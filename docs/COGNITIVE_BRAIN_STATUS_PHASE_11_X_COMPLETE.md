@@ -51,8 +51,8 @@ assert!(throughput > 200.0);  // Accounts for CI variability
 **Learning**:
 ```toml
 # ✅ Correct configuration
-pyo3 = { 
-    version = "0.24.1", 
+pyo3 = {
+    version = "0.24.1",
     features = ["abi3-py38", "extension-module"],
     optional = true  # For feature flags
 }
@@ -375,10 +375,10 @@ class SecureMFADelivery:
     def deliver_credentials(self, user, provisioning_uri, backup_codes):
         # Option 1: Encrypted email with PGP
         self.send_encrypted_email(user, ...)
-        
+
         # Option 2: SMS with verification
         self.send_sms_with_otp(user, ...)
-        
+
         # Option 3: Secure portal
         self.create_portal_access(user, ...)
 ```

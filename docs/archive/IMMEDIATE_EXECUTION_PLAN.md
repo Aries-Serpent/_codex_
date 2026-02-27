@@ -155,17 +155,17 @@ This is a **meta-capability** - it detects safeguards in OTHER code, not impleme
 3. **Create Documentation** (docs/capabilities/safeguards_detection.md):
    ```markdown
    # Safeguard Keyword Detection
-   
+
    ## Overview
    System for detecting defensive programming patterns
-   
+
    ## Keywords Detected
    - List all 25 keywords with examples
-   
+
    ## Usage
    - How to write detectable safeguards
    - Best practices
-   
+
    ## Keywords: safeguard, validation, security, defensive, robust
    ```
 

@@ -378,17 +378,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install architect
         run: |
           cd .github/agents/project-architect-researcher
           pip install -r requirements.txt
-      
+
       - name: Sync to NotebookLM
         env:
           NOTEBOOKLM_API_KEY: ${{ secrets.NOTEBOOKLM_API_KEY }}
@@ -399,7 +399,7 @@ jobs:
             --upload \
             --generate-audio \
             --create-share-link
-      
+
       - name: Post to Slack
         run: |
           SHARE_URL=$(cat /tmp/notebooklm/share_url.txt)
@@ -762,7 +762,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

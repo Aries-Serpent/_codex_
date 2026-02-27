@@ -259,7 +259,7 @@ Use proven Tier 1 templates as foundation:
 
 **Actions**:
 1. **ci-diagnostician**: Already active via workflows
-2. **test-assertion-updater**: 
+2. **test-assertion-updater**:
    - Add to pre-commit hooks (optional)
    - Document CLI usage for manual fixes
 3. **rust-error-validator**:
@@ -541,7 +541,7 @@ Begin with dependency-conflict-resolver. Use test-assertion-updater as template.
 
 ### Action 3: Validate CI Status
 **Why**: Ensure all checks passing before merge  
-**How**: 
+**How**:
 ```bash
 gh pr checks 2782 --watch
 ```

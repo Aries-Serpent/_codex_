@@ -47,9 +47,9 @@ use std::time::Duration;
 fn bench_task_latency(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_latency");
     group.measurement_time(Duration::from_secs(10));
-    
+
     let task_manager = TaskManager::new();
-    
+
     for size in [1, 10, 100, 1000].iter() {
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
             b.iter(|| {
@@ -59,7 +59,7 @@ fn bench_task_latency(c: &mut Criterion) {
             });
         });
     }
-    
+
     group.finish();
 }
 
@@ -67,43 +67,43 @@ fn bench_throughput(c: &mut Criterion) {
     let mut group = c.benchmark_group("throughput");
     group.measurement_time(Duration::from_secs(20));
     group.sample_size(50);
-    
+
     let swarm = SwarmEngine::new(1000); // 1000 agents
-    
+
     group.bench_function("10k_tasks", |b| {
         b.iter(|| {
             swarm.process_batch(black_box(10_000))
         });
     });
-    
+
     group.finish();
 }
 
 fn bench_compression(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression");
-    
+
     let data: Vec<u8> = (0..1_000_000).map(|_| rand::random()).collect();
-    
+
     group.bench_function("compress_1mb", |b| {
         b.iter(|| {
             Compression::compress(black_box(&data))
         });
     });
-    
+
     group.bench_function("decompress_1mb", |b| {
         let compressed = Compression::compress(&data);
         b.iter(|| {
             Compression::decompress(black_box(&compressed))
         });
     });
-    
+
     group.finish();
 }
 
 fn bench_concurrent_agents(c: &mut Criterion) {
     let mut group = c.benchmark_group("concurrent_agents");
     group.measurement_time(Duration::from_secs(30));
-    
+
     for agent_count in [100, 500, 1000].iter() {
         group.bench_with_input(
             BenchmarkId::from_parameter(agent_count),
@@ -116,7 +116,7 @@ fn bench_concurrent_agents(c: &mut Criterion) {
             },
         );
     }
-    
+
     group.finish();
 }
 

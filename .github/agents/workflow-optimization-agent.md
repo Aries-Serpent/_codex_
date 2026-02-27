@@ -125,7 +125,7 @@ Agent Actions:
      # Fan-out: Parallel execution
      job1: { uses: ./.github/workflows/component1.yml }
      job2: { uses: ./.github/workflows/component2.yml }
-     
+
      # Fan-in: Aggregate results
      summary:
        needs: [job1, job2]

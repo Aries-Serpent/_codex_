@@ -99,16 +99,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Validate test signatures
         run: |
           python scripts/test_signature_validator.py --check-only
-          
+
       - name: Comment on PR (if failures)
         if: failure()
         uses: actions/github-script@v7

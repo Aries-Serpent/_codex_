@@ -275,11 +275,11 @@ for doc in documents:
             "authority": 0.8,
             "topic_frequency": 1.0,
         })
-        
+
         # Embed
         emb = embedder.embed_text(chunk.content)
         chunk.metadata["embedding"] = emb.embedding
-        
+
         chunks.append(chunk)
 
 # Retrieve with quantum scoring
@@ -367,15 +367,15 @@ For optimal quantum retrieval, chunks should include these metadata fields:
 {
     # Required for quantum scoring
     "embedding": list[float],        # Vector embedding (typically 384-dim)
-    
+
     # Highly recommended
     "timestamp": float,              # Unix timestamp for temporal decay
     "authority": float,              # Source credibility (0-1)
-    
+
     # Optional
     "topic_frequency": float,        # Topic occurrence frequency
     "id": str,                       # Unique identifier
-    
+
     # Any other custom metadata
     "source": str,
     "author": str,
@@ -401,7 +401,7 @@ For optimal quantum retrieval, chunks should include these metadata fields:
 ### Embedding Pipeline
 - **Time Complexity:** O(n × d) where n is text length, d is model dimension
 - **Space Complexity:** O(d)
-- **Typical Speed:** 
+- **Typical Speed:**
   - With model: ~50-100ms per text
   - Fallback mode: ~1ms per text
 
@@ -411,7 +411,7 @@ For optimal quantum retrieval, chunks should include these metadata fields:
 - **Typical Speed:** ~10-50ms for 1000 documents
 
 ### Quantum Retrieval
-- **Time Complexity:** 
+- **Time Complexity:**
   - State calculation: O(n)
   - Entropy optimization: O(k² × n) where k is top_k
 - **Space Complexity:** O(n)

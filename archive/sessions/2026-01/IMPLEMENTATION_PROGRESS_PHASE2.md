@@ -177,7 +177,7 @@ related_patterns = [p for p in patterns if interference(p) > 1.5]
 ```python
 def interfere(self, other: 'PatternWave') -> float:
     phase_diff = abs(self.phase - other.phase)
-    
+
     if phase_diff < math.pi / 4:
         # Constructive interference
         return self.amplitude + other.amplitude

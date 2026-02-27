@@ -47,7 +47,7 @@ flowchart TB
         B --> C4[Agents]
         B --> C5[Physics]
     end
-    
+
     subgraph "FastAPI Backend"
         D[API Gateway] --> E1[Cognitive API]
         D --> E2[Agents API]
@@ -56,7 +56,7 @@ flowchart TB
         D --> E5[Metrics API]
         D --> WS[WebSocket Manager]
     end
-    
+
     subgraph "_codex_ Systems"
         F1[SuperpositionEngine]
         F2[EntanglementManager]
@@ -64,19 +64,19 @@ flowchart TB
         F4[PhysicsOrchestrator]
         F5[CodePipeline]
     end
-    
+
     C1 --> D
     C2 --> D
     C3 --> D
     C4 --> D
     C5 --> D
-    
+
     E1 --> F1
     E1 --> F2
     E2 --> F4
     E3 --> F3
     E4 --> F5
-    
+
     WS -.Real-time.-> A
 ```
 
@@ -88,7 +88,7 @@ sequenceDiagram
     participant API as FastAPI
     participant CB as Cognitive Brain
     participant MEM as Memory
-    
+
     UI->>API: POST /api/cognitive/evaluate
     API->>MEM: Check cache
     alt Cache Hit
@@ -187,10 +187,10 @@ async def get_quantum_state():
     """Get current cognitive brain state with quantum metrics"""
     from src.cognitive_brain.quantum.superposition import SuperpositionEngine
     from src.cognitive_brain.experiments.exp5_validation import get_current_metrics
-    
+
     engine = SuperpositionEngine()
     metrics = get_current_metrics()
-    
+
     return QuantumStateResponse(
         k1_factor=metrics.get("k1_factor", 0.35),
         accuracy=metrics.get("accuracy", 0.864),
@@ -210,9 +210,9 @@ async def get_quantum_state():
 async def evaluate_scenario(request: EvaluateRequest):
     """Evaluate decision scenario using quantum superposition"""
     from src.cognitive_brain.quantum.superposition import SuperpositionEngine
-    
+
     engine = SuperpositionEngine()
-    
+
     # Evaluate scenarios in parallel (superposition)
     results = []
     for scenario in request.scenarios:
@@ -222,7 +222,7 @@ async def evaluate_scenario(request: EvaluateRequest):
             "score": score,
             "probability": score / sum([engine.evaluate_state(s) for s in request.scenarios])
         })
-    
+
     return {
         "results": results,
         "coherence": engine.get_coherence(),
@@ -242,9 +242,9 @@ async def collapse_wave_function(request: CollapseRequest):
 async def get_quantum_memory():
     """Get quantum memory state"""
     from src.cognitive_brain.quantum.memory import QuantumMemoryManager
-    
+
     memory = QuantumMemoryManager(capacity=1000)
-    
+
     return {
         "stm_count": len(memory.short_term),
         "ltm_count": len(memory.long_term),
@@ -334,14 +334,14 @@ async def get_agents_state():
 async def orchestrate_task(request: OrchestrationRequest):
     """Orchestrate new task with agent assignment"""
     from agents.workflow_navigator import WorkflowNavigator
-    
+
     navigator = WorkflowNavigator()
-    
+
     if request.workflow_token:
         result = navigator.execute(request.workflow_token)
     else:
         result = {"status": "queued", "assigned_agent": "agent-1"}
-    
+
     return {
         "task_id": "task-123",
         "status": "running",
@@ -499,7 +499,7 @@ class AnalysisResult(BaseModel):
 async def ingest_code(file: UploadFile = File(...)):
     """Ingest code from file"""
     content = await file.read()
-    
+
     return {
         "snapshot_id": "snap-123",
         "status": "ingested",
@@ -557,21 +557,21 @@ class WebSocketManager:
     def __init__(self):
         self.active_connections: Set[WebSocket] = set()
         self.subscriptions: Dict[str, Set[WebSocket]] = {}
-    
+
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.add(websocket)
-    
+
     def disconnect(self, websocket: WebSocket):
         self.active_connections.discard(websocket)
         for topic_subs in self.subscriptions.values():
             topic_subs.discard(websocket)
-    
+
     async def subscribe(self, websocket: WebSocket, topic: str):
         if topic not in self.subscriptions:
             self.subscriptions[topic] = set()
         self.subscriptions[topic].add(websocket)
-    
+
     async def broadcast(self, topic: str, message: dict):
         if topic in self.subscriptions:
             for ws in self.subscriptions[topic]:
@@ -944,7 +944,7 @@ export function MemoryDashboard() {
 ```css
 :root {
   /* Existing colors... */
-  
+
   /* Quantum States */
   --quantum-superposition: oklch(0.65 0.22 310);
   --quantum-entangled: oklch(0.55 0.25 350);

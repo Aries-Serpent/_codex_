@@ -26,23 +26,23 @@ receivers:
   - name: 'default'
     email_configs:
       - to: 'ml-ops-team@example.com'
-  
+
   - name: 'pagerduty'
     pagerduty_configs:
       - service_key: '<PAGERDUTY_SERVICE_KEY>'
-  
+
   - name: 'slack-critical'
     slack_configs:
       - api_url: '<SLACK_WEBHOOK_URL>'
         channel: '#ml-ops-critical'
         title: '{{ .GroupLabels.alertname }}'
         text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
-  
+
   - name: 'slack-warnings'
     slack_configs:
       - api_url: '<SLACK_WEBHOOK_URL>'
         channel: '#ml-ops-warnings'
-  
+
   - name: 'email'
     email_configs:
       - to: 'ml-ops-team@example.com'

@@ -17,7 +17,7 @@ Fixed two critical CI/CD failures affecting the authentication tests and MkDocs 
 pytest: error: unrecognized arguments: --cov-report=xml --cov-report=html --cov-report=term-missing --cov-fail-under=70
 ```
 
-**Root Cause**: 
+**Root Cause**:
 - The `integration-test` job in `.github/workflows/auth-tests.yml` was missing the `pytest-cov` package
 - The global `pytest.ini` configuration includes coverage arguments in the `addopts` section
 - Without `pytest-cov` installed, pytest doesn't recognize these coverage options

@@ -36,13 +36,13 @@ for file in "${CANDIDATE_FILES[@]}"; do
             encoded_size=$(echo "scale=0; $size * 1.33 / 1" | bc)
             max_env_size=49152
             pct=$(echo "scale=1; $encoded_size * 100 / $max_env_size" | bc)
-            
+
             echo ""
             echo "📄 $file"
             echo "   Original: $size bytes"
             echo "   Base64: ~$encoded_size bytes"
             echo "   Usage: $pct% of 48KB"
-            
+
             if [ "$size" -gt "$MAX_SIZE" ]; then
                 echo -e "   ${RED}❌ ERROR: File exceeds 36KB limit!${NC}"
                 echo "   This file will NOT fit in a 48KB GitHub environment variable."

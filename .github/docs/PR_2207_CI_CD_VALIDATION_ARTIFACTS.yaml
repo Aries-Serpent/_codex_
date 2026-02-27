@@ -142,31 +142,31 @@ automation_workflows:
       - name: "Gate 1: Workflow Syntax"
         timeout_minutes: 5
         critical: true
-        
+
       - name: "Gate 2: Security Scan"
         timeout_minutes: 10
         critical: true
-        
+
       - name: "Gate 3: Dependencies"
         timeout_minutes: 5
         critical: true
-        
+
       - name: "Gate 4: Coverage"
         timeout_minutes: 20
         critical: true
-        
+
       - name: "Gate 5: Code Quality"
         timeout_minutes: 15
         critical: false
-        
+
       - name: "Gate 6: CODEOWNERS"
         timeout_minutes: 2
         critical: true
-        
+
       - name: "Gate 7: Documentation"
         timeout_minutes: 3
         critical: false
-        
+
       - name: "Gate 8: Merge Status"
         timeout_minutes: 2
         critical: true
@@ -177,22 +177,22 @@ automation_workflows:
     jobs:
       - name: "Checkout & Setup"
         timeout_minutes: 2
-        
+
       - name: "Dependency Resolution"
         timeout_minutes: 3
-        
+
       - name: "Full Test Suite"
         timeout_minutes: 15
-        
+
       - name: "Coverage Report"
         timeout_minutes: 3
-        
+
       - name: "Docker Build"
         timeout_minutes: 8
-        
+
       - name: "Artifact Upload"
         timeout_minutes: 2
-        
+
       - name: "Notification & Status"
         timeout_minutes: 2
 
@@ -203,19 +203,19 @@ approval_authorities:
     email: "mbaetiong@example.com"
     can_override_gates: false
     approval_required: true
-    
+
   security_reviewer:
     name: "Security Lead"
     role: "Information Security"
     can_override_gates: ["gate_2_security_scanning"]
     approval_required: true
-    
+
   qa_reviewer:
     name: "QA Lead"
     role: "Quality Assurance"
     can_override_gates: ["gate_4_test_coverage"]
     approval_required: true
-    
+
   devops_reviewer:
     name: "DevOps Lead"
     role: "Infrastructure"
@@ -227,31 +227,31 @@ deployment_readiness_matrix:
     - name: "Workflow Syntax"
       required: true
       current_status: "⏳ PENDING"
-      
+
     - name: "Security Scan"
       required: true
       current_status: "⏳ PENDING"
-      
+
     - name: "Dependency Lock"
       required: true
       current_status: "✅ VERIFIED (pre-deployment)"
-      
+
     - name: "Test Coverage"
       required: true
       current_status: "⏳ PENDING CI"
-      
+
     - name: "Code Quality"
       required: false
       current_status: "⏳ PENDING CI"
-      
+
     - name: "CODEOWNERS"
       required: true
       current_status: "✅ VERIFIED (100% coverage)"
-      
+
     - name: "Documentation"
       required: false
       current_status: "✅ VERIFIED"
-      
+
     - name: "Merge Status"
       required: true
       current_status: "✅ CLEAN"
@@ -260,31 +260,31 @@ deployment_timeline:
   t_minus_10m:
     action: "Final verification round"
     responsible_party: "DevOps Lead"
-    
+
   t_0m:
     action: "Execute merge"
     responsible_party: "Code Owner / DevOps Lead"
-    
+
   t_plus_1m:
     action: "Verify post-merge workflow triggered"
     responsible_party: "DevOps Lead"
-    
+
   t_plus_5m:
     action: "Monitor test execution"
     responsible_party: "QA Lead"
-    
+
   t_plus_20m:
     action: "Verify coverage report"
     responsible_party: "QA Lead"
-    
+
   t_plus_30m:
     action: "Check Docker build status"
     responsible_party: "DevOps Lead"
-    
+
   t_plus_35m:
     action: "Workflow completion confirmation"
     responsible_party: "DevOps Lead"
-    
+
   t_plus_40m:
     action: "Send success notification"
     responsible_party: "DevOps Lead"
@@ -296,7 +296,7 @@ rollback_triggers:
     - "Security vulnerability discovered post-merge"
     - "Application fails to start"
     - "Error rate exceeds 5x baseline"
-    
+
   manual_triggers:
     - "Multiple user-reported issues"
     - "Data corruption detected"
@@ -308,37 +308,37 @@ rollback_procedure:
     description: "Notify team"
     duration_minutes: 1
     command: "Send Slack alert to #incidents"
-    
+
   step_2:
     description: "Execute revert"
     duration_minutes: 2
     command: "gh pr revert 2207"
-    
+
   step_3:
     description: "Create incident report"
     duration_minutes: 5
     command: "gh issue create --title 'Incident: PR #2207 Rollback'"
-    
+
   step_4:
     description: "Schedule post-incident review"
     duration_minutes: 2
     command: "Calendar invite to team"
-    
+
   total_rollback_time_minutes: 10
 
 monitoring_alerts:
   - metric: "Application Error Rate"
     threshold: "5x baseline"
     action: "Escalate to on-call"
-    
+
   - metric: "Response Latency"
     threshold: "> 500ms"
     action: "Notify DevOps"
-    
+
   - metric: "CPU Usage"
     threshold: "> 85%"
     action: "Monitor and escalate if persistent"
-    
+
   - metric: "Memory Usage"
     threshold: "> 90%"
     action: "Monitor and escalate if persistent"
@@ -347,13 +347,13 @@ notifications:
   pre_deployment:
     channel: "#deployments"
     message_template: "deployment_notification_template"
-    
+
   post_deployment_success:
     channels:
       - "#deployments"
       - "@maintainers"
     message_template: "success_notification_template"
-    
+
   post_deployment_failure:
     channels:
       - "#incidents"
@@ -367,7 +367,7 @@ artifacts:
     - bandit-report.json
     - security-scan-results.json
     - coverage-baseline.json
-    
+
   post_deployment:
     - coverage-report.json
     - test-results.xml

@@ -40,7 +40,7 @@ Rust Tests (Cargo):
   ✅ Task Manager tests         6/6 passed
   ✅ Telemetry tests            6/6 passed
   ✅ Library tests              1/1 passed
-  
+
   Total: 30 passed, 0 failed, 1 ignored
 
 ================================================================================
@@ -50,18 +50,18 @@ Rust Tests (Cargo):
 1. ✅ tests/test_rag_tenant_management.py
    - Fixed 4 test assertion mismatches
    - Added specific error message validations
-   
+
 2. ✅ src/codex/rag/retriever.py
    - Fixed cache miss tracking logic
    - Simplified branching for metric recording
-   
+
 3. ✅ src/codex/rag/utils.py
    - Enhanced meta tensor handling
    - Added defensive checks for tensor availability
-   
+
 4. ✅ tests/rust_integration/test_serialization_integration.py
    - Removed redundant import
-   
+
 5. ✅ tests/rust_integration/test_agent_manager_integration.py
    - Added exception comment for broad exception
 
@@ -156,7 +156,7 @@ PR #2785 is ✅ READY TO MERGE with the following conditions:
 3. ⚠️  Upgrade pyo3 to 0.24.1+ before merging
 4. 🔄 Run full RAG suite in CI to validate all 6 fixes
 
-Recommendation: 
+Recommendation:
   MERGE after addressing the pyo3 security vulnerability and confirming
   full RAG test suite passes in CI environment with network access.
 

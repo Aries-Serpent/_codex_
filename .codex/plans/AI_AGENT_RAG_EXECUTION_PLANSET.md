@@ -508,7 +508,7 @@ for i, query in enumerate(queries, 1):
     results = retriever.query(query, top_k=5)
     latency = (time.time() - start) * 1000  # ms
     latencies.append(latency)
-    
+
     print(f"{i}. Query: '{query[:40]}...'")
     print(f"   Latency: {latency:.1f}ms, Results: {len(results)}")
 
@@ -580,7 +580,7 @@ PYTHON_EOF
 echo "Simulating continuous monitoring (5 iterations)"
 for i in {1..5}; do
     echo "Monitoring iteration $i/5"
-    
+
     # Query to generate metrics
     python -m codex.cli rag query \
       --index-name "codex_docs" \
@@ -588,13 +588,13 @@ for i in {1..5}; do
       --query "monitoring metrics" \
       --top-k 3 \
       --quiet > /dev/null 2>&1
-    
+
     # Export metrics
     python -m codex.cli rag metrics export \
       --format json \
       --output "/tmp/rag_metrics_$i.json" \
       --quiet
-    
+
     echo "  ✓ Metrics snapshot $i captured"
     sleep 1
 done
@@ -619,16 +619,16 @@ if snapshots:
     print("\nMetrics Trend Analysis:")
     first = snapshots[0]
     last = snapshots[-1]
-    
+
     # Query count trend
     first_queries = first.get('total_queries', 0)
     last_queries = last.get('total_queries', 0)
     query_increase = last_queries - first_queries
-    
+
     print(f"  Query count increased by: {query_increase}")
     print(f"  Starting queries: {first_queries}")
     print(f"  Ending queries: {last_queries}")
-    
+
 print("\n✓ Monitoring analysis complete")
 PYTHON_EOF
 
@@ -654,10 +654,10 @@ def health_check():
             "total_indices": len(list(Path(".codex/tenants").glob("*/*/"))),
         }
     }
-    
+
     # Overall health
     checks["healthy"] = all(checks["checks"].values())
-    
+
     return checks
 
 # Run health check

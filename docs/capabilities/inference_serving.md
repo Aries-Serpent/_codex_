@@ -56,26 +56,26 @@ from pydantic import BaseSettings
 class ServingConfig(BaseSettings):
     """
     Inference serving configuration.
-    
+
     Safeguard: Validates all settings.
     """
     # Server settings
     host: str = "0.0.0.0"
     port: int = 8080
     workers: int = 4
-    
+
     # Model settings
     model_path: str = "models/production"
     model_version: str = "latest"
-    
+
     # Performance
     max_batch_size: int = 32
     timeout_seconds: float = 30.0
-    
+
     # Safeguards
     max_request_size_mb: int = 10
     rate_limit_per_minute: int = 1000
-    
+
     class Config:
         env_prefix = "INFERENCE_"
 ```
@@ -125,12 +125,12 @@ app = FastAPI(title="Codex ML Inference API")
 class PredictionRequest(BaseModel):
     """
     Request model for predictions.
-    
+
     Safeguard: Validates input data.
     """
     inputs: List[float]
     model_version: Optional[str] = None
-    
+
     @validator("inputs")
     def validate_inputs(cls, v):
         """Validate input bounds."""
@@ -149,42 +149,42 @@ class PredictionResponse(BaseModel):
 class ModelManager:
     """
     Manage model loading and inference.
-    
+
     Safeguard: Thread-safe model access.
     """
-    
+
     def __init__(self):
         self._model = None
         self._version = None
         self._lock = threading.Lock()
-    
+
     def load_model(self, path: str, version: str) -> None:
         """
         Load model from path.
-        
+
         Safeguard: Validates model path exists.
         Timeout: Model loading timeout.
         """
         if not Path(path).exists():
             raise ValueError(f"Model path not found: {path}")
-        
+
         with self._lock:
             self._model = torch.jit.load(path)
             self._model.eval()
             self._version = version
-    
+
     def predict(self, inputs: torch.Tensor) -> torch.Tensor:
         """
         Run inference.
-        
+
         Safeguard: Validates model is loaded.
         """
         if self._model is None:
             raise RuntimeError("Model not loaded")
-        
+
         with torch.no_grad():
             return self._model(inputs)
-    
+
     @property
     def version(self) -> str:
         return self._version or "unknown"
@@ -200,28 +200,28 @@ async def startup():
 async def predict(request: PredictionRequest) -> PredictionResponse:
     """
     Make predictions.
-    
+
     Safeguard: Validates input and handles errors.
     Rate-limit: Applied via middleware.
     """
     import time
     start = time.time()
-    
+
     try:
         # Convert to tensor
         inputs = torch.tensor(request.inputs).unsqueeze(0)
-        
+
         # Run inference
         predictions = model_manager.predict(inputs)
-        
+
         latency = (time.time() - start) * 1000
-        
+
         return PredictionResponse(
             predictions=predictions.squeeze().tolist(),
             model_version=model_manager.version,
             latency_ms=latency,
         )
-    
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -229,7 +229,7 @@ async def predict(request: PredictionRequest) -> PredictionResponse:
 async def health():
     """
     Health check endpoint.
-    
+
     Safeguard: Validates model is ready.
     """
     if model_manager._model is None:
@@ -247,11 +247,11 @@ from collections import defaultdict
 class BatchInferenceServer:
     """
     Batch inference server with request coalescing.
-    
+
     Safeguard: Limits batch size.
     Timeout: Batch timeout for latency control.
     """
-    
+
     def __init__(
         self,
         model: torch.nn.Module,
@@ -263,50 +263,50 @@ class BatchInferenceServer:
         self.batch_timeout = batch_timeout_ms / 1000
         self.pending_requests = []
         self._lock = asyncio.Lock()
-    
+
     async def predict(self, inputs: List[float]) -> List[float]:
         """
         Add request to batch and wait for result.
-        
+
         Safeguard: Validates input length.
         """
         if len(inputs) > 10000:
             raise ValueError("Input too large")
-        
+
         future = asyncio.Future()
-        
+
         async with self._lock:
             self.pending_requests.append((inputs, future))
-            
+
             # Process batch if full
             if len(self.pending_requests) >= self.max_batch_size:
                 await self._process_batch()
-        
+
         # Wait for result with timeout
         try:
             result = await asyncio.wait_for(future, timeout=30.0)
             return result
         except asyncio.TimeoutError:
             raise RuntimeError("Inference timeout")
-    
+
     async def _process_batch(self):
         """Process pending batch."""
         if not self.pending_requests:
             return
-        
+
         requests = self.pending_requests[:self.max_batch_size]
         self.pending_requests = self.pending_requests[self.max_batch_size:]
-        
+
         # Build batch tensor
         inputs = [r[0] for r in requests]
         futures = [r[1] for r in requests]
-        
+
         batch = torch.tensor(inputs)
-        
+
         # Run inference
         with torch.no_grad():
             outputs = self.model(batch)
-        
+
         # Send results
         for i, future in enumerate(futures):
             future.set_result(outputs[i].tolist())
@@ -376,17 +376,17 @@ import inference_pb2_grpc
 class InferenceServicer(inference_pb2_grpc.InferenceServiceServicer):
     """
     gRPC inference servicer.
-    
+
     Safeguard: Validates requests.
     """
-    
+
     def Predict(self, request, context):
         """Handle single prediction."""
         inputs = torch.tensor(list(request.inputs))
-        
+
         with torch.no_grad():
             outputs = model(inputs)
-        
+
         return inference_pb2.PredictResponse(
             predictions=outputs.tolist(),
             model_version="v1.0.0",
@@ -412,12 +412,12 @@ from fastapi.responses import StreamingResponse
 async def predict_stream(websocket: WebSocket):
     """
     WebSocket endpoint for streaming predictions.
-    
+
     Safeguard: Connection timeout.
     Rate-limit: Max messages per second.
     """
     await websocket.accept()
-    
+
     try:
         while True:
             # Receive input
@@ -425,21 +425,21 @@ async def predict_stream(websocket: WebSocket):
                 websocket.receive_json(),
                 timeout=60.0  # Timeout safeguard
             )
-            
+
             # Validate input
             if "inputs" not in data:
                 await websocket.send_json({"error": "Missing inputs"})
                 continue
-            
+
             # Run inference
             inputs = torch.tensor(data["inputs"])
             with torch.no_grad():
                 outputs = model(inputs)
-            
+
             await websocket.send_json({
                 "predictions": outputs.tolist()
             })
-    
+
     except asyncio.TimeoutError:
         await websocket.close(code=1000, reason="Timeout")
     except Exception as e:
@@ -455,32 +455,32 @@ import random
 class ABTestingServer:
     """
     A/B testing for model versions.
-    
+
     Safeguard: Validates model versions exist.
     """
-    
+
     def __init__(self):
         self.models: Dict[str, torch.nn.Module] = {}
         self.traffic_split: Dict[str, float] = {}
-    
+
     def register_model(self, version: str, model: torch.nn.Module, traffic: float):
         """Register model with traffic split."""
         if traffic < 0 or traffic > 1:
             raise ValueError("Traffic must be between 0 and 1")
-        
+
         self.models[version] = model
         self.traffic_split[version] = traffic
-    
+
     def predict(self, inputs: torch.Tensor) -> tuple:
         """
         Route prediction to model based on traffic split.
-        
+
         Returns tuple of (predictions, model_version).
         """
         # Select model based on traffic split
         rand = random.random()
         cumulative = 0.0
-        
+
         for version, traffic in self.traffic_split.items():
             cumulative += traffic
             if rand <= cumulative:
@@ -488,7 +488,7 @@ class ABTestingServer:
                 with torch.no_grad():
                     outputs = model(inputs)
                 return outputs, version
-        
+
         # Fallback to first model
         version = list(self.models.keys())[0]
         model = self.models[version]
@@ -505,16 +505,16 @@ class ABTestingServer:
 def validate_inference_input(inputs: List[float], max_length: int = 10000) -> None:
     """
     Validate inference input.
-    
+
     Safeguard: Prevents malformed or oversized inputs.
     Bounds: Limits input size.
     """
     if not inputs:
         raise ValueError("Input cannot be empty")
-    
+
     if len(inputs) > max_length:
         raise ValueError(f"Input exceeds max length {max_length}")
-    
+
     for val in inputs:
         if not isinstance(val, (int, float)):
             raise TypeError("Input must contain only numbers")
@@ -548,13 +548,13 @@ def timeout_handler(signum, frame):
 def predict_with_timeout(model, inputs, timeout_seconds: float = 30.0):
     """
     Run inference with timeout.
-    
+
     Safeguard: Prevents hanging requests.
     Timeout: Raises after timeout_seconds.
     """
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(int(timeout_seconds))
-    
+
     try:
         with torch.no_grad():
             return model(inputs)

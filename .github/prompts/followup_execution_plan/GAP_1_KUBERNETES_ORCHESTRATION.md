@@ -181,15 +181,15 @@ data:
   WANDB_MODE: "offline"
   HF_DATASETS_OFFLINE: "1"
   TRANSFORMERS_OFFLINE: "1"
-  
+
   # Telemetry disabled
   DO_NOT_TRACK: "1"
   DISABLE_TELEMETRY: "1"
-  
+
   # Deterministic mode
   PYTHONHASHSEED: "0"
   CUBLAS_WORKSPACE_CONFIG: ":4096:8"
-  
+
   # Application settings
   WORKERS: "4"
   MAX_REQUESTS: "1000"
@@ -208,11 +208,11 @@ type: Opaque
 stringData:
   # Model registry credentials (if needed)
   MODEL_REGISTRY_TOKEN: ""
-  
+
   # MLflow tracking (if using remote)
   MLFLOW_TRACKING_URI: ""
   MLFLOW_TRACKING_TOKEN: ""
-  
+
   # API keys (if needed for external services)
   API_KEY: ""
 ```

@@ -113,18 +113,18 @@ graph TD
     A[README.md - You Are Here] --> B[PRE_RELEASE_CHECKLIST.md]
     A --> C[RELEASE_RUNBOOK.md]
     A --> D[PACKAGE_PUBLISHING_GUIDE.md]
-    
+
     B --> C
     C --> D
-    
+
     A --> E[RELEASE_WORKFLOW_PLAN.md]
     E --> F[GitHub Actions]
     E --> G[GitLab CI/CD]
     E --> H[ActiveState OIDC]
-    
+
     A --> I[COGNITIVE_BRAIN_ALIGNMENT.md]
     A --> J[AI_AGENT_AUTONOMOUS_OPERATIONS.md]
-    
+
     style A fill:#f9f,stroke:#333,stroke-width:4px
     style B fill:#bbf,stroke:#333,stroke-width:2px
     style C fill:#bbf,stroke:#333,stroke-width:2px

@@ -263,16 +263,16 @@ Integrate the new agent into existing workflow:
     needs: detect-and-analyze
     runs-on: ubuntu-latest
     if: needs.detect-and-analyze.outputs.fix_available != 'true'
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Diagnostician
         run: |
           python .github/agents/ci-failure-diagnostician/src/diagnostician.py \
             --run-id ${{ needs.detect-and-analyze.outputs.workflow_run_id }} \
             --output diagnostic_report.md
-      
+
       - name: Post Diagnostic Report
         uses: actions/github-script@v7
         with:

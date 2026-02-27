@@ -109,7 +109,7 @@ This report provides a comprehensive analysis of all custom GitHub Copilot agent
 - workflow-analytics-agent
 - workflow-management-agent
 
-**Consolidation Recommendation:** 
+**Consolidation Recommendation:**
 - **Merge ci-testing-agent + ci-emergency-response-agent** → `ci-diagnostic-agent`
 - **Merge workflow-ci-fixer + workflow-management-agent** → `workflow-orchestrator-agent`
 - Keep specialized agents (logs, artifacts, coverage)

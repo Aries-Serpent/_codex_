@@ -50,7 +50,7 @@ theme:
     - media: "(prefers-color-scheme)"       # Auto mode
     - media: "(prefers-color-scheme: light)"  # Light mode
     - media: "(prefers-color-scheme: dark)"   # Dark mode (slate)
-  
+
   features:
     - navigation.instant      # XHR loading
     - navigation.tracking     # URL updates
@@ -248,7 +248,7 @@ workflows:
     purpose: Base Jekyll site deployment
     theme: GitHub Pages default (has dark mode)
     status: Active (landing page)
-    
+
   pages-mkdocs.yml:
     type: Custom MkDocs
     purpose: Documentation site deployment

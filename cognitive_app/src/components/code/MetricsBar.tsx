@@ -17,9 +17,9 @@ interface MetricsBarProps {
 
 export function MetricsBar({ metadata, quantumMetrics }: MetricsBarProps) {
   const k1Success = metadata.k1_factor <= 0.35;
-  const coherenceLevel = 
-    metadata.coherence >= 0.65 ? 'high' : 
-    metadata.coherence >= 0.50 ? 'medium' : 
+  const coherenceLevel =
+    metadata.coherence >= 0.65 ? 'high' :
+    metadata.coherence >= 0.50 ? 'medium' :
     'low';
 
   return (
@@ -28,7 +28,7 @@ export function MetricsBar({ metadata, quantumMetrics }: MetricsBarProps) {
         <Lightning weight="duotone" className="w-5 h-5 text-accent" />
         Performance Metrics
       </h3>
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -56,18 +56,18 @@ export function MetricsBar({ metadata, quantumMetrics }: MetricsBarProps) {
           <span className="text-xs text-muted-foreground">Coherence</span>
           <div className="flex items-baseline gap-2">
             <span className={`text-2xl font-mono font-semibold ${
-              coherenceLevel === 'high' ? 'text-green-500' : 
-              coherenceLevel === 'medium' ? 'text-yellow-500' : 
+              coherenceLevel === 'high' ? 'text-green-500' :
+              coherenceLevel === 'medium' ? 'text-yellow-500' :
               'text-red-500'
             }`}>
               {(metadata.coherence * 100).toFixed(1)}%
             </span>
           </div>
           <div className="w-full bg-muted rounded-full h-1.5 mt-1">
-            <div 
+            <div
               className={`h-1.5 rounded-full transition-all ${
-                coherenceLevel === 'high' ? 'bg-green-500' : 
-                coherenceLevel === 'medium' ? 'bg-yellow-500' : 
+                coherenceLevel === 'high' ? 'bg-green-500' :
+                coherenceLevel === 'medium' ? 'bg-yellow-500' :
                 'bg-red-500'
               }`}
               style={{ width: `${metadata.coherence * 100}%` }}

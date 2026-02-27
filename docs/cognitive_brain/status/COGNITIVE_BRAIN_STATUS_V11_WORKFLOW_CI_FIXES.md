@@ -121,12 +121,12 @@ graph TD
     A --> C[Security Scan Agent]
     A --> D[Documentation Agent]
     A --> E[Owner Approval Guard]
-    
+
     B --> F[Test Execution]
     C --> G[Security Validation]
     D --> H[Doc Deployment]
     E --> I[Permission Checks]
-    
+
     A --> J[Cognitive Brain]
     J --> K[Pattern Learning]
     J --> L[Self-Healing]
@@ -214,18 +214,18 @@ Decisions:
     rationale: GitHub Actions doesn't support secrets:write
     approval: automatic (syntax fix)
     risk: none
-  
+
   - action: fix_yaml_syntax
     rationale: Parser failures blocking CI
     approval: automatic (correctness fix)
     risk: none
-  
+
   - action: remove_strict_flag
     rationale: 297 warnings blocking deployment
     approval: automatic (temporary workaround)
     risk: low (warnings still logged)
     followup_required: yes (fix warnings in Phase 11.X)
-  
+
   - action: create_custom_agent
     rationale: Prevent future workflow issues
     approval: automatic (knowledge capture)

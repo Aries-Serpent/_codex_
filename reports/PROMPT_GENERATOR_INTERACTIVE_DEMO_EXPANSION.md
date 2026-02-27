@@ -232,7 +232,7 @@ class ScriptExecutor:
     def __init__(self, max_execution_time: int = 30):
         self.docker_client = docker.from_env()
         self.max_execution_time = max_execution_time
-    
+
     async def execute_script(
         self,
         script: str,
@@ -242,7 +242,7 @@ class ScriptExecutor:
         """Execute script in sandboxed Docker container"""
         # Implementation
         pass
-    
+
     async def stream_output(self, execution_id: str) -> AsyncIterator[str]:
         """Stream execution output in real-time"""
         # Implementation
@@ -321,7 +321,7 @@ function validateScript(script: string, language: string): ValidationResult {
     /curl.*\|\s*bash/, // Remote execution
     /eval\(/, // Dynamic execution
   ];
-  
+
   // Check for malicious patterns
   // Validate syntax
   // Check file size limits
@@ -372,13 +372,13 @@ interface ExecutionMetrics {
     <StopButton onClick={handleStop} disabled={!isRunning} />
     <ClearButton onClick={handleClear} />
   </ExecutionControls>
-  
+
   <ExecutionStatus>
     <StatusBadge status={executionStatus} />
     <ProgressBar progress={executionProgress} />
     <ElapsedTime time={elapsedTime} />
   </ExecutionStatus>
-  
+
   <OutputPanel>
     <TabList>
       <Tab>Output</Tab>
@@ -393,7 +393,7 @@ interface ExecutionMetrics {
       <VisualizationPanel data={visualizationData} />
     </TabPanels>
   </OutputPanel>
-  
+
   <ExecutionHistory items={history} />
 </InteractiveDemoPanel>
 ```
@@ -429,15 +429,15 @@ describe('InteractiveDemo', () => {
   it('should execute script and display output', async () => {
     // Test implementation
   });
-  
+
   it('should handle execution errors gracefully', async () => {
     // Test implementation
   });
-  
+
   it('should stop running execution', async () => {
     // Test implementation
   });
-  
+
   it('should stream output in real-time', async () => {
     // Test implementation
   });
@@ -460,7 +460,7 @@ test('execute bash script and view output', async ({ page }) => {
   await page.waitForSelector('[data-testid="generated-script"]');
   await page.click('[data-testid="execute-button"]');
   await page.waitForSelector('[data-testid="execution-success"]');
-  
+
   const output = await page.textContent('[data-testid="stdout"]');
   expect(output).toContain('Hello');
 });
@@ -633,10 +633,10 @@ npm install @monaco-editor/react ws
 
 **Component Structure:**
 ```tsx
-export function InteractiveDemo({ 
-  script, 
-  language, 
-  onExecute 
+export function InteractiveDemo({
+  script,
+  language,
+  onExecute
 }: InteractiveDemoProps) {
   // State management
   // WebSocket connection

@@ -170,7 +170,7 @@ print(f"Expires: {decoded['exp']}")
 2. **Identify bottleneck:**
    ```bash
    # Check model inference time
-   
+
    # Check queueing time
    # latency_total - prediction_latency = queue_time
    ```
@@ -179,10 +179,10 @@ print(f"Expires: {decoded['exp']}")
    ```bash
    # CPU
    top -bn1 | grep python
-   
+
    # GPU (if applicable)
    nvidia-smi
-   
+
    # Memory
    free -h
    ```
@@ -209,7 +209,7 @@ print(f"Expires: {decoded['exp']}")
 ```python
 # In inference server config
 from src.codex_ml.serving.optimizations import (
-    RequestBatcher, 
+    RequestBatcher,
     DynamicBatchSizer
 )
 
@@ -286,7 +286,7 @@ def predict_with_retry(data, max_retries=3):
    ```bash
    # Check process
    ps aux | grep inference_server
-   
+
    # Check port binding
    netstat -tlnp | grep 8000
    ```
@@ -294,7 +294,7 @@ def predict_with_retry(data, max_retries=3):
 2. **Test connectivity:**
    ```bash
    # Local
-   
+
    # Remote
    curl http://<server-ip>:8000/health
    ```
@@ -303,7 +303,7 @@ def predict_with_retry(data, max_retries=3):
    ```bash
    # Linux
    sudo iptables -L -n | grep 8000
-   
+
    # Check if port is blocked
    telnet <server-ip> 8000
    ```

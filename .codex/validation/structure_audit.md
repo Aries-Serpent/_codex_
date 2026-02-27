@@ -24,5 +24,5 @@
 }
 # Structure Audit
 
-- **changelog**: consolidate-index — ['docs/changelog/CHANGELOG_SESSION_LOGGING.md', 'docs/changelog/CHANGELOG_Codex.md', 'docs/changelog/CHANGELOG_codex.md', 'docs/changelog/CHANGELOG_CODEX.md'] → 
-- **scripts**: reclassify — ['codex_ast_upgrade.py', 'run_next_stage.py'] → 
+- **changelog**: consolidate-index — ['docs/changelog/CHANGELOG_SESSION_LOGGING.md', 'docs/changelog/CHANGELOG_Codex.md', 'docs/changelog/CHANGELOG_codex.md', 'docs/changelog/CHANGELOG_CODEX.md'] →
+- **scripts**: reclassify — ['codex_ast_upgrade.py', 'run_next_stage.py'] →

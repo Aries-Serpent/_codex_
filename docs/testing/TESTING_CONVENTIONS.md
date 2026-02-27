@@ -33,7 +33,7 @@ The repository uses **centralized pytest configuration** in `pytest.ini` for set
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --strict-markers
     --timeout=300
@@ -140,7 +140,7 @@ pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures
 
 ```ini
 [pytest]
-addopts = 
+addopts =
     --timeout=300
     --timeout-method=thread
 ```
@@ -279,13 +279,13 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
-    
+
     steps:
       - name: Install dependencies
         run: |
           pip install -e ".[test]"
           pip install pytest pytest-cov pytest-xdist pytest-timeout pytest-rerunfailures
-      
+
       - name: Run tests
         run: |
           pytest tests/ \

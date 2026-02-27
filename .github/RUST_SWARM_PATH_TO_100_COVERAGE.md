@@ -88,7 +88,7 @@ use std::sync::Arc;
 
 fn bench_swarm_state(c: &mut Criterion) {
     let mut group = c.benchmark_group("swarm_state");
-    
+
     // Registration throughput
     group.bench_function("register_1000_agents", |b| {
         b.iter(|| {
@@ -98,7 +98,7 @@ fn bench_swarm_state(c: &mut Criterion) {
             }
         })
     });
-    
+
     // Concurrent registration
     group.bench_function("concurrent_register_100", |b| {
         b.iter(|| {
@@ -115,13 +115,13 @@ fn bench_swarm_state(c: &mut Criterion) {
             for h in handles { h.join().unwrap(); }
         })
     });
-    
+
     group.finish();
 }
 
 fn bench_task_queue(c: &mut Criterion) {
     let mut group = c.benchmark_group("task_queue");
-    
+
     // Submission throughput
     for size in [100, 1000, 10000].iter() {
         group.bench_with_input(BenchmarkId::from_parameter(size), size, |b, &size| {
@@ -138,53 +138,53 @@ fn bench_task_queue(c: &mut Criterion) {
             })
         });
     }
-    
+
     group.finish();
 }
 
 fn bench_compression(c: &mut Criterion) {
     let mut group = c.benchmark_group("compression");
-    
+
     let data_1kb = vec![0u8; 1024];
     let data_1mb = vec![0u8; 1024 * 1024];
-    
+
     // LZ4
     group.bench_function("lz4_1kb", |b| {
         let pipeline = CompressionPipeline::new("lz4".to_string(), None).unwrap();
         b.iter(|| pipeline.compress(black_box(&data_1kb)))
     });
-    
+
     group.bench_function("lz4_1mb", |b| {
         let pipeline = CompressionPipeline::new("lz4".to_string(), None).unwrap();
         b.iter(|| pipeline.compress(black_box(&data_1mb)))
     });
-    
+
     // Zstd
     group.bench_function("zstd_1mb", |b| {
         let pipeline = CompressionPipeline::new("zstd".to_string(), Some(3)).unwrap();
         b.iter(|| pipeline.compress(black_box(&data_1mb)))
     });
-    
+
     group.finish();
 }
 
 fn bench_serialization(c: &mut Criterion) {
     let mut group = c.benchmark_group("serialization");
-    
+
     let mut state = AgentState::new("agent_1".to_string(), vec!["item".to_string(); 1000]);
     for i in 0..10 {
         state.set_metric(format!("metric_{}", i), i as f64);
     }
-    
+
     group.bench_function("serialize_state", |b| {
         b.iter(|| serialize_state(black_box(&state)))
     });
-    
+
     let serialized = serialize_state(&state).unwrap();
     group.bench_function("deserialize_state", |b| {
         b.iter(|| deserialize_state(black_box(&serialized)))
     });
-    
+
     group.finish();
 }
 
@@ -257,38 +257,38 @@ import os
 
 def test_memory_usage():
     process = psutil.Process(os.getpid())
-    
+
     # Baseline
     baseline = process.memory_info().rss / 1024 / 1024
     print(f"Baseline memory: {baseline:.2f} MB")
-    
+
     # Create 1000 agents
     state = codex_engine.SwarmState()
     for i in range(1000):
         state.register_agent(f"agent_{i}")
-    
+
     after_agents = process.memory_info().rss / 1024 / 1024
     print(f"After 1000 agents: {after_agents:.2f} MB")
     print(f"Per-agent memory: {(after_agents - baseline) / 1000:.3f} MB")
-    
+
     # Submit 10k tasks
     queue = codex_engine.TaskQueue()
     for i in range(10000):
         task = codex_engine.Task(str(i), "test", "{}")
         queue.submit(task)
-    
+
     after_tasks = process.memory_info().rss / 1024 / 1024
     print(f"After 10k tasks: {after_tasks:.2f} MB")
-    
+
     # Cleanup test
     for i in range(1000):
         state.unregister_agent(f"agent_{i}")
-    
+
     time.sleep(1)  # Allow cleanup
-    
+
     after_cleanup = process.memory_info().rss / 1024 / 1024
     print(f"After cleanup: {after_cleanup:.2f} MB")
-    
+
     # Validate
     assert (after_cleanup - baseline) < 50, "Memory leak detected"
     print("✅ No memory leaks detected")
@@ -356,21 +356,21 @@ from codex_engine import (
 @pytest.mark.slow
 async def test_full_swarm_integration():
     """Full integration test: 500 agents, 10k tasks"""
-    
+
     # Setup
     state = SwarmState()
     queue = TaskQueue()
     manager = AgentManager(max_agents=500)
     orch = Orchestrator(state)
     compression = CompressionPipeline("lz4")
-    
+
     print("\n=== Full Swarm Integration Test ===")
-    
+
     # Start orchestrator
     orch.start()
     assert orch.is_running()
     print("✅ Orchestrator started")
-    
+
     # Spawn 500 agents
     start = time.time()
     for i in range(500):
@@ -383,9 +383,9 @@ async def test_full_swarm_integration():
     elapsed = time.time() - start
     print(f"✅ Spawned agents in {elapsed:.2f}s")
     assert elapsed < 10.0, "Agent spawning took too long"
-    
+
     await asyncio.sleep(0.5)
-    
+
     # Submit 10,000 tasks
     start = time.time()
     for i in range(10000):
@@ -394,14 +394,14 @@ async def test_full_swarm_integration():
             "operation": "analyze",
             "priority": i % 10
         }
-        
+
         # Serialize task data
         agent_state = AgentState(f"task_{i}", [f"data_{i}"])
         serialized = serialize_state(agent_state)
-        
+
         # Compress
         compressed = compression.compress(serialized)
-        
+
         # Submit
         task = codex_engine.Task(
             str(i),
@@ -409,55 +409,55 @@ async def test_full_swarm_integration():
             compressed.decode('latin1')  # Store as string
         )
         queue.submit(task)
-    
+
     elapsed = time.time() - start
     throughput = 10000 / elapsed
     print(f"✅ Submitted 10k tasks in {elapsed:.2f}s ({throughput:.0f} tasks/s)")
     assert throughput > 5000, f"Throughput too low: {throughput:.0f} tasks/s"
-    
+
     # Process tasks
     await asyncio.sleep(2.0)
-    
+
     # Validate state
     agent_count = state.get_agent_count()
     print(f"✅ Agent count: {agent_count}")
     assert agent_count > 0
-    
+
     # Cleanup
     orch.stop()
     print("✅ Orchestrator stopped")
-    
+
     print("\n=== Integration Test Complete ===")
 
 @pytest.mark.integration
 def test_compression_pipeline_integration():
     """Test compression with serialization"""
-    
+
     pipeline = CompressionPipeline("zstd", 3)
-    
+
     # Create large state
     state = AgentState("agent_1", ["memory_item"] * 10000)
     for i in range(100):
         state.set_metric(f"metric_{i}", float(i))
-    
+
     # Serialize
     serialized = serialize_state(state)
     original_size = len(serialized)
-    
+
     # Compress
     compressed = pipeline.compress(serialized)
     compressed_size = len(compressed)
-    
+
     # Decompress
     decompressed = pipeline.decompress(compressed)
-    
+
     # Deserialize
     recovered = deserialize_state(decompressed)
-    
+
     # Validate
     assert recovered.id == state.id
     assert len(recovered.memory) == len(state.memory)
-    
+
     ratio = original_size / compressed_size
     print(f"Compression ratio: {ratio:.2f}x")
     assert ratio > 2.0, "Compression not effective"
@@ -509,32 +509,32 @@ from codex_engine import SwarmState, TaskQueue, AgentManager
 def test_agent_spawn_failure_recovery():
     """Test recovery from agent spawn failures"""
     manager = AgentManager(max_agents=10)
-    
+
     successful = 0
     failed = 0
-    
+
     for i in range(20):
         try:
             manager.spawn_agent(f"agent_{i}", "{}")
             successful += 1
         except RuntimeError:
             failed += 1
-    
+
     # Should hit max limit
     assert manager.get_active_count() <= 10
     assert failed > 0
-    
+
     print(f"Spawned: {successful}, Failed: {failed}")
 
 def test_task_queue_stress():
     """Stress test task queue with rapid submit/receive"""
     queue = TaskQueue()
-    
+
     # Submit rapidly
     for i in range(100000):
         task = codex_engine.Task(str(i), "test", "{}")
         queue.submit(task)
-    
+
     # Receive all
     count = 0
     while True:
@@ -542,17 +542,17 @@ def test_task_queue_stress():
         if task is None:
             break
         count += 1
-    
+
     assert count == 100000
 
 def test_concurrent_state_modifications():
     """Test state under concurrent stress"""
     import concurrent.futures
     import threading
-    
+
     state = SwarmState()
     errors = []
-    
+
     def worker(thread_id):
         try:
             for i in range(100):
@@ -563,11 +563,11 @@ def test_concurrent_state_modifications():
                 state.unregister_agent(agent_id)
         except Exception as e:
             errors.append(e)
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         futures = [executor.submit(worker, i) for i in range(50)]
         concurrent.futures.wait(futures)
-    
+
     assert len(errors) == 0, f"Errors occurred: {errors}"
     print("✅ No errors under concurrent stress")
 
@@ -575,23 +575,23 @@ def test_memory_leak_detection():
     """Detect memory leaks through repeated operations"""
     import psutil
     import os
-    
+
     process = psutil.Process(os.getpid())
-    
+
     baseline = process.memory_info().rss / 1024 / 1024
-    
+
     for iteration in range(10):
         state = SwarmState()
         for i in range(100):
             state.register_agent(f"agent_{i}")
         for i in range(100):
             state.unregister_agent(f"agent_{i}")
-        
+
         del state
-    
+
     final = process.memory_info().rss / 1024 / 1024
     growth = final - baseline
-    
+
     print(f"Memory growth: {growth:.2f} MB")
     assert growth < 10, f"Memory leak detected: {growth:.2f} MB growth"
 ```
@@ -682,32 +682,32 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Install Rust
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    
+
     - name: Cache cargo
       uses: actions/cache@v3
       with:
         path: ~/.cargo
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-    
+
     - name: Run tests
       run: cargo test --release
-    
+
     - name: Run benchmarks
       run: cargo bench
-    
+
     - name: Build wheel
       run: |
         pip install maturin
         maturin build --release
-    
+
     - name: Python integration tests
       run: |
         pip install target/wheels/*.whl

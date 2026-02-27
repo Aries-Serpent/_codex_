@@ -22,7 +22,7 @@ interface QuantumMemoryViewerProps {
 export function QuantumMemoryViewer({ memoryState }: QuantumMemoryViewerProps) {
   const stmPercent = (memoryState.stm_used / memoryState.stm_capacity) * 100;
   const ltmPercent = (memoryState.ltm_used / memoryState.ltm_capacity) * 100;
-  
+
   const getMemoryColor = (percent: number) => {
     if (percent >= 90) return 'text-[oklch(0.55_0.22_25)]';
     if (percent >= 70) return 'text-[oklch(0.65_0.20_60)]';
@@ -57,8 +57,8 @@ export function QuantumMemoryViewer({ memoryState }: QuantumMemoryViewerProps) {
                   {memoryState.stm_used} / {memoryState.stm_capacity}
                 </span>
               </div>
-              <Progress 
-                value={stmPercent} 
+              <Progress
+                value={stmPercent}
                 className="h-2"
               />
             </div>
@@ -66,7 +66,7 @@ export function QuantumMemoryViewer({ memoryState }: QuantumMemoryViewerProps) {
             <div className="pt-3 border-t border-border">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Usage</span>
-                <motion.span 
+                <motion.span
                   className={`text-lg font-bold ${getMemoryColor(stmPercent)}`}
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
@@ -97,8 +97,8 @@ export function QuantumMemoryViewer({ memoryState }: QuantumMemoryViewerProps) {
                   {memoryState.ltm_used} / {memoryState.ltm_capacity}
                 </span>
               </div>
-              <Progress 
-                value={ltmPercent} 
+              <Progress
+                value={ltmPercent}
                 className="h-2"
               />
             </div>
@@ -117,7 +117,7 @@ export function QuantumMemoryViewer({ memoryState }: QuantumMemoryViewerProps) {
 
       <Card className="p-4 bg-card border-border">
         <h3 className="text-sm font-semibold mb-4">Quantum Memory Metrics</h3>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">

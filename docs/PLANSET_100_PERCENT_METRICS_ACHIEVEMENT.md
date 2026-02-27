@@ -46,7 +46,7 @@ import json
 
 def analyze_documentation():
     """Analyze documentation coverage across repository."""
-    
+
     gaps = {
         "python_modules_without_docstrings": [],
         "rust_modules_without_docs": [],
@@ -55,34 +55,34 @@ def analyze_documentation():
         "configs_without_comments": [],
         "agents_without_specs": []
     }
-    
+
     # Check Python modules for docstrings
     for py_file in glob.glob("src/**/*.py", recursive=True):
         with open(py_file) as f:
             content = f.read()
             if '"""' not in content and "'''" not in content:
                 gaps["python_modules_without_docstrings"].append(py_file)
-    
+
     # Check Rust modules for doc comments
     for rs_file in glob.glob("rust_swarm/**/*.rs", recursive=True):
         with open(rs_file) as f:
             content = f.read()
             if "//!" not in content and "///" not in content:
                 gaps["rust_modules_without_docs"].append(rs_file)
-    
+
     # Check workflows for documentation
     for workflow in glob.glob(".github/workflows/*.yml"):
         readme_path = workflow.replace(".yml", ".md")
         if not os.path.exists(readme_path):
             gaps["workflows_without_readme"].append(workflow)
-    
+
     # Check scripts for headers
     for script in glob.glob("scripts/**/*.py", recursive=True):
         with open(script) as f:
             first_lines = f.read(500)
             if not first_lines.strip().startswith('"""') and not first_lines.strip().startswith("'''"):
                 gaps["scripts_without_headers"].append(script)
-    
+
     # Check configs for documentation
     for config in glob.glob("**/*.yaml", recursive=True) + glob.glob("**/*.toml", recursive=True):
         if ".github" not in config:
@@ -90,7 +90,7 @@ def analyze_documentation():
                 content = f.read()
                 if "#" not in content:
                     gaps["configs_without_comments"].append(config)
-    
+
     # Report
     total_gaps = sum(len(v) for v in gaps.values())
     print(f"📊 Documentation Gap Analysis")
@@ -102,16 +102,16 @@ def analyze_documentation():
                 print(f"  - {item}")
             if len(items) > 5:
                 print(f"  ... and {len(items) - 5} more")
-    
+
     print(f"\n{'='*50}")
     print(f"Total Documentation Gaps: {total_gaps}")
     print(f"Current Coverage: 90%")
     print(f"Target Coverage: 100%")
-    
+
     # Save report
     with open("docs/DOCUMENTATION_GAP_ANALYSIS.json", "w") as f:
         json.dump(gaps, f, indent=2)
-    
+
     return gaps
 
 analyze_documentation()
@@ -133,8 +133,8 @@ EOF
 
 **Promptset**:
 ```
-@copilot Using the documentation gap analysis, systematically add comprehensive 
-docstrings to all Python modules identified. Follow Google Python Style Guide 
+@copilot Using the documentation gap analysis, systematically add comprehensive
+docstrings to all Python modules identified. Follow Google Python Style Guide
 for docstring format. Include:
 
 1. Module-level docstrings with purpose and usage examples
@@ -293,7 +293,7 @@ Purpose:
 
 Usage:
     python scripts/[name].py [args]
-    
+
     Examples:
     $ python scripts/[name].py --option value
     $ python scripts/[name].py --help
@@ -651,40 +651,40 @@ from pathlib import Path
 
 def setup_environment():
     """Complete automated environment setup."""
-    
+
     print("🚀 Starting automated development environment setup...")
-    
+
     # 1. Create virtual environment
     print("\n📦 Creating virtual environment...")
     subprocess.run([sys.executable, "-m", "venv", ".venv"], check=True)
-    
+
     # 2. Install dependencies
     print("\n📥 Installing dependencies...")
     venv_python = ".venv/bin/python" if os.name != "nt" else ".venv\\Scripts\\python.exe"
     subprocess.run([venv_python, "-m", "pip", "install", "--upgrade", "pip"], check=True)
     subprocess.run([venv_python, "-m", "pip", "install", "-e", ".[dev,test]"], check=True)
-    
+
     # 3. Install Rust dependencies
     print("\n🦀 Installing Rust dependencies...")
     subprocess.run(["cargo", "fetch"], check=True)
-    
+
     # 4. Setup pre-commit
     print("\n🪝 Installing pre-commit hooks...")
     subprocess.run([venv_python, "-m", "pre_commit", "install"], check=True)
-    
+
     # 5. Initialize database (if needed)
     print("\n💾 Initializing database...")
     # Add database setup here
-    
+
     # 6. Generate test data
     print("\n🎲 Generating test fixtures...")
     # Add test data generation here
-    
+
     # 7. Validate setup
     print("\n✅ Validating setup...")
     subprocess.run([venv_python, "-m", "pytest", "--co", "-q"], check=True)
     subprocess.run(["cargo", "check"], check=True)
-    
+
     print("\n🎉 Development environment ready!")
     print(f"\nActivate with: source .venv/bin/activate")
 
@@ -759,14 +759,14 @@ on:
   workflow_run:
     workflows: ["Rust-Python Hybrid Swarm CI/CD"]
     types: [completed]
-    
+
 jobs:
   investigate:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Analyze Failure
         uses: actions/github-script@v7
         with:
@@ -777,7 +777,7 @@ jobs:
               repo: context.repo.repo,
               run_id: context.payload.workflow_run.id
             });
-            
+
             // Analyze each failure
             for (const job of jobs.data.jobs) {
               if (job.conclusion === 'failure') {
@@ -787,7 +787,7 @@ jobs:
                   repo: context.repo.repo,
                   job_id: job.id
                 });
-                
+
                 // Pattern match known failures
                 // Auto-fix if possible
                 // Create detailed issue if not
@@ -840,18 +840,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Update Python Dependencies
         run: |
           pip install pip-tools
           pip-compile --upgrade requirements.in
           pip-compile --upgrade requirements-dev.in
-          
+
       - name: Test Updates
         run: |
           pip install -r requirements.txt
           pytest
-          
+
       - name: Create PR
         if: success()
         uses: peter-evans/create-pull-request@v5
@@ -859,20 +859,20 @@ jobs:
           title: "chore: Update Python dependencies"
           body: "Automated dependency update"
           branch: "auto/python-deps-update"
-          
+
   update-rust:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Update Rust Dependencies
         run: |
           cargo update
-          
+
       - name: Test Updates
         run: |
           cargo test
-          
+
       - name: Create PR
         if: success()
         uses: peter-evans/create-pull-request@v5
@@ -936,31 +936,31 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Semantic Version Bump
         id: version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Generate Changelog
         uses: orhun/git-cliff-action@v2
         with:
           args: --latest --strip all
-          
+
       - name: Update Version Files
         run: |
           # Update Cargo.toml
           sed -i "s/^version = .*/version = \"${{ steps.version.outputs.new_version }}\"/" Cargo.toml
-          
+
           # Update pyproject.toml
           sed -i "s/^version = .*/version = \"${{ steps.version.outputs.new_version }}\"/" pyproject.toml
-          
+
       - name: Build Release
         run: |
           cargo build --release
           maturin build --release
-          
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
@@ -1030,13 +1030,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Performance Benchmarks
         run: cargo bench --no-fail-fast
-        
+
       - name: Analyze Results
         run: python scripts/performance_analyzer.py
-        
+
       - name: Check for Regressions
         id: regression
         run: |
@@ -1045,7 +1045,7 @@ jobs:
           else
             echo "regression=true" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: Create Alert
         if: steps.regression.outputs.regression == 'true'
         uses: actions/github-script@v7
@@ -1128,21 +1128,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Generate API Documentation
         run: |
           cargo doc --no-deps
           pdoc src/ -o docs/api/python
-          
+
       - name: Update Architecture Diagrams
         run: python scripts/generate_architecture_diagrams.py
-        
+
       - name: Validate Links
         run: markdown-link-check docs/**/*.md
-        
+
       - name: Update README Badges
         run: python scripts/update_readme_badges.py
-        
+
       - name: Commit Documentation Updates
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

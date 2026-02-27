@@ -301,7 +301,7 @@ scoring:
     enabled: bool              # Enable coverage augmentation
     xml_patterns: list[str]    # Glob patterns for coverage files
     augment_tests_score: bool  # Use max(baseline, coverage)
-  
+
   dup:
     heuristic: str            # "simple" or "token_similarity"
     threshold: float          # Jaccard threshold [0.0, 1.0]

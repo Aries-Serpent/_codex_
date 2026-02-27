@@ -21,26 +21,26 @@ jobs:
   validate-cache-keys:
     name: Validate Cache Key Uniqueness
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Extract Cache Keys from Workflows
         id: extract-keys
         run: |
           echo "🔍 Extracting cache keys from all workflows..."
-          
+
           # Find all workflow files
           find .github/workflows -name "*.yml" -o -name "*.yaml" > workflow-files.txt
-          
+
           # Extract cache key patterns
           for file in $(cat workflow-files.txt); do
             # Skip disabled workflows
             if [[ "$file" == *"/disabled/"* ]] || [[ "$file" == *"-archive/"* ]]; then
               continue
             fi
-            
+
             # Extract keys
             grep -n "key:" "$file" 2>/dev/null | while read -r line; do
               LINE_NUM=$(echo "$line" | cut -d: -f1)
@@ -48,28 +48,28 @@ jobs:
               echo "$file:$LINE_NUM:$KEY"
             done
           done > cache-keys-raw.txt
-          
+
           cat cache-keys-raw.txt
-          
+
           TOTAL_KEYS=$(wc -l < cache-keys-raw.txt)
           echo "total_keys=${TOTAL_KEYS}" >> $GITHUB_OUTPUT
-      
+
       - name: Check for Duplicate Cache Keys
         id: check-duplicates
         run: |
           echo "⚠️  Checking for cache key conflicts..."
-          
+
           # Extract just the key patterns (remove file references)
           cut -d: -f3- cache-keys-raw.txt | sort > cache-keys-sorted.txt
-          
+
           # Find duplicates
           DUPLICATES=$(sort cache-keys-sorted.txt | uniq -d)
-          
+
           if [ -n "$DUPLICATES" ]; then
             echo "has_duplicates=true" >> $GITHUB_OUTPUT
             echo "❌ Cache key conflicts detected:"
             echo "$DUPLICATES" | tee cache-conflicts.txt
-            
+
             # Find which files have the conflicts
             while IFS= read -r dup_key; do
               echo "Files using key: $dup_key"
@@ -80,18 +80,18 @@ jobs:
             echo "has_duplicates=false" >> $GITHUB_OUTPUT
             echo "✅ No cache key conflicts detected"
           fi
-      
+
       - name: Validate Cache Key Format
         id: validate-format
         run: |
           echo "🔍 Validating cache key format..."
-          
+
           INVALID_KEYS=""
-          
+
           while IFS=: read -r file line key; do
             # Remove variables for pattern matching
             KEY_PATTERN=$(echo "$key" | sed 's/\${{[^}]*}}/VAR/g')
-            
+
             # Check if key follows recommended format
             # Should include: OS, workflow name, cache type
             if [[ ! "$KEY_PATTERN" =~ VAR.*VAR.*VAR ]]; then
@@ -100,21 +100,21 @@ jobs:
               INVALID_KEYS+="$file:$line|"
             fi
           done < cache-keys-raw.txt
-          
+
           if [ -n "$INVALID_KEYS" ]; then
             echo "has_invalid=true" >> $GITHUB_OUTPUT
           else
             echo "has_invalid=false" >> $GITHUB_OUTPUT
             echo "✅ All cache keys follow recommended format"
           fi
-      
+
       - name: Check for Workflow Isolation
         id: check-isolation
         run: |
           echo "🔒 Checking workflow isolation..."
-          
+
           MISSING_WORKFLOW_ID=""
-          
+
           while IFS=: read -r file line key; do
             # Check if key includes workflow identifier
             if [[ ! "$key" =~ github\.workflow ]]; then
@@ -122,7 +122,7 @@ jobs:
               MISSING_WORKFLOW_ID+="$file|"
             fi
           done < cache-keys-raw.txt
-          
+
           if [ -n "$MISSING_WORKFLOW_ID" ]; then
             echo "missing_isolation=true" >> $GITHUB_OUTPUT
             echo "Files missing workflow isolation:"
@@ -131,27 +131,27 @@ jobs:
             echo "missing_isolation=false" >> $GITHUB_OUTPUT
             echo "✅ All workflows have proper cache isolation"
           fi
-      
+
       - name: Generate Validation Report
         run: |
           cat > cache-validation-report.md << 'EOF'
           # Cache Configuration Validation Report
-          
+
           **Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
           **PR:** ${{ github.event.pull_request.number || 'N/A' }}
           **Branch:** ${{ github.ref_name }}
-          
+
           ## Summary
-          
+
           - **Total Cache Keys:** ${{ steps.extract-keys.outputs.total_keys }}
           - **Duplicate Keys:** ${{ steps.check-duplicates.outputs.has_duplicates }}
           - **Invalid Format:** ${{ steps.validate-format.outputs.has_invalid }}
           - **Missing Isolation:** ${{ steps.check-isolation.outputs.missing_isolation }}
-          
+
           ## Status
-          
+
           EOF
-          
+
           if [ "${{ steps.check-duplicates.outputs.has_duplicates }}" == "true" ]; then
             echo "❌ **FAILED**: Cache key conflicts detected" >> cache-validation-report.md
             echo "" >> cache-validation-report.md
@@ -163,16 +163,16 @@ jobs:
           else
             echo "✅ **PASSED**: All cache configurations valid" >> cache-validation-report.md
           fi
-          
+
           echo "" >> cache-validation-report.md
           echo "## Recommendations" >> cache-validation-report.md
           echo "" >> cache-validation-report.md
           echo "- Use unified cache manager for consistency" >> cache-validation-report.md
           echo "- Include workflow name in all cache keys" >> cache-validation-report.md
           echo "- Follow recommended key format: \`\${os}-\${workflow}-\${type}-\${hash}\`" >> cache-validation-report.md
-          
+
           cat cache-validation-report.md
-      
+
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -180,21 +180,21 @@ jobs:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('cache-validation-report.md', 'utf8');
-            
+
             // Find existing comment
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            
+
             const botComment = comments.data.find(comment =>
               comment.user.type === 'Bot' &&
               comment.body.includes('Cache Configuration Validation Report')
             );
-            
+
             const commentBody = `## 🔍 Cache Configuration Validation Report\n\n${report}`;
-            
+
             if (botComment) {
               // Update existing comment
               await github.rest.issues.updateComment({
@@ -212,7 +212,7 @@ jobs:
                 body: commentBody,
               });
             }
-      
+
       - name: Upload Validation Report
         uses: actions/upload-artifact@v4
         with:
@@ -221,7 +221,7 @@ jobs:
             cache-validation-report.md
             cache-keys-raw.txt
           retention-days: 30
-      
+
       - name: Fail on Conflicts
         if: steps.check-duplicates.outputs.has_duplicates == 'true'
         run: |
@@ -231,61 +231,61 @@ jobs:
   test-cache-manager:
     name: Test Cache Manager Module
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           # Install only test dependencies for cache manager tests
           pip install pytest pytest-cov pytest-mock pyyaml
-      
+
       - name: Run Cache Manager Tests
         run: |
           pytest tests/ci/test_cache_manager.py -v --tb=short --cov=codex.ci.cache_manager --cov-report=term-missing
-      
+
       - name: Validate CLI Interface
         run: |
           # Test health check
           python -m codex.ci.cache_manager health
-          
+
           # Test key generation
           python -m codex.ci.cache_manager generate-key --cache-type pip --workflow test
-          
+
           # Test validation
           python -m codex.ci.cache_manager validate || true
 
   validate-reusable-action:
     name: Validate Reusable Cache Action
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Validate Action Metadata
         run: |
           echo "🔍 Validating action.yml..."
-          
+
           ACTION_FILE=".github/actions/setup-python-cache/action.yml"
-          
+
           # Check file exists
           if [ ! -f "$ACTION_FILE" ]; then
             echo "❌ Action file not found: $ACTION_FILE"
             exit 1
           fi
-          
+
           # Validate YAML syntax
           python -m pip install --quiet pyyaml
           python -c "import yaml; yaml.safe_load(open('$ACTION_FILE'))"
-          
+
           # Check required fields
           for field in name description inputs outputs runs; do
             if ! grep -q "^$field:" "$ACTION_FILE"; then
@@ -293,16 +293,16 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo "✅ Action metadata valid"
-      
+
       - name: Test Reusable Action
         uses: ./.github/actions/setup-python-cache
         with:
           python-version: '3.12'
           cache-type: 'pip'
           workflow-name: 'validation-test'
-      
+
       - name: Verify Cache Configuration
         run: |
           echo "✅ Reusable action executed successfully"
@@ -313,20 +313,20 @@ jobs:
     needs: [validate-cache-keys, test-cache-manager, validate-reusable-action]
     runs-on: ubuntu-latest
     if: always()
-    
+
     steps:
       - name: Generate Summary
         run: |
           echo "## 📊 Cache Configuration Validation Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "### Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Cache Keys Validation:** ${{ needs.validate-cache-keys.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Cache Manager Tests:** ${{ needs.test-cache-manager.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Reusable Action Test:** ${{ needs.validate-reusable-action.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ needs.validate-cache-keys.result }}" == "success" ] && \
              [ "${{ needs.test-cache-manager.result }}" == "success" ] && \
              [ "${{ needs.validate-reusable-action.result }}" == "success" ]; then

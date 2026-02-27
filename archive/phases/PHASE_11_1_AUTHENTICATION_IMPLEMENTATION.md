@@ -31,13 +31,13 @@ graph TB
         Token[Token Manager]
         GH[GitHub API]
     end
-    
+
     subgraph "Security Layer"
         Sanitizer[Log Sanitizer]
         RateLimit[Rate Limiter]
         SessionStore[Session Store]
     end
-    
+
     User -->|1. Login Request| OAuth
     OAuth -->|2. Redirect| GH
     GH -->|3. Auth Code| OAuth
@@ -50,7 +50,7 @@ graph TB
     User -->|10. MFA Code| MFA
     MFA -->|11. Generate Session| Token
     Token -->|12. Session Token| User
-    
+
     OAuth -.-> Sanitizer
     MFA -.-> RateLimit
     Token -.-> SessionStore
@@ -252,7 +252,7 @@ sequenceDiagram
     participant MFA
     participant Token
     participant Session
-    
+
     User->>App: Login with GitHub
     App->>OAuth: Initiate OAuth flow
     OAuth->>OAuth: Generate state + PKCE
@@ -265,7 +265,7 @@ sequenceDiagram
     OAuth->>GitHub: Get user info
     GitHub->>OAuth: User data
     OAuth->>App: User authenticated
-    
+
     App->>MFA: Check MFA status
     alt MFA Enabled
         MFA->>User: Request TOTP/Backup code
@@ -277,7 +277,7 @@ sequenceDiagram
             MFA->>User: Error (rate limit)
         end
     end
-    
+
     App->>Token: Generate session token
     Token->>Session: Create session
     Token->>App: Session token + ID
@@ -515,15 +515,15 @@ The following features were deprioritized as they rely on third-party services n
    - Google OAuth
    - Azure AD
    - Okta
-   
+
 2. **HSM Integration**
    - AWS CloudHSM
    - Azure Key Vault
-   
+
 3. **Advanced MFA**
    - SMS via Twilio
    - Email OTP
-   
+
 4. **External Integrations**
    - Google Drive sync
    - NotebookLM integration

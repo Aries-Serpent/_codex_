@@ -111,7 +111,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   delete import.meta.env.VITE_CODEX_KEY;
   delete import.meta.env.VITE_CODEX_API;
-  
+
   // Mock SparkLLMClient to prevent AI Mode from activating
   const mockSparkClient = {
     generateCode: vi.fn().mockResolvedValue({
@@ -277,8 +277,8 @@ it('should handle download functionality', async () => {
   // Find Download button with more flexible selector
   const downloadButton = await waitFor(() => {
     const buttons = screen.getAllByRole('button');
-    const downloadBtn = buttons.find(btn => 
-      btn.textContent?.includes('Download') || 
+    const downloadBtn = buttons.find(btn =>
+      btn.textContent?.includes('Download') ||
       btn.getAttribute('aria-label')?.includes('Download')
     );
     expect(downloadBtn).toBeDefined();
@@ -290,7 +290,7 @@ it('should handle download functionality', async () => {
   await waitFor(() => {
     expect(createObjectURL).toHaveBeenCalled();
   });
-  
+
   expect(revokeObjectURL).toHaveBeenCalled();
 });
 ```
@@ -330,7 +330,7 @@ it('should have keyboard navigation support', async () => {
 
   // Test button focus (use Tab key simulation for realistic navigation)
   fireEvent.keyDown(textarea, { key: 'Tab', code: 'Tab' });
-  
+
   // Button should be focusable via keyboard or direct focus
   const button = screen.getByRole('button', { name: /Generate Code/i });
   button.focus();
@@ -362,9 +362,9 @@ it('should show progress during generation', async () => {
     healthy: true,
     metrics: { k1_factor: 0.312 },
   });
-  
+
   // Simulate slow generation to catch loading state
-  vi.mocked(mockClient.generateCode).mockImplementation(() => 
+  vi.mocked(mockClient.generateCode).mockImplementation(() =>
     new Promise(resolve => setTimeout(() => resolve({
       code: 'def test(): pass',
       metadata: { k1_factor: 0.312, coherence: 0.685, cache_hit: false, processing_time_ms: 1200 },
@@ -416,7 +416,7 @@ it('should handle realistic error scenarios', async () => {
     healthy: true,
     metrics: { k1_factor: 0.312 },
   });
-  
+
   // Mock generation error
   vi.mocked(mockClient.generateCode).mockRejectedValue(
     new Error('API rate limit exceeded')

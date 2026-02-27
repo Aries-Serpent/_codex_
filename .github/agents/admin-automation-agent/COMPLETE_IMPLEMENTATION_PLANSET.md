@@ -19,7 +19,7 @@ This planset provides complete implementation instructions for:
 
 **Current Status**:
 - ✅ Agent core implemented and tested (18KB)
-- ✅ NotebookLM workflow created (11KB) 
+- ✅ NotebookLM workflow created (11KB)
 - ✅ Repomix configuration complete
 - ✅ Security scanning integrated
 - ⏸️ Component managers (to be implemented)
@@ -76,26 +76,26 @@ graph TB
     subgraph "Admin Agent Core (✅ Complete)"
         AGENT[agent.py<br/>18KB]
     end
-    
+
     subgraph "Component Managers (⏸️ To Implement)"
         AUTH[auth_manager.py<br/>~5KB]
         WORKFLOW[workflow_manager.py<br/>~8KB]
         INTEGRATE[integration_manager.py<br/>~6KB]
         REPORT[reporting_engine.py<br/>~4KB]
     end
-    
+
     subgraph "Support Modules (⏸️ To Implement)"
         SECRETS[secrets_manager.py<br/>Link to existing]
         VALIDATE[validation_engine.py<br/>Link to existing]
     end
-    
+
     AGENT --> AUTH
     AGENT --> WORKFLOW
     AGENT --> INTEGRATE
     AGENT --> REPORT
     AGENT --> SECRETS
     AGENT --> VALIDATE
-    
+
     style AGENT fill:#90EE90
     style AUTH fill:#FFE4B5
     style WORKFLOW fill:#FFE4B5
@@ -145,26 +145,26 @@ from datetime import datetime, timedelta, UTC
 
 class AuthenticationManager:
     """Manage authentication for GitHub and Google services."""
-    
+
     # GitHub API endpoint
     GITHUB_API = "https://api.github.com"
-    
+
     # Required scopes for operations
     REQUIRED_SCOPES = {
         "secrets_management": ["repo", "workflow"],
         "workflow_management": ["repo", "workflow"],
         "repository_admin": ["repo", "admin:repo_hook"],
     }
-    
+
     def __init__(self, github_token: Optional[str] = None):
         """Initialize auth manager."""
         self.github_token = github_token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
         self._token_info = None
-    
+
     def validate_github_token(self) -> Dict:
         """
         Validate GitHub token and check scopes.
-        
+
         Returns:
             dict: {
                 "valid": bool,
@@ -176,29 +176,29 @@ class AuthenticationManager:
         """
         if not self.github_token:
             return {"valid": False, "error": "No token provided"}
-        
+
         try:
             # Make authenticated request to check token
             headers = {
                 "Authorization": f"Bearer {self.github_token}",
                 "Accept": "application/vnd.github+json"
             }
-            
+
             response = requests.get(
                 f"{self.GITHUB_API}/user",
                 headers=headers,
                 timeout=10
             )
-            
+
             if response.status_code != 200:
                 return {
                     "valid": False,
                     "error": f"Invalid token: HTTP {response.status_code}"
                 }
-            
+
             # Extract scopes from header
             scopes = response.headers.get("x-oauth-scopes", "").split(", ")
-            
+
             # Get rate limit info
             rate_limit_response = requests.get(
                 f"{self.GITHUB_API}/rate_limit",
@@ -206,9 +206,9 @@ class AuthenticationManager:
                 timeout=10
             )
             rate_limit = rate_limit_response.json().get("rate", {})
-            
+
             user_data = response.json()
-            
+
             return {
                 "valid": True,
                 "scopes": scopes,
@@ -220,22 +220,22 @@ class AuthenticationManager:
                 "user": user_data.get("login"),
                 "type": user_data.get("type")
             }
-            
+
         except requests.exceptions.RequestException as e:
             return {"valid": False, "error": str(e)}
-    
+
     def check_required_scopes(self, operation: str) -> Dict:
         """
         Check if token has required scopes for operation.
-        
+
         Args:
             operation: Operation name (secrets_management, workflow_management, etc.)
-        
+
         Returns:
             dict: {"has_scopes": bool, "missing": list, "available": list}
         """
         token_info = self.validate_github_token()
-        
+
         if not token_info.get("valid"):
             return {
                 "has_scopes": False,
@@ -243,21 +243,21 @@ class AuthenticationManager:
                 "missing": self.REQUIRED_SCOPES.get(operation, []),
                 "available": []
             }
-        
+
         required = self.REQUIRED_SCOPES.get(operation, [])
         available = token_info.get("scopes", [])
         missing = [s for s in required if s not in available]
-        
+
         return {
             "has_scopes": len(missing) == 0,
             "missing": missing,
             "available": available
         }
-    
+
     def check_token_expiry(self) -> Dict:
         """
         Check if token is expiring soon.
-        
+
         Returns:
             dict: {"expires_soon": bool, "days_remaining": int}
         """
@@ -268,14 +268,14 @@ class AuthenticationManager:
             "days_remaining": None,
             "note": "Expiry tracking not available for classic PATs"
         }
-    
+
     def rotate_token_needed(self, max_age_days: int = 90) -> bool:
         """
         Check if token rotation is recommended.
-        
+
         Args:
             max_age_days: Maximum token age before rotation recommended
-        
+
         Returns:
             bool: True if rotation recommended
         """
@@ -287,16 +287,16 @@ class AuthenticationManager:
 # Usage example
 if __name__ == "__main__":
     auth = AuthenticationManager()
-    
+
     # Validate token
     result = auth.validate_github_token()
     print(f"Token valid: {result.get('valid')}")
-    
+
     if result.get("valid"):
         print(f"User: {result.get('user')}")
         print(f"Scopes: {', '.join(result.get('scopes', []))}")
         print(f"Rate limit: {result.get('rate_limit', {}).get('remaining')}/{result.get('rate_limit', {}).get('limit')}")
-    
+
     # Check scopes for secret management
     scopes = auth.check_required_scopes("secrets_management")
     print(f"\nSecrets management scopes: {scopes.get('has_scopes')}")
@@ -420,9 +420,9 @@ def test_validate_github_token_success(auth_manager):
         mock_response.headers = {"x-oauth-scopes": "repo, workflow"}
         mock_response.json.return_value = {"login": "testuser", "type": "User"}
         mock_get.return_value = mock_response
-        
+
         result = auth_manager.validate_github_token()
-        
+
         assert result["valid"] is True
         assert result["user"] == "testuser"
         assert "repo" in result["scopes"]
@@ -433,9 +433,9 @@ def test_validate_github_token_invalid(auth_manager):
         mock_response = Mock()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
-        
+
         result = auth_manager.validate_github_token()
-        
+
         assert result["valid"] is False
         assert "Invalid token" in result["error"]
 
@@ -446,9 +446,9 @@ def test_check_required_scopes_missing(auth_manager):
             "valid": True,
             "scopes": ["repo"]  # Missing 'workflow'
         }
-        
+
         result = auth_manager.check_required_scopes("secrets_management")
-        
+
         assert result["has_scopes"] is False
         assert "workflow" in result["missing"]
 ```
@@ -1050,7 +1050,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1239,7 +1239,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

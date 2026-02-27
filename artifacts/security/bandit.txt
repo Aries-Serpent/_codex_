@@ -39,7 +39,7 @@ Test results:
 81	            _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
 82	    except Exception:  # pragma: no cover - best effort
 83	        pass
-84	
+84
 
 --------------------------------------------------
 >> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
@@ -212,7 +212,7 @@ Test results:
 60	        conn.execute("PRAGMA foreign_keys=ON;")
 61	    except Exception:
 62	        pass
-63	
+63
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -223,7 +223,7 @@ Test results:
 51	    _codex_sqlite_auto()
 52	except Exception:  # pragma: no cover
 53	    pass
-54	
+54
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -288,7 +288,7 @@ Test results:
 91	        conn.execute("PRAGMA foreign_keys=ON;")
 92	    except Exception:
 93	        pass
-94	
+94
 
 --------------------------------------------------
 >> Issue: [B101:assert_used] Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.
@@ -478,7 +478,7 @@ Test results:
    CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess
    Location: src\codex\utils\subprocess.py:5:0
-4	
+4
 5	import subprocess
 6	from pathlib import Path
 
@@ -557,7 +557,7 @@ Test results:
 58	            GlobalHydra.instance().clear()
 59	    except Exception:
 60	        pass
-61	
+61
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -568,7 +568,7 @@ Test results:
 120	            os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
 121	    except Exception:
 122	        pass
-123	
+123
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -616,7 +616,7 @@ Test results:
    CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random
    Location: src\codex_ml\data\loaders.py:200:10
-199	
+199
 200	    rng = random.Random(seed)
 201	    indices = list(range(total))
 
@@ -630,7 +630,7 @@ Test results:
 410	    except Exception:
 411	        # Logging should not interfere with dataset streaming.
 412	        pass
-413	
+413
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -742,7 +742,7 @@ Test results:
 78	        except Exception:
 79	            # best-effort provenance output
 80	            pass
-81	
+81
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -754,7 +754,7 @@ Test results:
 91	            except Exception:
 92	                # Ignore malformed cache and recompute
 93	                pass
-94	
+94
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -776,7 +776,7 @@ Test results:
 110	        except Exception:
 111	            # Best-effort cache only
 112	            pass
-113	
+113
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -893,7 +893,7 @@ Test results:
 146	            self._metrics_writer.close()
 147	        except Exception:  # pragma: no cover - best effort
 148	            pass
-149	
+149
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -904,7 +904,7 @@ Test results:
 56	                record["token_accuracy"] = float(accuracy_tensor.mean().item())
 57	        except Exception:
 58	            pass
-59	
+59
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -969,7 +969,7 @@ Test results:
 49	    except Exception:
 50	        # Never fail initialization if MLflow is present but misconfigured.
 51	        pass
-52	
+52
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -981,7 +981,7 @@ Test results:
 100	    except Exception:
 101	        # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
 102	        pass
-103	
+103
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -1003,7 +1003,7 @@ Test results:
 188	            payload["memory_info"] = {"rss": rss}
 189	        except Exception:  # pragma: no cover - platform specific
 190	            pass
-191	
+191
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1014,7 +1014,7 @@ Test results:
 331	            pynvml.nvmlShutdown()
 332	        except Exception:
 333	            pass
-334	
+334
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1070,7 +1070,7 @@ Test results:
 27	            self._writer.add_scalar(tag, value, step)
 28	        except Exception:  # pragma: no cover - tensorboard runtime errors
 29	            pass
-30	
+30
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1092,7 +1092,7 @@ Test results:
 39	            self._writer.close()
 40	        except Exception:  # pragma: no cover - closing is best-effort
 41	            pass
-42	
+42
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1139,7 +1139,7 @@ Test results:
 18	            torch.cuda.synchronize()
 19	    except Exception:
 20	        pass
-21	
+21
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -1147,7 +1147,7 @@ Test results:
    CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random
    Location: src\codex_ml\pipeline.py:569:10
-568	
+568
 569	    rng = random.Random(seed) if seed is not None else None
 570	    synthetic = _augment_prompts(synth_prompts or [], rng) if synth_prompts else []
 
@@ -1160,7 +1160,7 @@ Test results:
 102	            target = ep.load()
 103	        except Exception:
 104	            continue
-105	
+105
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1193,7 +1193,7 @@ Test results:
 177	            return data
 178	    except Exception:  # pragma: no cover - defensive
 179	        pass
-180	
+180
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -1212,7 +1212,7 @@ Test results:
    CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html
    Location: src\codex_ml\telemetry\server.py:16:55
-15	
+15
 16	def start_metrics_server(port: int = 8000, addr: str = "0.0.0.0") -> Optional[bool]:
 17	    """Start a Prometheus metrics server if ``prometheus_client`` is available.
 
@@ -1222,7 +1222,7 @@ Test results:
    CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html
    Location: src\codex_ml\tokenization\__init__.py:8:12
-7	
+7
 8	BOS_TOKEN = "<BOS>"
 9	EOS_TOKEN = "<EOS>"
 
@@ -1254,7 +1254,7 @@ Test results:
    Location: src\codex_ml\tokenization\__init__.py:11:12
 10	PAD_TOKEN = "<PAD>"
 11	UNK_TOKEN = "<UNK>"
-12	
+12
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1274,7 +1274,7 @@ Test results:
    Location: src\codex_ml\tracking\git_tag.py:12:0
 11	import locale
 12	import subprocess
-13	
+13
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -1362,7 +1362,7 @@ Test results:
 251	        except Exception:
 252	            # be robust; drop bad values quietly
 253	            pass
-254	
+254
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1373,7 +1373,7 @@ Test results:
 110	                self._writer.close()
 111	            except Exception:  # pragma: no cover
 112	                pass
-113	
+113
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1384,7 +1384,7 @@ Test results:
 146	                self._mlflow.end_run()
 147	            except Exception:  # pragma: no cover
 148	                pass
-149	
+149
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1395,7 +1395,7 @@ Test results:
 183	                self._run.finish()
 184	            except Exception:  # pragma: no cover
 185	                pass
-186	
+186
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1429,7 +1429,7 @@ Test results:
 617	            fh.write(json.dumps(record, sort_keys=True) + "\n")
 618	    except Exception:
 619	        pass
-620	
+620
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -1437,7 +1437,7 @@ Test results:
    CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random
    Location: src\codex_ml\train_loop.py:645:15
-644	
+644
 645	        return _random.random() < rate
 646	    except Exception:
 
@@ -1461,7 +1461,7 @@ Test results:
 1023	                    )
 1024	            except Exception:
 1025	                pass
-1026	
+1026
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1480,7 +1480,7 @@ Test results:
    CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html
    Location: src\codex_ml\training\__init__.py:731:20
-730	
+730
 731	        pad_token = "<pad>"
 732	        unk_token = "<unk>"
 
@@ -1492,7 +1492,7 @@ Test results:
    Location: src\codex_ml\training\__init__.py:732:20
 731	        pad_token = "<pad>"
 732	        unk_token = "<unk>"
-733	
+733
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1503,7 +1503,7 @@ Test results:
 1219	            return {}
 1220	    except Exception:  # pragma: no cover - len may not be defined
 1221	        pass
-1222	
+1222
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1514,7 +1514,7 @@ Test results:
 1228	                torch_dataset = formatted
 1229	        except Exception:  # pragma: no cover - fallback to raw dataset
 1230	            pass
-1231	
+1231
 
 --------------------------------------------------
 >> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
@@ -1522,7 +1522,7 @@ Test results:
    CWE: CWE-330 (https://cwe.mitre.org/data/definitions/330.html)
    More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random
    Location: src\codex_ml\training\dataloader_utils.py:24:16
-23	
+23
 24	    base_seed = random.getrandbits(32)
 25	    random.seed(base_seed)
 
@@ -1546,7 +1546,7 @@ Test results:
 104	                fh.write(json.dumps(record) + "\n")
 105	        except Exception:  # pragma: no cover - best-effort logging
 106	            pass
-107	
+107
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1568,7 +1568,7 @@ Test results:
 214	                fh.write(json.dumps(record, sort_keys=True) + "\n")
 215	        except Exception:
 216	            pass
-217	
+217
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1579,7 +1579,7 @@ Test results:
 255	                mlf.log_params(_as_flat_params(params))
 256	            except Exception:
 257	                pass
-258	
+258
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1645,7 +1645,7 @@ Test results:
 417	                        continue
 418	            except Exception:
 419	                pass
-420	
+420
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1656,7 +1656,7 @@ Test results:
 424	            system_thread.join(timeout=5.0)
 425	        except Exception:
 426	            pass
-427	
+427
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1667,7 +1667,7 @@ Test results:
 431	            writer.close()
 432	        except Exception:
 433	            pass
-434	
+434
 
 --------------------------------------------------
 >> Issue: [B403:blacklist] Consider possible security implications associated with pickle module.
@@ -1697,7 +1697,7 @@ Test results:
    Location: src\codex_ml\utils\checkpoint.py:49:15
 48	    with path.open("rb") as fh:  # pragma: no cover - pickle fallback
 49	        return pickle.load(fh)
-50	
+50
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1741,7 +1741,7 @@ Test results:
 83	            }
 84	        except Exception:  # pragma: no cover - defensive against malformed tuples
 85	            pass
-86	
+86
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1752,7 +1752,7 @@ Test results:
 97	            }
 98	        except Exception:
 99	            pass
-100	
+100
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1763,7 +1763,7 @@ Test results:
 105	                payload["torch_cpu"] = list(torch_state.tolist())
 106	        except Exception:  # pragma: no cover
 107	            pass
-108	
+108
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1774,7 +1774,7 @@ Test results:
 115	            ]
 116	        except Exception:  # pragma: no cover - tolerate CUDA edge cases
 117	            pass
-118	
+118
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1785,7 +1785,7 @@ Test results:
 132	            )
 133	        except Exception:
 134	            pass
-135	
+135
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1796,7 +1796,7 @@ Test results:
 145	            )
 146	        except Exception:
 147	            pass
-148	
+148
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1807,7 +1807,7 @@ Test results:
 152	            restored["torch_cpu"] = torch.tensor(torch_cpu, dtype=torch.uint8)
 153	        except Exception:
 154	            pass
-155	
+155
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -1829,7 +1829,7 @@ Test results:
 175	            _random.setstate(py_state)  # type: ignore[arg-type]
 176	    except Exception:  # pragma: no cover - corrupt payloads ignored
 177	        pass
-178	
+178
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1840,7 +1840,7 @@ Test results:
 183	                _np.random.set_state(np_state)  # type: ignore[arg-type]
 184	        except Exception:  # pragma: no cover
 185	            pass
-186	
+186
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1862,7 +1862,7 @@ Test results:
 198	                    torch.cuda.set_rng_state_all(cuda_state)
 199	            except Exception:
 200	                pass
-201	
+201
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1873,7 +1873,7 @@ Test results:
 361	            _dump_payload(out_dir / "rng.pt", raw_rng)
 362	        except Exception:  # pragma: no cover - torch serialization edge case
 363	            pass
-364	
+364
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1895,7 +1895,7 @@ Test results:
 393	            prune_best_k(out_dir.parent, int(best_k))
 394	        except Exception:
 395	            pass
-396	
+396
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1906,7 +1906,7 @@ Test results:
 408	                load_state(model_state)  # type: ignore[arg-type]
 409	    except Exception:
 410	        pass
-411	
+411
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1917,7 +1917,7 @@ Test results:
 417	                load_state(opt_state)  # type: ignore[arg-type]
 418	    except Exception:
 419	        pass
-420	
+420
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1928,7 +1928,7 @@ Test results:
 426	                load_state(sched_state)  # type: ignore[arg-type]
 427	    except Exception:
 428	        pass
-429	
+429
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1939,7 +1939,7 @@ Test results:
 455	                loader(state)
 456	        except Exception:
 457	            pass
-458	
+458
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1950,7 +1950,7 @@ Test results:
 465	                loader(opt_state)
 466	        except Exception:
 467	            pass
-468	
+468
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1961,7 +1961,7 @@ Test results:
 475	                loader(sched_state)
 476	        except Exception:
 477	            pass
-478	
+478
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -1983,7 +1983,7 @@ Test results:
 492	                    _restore_rng_state(raw)
 493	            except Exception:
 494	                pass
-495	
+495
 
 --------------------------------------------------
 >> Issue: [B403:blacklist] Consider possible security implications associated with pickle module.
@@ -2080,7 +2080,7 @@ Test results:
 358	        )
 359	    except Exception:  # pragma: no cover - metadata best effort
 360	        pass
-361	
+361
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2091,7 +2091,7 @@ Test results:
 369	        )
 370	    except Exception:  # pragma: no cover - telemetry best effort
 371	        pass
-372	
+372
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2102,7 +2102,7 @@ Test results:
 393	        raise CheckpointLoadError(str(exc)) from exc
 394	    except Exception:  # pragma: no cover - checksum verify is best-effort
 395	        pass
-396	
+396
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2113,7 +2113,7 @@ Test results:
 435	            _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
 436	        except Exception:  # pragma: no cover - scheduler load is best effort
 437	            pass
-438	
+438
 
 --------------------------------------------------
 >> Issue: [B301:blacklist] Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
@@ -2134,7 +2134,7 @@ Test results:
 116	        del _TEST_CFG
 117	    except Exception:
 118	        pass
-119	
+119
 
 --------------------------------------------------
 >> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
@@ -2175,7 +2175,7 @@ Test results:
 34	            fh.write(json.dumps(entry) + "\n")
 35	    except Exception:
 36	        pass
-37	
+37
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2208,7 +2208,7 @@ Test results:
 54	                    log_param(key, value)
 55	                except Exception:  # pragma: no cover - logging best effort
 56	                    continue
-57	
+57
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2219,7 +2219,7 @@ Test results:
 62	                stack.close()
 63	            except Exception:  # pragma: no cover - suppress close errors
 64	                pass
-65	
+65
 
 --------------------------------------------------
 >> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
@@ -2345,7 +2345,7 @@ Test results:
 96	            return _io_text__detect_encoding(p)
 97	        except Exception:
 98	            pass
-99	
+99
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2356,7 +2356,7 @@ Test results:
 113	            return "utf-8"
 114	    except Exception:
 115	        pass
-116	
+116
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -2367,7 +2367,7 @@ Test results:
 120	            return enc
 121	        except Exception:
 122	            continue
-123	
+123
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -2389,7 +2389,7 @@ Test results:
 201	            text = text.lstrip("\ufeff")
 202	    except Exception:
 203	        pass
-204	
+204
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2401,7 +2401,7 @@ Test results:
 228	        except Exception:
 229	            # Fall through to manual reader
 230	            pass
-231	
+231
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2413,7 +2413,7 @@ Test results:
 95	    except Exception:
 96	        # If something odd happens while checking BOMs, continue gracefully.
 97	        pass
-98	
+98
 
 --------------------------------------------------
 >> Issue: [B112:try_except_continue] Try, Except, Continue detected.
@@ -2425,7 +2425,7 @@ Test results:
 141	        except Exception:
 142	            # Any other unexpected error skip to next trial
 143	            continue
-144	
+144
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2437,7 +2437,7 @@ Test results:
 50	    except Exception:
 51	        # defensive: fall through to other strategies
 52	        pass
-53	
+53
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2448,7 +2448,7 @@ Test results:
 92	            return "utf-8"
 93	    except Exception:
 94	        pass
-95	
+95
 
 --------------------------------------------------
 >> Issue: [B110:try_except_pass] Try, Except, Pass detected.
@@ -2491,7 +2491,7 @@ Test results:
    Location: src\utils\checkpointing.py:88:4
 87	        raise RuntimeError("PyTorch is required to load checkpoints")
 88	    assert torch is not None
-89	
+89
 
 --------------------------------------------------
 

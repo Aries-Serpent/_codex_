@@ -326,7 +326,7 @@ from codex_ml.evaluation.runner import MetricAdapter
 class MyCustomMetric(MetricAdapter):
     def __init__(self):
         super().__init__(name="my_metric")
-    
+
     def compute(self) -> Dict[str, float]:
         # Custom metric logic
         return {"my_metric": calculated_value}
@@ -562,7 +562,7 @@ rm -rf artifacts/features/
 
 1. **Slack**: #mlops-support (fastest)
 2. **Email**: mlops-team@company.com
-3. **Documentation**: 
+3. **Documentation**:
    - `configs/production/README.md`
    - `PHASE_6_QUICKSTART.md`
    - `docs/runbooks/`
@@ -585,7 +585,7 @@ Template:
 ```markdown
 **Feature**: MLflow Tracking
 **Config**: tracking.mlflow.enabled=true
-**Steps**: 
+**Steps**:
 1. Run `python train.py`
 2. Check MLflow UI
 

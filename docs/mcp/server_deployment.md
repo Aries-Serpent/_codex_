@@ -12,15 +12,15 @@ graph TB
     B -->|Edge| C[Cloudflare Workers]
     B -->|Container| D[Fly.io]
     B -->|Local| E[Docker Compose]
-    
+
     C --> F[Durable Objects]
     C --> G[KV Storage]
     C --> H[Edge Network]
-    
+
     D --> I[Persistent Volumes]
     D --> J[Redis Instance]
     D --> K[SQLite DB]
-    
+
     E --> L[Local Chroma]
     E --> M[Local Redis]
     E --> N[Dev Environment]
@@ -301,9 +301,9 @@ const router = Router();
 
 // Authentication middleware
 async function authenticate(request: Request, env: Env): Promise<Response | null> {
-  const apiKey = request.headers.get('X-MCP-API-Key') || 
+  const apiKey = request.headers.get('X-MCP-API-Key') ||
                  request.headers.get('Authorization')?.replace('Bearer ', '');
-  
+
   if (!apiKey || apiKey !== env.MCP_API_KEY) {
     return new Response(JSON.stringify({
       error: {
@@ -315,7 +315,7 @@ async function authenticate(request: Request, env: Env): Promise<Response | null
       headers: { 'Content-Type': 'application/json' }
     });
   }
-  
+
   return null;
 }
 
@@ -334,10 +334,10 @@ router.post('/mcp/v1/query', async (request, env: Env) => {
   // Authenticate
   const authError = await authenticate(request, env);
   if (authError) return authError;
-  
+
   // Parse request
   const body = await request.json();
-  
+
   // TODO: Implement actual query logic
   // This is a placeholder that mirrors FastAPI schema
   return new Response(JSON.stringify({
@@ -357,10 +357,10 @@ router.post('/mcp/v1/context', async (request, env: Env) => {
   // Authenticate
   const authError = await authenticate(request, env);
   if (authError) return authError;
-  
+
   // Parse request
   const body = await request.json();
-  
+
   // TODO: Implement actual context storage
   return new Response(JSON.stringify({
     status: 'stored',
@@ -478,7 +478,7 @@ services:
       - mcp-network
     profiles:
       - mcp
-  
+
   redis:
     image: redis:7-alpine
     ports:
@@ -489,7 +489,7 @@ services:
       - mcp-network
     profiles:
       - mcp
-  
+
   chroma:
     image: ghcr.io/chroma-core/chroma:latest
     ports:
@@ -570,11 +570,11 @@ wrangler kv:key put --binding=MCP_CACHE "key" "value"
 ```typescript
 export class RateLimiterDO {
   state: DurableObjectState;
-  
+
   constructor(state: DurableObjectState, env: Env) {
     this.state = state;
   }
-  
+
   async fetch(request: Request) {
     // Token bucket logic here
     // (see rate_limiting.md for implementation)
@@ -927,7 +927,7 @@ async def readiness():
     # Check dependencies
     db_ok = await check_database()
     cache_ok = await check_cache()
-    
+
     if db_ok and cache_ok:
         return {"status": "ready"}
     else:

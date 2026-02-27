@@ -9,7 +9,7 @@
 ## 🎯 Quick Start (Copy this to PR comment)
 
 ```
-@copilot Begin Cognitive Brain Phase 8.2 implementation following `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md` and `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_CONTINUATION.md`. 
+@copilot Begin Cognitive Brain Phase 8.2 implementation following `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md` and `.codex/prompts/COGNITIVE_BRAIN_PHASE_8_CONTINUATION.md`.
 
 **Immediate Tasks (Pre-commit 1-2):**
 1. Create `src/cognitive_brain/quantum/ghz_state_manager.py` with N-qubit GHZ state generation (N≥3)
@@ -52,17 +52,17 @@ from scipy.linalg import norm
 
 class GHZStateManager:
     """Manage GHZ entangled states for N≥3 agents."""
-    
+
     def create_ghz_state(self, agents: List['Agent']) -> 'GHZState':
         """
         Create GHZ state: |GHZ⟩ = (|000...0⟩ + |111...1⟩) / √2
-        
+
         Args:
             agents: List of Agent objects (N≥3)
-        
+
         Returns:
             GHZState with state vector and correlations
-        
+
         Example:
             >>> manager = GHZStateManager()
             >>> agents = [Agent('A1'), Agent('A2'), Agent('A3')]
@@ -71,18 +71,18 @@ class GHZStateManager:
             True
         """
         pass  # IMPLEMENT
-    
+
     def measure_correlations(self, state: 'GHZState') -> Dict[str, float]:
         """
         Measure pairwise and N-party correlations.
-        
+
         Returns dict with:
         - 'pairwise': Average pairwise entanglement (0-1)
         - 'n_party': N-party correlation (-1 to 1)
         - 'coherence': Current state coherence (0-1)
         """
         pass  # IMPLEMENT
-    
+
     def optimize_coordination(self, state: 'GHZState') -> 'Action':
         """Optimize agent actions based on GHZ correlations."""
         pass  # IMPLEMENT
@@ -101,7 +101,7 @@ import numpy as np
 class GHZState:
     """
     Represents a GHZ entangled state for multi-agent coordination.
-    
+
     Attributes:
         agents: List of agent IDs participating
         state_vector: Complex amplitudes (normalized)
@@ -116,7 +116,7 @@ class GHZState:
     coherence: float
     created_at: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         """Validate GHZ state properties."""
         assert len(self.agents) >= 3, "GHZ requires N≥3 agents"
@@ -154,10 +154,10 @@ def some_cognitive_function(...):
     """Function with AfterMath integration."""
     # PLAN phase
     plan = create_execution_plan(...)
-    
+
     # DO phase  
     result = execute_plan(plan)
-    
+
     # ASSESS phase
     feedback = {
         'success': bool,
@@ -166,7 +166,7 @@ def some_cognitive_function(...):
         'improvements': [...]
     }
     update_aftermath_log(feedback)  # REQUIRED
-    
+
     return result
 ```
 
@@ -202,24 +202,24 @@ and coherence maximization.
 
 class QuantumOptimizer:
     """Optimize quantum components of cognitive brain."""
-    
+
     def optimize_k1_factor(self, current_k1: float, target: float = 0.25):
         """
         Optimize k₁ factor through iterative tuning.
-        
+
         Uses gradient descent on quantum decision parameters to
         minimize k₁ while maintaining quantum advantage.
         """
         pass  # IMPLEMENT
-    
+
     def maximize_coherence(self, state: 'QuantumState'):
         """
         Maximize quantum coherence through noise reduction.
-        
+
         Applies error correction and decoherence mitigation.
         """
         pass  # IMPLEMENT
-    
+
     def tune_entanglement(self, agents: List['Agent']):
         """Optimize entanglement parameters for agent coordination."""
         pass  # IMPLEMENT

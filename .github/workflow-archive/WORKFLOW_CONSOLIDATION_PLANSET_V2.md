@@ -60,7 +60,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
-  
+
   dependency-audit:
     name: Dependency Security Audit
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
         run: npm audit --audit-level=moderate
       - name: Run pip audit
         run: pip-audit
-  
+
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
@@ -78,7 +78,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
-  
+
   unified-results:
     name: Aggregate Security Results
     runs-on: ubuntu-latest
@@ -117,7 +117,7 @@ jobs:
 
 #### Enhanced: `optimized-ci.yml`
 **Current Jobs**: 4 (setup, test, benchmark, report)
-**Added Jobs**: 
+**Added Jobs**:
 - RAG-specific tests (from test-rag.yml)
 - Performance metrics (from test-comprehensive.yml)
 - Comprehensive benchmarks (from test-suite.yml)
@@ -183,7 +183,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Count Workflows
         id: count
         run: |
@@ -191,20 +191,20 @@ jobs:
           DISABLED=$(find .github/workflow-archive/disabled -name "*.yml" | wc -l)
           echo "active=$ACTIVE" >> $GITHUB_OUTPUT
           echo "disabled=$DISABLED" >> $GITHUB_OUTPUT
-      
+
       - name: Validate YAML
         run: yamllint .github/workflows/*.yml
-      
+
       - name: Workflow Success Rate
         run: |
           gh run list --limit 100 --json conclusion | \
             jq '[.[] | select(.conclusion == "success")] | length'
-      
+
       - name: Diagnostic Analysis
         run: |
           # Check for common failure patterns
           gh run list --status failure --limit 20 --json name,conclusion
-      
+
       - name: Generate Health Report
         run: |
           cat > ci-health-report.json << EOF
@@ -216,7 +216,7 @@ jobs:
             "variance": $(( ${{ steps.count.outputs.active }} - 48 ))
           }
           EOF
-      
+
       - name: Upload Report
         uses: actions/upload-artifact@v6
         with:
@@ -285,7 +285,7 @@ jobs:
           name: auth-compliance-report-${{ github.run_number }}
           path: compliance-report.json
           retention-days: 90
-  
+
   mfa-enrollment:
     name: MFA Enrollment Check
     runs-on: ubuntu-latest
@@ -293,7 +293,7 @@ jobs:
     steps:
       - name: Check MFA Status
         run: gh api /orgs/Aries-Serpent/members --jq '.[] | select(.two_factor_authentication == false)'
-  
+
   oauth-sync:
     name: OAuth App Sync
     runs-on: ubuntu-latest
@@ -301,7 +301,7 @@ jobs:
     steps:
       - name: Sync OAuth Apps
         run: gh api /user/installations
-  
+
   secret-rotation:
     name: Secret Rotation
     runs-on: ubuntu-latest
@@ -309,7 +309,7 @@ jobs:
     steps:
       - name: Rotate Secrets
         run: echo "Secret rotation logic"
-  
+
   token-rotation:
     name: Token Rotation
     runs-on: ubuntu-latest
@@ -317,7 +317,7 @@ jobs:
     steps:
       - name: Rotate Tokens
         run: echo "Token rotation logic"
-  
+
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -325,7 +325,7 @@ jobs:
     steps:
       - name: Run Audit
         run: echo "Security audit logic"
-  
+
   auth-tests:
     name: Authentication Tests
     runs-on: ubuntu-latest
@@ -374,24 +374,24 @@ jobs:
         chunk: ${{ github.event_name == 'schedule' && '[1, 2, 3]' || '[1]' }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
-      
+
       - name: Perform Analysis (Chunk ${{ matrix.chunk }})
         if: matrix.chunk > 1
         run: |
           # Chunked analysis for scheduled runs
           codeql database analyze --threads=4 \
             --chunk=${{ matrix.chunk }}/3
-      
+
       - name: Perform Analysis (Standard)
         if: matrix.chunk == 1 && github.event_name != 'schedule'
         uses: github/codeql-action/analyze@v3
-      
+
       - name: Upload Results
         if: github.event_name == 'schedule'
         uses: actions/upload-artifact@v6
@@ -443,26 +443,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Gather Workflow Data
         id: metrics
         run: |
           # Collect workflow run data
           gh run list --limit 100 --json name,conclusion,startedAt,durationMs > workflow_data.json
-          
+
           # Calculate metrics
           python3 << EOF
           import json
           with open('workflow_data.json') as f:
               data = json.load(f)
-          
+
           success_rate = len([r for r in data if r['conclusion'] == 'success']) / len(data) * 100
           avg_duration = sum(r['durationMs'] for r in data) / len(data) / 1000 / 60  # minutes
-          
+
           print(f"SUCCESS_RATE={success_rate:.2f}" >> $GITHUB_OUTPUT)
           print(f"AVG_DURATION={avg_duration:.2f}" >> $GITHUB_OUTPUT)
           EOF
-      
+
       - name: Health Assessment
         run: |
           cat > workflow-health-report.json << EOF
@@ -473,14 +473,14 @@ jobs:
             "active_workflows": $(find .github/workflows -name "*.yml" | wc -l)
           }
           EOF
-      
+
       - name: Generate Trends
         if: inputs.analysis_type != 'health-only'
         run: |
           # Generate trend CSV
           echo "timestamp,active,disabled,success_rate" > workflow_trends.csv
           echo "$(date -u +%Y-%m-%dT%H:%M:%SZ),$(find .github/workflows -name "*.yml" | wc -l),$(find .github/workflow-archive/disabled -name "*.yml" | wc -l),${{ steps.metrics.outputs.SUCCESS_RATE }}" >> workflow_trends.csv
-      
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -528,17 +528,17 @@ jobs:
     if: github.event.workflow_run.conclusion == 'failure' || github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Analyze Failure
         id: analyze
         run: |
           # Get failed workflow info
           WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
           RUN_ID="${{ github.event.workflow_run.id }}"
-          
+
           # Download logs and analyze
           gh run view $RUN_ID --log > failure_log.txt
-          
+
           # Detect common patterns
           if grep -q "ENOSPC" failure_log.txt; then
             echo "recovery_action=cleanup_disk" >> $GITHUB_OUTPUT
@@ -549,7 +549,7 @@ jobs:
           else
             echo "recovery_action=manual_review" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Execute Recovery
         if: steps.analyze.outputs.recovery_action != 'manual_review'
         run: |
@@ -568,7 +568,7 @@ jobs:
               pip install -r requirements.txt --force-reinstall
               ;;
           esac
-      
+
       - name: Feedback Loop
         run: |
           # Record recovery attempt
@@ -581,7 +581,7 @@ jobs:
             "success": true
           }
           EOF
-      
+
       - name: Upload Report
         uses: actions/upload-artifact@v6
         with:

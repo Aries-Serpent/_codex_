@@ -7,7 +7,7 @@ Reviewed and verified 25 code scanning findings from Bandit, CodeQL, and Semgrep
 ## Critical (6 alerts) - VERIFIED SECURE
 
 ### 1. MD5 Hash Usage (2 instances)
-**Files**: 
+**Files**:
 - `src/codex/ast/parser.py` (lines 124, 156)
 - `src/codex/metrics/duplication.py` (line 224)
 

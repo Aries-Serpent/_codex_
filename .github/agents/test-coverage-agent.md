@@ -26,19 +26,19 @@ graph TD
         C --> D[Test Suggester]
         D --> E[Report Generator]
     end
-    
+
     subgraph "Data Sources"
         F[coverage.json] --> A
         G[test_priority_matrix.json] --> C
         H[coverage_analysis.json] --> B
     end
-    
+
     subgraph "Outputs"
         E --> I[Coverage Reports]
         E --> J[Test Suggestions]
         E --> K[PR Comments]
     end
-    
+
     subgraph "Integration"
         L[CI Pipeline] --> A
         M[GitHub Actions] --> L
@@ -130,11 +130,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Tests with Coverage
         run: |
           pytest --cov=src --cov-report=json --cov-report=html
-          
+
       - name: Invoke Test Coverage Agent
         uses: ./.github/agents/test-coverage-agent
         with:
@@ -494,7 +494,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

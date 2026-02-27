@@ -74,22 +74,22 @@ graph TD
     B -->|HTTP Request| C[FastAPI Middleware]
     B -->|JSON-RPC Call| D[JSON-RPC Logger]
     B -->|VectorStore Op| E[Query Tracer]
-    
+
     C --> F[Structured Log]
     D --> F
     E --> F
-    
+
     C --> G[Prometheus Metric]
     E --> G
-    
+
     F --> H[Log Aggregator]
     G --> I[Metrics Scraper]
     E --> J[Trace Collector]
-    
+
     H --> K[Analysis/Search]
     I --> L[Dashboard]
     J --> L
-    
+
     K --> M{Anomaly?}
     M -->|Yes| N[Alert]
     M -->|No| O[Archive]

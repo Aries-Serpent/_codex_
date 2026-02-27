@@ -46,7 +46,7 @@ No files modified
 - [x] Address code review round 2 (6 comments) ✅
 - [ ] Monitor CI test shards (NEXT: awaiting CI run)
 
-**Validation**: 
+**Validation**:
 ```bash
 gh pr checks 2635
 ```

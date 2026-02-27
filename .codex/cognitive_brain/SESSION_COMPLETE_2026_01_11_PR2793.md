@@ -126,7 +126,7 @@ This session completed:
 For the next Copilot session, use:
 
 ```
-@copilot Continue with post-merge monitoring and custom agent implementation. 
+@copilot Continue with post-merge monitoring and custom agent implementation.
 See .codex/CONTINUATION_PROMPT_POST_CI_VALIDATION.md for full instructions.
 Begin with Phase A (Production Deployment) or Phase C (Custom Agent Development).
 ```

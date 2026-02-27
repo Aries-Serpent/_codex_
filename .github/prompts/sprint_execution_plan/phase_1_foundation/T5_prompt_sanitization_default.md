@@ -37,15 +37,15 @@ class PromptSanitizer:
         r"subprocess",
         r"os\.system",
     ]
-    
+
     def __init__(self, strict=True):
         self.strict = strict
         self.patterns = [re.compile(p, re.IGNORECASE) for p in self.INJECTION_PATTERNS]
-    
+
     def sanitize(self, prompt: str) -> str:
         """Sanitize prompt by removing/escaping dangerous patterns."""
         original = prompt
-        
+
         for pattern in self.patterns:
             if pattern.search(prompt):
                 if self.strict:
@@ -57,12 +57,12 @@ class PromptSanitizer:
                 else:
                     # Remove pattern in non-strict mode
                     prompt = pattern.sub("[REDACTED]", prompt)
-        
+
         if prompt != original:
             print(f"⚠️ Prompt sanitized: {len(original) - len(prompt)} chars removed")
-        
+
         return prompt
-    
+
     def is_safe(self, prompt: str) -> bool:
         """Check if prompt is safe without modifying."""
         try:
@@ -95,7 +95,7 @@ def run_inference(prompt, model, sanitize=True):
     if sanitize:
         sanitizer = PromptSanitizer(strict=True)
         prompt = sanitizer.sanitize(prompt)
-    
+
     # Run inference
     output = model.generate(prompt)
     return output
@@ -120,7 +120,7 @@ prompt_sanitization:
 ```python
 def test_sanitizer_blocks_injection():
     sanitizer = PromptSanitizer(strict=True)
-    
+
     with pytest.raises(ValueError, match="Unsafe prompt"):
         sanitizer.sanitize("<script>alert('xss')</script>")
 

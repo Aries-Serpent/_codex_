@@ -170,7 +170,7 @@ def test_training_is_reproducible_with_seed(...):
 - CI workflows using `diff` for comparison are sensitive
 - Solution: Skip placeholders or implement properly
 
-**Pattern for Future:** 
+**Pattern for Future:**
 - Mark placeholders with `@pytest.mark.skip`
 - Or use deterministic output (e.g., mock time)
 - Document reason in skip message

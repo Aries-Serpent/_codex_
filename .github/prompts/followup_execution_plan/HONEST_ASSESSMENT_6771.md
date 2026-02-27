@@ -261,7 +261,7 @@ This is FALSE because:
 
 ## Final Verdict
 
-### Can We Say We Have 71/71? 
+### Can We Say We Have 71/71?
 
 **NO** ❌
 

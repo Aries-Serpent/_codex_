@@ -227,7 +227,7 @@ sed -i '/ENABLE_FEATURE_X/d' config.py
 **State Recovery**:
 ```bash
 # Clean failed feature state
-rm -rf /tmp/mcp_feature_* 
+rm -rf /tmp/mcp_feature_*
 
 # Reset to known good state
 ./scripts/mcp/mcp-package --reset-config
@@ -348,22 +348,22 @@ Add `--exclude` parameter to filter out unwanted files from selection, complemen
 **File**: `scripts/mcp/select_components.py`
 
 ```python
-def expand_globs(patterns: List[str], base_dir: Path, 
+def expand_globs(patterns: List[str], base_dir: Path,
                  exclude_patterns: List[str] = None) -> Set[Path]:
     """Add exclude_patterns parameter"""
     matched_files = set()
-    
+
     # ... existing inclusion logic ...
-    
+
     if exclude_patterns:
         excluded = set()
         for ex_pattern in exclude_patterns:
             for path in base_dir.glob(ex_pattern):
                 if path.is_file():
                     excluded.add(path.relative_to(base_dir))
-        
+
         matched_files = matched_files - excluded
-    
+
     return matched_files
 ```
 
@@ -413,14 +413,14 @@ Automatically detect and resolve duplicate flat names (e.g., `src/foo.py` and `t
 flatten_filename() {
     local path="$1"
     local base_name=$(echo "$path" | sed 's|/|__|g')
-    
+
     # Check if name exists in tracking file
     if grep -q "^${base_name}$" "$WORK_DIR/.flat_names"; then
         # Compute short hash of full path
         local hash=$(echo "$path" | sha256sum | cut -c1-4)
         base_name="${base_name%.*}_${hash}.${base_name##*.}"
     fi
-    
+
     # Track this name
     echo "$base_name" >> "$WORK_DIR/.flat_names"
     echo "$base_name"
@@ -495,19 +495,19 @@ def diff_packages(pkg1_path: str, pkg2_path: str) -> Dict:
     """Compare two package manifests"""
     m1 = load_manifest(pkg1_path)
     m2 = load_manifest(pkg2_path)
-    
+
     files1 = {f['original_path']: f for f in m1['files']}
     files2 = {f['original_path']: f for f in m2['files']}
-    
+
     added = set(files2.keys()) - set(files1.keys())
     removed = set(files1.keys()) - set(files2.keys())
     common = set(files1.keys()) & set(files2.keys())
-    
+
     modified = []
     for path in common:
         if files1[path]['sha256'] != files2[path]['sha256']:
             modified.append(path)
-    
+
     return {
         'added': sorted(added),
         'removed': sorted(removed),
@@ -580,27 +580,27 @@ Combine multiple packages into one, resolving conflicts intelligently.
 from typing import List, Dict
 import zipfile
 
-def merge_packages(package_paths: List[str], 
+def merge_packages(package_paths: List[str],
                    conflict_strategy: str = 'newest') -> Dict:
     """Merge multiple packages into one"""
     merged_files = {}
-    
+
     for pkg_path in package_paths:
         manifest = load_manifest(pkg_path)
-        
+
         for file_info in manifest['files']:
             orig_path = file_info['original_path']
-            
+
             if orig_path in merged_files:
                 # Conflict! Apply strategy
                 merged_files[orig_path] = resolve_conflict(
-                    merged_files[orig_path], 
-                    file_info, 
+                    merged_files[orig_path],
+                    file_info,
                     conflict_strategy
                 )
             else:
                 merged_files[orig_path] = file_info
-    
+
     return merged_files
 
 def resolve_conflict(existing: Dict, new: Dict, strategy: str) -> Dict:
@@ -681,17 +681,17 @@ from rich.prompt import Confirm
 def interactive_mode(self):
     """Launch interactive package builder"""
     console = Console()
-    
+
     # Build file tree
     tree = self.build_file_tree()
-    
+
     # Display with checkboxes
     selected = self.show_tree_selector(tree)
-    
+
     # Show summary
     size_estimate = self.estimate_selected(selected)
     console.print(f"Selected: {len(selected)} files ({size_estimate} MB)")
-    
+
     # Confirm
     if Confirm.ask("Create package?"):
         self.package_selected_files(selected)
@@ -757,16 +757,16 @@ def analyze_recent_commits(since: str = "1 iteration") -> Dict[str, int]:
     """Analyze git log for file change patterns"""
     cmd = f"git log --since='{since}' --name-only --pretty=format:"
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    
+
     files = [f for f in result.stdout.split('\n') if f.strip()]
-    
+
     # Map files to topics
     topic_counts = Counter()
     for file_path in files:
         topic = map_file_to_topic(file_path)
         if topic:
             topic_counts[topic] += 1
-    
+
     return dict(topic_counts.most_common())
 
 def map_file_to_topic(file_path: str) -> str:
@@ -776,7 +776,7 @@ def map_file_to_topic(file_path: str) -> str:
     # Return best match
     pass
 
-def recommend_packages(topic_scores: Dict[str, int], 
+def recommend_packages(topic_scores: Dict[str, int],
                        threshold: int = 5) -> List[str]:
     """Recommend topics that exceed threshold"""
     return [t for t, count in topic_scores.items() if count >= threshold]

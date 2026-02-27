@@ -81,7 +81,7 @@ class EventType(str, Enum):
 @dataclass
 class Event:
     """Base event class.
-    
+
     Attributes:
         event_type: Type of event
         source: Event source identifier
@@ -96,17 +96,17 @@ class Event:
     event_id: str
     timestamp: str
     metadata: Dict[str, Any] = None
-    
+
     def __post_init__(self):
         if self.metadata is None:
             self.metadata = {}
-    
+
     def to_dict(self) -> dict:
         """Convert event to dictionary."""
         result = asdict(self)
         result["event_type"] = self.event_type.value
         return result
-    
+
     def to_json(self) -> str:
         """Convert event to JSON string."""
         return json.dumps(self.to_dict())
@@ -114,26 +114,26 @@ class Event:
 
 class EventPublisher(ABC):
     """Abstract event publisher."""
-    
+
     @abstractmethod
     def publish(self, event: Event) -> bool:
         """Publish an event.
-        
+
         Args:
             event: Event to publish
-            
+
         Returns:
             True if successful
         """
         pass
-    
+
     @abstractmethod
     def publish_batch(self, events: List[Event]) -> bool:
         """Publish multiple events.
-        
+
         Args:
             events: List of events to publish
-            
+
         Returns:
             True if all successful
         """
@@ -142,21 +142,21 @@ class EventPublisher(ABC):
 
 class EventSubscriber(ABC):
     """Abstract event subscriber."""
-    
+
     @abstractmethod
     def subscribe(self, event_type: EventType, handler: Callable[[Event], None]):
         """Subscribe to event type.
-        
+
         Args:
             event_type: Type of event to subscribe to
             handler: Callback function
         """
         pass
-    
+
     @abstractmethod
     def unsubscribe(self, event_type: EventType):
         """Unsubscribe from event type.
-        
+
         Args:
             event_type: Type of event to unsubscribe from
         """
@@ -165,36 +165,36 @@ class EventSubscriber(ABC):
 
 class EventBus:
     """Local event bus for development and testing."""
-    
+
     def __init__(self):
         """Initialize event bus."""
         self.subscribers: Dict[EventType, List[Callable]] = {}
         self.event_history: List[Event] = []
-    
+
     def publish(self, event: Event) -> bool:
         """Publish event to subscribers.
-        
+
         Args:
             event: Event to publish
-            
+
         Returns:
             True if successful
         """
         self.event_history.append(event)
-        
+
         handlers = self.subscribers.get(event.event_type, [])
         for handler in handlers:
             try:
                 handler(event)
             except Exception as e:
                 logger.error(f"Error in event handler: {e}")
-        
+
         logger.info(f"Published event: {event.event_type.value}")
         return True
-    
+
     def subscribe(self, event_type: EventType, handler: Callable[[Event], None]):
         """Subscribe to event type.
-        
+
         Args:
             event_type: Event type
             handler: Handler function
@@ -203,13 +203,13 @@ class EventBus:
             self.subscribers[event_type] = []
         self.subscribers[event_type].append(handler)
         logger.info(f"Subscribed to {event_type.value}")
-    
+
     def get_history(self, event_type: Optional[EventType] = None) -> List[Event]:
         """Get event history.
-        
+
         Args:
             event_type: Filter by event type
-            
+
         Returns:
             List of events
         """
@@ -238,80 +238,80 @@ __all__ = ["AzureEventPublisher"]
 
 class AzureEventPublisher(EventPublisher):
     """Azure Event Grid event publisher."""
-    
+
     def __init__(self, topic_endpoint: str = None, topic_key: str = None):
         """Initialize Azure Event Grid publisher.
-        
+
         Args:
             topic_endpoint: Event Grid topic endpoint
             topic_key: Topic access key
         """
         self.topic_endpoint = topic_endpoint or os.getenv("AZURE_EVENT_GRID_ENDPOINT")
         self.topic_key = topic_key or os.getenv("AZURE_EVENT_GRID_KEY")
-        
+
         if not self.topic_endpoint or not self.topic_key:
             logger.warning("Azure Event Grid credentials not configured")
             self._client = None
         else:
             self._client = self._create_client()
-    
+
     def _create_client(self):
         """Create Event Grid client."""
         try:
             from azure.eventgrid import EventGridPublisherClient
             from azure.core.credentials import AzureKeyCredential
-            
+
             credential = AzureKeyCredential(self.topic_key)
             return EventGridPublisherClient(self.topic_endpoint, credential)
         except ImportError:
             logger.error("azure-eventgrid package not installed")
             return None
-    
+
     def publish(self, event: Event) -> bool:
         """Publish event to Azure Event Grid.
-        
+
         Args:
             event: Event to publish
-            
+
         Returns:
             True if successful
         """
         if not self._client:
             logger.warning("Azure Event Grid client not initialized")
             return False
-        
+
         try:
             from azure.eventgrid import EventGridEvent
-            
+
             eg_event = EventGridEvent(
                 subject=f"codex-ml/{event.source}",
                 event_type=event.event_type.value,
                 data=event.data,
                 data_version="1.0",
             )
-            
+
             self._client.send([eg_event])
             logger.info(f"Published to Azure Event Grid: {event.event_type.value}")
             return True
         except Exception as e:
             logger.error(f"Failed to publish to Azure Event Grid: {e}")
             return False
-    
+
     def publish_batch(self, events: List[Event]) -> bool:
         """Publish batch of events.
-        
+
         Args:
             events: List of events
-            
+
         Returns:
             True if all successful
         """
         if not self._client:
             return False
-        
+
         try:
             from azure.eventgrid import EventGridEvent
-            
+
             eg_events = [
                 EventGridEvent(
                     subject=f"codex-ml/{e.source}",
@@ -321,7 +321,7 @@ class AzureEventPublisher(EventPublisher):
                 )
                 for e in events
             ]
-            
+
             self._client.send(eg_events)
             logger.info(f"Published {len(events)} events to Azure Event Grid")
             return True
@@ -351,16 +351,16 @@ __all__ = ["AWSEventPublisher"]
 
 class AWSEventPublisher(EventPublisher):
     """AWS EventBridge event publisher."""
-    
+
     def __init__(self, event_bus_name: str = None):
         """Initialize AWS EventBridge publisher.
-        
+
         Args:
             event_bus_name: EventBridge bus name
         """
         self.event_bus_name = event_bus_name or os.getenv("AWS_EVENT_BUS_NAME", "default")
         self._client = self._create_client()
-    
+
     def _create_client(self):
         """Create EventBridge client."""
         try:
@@ -372,20 +372,20 @@ class AWSEventPublisher(EventPublisher):
         except Exception as e:
             logger.error(f"Failed to create EventBridge client: {e}")
             return None
-    
+
     def publish(self, event: Event) -> bool:
         """Publish event to AWS EventBridge.
-        
+
         Args:
             event: Event to publish
-            
+
         Returns:
             True if successful
         """
         if not self._client:
             logger.warning("AWS EventBridge client not initialized")
             return False
-        
+
         try:
             response = self._client.put_events(
                 Entries=[
@@ -397,7 +397,7 @@ class AWSEventPublisher(EventPublisher):
                     }
                 ]
             )
-            
+
             if response['FailedEntryCount'] == 0:
                 logger.info(f"Published to AWS EventBridge: {event.event_type.value}")
                 return True
@@ -407,19 +407,19 @@ class AWSEventPublisher(EventPublisher):
         except Exception as e:
             logger.error(f"Failed to publish to AWS EventBridge: {e}")
             return False
-    
+
     def publish_batch(self, events: List[Event]) -> bool:
         """Publish batch of events.
-        
+
         Args:
             events: List of events
-            
+
         Returns:
             True if all successful
         """
         if not self._client:
             return False
-        
+
         try:
             entries = [
                 {
@@ -430,9 +430,9 @@ class AWSEventPublisher(EventPublisher):
                 }
                 for e in events
             ]
-            
+
             response = self._client.put_events(Entries=entries)
-            
+
             if response['FailedEntryCount'] == 0:
                 logger.info(f"Published {len(events)} events to AWS EventBridge")
                 return True
@@ -463,10 +463,10 @@ logger = logging.getLogger(__name__)
 
 class TrainingEventEmitter:
     """Emit events during training lifecycle."""
-    
+
     def __init__(self, publisher=None):
         """Initialize event emitter.
-        
+
         Args:
             publisher: Event publisher (defaults to local EventBus)
         """
@@ -475,7 +475,7 @@ class TrainingEventEmitter:
             self.publisher = self._create_publisher()
         else:
             self.publisher = publisher
-    
+
     def _create_publisher(self):
         """Create appropriate event publisher."""
         # Try Azure first
@@ -486,7 +486,7 @@ class TrainingEventEmitter:
                 return azure_pub
         except Exception:
             pass
-        
+
         # Try AWS
         try:
             aws_pub = AWSEventPublisher()
@@ -495,11 +495,11 @@ class TrainingEventEmitter:
                 return aws_pub
         except Exception:
             pass
-        
+
         # Fall back to local
         logger.info("Using local EventBus")
         return EventBus()
-    
+
     def emit_training_started(self, model_name: str, config: dict):
         """Emit training started event."""
         event = Event(
@@ -513,7 +513,7 @@ class TrainingEventEmitter:
             timestamp=datetime.now().isoformat(),
         )
         self.publisher.publish(event)
-    
+
     def emit_training_completed(self, model_name: str, metrics: dict):
         """Emit training completed event."""
         event = Event(
@@ -527,7 +527,7 @@ class TrainingEventEmitter:
             timestamp=datetime.now().isoformat(),
         )
         self.publisher.publish(event)
-    
+
     def emit_drift_detected(self, drift_type: str, score: float):
         """Emit drift detected event."""
         event = Event(
@@ -578,7 +578,7 @@ filters:
     - model.training.completed
     - model.deployed
     - drift.detected
-  
+
   # Minimum severity to emit
   min_severity: INFO
 
@@ -612,12 +612,12 @@ def test_event_bus():
     """Test local event bus."""
     bus = EventBus()
     received = []
-    
+
     def handler(event):
         received.append(event)
-    
+
     bus.subscribe(EventType.MODEL_TRAINING_STARTED, handler)
-    
+
     event = Event(
         event_type=EventType.MODEL_TRAINING_STARTED,
         source="test",
@@ -625,9 +625,9 @@ def test_event_bus():
         event_id="123",
         timestamp="2025-01-01T00:00:00",
     )
-    
+
     bus.publish(event)
-    
+
     assert len(received) == 1
     assert received[0].event_type == EventType.MODEL_TRAINING_STARTED
 ```

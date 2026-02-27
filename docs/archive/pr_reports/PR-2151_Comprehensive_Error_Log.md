@@ -231,7 +231,7 @@ class TrainingPipeline:
         'evaluation',
         'checkpoint_save'
     ]
-    
+
     STAGE_DEPENDENCIES = {
         'data_loading': ['tokenizer_init'],
         'model_init': ['config_validate'],
@@ -324,21 +324,21 @@ Add comprehensive documentation following Google style guide:
 def function_name(param1: Type1, param2: Type2) -> ReturnType:
     """
     Short one-line description.
-    
+
     Longer description explaining the function's behavior,
     use cases, and any important notes.
-    
+
     Args:
         param1: Description of param1
         param2: Description of param2
-    
+
     Returns:
         Description of return value
-    
+
     Raises:
         ValueError: When param1 is invalid
         RuntimeError: When operation fails
-    
+
     Examples:
         >>> result = function_name("value", 42)
         >>> print(result)
@@ -449,30 +449,30 @@ from codex_ml.training.distributed_troubleshooting import (
 
 class TestDistributedTroubleshooting:
     """Test distributed troubleshooting utilities."""
-    
+
     def test_troubleshoot_training_success(self):
         """Test successful troubleshooting run."""
         result = troubleshoot_training(rank=0, world_size=1)
         assert result.status == "healthy"
         assert len(result.issues) == 0
-    
+
     def test_troubleshoot_training_communication_failure(self):
         """Test detection of communication issues."""
         result = troubleshoot_training(rank=0, world_size=4)
         # Mock communication failure
         assert result.status == "unhealthy"
         assert "communication" in [i.category for i in result.issues]
-    
+
     def test_check_distributed_setup_valid(self):
         """Test distributed setup validation."""
         is_valid = check_distributed_setup()
         assert isinstance(is_valid, bool)
-    
+
     def test_diagnose_communication_issues(self):
         """Test communication diagnostics."""
         issues = diagnose_communication_issues()
         assert isinstance(issues, list)
-    
+
     # Add 20+ more tests for full coverage
 ```text
 
@@ -486,26 +486,26 @@ from tools.data_drift_check import check_drift, DriftDetector
 
 class TestDataDriftCheck:
     """Test data drift detection functionality."""
-    
+
     def test_check_drift_no_drift(self):
         """Test drift detection with no drift."""
         baseline = np.random.normal(0, 1, 1000)
         current = np.random.normal(0, 1, 1000)
         result = check_drift(baseline, current)
         assert not result.has_drift
-    
+
     def test_check_drift_with_drift(self):
         """Test drift detection with significant drift."""
         baseline = np.random.normal(0, 1, 1000)
         current = np.random.normal(5, 1, 1000)  # Shifted mean
         result = check_drift(baseline, current)
         assert result.has_drift
-    
+
     def test_drift_detector_initialization(self):
         """Test DriftDetector initialization."""
         detector = DriftDetector(threshold=0.05)
         assert detector.threshold == 0.05
-    
+
     # Add 10+ more tests for full coverage
 ```text
 
@@ -519,19 +519,19 @@ from tools.verification_tool import verify_setup, VerificationResult
 
 class TestVerificationTool:
     """Test verification tool functionality."""
-    
+
     def test_verify_setup_success(self, tmp_path):
         """Test successful verification."""
         result = verify_setup(tmp_path)
         assert isinstance(result, VerificationResult)
         assert result.passed
-    
+
     def test_verify_setup_missing_files(self, tmp_path):
         """Test verification with missing required files."""
         result = verify_setup(tmp_path)
         assert not result.passed
         assert "missing files" in result.errors
-    
+
     # Add 10+ more tests for full coverage
 ```text
 
@@ -545,9 +545,9 @@ from codex_ml.data.loader_enhanced import load_and_validate
 
 class TestLoaderEnhanced:
     """Test enhanced data loader functionality."""
-    
+
     # Existing tests at 45% coverage
-    
+
     # NEW: Add edge case tests
     def test_load_and_validate_empty_file(self, tmp_path):
         """Test loading empty file."""
@@ -555,24 +555,24 @@ class TestLoaderEnhanced:
         empty_file.write_text("")
         with pytest.raises(ValueError, match="empty"):
             load_and_validate(empty_file)
-    
+
     def test_load_and_validate_malformed_json(self, tmp_path):
         """Test loading malformed JSON."""
         bad_json = tmp_path / "bad.json"
         bad_json.write_text("{invalid json")
         with pytest.raises(ValueError, match="invalid"):
             load_and_validate(bad_json)
-    
+
     def test_load_and_validate_large_file(self, tmp_path):
         """Test loading large file with memory constraints."""
         # Test large file handling
         pass
-    
+
     def test_load_and_validate_concurrent_access(self, tmp_path):
         """Test concurrent file access."""
         # Test thread safety
         pass
-    
+
     # Add 6+ more tests to reach 90%+
 ```text
 
@@ -748,14 +748,14 @@ def troubleshoot_training(rank, world_size, model, optimizer):
         check_model_placement,
         check_optimizer_state,
     ]
-    
+
     results = []
     for check in checks:
         result = check(rank, world_size, model, optimizer)
         results.append(result)
         if not result.passed:
             break
-    
+
     return TroubleshootingResult(results)
 ```text
 
@@ -795,19 +795,19 @@ class CacheHandler:
     def __init__(self):
         self.cache = self._load_cache()  # 145ms
         self.config = self._load_config()  # Synchronous
-        
+
 # Optimized: Use lazy properties
 class CacheHandler:
     def __init__(self):
         self._cache = None
         self._config = None
-    
+
     @property
     def cache(self):
         if self._cache is None:
             self._cache = self._load_cache()
         return self._cache
-    
+
     @property
     def config(self):
         if self._config is None:
@@ -962,15 +962,15 @@ def load_and_validate(path: Path):
     # Validate path
     if not path.exists():
         raise FileNotFoundError(f"File not found: {path}")
-    
+
     if not path.is_file():
         raise ValueError(f"Path is not a file: {path}")
-    
+
     # Prevent path traversal
     resolved = path.resolve()
     if not str(resolved).startswith(str(ALLOWED_DATA_DIR)):
         raise SecurityError(f"Path outside allowed directory: {path}")
-    
+
     with open(resolved) as f:
         data = json.load(f)
 ```text
@@ -1003,10 +1003,10 @@ from pathlib import Path
 def load_config(config_path: Path):
     if not config_path.suffix in ['.yaml', '.yml', '.json']:
         raise ValueError("Invalid config file type")
-    
+
     if not config_path.exists():
         raise FileNotFoundError(f"Config not found")
-    
+
     # Load config
 ```text
 
@@ -1234,12 +1234,12 @@ Warnings (12):
     - tools/data_drift_check.py:8
     - src/data/loader_enhanced.py:12
     - tools/verification_tool.py:5
-  
+
   D103: Missing docstring in public function
     - src/training/distributed_troubleshooting.py:45
     - src/training/distributed_troubleshooting.py:78
     - src/training/distributed_troubleshooting.py:112
-  
+
   ANN001: Missing type annotation for function argument
     - [45 locations - see Issue 3]
 

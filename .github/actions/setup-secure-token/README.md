@@ -17,7 +17,7 @@ This composite action configures secure token retrieval for Copilot workflows in
 steps:
   - name: Checkout code
     uses: actions/checkout@v6
-  
+
   - name: Setup secure token
     uses: ./.github/actions/setup-secure-token
     env:

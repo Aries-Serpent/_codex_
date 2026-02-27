@@ -143,7 +143,7 @@ test_suites:
     timeout_seconds: 600
     retry_attempts: 3
     target_latency_seconds: 300
-    
+
   security_scan:
     enabled: true
     scanners:
@@ -151,7 +151,7 @@ test_suites:
       - detect-secrets
       - repomix-builtin
     fail_on_secrets_found: true
-    
+
   ai_architect:
     enabled: true
     test_queries:
@@ -159,13 +159,13 @@ test_suites:
       - "Analyze dependency vulnerabilities"
       - "Security audit summary"
     target_accuracy: 0.95
-    
+
   performance:
     enabled: true
     max_bundle_size_mb: 5
     target_compression_ratio: 0.70
     max_consolidation_time_seconds: 120
-    
+
   error_handling:
     enabled: true
     test_scenarios:
@@ -173,7 +173,7 @@ test_suites:
       - api_timeout
       - invalid_config
       - network_error
-      
+
   documentation:
     enabled: true
     check_links: true
@@ -205,23 +205,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           pip install pyyaml requests
-          
+
       - name: Run Testing Orchestrator Agent
         run: |
           python .github/agents/github-testing-orchestrator-agent/src/agent.py \
             --task all \
             --report json \
             --output-dir ${{ github.workspace }}/.reports
-            
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -229,7 +229,7 @@ jobs:
           name: test-orchestrator-results
           path: .reports/testing-orchestrator/
           retention-days: 30
-          
+
       - name: Comment results on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -239,13 +239,13 @@ jobs:
             const report = JSON.parse(
               fs.readFileSync('.reports/testing-orchestrator/summary.json', 'utf8')
             );
-            
+
             const body = `## 🧪 Test Orchestrator Results\n\n` +
               `**Status**: ${report.overall_status}\n` +
               `**Suites Passed**: ${report.passed}/${report.total}\n` +
               `**Duration**: ${report.duration_seconds}s\n\n` +
               `View detailed report`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               body: body
@@ -663,7 +663,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -852,7 +852,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

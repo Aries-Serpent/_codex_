@@ -86,12 +86,12 @@ def __call__(self, text, truncation=True, padding=False, return_tensors=None):
             "input_ids": [[0] for _ in text],
             "attention_mask": [[1] for _ in text]
         }
-    
+
     # Convert to tensors if requested
     if return_tensors == "pt":
         import torch
         result = {k: torch.tensor(v) for k, v in result.items()}
-    
+
     return result
 ```
 

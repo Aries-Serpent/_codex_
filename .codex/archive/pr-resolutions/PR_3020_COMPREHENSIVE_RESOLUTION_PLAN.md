@@ -12,7 +12,7 @@
 This document provides a comprehensive plan to complete PR #3020 following the AI Agency Policy mandate to "leave the codebase better than found" and address ALL concerns (including out-of-scope issues).
 
 ### Current PR State
-- **Branch:** `copilot/sub-pr-3020` 
+- **Branch:** `copilot/sub-pr-3020`
 - **Base:** `0D_base_`
 - **Commits:** 115 total (114 prior + 1 new link validator fix)
 - **Recent Fix:** Link validator now skips code blocks (commit 7feb750)

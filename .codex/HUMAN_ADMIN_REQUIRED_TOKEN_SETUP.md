@@ -301,7 +301,7 @@ gh run list --limit 5
 
 ### Issue 1: "Secret not found" in workflow
 **Cause:** Secret name mismatch or incorrect scope
-**Solution:** 
+**Solution:**
 ```bash
 # List all secrets
 gh secret list --repo Aries-Serpent/_codex_

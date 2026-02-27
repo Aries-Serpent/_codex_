@@ -49,7 +49,7 @@ jobs:
       - name: Check links in documentation
         run: |
           echo "🔍 Checking links in documentation files..."
-          
+
           # Find all markdown files
           find . -name "*.md" \
             -not -path "./node_modules/*" \
@@ -64,7 +64,7 @@ jobs:
       - name: Check critical documentation files
         run: |
           echo "🔍 Checking critical Genesis documentation..."
-          
+
           CRITICAL_FILES=(
             "docs/admin/GENESIS_SETUP_GUIDE.md"
             "docs/agent/OPERATIONAL_GUIDELINES.md"
@@ -72,7 +72,7 @@ jobs:
             "README.md"
             ".codex/guardrails.md"
           )
-          
+
           FAILED=0
           for file in "${CRITICAL_FILES[@]}"; do
             if [ -f "$file" ]; then
@@ -87,7 +87,7 @@ jobs:
               echo "⚠️  $file not found"
             fi
           done
-          
+
           if [ $FAILED -gt 0 ]; then
             echo "❌ $FAILED critical file(s) have broken links"
             exit 1

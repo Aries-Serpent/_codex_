@@ -87,7 +87,7 @@ Successfully completed **Priority 0 (CodeQL security fixes)** and **Priority 1 (
   - Parse secrets from YAML configuration
   - Subprocess CLI calls with error handling
   - Audit trail logging
-  
+
 - [ ] **Task 7**: Create Secrets Injection Workflow
   - `.github/workflows/automated-secrets-injection.yml`
   - Workflow_dispatch and schedule triggers

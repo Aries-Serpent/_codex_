@@ -125,19 +125,19 @@ class ZendeskVoiceLinesClient:
     def __init__(self, config):
         self.session = requests.Session()
         self.session.headers.update(config.get_auth_header())
-    
+
     def _handle_rate_limit(self, response):
         # Extract rate limit headers
         # Raise exception on 429 status
         pass
-    
+
     def get_voice_lines(self, page, per_page):
         # Construct URL with parameters
         # Make GET request
         # Handle rate limiting
         # Return JSON response
         pass
-    
+
     def get_all_pages(self, progress_callback):
         # Loop until next_page is null
         # Call progress callback
@@ -215,7 +215,7 @@ def _export_csv(self):
     all_lines = []
     for page in self.pages:
         all_lines.extend(page.get("lines", []))
-    
+
     # Write to CSV
     writer = csv.DictWriter(f, fieldnames=sorted(all_keys))
     writer.writeheader()
@@ -229,7 +229,7 @@ def _export_excel(self):
     all_lines = []
     for page in self.pages:
         all_lines.extend(page.get("lines", []))
-    
+
     # Use pandas for Excel
     df = pd.DataFrame(all_lines)
     df.to_excel(filename, index=False, engine="openpyxl")
@@ -284,11 +284,11 @@ Zendesk supports both, but:
 while True:
     data = self.get_voice_lines(page=page, per_page=per_page)
     pages.append(data)
-    
+
     next_page = data.get("next_page")
     if next_page is None:
         break
-    
+
     page += 1
     time.sleep(0.1)  # Rate limit respect
 ```
@@ -775,7 +775,7 @@ class ZendeskVoiceLinesClient:
 ```python
 class ZendeskVoiceLinesGUI:
     def __init__(self, root: Tk)
-    
+
     # Private methods for GUI management
     def _create_menu(self)
     def _create_config_frame(self)
@@ -783,7 +783,7 @@ class ZendeskVoiceLinesGUI:
     def _create_preview_frame(self)
     def _create_navigation_frame(self)
     def _create_export_frame(self)
-    
+
     # Event handlers
     def _test_connection(self)
     def _get_voice_lines(self)

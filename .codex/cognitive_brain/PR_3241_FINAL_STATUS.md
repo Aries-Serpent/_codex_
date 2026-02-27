@@ -127,11 +127,11 @@ These 8 patterns are organized by:
 Pattern 1 (Device Init) ─────> Pattern 2 (Test Alignment)
                                       │
                                       ├──> Always update tests when changing init
-                                      
+
 Pattern 3 (Decomposition) ───> Pattern 4 (Templates) ───> Pattern 7 (Outputs)
          │                           │                          │
          └───> Parallel arch         └───> Safe deployment     └───> Metrics
-         
+
 Pattern 5 (Tiered Cache) ────> Pattern 6 (Multi-Layer) ───> Pattern 8 (Dep Hash)
          │                           │                          │
          └───> Base strategy         └───> Incremental gains   └───> Auto-invalidate

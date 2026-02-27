@@ -186,11 +186,11 @@ dvc==3.64.2         → dvc-http       → aiohttp-retry → aiohttp==3.13.3
 1. **Dismiss Dependabot Alerts** (Manual action required)
    - Navigate to: https://github.com/Aries-Serpent/_codex_/security/dependabot
    - Dismiss alerts #50-57 with reason: "Already fixed - using patched version 3.13.3"
-   
+
 2. **Verify Alert Closure** (Automated)
    - Wait for Dependabot's next scheduled scan
    - Alerts should auto-close when scan detects 3.13.3
-   
+
 3. **Monitor for Future Updates**
    - Continue using Dependabot for automated vulnerability scanning
    - Review security advisories when aiohttp 3.14.x or later is released

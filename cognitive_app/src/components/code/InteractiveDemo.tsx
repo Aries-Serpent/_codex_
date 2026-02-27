@@ -34,7 +34,7 @@ export function InteractiveDemo({ script, language, onExecute }: InteractiveDemo
   const [progress, setProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [editedScript, setEditedScript] = useState(script);
-  
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number>(0);
 
@@ -53,7 +53,7 @@ export function InteractiveDemo({ script, language, onExecute }: InteractiveDemo
   const simulateExecution = useCallback(async () => {
     const startTime = Date.now();
     startTimeRef.current = startTime;
-    
+
     setStatus('running');
     setOutput('');
     setErrorOutput('');

@@ -28,7 +28,7 @@ if condition:
     path_A()  # State |A⟩
 else:
     path_B()  # State |B⟩
-    
+
 # Cognitive analysis: |Ψ⟩ = α|A⟩ + β|B⟩
 # Check BOTH paths for errors BEFORE runtime
 ```
@@ -162,7 +162,7 @@ class IteratorAnalyzer(ast.NodeVisitor):
 def build_cfg(ast_tree):
     blocks = []
     current_block = BasicBlock()
-    
+
     for node in ast.walk(ast_tree):
         if isinstance(node, ast.If):
             # Branch point: create two edges
@@ -170,11 +170,11 @@ def build_cfg(ast_tree):
             else_block = BasicBlock()
             current_block.add_edge(then_block, condition=node.test)
             current_block.add_edge(else_block, condition=ast.UnaryOp(op=ast.Not(), operand=node.test))
-            
+
         elif isinstance(node, ast.Return):
             # Terminal node
             current_block.is_exit = True
-            
+
     return ControlFlowGraph(blocks)
 ```
 
@@ -193,24 +193,24 @@ def build_cfg(ast_tree):
 # Reaching Definitions Analysis
 def reaching_definitions(cfg):
     # For each variable, track where it was last assigned
-    
+
     worklis t = [cfg.entry]
     in_sets = {block: set() for block in cfg.blocks}
     out_sets = {block: set() for block in cfg.blocks}
-    
+
     while worklist:
         block = worklist.pop()
         old_out = out_sets[block].copy()
-        
+
         # IN[block] = Union of OUT[predecessor] for all predecessors
         in_sets[block] = set().union(*[out_sets[pred] for pred in block.predecessors])
-        
+
         # OUT[block] = GEN[block] ∪ (IN[block] - KILL[block])
         out_sets[block] = block.gen | (in_sets[block] - block.kill)
-        
+
         if out_sets[block] != old_out:
             worklist.extend(block.successors)
-    
+
     return in_sets, out_sets
 ```
 
@@ -231,22 +231,22 @@ class SymbolicExecutor:
     def __init__(self):
         self.constraints = []
         self.symbolic_vars = {}
-        
+
     def execute_path(self, cfg_path):
         for block in cfg_path:
             for stmt in block.statements:
                 if isinstance(stmt, ast.Assign):
                     # Track symbolic value
                     self.symbolic_vars[stmt.targets[0].id] = self.evaluate_symbolic(stmt.value)
-                    
+
                 elif isinstance(stmt, ast.If):
                     # Add path constraint
                     condition = self.evaluate_symbolic(stmt.test)
                     self.constraints.append(condition)
-                    
+
         # Check if path is feasible
         return self.is_satisfiable(self.constraints)
-    
+
     def is_satisfiable(self, constraints):
         # Use SMT solver (e.g., Z3)
         solver = z3.Solver()
@@ -270,21 +270,21 @@ class SymbolicExecutor:
 # Simple type inference
 def infer_types(ast_tree):
     type_env = {}
-    
+
     for node in ast.walk(ast_tree):
         if isinstance(node, ast.Num):
             type_env[node] = int if isinstance(node.n, int) else float
-            
+
         elif isinstance(node, ast.BinOp):
             left_type = type_env.get(node.left)
             right_type = type_env.get(node.right)
-            
+
             if left_type == int and right_type == int:
                 if isinstance(node.op, ast.Div):
                     type_env[node] = float  # Division returns float
                 else:
                     type_env[node] = int
-                    
+
     return type_env
 ```
 
@@ -323,7 +323,7 @@ def infer_types(ast_tree):
        UninitializedVarPattern(),
        ModuleAttributePattern(),  # '__getattr__' conflicts
    ]
-   
+
    for pattern in patterns:
        matches = pattern.find_in_cfg(cfg)
        if matches:
@@ -334,7 +334,7 @@ def infer_types(ast_tree):
    ```python
    live_vars = compute_live_variables(cfg)
    reaching_defs = compute_reaching_definitions(cfg)
-   
+
    # Check for use-before-def
    for block in cfg.blocks:
        for use in block.variable_uses:
@@ -352,11 +352,11 @@ def infer_types(ast_tree):
    ```python
    sym_exec = SymbolicExecutor()
    paths = sym_exec.enumerate_paths(function_cfg, max_paths=100)
-   
+
    for path in paths:
        if not path.is_feasible():
            continue  # Skip infeasible paths
-           
+
        # Check for errors on this path
        if path.has_unhandled_exception():
            report_error(path.get_exception_info())
@@ -377,21 +377,21 @@ def infer_types(ast_tree):
 1. **Formulate as SMT problem**
    ```python
    import z3
-   
+
    # Example: Prove iterator has enough elements
    iterator_length = z3.Int('iterator_length')
    calls_to_next = z3.Int('calls_to_next')
-   
+
    constraints = [
        iterator_length >= 0,
        calls_to_next >= 0,
        calls_to_next > iterator_length,  # More calls than elements
    ]
-   
+
    solver = z3.Solver()
    for c in constraints:
        solver.add(c)
-       
+
    if solver.check() == z3.sat:
        model = solver.model()
        print(f"StopIteration will occur: iterator has {model[iterator_length]} elements but {model[calls_to_next]} calls to next()")
@@ -404,11 +404,11 @@ def infer_types(ast_tree):
        z3.Or(calls_to_next <= iterator_length,  # Within bounds
              z3.Exists([default_val], True))      # Or has default
    ]
-   
+
    solver2 = z3.Solver()
    for c in fixed_constraints:
        solver2.add(c)
-       
+
    assert solver2.check() == z3.unsat  # Prove no StopIteration possible
    ```
 
@@ -427,28 +427,28 @@ class CognitiveCodeAnalyzer:
     def __init__(self):
         self.knowledge_base = PatternKnowledgeBase()
         self.confidence_threshold = 0.8
-        
+
     def analyze(self, codebase, max_iterations=5):
         errors_found = []
-        
+
         for iteration in range(max_iterations):
             # Quantum superposition: Analyze all possible error modes
             candidates = self.scan_for_patterns(codebase)
-            
+
             # Wave function collapse: Rank by confidence
             ranked = self.rank_by_confidence(candidates)
-            
+
             # Observer effect: High-confidence findings update knowledge base
             for error in ranked:
                 if error.confidence > self.confidence_threshold:
                     errors_found.append(error)
                     self.knowledge_base.learn_from(error)
-                    
+
             # Entanglement: Check coupled modules
             for error in errors_found:
                 coupled_errors = self.find_entangled_errors(error)
                 errors_found.extend(coupled_errors)
-                
+
         return errors_found
 ```
 
@@ -464,7 +464,7 @@ class CognitiveCodeAnalyzer:
    ```python
    # Search for: next() calls without default or try/except
    pattern = r"next\([^,]+\)"  # Regex: next with single arg
-   
+
    matches = grep_codebase(pattern)
    # Found in: src/codex_ml/interpretability/*.py
    ```
@@ -484,7 +484,7 @@ class CognitiveCodeAnalyzer:
    ```python
    # Check if iterator could be exhausted before next() call
    cfg = build_cfg(function_containing_next)
-   
+
    for path in cfg.paths_to(next_call_node):
        iter_ops = path.count_iterator_operations()
        if iter_ops.advances > iter_ops.elements:
@@ -495,10 +495,10 @@ class CognitiveCodeAnalyzer:
    ```python
    # Before (risky):
    value = next(iterator)
-   
+
    # After (safe):
    value = next(iterator, default_value)
-   
+
    # Or:
    try:
        value = next(iterator)
@@ -514,7 +514,7 @@ class CognitiveCodeAnalyzer:
    ```python
    # Error signature: "'module' object at codex_ml.X has no attribute 'X'"
    # This is pytest collection phase error, not runtime
-   
+
    # Hypothesis: Lazy __getattr__ conflicts with pytest introspection
    ```
 
@@ -522,12 +522,12 @@ class CognitiveCodeAnalyzer:
    ```python
    # Inspect src/codex_ml/interfaces/__init__.py
    tree = ast.parse(read_file("src/codex_ml/interfaces/__init__.py"))
-   
+
    has_getattr = any(
        isinstance(node, ast.FunctionDef) and node.name == '__getattr__'
        for node in ast.walk(tree)
    )
-   
+
    if has_getattr:
        print("Confirmed: Lazy loading via __getattr__ present")
    ```
@@ -537,21 +537,21 @@ class CognitiveCodeAnalyzer:
    # When pytest calls: import codex_ml.interfaces
    # Python calls: codex_ml.interfaces.__getattr__('interfaces')
    # If __getattr__ raises AttributeError → pytest sees module without attribute
-   
+
    # Solution paths (superposition):
    # Path A: Add explicit imports (collapse lazy loading)
    # Path B: Add TYPE_CHECKING guard
    # Path C: Add conftest.py to pre-import modules
-   
+
    # Select path with minimal entropy (least change): Path B
    ```
 
 4. **Proposed Fix:**
    ```python
    # In src/codex_ml/interfaces/__init__.py
-   
+
    from typing import TYPE_CHECKING
-   
+
    if TYPE_CHECKING:
        # Explicit imports for static analysis/pytest
        from .tokenizer import Tokenizer
@@ -570,7 +570,7 @@ class CognitiveCodeAnalyzer:
    ```python
    # Search: getattr(faiss, "__version__")
    matches = grep("faiss.__version__")
-   
+
    # Found: src/codex/retrieval/stores/faiss_store.py:72
    ```
 
@@ -580,7 +580,7 @@ class CognitiveCodeAnalyzer:
    # Type A: Real faiss module (has __version__)
    # Type B: Mock/SimpleNamespace (no __version__)
    # Type C: MagicMock (has __version__ as Mock object)
-   
+
    # Robust access: getattr(faiss, "__version__", "unknown")
    ```
 
@@ -588,7 +588,7 @@ class CognitiveCodeAnalyzer:
    ```python
    # Before:
    logger.info(f"FAISS version: {faiss.__version__}")  # Fails on Type B
-   
+
    # After:
    version = getattr(faiss, "__version__", "unknown")
    logger.info(f"FAISS version: {version}")  # Works for all types
@@ -675,15 +675,15 @@ You are a module coupling analysis agent.
 ```python
 class CognitiveBrainState:
     """Quantum-inspired state machine for code analysis."""
-    
+
     STATES = ['SUPERPOSITION', 'OBSERVATION', 'COLLAPSE', 'VERIFICATION', 'LEARNING']
-    
+
     def __init__(self):
         self.state = 'SUPERPOSITION'
         self.hypotheses = []
         self.confidence = {}
         self.knowledge_base = KnowledgeGraph()
-        
+
     def superposition_phase(self, codebase):
         """Enumerate ALL possible error modes simultaneously."""
         self.hypotheses = [
@@ -693,52 +693,52 @@ class CognitiveBrainState:
             ImportErrorHypothesis(),
             # ... 50+ hypothesis types
         ]
-        
+
         for hyp in self.hypotheses:
             hyp.scan(codebase)
-            
+
         self.state = 'OBSERVATION'
-        
+
     def observation_phase(self):
         """Measure (analyze) each hypothesis - observer effect applies."""
         for hyp in self.hypotheses:
             evidence = hyp.collect_evidence()
             self.confidence[hyp] = hyp.compute_confidence(evidence)
-            
+
         self.state = 'COLLAPSE'
-        
+
     def collapse_phase(self):
         """Wave function collapse - select most likely errors."""
         ranked = sorted(self.hypotheses, key=lambda h: self.confidence[h], reverse=True)
-        
+
         # Keep top 20% (Pareto principle)
         threshold = 0.7
         self.confirmed_errors = [h for h in ranked if self.confidence[h] > threshold]
-        
+
         self.state = 'VERIFICATION'
-        
+
     def verification_phase(self):
         """Verify each error through multiple methods (entanglement check)."""
         verified = []
-        
+
         for error in self.confirmed_errors:
             # Multi-method verification
             static_check = error.verify_static()
             symbolic_check = error.verify_symbolic()
             coupling_check = error.verify_entanglement()
-            
+
             if static_check and (symbolic_check or coupling_check):
                 verified.append(error)
-                
+
         self.confirmed_errors = verified
         self.state = 'LEARNING'
-        
+
     def learning_phase(self):
         """Observer effect - update knowledge base from findings."""
         for error in self.confirmed_errors:
             pattern = error.extract_pattern()
             self.knowledge_base.add_pattern(pattern)
-            
+
         # Next iteration will be smarter
         self.state = 'SUPERPOSITION'  # Ready for next round
 ```
@@ -753,22 +753,22 @@ def select_optimal_fix(error, possible_fixes):
     - Maximize test coverage (wave function spread)
     - Preserve coupling (entanglement integrity)
     """
-    
+
     scores = {}
-    
+
     for fix in possible_fixes:
         # Metric 1: Lines of code changed (minimize)
         loc_change = fix.count_changed_lines()
-        
+
         # Metric 2: Test coverage impact (maximize)
         coverage_gain = fix.estimate_coverage_improvement()
-        
+
         # Metric 3: Coupling impact (minimize)
         coupling_change = fix.compute_coupling_delta()
-        
+
         # Metric 4: Risk (minimize)
         risk = fix.estimate_risk()
-        
+
         # Composite score (weighted)
         scores[fix] = (
             0.3 * (1 / loc_change) +        # Prefer smaller changes
@@ -776,7 +776,7 @@ def select_optimal_fix(error, possible_fixes):
             0.2 * (1 / coupling_change) +    # Prefer low coupling impact
             0.2 * (1 / risk)                 # Prefer low risk
         )
-        
+
     # Deterministic selection: highest score
     return max(possible_fixes, key=lambda f: scores[f])
 ```
@@ -812,40 +812,40 @@ def select_optimal_fix(error, possible_fixes):
 ```python
 def validate_cognitive_analysis(test_suite):
     """Validate methodology against known bugs."""
-    
+
     results = {
         'true_positives': 0,
         'false_positives': 0,
         'false_negatives': 0,
         'fix_success': 0,
     }
-    
+
     for test_case in test_suite:
         # Run cognitive analysis
         predictions = CognitiveBrainState().analyze(test_case.code)
-        
+
         # Compare with ground truth
         for pred in predictions:
             if pred.error_type in test_case.actual_errors:
                 results['true_positives'] += 1
             else:
                 results['false_positives'] += 1
-                
+
         # Check for missed errors
         for actual in test_case.actual_errors:
             if actual not in [p.error_type for p in predictions]:
                 results['false_negatives'] += 1
-                
+
         # Validate proposed fixes
         for fix in predictions:
             if verify_fix_correct(fix, test_case):
                 results['fix_success'] += 1
-                
+
     # Compute metrics
     precision = results['true_positives'] / (results['true_positives'] + results['false_positives'])
     recall = results['true_positives'] / (results['true_positives'] + results['false_negatives'])
     fix_rate = results['fix_success'] / len(predictions)
-    
+
     return precision, recall, fix_rate
 ```
 
@@ -868,28 +868,28 @@ on:
 jobs:
   cognitive-analysis:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Phase 1 - Superposition (Enumerate Hypotheses)
         run: python scripts/cognitive/superposition_scan.py
-        
+
       - name: Phase 2 - Observation (Collect Evidence)
         run: python scripts/cognitive/evidence_collector.py
-        
+
       - name: Phase 3 - Collapse (Rank Errors)
         run: python scripts/cognitive/rank_findings.py
-        
+
       - name: Phase 4 - Verification (Symbolic + SMT)
         run: python scripts/cognitive/verify_findings.py
-        
+
       - name: Phase 5 - Learning (Update Knowledge Base)
         run: python scripts/cognitive/update_kb.py
-        
+
       - name: Generate Report
         run: python scripts/cognitive/generate_report.py
-        
+
       - name: Upload Cognitive Analysis Results
         uses: actions/upload-artifact@v4
         with:

@@ -82,7 +82,7 @@ def tests(session: nox.Session) -> None:
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --cov=src
     --cov=training

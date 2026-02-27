@@ -118,8 +118,8 @@ export function ExecutionQueueMonitor({ executions }: ExecutionQueueMonitorProps
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-semibold">{execution.tokenName}</h4>
                         {getStatusIcon(execution.status)}
-                        <Badge 
-                          variant="outline" 
+                        <Badge
+                          variant="outline"
                           className={`text-xs ${
                             execution.status === 'running' ? 'border-accent text-accent' :
                             execution.status === 'completed' ? 'border-green-500 text-green-500' :
@@ -131,7 +131,7 @@ export function ExecutionQueueMonitor({ executions }: ExecutionQueueMonitorProps
                           {execution.status}
                         </Badge>
                       </div>
-                      
+
                       {execution.status === 'blocked' && execution.blockedBy && (
                         <div className="text-xs text-yellow-500 flex items-center gap-1">
                           <HourglassHigh weight="fill" className="w-3 h-3" />

@@ -51,7 +51,7 @@ conf/data/local.yaml       = configs/base/local.yaml
 configs/base/defaults.yaml = configs/defaults.yaml
 ```
 
-**Recommendation**: 
+**Recommendation**:
 - Keep both directories for backward compatibility
 - Add deprecation notices in conf/ files pointing to configs/
 - Use `scripts/remediation/consolidate_configs.py` when ready to migrate
@@ -71,7 +71,7 @@ configs/base/defaults.yaml = configs/defaults.yaml
 **Actions Taken**:
 1. ✅ Removed `tests/monitoring/test_mlflow_monitoring_utils.py`
    - Kept: `tests/monitoring/test_monitoring_mlflow_utils.py` (standard naming)
-   
+
 2. ✅ Removed `tests/modeling/conftest.py`
    - Kept: `tests/models/conftest.py` (standard directory name)
 
@@ -161,7 +161,7 @@ Option 2: Archive configs/safety/policy.yaml after verifying no external referen
 | `codebase_inventory.json` | 2.0MB | `workbench/` | ℹ️ Working file, consider compressing |
 | `pre-commit.log` | 1.1MB | `.codex/validation/20250910T135035Z/` | ℹ️ Validation artifact |
 
-**Recommendation**: 
+**Recommendation**:
 - Compress `codebase_inventory.json` if not actively used
 - Consider cleaning old validation logs periodically
 

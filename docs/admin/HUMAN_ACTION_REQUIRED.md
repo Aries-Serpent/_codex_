@@ -356,7 +356,7 @@ export ENCRYPTION_KEY=$(python -c "from codex.security.storage import generate_k
 
 ### 7.1 TODO Tracking System
 **Recommendation**: Implement systematic TODO tracking  
-**Action**: 
+**Action**:
 1. Create GitHub issue labels: `todo`, `fixme`, `action-required`
 2. Automate detection of TODO comments in PRs
 3. Require issue creation for all TODO comments

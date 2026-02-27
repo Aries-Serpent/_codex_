@@ -198,13 +198,13 @@ def detect(file_index: dict) -> dict:
     evidence_files = []
     found_patterns = []
     required_patterns = ["pattern1", "pattern2"]
-    
+
     # Your detection logic here
     for file in file_index["files"]:
         if matches_criteria(file):
             evidence_files.append(file["path"])
             found_patterns.append("pattern1")
-    
+
     return {
         "id": "new-capability",
         "evidence_files": evidence_files,

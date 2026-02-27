@@ -2,7 +2,7 @@
 
 # DependaBot Sheriff - Adapted for Aries-Serpent/_codex_
 # Consolidates Dependabot PRs into a single mergeable PR
-# 
+#
 # Based on: https://github.com/kiba-d/dependabot-sheriff
 # Adapted for: Aries-Serpent/_codex_ repository conventions
 
@@ -59,26 +59,26 @@ log_info() {
 
 check_prerequisites() {
     log "🔍 Checking prerequisites..."
-    
+
     # Check Git
     if ! command -v git &> /dev/null; then
         log_error "Git is not installed. Please install Git first."
         exit 1
     fi
-    
+
     # Check GitHub CLI
     if ! command -v gh &> /dev/null; then
         log_error "GitHub CLI (gh) is not installed. Please install it first."
         log_info "Install: brew install gh (macOS) or visit https://cli.github.com/"
         exit 1
     fi
-    
+
     # Check GitHub CLI authentication
     if ! gh auth status &> /dev/null; then
         log_error "GitHub CLI is not authenticated. Please run 'gh auth login'"
         exit 1
     fi
-    
+
     log_success "All prerequisites met"
 }
 
@@ -90,10 +90,10 @@ main() {
     log "🤠 DependaBot Sheriff starting..."
     log "📁 Working directory: $(pwd)"
     log "📝 Log file: $LOG_FILE"
-    
+
     # Check prerequisites
     check_prerequisites
-    
+
     # Check for uncommitted tracked changes (ignores untracked files)
     if [[ -n $(git status --porcelain | grep -E '^(M| M|A| D|D)') ]]; then
         log_error "Uncommitted tracked changes detected!"
@@ -101,26 +101,26 @@ main() {
         git status --short
         exit 1
     fi
-    
+
     # Switch to base branch and update
     log "🔄 Switching to $BASE_BRANCH branch and updating..."
     git checkout "$BASE_BRANCH"
     git pull origin "$BASE_BRANCH"
-    
+
     # Check if the branch already exists and delete it if present
     if git show-ref --verify --quiet refs/heads/"$BRANCH_NAME"; then
         log_warning "Branch $BRANCH_NAME already exists. Deleting it..."
         git branch -D "$BRANCH_NAME"
     fi
-    
+
     # Create a new branch
     log "🚀 Creating new branch: $BRANCH_NAME"
     git checkout -b "$BRANCH_NAME"
-    
+
     # Fetch PRs from Dependabot (app/dependabot or dependabot[bot])
     log "🔍 Searching for Dependabot PRs..."
     PR_NUMBERS=$(gh pr list --json number,author --jq '.[] | select(.author.login | test("dependabot"; "i")) | .number')
-    
+
     if [ -z "$PR_NUMBERS" ]; then
         log_warning "No Dependabot PRs found."
         log_info "Cleaning up and exiting..."
@@ -128,25 +128,25 @@ main() {
         git branch -D "$BRANCH_NAME" 2>/dev/null || true
         exit 0
     fi
-    
+
     log_info "Found Dependabot PRs: $PR_NUMBERS"
-    
+
     # Arrays to track PR processing
     declare -a MERGED_PRS
     declare -a SKIPPED_PRS
     declare -a FAILED_PRS
-    
+
     # Loop through each PR and check if checks have passed
     for PR in $PR_NUMBERS; do
         log "🔍 Checking PR #$PR status..."
-        
+
         # Get PR details
         PR_TITLE=$(gh pr view "$PR" --json title --jq '.title')
         log_info "PR #$PR: $PR_TITLE"
-        
+
         # Get the PR's status check rollup (CI/CD results)
         CHECK_STATUS=$(gh pr view "$PR" --json statusCheckRollup --jq '.statusCheckRollup[]?.conclusion' 2>/dev/null || echo "")
-        
+
         # Skip PRs with failed checks
         if echo "$CHECK_STATUS" | grep -q "FAILURE"; then
             log_warning "PR #$PR has failed checks. Skipping."
@@ -157,9 +157,9 @@ main() {
             SKIPPED_PRS+=("$PR (no checks)")
             continue
         fi
-        
+
         log_success "PR #$PR passed checks. Proceeding to merge."
-        
+
         # Fetch and merge the PR branch
         log "🔀 Fetching PR #$PR branch..."
         if git fetch origin pull/"$PR"/head:dependabot-pr-"$PR"; then
@@ -178,7 +178,7 @@ main() {
             FAILED_PRS+=("$PR (fetch failed)")
         fi
     done
-    
+
     # Check if any PRs were merged
     if [ ${#MERGED_PRS[@]} -eq 0 ]; then
         log_warning "No PRs were successfully merged."
@@ -187,11 +187,11 @@ main() {
         git branch -D "$BRANCH_NAME"
         exit 0
     fi
-    
+
     # Push the new merged branch
     log "🚀 Pushing branch $BRANCH_NAME to origin..."
     git push origin "$BRANCH_NAME"
-    
+
     # Create PR body with details
     PR_BODY="# 🤖 Consolidated Dependabot Updates - $DATE
 
@@ -247,14 +247,14 @@ Log file for this consolidation: \`$LOG_FILE\`
         --label "dependencies" \
         --label "dependabot" \
         2>&1 || echo "")
-    
+
     if [ -z "$PR_URL" ]; then
         log_error "Failed to create PR"
         exit 1
     fi
-    
+
     log_success "PR created: $PR_URL"
-    
+
     # Assign the PR to the designated reviewer
     log "👤 Assigning PR to @$ASSIGNEE..."
     if gh pr edit "$PR_URL" --add-assignee "$ASSIGNEE"; then
@@ -262,7 +262,7 @@ Log file for this consolidation: \`$LOG_FILE\`
     else
         log_warning "Failed to assign PR to @$ASSIGNEE"
     fi
-    
+
     # Print summary
     echo ""
     log "╔════════════════════════════════════════════════════════════════╗"
@@ -276,7 +276,7 @@ Log file for this consolidation: \`$LOG_FILE\`
     log_info "  • Consolidated PR: $PR_URL"
     log_info "  • Log file: $LOG_FILE"
     echo ""
-    
+
     # Create summary document
     SUMMARY_FILE="$LOG_DIR/dependabot_sheriff_summary_$DATE.md"
     cat > "$SUMMARY_FILE" << EOF

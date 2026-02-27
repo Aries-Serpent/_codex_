@@ -246,14 +246,14 @@ def complex_function(arg1, arg2):
 def complex_function(arg1, arg2):
     """
     Perform complex operation on inputs.
-    
+
     Args:
         arg1: First input parameter
         arg2: Second input parameter
-        
+
     Returns:
         Computed result
-        
+
     Raises:
         ValueError: If inputs invalid
     """

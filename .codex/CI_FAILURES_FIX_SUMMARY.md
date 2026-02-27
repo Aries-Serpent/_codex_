@@ -233,7 +233,7 @@ test-suite.yml wasn't generating junit.xml:
     echo "**Python Version:** ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
     echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
     echo "" >> $GITHUB_STEP_SUMMARY
-    
+
     # Show test counts from JUnit XML if available
     if [ -f junit.xml ]; then
       tests=$(grep -o 'tests="[0-9]*"' junit.xml | head -1 | grep -o '[0-9]*' || echo "0")
@@ -242,7 +242,7 @@ test-suite.yml wasn't generating junit.xml:
       echo "**Tests:** $tests total, $failures failed, $errors errors" >> $GITHUB_STEP_SUMMARY
       echo "" >> $GITHUB_STEP_SUMMARY
     fi
-    
+
     echo "See attached artifacts for detailed coverage reports." >> $GITHUB_STEP_SUMMARY
 ```
 

@@ -108,8 +108,8 @@ def test_gpu_dockerfile_builds():
 @pytest.mark.slow
 def test_gpu_dockerfile_builds():
     result = subprocess.run(
-        ["docker", "build", ...], 
-        capture_output=True, 
+        ["docker", "build", ...],
+        capture_output=True,
         timeout=1800  # 30 minutes
     )
 ```

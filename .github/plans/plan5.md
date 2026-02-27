@@ -1,4 +1,4 @@
-# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 5 of 6 
+# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 5 of 6
 
 > **Continuation**: Phase 5: Python 3.12 Adoption Retrospective  
 > **Duration**: 60 minutes  
@@ -831,7 +831,7 @@ dashboard:
   time:
     from: "now-30d"
     to: "now"
-  
+
   panels:
     - title: "CI Duration (min)"
       type: "graph"
@@ -843,7 +843,7 @@ dashboard:
           color: "orange"
         - value: 10
           color: "red"
-    
+
     - title: "GitHub Actions Minutes per-iteration"
       type: "stat"
       targets:
@@ -855,17 +855,17 @@ dashboard:
           color: "orange"
         - value: 400
           color: "red"
-    
+
     - title: "Python Version Distribution"
       type: "pie"
       targets:
         - expr: "count(python_version{version='3.12.10'}) by (version)"
-    
+
     - title: "Test Execution Time (min)"
       type: "graph"
       targets:
         - expr: "avg(pytest_duration_seconds) / 60"
-    
+
     - title: "Coverage Percentage"
       type: "stat"
       targets:
@@ -890,7 +890,7 @@ alerts:
     annotations:
       summary: "CI duration above baseline (>10 min)"
       description: "Expected ~6 min, currently {{ $value }} min"
-  
+
   - name: "Python Version Mismatch"
     expr: "count(python_version{version!='3.12.10'}) > 0"
     for: "5m"
@@ -898,7 +898,7 @@ alerts:
     annotations:
       summary: "Non-3.12.10 Python version detected"
       description: "{{ $value }} instances using wrong Python version"
-  
+
   - name: "Coverage Drop"
     expr: "avg(codecov_coverage_percentage) < 80"
     for: "1h"

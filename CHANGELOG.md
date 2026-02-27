@@ -83,24 +83,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Issue: Accessed file size after deletion (always returned 0)
   - Fix: Capture `original_size` before `unlink()`
   - Impact: Prevented incorrect compression metrics and potential data loss
-  
+
 - **Argument Parsing Conflicts**: Fixed CLI flag handling in 2 files
   - Issue: Conflicting `default=True` with negative flags `--no-log-actions`
   - Fix: Use `parser.set_defaults()` pattern instead
   - Files: `compress_historical_files.py`, `restore_offloaded_files.py`
-  
+
 - **Error Handling**: Added category validation in `restore_offloaded_files.py`
   - Issue: Potential KeyError on invalid category
   - Fix: Use `.get()` with validation and graceful error message
-  
+
 - **Workflow File Pattern**: Include .yaml extension in `validate_workflow_links.py`
   - Issue: Only checked `.yml`, missed `.yaml` workflow files
   - Fix: Combined glob patterns: `list(glob('*.yml')) + list(glob('*.yaml'))`
-  
+
 - **API Compatibility**: Updated GitHub API auth in `validate_workflows.py`
   - Issue: Deprecated 'token' format
   - Fix: Changed to 'Bearer' format
-  
+
 - **Code Quality**: Multiple improvements
   - Added GITHUB_TOKEN missing warning to stderr
   - Made repository name configurable (CLI arg > env > default)
@@ -123,12 +123,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automated fix script: `scripts/remediation/fix_datetime_deprecation.py`
   - Handles both `datetime` and aliased `_dt.datetime` patterns
   - Automatically adds timezone imports where needed
-  
+
 - **Impact**:
   - ✅ 0 deprecation warnings remaining
   - ✅ Timezone-aware datetime handling throughout codebase
   - ✅ Python 3.12+ compatibility ensured
-  
+
 **Files Fixed**: 27 scripts including:
 - `scripts/aftermath/parse_session.py`
 - `scripts/codex_offline_audit.py`
@@ -146,12 +146,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automated fix script: `scripts/remediation/fix_future_imports.py`
   - Algorithm: AST-based parsing and reconstruction
   - Validation: All files validated with `ast.parse()`
-  
+
 - **Impact**:
   - ✅ 0 SyntaxErrors remaining
   - ✅ PEP 236 compliance
   - ✅ All scripts compile successfully
-  
+
 **Files Fixed**: 25 scripts including:
 - `scripts/archival/check_archival_compliance.py`
 - `scripts/archive/select_and_compress.py`
@@ -166,13 +166,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Success metrics tracking
   - Technical implementation details
   - Lessons learned and best practices
-  
+
 - **Custom Agent**: Created `code-scanning-remediation-agent.md`
   - Alert triage system
   - Pattern-based fix automation
   - Integration with existing agents
   - Activation commands and examples
-  
+
 - **Automation Scripts**: 2 production-ready tools
   - `scripts/remediation/fix_datetime_deprecation.py` (126 lines)
   - `scripts/remediation/fix_future_imports.py` (232 lines)

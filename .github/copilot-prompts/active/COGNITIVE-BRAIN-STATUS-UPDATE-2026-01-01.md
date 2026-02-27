@@ -29,7 +29,7 @@ graph TB
         PDA[PDA Loop Engine<br/>Unified Framework]
         AM[AfterMath Processor<br/>Learning & Metrics]
     end
-    
+
     subgraph "Pattern Recognition Layer"
         PR[Pattern Recognizer<br/>4 Base Matchers]
         SEC[SecurityPatternMatcher<br/>28 Patterns NEW]
@@ -38,23 +38,23 @@ graph TB
         RES[ResourcePatternMatcher<br/>PLANNED]
         API[APIPatternMatcher<br/>PLANNED]
     end
-    
+
     subgraph "Agent Ecosystem"
         CI[ci-testing-agent.v1<br/>PRODUCTION]
         FLAKY[flaky-triage-agent<br/>PHASE 3]
         SECAGENT[security-scan-agent<br/>PHASE 4]
         DEP[dep-upgrade-agent<br/>PHASE 4]
     end
-    
+
     PDA --> CB
     AM --> CB
     PR --> CB
     SEC --> CB
-    
+
     CI --> PDA
     FLAKY -.uses.-> SEC
     SECAGENT -.uses.-> SEC
-    
+
     style CB fill:#90EE90
     style PDA fill:#87CEEB
     style SEC fill:#FFD700
@@ -274,7 +274,7 @@ Immediate tasks:
 6. Implement APIPatternMatcher (deprecated APIs, breaking changes)
 7. Add pattern relationship tracking to CognitiveBrain
 
-Reference: 
+Reference:
 - .github/copilot-prompts/active/PHASE1-COMPLETE-NEXT-STEPS.md
 - .github/agents/core/security_patterns.py (completed example)
 

@@ -1,9 +1,9 @@
 /**
  * Quantum Agent Framework
- * 
+ *
  * Implements a controlled dynamical system that maps input prompts to outputs
  * conditioned on source sets, capability operators, and configuration states.
- * 
+ *
  * Based on quantum-inspired agent theory with Hilbert spaces and energy minimization.
  */
 
@@ -145,7 +145,7 @@ export interface EnergyWeights {
 
 /**
  * Quantum-inspired Agent
- * 
+ *
  * Implements controlled dynamical system with energy minimization:
  * θ* = argmin_θ∈Ω E(θ)
  */
@@ -160,7 +160,7 @@ export class QuantumAgent {
   ) {
     // Initialize with fast prior (Describe phase)
     this.config = this.initializeFromPrior(initialConfig);
-    
+
     // Set default energy weights
     this.energyWeights = {
       λ_hall: weights.λ_hall ?? 1.0,
@@ -201,30 +201,30 @@ export class QuantumAgent {
     constraints: Partial<SystemConstraints> = {}
   ): Promise<AgentConfigurationState> {
     const Ω = this.constructConstraintDomain(constraints);
-    
+
     let θ_current = this.config;
     let E_current = await this.computeEnergy(θ_current);
-    
+
     const maxIterations = 100;
     const tolerance = 1e-4;
-    
+
     for (let i = 0; i < maxIterations; i++) {
       // Gradient descent step
       const θ_candidate = await this.gradientStep(θ_current, Ω);
       const E_candidate = await this.computeEnergy(θ_candidate);
-      
+
       // Accept if energy decreased
       if (E_candidate.total < E_current.total) {
         θ_current = θ_candidate;
         E_current = E_candidate;
       }
-      
+
       // Check convergence
       if (Math.abs(E_current.total - E_candidate.total) < tolerance) {
         break;
       }
     }
-    
+
     this.config = θ_current;
     return θ_current;
   }
@@ -240,13 +240,13 @@ export class QuantumAgent {
     const L_fmt = await this.computeFormattingLoss(θ);
     const L_src = await this.computeSourceComplianceLoss(θ);
     const L_coh = await this.computeCoherenceLoss(θ);
-    
+
     // Weighted sum
     const hallucination = this.energyWeights.λ_hall * L_hall;
     const formatting = this.energyWeights.λ_fmt * L_fmt;
     const sourceCompliance = this.energyWeights.λ_src * L_src;
     const coherence = this.energyWeights.λ_coh * L_coh;
-    
+
     return {
       hallucination,
       formatting,
@@ -265,7 +265,7 @@ export class QuantumAgent {
   ): Promise<ResponseState> {
     // Add to history
     this.context.history.push(query);
-    
+
     // Apply capability operators in sequence
     let currentState: ResponseState = {
       content: '',
@@ -274,14 +274,14 @@ export class QuantumAgent {
       reasoning: [],
       metadata: {},
     };
-    
+
     for (const capability of this.config.θ_caps) {
       currentState = await capability.operator(query, this.context);
     }
-    
+
     // Apply softmax-like normalization to confidence
     currentState.confidence = this.normalizeConfidence(currentState.confidence);
-    
+
     return currentState;
   }
 
@@ -291,15 +291,15 @@ export class QuantumAgent {
    */
   public projectOntoSources(query: QueryState): SourceState[] {
     const relevantSources: SourceState[] = [];
-    
+
     for (const source of this.config.θ_sources) {
       const relevance = this.computeSourceRelevance(query, source);
-      
+
       if (relevance > 0.5) { // Threshold
         relevantSources.push(source);
       }
     }
-    
+
     return relevantSources;
   }
 

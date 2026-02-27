@@ -260,7 +260,7 @@ def check_suspicious_activity(audit_file: Path, threshold: int = 5):
             entry = json.loads(line)
             if entry["event"] == "AUTH_FAILURE":
                 failures += 1
-    
+
     if failures > threshold:
         print(f"⚠️  ALERT: {failures} authentication failures detected!")
         return True
@@ -360,7 +360,7 @@ from datetime import datetime, UTC
 
 def benchmark_write_latency(iterations=1000):
     bridge = BridgeManager(mode=BridgeMode.NAMED_PIPE, require_auth=False)
-    
+
     latencies = []
     for _ in range(iterations):
         message = ContextMessage(
@@ -369,17 +369,17 @@ def benchmark_write_latency(iterations=1000):
             message_type="test",
             context={"data": "test"}
         )
-        
+
         start = time.perf_counter()
         bridge.write_message(message)
         end = time.perf_counter()
-        
+
         latencies.append((end - start) * 1000)  # Convert to ms
-    
+
     print(f"Avg: {sum(latencies)/len(latencies):.2f}ms")
     print(f"P95: {sorted(latencies)[int(0.95 * len(latencies))]:.2f}ms")
     print(f"Max: {max(latencies):.2f}ms")
-    
+
     bridge.cleanup()
 ```
 

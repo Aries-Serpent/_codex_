@@ -49,7 +49,7 @@ pip install -e .
    ```bash
    # Install lightweight dependencies first
    pip install pytest pytest-cov pytest-timeout
-   
+
    # Install core packages one at a time with verification
    pip install "torch>=2.6.0,<3.0.0" && echo "✅ torch installed"
    pip install "transformers>=4.48.0,<5" && echo "✅ transformers installed"
@@ -84,17 +84,17 @@ pip install -e .
    git clone https://github.com/Aries-Serpent/_codex_.git
    cd _codex_
    git checkout copilot/add-repository-variables
-   
+
    # Create and activate virtual environment
    python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
-   
+
    # Install with progress indicators
    pip install -e . -v
-   
+
    # Verify key package versions
    pip list | grep -E "torch|transformers|mlflow"
-   
+
    # Expected output:
    # torch                2.6.0
    # transformers         4.48.0
@@ -105,10 +105,10 @@ pip install -e .
    ```bash
    # Run all tests (may take 10-30 minutes)
    pytest tests/ -v --tb=short
-   
+
    # Generate coverage report
    pytest tests/ --cov=. --cov-report=html
-   
+
    # Review coverage report in htmlcov/index.html
    ```
 
@@ -117,7 +117,7 @@ pip install -e .
    pip install -e ".[test]"
    pip install -e ".[ml]"
    pip install -e ".[train]"
-   
+
    # Verify no conflicts
    pip check
    ```

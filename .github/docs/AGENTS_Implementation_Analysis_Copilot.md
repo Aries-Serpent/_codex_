@@ -192,7 +192,7 @@
    ```python
    # Current (immediate crash if validation fails)
    env_manager = EnvironmentManager()  # Global instance
-   
+
    # Recommended (lazy validation)
    env_manager = EnvironmentManager(validate_on_init=False)
    # Then call env_manager.validate() in main()
@@ -202,7 +202,7 @@
    ```python
    # Current
    db_path = Path(self.get('CODEX_LOG_DB_PATH') or self.get('CODEX_DB_PATH'))
-   
+
    # Issue: CODEX_DB_PATH not in ENV_VARS dict
    # Fix: Add to ENV_VARS or remove fallback
    ```
@@ -231,7 +231,7 @@
    ```python
    # Current: Single file per-iteration (can grow large)
    error_log = self.log_dir / f"errors_{datetime.now().strftime('%Y%m%d')}.log"
-   
+
    # Recommended: Add RotatingFileHandler
    from logging.handlers import RotatingFileHandler
    handler = RotatingFileHandler(
@@ -269,7 +269,7 @@
    def init_db():
        """Initialize SQLite database with schema."""
        from codex_ml.logging.db_manager import DBManager
-       
+
        db = DBManager()
        db.init_schema()
        click.echo("✅ Database initialized at .codex/session_logs.db")
@@ -285,10 +285,10 @@
    def list_sessions(limit: int):
        """List recent sessions."""
        from codex_ml.logging.db_manager import DBManager
-       
+
        db = DBManager()
        sessions = db.get_recent_sessions(limit=limit)
-       
+
        for session in sessions:
            click.echo(f"{session['session_id']} - {session['created_at']}")
    ```
@@ -341,51 +341,51 @@ from codex_ml.config.env_vars import env_manager
 class DBManager:
     """
     Manage SQLite database for session logs.
-    
+
     Usage:
         db = DBManager()
         db.init_schema()  # First run
-        
+
         with db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM sessions")
     """
-    
+
     def __init__(self, db_path: Optional[Path] = None):
         """
         Initialize database manager.
-        
+
         Args:
             db_path: Path to database file (default: from env_manager)
         """
         self.db_path = db_path or env_manager.get_db_path()
         self.pool_enabled = env_manager.is_sqlite_pool_enabled()
-        
+
         # Connection pool (if enabled)
         self._pool: List[sqlite3.Connection] = []
         self._pool_size = 5
-    
+
     def init_schema(self) -> None:
         """Initialize database schema from .codex/schema.sql."""
         schema_path = Path(__file__).parent.parent.parent / '.codex' / 'schema.sql'
-        
+
         if not schema_path.exists():
             raise FileNotFoundError(f"Schema file not found: {schema_path}")
-        
+
         schema_sql = schema_path.read_text()
-        
+
         with self.connection() as conn:
             conn.executescript(schema_sql)
             conn.commit()
-    
+
     @contextmanager
     def connection(self):
         """
         Context manager for database connections.
-        
+
         Yields:
             sqlite3.Connection
-        
+
         Example:
             with db.connection() as conn:
                 cursor = conn.cursor()
@@ -398,7 +398,7 @@ class DBManager:
             # Create new connection
             conn = sqlite3.connect(self.db_path)
             conn.row_factory = sqlite3.Row  # Enable dict-like access
-        
+
         try:
             yield conn
         finally:
@@ -407,14 +407,14 @@ class DBManager:
                 self._pool.append(conn)
             else:
                 conn.close()
-    
+
     def get_recent_sessions(self, limit: int = 10) -> List[Dict[str, Any]]:
         """
         Get recent sessions.
-        
+
         Args:
             limit: Number of sessions to return
-        
+
         Returns:
             List of session dicts
         """
@@ -425,17 +425,17 @@ class DBManager:
                 (limit,)
             )
             return [dict(row) for row in cursor.fetchall()]
-    
+
     def create_session(self, session_id: str, metadata: Optional[Dict[str, Any]] = None) -> None:
         """
         Create a new session.
-        
+
         Args:
             session_id: Session identifier
             metadata: Optional metadata (JSON)
         """
         import json
-        
+
         with self.connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -443,7 +443,7 @@ class DBManager:
                 (session_id, json.dumps(metadata) if metadata else None)
             )
             conn.commit()
-    
+
     def log_message(
         self,
         session_id: str,
@@ -453,7 +453,7 @@ class DBManager:
     ) -> None:
         """
         Log a message to the database.
-        
+
         Args:
             session_id: Session identifier
             role: Message role (system, user, assistant, tool)
@@ -461,36 +461,36 @@ class DBManager:
             metadata: Optional metadata (JSON)
         """
         import json
-        
+
         with self.connection() as conn:
             cursor = conn.cursor()
-            
+
             # Ensure session exists
             cursor.execute("SELECT 1 FROM sessions WHERE session_id = ?", (session_id,))
             if not cursor.fetchone():
                 self.create_session(session_id)
-            
+
             # Insert log
             cursor.execute(
                 "INSERT INTO logs (session_id, role, message, metadata) VALUES (?, ?, ?, ?)",
                 (session_id, role, message, json.dumps(metadata) if metadata else None)
             )
             conn.commit()
-    
+
     def search_logs(self, query: str, role: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Search logs using FTS5.
-        
+
         Args:
             query: Search query
             role: Optional role filter
-        
+
         Returns:
             List of matching log dicts
         """
         with self.connection() as conn:
             cursor = conn.cursor()
-            
+
             if role:
                 cursor.execute(
                     """
@@ -511,7 +511,7 @@ class DBManager:
                     """,
                     (query,)
                 )
-            
+
             return [dict(row) for row in cursor.fetchall()]
 ```text
 
@@ -541,13 +541,13 @@ class DBManager:
   class SessionLogger:
       def __init__(self, session_id: Optional[str] = None):
           self.db = DBManager()
-          
+
           # Auto-init if schema missing
           try:
               self.db.get_recent_sessions(limit=1)
           except sqlite3.OperationalError:
               self.db.init_schema()
-          
+
           self.session_id = session_id or env_manager.get_session_id()
   ```
 
@@ -565,13 +565,13 @@ class DBManager:
        """Test database schema creation."""
        db = DBManager(db_path=tmp_path / 'test.db')
        db.init_schema()
-       
+
        # Verify tables exist
        with db.connection() as conn:
            cursor = conn.cursor()
            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
            tables = {row['name'] for row in cursor.fetchall()}
-       
+
        assert 'sessions' in tables
        assert 'logs' in tables
        assert 'logs_fts' in tables
@@ -582,17 +582,17 @@ class DBManager:
    def test_connection_pooling(tmp_path, monkeypatch):
        """Test SQLite connection pooling."""
        monkeypatch.setenv('CODEX_SQLITE_POOL', '1')
-       
+
        db = DBManager(db_path=tmp_path / 'test.db')
        db.init_schema()
-       
+
        # Get connections
        with db.connection() as conn1:
            id1 = id(conn1)
-       
+
        with db.connection() as conn2:
            id2 = id(conn2)
-       
+
        # Should reuse connection
        assert id1 == id2
    ```
@@ -602,22 +602,22 @@ class DBManager:
    def test_cli_session_lifecycle(tmp_path):
        """Test full CLI workflow: log → view → query."""
        from click.testing import CliRunner
-       
+
        runner = CliRunner()
-       
+
        # Initialize DB
        result = runner.invoke(init_db)
        assert result.exit_code == 0
-       
+
        # Log message
        result = runner.invoke(session_logger, ['--role=user', '--message=Test'])
        assert result.exit_code == 0
-       
+
        # View logs
        result = runner.invoke(viewer, ['--format=json'])
        assert result.exit_code == 0
        assert 'Test' in result.output
-       
+
        # Query logs
        result = runner.invoke(query_logs, ['--search=Test'])
        assert result.exit_code == 0
@@ -714,7 +714,7 @@ handler = RotatingFileHandler(
 # In DBManager.__init__
 def __init__(self, ...):
     ...
-    
+
     # Auto-init on first connection
     if not self.db_path.exists():
         self.init_schema()
@@ -731,7 +731,7 @@ def __init__(self, ...):
 # In EnvironmentManager.__init__
 def __init__(self, validate_on_init: bool = False):
     self._session_id = None
-    
+
     if validate_on_init:
         self._validate_environment()
 ```text
@@ -943,7 +943,7 @@ bash .github/prompts/final_validation.sh
 
 **Timeline**:
 - Phase 1: **3-4 hours** (Copilot)
-- Review: **1 hour** 
+- Review: **1 hour**
 - Merge: **Same day** (if Phase 1 complete)
 
 ---

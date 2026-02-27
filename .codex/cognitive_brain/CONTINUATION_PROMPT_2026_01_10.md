@@ -114,11 +114,11 @@
    - **RAG Testing Patterns**: Document test patterns for RAG modules
      - Location: `.codex/cognitive_brain/testing_patterns/rag_module_testing.md`
      - Include: LRU cache testing, multi-tenant testing, error path strategies
-   
+
    - **Coverage Achievement Strategy**: Document how coverage was improved
      - Location: `.codex/cognitive_brain/strategies/coverage_improvement.md`
      - Include: Analysis approach, agent delegation, iterative refinement
-   
+
    - **Custom Agent Usage Patterns**: Document effective agent delegation
      - Location: `.codex/cognitive_brain/patterns/agent_delegation_patterns.md`
      - Include: When to use ci-testing-agent, how to verify results

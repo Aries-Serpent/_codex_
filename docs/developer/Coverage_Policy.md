@@ -1,6 +1,6 @@
 # [Doc]: Coverage Policy and Canonical Test Session
 > Generated: 2025-10-14 20:23:38 UTC | Author: mbaetiong  
-Energy: 5/5 
+Energy: 5/5
 
 ## Canonical Path
 - Canonical session: `nox -s coverage` (branch coverage, HTML/XML artifacts).

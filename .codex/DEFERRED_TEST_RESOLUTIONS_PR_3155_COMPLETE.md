@@ -245,7 +245,7 @@ This document provides comprehensive, iteration-based implementation plans for 4
        """Create archive with proper error handling."""
        if not os.path.exists(data_path):
            raise ValueError(f"Data path does not exist: {data_path}")
-       
+
        try:
            archive_path = self._create_archive_internal(data_path)
            if archive_path is None or not os.path.exists(archive_path):
@@ -366,30 +366,30 @@ This document provides comprehensive, iteration-based implementation plans for 4
        if debug:
            print(f"Reference: {reference}")
            print(f"Hypothesis: {hypothesis}")
-       
+
        # Tokenization
        ref_tokens = tokenize(reference)
        hyp_tokens = tokenize(hypothesis)
        if debug:
            print(f"Ref tokens: {ref_tokens}")
            print(f"Hyp tokens: {hyp_tokens}")
-       
+
        # N-gram precision
        for n in range(1, 5):
            precision = calculate_precision(ref_tokens, hyp_tokens, n)
            if debug:
                print(f"{n}-gram precision: {precision}")
-       
+
        # Brevity penalty
        bp = calculate_brevity_penalty(ref_tokens, hyp_tokens)
        if debug:
            print(f"Brevity penalty: {bp}")
-       
+
        # Final score
        score = calculate_final_score(precisions, bp)
        if debug:
            print(f"Final BLEU: {score}")
-       
+
        return score
    ```
 
@@ -425,19 +425,19 @@ This document provides comprehensive, iteration-based implementation plans for 4
        """Calculate n-gram precision with proper handling."""
        if len(hyp_tokens) < n:
            return 0.0  # Not enough tokens for n-gram
-       
+
        ref_ngrams = get_ngrams(ref_tokens, n)
        hyp_ngrams = get_ngrams(hyp_tokens, n)
-       
+
        # Count matches
-       matches = sum(min(ref_ngrams[ng], hyp_ngrams[ng]) 
+       matches = sum(min(ref_ngrams[ng], hyp_ngrams[ng])
                      for ng in hyp_ngrams)
        total = len(hyp_tokens) - n + 1  # Total n-grams in hypothesis
-       
+
        # Avoid division by zero
        if total == 0:
            return 0.0
-       
+
        return matches / total
    ```
 
@@ -493,14 +493,14 @@ This document provides comprehensive, iteration-based implementation plans for 4
    ```python
    def calculate_bleu(reference, hypothesis):
        """Calculate BLEU score between reference and hypothesis.
-       
+
        Args:
            reference: Reference translation (string or tokens)
            hypothesis: Hypothesis translation (string or tokens)
-       
+
        Returns:
            float: BLEU score between 0 and 1
-       
+
        Note:
            Uses modified precision with brevity penalty as per
            Papineni et al. (2002). Calculates 1-4 gram precision.
@@ -554,15 +554,15 @@ This document provides comprehensive, iteration-based implementation plans for 4
    ```python
    import cProfile
    import pstats
-   
+
    profiler = cProfile.Profile()
    profiler.enable()
-   
+
    # Run dict lookup operations
    test_dict = {f"key_{i}": f"value_{i}" for i in range(10000)}
    for i in range(100000):
        _ = test_dict.get(f"key_{i % 10000}")
-   
+
    profiler.disable()
    stats = pstats.Stats(profiler)
    stats.sort_stats('cumulative')
@@ -642,11 +642,11 @@ This document provides comprehensive, iteration-based implementation plans for 4
        """Test dictionary lookup performance."""
        # Setup
        test_dict = {f"key_{i}": i for i in range(10000)}
-       
+
        # Warm up
        for i in range(1000):
            _ = test_dict[f"key_{i % 10000}"]
-       
+
        # Measure
        import time
        start = time.perf_counter()
@@ -654,10 +654,10 @@ This document provides comprehensive, iteration-based implementation plans for 4
        for i in range(iterations):
            _ = test_dict[f"key_{i % 10000}"]
        elapsed = time.perf_counter() - start
-       
+
        ops_per_sec = iterations / elapsed
        baseline = 5000000  # 5M ops/sec baseline
-       
+
        assert ops_per_sec >= baseline, \
            f"Dict lookup performance {ops_per_sec:.0f} ops/sec below baseline {baseline}"
    ```

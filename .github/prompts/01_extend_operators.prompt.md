@@ -42,15 +42,15 @@ from ..orchestrator import PhysicsConstants, OrchestratorState, TaskState
 class KleinGordonOperator:
     """
     Klein-Gordon equation operator.
-    
+
     Provides second-order time dynamics (acceleration).
     """
-    
+
     def __init__(self, constants: PhysicsConstants):
         self.constants = constants
         self.c = constants.c
         self.hbar = constants.hbar
-    
+
     def second_time_derivative(
         self,
         current_state: OrchestratorState,
@@ -61,23 +61,23 @@ class KleinGordonOperator:
     ) -> complex:
         """
         Compute ∂²ψ/∂t² using finite differences.
-        
+
         ∂²ψ/∂t² ≈ (ψ(t) - 2ψ(t-dt) + ψ(t-2dt)) / dt²
         """
         if task_id not in previous_state.tasks or task_id not in older_state.tasks:
             return 0.0 + 0j
-        
+
         psi_current = current_state.tasks[task_id].spinor.psi_1
         psi_prev = previous_state.tasks[task_id].spinor.psi_1
         psi_older = older_state.tasks[task_id].spinor.psi_1
-        
+
         d2psi_dt2 = (psi_current - 2*psi_prev + psi_older) / (dt**2)
         return d2psi_dt2
-    
+
     def apply(self, state: OrchestratorState, task_id: str) -> complex:
         """
         Apply Klein-Gordon operator to get ∂²ψ/∂t².
-        
+
         From: -ℏ²∂²ψ/∂t² = (-ℏ²c²∇² + m²c⁴)ψ
         We get: ∂²ψ/∂t² = (c²∇² - (mc²/ℏ)²)ψ
         """
@@ -86,14 +86,14 @@ class KleinGordonOperator:
         hbar = self.hbar
         m = task.rest_mass
         psi = task.spinor.psi_1
-        
+
         # Simplified Laplacian (would need proper implementation)
         laplacian = 0.0 + 0j  # Placeholder
-        
+
         # Klein-Gordon: ∂²ψ/∂t² = c²∇²ψ - (mc²/ℏ)²ψ
         mass_term = (m * c * c / hbar) ** 2
         d2psi_dt2 = c*c * laplacian - mass_term * psi
-        
+
         return d2psi_dt2
 ```
 
@@ -123,12 +123,12 @@ def test_second_time_derivative():
     """Test second time derivative calculation."""
     const = PhysicsConstants()
     kg = KleinGordonOperator(const)
-    
+
     # Create three states
     state1 = OrchestratorState(constants=const)
     state2 = OrchestratorState(constants=const)
     state3 = OrchestratorState(constants=const)
-    
+
     # Would need proper test implementation
     pass
 ```

@@ -134,7 +134,7 @@ graph TD
     C --> D[AFTERMATH: reporter.py<br/>Track outcomes]
     D -.->|Pattern Learning| E[Cognitive Brain]
     E -.->|Historical Release Data| B
-    
+
     subgraph "Validation Checks"
         A1[CI/CD Status]
         A2[Test Coverage]
@@ -143,7 +143,7 @@ graph TD
         A5[Breaking Changes]
         A6[Documentation]
     end
-    
+
     A --> A1
     A --> A2
     A --> A3
@@ -189,7 +189,7 @@ class ValidationResult:
     details: Dict[str, Any]
     error_message: str = ""
     timestamp: datetime = None
-    
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now()
@@ -198,9 +198,9 @@ class ValidationResult:
 class ReleaseValidator:
     """
     Release Validator - PERCEIVE Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: release_validation
-    
+
     Performs comprehensive release readiness checks:
     - CI/CD pipeline status
     - Test coverage analysis
@@ -209,57 +209,57 @@ class ReleaseValidator:
     - Breaking change detection
     - Documentation completeness
     """
-    
+
     def __init__(self, repo_path: Path, branch: str = "main"):
         self.repo_path = repo_path
         self.branch = branch
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
         self.validations: List[ValidationResult] = []
-    
+
     def perceive(self, release_info: Dict[str, Any]) -> Dict[str, Any]:
         """
         PERCEIVE: Gather all release validation data.
-        
+
         #AFTERMATH_PATTERN_IDENTIFIED: comprehensive_validation
-        
+
         Args:
             release_info: Release metadata (version, target, etc.)
-            
+
         Returns:
             Validation results with pass/fail status
         """
         validations = []
-        
+
         # 1. CI/CD Status Check
         ci_result = self._check_ci_pipelines()
         validations.append(ci_result)
-        
+
         # 2. Test Coverage Analysis
         coverage_result = self._analyze_test_coverage()
         validations.append(coverage_result)
-        
+
         # 3. Security Scan Results
         security_result = self._get_security_scan_results()
         validations.append(security_result)
-        
+
         # 4. Dependency Audit
         deps_result = self._audit_dependencies()
         validations.append(deps_result)
-        
+
         # 5. Breaking Change Detection
         breaking_result = self._detect_breaking_changes()
         validations.append(breaking_result)
-        
+
         # 6. Documentation Completeness
         docs_result = self._verify_documentation()
         validations.append(docs_result)
-        
+
         # Store for aftermath analysis
         self.validations = validations
-        
+
         # Calculate overall pass rate
         pass_rate = sum(v.passed for v in validations) / len(validations)
-        
+
         return {
             "validations": [self._to_dict(v) for v in validations],
             "pass_rate": pass_rate,
@@ -267,7 +267,7 @@ class ReleaseValidator:
             "passed_checks": sum(v.passed for v in validations),
             "release_info": release_info
         }
-    
+
     def _check_ci_pipelines(self) -> ValidationResult:
         """Check if all CI pipelines are passing."""
         try:
@@ -279,7 +279,7 @@ class ReleaseValidator:
                 timeout=30,
                 check=False
             )
-            
+
             if result.returncode == 0:
                 runs = json.loads(result.stdout)
                 if runs:
@@ -291,7 +291,7 @@ class ReleaseValidator:
                         score=1.0 if passed else 0.0,
                         details={"conclusion": latest_run["conclusion"], "status": latest_run["status"]}
                     )
-            
+
             return ValidationResult(
                 check_name="CI/CD Status",
                 passed=False,
@@ -308,7 +308,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"CI check failed: {str(e)}"
             )
-    
+
     def _analyze_test_coverage(self) -> ValidationResult:
         """Analyze test coverage metrics."""
         try:
@@ -323,7 +323,7 @@ class ReleaseValidator:
                     score=0.92,  # Placeholder: 92%
                     details={"coverage_percentage": 92.0, "threshold": 90.0}
                 )
-            
+
             return ValidationResult(
                 check_name="Test Coverage",
                 passed=False,
@@ -340,7 +340,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Coverage check failed: {str(e)}"
             )
-    
+
     def _get_security_scan_results(self) -> ValidationResult:
         """Get results from security-scan-agent."""
         try:
@@ -349,13 +349,13 @@ class ReleaseValidator:
                 pattern_type="security_vulnerability",
                 confidence_threshold=0.8
             )
-            
+
             # Check for critical vulnerabilities
             critical_vulns = [p for p in patterns if p.get("severity") == "critical"]
-            
+
             passed = len(critical_vulns) == 0
             score = 1.0 if passed else 0.0
-            
+
             return ValidationResult(
                 check_name="Security Scan",
                 passed=passed,
@@ -371,7 +371,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Security scan check failed: {str(e)}"
             )
-    
+
     def _audit_dependencies(self) -> ValidationResult:
         """Audit dependencies for vulnerabilities."""
         try:
@@ -383,19 +383,19 @@ class ReleaseValidator:
                 timeout=60,
                 check=False
             )
-            
+
             if result.returncode == 0 and result.stdout:
                 audit_data = json.loads(result.stdout)
                 vuln_count = len(audit_data.get("vulnerabilities", []))
                 passed = vuln_count == 0
-                
+
                 return ValidationResult(
                     check_name="Dependency Audit",
                     passed=passed,
                     score=1.0 if passed else max(0.0, 1.0 - (vuln_count * 0.1)),
                     details={"vulnerabilities_found": vuln_count}
                 )
-            
+
             # If pip-audit not available or errors, mark as passed with warning
             return ValidationResult(
                 check_name="Dependency Audit",
@@ -413,7 +413,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Audit skipped: {str(e)}"
             )
-    
+
     def _detect_breaking_changes(self) -> ValidationResult:
         """Detect breaking changes in API/CLI."""
         try:
@@ -422,12 +422,12 @@ class ReleaseValidator:
                 pattern_type="api_breaking_change",
                 confidence_threshold=0.7
             )
-            
+
             breaking_changes = [p for p in patterns if p.get("is_breaking", False)]
-            
+
             passed = len(breaking_changes) == 0
             score = 1.0 if passed else 0.5  # Partial score for documented breaking changes
-            
+
             return ValidationResult(
                 check_name="Breaking Change Detection",
                 passed=passed,
@@ -443,22 +443,22 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Breaking change detection skipped: {str(e)}"
             )
-    
+
     def _verify_documentation(self) -> ValidationResult:
         """Verify documentation completeness."""
         try:
             # Check for required documentation files
             required_docs = ["README.md", "CHANGELOG.md", "docs/"]
             missing_docs = []
-            
+
             for doc in required_docs:
                 doc_path = self.repo_path / doc
                 if not doc_path.exists():
                     missing_docs.append(doc)
-            
+
             passed = len(missing_docs) == 0
             score = 1.0 - (len(missing_docs) / len(required_docs))
-            
+
             return ValidationResult(
                 check_name="Documentation Completeness",
                 passed=passed,
@@ -474,7 +474,7 @@ class ReleaseValidator:
                 details={},
                 error_message=f"Documentation check skipped: {str(e)}"
             )
-    
+
     def _to_dict(self, validation: ValidationResult) -> Dict[str, Any]:
         """Convert ValidationResult to dictionary."""
         return {
@@ -532,45 +532,45 @@ class ReleaseAssessment:
 class ReleaseGatekeeper:
     """
     Release Gatekeeper - DECIDE Phase
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: risk_assessment
-    
+
     Assesses release risk and makes go/no-go decisions.
     """
-    
+
     def __init__(self):
         self.brain = CognitiveBrain(Path(".codex/brain.db"))
-    
+
     def decide(self, validation_results: Dict[str, Any]) -> Dict[str, Any]:
         """
         DECIDE: Make release decision based on validations.
-        
+
         #AFTERMATH_METRIC: release_risk_calculated
-        
+
         Args:
             validation_results: Results from PERCEIVE phase
-            
+
         Returns:
             Release decision with risk assessment
         """
         # Calculate risk score
         risk_score = self._calculate_release_risk(validation_results)
-        
+
         # Query cognitive brain for historical patterns
         historical_success_rate = self._query_historical_success(risk_score)
-        
+
         # Identify blockers and warnings
         blockers = self._identify_blockers(validation_results)
         warnings = self._identify_warnings(validation_results)
-        
+
         # Make decision based on risk and blockers
         decision = self._make_decision(risk_score, blockers, warnings)
-        
+
         # Calculate confidence
         confidence = self._calculate_confidence(
             risk_score, historical_success_rate, len(blockers), len(warnings)
         )
-        
+
         assessment = ReleaseAssessment(
             decision=decision,
             risk_score=risk_score,
@@ -583,7 +583,7 @@ class ReleaseGatekeeper:
                 "validation_pass_rate": validation_results.get("pass_rate", 0.0)
             }
         )
-        
+
         return {
             "decision": assessment.decision.value,
             "risk_score": assessment.risk_score,
@@ -593,26 +593,26 @@ class ReleaseGatekeeper:
             "reasoning": assessment.reasoning,
             "metadata": assessment.metadata
         }
-    
+
     def _calculate_release_risk(self, validation_results: Dict[str, Any]) -> float:
         """Calculate overall release risk score."""
         pass_rate = validation_results.get("pass_rate", 0.0)
-        
+
         # Inverse pass rate for risk (higher pass rate = lower risk)
         base_risk = 1.0 - pass_rate
-        
+
         # Adjust for critical failures
         validations = validation_results.get("validations", [])
         critical_failures = [
-            v for v in validations 
+            v for v in validations
             if not v["passed"] and v["check_name"] in ["CI/CD Status", "Security Scan"]
         ]
-        
+
         # Increase risk for critical failures
         risk_adjustment = len(critical_failures) * 0.2
-        
+
         return min(1.0, base_risk + risk_adjustment)
-    
+
     def _query_historical_success(self, current_risk: float) -> float:
         """Query historical release success rate."""
         try:
@@ -620,28 +620,28 @@ class ReleaseGatekeeper:
                 pattern_type="release_outcome",
                 confidence_threshold=0.6
             )
-            
+
             # Filter by similar risk levels
             similar_releases = [
-                p for p in patterns 
+                p for p in patterns
                 if abs(p.get("risk_score", 0.5) - current_risk) < 0.2
             ]
-            
+
             if similar_releases:
                 success_count = sum(1 for p in similar_releases if p.get("success", False))
                 return success_count / len(similar_releases)
-            
+
             # Default to 70% if no historical data
             return 0.7
         except Exception:
             # Best-effort: if brain query fails, return default success rate
             return 0.7
-    
+
     def _identify_blockers(self, validation_results: Dict[str, Any]) -> List[str]:
         """Identify release blockers."""
         blockers = []
         validations = validation_results.get("validations", [])
-        
+
         for v in validations:
             if not v["passed"]:
                 check_name = v["check_name"]
@@ -651,14 +651,14 @@ class ReleaseGatekeeper:
                 # High-severity issues are blockers
                 elif v.get("score", 1.0) < 0.5:
                     blockers.append(f"{check_name}: Score {v['score']:.2f} below threshold")
-        
+
         return blockers
-    
+
     def _identify_warnings(self, validation_results: Dict[str, Any]) -> List[str]:
         """Identify release warnings."""
         warnings = []
         validations = validation_results.get("validations", [])
-        
+
         for v in validations:
             if not v["passed"]:
                 check_name = v["check_name"]
@@ -666,9 +666,9 @@ class ReleaseGatekeeper:
                 if check_name not in ["CI/CD Status", "Security Scan"]:
                     if v.get("score", 0.0) >= 0.5:  # Partial pass
                         warnings.append(f"{check_name}: {v.get('error_message', 'Minor issues detected')}")
-        
+
         return warnings
-    
+
     def _make_decision(
         self, risk_score: float, blockers: List[str], warnings: List[str]
     ) -> ReleaseDecision:
@@ -676,31 +676,31 @@ class ReleaseGatekeeper:
         # Block if any blockers exist
         if blockers:
             return ReleaseDecision.BLOCK
-        
+
         # Approve with monitoring if risk is moderate or warnings exist
         if risk_score >= 0.3 or warnings:
             return ReleaseDecision.APPROVE_WITH_MONITORING
-        
+
         # Approve if risk is low and no warnings
         return ReleaseDecision.APPROVE
-    
+
     def _calculate_confidence(
-        self, risk_score: float, historical_success: float, 
+        self, risk_score: float, historical_success: float,
         blocker_count: int, warning_count: int
     ) -> float:
         """Calculate confidence in decision."""
         # Base confidence on historical data
         confidence = historical_success
-        
+
         # Adjust for risk (higher risk = lower confidence)
         confidence *= (1.0 - (risk_score * 0.3))
-        
+
         # Reduce confidence for blockers and warnings
         confidence *= (1.0 - (blocker_count * 0.1))
         confidence *= (1.0 - (warning_count * 0.05))
-        
+
         return max(0.0, min(1.0, confidence))
-    
+
     def _generate_reasoning(
         self, decision: ReleaseDecision, risk_score: float,
         blockers: List[str], warnings: List[str]
@@ -1101,7 +1101,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1290,7 +1290,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -123,7 +123,7 @@ with patch.object(DBManager._logger, 'info') as mock_info:
 
 **Reported By**: Copilot Pull Request Reviewer  
 **Severity**: 🟡 **LOW** (PEP8 best practice)  
-**Files Affected**: 
+**Files Affected**:
 - `tests/conftest.py` (lines 380, 454, 525)
 - `tests/test_pooling_advanced.py` (line 113)
 
@@ -141,7 +141,7 @@ assert DBManager._POOL_ENABLED is True  # ✅ Identity check
 assert DBManager._POOL_ENABLED is False  # ✅ Identity check
 ```text
 
-**Rationale**: 
+**Rationale**:
 - `True`, `False`, `None` are singletons
 - Identity checks (`is`/`is not`) are more explicit
 - PEP8 recommends identity for singletons
@@ -234,44 +234,44 @@ from queue import Queue
 def test_concurrent_pool_access(self, pooling_db_manager):
     """Test concurrent access to connection pool."""
     from codex.logging.db_manager import DBManager
-    
+
     errors = []
     connections_used = Queue()  # ✅ Thread-safe
-    
+
     def worker(thread_id):
         try:
             for i in range(5):
                 conn = pooling_db_manager.get_connection()
                 connections_used.put(id(conn))  # ✅ Thread-safe put
-                
+
                 # Use connection
                 cursor = conn.execute("SELECT ?", (thread_id,))
                 result = cursor.fetchone()[0]
                 assert result == thread_id
-                
+
                 # Return to pool
                 pooling_db_manager.close_connection(conn)
         except Exception as e:
             errors.append((thread_id, str(e)))
-    
+
     # Spawn 3 threads
     threads = [threading.Thread(target=worker, args=(i,)) for i in range(3)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-    
+
     # No errors should occur
     assert len(errors) == 0, f"Concurrent access errors: {errors}"
-    
+
     # Verify connections were reused
     connection_ids = []
     while not connections_used.empty():
         connection_ids.append(connections_used.get())
-    
+
     unique_connections = len(set(connection_ids))
     total_uses = len(connection_ids)
-    
+
     # Should have reused connections (fewer unique than total uses)
     assert unique_connections < total_uses, \
         f"Expected connection reuse (unique: {unique_connections}, uses: {total_uses})"

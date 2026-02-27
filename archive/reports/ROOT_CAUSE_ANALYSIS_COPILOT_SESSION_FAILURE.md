@@ -68,7 +68,7 @@ $ ls tools/github-secrets-cli/
 
 **Evidence from Log**:
 ```
-Lines 4176-4198: "I realize that the actual CLI implementation files weren't created 
+Lines 4176-4198: "I realize that the actual CLI implementation files weren't created
 in the previous commits - they were only described in the PR description."
 ```
 
@@ -87,7 +87,7 @@ in the previous commits - they were only described in the PR description."
 
 **Evidence from Log**:
 ```
-Lines 4187-4198: Agent discovers files don't exist only when explicitly checking 
+Lines 4187-4198: Agent discovers files don't exist only when explicitly checking
 in a follow-up session, not during original implementation.
 ```
 
@@ -253,17 +253,17 @@ def create_and_verify(file_path, content):
     # Step 1: Create file
     with open(file_path, 'w') as f:
         f.write(content)
-    
+
     # Step 2: Verify existence
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Failed to create {file_path}")
-    
+
     # Step 3: Verify content
     with open(file_path, 'r') as f:
         actual = f.read()
     if len(actual) == 0:
         raise ValueError(f"{file_path} is empty")
-    
+
     # Step 4: Log verification
     print(f"✅ Verified: {file_path} ({len(actual)} bytes)")
     return file_path
@@ -365,18 +365,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Extract claimed files from PR description
         id: extract-claims
         run: |
           # Parse PR body for file paths
           # Create list of claimed implementations
-          
+
       - name: Verify claimed files exist
         run: |
           # Check each claimed file
           # Fail workflow if mismatches found
-          
+
       - name: Comment results on PR
         if: failure()
         uses: actions/github-script@v7

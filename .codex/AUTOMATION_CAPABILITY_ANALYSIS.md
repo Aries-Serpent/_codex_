@@ -197,7 +197,7 @@ from datetime import datetime
 
 class CodeQLSuppressionReviewer:
     """Automated reviewer for CodeQL suppressions."""
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.suppression_pattern = re.compile(
@@ -205,39 +205,39 @@ class CodeQLSuppressionReviewer:
             re.IGNORECASE
         )
         self.results = []
-    
+
     def find_all_suppressions(self) -> List[Tuple[Path, int, str, str]]:
         """Find all CodeQL suppressions in codebase."""
         print("🔍 Scanning for CodeQL suppressions...")
-        
+
         suppressions = []
-        
+
         # Search Python files
         result = subprocess.run(
             ['grep', '-rn', '--include=*.py', 'CodeQL', str(self.repo_root / 'src')],
             capture_output=True,
             text=True
         )
-        
+
         if result.returncode == 0:
             for line in result.stdout.strip().split('\n'):
                 if not line:
                     continue
-                    
+
                 parts = line.split(':', 2)
                 if len(parts) >= 3:
                     filepath = Path(parts[0])
                     lineno = int(parts[1])
                     content = parts[2]
-                    
+
                     match = self.suppression_pattern.search(content)
                     if match:
                         rule_id = match.group(1)
                         suppressions.append((filepath, lineno, rule_id, content))
-        
+
         print(f"✅ Found {len(suppressions)} suppression(s)")
         return suppressions
-    
+
     def validate_suppression(self, filepath: Path, lineno: int, rule_id: str) -> Dict:
         """Validate a single suppression."""
         validation = {
@@ -249,41 +249,41 @@ class CodeQLSuppressionReviewer:
             'follows_standard': False,
             'recommendation': 'REVIEW'
         }
-        
+
         # Read file context
         try:
             with open(filepath, 'r') as f:
                 lines = f.readlines()
-            
+
             # Check for justification comment (should be after CodeQL comment)
             if lineno < len(lines):
                 next_lines = lines[lineno:lineno+5]  # Check next 5 lines
-                
+
                 # Look for justification keywords
                 justification_keywords = ['justification:', 'reason:', 'rationale:', 'false positive']
                 for line in next_lines:
                     if any(kw in line.lower() for kw in justification_keywords):
                         validation['has_justification'] = True
-                        
+
                         # Quality check
                         if len(line.strip()) > 50:
                             validation['justification_quality'] = 'GOOD'
                         else:
                             validation['justification_quality'] = 'NEEDS_IMPROVEMENT'
                         break
-                
+
                 # Check if follows standard format
                 if validation['has_justification']:
                     validation['follows_standard'] = True
                     validation['recommendation'] = 'APPROVED'
                 else:
                     validation['recommendation'] = 'ADD_JUSTIFICATION'
-        
+
         except Exception as e:
             validation['recommendation'] = f'ERROR: {e}'
-        
+
         return validation
-    
+
     def generate_report(self, validations: List[Dict]) -> str:
         """Generate suppression review report."""
         report = [
@@ -294,11 +294,11 @@ class CodeQLSuppressionReviewer:
             "## Summary",
             ""
         ]
-        
+
         approved = sum(1 for v in validations if v['recommendation'] == 'APPROVED')
         needs_justification = sum(1 for v in validations if v['recommendation'] == 'ADD_JUSTIFICATION')
         needs_review = sum(1 for v in validations if v['recommendation'] == 'REVIEW')
-        
+
         report.extend([
             f"- ✅ Approved: {approved}",
             f"- ⚠️  Needs Justification: {needs_justification}",
@@ -307,14 +307,14 @@ class CodeQLSuppressionReviewer:
             "## Detailed Results",
             ""
         ])
-        
+
         for v in validations:
             status_icon = {
                 'APPROVED': '✅',
                 'ADD_JUSTIFICATION': '⚠️',
                 'REVIEW': '🔍'
             }.get(v['recommendation'], '❓')
-            
+
             report.extend([
                 f"### {status_icon} {v['filepath']}:{v['lineno']}",
                 f"**Rule ID:** `{v['rule_id']}`",
@@ -324,41 +324,41 @@ class CodeQLSuppressionReviewer:
                 f"**Recommendation:** {v['recommendation']}",
                 ""
             ])
-        
+
         report.extend([
             "## References",
             "- `.codex/SECURITY_FALSE_POSITIVE_STANDARD.md`",
             "- CodeQL documentation: https://codeql.github.com/docs/",
             ""
         ])
-        
+
         return '\n'.join(report)
-    
+
     def run_review(self) -> str:
         """Run complete suppression review."""
         print("🤖 Automated CodeQL Suppression Review")
         print("=" * 50)
-        
+
         # Find all suppressions
         suppressions = self.find_all_suppressions()
-        
+
         # Validate each suppression
         validations = []
         for filepath, lineno, rule_id, content in suppressions:
             validation = self.validate_suppression(filepath, lineno, rule_id)
             validations.append(validation)
-        
+
         # Generate report
         report = self.generate_report(validations)
-        
+
         # Save report
         report_path = self.repo_root / '.codex' / 'reports' / f'codeql_suppression_review_{datetime.now().strftime("%Y%m%d_%H%M%S")}.md'
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(report)
-        
+
         print(f"\n✅ Review complete")
         print(f"📄 Report saved to: {report_path}")
-        
+
         return str(report_path)
 
 if __name__ == '__main__':
@@ -397,100 +397,100 @@ from typing import List, Tuple
 
 class ProductionDeploymentAutomation:
     """Automated production deployment with safety checks."""
-    
+
     def __init__(self):
         self.checks_passed = []
         self.checks_failed = []
-    
+
     def check_security_stubs(self) -> bool:
         """Verify all security stubs converted to production."""
         print("🔐 Checking security stub implementations...")
-        
+
         stubs = [
             ('src/security/decorators.py', 'NotImplementedError'),
             ('src/security/providers/github_provider.py', 'NotImplementedError'),
         ]
-        
+
         for filepath, pattern in stubs:
             result = subprocess.run(
                 ['grep', '-n', pattern, filepath],
                 capture_output=True,
                 text=True
             )
-            
+
             if result.returncode == 0:
                 self.checks_failed.append(f"Stub found in {filepath}")
                 return False
-        
+
         self.checks_passed.append("All security stubs implemented")
         return True
-    
+
     def check_tests_passing(self) -> bool:
         """Verify all tests pass."""
         print("🧪 Running test suite...")
-        
+
         result = subprocess.run(
             ['pytest', 'tests/', '-v', '--tb=short'],
             capture_output=True,
             text=True
         )
-        
+
         if result.returncode != 0:
             self.checks_failed.append(f"Tests failed:\n{result.stdout}")
             return False
-        
+
         self.checks_passed.append("All tests passing")
         return True
-    
+
     def check_security_audit(self) -> bool:
         """Run security audit."""
         print("🔒 Running security audit...")
-        
+
         # Run bandit
         result = subprocess.run(
             ['bandit', '-r', 'src/', '-ll', '-f', 'json'],
             capture_output=True,
             text=True
         )
-        
+
         # Parse results and check for high/critical
         if result.returncode != 0:
             self.checks_failed.append(f"Security audit found issues:\n{result.stdout}")
             return False
-        
+
         self.checks_passed.append("Security audit clean")
         return True
-    
+
     def check_documentation(self) -> bool:
         """Verify documentation is complete."""
         print("📚 Checking documentation...")
-        
+
         required_docs = [
             '.codex/PRODUCTION_DEPLOYMENT_GUIDE.md',
             '.codex/SECURITY_FALSE_POSITIVE_STANDARD.md',
             '.codex/architecture/uuid_ticket_id_strategy.md',
         ]
-        
+
         for doc in required_docs:
             if not Path(doc).exists():
                 self.checks_failed.append(f"Missing documentation: {doc}")
                 return False
-        
+
         self.checks_passed.append("All required documentation present")
         return True
-    
+
     def run_deployment_checklist(self) -> Tuple[bool, List[str], List[str]]:
         """Run complete deployment checklist."""
         print("🚀 Production Deployment Checklist")
         print("=" * 50)
-        
+
         checks = [
             ("Security Stubs", self.check_security_stubs),
             ("Tests", self.check_tests_passing),
             ("Security Audit", self.check_security_audit),
             ("Documentation", self.check_documentation),
         ]
-        
+
         all_passed = True
         for name, check_func in checks:
             try:
@@ -504,9 +504,9 @@ class ProductionDeploymentAutomation:
                 all_passed = False
                 self.checks_failed.append(f"{name}: ERROR - {e}")
                 print(f"❌ {name}: ERROR - {e}")
-        
+
         return all_passed, self.checks_passed, self.checks_failed
-    
+
     def generate_approval_request(self, passed: bool) -> str:
         """Generate human approval request."""
         if passed:
@@ -552,7 +552,7 @@ Automated checks failed. Deployment cannot proceed.
 if __name__ == '__main__':
     automation = ProductionDeploymentAutomation()
     passed, checks_passed, checks_failed = automation.run_deployment_checklist()
-    
+
     print("\n" + "=" * 50)
     if passed:
         print("✅ All checks passed - Ready for approval")
@@ -711,7 +711,7 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
-    
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -790,17 +790,17 @@ def check_consistency():
     """Check terminology consistency."""
     # Check for inconsistent terminology
     issues = []
-    
+
     # Example: Check pre-commit vs precommit
     result = subprocess.run(
         ['grep', '-rn', 'precommit', '.codex/'],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         issues.append("Found 'precommit' - should be 'pre-commit'")
-    
+
     return len(issues) == 0, issues
 
 # Run all checks
@@ -860,29 +860,29 @@ ha-009:
 def analyze_workflow_resources():
     """Analyze resource usage in workflows."""
     print("🔍 Analyzing Workflow Resource Requirements")
-    
+
     # Parse workflow files
     workflows = Path('.github/workflows').glob('*.yml')
-    
+
     heavy_workflows = []
     for workflow in workflows:
         content = workflow.read_text()
-        
+
         # Check for resource-intensive operations
         if any(kw in content for kw in ['ml', 'train', 'pytorch', 'tensorflow']):
             heavy_workflows.append(workflow.name)
-    
+
     if heavy_workflows:
         print(f"\n⚠️  Found {len(heavy_workflows)} resource-intensive workflows:")
         for w in heavy_workflows:
             print(f"  - {w}")
-        
+
         print("\n💡 Recommendation:")
         print("  Consider configuring ubuntu-latest-8-cores for:")
         print(f"  {', '.join(heavy_workflows)}")
     else:
         print("\n✅ Current runners adequate for all workflows")
-    
+
     return heavy_workflows
 
 analyze_workflow_resources()

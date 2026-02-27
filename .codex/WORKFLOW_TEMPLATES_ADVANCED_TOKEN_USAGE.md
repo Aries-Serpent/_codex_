@@ -38,7 +38,7 @@ jobs:
             exit 1
           fi
           echo "✅ Validated: ${{ inputs.secret_name }}"
-      
+
       - name: Inject secret via GitHub CLI
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -46,9 +46,9 @@ jobs:
           # Using gh CLI to inject secret
           echo "${{ inputs.secret_value }}" | gh secret set "${{ inputs.secret_name }}" \
             --repo "${{ github.repository }}"
-          
+
           echo "✅ Secret '${{ inputs.secret_name }}' injected successfully"
-      
+
       - name: Verify secret injection
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -96,14 +96,14 @@ jobs:
         run: |
           # Note: Value should be provided securely, not as workflow input
           # This is a template - implement secure value retrieval
-          
+
           gh api \
             --method PUT \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/orgs/${{ github.repository_owner }}/actions/secrets/${{ inputs.secret_name }}" \
             -f visibility="${{ inputs.visibility }}"
-          
+
           echo "✅ Organization secret configured"
 ```
 
@@ -133,7 +133,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Generate new CODEX_MASTER_KEY
         id: generate
         run: |
@@ -141,7 +141,7 @@ jobs:
           NEW_KEY=$(openssl rand -base64 32)
           echo "::add-mask::$NEW_KEY"
           echo "new_key=$NEW_KEY" >> $GITHUB_OUTPUT
-      
+
       - name: Update CODEX_MASTER_KEY in repository secrets
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -149,9 +149,9 @@ jobs:
         run: |
           echo "$NEW_KEY" | gh secret set CODEX_MASTER_KEY \
             --repo "${{ github.repository }}"
-          
+
           echo "✅ CODEX_MASTER_KEY rotated successfully"
-      
+
       - name: Archive old key (encrypted)
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -159,16 +159,16 @@ jobs:
           # Archive for audit purposes
           DATE=$(date +%Y%m%d)
           mkdir -p .codex/key-archive
-          
+
           # Store encrypted reference (not the actual key)
           echo "$DATE: Key rotated" >> .codex/key-archive/rotation-log.txt
-          
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/key-archive/rotation-log.txt
           git commit -m "audit: token rotation on $DATE"
           git push
-      
+
       - name: Notify administrators
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -207,30 +207,30 @@ jobs:
     runs-on: [self-hosted, linux, x64, large]
     # OR use GitHub-hosted larger runners
     # runs-on: ubuntu-latest-8-cores
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -e ".[dev,test]"
-      
+
       - name: Run intensive operations
         run: |
           # Large-scale testing, training, or analysis
           pytest tests/ -n auto --maxprocesses=8
-          
+
           # ML model training
           python scripts/train_model.py --config configs/large-scale.yaml
-          
+
           # Code analysis
           python scripts/deep_analysis.py --full-codebase
 ```
@@ -247,7 +247,7 @@ jobs:
 {
   "name": "Codex Development Environment",
   "image": "mcr.microsoft.com/devcontainers/python:3.12",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
@@ -255,7 +255,7 @@ jobs:
       "version": "20"
     }
   },
-  
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -281,14 +281,14 @@ jobs:
       }
     }
   },
-  
+
   "postCreateCommand": "pip install -e '.[dev,test]'",
-  
+
   "remoteEnv": {
     "CODEX_MASTER_KEY": "${localEnv:CODEX_MASTER_KEY}",
     "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
   },
-  
+
   "hostRequirements": {
     "cpus": 4,
     "memory": "8gb",
@@ -324,7 +324,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Fetch organization audit log
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -335,28 +335,28 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/orgs/${{ github.repository_owner }}/audit-log?per_page=100" \
             > audit-log-$(date +%Y%m%d).json
-      
+
       - name: Analyze token usage
         run: |
           python3 << 'PYEOF'
           import json
           from datetime import datetime
-          
+
           with open('audit-log-*.json') as f:
               logs = json.load(f)
-          
+
           # Analyze for suspicious patterns
           token_events = [e for e in logs if 'token' in e.get('action', '')]
-          
+
           print(f"📊 Audit Summary for {datetime.now().date()}")
           print(f"Total events: {len(logs)}")
           print(f"Token-related events: {len(token_events)}")
-          
+
           # Generate report
           with open('.codex/audit-reports/per-iteration-summary.txt', 'a') as f:
               f.write(f"\n{datetime.now()}: {len(logs)} events, {len(token_events)} token events\n")
           PYEOF
-      
+
       - name: Commit audit reports
         run: |
           git config user.name "github-actions[bot]"
@@ -391,7 +391,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Check secret rotation compliance
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
@@ -399,17 +399,17 @@ jobs:
           # Check last rotation date
           LAST_ROTATION=$(cat .codex/key-archive/rotation-log.txt | tail -1 | cut -d: -f1)
           CURRENT_DATE=$(date +%Y%m%d)
-          
+
           # Calculate days since rotation
           DAYS_SINCE=$(( ($(date -d "$CURRENT_DATE" +%s) - $(date -d "$LAST_ROTATION" +%s)) / 86400 ))
-          
+
           if [ $DAYS_SINCE -gt 90 ]; then
             echo "⚠️  WARNING: Token rotation overdue ($DAYS_SINCE days)"
             exit 1
           else
             echo "✅ Token rotation compliant ($DAYS_SINCE days since last rotation)"
           fi
-      
+
       - name: Check access patterns
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
@@ -418,23 +418,23 @@ jobs:
           gh api "/repos/${{ github.repository }}/actions/runs?per_page=100" \
             | jq '.workflow_runs[] | select(.conclusion == "failure") | .name' \
             | sort | uniq -c
-      
+
       - name: Generate compliance report
         run: |
           python3 << 'PYEOF'
           import json
           from datetime import datetime
-          
+
           report = {
               "date": datetime.now().isoformat(),
               "token_rotation": "compliant",
               "workflow_health": "healthy",
               "security_scans": "passing"
           }
-          
+
           with open('.codex/compliance/report-latest.json', 'w') as f:
               json.dump(report, f, indent=2)
-          
+
           print("✅ Compliance report generated")
           PYEOF
 ```

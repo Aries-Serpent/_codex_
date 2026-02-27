@@ -314,10 +314,10 @@ def main():
         "Tests Passing": check_tests_passing(),
         "Security Status": check_security_status(),
     }
-    
+
     print("Genesis Phase 2 Readiness Check")
     print("=" * 50)
-    
+
     for check, result in checks.items():
         if isinstance(result, tuple):
             passed, details = result
@@ -326,7 +326,7 @@ def main():
             passed = result
             status = "✅ PASS" if passed else "❌ FAIL"
         print(f"{check}: {status}")
-    
+
     all_passed = all(r[0] if isinstance(r, tuple) else r for r in checks.values())
     print("=" * 50)
     print(f"Overall: {'✅ READY' if all_passed else '❌ NOT READY'}")
@@ -448,13 +448,13 @@ def main():
         "Safety Guards": check_safety_guards(),
         "Tests Passing": check_tests_passing(),
     }
-    
+
     print("Genesis Phase 2 Readiness Check")
     print("=" * 50)
     for check, passed in checks.items():
         status = "✅ PASS" if passed else "❌ FAIL"
         print(f"{check}: {status}")
-    
+
     all_passed = all(checks.values())
     print("=" * 50)
     print(f"Overall: {'✅ READY' if all_passed else '❌ NOT READY'}")
@@ -620,7 +620,7 @@ print(f"Total lessons: {len(lessons.lessons)}")
 
 # Recent commits
 import subprocess
-result = subprocess.run(["git", "log", "--oneline", "-5"], 
+result = subprocess.run(["git", "log", "--oneline", "-5"],
                        capture_output=True, text=True)
 print("Recent commits:")
 print(result.stdout)

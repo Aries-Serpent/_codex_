@@ -33,19 +33,19 @@
 **Benchmark Modules (975 LOC):**
 1. ✅ `src/codex/rag/benchmarks/runner.py` (217 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 217 lines
-   
+
 2. ✅ `src/codex/rag/benchmarks/embedding_bench.py` (159 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 159 lines
-   
+
 3. ✅ `src/codex/rag/benchmarks/indexing_bench.py` (157 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 157 lines
-   
+
 4. ✅ `src/codex/rag/benchmarks/retrieval_bench.py` (196 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 196 lines
-   
+
 5. ✅ `src/codex/rag/benchmarks/e2e_bench.py` (221 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 221 lines
-   
+
 6. ✅ `src/codex/rag/benchmarks/__init__.py` (25 LOC)
    - Verified: `ls -la` shows file exists, `wc -l` shows 25 lines
 

@@ -194,7 +194,7 @@ def test_total_space_calculation(sizes):
       types: [python]
       pass_filenames: true
       args: [--file, --dry-run]
-    
+
     - id: detect-redundant-code
       name: Detect redundant code
       entry: python scripts/linters/redundant_code.py

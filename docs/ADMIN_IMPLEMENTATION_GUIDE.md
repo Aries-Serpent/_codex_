@@ -319,7 +319,7 @@ secrets_configured:
   CODEX_PRIVATE_KEY: [configured/missing]
   CODEX_WEBHOOK_SECRET: [configured/missing]
   CODEX_INSTALLATION_ID: [configured/missing]
-  
+
   # Optional secrets
   optional_secrets:
     OPENAI_API_KEY: [configured/missing/not_needed]
@@ -591,7 +591,7 @@ repository:
   full_name: "Aries-Serpent/_codex_"
   default_branch: "main"
   visibility: [public/private]
-  
+
 github_app:
   created: [true/false]
   app_id: [APP_ID or "not_created"]
@@ -606,7 +606,7 @@ secrets_status:
   CODEX_PRIVATE_KEY: [configured/missing]
   CODEX_WEBHOOK_SECRET: [configured/missing]
   CODEX_INSTALLATION_ID: [configured/missing]
-  
+
   # Optional
   OPENAI_API_KEY: [configured/missing/not_needed]
   PINECONE_API_KEY: [configured/missing/not_needed]

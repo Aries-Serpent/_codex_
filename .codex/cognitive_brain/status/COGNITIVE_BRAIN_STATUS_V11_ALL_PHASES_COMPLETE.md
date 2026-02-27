@@ -90,7 +90,7 @@
 2. `scripts/github_secrets_sync.py` (7.5 KB) - Secrets sync
 3. `scripts/phase10/automated_secrets_manager.py` (20.6 KB) - Automated injection
 
-**Critical Discovery**: 
+**Critical Discovery**:
 - ❌ **BLOCKING BUG**: JWT rotation script had incorrect `PBKDF2` import
 - Should be: `PBKDF2HMAC` (correct cryptography API name)
 - **Impact**: Script completely non-functional, couldn't load
@@ -261,7 +261,7 @@ kdf = PBKDF2HMAC(  # was: PBKDF2
 
 ### Bug Analysis: PBKDF2 Import Issue
 
-**Root Cause**: 
+**Root Cause**:
 The cryptography library changed from `PBKDF2` to `PBKDF2HMAC` at some point, but the script wasn't updated.
 
 **Why It Matters**:

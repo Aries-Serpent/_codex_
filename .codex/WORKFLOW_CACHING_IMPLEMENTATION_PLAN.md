@@ -83,7 +83,7 @@ jobs:
         uses: actions/cache@v4
         with:
           key: link-check-folders-v1-${{ matrix.folder }}-${{ checksums[matrix.folder] }}
-      
+
       - name: Run link check if cache miss
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -242,13 +242,13 @@ Track cache efficiency and cost savings
 env:
   # Enable/disable caching globally
   WORKFLOW_CACHE_ENABLED: true
-  
+
   # Cache TTL for time-based caching (in hours)
   CACHE_TTL_HOURS: 1
-  
+
   # Maximum parallel jobs for folder-based caching
   MAX_PARALLEL_FOLDERS: 4
-  
+
   # Minimum file age before considering for caching (in minutes)
   MIN_FILE_AGE_MINUTES: 5
 ```
@@ -261,12 +261,12 @@ workflows:
   documentation-link-checker:
     strategy: aggregate-checksum
     enabled: true
-    
+
   documentation-link-checker-granular:
     strategy: per-folder
     enabled: true
     max_parallel: 4
-    
+
   documentation-link-checker-incremental:
     strategy: per-file
     enabled: true
@@ -438,16 +438,16 @@ workflows:
 compute_aggregate_checksum() {
   local pattern="$1"  # e.g., "*.md"
   local exclude_paths="$2"  # e.g., "./node_modules/*,./archive/*"
-  
+
   # Build find command
   local find_cmd="find . -name '$pattern'"
-  
+
   # Add exclusions
   IFS=',' read -ra EXCLUDES <<< "$exclude_paths"
   for excl in "${EXCLUDES[@]}"; do
     find_cmd="$find_cmd -not -path '$excl'"
   done
-  
+
   # Execute find and compute checksums
   eval "$find_cmd" | sort | while read -r file; do
     if [ -f "$file" ]; then

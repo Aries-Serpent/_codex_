@@ -111,33 +111,33 @@ while IFS=$'\t' read -r original archived commit; do
         echo "WARNING: Archived file not found: $archived"
         continue
     fi
-    
+
     # Extract original path from metadata
     if [ ! -f "${archived}.meta.md" ]; then
         echo "WARNING: Metadata missing for $archived"
         continue
     fi
-    
+
     orig_path=$(grep "Original Path:" "${archived}.meta.md" | cut -d'`' -f2)
-    
+
     if [ -z "$orig_path" ]; then
         echo "WARNING: Could not extract original path for $archived"
         continue
     fi
-    
+
     # Check if target already exists
     if [ -f "../../../$orig_path" ]; then
         echo "WARNING: Target already exists, skipping: $orig_path"
         continue
     fi
-    
+
     # Create directory if needed
     target_dir=$(dirname "../../../$orig_path")
     if ! mkdir -p "$target_dir" 2>/dev/null; then
         echo "ERROR: Cannot create directory: $target_dir"
         continue
     fi
-    
+
     # Copy file
     if cp "$archived" "../../../$orig_path"; then
         echo "✓ Restored: $orig_path"

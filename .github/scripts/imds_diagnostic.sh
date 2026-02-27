@@ -349,14 +349,14 @@ check_hosts() {
 ###############################################################################
 check_iptables() {
   section "iptables OUTPUT Chain Inspection"
-  
+
   # Check if iptables command exists
   if ! command -v iptables >/dev/null 2>&1; then
     log "iptables not available on this system"
     set_metric "iptables_drop_detected" 0
     return 0
   fi
-  
+
   # Detect sudo availability and privilege level
   local sudo_cmd=""
   if [ "$EUID" -eq 0 ]; then
@@ -386,18 +386,18 @@ check_iptables() {
     set_metric "iptables_drop_detected" 0
     return 0
   fi
-  
+
   # Execute iptables inspection with detected privilege method
   local out
   out="$($sudo_cmd iptables -L OUTPUT -n -v 2>/dev/null || true)"
-  
+
   if [ -z "$out" ]; then
     log "Failed to retrieve iptables OUTPUT chain"
     set_metric "iptables_retrieval_failed" 1
     set_metric "iptables_drop_detected" 0
     return 0
   fi
-  
+
   # Check for IMDS-specific rules
   if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
     log "Rules referencing $IMDS_IP:"
@@ -405,11 +405,11 @@ check_iptables() {
   else
     log "No explicit OUTPUT rule referencing $IMDS_IP."
   fi
-  
+
   # Check for DROP rules affecting IMDS
   local drop_check
   drop_check="$($sudo_cmd iptables -S OUTPUT 2>/dev/null || true)"
-  
+
   if grep -E "DROP" <<<"$drop_check" | grep -E "$IMDS_IP" >/dev/null 2>&1; then
     log "$(c_red "DROP rule detected affecting $IMDS_IP")"
     set_metric "iptables_drop_detected" 1
@@ -425,13 +425,13 @@ check_iptables() {
 ###############################################################################
 check_nftables() {
   section "nftables Ruleset Inspection"
-  
+
   # Check if nft command exists
   if ! command -v nft >/dev/null 2>&1; then
     log "nftables not available on this system"
     return 0
   fi
-  
+
   # Detect sudo availability (same pattern as iptables)
   local sudo_cmd=""
   if [ "$EUID" -eq 0 ]; then
@@ -454,17 +454,17 @@ check_nftables() {
     set_metric "nftables_skip_reason" "no_sudo_command"
     return 0
   fi
-  
+
   # Execute nftables inspection
   local out
   out="$($sudo_cmd nft list ruleset 2>/dev/null || true)"
-  
+
   if [ -z "$out" ]; then
     log "Failed to retrieve nftables ruleset"
     set_metric "nftables_retrieval_failed" 1
     return 0
   fi
-  
+
   # Check for IMDS-specific rules
   if grep -E "$IMDS_IP" <<<"$out" >/dev/null 2>&1; then
     log "nftables rules referencing $IMDS_IP:"
@@ -727,7 +727,7 @@ emit_json() {
     # Apply mode: actions successfully applied
     status="remediation-applied"
     log "Status determination: remediation-applied (APPLY=true, actions_applied=${#ACTIONS_APPLIED[@]})"
-    
+
     # Check if issues persist after remediation (partial remediation)
     if $REM_NEEDED; then
       log "$(c_yellow "WARNING: Remediation applied but issues may persist (REM_NEEDED still true)")"

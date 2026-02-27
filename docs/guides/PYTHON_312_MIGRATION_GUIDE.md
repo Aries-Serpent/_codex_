@@ -216,7 +216,7 @@ python --version  # Must be 3.12.x
 **Solution:**
 ```bash
 # Check which Python versions are installed
-ls /usr/bin/python* 
+ls /usr/bin/python*
 ls /usr/local/bin/python*
 
 # On macOS with Homebrew:
@@ -351,7 +351,7 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 
 ### Q: How do I report issues with the migration?
 
-**A:** 
+**A:**
 1. Check this guide's troubleshooting section
 2. Search existing GitHub issues
 3. Create a new issue with:

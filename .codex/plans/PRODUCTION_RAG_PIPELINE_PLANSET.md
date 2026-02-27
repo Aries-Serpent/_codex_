@@ -108,7 +108,7 @@ graph TB
         CHUNK --> EMB[Embedding]
         EMB --> IDX[Indexing]
     end
-    
+
     subgraph "Vector Store Layer"
         IDX --> VS[Vector Store]
         VS --> FAISS[FAISS]
@@ -116,7 +116,7 @@ graph TB
         VS --> PG[pgvector]
         VS --> WEAV[Weaviate]
     end
-    
+
     subgraph "Query Pipeline"
         QUERY[User Query] --> OPT[Optimization]
         OPT --> CACHE[Cache Layer]
@@ -125,7 +125,7 @@ graph TB
         RETR --> RANK[Reranking]
         RANK --> RESP[Response]
     end
-    
+
     subgraph "Production Features"
         MON[Monitoring] --> VS
         MON --> RETR

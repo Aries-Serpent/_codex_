@@ -40,7 +40,7 @@ capabilities:
           code_snippet: string
           similarity_score: float
           context: string
-    
+
   - name: find_similar_code
     description: Find code patterns similar to a given snippet
     parameters:
@@ -56,7 +56,7 @@ capabilities:
         type: integer
         default: 10
         description: Number of similar patterns to return
-    
+
   - name: suggest_documentation
     description: Find relevant documentation for code
     parameters:
@@ -68,7 +68,7 @@ capabilities:
         type: array
         default: ["usage", "api", "tutorial"]
         description: Types of documentation to search
-    
+
   - name: generate_usage_examples
     description: Generate usage examples from codebase
     parameters:
@@ -85,7 +85,7 @@ capabilities:
         default: "medium"
         enum: ["basic", "medium", "advanced"]
         description: Complexity level of examples
-    
+
   - name: explain_code
     description: Explain code using semantic understanding
     parameters:
@@ -114,34 +114,34 @@ triggers:
     pattern: "@semantic-search {query}"
     action: search_code
     example: "@semantic-search how to use RAG embeddings"
-    
+
   - type: comment
     pattern: "@semantic-search find similar to"
     action: find_similar_code
     example: "@semantic-search find similar to async def process_query()"
-    
+
   - type: comment
     pattern: "@semantic-search docs for {code_context}"
     action: suggest_documentation
     example: "@semantic-search docs for CachedRetriever"
-    
+
   - type: comment
     pattern: "@semantic-search examples for {api_name}"
     action: generate_usage_examples
     example: "@semantic-search examples for manage_tenant_indices"
-    
+
   - type: slash_command
     command: "/search-code"
     action: search_code
     parameters:
       query: "Natural language query"
-    
+
   - type: slash_command
     command: "/find-similar"
     action: find_similar_code
     parameters:
       code_snippet: "Code to find similar patterns"
-    
+
   - type: slash_command
     command: "/explain-code"
     action: explain_code
@@ -149,12 +149,12 @@ triggers:
       file_path: "Path to file"
       line_start: "Start line (optional)"
       line_end: "End line (optional)"
-    
+
   # Automatic triggers
   - type: pull_request_review
     action: suggest_relevant_code
     description: Suggest similar code patterns during PR review
-    
+
   - type: issue_comment
     contains: "how do I"
     action: search_code_and_docs
@@ -172,16 +172,16 @@ config:
   default_top_k: 5
   max_results: 50
   min_similarity_score: 0.6
-  
+
   # Retrieval settings
   use_cached_retriever: true
   cache_ttl_seconds: 3600
   cache_maxsize: 1000
-  
+
   # Index settings
   default_index_name: "codebase"
   fallback_indices: ["docs", "examples", "tests"]
-  
+
   # Language support
   supported_languages:
     - python
@@ -191,12 +191,12 @@ config:
     - rust
     - java
     - cpp
-  
+
   # Result formatting
   max_snippet_lines: 20
   include_context_lines: 3
   highlight_matches: true
-  
+
   # Performance
   query_timeout_seconds: 15  # Reduced for better UX (cached queries <1ms)
   max_concurrent_searches: 5
@@ -210,50 +210,50 @@ config:
 response_templates:
   search_results: |
     🔍 **Semantic Search Results**
-    
+
     **Query**: "{query}"
     **Found**: {num_results} results
-    
+
     {results_list}
-    
+
     ---
     **Search powered by RAG embeddings** | [Learn more](docs/agents/semantic-search.md)
-  
+
   similar_code: |
     🔗 **Similar Code Patterns**
-    
+
     **Original snippet**:
     ```{language}
     {original_snippet}
     ```
-    
+
     **Found {num_results} similar patterns**:
-    
+
     {similar_patterns_list}
-  
+
   usage_examples: |
     📚 **Usage Examples for `{api_name}`**
-    
+
     {examples_list}
-    
+
     **From codebase**:
     {codebase_examples}
-    
+
     ---
     Need more examples? Try: `@semantic-search examples for {api_name} advanced`
-  
+
   explanation: |
     💡 **Code Explanation**
-    
+
     **File**: `{file_path}`
     **Lines**: {line_start}-{line_end}
-    
+
     **Summary**:
     {summary}
-    
+
     **Details**:
     {detailed_explanation}
-    
+
     **Related concepts**:
     {related_concepts}
 
@@ -264,11 +264,11 @@ search_strategies:
     weights:
       semantic: 0.7
       keyword: 0.3
-    
+
   - name: semantic_only
     description: Pure semantic search using embeddings
     use_case: Natural language queries
-    
+
   - name: code_pattern
     description: Specialized for code pattern matching
     features:
@@ -282,19 +282,19 @@ ranking:
     - name: semantic_similarity
       weight: 0.5
       description: Embedding similarity score
-    
+
     - name: recency
       weight: 0.2
       description: Recently modified code ranked higher
-    
+
     - name: usage_frequency
       weight: 0.15
       description: Frequently used code ranked higher
-    
+
     - name: code_quality
       weight: 0.1
       description: Well-documented, tested code ranked higher
-    
+
     - name: relevance_to_context
       weight: 0.05
       description: Relevance to current PR/issue context
@@ -314,7 +314,7 @@ privacy:
     - "**/*secret*"
     - "**/*password*"
     - "**/credentials/**"
-  
+
   redact_sensitive_data: true
   respect_codeowners: true
 
@@ -322,17 +322,17 @@ privacy:
 error_handling:
   no_results_found: |
     ℹ️ No results found for your query.
-    
+
     **Suggestions**:
     - Try rephrasing your query
     - Use more specific terms
     - Check if the code exists in the indexed branches
-  
+
   search_timeout: |
     ⏱️ Search timed out. Try narrowing your search scope.
-  
+
   index_not_found: |
-    ⚠️ Search index not available. 
+    ⚠️ Search index not available.
     Contact @rag-index-manager to build the index.
 
 # Integration Points
@@ -340,11 +340,11 @@ integrations:
   rag_retriever:
     module: "codex.rag.retriever"
     class: "CachedRetriever"
-    
+
   code_analysis:
     ast_parser: "tree-sitter"
     syntax_highlighter: "pygments"
-    
+
   result_formatter:
     markdown: true
     code_blocks: true
@@ -355,7 +355,7 @@ analytics:
   track_queries: true
   track_result_clicks: true
   track_user_satisfaction: true
-  
+
   metrics:
     - query_latency_ms
     - results_per_query

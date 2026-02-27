@@ -57,30 +57,30 @@ from src.tokenization.api import TokenizerAPI
 
 class TestTokenizerLoading:
     """Test tokenizer loading from various sources."""
-    
+
     def test_load_from_local_file(self, tmp_path):
         """Test loading tokenizer from local file path."""
         # Create mock tokenizer file
         tokenizer_path = tmp_path / "tokenizer.json"
         tokenizer_path.write_text('{"version": "1.0"}')
-        
+
         # Test loading
         result = load_tokenizer(str(tokenizer_path))
         assert result is not None
-        
+
     def test_load_from_pretrained(self):
         """Test loading from pretrained model identifier."""
         # Use a small, fast model for testing
         result = load_tokenizer("bert-base-uncased", use_fast=True)
         assert result is not None
         assert hasattr(result, 'encode')
-        
+
     def test_load_with_fallback(self):
         """Test fallback mechanism when primary loading fails."""
         # Test with invalid path
         result = load_tokenizer("nonexistent_tokenizer", fallback=True)
         assert result is not None  # Should return fallback tokenizer
-        
+
     def test_load_with_custom_config(self):
         """Test loading with custom configuration."""
         config = {"max_length": 512, "padding": "max_length"}
@@ -89,7 +89,7 @@ class TestTokenizerLoading:
 
 class TestTokenizerCache:
     """Test tokenizer caching mechanisms."""
-    
+
     def test_cache_hit(self):
         """Test that repeated loads use cache."""
         tokenizer1 = load_tokenizer("bert-base-uncased")
@@ -131,24 +131,24 @@ from src.tokenization.adapter import TokenizerAdapter
 
 class TestVocabularyAccess:
     """Test vocabulary size and access methods."""
-    
+
     @pytest.fixture
     def tokenizer(self):
         """Fixture providing test tokenizer."""
         return TokenizerAPI.from_pretrained("bert-base-uncased")
-    
+
     def test_vocabulary_size(self, tokenizer):
         """Test vocabulary size reporting."""
         vocab_size = tokenizer.vocab_size
         assert vocab_size > 0
         assert isinstance(vocab_size, int)
-        
+
     def test_token_to_id(self, tokenizer):
         """Test converting tokens to IDs."""
         token_id = tokenizer.token_to_id("[CLS]")
         assert isinstance(token_id, int)
         assert token_id >= 0
-        
+
     def test_id_to_token(self, tokenizer):
         """Test converting IDs to tokens."""
         token = tokenizer.id_to_token(0)
@@ -157,13 +157,13 @@ class TestVocabularyAccess:
 
 class TestSpecialTokens:
     """Test special token handling."""
-    
+
     def test_get_special_tokens(self, tokenizer):
         """Test retrieving special tokens."""
         special_tokens = tokenizer.get_special_tokens()
         assert "cls_token" in special_tokens
         assert "sep_token" in special_tokens
-        
+
     def test_add_special_tokens(self, tokenizer):
         """Test adding custom special tokens."""
         initial_size = tokenizer.vocab_size
@@ -201,11 +201,11 @@ from src.tokenization.api import TokenizerAPI
 
 class TestTextEncoding:
     """Test encoding text to token IDs."""
-    
+
     @pytest.fixture
     def tokenizer(self):
         return TokenizerAPI.from_pretrained("bert-base-uncased")
-    
+
     def test_encode_simple_text(self, tokenizer):
         """Test encoding simple text."""
         text = "Hello world"
@@ -213,7 +213,7 @@ class TestTextEncoding:
         assert isinstance(tokens, list)
         assert len(tokens) > 0
         assert all(isinstance(t, int) for t in tokens)
-        
+
     def test_encode_with_special_tokens(self, tokenizer):
         """Test encoding includes special tokens."""
         text = "Hello world"
@@ -223,7 +223,7 @@ class TestTextEncoding:
 
 class TestTextDecoding:
     """Test decoding token IDs to text."""
-    
+
     def test_decode_tokens(self, tokenizer):
         """Test decoding token IDs back to text."""
         text = "Hello world"
@@ -231,7 +231,7 @@ class TestTextDecoding:
         decoded = tokenizer.decode(tokens)
         assert isinstance(decoded, str)
         # Should be similar to original (may have normalization)
-        
+
     def test_roundtrip_encoding(self, tokenizer):
         """Test encode-decode roundtrip."""
         original = "Machine learning is awesome"
@@ -272,29 +272,29 @@ from src.tokenization.api import TokenizerAPI
 
 class TestLoadingErrors:
     """Test error handling in tokenizer loading."""
-    
+
     def test_load_invalid_path(self):
         """Test loading from invalid path raises appropriate error."""
         with pytest.raises(FileNotFoundError):
             load_tokenizer("/nonexistent/path/tokenizer.json", fallback=False)
-            
+
     def test_load_invalid_format(self, tmp_path):
         """Test loading invalid format raises error."""
         bad_file = tmp_path / "bad.json"
         bad_file.write_text("not valid json {{{")
-        
+
         with pytest.raises((ValueError, json.JSONDecodeError)):
             load_tokenizer(str(bad_file))
 
 class TestEncodingErrors:
     """Test error handling in encoding operations."""
-    
+
     def test_encode_empty_string(self, tokenizer):
         """Test encoding empty string handles gracefully."""
         result = tokenizer.encode("")
         assert isinstance(result, list)
         # May return empty list or just special tokens
-        
+
     def test_encode_very_long_text(self, tokenizer):
         """Test encoding text exceeding max length."""
         long_text = "word " * 10000

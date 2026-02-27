@@ -66,42 +66,42 @@ updated: YYYY-MM-DD
 use_case:
   title: {Use case from table}
   scenario: {Scenario from table}
-  
+
 # Entry points
 entry_paths:
   - path/to/files
   - another/path
-  
+
 # Trigger configuration
 triggers:
   pro_plus:
     - {Trigger description}
   team:
     - {Trigger description}
-    
+
 # Target metrics
 metrics:
   - name: {metric_name}
     target: {target_value}
     direction: increase|decrease|maintain
-    
+
 # Execution steps
 steps:
   - name: {Step name}
     description: {What it does}
     timeout: {seconds}
-    
+
 # Output specifications
 outputs:
   - name: {output_file}
     format: json|markdown|sarif
     location: {path}
-    
+
 # Risk management
 risks:
   - risk: {Risk description}
     guardrail: {Mitigation}
-    
+
 # Cognitive Brain integration
 cognitive_brain:
   perception: {What data is collected}
@@ -263,14 +263,14 @@ class FlakyPerception:
         """Extract test results from workflow logs."""
         # Parse pytest output from Actions logs
         # Build test history: {test_name: [pass, fail, pass, ...]}
-        
+
 # agent/decision.py
 class FlakyDecision:
     def classify_flakes(self, history: TestHistory) -> List[FlakyTest]:
         """Classify tests as flaky based on pass/fail ratio."""
         # Threshold: >20% failure rate with inconsistent results
         # Severity: critical (always fails) vs intermittent
-        
+
 # agent/action.py
 class FlakyAction:
     def quarantine(self, flaky_tests: List[FlakyTest]):
@@ -358,7 +358,7 @@ class DependencyPerception:
         # Find all requirements*.txt
         # Parse pinned versions
         # Check for security vulnerabilities (pip-audit)
-        
+
 # agent/decision.py
 class DependencyDecision:
     def approve_updates(self, updates: List[Update]) -> List[Update]:
@@ -366,7 +366,7 @@ class DependencyDecision:
         # Reject major version changes
         # Prioritize security fixes
         # Check for known breaking changes in changelog
-        
+
 # agent/action.py
 class DependencyAction:
     def create_upgrade_pr(self, updates: List[Update]):
@@ -795,7 +795,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -984,7 +984,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -132,39 +132,39 @@ def check_threshold_consistency():
     workflow_dir = Path(".github/workflows")
     test_workflows = [
         "test-suite.yml",
-        "test-comprehensive.yml", 
+        "test-comprehensive.yml",
         "test-rag.yml"
     ]
-    
+
     thresholds = {}
     expected_threshold = 70
-    
+
     for workflow in test_workflows:
         workflow_path = workflow_dir / workflow
         if not workflow_path.exists():
             continue
-            
+
         content = workflow_path.read_text()
-        
+
         # Pattern 1: --fail-under=XX
         match1 = re.search(r'--fail-under=(\d+)', content)
         # Pattern 2: below XX% threshold
         match2 = re.search(r'below (\d+)% threshold', content)
-        
+
         threshold = None
         if match1:
             threshold = int(match1.group(1))
         elif match2:
             threshold = int(match2.group(1))
-            
+
         thresholds[workflow] = threshold
-        
+
     # Check consistency
     inconsistent = []
     for workflow, threshold in thresholds.items():
         if threshold != expected_threshold:
             inconsistent.append(f"{workflow}: {threshold}% (expected {expected_threshold}%)")
-    
+
     if inconsistent:
         print("❌ Coverage threshold inconsistencies found:")
         for item in inconsistent:
@@ -206,7 +206,7 @@ modules:
   rag:
     threshold: 75  # Higher standard for critical RAG modules
     mode: soft_gate
-  
+
   experimental:
     threshold: 50  # Lower for experimental features
     mode: warning_only

@@ -17,7 +17,7 @@ pub struct AgentHandle {
 }
 
 /// Agent lifecycle manager using Rayon thread pool
-/// 
+///
 /// Manages Python agent processes with true parallelism, bypassing GIL
 /// constraints. Uses Rayon for CPU-bound work distribution.
 #[pyclass]
@@ -30,7 +30,7 @@ pub struct AgentManager {
 #[pymethods]
 impl AgentManager {
     /// Create a new AgentManager
-    /// 
+    ///
     /// # Arguments
     /// * `max_agents` - Maximum number of concurrent agents
     #[new]
@@ -39,16 +39,16 @@ impl AgentManager {
             .num_threads(max_agents)
             .build()
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
-        
+
         Ok(AgentManager {
             pool: Arc::new(pool),
             active_agents: Arc::new(DashMap::new()),
             max_agents,
         })
     }
-    
+
     /// Spawn a new agent
-    /// 
+    ///
     /// # Arguments
     /// * `agent_id` - Unique identifier for the agent
     /// * `config` - JSON configuration for the agent
@@ -58,16 +58,16 @@ impl AgentManager {
                 format!("Max agents reached ({})", self.max_agents)
             ));
         }
-        
+
         let agents = self.active_agents.clone();
         let agent_id_clone = agent_id.clone();
-        
+
         // Insert immediately to reserve slot
         self.active_agents.insert(agent_id.clone(), AgentHandle {
             id: agent_id.clone(),
             status: AgentStatus::Working("initializing".to_string()),
         });
-        
+
         self.pool.spawn(move || {
             Python::with_gil(|py| {
                 // Try to import and run agent
@@ -98,30 +98,30 @@ impl AgentManager {
                 }
             });
         });
-        
+
         Ok(())
     }
-    
+
     /// Get the number of currently active agents
     fn get_active_count(&self) -> usize {
         self.active_agents.len()
     }
-    
+
     /// Get the maximum number of agents
     fn get_max_agents(&self) -> usize {
         self.max_agents
     }
-    
+
     /// Check if an agent is currently active
     fn is_agent_active(&self, agent_id: String) -> bool {
         self.active_agents.contains_key(&agent_id)
     }
-    
+
     /// List all active agent IDs
     fn list_active_agents(&self) -> Vec<String> {
         self.active_agents.iter().map(|entry| entry.key().clone()).collect()
     }
-    
+
     /// Terminate an agent (remove from active pool)
     fn terminate_agent(&self, agent_id: String) -> PyResult<bool> {
         Ok(self.active_agents.remove(&agent_id).is_some())

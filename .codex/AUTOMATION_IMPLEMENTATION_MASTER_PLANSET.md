@@ -32,28 +32,28 @@ graph TD
     B --> C[Phase 3: CI/CD Integration]
     C --> D[Phase 4: Token-Dependent Automation]
     D --> E[Phase 5: Custom Copilot Agents]
-    
+
     A --> A1[HA-005: Dependency Test]
     A --> A2[HA-011: Genesis Workflow Test]
     A --> A3[HA-012: CodeQL Review]
     A --> A4[HA-013: Deployment Checks]
-    
+
     B --> B1[Unit Tests for Scripts]
     B --> B2[Integration Tests]
     B --> B3[Documentation]
-    
+
     C --> C1[GitHub Actions Workflows]
     C --> C2[PR Automation]
     C --> C3[Status Reporting]
-    
+
     D --> D1[Token Rotation]
     D --> D2[Secret Management]
     D --> D3[API Automation]
-    
+
     E --> E1[CI/Testing Agent]
     E --> E2[Documentation Agent]
     E --> E3[Security Review Agent]
-    
+
     style A fill:#90EE90
     style B fill:#87CEEB
     style C fill:#FFD700
@@ -128,17 +128,17 @@ main() {
     log "Log File: $LOG_FILE"
     log "Report File: $REPORT_FILE"
     log ""
-    
+
     # Check Python version
     log "Checking Python version..."
     if ! command -v python3 &> /dev/null; then
         error "python3 not found in PATH"
         exit 1
     fi
-    
+
     PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
     log "Python version: $PYTHON_VERSION"
-    
+
     # Create clean test environment
     log "Creating clean virtual environment..."
     if ! python3 -m venv "$TEST_ENV_DIR" 2>&1 | tee -a "$LOG_FILE"; then
@@ -146,13 +146,13 @@ main() {
         exit 1
     fi
     success "Virtual environment created"
-    
+
     # Activate environment
     log "Activating virtual environment..."
     # shellcheck disable=SC1091
     source "$TEST_ENV_DIR/bin/activate"
     success "Environment activated"
-    
+
     # Upgrade pip
     log "Upgrading pip..."
     if ! pip install --upgrade pip --quiet 2>&1 | tee -a "$LOG_FILE"; then
@@ -160,7 +160,7 @@ main() {
         exit 1
     fi
     success "pip upgraded"
-    
+
     # Install project
     log "Installing project and dependencies..."
     cd "$REPO_ROOT"
@@ -169,11 +169,11 @@ main() {
         exit 1
     fi
     success "Project installed"
-    
+
     log ""
     log "📦 Verifying Critical Dependencies"
     log "===================================="
-    
+
     # Test critical dependencies
     declare -A deps=(
         ["torch"]="import torch; print(torch.__version__)"
@@ -182,10 +182,10 @@ main() {
         ["numpy"]="import numpy; print(numpy.__version__)"
         ["pandas"]="import pandas; print(pandas.__version__)"
     )
-    
+
     declare -A results=()
     local failed=0
-    
+
     for dep in "${!deps[@]}"; do
         log "Testing $dep..."
         if version=$(python3 -c "${deps[$dep]}" 2>&1); then
@@ -197,17 +197,17 @@ main() {
             ((failed++))
         fi
     done
-    
+
     log ""
     log "📦 Verifying Optional Dependencies"
     log "===================================="
-    
+
     # Test optional dependencies
     declare -A opt_deps=(
         ["xxhash"]="import xxhash; print(xxhash.__version__)"
         ["sklearn"]="import sklearn; print(sklearn.__version__)"
     )
-    
+
     for dep in "${!opt_deps[@]}"; do
         log "Testing $dep (optional)..."
         if version=$(python3 -c "${opt_deps[$dep]}" 2>&1); then
@@ -218,14 +218,14 @@ main() {
             results["$dep"]="⚠️  Not installed (optional)"
         fi
     done
-    
+
     # Generate report
     log ""
     log "📄 Generating Report"
     log "===================="
-    
+
     mkdir -p "$(dirname "$REPORT_FILE")"
-    
+
     cat > "$REPORT_FILE" << EOF
 # Dependency Installation Test Report
 
@@ -252,11 +252,11 @@ main() {
 | Package | Status |
 |---------|--------|
 EOF
-    
+
     for dep in "${!deps[@]}"; do
         echo "| $dep | ${results[$dep]} |" >> "$REPORT_FILE"
     done
-    
+
     cat >> "$REPORT_FILE" << EOF
 
 ### Optional Dependencies
@@ -264,11 +264,11 @@ EOF
 | Package | Status |
 |---------|--------|
 EOF
-    
+
     for dep in "${!opt_deps[@]}"; do
         echo "| $dep | ${results[$dep]} |" >> "$REPORT_FILE"
     done
-    
+
     cat >> "$REPORT_FILE" << EOF
 
 ---
@@ -301,12 +301,12 @@ fi)
 **Script:** \`.codex/scripts/automated_dependency_test.sh\`  
 **Part of:** Automation Implementation Master Planset
 EOF
-    
+
     success "Report generated: $REPORT_FILE"
-    
+
     # Deactivate environment
     deactivate
-    
+
     # Print summary
     log ""
     log "=========================================="
@@ -402,28 +402,28 @@ warning() {
 # Check gh CLI authentication
 check_auth() {
     log "Checking GitHub CLI authentication..."
-    
+
     if ! command -v gh &> /dev/null; then
         error "GitHub CLI (gh) not found in PATH"
         error "Install: https://cli.github.com/"
         exit 1
     fi
-    
+
     if ! gh auth status &>/dev/null; then
         error "GitHub CLI not authenticated"
         error "Run: gh auth login"
         exit 1
     fi
-    
+
     success "GitHub CLI authenticated"
 }
 
 # Dispatch workflow
 dispatch_workflow() {
     local branch="${1:-main}"
-    
+
     log "Dispatching $WORKFLOW_FILE workflow on branch: $branch"
-    
+
     if gh workflow run "$WORKFLOW_FILE" \
         --repo "$REPO_OWNER/$REPO_NAME" \
         --ref "$branch"; then
@@ -440,11 +440,11 @@ wait_for_run() {
     log "Waiting for workflow run to start..."
     local max_wait=30
     local waited=0
-    
+
     while [ $waited -lt $max_wait ]; do
         sleep 2
         ((waited+=2))
-        
+
         if gh run list \
             --workflow="$WORKFLOW_FILE" \
             --repo "$REPO_OWNER/$REPO_NAME" \
@@ -455,7 +455,7 @@ wait_for_run() {
             return 0
         fi
     done
-    
+
     warning "Workflow may not have started yet (timeout after ${max_wait}s)"
     return 1
 }
@@ -463,7 +463,7 @@ wait_for_run() {
 # Get latest run ID
 get_latest_run() {
     log "Getting latest workflow run..."
-    
+
     local run_id
     run_id=$(gh run list \
         --workflow="$WORKFLOW_FILE" \
@@ -471,7 +471,7 @@ get_latest_run() {
         --limit 1 \
         --json databaseId \
         --jq '.[0].databaseId')
-    
+
     if [ -n "$run_id" ]; then
         log "Run ID: $run_id"
         echo "$run_id"
@@ -485,10 +485,10 @@ get_latest_run() {
 # Monitor workflow run
 monitor_run() {
     local run_id="$1"
-    
+
     log "Monitoring workflow run: $run_id"
     log "This may take several minutes..."
-    
+
     # Watch run (blocks until complete)
     if gh run watch "$run_id" --repo "$REPO_OWNER/$REPO_NAME"; then
         success "Workflow monitoring complete"
@@ -502,15 +502,15 @@ monitor_run() {
 # Get run status
 get_run_status() {
     local run_id="$1"
-    
+
     log "Getting final status for run: $run_id"
-    
+
     local status
     status=$(gh run view "$run_id" \
         --repo "$REPO_OWNER/$REPO_NAME" \
         --json conclusion \
         --jq '.conclusion')
-    
+
     echo "$status"
 }
 
@@ -519,24 +519,24 @@ generate_report() {
     local run_id="$1"
     local status="$2"
     local branch="$3"
-    
+
     log "Generating test report..."
-    
+
     mkdir -p "$(dirname "$REPORT_FILE")"
-    
+
     # Get run details
     local run_details
     run_details=$(gh run view "$run_id" \
         --repo "$REPO_OWNER/$REPO_NAME" \
         --json number,displayTitle,createdAt,updatedAt,conclusion,event,headBranch,url)
-    
+
     local run_number=$(echo "$run_details" | jq -r '.number')
     local run_title=$(echo "$run_details" | jq -r '.displayTitle')
     local created_at=$(echo "$run_details" | jq -r '.createdAt')
     local updated_at=$(echo "$run_details" | jq -r '.updatedAt')
     local event=$(echo "$run_details" | jq -r '.event')
     local run_url=$(echo "$run_details" | jq -r '.url')
-    
+
     cat > "$REPORT_FILE" << EOF
 # Genesis Workflow Test Report
 
@@ -601,45 +601,45 @@ fi)
 **Script:** \`.codex/scripts/automated_genesis_test.sh\`  
 **Part of:** Automation Implementation Master Planset
 EOF
-    
+
     success "Report generated: $REPORT_FILE"
 }
 
 # Main function
 main() {
     local branch="${1:-main}"
-    
+
     log "🚀 Automated Genesis Workflow Test"
     log "===================================="
     log ""
-    
+
     # Check authentication
     check_auth
-    
+
     # Dispatch workflow
     if ! dispatch_workflow "$branch"; then
         exit 1
     fi
-    
+
     # Wait for run to start
     sleep 10
-    
+
     # Get run ID
     local run_id
     if ! run_id=$(get_latest_run); then
         exit 1
     fi
-    
+
     # Monitor run
     monitor_run "$run_id" || true
-    
+
     # Get final status
     local status
     status=$(get_run_status "$run_id")
-    
+
     # Generate report
     generate_report "$run_id" "$status" "$branch"
-    
+
     # Print summary
     log ""
     log "===================================="
@@ -703,7 +703,7 @@ class Suppression:
 
 class CodeQLSuppressionReviewer:
     """Automated reviewer for CodeQL suppressions."""
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.suppression_pattern = re.compile(
@@ -711,11 +711,11 @@ class CodeQLSuppressionReviewer:
             re.IGNORECASE
         )
         self.suppressions: List[Suppression] = []
-        
+
     def find_all_suppressions(self) -> List[Suppression]:
         """Find all CodeQL suppressions in codebase."""
         print("🔍 Scanning for CodeQL suppressions...")
-        
+
         # Search Python files
         try:
             result = subprocess.run(
@@ -724,20 +724,20 @@ class CodeQLSuppressionReviewer:
                 text=True,
                 check=False
             )
-            
+
             if result.returncode == 0:
                 for line in result.stdout.strip().split('\n'):
                     if not line:
                         continue
-                    
+
                     self._parse_suppression_line(line)
-        
+
         except Exception as e:
             print(f"❌ Error scanning for suppressions: {e}")
-        
+
         print(f"✅ Found {len(self.suppressions)} suppression(s)")
         return self.suppressions
-    
+
     def _parse_suppression_line(self, line: str):
         """Parse a grep result line into a Suppression object."""
         parts = line.split(':', 2)
@@ -747,9 +747,9 @@ class CodeQLSuppressionReviewer:
                 lineno = int(parts[1])
             except ValueError:
                 return
-            
+
             content = parts[2]
-            
+
             match = self.suppression_pattern.search(content)
             if match:
                 rule_id = match.group(1)
@@ -760,17 +760,17 @@ class CodeQLSuppressionReviewer:
                     content=content.strip()
                 )
                 self.suppressions.append(suppression)
-    
+
     def validate_suppression(self, suppression: Suppression) -> Suppression:
         """Validate a single suppression for compliance."""
         try:
             with open(suppression.filepath, 'r') as f:
                 lines = f.readlines()
-            
+
             # Check for justification comment (should be after CodeQL comment)
             if suppression.lineno < len(lines):
                 next_lines = lines[suppression.lineno:suppression.lineno+10]
-                
+
                 # Look for justification keywords
                 justification_keywords = [
                     'justification:',
@@ -780,7 +780,7 @@ class CodeQLSuppressionReviewer:
                     'explanation:',
                     'why:'
                 ]
-                
+
                 justification_lines = []
                 for i, line in enumerate(next_lines):
                     line_lower = line.lower()
@@ -792,10 +792,10 @@ class CodeQLSuppressionReviewer:
                             justification_lines.append(next_lines[j].strip('# \n'))
                             j += 1
                         break
-                
+
                 if justification_lines:
                     suppression.justification_text = '\n'.join(justification_lines)
-                    
+
                     # Quality check
                     total_chars = sum(len(line) for line in justification_lines)
                     if total_chars > 100:
@@ -811,12 +811,12 @@ class CodeQLSuppressionReviewer:
                         suppression.recommendation = "IMPROVE_JUSTIFICATION"
                 else:
                     suppression.recommendation = "ADD_JUSTIFICATION"
-        
+
         except Exception as e:
             suppression.recommendation = f"ERROR: {e}"
-        
+
         return suppression
-    
+
     def generate_report(self) -> str:
         """Generate comprehensive suppression review report."""
         report_lines = [
@@ -829,16 +829,16 @@ class CodeQLSuppressionReviewer:
             "## Summary",
             ""
         ]
-        
+
         # Calculate statistics
         approved = sum(1 for s in self.suppressions if s.recommendation == "APPROVED")
-        needs_justification = sum(1 for s in self.suppressions 
+        needs_justification = sum(1 for s in self.suppressions
                                    if s.recommendation == "ADD_JUSTIFICATION")
-        needs_improvement = sum(1 for s in self.suppressions 
+        needs_improvement = sum(1 for s in self.suppressions
                                 if "IMPROVE" in s.recommendation)
         needs_review = sum(1 for s in self.suppressions if s.recommendation == "REVIEW")
         errors = sum(1 for s in self.suppressions if "ERROR" in s.recommendation)
-        
+
         report_lines.extend([
             f"- ✅ Approved: {approved} ({approved/len(self.suppressions)*100:.1f}%)",
             f"- ⚠️  Needs Justification: {needs_justification}",
@@ -849,20 +849,20 @@ class CodeQLSuppressionReviewer:
             "## Compliance Status",
             ""
         ])
-        
+
         if approved == len(self.suppressions):
             report_lines.append("🎉 **All suppressions are compliant!**")
         elif needs_justification > 0 or needs_improvement > 0:
             report_lines.append("⚠️  **Action Required:** Some suppressions need attention.")
         else:
             report_lines.append("✅ **Status:** Good - minor improvements possible.")
-        
+
         report_lines.extend([
             "",
             "## Detailed Results",
             ""
         ])
-        
+
         # Group by recommendation
         by_recommendation = {}
         for s in self.suppressions:
@@ -870,7 +870,7 @@ class CodeQLSuppressionReviewer:
             if rec not in by_recommendation:
                 by_recommendation[rec] = []
             by_recommendation[rec].append(s)
-        
+
         for recommendation, suppressions in sorted(by_recommendation.items()):
             status_icon = {
                 'APPROVED': '✅',
@@ -878,12 +878,12 @@ class CodeQLSuppressionReviewer:
                 'IMPROVE_JUSTIFICATION': '📝',
                 'REVIEW': '🔍'
             }.get(recommendation, '❓')
-            
+
             report_lines.extend([
                 f"### {status_icon} {recommendation} ({len(suppressions)})",
                 ""
             ])
-            
+
             for s in suppressions:
                 rel_path = s.filepath.relative_to(self.repo_root) if s.filepath.is_relative_to(self.repo_root) else s.filepath
                 report_lines.extend([
@@ -893,7 +893,7 @@ class CodeQLSuppressionReviewer:
                     f"**Quality:** {s.justification_quality}",
                     ""
                 ])
-                
+
                 if s.justification_text:
                     report_lines.extend([
                         "**Justification:**",
@@ -902,9 +902,9 @@ class CodeQLSuppressionReviewer:
                         "```",
                         ""
                     ])
-                
+
                 report_lines.append("")
-        
+
         report_lines.extend([
             "## References",
             "",
@@ -914,7 +914,7 @@ class CodeQLSuppressionReviewer:
             "## Recommendations",
             ""
         ])
-        
+
         if needs_justification > 0:
             report_lines.extend([
                 f"1. Add justification comments for {needs_justification} suppression(s)",
@@ -923,7 +923,7 @@ class CodeQLSuppressionReviewer:
                 "4. Document what makes the code safe",
                 ""
             ])
-        
+
         if needs_improvement > 0:
             report_lines.extend([
                 f"5. Improve justification quality for {needs_improvement} suppression(s)",
@@ -931,7 +931,7 @@ class CodeQLSuppressionReviewer:
                 "7. Explain security implications clearly",
                 ""
             ])
-        
+
         report_lines.extend([
             "---",
             "",
@@ -939,9 +939,9 @@ class CodeQLSuppressionReviewer:
             "**Script:** `.codex/scripts/automated_codeql_suppression_review.py`",
             "**Part of:** Automation Implementation Master Planset"
         ])
-        
+
         return '\n'.join(report_lines)
-    
+
     def save_json_report(self, output_path: Path):
         """Save detailed JSON report."""
         data = {
@@ -950,59 +950,59 @@ class CodeQLSuppressionReviewer:
             'total_suppressions': len(self.suppressions),
             'suppressions': [asdict(s) for s in self.suppressions]
         }
-        
+
         # Convert Path objects to strings in JSON
         for s in data['suppressions']:
             s['filepath'] = str(s['filepath'])
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=2)
-        
+
         print(f"📄 JSON report saved: {output_path}")
-    
+
     def run_review(self) -> Tuple[str, bool]:
         """Run complete suppression review."""
         print("🤖 Automated CodeQL Suppression Review")
         print("=" * 50)
         print()
-        
+
         # Find all suppressions
         self.find_all_suppressions()
-        
+
         if not self.suppressions:
             print("✅ No CodeQL suppressions found")
             return "No suppressions found", True
-        
+
         # Validate each suppression
         print(f"\n🔍 Validating {len(self.suppressions)} suppression(s)...")
         for suppression in self.suppressions:
             self.validate_suppression(suppression)
-        
+
         print("✅ Validation complete")
-        
+
         # Generate reports
         print("\n📄 Generating reports...")
         markdown_report = self.generate_report()
-        
+
         # Save reports
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_dir = self.repo_root / '.codex' / 'reports'
         report_dir.mkdir(parents=True, exist_ok=True)
-        
+
         md_path = report_dir / f'codeql_suppression_review_{timestamp}.md'
         json_path = report_dir / f'codeql_suppression_review_{timestamp}.json'
-        
+
         md_path.write_text(markdown_report)
         self.save_json_report(json_path)
-        
+
         print(f"✅ Markdown report: {md_path}")
         print(f"✅ JSON report: {json_path}")
-        
+
         # Determine pass/fail
-        needs_action = sum(1 for s in self.suppressions 
+        needs_action = sum(1 for s in self.suppressions
                           if s.recommendation not in ['APPROVED'])
-        
+
         print("\n" + "=" * 50)
         if needs_action == 0:
             print("✅ All suppressions are compliant!")
@@ -1014,15 +1014,15 @@ class CodeQLSuppressionReviewer:
 def main():
     """Main entry point."""
     repo_root = Path('/home/runner/work/_codex_/_codex_')
-    
+
     if len(sys.argv) > 1:
         repo_root = Path(sys.argv[1])
-    
+
     reviewer = CodeQLSuppressionReviewer(repo_root)
     report_path, passed = reviewer.run_review()
-    
+
     print(f"\n📖 View report: cat {report_path}")
-    
+
     sys.exit(0 if passed else 1)
 
 if __name__ == '__main__':
@@ -1097,7 +1097,7 @@ FAIL=0
 run_test() {
     local name="$1"
     local command="$2"
-    
+
     echo "Testing: $name"
     if eval "$command"; then
         echo "✅ PASS: $name"
@@ -1199,68 +1199,68 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Run dependency test
         run: ./.codex/scripts/automated_dependency_test.sh
-      
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-test-report
           path: .codex/reports/dependency_test_report_*.md
-  
+
   codeql-suppression-review:
     name: CodeQL Suppression Review
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Run suppression review
         run: python ./.codex/scripts/automated_codeql_suppression_review.py
-      
+
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: codeql-suppression-reports
           path: .codex/reports/codeql_suppression_review_*
-  
+
   production-deployment-check:
     name: Production Deployment Readiness
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install -e .
-      
+
       - name: Run deployment checklist
         run: python ./.codex/scripts/automated_production_deployment.py --dry-run
-      
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deployment-readiness-report
           path: .codex/reports/production_deployment_*.md
-      
+
       - name: Comment on PR
         if: always()
         uses: actions/github-script@v7
@@ -1271,11 +1271,11 @@ jobs:
               .filter(f => f.startsWith('production_deployment_'))
               .sort()
               .reverse();
-            
+
             if (reports.length > 0) {
               const report = fs.readFileSync(`.codex/reports/${reports[0]}`, 'utf8');
               const truncated = report.length > 65000 ? report.substring(0, 65000) + '\n\n... (truncated)' : report;
-              
+
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
@@ -1337,27 +1337,27 @@ jobs:
       actions: write
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Generate new key
         id: newkey
         run: |
           NEW_KEY=$(openssl rand -base64 32)
           echo "::add-mask::$NEW_KEY"
           echo "key=$NEW_KEY" >> $GITHUB_OUTPUT
-      
+
       - name: Update secret
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
           echo "${{ steps.newkey.outputs.key }}" | \
             gh secret set CODEX_MASTER_KEY --repo ${{ github.repository }}
-      
+
       - name: Verify new key
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
           gh secret list | grep CODEX_MASTER_KEY
-      
+
       - name: Create audit log entry
         run: |
           echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ"): CODEX_MASTER_KEY rotated" >> \
@@ -1438,7 +1438,7 @@ prompts:
     1. Root cause analysis
     2. Specific fix recommendations
     3. Prevention strategies
-    
+
     Workflow: {workflow_name}
     Job: {job_name}
     Error: {error_message}

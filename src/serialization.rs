@@ -8,17 +8,17 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 
 /// Agent state for serialization
-/// 
+///
 /// Serializable agent state structure with MessagePack support
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[pyclass]
 pub struct AgentState {
     #[pyo3(get, set)]
     pub id: String,
-    
+
     #[pyo3(get, set)]
     pub memory: Vec<String>,
-    
+
     // Note: Python access to metrics requires custom getters/setters
     pub metrics: HashMap<String, f64>,
 }
@@ -26,7 +26,7 @@ pub struct AgentState {
 #[pymethods]
 impl AgentState {
     /// Create a new AgentState
-    /// 
+    ///
     /// # Arguments
     /// * `id` - Agent identifier
     /// * `memory` - List of memory items
@@ -38,17 +38,17 @@ impl AgentState {
             metrics: HashMap::new(),
         }
     }
-    
+
     /// Set a metric value
     fn set_metric(&mut self, key: String, value: f64) {
         self.metrics.insert(key, value);
     }
-    
+
     /// Get a metric value
     fn get_metric(&self, key: String) -> Option<f64> {
         self.metrics.get(&key).copied()
     }
-    
+
     /// Get all metric keys
     fn get_metric_keys(&self) -> Vec<String> {
         self.metrics.keys().cloned().collect()

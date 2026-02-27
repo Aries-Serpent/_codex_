@@ -43,7 +43,7 @@ echo ""
 echo "=== Backup Verification ==="
 if [ "$TOTAL_FILES" -gt 0 ]; then
     echo "✅ All workflow files backed up successfully"
-    
+
     # Compare file counts
     ORIGINAL_COUNT=$(find "$WORKFLOWS_DIR" -type f \( -name "*.yml" -o -name "*.yaml" \) | wc -l)
     if [ "$TOTAL_FILES" -eq "$ORIGINAL_COUNT" ]; then

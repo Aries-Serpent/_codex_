@@ -11,7 +11,7 @@
 
 ## Quick Access
 
-**View Cache Status**: 
+**View Cache Status**:
 ```
 GitHub Repository → Settings → Actions → Caches
 ```

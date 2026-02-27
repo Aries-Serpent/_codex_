@@ -298,7 +298,7 @@ LOW │    MEDIUM│    HIGH
 3. Check linting
    ruff check affected_file.py
    black --check affected_file.py
-   
+
 4. Type checking
    mypy affected_file.py
 ```
@@ -339,9 +339,9 @@ LOW │    MEDIUM│    HIGH
 2. **Commit Message** (Conventional Commits):
    ```
    type(scope): subject
-   
+
    Body explaining what and why (not how)
-   
+
    Refs: #issue_number
    Agent: ai_org_repo_admin
    Risk: Low
@@ -351,22 +351,22 @@ LOW │    MEDIUM│    HIGH
    ```markdown
    ## Summary
    Brief description of changes
-   
+
    ## Motivation
    Why this change is needed
-   
+
    ## Changes
    - Detailed list of modifications
-   
+
    ## Testing
    - How it was tested
    - Test results
-   
+
    ## Risk Assessment
    - Risk level: Medium
    - Impact: Describe potential impact
    - Rollback: Describe rollback procedure
-   
+
    ## Checklist
    - [ ] Tests pass
    - [ ] Documentation updated
@@ -569,24 +569,24 @@ try:
 except RecoverableError as e:
     # Log error
     log_error(e, severity="warning")
-    
+
     # Attempt fix
     if auto_fixable(e):
         fix_and_retry(e)
     else:
         # Create issue for human review
         create_issue(e, label="agent-error")
-        
+
 except CriticalError as e:
     # Log error
     log_error(e, severity="critical")
-    
+
     # Escalate immediately
     escalate_to_human(e, priority="high")
-    
+
     # Stop all related operations
     halt_operations()
-    
+
 finally:
     # Always log outcome
     log_operation_result()

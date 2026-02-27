@@ -392,7 +392,7 @@ Resolution Plan (Security Priority):
 ───────────────────────────────────────────────────────────
 1. django: 3.2.0 → 3.2.18 (SECURITY PATCH)
    Fixes: CVE-2023-12345 (High)
-   
+
 2. requests: 2.20.0 → 2.27.1 (SECURITY PATCH)
    Fixes: CVE-2022-67890 (Medium)
 
@@ -429,12 +429,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Resolve Dependency Conflicts
         id: resolve
         uses: ./.github/agents/dependency-conflict-resolver
@@ -444,14 +444,14 @@ jobs:
           check-vulnerabilities: true
           fail-on-conflicts: false
           auto-apply: false
-      
+
       - name: Upload Resolution Plan
         if: steps.resolve.outputs.conflicts-found != '0'
         uses: actions/upload-artifact@v3
         with:
           name: resolution-plan
           path: ${{ steps.resolve.outputs.resolution-plan }}
-      
+
       - name: Comment on PR
         if: github.event_name == 'pull_request' && steps.resolve.outputs.conflicts-found != '0'
         uses: actions/github-script@v6
@@ -462,13 +462,13 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `## 🔍 Dependency Conflict Report
-              
+
               **Conflicts Found:** ${{ steps.resolve.outputs.conflicts-found }}
               **Ecosystem:** ${{ steps.resolve.outputs.ecosystem-detected }}
               **Strategy:** balanced
-              
+
               📋 Resolution plan available in artifacts.
-              
+
               To resolve conflicts:
               1. Download the resolution plan artifact
               2. Review the suggested changes
@@ -571,66 +571,66 @@ def main():
     resolver = DependencyConflictResolver(
         config_path=Path('config/custom_config.yaml')
     )
-    
+
     # Parse dependencies
     print("📦 Parsing dependencies...")
     deps = resolver.parse_dependency_file(Path('requirements.txt'))
     print(f"   Found {len(deps)} dependencies")
-    
+
     # Build graph
     print("🔨 Building dependency graph...")
     graph = resolver.build_dependency_graph(deps)
     print(f"   Graph: {len(graph)} nodes")
-    
+
     # Detect conflicts
     print("🔍 Detecting conflicts...")
     conflicts = resolver.detect_conflicts()
-    
+
     if not conflicts:
         print("✅ No conflicts detected!")
         return 0
-    
+
     print(f"⚠️  Found {len(conflicts)} conflicts:")
     for i, conflict in enumerate(conflicts, 1):
         print(f"   {i}. {conflict.package_name}: {conflict.description}")
-    
+
     # Check vulnerabilities
     print("\n🛡️  Checking for vulnerabilities...")
     vulns = resolver.check_vulnerabilities()
     if vulns:
         print(f"   ⚠️  {len(vulns)} vulnerable packages found")
-    
+
     # Generate resolution plan
     print("\n📋 Generating resolution plan...")
     report = resolver.generate_resolution_plan()
     plan = report.resolution_plan
-    
+
     print(f"   Strategy: {plan.strategy.value}")
     print(f"   Actions: {len(plan.actions)}")
     print(f"   Risk: {plan.estimated_risk}")
-    
+
     # Prompt for confirmation
     if plan.requires_manual_review:
         print("\n⚠️  Manual review required for some conflicts")
         return 1
-    
+
     response = input("\n Apply resolution? [y/N]: ")
     if response.lower() != 'y':
         print("Aborted.")
         return 1
-    
+
     # Apply resolution
     print("\n🔧 Applying resolution...")
     success = resolver.apply_resolution(plan)
-    
+
     if not success:
         print("❌ Failed to apply resolution")
         return 1
-    
+
     # Validate
     print("✔️  Validating...")
     valid, errors = resolver.validate_resolution()
-    
+
     if valid:
         print("✅ Resolution applied successfully!")
         print("\n⚠️  Remember to:")
@@ -906,7 +906,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

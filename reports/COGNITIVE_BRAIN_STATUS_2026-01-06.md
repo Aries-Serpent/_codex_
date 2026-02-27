@@ -387,7 +387,7 @@ The Cognitive Brain framework integration is progressing successfully with Phase
 ### Existing CI Testing Agent ✅
 
 **Location:** `.github/agents/ci-testing-agent.md`  
-**Capabilities:** 
+**Capabilities:**
 - Automated test execution
 - Cognitive app testing
 - Decision trees for test scenarios

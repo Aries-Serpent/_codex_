@@ -54,7 +54,7 @@ class SecureBridge:
         self.mode = mode
         self.auth_token = auth_token or os.getenv("CODEX_BRIDGE_TOKEN")
         self._setup_secure_channel()
-    
+
     def _setup_secure_channel(self):
         if self.mode == BridgeMode.UNIX_SOCKET:
             # Create Unix domain socket with 0o600 permissions
@@ -76,7 +76,7 @@ class ContextMessage:
     context: Dict[str, Any]
     metadata: Optional[Dict[str, Any]] = None
     auth_token: Optional[str] = None
-    
+
     def to_json(self) -> str:
         return json.dumps(asdict(self))
 ```
@@ -242,7 +242,7 @@ srw------- 1 user user 0 Jan  9 12:00 /tmp/cognitive_bridge.sock
 - ✅ Audit trail completeness: 100%
 
 ### Performance Metrics
-- ✅ IPC latency: <5ms (target: <10ms) 
+- ✅ IPC latency: <5ms (target: <10ms)
 - ✅ Message throughput: 10,000+ msg/s
 - ✅ Connection overhead: <1ms
 - ✅ Authentication validation: <0.1ms

@@ -294,11 +294,11 @@ CACHE_CLEANUP_ENABLED: "true"
 env:
   # Enable cache manager
   CACHE_MANAGER_ENABLED: true
-  
+
   # Custom thresholds
   CACHE_SIZE_THRESHOLD_GB: 8.0
   CACHE_AGE_THRESHOLD_DAYS: 30
-  
+
   # Cache type
   CACHE_TYPE: pip
 ```

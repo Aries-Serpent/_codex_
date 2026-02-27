@@ -148,13 +148,13 @@ class DocumentProcessor:
         """Process agent-generated documentation."""
         # Apply date sanitization
         sanitized, replacements = sanitize_planning_dates(text)
-        
+
         # Log for audit trail
         if replacements:
             self.logger.info(f"Sanitized {len(replacements)} planning dates")
             for repl in replacements:
                 self.logger.debug(f"  {repl}")
-        
+
         return sanitized
 ```
 

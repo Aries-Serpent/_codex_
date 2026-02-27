@@ -36,17 +36,17 @@ Create and implement:
   - File formats: .py, .zip, .tar.gz, invalid encodings
   - Git repo ingestion, URL-based ingestion
   - Error handling: empty files, binary files, large files
-  
+
 - `tests/codex/test_analyze_phase9_1.py` (10-15 tests)
   - Static analysis, runtime analysis with AST
   - LLM intent inference (mock OpenAI API)
   - Analysis aggregation, error recovery
-  
+
 - `tests/codex/test_transform_phase9_1.py` (10-15 tests)
   - Tier A/B/C transformations
   - Validation, rollback mechanisms
   - Conflicting transformations edge cases
-  
+
 - `tests/codex/test_verify_phase9_1.py` (5-10 tests)
   - Behavior verification, diff validation
   - Performance regression detection
@@ -60,17 +60,17 @@ Create and implement:
   - create_workflow(), get_workflow(), state transitions
   - Token execution (AUDIT_EXEC, DOC_GEN, etc.)
   - Error handling: invalid IDs, missing steps, circular workflows
-  
+
 - `tests/agents/test_quantum_game_theory_phase9_1.py` (8-10 tests)
   - Strategy selection, coherence calculation
   - Nash equilibrium, quantum decisions
   - Edge cases: zero-sum games, ties
-  
+
 - `tests/agents/test_physics_orchestrator_phase9_1.py` (8-10 tests)
   - 6 paradigm integration (chaos, fractal, fluid, EM, wave, relativity)
   - Cross-paradigm coordination, parameter optimization
   - Error handling, extreme parameter values
-  
+
 - `tests/agents/test_mental_mapping_phase9_1.py` (4-8 tests)
   - Context tracking, state persistence
   - Memory management, context retrieval
@@ -84,17 +84,17 @@ Create and implement:
   - Topic-based selection (all 9 topics)
   - Custom patterns, glob handling
   - Error handling: invalid topic, no matches
-  
+
 - `tests/scripts/mcp/test_file_flattening_phase9_1.py` (5-8 tests)
   - Path flattening algorithm
   - Name collision detection, special characters
   - Max filename length, deeply nested paths
-  
+
 - `tests/scripts/mcp/test_manifest_generation_phase9_1.py` (5-8 tests)
   - Manifest structure validation
   - Metadata accuracy (SHA256, sizes, language)
   - Original path mapping, large manifests
-  
+
 - `tests/scripts/mcp/test_archive_creation_phase9_1.py` (2-4 tests)
   - ZIP creation, validation, compression
   - Error handling: write errors, disk space
@@ -109,17 +109,17 @@ Create and implement:
   - Complete pipeline: ingest → analyze → transform → verify
   - Error recovery across components
   - Partial failures, retry scenarios
-  
+
 - `tests/integration/test_mcp_workflow_e2e_phase9_1.py` (4-6 tests)
   - Topic-based packaging end-to-end
   - Custom workflows, validation
   - Package size limits, invalid inputs
-  
+
 - `tests/integration/test_agent_coordination_phase9_1.py` (5-8 tests)
   - Multi-agent workflows, handoff and state transfer
   - Coordination protocols, deadlock prevention
   - Agent failures, communication errors
-  
+
 - `tests/integration/test_state_management_phase9_1.py` (3-4 tests)
   - State persistence across sessions
   - Recovery after failures, migration
@@ -153,10 +153,10 @@ def test_example():
     """Test description."""
     # Arrange - Setup
     input_data = create_test_data()
-    
+
     # Act - Execute
     result = function_under_test(input_data)
-    
+
     # Assert - Verify
     assert result.status == "success"
 ```

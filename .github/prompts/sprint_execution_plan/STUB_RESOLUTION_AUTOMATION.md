@@ -15,7 +15,7 @@
 def find_not_implemented():
     """Scan codebase for NotImplementedError."""
     import ast
-    
+
     stubs = []
     for file in Path('src').rglob('*.py'):
         tree = ast.parse(file.read_text())
@@ -173,7 +173,7 @@ def process(data):
 def find_pass_only():
     """Find functions with only pass."""
     import ast
-    
+
     pass_only = []
     for file in Path('src').rglob('*.py'):
         tree = ast.parse(file.read_text())
@@ -254,7 +254,7 @@ class StubCleaner:
         self.stubs = []
         self.resolved = []
         self.manual_review = []
-    
+
     def scan_all(self):
         """Scan for all stub types."""
         self.stubs = (
@@ -266,7 +266,7 @@ class StubCleaner:
             self.find_stub_markers()
         )
         return self.stubs
-    
+
     def auto_resolve(self):
         """Attempt automated resolution."""
         for stub in self.stubs:
@@ -280,7 +280,7 @@ class StubCleaner:
             except Exception as e:
                 print(f"⚠️ Failed to resolve {stub}: {e}")
                 self.manual_review.append(stub)
-    
+
     def _determine_resolution(self, stub):
         """Determine best resolution strategy."""
         if stub['type'] == 'NotImplementedError':
@@ -292,7 +292,7 @@ class StubCleaner:
                 return Resolution('abstract_method', confidence=0.85)
             else:
                 return Resolution('implement_feature', confidence=0.5)
-        
+
         elif stub['type'] == 'TODO':
             # Parse TODO text for hints
             text = stub['text'].lower()
@@ -302,25 +302,25 @@ class StubCleaner:
                 return Resolution('optimize', confidence=0.6)
             else:
                 return Resolution('implement', confidence=0.5)
-        
+
         # ... more strategies
-    
+
     def _apply_resolution(self, stub, resolution):
         """Apply automated fix."""
         file_path = Path(stub['file'])
         lines = file_path.read_text().splitlines()
-        
+
         # Apply strategy-specific fix
         if resolution.strategy == 'optional_dependency':
             fixed_lines = self._fix_optional_dependency(lines, stub)
         elif resolution.strategy == 'add_error_handling':
             fixed_lines = self._fix_error_handling(lines, stub)
         # ... more strategies
-        
+
         # Write back
         file_path.write_text('\n'.join(fixed_lines))
         print(f"✓ Resolved {stub['file']}:{stub['line']}")
-    
+
     def generate_report(self):
         """Generate cleanup report."""
         report = {
@@ -329,13 +329,13 @@ class StubCleaner:
             'manual_review': len(self.manual_review),
             'success_rate': len(self.resolved) / len(self.stubs) if self.stubs else 0,
         }
-        
+
         print(f"\n📊 Stub Cleanup Report:")
         print(f"  Total: {report['total_stubs']}")
         print(f"  Auto-resolved: {report['auto_resolved']}")
         print(f"  Manual review: {report['manual_review']}")
         print(f"  Success rate: {report['success_rate']:.1%}")
-        
+
         return report
 
 # Execute
@@ -344,7 +344,7 @@ if __name__ == '__main__':
     cleaner.scan_all()
     cleaner.auto_resolve()
     report = cleaner.generate_report()
-    
+
     # Save manual review items
     with open('stub_manual_review.json', 'w') as f:
         json.dump(cleaner.manual_review, f, indent=2)
@@ -382,14 +382,14 @@ if __name__ == '__main__':
 def test_no_not_implemented_in_hot_path():
     """Ensure no NotImplementedError in critical paths."""
     from codex_ml.training import train
-    
+
     # Should not raise NotImplementedError
     train(model, dataset)
 
 def test_no_bare_pass_in_exception_handlers():
     """Ensure exception handlers do something."""
     import ast
-    
+
     for file in Path('src').rglob('*.py'):
         tree = ast.parse(file.read_text())
         for node in ast.walk(tree):
@@ -401,7 +401,7 @@ def test_stub_count_decreasing():
     """Track stub count over time."""
     current_count = count_stubs()
     baseline = 298
-    
+
     assert current_count < baseline, f"Stubs not decreasing: {current_count}/{baseline}"
 ```
 

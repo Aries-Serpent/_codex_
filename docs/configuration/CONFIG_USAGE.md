@@ -270,7 +270,7 @@ overrides = [
    # Bad
    with open("configs/training/base.yaml") as f:
        cfg = yaml.safe_load(f)
-   
+
    # Good
    cfg = load_config("base", config_dir="conf/training")
    ```
@@ -281,7 +281,7 @@ overrides = [
    training:
      epochs: 10
    max_epochs: 10  # Duplication!
-   
+
    # Good
    training:
      epochs: 10
@@ -292,7 +292,7 @@ overrides = [
    ```python
    # Bad
    cfg = load_config("config")  # May fail silently
-   
+
    # Good
    try:
        cfg = load_config("config", allow_fallback=False)
@@ -388,7 +388,7 @@ from codex.utils.config_loader import load_config
 
 def test_training_config():
     cfg = load_config("base", config_dir="conf/training")
-    
+
     assert cfg is not None
     assert "training" in cfg
     assert cfg.training.epochs > 0
@@ -399,7 +399,7 @@ def test_config_overrides():
         config_dir="conf/training",
         overrides=["training.epochs=5"]
     )
-    
+
     assert cfg.training.epochs == 5
 ```
 
@@ -408,11 +408,11 @@ def test_config_overrides():
 ```python
 def test_training_pipeline_with_config():
     cfg = load_config("base", config_dir="conf/training")
-    
+
     # Use config in training
     trainer = Trainer(config=cfg)
     results = trainer.train()
-    
+
     assert results.epochs_completed == cfg.training.epochs
 ```
 

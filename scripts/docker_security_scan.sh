@@ -60,23 +60,23 @@ echo ""
 echo "2. Running Trivy (vulnerability scanner)..."
 if command_exists trivy; then
     echo "  Scanning image: ${IMAGE_NAME}..."
-    
+
     # Full scan with all severity levels
     trivy image \
         --severity CRITICAL,HIGH,MEDIUM \
         --format table \
         "${IMAGE_NAME}" | tee "${REPORT_DIR}/trivy_${TIMESTAMP}.txt"
-    
+
     # JSON report for CI integration
     trivy image \
         --severity CRITICAL,HIGH,MEDIUM \
         --format json \
         --output "${REPORT_DIR}/trivy_${TIMESTAMP}.json" \
         "${IMAGE_NAME}"
-    
+
     # Check for critical vulnerabilities
     CRITICAL_COUNT=$(trivy image --severity CRITICAL --format json "${IMAGE_NAME}" | jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length')
-    
+
     if [ "${CRITICAL_COUNT:-0}" -gt 0 ]; then
         echo "  ⚠ WARNING: Found ${CRITICAL_COUNT} critical vulnerabilities!"
     else

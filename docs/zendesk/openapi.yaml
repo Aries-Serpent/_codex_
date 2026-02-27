@@ -4,18 +4,18 @@ info:
   version: 1.0.0
   description: |
     Complete Zendesk API integration with Quantum extensions for AI assistants.
-    
+
     This specification documents all endpoints implemented by the Zendesk API client
     and supports ChatGPT, CustomGPT, and Zendesk AI Assistant integrations.
-    
+
     ## Authentication
-    
+
     The API supports two authentication methods:
     - **API Token**: Use `{email}/token` as username and your API token as password
     - **OAuth 2.0**: Use Bearer token authentication
-    
+
     ## Rate Limits
-    
+
     Zendesk enforces rate limits. See the `Retry-After` header for rate limit information.
   contact:
     name: Zendesk API Support
@@ -105,7 +105,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/RateLimited'
-    
+
     post:
       operationId: createTicket
       summary: Create a ticket
@@ -150,7 +150,7 @@ paths:
   /tickets/{ticket_id}.json:
     parameters:
       - $ref: '#/components/parameters/ticketId'
-    
+
     get:
       operationId: getTicket
       summary: Get a ticket
@@ -175,7 +175,7 @@ paths:
                   assignee_id: 2001
         '404':
           $ref: '#/components/responses/NotFound'
-    
+
     put:
       operationId: updateTicket
       summary: Update a ticket
@@ -322,7 +322,7 @@ paths:
                     email: "john@example.com"
                     role: agent
                 count: 1
-    
+
     post:
       operationId: createUser
       summary: Create a user
@@ -354,7 +354,7 @@ paths:
   /users/{user_id}.json:
     parameters:
       - $ref: '#/components/parameters/userId'
-    
+
     get:
       operationId: getUser
       summary: Get a user
@@ -405,7 +405,7 @@ paths:
   /organizations/{organization_id}.json:
     parameters:
       - $ref: '#/components/parameters/organizationId'
-    
+
     get:
       operationId: getOrganization
       summary: Get an organization
@@ -450,7 +450,7 @@ paths:
         required: true
         schema:
           type: integer
-    
+
     get:
       operationId: getSLAPolicy
       summary: Get an SLA policy
@@ -473,7 +473,7 @@ paths:
       summary: Search Zendesk
       description: |
         Searches across Zendesk objects using query syntax.
-        
+
         ## Query Syntax Examples
         - `type:ticket status:open` - Open tickets
         - `type:user email:*@example.com` - Users with specific email domain
@@ -663,7 +663,7 @@ components:
       type: http
       scheme: basic
       description: Use `{email}/token` as username and API token as password
-    
+
     oauth2:
       type: oauth2
       description: OAuth 2.0 Bearer Token
@@ -683,7 +683,7 @@ components:
       description: The ticket ID
       schema:
         type: integer
-    
+
     userId:
       name: user_id
       in: path
@@ -691,7 +691,7 @@ components:
       description: The user ID
       schema:
         type: integer
-    
+
     organizationId:
       name: organization_id
       in: path
@@ -699,7 +699,7 @@ components:
       description: The organization ID
       schema:
         type: integer
-    
+
     perPage:
       name: per_page
       in: query
@@ -719,7 +719,7 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             error: "Could not authenticate you"
-    
+
     NotFound:
       description: Resource not found
       content:
@@ -729,7 +729,7 @@ components:
           example:
             error: "RecordNotFound"
             description: "Not found"
-    
+
     ValidationError:
       description: Validation error
       content:
@@ -741,7 +741,7 @@ components:
             details:
               subject:
                 - description: "is required"
-    
+
     RateLimited:
       description: Rate limit exceeded
       headers:
@@ -764,7 +764,7 @@ components:
           type: string
         description:
           type: string
-    
+
     ValidationErrorResponse:
       type: object
       properties:
@@ -779,7 +779,7 @@ components:
               properties:
                 description:
                   type: string
-    
+
     Ticket:
       type: object
       properties:
@@ -824,13 +824,13 @@ components:
         updated_at:
           type: string
           format: date-time
-    
+
     TicketResponse:
       type: object
       properties:
         ticket:
           $ref: '#/components/schemas/Ticket'
-    
+
     TicketListResponse:
       type: object
       properties:
@@ -843,7 +843,7 @@ components:
         next_page:
           type: string
           nullable: true
-    
+
     CreateTicketRequest:
       type: object
       required:
@@ -888,7 +888,7 @@ components:
                     type: integer
                   value:
                     type: string
-    
+
     UpdateTicketRequest:
       type: object
       properties:
@@ -911,7 +911,7 @@ components:
                 public:
                   type: boolean
                   default: true
-    
+
     User:
       type: object
       properties:
@@ -930,13 +930,13 @@ components:
         created_at:
           type: string
           format: date-time
-    
+
     UserResponse:
       type: object
       properties:
         user:
           $ref: '#/components/schemas/User'
-    
+
     UserListResponse:
       type: object
       properties:
@@ -946,7 +946,7 @@ components:
             $ref: '#/components/schemas/User'
         count:
           type: integer
-    
+
     CreateUserRequest:
       type: object
       required:
@@ -970,7 +970,7 @@ components:
             verified:
               type: boolean
               default: true
-    
+
     Organization:
       type: object
       properties:
@@ -985,13 +985,13 @@ components:
         created_at:
           type: string
           format: date-time
-    
+
     OrganizationResponse:
       type: object
       properties:
         organization:
           $ref: '#/components/schemas/Organization'
-    
+
     OrganizationListResponse:
       type: object
       properties:
@@ -1001,7 +1001,7 @@ components:
             $ref: '#/components/schemas/Organization'
         count:
           type: integer
-    
+
     SLAPolicy:
       type: object
       properties:
@@ -1028,13 +1028,13 @@ components:
                 type: integer
               business_hours:
                 type: boolean
-    
+
     SLAPolicyResponse:
       type: object
       properties:
         sla_policy:
           $ref: '#/components/schemas/SLAPolicy'
-    
+
     SLAPolicyListResponse:
       type: object
       properties:
@@ -1042,7 +1042,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SLAPolicy'
-    
+
     SearchResponse:
       type: object
       properties:
@@ -1060,7 +1060,7 @@ components:
         facets:
           type: object
           nullable: true
-    
+
     View:
       type: object
       properties:
@@ -1070,7 +1070,7 @@ components:
           type: string
         active:
           type: boolean
-    
+
     ViewListResponse:
       type: object
       properties:
@@ -1078,7 +1078,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/View'
-    
+
     Macro:
       type: object
       properties:
@@ -1088,7 +1088,7 @@ components:
           type: string
         active:
           type: boolean
-    
+
     MacroListResponse:
       type: object
       properties:
@@ -1096,7 +1096,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Macro'
-    
+
     Trigger:
       type: object
       properties:
@@ -1106,7 +1106,7 @@ components:
           type: string
         active:
           type: boolean
-    
+
     TriggerListResponse:
       type: object
       properties:
@@ -1114,7 +1114,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Trigger'
-    
+
     Automation:
       type: object
       properties:
@@ -1124,7 +1124,7 @@ components:
           type: string
         active:
           type: boolean
-    
+
     AutomationListResponse:
       type: object
       properties:
@@ -1132,7 +1132,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Automation'
-    
+
     AuditLog:
       type: object
       properties:
@@ -1147,7 +1147,7 @@ components:
         created_at:
           type: string
           format: date-time
-    
+
     AuditLogListResponse:
       type: object
       properties:
@@ -1155,7 +1155,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuditLog'
-    
+
     JobStatusResponse:
       type: object
       properties:

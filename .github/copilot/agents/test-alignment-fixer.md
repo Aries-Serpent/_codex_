@@ -36,14 +36,14 @@ spec:
     Automated test alignment agent. Detects test failures caused by
     implementation refactoring and fixes them to maintain behavior validation
     while respecting new implementation details.
-    
+
   capabilities:
     - Detect attribute access to removed properties
     - Fix mock/patch decorator paths
     - Update assertions to validate behavior (not implementation)
     - Maintain test coverage during refactoring
     - Suggest alternative validation approaches
-    
+
   triggers:
     automatic:
       - type: pull_request
@@ -51,30 +51,30 @@ spec:
         conditions:
           - test_failures: true
           - commit_message_contains: ["refactor", "security fix"]
-          
+
       - type: ci_failure
         job_types: [test, pytest]
         failure_patterns:
           - "AttributeError.*has no attribute"
           - "MagicMock.*matching these arguments"
           - "No module named"
-          
+
       - type: code_review
         events: [requested]
         conditions:
           - review_comment_contains: ["test failure", "align tests"]
-          
+
     manual:
       - type: slash_command
         command: "/fix-tests"
         scope: [pr, commit]
-        
+
       - type: comment
         patterns:
           - "fix test failures"
           - "align tests with refactoring"
           - "@copilot fix tests"
-          
+
   detection_patterns:
     attribute_errors:
       - pattern: "AttributeError: '(\\w+)' object has no attribute '(\\w+)'"
@@ -83,19 +83,19 @@ spec:
           class_name: "$1"
           missing_attr: "$2"
         action: suggest_alternative
-        
+
     mock_path_errors:
       - pattern: "patch\\(\"([^\"]+)\"\\)"
         severity: medium
         message: "Mock patch path may be incorrect after refactoring"
         action: find_correct_import_path
-        
+
     assertion_failures:
       - pattern: "assert (\\w+)\\.(\\w+)"
         when_attribute_missing: true
         severity: high
         action: suggest_behavior_validation
-        
+
   fixes:
     - name: remove_attribute_assertion
       description: "Remove assertions on deleted attributes"
@@ -103,18 +103,18 @@ spec:
       conditions:
         - attribute_removed_in_refactor: true
       action: remove_or_replace
-      
+
     - name: update_to_behavior_validation
       description: "Replace implementation checks with behavior validation"
       examples:
         - old: "assert provider.api_key == 'test-key'"
           new: "assert provider.client is not None"
           reason: "API key no longer stored (security refactoring)"
-          
+
         - old: "assert config._internal_state == 'ready'"
           new: "assert config.is_ready() == True"
           reason: "Internal state hidden behind public API"
-          
+
     - name: fix_mock_patch_path
       description: "Correct mock patch decorator paths"
       algorithm: |
@@ -124,42 +124,42 @@ spec:
         - old: "@patch('codex.rag.embeddings.OpenAI')"
           new: "@patch('openai.OpenAI')"
           reason: "Must patch where imported from, not where used"
-          
+
     - name: align_test_with_security_refactor
       description: "Update tests after security-driven refactoring"
       patterns:
         - removed_credential_storage:
             old: "assert obj.password == 'secret'"
             new: "assert obj.client is not None  # Password not stored (security)"
-        
+
         - removed_api_key_storage:
             old: "assert provider.api_key == 'key'"
             new: "assert provider.client is not None  # API key not stored (security)"
-            
+
   analysis:
     compare_with_commit:
       - look_back_commits: 5
       - identify_refactored_classes: true
       - track_removed_attributes: true
       - track_renamed_methods: true
-      
+
     suggest_fixes:
       - priority: behavior_validation_over_implementation
       - preserve_test_intent: true
       - maintain_coverage: true
-      
+
   validation:
     - run_tests_after_fix: true
     - check_coverage_maintained: true
     - verify_test_intent_preserved: true
     - ensure_no_false_positives: true
-    
+
   reporting:
     pr_comment_template: |
       ## 🔧 Test Alignment Report
-      
+
       I've detected and fixed test failures caused by refactoring:
-      
+
       ### Root Cause Analysis
       {{#each failures}}
       - **{{test_name}}** ({{file}}:{{line}})
@@ -167,7 +167,7 @@ spec:
         - 📝 Cause: {{root_cause}}
         - 🔍 Refactored in: {{refactor_commit}}
       {{/each}}
-      
+
       ### Fixes Applied
       {{#each fixes}}
       - **{{file}}:{{line}}**
@@ -175,35 +175,35 @@ spec:
         - ✅ After: `{{new_code}}`
         - 💡 Rationale: {{rationale}}
       {{/each}}
-      
+
       ### Test Coverage
       - Coverage before: {{coverage_before}}%
       - Coverage after: {{coverage_after}}%
       - Status: {{coverage_status}}
-      
+
       ### Validation
       - ✅ All tests pass: {{tests_pass}}
       - ✅ Coverage maintained: {{coverage_maintained}}
       - ✅ Test intent preserved: {{intent_preserved}}
-      
+
       **Commit:** {{commit_sha}}
-      
+
   permissions:
     contents: write
     pull_requests: write
     checks: read
     actions: read
-    
+
   resources:
     memory: 1Gi
     cpu: 1000m
     timeout: 10m
-    
+
   error_handling:
     max_fix_iterations: 3
     fallback_on_failure: notify_and_document
     preserve_original_tests: true
-    
+
   analytics:
     track_metrics:
       - test_failures_detected
@@ -211,7 +211,7 @@ spec:
       - fix_success_rate
       - coverage_delta
       - false_fix_rate
-      
+
   integration:
     ci_cd: enabled
     test_runner: pytest
@@ -229,35 +229,35 @@ spec:
 graph TB
     A[CI Test Failure] --> B[Analyze Failure Logs]
     B --> C{Refactoring<br/>Related?}
-    
+
     C -->|No| Z[Skip - Not Our Domain]
     C -->|Yes| D[Identify Refactored Classes]
-    
+
     D --> E[Compare Current vs Previous Commits]
     E --> F[Track Removed/Renamed Attributes]
-    
+
     F --> G[Generate Fix Proposals]
     G --> H{Fix Type?}
-    
+
     H -->|Attribute Access| I[Replace with<br/>Behavior Validation]
     H -->|Mock Path| J[Find Correct<br/>Import Path]
     H -->|Assertion| K[Update to<br/>Public API]
-    
+
     I --> L[Apply Fix]
     J --> L
     K --> L
-    
+
     L --> M[Run Tests]
     M --> N{Pass?}
-    
+
     N -->|No| O{Iterations < 3?}
     O -->|Yes| G
     O -->|No| P[Document Failure]
-    
+
     N -->|Yes| Q[Check Coverage]
     Q --> R[Commit & Comment]
     R --> S[✅ Complete]
-    
+
     style A fill:#ffe1e1
     style S fill:#d4f8d4
     style Z fill:#f0f0f0

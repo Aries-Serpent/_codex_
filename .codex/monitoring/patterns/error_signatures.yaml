@@ -14,7 +14,7 @@ categories:
       category: "dependency"
       suggested_fix: "Install missing module: pip install {module}"
       agent: "dependency-conflict-agent"
-    
+
     - id: "dep-002"
       name: "Pip Resolver Conflict"
       pattern: "ERROR: Cannot install .+ because these package versions have conflicting dependencies"
@@ -22,7 +22,7 @@ categories:
       category: "dependency"
       suggested_fix: "Review dependency conflicts and adjust version constraints"
       agent: "dependency-conflict-agent"
-    
+
     - id: "dep-003"
       name: "Version Mismatch"
       pattern: "requires ([\\w-]+)([<>=!]+)([\\d.]+).+but you'll have ([\\w-]+) ([\\d.]+)"
@@ -30,7 +30,7 @@ categories:
       category: "dependency"
       suggested_fix: "Update dependency versions to resolve conflict"
       agent: "dependency-conflict-agent"
-    
+
     - id: "dep-004"
       name: "Module Not Found (Python)"
       pattern: "ModuleNotFoundError: No module named ['\"]([^'\"]+)['\"]"
@@ -47,7 +47,7 @@ categories:
       category: "test"
       suggested_fix: "Increase timeout or investigate slow test execution"
       agent: "ci-testing-agent"
-    
+
     - id: "test-002"
       name: "Assertion Failure"
       pattern: "AssertionError: (.+)"
@@ -55,7 +55,7 @@ categories:
       category: "test"
       suggested_fix: "Review test assertions and expected vs actual values"
       agent: "ci-testing-agent"
-    
+
     - id: "test-003"
       name: "Fixture Error"
       pattern: "fixture ['\"]([^'\"]+)['\"] not found"
@@ -63,7 +63,7 @@ categories:
       category: "test"
       suggested_fix: "Define missing fixture or check fixture scope"
       agent: "ci-testing-agent"
-    
+
     - id: "test-004"
       name: "Pytest Collection Error"
       pattern: "ERROR collecting .+: (.+)"
@@ -71,7 +71,7 @@ categories:
       category: "test"
       suggested_fix: "Fix test collection issues (imports, syntax, fixtures)"
       agent: "ci-testing-agent"
-    
+
     - id: "test-005"
       name: "Test Setup/Teardown Failure"
       pattern: "ERROR at (setup|teardown) of .+"
@@ -88,7 +88,7 @@ categories:
       category: "build"
       suggested_fix: "Fix syntax error at specified location"
       agent: "ci-testing-agent"
-    
+
     - id: "build-002"
       name: "Encoding Error"
       pattern: "UnicodeDecodeError: 'utf-8' codec can't decode"
@@ -96,7 +96,7 @@ categories:
       category: "build"
       suggested_fix: "Fix file encoding or specify correct encoding"
       agent: "ci-testing-agent"
-    
+
     - id: "build-003"
       name: "Rust Compilation Error"
       pattern: "error\\[E\\d+\\]: (.+)"
@@ -104,7 +104,7 @@ categories:
       category: "build"
       suggested_fix: "Fix Rust compilation error"
       agent: "ci-testing-agent"
-    
+
     - id: "build-004"
       name: "TypeScript Compilation Error"
       pattern: "error TS(\\d+): (.+)"
@@ -121,7 +121,7 @@ categories:
       category: "coverage"
       suggested_fix: "Add tests to increase coverage above threshold"
       agent: "coverage-gapfill-agent"
-    
+
     - id: "cov-002"
       name: "Uncovered Lines"
       pattern: "TOTAL.+(\\d+)\\s+(\\d+)\\s+(\\d+)%"
@@ -138,7 +138,7 @@ categories:
       category: "lint"
       suggested_fix: "Fix linting error reported by Ruff"
       agent: "repository-hygiene-agent"
-    
+
     - id: "lint-002"
       name: "MyPy Type Error"
       pattern: "(.+\\.py):(\\d+): error: (.+)"
@@ -146,7 +146,7 @@ categories:
       category: "lint"
       suggested_fix: "Fix type checking error reported by MyPy"
       agent: "repository-hygiene-agent"
-    
+
     - id: "lint-003"
       name: "Black Formatting"
       pattern: "would reformat (.+\\.py)"
@@ -163,7 +163,7 @@ categories:
       category: "infrastructure"
       suggested_fix: "Wait for rate limit reset or use authenticated requests"
       agent: "ci-testing-agent"
-    
+
     - id: "infra-002"
       name: "Artifact Not Found"
       pattern: "Unable to find artifact .+"
@@ -171,7 +171,7 @@ categories:
       category: "infrastructure"
       suggested_fix: "Check artifact name and retention policy"
       agent: "ci-testing-agent"
-    
+
     - id: "infra-003"
       name: "Runner Out of Memory"
       pattern: "(Out of memory|OOM|MemoryError)"
@@ -179,7 +179,7 @@ categories:
       category: "infrastructure"
       suggested_fix: "Increase runner memory or optimize memory usage"
       agent: "ci-testing-agent"
-    
+
     - id: "infra-004"
       name: "Job Timeout"
       pattern: "The job running on runner .+ has exceeded the maximum execution time of (\\d+) minutes"
@@ -196,7 +196,7 @@ categories:
       category: "security"
       suggested_fix: "Update vulnerable dependency to patched version"
       agent: "security-agent"
-    
+
     - id: "sec-002"
       name: "Secret Exposure"
       pattern: "(secret|password|token|api[_-]?key).+exposed"
@@ -204,7 +204,7 @@ categories:
       category: "security"
       suggested_fix: "Rotate exposed secrets immediately"
       agent: "security-agent"
-    
+
     - id: "sec-003"
       name: "CodeQL Alert"
       pattern: "CodeQL .+ alert.+: (.+)"
@@ -221,7 +221,7 @@ categories:
       category: "documentation"
       suggested_fix: "Fix MkDocs configuration or missing file"
       agent: "documentation-quality-agent"
-    
+
     - id: "doc-002"
       name: "Broken Link"
       pattern: "broken link to '(.+)'"
@@ -229,7 +229,7 @@ categories:
       category: "documentation"
       suggested_fix: "Fix or remove broken link"
       agent: "documentation-quality-agent"
-    
+
     - id: "doc-003"
       name: "Missing Documentation"
       pattern: "(.+) is not documented"
@@ -246,7 +246,7 @@ statistical_patterns:
     threshold: 0.15  # 15% failure rate
     min_samples: 5
     confidence_multiplier: 1.2
-  
+
   performance_degradation:
     description: "Gradual increase in execution time"
     detection_method: "time_series_analysis"

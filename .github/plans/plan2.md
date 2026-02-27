@@ -1,4 +1,4 @@
-# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 2 of 6 
+# REFACTORED_PYTHON_312_ONLY_PLANSET.md - Part 2 of 6
 
 > **Continuation**: Phase 2: Python 3.12 Compliance Analysis  
 > **Duration**: 30 minutes  
@@ -183,54 +183,54 @@ def find_old_style_unions(file_path: Path) -> List[Tuple[int, str]]:
     """Find Union[X, Y] that should be X | Y"""
     content = file_path.read_text()
     lines = content.split('\n')
-    
+
     issues = []
     for i, line in enumerate(lines, start=1):
         # Find Union[...] patterns
         if re.search(r'Union\[', line):
             issues.append((i, line.strip()))
-    
+
     return issues
 
 def find_old_style_collections(file_path: Path) -> List[Tuple[int, str]]:
     """Find List/Dict/Set/Tuple imports that should use builtin types"""
     content = file_path.read_text()
     lines = content.split('\n')
-    
+
     issues = []
     for i, line in enumerate(lines, start=1):
         # Find typing.List, typing.Dict, etc.
         if re.search(r'from typing import.*(List|Dict|Set|Tuple)', line):
             issues.append((i, line.strip()))
-    
+
     return issues
 
 def scan_codebase():
     """Scan entire codebase for type hint modernization opportunities"""
     print("🔍 Type Hint Modernization Scan (Python 3.12)\n")
-    
+
     total_unions = 0
     total_collections = 0
-    
+
     for py_file in Path('src').rglob('*.py'):
         unions = find_old_style_unions(py_file)
         collections = find_old_style_collections(py_file)
-        
+
         if unions or collections:
             print(f"\n📄 {py_file}")
-            
+
             if unions:
                 print(f"   Found {len(unions)} old-style Union[...] (can use X | Y)")
                 total_unions += len(unions)
                 for line_no, line in unions[:3]:  # Show first 3
                     print(f"      Line {line_no}: {line[:60]}...")
-            
+
             if collections:
                 print(f"   Found {len(collections)} typing.List/Dict/etc (can use builtin)")
                 total_collections += len(collections)
                 for line_no, line in collections[:3]:
                     print(f"      Line {line_no}: {line[:60]}...")
-    
+
     print("\n" + "=" * 60)
     print(f"📊 Summary:")
     print(f"   Union[X, Y] → X | Y opportunities: {total_unions}")
@@ -279,10 +279,10 @@ def get_package_metadata(package: str) -> Optional[Dict]:
             text=True,
             timeout=30
         )
-        
+
         if result.returncode != 0:
             return None
-        
+
         # Parse output for available versions
         lines = result.stdout.split('\n')
         versions = []
@@ -292,13 +292,13 @@ def get_package_metadata(package: str) -> Optional[Dict]:
                 version_line = line.split(':', 1)[1]
                 versions = [v.strip() for v in version_line.split(',')]
                 break
-        
+
         return {
             "package": package,
             "versions": versions,
             "latest": versions[0] if versions else None
         }
-    
+
     except Exception as e:
         return {"package": package, "error": str(e)}
 
@@ -311,19 +311,19 @@ def check_installed_package(package: str) -> Dict:
             text=True,
             timeout=10
         )
-        
+
         if result.returncode != 0:
             return {"installed": False, "error": "Not installed"}
-        
+
         metadata = {}
         for line in result.stdout.split('\n'):
             if ':' in line:
                 key, value = line.split(':', 1)
                 metadata[key.strip()] = value.strip()
-        
+
         # Check Python version requirement
         requires_python = metadata.get('Requires-Python', 'Not specified')
-        
+
         # Determine if Python 3.12 is supported
         py312_supported = True
         if requires_python != 'Not specified':
@@ -334,7 +334,7 @@ def check_installed_package(package: str) -> Dict:
                 py312_supported = True
             elif '==3.11' in requires_python:
                 py312_supported = False
-        
+
         return {
             "installed": True,
             "version": metadata.get('Version'),
@@ -342,49 +342,49 @@ def check_installed_package(package: str) -> Dict:
             "py312_supported": py312_supported,
             "location": metadata.get('Location')
         }
-    
+
     except Exception as e:
         return {"installed": False, "error": str(e)}
 
 def analyze_dependencies():
     """Main dependency analysis"""
     print("🔍 Comprehensive Python 3.12 Dependency Analysis\n")
-    
+
     # Load dependencies from pyproject.toml
     pyproject = Path("pyproject.toml")
     data = tomllib.loads(pyproject.read_text())
-    
+
     main_deps = data.get("project", {}).get("dependencies", [])
     optional_deps = data.get("project", {}).get("optional-dependencies", {})
-    
+
     all_packages = []
-    
+
     # Parse main dependencies
     for dep in main_deps:
         package = dep.split('[')[0].split('>=')[0].split('==')[0].split('<')[0].strip()
         all_packages.append((package, "main", dep))
-    
+
     # Parse optional dependencies
     for group, deps in optional_deps.items():
         for dep in deps:
             package = dep.split('[')[0].split('>=')[0].split('==')[0].split('<')[0].strip()
             all_packages.append((package, f"optional:{group}", dep))
-    
+
     print(f"📦 Analyzing {len(all_packages)} packages...\n")
-    
+
     results = {
         "compatible": [],
         "incompatible": [],
         "unknown": [],
         "warnings": []
     }
-    
+
     for package, group, full_spec in all_packages:
         print(f"Checking: {package} ({group})...")
-        
+
         installed = check_installed_package(package)
         pypi = get_package_metadata(package)
-        
+
         if not installed.get("installed"):
             print(f"  ⚠️  Not installed: {installed.get('error')}")
             results["warnings"].append({
@@ -393,14 +393,14 @@ def analyze_dependencies():
                 "issue": "Not installed"
             })
             continue
-        
+
         version = installed.get("version")
         requires_python = installed.get("requires_python")
         supported = installed.get("py312_supported")
-        
+
         print(f"  Version: {version}")
         print(f"  Requires-Python: {requires_python}")
-        
+
         if supported:
             print(f"  ✅ Python 3.12 supported")
             results["compatible"].append({
@@ -423,13 +423,13 @@ def analyze_dependencies():
                 "version": version,
                 "group": group
             })
-        
+
         if pypi and pypi.get("latest"):
             if pypi["latest"] != version:
                 print(f"  💡 Newer version available: {pypi['latest']}")
-        
+
         print()
-    
+
     # Print summary
     print("=" * 60)
     print("\n📊 Summary:\n")
@@ -437,7 +437,7 @@ def analyze_dependencies():
     print(f"❌ Incompatible: {len(results['incompatible'])} packages")
     print(f"⚠️  Unknown: {len(results['unknown'])} packages")
     print(f"💡 Warnings: {len(results['warnings'])} packages")
-    
+
     if results['incompatible']:
         print("\n❌ INCOMPATIBLE PACKAGES:")
         for pkg in results['incompatible']:
@@ -445,21 +445,21 @@ def analyze_dependencies():
             print(f"     Requires-Python: {pkg['requires_python']}")
         print("\n⚠️  Action required: Update or replace these packages")
         return 1
-    
+
     if results['unknown']:
         print("\n⚠️  UNKNOWN COMPATIBILITY:")
         for pkg in results['unknown']:
             print(f"   - {pkg['package']} {pkg['version']}")
         print("\n💡 Recommend: Manual verification or test in Python 3.12 env")
-    
+
     # Save results
     output_file = Path("analysis/phase2/dependency_compatibility_detailed.json")
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.write_text(json.dumps(results, indent=2))
-    
+
     print(f"\n✅ All dependencies compatible with Python 3.12!")
     print(f"📄 Detailed results: {output_file}")
-    
+
     return 0
 
 if __name__ == "__main__":
@@ -565,19 +565,19 @@ CMD ["python", "-m", "codex.main"]
 # Extract Python version from all workflows
 for workflow in .github/workflows/*.yml; do
     echo "=== $(basename $workflow) ==="
-    
+
     # Check for matrix
     if grep -q "matrix:" "$workflow"; then
         echo "⚠️  Uses matrix strategy"
         grep -A 5 "matrix:" "$workflow" | grep -E "python-version|python_version"
     fi
-    
+
     # Check for hardcoded versions
     grep -E "python-version:|python_version:" "$workflow" || echo "No explicit Python version"
-    
+
     # Check for setup-python
     grep -A 2 "setup-python" "$workflow" | grep -E "with:|python-version"
-    
+
     echo ""
 done
 ```
@@ -597,26 +597,26 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12.10"
           cache: "pip"
-      
+
       - name: Verify Python version
         run: |
           python --version
           python -c "import sys; assert sys.version_info[:2] == (3, 12), 'Expected Python 3.12'"
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install -e ".[dev,test]"
-      
+
       - name: Run tests with coverage
         run: |
           pytest tests/ \
@@ -625,7 +625,7 @@ jobs:
             --cov-report=xml \
             --cov-report=term \
             --cov-fail-under=80
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
@@ -708,31 +708,31 @@ def find_python312_features(file_path: Path) -> List[str]:
     """Identify Python 3.12 features used in file"""
     content = file_path.read_text()
     tree = ast.parse(content)
-    
+
     features = []
-    
+
     # Check for type parameter syntax (PEP 695)
     for node in ast.walk(tree):
         if isinstance(node, ast.ClassDef):
             # Check if class uses new generic syntax
             if hasattr(node, 'type_params') and node.type_params:
                 features.append(f"PEP 695 generics: class {node.name}")
-    
+
     # Check for @override decorator
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
             for decorator in node.decorator_list:
                 if isinstance(decorator, ast.Name) and decorator.id == 'override':
                     features.append(f"@override decorator: {node.name}")
-    
+
     return features
 
 def scan_for_312_features():
     """Scan codebase for Python 3.12 features"""
     print("🔍 Python 3.12 Feature Usage Scan\n")
-    
+
     all_features: Set[str] = set()
-    
+
     for py_file in Path('src').rglob('*.py'):
         features = find_python312_features(py_file)
         if features:
@@ -741,10 +741,10 @@ def scan_for_312_features():
                 print(f"   - {feature}")
                 all_features.add(feature.split(':')[0])
             print()
-    
+
     print("=" * 60)
     print(f"\n📊 Summary: {len(all_features)} Python 3.12 features used")
-    
+
     if not all_features:
         print("\n💡 Opportunity: No Python 3.12 specific features used yet")
         print("   Consider modernizing code to use new syntax")

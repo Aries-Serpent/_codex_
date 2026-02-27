@@ -119,7 +119,7 @@ from transformers import (
 1. **Inference Pipeline** (`scripts/inference_pipeline.py`):
    ```python
    from transformers import AutoModelForCausalLM, AutoTokenizer
-   
+
    # Text generation with causal LM
    ```
 

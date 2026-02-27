@@ -52,7 +52,7 @@ Checking for regressions...
 Capability: Automated Testing
   Previous: 95.0 → Current: 88.0 (↓7.0)
   Threshold: 5.0
-  
+
 Capability: Model Monitoring
   Previous: 92.0 → Current: 85.0 (↓7.0)
   Threshold: 5.0

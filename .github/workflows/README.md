@@ -293,10 +293,10 @@ run: |
   cat > /tmp/body.md <<'EOF'
   Content here with $variables preserved literally
   EOF
-  
+
   # Then replace placeholders with sed
   sed -i "s/PLACEHOLDER/$ACTUAL_VALUE/g" /tmp/body.md
-  
+
   # Use file with gh CLI
   gh issue create --body-file /tmp/body.md
 ```
@@ -318,7 +318,7 @@ run: |
    # Validate YAML
    yamllint workflow.yml
    python -c "import yaml; yaml.safe_load(open('workflow.yml'))"
-   
+
    # Test scripts locally
    bash -n script.sh  # Syntax check
    shellcheck script.sh  # Linting
@@ -370,7 +370,7 @@ run: |
    ```yaml
    # Good - pinned to specific version
    uses: actions/checkout@v4
-   
+
    # Better - pinned to commit SHA
    uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
    ```

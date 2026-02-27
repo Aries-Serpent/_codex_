@@ -12,25 +12,25 @@ echo ""
 check_references() {
     local item=$1
     echo "Checking references to: $item"
-    
+
     # Check Python files
     py_refs=$(grep -r "$item" --include="*.py" --exclude-dir=".git" --exclude-dir="docs/for-human-removal" . 2>/dev/null | wc -l)
     echo "  Python references: $py_refs"
-    
+
     # Check scripts
     sh_refs=$(grep -r "$item" --include="*.sh" --exclude-dir=".git" --exclude-dir="docs/for-human-removal" . 2>/dev/null | wc -l)
     echo "  Script references: $sh_refs"
-    
+
     # Check workflows
     wf_refs=$(grep -r "$item" .github/workflows/ 2>/dev/null | wc -l)
     echo "  Workflow references: $wf_refs"
-    
+
     # Check docs
     doc_refs=$(grep -r "$item" --include="*.md" --exclude-dir=".git" --exclude-dir="docs/for-human-removal" . 2>/dev/null | wc -l)
     echo "  Documentation references: $doc_refs"
-    
+
     total=$((py_refs + sh_refs + wf_refs + doc_refs))
-    
+
     if [ $total -eq 0 ]; then
         echo "  ✅ SAFE TO REMOVE (no references found)"
     else

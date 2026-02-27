@@ -88,30 +88,30 @@ flowchart TD
     A[Trigger: Hourly/Manual/Event] --> B[Read Audit Log]
     B --> C[Parse JSON Entries]
     C --> D[Analyze Security Events]
-    
+
     D --> E{Auth Failures?}
     E -->|Yes| F[Count Failures by Source]
     E -->|No| G[Generate Summary]
-    
+
     F --> H{Threshold Exceeded?}
     H -->|Yes, >5| I[Generate Security Alert]
     H -->|No| G
-    
+
     I --> J{Critical? >10}
     J -->|Yes| K[Escalate to Security Team]
     J -->|No| L[Post Alert Comment]
-    
+
     G --> M[Calculate Metrics]
     M --> N[Check Token Age]
-    
+
     N --> O{>75 iterations?}
     O -->|Yes| P[Add Rotation Reminder]
     O -->|No| Q[Final Report]
-    
+
     P --> Q
     K --> Q
     L --> Q
-    
+
     Q --> R[Post Report/Comment]
 ```
 
@@ -138,16 +138,16 @@ triggers:
   scheduled:
     - cron: "0 * * * *"  # Every hour
       action: monitor_audit_log
-      
+
   events:
     - event: auth_failure_threshold
       condition: "auth_failures_per_hour > 5"
       action: generate_security_alert
-      
+
     - event: token_age
       condition: "days_since_rotation > 75"
       action: send_rotation_reminder
-      
+
   manual:
     - command: "/bridge-security-status"
       description: "Get current security status"
@@ -156,7 +156,7 @@ triggers:
           type: string
           default: "24h"
           options: ["1h", "24h", "7d", "30d"]
-          
+
     - pr_comment: "@copilot analyze bridge security"
       description: "Analyze bridge security logs"
 
@@ -203,27 +203,27 @@ class BridgeSecurityMonitor:
     def __init__(self, audit_log_path: str, failure_threshold: int = 5):
         self.audit_log_path = Path(audit_log_path)
         self.failure_threshold = failure_threshold
-        
+
     def analyze_period(self, hours: int = 24) -> Dict:
         """Analyze security events for the specified period."""
         cutoff_time = datetime.now(UTC) - timedelta(hours=hours)
-        
+
         total_messages = 0
         auth_successes = 0
         auth_failures = 0
         failure_sources = defaultdict(int)
         error_events = []
-        
+
         with open(self.audit_log_path, 'r') as f:
             for line in f:
                 entry = json.loads(line)
                 entry_time = datetime.fromisoformat(entry["timestamp"])
-                
+
                 if entry_time < cutoff_time:
                     continue
-                    
+
                 event = entry["event"]
-                
+
                 if event == "MESSAGE_SENT":
                     total_messages += 1
                 elif event == "AUTH_SUCCESS":
@@ -234,7 +234,7 @@ class BridgeSecurityMonitor:
                     failure_sources[source] += 1
                 elif event in ["WRITE_ERROR", "READ_ERROR"]:
                     error_events.append(entry)
-        
+
         return {
             "period_hours": hours,
             "total_messages": total_messages,
@@ -242,10 +242,10 @@ class BridgeSecurityMonitor:
             "auth_failures": auth_failures,
             "failure_sources": dict(failure_sources),
             "error_events": error_events,
-            "success_rate": (auth_successes / (auth_successes + auth_failures) * 100) 
+            "success_rate": (auth_successes / (auth_successes + auth_failures) * 100)
                             if (auth_successes + auth_failures) > 0 else 100.0
         }
-    
+
     def generate_report(self, analysis: Dict) -> str:
         """Generate markdown security report."""
         report = f"""## 🔒 Bridge Security Status
@@ -256,17 +256,17 @@ class BridgeSecurityMonitor:
 **Auth Failures:** {analysis['auth_failures']:,} ({100-analysis['success_rate']:.1f}%)  
 
 """
-        
+
         if analysis['auth_failures'] > 0:
             report += "### ⚠️ Authentication Failures\n\n"
-            for source, count in sorted(analysis['failure_sources'].items(), 
+            for source, count in sorted(analysis['failure_sources'].items(),
                                        key=lambda x: x[1], reverse=True):
                 report += f"- **{source}**: {count} attempt(s)\n"
             report += "\n"
-        
+
         if analysis['error_events']:
             report += f"### ❌ Error Events: {len(analysis['error_events'])}\n\n"
-        
+
         # Recommendation
         if analysis['auth_failures'] >= 10:
             report += """### 🚨 CRITICAL: Immediate Action Required
@@ -283,9 +283,9 @@ class BridgeSecurityMonitor:
 """
         else:
             report += "### ✅ Status: Normal\nNo immediate action required.\n"
-        
+
         return report
-    
+
     def check_alert_conditions(self, analysis: Dict) -> Tuple[bool, str]:
         """Check if alert conditions are met."""
         if analysis['auth_failures'] >= 10:
@@ -297,18 +297,18 @@ class BridgeSecurityMonitor:
 
 if __name__ == "__main__":
     import sys
-    
+
     period_hours = int(sys.argv[1]) if len(sys.argv) > 1 else 24
-    
+
     monitor = BridgeSecurityMonitor(
         audit_log_path="/tmp/codex_secure_bridge/audit.log"
     )
-    
+
     analysis = monitor.analyze_period(hours=period_hours)
     report = monitor.generate_report(analysis)
-    
+
     print(report)
-    
+
     should_alert, severity = monitor.check_alert_conditions(analysis)
     if should_alert:
         print(f"\n⚠️  ALERT: {severity.upper()}")
@@ -394,18 +394,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Run Security Monitor
         id: monitor
         run: |
           python scripts/agents/bridge_security_monitor.py 24
         continue-on-error: true
-      
+
       - name: Post Comment on Active PR
         if: steps.monitor.outcome == 'failure'
         uses: actions/github-script@v7
@@ -418,7 +418,7 @@ jobs:
               state: 'open',
               head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
             });
-            
+
             if (prs.length > 0) {
               const report = `${{ steps.monitor.outputs.report }}`;
               await github.rest.issues.createComment({
@@ -428,7 +428,7 @@ jobs:
                 body: report
               });
             }
-      
+
       - name: Create Security Issue if Critical
         if: steps.monitor.outputs.severity == 'critical'
         uses: actions/github-script@v7
@@ -459,23 +459,23 @@ def test_analyze_period_with_failures(tmp_path):
     """Test analysis with authentication failures."""
     audit_log = tmp_path / "audit.log"
     # ... create test audit log with failures
-    
+
     monitor = BridgeSecurityMonitor(str(audit_log))
     analysis = monitor.analyze_period(hours=1)
-    
+
     assert analysis['auth_failures'] > 0
     assert len(analysis['failure_sources']) > 0
 
 def test_alert_conditions():
     """Test alert threshold detection."""
     monitor = BridgeSecurityMonitor("/tmp/test.log")
-    
+
     # Test warning threshold
     analysis = {'auth_failures': 7}
     should_alert, severity = monitor.check_alert_conditions(analysis)
     assert should_alert is True
     assert severity == "warning"
-    
+
     # Test critical threshold
     analysis = {'auth_failures': 12}
     should_alert, severity = monitor.check_alert_conditions(analysis)

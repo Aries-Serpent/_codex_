@@ -29,7 +29,7 @@ This document outlines a comprehensive, phased approach to achieving 100% test c
 - `src/codex/utils/config_loader.py`: **73.86%** (136/181 statements, 52/60 branches)
   - ✅ Good coverage on core functionality
   - ❌ Gaps: Error handling paths (37-41, 59-69), edge cases (251-265)
-  
+
 - `src/bridge_manager.py`: **Not measured** (module not imported in tests)
   - Note: Tests exist but coverage not captured
 
@@ -81,16 +81,16 @@ This document outlines a comprehensive, phased approach to achieving 100% test c
 # Test Pattern: Security-Critical Code
 def test_security_feature_with_valid_input():
     """Happy path with valid credentials."""
-    
+
 def test_security_feature_with_invalid_input():
     """Reject invalid credentials."""
-    
+
 def test_security_feature_timing_attack_resistance():
     """Ensure constant-time operations."""
-    
+
 def test_security_feature_audit_logging():
     """Verify security events are logged."""
-    
+
 def test_security_feature_permission_enforcement():
     """Ensure proper permission checks."""
 ```
@@ -100,17 +100,17 @@ def test_security_feature_permission_enforcement():
 # Test Pattern: Business Rules
 def test_business_rule_normal_case():
     """Test typical business scenario."""
-    
+
 def test_business_rule_edge_cases():
     """Test boundary conditions."""
-    
+
 @pytest.mark.parametrize("input,expected", [...])
 def test_business_rule_variations(input, expected):
     """Test multiple scenarios."""
-    
+
 def test_business_rule_error_handling():
     """Test exception paths."""
-    
+
 def test_business_rule_integration():
     """Test with real dependencies."""
 ```
@@ -120,10 +120,10 @@ def test_business_rule_integration():
 # Test Pattern: Utilities
 def test_utility_function_happy_path():
     """Test with valid input."""
-    
+
 def test_utility_function_edge_cases():
     """Test empty, None, boundary values."""
-    
+
 def test_utility_function_error_handling():
     """Test exception cases."""
 ```
@@ -143,7 +143,7 @@ def test_utility_function_error_handling():
   3. Add timeout scenario tests
   4. Add non-blocking I/O tests
   5. Add socket mode tests (currently only pipe mode tested)
-  
+
 **Estimated Tests:** +8 tests (26 total)
 **Timeline:** 1 iteration
 
@@ -323,12 +323,12 @@ def generate_test_template(module_path: Path) -> str:
     """Generate pytest template for a module."""
     with open(module_path) as f:
         tree = ast.parse(f.read())
-    
-    functions = [node.name for node in ast.walk(tree) 
+
+    functions = [node.name for node in ast.walk(tree)
                  if isinstance(node, ast.FunctionDef)]
-    classes = [node.name for node in ast.walk(tree) 
+    classes = [node.name for node in ast.walk(tree)
                if isinstance(node, ast.ClassDef)]
-    
+
     template = f'''"""Tests for {module_path.name}"""
 
 import pytest
@@ -336,7 +336,7 @@ from {module_path.stem} import *
 
 
 '''
-    
+
     for func in functions:
         template += f'''def test_{func}_happy_path():
     """Test {func} with valid input."""
@@ -351,7 +351,7 @@ def test_{func}_error_handling():
 
 
 '''
-    
+
     return template
 
 if __name__ == "__main__":
@@ -379,19 +379,19 @@ on:
 jobs:
   coverage:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e '.[dev]'
-      
+
       - name: Run tests with coverage
         run: |
           pytest --cov=src --cov=agents \
@@ -399,7 +399,7 @@ jobs:
                  --cov-report=json \
                  --cov-report=term-missing \
                  --cov-fail-under=90
-      
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         with:
@@ -407,7 +407,7 @@ jobs:
           path: |
             htmlcov/
             coverage.json
-      
+
       - name: Comment PR with coverage
         if: github.event_name == 'pull_request'
         uses: py-cov-action/python-coverage-comment-action@v3
@@ -552,7 +552,7 @@ def test_config_loads(config_dir):
     """Test config loads successfully."""
     config_file = config_dir / "test.yaml"
     config_file.write_text("key: value")
-    
+
     cfg = load_config("test", config_dir=config_dir)
     assert cfg["key"] == "value"
 ```
@@ -562,18 +562,18 @@ def test_config_loads(config_dir):
 def test_security_feature_with_constant_time():
     """Ensure constant-time comparison."""
     import time
-    
+
     valid = "correct_token"
     invalid = "wrong_token"
-    
+
     start = time.perf_counter()
     result1 = authenticate(valid)
     time1 = time.perf_counter() - start
-    
+
     start = time.perf_counter()
     result2 = authenticate(invalid)
     time2 = time.perf_counter() - start
-    
+
     # Timing difference should be minimal (allow 10% variance)
     assert abs(time1 - time2) / max(time1, time2) < 0.1
 ```

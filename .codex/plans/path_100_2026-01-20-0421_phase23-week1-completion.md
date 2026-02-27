@@ -314,7 +314,7 @@ def test_cli_command():
 def test_file_processing(tmp_path, monkeypatch):
     test_file = tmp_path / "input.txt"
     test_file.write_text("content", encoding="utf-8")
-    
+
     result = process_file(str(test_file))
     assert result == expected
 ```

@@ -134,6 +134,6 @@ mv .github/workflows/security.yml.disabled .github/workflows/security.yml
 
 ## Audit Conclusion
 
-The `if: false` guard is part of a disabled workflow file. The guard itself is not actively causing any issues since the entire workflow is disabled. 
+The `if: false` guard is part of a disabled workflow file. The guard itself is not actively causing any issues since the entire workflow is disabled.
 
 **Recommendation**: No immediate action required. Consider deleting the disabled file in a future cleanup sprint to reduce clutter.

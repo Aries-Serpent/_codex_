@@ -38,8 +38,8 @@ echo "Generating manifest..."
 cat > "$ARTIFACT_DIR/MANIFEST.md" << 'EOFMANIFEST'
 # CI/CD Workflow Analysis Artifact Manifest
 
-**Generated**: 2026-01-30T21:00:00Z  
-**Repository**: Aries-Serpent/_codex_ (ID: 1040037790)  
+**Generated**: 2026-01-30T21:00:00Z
+**Repository**: Aries-Serpent/_codex_ (ID: 1040037790)
 **Purpose**: Comprehensive CI/CD workflow analysis and remediation planset
 
 ## Contents
@@ -96,8 +96,8 @@ All files validated with:
 
 ---
 
-**Total Package Size**: ~250 KB  
-**Format**: Markdown, JSON, Python, YAML  
+**Total Package Size**: ~250 KB
+**Format**: Markdown, JSON, Python, YAML
 **Retention**: Permanent (version controlled)
 EOFMANIFEST
 
@@ -119,7 +119,7 @@ zip -r "${ARTIFACT_DIR}.zip" "$ARTIFACT_DIR" -q
 if [ -f "${ARTIFACT_DIR}.zip" ]; then
     ZIP_SIZE=$(du -h "${ARTIFACT_DIR}.zip" | cut -f1)
     echo "✅ Archive created: ${ARTIFACT_DIR}.zip ($ZIP_SIZE)"
-    
+
     # List zip contents
     echo ""
     echo "📦 Archive Contents:"
@@ -135,4 +135,3 @@ echo "✅ Artifact package created successfully!"
 echo "📍 Location: $(pwd)/${ARTIFACT_DIR}.zip"
 echo "📊 Size: $ZIP_SIZE (uncompressed: $TOTAL_SIZE)"
 echo "📁 Files: $(find "$ARTIFACT_DIR" -type f | wc -l) files"
-

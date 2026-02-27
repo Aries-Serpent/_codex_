@@ -1,9 +1,9 @@
 /**
  * Bundle Builder Framework - Mathematical Foundation Implementation
- * 
+ *
  * Based on energy-based optimization with explicit completeness guarantees.
  * Implements the bundle-as-state-vector model with UI projection operators.
- * 
+ *
  * Core equation: |B*⟩ = argmin_{|B⟩∈Ω} E(B)
  * Completeness: M̂_complete · M̂_map · M̂_src = 1
  * UI Projection: |C⟩ = P̂_UI |B⟩
@@ -130,7 +130,7 @@ export interface CreateAgentConfig {
 
 /**
  * BundleBuilder implements energy-based optimization for agent bundle creation.
- * 
+ *
  * Mathematical foundation:
  * 1. Bundle as state vector in Hilbert space H_B
  * 2. Energy minimization: find |B*⟩ = argmin E(B)
@@ -385,7 +385,7 @@ export class BundleBuilder {
 
   /**
    * Optimize bundle from requirements through iterative energy minimization
-   * 
+   *
    * Algorithm:
    * 1. Generate initial bundle |B₀⟩ from requirements |R⟩
    * 2. Compute energy E(B_t)

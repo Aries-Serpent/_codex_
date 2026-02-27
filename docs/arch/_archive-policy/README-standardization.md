@@ -126,20 +126,20 @@ jobs:
     permissions:
       id-token: write  # ← REQUIRED for Sigstore
       contents: read
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install jsonschema
-      
+
       - name: Archive with standardization
         env:
           CODEX_STANDARDIZATION_ENABLED: "true"

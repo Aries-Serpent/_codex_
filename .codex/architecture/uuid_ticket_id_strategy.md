@@ -39,10 +39,10 @@ The conversion is implemented in `src/codex/zendesk/quantum/orchestrator.py` in 
    - 64-bit database integer columns
    - JSON number precision in some parsers
    - Display in fixed-width UI fields
-   
+
 2. **Human Readability**: 128-bit integers are not human-friendly in logs/UIs
    - Example: `123456789012345678901234567890123456`
-   
+
 3. **Sorting Semantics**: Unlike sequential IDs, UUIDs provide no temporal ordering
 
 ## Alternatives Considered
@@ -85,12 +85,12 @@ Maintain a bidirectional mapping between UUIDs and sequential IDs:
 ```python
 class TicketIDMapper:
     """Maps between UUID and sequential ID for system compatibility."""
-    
+
     def uuid_to_display_id(self, ticket_uuid: uuid.UUID) -> int:
         """Get or create sequential ID for display."""
         # Store mapping in database
         return self.db.get_or_create_sequential_id(ticket_uuid)
-    
+
     def display_id_to_uuid(self, display_id: int) -> uuid.UUID:
         """Resolve display ID to original UUID."""
         return self.db.lookup_uuid(display_id)

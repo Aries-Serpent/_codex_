@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory (`configs/`) is the **canonical configuration root** for all Hydra-based configuration in the _codex_ repository. 
+This directory (`configs/`) is the **canonical configuration root** for all Hydra-based configuration in the _codex_ repository.
 
 ## Directory Structure
 
@@ -58,7 +58,7 @@ from hydra.core.global_hydra import GlobalHydra
 # Initialize with canonical root
 with initialize(config_path="../configs", version_base=None):
     cfg = compose(config_name="defaults")
-    
+
 # Or for legacy compatibility:
 GlobalHydra.instance().clear()
 with initialize(config_path="../conf", version_base=None):
@@ -79,7 +79,7 @@ from hydra.core.config_store import ConfigStore
 class TrainingConfig:
     batch_size: int = 32
     learning_rate: float = 1e-4
-    
+
 cs = ConfigStore.instance()
 cs.store(name="training_base", node=TrainingConfig)
 ```

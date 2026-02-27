@@ -120,14 +120,14 @@ def test_encoder_handles_target_type():
     data = {'value': <problematic_type>}
     json_str = json.dumps(data, cls=CustomEncoder)
     # Verify no TypeError raised
-    
+
 # Test 2: Roundtrip serialization
 def test_encoder_preserves_data():
     original = {'value': <problematic_type>}
     serialized = json.dumps(original, cls=CustomEncoder)
     deserialized = json.loads(serialized)
     # Verify data integrity
-    
+
 # Test 3: Nested structures
 def test_encoder_handles_nested_types():
     data = {'nested': {'deep': {'value': <problematic_type>}}}
@@ -218,17 +218,17 @@ graph TD
     B -->|bytes| F[Decode or base64]
     B -->|Custom Class| G[Use asdict or __dict__]
     B -->|Unknown| H[Investigate __dict__ and __slots__]
-    
+
     C --> I[Add Type Marker?]
     I -->|Yes| J[Include __type__ field]
     I -->|No| K[Simple dict representation]
-    
+
     J --> L[Implement decoder]
     K --> M[Document format]
-    
+
     L --> N[Test roundtrip]
     M --> N
-    
+
     N --> O{All Tests Pass?}
     O -->|Yes| P[Deploy]
     O -->|No| Q[Debug & Fix]
@@ -269,7 +269,7 @@ def test_complex_encoder():
     data = {'amplitude': complex(0.9, 0.1)}
     json_str = json.dumps(data, cls=ComplexEncoder)
     result = json.loads(json_str)
-    
+
     assert result['amplitude']['real'] == 0.9
     assert result['amplitude']['imag'] == 0.1
 ```
@@ -285,7 +285,7 @@ def test_complex_encoder():
     python -c "
     import json
     from my_module import CustomEncoder
-    
+
     # Use custom encoder for artifacts
     with open('report.json', 'w') as f:
         json.dump(data, f, cls=CustomEncoder, indent=2)

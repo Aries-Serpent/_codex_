@@ -98,34 +98,34 @@ timestamp = datetime.now(UTC)
 ```python
 class AdaptiveScoringEngine:
     """Test adapter for AdaptiveScoringOptimizer with simplified API."""
-    
-    def __init__(self, compliance_score_weight=0.38, risk_weight=0.32, 
+
+    def __init__(self, compliance_score_weight=0.38, risk_weight=0.32,
                  cost_weight=None, impact_weight=None, learning_rate=0.12):
         # Validate weights
         if compliance_score_weight < 0 or risk_weight < 0:
             raise ValueError("Weights must be non-negative")
-        
+
         # Calculate remaining weights if not specified
         if cost_weight is None and impact_weight is None:
             remaining = 1.0 - compliance_score_weight - risk_weight
             cost_weight = remaining / 2
             impact_weight = remaining / 2
-        
+
         # Validate sum
         total = compliance_score_weight + risk_weight + cost_weight + impact_weight
         if abs(total - 1.0) > 0.01:
             raise ValueError(f"Weights must sum to 1.0 (got {total})")
-        
+
         self.optimizer = AdaptiveScoringOptimizer(learning_rate=learning_rate)
         self.optimizer.weights = ScoringWeights(...)
-    
+
     @property
     def compliance_score_weight(self):
         return self.optimizer.weights.compliance_score_weight
-    
+
     def compute_score(self, scenario):
         return self.optimizer.compute_score(scenario)
-    
+
     def train(self, scenarios, epochs=10):
         # Mock training for tests
         pass
@@ -239,11 +239,11 @@ class TestAdapter:
     """Adapter to bridge API differences."""
     def __init__(self, ...):
         self.actual = ActualImplementation(...)
-    
+
     @property
     def expected_attr(self):
         return self.actual.real_attr
-    
+
     def expected_method(self, ...):
         return self.actual.real_method(...)
 ```

@@ -225,14 +225,14 @@ You are an AI Software Architect responsible for maintaining the health, integri
 while not complete_understanding():
     current_knowledge = analyze_current_state()
     gaps = identify_knowledge_gaps(current_knowledge)
-    
+
     if len(gaps) == 0:
         break  # Complete understanding achieved
-    
+
     for gap in gaps:
         new_knowledge = deep_research(gap)
         current_knowledge.incorporate(new_knowledge)
-        
+
         # CRITICAL: Always ask the follow-up question
         if not ask_yourself("Is that ALL you need to know?"):
             # More research needed
@@ -536,7 +536,7 @@ graph TB
     ModuleB --> ModuleD[Module D]
     ModuleC --> ModuleD
     ModuleD --> ModuleB
-    
+
     style ModuleD fill:#FF6B6B
     note right of ModuleD: Circular dependency detected
 ```

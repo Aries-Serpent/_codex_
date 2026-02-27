@@ -142,12 +142,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Test Assertion Updater
         run: |
           cd .github/agents/test-assertion-updater
           python -m src.agent fix --validate
-          
+
       - name: Commit fixes
         run: |
           git config user.name "Test Assertion Updater Bot"
@@ -471,7 +471,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -660,7 +660,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

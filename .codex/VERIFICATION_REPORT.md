@@ -15,7 +15,7 @@
 1. `.codex/lessons_learned.json` (+84 lines)
    - Updated with token configuration lessons
    - Added API access limitations documentation
-   
+
 2. `scripts/validate_genesis_readiness.py` (+201 lines)
    - Enhanced Genesis validation script
    - 7 comprehensive checks implemented
@@ -110,7 +110,7 @@ name: Copilot Automation (TEMPLATE - REQUIRES HUMAN REVIEW)
 
 on:
   workflow_dispatch:
-  
+
 # SECURITY MITIGATION STRATEGIES:
 # 1. Use built-in GITHUB_TOKEN with scoped permissions instead of PAT where possible
 # 2. Split workflow: run dependency installation WITHOUT secrets
@@ -124,32 +124,32 @@ jobs:
     permissions:
       contents: read  # Minimal permissions
       pull-requests: write  # Only if needed
-    
+
     # SECURITY: Do NOT expose PAT to entire job
     # Move env to specific steps that need it
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       # SECURITY: Install dependencies WITHOUT secret exposure
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           # Pin versions for security and reproducibility
           pip install "pyyaml==6.0.1" "requests==2.31.0"
-      
+
       - name: Run Genesis Validation
         # SECURITY: Only expose secrets to trusted, reviewed code
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use built-in token when possible
         run: |
           python3 scripts/validate_genesis_readiness.py
-      
+
       # Additional steps here...
 ```
 
@@ -190,7 +190,7 @@ if token:
         'Authorization': f'token {token}',
         'Accept': 'application/vnd.github.v3+json'
     }
-    
+
     # Make API calls
     response = requests.get(
         'https://api.github.com/repos/Aries-Serpent/_codex_',
@@ -265,15 +265,15 @@ jobs:
       contents: write
       pull-requests: write
       actions: write
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       # SECURITY: Only expose tokens to specific trusted steps
       - name: Verify tokens
         env:
@@ -283,17 +283,17 @@ jobs:
         run: |
           echo "Verifying token configuration..."
           gh auth status || echo "Primary token check"
-          
+
           if [ -n "$CODEX_BACKUP_KEY" ]; then
             echo "Backup token available"
           fi
-      
+
       - name: Run Genesis Validation
         # No secrets needed for validation
         if: ${{ inputs.operation == 'validate-genesis' || inputs.operation == 'full-automation' }}
         run: |
           python3 scripts/validate_genesis_readiness.py
-      
+
       - name: Deploy Wiki
         # Only expose secrets to this specific step
         env:
@@ -303,7 +303,7 @@ jobs:
         run: |
           echo "Wiki deployment logic here"
           # Add actual wiki deployment commands
-      
+
       # SECURITY: Tests run WITHOUT access to PAT tokens
       - name: Run Tests
         # Use built-in token only, NOT custom PAT

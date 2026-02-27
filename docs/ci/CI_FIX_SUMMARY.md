@@ -17,7 +17,7 @@ error[E0308]: mismatched types
   --> benches/swarm_benchmarks.rs:63:53
    |
 63 |         b.iter(|| Compression::decompress(black_box(&compressed)));
-   |                                           ---------  ^^^^^^^^^^^ 
+   |                                           ---------  ^^^^^^^^^^^
    |                                           |          expected `&[u8]`, found `&Result<Vec<u8>, PyErr>`
 ```
 

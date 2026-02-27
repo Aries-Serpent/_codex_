@@ -108,7 +108,7 @@ export function WorkflowTokenOrchestrator() {
 
   const handleExecuteWorkflow = async (token: WorkflowToken) => {
     const analysis = workflowDependencyEngine.analyzeDependencies(token, allTokens);
-    
+
     if (!analysis.canExecute) {
       console.debug('Workflow execution blocked', {
         tokenId: token.id,
@@ -121,7 +121,7 @@ export function WorkflowTokenOrchestrator() {
     }
 
     const executionKey = `${token.id}-${Date.now()}`;
-    
+
     const newExecution: WorkflowExecution = {
       executionKey,
       tokenId: token.id,
@@ -140,8 +140,8 @@ export function WorkflowTokenOrchestrator() {
 
     for (let i = 0; i < token.stages.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      setExecutions(prev => 
-        prev.map(ex => 
+      setExecutions(prev =>
+        prev.map(ex =>
           ex.executionKey === executionKey
             ? { ...ex, currentStage: i + 1 }
             : ex
@@ -151,8 +151,8 @@ export function WorkflowTokenOrchestrator() {
 
     const success = await orchestrateTask(`Execute workflow: ${token.id}`, token.id);
 
-    setExecutions(prev => 
-      prev.map(ex => 
+    setExecutions(prev =>
+      prev.map(ex =>
         ex.executionKey === executionKey
           ? { ...ex, status: success ? 'completed' : 'failed', endTime: Date.now() }
           : ex
@@ -163,7 +163,7 @@ export function WorkflowTokenOrchestrator() {
       toast.success(`${token.name} completed`, {
         description: 'All stages executed successfully',
       });
-      
+
       analysis.dependents.forEach(dependent => {
         const depAnalysis = workflowDependencyEngine.analyzeDependencies(dependent, allTokens);
         if (depAnalysis.canExecute) {
@@ -180,7 +180,7 @@ export function WorkflowTokenOrchestrator() {
     }
 
     setTimeout(() => {
-      setExecutions(prev => 
+      setExecutions(prev =>
         prev.filter(ex => ex.executionKey !== executionKey)
       );
       if (activeWorkflow === token.id) {
@@ -238,7 +238,7 @@ export function WorkflowTokenOrchestrator() {
       progress: token ? Math.round((ex.currentStage / token.stages.length) * 100) : 0,
       blockedBy: ex.blockedBy,
       startTime: ex.startTime,
-      estimatedCompletion: ex.startTime && token 
+      estimatedCompletion: ex.startTime && token
         ? ex.startTime + (token.stages.length * 1500)
         : undefined,
     };
@@ -247,7 +247,7 @@ export function WorkflowTokenOrchestrator() {
   return (
     <div className="space-y-6">
       <ExecutionQueueMonitor executions={queuedExecutions} />
-      
+
       <Tabs defaultValue="cascade" className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="cascade" className="flex items-center gap-2">
@@ -269,13 +269,13 @@ export function WorkflowTokenOrchestrator() {
         </TabsList>
 
         <TabsContent value="cascade" className="space-y-6 mt-6">
-          <CascadeWaterfallVisualizer 
+          <CascadeWaterfallVisualizer
             tokens={allTokens}
             activeTokens={executingTokenIds}
             completedTokens={completedTokenIds}
           />
-          
-          <CascadingExecutionMonitor 
+
+          <CascadingExecutionMonitor
             tokens={allTokens}
             onExecuteToken={async (token) => {
               const success = await orchestrateTask(`Execute workflow: ${token.id}`, token.id);
@@ -287,7 +287,7 @@ export function WorkflowTokenOrchestrator() {
 
         <TabsContent value="tokens" className="space-y-6 mt-6">
           <WorkflowTemplatesLibrary />
-          
+
           <CustomWorkflowTokenCreator />
 
       <Card className="p-6 bg-gradient-to-br from-card via-card to-[oklch(0.28_0.03_260)]">
@@ -315,7 +315,7 @@ export function WorkflowTokenOrchestrator() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Card 
+                <Card
                   className={`p-4 cursor-pointer transition-all ${
                     isSelected ? 'ring-2 ring-accent shadow-lg' : ''
                   } ${isExecuting ? 'border-accent' : ''}`}
@@ -485,14 +485,14 @@ export function WorkflowTokenOrchestrator() {
         </TabsContent>
 
         <TabsContent value="chains" className="space-y-6 mt-6">
-          <OrchestrationChainBuilder 
-            allTokens={allTokens} 
+          <OrchestrationChainBuilder
+            allTokens={allTokens}
             onChainExecute={handleExecuteChain}
           />
         </TabsContent>
 
         <TabsContent value="dependencies" className="space-y-6 mt-6">
-          <DependencyGraphVisualizer 
+          <DependencyGraphVisualizer
             tokens={allTokens}
             highlightedToken={selectedToken || undefined}
             executingTokens={executingTokenIds}

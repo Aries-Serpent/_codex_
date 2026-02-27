@@ -1,12 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  ArrowsClockwise, 
-  Database, 
-  MagnifyingGlass, 
-  Package, 
-  Trash 
+import {
+  ArrowsClockwise,
+  Database,
+  MagnifyingGlass,
+  Package,
+  Trash
 } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
@@ -96,9 +96,9 @@ export function OperationsLog({ operations, maxHeight = '400px' }: OperationsLog
                   className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                 >
                   <div className={`p-2 rounded-lg ${operationBgColors[operation.type]}`}>
-                    <OperationIcon 
-                      weight="duotone" 
-                      className={`w-4 h-4 ${operationColors[operation.type]}`} 
+                    <OperationIcon
+                      weight="duotone"
+                      className={`w-4 h-4 ${operationColors[operation.type]}`}
                     />
                   </div>
 

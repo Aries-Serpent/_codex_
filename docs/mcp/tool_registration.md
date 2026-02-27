@@ -63,12 +63,12 @@ class Tool(BaseModel):
     parameters: List[ToolParameter] = Field(default_factory=list)
     version: str = "1.0.0"
     tags: List[str] = Field(default_factory=list)
-    
+
     def to_json_schema(self) -> dict:
         """Convert tool parameters to JSON Schema."""
         properties = {}
         required = []
-        
+
         for param in self.parameters:
             properties[param.name] = {
                 "type": param.type,
@@ -80,7 +80,7 @@ class Tool(BaseModel):
                 properties[param.name]["default"] = param.default
             if param.required:
                 required.append(param.name)
-        
+
         return {
             "type": "object",
             "properties": properties,
@@ -89,11 +89,11 @@ class Tool(BaseModel):
 
 class ToolRegistry:
     """Registry for MCP tools."""
-    
+
     def __init__(self):
         self._tools: Dict[str, Tool] = {}
         self._handlers: Dict[str, Callable] = {}
-    
+
     def register(
         self,
         tool: Tool,
@@ -101,80 +101,80 @@ class ToolRegistry:
     ) -> None:
         """
         Register a tool.
-        
+
         Args:
             tool: Tool definition
             handler: Optional handler function
-        
+
         Raises:
             ValueError: If tool name already registered
         """
         if tool.name in self._tools:
             raise ValueError(f"Tool '{tool.name}' already registered")
-        
+
         self._tools[tool.name] = tool
         if handler:
             self._handlers[tool.name] = handler
-    
+
     def unregister(self, name: str) -> None:
         """Unregister a tool."""
         self._tools.pop(name, None)
         self._handlers.pop(name, None)
-    
+
     def get_tool(self, name: str) -> Optional[Tool]:
         """Get tool by name."""
         return self._tools.get(name)
-    
+
     def list_tools(self, tags: Optional[List[str]] = None) -> List[Tool]:
         """
         List all registered tools.
-        
+
         Args:
             tags: Optional tag filter
-        
+
         Returns:
             List of tools (filtered by tags if provided)
         """
         tools = list(self._tools.values())
-        
+
         if tags:
             tools = [
                 tool for tool in tools
                 if any(tag in tool.tags for tag in tags)
             ]
-        
+
         return tools
-    
+
     def get_handler(self, name: str) -> Optional[Callable]:
         """Get tool handler function."""
         return self._handlers.get(name)
-    
+
     def execute(self, name: str, **params) -> Any:
         """
         Execute a tool.
-        
+
         Args:
             name: Tool name
             **params: Tool parameters
-        
+
         Returns:
             Tool execution result
-        
+
         Raises:
             ValueError: If tool not found or no handler
         """
         tool = self.get_tool(name)
         if not tool:
             raise ValueError(f"Tool '{name}' not found")
-        
+
         handler = self.get_handler(name)
         if not handler:
             raise ValueError(f"No handler for tool '{name}'")
-        
+
         # Validate parameters against schema
         schema = tool.to_json_schema()
         # ... validation logic here ...
-        
+
         return handler(**params)
 
 # Global registry instance
@@ -293,11 +293,11 @@ def mcp_tool(
             tags=tags or []
         )
         registry.register(tool, func)
-        
+
         @wraps(func)
         async def wrapper(*args, **kwargs):
             return await func(*args, **kwargs)
-        
+
         return wrapper
     return decorator
 
@@ -458,7 +458,7 @@ class ToolRegistry {
     this.tools = new Map();
     this.handlers = new Map();
   }
-  
+
   register(tool, handler) {
     if (this.tools.has(tool.name)) {
       throw new Error(`Tool '${tool.name}' already registered`);
@@ -468,28 +468,28 @@ class ToolRegistry {
       this.handlers.set(tool.name, handler);
     }
   }
-  
+
   listTools(tags = null) {
     let tools = Array.from(this.tools.values());
     if (tags && tags.length > 0) {
-      tools = tools.filter(tool => 
+      tools = tools.filter(tool =>
         tool.tags && tool.tags.some(tag => tags.includes(tag))
       );
     }
     return tools;
   }
-  
+
   async execute(name, params) {
     const tool = this.tools.get(name);
     if (!tool) {
       throw new Error(`Tool '${name}' not found`);
     }
-    
+
     const handler = this.handlers.get(name);
     if (!handler) {
       throw new Error(`No handler for tool '${name}'`);
     }
-    
+
     return await handler(params);
   }
 }
@@ -523,7 +523,7 @@ registry.register(
 // JSON-RPC handler
 async function handleJsonRpc(request) {
   const { method, params, id } = request;
-  
+
   if (method === 'mcp.listTools') {
     const tools = registry.listTools(params?.tags);
     return {
@@ -532,7 +532,7 @@ async function handleJsonRpc(request) {
       id
     };
   }
-  
+
   if (method === 'mcp.invokeTool') {
     try {
       const result = await registry.execute(params.name, params.arguments);
@@ -571,11 +571,11 @@ export default {
 ```python
 class DynamicToolRegistry(ToolRegistry):
     """Registry with hot-reload support."""
-    
+
     def __init__(self, config_path: Optional[str] = None):
         super().__init__()
         self.config_path = config_path
-    
+
     def load_from_config(self, config: dict):
         """Load tools from configuration."""
         for tool_config in config.get("tools", []):
@@ -585,25 +585,25 @@ class DynamicToolRegistry(ToolRegistry):
             if module_path:
                 handler = self._load_handler(module_path)
                 self.register(tool, handler)
-    
+
     def _load_handler(self, module_path: str) -> Callable:
         """Dynamically load handler from module path."""
         module_name, func_name = module_path.rsplit(".", 1)
         module = __import__(module_name, fromlist=[func_name])
         return getattr(module, func_name)
-    
+
     def reload(self):
         """Reload tools from config."""
         if not self.config_path:
             return
-        
+
         with open(self.config_path) as f:
             config = json.load(f)
-        
+
         # Clear existing tools
         self._tools.clear()
         self._handlers.clear()
-        
+
         # Reload from config
         self.load_from_config(config)
 
@@ -633,7 +633,7 @@ def test_tool_registration():
     """Test registering a tool."""
     registry = ToolRegistry()
     tool = Tool(name="test", description="Test tool")
-    
+
     registry.register(tool)
     assert registry.get_tool("test") == tool
     assert "test" in [t.name for t in registry.list_tools()]
@@ -642,7 +642,7 @@ def test_duplicate_registration():
     """Test duplicate tool registration fails."""
     registry = ToolRegistry()
     tool = Tool(name="test", description="Test tool")
-    
+
     registry.register(tool)
     with pytest.raises(ValueError, match="already registered"):
         registry.register(tool)
@@ -650,13 +650,13 @@ def test_duplicate_registration():
 def test_tool_listing():
     """Test listing tools with tag filter."""
     registry = ToolRegistry()
-    
+
     registry.register(Tool(name="search", description="Search", tags=["search"]))
     registry.register(Tool(name="context", description="Context", tags=["storage"]))
-    
+
     # List all
     assert len(registry.list_tools()) == 2
-    
+
     # Filter by tag
     search_tools = registry.list_tools(tags=["search"])
     assert len(search_tools) == 1
@@ -665,10 +665,10 @@ def test_tool_listing():
 def test_tool_execution():
     """Test executing a registered tool."""
     registry = ToolRegistry()
-    
+
     async def handler(x: int, y: int):
         return x + y
-    
+
     tool = Tool(
         name="add",
         description="Add numbers",
@@ -677,7 +677,7 @@ def test_tool_execution():
             ToolParameter(name="y", type="number", required=True)
         ]
     )
-    
+
     registry.register(tool, handler)
     result = await registry.execute("add", x=5, y=3)
     assert result == 8
@@ -693,7 +693,7 @@ def test_json_schema_generation():
             ToolParameter(name="enum_param", type="string", enum=["a", "b", "c"])
         ]
     )
-    
+
     schema = tool.to_json_schema()
     assert schema["type"] == "object"
     assert "required_param" in schema["required"]
@@ -914,13 +914,13 @@ registry.load_from_config(config)
 async def tools_health():
     """Tool registry health check."""
     tools = registry.list_tools()
-    
+
     # Check handler availability
     handlers_ok = sum(
         1 for tool in tools
         if registry.get_handler(tool.name) is not None
     )
-    
+
     return {
         "status": "healthy" if handlers_ok == len(tools) else "degraded",
         "total_tools": len(tools),

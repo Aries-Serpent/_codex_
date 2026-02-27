@@ -32,7 +32,7 @@ This session successfully executed the Priority 4 (P4) integration continuation 
 1. **Clear-text Logging** (CodeQL High Severity)
    - `src/security/providers/aws_provider.py` - Removed secret name from logs
    - `src/security/providers/environment_provider.py` - Removed env var name from logs
-   
+
 **Impact:** Prevents sensitive information leakage in logs (GDPR/SOC2 compliance)
 
 ### Code Quality Improvements
@@ -62,7 +62,7 @@ async def search(query_vector, top_k=5):
     # Scatter: Query all shards in parallel
     tasks = [query_shard(sid, vec, k*2) for sid in shards]
     results = await asyncio.gather(*tasks)
-    
+
     # Gather: Global re-ranking
     all_results.sort(key=lambda r: r.score, reverse=True)
     return all_results[:top_k]

@@ -20,7 +20,7 @@
    export HF_TOKEN="your-staging-token"
    export RAG_OPENAI_KEY="your-staging-key"
    export PYTHONPATH="/app/src"
-   
+
    # Install dependencies
    pip install -r requirements.txt
    pip install -r requirements-test.txt
@@ -32,10 +32,10 @@
    python -c "
    from sentence_transformers import SentenceTransformer
    import os
-   
+
    cache_dir = '/app/model_cache'
    os.makedirs(cache_dir, exist_ok=True)
-   
+
    # Cache primary model
    model = SentenceTransformer(
        'sentence-transformers/all-MiniLM-L6-v2',
@@ -51,7 +51,7 @@
    # Full RAG test suite
    PYTHONPATH=src pytest tests/test_rag*.py -v
    # Expected: 213+ passing
-   
+
    # Meta tensor specific validation
    PYTHONPATH=src pytest tests/test_rag_meta_tensor_regression.py -v
    # Expected: 9/9 passing
@@ -87,39 +87,39 @@ from codex.rag.utils import safe_model_to_device
 def benchmark_embedding_generation():
     """Measure embedding generation performance."""
     model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-    
+
     texts = ["Sample text"] * 100
-    
+
     start = time.time()
     embeddings = model.encode(texts, batch_size=32)
     duration = time.time() - start
-    
+
     print(f"Embedding 100 texts: {duration:.3f}s")
     print(f"Per-text latency: {duration/100*1000:.1f}ms")
-    
+
     return duration
 
 def benchmark_meta_tensor_transfer():
     """Measure meta tensor device transfer performance."""
     import torch
-    
+
     # Create meta tensor model
     with torch.device('meta'):
         model = torch.nn.Linear(1000, 1000)
-    
+
     start = time.time()
     model = safe_model_to_device(model, 'cpu')
     duration = time.time() - start
-    
+
     print(f"Meta tensor transfer: {duration:.3f}s")
     return duration
 
 if __name__ == '__main__':
     print("=== RAG Performance Benchmarks ===\n")
-    
+
     embedding_time = benchmark_embedding_generation()
     transfer_time = benchmark_meta_tensor_transfer()
-    
+
     print("\n=== Baseline Metrics ===")
     print(f"Embedding generation: {embedding_time:.3f}s (target: <1.0s)")
     print(f"Meta tensor transfer: {transfer_time:.3f}s (target: <0.5s)")
@@ -231,21 +231,21 @@ Adapt for your specific monitoring platform (Datadog, Prometheus, etc.)
 
 class RAGMetrics:
     """Production metrics for RAG operations."""
-    
+
     @staticmethod
     def record_meta_tensor_detection(device: str):
         """Record meta tensor detection event."""
         # Example: Datadog
         # statsd.increment('rag.meta_tensor_detected', tags=[f'device:{device}'])
         pass
-    
+
     @staticmethod
     def record_device_transfer_duration(duration: float, device: str):
         """Record device transfer timing."""
         # Example: Prometheus
         # device_transfer_histogram.labels(device=device).observe(duration)
         pass
-    
+
     @staticmethod
     def record_embedding_latency(duration: float, batch_size: int):
         """Record embedding generation latency."""
@@ -279,7 +279,7 @@ alerts:
     query: rate(rag.meta_tensor_detected[5m]) > 0.10
     severity: warning
     message: "High meta tensor detection rate"
-    
+
   - name: slow_device_transfer
     query: histogram_quantile(0.95, rag.device_transfer_duration) > 5.0
     severity: warning
@@ -299,14 +299,14 @@ alerts:
    # Test quantized models
    from sentence_transformers import SentenceTransformer
    import torch
-   
+
    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-   
+
    # Quantize to int8
    model = torch.quantization.quantize_dynamic(
        model, {torch.nn.Linear}, dtype=torch.qint8
    )
-   
+
    # Benchmark: Compare speed and quality
    ```
 
@@ -324,7 +324,7 @@ alerts:
    # Singleton pattern for model reuse
    class ModelCache:
        _models = {}
-       
+
        @classmethod
        def get_model(cls, name):
            if name not in cls._models:

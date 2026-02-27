@@ -49,7 +49,7 @@ def verify_token_scopes() -> dict:
     token = os.getenv("GITHUB_TOKEN")
     if not token:
         return {"error": "GITHUB_TOKEN not set", "status": "missing"}
-    
+
     # Make authenticated request (token never logged)
     response = requests.get(
         "https://api.github.com/user",
@@ -59,10 +59,10 @@ def verify_token_scopes() -> dict:
         },
         timeout=10
     )
-    
+
     # Extract scopes from header (NO token decoding)
     scopes = response.headers.get("x-oauth-scopes", "").split(", ")
-    
+
     return {
         "scopes": scopes,
         "has_repo": "repo" in scopes,
@@ -80,17 +80,17 @@ def verify_token_scopes() -> dict:
 def mask_token(token: str, visible_chars: int = 4) -> str:
     """
     Mask token for safe logging.
-    
+
     Args:
         token: Token to mask
         visible_chars: Number of characters to show (default: 4)
-    
+
     Returns:
         Masked token string (e.g., "ghp_****...xyz1")
     """
     if not token or len(token) <= visible_chars * 2:
         return "****"
-    
+
     return f"{token[:visible_chars]}****...{token[-visible_chars:]}"
 
 # Usage in logging

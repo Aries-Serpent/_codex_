@@ -688,11 +688,11 @@ Here are best practices for creating an efficient, CPU-only Python Dockerfile th
 3. Optimize Layer Caching
 - Copy dependency files before the rest of your code; this leverages cache if requirements haven’t changed.
 - Example:
-  
+
   COPY requirements.txt ./
-  
+
   RUN pip install --no-cache-dir -r requirements.txt
-  
+
   COPY . .
 - For nox: copy your noxfile.py and test requirements first for caching test dependencies.
 
@@ -703,7 +703,7 @@ Here are best practices for creating an efficient, CPU-only Python Dockerfile th
   FROM python:3.10-slim as builder
   WORKDIR /app
   COPY requirements.txt ./
-  RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt 
+  RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 
   FROM python:3.10-slim
   WORKDIR /app
@@ -722,14 +722,14 @@ Here are best practices for creating an efficient, CPU-only Python Dockerfile th
 
 6. Set WORKDIR
 - Ensures your application runs from a predictable location:
-  
+
   WORKDIR /app
 
 7. Environment Variables
 - For development, set envs like PYTHONUNBUFFERED=1 and PIP_NO_CACHE_DIR=off to see logs in real-time.
-  
+
   ENV PYTHONUNBUFFERED=1
-  
+
   ENV PIP_NO_CACHE_DIR=off
 
 8. Integrating Nox/Pytest
@@ -833,4 +833,3 @@ Acceptance:
 - pip-audit enforcement can switch to warn-only temporarily with documented allowlists.
 - Style normalization is formatting-only; easy git revert.
 - Docker artifacts are non-invasive; safe to remove.
-

@@ -462,7 +462,7 @@ sync_python_dependencies() {
     local token
     for token in "${SYNC_TOKENS[@]}"; do
       case "$token" in
-        base) : ;; 
+        base) : ;;
         cpu|gpu|dev|test|tracking|docs|lint|analysis|benchmark|training)
           args+=(--group "$token") ;;
         all|all-groups|everything)

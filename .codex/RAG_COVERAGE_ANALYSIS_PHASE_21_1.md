@@ -303,17 +303,17 @@ from codex.rag.gpu_utils import (
 
 class TestCudaDetection:
     """Test CUDA availability detection."""
-    
+
     def test_cuda_available_returns_true_when_present(self):
         """Test CUDA detection when GPU is available."""
         with patch('torch.cuda.is_available', return_value=True):
             assert check_cuda_available() is True
-    
+
     def test_cuda_unavailable_returns_false(self):
         """Test CUDA detection when GPU is not available."""
         with patch('torch.cuda.is_available', return_value=False):
             assert check_cuda_available() is False
-    
+
     def test_cuda_check_handles_import_error(self):
         """Test graceful handling when torch not available."""
         with patch('torch.cuda.is_available', side_effect=ImportError):
@@ -322,7 +322,7 @@ class TestCudaDetection:
 
 class TestGpuMemory:
     """Test GPU memory reporting."""
-    
+
     def test_get_memory_when_cuda_available(self):
         """Test memory reporting with GPU present."""
         with patch('torch.cuda.is_available', return_value=True):
@@ -330,7 +330,7 @@ class TestGpuMemory:
                 free, total = get_gpu_memory()
                 assert free == 8_000_000_000
                 assert total == 16_000_000_000
-    
+
     def test_get_memory_when_cuda_unavailable(self):
         """Test memory reporting without GPU."""
         with patch('torch.cuda.is_available', return_value=False):
@@ -341,19 +341,19 @@ class TestGpuMemory:
 
 class TestDeviceSelection:
     """Test device selection logic."""
-    
+
     def test_prefer_gpu_when_available(self):
         """Test GPU selection when available and preferred."""
         with patch('torch.cuda.is_available', return_value=True):
             device = select_device(prefer_gpu=True)
             assert device == "cuda"
-    
+
     def test_fallback_to_cpu_when_gpu_unavailable(self):
         """Test CPU fallback when GPU not available."""
         with patch('torch.cuda.is_available', return_value=False):
             device = select_device(prefer_gpu=True)
             assert device == "cpu"
-    
+
     def test_force_cpu_even_when_gpu_available(self):
         """Test CPU selection when explicitly requested."""
         with patch('torch.cuda.is_available', return_value=True):
@@ -363,7 +363,7 @@ class TestDeviceSelection:
 
 class TestBatchSizeOptimization:
     """Test optimal batch size calculation."""
-    
+
     def test_batch_size_with_available_memory(self):
         """Test batch size calculation with known memory."""
         batch_size = get_optimal_batch_size(
@@ -373,7 +373,7 @@ class TestBatchSizeOptimization:
         )
         assert batch_size > 0
         assert batch_size <= 1000
-    
+
     def test_batch_size_respects_max_batch(self):
         """Test batch size doesn't exceed max_batch parameter."""
         batch_size = get_optimal_batch_size(
@@ -383,7 +383,7 @@ class TestBatchSizeOptimization:
             max_batch=128
         )
         assert batch_size <= 128
-    
+
     def test_batch_size_with_limited_memory(self):
         """Test batch size with memory constraints."""
         batch_size = get_optimal_batch_size(
@@ -397,21 +397,21 @@ class TestBatchSizeOptimization:
 
 class TestGpuIndexing:
     """Test GPU index operations."""
-    
+
     def test_try_gpu_index_success(self):
         """Test successful GPU index creation."""
         mock_index = MagicMock()
         mock_data = Mock()
-        
+
         with patch('torch.cuda.is_available', return_value=True):
             result = try_gpu_index(mock_index, mock_data, device="cuda")
             assert result is not None
-    
+
     def test_try_gpu_index_fallback_to_cpu(self):
         """Test CPU fallback when GPU index fails."""
         mock_index = MagicMock()
         mock_data = Mock()
-        
+
         with patch('torch.cuda.is_available', return_value=False):
             result = try_gpu_index(mock_index, mock_data, device="cuda")
             # Should fallback and still return result
@@ -431,63 +431,63 @@ from codex.rag.utils import safe_model_load, ProvenanceMetadata
 
 class TestSafeModelLoad:
     """Test safe model loading utility."""
-    
+
     def test_load_model_to_cpu(self):
         """Test loading model to CPU device."""
         mock_model = MagicMock()
         mock_model.to = MagicMock(return_value=mock_model)
-        
+
         result = safe_model_load(mock_model, device="cpu")
-        
+
         assert result is not None
         mock_model.to.assert_called_once_with("cpu")
-    
+
     def test_load_model_to_gpu(self):
         """Test loading model to GPU device."""
         mock_model = MagicMock()
         mock_model.to = MagicMock(return_value=mock_model)
-        
+
         with patch('torch.cuda.is_available', return_value=True):
             result = safe_model_load(mock_model, device="cuda")
-            
+
             assert result is not None
             mock_model.to.assert_called()
-    
+
     def test_handle_meta_device_tensors(self):
         """Test conversion of meta device tensors to real tensors."""
         mock_model = MagicMock()
-        
+
         # Simulate meta device tensor
         mock_param = Mock()
         mock_param.device = torch.device("meta")
         mock_model.parameters = MagicMock(return_value=[mock_param])
-        
+
         result = safe_model_load(mock_model, device="cpu")
-        
+
         # Should handle meta tensors gracefully
         assert result is not None
-    
+
     def test_invalid_device_raises_error(self):
         """Test error handling for invalid device."""
         mock_model = MagicMock()
         mock_model.to = MagicMock(side_effect=RuntimeError("Invalid device"))
-        
+
         with pytest.raises(RuntimeError, match="Invalid device"):
             safe_model_load(mock_model, device="invalid_device")
-    
+
     def test_model_without_to_method(self):
         """Test handling models without to() method."""
         mock_model = object()  # No to() method
-        
+
         result = safe_model_load(mock_model, device="cpu")
-        
+
         # Should return original model if to() not available
         assert result is mock_model
 
 
 class TestProvenanceMetadata:
     """Test provenance metadata tracking."""
-    
+
     def test_metadata_creation(self):
         """Test creating provenance metadata."""
         metadata = ProvenanceMetadata(
@@ -497,12 +497,12 @@ class TestProvenanceMetadata:
             chunk_id="chunk_001",
             timestamp="2024-01-19T12:00:00Z"
         )
-        
+
         assert metadata.source_file == "test.py"
         assert metadata.start_line == 10
         assert metadata.end_line == 20
         assert metadata.chunk_id == "chunk_001"
-    
+
     def test_metadata_serialization(self):
         """Test metadata serialization to dict."""
         metadata = ProvenanceMetadata(
@@ -511,13 +511,13 @@ class TestProvenanceMetadata:
             end_line=20,
             chunk_id="chunk_001"
         )
-        
+
         data = metadata.to_dict()
-        
+
         assert isinstance(data, dict)
         assert data["source_file"] == "test.py"
         assert data["start_line"] == 10
-    
+
     def test_metadata_deserialization(self):
         """Test metadata deserialization from dict."""
         data = {
@@ -526,12 +526,12 @@ class TestProvenanceMetadata:
             "end_line": 20,
             "chunk_id": "chunk_001"
         }
-        
+
         metadata = ProvenanceMetadata.from_dict(data)
-        
+
         assert metadata.source_file == "test.py"
         assert metadata.start_line == 10
-    
+
     def test_metadata_validation(self):
         """Test metadata field validation."""
         with pytest.raises(ValueError):
@@ -550,12 +550,12 @@ class TestProvenanceMetadata:
 
 class TestTfidfEmbeddingProvider:
     """Test TF-IDF embedding provider."""
-    
+
     def test_initialization_default(self):
         """Test default initialization."""
         provider = TfidfEmbeddingProvider()
         assert provider.get_dimension() > 0
-    
+
     def test_initialization_custom_params(self):
         """Test initialization with custom parameters."""
         provider = TfidfEmbeddingProvider(
@@ -563,7 +563,7 @@ class TestTfidfEmbeddingProvider:
             ngram_range=(1, 2)
         )
         assert provider.get_dimension() <= 500
-    
+
     def test_fit_corpus(self):
         """Test fitting on a corpus."""
         provider = TfidfEmbeddingProvider()
@@ -572,74 +572,74 @@ class TestTfidfEmbeddingProvider:
             "This is document two",
             "Another document here"
         ]
-        
+
         provider.fit(corpus)
-        
+
         # Should have learned vocabulary
         assert provider._is_fitted
         assert provider.get_dimension() > 0
-    
+
     def test_encode_after_fit(self):
         """Test encoding after fitting."""
         provider = TfidfEmbeddingProvider()
         corpus = ["doc one", "doc two", "doc three"]
         provider.fit(corpus)
-        
+
         embeddings = provider.encode(["query document"])
-        
+
         assert embeddings.shape[0] == 1
         assert embeddings.shape[1] == provider.get_dimension()
-    
+
     def test_encode_multiple_texts(self):
         """Test encoding multiple texts."""
         provider = TfidfEmbeddingProvider()
         corpus = ["doc one", "doc two"]
         provider.fit(corpus)
-        
+
         embeddings = provider.encode(["query1", "query2", "query3"])
-        
+
         assert embeddings.shape[0] == 3
         assert embeddings.shape[1] == provider.get_dimension()
-    
+
     def test_unknown_words_handling(self):
         """Test handling of words not in vocabulary."""
         provider = TfidfEmbeddingProvider()
         corpus = ["cat dog", "dog bird"]
         provider.fit(corpus)
-        
+
         # Query with unknown words
         embeddings = provider.encode(["elephant zebra"])
-        
+
         # Should still produce embeddings (likely zeros)
         assert embeddings.shape[0] == 1
         assert embeddings.shape[1] == provider.get_dimension()
-    
+
     def test_encode_before_fit_raises_error(self):
         """Test that encoding before fitting raises error."""
         provider = TfidfEmbeddingProvider()
-        
+
         with pytest.raises(RuntimeError, match="not fitted"):
             provider.encode(["query"])
-    
+
     def test_dimension_consistency(self):
         """Test embedding dimension consistency."""
         provider = TfidfEmbeddingProvider(max_features=100)
         corpus = ["doc"] * 50
         provider.fit(corpus)
-        
+
         emb1 = provider.encode(["query1"])
         emb2 = provider.encode(["query2"])
-        
+
         assert emb1.shape[1] == emb2.shape[1]
-    
+
     def test_empty_text_handling(self):
         """Test handling of empty text."""
         provider = TfidfEmbeddingProvider()
         corpus = ["doc one", "doc two"]
         provider.fit(corpus)
-        
+
         embeddings = provider.encode([""])
-        
+
         # Should handle empty strings gracefully
         assert embeddings.shape[0] == 1
 ```

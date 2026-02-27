@@ -130,7 +130,7 @@ Each planset contributes to the following cognitive brain objectives:
 ### High-Risk Changes
 1. **IPC Bridge Replacement (PS-02):** Affects all workflow executions
    - **Mitigation:** Parallel run for 1 cycle, rollback plan ready
-   
+
 2. **Split Brain Elimination (PS-03):** Large refactor of critical path
    - **Mitigation:** Comprehensive test coverage, incremental migration
 

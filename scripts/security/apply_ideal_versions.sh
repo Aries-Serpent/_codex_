@@ -76,7 +76,7 @@ FAILED=0
 while IFS= read -r file; do
     if [ -n "$file" ]; then
         echo -n "  Updating $file... "
-        
+
         if git checkout $IDEAL_COMMIT -- "$file" 2>/dev/null; then
             echo "✓"
             ((SUCCESS++))

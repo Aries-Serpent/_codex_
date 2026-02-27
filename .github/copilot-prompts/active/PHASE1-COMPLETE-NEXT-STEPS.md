@@ -84,14 +84,14 @@ Phase 1 of the Unified Agent Framework is **90% complete** with all critical com
    cd /home/runner/work/_codex_/_codex_
    pytest .github/agents/core/tests/ -v --cov=.github/agents/core --cov-report=term-missing
    ```
-   
+
    **Expected Outcome**: 100% pass rate, 90%+ coverage
 
 2. **Validate Example Agent**
    ```bash
    python examples/example_agent.py
    ```
-   
+
    **Expected Outcome**: Successful execution with cognitive brain learning demo
 
 3. **Test CLI Tool**
@@ -99,14 +99,14 @@ Phase 1 of the Unified Agent Framework is **90% complete** with all critical com
    python brain_cli.py stats
    python brain_cli.py sessions --limit 5
    ```
-   
+
    **Expected Outcome**: Proper output formatting, no errors
 
 4. **Run Code Review**
    ```bash
    # Use code_review tool on all new files
    ```
-   
+
    **Expected Outcome**: 0 critical issues
 
 5. **Update Main README**
@@ -203,41 +203,41 @@ Create the first of 11 new agents using the unified framework. This agent will:
 ```python
 class FlakyTriageAgent(CognitiveAgent):
     """Agent for detecting and triaging flaky tests."""
-    
+
     def perceive(self, task):
         """
         Analyze GitHub Actions logs and test results.
-        
+
         - Parse workflow run logs
         - Extract test pass/fail data
         - Calculate timing statistics
         - Query cognitive brain for historical flake patterns
         """
-        
+
     def decide(self, context):
         """
         Classify tests and determine actions.
-        
+
         - Apply flaky thresholds (pass rate < 95%)
         - Determine severity (critical/high/medium/low)
         - Select action (quarantine/mark/investigate)
         - Prioritize by impact
         """
-        
+
     def act(self, decision):
         """
         Execute flake management actions.
-        
+
         - Create `flake_index.json`
         - Generate `quarantine_list.md`
         - Apply `@pytest.mark.flaky` decorators
         - Create GitHub issues (optional)
         """
-        
+
     def aftermath(self, result, context, decision):
         """
         Learn from flake detection and update brain.
-        
+
         - Record flake patterns
         - Store MTTR (Mean Time To Resolve)
         - Update confidence scores
@@ -471,7 +471,7 @@ Once ci-testing-agent migration proven successful:
 ```markdown
 @copilot Continue Phase 1 finalization and begin Phase 2 implementation.
 
-**Context**: Phase 1 of unified agent framework is 90% complete (af243e9, 3741de0). 
+**Context**: Phase 1 of unified agent framework is 90% complete (af243e9, 3741de0).
 All core components, tests, docs, and tools implemented.
 
 **Immediate Tasks** (30 min):

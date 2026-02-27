@@ -45,19 +45,19 @@ Manages MCP rate limiting through:
 async def handle_request(request):
     # 1. Identify client
     client_id = get_client_id(request)
-    
+
     # 2. Check global limits
     if not global_limiter.allow(request):
         return rate_limit_response(retry_after=60)
-    
+
     # 3. Check per-client limits
     if not client_limiter.allow(client_id):
         return rate_limit_response(retry_after=30)
-    
+
     # 4. Check endpoint-specific limits
     if not endpoint_limiter.allow(request.path):
         return rate_limit_response(retry_after=10)
-    
+
     # 5. Process request
     return await process(request)
 ```
@@ -80,18 +80,18 @@ logger = logging.getLogger(__name__)
 class TokenBucket:
     """
     Token bucket rate limiter implementation.
-    
+
     Provides:
     - Configurable rate and burst capacity
     - Thread-safe operation
     - Smooth rate limiting
-    
+
     Safeguards:
     - Bounds checking on parameters
     - Thread-safe token updates
     - Overflow protection
     """
-    
+
     def __init__(
         self,
         rate: float,
@@ -100,7 +100,7 @@ class TokenBucket:
     ):
         """
         Initialize token bucket.
-        
+
         Args:
             rate: Tokens added per second
             capacity: Maximum bucket capacity
@@ -113,27 +113,27 @@ class TokenBucket:
             raise ValueError("Capacity must be positive")
         if capacity > 1000000:  # Bounds check (safeguard)
             raise ValueError("Capacity exceeds maximum")
-        
+
         self._rate = rate
         self._capacity = capacity
         self._tokens = initial_tokens if initial_tokens is not None else capacity
         self._last_update = time.monotonic()
         self._lock = Lock()
-    
+
     def consume(self, tokens: int = 1) -> bool:
         """
         Attempt to consume tokens from the bucket.
-        
+
         Thread-safe token consumption with automatic refill.
-        
+
         Safeguards:
         - Token count validation
         - Overflow protection
         - Thread-safe operations
-        
+
         Args:
             tokens: Number of tokens to consume
-            
+
         Returns:
             True if tokens consumed, False if insufficient
         """
@@ -141,27 +141,27 @@ class TokenBucket:
             return True
         if tokens > self._capacity:  # Bounds check (safeguard)
             return False
-        
+
         with self._lock:
             self._refill()
-            
+
             if self._tokens >= tokens:
                 self._tokens -= tokens
                 return True
             return False
-    
+
     def _refill(self):
         """Refill tokens based on elapsed time."""
         now = time.monotonic()
         elapsed = now - self._last_update
-        
+
         # Calculate tokens to add
         tokens_to_add = elapsed * self._rate
-        
+
         # Update tokens (with overflow protection - safeguard)
         self._tokens = min(self._capacity, self._tokens + tokens_to_add)
         self._last_update = now
-    
+
     @property
     def available_tokens(self) -> float:
         """Get current available tokens."""
@@ -173,17 +173,17 @@ class TokenBucket:
 class RateLimiter:
     """
     Rate limiter using token bucket algorithm.
-    
+
     Provides per-client rate limiting with configurable policies.
-    
+
     Safeguards:
     - Client ID validation
     - Memory bounds on buckets
     - Cleanup of old buckets
     """
-    
+
     MAX_BUCKETS = 100000  # Safeguard: limit memory usage
-    
+
     def __init__(
         self,
         requests_per_second: float = 10.0,
@@ -191,7 +191,7 @@ class RateLimiter:
     ):
         """
         Initialize rate limiter.
-        
+
         Args:
             requests_per_second: Rate limit
             burst_size: Maximum burst capacity
@@ -200,27 +200,27 @@ class RateLimiter:
         self._burst = burst_size
         self._buckets: dict[str, TokenBucket] = {}
         self._lock = Lock()
-    
+
     def allow(self, client_id: str) -> bool:
         """
         Check if request is allowed for client.
-        
+
         Args:
             client_id: Client identifier
-            
+
         Returns:
             True if request allowed, False if rate limited
         """
         # Input validation (safeguard)
         if not client_id or not isinstance(client_id, str):
             return False
-        
+
         # Sanitize client ID (safeguard)
         client_id = client_id[:100]
-        
+
         bucket = self._get_or_create_bucket(client_id)
         return bucket.consume(1)
-    
+
     def _get_or_create_bucket(self, client_id: str) -> TokenBucket:
         """Get or create bucket for client."""
         with self._lock:
@@ -228,28 +228,28 @@ class RateLimiter:
                 # Enforce memory limit (safeguard)
                 if len(self._buckets) >= self.MAX_BUCKETS:
                     self._cleanup_old_buckets()
-                
+
                 self._buckets[client_id] = TokenBucket(
                     rate=self._rate,
                     capacity=self._burst
                 )
-            
+
             return self._buckets[client_id]
-    
+
     def _cleanup_old_buckets(self):
         """Remove old buckets to free memory."""
         # Remove 10% of oldest buckets
         to_remove = len(self._buckets) // 10
         for key in list(self._buckets.keys())[:to_remove]:
             del self._buckets[key]
-    
+
     def get_retry_after(self, client_id: str) -> int:
         """
         Get recommended retry-after time in seconds.
-        
+
         Args:
             client_id: Client identifier
-            
+
         Returns:
             Seconds to wait before retrying
         """
@@ -271,15 +271,15 @@ import time
 class SlidingWindowCounter:
     """
     Sliding window counter rate limiter.
-    
+
     More accurate than fixed window, prevents burst at window boundaries.
-    
+
     Safeguards:
     - Memory-efficient counter storage
     - Automatic cleanup of old entries
     - Thread-safe operations
     """
-    
+
     def __init__(
         self,
         limit: int,
@@ -287,7 +287,7 @@ class SlidingWindowCounter:
     ):
         """
         Initialize sliding window counter.
-        
+
         Args:
             limit: Maximum requests per window
             window_seconds: Window duration in seconds
@@ -296,44 +296,44 @@ class SlidingWindowCounter:
         self._window = window_seconds
         self._counters: dict[str, dict[int, int]] = defaultdict(dict)
         self._lock = Lock()
-    
+
     def allow(self, client_id: str) -> bool:
         """
         Check if request is allowed using sliding window.
-        
+
         Args:
             client_id: Client identifier
-            
+
         Returns:
             True if allowed, False if rate limited
         """
         now = int(time.time())
         current_window = now // self._window
         previous_window = current_window - 1
-        
+
         with self._lock:
             counters = self._counters[client_id]
-            
+
             # Get counts for current and previous windows
             current_count = counters.get(current_window, 0)
             previous_count = counters.get(previous_window, 0)
-            
+
             # Calculate weighted count
             window_position = (now % self._window) / self._window
             weighted_previous = previous_count * (1 - window_position)
             total_count = weighted_previous + current_count
-            
+
             if total_count >= self._limit:
                 return False
-            
+
             # Increment counter
             counters[current_window] = current_count + 1
-            
+
             # Cleanup old windows (safeguard - memory management)
             self._cleanup(client_id, current_window)
-            
+
             return True
-    
+
     def _cleanup(self, client_id: str, current_window: int):
         """Remove old window counters."""
         counters = self._counters[client_id]
@@ -354,15 +354,15 @@ from typing import Callable
 class RateLimitMiddleware:
     """
     FastAPI middleware for rate limiting.
-    
+
     Applies rate limiting to all requests with proper headers.
-    
+
     Safeguards:
     - Graceful handling of limit exceeded
     - Proper HTTP headers
     - Client identification
     """
-    
+
     def __init__(
         self,
         app,
@@ -374,16 +374,16 @@ class RateLimitMiddleware:
             requests_per_second=requests_per_minute / 60,
             burst_size=requests_per_minute // 2
         )
-    
+
     async def __call__(self, request: Request, call_next: Callable):
         """Process request with rate limiting."""
         # Get client identifier
         client_id = self._get_client_id(request)
-        
+
         # Check rate limit
         if not self._limiter.allow(client_id):
             retry_after = self._limiter.get_retry_after(client_id)
-            
+
             return JSONResponse(
                 status_code=429,
                 content={
@@ -397,21 +397,21 @@ class RateLimitMiddleware:
                     "X-RateLimit-Remaining": "0",
                 }
             )
-        
+
         # Process request
         response = await call_next(request)
-        
+
         # Add rate limit headers
         bucket = self._limiter._get_or_create_bucket(client_id)
         response.headers["X-RateLimit-Limit"] = str(self._limiter._burst)
         response.headers["X-RateLimit-Remaining"] = str(int(bucket.available_tokens))
-        
+
         return response
-    
+
     def _get_client_id(self, request: Request) -> str:
         """
         Extract client identifier from request.
-        
+
         Priority:
         1. API key
         2. User ID from auth
@@ -421,11 +421,11 @@ class RateLimitMiddleware:
         api_key = request.headers.get("X-API-Key")
         if api_key:
             return f"key:{api_key[:32]}"
-        
+
         # Check authenticated user
         if hasattr(request.state, "user"):
             return f"user:{request.state.user.id}"
-        
+
         # Fall back to IP
         client_ip = request.client.host if request.client else "unknown"
         return f"ip:{client_ip}"
@@ -460,15 +460,15 @@ Use YAML for rate limiting configuration:
 rate_limiting:
   enabled: true
   algorithm: "token_bucket"  # or "sliding_window"
-  
+
   global:
     requests_per_second: 1000
     burst_size: 2000
-  
+
   per_client:
     requests_per_minute: 60
     burst_size: 20
-  
+
   per_endpoint:
     "/api/auth/login":
       requests_per_minute: 10
@@ -476,7 +476,7 @@ rate_limiting:
     "/api/predict":
       requests_per_minute: 30
       burst_size: 10
-  
+
   tiers:
     free:
       requests_per_day: 1000
@@ -487,7 +487,7 @@ rate_limiting:
     enterprise:
       requests_per_day: -1  # unlimited
       requests_per_minute: 1000
-  
+
   response:
     include_headers: true
     retry_after_precision: "seconds"
@@ -524,19 +524,19 @@ async def get_data():
 ```python
 class TieredRateLimiter:
     """Rate limiter with different tiers."""
-    
+
     TIERS = {
         "free": {"rate": 1, "burst": 10},
         "pro": {"rate": 10, "burst": 50},
         "enterprise": {"rate": 100, "burst": 200}
     }
-    
+
     def __init__(self):
         self._limiters = {
             tier: RateLimiter(**config)
             for tier, config in self.TIERS.items()
         }
-    
+
     def allow(self, client_id: str, tier: str = "free") -> bool:
         """Check if request allowed for tier."""
         limiter = self._limiters.get(tier, self._limiters["free"])
@@ -559,10 +559,10 @@ import redis
 class RedisRateLimiter:
     """
     Distributed rate limiter using Redis.
-    
+
     Enables rate limiting across multiple service instances.
     """
-    
+
     def __init__(
         self,
         redis_client: redis.Redis,
@@ -572,16 +572,16 @@ class RedisRateLimiter:
         self._redis = redis_client
         self._limit = limit
         self._window = window_seconds
-    
+
     def allow(self, client_id: str) -> bool:
         """Check rate limit using Redis."""
         key = f"rate_limit:{client_id}"
-        
+
         pipe = self._redis.pipeline()
         pipe.incr(key)
         pipe.expire(key, self._window)
         results = pipe.execute()
-        
+
         current_count = results[0]
         return current_count <= self._limit
 ```
@@ -615,7 +615,7 @@ async def handle_rate_limited(request, retry_after):
     """Handle rate limited request gracefully."""
     # Log for monitoring
     logger.warning(f"Rate limit exceeded for {request.client.host}")
-    
+
     # Return informative response
     return JSONResponse(
         status_code=429,

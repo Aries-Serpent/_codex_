@@ -183,7 +183,7 @@ def test_linear_scheduler_creation():
     """Test linear scheduler creation and behavior."""
     scheduler = create_scheduler("linear", optimizer, steps=100)
     assert scheduler is not None
-    
+
     # Verify schedule values
     initial_lr = scheduler.get_last_lr()[0]
     scheduler.step()
@@ -192,9 +192,9 @@ def test_linear_scheduler_creation():
 
 def test_cosine_scheduler_warmup():
     """Test cosine scheduler with warmup period."""
-    scheduler = create_scheduler("cosine", optimizer, 
+    scheduler = create_scheduler("cosine", optimizer,
                                  warmup_steps=10, total_steps=100)
-    
+
     # Check warmup phase
     initial_lr = scheduler.get_last_lr()[0]
     for _ in range(10):
@@ -278,10 +278,10 @@ def test_function_behavior():
     # Arrange
     input_data = create_test_data()
     expected_output = calculate_expected()
-    
+
     # Act
     result = function_under_test(input_data)
-    
+
     # Assert
     assert result == expected_output
 ```
@@ -304,14 +304,14 @@ def test_function_edge_cases():
     """Test function with boundary conditions."""
     # Empty input
     assert function([]) == default_value
-    
+
     # Single item
     assert function([1]) == expected_single
-    
+
     # Maximum size
     large_input = [1] * 10000
     assert function(large_input) is not None
-    
+
     # Negative values
     with pytest.raises(ValueError):
         function([-1])
@@ -324,11 +324,11 @@ def test_function_error_handling():
     # Invalid type
     with pytest.raises(TypeError, match="Expected str"):
         function(123)
-    
+
     # Invalid value
     with pytest.raises(ValueError, match="Must be positive"):
         function(-1)
-    
+
     # None input
     with pytest.raises(ValueError, match="Cannot be None"):
         function(None)
@@ -464,22 +464,22 @@ def test_module_import():
 # Enhanced version (use this template)
 class TestModuleBehavior:
     """Comprehensive tests for module functionality."""
-    
+
     def test_happy_path(self):
         """Test main use case."""
         # Implement
         pass
-    
+
     def test_edge_case_empty(self):
         """Test with empty input."""
         # Implement
         pass
-    
+
     def test_edge_case_large(self):
         """Test with large input."""
         # Implement
         pass
-    
+
     def test_error_invalid_type(self):
         """Test error handling for invalid type."""
         # Implement

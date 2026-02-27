@@ -113,23 +113,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install pytest pytest-asyncio pyyaml click
-      
+
       - name: Generate integration tests
         run: |
           python .github/agents/pyo3-integration-tester/src/agent.py \
             --rust-dir ./rust_swarm \
             --output ./tests/integration \
             --overwrite
-      
+
       - name: Run integration tests
         run: |
           pytest ./tests/integration -v --tb=short
@@ -367,7 +367,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -556,7 +556,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

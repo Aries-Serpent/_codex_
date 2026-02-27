@@ -45,19 +45,19 @@
 
 1. **test_rag_security_comprehensive.py** (15.3KB, 25+ tests) ✅
    - Input sanitization, injection prevention, path security
-   
+
 2. **test_rag_functionality_comprehensive.py** (19KB, 30+ tests) ✅
    - Embeddings, retrieval, indexing, performance
-   
+
 3. **test_rag_providers_advanced.py** (16.7KB, 40+ tests) ✅
    - TF-IDF, SentenceTransformer, OpenAI providers
-   
+
 4. **test_rag_caching_system.py** (19.8KB, 40+ tests) ✅
    - Embedding, document, query cache layers
-   
+
 5. **test_rag_monitoring_metrics.py** (20.8KB, 45+ tests) ✅
    - Performance metrics, health monitoring, alerting
-   
+
 6. **test_rag_integration_advanced.py** (21.7KB, 35+ tests) ✅
    - Complex workflows, stress tests, concurrent access
 
@@ -321,16 +321,16 @@
 def test_embedding_input_sanitization(self):
     """Test that embedding inputs are properly sanitized."""
     from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-    
+
     provider = TFIDFEmbeddingProvider()
-    
+
     # Test with potentially malicious inputs
     malicious_inputs = [
         "<script>alert('xss')</script>",
         "'; DROP TABLE embeddings; --",
         "../../../etc/passwd",
     ]
-    
+
     for malicious_input in malicious_inputs:
         result = provider.encode([malicious_input])
         assert result is not None
@@ -341,13 +341,13 @@ def test_embedding_input_sanitization(self):
 def test_tfidf_embedding_consistency(self):
     """Test that TF-IDF embeddings are consistent."""
     from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-    
+
     provider = TFIDFEmbeddingProvider()
-    
+
     text = ["This is a test document"]
     emb1 = provider.encode(text)
     emb2 = provider.encode(text)
-    
+
     assert np.allclose(emb1, emb2)
 ```
 
@@ -357,14 +357,14 @@ def test_batch_embedding_performance(self):
     """Test performance of batch embedding."""
     from src.codex.rag.embeddings import TFIDFEmbeddingProvider
     import time
-    
+
     provider = TFIDFEmbeddingProvider()
     texts = [f"Document {i}" for i in range(100)]
-    
+
     start = time.time()
     embeddings = provider.encode(texts)
     duration = time.time() - start
-    
+
     assert duration < 5.0  # Should complete in < 5 seconds
 ```
 

@@ -107,7 +107,7 @@ python -m pytest tests/test_rag_*.py \
 ```ini
 [pytest]
 testpaths = tests
-addopts = 
+addopts =
     -q
     --strict-markers
 timeout = 300

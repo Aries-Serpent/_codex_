@@ -22,17 +22,17 @@
         "template_version"
       ],
       "properties": {
-        "title": { 
-          "type": "string", 
+        "title": {
+          "type": "string",
           "pattern": "^📍 `_codex_` : Status Update .+$",
           "description": "Report title following format: 📍 `_codex_` : Status Update YYYY-MM-DD-HH:mm:z-UTC"
         },
-        "timestamp_utc": { 
-          "type": "string", 
+        "timestamp_utc": {
+          "type": "string",
           "format": "date-time",
           "description": "ISO8601 UTC timestamp of report generation"
         },
-        "report_version": { 
+        "report_version": {
           "type": "string",
           "description": "Semantic version of this specific report (optional)"
         },
@@ -41,17 +41,17 @@
           "const": "v1.2",
           "description": "Template schema version used to generate this report"
         },
-        "authors": { 
-          "type": "array", 
+        "authors": {
+          "type": "array",
           "items": { "type": "string" },
           "description": "List of report authors (GitHub handles or names)"
         },
-        "reviewers": { 
-          "type": "array", 
+        "reviewers": {
+          "type": "array",
           "items": { "type": "string" },
           "description": "List of report reviewers"
         },
-        "previous_report_path": { 
+        "previous_report_path": {
           "type": "string",
           "description": "Path to previous report for delta computation"
         },
@@ -84,7 +84,7 @@
       "type": "object",
       "required": ["repo_map", "capabilities", "findings", "tests_gates", "repro", "deferred"],
       "properties": {
-        "repo_map": { 
+        "repo_map": {
           "type": "string",
           "description": "High-level directory structure and notable components"
         },
@@ -105,16 +105,16 @@
               "rollback"
             ],
             "properties": {
-              "id": { 
+              "id": {
                 "type": "string",
                 "pattern": "^CAP-[0-9]{3,}$",
                 "description": "Unique capability identifier (e.g., CAP-001)"
               },
-              "name": { 
+              "name": {
                 "type": "string",
                 "description": "Human-readable capability name"
               },
-              "category": { 
+              "category": {
                 "type": "string",
                 "enum": [
                   "Tokenization",
@@ -145,33 +145,33 @@
                 "enum": ["Implemented", "Partially Implemented", "Stubbed", "Missing", "Deprecated"],
                 "description": "Current implementation status"
               },
-              "artifacts": { 
+              "artifacts": {
                 "type": "string",
                 "description": "Paths, modules, files, or references to existing implementation"
               },
-              "gaps": { 
+              "gaps": {
                 "type": "string",
                 "description": "Missing features, incomplete implementations, or limitations"
               },
-              "risks": { 
+              "risks": {
                 "type": "string",
                 "description": "Potential issues, failure modes, or technical debt"
               },
-              "severity": { 
-                "type": "integer", 
-                "minimum": 1, 
+              "severity": {
+                "type": "integer",
+                "minimum": 1,
                 "maximum": 5,
                 "description": "Impact severity (1=Trivial, 2=Low, 3=Medium, 4=High, 5=Critical)"
               },
-              "confidence": { 
-                "type": "integer", 
-                "minimum": 1, 
+              "confidence": {
+                "type": "integer",
+                "minimum": 1,
                 "maximum": 5,
                 "description": "Assessment confidence (1=Very Low, 2=Low, 3=Medium, 4=High, 5=Very High)"
               },
-              "tags": { 
-                "type": "array", 
-                "items": { 
+              "tags": {
+                "type": "array",
+                "items": {
                   "type": "string",
                   "enum": [
                     "offline",
@@ -200,20 +200,20 @@
                 },
                 "description": "Searchable tags for filtering and grouping"
               },
-              "patch_plan": { 
+              "patch_plan": {
                 "type": "string",
                 "description": "Minimal implementation plan to address gaps"
               },
-              "rollback": { 
+              "rollback": {
                 "type": "string",
                 "description": "Steps to revert changes if patch fails"
               },
-              "owner": { 
+              "owner": {
                 "type": "string",
                 "description": "GitHub handle of owner/maintainer"
               },
-              "eta": { 
-                "type": "string", 
+              "eta": {
+                "type": "string",
                 "format": "date-time",
                 "description": "Estimated completion date for gaps"
               },
@@ -270,31 +270,31 @@
                 "pattern": "^FIND-[0-9]{3,}$",
                 "description": "Unique finding identifier"
               },
-              "title": { 
+              "title": {
                 "type": "string",
                 "description": "Concise finding title"
               },
-              "evidence": { 
+              "evidence": {
                 "type": "string",
                 "description": "Supporting evidence, links, or references"
               },
-              "impact": { 
+              "impact": {
                 "type": "string",
                 "description": "Potential or actual impact on the system"
               },
-              "proposed_action": { 
+              "proposed_action": {
                 "type": "string",
                 "description": "Recommended remediation steps"
               },
-              "severity": { 
-                "type": "integer", 
-                "minimum": 1, 
+              "severity": {
+                "type": "integer",
+                "minimum": 1,
                 "maximum": 5,
                 "description": "Impact severity (1=Trivial, 5=Critical)"
               },
-              "confidence": { 
-                "type": "integer", 
-                "minimum": 1, 
+              "confidence": {
+                "type": "integer",
+                "minimum": 1,
                 "maximum": 5,
                 "description": "Assessment confidence (1=Very Low, 5=Very High)"
               },
@@ -325,7 +325,7 @@
           "type": "object",
           "description": "Test coverage and quality gate status",
           "properties": {
-            "tests_summary": { 
+            "tests_summary": {
               "type": "object",
               "properties": {
                 "total": { "type": "integer", "minimum": 0 },
@@ -335,15 +335,15 @@
                 "duration_seconds": { "type": "number", "minimum": 0 }
               }
             },
-            "coverage_percent": { 
-              "type": "number", 
-              "minimum": 0, 
+            "coverage_percent": {
+              "type": "number",
+              "minimum": 0,
               "maximum": 100,
               "description": "Overall test coverage percentage"
             },
-            "coverage_threshold": { 
-              "type": "number", 
-              "minimum": 0, 
+            "coverage_threshold": {
+              "type": "number",
+              "minimum": 0,
               "maximum": 100,
               "description": "Required coverage threshold (fail-under)"
             },
@@ -376,7 +376,7 @@
                 "precommit": { "type": "string", "enum": ["pass", "fail", "skip"] }
               }
             },
-            "reproducibility": { 
+            "reproducibility": {
               "type": "string",
               "description": "Summary of reproducibility controls status"
             },
@@ -414,51 +414,51 @@
                 "type": "object",
                 "required": ["id", "category", "control", "status"],
                 "properties": {
-                  "id": { 
+                  "id": {
                     "type": "string",
                     "pattern": "^REPRO-[0-9]{3,}$",
                     "description": "Unique reproducibility control identifier"
                   },
-                  "category": { 
+                  "category": {
                     "type": "string",
                     "enum": ["env", "data", "build", "runtime", "hardware", "randomness", "versioning", "logging"],
                     "description": "Control category"
                   },
-                  "control": { 
+                  "control": {
                     "type": "string",
                     "description": "Description of the reproducibility control"
                   },
-                  "status": { 
+                  "status": {
                     "type": "string",
                     "enum": ["implemented", "partial", "missing", "na", "deprecated"],
                     "description": "Implementation status"
                   },
-                  "severity": { 
-                    "type": "integer", 
-                    "minimum": 1, 
+                  "severity": {
+                    "type": "integer",
+                    "minimum": 1,
                     "maximum": 5,
                     "description": "Importance for reproducibility (1=Low, 5=Critical)"
                   },
-                  "confidence": { 
-                    "type": "integer", 
-                    "minimum": 1, 
+                  "confidence": {
+                    "type": "integer",
+                    "minimum": 1,
                     "maximum": 5,
                     "description": "Confidence in status assessment"
                   },
-                  "evidence": { 
+                  "evidence": {
                     "type": "string",
                     "description": "File paths, tests, or documentation supporting this control"
                   },
-                  "owner": { 
+                  "owner": {
                     "type": "string",
                     "description": "Owner responsible for maintaining this control"
                   },
-                  "next_audit_utc": { 
-                    "type": "string", 
+                  "next_audit_utc": {
+                    "type": "string",
                     "format": "date-time",
                     "description": "Next scheduled audit/verification"
                   },
-                  "notes": { 
+                  "notes": {
                     "type": "string",
                     "description": "Additional context or implementation details"
                   },
@@ -497,22 +497,22 @@
                 "type": "string",
                 "pattern": "^DEFER-[0-9]{3,}$"
               },
-              "item": { 
+              "item": {
                 "type": "string",
                 "description": "Name/description of deferred item"
               },
-              "rationale": { 
+              "rationale": {
                 "type": "string",
                 "description": "Reason for deferral"
               },
-              "risk": { 
-                "type": "integer", 
-                "minimum": 1, 
+              "risk": {
+                "type": "integer",
+                "minimum": 1,
                 "maximum": 5,
                 "description": "Risk severity if item remains deferred"
               },
-              "review_date_utc": { 
-                "type": "string", 
+              "review_date_utc": {
+                "type": "string",
                 "format": "date-time",
                 "description": "Next scheduled review date"
               },
@@ -614,55 +614,55 @@
             "pattern": "^PATCH-[0-9]{3,}$",
             "description": "Unique patch identifier"
           },
-          "title": { 
+          "title": {
             "type": "string",
             "description": "Short descriptive title"
           },
-          "paths": { 
-            "type": "array", 
+          "paths": {
+            "type": "array",
             "items": { "type": "string" },
             "description": "File paths affected by this patch"
           },
-          "why": { 
+          "why": {
             "type": "string",
             "description": "Problem/rationale for this patch"
           },
-          "risk": { 
-            "type": "integer", 
-            "minimum": 1, 
+          "risk": {
+            "type": "integer",
+            "minimum": 1,
             "maximum": 5,
             "description": "Risk level of applying this patch"
           },
-          "confidence": { 
-            "type": "integer", 
-            "minimum": 1, 
+          "confidence": {
+            "type": "integer",
+            "minimum": 1,
             "maximum": 5,
             "description": "Confidence in patch correctness"
           },
-          "tests_docs": { 
+          "tests_docs": {
             "type": "string",
             "description": "Required test and documentation updates"
           },
-          "rollback": { 
+          "rollback": {
             "type": "string",
             "description": "Exact rollback procedure"
           },
-          "validation": { 
-            "type": "array", 
+          "validation": {
+            "type": "array",
             "items": { "type": "string" },
             "description": "Pre-merge validation checklist"
           },
-          "diff": { 
+          "diff": {
             "type": "string",
             "description": "Unified diff with Begin/End Patch markers"
           },
-          "capability_ids": { 
-            "type": "array", 
+          "capability_ids": {
+            "type": "array",
             "items": { "type": "string", "pattern": "^CAP-[0-9]{3,}$" },
             "description": "Capabilities addressed by this patch"
           },
-          "repro_ids": { 
-            "type": "array", 
+          "repro_ids": {
+            "type": "array",
             "items": { "type": "string", "pattern": "^REPRO-[0-9]{3,}$" },
             "description": "Reproducibility controls addressed"
           },
@@ -694,9 +694,9 @@
       "type": "object",
       "description": "Daily automated data ingestion",
       "properties": {
-        "issues": { 
-          "type": "array", 
-          "items": { 
+        "issues": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "url": { "type": "string", "format": "uri" },
@@ -712,9 +712,9 @@
           },
           "description": "Full list of issues (no truncation)"
         },
-        "pull_requests": { 
-          "type": "array", 
-          "items": { 
+        "pull_requests": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "url": { "type": "string", "format": "uri" },
@@ -730,9 +730,9 @@
           },
           "description": "Full list of PRs (no truncation)"
         },
-        "coverage": { 
-          "type": "number", 
-          "minimum": 0, 
+        "coverage": {
+          "type": "number",
+          "minimum": 0,
           "maximum": 100,
           "description": "Current test coverage percentage"
         },
@@ -761,8 +761,8 @@
           "type": "object",
           "description": "SAST and secret scanning results",
           "properties": {
-            "tools": { 
-              "type": "array", 
+            "tools": {
+              "type": "array",
               "items": { "type": "string", "enum": ["bandit", "detect-secrets", "semgrep", "other"] }
             },
             "findings_count": {
@@ -856,7 +856,7 @@
       "type": "object",
       "description": "Security and secret-masking status",
       "properties": {
-        "masking_applied": { 
+        "masking_applied": {
           "type": "boolean",
           "description": "Whether secret masking was applied to this report"
         },
@@ -869,7 +869,7 @@
           "type": "string",
           "description": "Version of threat model applied"
         },
-        "notes": { 
+        "notes": {
           "type": "string",
           "description": "Additional security notes or warnings"
         }
@@ -883,51 +883,51 @@
         "type": "object",
         "required": ["id", "category", "priority", "owner", "asked_utc", "status", "question"],
         "properties": {
-          "id": { 
+          "id": {
             "type": "string",
             "pattern": "^Q-[0-9]{3,}$",
             "description": "Unique question identifier"
           },
-          "category": { 
+          "category": {
             "type": "string",
             "enum": ["technical", "process", "architecture", "security", "performance", "compliance", "other"],
             "description": "Question category"
           },
-          "priority": { 
-            "type": "string", 
+          "priority": {
+            "type": "string",
             "enum": ["P0", "P1", "P2", "P3"],
             "description": "Priority level (P0=Critical, P3=Low)"
           },
-          "owner": { 
+          "owner": {
             "type": "string",
             "description": "Person responsible for answering"
           },
-          "asked_utc": { 
-            "type": "string", 
+          "asked_utc": {
+            "type": "string",
             "format": "date-time",
             "description": "When question was raised"
           },
-          "status": { 
-            "type": "string", 
+          "status": {
+            "type": "string",
             "enum": ["Open", "In Review", "Answered", "Deferred"],
             "description": "Current status"
           },
-          "answered_utc": { 
-            "type": "string", 
+          "answered_utc": {
+            "type": "string",
             "format": "date-time",
             "description": "When question was answered"
           },
-          "question": { 
+          "question": {
             "type": "string",
             "description": "Full question text"
           },
-          "answer": { 
+          "answer": {
             "type": "string",
             "description": "Answer or resolution"
           },
-          "confidence": { 
-            "type": "integer", 
-            "minimum": 1, 
+          "confidence": {
+            "type": "integer",
+            "minimum": 1,
             "maximum": 5,
             "description": "Confidence in answer"
           },
@@ -955,15 +955,15 @@
             "pattern": "^DEC-[0-9]{3,}$",
             "description": "Unique decision identifier"
           },
-          "title": { 
+          "title": {
             "type": "string",
             "description": "Decision title"
           },
-          "context": { 
+          "context": {
             "type": "string",
             "description": "Background and motivation"
           },
-          "options": { 
+          "options": {
             "type": "array",
             "items": {
               "type": "object",
@@ -975,20 +975,20 @@
             },
             "description": "Options considered"
           },
-          "chosen": { 
+          "chosen": {
             "type": "string",
             "description": "Chosen option"
           },
-          "owner": { 
+          "owner": {
             "type": "string",
             "description": "Decision maker"
           },
-          "date_utc": { 
-            "type": "string", 
+          "date_utc": {
+            "type": "string",
             "format": "date-time",
             "description": "When decision was made"
           },
-          "impact": { 
+          "impact": {
             "type": "string",
             "description": "Expected impact of this decision"
           },
@@ -1046,8 +1046,8 @@
             "fallback_mode": { "type": "string" }
           }
         },
-        "recommendations": { 
-          "type": "array", 
+        "recommendations": {
+          "type": "array",
           "items": { "type": "string" },
           "description": "Actionable tokenization recommendations"
         }

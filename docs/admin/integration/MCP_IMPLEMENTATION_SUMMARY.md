@@ -529,14 +529,14 @@ For questions or issues:
    ```bash
    # Disable workflows
    gh workflow disable notebooklm-sync.yml --repo Aries-Serpent/_codex_
-   
+
    # Revert to baseline (if needed)
    git revert edbd92d5 47db5019
-   
+
    # Or selective removal
    rm -f .github/workflows/mcp-*.yml
    rm -f docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md
-   
+
    # Verify clean state
    git status
    git diff HEAD~3

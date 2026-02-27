@@ -237,10 +237,10 @@ def test_config_migration():
     """Test config loads from both old and new locations."""
     # Load from new location
     new_cfg = load_config("base", config_dir="conf/model")
-    
+
     # Load from old location
     old_cfg = load_config("base", config_dir="configs/training/model")
-    
+
     # Verify equivalence
     assert new_cfg == old_cfg
 ```
@@ -258,7 +258,7 @@ def test_config_migration():
 
 1. **Training Pipelines**: Heavy config dependency
    - **Mitigation**: Extensive testing, gradual rollout
-   
+
 2. **CI/CD Workflows**: Hardcoded paths
    - **Mitigation**: Update workflows, test in dev environment
 

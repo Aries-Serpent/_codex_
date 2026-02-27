@@ -269,7 +269,7 @@ This PR successfully addresses **ALL** issues from the problem statement (commit
    - PS-3: Config Schema Validation
    - PS-4: Custom Agent Enhancement Suite
    - PS-5: Cognitive Brain Automation
-   
+
 3. **Integration** (15 min)
    - Add GitHub Actions workflows
    - Configure pre-commit hooks
@@ -280,7 +280,7 @@ This PR successfully addresses **ALL** issues from the problem statement (commit
    - Verify all utilities functional
    - Update cognitive brain with final status
 
-Use Master Planset (.codex/plans/MASTER_PLANSET_PRODUCTION_READINESS.md) 
+Use Master Planset (.codex/plans/MASTER_PLANSET_PRODUCTION_READINESS.md)
 as execution guide. Time budget: 55 minutes remaining.
 ```
 

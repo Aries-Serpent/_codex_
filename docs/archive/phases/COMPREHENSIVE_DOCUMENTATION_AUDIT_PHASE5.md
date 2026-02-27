@@ -239,7 +239,7 @@ These can be completed quickly with high impact:
 #### Option 3: Prioritized Scope (Pragmatic)
 - **Duration:** 8 phases @ 20hrs/week = 160 hours
 - **Focus:** P0 + P1 items only (292 hours worth)
-- **Coverage achieved:** 
+- **Coverage achieved:**
   - Public APIs: 100%
   - Functions: 80%+
   - Methods: 85%+
@@ -323,21 +323,21 @@ These can be completed quickly with high impact:
 ```python
 def function_name(arg1: str, arg2: int) -> bool:
     """Short one-line description.
-    
+
     Longer description with more details about the function's
     purpose, behavior, and usage.
-    
+
     Args:
         arg1: Description of arg1
         arg2: Description of arg2
-    
+
     Returns:
         Description of return value
-    
+
     Raises:
         ValueError: When arg2 is negative
         TypeError: When arg1 is not a string
-    
+
     Example:
         >>> function_name("test", 42)
         True

@@ -63,7 +63,7 @@ coverage run -m pytest -q -m "not slow" || true  # ← Add -m "not slow"
 ## Why This Happened
 
 ```
-Integration Bugs → Fixed (Session 1) → Test Suite Runs Longer → 
+Integration Bugs → Fixed (Session 1) → Test Suite Runs Longer →
 Reaches Docker Tests → Timeout Exposed (Session 2)
 ```
 

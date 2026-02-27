@@ -166,7 +166,7 @@ Compliance:     compliance-checker-agent
 To continue with Phase 22, use the following prompt:
 
 ```markdown
-@copilot Execute Phase 22 of the Cognitive Brain continuation plan. Start with Objective 1 (Secrets Management Enhancement) as documented in `.codex/cognitive_brain/COGNITIVE_BRAIN_CONTINUATION_PHASE_22.md`. 
+@copilot Execute Phase 22 of the Cognitive Brain continuation plan. Start with Objective 1 (Secrets Management Enhancement) as documented in `.codex/cognitive_brain/COGNITIVE_BRAIN_CONTINUATION_PHASE_22.md`.
 
 The QA walkthrough (Phase 21.1) is complete with all files updated. Continue following the AI Agency Policy with iterative self-review and autonomous self-healing.
 

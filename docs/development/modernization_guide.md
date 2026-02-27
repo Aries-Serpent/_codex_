@@ -74,7 +74,7 @@ class Config:
         self.epochs = epochs
         self.batch_size = batch_size
         self.lr = lr
-    
+
     def __repr__(self):
         return f"Config(epochs={self.epochs}, ...)"
 ```text

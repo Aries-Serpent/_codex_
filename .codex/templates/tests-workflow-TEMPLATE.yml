@@ -26,7 +26,7 @@ jobs:
       fail-fast: false  # Continue testing other versions even if one fails
       matrix:
         python-version: ['3.11', '3.12']  # Current supported versions
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          
+
           # Install test dependencies (pinned for reproducibility)
           pip install \
             "pytest==7.4.0" \
@@ -65,10 +65,10 @@ jobs:
             "pytest-randomly==3.15.0" \
             "pytest-xdist==3.5.0" \
             "hypothesis==6.100.0"
-          
+
           # Install project in editable mode with test extras
           pip install -e '.[test]'
-          
+
           echo "✅ Python dependencies installed"
 
       - name: Display environment info
@@ -123,20 +123,20 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           pip install -e '.[test,ml]'
-      
+
       - name: Run integration tests
         run: |
           pytest tests/integration/ \
@@ -149,30 +149,30 @@ jobs:
   advanced-features:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'  # Manual trigger only
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install full dependencies
         run: |
           pip install -e '.[test,ml,interpretability]'
-      
+
       - name: Test interpretability utilities
         run: |
           pytest tests/ -v -k "interpretability or attention or mlp"
         continue-on-error: true
-      
+
       - name: Test attention scoring
         run: |
           pytest tests/ -v -k "attention_scoring"
         continue-on-error: true
-      
+
       - name: Test MLP scoring
         run: |
           pytest tests/ -v -k "mlp_scoring"

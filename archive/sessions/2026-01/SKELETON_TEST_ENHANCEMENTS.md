@@ -271,10 +271,10 @@ Clear three-part structure:
 def test_config_creates_with_custom_values(self):
     # Arrange
     config = Config(param1=10, param2=True)
-    
+
     # Act
     result = config.validate()
-    
+
     # Assert
     assert result.param1 == 10
     assert result is_valid

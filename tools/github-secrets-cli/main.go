@@ -26,7 +26,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "github-secrets-cli",
 	Short: "Manage GitHub secrets across different scopes",
-	Long: `A command-line tool for managing GitHub secrets across organization, repository, 
+	Long: `A command-line tool for managing GitHub secrets across organization, repository,
 environment, and Codespaces scopes with client-side encryption and secure authentication.`,
 	Version: version,
 }
@@ -51,11 +51,11 @@ var authLoginCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		token, _ := cmd.Flags().GetString("token")
 		authMgr := NewAuthManager()
-		
+
 		if token != "" {
 			return authMgr.LoginWithPAT(token)
 		}
-		
+
 		return authMgr.LoginDeviceFlow(context.Background())
 	},
 }

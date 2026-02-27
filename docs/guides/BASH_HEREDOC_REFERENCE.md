@@ -176,7 +176,7 @@ Use `cat -vet` or `od -c` to visualize hidden characters:
 
 ```bash
 cat <<'EOF' > sample.txt
-line with space 
+line with space
 EOF
 cat -vet sample.txt
 ```text

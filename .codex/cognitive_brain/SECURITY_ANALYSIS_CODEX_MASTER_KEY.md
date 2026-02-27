@@ -232,7 +232,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: TruffleHog Secret Scan
         uses: trufflesecurity/trufflehog@main
         with:
@@ -240,12 +240,12 @@ jobs:
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --only-verified
-      
+
       - name: Gitleaks Secret Scan
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Custom Pattern Check
         run: |
           # Check for CODEX_MASTER_KEY exposure patterns
@@ -254,7 +254,7 @@ jobs:
             exit 1
           fi
           echo "✅ No CODEX_MASTER_KEY exposure patterns found"
-      
+
       - name: Fail on Detection
         if: failure()
         run: |
@@ -323,7 +323,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Scan for Leaks
         # ... (see Section 4.B)
-    
+
   use-secret-safely:
     name: Use CODEX_MASTER_KEY
     runs-on: ubuntu-latest
@@ -362,7 +362,7 @@ jobs:
 
 **Reason:** CODEX_MASTER_KEY is **not currently used** in any workflows.
 
-**Finding:** 
+**Finding:**
 - No guards (`if: false`) blocking secret usage
 - No workflows reference `secrets.CODEX_MASTER_KEY`
 - Secret exists only in documentation and setup guides
@@ -440,13 +440,13 @@ git push origin main
    ```bash
    # 1. Generate new key
    python -c "import secrets; print(secrets.token_hex(32))"
-   
+
    # 2. Update secret
    gh secret set CODEX_MASTER_KEY --repo Aries-Serpent/_codex_
    # (paste new value when prompted)
-   
+
    # 3. Update external services (if any) with new key
-   
+
    # 4. Verify workflows still function
    gh workflow run <test-workflow> --repo Aries-Serpent/_codex_
    ```
@@ -729,7 +729,7 @@ grep -c "CODEX_MASTER_KEY" docs/admin/GENESIS_SETUP_GUIDE.md && echo "✅ Docume
 4. Rotation procedures are documented and comprehensive
 5. Future implementation guidelines provided
 
-**Recommendation:** 
+**Recommendation:**
 - ✅ This PR (#2714) is **SAFE TO MERGE** with respect to CODEX_MASTER_KEY
 - ✅ No security risks introduced by this PR
 - ✅ Analysis report provided for future reference

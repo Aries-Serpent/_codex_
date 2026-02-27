@@ -7,22 +7,22 @@ inputs:
     description: 'Python version to setup'
     required: true
     default: '3.12'
-  
+
   cache-type:
     description: 'Type of cache (pip, nox, uv, etc.)'
     required: false
     default: 'pip'
-  
+
   workflow-name:
     description: 'Workflow name for cache isolation'
     required: false
     default: ${{ github.workflow }}
-  
+
   extra-identifiers:
     description: 'Additional cache identifiers (JSON: {"job":"test","python":"3.12"})'
     required: false
     default: '{}'
-  
+
   additional-paths:
     description: 'Additional paths to cache (one per line)'
     required: false
@@ -32,11 +32,11 @@ outputs:
   cache-key:
     description: 'Generated cache key'
     value: ${{ steps.cache-config.outputs.cache-key }}
-  
+
   cache-hit:
     description: 'Whether cache was hit'
     value: ${{ steps.cache.outputs.cache-hit }}
-  
+
   python-path:
     description: 'Path to Python executable'
     value: ${{ steps.setup-python.outputs.python-path }}
@@ -49,7 +49,7 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-    
+
     - name: Install Cache Manager Dependencies
       shell: bash
       run: |
@@ -58,7 +58,7 @@ runs:
         if [ -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
           python -m pip install -e "$GITHUB_WORKSPACE" --no-deps
         fi
-    
+
     - name: Generate Cache Configuration
       id: cache-config
       shell: bash
@@ -71,7 +71,7 @@ runs:
         CACHE_KEY=$(python -m codex.ci.cache_manager generate-key \
           --cache-type "$CACHE_TYPE" \
           --workflow "$WORKFLOW_NAME" 2>/dev/null || echo "")
-        
+
         if [ -z "$CACHE_KEY" ]; then
           # Fallback to manual generation if cache manager not available
           # Use portable Python hashing (works on all platforms)
@@ -80,18 +80,18 @@ content = b''.join(open(f,'rb').read() for f in sorted(glob.glob('pyproject.toml
 print(hashlib.sha256(content + b'$EXTRA_IDS').hexdigest()[:12])")
           CACHE_KEY="${RUNNER_OS}-${WORKFLOW_NAME}-${CACHE_TYPE}-${DEP_HASH}"
         fi
-        
+
         echo "cache-key=${CACHE_KEY}" >> $GITHUB_OUTPUT
-        
+
         # Generate restore keys
         RESTORE_KEY1="${RUNNER_OS}-${WORKFLOW_NAME}-${CACHE_TYPE}-"
         RESTORE_KEY2="${RUNNER_OS}-${CACHE_TYPE}-"
-        
+
         echo "restore-key-1=${RESTORE_KEY1}" >> $GITHUB_OUTPUT
         echo "restore-key-2=${RESTORE_KEY2}" >> $GITHUB_OUTPUT
-        
+
         echo "✅ Cache key generated: ${CACHE_KEY}"
-    
+
     - name: Determine Cache Paths
       id: cache-paths
       shell: bash
@@ -118,7 +118,7 @@ print(hashlib.sha256(content + b'$EXTRA_IDS').hexdigest()[:12])")
             PATHS="~/.cache/$CACHE_TYPE"
             ;;
         esac
-        
+
         # Add additional paths if specified
         if [ -n "$ADDITIONAL_PATHS" ]; then
           # Clean any leading whitespace from additional paths
@@ -126,14 +126,14 @@ print(hashlib.sha256(content + b'$EXTRA_IDS').hexdigest()[:12])")
           PATHS="${PATHS}
 ${CLEANED_PATHS}"
         fi
-        
+
         # Save to output (multi-line)
         echo "paths<<EOF" >> $GITHUB_OUTPUT
         echo "$PATHS" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        
+
         echo "✅ Cache paths configured for ${CACHE_TYPE}"
-    
+
     - name: Restore Cache
       id: cache
       uses: actions/cache@v5
@@ -143,7 +143,7 @@ ${CLEANED_PATHS}"
         restore-keys: |
           ${{ steps.cache-config.outputs.restore-key-1 }}
           ${{ steps.cache-config.outputs.restore-key-2 }}
-    
+
     - name: Report Cache Status
       shell: bash
       env:

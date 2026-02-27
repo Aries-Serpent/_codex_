@@ -63,12 +63,12 @@ export function useAgentOrchestration(autoRefresh = false, intervalMs = 5000) {
     }
   }, [fetchState, autoRefresh, intervalMs]);
 
-  return { 
-    state, 
-    loading, 
-    error, 
-    orchestrating, 
-    orchestrateTask, 
-    refetch: fetchState 
+  return {
+    state,
+    loading,
+    error,
+    orchestrating,
+    orchestrateTask,
+    refetch: fetchState
   };
 }

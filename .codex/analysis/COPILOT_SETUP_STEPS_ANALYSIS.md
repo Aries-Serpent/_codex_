@@ -31,7 +31,7 @@ This document provides a comprehensive analysis of `.github/workflows/copilot-se
 
 **Excerpt:**
 ```
-**Context:** New requirement to implement `.github/workflows/copilot-setup-steps.yml` 
+**Context:** New requirement to implement `.github/workflows/copilot-setup-steps.yml`
 for customizing the ephemeral GitHub Actions environment where Copilot agents operate.
 
 **Deliverable A: `.github/workflows/copilot-setup-steps.yml` (14 KB)**
@@ -295,18 +295,18 @@ jobs:
           echo "CODEX_FORCE_CPU=1" >> "$GITHUB_ENV"
           echo "RAG_EMBEDDING_PROVIDER=tfidf" >> "$GITHUB_ENV"
           echo "PYTHONPATH=${{ github.workspace }}/src:$PYTHONPATH" >> "$GITHUB_ENV"
-          
+
           # Logging configuration
           echo "CODEX_LOG_LEVEL=INFO" >> "$GITHUB_ENV"
           echo "CODEX_SESSION_LOG_DIR=${{ github.workspace }}/.codex/sessions" >> "$GITHUB_ENV"
-          
+
           # Database paths
           echo "CODEX_DB_PATH=${{ github.workspace }}/.codex/codex.db" >> "$GITHUB_ENV"
-          
+
           # Disable interactive prompts
           echo "DEBIAN_FRONTEND=noninteractive" >> "$GITHUB_ENV"
           echo "PIP_NO_INPUT=1" >> "$GITHUB_ENV"
-          
+
           # GitHub-specific
           echo "CI=true" >> "$GITHUB_ENV"
           echo "GITHUB_COPILOT_AGENT=true" >> "$GITHUB_ENV"
@@ -316,7 +316,7 @@ jobs:
 ```yaml
           # Verify Python imports work
           python -c "import codex; print('✅ codex package importable')" || echo "⚠️  codex package import failed"
-          
+
           # Verify tools are available
           which ruff && echo "✅ ruff available" || echo "⚠️  ruff not available"
           which black && echo "✅ black available" || echo "⚠️  black not available"
@@ -368,7 +368,7 @@ Modify copilot setup to skip LFS and enhance report
 
 **Body:**
 ```
-Updated GitHub Actions workflow to skip LFS content during checkout 
+Updated GitHub Actions workflow to skip LFS content during checkout
 and improve environment report generation.
 ```
 

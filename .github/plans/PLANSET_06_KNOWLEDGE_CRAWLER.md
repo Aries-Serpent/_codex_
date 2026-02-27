@@ -46,7 +46,7 @@
 def check_and_pull(self):
     local_index = load_index()
     remote_articles = fetch_article_metadata()
-    
+
     for article in remote_articles:
         if needs_update(article, local_index):
             content = fetch_article_content(article['id'])

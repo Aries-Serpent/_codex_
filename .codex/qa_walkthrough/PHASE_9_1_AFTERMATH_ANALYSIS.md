@@ -25,7 +25,7 @@
    - Lines of code: ~400
    - Module: src/context_management/budget.py
    - Coverage areas: TokenBudget, ContentBlock, TokenBudgetEnforcer, pruning strategies
-   
+
 2. **tests/context_management/test_memory.py**
    - Test functions: ~40
    - Lines of code: ~500  

@@ -89,13 +89,13 @@ graph TB
     subgraph "Code Generation"
         CG[CodeGenerator.tsx]
         AITOGGLE[AI Mode Toggle - NEW]
-        
+
         subgraph "Client Selection"
             SPARK[SparkLLMClient - NEW]
             CODEX[CodexAPIClient]
             MOCK[MockCodexAPIClient]
         end
-        
+
         METRICS[MetricsBar]
         EDITOR[CodeEditor]
     end
@@ -123,17 +123,17 @@ graph TB
 
     CODE --> CG
     CG --> AITOGGLE
-    
+
     AITOGGLE -->|ON| SPARK
     AITOGGLE -->|OFF| CODEX
     CODEX -->|Fallback| MOCK
-    
+
     SPARK --> LLM
     LLM --> MODEL
-    
+
     CG --> METRICS
     CG --> EDITOR
-    
+
     DEMO --> ID
     ID --> EXEC
     ID --> MONITOR
@@ -243,7 +243,7 @@ graph LR
     ID --> D4
 
     MB --> MC2
-    
+
     style ID fill:#90EE90
     style SC fill:#87CEEB
     style T1 fill:#FFD700
@@ -400,8 +400,8 @@ const client = new SparkLLMClient();
 // Generate code with AI
 const response = await client.generateCode({
   prompt: "Create a FastAPI endpoint for user authentication",
-  context: { 
-    language: "python", 
+  context: {
+    language: "python",
     tier: "B"  // A=safest, B=balanced, C=aggressive
   }
 });

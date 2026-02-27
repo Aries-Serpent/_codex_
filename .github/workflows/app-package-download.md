@@ -137,7 +137,7 @@ https://github.com/Aries-Serpent/_codex_/actions/runs/<run-id>
    # For ZIP
    unzip zendesk_voice_lines_*.zip
    cd zendesk_voice_lines_*/
-   
+
    # For TAR.GZ
    tar -xzf zendesk_voice_lines_*.tar.gz
    cd zendesk_voice_lines_*/
@@ -220,7 +220,7 @@ Choose between:
 
 **Cause**: The selected branch doesn't have an `apps/` directory.
 
-**Solution**: 
+**Solution**:
 - Verify the branch name is correct
 - Check that the branch contains the application you're trying to package
 - Use a different branch that has the `apps/` directory

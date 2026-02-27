@@ -174,10 +174,10 @@ results = monitor.monitor_all(...)
 if monitor.has_critical_drift():
     # Trigger retraining
     new_version = pipeline.retrain(train_fn, train_data)
-    
+
     # Compare with production
     comparison = pipeline.compare_models(new_version)
-    
+
     if comparison["is_better"]:
         pipeline.deploy_model(new_version)
     else:
@@ -198,15 +198,15 @@ class MyPlugin(Plugin):
     def initialize(self) -> bool:
         # Setup resources
         return True
-    
+
     def execute(self, data):
         # Process data
         return {"result": "processed"}
-    
+
     def cleanup(self):
         # Clean up resources
         pass
-    
+
     def get_contract(self) -> PluginContract:
         return PluginContract(
             required_methods=["initialize", "execute", "cleanup"],

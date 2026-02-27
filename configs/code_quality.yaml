@@ -17,7 +17,7 @@ code_smells:
         - "*/auth/*"
         - "*/security/*"
         - "*/payment/*"
-  
+
   max_arguments:
     threshold: 5
     severity: warning
@@ -29,7 +29,7 @@ code_smells:
       patterns:
         - "*/ui/*"
         - "*/config/*"
-  
+
   max_nesting:
     threshold: 4
     severity: warning
@@ -41,7 +41,7 @@ code_smells:
       patterns:
         - "*/auth/*"
         - "*/security/*"
-  
+
   god_class:
     methods_threshold: 20
     lines_threshold: 500
@@ -59,12 +59,12 @@ complexity:
     warning: 10
     error: 15
     critical: 20
-  
+
   cognitive:
     warning: 15
     error: 25
     critical: 35
-  
+
   maintainability_index:
     excellent: 85  # A grade
     good: 70       # B grade
@@ -81,11 +81,11 @@ profiles:
       max_arguments: {threshold: 4, severity: error}
       max_nesting: {threshold: 3, severity: error}
       god_class: {methods_threshold: 15, severity: error}
-  
+
   standard:
     description: "Default profile for most code"
     # Uses thresholds defined above
-  
+
   lenient:
     description: "For UI/integration code"
     code_smells:
@@ -98,13 +98,13 @@ profiles:
 path_overrides:
   - pattern: "src/agents/*"
     profile: standard
-  
+
   - pattern: "src/auth/*"
     profile: strict
-  
+
   - pattern: "src/ui/*"
     profile: lenient
-  
+
   - pattern: "tests/*"
     profile: lenient
     # Tests can be longer and more nested
@@ -123,9 +123,9 @@ reporting:
     - json
     - html
     - yaml
-  
+
   output_dir: ".codex/reports"
-  
+
   include_in_report:
     - file_path
     - smell_type
@@ -140,11 +140,11 @@ integration:
     enabled: true
     fail_on: [error, critical]
     warn_on: [warning]
-  
+
   pre_commit:
     enabled: false  # Opt-in
     fail_on: [error, critical]
-  
+
   ide:
     enabled: true  # LSP integration
     show_severity: [warning, error, critical]

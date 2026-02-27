@@ -41,28 +41,28 @@ jobs:
   batch-triage:
     name: Batch Triage CI Failures
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Install Dependencies
         run: |
           pip install pyyaml click --quiet
-      
+
       - name: Setup Cached Environment
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
           cache-tier: 'common'
-      
+
       - name: Determine Input Method
         id: input
         run: |
@@ -82,31 +82,31 @@ jobs:
               exit 1
             fi
           fi
-      
+
       - name: Run Batch Triage
         id: triage
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "::group::Running batch triage"
-          
+
           # Build command
           cmd="python scripts/ci/batch_triage.py"
-          
+
           if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
             cmd="$cmd --issues ${{ steps.input.outputs.value }}"
           else
             cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
           fi
-          
+
           cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
           cmd="$cmd --output batch_triage_report.md"
-          
+
           echo "Executing: $cmd"
           eval $cmd
-          
+
           echo "::endgroup::"
-          
+
           if [ -f "batch_triage_report.md" ]; then
             echo "triage_success=true" >> $GITHUB_OUTPUT
             echo "report_file=batch_triage_report.md" >> $GITHUB_OUTPUT
@@ -115,7 +115,7 @@ jobs:
             echo "triage_success=false" >> $GITHUB_OUTPUT
             exit 1
           fi
-      
+
       - name: Upload Triage Report
         if: steps.triage.outputs.triage_success == 'true'
         uses: actions/upload-artifact@v6
@@ -123,31 +123,31 @@ jobs:
           name: batch-triage-report-${{ github.run_id }}
           path: batch_triage_report.md
           retention-days: 90
-      
+
       - name: Generate JSON Report
         if: steps.triage.outputs.triage_success == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "::group::Generating JSON report"
-          
+
           # Build command for JSON output
           cmd="python scripts/ci/batch_triage.py"
-          
+
           if [ "${{ steps.input.outputs.method }}" = "issues" ]; then
             cmd="$cmd --issues ${{ steps.input.outputs.value }}"
           else
             cmd="$cmd --from-file ${{ steps.input.outputs.value }}"
           fi
-          
+
           cmd="$cmd --group-by ${{ inputs.group_by || 'root_cause' }}"
           cmd="$cmd --output batch_triage_report.json --json"
-          
+
           echo "Executing: $cmd"
           eval $cmd
-          
+
           echo "::endgroup::"
-      
+
       - name: Upload JSON Report
         if: steps.triage.outputs.triage_success == 'true'
         uses: actions/upload-artifact@v6
@@ -155,7 +155,7 @@ jobs:
           name: batch-triage-json-${{ github.run_id }}
           path: batch_triage_report.json
           retention-days: 90
-      
+
       - name: Create GitHub Issue with Report
         if: |
           steps.triage.outputs.triage_success == 'true' &&
@@ -165,17 +165,17 @@ jobs:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('batch_triage_report.md', 'utf8');
-            
+
             // Truncate report if too long (GitHub API limit)
             const maxLength = 60000;
             let body = report;
             if (body.length > maxLength) {
               body = body.substring(0, maxLength) + '\n\n... (truncated, see artifact for full report)';
             }
-            
+
             // Add workflow run link
             body += `\n\n---\n**Workflow Run:** ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
-            
+
             const issue = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -183,16 +183,16 @@ jobs:
               body: body,
               labels: ['ci-triage', 'automated', 'batch-analysis']
             });
-            
+
             console.log(`Created issue #${issue.data.number}`);
             core.setOutput('issue_number', issue.data.number);
-      
+
       - name: Generate Summary
         if: always()
         run: |
           echo "## 📊 Batch CI Failure Triage Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           if [ "${{ steps.triage.outputs.triage_success }}" = "true" ]; then
             echo "✅ **Status:** Success" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -203,7 +203,7 @@ jobs:
             echo "### Configuration" >> $GITHUB_STEP_SUMMARY
             echo "- **Input Method:** ${{ steps.input.outputs.method }}" >> $GITHUB_STEP_SUMMARY
             echo "- **Grouping Strategy:** ${{ inputs.group_by || 'root_cause' }}" >> $GITHUB_STEP_SUMMARY
-            
+
             # Show excerpt from report
             if [ -f "batch_triage_report.md" ]; then
               echo "" >> $GITHUB_STEP_SUMMARY
@@ -217,7 +217,7 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "Triage report generation failed. Check the logs for details." >> $GITHUB_STEP_SUMMARY
           fi
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "*Generated by Batch CI Failure Triage Workflow*" >> $GITHUB_STEP_SUMMARY

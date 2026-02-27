@@ -9,27 +9,27 @@ training:
   # Epochs and iterations
   epochs: 10
   max_steps: null  # If set, overrides epochs
-  
+
   # Optimization
   learning_rate: 1e-4
   weight_decay: 0.01
   grad_clip_norm: 1.0
-  
+
   # Batch sizes
   batch_size: 32
   eval_batch_size: 64
   gradient_accumulation_steps: 1
-  
+
   # Checkpointing
   save_steps: 1000
   save_total_limit: 3
-  
+
   # Evaluation
   eval_steps: 500
   eval_strategy: "steps"
-  
+
   # Logging
   logging_steps: 100
-  
+
   # Reproducibility
   seed: 42

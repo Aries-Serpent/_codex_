@@ -122,7 +122,7 @@ graph TD
 ```markdown
 @copilot /coverage-check
 
-Check current coverage status and identify any modules 
+Check current coverage status and identify any modules
 below 70% threshold.
 ```
 

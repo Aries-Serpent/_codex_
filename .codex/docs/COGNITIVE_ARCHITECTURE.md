@@ -117,7 +117,7 @@ graph LR
     C --> D["Update Policy<br/>(CODEBASE_AGENCY_POLICY.md)"]
     D --> E["Session N+1<br/>(Enhanced Context)"]
     E --> A
-    
+
     F["AfterMath/PDA Loop"] -.->|"Feeds Back"| B
 ```
 
@@ -338,7 +338,7 @@ ABUNDANCE_MANIFESTATION = {
         "location_3": ".codex/PR_SCOPE_NOTES.md",
         "purpose": "Same truth from multiple angles"
     },
-    
+
     "policy_documentation": {
         "primary": ".codex/CODEBASE_AGENCY_POLICY.md",
         "summaries": [
@@ -348,7 +348,7 @@ ABUNDANCE_MANIFESTATION = {
         ],
         "purpose": "Ensure survival through parallel channels"
     },
-    
+
     "test_coverage": {
         "target": "100% asymptotic goal",
         "achieved": "70% (7x baseline)",
@@ -457,7 +457,7 @@ FRACTAL_PATTERN = {
             "## Next Steps"
         ]
     },
-    
+
     "scale_2_module": {
         "structure": [
             "src/module/__init__.py",
@@ -467,7 +467,7 @@ FRACTAL_PATTERN = {
             "docs/module_guide.md"
         ]
     },
-    
+
     "scale_3_project": {
         "structure": [
             ".codex/plans/ (Intent)",
@@ -477,7 +477,7 @@ FRACTAL_PATTERN = {
             ".codex/prompts/ (Next Steps)"
         ]
     },
-    
+
     "observation": "Same 5-phase structure at all scales"
 }
 ```
@@ -528,21 +528,21 @@ BALANCED_FORCES = [
         "equilibrium": "Policy enables creativity by removing ambiguity",
         "evidence": "CODEBASE_AGENCY_POLICY.md + autonomous agents coexist"
     },
-    
+
     {
         "force_A": "100% Coverage Goal",
         "force_B": "70% Current Reality",
         "equilibrium": "Asymptotic approach maintains forward pressure",
         "evidence": ".codex/plans/ shows journey toward ∞"
     },
-    
+
     {
         "force_A": "Comprehensive Documentation",
         "force_B": "Fast Development Velocity",
         "equilibrium": "Templates + automation remove friction",
         "evidence": "High velocity maintained with full docs"
     },
-    
+
     {
         "force_A": "Multi-Language Polyglot",
         "force_B": "Consistent Patterns",
@@ -561,7 +561,7 @@ BALANCED_FORCES = [
 ```python
 class TraditionalRepository:
     """MAP paradigm - Static representation"""
-    
+
     def get_structure(self):
         return {
             "directories": self.list_dirs(),
@@ -572,7 +572,7 @@ class TraditionalRepository:
 
 class CodexRepository:
     """MEMORY paradigm - Living knowledge"""
-    
+
     def get_context(self, session_id):
         return {
             "what_was_done": self.retrieve_session(session_id),
@@ -654,13 +654,13 @@ COMPRESSION_ANALYSIS = {
         "documentation": "Minimal, added retrospectively",
         "agent_continuity": "None (context loss between devs)"
     },
-    
+
     "codex_repository": {
         "coverage_3_to_70": "3 phases (non-linear)",
         "documentation": "Comprehensive, concurrent",
         "agent_continuity": "Full context via .codex/ memory"
     },
-    
+
     "compression_factor": "~10x (6 months → 3 phases)"
 }
 ```

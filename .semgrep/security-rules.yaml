@@ -10,7 +10,7 @@ rules:
       owasp: "A03:2021 - Injection"
       references:
         - https://owasp.org/www-community/attacks/Command_Injection
-      
+
   - id: subprocess-call-shell-injection
     pattern: subprocess.call(..., shell=True, ...)
     message: "Avoid shell=True in subprocess.call() to prevent command injection"
@@ -18,7 +18,7 @@ rules:
     languages: [python]
     metadata:
       cwe: "CWE-78"
-      
+
   - id: subprocess-popen-shell-injection
     pattern: subprocess.Popen(..., shell=True, ...)
     message: "Avoid shell=True in subprocess.Popen() to prevent command injection"
@@ -61,7 +61,7 @@ rules:
     languages: [python]
     metadata:
       cwe: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm"
-      
+
   - id: sha1-without-flag
     patterns:
       - pattern: hashlib.sha1(...)
@@ -84,7 +84,7 @@ rules:
     metadata:
       cwe: "CWE-502: Deserialization of Untrusted Data"
       owasp: "A08:2021 - Software and Data Integrity Failures"
-      
+
   - id: unsafe-pickle-loads
     pattern: pickle.loads(...)
     message: "pickle.loads() can execute arbitrary code. Use safe_pickle_load() or RestrictedUnpickler"
@@ -105,7 +105,7 @@ rules:
     languages: [python]
     metadata:
       cwe: "CWE-732: Incorrect Permission Assignment for Critical Resource"
-      
+
   - id: insecure-file-permissions-world-writable
     pattern: os.chmod($PATH, 0o666)
     message: "File permissions 0o666 allow world-writable access. This is a serious security risk"
@@ -126,7 +126,7 @@ rules:
     languages: [python]
     metadata:
       cwe: "CWE-20: Improper Input Validation"
-      
+
   - id: urllib-urlopen-dynamic
     patterns:
       - pattern: urllib.request.urlopen($URL, ...)
@@ -147,7 +147,7 @@ rules:
     metadata:
       cwe: "CWE-942: Overly Permissive Cross-domain Whitelist"
       owasp: "A01:2021 - Broken Access Control"
-      
+
   - id: cors-with-credentials-wildcard
     patterns:
       - pattern: |

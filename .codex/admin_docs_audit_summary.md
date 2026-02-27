@@ -97,7 +97,7 @@
    - `docs/admin/security/ADMIN_TOKEN_SETUP.md`
    - `docs/admin/security/COPILOT_TOKEN_USAGE.md`
    - `docs/admin/security/HUMAN_ADMIN_FOLLOWUP_PR2639.md`
-   
+
    **Format:** Add at top of file:
    ```markdown
    **Last Updated**: YYYY-MM-DD

@@ -84,7 +84,7 @@ class ReasoningHead(nn.Module):
    codex deploy --config configs/deploy/reasoning_pod.yaml \
      --model artifacts/runs/reasoning-starter:last \
      --dry-run
-   
+
 
 - `configs/training/reasoning/baseline.yaml`
 ```text

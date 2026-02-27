@@ -65,7 +65,7 @@ def test_example():
     result = some_function()  # Unused
     assert True
 
-# AFTER: 
+# AFTER:
 def test_example():
     some_function()  # Call without assignment
     assert True
@@ -89,7 +89,7 @@ def test_example():
 3. **Final:** 70% (balanced, with roadmap)
 
 ### Files Affected:
-- `.github/workflows/test-suite.yml` 
+- `.github/workflows/test-suite.yml`
 - `.github/workflows/test-comprehensive.yml`
 - `.coveragerc` (removed fail_under, use pyproject.toml)
 
@@ -162,7 +162,7 @@ tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, **kwargs)
 if getattr(tokenizer, "pad_token", None) is None and \
    getattr(tokenizer, "eos_token", None):
     tokenizer.pad_token = tokenizer.eos_token
-    
+
 return tokenizer
 ```
 

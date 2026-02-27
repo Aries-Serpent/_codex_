@@ -116,15 +116,15 @@ agents/interpretability/
 ```python
 class AttentionScorer:
     """Analyze and score attention weights in transformer models."""
-    
+
     def __init__(self, model, layer_names=None):
         self.model = model
         self.layer_names = layer_names or self._auto_detect_layers()
-    
+
     def compute_attention_scores(self, inputs):
         """Extract attention weights from model layers."""
         pass
-    
+
     def get_top_k_tokens(self, attention_weights, k=10):
         """Return top-k attended tokens."""
         pass
@@ -134,11 +134,11 @@ class AttentionScorer:
 ```python
 class MLPScorer:
     """Analyze MLP activation patterns."""
-    
+
     def __init__(self, model, target_layers=None):
         self.model = model
         self.target_layers = target_layers
-    
+
     def compute_activation_scores(self, inputs):
         """Extract and score MLP activations."""
         pass

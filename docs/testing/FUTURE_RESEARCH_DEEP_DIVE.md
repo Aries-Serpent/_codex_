@@ -82,15 +82,15 @@ Manual test writing for achieving 100% coverage is time-intensive, requiring:
    ```python
    prompt = f"""
    Generate pytest tests for this Python function to achieve 100% coverage.
-   
+
    Function to test:
    {function_code}
-   
+
    Uncovered branches: {uncovered_lines}
-   
+
    Existing test pattern example:
    {similar_existing_test}
-   
+
    Requirements:
    - Use pytest fixtures
    - Mock external dependencies
@@ -109,11 +109,11 @@ Manual test writing for achieving 100% coverage is time-intensive, requiring:
    ```python
    # Validate syntax
    ast.parse(generated_test)
-   
+
    # Run test and check coverage
    result = pytest.run(generated_test)
    new_coverage = measure_coverage()
-   
+
    # Iterate if coverage not improved
    if new_coverage <= old_coverage:
        refine_prompt_with_failure_context()
@@ -139,13 +139,13 @@ class AutoTestGenerator:
         self.cov = coverage.Coverage(data_file=cov_file)
         self.cov.load()
         self.client = OpenAI()
-        
+
     def find_uncovered_functions(self, module_path):
         """Find functions with <100% coverage"""
         analysis = self.cov.analysis2(module_path)
         source = open(module_path).read()
         tree = ast.parse(source)
-        
+
         uncovered_funcs = []
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
@@ -158,7 +158,7 @@ class AutoTestGenerator:
                         'uncovered_lines': list(uncovered)
                     })
         return uncovered_funcs
-    
+
     def generate_tests(self, func_info):
         """Generate pytest tests for uncovered function"""
         prompt = self._build_prompt(func_info)
@@ -168,10 +168,10 @@ class AutoTestGenerator:
             temperature=0.3
         )
         return response.choices[0].message.content
-    
+
     def _build_prompt(self, func_info):
         return f"""Generate comprehensive pytest tests for this function.
-        
+
 Function:
 {func_info['code']}
 
@@ -379,7 +379,7 @@ def test_happy_path_only():
    killed_mutants = count_killed()
    survived_mutants = count_survived()
    mutation_score = killed_mutants / (killed_mutants + survived_mutants)
-   
+
    # Mutation score targets:
    # 60-75%: Acceptable
    # 75-90%: Good
@@ -392,15 +392,15 @@ def test_happy_path_only():
    # 1. Review the mutation
    # 2. Determine if test is weak or mutation is equivalent
    # 3. Add assertion to kill the mutant
-   
+
    # Example: Original test
    def test_divide():
        assert divide(10, 2) == 5
-   
+
    # Mutant: operator / changed to *
    def divide_mutant(a, b):
        return a * b  # Mutation survives!
-   
+
    # Fixed test (kills mutant):
    def test_divide_fixed():
        assert divide(10, 2) == 5
@@ -420,11 +420,11 @@ class MutationTester:
     def __init__(self, target_dir="src", test_dir="tests"):
         self.target_dir = Path(target_dir)
         self.test_dir = Path(test_dir)
-        
+
     def run_mutation_testing(self, module_path, threshold=75.0):
         """Run mutation testing on a module"""
         test_path = self.find_test_file(module_path)
-        
+
         # Run mutpy
         cmd = [
             "mut.py",
@@ -433,15 +433,15 @@ class MutationTester:
             "--report-json", "mutation_results.json",
             "--timeout-factor", "2.0"
         ]
-        
+
         result = subprocess.run(cmd, capture_output=True)
-        
+
         # Parse results
         with open("mutation_results.json") as f:
             results = json.load(f)
-        
+
         mutation_score = self.calculate_score(results)
-        
+
         if mutation_score < threshold:
             print(f"⚠️  Low mutation score: {mutation_score:.1f}%")
             print("Survived mutants:")
@@ -449,9 +449,9 @@ class MutationTester:
                 print(f"  - Line {mutant['lineno']}: {mutant['operator']}")
         else:
             print(f"✅ Good mutation score: {mutation_score:.1f}%")
-        
+
         return mutation_score
-    
+
     def calculate_score(self, results):
         killed = results['killed_count']
         total = results['total_count']
@@ -478,18 +478,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install mutpy pytest
           pip install -e .
-      
+
       - name: Run mutation testing
         run: |
           python scripts/testing/run_mutation_tests.py \
             --changed-files-only \
             --threshold 75
-      
+
       - name: Upload mutation report
         uses: actions/upload-artifact@v4
         with:
@@ -591,10 +591,10 @@ def test_reverse_string():
 def test_reverse_string_properties(s):
     # Property 1: Reversing twice returns original
     assert reverse(reverse(s)) == s
-    
+
     # Property 2: Length is preserved
     assert len(reverse(s)) == len(s)
-    
+
     # Property 3: Reversing empty string returns empty
     if s == "":
         assert reverse(s) == ""
@@ -639,16 +639,16 @@ def test_reverse_string_properties(s):
    # - Path manipulation (flatten, unflatten)
    # - Text parsing (AST, config files)
    # - Encoding/decoding (base64, JSON)
-   
+
    from hypothesis import given, strategies as st
-   
+
    @given(st.text(min_size=1, max_size=1000))
    def test_path_flatten_unflatten_roundtrip(path):
        """Flattening then unflattening returns original"""
        flattened = flatten_path(path)
        unflattened = unflatten_path(flattened)
        assert unflattened == path
-   
+
    @given(st.dictionaries(st.text(), st.integers()))
    def test_json_roundtrip(data):
        """JSON serialize/deserialize preserves data"""
@@ -663,13 +663,13 @@ def test_reverse_string_properties(s):
    def test_sort_properties(lst):
        """Test sorting properties"""
        sorted_lst = sorted(lst)
-       
+
        # Property 1: Length preserved
        assert len(sorted_lst) == len(lst)
-       
+
        # Property 2: All elements present
        assert sorted(sorted_lst) == sorted(lst)
-       
+
        # Property 3: Ordered
        for i in range(len(sorted_lst) - 1):
            assert sorted_lst[i] <= sorted_lst[i + 1]
@@ -718,15 +718,15 @@ path_strategy = st.text(
 def test_flatten_path_properties(path):
     """Property tests for path flattening"""
     assume('/' in path)  # Only test paths with separators
-    
+
     flattened = flatten_path(path)
-    
+
     # Property 1: No slashes in flattened path
     assert '/' not in flattened
-    
+
     # Property 2: Flattening is deterministic
     assert flatten_path(path) == flattened
-    
+
     # Property 3: Length doesn't decrease
     assert len(flattened) >= len(path.replace('/', ''))
 ```
@@ -740,12 +740,12 @@ from hypothesis.stateful import RuleBasedStateMachine, rule, precondition
 
 class WorkflowNavigatorStateMachine(RuleBasedStateMachine):
     """Stateful testing for WorkflowNavigator"""
-    
+
     def __init__(self):
         super().__init__()
         self.navigator = WorkflowNavigator()
         self.workflows = {}
-    
+
     @rule(workflow_id=st.text(min_size=1), steps=st.lists(st.text()))
     def create_workflow(self, workflow_id, steps):
         """Create a new workflow"""
@@ -753,14 +753,14 @@ class WorkflowNavigatorStateMachine(RuleBasedStateMachine):
         result = self.navigator.create_workflow(workflow_id, steps)
         self.workflows[workflow_id] = steps
         assert result == workflow_id
-    
+
     @rule(workflow_id=st.sampled_from([]))
     @precondition(lambda self: len(self.workflows) > 0)
     def get_workflow(self, workflow_id):
         """Get an existing workflow"""
         workflow = self.navigator.get_workflow(workflow_id)
         assert workflow.steps == self.workflows[workflow_id]
-    
+
     @rule()
     def check_invariants(self):
         """Invariants that should always hold"""

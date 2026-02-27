@@ -20,7 +20,7 @@
 ### Immediate Actions (This Session):
 
 **Phase 1: Diagnosis & Analysis (2-3 iterations)**
-1. Use the multi-agent framework from `.codex/tools/agent_system_framework.py` 
+1. Use the multi-agent framework from `.codex/tools/agent_system_framework.py`
 2. Create and run the 8-agent documentation improvement system:
    - Site Crawler Agent: Scan https://aries-serpent.github.io/_codex_/
    - CSS Analyzer Agent: Analyze current stylesheets
@@ -98,7 +98,7 @@
 Create a follow-up comment on PR #2682 with this exact format:
 
 ```
-@copilot continue GitHub Pages improvement from Phase [X]. 
+@copilot continue GitHub Pages improvement from Phase [X].
 
 Previous work completed:
 - [Detailed summary of what was accomplished]

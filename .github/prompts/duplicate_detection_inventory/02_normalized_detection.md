@@ -36,19 +36,19 @@ Implement normalized duplicate detection that identifies duplicates after removi
 ```python
 class NormalizedDetector:
     """Detects duplicates after normalizing code."""
-    
+
     def __init__(self, root_path: Path, normalize_identifiers: bool = False):
         """Initialize with options."""
         pass
-    
+
     def scan(self) -> List[DuplicateGroup]:
         """Scan and return normalized duplicate groups."""
         pass
-    
+
     def normalize_content(self, content: str, language: str) -> str:
         """Normalize code content for comparison."""
         pass
-    
+
     def compute_normalized_hash(self, normalized_content: str) -> str:
         """Compute hash of normalized content."""
         pass
@@ -70,15 +70,15 @@ class NormalizedDetector:
 ```python
 class PythonNormalizer:
     """Normalizes Python code."""
-    
+
     def remove_comments(self, code: str) -> str:
         """Remove # comments and docstrings."""
         pass
-    
+
     def normalize_imports(self, code: str) -> str:
         """Sort and normalize imports."""
         pass
-    
+
     def normalize_whitespace(self, code: str) -> str:
         """Normalize indentation and spacing."""
         pass
@@ -100,11 +100,11 @@ class PythonNormalizer:
 ```python
 class IdentifierNormalizer:
     """Normalizes identifiers for deeper similarity."""
-    
+
     def normalize(self, code: str, language: str) -> str:
         """Normalize identifiers in code."""
         pass
-    
+
     def create_token_map(self, code: str) -> Dict[str, str]:
         """Create stable identifier token mapping."""
         pass
@@ -125,19 +125,19 @@ class IdentifierNormalizer:
 ```python
 class FingerprintCache:
     """Caches normalized fingerprints."""
-    
+
     def __init__(self, cache_dir: Path):
         """Initialize cache in directory."""
         pass
-    
+
     def get(self, file_path: Path, mode: str) -> Optional[str]:
         """Get cached fingerprint if valid."""
         pass
-    
+
     def set(self, file_path: Path, mode: str, fingerprint: str):
         """Cache fingerprint."""
         pass
-    
+
     def invalidate(self, file_path: Path):
         """Invalidate cached fingerprints for file."""
         pass

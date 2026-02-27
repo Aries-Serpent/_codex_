@@ -26,7 +26,7 @@ monitoring:
     - fixes_committed
     - validation_failure_rate
     - average_fix_time
-  
+
   alerts:
     - condition: validation_failure_rate > 0.3
       action: disable_auto_commit

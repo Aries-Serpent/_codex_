@@ -122,7 +122,7 @@ class StandardizedASTNode:
 # src/codex_ml/ast/graph.py - DependencyGraph with Tarjan's SCC
 class DependencyGraph:
     """Directed graph with cycle detection."""
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Find strongly connected components using Tarjan's algorithm."""
         index_counter = [0]
@@ -131,21 +131,21 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id):
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
                     strongconnect(target_id)
                     lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
                 elif on_stack.get(target_id, False):
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             if lowlinks[node_id] == index[node_id]:
                 scc = []
                 while True:
@@ -154,14 +154,14 @@ class DependencyGraph:
                     scc.append(w)
                     if w == node_id:
                         break
-                
+
                 if len(scc) > 1:  # Only record cycles
                     sccs.append(scc)
-        
+
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
 ```text
 
@@ -189,7 +189,7 @@ def test_parser_performance_small(benchmark):
     from codex_ml.ast import UniversalParser
     parser = UniversalParser()
     source = "def func(): pass\n" * 10
-    
+
     result = benchmark(parser.parse, source, "test.py")
     assert result is not None
 
@@ -198,26 +198,26 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 class ParallelAnalyzer:
     """Analyze multiple files in parallel."""
-    
+
     def analyze_codebase(self, files, max_workers=4):
         """Analyze files concurrently."""
         results = {}
-        
+
         with ProcessPoolExecutor(max_workers=max_workers) as executor:
             futures = {
-                executor.submit(self._analyze_file, f): f 
+                executor.submit(self._analyze_file, f): f
                 for f in files
             }
-            
+
             for future in as_completed(futures):
                 file = futures[future]
                 try:
                     results[file] = future.result()
                 except Exception as e:
                     results[file] = {"error": str(e)}
-        
+
         return results
-    
+
     def _analyze_file(self, file_path):
         """Analyze single file (runs in subprocess)."""
         parser = UniversalParser()
@@ -524,7 +524,7 @@ class StandardizedASTNode:
     decorators: List[str] = field(default_factory=list)
     type_hints: Dict[str, str] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             'node_id': self.node_id,
@@ -550,7 +550,7 @@ class DependencyGraph:
     def __init__(self):
         self.nodes = {}
         self.edges = {}
-    
+
     def detect_cycles(self) -> List[List[str]]:
         """Tarjan's strongly connected components algorithm."""
         index_counter = [0]
@@ -559,21 +559,21 @@ class DependencyGraph:
         index = {}
         on_stack = {}
         sccs = []
-        
+
         def strongconnect(node_id):
             index[node_id] = index_counter[0]
             lowlinks[node_id] = index_counter[0]
             index_counter[0] += 1
             stack.append(node_id)
             on_stack[node_id] = True
-            
+
             for target_id in self.edges.get(node_id, set()):
                 if target_id not in index:
                     strongconnect(target_id)
                     lowlinks[node_id] = min(lowlinks[node_id], lowlinks[target_id])
                 elif on_stack.get(target_id, False):
                     lowlinks[node_id] = min(lowlinks[node_id], index[target_id])
-            
+
             if lowlinks[node_id] == index[node_id]:
                 scc = []
                 while True:
@@ -582,14 +582,14 @@ class DependencyGraph:
                     scc.append(w)
                     if w == node_id:
                         break
-                
+
                 if len(scc) > 1:
                     sccs.append(scc)
-        
+
         for node_id in self.nodes:
             if node_id not in index:
                 strongconnect(node_id)
-        
+
         return sccs
 ```text
 
@@ -608,26 +608,26 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      
+
       - name: Install dependencies
         run: pip install -e ".[ast]"
-      
+
       - name: Run AST analysis
         run: |
           python scripts/codex-audit src/
-      
+
       - name: Compare with baseline
         if: github.event_name == 'pull_request'
         run: |
           python scripts/codex-diff origin/main HEAD
-      
+
       - name: Upload report
         uses: actions/upload-artifact@v3
         with:
@@ -656,7 +656,7 @@ def analyze(path, output):
     """Analyze single file or directory"""
     analyzer = UniversalAnalyzer()
     results = analyzer.analyze_path(Path(path))
-    
+
     if output:
         analyzer.export_to_json(results, Path(output))
     else:
@@ -669,10 +669,10 @@ def audit(path, output):
     """Full codebase audit"""
     analyzer = UniversalAnalyzer()
     results = analyzer.analyze_all(Path(path))
-    
+
     # Generate HTML report
     report_html = analyzer.generate_html_report(results)
-    
+
     output_file = Path(output or 'audit_report.html')
     output_file.write_text(report_html)
     click.echo(f"Report saved: {output_file}")

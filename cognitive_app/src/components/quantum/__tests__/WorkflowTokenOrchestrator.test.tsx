@@ -5,7 +5,7 @@ import { WorkflowTokenOrchestrator } from '../../quantum/WorkflowTokenOrchestrat
 // Mock @github/spark/hooks - must be hoisted before imports
 vi.mock('@github/spark/hooks', () => {
   let kvStore: Record<string, any> = {};
-  
+
   return {
     useKV: (key: string, defaultValue: any) => {
       if (!(key in kvStore)) {

@@ -29,12 +29,12 @@ tracker = MLflowTracker(
 with tracker:
     # Log parameters
     tracker.log_params({"lr": 0.001, "batch_size": 32})
-    
+
     # Training loop
     for epoch in range(num_epochs):
         # ... training code ...
         tracker.log_metrics({"loss": loss, "accuracy": acc}, step=epoch)
-    
+
     # Log artifacts
     tracker.log_artifact("model.pt")
 ```
@@ -105,7 +105,7 @@ tracker.log_params({
 for epoch in range(num_epochs):
     train_loss = train_one_epoch(model, dataloader)
     val_loss = validate(model, val_dataloader)
-    
+
     tracker.log_metrics({
         "train_loss": train_loss,
         "val_loss": val_loss,
@@ -324,21 +324,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      
+
       - name: Install dependencies
         run: pip install -e .
-      
+
       - name: Train model with MLflow
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_URI }}
         run: |
           python train.py --config configs/production/tracking.yaml
-      
+
       - name: Check model quality
         run: |
           python scripts/check_mlflow_metrics.py --min-accuracy 0.85

@@ -14,7 +14,7 @@ export function SuperpositionCard({ scenario, index }: SuperpositionCardProps) {
   return (
     <Card className="p-4 relative overflow-hidden group hover:shadow-lg transition-shadow">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-      
+
       <div className="relative">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-lg">{scenario.state}</h4>
@@ -32,7 +32,7 @@ export function SuperpositionCard({ scenario, index }: SuperpositionCardProps) {
               <span className="font-mono font-semibold text-accent">{probabilityPercent}%</span>
             </div>
             <div className="h-2 bg-background rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-primary to-accent transition-all quantum-pulse"
                 style={{ width: `${probabilityPercent}%` }}
               />
@@ -46,7 +46,7 @@ export function SuperpositionCard({ scenario, index }: SuperpositionCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 bg-background rounded-full overflow-hidden">
-                <div 
+                <div
                   className={`h-full transition-all ${
                     energyLevel === 'High' ? 'bg-red-500' :
                     energyLevel === 'Medium' ? 'bg-yellow-500' :
@@ -62,7 +62,7 @@ export function SuperpositionCard({ scenario, index }: SuperpositionCardProps) {
           {scenario.bell_state && (
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground">
-                <strong className="text-accent">Entangled:</strong> This state is quantum-entangled 
+                <strong className="text-accent">Entangled:</strong> This state is quantum-entangled
                 with other decision nodes, enabling coordinated evaluation.
               </p>
             </div>

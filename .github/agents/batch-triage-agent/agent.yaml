@@ -33,7 +33,7 @@ security:
     shell_injection_protection: true
     command_validation_method: shlex_split
     subprocess_shell_disabled: true
-  
+
   remediation_safeguards:
     risk_based_approval: true
     dry_run_mode_available: true
@@ -45,13 +45,13 @@ integration:
     enabled: true
     pattern_storage: .codex/cognitive_brain/patterns/ci_failures/
     metrics_storage: .codex/metrics/batch_triage_metrics.yaml
-  
+
   pda_loop:
     perception: true
     decision: true
     action: true
     aftermath: true
-  
+
   external_systems:
     - github_actions
     - self_healing_engine
@@ -73,7 +73,7 @@ configuration:
       impact_max: significant
       auto_apply: false
       requires_escalation: true
-  
+
   notifications:
     slack:
       enabled: true
@@ -90,13 +90,13 @@ configuration:
       enabled: true
       comment_on_issues: true
       create_tracking_issue: true
-  
+
   learning:
     pattern_expiry_days: 90
     min_pattern_occurrences: 3
     success_rate_threshold: 0.7
     enable_ml_clustering: true
-  
+
   performance:
     triage_timeout_seconds: 300
     max_concurrent_analyses: 5
@@ -115,7 +115,7 @@ dependencies:
     - scripts.ci.batch_triage
     - agents.self_healing
     - scripts.cognitive.cognitive_brain_core
-  
+
   external_tools:
     - github_cli
     - pytest

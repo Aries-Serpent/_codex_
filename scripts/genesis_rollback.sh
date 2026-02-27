@@ -119,7 +119,7 @@ git commit -m "chore(genesis): emergency rollback - disable autonomous operation
 
 Rollback performed: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 - autonomous_actions_enabled: false
-- SAFE_MODE: True  
+- SAFE_MODE: True
 - genesis-bootstrap workflow: disabled
 - Record added to change_log.md
 

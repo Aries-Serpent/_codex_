@@ -206,11 +206,11 @@ Pattern 7: Redundant Imports       33 issues   Manual Review
    ```bash
    # Test data validation
    python scripts/validate_dataset.py
-   
+
    # Verify linting passes
    ruff check .
    mypy src/
-   
+
    # Run quick test subset
    pytest tests/ -k "not slow" -x
    ```

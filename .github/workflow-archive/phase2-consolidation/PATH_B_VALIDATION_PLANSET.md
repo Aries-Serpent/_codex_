@@ -359,7 +359,7 @@ Based on analysis of remaining workflows, Path B would target:
 1. **specialized-testing-suite.yml** (~9 KB)
    ```yaml
    name: Specialized Testing Suite
-   
+
    on:
      workflow_dispatch:
        inputs:
@@ -377,16 +377,16 @@ Based on analysis of remaining workflows, Path B would target:
        paths:
          - 'tests/rag/**'
          - 'tests/analytics/**'
-   
+
    jobs:
      rag-testing:
        if: inputs.mode == 'rag-testing-only' || inputs.mode == 'full-suite'
        # ... RAG test implementation
-     
+
      ci-triage:
        if: inputs.mode == 'ci-triage-only' || inputs.mode == 'full-suite'
        # ... CI triage implementation
-     
+
      failure-simulation:
        if: inputs.mode == 'failure-sim-only' || inputs.mode == 'full-suite'
        # ... Failure simulation implementation
@@ -395,7 +395,7 @@ Based on analysis of remaining workflows, Path B would target:
 2. **monitoring-analytics-suite.yml** (~10 KB)
    ```yaml
    name: Monitoring & Analytics Suite
-   
+
    on:
      workflow_dispatch:
        inputs:
@@ -411,12 +411,12 @@ Based on analysis of remaining workflows, Path B would target:
      workflow_run:
        workflows: ["Optimized CI"]
        types: [completed]
-   
+
    jobs:
      health-monitoring:
        if: inputs.mode == 'health-monitor-only' || inputs.mode == 'full-monitoring'
        # ... Health monitoring implementation
-     
+
      analytics-collection:
        if: inputs.mode == 'analytics-only' || inputs.mode == 'full-monitoring'
        # ... Analytics implementation with quantum analysis
@@ -425,7 +425,7 @@ Based on analysis of remaining workflows, Path B would target:
 3. **documentation-suite.yml** (~7 KB)
    ```yaml
    name: Documentation Suite
-   
+
    on:
      workflow_dispatch:
        inputs:
@@ -441,16 +441,16 @@ Based on analysis of remaining workflows, Path B would target:
        paths:
          - 'docs/**'
          - 'src/**/*.py'
-   
+
    jobs:
      mkdocs-build:
        if: inputs.mode == 'mkdocs-only' || inputs.mode == 'full-docs'
        # ... MkDocs implementation
-     
+
      api-documentation:
        if: inputs.mode == 'api-docs-only' || inputs.mode == 'full-docs'
        # ... API docs implementation
-     
+
      deploy:
        needs: [mkdocs-build, api-documentation]
        if: inputs.mode == 'full-docs'

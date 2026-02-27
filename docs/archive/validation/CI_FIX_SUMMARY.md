@@ -62,10 +62,10 @@ tests/metrics/test_f1_score.py::test_f1_micro_handles_zero_division PASSED
 def clear_prometheus_registry():
     """Clear Prometheus registry between tests to prevent collision."""
     from prometheus_client import REGISTRY
-    
+
     collectors_before = list(REGISTRY._collector_to_names.keys())
     yield
-    
+
     # Clean up collectors added during test
     collectors_after = list(REGISTRY._collector_to_names.keys())
     for collector in collectors_after:
@@ -142,13 +142,13 @@ audit = AuditResult(
 ---
 
 #### 5. Test Collection Warnings - FIXED ✅
-**Files:** 
+**Files:**
 - `src/cognitive_brain/quantum/uncertainty.py`
 - `src/cognitive_brain/quantum/__init__.py`
 
 **Issue:** Pytest collected dataclasses as test classes:
 ```
-PytestCollectionWarning: cannot collect test class 'TestExecutionMetrics' 
+PytestCollectionWarning: cannot collect test class 'TestExecutionMetrics'
 because it has a __init__ constructor
 ```
 
@@ -210,7 +210,7 @@ TestExecutionPriority = ExecutionPriority
 
 **Error:**
 ```
-hydra.errors.MissingConfigException: In 'hydra/config': 
+hydra.errors.MissingConfigException: In 'hydra/config':
 Could not load 'hydra/data/base'.
 ```
 
@@ -223,7 +223,7 @@ Could not load 'hydra/data/base'.
 
 **Error:**
 ```
-AssertionError: FAIL configs/deployment/hhg_logistics/monitor/default.yaml 
+AssertionError: FAIL configs/deployment/hhg_logistics/monitor/default.yaml
 -> configs/schemas/monitoring.schema.yaml
 ```
 
@@ -293,7 +293,7 @@ test_increasing_load_handling: assert 4.219... < (2.0 * 2)
 
 **Error (Intermittent):**
 ```
-CheckpointLoadError: failed to save checkpoint via pickle: 
+CheckpointLoadError: failed to save checkpoint via pickle:
 issubclass() arg 2 must be a class, a tuple of classes, or a union
 ```
 

@@ -38,7 +38,7 @@ graph TB
         E[Decision Engine]
         F[Self-Reflection]
     end
-    
+
     subgraph "Workaround Tools"
         T1[Cognitive Index Builder]
         T2[Context Retriever]
@@ -47,7 +47,7 @@ graph TB
         T5[Authorization Engine]
         T6[Meta-Analyzer]
     end
-    
+
     subgraph "Codebase as Brain"
         CB1[.codex/cognitive_brain/]
         CB2[.codex/cache/]
@@ -56,28 +56,28 @@ graph TB
         CB5[.codex/decisions/]
         CB6[.codex/meta/]
     end
-    
+
     A --> T1
     B --> T2
     C --> T3
     D --> T4
     E --> T5
     F --> T6
-    
+
     T1 --> CB1
     T2 --> CB2
     T3 --> CB3
     T4 --> CB4
     T5 --> CB5
     T6 --> CB6
-    
+
     CB1 -.->|Persistent Memory| A
     CB2 -.->|Cached Context| B
     CB3 -.->|Learned Patterns| C
     CB4 -.->|Execution Plans| D
     CB5 -.->|Decision History| E
     CB6 -.->|Self-Knowledge| F
-    
+
     style A fill:#E6F3FF
     style B fill:#FFE6E6
     style C fill:#E6FFE6
@@ -138,27 +138,27 @@ class MemoryNode:
 class CognitiveIndexBuilder:
     """
     Builds a cognitive index of the codebase.
-    
+
     This index acts as AI Agent's memory, allowing:
     - Instant semantic search
     - Dependency graph traversal
     - Pattern recognition
     - Context-aware code understanding
     """
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.db_path = repo_root / '.codex' / 'cache' / 'cognitive_index.db'
         self.entities: Dict[str, CodeEntity] = {}
         self.memory_graph: Dict[str, MemoryNode] = {}
-        
+
     def initialize_database(self):
         """Initialize SQLite database for cognitive index."""
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Entities table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS entities (
@@ -176,7 +176,7 @@ class CognitiveIndexBuilder:
                 updated_at TEXT NOT NULL
             )
         ''')
-        
+
         # Memory graph table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS memory_graph (
@@ -189,7 +189,7 @@ class CognitiveIndexBuilder:
                 FOREIGN KEY (entity_id) REFERENCES entities(id)
             )
         ''')
-        
+
         # Semantic search table (for future vector embeddings)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS semantic_index (
@@ -198,7 +198,7 @@ class CognitiveIndexBuilder:
                 FOREIGN KEY (entity_id) REFERENCES entities(id)
             )
         ''')
-        
+
         # Full-text search
         cursor.execute('''
             CREATE VIRTUAL TABLE IF NOT EXISTS fts_entities USING fts5(
@@ -210,18 +210,18 @@ class CognitiveIndexBuilder:
                 content_rowid='rowid'
             )
         ''')
-        
+
         # Indexes for performance
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_entity_type ON entities(type)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_entity_name ON entities(name)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_entity_filepath ON entities(filepath)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_memory_importance ON memory_graph(importance_score DESC)')
-        
+
         conn.commit()
         conn.close()
-        
+
         print(f"✅ Cognitive index database initialized: {self.db_path}")
-    
+
     def parse_python_file(self, filepath: Path) -> List[CodeEntity]:
         """Parse Python file and extract semantic entities."""
         try:
@@ -230,30 +230,30 @@ class CognitiveIndexBuilder:
         except Exception as e:
             print(f"❌ Failed to parse {filepath}: {e}")
             return []
-        
+
         entities = []
-        
+
         # Extract functions
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 entity_id = self._generate_id(filepath, node.name, node.lineno)
-                
+
                 # Extract signature
                 args = [arg.arg for arg in node.args.args]
                 signature = f"{node.name}({', '.join(args)})"
-                
+
                 # Extract docstring
                 docstring = ast.get_docstring(node)
-                
+
                 # Extract dependencies (imports, function calls)
                 dependencies = self._extract_dependencies(node)
-                
+
                 # Calculate complexity
                 complexity = self._calculate_complexity(node)
-                
+
                 # Extract tags from docstring
                 tags = self._extract_tags(docstring) if docstring else []
-                
+
                 entity = CodeEntity(
                     id=entity_id,
                     type='function',
@@ -266,20 +266,20 @@ class CognitiveIndexBuilder:
                     tags=tags,
                     complexity=complexity
                 )
-                
+
                 entities.append(entity)
-            
+
             elif isinstance(node, ast.ClassDef):
                 entity_id = self._generate_id(filepath, node.name, node.lineno)
-                
+
                 # Extract methods
                 methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
-                
+
                 docstring = ast.get_docstring(node)
                 dependencies = self._extract_dependencies(node)
                 complexity = self._calculate_complexity(node)
                 tags = self._extract_tags(docstring) if docstring else []
-                
+
                 entity = CodeEntity(
                     id=entity_id,
                     type='class',
@@ -292,20 +292,20 @@ class CognitiveIndexBuilder:
                     tags=tags,
                     complexity=complexity
                 )
-                
+
                 entities.append(entity)
-        
+
         return entities
-    
+
     def _generate_id(self, filepath: Path, name: str, lineno: int) -> str:
         """Generate unique ID for entity."""
         content = f"{filepath}:{name}:{lineno}"
         return hashlib.sha256(content.encode()).hexdigest()[:16]
-    
+
     def _extract_dependencies(self, node: ast.AST) -> List[str]:
         """Extract dependencies (imports, function calls, etc.)."""
         dependencies = []
-        
+
         for child in ast.walk(node):
             # Function calls
             if isinstance(child, ast.Call):
@@ -313,22 +313,22 @@ class CognitiveIndexBuilder:
                     dependencies.append(child.func.id)
                 elif isinstance(child.func, ast.Attribute):
                     dependencies.append(child.func.attr)
-            
+
             # Imports
             elif isinstance(child, ast.Import):
                 for alias in child.names:
                     dependencies.append(alias.name)
-            
+
             elif isinstance(child, ast.ImportFrom):
                 if child.module:
                     dependencies.append(child.module)
-        
+
         return list(set(dependencies))  # Remove duplicates
-    
+
     def _calculate_complexity(self, node: ast.AST) -> int:
         """Calculate cyclomatic complexity."""
         complexity = 1
-        
+
         for child in ast.walk(node):
             # Branch points
             if isinstance(child, (ast.If, ast.While, ast.For, ast.ExceptHandler)):
@@ -336,88 +336,88 @@ class CognitiveIndexBuilder:
             # Boolean operators
             elif isinstance(child, (ast.And, ast.Or)):
                 complexity += 1
-        
+
         return complexity
-    
+
     def _extract_tags(self, docstring: str) -> List[str]:
         """Extract tags from docstring."""
         if not docstring:
             return []
-        
+
         tags = []
-        
+
         # Common tag patterns
         tag_patterns = [
             'deprecated', 'todo', 'fixme', 'hack', 'note', 'warning',
             'example', 'param', 'return', 'raises', 'async', 'sync'
         ]
-        
+
         docstring_lower = docstring.lower()
         for pattern in tag_patterns:
             if pattern in docstring_lower:
                 tags.append(pattern)
-        
+
         return tags
-    
+
     def build_index(self, include_tests: bool = True):
         """Build cognitive index for entire codebase."""
         print("🧠 Building Cognitive Index")
         print("=" * 60)
-        
+
         # Initialize database
         self.initialize_database()
-        
+
         # Scan Python files
         src_dir = self.repo_root / 'src'
         test_dir = self.repo_root / 'tests' if include_tests else None
-        
+
         python_files = list(src_dir.rglob('*.py'))
         if test_dir and test_dir.exists():
             python_files.extend(test_dir.rglob('*.py'))
-        
+
         print(f"📁 Found {len(python_files)} Python files")
-        
+
         # Parse each file
         all_entities = []
         for filepath in python_files:
             entities = self.parse_python_file(filepath)
             all_entities.extend(entities)
             self.entities.update({e.id: e for e in entities})
-        
+
         print(f"📊 Extracted {len(all_entities)} code entities")
-        
+
         # Build memory graph
         self._build_memory_graph()
-        
+
         # Save to database
         self._save_to_database()
-        
+
         # Generate statistics
         stats = self._generate_statistics()
-        
+
         print("\n✅ Cognitive index built successfully")
         print(f"📄 Database: {self.db_path}")
         print(f"📊 Statistics: {stats}")
-        
+
         return stats
-    
+
     def _build_memory_graph(self):
         """Build memory graph from entities."""
         print("\n🔗 Building memory graph...")
-        
+
         for entity_id, entity in self.entities.items():
             # Find relationships
             relationships = []
-            
+
             for dep in entity.dependencies:
                 # Find entities that match this dependency
                 for other_id, other_entity in self.entities.items():
                     if other_entity.name == dep:
                         relationships.append(other_id)
-            
+
             # Calculate importance score
             importance = self._calculate_importance(entity)
-            
+
             memory_node = MemoryNode(
                 id=f"mem_{entity_id}",
                 entity_id=entity_id,
@@ -426,43 +426,43 @@ class CognitiveIndexBuilder:
                 last_accessed=datetime.now(UTC).isoformat(),
                 importance_score=importance
             )
-            
+
             self.memory_graph[memory_node.id] = memory_node
-        
+
         print(f"✅ Built memory graph with {len(self.memory_graph)} nodes")
-    
+
     def _calculate_importance(self, entity: CodeEntity) -> float:
         """Calculate importance score for entity."""
         score = 0.5  # Base score
-        
+
         # Increase for public APIs
         if not entity.name.startswith('_'):
             score += 0.2
-        
+
         # Increase for documented code
         if entity.docstring:
             score += 0.1
-        
+
         # Decrease for high complexity (needs refactoring)
         if entity.complexity > 10:
             score -= 0.1
-        
+
         # Increase for many dependencies (hub)
         if len(entity.dependencies) > 5:
             score += 0.1
-        
+
         # Normalize to [0, 1]
         return max(0.0, min(1.0, score))
-    
+
     def _save_to_database(self):
         """Save entities and memory graph to database."""
         print("\n💾 Saving to database...")
-        
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         timestamp = datetime.now(UTC).isoformat()
-        
+
         # Save entities
         for entity in self.entities.values():
             cursor.execute('''
@@ -481,7 +481,7 @@ class CognitiveIndexBuilder:
                 timestamp,
                 timestamp
             ))
-        
+
         # Save memory graph
         for memory_node in self.memory_graph.values():
             cursor.execute('''
@@ -494,23 +494,23 @@ class CognitiveIndexBuilder:
                 memory_node.last_accessed,
                 memory_node.importance_score
             ))
-        
+
         conn.commit()
         conn.close()
-        
+
         print("✅ Saved to database")
-    
+
     def _generate_statistics(self) -> Dict[str, Any]:
         """Generate statistics about cognitive index."""
         by_type = {}
         for entity in self.entities.values():
             by_type[entity.type] = by_type.get(entity.type, 0) + 1
-        
+
         avg_complexity = sum(e.complexity for e in self.entities.values()) / len(self.entities) if self.entities else 0
-        
+
         documented = sum(1 for e in self.entities.values() if e.docstring)
         doc_percentage = (documented / len(self.entities) * 100) if self.entities else 0
-        
+
         return {
             'total_entities': len(self.entities),
             'by_type': by_type,
@@ -519,12 +519,12 @@ class CognitiveIndexBuilder:
             'memory_nodes': len(self.memory_graph),
             'database_path': str(self.db_path)
         }
-    
+
     def search(self, query: str, limit: int = 10) -> List[CodeEntity]:
         """Search cognitive index."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Full-text search
         cursor.execute('''
             SELECT e.* FROM entities e
@@ -532,10 +532,10 @@ class CognitiveIndexBuilder:
             WHERE fts_entities MATCH ?
             LIMIT ?
         ''', (query, limit))
-        
+
         results = cursor.fetchall()
         conn.close()
-        
+
         # Convert to CodeEntity objects
         entities = []
         for row in results:
@@ -552,24 +552,24 @@ class CognitiveIndexBuilder:
                 complexity=row[9]
             )
             entities.append(entity)
-        
+
         return entities
 
 def main():
     """Main entry point."""
     import sys
-    
+
     repo_root = Path('/home/runner/work/_codex_/_codex_')
     if len(sys.argv) > 1:
         repo_root = Path(sys.argv[1])
-    
+
     builder = CognitiveIndexBuilder(repo_root)
     stats = builder.build_index()
-    
+
     print("\n" + "=" * 60)
     print("🧠 Cognitive Index Statistics:")
     print(json.dumps(stats, indent=2))
-    
+
     # Example search
     print("\n🔍 Example Search: 'authentication'")
     results = builder.search('authentication', limit=5)
@@ -622,41 +622,41 @@ class RelevantContext:
 class ContextRetriever:
     """
     Retrieves context from cognitive brain.
-    
+
     Uses:
     - Semantic similarity
     - Dependency graphs
     - Historical patterns
     - Task relationships
     """
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.db_path = repo_root / '.codex' / 'cache' / 'cognitive_index.db'
-    
+
     def retrieve_context(self, task_description: str, max_depth: int = 3) -> RelevantContext:
         """Retrieve context relevant to task."""
         # Extract keywords from task
         keywords = self._extract_keywords(task_description)
-        
+
         # Search cognitive index
         entities = self._search_entities(keywords)
-        
+
         # Traverse dependency graph
         related = self._traverse_graph(entities, max_depth)
-        
+
         # Find patterns
         patterns = self._find_patterns(entities)
-        
+
         # Find related decisions
         decisions = self._find_decisions(task_description)
-        
+
         # Find related tasks
         related_tasks = self._find_related_tasks(task_description)
-        
+
         # Calculate importance
         importance = self._calculate_context_importance(entities, patterns, decisions)
-        
+
         return RelevantContext(
             entities=entities + related,
             patterns=patterns,
@@ -664,26 +664,26 @@ class ContextRetriever:
             related_tasks=related_tasks,
             importance_score=importance
         )
-    
+
     def _extract_keywords(self, text: str) -> List[str]:
         """Extract keywords from text."""
         # Simple keyword extraction (can be enhanced with NLP)
         words = text.lower().split()
-        
+
         # Filter common words
         stopwords = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for'}
         keywords = [w for w in words if w not in stopwords and len(w) > 3]
-        
+
         return keywords
-    
+
     def _search_entities(self, keywords: List[str]) -> List[Dict]:
         """Search entities by keywords."""
         if not self.db_path.exists():
             return []
-        
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         results = []
         for keyword in keywords:
             cursor.execute('''
@@ -692,7 +692,7 @@ class ContextRetriever:
                 ORDER BY importance_score DESC
                 LIMIT 10
             ''', (f'%{keyword}%', f'%{keyword}%'))
-            
+
             rows = cursor.fetchall()
             for row in rows:
                 results.append({
@@ -703,33 +703,33 @@ class ContextRetriever:
                     'lineno': row[4],
                     'docstring': row[6]
                 })
-        
+
         conn.close()
         return results
-    
+
     def _traverse_graph(self, entities: List[Dict], max_depth: int) -> List[Dict]:
         """Traverse dependency graph to find related entities."""
         if not self.db_path.exists():
             return []
-        
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         visited = set()
         related = []
-        
+
         def traverse(entity_id: str, depth: int):
             if depth > max_depth or entity_id in visited:
                 return
-            
+
             visited.add(entity_id)
-            
+
             # Get relationships
             cursor.execute('''
                 SELECT relationships FROM memory_graph
                 WHERE entity_id = ?
             ''', (entity_id,))
-            
+
             row = cursor.fetchone()
             if row:
                 relationships = json.loads(row[0])
@@ -747,50 +747,50 @@ class ContextRetriever:
                                 'lineno': entity_row[4]
                             })
                             traverse(rel_id, depth + 1)
-        
+
         for entity in entities:
             traverse(entity['id'], 0)
-        
+
         conn.close()
         return related
-    
+
     def _find_patterns(self, entities: List[Dict]) -> List[Dict]:
         """Find patterns in cognitive brain related to entities."""
         patterns_dir = self.repo_root / '.codex' / 'patterns'
         if not patterns_dir.exists():
             return []
-        
+
         patterns = []
         for pattern_file in patterns_dir.glob('*.json'):
             with open(pattern_file) as f:
                 pattern = json.load(f)
                 patterns.append(pattern)
-        
+
         return patterns
-    
+
     def _find_decisions(self, task_description: str) -> List[Dict]:
         """Find related decisions from cognitive brain."""
         decisions_dir = self.repo_root / '.codex' / 'decisions'
         if not decisions_dir.exists():
             return []
-        
+
         decisions = []
         for decision_file in decisions_dir.glob('*.json'):
             with open(decision_file) as f:
                 decision = json.load(f)
                 # Simple relevance check
-                if any(word in decision.get('description', '').lower() 
+                if any(word in decision.get('description', '').lower()
                       for word in task_description.lower().split()):
                     decisions.append(decision)
-        
+
         return decisions
-    
+
     def _find_related_tasks(self, task_description: str) -> List[Dict]:
         """Find related tasks from cognitive brain."""
         tasks_dir = self.repo_root / '.codex' / 'plansets'
         if not tasks_dir.exists():
             return []
-        
+
         related = []
         for task_file in tasks_dir.glob('*.md'):
             content = task_file.read_text()
@@ -800,39 +800,39 @@ class ContextRetriever:
                     'file': str(task_file),
                     'title': task_file.stem
                 })
-        
+
         return related
-    
+
     def _calculate_context_importance(self, entities, patterns, decisions) -> float:
         """Calculate importance of retrieved context."""
         score = 0.0
-        
+
         # More entities = more context
         score += min(len(entities) / 10, 1.0) * 0.4
-        
+
         # Patterns add value
         score += min(len(patterns) / 5, 1.0) * 0.3
-        
+
         # Decisions add value
         score += min(len(decisions) / 3, 1.0) * 0.3
-        
+
         return score
 
 def main():
     """Main entry point."""
     import sys
-    
+
     repo_root = Path('/home/runner/work/_codex_/_codex_')
-    
+
     if len(sys.argv) < 2:
         print("Usage: context_retriever.py <task_description>")
         sys.exit(1)
-    
+
     task = ' '.join(sys.argv[1:])
-    
+
     retriever = ContextRetriever(repo_root)
     context = retriever.retrieve_context(task)
-    
+
     print(f"🧠 Context Retrieved for: {task}")
     print("=" * 60)
     print(f"📊 Entities: {len(context.entities)}")
@@ -840,7 +840,7 @@ def main():
     print(f"📊 Decisions: {len(context.decisions)}")
     print(f"📊 Related Tasks: {len(context.related_tasks)}")
     print(f"📊 Importance Score: {context.importance_score:.2f}")
-    
+
     if context.entities:
         print("\n🔍 Top Entities:")
         for entity in context.entities[:5]:
@@ -890,7 +890,7 @@ class Pattern:
 class PatternLearner:
     """
     Learns patterns from codebase.
-    
+
     Patterns include:
     - Architectural patterns
     - Coding conventions
@@ -898,45 +898,45 @@ class PatternLearner:
     - Error handling patterns
     - Testing patterns
     """
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.patterns_dir = repo_root / '.codex' / 'patterns'
         self.patterns_dir.mkdir(parents=True, exist_ok=True)
         self.patterns: List[Pattern] = []
-    
+
     def learn_from_codebase(self):
         """Learn patterns from entire codebase."""
         print("🧠 Learning Patterns from Codebase")
         print("=" * 60)
-        
+
         # Learn naming conventions
         naming_patterns = self._learn_naming_patterns()
         self.patterns.extend(naming_patterns)
-        
+
         # Learn architectural patterns
         arch_patterns = self._learn_architectural_patterns()
         self.patterns.extend(arch_patterns)
-        
+
         # Learn error handling patterns
         error_patterns = self._learn_error_handling_patterns()
         self.patterns.extend(error_patterns)
-        
+
         # Learn testing patterns
         test_patterns = self._learn_testing_patterns()
         self.patterns.extend(test_patterns)
-        
+
         # Save patterns
         self._save_patterns()
-        
+
         print(f"\n✅ Learned {len(self.patterns)} patterns")
-    
+
     def _learn_naming_patterns(self) -> List[Pattern]:
         """Learn naming conventions from codebase."""
         print("\n📝 Learning naming patterns...")
-        
+
         patterns = []
-        
+
         # Collect all function/class names
         names = {
             'function': [],
@@ -944,13 +944,13 @@ class PatternLearner:
             'variable': [],
             'constant': []
         }
-        
+
         # Parse Python files
         for py_file in (self.repo_root / 'src').rglob('*.py'):
             try:
                 import ast
                 tree = ast.parse(py_file.read_text())
-                
+
                 for node in ast.walk(tree):
                     if isinstance(node, ast.FunctionDef):
                         names['function'].append(node.name)
@@ -965,16 +965,16 @@ class PatternLearner:
                                     names['variable'].append(target.id)
             except:
                 continue
-        
+
         # Analyze patterns
         for name_type, name_list in names.items():
             if not name_list:
                 continue
-            
+
             # Check snake_case vs camelCase
             snake_case = sum(1 for n in name_list if '_' in n)
             camel_case = sum(1 for n in name_list if n[0].islower() and any(c.isupper() for c in n))
-            
+
             if snake_case > len(name_list) * 0.7:
                 pattern = Pattern(
                     id=self._generate_id(f"naming_{name_type}_snake"),
@@ -988,7 +988,7 @@ class PatternLearner:
                     last_seen=datetime.now(UTC).isoformat()
                 )
                 patterns.append(pattern)
-            
+
             elif camel_case > len(name_list) * 0.7:
                 pattern = Pattern(
                     id=self._generate_id(f"naming_{name_type}_camel"),
@@ -1002,19 +1002,19 @@ class PatternLearner:
                     last_seen=datetime.now(UTC).isoformat()
                 )
                 patterns.append(pattern)
-        
+
         print(f"  ✅ Learned {len(patterns)} naming patterns")
         return patterns
-    
+
     def _learn_architectural_patterns(self) -> List[Pattern]:
         """Learn architectural patterns."""
         print("\n🏗️  Learning architectural patterns...")
-        
+
         patterns = []
-        
+
         # Detect common directories
         dirs = [d.name for d in (self.repo_root / 'src').iterdir() if d.is_dir()]
-        
+
         # Check for common architectures
         if 'models' in dirs and 'views' in dirs and 'controllers' in dirs:
             pattern = Pattern(
@@ -1029,7 +1029,7 @@ class PatternLearner:
                 last_seen=datetime.now(UTC).isoformat()
             )
             patterns.append(pattern)
-        
+
         # Check for layered architecture
         if 'services' in dirs and 'repositories' in dirs:
             pattern = Pattern(
@@ -1044,25 +1044,25 @@ class PatternLearner:
                 last_seen=datetime.now(UTC).isoformat()
             )
             patterns.append(pattern)
-        
+
         print(f"  ✅ Learned {len(patterns)} architectural patterns")
         return patterns
-    
+
     def _learn_error_handling_patterns(self) -> List[Pattern]:
         """Learn error handling patterns."""
         print("\n⚠️  Learning error handling patterns...")
-        
+
         patterns = []
-        
+
         # Count exception handling styles
         try_except_count = 0
         custom_exception_count = 0
-        
+
         for py_file in (self.repo_root / 'src').rglob('*.py'):
             try:
                 import ast
                 tree = ast.parse(py_file.read_text())
-                
+
                 for node in ast.walk(tree):
                     if isinstance(node, ast.ExceptHandler):
                         try_except_count += 1
@@ -1071,7 +1071,7 @@ class PatternLearner:
                                 custom_exception_count += 1
             except:
                 continue
-        
+
         if try_except_count > 10:
             pattern = Pattern(
                 id=self._generate_id("error_try_except"),
@@ -1085,7 +1085,7 @@ class PatternLearner:
                 last_seen=datetime.now(UTC).isoformat()
             )
             patterns.append(pattern)
-        
+
         if custom_exception_count > 5:
             pattern = Pattern(
                 id=self._generate_id("error_custom_exceptions"),
@@ -1099,24 +1099,24 @@ class PatternLearner:
                 last_seen=datetime.now(UTC).isoformat()
             )
             patterns.append(pattern)
-        
+
         print(f"  ✅ Learned {len(patterns)} error handling patterns")
         return patterns
-    
+
     def _learn_testing_patterns(self) -> List[Pattern]:
         """Learn testing patterns."""
         print("\n🧪 Learning testing patterns...")
-        
+
         patterns = []
-        
+
         tests_dir = self.repo_root / 'tests'
         if not tests_dir.exists():
             return patterns
-        
+
         # Count test frameworks
         pytest_count = 0
         unittest_count = 0
-        
+
         for test_file in tests_dir.rglob('test_*.py'):
             try:
                 content = test_file.read_text()
@@ -1126,7 +1126,7 @@ class PatternLearner:
                     unittest_count += 1
             except:
                 continue
-        
+
         if pytest_count > unittest_count and pytest_count > 5:
             pattern = Pattern(
                 id=self._generate_id("test_pytest"),
@@ -1140,21 +1140,21 @@ class PatternLearner:
                 last_seen=datetime.now(UTC).isoformat()
             )
             patterns.append(pattern)
-        
+
         print(f"  ✅ Learned {len(patterns)} testing patterns")
         return patterns
-    
+
     def _generate_id(self, name: str) -> str:
         """Generate unique ID for pattern."""
         return hashlib.sha256(name.encode()).hexdigest()[:16]
-    
+
     def _save_patterns(self):
         """Save learned patterns to cognitive brain."""
         for pattern in self.patterns:
             pattern_file = self.patterns_dir / f"{pattern.id}.json"
             with open(pattern_file, 'w') as f:
                 json.dump(asdict(pattern), f, indent=2)
-        
+
         # Also save summary
         summary_file = self.patterns_dir / '_summary.json'
         summary = {
@@ -1162,25 +1162,25 @@ class PatternLearner:
             'by_category': {},
             'last_updated': datetime.now(UTC).isoformat()
         }
-        
+
         for pattern in self.patterns:
             category = pattern.category
             if category not in summary['by_category']:
                 summary['by_category'][category] = 0
             summary['by_category'][category] += 1
-        
+
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
-        
+
         print(f"\n💾 Saved {len(self.patterns)} patterns to {self.patterns_dir}")
 
 def main():
     """Main entry point."""
     repo_root = Path('/home/runner/work/_codex_/_codex_')
-    
+
     learner = PatternLearner(repo_root)
     learner.learn_from_codebase()
-    
+
     print("\n" + "=" * 60)
     print("🎓 Pattern Learning Complete")
 
@@ -1224,7 +1224,7 @@ class Task:
 class TaskOrchestrator:
     """
     Orchestrates tasks using cognitive brain.
-    
+
     Capabilities:
     - Task decomposition
     - Context retrieval
@@ -1232,46 +1232,46 @@ class TaskOrchestrator:
     - Progress tracking
     - Result synthesis
     """
-    
+
     def __init__(self, repo_root: Path):
         self.repo_root = repo_root
         self.tasks: Dict[str, Task] = {}
-    
+
     def execute_task(self, description: str) -> Dict[str, Any]:
         """Execute a task using cognitive brain."""
         print(f"🎯 Executing Task: {description}")
         print("=" * 60)
-        
+
         # Step 1: Decompose task
         subtasks = self._decompose_task(description)
         print(f"\n📋 Decomposed into {len(subtasks)} subtasks")
-        
+
         # Step 2: Retrieve context for each subtask
         print("\n🧠 Retrieving context from cognitive brain...")
         for subtask in subtasks:
             self._retrieve_context(subtask)
-        
+
         # Step 3: Execute subtasks in order
         print("\n⚙️  Executing subtasks...")
         results = []
         for subtask in subtasks:
             result = self._execute_subtask(subtask)
             results.append(result)
-        
+
         # Step 4: Synthesize results
         print("\n🔄 Synthesizing results...")
         final_result = self._synthesize_results(results)
-        
+
         print("\n✅ Task complete!")
         return final_result
-    
+
     def _decompose_task(self, description: str) -> List[Task]:
         """Decompose task into subtasks."""
         # Simple decomposition based on keywords
         # In production, this would use more sophisticated NLP
-        
+
         subtasks = []
-        
+
         # Example decomposition rules
         if 'implement' in description.lower():
             subtasks.append(Task(
@@ -1312,43 +1312,43 @@ class TaskOrchestrator:
                 created_at=datetime.now(UTC).isoformat(),
                 updated_at=datetime.now(UTC).isoformat()
             ))
-        
+
         return subtasks
-    
+
     def _retrieve_context(self, task: Task):
         """Retrieve context for task from cognitive brain."""
         # Use ContextRetriever
         from context_retriever import ContextRetriever
-        
+
         retriever = ContextRetriever(self.repo_root)
         context = retriever.retrieve_context(task.description)
-        
+
         task.context = {
             'entities': len(context.entities),
             'patterns': len(context.patterns),
             'decisions': len(context.decisions),
             'importance': context.importance_score
         }
-    
+
     def _execute_subtask(self, task: Task) -> Dict[str, Any]:
         """Execute a single subtask."""
         print(f"  ⚙️  {task.description}")
-        
+
         task.status = 'in_progress'
         task.updated_at = datetime.now(UTC).isoformat()
-        
+
         # Actual execution would happen here
         # For now, just simulate
-        
+
         task.status = 'completed'
         task.updated_at = datetime.now(UTC).isoformat()
-        
+
         return {
             'task_id': task.id,
             'status': task.status,
             'context_used': task.context
         }
-    
+
     def _synthesize_results(self, results: List[Dict]) -> Dict[str, Any]:
         """Synthesize results from all subtasks."""
         return {
@@ -1361,18 +1361,18 @@ class TaskOrchestrator:
 def main():
     """Main entry point."""
     import sys
-    
+
     repo_root = Path('/home/runner/work/_codex_/_codex_')
-    
+
     if len(sys.argv) < 2:
         print("Usage: task_orchestrator.py <task_description>")
         sys.exit(1)
-    
+
     task_description = ' '.join(sys.argv[1:])
-    
+
     orchestrator = TaskOrchestrator(repo_root)
     result = orchestrator.execute_task(task_description)
-    
+
     print("\n" + "=" * 60)
     print("📊 Task Execution Result:")
     print(json.dumps(result, indent=2))
@@ -1465,26 +1465,26 @@ def autonomous_development_workflow(task_description: str):
     AI Agent uses cognitive brain throughout.
     """
     repo_root = Path('/home/runner/work/_codex_/_codex_')
-    
+
     print("🧠 COGNITIVE BRAIN TOOLKIT - Complete Workflow")
     print("=" * 70)
     print(f"Task: {task_description}")
     print()
-    
+
     # Step 1: Build/Update Cognitive Index
     print("Step 1: Building Cognitive Index...")
     builder = CognitiveIndexBuilder(repo_root)
     stats = builder.build_index()
     print(f"✅ Index built: {stats['total_entities']} entities")
     print()
-    
+
     # Step 2: Learn Patterns
     print("Step 2: Learning Patterns...")
     learner = PatternLearner(repo_root)
     learner.learn_from_codebase()
     print(f"✅ Learned {len(learner.patterns)} patterns")
     print()
-    
+
     # Step 3: Retrieve Relevant Context
     print("Step 3: Retrieving Context...")
     retriever = ContextRetriever(repo_root)
@@ -1495,14 +1495,14 @@ def autonomous_development_workflow(task_description: str):
     print(f"   - Decisions: {len(context.decisions)}")
     print(f"   - Importance: {context.importance_score:.2f}")
     print()
-    
+
     # Step 4: Execute Task with Orchestrator
     print("Step 4: Executing Task...")
     orchestrator = TaskOrchestrator(repo_root)
     result = orchestrator.execute_task(task_description)
     print(f"✅ Task executed: {result['completed']}/{result['total_subtasks']} subtasks completed")
     print()
-    
+
     # Step 5: Check Authorization for Next Phase
     print("Step 5: Checking Authorization...")
     auth_engine = QuantumAuthorizationEngine(repo_root)
@@ -1510,7 +1510,7 @@ def autonomous_development_workflow(task_description: str):
     print(f"✅ Authorization: {auth_state}")
     print(f"   Report: {report_path}")
     print()
-    
+
     # Step 6: Decide Next Action
     print("Step 6: Determining Next Action...")
     if auth_state == "AUTHORIZED":
@@ -1524,14 +1524,14 @@ def autonomous_development_workflow(task_description: str):
 
 if __name__ == '__main__':
     import sys
-    
+
     if len(sys.argv) < 2:
         task = "Implement JWT token validation with security best practices"
     else:
         task = ' '.join(sys.argv[1:])
-    
+
     action = autonomous_development_workflow(task)
-    
+
     print("\n" + "=" * 70)
     print(f"🎯 Next Action: {action}")
     print("🧠 Cognitive Brain Toolkit - Complete")

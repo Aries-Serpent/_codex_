@@ -215,21 +215,21 @@ python << 'EOF'
 import json
 with open('.coverage_week1.json') as f:
     cov = json.load(f)
-    total_statements = sum(file_data['summary']['num_statements'] 
+    total_statements = sum(file_data['summary']['num_statements']
                           for file_data in cov['files'].values())
-    covered_statements = sum(file_data['summary']['covered_lines'] 
+    covered_statements = sum(file_data['summary']['covered_lines']
                             for file_data in cov['files'].values())
     coverage_pct = (covered_statements / total_statements * 100) if total_statements > 0 else 0
     print(f"Week 1 Coverage: {coverage_pct:.2f}%")
     print(f"Covered: {covered_statements}/{total_statements} statements")
-    
+
     # Identify gaps
     gaps = []
     for file_path, file_data in cov['files'].items():
         file_cov = file_data['summary']['percent_covered']
         if file_cov < 50:
             gaps.append((file_path, file_cov))
-    
+
     if gaps:
         print("\nGaps to address:")
         for path, cov_pct in sorted(gaps, key=lambda x: x[1]):
@@ -282,12 +282,12 @@ with open('.coverage_week1.json') as f:
         for path, data in cov['files'].items()
         if data['summary']['percent_covered'] < 50
     }
-    
+
     print("Integration test targets:")
     print("1. CLI → Training pipeline")
     print("2. Data loading → Preprocessing → Model input")
     print("3. Configuration → Model initialization")
-    
+
     print("\nGap-filling targets:")
     for path, cov_pct in sorted(low_cov_modules.items(), key=lambda x: x[1])[:10]:
         print(f"  - {path}: {cov_pct:.1f}%")
@@ -317,14 +317,14 @@ training:
   batch_size: 8
   epochs: 1
         """)
-        
+
         result = runner.invoke(app, [
             "train",
             "--config", str(config_path),
             "--data", "tests/fixtures/tiny_dataset.json",
             "--output", tmpdir
         ])
-        
+
         assert result.exit_code == 0
         assert (Path(tmpdir) / "model.pt").exists()
 ```
@@ -336,13 +336,13 @@ def test_data_loading_preprocessing_model_input():
     """Verify complete data transformation pipeline"""
     # Load raw data
     raw_data = load_dataset("tests/fixtures/raw_data.json")
-    
+
     # Preprocess
     processed_data = preprocess_data(raw_data)
-    
+
     # Convert to model input format
     model_inputs = prepare_model_inputs(processed_data)
-    
+
     # Verify shapes and types
     assert isinstance(model_inputs, dict)
     assert "input_ids" in model_inputs
@@ -445,7 +445,7 @@ python << 'EOF'
 import json
 with open('.coverage_week2.json') as f:
     cov = json.load(f)
-    
+
 # Calculate current coverage
 total = sum(f['summary']['num_statements'] for f in cov['files'].values())
 covered = sum(f['summary']['covered_lines'] for f in cov['files'].values())

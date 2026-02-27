@@ -160,11 +160,11 @@ metrics = RAGMetrics(config=config)
 ```python
 class AdaptiveMetrics:
     """Metrics that adapt window sizes based on load."""
-    
+
     def __init__(self):
         self.config = MetricsConfig()
         self.metrics = RAGMetrics(self.config)
-    
+
     def adjust_for_load(self, query_rate: float):
         """Adjust windows based on query rate."""
         if query_rate > 100:  # High load
@@ -173,7 +173,7 @@ class AdaptiveMetrics:
         elif query_rate < 10:  # Low load
             # Increase windows for better statistics
             self.config.query_latency_window = 2000
-        
+
         # Recreate metrics with new config
         self.metrics = RAGMetrics(self.config)
 ```
@@ -252,13 +252,13 @@ metrics = RAGMetrics(config=config)
 def benchmark_config(config: MetricsConfig):
     import tracemalloc
     tracemalloc.start()
-    
+
     metrics = RAGMetrics(config=config)
-    
+
     # Simulate production workload
     for i in range(10000):
         metrics.track_query_latency(100.0)
-    
+
     current, peak = tracemalloc.get_traced_memory()
     print(f"Peak memory: {peak / 1024:.2f} KB")
     tracemalloc.stop()

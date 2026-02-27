@@ -47,31 +47,31 @@ import torch
 
 def train_epoch(model, train_loader, optimizer, device="cuda"):
     """Basic training epoch - single pass through dataset.
-    
+
     Args:
         model: PyTorch model to train
         train_loader: DataLoader with training data
         optimizer: PyTorch optimizer
         device: Device to train on
-    
+
     Returns:
         Average loss for the epoch
     """
     model.train()
     total_loss = 0.0
-    
+
     for batch in train_loader:
         inputs, targets = batch
         inputs, targets = inputs.to(device), targets.to(device)
-        
+
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = torch.nn.functional.cross_entropy(outputs, targets)
         loss.backward()
         optimizer.step()
-        
+
         total_loss += loss.item()
-    
+
     return total_loss / len(train_loader)
 ```
 
@@ -97,13 +97,13 @@ def apply_lora_to_model(
         bias="none",
         task_type=TaskType.CAUSAL_LM,
     )
-    
+
     peft_model = get_peft_model(base_model, lora_config)
-    
+
     # Print trainable parameters
     peft_model.print_trainable_parameters()
     # Output: trainable params: 4,194,304 || all params: 1,3427,968,320 || trainable%: 0.31%
-    
+
     return peft_model
 
 
@@ -123,14 +123,14 @@ import torch.nn as nn
 
 class AdapterLayer(nn.Module):
     """Lightweight adapter module inserted between frozen layers."""
-    
+
     def __init__(self, input_dim, bottleneck_dim=64):
         super().__init__()
         self.down_project = nn.Linear(input_dim, bottleneck_dim)
         self.activation = nn.GELU()
         self.up_project = nn.Linear(bottleneck_dim, input_dim)
         self.layer_norm = nn.LayerNorm(input_dim)
-    
+
     def forward(self, x):
         # Residual connection
         residual = x
@@ -149,13 +149,13 @@ def add_adapters_to_transformer(
         # Freeze original parameters
         for param in layer.parameters():
             param.requires_grad = False
-        
+
         # Add adapter after attention
         layer.adapter_attn = AdapterLayer(layer.hidden_size, bottleneck_dim)
-        
+
         # Add adapter after feed-forward
         layer.adapter_ffn = AdapterLayer(layer.hidden_size, bottleneck_dim)
-    
+
     return model
 ```
 
@@ -173,7 +173,7 @@ def apply_prefix_tuning(base_model, num_virtual_tokens=20):
         encoder_hidden_size=base_model.config.hidden_size,
         prefix_projection=True,  # Use MLP for prefix generation
     )
-    
+
     peft_model = get_peft_model(base_model, prefix_config)
     return peft_model
 ```
@@ -183,10 +183,10 @@ def apply_prefix_tuning(base_model, num_virtual_tokens=20):
 ```python
 class PEFTForwardHook:
     """Custom forward hook for monitoring PEFT activations."""
-    
+
     def __init__(self):
         self.activations = {}
-    
+
     def __call__(self, module, input, output):
         """Store activations for analysis."""
         self.activations[module.__class__.__name__] = output.detach()
@@ -195,10 +195,10 @@ class PEFTForwardHook:
 
 class PEFTBackwardHook:
     """Custom backward hook for gradient monitoring."""
-    
+
     def __init__(self):
         self.gradients = {}
-    
+
     def __call__(self, module, grad_input, grad_output):
         """Store gradients for analysis."""
         self.gradients[module.__class__.__name__] = grad_output[0].detach()
@@ -208,12 +208,12 @@ def register_peft_hooks(model):
     """Register hooks on PEFT modules."""
     forward_hook = PEFTForwardHook()
     backward_hook = PEFTBackwardHook()
-    
+
     for name, module in model.named_modules():
         if "lora" in name.lower() or "adapter" in name.lower():
             module.register_forward_hook(forward_hook)
             module.register_full_backward_hook(backward_hook)
-    
+
     return forward_hook, backward_hook
 ```
 
@@ -226,7 +226,7 @@ from peft import LoraConfig, get_peft_model
 def create_multi_task_peft_model(base_model, tasks):
     """Create a model with task-specific LoRA adapters."""
     task_models = {}
-    
+
     for task_name in tasks:
         lora_config = LoraConfig(
             r=8,
@@ -235,7 +235,7 @@ def create_multi_task_peft_model(base_model, tasks):
             modules_to_save=[f"task_head_{task_name}"],  # Task-specific heads
         )
         task_models[task_name] = get_peft_model(base_model, lora_config)
-    
+
     return task_models
 
 
@@ -245,7 +245,7 @@ task_models = create_multi_task_peft_model(base_model, ["classification", "gener
 for epoch in range(num_epochs):
     # Train classification task
     train_epoch(task_models["classification"], classification_loader, optimizer_cls)
-    
+
     # Train generation task
     train_epoch(task_models["generation"], generation_loader, optimizer_gen)
 ```

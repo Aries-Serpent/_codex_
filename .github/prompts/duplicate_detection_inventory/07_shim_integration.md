@@ -40,18 +40,18 @@ class ShimEntry:
     canonical_path: str
     status: str
     whitelist_duplicates: List[str]
-    
+
 class ShimInventoryReader:
     """Reads SHIM_INVENTORY.yaml."""
-    
+
     def __init__(self, repo_root: Path):
         """Initialize with repository root."""
         pass
-    
+
     def load(self) -> List[ShimEntry]:
         """Load and parse SHIM inventory."""
         pass
-    
+
     def get_whitelisted_paths(self) -> Set[Tuple[str, str]]:
         """Get set of whitelisted (module, path) pairs."""
         pass
@@ -72,19 +72,19 @@ class ShimInventoryReader:
 ```python
 class CrossReference:
     """Cross-references duplicates with SHIM inventory."""
-    
+
     def __init__(self, shim_entries: List[ShimEntry]):
         """Initialize with SHIM inventory."""
         pass
-    
+
     def check_duplicate(self, group: DuplicateGroup) -> CrossReferenceResult:
         """Check if duplicate is in SHIM inventory."""
         pass
-    
+
     def is_whitelisted(self, module: str, path: str) -> bool:
         """Check if module/path is whitelisted."""
         pass
-    
+
     def get_recommendations(self, group: DuplicateGroup) -> List[str]:
         """Get recommendations for duplicate group."""
         pass
@@ -114,7 +114,7 @@ class CrossReferenceResult:
 @dataclass
 class DuplicateGroup:
     # ... existing fields ...
-    
+
     # SHIM integration fields:
     in_shim_inventory: bool = False
     shim_status: Optional[str] = None

@@ -50,12 +50,12 @@ export function EntanglementCard({ pair, index }: EntanglementCardProps) {
               <Link weight="duotone" className="w-5 h-5 text-primary" />
               <motion.div
                 className="absolute inset-0"
-                animate={{ 
+                animate={{
                   scale: [1, 1.2, 1],
                   opacity: [0.5, 0.8, 0.5]
                 }}
-                transition={{ 
-                  duration: 2, 
+                transition={{
+                  duration: 2,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
@@ -75,17 +75,17 @@ export function EntanglementCard({ pair, index }: EntanglementCardProps) {
             <span className="text-muted-foreground">Agent 1:</span>
             <span className="font-mono text-foreground">{pair.agent1}</span>
           </div>
-          
+
           <div className="flex items-center justify-center py-2">
             <div className="relative w-full h-1 bg-muted rounded-full overflow-hidden">
               <motion.div
                 className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-accent to-primary"
                 initial={{ width: '0%' }}
-                animate={{ 
+                animate={{
                   width: `${pair.entanglement_score * 100}%`,
                   backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                 }}
-                transition={{ 
+                transition={{
                   width: { duration: 0.8, ease: 'easeOut' },
                   backgroundPosition: { duration: 2, repeat: Infinity, ease: 'linear' }
                 }}

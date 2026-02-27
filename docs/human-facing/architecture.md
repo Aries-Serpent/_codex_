@@ -13,19 +13,19 @@ graph TB
         TO[Tool Orchestrator]
         RP[RAG Pipeline]
     end
-    
+
     subgraph "Verification Layer"
         CV[CoVe Engine]
         CT[Conformance Tests]
         AU[Audit Trail]
     end
-    
+
     subgraph "Infrastructure"
         MCP[MCP Server]
         EMB[Embedding Workers]
         VS[Vector Store]
     end
-    
+
     AC --> TO
     AC --> RP
     TO --> CV

@@ -52,7 +52,7 @@ Comprehensive resolution of ALL CI/test failures, code review comments, and qual
 - ✅ **Ran comprehensive documentation test suite**
   - Results: **94 passed, 7 skipped, 2 failed** (pre-existing failures unrelated to our changes)
   - Pre-existing failures:
-    - `test_api_docs.py::TestCLIDocumentation::test_cli_docs_have_examples` 
+    - `test_api_docs.py::TestCLIDocumentation::test_cli_docs_have_examples`
     - `test_status_update_template.py::test_mandated_structure_present`
   - Our fixed tests:
     - ✅ `test_no_empty_markdown_files` - PASSING
@@ -138,7 +138,7 @@ Comprehensive resolution of ALL CI/test failures, code review comments, and qual
 
 **Context**: PR #3020 (copilot/sub-pr-3020 → 0D_base_) comprehensive CI/test failure resolution.
 
-**Completed**: 
+**Completed**:
 - ✅ All code review comments addressed
 - ✅ test_no_empty_markdown_files fixed
 - ✅ torch stub handling fixed

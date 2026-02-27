@@ -155,10 +155,10 @@ chmod +x scripts/fix_doc_links.sh
 class SimpleModel(nn.Module):
     def __init__(self, ...):
         ...
-    
+
     def forward(self, x):
         ...
-    
+
     def __call__(self, *args, **kwargs):
         """Allow model(x) syntax by delegating to forward()."""
         return self.forward(*args, **kwargs)
@@ -333,9 +333,9 @@ except Exception:
 - **Issue Comments:**
   - #3894028093 - Complete resolution instructions
   - #3894028408 - Failing checks timeline & analysis
-  
+
 - **PR:** #3244 - Main pull request
-  
+
 - **Branch:** `copilot/fix-failing-workflows-rag`
 
 - **Files Changed:** 105 files

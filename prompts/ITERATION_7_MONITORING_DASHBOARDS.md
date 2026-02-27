@@ -56,7 +56,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
     "tags": ["rag", "executive", "kpi"],
     "timezone": "utc",
     "refresh": "30s",
-    
+
     "panels": [
       {
         "id": 1,
@@ -80,7 +80,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0}
       },
-      
+
       {
         "id": 2,
         "title": "Query Success Rate",
@@ -105,7 +105,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0}
       },
-      
+
       {
         "id": 3,
         "title": "Global P99 Latency",
@@ -130,7 +130,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0}
       },
-      
+
       {
         "id": 4,
         "title": "Cache Hit Rate",
@@ -155,7 +155,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0}
       },
-      
+
       {
         "id": 5,
         "title": "Query Volume by Region",
@@ -172,7 +172,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
       },
-      
+
       {
         "id": 6,
         "title": "System Health Score",
@@ -191,7 +191,7 @@ Create `deploy/grafana/dashboards/01-executive-overview.json`:
         },
         "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
       },
-      
+
       {
         "id": 7,
         "title": "Regional Status",
@@ -258,10 +258,10 @@ def create_panel(
 
 def generate_operations_dashboard() -> Dict[str, Any]:
     """Generate complete operations dashboard."""
-    
+
     panels = []
     panel_id = 1
-    
+
     # Row 1: Critical Metrics
     panels.append(create_panel(
         panel_id := panel_id + 1,
@@ -279,7 +279,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     panels.append(create_panel(
         panel_id := panel_id + 1,
         "Error Rate",
@@ -296,7 +296,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     # Row 2: Latency Distribution
     panels.append(create_panel(
         panel_id := panel_id + 1,
@@ -328,7 +328,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     # Row 3: Cache Performance
     panels.append(create_panel(
         panel_id := panel_id + 1,
@@ -347,7 +347,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     panels.append(create_panel(
         panel_id := panel_id + 1,
         "Cache Memory Usage",
@@ -363,7 +363,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     # Row 4: Resource Utilization
     panels.append(create_panel(
         panel_id := panel_id + 1,
@@ -382,7 +382,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     panels.append(create_panel(
         panel_id := panel_id + 1,
         "Memory Usage",
@@ -398,7 +398,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     panels.append(create_panel(
         panel_id := panel_id + 1,
         "Disk I/O",
@@ -418,7 +418,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     # Row 5: Index Operations
     panels.append(create_panel(
         panel_id := panel_id + 1,
@@ -435,7 +435,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     panels.append(create_panel(
         panel_id := panel_id + 1,
         "Index Sync Lag",
@@ -451,7 +451,7 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     ))
-    
+
     dashboard = {
         "dashboard": {
             "title": "RAG Operations Dashboard",
@@ -490,16 +490,16 @@ def generate_operations_dashboard() -> Dict[str, Any]:
             }
         }
     }
-    
+
     return dashboard
 
 
 if __name__ == "__main__":
     dashboard = generate_operations_dashboard()
-    
+
     with open("deploy/grafana/dashboards/02-operations.json", "w") as f:
         json.dump(dashboard, f, indent=2)
-    
+
     print("✅ Operations dashboard generated")
     print("   File: deploy/grafana/dashboards/02-operations.json")
     print(f"   Panels: {len(dashboard['dashboard']['panels'])}")
@@ -525,7 +525,7 @@ groups:
           summary: "High error rate detected"
           description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
           runbook: "https://docs.example.com/runbooks/high-error-rate"
-      
+
       - alert: RAGHighLatency
         expr: |
           histogram_quantile(0.99, sum(rate(rag_query_latency_ms_bucket[5m])) by (le, region)) > 500
@@ -537,7 +537,7 @@ groups:
           summary: "High P99 latency in {{$labels.region}}"
           description: "P99 latency is {{ $value }}ms (threshold: 500ms)"
           runbook: "https://docs.example.com/runbooks/high-latency"
-      
+
       - alert: RAGRegionDown
         expr: |
           up{job="rag-api"} == 0
@@ -550,7 +550,7 @@ groups:
           summary: "RAG region {{$labels.region}} is down"
           description: "Health checks failing for {{$labels.instance}}"
           runbook: "https://docs.example.com/runbooks/region-down"
-      
+
       - alert: RAGCacheLowHitRate
         expr: |
           rag_cache_hit_rate < 0.5
@@ -562,7 +562,7 @@ groups:
           summary: "Low cache hit rate"
           description: "Cache hit rate is {{ $value | humanizePercentage }} (target: 70%)"
           runbook: "https://docs.example.com/runbooks/low-cache-hit-rate"
-      
+
       - alert: RAGIndexSyncLag
         expr: |
           rag_index_sync_lag_seconds > 600
@@ -574,7 +574,7 @@ groups:
           summary: "Index sync lagging"
           description: "Sync lag is {{ $value }}s between {{$labels.source_region}} and {{$labels.target_region}}"
           runbook: "https://docs.example.com/runbooks/index-sync-lag"
-      
+
       - alert: RAGMemoryHigh
         expr: |
           rag_memory_usage_bytes / rag_memory_limit_bytes > 0.85
@@ -596,13 +596,13 @@ groups:
             sum(rate(rag_queries_total{status="error"}[30d])) /
             sum(rate(rag_queries_total[30d]))
           )
-      
+
       - record: rag:slo:latency_p99_30d
         expr: |
           histogram_quantile(0.99,
             sum(rate(rag_query_latency_ms_bucket[30d])) by (le)
           )
-      
+
       - alert: RAGSLOAvailabilityBreach
         expr: rag:slo:availability_30d < 0.999
         for: 1h
@@ -612,7 +612,7 @@ groups:
         annotations:
           summary: "SLO breach: availability"
           description: "30 iteration availability is {{ $value | humanizePercentage }} (SLO: 99.9%)"
-          
+
       - alert: RAGSLOLatencyBreach
         expr: rag:slo:latency_p99_30d > 200
         for: 1h
@@ -645,13 +645,13 @@ echo "Deploying Grafana dashboards..."
 
 for dashboard in deploy/grafana/dashboards/*.json; do
     echo "  Uploading $(basename $dashboard)..."
-    
+
     curl -X POST \
         -H "Authorization: Bearer ${GRAFANA_API_KEY}" \
         -H "Content-Type: application/json" \
         -d @"$dashboard" \
         "${GRAFANA_URL}/api/dashboards/db"
-    
+
     echo "  ✅ Deployed"
 done
 

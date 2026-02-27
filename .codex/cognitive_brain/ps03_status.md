@@ -74,7 +74,7 @@ class ZendeskTicket(_ZendeskBaseModel):
     priority: str
     sla_deadline: float
     complexity: float = 1.0
-    
+
     def to_thermodynamic_task(self) -> ThermodynamicTask:
         # Converts to quantum task with energy/temperature/entropy
 ```
@@ -85,7 +85,7 @@ class ZendeskTicket(_ZendeskBaseModel):
 class ZendeskQuantumOrchestrator:
     def prioritize_tickets(self, tickets: Iterable[ZendeskTicket]) -> list[tuple[int, float]]:
         # Thermodynamic prioritization algorithm
-        
+
     def execute_cycle(self) -> dict[str, Any]:
         # Execute one orchestration cycle
 ```

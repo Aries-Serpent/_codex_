@@ -243,7 +243,7 @@ tokenization,tokenization.loader,src/codex/api/app.py,13
 **Date**: 2025-12-04 22:44:41 UTC  
 **Pass/Fail**: ⚠️ **PARTIAL** - Remediation scripts validated; architectural issues detected and documented
 
-**Status**: 
+**Status**:
 - ✅ All remediation scripts functional and tested
 - ⚠️ Architectural issues detected (expected)
 - ✅ Remediation plans documented

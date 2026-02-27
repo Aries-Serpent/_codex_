@@ -227,7 +227,7 @@ matrix:
 
 **Issue:**
 ```python
-RuntimeError: profiler::_record_function_exit() Expected a value of type 
+RuntimeError: profiler::_record_function_exit() Expected a value of type
 '__torch__.torch.classes.profiler._RecordFunction' but instead found type 'ScriptObject'
 ```
 
@@ -710,18 +710,18 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
    # 1. Revert pyproject.toml
    git diff HEAD~1 pyproject.toml  # Review changes
    git checkout HEAD~1 -- pyproject.toml
-   
+
    # 2. Restore CI matrix
    # Edit .github/workflows/test-comprehensive.yml
    # python-version: ['3.11', '3.12']  # Re-add 3.11
-   
+
    # 3. Rebuild Docker images with 3.11 base
    docker build --build-arg PYTHON_VERSION=3.11 -t codex:3.11 .
-   
+
    # 4. Validate rollback
    pytest tests/ --python=3.11
    ```
-   
+
    ```bash
    # Option B/C Rollback (No changes needed)
    # Already supporting both versions, no rollback required

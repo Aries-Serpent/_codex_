@@ -33,23 +33,23 @@ workflow:
   id: audit-execution
   frequency: high
   deterministic: true
-  
+
 steps:
   - id: prepare
     action: validate_environment
     command: python -m scripts.space_traversal.audit_runner --check
-    
+
   - id: execute
     action: run_audit
     command: python -m scripts.space_traversal.audit_runner run
     outputs:
       - audit_report.md
       - audit_results.json
-      
+
   - id: store
     action: store_trends
     command: python -m scripts.space_traversal.audit_runner store-trend
-    
+
   - id: visualize
     action: generate_dashboard
     command: python -m scripts.space_traversal.audit_runner dashboard
@@ -61,7 +61,7 @@ navigation:
     - "Run audit pipeline"
     - "Check code quality"
     - "Validate capabilities"
-  
+
   quick_access:
     command: "audit"
     alias: ["check", "validate", "quality"]
@@ -76,7 +76,7 @@ workflow:
   id: pre-release-deployment
   frequency: medium
   deterministic: true
-  
+
 steps:
   - id: validate
     action: run_validation
@@ -84,15 +84,15 @@ steps:
       - lint_code
       - type_check
       - security_scan
-      
+
   - id: test
     action: run_tests
     command: nox -s tests
-    
+
   - id: audit
     action: full_audit
     uses: AUDIT_EXEC
-    
+
   - id: build
     action: build_artifacts
     outputs:
@@ -100,7 +100,7 @@ steps:
       - source_dist
       - documentation
       - wiki_bundle
-      
+
   - id: deploy
     action: create_pre_release
     command: gh release create --prerelease
@@ -110,7 +110,7 @@ navigation:
     - "Deploy pre-release"
     - "Create release candidate"
     - "Prepare deployment"
-  
+
   quick_access:
     command: "release"
     alias: ["deploy", "publish"]
@@ -125,12 +125,12 @@ workflow:
   id: repository-organization
   frequency: low
   deterministic: true
-  
+
 steps:
   - id: analyze
     action: analyze_structure
     command: python scripts/organize_repository.py --dry-run
-    
+
   - id: archive
     action: archive_files
     command: python scripts/organize_repository.py
@@ -138,7 +138,7 @@ steps:
       - archive_directory
       - index_json
       - index_markdown
-      
+
   - id: validate
     action: verify_archive
     checks:
@@ -151,7 +151,7 @@ navigation:
     - "Organize repository"
     - "Archive old files"
     - "Clean up root"
-  
+
   quick_access:
     command: "organize"
     alias: ["cleanup", "archive"]
@@ -166,26 +166,26 @@ workflow:
   id: documentation-generation
   frequency: medium
   deterministic: true
-  
+
 steps:
   - id: generate_wiki
     action: create_wiki_bundle
     command: python -m scripts.space_traversal.audit_runner wiki
     outputs:
       - wiki_bundle.zip
-      
+
   - id: generate_docs_hub
     action: create_docs_hub
     command: python -m scripts.space_traversal.audit_runner docs-hub
     outputs:
       - docs_hub.html
-      
+
   - id: generate_api_docs
     action: create_api_collection
     outputs:
       - api_collection.html
       - swagger.html
-      
+
   - id: deploy_wiki
     action: deploy_to_github_wiki
     command: |
@@ -198,7 +198,7 @@ navigation:
     - "Generate documentation"
     - "Update wiki"
     - "Create API docs"
-  
+
   quick_access:
     command: "docs"
     alias: ["wiki", "documentation"]
@@ -214,20 +214,20 @@ workflow:
   frequency: high
   deterministic: true
   automated: true
-  
+
 steps:
   - id: detect
     action: analyze_gaps
     command: python -m agents.capability_detector
-    
+
   - id: assess
     action: calculate_priority
     uses: physics_orchestrator
-    
+
   - id: create_issues
     action: generate_github_issues
     command: gh issue create --label auto-detected
-    
+
   - id: track
     action: update_metrics
     outputs:
@@ -238,7 +238,7 @@ navigation:
     - "Run feedback loop"
     - "Detect capability gaps"
     - "Self-improve"
-  
+
   quick_access:
     command: "heal"
     alias: ["feedback", "improve"]
@@ -253,27 +253,27 @@ workflow:
   id: physics-decision-making
   frequency: high
   deterministic: true
-  
+
 steps:
   - id: assess
     action: gather_state
     uses: physics_orchestrator.assess_situation
-    
+
   - id: deliberate
     action: calculate_paths
     uses: physics_orchestrator.deliberate_paths
     outputs:
       - ranked_paths
       - energy_calculations
-      
+
   - id: optimize
     action: select_optimal
     uses: physics_orchestrator.optimize_path
-    
+
   - id: act
     action: execute_decision
     uses: physics_orchestrator.act
-    
+
   - id: reflect
     action: store_reasoning
     uses: mental_mapping.record_outcome
@@ -283,7 +283,7 @@ navigation:
     - "Make decision"
     - "Evaluate options"
     - "Choose path"
-  
+
   quick_access:
     command: "decide"
     alias: ["choose", "evaluate", "optimize"]
@@ -298,22 +298,22 @@ workflow:
   id: mental-mapping-review
   frequency: medium
   deterministic: true
-  
+
 steps:
   - id: load
     action: load_mental_map
     command: python -m agents.mental_mapping load
-    
+
   - id: review
     action: iterative_review
     uses: mental_mapping.iterative_review
-    
+
   - id: learn
     action: extract_lessons
     outputs:
       - lessons_learned
       - quality_scores
-      
+
   - id: improve
     action: update_decision_quality
     uses: mental_mapping.self_appraise
@@ -323,7 +323,7 @@ navigation:
     - "Review decisions"
     - "Learn from outcomes"
     - "Improve quality"
-  
+
   quick_access:
     command: "review"
     alias: ["learn", "reflect"]
@@ -525,7 +525,7 @@ template:
     - test
     - build
     - deploy
-  
+
   parameters:
     - test_suite: required
     - deploy_target: required

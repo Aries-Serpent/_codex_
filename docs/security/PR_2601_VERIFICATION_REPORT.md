@@ -19,7 +19,7 @@ python -c "from src.services.workflow.inventory import WorkflowInventory; print(
 # OUTPUT: ✅ Import successful
 
 grep -n '\.\s\+[a-zA-Z_]' src/services/workflow/inventory.py
-# OUTPUT: 
+# OUTPUT:
 # 4:a dependency graph. Supports caching and incremental updates.
 # 94:            if workflow_file.suffix == ".disabled" or ". disabled" in workflow_file.suffixes:
 # NOTE: Both occurrences are in strings/comments, NOT actual syntax errors
@@ -70,7 +70,7 @@ pytest tests/security/test_security_integration.py::TestSecurityMasking::test_ma
 # OUTPUT: 1 passed, 2 warnings in 0.54s ✅
 ```
 
-**Security Impact**: 
+**Security Impact**:
 - Prevents substring injection attacks (e.g., `evil.com/example.com` would fail)
 - Ensures domain appears at END of email address (after @ sign)
 - Position-aware validation eliminates false positives
@@ -122,7 +122,7 @@ pytest tests/security/test_security_integration.py -v
 # OUTPUT: 27 passed, 2 warnings in 0.73s ✅
 ```
 
-**Fixed in Commits**: 
+**Fixed in Commits**:
 - aa72f83 (initial fix)
 - 9603938 (consistency improvement)
 
@@ -193,7 +193,7 @@ All 3 critical blocking issues have been successfully addressed:
 - Zero code quality issues detected by ruff
 - Changes are minimal and surgical (2 files, +11 net lines)
 
-**Security Impact**: 
+**Security Impact**:
 - 3 HIGH severity CodeQL alerts → RESOLVED
 - Enhanced secret masking in log sanitization
 - Position-aware validation prevents injection attacks

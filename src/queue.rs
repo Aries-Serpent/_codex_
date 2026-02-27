@@ -11,7 +11,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 
 /// A task to be executed by an agent
-/// 
+///
 /// Tasks are the fundamental unit of work in the swarm. They contain
 /// all necessary information for an agent to execute a specific operation.
 #[derive(Serialize, Deserialize, Clone, Debug)]
@@ -20,11 +20,11 @@ pub struct Task {
     /// Unique identifier for the task
     #[pyo3(get, set)]
     pub id: String,
-    
+
     /// Type of task (e.g., "analyze_file", "generate_code", "review_pr")
     #[pyo3(get, set)]
     pub task_type: String,
-    
+
     /// JSON-encoded task data
     #[pyo3(get, set)]
     pub data: String,
@@ -33,7 +33,7 @@ pub struct Task {
 #[pymethods]
 impl Task {
     /// Create a new Task
-    /// 
+    ///
     /// # Arguments
     /// * `id` - Unique task identifier
     /// * `task_type` - Type of task to execute
@@ -45,7 +45,7 @@ impl Task {
 }
 
 /// High-performance task queue for agent coordination
-/// 
+///
 /// Uses Tokio's unbounded MPSC channels for lock-free task submission
 /// and retrieval. Capable of handling 10,000+ tasks per second with
 /// sub-millisecond latency.
@@ -66,12 +66,12 @@ impl TaskQueue {
             rx: Arc::new(Mutex::new(rx)),
         }
     }
-    
+
     /// Submit a task to the queue
-    /// 
+    ///
     /// This operation is lock-free and returns immediately. Tasks are
     /// processed in FIFO order.
-    /// 
+    ///
     /// # Arguments
     /// * `task` - Task to submit
     fn submit(&self, task: Task) -> PyResult<()> {
@@ -81,18 +81,18 @@ impl TaskQueue {
             ))?;
         Ok(())
     }
-    
+
     /// Receive the next task from the queue (non-blocking)
-    /// 
+    ///
     /// Returns None if the queue is empty. This is a non-blocking operation
     /// suitable for polling from Python.
     fn receive(&self) -> PyResult<Option<Task>> {
         let mut rx = self.rx.lock().unwrap();
         Ok(rx.try_recv().ok())
     }
-    
+
     /// Get the approximate number of tasks in the queue
-    /// 
+    ///
     /// Note: This is an estimate due to concurrent access. The actual
     /// count may change immediately after this call.
     fn size(&self) -> usize {

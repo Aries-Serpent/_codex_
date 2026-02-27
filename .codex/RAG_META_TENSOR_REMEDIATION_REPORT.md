@@ -89,13 +89,13 @@ if hasattr(model, "_load_sbert_model") or hasattr(model, "encode"):
             model_name_or_path,
             cache_folder=cache_folder
         )
-        
+
         # Check if reinitialized model still has meta tensors
         if new_model_has_meta:
             new_model = new_model.to_empty(device=device)
         else:
             new_model = new_model.to(device)
-        
+
         return new_model
 ```
 
@@ -313,7 +313,7 @@ For development environments, consider lazy model loading:
 class LazyEmbeddingProvider:
     def __init__(self):
         self._model = None
-    
+
     @property
     def model(self):
         if self._model is None:

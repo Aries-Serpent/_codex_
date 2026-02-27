@@ -144,7 +144,7 @@ python scripts/space_traversal/audit_runner.py run
 ## Rollback Plan
 If the changes cause build failures or test regressions:
 
-1. **Hydra shadowing issues**: 
+1. **Hydra shadowing issues**:
    ```bash
    git mv config_legacy hydra  # Restore original structure
    ```

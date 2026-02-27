@@ -2,12 +2,12 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Lightning, 
-  CheckCircle, 
-  Circle, 
-  ArrowRight, 
-  Pause, 
+import {
+  Lightning,
+  CheckCircle,
+  Circle,
+  ArrowRight,
+  Pause,
   Play,
   Stop,
   Timer,
@@ -39,15 +39,15 @@ interface CascadingExecutionMonitorProps {
 
 /**
  * Stage execution time in milliseconds for cascade animation timing.
- * 
+ *
  * This constant determines how long each execution stage takes in the cascading workflow
  * visualization. It can be configured via the VITE_STAGE_EXECUTION_TIME_MS environment
  * variable to allow different execution speeds for testing, demos, or production.
- * 
+ *
  * - Default: 800ms - Provides a smooth, visible animation for users to follow execution flow
  * - Min: 1ms - Must be positive to allow progression
  * - Max: 10000ms - Capped to prevent unreasonably slow animations
- * 
+ *
  * The timing affects visual feedback only and does not impact actual workflow execution performance.
  */
 const STAGE_EXECUTION_TIME_MS = (() => {
@@ -61,7 +61,7 @@ const STAGE_EXECUTION_TIME_MS = (() => {
   return 800;
 })();
 
-export function CascadingExecutionMonitor({ 
+export function CascadingExecutionMonitor({
   tokens,
   onExecuteToken,
   showVisualization = true
@@ -85,15 +85,15 @@ export function CascadingExecutionMonitor({
   const calculateCascadeStructure = (): CascadeNode[] => {
     const nodes: CascadeNode[] = [];
     const depths = new Map<string, number>();
-    
+
     const calculateDepth = (token: WorkflowToken): number => {
       if (depths.has(token.id)) return depths.get(token.id)!;
-      
+
       if (!token.dependencies || token.dependencies.length === 0) {
         depths.set(token.id, 0);
         return 0;
       }
-      
+
       const depTokens = tokens.filter(t => token.dependencies!.includes(t.id));
       const maxDepth = depTokens.length > 0 ? Math.max(...depTokens.map(calculateDepth)) : 0;
       const depth = maxDepth + 1;
@@ -116,7 +116,7 @@ export function CascadingExecutionMonitor({
       const depth = depths.get(token.id) || 0;
       const tokensAtDepth = depthGroups.get(depth) || [];
       const parallelGroup = tokensAtDepth.indexOf(token);
-      
+
       nodes.push({
         tokenId: token.id,
         token,
@@ -141,17 +141,17 @@ export function CascadingExecutionMonitor({
     setIsPaused(false);
     setCompletedCount(0);
     setCascadeStartTime(Date.now());
-    
+
     await executeCascade(structure);
   };
 
   const executeCascade = async (nodes: CascadeNode[]) => {
     const nodesToExecute = [...nodes];
-    
+
     while (nodesToExecute.length > 0 && !isPaused) {
       const readyNodes = nodesToExecute.filter(node => {
         if (node.status === 'completed' || node.status === 'failed') return false;
-        
+
         const dependencies = node.token.dependencies || [];
         return dependencies.every(depId => {
           const depNode = cascadeNodes.find(n => n.tokenId === depId);
@@ -164,15 +164,15 @@ export function CascadingExecutionMonitor({
       await Promise.all(
         readyNodes.map(async (node) => {
           updateNodeStatus(node.tokenId, 'executing', 0);
-          
+
           const success = await simulateExecution(node);
-          
+
           updateNodeStatus(
-            node.tokenId, 
+            node.tokenId,
             success ? 'completed' : 'failed',
             100
           );
-          
+
           if (success) {
             setCompletedCount(prev => prev + 1);
             triggerDependents(node.tokenId);
@@ -183,14 +183,14 @@ export function CascadingExecutionMonitor({
       nodesToExecute.splice(0, readyNodes.length);
       await new Promise(resolve => setTimeout(resolve, 500));
     }
-    
+
     setIsRunning(false);
   };
 
   const simulateExecution = async (node: CascadeNode): Promise<boolean> => {
     const stages = node.token.stages.length;
     const stageTime = STAGE_EXECUTION_TIME_MS;
-    
+
     for (let i = 0; i < stages; i++) {
       if (isPaused) {
         await new Promise(resolve => {
@@ -202,22 +202,22 @@ export function CascadingExecutionMonitor({
           }, 100);
         });
       }
-      
+
       const progress = Math.round(((i + 1) / stages) * 100);
       updateNodeStatus(node.tokenId, 'executing', progress);
       await new Promise(resolve => setTimeout(resolve, stageTime));
     }
-    
+
     if (onExecuteToken) {
       return await onExecuteToken(node.token);
     }
-    
+
     return true;
   };
 
   const updateNodeStatus = (
-    tokenId: string, 
-    status: CascadeNode['status'], 
+    tokenId: string,
+    status: CascadeNode['status'],
     progress: number
   ) => {
     setCascadeNodes(prev => prev.map(node => {
@@ -241,7 +241,7 @@ export function CascadingExecutionMonitor({
           const depNode = prev.find(n => n.tokenId === depId);
           return depNode?.status === 'completed';
         });
-        
+
         if (allDepsComplete) {
           return {
             ...node,
@@ -273,7 +273,7 @@ export function CascadingExecutionMonitor({
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     const remainingMs = Math.floor((ms % 1000) / 100);
-    
+
     if (minutes > 0) {
       return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}.${remainingMs}`;
     }
@@ -342,7 +342,7 @@ export function CascadingExecutionMonitor({
 
         <div className="flex items-center gap-3">
           {!isRunning ? (
-            <Button 
+            <Button
               onClick={startCascade}
               disabled={tokens.length === 0}
               className="flex items-center gap-2"
@@ -352,7 +352,7 @@ export function CascadingExecutionMonitor({
             </Button>
           ) : (
             <>
-              <Button 
+              <Button
                 onClick={togglePause}
                 variant="outline"
                 className="flex items-center gap-2"
@@ -369,7 +369,7 @@ export function CascadingExecutionMonitor({
                   </>
                 )}
               </Button>
-              <Button 
+              <Button
                 onClick={stopCascade}
                 variant="destructive"
                 className="flex items-center gap-2"
@@ -442,7 +442,7 @@ export function CascadingExecutionMonitor({
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: nodeIndex * 0.05 }}
                       >
-                        <Card 
+                        <Card
                           className={`p-4 border-2 transition-all ${getStatusColor(node.status)}`}
                         >
                           <div className="flex items-start justify-between mb-2">
@@ -494,12 +494,12 @@ export function CascadingExecutionMonitor({
                                   {node.token.dependencies.map(depId => {
                                     const depNode = cascadeNodes.find(n => n.tokenId === depId);
                                     return (
-                                      <Badge 
-                                        key={depId} 
-                                        variant="outline" 
+                                      <Badge
+                                        key={depId}
+                                        variant="outline"
                                         className={`text-xs ${
-                                          depNode?.status === 'completed' 
-                                            ? 'border-green-500/50 text-green-500' 
+                                          depNode?.status === 'completed'
+                                            ? 'border-green-500/50 text-green-500'
                                             : ''
                                         }`}
                                       >

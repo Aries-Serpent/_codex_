@@ -278,7 +278,7 @@ Exit: 1 if build fails (blocks merge)
 
 **Scheduled Validation** (`.github/workflows/pages-scheduled-validation.yml`)
 ```yaml
-Trigger: 
+Trigger:
   - schedule: '0 0 * * *' (daily)
   - schedule: '0 0 * * 1' (weekly)
   - workflow_dispatch
@@ -423,7 +423,7 @@ Error Types:
      ├─ Check: similar files
      ├─ Action: Auto-fix if confidence > 90%
      └─ Report: With suggestions if no fix
-  
+
   2. yaml_error: mkdocs.yml parse failure
      ├─ Action: Report immediately
      └─ Block: Deployment
@@ -447,12 +447,12 @@ Error Types:
      ├─ Source: mkdocs.yml
      ├─ Action: Report line number
      └─ Block: Yes (critical)
-  
+
   2. Missing file in nav
      ├─ Source: mkdocs.yml nav entry
      ├─ Action: Report path
      └─ Block: Yes (strict mode)
-  
+
   3. Markdown syntax error
      ├─ Source: Individual .md file
      ├─ Action: Report file and issue
@@ -473,12 +473,12 @@ Error Types:
      ├─ Capture: Exit code
      ├─ Action: continue-on-error
      └─ Report: In summary
-  
+
   2. GitHub API failure
      ├─ Capture: HTTP status
      ├─ Action: Retry once
      └─ Report: If persistent
-  
+
   3. Artifact upload failure
      ├─ Capture: Error message
      ├─ Action: Non-blocking
@@ -512,11 +512,11 @@ Recovery:
    # Current: Sequential
    for file in files:
        validate(file)
-   
+
    # Proposed: Parallel
    with ThreadPoolExecutor(max_workers=4) as executor:
        executor.map(validate, files)
-   
+
    # Expected: 4x speedup (~5s instead of ~20s)
    ```
 
@@ -526,7 +526,7 @@ Recovery:
    cache_key = f"{file.stat().st_mtime}:{file.name}"
    if cache_key in cache:
        return cache[cache_key]
-   
+
    # Expected: 50-80% speedup on repeated runs
    ```
 
@@ -535,7 +535,7 @@ Recovery:
    # Only validate changed files in PR
    changed_files = get_changed_files()
    files_to_check = filter_markdown(changed_files)
-   
+
    # Expected: 80-95% speedup for small PRs
    ```
 

@@ -33,7 +33,7 @@ class TransformersProvider:
     def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModel.from_pretrained(model_name)
-        
+
     def encode(self, texts):
         inputs = self.tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
         with torch.no_grad():
@@ -57,13 +57,13 @@ class TfidfProvider:
     def __init__(self, max_features=384):
         self.vectorizer = TfidfVectorizer(max_features=max_features)
         self.is_fitted = False
-        
+
     def encode(self, texts):
         if not self.is_fitted:
             self.vectorizer.fit(texts)
             self.is_fitted = True
         return self.vectorizer.transform(texts).toarray()
-    
+
     def get_dimension(self):
         return self.vectorizer.max_features
 ```
@@ -120,16 +120,16 @@ class TfidfProvider:
 class TfidfEmbeddingProvider:
     """
     TF-IDF based embedding provider (offline-capable).
-    
+
     Uses scikit-learn's TfidfVectorizer for embeddings.
     Lower quality than transformers but works offline with zero setup.
     Ideal for development, testing, and offline scenarios.
     """
-    
+
     def __init__(self, max_features: int = 384):
         """
         Initialize TF-IDF provider.
-        
+
         Args:
             max_features: Maximum number of features (embedding dimension)
         """
@@ -138,7 +138,7 @@ class TfidfEmbeddingProvider:
         except ImportError:
             logger.error("scikit-learn not installed. Install with: pip install scikit-learn")
             raise
-        
+
         self.max_features = max_features
         self.vectorizer = TfidfVectorizer(
             max_features=max_features,
@@ -147,30 +147,30 @@ class TfidfEmbeddingProvider:
         )
         self.is_fitted = False
         logger.info(f"Initialized TF-IDF provider (dimension={max_features})")
-    
+
     def encode(self, texts: List[str], **kwargs) -> np.ndarray:
         """
         Encode texts using TF-IDF.
-        
+
         Args:
             texts: List of texts to encode
             **kwargs: Ignored (for compatibility)
-            
+
         Returns:
             numpy array of embeddings
         """
         if not texts:
             return np.array([])
-        
+
         if not self.is_fitted:
             logger.info("Fitting TF-IDF vectorizer on input texts")
             self.vectorizer.fit(texts)
             self.is_fitted = True
-        
+
         embeddings = self.vectorizer.transform(texts).toarray()
         logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape}")
         return embeddings
-    
+
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         return self.max_features
@@ -184,13 +184,13 @@ def create_embedding_provider(
 ) -> EmbeddingProvider:
     """
     Create embedding provider with automatic fallback.
-    
+
     Args:
         provider: Provider type ('auto', 'sentence-transformers', 'tfidf', 'openai')
         model_name: Model name (for transformer-based providers)
         cache_dir: Cache directory
         **kwargs: Additional provider-specific arguments
-        
+
     Returns:
         Embedding provider instance
     """
@@ -206,23 +206,23 @@ def create_embedding_provider(
             logger.warning(f"Failed to load sentence-transformers: {e}")
             logger.info("Falling back to TF-IDF provider")
             return TfidfEmbeddingProvider(max_features=384)
-    
+
     elif provider == "sentence-transformers":
         return LocalSentenceTransformerProvider(
             model_name=model_name,
             cache_dir=cache_dir
         )
-    
+
     elif provider == "tfidf":
         max_features = kwargs.get("max_features", 384)
         return TfidfEmbeddingProvider(max_features=max_features)
-    
+
     elif provider == "openai":
         api_key = kwargs.get("api_key") or os.getenv("RAG_OPENAI_KEY") or os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("OpenAI API key required for openai provider")
         return OpenAIEmbeddingProvider(api_key=api_key)
-    
+
     else:
         raise ValueError(f"Unknown provider: {provider}. Choose from: auto, sentence-transformers, tfidf, openai")
 ```

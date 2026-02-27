@@ -59,21 +59,21 @@ search_space = {
     "compliance_weight": (0.30, 0.45),
     "risk_weight": (0.25, 0.40),
     "learning_rate": (0.08, 0.15),
-    
+
     # Memory parameters
     "stm_capacity": (500, 2000),
     "ltm_capacity": (5000, 20000),
     "consolidation_threshold": (0.6, 0.8),
-    
+
     # Multi-agent parameters
     "min_agents": (3, 6),
     "correlation_threshold": (0.70, 0.85),
-    
+
     # Learning parameters
     "q_learning_rate": (0.08, 0.15),
     "discount_factor": (0.90, 0.98),
     "epsilon": (0.05, 0.15),
-    
+
     # Transfer learning
     "similarity_threshold": (0.65, 0.80),
     "adaptation_steps": (1, 10),
@@ -193,17 +193,17 @@ else:
 search_space = {
     # Layer types
     "layer_types": ["dense", "attention", "lstm", "gru", "transformer"],
-    
+
     # Layer sizes
     "hidden_sizes": [64, 128, 256, 512, 1024],
-    
+
     # Activation functions
     "activations": ["relu", "gelu", "swish", "tanh"],
-    
+
     # Connections
     "skip_connections": [True, False],
     "residual_blocks": [1, 2, 3, 4],
-    
+
     # Regularization
     "dropout": [0.0, 0.1, 0.2, 0.3],
     "layer_norm": [True, False],

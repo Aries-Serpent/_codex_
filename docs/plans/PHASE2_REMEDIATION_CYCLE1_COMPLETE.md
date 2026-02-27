@@ -150,7 +150,7 @@ QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
 ### 2. **Strategic Skipping vs. Fixing**
 - **Lesson:** Skip tests for non-existent modules rather than trying to create mocks
 - **Rationale:** The modules may be added later; premature mocking creates technical debt
-- **Decision Rule:** 
+- **Decision Rule:**
   - Fix if API exists but signature is wrong
   - Skip if class/module doesn't exist
   - Skip if fixing requires complete test rewrite

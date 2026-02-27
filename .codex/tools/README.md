@@ -24,5 +24,5 @@ See `.codex/COGNITIVE_BRAIN_TOOLKIT.md` for complete documentation and implement
 - [ ] autonomous_authorization.py
 - [ ] meta_analyzer.py
 
-**Note:** Tool implementations are documented in `.codex/COGNITIVE_BRAIN_TOOLKIT.md`. 
+**Note:** Tool implementations are documented in `.codex/COGNITIVE_BRAIN_TOOLKIT.md`.
 This directory will be populated during the next phase execution.

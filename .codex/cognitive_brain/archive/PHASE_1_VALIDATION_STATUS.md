@@ -167,7 +167,7 @@ Follow the continuation prompt at `.codex/prompts/COPILOT_RAG_CONTINUATION_PROMP
 
 **For @mbaetiong:**
 
-The Phase 1 implementation is complete and functional. The network limitation prevents full validation, but the code is sound. 
+The Phase 1 implementation is complete and functional. The network limitation prevents full validation, but the code is sound.
 
 **Options:**
 1. **Accept current status** - Phase 1 is complete, proceed with Phase 2-8 in environment with internet

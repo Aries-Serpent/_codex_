@@ -312,7 +312,7 @@ npx playwright test --list
 - `cognitive_app/package.json` (added E2E scripts)
 - `cognitive_app/package-lock.json` (added @playwright/test)
 
-**Commit Message:** 
+**Commit Message:**
 ```
 Phase 1 complete: Playwright E2E infrastructure setup
 

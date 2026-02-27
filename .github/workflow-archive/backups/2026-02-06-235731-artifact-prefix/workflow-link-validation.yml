@@ -8,15 +8,15 @@ on:
       - '.github/workflows/**/*.yml'
       - 'docs/**'
       - '**.md'
-  
+
   push:
     branches: [main]
     paths:
       - '.github/workflows/**/*.md'
       - '.github/workflows/**/*.yml'
-  
+
   workflow_dispatch:
-  
+
   schedule:
     # Weekly validation on Sunday at 3 AM
     - cron: '0 3 * * 0'
@@ -32,53 +32,53 @@ jobs:
   validate-workflow-links:
     name: Validate Workflow Documentation Links
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache-tier: ephemeral
-      
+
       - name: Install dependencies
         run: |
           # No external dependencies needed for link validation
           echo "Link validation script is self-contained"
-      
+
       - name: Validate links with intelligent parser
         id: validate
         run: |
           python .github/scripts/validate-links.py
         continue-on-error: false
-      
+
       - name: Comment on PR
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
           script: |
             const comment = `## ❌ Workflow Documentation Link Validation Failed
-            
+
             Broken links were found in workflow documentation. Please review the workflow run logs for details.
-            
+
             **Common fixes:**
             - Update relative paths to match file locations
             - Ensure linked files exist in the repository
             - Use GitHub URLs for files outside the workflows directory
-            
+
             See the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
             });
-      
+
       - name: Upload validation report
         if: always()
         uses: actions/upload-artifact@v6

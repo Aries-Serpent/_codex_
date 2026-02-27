@@ -170,11 +170,11 @@ workflows:
     baseline_duration: 25-30 minutes
     timeout_threshold: 45 minutes
     alert_at: 40 minutes (90%)
-  
+
   docker_builds:
     baseline_duration: 20-25 minutes per build
     timeout_threshold: 90 minutes
-    
+
 test_execution:
   total_tests: 1300+
   slow_tests: 2 (Docker builds)

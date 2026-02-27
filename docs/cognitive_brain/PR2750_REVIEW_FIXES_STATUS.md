@@ -31,13 +31,13 @@ from datetime import UTC, datetime
 timestamp = datetime.now(UTC).isoformat()  # Outputs: 2026-01-08T21:58:07.834371+00:00
 ```
 
-**Why:** 
+**Why:**
 - `datetime.utcnow()` is deprecated as of Python 3.12
 - `datetime.now(UTC)` provides timezone-aware timestamps
 - ISO 8601 format with `+00:00` is more standards-compliant than 'Z' suffix
 - Project requires Python >=3.11, so UTC constant is available
 
-### Issue 2: Naive `datetime.now()` 
+### Issue 2: Naive `datetime.now()`
 **File Fixed:** `src/codex/dynamics/model/sla.py:259`
 
 **Solution:**
@@ -138,7 +138,7 @@ def test_openai_provider_api_error(self, mock_openai):
 **Found:** 2 issues with timestamp format consistency
 
 **Action:** Fixed UTC import issue
-- Changed from incorrect `datetime.now(datetime.UTC)` 
+- Changed from incorrect `datetime.now(datetime.UTC)`
 - To correct `datetime.now(UTC)` with proper import
 - Added `from datetime import UTC` in all affected files
 

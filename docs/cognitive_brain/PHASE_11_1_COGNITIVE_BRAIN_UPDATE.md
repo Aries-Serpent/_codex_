@@ -155,7 +155,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
        secret_encrypted BYTEA NOT NULL,
        created_at TIMESTAMP DEFAULT NOW()
    );
-   
+
    CREATE TABLE backup_codes (
        id SERIAL PRIMARY KEY,
        user_id VARCHAR(255) NOT NULL,
@@ -163,7 +163,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
        used BOOLEAN DEFAULT FALSE,
        used_at TIMESTAMP
    );
-   
+
    CREATE TABLE sessions (
        session_id VARCHAR(255) PRIMARY KEY,
        user_id VARCHAR(255) NOT NULL,
@@ -179,7 +179,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
    ```bash
    # Install Redis
    sudo apt-get install redis-server
-   
+
    # Configure Redis
    redis-cli config set maxmemory 256mb
    redis-cli config set maxmemory-policy allkeys-lru
@@ -192,7 +192,7 @@ logger.info(f"ℹ️  Task info: {safe_message}")
    # migrations/001_auth_tables.py
    from alembic import op
    import sqlalchemy as sa
-   
+
    def upgrade():
        # Create tables (see schema above)
        pass
@@ -229,11 +229,11 @@ logger.info(f"ℹ️  Task info: {safe_message}")
        server auth2:8000;
        server auth3:8000;
    }
-   
+
    server {
        listen 443 ssl;
        server_name auth.yourapp.com;
-       
+
        location / {
            proxy_pass http://codex_auth;
        }
@@ -381,7 +381,7 @@ graph TD
 ```markdown
 @copilot Continue with Phase 11.x production deployment and hardening
 
-**Context**: Phase 11.x Priority 1 is complete with all code review feedback addressed. 
+**Context**: Phase 11.x Priority 1 is complete with all code review feedback addressed.
 Authentication system is tested and validated but uses in-memory storage (development only).
 
 **Task**: Production Hardening - Replace Development Storage

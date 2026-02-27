@@ -42,7 +42,7 @@ export function MemoryEntryCard({ entry }: MemoryEntryCardProps) {
               <span className="text-xs text-muted-foreground">Confidence:</span>
               <div className="flex items-center gap-1">
                 <div className="w-16 h-1.5 bg-background rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className={`h-full ${config.color.replace('text', 'bg')} transition-all`}
                     style={{ width: `${confidencePercent}%` }}
                   />
@@ -64,13 +64,13 @@ function getTimeAgo(timestamp: string): string {
   const time = new Date(timestamp);
   const diffMs = now.getTime() - time.getTime();
   const diffMins = Math.floor(diffMs / 60000);
-  
+
   if (diffMins < 1) return 'Just now';
   if (diffMins < 60) return `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
-  
+
   const diffHours = Math.floor(diffMins / 60);
   if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-  
+
   const diffDays = Math.floor(diffHours / 24);
   return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
 }

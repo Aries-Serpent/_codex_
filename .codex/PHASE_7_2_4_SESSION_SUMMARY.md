@@ -359,7 +359,7 @@ $ codex-ast query myfile.py --language python --type function --metadata
 - Comprehensive session completion
 - May approach token limits
 
-**Recommendation**: 
+**Recommendation**:
 Given session length (~8.5 hours) and token usage, Phase 7.2 completion provides excellent stopping point. Phase 7.4 (performance) + Phase 8 continuation prompt can be next session.
 
 ---

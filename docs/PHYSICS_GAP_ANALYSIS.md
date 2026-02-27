@@ -167,7 +167,7 @@ This living document tracks identified gaps, risks, incomplete implementations, 
        def validate_chaos_params(self, r: float) -> None:
            if not 0 < r <= 4:
                raise ValueError(f"Chaos parameter r={r} outside valid range (0, 4]")
-       
+
        def validate_grid_resolution(self, res: int) -> None:
            if not 10 <= res <= 1000:
                raise ValueError(f"Grid resolution {res} outside valid range [10, 1000]")
@@ -203,7 +203,7 @@ This living document tracks identified gaps, risks, incomplete implementations, 
    except ImportError:
        import numpy as cp
        GPU_AVAILABLE = False
-   
+
    class GPUAcceleratedEMField(EMFieldRouter):
        def _recalculate_fields(self):
            # Use CuPy for GPU acceleration

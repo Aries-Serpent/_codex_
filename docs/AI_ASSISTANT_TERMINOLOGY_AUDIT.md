@@ -191,8 +191,8 @@ Add this header to key documentation files:
 ---
 **AI-Managed Repository Notice**
 
-This repository is designed for and managed by AI Assistants and Agents. All processes, 
-approvals, reviews, and decisions are performed autonomously by AI systems. Human 
+This repository is designed for and managed by AI Assistants and Agents. All processes,
+approvals, reviews, and decisions are performed autonomously by AI systems. Human
 intervention is optional and limited to oversight purposes only.
 
 AI Assistants have full authority for:

@@ -277,12 +277,12 @@ version: 1.0.0
 triggers:
   - on_pr_files_changed: "**/*.py"
   - on_manual_invoke: "@copilot audit-logging"
-  
+
 checks:
   - pattern: 'logger\.\w+\(f".*\{[^}]+\}.*"\)'
     severity: high
     message: "Potential sensitive data logging detected"
-    
+
 auto_fix:
   enabled: true
   strategy: aggregate_only
@@ -305,7 +305,7 @@ graph TD
     I -->|User Rejects| K[Mark Reviewed]
     J --> L[Re-scan]
     L --> E
-    
+
     style A fill:#e1f5ff
     style E fill:#d4edda
     style G fill:#fff3cd
@@ -329,7 +329,7 @@ version: 1.0.0
 triggers:
   - on_pr_files_changed: "**/*.py"
   - on_schedule: "weekly"
-  
+
 checks:
   - type: ast_analysis
     detect: unused_imports
@@ -337,7 +337,7 @@ checks:
       - type_checking_imports
       - noqa_comments
       - conditional_imports
-      
+
 auto_fix:
   enabled: true
   strategy: safe_removal
@@ -360,7 +360,7 @@ graph LR
     I --> J[Run Tests]
     J -->|Pass| K[✅ Commit]
     J -->|Fail| L[Revert]
-    
+
     style K fill:#d4edda
     style I fill:#fff3cd
     style L fill:#f8d7da
@@ -383,20 +383,20 @@ version: 1.0.0
 triggers:
   - on_codeql_alert: ["high", "critical"]
   - on_manual_invoke: "@copilot fix-codeql"
-  
+
 remediations:
   - alert_type: clear_text_logging
     strategy: aggregate_counts
     confidence: high
-    
+
   - alert_type: sql_injection
     strategy: parameterized_queries
     confidence: high
-    
+
   - alert_type: path_traversal
     strategy: safe_path_join
     confidence: medium
-    
+
 auto_fix:
   enabled: true
   create_pr: true
@@ -410,7 +410,7 @@ sequenceDiagram
     participant A as Auto-Fix Agent
     participant G as GitHub API
     participant R as Reviewer
-    
+
     C->>A: Alert Generated
     A->>A: Analyze Alert Pattern
     A->>A: Select Remediation
@@ -576,7 +576,7 @@ All identified security vulnerabilities have been remediated. The codebase now i
     3. Update SECURITY.md with new logging standards
     4. Run comprehensive security audit: bandit, semgrep, codeql
     5. Generate updated SBOM
-    
+
     Iterate autonomously with up to 5 self-healing cycles.
     Update cognitive brain and commit after each major milestone.
     """

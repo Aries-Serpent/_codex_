@@ -109,7 +109,7 @@ python -c "from codex_engine import SwarmState; print('✓ Import successful')"
 mod tests {
     use super::*;
     use std::thread;
-    
+
     #[test]
     fn test_concurrent_registration() {
         let state = SwarmState::new();
@@ -121,7 +121,7 @@ mod tests {
                 })
             })
             .collect();
-        
+
         for h in handles { h.join().unwrap(); }
         assert_eq!(state.get_agent_count(), 100);
     }

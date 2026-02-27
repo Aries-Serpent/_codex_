@@ -59,11 +59,11 @@ Begin autonomous implementation. Create PRs for each milestone.
    name = "codex-swarm-engine"
    version = "0.1.0"
    edition = "2021"
-   
+
    [lib]
    name = "codex_engine"
    crate-type = ["cdylib"]
-   
+
    [dependencies]
    pyo3 = { version = "0.20", features = ["extension-module", "abi3-py37"] }
    tokio = { version = "1.36", features = ["full"] }
@@ -76,7 +76,7 @@ Begin autonomous implementation. Create PRs for each milestone.
    [build-system]
    requires = ["maturin>=1.4,<2.0"]
    build-backend = "maturin"
-   
+
    [project]
    name = "codex-engine"
    requires-python = ">=3.7"
@@ -85,7 +85,7 @@ Begin autonomous implementation. Create PRs for each milestone.
 3. Create `src/lib.rs`:
    ```rust
    use pyo3::prelude::*;
-   
+
    #[pymodule]
    fn codex_engine(_py: Python, m: &PyModule) -> PyResult<()> {
        m.add_class::<SwarmState>()?;
@@ -153,16 +153,16 @@ impl SwarmState {
             agents: Arc::new(DashMap::new()),
         }
     }
-    
+
     fn register_agent(&self, agent_id: String) -> PyResult<()> {
         self.agents.insert(agent_id, AgentStatus::Idle);
         Ok(())
     }
-    
+
     fn get_agent_count(&self) -> usize {
         self.agents.len()
     }
-    
+
     fn set_agent_status(&self, agent_id: String, status: String) -> PyResult<()> {
         self.agents.insert(agent_id, AgentStatus::Working(status));
         Ok(())
@@ -255,7 +255,7 @@ impl Orchestrator {
             state: Arc::new(state.extract()?),
         })
     }
-    
+
     fn start(&self) -> PyResult<()> {
         let state = self.state.clone();
         self.runtime.spawn(async move {
@@ -373,13 +373,13 @@ impl TaskQueue {
             rx: Arc::new(Mutex::new(rx)),
         }
     }
-    
+
     fn submit(&self, task: Task) -> PyResult<()> {
         self.tx.send(task)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string()))?;
         Ok(())
     }
-    
+
     fn receive(&self, py: Python) -> PyResult<Option<Task>> {
         py.allow_threads(|| {
             let mut rx = self.rx.lock().unwrap();
@@ -483,12 +483,12 @@ impl AgentManager {
             max_agents,
         })
     }
-    
+
     fn spawn_agent(&self, agent_id: String, config: String) -> PyResult<()> {
         if self.active_agents.len() >= self.max_agents {
             return Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>("Max agents reached"));
         }
-        
+
         let agents = self.active_agents.clone();
         self.pool.spawn(move || {
             Python::with_gil(|py| {
@@ -499,14 +499,14 @@ impl AgentManager {
                 Ok::<(), PyErr>(())
             }).unwrap();
         });
-        
+
         self.active_agents.insert(agent_id.clone(), AgentHandle {
             id: agent_id,
             status: AgentStatus::Working("initialized".to_string()),
         });
         Ok(())
     }
-    
+
     fn get_active_count(&self) -> usize {
         self.active_agents.len()
     }
@@ -524,7 +524,7 @@ fn test_spawn_500_agents() {
     }
     let elapsed = start.elapsed();
     assert!(elapsed < Duration::from_secs(5)); // < 5s to spawn 500
-    
+
     // Wait for agents to initialize
     std::thread::sleep(Duration::from_secs(2));
     assert!(manager.get_active_count() > 450); // Most should be active
@@ -605,14 +605,14 @@ impl CompressionPipeline {
         };
         Ok(CompressionPipeline { codec })
     }
-    
+
     fn compress(&self, data: &[u8]) -> PyResult<Vec<u8>> {
         match self.codec {
             CompressionCodec::LZ4 => self.compress_lz4(data),
             CompressionCodec::Zstd(level) => self.compress_zstd(data, level),
         }
     }
-    
+
     fn decompress(&self, data: &[u8]) -> PyResult<Vec<u8>> {
         match self.codec {
             CompressionCodec::LZ4 => self.decompress_lz4(data),
@@ -643,7 +643,7 @@ impl CompressionPipeline {
 fn bench_compression(c: &mut Criterion) {
     let data = vec![0u8; 1024 * 1024]; // 1MB
     let pipeline = CompressionPipeline::new("lz4".to_string(), None).unwrap();
-    
+
     c.bench_function("compress_1mb_lz4", |b| {
         b.iter(|| pipeline.compress(black_box(&data)))
     });
@@ -733,11 +733,11 @@ fn bench_serialization(c: &mut Criterion) {
         memory: vec!["item1".to_string(); 1000],
         metrics: HashMap::new(),
     };
-    
+
     c.bench_function("messagepack_serialize", |b| {
         b.iter(|| serialize_state(black_box(&state)))
     });
-    
+
     c.bench_function("json_serialize", |b| {
         b.iter(|| serde_json::to_vec(black_box(&state)))
     });
@@ -752,21 +752,21 @@ from codex_engine import AgentState, serialize_state, deserialize_state
 
 def test_serialization_speed():
     state = AgentState(id="agent_1", memory=["item"] * 1000)
-    
+
     # MessagePack
     start = time.time()
     for _ in range(1000):
         data = serialize_state(state)
         deserialize_state(data)
     msgpack_time = time.time() - start
-    
+
     # JSON
     start = time.time()
     for _ in range(1000):
         data = json.dumps({"id": state.id, "memory": state.memory})
         json.loads(data)
     json_time = time.time() - start
-    
+
     assert msgpack_time < json_time / 5  # > 5x faster
 ```
 
@@ -846,28 +846,28 @@ Report results in PR comment with metrics table.
 ```python
 async def test_full_swarm_integration():
     from codex_engine import SwarmState, Orchestrator, AgentManager, TaskQueue
-    
+
     # Initialize components
     state = SwarmState()
     queue = TaskQueue()
     manager = AgentManager(max_agents=500)
     orch = Orchestrator(state)
-    
+
     # Start orchestrator
     orch.start()
-    
+
     # Spawn 500 agents
     for i in range(500):
         manager.spawn_agent(f"agent_{i}", "{}")
-    
+
     # Submit 10,000 tasks
     for i in range(10000):
         task = Task(id=str(i), task_type="analyze", data="{}")
         queue.submit(task)
-    
+
     # Wait for completion
     await asyncio.sleep(30)
-    
+
     # Validate
     assert manager.get_active_count() > 450
     assert state.get_agent_count() == 500

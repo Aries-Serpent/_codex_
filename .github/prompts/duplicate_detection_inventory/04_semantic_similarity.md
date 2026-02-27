@@ -34,19 +34,19 @@ Implement semantic similarity detection using:
 ```python
 class MinHashDetector:
     """Detects similar code using MinHash."""
-    
+
     def __init__(self, threshold: float = 0.75, num_perm: int = 128):
         """Initialize MinHash with parameters."""
         pass
-    
+
     def tokenize(self, code: str) -> List[str]:
         """Tokenize code into shingles."""
         pass
-    
+
     def compute_minhash(self, tokens: List[str]) -> MinHash:
         """Compute MinHash signature."""
         pass
-    
+
     def find_similar(self, signatures: Dict[str, MinHash]) -> List[Tuple]:
         """Find similar code blocks above threshold."""
         pass
@@ -67,11 +67,11 @@ class MinHashDetector:
 ```python
 class SimilarityClusterer:
     """Clusters similar code blocks."""
-    
+
     def cluster(self, similarities: List[Tuple[str, str, float]]) -> List[Cluster]:
         """Cluster similar items."""
         pass
-    
+
     def select_representative(self, cluster: List[str]) -> str:
         """Select best representative for cluster."""
         pass
@@ -92,15 +92,15 @@ class SimilarityClusterer:
 ```python
 class SemanticDetector:
     """Detects semantically similar code."""
-    
+
     def __init__(self, root_path: Path, threshold: float = 0.75):
         """Initialize with threshold."""
         pass
-    
+
     def scan(self) -> List[DuplicateGroup]:
         """Scan for semantic duplicates."""
         pass
-    
+
     def build_similarity_matrix(self) -> np.ndarray:
         """Build pairwise similarity matrix."""
         pass

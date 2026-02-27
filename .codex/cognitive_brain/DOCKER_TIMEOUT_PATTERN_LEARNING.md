@@ -28,8 +28,8 @@ result = subprocess.run(["docker", "build", ...], capture_output=True)
 @pytest.mark.slow
 def test_docker_build():
     result = subprocess.run(
-        ["docker", "build", ...], 
-        capture_output=True, 
+        ["docker", "build", ...],
+        capture_output=True,
         timeout=1800  # 30 minutes
     )
 ```
@@ -129,7 +129,7 @@ import subprocess
 from typing import Optional
 
 def run_with_timeout(
-    cmd: list[str], 
+    cmd: list[str],
     timeout: int,
     on_timeout: Optional[callable] = None
 ) -> subprocess.CompletedProcess:

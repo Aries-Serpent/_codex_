@@ -30,14 +30,14 @@ graph TB
         SO[Strategy Optimizer]
         ML[Meta-Learner]
     end
-    
+
     subgraph "Quantum Framework"
         QS[Quantum Superposition]
         QE[Quantum Entanglement]
         QU[Quantum Uncertainty]
         QC[Coherence Monitor]
     end
-    
+
     subgraph "RAG Pipeline"
         CLI[CLI Layer - 7 commands]
         API[API Layer - 8 endpoints]
@@ -45,7 +45,7 @@ graph TB
         RET[Semantic Retriever]
         EMB[Embedding Providers]
     end
-    
+
     subgraph "doc-test-scribe Agent"
         DT[Deep Thinking Engine]
         QT[Quantum Tokenizer]
@@ -53,28 +53,28 @@ graph TB
         SG[Synthesis Generator]
         VAL[Validator]
     end
-    
+
     QDE --> RET
     MM --> IDX
     OA --> RET
     SO --> EMB
     ML --> PM
-    
+
     QS --> QT
     QE --> QT
     QU --> DT
     QC --> VAL
-    
+
     CLI --> API
     API --> IDX
     IDX --> RET
     RET --> EMB
-    
+
     QT --> DT
     DT --> SG
     PM --> SG
     SG --> VAL
-    
+
     RET -.enhances.-> QDE
     PM -.learns from.-> RET
     VAL -.monitors.-> QC
@@ -97,7 +97,7 @@ graph TB
   5. `merge` - Merge multiple indices
   6. `stats` - Index statistics
   7. `metrics` - System metrics
-  
+
 - Test coverage: 96.9% (31/32 tests passing)
 - Type hints: 100%
 - Docstrings: Comprehensive
@@ -239,14 +239,14 @@ class EnhancedMemoryManager:
     def __init__(self):
         self.quantum_memory = QuantumMemory()
         self.rag_retriever = Retriever("cognitive_brain_knowledge")
-    
+
     def recall(self, query: str, context_size: int = 10):
         # Quantum memory for recent/frequent
         quantum_results = self.quantum_memory.recall(query)
-        
+
         # RAG for semantic search across all history
         semantic_results = self.rag_retriever.query(query, top_k=context_size)
-        
+
         # Merge and re-rank
         return self.merge_results(quantum_results, semantic_results)
 ```
@@ -274,17 +274,17 @@ class RAGEnhancedDecisionEngine:
     def __init__(self):
         self.superposition = SuperpositionEngine()
         self.decision_history = Retriever("decision_patterns")
-    
+
     def explore_decisions(self, problem: str):
         # Find similar past decisions
         similar = self.decision_history.query(problem, top_k=5)
-        
+
         # Extract decision patterns
         patterns = self.extract_patterns(similar)
-        
+
         # Generate decision options using patterns
         decisions = self.generate_from_patterns(patterns)
-        
+
         # Evaluate in superposition
         return self.superposition.evaluate_parallel(decisions)
 ```
@@ -317,14 +317,14 @@ class RAGPoweredAnalyzer(OutcomeAnalyzer):
             index_name="session_outcomes"
         )
         self.outcome_retriever = Retriever("session_outcomes")
-    
+
     def analyze_patterns(self, current_outcome):
         # Find similar past outcomes
         similar = self.outcome_retriever.query(
             str(current_outcome),
             top_k=10
         )
-        
+
         # Cluster and analyze
         return self.cluster_and_learn(similar)
 ```
@@ -352,16 +352,16 @@ class AutomatedMetaLearner(MetaLearner):
     def __init__(self):
         super().__init__()
         self.scribe = DocTestScribe()
-    
+
     def learn_from_codebase(self, target_files):
         # Generate docs and tests
         for file in target_files:
             docs = self.scribe.document(file)
             tests = self.scribe.test(file, coverage=90)
-            
+
             # Extract patterns from generated content
             patterns = self.extract_patterns(docs, tests)
-            
+
             # Add to learning memory
             self.update_knowledge_base(patterns)
 ```

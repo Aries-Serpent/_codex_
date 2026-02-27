@@ -122,7 +122,7 @@ async def query_shards(self, query_vec, k=10):
                 f"ORDER BY embedding <=> $1 LIMIT {k*2}",
                 (query_vec,)
             )
-    
+
     tasks = [_query_shard(i) for i in range(self.num_shards)]
     results = await asyncio.gather(*tasks)
     return self.global_rerank(results, k)

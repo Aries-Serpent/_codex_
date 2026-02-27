@@ -3,12 +3,12 @@ graph TB
         A[Repository Files] -->|enumerate & hash| B[context_index.json]
         B -->|sorted file list| C[SHA256 hashes]
     end
-    
+
     subgraph "Stage 2: Facet Grouping"
         B -->|regex patterns| D[facets.json]
         D -->|domain clustering| E[checkpoint, token, train, eval, data, safety, logging, config, serve, secret, status, archive]
     end
-    
+
     subgraph "Stage 3: Capability Extraction"
         D -->|static baseline| F[8 core capabilities]
         D -->|dynamic detectors| G[31 extended capabilities]
@@ -16,7 +16,7 @@ graph TB
         G --> H
         H -->|39 total capabilities| I[evidence files + patterns]
     end
-    
+
     subgraph "Stage 4: Scoring"
         H -->|component scoring| J[capabilities_scored.json]
         J -->|functionality| K[found/required patterns]
@@ -31,12 +31,12 @@ graph TB
         O --> P
         P -->|score ∈ [0,1]| J
     end
-    
+
     subgraph "Stage 5: Gap Analysis"
         J -->|filter score < 0.70| Q[gaps.json]
         Q -->|low-maturity capabilities| R[remediation targets]
     end
-    
+
     subgraph "Stage 6: Report Rendering"
         J -->|Jinja2 template| S[capability_matrix_timestamp.md]
         Q --> S
@@ -44,7 +44,7 @@ graph TB
         S -->|machine-readable| U[capability_matrix_timestamp.json]
         S -->|daily automation| V[codex_status_update_date.md]
     end
-    
+
     subgraph "Stage 7: Manifest Generation"
         B -->|repo_root_sha| W[audit_run_manifest.json]
         H --> W
@@ -54,7 +54,7 @@ graph TB
         W -->|warnings| Y[configuration notes]
         W -->|weights snapshot| Z[reproducible config]
     end
-    
+
     style A fill:#e1f5fe
     style B fill:#b3e5fc
     style D fill:#81d4fa

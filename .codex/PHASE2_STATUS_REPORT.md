@@ -179,35 +179,35 @@ from pathlib import Path
 def deploy_wiki():
     wiki_source = Path('.codex/wiki')
     wiki_files = list(wiki_source.glob('*.md'))
-    
+
     if not wiki_files:
         print("❌ No wiki files found")
         return False
-    
+
     print(f"Found {len(wiki_files)} wiki files")
-    
+
     # Clone wiki repo
     result = subprocess.run([
         'git', 'clone',
         'https://github.com/Aries-Serpent/_codex_.wiki.git',
         '/tmp/wiki'
     ], capture_output=True)
-    
+
     if result.returncode != 0:
         print("❌ Failed to clone wiki")
         return False
-    
+
     # Copy files
     for file in wiki_files:
         dest = Path('/tmp/wiki') / file.name
         dest.write_text(file.read_text())
         print(f"✅ Copied {file.name}")
-    
+
     # Commit and push
     subprocess.run(['git', 'add', '.'], cwd='/tmp/wiki')
     subprocess.run(['git', 'commit', '-m', 'docs: deploy wiki'], cwd='/tmp/wiki')
     result = subprocess.run(['git', 'push'], cwd='/tmp/wiki', capture_output=True)
-    
+
     return result.returncode == 0
 
 if __name__ == '__main__':
@@ -275,14 +275,14 @@ def check_safety_guards():
         config_file = Path('.codex/autonomous_agent.yaml')
         if not config_file.exists():
             return {'passed': False, 'message': 'Config file not found'}
-        
+
         with open(config_file) as f:
             config = yaml.safe_load(f)
-        
+
         # Check for safety flag
         autonomous_enabled = config.get('agent', {}).get('autonomous_actions_enabled', True)
         passed = not autonomous_enabled
-        
+
         return {
             'passed': passed,
             'message': f"autonomous_actions_enabled = {autonomous_enabled}"
@@ -296,10 +296,10 @@ def check_module_imports():
         import sys
         sys.path.insert(0, 'scripts')
         import autonomous_agent
-        
+
         required_attrs = ['AutonomousAgent', 'ActionType', 'HealthStatus', 'uuid']
         missing = [attr for attr in required_attrs if not hasattr(autonomous_agent, attr)]
-        
+
         passed = len(missing) == 0
         return {
             'passed': passed,
@@ -313,7 +313,7 @@ def check_workflows_valid():
     try:
         workflow_dir = Path('.github/workflows')
         workflows = list(workflow_dir.glob('*.yml')) + list(workflow_dir.glob('*.yaml'))
-        
+
         errors = []
         for wf in workflows:
             try:
@@ -321,7 +321,7 @@ def check_workflows_valid():
                     yaml.safe_load(f)
             except Exception as e:
                 errors.append(f"{wf.name}: {e}")
-        
+
         passed = len(errors) == 0
         return {
             'passed': passed,
@@ -336,13 +336,13 @@ def check_security_status():
         scan_file = Path('.codex/security_vulnerability_scan_latest.md')
         if not scan_file.exists():
             scan_file = Path('.codex/security_vulnerability_scan_2025-12-26.md')
-        
+
         if not scan_file.exists():
             return {'passed': False, 'message': 'Security scan file not found'}
-        
+
         with open(scan_file) as f:
             content = f.read()
-        
+
         # Simple check for vulnerability count
         passed = '0 known vulnerabilities' in content.lower() or 'no vulnerabilities' in content.lower()
         return {
@@ -357,7 +357,7 @@ def check_lessons_learned():
     try:
         with open('.codex/lessons_learned.json') as f:
             lessons = json.load(f)
-        
+
         passed = len(lessons) > 0
         return {
             'passed': passed,
@@ -371,10 +371,10 @@ def check_wiki_content():
     try:
         wiki_dir = Path('.codex/wiki')
         wiki_files = list(wiki_dir.glob('*.md'))
-        
+
         required_files = ['Home.md', 'Genesis-Protocol.md']
         missing = [f for f in required_files if not (wiki_dir / f).exists()]
-        
+
         passed = len(missing) == 0
         return {
             'passed': passed,
@@ -393,39 +393,39 @@ def main():
         "Lessons Learned": check_lessons_learned,
         "Wiki Content": check_wiki_content,
     }
-    
+
     print(f"{Colors.BOLD}Genesis Phase 2 Readiness Validation{Colors.END}")
     print("=" * 70)
     print(f"Timestamp: {datetime.now().isoformat()}")
     print(f"Branch: copilot/sub-pr-2623")
     print("=" * 70)
     print()
-    
+
     results = {}
     for check_name, check_func in checks.items():
         result = check_func()
         results[check_name] = result
-        
+
         status = f"{Colors.GREEN}✅ PASS{Colors.END}" if result['passed'] else f"{Colors.RED}❌ FAIL{Colors.END}"
         print(f"{check_name:.<30} {status}")
         print(f"  {result['message']}")
-    
+
     print()
     print("=" * 70)
-    
+
     all_passed = all(r['passed'] for r in results.values())
     passed_count = sum(1 for r in results.values() if r['passed'])
     total_count = len(results)
-    
+
     if all_passed:
         print(f"{Colors.GREEN}{Colors.BOLD}✅ READY FOR PHASE 2{Colors.END}")
         print(f"All {total_count} checks passed")
     else:
         print(f"{Colors.YELLOW}{Colors.BOLD}⚠️  NOT FULLY READY{Colors.END}")
         print(f"{passed_count}/{total_count} checks passed")
-    
+
     print("=" * 70)
-    
+
     return 0 if all_passed else 1
 
 if __name__ == "__main__":

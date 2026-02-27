@@ -126,8 +126,8 @@ def bleu(reference: str, hypothesis: str) -> float:
     from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
     chencherry = SmoothingFunction()
     return float(sentence_bleu(
-        [reference.split()], 
-        hypothesis.split(), 
+        [reference.split()],
+        hypothesis.split(),
         smoothing_function=chencherry.method1
     ))
 

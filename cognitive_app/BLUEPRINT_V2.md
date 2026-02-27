@@ -15,7 +15,7 @@ graph TB
     subgraph "Frontend Application"
         APP[App.tsx - Main Shell]
         NAV[Navigation - 7 Tabs]
-        
+
         subgraph "Tabs"
             T1[Dashboard]
             T2[Code Generator]
@@ -29,18 +29,18 @@ graph TB
 
     subgraph "Code Generation System - ENHANCED"
         CG[CodeGenerator Component]
-        
+
         subgraph "AI Mode Toggle - NEW"
             TOGGLE[Switch Component]
             STATUS[Status Indicator]
         end
-        
+
         subgraph "Client Layer"
             SPARK[SparkLLMClient - NEW]
             CODEX[CodexAPIClient]
             MOCK[MockCodexAPIClient]
         end
-        
+
         RESULT[Generated Code Display]
         METRICS[Quantum Metrics Bar]
     end
@@ -65,26 +65,26 @@ graph TB
 
     APP --> NAV
     NAV --> T1 & T2 & T3 & T4 & T5 & T6 & T7
-    
+
     T2 --> CG
     CG --> TOGGLE
     CG --> STATUS
-    
+
     TOGGLE -->|ON| SPARK
     TOGGLE -->|OFF| CODEX
     CODEX -->|Fallback| MOCK
-    
+
     SPARK --> SPARKLLM
     SPARKLLM --> GPT
-    
+
     CG --> RESULT
     CG --> METRICS
-    
+
     T3 --> DEMO
     DEMO --> EXEC
     DEMO --> MON
     DEMO --> OUT
-    
+
     CG -.Test Coverage.-> UT
     CG -.Test Coverage.-> IT
     DEMO -.Test Coverage.-> UT
@@ -237,20 +237,20 @@ sequenceDiagram
 
     U->>UI: Opens Code Generator
     UI->>T: Renders Toggle (OFF)
-    
+
     U->>T: Enables AI Mode
     T->>S: Initialize Client
     S->>L: Check Status
     L-->>S: Connected (gpt-4o-mini)
     S-->>UI: Update Status "AI-Powered"
-    
+
     U->>UI: Types Prompt
     Note over U,UI: Min 10 characters required
-    
+
     U->>UI: Clicks "Generate Code"
     UI->>S: generateCode(prompt, context)
     S->>L: Send Request
-    
+
     alt Success
         L-->>S: AI Generated Code
         S->>S: Generate Quantum Metrics
@@ -279,13 +279,13 @@ sequenceDiagram
 
     U->>D: Navigates to Demo Tab
     D->>E: Load Default Code
-    
+
     U->>E: Edit Code
     E->>E: Update State
-    
+
     U->>D: Click "Run"
     D->>X: Execute Code
-    
+
     par Parallel Execution
         X->>R: Start Monitoring
         R->>R: Track CPU/Memory
@@ -293,7 +293,7 @@ sequenceDiagram
         X->>X: Run Code
         Note over X: Sandboxed Execution
     end
-    
+
     alt Successful Execution
         X-->>O: stdout Output
         R-->>O: Resource Metrics
@@ -303,7 +303,7 @@ sequenceDiagram
         R-->>O: Resource Metrics
         O-->>U: Display Error
     end
-    
+
     U->>D: View Metrics
     Note over U,D: CPU, Memory, Time
 ```
@@ -612,8 +612,8 @@ permissions:
 
 **Vite Config:** `cognitive_app/vite.config.ts`
 ```typescript
-base: process.env.GITHUB_ACTIONS 
-  ? '/_codex_/cognitive_app/' 
+base: process.env.GITHUB_ACTIONS
+  ? '/_codex_/cognitive_app/'
   : '/',
 ```
 
@@ -695,22 +695,22 @@ pie title Test Coverage Distribution
 ```mermaid
 timeline
     title Cognitive App Evolution Roadmap
-    
+
     section Cycle 1 - COMPLETE
         v2.0.0 Release : AI Mode Integration
                        : Interactive Demo Tab
                        : 90%+ Test Coverage
-    
+
     section Cycle 2 - Planned
         v2.1.0 : Code History/Undo
                : Enhanced Language Support
                : Template Library
-    
+
     section Cycle 3 - Proposed
         v2.2.0 : Code Sharing Features
                : Advanced Metrics Viz
                : Collaborative Editing
-    
+
     section Cycle 4 - Future
         v3.0.0 : Multi-Model Support
                : Custom AI Training

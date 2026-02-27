@@ -174,36 +174,36 @@ class SecureBridge:
     def __init__(self, pipe_path: Path):
         self.pipe_path = pipe_path
         self.auth_token = os.getenv("CODEX_BRIDGE_TOKEN")
-        
+
     def create_pipe(self):
         """Create named pipe with secure permissions."""
         if self.pipe_path.exists():
             self.pipe_path.unlink()
-        
+
         # Create with owner-only permissions
         os.mkfifo(self.pipe_path, mode=0o600)
-        
+
         # Verify permissions
         st = self.pipe_path.stat()
         mode = stat.S_IMODE(st.st_mode)
         if mode != 0o600:
             raise SecurityError(f"Insecure permissions: {oct(mode)}")
-    
+
     def verify_permissions(self) -> bool:
         """Verify pipe has secure permissions."""
         if not self.pipe_path.exists():
             return False
-        
+
         st = self.pipe_path.stat()
-        
+
         # Check permissions (must be 0o600)
         if stat.S_IMODE(st.st_mode) != 0o600:
             return False
-        
+
         # Check owner (must be current user)
         if st.st_uid != os.getuid():
             return False
-        
+
         return True
 ```
 

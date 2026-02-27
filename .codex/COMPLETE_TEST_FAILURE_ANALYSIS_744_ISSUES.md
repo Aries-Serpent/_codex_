@@ -173,7 +173,7 @@ import psutil
 def session_resource_manager():
     """Manage resources across entire test session."""
     import resource
-    
+
     # Increase file descriptor limit
     try:
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -181,7 +181,7 @@ def session_resource_manager():
         print(f"File descriptor limit set to {min(hard, 4096)}")
     except Exception as e:
         warnings.warn(f"Could not increase file limits: {e}")
-    
+
     # Track initial state
     initial_files = set()
     try:
@@ -190,9 +190,9 @@ def session_resource_manager():
         print(f"Initial open files: {len(initial_files)}")
     except:
         pass
-    
+
     yield
-    
+
     # Cleanup and report
     gc.collect()
     try:
@@ -211,12 +211,12 @@ def protect_stderr():
     """Protect stderr from being closed or corrupted."""
     import sys
     import io
-    
+
     original_stderr = sys.stderr
     original_stdout = sys.stdout
-    
+
     yield
-    
+
     # Restore if modified
     try:
         if sys.stderr != original_stderr:
@@ -233,10 +233,10 @@ def protect_stderr():
 def force_file_cleanup():
     """Force cleanup of file handles after each test."""
     yield
-    
+
     # Force garbage collection
     gc.collect()
-    
+
     # Close any lingering file objects
     import gc
     for obj in gc.get_objects():
@@ -262,7 +262,7 @@ def pytest_runtest_protocol(item, nextitem):
     """Monitor resources during test execution."""
     import psutil
     import warnings
-    
+
     try:
         process = psutil.Process()
         before_files = len(process.open_files())
@@ -270,21 +270,21 @@ def pytest_runtest_protocol(item, nextitem):
     except:
         before_files = 0
         before_memory = 0
-    
+
     yield
-    
+
     try:
         process = psutil.Process()
         after_files = len(process.open_files())
         after_memory = process.memory_info().rss / 1024 / 1024  # MB
-        
+
         # Check for leaks
         if after_files > before_files + 5:
             warnings.warn(
                 f"{item.nodeid}: File handle leak "
                 f"({before_files} -> {after_files})"
             )
-        
+
         if after_memory > before_memory * 1.2:  # 20% increase
             warnings.warn(
                 f"{item.nodeid}: Memory leak "
@@ -310,7 +310,7 @@ class FileOperationVisitor(ast.NodeVisitor):
     def __init__(self):
         self.issues = []
         self.current_file = None
-    
+
     def visit_Call(self, node):
         # Check for open() calls
         if isinstance(node.func, ast.Name) and node.func.id == 'open':
@@ -322,7 +322,7 @@ class FileOperationVisitor(ast.NodeVisitor):
                     'code': ast.unparse(node)
                 })
         self.generic_visit(node)
-    
+
     def _is_in_with_statement(self, node):
         # This is simplified - in practice, would need to track context
         return False  # Conservative: report all for manual review
@@ -334,7 +334,7 @@ def audit_file(filepath):
             tree = ast.parse(f.read(), filename=str(filepath))
         except SyntaxError:
             return []
-    
+
     visitor = FileOperationVisitor()
     visitor.current_file = filepath
     visitor.visit(tree)
@@ -343,29 +343,29 @@ def audit_file(filepath):
 def main():
     test_dir = Path('tests')
     all_issues = []
-    
+
     for test_file in test_dir.rglob('*.py'):
         issues = audit_file(test_file)
         all_issues.extend(issues)
-    
+
     print(f"=== FILE HANDLE AUDIT REPORT ===\n")
     print(f"Total issues found: {len(all_issues)}\n")
-    
+
     # Group by file
     by_file = {}
     for issue in all_issues:
         by_file.setdefault(issue['file'], []).append(issue)
-    
+
     for filepath, issues in sorted(by_file.items(), key=lambda x: -len(x[1])):
         print(f"\n{filepath}: {len(issues)} issues")
         for issue in issues[:5]:  # Show first 5
             print(f"  Line {issue['line']}: {issue['code']}")
-    
+
     # Generate fix script
     print(f"\n=== RECOMMENDED FIXES ===\n")
     print("Run the following to fix automatically:")
     print("  python scripts/auto_fix_file_handles.py")
-    
+
     return len(all_issues)
 
 if __name__ == '__main__':
@@ -392,9 +392,9 @@ if __name__ == '__main__':
       --tb=short \
       --maxfail=100 \
       | tee pytest_output.log &
-    
+
     PYTEST_PID=$!
-    
+
     # Monitor progress every 5 minutes
     while kill -0 $PYTEST_PID 2>/dev/null; do
       sleep 300
@@ -402,7 +402,7 @@ if __name__ == '__main__':
       echo "Open file descriptors: $(ls /proc/$PYTEST_PID/fd 2>/dev/null | wc -l)"
       echo "Memory usage: $(ps -p $PYTEST_PID -o rss= | awk '{print $1/1024 "MB"}')"
     done
-    
+
     wait $PYTEST_PID
 ```
 
@@ -426,17 +426,17 @@ def extract_failures(log_file):
     """Extract test failures from pytest output."""
     with open(log_file) as f:
         content = f.read()
-    
+
     failures = []
-    
+
     # Pattern 1: FAILED test/path::TestClass::test_name
     pattern1 = r'FAILED (tests/[^\s]+::[^\s]+)'
     failures.extend(re.findall(pattern1, content))
-    
+
     # Pattern 2: ERROR test/path::TestClass::test_name
     pattern2 = r'ERROR (tests/[^\s]+::[^\s]+)'
     failures.extend(re.findall(pattern2, content))
-    
+
     return list(set(failures))  # Remove duplicates
 
 def categorize_by_module(failures):
@@ -450,13 +450,13 @@ def categorize_by_module(failures):
             by_module.setdefault(module, []).append(failure)
         else:
             by_module.setdefault('other', []).append(failure)
-    
+
     return by_module
 
 def main():
     # This will need the actual log file
     # For now, create template for manual population
-    
+
     print("=== FAILED TEST EXTRACTION ===\n")
     print("To extract failures:")
     print("1. Download coverage logs from GitHub Actions")
@@ -536,12 +536,12 @@ def identify_errors():
         capture_output=True,
         text=True
     )
-    
+
     errors = []
     for line in result.stderr.split('\n'):
         if 'ERROR' in line:
             errors.append(line)
-    
+
     return errors
 
 def categorize_errors(errors):
@@ -549,7 +549,7 @@ def categorize_errors(errors):
     import_errors = []
     fixture_errors = []
     other_errors = []
-    
+
     for error in errors:
         if 'ModuleNotFoundError' in error or 'ImportError' in error:
             import_errors.append(error)
@@ -557,7 +557,7 @@ def categorize_errors(errors):
             fixture_errors.append(error)
         else:
             other_errors.append(error)
-    
+
     return {
         'import': import_errors,
         'fixture': fixture_errors,

@@ -270,7 +270,7 @@ To migrate existing workflows to use standardized variables:
    ```yaml
    # Before
    python-version: '3.11'
-   
+
    # After
    python-version: ${{ vars.CODEX_PYTHON_VERSION }}
    ```
@@ -334,7 +334,7 @@ To migrate existing workflows to use standardized variables:
    git ls-remote --heads origin
    git fetch origin
    git push origin branch-name
-   
+
    # ❌ may fail: gh CLI operations
    gh pr view 123
    gh issue create --title "..."
@@ -369,7 +369,7 @@ To enable full API access:
    ```bash
    # Local environment
    export GITHUB_TOKEN="your_token_here"
-   
+
    # Verify
    gh auth status
    ```

@@ -69,7 +69,7 @@ path: |
 key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
 ```
 
-**Benefit**: 
+**Benefit**:
 - Caches pip dependencies
 - Caches gh CLI data
 - Estimated savings: 1-2 minutes per run
@@ -88,7 +88,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 ```
 
 **Trigger Frequency**: Daily (cron: '0 0 * * *')  
-**Estimated Impact**: 
+**Estimated Impact**:
 - 2-3 minutes saved per per-iteration run
 - 60-90 minutes saved per month
 - Reduced network bandwidth usage
@@ -525,7 +525,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
    - Too broad = larger cache files
    - Current pattern is good balance
 
-2. **Monitor Cache Hit Rates**: 
+2. **Monitor Cache Hit Rates**:
    - Low hit rate caches are inefficient
    - Remove caching from rarely-run workflows
    - Focus on high-frequency workflows only
@@ -537,7 +537,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
      ~/.cache/pip
      ~/.cache/nox
      ~/.cache/pre-commit  # Remove if not needed
-   
+
    # Cache only essentials:
    path: |
      ~/.cache/pip

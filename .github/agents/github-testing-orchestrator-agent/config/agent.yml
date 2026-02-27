@@ -16,7 +16,7 @@ test_suites:
     timeout_seconds: 600
     retry_attempts: 3
     target_latency_seconds: 300
-    
+
   security_scan:
     enabled: true
     scanners:
@@ -24,7 +24,7 @@ test_suites:
       - detect-secrets
       - repomix-builtin
     fail_on_secrets_found: true
-    
+
   ai_architect:
     enabled: true
     test_queries:
@@ -32,13 +32,13 @@ test_suites:
       - "Analyze dependency vulnerabilities"
       - "Security audit summary"
     target_accuracy: 0.95
-    
+
   performance:
     enabled: true
     max_bundle_size_mb: 5
     target_compression_ratio: 0.70
     max_consolidation_time_seconds: 120
-    
+
   error_handling:
     enabled: true
     test_scenarios:
@@ -46,7 +46,7 @@ test_suites:
       - api_timeout
       - invalid_config
       - network_error
-      
+
   documentation:
     enabled: true
     check_links: true
@@ -58,7 +58,7 @@ reporting:
   output_dir: .reports/testing-orchestrator
   include_logs: true
   create_artifacts: true
-  
+
 github:
   api_base_url: https://api.github.com
   default_repo: Aries-Serpent/_codex_

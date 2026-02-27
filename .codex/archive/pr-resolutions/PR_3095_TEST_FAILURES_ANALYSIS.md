@@ -43,7 +43,7 @@ F..............F........FFF
 **File:** `tests/test_github_client.py::test_list_branches_returns_list`  
 **Error:** `requests.exceptions.HTTPError: 403 Client Error: Forbidden`  
 **Root Cause:** GitHub API rate limiting during test execution  
-**Fix Strategy:** 
+**Fix Strategy:**
 - Add `@pytest.mark.network` decorator
 - Mock the GitHub API call for CI environments
 - Skip test when GITHUB_TOKEN not available

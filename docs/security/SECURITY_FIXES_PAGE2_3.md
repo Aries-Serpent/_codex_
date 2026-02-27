@@ -103,24 +103,24 @@ Since these are test files checking that classes can be imported/initialized, an
 def safe_extract_tarfile(tar_path: Path, extract_to: Path, *, members=None) -> None:
     """Safely extract tarfile preventing path traversal attacks."""
     extract_to = extract_to.resolve()
-    
+
     with tarfile.open(tar_path) as tar:
         to_extract = members if members is not None else tar.getmembers()
-        
+
         # Validate all paths before extraction
         for member in to_extract:
             member_path = (extract_to / member.name).resolve()
-            
+
             # Check if path escapes the extraction directory
             try:
                 member_path.relative_to(extract_to)
             except ValueError:
                 raise ValueError(f"Security: Path traversal in {member.name}")
-        
+
         # Use Python 3.12+ filter if available
         if hasattr(tarfile, "data_filter"):
             tar.extraction_filter = tarfile.data_filter
-        
+
         tar.extractall(extract_to, members=to_extract)
 ```
 

@@ -13,7 +13,7 @@ Two GitHub Actions workflows enable automated and manual CI/CD analytics using t
 1. **Manual Workflow Analytics** (`workflow-analytics-manual.yml`)
    - On-demand analysis with customizable parameters
    - Flexible reporting and action options
-   
+
 2. **Scheduled Workflow Analytics** (`workflow-analytics-scheduled.yml`)
    - per-phase automated health checks
    - Auto-creates issues for problems

@@ -34,10 +34,10 @@ def main(argv=None) -> int:
 ```python
 def parse_args(argv=None) -> argparse.Namespace:
     """Parse command line arguments.
-    
+
     Args:
         argv: Optional argument list (for testing)
-    
+
     Returns:
         Parsed arguments namespace
     """
@@ -52,10 +52,10 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 def main(argv=None) -> int:
     """Main entry point for snapshot schema validation.
-    
+
     Args:
         argv: Optional argument list (for testing)
-    
+
     Returns:
         Exit code (0 = success, non-zero = error)
     """

@@ -77,32 +77,32 @@ jobs:
           CHUNKS[agents]="agents/"
           CHUNKS[training]="training/"
           CHUNKS[scripts]="scripts/"
-          
+
           # Build chunk matrix
           CHUNK_JSON='['
           FIRST=true
-          
+
           for name in "${!CHUNKS[@]}"; do
             path="${CHUNKS[$name]}"
-            
+
             # Check if path exists
             if [ -d "$path" ]; then
               # Calculate size
               size=$(du -sb "$path" 2>/dev/null | cut -f1 || echo "0")
-              
+
               # Add to matrix
               if [ "$FIRST" = true ]; then
                 FIRST=false
               else
                 CHUNK_JSON+=','
               fi
-              
+
               CHUNK_JSON+="{\"name\":\"$name\",\"path\":\"$path\",\"size\":$size}"
-              
+
               # Log size info
               size_mb=$(echo "scale=2; $size / 1048576" | bc)
               echo "Chunk '$name' ($path): ${size_mb}MB"
-              
+
               # Warn if approaching limit
               if [ "$size" -gt 8000000 ]; then
                 echo "::warning::Chunk '$name' is approaching 10MB limit (${size_mb}MB)"
@@ -111,12 +111,12 @@ jobs:
               echo "Path $path does not exist, skipping"
             fi
           done
-          
+
           CHUNK_JSON+=']'
-          
+
           echo "chunks=$CHUNK_JSON" >> "$GITHUB_OUTPUT"
           echo "should_run=true" >> "$GITHUB_OUTPUT"
-          
+
           echo "Chunk matrix: $CHUNK_JSON"
 
   # Job 2: Analyze each chunk in parallel
@@ -241,12 +241,12 @@ jobs:
           echo "" >> size-report.md
           echo "| Directory | Size (bytes) | Size (MB) | Status |" >> size-report.md
           echo "|-----------|--------------|-----------|--------|" >> size-report.md
-          
+
           for dir in src/codex src/codex_ml agents training scripts tests; do
             if [ -d "$dir" ]; then
               size=$(du -sb "$dir" 2>/dev/null | cut -f1 || echo "0")
               size_mb=$(echo "scale=2; $size / 1048576" | bc)
-              
+
               if [ "$size" -gt 9000000 ]; then
                 status="⚠️ Warning"
               elif [ "$size" -gt 8000000 ]; then
@@ -254,19 +254,19 @@ jobs:
               else
                 status="✅ OK"
               fi
-              
+
               echo "| $dir | $size | ${size_mb}MB | $status |" >> size-report.md
             fi
           done
-          
+
           # Total
           total=$(du -sb . --exclude='.git' 2>/dev/null | cut -f1 || echo "0")
           total_mb=$(echo "scale=2; $total / 1048576" | bc)
           echo "" >> size-report.md
           echo "**Total repository size:** ${total_mb}MB" >> size-report.md
-          
+
           cat size-report.md
-          
+
           echo "## Summary" >> "$GITHUB_STEP_SUMMARY"
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
 

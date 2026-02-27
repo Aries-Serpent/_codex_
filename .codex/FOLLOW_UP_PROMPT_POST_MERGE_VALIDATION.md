@@ -183,26 +183,26 @@ Target workflows for immediate optimization:
 1. Add cache health monitoring workflow:
    ```yaml
    name: Cache Health Monitor
-   
+
    on:
      schedule:
        - cron: '0 0 * * *'  # Daily at midnight
      workflow_dispatch:
-   
+
    jobs:
      monitor:
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         
+
          - name: Check Cache Health
            run: |
              python -m codex.ci.cache_manager health
-             
+
          - name: Generate Report
            run: |
              python -m codex.ci.cache_manager validate > .codex/cache-health-report.txt
-             
+
          - name: Upload Report
            uses: actions/upload-artifact@v4
            with:
@@ -240,7 +240,7 @@ Target workflows for immediate optimization:
    ```bash
    # Test cryptography functionality
    python -c "from cryptography.hazmat.primitives import hashes; print('✅ Cryptography working')"
-   
+
    # Test elliptic curve operations
    python -c "from cryptography.hazmat.primitives.asymmetric import ec; key = ec.generate_private_key(ec.SECP256R1()); print('✅ EC operations working')"
    ```
@@ -249,7 +249,7 @@ Target workflows for immediate optimization:
    ```bash
    # Run auth tests
    pytest tests/auth/ -v
-   
+
    # Run security tests
    pytest tests/security/ -v
    ```
@@ -315,37 +315,37 @@ on:
     paths:
       - '.github/workflows/**'
       - 'src/codex/ci/cache_manager.py'
-  
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Dependencies
         run: pip install -e .
-      
+
       - name: Validate Cache Health
         run: python -m codex.ci.cache_manager validate
-      
+
       - name: Check for Conflicts
         run: |
           # Extract all cache keys from workflows
           grep -r "key:" .github/workflows/*.yml > cache-keys.txt
-          
+
           # Check for duplicates
           sort cache-keys.txt | uniq -d > duplicates.txt
-          
+
           if [ -s duplicates.txt ]; then
             echo "❌ Cache key conflicts detected:"
             cat duplicates.txt
             exit 1
           fi
-          
+
           echo "✅ No cache conflicts detected"
 ```
 
@@ -427,17 +427,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check Documentation Links
         run: python scripts/validate_docs_links.py
-      
+
       - name: Check Cache Documentation
         run: |
           # Verify cache docs are up to date
           if ! grep -q "$(date +%Y-%m-%d)" .codex/docs/UNIFIED_CACHE_MANAGEMENT.md; then
             echo "⚠️ Cache documentation may be outdated"
           fi
-      
+
       - name: Generate Quality Report
         run: |
           python scripts/documentation_quality_agent.py \
@@ -504,7 +504,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check Cryptography Version
         run: |
           CURRENT=$(pip show cryptography | grep Version | awk '{print $2}')
@@ -512,7 +512,7 @@ jobs:
             echo "❌ Cryptography version outdated: $CURRENT"
             exit 1
           fi
-      
+
       - name: Vulnerability Scan
         run: pip-audit --desc
 ```

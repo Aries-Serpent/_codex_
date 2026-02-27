@@ -53,13 +53,13 @@ parameters:
   max_monitoring_duration: 55  # minutes
   poll_interval: 180  # seconds (3 minutes)
   alert_threshold: 0.8  # 80% of max duration
-  
+
 workflows_to_monitor:
   - name: "Art_Code Quality & Coverage Suite"
     expected_duration: 25  # minutes
     max_duration: 45
     priority: HIGH
-    
+
   - name: "Art_Rust-Python Hybrid Swarm CI/CD"
     expected_duration: 15
     max_duration: 35
@@ -107,7 +107,7 @@ new_features:
   - api_change_detection: true
   - pattern_learning: true
   - surgical_fixes_only: true  # AI Agency Policy compliance
-  
+
 categorization:
   enabled: true
   categories:
@@ -116,7 +116,7 @@ categorization:
     - type_safety
     - module_import
     - integration_issues
-    
+
 auto_fix_patterns:
   - genesis_workflow_paths
   - hydra_config_composition
@@ -161,13 +161,13 @@ new_features:
   - pattern_matching: true
   - executive_summaries: true
   - baseline_comparison: true
-  
+
 analysis_scope:
   - all_workflows: true
   - failed_jobs: true
   - in_progress_jobs: true
   - successful_jobs: true  # for learning
-  
+
 output_formats:
   - executive_summary
   - detailed_analysis
@@ -225,11 +225,11 @@ optimization_strategies:
   - smart_caching: true
   - instrumentation_tuning: true
   - slow_test_optimization: true
-  
+
 parallelization:
   max_workers: 4
   strategy: "by_duration"  # or "by_module"
-  
+
 caching:
   - pip_dependencies: 30d
   - compiled_artifacts: 7d
@@ -272,13 +272,13 @@ new_features:
   - cicd_learning_integration: true
   - pattern_library_management: true
   - decision_confidence_scoring: true
-  
+
 learning_sources:
   - workflow_durations
   - test_failures
   - resolution_patterns
   - human_feedback
-  
+
 confidence_thresholds:
   auto_execute: 90  # >= 90% confidence
   recommend: 70      # 70-89% confidence
@@ -299,20 +299,20 @@ confidence_thresholds:
 graph TB
     User[User/PR] --> Monitor[Workflow Completion Monitor]
     Monitor --> Brain[Cognitive Brain Manager]
-    
+
     Monitor -->|Detects Failure| CILogs[CI Log Retrieval Agent]
     CILogs --> Brain
     CILogs -->|Failure Analysis| TestFixer[Test Alignment Fixer]
-    
+
     TestFixer --> Brain
     TestFixer -->|Tests Fixed| Verify[Re-run Workflows]
-    
+
     Verify -->|Still Slow| Optimizer[Coverage Optimizer Agent]
     Optimizer --> Brain
-    
+
     Brain -->|Learning| PatternLib[(Pattern Library)]
     Brain -->|Decisions| ActionLog[(Action Log)]
-    
+
     Monitor -.->|Status Updates| User
     TestFixer -.->|Fix Summary| User
     Optimizer -.->|Optimization Report| User

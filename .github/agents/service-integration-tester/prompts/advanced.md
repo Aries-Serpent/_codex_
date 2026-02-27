@@ -97,22 +97,22 @@ import json
 
 class ContractValidator:
     """Contract-driven development validator"""
-    
+
     def __init__(self, spec_path: Path, base_url: str):
         self.spec_path = spec_path
         self.base_url = base_url
         self.tester = ServiceIntegrationTester()
         self.baseline_path = Path(".codex/contract_baselines.json")
-    
+
     def validate_new_endpoints(self) -> bool:
         """Validate that all spec endpoints are implemented"""
         endpoints = self.tester.scan_endpoints(self.base_url, self.spec_path)
-        
+
         all_implemented = True
-        
+
         for endpoint in endpoints:
             result = self.tester.test_endpoint_sync(endpoint)
-            
+
             if result.status_code == 404:
                 print(f"❌ Endpoint not implemented: {endpoint.method} {endpoint.path}")
                 all_implemented = False
@@ -121,34 +121,34 @@ class ContractValidator:
                 all_implemented = False
             else:
                 print(f"✅ Endpoint implemented: {endpoint.method} {endpoint.path}")
-        
+
         return all_implemented
-    
+
     def check_breaking_changes(self) -> list:
         """Detect breaking changes from baseline"""
         violations = []
-        
+
         # Load baseline
         if not self.baseline_path.exists():
             print("No baseline found, creating initial baseline...")
             self.create_baseline()
             return violations
-        
+
         with open(self.baseline_path, 'r') as f:
             baseline = json.load(f)
-        
+
         # Validate current against baseline
         current_compliant, current_violations = self.tester.validate_contract_compliance(
             self.spec_path,
             self.base_url
         )
-        
+
         # Check for new violations
         baseline_violations = set(baseline.get('violations', []))
         current_violations_set = set(current_violations)
-        
+
         new_violations = current_violations_set - baseline_violations
-        
+
         if new_violations:
             violations.extend(list(new_violations))
             print(f"❌ Found {len(new_violations)} new breaking changes:")
@@ -156,27 +156,27 @@ class ContractValidator:
                 print(f"   - {v}")
         else:
             print("✅ No new breaking changes detected")
-        
+
         return violations
-    
+
     def create_baseline(self):
         """Create contract baseline for future comparison"""
         compliant, violations = self.tester.validate_contract_compliance(
             self.spec_path,
             self.base_url
         )
-        
+
         baseline = {
             'timestamp': datetime.now(timezone.utc).isoformat(),
             'compliant': compliant,
             'violations': violations,
             'metrics': self.tester.get_metrics()
         }
-        
+
         self.baseline_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.baseline_path, 'w') as f:
             json.dump(baseline, f, indent=2)
-        
+
         print(f"Baseline created: {self.baseline_path}")
 
 # Usage in CI/CD
@@ -210,36 +210,36 @@ import time
 
 class ChaosIntegrationTester:
     """Integration tester with chaos engineering capabilities"""
-    
+
     def __init__(self):
         self.tester = ServiceIntegrationTester()
-    
+
     def test_with_network_delay(self, endpoint: Endpoint, delay_ms: int):
         """Test endpoint with network delay injected"""
         # Inject network delay (using tc or similar)
         try:
             subprocess.run([
-                "tc", "qdisc", "add", "dev", "eth0", "root", "netem", 
+                "tc", "qdisc", "add", "dev", "eth0", "root", "netem",
                 "delay", f"{delay_ms}ms"
             ], capture_output=True)
-            
+
             print(f"Injected {delay_ms}ms network delay")
-            
+
             # Test endpoint
             result = self.tester.test_endpoint_sync(endpoint)
-            
+
             # Verify graceful degradation
             if result.response_time_ms and result.response_time_ms > delay_ms:
                 print(f"✅ Service handled delay: {result.response_time_ms:.0f}ms")
             else:
                 print(f"⚠️  Unexpected response time: {result.response_time_ms:.0f}ms")
-            
+
             return result
         finally:
             # Remove delay
-            subprocess.run(["tc", "qdisc", "del", "dev", "eth0", "root"], 
+            subprocess.run(["tc", "qdisc", "del", "dev", "eth0", "root"],
                          capture_output=True)
-    
+
     def test_with_packet_loss(self, endpoint: Endpoint, loss_percent: int):
         """Test endpoint with packet loss"""
         try:
@@ -247,43 +247,43 @@ class ChaosIntegrationTester:
                 "tc", "qdisc", "add", "dev", "eth0", "root", "netem",
                 "loss", f"{loss_percent}%"
             ], capture_output=True)
-            
+
             print(f"Injected {loss_percent}% packet loss")
-            
+
             # Test with retries
             attempts = 0
             max_attempts = 5
-            
+
             while attempts < max_attempts:
                 result = self.tester.test_endpoint_sync(endpoint)
-                
+
                 if result.status == 'success':
                     print(f"✅ Service recovered after {attempts + 1} attempts")
                     return result
-                
+
                 attempts += 1
                 time.sleep(1)
-            
+
             print(f"❌ Service failed after {max_attempts} attempts")
             return result
         finally:
             subprocess.run(["tc", "qdisc", "del", "dev", "eth0", "root"],
                          capture_output=True)
-    
+
     def test_dependency_failure(self, endpoint: Endpoint, dependency_url: str):
         """Test endpoint when dependency is unavailable"""
         print(f"Simulating failure of dependency: {dependency_url}")
-        
+
         # Block dependency (using iptables or similar)
         try:
             subprocess.run([
-                "iptables", "-A", "OUTPUT", "-d", dependency_url, 
+                "iptables", "-A", "OUTPUT", "-d", dependency_url,
                 "-j", "DROP"
             ], capture_output=True)
-            
+
             # Test primary service
             result = self.tester.test_endpoint_sync(endpoint)
-            
+
             # Check for graceful degradation
             if result.status_code in [503, 504]:
                 print("✅ Service returned appropriate error for dependency failure")
@@ -291,7 +291,7 @@ class ChaosIntegrationTester:
                 print("✅ Service has fallback mechanism")
             else:
                 print(f"⚠️  Unexpected response: {result.status_code}")
-            
+
             return result
         finally:
             subprocess.run([
@@ -335,20 +335,20 @@ from datetime import datetime, timezone
 
 class PerformanceRegressionDetector:
     """Detect performance regressions using baseline comparison"""
-    
+
     def __init__(self, baseline_path: Path):
         self.tester = ServiceIntegrationTester()
         self.baseline_path = baseline_path
         self.baseline = self.load_baseline()
-    
+
     def load_baseline(self) -> dict:
         """Load performance baseline"""
         if not self.baseline_path.exists():
             return {}
-        
+
         with open(self.baseline_path, 'r') as f:
             return json.load(f)
-    
+
     def test_with_regression_detection(
         self,
         endpoint: Endpoint,
@@ -356,14 +356,14 @@ class PerformanceRegressionDetector:
         threshold: float = 0.20  # 20% regression threshold
     ) -> dict:
         """Test endpoint and detect regressions"""
-        
+
         # Run tests
         response_times = []
         for _ in range(iterations):
             result = self.tester.test_endpoint_sync(endpoint)
             if result.response_time_ms:
                 response_times.append(result.response_time_ms)
-        
+
         # Calculate statistics
         current_stats = {
             'mean': statistics.mean(response_times),
@@ -373,29 +373,29 @@ class PerformanceRegressionDetector:
             'p99': sorted(response_times)[int(len(response_times) * 0.99)],
             'samples': len(response_times)
         }
-        
+
         # Compare to baseline
         endpoint_key = f"{endpoint.method}:{endpoint.path}"
-        
+
         if endpoint_key in self.baseline:
             baseline_stats = self.baseline[endpoint_key]
-            
+
             # Calculate regression
             mean_regression = (
-                (current_stats['mean'] - baseline_stats['mean']) / 
+                (current_stats['mean'] - baseline_stats['mean']) /
                 baseline_stats['mean']
             )
             p95_regression = (
-                (current_stats['p95'] - baseline_stats['p95']) / 
+                (current_stats['p95'] - baseline_stats['p95']) /
                 baseline_stats['p95']
             )
-            
+
             # Check thresholds
             has_regression = (
-                mean_regression > threshold or 
+                mean_regression > threshold or
                 p95_regression > threshold
             )
-            
+
             result = {
                 'endpoint': endpoint_key,
                 'current': current_stats,
@@ -406,31 +406,31 @@ class PerformanceRegressionDetector:
                     'detected': has_regression
                 }
             }
-            
+
             if has_regression:
                 print(f"❌ Performance regression detected for {endpoint_key}")
                 print(f"   Mean: {mean_regression*100:.1f}% slower")
                 print(f"   P95: {p95_regression*100:.1f}% slower")
             else:
                 print(f"✅ No regression for {endpoint_key}")
-            
+
             return result
         else:
             print(f"No baseline for {endpoint_key}, creating baseline...")
             self.baseline[endpoint_key] = current_stats
             self.save_baseline()
-            
+
             return {
                 'endpoint': endpoint_key,
                 'current': current_stats,
                 'baseline': None,
                 'regression': None
             }
-    
+
     def save_baseline(self):
         """Save current baseline"""
         self.baseline['last_updated'] = datetime.now(timezone.utc).isoformat()
-        
+
         self.baseline_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.baseline_path, 'w') as f:
             json.dump(self.baseline, f, indent=2)
@@ -451,7 +451,7 @@ regressions_found = []
 
 for endpoint in endpoints:
     result = detector.test_with_regression_detection(endpoint, iterations=30)
-    
+
     if result['regression'] and result['regression']['detected']:
         regressions_found.append(result)
 
@@ -475,7 +475,7 @@ import time
 
 class MultiRegionLatencyTester:
     """Test API latency from multiple regions"""
-    
+
     def __init__(self):
         self.regions = {
             'us-east-1': 'https://us-east-1.api.example.com',
@@ -484,18 +484,18 @@ class MultiRegionLatencyTester:
             'ap-southeast-1': 'https://ap-southeast-1.api.example.com',
             'ap-northeast-1': 'https://ap-northeast-1.api.example.com'
         }
-    
-    def test_region(self, region_name: str, base_url: str, 
+
+    def test_region(self, region_name: str, base_url: str,
                     endpoint_path: str = "/api/ping") -> dict:
         """Test latency for a specific region"""
         tester = ServiceIntegrationTester()
-        
+
         endpoint = Endpoint(
             path=endpoint_path,
             method="GET",
             base_url=base_url
         )
-        
+
         # Test multiple times for accuracy
         response_times = []
         for _ in range(10):
@@ -503,7 +503,7 @@ class MultiRegionLatencyTester:
             if result.response_time_ms:
                 response_times.append(result.response_time_ms)
             time.sleep(0.1)
-        
+
         if response_times:
             return {
                 'region': region_name,
@@ -517,22 +517,22 @@ class MultiRegionLatencyTester:
                 'region': region_name,
                 'error': 'No successful responses'
             }
-    
+
     def test_all_regions(self, endpoint_path: str = "/api/ping") -> dict:
         """Test all regions in parallel"""
         results = {}
-        
+
         with ThreadPoolExecutor(max_workers=len(self.regions)) as executor:
             futures = {
                 executor.submit(
-                    self.test_region, 
-                    region_name, 
+                    self.test_region,
+                    region_name,
                     base_url,
                     endpoint_path
                 ): region_name
                 for region_name, base_url in self.regions.items()
             }
-            
+
             for future in futures:
                 region_name = futures[future]
                 try:
@@ -540,22 +540,22 @@ class MultiRegionLatencyTester:
                     results[region_name] = result
                 except Exception as e:
                     results[region_name] = {'error': str(e)}
-        
+
         return results
-    
+
     def find_optimal_region(self, results: dict) -> str:
         """Find region with lowest latency"""
         valid_results = {
             k: v for k, v in results.items()
             if 'avg_latency' in v
         }
-        
+
         if not valid_results:
             return None
-        
-        optimal = min(valid_results.items(), 
+
+        optimal = min(valid_results.items(),
                      key=lambda x: x[1]['avg_latency'])
-        
+
         return optimal[0]
 
 # Usage
@@ -596,10 +596,10 @@ from datetime import datetime, timedelta, timezone
 
 class AdvancedMockDataGenerator:
     """Generate complex mock data with relationships"""
-    
+
     def __init__(self):
         self.tester = ServiceIntegrationTester()
-    
+
     def generate_user_ecosystem(self, num_users: int = 10) -> dict:
         """Generate interconnected user data"""
         ecosystem = {
@@ -608,10 +608,10 @@ class AdvancedMockDataGenerator:
             'preferences': [],
             'activities': []
         }
-        
+
         for i in range(num_users):
             user_id = str(uuid.uuid4())
-            
+
             # User
             user = self.tester.generate_mock_data({
                 'id': 'uuid',
@@ -620,7 +620,7 @@ class AdvancedMockDataGenerator:
             })
             user['id'] = user_id
             ecosystem['users'].append(user)
-            
+
             # Profile
             profile = {
                 'user_id': user_id,
@@ -629,7 +629,7 @@ class AdvancedMockDataGenerator:
                 'avatar_url': f"https://avatars.example.com/{user_id}"
             }
             ecosystem['profiles'].append(profile)
-            
+
             # Preferences
             preferences = {
                 'user_id': user_id,
@@ -638,7 +638,7 @@ class AdvancedMockDataGenerator:
                 'notifications_enabled': random.choice([True, False])
             }
             ecosystem['preferences'].append(preferences)
-            
+
             # Activities (random 1-5 per user)
             for _ in range(random.randint(1, 5)):
                 activity = {
@@ -646,14 +646,14 @@ class AdvancedMockDataGenerator:
                     'user_id': user_id,
                     'type': random.choice(['login', 'purchase', 'view', 'update']),
                     'timestamp': (
-                        datetime.now(timezone.utc) - 
+                        datetime.now(timezone.utc) -
                         timedelta(days=random.randint(0, 30))
                     ).isoformat()
                 }
                 ecosystem['activities'].append(activity)
-        
+
         return ecosystem
-    
+
     def generate_ecommerce_data(self, num_orders: int = 20) -> dict:
         """Generate realistic e-commerce data"""
         data = {
@@ -662,7 +662,7 @@ class AdvancedMockDataGenerator:
             'order_items': [],
             'payments': []
         }
-        
+
         # Generate products
         categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Sports']
         for i in range(50):
@@ -673,38 +673,38 @@ class AdvancedMockDataGenerator:
                 'price': round(random.uniform(9.99, 999.99), 2),
                 'stock': random.randint(0, 100),
                 'created_at': (
-                    datetime.now(timezone.utc) - 
+                    datetime.now(timezone.utc) -
                     timedelta(days=random.randint(0, 365))
                 ).isoformat()
             }
             data['products'].append(product)
-        
+
         # Generate orders with items
         for _ in range(num_orders):
             order_id = str(uuid.uuid4())
-            
+
             # Order
             order = {
                 'id': order_id,
                 'user_id': str(uuid.uuid4()),
                 'status': random.choice(['pending', 'processing', 'shipped', 'delivered']),
                 'created_at': (
-                    datetime.now(timezone.utc) - 
+                    datetime.now(timezone.utc) -
                     timedelta(days=random.randint(0, 90))
                 ).isoformat()
             }
             data['orders'].append(order)
-            
+
             # Order items (1-5 per order)
             num_items = random.randint(1, 5)
             selected_products = random.sample(data['products'], num_items)
-            
+
             total_amount = 0
             for product in selected_products:
                 quantity = random.randint(1, 3)
                 item_total = product['price'] * quantity
                 total_amount += item_total
-                
+
                 order_item = {
                     'id': str(uuid.uuid4()),
                     'order_id': order_id,
@@ -714,7 +714,7 @@ class AdvancedMockDataGenerator:
                     'total_price': item_total
                 }
                 data['order_items'].append(order_item)
-            
+
             # Payment
             payment = {
                 'id': str(uuid.uuid4()),
@@ -725,7 +725,7 @@ class AdvancedMockDataGenerator:
                 'timestamp': order['created_at']
             }
             data['payments'].append(payment)
-        
+
         return data
 
 # Usage
@@ -758,15 +758,15 @@ for order in ecommerce_data['orders'][:3]:
         method="POST",
         base_url="https://api.example.com"
     )
-    
+
     # Scrub PII before sending
     order_payload = tester.scrub_pii(json.dumps(order))
-    
+
     result = tester.test_endpoint_sync(
         endpoint,
         payload=json.loads(order_payload)
     )
-    
+
     print(f"Order {order['id'][:8]}...: {result.status}")
 ```
 
@@ -1017,7 +1017,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

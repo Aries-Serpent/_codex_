@@ -259,12 +259,12 @@ from codex_ml.data.local_files import load_jsonl, save_jsonl
 def load_or_process(input_path, cache_path):
     if Path(cache_path).exists():
         return load_jsonl(cache_path)
-    
+
     # Process and cache
     raw_data = load_jsonl(input_path)
     processed = process_data(raw_data)
     save_jsonl(processed, cache_path)
-    
+
     return processed
 ```text
 

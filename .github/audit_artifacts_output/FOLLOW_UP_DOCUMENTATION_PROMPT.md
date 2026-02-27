@@ -489,24 +489,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install pyyaml jinja2 pytest pytest-cov
-      
+
       - name: Run tests with coverage
         run: |
           pytest --cov=src --cov-report=xml
-      
+
       - name: Run audit pipeline
         run: |
           make space-audit
-      
+
       - name: Upload audit artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -514,7 +514,7 @@ jobs:
           path: |
             audit_artifacts/
             reports/
-      
+
       - name: Check for regressions
         run: |
           python scripts/space_traversal/audit_runner.py diff \
@@ -549,21 +549,21 @@ from pathlib import Path
 def log_audit_results():
     with open("audit_artifacts/capabilities_scored.json") as f:
         data = json.load(f)
-    
+
     with mlflow.start_run(run_name="audit-pipeline"):
         # Log overall metrics
         scores = [cap["score"] for cap in data["capabilities"]]
         mlflow.log_metric("avg_capability_score", sum(scores) / len(scores))
         mlflow.log_metric("num_capabilities", len(data["capabilities"]))
-        
+
         # Log per-capability scores
         for cap in data["capabilities"]:
             mlflow.log_metric(f"score_{cap['id']}", cap["score"])
-        
+
         # Log artifacts
         mlflow.log_artifact("audit_artifacts/capabilities_scored.json")
         mlflow.log_artifact("reports/capability_matrix_*.md")
-        
+
         print("Audit results logged to MLflow")
 
 if __name__ == "__main__":
@@ -583,12 +583,12 @@ SLACK_WEBHOOK = "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 def notify_slack():
     with open("audit_artifacts/capabilities_scored.json") as f:
         data = json.load(f)
-    
+
     scores = [cap["score"] for cap in data["capabilities"]]
     avg_score = sum(scores) / len(scores)
-    
+
     low_scores = [cap for cap in data["capabilities"] if cap["score"] < 0.70]
-    
+
     message = {
         "text": f"🔍 Audit Pipeline Results",
         "blocks": [
@@ -604,7 +604,7 @@ def notify_slack():
             }
         ]
     }
-    
+
     if low_scores:
         low_list = "\n".join([f"• {cap['id']}: {cap['score']:.2f}" for cap in low_scores[:5]])
         message["blocks"].append({
@@ -614,7 +614,7 @@ def notify_slack():
                 "text": f"*Low Maturity Capabilities:*\n{low_list}"
             }
         })
-    
+
     response = requests.post(SLACK_WEBHOOK, json=message)
     response.raise_for_status()
     print("Notification sent to Slack")
@@ -663,7 +663,7 @@ if __name__ == "__main__":
    ```bash
    # First run
    python scripts/space_traversal/audit_runner.py stage S1
-   
+
    # Subsequent runs (skip S1 if files unchanged)
    python scripts/space_traversal/audit_runner.py stage S3
    python scripts/space_traversal/audit_runner.py stage S4

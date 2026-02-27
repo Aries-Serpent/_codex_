@@ -33,7 +33,7 @@ I need help remediating a security vulnerability in the Codex repository.
    # ❌ Vulnerable
    query = f"SELECT * FROM users WHERE name = '{user_input}'"
    cursor.execute(query)
-   
+
    # ✅ Fixed: Use parameterized queries
    query = "SELECT * FROM users WHERE name = ?"
    cursor.execute(query, (user_input,))
@@ -43,11 +43,11 @@ I need help remediating a security vulnerability in the Codex repository.
    ```python
    # ❌ Vulnerable
    html = f"<div>{user_input}</div>"
-   
+
    # ✅ Fixed: Escape user input
    import html
    safe_html = f"<div>{html.escape(user_input)}</div>"
-   
+
    # ✅ Better: Use template engine with auto-escaping
    from jinja2 import Template
    template = Template("<div>{{ user_input }}</div>")
@@ -60,15 +60,15 @@ I need help remediating a security vulnerability in the Codex repository.
    file_path = os.path.join(base_dir, user_input)
    with open(file_path) as f:
        data = f.read()
-   
+
    # ✅ Fixed: Validate and sanitize path using robust containment check
    import os
    from pathlib import Path
-   
+
    file_path = os.path.join(base_dir, user_input)
    real_base = os.path.realpath(base_dir)
    real_path = os.path.realpath(file_path)
-   
+
    # Use commonpath for robust containment - prevents /safe/dir_evil bypassing /safe/dir
    try:
        if os.path.commonpath([real_base, real_path]) != real_base:
@@ -77,7 +77,7 @@ I need help remediating a security vulnerability in the Codex repository.
        # commonpath raises ValueError if paths are on different drives (Windows)
        # or have no common prefix - treat as invalid path
        raise ValueError("Invalid path - path traversal attempt detected")
-   
+
    with open(real_path) as f:
        data = f.read()
    ```
@@ -86,11 +86,11 @@ I need help remediating a security vulnerability in the Codex repository.
    ```python
    # ❌ Vulnerable
    os.system(f"ls {user_input}")
-   
+
    # ✅ Fixed: Use subprocess with list
    import subprocess
    subprocess.run(["ls", user_input], check=True)
-   
+
    # ✅ Better: Validate input first
    if not user_input.isalnum():
        raise ValueError("Invalid input")
@@ -102,11 +102,11 @@ I need help remediating a security vulnerability in the Codex repository.
    # ❌ Vulnerable
    import pickle
    data = pickle.loads(user_data)
-   
+
    # ✅ Fixed: Use safe formats
    import json
    data = json.loads(user_data)
-   
+
    # ✅ Or validate source
    if not is_trusted_source(source):
        raise SecurityError("Untrusted data")
@@ -116,7 +116,7 @@ I need help remediating a security vulnerability in the Codex repository.
    ```python
    # ❌ Vulnerable
    API_KEY = "sk_live_abc123..."
-   
+
    # ✅ Fixed: Use environment variables
    import os
    API_KEY = os.getenv("API_KEY")
@@ -129,7 +129,7 @@ I need help remediating a security vulnerability in the Codex repository.
    # ❌ Vulnerable: MD5 for passwords
    import hashlib
    password_hash = hashlib.md5(password.encode()).hexdigest()
-   
+
    # ✅ Fixed: Use proper password hashing
    from passlib.hash import bcrypt
    password_hash = bcrypt.hash(password)
@@ -166,7 +166,7 @@ I need help remediating a security vulnerability in the Codex repository.
        connector = LocalConnector(root="/safe/dir")
        with pytest.raises(ConnectorError):
            connector.read_file("../../etc/passwd")
-   
+
    def test_xss_prevention():
        """Ensure XSS is prevented."""
        malicious = "<script>alert('XSS')</script>"
@@ -180,13 +180,13 @@ I need help remediating a security vulnerability in the Codex repository.
    # CodeQL
    codeql database create --language=python db
    codeql database analyze db --format=sarif-latest --output=results.sarif
-   
+
    # Bandit
    bandit -r src/ -f json -o bandit-report.json
-   
+
    # Safety (dependencies)
    safety check --json
-   
+
    # detect-secrets
    detect-secrets scan --baseline .secrets.baseline
    ```
@@ -202,13 +202,13 @@ I need help remediating a security vulnerability in the Codex repository.
    ```bash
    # Re-run security scanner
    codeql database analyze db --format=sarif-latest
-   
+
    # Run tests
    pytest tests/ -v
-   
+
    # Check for regressions
    pytest tests/security/ -v
-   
+
    # Manual verification
    # Try to exploit the vulnerability
    ```
@@ -218,12 +218,12 @@ I need help remediating a security vulnerability in the Codex repository.
    def process_user_input(data: str) -> str:
        """
        Process user input safely.
-       
+
        Security: Input is sanitized to prevent XSS attacks.
        - HTML entities are escaped
        - Script tags are neutralized
        - All user input is treated as untrusted
-       
+
        See: SECURITY.md for security guidelines
        """
        return html.escape(data)
@@ -329,7 +329,7 @@ Security scanning is integrated into CI/CD:
 # .github/workflows/security.yml
 - name: Run CodeQL
   uses: github/codeql-action/analyze@v2
-  
+
 - name: Run Bandit
   run: bandit -r src/ -f json
 ```

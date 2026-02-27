@@ -135,19 +135,19 @@ graph TB
         PS09[PS-09: Training]
         PS10[PS-10: Owner Guard]
     end
-    
+
     subgraph "P4 Enhancements 📋"
         TLS[Distributed Bridge TLS]
         SHARD[Index Sharding]
         SCOPE[Scope Validation]
         MULTI[Multi-Provider]
     end
-    
+
     PS02 --> TLS
     PS06 --> SHARD
     PS05 --> SCOPE
     PS05 --> MULTI
-    
+
     subgraph "CI/CD Agents"
         PERF[Performance Detector]
         DOC[Doc Freshness]

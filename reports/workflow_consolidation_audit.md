@@ -145,13 +145,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Cache cleanup logic from cache-cleanup.yml
-  
+
   cache-warmup:
     if: github.event.schedule == '0 6 * * *' || github.event.inputs.operation == 'warmup'
     runs-on: ubuntu-latest
     steps:
       # Cache warmup logic from cache-warmup.yml
-  
+
   cache-management:
     if: github.event.inputs.operation == 'management'
     runs-on: ubuntu-latest

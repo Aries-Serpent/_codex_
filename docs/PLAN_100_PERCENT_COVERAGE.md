@@ -93,7 +93,7 @@ def test_partial_file_read():
     with tempfile.TemporaryDirectory() as tmpdir:
         file_path = Path(tmpdir) / "partial.txt"
         file_path.write_text("Partial content")
-        
+
         # Simulate partial read by mocking open
         with patch('builtins.open', side_effect=IOError("Partial read")):
             with pytest.raises(ValueError, match="No chunks generated"):
@@ -104,7 +104,7 @@ def test_disk_full_during_persist():
     with tempfile.TemporaryDirectory() as tmpdir:
         embeddings = np.random.randn(1, 384).astype(np.float32)
         chunks = [(0, 10, "test")]
-        
+
         # Mock disk full error
         with patch('builtins.open', side_effect=OSError(errno.ENOSPC, "No space")):
             with pytest.raises(OSError):
@@ -120,7 +120,7 @@ def test_openai_connection_timeout(mock_openai):
     mock_client = MagicMock()
     mock_client.embeddings.create.side_effect = TimeoutError("Connection timeout")
     mock_openai.return_value = mock_client
-    
+
     provider = OpenAIEmbeddingProvider(api_key="test-key")
     with pytest.raises(TimeoutError):
         provider.encode(["test"])
@@ -129,11 +129,11 @@ def test_openai_connection_timeout(mock_openai):
 def test_openai_rate_limit(mock_openai):
     """Test OpenAI provider with rate limit error"""
     from openai import RateLimitError
-    
+
     mock_client = MagicMock()
     mock_client.embeddings.create.side_effect = RateLimitError("Rate limit exceeded")
     mock_openai.return_value = mock_client
-    
+
     provider = OpenAIEmbeddingProvider(api_key="test-key")
     with pytest.raises(RateLimitError):
         provider.encode(["test"])
@@ -148,17 +148,17 @@ def test_cache_npz_partial_write():
         mock_provider = MagicMock()
         mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
         mock_provider.get_dimension.return_value = 384
-        
+
         cached = CachedEmbeddingProvider(mock_provider, cache_dir=tmpdir)
-        
+
         # Create cache
         cached.encode(["test"], cache_key="partial")
-        
+
         # Corrupt by truncating
         cache_file = Path(tmpdir) / "partial.npz"
         with open(cache_file, 'wb') as f:
             f.write(b'corrupted')
-        
+
         # Should regenerate
         embeddings = cached.encode(["test"], cache_key="partial")
         assert embeddings is not None
@@ -170,16 +170,16 @@ def test_cache_metadata_invalid_json():
         mock_provider = MagicMock()
         mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
         mock_provider.get_dimension.return_value = 384
-        
+
         cached = CachedEmbeddingProvider(mock_provider, cache_dir=tmpdir)
-        
+
         # Create cache
         cached.encode(["test"], cache_key="badjson")
-        
+
         # Corrupt metadata
         meta_file = Path(tmpdir) / "badjson.meta.json"
         meta_file.write_text("{ invalid json ]")
-        
+
         # Should handle and regenerate
         embeddings = cached.encode(["test"], cache_key="badjson")
         assert embeddings is not None
@@ -300,7 +300,7 @@ def test_persist_index_single_vector():
     with tempfile.TemporaryDirectory() as tmpdir:
         embeddings = np.random.randn(1, 384).astype(np.float32)
         chunks = [(0, 10, "Single chunk")]
-        
+
         index_path = persist_index(
             index_name="single",
             embeddings=embeddings,
@@ -308,7 +308,7 @@ def test_persist_index_single_vector():
             tenant_id="test",
             index_dir=tmpdir,
         )
-        
+
         assert index_path.exists()
         index, loaded_chunks, _ = load_index("single", "test", tmpdir)
         assert index.ntotal == 1
@@ -319,7 +319,7 @@ def test_cache_with_single_character_key():
         mock_provider = MagicMock()
         mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
         mock_provider.get_dimension.return_value = 384
-        
+
         cached = CachedEmbeddingProvider(mock_provider, cache_dir=tmpdir)
         embeddings = cached.encode(["test"], cache_key="a")
         assert embeddings is not None
@@ -349,7 +349,7 @@ def test_openai_provider_destructor():
     with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):
         provider = OpenAIEmbeddingProvider()
         assert provider.api_key == "test-key"
-        
+
         # Call destructor
         provider.__del__()
         assert provider.api_key is None
@@ -360,18 +360,18 @@ def test_cached_provider_clear_cache():
         mock_provider = MagicMock()
         mock_provider.encode.return_value = np.random.randn(1, 384).astype(np.float32)
         mock_provider.get_dimension.return_value = 384
-        
+
         cached = CachedEmbeddingProvider(mock_provider, cache_dir=tmpdir)
-        
+
         # Create some cache entries
         cached.encode(["test1"], cache_key="key1")
         cached.encode(["test2"], cache_key="key2")
-        
+
         assert cached.cache_misses == 2
-        
+
         # Clear cache
         cached.clear_cache()
-        
+
         assert cached.cache_hits == 0
         assert cached.cache_misses == 0
         assert Path(tmpdir).exists()
@@ -385,16 +385,16 @@ def test_retriever_file_extraction_fallback():
     """Test file extraction with various metadata structures"""
     with tempfile.TemporaryDirectory() as tmpdir:
         retriever = Retriever(index_dir=tmpdir, index_name="test", tenant_id="test")
-        
+
         # Test with direct file reference
         chunk1 = {"file": "direct.txt"}
         assert retriever._extract_file_from_metadata(chunk1) == "direct.txt"
-        
+
         # Test without file reference, with index metadata
         retriever.index_metadata = {"files": [{"file": "meta.txt"}]}
         chunk2 = {}
         assert retriever._extract_file_from_metadata(chunk2) == "meta.txt"
-        
+
         # Test without any file info
         retriever.index_metadata = {}
         chunk3 = {}
@@ -404,13 +404,13 @@ def test_retriever_line_estimation_edge_cases():
     """Test line number estimation with various positions"""
     with tempfile.TemporaryDirectory() as tmpdir:
         retriever = Retriever(index_dir=tmpdir, index_name="test", tenant_id="test")
-        
+
         # Test zero position
         assert retriever._estimate_line_number(0) == 1
-        
+
         # Test negative position
         assert retriever._estimate_line_number(-10) == 1
-        
+
         # Test large position
         assert retriever._estimate_line_number(10000, chars_per_line=80) > 100
 ```
@@ -422,13 +422,13 @@ def test_indexer_warning_on_skipped_file():
     """Test that warnings are logged for skipped files"""
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
-        
+
         # Create one valid and one invalid file
         valid_file = tmpdir / "valid.txt"
         valid_file.write_text("Valid content " * 50)
-        
+
         invalid_file = tmpdir / "nonexistent.txt"
-        
+
         # Capture logs
         with pytest.warns(UserWarning, match="File not found") or \
              patch('codex.rag.indexer.logger') as mock_logger:
@@ -441,7 +441,7 @@ def test_indexer_warning_on_skipped_file():
                 )
             except ValueError:
                 pass  # Expected if no valid chunks
-            
+
             # Verify warning was logged
             if hasattr(mock_logger, 'warning'):
                 assert mock_logger.warning.called
@@ -453,26 +453,26 @@ def test_retriever_reload_functionality():
         files = []
         docs_dir = Path(tmpdir) / "docs"
         docs_dir.mkdir()
-        
+
         doc = docs_dir / "doc.txt"
         doc.write_text("Test content " * 50)
         files.append(doc)
-        
+
         index_dir = Path(tmpdir) / "indices"
         build_index_from_files(files, "test", "test", str(index_dir))
-        
+
         # Create retriever
         retriever = Retriever(
             index_dir=str(index_dir),
             index_name="test",
             tenant_id="test"
         )
-        
+
         initial_stats = retriever.get_stats()
-        
+
         # Reload
         retriever.reload()
-        
+
         reloaded_stats = retriever.get_stats()
         assert initial_stats["num_vectors"] == reloaded_stats["num_vectors"]
 ```
@@ -505,13 +505,13 @@ def test_docs_example_quick_start():
         from codex.rag.indexer import build_index_from_files
         from codex.rag.retriever import Retriever
         from pathlib import Path
-        
+
         # Create sample docs
         docs_dir = Path(tmpdir) / "docs"
         docs_dir.mkdir()
         doc = docs_dir / "test.md"
         doc.write_text("# Test\nThis is a test document. " * 30)
-        
+
         # Build index
         index_dir = Path(tmpdir) / "indices"
         build_index_from_files(
@@ -520,14 +520,14 @@ def test_docs_example_quick_start():
             tenant_id="default",
             index_dir=str(index_dir),
         )
-        
+
         # Query
         retriever = Retriever(
             index_dir=str(index_dir),
             index_name="docs",
             tenant_id="default"
         )
-        
+
         results = retriever.query("test document", top_k=5)
         assert len(results) > 0
         assert "text" in results[0]
@@ -536,35 +536,35 @@ def test_docs_example_quick_start():
 def test_docs_example_chunking():
     """Test chunking example from docs"""
     from codex.rag.indexer import chunk_text
-    
+
     # From docs
     chunks = chunk_text(
         text="Your long document text...",
         chunk_size=1000,
         overlap=128
     )
-    
+
     assert isinstance(chunks, list)
     assert all(len(chunk) == 3 for chunk in chunks)
 
 def test_docs_example_embeddings():
     """Test embeddings example from docs"""
     from codex.rag.embeddings import create_embedding_provider
-    
+
     # From docs
     provider = create_embedding_provider(
         provider_type="local",
         use_cache=True,
         cache_dir=".codex/embeddings_cache"
     )
-    
+
     assert provider is not None
 
 def test_docs_example_multi_index():
     """Test multi-index example from docs"""
     with tempfile.TemporaryDirectory() as tmpdir:
         from codex.rag.retriever import MultiIndexRetriever
-        
+
         retriever = MultiIndexRetriever(
             indices=[
                 {"index_name": "docs", "tenant_id": "default"},
@@ -572,7 +572,7 @@ def test_docs_example_multi_index():
             ],
             index_dir=tmpdir
         )
-        
+
         assert retriever is not None
         results = retriever.query("query", top_k=10)
         assert isinstance(results, list)
@@ -731,7 +731,7 @@ def get_uncovered_lines():
         capture_output=True,
         text=True
     )
-    
+
     # Parse output for missing lines
     uncovered = {}
     for line in result.stdout.split('\n'):
@@ -740,7 +740,7 @@ def get_uncovered_lines():
             file, coverage, lines = match.groups()
             if coverage != '100%':
                 uncovered[file] = lines
-    
+
     return uncovered
 
 def generate_test_stub(file, lines):
@@ -754,14 +754,14 @@ def test_{Path(file).stem}_line_{lines.replace(",", "_").replace("-", "_")}():
 
 def main():
     uncovered = get_uncovered_lines()
-    
+
     with open('tests/test_generated_coverage.py', 'w') as f:
         f.write('"""Auto-generated coverage tests"""\n\n')
         f.write('import pytest\n\n')
-        
+
         for file, lines in uncovered.items():
             f.write(generate_test_stub(file, lines))
-    
+
     print(f"Generated test stubs for {len(uncovered)} files")
 
 if __name__ == '__main__':

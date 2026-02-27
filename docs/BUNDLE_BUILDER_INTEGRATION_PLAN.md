@@ -73,15 +73,15 @@ interface EnergyComponents {
 class BundleBuilder {
   // Energy minimization
   computeEnergy(bundle: BundleState): EnergyComponents;
-  
+
   // Measurement operators
   measureCompleteness(bundle: BundleState): 0 | 1;
   measureUIMapping(bundle: BundleState): 0 | 1;
   measureSourceCoherence(bundle: BundleState): 0 | 1;
-  
+
   // UI Projection operator
   projectToUI(bundle: BundleState): CreateAgentConfig;
-  
+
   // Repair loop
   async optimizeBundle(requirements: Requirements): Promise<BundleState>;
 }
@@ -95,7 +95,7 @@ class BundleBuilder {
 // Extend QuantumAgent with Bundle Builder
 class QuantumAgent {
   // ... existing code ...
-  
+
   // NEW: Bundle creation
   async createBundleFromRequirements(
     requirements: Requirements
@@ -104,7 +104,7 @@ class QuantumAgent {
     const bundle = await builder.optimizeBundle(requirements);
     return this.manifestFromBundle(bundle);
   }
-  
+
   // NEW: Validate bundle completeness
   validateBundle(bundle: BundleState): {
     complete: boolean;
@@ -124,7 +124,7 @@ class QuantumAgent {
 export function BundleBuilderWizard() {
   const [bundle, setBundle] = useState<BundleState>();
   const [energy, setEnergy] = useState<EnergyComponents>();
-  
+
   return (
     <Tabs defaultValue="describe">
       <TabsList>
@@ -133,10 +133,10 @@ export function BundleBuilderWizard() {
         <TabsTrigger value="preview">Preview</TabsTrigger>
         <TabsTrigger value="export">Export</TabsTrigger>
       </TabsList>
-      
+
       {/* Energy monitor */}
       <EnergyDashboard energy={energy} />
-      
+
       {/* Completeness indicators */}
       <CompletenessIndicators bundle={bundle} />
     </Tabs>
@@ -155,7 +155,7 @@ export function EnergyDashboard({ energy }: { energy: EnergyComponents }) {
       <CardContent>
         {/* Bar chart of energy components */}
         <EnergyBreakdownChart components={energy} />
-        
+
         {/* Optimization suggestions */}
         <OptimizationSuggestions energy={energy} />
       </CardContent>
@@ -295,19 +295,19 @@ graph TB
         Energy[Energy Minimization]
         Hilbert[Hilbert Spaces]
     end
-    
+
     subgraph "Bundle Builder"
         BB[BundleBuilder]
         Manifest[Bundle Manifest]
         UI[UI Projection]
     end
-    
+
     subgraph "Cognitive Brain"
         CB[Cognitive Brain v4.x]
         Agents[Agent Registry]
         Templates[Template Library]
     end
-    
+
     BB --> |creates| QA
     BB --> |uses| Energy
     Manifest --> |exports to| Agents

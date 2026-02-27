@@ -239,11 +239,11 @@ If any task fails:
    ```bash
    # Revert last change
    git reset --hard HEAD~1
-   
+
    # Clear caches
    rm -rf ~/.cache/pip
    rm -rf node_modules/
-   
+
    # Retry with verbose logging
    [command] --verbose --debug
    ```

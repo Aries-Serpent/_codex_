@@ -82,12 +82,12 @@ def _seed_everything(seed: int) -> None:
     import random
     import numpy as np
     import torch
-    
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    
+
     # Add these critical lines:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
@@ -114,11 +114,11 @@ git push
 
 def test_meta_propagates_and_renders(tmp_path):
     from pathlib import Path
-    
+
     # Add this:
     artifacts_dir = Path.cwd() / "audit_artifacts"
     artifacts_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # ... rest of test
 ```
 

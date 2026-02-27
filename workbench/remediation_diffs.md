@@ -32,7 +32,7 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
 +++ b/noxfile.py
 @@ -150,7 +150,11 @@ def tests(session: nox.Session) -> None:
      session.install("-e", ".[test]")
-     
+
      # Run pytest
 -    session.run("pytest", "tests/", *session.posargs)
 +    session.run(
@@ -41,7 +41,7 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
 +        "--cov-fail-under=80",
 +        *session.posargs
 +    )
-     
+
      _show_vendor_scan(session)
 ```
 
@@ -59,17 +59,17 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
  from torch import nn
  from torch.utils.data import DataLoader
 +import os
- 
+
  from .config import TrainingConfig
- 
+
 @@ -25,6 +26,19 @@ class Trainer:
          self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
          self.logger = self._setup_logger()
-         
+
 +        # Enable deterministic mode if requested
 +        if self.config.deterministic:
 +            self._enable_deterministic_mode()
-+    
++  
 +    def _enable_deterministic_mode(self):
 +        """Enable PyTorch deterministic mode for reproducibility."""
 +        torch.use_deterministic_algorithms(True)
@@ -79,7 +79,7 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
 +        self.logger.info(
 +            "Deterministic mode enabled. This may reduce training performance."
 +        )
-+        
++  
      def _setup_logger(self):
          """Setup training logger."""
          import logging
@@ -114,7 +114,7 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
  import json
 +import random
  from datetime import datetime
- 
+
  class CheckpointManager:
 @@ -36,6 +37,14 @@ class CheckpointManager:
              'scheduler_state_dict': scheduler.state_dict() if scheduler else None,
@@ -125,17 +125,17 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
 +                'numpy': np.random.get_state(),
 +                'torch': torch.get_rng_state(),
 +                'cuda': [
-+                    torch.cuda.get_rng_state(i) 
++                    torch.cuda.get_rng_state(i)
 +                    for i in range(torch.cuda.device_count())
 +                ] if torch.cuda.is_available() else []
 +            }
          }
-         
+
          # Save checkpoint
 @@ -68,6 +77,18 @@ class CheckpointManager:
          if checkpoint['scheduler_state_dict'] and scheduler:
              scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-         
+
 +        # Restore RNG states for reproducibility
 +        if 'rng_states' in checkpoint:
 +            rng_states = checkpoint['rng_states']
@@ -148,9 +148,9 @@ This document provides ready-to-apply atomic diffs for the top 10 most critical 
 +            self.logger.info("RNG states restored from checkpoint")
 +        else:
 +            self.logger.warning("No RNG states found in checkpoint - reproducibility not guaranteed")
-+        
++  
          return checkpoint
-     
+
      def get_best_checkpoint(self, metric: str = 'loss', mode: str = 'min') -> Optional[Path]:
 ```
 
@@ -189,27 +189,27 @@ class HealthStatus(Enum):
 
 class HealthChecker:
     """Service health checker with readiness and liveness probes."""
-    
+
     def __init__(self):
         self.checks: Dict[str, Callable[[], bool]] = {}
         self.start_time = time.time()
-    
+
     def register_check(self, name: str, check_fn: Callable[[], bool]):
         """Register a health check function."""
         self.checks[name] = check_fn
-    
+
     def health(self) -> Dict[str, Any]:
         """Basic health endpoint."""
         return {
             "status": HealthStatus.HEALTHY.value,
             "uptime_seconds": time.time() - self.start_time
         }
-    
+
     def ready(self) -> Dict[str, Any]:
         """Readiness check - can service handle requests?"""
         results = {}
         all_passed = True
-        
+
         for name, check_fn in self.checks.items():
             try:
                 passed = check_fn()
@@ -220,12 +220,12 @@ class HealthChecker:
                 logger.error(f"Health check '{name}' failed: {e}")
                 results[name] = f"error: {e}"
                 all_passed = False
-        
+
         return {
             "status": HealthStatus.HEALTHY.value if all_passed else HealthStatus.UNHEALTHY.value,
             "checks": results
         }
-    
+
     def live(self) -> Dict[str, Any]:
         """Liveness check - is service alive?"""
         return {
@@ -240,11 +240,11 @@ class HealthChecker:
 --- a/services/inference/app.py
 +++ b/services/inference/app.py
 @@ -5,6 +5,7 @@ from typing import List, Dict, Any
- 
+
  from fastapi import FastAPI, HTTPException
  from pydantic import BaseModel
 +from codex.health import HealthChecker
- 
+
  app = FastAPI(title="Codex Inference Service")
 +health_checker = HealthChecker()
 +
@@ -266,7 +266,7 @@ class HealthChecker:
 +def liveness():
 +    """Liveness check."""
 +    return health_checker.live()
- 
+
  class InferenceRequest(BaseModel):
      text: str
 ```
@@ -292,34 +292,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install pip-audit
         run: pip install pip-audit
-      
+
       - name: Scan requirements.txt
         run: pip-audit -r requirements.txt --desc --format json --output requirements-audit.json
         continue-on-error: true
-      
+
       - name: Scan requirements-dev.txt
         run: pip-audit -r requirements-dev.txt --desc --format json --output requirements-dev-audit.json
         continue-on-error: true
-      
+
       - name: Scan requirements-ml-cpu.txt
         run: pip-audit -r requirements-ml-cpu.txt --desc --format json --output requirements-ml-audit.json
         continue-on-error: true
-      
+
       - name: Check for critical vulnerabilities
         run: |
           # Fail if any critical vulnerabilities found
           python -c "
           import json
           import sys
-          
+
           critical_found = False
           for file in ['requirements-audit.json', 'requirements-dev-audit.json', 'requirements-ml-audit.json']:
               try:
@@ -331,11 +331,11 @@ jobs:
                               critical_found = True
               except FileNotFoundError:
                   pass
-          
+
           if critical_found:
               sys.exit(1)
           "
-      
+
       - name: Upload audit results
         uses: actions/upload-artifact@v4
         if: always()
@@ -357,7 +357,7 @@ jobs:
 -FROM python:3.11-slim
 +# Pin to specific digest for reproducibility
 +FROM python:3.11-slim@sha256:abc123...  # Replace with actual digest
- 
+
  WORKDIR /app
 ```
 
@@ -370,7 +370,7 @@ jobs:
 -FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
 +# Pin to specific digest for reproducibility
 +FROM nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:def456...  # Replace with actual digest
- 
+
  WORKDIR /app
 ```
 
@@ -414,7 +414,7 @@ def capture_environment() -> Dict[str, Any]:
             "processor": platform.processor()
         }
     }
-    
+
     # PyTorch info if available
     try:
         import torch
@@ -425,7 +425,7 @@ def capture_environment() -> Dict[str, Any]:
             "cudnn_version": torch.backends.cudnn.version() if torch.cuda.is_available() else None,
             "device_count": torch.cuda.device_count() if torch.cuda.is_available() else 0
         }
-        
+
         if torch.cuda.is_available():
             env_info["cuda_devices"] = [
                 {
@@ -437,14 +437,14 @@ def capture_environment() -> Dict[str, Any]:
             ]
     except ImportError:
         env_info["torch"] = {"error": "PyTorch not installed"}
-    
+
     # NumPy version
     try:
         import numpy as np
         env_info["numpy"] = {"version": np.__version__}
     except ImportError:
         pass
-    
+
     return env_info
 
 
@@ -463,21 +463,21 @@ def save_environment_manifest(output_path: Path):
 +++ b/src/training/trainer.py
 @@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
  import os
- 
+
  from .config import TrainingConfig
 +from utils.environment_capture import capture_environment, save_environment_manifest
- 
+
  class Trainer:
      """Training orchestrator."""
 @@ -26,6 +27,11 @@ class Trainer:
          self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
          self.logger = self._setup_logger()
-         
+
 +        # Capture and log environment
 +        env_info = capture_environment()
 +        self.logger.info(f"Environment: {env_info}")
 +        save_environment_manifest(Path(self.config.output_dir) / "environment.json")
-+        
++  
          # Enable deterministic mode if requested
          if self.config.deterministic:
              self._enable_deterministic_mode()
@@ -518,7 +518,7 @@ class AlertLevel(Enum):
 
 class Alerter(ABC):
     """Base class for alerting implementations."""
-    
+
     @abstractmethod
     def send_alert(
         self,
@@ -542,12 +542,12 @@ from .base import Alerter, AlertLevel
 
 class SlackNotifier(Alerter):
     """Send alerts to Slack webhook."""
-    
+
     def __init__(self, webhook_url: Optional[str] = None):
         self.webhook_url = webhook_url or os.getenv("SLACK_WEBHOOK_URL")
         if not self.webhook_url:
             raise ValueError("Slack webhook URL not configured")
-    
+
     def send_alert(
         self,
         message: str,
@@ -561,12 +561,12 @@ class SlackNotifier(Alerter):
             AlertLevel.ERROR: ":x:",
             AlertLevel.CRITICAL: ":rotating_light:"
         }
-        
+
         payload = {
             "text": f"{emoji_map[level]} *{level.value.upper()}*: {message}",
             "attachments": []
         }
-        
+
         if context:
             payload["attachments"].append({
                 "color": "danger" if level in [AlertLevel.ERROR, AlertLevel.CRITICAL] else "warning",
@@ -575,7 +575,7 @@ class SlackNotifier(Alerter):
                     for k, v in context.items()
                 ]
             })
-        
+
         try:
             response = requests.post(self.webhook_url, json=payload, timeout=10)
             return response.status_code == 200
@@ -592,19 +592,19 @@ class SlackNotifier(Alerter):
  from .config import TrainingConfig
  from utils.environment_capture import capture_environment, save_environment_manifest
 +from codex.alerting import SlackNotifier, AlertLevel
- 
+
  class Trainer:
      """Training orchestrator."""
 @@ -27,6 +28,12 @@ class Trainer:
          self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
          self.logger = self._setup_logger()
-         
+
 +        # Set up alerting
 +        try:
 +            self.alerter = SlackNotifier()
 +        except ValueError:
 +            self.alerter = None  # Alerting not configured
-+        
++  
          # Capture and log environment
          env_info = capture_environment()
          self.logger.info(f"Environment: {env_info}")
@@ -662,7 +662,7 @@ cpu_usage_percent = Gauge('cpu_usage_percent', 'CPU usage percentage')
 
 class PrometheusExporter:
     """Prometheus metrics exporter."""
-    
+
     @staticmethod
     def export_metrics() -> bytes:
         """Export metrics in Prometheus format."""
@@ -698,13 +698,13 @@ metrics_registry = {
  from pydantic import BaseModel
  from codex.health import HealthChecker
 +from codex.metrics import PrometheusExporter, metrics_registry
- 
+
  app = FastAPI(title="Codex Inference Service")
  health_checker = HealthChecker()
 @@ -26,6 +27,11 @@ def liveness():
      """Liveness check."""
      return health_checker.live()
- 
+
 +@app.get("/metrics")
 +def metrics():
 +    """Prometheus metrics endpoint."""
@@ -712,7 +712,7 @@ metrics_registry = {
 +
  class InferenceRequest(BaseModel):
      text: str
-     
+
 @@ -33,7 +39,11 @@ class InferenceRequest(BaseModel):
  async def predict(request: InferenceRequest):
      """Run inference."""
@@ -757,20 +757,20 @@ logger = logging.getLogger(__name__)
 
 class ConfigDriftMonitor:
     """Monitor configuration files for unexpected changes."""
-    
+
     def __init__(self, baseline_path: Path):
         self.baseline_path = baseline_path
         self.baseline = self._load_baseline()
-    
+
     def _load_baseline(self) -> Dict[str, str]:
         """Load baseline configuration hashes."""
         if not self.baseline_path.exists():
             logger.warning(f"No baseline found at {self.baseline_path}")
             return {}
-        
+
         with open(self.baseline_path) as f:
             return json.load(f)
-    
+
     def _compute_hash(self, file_path: Path) -> str:
         """Compute SHA256 hash of file."""
         sha256 = hashlib.sha256()
@@ -778,18 +778,18 @@ class ConfigDriftMonitor:
             for chunk in iter(lambda: f.read(4096), b''):
                 sha256.update(chunk)
         return sha256.hexdigest()
-    
+
     def check_drift(self, config_files: list[Path]) -> Dict[str, Any]:
         """Check for configuration drift."""
         drift_detected = []
-        
+
         for file_path in config_files:
             if not file_path.exists():
                 continue
-            
+
             current_hash = self._compute_hash(file_path)
             baseline_hash = self.baseline.get(str(file_path))
-            
+
             if baseline_hash and current_hash != baseline_hash:
                 drift_detected.append({
                     "file": str(file_path),
@@ -797,23 +797,23 @@ class ConfigDriftMonitor:
                     "current_hash": current_hash
                 })
                 logger.warning(f"Config drift detected in {file_path}")
-        
+
         return {
             "drift_detected": len(drift_detected) > 0,
             "files_with_drift": drift_detected
         }
-    
+
     def update_baseline(self, config_files: list[Path]):
         """Update baseline with current configuration hashes."""
         baseline = {}
         for file_path in config_files:
             if file_path.exists():
                 baseline[str(file_path)] = self._compute_hash(file_path)
-        
+
         self.baseline_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.baseline_path, 'w') as f:
             json.dump(baseline, f, indent=2)
-        
+
         logger.info(f"Updated baseline with {len(baseline)} configurations")
 ```
 
@@ -829,15 +829,15 @@ def main():
     """Check configuration drift."""
     root = Path(__file__).parent.parent
     baseline_path = root / ".codex" / "config_baseline.json"
-    
+
     # Collect all config files
     config_files = []
     for pattern in ["configs/**/*.yaml", "configs/**/*.yml", "*.toml"]:
         config_files.extend(root.glob(pattern))
-    
+
     monitor = ConfigDriftMonitor(baseline_path)
     result = monitor.check_drift(config_files)
-    
+
     if result["drift_detected"]:
         print("⚠️  Configuration drift detected:")
         for drift in result["files_with_drift"]:

@@ -33,20 +33,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev,test]"
-      
+
       - name: Run tests with coverage
         run: |
           pytest --cov=src --cov-report=json:coverage.json
-      
+
       - name: Enforce coverage thresholds
         uses: ./.github/agents/test-coverage-enforcer
         with:
@@ -191,15 +191,15 @@ Generated 4 test suggestions:
 Priority 1: divide in src/calculator.py
   Impact: +25.0% coverage
   Test file: tests/test_calculator.py
-  
+
 Priority 2: multiply in src/calculator.py
   Impact: +20.0% coverage
   Test file: tests/test_calculator.py
-  
+
 Priority 3: subtract in src/calculator.py
   Impact: +15.0% coverage
   Test file: tests/test_calculator.py
-  
+
 Priority 4: add in src/calculator.py
   Impact: +15.0% coverage
   Test file: tests/test_calculator.py
@@ -347,26 +347,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e ".[dev,test]"
-      
+
       - name: Run linters
         run: |
           ruff check src/
           black --check src/
           isort --check src/
-      
+
       - name: Run tests
         run: |
           pytest tests/ -v --tb=short
-      
+
       - name: Enforce coverage
         uses: ./.github/agents/test-coverage-enforcer
         id: coverage
@@ -378,14 +378,14 @@ jobs:
           source-path: src
           output-format: json
           output-file: coverage-report.json
-      
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage-report.json
-      
+
       - name: Notify on failure
         if: steps.coverage.outputs.passed == 'false'
         uses: actions/github-script@v6
@@ -393,9 +393,9 @@ jobs:
           script: |
             const coverage = '${{ steps.coverage.outputs.coverage-percentage }}';
             const threshold = '80';
-            
+
             core.setFailed(`Coverage ${coverage}% is below threshold ${threshold}%`);
-      
+
       - name: Deploy
         if: github.ref == 'refs/heads/main' && steps.coverage.outputs.passed == 'true'
         run: |
@@ -490,7 +490,7 @@ The agent generates a styled HTML report:
     <h1>Test Coverage Enforcement Report</h1>
     <p><strong>Total files:</strong> 5</p>
     <p><strong>Issues found:</strong> 2</p>
-    
+
     <h2>Coverage by File</h2>
     <table>
         <tr>
@@ -854,7 +854,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1043,7 +1043,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

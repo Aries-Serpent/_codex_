@@ -149,7 +149,7 @@ git diff --cached --stat
    ```python
    # ❌ WRONG
    output_path = "/tmp/analysis.md"
-   
+
    # ✅ CORRECT
    output_path = Path(".codex") / "analysis.md"
    ```

@@ -6,7 +6,7 @@ A command-line tool for managing GitHub secrets across different scopes (organiz
 
 - **Multi-Scope Support**: Manage secrets at organization, repository, environment, and user/Codespaces levels
 - **Client-Side Encryption**: Uses NaCl sealed box encryption with fetch-on-demand public keys
-- **Flexible Authentication**: 
+- **Flexible Authentication**:
   - OAuth2 Device Flow for interactive sessions
   - Fine-Grained Personal Access Tokens (PAT) for automation
   - Secure token persistence via system keyring
@@ -212,10 +212,10 @@ def set_repository_secret(repo, name, value):
         "--value", value,
         "--json"
     ], capture_output=True, text=True)
-    
+
     if result.returncode != 0:
         raise RuntimeError(f"Failed to set secret: {result.stderr}")
-    
+
     return json.loads(result.stdout)
 ```
 

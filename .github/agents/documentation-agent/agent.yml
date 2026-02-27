@@ -15,13 +15,13 @@ integration:
   cognitive_brain: true
   pda_loop: true
   aftermath: true
-  
+
   phase8_10:
     - DocumentationPortal
-  
+
   phase8_11:
     - ExplainableAI
-  
+
   external:
     - AST analysis
     - Git history
@@ -37,12 +37,12 @@ config:
   random_seed: 48  # DOC_AGENT_SEED
   validation_seed: 42
   wandb_mode: offline
-  
+
   formats:
     api_docs: markdown
     changelog: keepachangelog
     diagrams: mermaid
-  
+
   standards:
     docstring_style: google
     commit_convention: conventional

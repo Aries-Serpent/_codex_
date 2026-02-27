@@ -23,7 +23,7 @@ Automated workflow health monitoring system with quantum-inspired test logic for
 ```python
 class WorkflowHealthState:
     """Quantum-inspired workflow health representation"""
-    
+
     def __init__(self):
         # Workflow exists in superposition until measured
         self.states = {
@@ -33,14 +33,14 @@ class WorkflowHealthState:
         }
         self.measured = False
         self.collapsed_state = None
-    
+
     def measure(self) -> str:
         """Collapse superposition to definite state (like quantum measurement)"""
         if not self.measured:
             self.collapsed_state = self._collapse_wavefunction()
             self.measured = True
         return self.collapsed_state
-    
+
     def _collapse_wavefunction(self) -> str:
         """Probabilistic collapse based on quantum mechanics principles"""
         import random
@@ -57,12 +57,12 @@ class WorkflowHealthState:
 ```python
 class EntangledWorkflows:
     """Workflows that are entangled (share dependencies)"""
-    
+
     def __init__(self, workflow_a: str, workflow_b: str):
         self.workflow_a = workflow_a
         self.workflow_b = workflow_b
         self.correlation = 0.8  # Entanglement strength
-    
+
     def measure_correlated_failure(self, a_failed: bool) -> float:
         """If workflow A fails, probability workflow B fails increases"""
         if a_failed:
@@ -82,11 +82,11 @@ on:
   workflow_run:
     workflows: ["*"]
     types: [completed]
-  
+
   # Scheduled health checks
   schedule:
     - cron: '*/30 * * * *'  # Every 30 minutes
-  
+
   # Manual trigger
   workflow_dispatch:
     inputs:
@@ -102,20 +102,20 @@ jobs:
   quantum-health-check:
     name: Quantum-Inspired Health Analysis
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install requests pyyaml numpy scipy
-      
+
       - name: Run quantum health analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -123,7 +123,7 @@ jobs:
           python scripts/quantum_workflow_health.py \
             --commit-sha "${{ github.event.workflow_run.head_sha || github.sha }}" \
             --full-analysis "${{ inputs.full_analysis || false }}"
-      
+
       - name: Upload health report
         uses: actions/upload-artifact@v6
         if: always()
@@ -131,7 +131,7 @@ jobs:
           name: workflow-health-report
           path: .codex/monitoring/health_report_*.json
           retention-days: 30
-      
+
       - name: Create issue on critical failures
         if: failure()
         uses: actions/github-script@v7
@@ -139,7 +139,7 @@ jobs:
           script: |
             const fs = require('fs');
             const report = JSON.parse(fs.readFileSync('.codex/monitoring/health_report_latest.json'));
-            
+
             if (report.critical_failures > 0) {
               await github.rest.issues.create({
                 owner: context.repo.owner,
@@ -187,23 +187,23 @@ class QuantumWorkflowState:
     name: str
     status: str
     conclusion: Optional[str]
-    
+
     # Quantum properties
     health_amplitude: complex  # Wave function amplitude
     phase: float  # Quantum phase
     entangled_with: List[int]  # Entangled workflow IDs
-    
+
     # Measured properties
     measured_health: Optional[str] = None
     measurement_time: Optional[str] = None
-    
+
     def __post_init__(self):
         """Initialize quantum state"""
         if self.health_amplitude is None:
             self.health_amplitude = self._calculate_amplitude()
         if self.phase is None:
             self.phase = random.uniform(0, 2 * math.pi)
-    
+
     def _calculate_amplitude(self) -> complex:
         """Calculate wave function amplitude from workflow state"""
         if self.status == 'completed':
@@ -216,15 +216,15 @@ class QuantumWorkflowState:
         else:
             # In progress = superposition
             return complex(0.7, 0.3)
-    
+
     def measure_health(self) -> str:
         """Collapse wave function to definite health state"""
         if self.measured_health:
             return self.measured_health
-        
+
         # Calculate probability from amplitude
         probability = abs(self.health_amplitude) ** 2
-        
+
         # Collapse to definite state
         if probability > 0.8:
             self.measured_health = 'healthy'
@@ -232,10 +232,10 @@ class QuantumWorkflowState:
             self.measured_health = 'degraded'
         else:
             self.measured_health = 'critical'
-        
+
         self.measurement_time = datetime.utcnow().isoformat()
         return self.measured_health
-    
+
     def apply_entanglement(self, other_states: List['QuantumWorkflowState']):
         """Apply entanglement effects from related workflows"""
         for other in other_states:
@@ -251,7 +251,7 @@ class QuantumWorkflowState:
 
 class QuantumWorkflowHealthAnalyzer:
     """Analyze workflow health using quantum-inspired principles"""
-    
+
     def __init__(self, github_token: str, repo: str = 'Aries-Serpent/_codex_'):
         self.token = github_token
         self.repo = repo
@@ -260,30 +260,30 @@ class QuantumWorkflowHealthAnalyzer:
             'Authorization': f'token {github_token}',
             'Accept': 'application/vnd.github+json'
         }
-    
+
     def fetch_workflows(self, commit_sha: str) -> List[Dict]:
         """Fetch all workflows for a commit"""
         url = f'{self.base_url}/actions/runs'
         params = {'per_page': 100}
-        
+
         response = requests.get(url, headers=self.headers, params=params)
         response.raise_for_status()
-        
+
         all_runs = response.json()['workflow_runs']
-        
+
         # Filter by commit SHA
         return [run for run in all_runs if run['head_sha'].startswith(commit_sha[:7])]
-    
+
     def create_quantum_states(self, workflows: List[Dict]) -> List[QuantumWorkflowState]:
         """Convert workflows to quantum states"""
         states = []
-        
+
         # Identify entanglements (workflows that run together)
         workflow_groups = self._identify_entanglements(workflows)
-        
+
         for workflow in workflows:
             entangled = workflow_groups.get(workflow['id'], [])
-            
+
             state = QuantumWorkflowState(
                 workflow_id=workflow['id'],
                 name=workflow['name'],
@@ -294,13 +294,13 @@ class QuantumWorkflowHealthAnalyzer:
                 entangled_with=entangled
             )
             states.append(state)
-        
+
         return states
-    
+
     def _identify_entanglements(self, workflows: List[Dict]) -> Dict[int, List[int]]:
         """Identify which workflows are entangled (share dependencies)"""
         entanglements = {}
-        
+
         # Group workflows by event type and branch
         groups = {}
         for wf in workflows:
@@ -308,37 +308,37 @@ class QuantumWorkflowHealthAnalyzer:
             if key not in groups:
                 groups[key] = []
             groups[key].append(wf['id'])
-        
+
         # Workflows in same group are entangled
         for group_ids in groups.values():
             for wf_id in group_ids:
                 entanglements[wf_id] = [x for x in group_ids if x != wf_id]
-        
+
         return entanglements
-    
+
     def analyze_health(self, states: List[QuantumWorkflowState]) -> Dict:
         """Perform quantum health analysis"""
-        
+
         # Phase 1: Measure all states (collapse wave functions)
         for state in states:
             state.measure_health()
-        
+
         # Phase 2: Apply entanglement effects
         for state in states:
             state.apply_entanglement(states)
             # Re-measure after entanglement
             state.measured_health = None
             state.measure_health()
-        
+
         # Phase 3: Calculate aggregate metrics
         health_counts = {'healthy': 0, 'degraded': 0, 'critical': 0}
         for state in states:
             health_counts[state.measured_health] += 1
-        
+
         # Phase 4: Quantum tunneling detection
         # (workflows that unexpectedly recovered from failures)
         tunneling_events = self._detect_tunneling(states)
-        
+
         return {
             'timestamp': datetime.utcnow().isoformat(),
             'total_workflows': len(states),
@@ -350,11 +350,11 @@ class QuantumWorkflowHealthAnalyzer:
             'states': [asdict(s) for s in states],
             'tunneling_details': tunneling_events
         }
-    
+
     def _detect_tunneling(self, states: List[QuantumWorkflowState]) -> List[Dict]:
         """Detect quantum tunneling events (unexpected recoveries)"""
         tunneling = []
-        
+
         # Look for workflows that went from critical to healthy
         # without expected intermediate states
         for state in states:
@@ -364,34 +364,34 @@ class QuantumWorkflowHealthAnalyzer:
                     'name': state.name,
                     'description': 'Unexpected recovery from potential failure'
                 })
-        
+
         return tunneling
-    
+
     def _calculate_overall_health(self, health_counts: Dict[str, int]) -> str:
         """Calculate overall system health"""
         total = sum(health_counts.values())
         if total == 0:
             return 'unknown'
-        
+
         healthy_ratio = health_counts['healthy'] / total
-        
+
         if healthy_ratio > 0.8:
             return 'healthy'
         elif healthy_ratio > 0.5:
             return 'degraded'
         else:
             return 'critical'
-    
+
     def _calculate_coherence(self, states: List[QuantumWorkflowState]) -> float:
         """Calculate quantum coherence (system stability)"""
         if not states:
             return 0.0
-        
+
         # High coherence = stable system
         # Low coherence = unstable/chaotic system
         phases = [s.phase for s in states]
         phase_variance = sum((p - sum(phases)/len(phases))**2 for p in phases) / len(phases)
-        
+
         # Normalize to 0-1 scale (lower variance = higher coherence)
         coherence = 1.0 / (1.0 + phase_variance)
         return round(coherence, 3)
@@ -401,43 +401,43 @@ def main():
     parser = argparse.ArgumentParser(description='Quantum-Inspired Workflow Health Analysis')
     parser.add_argument('--commit-sha', required=True, help='Commit SHA to analyze')
     parser.add_argument('--full-analysis', action='store_true', help='Run full analysis')
-    
+
     args = parser.parse_args()
-    
+
     # Get GitHub token from environment
     import os
     token = os.getenv('GITHUB_TOKEN')
     if not token:
         print("Error: GITHUB_TOKEN environment variable not set")
         sys.exit(1)
-    
+
     # Run analysis
     analyzer = QuantumWorkflowHealthAnalyzer(token)
-    
+
     print(f"🔬 Performing quantum health analysis for commit {args.commit_sha[:7]}...")
-    
+
     workflows = analyzer.fetch_workflows(args.commit_sha)
     print(f"📊 Found {len(workflows)} workflows")
-    
+
     states = analyzer.create_quantum_states(workflows)
     print(f"🌀 Created {len(states)} quantum states")
-    
+
     results = analyzer.analyze_health(states)
-    
+
     # Save results
     import os
     os.makedirs('.codex/monitoring', exist_ok=True)
-    
+
     timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
     report_file = f'.codex/monitoring/health_report_{timestamp}.json'
-    
+
     with open(report_file, 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     # Also save as "latest"
     with open('.codex/monitoring/health_report_latest.json', 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     # Print summary
     print("\n" + "="*70)
     print("🎯 QUANTUM HEALTH ANALYSIS RESULTS")
@@ -448,14 +448,14 @@ def main():
     print(f"  ✅ Healthy: {results['health_distribution']['healthy']}")
     print(f"  ⚠️  Degraded: {results['health_distribution']['degraded']}")
     print(f"  🚨 Critical: {results['health_distribution']['critical']}")
-    
+
     if results['tunneling_events'] > 0:
         print(f"\n🌀 Quantum Tunneling Events: {results['tunneling_events']}")
         print("   (Unexpected recoveries detected)")
-    
+
     print(f"\n📄 Full report saved: {report_file}")
     print("="*70)
-    
+
     # Exit with appropriate code
     if results['critical_failures'] > 0:
         print("\n❌ CRITICAL FAILURES DETECTED")
@@ -497,7 +497,7 @@ from scripts.quantum_workflow_health import (
 
 class TestQuantumWorkflowState:
     """Test quantum state behavior"""
-    
+
     def test_superposition_before_measurement(self):
         """State exists in superposition until measured"""
         state = QuantumWorkflowState(
@@ -509,13 +509,13 @@ class TestQuantumWorkflowState:
             phase=0.5,
             entangled_with=[]
         )
-        
+
         # Before measurement, state is uncertain
         assert state.measured_health is None
-        
+
         # Amplitude represents superposition
         assert abs(state.health_amplitude) > 0
-    
+
     def test_wave_function_collapse(self):
         """Measurement collapses wave function to definite state"""
         state = QuantumWorkflowState(
@@ -527,16 +527,16 @@ class TestQuantumWorkflowState:
             phase=0.5,
             entangled_with=[]
         )
-        
+
         # First measurement collapses state
         health1 = state.measure_health()
         assert health1 in ['healthy', 'degraded', 'critical']
         assert state.measured_health is not None
-        
+
         # Subsequent measurements return same result (deterministic)
         health2 = state.measure_health()
         assert health1 == health2
-    
+
     def test_entanglement_correlation(self):
         """Entangled workflows affect each other"""
         # Create two entangled workflows
@@ -549,7 +549,7 @@ class TestQuantumWorkflowState:
             phase=0.0,
             entangled_with=[2]
         )
-        
+
         state2 = QuantumWorkflowState(
             workflow_id=2,
             name="Workflow B",
@@ -559,17 +559,17 @@ class TestQuantumWorkflowState:
             phase=0.0,
             entangled_with=[1]
         )
-        
+
         # Measure state2 (failure)
         state2.measure_health()
         assert state2.measured_health == 'critical'
-        
+
         # Entanglement should affect state1
         state1.apply_entanglement([state2])
-        
+
         # state1's amplitude should decrease due to entanglement
         assert abs(state1.health_amplitude) < 0.8
-    
+
     def test_heisenberg_uncertainty(self):
         """Cannot know exact state without measurement"""
         state = QuantumWorkflowState(
@@ -581,7 +581,7 @@ class TestQuantumWorkflowState:
             phase=math.pi/4,
             entangled_with=[]
         )
-        
+
         # Before measurement, outcome is probabilistic
         # Run multiple measurements and verify randomness
         outcomes = set()
@@ -590,12 +590,12 @@ class TestQuantumWorkflowState:
             state.measured_health = None
             outcome = state.measure_health()
             outcomes.add(outcome)
-        
+
         # Should get varied outcomes (uncertainty)
         # Note: With specific amplitude, might be deterministic
         # This test validates the measurement mechanism exists
         assert len(outcomes) >= 1
-    
+
     def test_quantum_tunneling_detection(self):
         """Detect unexpected state transitions (tunneling)"""
         # Workflow with high imaginary component (tunneling signature)
@@ -608,9 +608,9 @@ class TestQuantumWorkflowState:
             phase=math.pi/2,
             entangled_with=[]
         )
-        
+
         state.measure_health()
-        
+
         # Tunneling indicator: healthy result with high imaginary amplitude
         if state.measured_health == 'healthy':
             assert abs(state.health_amplitude.imag) > 0.5  # Tunneling signature
@@ -618,37 +618,37 @@ class TestQuantumWorkflowState:
 
 class TestQuantumHealthAnalyzer:
     """Test quantum health analyzer"""
-    
+
     def test_workflow_entanglement_detection(self):
         """Identify entangled workflows"""
         analyzer = QuantumWorkflowHealthAnalyzer(
             github_token='fake_token',
             repo='test/repo'
         )
-        
+
         workflows = [
             {'id': 1, 'event': 'push', 'head_branch': 'main'},
             {'id': 2, 'event': 'push', 'head_branch': 'main'},
             {'id': 3, 'event': 'pull_request', 'head_branch': 'feature'},
         ]
-        
+
         entanglements = analyzer._identify_entanglements(workflows)
-        
+
         # 1 and 2 should be entangled (same event/branch)
         assert 2 in entanglements[1]
         assert 1 in entanglements[2]
-        
+
         # 3 should not be entangled with 1 or 2
         assert 1 not in entanglements[3]
         assert 2 not in entanglements[3]
-    
+
     def test_coherence_calculation(self):
         """Calculate quantum coherence (system stability)"""
         analyzer = QuantumWorkflowHealthAnalyzer(
             github_token='fake_token',
             repo='test/repo'
         )
-        
+
         # All workflows in phase = high coherence
         states_coherent = [
             QuantumWorkflowState(
@@ -662,9 +662,9 @@ class TestQuantumHealthAnalyzer:
             )
             for i in range(5)
         ]
-        
+
         coherence_high = analyzer._calculate_coherence(states_coherent)
-        
+
         # Random phases = low coherence
         states_incoherent = [
             QuantumWorkflowState(
@@ -678,27 +678,27 @@ class TestQuantumHealthAnalyzer:
             )
             for i in range(5)
         ]
-        
+
         coherence_low = analyzer._calculate_coherence(states_incoherent)
-        
+
         # High coherence should be greater than low coherence
         assert coherence_high > coherence_low
-    
+
     def test_overall_health_calculation(self):
         """Calculate overall system health"""
         analyzer = QuantumWorkflowHealthAnalyzer(
             github_token='fake_token',
             repo='test/repo'
         )
-        
+
         # Mostly healthy
         health_good = {'healthy': 8, 'degraded': 2, 'critical': 0}
         assert analyzer._calculate_overall_health(health_good) == 'healthy'
-        
+
         # Mixed health
         health_mixed = {'healthy': 5, 'degraded': 3, 'critical': 2}
         assert analyzer._calculate_overall_health(health_mixed) == 'degraded'
-        
+
         # Mostly critical
         health_bad = {'healthy': 1, 'degraded': 2, 'critical': 7}
         assert analyzer._calculate_overall_health(health_bad) == 'critical'
@@ -707,7 +707,7 @@ class TestQuantumHealthAnalyzer:
 @pytest.mark.integration
 class TestQuantumHealthIntegration:
     """Integration tests requiring GitHub API"""
-    
+
     @pytest.mark.skipif(
         not os.getenv('GITHUB_TOKEN'),
         reason="Requires GITHUB_TOKEN"
@@ -715,23 +715,23 @@ class TestQuantumHealthIntegration:
     def test_full_analysis_real_workflows(self):
         """Test full analysis with real GitHub workflows"""
         import os
-        
+
         analyzer = QuantumWorkflowHealthAnalyzer(
             github_token=os.getenv('GITHUB_TOKEN'),
             repo='Aries-Serpent/_codex_'
         )
-        
+
         # Use a known commit SHA
         commit_sha = 'b615560'
-        
+
         workflows = analyzer.fetch_workflows(commit_sha)
         assert len(workflows) > 0
-        
+
         states = analyzer.create_quantum_states(workflows)
         assert len(states) == len(workflows)
-        
+
         results = analyzer.analyze_health(states)
-        
+
         # Verify result structure
         assert 'overall_health' in results
         assert 'quantum_coherence' in results

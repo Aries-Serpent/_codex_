@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Authenticate and perform operation
         env:
           GH_TOKEN: ${{ secrets.ORG_MASTER_KEY }}
@@ -143,20 +143,20 @@ import requests
 def perform_api_operation():
     # Token available when script runs in GitHub Actions
     token = os.environ.get('ORG_MASTER_KEY')
-    
+
     if not token:
         raise ValueError("ORG_MASTER_KEY not configured")
-    
+
     headers = {
         'Authorization': f'Bearer {token}',
         'Accept': 'application/vnd.github+json'
     }
-    
+
     response = requests.get(
         'https://api.github.com/user',
         headers=headers
     )
-    
+
     return response.json()
 
 if __name__ == '__main__':
@@ -473,7 +473,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -662,7 +662,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -35,7 +35,7 @@
 - All 34 tests fully implemented in Phase 26
 
 **2. CLI Module** (2 placeholders remaining):
-- `test_cli_help_text_consistency` 
+- `test_cli_help_text_consistency`
 - `test_cli_version_output_format`
 
 **3. Training Module** (13 placeholders remaining):
@@ -134,17 +134,17 @@ def test_training_dataset_custom_transform_validation():
             if x.shape[0] == 0:
                 raise ValueError("Empty input")
             return x * 2
-    
+
     transform = CustomTransform()
     dataset = Mock()
     dataset.__len__.return_value = 10
     dataset.__getitem__.side_effect = lambda idx: torch.zeros((0,))
-    
+
     # Assertions
     with pytest.raises(ValueError, match="Empty input"):
         for item in dataset:
             transform(item)
-    
+
     assert dataset.__len__.called
     assert dataset.__getitem__.call_count > 0
 ```
@@ -159,16 +159,16 @@ def test_training_dataset_custom_transform_validation():
 def test_services_event_bus_error_propagation():
     """Test error propagation through event bus."""
     bus = Mock(spec=EventBus)
-    
+
     def failing_handler(event):
         raise RuntimeError("Handler failed")
-    
+
     bus.subscribe("test_event", failing_handler)
-    
+
     # Should capture and log error without crashing
     with pytest.raises(RuntimeError):
         bus.publish("test_event", {"data": "test"})
-    
+
     # Verify error logged
     assert bus.log_error.called
     assert "Handler failed" in str(bus.log_error.call_args)
@@ -184,10 +184,10 @@ def test_cognitive_brain_service_communication():
     """Test communication between cognitive brain and services."""
     brain = Mock(spec=CognitiveBrain)
     service = Mock(spec=Service)
-    
+
     # Brain sends command to service
     brain.send_command(service, "execute", {"param": "value"})
-    
+
     # Assertions
     assert service.execute.called
     assert service.execute.call_args[0][0] == {"param": "value"}

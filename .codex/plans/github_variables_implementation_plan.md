@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Emergent Intelligence Agent
         env:
           AGENT_SEED: ${{ vars.EMERGENT_AGENT_SEED }}

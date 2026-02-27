@@ -253,7 +253,7 @@ Based on pytest progress output:
 ### Approach Used
 1. **Continuous Polling**: Checked workflow status every 2-5 minutes
 2. **Total Monitoring Time**: 33 minutes of active monitoring
-3. **Wait Intervals**: 
+3. **Wait Intervals**:
    - Initial: 30 seconds
    - Mid-monitoring: 2-3 minutes
    - Extended: 5 minutes (for long-running coverage tests)

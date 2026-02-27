@@ -144,7 +144,7 @@ The design should evoke **cutting-edge AI sophistication** combined with **scien
 **Quantum-Inspired Gradient Palette with High Contrast**
 
 - **Primary Color**: Deep Purple `oklch(0.45 0.18 295)` - Represents quantum superposition, conveys innovation and advanced AI capabilities, used for primary CTAs and quantum visualizations
-- **Secondary Colors**: 
+- **Secondary Colors**:
   - Vibrant Indigo `oklch(0.50 0.20 280)` - Supporting quantum theme, used for secondary actions and accents
   - Electric Blue `oklch(0.60 0.15 250)` - Technology and precision, used for data visualizations and active states
   - Deep Slate `oklch(0.25 0.02 250)` - Dark UI backgrounds, cards, and panels
@@ -174,7 +174,7 @@ Animations should emphasize **quantum state transitions**, **cognitive processin
 
 ## Component Selection
 
-- **Components**: 
+- **Components**:
   - `Card` with dark variant for all major sections (Code Editor, Metrics Panel, Quantum Visualizer)
   - `Textarea` for prompt input with character counter integration
   - `Button` with loading states for primary actions, icon variants for secondary actions
@@ -186,7 +186,7 @@ Animations should emphasize **quantum state transitions**, **cognitive processin
   - `Tooltip` for metric explanations and help text
   - `Separator` for visual section breaks
   - Monaco Editor (external) for syntax-highlighted code display
-- **Customizations**: 
+- **Customizations**:
   - Canvas-based quantum visualizer (no Shadcn equivalent)
   - Custom gradient header with animated particle background
   - WebGL physics simulator canvas
@@ -194,23 +194,23 @@ Animations should emphasize **quantum state transitions**, **cognitive processin
   - SVG-based collaboration graph with animated connections
   - Token flow stream with real-time updates and auto-scrolling
   - Circular network layout for paradigm visualization
-- **States**: 
+- **States**:
   - Buttons: default (purple gradient), hover (lighter + lift), active (pressed + scale 0.98), disabled (gray + reduced opacity), loading (spinner + pulse)
   - Inputs: default (subtle border), focus (cyan glow + border), error (red border + shake), success (green checkmark)
   - Cards: default (slate background), hover (subtle lift on interactive cards), active (cyan border for selected agents)
-- **Icon Selection**: 
+- **Icon Selection**:
   - Phosphor Icons throughout: `Code`, `Brain`, `Lightning`, `Database`, `Atom`, `ChartLine`, `FileCode`, `Play`, `Stop`, `ArrowsClockwise`, `Check`, `X`, `Copy`, `Download`, `Upload`, `GitBranch`, `ArrowRight`, `Circle`, `CheckCircle`, `Plus`, `Sparkle`, `BookOpen`, `MagnifyingGlass`, `Package`, `Star`, `TrendUp`, `Link`, `Warning`
   - Emojis for agent types: 🤖 (workflow), ⚛️ (quantum), 🔬 (physics), 🔗 (collaboration)
   - Workflow tokens: 🔍 (audit), 📚 (docs), 🔧 (heal), ⚛️ (decide), 🗂️ (organize), ✅ (review)
   - Physics paradigms: 🌀 (chaos), 🔺 (fractal), 💧 (fluid), ⚡ (electromagnetic), 〰️ (wave), ⏰ (relativity)
   - Custom token icon picker: 20 emoji options (🚀, ⚡, 🔬, 🧬, 🔮, 🌟, 💎, 🎯, 🔥, 💫, 🌈, 🎨, 🔧, 🛠️, ⚙️, 🔍, 📊, 🎪, 🏆, 💡)
   - Template bundle categories: 🏗️ (full-stack dev), 🤖 (MLOps), 🔒 (security), ⚙️ (DevOps), ✨ (code quality), 📈 (analytics)
-- **Spacing**: 
+- **Spacing**:
   - Container padding: `p-6` (24px) for cards, `p-8` (32px) for main sections
   - Component gaps: `gap-4` (16px) for related elements, `gap-6` (24px) for section separation
   - Button padding: `px-6 py-3` for primary, `px-4 py-2` for secondary
   - Grid gaps: `gap-4` for dense layouts (metrics), `gap-6` for breathing room (cards)
-- **Mobile**: 
+- **Mobile**:
   - Single column layout <768px
   - Collapsible sidebar navigation becomes bottom tabs
   - Quantum visualizer canvas scales to screen width (min 320px)

@@ -161,7 +161,7 @@ run: |
     echo "**Bold text:** $VARIABLE"
     echo "More content"
   } > /tmp/file.md
-  
+
   gh issue create --body-file /tmp/file.md
 ```
 

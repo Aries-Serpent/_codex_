@@ -18,24 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run actionlint
         uses: rhysd/actionlint@v1.6.26
-      
+
       - name: Install yamllint
         run: |
           pip install yamllint
-      
+
       - name: Run yamllint on workflows
         run: |
           echo "Linting YAML files in .github/workflows..."
           yamllint .github/workflows/ -c .yamllint.yml || echo "Warning: yamllint found issues (non-blocking in template mode)"
-      
+
       - name: Run yamllint on .codex directory
         run: |
           echo "Linting YAML files in .codex..."
           yamllint .codex/*.yaml .codex/*.yml -c .yamllint.yml || echo "Warning: yamllint found issues (non-blocking in template mode)"
-      
+
       - name: Validate YAML syntax with Python
         run: |
           echo "Validating YAML syntax..."
@@ -43,9 +43,9 @@ jobs:
           import yaml
           import sys
           from pathlib import Path
-          
+
           errors = []
-          
+
           # Check workflows
           for f in Path('.github/workflows').glob('*.yml'):
               try:
@@ -55,7 +55,7 @@ jobs:
               except Exception as e:
                   print(f'❌ {f}: {e}')
                   errors.append(str(f))
-          
+
           # Check .codex YAML files
           for f in Path('.codex').glob('*.yaml'):
               try:
@@ -65,7 +65,7 @@ jobs:
               except Exception as e:
                   print(f'❌ {f}: {e}')
                   errors.append(str(f))
-          
+
           if errors:
               print(f'\nErrors found in: {errors}')
               sys.exit(1)

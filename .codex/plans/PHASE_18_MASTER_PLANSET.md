@@ -134,7 +134,7 @@ graph TD
         CB --> MTA[Maintenance Agent]
         CB --> CQA[CodeQL Chunk Agent]
     end
-    
+
     subgraph "Phase 18: Deployment"
         P18_0[18.0 Validation] --> P18_1[18.1 Documentation]
         P18_1 --> P18_2[18.2 CI/CD]

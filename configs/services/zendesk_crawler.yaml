@@ -39,7 +39,7 @@ pii_scrubbing:
 monitoring:
   enabled: true
   log_level: INFO  # DEBUG, INFO, WARNING, ERROR
-  
+
   # Alert thresholds
   alerts:
     max_failures: 5  # Alert if > 5 articles fail in single sync
@@ -62,12 +62,12 @@ retry_policy:
 cache:
   max_age_days: 30  # Clean up cache entries older than 30 days
   auto_clean: true  # Automatically clean stale cache entries
-  
+
 # Output management
 output:
   retention_days: 90  # Keep snapshots for 90 days
   compress_old_snapshots: true  # Compress snapshots older than 30 days
-  
+
 # Integration hooks
 hooks:
   pre_sync: null  # Optional script to run before sync

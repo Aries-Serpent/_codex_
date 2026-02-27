@@ -170,15 +170,15 @@ These variables are specifically designed for quantum physics-inspired calculati
 class QuantumTestVariables:
     # Planck constant (normalized)
     hbar: float = 1.0
-    
+
     # Wavefunction parameters
     psi_0: complex = 1.0 / math.sqrt(2)  # Initial amplitude
     psi_1: complex = 1.0 / math.sqrt(2)  # Superposition amplitude
-    
+
     # Born rule: probability = |ψ|²
     probability_0: float = 0.5
     probability_1: float = 0.5
-    
+
     # Normalization: Σ|ψ|² = 1
     normalization: float = 1.0
 ```
@@ -189,14 +189,14 @@ class QuantumTestVariables:
 class EntanglementTestVariables:
     # Bell state |Φ+⟩ = (|00⟩ + |11⟩)/√2
     bell_state_amplitude: float = 1.0 / math.sqrt(2)
-    
+
     # Correlation for Bell state
     correlation: float = 1.0  # Maximally correlated
-    
+
     # CHSH inequality
     classical_bound: float = 2.0
     tsirelson_bound: float = 2.828  # 2√2
-    
+
     # Entanglement entropy
     entanglement_entropy: float = 1.0  # bits for maximally entangled
 ```
@@ -209,12 +209,12 @@ class QLearningTestVariables:
     alpha: float = 0.12  # Learning rate
     gamma: float = 0.99  # Discount factor
     epsilon: float = 0.1  # Exploration rate
-    
+
     # Bellman equation: Q(s,a) = R + γ·max(Q(s',a'))
     q_value: float = 0.0
     reward: float = 1.0
     max_next_q: float = 0.5
-    
+
     # TD error: δ = R + γ·max(Q(s',a')) - Q(s,a)
     td_error: float = 0.0
 ```
@@ -227,14 +227,14 @@ class ThermodynamicTestVariables:
     temperature: float = 1.0
     energy: float = 1.0
     boltzmann_constant: float = 1.0  # k_B = 1 in natural units
-    
+
     # Gibbs probability: P ∝ exp(-E/kT)
     gibbs_probability: float = math.exp(-1.0)
-    
+
     # Free energy: F = E - TS
     entropy: float = 0.5
     free_energy: float = 0.5  # F = 1.0 - 1.0 * 0.5
-    
+
     # Partition function: Z = Σ exp(-E_i/kT)
     partition_function: float = 0.0
 ```
@@ -288,19 +288,19 @@ class ThermodynamicTestVariables:
 class UniversalIntelligenceVariables:
     # Algorithmic domain
     algorithmic_accuracy: float = 0.0
-    
+
     # Game playing domain
     game_win_rate: float = 0.0
-    
+
     # Language domain
     language_understanding: float = 0.0
-    
+
     # Vision domain
     vision_accuracy: float = 0.0
-    
+
     # Control domain
     control_reward: float = 0.0
-    
+
     # Scientific domain
     scientific_prediction: float = 0.0
 ```
@@ -537,7 +537,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -690,7 +690,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

@@ -33,7 +33,7 @@ Successfully completed comprehensive test fixing mission. All requested test bat
 
 **Problem**: PyTorch meta tensors fail when using `.to(device)` in transformers v5.0.0+
 ```
-NotImplementedError: Cannot copy out of meta tensor; no data! 
+NotImplementedError: Cannot copy out of meta tensor; no data!
 Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 ```
 
@@ -45,7 +45,7 @@ Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
   - `src/codex/rag/retriever.py:112`
 - Enhanced test mocks with `to_empty()` method
 
-**Impact**: 
+**Impact**:
 - ✅ 16 RAG tests now passing
 - ✅ Zero meta tensor errors
 - ✅ Future-proof for PyTorch 2.0+
@@ -107,7 +107,7 @@ MockSentenceTransformer.__init__() got an unexpected keyword argument 'trust_rem
   ✅ 15/15 Tenant management tests passing
   ✅ 8/8 End-to-end pipeline tests passing
   ✅ 7/7 Initialization pattern tests passing
-  
+
 Remaining (not in scope):
   ⏭️ 2 skipped tests (optional dependencies)
 ```
@@ -167,14 +167,14 @@ class MockSentenceTransformer:
 
 # After (COMPLETE):
 class MockSentenceTransformer:
-    def __init__(self, model_name, cache_folder=None, device="cpu", 
+    def __init__(self, model_name, cache_folder=None, device="cpu",
                  trust_remote_code=False, use_auth_token=None):
         self.model_name = model_name
         self.device = device
         self.cache_folder = cache_folder
         self.trust_remote_code = trust_remote_code
         self.use_auth_token = use_auth_token
-    
+
     def to_empty(self, device):
         self.device = device
         return self

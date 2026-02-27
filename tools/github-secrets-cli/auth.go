@@ -162,7 +162,7 @@ type deviceCodeResponse struct {
 // requestDeviceCode initiates the device flow
 func (a *AuthManager) requestDeviceCode(ctx context.Context) (*deviceCodeResponse, error) {
 	data := strings.NewReader(fmt.Sprintf("client_id=%s&scope=repo,admin:org,codespace", githubClientID))
-	
+
 	req, err := http.NewRequestWithContext(ctx, "POST", githubOAuthURL, data)
 	if err != nil {
 		return nil, err
@@ -237,7 +237,7 @@ func (a *AuthManager) pollForToken(ctx context.Context, deviceCode *deviceCodeRe
 // checkToken checks if the token is available
 func (a *AuthManager) checkToken(ctx context.Context, deviceCode string) (string, error) {
 	data := strings.NewReader(fmt.Sprintf("client_id=%s&device_code=%s&grant_type=urn:ietf:params:oauth:grant-type:device_code", githubClientID, deviceCode))
-	
+
 	req, err := http.NewRequestWithContext(ctx, "POST", githubTokenURL, data)
 	if err != nil {
 		return "", err

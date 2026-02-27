@@ -74,7 +74,7 @@ jobs:
           try:
               from scripts.space_traversal.wiki_generator import generate_wiki, create_wiki_bundle
               from pathlib import Path
-              
+
               output_dir = Path('wiki_output')
               repo = os.environ['REPO_NAME']
               version = os.environ['VERSION']
@@ -110,7 +110,7 @@ jobs:
           try:
               from scripts.space_traversal.viz_docs_hub import generate_docs_hub
               from pathlib import Path
-              
+
               repo = os.environ['REPO_NAME']
               version = os.environ['VERSION']
               generate_docs_hub(Path('wiki_output/docs_hub.html'), repo, version)
@@ -138,7 +138,7 @@ jobs:
           try:
               from scripts.space_traversal.viz_agent_interface import generate_agent_interface
               from pathlib import Path
-              
+
               repo = os.environ['REPO_NAME']
               version = os.environ['VERSION']
               generate_agent_interface(Path('wiki_output/agent_interface.html'), repo, version)

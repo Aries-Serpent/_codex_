@@ -163,7 +163,7 @@ python tools/modernization_scanner.py src/ --verbose
 ### 1. Bulk Fence Fixes (Deferred to Follow-up PR)
 
 **Reason**: 109 fence errors require careful review
-**Recommendation**: 
+**Recommendation**:
 ```bash
 # Run fence fixer with review
 python tools/fence_fixer.py docs/ --dry-run --verbose

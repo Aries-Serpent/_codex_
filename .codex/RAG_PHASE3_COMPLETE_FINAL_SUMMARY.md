@@ -80,9 +80,9 @@ Target Achievement: 237% (90+ target → 213+ actual)
 def safe_model_to_device(model, device="cpu"):
     import time
     start_time = time.time()  # ← Track timing from start
-    
+
     # ... operation logic ...
-    
+
     if meta_status:
         # Meta tensor path
         duration = time.time() - start_time
@@ -257,14 +257,14 @@ import time
 
 def critical_operation(*args, **kwargs):
     start_time = time.time()
-    
+
     try:
         result = perform_operation(*args, **kwargs)
-        
+
         duration = time.time() - start_time
         if duration > threshold or special_case:
             logger.info(f"Operation completed in {duration:.3f}s")
-        
+
         return result
     except Exception as e:
         duration = time.time() - start_time

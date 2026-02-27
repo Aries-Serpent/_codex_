@@ -129,7 +129,7 @@ def __init__(self, grid_size: int = 100):
 class QuantumOperator:
     dimension: int = 10
     grid_size: Optional[int] = None  # Alias
-    
+
     def __post_init__(self):
         if self.grid_size is not None:
             self.dimension = self.grid_size
@@ -256,7 +256,7 @@ def method(new_param=None, old_param=None):
 class MyClass:
     primary_param: int = 10
     alias_param: Optional[int] = None
-    
+
     def __post_init__(self):
         if self.alias_param is not None:
             self.primary_param = self.alias_param

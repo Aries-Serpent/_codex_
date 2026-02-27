@@ -206,10 +206,10 @@ def test_feature_happy_path():
     """Test normal operation of feature."""
     # Arrange
     set_clock("2025-01-01T00:00:00")
-    
+
     # Act
     result = function_under_test(valid_input)
-    
+
     # Assert
     assert result == expected_output
     assert get_timestamp() == "2025-01-01T00:00:00"

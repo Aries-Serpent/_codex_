@@ -26,7 +26,7 @@ dependencies = [
     # Existing dependencies...
     "omegaconf>=2.3",
     "hydra-core==1.3.2",
-    
+
     # AST Core Dependencies (NEW)
     "libcst>=1.0.0",         # Universal Python parser
     "radon>=6.0.0",          # Code metrics

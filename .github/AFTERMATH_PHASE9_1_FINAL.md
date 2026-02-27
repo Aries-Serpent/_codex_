@@ -137,25 +137,25 @@ next_steps:
     acceptance: "100-150 tests added, 92% coverage reached"
     estimated_tokens: 60000
     estimated_duration: "2-3 hours"
-    
+
   - task: "Test all public functions in agents/ and src/codex/"
     priority: "HIGH"
     dependencies: ["Phase 9.2 started"]
     acceptance: "All exported public APIs tested with parameter and return validation"
     estimated_tokens: 35000
-    
+
   - task: "Test all class APIs (init, methods, properties)"
     priority: "HIGH"
     dependencies: ["Public functions tested"]
     acceptance: "Workflow, AST, Config classes fully tested"
     estimated_tokens: 25000
-    
+
   - task: "Phase 9.3: Error Path Expansion (92% → 97%)"
     priority: "MEDIUM"
     dependencies: ["Phase 9.2 complete"]
     acceptance: "All error paths, exception handlers, recovery logic tested"
     estimated_tokens: 40000
-    
+
   - task: "Phase 9.4: Edge Cases (97% → 100%)"
     priority: "MEDIUM"
     dependencies: ["Phase 9.3 complete"]
@@ -180,7 +180,7 @@ future_research:
       "6. CI integration for continuous test generation"
     ]
     success_metrics: ["5-10x faster generation", "≥95% generated tests pass without edits", "+10-15% coverage per run", "≥80% mutation score"]
-    
+
   - topic: "Mutation testing for test quality validation"
     rationale: "100% coverage doesn't guarantee effective tests; need validation that tests catch bugs"
     potential_approach: "mutpy integration: Select module → apply mutation operators → run tests → calculate mutation score → identify weak tests → enhance"
@@ -198,7 +198,7 @@ future_research:
       "6. Create quality dashboard"
     ]
     success_metrics: ["Mutation score 60% → 80%+", "20-30% weak tests identified and fixed", "CI integrated", "Dashboard operational"]
-    
+
   - topic: "Property-based testing expansion with Hypothesis"
     rationale: "Current ~10% property-based could catch 20-30% more edge cases automatically with expanded usage"
     potential_approach: "Systematic expansion: Identify string processing/data transformations → define properties (round-trip, idempotence) → implement Hypothesis tests → discover edge cases"

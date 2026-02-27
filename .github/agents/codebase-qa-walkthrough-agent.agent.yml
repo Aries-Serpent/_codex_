@@ -21,12 +21,12 @@ triggers:
     - "@copilot qa review"
     - "@copilot quality assurance"
     - "@copilot qa check"
-  
+
   labels:
     - qa-review-requested
     - needs-qa
     - quality-check
-  
+
   files:
     patterns:
       - "**/*.py"
@@ -56,28 +56,28 @@ quality_criteria:
     - null_safety
     - resource_management
     - code_organization
-  
+
   security:
     - no_hardcoded_secrets
     - input_validation
     - sql_injection_prevention
     - xss_prevention
     - secure_dependencies
-  
+
   performance:
     - algorithmic_efficiency
     - memory_management
     - database_query_optimization
     - caching_strategy
     - concurrent_execution
-  
+
   testing:
     - unit_test_coverage
     - integration_test_coverage
     - edge_case_handling
     - error_scenario_testing
     - mock_usage
-  
+
   documentation:
     - function_docstrings
     - class_documentation
@@ -96,7 +96,7 @@ output:
     - test_results
     - coverage_report
     - action_items
-  
+
   include_code_snippets: true
   include_metrics: true
   include_diagrams: true
@@ -108,7 +108,7 @@ integrations:
     update_pr_description: false
     add_labels: true
     request_changes_on_critical: true
-  
+
   tools:
     - pylint
     - mypy
@@ -124,7 +124,7 @@ permissions:
     - contents
     - pull_requests
     - issues
-  
+
   write:
     - pull_requests  # For review comments
     - issues  # For creating issues

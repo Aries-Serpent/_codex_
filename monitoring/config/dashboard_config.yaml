@@ -21,14 +21,14 @@ metrics:
   collection:
     interval_seconds: 30
     retention_days: 90
-    
+
   sources:
     github:
       workflows: true
       security_alerts: true
       dependabot: true
       codeql: true
-    
+
     agents:
       ml_threat_detector: true
       ci_diagnostic: true
@@ -37,7 +37,7 @@ metrics:
   storage:
     type: json_files  # or influxdb, prometheus
     directory: metrics_data
-    
+
   # If using InfluxDB:
   # influxdb:
   #   url: http://localhost:8086
@@ -72,12 +72,12 @@ thresholds:
     critical: 70
     warning: 85
     healthy: 95
-  
+
   ci_success_rate:
     critical: 0.7
     warning: 0.85
     healthy: 0.95
-  
+
   vulnerabilities:
     critical: 10
     warning: 5
@@ -88,16 +88,16 @@ alerts:
   channels:
     - github_issues
     - pr_comments
-  
+
   rules:
     - name: Low Security Score
       condition: security_score < 85
       severity: warning
-    
+
     - name: Critical Vulnerabilities
       condition: vulnerabilities_total > 5
       severity: critical
-    
+
     - name: High CI Failure Rate
       condition: workflow_success_rate < 0.8
       severity: warning

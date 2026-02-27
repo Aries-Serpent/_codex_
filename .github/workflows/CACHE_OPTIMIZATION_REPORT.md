@@ -22,7 +22,7 @@ Successfully implemented comprehensive cache optimizations across all Phase 1 an
 key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
 ```
 
-**Issue**: 
+**Issue**:
 - security-suite.yml installs: safety, pip-audit, torch, hydra-core
 - nox_gates.yml installs: nox + different test dependencies
 - Same cache key = constant cache invalidation
@@ -54,7 +54,7 @@ path: |
   ~/.cache/pip  # ✅ Only essentials
 ```
 
-**Result**: 
+**Result**:
 - Reduced cache size per workflow by 10-20%
 - Faster cache save/restore operations
 
@@ -161,7 +161,7 @@ restore-keys: |
 **Cache Paths**: `~/.cache/pip`, `~/.cache/gh`
 
 ### 4. security-suite.yml (2 jobs)
-**Cache Keys**: 
+**Cache Keys**:
 - Job 1: `Linux-Unified Security Suite-dependency-scan-pip-<hash>`
 - Job 2: `Linux-Unified Security Suite-policy-check-pip-<hash>`
 
@@ -279,7 +279,7 @@ restore-keys: |
 
 ### Cache Storage Efficiency
 
-**Before**: 
+**Before**:
 - Redundant caches due to conflicts
 - Unused paths cached (gh CLI everywhere)
 - Estimated waste: ~1.5 GB

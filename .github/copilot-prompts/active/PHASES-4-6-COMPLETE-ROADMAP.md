@@ -416,7 +416,7 @@ def _is_safe_path(self, file_path: Path) -> bool:
     try:
         file_resolved = file_path.resolve()
         repo_resolved = self.repo_path.resolve()
-        return (str(file_resolved).startswith(str(repo_resolved)) 
+        return (str(file_resolved).startswith(str(repo_resolved))
                and file_path.exists())
     except (OSError, ValueError):
         return False

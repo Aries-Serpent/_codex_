@@ -296,7 +296,7 @@ class TestSecretsWorkflow:
         # Verify API response
         # Verify database state
         # Verify audit log
-        
+
     def test_rotation_flow(self, authenticated_user, existing_secret):
         # Initiate rotation
         # Verify zero-downtime
@@ -356,7 +356,7 @@ class TestPerformance:
     def test_secret_creation_throughput(self, benchmark):
         result = benchmark(create_secret, {"name": "test", "value": "secret"})
         assert result.stats.mean < 0.1  # 100ms average
-        
+
     @pytest.mark.load
     def test_concurrent_access(self, locust_env):
         # Simulate 100 users
@@ -579,7 +579,7 @@ prompts:
   main: |
     You are a code migration expert. Analyze the codebase and perform safe,
     incremental migrations following best practices.
-    
+
     Steps:
     1. Analyze codebase structure
     2. Identify migration targets
@@ -649,7 +649,7 @@ prompts:
   main: |
     You are a technical writer specializing in developer documentation.
     Generate clear, comprehensive, and maintainable documentation.
-    
+
     Documentation types:
     1. API Reference (from docstrings)
     2. User Guides (step-by-step tutorials)

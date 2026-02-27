@@ -136,7 +136,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         502: "UPSTREAM_ERROR",
         504: "TIMEOUT_ERROR"
     }
-    
+
     return JSONResponse(
         status_code=exc.status_code,
         content={
@@ -184,7 +184,7 @@ async def general_exception_handler(request: Request, exc: Exception):
     # Log the full exception for debugging
     import traceback
     traceback.print_exc()
-    
+
     return JSONResponse(
         status_code=500,
         content={
@@ -210,18 +210,18 @@ router = APIRouter()
 async def handle_jsonrpc(request: Request):
     """Handle JSON-RPC requests."""
     body = await request.json()
-    
+
     # Validate JSON-RPC structure
     if "jsonrpc" not in body or body["jsonrpc"] != "2.0":
         raise JsonRpcError(-32600, "Invalid request: missing or invalid 'jsonrpc' field")
-    
+
     if "method" not in body:
         raise JsonRpcError(-32600, "Invalid request: missing 'method' field")
-    
+
     method = body["method"]
     params = body.get("params", {})
     request.state.rpc_id = body.get("id")
-    
+
     # Method routing
     if method == "mcp.query":
         if "query" not in params:
@@ -231,10 +231,10 @@ async def handle_jsonrpc(request: Request):
                 {"field": "query", "type": "string", "received": None}
             )
         return {"jsonrpc": "2.0", "result": {"data": []}, "id": body.get("id")}
-    
+
     elif method == "unknown.method":
         raise JsonRpcError(-32601, f"Method not found: {method}")
-    
+
     else:
         raise JsonRpcError(-32603, "Internal error: unexpected condition")
 ```
@@ -252,14 +252,14 @@ async def query_endpoint(
     """HTTP endpoint with error handling."""
     # Authentication error (handled by validate_api_key dependency)
     # Raises HTTPException(status_code=401, detail="Invalid API key")
-    
+
     # Validation error
     if not query or len(query) < 3:
         raise HTTPException(
             status_code=422,
             detail="Query must be at least 3 characters"
         )
-    
+
     # Rate limit error
     if not check_rate_limit(api_key):
         raise HTTPException(
@@ -267,7 +267,7 @@ async def query_endpoint(
             detail="Rate limit exceeded. Try again in 60 seconds.",
             headers={"Retry-After": "60"}
         )
-    
+
     # Resource not found
     try:
         result = fetch_data(query)
@@ -276,21 +276,21 @@ async def query_endpoint(
             status_code=404,
             detail=f"Resource not found for query: {query}"
         )
-    
+
     # Upstream service error
     except ConnectionError:
         raise HTTPException(
             status_code=502,
             detail="Upstream service unavailable"
         )
-    
+
     # Timeout error
     except TimeoutError:
         raise HTTPException(
             status_code=504,
             detail="Request timeout after 30 seconds"
         )
-    
+
     return {"result": result}
 ```
 
@@ -301,7 +301,7 @@ graph TD
     A[Request Received] --> B{Request Type?}
     B -->|JSON-RPC| C[Parse JSON-RPC]
     B -->|HTTP| D[Parse HTTP Request]
-    
+
     C --> E{Valid JSON-RPC?}
     E -->|No| F[JsonRpcError -32600]
     E -->|Yes| G{Method Exists?}
@@ -309,7 +309,7 @@ graph TD
     G -->|Yes| I{Valid Params?}
     I -->|No| J[JsonRpcError -32602]
     I -->|Yes| K[Execute Method]
-    
+
     D --> L{Authenticated?}
     L -->|No| M[HTTPException 401]
     L -->|Yes| N{Rate Limited?}
@@ -317,20 +317,20 @@ graph TD
     N -->|No| P{Valid Request?}
     P -->|No| Q[HTTPException 422]
     P -->|Yes| R[Execute Handler]
-    
+
     K --> S{Success?}
     S -->|No| T[JsonRpcError -32603]
     S -->|Yes| U[Return Result]
-    
+
     R --> V{Success?}
     V -->|No| W[HTTPException 500]
     V -->|Yes| X[Return Response]
-    
+
     F --> Y[JSON-RPC Error Response]
     H --> Y
     J --> Y
     T --> Y
-    
+
     M --> Z[HTTP Error Response]
     O --> Z
     Q --> Z
@@ -374,13 +374,13 @@ def log_error(error: Exception, request: Request, **extra):
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         **extra
     }
-    
+
     if isinstance(error, JsonRpcError):
         log_data["jsonrpc_code"] = error.code
         log_data["jsonrpc_data"] = error.data
     elif isinstance(error, HTTPException):
         log_data["http_status"] = error.status_code
-    
+
     logger.error(json.dumps(log_data))
 ```
 
@@ -414,7 +414,7 @@ async def track_errors(request: Request, call_next):
         error_type = type(exc).__name__
         error_code = getattr(exc, "code", getattr(exc, "status_code", "unknown"))
         error_counter.labels(error_type=error_type, error_code=error_code).inc()
-        
+
         duration = time.time() - start_time
         error_duration.labels(error_type=error_type).observe(duration)
         raise
@@ -480,7 +480,7 @@ def test_http_rate_limit_error(client: TestClient, monkeypatch):
     """Test HTTP 429 rate limit error."""
     def mock_check_rate_limit(api_key):
         return False
-    
+
     monkeypatch.setattr("mcp.server.http.check_rate_limit", mock_check_rate_limit)
     response = client.post(
         "/mcp/v1/query",
@@ -513,35 +513,35 @@ def call_mcp_api(endpoint: str, payload: dict, max_retries: int = 3):
                 headers={"X-MCP-API-Key": "your-key"},
                 timeout=30
             )
-            
+
             # Handle rate limiting with exponential backoff
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", 60))
                 print(f"Rate limited. Retrying after {retry_after}s...")
                 time.sleep(retry_after)
                 continue
-            
+
             # Handle other errors
             if response.status_code >= 400:
                 error_data = response.json()
                 raise Exception(f"API Error: {error_data['error']['message']}")
-            
+
             return response.json()
-            
+
         except requests.Timeout:
             if attempt < max_retries - 1:
                 print(f"Timeout. Retrying... (attempt {attempt + 1}/{max_retries})")
                 time.sleep(2 ** attempt)  # Exponential backoff
             else:
                 raise
-        
+
         except requests.ConnectionError:
             if attempt < max_retries - 1:
                 print(f"Connection error. Retrying... (attempt {attempt + 1}/{max_retries})")
                 time.sleep(2 ** attempt)
             else:
                 raise
-    
+
     raise Exception("Max retries exceeded")
 ```
 
@@ -559,7 +559,7 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
         },
         body: JSON.stringify(payload)
       });
-      
+
       // Handle rate limiting
       if (response.status === 429) {
         const retryAfter = parseInt(response.headers.get('Retry-After') || '60');
@@ -567,15 +567,15 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
         await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
         continue;
       }
-      
+
       // Handle errors
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(`API Error: ${errorData.error.message}`);
       }
-      
+
       return await response.json();
-      
+
     } catch (error) {
       if (attempt < maxRetries - 1) {
         console.log(`Error: ${error.message}. Retrying... (attempt ${attempt + 1}/${maxRetries})`);
@@ -585,7 +585,7 @@ async function callMcpApi(endpoint, payload, maxRetries = 3) {
       }
     }
   }
-  
+
   throw new Error('Max retries exceeded');
 }
 ```

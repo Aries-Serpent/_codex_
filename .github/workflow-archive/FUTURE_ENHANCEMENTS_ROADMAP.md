@@ -38,9 +38,9 @@ def sanitize_sensitive_data(data: Any) -> str:
     """Redact sensitive information before logging."""
     if isinstance(data, str):
         # Redact tokens, keys, passwords
-        data = re.sub(r'(token|key|password|secret)[\s:=]+[\w\-\.]+', 
-                     r'\1=***REDACTED***', 
-                     data, 
+        data = re.sub(r'(token|key|password|secret)[\s:=]+[\w\-\.]+',
+                     r'\1=***REDACTED***',
+                     data,
                      flags=re.IGNORECASE)
         # Redact GitHub tokens specifically
         data = re.sub(r'ghp_[a-zA-Z0-9]{36}', 'ghp_***REDACTED***', data)
@@ -108,7 +108,7 @@ def sanitize_sensitive_data(data: Any) -> str:
 
 **Effort**: 10-12 phases (3 months)  
 **Risk**: Medium-High (Complex integration)  
-**Dependencies**: 
+**Dependencies**:
 - Quantum orchestrator codebase
 - AI agent framework
 - Performance testing infrastructure
@@ -140,15 +140,15 @@ def sanitize_sensitive_data(data: Any) -> str:
 
 class WorkflowAnalytics:
     """Analyze workflow performance and suggest optimizations."""
-    
+
     def analyze_runtime(self, workflow_name: str) -> dict:
         """Analyze historical runtime data."""
         pass
-    
+
     def identify_bottlenecks(self) -> list:
         """Identify slow jobs in workflows."""
         pass
-    
+
     def suggest_optimizations(self) -> list:
         """Generate optimization recommendations."""
         pass

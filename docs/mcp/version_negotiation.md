@@ -18,10 +18,10 @@ The server prefers MCP protocol version **1.0** and negotiates via `mcp.negotiat
 sequenceDiagram
     participant Client
     participant Server
-    
+
     Client->>Server: mcp.negotiateVersion(supported: ["0.9", "1.0"])
     Server->>Server: Check overlapping versions
-    
+
     alt Match Found
         Server-->>Client: version: "1.0"
         Client->>Server: Use protocol v1.0
@@ -69,43 +69,43 @@ from fastapi import HTTPException
 
 class VersionNegotiator:
     """Handle MCP protocol version negotiation."""
-    
+
     SUPPORTED_VERSIONS = ["1.0", "0.9"]  # Server preference order
-    
+
     @classmethod
     def negotiate(cls, client_versions: List[str]) -> str:
         """
         Negotiate protocol version.
-        
+
         Args:
             client_versions: List of versions supported by client
-        
+
         Returns:
             Negotiated version string
-        
+
         Raises:
             ValueError: If no compatible version found
         """
         if not client_versions:
             raise ValueError("Client must provide at least one supported version")
-        
+
         # Find first server-preferred version that client supports
         for server_version in cls.SUPPORTED_VERSIONS:
             if server_version in client_versions:
                 return server_version
-        
+
         # No overlap
         raise ValueError(
             f"No compatible version found. "
             f"Server supports: {cls.SUPPORTED_VERSIONS}, "
             f"Client supports: {client_versions}"
         )
-    
+
     @classmethod
     def is_supported(cls, version: str) -> bool:
         """Check if version is supported by server."""
         return version in cls.SUPPORTED_VERSIONS
-    
+
     @classmethod
     def get_version_info(cls, version: str) -> dict:
         """Get information about a specific version."""
@@ -140,12 +140,12 @@ async def handle_jsonrpc(request: Request):
     method = body.get("method")
     params = body.get("params", {})
     rpc_id = body.get("id")
-    
+
     if method == "mcp.negotiateVersion":
         try:
             client_versions = params.get("supported", [])
             version = VersionNegotiator.negotiate(client_versions)
-            
+
             return {
                 "jsonrpc": "2.0",
                 "result": {
@@ -171,7 +171,7 @@ async def handle_jsonrpc(request: Request):
                 },
                 "id": rpc_id
             }
-    
+
     # Handle other methods...
 ```
 
@@ -182,13 +182,13 @@ import requests
 
 class MCPClient:
     """MCP client with version negotiation."""
-    
+
     SUPPORTED_VERSIONS = ["1.0", "0.9"]
-    
+
     def __init__(self, server_url: str):
         self.server_url = server_url
         self.negotiated_version = None
-    
+
     def negotiate_version(self) -> str:
         """Negotiate protocol version with server."""
         response = requests.post(
@@ -202,15 +202,15 @@ class MCPClient:
                 "id": 1
             }
         )
-        
+
         data = response.json()
-        
+
         if "error" in data:
             raise Exception(f"Version negotiation failed: {data['error']['message']}")
-        
+
         self.negotiated_version = data["result"]["version"]
         return self.negotiated_version
-    
+
     def connect(self):
         """Connect to server with version negotiation."""
         version = self.negotiate_version()
@@ -231,7 +231,7 @@ class MCPClient {
     this.negotiatedVersion = null;
     this.supportedVersions = ['1.0', '0.9'];
   }
-  
+
   async negotiateVersion() {
     const response = await fetch(`${this.serverUrl}/mcp/v1/rpc`, {
       method: 'POST',
@@ -245,17 +245,17 @@ class MCPClient {
         id: 1
       })
     });
-    
+
     const data = await response.json();
-    
+
     if (data.error) {
       throw new Error(`Version negotiation failed: ${data.error.message}`);
     }
-    
+
     this.negotiatedVersion = data.result.version;
     return this.negotiatedVersion;
   }
-  
+
   async connect() {
     const version = await this.negotiateVersion();
     console.log(`Connected with protocol version ${version}`);
@@ -380,7 +380,7 @@ Clients can detect available features based on negotiated version:
 ```python
 class FeatureDetector:
     """Detect features available in negotiated version."""
-    
+
     FEATURE_MATRIX = {
         "1.0": {
             "tool_registry": True,
@@ -401,12 +401,12 @@ class FeatureDetector:
             "websockets": False
         }
     }
-    
+
     @classmethod
     def has_feature(cls, version: str, feature: str) -> bool:
         """Check if version supports a feature."""
         return cls.FEATURE_MATRIX.get(version, {}).get(feature, False)
-    
+
     @classmethod
     def get_features(cls, version: str) -> List[str]:
         """Get all features supported in version."""
@@ -508,7 +508,7 @@ def test_version_negotiation_jsonrpc(client):
         "params": {"supported": ["1.0"]},
         "id": 1
     })
-    
+
     assert response.status_code == 200
     data = response.json()
     assert data["result"]["version"] == "1.0"
@@ -522,7 +522,7 @@ def test_version_negotiation_failure(client):
         "params": {"supported": ["0.5"]},
         "id": 1
     })
-    
+
     data = response.json()
     assert "error" in data
     assert data["error"]["code"] == -32602

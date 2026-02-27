@@ -215,7 +215,7 @@ Post this as a comment on PR #2827:
 ```markdown
 @copilot Continue with Phase 2 validation and Phase 3 agent implementation for PR #2827.
 
-**Context**: 
+**Context**:
 - Phase 1 complete (commit 59008ae1): 11 terminology fixes applied
 - Phase 2 complete (commit 9e84fd64): RAG test optimizations implemented
 - All self-healing iterations passed (5/5)

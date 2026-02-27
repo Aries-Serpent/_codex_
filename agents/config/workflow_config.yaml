@@ -40,23 +40,23 @@ suggestions:
     workflows:
       - AUDIT_EXEC
     reason: "Recent code changes should be audited"
-  
+
   low_test_coverage:
     workflows:
       - AUDIT_EXEC
     reason: "Low coverage indicates need for quality check"
-  
+
   many_open_issues:
     workflows:
       - SELF_HEAL
     reason: "High issue count suggests capability gaps"
-  
+
   pre_release_ready:
     workflows:
       - AUDIT_EXEC
       - PRE_RELEASE
     reason: "Ready for pre-release deployment"
-  
+
   documentation_stale:
     workflows:
       - DOC_GEN
@@ -85,14 +85,14 @@ chains:
       - PHYS_DECIDE
       - PRE_RELEASE
     description: "Complete audit, decision, and deployment pipeline"
-  
+
   self_improvement_cycle:
     workflows:
       - SELF_HEAL
       - MENTAL_REVIEW
       - PHYS_DECIDE
     description: "Detect gaps, review decisions, plan improvements"
-  
+
   documentation_refresh:
     workflows:
       - DOC_GEN

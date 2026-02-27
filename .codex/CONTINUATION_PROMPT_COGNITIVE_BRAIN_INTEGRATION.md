@@ -261,17 +261,17 @@ class {AgentName}APIUnavailableError(Exception):
 class {AgentName}:
     """
     {Detailed class description}
-    
+
     Attributes:
         _api_key: API key for authentication
         _base_url: Base URL for API endpoints
         _api_available: Flag indicating API availability
     """
-    
+
     def __init__(self, api_key: Optional[str] = None):
         """
         Initialize the agent.
-        
+
         Args:
             api_key: Optional API key for authentication
         """
@@ -279,21 +279,21 @@ class {AgentName}:
         self._base_url = "https://api.example.com/v1"
         self._api_available = False
         self._last_check = datetime.now(timezone.utc)
-        
+
         # Check API availability on initialization
         self._check_api_status()
-    
+
     def _ensure_api_available(self) -> None:
         """Ensure the API is available before making calls."""
         if not self._api_available:
             raise {AgentName}APIUnavailableError(
                 "{Service} API is not available. Please check your configuration."
             )
-    
+
     def _check_api_status(self) -> bool:
         """
         Check if the API is available.
-        
+
         Returns:
             True if API is available, False otherwise
         """
@@ -308,7 +308,7 @@ class {AgentName}:
         except (requests.RequestException, Exception):
             self._api_available = False
             return False
-    
+
     # Add agent-specific methods here
     # Each method should:
     # 1. Call _ensure_api_available() first
@@ -344,16 +344,16 @@ class {AgentName}:
 ```python
 class BaseAgent(ABC):
     """Abstract base class for all custom agents."""
-    
+
     @abstractmethod
     def _check_api_status(self) -> bool:
         """Check if the agent's API/service is available."""
         pass
-    
+
     def _ensure_api_available(self) -> None:
         """Ensure API is available before operations."""
         pass
-    
+
     def _make_request(
         self,
         method: str,
@@ -363,7 +363,7 @@ class BaseAgent(ABC):
     ) -> requests.Response:
         """Make HTTP request with standard error handling."""
         pass
-    
+
     def _log_operation(
         self,
         operation: str,
@@ -400,11 +400,11 @@ class BaseAgent(ABC):
 ```python
 class AgentRegistry:
     """Registry for discovering and managing custom agents."""
-    
+
     def __init__(self):
         self._agents: Dict[str, Type[BaseAgent]] = {}
         self._metadata: Dict[str, AgentMetadata] = {}
-    
+
     def register(
         self,
         name: str,
@@ -413,15 +413,15 @@ class AgentRegistry:
     ) -> None:
         """Register a new agent."""
         pass
-    
+
     def get_agent(self, name: str) -> Optional[BaseAgent]:
         """Retrieve an agent instance by name."""
         pass
-    
+
     def list_agents(self) -> List[AgentMetadata]:
         """List all registered agents with metadata."""
         pass
-    
+
     def health_check(self, name: str) -> HealthStatus:
         """Check health status of an agent."""
         pass

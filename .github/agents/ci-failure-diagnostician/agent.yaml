@@ -22,7 +22,7 @@ triggers:
       - "*"
     exclude_jobs:
       - "dependabot-*"
-      
+
   - type: manual
     command: "@copilot diagnose ci failure"
 
@@ -34,7 +34,7 @@ capabilities:
       - circleci
       - jenkins
     max_log_size_mb: 10
-    
+
   classify_failures:
     enabled: true
     categories:
@@ -45,7 +45,7 @@ capabilities:
       - timeout
       - resource_exhaustion
     confidence_threshold: 0.8
-    
+
   extract_root_cause:
     enabled: true
     patterns:
@@ -53,14 +53,14 @@ capabilities:
       - stack_trace_analysis
       - timing_correlation
     max_depth: 5
-    
+
   suggest_fixes:
     enabled: true
     strategies:
       - pattern_matching
       - similar_issue_search
       - cognitive_brain_lookup
-    
+
   auto_retry:
     enabled: true
     max_retries: 3
@@ -96,7 +96,7 @@ integrations:
     pattern_storage: true
     failure_patterns_category: true
     learning_enabled: true
-    
+
   github:
     pr_comments: true
     workflow_dispatch: true
@@ -113,7 +113,7 @@ monitoring:
     - classifications_accurate
     - auto_retries_successful
     - mean_time_to_diagnosis
-  
+
   alerts:
     - condition: auto_retry_success_rate < 0.5
       action: reduce_auto_retry

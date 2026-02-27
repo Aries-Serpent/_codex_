@@ -253,7 +253,7 @@ Python → PyO3 → Rust → Process → Serialize (MessagePack) → Compress (L
 **Architecture Questions:**
 ```
 Q: "How does the cognitive brain coordinate agent dispatch?"
-A: Reference `scripts/cognitive/dispatch_agent.py`, show flow through 
+A: Reference `scripts/cognitive/dispatch_agent.py`, show flow through
    `agents/developer_orchestrator.py` to `.github/agents/AGENT_REGISTRY.yaml`
 ```
 
@@ -267,8 +267,8 @@ A: Cite `Cargo.toml` (PyO3 config), `rust_swarm/ffi_bridge.rs` (bridge code),
 **Operational Questions:**
 ```
 Q: "What agents handle security vulnerabilities?"
-A: List from AGENT_REGISTRY.yaml: bridge-security-monitor, 
-   dependency-vulnerability-scanner, codeql-alert-resolution-agent, 
+A: List from AGENT_REGISTRY.yaml: bridge-security-monitor,
+   dependency-vulnerability-scanner, codeql-alert-resolution-agent,
    security-vulnerability-patcher
 ```
 

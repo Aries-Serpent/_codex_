@@ -39,10 +39,10 @@ Performed comprehensive self-review with iterative self-healing across the entir
 ```diff
 - def _redact_identifier(identifier: str) -> str:
 -     """Redact sensitive identifier for logging.
--     
+-  
 -     Args:
 -         identifier: Token ID, name, or other identifier
--         
+-  
 -     Returns:
 -         Redacted version showing only first 4 characters
 -     """
@@ -118,17 +118,17 @@ Added comprehensive docstring examples:
 # ```python
 # import jwt
 # from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-# 
+#
 # security = HTTPBearer()
 # credentials: HTTPAuthorizationCredentials = Depends(security)
 # token = credentials.credentials
-# 
+#
 # # For JWT tokens:
 # payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
 # return payload.get("scopes", [])
-# 
+#
 # # For OAuth introspection:
-# response = requests.post(INTROSPECTION_ENDPOINT, 
+# response = requests.post(INTROSPECTION_ENDPOINT,
 #                          data={"token": token},
 #                          auth=(CLIENT_ID, CLIENT_SECRET))
 # return response.json().get("scope", "").split()
@@ -365,7 +365,7 @@ performance = ["xxhash>=3.0.0"]  # Optional: 10-100x faster
 ```python
 def placeholder_function():
     """Placeholder that must be implemented.
-    
+
     Example implementation:
     ```python
     # Code example here

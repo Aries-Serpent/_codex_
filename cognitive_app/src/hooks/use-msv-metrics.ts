@@ -21,14 +21,14 @@ export interface MSVMetrics {
 
 /**
  * Hook for fetching Metacognitive State Vector (MSV) metrics from cognitive brain.
- * 
+ *
  * MSV measures AI self-awareness across 5 cognitive dimensions:
  * - Correctness Awareness: Test coverage, CodeQL integration
  * - Conflict Detection: Split-brain elimination, config consolidation
  * - Importance Assessment: Priority-based plansets, phase-gating
  * - Experience Matching: Pattern detection, meta-learning
  * - Adaptive Response: CI auto-fix, self-healing iterations
- * 
+ *
  * @param autoRefresh - Whether to automatically refresh metrics
  * @param intervalMs - Refresh interval in milliseconds (default: 10000)
  * @returns MSV metrics, loading state, error, and refetch function
@@ -41,7 +41,7 @@ export function useMSVMetrics(autoRefresh = false, intervalMs = 10000) {
   const fetchMetrics = useCallback(async () => {
     try {
       setError(null);
-      
+
       // Try to fetch from API endpoint
       const response = await client.get('/api/cognitive/msv-metrics');
       setMetrics(response as MSVMetrics);

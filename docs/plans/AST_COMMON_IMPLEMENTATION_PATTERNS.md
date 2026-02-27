@@ -40,19 +40,19 @@ from typing import Optional, List, Dict, Any
 @dataclass
 class StandardizedASTNode:
     """Language-agnostic AST representation."""
-    
+
     # Identity (required)
     node_id: str
     type: str
     name: str
-    
+
     # Structure (with defaults)
     parent: Optional["StandardizedASTNode"] = None
     children: List["StandardizedASTNode"] = field(default_factory=list)
-    
+
     # Metadata (extensible)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Computed properties
     @property
     def depth(self) -> int:
@@ -77,10 +77,10 @@ class SourceLocation:
     line_end: int
     column_start: int = 0
     column_end: int = 0
-    
+
     def __str__(self) -> str:
         return f"{self.file_path}:{self.line_start}:{self.column_start}"
-    
+
     @classmethod
     def from_string(cls, location: str) -> "SourceLocation":
         """Parse 'file:line:col' format."""
@@ -109,17 +109,17 @@ from abc import ABC, abstractmethod
 
 class ASTAnalyzer(ABC):
     """Abstract base class for AST analyzers."""
-    
+
     @abstractmethod
     def analyze(self, node: StandardizedASTNode) -> List[Finding]:
         """Analyze a node and return findings."""
         pass
-    
+
     @abstractmethod
     def get_analyzer_type(self) -> str:
         """Get the type of analysis this analyzer performs."""
         pass
-    
+
     def supports_node_type(self, node_type: str) -> bool:
         """Override to filter which nodes this analyzer processes."""
         return True
@@ -127,7 +127,7 @@ class ASTAnalyzer(ABC):
 
 class ComplexityAnalyzer(ASTAnalyzer):
     """Concrete analyzer for cyclomatic complexity."""
-    
+
     def analyze(self, node: StandardizedASTNode) -> List[Finding]:
         if node.type != "function":
             return []
@@ -139,7 +139,7 @@ class ComplexityAnalyzer(ASTAnalyzer):
                 message=f"Complexity {complexity} exceeds threshold {self.threshold}"
             )]
         return []
-    
+
     def get_analyzer_type(self) -> str:
         return "complexity"
 ```
@@ -153,21 +153,21 @@ class ComplexityAnalyzer(ASTAnalyzer):
 ```python
 class AnalyzerRegistry:
     """Registry for AST analyzers."""
-    
+
     def __init__(self):
         self.analyzers: Dict[str, ASTAnalyzer] = {}
         self._register_defaults()
-    
+
     def _register_defaults(self):
         """Register built-in analyzers."""
         self.register(ComplexityAnalyzer())
         self.register(DependencyAnalyzer())
         self.register(CodeSmellAnalyzer())
-    
+
     def register(self, analyzer: ASTAnalyzer):
         """Register an analyzer."""
         self.analyzers[analyzer.get_analyzer_type()] = analyzer
-    
+
     def analyze_all(self, tree: StandardizedASTNode) -> List[Finding]:
         """Run all registered analyzers on tree."""
         findings = []
@@ -191,47 +191,47 @@ class AnalyzerRegistry:
 ```python
 class DependencyGraph:
     """Dependency graph with cycle detection."""
-    
+
     def __init__(self):
         self.nodes: Dict[str, Set[str]] = {}  # node -> dependencies
-    
+
     def add_node(self, node_id: str, dependencies: List[str] = None):
         """Add a node with its dependencies."""
         self.nodes[node_id] = set(dependencies or [])
-    
+
     def has_cycle(self) -> bool:
         """Check for cycles using DFS (Tarjan's algorithm)."""
         visited = set()
         rec_stack = set()
-        
+
         def dfs(node: str) -> bool:
             visited.add(node)
             rec_stack.add(node)
-            
+
             for neighbor in self.nodes.get(node, []):
                 if neighbor not in visited:
                     if dfs(neighbor):
                         return True
                 elif neighbor in rec_stack:
                     return True
-            
+
             rec_stack.remove(node)
             return False
-        
+
         for node in self.nodes:
             if node not in visited:
                 if dfs(node):
                     return True
         return False
-    
+
     def topological_sort(self) -> List[str]:
         """Return nodes in topological order."""
         if self.has_cycle():
             raise ValueError("Cannot sort graph with cycles")
-        
+
         visited = set()
         order = []
-        
+
         def visit(node: str):
             if node in visited:
                 return
@@ -239,10 +239,10 @@ class DependencyGraph:
             for dep in self.nodes.get(node, []):
                 visit(dep)
             order.append(node)
-        
+
         for node in self.nodes:
             visit(node)
-        
+
         return order
 ```
 
@@ -261,31 +261,31 @@ class DependencyGraph:
 def main():
     parser = argparse.ArgumentParser(description="AST Analysis CLI")
     parser.add_argument("--config", help="Config file path")
-    
+
     subparsers = parser.add_subparsers(dest="command")
-    
+
     # Analyze command
     analyze = subparsers.add_parser("analyze", help="Analyze codebase")
     analyze.add_argument("path", help="Path to analyze")
     analyze.add_argument("--format", choices=["json", "text"], default="text")
     analyze.set_defaults(func=cmd_analyze)
-    
+
     # Audit command
     audit = subparsers.add_parser("audit", help="Run full audit")
     audit.add_argument("--baseline", help="Compare against baseline")
     audit.set_defaults(func=cmd_audit)
-    
+
     # Diff command
     diff = subparsers.add_parser("diff", help="Compare two analyses")
     diff.add_argument("before", help="Before analysis file")
     diff.add_argument("after", help="After analysis file")
     diff.set_defaults(func=cmd_diff)
-    
+
     args = parser.parse_args()
     if not args.command:
         parser.print_help()
         sys.exit(1)
-    
+
     args.func(args)
 ```
 
@@ -302,12 +302,12 @@ def main():
 ```python
 class ASTStorage:
     """SQLite storage for AST analysis results."""
-    
+
     def __init__(self, db_path: Path):
         self.db_path = db_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._initialize_schema()
-    
+
     @contextmanager
     def _get_connection(self):
         """Context manager for database connections."""
@@ -321,12 +321,12 @@ class ASTStorage:
             raise
         finally:
             conn.close()
-    
+
     def _initialize_schema(self):
         """Create database schema."""
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS analyses (
                     analysis_id TEXT PRIMARY KEY,
@@ -337,7 +337,7 @@ class ASTStorage:
                     findings TEXT
                 )
             """)
-            
+
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS nodes (
                     node_id TEXT PRIMARY KEY,
@@ -367,36 +367,36 @@ class ASTStorage:
 @dataclass
 class ASTConfig:
     """AST analysis configuration."""
-    
+
     # Parser configuration
     parser_backend: str = "libcst"  # or "tree-sitter", "parso"
     parse_timeout: int = 30  # seconds
-    
+
     # Analysis configuration
     complexity_threshold: int = 10
     max_function_lines: int = 50
     max_file_lines: int = 500
-    
+
     # Output configuration
     output_format: str = "json"
     output_path: Path = field(default_factory=lambda: Path("ast_output"))
-    
+
     # Performance configuration
     max_parallel: int = 4
     cache_enabled: bool = True
     cache_path: Path = field(default_factory=lambda: Path(".ast_cache"))
-    
+
     def __post_init__(self):
         """Apply environment variable overrides."""
         if env_backend := os.getenv("AST_PARSER_BACKEND"):
             self.parser_backend = env_backend
-        
+
         if env_threshold := os.getenv("AST_COMPLEXITY_THRESHOLD"):
             try:
                 self.complexity_threshold = int(env_threshold)
             except ValueError:
                 pass
-        
+
         if env_parallel := os.getenv("AST_MAX_PARALLEL"):
             try:
                 self.max_parallel = int(env_parallel)
@@ -574,7 +574,7 @@ Before starting AST implementation:
 
 ---
 
-**Next Steps:** 
+**Next Steps:**
 1. Stakeholder review of pattern reuse approach
 2. Approve Phase 1 Quick Wins (5 iterations)
 3. Add dependencies to pyproject.toml

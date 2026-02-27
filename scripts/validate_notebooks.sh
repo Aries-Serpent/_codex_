@@ -32,10 +32,10 @@ passed=0
 for notebook in $notebooks; do
     echo ""
     echo "Validating: $notebook"
-    
+
     # Create temp output file
     output_nb="/tmp/$(basename "$notebook" .ipynb)_output.ipynb"
-    
+
     # Run notebook with papermill (timeout after 5 minutes)
     if timeout 300 papermill "$notebook" "$output_nb" \
         --log-output \
@@ -52,7 +52,7 @@ for notebook in $notebooks; do
         fi
         ((failed++))
     fi
-    
+
     # Cleanup
     rm -f "$output_nb"
 done

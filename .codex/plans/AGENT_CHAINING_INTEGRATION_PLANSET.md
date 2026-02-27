@@ -23,36 +23,36 @@ Integration guide for chaining the workflow-health-monitor agent with other spec
 ```python
 class AgentQuantumState:
     """Represents agent in quantum superposition"""
-    
+
     def __init__(self, agent_name: str, capabilities: List[str]):
         self.agent_name = agent_name
         self.capabilities = capabilities
         self.state = 'idle'  # idle, active, waiting, complete
         self.entangled_agents = []
         self.coherence = 1.0  # Measure of agent coordination
-    
+
     def entangle(self, other_agent: 'AgentQuantumState'):
         """Create entanglement between agents"""
         if other_agent not in self.entangled_agents:
             self.entangled_agents.append(other_agent)
             other_agent.entangled_agents.append(self)
-    
+
     def trigger(self) -> bool:
         """Activate agent (collapse to active state)"""
         self.state = 'active'
-        
+
         # Notify entangled agents (quantum correlation)
         for agent in self.entangled_agents:
             if agent.state == 'idle':
                 agent.state = 'waiting'  # Correlated activation
-        
+
         return True
-    
+
     def measure_coherence(self) -> float:
         """Calculate coherence with entangled agents"""
         if not self.entangled_agents:
             return 1.0
-        
+
         # Coherence = alignment of states
         active_count = sum(1 for a in self.entangled_agents if a.state == 'active')
         return active_count / len(self.entangled_agents)
@@ -70,7 +70,7 @@ on:
   workflow_run:
     workflows: ["Workflow Health Check (Quantum-Inspired)"]
     types: [completed]
-  
+
   # Manual trigger with agent selection
   workflow_dispatch:
     inputs:
@@ -97,20 +97,20 @@ jobs:
   orchestrate-agent-chain:
     name: Orchestrate Entangled Agents
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install pyyaml numpy
-      
+
       - name: Initialize quantum agent network
         id: init
         run: |
@@ -118,20 +118,20 @@ jobs:
             --primary-agent "${{ inputs.primary_agent || 'workflow-health-monitor' }}" \
             --chain-depth "${{ inputs.chain_depth || 3 }}" \
             --enable-quantum "${{ inputs.enable_quantum_optimization || true }}"
-      
+
       - name: Execute agent chain
         id: execute
         run: |
           python scripts/agents/execute_agent_chain.py \
             --chain-file .codex/agents/chain_plan.json
-      
+
       - name: Upload chain execution report
         uses: actions/upload-artifact@v6
         with:
           name: agent-chain-report
           path: .codex/agents/chain_execution_*.json
           retention-days: 30
-      
+
       - name: Create summary
         run: |
           echo "## 🔗 Agent Chain Execution" >> $GITHUB_STEP_SUMMARY
@@ -181,7 +181,7 @@ class Agent:
     prerequisites: List[str]
     quantum_state: str = 'idle'  # idle, ready, active, complete
     entangled_with: List[str] = None
-    
+
     def __post_init__(self):
         if self.entangled_with is None:
             self.entangled_with = []
@@ -189,16 +189,16 @@ class Agent:
 
 class QuantumAgentOrchestrator:
     """Orchestrate agents using quantum-inspired principles"""
-    
+
     def __init__(self, agents_dir: Path = Path('.github/agents')):
         self.agents_dir = agents_dir
         self.agents = self._load_agents()
         self.entanglements = self._calculate_entanglements()
-    
+
     def _load_agents(self) -> Dict[str, Agent]:
         """Load all available agents"""
         agents = {}
-        
+
         # Define agents with their capabilities
         agent_definitions = [
             Agent(
@@ -273,45 +273,45 @@ class QuantumAgentOrchestrator:
                 prerequisites=[]
             )
         ]
-        
+
         for agent in agent_definitions:
             agents[agent.name] = agent
-        
+
         return agents
-    
+
     def _calculate_entanglements(self) -> Dict[str, List[str]]:
         """Calculate which agents are entangled (share data dependencies)"""
         entanglements = {}
-        
+
         for agent_name, agent in self.agents.items():
             entangled = []
-            
+
             # Agents with shared prerequisites are entangled
             for other_name, other_agent in self.agents.items():
                 if agent_name == other_name:
                     continue
-                
+
                 # Check for shared prerequisites
                 shared_prereqs = set(agent.prerequisites) & set(other_agent.prerequisites)
                 if shared_prereqs:
                     entangled.append(other_name)
-                
+
                 # Check for input/output compatibility
                 agent_outputs = set()
                 for cap in agent.capabilities:
                     agent_outputs.update(cap.output_types)
-                
+
                 other_inputs = set()
                 for cap in other_agent.capabilities:
                     other_inputs.update(cap.input_types)
-                
+
                 if agent_outputs & other_inputs:
                     entangled.append(other_name)
-            
+
             entanglements[agent_name] = list(set(entangled))
-        
+
         return entanglements
-    
+
     def create_chain(
         self,
         primary_agent: str,
@@ -319,24 +319,24 @@ class QuantumAgentOrchestrator:
         quantum_optimize: bool = True
     ) -> List[str]:
         """Create agent execution chain starting from primary agent"""
-        
+
         if primary_agent not in self.agents:
             raise ValueError(f"Unknown agent: {primary_agent}")
-        
+
         # Start with primary agent
         chain = [primary_agent]
         visited = {primary_agent}
-        
+
         # Build chain using entanglement graph
         current_depth = 0
         current_layer = [primary_agent]
-        
+
         while current_depth < max_depth and current_layer:
             next_layer = []
-            
+
             for agent_name in current_layer:
                 entangled = self.entanglements.get(agent_name, [])
-                
+
                 for next_agent in entangled:
                     if next_agent not in visited:
                         # Check if prerequisites are met
@@ -345,19 +345,19 @@ class QuantumAgentOrchestrator:
                             next_layer.append(next_agent)
                             visited.add(next_agent)
                             chain.append(next_agent)
-            
+
             current_layer = next_layer
             current_depth += 1
-        
+
         # Quantum optimization: reorder chain to minimize total cost
         if quantum_optimize and len(chain) > 2:
             chain = self._quantum_optimize_chain(chain)
-        
+
         return chain
-    
+
     def _quantum_optimize_chain(self, chain: List[str]) -> List[str]:
         """Optimize chain using quantum-inspired annealing"""
-        
+
         # Calculate total cost for current order
         def calculate_cost(order: List[str]) -> float:
             total = 0
@@ -365,38 +365,38 @@ class QuantumAgentOrchestrator:
                 agent = self.agents[agent_name]
                 total += sum(cap.cost for cap in agent.capabilities)
             return total
-        
+
         # Simulated quantum annealing
         current_order = chain.copy()
         current_cost = calculate_cost(current_order)
         temperature = 1.0
-        
+
         for iteration in range(100):
             # Generate neighbor by swapping two adjacent agents
             if len(current_order) < 2:
                 break
-            
+
             i = np.random.randint(1, len(current_order) - 1)
             new_order = current_order.copy()
             new_order[i], new_order[i+1] = new_order[i+1], new_order[i]
-            
+
             # Check if prerequisites still satisfied
             if not self._prerequisites_satisfied(new_order):
                 continue
-            
+
             new_cost = calculate_cost(new_order)
             delta = new_cost - current_cost
-            
+
             # Accept if better, or with probability based on temperature
             if delta < 0 or np.random.random() < np.exp(-delta / temperature):
                 current_order = new_order
                 current_cost = new_cost
-            
+
             # Cool down
             temperature *= 0.95
-        
+
         return current_order
-    
+
     def _prerequisites_satisfied(self, order: List[str]) -> bool:
         """Check if prerequisites are satisfied in given order"""
         seen = set()
@@ -406,24 +406,24 @@ class QuantumAgentOrchestrator:
                 return False
             seen.add(agent_name)
         return True
-    
+
     def generate_chain_plan(
         self,
         chain: List[str],
         output_file: Path
     ) -> Dict:
         """Generate execution plan for agent chain"""
-        
+
         plan = {
             'chain': chain,
             'agents': [],
             'entanglements': {},
             'estimated_cost': 0
         }
-        
+
         for agent_name in chain:
             agent = self.agents[agent_name]
-            
+
             agent_info = {
                 'name': agent_name,
                 'file': agent.file_path,
@@ -431,17 +431,17 @@ class QuantumAgentOrchestrator:
                 'prerequisites': agent.prerequisites,
                 'entangled_with': self.entanglements.get(agent_name, [])
             }
-            
+
             plan['agents'].append(agent_info)
             plan['estimated_cost'] += sum(cap.cost for cap in agent.capabilities)
-        
+
         plan['entanglements'] = self.entanglements
-        
+
         # Save plan
         output_file.parent.mkdir(parents=True, exist_ok=True)
         with open(output_file, 'w') as f:
             json.dump(plan, f, indent=2)
-        
+
         return plan
 
 
@@ -466,9 +466,9 @@ def main():
         default=True,
         help='Enable quantum optimization'
     )
-    
+
     args = parser.parse_args()
-    
+
     print("="*70)
     print("🔗 QUANTUM AGENT ORCHESTRATOR")
     print("="*70)
@@ -476,32 +476,32 @@ def main():
     print(f"Max Chain Depth: {args.chain_depth}")
     print(f"Quantum Optimization: {args.enable_quantum}")
     print("="*70)
-    
+
     # Initialize orchestrator
     orchestrator = QuantumAgentOrchestrator()
-    
+
     print(f"\n📊 Loaded {len(orchestrator.agents)} agents")
     print(f"🔗 Calculated {sum(len(v) for v in orchestrator.entanglements.values())} entanglements")
-    
+
     # Create chain
     chain = orchestrator.create_chain(
         args.primary_agent,
         args.chain_depth,
         args.enable_quantum
     )
-    
+
     print(f"\n🎯 Generated chain with {len(chain)} agents:")
     for i, agent_name in enumerate(chain, 1):
         print(f"  {i}. {agent_name}")
-    
+
     # Generate execution plan
     output_file = Path('.codex/agents/chain_plan.json')
     plan = orchestrator.generate_chain_plan(chain, output_file)
-    
+
     print(f"\n💰 Estimated Cost: {plan['estimated_cost']:.1f} units")
     print(f"📄 Plan saved to: {output_file}")
     print("="*70)
-    
+
     return 0
 
 
@@ -533,44 +533,44 @@ from scripts.agents.quantum_agent_orchestrator import (
 
 class TestAgentQuantumState:
     """Test quantum state behavior of agents"""
-    
+
     def test_agent_entanglement(self):
         """Agents can be entangled"""
         agent1 = AgentQuantumState('agent1', ['cap1'])
         agent2 = AgentQuantumState('agent2', ['cap2'])
-        
+
         agent1.entangle(agent2)
-        
+
         assert agent2 in agent1.entangled_agents
         assert agent1 in agent2.entangled_agents
-    
+
     def test_correlated_activation(self):
         """Entangled agents show correlated behavior"""
         agent1 = AgentQuantumState('agent1', ['cap1'])
         agent2 = AgentQuantumState('agent2', ['cap2'])
-        
+
         agent1.entangle(agent2)
-        
+
         # Activate agent1
         agent1.trigger()
-        
+
         # agent2 should transition to waiting (correlation)
         assert agent1.state == 'active'
         assert agent2.state == 'waiting'
-    
+
     def test_coherence_measurement(self):
         """Coherence measures agent coordination"""
         agent1 = AgentQuantumState('agent1', ['cap1'])
         agent2 = AgentQuantumState('agent2', ['cap2'])
         agent3 = AgentQuantumState('agent3', ['cap3'])
-        
+
         agent1.entangle(agent2)
         agent1.entangle(agent3)
-        
+
         # All idle = low coherence
         coherence_idle = agent1.measure_coherence()
         assert coherence_idle == 0.0
-        
+
         # Activate agents = higher coherence
         agent2.state = 'active'
         agent3.state = 'active'
@@ -580,96 +580,96 @@ class TestAgentQuantumState:
 
 class TestQuantumAgentOrchestrator:
     """Test agent orchestration"""
-    
+
     def test_agent_loading(self):
         """Agents are loaded correctly"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         assert 'workflow-health-monitor' in orchestrator.agents
         assert 'ci-testing-agent' in orchestrator.agents
         assert len(orchestrator.agents) >= 5
-    
+
     def test_entanglement_calculation(self):
         """Entanglements are calculated from prerequisites and data flow"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         # workflow-health-monitor outputs should entangle with ci-testing-agent inputs
         health_monitor = orchestrator.agents['workflow-health-monitor']
         ci_testing = orchestrator.agents['ci-testing-agent']
-        
+
         # ci-testing should be entangled with workflow-health-monitor
         assert 'workflow-health-monitor' in ci_testing.prerequisites or \
                'ci-testing-agent' in orchestrator.entanglements.get('workflow-health-monitor', [])
-    
+
     def test_chain_creation(self):
         """Chains are created correctly"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         chain = orchestrator.create_chain(
             primary_agent='workflow-health-monitor',
             max_depth=2,
             quantum_optimize=False
         )
-        
+
         # Chain should start with primary agent
         assert chain[0] == 'workflow-health-monitor'
-        
+
         # Chain should have length > 1 (entangled agents added)
         assert len(chain) > 1
-    
+
     def test_prerequisite_validation(self):
         """Prerequisites are validated in chain"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         # Valid order
         valid_order = ['workflow-health-monitor', 'ci-testing-agent', 'test-alignment-fixer']
         assert orchestrator._prerequisites_satisfied(valid_order)
-        
+
         # Invalid order (ci-testing-agent before prerequisite)
         invalid_order = ['ci-testing-agent', 'workflow-health-monitor']
         assert not orchestrator._prerequisites_satisfied(invalid_order)
-    
+
     def test_quantum_optimization(self):
         """Quantum optimization improves chain"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         # Create chain without optimization
         chain_unoptimized = orchestrator.create_chain(
             primary_agent='workflow-health-monitor',
             max_depth=3,
             quantum_optimize=False
         )
-        
+
         # Create chain with optimization
         chain_optimized = orchestrator.create_chain(
             primary_agent='workflow-health-monitor',
             max_depth=3,
             quantum_optimize=True
         )
-        
+
         # Both should have same agents, possibly different order
         assert set(chain_unoptimized) == set(chain_optimized)
-        
+
         # Optimized should satisfy prerequisites
         assert orchestrator._prerequisites_satisfied(chain_optimized)
-    
+
     def test_chain_plan_generation(self, tmp_path):
         """Chain plan is generated correctly"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         chain = ['workflow-health-monitor', 'ci-testing-agent']
         output_file = tmp_path / 'chain_plan.json'
-        
+
         plan = orchestrator.generate_chain_plan(chain, output_file)
-        
+
         # Plan should have required keys
         assert 'chain' in plan
         assert 'agents' in plan
         assert 'estimated_cost' in plan
-        
+
         # Plan should be saved to file
         assert output_file.exists()
-        
+
         # Cost should be positive
         assert plan['estimated_cost'] > 0
 
@@ -677,22 +677,22 @@ class TestQuantumAgentOrchestrator:
 @pytest.mark.integration
 class TestAgentChainExecution:
     """Integration tests for agent chain execution"""
-    
+
     def test_full_chain_execution(self):
         """Full agent chain can be executed"""
         orchestrator = QuantumAgentOrchestrator()
-        
+
         # Create chain
         chain = orchestrator.create_chain(
             primary_agent='workflow-health-monitor',
             max_depth=2,
             quantum_optimize=True
         )
-        
+
         # Verify chain structure
         assert len(chain) > 1
         assert chain[0] == 'workflow-health-monitor'
-        
+
         # Verify all agents in chain exist
         for agent_name in chain:
             assert agent_name in orchestrator.agents

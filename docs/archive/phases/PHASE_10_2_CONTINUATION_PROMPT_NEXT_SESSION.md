@@ -8,7 +8,7 @@
 - **CodeQL Security Fixes**: All 10 high-severity clear-text logging alerts fixed
   - Commit: `eeb555831`
   - Files: `.github/agents/github-security-validator-agent/src/agent.py`, `.github/agents/admin-automation-agent/src/agent.py`
-  
+
 - **GitHub Secrets CLI Implementation**: Fully functional CLI (13MB binary)
   - Commit: `b14dc76c1`
   - Modules: `auth.go` (275 lines), `crypto.go` (145 lines), `client.go` (256 lines), `main.go` (420 lines)
@@ -66,34 +66,34 @@ export GITHUB_TOKEN=<token_from_secrets>
 def task_inject_secrets(self, config_file: str = None, dry_run: bool = False) -> Dict:
     """
     Inject GitHub secrets using the secrets CLI.
-    
+
     Args:
         config_file: Path to secrets configuration YAML
         dry_run: If True, validate but don't actually inject
-    
+
     Returns:
         Dict with injection results
     """
     import subprocess
     import yaml
-    
+
     # Default config
     if not config_file:
         config_file = ".github/config/secrets.yml"
-    
+
     # Load secrets configuration
     with open(config_file) as f:
         secrets_config = yaml.safe_load(f)
-    
+
     results = []
     cli_path = "tools/github-secrets-cli/github-secrets-cli"
-    
+
     for secret in secrets_config.get('secrets', []):
         secret_name = secret['name']
         secret_value = secret['value']
         scope = secret.get('scope', 'repo')
         repo = secret.get('repo', 'Aries-Serpent/_codex_')
-        
+
         # Build command
         cmd = [
             cli_path, 'set',
@@ -102,7 +102,7 @@ def task_inject_secrets(self, config_file: str = None, dry_run: bool = False) ->
             '--name', secret_name,
             '--value', secret_value
         ]
-        
+
         if dry_run:
             results.append({
                 'name': secret_name,
@@ -110,7 +110,7 @@ def task_inject_secrets(self, config_file: str = None, dry_run: bool = False) ->
                 'command': ' '.join(cmd)
             })
             continue
-        
+
         # Execute CLI
         try:
             result = subprocess.run(
@@ -140,7 +140,7 @@ def task_inject_secrets(self, config_file: str = None, dry_run: bool = False) ->
                 'error': 'Unexpected error occurred'
             })
             logger.error(f"❌ Unexpected error for secret: {secret_name}")
-    
+
     return {
         'success': all(r['status'] in ['success', 'dry-run'] for r in results),
         'total': len(results),
@@ -157,7 +157,7 @@ secrets:
     value: "test_value_1"
     scope: repo
     repo: Aries-Serpent/_codex_
-  
+
   - name: CODEX_TEST_SECRET_2
     value: "test_value_2"
     scope: repo
@@ -201,30 +201,30 @@ permissions:
 jobs:
   inject-secrets:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
-      
+
       - name: Install Python dependencies
         run: |
           pip install pyyaml
-      
+
       - name: Build CLI
         run: |
           cd tools/github-secrets-cli
           go build -o github-secrets-cli
           chmod +x github-secrets-cli
-      
+
       - name: Run Admin Automation Agent
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
@@ -233,7 +233,7 @@ jobs:
             task_inject_secrets \
             --config-file "${{ inputs.config_file }}" \
             ${{ inputs.dry_run && '--dry-run' || '' }}
-      
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4

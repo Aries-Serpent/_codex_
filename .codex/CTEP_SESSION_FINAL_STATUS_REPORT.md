@@ -131,7 +131,7 @@ All 7 tasks remain pending (full test suite, pre-commit, mypy, docs, etc.)
    - **Pattern:**
      ```python
      from typing import TYPE_CHECKING
-     
+
      if TYPE_CHECKING:
          from . import tokenizer, model  # Explicit for pytest
      else:

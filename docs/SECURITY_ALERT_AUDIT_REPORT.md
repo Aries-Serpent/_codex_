@@ -38,7 +38,7 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
   ```python
   def _is_public_bind(host: str) -> bool:
       return host in {"0.0.0.0", "::"}
-  
+
   if _is_public_bind(args.host) and not allow_public:
       logger.error("Refusing to bind to public interface without explicit opt-in")
   ```
@@ -94,7 +94,7 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 - **Verification**: defusedxml >=0.7.1 in requirements.txt
 
 #### Alerts #1672, #1664-#1652: Error Handling (13 alerts)
-- **Locations**: 
+- **Locations**:
   - `src/codex/cli.py:1483`
   - `src/training/functional_training.py` (lines 229, 459, 487, 579, 650, 706, 749, 757, 798, 808, 814, 844, 846)
 - **Status**: ✅ **NOT FOUND / ALREADY RESOLVED**
@@ -125,11 +125,11 @@ Comprehensive audit of all 23 alerts mentioned in comment #3684447350 reveals th
 1. **f4e4e5e** - security: fix critical code scanning errors (6/25 alerts)
    - Fixed MD5 with usedforsecurity=False
    - Fixed redundant assignments
-   
+
 2. **23d1216** - security: fix all 10 code quality notes (25/25 COMPLETE)
    - Verified XML uses defusedxml
    - Verified subprocess security
-   
+
 3. **835e21a** - security: fix unsafe PyTorch weights_only parameter (2 warnings)
    - Changed weights_only=False to weights_only=True
    - Fixed in 3 _torch_load functions

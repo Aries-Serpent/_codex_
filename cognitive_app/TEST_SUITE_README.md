@@ -162,25 +162,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: cognitive_app/package-lock.json
-      
+
       - name: Install dependencies
         working-directory: cognitive_app
         run: npm ci
-      
+
       - name: Run lazy initialization tests
         working-directory: cognitive_app
         run: npm run test:lazy-init
-      
+
       - name: Generate coverage report
         working-directory: cognitive_app
         run: npm run test:coverage
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -260,10 +260,10 @@ While automated tests cover functionality, manual testing is recommended for:
 it('[APPROVED] should validate new behavior', async () => {
   // Arrange
   import.meta.env.VITE_CODEX_KEY = 'test-key';
-  
+
   // Act
   render(<CodeGenerator />);
-  
+
   // Assert
   await waitFor(() => {
     expect(screen.getByText(/expected/i)).toBeInTheDocument();

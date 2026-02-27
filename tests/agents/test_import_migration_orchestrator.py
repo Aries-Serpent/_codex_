@@ -77,6 +77,8 @@ class TestImportMigration:
         assert long_migration.potential_energy > short_migration.potential_energy
 
 
+@pytest.mark.slow
+@pytest.mark.integration
 class TestImportMigrationOrchestrator:
     """Test suite for ImportMigrationOrchestrator."""
 
@@ -316,6 +318,8 @@ from training.pipeline import Pipeline
         assert len(results["files_modified"]) <= unique_files
 
 
+@pytest.mark.slow
+@pytest.mark.integration
 class TestImportMigrationWorkflow:
     """Integration tests for complete import migration workflow."""
 

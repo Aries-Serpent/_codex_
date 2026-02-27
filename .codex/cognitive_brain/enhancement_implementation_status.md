@@ -200,7 +200,7 @@ decoded, header = decode_message(encoded)
     python -c "
     from security.token_rotation import check_token_rotation_needed
     from datetime import datetime, UTC
-    
+
     # Check each managed token
     needs_rotation, reason = check_token_rotation_needed(
         token_id='${{ secrets.GITHUB_TOKEN }}',

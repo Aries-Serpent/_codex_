@@ -71,7 +71,7 @@
 1. **Create Script Registry**
    ```markdown
    # scripts/README.md
-   
+
    | Script | Purpose | Usage |
    |--------|---------|-------|
    | validate_docs_links.py | Link validation | `python scripts/validate_docs_links.py --fix` |
@@ -83,7 +83,7 @@
    # tests/scripts/test_validate_docs_links.py
    def test_parse_markdown_links():
        ...
-   
+
    def test_auto_fix_confidence():
        ...
    ```
@@ -168,7 +168,7 @@
    # Skip special link types
    if url.startswith('mailto:'):
        return  # Skip email links
-   
+
    if in_code_block(md_file, line_num):
        return  # Skip links in code examples
    ```
@@ -306,7 +306,7 @@
 2. **Agent Changelog**
    ```markdown
    # .github/agents/CHANGELOG.md
-   
+
    ## 2026-02-10 - v1.1.0
    - Added auto-fix functionality
    - Fixed CSS opacity issues
@@ -316,7 +316,7 @@
 3. **Quick Reference Cards**
    ```markdown
    # docs/quick-reference/github-pages-manager.md
-   
+
    ## Common Commands
    - Validate: @copilot Use github-pages-manager to validate
    - Fix links: @copilot Use github-pages-manager to fix broken links
@@ -402,7 +402,7 @@
    # Parallel validation
    with ThreadPoolExecutor(max_workers=4) as executor:
        results = executor.map(validate_file, files)
-   
+
    # Caching
    cache = {}
    cache_key = f"{file.stat().st_mtime}:{file.name}"

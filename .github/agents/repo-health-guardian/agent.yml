@@ -25,7 +25,7 @@ configuration:
     - docs
     - .codex
     - .github/agents
-  
+
   ignore_patterns:
     - "*.pyc"
     - "__pycache__"

@@ -42,7 +42,7 @@ fail_under = 0  # <-- THIS IS THE AUTHORITATIVE THRESHOLD
 **Defers to Primary**: `pytest.ini`
 ```ini
 [pytest]
-addopts = 
+addopts =
     # --cov-fail-under removed - use pyproject.toml
 ```
 

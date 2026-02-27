@@ -277,11 +277,11 @@ from codex.rag import (
     manage_tenant_indices,
     TenantOperationResult,
     IndexOperation,
-    
+
     # Cached Retrieval
     CachedRetriever,
     LRUCache,
-    
+
     # Provenance
     ProvenanceMetadata,
 )

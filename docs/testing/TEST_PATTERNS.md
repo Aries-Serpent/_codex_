@@ -85,11 +85,11 @@ class TestPipelineIntegration:
         # Setup
         loader = DataLoader(temp_index_dir)
         processor = DataProcessor()
-        
+
         # Execute
         raw_data = loader.load()
         processed = processor.process(raw_data)
-        
+
         # Verify
         assert processed.is_valid()
         assert len(processed.records) > 0
@@ -123,7 +123,7 @@ def test_cli_command_executes_successfully(tmp_path):
     """Test CLI command execution."""
     config_file = tmp_path / "config.yaml"
     config_file.write_text("key: value")
-    
+
     result = subprocess.run(
         [sys.executable, "-m", "codex_ml.cli", "validate", str(config_file)],
         capture_output=True,

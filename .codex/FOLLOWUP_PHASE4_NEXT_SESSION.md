@@ -49,7 +49,7 @@
    ```bash
    # Check workflow status
    gh run list --branch copilot/sub-pr-2623-another-one --limit 10
-   
+
    # View specific workflow
    gh run view <run_id> --log
    ```
@@ -112,7 +112,7 @@ activation_scores = mlp_scorer.compute_activation_scores(inputs)
 # In pyproject.toml [project.optional-dependencies]
 interpretability = [
     "captum>=0.7.0",
-    "shap>=0.44.0", 
+    "shap>=0.44.0",
     "transformers>=4.48.0",
 ]
 ```

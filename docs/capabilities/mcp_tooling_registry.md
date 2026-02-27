@@ -87,34 +87,34 @@ class ToolMetadata(BaseModel):
 
 class ToolRegistry:
     """Central registry for MCP tools."""
-    
+
     def __init__(self):
         self._tools: Dict[str, tuple[ToolMetadata, Callable]] = {}
-    
+
     def register(self, metadata: ToolMetadata, handler: Callable):
         """Register a tool with the registry."""
         if metadata.name in self._tools:
             raise ValueError(f"Tool '{metadata.name}' already registered")
-        
+
         # Validate handler signature
         self._validate_handler(handler, metadata.schema)
-        
+
         self._tools[metadata.name] = (metadata, handler)
         print(f"✓ Registered tool: {metadata.name} v{metadata.version}")
-    
+
     def get_tool(self, name: str) -> tuple[ToolMetadata, Callable]:
         """Retrieve tool by name."""
         if name not in self._tools:
             raise KeyError(f"Tool '{name}' not found in registry")
         return self._tools[name]
-    
+
     def list_tools(self, category: str = None) -> list[ToolMetadata]:
         """List all registered tools, optionally filtered by category."""
         tools = [meta for meta, _ in self._tools.values()]
         if category:
             tools = [t for t in tools if t.category == category]
         return tools
-    
+
     def _validate_handler(self, handler: Callable, schema: dict):
         """Validate handler signature matches schema."""
         import inspect
@@ -191,24 +191,24 @@ def invoke_tool(tool_name: str, parameters: dict) -> dict:
     try:
         # Get tool from registry
         metadata, handler = registry.get_tool(tool_name)
-        
+
         if not metadata.enabled:
             raise ValueError(f"Tool '{tool_name}' is disabled")
-        
+
         # Validate parameters against schema
         request_model = metadata.schema["request"]
         validated_params = request_model(**parameters)
-        
+
         # Execute tool
         result = handler(validated_params)
-        
+
         return {
             "success": True,
             "result": result.dict(),
             "tool": tool_name,
             "version": metadata.version
         }
-    
+
     except Exception as e:
         return {
             "success": False,
@@ -235,15 +235,15 @@ from pathlib import Path
 def auto_discover_tools(tools_dir: str = "./tools"):
     """Automatically discover and register tools."""
     tools_path = Path(tools_dir)
-    
+
     for tool_file in tools_path.glob("*.py"):
         if tool_file.stem.startswith("_"):
             continue
-        
+
         # Import tool module
         module_name = f"tools.{tool_file.stem}"
         module = importlib.import_module(module_name)
-        
+
         # Look for register function
         if hasattr(module, "register_tool"):
             try:
@@ -261,12 +261,12 @@ auto_discover_tools()
 ```python
 class VersionedRegistry(ToolRegistry):
     """Registry supporting multiple tool versions."""
-    
+
     def register(self, metadata: ToolMetadata, handler: Callable):
         """Register tool with version support."""
         key = f"{metadata.name}@{metadata.version}"
         self._tools[key] = (metadata, handler)
-    
+
     def get_tool(self, name: str, version: str = "latest") -> tuple:
         """Get specific version of tool."""
         if version == "latest":
@@ -278,7 +278,7 @@ class VersionedRegistry(ToolRegistry):
             ]
             if not versions:
                 raise KeyError(f"Tool '{name}' not found")
-            
+
             # Sort by version and return latest
             latest = max(versions, key=lambda x: x[0].version)
             return latest
@@ -400,7 +400,7 @@ def track_invocation(tool_name: str, duration_ms: float, success: bool):
             "success": 0,
             "total_duration_ms": 0
         }
-    
+
     stats = tool_invocations[tool_name]
     stats["count"] += 1
     stats["success"] += int(success)

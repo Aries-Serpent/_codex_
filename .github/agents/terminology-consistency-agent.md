@@ -53,14 +53,14 @@ graph TD
     B -->|Planning/Workflow| C[Apply Replacement]
     B -->|Technical Metric| D[Preserve Original]
     B -->|Ambiguous| E[Request Human Review]
-    
+
     C --> F{Validate Syntax}
     F -->|Valid| G[Suggest Replacement]
     F -->|Invalid| E
-    
+
     D --> H[Mark as Preserved]
     E --> I[Add to Review Queue]
-    
+
     G --> J[Update Documentation]
     H --> J
     I --> K[Human Decision]
@@ -162,7 +162,7 @@ Found 3 time-based references in planning context:
 ```bash
 # Agent automatically applies fixes for unambiguous cases
 # Files: docs/plan.md
-# Changes: 
+# Changes:
 #   - "2-3 days" → "2-3 iterations" (3 instances)
 #   - "weekly sync" → "per-phase sync" (1 instance)
 # Technical refs preserved: 2 instances
@@ -208,7 +208,7 @@ settings:
   auto_fix: false  # Suggest only, no auto-apply
   strict_mode: false  # Allow ambiguous cases
   preserve_technical: true
-  
+
 patterns_file: .codex/cognitive_brain/terminology_patterns.md
 
 thresholds:

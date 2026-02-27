@@ -105,7 +105,7 @@ class CustomModelServer(ModelServer):
         import torch
         self.model = torch.load("model.pt")
         logger.info(f"Loaded custom model: {self.model_name}")
-    
+
     def predict(self, inputs, parameters=None):
         """Custom inference logic"""
         # Your inference code here
@@ -249,7 +249,7 @@ from pydantic import BaseModel, Field, validator
 class PredictionRequest(BaseModel):
     inputs: List[str] = Field(..., description="Input texts")
     parameters: Optional[Dict] = None
-    
+
     @validator('inputs')
     def validate_inputs(cls, v):
         if not v:
@@ -392,13 +392,13 @@ from src.codex_ml.serving.inference_server import ModelServer, RateLimiter
 def test_model_server():
     server = ModelServer("test-model")
     server.load_model()
-    
+
     predictions = server.predict(["input1", "input2"])
     assert len(predictions) == 2
 
 def test_rate_limiter():
     limiter = RateLimiter(max_requests=2, window_seconds=60)
-    
+
     assert limiter.is_allowed("client1") is True
     assert limiter.is_allowed("client1") is True
     assert limiter.is_allowed("client1") is False  # Exceeded

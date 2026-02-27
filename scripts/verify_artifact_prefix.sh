@@ -35,7 +35,7 @@ echo ""
 # Check each workflow
 while IFS= read -r workflow; do
   BASENAME=$(basename "$workflow")
-  
+
   if ! grep -q "^name: Art_" "$workflow"; then
     echo -e "${RED}❌ Missing prefix:${NC} $BASENAME"
     MISSING=$((MISSING + 1))

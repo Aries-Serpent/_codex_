@@ -58,15 +58,15 @@ __all__ = ["DuplicateScanner", "DuplicateDetector"]
 ```python
 class ExactDetector:
     """Detects exact file duplicates using SHA256 hashing."""
-    
+
     def __init__(self, root_path: Path, exclude_patterns: List[str] = None):
         """Initialize detector with repository root and exclusion patterns."""
         pass
-    
+
     def scan(self) -> List[DuplicateGroup]:
         """Scan repository and return list of duplicate groups."""
         pass
-    
+
     def compute_hash(self, file_path: Path) -> str:
         """Compute SHA256 hash of file contents."""
         pass
@@ -121,15 +121,15 @@ class DuplicateGroup:
 ```python
 class InventoryWriter:
     """Writes duplicate inventory to multiple formats."""
-    
+
     def write_yaml(self, inventory: SupplementalInventory, path: Path):
         """Write inventory to YAML file."""
         pass
-    
+
     def write_json(self, inventory: SupplementalInventory, path: Path):
         """Write inventory to JSON file."""
         pass
-    
+
     def write_csv(self, inventory: SupplementalInventory, path: Path):
         """Write flat summary to CSV file."""
         pass
@@ -151,25 +151,25 @@ class InventoryWriter:
 ```python
 class DuplicateScanner:
     """Main coordinator for duplicate detection."""
-    
+
     def __init__(self, root_path: Path, config: Optional[Dict] = None):
         """Initialize scanner with repo root and configuration."""
         pass
-    
+
     def scan(self, modes: List[str] = None) -> SupplementalInventory:
         """
         Scan repository for duplicates.
-        
+
         Args:
             modes: List of detection modes to use
                    ["exact", "normalized", "ast", "semantic"]
                    If None, uses all modes.
-        
+
         Returns:
             Complete supplemental inventory
         """
         pass
-    
+
     def write_outputs(self, inventory: SupplementalInventory, output_dir: Path):
         """Write inventory to all output formats."""
         pass
@@ -287,7 +287,7 @@ metadata:
   detection_modes: ["exact"]
   total_files_scanned: 1234
   total_groups: 5
-  
+
 duplicate_groups:
   - id: "dup-exact-001"
     type: "exact-file"

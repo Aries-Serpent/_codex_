@@ -339,10 +339,10 @@ git revert <commit-hash>
 
 - **Workflow File**: `.github/workflows/phase34-codeql-alert-fetch.yml`
 - **Related Issues**: Line 134 check failure
-- **Documentation**: 
+- **Documentation**:
   - [GitHub Actions YAML Syntax](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
   - [YAML Heredoc Constraints](.codex/YAML_HEREDOC_SYNTAX_CONSTRAINTS.md)
-- **Repository Memory**: 
+- **Repository Memory**:
   - Fact: "Avoid heredocs in GitHub Actions workflows. Use direct variable assignment or echo command groups instead of heredocs with special characters."
   - Citations: `.github/workflows/codebase-qa-walkthrough.yml:126`, `.github/workflows/rust_swarm_ci.yml:277`
 - **Previous Iterations**: Similar fixes in codebase-qa-walkthrough.yml and rust_swarm_ci.yml
@@ -446,7 +446,7 @@ git revert <commit-hash>
 7. Update .codex/change_log.md with fix details and timestamp
 8. Create rollback documentation in workflow README
 
-Validate: 
+Validate:
 - YAML parses without errors (yamllint exit code 0)
 - Manual trigger starts workflow successfully (gh workflow run succeeds)
 - Debug logging appears in workflow run output
@@ -464,13 +464,13 @@ DO NOT CONCLUDE until:
 
 ## 📝 Notes
 
-**Additional Context**: 
+**Additional Context**:
 - This issue was discovered during Phase 34 CodeQL alert resolution workflow setup
 - The heredoc syntax works in standalone bash scripts but fails in GitHub Actions YAML due to YAML parser conflicts
 - Repository already has precedent for this fix pattern in `codebase-qa-walkthrough.yml:126` and `rust_swarm_ci.yml:277`
 - The workflow must maintain ability to create GitHub issues with rich markdown formatting including code blocks
 
-**Dependencies**: 
+**Dependencies**:
 - GitHub CLI (`gh`) must be available in workflow runner (already installed in ubuntu-latest)
 - GITHUB_TOKEN secret must have issues:write permission (already configured in workflow permissions)
 - yamllint and Python YAML parser for validation (available in ubuntu-latest)
@@ -484,7 +484,7 @@ DO NOT CONCLUDE until:
 
 **Terminology**: This plan uses iteration-based workflow terminology aligned with _codex_ incremental development philosophy. All references to fixed timelines (weeks/days) have been replaced with flexible iterations and commit/pre-commit steps.
 
-**Related Memory**: 
+**Related Memory**:
 - **Fact**: "Avoid heredocs in GitHub Actions workflows. Use direct variable assignment or echo command groups instead of heredocs with special characters."
 - **Citations**: `.github/workflows/codebase-qa-walkthrough.yml:126`, `.github/workflows/rust_swarm_ci.yml:277`
 - **Reason**: This fix will update the repository pattern for GitHub Actions heredoc usage and should be stored as verified working solution

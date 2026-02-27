@@ -99,7 +99,7 @@ python scripts/remediation/analyze_legacy_usage.py
 **Status**: Analysis script exists  
 **Output**: `reports/legacy_import_usage.csv`
 
-**Scope**: 
+**Scope**:
 - Review legacy imports (29 sites per prior documentation)
 - Prioritize high-frequency imports for refactoring
 - Create refactoring plan with risk assessment
@@ -173,7 +173,7 @@ python scripts/remediation/analyze_legacy_usage.py
 
 ### Recommendations
 
-1. **Immediate**: 
+1. **Immediate**:
    - Commit validation results
    - Update progress checklist
 

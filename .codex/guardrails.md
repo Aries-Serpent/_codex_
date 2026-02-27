@@ -43,11 +43,11 @@ These are policy placeholders for the Genesis Protocol. Human admin (mbaetiong) 
   - Required permissions: Actions, Administration, Contents, Pull Requests, Workflows
   - Rotation schedule: Every 90 iterations
   - Storage: GitHub repository secrets only
-  
+
 - **CODEX_WEBHOOK_SECRET**: Webhook signature verification
   - Generation: `openssl rand -hex 32`
   - Storage: GitHub repository secrets only
-  
+
 - **CODEX_BACKUP_KEY**: Fallback authentication (optional)
   - Same permissions as CODEX_MASTER_KEY
   - Storage: GitHub repository secrets only

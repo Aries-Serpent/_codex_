@@ -45,14 +45,14 @@ Manages MCP security through:
 async def authenticate_request(request):
     # 1. Extract credentials from request
     credentials = extract_credentials(request)
-    
+
     # 2. Validate credentials
     identity = await validate_credentials(credentials)
-    
+
     # 3. Check authorization
     if not authorize(identity, request.resource):
         raise AuthorizationError("Access denied")
-    
+
     # 4. Return authenticated context
     return AuthContext(identity=identity, permissions=identity.permissions)
 ```
@@ -71,87 +71,87 @@ import hashlib
 class APIKeyAuthenticator:
     """
     API Key authentication for MCP services.
-    
+
     Provides secure API key validation with safeguards:
     - Constant-time comparison to prevent timing attacks
     - Key hashing for secure storage
     - Rate limiting integration
     """
-    
+
     def __init__(self, valid_keys: dict[str, str]):
         """
         Initialize with valid API keys.
-        
+
         Args:
             valid_keys: Mapping of key IDs to hashed keys
         """
         self._valid_keys = valid_keys
-    
+
     def verify_api_key(self, api_key: str) -> Optional[str]:
         """
         Verify an API key and return the associated identity.
-        
+
         Safeguards:
         - Uses constant-time comparison
         - Validates key format before comparison
         - Returns None on failure (no exception details leak)
-        
+
         Args:
             api_key: The API key to verify
-            
+
         Returns:
             Key ID if valid, None otherwise
         """
         if not api_key or not isinstance(api_key, str):
             return None
-        
+
         # Validate key format (safeguard)
         if len(api_key) < 32 or len(api_key) > 128:
             return None
-        
+
         # Hash the provided key
         key_hash = hashlib.sha256(api_key.encode()).hexdigest()
-        
+
         # Constant-time comparison (safeguard)
         for key_id, stored_hash in self._valid_keys.items():
             if secrets.compare_digest(key_hash, stored_hash):
                 return key_id
-        
+
         return None
 
 def authenticate(request) -> dict:
     """
     Main authentication entry point.
-    
+
     Extracts and validates credentials from the request,
     returning the authenticated identity.
-    
+
     Args:
         request: Incoming HTTP request
-        
+
     Returns:
         Dictionary with identity information
-        
+
     Raises:
         AuthenticationError: If authentication fails
     """
     # Extract API key from headers
     api_key = request.headers.get("X-API-Key") or request.headers.get("Authorization")
-    
+
     if not api_key:
         raise AuthenticationError("No API key provided")
-    
+
     # Handle Bearer token format
     if api_key.startswith("Bearer "):
         api_key = api_key[7:]
-    
+
     # Verify the key
     authenticator = get_authenticator()
     identity = authenticator.verify_api_key(api_key)
-    
+
     if not identity:
         raise AuthenticationError("Invalid API key")
-    
+
     return {"identity": identity, "authenticated": True}
 ```
 
@@ -167,25 +167,25 @@ from typing import Optional, Dict, Any
 class JWTAuthenticator:
     """
     JWT authentication for MCP services.
-    
+
     Provides stateless token-based authentication with:
     - Token validation and verification
     - Expiration checking
     - Signature verification
     - Claims validation
     """
-    
+
     def __init__(self, secret_key: str, algorithm: str = "HS256"):
         """
         Initialize JWT authenticator.
-        
+
         Args:
             secret_key: Secret key for token signing
             algorithm: JWT algorithm (default: HS256)
         """
         self._secret = secret_key
         self._algorithm = algorithm
-    
+
     def create_token(
         self,
         identity: str,
@@ -194,12 +194,12 @@ class JWTAuthenticator:
     ) -> str:
         """
         Create a JWT token for the given identity.
-        
+
         Args:
             identity: User or service identity
             permissions: List of granted permissions
             expires_in: Token lifetime in seconds
-            
+
         Returns:
             Signed JWT token string
         """
@@ -210,20 +210,20 @@ class JWTAuthenticator:
             "exp": datetime.utcnow() + timedelta(seconds=expires_in),
         }
         return jwt.encode(payload, self._secret, algorithm=self._algorithm)
-    
+
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
         """
         Verify and decode a JWT token.
-        
+
         Safeguards:
         - Validates token format
         - Checks expiration
         - Verifies signature
         - Validates required claims
-        
+
         Args:
             token: JWT token to verify
-            
+
         Returns:
             Decoded payload if valid, None otherwise
         """
@@ -231,10 +231,10 @@ class JWTAuthenticator:
             # Validate token format (safeguard)
             if not token or not isinstance(token, str):
                 return None
-            
+
             if len(token) > 10000:  # Bounds check (safeguard)
                 return None
-            
+
             # Decode and verify
             payload = jwt.decode(
                 token,
@@ -242,9 +242,9 @@ class JWTAuthenticator:
                 algorithms=[self._algorithm],
                 options={"require": ["sub", "exp"]}
             )
-            
+
             return payload
-            
+
         except jwt.ExpiredSignatureError:
             return None
         except jwt.InvalidTokenError:
@@ -269,20 +269,20 @@ class Permission(Enum):
 class RBACAuthorizer:
     """
     Role-Based Access Control for MCP services.
-    
+
     Provides fine-grained permission management with:
     - Role definitions
     - Permission inheritance
     - Resource-based access control
     """
-    
+
     def __init__(self):
         self._role_permissions: dict[str, Set[Permission]] = {
             "reader": {Permission.READ},
             "writer": {Permission.READ, Permission.WRITE},
             "admin": {Permission.READ, Permission.WRITE, Permission.ADMIN, Permission.EXECUTE},
         }
-    
+
     def authorize(
         self,
         identity: str,
@@ -291,34 +291,34 @@ class RBACAuthorizer:
     ) -> bool:
         """
         Check if identity is authorized for the resource.
-        
+
         Safeguards:
         - Input validation on all parameters
         - Defensive permission checking
         - Audit logging for access attempts
-        
+
         Args:
             identity: User or service identity
             resource: Resource being accessed
             required_permission: Required permission level
-            
+
         Returns:
             True if authorized, False otherwise
         """
         # Input validation (safeguard)
         if not identity or not resource:
             return False
-        
+
         # Get identity's role and permissions
         role = self._get_identity_role(identity)
         permissions = self._role_permissions.get(role, set())
-        
+
         # Check permission
         authorized = required_permission in permissions
-        
+
         # Audit log (safeguard - traceability)
         self._log_access_attempt(identity, resource, required_permission, authorized)
-        
+
         return authorized
 ```
 
@@ -354,13 +354,13 @@ authentication:
     enabled: true
     header_name: "X-API-Key"
     hash_algorithm: "sha256"
-  
+
   jwt:
     enabled: true
     algorithm: "HS256"
     expiry_seconds: 3600
     refresh_enabled: true
-  
+
   oauth:
     enabled: false
 
@@ -389,11 +389,11 @@ def require_auth(permission: Permission = Permission.READ):
         async def wrapper(request, *args, **kwargs):
             # Authenticate
             auth_context = authenticate(request)
-            
+
             # Authorize
             if not authorize(auth_context["identity"], request.path, permission):
                 raise HTTPException(403, "Access denied")
-            
+
             return await func(request, *args, **kwargs)
         return wrapper
     return decorator
@@ -410,26 +410,26 @@ async def create_resource(request):
 async def refresh_access_token(refresh_token: str) -> dict:
     """
     Refresh an access token using a refresh token.
-    
+
     Safeguards:
     - Validates refresh token
     - Checks token revocation
     - Issues new short-lived access token
     """
     authenticator = JWTAuthenticator(get_secret())
-    
+
     # Verify refresh token
     payload = authenticator.verify_token(refresh_token)
     if not payload or payload.get("type") != "refresh":
         raise AuthenticationError("Invalid refresh token")
-    
+
     # Create new access token
     access_token = authenticator.create_token(
         identity=payload["sub"],
         permissions=payload["permissions"],
         expires_in=3600  # 1 hour
     )
-    
+
     return {"access_token": access_token, "token_type": "Bearer"}
 ```
 
@@ -439,7 +439,7 @@ async def refresh_access_token(refresh_token: str) -> dict:
 async def authenticate_mfa(username: str, password: str, totp_code: str) -> dict:
     """
     Authenticate with multi-factor authentication.
-    
+
     Combines password verification with TOTP code validation
     for enhanced security.
     """
@@ -447,11 +447,11 @@ async def authenticate_mfa(username: str, password: str, totp_code: str) -> dict
     user = await verify_password(username, password)
     if not user:
         raise AuthenticationError("Invalid credentials")
-    
+
     # Verify TOTP code
     if not verify_totp(user.totp_secret, totp_code):
         raise AuthenticationError("Invalid MFA code")
-    
+
     # Create authenticated session
     return create_session(user)
 ```
@@ -483,7 +483,7 @@ def safe_compare(a: str, b: str) -> bool:
 ```python
 class TokenRotationPolicy:
     """Automatically rotate tokens before expiry."""
-    
+
     def should_rotate(self, token_payload: dict) -> bool:
         """Check if token should be rotated."""
         exp = token_payload.get("exp", 0)

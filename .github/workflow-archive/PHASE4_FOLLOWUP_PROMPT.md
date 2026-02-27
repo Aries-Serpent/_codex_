@@ -37,7 +37,7 @@ Optimize and enhance the consolidated workflow architecture based on the complet
    # Get recent workflow runtimes
    gh run list --limit 50 --json conclusion,name,startedAt,updatedAt | \
      jq '.[] | {name, duration: ((.updatedAt | fromdateiso8601) - (.startedAt | fromdateiso8601))}'
-   
+
    # Identify slowest workflows
    ```
 

@@ -107,7 +107,7 @@ Some artifacts are committed to the repository:
 #### 2.1 Coverage Report
 - **Workflow**: `coverage_report.yml`
 - **Artifact Name**: `coverage-artifacts`
-- **Path**: 
+- **Path**:
   - `htmlcov/` (HTML report)
   - `coverage.xml` (XML format)
   - `.coverage` (SQLite database)
@@ -173,7 +173,7 @@ Some artifacts are committed to the repository:
 #### 3.2 Post-Merge Validation Report
 - **Workflow**: `post-merge-validation-optimized.yml`
 - **Artifact Name**: `modernization-report`
-- **Path**: 
+- **Path**:
   - `modernization_summary.json`
   - `import_verification.log`
 - **Content**: Post-merge validation results
@@ -191,7 +191,7 @@ Some artifacts are committed to the repository:
 #### 4.1 Audit Results
 - **Workflow**: `audit-improvement-pipeline.yml`
 - **Artifact Name**: `audit-results`
-- **Path**: 
+- **Path**:
   - `audit_run_manifest.json`
   - `audit_artifacts/capabilities_scored.json`
   - `audit_artifacts/gaps.json`
@@ -393,10 +393,10 @@ def get_latest_artifact(artifact_name_pattern):
         capture_output=True, text=True
     )
     run_id = json.loads(result.stdout)[0]["databaseId"]
-    
+
     # Download artifact
     subprocess.run(["gh", "run", "download", str(run_id), "--name", artifact_name_pattern])
-    
+
     return f"Downloaded artifacts from run {run_id}"
 
 # Usage
@@ -504,14 +504,14 @@ def analyze_code_quality():
     """Download and analyze code quality artifacts."""
     # Download latest
     subprocess.run(["gh", "run", "download", "--name", "code-quality-report"])
-    
+
     # Load and analyze
     with open(".codex/reports/smells.json") as f:
         smells = json.load(f)
-    
+
     # Extract insights
     high_priority = [s for s in smells if s.get("severity") == "high"]
-    
+
     return {
         "total_smells": len(smells),
         "high_priority": len(high_priority),

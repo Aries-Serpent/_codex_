@@ -3,16 +3,16 @@ experiment:
   name: debug
   type: unit_test
   description: "Minimal configuration for unit testing"
-  
+
   # Test-specific overrides
   seed: 42
   deterministic: true
-  
+
   # Resource limits for testing
   max_iterations: 10
   batch_size: 2
   num_workers: 0
-  
+
   # Disable expensive operations
   enable_logging: false
   save_checkpoints: false

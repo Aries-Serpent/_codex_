@@ -9,15 +9,15 @@ agent:
   version: "0.0.0-template"
   repository_id: "1040037790"
   organization: "Aries-Serpent"
-  
+
   # HUMAN: Set to true only AFTER Genesis and secrets are verified
   autonomous_actions_enabled: false
-  
+
   allowed_operations:
     - maintenance
     - testing
     - documentation
-  
+
   escalation_policy:
     security: escalate
     config_changes: escalate
@@ -35,7 +35,7 @@ security:
   master_key_placeholder: "<<HUMAN: inject CODEX_MASTER_KEY as repo secret>>"
   webhook_secret_placeholder: "<<HUMAN: inject CODEX_WEBHOOK_SECRET as repo secret>>"
   backup_key_placeholder: "<<HUMAN: inject CODEX_BACKUP_KEY as repo secret (optional)>>"
-  
+
   # Token rotation schedule
   token_rotation_days: 90
   rotation_reminder_days: 14
@@ -46,7 +46,7 @@ guardrails:
     - security_changes
     - configuration_changes
     - secret_operations
-  
+
   forbidden_operations:
     - rotate_secrets
     - expose_secrets

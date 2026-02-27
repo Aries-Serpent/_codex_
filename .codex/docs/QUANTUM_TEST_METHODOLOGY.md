@@ -100,7 +100,7 @@ class QuantumTest:
     energy: float = 1.0        # Execution cost
     entropy: float = 0.5       # Uncertainty reduction
     temperature: float = 1.0   # Urgency factor
-    
+
     def calculate_free_energy(self) -> float:
         return self.energy - self.temperature * self.entropy
 ```
@@ -117,7 +117,7 @@ class QuantumTest:
 def execute_test(test: QuantumTest) -> TestState:
     """Execute test and collapse wave function."""
     start_time = time.time()
-    
+
     try:
         result = test.test_func()
         state = TestState.PASSED if result else TestState.FAILED
@@ -125,7 +125,7 @@ def execute_test(test: QuantumTest) -> TestState:
         state = TestState.FAILED
     finally:
         test.execution_time = time.time() - start_time
-    
+
     # Wave function has collapsed
     return state
 ```
@@ -146,9 +146,9 @@ def calculate_test_interference(test1: QuantumTest, test2: QuantumTest) -> float
     amplitude1 = test1.amplitude
     amplitude2 = test2.amplitude
     phase_diff = test1.phase - test2.phase
-    
+
     return (
-        amplitude1**2 + amplitude2**2 + 
+        amplitude1**2 + amplitude2**2 +
         2 * amplitude1 * amplitude2 * math.cos(phase_diff)
     )
 ```
@@ -171,15 +171,15 @@ def calculate_coverage_entropy(tested_files: int, total_files: int) -> float:
     """Shannon entropy of coverage distribution."""
     if total_files == 0:
         return 0.0
-    
+
     p_tested = tested_files / total_files
     p_untested = 1 - p_tested
-    
+
     entropy = 0.0
     for p in [p_tested, p_untested]:
         if p > 0:
             entropy -= p * math.log2(p)
-    
+
     return entropy
 ```
 
@@ -201,11 +201,11 @@ class ModuleQuantumState:
     path: str
     total_files: int
     tested_files: int
-    
+
     @property
     def coverage_ratio(self) -> float:
         return self.tested_files / self.total_files if self.total_files > 0 else 0
-    
+
     @property
     def entropy(self) -> float:
         """Shannon entropy - maximum at 50% coverage."""
@@ -213,17 +213,17 @@ class ModuleQuantumState:
         if p == 0 or p == 1:
             return 0.0
         return -p * math.log2(p) - (1-p) * math.log2(1-p)
-    
+
     @property
     def amplitude(self) -> float:
         """Probability amplitude based on untested code."""
         return math.sqrt(1 - self.coverage_ratio)
-    
+
     @property
     def energy(self) -> float:
         """Energy cost - proportional to module size."""
         return math.log(self.total_files + 1)
-    
+
     @property
     def free_energy(self) -> float:
         """Lower = higher priority."""
@@ -265,23 +265,23 @@ def thermodynamic_test_schedule(
 ) -> list[tuple[str, int]]:
     """
     Schedule test development using thermodynamic principles.
-    
+
     Returns: List of (module_path, tests_to_add) tuples
     """
     schedule = []
     remaining_energy = max_energy_per_cycle
-    
+
     # Sort by free energy (lowest first)
     sorted_modules = sorted(modules, key=lambda m: m.free_energy)
-    
+
     for module in sorted_modules:
         tests_needed = calculate_tests_needed(module)
         test_energy = module.energy * 0.1  # Energy per test
-        
+
         if test_energy <= remaining_energy:
             schedule.append((module.path, tests_needed))
             remaining_energy -= test_energy
-    
+
     return schedule
 ```
 
@@ -322,16 +322,16 @@ from typing import List, Tuple
 @dataclass
 class ModuleQuantumState:
     """Quantum state of a source module."""
-    
+
     path: str
     total_files: int
     tested_files: int
     lines_of_code: int = 0
-    
+
     @property
     def coverage_ratio(self) -> float:
         return self.tested_files / self.total_files if self.total_files > 0 else 0
-    
+
     @property
     def entropy(self) -> float:
         """Shannon entropy - maximum at 50% coverage."""
@@ -339,28 +339,28 @@ class ModuleQuantumState:
         if p <= 0 or p >= 1:
             return 0.0
         return -p * math.log2(p) - (1-p) * math.log2(1-p)
-    
+
     @property
     def amplitude(self) -> float:
         """Probability amplitude based on untested code."""
         return math.sqrt(max(0, 1 - self.coverage_ratio))
-    
+
     @property
     def born_probability(self) -> float:
         """Born rule: P = |ψ|²"""
         return self.amplitude ** 2
-    
+
     @property
     def energy(self) -> float:
         """Energy cost - proportional to module complexity."""
         return math.log(self.total_files + 1) + math.log(self.lines_of_code + 1) * 0.1
-    
+
     @property
     def free_energy(self) -> float:
         """Gibbs free energy: G = E - TS (lower = higher priority)."""
         temperature = 1.0  # Urgency factor
         return self.energy - temperature * self.entropy
-    
+
     def tests_needed_for_target(self, target: float = 0.70) -> int:
         """Calculate tests needed to reach target coverage."""
         target_tested = int(self.total_files * target)
@@ -370,18 +370,18 @@ class ModuleQuantumState:
 def quantum_prioritize_modules(modules: List[ModuleQuantumState]) -> List[Tuple[str, float, int]]:
     """
     Prioritize modules using quantum principles.
-    
+
     Returns: List of (path, priority_score, tests_needed) tuples
     """
     results = []
-    
+
     for module in modules:
         # Priority combines Born probability and inverse free energy
         priority = module.born_probability / max(0.01, module.free_energy)
         tests_needed = module.tests_needed_for_target(0.70)
-        
+
         results.append((module.path, priority, tests_needed))
-    
+
     # Sort by priority (highest first)
     return sorted(results, key=lambda x: x[1], reverse=True)
 
@@ -395,13 +395,13 @@ if __name__ == "__main__":
         ModuleQuantumState("src/services", 27, 3, 4500),
         ModuleQuantumState("src/codex_ml", 446, 47, 50000),
     ]
-    
+
     priorities = quantum_prioritize_modules(modules)
-    
+
     print("\\n🔬 Quantum Test Development Priority List\\n")
     print(f"{'Module':<30} {'Priority':>10} {'Tests Needed':>15}")
     print("-" * 58)
-    
+
     for path, priority, tests in priorities:
         print(f"{path:<30} {priority:>10.4f} {tests:>15}")
 ```
@@ -453,7 +453,7 @@ Where:
 ```python
 class TestEntangledModules:
     """Tests for entangled module behavior."""
-    
+
     def test_correlation_preserved(self):
         """Test that changes in Module A affect Module B correctly."""
         # When A changes state, B should reflect it
@@ -474,14 +474,14 @@ class TestEntangledModules:
 ```python
 class TestDecoherence:
     """Tests for environmental isolation."""
-    
+
     @pytest.fixture
     def isolated_environment(self, monkeypatch):
         """Create isolated test environment."""
         monkeypatch.setenv("TEST_MODE", "isolated")
         monkeypatch.delenv("PRODUCTION_KEY", raising=False)
         yield
-    
+
     def test_no_environment_leakage(self, isolated_environment):
         """Test that environment variables don't leak."""
         result = module.process()
@@ -501,13 +501,13 @@ class TestDecoherence:
 ```python
 class TestTunneling:
     """Tests for abstraction barrier behavior."""
-    
+
     def test_through_interface(self):
         """Test behavior observed through public interface."""
         # Don't test implementation, test observable behavior
         result = high_level_api.perform_operation()
         assert result.is_valid()
-    
+
     def test_internal_state_not_exposed(self):
         """Test that internal state is properly encapsulated."""
         obj = Module()
@@ -527,13 +527,13 @@ class TestTunneling:
 ```python
 class TestEigenstates:
     """Tests for stable/idempotent behavior."""
-    
+
     def test_idempotent_operation(self):
         """Test operation is idempotent (eigenstate)."""
         state = module.normalize(data)
         state_again = module.normalize(state)
         assert state == state_again  # Eigenstate preserved
-    
+
     def test_stable_hash(self):
         """Test hash is stable (deterministic eigenvalue)."""
         hash1 = module.compute_hash(data)
@@ -554,13 +554,13 @@ class TestEigenstates:
 ```python
 class TestMeasurementBackaction:
     """Tests for expected side effects."""
-    
+
     def test_logging_side_effect(self, caplog):
         """Test that operation produces expected log output."""
         with caplog.at_level(logging.INFO):
             module.perform_operation()
         assert "Operation completed" in caplog.text
-    
+
     def test_state_modification(self):
         """Test that operation modifies state as expected."""
         original_count = module.get_count()

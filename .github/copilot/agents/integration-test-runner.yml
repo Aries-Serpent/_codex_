@@ -20,7 +20,7 @@ actions:
   - name: discover_tests
     description: Discover all integration tests
     script: pytest --collect-only tests/integration/
-    
+
   - name: execute_parallel
     description: Run tests in parallel
     config:
@@ -28,28 +28,28 @@ actions:
       timeout: 600  # 10 minutes per test
       retry_flaky: true
     script: pytest tests/integration/ -n 4 --tb=short
-    
+
   - name: analyze_failures
     description: Analyze test failures for patterns
     heuristics:
       - Group by error type
       - Detect flaky tests (intermittent failures)
       - Identify infrastructure issues
-    
+
   - name: auto_retry
     description: Retry failed tests with backoff
     config:
       max_attempts: 3
       backoff: [30, 60, 120]  # seconds
     condition: failure_type == "transient"
-    
+
   - name: aggregate_results
     description: Generate comprehensive test report
     outputs:
       - junit_xml: test-results.xml
       - coverage_html: coverage_report/
       - summary_json: test-summary.json
-    
+
   - name: update_pr_status
     description: Update PR with test results
     github_check: integration-tests

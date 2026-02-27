@@ -108,7 +108,7 @@ pip list | grep -E "(filelock|torch|starlette|nbconvert)"
   - **Impact**: Denial of Service through malicious multipart forms
   - **Mitigation**: Updated starlette to >=0.37.2
   - **Additional Protection**: Added `SecureMultipartMiddleware` with size limits
-  
+
 - ✅ **CVE-2024-XXXXX**: nbconvert path traversal → **Fixed in nbconvert 7.16.4+**
   - **Impact**: Unauthorized code execution via uncontrolled search path (Windows)
   - **Mitigation**: Updated nbconvert to >=7.16.4 in all notebook requirements
@@ -208,7 +208,7 @@ To report a vulnerability privately:
 
 2. **If GitHub Security Advisories Are Unavailable:**
    - Email us directly at: **security@aries-serpent.dev**
-   - Clearly label the email subject with `[SECURITY]` 
+   - Clearly label the email subject with `[SECURITY]`
    - Include:
      - Description of the vulnerability
      - Steps to reproduce
@@ -309,7 +309,7 @@ We run the following automated security scans in CI:
 - Generates security reports as artifacts
 - Currently informational (warnings only), can be configured to fail CI
 
-**Prompt Sanitization**: 
+**Prompt Sanitization**:
 - Default sanitization enabled for all inference endpoints
 - Detects and blocks: XSS, SQL injection, command injection, code execution
 - Module: `src/codex_ml/safety/prompt_sanitizer.py`

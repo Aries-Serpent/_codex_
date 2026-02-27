@@ -21,7 +21,7 @@
 ## Objectives for v1.2.4
 
 1. **Execute Legacy Import Reduction** (Primary Goal)
-2. **Validate CI Workflow End-to-End** 
+2. **Validate CI Workflow End-to-End**
 3. **Polish Documentation**
 4. **Final Acceptance Testing**
 5. **Generate v1.2.5 Prompt**

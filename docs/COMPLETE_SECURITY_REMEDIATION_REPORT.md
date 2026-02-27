@@ -148,7 +148,7 @@ All code quality notes from the original scan have been verified and addressed.
 1. **utils/safe_torch_loader.py** (85 lines)
    - Secure PyTorch model loading with weights_only=True enforcement
    - Prevents RCE via malicious model files
-   
+
 2. **utils/torch_resource_manager.py** (67 lines)
    - Context manager for automatic GPU resource cleanup
    - Prevents resource leaks in long-running services

@@ -20,8 +20,8 @@ interface GraphNode {
   level: number;
 }
 
-export function DependencyGraphVisualizer({ 
-  tokens, 
+export function DependencyGraphVisualizer({
+  tokens,
   highlightedToken,
   executingTokens = new Set(),
   completedTokens = new Set()
@@ -124,8 +124,8 @@ export function DependencyGraphVisualizer({
         const depNode = nodes.find(n => n.id === depId);
         if (!depNode) return;
 
-        const isHighlighted = 
-          highlightedToken === node.id || 
+        const isHighlighted =
+          highlightedToken === node.id ||
           highlightedToken === depId ||
           hoveredNode === node.id ||
           hoveredNode === depId;
@@ -133,7 +133,7 @@ export function DependencyGraphVisualizer({
         ctx.beginPath();
         ctx.moveTo(depNode.x, depNode.y);
         ctx.lineTo(node.x, node.y);
-        
+
         if (isHighlighted) {
           ctx.strokeStyle = 'oklch(0.75 0.15 195)';
           ctx.lineWidth = 3;
@@ -141,7 +141,7 @@ export function DependencyGraphVisualizer({
           ctx.strokeStyle = 'oklch(0.35 0.02 250)';
           ctx.lineWidth = 2;
         }
-        
+
         ctx.setLineDash([5, 5]);
         ctx.stroke();
         ctx.setLineDash([]);
@@ -162,8 +162,8 @@ export function DependencyGraphVisualizer({
           arrowX - arrowSize * Math.cos(angle + Math.PI / 6),
           arrowY - arrowSize * Math.sin(angle + Math.PI / 6)
         );
-        ctx.strokeStyle = isHighlighted 
-          ? 'oklch(0.75 0.15 195)' 
+        ctx.strokeStyle = isHighlighted
+          ? 'oklch(0.75 0.15 195)'
           : 'oklch(0.35 0.02 250)';
         ctx.lineWidth = 2;
         ctx.stroke();
@@ -242,8 +242,8 @@ export function DependencyGraphVisualizer({
             <svg className="absolute inset-0 w-full h-full pointer-events-none">
               {nodes.map(node => {
                 const status = getNodeStatus(node.id);
-                const isHighlighted = 
-                  highlightedToken === node.id || 
+                const isHighlighted =
+                  highlightedToken === node.id ||
                   hoveredNode === node.id;
 
                 return (
@@ -383,7 +383,7 @@ export function DependencyGraphVisualizer({
               <div className="text-sm">
                 <p className="font-semibold text-blue-400 mb-1">Dependency Resolution</p>
                 <p className="text-blue-300/80">
-                  Tokens will execute automatically once their dependencies complete. 
+                  Tokens will execute automatically once their dependencies complete.
                   Click a node to see its dependencies and dependents.
                 </p>
               </div>

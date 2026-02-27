@@ -39,12 +39,12 @@ graph TD
     B -->|High| D[Fast Rollback]
     B -->|Medium| E[Staged Rollback]
     B -->|Low| F[Hotfix Forward]
-    
+
     C --> G[Execute: emergency-stop.sh]
     D --> H[Execute: rollback.sh --to-previous]
     E --> I[Execute: staged-rollback.sh]
     F --> J[Create & Deploy Hotfix]
-    
+
     G --> K[Notify Stakeholders]
     H --> K
     I --> K

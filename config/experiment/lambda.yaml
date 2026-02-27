@@ -20,17 +20,17 @@ test:
   markers:
     - lambda
     - deployment
-  
+
 # Coverage settings
 coverage:
   enabled: false  # Skip coverage in Lambda to save time/memory
-  
+
 # Performance
 performance:
   parallel_workers: 1  # Lambda typically runs single-threaded
   cache_enabled: false  # Limited persistent storage in Lambda
   memory_limit: 512  # MB
-  
+
 # Lambda-specific settings
 lambda:
   runtime: python3.12

@@ -24,23 +24,23 @@ jobs:
     outputs:
       gaps_found: ${{ steps.analyze.outputs.gaps_found }}
       feedback_count: ${{ steps.analyze.outputs.feedback_count }}
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      
+
       - name: Install Dependencies
         run: |
           pip install -e .
           pip install pyyaml
-      
+
       - name: Analyze Capability Gaps
         id: analyze
         run: |
@@ -48,20 +48,20 @@ jobs:
           from pathlib import Path
           import json
           import yaml
-          
+
           # Load current capabilities
           with open('.copilot-space/workflow.yaml') as f:
               workflow = yaml.safe_load(f)
               current_caps = set(c['name'] for c in workflow.get('capabilities', []))
-          
+
           # Load expected capabilities from config
           expected_caps = set(workflow.get('expected_capabilities', []))
           if not expected_caps:
               raise ValueError('No expected_capabilities found in .copilot-space/workflow.yaml. Please define an expected_capabilities list.')
-          
+
           # Find gaps
           gaps = expected_caps - current_caps
-          
+
           # Save gap analysis
           gap_data = {
               'detected_at': '$(date -Iseconds)',
@@ -70,19 +70,19 @@ jobs:
               'expected_count': len(expected_caps),
               'coverage': round(len(current_caps) / len(expected_caps) * 100, 2)
           }
-          
+
           with open('capability_gaps.json', 'w') as f:
               json.dump(gap_data, f, indent=2)
-          
+
           print(f'Found {len(gaps)} capability gaps')
           print(f'Coverage: {gap_data[\"coverage\"]}%')
-          
+
           # Set outputs
           with open('$GITHUB_OUTPUT', 'a') as f:
               f.write(f'gaps_found={len(gaps)}\n')
               f.write(f'feedback_count=0\n')  # Placeholder
           "
-      
+
       - name: Analyze Session Logs
         run: |
           # Analyze recent session logs for patterns
@@ -96,37 +96,37 @@ jobs:
           else
             echo "No session logs found"
           fi
-      
+
       - name: Upload Gap Analysis
         uses: actions/upload-artifact@v6
         with:
           name: gap-analysis
           path: capability_gaps.json
           retention-days: 30
-  
+
   detect-regressions:
     name: Detect Regressions
     runs-on: ubuntu-latest
     needs: analyze-feedback
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
-      
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      
+
       - name: Install Dependencies
         run: pip install -e .
-      
+
       - name: Run Regression Check
         id: regression
         run: |
           # Run audit first to get current state
           python -m scripts.space_traversal.audit_runner run || echo "Audit completed with warnings"
-          
+
           # Check for regressions
           if python -m scripts.space_traversal.audit_runner check-regressions; then
             echo "No regressions detected"
@@ -136,7 +136,7 @@ jobs:
             echo "regressions_found=true" >> $GITHUB_OUTPUT
           fi
         continue-on-error: true
-      
+
       - name: Upload Regression Report
         if: steps.regression.outputs.regressions_found == 'true'
         uses: actions/upload-artifact@v6
@@ -144,37 +144,37 @@ jobs:
           name: regression-report
           path: regression_report.md
           retention-days: 30
-  
+
   create-improvement-issues:
     name: Create Improvement Issues
     runs-on: ubuntu-latest
     needs: [analyze-feedback, detect-regressions]
     if: needs.analyze-feedback.outputs.gaps_found > 0
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
-      
+
       - name: Download Gap Analysis
         uses: actions/download-artifact@v4
         with:
           name: gap-analysis
-      
+
       - name: Create Issues for High-Priority Gaps
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Read gap analysis
           gaps=$(jq -r '.gaps[]' capability_gaps.json | head -5)
-          
+
           # High priority capabilities
           high_priority="Model Monitoring Feature Store A/B Testing Shadow Deployment Canary Release"
-          
+
           # Create issues for high-priority gaps
           for gap in $gaps; do
             if echo "$high_priority" | grep -q "$gap"; then
               echo "Creating issue for: $gap"
-              
+
               gh issue create \
                 --title "[Auto] Capability Gap: $gap" \
                 --body "## Detected Capability Gap
@@ -211,7 +211,7 @@ jobs:
                 --label "enhancement,ai-agent-feedback,auto-detected,mlops-capability" || echo "Issue creation failed or already exists"
             fi
           done
-      
+
       - name: Summary
         run: |
           echo "## Feedback Loop Analysis Complete" >> $GITHUB_STEP_SUMMARY
@@ -224,28 +224,28 @@ jobs:
           echo "2. Prioritize and assign issues" >> $GITHUB_STEP_SUMMARY
           echo "3. Create implementation plans" >> $GITHUB_STEP_SUMMARY
           echo "4. Track progress in project board" >> $GITHUB_STEP_SUMMARY
-  
+
   update-metrics:
     name: Update Improvement Metrics
     runs-on: ubuntu-latest
     needs: [analyze-feedback, detect-regressions, create-improvement-issues]
     if: always()
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
-      
+
       - name: Download Gap Analysis
         uses: actions/download-artifact@v4
         with:
           name: gap-analysis
         continue-on-error: true
-      
+
       - name: Update Metrics
         run: |
           # Create or update metrics file
           mkdir -p .codex/metrics
-          
+
           cat > .codex/metrics/improvement_metrics.json << EOF
           {
             "last_updated": "$(date -Iseconds)",
@@ -256,25 +256,25 @@ jobs:
             "workflow_run": "${{ github.run_id }}"
           }
           EOF
-          
+
           echo "Metrics updated in .codex/metrics/improvement_metrics.json"
-      
+
       - name: Commit Metrics
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git add .codex/metrics/improvement_metrics.json
           git commit -m "chore: Update improvement metrics [skip ci]" || echo "No changes to commit"
           git push || echo "No changes to push"
         continue-on-error: true
-  
+
   notify-results:
     name: Notify Results
     runs-on: ubuntu-latest
     needs: [analyze-feedback, detect-regressions, create-improvement-issues, update-metrics]
     if: always()
-    
+
     steps:
       - name: Feedback Loop Summary
         run: |

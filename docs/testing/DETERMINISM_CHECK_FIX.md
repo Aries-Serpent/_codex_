@@ -49,14 +49,14 @@ if [ "$EXIT1" = "2" ] && [ "$EXIT2" = "2" ]; then
   # Check if both logs show "0 selected" (no tests matched the marker)
   SELECTED1=$(grep -E "0 selected" determinism_pass1.log || echo "")
   SELECTED2=$(grep -E "0 selected" determinism_pass2.log || echo "")
-  
+
   # If both runs had collection errors but 0 tests selected, treat as "no tests"
   if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
     echo "⚠️  Collection errors but no determinism tests selected (exit code 2)"
     # ... informative summary ...
     exit 0  # Success
   fi
-  
+
   # Otherwise, treat exit code 2 as a failure
   echo "❌ Collection errors during test execution (exit code 2)"
   exit 1

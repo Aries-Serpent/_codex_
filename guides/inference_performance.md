@@ -71,7 +71,7 @@ def distillation_loss(student_logits, teacher_logits, temperature=3.0):
     """Compute distillation loss."""
     soft_targets = F.softmax(teacher_logits / temperature, dim=1)
     soft_prob = F.log_softmax(student_logits / temperature, dim=1)
-    
+
     return F.kl_div(soft_prob, soft_targets, reduction='batchmean') * (temperature ** 2)
 ```
 
@@ -89,17 +89,17 @@ class DynamicBatcher:
         self.max_wait_ms = max_wait_ms
         self.queue = deque()
         self.batch_ready = asyncio.Event()
-    
+
     async def add_request(self, data):
         """Add request to batch queue."""
         future = asyncio.Future()
         self.queue.append((data, future))
-        
+
         if len(self.queue) >= self.max_batch_size:
             self.batch_ready.set()
-        
+
         return await future
-    
+
     async def process_batches(self):
         """Process batches continuously."""
         while True:
@@ -111,12 +111,12 @@ class DynamicBatcher:
                 )
             except asyncio.TimeoutError:
                 pass
-            
+
             if self.queue:
                 batch = self._create_batch()
                 results = await self._process_batch(batch)
                 self._return_results(batch, results)
-            
+
             self.batch_ready.clear()
 ```
 
@@ -128,30 +128,30 @@ def find_optimal_batch_size(model, input_shape, device='cuda'):
     batch_sizes = [1, 2, 4, 8, 16, 32, 64]
     best_throughput = 0
     best_batch_size = 1
-    
+
     for bs in batch_sizes:
         try:
             dummy_input = torch.randn(bs, *input_shape).to(device)
-            
+
             # Warmup
             for _ in range(10):
                 _ = model(dummy_input)
-            
+
             # Benchmark
             start = time.time()
             for _ in range(100):
                 _ = model(dummy_input)
             duration = time.time() - start
-            
+
             throughput = (100 * bs) / duration
-            
+
             if throughput > best_throughput:
                 best_throughput = throughput
                 best_batch_size = bs
-                
+
         except RuntimeError:  # OOM
             break
-    
+
     return best_batch_size, best_throughput
 ```
 
@@ -169,33 +169,33 @@ class PredictionCache:
         self.max_size = max_size
         self.hits = 0
         self.misses = 0
-    
+
     def get_cache_key(self, input_data):
         """Generate cache key from input."""
         return hashlib.sha256(
             str(input_data).encode()
         ).hexdigest()
-    
+
     def get(self, input_data):
         """Get cached prediction."""
         key = self.get_cache_key(input_data)
-        
+
         if key in self.cache:
             self.hits += 1
             return self.cache[key]
-        
+
         self.misses += 1
         return None
-    
+
     def set(self, input_data, prediction):
         """Cache prediction."""
         if len(self.cache) >= self.max_size:
             # LRU eviction
             self.cache.pop(next(iter(self.cache)))
-        
+
         key = self.get_cache_key(input_data)
         self.cache[key] = prediction
-    
+
     @property
     def hit_rate(self):
         total = self.hits + self.misses
@@ -207,10 +207,10 @@ class PredictionCache:
 ```python
 class FeatureCache:
     """Cache expensive feature computations."""
-    
+
     def __init__(self):
         self.cache = {}
-    
+
     def get_features(self, input_id, compute_fn):
         """Get or compute features."""
         if input_id not in self.cache:
@@ -315,7 +315,7 @@ class ParallelModel(nn.Module):
         super().__init__()
         self.layer1 = nn.Linear(1000, 1000).to('cuda:0')
         self.layer2 = nn.Linear(1000, 1000).to('cuda:1')
-    
+
     def forward(self, x):
         x = self.layer1(x.to('cuda:0'))
         x = self.layer2(x.to('cuda:1'))
@@ -352,13 +352,13 @@ import pstats
 def profile_inference():
     profiler = cProfile.Profile()
     profiler.enable()
-    
+
     # Run inference
     for _ in range(100):
         model.predict(sample_input)
-    
+
     profiler.disable()
-    
+
     # Print stats
     stats = pstats.Stats(profiler)
     stats.sort_stats('cumulative')
@@ -374,7 +374,7 @@ from locust import HttpUser, task, between
 
 class InferenceUser(HttpUser):
     wait_time = between(0.1, 0.5)
-    
+
     @task
     def predict(self):
         self.client.post(
@@ -389,18 +389,18 @@ class InferenceUser(HttpUser):
 def benchmark_model(model, num_runs=1000):
     """Benchmark model performance."""
     latencies = []
-    
+
     # Warmup
     for _ in range(10):
         _ = model(sample_input)
-    
+
     # Measure
     for _ in range(num_runs):
         start = time.perf_counter()
         _ = model(sample_input)
         latency = time.perf_counter() - start
         latencies.append(latency)
-    
+
     return {
         'mean': np.mean(latencies),
         'p50': np.percentile(latencies, 50),

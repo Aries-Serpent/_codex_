@@ -5,7 +5,7 @@
 
 Context
 - Repo: Aries-Serpent/_codex_
-- Focus modules: 
+- Focus modules:
   - src/codex_ml/evaluation/loop.py
   - src/codex_ml/logging/registry.py (integration paths)
   - Checkpoint best‑k retention implementation

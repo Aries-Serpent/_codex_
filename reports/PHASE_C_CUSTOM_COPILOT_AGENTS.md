@@ -23,7 +23,7 @@ graph TB
         T2[Scheduled Job<br/>Daily 2AM UTC]
         T3[Manual Command<br/>@rag-index-manager]
     end
-    
+
     subgraph "Agent Controller"
         AC[RAG Index Manager]
         AC --> OP1[Build Index]
@@ -32,36 +32,36 @@ graph TB
         AC --> OP4[Optimize Index]
         AC --> OP5[Merge Indices]
     end
-    
+
     subgraph "RAG System"
         IDX[manage_tenant_indices]
         FAISS[(FAISS Indices<br/>.codex/tenants/)]
         CACHE[(Embeddings Cache<br/>.codex/embeddings_cache/)]
     end
-    
+
     subgraph "Outputs"
         GH[GitHub Comment]
         SLACK[Slack Notification]
         METRICS[Prometheus Metrics]
     end
-    
+
     T1 --> AC
     T2 --> AC
     T3 --> AC
-    
+
     OP1 --> IDX
     OP2 --> IDX
     OP3 --> IDX
     OP4 --> IDX
     OP5 --> IDX
-    
+
     IDX --> FAISS
     IDX --> CACHE
-    
+
     AC --> GH
     AC --> SLACK
     AC --> METRICS
-    
+
     style AC fill:#4CAF50,color:#fff
     style FAISS fill:#2196F3,color:#fff
     style CACHE fill:#2196F3,color:#fff
@@ -77,24 +77,24 @@ sequenceDiagram
     participant Indexer as manage_tenant_indices
     participant ST as SentenceTransformer
     participant FAISS as FAISS Index
-    
+
     User->>GitHub: @rag-index-manager build index for tenant_a/docs
     GitHub->>Agent: Trigger agent with params
     Agent->>Agent: Parse command & validate
     Agent->>Indexer: manage_tenant_indices(tenant_id="tenant_a", operation="create")
-    
+
     Indexer->>Indexer: Read docs files
     Indexer->>Indexer: chunk_text(docs, size=1000)
     Indexer->>ST: Generate embeddings
     ST-->>Indexer: 384-dim vectors
-    
+
     Indexer->>FAISS: Build IndexFlatL2
     Indexer->>FAISS: Add vectors
     FAISS-->>Indexer: Index built
-    
+
     Indexer->>Indexer: Persist to .codex/tenants/tenant_a/docs/
     Indexer-->>Agent: TenantOperationResult(success=True)
-    
+
     Agent->>GitHub: Post success comment with stats
     Agent->>Agent: Update Prometheus metrics
     GitHub-->>User: Show comment with usage instructions
@@ -123,7 +123,7 @@ graph TB
         T2[/search-code command]
         T3[PR Review<br/>Auto-suggest]
     end
-    
+
     subgraph "Agent Controller"
         SC[Semantic Search Agent]
         SC --> C1[Parse Query]
@@ -132,45 +132,45 @@ graph TB
         SC --> C4[Rank Results]
         SC --> C5[Format Response]
     end
-    
+
     subgraph "RAG Retrieval"
         CR[CachedRetriever]
         EMB[Query Embedding]
         FAISS[(FAISS Index)]
         CACHE[(LRU Cache)]
     end
-    
+
     subgraph "Post-Processing"
         PROV[ProvenanceMetadata]
         SYNTAX[Syntax Highlighter]
         CONTEXT[Context Extractor]
     end
-    
+
     subgraph "Response"
         MD[Markdown Formatter]
         GH[GitHub Comment]
     end
-    
+
     T1 --> SC
     T2 --> SC
     T3 --> SC
-    
+
     C2 --> C3
     C3 --> CR
-    
+
     CR --> CACHE
     CR --> EMB
     EMB --> FAISS
     FAISS --> CR
-    
+
     CR --> PROV
     PROV --> SYNTAX
     SYNTAX --> CONTEXT
-    
+
     C4 --> CONTEXT
     C5 --> MD
     MD --> GH
-    
+
     style SC fill:#9C27B0,color:#fff
     style CR fill:#FF9800,color:#fff
     style FAISS fill:#2196F3,color:#fff
@@ -187,16 +187,16 @@ sequenceDiagram
     participant Retriever as CachedRetriever
     participant FAISS as FAISS Index
     participant Formatter
-    
+
     User->>GitHub: @semantic-search how to use RAG embeddings
     GitHub->>Agent: Trigger with query
-    
+
     Agent->>Agent: Normalize query<br/>"how to use rag embeddings"
     Agent->>Agent: Enhance query<br/>Add synonyms, expand terms
-    
+
     Agent->>Retriever: query_with_cache(query, top_k=5)
     Retriever->>Retriever: Check LRU cache
-    
+
     alt Cache Hit
         Retriever-->>Agent: Cached results (1-2ms)
     else Cache Miss
@@ -207,11 +207,11 @@ sequenceDiagram
         Retriever->>Retriever: Store in cache
         Retriever-->>Agent: Fresh results (100-200ms)
     end
-    
+
     Agent->>Agent: Rank by relevance
     Agent->>Formatter: Format results with syntax highlighting
     Formatter-->>Agent: Markdown output
-    
+
     Agent->>GitHub: Post formatted comment
     GitHub-->>User: Display search results
 ```
@@ -221,27 +221,27 @@ sequenceDiagram
 ```mermaid
 graph LR
     Query[User Query] --> Strategy{Search Strategy}
-    
+
     Strategy -->|Natural Language| Semantic[Semantic-Only<br/>100% embedding similarity]
     Strategy -->|Code Pattern| Hybrid[Hybrid Search<br/>70% semantic + 30% keyword]
     Strategy -->|Specific API| Pattern[Code Pattern<br/>AST + Structure matching]
-    
+
     Semantic --> Rank[Result Ranking]
     Hybrid --> Rank
     Pattern --> Rank
-    
+
     Rank --> F1[Semantic Similarity<br/>50%]
     Rank --> F2[Recency<br/>20%]
     Rank --> F3[Usage Frequency<br/>15%]
     Rank --> F4[Code Quality<br/>10%]
     Rank --> F5[Context Relevance<br/>5%]
-    
+
     F1 --> Results[Final Results]
     F2 --> Results
     F3 --> Results
     F4 --> Results
     F5 --> Results
-    
+
     style Strategy fill:#FF9800,color:#fff
     style Rank fill:#4CAF50,color:#fff
     style Results fill:#2196F3,color:#fff
@@ -260,49 +260,49 @@ graph TB
         Issue[Issue]
         Docs[Documentation]
     end
-    
+
     subgraph "Copilot Agents"
         IM[RAG Index Manager]
         SS[Semantic Search]
     end
-    
+
     subgraph "RAG Core (Phase B)"
         MT[Multi-Tenant<br/>Index Manager]
         CR[CachedRetriever<br/>with LRU]
         PM[Provenance<br/>Metadata]
     end
-    
+
     subgraph "Storage"
         FAISS[(FAISS Indices<br/>.codex/tenants/)]
         CACHE[(Embeddings Cache<br/>.codex/embeddings_cache/)]
     end
-    
+
     subgraph "Monitoring (Phase D)"
         PROM[Prometheus<br/>Metrics]
         CW[CloudWatch<br/>Logs]
         GRAF[Grafana<br/>Dashboards]
     end
-    
+
     Docs --> IM
     PR --> IM
     PR --> SS
     Issue --> SS
-    
+
     IM --> MT
     SS --> CR
     CR --> PM
-    
+
     MT --> FAISS
     MT --> CACHE
     CR --> FAISS
     CR --> CACHE
-    
+
     IM --> PROM
     SS --> PROM
     PROM --> GRAF
     IM --> CW
     SS --> CW
-    
+
     style IM fill:#4CAF50,color:#fff
     style SS fill:#9C27B0,color:#fff
     style MT fill:#FF9800,color:#fff
@@ -326,12 +326,12 @@ config:
   cache_dir: ".codex/embeddings_cache"
   default_model: "sentence-transformers/all-MiniLM-L6-v2"
   embedding_dimension: 384
-  
+
   # Performance
   max_chunk_size: 2000
   min_chunk_size: 100
   batch_size: 32
-  
+
   # Health thresholds
   staleness_threshold_days: 7
   health_check_interval_hours: 24
@@ -340,11 +340,11 @@ triggers:
   - type: file_change
     patterns: ["docs/**/*.md"]
     action: check_index_staleness
-    
+
   - type: schedule
     cron: "0 2 * * *"
     action: monitor_all_indices
-    
+
   - type: comment
     pattern: "@rag-index-manager {action}"
     actions: [build, rebuild, health, optimize, merge]
@@ -362,12 +362,12 @@ config:
   default_top_k: 5
   max_results: 50
   min_similarity_score: 0.6
-  
+
   # Caching (Phase B integration)
   use_cached_retriever: true
   cache_ttl_seconds: 3600
   cache_maxsize: 1000
-  
+
   # Languages
   supported_languages:
     - python
@@ -380,7 +380,7 @@ search_strategies:
   hybrid_search:
     semantic_weight: 0.7
     keyword_weight: 0.3
-  
+
 ranking:
   semantic_similarity: 0.5
   recency: 0.2
@@ -488,7 +488,7 @@ privacy:
     - "**/*secret*"
     - "**/*password*"
     - "**/credentials/**"
-  
+
   redact_sensitive_data: true
   respect_codeowners: true
 ```
@@ -523,13 +523,13 @@ def test_build_index_success():
 # tests/agents/test_semantic_search.py
 def test_search_code_with_cache():
     agent = SemanticSearchAgent(config)
-    
+
     # First search - cache miss
     results1 = agent.search_code("how to use embeddings")
-    
+
     # Second search - cache hit
     results2 = agent.search_code("how to use embeddings")
-    
+
     assert results1 == results2
     assert agent.cache_stats["hits"] == 1
 ```
@@ -547,7 +547,7 @@ def test_index_manager_to_search_workflow():
         source_paths=[Path("src/")]
     )
     assert build_result.success
-    
+
     # Search the index
     search_agent = SemanticSearchAgent()
     results = search_agent.search_code(

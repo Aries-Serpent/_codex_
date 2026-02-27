@@ -36,10 +36,10 @@ microservices = {
 results = {}
 for service_name, service_url in microservices.items():
     print(f"Testing {service_name} service...")
-    
+
     # Discover health endpoints
     endpoints = tester.scan_endpoints(service_url, "common")
-    
+
     # Test first endpoint (usually /health)
     if endpoints:
         result = tester.test_endpoint_sync(endpoints[0])
@@ -48,7 +48,7 @@ for service_name, service_url in microservices.items():
             'response_time': result.response_time_ms,
             'status_code': result.status_code
         }
-        
+
         if result.status == 'success':
             print(f"  ✅ {service_name}: Healthy ({result.response_time_ms:.0f}ms)")
         else:
@@ -112,11 +112,11 @@ contract_violations = []
 
 for endpoint in endpoints:
     print(f"\nTesting {endpoint.method} {endpoint.path}")
-    
+
     # Prepare test data for POST/PUT/PATCH
     payload = None
     expected_status = 200
-    
+
     if endpoint.method in ['POST', 'PUT', 'PATCH']:
         # Generate mock data based on endpoint
         if 'user' in endpoint.path:
@@ -125,17 +125,17 @@ for endpoint in endpoints:
             schema = {'name': 'string', 'price': 'float', 'available': 'bool'}
         else:
             schema = None
-        
+
         payload = tester.generate_mock_data(schema)
         expected_status = 201 if endpoint.method == 'POST' else 200
-    
+
     # Test endpoint
     result = tester.test_endpoint_sync(
         endpoint,
         payload=payload,
         expected_status=expected_status
     )
-    
+
     # Check for contract violations
     if result.validation_errors:
         contract_violations.append({
@@ -384,20 +384,20 @@ results = {}
 for env_name, base_url in environments.items():
     print(f"\nTesting {env_name.upper()} environment...")
     print("-" * 60)
-    
+
     tester = ServiceIntegrationTester()
     endpoints = tester.scan_endpoints(base_url, test_endpoints)
-    
+
     for endpoint in endpoints:
         result = tester.test_endpoint_sync(endpoint)
-        
+
         key = f"{env_name}:{endpoint.path}"
         results[key] = {
             'status': result.status,
             'status_code': result.status_code,
             'response_time': result.response_time_ms
         }
-        
+
         status_icon = "✅" if result.status == 'success' else "❌"
         print(f"  {status_icon} {endpoint.path}: {result.status_code} ({result.response_time_ms:.0f}ms)")
 
@@ -410,7 +410,7 @@ for env_name in environments.keys():
     env_results = {k: v for k, v in results.items() if k.startswith(f"{env_name}:")}
     success_count = sum(1 for r in env_results.values() if r['status'] == 'success')
     avg_time = sum(r['response_time'] for r in env_results.values()) / len(env_results)
-    
+
     print(f"\n{env_name.upper()}:")
     print(f"  Success Rate: {success_count}/{len(env_results)}")
     print(f"  Avg Response Time: {avg_time:.0f}ms")
@@ -446,18 +446,18 @@ performance_data = {}
 
 for endpoint in endpoints_to_test:
     print(f"\nTesting {endpoint.path}...")
-    
+
     response_times = []
     success_count = 0
-    
+
     # Run iterations
     for i in range(iterations):
         result = tester.test_endpoint_sync(endpoint)
-        
+
         if result.status == 'success':
             success_count += 1
             response_times.append(result.response_time_ms)
-    
+
     # Calculate statistics
     if response_times:
         performance_data[endpoint.path] = {
@@ -469,7 +469,7 @@ for endpoint in endpoints_to_test:
             'p95': sorted(response_times)[int(len(response_times) * 0.95)],
             'p99': sorted(response_times)[int(len(response_times) * 0.99)]
         }
-        
+
         print(f"  Success Rate: {performance_data[endpoint.path]['success_rate']:.0f}%")
         print(f"  Avg: {performance_data[endpoint.path]['avg']:.1f}ms")
         print(f"  Median: {performance_data[endpoint.path]['median']:.1f}ms")
@@ -504,10 +504,10 @@ on:
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Test Staging API
         uses: ./.github/agents/service-integration-tester
         with:
@@ -516,7 +516,7 @@ jobs:
           fail-on-error: 'true'
           output-file: 'staging_report.txt'
           export-json: 'true'
-      
+
       - name: Performance Check
         uses: ./.github/agents/service-integration-tester
         with:
@@ -524,7 +524,7 @@ jobs:
           test-common: 'true'
           measure-performance: 'true'
           performance-iterations: '20'
-      
+
       - name: Upload Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -771,7 +771,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

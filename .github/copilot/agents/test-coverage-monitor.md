@@ -41,13 +41,13 @@ on:
 def analyze_coverage():
     """Run pytest with coverage for all modules."""
     result = subprocess.run([
-        'pytest', 
-        '--cov=src', 
+        'pytest',
+        '--cov=src',
         '--cov=agents',
         '--cov-report=json',
         '--cov-report=term'
     ], capture_output=True)
-    
+
     return parse_coverage_json('coverage.json')
 ```
 
@@ -57,7 +57,7 @@ def compare_coverage(baseline: float, current: float) -> dict:
     """Compare current coverage against baseline."""
     delta = current - baseline
     status = 'improved' if delta > 0 else 'degraded' if delta < 0 else 'stable'
-    
+
     return {
         'baseline': baseline,
         'current': current,
@@ -73,7 +73,7 @@ def analyze_module_coverage(module_path: str) -> dict:
     """Analyze coverage for specific module."""
     coverage_data = load_coverage_data()
     module_cov = coverage_data['files'][module_path]
-    
+
     return {
         'module': module_path,
         'statements': module_cov['summary']['num_statements'],
@@ -96,7 +96,7 @@ def generate_alert(comparison: dict) -> str:
     else:
         emoji = '✅'
         message = f"Coverage stable/improved: {comparison['delta']:+.2f}%"
-    
+
     return f"{emoji} {message}"
 ```
 
@@ -120,25 +120,25 @@ jobs:
   coverage-monitor:
     runs-on: ubuntu-latest
     if: |
-      github.event_name != 'issue_comment' || 
+      github.event_name != 'issue_comment' ||
       contains(github.event.comment.body, '/coverage-check')
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install pytest pytest-cov
-      
+
       - name: Load baseline coverage
         id: baseline
         run: |
@@ -148,14 +148,14 @@ jobs:
             BASELINE=0
           fi
           echo "baseline=$BASELINE" >> $GITHUB_OUTPUT
-      
+
       - name: Run coverage analysis
         id: coverage
         run: |
           pytest --cov=src --cov=agents --cov-report=json --cov-report=term
           CURRENT=$(jq -r '.totals.percent_covered' coverage.json)
           echo "current=$CURRENT" >> $GITHUB_OUTPUT
-      
+
       - name: Compare coverage
         id: compare
         run: |
@@ -163,14 +163,14 @@ jobs:
             --baseline ${{ steps.baseline.outputs.baseline }} \
             --current ${{ steps.coverage.outputs.current }} \
             --output comparison.json
-      
+
       - name: Generate alert
         id: alert
         run: |
           python .github/agents/scripts/generate_coverage_alert.py \
             --comparison comparison.json \
             --output alert.md
-      
+
       - name: Post comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -184,7 +184,7 @@ jobs:
               repo: context.repo.repo,
               body: alert
             });
-      
+
       - name: Update baseline (main branch only)
         if: github.ref == 'refs/heads/main'
         run: |
@@ -194,7 +194,7 @@ jobs:
           git add .codex/coverage_baseline.json
           git commit -m "chore: update coverage baseline"
           git push
-      
+
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -276,19 +276,19 @@ modules:
   src/codex/utils:
     minimum: 90.0
     target: 95.0
-  
+
   src/bridge_manager.py:
     minimum: 90.0
     target: 95.0
-  
+
   src/codex/knowledge:
     minimum: 85.0
     target: 90.0
-  
+
   src/codex/rag:
     minimum: 80.0
     target: 85.0
-  
+
   src/security:
     minimum: 95.0  # Security modules require higher coverage
     target: 100.0
@@ -303,12 +303,12 @@ rules:
     - condition: "delta < -5.0"
       action: "block_merge"
       notify: ["@owner"]
-  
+
   warning:
     - condition: "delta < -2.0"
       action: "require_approval"
       notify: ["@maintainers"]
-  
+
   info:
     - condition: "delta >= 0"
       action: "informational"
@@ -333,14 +333,14 @@ import json
 def compare_coverage(baseline: float, current: float) -> dict:
     """Compare coverage values."""
     delta = current - baseline
-    
+
     if delta < -5.0:
         severity = 'critical'
     elif delta < -2.0:
         severity = 'warning'
     else:
         severity = 'info'
-    
+
     return {
         'baseline': baseline,
         'current': current,
@@ -355,14 +355,14 @@ def main():
     parser.add_argument('--current', type=float, required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    
+
     comparison = compare_coverage(args.baseline, args.current)
-    
+
     with open(args.output, 'w') as f:
         json.dump(comparison, f, indent=2)
-    
+
     print(f"Coverage comparison: {comparison['status']} ({comparison['delta']:+.2f}%)")
-    
+
     # Exit with error code if critical
     if comparison['severity'] == 'critical':
         exit(1)
@@ -429,7 +429,7 @@ def generate_alert(comparison: dict) -> str:
     """Generate alert message from comparison."""
     severity = comparison['severity']
     template = TEMPLATES.get(severity, TEMPLATES['info'])
-    
+
     if severity == 'info':
         if comparison['delta'] > 0:
             status_emoji = 'Improved 📈'
@@ -443,7 +443,7 @@ def generate_alert(comparison: dict) -> str:
         status_emoji = ''
         status_text = ''
         message = ''
-    
+
     return template.format(
         baseline=comparison['baseline'],
         current=comparison['current'],
@@ -458,15 +458,15 @@ def main():
     parser.add_argument('--comparison', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    
+
     with open(args.comparison) as f:
         comparison = json.load(f)
-    
+
     alert = generate_alert(comparison)
-    
+
     with open(args.output, 'w') as f:
         f.write(alert)
-    
+
     print(f"Alert generated: {comparison['severity']}")
 
 if __name__ == '__main__':

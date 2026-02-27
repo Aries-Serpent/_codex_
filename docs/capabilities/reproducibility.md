@@ -58,10 +58,10 @@ from typing import Optional
 def set_seed(seed: int, deterministic: bool = True) -> None:
     """
     Set random seeds for reproducibility.
-    
+
     Safeguard: Validates seed value.
     Deterministic: Enables deterministic operations.
-    
+
     Args:
         seed: Random seed value (non-negative integer).
         deterministic: Enable fully deterministic mode.
@@ -69,23 +69,23 @@ def set_seed(seed: int, deterministic: bool = True) -> None:
     # Validation safeguard
     if seed < 0:
         raise ValueError(f"Seed must be non-negative, got {seed}")
-    
+
     # Python random
     random.seed(seed)
-    
+
     # NumPy
     np.random.seed(seed)
-    
+
     # PyTorch
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-    
+
     # Deterministic operations
     if deterministic:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
-        
+
         # Enable deterministic algorithms (PyTorch 1.8+)
         if hasattr(torch, 'use_deterministic_algorithms'):
             try:
@@ -97,7 +97,7 @@ def set_seed(seed: int, deterministic: bool = True) -> None:
 def get_random_state() -> dict:
     """
     Capture current random state.
-    
+
     Returns:
         Dictionary with all random states.
     """
@@ -111,16 +111,16 @@ def get_random_state() -> dict:
 def set_random_state(state: dict) -> None:
     """
     Restore random state.
-    
+
     Safeguard: Validates state dictionary.
     """
     if "python" not in state:
         raise ValueError("Invalid state dictionary")
-    
+
     random.setstate(state["python"])
     np.random.set_state(state["numpy"])
     torch.set_rng_state(state["torch"])
-    
+
     if state["cuda"] is not None and torch.cuda.is_available():
         torch.cuda.set_rng_state_all(state["cuda"])
 ```
@@ -137,14 +137,14 @@ from typing import Dict, Any
 def capture_environment() -> Dict[str, Any]:
     """
     Capture complete environment snapshot.
-    
+
     Safeguard: Handles missing components gracefully.
     """
     env = {
         "python_version": sys.version,
         "platform": sys.platform,
     }
-    
+
     # Installed packages
     try:
         result = subprocess.run(
@@ -156,7 +156,7 @@ def capture_environment() -> Dict[str, Any]:
         env["packages"] = result.stdout.strip().split("\n")
     except (subprocess.TimeoutExpired, FileNotFoundError):
         env["packages"] = []
-    
+
     # Git information
     try:
         git_hash = subprocess.check_output(
@@ -165,7 +165,7 @@ def capture_environment() -> Dict[str, Any]:
             timeout=5
         ).decode().strip()
         env["git_hash"] = git_hash
-        
+
         # Check for uncommitted changes
         diff_result = subprocess.run(
             ["git", "diff", "--stat"],
@@ -177,7 +177,7 @@ def capture_environment() -> Dict[str, Any]:
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
         env["git_hash"] = "unknown"
         env["git_dirty"] = None
-    
+
     # PyTorch specific
     try:
         import torch
@@ -188,13 +188,13 @@ def capture_environment() -> Dict[str, Any]:
             env["cudnn_version"] = torch.backends.cudnn.version()
     except ImportError:
         pass
-    
+
     return env
 
 def save_environment(path: str) -> None:
     """
     Save environment snapshot to file.
-    
+
     Safeguard: Creates parent directories.
     """
     env = capture_environment()
@@ -205,18 +205,18 @@ def save_environment(path: str) -> None:
 def verify_environment(expected_path: str) -> Dict[str, list]:
     """
     Verify current environment matches snapshot.
-    
+
     Returns dictionary of mismatches.
     """
     expected_env = json.loads(Path(expected_path).read_text())
     current_env = capture_environment()
-    
+
     mismatches = {
         "version_changes": [],
         "missing_packages": [],
         "extra_packages": [],
     }
-    
+
     # Check Python version
     if expected_env.get("python_version") != current_env.get("python_version"):
         mismatches["version_changes"].append({
@@ -224,14 +224,14 @@ def verify_environment(expected_path: str) -> Dict[str, list]:
             "expected": expected_env.get("python_version"),
             "current": current_env.get("python_version"),
         })
-    
+
     # Check packages
     expected_packages = set(expected_env.get("packages", []))
     current_packages = set(current_env.get("packages", []))
-    
+
     mismatches["missing_packages"] = list(expected_packages - current_packages)
     mismatches["extra_packages"] = list(current_packages - expected_packages)
-    
+
     return mismatches
 ```
 
@@ -246,24 +246,24 @@ from dataclasses import dataclass
 class ReproducibilityConfig:
     """
     Reproducibility settings.
-    
+
     Safeguard: Validates configuration.
     """
     # Random seed
     seed: int = 42
     deterministic: bool = True
-    
+
     # Environment
     save_environment: bool = True
     verify_environment: bool = False
-    
+
     # Code versioning
     require_clean_git: bool = False
     log_git_diff: bool = True
-    
+
     # Data versioning
     hash_datasets: bool = True
-    
+
     def __post_init__(self):
         """Validate configuration."""
         if self.seed < 0:
@@ -277,16 +277,16 @@ class ReproducibilityConfig:
 reproducibility:
   seed: 42
   deterministic: true
-  
+
   environment:
     save_snapshot: true
     verify_on_load: true
     snapshot_path: experiments/environment.json
-  
+
   code:
     require_clean_git: false
     log_git_diff: true
-    
+
   data:
     hash_datasets: true
     track_transforms: true
@@ -325,22 +325,22 @@ def reproducible_context(
 ):
     """
     Context manager for reproducible experiments.
-    
+
     Safeguard: Captures and restores state.
     """
     out_path = Path(output_dir)
     out_path.mkdir(parents=True, exist_ok=True)
-    
+
     # Set seeds
     set_seed(seed, deterministic=deterministic)
-    
+
     # Capture environment
     env = capture_environment()
     (out_path / "environment.json").write_text(json.dumps(env, indent=2))
-    
+
     # Capture random state
     initial_state = get_random_state()
-    
+
     try:
         yield
     finally:
@@ -364,7 +364,7 @@ import numpy as np
 def hash_data(data: Union[np.ndarray, list, str]) -> str:
     """
     Compute deterministic hash of data.
-    
+
     Safeguard: Handles different data types.
     Deterministic: Same data always produces same hash.
     """
@@ -377,13 +377,13 @@ def hash_data(data: Union[np.ndarray, list, str]) -> str:
         data_bytes = data.encode()
     else:
         raise TypeError(f"Unsupported type: {type(data)}")
-    
+
     return hashlib.sha256(data_bytes).hexdigest()[:16]
 
 def verify_dataset(dataset, expected_hash: str) -> bool:
     """
     Verify dataset matches expected hash.
-    
+
     Safeguard: Ensures data hasn't changed.
     """
     # Convert dataset to array for hashing
@@ -393,7 +393,7 @@ def verify_dataset(dataset, expected_hash: str) -> bool:
         data = np.array(dataset)
     else:
         data = list(dataset)
-    
+
     actual_hash = hash_data(data)
     return actual_hash == expected_hash
 
@@ -414,51 +414,51 @@ def save_reproducible_checkpoint(
 ) -> None:
     """
     Save checkpoint with complete reproducibility info.
-    
+
     Safeguard: Captures all necessary state.
     """
     checkpoint = {
         # Model state
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict(),
-        
+
         # Training progress
         "epoch": epoch,
-        
+
         # Configuration
         "config": config,
-        
+
         # Reproducibility
         "random_state": get_random_state(),
         "environment": capture_environment(),
     }
-    
+
     torch.save(checkpoint, path)
 
 def load_reproducible_checkpoint(path: str, model, optimizer):
     """
     Load checkpoint and restore reproducibility state.
-    
+
     Safeguard: Validates checkpoint structure.
     """
     checkpoint = torch.load(path)
-    
+
     # Restore model
     model.load_state_dict(checkpoint["model_state_dict"])
     optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-    
+
     # Restore random state
     if "random_state" in checkpoint:
         set_random_state(checkpoint["random_state"])
-    
+
     # Verify environment
     if "environment" in checkpoint:
         expected_env = checkpoint["environment"]
         current_env = capture_environment()
-        
+
         if expected_env.get("torch_version") != current_env.get("torch_version"):
             print(f"Warning: PyTorch version mismatch")
-    
+
     return checkpoint["epoch"], checkpoint.get("config", {})
 ```
 
@@ -468,15 +468,15 @@ def load_reproducible_checkpoint(path: str, model, optimizer):
 def generate_reproducibility_report(output_dir: str) -> str:
     """
     Generate comprehensive reproducibility report.
-    
+
     Safeguard: Validates all paths exist.
     """
     out_path = Path(output_dir)
     report = []
-    
+
     report.append("# Reproducibility Report\n")
     report.append(f"Generated: {datetime.datetime.now().isoformat()}\n")
-    
+
     # Environment
     env_file = out_path / "environment.json"
     if env_file.exists():
@@ -486,7 +486,7 @@ def generate_reproducibility_report(output_dir: str) -> str:
         report.append(f"- PyTorch: {env.get('torch_version', 'unknown')}")
         report.append(f"- Git Hash: {env.get('git_hash', 'unknown')}")
         report.append(f"- Git Dirty: {env.get('git_dirty', 'unknown')}")
-    
+
     # Configuration
     config_file = out_path / "config.yaml"
     if config_file.exists():
@@ -494,7 +494,7 @@ def generate_reproducibility_report(output_dir: str) -> str:
         report.append("```yaml")
         report.append(config_file.read_text())
         report.append("```")
-    
+
     # Instructions to reproduce
     report.append("\n## How to Reproduce\n")
     report.append("```bash")
@@ -509,7 +509,7 @@ def generate_reproducibility_report(output_dir: str) -> str:
     report.append("# Run training with same seed")
     report.append("python train.py --seed 42 --config config.yaml")
     report.append("```")
-    
+
     return "\n".join(report)
 ```
 
@@ -521,20 +521,20 @@ def generate_reproducibility_report(output_dir: str) -> str:
 def validate_determinism(fn, *args, num_runs: int = 3) -> bool:
     """
     Validate function produces deterministic results.
-    
+
     Safeguard: Tests multiple runs for consistency.
     """
     results = []
-    
+
     for _ in range(num_runs):
         set_seed(42)
         result = fn(*args)
-        
+
         if isinstance(result, torch.Tensor):
             result = result.detach().cpu().numpy().tolist()
-        
+
         results.append(result)
-    
+
     # All results should be identical
     return all(r == results[0] for r in results)
 ```
@@ -545,7 +545,7 @@ def validate_determinism(fn, *args, num_runs: int = 3) -> bool:
 def require_clean_git() -> None:
     """
     Require clean git state for reproducibility.
-    
+
     Safeguard: Prevents experiments with uncommitted changes.
     """
     try:
@@ -555,7 +555,7 @@ def require_clean_git() -> None:
             text=True,
             timeout=5
         )
-        
+
         if result.stdout.strip():
             raise RuntimeError(
                 "Uncommitted changes detected. "

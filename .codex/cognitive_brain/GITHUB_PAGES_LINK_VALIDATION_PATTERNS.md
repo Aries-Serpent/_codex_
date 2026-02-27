@@ -57,7 +57,7 @@ multi_layer_optimization:
       - Efficient regex
       - Reduce I/O operations
     expected: 10-50x improvement
-    
+
   layer_2_filtering:
     action: Reduce noise
     techniques:
@@ -65,7 +65,7 @@ multi_layer_optimization:
       - Context awareness
       - Maintain accuracy
     expected: 50-90% noise reduction
-    
+
   layer_3_caching:
     action: Avoid repeated work
     techniques:
@@ -116,11 +116,11 @@ def is_false_positive(link: str, context: str) -> bool:
         r'\{\{.*\}\}',                  # Templates
         r'chatgpt\.com/',               # External tools
     ]
-    
+
     for pattern in patterns:
         if re.search(pattern, link) or re.search(pattern, context):
             return True
-    
+
     return False
 
 # Code block detection
@@ -149,26 +149,26 @@ class FalsePositiveFilter:
     def __init__(self):
         self.patterns = []
         self.exclusion_zones = []  # [(start, end), ...]
-    
+
     def add_pattern(self, regex: str, description: str):
         """Add exclusion pattern."""
         self.patterns.append((re.compile(regex), description))
-    
+
     def add_exclusion_zone(self, start: int, end: int):
         """Mark range to skip (e.g., code blocks)."""
         self.exclusion_zones.append((start, end))
-    
+
     def should_skip(self, item: str, position: int, context: str = "") -> bool:
         """Check if item is false positive."""
         # Check exclusion zones
         if any(start <= position < end for start, end in self.exclusion_zones):
             return True
-        
+
         # Check patterns
         for pattern, desc in self.patterns:
             if pattern.search(item) or pattern.search(context):
                 return True
-        
+
         return False
 ```
 
@@ -209,13 +209,13 @@ def validate_with_cache(file: Path, cache: Dict) -> Dict:
     """Validate file with cache support."""
     cache_key = str(file)
     current_mtime = get_file_mtime(file)
-    
+
     # Check cache
     if cache_key in cache:
         if cache[cache_key]['mtime'] == current_mtime:
             # Cache hit - file unchanged
             return cache[cache_key]
-    
+
     # Cache miss - validate and update
     result = validate_file(file)
     cache[cache_key] = {
@@ -245,32 +245,32 @@ def validate_with_cache(file: Path, cache: Dict) -> Dict:
 ```python
 class MtimeCache:
     """Generic mtime-based cache."""
-    
+
     def __init__(self, cache_file: Path):
         self.cache_file = cache_file
         self.cache = self.load()
-    
+
     def load(self) -> Dict:
         """Load cache from disk."""
         if self.cache_file.exists():
             with open(self.cache_file) as f:
                 return json.load(f)
         return {}
-    
+
     def save(self):
         """Save cache to disk."""
         self.cache_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.cache_file, 'w') as f:
             json.dump(self.cache, f, indent=2)
-    
+
     def get(self, path: Path, validator: Callable) -> Any:
         """Get cached result or validate."""
         key = str(path)
         mtime = path.stat().st_mtime
-        
+
         if key in self.cache and self.cache[key]['mtime'] == mtime:
             return self.cache[key]['result']
-        
+
         result = validator(path)
         self.cache[key] = {'mtime': mtime, 'result': result}
         return result
@@ -303,7 +303,7 @@ Parallel processing can speed up validation, but requires careful design to avoi
 class Validator:
     def __init__(self):
         self.errors = []  # Shared state
-    
+
     def validate_file(self, file: Path):
         """NOT thread-safe!"""
         error = check_file(file)
@@ -314,26 +314,26 @@ class Validator:
 def validate_file_worker(file: Path) -> Dict:
     """Pure function - thread-safe by design."""
     errors = []
-    
+
     # All processing in local scope
     error = check_file(file)
     if error:
         errors.append(error)
-    
+
     return {'file': str(file), 'errors': errors}
 
 # Main thread aggregation
 def validate_all(files: List[Path]) -> List[Dict]:
     """Parallel execution with safe aggregation."""
     all_errors = []
-    
+
     with ThreadPoolExecutor(max_workers=4) as executor:
         futures = [executor.submit(validate_file_worker, f) for f in files]
-        
+
         for future in as_completed(futures):
             result = future.result()
             all_errors.extend(result['errors'])  # Serial aggregation
-    
+
     return all_errors
 ```
 
@@ -374,7 +374,7 @@ else:
 def parallel_map(func: Callable, items: List, workers: int = 4) -> List:
     """
     Parallel map with thread-safe aggregation.
-    
+
     func must be a pure function: (item) -> result
     """
     with ThreadPoolExecutor(max_workers=workers) as executor:
@@ -404,7 +404,7 @@ categorization_workflow:
   step_1_collect:
     action: Run validation, capture all errors
     output: Raw error list (71 items)
-    
+
   step_2_analyze:
     action: Group by pattern and context
     categories:
@@ -415,14 +415,14 @@ categorization_workflow:
       - Template vars ({{var}})
       - Code block examples (in ```)
       - Genuine broken links
-    
+
   step_3_classify:
     action: Label each error
     labels:
       - false_positive: Skip
       - auto_fixable: Suggest fix
       - manual_review: Investigate
-    
+
   step_4_prioritize:
     action: Rank by impact
     priority:
@@ -430,7 +430,7 @@ categorization_workflow:
       - P1: Broken common navigation
       - P2: Broken reference links
       - P3: Future/planned features
-    
+
   step_5_document:
     action: Create categorization report
     include:

@@ -278,7 +278,7 @@ field: Union[str, np.ndarray, List] = default_value
    @dataclass
    class Example:
        required_field: str = ""
-       
+
        def __post_init__(self):
            if not self.required_field:
                self.required_field = generate_default()

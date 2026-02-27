@@ -1,7 +1,7 @@
-import { 
-  CodexRequest, 
-  CodexResponse, 
-  StatusResponse, 
+import {
+  CodexRequest,
+  CodexResponse,
+  StatusResponse,
   QuantumStateResponse,
   MemoryStateResponse,
   MemoryEntry,
@@ -27,7 +27,7 @@ export class MockCodexAPIClient {
     const sampleCode = `def ${sanitizedName}():
     """
     ${request.prompt}
-    
+
     Generated using quantum-enhanced cognitive brain
     - k₁ factor: 0.312 (target ≤0.35)
     - Coherence: 68.5% (target ≥65%)
@@ -35,11 +35,11 @@ export class MockCodexAPIClient {
     """
     # Implementation using ${request.context?.framework || 'standard library'}
     result = perform_operation()
-    
+
     # Validate output
     if not result:
         raise ValueError("Operation failed")
-    
+
     return result
 
 
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
   async searchMemories(query: string): Promise<MemoryEntry[]> {
     await this.mockDelay(200);
-    
+
     if (!query.trim()) return [];
 
     const mockMemories: MemoryEntry[] = [
@@ -311,7 +311,7 @@ if __name__ == "__main__":
 
   async getMSVMetrics() {
     await this.mockDelay(150);
-    
+
     // Mock MSV metrics based on V3.0 baseline (93.2/100)
     // Simulate realistic fluctuations around target values
     const baseCorrectness = 95;
@@ -319,13 +319,13 @@ if __name__ == "__main__":
     const baseImportance = 94;
     const baseExperience = 90;
     const baseAdaptive = 93;
-    
+
     const correctness = baseCorrectness + (Math.random() * 2 - 1);
     const conflict = baseConflict + (Math.random() * 2 - 1);
     const importance = baseImportance + (Math.random() * 2 - 1);
     const experience = baseExperience + (Math.random() * 2 - 1);
     const adaptive = baseAdaptive + (Math.random() * 2 - 1);
-    
+
     return {
       correctness_awareness: Math.max(0, Math.min(100, correctness)),
       conflict_detection: Math.max(0, Math.min(100, conflict)),

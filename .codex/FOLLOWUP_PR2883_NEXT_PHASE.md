@@ -68,21 +68,21 @@
 1. **Unit Tests for Remediation Engine**
    ```python
    # tests/test_remediation_engine_security.py
-   
+
    def test_command_validation_allows_whitelisted():
        """Test that whitelisted commands pass validation."""
        engine = RemediationEngine()
        assert engine._validate_command("pip install requests")
        assert engine._validate_command("pytest tests/")
        assert engine._validate_command("ruff check --fix .")
-   
+
    def test_command_validation_blocks_dangerous():
        """Test that non-whitelisted commands are blocked."""
        engine = RemediationEngine()
        assert not engine._validate_command("rm -rf /")
        assert not engine._validate_command("curl http://evil.com")
        assert not engine._validate_command("sudo apt-get install")
-   
+
    def test_shlex_split_prevents_injection():
        """Test that shlex.split prevents command injection."""
        engine = RemediationEngine()
@@ -90,7 +90,7 @@
        # Should parse as single command, not execute second part
        parts = shlex.split(cmd)
        assert len(parts) == 4  # ['pip', 'install', 'requests;', 'rm', ...]
-   
+
    def test_apply_action_validates_before_execution():
        """Test that validation occurs before subprocess execution."""
        engine = RemediationEngine()
@@ -136,38 +136,38 @@
 1. **Update Agent Development Guide**
    ```markdown
    # .codex/AGENTS_GUIDE.md additions:
-   
+
    ## Security Requirements for Remediation Agents
-   
+
    ### Command Execution Safety
    All agents that execute system commands must follow these requirements:
-   
+
    1. **Use Command Whitelist**
       - Define ALLOWED_COMMANDS class attribute
       - Only permit necessary tools (gh, pip, python, etc.)
       - Validate commands before execution
-   
+
    2. **Secure Subprocess Usage**
       - NEVER use `subprocess.run(shell=True)`
       - Always use `shlex.split()` for command parsing
       - Set explicit `shell=False` parameter
       - Use timeout to prevent hanging
-   
+
    3. **Example Implementation**
       ```python
       import shlex
       import subprocess
-      
+
       def _validate_command(self, cmd_string: str) -> bool:
           cmd_parts = shlex.split(cmd_string)
           if not cmd_parts or cmd_parts[0] not in self.ALLOWED_COMMANDS:
               return False
           return True
-      
+
       def execute_command(self, cmd_string: str):
           if not self._validate_command(cmd_string):
               raise SecurityError("Command not whitelisted")
-          
+
           cmd_args = shlex.split(cmd_string)
           result = subprocess.run(
               cmd_args,
@@ -324,7 +324,7 @@ Use this checklist for the next session:
 ```markdown
 @copilot Continue monitoring and testing CI/CD improvements:
 
-**Context:** 
+**Context:**
 - PR #2883 completed CI/CD artifact fixes and security enhancements
 - NEW: Pytest plugin installation fix completed (commit fd051f8)
 - Comprehensive tests workflow now has proper plugin configuration
@@ -335,7 +335,7 @@ Use this checklist for the next session:
    - Verify tests actually execute (not filtered out with exit code 5)
    - Confirm no "unrecognized arguments" errors for --cov, -n, --reruns
    - Verify coverage reports upload successfully to Codecov
-   
+
 2. **Monitor Rust Swarm CI**
    - Check rust_swarm_ci.yml for artifact warnings (last 3 runs)
    - Verify benchmark_results.txt is created successfully

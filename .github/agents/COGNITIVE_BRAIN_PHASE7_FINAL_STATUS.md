@@ -30,40 +30,40 @@ graph TB
         QC[QuantumConfig<br/>Feature Flags]
         DB[Database ORM<br/>Metrics Storage]
     end
-    
+
     subgraph "Monitoring Layer"
         CM[CoherenceMonitor<br/>Real-time Alerts]
         AB[ABTestFramework<br/>Statistical Validation]
     end
-    
+
     subgraph "Quantum Features"
         SE[SuperpositionEngine<br/>Parallel Decisions]
         EM[EntanglementManager<br/>Agent Correlation]
         UO[UncertaintyOptimizer<br/>Test Prioritization]
         WC[WaveCollapseOptimizer<br/>Pattern Recognition]
     end
-    
+
     subgraph "Integration Layer"
         QCA[QuantumComplianceAssessor<br/>Compliance Integration]
         ECA[EntangledComplianceSecurityAssessor<br/>Agent Coordination]
     end
-    
+
     QC --> SE
     QC --> EM
     QC --> UO
     QC --> WC
-    
+
     DB --> CM
     CM --> SE
     CM --> EM
-    
+
     AB --> SE
     AB --> EM
-    
+
     SE --> QCA
     EM --> ECA
     QCA --> ECA
-    
+
     style QC fill:#e1f5ff
     style SE fill:#fff3e0
     style EM fill:#f3e5f5
@@ -619,7 +619,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2

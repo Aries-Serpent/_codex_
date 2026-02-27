@@ -202,7 +202,7 @@ scoring:
     xml_patterns:
       - "coverage.xml"
     augment_tests_score: true
-  
+
   dup:
     heuristic: "token_similarity"
     threshold: 0.7

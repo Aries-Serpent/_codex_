@@ -112,7 +112,7 @@ class TicketPriority(str, Enum):
     HIGH = "high"
     NORMAL = "normal"
     LOW = "low"
-    
+
     def to_zendesk_priority(self) -> int:
         return {
             self.URGENT: 1,

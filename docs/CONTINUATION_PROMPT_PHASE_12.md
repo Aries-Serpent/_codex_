@@ -178,20 +178,20 @@ mkdir -p .github/agents/secrets-audit-agent/{prompts,workflows}
 class SecureMFADelivery:
     def __init__(self, gpg_keyring):
         self.gpg = gnupg.GPG(keyring=gpg_keyring)
-        
+
     def deliver_via_email(self, user, provisioning_uri, backup_codes):
         # Get user's public PGP key from GitHub
         pub_key = self.fetch_github_pgp_key(user)
-        
+
         # Encrypt credentials
         encrypted = self.gpg.encrypt(
             f"Provisioning URI: {provisioning_uri}\nBackup Codes: {backup_codes}",
             recipients=[pub_key]
         )
-        
+
         # Send via approved email service
         self.send_secure_email(user, encrypted)
-        
+
         # Log delivery (not credentials!)
         logger.info(f"MFA credentials delivered to {user}")
 ```

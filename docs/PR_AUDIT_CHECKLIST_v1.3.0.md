@@ -94,10 +94,10 @@ Attach files, SHAs, sizes for all generated artifacts.
   - Run 1 SHA: ________
   - Run 2 SHA: ________
   - Equality: [ ] PASS [ ] FAIL
-  
+
 - [ ] **capabilities_scored.json equal across two runs** (normalized; exclude timestamp)
   - Normalized comparison: [ ] PASS [ ] FAIL
-  
+
 - [ ] **Template hash present and unchanged** across runs unless explicitly updated
   - Template hash: ________
   - Status: [ ] Unchanged [ ] Updated (justified)
@@ -109,14 +109,14 @@ Attach files, SHAs, sizes for all generated artifacts.
 - [ ] **CodeQL analysis** — 0 alerts (attach summary)
   - Status: [ ] PASS [ ] FAIL [ ] N/A
   - Alerts: ___
-  
+
 - [ ] **Secret detection** — 0 findings
   - Tool: ___
   - Status: [ ] PASS [ ] FAIL [ ] N/A
-  
+
 - [ ] **Injection/path traversal checks** — reviewed
   - Status: [ ] SAFE [ ] ISSUES [ ] N/A
-  
+
 - [ ] **Supply chain security** — reviewed
   - Dependencies checked: [ ] YES [ ] NO [ ] N/A
 
@@ -297,24 +297,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install pyyaml jinja2
-      
+
       - name: Run audit pipeline
         run: |
           python scripts/space_traversal/audit_runner.py run
-      
+
       - name: Verify determinism
         run: |
           python scripts/space_traversal/verify_determinism.py --runs 2
-      
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

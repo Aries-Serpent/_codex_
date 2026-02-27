@@ -22,7 +22,7 @@ Options:
 
 Example:
     $0 /tmp/stage package_zendesk.zip
-    
+
 This script:
   1. Flattens nested directory structure (path/to/file.py -> path__to__file.py)
   2. Computes SHA256 and size for each file
@@ -120,7 +120,7 @@ detect_language() {
 extract_tags() {
     local path="$1"
     local tags=""
-    
+
     # Extract directory-based tags
     if [[ "$path" == *"/agents/"* ]]; then tags="${tags},agents"; fi
     if [[ "$path" == *"/tests/"* ]]; then tags="${tags},tests"; fi
@@ -130,7 +130,7 @@ extract_tags() {
     if [[ "$path" == *"quantum"* ]]; then tags="${tags},quantum"; fi
     if [[ "$path" == *"/workflows/"* ]]; then tags="${tags},workflows"; fi
     if [[ "$path" == *"/scripts/"* ]]; then tags="${tags},scripts"; fi
-    
+
     # Remove leading comma
     tags="${tags#,}"
     echo "$tags"
@@ -143,27 +143,27 @@ INDEX_ROWS=""
 while IFS= read -r -d '' filepath; do
     # Get relative path from source dir
     REL_PATH="${filepath#$SOURCE_DIR/}"
-    
+
     # Skip if it's a directory
     [ -f "$filepath" ] || continue
-    
+
     # Flatten filename
     FLAT_NAME=$(flatten_filename "$REL_PATH")
-    
+
     # Copy to work directory with flat name
     cp "$filepath" "$WORK_DIR/$FLAT_NAME"
-    
+
     # Compute metadata
     SHA256=$(sha256sum "$filepath" | awk '{print $1}')
     SIZE=$(stat -c%s "$filepath" 2>/dev/null || stat -f%z "$filepath")
     LANGUAGE=$(detect_language "$REL_PATH")
     TAGS=$(extract_tags "$REL_PATH")
-    
+
     # Add to manifest
     if [ $FILE_COUNT -gt 0 ]; then
         echo "," >> "$MANIFEST_FILE"
     fi
-    
+
     cat >> "$MANIFEST_FILE" <<EOF
     {
       "flat_name": "$FLAT_NAME",
@@ -175,14 +175,14 @@ while IFS= read -r -d '' filepath; do
       "chunked": false
     }
 EOF
-    
+
     # Add to index
     SIZE_KB=$((SIZE / 1024))
     INDEX_ROWS="${INDEX_ROWS}| \`${FLAT_NAME}\` | \`${REL_PATH}\` | ${SIZE_KB} KB | ${LANGUAGE} |\n"
-    
+
     FILE_COUNT=$((FILE_COUNT + 1))
     TOTAL_SIZE=$((TOTAL_SIZE + SIZE))
-    
+
     echo "  [$FILE_COUNT] $REL_PATH -> $FLAT_NAME (${SIZE_KB} KB)"
 done < <(find "$SOURCE_DIR" -type f -print0)
 

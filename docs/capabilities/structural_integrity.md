@@ -31,13 +31,13 @@ The detector analyzes directory structure to identify:
 # Pseudocode for structural integrity detection
 for each file in repository:
     extract directory structure
-    
+
 identify split-brain patterns:
     intersection = root_dirs ∩ src_dirs
-    
+
 identify shadowing patterns:
     shadows = root_dirs ∩ known_pypi_packages
-    
+
 assess risk_level:
     high: if split-brain OR shadowing detected
     low: otherwise
@@ -52,7 +52,7 @@ The detector is configured in `scripts/space_traversal/detectors/structure_integ
 ```python
 # Known libraries that should not exist as root directories
 KNOWN_SHADOW_RISKS = {
-    "hydra", "torch", "numpy", "requests", 
+    "hydra", "torch", "numpy", "requests",
     "wandb", "mlflow", "pandas"
 }
 

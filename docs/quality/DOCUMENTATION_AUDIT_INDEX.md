@@ -308,19 +308,19 @@ week_2:
 ```python
 def function_name(arg1: str, arg2: int) -> bool:
     """Short one-line description.
-    
+
     Longer description with details.
-    
+
     Args:
         arg1: Description of arg1
         arg2: Description of arg2
-    
+
     Returns:
         Description of return value
-    
+
     Raises:
         ValueError: When arg2 is negative
-    
+
     Example:
         >>> function_name("test", 42)
         True
@@ -363,14 +363,14 @@ Overall Score = Weighted Average:
     * Class docstrings (25%)
     * Method docstrings (20%)
     * Public API coverage (15%)
-  
+
   - User Documentation (30%):
     * File count
     * API reference files
     * Tutorial files
     * Guide files
     * Architecture files
-  
+
   - CLI Documentation (20%):
     * Commands with help text
 ```

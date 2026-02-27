@@ -1,9 +1,9 @@
 name: Art_Rust-Python Hybrid Swarm CI/CD
 
 on:
-  push: 
+  push:
     branches: [ main, develop, 'copilot/**' ]
-  pull_request: 
+  pull_request:
     branches: [ main ]
 
 env:
@@ -13,7 +13,7 @@ env:
   RUST_TEST_THREADS: "1"
 
 jobs:
-  rust_tests: 
+  rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
 
@@ -68,11 +68,11 @@ jobs:
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v6
-        with: 
+        with:
           name: rust-test-results
           path: target/release/deps/*. log
 
-  rust_benchmarks: 
+  rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
     needs: rust_tests
@@ -103,14 +103,14 @@ jobs:
             echo "⚠️ Warning: No Criterion results found in target/criterion"
             mkdir -p target/criterion
           fi
-          
+
           # Generate benchmark summary report
           echo "# Rust Swarm Benchmark Results" > benchmark_results.txt
           echo "" >> benchmark_results.txt
           echo "Generated:  $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> benchmark_results.txt
           echo "Commit: ${GITHUB_SHA: 0:8}" >> benchmark_results.txt
           echo "" >> benchmark_results.txt
-          
+
           if [ -d "target/criterion" ] && [ "$(find target/criterion -name '*.json' -print0 | grep -zc . )" -gt 0 ]; then
             echo "## Benchmark Summary" >> benchmark_results.txt
             echo "" >> benchmark_results.txt
@@ -183,7 +183,7 @@ jobs:
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v6
-        with: 
+        with:
           name: coverage-report
           path: coverage/
           if-no-files-found: warn
@@ -254,7 +254,7 @@ jobs:
             echo "Creating placeholder for future tests"
             mkdir -p tests/integration
           fi
-          
+
           # Ensure htmlcov directory exists for artifact upload
           if [ !  -d "htmlcov" ]; then
             mkdir -p htmlcov
@@ -404,7 +404,7 @@ jobs:
     needs: [rust_tests, python_integration, code_coverage]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-    strategy: 
+    strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.12']
@@ -414,7 +414,7 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v6
-        with: 
+        with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Rust toolchain

@@ -162,11 +162,11 @@ All remaining gaps are edge cases or unreachable code paths.
 def test_array_indexing_in_path(self, adapter):
     json_source = '''{"users": [{"name": "Alice", "age": 30}]}'''
     adapter.parse(json_source)
-    
+
     # Valid index
     name = adapter.get_value_at_path("users[0].name")
     assert name == "Alice"
-    
+
     # Out of bounds
     result = adapter.get_value_at_path("users[10].name")
     assert result is None
@@ -182,7 +182,7 @@ config:
 """
     root = adapter.parse(yaml_source)
     mapping = root.children[0]
-    
+
     metadata = adapter.extract_metadata(mapping)
     assert metadata["node_type"] == "mapping"
     assert "keys" in metadata

@@ -408,16 +408,16 @@ gh run download RUN_ID
 ## Activation Prompt
 
 ```
-@copilot Continue from Phase 31 completion. PR #2991 is ready for final review 
-and merge. Previous agent completed intuitive_aptitude module implementation 
-with 76 passing tests, full type safety, comprehensive documentation, and 
-custom GitHub Copilot agent. 
+@copilot Continue from Phase 31 completion. PR #2991 is ready for final review
+and merge. Previous agent completed intuitive_aptitude module implementation
+with 76 passing tests, full type safety, comprehensive documentation, and
+custom GitHub Copilot agent.
 
 Next steps:
 1. Review and merge PR #2991
 2. Validate integration with existing codebase
 3. Plan Phase 32 (choose from 3 options in follow-up prompt)
 
-See .codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md and 
+See .codex/cognitive_brain/PHASE_31_CODE_ANALYSIS_COMPLETE.md and
 .codex/cognitive_brain/FOLLOWUP_PROMPT_PHASE_32.md for full context.
 ```

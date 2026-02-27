@@ -24,12 +24,12 @@
 - Semgrep action version or installation issue.
 - Path resolution problem in GitHub Actions environment.
 
-**Evidence**: 
+**Evidence**:
 - Repository contains `.semgrep/semgrep.yml` with proper configuration
 - Workflow file: `.github/workflows/semgrep_sarif.yml`
 - Failure occurs at scan step: "1 configuration not found"
 
-**Fix Recommendation**: 
+**Fix Recommendation**:
 ```bash
 # Option 1: Create symlink in root
 ln -s .semgrep/semgrep.yml .semgrep.yml
@@ -73,7 +73,7 @@ mv .semgrep/semgrep.yml .semgrep.yml
    - CUDA/CPU torch variants
    - Version conflicts
 
-**Evidence**: 
+**Evidence**:
 - Workflow file: `.github/workflows/test-rag.yml`
 - Uses `--cov-fail-under=90` threshold
 - Pre-existing issue documented: `rag_torch_compatibility.md`
@@ -82,12 +82,12 @@ mv .semgrep/semgrep.yml .semgrep.yml
 **Specific Known Issue**:
 ```python
 # From .codex/github_issues/rag_torch_compatibility.md
-NotImplementedError: Cannot copy out of meta tensor; 
-no data! Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() 
+NotImplementedError: Cannot copy out of meta tensor;
+no data! Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to()
 when moving module from meta to a different device.
 ```
 
-**Fix Recommendation**: 
+**Fix Recommendation**:
 ```bash
 # 1. Update test timeout in workflow
 jobs:
@@ -163,7 +163,7 @@ strategy:
    - Outdated dependencies
    - Configuration issues
 
-**Evidence**: 
+**Evidence**:
 - Multiple failing jobs suggest systematic issues:
   - Overall Status (4s failure - very fast, likely config issue)
   - Rust Unit Tests (28s - compilation or test failure)

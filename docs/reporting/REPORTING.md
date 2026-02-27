@@ -89,5 +89,5 @@ The following existing scripts provide partial reporting functionality:
 - `scripts/space_traversal/trend_dashboard.py` - Trend analysis dashboard
 - `scripts/status/render_html_report.py` - HTML status report renderer
 
-These scripts will be integrated into the unified `codex-report` and 
+These scripts will be integrated into the unified `codex-report` and
 `codex-dashboard` commands in Phase 3.

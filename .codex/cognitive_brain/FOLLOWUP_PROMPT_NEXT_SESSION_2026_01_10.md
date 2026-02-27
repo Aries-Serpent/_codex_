@@ -133,14 +133,14 @@ def test_sharding_without_xxhash(monkeypatch):
     """Test that sharding works when xxhash is unavailable."""
     # Mock xxhash import to raise ImportError
     monkeypatch.setattr("builtins.__import__", mock_import_without_xxhash)
-    
+
     ring = ConsistentHashRing(num_shards=8)
     keys = [f"doc_{i}" for i in range(1000)]
-    
+
     # Verify all keys get assigned to shards
     shard_assignments = [ring.get_shard(key) for key in keys]
     assert len(set(shard_assignments)) == 8  # All shards used
-    
+
     # Check distribution is reasonably balanced (within 20% of ideal)
     ideal_per_shard = len(keys) / 8
     for shard in range(8):
@@ -151,7 +151,7 @@ def test_hash_function_determinism():
     """Verify hash functions are deterministic."""
     ring1 = ConsistentHashRing(num_shards=8)
     ring2 = ConsistentHashRing(num_shards=8)
-    
+
     test_keys = [f"key_{i}" for i in range(100)]
     for key in test_keys:
         assert ring1.get_shard(key) == ring2.get_shard(key)

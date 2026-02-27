@@ -133,11 +133,11 @@ jobs:
           COLLECT_OUTPUT="$(python -m pytest tests/ --collect-only -vv 2>&1)"
           COLLECT_STATUS=$?
           set -e
-          
+
           # Show summary of collection
           echo "$COLLECT_OUTPUT" | tail -20
           echo ""
-          
+
           if [ "$COLLECT_STATUS" -eq 0 ]; then
             echo "✅ Test collection successful"
             # Count collected tests
@@ -159,7 +159,7 @@ jobs:
             printf '%s\n' "$COLLECT_OUTPUT"
             exit 1
           fi
-          
+
           echo ""
           echo "=== Test Directory Structure ==="
           find tests/ -name "test_*.py" -type f | wc -l | xargs echo "Total test files:"
@@ -168,7 +168,7 @@ jobs:
       - name: Run core tests with coverage (layered fallbacks)
         run: |
           set -euo pipefail
-          
+
           # Tier 1: Plugin-driven parallel with pytest-cov
           echo "=== Tier 1: Plugin-driven parallel execution ==="
           # Use --continue-on-collection-errors to not fail on import errors
@@ -187,7 +187,7 @@ jobs:
             echo "✅ Plugin-driven parallel succeeded"
             exit 0
           fi
-          
+
           # Tier 2: Coverage-run with parallel pytest
           echo "⚠️ Plugin-driven parallel failed; trying coverage-run with parallel pytest"
           rm -f .coverage .coverage.* coverage.xml junit.xml
@@ -204,7 +204,7 @@ jobs:
             coverage report || true
             exit 0
           fi
-          
+
           # Tier 3: Sequential coverage-run (last resort)
           echo "⚠️ Parallel coverage-run failed; falling back to sequential execution"
           rm -f .coverage .coverage.* coverage.xml junit.xml
@@ -225,17 +225,17 @@ jobs:
           CODEX_FORCE_CPU: "1"
           RAG_EMBEDDING_PROVIDER: sentence-transformers
           CODEX_ML_SUPPORTED_MODEL: dummy
-      
+
       - name: Combine and report coverage
         if: always()
         run: |
           echo "=== Combining coverage data ==="
           coverage combine || echo "No coverage data to combine (may be single .coverage file)"
-          
+
           echo "=== Generating coverage reports ==="
           coverage html || echo "HTML report generation failed"
           coverage xml || echo "XML report generation failed"
-          
+
           echo "=== Coverage summary ==="
           # Enforce a minimum coverage level for CI. This is a soft gate:
           # - CI will emit a warning if coverage is below the threshold

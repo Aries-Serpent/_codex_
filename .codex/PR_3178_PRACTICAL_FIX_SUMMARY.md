@@ -21,7 +21,7 @@
 - `'module' object at codex_ml.interfaces has no attribute 'interfaces'`
 - `'module' object at codex_ml.training has no attribute 'training'`
 
-**Root Cause:** 
+**Root Cause:**
 These errors occur during pytest collection, not during test execution. The error message pattern suggests pytest is somehow creating a circular module reference (codex_ml.X.X instead of codex_ml.X). This is likely a pytest/Python path configuration issue in CI, not a code issue.
 
 **Evidence:**

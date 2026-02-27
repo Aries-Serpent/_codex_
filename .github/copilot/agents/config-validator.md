@@ -91,53 +91,53 @@ graph TD
     B -->|Pre-commit| C[Git Hook]
     B -->|PR Review| D[GitHub Actions]
     B -->|Manual| E[Command Parse]
-    
+
     C --> F[Get Changed Files]
     D --> F
     E --> F
-    
+
     F --> G[Load Config Files]
     G --> H[YAML Syntax Check]
-    
+
     H --> I{Valid YAML?}
     I -->|No| J[Report Syntax Errors]
     I -->|Yes| K[Structure Validation]
-    
+
     K --> L{Has Defaults?}
     L -->|Yes| M[Validate Hydra Composition]
     L -->|No| N[Check Interpolations]
-    
+
     M --> O{Composition Valid?}
     O -->|No| P[Report Composition Errors]
     O -->|Yes| N
-    
+
     N --> Q{Interpolations Valid?}
     Q -->|No| R[Report Interpolation Errors]
     Q -->|Yes| S[Cross-File Validation]
-    
+
     S --> T{Dependencies Valid?}
     T -->|No| U[Report Dependency Errors]
     T -->|Yes| V[Schema Validation]
-    
+
     V --> W{Schema Valid?}
     W -->|No| X[Report Schema Errors]
     W -->|Yes| Y[Load Test]
-    
+
     Y --> Z{Loads Successfully?}
     Z -->|No| AA[Report Load Errors]
     Z -->|Yes| AB[✅ All Checks Passed]
-    
+
     J --> AC[Aggregate Errors]
     P --> AC
     R --> AC
     U --> AC
     X --> AC
     AA --> AC
-    
+
     AC --> AD{Block PR?}
     AD -->|Yes| AE[Set Status: Failed]
     AD -->|No| AF[Set Status: Warning]
-    
+
     AB --> AG[Set Status: Passed]
 ```
 
@@ -168,12 +168,12 @@ def check_duplicate_keys(path: str) -> list[Issue]:
     issues = []
     with open(path) as f:
         content = f.read()
-    
+
     # Parse with duplicate key detection
     loader = yaml.SafeLoader(content)
     loader.check_mapping_key = lambda node, key_node: check_for_duplicate(node, key_node, issues)
     loader.get_single_data()
-    
+
     return issues
 ```
 
@@ -322,29 +322,29 @@ blocking_rules:
 response_templates:
   passed: |
     ✅ Configuration Validation Passed
-    
+
     **File:** `{file}`
     **Checks:** {passed}/{total} passed
     **Status:** Ready for merge
-  
+
   failed: |
     ❌ Configuration Validation Failed
-    
+
     **File:** `{file}`
     **Failed Checks:** {failed_count}
-    
+
     {error_details}
-    
+
     **Action:** Fix errors before merging
-  
+
   warning: |
     ⚠️ Configuration Validation Warnings
-    
+
     **File:** `{file}`
     **Warnings:** {warning_count}
-    
+
     {warning_details}
-    
+
     **Action:** Review warnings (non-blocking)
 
 error_handling:

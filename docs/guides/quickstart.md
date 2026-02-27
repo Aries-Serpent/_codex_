@@ -81,7 +81,7 @@ monitor.set_baseline("domain1", 0.85)
 # Check safety during execution
 if monitor.detect_negative_transfer("domain1", current_perf):
     monitor.trigger_rollback("domain1")
-    
+
 if monitor.detect_forgetting("domain1", current_perf):
     monitor.isolate_domain("domain1")
 ```

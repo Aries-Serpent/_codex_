@@ -77,23 +77,23 @@ jobs:
   test-rag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-test.txt
-      
+
       - name: Run RAG integration tests
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -101,7 +101,7 @@ jobs:
           PYTHONPATH: src
         run: |
           pytest tests/test_rag*.py -v --tb=short --maxfail=5
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -135,21 +135,21 @@ def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
     """..."""
     import time
     start_time = time.time()
-    
+
     try:
         import torch
         meta_status = has_meta_tensors(model)
-        
+
         if meta_status:
             # Log meta tensor detection for production monitoring
             logger.warning(
                 f"Meta tensor detected in model. "
                 f"Using to_empty() for device transfer to {device}."
             )
-            
+
             # Device transfer with to_empty()
             model = model.to_empty(device=device)
-            
+
             # Reinitialize parameters
             if hasattr(model, 'modules'):
                 for module in model.modules():
@@ -158,21 +158,21 @@ def safe_model_to_device(model: Any, device: str = "cpu") -> Any:
                             module.reset_parameters()
                         except Exception as e:
                             logger.debug(f"Could not reset parameters for {module}: {e}")
-            
+
             # Log completion time
             duration = time.time() - start_time
             logger.info(
                 f"Meta tensor device transfer completed in {duration:.3f}s. "
                 f"Device: {device}"
             )
-            
+
             # Optional: Add metrics if you have a metrics system
             # Example:
             # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
             # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
-            
+
             return model
-        
+
         else:
             # Standard device transfer
             # ... existing code ...

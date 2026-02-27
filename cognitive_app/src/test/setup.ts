@@ -35,15 +35,15 @@ global.IntersectionObserver = class IntersectionObserver implements Intersection
   readonly thresholds: ReadonlyArray<number> = [];
 
   constructor() {}
-  
+
   disconnect(): void {}
-  
+
   observe(): void {}
-  
+
   takeRecords(): IntersectionObserverEntry[] {
     return [];
   }
-  
+
   unobserve(): void {}
 };
 

@@ -96,7 +96,7 @@ jobs:
     uses: ./.github/workflows/codebase-qa-walkthrough.yml
     with:
       review_depth: standard
-  
+
   deploy:
     needs: qa
     if: needs.qa.outputs.critical_issues == '0'
@@ -298,7 +298,7 @@ jobs:
       target_ref: main
       fail_on_critical: false     # Don't fail, just report
       post_comment: false
-  
+
   notify-team:
     needs: comprehensive-qa
     runs-on: ubuntu-latest
@@ -341,7 +341,7 @@ jobs:
       target_ref: ${{ github.ref }}
       fail_on_critical: true
       focus_areas: security,testing
-  
+
   create-release:
     needs: release-qa
     if: needs.release-qa.outputs.overall_score >= '80'
@@ -368,12 +368,12 @@ import requests
 def trigger_qa_walkthrough(pr_number: int, depth: str = "standard"):
     """Trigger QA walkthrough on a PR."""
     url = f"https://api.github.com/repos/Aries-Serpent/_codex_/actions/workflows/codebase-qa-walkthrough.yml/dispatches"
-    
+
     headers = {
         "Authorization": f"Bearer {github_token}",
         "Accept": "application/vnd.github+json"
     }
-    
+
     data = {
         "ref": "main",
         "inputs": {
@@ -383,7 +383,7 @@ def trigger_qa_walkthrough(pr_number: int, depth: str = "standard"):
             "post_comment": "true"
         }
     }
-    
+
     response = requests.post(url, headers=headers, json=data)
     return response.status_code == 204
 ```
@@ -396,14 +396,14 @@ Copilot extensions can integrate via comment trigger:
 // In your Copilot extension
 async function requestQAReview(prNumber, depth = 'standard') {
   const comment = `@copilot qa walkthrough ${depth}`;
-  
+
   await octokit.issues.createComment({
     owner: 'Aries-Serpent',
     repo: '_codex_',
     issue_number: prNumber,
     body: comment
   });
-  
+
   console.log('QA review requested');
 }
 ```
@@ -472,10 +472,10 @@ tools:
   bandit:
     confidence_level: MEDIUM
     severity_level: MEDIUM
-  
+
   pylint:
     fail_under: 8.0
-  
+
   ruff:
     select: ["E", "F", "W"]
 ```

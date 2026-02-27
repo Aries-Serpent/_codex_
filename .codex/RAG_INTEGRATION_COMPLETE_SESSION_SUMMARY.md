@@ -77,11 +77,11 @@ class MockSentenceTransformer:
     def get_sentence_embedding_dimension(self):
         """CRITICAL for FAISS index creation"""
         return 384
-    
+
     def modules(self):
         """Required for meta tensor compatibility"""
         return iter([])
-    
+
     def encode(self, texts, **kwargs):
         """Enhanced to handle all parameters"""
         convert_to_numpy = kwargs.get('convert_to_numpy', True)
@@ -132,11 +132,11 @@ class MockSentenceTransformer:
     def __init__(self, *args, **kwargs):
         # Store all parameters
         pass
-    
+
     def encode(self, texts, **kwargs):
         # Handle ALL kwargs the real method accepts
         pass
-    
+
     def get_sentence_embedding_dimension(self):
         # Return correct dimension for downstream code
         return 384

@@ -313,7 +313,7 @@ firefox htmlcov/index.html  # or your browser
   run: |
     pip install pytest pytest-cov
     pytest tests/agents/ --cov=agents --cov-report=xml --cov-report=term
-    
+
 - name: Upload coverage
   uses: codecov/codecov-action@v3
   with:

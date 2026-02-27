@@ -1,8 +1,8 @@
 // Type definitions for spark API are in vite-env.d.ts
 import type {} from '../vite-env.d.ts';
 
-import { 
-  CodexRequest, 
+import {
+  CodexRequest,
   CodexResponse
 } from './codex-api-client';
 
@@ -15,7 +15,7 @@ export class SparkLLMClient {
     try {
       const language = request.context?.language || 'python';
       const tier = request.context?.tier || 'B';
-      
+
       const prompt = spark.llmPrompt`You are an expert code generation assistant. Generate clean, production-ready ${language} code based on the following requirement:
 
 ${request.prompt}
@@ -53,7 +53,7 @@ Generate ONLY the code with comments. Do not include explanations outside the co
       };
     } catch (error) {
       console.error('Spark LLM generation error:', error);
-      
+
       return this.generateFallbackCode(request, Date.now() - startTime);
     }
   }
@@ -61,7 +61,7 @@ Generate ONLY the code with comments. Do not include explanations outside the co
   private generateFallbackCode(request: CodexRequest, processingTime: number): CodexResponse {
     const language = request.context?.language || 'python';
     const cleanPrompt = request.prompt.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 40);
-    
+
     let sampleCode: string;
 
     if (language === 'python') {
@@ -76,7 +76,7 @@ AI-Generated Code using Spark Cognitive Brain
 def ${cleanPrompt}():
     """
     Implementation of: ${request.prompt}
-    
+
     Returns:
         dict: Result containing status and data
     """
@@ -86,9 +86,9 @@ def ${cleanPrompt}():
             "data": [],
             "message": "Operation completed successfully"
         }
-        
+
         # TODO: Add your implementation here
-        
+
         return result
     except Exception as e:
         raise ValueError(f"Operation failed: {str(e)}")
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     } else if (language === 'javascript' || language === 'typescript') {
       sampleCode = `/**
  * ${request.prompt}
- * 
+ *
  * AI-Generated Code using Spark Cognitive Brain
  * Processing time: ${processingTime}ms
  * Quality tier: ${request.context?.tier || 'B'}
@@ -121,9 +121,9 @@ async function ${cleanPrompt}() {
       data: [],
       message: 'Operation completed successfully'
     };
-    
+
     // TODO: Add your implementation here
-    
+
     return result;
   } catch (error) {
     throw new Error(\`Operation failed: \${error.message}\`);

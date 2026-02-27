@@ -104,7 +104,7 @@ def test_scope_hierarchical_admin_branch(self) -> None:
 def test_token_scope_hierarchical_admin(self) -> None:
     """Test TokenScope admin permission includes write and read."""
     from src.security.scope_validator import TokenScope
-    
+
     scope = TokenScope.ADMIN_REPO
     # Test actual conditional branches in TokenScope class
     assert scope & TokenScope.WRITE_REPO

@@ -108,7 +108,7 @@ If strict numeric compliance with ≤15 is required:
 - Document that "legacy" refers only to Split Brain architecture modules
 - Current state: 1 legacy import (training shim test, intentional)
 
-**Option B: Hydra Dependency Reduction** 
+**Option B: Hydra Dependency Reduction**
 - Refactor 14+ hydra-core usage sites to reduce dependency footprint
 - Estimated effort: 2-3 iterations, involves restructuring CLI and config management
 - Risk: may impact functionality that relies on hydra features

@@ -108,7 +108,7 @@ with patch('faiss.IndexFlatL2', return_value=mock_index):
 ### Baseline to Current
 
 - **Starting Coverage**: ~15-17% (before Phase 2)
-- **Phase 2.1 Complete**: ~23-27% 
+- **Phase 2.1 Complete**: ~23-27%
 - **Phase 2.2 Complete**: ~33-39%
 - **Phase 2.3 Complete**: ~47-50% ✅
 - **Target Achievement**: **ON TRACK**
@@ -152,20 +152,20 @@ with patch('faiss.IndexFlatL2', return_value=mock_index):
 ```python
 class TestModuleFeature:
     """Test suite for specific feature."""
-    
+
     @pytest.fixture
     def setup_fixture(self):
         """Common setup for tests."""
         # Setup code
         yield resource
         # Cleanup code
-    
+
     def test_basic_functionality(self, setup_fixture):
         """Test basic use case."""
         # Arrange
         # Act
         # Assert
-    
+
     def test_edge_case(self):
         """Test edge case or error condition."""
         with pytest.raises(ExpectedException):

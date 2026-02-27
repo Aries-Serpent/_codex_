@@ -253,7 +253,7 @@ graph TD
     J -->|Yes| K[Update Knowledge Base]
     J -->|No| L[Escalate to Human]
     K --> M[Report Complete]
-    
+
     style A fill:#ff6b6b
     style E fill:#51cf66
     style K fill:#4dabf7
@@ -309,7 +309,7 @@ graph TD
     H --> I
     I --> J[Post to Issue]
     J --> K[Update Dashboard]
-    
+
     style D fill:#ffd43b
     style E fill:#ff6b6b
     style H fill:#ff6b6b
@@ -362,7 +362,7 @@ graph TD
     G --> J[Notify Team]
     I --> K[Update Dashboard]
     J --> K
-    
+
     style D fill:#ffd43b
     style F fill:#ff6b6b
     style G fill:#ff6b6b
@@ -439,24 +439,24 @@ graph TB
         Security[Security Enforcer]
         Workflow[Workflow Optimizer]
     end
-    
+
     subgraph "Phase 12 - Planned"
         CI[CI Monitoring Agent]
         Secrets[Secrets Audit Agent]
         Perf[Performance Detector]
         Docs[Doc Sync Agent]
     end
-    
+
     subgraph "Core Infrastructure"
         CB[(Cognitive Brain)]
         KB[(Knowledge Base)]
         GH[GitHub API]
     end
-    
+
     Auth --> CB
     Security --> CB
     Workflow --> CB
-    
+
     CI --> CB
     CI --> GH
     Secrets --> GH
@@ -464,11 +464,11 @@ graph TB
     Perf --> CB
     Docs --> CB
     Docs --> KB
-    
+
     CB -.learns from.-> CI
     CB -.learns from.-> Secrets
     CB -.learns from.-> Perf
-    
+
     style Auth fill:#51cf66
     style Security fill:#51cf66
     style Workflow fill:#51cf66
@@ -518,17 +518,17 @@ timeline
 ```mermaid
 C4Context
     title System Context - Codex with Phase 11 Complete
-    
+
     Person(user, "Developer", "Uses Codex for AI-assisted development")
     System(codex, "Codex System", "AI-powered development platform")
     System_Ext(github, "GitHub", "Code hosting and CI/CD")
     System_Ext(openai, "OpenAI", "LLM provider")
-    
+
     Rel(user, codex, "Interacts with")
     Rel(codex, github, "Integrates with", "OAuth2, API")
     Rel(codex, openai, "Uses", "GPT-4, Embeddings")
     Rel(github, codex, "Triggers", "Webhooks, Actions")
-    
+
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
 

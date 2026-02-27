@@ -85,19 +85,19 @@ graph LR
     D -.-> E[(Cognitive Brain)]
     E -.Query.-> B
     E -.Record.-> D
-    
+
     A1[Discover IaC files] --> A
     A2[Run linters] --> A
     A3[Collect findings] --> A
-    
+
     B1[Calculate risk score] --> B
     B2[Identify blockers] --> B
     B3[Policy checks] --> B
-    
+
     C1[Generate reports] --> C
     C2[Create annotations] --> C
     C3[Suggest fixes] --> C
-    
+
     D1[Track outcomes] --> D
     D2[Extract lessons] --> D
     D3[Record patterns] --> D
@@ -212,13 +212,13 @@ policy_config = {
 scan_results = scanner.scan(scan_config)
 validation_results = validator.validate(scan_results, policy_config)
 enforcement_results = enforcer.enforce(
-    validation_results, 
-    scan_results, 
+    validation_results,
+    scan_results,
     {"output_format": "markdown"}
 )
 aftermath_report = reporter.generate_aftermath_report(
-    scan_results, 
-    validation_results, 
+    scan_results,
+    validation_results,
     enforcement_results
 )
 
@@ -321,18 +321,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           # Pin versions to prevent supply chain attacks
           pip install tfsec==1.28.4 kube-score==1.17.0 cfn-lint==0.83.4 hadolint==2.12.0 ansible-lint==6.22.1
-      
+
       - name: Run IaC Linter
         run: |
           python -c "
@@ -340,15 +340,15 @@ jobs:
           from agent.scanner import IaCScanner
           from agent.validator import IaCValidator
           from agent.enforcer import IaCEnforcer
-          
+
           scanner = IaCScanner(Path('.'))
           validator = IaCValidator()
           enforcer = IaCEnforcer()
-          
+
           scan = scanner.scan({})
           validation = validator.validate(scan, {'block_on_high': True})
           enforcement = enforcer.enforce(validation, scan, {})
-          
+
           exit(enforcement['exit_code'])
           "
 ```
@@ -695,7 +695,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -884,7 +884,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

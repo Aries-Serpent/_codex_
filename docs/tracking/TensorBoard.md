@@ -55,7 +55,7 @@ def train(config):
         for epoch in range(config.epochs):
             for batch_idx, batch in enumerate(dataloader):
                 loss = train_batch(batch)
-                
+
                 # Log to TensorBoard if available
                 if tb:
                     global_step = epoch * len(dataloader) + batch_idx
@@ -177,15 +177,15 @@ from codex_ml.utils.tensorboard_logger import get_tb_writer
 def main():
     # Enable TensorBoard
     os.environ["CODEX_ENABLE_TENSORBOARD"] = "1"
-    
+
     with get_tb_writer("runs/training") as tb:
         model = create_model()
         optimizer = create_optimizer(model)
-        
+
         for epoch in range(num_epochs):
             train_loss = train_epoch(model, optimizer)
             val_loss = validate(model)
-            
+
             if tb:
                 tb.add_scalars("epoch", {
                     "train_loss": train_loss,
@@ -201,14 +201,14 @@ from codex_ml.utils.tensorboard_logger import get_tb_writer
 def evaluate(model, dataset):
     with get_tb_writer("runs/evaluation") as tb:
         results = {}
-        
+
         for metric_name, metric_fn in metrics.items():
             score = metric_fn(model, dataset)
             results[metric_name] = score
-            
+
             if tb:
                 tb.add_scalar(f"eval/{metric_name}", score, step=0)
-        
+
         return results
 ```text
 

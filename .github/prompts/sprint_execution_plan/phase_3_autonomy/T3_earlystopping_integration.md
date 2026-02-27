@@ -27,7 +27,7 @@ from transformers import EarlyStoppingCallback
 class CodexTrainer:
     def __init__(self, model, args, train_dataset, eval_dataset=None, **kwargs):
         callbacks = kwargs.get('callbacks', [])
-        
+
         # Auto-inject EarlyStopping if eval dataset provided
         if eval_dataset is not None:
             has_early_stopping = any(
@@ -40,7 +40,7 @@ class CodexTrainer:
                 )
                 callbacks.append(early_stop_cb)
                 print("✓ EarlyStoppingCallback auto-injected (patience=3)")
-        
+
         kwargs['callbacks'] = callbacks
         self.trainer = Trainer(model, args, train_dataset, eval_dataset, **kwargs)
 ```

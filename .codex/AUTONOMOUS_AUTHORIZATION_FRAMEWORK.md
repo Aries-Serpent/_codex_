@@ -57,19 +57,19 @@ authorization_observables:
     - code_review_approved: BOOLEAN
     - documentation_complete: BOOLEAN
     - no_blocking_issues: BOOLEAN
-    
+
   security_compliance:
     - no_high_critical_vulns: BOOLEAN
     - secrets_configured: BOOLEAN
     - audit_trail_active: BOOLEAN
     - codeql_clean: BOOLEAN
-    
+
   quality_gates:
     - code_coverage_threshold: PERCENTAGE >= 80
     - performance_benchmarks: BOOLEAN
     - integration_tests_pass: BOOLEAN
     - linting_clean: BOOLEAN
-    
+
   policy_compliance:
     - follows_codebase_policy: BOOLEAN
     - human_grant_explicit: BOOLEAN
@@ -124,23 +124,23 @@ class AuthorizationCriteria:
     current_value: any = None
     threshold: any = None
     status: str = "UNKNOWN"  # PASS, FAIL, UNKNOWN
-    
+
 class QuantumAuthorizationEngine:
     """
     Quantum-inspired authorization engine.
-    
+
     Treats authorization as wave function collapse based on observable measurements.
     When all observables meet thresholds, wave function collapses to AUTHORIZED state.
     """
-    
+
     def __init__(self, repo_root: str):
         self.repo_root = repo_root
         self.criteria: List[AuthorizationCriteria] = []
         self.authorization_state = "SUPERPOSITION"  # SUPERPOSITION, AUTHORIZED, BLOCKED
-        
+
     def define_criteria(self):
         """Define all authorization criteria (observables)."""
-        
+
         # TECHNICAL READINESS
         self.criteria.extend([
             AuthorizationCriteria(
@@ -172,7 +172,7 @@ class QuantumAuthorizationEngine:
                 threshold=0
             ),
         ])
-        
+
         # SECURITY COMPLIANCE
         self.criteria.extend([
             AuthorizationCriteria(
@@ -204,7 +204,7 @@ class QuantumAuthorizationEngine:
                 threshold=True
             ),
         ])
-        
+
         # QUALITY GATES
         self.criteria.extend([
             AuthorizationCriteria(
@@ -229,7 +229,7 @@ class QuantumAuthorizationEngine:
                 threshold=True
             ),
         ])
-        
+
         # POLICY COMPLIANCE
         self.criteria.extend([
             AuthorizationCriteria(
@@ -261,9 +261,9 @@ class QuantumAuthorizationEngine:
                 threshold=True
             ),
         ])
-    
+
     # Measurement Functions (Quantum Observables)
-    
+
     def _measure_tests_passing(self) -> bool:
         """Measure: Are all tests passing?"""
         try:
@@ -276,7 +276,7 @@ class QuantumAuthorizationEngine:
             return result.returncode == 0
         except Exception:
             return False
-    
+
     def _measure_code_review(self) -> bool:
         """Measure: Is code review approved?"""
         # Check if all review comments addressed
@@ -292,7 +292,7 @@ class QuantumAuthorizationEngine:
             return 'review' in result.stdout.lower() or 'address' in result.stdout.lower()
         except Exception:
             return False
-    
+
     def _measure_documentation(self) -> bool:
         """Measure: Is documentation complete?"""
         required_docs = [
@@ -301,10 +301,10 @@ class QuantumAuthorizationEngine:
             '.codex/AUTOMATION_IMPLEMENTATION_MASTER_PLANSET.md',
             '.codex/cognitive_brain/AI_AGENT_AUTONOMOUS_OPERATION_PROTOCOL.md',
         ]
-        
+
         from pathlib import Path
         return all(Path(self.repo_root) / doc for doc in required_docs)
-    
+
     def _measure_blocking_issues(self) -> int:
         """Measure: Number of blocking issues."""
         # Check for FIXME, TODO with CRITICAL, BLOCKING tags
@@ -320,7 +320,7 @@ class QuantumAuthorizationEngine:
             return len(result.stdout.decode().strip().split('\n'))
         except Exception:
             return 0
-    
+
     def _measure_vulnerabilities(self) -> int:
         """Measure: Number of high/critical vulnerabilities."""
         try:
@@ -331,10 +331,10 @@ class QuantumAuthorizationEngine:
                 text=True,
                 cwd=self.repo_root
             )
-            
+
             if result.returncode == 0:
                 return 0
-            
+
             # Parse JSON output
             data = json.loads(result.stdout)
             high_critical = [v for v in data if v.get('severity') in ['high', 'critical']]
@@ -342,7 +342,7 @@ class QuantumAuthorizationEngine:
         except Exception:
             # If safety not installed or fails, assume 0
             return 0
-    
+
     def _measure_secrets_configured(self) -> bool:
         """Measure: Are required secrets configured?"""
         # Check for CODEX_MASTER_KEY grant in documentation
@@ -354,7 +354,7 @@ class QuantumAuthorizationEngine:
         except Exception:
             pass
         return False
-    
+
     def _measure_audit_trail(self) -> bool:
         """Measure: Is audit trail active?"""
         # Check if git log is being maintained
@@ -367,13 +367,13 @@ class QuantumAuthorizationEngine:
             return result.returncode == 0 and len(result.stdout) > 0
         except Exception:
             return False
-    
+
     def _measure_codeql_status(self) -> bool:
         """Measure: Is CodeQL clean?"""
         # Check if CodeQL suppressions are documented
         suppression_std = Path(self.repo_root) / '.codex' / 'SECURITY_FALSE_POSITIVE_STANDARD.md'
         return suppression_std.exists()
-    
+
     def _measure_code_coverage(self) -> float:
         """Measure: Code coverage percentage."""
         try:
@@ -383,7 +383,7 @@ class QuantumAuthorizationEngine:
                 cwd=self.repo_root,
                 timeout=300
             )
-            
+
             coverage_file = Path(self.repo_root) / 'coverage.json'
             if coverage_file.exists():
                 data = json.loads(coverage_file.read_text())
@@ -391,7 +391,7 @@ class QuantumAuthorizationEngine:
         except Exception:
             pass
         return 0.0
-    
+
     def _measure_integration_tests(self) -> bool:
         """Measure: Do integration tests pass?"""
         try:
@@ -404,7 +404,7 @@ class QuantumAuthorizationEngine:
             return result.returncode == 0
         except Exception:
             return False
-    
+
     def _measure_linting(self) -> bool:
         """Measure: Is code linting clean?"""
         try:
@@ -417,12 +417,12 @@ class QuantumAuthorizationEngine:
         except Exception:
             # If ruff not installed, skip
             return True
-    
+
     def _measure_policy_compliance(self) -> bool:
         """Measure: Does code follow codebase policy?"""
         policy_file = Path(self.repo_root) / '.codex' / 'CODEBASE_AGENCY_POLICY.md'
         return policy_file.exists()
-    
+
     def _measure_human_grant(self) -> bool:
         """Measure: Has human explicitly granted authorization?"""
         # Check for explicit grant in unified plan or comments
@@ -431,19 +431,19 @@ class QuantumAuthorizationEngine:
             'CODEX_MASTER_KEY AS FREELY NEEDED',
             'User Confirmation: ✅ GRANTED',
         ]
-        
+
         unified_plan = Path(self.repo_root) / '.codex' / 'HUMAN_ADMIN_UNIFIED_ACTION_PLAN.md'
         if unified_plan.exists():
             content = unified_plan.read_text()
             return any(indicator in content for indicator in grant_indicators)
-        
+
         return False
-    
+
     def _measure_token_access(self) -> bool:
         """Measure: Is token access confirmed?"""
         # Same as secrets configured
         return self._measure_secrets_configured()
-    
+
     def _measure_rollback_plan(self) -> bool:
         """Measure: Does rollback plan exist?"""
         # Check for rollback documentation
@@ -452,7 +452,7 @@ class QuantumAuthorizationEngine:
             'rollback',
             'revert',
         ]
-        
+
         for doc in Path(self.repo_root / '.codex').rglob('*.md'):
             try:
                 content = doc.read_text().lower()
@@ -460,21 +460,21 @@ class QuantumAuthorizationEngine:
                     return True
             except Exception:
                 continue
-        
+
         return False
-    
+
     # Core Authorization Logic
-    
+
     def measure_all_observables(self):
         """Perform quantum measurement on all observables."""
         print("🔬 Measuring Authorization Observables")
         print("=" * 60)
-        
+
         for criterion in self.criteria:
             print(f"\n📊 Measuring: {criterion.name}")
             try:
                 criterion.current_value = criterion.measurement_fn()
-                
+
                 # Determine status
                 if criterion.threshold is not None:
                     if isinstance(criterion.threshold, bool):
@@ -483,51 +483,51 @@ class QuantumAuthorizationEngine:
                         criterion.status = "PASS" if criterion.current_value >= criterion.threshold else "FAIL"
                 else:
                     criterion.status = "PASS"
-                
+
                 status_icon = "✅" if criterion.status == "PASS" else "❌"
                 print(f"{status_icon} {criterion.name}: {criterion.current_value}")
-                
+
             except Exception as e:
                 criterion.status = "ERROR"
                 criterion.current_value = f"ERROR: {e}"
                 print(f"❌ {criterion.name}: ERROR - {e}")
-    
+
     def collapse_wave_function(self) -> str:
         """
         Collapse authorization wave function based on measurements.
-        
+
         Returns: AUTHORIZED, BLOCKED, or SUPERPOSITION
         """
         print("\n" + "=" * 60)
         print("🌊 Collapsing Authorization Wave Function")
         print("=" * 60)
-        
+
         # Group criteria by category
         by_category = {}
         for criterion in self.criteria:
             if criterion.category not in by_category:
                 by_category[criterion.category] = []
             by_category[criterion.category].append(criterion)
-        
+
         # Calculate category scores
         category_status = {}
         for category, criteria_list in by_category.items():
             required = [c for c in criteria_list if c.required]
             passed = [c for c in required if c.status == "PASS"]
-            
+
             category_status[category] = {
                 'total': len(required),
                 'passed': len(passed),
                 'percentage': len(passed) / len(required) * 100 if required else 100
             }
-            
+
             status_icon = "✅" if len(passed) == len(required) else "❌"
             print(f"{status_icon} {category.upper()}: {len(passed)}/{len(required)} " +
                   f"({category_status[category]['percentage']:.1f}%)")
-        
+
         # Determine authorization state
         all_passed = all(cat['passed'] == cat['total'] for cat in category_status.values())
-        
+
         print("\n" + "=" * 60)
         if all_passed:
             self.authorization_state = "AUTHORIZED"
@@ -539,13 +539,13 @@ class QuantumAuthorizationEngine:
             print("❌ WAVE FUNCTION COLLAPSED TO: |BLOCKED⟩")
             print("   Some observables below threshold.")
             print("   Address failed criteria before proceeding.")
-        
+
         return self.authorization_state
-    
+
     def generate_authorization_report(self) -> str:
         """Generate detailed authorization report."""
         timestamp = datetime.now(UTC).isoformat()
-        
+
         report = [
             "# Autonomous Authorization Report",
             "",
@@ -567,29 +567,29 @@ class QuantumAuthorizationEngine:
             "## Authorization Criteria",
             ""
         ]
-        
+
         # Group by category
         by_category = {}
         for criterion in self.criteria:
             if criterion.category not in by_category:
                 by_category[criterion.category] = []
             by_category[criterion.category].append(criterion)
-        
+
         for category, criteria_list in sorted(by_category.items()):
             report.append(f"### {category.upper()}")
             report.append("")
             report.append("| Criterion | Required | Status | Value | Threshold |")
             report.append("|-----------|----------|--------|-------|-----------|")
-            
+
             for criterion in criteria_list:
                 req = "✅" if criterion.required else "⭕"
                 status = {"PASS": "✅", "FAIL": "❌", "ERROR": "⚠️", "UNKNOWN": "❓"}[criterion.status]
                 report.append(
                     f"| {criterion.name} | {req} | {status} | {criterion.current_value} | {criterion.threshold} |"
                 )
-            
+
             report.append("")
-        
+
         # Summary
         report.extend([
             "## Summary",
@@ -597,7 +597,7 @@ class QuantumAuthorizationEngine:
             f"**Final State:** `{self.authorization_state}`",
             ""
         ])
-        
+
         if self.authorization_state == "AUTHORIZED":
             report.extend([
                 "✅ **AUTHORIZATION GRANTED**",
@@ -620,10 +620,10 @@ class QuantumAuthorizationEngine:
                 f"**Failed Criteria:** {len(failed)}",
                 ""
             ])
-            
+
             for criterion in failed:
                 report.append(f"- ❌ {criterion.name}: {criterion.current_value} (required: {criterion.threshold})")
-            
+
             report.extend([
                 "",
                 "**Required Actions:**",
@@ -632,7 +632,7 @@ class QuantumAuthorizationEngine:
                 "3. Proceed when AUTHORIZED state achieved",
                 ""
             ])
-        
+
         report.extend([
             "---",
             "",
@@ -641,58 +641,58 @@ class QuantumAuthorizationEngine:
             "**Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`",
             ""
         ])
-        
+
         return '\n'.join(report)
-    
+
     def run_authorization_check(self) -> Tuple[str, str]:
         """
         Run complete autonomous authorization check.
-        
+
         Returns: (authorization_state, report_path)
         """
         print("🤖 Autonomous Authorization Engine")
         print("=" * 60)
         print()
-        
+
         # Define criteria
         self.define_criteria()
         print(f"📋 Defined {len(self.criteria)} authorization criteria")
         print()
-        
+
         # Measure all observables
         self.measure_all_observables()
-        
+
         # Collapse wave function
         final_state = self.collapse_wave_function()
-        
+
         # Generate report
         print("\n📄 Generating Authorization Report...")
         report_content = self.generate_authorization_report()
-        
+
         # Save report
         report_path = Path(self.repo_root) / '.codex' / 'reports' / f'autonomous_authorization_{datetime.now().strftime("%Y%m%d_%H%M%S")}.md'
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(report_content)
-        
+
         print(f"✅ Report saved: {report_path}")
         print()
         print("=" * 60)
-        
+
         return final_state, str(report_path)
 
 def main():
     """Main entry point."""
     import sys
-    
+
     repo_root = '/home/runner/work/_codex_/_codex_'
     if len(sys.argv) > 1:
         repo_root = sys.argv[1]
-    
+
     engine = QuantumAuthorizationEngine(repo_root)
     state, report = engine.run_authorization_check()
-    
+
     print(f"\n📖 View report: cat {report}")
-    
+
     if state == "AUTHORIZED":
         print("\n✅ AUTONOMOUS AUTHORIZATION GRANTED")
         print("   AI Agent proceeding with next phase production work...")
@@ -779,37 +779,37 @@ Available if needed, but not required when criteria met.
 graph TD
     A[AI Agent Completes Current Phase] --> B[Run Autonomous Authorization Check]
     B --> C{Measure All Observables}
-    
+
     C --> C1[Technical Readiness]
     C --> C2[Security Compliance]
     C --> C3[Quality Gates]
     C --> C4[Policy Compliance]
-    
+
     C1 --> D{All Criteria Met?}
     C2 --> D
     C3 --> D
     C4 --> D
-    
+
     D -->|YES| E[Wave Function Collapses to AUTHORIZED]
     D -->|NO| F[Wave Function Collapses to BLOCKED]
-    
+
     E --> G[Generate Authorization Report]
     F --> H[Generate Failure Report]
-    
+
     G --> I[AI Agent Proceeds Autonomously]
     H --> J[AI Agent Addresses Failed Criteria]
-    
+
     I --> K[Create New Branch]
     K --> L[Execute Pre-Commit Cycles 1-10]
     L --> M[Report Progress]
     M --> N{All Success Criteria Met?}
-    
+
     N -->|YES| O[Production Deployment Ready]
     N -->|NO| L
-    
+
     J --> P[Fix Issues]
     P --> B
-    
+
     style E fill:#90EE90
     style I fill:#90EE90
     style O fill:#90EE90

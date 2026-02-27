@@ -21,10 +21,10 @@ triggers:
     patterns:
       - "**/cache*.py"
       - "**/retriever*.py"
-    
+
   - type: manual
     command: "@copilot validate cache logic"
-    
+
   - type: scheduled
     cron: "0 4 * * 0"  # Weekly on Sunday at 4 AM
 
@@ -38,12 +38,12 @@ capabilities:
       - lru_ordering
       - concurrent_access_safety
       - key_collision_handling
-    
+
   test_execution:
     enabled: true
     max_examples: 1000
     timeout_seconds: 300
-    
+
   report_generation:
     enabled: true
     formats:
@@ -73,7 +73,7 @@ integrations:
   cognitive_brain:
     pattern_storage: true
     cache_patterns_category: true
-    
+
   github:
     pr_comments: true
     status_checks: true

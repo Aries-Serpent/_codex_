@@ -23,45 +23,45 @@ interface CustomWorkflowToken {
 }
 
 const PARADIGM_OPTIONS = [
-  { 
-    id: 'chaos', 
-    name: 'Chaos Theory', 
-    icon: '🌀', 
+  {
+    id: 'chaos',
+    name: 'Chaos Theory',
+    icon: '🌀',
     description: 'Detect instabilities and non-linear dynamics',
     color: 'oklch(0.50 0.25 30)'
   },
-  { 
-    id: 'fractal', 
-    name: 'Fractal Analysis', 
-    icon: '🔺', 
+  {
+    id: 'fractal',
+    name: 'Fractal Analysis',
+    icon: '🔺',
     description: 'Identify self-similar patterns and scaling',
     color: 'oklch(0.55 0.22 60)'
   },
-  { 
-    id: 'fluid', 
-    name: 'Fluid Dynamics', 
-    icon: '💧', 
+  {
+    id: 'fluid',
+    name: 'Fluid Dynamics',
+    icon: '💧',
     description: 'Optimize flow and continuity',
     color: 'oklch(0.60 0.20 220)'
   },
-  { 
-    id: 'electromagnetic', 
-    name: 'Electromagnetic', 
-    icon: '⚡', 
+  {
+    id: 'electromagnetic',
+    name: 'Electromagnetic',
+    icon: '⚡',
     description: 'Analyze fields and interactions',
     color: 'oklch(0.65 0.20 180)'
   },
-  { 
-    id: 'wave', 
-    name: 'Wave Theory', 
-    icon: '〰️', 
+  {
+    id: 'wave',
+    name: 'Wave Theory',
+    icon: '〰️',
     description: 'Process oscillations and interference',
     color: 'oklch(0.70 0.18 250)'
   },
-  { 
-    id: 'relativity', 
-    name: 'Relativity', 
-    icon: '⏰', 
+  {
+    id: 'relativity',
+    name: 'Relativity',
+    icon: '⏰',
     description: 'Manage temporal dependencies',
     color: 'oklch(0.50 0.20 320)'
   },
@@ -88,7 +88,7 @@ export function CustomWorkflowTokenCreator({ onTokenCreated }: CustomWorkflowTok
   const [customTokens, setCustomTokens] = useKV<CustomWorkflowToken[]>('custom-workflow-tokens', []);
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
-  
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('🚀');
@@ -137,12 +137,12 @@ export function CustomWorkflowTokenCreator({ onTokenCreated }: CustomWorkflowTok
       toast.error('Token name is required');
       return;
     }
-    
+
     if (selectedParadigms.length === 0) {
       toast.error('Select at least one paradigm');
       return;
     }
-    
+
     const validStages = stages.filter(s => s.trim());
     if (validStages.length === 0) {
       toast.error('Add at least one stage');
@@ -161,7 +161,7 @@ export function CustomWorkflowTokenCreator({ onTokenCreated }: CustomWorkflowTok
     };
 
     setCustomTokens((current) => [...(current || []), newToken]);
-    
+
     toast.success('Workflow token created!', {
       description: `${name} is ready to execute`,
     });
@@ -187,7 +187,7 @@ export function CustomWorkflowTokenCreator({ onTokenCreated }: CustomWorkflowTok
     <div className="space-y-4">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button 
+          <Button
             className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
             size="lg"
           >
@@ -313,8 +313,8 @@ export function CustomWorkflowTokenCreator({ onTokenCreated }: CustomWorkflowTok
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className={`text-left p-4 rounded-lg border-2 transition-all ${
-                              isSelected 
-                                ? 'border-accent bg-accent/10 shadow-lg' 
+                              isSelected
+                                ? 'border-accent bg-accent/10 shadow-lg'
                                 : 'border-border hover:border-accent/50'
                             }`}
                           >

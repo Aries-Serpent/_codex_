@@ -344,12 +344,12 @@ To only consolidate low-risk updates, add this function:
 is_low_risk_pr() {
     local PR=$1
     local TITLE=$(gh pr view "$PR" --json title --jq '.title')
-    
+
     # Define low-risk patterns
     if echo "$TITLE" | grep -qE "patch|importlib-metadata|nvidia-nccl|regex|pytest-timeout"; then
         return 0  # Low risk
     fi
-    
+
     return 1  # Not low risk
 }
 ```

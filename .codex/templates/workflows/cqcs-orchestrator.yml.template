@@ -1,7 +1,7 @@
 # Orchestrator Workflow: Code Quality & Coverage Suite (Parallel)
 # Decomposed Architecture for Performance Optimization
 # Generated: 2026-02-11
-# 
+#
 # This orchestrator replaces the monolithic code-quality-coverage-suite.yml
 # with a parallel fan-out/fan-in architecture that reduces runtime from
 # 1h+ to ~15-20 minutes.
@@ -98,7 +98,7 @@ jobs:
     if: always()
     permissions:
       pull-requests: write
-    
+
     steps:
       - name: Generate comprehensive summary
         run: |
@@ -107,7 +107,7 @@ jobs:
           echo "**Mode:** ${{ inputs.mode || github.event_name }}" >> $GITHUB_STEP_SUMMARY
           echo "**Architecture:** Parallel fan-out/fan-in (6 phases)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "### Phase Results" >> $GITHUB_STEP_SUMMARY
           echo "| Phase | Tool | Status | Metrics |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|------|--------|---------|" >> $GITHUB_STEP_SUMMARY
@@ -116,19 +116,19 @@ jobs:
           echo "| 3 | Bandit Security | ${{ needs.bandit_security.result || 'skipped' }} | ${{ needs.bandit_security.outputs.issues_count || 'N/A' }} issues (${{ needs.bandit_security.outputs.severity || 'N/A' }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| 4 | Radon Complexity | ${{ needs.radon_complexity.result || 'skipped' }} | Avg: ${{ needs.radon_complexity.outputs.average_complexity || 'N/A' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 5 | Coverage + PDF | ${{ needs.coverage_analysis.result || 'skipped' }} | ${{ needs.coverage_analysis.outputs.total_coverage || 'N/A' }}% |" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Artifacts Generated" >> $GITHUB_STEP_SUMMARY
           echo "- 📊 Coverage reports (JSON, HTML, PDF)" >> $GITHUB_STEP_SUMMARY
           echo "- 🔍 Code quality reports (Ruff, mypy, Bandit, Radon)" >> $GITHUB_STEP_SUMMARY
           echo "- 📈 All results stored for 30-90 days" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Performance" >> $GITHUB_STEP_SUMMARY
           echo "- ⚡ **Parallel execution:** All phases run simultaneously" >> $GITHUB_STEP_SUMMARY
           echo "- 🚀 **Estimated runtime:** 15-20 minutes (vs 1h+ monolithic)" >> $GITHUB_STEP_SUMMARY
           echo "- 💾 **Cache optimization:** Shared Python setup across phases" >> $GITHUB_STEP_SUMMARY
-      
+
       - name: Comment on PR (if applicable)
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -147,7 +147,7 @@ jobs:
 
             View detailed results in the [workflow run](${context.payload.pull_request.html_url}/checks).
             `;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

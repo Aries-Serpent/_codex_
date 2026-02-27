@@ -146,7 +146,7 @@ Production-ready Python implementation:
 
 **Analysis Flow**:
 ```
-Log File → Pattern Matching → Parameter Extraction → 
+Log File → Pattern Matching → Parameter Extraction →
 Confidence Scoring → Auto-fix Decision → JSON Output
 ```
 

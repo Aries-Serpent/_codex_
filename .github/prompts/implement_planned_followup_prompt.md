@@ -44,10 +44,10 @@ Add method after `__init__`:
 def set_log_level(self, level: str) -> None:
     """
     Set logging level dynamically.
-    
+
     Args:
         level: One of DEBUG, INFO, WARNING, ERROR, CRITICAL (case-insensitive)
-    
+
     Raises:
         ValueError: If invalid level provided
     """
@@ -66,16 +66,16 @@ def test_set_log_level(tmp_path):
     """Test dynamic log level setting."""
     from codex.logging.error_handler import CodexErrorHandler
     import logging
-    
+
     handler = CodexErrorHandler(log_dir=tmp_path)
     assert handler.logger.level == logging.ERROR  # Default
-    
+
     handler.set_log_level('DEBUG')
     assert handler.logger.level == logging.DEBUG
-    
+
     handler.set_log_level('warning')  # Case-insensitive
     assert handler.logger.level == logging.WARNING
-    
+
     with pytest.raises(ValueError, match="Invalid log level"):
         handler.set_log_level('INVALID')
 ```text
@@ -90,9 +90,9 @@ Add method after `_ensure_validated()`:
 def validate(self) -> None:
     """
     Explicitly validate environment variables.
-    
+
     Can be called multiple times safely (idempotent).
-    
+
     Raises:
         EnvironmentError: If validation fails
     """
@@ -104,14 +104,14 @@ Add tests to `tests/test_agents_infrastructure.py`:
 def test_public_validate_method():
     """Test public validate() method."""
     from codex.config.env_vars import EnvironmentManager
-    
+
     with patch.dict(os.environ, {}, clear=True):
         env = EnvironmentManager(lazy_validation=True)
         assert not env._validated
-        
+
         env.validate()
         assert env._validated
-        
+
         env.validate()  # Idempotent
         assert env._validated
 
@@ -119,10 +119,10 @@ def test_public_validate_method():
 def test_validate_with_invalid_env():
     """Test validate() detects invalid environment."""
     from codex.config.env_vars import EnvironmentManager
-    
+
     with patch.dict(os.environ, {'CODEX_SQLITE_POOL': '999'}, clear=True):
         env = EnvironmentManager(lazy_validation=True)
-        
+
         with pytest.raises(EnvironmentError, match="Invalid value"):
             env.validate()
 ```text
@@ -140,19 +140,19 @@ Add class `TestConcurrency`:
 ```python
 class TestConcurrency:
     """Test concurrent database access (WAL mode validation)."""
-    
+
     def test_db_manager_concurrent_writes(self, tmp_path):
         """Test DBManager handles 5 threads × 10 writes = 50 rows."""
         from codex.logging.db_manager import DBManager
         import threading
         import time
-        
+
         db_path = tmp_path / "concurrent.db"
         manager = DBManager(db_path=db_path)
         manager.init_schema()
-        
+
         errors = []
-        
+
         def write_logs(thread_id: int):
             try:
                 for i in range(10):
@@ -160,22 +160,22 @@ class TestConcurrency:
                         conn.execute(
                             "INSERT INTO session_events (ts, session_id, role, message) "
                             "VALUES (?, ?, ?, ?)",
-                            (time.time(), f"thread-{thread_id}", "user", 
+                            (time.time(), f"thread-{thread_id}", "user",
                              f"Msg {i} from thread {thread_id}")
                         )
                         conn.commit()
             except Exception as e:
                 errors.append((thread_id, str(e)))
-        
+
         # Spawn 5 threads
         threads = [threading.Thread(target=write_logs, args=(i,)) for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         assert len(errors) == 0, f"Concurrent errors: {errors}"
-        
+
         # Verify 50 total rows
         with manager.connection() as conn:
             count = conn.execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
@@ -195,24 +195,24 @@ def test_full_session_lifecycle(self, tmp_path):
     from codex.cli import init_db_cmd
     from codex.logging.db_manager import DBManager
     import time
-    
+
     runner = CliRunner()
     db_path = tmp_path / "lifecycle.db"
-    
+
     # Init database
     result = runner.invoke(init_db_cmd, ["--db-path", str(db_path)])
     assert result.exit_code == 0
-    
+
     # Log test messages
     manager = DBManager(db_path=db_path)
     session_id = "test-123"
-    
+
     messages = [
         ("system", "Init"),
         ("user", "Hello"),
         ("assistant", "Hi there"),
     ]
-    
+
     for role, msg in messages:
         with manager.connection() as conn:
             conn.execute(
@@ -221,7 +221,7 @@ def test_full_session_lifecycle(self, tmp_path):
                 (time.time(), session_id, role, msg)
             )
             conn.commit()
-    
+
     # Query and verify
     with manager.connection() as conn:
         count = conn.execute(
@@ -229,7 +229,7 @@ def test_full_session_lifecycle(self, tmp_path):
             (session_id,)
         ).fetchone()[0]
         assert count == 3
-        
+
         # Search test
         search_count = conn.execute(
             "SELECT COUNT(*) FROM session_events WHERE message LIKE ?",
@@ -251,63 +251,63 @@ Add class `TestEdgeCases`:
 ```python
 class TestEdgeCases:
     """Edge cases and error paths for coverage."""
-    
+
     def test_error_handler_creates_log_dir(self):
         """Test ErrorHandler creates non-existent directory."""
         from codex.logging.error_handler import CodexErrorHandler
         from pathlib import Path
         import time
-        
+
         fake_path = Path(f"/tmp/codex_test_{time.time()}")
         handler = CodexErrorHandler(log_dir=fake_path)
         assert fake_path.exists()
-        
+
         import shutil
         shutil.rmtree(fake_path)
-    
+
     def test_db_manager_invalid_path_fails(self):
         """Test DBManager with read-only path."""
         from codex.logging.db_manager import DBManager
-        
+
         db = DBManager(db_path=Path("/invalid/readonly.db"))
         with pytest.raises(Exception):
             db.init_schema()
-    
+
     def test_export_env_minimal_config(self):
         """Test export-env with empty environment."""
         from click.testing import CliRunner
         from codex.cli import export_env_cmd
         import json
-        
+
         runner = CliRunner()
-        
+
         with patch.dict(os.environ, {}, clear=True):
             result = runner.invoke(export_env_cmd, ["--format=json"])
             assert result.exit_code == 0
             config = json.loads(result.output)
             assert 'CODEX_ENV_PYTHON_VERSION' in config
-    
+
     def test_list_sessions_empty_db(self, tmp_path):
         """Test list-sessions with no sessions."""
         from click.testing import CliRunner
         from codex.cli import list_sessions_cmd, init_db_cmd
-        
+
         runner = CliRunner()
         db_path = tmp_path / "empty.db"
-        
+
         result = runner.invoke(init_db_cmd, ["--db-path", str(db_path)])
         assert result.exit_code == 0
-        
+
         # Mock db_path for list_sessions
         with patch('codex.logging.db_manager.env_manager.get_db_path', return_value=db_path):
             result = runner.invoke(list_sessions_cmd)
             assert result.exit_code == 0
-    
+
     def test_clean_logs_no_old_data(self):
         """Test clean-logs with no old logs."""
         from click.testing import CliRunner
         from codex.cli import clean_logs_cmd
-        
+
         runner = CliRunner()
         result = runner.invoke(clean_logs_cmd, ["--dry-run", "--older-than=30"])
         assert result.exit_code == 0

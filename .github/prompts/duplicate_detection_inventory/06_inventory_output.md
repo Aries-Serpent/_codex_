@@ -43,7 +43,7 @@ class InventoryMetadata:
     total_groups: int
     total_violations: int
     scan_duration_seconds: float
-    
+
 @dataclass
 class MemberFile:
     path: str
@@ -76,11 +76,11 @@ class SupplementalInventory:
     metadata: InventoryMetadata
     duplicate_groups: List[DuplicateGroup]
     intentional_duplicates: List[DuplicateGroup]
-    
+
     def validate(self) -> List[str]:
         """Validate schema, return list of errors."""
         pass
-    
+
     def to_dict(self) -> Dict:
         """Convert to dictionary."""
         pass
@@ -102,19 +102,19 @@ class SupplementalInventory:
 ```python
 class InventoryWriter:
     """Writes inventory to multiple formats."""
-    
+
     def write_yaml(self, inventory: SupplementalInventory, path: Path):
         """Write to YAML with proper formatting."""
         pass
-    
+
     def write_json(self, inventory: SupplementalInventory, path: Path):
         """Write to JSON with indentation."""
         pass
-    
+
     def write_csv(self, inventory: SupplementalInventory, path: Path):
         """Write flattened CSV summary."""
         pass
-    
+
     def write_all(self, inventory: SupplementalInventory, output_dir: Path):
         """Write all formats to directory."""
         pass
@@ -178,11 +178,11 @@ Scanner Version: 1.0.0
 ```python
 class ReportGenerator:
     """Generates human-readable markdown reports."""
-    
+
     def generate(self, inventory: SupplementalInventory) -> str:
         """Generate markdown report."""
         pass
-    
+
     def write_report(self, inventory: SupplementalInventory, path: Path):
         """Write report to file."""
         pass
@@ -211,11 +211,11 @@ class ReportGenerator:
 ```python
 class IntentionalDetector:
     """Detects intentionally duplicated files."""
-    
+
     def is_intentional(self, group: DuplicateGroup) -> bool:
         """Check if duplicate group is intentional."""
         pass
-    
+
     def get_intentional_reason(self, group: DuplicateGroup) -> str:
         """Get reason why duplicate is intentional."""
         pass

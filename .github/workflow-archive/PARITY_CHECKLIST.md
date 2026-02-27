@@ -260,7 +260,7 @@ ls .github/workflow-archive/disabled/report_publish.yml         # ✅ Present
 
 **5. report_publish.yml (Artifact Publishing) - COVERED**:
 - **Original**: Validated and bundled status artifacts
-- **Replacement**: 
+- **Replacement**:
   - `status_gate.yml` - Status validation on PR/push
   - `publish_dashboard_release.yml` - per-phase releases
   - `scripts/status/bundle_status_artifacts.sh` - Bundling script
@@ -588,7 +588,7 @@ Rationale:
    - Workflow YAML syntax validation
    - Python import validation
    - Core module verification
-   
+
 2. **Template Validation** → `template_lint.yml`
    - HTML template linting
    - Template-specific validation rules
@@ -611,7 +611,7 @@ Rationale:
    - Check `publish_dashboard_release.yml` for coverage
    - Check `ci-health-monitor.yml` for overlap
    - Verify 5 disabled status workflows functionality
-   
+
 2. **Investigate Cache Management** (cache-management.yml)
    - Check if using distributed `actions/cache@v4` approach
    - Verify cache cleanup/warming covered by other workflows
@@ -723,8 +723,8 @@ gh run download --name audit-results
 import subprocess, json
 
 def get_latest_artifact(name):
-    result = subprocess.run(["gh", "run", "list", "--limit", "1", 
-                           "--json", "databaseId"], 
+    result = subprocess.run(["gh", "run", "list", "--limit", "1",
+                           "--json", "databaseId"],
                           capture_output=True, text=True)
     run_id = json.loads(result.stdout)[0]["databaseId"]
     subprocess.run(["gh", "run", "download", str(run_id), "--name", name])
@@ -786,4 +786,3 @@ view /home/runner/work/_codex_/_codex_/.github/workflow-archive/README.md
 **Parity Confirmation**: ✅ **100% (8 of 8 categories)**  
 **Artifacts**: ✅ **Fully cataloged and retrievable**  
 **Ready for**: ✅ **Merge and deployment**
-

@@ -63,8 +63,8 @@ export function PhysicsParadigmExplorer({ agents }: PhysicsParadigmExplorerProps
           const isActive = count > 0;
 
           return (
-            <Card 
-              key={key} 
+            <Card
+              key={key}
               className={`p-4 relative overflow-hidden transition-all ${
                 isActive ? 'border-accent shadow-md' : 'opacity-60'
               }`}
@@ -72,7 +72,7 @@ export function PhysicsParadigmExplorer({ agents }: PhysicsParadigmExplorerProps
               {isActive && (
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-primary/5" />
               )}
-              
+
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl">{info.icon}</span>
@@ -88,7 +88,7 @@ export function PhysicsParadigmExplorer({ agents }: PhysicsParadigmExplorerProps
 
                 <h4 className="font-semibold text-lg mb-1">{info.name}</h4>
                 <p className="text-sm text-muted-foreground mb-2">{info.description}</p>
-                
+
                 <div className="pt-2 border-t border-border">
                   <p className="text-xs text-muted-foreground">
                     <strong className="text-accent">Metric:</strong> {info.metric}
@@ -102,9 +102,9 @@ export function PhysicsParadigmExplorer({ agents }: PhysicsParadigmExplorerProps
 
       <Card className="p-4 mt-4 bg-muted/30">
         <p className="text-sm text-muted-foreground">
-          <strong className="text-accent">Physics-Inspired Orchestration:</strong> Agents leverage 
-          6 classical physics paradigms to optimize decision-making. Each paradigm provides unique 
-          mathematical frameworks for analyzing complexity, flow, patterns, and causality in 
+          <strong className="text-accent">Physics-Inspired Orchestration:</strong> Agents leverage
+          6 classical physics paradigms to optimize decision-making. Each paradigm provides unique
+          mathematical frameworks for analyzing complexity, flow, patterns, and causality in
           computational systems.
         </p>
       </Card>

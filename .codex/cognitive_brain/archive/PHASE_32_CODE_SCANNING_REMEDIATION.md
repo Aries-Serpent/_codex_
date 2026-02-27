@@ -372,16 +372,16 @@ git diff --stat
 ```python
 def fix_datetime_file(filepath: Path) -> bool:
     content = filepath.read_text()
-    
+
     # Pattern replacement
     content = content.replace('datetime.utcnow()', 'datetime.now(timezone.utc)')
     content = content.replace('_dt.datetime.utcnow()', '_dt.datetime.now(_dt.timezone.utc)')
-    
+
     # Add timezone import if needed
     if 'datetime.now(timezone.utc)' in content:
         if not has_timezone_import(content):
             add_timezone_import(content)
-    
+
     if content != original:
         filepath.write_text(content)
         return True
@@ -393,13 +393,13 @@ def fix_datetime_file(filepath: Path) -> bool:
 ```python
 def fix_future_imports_file(filepath: Path) -> bool:
     lines = filepath.read_text().splitlines(keepends=True)
-    
+
     # 1. Extract module docstring
     docstring_lines, doc_end_idx = extract_module_docstring(lines)
-    
+
     # 2. Collect all from __future__ imports
     future_imports = [line for line in lines if 'from __future__' in line]
-    
+
     # 3. Reconstruct file
     new_lines = []
     new_lines.extend(docstring_lines)
@@ -407,10 +407,10 @@ def fix_future_imports_file(filepath: Path) -> bool:
     new_lines.extend(future_imports)
     new_lines.append('\n')
     new_lines.extend(remaining_code)
-    
+
     # 4. Validate with AST
     ast.parse(''.join(new_lines))
-    
+
     filepath.write_text(''.join(new_lines))
     return True
 ```

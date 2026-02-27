@@ -38,7 +38,7 @@
 
 ### 1. cli.py - Command Line Interface (12.45%)
 
-**Why Critical**: 
+**Why Critical**:
 - Largest file (221 lines, 49% of module)
 - Lowest coverage (12.45%)
 - CLI is primary user-facing interface
@@ -197,7 +197,7 @@
 - `tests/cli/test_tokenization_cli_comprehensive.py`
 - `tests/test_tokenizer_ids.py`
 
-**Analysis**: 
+**Analysis**:
 - Many existing tests focus on tokenizer usage, not the core module
 - CLI tests exist but don't cover fallback paths
 - Loader tests focus on environment integration, not core functions

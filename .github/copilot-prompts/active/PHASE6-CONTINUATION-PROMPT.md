@@ -264,7 +264,7 @@ mkdir -p .github/agents/{agent-name}/tests/{unit,integration}
 def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
     """
     PERCEIVE: Gather and analyze data.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: {pattern_name}
     """
     context = {
@@ -281,7 +281,7 @@ def perceive(self, task: Dict[str, Any]) -> Dict[str, Any]:
 def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
     """
     DECIDE: Make decisions based on analysis.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: {decision_pattern}
     """
     decision = {
@@ -298,7 +298,7 @@ def decide(self, context: Dict[str, Any]) -> Dict[str, Any]:
 def act(self, decision: Dict[str, Any]) -> Dict[str, Any]:
     """
     ACT: Execute actions.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: {action_pattern}
     """
     result = {
@@ -316,23 +316,23 @@ def aftermath(self, result: Dict[str, Any], context: Dict[str, Any],
               decision: Dict[str, Any]) -> None:
     """
     AFTERMATH: Learn and report.
-    
+
     #AFTERMATH_PATTERN_IDENTIFIED: {learning_pattern}
     """
     # Record metrics
     self._record_metrics(result, context, decision)
-    
+
     # Store patterns
     self._store_patterns(result)
-    
+
     # Generate lessons
     lessons = self._generate_lessons(result, context, decision)
     for lesson in lessons:
         self._store_lesson(lesson)
-    
+
     # Generate reports
     self._save_reports(result, context, decision)
-    
+
     #AFTERMATH_METRIC: learning_complete = True
     #AFTERMATH_LESSON_LEARNED: {agent}_insights
 ```
@@ -362,7 +362,7 @@ def _is_safe_path(self, file_path: Path) -> bool:
     try:
         file_resolved = file_path.resolve()
         repo_resolved = self.repo_path.resolve()
-        return (str(file_resolved).startswith(str(repo_resolved)) 
+        return (str(file_resolved).startswith(str(repo_resolved))
                and file_path.exists())
     except (OSError, ValueError):
         return False

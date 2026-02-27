@@ -42,7 +42,7 @@ export function AgentCard({ agent }: AgentCardProps) {
       agent.status === 'thinking' ? 'agent-thinking' : ''
     }`}>
       <div className={`absolute inset-0 ${config.bg} opacity-10`} />
-      
+
       <div className="relative">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">

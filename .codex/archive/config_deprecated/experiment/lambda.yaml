@@ -3,16 +3,16 @@ experiment:
   name: lambda
   type: serverless
   description: "Configuration for Lambda/serverless deployment"
-  
+
   # Serverless-specific settings
   seed: 42
   deterministic: true
-  
+
   # Resource constraints for serverless
   max_iterations: 50
   batch_size: 1
   num_workers: 0
-  
+
   # Minimal resource usage
   enable_logging: true
   save_checkpoints: false

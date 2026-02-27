@@ -70,7 +70,7 @@ if meta_status:
     # Log metric
     metrics.increment('rag.meta_tensor_detected')
     metrics.timing('rag.to_empty_duration', duration)
-    
+
     # Alert if frequent
     if rate > threshold:
         alert('High meta tensor rate detected')

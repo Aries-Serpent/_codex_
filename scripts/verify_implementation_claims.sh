@@ -22,19 +22,19 @@ TOTAL=0
 verify_file() {
     local file=$1
     ((TOTAL++))
-    
+
     if [ ! -e "$file" ]; then
         echo -e "${RED}❌ MISSING${NC}: $file"
         ((FAILURES++))
         return 1
     fi
-    
+
     if [ ! -s "$file" ]; then
         echo -e "${YELLOW}⚠️  EMPTY${NC}: $file"
         ((FAILURES++))
         return 1
     fi
-    
+
     SIZE=$(wc -l < "$file" 2>/dev/null || echo "N/A")
     echo -e "${GREEN}✅ EXISTS${NC}: $file ($SIZE lines)"
     ((SUCCESSES++))
@@ -54,17 +54,17 @@ else
     # Default list of commonly claimed but missing files
     echo "Checking default critical files..."
     echo ""
-    
+
     # GitHub Secrets CLI
     verify_file "tools/github-secrets-cli/main.go" || true
     verify_file "tools/github-secrets-cli/go.mod" || true
     verify_file "tools/github-secrets-cli/README.md" || true
-    
+
     # Testing Orchestrator Agent
     verify_file ".github/agents/github-testing-orchestrator-agent/src/agent.py" || true
     verify_file ".github/agents/github-testing-orchestrator-agent/config/agent.yml" || true
     verify_file ".github/agents/github-testing-orchestrator-agent/README.md" || true
-    
+
     # Security Validator Agent
     verify_file ".github/agents/github-security-validator-agent/src/agent.py" || true
     verify_file ".github/agents/github-security-validator-agent/config/agent.yml" || true

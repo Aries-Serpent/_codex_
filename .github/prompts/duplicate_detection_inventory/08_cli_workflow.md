@@ -62,20 +62,20 @@ def main():
     )
     # Add all arguments
     args = parser.parse_args()
-    
+
     # Load configuration
     config = load_config(args.config) if args.config else {}
-    
+
     # Initialize scanner
     scanner = DuplicateScanner(args.repo_path, config)
-    
+
     # Run scan with progress
     with Progress() as progress:
         inventory = scanner.scan(modes=args.modes)
-    
+
     # Write outputs
     scanner.write_outputs(inventory, args.output_dir)
-    
+
     # Exit with appropriate code
     sys.exit(0 if inventory.metadata.total_violations == 0 else 1)
 ```
@@ -101,23 +101,23 @@ scan:
     - normalized
     - ast
     - semantic
-  
+
   thresholds:
     normalized: 1.0
     ast: 0.85
     semantic: 0.75
-  
+
   exclude_patterns:
     - "*.min.js"
     - "vendor/**"
     - "node_modules/**"
     - ".git/**"
-  
+
   include_dirs:
     - "src/"
     - "scripts/"
     - "lib/"
-  
+
 output:
   directory: "./duplicate_analysis"
   formats:
@@ -126,11 +126,11 @@ output:
     - csv
     - markdown
   include_intentional: false
-  
+
 git:
   enabled: true
   churn_window_days: 90
-  
+
 shim:
   inventory_path: ".github/SHIM_INVENTORY.yaml"
   cross_reference: true
@@ -140,17 +140,17 @@ shim:
 ```python
 class Config:
     """Configuration manager."""
-    
+
     @staticmethod
     def load(path: Path) -> Dict:
         """Load configuration from file."""
         pass
-    
+
     @staticmethod
     def merge(config: Dict, args: argparse.Namespace) -> Dict:
         """Merge config file with CLI args (CLI wins)."""
         pass
-    
+
     @staticmethod
     def validate(config: Dict) -> List[str]:
         """Validate configuration, return errors."""
@@ -173,19 +173,19 @@ class Config:
 ```python
 class ProgressReporter:
     """Reports scan progress."""
-    
+
     def __init__(self, verbose: bool = False):
         """Initialize reporter."""
         pass
-    
+
     def start_scan(self, total_files: int):
         """Start progress tracking."""
         pass
-    
+
     def update(self, current_file: Path):
         """Update progress."""
         pass
-    
+
     def finish(self):
         """Finish progress reporting."""
         pass
@@ -223,42 +223,42 @@ jobs:
     permissions:
       contents: read
       issues: write
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for git metrics
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      
+
       - name: Install dependencies
         run: |
           pip install pyyaml gitpython
           # Install any other dependencies
-      
+
       - name: Run duplicate detection
         run: |
           python scripts/analysis/cli.py . \
             --output-dir duplicate_analysis \
             --modes ${{ github.event.inputs.modes || 'exact,normalized' }} \
             --format all
-      
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: duplicate-analysis-${{ github.run_id }}
           path: duplicate_analysis/
-      
+
       - name: Check for new violations
         id: check
         run: |
           # Parse output and check for new violations
           python scripts/analysis/check_violations.py
-      
+
       - name: Create issue if violations found
         if: steps.check.outputs.has_violations == 'true'
         uses: actions/github-script@v7
@@ -267,7 +267,7 @@ jobs:
             // Create issue with violation details
             const fs = require('fs');
             const report = fs.readFileSync('duplicate_analysis/supplemental_duplicates.md', 'utf8');
-            
+
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -295,7 +295,7 @@ jobs:
       --output-dir audit_artifacts/duplicates \
       --modes exact,normalized \
       --quiet
-  
+
 - name: Combine audit artifacts
   run: |
     # Merge duplicate detection results into audit report

@@ -244,22 +244,22 @@ security_analysis:
   - pattern: "multi-source-cve-lookup"
     tools: ["web_search", "gh-advisory-database"]
     databases: ["NVD", "GitHub Advisory", "OSV"]
-    
+
   - pattern: "codebase-impact-assessment"
     tools: ["grep", "view"]
     analysis: ["direct-dependencies", "indirect-dependencies", "usage-context"]
-    
+
 agent_design:
   - pattern: "5-phase-workflow"
     phases: ["detection", "analysis", "assessment", "reporting", "validation"]
-    
+
   - pattern: "cognitive-brain-integration"
     components: ["session-log", "patterns-learned", "metrics-tracking"]
-    
+
 repository_organization:
   - pattern: "zero-breakage-guarantee"
     approach: ["low-risk-first", "comprehensive-validation", "git-mv"]
-    
+
   - pattern: "incremental-cleanup"
     categories: ["immediate", "deferred", "out-of-scope"]
 ```

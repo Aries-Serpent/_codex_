@@ -292,13 +292,13 @@ Each phase included:
    ```bash
    # Check Kubernetes
    kubectl apply --dry-run=client -k manifests/k8s/base
-   
+
    # Check Feature Store
    python -c "from src.codex_ml.features import FeatureStore; print('✅')"
-   
+
    # Check Events
    python -c "from src.codex_ml.events import EventBus; print('✅')"
-   
+
    # Check Freshness
    python -c "from src.codex_ml.monitoring.feature_freshness_drift import FeatureFreshnessDriftDetector; print('✅')"
    ```

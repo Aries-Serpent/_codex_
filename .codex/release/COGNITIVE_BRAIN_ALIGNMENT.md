@@ -29,7 +29,7 @@ This document verifies 100% alignment between the release infrastructure and cog
 ### Quality Standards Alignment
 
 | Cognitive Standard | Release Enforcement | Alignment |
-|-------------------|--------------------|-----------| 
+|-------------------|--------------------|-----------|
 | **Tests**: ≥1500 passing | Blocking gate: test count | ✅ 100% |
 | **Coverage**: ≥70% | Blocking gate: coverage | ✅ 100% |
 | **Security**: 0 vulnerabilities | Blocking gate: security scan | ✅ 100% |

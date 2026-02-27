@@ -71,17 +71,17 @@ class CapabilityConfig:
 
 class NewCapability:
     """Implementation of the new capability."""
-    
+
     def __init__(self, config: Optional[CapabilityConfig] = None) -> None:
         self._config = config or CapabilityConfig()
         self._logger = logging.getLogger(__name__)
-    
+
     def do_something(self, param: str) -> str:
         """Perform the capability action.
-        
+
         Args:
             param: Input parameter.
-            
+
         Returns:
             Result of the action.
         """
@@ -102,24 +102,24 @@ from src.mcp.new_capability import NewCapability, CapabilityConfig
 
 class TestNewCapability:
     """Test suite for NewCapability."""
-    
+
     def test_init_with_defaults(self):
         """Test initialization with default config."""
         cap = NewCapability()
         assert cap._config.setting1 == "default"
-    
+
     def test_init_with_custom_config(self):
         """Test initialization with custom config."""
         config = CapabilityConfig(setting1="custom", setting2=200)
         cap = NewCapability(config)
         assert cap._config.setting1 == "custom"
-    
+
     def test_do_something(self):
         """Test the main capability action."""
         cap = NewCapability()
         result = cap.do_something("test")
         assert result == "Result: test"
-    
+
     def test_do_something_with_empty_input(self):
         """Test with empty input."""
         cap = NewCapability()
@@ -139,10 +139,10 @@ async def handle_new_method(
     self, params: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """Handler for mcp.newMethod.
-    
+
     Args:
         params: Method parameters.
-        
+
     Returns:
         Method result.
     """

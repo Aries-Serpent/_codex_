@@ -88,7 +88,7 @@ if feedback:
             categories['error'] += 1
         elif 'unclear' in content or 'confusing' in content:
             categories['documentation'] += 1
-    
+
     print('\\nFeedback categories:')
     for category, count in categories.most_common():
         print(f'  {category}: {count}')
@@ -159,21 +159,21 @@ def analyze_recent_sessions(hours=24):
     \"\"\"Analyze recent agent sessions for feedback.\"\"\"
     cutoff = datetime.now() - timedelta(hours=hours)
     sessions = Path('.codex/sessions')
-    
+
     feedback_items = []
     for log_file in sessions.glob('*.jsonl'):
         if datetime.fromtimestamp(log_file.stat().st_mtime) < cutoff:
             continue
-            
+
         with open(log_file) as f:
             for line in f:
                 event = json.loads(line)
                 # Look for error patterns
                 content = event.get('content', '')
-                if any(keyword in content.lower() for keyword in 
+                if any(keyword in content.lower() for keyword in
                        ['error', 'missing', 'not found', 'unclear', 'bug']):
                     feedback_items.append(event)
-    
+
     return feedback_items
 
 def create_improvement_issue(feedback):
@@ -196,14 +196,14 @@ def create_improvement_issue(feedback):
 - ai-agent-feedback
 - auto-detected
 \"\"\"
-    
+
     # Create issue using GitHub CLI
     result = subprocess.run(
         ['gh', 'issue', 'create', '--title', title, '--body', body,
          '--label', 'enhancement,ai-agent-feedback'],
         capture_output=True, text=True
     )
-    
+
     if result.returncode == 0:
         print(f\"✅ Created issue: {title}\")
     else:
@@ -211,14 +211,14 @@ def create_improvement_issue(feedback):
 
 def main():
     print(\"Starting feedback loop analysis...\")
-    
+
     # Analyze sessions
     feedback = analyze_recent_sessions(hours=24)
     print(f\"Found {len(feedback)} feedback items in last 24 hours\")
-    
+
     # Process high-priority feedback
     # (implement your logic here)
-    
+
     print(\"Feedback loop complete\")
 
 if __name__ == '__main__':
@@ -372,26 +372,26 @@ on:
 jobs:
   feedback-loop:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      
+
       - name: Install Dependencies
         run: pip install -e .
-      
+
       - name: Analyze Capability Gaps
         run: python scripts/analyze_gaps.py
-      
+
       - name: Run Feedback Loop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/feedback_loop.py
-      
+
       - name: Upload Analysis
         uses: actions/upload-artifact@v3
         with:

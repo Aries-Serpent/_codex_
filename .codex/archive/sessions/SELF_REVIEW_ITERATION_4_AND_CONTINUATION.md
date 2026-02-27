@@ -216,7 +216,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   delete import.meta.env.VITE_CODEX_KEY;
   delete import.meta.env.VITE_CODEX_API;
-  
+
   // Fix: Proper class mock pattern
   const mockClient = {
     getStatus: vi.fn().mockResolvedValue({
@@ -229,10 +229,10 @@ beforeEach(() => {
       quantum_metrics: { superposition_states: 3, entanglement_score: 0.85 },
     }),
   };
-  
+
   // Use proper constructor mock
   vi.mocked(MockCodexAPIClient).mockImplementation(() => mockClient as any);
-  
+
   // Also mock SparkLLMClient
   const mockSparkClient = {
     generateCode: vi.fn().mockResolvedValue({

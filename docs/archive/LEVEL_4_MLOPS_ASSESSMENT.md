@@ -426,7 +426,7 @@ All critical Level 4 requirements are met.
    class ComplianceGate:
        def __init__(self, policy: str):
            self.policy = policy  # "GDPR", "HIPAA", "SOC2"
-       
+
        def validate(self, model, data, deployment):
            # Policy-specific checks
            # Return compliance report

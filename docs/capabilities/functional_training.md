@@ -63,35 +63,35 @@ def training_step(
 ) -> Dict[str, float]:
     """
     Execute a single training step.
-    
+
     Safeguard: Validates model is in training mode.
     Bounds: Clips gradients to prevent explosion.
-    
+
     Args:
         model: The neural network model.
         batch: Tuple of (inputs, targets).
         optimizer: The optimizer for parameter updates.
         criterion: Loss function.
-    
+
     Returns:
         Dictionary with loss and metrics.
     """
     # Validation safeguard
     if not model.training:
         model.train()
-    
+
     inputs, targets = batch
-    
+
     # Forward pass
     optimizer.zero_grad()
     outputs = model(inputs)
     loss = criterion(outputs, targets)
-    
+
     # Backward pass with gradient clipping safeguard
     loss.backward()
     torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
     optimizer.step()
-    
+
     return {"loss": loss.item()}
 ```
 
@@ -109,40 +109,40 @@ def train_epoch(
 ) -> Dict[str, float]:
     """
     Train for one complete epoch.
-    
+
     Safeguard: Validates dataloader is not empty.
     Bounds: Accumulates metrics safely.
-    
+
     Args:
         model: The neural network model.
         dataloader: DataLoader for training data.
         optimizer: The optimizer.
         criterion: Loss function.
         device: Device to train on.
-    
+
     Returns:
         Dictionary with average epoch metrics.
     """
     model.train()
     total_loss = 0.0
     num_batches = 0
-    
+
     # Validation safeguard
     if len(dataloader) == 0:
         raise ValueError("Dataloader is empty")
-    
+
     for batch in dataloader:
         inputs, targets = batch
         inputs = inputs.to(device)
         targets = targets.to(device)
-        
+
         metrics = training_step(model, (inputs, targets), optimizer, criterion)
         total_loss += metrics["loss"]
         num_batches += 1
-    
+
     # Bounds safeguard - avoid division by zero
     avg_loss = total_loss / max(num_batches, 1)
-    
+
     return {"loss": avg_loss, "batches": num_batches}
 ```
 
@@ -158,27 +158,27 @@ from typing import Optional, List
 class TrainingConfig:
     """
     Configuration for functional training.
-    
+
     Safeguard: Validates all parameters.
     """
     # Training parameters
     epochs: int = 10
     batch_size: int = 32
     learning_rate: float = 1e-3
-    
+
     # Optimization
     optimizer: str = "adam"
     scheduler: Optional[str] = None
     weight_decay: float = 0.0
-    
+
     # Safeguards
     gradient_clip_norm: float = 1.0
     early_stopping_patience: int = 5
-    
+
     # Checkpointing
     checkpoint_dir: str = "checkpoints"
     save_every_n_epochs: int = 1
-    
+
     def __post_init__(self):
         """Validate configuration."""
         # Validation safeguards
@@ -198,24 +198,24 @@ training:
   epochs: 100
   batch_size: 64
   learning_rate: 0.001
-  
+
   optimizer:
     name: adam
     betas: [0.9, 0.999]
     weight_decay: 0.01
-  
+
   scheduler:
     name: cosine
     warmup_epochs: 5
     min_lr: 1e-6
-  
+
   safeguards:
     gradient_clip_norm: 1.0
     early_stopping:
       enabled: true
       patience: 10
       min_delta: 0.001
-  
+
   checkpointing:
     enabled: true
     directory: checkpoints/
@@ -256,18 +256,18 @@ from typing import Callable, List
 def compose_pipeline(*functions: Callable) -> Callable:
     """
     Compose multiple training functions into a pipeline.
-    
+
     Safeguard: Validates all functions are callable.
     """
     for fn in functions:
         if not callable(fn):
             raise TypeError(f"{fn} is not callable")
-    
+
     def pipeline(state: dict) -> dict:
         for fn in functions:
             state = fn(state)
         return state
-    
+
     return pipeline
 
 # Define pipeline stages
@@ -282,12 +282,12 @@ def batch_stage(state):
     # Forward pass
     outputs = state["model"](state["inputs"])
     loss = state["criterion"](outputs, state["targets"])
-    
+
     # Backward pass
     state["optimizer"].zero_grad()
     loss.backward()
     state["optimizer"].step()
-    
+
     state["epoch_loss"] += loss.item()
     return state
 
@@ -308,35 +308,35 @@ from typing import List
 
 class TrainingCallback(ABC):
     """Base class for training callbacks."""
-    
+
     def on_epoch_start(self, state: dict) -> None:
         pass
-    
+
     def on_epoch_end(self, state: dict) -> None:
         pass
-    
+
     def on_batch_start(self, state: dict) -> None:
         pass
-    
+
     def on_batch_end(self, state: dict) -> None:
         pass
 
 class EarlyStoppingCallback(TrainingCallback):
     """
     Early stopping callback.
-    
+
     Safeguard: Prevents overfitting by stopping when loss plateaus.
     """
-    
+
     def __init__(self, patience: int = 5, min_delta: float = 0.001):
         self.patience = patience
         self.min_delta = min_delta
         self.best_loss = float("inf")
         self.counter = 0
-    
+
     def on_epoch_end(self, state: dict) -> None:
         loss = state.get("val_loss", state.get("loss", float("inf")))
-        
+
         if loss < self.best_loss - self.min_delta:
             self.best_loss = loss
             self.counter = 0
@@ -348,15 +348,15 @@ class EarlyStoppingCallback(TrainingCallback):
 
 class GradientLoggingCallback(TrainingCallback):
     """Log gradient statistics for debugging."""
-    
+
     def on_batch_end(self, state: dict) -> None:
         model = state["model"]
         grad_norms = []
-        
+
         for p in model.parameters():
             if p.grad is not None:
                 grad_norms.append(p.grad.norm().item())
-        
+
         if grad_norms:
             state["grad_norm"] = sum(grad_norms) / len(grad_norms)
 
@@ -370,7 +370,7 @@ def train_with_callbacks(
 ) -> Dict[str, List[float]]:
     """
     Training loop with callback support.
-    
+
     Safeguard: Validates callbacks list.
     """
     history = {"loss": []}
@@ -380,25 +380,25 @@ def train_with_callbacks(
         "criterion": criterion,
         "stop_training": False,
     }
-    
+
     for epoch in range(epochs):
         # Call epoch start callbacks
         for cb in callbacks:
             cb.on_epoch_start(state)
-        
+
         metrics = train_epoch(model, dataloader, optimizer, criterion)
         state.update(metrics)
-        
+
         # Call epoch end callbacks
         for cb in callbacks:
             cb.on_epoch_end(state)
-        
+
         history["loss"].append(metrics["loss"])
-        
+
         # Check for early stopping
         if state.get("stop_training"):
             break
-    
+
     return history
 ```
 
@@ -411,13 +411,13 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 def setup_distributed(rank: int, world_size: int) -> None:
     """
     Setup distributed training.
-    
+
     Safeguard: Validates rank and world_size.
     Timeout: Sets initialization timeout.
     """
     if rank < 0 or rank >= world_size:
         raise ValueError(f"Invalid rank {rank} for world_size {world_size}")
-    
+
     dist.init_process_group(
         backend="nccl",
         rank=rank,
@@ -433,21 +433,21 @@ def distributed_training_step(
 ) -> Dict[str, float]:
     """
     Distributed training step.
-    
+
     Safeguard: Synchronizes gradients across processes.
     """
     inputs, targets = batch
-    
+
     optimizer.zero_grad()
     outputs = model(inputs)
     loss = criterion(outputs, targets)
     loss.backward()
     optimizer.step()
-    
+
     # All-reduce loss for logging
     dist.all_reduce(loss, op=dist.ReduceOp.SUM)
     loss = loss / dist.get_world_size()
-    
+
     return {"loss": loss.item()}
 ```
 
@@ -465,30 +465,30 @@ def mixed_precision_step(
 ) -> Dict[str, float]:
     """
     Training step with automatic mixed precision.
-    
+
     Safeguard: Uses GradScaler to prevent underflow.
     Bounds: Clips gradients after unscaling.
     """
     inputs, targets = batch
-    
+
     optimizer.zero_grad()
-    
+
     # Forward pass with autocast
     with autocast():
         outputs = model(inputs)
         loss = criterion(outputs, targets)
-    
+
     # Backward pass with scaler
     scaler.scale(loss).backward()
-    
+
     # Unscale and clip gradients (safeguard)
     scaler.unscale_(optimizer)
     torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-    
+
     # Optimizer step with scaler
     scaler.step(optimizer)
     scaler.update()
-    
+
     return {"loss": loss.item()}
 ```
 
@@ -508,7 +508,7 @@ def mixed_precision_step(
 def validate_training_state(state: dict) -> None:
     """
     Validate training state before step.
-    
+
     Safeguard: Ensures all required components present.
     Validation: Checks for common issues.
     """
@@ -516,7 +516,7 @@ def validate_training_state(state: dict) -> None:
     for key in required:
         if key not in state:
             raise ValueError(f"Missing required key: {key}")
-    
+
     # Check for NaN in model parameters
     for name, param in state["model"].named_parameters():
         if torch.isnan(param).any():
@@ -529,7 +529,7 @@ def validate_training_state(state: dict) -> None:
 def check_loss_bounds(loss: float, max_loss: float = 1e6) -> bool:
     """
     Check if loss is within acceptable bounds.
-    
+
     Safeguard: Detects diverging training.
     Bounds: Maximum loss threshold.
     """
@@ -598,7 +598,7 @@ import pytorch_lightning as pl
 
 class FunctionalTrainingModule(pl.LightningModule):
     """Wrap functional training in Lightning."""
-    
+
     def training_step(self, batch, batch_idx):
         return training_step(self, batch, self.optimizers(), self.criterion)
 ```

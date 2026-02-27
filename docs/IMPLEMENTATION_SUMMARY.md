@@ -91,7 +91,7 @@ provider = create_embedding_provider(
 - Compression (npz format)
 - Cache hit rate tracking
 
-**Performance**: 
+**Performance**:
 - Cache hit: <1ms
 - Cache miss: ~100ms per chunk (local) or ~50ms (OpenAI)
 
@@ -153,7 +153,7 @@ Remaining gaps:
 $ bandit -r src/codex/rag/
 Test results:
   No issues identified.
-  
+
 Code scanned:
   Total lines: 1,268
   Severity: 0 High, 0 Medium, 0 Low

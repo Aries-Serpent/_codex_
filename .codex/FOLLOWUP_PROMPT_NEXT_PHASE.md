@@ -178,25 +178,25 @@ jobs:
     name: Automated Security Analysis
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
-    
+
     permissions:
       contents: read
       pull-requests: write
       security-events: read
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install safety requests packaging pyyaml
-      
+
       - name: Extract dependency changes
         id: extract
         run: |
@@ -205,40 +205,40 @@ jobs:
           git diff origin/${{ github.base_ref }}..HEAD -- requirements*.txt requirements/ > /tmp/dep_changes.diff
           python scripts/security/extract_dependency_changes.py /tmp/dep_changes.diff > /tmp/dep_list.json
           echo "dep_list=$(cat /tmp/dep_list.json)" >> $GITHUB_OUTPUT
-      
+
       - name: Query vulnerability databases
         run: |
           python scripts/security/query_vulnerabilities.py \
             --deps-file /tmp/dep_list.json \
             --output .codex/vulnerability_analysis.json
-      
+
       - name: Analyze codebase usage
         run: |
           python scripts/security/analyze_codebase_usage.py \
             --deps-file /tmp/dep_list.json \
             --output .codex/usage_analysis.json
-      
+
       - name: Generate security report
         run: |
           python scripts/security/generate_security_report.py \
             --vulnerabilities .codex/vulnerability_analysis.json \
             --usage .codex/usage_analysis.json \
             --output .codex/security_report.md
-      
+
       - name: Post PR comment
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('.codex/security_report.md', 'utf8');
-            
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: report
             });
-      
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -281,7 +281,7 @@ def extract_changes(diff_file):
                         if change['name'] == pkg_name and change['new_version'] is None:
                             change['new_version'] = new_version
                             break
-    
+
     return [c for c in changes if c['new_version'] is not None]
 
 if __name__ == '__main__':
@@ -337,13 +337,13 @@ python scripts/organization/categorize_directories.py .codex/root_directories_au
 Analyze directories for consolidation opportunities:
 - **Config directories**: `conf/`, `config/`, `config_legacy/`, `configs/`, `omegaconf/`, `yaml_legacy/`
   - Proposal: Consolidate into `configs/` with subdirectories
-  
+
 - **Code directories**: `cli/`, `utils/`, `tools/`, `codex_*/`
   - Proposal: Move to `src/` or create `lib/` directory
-  
+
 - **Data directories**: `data/`, `datasets/`, `samples/`
   - Proposal: Consolidate into `data/` with subdirectories
-  
+
 - **Documentation**: `guides/`, `prompts/`, `PROMPTS/`
   - Proposal: Move to `docs/`
 
@@ -467,12 +467,12 @@ patterns:
     tools: ["web_search", "gh-advisory-database"]
     databases: ["NVD", "GitHub Advisory", "OSV"]
     effectiveness: "high"
-    
+
   - name: "codebase-impact-assessment"
     description: "Analyze direct and indirect dependency usage"
     tools: ["grep", "view"]
     metrics: ["usage_frequency", "exposure_context", "risk_level"]
-    
+
   - name: "zero-breakage-guarantee"
     description: "Low-risk changes first with comprehensive validation"
     approach: ["incremental", "validated", "reversible"]

@@ -36,7 +36,7 @@ graph TB
     Code[Code Generation - Core Validated]
     Workflow[Workflow Orchestration - 100%]
     QF[Quantum Framework - NEW]
-    
+
     UI --> AI
     AI --> Exec
     Exec --> Quantum

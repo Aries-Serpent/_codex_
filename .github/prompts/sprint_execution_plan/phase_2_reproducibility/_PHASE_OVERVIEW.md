@@ -79,19 +79,19 @@ graph TD
 ```python
 def execute_phase_2():
     print("🔬 Starting Phase 2: Reproducibility")
-    
+
     # Sprint 3: RNG & Checkpointing
     execute_task("T4")  # RNG strict resume
     execute_task("checkpoint_integrity")
     execute_task("deterministic_algorithms")
-    
+
     validate_sprint_3()
-    
+
     # Sprint 4: Data & Supply Chain
     execute_task("T6")  # Dataset hashing
     execute_task("T10")  # SBOM
     execute_task("config_drift")
-    
+
     return validate_phase_2_completion()
 ```
 

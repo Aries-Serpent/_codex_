@@ -42,7 +42,7 @@ async def predict(request: PredictionRequest):
     try:
         with torch.no_grad():
             output = model(torch.tensor(request.data))
-        
+
         return PredictionResponse(
             prediction=output.tolist(),
             confidence=float(output.max()),
@@ -65,39 +65,39 @@ class BatchInferenceProcessor:
         self.model = model
         self.batch_size = batch_size
         self.s3 = boto3.client('s3')
-    
+
     def process_batch_file(self, input_file, output_file):
         """Process entire batch file."""
         # Read input data
         data = self._read_input(input_file)
-        
+
         # Process in batches
         results = []
         for i in range(0, len(data), self.batch_size):
             batch = data[i:i + self.batch_size]
             predictions = self.model.predict(batch)
             results.extend(predictions)
-        
+
         # Write results
         self._write_output(output_file, results)
-    
+
     def process_s3_batch(self, bucket, prefix):
         """Process all files in S3 prefix."""
         objects = self.s3.list_objects_v2(Bucket=bucket, Prefix=prefix)
-        
+
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = []
             for obj in objects.get('Contents', []):
                 input_key = obj['Key']
                 output_key = input_key.replace('input/', 'output/')
-                
+
                 future = executor.submit(
                     self.process_batch_file,
                     f"s3://{bucket}/{input_key}",
                     f"s3://{bucket}/{output_key}"
                 )
                 futures.append(future)
-            
+
             # Wait for completion
             for future in futures:
                 future.result()
@@ -124,17 +124,17 @@ class StreamingInference:
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
         self.output_topic = output_topic
-    
+
     def run(self):
         """Process messages continuously."""
         for message in self.consumer:
             try:
                 # Get input data
                 input_data = message.value
-                
+
                 # Make prediction
                 prediction = self.model.predict(input_data)
-                
+
                 # Send result
                 self.producer.send(
                     self.output_topic,
@@ -310,7 +310,7 @@ upstream inference_backend {
 
 server {
     listen 80;
-    
+
     location /predict {
         proxy_pass http://inference_backend;
         proxy_set_header Host $host;
@@ -319,7 +319,7 @@ server {
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
     }
-    
+
     location /health {
         access_log off;
         proxy_pass http://inference_backend;
@@ -361,12 +361,12 @@ class ModelRouter:
             'green': load_model('model_v2.pt')
         }
         self.active = 'blue'
-    
+
     def predict(self, data, version=None):
         """Route to active model version."""
         model_version = version or self.active
         return self.models[model_version].predict(data)
-    
+
     def switch_version(self):
         """Switch active version."""
         self.active = 'green' if self.active == 'blue' else 'blue'
@@ -382,7 +382,7 @@ class CanaryRouter:
         self.stable = stable_model
         self.canary = canary_model
         self.canary_percent = canary_percent
-    
+
     def predict(self, data):
         """Route % of traffic to canary."""
         if random.random() * 100 < self.canary_percent:
@@ -433,7 +433,7 @@ async def predict(
     """Protected endpoint."""
     if not verify_token(credentials.credentials):
         raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     return make_prediction(request)
 ```
 
@@ -444,7 +444,7 @@ from pydantic import BaseModel, validator
 
 class PredictionRequest(BaseModel):
     data: list
-    
+
     @validator('data')
     def validate_data(cls, v):
         if not v or len(v) == 0:

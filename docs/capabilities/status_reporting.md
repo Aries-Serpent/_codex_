@@ -162,7 +162,7 @@ spec:
         image: codex-api:latest
         ports:
         - containerPort: 8000
-        
+
         livenessProbe:
           httpGet:
             path: /health
@@ -171,7 +171,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         readinessProbe:
           httpGet:
             path: /ready
@@ -180,7 +180,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 2
-        
+
         startupProbe:
           httpGet:
             path: /health
@@ -213,11 +213,11 @@ class StatusDashboard:
     Comprehensive status reporting dashboard.
     Monitors all system components and dependencies.
     """
-    
+
     def __init__(self):
         self.services: Dict[str, ServiceStatus] = {}
         self.metrics_history: List[dict] = []
-    
+
     async def check_all_services(self) -> Dict[str, ServiceStatus]:
         """
         Check health of all services concurrently.
@@ -230,17 +230,17 @@ class StatusDashboard:
             ("ml_model", self.check_ml_model),
             ("external_api", self.check_external_api)
         ]
-        
+
         results = await asyncio.gather(*[
             self._check_service(name, check_func)
             for name, check_func in services_to_check
         ])
-        
+
         for service_status in results:
             self.services[service_status.name] = service_status
-        
+
         return self.services
-    
+
     async def _check_service(self, name: str, check_func) -> ServiceStatus:
         """Execute health check with timeout and error handling."""
         start_time = datetime.utcnow()
@@ -250,7 +250,7 @@ class StatusDashboard:
                 timeout=5.0  # Timeout safeguard
             )
             response_time = (datetime.utcnow() - start_time).total_seconds() * 1000
-            
+
             return ServiceStatus(
                 name=name,
                 status="healthy",
@@ -273,7 +273,7 @@ class StatusDashboard:
                 response_time_ms=0.0,
                 error_message=str(e)
             )
-    
+
     def get_overall_status(self) -> str:
         """
         Determine overall system status based on service health.
@@ -281,20 +281,20 @@ class StatusDashboard:
         """
         if not self.services:
             return "unknown"
-        
+
         statuses = [s.status for s in self.services.values()]
-        
+
         if all(s == "healthy" for s in statuses):
             return "healthy"
         elif any(s == "unhealthy" for s in statuses):
             critical_services = ["database", "ml_model"]
-            if any(self.services.get(s, ServiceStatus("", "unknown", datetime.utcnow(), 0)).status == "unhealthy" 
+            if any(self.services.get(s, ServiceStatus("", "unknown", datetime.utcnow(), 0)).status == "unhealthy"
                    for s in critical_services):
                 return "unhealthy"
             return "degraded"
         else:
             return "degraded"
-    
+
     def generate_report(self) -> dict:
         """Generate comprehensive status report."""
         return {
@@ -312,24 +312,24 @@ class StatusDashboard:
             "uptime_hours": self.calculate_uptime(),
             "recent_incidents": self.get_recent_incidents()
         }
-    
+
     async def check_database(self):
         """Validate database connectivity."""
         # Validation and health check
         pass
-    
+
     async def check_cache(self):
         """Validate cache service."""
         pass
-    
+
     async def check_storage(self):
         """Validate storage access."""
         pass
-    
+
     async def check_ml_model(self):
         """Validate ML model availability."""
         pass
-    
+
     async def check_external_api(self):
         """Validate external API connectivity."""
         pass
@@ -353,11 +353,11 @@ class AlertManager:
     Alert management and notification system.
     Sends alerts via multiple channels.
     """
-    
+
     def __init__(self, config: dict):
         self.config = config
         self.alert_history: List[dict] = []
-    
+
     def send_alert(self, title: str, message: str, severity: AlertSeverity):
         """
         Send alert via configured channels.
@@ -366,32 +366,32 @@ class AlertManager:
         # Validate alert not duplicate
         if self._is_duplicate_alert(title, message):
             return
-        
+
         alert_data = {
             "title": title,
             "message": message,
             "severity": severity.value,
             "timestamp": datetime.utcnow().isoformat()
         }
-        
+
         # Send via configured channels
         if self.config.get("slack_enabled"):
             self._send_slack_alert(alert_data)
-        
+
         if self.config.get("email_enabled"):
             self._send_email_alert(alert_data)
-        
+
         if severity == AlertSeverity.CRITICAL and self.config.get("pagerduty_enabled"):
             self._send_pagerduty_alert(alert_data)
-        
+
         self.alert_history.append(alert_data)
-    
+
     def _send_slack_alert(self, alert_data: dict):
         """Send alert to Slack channel."""
         webhook_url = self.config.get("slack_webhook_url")
         if not webhook_url:
             return
-        
+
         payload = {
             "text": f"*{alert_data['title']}*",
             "attachments": [{
@@ -403,9 +403,9 @@ class AlertManager:
                 ]
             }]
         }
-        
+
         requests.post(webhook_url, json=payload)
-    
+
     def _get_color(self, severity: str) -> str:
         """Map severity to color for visual indicators."""
         colors = {
@@ -429,7 +429,7 @@ status:
     status: /status
     metrics: /metrics
     ready: /ready
-  
+
   checks:
     database:
       enabled: true
@@ -440,7 +440,7 @@ status:
     storage:
       enabled: true
       timeout_seconds: 5
-  
+
   alerts:
     slack:
       enabled: true
@@ -453,7 +453,7 @@ status:
     pagerduty:
       enabled: true
       api_key: ${PAGERDUTY_API_KEY}
-  
+
   metrics:
     collection_interval_seconds: 60
     retention_days: 30
@@ -515,20 +515,20 @@ class AlertDebouncer:
         self.window = timedelta(minutes=window_minutes)
         self.threshold = threshold
         self.alerts = deque()
-    
+
     def should_alert(self, alert_key: str) -> bool:
         """Validation: Only alert if threshold breached in window."""
         now = datetime.utcnow()
         # Remove old alerts outside window
         while self.alerts and self.alerts[0][1] < now - self.window:
             self.alerts.popleft()
-        
+
         # Count recent alerts for this key
         count = sum(1 for key, _ in self.alerts if key == alert_key)
-        
+
         if count >= self.threshold:
             return True
-        
+
         self.alerts.append((alert_key, now))
         return False
 ```

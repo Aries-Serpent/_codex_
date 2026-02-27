@@ -21,13 +21,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-      
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: 'pip'
-      
+
       - name: Cache Python dependencies
         uses: actions/cache@v5
         with:
@@ -36,18 +36,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-docs-
             ${{ runner.os }}-pip-
-      
+
       - name: Install dependencies
         run: |
           pip install markdown-it-py Pygments PyYAML codespell
-      
+
       - name: Run fence fixer (dry-run with reports)
         id: fence-check
         run: |
           python tools/fence_fixer_v2.py docs/ --dry-run --verbose --report --config .fencefixer.yml
           echo "review_count=$(jq '.review_queue // 0' .reports/fencefix_run.json 2>/dev/null || echo 0)" >> $GITHUB_OUTPUT
         continue-on-error: true
-      
+
       - name: Check review queue threshold
         run: |
           review_count=${{ steps.fence-check.outputs.review_count }}
@@ -59,7 +59,7 @@ jobs:
           else
             echo "✅ Review queue within acceptable limits"
           fi
-      
+
       - name: Upload fence fix report
         if: always()
         uses: actions/upload-artifact@v6
@@ -69,7 +69,7 @@ jobs:
             .reports/fencefix_run.json
             .reports/fencefix_summary.md
           retention-days: 30
-      
+
       - name: Comment PR with fence report
         if: github.event_name == 'pull_request' && always()
         uses: actions/github-script@v8
@@ -77,10 +77,10 @@ jobs:
           script: |
             const fs = require('fs');
             const summaryPath = '.reports/fencefix_summary.md';
-            
+
             if (fs.existsSync(summaryPath)) {
               const summary = fs.readFileSync(summaryPath, 'utf8');
-              
+
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
@@ -88,12 +88,12 @@ jobs:
                 body: `## 📝 Fence Fixer Report\n\n${summary}`
               });
             }
-      
+
       - name: Run codespell
         run: |
           codespell --quiet-level=2 --skip="*.pyc,*.git,*.svg,*.lock,*.json" || true
         continue-on-error: true
-      
+
       - name: Validate fence script (legacy)
         run: |
           python tools/validate_fences.py || echo "Fence validation completed with warnings"

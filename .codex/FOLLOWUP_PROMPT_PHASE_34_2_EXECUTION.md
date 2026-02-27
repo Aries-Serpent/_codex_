@@ -19,7 +19,7 @@
 ### Commit History
 
 1. **a407495** - Primary YAML syntax fix + PR review comments (4 files, +551 -48)
-2. **aa8797a** - AI Agency Policy full compliance (5 files, +919 -57) 
+2. **aa8797a** - AI Agency Policy full compliance (5 files, +919 -57)
 3. **017ed56** - Documentation and commit SHA summary (1 file, +277)
 
 **Total Impact**: 7 files modified, 1,747 lines added, 105 lines deleted
@@ -202,11 +202,11 @@ gh run list --workflow=phase34-codeql-alert-fetch.yml --limit 1
    ```bash
    # Analyze alerts
    cat .codex/security/alert_summary.md
-   
+
    # Extract P0/P1 (critical/high) alerts
    jq '.alerts[] | select(.severity == "critical" or .severity == "high")' \
      .codex/security/alert_inventory.json > .codex/security/critical_alerts.json
-   
+
    # Continue with remediation
    @workspace codeql-alert-resolution-agent
    ```
@@ -248,7 +248,7 @@ gh run list --workflow=phase34-codeql-alert-fetch.yml --limit 1
 
 **Commits Ahead**: 3 commits ahead of base branch
 
-**Changes**: 
+**Changes**:
 - 7 files modified
 - 1,747 lines added
 - 105 lines deleted

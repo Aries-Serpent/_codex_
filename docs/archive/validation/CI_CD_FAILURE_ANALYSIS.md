@@ -109,7 +109,7 @@ assert metric.compute()["f1_score"] == 1.0
 
 **Failure:**
 ```
-ValueError: Duplicated timeseries in CollectorRegistry: 
+ValueError: Duplicated timeseries in CollectorRegistry:
 {'codex_requests_created', 'codex_requests', 'codex_requests_total'}
 ```
 
@@ -131,9 +131,9 @@ def clear_prometheus_registry():
     """Clear Prometheus registry before each test."""
     # Save existing collectors
     collectors = list(REGISTRY._collector_to_names.keys())
-    
+
     yield
-    
+
     # Clear all collectors added during test
     for collector in collectors:
         try:
@@ -242,7 +242,7 @@ grep -A 10 "class EntanglementManager" src/cognitive_brain/quantum/entanglement.
 
 **Failure:**
 ```
-hydra.errors.MissingConfigException: In 'hydra/config': 
+hydra.errors.MissingConfigException: In 'hydra/config':
 Could not load 'hydra/data/base'.
 ```
 
@@ -262,7 +262,7 @@ Could not load 'hydra/data/base'.
 
 **Failure:**
 ```
-AssertionError: FAIL configs/deployment/hhg_logistics/monitor/default.yaml 
+AssertionError: FAIL configs/deployment/hhg_logistics/monitor/default.yaml
 -> configs/schemas/monitoring.schema.yaml
 ```
 
@@ -322,7 +322,7 @@ test_increasing_load_handling: assert 4.219... < (2.0 * 2)
 
 **Failure (Intermittent):**
 ```
-CheckpointLoadError: failed to save checkpoint via pickle: 
+CheckpointLoadError: failed to save checkpoint via pickle:
 issubclass() arg 2 must be a class, a tuple of classes, or a union
 ```
 
@@ -343,10 +343,10 @@ issubclass() arg 2 must be a class, a tuple of classes, or a union
 
 **Warnings:**
 ```
-src/cognitive_brain/quantum/uncertainty.py:30: PytestCollectionWarning: 
+src/cognitive_brain/quantum/uncertainty.py:30: PytestCollectionWarning:
 cannot collect test class 'TestExecutionMetrics' because it has a __init__ constructor
 
-src/cognitive_brain/quantum/uncertainty.py:42: PytestCollectionWarning: 
+src/cognitive_brain/quantum/uncertainty.py:42: PytestCollectionWarning:
 cannot collect test class 'TestExecutionPriority' because it has a __init__ constructor
 ```
 

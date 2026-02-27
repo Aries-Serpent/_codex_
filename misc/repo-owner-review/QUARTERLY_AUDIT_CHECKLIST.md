@@ -192,17 +192,17 @@ labels: ['audit', 'maintenance', 'quarterly']
 assignees: ''
 body: |
   ## Quarterly Audit Due
-  
+
   It's time for the quarterly codebase audit.
-  
+
   **Due Date**: [DATE]
-  
+
   **Checklist**: See `misc/repo-owner-review/QUARTERLY_AUDIT_CHECKLIST.md`
-  
+
   **Previous Report**: [Link to previous audit report]
-  
+
   ## Actions
-  
+
   1. [ ] Create audit branch
   2. [ ] Complete audit checklist
   3. [ ] Create audit report
@@ -230,7 +230,7 @@ jobs:
             const now = new Date();
             const quarter = Math.ceil((now.getMonth() + 1) / 3);
             const year = now.getFullYear();
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -243,7 +243,7 @@ jobs:
 ---
 
 **Template Maintainer**: Copilot AI Assistant  
-**Related Files**: 
+**Related Files**:
 - `misc/repo-owner-review/AUDIT_REPORT_2025-12-12.md`
 - `misc/repo-owner-review/RECOVERY_GUIDE.md`
 - `.github/SHIM_INVENTORY.yaml`

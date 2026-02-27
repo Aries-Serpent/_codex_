@@ -202,7 +202,7 @@ Auto-Fix Common CI Issues........................Failed
   ✗ Found 3 issues
   Pattern 1: Unused Imports - 2 issues
   Pattern 4: Coverage Threshold - 1 issue
-  
+
   Run: python scripts/ci/auto_fix_common_issues.py
 ```
 

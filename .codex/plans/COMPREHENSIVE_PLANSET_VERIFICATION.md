@@ -193,10 +193,10 @@ graph TD
     A[qa-walkthrough-agent] --> B[Coverage Analysis]
     A --> C[Security Audit]
     A --> D[Module Inventory]
-    
+
     E[ci-testing-agent] --> F[Test Execution]
     E --> G[Failure Diagnosis]
-    
+
     H[test-alignment-fixer] --> I[Test Updates]
     H --> J[Assertion Fixes]
 ```

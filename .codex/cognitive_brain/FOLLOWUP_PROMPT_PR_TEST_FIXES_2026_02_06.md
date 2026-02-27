@@ -229,8 +229,8 @@ Fix multiple test failures and CI issues to ensure Python 3.12 compatibility
 ✅ Security scan passed
 ✅ No auto-fixable issues
 
-The PR addresses all issues from commit 6caba04acf87fef7004d62ed30bbdb8813e69863 
-and leverages custom agents (ci-log-retrieval-agent, link-validator-agent) for 
+The PR addresses all issues from commit 6caba04acf87fef7004d62ed30bbdb8813e69863
+and leverages custom agents (ci-log-retrieval-agent, link-validator-agent) for
 comprehensive fixes.
 
 Awaiting CI validation and human review. 🚀

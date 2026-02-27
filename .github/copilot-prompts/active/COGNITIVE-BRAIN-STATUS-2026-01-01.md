@@ -37,35 +37,35 @@ graph TB
         AM[AfterMath Processor]
         DASH[Codebase Dashboard]
     end
-    
+
     subgraph "Agent Layer"
         CI[ci-testing-agent.v1]
         SEC[security-scan-agent*]
         DEP[dep-upgrade-agent*]
         FLAKY[flaky-triage-agent*]
     end
-    
+
     subgraph "Data Sources"
         GH[GitHub API]
         COV[Coverage Reports]
         LOGS[CI/CD Logs]
         CODE[Codebase AST]
     end
-    
+
     CB --> PDA
     CB --> AM
     AM --> DASH
-    
+
     CI --> CB
     SEC --> CB
     DEP --> CB
     FLAKY --> CB
-    
+
     GH --> CI
     COV --> CI
     LOGS --> CI
     CODE --> CI
-    
+
     style CI fill:#90EE90
     style SEC fill:#FFE4B5
     style DEP fill:#FFE4B5
@@ -82,31 +82,31 @@ The **Perception-Decision-Action (PDA)** loop is the core cognitive pattern:
 class CognitiveAgent:
     def execute_pda_loop(self, task: Dict) -> Dict:
         """Execute one PDA cycle."""
-        
+
         # 1. PERCEPTION: Gather and analyze context
         context = self.perceive(task)
         # - Parse inputs (code, logs, metrics)
         # - Extract patterns using AST/regex
         # - Identify gaps and risks
-        
+
         # 2. DECISION: Determine optimal action
         decision = self.decide(context)
         # - Prioritize based on impact/risk
         # - Select strategy (generate/fix/report)
         # - Plan execution steps
-        
+
         # 3. ACTION: Execute with guardrails
         result = self.act(decision)
         # - Execute in sandbox
         # - Validate outputs
         # - Handle failures gracefully
-        
+
         # 4. AFTERMATH: Learn and persist
         self.aftermath(result)
         # - Tag metrics: #AFTERMATH_METRIC
         # - Update cognitive brain
         # - Generate lessons learned
-        
+
         return result
 ```
 
@@ -171,7 +171,7 @@ except (FileNotFoundError, IOError, json.JSONDecodeError):
   test_patterns_improved: 2
   exception_handling_specificity: 2 locations
   unused_code_removed: 10+ imports
-  
+
 #AFTERMATH_QUALITY_CHECK:
   code_review_iterations: 3
   feedback_addressed: 100%
@@ -193,7 +193,7 @@ except (FileNotFoundError, IOError, json.JSONDecodeError):
 # New: scripts/cognitive_brain/pattern_recognizer.py
 class PatternRecognizer:
     """Identifies recurring patterns in codebase and sessions."""
-    
+
     def __init__(self, brain_db: Path):
         self.db = PatternDB(brain_db)
         self.matchers = [
@@ -202,30 +202,30 @@ class PatternRecognizer:
             TestPatternMatcher(),
             DocstringPatternMatcher()
         ]
-    
+
     def analyze_commit(self, commit_sha: str) -> List[Pattern]:
         """Extract patterns from a commit."""
         patterns = []
         diff = get_git_diff(commit_sha)
-        
+
         for matcher in self.matchers:
             found = matcher.find_patterns(diff)
             patterns.extend(found)
-        
+
         return self._deduplicate_and_rank(patterns)
-    
+
     def learn_from_feedback(self, pattern: Pattern, feedback: str):
         """Update pattern weights based on review feedback."""
         self.db.update_pattern_score(
             pattern_id=pattern.id,
             adjustment=self._compute_adjustment(feedback)
         )
-    
+
     def suggest_improvements(self, code: str) -> List[Suggestion]:
         """Suggest improvements based on learned patterns."""
         current_patterns = self._extract_patterns(code)
         known_improvements = self.db.query_improvements(current_patterns)
-        
+
         return [
             Suggestion(
                 pattern=p.id,
@@ -257,55 +257,55 @@ from pathlib import Path
 
 class CognitiveAgent(ABC):
     """Base class for all cognitive agents."""
-    
+
     def __init__(self, workspace: Path, config: Dict):
         self.workspace = workspace
         self.config = config
         self.brain = CognitiveBrain(workspace / ".codex" / "brain.db")
         self.pda_history = []
-    
+
     @abstractmethod
     def perceive(self, task: Dict) -> Dict[str, Any]:
         """PERCEPTION: Gather and analyze context.
-        
+
         Returns:
             context: Structured data about the environment
         """
         pass
-    
+
     @abstractmethod
     def decide(self, context: Dict) -> Dict[str, Any]:
         """DECISION: Determine optimal action strategy.
-        
+
         Returns:
             decision: Action plan with steps and guardrails
         """
         pass
-    
+
     @abstractmethod
     def act(self, decision: Dict) -> Dict[str, Any]:
         """ACTION: Execute decision with safety checks.
-        
+
         Returns:
             result: Execution outcomes and artifacts
         """
         pass
-    
+
     def aftermath(self, result: Dict) -> Dict[str, Any]:
         """AFTERMATH: Learn from execution and persist insights."""
-        
+
         # Extract metrics
         metrics = self._extract_metrics(result)
-        
+
         # Identify patterns
         patterns = self.brain.pattern_recognizer.analyze_session(
             agent_id=self.agent_id,
             result=result
         )
-        
+
         # Generate lessons
         lessons = self._generate_lessons(result, patterns)
-        
+
         # Persist to cognitive brain
         self.brain.store_session(
             agent_id=self.agent_id,
@@ -315,41 +315,41 @@ class CognitiveAgent(ABC):
             lessons=lessons,
             pda_history=self.pda_history
         )
-        
+
         # Update dashboard
         self._update_dashboard(metrics, patterns, lessons)
-        
+
         return {
             "metrics": metrics,
             "patterns": patterns,
             "lessons": lessons,
             "tags": self._generate_aftermath_tags(result)
         }
-    
+
     def execute(self, task: Dict) -> Dict:
         """Execute full PDA loop with aftermath."""
         try:
             # Perception
             context = self.perceive(task)
             self.pda_history.append({"phase": "perception", "data": context})
-            
+
             # Decision
             decision = self.decide(context)
             self.pda_history.append({"phase": "decision", "data": decision})
-            
+
             # Action
             result = self.act(decision)
             self.pda_history.append({"phase": "action", "data": result})
-            
+
             # Aftermath
             aftermath_data = self.aftermath(result)
-            
+
             return {
                 "status": "success",
                 "result": result,
                 "aftermath": aftermath_data
             }
-            
+
         except Exception as e:
             # Learn from failures too
             error_context = {
@@ -359,7 +359,7 @@ class CognitiveAgent(ABC):
             }
             self.brain.store_failure(error_context)
             raise
-    
+
     @property
     @abstractmethod
     def agent_id(self) -> str:
@@ -443,12 +443,12 @@ flowchart TB
     B --> D[Semgrep: Pattern Matching]
     B --> E[Safety: Dependencies]
     B --> F[CodeQL: Deep Analysis]
-    
+
     C --> G{Aggregate Findings}
     D --> G
     E --> G
     F --> G
-    
+
     G --> H[Deduplicate & Prioritize]
     H --> I[Filter False Positives]
     I --> J[Generate SARIF Report]
@@ -493,12 +493,12 @@ decision:
     MEDIUM: Warn PR, fix recommended
     LOW: Info only, no blocking
     INFO: Track for trends
-  
+
   false_positive_filter:
     - Check against cognitive brain's FP database
     - Apply rule exemptions from .security-exemptions.yml
     - Use confidence scores (only show >70% confidence)
-  
+
   prioritization:
     - Critical: Known exploitable CVEs
     - High: Injection vulnerabilities, authentication bypasses
@@ -545,7 +545,7 @@ perception:
     - Lock files (requirements-lock.txt)
     - CHANGELOG files from dependencies
     - Security advisories (GitHub, PyPI)
-  
+
   analysis:
     - Detect outdated dependencies (pip list --outdated)
     - Check for security vulnerabilities (safety check)
@@ -557,13 +557,13 @@ decision:
     patch: Auto-upgrade (e.g., 1.2.3 → 1.2.4)
     minor: Test + review (e.g., 1.2.3 → 1.3.0)
     major: Manual review required (e.g., 1.2.3 → 2.0.0)
-  
+
   compatibility_check:
     - Run full test suite
     - Check for deprecated API usage
     - Validate import compatibility
     - Test integration points
-  
+
   rollback_criteria:
     - Test failure rate >5%
     - New deprecation warnings
@@ -578,7 +578,7 @@ action:
     4. Generate compatibility report
     5. Create PR with upgrade summary
     6. If tests fail, rollback and report
-  
+
   guardrails:
     - Never upgrade in production branch
     - Always run tests before committing
@@ -629,7 +629,7 @@ graph TB
     subgraph "Agent Orchestration Layer"
         ORCH[Orchestrator]
     end
-    
+
     subgraph "Collaboration Patterns"
         CI[ci-testing-agent] -.->|coverage data| SEC[security-scan-agent]
         SEC -.->|vulnerabilities| DEP[dep-upgrade-agent]
@@ -637,14 +637,14 @@ graph TB
         FLAKY[flaky-triage-agent] -.->|stable tests| CI
         DOC[doc-reporter-agent] -.->|API changes| REV[code-review-summarizer]
     end
-    
+
     ORCH --> CI
     ORCH --> SEC
     ORCH --> DEP
     ORCH --> FLAKY
     ORCH --> DOC
     ORCH --> REV
-    
+
     CI --> CB[Cognitive Brain]
     SEC --> CB
     DEP --> CB
@@ -658,19 +658,19 @@ graph TB
 # New: .github/agents/core/orchestrator.py
 class AgentOrchestrator:
     """Coordinates multi-agent workflows."""
-    
+
     def __init__(self, brain: CognitiveBrain):
         self.brain = brain
         self.agents = {}
         self.workflows = {}
-    
+
     def register_agent(self, agent: CognitiveAgent):
         """Register an agent with the orchestrator."""
         self.agents[agent.agent_id] = agent
-    
+
     def define_workflow(self, workflow_id: str, steps: List[Dict]):
         """Define a multi-agent workflow.
-        
+
         Example:
             orchestrator.define_workflow("pr-validation", [
                 {"agent": "security-scan-agent", "task": {...}},
@@ -679,28 +679,28 @@ class AgentOrchestrator:
             ])
         """
         self.workflows[workflow_id] = steps
-    
+
     def execute_workflow(self, workflow_id: str, context: Dict) -> Dict:
         """Execute a workflow with dependency resolution."""
         steps = self.workflows[workflow_id]
         results = {}
-        
+
         for step in self._resolve_dependencies(steps):
             agent = self.agents[step["agent"]]
             task = self._prepare_task(step["task"], results, context)
-            
+
             result = agent.execute(task)
             results[step["agent"]] = result
-            
+
             # Share relevant data with cognitive brain
             self.brain.record_agent_interaction(
                 workflow_id=workflow_id,
                 agent_id=agent.agent_id,
                 result=result
             )
-        
+
         return self._aggregate_results(results)
-    
+
     def _resolve_dependencies(self, steps: List[Dict]) -> List[Dict]:
         """Topologically sort steps based on dependencies."""
         # Implement dependency resolution

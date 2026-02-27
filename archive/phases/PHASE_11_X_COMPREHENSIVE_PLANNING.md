@@ -36,53 +36,53 @@ graph TB
         Security[Security Layer]
         Agents[Custom Agents]
         Deploy[Deployment Pipeline]
-        
+
         Auth --> Security
         Workflow --> Integration
         Testing --> Deploy
         Agents --> Integration
         Security --> Deploy
     end
-    
+
     subgraph "Authentication Layer"
         OAuth[OAuth2 Provider]
         MFA[MFA Service]
         HSM[HSM Integration]
         TokenMgr[Token Manager]
-        
+
         OAuth --> TokenMgr
         MFA --> TokenMgr
         HSM --> TokenMgr
     end
-    
+
     subgraph "Workflow Layer"
         GDrive[Google Drive API]
         NotebookLM[NotebookLM Sync]
         Scheduler[Workflow Scheduler]
         Webhooks[Webhook Handler]
-        
+
         GDrive --> Scheduler
         NotebookLM --> Scheduler
         Webhooks --> Scheduler
     end
-    
+
     subgraph "Testing Layer"
         E2E[E2E Tests]
         Perf[Performance Tests]
         Chaos[Chaos Engineering]
         Load[Load Testing]
-        
+
         E2E --> Load
         Perf --> Load
         Chaos --> Perf
     end
-    
+
     subgraph "Integration Layer"
         MLflow[MLflow Tracking]
         Slack[Slack Notifications]
         PagerDuty[PagerDuty Alerts]
         Datadog[Datadog Metrics]
-        
+
         MLflow --> Datadog
         Slack --> PagerDuty
     end
@@ -105,7 +105,7 @@ sequenceDiagram
     participant MFA
     participant HSM
     participant TokenStore
-    
+
     User->>App: Login Request
     App->>OAuth: Initiate OAuth Flow
     OAuth->>User: Redirect to Provider
@@ -191,25 +191,25 @@ flowchart TD
     Check -->|Schedule| Schedule[Cron Schedule]
     Check -->|Webhook| Webhook[GitHub Webhook]
     Check -->|Manual| Manual[Manual Trigger]
-    
+
     Schedule --> Flatten[Flatten Repository]
     Webhook --> Flatten
     Manual --> Flatten
-    
+
     Flatten --> Validate{Valid Output?}
     Validate -->|No| Error[Log Error & Alert]
     Validate -->|Yes| Upload[Upload to Google Drive]
-    
+
     Upload --> DriveCheck{Upload Success?}
     DriveCheck -->|No| Retry[Retry Upload]
     DriveCheck -->|Yes| Sync[Sync to NotebookLM]
-    
+
     Retry --> DriveCheck
-    
+
     Sync --> NotebookCheck{Sync Success?}
     NotebookCheck -->|No| Alert[Send Alert]
     NotebookCheck -->|Yes| Notify[Send Notifications]
-    
+
     Error --> Alert
     Alert --> End[End Workflow]
     Notify --> End
@@ -286,20 +286,20 @@ graph LR
         Load[Load Tests<br/>Stress & Scalability]
         Chaos[Chaos Tests<br/>Resilience]
     end
-    
+
     Unit --> Integration
     Integration --> E2E
     E2E --> Performance
     Performance --> Load
     Load --> Chaos
-    
+
     subgraph "Test Infrastructure"
         TestEnv[Test Environment]
         Fixtures[Test Fixtures]
         Mocks[Mock Services]
         Metrics[Metrics Collection]
     end
-    
+
     E2E --> TestEnv
     Performance --> Metrics
     Chaos --> Mocks
@@ -373,35 +373,35 @@ graph TB
         App[Codex Application]
         Events[Event Bus]
     end
-    
+
     subgraph "Observability"
         MLflow[MLflow Tracking]
         Datadog[Datadog APM]
         Logs[Centralized Logging]
     end
-    
+
     subgraph "Alerting"
         Slack[Slack Notifications]
         PagerDuty[PagerDuty Incidents]
         Email[Email Alerts]
     end
-    
+
     subgraph "Metrics"
         AppMetrics[Application Metrics]
         InfraMetrics[Infrastructure Metrics]
         BusinessMetrics[Business Metrics]
     end
-    
+
     App --> Events
     Events --> MLflow
     Events --> Slack
     Events --> Datadog
-    
+
     MLflow --> AppMetrics
     Datadog --> InfraMetrics
     Slack --> Email
     PagerDuty --> Slack
-    
+
     AppMetrics --> Logs
     InfraMetrics --> Logs
     BusinessMetrics --> Logs

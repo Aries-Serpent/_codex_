@@ -27,7 +27,7 @@ You are continuing from a successful Phase 10.1 session that:
 
 ### Priority 0: GitHub Secrets CLI Command Implementation (4-6 hours)
 
-**Current State**: 
+**Current State**:
 - ✅ CLI structure created (`main.go`, `go.mod`, `README.md`)
 - ✅ Dependencies declared (Cobra, go-keyring, x/crypto, x/oauth2)
 - ⏸️ Commands are skeleton only - need full implementation
@@ -167,7 +167,7 @@ cd ../..
 def inject_secrets(self, secrets_config: Dict) -> Dict:
     """Inject GitHub secrets using CLI."""
     results = []
-    
+
     for secret in secrets_config.get('secrets', []):
         cmd = [
             'github-secrets-cli', 'set',
@@ -176,7 +176,7 @@ def inject_secrets(self, secrets_config: Dict) -> Dict:
             '--name', secret['name'],
             '--value', secret['value']
         ]
-        
+
         result = subprocess.run(cmd, capture_output=True, text=True)
         results.append({
             'name': secret['name'],
@@ -184,7 +184,7 @@ def inject_secrets(self, secrets_config: Dict) -> Dict:
             'output': result.stdout,
             'error': result.stderr if result.returncode != 0 else None
         })
-    
+
     return {'secrets_injected': len(results), 'results': results}
 ```
 
@@ -224,18 +224,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
-          
+
       - name: Build CLI
         run: |
           cd tools/github-secrets-cli
           go build -o github-secrets-cli
           chmod +x github-secrets-cli
-          
+
       - name: Inject Secrets
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
@@ -245,7 +245,7 @@ jobs:
             --config config/secrets.yml \
             --report json \
             ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
-            
+
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:

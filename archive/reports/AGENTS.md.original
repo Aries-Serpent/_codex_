@@ -1,13 +1,13 @@
 # AGENTS — Codex Operations Playbook
 
-> **Version**: 4.4.0  
-> **Generated**: 2025-12-17  
-> **MLOps Maturity**: Level 4 Certified (100/100)  
-> **Audit Pipeline**: v1.5.5 (40 capabilities, all at HIGH maturity ≥0.85)  
-> **Gap Analysis**: 47/47 Items Complete (100%)  
-> **CI/CD Status**: ✅ Fully Operational (46/46 workflows passing YAML validation)  
-> **Python Ingestion Pipeline**: ✅ Complete (6 modules, 101 tests)  
-> **Scope**: Entire repository  
+> **Version**: 4.4.0
+> **Generated**: 2025-12-17
+> **MLOps Maturity**: Level 4 Certified (100/100)
+> **Audit Pipeline**: v1.5.5 (40 capabilities, all at HIGH maturity ≥0.85)
+> **Gap Analysis**: 47/47 Items Complete (100%)
+> **CI/CD Status**: ✅ Fully Operational (46/46 workflows passing YAML validation)
+> **Python Ingestion Pipeline**: ✅ Complete (6 modules, 101 tests)
+> **Scope**: Entire repository
 > **Purpose**: Provide Codex agents and contributors with exhaustive, accurate guidance for navigating, testing, and extending this Level 4 MLOps production codebase without breaking operational guardrails.
 
 ## 🏆 Achievement Summary
@@ -123,19 +123,19 @@ The `agents` package provides physics-inspired orchestration and decision-making
 from agents import (
     # Physics-inspired orchestration
     PhysicsInspiredOrchestrator, ActionPath, ActionType, DecisionState, ForceVector,
-    
+
     # Import migration automation
     ImportMigration, ImportMigrationOrchestrator,
-    
+
     # Quantum game theory
     BlueRedTeamSimulator, QuantumInspiredGameEngine, ClassicalGameEngine,
-    
+
     # Self-healing automation
     SelfHealingEngine, DetectedIssue, IssueType, IssueSeverity,
-    
+
     # Mental mapping for reasoning
     MentalMappingModel, MentalNode, ReasoningStep,
-    
+
     # Workflow navigation
     WorkflowNavigator, Workflow, WorkflowStep,
 )
@@ -286,20 +286,20 @@ flowchart TB
         Interface[Agent Interface HTML]
         Commands[Command Generator]
     end
-    
+
     subgraph Pipeline["🔍 Audit Pipeline v1.5.x"]
         Runner[audit_runner.py]
         DB[(TrendDatabase)]
         Compare[Comparison Engine]
         Viz[Visualization]
     end
-    
+
     subgraph Outputs["📤 Outputs"]
         Dashboard[HTML Dashboard]
         Reports[Markdown Reports]
         Webhooks[Notifications]
     end
-    
+
     Agent --> Runner
     Runner --> DB
     Runner --> Compare
@@ -327,26 +327,26 @@ flowchart LR
         Code[Repository Code]
         Config[Configuration]
     end
-    
+
     subgraph Core["🔍 Audit Core"]
         Scanner[Code Scanner]
         Scorer[Capability Scorer]
         DB[(Trend Database)]
     end
-    
+
     subgraph Analysis["📈 Analysis"]
         Compare[Comparison]
         Regression[Regression Detection]
         Trends[Trend Analysis]
     end
-    
+
     subgraph Output["📤 Output"]
         Dashboard[Dashboard]
         Reports[Reports]
         Alerts[Webhooks]
         CI[CI Integration]
     end
-    
+
     Code --> Scanner
     Config --> Scanner
     Scanner --> Scorer
@@ -369,7 +369,7 @@ graph TD
         TC[trend_compare.py]
         AR[audit_runner.py]
     end
-    
+
     subgraph Viz["Visualization"]
         VA[viz_ascii.py]
         VH[viz_html.py]
@@ -379,14 +379,14 @@ graph TD
         VDH[viz_docs_hub.py]
         VAI[viz_agent_interface.py]
     end
-    
+
     subgraph Integration["Integration"]
         WH[webhooks.py]
         CI[ci_integration.py]
         PF[performance.py]
         WG[wiki_generator.py]
     end
-    
+
     AR --> TD
     AR --> TC
     AR --> VA
@@ -394,7 +394,7 @@ graph TD
     AR --> WH
     AR --> CI
     AR --> VAI
-    
+
     style TD fill:#58a6ff
     style AR fill:#3fb950
     style VAI fill:#a371f7
@@ -475,22 +475,22 @@ sequenceDiagram
     participant Compare as Comparator
     participant Viz as Visualization
     participant CI as CI Integration
-    
+
     Agent->>CLI: run audit
     CLI->>CLI: scan repository
     CLI->>DB: store_snapshot()
     DB-->>CLI: run_id
-    
+
     Agent->>CLI: check-regressions
     CLI->>DB: get_trend(all)
     CLI->>Compare: detect_regressions()
     Compare-->>CLI: regressions[]
-    
+
     Agent->>CLI: dashboard
     CLI->>DB: get_latest_scores()
     CLI->>Viz: generate_dashboard()
     Viz-->>Agent: HTML Dashboard
-    
+
     Note over CI: CI/CD Integration
     CI->>CLI: trigger audit
     CLI->>CI: write_github_step_summary()
@@ -614,7 +614,7 @@ secret = storage.load_secret("api_key.enc")
 - [Integration Tests](tests/security/test_security_integration.py) - 18 tests
 - [Benchmarks](benchmarks/security_benchmarks.py) - Performance
 
-**Pre-commit Hooks**: detect-secrets, gitleaks, bandit, pip-audit  
+**Pre-commit Hooks**: detect-secrets, gitleaks, bandit, pip-audit
 **CI/CD**: CodeQL analysis, dependency audit, secret scanning
 
 ---
@@ -846,9 +846,9 @@ Using this AGENTS.md, analyze how Codex interacts with the repository and sugges
 
 ## 📂 Key Module Paths Reference
 
-**Security Module**: `src/codex/security/` - Security utilities, encryption, sanitization  
-**AST Module**: `src/codex/ast/` - Abstract syntax tree parsing and analysis  
-**Agents**: `agents/` - AI agent implementations and orchestration  
+**Security Module**: `src/codex/security/` - Security utilities, encryption, sanitization
+**AST Module**: `src/codex/ast/` - Abstract syntax tree parsing and analysis
+**Agents**: `agents/` - AI agent implementations and orchestration
 **Agent Scripts**: `scripts/agent/` - Agent automation scripts
 
 For detailed module documentation, see respective README files in each directory.

@@ -152,12 +152,12 @@ These are temporary session tracking files that should be archived:
 - **Current:** Root
 - **Proposed:** `.github/agents/docs/AGENTS.md` OR `docs/agents/AGENTS.md`
 - **Risk:** HIGH (293 references across codebase)
-- **Action:** 
+- **Action:**
   1. Run full reference scan
   2. Create automated update script for all 293 references
   3. Validate in staging before production
   4. Consider creating redirect/symlink for transition period
-  
+
 **docs/analysis/PR_3133_ANALYSIS.md** - ⚠️ MOVE
 - **Current:** Root
 - **Proposed:** `docs/analysis/PR_3133_ANALYSIS.md`

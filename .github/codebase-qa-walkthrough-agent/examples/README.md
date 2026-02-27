@@ -150,21 +150,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: pip install -e ".[dev]"
-      
+
       - name: Run QA Walkthrough
         run: |
           python -m codex.qa_walkthrough \
             --full-audit \
             --output-dir .codex/qa_walkthrough
-      
+
       - name: Upload Audit Report
         uses: actions/upload-artifact@v4
         with:

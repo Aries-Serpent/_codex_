@@ -44,10 +44,10 @@ WORKFLOWS=(
 for workflow in "${WORKFLOWS[@]}"; do
   # Backup original
   cp .github/workflows/$workflow .github/workflows/$workflow.bak
-  
+
   # Add Art_ prefix to name field
   sed -i 's/^name: \(.*\)/name: Art_\1/' .github/workflows/$workflow
-  
+
   echo "✅ Updated: $workflow"
 done
 

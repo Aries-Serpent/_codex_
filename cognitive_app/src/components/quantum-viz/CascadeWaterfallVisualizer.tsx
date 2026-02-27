@@ -38,15 +38,15 @@ export function CascadeWaterfallVisualizer({
   useEffect(() => {
     const calculateLayout = () => {
       const depths = new Map<string, number>();
-      
+
       const calculateDepth = (token: WorkflowToken): number => {
         if (depths.has(token.id)) return depths.get(token.id)!;
-        
+
         if (!token.dependencies || token.dependencies.length === 0) {
           depths.set(token.id, 0);
           return 0;
         }
-        
+
         const depTokens = tokens.filter(t => token.dependencies!.includes(t.id));
         const maxDepth = depTokens.length > 0 ? Math.max(...depTokens.map(calculateDepth)) : 0;
         const depth = maxDepth + 1;
@@ -108,14 +108,14 @@ export function CascadeWaterfallVisualizer({
   useEffect(() => {
     nodes.forEach(node => {
       if (completedTokens.has(node.tokenId)) {
-        const dependents = nodes.filter(n => 
+        const dependents = nodes.filter(n =>
           n.token.dependencies?.includes(node.tokenId)
         );
 
         dependents.forEach(dependent => {
           setCascadeEffects(prev => {
             const exists = prev.some(
-              effect => effect.from.x === node.x && 
+              effect => effect.from.x === node.x &&
                        effect.from.y === node.y &&
                        effect.to.x === dependent.x &&
                        effect.to.y === dependent.y
@@ -154,10 +154,10 @@ export function CascadeWaterfallVisualizer({
           ctx.beginPath();
           ctx.moveTo(toNode.x, toNode.y);
           ctx.lineTo(fromNode.x, fromNode.y);
-          
-          const isActive = activeTokens.has(fromNode.tokenId) || 
+
+          const isActive = activeTokens.has(fromNode.tokenId) ||
                           activeTokens.has(toNode.tokenId);
-          const isCompleted = completedTokens.has(fromNode.tokenId) && 
+          const isCompleted = completedTokens.has(fromNode.tokenId) &&
                              completedTokens.has(toNode.tokenId);
 
           if (isCompleted) {
@@ -170,7 +170,7 @@ export function CascadeWaterfallVisualizer({
             ctx.strokeStyle = 'oklch(0.35 0.02 250)';
             ctx.lineWidth = 1.5;
           }
-          
+
           ctx.setLineDash([4, 4]);
           ctx.stroke();
           ctx.setLineDash([]);
@@ -183,7 +183,7 @@ export function CascadeWaterfallVisualizer({
       cascadeEffects.forEach(effect => {
         const age = now - effect.timestamp;
         const progress = age / 2000;
-        
+
         if (progress >= 1) return;
 
         const currentX = effect.from.x + (effect.to.x - effect.from.x) * progress;
@@ -267,14 +267,14 @@ export function CascadeWaterfallVisualizer({
                     strokeWidth={isActive ? 3 : 2}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ 
+                    transition={{
                       type: 'spring',
                       stiffness: 260,
                       damping: 20,
-                      delay: node.depth * 0.1 
+                      delay: node.depth * 0.1
                     }}
                   />
-                  
+
                   {isActive && (
                     <>
                       <motion.circle
@@ -287,7 +287,7 @@ export function CascadeWaterfallVisualizer({
                         opacity={0.5}
                         initial={{ r: 35, opacity: 0.5 }}
                         animate={{ r: 50, opacity: 0 }}
-                        transition={{ 
+                        transition={{
                           duration: 1.5,
                           repeat: Infinity,
                           ease: 'easeOut'
@@ -303,7 +303,7 @@ export function CascadeWaterfallVisualizer({
                         opacity={0.5}
                         initial={{ r: 35, opacity: 0.5 }}
                         animate={{ r: 50, opacity: 0 }}
-                        transition={{ 
+                        transition={{
                           duration: 1.5,
                           repeat: Infinity,
                           ease: 'easeOut',

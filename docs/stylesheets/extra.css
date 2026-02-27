@@ -1,5 +1,5 @@
 /* Custom CSS for GitHub Pages - Table Formatting Fix
- * 
+ *
  * Ensures proper spacing between headers and tables
  * even when markdown doesn't have blank lines
  */
@@ -43,7 +43,7 @@
   .md-typeset table {
     font-size: 0.9em;
   }
-  
+
   .md-typeset table th,
   .md-typeset table td {
     padding: 0.6em 0.8em;
@@ -220,11 +220,11 @@ pre code {
     .mermaid {
         page-break-inside: avoid;
     }
-    
+
     .md-typeset table {
         page-break-inside: avoid;
     }
-    
+
     .md-typeset pre {
         page-break-inside: avoid;
     }

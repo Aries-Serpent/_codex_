@@ -102,10 +102,10 @@ def tests_ml_full(session: nox.Session):
     import shutil
     stat = shutil.disk_usage(".")
     available_gb = stat.free / (1024**3)
-    
+
     if available_gb < 10:
         session.skip(f"Insufficient disk space: {available_gb:.1f} GB available, need 10+ GB")
-    
+
     _install_requirements(session, REQ_MINIMAL, REQ_ML_FULL)
     session.run("pytest", "-m", "requires_torch")
 ```text
@@ -137,7 +137,7 @@ def check_disk_space_before_install(required_gb: float = 5.0):
     import shutil
     stat = shutil.disk_usage(".")
     available_gb = stat.free / (1024**3)
-    
+
     if available_gb < required_gb:
         raise RuntimeError(
             f"Insufficient disk space: {available_gb:.1f} GB available, "
@@ -163,7 +163,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
         if estimated_size > max_size_mb:
             print(f"Skipping {package} ({estimated_size} MB > {max_size_mb} MB limit)")
             continue
-        
+
         subprocess.run(["pip", "install", package])
 ```text
 
@@ -175,7 +175,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
    ```bash
    # Install only pytest, ruff, black (<200 MB total)
    pip install pytest pytest-cov ruff black mypy
-   
+
    # Run non-ML tests
    pytest -m "not requires_torch" -q
    ```
@@ -184,7 +184,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
    ```bash
    # Bandit already installed (<100 MB)
    bandit -r src/ -c bandit.yaml
-   
+
    # Semgrep (if available, ~50 MB)
    pip install semgrep
    semgrep scan --config semgrep_rules/ src/

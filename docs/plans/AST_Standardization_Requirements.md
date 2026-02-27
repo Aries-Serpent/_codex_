@@ -106,25 +106,25 @@ This document provides **requirements, architecture, and standardization strateg
 # Pseudo-code architecture
 class UniversalParser:
     """Language-agnostic AST parser using libcst + custom wrappers."""
-    
+
     SUPPORTED_LANGUAGES = {
         "python": PythonParser,
         "yaml": YAMLParser,
         "json": JSONParser,
         "sql": SQLParser,
     }
-    
+
     def parse(self, source_code: str, language: str) -> StandardizedAST:
         """Parse source code → standardized internal AST."""
         parser_class = self.SUPPORTED_LANGUAGES.get(language)
         if not parser_class:
             raise UnsupportedLanguageError(language)
-        
+
         parser = parser_class()
         raw_ast = parser.parse(source_code)
         standardized = self.normalize(raw_ast, language)
         return standardized
-    
+
     def normalize(self, raw_ast, language: str) -> StandardizedAST:
         """Convert language-specific AST → standardized format."""
         # Maps language AST nodes to unified representation
@@ -132,7 +132,7 @@ class UniversalParser:
 
 class StandardizedAST:
     """Unified AST representation across languages."""
-    
+
     type: str  # "module", "function", "class", "expression", etc.
     name: str
     parent: Optional["StandardizedAST"]
@@ -150,7 +150,7 @@ class StandardizedAST:
 ```python
 class MetricsAnalyzer:
     """Extract code quality metrics from AST."""
-    
+
     def analyze(self, ast_node: StandardizedAST) -> CodeMetrics:
         """Compute metrics for code node."""
         return CodeMetrics(
@@ -168,7 +168,7 @@ class CodeMetrics:
     cognitive_complexity: float
     halstead_metrics: HalsteadMetrics
     maintainability_index: float
-    
+
     @property
     def quality_tier(self) -> str:
         """Rate code quality: A (excellent) → F (poor)."""
@@ -182,24 +182,24 @@ class CodeMetrics:
 ```python
 class DependencyGraphBuilder:
     """Build and analyze code dependency graphs."""
-    
+
     def build_graph(self, codebase: Codebase) -> DependencyGraph:
         """Build complete dependency graph from codebase."""
         graph = DependencyGraph()
-        
+
         # Extract imports, function calls, class inheritance
         for module in codebase.modules:
             self._extract_imports(module, graph)
             self._extract_calls(module, graph)
             self._extract_inheritance(module, graph)
-        
+
         return graph
-    
+
     def detect_cycles(self, graph: DependencyGraph) -> List[DependencyCycle]:
         """Find circular dependencies."""
         # Tarjan's algorithm for strongly connected components
         pass
-    
+
     def compute_coupling(self, graph: DependencyGraph) -> CouplingMetrics:
         """Measure coupling and cohesion."""
         pass
@@ -208,11 +208,11 @@ class DependencyGraphBuilder:
 class DependencyGraph:
     nodes: Dict[str, CodeNode]  # fully-qualified name → node
     edges: Dict[str, List[str]]  # node → dependencies
-    
+
     def get_dependents(self, node_id: str) -> List[str]:
         """Get all nodes depending on this node."""
         pass
-    
+
     def get_transitive_deps(self, node_id: str) -> Set[str]:
         """Get all transitive dependencies."""
         pass
@@ -224,7 +224,7 @@ class DependencyGraph:
 ```python
 class CodeSmellDetector:
     """Identify code quality issues."""
-    
+
     def detect_smells(self, ast_node: StandardizedAST) -> List[CodeSmell]:
         """Find code smells in AST."""
         smells = []
@@ -234,12 +234,12 @@ class CodeSmellDetector:
         smells.extend(self.detect_unused_code(ast_node))
         smells.extend(self.detect_dead_code(ast_node))
         return smells
-    
+
     def detect_long_functions(self, ast_node: StandardizedAST) -> List[CodeSmell]:
         """Find functions > 50 LOC."""
         if ast_node.type != "function":
             return []
-        
+
         loc = self.count_loc(ast_node)
         if loc > 50:
             return [CodeSmell(
@@ -265,11 +265,11 @@ class CodeSmell:
 ```python
 class KnowledgeGraphBuilder:
     """Build semantic knowledge graph from AST + metrics."""
-    
+
     def build_kg(self, codebase: Codebase) -> KnowledgeGraph:
         """Create unified knowledge representation."""
         kg = KnowledgeGraph()
-        
+
         # Entities
         for module in codebase.modules:
             kg.add_entity("Module", module.name, attributes={
@@ -277,18 +277,18 @@ class KnowledgeGraphBuilder:
                 "loc": module.loc,
                 "purpose": module.docstring,
             })
-            
+
             for func in module.functions:
                 kg.add_entity("Function", func.name, attributes={
                     "module": module.name,
                     "signature": func.signature,
                     "complexity": func.complexity,
                 })
-        
+
         # Relationships
         for edge in self.dep_graph.edges:
             kg.add_relationship("depends_on", edge.source, edge.target)
-        
+
         return kg
 
 @dataclass
@@ -296,15 +296,15 @@ class KnowledgeGraph:
     entities: Dict[str, List[Entity]]  # type → [entity]
     relationships: List[Relationship]
     attributes: Dict[str, Any]
-    
+
     def query(self, pattern: str) -> List[Entity]:
         """Query graph using pattern (e.g., "Function:*:complexity>10")."""
         pass
-    
+
     def export_to_json(self) -> str:
         """Export KG to JSON format."""
         pass
-    
+
     def export_to_sqlite(self, db_path: str) -> None:
         """Export KG to SQLite database."""
         pass
@@ -574,12 +574,12 @@ docs/
 
 def analyze_and_update_maturity():
     """Use AST findings to populate MATURITY_REMAINING_WORK.md."""
-    
+
     # 1. Analyze codebase
     codebase = Codebase.from_directory("src/")
     analyzer = UniversalAnalyzer()
     report = analyzer.analyze_all(codebase)
-    
+
     # 2. Extract findings
     findings = {
         "missing_type_hints": count_functions_without_types(report),
@@ -589,10 +589,10 @@ def analyze_and_update_maturity():
         "test_coverage_gaps": identify_untested_modules(report),
         "long_functions": find_functions(loc > 50, report),
     }
-    
+
     # 3. Update MATURITY_REMAINING_WORK.md
     update_checklist("MATURITY_REMAINING_WORK.md", findings)
-    
+
     # 4. Prioritize tasks
     prioritized = prioritize_by(findings, weight={
         "circular_dependencies": 10,
@@ -600,7 +600,7 @@ def analyze_and_update_maturity():
         "missing_type_hints": 6,
         ...
     })
-    
+
     return prioritized
 ```text
 
@@ -657,7 +657,7 @@ def test_parser_accuracy_python():
         return len(y) == x
     """
     ast = parser.parse(source, "python")
-    
+
     assert ast.type == "module"
     assert len(ast.children) == 1
     assert ast.children[0].type == "function"
@@ -688,7 +688,7 @@ def test_dependency_cycle_detection():
         "C": ["A"],  # Cycle: A → B → C → A
     })
     cycles = detector.detect_cycles(graph)
-    
+
     assert len(cycles) == 1
     assert set(cycles[0]) == {"A", "B", "C"}
 ```text
@@ -904,17 +904,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Full history for diff analysis
-      
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      
+
       - name: Install dependencies
         run: pip install -e ".[ast]"
-      
+
       - name: Run codebase audit
         run: codex-audit src/ --output audit_report.html --format html
-      
+
       - name: Compare with baseline
         if: github.event_name == 'pull_request'
         run: |
@@ -922,13 +922,13 @@ jobs:
             --metric complexity \
             --output complexity_diff.txt
           cat complexity_diff.txt
-      
+
       - name: Upload results
         uses: actions/upload-artifact@v3
         with:
           name: ast-analysis-report
           path: audit_report.html
-      
+
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6

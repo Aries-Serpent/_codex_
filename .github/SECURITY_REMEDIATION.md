@@ -163,7 +163,7 @@ python3 -m pylint src/cognitive_brain/integrations/ --disable=C0103,R0913
    ```yaml
    # Before
    - uses: actions/checkout@v4
-   
+
    # After
    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
    ```

@@ -404,7 +404,7 @@ results = defaultdict(list)
 for pyfile in Path('.').rglob('*.py'):
     if any(exc in str(pyfile) for exc in ['.venv', '.git', '__pycache__']):
         continue
-    
+
     with open(pyfile) as f:
         for lineno, line in enumerate(f, 1):
             if match := nosec_pattern.search(line):
@@ -879,7 +879,7 @@ mkdir -p src/codex_plans && touch src/codex_plans/__init__.py
 exclude_dirs:
   - /tests/      # Test files have intentional security issues
   - /.venv/      # Virtual environment
-  
+
 nosec: true      # Allow # nosec with justification
 confidence_level: MEDIUM
 severity_level: MEDIUM

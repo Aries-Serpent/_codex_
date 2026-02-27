@@ -137,7 +137,7 @@ jobs:
       - name: Run tests with coverage (layered fallbacks)
         run: |
           set -euo pipefail
-          
+
           # Tier 1: Plugin-driven parallel with pytest-cov
           echo "=== Tier 1: Plugin-driven parallel execution ==="
           if pytest tests/ \
@@ -154,7 +154,7 @@ jobs:
             echo "✅ Plugin-driven parallel succeeded"
             exit 0
           fi
-          
+
           # Tier 2: Coverage-run with parallel pytest
           echo "⚠️ Plugin-driven parallel failed; trying coverage-run with parallel pytest"
           rm -f .coverage .coverage.* coverage.xml junit.xml
@@ -172,7 +172,7 @@ jobs:
             coverage report || true
             exit 0
           fi
-          
+
           # Tier 3: Sequential coverage-run (last resort)
           echo "⚠️ Parallel coverage-run failed; falling back to sequential execution"
           rm -f .coverage .coverage.* coverage.xml junit.xml
@@ -198,11 +198,11 @@ jobs:
         run: |
           echo "=== Combining coverage data ==="
           coverage combine || echo "No coverage data to combine (may be single .coverage file)"
-          
+
           echo "=== Generating coverage reports ==="
           coverage html || echo "HTML report generation failed"
           coverage xml || echo "XML report generation failed"
-          
+
           echo "=== Coverage summary ==="
           coverage report --fail-under=70 || {
             echo "⚠️ Soft gate: Coverage below 70%"
@@ -304,7 +304,7 @@ jobs:
           # Evaluate job outcome instead of hardcoded string comparison
           # Possible values: success, failure, cancelled, skipped
           TEST_RESULT="${{ needs.test.result }}"
-          
+
           if [[ "${TEST_RESULT}" == "success" ]]; then
             echo "✅ All tests passed"
             exit 0

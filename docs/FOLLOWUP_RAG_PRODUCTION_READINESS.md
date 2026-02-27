@@ -67,7 +67,7 @@ python scripts/local/build_faiss.sh default docs docs/
    class CachedRetriever(Retriever):
        def __init__(self, cache_ttl: int = 3600, ...):
            self.query_cache = LRUCache(maxsize=1000)
-       
+
        def query_with_cache(self, q: str, ...) -> List[Dict]:
            # Check cache before FAISS lookup
    ```
@@ -139,7 +139,7 @@ class RAGMetrics:
     def track_index_size(self, num_chunks: int, size_mb: float)
     def track_cache_hit_rate(self, hits: int, misses: int)
     def track_embedding_throughput(self, texts_per_sec: float)
-    
+
     def export_prometheus(self) -> str
     def export_cloudwatch(self) -> Dict
 ```

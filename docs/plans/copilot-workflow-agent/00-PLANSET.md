@@ -68,16 +68,16 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 ```python
 class GitHubClient:
     """Thin, testable wrapper around GitHub REST/GraphQL."""
-    
+
     async def trigger_workflow(self, workflow_id: str, ref: str, inputs: dict) -> str:
         """Trigger workflow_dispatch and return run_id."""
-        
+
     async def get_run_status(self, run_id: str) -> RunStatus:
         """Poll workflow run status."""
-        
+
     async def get_job_logs(self, job_id: str) -> str:
         """Retrieve job logs for analysis."""
-        
+
     async def download_artifact(self, artifact_id: str) -> bytes:
         """Download workflow artifact."""
 ```
@@ -86,13 +86,13 @@ class GitHubClient:
 ```python
 class WorkflowInventory:
     """Discovers workflows, extracts triggers/inputs, builds dependency graph."""
-    
+
     def scan_workflows(self, path: str = ".github/workflows") -> List[WorkflowMeta]:
         """Scan all workflow files and extract metadata."""
-        
+
     def get_triggerable(self) -> List[WorkflowMeta]:
         """Return workflows with workflow_dispatch trigger."""
-        
+
     def build_dependency_graph(self) -> Dict[str, List[str]]:
         """Build workflow dependency graph."""
 ```
@@ -101,7 +101,7 @@ class WorkflowInventory:
 ```python
 class SessionState:
     """Persistent session + run state for cross-session resumption."""
-    
+
     session_id: str
     created_at: datetime
     workflow_runs: List[WorkflowRun]
@@ -146,10 +146,10 @@ class SessionState:
 ```python
 class FailureDetector:
     """Analyzes job logs to detect and classify failures."""
-    
+
     def analyze_logs(self, logs: str) -> FailureAnalysis:
         """Parse logs and identify failure patterns."""
-        
+
     def classify_failure(self, analysis: FailureAnalysis) -> FailureType:
         """Classify failure into known categories."""
 ```
@@ -158,13 +158,13 @@ class FailureDetector:
 ```python
 class AutoRemediator:
     """Applies automatic fixes for known failure types."""
-    
+
     def can_remediate(self, failure: FailureType) -> bool:
         """Check if failure can be auto-remediated."""
-        
+
     def generate_fix(self, failure: FailureAnalysis) -> Optional[Patch]:
         """Generate fix patch for failure."""
-        
+
     def apply_fix(self, patch: Patch) -> ApplyResult:
         """Apply fix and return result."""
 ```
@@ -204,13 +204,13 @@ class AutoRemediator:
 ```python
 class AgentSurface:
     """Web-UI integration for Copilot agent."""
-    
+
     def show_workflow_preview(self, workflow: WorkflowMeta) -> Preview:
         """Show workflow preview before triggering."""
-        
+
     def request_approval(self, action: Action) -> ApprovalRequest:
         """Request user approval for high-risk action."""
-        
+
     def display_results(self, run: WorkflowRun) -> ResultDisplay:
         """Display workflow results to user."""
 ```
@@ -219,10 +219,10 @@ class AgentSurface:
 ```python
 class ApprovalEngine:
     """Enforces policies for high-risk actions."""
-    
+
     def requires_approval(self, action: Action) -> bool:
         """Check if action requires user approval."""
-        
+
     def create_approval_request(self, action: Action) -> ApprovalRequest:
         """Create approval request with context."""
 ```

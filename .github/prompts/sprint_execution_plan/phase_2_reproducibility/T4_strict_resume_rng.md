@@ -47,10 +47,10 @@ class RNGCheckpoint:
         with open(path, "w") as f:
             json.dump(self._serialize(rng_state), f)
         return path
-    
+
     def load(self, checkpoint_dir, strict=False):
         path = Path(checkpoint_dir) / ".rng.json"
-        
+
         if not path.exists():
             if strict:
                 raise FileNotFoundError(
@@ -60,16 +60,16 @@ class RNGCheckpoint:
             else:
                 print(f"⚠️ RNG sidecar not found, resume may not be deterministic")
                 return None
-        
+
         with open(path) as f:
             rng_state = self._deserialize(json.load(f))
-        
+
         random.setstate(rng_state["python"])
         np.random.set_state(rng_state["numpy"])
         torch.set_rng_state(rng_state["torch"])
         for i, state in enumerate(rng_state["torch_cuda"]):
             torch.cuda.set_rng_state(state, i)
-        
+
         return rng_state
 ```
 
@@ -78,11 +78,11 @@ class RNGCheckpoint:
 def resume_training(checkpoint_path, strict_resume=False):
     # Load model/optimizer checkpoints
     load_checkpoint(checkpoint_path)
-    
+
     # Load RNG state
     rng_checkpoint = RNGCheckpoint()
     rng_checkpoint.load(checkpoint_path, strict=strict_resume)
-    
+
     # Continue training
     train()
 ```
@@ -101,14 +101,14 @@ def test_rng_sidecar_restores_state():
     # Save state
     rng_cp = RNGCheckpoint()
     rng_cp.save("test_checkpoint")
-    
+
     # Generate random number
     value1 = np.random.rand()
-    
+
     # Load state and generate again
     rng_cp.load("test_checkpoint")
     value2 = np.random.rand()
-    
+
     assert value1 == value2
 ```
 

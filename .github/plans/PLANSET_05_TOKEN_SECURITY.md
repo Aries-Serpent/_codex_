@@ -52,14 +52,14 @@ import os
 def verify_token_scopes() -> dict:
     """
     Verify GitHub token scopes WITHOUT decoding token.
-    
+
     Returns:
         dict: Scope verification results
     """
     token = os.getenv("GITHUB_TOKEN")
     if not token:
         return {"error": "GITHUB_TOKEN not set"}
-    
+
     # Make authenticated request
     response = requests.get(
         "https://api.github.com/user",
@@ -69,10 +69,10 @@ def verify_token_scopes() -> dict:
         },
         timeout=10
     )
-    
+
     # Extract scopes from header (NO token decoding)
     scopes = response.headers.get("x-oauth-scopes", "").split(", ")
-    
+
     return {
         "scopes": scopes,
         "has_repo": "repo" in scopes,

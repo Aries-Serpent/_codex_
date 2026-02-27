@@ -177,25 +177,25 @@ archival:
   storage:
     local: /data/artifacts/bundles
     remote: s3://ml-artifacts/bundles
-    
+
   # Compression settings
   compression:
     algorithm: gzip  # gzip, bzip2, xz, lz4
     level: 6         # 1-9 for gzip
-    
+
   # Deduplication
   deduplication:
     enabled: true
     block_size: 4096
     hash_algorithm: sha256
-    
+
   # Metadata
   metadata:
     include_git_info: true
     include_environment: true
     include_dependencies: true
     include_system_info: true
-    
+
   # Retention policy
   retention:
     keep_latest: 10
@@ -327,7 +327,7 @@ manager = BundleManager(storage_dir="/data/bundles")
 # Auto-archive completed experiments
 def archive_completed_experiments():
     experiments = manager.list_experiments(status="completed")
-    
+
     for exp in experiments:
         # Bundle if not already bundled
         if not manager.has_bundle(exp.id):
@@ -341,7 +341,7 @@ def archive_completed_experiments():
 # Cleanup old bundles
 def cleanup_old_bundles():
     cutoff_date = datetime.now() - timedelta(days=90)
-    
+
     old_bundles = manager.list_bundles(max_date=cutoff_date)
     for bundle in old_bundles:
         if bundle.retention_policy == "delete":

@@ -23,71 +23,71 @@
 # RLHF-specific parameters (placeholder values)
 rlhf:
   enabled: false  # Not implemented yet
-  
+
   # Reward model configuration
   reward_model:
     path: null  # Path to pre-trained reward model
     device: null  # Auto-detect
     dtype: null  # Auto-detect
-  
+
   # PPO parameters (based on InstructGPT paper)
   ppo:
     # Number of PPO epochs per batch
     epochs: 4
-    
+
     # Mini-batch size for PPO updates
     mini_batch_size: 4
-    
+
     # Number of rollouts per batch
     batch_size: 16
-    
+
     # Learning rate for policy
     learning_rate: 1.4e-5
-    
+
     # Clipping parameter for policy loss
     clip_range: 0.2
-    
+
     # Coefficient for value function loss
     vf_coef: 0.1
-    
+
     # Entropy bonus coefficient
     entropy_coef: 0.01
-    
+
     # Max gradient norm for clipping
     max_grad_norm: 0.5
-  
+
   # KL divergence penalty
   kl:
     # KL penalty coefficient
     coef: 0.2
-    
+
     # Target KL divergence
     target: 6.0
-    
+
     # Adaptive KL penalty
     adaptive: true
-  
+
   # Reference model (for KL constraint)
   reference_model:
     # Path to reference model (usually same as base model)
     path: null
     # Whether to keep reference model frozen
     frozen: true
-  
+
   # Generation parameters during RLHF
   generation:
     # Maximum generation length
     max_length: 512
-    
+
     # Temperature for sampling
     temperature: 0.7
-    
+
     # Top-k sampling
     top_k: 50
-    
+
     # Top-p (nucleus) sampling
     top_p: 0.9
-    
+
     # Number of sequences to generate per prompt
     num_return_sequences: 1
 
@@ -95,29 +95,29 @@ rlhf:
 training:
   # RLHF typically needs smaller learning rates
   learning_rate: 1.4e-5
-  
+
   # Batch size for RLHF
   batch_size: 16
-  
+
   # Number of RLHF iterations
   epochs: 3
   max_epochs: ${.epochs}
-  
+
   # RLHF inherits rlhf config above
   rlhf: ${rlhf}
-  
+
   # Optimizer settings
   optimizer:
     name: adamw_torch
     weight_decay: 0.0  # RLHF often uses no weight decay
     betas: [0.9, 0.95]
     eps: 1.0e-08
-  
+
   # Scheduler settings
   scheduler:
     name: constant_with_warmup
     warmup_steps: 100
-  
+
   # Checkpointing
   checkpoint:
     dir: runs/rlhf/checkpoints

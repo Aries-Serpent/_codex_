@@ -151,7 +151,7 @@ from pathlib import Path
 
 def categorize_failure(failure_text):
     categories = []
-    
+
     if 'ModuleNotFoundError' in failure_text or 'ImportError' in failure_text:
         categories.append('Import/Dependency')
     if 'closed file' in failure_text or 'OSError' in failure_text:
@@ -164,19 +164,19 @@ def categorize_failure(failure_text):
         categories.append('Assertion')
     if 'timeout' in failure_text.lower():
         categories.append('Timeout')
-    
+
     return categories or ['Uncategorized']
 
 def analyze_failures(log_file):
     failures_by_category = defaultdict(list)
-    
+
     with open(log_file) as f:
         content = f.read()
-    
+
     # Extract individual failure blocks
     failure_pattern = r'FAILED (.*?) - (.*?)(?=FAILED|ERROR|$)'
     matches = re.findall(failure_pattern, content, re.DOTALL)
-    
+
     for test_name, error_msg in matches:
         categories = categorize_failure(error_msg)
         for category in categories:
@@ -184,12 +184,12 @@ def analyze_failures(log_file):
                 'test': test_name,
                 'error': error_msg[:200]
             })
-    
+
     return failures_by_category
 
 if __name__ == '__main__':
     results = analyze_failures('coverage_logs.txt')
-    
+
     print("=== FAILURE ANALYSIS REPORT ===\n")
     for category, failures in sorted(results.items(), key=lambda x: -len(x[1])):
         print(f"\n{category}: {len(failures)} failures")
@@ -292,13 +292,13 @@ def ensure_resource_cleanup():
     """Ensure all resources are cleaned up after tests."""
     # Track open file handles
     initial_files = set(sys.modules.keys())
-    
+
     yield
-    
+
     # Cleanup phase
     import gc
     gc.collect()
-    
+
     # Warn about leaked file handles
     import resource
     try:
@@ -315,9 +315,9 @@ def reset_file_descriptors():
     # Store original streams
     orig_stdout = sys.stdout
     orig_stderr = sys.stderr
-    
+
     yield
-    
+
     # Restore if modified
     if sys.stdout != orig_stdout:
         sys.stdout = orig_stdout
@@ -335,14 +335,14 @@ import warnings
 
 class ResourceMonitor:
     """Monitor resource usage during tests."""
-    
+
     def __init__(self):
         self.process = psutil.Process()
         self.baseline = {
             'open_files': len(self.process.open_files()),
             'memory': self.process.memory_info().rss,
         }
-    
+
     def check_leaks(self):
         current_files = len(self.process.open_files())
         if current_files > self.baseline['open_files'] + 10:
@@ -350,7 +350,7 @@ class ResourceMonitor:
                 f"File handle leak detected: "
                 f"{current_files} open (baseline: {self.baseline['open_files']})"
             )
-        
+
         current_memory = self.process.memory_info().rss
         if current_memory > self.baseline['memory'] * 1.5:
             warnings.warn(
@@ -474,7 +474,7 @@ def extract_function_signature(file_path, function_name):
     """Extract current function signature from source."""
     with open(file_path) as f:
         tree = ast.parse(f.read())
-    
+
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef) and node.name == function_name:
             args = [arg.arg for arg in node.args.args]
@@ -489,7 +489,7 @@ def suggest_fix(test_file, error_msg):
     if match:
         arg_name = match.group(1)
         print(f"Remove keyword argument '{arg_name}' or check if parameter name changed")
-    
+
     match = re.search(r"missing \d+ required.*argument.*: '(.*)'", error_msg)
     if match:
         missing_args = match.group(1)
@@ -620,7 +620,7 @@ import ast
 def find_incomplete_mocks(test_file):
     with open(test_file) as f:
         tree = ast.parse(f.read())
-    
+
     issues = []
     for node in ast.walk(tree):
         # Find Mock() or MagicMock() calls
@@ -630,7 +630,7 @@ def find_incomplete_mocks(test_file):
                 has_spec = any(kw.arg == 'spec' for kw in node.keywords)
                 if not has_spec:
                     issues.append(f"Line {node.lineno}: Mock without spec")
-    
+
     return issues
 ```
 
@@ -655,7 +655,7 @@ def validate_mock(mock_obj, real_class):
     """Validate mock matches real class interface."""
     mock_attrs = set(dir(mock_obj))
     real_attrs = set(dir(real_class))
-    
+
     missing = real_attrs - mock_attrs
     if missing:
         raise ValueError(f"Mock missing attributes: {missing}")
@@ -699,15 +699,15 @@ assert result == expected, f"Expected {expected} but got {result}"
 def timeout_protection():
     """Prevent individual tests from hanging."""
     import signal
-    
+
     def timeout_handler(signum, frame):
         pytest.fail("Test timeout exceeded (30 seconds)")
-    
+
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(30)  # 30 second timeout
-    
+
     yield
-    
+
     signal.alarm(0)  # Cancel alarm
 ```
 
@@ -932,7 +932,7 @@ Update all tests to match current API signatures:
 class FAISSStore:
     def __init__(self, index_dir, index_name, dimension=None):
         ...
-    
+
     def create_index(self):  # No dimension parameter
         ...
 
@@ -1074,18 +1074,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run test suite with monitoring
         run: |
           pytest tests/ \
             --json-report \
             --json-report-file=test-report.json \
             --durations=20
-      
+
       - name: Analyze test health
         run: |
           python scripts/analyze_test_health.py test-report.json
-      
+
       - name: Upload health metrics
         uses: actions/upload-artifact@v4
         with:
@@ -1102,7 +1102,7 @@ from datetime import datetime
 def analyze_test_health(report_file):
     with open(report_file) as f:
         data = json.load(f)
-    
+
     metrics = {
         'total_tests': data['summary']['total'],
         'passed': data['summary']['passed'],
@@ -1112,7 +1112,7 @@ def analyze_test_health(report_file):
         'duration': data['duration'],
         'pass_rate': data['summary']['passed'] / data['summary']['total'] * 100
     }
-    
+
     # Check thresholds
     alerts = []
     if metrics['pass_rate'] < 95:
@@ -1121,7 +1121,7 @@ def analyze_test_health(report_file):
         alerts.append(f"⚠️ Test duration over 20 minutes: {metrics['duration']/60:.1f}m")
     if metrics['errors'] > 0:
         alerts.append(f"🚨 {metrics['errors']} test errors detected")
-    
+
     # Generate report
     report = f"""# Test Health Report
 Generated: {datetime.now().isoformat()}
@@ -1137,10 +1137,10 @@ Generated: {datetime.now().isoformat()}
 ## Alerts
 {chr(10).join(alerts) if alerts else "✅ All metrics within acceptable ranges"}
 """
-    
+
     with open('test-health-report.md', 'w') as f:
         f.write(report)
-    
+
     # Exit with error if alerts
     if alerts:
         sys.exit(1)
@@ -1160,7 +1160,7 @@ if __name__ == '__main__':
       language: python
       types: [python]
       files: ^tests/
-    
+
     - id: test-isolation-check
       name: Check for test isolation issues
       entry: python scripts/check_test_isolation.py
@@ -1179,22 +1179,22 @@ def check_file_operations(filename):
     """Check that all file operations use context managers."""
     with open(filename) as f:
         content = f.read()
-    
+
     # Find file open calls not in context manager
     pattern = r'^(?!.*with\s).*\b(open|file)\s*\('
     issues = []
-    
+
     for i, line in enumerate(content.split('\n'), 1):
         if re.search(pattern, line) and not line.strip().startswith('#'):
             issues.append(f"{filename}:{i}: File operation without context manager")
-    
+
     return issues
 
 if __name__ == '__main__':
     all_issues = []
     for filename in sys.argv[1:]:
         all_issues.extend(check_file_operations(filename))
-    
+
     if all_issues:
         print("Resource management issues found:")
         for issue in all_issues:
@@ -1217,7 +1217,7 @@ from collections import defaultdict
 def analyze_test_file(filepath):
     with open(filepath) as f:
         tree = ast.parse(f.read())
-    
+
     metrics = {
         'test_count': 0,
         'has_docstrings': 0,
@@ -1225,21 +1225,21 @@ def analyze_test_file(filepath):
         'has_assertions': 0,
         'average_length': 0,
     }
-    
+
     test_lengths = []
-    
+
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef) and node.name.startswith('test_'):
             metrics['test_count'] += 1
-            
+
             # Check for docstring
             if ast.get_docstring(node):
                 metrics['has_docstrings'] += 1
-            
+
             # Check for fixtures (parameters)
             if node.args.args:
                 metrics['uses_fixtures'] += 1
-            
+
             # Check for assertions
             has_assert = any(
                 isinstance(n, ast.Assert)
@@ -1247,31 +1247,31 @@ def analyze_test_file(filepath):
             )
             if has_assert:
                 metrics['has_assertions'] += 1
-            
+
             # Calculate length
             test_lengths.append(len(node.body))
-    
+
     if test_lengths:
         metrics['average_length'] = sum(test_lengths) / len(test_lengths)
-    
+
     return metrics
 
 def main():
     test_files = Path('tests').rglob('test_*.py')
-    
+
     total_metrics = defaultdict(int)
     file_count = 0
-    
+
     for filepath in test_files:
         file_metrics = analyze_test_file(filepath)
         file_count += 1
-        
+
         for key, value in file_metrics.items():
             total_metrics[key] += value
-    
+
     # Calculate percentages
     total_tests = total_metrics['test_count']
-    
+
     print(f"# Test Quality Metrics\n")
     print(f"Total test files: {file_count}")
     print(f"Total tests: {total_tests}")
@@ -1318,7 +1318,7 @@ Before declaring completion:
   - [ ] Execution time < 20 minutes
   - [ ] Zero resource leaks
   - [ ] Zero import errors
-  
+
 - [ ] **Code Quality**
   - [ ] All file operations use context managers
   - [ ] All mocks use spec parameter

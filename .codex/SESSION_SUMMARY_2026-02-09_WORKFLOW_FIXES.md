@@ -334,7 +334,7 @@ From the user's comment, the following items remain:
 @copilot continue with:
 - [ ] Monitor test pass rate
 - [ ] Track linter usage
-- [ ] Gather details regarding failure, errors, artifacts and feedback 
+- [ ] Gather details regarding failure, errors, artifacts and feedback
 - [ ] Update standards as needed - Process documented
 - [ ] Expand test coverage
 

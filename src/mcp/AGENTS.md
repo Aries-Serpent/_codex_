@@ -23,7 +23,7 @@ from codex.security import mask_token, sanitize_log
 async def handler(request: Request):
     # Mask any tokens in logs
     logger.info(f"Request from: {mask_token(request.headers.get('Authorization'))}")
-    
+
     # Sanitize user input
     user_data = await request.json()
     logger.info(f"Data: {sanitize_log(user_data)}")
@@ -57,4 +57,3 @@ async def handler(request: Request):
 **AST Module**: `src/codex/ast/` - Code analysis integration  
 **Agent Directory**: `agents/` - Agent implementations  
 **Agent Scripts**: `scripts/agent/` - Automation utilities
-

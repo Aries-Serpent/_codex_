@@ -135,10 +135,10 @@ This table provides actionable coverage improvement strategies based on physics 
 def test_module_initialization():
     """Test initialization using Eq #1 (Schrödinger evolution)."""
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-    
+
     orchestrator = PhysicsInspiredOrchestrator()
     assert orchestrator is not None
-    
+
     # Add property checks for evolution states
     if hasattr(orchestrator, 'state'):
         assert orchestrator.state is not None
@@ -150,7 +150,7 @@ def test_module_initialization():
 def test_enum_validations():
     """Test enum validations using Eq #2 (Energy-momentum)."""
     from agents.quantum_game_theory import ActionType
-    
+
     # Test all enum values
     for action_type in ActionType:
         assert action_type is not None
@@ -163,9 +163,9 @@ def test_enum_validations():
 def test_property_coverage():
     """Test property/getter coverage using Eq #3 (Lorentz factor)."""
     from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-    
+
     orchestrator = PhysicsInspiredOrchestrator()
-    
+
     # Test properties
     if hasattr(orchestrator, 'gamma'):
         gamma = orchestrator.gamma
@@ -178,13 +178,13 @@ def test_property_coverage():
 def test_deep_module_coverage():
     """Test deep module coverage using Eq #4 (Continuity)."""
     from agents.self_healing import SelfHealingSystem
-    
+
     system = SelfHealingSystem()
-    
+
     # Test auto-repair branches
     system.inject_drift(0.01)  # Small drift
     system.auto_repair()
-    
+
     # Validate conservation
     assert abs(system.total_probability() - 1.0) < 1e-6
 ```

@@ -16,7 +16,7 @@ This document tracks the remediation of security vulnerabilities identified in P
 - **File**: `.github/audit_artifacts_output/generate_commit_analysis.py`
 - **Issue**: Used `shell=True` in subprocess.run
 - **CVE Risk**: Command Injection (CWE-78)
-- **Fix Applied**: 
+- **Fix Applied**:
   - Added `import shlex`
   - Changed to `shlex.split(cmd)` with `shell=False`
   - Prevents arbitrary command execution
@@ -56,7 +56,7 @@ This document tracks the remediation of security vulnerabilities identified in P
 
 #### 3.1 Hash Algorithm Audit - COMPLETED ✅
 - **Analysis**: Reviewed all MD5/SHA1 usage across codebase
-- **Findings**: 
+- **Findings**:
   - **13 files** using MD5 for non-security purposes (checksums, deduplication, sharding)
   - **0 files** using MD5 for cryptographic security
   - All security-sensitive operations use SHA-256 or better
@@ -88,9 +88,9 @@ Files confirmed safe with MD5 for non-security purposes:
 - **Action**: Document usage in code review guidelines
 
 #### 4.2 CORS Configuration - IDENTIFIED ⚠️
-- **Files**: 
+- **Files**:
   - `services/ita/app/main.py:47`
-  - `services/msp_gateway/app.py` 
+  - `services/msp_gateway/app.py`
 - **Issue**: Allow all origins with `allow_origins=["*"]`
 - **Context**: Local development / offline mode services
 - **Risk Level**: Medium (local services only)
@@ -125,7 +125,7 @@ app.add_middleware(
 
 #### 5.1 Rust Unit Test Failures
 - **Status**: ⏳ PENDING INVESTIGATION
-- **Next Steps**: 
+- **Next Steps**:
   1. Run `cargo check` to identify compilation errors
   2. Run `cargo test --package <component>` for specific failures
   3. Fix compilation and test logic errors

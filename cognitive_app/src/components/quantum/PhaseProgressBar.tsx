@@ -27,7 +27,7 @@ export function PhaseProgressBar({ currentPhase, targetPhase }: PhaseProgressBar
           </span>
         </div>
         <div className="h-3 bg-background rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-primary via-secondary to-accent transition-all"
             style={{ width: `${progress}%` }}
           />

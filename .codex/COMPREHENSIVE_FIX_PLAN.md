@@ -141,7 +141,7 @@ def test_meta_propagates_and_renders(tmp_path):
     # ADD at start:
     artifacts = Path.cwd() / "audit_artifacts"
     artifacts.mkdir(parents=True, exist_ok=True)
-    
+
     # ... rest of test
 ```
 
@@ -157,16 +157,16 @@ def set_seed(seed: int) -> None:
     import random
     import numpy as np
     import torch
-    
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
-    
+
     # ADD these critical lines for determinism:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-    
+
     # For PyTorch 2.x:
     try:
         torch.use_deterministic_algorithms(True, warn_only=True)

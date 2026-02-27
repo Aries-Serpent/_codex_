@@ -149,10 +149,10 @@ jobs:
           python3 << 'EOF'
           import hashlib
           from pathlib import Path
-          
+
           hashes = {}
           duplicates = []
-          
+
           for file in Path('.').rglob('*.py'):
               if '.git' in str(file) or '__pycache__' in str(file):
                   continue
@@ -161,7 +161,7 @@ jobs:
                   duplicates.append((file, hashes[h]))
               else:
                   hashes[h] = file
-          
+
           if duplicates:
               print("::warning::Duplicate files detected:")
               for dup, orig in duplicates:

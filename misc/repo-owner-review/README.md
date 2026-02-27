@@ -8,7 +8,7 @@ This folder contains files that have been reviewed, archived, or offloaded from 
 1. **External Storage**: Historical files offloaded to reduce repository size
 2. **Human Review**: Non-essential files subject to owner review and potential removal
 
-**⚠️ Important Notice**: 
+**⚠️ Important Notice**:
 - Files in offload subdirectories are organized for QA walkthrough access
 - Historical files are preserved for trend analysis and audit compliance
 - Legacy archived files may be deleted by repository owner at any time

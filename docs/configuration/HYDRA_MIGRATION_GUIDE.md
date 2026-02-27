@@ -163,7 +163,7 @@ if error:
     print(f"Message: {error.message}")
     print(f"Severity: {error.severity}")
     print(f"Resolution: {error.resolution}")
-    
+
     # Format with context
     formatted = error.format(file="myconfig.yaml")
     print(formatted)
@@ -201,11 +201,11 @@ from pathlib import Path
 def temp_config_dir(tmp_path: Path) -> Path:
     config_dir = tmp_path / "conf"
     config_dir.mkdir()
-    
+
     # Create test config
     test_config = config_dir / "test.yaml"
     test_config.write_text("key: value")
-    
+
     return tmp_path
 ```
 

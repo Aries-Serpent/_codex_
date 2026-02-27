@@ -81,29 +81,29 @@ Every project state has unique quantum numbers:
 @dataclass
 class ProjectQuantumState:
     """Quantum state representation of project."""
-    
+
     # Principal quantum number (phase)
     n: int  # 0=planning, 1=execution, 2=validation, 3=completion
-    
+
     # Angular momentum (complexity)
     l: int  # 0=simple, 1=moderate, 2=complex, 3=very_complex
-    
+
     # Magnetic quantum number (priority)
     m: int  # -3=low, 0=medium, +3=high
-    
+
     # Spin (execution mode)
     s: float  # -0.5=sequential, +0.5=parallel
-    
+
     # Seed (determinism)
     seed: int  # Fixed random seed
-    
+
     # Time parameter
     t: float  # Progress in arbitrary units
-    
+
     def __hash__(self) -> int:
         """Unique hash for state."""
         return hash((self.n, self.l, self.m, self.s, self.seed, self.t))
-    
+
     def to_ket(self) -> str:
         """Bra-ket notation."""
         return f"|{self.n},{self.l},{self.m},{self.s};{self.seed}⟩"
@@ -136,19 +136,19 @@ Where:
 ```python
 class TaskSelectionOperator:
     """Deterministic task selection using quantum measurement."""
-    
+
     def __init__(self, seed: int = 12345):
         self.seed = seed
         self._rng = random.Random(seed)  # Fixed seed
-    
+
     def measure(
-        self, 
+        self,
         tasks: List[Task],
         state: ProjectQuantumState,
     ) -> Task:
         """
         Measure task state - collapse wave function.
-        
+
         Deterministic: Same seed + same tasks → same selection
         """
         # Compute selection weights
@@ -156,19 +156,19 @@ class TaskSelectionOperator:
         for task in tasks:
             # Deterministic weight calculation
             base_weight = task.priority * (state.n + 1)
-            
+
             # Add deterministic "noise" from seed
             task_seed = hash((self.seed, task.id, state.t))
             task_rng = random.Random(task_seed)
             noise = task_rng.uniform(0, 0.1)
-            
+
             weight = base_weight + noise
             weights.append(weight)
-        
+
         # Deterministic selection (argmax)
         selected_idx = weights.index(max(weights))
         return tasks[selected_idx]
-    
+
     def expectation_value(self, tasks: List[Task]) -> float:
         """Expected value ⟨Ô⟩ = Σᵢ pᵢ λᵢ"""
         priorities = [t.priority for t in tasks]
@@ -191,10 +191,10 @@ Allocation matrix A_ij deterministic from:
 ```python
 class ResourceAllocationOperator:
     """Deterministic resource allocation."""
-    
+
     def __init__(self, seed: int = 12345):
         self.seed = seed
-    
+
     def measure(
         self,
         task: Task,
@@ -203,39 +203,39 @@ class ResourceAllocationOperator:
     ) -> Dict[str, Resource]:
         """
         Allocate resources deterministically.
-        
+
         Returns: Dict mapping resource type to allocated resource
         """
         allocation = {}
-        
+
         for req_type, req_amount in task.requirements.items():
             # Find suitable resources
             candidates = [
-                r for r in resources 
+                r for r in resources
                 if r.type == req_type and r.available >= req_amount
             ]
-            
+
             if not candidates:
                 continue
-            
+
             # Deterministic selection
             selection_seed = hash((self.seed, task.id, req_type, state.t))
             selection_rng = random.Random(selection_seed)
-            
+
             # Sort candidates deterministically
             candidates.sort(key=lambda r: (r.cost, r.id))
-            
+
             # Add deterministic noise for exploration
             scores = []
             for candidate in candidates:
                 base_score = 1.0 / (candidate.cost + 1e-6)
                 noise = selection_rng.uniform(0, 0.1)
                 scores.append(base_score + noise)
-            
+
             # Select highest score
             selected_idx = scores.index(max(scores))
             allocation[req_type] = candidates[selected_idx]
-        
+
         return allocation
 ```
 
@@ -252,12 +252,12 @@ D_ij = 1 if task_j depends on task_i, else 0
 ```python
 class DependencyOperator:
     """Deterministic dependency resolution."""
-    
+
     @staticmethod
     def can_execute(task: Task, completed: Set[str]) -> bool:
         """Check if all dependencies are satisfied."""
         return all(dep in completed for dep in task.dependencies)
-    
+
     @staticmethod
     def get_executable_tasks(
         tasks: List[Task],
@@ -266,10 +266,10 @@ class DependencyOperator:
         """Get tasks that can be executed (wave function support)."""
         return [
             task for task in tasks
-            if task.id not in completed 
+            if task.id not in completed
             and DependencyOperator.can_execute(task, completed)
         ]
-    
+
     @staticmethod
     def topological_sort(tasks: List[Task]) -> List[Task]:
         """Deterministic topological ordering."""
@@ -277,20 +277,20 @@ class DependencyOperator:
         in_degree = {t.id: len(t.dependencies) for t in tasks}
         queue = [t for t in tasks if in_degree[t.id] == 0]
         result = []
-        
+
         while queue:
             # Sort for determinism
             queue.sort(key=lambda t: t.id)
             task = queue.pop(0)
             result.append(task)
-            
+
             # Update in-degrees
             for other in tasks:
                 if task.id in other.dependencies:
                     in_degree[other.id] -= 1
                     if in_degree[other.id] == 0:
                         queue.append(other)
-        
+
         return result
 ```
 
@@ -305,13 +305,13 @@ class DependencyOperator:
 @dataclass
 class ProjectHamiltonian:
     """Project evolution Hamiltonian."""
-    
+
     # Energy components
     task_energy: float = 1.0        # Base task completion energy
     dependency_coupling: float = 0.5 # Inter-task coupling strength
     resource_potential: float = 0.3  # Resource availability barrier
     constraint_field: float = 0.2    # Constraint enforcement
-    
+
     def total_energy(
         self,
         state: ProjectQuantumState,
@@ -320,30 +320,30 @@ class ProjectHamiltonian:
     ) -> float:
         """
         Calculate total system energy.
-        
+
         E_total = E_task + E_dep + E_res + E_const
         """
         # Task energy (kinetic)
         n_pending = len([t for t in tasks if not t.completed])
         E_task = self.task_energy * n_pending
-        
+
         # Dependency energy (potential)
         n_blocked = len([
-            t for t in tasks 
+            t for t in tasks
             if not t.completed and not all(d in [tt.id for tt in tasks if tt.completed] for d in t.dependencies)
         ])
         E_dep = self.dependency_coupling * n_blocked
-        
+
         # Resource energy
         total_capacity = sum(r.capacity for r in resources)
         used_capacity = sum(r.capacity - r.available for r in resources)
         E_res = self.resource_potential * (used_capacity / max(total_capacity, 1))
-        
+
         # Constraint energy
         E_const = self.constraint_field * state.l  # Complexity contribution
-        
+
         return E_task + E_dep + E_res + E_const
-    
+
     def time_evolution(
         self,
         state: ProjectQuantumState,
@@ -351,9 +351,9 @@ class ProjectHamiltonian:
     ) -> ProjectQuantumState:
         """
         Evolve state using Schrödinger equation.
-        
+
         |Ψ(t+dt)⟩ = exp(-iĤdt/ℏ) |Ψ(t)⟩
-        
+
         For discrete time: advance quantum numbers
         """
         new_state = ProjectQuantumState(
@@ -364,12 +364,12 @@ class ProjectHamiltonian:
             seed=state.seed,
             t=state.t + dt,
         )
-        
+
         # Check for phase transitions
         if state.t % 1.0 < 0.1 and (state.t + dt) % 1.0 >= 0.1:
             # Crossed integer boundary → phase transition
             new_state.n = min(state.n + 1, 3)
-        
+
         return new_state
 ```
 
@@ -386,20 +386,20 @@ System stays in ground state (optimal plan)
 ```python
 class AdiabaticPlanner:
     """Adiabatic optimization for project planning."""
-    
+
     def __init__(self, seed: int = 12345, total_steps: int = 100):
         self.seed = seed
         self.total_steps = total_steps
         self._rng = random.Random(seed)
-    
+
     def beta_schedule(self, step: int) -> float:
         """
         Annealing schedule β(t).
-        
+
         Linear schedule: β(t) = t / T
         """
         return step / self.total_steps
-    
+
     def exploration_hamiltonian(self, tasks: List[Task]) -> float:
         """
         H_explore: Encourages trying different task orderings.
@@ -407,31 +407,31 @@ class AdiabaticPlanner:
         # Entropy-based: higher entropy = more exploration
         if not tasks:
             return 0.0
-        
+
         # Deterministic entropy from task priorities
         priorities = [t.priority for t in tasks]
         total = sum(priorities)
         if total == 0:
             return 0.0
-        
+
         probs = [p / total for p in priorities]
         entropy = -sum(p * math.log(p + 1e-10) for p in probs)
-        
+
         return entropy
-    
+
     def exploitation_hamiltonian(self, tasks: List[Task]) -> float:
         """
         H_exploit: Favors high-priority, ready tasks.
         """
         if not tasks:
             return 0.0
-        
+
         # Sum of priority-weighted readiness
         return sum(
             t.priority * (1.0 if not t.dependencies else 0.5)
             for t in tasks
         )
-    
+
     def interpolated_energy(
         self,
         tasks: List[Task],
@@ -443,51 +443,51 @@ class AdiabaticPlanner:
         beta = self.beta_schedule(step)
         E_explore = self.exploration_hamiltonian(tasks)
         E_exploit = self.exploitation_hamiltonian(tasks)
-        
+
         return (1 - beta) * E_explore + beta * E_exploit
-    
+
     def optimize(
         self,
         tasks: List[Task],
     ) -> List[Task]:
         """
         Find ground state (optimal ordering) via adiabatic evolution.
-        
+
         Returns: Optimally ordered task list
         """
         current_ordering = tasks.copy()
-        
+
         for step in range(self.total_steps):
             # Current energy
             current_energy = self.interpolated_energy(current_ordering, step)
-            
+
             # Try perturbation (deterministic)
             perturb_seed = hash((self.seed, step))
             perturb_rng = random.Random(perturb_seed)
-            
+
             if len(current_ordering) < 2:
                 continue
-            
+
             # Swap two tasks
             i = perturb_rng.randint(0, len(current_ordering) - 1)
             j = perturb_rng.randint(0, len(current_ordering) - 1)
-            
+
             # Create new ordering
             new_ordering = current_ordering.copy()
             new_ordering[i], new_ordering[j] = new_ordering[j], new_ordering[i]
-            
+
             # Check energy
             new_energy = self.interpolated_energy(new_ordering, step)
-            
+
             # Accept if lower energy (greedy) or with probability (early steps)
             beta = self.beta_schedule(step)
             accept_prob = math.exp(beta * (current_energy - new_energy))
-            
+
             # Deterministic acceptance
             accept_rand = perturb_rng.random()
             if new_energy < current_energy or accept_rand < accept_prob:
                 current_ordering = new_ordering
-        
+
         return current_ordering
 ```
 
@@ -509,12 +509,12 @@ Correlation: ⟨task_i | task_j⟩ ≠ 0
 ```python
 class TaskEntanglementAnalyzer:
     """Analyze task correlation and entanglement."""
-    
+
     @staticmethod
     def entanglement_strength(task_a: Task, task_b: Task) -> float:
         """
         Measure entanglement between tasks.
-        
+
         Strength ∈ [0, 1]:
         - 0: No correlation (independent)
         - 1: Maximally entangled (strong dependency)
@@ -522,29 +522,29 @@ class TaskEntanglementAnalyzer:
         # Direct dependency
         if task_b.id in task_a.dependencies:
             return 1.0
-        
+
         if task_a.id in task_b.dependencies:
             return 1.0
-        
+
         # Indirect dependency (transitive)
         # Check if they share resources
         shared_resources = set(task_a.requirements.keys()) & set(task_b.requirements.keys())
         if shared_resources:
             return 0.5
-        
+
         # No correlation
         return 0.0
-    
+
     @staticmethod
     def entanglement_matrix(tasks: List[Task]) -> List[List[float]]:
         """
         Compute full entanglement matrix.
-        
+
         E_ij = entanglement between task_i and task_j
         """
         n = len(tasks)
         matrix = [[0.0] * n for _ in range(n)]
-        
+
         for i, task_a in enumerate(tasks):
             for j, task_b in enumerate(tasks):
                 if i == j:
@@ -553,39 +553,39 @@ class TaskEntanglementAnalyzer:
                     matrix[i][j] = TaskEntanglementAnalyzer.entanglement_strength(
                         task_a, task_b
                     )
-        
+
         return matrix
-    
+
     @staticmethod
     def find_entangled_clusters(tasks: List[Task]) -> List[List[Task]]:
         """
         Find maximally entangled task clusters.
-        
+
         Returns: List of task groups that should be executed together
         """
         entanglement = TaskEntanglementAnalyzer.entanglement_matrix(tasks)
         n = len(tasks)
-        
+
         # Union-find for clustering
         parent = list(range(n))
-        
+
         def find(x):
             if parent[x] != x:
                 parent[x] = find(parent[x])
             return parent[x]
-        
+
         def union(x, y):
             px, py = find(x), find(y)
             if px != py:
                 parent[px] = py
-        
+
         # Group highly entangled tasks
         threshold = 0.5
         for i in range(n):
             for j in range(i + 1, n):
                 if entanglement[i][j] >= threshold:
                     union(i, j)
-        
+
         # Extract clusters
         clusters = {}
         for i in range(n):
@@ -593,7 +593,7 @@ class TaskEntanglementAnalyzer:
             if root not in clusters:
                 clusters[root] = []
             clusters[root].append(tasks[i])
-        
+
         return list(clusters.values())
 ```
 
@@ -647,20 +647,20 @@ class ProjectQuantumState:
 class DeterministicQuantumPlanner:
     """
     Complete deterministic planner using quantum principles.
-    
+
     Given same seed and inputs → produces identical plan every time.
     """
-    
+
     def __init__(self, seed: int = 12345):
         """Initialize with fixed seed for determinism."""
         self.seed = seed
         self._rng = random.Random(seed)
-        
+
         # Operators
         self.task_selector = TaskSelectionOperator(seed)
         self.resource_allocator = ResourceAllocationOperator(seed)
         self.adiabatic_optimizer = AdiabaticPlanner(seed)
-        
+
         # State
         self.quantum_state = ProjectQuantumState(
             n=0,  # Planning phase
@@ -670,11 +670,11 @@ class DeterministicQuantumPlanner:
             seed=seed,
             t=0.0,
         )
-        
+
         # History
         self.state_history: List[ProjectQuantumState] = []
         self.measurement_log: List[Dict] = []
-    
+
     def plan(
         self,
         tasks: List[Task],
@@ -683,7 +683,7 @@ class DeterministicQuantumPlanner:
     ) -> Dict:
         """
         Generate deterministic project plan.
-        
+
         Returns:
             Complete project schedule with:
             - Task ordering
@@ -697,23 +697,23 @@ class DeterministicQuantumPlanner:
             "n_resources": len(resources),
             "start_date": start_date.isoformat(),
         })
-        
+
         # Phase 1: Adiabatic optimization for task ordering
         self.quantum_state.n = 0
         self.quantum_state.l = self._estimate_complexity(tasks)
-        
+
         optimized_tasks = self.adiabatic_optimizer.optimize(tasks)
         self._log_measurement("optimization", {
             "ordering": [t.id for t in optimized_tasks],
         })
-        
+
         # Phase 2: Dependency resolution
         self.quantum_state.n = 1
         sorted_tasks = DependencyOperator.topological_sort(optimized_tasks)
         self._log_measurement("dependency_resolution", {
             "topological_order": [t.id for t in sorted_tasks],
         })
-        
+
         # Phase 3: Resource allocation and scheduling
         self.quantum_state.n = 2
         schedule = self._create_schedule(
@@ -721,11 +721,11 @@ class DeterministicQuantumPlanner:
             resources,
             start_date,
         )
-        
+
         # Phase 4: Validation
         self.quantum_state.n = 3
         validation = self._validate_plan(schedule, resources)
-        
+
         return {
             "schedule": schedule,
             "quantum_trajectory": self.state_history.copy(),
@@ -733,12 +733,12 @@ class DeterministicQuantumPlanner:
             "validation": validation,
             "determinism_hash": self._compute_determinism_hash(),
         }
-    
+
     def _estimate_complexity(self, tasks: List[Task]) -> int:
         """Estimate project complexity (l quantum number)."""
         n_tasks = len(tasks)
         avg_deps = sum(len(t.dependencies) for t in tasks) / max(n_tasks, 1)
-        
+
         if n_tasks < 5 and avg_deps < 1:
             return 0  # Simple
         elif n_tasks < 20 and avg_deps < 3:
@@ -747,7 +747,7 @@ class DeterministicQuantumPlanner:
             return 2  # Complex
         else:
             return 3  # Very complex
-    
+
     def _create_schedule(
         self,
         tasks: List[Task],
@@ -758,47 +758,47 @@ class DeterministicQuantumPlanner:
         schedule = {}
         completed = set()
         current_time = start_date
-        
+
         resource_availability = {r.id: r.available for r in resources}
-        
+
         while len(completed) < len(tasks):
             # Get executable tasks
             executable = DependencyOperator.get_executable_tasks(
                 tasks, completed
             )
-            
+
             if not executable:
                 break  # No more tasks or deadlock
-            
+
             # Select next task (measurement)
             selected = self.task_selector.measure(executable, self.quantum_state)
-            
+
             # Allocate resources
             allocation = self.resource_allocator.measure(
                 selected, resources, self.quantum_state
             )
-            
+
             # Check resource availability
             can_start = all(
                 resource_availability[res.id] >= selected.requirements.get(res.type, 0)
                 for res in allocation.values()
             )
-            
+
             if not can_start:
                 # Wait for resources
                 current_time += timedelta(hours=1)
                 self.quantum_state.t += 0.1
                 continue
-            
+
             # Reserve resources
             for res_type, resource in allocation.items():
                 resource_availability[resource.id] -= selected.requirements[res_type]
-            
+
             # Schedule task
             selected.start_time = current_time
             selected.end_time = current_time + timedelta(hours=selected.duration)
             selected.completed = True
-            
+
             schedule[selected.id] = {
                 "task": selected,
                 "start": selected.start_time,
@@ -806,24 +806,24 @@ class DeterministicQuantumPlanner:
                 "resources": {k: v.id for k, v in allocation.items()},
                 "quantum_state": self.quantum_state.to_ket(),
             }
-            
+
             completed.add(selected.id)
             current_time = selected.end_time
             self.quantum_state.t += selected.duration / 10.0
-            
+
             # Release resources
             for res_type, resource in allocation.items():
                 resource_availability[resource.id] += selected.requirements[res_type]
-            
+
             # Log
             self._log_measurement("task_scheduled", {
                 "task_id": selected.id,
                 "start": selected.start_time.isoformat(),
                 "end": selected.end_time.isoformat(),
             })
-        
+
         return schedule
-    
+
     def _validate_plan(self, schedule: Dict, resources: List[Resource]) -> Dict:
         """Validate plan consistency."""
         return {
@@ -832,7 +832,7 @@ class DeterministicQuantumPlanner:
             "resources_sufficient": self._check_resources(schedule, resources),
             "deterministic": True,  # By construction
         }
-    
+
     def _check_dependencies(self, schedule: Dict) -> bool:
         """Check if all dependencies are satisfied."""
         for task_id, entry in schedule.items():
@@ -843,12 +843,12 @@ class DeterministicQuantumPlanner:
                 if schedule[dep_id]["end"] > entry["start"]:
                     return False
         return True
-    
+
     def _check_resources(self, schedule: Dict, resources: List[Resource]) -> bool:
         """Check if resource allocations are valid."""
         # Simplified check
         return all("resources" in entry for entry in schedule.values())
-    
+
     def _log_measurement(self, measurement_type: str, data: Dict):
         """Log quantum measurement."""
         self.measurement_log.append({
@@ -858,11 +858,11 @@ class DeterministicQuantumPlanner:
             "data": data,
         })
         self.state_history.append(self.quantum_state)
-    
+
     def _compute_determinism_hash(self) -> str:
         """Compute hash proving determinism."""
         import hashlib
-        
+
         # Hash all measurements
         content = json.dumps(self.measurement_log, sort_keys=True)
         return hashlib.sha256(content.encode()).hexdigest()[:16]
@@ -908,20 +908,20 @@ print("✓ Plans are identical (deterministic)")
 def validate_determinism(seed: int, n_runs: int = 10) -> bool:
     """
     Validate that planner is truly deterministic.
-    
+
     Runs planner n_runs times with same seed,
     verifies all outputs are identical.
     """
     tasks = generate_test_tasks()
     resources = generate_test_resources()
     start_date = datetime(Current Cycle, 1, 1)
-    
+
     hashes = []
     for _ in range(n_runs):
         planner = DeterministicQuantumPlanner(seed=seed)
         plan = planner.plan(tasks, resources, start_date)
         hashes.append(plan["determinism_hash"])
-    
+
     # All hashes must be identical
     return len(set(hashes)) == 1
 ```
@@ -932,17 +932,17 @@ def validate_determinism(seed: int, n_runs: int = 10) -> bool:
 @dataclass
 class QuantumPlanMetrics:
     """Metrics for quantum planning."""
-    
+
     # Wave function properties
     total_probability: float  # Should be ~1.0
     coherence_time: float  # How long plan stays valid
     entanglement_entropy: float  # Task correlation
-    
+
     # Performance
     makespan: float  # Total project duration
     resource_utilization: float  # % resources used
     critical_path_length: float  # Longest dependency chain
-    
+
     # Determinism
     determinism_verified: bool
     seed_sensitivity: float  # How much seed affects output
@@ -1213,7 +1213,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -1402,7 +1402,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

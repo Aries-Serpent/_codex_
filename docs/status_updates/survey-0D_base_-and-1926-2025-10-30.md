@@ -2415,7 +2415,7 @@ curricula across training, evaluation, and deployment.
 
 | Phase | Objective | Dataset preset | Signals |
 | --- | --- | --- | --- |
-| Warm-up | Stabilise reasoning traces | `datasets/reasoning/warmup.jsonl` | Trace coverage, loss | 
+| Warm-up | Stabilise reasoning traces | `datasets/reasoning/warmup.jsonl` | Trace coverage, loss |
 | First principles | Teach decomposition heuristics | `datasets/reasoning/first_principles.jsonl` | Win rate, critique density |
 | Challenge set | Stress bespoke behaviors | `datasets/reasoning/challenge.jsonl` | Latency deltas, judge disagreement |
 

@@ -10,15 +10,15 @@ fn complex_operation(input: &str, config: &str) -> PyResult<String> {
     // Parse input
     let data = parse_input(input)
         .map_err(|e| PyValueError::new_err(format!("Invalid input: {}", e)))?;
-    
+
     // Load config
     let cfg = load_config(config)
         .map_err(|e| PyIOError::new_err(format!("Config error: {}", e)))?;
-    
+
     // Process with config
     let result = process_with_config(&data, &cfg)
         .map_err(|e| PyRuntimeError::new_err(format!("Processing failed: {}", e)))?;
-    
+
     Ok(result)
 }
 ```
@@ -73,11 +73,11 @@ fn validate_and_process(input: &str) -> PyResult<String> {
     if input.is_empty() {
         return Err(PyValueError::new_err("Input cannot be empty"));
     }
-    
+
     if !is_valid_format(input) {
         return Err(PyValueError::new_err("Invalid format"));
     }
-    
+
     // Process
     let result = process(input)?;
     Ok(result)
@@ -122,12 +122,12 @@ fn load_and_process(path: &str, format: &str) -> PyResult<Output> {
         .map_err(|e| PyIOError::new_err(
             format!("Failed to load file '{}': {}", path, e)
         ))?;
-    
+
     let parsed = parse_data(&data, format)
         .map_err(|e| PyValueError::new_err(
             format!("Failed to parse as {}: {}", format, e)
         ))?;
-    
+
     Ok(process(parsed))
 }
 ```
@@ -156,22 +156,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install validator
         run: |
           pip install click pyyaml
-      
+
       - name: Run validation
         run: |
           python .github/agents/rust-error-validator/src/agent.py \
             --dir ./rust_src \
             --format json > findings.json
-      
+
       - name: Check findings
         run: |
           HIGH_COUNT=$(jq '.severity_breakdown.high' findings.json)
@@ -179,7 +179,7 @@ jobs:
             echo "Found $HIGH_COUNT high severity issues"
             exit 1
           fi
-      
+
       - name: Upload findings
         if: always()
         uses: actions/upload-artifact@v4
@@ -441,7 +441,7 @@ prompt: |
   - Parameter 1: value1
   - Parameter 2: value2
   - Options: [option_a, option_b]
-  
+
   Validation requirements:
   - Requirement 1
   - Requirement 2
@@ -630,7 +630,7 @@ requests>=2.31.0
 
 #### 1. Input Validation Failure
 **Symptoms**: Agent rejects input parameters  
-**Recovery**: 
+**Recovery**:
 - Validate input format
 - Check required fields
 - Verify value ranges

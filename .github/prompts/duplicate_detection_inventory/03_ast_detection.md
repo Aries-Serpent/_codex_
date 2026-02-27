@@ -47,15 +47,15 @@ class FunctionSignature:
 
 class PythonASTParser:
     """Parses Python files to extract functions/classes."""
-    
+
     def parse_file(self, file_path: Path) -> List[FunctionSignature]:
         """Extract all functions from file."""
         pass
-    
+
     def compute_ast_hash(self, node: ast.AST) -> str:
         """Compute hash of AST structure."""
         pass
-    
+
     def get_structural_similarity(self, ast1: ast.AST, ast2: ast.AST) -> float:
         """Compute similarity score (0.0-1.0)."""
         pass
@@ -90,19 +90,19 @@ class PythonASTParser:
 ```python
 class ASTDetector:
     """Detects duplicates at function/class level."""
-    
+
     def __init__(self, root_path: Path, similarity_threshold: float = 0.85):
         """Initialize with threshold."""
         pass
-    
+
     def scan(self) -> List[DuplicateGroup]:
         """Scan repository for AST-level duplicates."""
         pass
-    
+
     def find_identical_functions(self) -> List[DuplicateGroup]:
         """Find functions with identical AST."""
         pass
-    
+
     def find_similar_functions(self) -> List[DuplicateGroup]:
         """Find functions with similar AST (above threshold)."""
         pass
@@ -128,11 +128,11 @@ class ASTDetector:
 ```python
 class ASTSimilarity:
     """Computes similarity between AST structures."""
-    
+
     def compare(self, ast1: ast.AST, ast2: ast.AST) -> float:
         """Return similarity score."""
         pass
-    
+
     def tree_edit_distance(self, ast1: ast.AST, ast2: ast.AST) -> int:
         """Compute edit distance between trees."""
         pass
@@ -152,15 +152,15 @@ class ASTSimilarity:
 ```python
 class ParserRegistry:
     """Registry of AST parsers by language."""
-    
+
     def get_parser(self, language: str) -> Optional[ASTParser]:
         """Get parser for language."""
         pass
-    
+
     def register(self, language: str, parser: ASTParser):
         """Register custom parser."""
         pass
-    
+
     def detect_language(self, file_path: Path) -> Optional[str]:
         """Detect language from file extension."""
         pass

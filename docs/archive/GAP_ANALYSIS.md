@@ -51,7 +51,7 @@ This report documents the changes made to address PR feedback, fix CI failures, 
 
 **Issue**: 318 files failed Black formatting checks, causing code quality workflow to fail.
 
-**Solution**: 
+**Solution**:
 - Installed Black 25.12.0 with proper configuration
 - Auto-formatted 547 files across the codebase
 - All formatting issues resolved
@@ -65,7 +65,7 @@ The following failures existed before our changes and are not caused by this PR:
 #### a. Smoke Test Failures
 
 **test_cli_determinism_wiring**:
-- Missing `codex_script` module 
+- Missing `codex_script` module
 - Function `_init_determinism_from_env` not implemented
 - Test added in commit 2370a96e but implementation incomplete
 

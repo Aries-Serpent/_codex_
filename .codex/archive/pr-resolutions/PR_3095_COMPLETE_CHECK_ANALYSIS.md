@@ -224,7 +224,7 @@ grep -rn "\.to(device)" src/codex/rag/
 pytest tests/test_rag*.py -v --tb=short
 ```
 
-**Expected Impact**: 
+**Expected Impact**:
 - Resolves 30 RAG test failures
 - Resolves 10 Testing Suite failures
 - Unblocks integration tests

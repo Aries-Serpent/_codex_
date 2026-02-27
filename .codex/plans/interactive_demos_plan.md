@@ -75,7 +75,7 @@ import sys
 @dataclass
 class Example:
     name: str
-    
+
 # System shows:
 # ✓ Used: dataclass
 # ✗ Unused: field, List, Optional, math, sys
@@ -490,7 +490,7 @@ docs/
     <section class="demo-explanation">
       <h2>What is Quantum Advantage?</h2>
       <p>
-        The _codex_ cognitive brain achieves a <strong>5.56x quantum advantage</strong> 
+        The _codex_ cognitive brain achieves a <strong>5.56x quantum advantage</strong>
         over baseline performance, measured by the k₁ constant:
       </p>
       <div class="formula">
@@ -498,14 +498,14 @@ docs/
         <p><strong>Quantum Advantage = 1 / k₁</strong></p>
       </div>
       <p>
-        For example, if k₁ = 0.18 (18% of original time), 
+        For example, if k₁ = 0.18 (18% of original time),
         quantum advantage = 1/0.18 ≈ 5.56x faster.
       </p>
     </section>
 
     <section class="demo-calculator">
       <h2>Interactive Calculator</h2>
-      
+
       <div class="input-group">
         <label for="baseline-time">Baseline Time (seconds):</label>
         <input type="number" id="baseline-time" value="100" min="1" step="1">
@@ -610,7 +610,7 @@ docs/
 
     function updateChart(baseline, improved) {
       const ctx = document.getElementById('comparison-chart').getContext('2d');
-      
+
       if (chart) {
         chart.destroy();
       }
@@ -848,7 +848,7 @@ docs/
   .demo-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .example-grid {
     grid-template-columns: 1fr;
   }

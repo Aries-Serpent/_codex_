@@ -26,36 +26,36 @@ jobs:
   check-documentation-links:
     name: Validate Documentation Links
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           # Install only minimal dependencies needed for validation scripts
           pip install pyyaml requests
-      
+
       - name: Check Documentation Links
         id: link-check
         run: |
           echo "🔍 Checking documentation links..."
-          
+
           # Run link validator
           python scripts/validate_docs_links.py --validate-anchors > link-check-results.txt 2>&1 || true
-          
+
           # Extract results
           BROKEN_LINKS=$(grep -c "❌" link-check-results.txt || echo "0")
           echo "broken_links=${BROKEN_LINKS}" >> $GITHUB_OUTPUT
-          
+
           cat link-check-results.txt
-      
+
       - name: Upload Link Check Results
         uses: actions/upload-artifact@v4
         with:
@@ -66,38 +66,38 @@ jobs:
   check-documentation-freshness:
     name: Check Documentation Freshness
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Need full history for last modified dates
-      
+
       - name: Analyze Documentation Age
         id: freshness
         run: |
           echo "📅 Analyzing documentation freshness..."
-          
+
           # Find all markdown files
           find docs .codex/docs -name "*.md" -type f > doc-files.txt
-          
+
           # Check last modified date for each
           STALE_DOCS=""
           TOTAL_DOCS=0
           STALE_COUNT=0
-          
+
           while IFS= read -r file; do
             TOTAL_DOCS=$((TOTAL_DOCS + 1))
-            
+
             # Get last commit date for this file
             LAST_MODIFIED=$(git log -1 --format=%cd --date=short "$file" 2>/dev/null || echo "unknown")
-            
+
             if [ "$LAST_MODIFIED" != "unknown" ]; then
               # Calculate age in days
               LAST_MODIFIED_EPOCH=$(date -d "$LAST_MODIFIED" +%s)
               NOW_EPOCH=$(date +%s)
               AGE_DAYS=$(( (NOW_EPOCH - LAST_MODIFIED_EPOCH) / 86400 ))
-              
+
               # Flag if older than 90 days
               if [ "$AGE_DAYS" -gt 90 ]; then
                 STALE_DOCS+="$file ($AGE_DAYS days)\n"
@@ -105,26 +105,26 @@ jobs:
               fi
             fi
           done < doc-files.txt
-          
+
           echo "total_docs=${TOTAL_DOCS}" >> $GITHUB_OUTPUT
           echo "stale_docs=${STALE_COUNT}" >> $GITHUB_OUTPUT
-          
+
           echo "Total documentation files: $TOTAL_DOCS"
           echo "Stale documentation files: $STALE_COUNT"
-          
+
           if [ "$STALE_COUNT" -gt 0 ]; then
             echo "⚠️  Stale documentation (>90 days):"
             echo -e "$STALE_DOCS"
           fi
-      
+
       - name: Check for "Current" Placeholders
         id: check-placeholders
         run: |
           echo "🔍 Checking for date placeholders..."
-          
+
           # Find files with "Current" instead of actual dates
           PLACEHOLDER_FILES=$(grep -r "Last Updated.*Current" docs/ .codex/docs/ 2>/dev/null | cut -d: -f1 | sort -u || echo "")
-          
+
           if [ -n "$PLACEHOLDER_FILES" ]; then
             echo "has_placeholders=true" >> $GITHUB_OUTPUT
             echo "⚠️  Files with 'Current' placeholder:"
@@ -137,19 +137,19 @@ jobs:
   check-documentation-structure:
     name: Validate Documentation Structure
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Check Table of Contents
         id: toc-check
         run: |
           echo "📑 Checking table of contents..."
-          
+
           # Check if README files have TOC
           MISSING_TOC=""
-          
+
           for readme in README.md docs/README.md .codex/docs/README.md; do
             if [ -f "$readme" ]; then
               if ! grep -q -i "table of contents\|toc" "$readme"; then
@@ -157,7 +157,7 @@ jobs:
               fi
             fi
           done
-          
+
           if [ -n "$MISSING_TOC" ]; then
             echo "missing_toc=true" >> $GITHUB_OUTPUT
             echo "⚠️  Files missing table of contents:"
@@ -166,41 +166,41 @@ jobs:
             echo "missing_toc=false" >> $GITHUB_OUTPUT
             echo "✅ All README files have table of contents"
           fi
-      
+
       - name: Check Code Blocks
         id: code-blocks
         run: |
           echo "💻 Validating code blocks..."
-          
+
           # Run code fence validator
           python scripts/validate_code_fences.py --check > code-fence-results.txt 2>&1 || true
-          
+
           ISSUES=$(grep -c "Issue" code-fence-results.txt || echo "0")
           echo "code_block_issues=${ISSUES}" >> $GITHUB_OUTPUT
-          
+
           cat code-fence-results.txt
-      
+
       - name: Check Markdown Formatting
         id: formatting
         run: |
           echo "📝 Checking markdown formatting..."
-          
+
           # Check for common formatting issues
           FORMATTING_ISSUES=0
-          
+
           # Check for trailing whitespace
           if grep -r " $" docs/ .codex/docs/ --include="*.md" > /dev/null 2>&1; then
             echo "⚠️  Trailing whitespace detected"
             FORMATTING_ISSUES=$((FORMATTING_ISSUES + 1))
           fi
-          
+
           # Check for missing blank lines before tables
           python scripts/validate_table_spacing.py --check > table-spacing-results.txt 2>&1 || true
           TABLE_ISSUES=$(grep -c "Issue" table-spacing-results.txt || echo "0")
           FORMATTING_ISSUES=$((FORMATTING_ISSUES + TABLE_ISSUES))
-          
+
           echo "formatting_issues=${FORMATTING_ISSUES}" >> $GITHUB_OUTPUT
-          
+
           if [ "$FORMATTING_ISSUES" -eq 0 ]; then
             echo "✅ No formatting issues found"
           else
@@ -212,37 +212,37 @@ jobs:
     needs: [check-documentation-links, check-documentation-freshness, check-documentation-structure]
     runs-on: ubuntu-latest
     if: always()
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+
       - name: Calculate Coverage
         id: coverage
         run: |
           echo "📊 Calculating documentation coverage..."
-          
+
           # Count source files
           PYTHON_FILES=$(find src -name "*.py" -type f | wc -l)
-          
+
           # Count documented modules (with docstrings)
           DOCUMENTED=$(find src -name "*.py" -type f -exec grep -l '"""' {} \; | wc -l)
-          
+
           # Calculate coverage
           if [ "$PYTHON_FILES" -gt 0 ]; then
             COVERAGE=$(awk "BEGIN {printf \"%.1f\", ($DOCUMENTED/$PYTHON_FILES)*100}")
           else
             COVERAGE="0"
           fi
-          
+
           echo "python_files=${PYTHON_FILES}" >> $GITHUB_OUTPUT
           echo "documented=${DOCUMENTED}" >> $GITHUB_OUTPUT
           echo "coverage=${COVERAGE}" >> $GITHUB_OUTPUT
-          
+
           echo "Python files: $PYTHON_FILES"
           echo "Documented: $DOCUMENTED"
           echo "Coverage: ${COVERAGE}%"
-      
+
       - name: Generate Quality Score
         id: quality-score
         run: |
@@ -251,30 +251,30 @@ jobs:
           STALE_DOCS=${{ needs.check-documentation-freshness.outputs.stale_docs || '0' }}
           TOTAL_DOCS=${{ needs.check-documentation-freshness.outputs.total_docs || '1' }}
           COVERAGE=${{ steps.coverage.outputs.coverage }}
-          
+
           # Quality score calculation
           # Start with 100, deduct points for issues
           SCORE=100
-          
+
           # Deduct for broken links (5 points each, max 50)
           LINK_DEDUCTION=$((BROKEN_LINKS * 5))
           if [ "$LINK_DEDUCTION" -gt 50 ]; then
             LINK_DEDUCTION=50
           fi
           SCORE=$((SCORE - LINK_DEDUCTION))
-          
+
           # Deduct for stale docs (based on percentage)
           if [ "$TOTAL_DOCS" -gt 0 ]; then
             STALE_PERCENT=$((STALE_DOCS * 100 / TOTAL_DOCS))
             STALE_DEDUCTION=$((STALE_PERCENT / 2))  # Up to 50 points
             SCORE=$((SCORE - STALE_DEDUCTION))
           fi
-          
+
           # Bonus for high coverage
           if [ "$(echo "$COVERAGE >= 90" | bc)" -eq 1 ]; then
             SCORE=$((SCORE + 10))
           fi
-          
+
           # Ensure score is between 0-100
           if [ "$SCORE" -lt 0 ]; then
             SCORE=0
@@ -282,14 +282,14 @@ jobs:
           if [ "$SCORE" -gt 100 ]; then
             SCORE=100
           fi
-          
+
           echo "quality_score=${SCORE}" >> $GITHUB_OUTPUT
           echo "Documentation Quality Score: ${SCORE}/100"
-      
+
       - name: Generate Health Dashboard
         run: |
           QUALITY_SCORE=${{ steps.quality-score.outputs.quality_score }}
-          
+
           # Determine status emoji
           if [ "$QUALITY_SCORE" -ge 90 ]; then
             STATUS_EMOJI="🟢"
@@ -304,15 +304,15 @@ jobs:
             STATUS_EMOJI="🔴"
             STATUS_TEXT="Needs Improvement"
           fi
-          
+
           cat > .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md << EOF
           # Documentation Health Dashboard
-          
+
           **Last Updated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
           **Quality Score:** ${QUALITY_SCORE}/100 ${STATUS_EMOJI} **${STATUS_TEXT}**
-          
+
           ## Coverage Metrics
-          
+
           | Metric | Value | Status |
           |--------|-------|--------|
           | Python Files | ${{ steps.coverage.outputs.python_files }} | - |
@@ -320,43 +320,43 @@ jobs:
           | Documentation Coverage | ${{ steps.coverage.outputs.coverage }}% | $([ "$(echo "${{ steps.coverage.outputs.coverage }} >= 80" | bc)" -eq 1 ] && echo "✅" || echo "⚠️") |
           | Broken Links | ${{ needs.check-documentation-links.outputs.broken_links || '0' }} | $([ "${{ needs.check-documentation-links.outputs.broken_links || '0' }}" -eq 0 ] && echo "✅" || echo "❌") |
           | Stale Documents | ${{ needs.check-documentation-freshness.outputs.stale_docs || '0' }} / ${{ needs.check-documentation-freshness.outputs.total_docs || '0' }} | $([ "${{ needs.check-documentation-freshness.outputs.stale_docs || '0' }}" -eq 0 ] && echo "✅" || echo "⚠️") |
-          
+
           ## Recent Updates
-          
+
           - $(date +%Y-%m-%d): Generated documentation health dashboard
           - $(date +%Y-%m-%d): Validated cache management documentation
           - $(date +%Y-%m-%d): Updated RAG module documentation
-          
+
           ## Action Items
-          
+
           EOF
-          
+
           # Add action items based on metrics
           if [ "${{ needs.check-documentation-links.outputs.broken_links || '0' }}" -gt 0 ]; then
             echo "- [ ] Fix ${{ needs.check-documentation-links.outputs.broken_links }} broken links" >> .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
           fi
-          
+
           if [ "${{ needs.check-documentation-freshness.outputs.stale_docs || '0' }}" -gt 0 ]; then
             echo "- [ ] Update ${{ needs.check-documentation-freshness.outputs.stale_docs }} stale documents" >> .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
           fi
-          
+
           if [ "${{ needs.check-documentation-freshness.outputs.has_placeholders }}" == "true" ]; then
             echo "- [ ] Replace 'Current' placeholders with actual dates" >> .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
           fi
-          
+
           if [ "$(echo "${{ steps.coverage.outputs.coverage }} < 80" | bc)" -eq 1 ]; then
             echo "- [ ] Improve documentation coverage to 80%+" >> .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
           fi
-          
+
           cat .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
-      
+
       - name: Upload Dashboard
         uses: actions/upload-artifact@v4
         with:
           name: documentation-health-dashboard
           path: .codex/docs/DOCUMENTATION_HEALTH_DASHBOARD.md
           retention-days: 90
-      
+
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -366,32 +366,32 @@ jobs:
             const coverage = ${{ steps.coverage.outputs.coverage }};
             const brokenLinks = ${{ needs.check-documentation-links.outputs.broken_links || 0 }};
             const staleDocs = ${{ needs.check-documentation-freshness.outputs.stale_docs || 0 }};
-            
+
             let status = '🟢 Excellent';
             if (qualityScore < 90) status = '🟡 Good';
             if (qualityScore < 75) status = '🟠 Fair';
             if (qualityScore < 60) status = '🔴 Needs Improvement';
-            
+
             const comment = `## 📚 Documentation Quality Report
-            
+
             **Quality Score:** ${qualityScore}/100 ${status}
-            
+
             ### Metrics
             - **Coverage:** ${coverage}%
             - **Broken Links:** ${brokenLinks}
             - **Stale Documents:** ${staleDocs}
-            
+
             ${qualityScore >= 90 ? '✅ Documentation quality is excellent!' : ''}
             ${qualityScore < 90 ? '💡 See artifacts for detailed recommendations' : ''}
             `;
-            
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: comment
             });
-      
+
       - name: Summary
         run: |
           echo "## 📚 Documentation Quality Summary" >> $GITHUB_STEP_SUMMARY

@@ -23,12 +23,12 @@ sequence:
   - agent: ci-log-retrieval-agent
     action: fetch_logs
     output: logs
-  
+
   - agent: dependency-conflict-agent
     action: analyze_dependencies
     input: logs
     output: dependency_analysis
-  
+
   - agent: workflow-ci-fixer
     action: apply_fixes
     input: dependency_analysis
@@ -54,10 +54,10 @@ primary_agent: qa-walkthrough-agent
 parallel:
   - agent: test-coverage-monitor
     action: check_coverage
-  
+
   - agent: test-alignment-fixer
     action: verify_alignment
-  
+
   - agent: integration-test-runner
     action: run_tests
 
@@ -85,13 +85,13 @@ primary_agent: artifact-monitor-agent
 decision_tree:
   - condition: failure_type == 'test_failure'
     agent: ci-testing-agent
-  
+
   - condition: failure_type == 'dependency_conflict'
     agent: dependency-conflict-agent
-  
+
   - condition: failure_type == 'coverage_drop'
     agent: coverage-roadmap-agent
-  
+
   - default:
     agent: ci-emergency-response-agent
 ```
@@ -120,7 +120,7 @@ delegates:
         action: update_references
       - agent: link-validator-agent
         action: validate_links
-  
+
   - agent: documentation-consolidator
     delegates:
       - agent: documentation-quality-agent
@@ -176,7 +176,7 @@ Add to agent markdown file:
 
 ### Activation Example
 ```
-@copilot Use CI Testing Agent to diagnose the failure, 
+@copilot Use CI Testing Agent to diagnose the failure,
 then chain to CI Log Retrieval Agent for detailed logs,
 then apply fixes using Workflow CI Fixer
 ```
@@ -190,21 +190,21 @@ Add to `agent.yml`:
 agent:
   name: ci-testing-agent
   version: 1.0.0
-  
+
   chains:
     sequential:
       - agent: ci-log-retrieval-agent
         trigger: on_diagnosis_complete
         pass_data: [failure_type, commit_sha]
-      
+
       - agent: dependency-conflict-agent
         trigger: if_dependency_issue
         pass_data: [requirements_files]
-    
+
     parallel:
       - agent: test-coverage-monitor
       - agent: test-failure-analyzer-agent
-    
+
     delegates:
       - agent: workflow-ci-fixer
         trigger: on_fix_needed
@@ -220,26 +220,26 @@ class CITestingAgent(Agent):
     def execute(self, context):
         # Main logic
         result = self.diagnose(context)
-        
+
         # Chain to next agent
         if result.needs_logs:
             logs = self.chain_to('ci-log-retrieval-agent', {
                 'run_id': result.run_id
             })
-        
+
         # Parallel execution
         analyses = self.parallel_chain([
             ('dependency-conflict-agent', context),
             ('test-coverage-monitor', context)
         ])
-        
+
         # Conditional delegation
         if result.needs_fix:
             self.delegate_to('workflow-ci-fixer', {
                 'fix_type': result.fix_type,
                 'approval': True
             })
-        
+
         return result
 ```
 
@@ -385,21 +385,21 @@ orchestration:
   can_be_chained: true
   can_delegate: true
   can_accept_delegation: true
-  
+
   recommended_chains:
     - agent: ci-log-retrieval-agent
       when: needs_logs
       priority: high
-    
+
     - agent: dependency-conflict-agent
       when: dependency_failure
       priority: high
-  
+
   chain_protocols:
     - sequential
     - parallel
     - conditional
-  
+
   data_requirements:
     input: [run_id, failure_type]
     output: [diagnosis, recommendations, fixes]

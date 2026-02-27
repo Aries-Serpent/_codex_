@@ -30,7 +30,7 @@ requires-python = ">=3.11"
 
 **Status**: ✅ Currently allows 3.12, just needs testing and explicit support
 
-**Workflows**: 
+**Workflows**:
 - 47 workflows use Python 3.12
 - 2 workflows already use Python 3.12:
   - `optimized-ci.yml`
@@ -64,7 +64,7 @@ grep -r "import imp\|from imp" --include="*.py" . | wc -l
    # Old (Python < 3.12)
    import imp
    module = imp.load_source('name', 'path')
-   
+
    # New (Python 3.12+)
    import importlib.util
    spec = importlib.util.spec_from_file_location('name', 'path')

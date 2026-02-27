@@ -83,7 +83,7 @@ class AgentRequirement:
     estimated_tests: int
     dependencies: List[str]
     integration_points: List[str]
-    
+
 @dataclass
 class CapabilityRequirement:
     """Individual capability needed by agent"""
@@ -95,16 +95,16 @@ class CapabilityRequirement:
 
 class RequirementsAnalyzer:
     """Analyze agent requirements and extract capabilities"""
-    
+
     def analyze(self, spec: AgentRequirement) -> List[CapabilityRequirement]:
         """
         Analyze specification and extract required capabilities
-        
+
         Returns:
             List of capability requirements with component suggestions
         """
         capabilities = []
-        
+
         # Parse purpose and complexity
         if "validator" in spec.name.lower():
             capabilities.append(self._validator_capability())
@@ -114,13 +114,13 @@ class RequirementsAnalyzer:
             capabilities.append(self._enforcer_capability())
         if "tester" in spec.name.lower():
             capabilities.append(self._tester_capability())
-            
+
         # Add integration capabilities
         for integration in spec.integration_points:
             capabilities.append(self._integration_capability(integration))
-            
+
         return capabilities
-    
+
     def _validator_capability(self) -> CapabilityRequirement:
         """Standard validation capability"""
         return CapabilityRequirement(
@@ -130,7 +130,7 @@ class RequirementsAnalyzer:
             optional_components=["semantic-search"],
             priority=5
         )
-    
+
     def _scanner_capability(self) -> CapabilityRequirement:
         """Scanning/analysis capability"""
         return CapabilityRequirement(
@@ -140,7 +140,7 @@ class RequirementsAnalyzer:
             optional_components=["semantic-search", "config-validator"],
             priority=4
         )
-    
+
     def _enforcer_capability(self) -> CapabilityRequirement:
         """Enforcement/remediation capability"""
         return CapabilityRequirement(
@@ -150,7 +150,7 @@ class RequirementsAnalyzer:
             optional_components=["test-alignment-fixer", "integration-test-runner"],
             priority=5
         )
-    
+
     def _tester_capability(self) -> CapabilityRequirement:
         """Testing orchestration capability"""
         return CapabilityRequirement(
@@ -160,7 +160,7 @@ class RequirementsAnalyzer:
             optional_components=["test-alignment-fixer"],
             priority=5
         )
-    
+
     def _integration_capability(self, integration_point: str) -> CapabilityRequirement:
         """Integration-specific capability"""
         component_map = {
@@ -169,7 +169,7 @@ class RequirementsAnalyzer:
             "documentation": ["doc-freshness-checker", "semantic-search"],
             "cognitive_brain": ["rag-index-manager"],
         }
-        
+
         return CapabilityRequirement(
             name=f"integration_{integration_point}",
             description=f"Integration with {integration_point}",
@@ -208,33 +208,33 @@ class AgentPlan:
     estimated_reuse: int  # percentage
     estimated_effort: str  # low, medium, high
     quality_gates: List[str]
-    
+
 class AgentPlanner:
     """Plan agent implementation with component selection"""
-    
+
     def __init__(self, registry: ComponentRegistry):
         self.registry = registry
-        
+
     def plan(self, capabilities: List[CapabilityRequirement]) -> AgentPlan:
         """
         Create implementation plan from capabilities
-        
+
         Returns:
             AgentPlan with component selections and estimates
         """
         # Find base component (highest reuse potential)
         base = self._select_base_component(capabilities)
-        
+
         # Find extension components for additional capabilities
         extensions = self._select_extensions(capabilities, base)
-        
+
         # Find integration components
         integrations = self._select_integrations(capabilities)
-        
+
         # Calculate reuse and effort
         reuse = self._calculate_reuse(base, extensions, integrations)
         effort = self._estimate_effort(reuse, len(capabilities))
-        
+
         return AgentPlan(
             agent_name=capabilities[0].name if capabilities else "unknown",
             base_component=base,
@@ -244,17 +244,17 @@ class AgentPlanner:
             estimated_effort=effort,
             quality_gates=["structure", "tests", "security", "docs", "integration"]
         )
-    
+
     def _select_base_component(self, capabilities: List[CapabilityRequirement]) -> ComponentSelection:
         """Select primary base component with highest reuse"""
         # Sort capabilities by priority
         sorted_caps = sorted(capabilities, key=lambda c: c.priority, reverse=True)
-        
+
         # Find component with best match for top capability
         top_capability = sorted_caps[0]
         best_component = None
         best_score = 0
-        
+
         for comp_name in top_capability.required_components:
             component = self.registry.get_component(comp_name)
             if component:
@@ -262,7 +262,7 @@ class AgentPlanner:
                 if score > best_score:
                     best_score = score
                     best_component = component
-        
+
         if best_component:
             return ComponentSelection(
                 name=best_component.name,
@@ -271,7 +271,7 @@ class AgentPlanner:
                 files_to_copy=best_component.core_files,
                 modifications_needed=[]
             )
-        
+
         # Fallback to template
         return ComponentSelection(
             name="template",
@@ -280,12 +280,12 @@ class AgentPlanner:
             files_to_copy=["structure"],
             modifications_needed=["implement_all"]
         )
-    
-    def _select_extensions(self, capabilities: List[CapabilityRequirement], 
+
+    def _select_extensions(self, capabilities: List[CapabilityRequirement],
                           base: ComponentSelection) -> List[ComponentSelection]:
         """Select extension components for additional capabilities"""
         extensions = []
-        
+
         for capability in capabilities:
             for comp_name in capability.optional_components:
                 if comp_name != base.name:
@@ -298,13 +298,13 @@ class AgentPlanner:
                             files_to_copy=component.reusable_modules,
                             modifications_needed=["integrate"]
                         ))
-        
+
         return extensions
-    
+
     def _select_integrations(self, capabilities: List[CapabilityRequirement]) -> List[ComponentSelection]:
         """Select components for integration points"""
         integrations = []
-        
+
         for capability in capabilities:
             if capability.name.startswith("integration_"):
                 for comp_name in capability.required_components:
@@ -317,9 +317,9 @@ class AgentPlanner:
                             files_to_copy=component.integration_helpers,
                             modifications_needed=["adapt"]
                         ))
-        
+
         return integrations
-    
+
     def _calculate_reuse(self, base: ComponentSelection,
                         extensions: List[ComponentSelection],
                         integrations: List[ComponentSelection]) -> int:
@@ -328,7 +328,7 @@ class AgentPlanner:
         total += sum(e.reuse_percentage for e in extensions) * 0.3
         total += sum(i.reuse_percentage for i in integrations) * 0.2
         return min(int(total), 100)
-    
+
     def _estimate_effort(self, reuse: int, num_capabilities: int) -> str:
         """Estimate development effort"""
         if reuse >= 75:
@@ -337,18 +337,18 @@ class AgentPlanner:
             return "medium"
         else:
             return "high"
-    
+
     def _calculate_match_score(self, component, capabilities: List[CapabilityRequirement]) -> int:
         """Calculate how well component matches capabilities"""
         score = 50  # Base score
-        
+
         # Add points for each matched capability
         for capability in capabilities:
             if component.name in capability.required_components:
                 score += 20
             elif component.name in capability.optional_components:
                 score += 10
-        
+
         return min(score, 100)
 ```
 
@@ -372,79 +372,79 @@ class ComposedCode:
 
 class ComponentComposer:
     """Compose components into agent code"""
-    
+
     def __init__(self, agents_dir: Path):
         self.agents_dir = agents_dir
-        
+
     def compose(self, plan: AgentPlan, agent_name: str) -> Dict[str, ComposedCode]:
         """
         Compose agent from plan
-        
+
         Returns:
             Dictionary of file_path -> ComposedCode
         """
         composed_files = {}
-        
+
         # 1. Copy base component structure
         base_files = self._copy_base(plan.base_component, agent_name)
         composed_files.update(base_files)
-        
+
         # 2. Integrate extension components
         for extension in plan.extension_components:
             extension_code = self._integrate_extension(extension, composed_files)
             composed_files.update(extension_code)
-        
+
         # 3. Add integration helpers
         for integration in plan.integration_components:
             integration_code = self._add_integration(integration, composed_files)
             composed_files.update(integration_code)
-        
+
         # 4. Generate glue code
         glue_code = self._generate_glue_code(plan, agent_name)
         composed_files.update(glue_code)
-        
+
         return composed_files
-    
+
     def _copy_base(self, base: ComponentSelection, agent_name: str) -> Dict[str, ComposedCode]:
         """Copy base component files"""
         files = {}
-        
+
         # Copy main implementation
         source_path = self.agents_dir / base.name / "src" / "agent.py"
         if source_path.exists():
             content = source_path.read_text()
             # Replace component name with new agent name
-            content = content.replace(base.name.replace("-", "_"), 
+            content = content.replace(base.name.replace("-", "_"),
                                     agent_name.replace("-", "_"))
-            
+
             files[f"src/agent.py"] = ComposedCode(
                 file_path=f"src/agent.py",
                 content=content,
                 source_components=[base.name],
                 modifications=["rename"]
             )
-        
+
         # Copy tests
         test_path = self.agents_dir / base.name / "tests" / "test_agent.py"
         if test_path.exists():
             content = test_path.read_text()
             content = content.replace(base.name.replace("-", "_"),
                                     agent_name.replace("-", "_"))
-            
+
             files[f"tests/test_agent.py"] = ComposedCode(
                 file_path=f"tests/test_agent.py",
                 content=content,
                 source_components=[base.name],
                 modifications=["rename", "adapt_tests"]
             )
-        
+
         return files
-    
+
     def _integrate_extension(self, extension: ComponentSelection,
                            existing_files: Dict[str, ComposedCode]) -> Dict[str, ComposedCode]:
         """Integrate extension component"""
         new_files = {}
-        
+
         # Extract reusable modules from extension
         source_path = self.agents_dir / extension.name / "src"
         if source_path.exists():
@@ -452,7 +452,7 @@ class ComponentComposer:
                 module_path = source_path / module_file
                 if module_path.exists():
                     content = module_path.read_text()
-                    
+
                     # Add to helpers directory
                     helper_path = f"src/helpers/{module_file}"
                     new_files[helper_path] = ComposedCode(
@@ -461,14 +461,14 @@ class ComponentComposer:
                         source_components=[extension.name],
                         modifications=["extract", "integrate"]
                     )
-        
+
         return new_files
-    
+
     def _add_integration(self, integration: ComponentSelection,
                         existing_files: Dict[str, ComposedCode]) -> Dict[str, ComposedCode]:
         """Add integration helper code"""
         new_files = {}
-        
+
         # Copy integration helpers
         source_path = self.agents_dir / integration.name / "src"
         if source_path.exists():
@@ -476,7 +476,7 @@ class ComponentComposer:
                 helper_path = source_path / helper_file
                 if helper_path.exists():
                     content = helper_path.read_text()
-                    
+
                     integration_path = f"src/integrations/{helper_file}"
                     new_files[integration_path] = ComposedCode(
                         file_path=integration_path,
@@ -484,30 +484,30 @@ class ComponentComposer:
                         source_components=[integration.name],
                         modifications=["adapt_integration"]
                     )
-        
+
         return new_files
-    
+
     def _generate_glue_code(self, plan: AgentPlan, agent_name: str) -> Dict[str, ComposedCode]:
         """Generate glue code to connect components"""
         glue_files = {}
-        
+
         # Generate __init__.py with imports
         imports = []
         imports.append(f"from .agent import {agent_name.replace('-', '_').title()}Agent")
-        
+
         for extension in plan.extension_components:
             module_name = extension.name.replace("-", "_")
             imports.append(f"from .helpers import {module_name}")
-        
+
         init_content = "\n".join(imports) + "\n\n__all__ = []\n"
-        
+
         glue_files["src/__init__.py"] = ComposedCode(
             file_path="src/__init__.py",
             content=init_content,
             source_components=["generated"],
             modifications=["glue"]
         )
-        
+
         return glue_files
 ```
 
@@ -531,42 +531,42 @@ class ValidationResult:
 
 class QualityValidator:
     """Run 5-pass quality validation"""
-    
+
     def __init__(self, agent_path: Path):
         self.agent_path = agent_path
-        
+
     def validate_all(self) -> Tuple[bool, List[ValidationResult]]:
         """
         Run all 5 validation passes
-        
+
         Returns:
             (all_passed, list of results)
         """
         results = []
-        
+
         # Pass 1: Structural validation
         results.append(self._validate_structure())
-        
+
         # Pass 2: Test coverage validation
         results.append(self._validate_tests())
-        
+
         # Pass 3: Security validation
         results.append(self._validate_security())
-        
+
         # Pass 4: Documentation validation
         results.append(self._validate_documentation())
-        
+
         # Pass 5: Integration validation
         results.append(self._validate_integration())
-        
+
         all_passed = all(r.passed for r in results)
         return all_passed, results
-    
+
     def _validate_structure(self) -> ValidationResult:
         """Pass 1: Check directory structure"""
         issues = []
         warnings = []
-        
+
         required_files = [
             "README.md",
             "CHANGELOG.md",
@@ -577,35 +577,35 @@ class QualityValidator:
             "prompts/main.md",
             "config/agent_config.yaml"
         ]
-        
+
         for file_path in required_files:
             full_path = self.agent_path / file_path
             if not full_path.exists():
                 issues.append(f"Missing required file: {file_path}")
-        
+
         passed = len(issues) == 0
         return ValidationResult("structural", passed, issues, warnings)
-    
+
     def _validate_tests(self) -> ValidationResult:
         """Pass 2: Run tests and check coverage"""
         issues = []
         warnings = []
-        
+
         try:
             # Run pytest with coverage
             result = subprocess.run(
-                ["pytest", str(self.agent_path / "tests"), 
+                ["pytest", str(self.agent_path / "tests"),
                  "--cov", str(self.agent_path / "src"),
                  "--cov-report", "term-missing"],
                 capture_output=True,
                 text=True,
                 timeout=300
             )
-            
+
             # Check if all tests passed
             if result.returncode != 0:
                 issues.append("Tests failed")
-            
+
             # Check coverage (look for coverage percentage in output)
             if "TOTAL" in result.stdout:
                 lines = result.stdout.split("\n")
@@ -616,18 +616,18 @@ class QualityValidator:
                             coverage = int(parts[-1].replace("%", ""))
                             if coverage < 90:
                                 issues.append(f"Coverage {coverage}% < 90% required")
-        
+
         except Exception as e:
             issues.append(f"Test execution failed: {str(e)}")
-        
+
         passed = len(issues) == 0
         return ValidationResult("tests", passed, issues, warnings)
-    
+
     def _validate_security(self) -> ValidationResult:
         """Pass 3: Security validation"""
         issues = []
         warnings = []
-        
+
         # Check for hardcoded secrets
         for py_file in (self.agent_path / "src").rglob("*.py"):
             content = py_file.read_text()
@@ -635,18 +635,18 @@ class QualityValidator:
                 warnings.append(f"Possible hardcoded secret in {py_file.name}")
             if "api_key" in content.lower() and "=" in content:
                 warnings.append(f"Possible hardcoded API key in {py_file.name}")
-        
+
         # TODO: Run actual security scanners (CodeQL, Semgrep)
         # For now, just check for obvious issues
-        
+
         passed = len(issues) == 0
         return ValidationResult("security", passed, issues, warnings)
-    
+
     def _validate_documentation(self) -> ValidationResult:
         """Pass 4: Documentation validation"""
         issues = []
         warnings = []
-        
+
         # Check README has required sections
         readme_path = self.agent_path / "README.md"
         if readme_path.exists():
@@ -655,22 +655,22 @@ class QualityValidator:
             for section in required_sections:
                 if section not in content:
                     warnings.append(f"README missing section: {section}")
-        
+
         # Check CHANGELOG starts at v1.0.0
         changelog_path = self.agent_path / "CHANGELOG.md"
         if changelog_path.exists():
             content = changelog_path.read_text()
             if "## [1.0.0]" not in content and "## 1.0.0" not in content:
                 issues.append("CHANGELOG must start at v1.0.0")
-        
+
         passed = len(issues) == 0
         return ValidationResult("documentation", passed, issues, warnings)
-    
+
     def _validate_integration(self) -> ValidationResult:
         """Pass 5: Integration validation"""
         issues = []
         warnings = []
-        
+
         # Check config has cognitive brain integration
         config_path = self.agent_path / "config" / "agent_config.yaml"
         if config_path.exists():
@@ -679,7 +679,7 @@ class QualityValidator:
                 warnings.append("Config missing cognitive brain integration")
             if "metrics" not in content:
                 warnings.append("Config missing metrics tracking")
-        
+
         passed = len(issues) == 0
         return ValidationResult("integration", passed, issues, warnings)
 ```
@@ -701,7 +701,7 @@ from .cognitive_brain_client import CognitiveBrainClient
 
 class MetaOrchestrator:
     """Main orchestrator for agent generation"""
-    
+
     def __init__(self, agents_dir: Path, cognitive_brain_path: Path):
         self.agents_dir = agents_dir
         self.registry = ComponentRegistry(agents_dir)
@@ -709,16 +709,16 @@ class MetaOrchestrator:
         self.planner = AgentPlanner(self.registry)
         self.composer = ComponentComposer(agents_dir)
         self.cognitive_brain = CognitiveBrainClient(cognitive_brain_path)
-        
-    def generate_agent(self, spec: AgentRequirement, 
+
+    def generate_agent(self, spec: AgentRequirement,
                       validate: bool = True) -> tuple[bool, str]:
         """
         Generate complete agent from specification
-        
+
         Args:
             spec: Agent specification
             validate: Run quality validation (default: True)
-            
+
         Returns:
             (success, message)
         """
@@ -727,7 +727,7 @@ class MetaOrchestrator:
             print(f"[1/6] Analyzing requirements for {spec.name}...")
             capabilities = self.analyzer.analyze(spec)
             print(f"      Found {len(capabilities)} capabilities")
-            
+
             # Step 2: Plan implementation
             print(f"[2/6] Planning implementation...")
             plan = self.planner.plan(capabilities)
@@ -735,36 +735,36 @@ class MetaOrchestrator:
             print(f"      Extensions: {len(plan.extension_components)}")
             print(f"      Estimated reuse: {plan.estimated_reuse}%")
             print(f"      Estimated effort: {plan.estimated_effort}")
-            
+
             # Step 3: Compose components
             print(f"[3/6] Composing components...")
             composed_files = self.composer.compose(plan, spec.name)
             print(f"      Generated {len(composed_files)} files")
-            
+
             # Step 4: Assemble code
             print(f"[4/6] Assembling agent code...")
             agent_path = self.agents_dir / spec.name
             assembler = CodeAssembler(agent_path)
             assembler.assemble(composed_files, plan)
             print(f"      Agent assembled at {agent_path}")
-            
+
             # Step 5: Validate (if requested)
             if validate:
                 print(f"[5/6] Running 5-pass validation...")
                 validator = QualityValidator(agent_path)
                 all_passed, results = validator.validate_all()
-                
+
                 for result in results:
                     status = "✅" if result.passed else "❌"
                     print(f"      {status} Pass {result.pass_name}: {len(result.issues)} issues, {len(result.warnings)} warnings")
                     for issue in result.issues:
                         print(f"         - {issue}")
-                
+
                 if not all_passed:
                     return False, "Quality validation failed"
             else:
                 print(f"[5/6] Skipping validation")
-            
+
             # Step 6: Update cognitive brain
             print(f"[6/6] Updating cognitive brain...")
             self.cognitive_brain.record_pattern({
@@ -776,9 +776,9 @@ class MetaOrchestrator:
                 "success": True
             })
             print(f"      Pattern recorded")
-            
+
             return True, f"Agent {spec.name} generated successfully"
-            
+
         except Exception as e:
             error_msg = f"Failed to generate agent: {str(e)}"
             print(f"❌ {error_msg}")

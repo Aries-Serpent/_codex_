@@ -62,7 +62,7 @@ jobs:
       # ... consolidated steps
 ```
 
-**Benefits**: 
+**Benefits**:
 - Reduce from 6 workflows to 1
 - Clearer test organization
 - Easier to add new Python versions

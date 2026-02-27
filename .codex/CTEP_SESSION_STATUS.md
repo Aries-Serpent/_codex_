@@ -67,7 +67,7 @@
 
 ### Module Attribute Errors (31 tests)
 **Pattern:** `'module' object at codex_ml.X has no attribute 'X'`
-**Analysis:** 
+**Analysis:**
 - Pytest collection phase error, not runtime
 - Both `interfaces/__init__.py` and `training/__init__.py` use lazy `__getattr__`
 - Imports work correctly locally: `from codex_ml.interfaces.tokenizer import HFTokenizer`

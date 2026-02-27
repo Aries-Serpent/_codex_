@@ -38,14 +38,14 @@ Address remaining 3 nitpick issues from code review regarding memory efficiency 
    sys.path.insert(0, 'src')
    from codex.rag.monitoring import RAGMetrics
    import tracemalloc
-   
+
    tracemalloc.start()
    metrics = RAGMetrics(window_size=1000)
-   
+
    # Simulate metrics
    for i in range(1000):
        metrics.track_query_latency(100.0, tenant_id='test')
-   
+
    current, peak = tracemalloc.get_traced_memory()
    print(f'Current memory: {current / 1024:.2f} KB')
    print(f'Peak memory: {peak / 1024:.2f} KB')
@@ -89,7 +89,7 @@ Validate complete system with CI testing agent and comprehensive test execution.
    ```bash
    pytest tests/test_rag_*.py -v --tb=short --cov=src/codex/rag --cov-report=term-missing
    ```
-   
+
    Expected: 403 test functions, >90% coverage
 
 2. **Security Scan**
@@ -97,7 +97,7 @@ Validate complete system with CI testing agent and comprehensive test execution.
    bandit -r src/codex/rag/ scripts/ -f json -o reports/bandit_scan.json
    bandit -r src/codex/rag/ scripts/ -f txt
    ```
-   
+
    Expected: Zero high/medium vulnerabilities
 
 3. **Performance Benchmarking**

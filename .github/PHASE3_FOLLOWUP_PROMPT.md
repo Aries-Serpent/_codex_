@@ -53,20 +53,20 @@
 ```mermaid
 flowchart TD
     Start[Monitor Cache Usage<br/>Current: 7.69 GB] --> Check{Usage Status?}
-    
+
     Check -->|< 8.0 GB| Green[✅ Safe to Add<br/>5-8 workflows]
     Check -->|8.0-8.5 GB| Yellow[⚠️ Add Carefully<br/>2-3 workflows]
     Check -->|8.5-9.0 GB| Orange[🟠 Optimize First<br/>0-1 workflow]
     Check -->|> 9.0 GB| Red[🔴 Stop<br/>Optimization Required]
-    
+
     Green --> Implement[Implement Phase 3]
     Yellow --> Implement
     Orange --> Optimize[Run Optimization]
     Red --> Optimize
-    
+
     Optimize --> Recheck[Recheck Usage]
     Recheck --> Check
-    
+
     Implement --> Validate[Validate Each Addition]
     Validate --> Monitor[Monitor Impact]
     Monitor --> Complete[Phase 3 Complete]
@@ -239,7 +239,7 @@ path: |
    ```bash
    # Identify evicted caches
    gh cache list --repo Aries-Serpent/_codex_
-   
+
    # Manually delete low-priority caches
    gh cache delete <cache-id> --repo Aries-Serpent/_codex_
    ```
@@ -265,7 +265,7 @@ If any documented plans become obsolete or require external review:
    ```bash
    # Create archive
    tar -czf misc/repo-owner-review/archived-artifacts/phase3-obsolete-plans-$(date +%Y%m%d).tar.gz <files>
-   
+
    # Update index
    echo "- phase3-obsolete-plans-YYYYMMDD.tar.gz: Reason for archival" >> \
      misc/repo-owner-review/archived-artifacts/INDEX.md

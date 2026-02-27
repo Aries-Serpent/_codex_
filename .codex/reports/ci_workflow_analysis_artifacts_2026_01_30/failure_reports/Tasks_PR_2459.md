@@ -23,7 +23,7 @@ This document provides a comprehensive, actionable plan for GitHub Copilot Agent
 
 **Problem**: Package directory `src/codex_plans` referenced but doesn't exist.
 
-**Action Items**: 
+**Action Items**:
 
 ````markdown name=TASK-001-package-directory-fix. md
 # Task 001:  Resolve Missing Package Directory
@@ -66,7 +66,7 @@ pytest tests/ -v
 
 **Problem**: Bandit failing on `nosec` comments without test justification.
 
-**Action Items**: 
+**Action Items**:
 
 ````markdown name=TASK-002-bandit-configuration.md
 # Task 002: Configure Bandit Security Scanner
@@ -133,15 +133,15 @@ tests:
           nosec: true
           EOF
           fi
-          
+
           # Run bandit with proper error handling
           bandit -r src/ -c bandit.yaml -f json -o bandit-results.json || BANDIT_EXIT=$?
           bandit -r src/ -c bandit.yaml -f txt | tee bandit-report.txt
-          
+
           # Upload results even on failure
           echo "Bandit scan completed with exit code: ${BANDIT_EXIT:-0}"
         continue-on-error: false
-      
+
       - name: Upload Bandit Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -160,7 +160,7 @@ Create audit script to review all nosec comments:
 ```python name=tools/audit_nosec.py
 #!/usr/bin/env python3
 """
-Audit all # nosec comments in the codebase. 
+Audit all # nosec comments in the codebase.
 Generate report of suppressions with context.
 """
 import re
@@ -174,16 +174,16 @@ NOSEC_PATTERN = re.compile(r'#\s*nosec\s*(B\d+)?')
 def find_nosec_comments() -> List[Dict[str, Any]]:
     """Find all nosec comments with context."""
     findings = []
-    
+
     for py_file in REPO_ROOT. rglob("*.py"):
         if any(skip in str(py_file) for skip in ['. venv', 'venv', '__pycache__', '.git']):
             continue
-        
+
         try:
             lines = py_file.read_text(encoding='utf-8').splitlines()
             for line_num, line in enumerate(lines, 1):
                 match = NOSEC_PATTERN. search(line)
-                if match: 
+                if match:
                     findings.append({
                         'file': str(py_file. relative_to(REPO_ROOT)),
                         'line': line_num,
@@ -192,33 +192,33 @@ def find_nosec_comments() -> List[Dict[str, Any]]:
                     })
         except Exception as e:
             print(f"Error reading {py_file}: {e}", file=sys.stderr)
-    
+
     return findings
 
 def generate_report(findings: List[Dict[str, Any]]) -> None:
     """Generate markdown report of nosec usage."""
     report_path = REPO_ROOT / ". codex" / "nosec_audit.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     with open(report_path, 'w') as f:
         f.write("# Nosec Comment Audit Report\n\n")
         f.write(f"Total suppressions found: {len(findings)}\n\n")
         f.write("| File | Line | Bandit ID | Code |\n")
         f.write("|------|------|-----------|------|\n")
-        
+
         for finding in sorted(findings, key=lambda x:  (x['file'], x['line'])):
             f.write(f"| {finding['file']} | {finding['line']} | "
                    f"{finding['bandit_id']} | `{finding['code'][: 60]}...` |\n")
-    
+
     print(f"Report generated: {report_path}")
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     findings = find_nosec_comments()
     generate_report(findings)
-    
+
     # Exit with non-zero if too many suppressions
     if len(findings) > 100:
-        print(f"WARNING: {len(findings)} nosec suppressions found.  Review recommended.", 
+        print(f"WARNING: {len(findings)} nosec suppressions found.  Review recommended.",
               file=sys.stderr)
         sys.exit(1)
 ```
@@ -242,7 +242,7 @@ act -j bandit-scan  # Using act for local testing
 
 **Problem**: Debian Buster repositories are archived/discontinued.
 
-**Action Items**: 
+**Action Items**:
 
 ````markdown name=TASK-003-docker-base-image-update.md
 # Task 003: Update Docker Base Images
@@ -349,8 +349,8 @@ ENTRYPOINT ["/bin/bash"]
             --build-arg DEBIAN_VERSION=bullseye \
             -t security-scanner:latest \
             -f Dockerfile.security-scanner \
-            . 
-      
+            .
+
       - name: Run Security Scans in Container
         run: |
           docker run --rm \
@@ -366,7 +366,7 @@ ENTRYPOINT ["/bin/bash"]
 ## Validation
 ```bash
 # Local Docker build test
-docker build -t codex-test -f Dockerfile.security-scanner . 
+docker build -t codex-test -f Dockerfile.security-scanner .
 docker run --rm codex-test python --version
 
 # Vulnerability scan
@@ -382,7 +382,7 @@ docker scout cves codex-test
 # Phase 2: Deep Codebase Analysis & Gap Identification
 
 ## Objective
-Then continue with reviewing all listed below and verifying all that was successfully implemented and identify any that must still be addressed and / or planned and still need to be addressed and implemented.  YOU MUST EXHAUST MAXIMUM TOKEN Usage while before finalizing your last code review YOU MUST analyze the codebase to identify all remaining gaps, risks, and incomplete implementations. 
+Then continue with reviewing all listed below and verifying all that was successfully implemented and identify any that must still be addressed and / or planned and still need to be addressed and implemented.  YOU MUST EXHAUST MAXIMUM TOKEN Usage while before finalizing your last code review YOU MUST analyze the codebase to identify all remaining gaps, risks, and incomplete implementations.
 
 ## 2.1 Configuration Audit
 
@@ -417,10 +417,10 @@ def load_dependencies(toml_path:  Path) -> dict:
     """Extract dependencies from pyproject.toml."""
     with open(toml_path, 'rb') as f:
         data = tomli.load(f)
-    
+
     deps = data.get('project', {}).get('dependencies', [])
     optional = data.get('project', {}).get('optional-dependencies', {})
-    
+
     return {
         'core': deps,
         'optional': optional,
@@ -430,32 +430,32 @@ def load_dependencies(toml_path:  Path) -> dict:
 def find_conflicts():
     """Find version conflicts across pyproject.toml files."""
     pyproject_files = list(REPO_ROOT.rglob("pyproject.toml"))
-    
+
     all_deps = {}
-    for pf in pyproject_files: 
+    for pf in pyproject_files:
         deps = load_dependencies(pf)
         all_deps[deps['path']] = deps
-    
+
     # Track package versions
     version_map = {}
     for path, deps in all_deps.items():
-        for dep in deps['core']: 
+        for dep in deps['core']:
             pkg_name = dep. split('[')[0].split('>')[0].split('<')[0].split('=')[0].strip()
             if pkg_name not in version_map:
                 version_map[pkg_name] = []
             version_map[pkg_name].append((path, dep))
-    
+
     # Report conflicts
     conflicts = []
     for pkg, occurrences in version_map.items():
         if len(set(occ[1] for occ in occurrences)) > 1:
             conflicts.append((pkg, occurrences))
-    
+
     return conflicts
 
 if __name__ == "__main__":
     conflicts = find_conflicts()
-    
+
     if conflicts:
         print("⚠️  Dependency version conflicts found:\n")
         for pkg, occurrences in conflicts:
@@ -498,20 +498,20 @@ class TypeHintAnalyzer(ast.NodeVisitor):
         self.typed_functions = 0
         self.total_args = 0
         self.typed_args = 0
-    
+
     def visit_FunctionDef(self, node:  ast.FunctionDef):
         self.total_functions += 1
-        
+
         # Check return type
         if node.returns is not None:
             self.typed_functions += 1
-        
+
         # Check argument types
         for arg in node. args.args:
             self.total_args += 1
             if arg.annotation is not None:
                 self.typed_args += 1
-        
+
         self.generic_visit(node)
 
 def analyze_file(filepath: Path) -> Dict:
@@ -521,7 +521,7 @@ def analyze_file(filepath: Path) -> Dict:
         tree = ast.parse(source)
         analyzer = TypeHintAnalyzer()
         analyzer.visit(tree)
-        
+
         return {
             'file': str(filepath.relative_to(REPO_ROOT)),
             'functions': analyzer.total_functions,
@@ -537,33 +537,33 @@ def analyze_file(filepath: Path) -> Dict:
                 if analyzer.total_args > 0 else 0
             ),
         }
-    except Exception as e: 
+    except Exception as e:
         print(f"Error analyzing {filepath}: {e}", file=sys.stderr)
         return None
 
 def main():
     results = []
-    
+
     for py_file in REPO_ROOT. rglob("*.py"):
         if any(skip in str(py_file) for skip in ['.venv', 'venv', '__pycache__', 'tests']):
             continue
-        
+
         result = analyze_file(py_file)
         if result:
             results.append(result)
-    
+
     # Summary
     total_funcs = sum(r['functions'] for r in results)
     total_typed_funcs = sum(r['typed_functions'] for r in results)
     overall_coverage = total_typed_funcs / total_funcs * 100 if total_funcs > 0 else 0
-    
+
     print(f"\n📊 Type Hint Coverage Report")
     print(f"=" * 50)
     print(f"Overall Function Coverage: {overall_coverage:.1f}%")
     print(f"Total Functions: {total_funcs}")
     print(f"Typed Functions: {total_typed_funcs}")
     print(f"\nFiles needing attention (< 50% coverage):")
-    
+
     for r in sorted(results, key=lambda x:  x['function_coverage']):
         if r['function_coverage'] < 50 and r['functions'] > 5:
             print(f"  {r['file']}:  {r['function_coverage']:.1f}% ({r['typed_functions']}/{r['functions']})")
@@ -598,26 +598,26 @@ TESTS_DIR = REPO_ROOT / "tests"
 def find_untested_modules():
     """Find modules without tests."""
     untested = []
-    
+
     for py_file in SRC_DIR. rglob("*.py"):
         if py_file.name == "__init__.py":
             continue
-        
+
         rel_path = py_file.relative_to(SRC_DIR)
         test_path = TESTS_DIR / f"test_{rel_path}"
-        
+
         if not test_path.exists():
             # Also check for test_module.py pattern
             alt_test = TESTS_DIR / rel_path.parent / f"test_{rel_path. name}"
             if not alt_test.exists():
                 untested.append(str(rel_path))
-    
+
     return untested
 
 if __name__ == "__main__":
     untested = find_untested_modules()
-    
-    if untested: 
+
+    if untested:
         print("⚠️  Modules without test coverage:")
         for module in sorted(untested):
             print(f"  - {module}")
@@ -645,7 +645,7 @@ class DocstringAnalyzer(ast.NodeVisitor):
     def __init__(self):
         self.functions:  List[Dict] = []
         self.classes: List[Dict] = []
-    
+
     def visit_FunctionDef(self, node: ast. FunctionDef):
         docstring = ast.get_docstring(node)
         self.functions.append({
@@ -658,7 +658,7 @@ class DocstringAnalyzer(ast.NodeVisitor):
             'has_returns': node.returns is not None,
         })
         self.generic_visit(node)
-    
+
     def visit_ClassDef(self, node: ast.ClassDef):
         docstring = ast.get_docstring(node)
         self.classes.append({
@@ -676,13 +676,13 @@ def analyze_file(filepath: Path) -> Dict:
         tree = ast.parse(source)
         analyzer = DocstringAnalyzer()
         analyzer.visit(tree)
-        
+
         public_funcs = [f for f in analyzer.functions if f['is_public']]
         documented_funcs = [f for f in public_funcs if f['has_docstring']]
-        
+
         public_classes = [c for c in analyzer.classes if c['is_public']]
         documented_classes = [c for c in public_classes if c['has_docstring']]
-        
+
         return {
             'file': str(filepath.relative_to(REPO_ROOT)),
             'total_public_functions': len(public_funcs),
@@ -704,16 +704,16 @@ def analyze_file(filepath: Path) -> Dict:
 
 def main():
     results = []
-    
+
     for py_file in (REPO_ROOT / "src").rglob("*.py"):
         result = analyze_file(py_file)
         if result:
             results.append(result)
-    
+
     # Generate report
     print("\n📚 Docstring Coverage Report")
     print("=" * 60)
-    
+
     for r in sorted(results, key=lambda x: x['function_coverage']):
         if r['total_public_functions'] > 0:
             status = "✅" if r['function_coverage'] >= 80 else "⚠️"
@@ -769,54 +769,54 @@ def calculate_shannon_entropy(data: str) -> float:
     """
     Calculate Shannon entropy of source code.
     Higher entropy = more information density.
-    
+
     H(X) = -Σ p(x) * log2(p(x))
     """
-    if not data: 
+    if not data:
         return 0.0
-    
+
     # Calculate character frequency
     counter = Counter(data)
     length = len(data)
-    
+
     # Calculate entropy
     entropy = 0.0
     for count in counter.values():
         probability = count / length
         if probability > 0:
             entropy -= probability * math. log2(probability)
-    
+
     return entropy
 
 def calculate_code_redundancy(filepath: Path) -> Dict:
     """
-    Calculate redundancy metrics: 
+    Calculate redundancy metrics:
     - Duplicate lines
     - Similar code blocks
     - Repeated patterns
     """
-    try: 
+    try:
         source = filepath.read_text(encoding='utf-8')
         lines = [line.strip() for line in source.splitlines() if line.strip()]
-        
+
         # Count duplicate lines
         line_counts = Counter(lines)
         duplicate_lines = sum(count - 1 for count in line_counts.values() if count > 1)
-        
+
         # Calculate metrics
         total_lines = len(lines)
         unique_lines = len(line_counts)
         redundancy_ratio = (total_lines - unique_lines) / total_lines if total_lines > 0 else 0
-        
+
         # Shannon entropy
         entropy = calculate_shannon_entropy(source)
-        
+
         # Theoretical maximum entropy (uniform distribution)
         max_entropy = math.log2(len(set(source))) if source else 0
-        
+
         # Compression efficiency (entropy / max_entropy)
         efficiency = entropy / max_entropy if max_entropy > 0 else 0
-        
+
         return {
             'file': str(filepath. relative_to(REPO_ROOT)),
             'total_lines':  total_lines,
@@ -838,56 +838,56 @@ def calculate_cyclomatic_complexity(filepath: Path) -> Dict:
     V(G) = E - N + 2P
     where E = edges, N = nodes, P = connected components
     """
-    try: 
+    try:
         source = filepath.read_text(encoding='utf-8')
         tree = ast.parse(source)
-        
+
         class ComplexityAnalyzer(ast.NodeVisitor):
             def __init__(self):
                 self.complexity = 1  # Base complexity
-            
+
             def visit_If(self, node):
                 self.complexity += 1
                 self.generic_visit(node)
-            
+
             def visit_For(self, node):
                 self. complexity += 1
                 self. generic_visit(node)
-            
+
             def visit_While(self, node):
                 self.complexity += 1
                 self.generic_visit(node)
-            
+
             def visit_ExceptHandler(self, node):
                 self.complexity += 1
                 self.generic_visit(node)
-        
+
         analyzer = ComplexityAnalyzer()
         analyzer.visit(tree)
-        
+
         return {
             'cyclomatic_complexity': analyzer.complexity
         }
-    except: 
+    except:
         return {'cyclomatic_complexity': 0}
 
 def main():
     print("\n🔬 Physics-Inspired Code Analysis")
     print("=" * 60)
     print("Metrics based on information theory and graph theory\n")
-    
+
     results = []
-    
+
     for py_file in (REPO_ROOT / "src").rglob("*.py"):
         if any(skip in str(py_file) for skip in ['__pycache__', '.venv']):
             continue
-        
+
         metrics = calculate_code_redundancy(py_file)
         if metrics:
             complexity = calculate_cyclomatic_complexity(py_file)
             metrics. update(complexity)
             results. append(metrics)
-    
+
     # Sort by redundancy (highest first)
     for r in sorted(results, key=lambda x: x['redundancy_ratio'], reverse=True)[:10]:
         print(f"\n📄 {r['file']}")
@@ -896,7 +896,7 @@ def main():
         print(f"   Information Density: {r['information_density']:.3f} bits/line")
         print(f"   Compression Efficiency: {r['compression_efficiency']:.1f}%")
         print(f"   Cyclomatic Complexity: {r['cyclomatic_complexity']}")
-        
+
         # Recommendations
         if r['redundancy_ratio'] > 30:
             print("   ⚠️  HIGH REDUNDANCY - Consider refactoring")
@@ -928,11 +928,11 @@ class ImportAnalyzer(ast.NodeVisitor):
         self.module_path = module_path
         self.imports: Set[str] = set()
         self.from_imports: Set[str] = set()
-    
+
     def visit_Import(self, node: ast.Import):
         for alias in node.names:
             self.imports.add(alias.name)
-    
+
     def visit_ImportFrom(self, node: ast.ImportFrom):
         if node.module:
             self.from_imports. add(node.module)
@@ -940,29 +940,29 @@ class ImportAnalyzer(ast.NodeVisitor):
 def build_dependency_graph() -> nx.DiGraph:
     """Build directed graph of module dependencies."""
     graph = nx. DiGraph()
-    
+
     for py_file in (REPO_ROOT / "src").rglob("*.py"):
         if '__pycache__' in str(py_file):
             continue
-        
+
         try:
             source = py_file.read_text(encoding='utf-8')
             tree = ast.parse(source)
-            
+
             module_name = str(py_file.relative_to(REPO_ROOT / "src")).replace('/', '. ').replace('.py', '')
             analyzer = ImportAnalyzer(module_name)
             analyzer.visit(tree)
-            
+
             # Add node
             graph.add_node(module_name)
-            
+
             # Add edges for imports
             for imp in analyzer.imports | analyzer.from_imports:
                 if imp. startswith('codex'):
                     graph.add_edge(module_name, imp)
-        except: 
+        except:
             pass
-    
+
     return graph
 
 def calculate_coupling_energy(graph:  nx.DiGraph) -> Dict:
@@ -971,29 +971,29 @@ def calculate_coupling_energy(graph:  nx.DiGraph) -> Dict:
     E = Σ (distance * coupling_strength)
     """
     metrics = {}
-    
+
     for node in graph.nodes():
         # In-degree = modules depending on this one
         # Out-degree = modules this one depends on
         in_deg = graph.in_degree(node)
         out_deg = graph.out_degree(node)
-        
+
         # Coupling energy (higher = more coupled)
         coupling_energy = in_deg * out_deg
-        
+
         # Path redundancy (number of paths to other modules)
         try:
             avg_path_length = nx.average_shortest_path_length(graph. subgraph([node] + list(graph.neighbors(node))))
         except:
             avg_path_length = 0
-        
+
         metrics[node] = {
             'in_degree': in_deg,
             'out_degree':  out_deg,
             'coupling_energy': coupling_energy,
             'avg_path_length':  avg_path_length,
         }
-    
+
     return metrics
 
 def identify_refactoring_opportunities(graph: nx.DiGraph, metrics: Dict) -> List[Dict]:
@@ -1001,7 +1001,7 @@ def identify_refactoring_opportunities(graph: nx.DiGraph, metrics: Dict) -> List
     Identify modules that should be refactored based on coupling analysis.
     """
     opportunities = []
-    
+
     for module, data in metrics.items():
         if data['coupling_energy'] > 20:  # High coupling threshold
             opportunities.append({
@@ -1012,7 +1012,7 @@ def identify_refactoring_opportunities(graph: nx.DiGraph, metrics: Dict) -> List
                 'dependents': list(graph.predecessors(module)),
                 'dependencies':  list(graph.successors(module)),
             })
-        
+
         if data['out_degree'] > 15:  # High fan-out
             opportunities.append({
                 'module': module,
@@ -1021,31 +1021,31 @@ def identify_refactoring_opportunities(graph: nx.DiGraph, metrics: Dict) -> List
                 'recommendation': 'Introduce facade or adapter pattern',
                 'dependencies': list(graph.successors(module)),
             })
-    
+
     return opportunities
 
 def main():
     print("\n🔬 Dependency Field Analysis")
     print("=" * 60)
     print("Using field theory concepts to analyze code coupling\n")
-    
+
     graph = build_dependency_graph()
     metrics = calculate_coupling_energy(graph)
     opportunities = identify_refactoring_opportunities(graph, metrics)
-    
+
     print(f"Total modules analyzed: {len(graph.nodes())}")
     print(f"Total dependencies: {len(graph.edges())}")
     print(f"Refactoring opportunities found: {len(opportunities)}\n")
-    
+
     if opportunities:
         print("🎯 Refactoring Recommendations:\n")
         for opp in opportunities[: 5]:  # Top 5
             print(f"📦 {opp['module']}")
             print(f"   Reason: {opp['reason']}")
             print(f"   Recommendation: {opp['recommendation']}")
-            if 'dependents' in opp: 
+            if 'dependents' in opp:
                 print(f"   Dependents ({len(opp['dependents'])}): {', '.join(opp['dependents'][:3])}")
-            if 'dependencies' in opp: 
+            if 'dependencies' in opp:
                 print(f"   Dependencies ({len(opp['dependencies'])}): {', '.join(opp['dependencies'][:3])}")
             print()
 
@@ -1081,7 +1081,7 @@ Each iteration follows this pattern:
   - Impact: High/Medium/Low
   - Risk: High/Medium/Low
   - Effort: High/Medium/Low
-  
+
 - [ ] Gap 2: [Description]
   - Impact: High/Medium/Low
   - Risk: High/Medium/Low
@@ -1116,7 +1116,7 @@ Each iteration follows this pattern:
 ```python name=tools/orchestrate_improvements.py
 #!/usr/bin/env python3
 """
-Master orchestrator for continuous improvement cycles. 
+Master orchestrator for continuous improvement cycles.
 Coordinates all analysis and improvement tools.
 """
 import subprocess
@@ -1136,7 +1136,7 @@ class ImprovementOrchestrator:
         self.findings:  List[Dict] = []
         self.fixes_applied:  List[Dict] = []
         self.status_log = CODEX_DIR / "improvement_log.ndjson"
-    
+
     def log_event(self, event_type: str, data: Dict):
         """Log event to NDJSON file."""
         event = {
@@ -1147,11 +1147,11 @@ class ImprovementOrchestrator:
         }
         with open(self.status_log, 'a') as f:
             f.write(json.dumps(event) + '\n')
-    
+
     def run_analysis_suite(self) -> List[Dict]:
         """Run all analysis tools and collect findings."""
         findings = []
-        
+
         analyses = [
             ('Type Coverage', 'tools/analyze_type_coverage.py'),
             ('Docstring Coverage', 'tools/analyze_docstrings.py'),
@@ -1160,7 +1160,7 @@ class ImprovementOrchestrator:
             ('Untested Modules', 'tools/find_untested_modules.py'),
             ('Dependency Sync', 'tools/check_dep_sync.py'),
         ]
-        
+
         for name, script in analyses:
             print(f"\n🔍 Running {name} analysis...")
             try:
@@ -1170,33 +1170,33 @@ class ImprovementOrchestrator:
                     text=True,
                     timeout=300,
                 )
-                
+
                 findings.append({
                     'analysis': name,
                     'exit_code': result.returncode,
                     'output': result. stdout,
                     'errors': result.stderr,
                 })
-                
+
                 if result.returncode != 0:
                     print(f"⚠️  {name} found issues")
                 else:
                     print(f"✅ {name} passed")
-            
+
             except subprocess.TimeoutExpired:
                 print(f"⏱️  {name} timed out")
-            except Exception as e: 
+            except Exception as e:
                 print(f"❌ {name} failed: {e}")
-        
+
         return findings
-    
+
     def prioritize_findings(self, findings: List[Dict]) -> List[Tuple[str, int]]:
         """
         Prioritize findings using weighted scoring.
         Score = Impact * Risk / Effort
         """
         priorities = []
-        
+
         # Simple heuristic based on analysis type
         weights = {
             'Type Coverage': (3, 2, 2),  # (impact, risk, effort)
@@ -1206,15 +1206,15 @@ class ImprovementOrchestrator:
             'Untested Modules': (4, 4, 2),
             'Dependency Sync': (5, 5, 2),
         }
-        
+
         for finding in findings:
             if finding['exit_code'] != 0:
                 impact, risk, effort = weights. get(finding['analysis'], (1, 1, 1))
                 score = (impact * risk) / effort
                 priorities.append((finding['analysis'], score))
-        
+
         return sorted(priorities, key=lambda x:  x[1], reverse=True)
-    
+
     def generate_improvement_plan(self, priorities: List[Tuple[str, int]]) -> Dict:
         """Generate actionable improvement plan."""
         plan = {
@@ -1230,14 +1230,14 @@ class ImprovementOrchestrator:
             ],
             'recommended_actions': self._get_actions_for_analyses([p[0] for p in priorities[: 3]]),
         }
-        
+
         # Save plan
         plan_file = CODEX_DIR / f"improvement_plan_iter_{self.iteration}.json"
         with open(plan_file, 'w') as f:
             json.dump(plan, f, indent=2)
-        
+
         return plan
-    
+
     def _get_actions_for_analyses(self, analyses: List[str]) -> List[Dict]:
         """Map analyses to recommended actions."""
         action_map = {
@@ -1272,39 +1272,39 @@ class ImprovementOrchestrator:
                 'command': 'pip-compile pyproject.toml',
             },
         }
-        
+
         return [action_map.get(analysis, {}) for analysis in analyses if analysis in action_map]
-    
+
     def execute_iteration(self) -> Dict:
         """Execute one complete improvement iteration."""
         print(f"\n{'='*60}")
         print(f"🔄 ITERATION {self.iteration}")
         print(f"{'='*60}\n")
-        
+
         # Step 1: Discover
         print("📊 STEP 1: DISCOVER")
         findings = self.run_analysis_suite()
         self.log_event('analysis_complete', {'findings_count': len(findings)})
-        
+
         # Step 2: Prioritize
         print("\n📊 STEP 2: PRIORITIZE")
         priorities = self. prioritize_findings(findings)
         print("\nPriority Queue:")
         for i, (analysis, score) in enumerate(priorities, 1):
             print(f"  {i}. {analysis} (score: {score:.2f})")
-        
+
         # Step 3: Plan
         print("\n📊 STEP 3: PLAN")
         plan = self.generate_improvement_plan(priorities)
         print(f"Improvement plan saved to: . codex/improvement_plan_iter_{self.iteration}.json")
-        
+
         # Step 4: Generate Report
         print("\n📊 STEP 4: REPORT")
         report = self.generate_status_report(findings, priorities, plan)
-        
+
         self.iteration += 1
         return report
-    
+
     def generate_status_report(self, findings:  List[Dict], priorities: List[Tuple[str, int]], plan: Dict) -> Dict:
         """Generate comprehensive status report."""
         report = {
@@ -1319,24 +1319,24 @@ class ImprovementOrchestrator:
             'priorities': [{'analysis': a, 'score': s} for a, s in priorities],
             'plan': plan,
         }
-        
+
         # Save report
         report_file = CODEX_DIR / f"status_report_iter_{self.iteration}.json"
         with open(report_file, 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         # Also generate markdown summary
         md_report = self.generate_markdown_report(report)
         md_file = CODEX_DIR / f"status_report_iter_{self.iteration}.md"
         with open(md_file, 'w') as f:
             f.write(md_report)
-        
+
         print(f"\n✅ Status report saved:")
         print(f"   JSON: {report_file}")
         print(f"   Markdown:  {md_file}")
-        
+
         return report
-    
+
     def generate_markdown_report(self, report: Dict) -> str:
         """Generate markdown-formatted status report."""
         md = f"""# Improvement Iteration {report['iteration']} - Status Report
@@ -1354,44 +1354,44 @@ class ImprovementOrchestrator:
 """
         for i, priority in enumerate(report['priorities'], 1):
             md += f"{i}. **{priority['analysis']}** (score: {priority['score']:.2f})\n"
-        
+
         md += "\n## 📋 Recommended Actions\n\n"
         for action in report['plan']. get('recommended_actions', []):
-            if action: 
+            if action:
                 md += f"### {action. get('action', 'Unknown')}\n"
                 md += f"- **Tool**: `{action.get('tool', 'N/A')}`\n"
                 md += f"- **Command**: `{action.get('command', 'N/A')}`\n\n"
-        
+
         md += "## 🔍 Detailed Findings\n\n"
-        for finding in report['findings']: 
+        for finding in report['findings']:
             status = "✅" if finding['exit_code'] == 0 else "❌"
             md += f"### {status} {finding['analysis']}\n\n"
             if finding['exit_code'] != 0:
                 md += "```\n"
                 md += finding['output'][: 500]  # Truncate long output
                 md += "\n```\n\n"
-        
+
         return md
 
 def main():
     orchestrator = ImprovementOrchestrator()
-    
+
     # Run improvement cycle
     max_iterations = 5  # Safety limit
     for i in range(max_iterations):
         report = orchestrator.execute_iteration()
-        
+
         # Check if we're done (no more high-priority issues)
         if report['summary']['failed_analyses'] == 0:
             print(f"\n🎉 All analyses passed! No further improvements needed.")
             break
-        
+
         # Ask user to continue (in automated mode, this would be automatic)
         if i < max_iterations - 1:
             response = input(f"\nContinue to iteration {i + 2}? (y/n): ")
             if response.lower() != 'y':
                 break
-    
+
     print(f"\n✅ Improvement cycle complete.  Total iterations: {orchestrator.iteration}")
 
 if __name__ == "__main__":
@@ -1406,7 +1406,7 @@ name: Continuous Improvement
 on:
   schedule:
     - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       max_iterations:
         description: 'Maximum number of improvement iterations'
@@ -1421,36 +1421,36 @@ permissions:
 jobs:
   analyze-and-improve:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth:  0
-      
+
       - name: Set up Python
         uses:  actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev,all]
-      
+
       - name:  Run improvement orchestrator
         id: improve
         run: |
           python tools/orchestrate_improvements.py
         continue-on-error: true
-      
+
       - name: Upload improvement reports
         uses: actions/upload-artifact@v4
         with:
           name:  improvement-reports
           path: . codex/status_report_*. md
           retention-days: 90
-      
+
       - name: Create improvement issue
         if: failure()
         uses: actions/github-script@v7
@@ -1461,10 +1461,10 @@ jobs:
               .filter(f => f.startsWith('status_report_'))
               .sort()
               .reverse();
-            
+
             if (reports.length > 0) {
               const latest = fs.readFileSync(`.codex/${reports[0]}`, 'utf8');
-              
+
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -1565,7 +1565,7 @@ jobs:
 ```python name=tools/validate_production_readiness.py
 #!/usr/bin/env python3
 """
-Comprehensive production readiness validation. 
+Comprehensive production readiness validation.
 Checks all critical requirements before deployment.
 """
 import subprocess
@@ -1577,17 +1577,17 @@ from datetime import datetime
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-class ProductionReadinessValidator: 
+class ProductionReadinessValidator:
     def __init__(self):
         self.results:  List[Dict] = []
         self.passed = 0
         self.failed = 0
         self.warnings = 0
-    
+
     def validate_code_quality(self) -> List[Dict]:
         """Validate code quality checks."""
         checks = []
-        
+
         # Black formatting
         result = subprocess.run(['black', '--check', 'src/'], capture_output=True)
         checks.append({
@@ -1596,7 +1596,7 @@ class ProductionReadinessValidator:
             'status':  'PASS' if result. returncode == 0 else 'FAIL',
             'details': result.stderr.decode() if result.returncode != 0 else 'All files formatted correctly',
         })
-        
+
         # isort
         result = subprocess.run(['isort', '--check-only', 'src/'], capture_output=True)
         checks.append({
@@ -1605,7 +1605,7 @@ class ProductionReadinessValidator:
             'status':  'PASS' if result. returncode == 0 else 'FAIL',
             'details': 'Imports sorted correctly' if result.returncode == 0 else 'Run:  isort src/',
         })
-        
+
         # Ruff
         result = subprocess.run(['ruff', 'check', 'src/'], capture_output=True)
         checks.append({
@@ -1614,7 +1614,7 @@ class ProductionReadinessValidator:
             'status': 'PASS' if result.returncode == 0 else 'FAIL',
             'details': result.stdout.decode()[:200],
         })
-        
+
         # Mypy
         result = subprocess.run(['mypy', 'src/'], capture_output=True)
         checks.append({
@@ -1623,25 +1623,25 @@ class ProductionReadinessValidator:
             'status': 'PASS' if result.returncode == 0 else 'WARNING',
             'details': result.stdout.decode()[:200],
         })
-        
+
         return checks
-    
+
     def validate_testing(self) -> List[Dict]:
         """Validate test coverage and quality."""
         checks = []
-        
+
         # Run tests with coverage
         result = subprocess.run(
             ['pytest', '--cov=src', '--cov-report=json', '--cov-report=term'],
             capture_output=True,
         )
-        
+
         # Parse coverage
         try:
             with open('coverage.json') as f:
                 cov_data = json.load(f)
                 total_coverage = cov_data['totals']['percent_covered']
-            
+
             checks.append({
                 'category': 'Testing',
                 'check': 'Test coverage',
@@ -1655,13 +1655,13 @@ class ProductionReadinessValidator:
                 'status': 'FAIL',
                 'details': 'Could not determine coverage',
             })
-        
+
         return checks
-    
+
     def validate_security(self) -> List[Dict]:
         """Validate security checks."""
         checks = []
-        
+
         # Bandit
         result = subprocess. run(
             ['bandit', '-r', 'src/', '-f', 'json'],
@@ -1670,7 +1670,7 @@ class ProductionReadinessValidator:
         try:
             bandit_results = json. loads(result.stdout)
             high_severity = len([r for r in bandit_results. get('results', []) if r['issue_severity'] == 'HIGH'])
-            
+
             checks. append({
                 'category': 'Security',
                 'check':  'SAST scan (Bandit)',
@@ -1684,13 +1684,13 @@ class ProductionReadinessValidator:
                 'status': 'WARNING',
                 'details':  'Could not parse Bandit results',
             })
-        
+
         # Dependency audit
         result = subprocess.run(['pip-audit', '--format=json'], capture_output=True)
         try:
             audit_results = json. loads(result.stdout)
             vulnerabilities = len(audit_results.get('dependencies', []))
-            
+
             checks.append({
                 'category':  'Security',
                 'check': 'Dependency vulnerabilities',
@@ -1704,20 +1704,20 @@ class ProductionReadinessValidator:
                 'status': 'WARNING',
                 'details': 'Could not run pip-audit',
             })
-        
+
         return checks
-    
+
     def validate_documentation(self) -> List[Dict]:
         """Validate documentation completeness."""
         checks = []
-        
+
         required_docs = [
             'README.md',
             'AGENTS.md',
             'LICENSE',
             '. github/workflows/ci.yml',
         ]
-        
+
         for doc in required_docs:
             exists = (REPO_ROOT / doc).exists()
             checks. append({
@@ -1726,13 +1726,13 @@ class ProductionReadinessValidator:
                 'status': 'PASS' if exists else 'FAIL',
                 'details':  'Found' if exists else 'Missing',
             })
-        
+
         return checks
-    
+
     def validate_configuration(self) -> List[Dict]:
         """Validate configuration management."""
         checks = []
-        
+
         # Check pyproject.toml exists and is valid
         pyproject_path = REPO_ROOT / 'pyproject.toml'
         if pyproject_path.exists():
@@ -1740,25 +1740,25 @@ class ProductionReadinessValidator:
                 import tomli
                 with open(pyproject_path, 'rb') as f:
                     config = tomli.load(f)
-                
+
                 checks.append({
                     'category': 'Configuration',
                     'check': 'pyproject. toml valid',
                     'status': 'PASS',
                     'details': f'Project:  {config.get("project", {}).get("name", "Unknown")}',
                 })
-                
+
                 # Check for version pinning
                 deps = config.get('project', {}).get('dependencies', [])
                 unpinned = [d for d in deps if '==' not in d and '>=' not in d]
-                
+
                 checks.append({
                     'category': 'Configuration',
                     'check': 'Dependencies pinned',
                     'status': 'WARNING' if unpinned else 'PASS',
                     'details': f'Unpinned dependencies: {len(unpinned)}',
                 })
-                
+
             except Exception as e:
                 checks.append({
                     'category': 'Configuration',
@@ -1773,18 +1773,18 @@ class ProductionReadinessValidator:
                 'status': 'FAIL',
                 'details':  'File not found',
             })
-        
+
         return checks
-    
+
     def validate_deployment(self) -> List[Dict]:
         """Validate deployment readiness."""
         checks = []
-        
+
         # Check for CI/CD workflows
         workflows_dir = REPO_ROOT / '. github' / 'workflows'
         if workflows_dir.exists():
             workflow_files = list(workflows_dir.glob('*.yml')) + list(workflows_dir.glob('*.yaml'))
-            
+
             checks.append({
                 'category':  'Deployment',
                 'check': 'CI/CD workflows present',
@@ -1798,89 +1798,89 @@ class ProductionReadinessValidator:
                 'status': 'WARNING',
                 'details': 'No . github/workflows directory',
             })
-        
+
         # Check for Docker configuration
         dockerfile_exists = (REPO_ROOT / 'Dockerfile').exists()
         compose_exists = (REPO_ROOT / 'docker-compose.yml').exists()
-        
+
         checks.append({
             'category':  'Deployment',
             'check': 'Containerization support',
             'status': 'PASS' if dockerfile_exists else 'WARNING',
             'details': f'Dockerfile: {dockerfile_exists}, Compose: {compose_exists}',
         })
-        
+
         return checks
-    
+
     def validate_observability(self) -> List[Dict]:
         """Validate observability and monitoring."""
         checks = []
-        
+
         # Search for logging setup
         logging_files = list((REPO_ROOT / 'src').rglob('*log*. py'))
-        
+
         checks. append({
             'category': 'Observability',
             'check': 'Logging infrastructure',
             'status': 'PASS' if logging_files else 'WARNING',
             'details': f'Found {len(logging_files)} logging module(s)',
         })
-        
+
         # Check for metrics/monitoring code
         metrics_keywords = ['prometheus', 'metric', 'monitor', 'telemetry']
         metrics_files = []
         for pattern in metrics_keywords:
             metrics_files.extend(list((REPO_ROOT / 'src').rglob(f'*{pattern}*. py')))
-        
+
         checks.append({
             'category':  'Observability',
             'check': 'Metrics/monitoring setup',
             'status': 'PASS' if metrics_files else 'WARNING',
             'details': f'Found {len(set(metrics_files))} monitoring module(s)',
         })
-        
+
         return checks
-    
+
     def run_all_validations(self) -> Dict:
         """Run all production readiness validations."""
         print("\n🔍 Running Production Readiness Validation")
         print("=" * 60)
-        
+
         all_checks = []
-        
+
         print("\n1️⃣  Code Quality...")
         all_checks.extend(self.validate_code_quality())
-        
+
         print("2️⃣  Testing & Coverage...")
         all_checks.extend(self.validate_testing())
-        
+
         print("3️⃣  Security...")
         all_checks.extend(self.validate_security())
-        
+
         print("4️⃣  Documentation...")
         all_checks.extend(self.validate_documentation())
-        
+
         print("5️⃣  Configuration...")
         all_checks.extend(self.validate_configuration())
-        
+
         print("6️⃣  Deployment...")
         all_checks.extend(self.validate_deployment())
-        
+
         print("7️⃣  Observability...")
         all_checks.extend(self.validate_observability())
-        
+
         # Calculate summary statistics
         for check in all_checks:
             if check['status'] == 'PASS':
                 self.passed += 1
-            elif check['status'] == 'FAIL': 
+            elif check['status'] == 'FAIL':
                 self.failed += 1
             elif check['status'] == 'WARNING':
                 self.warnings += 1
-        
+
         total = self.passed + self.failed + self.warnings
         pass_rate = (self.passed / total * 100) if total > 0 else 0
-        
+
         summary = {
             'timestamp': datetime.utcnow().isoformat(),
             'total_checks': total,
@@ -1891,15 +1891,15 @@ class ProductionReadinessValidator:
             'production_ready': self.failed == 0 and self.warnings < 5,
             'checks':  all_checks,
         }
-        
+
         # Save results
         results_file = REPO_ROOT / '. codex' / 'production_readiness. json'
         results_file.parent.mkdir(exist_ok=True)
         with open(results_file, 'w') as f:
             json.dump(summary, f, indent=2)
-        
+
         return summary
-    
+
     def print_summary(self, summary: Dict):
         """Print human-readable summary."""
         print("\n" + "=" * 60)
@@ -1911,21 +1911,21 @@ class ProductionReadinessValidator:
         print(f"⚠️  Warnings: {summary['warnings']}")
         print(f"\nPass Rate: {summary['pass_rate']:.1f}%")
         print(f"Production Ready: {'✅ YES' if summary['production_ready'] else '❌ NO'}")
-        
+
         # Print failed checks
         if summary['failed'] > 0:
             print("\n❌ FAILED CHECKS:")
             for check in summary['checks']:
                 if check['status'] == 'FAIL':
                     print(f"  • [{check['category']}] {check['check']}:  {check['details']}")
-        
+
         # Print warnings
         if summary['warnings'] > 0:
             print("\n⚠️  WARNINGS:")
             for check in summary['checks']:
                 if check['status'] == 'WARNING':
                     print(f"  • [{check['category']}] {check['check']}:  {check['details']}")
-        
+
         print(f"\nDetailed results saved to: . codex/production_readiness. json")
         print("=" * 60 + "\n")
 
@@ -1933,7 +1933,7 @@ def main():
     validator = ProductionReadinessValidator()
     summary = validator.run_all_validations()
     validator.print_summary(summary)
-    
+
     # Exit with appropriate code
     if summary['failed'] > 0:
         sys.exit(1)
@@ -1942,7 +1942,7 @@ def main():
     else:
         sys.exit(0)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -1965,7 +1965,7 @@ def load_latest_results() -> Dict:
     results_file = REPO_ROOT / '. codex' / 'production_readiness.json'
     if not results_file.exists():
         return None
-    
+
     with open(results_file) as f:
         return json.load(f)
 
@@ -1994,7 +1994,7 @@ def generate_markdown_report(results: Dict) -> str:
 ## Detailed Results by Category
 
 """
-    
+
     # Group checks by category
     categories = {}
     for check in results['checks']:
@@ -2002,28 +2002,28 @@ def generate_markdown_report(results: Dict) -> str:
         if cat not in categories:
             categories[cat] = []
         categories[cat].append(check)
-    
+
     # Generate category sections
     for category, checks in sorted(categories.items()):
         md += f"\n### {category}\n\n"
         md += "| Check | Status | Details |\n"
         md += "|-------|--------|----------|\n"
-        
+
         for check in checks:
             status_emoji = {
                 'PASS': '✅',
                 'FAIL':  '❌',
                 'WARNING': '⚠️'
             }.get(check['status'], '❓')
-            
+
             md += f"| {check['check']} | {status_emoji} {check['status']} | {check['details'][: 50]}... |\n"
-        
+
         # Category summary
         cat_passed = sum(1 for c in checks if c['status'] == 'PASS')
         cat_total = len(checks)
         cat_rate = (cat_passed / cat_total * 100) if cat_total > 0 else 0
         md += f"\n**Category Pass Rate**: {cat_rate:.1f}% ({cat_passed}/{cat_total})\n"
-    
+
     # Failed checks section
     failed_checks = [c for c in results['checks'] if c['status'] == 'FAIL']
     if failed_checks:
@@ -2032,7 +2032,7 @@ def generate_markdown_report(results: Dict) -> str:
             md += f"### {i}. [{check['category']}] {check['check']}\n\n"
             md += f"**Details**: {check['details']}\n\n"
             md += "**Action Required**: "
-            
+
             # Provide specific remediation advice
             if 'formatting' in check['check'].lower():
                 md += "Run `black src/` to auto-format code.\n"
@@ -2044,19 +2044,19 @@ def generate_markdown_report(results: Dict) -> str:
                 md += "Add tests to increase coverage above 80%.\n"
             else:
                 md += "Review and address the issue.\n"
-            
+
             md += "\n"
-    
+
     # Warnings section
     warning_checks = [c for c in results['checks'] if c['status'] == 'WARNING']
     if warning_checks:
         md += "\n---\n\n## ⚠️  Warnings (Non-Critical)\n\n"
         for i, check in enumerate(warning_checks, 1):
             md += f"{i}. **[{check['category']}]** {check['check']}:  {check['details']}\n"
-    
+
     # Recommendations
     md += "\n---\n\n## 📋 Recommendations\n\n"
-    
+
     if results['production_ready']:
         md += "🎉 **Congratulations! ** Your codebase is production-ready.\n\n"
         md += "**Next Steps**:\n"
@@ -2071,7 +2071,7 @@ def generate_markdown_report(results: Dict) -> str:
         md += f"2. Review {results['warnings']} warning(s)\n"
         md += "3. Re-run validation after fixes\n"
         md += "4. Consider additional testing\n"
-    
+
     # Physics-inspired metrics section
     md += "\n---\n\n## 🔬 Physics-Inspired Quality Metrics\n\n"
     md += "These metrics use information theory and graph theory to assess code quality:\n\n"
@@ -2082,39 +2082,39 @@ def generate_markdown_report(results: Dict) -> str:
     md += "| Coupling Energy | Module interdependencies | < 20 | ⏳ Pending |\n"
     md += "| Cyclomatic Complexity | Code complexity | < 10/function | ⏳ Pending |\n"
     md += "\n*Run `python tools/analyze_code_entropy.py` for detailed metrics.*\n"
-    
+
     # Trend analysis
     md += "\n---\n\n## 📈 Trend Analysis\n\n"
     md += "*Historical data will appear here after multiple validation runs.*\n\n"
-    
+
     # Footer
     md += "\n---\n\n"
     md += f"**Report Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}\n"
     md += f"**Tool Version**: 1.0.0\n"
     md += f"**Repository**: Aries-Serpent/_codex_\n"
-    
+
     return md
 
 def save_report(report: str):
     """Save report to file."""
     report_file = REPO_ROOT / '.codex' / 'PRODUCTION_READINESS_REPORT.md'
     report_file.parent.mkdir(exist_ok=True)
-    
+
     with open(report_file, 'w') as f:
         f.write(report)
-    
+
     print(f"✅ Report saved to: {report_file}")
 
 def main():
     results = load_latest_results()
-    
+
     if not results:
         print("❌ No validation results found.  Run validate_production_readiness. py first.")
         return 1
-    
+
     report = generate_markdown_report(results)
     save_report(report)
-    
+
     return 0
 
 if __name__ == "__main__":
@@ -2165,7 +2165,7 @@ python tools/validate_production_readiness.py
 4. ✅ Implement security headers for web services
 5. ✅ Add OWASP dependency check
 
-**Success Criteria**: 
+**Success Criteria**:
 - [ ] Bandit scan:  0 high-severity issues
 - [ ] pip-audit: 0 vulnerabilities
 - [ ] All secrets properly managed (no hardcoded secrets)
@@ -2183,14 +2183,14 @@ detect-secrets scan --baseline . secrets. baseline
 
 **Objective**: Achieve >80% test coverage across all modules
 
-**Tasks**: 
+**Tasks**:
 1. ✅ Identify untested modules
 2. ✅ Create test files for uncovered modules
 3. ✅ Add property-based tests (Hypothesis) for core logic
 4. ✅ Implement integration tests for critical paths
 5. ✅ Add performance benchmarks
 
-**Success Criteria**: 
+**Success Criteria**:
 - [ ] Overall coverage > 80%
 - [ ] All public APIs have tests
 - [ ] Critical paths have integration tests
@@ -2246,7 +2246,7 @@ python tools/analyze_import_paths.py
 - [ ] All env vars documented in AGENTS.md
 - [ ] Runbooks for common operations
 
-**Validation Command**: 
+**Validation Command**:
 ```bash
 python tools/analyze_docstrings.py
 ```
@@ -2282,20 +2282,20 @@ locust -f tests/load/locustfile.py
 
 **Objective**: Implement comprehensive observability
 
-**Tasks**: 
+**Tasks**:
 1. ✅ Structured logging throughout
 2. ✅ Metrics collection (Prometheus)
 3. ✅ Distributed tracing (OpenTelemetry)
 4. ✅ Error tracking (Sentry integration)
 5. ✅ Create monitoring dashboards
 
-**Success Criteria**: 
+**Success Criteria**:
 - [ ] All critical paths logged
 - [ ] Key metrics exposed
 - [ ] Traces for all external calls
 - [ ] Error tracking operational
 
-**Validation Command**: 
+**Validation Command**:
 ```bash
 python tools/validate_observability.py
 ```
@@ -2379,29 +2379,29 @@ class StatusDashboard:
                 'completed': 0,
             },
         ]
-    
+
     def update_from_logs(self):
         """Update status from improvement logs."""
         log_file = CODEX_DIR / 'improvement_log.ndjson'
-        
+
         if not log_file.exists():
             return
-        
+
         with open(log_file) as f:
             for line in f:
                 event = json.loads(line)
                 iter_id = event. get('iteration')
-                
+
                 if iter_id and iter_id <= len(self.iterations):
                     # Update iteration status based on events
                     if event.get('type') == 'task_completed':
                         self. iterations[iter_id - 1]['completed'] += 1
-    
-    def calculate_overall_progress(self) -> Dict: 
+
+    def calculate_overall_progress(self) -> Dict:
         """Calculate overall progress metrics."""
         total_tasks = sum(i['tasks'] for i in self.iterations)
         completed_tasks = sum(i['completed'] for i in self.iterations)
-        
+
         return {
             'total_iterations': len(self.iterations),
             'completed_iterations': sum(1 for i in self.iterations if i['status'] == 'COMPLETED'),
@@ -2410,11 +2410,11 @@ class StatusDashboard:
             'completed_tasks': completed_tasks,
             'progress_percentage': (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0,
         }
-    
+
     def generate_markdown_dashboard(self) -> str:
         """Generate Markdown dashboard."""
         progress = self.calculate_overall_progress()
-        
+
         md = f"""# 🎯 Improvement Status Dashboard
 
 **Last Updated**:  {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}  
@@ -2443,7 +2443,7 @@ class StatusDashboard:
 ## 📋 Iteration Status
 
 """
-        
+
         for iteration in self.iterations:
             status_emoji = {
                 'COMPLETED': '✅',
@@ -2451,17 +2451,17 @@ class StatusDashboard:
                 'PLANNED': '📅',
                 'BLOCKED': '🚫'
             }.get(iteration['status'], '❓')
-            
+
             progress_pct = (iteration['completed'] / iteration['tasks'] * 100) if iteration['tasks'] > 0 else 0
-            
+
             md += f"### {status_emoji} Iteration {iteration['id']}:  {iteration['name']}\n\n"
             md += f"- **Priority**: {iteration['priority']}\n"
             md += f"- **Status**: {iteration['status']}\n"
             md += f"- **Progress**: {iteration['completed']}/{iteration['tasks']} tasks ({progress_pct:.0f}%)\n"
             md += f"- **Progress Bar**: [{'█' * int(progress_pct / 10)}{'░' * (10 - int(progress_pct / 10))}]\n\n"
-        
+
         md += "---\n\n## 🎯 Next Actions\n\n"
-        
+
         # Find next action
         for iteration in self.iterations:
             if iteration['status'] == 'IN_PROGRESS':
@@ -2470,20 +2470,20 @@ class StatusDashboard:
             elif iteration['status'] == 'PLANNED':
                 md += f"📅 **Up Next**: Iteration {iteration['id']} - {iteration['name']}\n\n"
                 break
-        
+
         md += "---\n\n"
         md += "*Dashboard auto-generated by improvement orchestrator*\n"
-        
+
         return md
-    
+
     def save_dashboard(self):
         """Save dashboard to file."""
         md = self.generate_markdown_dashboard()
-        
+
         dashboard_file = CODEX_DIR / 'STATUS_DASHBOARD.md'
         with open(dashboard_file, 'w') as f:
             f.write(md)
-        
+
         print(f"✅ Dashboard saved to: {dashboard_file}")
 
 def main():
@@ -2491,7 +2491,7 @@ def main():
     dashboard.update_from_logs()
     dashboard.save_dashboard()
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
 ```
 
@@ -2502,7 +2502,7 @@ if __name__ == "__main__":
 ```python name=tools/detect_gaps. py
 #!/usr/bin/env python3
 """
-Automated gap detection using multiple analysis techniques. 
+Automated gap detection using multiple analysis techniques.
 Combines static analysis, dynamic analysis, and heuristics.
 """
 import ast
@@ -2516,20 +2516,20 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 class GapDetector:
     def __init__(self):
         self.gaps:  List[Dict] = []
-    
+
     def detect_missing_tests(self) -> List[Dict]:
         """Detect modules without test coverage."""
         gaps = []
         src_dir = REPO_ROOT / 'src'
         tests_dir = REPO_ROOT / 'tests'
-        
+
         for py_file in src_dir.rglob('*.py'):
             if py_file.name == '__init__.py':
                 continue
-            
+
             rel_path = py_file.relative_to(src_dir)
             test_path = tests_dir / f'test_{rel_path}'
-            
+
             if not test_path.exists():
                 gaps. append({
                     'type': 'missing_test',
@@ -2539,22 +2539,22 @@ class GapDetector:
                     'module': str(rel_path),
                     'recommendation': f'Create test file:  tests/test_{rel_path}',
                 })
-        
+
         return gaps
-    
+
     def detect_missing_type_hints(self) -> List[Dict]:
         """Detect functions missing type hints."""
         gaps = []
-        
+
         for py_file in (REPO_ROOT / 'src').rglob('*.py'):
             try:
                 source = py_file.read_text(encoding='utf-8')
                 tree = ast.parse(source)
-                
+
                 class TypeHintChecker(ast.NodeVisitor):
                     def __init__(self):
                         self.missing = []
-                    
+
                     def visit_FunctionDef(self, node):
                         if not node.name.startswith('_'):  # Public functions only
                             if node.returns is None:
@@ -2563,10 +2563,10 @@ class GapDetector:
                                     'line': node.lineno,
                                 })
                         self.generic_visit(node)
-                
+
                 checker = TypeHintChecker()
                 checker. visit(tree)
-                
+
                 if checker.missing:
                     for func in checker.missing:
                         gaps.append({
@@ -2579,24 +2579,24 @@ class GapDetector:
                             'line': func['line'],
                             'recommendation': f'Add type hints to {func["function"]}()',
                         })
-            except: 
+            except:
                 pass
-        
+
         return gaps
-    
+
     def detect_missing_docstrings(self) -> List[Dict]:
         """Detect public APIs without docstrings."""
         gaps = []
-        
+
         for py_file in (REPO_ROOT / 'src').rglob('*.py'):
             try:
                 source = py_file. read_text(encoding='utf-8')
                 tree = ast. parse(source)
-                
+
                 class DocstringChecker(ast. NodeVisitor):
                     def __init__(self):
                         self.missing = []
-                    
+
                     def visit_FunctionDef(self, node):
                         if not node.name. startswith('_'):
                             docstring = ast.get_docstring(node)
@@ -2606,7 +2606,7 @@ class GapDetector:
                                     'line': node. lineno,
                                 })
                         self.generic_visit(node)
-                    
+
                     def visit_ClassDef(self, node):
                         if not node.name.startswith('_'):
                             docstring = ast.get_docstring(node)
@@ -2616,10 +2616,10 @@ class GapDetector:
                                     'line': node.lineno,
                                 })
                         self.generic_visit(node)
-                
+
                 checker = DocstringChecker()
                 checker. visit(tree)
-                
+
                 if checker.missing:
                     for item in checker.missing:
                         gaps.append({
@@ -2634,19 +2634,19 @@ class GapDetector:
                         })
             except:
                 pass
-        
+
         return gaps
-    
+
     def detect_security_gaps(self) -> List[Dict]:
         """Detect potential security issues."""
         gaps = []
-        
+
         # Run bandit
         result = subprocess.run(
             ['bandit', '-r', 'src/', '-f', 'json'],
             capture_output=True,
         )
-        
+
         try:
             bandit_results = json.loads(result.stdout)
             for issue in bandit_results. get('results', []):
@@ -2663,21 +2663,21 @@ class GapDetector:
                     })
         except:
             pass
-        
+
         return gaps
-    
+
     def detect_dependency_gaps(self) -> List[Dict]:
         """Detect dependency issues."""
         gaps = []
-        
+
         # Check for unpinned dependencies
         try:
             import tomli
             with open(REPO_ROOT / 'pyproject.toml', 'rb') as f:
                 config = tomli.load(f)
-            
+
             deps = config.get('project', {}).get('dependencies', [])
-            for dep in deps: 
+            for dep in deps:
                 if '==' not in dep and not dep.startswith('python'):
                     gaps.append({
                         'type': 'unpinned_dependency',
@@ -2689,43 +2689,43 @@ class GapDetector:
                     })
         except:
             pass
-        
+
         return gaps
-    
+
     def run_all_detectors(self) -> List[Dict]:
         """Run all gap detectors."""
         print("\n🔍 Running Gap Detection...")
-        
+
         all_gaps = []
-        
+
         print("  • Detecting missing tests...")
         all_gaps.extend(self.detect_missing_tests())
-        
+
         print("  • Detecting missing type hints...")
         all_gaps.extend(self.detect_missing_type_hints())
-        
+
         print("  • Detecting missing docstrings...")
         all_gaps.extend(self.detect_missing_docstrings())
-        
+
         print("  • Detecting security gaps...")
         all_gaps.extend(self.detect_security_gaps())
-        
+
         print("  • Detecting dependency gaps...")
         all_gaps.extend(self.detect_dependency_gaps())
-        
+
         return all_gaps
-    
+
     def prioritize_gaps(self, gaps:  List[Dict]) -> List[Dict]:
         """Prioritize gaps by impact/effort ratio."""
         for gap in gaps:
             gap['priority_score'] = gap['impact'] / gap['effort']
-        
+
         return sorted(gaps, key=lambda x: x['priority_score'], reverse=True)
-    
+
     def generate_gap_report(self, gaps: List[Dict]) -> str:
         """Generate gap analysis report."""
         prioritized = self.prioritize_gaps(gaps)
-        
+
         md = f"""# 🔍 Gap Analysis Report
 
 **Generated**:  {json.dumps(datetime.now().isoformat())}  
@@ -2736,7 +2736,7 @@ class GapDetector:
 ## Summary by Type
 
 """
-        
+
         # Group by type
         by_type = {}
         for gap in gaps:
@@ -2744,37 +2744,37 @@ class GapDetector:
             if gap_type not in by_type:
                 by_type[gap_type] = []
             by_type[gap_type].append(gap)
-        
+
         for gap_type, items in sorted(by_type.items()):
             md += f"- **{gap_type}**: {len(items)} found\n"
-        
+
         md += "\n---\n\n## Top Priority Gaps\n\n"
-        
+
         for i, gap in enumerate(prioritized[: 20], 1):  # Top 20
             md += f"### {i}. [{gap['severity']}] {gap['type']}\n\n"
             md += f"- **Priority Score**: {gap['priority_score']:.2f} (impact: {gap['impact']}, effort: {gap['effort']})\n"
             md += f"- **Recommendation**: {gap['recommendation']}\n"
-            
+
             if 'file' in gap:
                 md += f"- **File**: {gap['file']}"
                 if 'line' in gap:
                     md += f" (line {gap['line']})"
                 md += "\n"
-            
+
             md += "\n"
-        
+
         return md
-    
+
     def save_gap_report(self, gaps: List[Dict]):
         """Save gap report to file."""
         report = self.generate_gap_report(gaps)
-        
+
         report_file = REPO_ROOT / '. codex' / 'GAP_ANALYSIS.md'
         report_file.parent.mkdir(exist_ok=True)
-        
+
         with open(report_file, 'w') as f:
             f.write(report)
-        
+
         # Also save JSON
         json_file = REPO_ROOT / '.codex' / 'gaps.json'
         with open(json_file, 'w') as f:
@@ -2783,7 +2783,7 @@ class GapDetector:
                 'total_gaps': len(gaps),
                 'gaps': self.prioritize_gaps(gaps),
             }, f, indent=2)
-        
+
         print(f"✅ Gap report saved:")
         print(f"   Markdown: {report_file}")
         print(f"   JSON: {json_file}")
@@ -2791,9 +2791,9 @@ class GapDetector:
 def main():
     detector = GapDetector()
     gaps = detector.run_all_detectors()
-    
+
     print(f"\n📊 Found {len(gaps)} gaps")
-    
+
     detector.save_gap_report(gaps)
 
 if __name__ == "__main__":
@@ -2860,11 +2860,11 @@ Execute a comprehensive, iterative improvement cycle to resolve all critical bui
 **Problem**: Bandit fails with warnings about `nosec` comments without test justification
 
 **Actions**:
-1. Create/update `bandit.yaml` in repository root: 
+1. Create/update `bandit.yaml` in repository root:
 
 ```yaml
 # bandit.yaml - Security scanner configuration
-exclude_dirs: 
+exclude_dirs:
   - /tests/
   - /.venv/
   - /venv/
@@ -2895,14 +2895,14 @@ skips:
           if [ ! -f bandit.yaml ]; then
             echo "nosec: true" > bandit.yaml
           fi
-          
+
           # Run with proper error handling
           bandit -r src/ -c bandit.yaml -f json -o bandit-results.json || BANDIT_EXIT=$?
           bandit -r src/ -c bandit.yaml -f txt | tee bandit-report.txt
-          
+
           echo "Bandit completed with exit code: ${BANDIT_EXIT:-0}"
         continue-on-error: false
-      
+
       - name: Upload Bandit Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -2926,7 +2926,7 @@ skips:
 **Problem**: Debian Buster repositories are archived/discontinued
 
 **Actions**:
-1. Find all Dockerfiles: 
+1. Find all Dockerfiles:
    ```bash
    find . -name "Dockerfile*" -o -name "*. dockerfile" | grep -v node_modules
    ```
@@ -2962,7 +2962,7 @@ ENTRYPOINT ["/bin/bash"]
 
 3. Validate Docker builds:
    ```bash
-   docker build -t codex-test -f Dockerfile.security-scanner . 
+   docker build -t codex-test -f Dockerfile.security-scanner .
    docker run --rm codex-test python --version
    ```
 
@@ -2970,7 +2970,7 @@ ENTRYPOINT ["/bin/bash"]
 
 ## 🔄 PHASE 2: CONTINUOUS IMPROVEMENT CYCLES
 
-**CRITICAL INSTRUCTION**: Then continue with reviewing all listed below and verifying all that was successfully implemented and identify any that must still be addressed and/or planned and still need to be addressed and implemented.  YOU MUST EXHAUST MAXIMUM TOKEN Usage while before finalizing your last code review YOU MUST analyze the codebase to identify all remaining gaps, risks, and incomplete implementations. 
+**CRITICAL INSTRUCTION**: Then continue with reviewing all listed below and verifying all that was successfully implemented and identify any that must still be addressed and/or planned and still need to be addressed and implemented.  YOU MUST EXHAUST MAXIMUM TOKEN Usage while before finalizing your last code review YOU MUST analyze the codebase to identify all remaining gaps, risks, and incomplete implementations.
 
 ### Iteration Protocol
 
@@ -3178,7 +3178,7 @@ Each iteration is complete when:
 
 ## 🎉 COMPLETION ACTIONS
 
-When all criteria met: 
+When all criteria met:
 1. Generate final production readiness report
 2. Create summary pull request
 3. Tag release candidate
@@ -3187,7 +3187,7 @@ When all criteria met:
 
 ---
 
-**Remember**: This is an AI Assistant/Agent optimized codebase. Build on existing capabilities.  Use physics-inspired calculations for continual improvement. Iterate until production-ready. Document everything. 
+**Remember**: This is an AI Assistant/Agent optimized codebase. Build on existing capabilities.  Use physics-inspired calculations for continual improvement. Iterate until production-ready. Document everything.
 
 **Start with P0 tasks immediately.  Report progress after each iteration.  Continue until complete.**
 ````

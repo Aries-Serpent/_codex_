@@ -28,7 +28,7 @@
 - Removed explicit `Exit(0)` raise in success path
 - Added proper exception handling to re-raise typer.Exit
 - Normal return for success allows Typer to set exit code 0
-- **Tests Fixed**: 
+- **Tests Fixed**:
   - `tests.cli.test_cli_manifest_validate::test_validate_ok_and_strict`
   - `tests.cli.test_cli_manifest_validate::test_validate_rejects_wrong_schema`
 
@@ -230,11 +230,11 @@ python3 -m pytest tests/models/test_peft_optional.py -xvs
 
 1. **Decorator Semantics Matter**: Phase_step decorator was silently converting failures to success
    - Always check decorator behavior when debugging unexpected return values
-   
+
 2. **Typer Exit Conventions**: Explicit Exit(0) vs normal return have different behaviors
    - Normal return → exit 0 automatically
    - Raise Exit(code) → explicit exit code
-   
+
 3. **Missing Infrastructure**: Tests can import non-existent modules
    - Always check file existence before assuming availability
    - Create minimal stubs for test infrastructure
