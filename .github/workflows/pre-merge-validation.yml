@@ -35,7 +35,7 @@ jobs:
       - name: Run auto-fix check
         id: autofix
         run: |
-          python scripts/ci/auto_fix_common_issues.py --check-only
+          python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/autofix_report.json
         continue-on-error: true
 
       - name: Run quick tests
@@ -92,6 +92,10 @@ jobs:
         if: steps.autofix.outcome != 'success'
         run: |
           echo "::error::Pre-merge validation failed - auto-fixable issues detected"
+          if [ -f /tmp/autofix_report.json ]; then
+            python3 -c "import json; r=json.load(open('/tmp/autofix_report.json')); issues=[i for i in r.get('issues',[]) if i.get('auto_fix_available')]; print('Auto-fixable issues:') or [print('  ['+i['pattern_name']+'] '+i['file']+':'+str(i['line'])+' - '+i['message']) for i in issues] if issues else print('Run: python scripts/ci/auto_fix_common_issues.py --check-only for details')" || true
+          fi
+          echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
           exit 1
 
       - name: Cache health report

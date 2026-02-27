@@ -1,4 +1,30 @@
 # QA Walkthrough Change Log
+## 📝 2026-02-27T14:11:55Z — Session S86 (PR #3388): Pre-Merge Validation CI fix, Pattern 8 reclassification
+
+### CI Failures Fixed (1 critical workflow fix)
+- **scripts/ci/auto_fix_common_issues.py**: Moved "CodeQL Alerts" (Pattern 8) from `auto_fixable_patterns` to `manual_review_patterns`. Pattern 8 detected F401+F841 but had no fix logic — `fixes_applied["CodeQL Alerts"]` was always 0, making `has_auto_fixable_issues()` return True for F841-only issues. F841 is not auto-fixable (already informational via Pattern 2); F401 is already handled by Pattern 1.
+- **.github/workflows/pre-merge-validation.yml**: Added `--json-output /tmp/autofix_report.json` to autofix step; "Fail if critical checks failed" now shows specific file:line issues from JSON report for better developer UX.
+
+### Agent Ecosystem Updates
+- **.github/agents/ci-failure-resolution-agent.md**: Version 1.0.0→1.1.0; Added Pattern 5 "Pre-Merge Autofix" with diagnosis steps, fix categories, and Pattern 8 classification warning.
+
+### Cognitive Brain Status
+- **.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S86_PR3388.md**: Status file for S86 session — root cause analysis, 5-pass self-review, metrics before/after, next-phase objectives.
+
+### Follow-Up Prompt
+- **.github/copilot-prompts/active/PR-3388-followup.md**: Continuation prompt for PR #3388; includes HOTFIX items from post-PR3375 as Priority 1 tasks.
+
+### Metrics (session end)
+- **CI Workflow**: Pre-Merge Validation pattern fixed — Pattern 8 no longer causes false positive blocks
+- **auto_fixable_patterns**: 3→2 (Patterns 1+4 only; Pattern 8 correctly informational)
+- **Workflow UX**: Error messages now show specific file:line for auto-fixable issues
+- **CI Agent**: Strategy 5 (Pre-Merge Validation pattern) added to ci-failure-resolution-agent.md
+
+### Commits
+- `fb81378` — fix(ci): move CodeQL Alerts to manual_review_patterns in auto_fix_common_issues.py
+- (next) — feat(ci): improve pre-merge validation error output with JSON report; add S78 status and follow-up
+
+---
 ## 📝 2026-02-22T02:00:00Z — Session S61: 14 CI fixes, E-10/E-11, DR-003/DR-009, exc_info cleanup
 
 ### CI Failures Fixed (14)

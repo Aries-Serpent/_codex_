@@ -45,7 +45,6 @@ class CommonIssueFixer:
         self.auto_fixable_patterns = {
             "Unused Imports",      # Pattern 1 - ruff --fix
             "Coverage Thresholds", # Pattern 4 - automated replacement
-            "CodeQL Alerts",       # Pattern 8 - ruff --fix
         }
         self.manual_review_patterns = {
             "Unused Variables",    # Pattern 2 - context-dependent
@@ -53,6 +52,9 @@ class CommonIssueFixer:
             "Tokenizer Fallbacks", # Pattern 5 - code-flow dependent
             "Test Assertions",     # Pattern 6 - logic-dependent
             "Redundant Imports",   # Pattern 7 - manual review
+            # Pattern 8 - informational only: F401 is already handled by Pattern 1
+            # (which has actual ruff --fix logic); F841 cannot be auto-fixed.
+            "CodeQL Alerts",
         }
 
     def run_all_patterns(self) -> bool:
