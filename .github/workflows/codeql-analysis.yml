@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Languages detected in repository
-        language: ['python', 'javascript', 'typescript']
+        # CodeQL treats TypeScript as part of 'javascript' — no separate 'typescript' entry needed
+        language: ['python', 'javascript']
 
     steps:
       - name: Checkout repository

@@ -1094,3 +1094,38 @@ guarded `try/except ImportError` block.
 
 **File**: `src/codex/retrieval/stores/__init__.py`
 **Status**: FAISS guard added ✅; RetrievalEngine factory migration ⏳ S81
+
+---
+
+### DRQ-S90-001: CodeQL auto-fixable pattern classification recurring pattern
+
+**ID**: DRQ-S90-001
+**Category**: CodeQL "unused import" false positives
+**Priority**: LOW
+**Impact**: CI noise — CodeQL reports unused imports that are actually re-exports or
+backward-compatibility aliases, creating false positive auto-fix suggestions.
+
+**Context**: Pattern 1 (unused imports via `ruff F401`) and Pattern 8 (CodeQL alerts)
+in `scripts/ci/auto_fix_common_issues.py` overlap in detection scope. Pattern 8's
+`auto_fixable_patterns` membership implies it can auto-fix CodeQL alerts, but the
+actual fix logic only covers `F401`/`F841` (same as Pattern 1).
+
+**The Question**: Should Pattern 8 be removed from `auto_fixable_patterns` and
+marked detect-only, or should it gain distinct fix logic (e.g., `# noqa` annotation
+insertion for re-export aliases)?
+
+**Why Needs Research**: The overlap causes double-counting in diagnostic reports and
+misleading "auto-fixable" counts. Deduplicating requires understanding which CodeQL
+alerts are genuinely auto-fixable vs. which are false positives on intentional re-exports.
+
+**Current Hypothesis**: Pattern 8 should be detect-only (remove from
+`auto_fixable_patterns`). Re-export aliases should use `__all__` declarations to
+suppress both ruff F401 and CodeQL unused-import alerts.
+
+**Acceptance Criteria**:
+1. `auto_fix_common_issues.py --check-only` reports accurate auto-fixable counts
+2. Pattern 1 and Pattern 8 have zero overlap in detected issues
+3. CodeQL alerts for intentional re-exports are suppressed via `__all__`
+
+**File**: `scripts/ci/auto_fix_common_issues.py`
+**Status**: Research pending ⏳ S90
