@@ -419,7 +419,7 @@ async def _shutdown() -> None:
         try:
             await worker_task
         except asyncio.CancelledError:
-            pass
+            logger.info("Background worker task cancelled during shutdown")
 
 
 def _rate_key(_: InferRequest) -> str:
