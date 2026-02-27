@@ -2,9 +2,64 @@
 
 **Created**: 2026-02-22 08:30
 **Status**: Awaiting Research
-**Total Questions**: 5
+**Total Questions**: 9
 **PR**: https://github.com/Aries-Serpent/_codex_/pull/3344
 **Branch**: `copilot/sub-pr-3336-again`
+
+---
+
+## S81 Additions (PR #3384) — 2026-02-27
+
+### Q008: Why does `test_evaluate_cli_runs` keep failing with different root causes each session?
+
+**Category**: Multi-output CLI
+**Priority**: Medium
+**Impact**: Medium
+**Created**: 2026-02-27
+**Status**: ⏳ Interim fix applied (DRQ-S81-008)
+
+#### Context
+**Where discovered**: `tests/test_evaluate_cli.py::test_evaluate_cli_runs`
+**Session S58 failure**: Hydra `config_path` pointed to wrong level (`../../configs/evaluation` → `../configs/evaluation`)
+**Session S81 failure**: Test looked for output in `tmp_path/outputs/` (Hydra's working dir) but CLI writes to the explicit `output_dir` CLI arg (`tmp_path/eval`)
+
+#### The Question
+Is the fundamental issue that the test was originally written assuming Hydra would change the working directory (pre-1.3 behavior), and the two failures reflect the gradual drift between Hydra version behavior and test assumptions? Or is there a deeper miscommunication between the Hydra `config_path` resolution and the `output_dir` override semantics?
+
+#### Why This Needs Research
+- [ ] Hydra `version_base=None` CWD behavior changed across 1.1→1.3; confirm exact behavior in CI (hydra-core==1.3.2)
+- [ ] Confirm whether `output_dir` passed as CLI override is absolute or Hydra-resolved relative
+- [ ] Determine if the test should use `subprocess` at all vs. direct Python invocation
+
+#### Current Hypothesis
+Hydra 1.3.2 with `version_base=None` does NOT change CWD. The original test assumed the old behavior where Hydra wrote everything to `./outputs/YYYY-MM-DD/HH-MM-SS/`. The correct fix (applied S81) is to look in `output_dir` directly.
+
+#### Interim Fix Applied (S81)
+Changed `outputs_dir = Path(tmp_path) / "outputs"` → `ndjson_files = list(output_dir.glob("**/predictions.ndjson"))` in `tests/test_evaluate_cli.py`. Verified: `eval/predictions.ndjson` and `eval/summary.json` ARE written correctly (confirmed via `/tmp/pytest-of-runner/pytest-7/test_evaluate_cli_runs0/eval/summary.json`).
+
+**Status**: Interim fix confirmed working ✅; root cause research deferred
+
+---
+
+### Q009: FastAPI module-level app singleton — safe pattern for test isolation?
+
+**Category**: Integration test environment
+**Priority**: Low
+**Impact**: Low
+**Created**: 2026-02-27
+**Status**: ⏳ Interim fix applied (DRQ-S81-009)
+
+#### Context
+**Where discovered**: `tests/test_api_infer.py` + `services/api/main.py`
+**What happened**: `app = FastAPI(...)` is a module-level singleton in `services/api/main.py`. Tests that import `app` share the same `app.state` object. When `_load_components()` caches `tokenizer` and `model` on `app.state`, subsequent test files see stale state and ignore `API_TOKENIZER`/`API_MODEL` monkeypatches.
+
+#### The Question
+Is using a module-level FastAPI singleton in combination with pytest a supported pattern? Should `services/api/main.py` use an `app_factory()` function instead, returning a fresh `FastAPI()` instance per test?
+
+#### Interim Fix Applied (S81)
+Added `_clear_app_state()` helper to the `_set_env` autouse fixture — clears `app.state.tokenizer` and `app.state.model` before and after each test. Used `with TestClient(app) as client:` for proper ASGI lifecycle (startup/shutdown events).
+
+**Status**: Interim fix working ✅; factory pattern refactor deferred
 
 ---
 

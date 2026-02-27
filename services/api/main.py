@@ -411,6 +411,20 @@ async def _startup() -> None:
     app.state.worker_task = asyncio.create_task(worker())
 
 
+@app.on_event("shutdown")
+async def _shutdown() -> None:
+    worker_task = getattr(app.state, "worker_task", None)
+    if worker_task is not None and not worker_task.done():
+        worker_task.cancel()
+        try:
+            await worker_task
+        except asyncio.CancelledError:
+            # Intentionally suppressed: CancelledError is the expected outcome of
+            # task.cancel() and signals successful teardown.  In a shutdown handler
+            # there is no outer coroutine to propagate to, so swallowing is correct.
+            logger.info("Background worker task cancelled during shutdown")
+
+
 def _rate_key(_: InferRequest) -> str:
     return "infer"
 
