@@ -190,7 +190,9 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_requirements(user_request)
 
-        assert "requirements" in result or isinstance(result, list)
+        # analyze_requirements returns a dict with "missing_variables",
+        # "provided_variables", "completeness", etc. – NOT a "requirements" key.
+        assert "missing_variables" in result or isinstance(result, list)
         assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
 
     def test_analyze_requirements_identifies_variables(self, orchestrator):
@@ -199,9 +201,10 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_requirements(user_request)
 
-        # Should identify port and auth-related requirements
-        if isinstance(result, dict) and "requirements" in result:
-            reqs = result["requirements"]
+        # analyze_requirements returns a dict; fall back to orchestrator.requirements
+        # for any list-typed return shape (future-proofing only).
+        if isinstance(result, dict):
+            reqs = result.get("missing_variables", orchestrator.requirements)
         else:
             reqs = orchestrator.requirements
 

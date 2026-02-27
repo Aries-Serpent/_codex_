@@ -44,8 +44,9 @@ def test_evaluate_cli_runs(tmp_path):
         "limit=2",
     ]
     subprocess.run(cmd, check=True, cwd=tmp_path, env=env)
-    outputs_dir = Path(tmp_path) / "outputs"
-    ndjson_files = list(outputs_dir.glob("**/predictions.ndjson"))
+    # The CLI writes output to the directory given by output_dir, not to a
+    # Hydra-managed "outputs/" subdirectory.
+    ndjson_files = list(output_dir.glob("**/predictions.ndjson"))
     assert ndjson_files
     summary = json.loads((ndjson_files[0].parent / "summary.json").read_text(encoding="utf-8"))
     assert "metrics" in summary
