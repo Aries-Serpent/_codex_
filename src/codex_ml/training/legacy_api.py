@@ -1343,7 +1343,7 @@ def run_functional_training(
     train_kwargs.setdefault("lr", cfg.learning_rate)
     train_kwargs.setdefault("batch_size", cfg.batch_size)
     train_kwargs.setdefault("epochs", cfg.max_epochs)
-    train_kwargs.setdefault("grad_accum", cfg.gradient_accumulation)
+    train_kwargs.setdefault("gradient_accumulation_steps", cfg.gradient_accumulation)
     train_kwargs.setdefault("save_every", cfg.checkpoint_every_n_steps)
     train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
@@ -1355,7 +1355,7 @@ def run_functional_training(
     train_kwargs["lr"] = float(train_kwargs["lr"])
     train_kwargs["batch_size"] = int(train_kwargs["batch_size"])
     train_kwargs["epochs"] = int(train_kwargs["epochs"])
-    train_kwargs["grad_accum"] = int(train_kwargs["grad_accum"])
+    train_kwargs["gradient_accumulation_steps"] = int(train_kwargs["gradient_accumulation_steps"])
     train_kwargs["save_every"] = int(train_kwargs["save_every"])
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
@@ -1448,7 +1448,10 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
-    train_cfg = TrainCfg(**train_kwargs)
+    # Filter to only TrainConfig-known fields before construction.
+    # This silently drops legacy keys (save_every, warmup_steps, weight_decay, etc.)
+    # that were added for forward-compatibility but are not part of TrainConfig.
+    train_cfg = TrainCfg(**{k: v for k, v in train_kwargs.items() if k in TrainCfg.__dataclass_fields__})
     result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
         eval_batch_raw = (
