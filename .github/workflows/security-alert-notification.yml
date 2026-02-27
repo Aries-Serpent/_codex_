@@ -14,6 +14,7 @@ permissions:
   security-events: read
   issues: write
   pull-requests: write
+  vulnerability-alerts: read
 
 jobs:
   check-security-alerts:
@@ -31,18 +32,33 @@ jobs:
           python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification 2>/dev/null || echo "Cache health: check skipped"
       - name: Get Dependabot alerts
         id: get-alerts
+        continue-on-error: true
         uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data: alerts } = await github.rest.dependabot.listAlertsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              sort: 'created',
-              direction: 'desc',
-              per_page: 100
-            });
+            let alerts;
+            try {
+              const response = await github.rest.dependabot.listAlertsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                sort: 'created',
+                direction: 'desc',
+                per_page: 100
+              });
+              alerts = response.data;
+            } catch (err) {
+              core.warning(`Unable to fetch Dependabot alerts: ${err.message} (status ${err.status})`);
+              core.setOutput('alert-count', 0);
+              core.setOutput('critical-count', 0);
+              core.setOutput('high-count', 0);
+              core.setOutput('moderate-count', 0);
+              core.setOutput('low-count', 0);
+              core.setOutput('alerts', '[]');
+              core.setOutput('has-alerts', false);
+              return { count: 0, alerts: [] };
+            }
 
             // Filter alerts created in last 24 hours
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
