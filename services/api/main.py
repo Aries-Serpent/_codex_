@@ -403,6 +403,12 @@ async def _startup() -> None:
                     "artifacts": str(run_dir),
                     "finished": time.time(),
                 }
+            except asyncio.CancelledError:
+                # Re-raise so the task loop exits cleanly on cancellation.
+                # Without this, CancelledError would be caught by the broad
+                # `except Exception` below and swallowed, causing task.cancel()
+                # in _shutdown() to hang waiting for the task to finish.
+                raise
             except Exception as exc:
                 JOBS[jid] = {"status": "failed", "error": str(exc)}
             finally:
