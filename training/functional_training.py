@@ -14,6 +14,7 @@ import numpy as np
 from torch.nn.utils import clip_grad_norm_
 
 import torch
+import torch.nn.functional as F
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
@@ -676,12 +677,17 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> Dic
                             else:
                                 # Model returned a raw logits tensor (e.g. MiniLM).
                                 # Compute next-token cross-entropy from labels in batch.
-                                import torch.nn.functional as F  # noqa: PLC0415
                                 labels = batch.get("labels", batch.get("input_ids"))
                                 if labels is None:
                                     raise ValueError(
                                         "Model returned a raw tensor but batch has no "
                                         "'labels' or 'input_ids' key for loss computation."
+                                    )
+                                if out.dim() < 2:
+                                    raise ValueError(
+                                        f"Model output tensor has unexpected shape {out.shape}; "
+                                        "expected at least 2 dimensions (batch, vocab) or "
+                                        "(batch, seq_len, vocab)."
                                     )
                                 loss_t = F.cross_entropy(
                                     out.view(-1, out.size(-1)), labels.view(-1)
