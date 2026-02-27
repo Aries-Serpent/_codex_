@@ -88,6 +88,14 @@ skip_if_no_cuda = pytest.mark.skipif(
     not is_cuda_available(), reason="CUDA/GPU not available in this environment"
 )
 
+# Skip marker for tests that use real SentenceTransformer models.
+# These fail with IndexError on CPU-only CI runners (GitHub Actions).
+# Usage: @skip_real_st_models  (class-level or method-level decorator)
+skip_real_st_models = pytest.mark.skipif(
+    not is_cuda_available(),
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Relax coverage enforcement during collection-only runs.

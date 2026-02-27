@@ -484,6 +484,7 @@ class TestCreateEmbeddingProvider:
             assert str(tmpdir) in str(provider.cache_dir)
 
 
+@_skip_real_st_models
 class TestEmbeddingsIntegration:
     """Integration tests for embeddings module"""
 

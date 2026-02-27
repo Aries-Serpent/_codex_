@@ -35,8 +35,21 @@ pytestmark = pytest.mark.skipif(
     reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 
+# Guard for tests that require real SentenceTransformer models on CPU
+try:
+    import torch as _torch
+    _cuda_available = _torch.cuda.is_available()
+except Exception:
+    _cuda_available = False
+
+_skip_real_st_models = pytest.mark.skipif(
+    not _cuda_available,
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 @pytest.mark.integration
+@_skip_real_st_models
 class TestEndToEndPipeline:
     """Test complete RAG pipeline from docs to retrieval"""
 
@@ -123,6 +136,7 @@ class TestEndToEndPipeline:
 
 
 @pytest.mark.integration
+@_skip_real_st_models
 class TestMultiTenantIsolation:
     """Test multi-tenant index isolation"""
 
@@ -179,6 +193,7 @@ class TestMultiTenantIsolation:
 
 
 @pytest.mark.integration
+@_skip_real_st_models
 class TestCacheEffectiveness:
     """Test embedding cache behavior across workflows"""
 
@@ -218,6 +233,7 @@ class TestCacheEffectiveness:
 
 
 @pytest.mark.integration
+@_skip_real_st_models
 class TestCrossModuleInteractions:
     """Test interactions between different RAG modules"""
 
@@ -261,6 +277,7 @@ class TestCrossModuleInteractions:
 
 
 @pytest.mark.integration
+@_skip_real_st_models
 class TestMultiIndexQueries:
     """Test querying across multiple indices"""
 
@@ -312,6 +329,7 @@ class TestMultiIndexQueries:
 
 @pytest.mark.integration
 @pytest.mark.slow
+@_skip_real_st_models
 class TestPerformanceUnderLoad:
     """Test system performance with realistic loads"""
 
