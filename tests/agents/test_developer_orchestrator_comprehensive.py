@@ -190,7 +190,9 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_requirements(user_request)
 
-        assert "requirements" in result or isinstance(result, list)
+        # analyze_requirements returns a dict with "missing_variables",
+        # "provided_variables", "completeness", etc. – NOT a "requirements" key.
+        assert "missing_variables" in result or isinstance(result, list)
         assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
 
     def test_analyze_requirements_identifies_variables(self, orchestrator):

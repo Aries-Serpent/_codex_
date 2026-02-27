@@ -411,6 +411,17 @@ async def _startup() -> None:
     app.state.worker_task = asyncio.create_task(worker())
 
 
+@app.on_event("shutdown")
+async def _shutdown() -> None:
+    worker_task = getattr(app.state, "worker_task", None)
+    if worker_task is not None and not worker_task.done():
+        worker_task.cancel()
+        try:
+            await worker_task
+        except asyncio.CancelledError:
+            pass
+
+
 def _rate_key(_: InferRequest) -> str:
     return "infer"
 
