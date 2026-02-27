@@ -714,7 +714,9 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             else:
                                 # Model returned a raw logits tensor (e.g. MiniLM).
                                 # Compute next-token cross-entropy from labels in batch.
-                                labels = batch.get("labels", batch.get("input_ids"))
+                                # Prefer 'labels' (next-token targets) over 'input_ids'
+                                # as fallback for causal-LM datasets without separate labels.
+                                labels = batch.get("labels") or batch.get("input_ids")
                                 if labels is None:
                                     raise ValueError(
                                         "Model returned a raw tensor but batch has no "
