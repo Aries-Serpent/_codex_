@@ -201,11 +201,9 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_requirements(user_request)
 
-        # Should identify port and auth-related requirements
-        if isinstance(result, dict) and "requirements" in result:
-            reqs = result["requirements"]
-        else:
-            reqs = orchestrator.requirements
+        # analyze_requirements returns a dict; fall back to orchestrator.requirements
+        # for any list-typed return shape (future-proofing only).
+        reqs = result.get("missing_variables", orchestrator.requirements) if isinstance(result, dict) else orchestrator.requirements
 
         assert len(reqs) > 0
 
