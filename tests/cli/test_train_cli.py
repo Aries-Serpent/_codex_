@@ -32,7 +32,7 @@ def test_train_cli_invokes_unified_training(monkeypatch, tmp_path: pathlib.Path)
             "--model-name",
             "demo",
             "--epochs",
-            "0",
+            "1",
             "--output-dir",
             str(tmp_path),
         ],
@@ -40,4 +40,4 @@ def test_train_cli_invokes_unified_training(monkeypatch, tmp_path: pathlib.Path)
 
     assert result.exit_code == 0, result.output
     assert captured["cfg"].model_name == "demo"
-    assert captured["cfg"].epochs == 0
+    assert captured["cfg"].epochs == 1

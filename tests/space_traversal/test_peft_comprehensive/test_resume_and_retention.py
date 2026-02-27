@@ -28,6 +28,7 @@ def test_emit_checkpoint_respects_retention(monkeypatch, tmp_path: Path) -> None
         metric_value,
         metric_key,
         config,
+        metadata=None,
         mode="min",
         top_k=3,
         prefix="ckpt",
