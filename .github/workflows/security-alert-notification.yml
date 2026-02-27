@@ -98,10 +98,12 @@ jobs:
         id: create-summary
         if: steps.get-alerts.outputs.has-alerts == 'true'
         uses: actions/github-script@v8
+        env:
+          ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const alerts = JSON.parse('${{ steps.get-alerts.outputs.alerts }}');
+            const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');
 
             let summary = '## 🚨 New Security Alerts Detected\n\n';
             summary += `**Total New Alerts:** ${alerts.length}\n\n`;

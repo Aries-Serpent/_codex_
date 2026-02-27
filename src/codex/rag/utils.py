@@ -107,6 +107,24 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                                 if param.device.type == 'meta':
                                     logger.debug("Found meta device in submodule parameter")
                                     return True
+                    if hasattr(submodule, 'named_buffers'):
+                        # Also check directly-owned buffers on this submodule.
+                        # For wrapper objects, buffers() may not recurse, so
+                        # recurse=False avoids double-counting across the walk.
+                        try:
+                            buf_iter = submodule.named_buffers(recurse=False)
+                        except TypeError:
+                            # recurse= kwarg unsupported in older PyTorch or
+                            # custom module implementations – fall back to default.
+                            buf_iter = submodule.named_buffers()
+                        for _, buf in buf_iter:
+                            if hasattr(buf, 'is_meta') and buf.is_meta:
+                                logger.debug("Found meta tensor in submodule buffer")
+                                return True
+                            if hasattr(buf, 'device') and hasattr(buf.device, 'type'):
+                                if buf.device.type == 'meta':
+                                    logger.debug("Found meta device in submodule buffer")
+                                    return True
 
             # Also check the model's own device attribute (e.g., SentenceTransformer
             # wrappers that expose their device without standard parameters/buffers).

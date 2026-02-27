@@ -55,7 +55,10 @@ class TestCheckForMetaTensors:
         # Create a simple model without meta tensors on explicit CPU device
         model = torch.nn.Linear(10, 5, device="cpu")
         has_meta = check_for_meta_tensors(model)
-        assert has_meta is False, f"Expected False, got {has_meta!r} (params: {[(n, p.device) for n, p in model.named_parameters()]})"
+        param_devices = [(n, p.device) for n, p in model.named_parameters()]
+        assert has_meta is False, (
+            f"Expected False, got {has_meta!r} (params: {param_devices})"
+        )
 
     def test_model_with_meta_tensors(self):
         """Test detection on model with meta tensors"""
