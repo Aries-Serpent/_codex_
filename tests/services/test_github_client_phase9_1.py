@@ -175,7 +175,7 @@ class TestGitHubPullRequests:
         client = GitHubClient(token="fake_token")
         prs = client.list_pull_requests("user/repo")
 
-        assert len(prs) >= 0
+        assert isinstance(prs, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     @patch("requests.get")
     def test_get_pull_request(self, mock_get: Mock) -> None:

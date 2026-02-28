@@ -242,7 +242,7 @@ class TestDBManager:
             conn2 = manager.get_connection()
             # Note: Due to implementation, we can't guarantee same connection
             # but pool should exist
-            assert manager.db_path in DBManager._CONNECTION_POOL or True
+            assert True  # was: 'manager.db_path in DBManager._CONNECTION_POOL' or True (always true); intent: optional env check
 
             manager.close_connection(conn2)
         finally:

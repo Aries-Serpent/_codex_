@@ -478,7 +478,7 @@ def func(x, y):
         # If errors are tracked, they should be present
         # If not tracked, at least no patches should be generated for syntax-invalid files
         if hasattr(result, 'errors') and result.errors is not None:
-            assert len(result.errors) >= 0  # Changed from > 0 to >= 0
+            assert isinstance(result.errors, (list, tuple, set, dict))# Changed from > 0 to >= 0
 
 
 class TestTransformTierC:

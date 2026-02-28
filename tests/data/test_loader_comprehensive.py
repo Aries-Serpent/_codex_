@@ -150,13 +150,13 @@ class TestLoadTexts:
         """Test loading texts from JSONL file."""
         if hasattr(loader, "load_texts"):
             texts = list(loader.load_texts(mock_jsonl_data))
-            assert len(texts) >= 0
+            assert isinstance(texts, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     def test_load_texts_with_limit(self, mock_jsonl_data):
         """Test loading texts with limit."""
         if hasattr(loader, "load_texts"):
             texts = loader.load_texts(mock_jsonl_data)
-            assert len(texts) >= 0  # Just verify it loads
+            assert isinstance(texts, (list, tuple, set, dict))# Just verify it loads
 
 
 class TestStreamTexts:
@@ -167,7 +167,7 @@ class TestStreamTexts:
         if hasattr(loader, "stream_texts"):
             stream = loader.stream_texts(mock_jsonl_data)
             texts = list(stream)
-            assert len(texts) >= 0
+            assert isinstance(texts, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     def test_stream_texts_is_iterator(self, mock_jsonl_data):
         """Test stream_texts returns iterator."""

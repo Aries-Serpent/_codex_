@@ -138,7 +138,7 @@ def test_analyze_complexity(temp_repo):
     metrics = sensor.analyze_complexity()
 
     # Should detect the complex function
-    assert len(metrics) >= 0
+    assert isinstance(metrics, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     if metrics:
         assert metrics[0].name == "code_complexity"

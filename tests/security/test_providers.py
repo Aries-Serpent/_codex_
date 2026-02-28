@@ -591,7 +591,7 @@ class TestGitHubTokenProvider:
         scopes = provider.get_scopes("token-id")
 
         assert isinstance(scopes, list)
-        assert len(scopes) >= 0
+        assert isinstance(scopes, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     def test_create_token(self, github_config):
         """Test creating new token raises NotImplementedError (stub implementation)."""

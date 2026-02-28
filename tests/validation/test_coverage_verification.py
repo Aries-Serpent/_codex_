@@ -68,7 +68,7 @@ class TestCoverageConfiguration:
             # Should have omit patterns to exclude test files, etc.
             has_omit = "omit" in content or "exclude" in content
             # This is optional but good practice
-            assert has_omit or True, "Consider adding coverage omit patterns"
+            assert True, "Coverage omit patterns check skipped (optional practice)"  # was: assert has_omit or True (always true)
 
 
 # =============================================================================

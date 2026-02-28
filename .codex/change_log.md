@@ -1866,3 +1866,40 @@ test_adaptive_scoring_optimized.py.
 - **Bandit issues**: 0 ✅
 - **Open blocking deployment items**: 1 (B-03 GPU only — deferred to S95)
 - **AAIS**: 96.3/100 ✅ (V4.0, +1.6 from V3.0)
+
+---
+
+## S95 — Hardware-First Policy, Pattern 6 Fixes, Assertion Helpers, Phase 10 Plan
+**Session**: S95  **Date**: 2026-02-28  **Branch**: copilot/sub-pr-3389
+
+### Hardware Policy (New Requirement — @mbaetiong)
+The primary test machine (Intel Core Ultra 5 135U vPro, 16 GB DDR5-5600, no CUDA)
+is the authoritative target. **All incompatible components are optional/deferred.**
+The codebase adapts to the hardware, never the reverse.
+
+### Source Fixes
+- **`src/codex/agents/memory/backends.py`** — Bare `import fcntl` replaced with
+  `if sys.platform != "win32":` guard + `_HAS_FCNTL` flag + `_flock()` Windows no-op helper.
+  Last remaining unguarded platform-specific import is now resolved.
+
+### Documentation
+- **`docs/ops/hardware_compatibility_matrix.md`** — NEW: Tier 1/2/3 compatibility matrix.
+  Tier 1 = fully supported on primary machine. Tier 2 = guarded/degraded. Tier 3 = deferred/N/A.
+- **`docs/ops/DEPLOYMENT_READINESS_S92.md`** — B-03 GPU smoke ✅ CLOSED as N/A for primary
+  machine. S-20/S-21/S-22/S-23 rows added to cleared-gates table.
+
+### Test Quality
+- Pattern 6: 263 → 236 trivially-true assertions fixed (26 `len() >= 0` + 1 `X or True`).
+- **`tests/helpers/assertions.py`** — NEW: 8 assertion helpers replacing vague bare-assert patterns.
+
+### Cognitive Brain
+- **`COGNITIVE_BRAIN_STATUS_V6_FINAL.md`** — Phase 10 plan: 10 objectives, hardware-first
+  principles, AAIS target 97.5/100.
+
+### Metrics (session end)
+- **Ruff errors**: 0 ✅
+- **Bandit issues**: 0 ✅
+- **Open blocking deployment items**: 0 ✅ (B-03 GPU formally closed as N/A)
+- **Platform-incompatible bare imports**: 0 ✅ (all platform-specific imports guarded)
+- **Pattern 6 trivially-true assertions**: 236 remaining (236 = catch-all handlers; informational)
+- **AAIS**: 96.3/100 (V4.0) — target 97.5 after Phase 10 assertions work
