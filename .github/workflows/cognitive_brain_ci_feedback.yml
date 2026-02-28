@@ -216,6 +216,8 @@ jobs:
             --repo "${{ github.repository }}" \
             --pr "${PR_NUMBER}" \
             --body-file "${PROMPT_FILE}"
+
+      - name: Store failure as pattern candidate (PDA AfterMath)
         if: github.event.workflow_run.conclusion == 'failure'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
