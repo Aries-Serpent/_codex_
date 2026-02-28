@@ -9,10 +9,17 @@ Provides Python-specific AST analysis with metadata extraction for:
 - Import statements
 """
 
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import libcst as cst
+try:
+    import libcst as cst  # type: ignore[import-untyped]
+    _LIBCST_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    cst = None  # type: ignore[assignment]
+    _LIBCST_AVAILABLE = False
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -27,8 +34,13 @@ class PythonASTAdapter(BaseASTAdapter):
 
     def __init__(self, file_path: Optional[Path] = None):
         """Initialize Python AST adapter."""
+        if not _LIBCST_AVAILABLE:  # pragma: no cover
+            raise ImportError(
+                "libcst is required for PythonASTAdapter. "
+                "Install it with: pip install libcst>=1.0.0"
+            )
         super().__init__(file_path)
-        self._cst_tree: Optional[cst.Module] = None
+        self._cst_tree: Optional[cst.Module] = None  # type: ignore[name-defined]
 
     def parse(self, source_code: str) -> StandardizedASTNode:
         """

@@ -2,7 +2,9 @@
 
 import pytest
 
-from codex.ast_adapters import SQLASTAdapter
+pytest.importorskip("sqlparse", reason="sqlparse optional dependency not installed")
+
+from codex.ast_adapters import SQLASTAdapter  # noqa: E402
 
 
 class TestSQLASTAdapter:

@@ -5,12 +5,24 @@ supporting both DML (SELECT, INSERT, UPDATE, DELETE) and DDL
 (CREATE, ALTER, DROP) statements.
 """
 
+from __future__ import annotations
+
 import uuid
 from typing import Any, Dict, List, Optional
 
-import sqlparse
-from sqlparse.sql import Identifier, IdentifierList, Statement
-from sqlparse.tokens import Keyword
+try:
+    import sqlparse  # type: ignore[import-untyped]
+    from sqlparse.sql import (  # type: ignore[import-untyped]
+        Identifier,
+        IdentifierList,
+        Statement,
+    )
+    from sqlparse.tokens import Keyword  # type: ignore[import-untyped]
+    _SQLPARSE_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    sqlparse = None  # type: ignore[assignment]
+    Identifier = IdentifierList = Statement = Keyword = None  # type: ignore[assignment,misc]
+    _SQLPARSE_AVAILABLE = False
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -33,6 +45,11 @@ class SQLASTAdapter(BaseASTAdapter):
 
     def __init__(self):
         """Initialize SQL adapter."""
+        if not _SQLPARSE_AVAILABLE:  # pragma: no cover
+            raise ImportError(
+                "sqlparse is required for SQLASTAdapter. "
+                "Install it with: pip install sqlparse>=0.4"
+            )
         super().__init__()
         self._tables: List[str] = []
         self._columns: List[str] = []

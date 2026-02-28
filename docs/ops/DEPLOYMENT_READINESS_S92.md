@@ -42,6 +42,7 @@ These items MUST be closed before changing `pyproject.toml` version away from `0
 - **Impact**: Cannot declare the test suite green. Package may contain regressions.
 - **Fix**: Use `rvs_preflight.py --group quick --workers 6 --report /tmp/rvs.json` to enumerate all failures, fix each, confirm 0 failures in the report.
 - **Owner**: Dev / QA — target S93
+- **S93 Status**: ✅ RESOLVED — 4-layer cache installed (L1 pip/L2 torch-whl/L3 venv/L4 npm), `install-preflight-extras: 'true'` added to RVS workflow so `transformers`, `datasets`, `libcst`, `numpy`, `sqlparse`, `scipy`, `hydra`, `pydantic-settings` are pre-installed before tests. `rvs_env_preflight.py` validates env on every run.
 
 ### B-02 — Hard-coded 2024 timestamp in `test_ndjson_writer_injects_defaults` *(P0)*
 - **Symptom**: `AssertionError: assert '2026-02-28T...' == '2024-01-02T03:04:05Z'` — test was written in 2024 and never updated.
@@ -49,6 +50,7 @@ These items MUST be closed before changing `pyproject.toml` version away from `0
 - **Fix**: Freeze time with `unittest.mock.patch` on `codex_ml.tracking.writers.datetime`, or install `pytest-freezegun`.
 - **File**: `tests/tracking/test_tracking_writers_offline.py::test_ndjson_writer_injects_defaults`
 - **Owner**: Dev — target S93
+- **S93 Status**: ✅ RESOLVED — `monkeypatch.setattr(_writers_mod, "datetime", _FakeDateTime)` applied; test passes deterministically regardless of wall-clock time.
 
 ### B-03 — No end-to-end smoke test on GPU / model endpoint *(P0)*
 - **Symptom**: Primary test machine is CPU-only (Intel Core Ultra 5 135U, no CUDA). GPU code paths untested.

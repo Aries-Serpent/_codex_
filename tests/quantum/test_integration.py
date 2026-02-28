@@ -101,9 +101,9 @@ class TestAgentOrchestrationIntegration:
         """Test integrating with agent core functionality."""
         registry = QuantumPluginRegistry()
 
-        # Register agent components
+        # Register agent components — import path is relative to src/ (on sys.path)
         registry.register(
-            QuantumPlugin(name="agent_core", import_path="src.agent.core", energy_cost=1.0)
+            QuantumPlugin(name="agent_core", import_path="agent.core", energy_cost=1.0)
         )
 
         module = registry.load_with_dependencies("agent_core")
@@ -116,7 +116,7 @@ class TestAgentOrchestrationIntegration:
 
         registry.register(
             QuantumPlugin(
-                name="mcp_metrics", import_path="src.mcp.metrics.mcp_metrics", energy_cost=0.8
+                name="mcp_metrics", import_path="mcp.metrics.mcp_metrics", energy_cost=0.8
             )
         )
 

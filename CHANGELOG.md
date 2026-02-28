@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### S93 — Pre-Flight Env, RVS Green, Quantum Import Fixes (2026-02-28)
+
+**CI / Environment**
+- Added 4-layer cache hierarchy to `setup-python-cached` action: L1 pip downloads (shared), L2 PyTorch CPU wheels (torch-version keyed), L3 full venv (extras+flags keyed), L4 npm tools. Cache keys include extras/torch/preflight flags so partial restore-key hits refresh rather than rebuild.
+- Added `install-preflight-extras` input to `setup-python-cached`: pre-installs `transformers`, `datasets`, `peft`, `accelerate`, `libcst`, `sqlparse`, `numpy`, `scipy`, `mlflow`, `hydra-core`, `omegaconf`, `psutil`, `pydantic-settings` so the full test matrix runs without import-skip gaps.
+- Updated `resilient_validation.yml` to pass `install-preflight-extras: 'true'`; all four test-group matrix jobs now have a complete env before any test executes.
+- Created `scripts/ci/rvs_env_preflight.py`: standalone env validator that audits all 22 required packages across 6 groups, writes machine-readable JSON manifest, and can auto-install missing packages or patch an env from a CI failure report JSON (`--from-failure`).
+
+**Test fixes**
+- `tests/quantum/test_integration.py` — `test_agent_core_integration` and `test_mcp_metrics_integration`: corrected import paths from `src.agent.core` / `src.mcp.metrics.mcp_metrics` (repo-root prefix, not importable) to `agent.core` / `mcp.metrics.mcp_metrics` (src/ is on sys.path in installed env).
+- `tests/test_training_metadata_logging.py` — `test_run_functional_training_records_metadata`: reordered monkeypatches so `current_commit` is patched BEFORE `fake_import` replaces `builtins.__import__`; eliminates `AttributeError: module has no attribute 'run_metadata'` that occurred when pytest's setattr resolution ran under the blocked importer.
+- `tests/tracking/test_tracking_writers_offline.py` — `test_ndjson_writer_injects_defaults`: time frozen via `_FakeDateTime` / `monkeypatch.setattr` (already applied in S92; verified passing).
+
+**Deployment readiness (docs/ops/DEPLOYMENT_READINESS_S92.md)**
+- B-01 marked ✅ RESOLVED: preflight env now pre-installs all required packages.
+- B-02 marked ✅ RESOLVED: timestamp test frozen deterministically.
+- Blocking items remaining: B-03 (GPU smoke), B-04 (version tag), B-05+ (future sessions).
+
 ### Security - Critical Dependency Updates (2026-02-09)
 
 **Fixed 3 security vulnerabilities by updating nbconvert and litestar packages:**

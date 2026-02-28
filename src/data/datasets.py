@@ -158,7 +158,7 @@ def _collate_text_batch(
     batch: Iterable[tuple[str, int]],
     *,
     max_length: int,
-) -> tuple[Any, Any]:
+) -> dict[str, Any]:
     if torch is None:  # pragma: no cover - enforced by build_dataloaders guard
         raise RuntimeError("torch is required for batch collation")
     texts, labels = zip(*batch, strict=False)
@@ -177,7 +177,14 @@ def _collate_text_batch(
     input_ids = encodings.get("input_ids")
     if input_ids is None:
         raise KeyError("tokenizer output is missing 'input_ids'")
-    return input_ids, torch.tensor(labels, dtype=torch.long)
+    result: dict[str, Any] = {
+        "input_ids": input_ids,
+        "labels": torch.tensor(labels, dtype=torch.long),
+    }
+    attention_mask = encodings.get("attention_mask")
+    if attention_mask is not None:
+        result["attention_mask"] = attention_mask
+    return result
 
 
 def _coerce_tokenizer(tokenizer: Any) -> BatchTokenizer:

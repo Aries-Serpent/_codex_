@@ -13,10 +13,11 @@ Target: +4-5% coverage gain (38% → 43%)
 """
 
 
+import pytest
+pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
 
 
 class TestPhase2_MomentumOperators:

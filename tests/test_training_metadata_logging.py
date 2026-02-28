@@ -20,6 +20,10 @@ torch = pytest.importorskip("torch")
 def test_run_functional_training_records_metadata(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, mock_json_serializable
 ) -> None:
+    monkeypatch.setattr(
+        "codex_ml.logging.run_metadata.current_commit", lambda: "deadbeef", raising=False
+    )
+
     real_import = builtins.__import__
 
     def fake_import(name: str, *args: object, **kwargs: object):  # type: ignore[override]
@@ -28,9 +32,6 @@ def test_run_functional_training_records_metadata(
         return real_import(name, *args, **kwargs)
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
-    monkeypatch.setattr(
-        "codex_ml.logging.run_metadata.current_commit", lambda: "deadbeef", raising=False
-    )
 
     metrics_path = tmp_path / "metrics.ndjson"
     config = {

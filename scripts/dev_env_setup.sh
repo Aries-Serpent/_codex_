@@ -311,6 +311,13 @@ fi
 # ---------------------------------------------------------------------------
 # 9. Summary
 # ---------------------------------------------------------------------------
+
+# Install git hooks (pre-push RVS pre-flight) — idempotent, safe to re-run
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -f "$ROOT/scripts/install_hooks.sh" ]]; then
+  bash "$ROOT/scripts/install_hooks.sh" || true
+fi
+
 header "Setup complete"
 
 if [[ "$TOOLS_OK" == "true" ]]; then
