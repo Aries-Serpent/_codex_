@@ -5,9 +5,33 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — S116b
+## [Unreleased] — S116c
 
-### S116b — §8 prompt-ordering bugfix + webhook/app/chat-ops infra suite (2026-02-28)
+### S116c — Dynamic CI-failure-driven @copilot continue (no static PR numbers) (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Bugfix/Feature | `.github/workflows/admin_setup_verification.yml` | §8 complete rewrite: no static PR numbers, no `PR-{N}-followup.md` file lookup. Dynamically builds prompt from live CI failure data (`/actions/runs?branch=...&per_page=15`). Posts `@copilot continue` followed by failure list + AAIS directive. |
+| Idempotency fix | `.github/workflows/admin_setup_verification.yml` | Replaced file-path substring idempotency check (false-positive prone) with time-based check: skip if `@copilot continue` was posted within last 2h (startswith check on comment body). |
+
+### Root Cause Fixed (S116c)
+
+Two separate bugs caused §8 to skip posting:
+1. **False-positive idempotency** (S116b): the check matched reply comments that merely
+   *mentioned* the prompt file path in passing text — e.g. Copilot's own reply
+   "The next push will post `.github/copilot-prompts/active/PR-3403-followup.md` correctly."
+   contained both `@copilot continue` (in the quoted block) and the path string.
+   Fix: replaced with a 2-hour time-window check using `startswith("@copilot continue")`.
+2. **Static PR-number dependency**: `PR-{N}-followup.md` files are not always present and
+   couple the posting mechanism to manually-created prompt files. Fix: removed entirely.
+
+New §8 behavior:
+- Queries `/actions/runs?branch={branch}&per_page=15` for recent failures
+- Builds dynamic `@copilot continue` body listing failed runs + AAIS directive
+- Falls back to generic improvement directive when no failures found
+- Idempotency: skip if already posted in last 2h
+
+## [S116b] — S116b — §8 prompt-ordering bugfix + webhook/app/chat-ops infra suite (2026-02-28)
 
 | Area | File(s) | What |
 |------|---------|------|

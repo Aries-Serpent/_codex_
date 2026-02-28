@@ -367,7 +367,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> $GITHUB_STEP_SUMMARY
 
-      - name: "§8 Auto-post @copilot continue prompt (keys functional + prompt file present)"
+      - name: "§8 Auto-post @copilot continue with dynamic CI failure context"
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
@@ -382,7 +382,7 @@ jobs:
             exit 0
           fi
 
-          # Discover target PR first (needed for PR-specific prompt file selection)
+          # Discover target PR
           TARGET_PR="$PR_NUMBER_INPUT"
           if [ -z "$TARGET_PR" ]; then
             TARGET_PR=$(curl -s \
@@ -398,76 +398,106 @@ jobs:
             exit 0
           fi
 
-          # Find prompt file: PR-specific match first, then latest *-followup.md
-          PROMPT_DIR=".github/copilot-prompts/active"
-          PROMPT_FILE=""
-          if [ -f "${PROMPT_DIR}/PR-${TARGET_PR}-followup.md" ]; then
-            PROMPT_FILE="${PROMPT_DIR}/PR-${TARGET_PR}-followup.md"
-          else
-            PROMPT_FILE=$(ls -t "${PROMPT_DIR}"/*-followup.md 2>/dev/null | head -1 || true)
-          fi
-
-          if [ -z "$PROMPT_FILE" ]; then
-            echo "No followup prompt file found — skipping @copilot continue post"
-            exit 0
-          fi
-
-          # Idempotency check — skip if @copilot continue already posted for this prompt
-          export PROMPT_FILE
-          EXISTING=$(curl -s \
-            -H "Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPO}/issues/${TARGET_PR}/comments?per_page=100" \
-            | python3 -c "import json,os,sys; cs=json.load(sys.stdin); p=os.environ.get('PROMPT_FILE',''); print('found' if isinstance(cs,list) and any('@copilot continue' in c.get('body','') and p in c.get('body','') for c in cs if isinstance(c,dict)) else '')" \
-            2>/dev/null || true)
-
-          if [ "$EXISTING" = "found" ]; then
-            echo "ℹ️ @copilot continue already posted for '${PROMPT_FILE}' on PR #${TARGET_PR} — skipping (idempotent)"
-            exit 0
-          fi
-
-          # Post the @copilot continue comment
-          # Build body without leading > characters (YAML block scalar conflict)
-          BODY_LINE1="@copilot continue \`${PROMPT_FILE}\`"
-          BODY_LINE2="Auto-posted by Admin Setup Verification (keys confirmed functional)."
-          BODY_LINE3="Activates: store_memory context + cognitive brain autonomous improvement."
-
           export TARGET_PR
-          export BODY_LINE1 BODY_LINE2 BODY_LINE3
-          if POST_STATUS=$(python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error
 
-          token = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY", "")
-          repo  = os.environ["GITHUB_REPO"]
-          pr    = os.environ["TARGET_PR"]
-          body  = "\n\n".join([
-              os.environ["BODY_LINE1"],
-              "> " + os.environ["BODY_LINE2"],
-              "> " + os.environ["BODY_LINE3"],
-          ])
+          # Build dynamic CI-failure-aware prompt and post — all in one Python block.
+          # No static PR numbers: prompt is dynamically assembled from live CI data.
+          # Idempotency: time-based (2-hour window) to avoid false positives from
+          # reply comments that merely mention "@copilot continue" in their body.
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error, datetime
 
+          token  = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY", "")
+          repo   = os.environ["GITHUB_REPO"]
+          branch = os.environ["GITHUB_REF_NAME"]
+          pr     = os.environ["TARGET_PR"]
+          marker = "@copilot continue"
+
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+
+          def gh_get(path, qs=""):
+              url = f"https://api.github.com/repos/{repo}{path}{qs}"
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as r:
+                  return json.load(r)
+
+          # --- Idempotency: skip if @copilot continue was posted in last 2h ---
+          try:
+              comments = gh_get(f"/issues/{pr}/comments", "?per_page=100")
+              cutoff   = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
+              for c in (comments if isinstance(comments, list) else []):
+                  if c.get("body", "").lstrip().startswith(marker):
+                      try:
+                          ts = datetime.datetime.strptime(c["created_at"], "%Y-%m-%dT%H:%M:%SZ")
+                          if ts > cutoff:
+                              print(f"info: @copilot continue already posted within 2h on PR #{pr} — skipping (idempotent)")
+                              sys.exit(0)
+                      except Exception:
+                          pass
+          except Exception as e:
+              print(f"Warning: idempotency check failed ({e}) — proceeding", file=sys.stderr)
+
+          # --- Query recent CI runs on this branch (any status) ---
+          failure_lines = []
+          try:
+              runs_data = gh_get("/actions/runs", f"?branch={branch}&per_page=15")
+              all_runs  = runs_data.get("workflow_runs", []) if isinstance(runs_data, dict) else []
+              failed    = [r for r in all_runs if r.get("conclusion") in ("failure", "timed_out", "cancelled")][:6]
+              for run in failed:
+                  name       = run.get("name", "unknown")
+                  url        = run.get("html_url", "")
+                  run_id     = run.get("id", "")
+                  conclusion = run.get("conclusion", "failure")
+                  failure_lines.append(f"  - **[{name}]({url})** (run `{run_id}`, `{conclusion}`)")
+          except Exception as e:
+              print(f"Warning: could not fetch CI runs ({e})", file=sys.stderr)
+
+          # --- Build dynamic body (no static PR numbers) ---
+          date  = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+          lines = [
+              "@copilot continue",
+              "",
+              f"> **CI Auto-Diagnosis** — {date}",
+              f"> Branch: `{branch}` | PR: #{pr}",
+              ">",
+          ]
+          if failure_lines:
+              lines += ["> **Recently failed CI runs — address all per codebase policy:**"]
+              lines += [f">{fl}" for fl in failure_lines]
+              lines += [
+                  ">",
+                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
+                  "> **AAIS directive:** fix all failures, ruff clean (0 errors), update accountability report.",
+              ]
+          else:
+              lines += [
+                  "> No recent CI failures detected on this branch.",
+                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
+                  "> **Next:** ruff clean, coverage gap-fill, update accountability report.",
+              ]
+          lines += [
+              ">",
+              "> _Auto-posted by Admin Setup Verification (keys confirmed functional)._",
+          ]
+          body = "\n".join(lines)
+
+          # --- Post ---
           url  = f"https://api.github.com/repos/{repo}/issues/{pr}/comments"
           data = json.dumps({"body": body}).encode()
-          req  = urllib.request.Request(url, data=data, method="POST")
-          req.add_header("Authorization", f"Bearer {token}")
-          req.add_header("Accept", "application/vnd.github+json")
-          req.add_header("X-GitHub-Api-Version", "2022-11-28")
-          req.add_header("Content-Type", "application/json")
+          req  = urllib.request.Request(url, data=data, method="POST", headers={**headers, "Content-Type": "application/json"})
           try:
               with urllib.request.urlopen(req) as resp:
                   result = json.load(resp)
-                  print(result.get("html_url", "?"))
-                  sys.exit(0)
+                  print(f"Posted @copilot continue to PR #{pr}: {result.get('html_url','?')}")
           except urllib.error.HTTPError as e:
               msg = e.read().decode(errors="replace")
-              print(f"HTTP {e.code}: {msg}", file=sys.stderr)
+              print(f"::warning::Failed to post to PR #{pr} — HTTP {e.code}: {msg}", file=sys.stderr)
               sys.exit(1)
           PYEOF
-          ); then
-            echo "✅ Posted @copilot continue to PR #${TARGET_PR}: ${POST_STATUS}"
-          else
-            echo "::warning::Failed to post @copilot continue to PR #${TARGET_PR} — check token scopes"
-          fi
 
       - name: "Post verification summary to PR (if CODEX_MASTER_KEY set)"
         if: inputs.pr_number != ''
