@@ -48,7 +48,10 @@ def test_lora_parameters_trainable(tmp_path) -> None:
     # peft may wrap model with LoRA adapters — verify if applied
     has_lora = any("lora" in n.lower() for n in trainable)
     if has_lora:
-        assert any("lora" not in n and not p.requires_grad for n, p in model.named_parameters())
+        assert any(
+            "lora" not in n.lower() and not p.requires_grad
+            for n, p in model.named_parameters()
+        )
     else:
         # If peft couldn't apply LoRA to MiniLM (no matching target_modules),
         # verify training still ran (all params trainable as baseline)

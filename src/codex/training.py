@@ -944,7 +944,9 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
         Dict with at minimum a ``loss`` key.
     """
     corpus = list(texts)
-    # Strip kwargs that run_functional_training doesn't accept
+    # Strip kwargs that run_functional_training doesn't accept.
+    # gradient_accumulation_steps and deterministic are passed by main() for
+    # test observability but run_functional_training uses grad_accum directly.
     _compat_keys = {"hydra_cfg", "seed", "gradient_accumulation_steps", "deterministic"}
     compat = {k: v for k, v in kwargs.items() if k not in _compat_keys}
     return run_functional_training(
