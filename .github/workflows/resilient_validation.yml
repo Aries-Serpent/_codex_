@@ -99,6 +99,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     continue-on-error: true  # Sharding is additive; do not block merges until stable
+    permissions:
+      contents: read
 
     strategy:
       fail-fast: false
@@ -132,6 +134,7 @@ jobs:
             --splits ${{ matrix.total }} \
             --group ${{ matrix.shard }} \
             --splitting-algorithm=least_duration \
+            --durations-path=.test_durations \
             -q
           echo "Shard ${{ matrix.shard }}/${{ matrix.total }} exit: $?"
 

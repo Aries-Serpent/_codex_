@@ -100,7 +100,8 @@ jobs:
             exit 0
           fi
           python3 << 'PY'
-          import json, sys
+          import json
+          import sys
 
           with open("sbom-cyclonedx.json", "r", encoding="utf-8") as f:
               sbom = json.load(f)

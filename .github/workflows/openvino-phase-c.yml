@@ -67,7 +67,7 @@ jobs:
 
       - name: Install OpenVINO runtime (if available)
         run: |
-          pip install openvino --quiet 2>/dev/null || echo "openvino not available on this runner"
+          pip install openvino --disable-pip-version-check --no-warn-script-location --quiet || echo "openvino not available on this runner"
 
       - name: Run Phase C smoke tests (skip if GPU absent)
         run: |

@@ -116,7 +116,7 @@ class TestOpenVINOBackendAvailable:
 try:
     from codex_ml.backends.openvino_backend import is_available as _ov_is_available
     _GPU_PRESENT = _ov_is_available("GPU")
-except Exception:  # noqa: BLE001
+except (ImportError, AttributeError):
     _GPU_PRESENT = False
 
 _skip_no_gpu = pytest.mark.skipif(
