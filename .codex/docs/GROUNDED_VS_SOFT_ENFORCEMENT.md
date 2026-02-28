@@ -293,6 +293,39 @@ xychart-beta
     echo "$FILES"
 ```
 
+### Workflow Cascade Prevention — Concurrency & Self-Exclusion
+
+> Incident: 2026-02-28 — 214 queued runs from exponential `workflow_run: ["*"]` cascade
+
+**Root cause:** Two workflows (`cognitive_brain_ci_feedback.yml`, `workflow-analytics-unified.yml`) used `workflow_run: workflows: ["*"]` (wildcard) — they fire on **every** workflow completion including each other's. With zero concurrency controls, completions triggered an exponential cascade: A completes → B fires → B completes → A fires → ∞.
+
+**Grounded fix (3 layers, no overlap):**
+
+| Layer | Mechanism | Effect |
+|-------|-----------|--------|
+| **1. Concurrency groups** | `concurrency: { group: <name>, cancel-in-progress: true }` | Only one instance per workflow runs at a time; duplicates are auto-cancelled |
+| **2. Self-exclusion filter** | Job-level `if:` excludes own name and known cascade partners | Breaks A↔B infinite loop at the trigger level |
+| **3. Schedule demotion** | Replaced `workflow_run: ["*"]` with `schedule: cron: '0 * * * *'` (hourly) | Eliminates the wildcard trigger entirely where real-time reaction is not needed |
+
+**Workflows patched:**
+
+| Workflow | Trigger before | Trigger after | Concurrency | Self-exclusion |
+|----------|---------------|---------------|-------------|----------------|
+| `cognitive_brain_ci_feedback.yml` | `workflow_run: ["*"]` | `workflow_run: ["*"]` (kept — needs `workflow_run` context) | ✅ `cognitive-brain-ci-feedback` | ✅ Skips own name + analytics |
+| `workflow-analytics-unified.yml` | `workflow_run: ["*"]` + `*/30` cron | `schedule: hourly` + `weekly` (wildcard removed) | ✅ `workflow-analytics-unified-${{ event }}` | N/A — no longer a `workflow_run` trigger |
+| `self_healing_ci.yml` | Named workflows, no concurrency | Unchanged trigger | ✅ `self-healing-ci` | N/A — targeted trigger |
+| `self-healing.yml` | Named workflows, no concurrency | Unchanged trigger | ✅ `self-healing` | N/A — targeted trigger |
+| `cognitive-action-decision.yml` | Named + schedule, no concurrency | Unchanged trigger | ✅ `cognitive-action-decision` | N/A — targeted trigger |
+| `cognitive-analysis-feed.yml` | Named + schedule, no concurrency | Unchanged trigger | ✅ `cognitive-analysis-feed` | N/A — targeted trigger |
+| `agent-orchestration-unified.yml` | Named, no concurrency | Unchanged trigger | ✅ `agent-orchestration-unified` | N/A — targeted trigger |
+
+```yaml
+# PATTERN: Concurrency control for workflow_run workflows (no-overlap guarantee)
+concurrency:
+  group: <workflow-name>
+  cancel-in-progress: true
+```
+
 ---
 
-*Updated: 2026-02-28 | S116i resume (repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+*Updated: 2026-02-28 | S116i resume (cascade fix + repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

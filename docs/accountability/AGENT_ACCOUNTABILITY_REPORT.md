@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i resume — repo-wide grounded enforcement audit + copilot-pr-session-injector base-ref fix)
+**Last updated:** 2026-02-28 (S116i resume — workflow cascade fix: concurrency + self-exclusion on 7 workflow_run workflows)
 
 ---
 
@@ -311,6 +311,9 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-045 | Token delegation activated: COPILOT_AGENT_AUTH_ENABLED=true, COGNITIVE_BRAIN_ALLOWED_ACTORS set (workflow run 22531062732) | ✅ Verified (S116i resume) |
 | W-046 | copilot-pr-session-injector.yml: added "🔀 Fetch base branch ref for diff" step — same base_ref vulnerability as original git diff 128 bug | ✅ Done (S116i resume) |
 | W-047 | Repo-wide grounded enforcement audit: 86 workflows scanned, 8 cross-branch diff workflows evaluated, grounded-first pattern documented in GROUNDED_VS_SOFT_ENFORCEMENT.md | ✅ Done (S116i resume) |
+| W-048 | Fix 214 queued workflow cascade: added `concurrency: { cancel-in-progress: true }` to all 7 `workflow_run`-triggered workflows. Root cause: `cognitive_brain_ci_feedback.yml` + `workflow-analytics-unified.yml` both used `workflow_run: ["*"]` wildcard with zero concurrency — each completion triggered both, creating exponential queue growth | ✅ Done (S116i resume) |
+| W-049 | `cognitive_brain_ci_feedback.yml`: added self-exclusion filter — job skips when triggered by own name or `Art_Workflow Analytics & Health (Unified)` to break A↔B cascade loop | ✅ Done (S116i resume) |
+| W-050 | `workflow-analytics-unified.yml`: removed `workflow_run: ["*"]` wildcard trigger, demoted to hourly schedule (`cron: '0 * * * *'`) — same cadence as `batch-ci-triage.yml`. Removed `*/30` cron (redundant with wildcard). Added concurrency control | ✅ Done (S116i resume) |
 
 ---
 

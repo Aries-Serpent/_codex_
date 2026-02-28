@@ -29,6 +29,11 @@ permissions:
   actions: write
   checks: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: self-healing
+  cancel-in-progress: true
+
 jobs:
   detect-and-analyze:
     name: Detect and Analyze Failure

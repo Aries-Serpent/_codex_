@@ -36,6 +36,11 @@ permissions:
   issues: write
   actions: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: self-healing-ci
+  cancel-in-progress: true
+
 jobs:
   analyze-and-heal:
     name: Analyze failure and apply auto-fix

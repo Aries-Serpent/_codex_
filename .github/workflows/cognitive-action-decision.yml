@@ -40,6 +40,11 @@ permissions:
   issues: write
   pull-requests: write
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: cognitive-action-decision
+  cancel-in-progress: true
+
 jobs:
   decision_engine:
     name: Execute Decision Engine

@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Bugfix | `.github/workflows/cognitive_brain_ci_feedback.yml` | Fix `AttributeError: ImprovementArea.CI_HEALTH` → `CI_SELF_HEALING` (run 22530335616) |
 | Bugfix | `.github/workflows/copilot-setup-steps.yml` | Fix `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`): added step to fetch all remote branch refs after checkout so Copilot agent's internal diff can resolve the PR base branch (run 22530338486) |
 | Bugfix | `.github/workflows/copilot-pr-session-injector.yml` | Fix same base_ref vulnerability: added "🔀 Fetch base branch ref for diff" step before `origin/${{ github.base_ref }}...HEAD` diffs — prevents silent failure on non-default base branches |
-| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Repo-wide grounded enforcement audit: 86 workflows scanned, lifecycle chain documented, grounded-first pattern template added |
+| **Bugfix** | **7 `workflow_run` workflows** | **Fix 214 queued run cascade: added `concurrency: { cancel-in-progress: true }` to all 7 `workflow_run`-triggered workflows. Added self-exclusion filter to `cognitive_brain_ci_feedback.yml`. Demoted `workflow-analytics-unified.yml` from `workflow_run: ["*"]` wildcard to hourly schedule. Root cause: two wildcard triggers firing on every completion including each other's → exponential queue growth** |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Repo-wide grounded enforcement audit: 86 workflows scanned, lifecycle chain documented, grounded-first pattern template added, cascade prevention pattern documented |
 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-044–W-047 added; last-updated → S116i resume (grounded audit) |
 | Note | _Dependabot_ | Transient Dependabot graph submission failure (`github.com:443 EOF`) — non-blocking, no action required |
 
