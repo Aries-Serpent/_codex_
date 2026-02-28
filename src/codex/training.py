@@ -993,8 +993,14 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
-        lora_section = training_section.get("lora", {}) if isinstance(training_section, dict) else {}
-        repro_section = training_section.get("reproducibility", {}) if isinstance(training_section, dict) else {}
+        lora_section = (
+            training_section.get("lora", {})
+            if isinstance(training_section, dict) else {}
+        )
+        repro_section = (
+            training_section.get("reproducibility", {})
+            if isinstance(training_section, dict) else {}
+        )
         run_hf_trainer(
             texts=texts,
             output_dir=Path(output_dir_val) if output_dir_val else None,
