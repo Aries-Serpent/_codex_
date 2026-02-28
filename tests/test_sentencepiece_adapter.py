@@ -173,7 +173,7 @@ def _stub_sp(monkeypatch, model: Path, vocab_size: int = 5):
         def DecodeIds(self, ids):
             try:
                 return "".join(chr(int(i) % 256) for i in ids)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return ""
 
         # Convenience aliases common in lightweight adapters
@@ -206,7 +206,7 @@ def _get_adapter_module():
     try:
         module = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
         return module
-    except Exception:
+    except Exception:  # noqa: BLE001
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise
 

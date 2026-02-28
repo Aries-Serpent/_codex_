@@ -60,7 +60,11 @@ from .middleware import (
     get_current_user,
     require_auth,
 )
-from .oauth_manager import OAuthConfig, OAuthManager, OAuthToken
+
+try:
+    from .oauth_manager import OAuthConfig, OAuthManager, OAuthToken
+except ImportError:  # httpx or other optional dep missing
+    OAuthConfig = OAuthManager = OAuthToken = None  # type: ignore[assignment,misc]
 from .token_manager import SessionInfo, TokenClaims, TokenManager, TokenType
 
 __all__ = [

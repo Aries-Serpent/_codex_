@@ -14,7 +14,6 @@ permissions:
   security-events: read
   issues: write
   pull-requests: write
-  vulnerability-alerts: read
 
 jobs:
   check-security-alerts:
