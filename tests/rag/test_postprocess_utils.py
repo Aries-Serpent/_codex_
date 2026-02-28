@@ -81,7 +81,7 @@ class TestOutputProcessor:
 
         evidence = processor.extract_evidence_tags(output, retrieved_docs)
 
-        assert isinstance(evidence, (list, tuple, set, dict))# May find overlap
+        assert isinstance(evidence, (list, tuple, set, dict))  # May find overlap
 
     def test_extract_evidence_tags_no_overlap(self):
         """Test evidence extraction with no overlap."""
