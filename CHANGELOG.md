@@ -7,15 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] — S116i resume
 
-### S116i resume — Session Summary Tier-1 Gate + CI Feedback Fix + Base Ref Fix (2026-02-28)
+### S116i resume — Session Summary Tier-1 Gate + CI Feedback Fix + Base Ref Fix + Grounded Audit (2026-02-28)
 
 | Type | File | Change |
 |------|------|--------|
 | Feature | `.github/workflows/chatops_copilot_trigger.yml` | Session-summary gate: `/copilot continue` blocked when `SESSION_TIMEBOX_EXPIRED` active and no `## 🧠 Session Summary` posted — promotes "Session summary on close" from Soft → Tier-1 |
 | Bugfix | `.github/workflows/cognitive_brain_ci_feedback.yml` | Fix `AttributeError: ImprovementArea.CI_HEALTH` → `CI_SELF_HEALING` (run 22530335616) |
 | Bugfix | `.github/workflows/copilot-setup-steps.yml` | Fix `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`): added step to fetch all remote branch refs after checkout so Copilot agent's internal diff can resolve the PR base branch (run 22530338486) |
-| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart 2→9; Tier-1 examples expanded |
-| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-038–W-043 added; last-updated → S116i resume |
+| Bugfix | `.github/workflows/copilot-pr-session-injector.yml` | Fix same base_ref vulnerability: added "🔀 Fetch base branch ref for diff" step before `origin/${{ github.base_ref }}...HEAD` diffs — prevents silent failure on non-default base branches |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Repo-wide grounded enforcement audit: 86 workflows scanned, lifecycle chain documented, grounded-first pattern template added |
+| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-044–W-047 added; last-updated → S116i resume (grounded audit) |
 | Note | _Dependabot_ | Transient Dependabot graph submission failure (`github.com:443 EOF`) — non-blocking, no action required |
 
 ---

@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i resume — git diff exit 128 fix: fetch remote branch refs in copilot-setup-steps)
+**Last updated:** 2026-02-28 (S116i resume — repo-wide grounded enforcement audit + copilot-pr-session-injector base-ref fix)
 
 ---
 
@@ -307,6 +307,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) |
 | W-042 | copilot-setup-steps.yml: added "🔀 Fetch remote branch refs for PR diff support" step after checkout — fixes `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`) in Copilot agent run 22530338486 | ✅ Done (S116i resume) |
 | W-043 | Verified cognitive-preflight REQ-4 + REQ-5 unaffected (use `HEAD~1 HEAD`, not base branch name) | ✅ Verified (S116i resume) |
+| W-044 | Confirmed git diff fix working: copilot-setup-steps run 22531062773 step 3 "🔀 Fetch remote branch refs" → SUCCESS | ✅ Verified (S116i resume) |
+| W-045 | Token delegation activated: COPILOT_AGENT_AUTH_ENABLED=true, COGNITIVE_BRAIN_ALLOWED_ACTORS set (workflow run 22531062732) | ✅ Verified (S116i resume) |
+| W-046 | copilot-pr-session-injector.yml: added "🔀 Fetch base branch ref for diff" step — same base_ref vulnerability as original git diff 128 bug | ✅ Done (S116i resume) |
+| W-047 | Repo-wide grounded enforcement audit: 86 workflows scanned, 8 cross-branch diff workflows evaluated, grounded-first pattern documented in GROUNDED_VS_SOFT_ENFORCEMENT.md | ✅ Done (S116i resume) |
 
 ---
 

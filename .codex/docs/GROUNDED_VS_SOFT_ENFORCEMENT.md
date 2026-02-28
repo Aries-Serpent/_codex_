@@ -195,4 +195,104 @@ xychart-beta
 
 ---
 
-*Generated: 2026-02-28 | S116i resume | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+## Repo-Wide Audit: Copilot Agent Process & Operation Enforcement
+
+> Traversal date: 2026-02-28 | 86 workflows scanned
+
+### Copilot Agent Lifecycle — Grounded Enforcement Chain
+
+```
+ ┌──────────────────────────────────────────────────────────────────┐
+ │  GROUNDED (Primary — bypass requires intentional YAML edit)     │
+ │                                                                  │
+ │  1. copilot-setup-steps.yml                                      │
+ │     └─ "🔀 Fetch remote branch refs" after checkout             │
+ │        Ensures base branch resolvable for report_progress diff   │
+ │                                                                  │
+ │  2. agent-auth-delegation.yml → cognitive-preflight job          │
+ │     ├─ REQ-1: Mandatory checklist posted as PR comment           │
+ │     ├─ REQ-2: CI failure patterns from ci_failure_patterns.yaml  │
+ │     ├─ REQ-3: git check-ignore → exit 1 (gitignore gate)        │
+ │     ├─ REQ-4: git diff HEAD~1 → exit 1 (accountability report)  │
+ │     ├─ REQ-5: git diff HEAD~1 → exit 1 (CHANGELOG.md)           │
+ │     └─ REQ-6: SESSION_TIMEBOX_EXPIRED ack → exit 1               │
+ │     All feed into: activate-delegation needs: [cognitive-preflight]│
+ │                                                                  │
+ │  3. chatops_copilot_trigger.yml                                  │
+ │     └─ Session-summary gate: blocks /copilot continue dispatch   │
+ │        when SESSION_TIMEBOX_EXPIRED active without summary       │
+ │                                                                  │
+ │  4. session-watchdog.yml                                         │
+ │     ├─ Timebox detection → SESSION_TIMEBOX_START posted          │
+ │     ├─ Expiry check → SESSION_TIMEBOX_EXPIRED posted             │
+ │     └─ Exploration session detection → SESSION_TYPE_EXPLORATION  │
+ │                                                                  │
+ │  5. token-probe.yml                                              │
+ │     └─ Real HTTP probe (GET /repo + POST /comments)              │
+ │        Returns objective pass/fail — cannot be faked             │
+ │                                                                  │
+ │  6. copilot-pr-session-injector.yml                              │
+ │     └─ "🔀 Fetch base branch ref" before origin/base_ref diff   │
+ │        Grounded: prevents silent diff failure on non-default base│
+ └──────────────────────────────────────────────────────────────────┘
+ 
+ ┌──────────────────────────────────────────────────────────────────┐
+ │  SOFT (Fallback — used when grounded method unavailable)        │
+ │                                                                  │
+ │  • store_memory facts → injected at session start               │
+ │  • .codex/README_FIRST_MANDATORY.md → naming convention only    │
+ │  • CODEBASE_AGENCY_POLICY.md → 38 MUST/NEVER lines, 0 hooks    │
+ │  • .codex/CONTINUATION_PROMPT_*.md → may not be picked up       │
+ │  • Accountability report text → reactive, not preventive         │
+ │  • "5-pass self-review" → subjective, ungatable                 │
+ │  • "NEVER stop after one commit" → no session-duration gate     │
+ └──────────────────────────────────────────────────────────────────┘
+```
+
+### Workflow-by-Workflow: `git diff` / `base_ref` Vulnerability Scan
+
+| Workflow | Uses `base_ref` or cross-branch diff? | Has fetch step? | Status |
+|----------|---------------------------------------|-----------------|--------|
+| `copilot-setup-steps.yml` | `report_progress` internal diff vs base branch | ✅ `git fetch origin '+refs/heads/*:...' --depth=1` | ✅ **GROUNDED** |
+| `copilot-pr-session-injector.yml` | `origin/${{ github.base_ref }}...HEAD` (3 diffs) | ✅ `git fetch origin "${{ github.base_ref }}" --depth=1` | ✅ **GROUNDED** (fixed this session) |
+| `agent-auth-delegation.yml` (cognitive-preflight) | `HEAD~1 HEAD` only | N/A — uses `fetch-depth: 2` | ✅ **SAFE** (no base_ref needed) |
+| `pr-size-analyzer.yml` | `${{ github.event.pull_request.base.sha }}` | ✅ `git fetch origin "$BASE_SHA"` + `HEAD~1` fallback | ✅ **GROUNDED** (has fallback) |
+| `validate.yml` | `VALIDATE_BASE_REF` env var (optional) | Uses `fetch-depth: 0` | 🟡 **PARTIAL** (fetch-depth: 0 may not include all branch refs) |
+| `auto-fix-pr-check.yml` | `git diff` (staged only) | N/A — no cross-branch diff | ✅ **SAFE** |
+| `auto-fix-common-issues.yml` | `git diff --staged` only | N/A — no cross-branch diff | ✅ **SAFE** |
+| `agent-var-writer.yml` | `git diff --cached` only | N/A | ✅ **SAFE** |
+
+### Grounded-First Pattern (recommended for all new workflows)
+
+```yaml
+# PATTERN: Grounded base-ref resolution with soft fallback
+# Use this in ANY workflow that diffs against the PR base branch.
+
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+
+# Grounded method (primary): explicitly fetch base branch
+- name: "🔀 Fetch base branch ref for diff"
+  run: |
+    git fetch origin "${{ github.base_ref }}" --depth=1 2>/dev/null \
+      && echo "✅ Base branch '${{ github.base_ref }}' fetched" \
+      || echo "⚠️ Base branch fetch failed — diffs will use fallback"
+
+# Soft fallback: HEAD~1 when base_ref unavailable
+- name: "Compute diff"
+  run: |
+    if git diff --name-only "origin/${{ github.base_ref }}...HEAD" >/dev/null 2>&1; then
+      # Grounded: precise base-branch diff
+      FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+    else
+      # Soft fallback: last-commit diff only
+      echo "⚠️ Falling back to HEAD~1 diff (base branch not available)"
+      FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+    fi
+    echo "$FILES"
+```
+
+---
+
+*Updated: 2026-02-28 | S116i resume (repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
