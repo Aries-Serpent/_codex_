@@ -10,4 +10,3 @@ PY
 . ./.venv/bin/activate || true
 .venv/bin/pre-commit run --all-files || true
 .venv/bin/pytest -q || true
-

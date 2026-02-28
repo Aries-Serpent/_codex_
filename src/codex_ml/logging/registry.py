@@ -113,6 +113,6 @@ __all__ = [
 
 # Export _NDJSONMetricsLogger as NDJSONMetricsLogger for backward compatibility with tests
 NDJSONMetricsLogger = _NDJSONMetricsLogger
-# Export NDJSONLogger as the metrics-aware wrapper so `registry.NDJSONLogger(path, sys_metrics=True)`
+# Export NDJSONLogger as the metrics-aware wrapper so `registry.NDJSONLogger(path, sys_metrics=True)`  # noqa: E501
 # works as expected by tests. Uses a distinct public name to avoid shadowing the internal import.
 NDJSONLogger = _NDJSONMetricsLogger  # noqa: F811  # intentional alias so registry.NDJSONLogger works

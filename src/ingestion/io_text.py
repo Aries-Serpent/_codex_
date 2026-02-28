@@ -59,7 +59,14 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         # defensive: fall through to other strategies
         pass
 
-    safe_encodings = {"utf-8", "utf-16", "utf-32", "cp1252", "windows-1252", "iso-8859-1"}
+    safe_encodings = {
+        "utf-8",
+        "utf-16",
+        "utf-32",
+        "cp1252",
+        "windows-1252",
+        "iso-8859-1",
+    }
 
     # Try charset-normalizer.from_path if available
     try:

@@ -40,8 +40,7 @@ def get_adapter(language: str):
 
     if language not in adapters:
         raise ValueError(
-            f"Unsupported language: {language}. "
-            f"Supported languages: {', '.join(adapters.keys())}"
+            f"Unsupported language: {language}. Supported languages: {', '.join(adapters.keys())}"
         )
 
     return adapters[language]()
@@ -165,58 +164,51 @@ def main(argv: Optional[list] = None):
     parser = argparse.ArgumentParser(
         prog="codex_ast",
         description="Parse and query AST structures across multiple languages",
-        epilog="Supported languages: python, yaml, json, sql"
+        epilog="Supported languages: python, yaml, json, sql",
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # Parse command
-    parse_parser = subparsers.add_parser(
-        "parse",
-        help="Parse a file and output the AST as JSON"
-    )
+    parse_parser = subparsers.add_parser("parse", help="Parse a file and output the AST as JSON")
     parse_parser.add_argument("file", help="Path to the file to parse")
     parse_parser.add_argument(
-        "-l", "--language",
+        "-l",
+        "--language",
         required=True,
         choices=["python", "yaml", "json", "sql"],
-        help="Source language"
+        help="Source language",
     )
 
     # Stats command
-    stats_parser = subparsers.add_parser(
-        "stats",
-        help="Parse a file and output statistics"
-    )
+    stats_parser = subparsers.add_parser("stats", help="Parse a file and output statistics")
     stats_parser.add_argument("file", help="Path to the file to parse")
     stats_parser.add_argument(
-        "-l", "--language",
+        "-l",
+        "--language",
         required=True,
         choices=["python", "yaml", "json", "sql"],
-        help="Source language"
+        help="Source language",
     )
 
     # Query command
-    query_parser = subparsers.add_parser(
-        "query",
-        help="Query for specific node types"
-    )
+    query_parser = subparsers.add_parser("query", help="Query for specific node types")
     query_parser.add_argument("file", help="Path to the file to parse")
     query_parser.add_argument(
-        "-l", "--language",
+        "-l",
+        "--language",
         required=True,
         choices=["python", "yaml", "json", "sql"],
-        help="Source language"
+        help="Source language",
     )
     query_parser.add_argument(
-        "-t", "--type",
+        "-t",
+        "--type",
         required=True,
-        help="Node type to query (e.g., function, class, mapping)"
+        help="Node type to query (e.g., function, class, mapping)",
     )
     query_parser.add_argument(
-        "-m", "--metadata",
-        action="store_true",
-        help="Include metadata in output"
+        "-m", "--metadata", action="store_true", help="Include metadata in output"
     )
 
     args = parser.parse_args(argv)

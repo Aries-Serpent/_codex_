@@ -283,7 +283,7 @@ class CacheManager:
 
                 caches = json.loads(result.stdout)
                 total_bytes = sum(c.get("sizeInBytes", 0) for c in caches)
-                health.total_size_gb = total_bytes / (1024 ** 3)
+                health.total_size_gb = total_bytes / (1024**3)
                 health.total_caches = len(caches)
 
                 if caches:
@@ -293,7 +293,12 @@ class CacheManager:
                     )
                     health.oldest_cache_days = (datetime.now(oldest.tzinfo) - oldest).days
 
-            except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError, subprocess.TimeoutExpired):
+            except (
+                subprocess.CalledProcessError,
+                json.JSONDecodeError,
+                KeyError,
+                subprocess.TimeoutExpired,
+            ):
                 # Swallow errors when gh CLI is unavailable or times out
                 # Health metrics will remain at default values (0)
                 pass
@@ -301,13 +306,13 @@ class CacheManager:
         if health.total_size_gb > size_threshold_gb:
             health.is_critical = True
             health.warnings.append(
-                f"Cache size ({health.total_size_gb:.2f} GB) exceeds threshold ({size_threshold_gb} GB)"
+                f"Cache size ({health.total_size_gb:.2f} GB) exceeds threshold ({size_threshold_gb} GB)"  # noqa: E501
             )
             health.recommendations.append("Run cache cleanup to free space")
 
         if health.oldest_cache_days and health.oldest_cache_days > age_threshold_days:
             health.warnings.append(
-                f"Oldest cache is {health.oldest_cache_days} days old (threshold: {age_threshold_days})"
+                f"Oldest cache is {health.oldest_cache_days} days old (threshold: {age_threshold_days})"  # noqa: E501
             )
             health.recommendations.append("Clean up old caches")
 
@@ -323,7 +328,11 @@ class CacheManager:
                 timeout=5,
             )
             return True
-        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        except (
+            subprocess.CalledProcessError,
+            FileNotFoundError,
+            subprocess.TimeoutExpired,
+        ):
             return False
 
 

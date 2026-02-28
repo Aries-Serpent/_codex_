@@ -65,23 +65,27 @@ except ImportError:
     class _NoOpMetric:  # type: ignore
         def labels(self, **_):
             return self
+
         def inc(self, *_, **__):
             pass
+
         def set(self, *_, **__):
             pass
+
         def observe(self, *_, **__):
             pass
 
     _cognitive_decisions_total = _NoOpMetric()  # type: ignore
-    _cognitive_coherence = _NoOpMetric()        # type: ignore
-    _cognitive_latency = _NoOpMetric()          # type: ignore
-    _cognitive_errors_total = _NoOpMetric()     # type: ignore
+    _cognitive_coherence = _NoOpMetric()  # type: ignore
+    _cognitive_latency = _NoOpMetric()  # type: ignore
+    _cognitive_errors_total = _NoOpMetric()  # type: ignore
     _PROMETHEUS_AVAILABLE = False
 
 
 # ---------------------------------------------------------------------------
 # Public dataclasses
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class DecisionRecord:
@@ -102,22 +106,23 @@ class AgentHealthMetrics:
     AGENT_USAGE: Check health before critical decisions or agent handoffs.
     """
 
-    coherence_current: float      # Latest coherence (≥0.750 = healthy)
-    coherence_avg: float          # Average over window
-    coherence_trend: str          # "stable" | "improving" | "degrading"
-    error_rate_per_min: float     # Errors per minute (≤0.1 = healthy)
-    latency_p99_ms: float         # p99 latency (≤50ms = healthy)
-    decisions_per_min: float      # Throughput
+    coherence_current: float  # Latest coherence (≥0.750 = healthy)
+    coherence_avg: float  # Average over window
+    coherence_trend: str  # "stable" | "improving" | "degrading"
+    error_rate_per_min: float  # Errors per minute (≤0.1 = healthy)
+    latency_p99_ms: float  # p99 latency (≤50ms = healthy)
+    decisions_per_min: float  # Throughput
     pattern_distribution: Dict[str, int]  # (not tracked here; reserved)
-    health_status: str            # "healthy" | "degraded" | "critical"
-    prometheus_available: bool    # Whether Prometheus metrics are exported
-    active_learning_queries_today: int = 0     # AL queries used today
-    active_learning_budget_per_day: int = 50   # AL daily budget limit
+    health_status: str  # "healthy" | "degraded" | "critical"
+    prometheus_available: bool  # Whether Prometheus metrics are exported
+    active_learning_queries_today: int = 0  # AL queries used today
+    active_learning_budget_per_day: int = 50  # AL daily budget limit
 
 
 # ---------------------------------------------------------------------------
 # AgentDashboard
 # ---------------------------------------------------------------------------
+
 
 class AgentDashboard:
     """
@@ -283,8 +288,10 @@ class AgentDashboard:
         _al_budget = 50
         try:
             from cognitive_brain.active_learning.hook import ActiveLearningHook
+
             _al_hook = ActiveLearningHook()
             from datetime import datetime, timezone
+
             today = datetime.now(timezone.utc).date().isoformat()
             _al_queries_today = _al_hook._daily_counts.get(today, 0)
             _al_budget = _al_hook.query_budget_per_day
@@ -334,11 +341,13 @@ class AgentDashboard:
             actions.append("enabled_classical_fallback_high_errors")
 
         if actions:
-            self._self_correction_log.append({
-                "timestamp": time.time(),
-                "health_status": health.health_status,
-                "actions": actions,
-            })
+            self._self_correction_log.append(
+                {
+                    "timestamp": time.time(),
+                    "health_status": health.health_status,
+                    "actions": actions,
+                }
+            )
 
         return actions
 

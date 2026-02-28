@@ -4,6 +4,7 @@ AST Plugin Architecture.
 Provides base interface for extending AST analysis to new languages
 and custom analysis tools.
 """
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,6 +16,7 @@ from codex.ast.node import StandardizedASTNode
 @dataclass
 class PluginMetadata:
     """Metadata about a plugin."""
+
     name: str
     version: str
     author: str
@@ -139,4 +141,4 @@ class AnalysisPlugin(ABC):
         pass
 
 
-__all__ = ['ASTPlugin', 'AnalysisPlugin', 'PluginMetadata']
+__all__ = ["ASTPlugin", "AnalysisPlugin", "PluginMetadata"]

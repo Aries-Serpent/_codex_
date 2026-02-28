@@ -76,17 +76,12 @@ class CoVeResult:
     verifications: list[VerificationResult]
     overall_score: float
     overall_status: VerificationStatus
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     @property
     def verified_count(self) -> int:
         """Count of verified claims."""
-        return sum(
-            1 for v in self.verifications
-            if v.status == VerificationStatus.VERIFIED
-        )
+        return sum(1 for v in self.verifications if v.status == VerificationStatus.VERIFIED)
 
     @property
     def verification_rate(self) -> float:
@@ -128,7 +123,7 @@ class ClaimExtractor:
         claims: list[Claim] = []
 
         # Split into sentences
-        sentences = re.split(r'[.!?]+', text)
+        sentences = re.split(r"[.!?]+", text)
 
         for sentence in sentences:
             sentence = sentence.strip()
@@ -144,12 +139,17 @@ class ClaimExtractor:
                     # Determine claim type
                     claim_type = self._classify_claim(sentence)
 
-                    claims.append(Claim(
-                        id=claim_id,
-                        text=sentence,
-                        source_span=(text.find(sentence), text.find(sentence) + len(sentence)),
-                        claim_type=claim_type,
-                    ))
+                    claims.append(
+                        Claim(
+                            id=claim_id,
+                            text=sentence,
+                            source_span=(
+                                text.find(sentence),
+                                text.find(sentence) + len(sentence),
+                            ),
+                            claim_type=claim_type,
+                        )
+                    )
                     break  # One claim per sentence
 
             # Bounds check (safeguard)
@@ -162,11 +162,11 @@ class ClaimExtractor:
 
     def _classify_claim(self, sentence: str) -> str:
         """Classify the type of claim."""
-        if re.search(r'\d+(?:\.\d+)?(?:\s*%|\s+percent)', sentence):
+        if re.search(r"\d+(?:\.\d+)?(?:\s*%|\s+percent)", sentence):
             return "numerical"
-        if re.search(r'(?:in|on|at)\s+\d{4}', sentence):
+        if re.search(r"(?:in|on|at)\s+\d{4}", sentence):
             return "temporal"
-        if re.search(r'(?:always|never|all|none)', sentence, re.IGNORECASE):
+        if re.search(r"(?:always|never|all|none)", sentence, re.IGNORECASE):
             return "universal"
         return "factual"
 
@@ -258,8 +258,7 @@ class CoVeEngine:
         # Step 3: Calculate overall score
         if verifications:
             verified_count = sum(
-                1 for v in verifications
-                if v.status == VerificationStatus.VERIFIED
+                1 for v in verifications if v.status == VerificationStatus.VERIFIED
             )
             overall_score = verified_count / len(verifications)
         else:
@@ -292,7 +291,7 @@ class CoVeEngine:
         logger.info(
             "Verification complete: score=%.2f, status=%s",
             overall_score,
-            overall_status.value
+            overall_status.value,
         )
 
         return result
@@ -375,9 +374,8 @@ class CoVeEngine:
             "total_verifications": len(self._verification_history),
             "avg_score": avg_score,
             "total_claims": total_claims,
-            "verified_rate": sum(
-                r.verification_rate for r in self._verification_history
-            ) / len(self._verification_history),
+            "verified_rate": sum(r.verification_rate for r in self._verification_history)
+            / len(self._verification_history),
         }
 
 
@@ -414,4 +412,5 @@ async def main() -> None:
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

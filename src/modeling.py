@@ -233,7 +233,9 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
     )
 
 
-def load_tokenizer(config: Mapping[str, Any] | ModelInitConfig) -> PreTrainedTokenizerBase:
+def load_tokenizer(
+    config: Mapping[str, Any] | ModelInitConfig,
+) -> PreTrainedTokenizerBase:
     """Load a tokenizer matching the model configuration."""
 
     if AutoTokenizer is None:  # pragma: no cover - transformers missing at runtime

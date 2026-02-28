@@ -61,7 +61,7 @@ class OOMHandler:
 
         logger.warning(
             f"🔧 OOM detected: Reducing batch size "
-            f"{self.current_batch_size} → {new_size} (retry {self.retry_count + 1}/{self.max_retries})"
+            f"{self.current_batch_size} → {new_size} (retry {self.retry_count + 1}/{self.max_retries})"  # noqa: E501
         )
 
         self.current_batch_size = new_size

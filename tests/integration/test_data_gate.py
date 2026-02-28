@@ -23,7 +23,7 @@ def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
 def test_data_gate_non_abort(tmp_path: Path) -> None:
     try:
         from hhg_logistics.monitor.data_gate import run_data_drift_gate
-    except Exception:  # pragma: no cover - optional dependency missing
+    except ImportError:  # pragma: no cover - optional dependency missing
         pytest.skip("evidently not installed")
 
     reference = tmp_path / "ref.csv"
@@ -49,7 +49,7 @@ def test_data_gate_non_abort(tmp_path: Path) -> None:
 def test_data_gate_abort(tmp_path: Path) -> None:
     try:
         from hhg_logistics.monitor.data_gate import run_data_drift_gate
-    except Exception:  # pragma: no cover
+    except ImportError:  # pragma: no cover
         pytest.skip("evidently not installed")
 
     reference = tmp_path / "ref.csv"

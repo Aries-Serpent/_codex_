@@ -25,6 +25,7 @@ from typing import Callable
 logger = logging.getLogger(__name__)
 _secure_random = secrets.SystemRandom()
 
+
 def retry_on_exception(
     exceptions: tuple[type, ...] = (Exception,),
     tries: int = 3,

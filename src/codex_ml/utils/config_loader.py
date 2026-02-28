@@ -27,6 +27,7 @@ from omegaconf import DictConfig, OmegaConf
 
 logger = logging.getLogger(__name__)
 
+
 def _flatten_training_section(cfg: Mapping[str, Any]) -> dict[str, Any]:
     """Return a shallow copy of the training section if present, otherwise the whole mapping."""
     if "training" in cfg and isinstance(cfg["training"], Mapping):
@@ -200,7 +201,7 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         except MissingPyYAMLError as exc:
             logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
-                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {path}."
             ) from exc
     if not isinstance(data, Mapping):
@@ -326,7 +327,7 @@ def load_config(*, config_path: str) -> DictConfig:
         except MissingPyYAMLError as exc:
             logger.debug(f"MissingPyYAMLError: {exc}")
             raise RuntimeError(
-                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+                'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {config_path}."
             ) from exc
 

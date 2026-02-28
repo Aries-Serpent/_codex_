@@ -365,4 +365,3 @@ Run validation manually using GitHub Pages Manager agent:
 # Run comprehensive health check
 @copilot Use github-pages-manager to run a comprehensive health check on GitHub Pages
 ```
-

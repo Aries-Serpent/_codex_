@@ -142,13 +142,12 @@ class TfidfVectorizer:
 
         # Filter by document frequency
         valid_terms = [
-            term for term, freq in doc_freq.items()
-            if self.min_df <= freq <= max_doc_freq
+            term for term, freq in doc_freq.items() if self.min_df <= freq <= max_doc_freq
         ]
 
         # Sort by frequency and take top features
         valid_terms.sort(key=lambda t: doc_freq[t], reverse=True)
-        valid_terms = valid_terms[:self.max_features]
+        valid_terms = valid_terms[: self.max_features]
 
         # Build vocabulary
         self._vocabulary = {term: idx for idx, term in enumerate(valid_terms)}
@@ -209,13 +208,16 @@ class TfidfVectorizer:
     def save(self, path: str | Path) -> None:
         """Save vectorizer state."""
         with open(path, "w") as f:
-            json.dump({
-                "vocabulary": self._vocabulary,
-                "idf": self._idf,
-                "max_features": self.max_features,
-                "min_df": self.min_df,
-                "max_df": self.max_df,
-            }, f)
+            json.dump(
+                {
+                    "vocabulary": self._vocabulary,
+                    "idf": self._idf,
+                    "max_features": self.max_features,
+                    "min_df": self.min_df,
+                    "max_df": self.max_df,
+                },
+                f,
+            )
 
     @classmethod
     def load(cls, path: str | Path) -> TfidfVectorizer:
@@ -359,13 +361,16 @@ class NaiveBayesClassifier:
     def save(self, path: str | Path) -> None:
         """Save classifier state."""
         with open(path, "w") as f:
-            json.dump({
-                "classes": self._classes,
-                "class_priors": self._class_priors,
-                "feature_log_probs": self._feature_log_probs,
-                "n_features": self._n_features,
-                "alpha": self.alpha,
-            }, f)
+            json.dump(
+                {
+                    "classes": self._classes,
+                    "class_priors": self._class_priors,
+                    "feature_log_probs": self._feature_log_probs,
+                    "n_features": self._n_features,
+                    "alpha": self.alpha,
+                },
+                f,
+            )
 
     @classmethod
     def load(cls, path: str | Path) -> NaiveBayesClassifier:
@@ -475,11 +480,13 @@ class SymptomClassifier:
 
         results = []
         for pred, proba in zip(predictions, probas):
-            results.append(ClassificationResult(
-                predicted_category=pred,
-                confidence=max(proba.values()),
-                all_probabilities=proba,
-            ))
+            results.append(
+                ClassificationResult(
+                    predicted_category=pred,
+                    confidence=max(proba.values()),
+                    all_probabilities=proba,
+                )
+            )
 
         return results
 
@@ -501,10 +508,13 @@ class SymptomClassifier:
 
         # Save metadata
         with open(dir_path / "metadata.json", "w") as f:
-            json.dump({
-                "categories": self._categories,
-                "fitted": self._fitted,
-            }, f)
+            json.dump(
+                {
+                    "categories": self._categories,
+                    "fitted": self._fitted,
+                },
+                f,
+            )
 
     @classmethod
     def load(cls, directory: str | Path) -> SymptomClassifier:

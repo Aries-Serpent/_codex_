@@ -98,7 +98,7 @@ def bleu(
 
     hypotheses: list of hypothesis strings (len = M)
     references: either a list of reference strings (len = M), or a list of lists of references per hypothesis
-    """
+    """  # noqa: E501
     # Normalize references input
     norm_refs: list[list[str]] = []
     if len(references) > 0 and isinstance(references[0], str):

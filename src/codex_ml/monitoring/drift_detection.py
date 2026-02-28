@@ -259,7 +259,7 @@ class ModelDriftDetector(DriftDetector):
                     DriftAlert(
                         drift_type=DriftType.MODEL,
                         severity=severity,
-                        message=f"{metric_name} changed by {rel_change*100:.1f}%",
+                        message=f"{metric_name} changed by {rel_change * 100:.1f}%",
                         details={
                             "metric": metric_name,
                             "current": current_val,

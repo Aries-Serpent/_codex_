@@ -32,7 +32,12 @@ def _count_function_lines(node: ast.FunctionDef | ast.AsyncFunctionDef) -> int:
     return max(0, (node.end_lineno or node.lineno) - node.lineno)
 
 
-def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5, max_file_lines: int = 500) -> dict:
+def _scan_smells(
+    src_root: Path,
+    long_fn_threshold: int = 50,
+    max_args: int = 5,
+    max_file_lines: int = 500,
+) -> dict:
     long_functions: list[dict] = []
     large_files: list[dict] = []
     many_args: list[dict] = []
@@ -40,7 +45,7 @@ def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5,
     for path in src_root.rglob("*.py"):
         try:
             source = path.read_text(encoding="utf-8", errors="replace")
-        except Exception:
+        except Exception:  # nosec B112
             continue
         lines = source.splitlines()
         if len(lines) > max_file_lines:
@@ -53,8 +58,12 @@ def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5,
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 fn_lines = _count_function_lines(node)
                 if fn_lines > long_fn_threshold:
-                    long_functions.append({"file": str(path), "function": node.name, "lines": fn_lines})
-                arg_count = len(node.args.args) + len(node.args.posonlyargs) + len(node.args.kwonlyargs)
+                    long_functions.append(
+                        {"file": str(path), "function": node.name, "lines": fn_lines}
+                    )
+                arg_count = (
+                    len(node.args.args) + len(node.args.posonlyargs) + len(node.args.kwonlyargs)
+                )
                 if arg_count > max_args:
                     many_args.append({"file": str(path), "function": node.name, "args": arg_count})
 
@@ -72,7 +81,14 @@ def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5,
 @click.option("--fail-on", multiple=True, help="Severity levels to fail on (error, critical)")
 @click.option("--warn-on", multiple=True, help="Severity levels to warn on (warning)")
 @click.option("--fail-on-smells", is_flag=True, default=False, help="Exit 1 if any smells found")
-def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: tuple, fail_on_smells: bool):
+def smell_main(
+    format: str,
+    output: str,
+    config: str,
+    fail_on: tuple,
+    warn_on: tuple,
+    fail_on_smells: bool,
+):
     """Detect code smells based on configured thresholds.
 
     Examples:
@@ -86,6 +102,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
     # Try loading config if it exists
     try:
         import yaml
+
         cfg_path = Path(config)
         if cfg_path.exists():
             with open(cfg_path) as f:
@@ -112,6 +129,7 @@ def smell_main(format: str, output: str, config: str, fail_on: tuple, warn_on: t
     }
 
     import json
+
     output_text = json.dumps(summary, indent=2)
 
     if output:

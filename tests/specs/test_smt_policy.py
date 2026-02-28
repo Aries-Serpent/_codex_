@@ -10,7 +10,7 @@ import pytest
 
 try:
     import z3  # type: ignore
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     z3 = None  # type: ignore
 
 

@@ -451,7 +451,7 @@ class FeatureStore:
         self.feature_versions[feature_group_name].append(feature_version)
 
         logger.info(
-            f"Materialized {feature_group_name} v{version} to {storage_path} " f"({len(df)} rows)"
+            f"Materialized {feature_group_name} v{version} to {storage_path} ({len(df)} rows)"
         )
 
         return storage_path

@@ -9,10 +9,10 @@ import json
 import sys
 from pathlib import Path
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))

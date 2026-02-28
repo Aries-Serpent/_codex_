@@ -552,7 +552,7 @@ class TestErrorHandling:
 
             # Commit
             temp_file.rename(output_file)
-        except Exception:
+        except OSError:
             # Rollback
             if temp_file.exists():
                 temp_file.unlink()

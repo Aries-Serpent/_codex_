@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 # Module-level requests availability flag — avoids repeated ImportError handling
 try:
     import requests as _requests
+
     HAS_REQUESTS = True
 except ImportError:
     _requests = None  # type: ignore[assignment]
@@ -48,6 +49,7 @@ except ImportError:
 
 # Pre-compiled GitHub token format regex — avoids recompiling on every call
 _GITHUB_TOKEN_RE = re.compile(r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$")
+
 
 class GitHubTokenProvider(TokenProvider):
     """GitHub token provider for PATs and GitHub Apps.
@@ -86,11 +88,7 @@ class GitHubTokenProvider(TokenProvider):
         """Get provider type."""
         return ProviderType.GITHUB
 
-    def rotate_secret(
-        self,
-        secret_id: str,
-        **kwargs: Any
-    ) -> RotationResult:
+    def rotate_secret(self, secret_id: str, **kwargs: Any) -> RotationResult:
         """Rotate GitHub token.
 
         For fine-grained PATs, creates a new token with same scopes.
@@ -120,16 +118,14 @@ class GitHubTokenProvider(TokenProvider):
 
             # Create new token
             new_token_result = self.create_token(
-                name=note,
-                scopes=scopes,
-                expires_in_days=expires_in_days
+                name=note, scopes=scopes, expires_in_days=expires_in_days
             )
 
             if not new_token_result.success:
                 return RotationResult(
                     success=False,
                     old_secret_id=secret_id,
-                    error_message=new_token_result.error_message
+                    error_message=new_token_result.error_message,
                 )
 
             # Revoke old token (optional, based on policy)
@@ -147,22 +143,14 @@ class GitHubTokenProvider(TokenProvider):
                 metadata={
                     "scopes": scopes,
                     "expires_in_days": expires_in_days,
-                }
+                },
             )
 
         except Exception as e:
             logger.error(f"GitHub token rotation failed: {e}")
-            return RotationResult(
-                success=False,
-                old_secret_id=secret_id,
-                error_message=str(e)
-            )
+            return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
 
-    def validate_secret(
-        self,
-        secret_id: str,
-        secret_value: Optional[str] = None
-    ) -> bool:
+    def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate GitHub token.
 
         Args:
@@ -204,9 +192,7 @@ class GitHubTokenProvider(TokenProvider):
             # offline / air-gapped deployments are not broken.
             if not HAS_REQUESTS:
                 # requests not available — fall back to format-only validation
-                logger.warning(
-                    "requests library unavailable; using format-only token validation"
-                )
+                logger.warning("requests library unavailable; using format-only token validation")
                 return True
             try:
                 resp = _requests.get(
@@ -265,7 +251,7 @@ class GitHubTokenProvider(TokenProvider):
             expires_at=datetime.now(UTC) + timedelta(days=90),
             rotation_policy="auto_rotate_on_exposure",
             tags={"provider": "github", "type": "pat"},
-            scopes=["repo", "workflow"]  # Example scopes
+            scopes=["repo", "workflow"],  # Example scopes
         )
 
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
@@ -301,10 +287,7 @@ class GitHubTokenProvider(TokenProvider):
             return []
 
     def create_token(
-        self,
-        name: str,
-        scopes: List[str],
-        expires_in_days: Optional[int] = None
+        self, name: str, scopes: List[str], expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create new GitHub token.
 
@@ -325,11 +308,7 @@ class GitHubTokenProvider(TokenProvider):
             "fine-grained PATs) before it can be used."
         )
 
-    def update_token_scopes(
-        self,
-        secret_id: str,
-        scopes: List[str]
-    ) -> bool:
+    def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
         """Update GitHub token scopes.
 
         For fine-grained PATs, updates permission set.
@@ -380,8 +359,8 @@ class GitHubTokenProvider(TokenProvider):
             logger.warning("revoke_secret(): requests library unavailable; cannot revoke.")
             return False
         try:
-            # Fine-grained PATs and installation tokens can be revoked via DELETE /installation/token
-            # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)
+            # Fine-grained PATs and installation tokens can be revoked via DELETE /installation/token  # noqa: E501
+            # Classic PATs require DELETE /applications/{client_id}/token (needs OAuth app client_id)  # noqa: E501
             # We attempt the installation token revoke path first (works for ghs_ tokens)
             if token.startswith("ghs_"):
                 resp = _requests.delete(
@@ -413,10 +392,7 @@ class GitHubTokenProvider(TokenProvider):
             logger.error("revoke_secret() failed: %s", exc)
             return False
 
-    def list_secrets(
-        self,
-        filter_tags: Optional[Dict[str, str]] = None
-    ) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
         """List GitHub tokens via the GitHub REST API.
 
         Calls GET /user to confirm the token is valid and returns a single
@@ -448,10 +424,10 @@ class GitHubTokenProvider(TokenProvider):
             if resp.status_code == 200:
                 data = resp.json()
                 meta = SecretMetadata(
-                    secret_id="current_token",
+                    secret_id="current_token",  # nosec B106
                     name=f"GitHub PAT for {data.get('login', 'unknown')}",
                     created_at=datetime.now(UTC),
-                    tags={"github_login": data.get("login", ""), "token_type": "pat"},
+                    tags={"github_login": data.get("login", ""), "token_type": "pat"},  # nosec B105
                     scopes=None,  # scope info not available from /user
                 )
                 return [meta]

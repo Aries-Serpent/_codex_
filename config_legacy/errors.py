@@ -42,4 +42,3 @@ except ImportError:
 
 
 __all__ = ["MissingConfigException"]
-

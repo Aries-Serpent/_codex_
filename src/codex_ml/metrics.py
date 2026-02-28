@@ -87,4 +87,11 @@ def token_accuracy(logits: "torch.Tensor", targets: "torch.Tensor") -> float:
     return (preds == targets).float().mean().item()
 
 
-__all__ = ["accuracy", "precision", "recall", "f1_score", "perplexity", "token_accuracy"]
+__all__ = [
+    "accuracy",
+    "precision",
+    "recall",
+    "f1_score",
+    "perplexity",
+    "token_accuracy",
+]

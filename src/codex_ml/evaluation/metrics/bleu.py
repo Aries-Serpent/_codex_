@@ -85,9 +85,7 @@ class BleuMetric(MetricAdapter):
 
             # Note: max_ngram_order is not supported in newer sacrebleu versions
             # The library uses n-gram order 4 by default
-            bleu = sacrebleu.corpus_bleu(
-                self._predictions, refs_list
-            )
+            bleu = sacrebleu.corpus_bleu(self._predictions, refs_list)
 
             return {
                 self.name: bleu.score / 100.0,  # Convert to 0-1 scale

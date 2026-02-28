@@ -41,7 +41,13 @@ def snapshot(output: Path = SNAPSHOT_OUTPUT_ARGUMENT) -> None:
 
     base = Path("configs/deployment/d365")
     data: dict[str, str] = {}
-    for name in ("tables.csv", "columns.csv", "slas.csv", "routing.csv", "solution_manifest.json"):
+    for name in (
+        "tables.csv",
+        "columns.csv",
+        "slas.csv",
+        "routing.csv",
+        "solution_manifest.json",
+    ):
         path = base / name
         if path.exists():
             data[name] = path.read_text(encoding="utf-8")
@@ -95,7 +101,7 @@ def apply_routing(
         True,
         "--dry-run/--no-dry-run",
         help=(
-            "Simulate routing apply; --no-dry-run would perform outbound " "calls when implemented."
+            "Simulate routing apply; --no-dry-run would perform outbound calls when implemented."
         ),
     ),
 ) -> None:
@@ -112,7 +118,7 @@ def apply_slas(
     dry_run: bool = typer.Option(
         True,
         "--dry-run/--no-dry-run",
-        help=("Simulate SLA apply; --no-dry-run would perform outbound calls " "when implemented."),
+        help=("Simulate SLA apply; --no-dry-run would perform outbound calls when implemented."),
     ),
 ) -> None:
     """Apply SLA operations (stub) and emit evidence."""

@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from gpt4all import Embed4All
+
     GPT4ALL_AVAILABLE = True
 except ImportError:
     GPT4ALL_AVAILABLE = False
@@ -51,10 +52,7 @@ class GPT4AllEmbeddingProvider:
             dimension: Expected embedding dimension (auto-detected if None)
         """
         if not GPT4ALL_AVAILABLE:
-            raise ImportError(
-                "gpt4all not installed. "
-                "Install with: pip install gpt4all"
-            )
+            raise ImportError("gpt4all not installed. Install with: pip install gpt4all")
 
         self.model_name = model_name
 
@@ -114,5 +112,5 @@ class GPT4AllEmbeddingProvider:
 
     def __del__(self):
         """Cleanup embedder on deletion."""
-        if hasattr(self, 'embedder'):
+        if hasattr(self, "embedder"):
             del self.embedder

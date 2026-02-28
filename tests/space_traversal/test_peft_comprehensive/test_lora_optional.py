@@ -23,7 +23,7 @@ def _has_peft() -> bool:
         import peft  # noqa: F401
 
         return True
-    except Exception:
+    except ImportError:
         return False
 
 

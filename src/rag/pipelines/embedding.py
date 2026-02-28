@@ -71,7 +71,7 @@ class EmbeddingPipeline:
         logger.info(
             "EmbeddingPipeline initialized: model=%s, dim=%d",
             self.config.model_name,
-            self.config.dimension
+            self.config.dimension,
         )
 
     def _load_model(self) -> bool:
@@ -108,7 +108,7 @@ class EmbeddingPipeline:
         # Convert hex pairs to float values between -1 and 1
         # Each hex pair (0-255) is normalized: (value / 127.5) - 1.0 maps to [-1, 1]
         for i in range(0, min(len(text_hash), self.config.dimension * 2), 2):
-            byte_val = int(text_hash[i:i+2], 16)
+            byte_val = int(text_hash[i : i + 2], 16)
             embedding.append((byte_val / 127.5) - 1.0)
 
         # Pad to full dimension
@@ -116,7 +116,7 @@ class EmbeddingPipeline:
             embedding.append(0.0)
 
         # Truncate if needed
-        embedding = embedding[:self.config.dimension]
+        embedding = embedding[: self.config.dimension]
 
         # Normalize if configured
         if self.config.normalize:
@@ -161,9 +161,7 @@ class EmbeddingPipeline:
         else:
             try:
                 normalize = self.config.normalize
-                raw_embedding = self._model.encode(
-                    text, normalize_embeddings=normalize
-                )
+                raw_embedding = self._model.encode(text, normalize_embeddings=normalize)
                 embedding = raw_embedding.tolist()
                 model_name = self.config.model_name
             except Exception as e:
@@ -213,12 +211,14 @@ class EmbeddingPipeline:
                 )
 
                 for text, embedding in zip(texts, embeddings):
-                    results.append(EmbeddingResult(
-                        text=text[:100],
-                        embedding=embedding.tolist(),
-                        model=self.config.model_name,
-                        dimension=len(embedding),
-                    ))
+                    results.append(
+                        EmbeddingResult(
+                            text=text[:100],
+                            embedding=embedding.tolist(),
+                            model=self.config.model_name,
+                            dimension=len(embedding),
+                        )
+                    )
 
             except Exception as e:
                 logger.error("Batch embedding failed, using fallback: %s", e)

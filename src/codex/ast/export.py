@@ -233,7 +233,7 @@ class KnowledgeGraphExporter:
                     lines.append(f'      <data key="name">{_escape_xml(n.name)}</data>')
                     lines.append(f'      <data key="type">{n.type.value}</data>')
                     lines.append(
-                        f'      <data key="file">{_escape_xml(str(n.source_location.file_path))}</data>'
+                        f'      <data key="file">{_escape_xml(str(n.source_location.file_path))}</data>'  # noqa: E501
                     )
                     lines.append("    </node>")
 

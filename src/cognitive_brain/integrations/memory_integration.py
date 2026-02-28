@@ -40,9 +40,9 @@ logger = logging.getLogger(__name__)
 
 
 # Constants
-# Quantum baseline: average time for a full quantum compliance assessment from Phase 8.0 experiments.
-# NOTE: This is distinct from the CLASSICAL_BASELINE_MS = 28.5 used in exp5_validation.py for k₁ calculations.
-# The quantum baseline is used for memory-augmented/quantum performance comparisons, not classical rule-based baselines.
+# Quantum baseline: average time for a full quantum compliance assessment from Phase 8.0 experiments.  # noqa: E501
+# NOTE: This is distinct from the CLASSICAL_BASELINE_MS = 28.5 used in exp5_validation.py for k₁ calculations.  # noqa: E501
+# The quantum baseline is used for memory-augmented/quantum performance comparisons, not classical rule-based baselines.  # noqa: E501
 QUANTUM_FULL_ASSESSMENT_TIME_MS = 12.5
 
 

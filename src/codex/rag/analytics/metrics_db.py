@@ -14,6 +14,7 @@ from typing import Any, Dict, Optional
 @dataclass
 class QueryMetric:
     """Single query metric record."""
+
     timestamp: str
     query: str
     index_name: str
@@ -92,26 +93,28 @@ class MetricsDatabase:
             metric: Query metric to log
         """
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO query_metrics
                 (timestamp, query, index_name, tenant_id, top_k,
                  latency_ms, cache_hit, num_results, avg_score)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                metric.timestamp,
-                metric.query,
-                metric.index_name,
-                metric.tenant_id,
-                metric.top_k,
-                metric.latency_ms,
-                1 if metric.cache_hit else 0,
-                metric.num_results,
-                metric.avg_score
-            ))
+            """,
+                (
+                    metric.timestamp,
+                    metric.query,
+                    metric.index_name,
+                    metric.tenant_id,
+                    metric.top_k,
+                    metric.latency_ms,
+                    1 if metric.cache_hit else 0,
+                    metric.num_results,
+                    metric.avg_score,
+                ),
+            )
             conn.commit()
 
-    def get_stats(self, index_name: Optional[str] = None,
-                  hours: int = 24) -> Dict[str, Any]:
+    def get_stats(self, index_name: Optional[str] = None, hours: int = 24) -> Dict[str, Any]:
         """
         Get aggregate statistics.
 
@@ -151,11 +154,12 @@ class MetricsDatabase:
                 "max_latency_ms": round(row[3] or 0, 2),
                 "cache_hit_rate": round(row[4] or 0, 2),
                 "avg_results": round(row[5] or 0, 2),
-                "avg_score": round(row[6] or 0, 4)
+                "avg_score": round(row[6] or 0, 4),
             }
 
-    def get_percentiles(self, index_name: Optional[str] = None,
-                       hours: int = 24) -> Dict[str, float]:
+    def get_percentiles(
+        self, index_name: Optional[str] = None, hours: int = 24
+    ) -> Dict[str, float]:
         """
         Calculate latency percentiles.
 
@@ -190,11 +194,10 @@ class MetricsDatabase:
             return {
                 "p50": latencies[int(n * 0.50)],
                 "p95": latencies[int(n * 0.95)],
-                "p99": latencies[int(n * 0.99)]
+                "p99": latencies[int(n * 0.99)],
             }
 
-    def export_to_json(self, output_path: Path,
-                      hours: int = 24) -> None:
+    def export_to_json(self, output_path: Path, hours: int = 24) -> None:
         """
         Export metrics to JSON file.
 
@@ -203,27 +206,32 @@ class MetricsDatabase:
             hours: Time window in hours
         """
         with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT timestamp, query, index_name, tenant_id, top_k,
                        latency_ms, cache_hit, num_results, avg_score
                 FROM query_metrics
                 WHERE datetime(timestamp) > datetime('now', '-' || ? || ' hours')
                 ORDER BY timestamp DESC
-            """, (hours,))
+            """,
+                (hours,),
+            )
 
             metrics = []
             for row in cursor.fetchall():
-                metrics.append({
-                    "timestamp": row[0],
-                    "query": row[1],
-                    "index_name": row[2],
-                    "tenant_id": row[3],
-                    "top_k": row[4],
-                    "latency_ms": row[5],
-                    "cache_hit": bool(row[6]),
-                    "num_results": row[7],
-                    "avg_score": row[8]
-                })
+                metrics.append(
+                    {
+                        "timestamp": row[0],
+                        "query": row[1],
+                        "index_name": row[2],
+                        "tenant_id": row[3],
+                        "top_k": row[4],
+                        "latency_ms": row[5],
+                        "cache_hit": bool(row[6]),
+                        "num_results": row[7],
+                        "avg_score": row[8],
+                    }
+                )
 
             with open(output_path, "w") as f:
                 json.dump(metrics, f, indent=2)

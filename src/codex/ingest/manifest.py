@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 # Try to import YAML parser
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
@@ -35,6 +36,7 @@ except ImportError as e:
 @dataclass
 class SourceConfig:
     """Source configuration in manifest."""
+
     type: Literal["file", "zip", "git-url"]
     path: str
     ref: Optional[str] = None
@@ -43,6 +45,7 @@ class SourceConfig:
 @dataclass
 class SampleInput:
     """Sample input definition."""
+
     path: str
     description: Optional[str] = None
 
@@ -50,6 +53,7 @@ class SampleInput:
 @dataclass
 class GoldenOutput:
     """Golden output for verification."""
+
     input_ref: str
     expected_output: str
     comparison_mode: Literal["exact", "fuzzy", "regex", "semantic"] = "exact"
@@ -58,6 +62,7 @@ class GoldenOutput:
 @dataclass
 class Constraints:
     """Execution constraints."""
+
     max_runtime_seconds: int = 60
     max_memory_mb: int = 512
     allowed_network: bool = False
@@ -68,6 +73,7 @@ class Constraints:
 @dataclass
 class Metadata:
     """Manifest metadata."""
+
     owner: Optional[str] = None
     privacy: Literal["public", "private"] = "private"
     allow_external_llm: bool = False
@@ -90,6 +96,7 @@ class IngestManifest:
         constraints: Execution constraints
         metadata: Additional metadata
     """
+
     version: str
     source: SourceConfig
     entry_point: Optional[str] = None
@@ -109,8 +116,7 @@ class IngestManifest:
             },
             "entry_point": self.entry_point,
             "sample_inputs": [
-                {"path": s.path, "description": s.description}
-                for s in self.sample_inputs
+                {"path": s.path, "description": s.description} for s in self.sample_inputs
             ],
             "golden_outputs": [
                 {
@@ -142,6 +148,7 @@ def _validate_version(version: str) -> None:
     Safeguard: Version format validation.
     """
     import re
+
     if not re.match(r"^\d+\.\d+$", version):
         raise ValueError(f"Invalid version format: {version}")
 
@@ -225,10 +232,12 @@ def parse_manifest(path: Path) -> IngestManifest:
     sample_inputs = []
     for item in data.get("sample_inputs", []):
         if isinstance(item, dict):
-            sample_inputs.append(SampleInput(
-                path=item["path"],
-                description=item.get("description"),
-            ))
+            sample_inputs.append(
+                SampleInput(
+                    path=item["path"],
+                    description=item.get("description"),
+                )
+            )
         elif isinstance(item, str):
             sample_inputs.append(SampleInput(path=item))
 
@@ -236,11 +245,13 @@ def parse_manifest(path: Path) -> IngestManifest:
     golden_outputs = []
     for item in data.get("golden_outputs", []):
         if isinstance(item, dict):
-            golden_outputs.append(GoldenOutput(
-                input_ref=item["input_ref"],
-                expected_output=item["expected_output"],
-                comparison_mode=item.get("comparison_mode", "exact"),
-            ))
+            golden_outputs.append(
+                GoldenOutput(
+                    input_ref=item["input_ref"],
+                    expected_output=item["expected_output"],
+                    comparison_mode=item.get("comparison_mode", "exact"),
+                )
+            )
 
     # Parse constraints
     constraints = _validate_constraints(data.get("constraints", {}))

@@ -4,7 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from codex.ast_adapters.python_adapter import PythonASTAdapter
+pytest.importorskip("libcst", reason="libcst optional dependency not installed")
+
+from codex.ast_adapters.python_adapter import PythonASTAdapter  # noqa: E402
 
 
 def test_python_adapter_initialization():

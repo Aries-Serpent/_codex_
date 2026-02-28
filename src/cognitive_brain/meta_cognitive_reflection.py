@@ -392,11 +392,7 @@ class MetaCognitiveReflectionLayer:
         Returns:
             List of strong domains
         """
-        return [
-            mk
-            for mk in self.meta_knowledge.values()
-            if mk.strength_assessment >= threshold
-        ]
+        return [mk for mk in self.meta_knowledge.values() if mk.strength_assessment >= threshold]
 
     def get_weaknesses(self, threshold: float = 0.5) -> List[MetaKnowledge]:
         """
@@ -408,11 +404,7 @@ class MetaCognitiveReflectionLayer:
         Returns:
             List of weak domains
         """
-        return [
-            mk
-            for mk in self.meta_knowledge.values()
-            if mk.strength_assessment < threshold
-        ]
+        return [mk for mk in self.meta_knowledge.values() if mk.strength_assessment < threshold]
 
     def generate_self_assessment_report(self) -> str:
         """
@@ -474,9 +466,7 @@ class MetaCognitiveReflectionLayer:
             ]
         )
 
-        effective_patterns = [
-            p for p in self.strategy_patterns.values() if p.effectiveness >= 0.7
-        ]
+        effective_patterns = [p for p in self.strategy_patterns.values() if p.effectiveness >= 0.7]
         if effective_patterns:
             for pattern in effective_patterns:
                 lines.append(

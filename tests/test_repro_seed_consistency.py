@@ -14,13 +14,13 @@ import numpy as np  # noqa: E402
 
 try:
     import torch
-except Exception:  # pragma: no cover - torch missing
+except ImportError:  # pragma: no cover - torch missing
     torch = None  # type: ignore[assignment]
 
 # Prefer top-level re-export if available; fallback to module path
 try:
     from codex_ml.utils import set_reproducible  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     from codex_ml.utils.repro import set_reproducible  # type: ignore
 
 

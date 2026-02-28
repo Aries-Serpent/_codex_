@@ -45,9 +45,7 @@ class QuantumState:
             self.metadata = {}
 
         if not 0.0 <= self.coherence <= 1.0:
-            raise ValueError(
-                f"Coherence must be between 0.0 and 1.0, got {self.coherence}"
-            )
+            raise ValueError(f"Coherence must be between 0.0 and 1.0, got {self.coherence}")
 
     def is_coherent(self, threshold: float = 0.3) -> bool:
         """
@@ -72,9 +70,7 @@ class QuantumState:
             ValueError: If new_coherence is out of range
         """
         if not 0.0 <= new_coherence <= 1.0:
-            raise ValueError(
-                f"Coherence must be between 0.0 and 1.0, got {new_coherence}"
-            )
+            raise ValueError(f"Coherence must be between 0.0 and 1.0, got {new_coherence}")
         self.coherence = new_coherence
 
     def to_dict(self) -> Dict[str, Any]:
@@ -92,10 +88,7 @@ class QuantumState:
 
     def __repr__(self) -> str:
         """String representation of quantum state."""
-        return (
-            f"QuantumState(feature={self.feature.value}, "
-            f"coherence={self.coherence:.3f})"
-        )
+        return f"QuantumState(feature={self.feature.value}, coherence={self.coherence:.3f})"
 
 
 class QuantumException(Exception):
@@ -112,8 +105,7 @@ class CoherenceDegradationError(QuantumException):
         self.threshold = threshold
         self.feature = feature
         super().__init__(
-            f"Coherence degradation detected in {feature}: "
-            f"{current:.3f} < {threshold:.3f}"
+            f"Coherence degradation detected in {feature}: {current:.3f} < {threshold:.3f}"
         )
 
 

@@ -143,14 +143,13 @@ class FAISSStore(VectorStore):
         # Validate document count
         if len(documents) != n_vectors:
             raise ValueError(
-                f"Number of embeddings ({n_vectors}) must match number of documents ({len(documents)})"
+                f"Number of embeddings ({n_vectors}) must match number of documents ({len(documents)})"  # noqa: E501
             )
 
         # Safety limit check
         if n_vectors > self.max_vectors:
             raise RuntimeError(
-                f"Cannot create index with {n_vectors} vectors. "
-                f"Maximum allowed: {self.max_vectors}"
+                f"Cannot create index with {n_vectors} vectors. Maximum allowed: {self.max_vectors}"
             )
 
         # Validate embedding values

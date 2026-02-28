@@ -121,7 +121,11 @@ class _WhitespaceFallbackTokenizer:
         return ids
 
     def decode(
-        self, ids: Sequence[int], *, clean_up_tokenization_spaces: bool = False, **_: Any
+        self,
+        ids: Sequence[int],
+        *,
+        clean_up_tokenization_spaces: bool = False,
+        **_: Any,
     ) -> str:
         tokens: list[str] = []
         for idx in ids:

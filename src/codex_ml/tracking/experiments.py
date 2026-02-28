@@ -97,7 +97,9 @@ def log_metric(
 
 
 def finish_run(
-    run_info: RunInfo, status: str = "completed", base_dir: str | Path = "artifacts/experiments"
+    run_info: RunInfo,
+    status: str = "completed",
+    base_dir: str | Path = "artifacts/experiments",
 ) -> Path:
     run_dir = _run_dir(base_dir, run_info.run_id)
     logger = _logger_for(run_dir)

@@ -34,6 +34,7 @@ class MetricType(Enum):
     - SESSION_EFFECTIVENESS: percentage (0-100), e.g., 80.0 for 80% effective
     - TEST_SUCCESS_RATE: percentage (0-100), e.g., 100.0 for all tests passing
     """
+
     COVERAGE = "coverage"
     SECURITY = "security"
     CI_CD = "ci_cd"
@@ -46,6 +47,7 @@ class MetricType(Enum):
 
 class TrendDirection(Enum):
     """Direction of metric trends."""
+
     IMPROVING = "improving"
     STABLE = "stable"
     DEGRADING = "degrading"
@@ -54,6 +56,7 @@ class TrendDirection(Enum):
 
 class AlertSeverity(Enum):
     """Severity levels for metric alerts."""
+
     INFO = "info"
     WARNING = "warning"
     CRITICAL = "critical"
@@ -62,6 +65,7 @@ class AlertSeverity(Enum):
 @dataclass
 class MetricValue:
     """A single metric measurement."""
+
     metric_type: MetricType
     value: float
     timestamp: datetime
@@ -73,7 +77,7 @@ class MetricValue:
             "metric_type": self.metric_type.value,
             "value": self.value,
             "timestamp": self.timestamp.isoformat(),
-            "context": self.context
+            "context": self.context,
         }
 
     @classmethod
@@ -83,13 +87,14 @@ class MetricValue:
             metric_type=MetricType(data["metric_type"]),
             value=data["value"],
             timestamp=datetime.fromisoformat(data["timestamp"]),
-            context=data.get("context", {})
+            context=data.get("context", {}),
         )
 
 
 @dataclass
 class MetricThreshold:
     """Threshold configuration for a metric."""
+
     metric_type: MetricType
     target: float
     warning_threshold: float
@@ -120,6 +125,7 @@ class MetricThreshold:
 @dataclass
 class MetricAlert:
     """An alert generated from metric analysis."""
+
     metric_type: MetricType
     severity: AlertSeverity
     message: str
@@ -137,13 +143,14 @@ class MetricAlert:
             "current_value": self.current_value,
             "threshold_value": self.threshold_value,
             "timestamp": self.timestamp.isoformat(),
-            "acknowledged": self.acknowledged
+            "acknowledged": self.acknowledged,
         }
 
 
 @dataclass
 class TrendAnalysis:
     """Result of trend analysis for a metric."""
+
     metric_type: MetricType
     direction: TrendDirection
     slope: float
@@ -165,13 +172,14 @@ class TrendAnalysis:
             "period_days": self.period_days,
             "start_value": self.start_value,
             "end_value": self.end_value,
-            "change_percent": self.change_percent
+            "change_percent": self.change_percent,
         }
 
 
 @dataclass
 class HealthReport:
     """Overall health report combining all metrics."""
+
     timestamp: datetime
     overall_status: str  # healthy, warning, critical
     metrics: dict[MetricType, float]
@@ -187,7 +195,7 @@ class HealthReport:
             "metrics": {k.value: v for k, v in self.metrics.items()},
             "alerts": [a.to_dict() for a in self.alerts],
             "trends": [t.to_dict() for t in self.trends],
-            "recommendations": self.recommendations
+            "recommendations": self.recommendations,
         }
 
 
@@ -225,11 +233,7 @@ class MetricStore:
         self._metrics[key].append(metric.to_dict())
         self._save()
 
-    def get_metrics(
-        self,
-        metric_type: MetricType,
-        days: int = 30
-    ) -> list[MetricValue]:
+    def get_metrics(self, metric_type: MetricType, days: int = 30) -> list[MetricValue]:
         """Get metrics for a type within the specified days."""
         key = metric_type.value
         if key not in self._metrics:
@@ -256,11 +260,7 @@ class TrendAnalyzer:
         """Initialize the trend analyzer."""
         self.min_data_points = min_data_points
 
-    def analyze(
-        self,
-        metrics: list[MetricValue],
-        period_days: int = 7
-    ) -> TrendAnalysis | None:
+    def analyze(self, metrics: list[MetricValue], period_days: int = 7) -> TrendAnalysis | None:
         """
         Analyze the trend of a metric series.
 
@@ -299,8 +299,9 @@ class TrendAnalyzer:
         # R-squared (coefficient of determination)
         mean_y = sum_y / n
         ss_tot = sum((y - mean_y) ** 2 for y in y_values)
-        ss_res = sum((y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2
-                     for x, y in zip(x_values, y_values))
+        ss_res = sum(
+            (y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2 for x, y in zip(x_values, y_values)
+        )
         r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 
         # Determine trend direction
@@ -328,7 +329,7 @@ class TrendAnalyzer:
             period_days=period_days,
             start_value=start_value,
             end_value=end_value,
-            change_percent=change_percent
+            change_percent=change_percent,
         )
 
 
@@ -374,9 +375,7 @@ class CorrelationAnalyzer:
     """Analyzes correlations between metrics."""
 
     def analyze_correlation(
-        self,
-        metrics_a: list[MetricValue],
-        metrics_b: list[MetricValue]
+        self, metrics_a: list[MetricValue], metrics_b: list[MetricValue]
     ) -> float | None:
         """
         Calculate Pearson correlation coefficient between two metric series.
@@ -394,7 +393,7 @@ class CorrelationAnalyzer:
             # Find closest metric in b
             closest = min(
                 metrics_b,
-                key=lambda mb: abs(ma.timestamp.timestamp() - mb.timestamp.timestamp())
+                key=lambda mb: abs(ma.timestamp.timestamp() - mb.timestamp.timestamp()),
             )
             # Only match if within 1 hour
             if abs(ma.timestamp.timestamp() - closest.timestamp.timestamp()) < 3600:
@@ -431,35 +430,53 @@ class ObjectiveAnalyzer:
     # Default thresholds
     DEFAULT_THRESHOLDS = {
         MetricType.COVERAGE: MetricThreshold(
-            MetricType.COVERAGE, target=70.0, warning_threshold=60.0,
-            critical_threshold=50.0, comparison="gte"
+            MetricType.COVERAGE,
+            target=70.0,
+            warning_threshold=60.0,
+            critical_threshold=50.0,
+            comparison="gte",
         ),
         MetricType.SECURITY: MetricThreshold(
-            MetricType.SECURITY, target=0, warning_threshold=3,
-            critical_threshold=10, comparison="lte"
+            MetricType.SECURITY,
+            target=0,
+            warning_threshold=3,
+            critical_threshold=10,
+            comparison="lte",
         ),
         MetricType.CI_CD: MetricThreshold(
-            MetricType.CI_CD, target=100.0, warning_threshold=95.0,
-            critical_threshold=90.0, comparison="gte"
+            MetricType.CI_CD,
+            target=100.0,
+            warning_threshold=95.0,
+            critical_threshold=90.0,
+            comparison="gte",
         ),
         MetricType.DOCUMENTATION: MetricThreshold(
-            MetricType.DOCUMENTATION, target=30, warning_threshold=60,
-            critical_threshold=90, comparison="lte"  # days since update
+            MetricType.DOCUMENTATION,
+            target=30,
+            warning_threshold=60,
+            critical_threshold=90,
+            comparison="lte",  # days since update
         ),
         MetricType.TEST_SUCCESS_RATE: MetricThreshold(
-            MetricType.TEST_SUCCESS_RATE, target=100.0, warning_threshold=95.0,
-            critical_threshold=90.0, comparison="gte"
+            MetricType.TEST_SUCCESS_RATE,
+            target=100.0,
+            warning_threshold=95.0,
+            critical_threshold=90.0,
+            comparison="gte",
         ),
         MetricType.BUILD_TIME: MetricThreshold(
-            MetricType.BUILD_TIME, target=300, warning_threshold=600,
-            critical_threshold=900, comparison="lte"  # seconds
+            MetricType.BUILD_TIME,
+            target=300,
+            warning_threshold=600,
+            critical_threshold=900,
+            comparison="lte",  # seconds
         ),
     }
 
     def __init__(
         self,
         store: MetricStore | None = None,
-        thresholds: dict[MetricType, MetricThreshold] | None = None
+        thresholds: dict[MetricType, MetricThreshold] | None = None,
     ):
         """Initialize the objective analyzer."""
         self.store = store or MetricStore()
@@ -469,25 +486,20 @@ class ObjectiveAnalyzer:
         self.correlation_analyzer = CorrelationAnalyzer()
 
     def record_metric(
-        self,
-        metric_type: MetricType,
-        value: float,
-        context: dict | None = None
+        self, metric_type: MetricType, value: float, context: dict | None = None
     ) -> MetricValue:
         """Record a new metric value."""
         metric = MetricValue(
             metric_type=metric_type,
             value=value,
             timestamp=datetime.now(timezone.utc),
-            context=context or {}
+            context=context or {},
         )
         self.store.add_metric(metric)
         return metric
 
     def check_threshold(
-        self,
-        metric_type: MetricType,
-        value: float | None = None
+        self, metric_type: MetricType, value: float | None = None
     ) -> tuple[bool, MetricAlert | None]:
         """
         Check if a metric breaches its threshold.
@@ -519,15 +531,11 @@ class ObjectiveAnalyzer:
             message=f"{metric_type.value} is at {value}, threshold is {threshold.target}",
             current_value=value,
             threshold_value=threshold.target,
-            timestamp=datetime.now(timezone.utc)
+            timestamp=datetime.now(timezone.utc),
         )
         return False, alert
 
-    def analyze_trend(
-        self,
-        metric_type: MetricType,
-        period_days: int = 7
-    ) -> TrendAnalysis | None:
+    def analyze_trend(self, metric_type: MetricType, period_days: int = 7) -> TrendAnalysis | None:
         """Analyze the trend for a specific metric."""
         metrics = self.store.get_metrics(metric_type, days=period_days + 7)
         return self.trend_analyzer.analyze(metrics, period_days)
@@ -537,11 +545,7 @@ class ObjectiveAnalyzer:
         metrics = self.store.get_metrics(metric_type, days=30)
         return self.anomaly_detector.detect(metrics)
 
-    def analyze_correlation(
-        self,
-        metric_a: MetricType,
-        metric_b: MetricType
-    ) -> float | None:
+    def analyze_correlation(self, metric_a: MetricType, metric_b: MetricType) -> float | None:
         """Analyze correlation between two metrics."""
         metrics_a = self.store.get_metrics(metric_a, days=30)
         metrics_b = self.store.get_metrics(metric_b, days=30)
@@ -587,14 +591,14 @@ class ObjectiveAnalyzer:
             metrics=current_metrics,
             alerts=alerts,
             trends=trends,
-            recommendations=recommendations
+            recommendations=recommendations,
         )
 
     def _generate_recommendations(
         self,
         metrics: dict[MetricType, float],
         alerts: list[MetricAlert],
-        trends: list[TrendAnalysis]
+        trends: list[TrendAnalysis],
     ) -> list[str]:
         """Generate recommendations based on analysis."""
         recommendations = []
@@ -644,7 +648,7 @@ class ObjectiveAnalyzer:
             "alert_count": len(report.alerts),
             "critical_count": sum(1 for a in report.alerts if a.severity == AlertSeverity.CRITICAL),
             "metrics": {k.value: v for k, v in report.metrics.items()},
-            "top_recommendation": report.recommendations[0] if report.recommendations else None
+            "top_recommendation": report.recommendations[0] if report.recommendations else None,
         }
 
 

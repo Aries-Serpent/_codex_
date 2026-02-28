@@ -322,7 +322,6 @@ def test_session_logger_dedupe_wal(monkeypatch, tmp_path):
     monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
     monkeypatch.delenv("CODEX_DB_POOL", raising=False)
 
-    import sqlite3
 
     wal_calls = {"count": 0}
     orig_connect = sqlite3.connect

@@ -22,7 +22,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 
-def safe_load_sentence_transformer(
+def safe_load_sentence_transformer(  # nosec B107
     model_name: str,
     cache_dir: Optional[str] = None,
     use_auth_token_env_key: str = "HF_TOKEN",

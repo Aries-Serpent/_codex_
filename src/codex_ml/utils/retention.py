@@ -100,7 +100,13 @@ def prune_checkpoints(
     """
     root = Path(checkpoint_dir)
     if not root.exists():
-        return {"total": 0, "kept": [], "pruned": [], "protected_latest": None, "dry_run": dry_run}
+        return {
+            "total": 0,
+            "kept": [],
+            "pruned": [],
+            "protected_latest": None,
+            "dry_run": dry_run,
+        }
 
     epoch_dirs = _discover_epoch_dirs(root)
     epochs = []

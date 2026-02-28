@@ -60,7 +60,7 @@ def _get_adapter() -> BackendAdapter:
     return adapter  # type: ignore[return-value]
 
 
-# Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.
+# Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.  # noqa: E501
 async def handle_jsonrpc_request(
     payload: Any, adapter: BackendAdapter
 ) -> Union[dict[str, Any], list[dict[str, Any]]]:
@@ -110,7 +110,11 @@ async def _dispatch_method(p: dict[str, Any], adapter: BackendAdapter) -> dict[s
         increment("mcp_call_tool_total")
         with Timer("mcp_call_tool_latency"):
             if tool_id == "mock.tool.echo":
-                return {"jsonrpc": "2.0", "result": {"output": input_payload}, "id": req_id}
+                return {
+                    "jsonrpc": "2.0",
+                    "result": {"output": input_payload},
+                    "id": req_id,
+                }
 
             if tool_id == "mcp.tool.query":
                 query_embedding = input_payload.get("embedding")

@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
+
+
 @dataclass
 class CacheEntry:
     """A cached context entry."""

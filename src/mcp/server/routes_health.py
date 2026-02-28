@@ -26,6 +26,7 @@ from .adapter_loader import load_adapter
 
 logger = logging.getLogger(__name__)
 
+
 def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None:
     @app.get("/health")
     async def health_root():
@@ -53,4 +54,10 @@ def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             adapter_status = {"status": "degraded"}
-        return JSONResponse(content={"status": "ok", "adapter": adapter_path, "adapter_status": adapter_status})
+        return JSONResponse(
+            content={
+                "status": "ok",
+                "adapter": adapter_path,
+                "adapter_status": adapter_status,
+            }
+        )

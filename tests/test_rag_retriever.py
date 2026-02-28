@@ -33,7 +33,7 @@ pytestmark = pytest.mark.skipif(
 try:
     import torch as _torch
     _cuda_available = _torch.cuda.is_available()
-except Exception:
+except (ImportError, RuntimeError):
     _cuda_available = False
 
 _skip_real_st_models = pytest.mark.skipif(

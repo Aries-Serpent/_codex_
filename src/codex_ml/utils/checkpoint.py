@@ -136,6 +136,7 @@ def _load_payload(path: Path, map_location: str | None = None) -> Any:
             return _torch_load(path, map_location=map_location)
     # Use safe pickle loading to prevent code execution vulnerabilities
     from utils.safe_pickle import safe_pickle_load
+
     return safe_pickle_load(str(path), use_restricted_unpickler=True)
 
 
@@ -149,7 +150,11 @@ def _capture_rng_state_raw() -> dict[str, Any]:
             state["torch_cpu"] = _torch_rng_get_state()
 
         cuda_mod = getattr(torch, "cuda", None)
-        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
+        if (
+            cuda_mod is not None
+            and callable(getattr(cuda_mod, "is_available", None))
+            and cuda_mod.is_available()
+        ):
             with suppress(Exception):  # pragma: no cover - optional GPU support
                 state["torch_cuda_all"] = cuda_mod.get_rng_state_all()
     return state
@@ -257,7 +262,11 @@ def _restore_rng_state(state: Mapping[str, Any]) -> None:
             if torch_state is not None:
                 _torch_rng_set_state(torch_state)
         cuda_mod = getattr(torch, "cuda", None)
-        if cuda_mod is not None and callable(getattr(cuda_mod, "is_available", None)) and cuda_mod.is_available():
+        if (
+            cuda_mod is not None
+            and callable(getattr(cuda_mod, "is_available", None))
+            and cuda_mod.is_available()
+        ):
             with suppress(Exception):
                 cuda_state = state.get("torch_cuda_all")
                 if cuda_state is not None:
@@ -265,7 +274,14 @@ def _restore_rng_state(state: Mapping[str, Any]) -> None:
 
 
 def _component_paths(out_dir: Path) -> Iterable[Path]:
-    for name in ("model.pt", "optimizer.pt", "scheduler.pt", "rng.pt", "rng.json", "metadata.json"):
+    for name in (
+        "model.pt",
+        "optimizer.pt",
+        "scheduler.pt",
+        "rng.pt",
+        "rng.json",
+        "metadata.json",
+    ):
         candidate = out_dir / name
         if candidate.exists():
             yield candidate

@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -191,7 +190,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             exit_code = 0
         status = "ok" if exit_code == 0 else "error"
         log_event(
-            logger, "cli.finish", prog="checkpoint-validate", status=status, exit_code=exit_code
+            logger,
+            "cli.finish",
+            prog="checkpoint-validate",
+            status=status,
+            exit_code=exit_code,
         )
         return exit_code
 

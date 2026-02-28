@@ -5,11 +5,11 @@ Provides JSONL and SQLite implementations of the MemoryProtocol.
 
 from __future__ import annotations
 
-import fcntl
 import json
 import logging
 import os
 import sqlite3
+import sys as _sys
 from pathlib import Path
 from typing import Any
 from uuid import UUID
@@ -17,6 +17,33 @@ from uuid import UUID
 from .protocol import MemoryEntry, MemoryProtocol, MemoryQuery
 
 logger = logging.getLogger(__name__)
+
+# Platform guard: fcntl is POSIX-only.  On Windows we fall back to a no-op
+# lock so the backend still functions (single-process writes are safe;
+# multi-process concurrent writes on Windows simply skip advisory locking).
+if _sys.platform != "win32":
+    import fcntl as _fcntl  # type: ignore[import]
+
+    _HAS_FCNTL = True
+else:
+    _fcntl = None  # type: ignore[assignment]
+    _HAS_FCNTL = False
+    logger.warning(
+        "fcntl unavailable on Windows — MemoryBackend file-locking disabled "
+        "(safe for single-process use; avoid concurrent multi-process writes)."
+    )
+
+
+def _flock(fd: int, mode: str) -> None:
+    """Portable advisory file lock helper.
+
+    On POSIX uses ``fcntl.flock``; on Windows (no fcntl) is a no-op.
+    ``mode`` is one of ``'ex'`` (exclusive), ``'sh'`` (shared), ``'un'`` (unlock).
+    """
+    if not _HAS_FCNTL:
+        return  # Windows: skip advisory locking
+    _map = {"ex": _fcntl.LOCK_EX, "sh": _fcntl.LOCK_SH, "un": _fcntl.LOCK_UN}
+    _fcntl.flock(fd, _map[mode])
 
 
 class JSONLMemoryBackend(MemoryProtocol):
@@ -36,23 +63,19 @@ class JSONLMemoryBackend(MemoryProtocol):
         # Ensure file exists with secure permissions
         if not self.storage_path.exists():
             # Create with owner-only permissions (0o600) for security
-            fd = os.open(
-                self.storage_path,
-                os.O_CREAT | os.O_WRONLY,
-                0o600
-            )
+            fd = os.open(self.storage_path, os.O_CREAT | os.O_WRONLY, 0o600)
             os.close(fd)
 
     def store(self, entry: MemoryEntry) -> None:
         """Append entry to JSONL file with file locking."""
         with open(self.storage_path, "a", encoding="utf-8") as f:
             # Acquire exclusive lock to prevent race conditions
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            _flock(f.fileno(), "ex")
             try:
                 f.write(json.dumps(entry.to_dict()) + "\n")
                 f.flush()
             finally:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                _flock(f.fileno(), "un")
 
     def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
         """Retrieve entries by scanning the entire file.
@@ -95,7 +118,7 @@ class JSONLMemoryBackend(MemoryProtocol):
 
         # Sort by timestamp descending and limit
         matches.sort(key=lambda x: x.timestamp, reverse=True)
-        return matches[:query.limit]
+        return matches[: query.limit]
 
     def delete(self, entry_id: UUID) -> bool:
         """Delete entry by rewriting file without it (with file locking)."""
@@ -107,7 +130,7 @@ class JSONLMemoryBackend(MemoryProtocol):
 
         # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
-            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+            _flock(f.fileno(), "sh")
             try:
                 for line in f:
                     if not line.strip():
@@ -121,17 +144,17 @@ class JSONLMemoryBackend(MemoryProtocol):
                     except (json.JSONDecodeError, KeyError, ValueError):
                         entries.append(line)
             finally:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                _flock(f.fileno(), "un")
 
         # Write with exclusive lock if found
         if found:
             with open(self.storage_path, "w", encoding="utf-8") as f:
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                _flock(f.fileno(), "ex")
                 try:
                     f.writelines(entries)
                     f.flush()
                 finally:
-                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                    _flock(f.fileno(), "un")
 
         return found
 
@@ -145,7 +168,7 @@ class JSONLMemoryBackend(MemoryProtocol):
 
         # Read with shared lock
         with open(self.storage_path, "r", encoding="utf-8") as f:
-            fcntl.flock(f.fileno(), fcntl.LOCK_SH)
+            _flock(f.fileno(), "sh")
             try:
                 for line in f:
                     if not line.strip():
@@ -159,17 +182,17 @@ class JSONLMemoryBackend(MemoryProtocol):
                     except (json.JSONDecodeError, KeyError):
                         entries.append(line)
             finally:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                _flock(f.fileno(), "un")
 
         # Write with exclusive lock if any deleted
         if deleted_count > 0:
             with open(self.storage_path, "w", encoding="utf-8") as f:
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                _flock(f.fileno(), "ex")
                 try:
                     f.writelines(entries)
                     f.flush()
                 finally:
-                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                    _flock(f.fileno(), "un")
 
         return deleted_count
 
@@ -239,9 +262,10 @@ class SQLiteMemoryBackend(MemoryProtocol):
             data = entry.to_dict()
             # Ensure timestamp is timezone-aware (UTC)
             timestamp_str = data["timestamp"]
-            if not timestamp_str.endswith('+00:00') and not timestamp_str.endswith('Z'):
+            if not timestamp_str.endswith("+00:00") and not timestamp_str.endswith("Z"):
                 # Add UTC timezone if missing
                 from datetime import datetime, timezone
+
                 dt = datetime.fromisoformat(timestamp_str)
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=timezone.utc)
@@ -296,15 +320,17 @@ class SQLiteMemoryBackend(MemoryProtocol):
             entries = []
             for row in cursor:
                 entries.append(
-                    MemoryEntry.from_dict({
-                        "id": row["id"],
-                        "content": json.loads(row["content"]),
-                        "timestamp": row["timestamp"],
-                        "agent_id": row["agent_id"],
-                        "session_id": row["session_id"],
-                        "metadata": json.loads(row["metadata"]) if row["metadata"] else {},
-                        "embedding": json.loads(row["embedding"]) if row["embedding"] else None,
-                    })
+                    MemoryEntry.from_dict(
+                        {
+                            "id": row["id"],
+                            "content": json.loads(row["content"]),
+                            "timestamp": row["timestamp"],
+                            "agent_id": row["agent_id"],
+                            "session_id": row["session_id"],
+                            "metadata": json.loads(row["metadata"]) if row["metadata"] else {},
+                            "embedding": json.loads(row["embedding"]) if row["embedding"] else None,
+                        }
+                    )
                 )
 
             return entries

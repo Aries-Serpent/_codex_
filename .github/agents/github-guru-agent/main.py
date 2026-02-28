@@ -361,7 +361,7 @@ class GitHubGuruAgent:
         self._metrics.start_capability("codebase_navigation_guidance")
         try:
             hint_lines = [
-                f"**Codebase Navigation Guidance**",
+                "**Codebase Navigation Guidance**",
                 f"Query: `{query}`" if query else "",
                 "",
             ]

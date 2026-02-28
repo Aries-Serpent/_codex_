@@ -50,7 +50,7 @@ class TestSearchEngineOperations:
                 with patch.object(engine, 'fuzzy_search') as mock_fuzzy:
                     mock_fuzzy.return_value = [{"id": 1}]
                     results = engine.fuzzy_search("tset")
-                    assert len(results) >= 0
+                    assert isinstance(results, (list, tuple, set, dict))  # was: len() >= 0 (always true)
         except (ImportError, AttributeError):
             pytest.skip("fuzzy_search not available")
 

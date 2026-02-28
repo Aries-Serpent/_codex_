@@ -47,7 +47,7 @@ def save_checkpoint(*args, **kwargs):
     global _warned
     if not _warned:
         warnings.warn(
-            "codex_ml.checkpointing.compat.save_checkpoint is deprecated; use checkpoint_core.save_checkpoint",
+            "codex_ml.checkpointing.compat.save_checkpoint is deprecated; use checkpoint_core.save_checkpoint",  # noqa: E501
             DeprecationWarning,
             stacklevel=2,
         )

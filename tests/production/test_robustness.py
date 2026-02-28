@@ -341,7 +341,7 @@ def test_partial_write_recovery(tmp_path):
             # Atomic rename
             temp_path.replace(file_path)
             return True
-        except Exception:
+        except OSError:
             # Clean up temporary file on failure
             if temp_path.exists():
                 temp_path.unlink()

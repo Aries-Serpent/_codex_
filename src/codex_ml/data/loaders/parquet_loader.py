@@ -47,7 +47,10 @@ class ParquetLoader:
     """
 
     def __init__(
-        self, file_path: Path, columns: Optional[list[str]] = None, use_threads: bool = True
+        self,
+        file_path: Path,
+        columns: Optional[list[str]] = None,
+        use_threads: bool = True,
     ):
         """
         Initialize Parquet loader
@@ -59,7 +62,7 @@ class ParquetLoader:
         """
         if not PARQUET_AVAILABLE:
             raise ImportError(
-                "PyArrow required for Parquet support.\n" "Install: pip install pyarrow>=10.0.0"
+                "PyArrow required for Parquet support.\nInstall: pip install pyarrow>=10.0.0"
             )
 
         self.file_path = Path(file_path)

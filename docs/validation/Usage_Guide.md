@@ -196,4 +196,3 @@ make space-diff old=reports/old.md new=reports/new.md
 ```
 
 For detailed remediation procedures, see `docs/validation/Convergence_Runbook.md`.
-

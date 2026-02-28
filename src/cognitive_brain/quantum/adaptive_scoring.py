@@ -32,10 +32,7 @@ class ScoringWeights:
     def normalize(self) -> "ScoringWeights":
         """Normalize weights to sum to 1.0"""
         total = (
-            self.compliance_score_weight
-            + self.risk_weight
-            + self.cost_weight
-            + self.impact_weight
+            self.compliance_score_weight + self.risk_weight + self.cost_weight + self.impact_weight
         )
         if total == 0:
             return self
@@ -122,10 +119,8 @@ class AdaptiveScoringOptimizer:
         """
         score = (
             self.weights.compliance_score_weight * features.get("compliance_score", 0.5)
-            + self.weights.risk_weight
-            * (1.0 - features.get("risk_score", 0.5))  # Invert risk
-            + self.weights.cost_weight
-            * (1.0 - features.get("cost_score", 0.5))  # Invert cost
+            + self.weights.risk_weight * (1.0 - features.get("risk_score", 0.5))  # Invert risk
+            + self.weights.cost_weight * (1.0 - features.get("cost_score", 0.5))  # Invert cost
             + self.weights.impact_weight * features.get("impact_score", 0.5)
         )
         return max(0.0, min(1.0, score))
@@ -170,25 +165,16 @@ class AdaptiveScoringOptimizer:
         new_weights = ScoringWeights(
             compliance_score_weight=max(
                 0.0,
-                old_weights["compliance_score_weight"]
-                + self.velocity["compliance_score_weight"],
+                old_weights["compliance_score_weight"] + self.velocity["compliance_score_weight"],
             ),
-            risk_weight=max(
-                0.0, old_weights["risk_weight"] + self.velocity["risk_weight"]
-            ),
-            cost_weight=max(
-                0.0, old_weights["cost_weight"] + self.velocity["cost_weight"]
-            ),
-            impact_weight=max(
-                0.0, old_weights["impact_weight"] + self.velocity["impact_weight"]
-            ),
+            risk_weight=max(0.0, old_weights["risk_weight"] + self.velocity["risk_weight"]),
+            cost_weight=max(0.0, old_weights["cost_weight"] + self.velocity["cost_weight"]),
+            impact_weight=max(0.0, old_weights["impact_weight"] + self.velocity["impact_weight"]),
         )
         self.weights = new_weights.normalize()
 
         # Compute weight changes
-        changes = {
-            key: self.weights.to_dict()[key] - old_weights[key] for key in old_weights
-        }
+        changes = {key: self.weights.to_dict()[key] - old_weights[key] for key in old_weights}
 
         # Update k₁ estimate (process factor)
         accuracy = sum(1 for f in recent if f.is_correct) / len(recent)
@@ -197,9 +183,7 @@ class AdaptiveScoringOptimizer:
 
         return changes
 
-    def _compute_gradients(
-        self, feedback_batch: List[FeedbackRecord]
-    ) -> Dict[str, float]:
+    def _compute_gradients(self, feedback_batch: List[FeedbackRecord]) -> Dict[str, float]:
         """
         Compute gradients from feedback batch.
 
@@ -233,12 +217,8 @@ class AdaptiveScoringOptimizer:
                 gradients["compliance_score_weight"] += factor * features.get(
                     "compliance_score", 0.5
                 )
-                gradients["risk_weight"] += factor * (
-                    1.0 - features.get("risk_score", 0.5)
-                )
-                gradients["cost_weight"] += factor * (
-                    1.0 - features.get("cost_score", 0.5)
-                )
+                gradients["risk_weight"] += factor * (1.0 - features.get("risk_score", 0.5))
+                gradients["cost_weight"] += factor * (1.0 - features.get("cost_score", 0.5))
                 gradients["impact_weight"] += factor * features.get("impact_score", 0.5)
 
         # Average gradients

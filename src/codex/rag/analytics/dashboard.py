@@ -105,13 +105,13 @@ class AnalyticsDashboard:
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Queries</div>
-                <div class="stat-value">{stats['total_queries']}</div>
+                <div class="stat-value">{stats["total_queries"]}</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-label">Avg Latency</div>
                 <div class="stat-value">
-                    {stats['avg_latency_ms']}
+                    {stats["avg_latency_ms"]}
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
@@ -119,14 +119,14 @@ class AnalyticsDashboard:
             <div class="stat-card">
                 <div class="stat-label">Cache Hit Rate</div>
                 <div class="stat-value">
-                    {stats['cache_hit_rate']}
+                    {stats["cache_hit_rate"]}
                     <span class="stat-unit">%</span>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-label">Avg Results</div>
-                <div class="stat-value">{stats['avg_results']:.1f}</div>
+                <div class="stat-value">{stats["avg_results"]:.1f}</div>
             </div>
         </div>
 
@@ -139,7 +139,7 @@ class AnalyticsDashboard:
             <div class="stat-card">
                 <div class="stat-label">P50 Latency</div>
                 <div class="stat-value">
-                    {percentiles['p50']:.1f}
+                    {percentiles["p50"]:.1f}
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
@@ -147,7 +147,7 @@ class AnalyticsDashboard:
             <div class="stat-card">
                 <div class="stat-label">P95 Latency</div>
                 <div class="stat-value">
-                    {percentiles['p95']:.1f}
+                    {percentiles["p95"]:.1f}
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
@@ -155,14 +155,14 @@ class AnalyticsDashboard:
             <div class="stat-card">
                 <div class="stat-label">P99 Latency</div>
                 <div class="stat-value">
-                    {percentiles['p99']:.1f}
+                    {percentiles["p99"]:.1f}
                     <span class="stat-unit">ms</span>
                 </div>
             </div>
         </div>
 
         <div class="timestamp">
-            Last updated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}
+            Last updated: {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")}
         </div>
     </div>
 
@@ -175,7 +175,7 @@ class AnalyticsDashboard:
                 labels: ['P50', 'P95', 'P99'],
                 datasets: [{{
                     label: 'Latency (ms)',
-                    data: [{percentiles['p50']:.1f}, {percentiles['p95']:.1f}, {percentiles['p99']:.1f}],
+                    data: [{percentiles["p50"]:.1f}, {percentiles["p95"]:.1f}, {percentiles["p99"]:.1f}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 206, 86, 0.8)',
@@ -208,7 +208,7 @@ class AnalyticsDashboard:
     </script>
 </body>
 </html>
-"""
+"""  # noqa: E501
         return html
 
     def save_to_file(self, output_path: Path, hours: int = 24) -> None:

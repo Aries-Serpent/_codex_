@@ -12,5 +12,5 @@ import pytest
 def test_adapter_imports():
     try:
         from hhg_logistics.model.adapters import load_adapters_into  # noqa: F401
-    except Exception:
+    except ImportError:
         pytest.skip("peft not installed")

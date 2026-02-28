@@ -83,7 +83,7 @@ def _metrics_visit(label: str, src: str):
         v.visit(tree)
         file_entry = _AST_METRICS["files"].setdefault(label, {})
         file_entry["nodes_visited"] = v.count
-    except Exception:
+    except Exception:  # noqa: BLE001
         # silent best-effort
         pass
 
@@ -95,8 +95,8 @@ def _flush_metrics():
     out.parent.mkdir(parents=True, exist_ok=True)
     try:
         out.write_text(json.dumps(_AST_METRICS, indent=2), encoding="utf-8")
-    except Exception:
-        pass
+    except OSError:
+        pass  # best-effort audit write; ignore filesystem errors
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -128,12 +128,12 @@ def _discover_candidates() -> List[str]:
             continue
         try:
             txt = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception:
+        except Exception:  # noqa: BLE001
             continue
         if re.search(r"\bdef\s+build_query\s*\(", txt):
             try:
                 rel = str(p.relative_to(ROOT))
-            except Exception:
+            except Exception:  # noqa: BLE001
                 rel = str(p)
             out.append(rel)
     out = sorted(set(out), key=lambda s: (len(s.split("/")), s))
@@ -241,7 +241,7 @@ def _extract_literal_columns_from_source(src: str) -> List[str]:
                 if c and all(x not in c.lower() for x in ["*", "case ", "count(", "sum(", "avg("]):
                     if re.match(r"[A-Za-z_][A-Za-z0-9_]*$", c):
                         cols.add(c)
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
     return sorted(cols)
 
@@ -272,7 +272,7 @@ def _extract_timestamp_from_source(src: str) -> Optional[str]:
                     _dfs_dict(node.value, 1, set(), ts_acc)
             elif isinstance(node, ast.Dict):
                 _dfs_dict(node, 1, set(), ts_acc)
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
     return ts_acc[0] if ts_acc else None
 
@@ -292,7 +292,7 @@ def _infer_expectations(build_query) -> Tuple[List[str], str]:
             expected_cols = inferred_cols
         if inferred_ts:
             ts = inferred_ts
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
     try:
         sig = inspect.signature(build_query)
@@ -304,7 +304,7 @@ def _infer_expectations(build_query) -> Tuple[List[str], str]:
                 ts = "order_by"
         if not expected_cols and ("columns" in params or "select" in params):
             expected_cols = ["event_time", "user_id", "message"]
-    except Exception:
+    except Exception:  # noqa: BLE001
         pass
     if not expected_cols:
         expected_cols = ["event_time", "user_id", "message"]
@@ -402,7 +402,7 @@ def test_build_query_selects_columns_and_orders():
 
     try:
         sig = inspect.signature(build_query)
-    except Exception:
+    except ImportError:
         sig = None
 
     mapcol = {"timestamp": ts, "select": exp_cols}

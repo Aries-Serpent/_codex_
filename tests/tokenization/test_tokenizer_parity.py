@@ -8,7 +8,7 @@ import pytest
 
 try:
     from transformers import AutoTokenizer  # type: ignore
-except Exception:
+except ImportError:
     AutoTokenizer = None  # type: ignore
 
 

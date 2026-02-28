@@ -2,7 +2,9 @@
 
 import pytest
 
-from codex.ast_adapters import SQLASTAdapter
+pytest.importorskip("sqlparse", reason="sqlparse optional dependency not installed")
+
+from codex.ast_adapters import SQLASTAdapter  # noqa: E402
 
 
 class TestSQLASTAdapter:
@@ -163,7 +165,7 @@ class TestSQLASTAdapter:
 
         columns = adapter.get_columns()
         # Should find at least some columns
-        assert len(columns) >= 0  # sqlparse may or may not extract all
+        assert isinstance(columns, (list, tuple, set, dict))# sqlparse may or may not extract all
 
     def test_extract_metadata_document(self, adapter):
         """Test extracting document-level metadata."""

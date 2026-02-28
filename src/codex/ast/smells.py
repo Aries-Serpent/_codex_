@@ -243,9 +243,7 @@ class CodeSmellDetector:
             logger.warning("Exception occurred", exc_info=True)
             return []
 
-    def detect_string(
-        self, code: str, file_path: Optional[Path] = None
-    ) -> list[CodeSmell]:
+    def detect_string(self, code: str, file_path: Optional[Path] = None) -> list[CodeSmell]:
         """Detect code smells in Python source code.
 
         Args:
@@ -291,9 +289,7 @@ class CodeSmellDetector:
 
         for py_file in directory.rglob("*.py"):
             # Check exclusions
-            excluded = any(
-                py_file.match(pattern) for pattern in exclude_patterns
-            )
+            excluded = any(py_file.match(pattern) for pattern in exclude_patterns)
             if excluded:
                 continue
 
@@ -305,9 +301,7 @@ class CodeSmellDetector:
 
     # Detection implementations
 
-    def _detect_long_functions(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_long_functions(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect functions exceeding maximum length."""
         smells = []
         for node in ast.walk(tree):
@@ -320,32 +314,26 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-C001",
-                            message=f"Function '{node.name}' is {length} lines (max: {self.MAX_FUNCTION_LENGTH})",
+                            message=f"Function '{node.name}' is {length} lines (max: {self.MAX_FUNCTION_LENGTH})",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.COMPLEXITY,
                             file_path=file_path,
                             line_start=line_start,
                             line_end=line_end,
-                            suggestion=f"Consider breaking down '{node.name}' into smaller functions",
+                            suggestion=f"Consider breaking down '{node.name}' into smaller functions",  # noqa: E501
                             metadata={"length": length, "function": node.name},
                         )
                     )
         return smells
 
-    def _detect_many_args(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_many_args(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect functions with too many arguments."""
         smells = []
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 # Count all argument types
                 args = node.args
-                arg_count = (
-                    len(args.args)
-                    + len(args.posonlyargs)
-                    + len(args.kwonlyargs)
-                )
+                arg_count = len(args.args) + len(args.posonlyargs) + len(args.kwonlyargs)
                 # Subtract 'self' or 'cls' for methods
                 if args.args and args.args[0].arg in ("self", "cls"):
                     arg_count -= 1
@@ -354,21 +342,19 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-C002",
-                            message=f"Function '{node.name}' has {arg_count} arguments (max: {self.MAX_FUNCTION_ARGS})",
+                            message=f"Function '{node.name}' has {arg_count} arguments (max: {self.MAX_FUNCTION_ARGS})",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.COMPLEXITY,
                             file_path=file_path,
                             line_start=node.lineno,
                             line_end=getattr(node, "end_lineno", node.lineno),
-                            suggestion="Consider using a configuration object or breaking into multiple functions",
+                            suggestion="Consider using a configuration object or breaking into multiple functions",  # noqa: E501
                             metadata={"arg_count": arg_count, "function": node.name},
                         )
                     )
         return smells
 
-    def _detect_deep_nesting(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_deep_nesting(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect deeply nested code blocks."""
         smells = []
 
@@ -388,7 +374,7 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-C003",
-                            message=f"Code is nested {depth} levels deep (max: {self.MAX_NESTED_DEPTH})",
+                            message=f"Code is nested {depth} levels deep (max: {self.MAX_NESTED_DEPTH})",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.COMPLEXITY,
                             file_path=file_path,
@@ -405,9 +391,7 @@ class CodeSmellDetector:
         check_depth(tree)
         return smells
 
-    def _detect_short_names(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_short_names(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect identifiers with very short names."""
         smells = []
         # Allowed short names
@@ -444,9 +428,7 @@ class CodeSmellDetector:
                     )
         return smells
 
-    def _detect_non_pep8_names(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_non_pep8_names(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect names that don't follow PEP 8 conventions."""
         smells = []
         snake_case = re.compile(r"^[a-z_][a-z0-9_]*$")
@@ -485,9 +467,7 @@ class CodeSmellDetector:
                     )
         return smells
 
-    def _detect_god_class(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_god_class(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect classes with too many methods (God Class anti-pattern)."""
         smells = []
         max_methods = 20
@@ -504,7 +484,7 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S001",
-                            message=f"Class '{node.name}' has {method_count} methods (max: {max_methods})",
+                            message=f"Class '{node.name}' has {method_count} methods (max: {max_methods})",  # noqa: E501
                             severity=SmellSeverity.ERROR,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,
@@ -516,9 +496,7 @@ class CodeSmellDetector:
                     )
         return smells
 
-    def _detect_empty_except(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_empty_except(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect empty except clauses (bare except or pass-only)."""
         smells = []
 
@@ -529,7 +507,7 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",
-                            message="Bare 'except:' catches all exceptions including KeyboardInterrupt",
+                            message="Bare 'except:' catches all exceptions including KeyboardInterrupt",  # noqa: E501
                             severity=SmellSeverity.ERROR,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,
@@ -540,14 +518,11 @@ class CodeSmellDetector:
                     )
 
                 # Check for pass-only handler
-                if (
-                    len(node.body) == 1
-                    and isinstance(node.body[0], ast.Pass)
-                ):
+                if len(node.body) == 1 and isinstance(node.body[0], ast.Pass):
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",
-                            message="Exception handler only contains 'pass' - exception is silently ignored",
+                            message="Exception handler only contains 'pass' - exception is silently ignored",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,
@@ -558,9 +533,7 @@ class CodeSmellDetector:
                     )
         return smells
 
-    def _detect_missing_docstrings(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_missing_docstrings(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect public functions and classes without docstrings."""
         smells = []
 
@@ -580,7 +553,7 @@ class CodeSmellDetector:
                             file_path=file_path,
                             line_start=node.lineno,
                             line_end=node.lineno,
-                            suggestion="Add a docstring describing the function's purpose, parameters, and return value",
+                            suggestion="Add a docstring describing the function's purpose, parameters, and return value",  # noqa: E501
                         )
                     )
 
@@ -603,9 +576,7 @@ class CodeSmellDetector:
                     )
         return smells
 
-    def _detect_magic_numbers(
-        self, tree: ast.AST, file_path: Path
-    ) -> list[CodeSmell]:
+    def _detect_magic_numbers(self, tree: ast.AST, file_path: Path) -> list[CodeSmell]:
         """Detect unexplained numeric literals (magic numbers)."""
         smells = []
         # Common acceptable values

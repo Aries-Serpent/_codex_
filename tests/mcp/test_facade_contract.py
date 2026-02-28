@@ -54,7 +54,7 @@ def fake_adapter_loader(monkeypatch):
         from src.mcp.middleware.rate_limit_middleware import clear_buckets
 
         clear_buckets()
-    except Exception:
+    except ImportError:
         pass
     monkeypatch.setattr("src.mcp.server.adapter_loader.load_adapter", lambda: (fake, "fake.adapter"))
     try:
@@ -62,7 +62,7 @@ def fake_adapter_loader(monkeypatch):
 
         monkeypatch.setattr(jsonrpc_adapter, "_ADAPTER_LOADER", lambda: (fake, "fake.adapter"))
         jsonrpc_adapter.clear_adapter_cache()
-    except Exception:
+    except ImportError:
         pass
     return fake
 
@@ -76,7 +76,7 @@ def _load_app():
 
         jsonrpc_adapter.clear_adapter_cache()
         jsonrpc_adapter._ADAPTER_LOADER = adapter_loader.load_adapter
-    except Exception:
+    except ImportError:
         pass
     return app
 

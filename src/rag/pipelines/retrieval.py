@@ -34,6 +34,7 @@ DEFAULT_TOP_K = 10
 # Vector store backend abstraction
 # ---------------------------------------------------------------------------
 
+
 class VectorStoreBackend(ABC):
     """Abstract base class for vector store backends."""
 
@@ -62,12 +63,14 @@ class InMemoryVectorStore(VectorStoreBackend):
         self._index: list[dict[str, Any]] = []
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
-        self._index.append({
-            "id": doc_id,
-            "content": content,
-            "embedding": embedding,
-            "metadata": metadata,
-        })
+        self._index.append(
+            {
+                "id": doc_id,
+                "content": content,
+                "embedding": embedding,
+                "metadata": metadata,
+            }
+        )
 
     def search(
         self,
@@ -84,7 +87,12 @@ class InMemoryVectorStore(VectorStoreBackend):
             scored.append((doc, score))
         scored.sort(key=lambda x: x[1], reverse=True)
         return [
-            {"id": d["id"], "content": d["content"], "score": s, "metadata": d.get("metadata", {})}
+            {
+                "id": d["id"],
+                "content": d["content"],
+                "score": s,
+                "metadata": d.get("metadata", {}),
+            }
             for d, s in scored[:top_k]
         ]
 
@@ -106,7 +114,11 @@ class PGVectorStoreBackend(VectorStoreBackend):
     def __init__(self) -> None:
         self._store: Any = None
         try:
-            from codex.retrieval.stores.pgvector_store import PGVectorStore, HAS_PSYCOPG3
+            from codex.retrieval.stores.pgvector_store import (
+                HAS_PSYCOPG3,
+                PGVectorStore,
+            )
+
             if HAS_PSYCOPG3:
                 self._store = PGVectorStore()
         except Exception as exc:
@@ -116,7 +128,9 @@ class PGVectorStoreBackend(VectorStoreBackend):
                 exc,
             )
         if self._store is None:
-            logger.warning("PGVectorStoreBackend: psycopg3/PGVectorStore unavailable, falling back to in-memory")
+            logger.warning(
+                "PGVectorStoreBackend: psycopg3/PGVectorStore unavailable, falling back to in-memory"  # noqa: E501
+            )
             self._fallback = InMemoryVectorStore()
         else:
             self._fallback = None
@@ -290,6 +304,7 @@ class RetrievalPipeline:
             RetrievalResponse with ranked results.
         """
         import time
+
         start_time = time.time()
 
         # Input validation (safeguard)
@@ -332,11 +347,7 @@ class RetrievalPipeline:
 
         search_time = (time.time() - start_time) * 1000
 
-        logger.info(
-            "Retrieved %d results for query (%.1fms)",
-            len(results),
-            search_time
-        )
+        logger.info("Retrieved %d results for query (%.1fms)", len(results), search_time)
 
         return RetrievalResponse(
             query=query,
@@ -378,7 +389,12 @@ def main() -> None:
 
     pipeline.add_documents(
         documents,
-        metadatas=[{"topic": "python"}, {"topic": "ml"}, {"topic": "nlp"}, {"topic": "db"}],
+        metadatas=[
+            {"topic": "python"},
+            {"topic": "ml"},
+            {"topic": "nlp"},
+            {"topic": "db"},
+        ],
     )
 
     # Query
@@ -394,4 +410,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

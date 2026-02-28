@@ -379,7 +379,9 @@ def cache_dataset(
                         fcntl.flock(fd, fcntl.LOCK_UN)
                     except Exception as e:
                         logger.debug(f"Exception: {e}")
-                        logger.warning(f"Exception: {e}", exc_info=True)  # File lock release failed; continue cleanup
+                        logger.warning(
+                            f"Exception: {e}", exc_info=True
+                        )  # File lock release failed; continue cleanup
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)

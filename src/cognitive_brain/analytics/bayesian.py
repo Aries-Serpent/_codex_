@@ -378,9 +378,7 @@ class BayesianAssessor:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _resolve_parents(
-        self, table: CPDTable, evidence: dict[str, str]
-    ) -> tuple | None:
+    def _resolve_parents(self, table: CPDTable, evidence: dict[str, str]) -> tuple | None:
         """
         Resolve parent key from evidence dict.
 
@@ -395,9 +393,7 @@ class BayesianAssessor:
             key_parts.append(val)
         return tuple(key_parts) if key_parts else ()
 
-    def _marginalise(
-        self, table: CPDTable, value: str, evidence: dict[str, str]
-    ) -> float:
+    def _marginalise(self, table: CPDTable, value: str, evidence: dict[str, str]) -> float:
         """Marginalise over unknown parent values using uniform prior."""
         total = 0.0
         count = 0

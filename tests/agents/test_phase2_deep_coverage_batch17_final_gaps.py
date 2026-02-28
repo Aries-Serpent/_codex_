@@ -9,10 +9,10 @@ Version: 1.0.0
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestUncoveredPaths_PhysicsOrchestrator:

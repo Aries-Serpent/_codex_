@@ -1,4 +1,5 @@
 """Multi-language AST support via tree-sitter."""
+
 from __future__ import annotations
 
 import importlib
@@ -16,13 +17,15 @@ class LanguageRegistry:
     """
 
     # Frozen set of allowed module names for security
-    _ALLOWED_MODULES = frozenset({
-        "tree_sitter_python",
-        "tree_sitter_yaml",
-        "tree_sitter_json",
-        "tree_sitter_javascript",
-        "tree_sitter_typescript",
-    })
+    _ALLOWED_MODULES = frozenset(
+        {
+            "tree_sitter_python",
+            "tree_sitter_yaml",
+            "tree_sitter_json",
+            "tree_sitter_javascript",
+            "tree_sitter_typescript",
+        }
+    )
 
     LANGUAGES: dict[str, str] = {
         "python": "tree_sitter_python",
@@ -71,9 +74,7 @@ class LanguageRegistry:
                 logger.info(f"Loaded language parser for {name}")
                 return lang
             except ImportError:
-                logger.warning(
-                    "tree-sitter not installed - install with: pip install tree-sitter"
-                )
+                logger.warning("tree-sitter not installed - install with: pip install tree-sitter")
                 return None
 
         except ImportError:

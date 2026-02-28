@@ -147,9 +147,7 @@ class RigidityDetector:
 
     def _check_god_class(self, node: ast.ClassDef, file_path: str, source: str) -> None:
         """Check if a class has too many methods (god class pattern)."""
-        methods = [
-            n for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-        ]
+        methods = [n for n in node.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]
 
         if len(methods) > self.max_class_methods:
             severity = min(1.0, (len(methods) - self.max_class_methods) / 20.0)
@@ -169,9 +167,7 @@ class RigidityDetector:
                 )
             )
 
-    def _check_long_method(
-        self, node: ast.FunctionDef, file_path: str, source: str
-    ) -> None:
+    def _check_long_method(self, node: ast.FunctionDef, file_path: str, source: str) -> None:
         """Check if a method is too long."""
         if not hasattr(node, "end_lineno") or node.end_lineno is None:
             return
@@ -196,9 +192,7 @@ class RigidityDetector:
                 )
             )
 
-    def _check_deep_nesting(
-        self, node: ast.FunctionDef, file_path: str, source: str
-    ) -> None:
+    def _check_deep_nesting(self, node: ast.FunctionDef, file_path: str, source: str) -> None:
         """Check for deep nesting in a method."""
         max_depth = self._get_max_nesting_depth(node)
 
@@ -282,9 +276,7 @@ class DeterritorializationEngine:
         LOGGER.info(f"Detected {len(self.rigidities)} rigidities in {path}")
         return self.rigidities
 
-    def propose_lines_of_flight(
-        self, min_severity: float = 0.5
-    ) -> List[LineOfFlight]:
+    def propose_lines_of_flight(self, min_severity: float = 0.5) -> List[LineOfFlight]:
         """
         Propose lines of flight for detected rigidities.
 
@@ -306,8 +298,7 @@ class DeterritorializationEngine:
                 self.lines_of_flight.append(line_of_flight)
 
         LOGGER.info(
-            f"Proposed {len(self.lines_of_flight)} lines of flight "
-            f"(min_severity={min_severity})"
+            f"Proposed {len(self.lines_of_flight)} lines of flight (min_severity={min_severity})"
         )
         return self.lines_of_flight
 
@@ -460,9 +451,7 @@ class DeterritorializationEngine:
             "rigidity_by_type": rigidity_counts,
             "average_severity": avg_severity,
             "lines_of_flight": len(self.lines_of_flight),
-            "high_priority_rigidities": sum(
-                1 for r in self.rigidities if r.severity >= 0.7
-            ),
+            "high_priority_rigidities": sum(1 for r in self.rigidities if r.severity >= 0.7),
         }
 
     def export_report(self) -> Dict[str, Any]:

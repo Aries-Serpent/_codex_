@@ -408,7 +408,9 @@ class HARCache:
                 cache_file.unlink()
             except Exception as e:
                 logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)  # Ignore file deletion errors during cleanup
+                logger.warning(
+                    f"Exception: {e}", exc_info=True
+                )  # Ignore file deletion errors during cleanup
         self._index.clear()
         return count
 

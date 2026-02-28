@@ -206,7 +206,11 @@ class ModelRegistry:
             raise
 
     def promote_model(
-        self, name: str, version: str, stage: DeploymentStage, archive_existing: bool = True
+        self,
+        name: str,
+        version: str,
+        stage: DeploymentStage,
+        archive_existing: bool = True,
     ) -> ModelVersion:
         """Promote model to a deployment stage
 

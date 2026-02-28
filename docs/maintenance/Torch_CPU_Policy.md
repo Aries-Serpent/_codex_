@@ -23,4 +23,3 @@ Operational helpers added:
 [2]: https://docs.astral.sh/uv/reference/cli/?utm_source=chatgpt.com "Commands | uv - Astral Docs"
 [3]: https://docs.github.com/copilot/managing-copilot/configure-personal-settings/installing-the-github-copilot-extension-in-your-environment?utm_source=chatgpt.com "Installing the GitHub Copilot extension in your environment"
 [4]: https://www.npmjs.com/package/api-copilot?utm_source=chatgpt.com "api-copilot"
-

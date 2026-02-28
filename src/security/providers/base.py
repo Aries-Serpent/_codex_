@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 class ProviderType(Enum):
     """Supported secret provider types."""
+
     GITHUB = "github"
     AWS_SECRETS_MANAGER = "aws_secrets_manager"
     AZURE_KEY_VAULT = "azure_key_vault"
@@ -29,9 +30,10 @@ class ProviderType(Enum):
 
 class SecretType(Enum):
     """Types of secrets managed by providers."""
-    TOKEN = "token"
+
+    TOKEN = "token"  # nosec B105
     API_KEY = "api_key"
-    PASSWORD = "password"
+    PASSWORD = "password"  # nosec B105
     CERTIFICATE = "certificate"
     SSH_KEY = "ssh_key"
     GENERIC = "generic"
@@ -40,6 +42,7 @@ class SecretType(Enum):
 @dataclass
 class SecretMetadata:
     """Metadata about a secret."""
+
     secret_id: str
     secret_type: SecretType
     provider: ProviderType
@@ -54,6 +57,7 @@ class SecretMetadata:
 @dataclass
 class RotationResult:
     """Result of a secret rotation operation."""
+
     success: bool
     old_secret_id: str
     new_secret_id: Optional[str] = None
@@ -64,21 +68,25 @@ class RotationResult:
 
 class SecretProviderError(Exception):
     """Base exception for secret provider errors."""
+
     pass
 
 
 class ProviderConfigError(SecretProviderError):
     """Raised when provider configuration is invalid."""
+
     pass
 
 
 class RotationError(SecretProviderError):
     """Raised when secret rotation fails."""
+
     pass
 
 
 class ValidationError(SecretProviderError):
     """Raised when secret validation fails."""
+
     pass
 
 
@@ -96,11 +104,7 @@ class SecretProvider(ABC):
     """
 
     @abstractmethod
-    def rotate_secret(
-        self,
-        secret_id: str,
-        **kwargs: Any
-    ) -> RotationResult:
+    def rotate_secret(self, secret_id: str, **kwargs: Any) -> RotationResult:
         """Rotate a secret to a new value.
 
         Args:
@@ -116,11 +120,7 @@ class SecretProvider(ABC):
         pass
 
     @abstractmethod
-    def validate_secret(
-        self,
-        secret_id: str,
-        secret_value: Optional[str] = None
-    ) -> bool:
+    def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate a secret is valid and not expired.
 
         Args:
@@ -194,14 +194,9 @@ class SecretProvider(ABC):
         Raises:
             NotImplementedError: If provider doesn't support revocation
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not support revocation"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} does not support revocation")
 
-    def list_secrets(
-        self,
-        filter_tags: Optional[Dict[str, str]] = None
-    ) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
         """List all secrets managed by this provider.
 
         Default implementation raises NotImplementedError.
@@ -216,9 +211,7 @@ class SecretProvider(ABC):
         Raises:
             NotImplementedError: If provider doesn't support listing
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not support listing"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} does not support listing")
 
     @property
     @abstractmethod
@@ -264,10 +257,7 @@ class TokenProvider(SecretProvider):
 
     @abstractmethod
     def create_token(
-        self,
-        name: str,
-        scopes: List[str],
-        expires_in_days: Optional[int] = None
+        self, name: str, scopes: List[str], expires_in_days: Optional[int] = None
     ) -> RotationResult:
         """Create a new token.
 
@@ -285,11 +275,7 @@ class TokenProvider(SecretProvider):
         pass
 
     @abstractmethod
-    def update_token_scopes(
-        self,
-        secret_id: str,
-        scopes: List[str]
-    ) -> bool:
+    def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
         """Update scopes for an existing token.
 
         Args:
@@ -319,11 +305,7 @@ class ProviderConfig:
         ... )
     """
 
-    def __init__(
-        self,
-        provider_type: ProviderType,
-        **config: Any
-    ):
+    def __init__(self, provider_type: ProviderType, **config: Any):
         """Initialize provider configuration.
 
         Args:

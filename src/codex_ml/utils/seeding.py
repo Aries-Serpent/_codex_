@@ -11,6 +11,7 @@ import random
 
 logger = logging.getLogger(__name__)
 
+
 def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> None:
     """
     Set a unified seed across Python, NumPy (if present), and Torch (if present).
@@ -30,6 +31,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         np.random.seed(seed)
         try:
             from codex_ml.utils.seed_registry import register_seed_snapshot
+
             register_seed_snapshot(numpy_state=np.random.get_state())
         except Exception:
             logger.debug("register_seed_snapshot unavailable; numpy seed set via np.random.seed()")

@@ -7,6 +7,7 @@ a unified loading system with Hydra/OmegaConf support.
 
 Part of Phase 3: Configuration Sprawl Resolution
 """
+
 from __future__ import annotations
 
 import logging
@@ -53,7 +54,7 @@ class ConfigLoader:
         self,
         config_dir: Optional[Path] = None,
         allow_deprecated: bool = False,
-        strict_mode: bool = False
+        strict_mode: bool = False,
     ):
         """
         Initialize configuration loader.
@@ -82,7 +83,7 @@ class ConfigLoader:
         self,
         config_name: str,
         config_path: Optional[str] = None,
-        overrides: Optional[Dict[str, Any]] = None
+        overrides: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Load configuration file.
@@ -118,8 +119,7 @@ class ConfigLoader:
 
         if not config_file:
             raise FileNotFoundError(
-                f"Configuration file not found: {config_name} "
-                f"in {config_path or self.config_dir}"
+                f"Configuration file not found: {config_name} in {config_path or self.config_dir}"
             )
 
         # Load based on file type
@@ -146,7 +146,7 @@ class ConfigLoader:
             if suffix in [".yaml", ".yml"]:
                 return self._load_yaml(file_path)
             elif suffix == ".json":
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     return json.load(f)
             elif suffix == ".toml":
                 return self._load_toml(file_path)
@@ -162,7 +162,8 @@ class ConfigLoader:
         """Load YAML file."""
         try:
             import yaml
-            with open(file_path, 'r') as f:
+
+            with open(file_path, "r") as f:
                 return yaml.safe_load(f) or {}
         except ImportError:
             logger.error("PyYAML not installed. Install with: pip install pyyaml")
@@ -172,17 +173,14 @@ class ConfigLoader:
         """Load TOML file."""
         try:
             import tomli
-            with open(file_path, 'rb') as f:
+
+            with open(file_path, "rb") as f:
                 return tomli.load(f)
         except ImportError:
             logger.error("tomli not installed. Install with: pip install tomli")
             raise
 
-    def _apply_overrides(
-        self,
-        config: Dict[str, Any],
-        overrides: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _apply_overrides(self, config: Dict[str, Any], overrides: Dict[str, Any]) -> Dict[str, Any]:
         """Apply override values to configuration."""
         result = config.copy()
 
@@ -259,7 +257,7 @@ _config_loader: Optional[ConfigLoader] = None
 def get_config_loader(
     config_dir: Optional[Path] = None,
     allow_deprecated: bool = False,
-    strict_mode: bool = False
+    strict_mode: bool = False,
 ) -> ConfigLoader:
     """
     Get or create global ConfigLoader instance.
@@ -278,7 +276,7 @@ def get_config_loader(
         _config_loader = ConfigLoader(
             config_dir=config_dir,
             allow_deprecated=allow_deprecated,
-            strict_mode=strict_mode
+            strict_mode=strict_mode,
         )
 
     return _config_loader
@@ -287,7 +285,7 @@ def get_config_loader(
 def load_config(
     config_name: str,
     config_path: Optional[str] = None,
-    overrides: Optional[Dict[str, Any]] = None
+    overrides: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Convenience function to load configuration.
@@ -311,6 +309,7 @@ def reset_config_loader() -> None:
 
 
 # Migration helpers
+
 
 def detect_config_sprawl() -> Dict[str, List[str]]:
     """
@@ -345,7 +344,9 @@ def generate_migration_report() -> str:
     sprawl = detect_config_sprawl()
 
     report = ["# Configuration Sprawl Analysis\n"]
-    report.append(f"**Analysis Date:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}\n")
+    report.append(
+        f"**Analysis Date:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}\n"
+    )
     report.append("## Summary\n")
 
     total_files = sum(len(files) for files in sprawl.values())
@@ -355,7 +356,13 @@ def generate_migration_report() -> str:
     report.append("## Directory Breakdown\n")
 
     for name, files in sprawl.items():
-        status = "✅ Primary" if name == "primary" else "⚠️ Deprecated" if "deprecated" in name else "🔄 Secondary"
+        status = (
+            "✅ Primary"
+            if name == "primary"
+            else "⚠️ Deprecated"
+            if "deprecated" in name
+            else "🔄 Secondary"
+        )
         report.append(f"\n### {name} - {status}\n")
         report.append(f"- **File Count:** {len(files)}\n")
         report.append(f"- **Path:** `{CONFIG_DIRS[name]}`\n")

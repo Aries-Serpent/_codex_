@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class InputSpec:
     """Specification for a code input."""
+
     name: str
     type: Literal["cli_arg", "stdin", "file", "env_var", "network"]
     required: bool = True
@@ -37,6 +38,7 @@ class InputSpec:
 @dataclass
 class OutputSpec:
     """Specification for a code output."""
+
     name: str
     type: Literal["stdout", "stderr", "file", "network", "return_value"]
 
@@ -63,6 +65,7 @@ class IntentSpec:
         llm_provenance_ref: Reference to LLM provenance record
         assumptions: Assumptions made during inference
     """
+
     snapshot_id: str
     timestamp: datetime
     goal: str
@@ -84,13 +87,9 @@ class IntentSpec:
             "goal": self.goal,
             "actors": self.actors,
             "inputs": [
-                {"name": i.name, "type": i.type, "required": i.required}
-                for i in self.inputs
+                {"name": i.name, "type": i.type, "required": i.required} for i in self.inputs
             ],
-            "outputs": [
-                {"name": o.name, "type": o.type}
-                for o in self.outputs
-            ],
+            "outputs": [{"name": o.name, "type": o.type} for o in self.outputs],
             "constraints": self.constraints,
             "side_effects": self.side_effects,
             "confidence": self.confidence,
@@ -103,6 +102,7 @@ class IntentSpec:
         """Save intent spec to YAML file."""
         try:
             import yaml
+
             with path.open("w", encoding="utf-8") as f:
                 yaml.dump(self.to_dict(), f, default_flow_style=False)
         except ImportError as e:
@@ -270,7 +270,6 @@ def infer_intent(
     # Optionally enhance with LLM
     if use_llm and llm_client is not None:
         try:
-
             # Build context for LLM
             context = {
                 "static_summary": static_report.get("summary", {}),

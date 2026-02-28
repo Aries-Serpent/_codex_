@@ -40,7 +40,7 @@ class EmbeddingModel:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.error(
-                "sentence-transformers not installed. Install with: pip install sentence-transformers"
+                "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
             )
             raise
         except Exception as e:

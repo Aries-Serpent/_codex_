@@ -100,7 +100,9 @@ def record_dataset_checksums(
     sidecar = out_path.with_suffix(out_path.suffix + ".version.json")
     sidecar.write_text(
         json.dumps(
-            {"version": version, "files": checksums, "name": dataset_name}, indent=2, sort_keys=True
+            {"version": version, "files": checksums, "name": dataset_name},
+            indent=2,
+            sort_keys=True,
         ),
         encoding="utf-8",
     )

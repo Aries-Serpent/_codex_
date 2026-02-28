@@ -59,9 +59,7 @@ class DecisionContext:
         if not 0.0 <= self.complexity <= 1.0:
             raise ValueError(f"Complexity must be in [0,1], got {self.complexity}")
         if not 0.0 <= self.time_pressure <= 1.0:
-            raise ValueError(
-                f"Time pressure must be in [0,1], got {self.time_pressure}"
-            )
+            raise ValueError(f"Time pressure must be in [0,1], got {self.time_pressure}")
 
 
 @dataclass

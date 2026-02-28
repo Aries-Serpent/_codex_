@@ -87,7 +87,9 @@ class Trigger(_ZendeskBaseModel):
         return patches
 
 
-def _dump_conditions(conditions: dict[str, Iterable[Condition]]) -> dict[str, list[dict[str, Any]]]:
+def _dump_conditions(
+    conditions: dict[str, Iterable[Condition]],
+) -> dict[str, list[dict[str, Any]]]:
     """Serialize condition groups into JSON-compatible dictionaries."""
 
     return {

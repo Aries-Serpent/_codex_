@@ -29,7 +29,7 @@ __all__ = [
 
 OFFICIAL_CPU_INDEX_URL: Final[str] = "https://download.pytorch.org/whl/cpu"
 REINSTALL_COMMAND: Final[str] = (
-    "python -m pip install torch torchvision torchaudio --index-url " f"{OFFICIAL_CPU_INDEX_URL}"
+    f"python -m pip install torch torchvision torchaudio --index-url {OFFICIAL_CPU_INDEX_URL}"
 )
 
 

@@ -57,7 +57,6 @@ def sample_ndjson():
 @pytest.fixture
 def temp_index_dir():
     """Create a temporary directory for FAISS index"""
-    import tempfile
 
     temp_dir = tempfile.mkdtemp()
     yield temp_dir

@@ -73,19 +73,13 @@ class ChunkingPipeline:
         self.config = config or ChunkingConfig()
 
         # Validate config (safeguard)
-        self.config.chunk_size = max(
-            MIN_CHUNK_SIZE,
-            min(MAX_CHUNK_SIZE, self.config.chunk_size)
-        )
-        self.config.chunk_overlap = min(
-            self.config.chunk_overlap,
-            self.config.chunk_size // 2
-        )
+        self.config.chunk_size = max(MIN_CHUNK_SIZE, min(MAX_CHUNK_SIZE, self.config.chunk_size))
+        self.config.chunk_overlap = min(self.config.chunk_overlap, self.config.chunk_size // 2)
 
         logger.info(
             "ChunkingPipeline initialized: size=%d, overlap=%d",
             self.config.chunk_size,
-            self.config.chunk_overlap
+            self.config.chunk_overlap,
         )
 
     def chunk_text(
@@ -124,12 +118,14 @@ class ChunkingPipeline:
             else:
                 # Save current chunk if not empty
                 if current_chunk:
-                    chunks.append(Chunk(
-                        content=current_chunk.strip(),
-                        start_index=current_start,
-                        end_index=current_start + len(current_chunk),
-                        metadata={**metadata, "chunk_index": len(chunks)},
-                    ))
+                    chunks.append(
+                        Chunk(
+                            content=current_chunk.strip(),
+                            start_index=current_start,
+                            end_index=current_start + len(current_chunk),
+                            metadata={**metadata, "chunk_index": len(chunks)},
+                        )
+                    )
 
                 # Handle large splits
                 if len(split) > self.config.chunk_size:
@@ -146,12 +142,14 @@ class ChunkingPipeline:
 
         # Add final chunk
         if current_chunk.strip():
-            chunks.append(Chunk(
-                content=current_chunk.strip(),
-                start_index=current_start,
-                end_index=current_start + len(current_chunk),
-                metadata={**metadata, "chunk_index": len(chunks)},
-            ))
+            chunks.append(
+                Chunk(
+                    content=current_chunk.strip(),
+                    start_index=current_start,
+                    end_index=current_start + len(current_chunk),
+                    metadata={**metadata, "chunk_index": len(chunks)},
+                )
+            )
 
         logger.info("Created %d chunks from text of length %d", len(chunks), len(text))
         return chunks

@@ -223,7 +223,11 @@ class BlueGreenDeployment:
 
         if not green_healthy and self.splitter.green_requests > 10:
             self.trigger_rollback("Green deployment unhealthy")
-            return {"status": "rolled_back", "progress": progress, "reason": "Health check failed"}
+            return {
+                "status": "rolled_back",
+                "progress": progress,
+                "reason": "Health check failed",
+            }
 
         # Complete rollout
         if progress >= 1.0 and elapsed > self.config.min_healthy_duration_s:
@@ -288,5 +292,8 @@ class BlueGreenDeployment:
                 "blue": self.splitter.blue_weight,
                 "green": self.splitter.green_weight,
             },
-            "health": {"blue": self.splitter.blue_healthy, "green": self.splitter.green_healthy},
+            "health": {
+                "blue": self.splitter.blue_healthy,
+                "green": self.splitter.green_healthy,
+            },
         }

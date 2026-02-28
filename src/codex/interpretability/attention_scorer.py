@@ -76,7 +76,7 @@ class AttentionScorer:
         model: torch.nn.Module,
         normalize: bool = True,
         device: Optional[Union[str, torch.device]] = None,
-        epsilon: float = 1e-10
+        epsilon: float = 1e-10,
     ):
         """
         Initialize the attention scorer.
@@ -133,8 +133,8 @@ class AttentionScorer:
         hooks = []
         for name, module in self.model.named_modules():
             # Common attention module names in transformers
-            if any(key in name.lower() for key in ['attention', 'attn']):
-                if hasattr(module, 'forward'):
+            if any(key in name.lower() for key in ["attention", "attn"]):
+                if hasattr(module, "forward"):
                     hook = module.register_forward_hook(attention_hook)
                     hooks.append(hook)
                     layer_names.append(name)
@@ -146,11 +146,11 @@ class AttentionScorer:
                 outputs = self.model(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
-                    output_attentions=True
+                    output_attentions=True,
                 )
 
                 # Extract attention from outputs if available
-                if hasattr(outputs, 'attentions') and outputs.attentions:
+                if hasattr(outputs, "attentions") and outputs.attentions:
                     attention_weights = [attn.detach().cpu() for attn in outputs.attentions]
                     layer_names = [f"layer_{i}" for i in range(len(attention_weights))]
             except Exception as e:
@@ -165,9 +165,7 @@ class AttentionScorer:
         return attention_weights, layer_names
 
     def compute_token_importance(
-        self,
-        attention_weights: List[torch.Tensor],
-        method: str = "mean"
+        self, attention_weights: List[torch.Tensor], method: str = "mean"
     ) -> np.ndarray:
         """
         Compute importance score for each token based on attention patterns.
@@ -194,7 +192,7 @@ class AttentionScorer:
             importance = stacked.max(dim=2)[0].mean(dim=(0, 1)).numpy()
         elif method == "norm":
             # L2 norm of attention received by each token across layers and heads
-            # Shape: (num_layers, num_heads, seq_len) -> mean across (layers, heads) -> norm of seq_len
+            # Shape: (num_layers, num_heads, seq_len) -> mean across (layers, heads) -> norm of seq_len  # noqa: E501
             aggregated = stacked.mean(dim=(0, 1))  # (seq_len, seq_len)
             importance = aggregated.mean(dim=0).numpy()  # Average incoming attention per token
         else:
@@ -206,9 +204,7 @@ class AttentionScorer:
         return importance
 
     def compute_attention_flow(
-        self,
-        attention_weights: List[torch.Tensor],
-        layer_aggregation: str = "mean"
+        self, attention_weights: List[torch.Tensor], layer_aggregation: str = "mean"
     ) -> np.ndarray:
         """
         Compute attention flow matrix between tokens.
@@ -247,7 +243,7 @@ class AttentionScorer:
         attention_mask: Optional[torch.Tensor] = None,
         tokens: Optional[List[str]] = None,
         importance_method: str = "mean",
-        flow_aggregation: str = "mean"
+        flow_aggregation: str = "mean",
     ) -> AttentionAnalysis:
         """
         Perform complete attention analysis on input.
@@ -263,28 +259,20 @@ class AttentionScorer:
             AttentionAnalysis object with all results
         """
         # Extract attention weights
-        attn_weights, layer_names = self.extract_attention_weights(
-            input_ids, attention_mask
-        )
+        attn_weights, layer_names = self.extract_attention_weights(input_ids, attention_mask)
 
         if not attn_weights:
             raise ValueError("Failed to extract attention weights from model")
 
         # Compute token importance
-        importance = self.compute_token_importance(
-            attn_weights, method=importance_method
-        )
+        importance = self.compute_token_importance(attn_weights, method=importance_method)
 
         # Compute attention flow
-        flow = self.compute_attention_flow(
-            attn_weights, layer_aggregation=flow_aggregation
-        )
+        flow = self.compute_attention_flow(attn_weights, layer_aggregation=flow_aggregation)
 
         # Stack attention weights for output
         # Shape: (num_layers, num_heads, seq_len, seq_len)
-        stacked_weights = np.stack([
-            attn[0].numpy() for attn in attn_weights
-        ])
+        stacked_weights = np.stack([attn[0].numpy() for attn in attn_weights])
 
         return AttentionAnalysis(
             attention_weights=stacked_weights,
@@ -292,13 +280,11 @@ class AttentionScorer:
             attention_flow=flow,
             layer_names=layer_names,
             token_ids=input_ids[0].tolist() if input_ids is not None else None,
-            tokens=tokens
+            tokens=tokens,
         )
 
     def get_top_attended_tokens(
-        self,
-        analysis: AttentionAnalysis,
-        top_k: int = 5
+        self, analysis: AttentionAnalysis, top_k: int = 5
     ) -> List[Tuple[int, float, Optional[str]]]:
         """
         Get the top-k most attended tokens.
@@ -315,10 +301,6 @@ class AttentionScorer:
         results = []
         for idx in top_indices:
             token_str = analysis.tokens[idx] if analysis.tokens else None
-            results.append((
-                int(idx),
-                float(analysis.token_importance[idx]),
-                token_str
-            ))
+            results.append((int(idx), float(analysis.token_importance[idx]), token_str))
 
         return results

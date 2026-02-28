@@ -85,4 +85,3 @@
 _Secret usage information has been omitted from this report for security reasons._
 
 _Secret names are available in `WORKFLOW_INVENTORY.yaml` for authorized tooling use only._
-

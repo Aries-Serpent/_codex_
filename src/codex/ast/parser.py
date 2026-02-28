@@ -108,9 +108,7 @@ class UniversalParser:
             return self._parse_with_libcst(code, file_path)
         return self._parse_with_ast(code, file_path)
 
-    def _parse_with_libcst(
-        self, code: str, file_path: Path
-    ) -> Optional[StandardizedASTNode]:
+    def _parse_with_libcst(self, code: str, file_path: Path) -> Optional[StandardizedASTNode]:
         """Parse using libcst for enhanced CST preservation."""
         try:
             tree = cst.parse_module(code)
@@ -122,7 +120,10 @@ class UniversalParser:
                 type=NodeType.MODULE,
                 name=file_path.stem,
                 source_location=SourceLocation(file_path, 1, 0, len(code.splitlines()), 0),
-                metadata={"parser": "libcst", "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()},
+                metadata={
+                    "parser": "libcst",
+                    "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest(),
+                },
             )
 
             # Extract children using visitor
@@ -141,9 +142,7 @@ class UniversalParser:
             # Fallback to stdlib ast
             return self._parse_with_ast(code, file_path)
 
-    def _parse_with_ast(
-        self, code: str, file_path: Path
-    ) -> Optional[StandardizedASTNode]:
+    def _parse_with_ast(self, code: str, file_path: Path) -> Optional[StandardizedASTNode]:
         """Parse using stdlib ast module (fallback)."""
         try:
             tree = ast.parse(code, filename=str(file_path))
@@ -154,7 +153,10 @@ class UniversalParser:
                 type=NodeType.MODULE,
                 name=file_path.stem,
                 source_location=SourceLocation(file_path, 1, 0, len(code.splitlines()), 0),
-                metadata={"parser": "ast", "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()},
+                metadata={
+                    "parser": "ast",
+                    "hash": hashlib.md5(code.encode(), usedforsecurity=False).hexdigest(),
+                },
             )
 
             # Extract top-level definitions
@@ -171,9 +173,7 @@ class UniversalParser:
                 raise ParseError(str(e), file_path, e.lineno or 0) from e
             return None
 
-    def _convert_ast_node(
-        self, node: ast.AST, file_path: Path
-    ) -> Optional[StandardizedASTNode]:
+    def _convert_ast_node(self, node: ast.AST, file_path: Path) -> Optional[StandardizedASTNode]:
         """Convert stdlib ast node to StandardizedASTNode."""
         node_type = None
         name = ""
@@ -255,9 +255,7 @@ class UniversalParser:
             return f"@{ast.unparse(decorator)}"
         return "@<unknown>"
 
-    def _extract_type_hints(
-        self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef]
-    ) -> dict:
+    def _extract_type_hints(self, node: Union[ast.FunctionDef, ast.AsyncFunctionDef]) -> dict:
         """Extract type hints from function definition."""
         hints = {}
 
@@ -301,9 +299,7 @@ class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
                 first_stmt = node.body.body[0]
                 if isinstance(first_stmt, cst.SimpleStatementLine):
                     for stmt in first_stmt.body:
-                        if isinstance(stmt, cst.Expr) and isinstance(
-                            stmt.value, cst.SimpleString
-                        ):
+                        if isinstance(stmt, cst.Expr) and isinstance(stmt.value, cst.SimpleString):
                             docstring = stmt.value.value.strip("\"'")
                             break
 
@@ -352,9 +348,7 @@ class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
                 first_stmt = node.body.body[0]
                 if isinstance(first_stmt, cst.SimpleStatementLine):
                     for stmt in first_stmt.body:
-                        if isinstance(stmt, cst.Expr) and isinstance(
-                            stmt.value, cst.SimpleString
-                        ):
+                        if isinstance(stmt, cst.Expr) and isinstance(stmt.value, cst.SimpleString):
                             docstring = stmt.value.value.strip("\"'")
                             break
 
@@ -379,9 +373,7 @@ class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
 
 
 # Convenience function
-def parse_python(
-    source: Union[str, Path], strict: bool = False
-) -> Optional[StandardizedASTNode]:
+def parse_python(source: Union[str, Path], strict: bool = False) -> Optional[StandardizedASTNode]:
     """Parse Python source into StandardizedASTNode tree.
 
     Args:

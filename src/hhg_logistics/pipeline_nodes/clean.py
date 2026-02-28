@@ -24,6 +24,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 def _coerce_row(row: dict, required: Sequence[str]) -> dict:
     coerced: dict = {}
     for key in required:

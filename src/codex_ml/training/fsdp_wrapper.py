@@ -45,6 +45,7 @@ try:
 
     import torch
     import torch.nn as nn
+
     # Verify torch is functional
     _ = torch.Tensor
     TORCH_AVAILABLE = True

@@ -11,8 +11,9 @@ from numbers import Number
 import pytest
 
 try:
+    import pynvml  # noqa: F401
     _HAS_NVML = True
-except Exception:
+except ImportError:
     _HAS_NVML = False
 
 from codex_ml.monitoring.microhelpers import get_gpu_stats

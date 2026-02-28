@@ -40,7 +40,7 @@ def _load_gate_results(path: Path) -> Iterable[GateResult]:
 
 def _format_gate_result(result: GateResult) -> str:
     icon = "✅" if result.status == "pass" else "⚠️" if result.status == "warn" else "❌"
-    return f"- {icon} **{result.gate_id}** ({result.category}) — {result.description} [{result.status}] | RA: {result.ra_rule}. {result.detail}"
+    return f"- {icon} **{result.gate_id}** ({result.category}) — {result.description} [{result.status}] | RA: {result.ra_rule}. {result.detail}"  # noqa: E501
 
 
 def render_scorecard(

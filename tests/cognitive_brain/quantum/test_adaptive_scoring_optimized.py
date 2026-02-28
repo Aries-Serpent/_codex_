@@ -162,7 +162,6 @@ class TestAdaptiveScoringOptimized:
             )
         except Exception as e:
             # Skip test if quantum simulation environment is not properly configured
-            import pytest
             pytest.skip(f"Quantum simulation environment not available: {e}")
 
     @pytest.mark.slow

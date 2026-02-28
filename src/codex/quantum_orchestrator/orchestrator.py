@@ -162,7 +162,8 @@ class DiracMatrices:
     def alpha_y() -> np.ndarray:
         """α₂ matrix (y-direction)."""
         return np.array(
-            [[0, 0, 0, -1j], [0, 0, 1j, 0], [0, -1j, 0, 0], [1j, 0, 0, 0]], dtype=complex
+            [[0, 0, 0, -1j], [0, 0, 1j, 0], [0, -1j, 0, 0], [1j, 0, 0, 0]],
+            dtype=complex,
         )
 
     @staticmethod
@@ -671,7 +672,11 @@ class QuantumRelativisticDiracOrchestrator:
         position = TaskVector(**position_kwargs)
 
         task = TaskState(
-            task_id=task_id, name=name, position=position, _constants=self.constants, **kwargs
+            task_id=task_id,
+            name=name,
+            position=position,
+            _constants=self.constants,
+            **kwargs,
         )
         self.state.tasks[task_id] = task
 

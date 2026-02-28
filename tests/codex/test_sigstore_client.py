@@ -21,7 +21,7 @@ def test_sigstore_mock_fallback_when_package_absent(monkeypatch):
             import codex.archive.sigstore_client as sc_mod
             # Keep a reference; keep the module in sys.modules inside the block
             sys.modules.setdefault("codex.archive.sigstore_client", sc_mod)
-        except Exception:
+        except ImportError:
             pytest.skip("sigstore_client cannot be loaded in this environment")
 
     # The module must define HAS_SIGSTORE and it must be False

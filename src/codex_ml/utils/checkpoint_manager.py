@@ -59,13 +59,20 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
             load_kwargs = {"map_location": "cpu"}
             # Check if torch.load supports weights_only parameter (PyTorch >= 2.0)
             import inspect
+
             if "weights_only" in inspect.signature(torch.load).parameters:
                 load_kwargs["weights_only"] = True
             data = torch.load(target, **load_kwargs)  # nosec B614 - weights_only=True set above when available
-        except (RuntimeError, pickle.UnpicklingError, EOFError, AttributeError) as torch_error:
+        except (
+            RuntimeError,
+            pickle.UnpicklingError,
+            EOFError,
+            AttributeError,
+        ) as torch_error:
             logger.debug(f"Exception: {torch_error}")
             # Use safe pickle loading as fallback
             from utils.safe_pickle import safe_pickle_load
+
             try:
                 data = safe_pickle_load(str(target), use_restricted_unpickler=True)
             except Exception:
@@ -75,6 +82,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
     else:  # pragma: no cover - exercised when torch is unavailable
         # Use safe pickle loading to prevent code execution vulnerabilities
         from utils.safe_pickle import safe_pickle_load
+
         data = safe_pickle_load(str(target), use_restricted_unpickler=True)
     if not isinstance(data, dict):
         raise TypeError("checkpoint payload must be a mapping")

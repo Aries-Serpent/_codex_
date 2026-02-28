@@ -62,9 +62,7 @@ class HDF5Loader:
             mode: File open mode ('r', 'r+', 'w', 'a')
         """
         if not HDF5_AVAILABLE:
-            raise ImportError(
-                "h5py required for HDF5 support.\n" "Install: pip install h5py>=3.0.0"
-            )
+            raise ImportError("h5py required for HDF5 support.\nInstall: pip install h5py>=3.0.0")
 
         self.file_path = Path(file_path)
         if not self.file_path.exists():

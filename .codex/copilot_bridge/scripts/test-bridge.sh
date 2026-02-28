@@ -9,4 +9,3 @@ PAYLOAD=$(jq -n --arg p "List repository files and suggest a README outline." \
 curl -sS -X POST "${BRIDGE_URL}/copilot/run" \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD" | jq .
-

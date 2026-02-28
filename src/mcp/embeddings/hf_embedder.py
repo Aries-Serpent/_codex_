@@ -52,4 +52,7 @@ class HFEmbedder(EmbedderInterface):
         return self._model.encode(texts).tolist()
 
     def health_check(self) -> dict[str, Any]:
-        return {"status": "ok" if self._model is not None else "disconnected", "adapter": "hf"}
+        return {
+            "status": "ok" if self._model is not None else "disconnected",
+            "adapter": "hf",
+        }

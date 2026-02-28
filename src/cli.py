@@ -126,7 +126,6 @@ def classification_accuracy(outputs: Any, labels: Any) -> float:
     if hasattr(labels, "cpu"):
         labels = labels.cpu()
     if hasattr(labels, "numpy"):
-
         labels_array = np.asarray(labels)
     else:
         labels_array = labels

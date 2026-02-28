@@ -501,7 +501,6 @@ class TestDataLoadingEdgeCases:
             corrupted_file = f.name
 
         try:
-            import pickle
             with pytest.raises((pickle.UnpicklingError, EOFError)):
                 with open(corrupted_file, 'rb') as f:
                     pickle.load(f)  # nosec B301 - Test code validating error handling of corrupted pickle files

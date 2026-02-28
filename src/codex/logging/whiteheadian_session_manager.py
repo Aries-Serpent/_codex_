@@ -239,8 +239,7 @@ class WhiteheadianSessionManager:
             occasion.definiteness = min(1.0, 0.3 + (avg_intensity * 0.7))
 
         LOGGER.info(
-            f"Session {occasion.session_id} concrescing: "
-            f"definiteness={occasion.definiteness:.2%}"
+            f"Session {occasion.session_id} concrescing: definiteness={occasion.definiteness:.2%}"
         )
 
     def achieve_satisfaction(self, occasion: ActualOccasion) -> float:
@@ -271,9 +270,7 @@ class WhiteheadianSessionManager:
         # Store satisfaction in metadata
         occasion.metadata["satisfaction"] = satisfaction
 
-        LOGGER.info(
-            f"Session {occasion.session_id} achieved satisfaction: {satisfaction:.2%}"
-        )
+        LOGGER.info(f"Session {occasion.session_id} achieved satisfaction: {satisfaction:.2%}")
         return satisfaction
 
     def contribute_novelty(self, occasion: ActualOccasion, novelty: float) -> None:
@@ -292,9 +289,7 @@ class WhiteheadianSessionManager:
 
         occasion.novelty_contribution = novelty
 
-        LOGGER.info(
-            f"Session {occasion.session_id} contributed novelty: {novelty:.2%}"
-        )
+        LOGGER.info(f"Session {occasion.session_id} contributed novelty: {novelty:.2%}")
 
     def supersede(self, old_occasion: ActualOccasion, new_occasion: ActualOccasion) -> None:
         """
@@ -305,14 +300,10 @@ class WhiteheadianSessionManager:
         old_occasion.phase = SessionPhase.SUPERSEDED
 
         # New occasion can prehend the old one
-        if old_occasion.session_id not in self.prehension_network.get(
-            new_occasion.session_id, []
-        ):
+        if old_occasion.session_id not in self.prehension_network.get(new_occasion.session_id, []):
             self.prehend(new_occasion, [old_occasion.session_id])
 
-        LOGGER.info(
-            f"Session {old_occasion.session_id} superseded by {new_occasion.session_id}"
-        )
+        LOGGER.info(f"Session {old_occasion.session_id} superseded by {new_occasion.session_id}")
 
     def _calculate_prehension_intensity(
         self, current: ActualOccasion, past: ActualOccasion
@@ -336,9 +327,7 @@ class WhiteheadianSessionManager:
         return min(1.0, intensity)
 
     @staticmethod
-    def calculate_satisfaction(
-        prehensions: int, realizations: int, definiteness: float
-    ) -> float:
+    def calculate_satisfaction(prehensions: int, realizations: int, definiteness: float) -> float:
         """
         Calculate session satisfaction.
 
@@ -385,8 +374,7 @@ class WhiteheadianSessionManager:
         satisfied_in_window = sum(
             1
             for occ in self.occasions.values()
-            if occ.satisfied_at
-            and occ.satisfied_at.timestamp() >= cutoff
+            if occ.satisfied_at and occ.satisfied_at.timestamp() >= cutoff
         )
 
         rate = satisfied_in_window / time_window_hours

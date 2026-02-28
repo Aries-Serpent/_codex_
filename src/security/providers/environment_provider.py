@@ -56,11 +56,7 @@ class EnvironmentProvider(SecretProvider):
         """Get provider type."""
         return ProviderType.ENVIRONMENT
 
-    def rotate_secret(
-        self,
-        secret_id: str,
-        **kwargs: Any
-    ) -> RotationResult:
+    def rotate_secret(self, secret_id: str, **kwargs: Any) -> RotationResult:
         """Rotate environment variable secret.
 
         For environment provider, rotation is not automatic.
@@ -79,7 +75,7 @@ class EnvironmentProvider(SecretProvider):
             return RotationResult(
                 success=False,
                 old_secret_id=secret_id,
-                error_message=f"Environment variable {full_name} not found"
+                error_message=f"Environment variable {full_name} not found",
             )
 
         return RotationResult(
@@ -88,14 +84,10 @@ class EnvironmentProvider(SecretProvider):
             error_message=(
                 "Environment provider does not support automatic rotation. "
                 f"Manually update environment variable: {full_name}"
-            )
+            ),
         )
 
-    def validate_secret(
-        self,
-        secret_id: str,
-        secret_value: Optional[str] = None
-    ) -> bool:
+    def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate environment variable exists.
 
         Args:
@@ -177,10 +169,7 @@ class EnvironmentProvider(SecretProvider):
         logger.info("Set environment variable via EnvironmentSecretProvider")
         return True
 
-    def list_secrets(
-        self,
-        filter_tags: Optional[Dict[str, str]] = None
-    ) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
         """List all environment variables with prefix.
 
         Args:
@@ -194,7 +183,7 @@ class EnvironmentProvider(SecretProvider):
         for name in os.environ:
             if name.startswith(self.prefix):
                 # Remove prefix to get secret_id
-                secret_id = name[len(self.prefix):]
+                secret_id = name[len(self.prefix) :]
                 try:
                     metadata = self.get_secret_metadata(secret_id)
                     secrets.append(metadata)

@@ -131,3 +131,53 @@ ITERATION 5: If pass → commit; if fail → diagnose with inspect.signature()
 - `monkeypatch.setitem(_METRIC_REGISTRY, "X", mock)` → runner uses mock (not real fn)
 - All previously failing tests PASS
 - No new regressions introduced
+
+---
+
+## ⚡ Parallel Batch Scanning Protocol
+
+> **Mandatory.** This agent MUST use `scripts/ci/rvs_preflight.py` (or the
+> `BatchScanRunner` Python API) for all codebase scans.  Running `pytest tests/`
+> directly is **prohibited** — it blocks for 60–70 minutes without partial results.
+
+### Quick Reference
+
+```bash
+# 1. Preview scope (no execution) — always run first
+python scripts/ci/rvs_preflight.py --group quick --preview
+
+# 2. Incremental scan — changed files only (fastest, use during active work)
+python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 4
+
+# 3. Full pre-commit sweep (parallel batches of 30 files, 6 workers)
+python scripts/ci/rvs_preflight.py --group quick --workers 6 --batch-size 30
+
+# 4. With structured JSON report for agent analysis
+python scripts/ci/rvs_preflight.py --group quick --workers 6 \
+    --report /tmp/rvs_report.json
+
+# 5. Fail-fast triage (stop all batches on first failure)
+python scripts/ci/rvs_preflight.py --group quick --fail-fast --workers 4
+```
+
+### Python API
+
+```python
+from scripts.ci.batch_scan_integration import BatchScanRunner
+
+runner = BatchScanRunner(workers=6, batch_size=30)
+result = runner.scan(group="quick", changed_only=True)
+# result.ok, result.failures, result.summary_line, result.batches_run
+if not result.ok:
+    for failure in result.failures[:10]:
+        print(f"  FAILED: {failure}")
+```
+
+### Decision Flow
+
+1. `--preview` → confirm test scope
+2. `--changed-only` → validate your specific changes
+3. `--group quick --workers 6` → full sweep before commit
+4. Parse `--report` JSON for structured failure analysis
+
+**Full protocol**: `.github/agents/BATCH_SCAN_PROTOCOL.md`

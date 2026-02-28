@@ -25,6 +25,7 @@ from typing import Optional
 
 try:
     import typer
+
     TYPER_AVAILABLE = True
 except ImportError:
     TYPER_AVAILABLE = False
@@ -46,7 +47,7 @@ if TYPER_AVAILABLE:
     @app.command()
     def validate(
         path: Path = typer.Option(..., help="Path to manifest JSON file"),
-        strict: bool = typer.Option(False, help="Enable strict validation")
+        strict: bool = typer.Option(False, help="Enable strict validation"),
     ):
         """Validate a manifest file against the schema."""
         try:
@@ -86,6 +87,7 @@ if TYPER_AVAILABLE:
     ):
         """Create a new manifest file with schema codex.checkpoint.v2."""
         import time
+
         manifest_data = {
             "schema": "codex.checkpoint.v2",
             "run": {
@@ -100,7 +102,9 @@ if TYPER_AVAILABLE:
     @app.command()
     def hash(
         path: Path = typer.Option(..., help="Path to manifest JSON file"),
-        update_readme: Optional[Path] = typer.Option(None, "--update-readme", help="README.md to update"),
+        update_readme: Optional[Path] = typer.Option(
+            None, "--update-readme", help="README.md to update"
+        ),
     ):
         """Compute SHA-256 digest of a manifest file and optionally update a README."""
         _DIGEST_START = "<!-- manifest-digest:start -->"

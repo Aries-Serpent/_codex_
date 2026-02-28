@@ -396,8 +396,7 @@ def inject_early_stopping(
         # Check isinstance for real instances, or check type name for mocks
         has_early_stopping = any(
             isinstance(cb, (EarlyStoppingCallback, CodexEarlyStoppingCallback))
-            or type(cb).__name__
-            in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
+            or type(cb).__name__ in ("EarlyStoppingCallback", "CodexEarlyStoppingCallback")
             for cb in callbacks
         )
     except ImportError as e:

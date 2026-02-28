@@ -217,7 +217,9 @@ class SeedManager:
             env_info["torch_version"] = getattr(torch, "__version__", "unknown")
             cuda = getattr(torch, "cuda", None)
             cuda_available = bool(
-                cuda is not None and callable(getattr(cuda, "is_available", None)) and cuda.is_available()
+                cuda is not None
+                and callable(getattr(cuda, "is_available", None))
+                and cuda.is_available()
             )
             env_info["cuda_available"] = cuda_available
             if cuda_available:

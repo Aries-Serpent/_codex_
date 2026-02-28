@@ -45,7 +45,7 @@ class TestComplexWorkflows:
             for doc_id, content in documents:
                 try:
                     indexer.add_document(doc_id, content)
-                except Exception:  # Expected: document may already exist or indexer may not be fully initialized
+                except Exception:  # Expected: document may already exist or indexer may not be fully initialized  # noqa: BLE001
                     pass
 
             # Retrieve relevant documents
@@ -76,7 +76,7 @@ class TestComplexWorkflows:
                 try:
                     results = retriever.retrieve(query, top_k=5)
                     all_results.append(results)
-                except Exception:
+                except Exception:  # noqa: BLE001
                     all_results.append([])
 
             # Should handle multiple queries
@@ -102,7 +102,7 @@ class TestComplexWorkflows:
                     try:
                         indexer.add_document(doc_id, content)
                         doc_count += 1
-                    except Exception:  # Expected: concurrent indexing may fail or reach capacity
+                    except Exception:  # Expected: concurrent indexing may fail or reach capacity  # noqa: BLE001
                         pass
 
             # Should have added documents incrementally
@@ -131,7 +131,7 @@ class TestComplexWorkflows:
                 try:
                     indexer.remove_document(doc_id)
                     indexer.add_document(doc_id, updated_content)
-                except Exception:  # Expected: document may not exist or update operation may not be supported
+                except Exception:  # Expected: document may not exist or update operation may not be supported  # noqa: BLE001
                     pass
 
             assert True
@@ -158,7 +158,7 @@ class TestStressTests:
                 content = f"Document {i} with test content for stress testing. " * 10
                 try:
                     indexer.add_document(doc_id, content)
-                except Exception:  # Expected: stress test may exceed limits or cause memory issues
+                except Exception:  # Expected: stress test may exceed limits or cause memory issues  # noqa: BLE001
                     pass
 
             duration = time.time() - start_time
@@ -187,7 +187,7 @@ class TestStressTests:
                 content = f"Content about topic {i % 10}"
                 try:
                     indexer.add_document(doc_id, content)
-                except Exception:  # Expected: bulk indexing may fail for individual documents
+                except Exception:  # Expected: bulk indexing may fail for individual documents  # noqa: BLE001
                     pass
 
             # Test retrieval performance
@@ -197,7 +197,7 @@ class TestStressTests:
             for query in queries:
                 try:
                     retriever.retrieve(query, top_k=10)
-                except Exception:  # Expected: retrieval may fail if indexing was incomplete
+                except Exception:  # Expected: retrieval may fail if indexing was incomplete  # noqa: BLE001
                     pass
             duration = time.time() - start_time
 
@@ -456,7 +456,7 @@ class TestPerformanceBenchmarks:
                 start = time.time()
                 try:
                     retriever.retrieve("benchmark query", top_k=top_k)
-                except Exception:  # Expected: retrieval may fail during performance benchmarking
+                except Exception:  # Expected: retrieval may fail during performance benchmarking  # noqa: BLE001
                     pass
                 latency = (time.time() - start) * 1000  # ms
                 latencies.append((top_k, latency))
@@ -485,7 +485,7 @@ class TestPerformanceBenchmarks:
                 for i in range(num_docs):
                     try:
                         indexer.add_document(f"bench_{size}_{i}", content)
-                    except Exception:  # Expected: benchmarking may hit resource limits
+                    except Exception:  # Expected: benchmarking may hit resource limits  # noqa: BLE001
                         pass
                 duration = time.time() - start
 
@@ -595,7 +595,7 @@ class TestResourceManagement:
             for i in range(50):
                 try:
                     indexer.add_document(f"shutdown_doc_{i}", "content")
-                except Exception:  # Expected: cleanup may fail if resource already released in test teardown
+                except Exception:  # Expected: cleanup may fail if resource already released in test teardown  # noqa: BLE001
                     pass
 
             # Initiate shutdown

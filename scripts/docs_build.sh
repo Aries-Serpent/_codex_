@@ -83,4 +83,3 @@ BUILD_INFO="${ART_DIR}/INDEX.md"
 ( cd "${ART_DIR}" && find . -type f -print0 | sort -z | xargs -0 sha256sum ) > "${MANIFEST}"
 
 echo "[INFO] Docs build finished. Artifacts in ${ART_DIR}"
-

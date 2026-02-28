@@ -11,9 +11,9 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
 try:
-    from .analyzers import IssueAnalyzer, IssueAnalysisResult
+    from .analyzers import IssueAnalysisResult, IssueAnalyzer
 except ImportError:
-    from analyzers import IssueAnalyzer, IssueAnalysisResult
+    from analyzers import IssueAnalysisResult, IssueAnalyzer
 try:
     from .github_client import GitHubAPIClient
 except ImportError:

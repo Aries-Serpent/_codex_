@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 # Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
 try:
     import defusedxml
+
     defusedxml.defuse_stdlib()
 except (ImportError, AttributeError):  # pragma: no cover - optional dep
     pass
@@ -135,7 +136,10 @@ def _fix_pool(max_workers: int | None = None) -> None:
 ALLOWED_TASKS = {
     "ingest": (_run_ingest, "Ingest example data into the Codex environment."),
     "ci": (_run_ci, "Run local CI checks (lint + tests)."),
-    "pool-fix": (lambda: _fix_pool(4), "Reset tokenization thread pool (default 4 workers)."),
+    "pool-fix": (
+        lambda: _fix_pool(4),
+        "Reset tokenization thread pool (default 4 workers).",
+    ),
 }
 
 
@@ -456,7 +460,10 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             except Exception as exc2:
                 logger.debug(f"Exception: {exc2}")
                 _log_error(
-                    "STEP train", "fallback run_hf_trainer", str(exc2), f"args={engine_args}"
+                    "STEP train",
+                    "fallback run_hf_trainer",
+                    str(exc2),
+                    f"args={engine_args}",
                 )
                 raise
         argv = ["--engine", "custom", *engine_args]
@@ -474,11 +481,24 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
 
 @cli.command("batch-triage")
 @click.option("--issues", help="Comma-separated GitHub issue numbers")
-@click.option("--from-file", type=click.Path(exists=True), help="CSV file with issue/workflow data")
-@click.option("--output", type=click.Path(), default="batch_triage_report.md", help="Output file path")
+@click.option(
+    "--from-file",
+    type=click.Path(exists=True),
+    help="CSV file with issue/workflow data",
+)
+@click.option(
+    "--output",
+    type=click.Path(),
+    default="batch_triage_report.md",
+    help="Output file path",
+)
 @click.option("--json", "as_json", is_flag=True, help="Output as JSON instead of markdown")
-@click.option("--group-by", type=click.Choice(["root_cause", "workflow", "severity", "failure_type"]),
-              default="root_cause", help="Grouping strategy")
+@click.option(
+    "--group-by",
+    type=click.Choice(["root_cause", "workflow", "severity", "failure_type"]),
+    default="root_cause",
+    help="Grouping strategy",
+)
 def batch_triage(issues, from_file, output, as_json, group_by):
     """Batch triage CI/test failures with automated remediation suggestions.
 
@@ -1436,7 +1456,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 "DUPLICATION REPORT",
                 "=" * 60,
                 f"Scan path: {path_obj}",
-                f"Generated: {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}",
+                f"Generated: {__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat()}",  # noqa: E501
                 "",
                 "SUMMARY",
                 "-" * 60,
@@ -1532,13 +1552,13 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
 
             if difference > threshold_increase:
                 click.echo(
-                    f"\n❌ Duplication increased by {difference:.2%}, exceeds threshold {threshold_increase:.2%}",
+                    f"\n❌ Duplication increased by {difference:.2%}, exceeds threshold {threshold_increase:.2%}",  # noqa: E501
                     err=True,
                 )
                 sys.exit(1)
             elif difference > 0:
                 click.echo(
-                    f"\n⚠️  Duplication increased by {difference:.2%}, within threshold {threshold_increase:.2%}"
+                    f"\n⚠️  Duplication increased by {difference:.2%}, within threshold {threshold_increase:.2%}"  # noqa: E501
                 )
             else:
                 click.echo("\n✅ Duplication decreased or stayed the same")
@@ -1613,7 +1633,9 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         click.echo(f"No workflows found in {workflows_dir}")
         return
 
-    workflows = inventory.get_triggerable() if triggerable_only else list(inventory.workflows.values())
+    workflows = (
+        inventory.get_triggerable() if triggerable_only else list(inventory.workflows.values())
+    )
 
     if format == "json":
         data = [
@@ -1637,11 +1659,15 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         click.echo(f"Total triggers: {stats.total_triggers}")
         click.echo(f"Dependencies: {stats.dependency_count}")
     else:  # table
-        click.echo(f"\n📋 Workflows ({len(workflows)} {'triggerable' if triggerable_only else 'total'})\n")
+        click.echo(
+            f"\n📋 Workflows ({len(workflows)} {'triggerable' if triggerable_only else 'total'})\n"
+        )
         click.echo(f"{'Name':<40} {'File':<30} {'Jobs':<6} {'Triggers':<10}")
         click.echo("-" * 90)
         for w in workflows:
-            click.echo(f"{w.name[:39]:<40} {w.filename[:29]:<30} {len(w.jobs):<6} {len(w.triggers):<10}")
+            click.echo(
+                f"{w.name[:39]:<40} {w.filename[:29]:<30} {len(w.jobs):<6} {len(w.triggers):<10}"
+            )
 
 
 # Expose CLI groups as module attributes for testing and dynamic imports

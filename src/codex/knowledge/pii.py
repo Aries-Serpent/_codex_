@@ -30,14 +30,18 @@ _EMAIL = re.compile(r"([\w.+%\-]+)@([A-Za-z0-9.-]+\.[A-Za-z]{2,})", re.UNICODE)
 _PHONE = re.compile(r"(?:(?:\+?\d{1,3}[\s-]?)?(?:\(?\d{3}\)?[\s-]?)\d{3}[\s-]?\d{4})")
 
 # IP address patterns
-_IPV4 = re.compile(r"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b")
+_IPV4 = re.compile(
+    r"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b"
+)
 _IPV6 = re.compile(r"\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b")
 
 # SSN pattern (US Social Security Number)
 _SSN = re.compile(r"\b\d{3}[-.]?\d{2}[-.]?\d{4}\b")
 
 # Credit card patterns (major providers)
-_CREDIT_CARD = re.compile(r"\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b")
+_CREDIT_CARD = re.compile(
+    r"\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b"
+)
 
 # AWS Access Key pattern
 _AWS_KEY = re.compile(r"\bAKIA[0-9A-Z]{16}\b")
@@ -49,7 +53,7 @@ _GPL = re.compile(r"GNU GENERAL PUBLIC LICENSE|GPL v[23]", re.I)
 class RedactionMode(Enum):
     """Redaction modes for PII scrubbing."""
 
-    TOKEN_REPLACEMENT = "token"  # Replace with [TYPE_REDACTED]
+    TOKEN_REPLACEMENT = "token"  # Replace with [TYPE_REDACTED]  # nosec B105
     SEMANTIC_PRESERVATION = "semantic"  # Replace with type-appropriate placeholder
     HASH_PRESERVATION = "hash"  # Replace with hash for deduplication
 
@@ -176,7 +180,7 @@ def scrub(
                 f"Length: {len(card_num)}, Position: {m.start()}, "
                 "First 2 digits: %s, Last 2 digits: %s",
                 card_num[:2] if len(card_num) >= 2 else "N/A",
-                card_num[-2:] if len(card_num) >= 2 else "N/A"
+                card_num[-2:] if len(card_num) >= 2 else "N/A",
             )
             return m.group(0)  # Not a valid card number
         flags.pii_credit_card = True

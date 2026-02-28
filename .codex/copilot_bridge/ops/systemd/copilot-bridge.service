@@ -22,4 +22,3 @@ ProtectHome=read-only
 
 [Install]
 WantedBy=multi-user.target
-

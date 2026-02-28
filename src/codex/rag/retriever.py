@@ -19,6 +19,7 @@ try:
 except ImportError:  # pragma: no cover - optional dependency
     SentenceTransformer = None
 
+
 class Retriever:
     """
     Semantic retriever using FAISS indices with provenance tracking.
@@ -92,9 +93,7 @@ class Retriever:
 
             logger.info(f"Loading query embedding model: {self.model_name}")
 
-            self.model = safe_load_sentence_transformer(
-                self.model_name, self.cache_dir
-            )
+            self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")

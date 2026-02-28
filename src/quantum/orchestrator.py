@@ -161,10 +161,7 @@ class ThermodynamicOrchestrator:
 
         while remaining and energy_budget > 0:
             # Find tasks whose dependencies are satisfied
-            ready = [
-                t for t in remaining
-                if all(dep in completed for dep in t.dependencies)
-            ]
+            ready = [t for t in remaining if all(dep in completed for dep in t.dependencies)]
 
             if not ready:
                 # No tasks can run (unresolvable dependencies)

@@ -68,4 +68,3 @@
 - **copilot_bridge** (Score: 25/100, Files: 2)
 
 ## Recommendations
-

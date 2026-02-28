@@ -23,6 +23,7 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+
 def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     """
     Initialize MLflow in offline/local mode.

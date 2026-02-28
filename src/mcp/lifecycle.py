@@ -36,7 +36,11 @@ VALID_TRANSITIONS: dict[ServerState, list[ServerState]] = {
     ServerState.UNINITIALIZED: [ServerState.INITIALIZING],
     ServerState.INITIALIZING: [ServerState.READY, ServerState.ERROR],
     ServerState.READY: [ServerState.RUNNING, ServerState.STOPPING],
-    ServerState.RUNNING: [ServerState.DRAINING, ServerState.STOPPING, ServerState.ERROR],
+    ServerState.RUNNING: [
+        ServerState.DRAINING,
+        ServerState.STOPPING,
+        ServerState.ERROR,
+    ],
     ServerState.DRAINING: [ServerState.STOPPING],
     ServerState.STOPPING: [ServerState.STOPPED],
     ServerState.STOPPED: [ServerState.INITIALIZING],
@@ -56,9 +60,7 @@ class InvalidStateTransition(Exception):
         """
         self.current = current
         self.target = target
-        super().__init__(
-            f"Invalid state transition from {current.value} to {target.value}"
-        )
+        super().__init__(f"Invalid state transition from {current.value} to {target.value}")
 
 
 @dataclass
@@ -131,11 +133,7 @@ class LifecycleManager:
 
             old_state = self._state
             self._state = target
-            self._logger.info(
-                "State transition: %s -> %s",
-                old_state.value,
-                target.value
-            )
+            self._logger.info("State transition: %s -> %s", old_state.value, target.value)
 
     def register_health_check(self, check: Callable[[], HealthStatus]) -> None:
         """Register a health check function.
@@ -202,7 +200,7 @@ class LifecycleManager:
                 if time.time() - drain_start > self._config.drain_timeout_seconds:
                     self._logger.warning(
                         "Drain timeout reached with %d active requests",
-                        self._active_requests
+                        self._active_requests,
                     )
                     break
                 await asyncio.sleep(0.1)
@@ -251,7 +249,7 @@ class LifecycleManager:
             return HealthStatus(
                 healthy=False,
                 message=f"Server in {self._state.value} state",
-                details={"state": self._state.value}
+                details={"state": self._state.value},
             )
 
         all_healthy = True
@@ -263,7 +261,7 @@ class LifecycleManager:
                 result = check()
                 details[f"check_{i}"] = {
                     "healthy": result.healthy,
-                    "message": result.message
+                    "message": result.message,
                 }
                 if not result.healthy:
                     all_healthy = False
@@ -277,7 +275,7 @@ class LifecycleManager:
         return HealthStatus(
             healthy=all_healthy,
             message="; ".join(messages) if messages else "All checks passed",
-            details=details
+            details=details,
         )
 
     async def wait_for_shutdown(self) -> None:
@@ -291,8 +289,7 @@ class LifecycleManager:
         for sig in (signal.SIGTERM, signal.SIGINT):
             # Capture sig in lambda to avoid closure issue
             loop.add_signal_handler(
-                sig,
-                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True))
+                sig, lambda s=sig: asyncio.create_task(self.shutdown(graceful=True))
             )
 
         self._logger.info("Signal handlers configured")

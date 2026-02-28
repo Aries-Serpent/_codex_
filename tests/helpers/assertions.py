@@ -1,0 +1,208 @@
+"""Assertion helpers for the _codex_ test suite.
+
+These helpers replace vague ``len(x) >= 0`` (always-true) / ``assert x is not None``
+patterns with more informative assertions that actually validate invariants.
+
+Usage::
+
+    from tests.helpers.assertions import (
+        assert_non_empty_list,
+        assert_collection,
+        assert_no_exception,
+        assert_dict_has_keys,
+        assert_positive,
+    )
+
+All helpers raise ``AssertionError`` with a descriptive message on failure.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Callable, TypeVar
+
+__all__ = [
+    "assert_non_empty_list",
+    "assert_collection",
+    "assert_non_negative_count",
+    "assert_no_exception",
+    "assert_dict_has_keys",
+    "assert_positive",
+    "assert_callable_returns",
+    "assert_string_non_empty",
+    "assert_instance",
+]
+
+T = TypeVar("T")
+
+
+def assert_non_empty_list(value: Any, name: str = "value") -> None:
+    """Assert that *value* is a non-empty list.
+
+    Replaces ``assert isinstance(x, list) and len(x) > 0`` one-liners.
+
+    >>> assert_non_empty_list([1, 2, 3])
+    >>> assert_non_empty_list([], "results")  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected non-empty list for 'results', got [] (len=0)
+    """
+    assert isinstance(value, list), (
+        f"expected list for '{name}', got {type(value).__name__!r}"
+    )
+    assert len(value) > 0, (
+        f"expected non-empty list for '{name}', got {value!r} (len=0)"
+    )
+
+
+def assert_collection(
+    value: Any,
+    name: str = "value",
+    *,
+    types: tuple[type, ...] = (list, tuple, set, dict, frozenset),
+) -> None:
+    """Assert that *value* is a collection (list/tuple/set/dict/frozenset).
+
+    Replaces ``assert isinstance(x, (list, tuple, set, dict))`` patterns.
+    The number of items may be zero — use :func:`assert_non_empty_list` when
+    a non-empty result is required.
+
+    >>> assert_collection([])          # empty list is fine
+    >>> assert_collection((1, 2, 3))   # tuple is fine
+    >>> assert_collection("hello")     # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected a collection for 'value', got str
+    """
+    assert isinstance(value, types), (
+        f"expected a collection for '{name}', got {type(value).__name__}"
+    )
+
+
+def assert_non_negative_count(value: Any, name: str = "value") -> None:
+    """Assert that *value* is a sized object (has ``__len__``) with ``len >= 0``.
+
+    This is the *meaningful* version of the always-true ``len(x) >= 0``
+    anti-pattern: it actually verifies that the object implements the sized
+    protocol, which can legitimately fail on unexpected types.
+
+    >>> assert_non_negative_count([])
+    >>> assert_non_negative_count({})
+    >>> assert_non_negative_count(42)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected a sized object for 'value', got int
+    """
+    assert hasattr(value, "__len__"), (
+        f"expected a sized object for '{name}', got {type(value).__name__}"
+    )
+    length = len(value)  # type: ignore[arg-type]
+    assert length >= 0, f"negative length for '{name}': {length}"  # always true but now documents intent
+
+
+def assert_no_exception(callable_: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+    """Assert that *callable_* can be called without raising an exception.
+
+    Returns the return value so callers can chain further assertions.
+
+    Replaces ``try: fn(); except Exception: pass`` patterns in tests.
+
+    >>> assert_no_exception(int, "42")
+    42
+    >>> assert_no_exception(int, "oops")  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: ...raised ValueError...
+    """
+    try:
+        return callable_(*args, **kwargs)
+    except Exception as exc:  # noqa: BLE001
+        raise AssertionError(
+            f"{callable_.__name__!r} raised {type(exc).__name__}: {exc}"
+        ) from exc
+
+
+def assert_dict_has_keys(d: Any, *keys: str, name: str = "dict") -> None:
+    """Assert that *d* is a dict containing all of *keys*.
+
+    >>> assert_dict_has_keys({"a": 1, "b": 2}, "a", "b")
+    >>> assert_dict_has_keys({"a": 1}, "missing")  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: '{name}' missing key 'missing' — present keys: ['a']
+    """
+    assert isinstance(d, dict), f"expected dict for '{name}', got {type(d).__name__}"
+    for key in keys:
+        assert key in d, f"'{name}' missing key {key!r} — present keys: {sorted(d)}"
+
+
+def assert_positive(value: Any, name: str = "value") -> None:
+    """Assert that *value* is a number > 0.
+
+    >>> assert_positive(1)
+    >>> assert_positive(0)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected positive number for 'value', got 0
+    """
+    assert isinstance(value, (int, float)), (
+        f"expected numeric for '{name}', got {type(value).__name__}"
+    )
+    assert value > 0, f"expected positive number for '{name}', got {value}"
+
+
+def assert_callable_returns(
+    callable_: Callable[..., T],
+    expected_type: type[T],
+    *args: Any,
+    name: str = "",
+    **kwargs: Any,
+) -> T:
+    """Call *callable_* and assert the return value is an instance of *expected_type*.
+
+    Returns the value so callers can chain further assertions.
+
+    >>> assert_callable_returns(list, list)
+    []
+    """
+    result = callable_(*args, **kwargs)
+    label = name or callable_.__name__
+    assert isinstance(result, expected_type), (
+        f"'{label}' returned {type(result).__name__!r}, "
+        f"expected {expected_type.__name__!r}"
+    )
+    return result  # type: ignore[return-value]
+
+
+def assert_string_non_empty(value: Any, name: str = "value") -> None:
+    """Assert that *value* is a non-empty string.
+
+    >>> assert_string_non_empty("hello")
+    >>> assert_string_non_empty("")  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected non-empty string for 'value', got ''
+    """
+    assert isinstance(value, str), (
+        f"expected str for '{name}', got {type(value).__name__}"
+    )
+    assert len(value) > 0, f"expected non-empty string for '{name}', got {value!r}"
+
+
+def assert_instance(value: Any, expected_type: type | tuple[type, ...], name: str = "value") -> None:
+    """Assert that *value* is an instance of *expected_type*.
+
+    Thin wrapper around ``isinstance`` that produces a descriptive message.
+
+    >>> assert_instance([], list)
+    >>> assert_instance("oops", list)  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+        ...
+    AssertionError: expected list for 'value', got str
+    """
+    if isinstance(expected_type, tuple):
+        type_names = " | ".join(t.__name__ for t in expected_type)
+    else:
+        type_names = expected_type.__name__
+    assert isinstance(value, expected_type), (
+        f"expected {type_names} for '{name}', got {type(value).__name__}"
+    )

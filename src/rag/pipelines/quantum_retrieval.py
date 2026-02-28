@@ -174,9 +174,7 @@ class QuantumRelevanceScorer:
         authority = max(0.0, min(1.0, authority))  # Clamp to [0, 1]
 
         # Combined relevance score
-        relevance = (
-            self.alpha * semantic_sim + self.beta * temporal_score + self.gamma * authority
-        )
+        relevance = self.alpha * semantic_sim + self.beta * temporal_score + self.gamma * authority
 
         # Clamp relevance to valid probability range
         relevance = max(0.0, min(1.0, relevance))
@@ -246,9 +244,7 @@ class QuantumRelevanceScorer:
                 total_prob = sum(probs)
                 if total_prob > 0:
                     normalized = [p / total_prob for p in probs]
-                    entropy_val = -sum(
-                        p * math.log(p) if p > 0 else 0.0 for p in normalized
-                    )
+                    entropy_val = -sum(p * math.log(p) if p > 0 else 0.0 for p in normalized)
                 else:
                     entropy_val = 0.0
 
@@ -297,9 +293,7 @@ class QuantumRelevanceScorer:
 
         # Ensure same length
         if len(vec1) != len(vec2):
-            logger.warning(
-                "Vector length mismatch: %d vs %d, returning 0.0", len(vec1), len(vec2)
-            )
+            logger.warning("Vector length mismatch: %d vs %d, returning 0.0", len(vec1), len(vec2))
             return 0.0
 
         # Calculate dot product and norms
@@ -418,7 +412,9 @@ class QuantumEnhancedRetrieval(RetrievalPipeline):
         results.sort(key=lambda r: r.score, reverse=True)
 
         logger.info(
-            "Quantum retrieval completed: %d chunks -> %d results", len(chunks), len(results)
+            "Quantum retrieval completed: %d chunks -> %d results",
+            len(chunks),
+            len(results),
         )
 
         return results

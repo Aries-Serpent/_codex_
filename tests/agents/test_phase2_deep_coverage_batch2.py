@@ -13,10 +13,10 @@ Target: +12-15% coverage gain (34% → 48%)
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestPhase2_AdvancedPhysics_SpinorDimension:

@@ -182,7 +182,6 @@ def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
     logger_mod = _import_any(["src.codex.logging.session_logger"])
     if not hooks or not logger_mod:
         pytest.skip("logging modules not available")
-    import importlib
 
     importlib.reload(hooks)
     with hooks.session():

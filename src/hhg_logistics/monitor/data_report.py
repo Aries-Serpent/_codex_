@@ -91,10 +91,16 @@ def main(args: list[str] | None = None) -> None:
     parser.add_argument("--reference", type=str, required=True, help="Reference CSV path")
     parser.add_argument("--current", type=str, required=True, help="Current CSV path")
     parser.add_argument(
-        "--out_html", type=str, default=".codex/reports/data_drift.html", help="HTML output path"
+        "--out_html",
+        type=str,
+        default=".codex/reports/data_drift.html",
+        help="HTML output path",
     )
     parser.add_argument(
-        "--out_json", type=str, default=".codex/reports/data_drift.json", help="JSON output path"
+        "--out_json",
+        type=str,
+        default=".codex/reports/data_drift.json",
+        help="JSON output path",
     )
     parser.add_argument("--columns", type=str, default="", help="Comma separated column subset")
     parsed = parser.parse_args(args=args)

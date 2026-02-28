@@ -99,14 +99,8 @@ class DocumentPreprocessor:
     """
 
     # Regular expressions for cleaning
-    URL_PATTERN = re.compile(
-        r"https?://[^\s<>\"{}|\\^`\[\]]+",
-        re.IGNORECASE
-    )
-    EMAIL_PATTERN = re.compile(
-        r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
-        re.IGNORECASE
-    )
+    URL_PATTERN = re.compile(r"https?://[^\s<>\"{}|\\^`\[\]]+", re.IGNORECASE)
+    EMAIL_PATTERN = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", re.IGNORECASE)
     HTML_TAG_PATTERN = re.compile(r"<[^>]+>", re.IGNORECASE)
     CONTROL_CHAR_PATTERN = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f]")
     MULTIPLE_SPACES = re.compile(r"[ \t]+")

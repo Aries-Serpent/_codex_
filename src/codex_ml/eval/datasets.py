@@ -241,7 +241,7 @@ def load_dataset(
                 is_dataset_dict = DatasetDict is not None and isinstance(ds, DatasetDict)
             except TypeError:
                 # Fallback: check if it has the DatasetDict API (keys() method and dict-like)
-                is_dataset_dict = hasattr(ds, 'keys') and hasattr(ds, '__getitem__')
+                is_dataset_dict = hasattr(ds, "keys") and hasattr(ds, "__getitem__")
 
             if is_dataset_dict:
                 if hf_split not in ds:

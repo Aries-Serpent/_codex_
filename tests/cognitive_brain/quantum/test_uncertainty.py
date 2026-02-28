@@ -360,7 +360,6 @@ def test_execution_time_penalty(optimizer):
 
 def test_integration_with_monitor():
     """Test integration with coherence monitor."""
-    import tempfile
     from pathlib import Path
 
     # Create temporary database with schema

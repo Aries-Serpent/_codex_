@@ -306,12 +306,21 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog="codex-train", args=list(argv or []))
             print(json.dumps(_probe_payload()))
-            log_event(logger, "cli.finish", prog="codex-train", status="ok", mode="probe-json", rc=0)
+            log_event(
+                logger,
+                "cli.finish",
+                prog="codex-train",
+                status="ok",
+                mode="probe-json",
+                rc=0,
+            )
         return 0
 
     # Check for hydra availability early
     if hydra is None or _hydra_entry is None:
-        sys.stderr.write("Error: hydra-core is required for training. Install with: pip install hydra-core\n")
+        sys.stderr.write(
+            "Error: hydra-core is required for training. Install with: pip install hydra-core\n"
+        )
         return 2
 
     parser_cls = ArgparseJSONParser if ArgparseJSONParser is not None else argparse.ArgumentParser

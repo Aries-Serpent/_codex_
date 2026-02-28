@@ -210,7 +210,11 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
         _tar_add_bytes(tar, "release.manifest.lock.json", locked.read_bytes(), 0o644)
     _evidence_append_release(
         "PACK",
-        {"release_id": m.release_id, "version": m.version, "bundle": bundle_path.as_posix()},
+        {
+            "release_id": m.release_id,
+            "version": m.version,
+            "bundle": bundle_path.as_posix(),
+        },
     )
     try:
         dal = ArchiveDAL.from_env()

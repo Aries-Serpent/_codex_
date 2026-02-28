@@ -70,13 +70,14 @@ from typing import Any, Dict, List, Optional, Sequence
 # ---------------------------------------------------------------------------
 
 _DECOHERENCE_HALF_LIFE_SESSIONS: float = 5.0  # amplitude halves every 5 sessions
-_EXECUTION_THRESHOLD: float = 0.05            # steps below this amplitude are pruned
-_MAX_PLAN_STEPS: int = 20                     # safety cap on collapsed path length
+_EXECUTION_THRESHOLD: float = 0.05  # steps below this amplitude are pruned
+_MAX_PLAN_STEPS: int = 20  # safety cap on collapsed path length
 
 
 # ---------------------------------------------------------------------------
 # Enumerations
 # ---------------------------------------------------------------------------
+
 
 class ImprovementArea(str, Enum):
     """Predefined codebase improvement areas with built-in templates."""
@@ -108,6 +109,7 @@ class StepStatus(str, Enum):
 # ---------------------------------------------------------------------------
 # Data classes
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class PhysicsParams:
@@ -190,9 +192,7 @@ class PlanStep:
     decoherence_sessions: int = 0
     entangled_with: List[str] = field(default_factory=list)
     status: StepStatus = StepStatus.PENDING
-    created_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     # ------------------------------------------------------------------
     # Amplitude with decoherence applied
@@ -265,9 +265,7 @@ class QuantumPlanset:
     steps: List[PlanStep] = field(default_factory=list)
     entanglement_bonds: List[EntanglementBond] = field(default_factory=list)
     context: Dict[str, Any] = field(default_factory=dict)
-    created_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     collapsed_at: Optional[str] = None
 
     # ------------------------------------------------------------------
@@ -318,6 +316,7 @@ class QuantumPlanset:
 # Built-in planset templates
 # ---------------------------------------------------------------------------
 
+
 def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -325,170 +324,306 @@ def _ts() -> str:
 _TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
     ImprovementArea.COVERAGE_IMPROVEMENT: [
         {
-            "step_id": "COV-01", "agent": "coverage-gapfill-agent",
+            "step_id": "COV-01",
+            "agent": "coverage-gapfill-agent",
             "action": "identify low-coverage modules",
             "description": "Run pytest-cov and list modules below threshold.",
-            "physics": {"impact": 0.9, "confidence": 0.95, "momentum": 8.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.1},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.95,
+                "momentum": 8.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "COV-02", "agent": "coverage-gapfill-agent",
+            "step_id": "COV-02",
+            "agent": "coverage-gapfill-agent",
             "action": "generate targeted unit tests",
             "description": "Write tests for uncovered branches; target ≥90%.",
-            "physics": {"impact": 0.85, "confidence": 0.8, "momentum": 7.0,
-                        "energy": 15.0, "risk": 0.1, "friction": 0.2},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.8,
+                "momentum": 7.0,
+                "energy": 15.0,
+                "risk": 0.1,
+                "friction": 0.2,
+            },
             "entangled_with": ["COV-01"],
         },
         {
-            "step_id": "COV-03", "agent": "coverage-maintenance-agent",
+            "step_id": "COV-03",
+            "agent": "coverage-maintenance-agent",
             "action": "raise coverage threshold in pyproject.toml",
             "description": "Increment `[tool.coverage.report].fail_under` by 5 %.",
-            "physics": {"impact": 0.7, "confidence": 0.9, "momentum": 5.0,
-                        "energy": 3.0, "risk": 0.15, "friction": 0.1},
+            "physics": {
+                "impact": 0.7,
+                "confidence": 0.9,
+                "momentum": 5.0,
+                "energy": 3.0,
+                "risk": 0.15,
+                "friction": 0.1,
+            },
             "entangled_with": ["COV-02"],
         },
         {
-            "step_id": "COV-04", "agent": "mutation-testing-agent",
+            "step_id": "COV-04",
+            "agent": "mutation-testing-agent",
             "action": "run mutation score on new tests",
             "description": "Ensure mutation score ≥60 % for added test files.",
-            "physics": {"impact": 0.6, "confidence": 0.7, "momentum": 4.0,
-                        "energy": 25.0, "risk": 0.2, "friction": 0.3},
+            "physics": {
+                "impact": 0.6,
+                "confidence": 0.7,
+                "momentum": 4.0,
+                "energy": 25.0,
+                "risk": 0.2,
+                "friction": 0.3,
+            },
             "entangled_with": ["COV-02"],
         },
     ],
-
     ImprovementArea.SECURITY_REMEDIATION: [
         {
-            "step_id": "SEC-01", "agent": "codeql-alert-resolution-agent",
+            "step_id": "SEC-01",
+            "agent": "codeql-alert-resolution-agent",
             "action": "collect open CodeQL alerts via resolution pipeline",
             "description": "Run resolution_pipeline.py stages=collect,analyse.",
-            "physics": {"impact": 0.95, "confidence": 0.99, "momentum": 9.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.95,
+                "confidence": 0.99,
+                "momentum": 9.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "SEC-02", "agent": "codeql-alert-resolution-agent",
+            "step_id": "SEC-02",
+            "agent": "codeql-alert-resolution-agent",
             "action": "auto-remediate P0/P1 alerts",
             "description": "Apply codemods for sql_injection, subprocess, hardcoded patterns.",
-            "physics": {"impact": 0.9, "confidence": 0.8, "momentum": 9.0,
-                        "energy": 10.0, "risk": 0.2, "friction": 0.1},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.8,
+                "momentum": 9.0,
+                "energy": 10.0,
+                "risk": 0.2,
+                "friction": 0.1,
+            },
             "entangled_with": ["SEC-01"],
         },
         {
-            "step_id": "SEC-03", "agent": "dependency-vulnerability-scanner",
+            "step_id": "SEC-03",
+            "agent": "dependency-vulnerability-scanner",
             "action": "scan requirements for known CVEs",
             "description": "Run pip-audit; document CVEs without fixes in lock.txt.",
-            "physics": {"impact": 0.85, "confidence": 0.95, "momentum": 7.0,
-                        "energy": 8.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.95,
+                "momentum": 7.0,
+                "energy": 8.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "SEC-04", "agent": "secret-detection-agent",
+            "step_id": "SEC-04",
+            "agent": "secret-detection-agent",
             "action": "scan for accidentally committed secrets",
             "description": "Run detect-secrets baseline; update .secrets.baseline.",
-            "physics": {"impact": 0.8, "confidence": 0.9, "momentum": 6.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.9,
+                "momentum": 6.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "SEC-05", "agent": "codeql-alert-resolution-agent",
+            "step_id": "SEC-05",
+            "agent": "codeql-alert-resolution-agent",
             "action": "validate and close resolved alerts",
             "description": "Run stages=validate,close for confirmed fixes.",
-            "physics": {"impact": 0.7, "confidence": 0.85, "momentum": 6.0,
-                        "energy": 5.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.7,
+                "confidence": 0.85,
+                "momentum": 6.0,
+                "energy": 5.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["SEC-02"],
         },
     ],
-
     ImprovementArea.CI_SELF_HEALING: [
         {
-            "step_id": "CI-01", "agent": "ci-failure-resolution-agent",
+            "step_id": "CI-01",
+            "agent": "ci-failure-resolution-agent",
             "action": "retrieve and categorise recent CI failures",
             "description": "Use get_job_logs(failed_only=True) for last 25 h.",
-            "physics": {"impact": 0.9, "confidence": 0.95, "momentum": 9.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.95,
+                "momentum": 9.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "CI-02", "agent": "ci-auto-healer-agent",
+            "step_id": "CI-02",
+            "agent": "ci-auto-healer-agent",
             "action": "apply embedded fix patterns",
             "description": "Match failures to fix library; apply patches; push.",
-            "physics": {"impact": 0.85, "confidence": 0.75, "momentum": 8.0,
-                        "energy": 12.0, "risk": 0.2, "friction": 0.15},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.75,
+                "momentum": 8.0,
+                "energy": 12.0,
+                "risk": 0.2,
+                "friction": 0.15,
+            },
             "entangled_with": ["CI-01"],
         },
         {
-            "step_id": "CI-03", "agent": "autonomous-test-healer-agent",
+            "step_id": "CI-03",
+            "agent": "autonomous-test-healer-agent",
             "action": "stabilise flaky tests",
             "description": "Detect and apply @pytest.mark.retry or deterministic mocks.",
-            "physics": {"impact": 0.75, "confidence": 0.7, "momentum": 6.0,
-                        "energy": 15.0, "risk": 0.25, "friction": 0.2},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.7,
+                "momentum": 6.0,
+                "energy": 15.0,
+                "risk": 0.25,
+                "friction": 0.2,
+            },
         },
         {
-            "step_id": "CI-04", "agent": "workflow-optimization-agent",
+            "step_id": "CI-04",
+            "agent": "workflow-optimization-agent",
             "action": "optimise workflow job parallelism and caching",
             "description": "Identify sequential jobs that can run in parallel; add cache keys.",
-            "physics": {"impact": 0.65, "confidence": 0.8, "momentum": 5.0,
-                        "energy": 10.0, "risk": 0.1, "friction": 0.2},
+            "physics": {
+                "impact": 0.65,
+                "confidence": 0.8,
+                "momentum": 5.0,
+                "energy": 10.0,
+                "risk": 0.1,
+                "friction": 0.2,
+            },
         },
     ],
-
     ImprovementArea.DEPENDENCY_MODERNISATION: [
         {
-            "step_id": "DEP-01", "agent": "dependency-conflict-agent",
+            "step_id": "DEP-01",
+            "agent": "dependency-conflict-agent",
             "action": "audit requirements for conflicts",
             "description": "Run pip-check; detect version incompatibilities.",
-            "physics": {"impact": 0.8, "confidence": 0.95, "momentum": 7.0,
-                        "energy": 5.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.95,
+                "momentum": 7.0,
+                "energy": 5.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "DEP-02", "agent": "dependency-vulnerability-scanner",
+            "step_id": "DEP-02",
+            "agent": "dependency-vulnerability-scanner",
             "action": "upgrade packages with known CVEs",
             "description": "Apply pip-audit --fix; document unfixable CVEs in lock.txt.",
-            "physics": {"impact": 0.9, "confidence": 0.85, "momentum": 8.0,
-                        "energy": 10.0, "risk": 0.2, "friction": 0.15},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.85,
+                "momentum": 8.0,
+                "energy": 10.0,
+                "risk": 0.2,
+                "friction": 0.15,
+            },
             "entangled_with": ["DEP-01"],
         },
         {
-            "step_id": "DEP-03", "agent": "dependency-conflict-agent",
+            "step_id": "DEP-03",
+            "agent": "dependency-conflict-agent",
             "action": "pin compatible version ranges",
             "description": "Update pyproject.toml/requirements with compatible bounds.",
-            "physics": {"impact": 0.7, "confidence": 0.8, "momentum": 6.0,
-                        "energy": 8.0, "risk": 0.15, "friction": 0.1},
+            "physics": {
+                "impact": 0.7,
+                "confidence": 0.8,
+                "momentum": 6.0,
+                "energy": 8.0,
+                "risk": 0.15,
+                "friction": 0.1,
+            },
             "entangled_with": ["DEP-02"],
         },
     ],
-
     ImprovementArea.DOCUMENTATION_HYGIENE: [
         {
-            "step_id": "DOC-01", "agent": "link-validator-agent",
+            "step_id": "DOC-01",
+            "agent": "link-validator-agent",
             "action": "scan docs for broken internal/external links",
             "description": "Run validate-links.py; generate broken-link report.",
-            "physics": {"impact": 0.7, "confidence": 0.98, "momentum": 6.0,
-                        "energy": 5.0, "risk": 0.02, "friction": 0.05},
+            "physics": {
+                "impact": 0.7,
+                "confidence": 0.98,
+                "momentum": 6.0,
+                "energy": 5.0,
+                "risk": 0.02,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "DOC-02", "agent": "doc-freshness-checker",
+            "step_id": "DOC-02",
+            "agent": "doc-freshness-checker",
             "action": "identify stale documentation",
             "description": "Flag docs with timestamps > 90 days and no recent changes.",
-            "physics": {"impact": 0.65, "confidence": 0.9, "momentum": 5.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.1},
+            "physics": {
+                "impact": 0.65,
+                "confidence": 0.9,
+                "momentum": 5.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "DOC-03", "agent": "unified-doc-agent",
+            "step_id": "DOC-03",
+            "agent": "unified-doc-agent",
             "action": "add YAML frontmatter to agent files missing name/description",
-            "description": "Patch .github/agents/*.md without frontmatter; validates via Copilot UI.",
-            "physics": {"impact": 0.75, "confidence": 0.95, "momentum": 6.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "description": "Patch .github/agents/*.md without frontmatter; validates via Copilot UI.",  # noqa: E501
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.95,
+                "momentum": 6.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "DOC-04", "agent": "documentation-consolidator",
+            "step_id": "DOC-04",
+            "agent": "documentation-consolidator",
             "action": "consolidate duplicate doc files",
             "description": "Identify files with >70 % similarity; merge and update cross-refs.",
-            "physics": {"impact": 0.6, "confidence": 0.75, "momentum": 4.0,
-                        "energy": 15.0, "risk": 0.2, "friction": 0.3},
+            "physics": {
+                "impact": 0.6,
+                "confidence": 0.75,
+                "momentum": 4.0,
+                "energy": 15.0,
+                "risk": 0.2,
+                "friction": 0.3,
+            },
         },
     ],
-
     ImprovementArea.QI_TESTING: [
         {
-            "step_id": "QI-01", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-01",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "run raw scalability experiment and save baseline JSON",
             "description": (
                 "Execute exp1b_revalidation.py --multi-seed --scenarios 200 "
@@ -496,23 +631,37 @@ _TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
                 "audit_artifacts/results/phase4_scalability_raw.json. "
                 "Establishes per-seed accuracy baseline for patterns H/F/E/C."
             ),
-            "physics": {"impact": 0.95, "confidence": 0.99, "momentum": 9.0,
-                        "energy": 8.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.95,
+                "confidence": 0.99,
+                "momentum": 9.0,
+                "energy": 8.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "QI-02", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-02",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "generate per-pattern accuracy report",
             "description": (
                 "Run per_pattern_report.py against baseline JSON; identify "
                 "patterns below 95 % accuracy threshold (H, F, E, C). "
                 "Output: audit_artifacts/poctune/iteration_N_per_pattern.json."
             ),
-            "physics": {"impact": 0.9, "confidence": 0.98, "momentum": 8.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.98,
+                "momentum": 8.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
             "entangled_with": ["QI-01"],
         },
         {
-            "step_id": "QI-03", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-03",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "update target_patterns.json tuning rules",
             "description": (
                 "Increase effect_factor for failing patterns in "
@@ -520,12 +669,19 @@ _TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
                 "BayesianAssessor.apply_tuning_rules() and "
                 "FuzzyEngine.apply_membership_tuning() pick these up at runtime."
             ),
-            "physics": {"impact": 0.85, "confidence": 0.85, "momentum": 7.0,
-                        "energy": 5.0, "risk": 0.15, "friction": 0.1},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.85,
+                "momentum": 7.0,
+                "energy": 5.0,
+                "risk": 0.15,
+                "friction": 0.1,
+            },
             "entangled_with": ["QI-02"],
         },
         {
-            "step_id": "QI-04", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-04",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "run tuned experiment with CODEX_BAYESIAN_MODE + CODEX_FUZZY_MODE",
             "description": (
                 "Re-run exp1b_revalidation.py with CODEX_BAYESIAN_MODE=true "
@@ -533,292 +689,495 @@ _TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
                 "audit_artifacts/poctune/iteration_N_results.json. "
                 "Applies Bayesian posterior boosting and Fuzzy boundary shifts."
             ),
-            "physics": {"impact": 0.88, "confidence": 0.82, "momentum": 7.5,
-                        "energy": 10.0, "risk": 0.2, "friction": 0.15},
+            "physics": {
+                "impact": 0.88,
+                "confidence": 0.82,
+                "momentum": 7.5,
+                "energy": 10.0,
+                "risk": 0.2,
+                "friction": 0.15,
+            },
             "entangled_with": ["QI-03"],
         },
         {
-            "step_id": "QI-05", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-05",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "compare per-pattern accuracy before vs after tuning",
             "description": (
                 "Diff iteration_N_per_pattern.json against baseline; confirm "
                 "improvement ≥5 pp on failing patterns. "
                 "k₁ must remain ≤0.35; coherence must remain ≥0.650."
             ),
-            "physics": {"impact": 0.8, "confidence": 0.9, "momentum": 7.0,
-                        "energy": 5.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.9,
+                "momentum": 7.0,
+                "energy": 5.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["QI-04"],
         },
         {
-            "step_id": "QI-06", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-06",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "regression guard — verify seed=42 accuracy=100% and k1≤0.35",
             "description": (
                 "Run single-seed benchmark (seed=42, 110 scenarios). "
                 "Assert accuracy==100 %, k₁≤0.35. "
                 "Fail-fast: revert target_patterns.json if guard fails."
             ),
-            "physics": {"impact": 0.92, "confidence": 0.97, "momentum": 9.0,
-                        "energy": 6.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.92,
+                "confidence": 0.97,
+                "momentum": 9.0,
+                "energy": 6.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
             "entangled_with": ["QI-05"],
         },
         {
-            "step_id": "QI-07", "agent": "quantum-compliance-tuning-agent",
+            "step_id": "QI-07",
+            "agent": "quantum-compliance-tuning-agent",
             "action": "accept or revert tuning iteration",
             "description": (
                 "If improvement ≥5 pp AND no regression on A/B/D/G patterns "
                 "AND regression guard passed → commit target_patterns.json. "
                 "Otherwise revert file and schedule next iteration (max 5 total)."
             ),
-            "physics": {"impact": 0.75, "confidence": 0.88, "momentum": 6.0,
-                        "energy": 5.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.88,
+                "momentum": 6.0,
+                "energy": 5.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["QI-06"],
         },
     ],
-
     ImprovementArea.CACHE_VALIDATION: [
         {
-            "step_id": "CACHE-01", "agent": "cache-management-agent",
+            "step_id": "CACHE-01",
+            "agent": "cache-management-agent",
             "action": "analyse cache implementation for correctness gaps",
             "description": (
                 "Inspect cache classes for missing eviction, TTL, and consistency "
                 "guarantees. Source: CUSTOM_AGENT_PLANSET_CACHE_LOGIC_VALIDATOR.md Phase 1."
             ),
-            "physics": {"impact": 0.85, "confidence": 0.92, "momentum": 7.0,
-                        "energy": 6.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.92,
+                "momentum": 7.0,
+                "energy": 6.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "CACHE-02", "agent": "cache-management-agent",
+            "step_id": "CACHE-02",
+            "agent": "cache-management-agent",
             "action": "generate property-based tests for cache invariants",
             "description": (
                 "Write hypothesis/property tests for cache correctness, consistency, "
                 "and performance. Source: Phase 2 of cache validator planset."
             ),
-            "physics": {"impact": 0.8, "confidence": 0.85, "momentum": 6.5,
-                        "energy": 10.0, "risk": 0.15, "friction": 0.15},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.85,
+                "momentum": 6.5,
+                "energy": 10.0,
+                "risk": 0.15,
+                "friction": 0.15,
+            },
             "entangled_with": ["CACHE-01"],
         },
         {
-            "step_id": "CACHE-03", "agent": "cache-manager-integration",
+            "step_id": "CACHE-03",
+            "agent": "cache-manager-integration",
             "action": "run cache validation suite and collect failure report",
             "description": "Execute property tests; export pass/fail report per cache class.",
-            "physics": {"impact": 0.75, "confidence": 0.88, "momentum": 6.0,
-                        "energy": 8.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.88,
+                "momentum": 6.0,
+                "energy": 8.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["CACHE-02"],
         },
         {
-            "step_id": "CACHE-04", "agent": "cache-management-agent",
+            "step_id": "CACHE-04",
+            "agent": "cache-management-agent",
             "action": "fix identified cache defects and re-validate",
             "description": "Apply patches for failing invariants; re-run suite to confirm green.",
-            "physics": {"impact": 0.7, "confidence": 0.8, "momentum": 5.5,
-                        "energy": 12.0, "risk": 0.2, "friction": 0.2},
+            "physics": {
+                "impact": 0.7,
+                "confidence": 0.8,
+                "momentum": 5.5,
+                "energy": 12.0,
+                "risk": 0.2,
+                "friction": 0.2,
+            },
             "entangled_with": ["CACHE-03"],
         },
     ],
-
     ImprovementArea.TEST_ASSERTION_UPDATE: [
         {
-            "step_id": "ASSERT-01", "agent": "test-alignment-fixer-enhanced",
+            "step_id": "ASSERT-01",
+            "agent": "test-alignment-fixer-enhanced",
             "action": "scan codebase for stale test assertions after API changes",
             "description": (
                 "Detect mismatches between test assertions and current implementation. "
                 "Source: CUSTOM_AGENT_PLANSET_TEST_ASSERTION_UPDATER.md."
             ),
-            "physics": {"impact": 0.88, "confidence": 0.95, "momentum": 8.0,
-                        "energy": 6.0, "risk": 0.08, "friction": 0.08},
+            "physics": {
+                "impact": 0.88,
+                "confidence": 0.95,
+                "momentum": 8.0,
+                "energy": 6.0,
+                "risk": 0.08,
+                "friction": 0.08,
+            },
         },
         {
-            "step_id": "ASSERT-02", "agent": "test-alignment-fixer-enhanced",
+            "step_id": "ASSERT-02",
+            "agent": "test-alignment-fixer-enhanced",
             "action": "analyse implementation to derive correct expected values",
             "description": "Run implementation analyser to extract correct return types/values.",
-            "physics": {"impact": 0.82, "confidence": 0.88, "momentum": 7.0,
-                        "energy": 8.0, "risk": 0.12, "friction": 0.1},
+            "physics": {
+                "impact": 0.82,
+                "confidence": 0.88,
+                "momentum": 7.0,
+                "energy": 8.0,
+                "risk": 0.12,
+                "friction": 0.1,
+            },
             "entangled_with": ["ASSERT-01"],
         },
         {
-            "step_id": "ASSERT-03", "agent": "test-alignment-fixer-enhanced",
+            "step_id": "ASSERT-03",
+            "agent": "test-alignment-fixer-enhanced",
             "action": "auto-update stale assertions preserving test intent",
             "description": "Apply minimal diffs to fix assertions; preserve coverage and intent.",
-            "physics": {"impact": 0.85, "confidence": 0.82, "momentum": 7.5,
-                        "energy": 10.0, "risk": 0.18, "friction": 0.12},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.82,
+                "momentum": 7.5,
+                "energy": 10.0,
+                "risk": 0.18,
+                "friction": 0.12,
+            },
             "entangled_with": ["ASSERT-02"],
         },
         {
-            "step_id": "ASSERT-04", "agent": "autonomous-test-healer-agent",
+            "step_id": "ASSERT-04",
+            "agent": "autonomous-test-healer-agent",
             "action": "validate updated assertions pass CI and mutation score ≥60%",
             "description": "Run pytest + mutmut on changed files; fail if score drops.",
-            "physics": {"impact": 0.75, "confidence": 0.90, "momentum": 6.0,
-                        "energy": 15.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.90,
+                "momentum": 6.0,
+                "energy": 15.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["ASSERT-03"],
         },
     ],
-
     ImprovementArea.RAG_PIPELINE: [
         {
-            "step_id": "RAG-01", "agent": "rag-module-management-agent",
+            "step_id": "RAG-01",
+            "agent": "rag-module-management-agent",
             "action": "implement Phase 3 production features (streaming, auth, rate-limit)",
             "description": (
                 "Phase 1+2 complete. Implement Phase 3: streaming responses, "
                 "API auth middleware, per-user rate limiting. "
                 "Source: PRODUCTION_RAG_PIPELINE_PLANSET.md Phase 3."
             ),
-            "physics": {"impact": 0.92, "confidence": 0.88, "momentum": 9.0,
-                        "energy": 12.0, "risk": 0.15, "friction": 0.1},
+            "physics": {
+                "impact": 0.92,
+                "confidence": 0.88,
+                "momentum": 9.0,
+                "energy": 12.0,
+                "risk": 0.15,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "RAG-02", "agent": "rag-freshness-loop-agent",
+            "step_id": "RAG-02",
+            "agent": "rag-freshness-loop-agent",
             "action": "add incremental index refresh and stale-entry eviction",
             "description": "Wire freshness-loop to embedding pipeline; schedule nightly refresh.",
-            "physics": {"impact": 0.85, "confidence": 0.85, "momentum": 8.0,
-                        "energy": 10.0, "risk": 0.12, "friction": 0.1},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.85,
+                "momentum": 8.0,
+                "energy": 10.0,
+                "risk": 0.12,
+                "friction": 0.1,
+            },
             "entangled_with": ["RAG-01"],
         },
         {
-            "step_id": "RAG-03", "agent": "integration-test-runner",
+            "step_id": "RAG-03",
+            "agent": "integration-test-runner",
             "action": "run end-to-end RAG pipeline integration tests",
             "description": "Validate query→retrieval→rerank→response pipeline under load.",
-            "physics": {"impact": 0.8, "confidence": 0.9, "momentum": 7.0,
-                        "energy": 8.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.9,
+                "momentum": 7.0,
+                "energy": 8.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["RAG-02"],
         },
         {
-            "step_id": "RAG-04", "agent": "performance-monitor-agent",
+            "step_id": "RAG-04",
+            "agent": "performance-monitor-agent",
             "action": "benchmark retrieval latency P95 ≤ 200ms",
             "description": "Run latency benchmarks; tune HNSW/IVF params if P95 > 200ms.",
-            "physics": {"impact": 0.75, "confidence": 0.82, "momentum": 6.0,
-                        "energy": 10.0, "risk": 0.15, "friction": 0.15},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.82,
+                "momentum": 6.0,
+                "energy": 10.0,
+                "risk": 0.15,
+                "friction": 0.15,
+            },
             "entangled_with": ["RAG-03"],
         },
     ],
-
     ImprovementArea.ML_PATTERN_FEEDING: [
         {
-            "step_id": "ML-01", "agent": "ml-validation-suite-agent",
+            "step_id": "ML-01",
+            "agent": "ml-validation-suite-agent",
             "action": "extract patterns from existing ML run history",
             "description": (
                 "Parse audit_artifacts/results/ for recurring decision patterns. "
                 "Source: ML_PATTERN_FEEDING_PLANSET.md Phase 1."
             ),
-            "physics": {"impact": 0.88, "confidence": 0.92, "momentum": 8.0,
-                        "energy": 7.0, "risk": 0.08, "friction": 0.08},
+            "physics": {
+                "impact": 0.88,
+                "confidence": 0.92,
+                "momentum": 8.0,
+                "energy": 7.0,
+                "risk": 0.08,
+                "friction": 0.08,
+            },
         },
         {
-            "step_id": "ML-02", "agent": "cognitive-brain-manager",
+            "step_id": "ML-02",
+            "agent": "cognitive-brain-manager",
             "action": "apply quantum interference to merge pattern libraries",
             "description": (
                 "Feed extracted patterns through QuantumPlansetEngine.interference(); "
                 "boost overlapping patterns constructively. Phase 2."
             ),
-            "physics": {"impact": 0.85, "confidence": 0.85, "momentum": 8.0,
-                        "energy": 8.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.85,
+                "momentum": 8.0,
+                "energy": 8.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["ML-01"],
         },
         {
-            "step_id": "ML-03", "agent": "cognitive-brain-manager",
+            "step_id": "ML-03",
+            "agent": "cognitive-brain-manager",
             "action": "feed merged patterns into cognitive brain pattern store",
             "description": "Call AgentBrainInterface.submit_learning() for each merged pattern.",
-            "physics": {"impact": 0.9, "confidence": 0.88, "momentum": 8.5,
-                        "energy": 6.0, "risk": 0.08, "friction": 0.06},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.88,
+                "momentum": 8.5,
+                "energy": 6.0,
+                "risk": 0.08,
+                "friction": 0.06,
+            },
             "entangled_with": ["ML-02"],
         },
         {
-            "step_id": "ML-04", "agent": "rag-freshness-loop-agent",
+            "step_id": "ML-04",
+            "agent": "rag-freshness-loop-agent",
             "action": "automate nightly pattern extraction and brain update",
             "description": "Wire ML-01→ML-03 pipeline into nightly GitHub Actions schedule.",
-            "physics": {"impact": 0.75, "confidence": 0.82, "momentum": 6.0,
-                        "energy": 8.0, "risk": 0.12, "friction": 0.1},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.82,
+                "momentum": 6.0,
+                "energy": 8.0,
+                "risk": 0.12,
+                "friction": 0.1,
+            },
             "entangled_with": ["ML-03"],
         },
     ],
-
     ImprovementArea.WORKFLOW_HEALTH: [
         {
-            "step_id": "WF-01", "agent": "workflow-health-monitor",
+            "step_id": "WF-01",
+            "agent": "workflow-health-monitor",
             "action": "measure all workflow state amplitudes (quantum collapse of states)",
             "description": (
                 "Fetch all workflow runs from last 72h; compute health amplitude "
                 "per workflow. Source: WORKFLOW_HEALTH_AUTOMATION_PLANSET.md Phase 1."
             ),
-            "physics": {"impact": 0.88, "confidence": 0.95, "momentum": 8.5,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.88,
+                "confidence": 0.95,
+                "momentum": 8.5,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
         },
         {
-            "step_id": "WF-02", "agent": "workflow-analytics-agent",
+            "step_id": "WF-02",
+            "agent": "workflow-analytics-agent",
             "action": "apply entanglement effects — correlate dependent workflow failures",
-            "description": "Identify workflows whose failures co-occur; flag coupled failure chains.",
-            "physics": {"impact": 0.82, "confidence": 0.88, "momentum": 7.5,
-                        "energy": 6.0, "risk": 0.1, "friction": 0.08},
+            "description": "Identify workflows whose failures co-occur; flag coupled failure chains.",  # noqa: E501
+            "physics": {
+                "impact": 0.82,
+                "confidence": 0.88,
+                "momentum": 7.5,
+                "energy": 6.0,
+                "risk": 0.1,
+                "friction": 0.08,
+            },
             "entangled_with": ["WF-01"],
         },
         {
-            "step_id": "WF-03", "agent": "workflow-health-monitor",
+            "step_id": "WF-03",
+            "agent": "workflow-health-monitor",
             "action": "calculate aggregate health metrics dashboard",
             "description": "Produce Markdown health table: success rate, P95 duration, flake rate.",
-            "physics": {"impact": 0.78, "confidence": 0.92, "momentum": 7.0,
-                        "energy": 5.0, "risk": 0.05, "friction": 0.05},
+            "physics": {
+                "impact": 0.78,
+                "confidence": 0.92,
+                "momentum": 7.0,
+                "energy": 5.0,
+                "risk": 0.05,
+                "friction": 0.05,
+            },
             "entangled_with": ["WF-02"],
         },
         {
-            "step_id": "WF-04", "agent": "workflow-optimization-agent",
+            "step_id": "WF-04",
+            "agent": "workflow-optimization-agent",
             "action": "quantum tunnelling detection — find workflows stuck in failure loops",
             "description": "Identify workflows failing >3 consecutive runs; auto-disable + alert.",
-            "physics": {"impact": 0.85, "confidence": 0.88, "momentum": 8.0,
-                        "energy": 7.0, "risk": 0.1, "friction": 0.08},
+            "physics": {
+                "impact": 0.85,
+                "confidence": 0.88,
+                "momentum": 8.0,
+                "energy": 7.0,
+                "risk": 0.1,
+                "friction": 0.08,
+            },
             "entangled_with": ["WF-03"],
         },
         {
-            "step_id": "WF-05", "agent": "workflow-ci-fixer",
+            "step_id": "WF-05",
+            "agent": "workflow-ci-fixer",
             "action": "apply automated fixes for stuck workflows",
             "description": "Apply fix patterns for timeout, cache-miss, dep-conflict failures.",
-            "physics": {"impact": 0.8, "confidence": 0.8, "momentum": 7.0,
-                        "energy": 10.0, "risk": 0.18, "friction": 0.15},
+            "physics": {
+                "impact": 0.8,
+                "confidence": 0.8,
+                "momentum": 7.0,
+                "energy": 10.0,
+                "risk": 0.18,
+                "friction": 0.15,
+            },
             "entangled_with": ["WF-04"],
         },
     ],
-
     ImprovementArea.AGENT_CHAINING: [
         {
-            "step_id": "CHAIN-01", "agent": "agent-orchestrator",
+            "step_id": "CHAIN-01",
+            "agent": "agent-orchestrator",
             "action": "implement agent state management for chained executions",
             "description": (
                 "Build AgentStateManager: tracks context handoff between chained agents. "
                 "Source: AGENT_CHAINING_INTEGRATION_PLANSET.md Phase 1."
             ),
-            "physics": {"impact": 0.9, "confidence": 0.88, "momentum": 8.5,
-                        "energy": 10.0, "risk": 0.12, "friction": 0.1},
+            "physics": {
+                "impact": 0.9,
+                "confidence": 0.88,
+                "momentum": 8.5,
+                "energy": 10.0,
+                "risk": 0.12,
+                "friction": 0.1,
+            },
         },
         {
-            "step_id": "CHAIN-02", "agent": "agent-orchestrator",
+            "step_id": "CHAIN-02",
+            "agent": "agent-orchestrator",
             "action": "build orchestrator core with sequential/parallel routing",
             "description": (
                 "Implement ChainOrchestrator.route(): sequential_chain, "
                 "parallel_fan_out, conditional_routing patterns. Phase 2."
             ),
-            "physics": {"impact": 0.88, "confidence": 0.85, "momentum": 8.0,
-                        "energy": 12.0, "risk": 0.15, "friction": 0.12},
+            "physics": {
+                "impact": 0.88,
+                "confidence": 0.85,
+                "momentum": 8.0,
+                "energy": 12.0,
+                "risk": 0.15,
+                "friction": 0.12,
+            },
             "entangled_with": ["CHAIN-01"],
         },
         {
-            "step_id": "CHAIN-03", "agent": "agent-orchestrator",
+            "step_id": "CHAIN-03",
+            "agent": "agent-orchestrator",
             "action": "optimise context compression for long chains",
             "description": "Apply ContextCompressor to reduce token overhead across chain hops.",
-            "physics": {"impact": 0.78, "confidence": 0.82, "momentum": 6.5,
-                        "energy": 8.0, "risk": 0.12, "friction": 0.1},
+            "physics": {
+                "impact": 0.78,
+                "confidence": 0.82,
+                "momentum": 6.5,
+                "energy": 8.0,
+                "risk": 0.12,
+                "friction": 0.1,
+            },
             "entangled_with": ["CHAIN-02"],
         },
         {
-            "step_id": "CHAIN-04", "agent": "workflow-management-agent",
+            "step_id": "CHAIN-04",
+            "agent": "workflow-management-agent",
             "action": "wire agent chains into GitHub Actions reusable workflows",
             "description": "Create reusable workflow templates for common agent chain patterns.",
-            "physics": {"impact": 0.82, "confidence": 0.88, "momentum": 7.5,
-                        "energy": 8.0, "risk": 0.1, "friction": 0.08},
+            "physics": {
+                "impact": 0.82,
+                "confidence": 0.88,
+                "momentum": 7.5,
+                "energy": 8.0,
+                "risk": 0.1,
+                "friction": 0.08,
+            },
             "entangled_with": ["CHAIN-03"],
         },
         {
-            "step_id": "CHAIN-05", "agent": "integration-test-runner",
+            "step_id": "CHAIN-05",
+            "agent": "integration-test-runner",
             "action": "run end-to-end chain integration tests",
             "description": "Verify context flows correctly through 3-agent and 5-agent chains.",
-            "physics": {"impact": 0.75, "confidence": 0.90, "momentum": 6.0,
-                        "energy": 10.0, "risk": 0.1, "friction": 0.1},
+            "physics": {
+                "impact": 0.75,
+                "confidence": 0.90,
+                "momentum": 6.0,
+                "energy": 10.0,
+                "risk": 0.1,
+                "friction": 0.1,
+            },
             "entangled_with": ["CHAIN-04"],
         },
     ],
@@ -828,6 +1187,7 @@ _TEMPLATES: Dict[str, List[Dict[str, Any]]] = {
 # ---------------------------------------------------------------------------
 # Engine
 # ---------------------------------------------------------------------------
+
 
 class QuantumPlansetEngine:
     """
@@ -912,11 +1272,13 @@ class QuantumPlansetEngine:
                 bond_key = tuple(sorted([step.step_id, partner_id]))
                 if bond_key not in seen_bonds:
                     seen_bonds.add(bond_key)
-                    bonds.append(EntanglementBond(
-                        step_a=step.step_id,
-                        step_b=partner_id,
-                        coupling_strength=0.9,
-                    ))
+                    bonds.append(
+                        EntanglementBond(
+                            step_a=step.step_id,
+                            step_b=partner_id,
+                            coupling_strength=0.9,
+                        )
+                    )
 
         # Apply context-driven momentum boost
         if context:
@@ -948,7 +1310,8 @@ class QuantumPlansetEngine:
         planset.collapsed_at = datetime.now(timezone.utc).isoformat()
 
         viable = [
-            s for s in planset.steps
+            s
+            for s in planset.steps
             if s.is_viable() and s.status not in (StepStatus.COMPLETE, StepStatus.SKIPPED)
         ]
         if not viable:
@@ -975,7 +1338,8 @@ class QuantumPlansetEngine:
                 if partner_id not in seen_ids and partner_id in step_by_id:
                     partner = step_by_id[partner_id]
                     if partner.is_viable() and partner.status not in (
-                        StepStatus.COMPLETE, StepStatus.SKIPPED
+                        StepStatus.COMPLETE,
+                        StepStatus.SKIPPED,
                     ):
                         path.append(partner)
                         seen_ids.add(partner_id)
@@ -1182,6 +1546,4 @@ class QuantumPlansetEngine:
 
         for step in steps:
             if step.step_id in boosts:
-                step.physics.momentum = min(
-                    step.physics.momentum * boosts[step.step_id], 10.0
-                )
+                step.physics.momentum = min(step.physics.momentum * boosts[step.step_id], 10.0)

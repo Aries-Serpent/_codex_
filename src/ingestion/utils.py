@@ -100,7 +100,14 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
-    safe_encodings = {"utf-8", "utf-16", "utf-32", "cp1252", "windows-1252", "iso-8859-1"}
+    safe_encodings = {
+        "utf-8",
+        "utf-16",
+        "utf-32",
+        "cp1252",
+        "windows-1252",
+        "iso-8859-1",
+    }
 
     try:  # optional dependency
         from charset_normalizer import from_bytes  # type: ignore
@@ -341,9 +348,7 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except (
-                Exception
-            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
+            except Exception as exc:  # nosec B110 - fall through to manual reader; log for visibility
                 logger.debug(
                     "ingestion.utils: primary reader result normalisation failed: %s",
                     exc,

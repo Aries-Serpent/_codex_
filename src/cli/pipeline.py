@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 
 class PipelineValidationError(Exception):
     """Raised when pipeline configuration validation fails."""
+
     pass
 
 
@@ -56,7 +57,7 @@ def run_pipeline(
     tokenizer: Optional[Any],
     train_ds: Optional[Any],
     val_ds: Optional[Any],
-    config: Dict[str, Any]
+    config: Dict[str, Any],
 ) -> Dict[str, Any]:
     """
     Run training pipeline with validation.

@@ -15,6 +15,7 @@ from typing import Callable, Optional
 
 logger = logging.getLogger(__name__)
 
+
 class MetricType(Enum):
     """Types of metrics tracked."""
 
@@ -244,7 +245,12 @@ class ContextObserver:
         self._gauges[key] = value
 
         self._metrics.append(
-            Metric(name=metric_name, value=value, metric_type=MetricType.GAUGE, labels=labels or {})
+            Metric(
+                name=metric_name,
+                value=value,
+                metric_type=MetricType.GAUGE,
+                labels=labels or {},
+            )
         )
 
     def histogram(self, metric_name: str, value: float, labels: Optional[dict] = None):
@@ -254,12 +260,19 @@ class ContextObserver:
 
         self._metrics.append(
             Metric(
-                name=metric_name, value=value, metric_type=MetricType.HISTOGRAM, labels=labels or {}
+                name=metric_name,
+                value=value,
+                metric_type=MetricType.HISTOGRAM,
+                labels=labels or {},
             )
         )
 
     def alert(
-        self, severity: AlertSeverity, message: str, source: str, context: Optional[dict] = None
+        self,
+        severity: AlertSeverity,
+        message: str,
+        source: str,
+        context: Optional[dict] = None,
     ) -> Alert:
         """
         Generate an alert.

@@ -37,14 +37,16 @@ DEFAULT_FLAKINESS_RUNS = 3
 
 class ComparisonMode(Enum):
     """Comparison tolerance mode."""
-    STRICT = "strict"      # Byte-for-byte match
-    FUZZY = "fuzzy"        # Ignore whitespace, ordering
+
+    STRICT = "strict"  # Byte-for-byte match
+    FUZZY = "fuzzy"  # Ignore whitespace, ordering
     SEMANTIC = "semantic"  # Equivalent meaning
 
 
 @dataclass
 class ComparisonDetail:
     """Details of a single comparison."""
+
     input_ref: str
     mode: ComparisonMode
     result: Literal["match", "divergence", "error"]
@@ -66,6 +68,7 @@ class ComparisonResult:
         flakiness_check: Results of flakiness detection
         timestamp: When comparison was performed
     """
+
     result: Literal["pass", "fail", "warn"]
     baseline_hash: str
     patched_hash: str
@@ -118,10 +121,15 @@ def _normalize_output(output: str, mode: ComparisonMode) -> str:
     if mode == ComparisonMode.SEMANTIC:
         # More aggressive normalization
         import re
+
         # Remove timestamps, UUIDs, etc.
-        normalized = re.sub(r'\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}', '<TIMESTAMP>', output)
-        normalized = re.sub(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', '<UUID>', normalized)
-        normalized = re.sub(r'0x[0-9a-f]+', '<ADDR>', normalized)
+        normalized = re.sub(r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}", "<TIMESTAMP>", output)
+        normalized = re.sub(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "<UUID>",
+            normalized,
+        )
+        normalized = re.sub(r"0x[0-9a-f]+", "<ADDR>", normalized)
         return normalized.strip()
 
     return output
@@ -200,6 +208,7 @@ def _compare_outputs(
 
     # Generate diff
     import difflib
+
     diff = difflib.unified_diff(
         norm_baseline.splitlines(keepends=True),
         norm_patched.splitlines(keepends=True),
@@ -265,12 +274,14 @@ def compare(
             result="warn",
             baseline_hash="",
             patched_hash="",
-            comparisons=[ComparisonDetail(
-                input_ref="(no entry point)",
-                mode=mode,
-                result="error",
-                error="Could not find entry point script",
-            )],
+            comparisons=[
+                ComparisonDetail(
+                    input_ref="(no entry point)",
+                    mode=mode,
+                    result="error",
+                    error="Could not find entry point script",
+                )
+            ],
         )
 
     # Run without inputs first
@@ -403,8 +414,8 @@ class TestBehaviorSnapshots:
     for i, (input_path, output_path) in enumerate(zip(sample_inputs, golden_outputs)):
         # Use string concatenation to avoid format issues with nested braces
         test_method = f'''
-    def test_snapshot_{i+1}(self, source_dir, golden_dir):
-        """Test against golden output {i+1}."""
+    def test_snapshot_{i + 1}(self, source_dir, golden_dir):
+        """Test against golden output {i + 1}."""
         input_file = Path("{input_path}")
         expected_file = Path("{output_path}")
 

@@ -59,7 +59,9 @@ if "CheckpointManager" not in globals():
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]
 
-        def _numpy_state_payload(raw_state: Any) -> list[Any]:  # pragma: no cover - numpy optional
+        def _numpy_state_payload(
+            raw_state: Any,
+        ) -> list[Any]:  # pragma: no cover - numpy optional
             return [
                 raw_state[0],
                 raw_state[1].tolist(),
@@ -137,10 +139,15 @@ if "CheckpointManager" not in globals():
                 payload["rng"] = dump_rng_state()
 
             import pickle as _stdlib_pickle  # noqa: PLC0415 - local to keep top-level light
+
             buffer = io.BytesIO()
             try:
                 _torch.save(payload, buffer)
-            except (RuntimeError, TypeError, _stdlib_pickle.PicklingError):  # pragma: no cover
+            except (
+                RuntimeError,
+                TypeError,
+                _stdlib_pickle.PicklingError,
+            ):  # pragma: no cover
                 # Retry with pickle protocol 2 to avoid torch.FloatStorage identity
                 # mismatch on PyTorch 2.x + Python 3.12.
                 buffer = io.BytesIO()
@@ -368,7 +375,9 @@ class CheckpointManager:
                 p.unlink()
             except FileNotFoundError as e:
                 logger.debug("FileNotFoundError: %s", e)
-                logger.warning("FileNotFoundError: %s", e, exc_info=True)  # File already deleted; no action needed
+                logger.warning(
+                    "FileNotFoundError: %s", e, exc_info=True
+                )  # File already deleted; no action needed
 
     def _update_best(self, path: Path, step: int, metrics: Optional[dict[str, float]]) -> None:
         if not self.metric or not metrics or self.metric not in metrics:
@@ -419,7 +428,9 @@ class CheckpointManager:
                     link.unlink()
             except FileNotFoundError as e:
                 logger.debug("FileNotFoundError: %s", e)
-                logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Symlink/file already removed; continue
+                logger.warning(
+                    "FileNotFoundError: %s", e, exc_info=True
+                )  # Symlink/file already removed; continue
             try:
                 rel = os.path.relpath(target, start=self._best_dir)
                 os.symlink(rel, link)
@@ -434,13 +445,17 @@ class CheckpointManager:
                         child.unlink()
                 except FileNotFoundError as e:
                     logger.debug("FileNotFoundError: %s", e)
-                    logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Child already deleted; continue cleanup
+                    logger.warning(
+                        "FileNotFoundError: %s", e, exc_info=True
+                    )  # Child already deleted; continue cleanup
         try:
             if self._best_file.exists() or self._best_file.is_symlink():
                 self._best_file.unlink()
         except FileNotFoundError as e:
             logger.debug("FileNotFoundError: %s", e)
-            logger.warning("FileNotFoundError: %s", e, exc_info=True)  # Best file symlink doesn't exist; continue
+            logger.warning(
+                "FileNotFoundError: %s", e, exc_info=True
+            )  # Best file symlink doesn't exist; continue
         if self._best_records:
             best_target = self._best_records[0]["path"]
             try:

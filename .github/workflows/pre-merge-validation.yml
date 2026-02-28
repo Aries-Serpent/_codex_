@@ -38,6 +38,14 @@ jobs:
           python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/autofix_report.json
         continue-on-error: true
 
+      - name: Verify agent batch-scan protocol coverage
+        id: batch_scan_protocol
+        run: |
+          python scripts/ci/inject_batch_scan_protocol.py --dry-run
+          # Fails (non-zero) if any applicable agent is missing the ⚡ section,
+          # preventing new agents from being added without the protocol.
+        continue-on-error: true
+
       - name: Run quick tests
         id: tests
         run: |

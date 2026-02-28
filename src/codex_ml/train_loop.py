@@ -111,6 +111,7 @@ _TELEMETRY_JSON_ENABLED = True
 
 try:
     import torch
+
     StepLR = torch.optim.lr_scheduler.StepLR
     optim = torch.optim
     DataLoader = torch.utils.data.DataLoader
@@ -340,11 +341,11 @@ def _initialize_reasoning_runtime(
 ) -> tuple[Any, ReasoningRuntime | None]:
     if raw_cfg and not _HAS_TORCH:
         raise ImportError(
-            "Reasoning adapters require torch; install the dependency before enabling training.reasoning"
+            "Reasoning adapters require torch; install the dependency before enabling training.reasoning"  # noqa: E501
         )
     if raw_cfg and not _HAS_REASONING_ADAPTERS:
         raise ImportError(
-            "Reasoning adapters are unavailable; install optional reasoning dependencies before enabling training.reasoning",
+            "Reasoning adapters are unavailable; install optional reasoning dependencies before enabling training.reasoning",  # noqa: E501
         )
     try:
         reasoning_cfg = _coerce_reasoning_config(raw_cfg)
@@ -455,7 +456,7 @@ def _now_ts() -> str:
     Returns:
         Timestamp string like "2026-02-01T12:34:56.789Z"
     """
-    return datetime.now(UTC).isoformat().replace('+00:00', 'Z')
+    return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
 _LEGACY_NDJSON = is_legacy_mode()
@@ -584,14 +585,13 @@ def _load_or_create_model(
         return model, False
     if instantiate_model is None:
         logger.warning(
-            "Model registry is not available; proceeding without instantiating '%s'", model_name or "model"
+            "Model registry is not available; proceeding without instantiating '%s'",
+            model_name or "model",
         )
         return None, False
     if not model_name:
         # If no model_name but instantiate_model exists, return None (allow tests without models)
-        logger.warning(
-            "No model or model_name provided; proceeding without model"
-        )
+        logger.warning("No model or model_name provided; proceeding without model")
         return None, False
     created = instantiate_model(model_name, model_kwargs)
     return created, True
@@ -1232,7 +1232,12 @@ def run_training(
                     logger.debug(f"ValueError: {e}")
                     logger.debug("Unable to parse %s env var %s", field_name, env_name)
             secure_rng_flag = os.getenv("CODEX_DP_SECURE_RNG")
-            if secure_rng_flag and secure_rng_flag.lower() in {"1", "true", "yes", "on"}:
+            if secure_rng_flag and secure_rng_flag.lower() in {
+                "1",
+                "true",
+                "yes",
+                "on",
+            }:
                 dp_kwargs["secure_rng"] = True
             try:
                 dp_settings = DifferentialPrivacyConfig(**dp_kwargs)
@@ -1319,7 +1324,9 @@ def run_training(
                     safe_uri = Path(mlflow_uri).expanduser().resolve().as_uri()
                 except Exception:
                     logger.warning(
-                        "Unable to coerce MLflow URI '%s'; using %s", mlflow_uri, safe_uri
+                        "Unable to coerce MLflow URI '%s'; using %s",
+                        mlflow_uri,
+                        safe_uri,
                     )
         mlflow.set_tracking_uri(safe_uri)
         mlflow.set_experiment(mlflow_experiment)

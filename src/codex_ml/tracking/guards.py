@@ -16,7 +16,7 @@ References:
 - MLflow tracking URI schemes (remote vs local): https://mlflow.org/docs/latest/ml/tracking/   # see "Tracking"
 - Weights & Biases offline modes: https://docs.wandb.ai/guides/track/environment-variables/    # WANDB_MODE
 - W&B offline guide: https://docs.wandb.ai/support/run_wandb_offline/
-"""
+"""  # noqa: E501
 
 from __future__ import annotations
 

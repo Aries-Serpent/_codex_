@@ -31,4 +31,3 @@
 - `CODEX_ENV_SWIFT_VERSION` = `6.1`
 - `CODEX_MLFLOW_URI` = `file:./artifacts/mlruns`
 - `CODEX_PROXY_CERT` = `/usr/local/share/ca-certificates/envoy-mitmproxy-ca-cert.crt`
-

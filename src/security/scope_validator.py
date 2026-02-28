@@ -18,16 +18,19 @@ logger = logging.getLogger(__name__)
 
 class ScopeError(Exception):
     """Base exception for scope validation errors."""
+
     pass
 
 
 class InsufficientScopeError(ScopeError):
     """Raised when token lacks required scope."""
+
     pass
 
 
 class InvalidScopeError(ScopeError):
     """Raised when scope format is invalid."""
+
     pass
 
 
@@ -111,36 +114,30 @@ class TokenScope(Flag):
             "repo:write": cls.WRITE_REPO | cls.READ_REPO,
             "repo:admin": cls.ADMIN_REPO | cls.WRITE_REPO | cls.READ_REPO,
             "repo:delete": cls.DELETE_REPO | cls.ADMIN_REPO | cls.WRITE_REPO | cls.READ_REPO,
-
             # Workflow
             "workflow": cls.READ_WORKFLOW | cls.WRITE_WORKFLOW,
             "workflow:read": cls.READ_WORKFLOW,
             "workflow:write": cls.WRITE_WORKFLOW | cls.READ_WORKFLOW,
             "workflow:admin": cls.ADMIN_WORKFLOW | cls.WRITE_WORKFLOW | cls.READ_WORKFLOW,
-
             # Issues
             "issues": cls.READ_ISSUES | cls.WRITE_ISSUES,
             "issues:read": cls.READ_ISSUES,
             "issues:write": cls.WRITE_ISSUES | cls.READ_ISSUES,
             "issues:admin": cls.ADMIN_ISSUES | cls.WRITE_ISSUES | cls.READ_ISSUES,
-
             # Packages
             "packages": cls.READ_PACKAGES | cls.WRITE_PACKAGES,
             "packages:read": cls.READ_PACKAGES,
             "packages:write": cls.WRITE_PACKAGES | cls.READ_PACKAGES,
             "packages:admin": cls.ADMIN_PACKAGES | cls.WRITE_PACKAGES | cls.READ_PACKAGES,
-
             # Organization
             "org": cls.READ_ORG | cls.WRITE_ORG,
             "org:read": cls.READ_ORG,
             "org:write": cls.WRITE_ORG | cls.READ_ORG,
             "org:admin": cls.ADMIN_ORG | cls.WRITE_ORG | cls.READ_ORG,
-
             # User
             "user": cls.READ_USER | cls.WRITE_USER,
             "user:read": cls.READ_USER,
             "user:write": cls.WRITE_USER | cls.READ_USER,
-
             # Security
             "security": cls.READ_SECURITY | cls.WRITE_SECURITY,
             "security:read": cls.READ_SECURITY,
@@ -219,6 +216,7 @@ class TokenScope(Flag):
 @dataclass
 class ScopeValidationResult:
     """Result of scope validation."""
+
     valid: bool
     granted_scopes: TokenScope
     required_scopes: TokenScope
@@ -321,7 +319,7 @@ class ScopeValidator:
                 valid=True,
                 granted_scopes=self.scopes,
                 required_scopes=required,
-                message="Scope validation successful"
+                message="Scope validation successful",
             )
         else:
             missing = required & ~self.scopes
@@ -330,7 +328,7 @@ class ScopeValidator:
                 granted_scopes=self.scopes,
                 required_scopes=required,
                 missing_scopes=missing,
-                message=f"Missing scopes: {missing.to_strings()}"
+                message=f"Missing scopes: {missing.to_strings()}",
             )
 
     def get_granted_scopes(self) -> Set[str]:

@@ -55,33 +55,30 @@ class ProviderFactory:
         try:
             if provider_type == ProviderType.GITHUB:
                 from security.providers.github_provider import GitHubTokenProvider
+
                 return GitHubTokenProvider(config)
 
             elif provider_type == ProviderType.AWS_SECRETS_MANAGER:
                 from security.providers.aws_provider import AWSSecretsManagerProvider
+
                 return AWSSecretsManagerProvider(config)
 
             elif provider_type == ProviderType.AZURE_KEY_VAULT:
                 # Future implementation
-                raise ProviderConfigError(
-                    "Azure Key Vault provider not yet implemented"
-                )
+                raise ProviderConfigError("Azure Key Vault provider not yet implemented")
 
             elif provider_type == ProviderType.HASHICORP_VAULT:
                 # Future implementation
-                raise ProviderConfigError(
-                    "HashiCorp Vault provider not yet implemented"
-                )
+                raise ProviderConfigError("HashiCorp Vault provider not yet implemented")
 
             elif provider_type == ProviderType.ENVIRONMENT:
                 # For testing - returns stub provider
                 from security.providers.environment_provider import EnvironmentProvider
+
                 return EnvironmentProvider(config)
 
             else:
-                raise ProviderConfigError(
-                    f"Unsupported provider type: {provider_type}"
-                )
+                raise ProviderConfigError(f"Unsupported provider type: {provider_type}")
 
         except ImportError as e:
             raise ProviderConfigError(
@@ -109,9 +106,7 @@ class ProviderFactory:
         try:
             provider_type = ProviderType(provider_type_str)
         except ValueError:
-            raise ProviderConfigError(
-                f"Invalid provider type: {provider_type_str}"
-            )
+            raise ProviderConfigError(f"Invalid provider type: {provider_type_str}")
 
         # Create config and provider
         config = ProviderConfig(provider_type=provider_type, **config_dict)
@@ -134,6 +129,7 @@ class ProviderFactory:
             from security.providers.github_provider import (
                 GitHubTokenProvider,  # noqa: F401 - Testing optional dependency availability
             )
+
             available.append(ProviderType.GITHUB)
         except ImportError:
             # GitHub provider dependencies not available (e.g., requests library)
@@ -145,6 +141,7 @@ class ProviderFactory:
             from security.providers.aws_provider import (
                 AWSSecretsManagerProvider,  # noqa: F401 - Testing optional dependency availability
             )
+
             available.append(ProviderType.AWS_SECRETS_MANAGER)
         except ImportError:
             # AWS provider dependencies not available (e.g., boto3 library)
@@ -216,10 +213,7 @@ def create_provider_from_env(provider_type: ProviderType) -> SecretProvider:
     import os
 
     if provider_type == ProviderType.GITHUB:
-        config = ProviderConfig(
-            provider_type=ProviderType.GITHUB,
-            token=os.getenv("GITHUB_TOKEN")
-        )
+        config = ProviderConfig(provider_type=ProviderType.GITHUB, token=os.getenv("GITHUB_TOKEN"))
 
     elif provider_type == ProviderType.AWS_SECRETS_MANAGER:
         region = os.getenv("AWS_REGION", "us-east-1")

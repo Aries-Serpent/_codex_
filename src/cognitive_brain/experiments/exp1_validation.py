@@ -196,9 +196,7 @@ def run_exp1_validation() -> Dict:
         # Calculate metrics
         quantum_accuracy = quantum_correct / len(scenarios)
         classical_accuracy = classical_correct / len(scenarios)
-        accuracy_improvement = (
-            (quantum_accuracy - classical_accuracy) / classical_accuracy
-        ) * 100
+        accuracy_improvement = ((quantum_accuracy - classical_accuracy) / classical_accuracy) * 100
 
         avg_quantum_time = sum(quantum_times) / len(quantum_times)
         avg_classical_time = sum(classical_times) / len(classical_times)
@@ -208,13 +206,11 @@ def run_exp1_validation() -> Dict:
         print("[ASSESS] Analyzing results...")
         print()
         print(f"  Quantum Accuracy:     {quantum_accuracy:.1%} ({quantum_correct}/100)")
-        print(
-            f"  Classical Accuracy:   {classical_accuracy:.1%} ({classical_correct}/100)"
-        )
+        print(f"  Classical Accuracy:   {classical_accuracy:.1%} ({classical_correct}/100)")
         print(f"  Improvement:          {accuracy_improvement:+.1f}%")
         print("  Target:               +15.0%")
         print(
-            f"  Status:               {'✅ TARGET MET' if accuracy_improvement >= 15.0 else '⚠️ BELOW TARGET'}"
+            f"  Status:               {'✅ TARGET MET' if accuracy_improvement >= 15.0 else '⚠️ BELOW TARGET'}"  # noqa: E501
         )
         print()
         print(f"  Avg Quantum Time:     {avg_quantum_time:.2f}ms")
@@ -237,9 +233,7 @@ def run_exp1_validation() -> Dict:
             print()
 
         # Pattern 2: Performance vs accuracy tradeoff
-        time_ratio = (
-            avg_quantum_time / avg_classical_time if avg_classical_time > 0 else 1.0
-        )
+        time_ratio = avg_quantum_time / avg_classical_time if avg_classical_time > 0 else 1.0
         print("  2. Performance-Accuracy Tradeoff:")
         print(f"     - Quantum is {time_ratio:.2f}x slower than classical")
         print(f"     - But delivers {accuracy_improvement:+.1f}% accuracy improvement")

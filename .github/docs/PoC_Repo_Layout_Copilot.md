@@ -38,4 +38,3 @@ docs/
 ## Governance notes
 - Standardize on **`@github/copilot`** CLI; consult `copilot --help` for flags. General background: GitHub Docs for Copilot in the CLI.  
 - First-run requires **/login**, trusting the directory, and **per-tool approvals**. :contentReference[oaicite:6]{index=6}
-

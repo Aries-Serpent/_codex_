@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 # Import with fallback support
 try:
     from omegaconf import DictConfig, OmegaConf
+
     _OMEGACONF_AVAILABLE = True
 except ImportError:
     logger.warning("OmegaConf not available, using dict fallback")
@@ -44,6 +45,7 @@ except ImportError:
 try:
     from hydra import compose, initialize_config_dir
     from hydra.errors import MissingConfigException as HydraMissingConfigException
+
     _HYDRA_AVAILABLE = True
 except ImportError:
     logger.debug("Hydra not available, using fallback")
@@ -60,7 +62,14 @@ if not _HYDRA_AVAILABLE:
         # Define our own if neither is available
         class MissingConfigException(FileNotFoundError):
             """Exception raised when a configuration file cannot be located."""
-            def __init__(self, *, missing_cfg_file: str, message: str | None = None, **kwargs: Any) -> None:
+
+            def __init__(
+                self,
+                *,
+                missing_cfg_file: str,
+                message: str | None = None,
+                **kwargs: Any,
+            ) -> None:
                 self.missing_cfg_file = missing_cfg_file
                 resolved = message or f"Missing config file: {missing_cfg_file}"
                 super().__init__(resolved)
@@ -72,6 +81,7 @@ else:
 @dataclass
 class ErrorConfig:
     """Structured error configuration."""
+
     code: str
     message: str
     severity: str
@@ -115,6 +125,7 @@ class ConfigLoader:
 
         try:
             import yaml
+
             with error_config_path.open("r") as f:
                 self.error_config = yaml.safe_load(f) or {}
         except ImportError:
@@ -133,14 +144,14 @@ class ConfigLoader:
                     "code": "CONFIG_001",
                     "message": "Missing configuration file",
                     "severity": "error",
-                    "resolution": "Ensure the configuration file exists"
+                    "resolution": "Ensure the configuration file exists",
                 }
             },
             "defaults": {
                 "log_errors": True,
                 "raise_on_error": True,
-                "fallback_enabled": True
-            }
+                "fallback_enabled": True,
+            },
         }
 
     def get_error(self, category: str, error_key: str) -> ErrorConfig | None:
@@ -195,7 +206,11 @@ class ConfigLoader:
         # If primary was conf/, try configs/
         if primary_dir.name == "conf" or "conf" in str(primary_dir):
             # Map conf/ structure to configs/ structure
-            relative_to_conf = primary_dir.relative_to(self.repo_root / "conf") if (self.repo_root / "conf") in primary_dir.parents else Path(".")
+            relative_to_conf = (
+                primary_dir.relative_to(self.repo_root / "conf")
+                if (self.repo_root / "conf") in primary_dir.parents
+                else Path(".")
+            )
 
             # Try common legacy mappings
             legacy_candidates = [
@@ -216,7 +231,7 @@ class ConfigLoader:
         config_name: str,
         config_dir: str | Path | None = None,
         overrides: list[str] | None = None,
-        allow_fallback: bool = True
+        allow_fallback: bool = True,
     ) -> DictConfig | dict[str, Any]:
         """Load configuration using Hydra Compose API.
 
@@ -268,6 +283,7 @@ class ConfigLoader:
         if config_file.exists():
             try:
                 import yaml
+
                 with config_file.open("r") as f:
                     data = yaml.safe_load(f) or {}
 
@@ -291,10 +307,7 @@ class ConfigLoader:
         if not allow_fallback:
             error = self.get_error("config_errors", "missing_config")
             msg = error.format() if error else f"Missing config file: {config_file}"
-            raise MissingConfigException(
-                missing_cfg_file=str(config_file),
-                message=msg
-            )
+            raise MissingConfigException(missing_cfg_file=str(config_file), message=msg)
 
         # Return empty config as fallback
         logger.warning(f"Config not found, returning empty fallback: {config_file}")
@@ -323,6 +336,7 @@ class ConfigLoader:
             # Parse value
             try:
                 import yaml
+
                 value = yaml.safe_load(value_str)
             except Exception:
                 value = value_str
@@ -354,7 +368,7 @@ def load_config(
     config_name: str,
     config_dir: str | Path | None = None,
     overrides: list[str] | None = None,
-    allow_fallback: bool = True
+    allow_fallback: bool = True,
 ) -> DictConfig | dict[str, Any]:
     """Load configuration using global loader.
 

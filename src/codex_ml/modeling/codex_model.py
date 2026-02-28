@@ -77,7 +77,9 @@ class CodexModel:
         return "cpu"
 
     @staticmethod
-    def _normalise_lora(options: LoraOptions | Mapping[str, Any] | None) -> LoraOptions | None:
+    def _normalise_lora(
+        options: LoraOptions | Mapping[str, Any] | None,
+    ) -> LoraOptions | None:
         if options is None:
             return None
         if isinstance(options, LoraOptions):
@@ -105,6 +107,9 @@ class CodexModel:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.tokenizer_name, **self._tokenizer_kwargs
         )
+        # Ensure pad_token is set; many decoder-only models omit it.
+        if self.tokenizer.pad_token is None and self.tokenizer.eos_token is not None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
 
         lora_enabled = self._lora_cfg is not None and bool(
             self._lora_cfg.adapter_path or get_peft_model
@@ -164,7 +169,12 @@ class CodexModel:
         return self.model
 
     def generate(
-        self, prompt: str, *, max_tokens: int = 20, temperature: float = 0.8, **kwargs: Any
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 20,
+        temperature: float = 0.8,
+        **kwargs: Any,
     ) -> str:
         """Generate text from ``prompt`` using the wrapped model."""
 

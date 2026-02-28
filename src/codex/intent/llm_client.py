@@ -45,6 +45,7 @@ RATE_LIMIT_DELAY = 1.0
 @dataclass
 class ProvenanceRecord:
     """Record of an LLM API call for auditing."""
+
     prompt_hash: str
     prompt: str
     response: str
@@ -94,7 +95,7 @@ def _truncate_context(text: str, max_chars: int = 24000) -> str:
         return text
 
     # Truncate with indicator
-    return text[:max_chars - 100] + "\n\n[... truncated for token budget ...]"
+    return text[: max_chars - 100] + "\n\n[... truncated for token budget ...]"
 
 
 class CodexLLMClient:
@@ -138,6 +139,7 @@ class CodexLLMClient:
         if allow_external_llm:
             try:
                 from openai import OpenAI
+
                 api_key = os.environ.get("OPENAI_API_KEY")
                 if api_key:
                     self._client = OpenAI(api_key=api_key)

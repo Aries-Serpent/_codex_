@@ -35,7 +35,7 @@ def _write_csv(path: Path) -> None:
 def test_build_report(tmp_path: Path) -> None:
     try:
         import hhg_logistics.monitor.serve_report as serve_report
-    except Exception:  # pragma: no cover - optional dependency guard
+    except ImportError:  # pragma: no cover - optional dependency guard
         pytest.skip("evidently not installed")
 
     reference = tmp_path / "ref.csv"

@@ -25,7 +25,7 @@ except ImportError:
 try:
     import torch as _torch_ver
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver.__version__.startswith("2.")
-except Exception:
+except ImportError:
     _TORCH_312_BUG = False
 
 # Only import if dependencies are available

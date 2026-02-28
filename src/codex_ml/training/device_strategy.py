@@ -13,6 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
+
     # Verify torch is actually functional (not just a stub)
     _ = torch.float32  # Test access to a common attribute
     _HAS_TORCH = True

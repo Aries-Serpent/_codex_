@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -168,7 +167,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     with capture_exceptions(logger):
         log_event(logger, "cli.start", prog="tracking-decide", args=arg_list)
         if typer is None:
-            log_event(logger, "cli.finish", prog="tracking-decide", status="error", exit_code=1)
+            log_event(
+                logger,
+                "cli.finish",
+                prog="tracking-decide",
+                status="error",
+                exit_code=1,
+            )
             raise SystemExit(
                 "Typer is required to use codex_ml.cli.tracking_decide; install it with "
                 "`pip install typer`."
@@ -180,7 +185,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         else:
             exit_code = 0
         status = "ok" if exit_code == 0 else "error"
-        log_event(logger, "cli.finish", prog="tracking-decide", status=status, exit_code=exit_code)
+        log_event(
+            logger,
+            "cli.finish",
+            prog="tracking-decide",
+            status=status,
+            exit_code=exit_code,
+        )
         return exit_code
 
 

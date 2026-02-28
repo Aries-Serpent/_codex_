@@ -15,7 +15,7 @@ from codex_ml.metrics.evaluator import batch_metrics  # noqa: E402
 
 try:  # pragma: no cover - torch optional in CI
     import torch
-except Exception:  # pragma: no cover - skip when torch unavailable
+except ImportError:  # pragma: no cover - skip when torch unavailable
     torch = None  # type: ignore[assignment]
 
 pytestmark = pytest.mark.skipif(torch is None, reason="requires PyTorch")

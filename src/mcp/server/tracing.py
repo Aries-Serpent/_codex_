@@ -48,14 +48,16 @@ def init_tracing(service_name: str = "mcp"):
 
     resource = resource_mod.Resource.create({"service.name": service_name})
     provider = tracer_mod.TracerProvider(resource=resource)
-    provider.add_span_processor(export_mod.BatchSpanProcessor(otlp_mod.OTLPSpanExporter(endpoint=otlp)))
+    provider.add_span_processor(
+        export_mod.BatchSpanProcessor(otlp_mod.OTLPSpanExporter(endpoint=otlp))
+    )
     trace.set_tracer_provider(provider)
 
 
 def ensure_request_id(request: Request) -> str:
     """
     Ensure request has X-Request-Id (generate if missing) and attach to request.state for downstream use.
-    """
+    """  # noqa: E501
     rid = request.headers.get("x-request-id")
     if not rid:
         rid = str(uuid.uuid4())

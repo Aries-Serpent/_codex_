@@ -10,6 +10,7 @@ should **decrease** during training and signals when progress has stalled::
             break
 
 """
+
 from __future__ import annotations
 
 

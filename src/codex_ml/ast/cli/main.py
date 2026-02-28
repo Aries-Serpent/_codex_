@@ -10,6 +10,7 @@ Usage:
     python -m codex_ml.ast.cli stats [--db <path>]
     python -m codex_ml.ast.cli export [--format json|csv] [--output <file>]
 """
+
 import argparse
 import json
 import sys
@@ -181,12 +182,32 @@ def cmd_export(args: argparse.Namespace) -> int:
             # Use csv module for proper CSV formatting
             string_buffer = io.StringIO()
             writer = csv.writer(string_buffer, quoting=csv.QUOTE_ALL)
-            writer.writerow(["finding_id", "type", "severity", "message", "file", "line", "analyzer"])
+            writer.writerow(
+                [
+                    "finding_id",
+                    "type",
+                    "severity",
+                    "message",
+                    "file",
+                    "line",
+                    "analyzer",
+                ]
+            )
 
             for f in findings:
                 file_path = str(f.location.file_path) if f.location else ""
                 line = f.location.line_start if f.location else ""
-                writer.writerow([f.finding_id, f.type, f.severity, f.message, file_path, line, f.analyzer])
+                writer.writerow(
+                    [
+                        f.finding_id,
+                        f.type,
+                        f.severity,
+                        f.message,
+                        file_path,
+                        line,
+                        f.analyzer,
+                    ]
+                )
 
             output = string_buffer.getvalue()
 

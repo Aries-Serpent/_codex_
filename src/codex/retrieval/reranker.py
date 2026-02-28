@@ -150,9 +150,8 @@ class ScoreFusionReranker(BaseReranker):
 
         # Apply threshold and top_k
         ranked_results = [
-            r for r in ranked_results
-            if r.reranked_score >= self.config.score_threshold
-        ][:self.config.top_k]
+            r for r in ranked_results if r.reranked_score >= self.config.score_threshold
+        ][: self.config.top_k]
 
         # Set final ranks
         for i, result in enumerate(ranked_results):
@@ -183,9 +182,7 @@ class MMRReranker(BaseReranker):
         n_results = len(results)
 
         # Extract relevance scores
-        relevance_scores = np.array([
-            r.get("score", 0.0) for r in results
-        ])
+        relevance_scores = np.array([r.get("score", 0.0) for r in results])
 
         # If embeddings provided, compute diversity matrix
         if embeddings is not None and len(embeddings) == n_results:
@@ -218,10 +215,7 @@ class MMRReranker(BaseReranker):
                     relevance = relevance_scores[idx]
 
                     # Max similarity to already selected
-                    max_sim = max(
-                        similarity_matrix[idx, sel_idx]
-                        for sel_idx in selected_indices
-                    )
+                    max_sim = max(similarity_matrix[idx, sel_idx] for sel_idx in selected_indices)
 
                     # MMR score
                     mmr_score = lambda_param * relevance - (1 - lambda_param) * max_sim
@@ -271,6 +265,7 @@ class CrossEncoderReranker(BaseReranker):
 
         try:
             from sentence_transformers import CrossEncoder
+
             self._model = CrossEncoder(self.config.cross_encoder_model)
             self._model_loaded = True
             logger.info(f"Loaded cross-encoder: {self.config.cross_encoder_model}")
@@ -295,10 +290,7 @@ class CrossEncoderReranker(BaseReranker):
         model = self._load_model()
 
         # Extract documents
-        documents = [
-            r.get("content", r.get("text", ""))
-            for r in results
-        ]
+        documents = [r.get("content", r.get("text", "")) for r in results]
 
         # Score with cross-encoder
         if model is not None:
@@ -332,9 +324,8 @@ class CrossEncoderReranker(BaseReranker):
 
         # Apply threshold and top_k
         ranked_results = [
-            r for r in ranked_results
-            if r.reranked_score >= self.config.score_threshold
-        ][:self.config.top_k]
+            r for r in ranked_results if r.reranked_score >= self.config.score_threshold
+        ][: self.config.top_k]
 
         # Set final ranks
         for i, result in enumerate(ranked_results):
@@ -380,10 +371,7 @@ class Reranker:
             }
             self._reranker = None
         else:
-            reranker_class = self.STRATEGY_MAP.get(
-                self.config.strategy,
-                ScoreFusionReranker
-            )
+            reranker_class = self.STRATEGY_MAP.get(self.config.strategy, ScoreFusionReranker)
             self._reranker = reranker_class(self.config)
 
     def rerank(
@@ -421,15 +409,17 @@ class Reranker:
     def _wrap_results(self, results: Sequence[dict[str, Any]]) -> list[RankedResult]:
         """Wrap raw results as RankedResult without re-ranking."""
         wrapped = []
-        for i, result in enumerate(results[:self.config.top_k], 1):
-            wrapped.append(RankedResult(
-                document_id=result.get("id", result.get("document_id", "")),
-                content=result.get("content", result.get("text", "")),
-                original_score=result.get("score", 0.0),
-                reranked_score=result.get("score", 0.0),
-                rank=i,
-                metadata=result.get("metadata", {}),
-            ))
+        for i, result in enumerate(results[: self.config.top_k], 1):
+            wrapped.append(
+                RankedResult(
+                    document_id=result.get("id", result.get("document_id", "")),
+                    content=result.get("content", result.get("text", "")),
+                    original_score=result.get("score", 0.0),
+                    reranked_score=result.get("score", 0.0),
+                    rank=i,
+                    metadata=result.get("metadata", {}),
+                )
+            )
         return wrapped
 
     def _hybrid_rerank(

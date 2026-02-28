@@ -91,9 +91,7 @@ def require_scope(*required_scopes: str) -> Callable:
             # Check scope and raise if insufficient
             validator.require_scope(required_scope_flags)
 
-            logger.debug(
-                f"Scope check passed for {func.__name__}: {required_scopes}"
-            )
+            logger.debug(f"Scope check passed for {func.__name__}: {required_scopes}")
 
             # Execute function
             return func(*args, **kwargs)
@@ -130,9 +128,7 @@ def require_any_scope(*required_scopes: str) -> Callable:
         ...     pass
     """
     # Convert scope strings to TokenScope flags
-    required_scope_flags = [
-        TokenScope.from_string(scope) for scope in required_scopes
-    ]
+    required_scope_flags = [TokenScope.from_string(scope) for scope in required_scopes]
 
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -148,9 +144,7 @@ def require_any_scope(*required_scopes: str) -> Callable:
             # Check scope and raise if insufficient
             validator.require_any_scope(required_scope_flags)
 
-            logger.debug(
-                f"Scope check passed for {func.__name__}: one of {required_scopes}"
-            )
+            logger.debug(f"Scope check passed for {func.__name__}: one of {required_scopes}")
 
             # Execute function
             return func(*args, **kwargs)
@@ -186,6 +180,7 @@ def optional_scope(*scopes: str) -> Callable:
         ...         return {"repo": repo_id, "write_access": True}
         ...     return {"repo": repo_id, "write_access": False}
     """
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -195,10 +190,7 @@ def optional_scope(*scopes: str) -> Callable:
                 # Log scope check but don't enforce
                 scope_flags = TokenScope.from_list(list(scopes))
                 has_scopes = validator.has_scope(scope_flags)
-                logger.debug(
-                    f"Optional scope check for {func.__name__}: "
-                    f"{scopes} = {has_scopes}"
-                )
+                logger.debug(f"Optional scope check for {func.__name__}: {scopes} = {has_scopes}")
 
             # Execute function regardless
             return func(*args, **kwargs)

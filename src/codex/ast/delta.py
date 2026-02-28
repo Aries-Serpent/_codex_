@@ -1,4 +1,5 @@
 """AST delta analysis for detecting changes."""
+
 from __future__ import annotations
 
 import logging
@@ -65,9 +66,7 @@ class DeltaAnalyzer:
         unchanged = []
 
         # Get all baseline file paths
-        baselines = {
-            b["file_path"]: b for b in self.baseline_manager.list_baselines()
-        }
+        baselines = {b["file_path"]: b for b in self.baseline_manager.list_baselines()}
         baseline_paths = set(baselines.keys())
         current_paths = set(current_files.keys())
 

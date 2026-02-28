@@ -89,6 +89,7 @@ class ExperimentConfig:
         save_checkpoints: Enable checkpoint saving during training
         eval_frequency: Evaluation frequency in iterations (0 disables)
     """
+
     name: str = "default"
     type: str = "default"
     description: str = ""
@@ -267,7 +268,16 @@ def cmd_audit(args: argparse.Namespace) -> int:
     cfg_path = Path(args.path or _DEFAULT_CONFIG_PATH).expanduser().resolve()
     if not cfg_path.exists():
         print("[config] configs/base/hydra.yaml not found", file=sys.stderr)
-        print(json.dumps({"_self_": False, "position": None, "ok": False, "unresolved_refs": True}))
+        print(
+            json.dumps(
+                {
+                    "_self_": False,
+                    "position": None,
+                    "ok": False,
+                    "unresolved_refs": True,
+                }
+            )
+        )
         return 2
 
     text = cfg_path.read_text(encoding="utf-8")

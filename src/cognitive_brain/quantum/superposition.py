@@ -141,7 +141,7 @@ class SuperpositionEngine:
         self.config = config
         self.monitor = monitor
         self.max_workers = max_workers
-        self.lightweight = getattr(config, 'lightweight_mode', False)
+        self.lightweight = getattr(config, "lightweight_mode", False)
 
         self._evaluation_times: List[float] = []
 
@@ -229,15 +229,15 @@ class SuperpositionEngine:
 
         # Phase 3: Apply quantum noise simulation if configured
         # Models gate depolarization and measurement errors per IEEE quantum standard
-        if getattr(self.config, 'noise_enabled', False):
-            gate_err = getattr(self.config, 'gate_error_rate', 0.0)
-            meas_err = getattr(self.config, 'measurement_error_rate', 0.0)
+        if getattr(self.config, "noise_enabled", False):
+            gate_err = getattr(self.config, "gate_error_rate", 0.0)
+            meas_err = getattr(self.config, "measurement_error_rate", 0.0)
             scores = self._apply_noise(scores, gate_err, meas_err)
 
         # Normalize to probability distribution using temperature-scaled softmax
         # Softmax with temperature T: P_i = exp(s_i/T) / Σ exp(s_j/T)
         # Lower temperature → sharper distribution → higher coherence
-        temperature = getattr(self.config, 'superposition_temperature', 0.08)
+        temperature = getattr(self.config, "superposition_temperature", 0.08)
         max_score = max(scores) if scores else 0.0
         if max_score == 0:
             probabilities = [1.0 / len(scores)] * len(scores)
@@ -375,7 +375,11 @@ class SuperpositionEngine:
                 # 3. Context dict as single arg
                 result = None
                 _tried = False
-                for _args in [(), tuple(_context.values()) if _context else (), (_context,)]:
+                for _args in [
+                    (),
+                    tuple(_context.values()) if _context else (),
+                    (_context,),
+                ]:
                     try:
                         result = fn(*_args)
                         _tried = True
@@ -397,6 +401,7 @@ class SuperpositionEngine:
                     return float(result)
                 except (TypeError, ValueError):
                     return 0.0
+
             return _wrapped
 
         decision_objects = [

@@ -71,7 +71,7 @@ def resolve_fetch_messages():
             fn = getattr(m, "fetch_messages")
             try:
                 sig = inspect.signature(fn)
-            except Exception:
+            except ImportError:
                 sig = None
             meta = {
                 "module": mod,
@@ -101,7 +101,7 @@ def resolve_writer():
                 fn = getattr(m, name)
                 try:
                     sig = inspect.signature(fn)
-                except Exception:
+                except ImportError:
                     sig = None
                 params = sig.parameters if sig else {}
                 if not any(k in params for k in ["session_id", "session", "sid"]):

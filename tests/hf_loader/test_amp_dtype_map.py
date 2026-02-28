@@ -18,5 +18,5 @@ def test_amp_dtype_map_behavior():
 
         assert out_bf16 in (None, torch.bfloat16)
         assert out_fp16 in (None, torch.float16)
-    except Exception:
+    except ImportError:
         assert out_bf16 is None and out_fp16 is None

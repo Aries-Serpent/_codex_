@@ -13,10 +13,10 @@ Target: +3-4% coverage gain (62% → 66%)
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestPhase2_PhysicsIntegration:

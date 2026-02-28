@@ -52,4 +52,4 @@ class PerformanceMonitor:
         self.metrics_file.write_text(json.dumps(data, indent=2))
 
     def generate_report(self) -> str:
-        return f"# Performance Report\nGenerated: {datetime.now(UTC).isoformat()}\nTotal metrics: {len(self.metrics)}\n"
+        return f"# Performance Report\nGenerated: {datetime.now(UTC).isoformat()}\nTotal metrics: {len(self.metrics)}\n"  # noqa: E501

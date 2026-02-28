@@ -541,7 +541,7 @@ class SqliteDAL(BaseDAL):
         ctx = json.dumps(context or {}, sort_keys=True)
         with self.txn():
             self.conn.execute(
-                ("INSERT INTO event (id, item_id, action, actor, context) " "VALUES (?,?,?,?,?)"),
+                ("INSERT INTO event (id, item_id, action, actor, context) VALUES (?,?,?,?,?)"),
                 (
                     eid,
                     item_id,
@@ -868,7 +868,10 @@ class PostgresDAL(BaseDAL):
     def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
         cur = self.conn.cursor()
         try:
-            cur.execute("SELECT * FROM release_meta WHERE release_id = %s LIMIT 1", (release_id,))
+            cur.execute(
+                "SELECT * FROM release_meta WHERE release_id = %s LIMIT 1",
+                (release_id,),
+            )
             row = cur.fetchone()
             if not row:
                 return None
@@ -1089,7 +1092,15 @@ class MariaDbDAL(BaseDAL):
                 )
                 cur.execute(
                     sql,
-                    (cid, release_meta_id, item_id, tombstone, dest_path, mode, payload),
+                    (
+                        cid,
+                        release_meta_id,
+                        item_id,
+                        tombstone,
+                        dest_path,
+                        mode,
+                        payload,
+                    ),
                 )
             finally:
                 cur.close()
@@ -1098,7 +1109,10 @@ class MariaDbDAL(BaseDAL):
     def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
         cur = self.conn.cursor()
         try:
-            cur.execute("SELECT * FROM release_meta WHERE release_id = %s LIMIT 1", (release_id,))
+            cur.execute(
+                "SELECT * FROM release_meta WHERE release_id = %s LIMIT 1",
+                (release_id,),
+            )
             row = cur.fetchone()
             if not row:
                 return None

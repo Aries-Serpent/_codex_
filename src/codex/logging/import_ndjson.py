@@ -93,7 +93,7 @@ def _init_db(conn: sqlite3.Connection) -> None:
     # Create the `(session_id, ts)` index for efficient backfilling of legacy
     # databases and faster retention queries.
     conn.execute(
-        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx " "ON session_events(session_id, ts)"
+        "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx ON session_events(session_id, ts)"
     )
     conn.execute(
         """

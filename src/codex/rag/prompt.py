@@ -144,7 +144,9 @@ class PromptTemplate:
     QUERY_END = QUERY_END
 
     def __init__(
-        self, config: Optional[PromptConfig] = None, tokenizer: Optional[TokenizerFn] = None
+        self,
+        config: Optional[PromptConfig] = None,
+        tokenizer: Optional[TokenizerFn] = None,
     ):
         """
         Initialize prompt template.
@@ -211,7 +213,7 @@ class PromptTemplate:
             if total_tokens + snippet_tokens > self.config.max_context_tokens:
                 # Skip if adding would exceed budget
                 logger.debug(
-                    f"Context budget reached: {total_tokens}/{self.config.max_context_tokens} tokens. "
+                    f"Context budget reached: {total_tokens}/{self.config.max_context_tokens} tokens. "  # noqa: E501
                     f"Skipping remaining {len(retrieved_docs) - i + 1} documents."
                 )
                 break

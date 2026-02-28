@@ -71,6 +71,7 @@ class PipelineConfig:
         timeout_seconds: Operation timeout
         validate_utf8: Validate UTF-8 encoding
     """
+
     encoding: str = "auto"
     batch_size: int = 1000
     max_file_size_mb: int = MAX_FILE_SIZE_MB
@@ -96,6 +97,7 @@ class PipelineResult:
         output_path: Path to output file (if applicable)
         metadata: Additional metadata about the operation
     """
+
     success: bool
     records_processed: int = 0
     records_skipped: int = 0

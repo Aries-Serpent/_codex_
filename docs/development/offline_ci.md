@@ -20,4 +20,3 @@ commands without executing them, or `--steps security coverage` to run a subset.
 
 The runner mirrors the job structure defined in `.github/workflows/ci.yml`
 while keeping execution entirely offline.
-

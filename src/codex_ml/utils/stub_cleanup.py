@@ -325,7 +325,12 @@ def prioritize_stubs(stubs: list[StubInfo]) -> list[StubInfo]:
     """
     priority_order = {"P0": 0, "P1": 1, "P2": 2}
     return sorted(
-        stubs, key=lambda s: (priority_order.get(s.priority, 3), str(s.file_path), s.line_number)
+        stubs,
+        key=lambda s: (
+            priority_order.get(s.priority, 3),
+            str(s.file_path),
+            s.line_number,
+        ),
     )
 
 

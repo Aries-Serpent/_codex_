@@ -62,7 +62,7 @@ def _has_omegaconf() -> bool:
         import omegaconf  # type: ignore # noqa: F401
 
         return True
-    except Exception:
+    except ImportError:
         return False
 
 

@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -228,7 +227,12 @@ def _summarise_rows(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
 
     return sorted(
         result,
-        key=lambda item: (item["run_id"], item["split"], item["metric"], item["dataset"]),
+        key=lambda item: (
+            item["run_id"],
+            item["split"],
+            item["metric"],
+            item["dataset"],
+        ),
     )
 
 
@@ -307,7 +311,9 @@ def summarize_directory(
 
 
 # Convenience wrapper for backward compatibility with tests
-def summarize(run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None) -> Path:
+def summarize(
+    run_dir: Union[str, Path], fmt: str, destination: Optional[Union[str, Path]] = None
+) -> Path:
     """Convenience wrapper for summarize_directory.
 
     This function provides a simpler interface compatible with existing tests.

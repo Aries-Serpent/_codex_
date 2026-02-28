@@ -5,6 +5,7 @@ Safe accelerate initialization guard with CPU fallback.
 Provides structured diagnostics and never raises on CPU-only environments.
 Designed to be skip-safe on GitHub runners and CI environments.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 # patch("src.training.accelerate_init_guard.Accelerator", ...)
 try:
     from accelerate import Accelerator  # noqa: F401
+
     _ACCELERATOR_AVAILABLE = True
 except ImportError:
     Accelerator = None  # type: ignore[misc,assignment]
@@ -57,7 +59,7 @@ class AccelerateInitResult:
     def __str__(self) -> str:
         """Human-readable summary."""
         if self.success:
-            return f"AccelerateInitResult(success=True, backend={self.backend}, world_size={self.world_size})"
+            return f"AccelerateInitResult(success=True, backend={self.backend}, world_size={self.world_size})"  # noqa: E501
         elif self.skip_reason:
             return f"AccelerateInitResult(skipped, reason={self.skip_reason})"
         else:

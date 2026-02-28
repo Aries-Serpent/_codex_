@@ -136,7 +136,10 @@ class ContextMemory:
                     summary = self._summarizer(chunk_content)
                 except Exception as exc:
                     logger.debug(f"Exception: {exc}")
-                    logger.warning("Failed to summarize chunk; storing without summary", exc_info=exc)
+                    logger.warning(
+                        "Failed to summarize chunk; storing without summary",
+                        exc_info=exc,
+                    )
 
             # Create chunk
             chunk = MemoryChunk(
@@ -158,7 +161,11 @@ class ContextMemory:
                     self._embeddings[chunk_id] = self._embedder(chunk_content)
                 except Exception as exc:
                     logger.debug(f"Exception: {exc}")
-                    logger.warning("Failed to embed chunk %s; proceeding without embedding", chunk_id, exc_info=exc)
+                    logger.warning(
+                        "Failed to embed chunk %s; proceeding without embedding",
+                        chunk_id,
+                        exc_info=exc,
+                    )
 
         # Persist if storage configured
         if self.storage_path:
@@ -198,7 +205,8 @@ class ContextMemory:
         else:
             # Sort by recency and access count
             candidates.sort(
-                key=lambda c: (c.priority, c.access_count, c.last_accessed), reverse=True
+                key=lambda c: (c.priority, c.access_count, c.last_accessed),
+                reverse=True,
             )
             retrieval_method = "priority_recency"
 
@@ -254,7 +262,10 @@ class ContextMemory:
                     summaries.append(summary)
                 except Exception as exc:
                     logger.debug(f"Exception: {exc}")
-                    logger.warning("Chunk summarization failed; using fallback content", exc_info=exc)
+                    logger.warning(
+                        "Chunk summarization failed; using fallback content",
+                        exc_info=exc,
+                    )
                     summaries.append(chunk.content[:200] + "...")
 
         # Reduce phase: combine summaries
@@ -266,7 +277,10 @@ class ContextMemory:
             return self._summarizer(combined)
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
-            logger.warning("Failed to summarize combined content; returning raw aggregation", exc_info=exc)
+            logger.warning(
+                "Failed to summarize combined content; returning raw aggregation",
+                exc_info=exc,
+            )
             return combined
 
     def stream_retrieve(
@@ -399,7 +413,8 @@ class ContextMemory:
 
         # Find lowest priority, least accessed chunk
         candidate = min(
-            self._chunks.values(), key=lambda c: (c.priority, c.access_count, c.last_accessed)
+            self._chunks.values(),
+            key=lambda c: (c.priority, c.access_count, c.last_accessed),
         )
 
         return self.delete_chunk(candidate.chunk_id)

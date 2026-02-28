@@ -73,12 +73,13 @@ def _get_github_client():
     """Get GitHub client instance."""
     try:
         from src.services.github.client import GitHubClientSync
+
         return GitHubClientSync()
     except ImportError as e:
         logger.error(f"GitHub client not available: {e}")
         raise HTTPException(
             status_code=500,
-            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
+            detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed.",
         )
 
 
@@ -201,7 +202,9 @@ async def list_check_runs(
     owner: str = Query(..., description="Repository owner (e.g., 'Aries-Serpent')"),
     repo: str = Query(..., description="Repository name (e.g., '_codex_')"),
     ref: str = Query(..., description="Git reference (commit SHA, branch, or tag)"),
-    status: Optional[CheckRunStatus] = Query(None, description="Filter by status (queued, in_progress, completed)"),
+    status: Optional[CheckRunStatus] = Query(
+        None, description="Filter by status (queued, in_progress, completed)"
+    ),
     check_name: Optional[str] = Query(None, description="Filter by check run name"),
 ):
     """List check runs for a git reference.
@@ -223,13 +226,12 @@ async def list_check_runs(
         client = _get_github_client()
 
         from src.services.github.types import CheckRunStatus
+
         status_enum = CheckRunStatus(status) if status else None
 
         # Fetch check runs
         check_runs = client.list_check_runs_for_ref(
-            owner, repo, ref,
-            check_name=check_name,
-            status=status_enum
+            owner, repo, ref, check_name=check_name, status=status_enum
         )
 
         # Convert to response format

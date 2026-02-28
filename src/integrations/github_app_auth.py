@@ -51,7 +51,7 @@ def _read_private_key() -> str:
     if path and Path(path).exists():
         return Path(path).read_text(encoding="utf-8")
     raise AuthError(
-        "Missing GitHub App private key (set GITHUB_APP_PRIVATE_KEY_PEM or GITHUB_APP_PRIVATE_KEY_PATH)."
+        "Missing GitHub App private key (set GITHUB_APP_PRIVATE_KEY_PEM or GITHUB_APP_PRIVATE_KEY_PATH)."  # noqa: E501
     )
 
 
@@ -81,7 +81,11 @@ def exchange_installation_token(app_jwt: str, installation_id: str | int) -> tup
 
 
 def create_runner_registration_token(
-    installation_token: str, *, owner: str, repo: str | None = None, org: str | None = None
+    installation_token: str,
+    *,
+    owner: str,
+    repo: str | None = None,
+    org: str | None = None,
 ) -> str:
     """Create a short-lived registration token for a self-hosted runner."""
 
@@ -138,13 +142,13 @@ def assert_online_allowlisted(
     hosts = _allowlisted_hosts(env_map)
     if not hosts:
         raise SystemExit(
-            "CODEX_ALLOWLIST_HOSTS or CODEX_NET_ALLOWLIST must include api.github.com for GitHub access"
+            "CODEX_ALLOWLIST_HOSTS or CODEX_NET_ALLOWLIST must include api.github.com for GitHub access"  # noqa: E501
         )
 
     host = _github_api_host(api_base or GITHUB_API_BASE)
     if host.lower() not in hosts:
         raise SystemExit(
-            f"{host} must be present in CODEX_ALLOWLIST_HOSTS or CODEX_NET_ALLOWLIST for GitHub access"
+            f"{host} must be present in CODEX_ALLOWLIST_HOSTS or CODEX_NET_ALLOWLIST for GitHub access"  # noqa: E501
         )
 
 

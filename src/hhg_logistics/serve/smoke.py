@@ -39,7 +39,11 @@ async def _run_once(client: httpx.AsyncClient, idx: int) -> dict[str, Any]:
     start = time.perf_counter()
     response = await client.post("/predict", json=payload, timeout=30.0)
     latency_ms = int((time.perf_counter() - start) * 1000)
-    return {"status": response.status_code, "latency_ms": latency_ms, "json": response.json()}
+    return {
+        "status": response.status_code,
+        "latency_ms": latency_ms,
+        "json": response.json(),
+    }
 
 
 async def main_async(n: int = 16, concurrency: int = 4) -> None:

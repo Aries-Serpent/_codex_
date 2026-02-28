@@ -36,7 +36,11 @@ logger = logging.getLogger(__name__)
 # Security: Default trusted directories for external tools
 # Can be overridden via CODEX_TRUSTED_TOOL_DIRS environment variable
 DEFAULT_TRUSTED_DIRS = ["/usr/bin", "/usr/local/bin", "/opt/homebrew/bin"]
-TRUSTED_TOOL_DIRS = os.environ.get("CODEX_TRUSTED_TOOL_DIRS", "").split(":") if os.environ.get("CODEX_TRUSTED_TOOL_DIRS") else DEFAULT_TRUSTED_DIRS
+TRUSTED_TOOL_DIRS = (
+    os.environ.get("CODEX_TRUSTED_TOOL_DIRS", "").split(":")
+    if os.environ.get("CODEX_TRUSTED_TOOL_DIRS")
+    else DEFAULT_TRUSTED_DIRS
+)
 
 # Safeguards: Configuration bounds
 MAX_FILE_SIZE_KB = 1024
@@ -46,6 +50,7 @@ MAX_FILES_TO_ANALYZE = 1000
 @dataclass
 class LintIssue:
     """A linting issue found in source code."""
+
     rule: str
     severity: str  # error, warning, info
     line: int
@@ -57,6 +62,7 @@ class LintIssue:
 @dataclass
 class SecurityIssue:
     """A security issue found in source code."""
+
     tool: str  # bandit, semgrep, gitleaks
     rule_id: str
     severity: str  # critical, high, medium, low
@@ -68,6 +74,7 @@ class SecurityIssue:
 @dataclass
 class ComplexityMetrics:
     """Complexity metrics for a file."""
+
     cyclomatic: float
     cognitive: float
     halstead_difficulty: Optional[float] = None
@@ -76,6 +83,7 @@ class ComplexityMetrics:
 @dataclass
 class FileAnalysis:
     """Analysis results for a single file."""
+
     path: str
     loc: int
     sloc: int
@@ -93,6 +101,7 @@ class StaticReport:
     Contains analysis results for all files in the source directory
     along with aggregate statistics.
     """
+
     snapshot_id: str
     timestamp: datetime
     files: list[FileAnalysis]
@@ -254,7 +263,7 @@ def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[st
 
     Returns:
         Resolved tool path if found and trusted, None otherwise
-    """
+    """  # noqa: E501
     tool_path = shutil.which(tool)
     if not tool_path:
         logger.warning("%s not found, skipping", tool)
@@ -271,7 +280,8 @@ def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[st
         if not is_trusted:
             logger.warning(
                 "%s resolved to %s which is not in any configured trusted directory, skipping",
-                tool, resolved_path
+                tool,
+                resolved_path,
             )
             return None
 
@@ -301,14 +311,16 @@ def _run_ruff(source_dir: Path) -> list[LintIssue]:
         if result.stdout:
             data = json.loads(result.stdout)
             for item in data:
-                issues.append(LintIssue(
-                    rule=item.get("code", ""),
-                    severity="warning" if item.get("code", "").startswith("W") else "error",
-                    line=item.get("location", {}).get("row", 0),
-                    column=item.get("location", {}).get("column", 0),
-                    message=item.get("message", ""),
-                    file_path=item.get("filename", ""),
-                ))
+                issues.append(
+                    LintIssue(
+                        rule=item.get("code", ""),
+                        severity="warning" if item.get("code", "").startswith("W") else "error",
+                        line=item.get("location", {}).get("row", 0),
+                        column=item.get("location", {}).get("column", 0),
+                        message=item.get("message", ""),
+                        file_path=item.get("filename", ""),
+                    )
+                )
     except FileNotFoundError as e:
         logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
@@ -345,14 +357,16 @@ def _run_bandit(source_dir: Path) -> list[SecurityIssue]:
         if result.stdout:
             data = json.loads(result.stdout)
             for item in data.get("results", []):
-                issues.append(SecurityIssue(
-                    tool="bandit",
-                    rule_id=item.get("test_id", ""),
-                    severity=item.get("issue_severity", "medium").lower(),
-                    line=item.get("line_number", 0),
-                    message=item.get("issue_text", ""),
-                    file_path=item.get("filename", ""),
-                ))
+                issues.append(
+                    SecurityIssue(
+                        tool="bandit",
+                        rule_id=item.get("test_id", ""),
+                        severity=item.get("issue_severity", "medium").lower(),
+                        line=item.get("line_number", 0),
+                        message=item.get("issue_text", ""),
+                        file_path=item.get("filename", ""),
+                    )
+                )
     except FileNotFoundError as e:
         logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
@@ -487,10 +501,7 @@ def analyze(
     # Calculate summary
     total_loc = sum(f.loc for f in files)
     total_sloc = sum(f.sloc for f in files)
-    avg_complexity = (
-        sum(f.complexity.cyclomatic for f in files) / len(files)
-        if files else 0
-    )
+    avg_complexity = sum(f.complexity.cyclomatic for f in files) / len(files) if files else 0
 
     summary = {
         "total_files": len(files),

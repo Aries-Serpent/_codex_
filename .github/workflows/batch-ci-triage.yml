@@ -335,4 +335,3 @@ jobs:
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Issue: #\`${{ steps.upsert-issue.outputs.issue_number || 'N/A' }}\`" >> $GITHUB_STEP_SUMMARY
-

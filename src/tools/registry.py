@@ -142,9 +142,7 @@ class ToolRegistry:
             if param_name in ("self", "cls"):
                 continue
 
-            param_info: dict[str, Any] = {
-                "required": param.default is inspect.Parameter.empty
-            }
+            param_info: dict[str, Any] = {"required": param.default is inspect.Parameter.empty}
 
             # Try to get type annotation
             if param.annotation is not inspect.Parameter.empty:

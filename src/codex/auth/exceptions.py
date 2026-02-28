@@ -26,8 +26,11 @@ class AuthError(Exception):
 class AuthenticationError(AuthError):
     """Authentication failed (401)."""
 
-    def __init__(self, message: str = "Authentication required",
-                 code: str = "authentication_required"):
+    def __init__(
+        self,
+        message: str = "Authentication required",
+        code: str = "authentication_required",
+    ):
         super().__init__(message, code)
 
 
@@ -77,16 +80,18 @@ class MFAVerificationError(AuthenticationError):
 class AuthorizationError(AuthError):
     """Authorization failed (403)."""
 
-    def __init__(self, message: str = "Access denied",
-                 code: str = "access_denied"):
+    def __init__(self, message: str = "Access denied", code: str = "access_denied"):
         super().__init__(message, code)
 
 
 class InsufficientScopesError(AuthorizationError):
     """Required scopes not present."""
 
-    def __init__(self, required_scopes: Optional[list] = None,
-                 message: str = "Insufficient permissions"):
+    def __init__(
+        self,
+        required_scopes: Optional[list] = None,
+        message: str = "Insufficient permissions",
+    ):
         super().__init__(message, "insufficient_scopes")
         self.required_scopes = required_scopes or []
 
@@ -94,8 +99,7 @@ class InsufficientScopesError(AuthorizationError):
 class RateLimitError(AuthError):
     """Rate limit exceeded (429)."""
 
-    def __init__(self, message: str = "Rate limit exceeded",
-                 retry_after: Optional[int] = None):
+    def __init__(self, message: str = "Rate limit exceeded", retry_after: Optional[int] = None):
         super().__init__(message, "rate_limit_exceeded")
         self.retry_after = retry_after
 
@@ -103,8 +107,12 @@ class RateLimitError(AuthError):
 class OAuthError(AuthError):
     """OAuth-specific error."""
 
-    def __init__(self, message: str, oauth_error: Optional[str] = None,
-                 error_description: Optional[str] = None):
+    def __init__(
+        self,
+        message: str,
+        oauth_error: Optional[str] = None,
+        error_description: Optional[str] = None,
+    ):
         super().__init__(message, oauth_error or "oauth_error")
         self.oauth_error = oauth_error
         self.error_description = error_description

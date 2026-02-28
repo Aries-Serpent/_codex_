@@ -89,7 +89,7 @@ class MetricsAggregator:
         """
         if len(complexity_metrics) < 2 or len(coverage_metrics) < 2:
             raise ValueError(
-                f"At least 2 data points required for correlation, got {len(complexity_metrics)} and {len(coverage_metrics)}"
+                f"At least 2 data points required for correlation, got {len(complexity_metrics)} and {len(coverage_metrics)}"  # noqa: E501
             )
 
         if len(complexity_metrics) != len(coverage_metrics):

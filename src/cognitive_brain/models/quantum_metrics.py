@@ -79,6 +79,7 @@ class QuantumMetric:
     def from_dict(cls, data: Dict[str, Any]) -> "QuantumMetric":
         """Create model from dictionary representation."""
         import dataclasses as _dc
+
         data = data.copy()
         if "timestamp" in data and isinstance(data["timestamp"], str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
@@ -189,9 +190,7 @@ class QuantumMetricRepository:
             VALUES (?, ?, ?, ?, ?, ?)
             """,
             (
-                metric.timestamp.isoformat()
-                if metric.timestamp
-                else datetime.now(UTC).isoformat(),
+                metric.timestamp.isoformat() if metric.timestamp else datetime.now(UTC).isoformat(),
                 metric.feature,
                 metric.metric_name,
                 metric.metric_value,
@@ -431,9 +430,7 @@ class QuantumMetricRepository:
         # Prepare batch data
         batch_data = [
             (
-                metric.timestamp.isoformat()
-                if metric.timestamp
-                else datetime.now(UTC).isoformat(),
+                metric.timestamp.isoformat() if metric.timestamp else datetime.now(UTC).isoformat(),
                 metric.feature,
                 metric.metric_name,
                 metric.metric_value,
@@ -500,13 +497,12 @@ class QuantumMetricRepository:
             metric_name = "value"
 
         # Store the full kwargs dict in metadata for later retrieval
-        metadata: Dict[str, Any] = {
-            k: v for k, v in kwargs.items() if k not in ("feature",)
-        }
+        metadata: Dict[str, Any] = {k: v for k, v in kwargs.items() if k not in ("feature",)}
 
         raw_ts = kwargs.get("timestamp")
         if isinstance(raw_ts, (int, float)):
             from datetime import timezone
+
             ts = datetime.fromtimestamp(float(raw_ts), tz=timezone.utc)
         elif isinstance(raw_ts, datetime):
             ts = raw_ts
@@ -549,6 +545,7 @@ class QuantumMetricRepository:
             if isinstance(meta, str):
                 try:
                     import json as _json
+
                     meta = _json.loads(meta)
                 except Exception:
                     meta = {}

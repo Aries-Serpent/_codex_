@@ -380,6 +380,7 @@ def load_dataset(
         try:
             # Use safe pickle loading to prevent code execution vulnerabilities
             from utils.safe_pickle import safe_pickle_load
+
             data = safe_pickle_load(str(cache_file), use_restricted_unpickler=True)
             if isinstance(data, list):
                 return data

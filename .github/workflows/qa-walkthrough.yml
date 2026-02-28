@@ -115,7 +115,8 @@ jobs:
 
       - name: Run ruff lint
         run: |
-          python3 -m ruff check src/ --select=F,W,I,E --output-format=json \
+          python3 -m ruff check src/ --select=F,W,I,E --extend-ignore=E501 \
+            --output-format=json \
             --output-file=ruff-report.json 2>ruff-stderr.log || true
           if [ -s ruff-stderr.log ]; then
             echo "Ruff stderr output:"; cat ruff-stderr.log
@@ -125,7 +126,7 @@ jobs:
       - name: Run bandit security scan
         run: |
           python3 -m bandit -r src/ -f json -o bandit-report.json \
-            --severity-level medium -q 2>/dev/null || true
+            --configfile .bandit --severity-level medium -q 2>/dev/null || true
           echo "Bandit scan complete"
 
       - name: Generate QA summary

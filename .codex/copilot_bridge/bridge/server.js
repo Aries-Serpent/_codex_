@@ -179,4 +179,3 @@ app.listen(config.port, config.bind, () => {
   console.log(`[copilot-bridge] listening on http://${config.bind}:${config.port}`);
   console.log(`[copilot-bridge] default cwd: ${config.defaultCwd}`);
 });
-

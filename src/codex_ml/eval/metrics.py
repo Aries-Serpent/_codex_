@@ -312,7 +312,10 @@ def bleu(
             return result
         logger.warning(f"sacrebleu returned unexpected value: {result}, falling back to NLTK")
     except Exception:
-        logger.warning("sacrebleu import or computation failed, falling back to NLTK", exc_info=True)
+        logger.warning(
+            "sacrebleu import or computation failed, falling back to NLTK",
+            exc_info=True,
+        )
 
     # Fall back to NLTK
     try:

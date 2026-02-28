@@ -1262,3 +1262,43 @@ else:
 
 
 **Template Applied**: 2026-01-23T19:45:00Z
+
+---
+
+## Phase 10: Hardware-First Production Readiness (S95+)
+<!-- Added S95 2026-02-28 — @copilot -->
+
+**Status:** 🟡 PLANNED  
+**Activation Gate:** All blocking deployment items (B-01–B-07) resolved ✅  
+**Primary Constraint:** Intel Core Ultra 5 135U vPro — CPU-only, no CUDA, 16 GB DDR5-5600
+
+### Objectives
+
+| ID | Objective | Priority | Status |
+|----|-----------|----------|--------|
+| P10-01 | Hardware-first compatibility policy enforced codebase-wide | P0 | ✅ DONE (S95) |
+| P10-02 | All GPU components optional/deferred — codebase runs on CPU | P0 | ✅ DONE (S92-S95) |
+| P10-03 | `0.9.0-rc1` package publishable to PyPI (B-04 ✅) | P0 | ✅ DONE (S94) |
+| P10-04 | CPU performance baseline established | P1 | 🔶 S96 |
+| P10-05 | Intel OpenVINO path (optional iGPU acceleration) | P2 | ⏳ S96+ |
+| P10-06 | Secrets rotation runbook (`CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY`) | P1 | ⏳ S96 |
+| P10-07 | SBOM scan integrated into CI (CycloneDX or SPDX) | P1 | ⏳ S96 |
+| P10-08 | Pattern 6 catch-all handlers (236 remaining) systematic fix | P2 | ⏳ S96 |
+| P10-09 | Coverage threshold incremental raise (current: informational) | P2 | ⏳ S96 |
+| P10-10 | OpenTelemetry spans on batch validation pipeline (P9-05) | P2 | ⏳ S96 |
+
+### Phase 10 Principles
+
+1. **Hardware-first**: The workstation shapes the codebase, never the reverse.
+2. **Optional GPU**: CUDA/GPU features are enhancements, not requirements.
+3. **Tier system**: All components classified Tier 1 (CPU), Tier 2 (guarded), or Tier 3 (deferred).
+4. **Zero hard failures**: Any component missing on the primary test machine must skip gracefully.
+5. **Incremental gates**: Each S-ID moves the threshold; no single session does everything.
+
+### Hardware Compatibility Reference
+
+See `docs/ops/hardware_compatibility_matrix.md` for the authoritative Tier 1/2/3 classification.
+
+**AAIS Score:** 96.3/100 (V4.0) → target 97.5/100 at Phase 10 completion
+
+**Last Updated:** 2026-02-28T04:45:00Z (S95)

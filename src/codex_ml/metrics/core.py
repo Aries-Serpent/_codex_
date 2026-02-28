@@ -52,7 +52,10 @@ class MetricRegistry:
         return sorted(self._metrics.keys())
 
     def compute(
-        self, names: Iterable[str], labels: Sequence[Number], predictions: Sequence[Number]
+        self,
+        names: Iterable[str],
+        labels: Sequence[Number],
+        predictions: Sequence[Number],
     ) -> dict[str, float | None]:
         results: dict[str, float | None] = {}
         for name in names:
@@ -97,7 +100,11 @@ def _init_default_registry() -> MetricRegistry:
         )
     )
     registry.register(
-        Metric(name="mse", func=_mse, description="Mean squared error over numeric targets.")
+        Metric(
+            name="mse",
+            func=_mse,
+            description="Mean squared error over numeric targets.",
+        )
     )
     return registry
 

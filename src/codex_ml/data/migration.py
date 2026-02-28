@@ -55,7 +55,11 @@ class AssignmentMappingMigration:
             v2_data = json.load(f)
 
         # Transform v2 structure to v3
-        v3_data: dict[str, Any] = {"version": "3.0", "schema": "assignment_mapping_v3", "items": []}
+        v3_data: dict[str, Any] = {
+            "version": "3.0",
+            "schema": "assignment_mapping_v3",
+            "items": [],
+        }
 
         for mapping in v2_data.get("mappings", []):
             v3_data["items"].append(

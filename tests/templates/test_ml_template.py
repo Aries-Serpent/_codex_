@@ -51,7 +51,7 @@ def _check_torch_available() -> bool:
         _ = test_tensor + 1  # Basic operation
 
         return True
-    except Exception:
+    except ImportError:
         return False
 
 

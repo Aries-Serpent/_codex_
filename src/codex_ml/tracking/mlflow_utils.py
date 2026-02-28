@@ -81,7 +81,7 @@ class MlflowConfig:
     - experiment: experiment name to use for runs
     - run_tags: optional run tags mapping forwarded to mlflow.start_run
     - enable_system_metrics: optionally set environment flag for MLflow system metrics
-    """
+    """  # noqa: E501
 
     enable: bool = False
     tracking_uri: Optional[str] = field(default_factory=_resolve_tracking_uri_default)
@@ -280,7 +280,10 @@ def log_params(d: Mapping[str, Any], *, enabled: Optional[bool] = None) -> None:
 
 
 def log_metrics(
-    metrics: Mapping[str, float], *, step: Optional[int] = None, enabled: Optional[bool] = None
+    metrics: Mapping[str, float],
+    *,
+    step: Optional[int] = None,
+    enabled: Optional[bool] = None,
 ) -> None:
     """Record scalar metrics against an explicit training step.
 
@@ -312,7 +315,9 @@ def log_metrics(
 
 
 def log_artifacts(
-    path: Union[str, Path, Iterable[Union[str, Path]]], *, enabled: Optional[bool] = None
+    path: Union[str, Path, Iterable[Union[str, Path]]],
+    *,
+    enabled: Optional[bool] = None,
 ) -> None:
     """Persist files or directories to MLflow artifact storage.
 

@@ -4,6 +4,7 @@ Dependency graph implementation with cycle detection.
 Provides directed graph operations for tracking code dependencies,
 including cycle detection using Tarjan's algorithm and topological sorting.
 """
+
 from typing import Any, Dict, List, Optional, Set
 
 from codex_ml.ast.core.exceptions import CycleDetectedError

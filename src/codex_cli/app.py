@@ -119,7 +119,7 @@ if _USE_TYPER:
     app = _typer.Typer(
         name="codex",
         add_completion=False,
-        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
+        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",  # noqa: E501
     )
 
     def _discover_reasoning_templates() -> Sequence[tuple[str, str, Path]]:
@@ -280,7 +280,7 @@ else:  # pragma: no cover - click fallback
 
     @_click.group(
         name="codex",
-        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",
+        help="Codex CLI for reasoning templates plus local/offline runs (tokenize/train/eval/tracking).",  # noqa: E501
     )
     def app() -> None:
         """Codex offline smoke helpers."""
@@ -337,14 +337,22 @@ else:  # pragma: no cover - click fallback
 
     @app.command("track-smoke")
     @_click.option(
-        "--dir", "dir_", type=_click.Path(path_type=Path), default=None, help="Local mlruns dir"
+        "--dir",
+        "dir_",
+        type=_click.Path(path_type=Path),
+        default=None,
+        help="Local mlruns dir",
     )
     def track_smoke(dir_: Optional[Path]) -> None:
         _track_smoke_impl(dir_)
 
     @app.command("split-smoke")
     @_click.option(
-        "--seed", type=int, default=1337, show_default=True, help="Seed for deterministic split"
+        "--seed",
+        type=int,
+        default=1337,
+        show_default=True,
+        help="Seed for deterministic split",
     )
     def split_smoke(seed: int) -> None:
         _split_smoke_impl(seed)
