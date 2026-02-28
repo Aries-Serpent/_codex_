@@ -1036,46 +1036,37 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             )
         import importlib
 
-        _tf = importlib.import_module("transformers")
-        _ds = importlib.import_module("datasets")
+        tf_mod = importlib.import_module("transformers")
+        ds_mod = importlib.import_module("datasets")
         model_name = ts.get("model", "gpt2")
-        tokenizer = _tf.AutoTokenizer.from_pretrained(model_name)
-        model = _tf.AutoModelForCausalLM.from_pretrained(model_name)
+        tokenizer = tf_mod.AutoTokenizer.from_pretrained(model_name)
+        model = tf_mod.AutoModelForCausalLM.from_pretrained(model_name)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
+
+        def _encode_with_labels(tok, txts):
+            """Tokenize *txts* and create labels (padding → -100)."""
+            enc = tok(txts, padding=True, return_tensors="pt")
+            ids = enc["input_ids"]
+            mask = enc["attention_mask"]
+            lbl = ids.clone()
+            lbl[mask == 0] = -100
+            return ds_mod.Dataset.from_dict({
+                "input_ids": ids,
+                "attention_mask": mask,
+                "labels": lbl,
+            })
+
         texts = ts.get("texts", ["hello world"])
-        enc = tokenizer(texts, padding=True, return_tensors="pt")
-        ids = enc["input_ids"]
-        mask = enc["attention_mask"]
-        labels = ids.clone()
-        labels[mask == 0] = -100
-        train_data = {
-            "input_ids": ids,
-            "attention_mask": mask,
-            "labels": labels,
-        }
-        train_ds = _ds.Dataset.from_dict(train_data)
+        train_ds = _encode_with_labels(tokenizer, texts)
         val_ds = None
         val_texts = ts.get("val_texts")
         if val_texts:
-            venc = tokenizer(
-                val_texts, padding=True, return_tensors="pt",
-            )
-            vids = venc["input_ids"]
-            vmask = venc["attention_mask"]
-            vlabels = vids.clone()
-            vlabels[vmask == 0] = -100
-            val_ds = _ds.Dataset.from_dict({
-                "input_ids": vids,
-                "attention_mask": vmask,
-                "labels": vlabels,
-            })
+            val_ds = _encode_with_labels(tokenizer, val_texts)
         train_cfg = TrainCfg(
             grad_accum=ts.get("grad_accum", args.grad_accum),
         )
-        run_custom_trainer(
-            model, tokenizer, train_ds, val_ds, train_cfg,
-        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
         return
 
     if not args.use_deeplearning:
