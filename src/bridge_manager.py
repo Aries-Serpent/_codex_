@@ -19,6 +19,12 @@ try:
     _HAS_FCNTL = True
 except ImportError:  # Windows — fcntl is POSIX-only
     _HAS_FCNTL = False
+
+try:
+    import msvcrt as _msvcrt  # Windows file-locking; not present on POSIX
+    _HAS_MSVCRT = True
+except ImportError:
+    _HAS_MSVCRT = False
 import json
 import logging
 import os
@@ -26,6 +32,7 @@ import secrets
 import socket
 import ssl
 import tempfile
+import time
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -107,8 +114,9 @@ class BridgeLock:
     File-based locking mechanism using fcntl (POSIX) or no-op stub (Windows).
 
     Prevents race conditions when multiple processes access the bridge.
-    On Windows, where fcntl is unavailable, acquire() always returns True
-    (single-process use assumed).
+    On POSIX (Linux/macOS), uses ``fcntl.flock`` for exclusive file locking.
+    On Windows, uses ``msvcrt.locking`` as a portable cross-process fallback.
+    If neither mechanism is available, ``acquire()`` raises ``NotImplementedError``.
     """
 
     def __init__(self, lock_path: Path):
@@ -120,25 +128,29 @@ class BridgeLock:
         """
         Acquire exclusive lock.
 
+        Uses ``fcntl.flock`` on POSIX and ``msvcrt.locking`` on Windows.
+
         Args:
             timeout: Maximum seconds to wait for lock
 
         Returns:
             True if lock acquired, False on timeout
+
+        Raises:
+            NotImplementedError: If neither fcntl nor msvcrt is available.
         """
-        if not _HAS_FCNTL:
-            # Windows: fcntl is POSIX-only; skip file locking.
-            # ⚠️  This means NO cross-process locking on Windows — safe only for
-            # single-process deployments.  Multi-process writers on Windows must
-            # use an OS-level lock (e.g. msvcrt.locking) instead.
-            logger.warning(
-                "BridgeLock: fcntl unavailable on this platform — "
-                "file locking is disabled (single-process use only)."
+        if not _HAS_FCNTL and not _HAS_MSVCRT:
+            raise NotImplementedError(
+                "BridgeLock: neither fcntl (POSIX) nor msvcrt (Windows) is available. "
+                "Cross-process file locking is not supported on this platform."
             )
-            return True
+
+        if not _HAS_FCNTL:
+            # Windows path — use msvcrt.locking for cross-process byte-range lock
+            return self._acquire_windows(timeout)
 
         try:
-            # Ensure lock file exists
+            # POSIX path — fcntl.flock with timeout retry
             self.lock_path.parent.mkdir(parents=True, exist_ok=True)
             self.lock_path.touch(exist_ok=True)
 
@@ -163,15 +175,40 @@ class BridgeLock:
                 self.lock_fd = None
             return False
 
+    def _acquire_windows(self, timeout: int) -> bool:
+        """Windows-specific file lock using ``msvcrt.locking``."""
+        self.lock_path.parent.mkdir(parents=True, exist_ok=True)
+        self.lock_path.touch(exist_ok=True)
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            try:
+                self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
+                _msvcrt.locking(self.lock_fd, _msvcrt.LK_NBLCK, 1)  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
+                logger.debug(f"Lock acquired (msvcrt): {self.lock_path}")
+                return True
+            except OSError:
+                if self.lock_fd is not None:
+                    os.close(self.lock_fd)
+                    self.lock_fd = None
+                time.sleep(0.05)  # 50 ms retry interval
+        logger.warning(f"Failed to acquire lock (timeout): {self.lock_path}")
+        return False
+
     def release(self) -> None:
         """Release the lock."""
-        if not _HAS_FCNTL:
+        if not _HAS_FCNTL and not _HAS_MSVCRT:
             return
         if self.lock_fd is not None:
             try:
-                fcntl.flock(self.lock_fd, fcntl.LOCK_UN)
-                os.close(self.lock_fd)
-                logger.debug(f"Lock released: {self.lock_path}")
+                if _HAS_MSVCRT and not _HAS_FCNTL:
+                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)
+                    os.close(self.lock_fd)
+                    logger.debug(f"Lock released (msvcrt): {self.lock_path}")
+                else:
+                    # POSIX path (_HAS_FCNTL is True here per acquire() guard)
+                    fcntl.flock(self.lock_fd, fcntl.LOCK_UN)
+                    os.close(self.lock_fd)
+                    logger.debug(f"Lock released: {self.lock_path}")
             except Exception as e:
                 logger.error(f"Lock release error: {e}")
             finally:

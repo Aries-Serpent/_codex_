@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### S94 — Windows Locking, Sandbox Enforcement, CPU Smoke Tests, RC Version (2026-02-28)
+
+**Security / Platform (B-06 + B-07 resolved)**
+- `src/bridge_manager.py`: Implemented `msvcrt.locking` as a Windows-native cross-process file-locking backend for `BridgeLock`. On POSIX, `fcntl.flock` is used unchanged. On Windows, `msvcrt.LK_NBLCK` with timeout retry loop replaces the previous no-op stub that returned `True` silently. Raises `NotImplementedError` only when neither backend is available. `_HAS_MSVCRT` flag exposed for introspection.
+- `src/codex_ml/safety/sandbox.py`: Added `enforce_limits: bool = False` parameter to `run_in_sandbox()`. When the `resource` module is unavailable (Windows) AND `enforce_limits=True`, a `RuntimeError` is raised immediately — preventing silent sandbox escapes. When `enforce_limits=False` (default), a `logging.warning` is emitted. Eliminates B-06 "silent no-op" risk.
+
+**Release (B-04 resolved)**
+- `pyproject.toml`: version bumped `0.1.0` → `0.9.0-rc1`; ready for PyPI RC publish.
+
+**Testing (B-03 partial)**
+- `tests/smoke/test_cpu_integration_smoke.py`: 20 new CPU-only smoke tests covering BridgeLock platform backend selection (POSIX/Windows), sandbox `enforce_limits` behavior, `BatchScanRunner` API contract (`preview()`, `BatchScanResult` fields), `rvs_env_preflight.py` import + `PACKAGE_GROUPS` completeness, and Windows-compat source guards (no bare POSIX imports outside `try/except`).
+
 ### S93 — Pre-Flight Env, RVS Green, Quantum Import Fixes (2026-02-28)
 
 **CI / Environment**

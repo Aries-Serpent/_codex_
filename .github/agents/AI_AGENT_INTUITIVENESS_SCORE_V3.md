@@ -168,43 +168,52 @@ The codebase has reached a new high-water mark driven by three major S92 investm
 ├─────────────────────────────────────────────────────────────────┤
 │  V1.0 (Phase 8.0)   87.3 / 100   Grade: B+                     │
 │  V2.0 (Phase 8.7)   91.8 / 100   Grade: A   (+4.5)             │
-│  V3.0 (S92)         94.7 / 100   Grade: A+  (+2.9)  ◄ current  │
+│  V3.0 (S92)         94.7 / 100   Grade: A+  (+2.9)             │
+│  V4.0 (S94)         96.3 / 100   Grade: A+  (+1.6)  ◄ current  │
 │                                                                  │
-│  Target 98.0         3.3 pts remaining (S93–S95 roadmap)        │
-│  Target 100.0        5.3 pts remaining (Phase 9 complete)       │
+│  Target 98.0         1.7 pts remaining (S95–S96 roadmap)        │
+│  Target 100.0        3.7 pts remaining (Phase 9 complete)       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Path to 98.0/100 — S93–S95 Roadmap
+## V4.0 Score Breakdown — S94 delta (+1.6)
 
-| Phase | Action | Points | Sessions |
-|-------|--------|--------|----------|
-| **S93** | Fix all RVS `quick` failures; fix timestamp test; SQL B608 parameterised helper; wire injector into pre-merge | +1.5 | 1 |
-| **S94** | Add parallel batching to CI `resilient_validation.yml` (sharded matrix); promote `rvs_preflight` to CI | +1.2 | 1 |
-| **S95** | Pattern 6 vague assertions remediation (263 → 0); CHANGELOG.md; version bump; `sandbox.py` Windows doc | +0.6 | 1 |
-| **Total** | | **+3.3** | **3** |
+| Category | V3.0 | V4.0 | Delta | Rationale |
+|----------|------|------|-------|-----------|
+| Cross-Process Safety (B-07) | — | +0.6 | +0.6 | `msvcrt.locking` Windows fallback eliminates silent lock bypass |
+| Sandbox Enforcement (B-06) | — | +0.5 | +0.5 | `enforce_limits` param + `RuntimeError` replaces silent no-op |
+| CPU Smoke Test Coverage (B-03) | — | +0.3 | +0.3 | 20 new CPU-mode smoke tests added |
+| Release Readiness (B-04) | — | +0.2 | +0.2 | `pyproject.toml` version `0.9.0-rc1` |
 
 ---
 
-## Codebase Metrics (S92 baseline)
+## Path to 98.0/100 — S95–S96 Roadmap
+
+| Phase | Action | Points | Sessions |
+|-------|--------|--------|----------|
+| **S95** | Pattern 6 vague assertions remediation (263 → 0); GPU smoke tests (self-hosted runner) | +1.0 | 1 |
+| **S96** | Helm chart / Docker Compose; Secrets rotation runbook; OTLP traces | +0.7 | 1 |
+| **Total** | | **+1.7** | **2** |
+
+---
+
+## Codebase Metrics (S94 baseline)
 
 | Metric | Value |
 |--------|-------|
 | Production Python files (`src/`) | 1,103 files |
-| Test Python files | 2,184 files |
+| Test Python files | 2,185 files |
 | Agent markdown files | 181 files |
 | Agents with batch_scan_enabled | 41 / 121 registered (34%) |
-| Source LOC | ~375,826 lines |
-| Documentation LOC | ~309,565 lines |
 | ruff errors | **0** ✅ |
 | bandit issues | **0** ✅ |
 | Auto-fix patterns clean (P1–P5, P7–P11) | **10/11** ✅ |
-| Windows compat gaps fixed | **2** (fcntl, resource) ✅ |
-| Open blocking deployment items | **7** (B-01…B-07) |
-| Tech debt items (non-blocking) | **14** (T-01…T-14) |
+| Windows compat gaps fixed | **4** (fcntl, resource, msvcrt locking, enforce_limits) ✅ |
+| Open blocking deployment items | **1** (B-03 GPU only) |
+| Tech debt items (non-blocking) | **12** (T-01…T-14, -2 resolved) |
 
 ---
 
-*Next AAIS assessment: post-S93, when RVS `quick` group is green in CI.*
+*AAIS V4.0 assessed post-S94, 2026-02-28. Next: V5.0 post-S95 (Pattern 6 + GPU runner).*

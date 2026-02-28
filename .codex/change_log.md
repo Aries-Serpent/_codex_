@@ -1841,3 +1841,28 @@ test_adaptive_scoring_optimized.py.
 - **Agents with batch_scan_enabled**: 41/121 registered ✅
 - **AAIS**: 94.7/100 ✅ (+2.9 from V2.0)
 - **Open blocking deployment items**: 7 (B-01…B-07)
+
+---
+
+## S94 — Windows Locking (msvcrt), Sandbox Enforcement, CPU Smoke Tests, RC Version (2026-02-28)
+
+### Security / Platform
+- **`src/bridge_manager.py`** — `BridgeLock` now uses `msvcrt.locking` on Windows instead of returning `True` silently (B-07 ✅ RESOLVED). Raises `NotImplementedError` if neither fcntl nor msvcrt is available. `_HAS_MSVCRT` flag exposed.
+- **`src/codex_ml/safety/sandbox.py`** — `run_in_sandbox()` accepts new `enforce_limits: bool = False` parameter. Windows + `enforce_limits=True` → `RuntimeError` (B-06 ✅ RESOLVED). Default `False` emits a `logging.warning`.
+
+### Release
+- **`pyproject.toml`** — version `0.1.0` → `0.9.0-rc1` (B-04 ✅ RESOLVED).
+
+### Tests
+- **`tests/smoke/test_cpu_integration_smoke.py`** — 20 new CPU-mode smoke tests: BridgeLock platform backend, sandbox enforce_limits, BatchScanRunner API (preview + BatchScanResult fields), rvs_env_preflight.py PACKAGE_GROUPS, Windows compat source guards.
+
+### Documentation
+- **`docs/ops/DEPLOYMENT_READINESS_S92.md`** — B-03 (partial), B-04, B-06, B-07 all marked ✅ RESOLVED with S94 details.
+- **`CHANGELOG.md`** — S94 section prepended to `[Unreleased]`.
+- **`.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V3.md`** — V4.0 assessment: 94.7 → **96.3/100** (+1.6); path to 98.0 updated.
+
+### Metrics (session end)
+- **Ruff errors**: 0 ✅
+- **Bandit issues**: 0 ✅
+- **Open blocking deployment items**: 1 (B-03 GPU only — deferred to S95)
+- **AAIS**: 96.3/100 ✅ (V4.0, +1.6 from V3.0)
