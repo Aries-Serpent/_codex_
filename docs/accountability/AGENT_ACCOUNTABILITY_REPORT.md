@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116e)
+**Last updated:** 2026-02-28 (S116f)
 
 ---
 
@@ -67,6 +67,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-015 | §8 dynamic prompt: no static PR numbers; CI failure query + AAIS directive body | ✅ Done (S116c) |
 | W-016 | agent-auth-delegation: `git add` → `git add -f` for gitignored session token file | ✅ Done (S116d) |
 | W-017 | agent_infrastructure_manager.yml: duplicate `env:` key in `list-vars` step caused 6 failed runs (0 jobs) | ✅ Done (S116e) |
+| W-018 | agent-auth-delegation: `checkout@v4` missing `token: CODEX_MASTER_KEY` → push 403 as github-actions[bot] | ✅ Done (S116f) |
 
 ---
 

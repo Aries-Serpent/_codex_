@@ -86,6 +86,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY }}
 
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
