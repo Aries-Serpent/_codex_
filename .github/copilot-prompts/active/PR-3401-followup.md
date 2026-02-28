@@ -1,6 +1,6 @@
 # 🎯 PR Follow-Up Tasks - #3401
 
-**PR**: #3401 - PR #3401  
+**PR**: #3401  
 **Branch**: `copilot/sub-pr-3389`  
 **Author**: @Copilot  
 **Date**: 2026-02-28  

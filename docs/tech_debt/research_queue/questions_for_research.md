@@ -1129,3 +1129,125 @@ suppress both ruff F401 and CodeQL unused-import alerts.
 
 **File**: `scripts/ci/auto_fix_common_issues.py`
 **Status**: Research pending ⏳ S90
+
+---
+
+## S105 Additions (PR #3401) — 2026-02-28
+
+### DRQ-S105-001: pytest-rerunfailures + pytest-timeout thread incompatibility causing crash in sharded CI
+
+**ID**: DRQ-S105-001
+**Category**: Integration test environment
+**Priority**: HIGH
+**Impact**: HIGH — Shard 2/2 crashes with `ValueError("I/O operation on closed file.")` + `lost sys.stderr`, blocking meaningful CI signal from the second half of the test suite
+**Created**: 2026-02-28
+**Status**: ✅ Interim fix applied
+
+#### Context
+**Where discovered**: Resilient Validation Suite / Sharded quick tests (shard 2/2), run 22517735336
+**Failure pattern**: At the 7-10% mark of shard 2, pytest-timeout (default thread mode) injects a `Timeout` exception into ALL running threads. The `pytest-rerunfailures` plugin maintains a background server socket thread (`run_server()` in `pytest_rerunfailures.py:466`) that blocks on `socket.accept()`. The injected exception hits that thread, which then tries to write an error message to `sys.stderr` — but pytest has already redirected/closed `sys.stderr` for capsys capture, causing `ValueError("I/O operation on closed file.")`. Python's error handler then prints `lost sys.stderr` and continues; the test suite exits non-zero.
+
+#### The Question
+Is this crash entirely attributable to the thread-mode timeout × rerunfailures server interaction, or is there an additional test-level root cause (e.g., a specific test that starts its own background thread that outlives the test function)? Would switching to `--timeout-method=signal` eliminate the issue without `-p no:rerunfailures`?
+
+#### Why This Needs Research
+- Thread-mode timeout is the default and safest on Linux; signal-mode is UNIX-only and breaks with `xdist`.
+- `pytest-rerunfailures` docs say it's compatible with `pytest-timeout`, but they refer to test-level reruns, not the server-thread interaction.
+- If there are tests with background threads (not just the rerunfailures server), disabling rerunfailures won't fully prevent `lost sys.stderr`.
+
+#### Current Hypothesis
+The primary cause is the rerunfailures server thread + thread-mode timeout. A secondary cause may be a test in `test_fetch_messages.py` (known to use `threading`) that doesn't clean up its thread before returning. Both are needed for a complete fix.
+
+#### Interim Fix Applied
+Added `-p no:rerunfailures` to the sharded-quick pytest command in `resilient_validation.yml`. This eliminates the background server thread. The fix tag: `# DRQ-S105-001: interim fix pending research`.
+
+#### Research Sources Used
+- pytest-rerunfailures docs: https://pytest-rerunfailures.readthedocs.io/
+- pytest-timeout README: https://github.com/pytest-dev/pytest-timeout/blob/main/README.rst
+- Web search: "pytest-rerunfailures pytest-timeout thread incompatibility ValueError I/O operation on closed file"
+
+#### Acceptance Criteria
+1. Shard 2/2 completes without `ValueError("I/O operation on closed file.")` in logs
+2. `lost sys.stderr` no longer appears in CI output
+3. The fix doesn't suppress legitimate test failure signals
+
+---
+
+### DRQ-S105-002: GitHub CodeQL "N configurations not found" — GHAS expects more analyses than workflow produces
+
+**ID**: DRQ-S105-002
+**Category**: API Drift
+**Priority**: MEDIUM
+**Impact**: MEDIUM — `Code scanning results / CodeQL` PR check shows "Failing after 2s — N configurations not found", blocking PR merge confidence
+**Created**: 2026-02-28
+**Status**: ✅ Interim fix applied
+
+#### Context
+**Where discovered**: PR #3389 checks, check_run_id=65238276083
+**Failure pattern**: GitHub Advanced Security (GHAS) creates placeholder `Code scanning results / CodeQL` check runs for each expected analysis configuration. If the CodeQL workflow doesn't produce SARIF uploads matching those expected configurations, the checks fail instantly (2s). The `codeql-analysis.yml` was only analyzing `python` and `javascript` (2 languages), but GHAS expected more (possibly including `go`, previously including `typescript`).
+
+#### The Question
+What is the exact set of configurations GitHub GHAS expects for this repository, and what caused the expectation of 6 (not 2 or 3)? Is the count from: (a) historical scans with more languages, (b) org-level security policy forcing specific language sets, (c) default setup auto-detecting all repo languages, or (d) the `typescript` → `javascript` collapse leaving ghost entries?
+
+#### Why This Needs Research
+- GHAS configuration expectations are set server-side and not easily introspectable from the repo  
+- Removing `typescript` from the matrix (commit `f0ff0f78`) may have left stale entries in GHAS history
+- Org-level policies can force CodeQL to run for all GitHub-detected languages regardless of workflow
+
+#### Current Hypothesis
+GHAS auto-detected Python, JavaScript, TypeScript, and Go as repo languages. Note: CodeQL
+treats TypeScript as part of `javascript` — so CodeQL only produces 3 analysis configurations
+(python, javascript/typescript, go), not 4. The "6 configurations" error may include stale
+historical entries in GHAS from earlier scans plus the currently expected 3. Adding `go`
+brings the active count from 2 to 3; GHAS will retire stale entries over time.
+
+#### Interim Fix Applied
+- Added `go` to the CodeQL language matrix (Go code exists in `tools/github-secrets-cli/`)
+- Extended `pull_request.branches` to include `'0D_base_'` and `'copilot/**'` so the workflow runs on all active PR targets, not just `main`/`develop`
+
+#### Research Sources Used
+- Community discussion: https://github.com/orgs/community/discussions/121836
+- GitHub Security Blog: https://github.blog/changelog/2025-07-14-security-configurations-support-for-running-codeql-in-either-default-or-advanced-setup/
+- `advanced-security/set-codeql-language-matrix` action: https://github.com/advanced-security/set-codeql-language-matrix
+
+#### Acceptance Criteria
+1. `Code scanning results / CodeQL` check passes on all new PRs
+2. All three configured languages (python, javascript, go) produce SARIF results
+3. No "N configurations not found" in PR check output
+
+---
+
+### DRQ-S105-003: pytest-split without .test_durations — slow test collection causes shard imbalance and timeout
+
+**ID**: DRQ-S105-003
+**Category**: Integration test environment
+**Priority**: MEDIUM
+**Impact**: MEDIUM — Without `.test_durations`, pytest-split falls back to count-based splitting. All test definitions must be collected on every shard before any can run. Combined with ~2000 quick tests, shard 2/2 collects 1000+ test items before executing any — adding significant overhead. Tests appear to run at 1 test/3s pace when collection + execution are measured together.
+**Created**: 2026-02-28
+**Status**: ✅ Interim fix applied
+
+#### The Question
+Should `.test_durations` be committed to the repository (removing it from `.gitignore`) to make the split deterministic and fast from day one? Or is the cache-based approach sufficient for progressive improvement?
+
+#### Why This Needs Research
+- Committing `.test_durations` (re-generated on significant test changes) is simpler but adds ~50KB to git history  
+- Cache-based approach is cleaner but adds a round-trip latency before the first warm cache hit
+- The accuracy of `least_duration` splits depends on how frequently the durations file is updated
+
+#### Current Hypothesis
+Cache-based approach with `actions/cache@v4` is sufficient. After 2-3 CI runs, the durations file will be populated and splits will be accurate. Committing the file should be done only when the test suite changes significantly (per DRQ).
+
+#### Interim Fix Applied
+- Added `--store-durations` to the sharded-quick pytest command to generate `.test_durations` on every run
+- Added `actions/cache/restore@v4` (before tests) and `actions/cache/save@v4` (after tests) to persist durations between CI runs
+- Cache key: `test-durations-shard-N-${{ hashFiles('tests/**/*.py') }}` — invalidated when test files change
+
+#### Research Sources Used
+- pytest-split docs: https://jerry-git.github.io/pytest-split/
+- "Blazing fast CI with pytest-split and GitHub Actions": https://blog.jerrycodes.com/pytest-split-and-github-actions/
+- GitHub issue #20: https://github.com/jerry-git/pytest-split/issues/20
+
+#### Acceptance Criteria
+1. `shard-results-*` artifacts always include a non-empty `.test_durations`
+2. Subsequent runs restore cached durations and show visibly faster collection
+3. Shard sizes are approximately balanced (within 10% of each other by duration)
