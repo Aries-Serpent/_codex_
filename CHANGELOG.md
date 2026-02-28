@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### S98 — Ruff E501 → 0, Pattern 6 → 77, Auto-Fix Patterns 12+13, AAIS V4.3 (2026-02-28)
+### S98 — Ruff E501 → 0, Pattern 6 → 77, Auto-Fix Patterns 12+13, OpenVINO Phase B, AAIS V4.3 (2026-02-28)
 
 **Ruff E501 Line-Length: 3100 → 0 issues**
 - `.ruff.toml` `line-length` harmonised 88 → 100 (matches `pyproject.toml`)
@@ -39,6 +39,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **AAIS**
 - `.github/agents/AI_AGENT_INTUITIVENESS_SCORE_V3.md` → **V4.3** — AAIS **98.6/100** (+0.6 from V4.2)
   - Ruff E501 → 0: +0.3  |  Pattern 6 → 77: +0.2  |  Auto-fix P12+P13: +0.1
+
+**Intel OpenVINO Phase B (P10-05)**
+- `src/codex_ml/backends/openvino_backend.py` — NEW: `is_available()`, `available_devices()`, `infer()` with Tier 2 guard; no-op when `openvino` absent
+- `src/codex_ml/backends/__init__.py` — NEW: backends package init
+- `tests/smoke/test_openvino_backend_smoke.py` — NEW: 11 smoke tests (no GPU required)
+- `docs/ops/openvino_integration.md` — Phase B status updated ✅
+- `docs/ops/PHASE_11_PLAN.md` — S98 row marked ✅ DONE; status → In Progress
+- `.github/agents/S99_HOTFIX_CONTINUATION_PROMPT.md` — NEW: S99 HOTFIX follow-up prompt (HF-01–HF-04 + P1–P3 queue)
 
 
 

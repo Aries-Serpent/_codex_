@@ -2009,3 +2009,15 @@ Resolve 3100 QA walkthrough ruff E501 issues to 0, reduce Pattern 6 to ≤ 80, a
 - **Auto-fix patterns**: 13 (P12 Line Length + P13 W-Series added)
 - **Coverage threshold**: 30% (Phase 23 — active)
 - **AAIS**: 98.6/100 (V4.3) ✅
+
+**Addendum S98b (OpenVINO Phase B + HOTFIX prompt)**
+
+| Area | File(s) | What |
+|------|---------|------|
+| OpenVINO Phase B | `src/codex_ml/backends/__init__.py` | NEW: backends package |
+| OpenVINO Phase B | `src/codex_ml/backends/openvino_backend.py` | NEW: is_available(), available_devices(), infer() — Tier 2 guard |
+| OpenVINO Phase B | `tests/smoke/test_openvino_backend_smoke.py` | NEW: 11 smoke tests (11/11 pass, no GPU required) |
+| OpenVINO Phase B | `docs/ops/openvino_integration.md` | Phase B status → ✅ Complete |
+| Phase 11 plan | `docs/ops/PHASE_11_PLAN.md` | S98 row → ✅ DONE; P10-05 row updated |
+| HOTFIX prompt | `.github/agents/S99_HOTFIX_CONTINUATION_PROMPT.md` | NEW: HF-01–HF-04 blocking items + S99 priority queue |
+| CHANGELOG | `CHANGELOG.md` | S98 title + OpenVINO Phase B section added |

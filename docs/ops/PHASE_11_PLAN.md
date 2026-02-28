@@ -1,6 +1,6 @@
 # Phase 11 — Quality Hardening & Coverage Growth
 
-**Status**: 📋 Planning (S97 baseline)  
+**Status**: 🔶 In Progress (S98 complete)  
 **Predecessor**: Phase 10 — Hardware-First Production Readiness (complete S96)  
 **Horizon**: S97–S103  
 **Primary metric**: Test coverage 30% → 50%
@@ -15,7 +15,7 @@
 | P10-02 | All GPU components optional/deferred | ✅ DONE (S92–S95) |
 | P10-03 | 0.9.0-rc1 publishable | ✅ DONE (S94) |
 | P10-04 | CPU performance baseline | ✅ DONE (S96) |
-| P10-05 | Intel OpenVINO optional iGPU path | ✅ DONE (S97 — doc + plan) |
+| P10-05 | Intel OpenVINO optional iGPU path | ✅ DONE (S97 doc + S98 Phase B backend) |
 | P10-06 | Secrets rotation runbook | ✅ DONE (S96) |
 | P10-07 | SBOM CI integration | ✅ DONE (S96) |
 | P10-08 | Pattern 6 catch-alls systematic fix | ✅ DONE (S97 — 222→118) |
@@ -97,12 +97,12 @@
 | Session | Primary Focus | Target Deliverable |
 |---------|--------------|-------------------|
 | S97 | CodeQL alerts, Pattern 6 222→118, P10-05 doc | This document |
-| S98 | Pattern 6 118→60, coverage gap-fill (P11-01a) | `fail_under = 35` |
-| S99 | OpenVINO backend (P11-03 Phase B+C) | `openvino_backend.py` |
-| S100 | Coverage gap-fill continued (P11-01b) | `fail_under = 40` |
+| **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** | ✅ **DONE** |
+| S99 | OpenVINO Phase C CI smoke test (P11-03); Pattern 6 77→40 | `test_openvino_smoke` on iGPU runner |
+| S100 | Coverage gap-fill (P11-01a) — `fail_under = 35` | Measured coverage ≥ 33% |
 | S101 | CI parallel sharding (P11-04) | Sharded matrix |
 | S102 | Pattern 6 → 0 (P11-02 Batch C+D) | 0 informational issues |
-| S103 | Coverage 50% gate + AAIS V5.0 | `fail_under = 50`, 98.0/100 |
+| S103 | Coverage 50% gate + AAIS V5.0 | `fail_under = 50`, 100/100 |
 
 ---
 
@@ -118,4 +118,4 @@ Phase 11 is **complete** when all of the following hold:
 
 ---
 
-*Phase 11 plan authored S97 (2026-02-28). Next review: S103.*
+*Phase 11 plan authored S97 (2026-02-28). S98 session complete. Next review: S103.*
