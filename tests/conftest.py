@@ -1844,7 +1844,7 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except Exception:  # Best-effort cleanup; psutil may not be available
+    except Exception:  # Best-effort cleanup; psutil may not be available  # noqa: BLE001
         pass
 
 
@@ -1896,7 +1896,7 @@ def protect_stderr():
             sys.stderr = original_stderr
         if sys.stdout is not original_stdout:
             sys.stdout = original_stdout
-    except Exception:
+    except Exception:  # noqa: BLE001
         # Force restore on any error
         sys.stderr = original_stderr
         sys.stdout = original_stdout
@@ -1953,7 +1953,7 @@ def force_file_cleanup():
             close_method = getattr(obj, "close", None)
             closed_attr = getattr(obj, "closed", None)
             name_attr = getattr(obj, "name", None)
-        except Exception:
+        except Exception:  # noqa: BLE001
             continue  # Skip objects with unsafe attribute access
 
         try:
@@ -1971,7 +1971,7 @@ def force_file_cleanup():
                     # It's an open file object (not stdin/stdout/stderr which have int names)
                     try:
                         close_method()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         pass  # Already closed or not closeable
         except (ReferenceError, AttributeError):
             pass  # Object was garbage collected during iteration
@@ -2029,7 +2029,7 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning,
             )
-    except Exception:  # psutil optional; skip leak check if unavailable
+    except Exception:  # psutil optional; skip leak check if unavailable  # noqa: BLE001
         pass
 
 

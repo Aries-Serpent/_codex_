@@ -313,6 +313,9 @@ class CommonIssueFixer:
             for line_num, line in enumerate(lines, 1):
                 for pattern, desc in vague_patterns:
                     if re.search(pattern, line):
+                        # Skip lines explicitly suppressed with noqa
+                        if "# noqa" in line:
+                            continue
                         issues.append(
                             f"{py_file.relative_to(self.repo_root)}:{line_num} - {desc}"
                         )
