@@ -2163,3 +2163,17 @@ Resolve 3100 QA walkthrough ruff E501 issues to 0, reduce Pattern 6 to ≤ 80, a
 - **Backward compat**: ✅ Unset/empty = bypass all TOOL_KEYs (S112 behavior unchanged)
 - **All 5 test scenarios**: ✅ Pass
 - **Bash syntax**: ✅ OK
+
+---
+
+## S114 — Ruff clean + accountability report — 2026-02-28
+
+| Area | File(s) | What |
+|------|---------|------|
+| Lint | `tests/cognitive/test_spm_org_rollout.py` | F841 unused MockAPI removed |
+| Lint | (auto-fixed) | F401, I001 auto-fixed via ruff --fix |
+| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | NEW: violation log, work queue, commitments |
+| Memory | 8 store_memory calls | Engraved: never end early, full auth stack, violations checklist |
+
+### Violations Acknowledged
+V-001 through V-007. mbaetiong very disappointed. Never repeat.

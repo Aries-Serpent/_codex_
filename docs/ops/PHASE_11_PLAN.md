@@ -106,6 +106,7 @@
 | S103 | Coverage 50% gate — `fail_under = 50` | `fail_under = 50`, Phase 11 final |
 | **S112** | **owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass (PR #3402 P3)** | ✅ **DONE** |
 | **S113** | **owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter** | ✅ **DONE** |
+| **S114** | **Ruff 0 errors (F401/F841/I001), accountability report, full dep install** | ✅ **DONE** |
 
 ---
 
@@ -124,4 +125,4 @@ Phase 11 is **complete** when all of the following hold:
 
 ---
 
-*Phase 11 plan authored S97 (2026-02-28). S113 session complete. Next: S114 coverage gap-fill.*
+*Phase 11 plan authored S97 (2026-02-28). S114 session complete. Next: S115 full test suite green + coverage gap-fill.*
