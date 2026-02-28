@@ -1,6 +1,6 @@
 # Phase 11 — Quality Hardening & Coverage Growth
 
-**Status**: 🔶 In Progress (S98 complete)  
+**Status**: 🔶 In Progress (S100 complete, P11-01 deferred to S101)  
 **Predecessor**: Phase 10 — Hardware-First Production Readiness (complete S96)  
 **Horizon**: S97–S103  
 **Primary metric**: Test coverage 30% → 50%
@@ -100,9 +100,9 @@
 | **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** | ✅ **DONE** |
 | **S99** | **HOTFIX: YAML/auth/perms, Pattern 6 77→40, AAIS 98.9** | ✅ **DONE** |
 | **S100** | **OpenVINO Phase C, Pattern 6→0, CI sharding, SBOM validation, v0.9.0, AAIS V5.0** | ✅ **DONE** |
-| S101 | Coverage gap-fill (P11-01a) — `fail_under = 35` (needs measured ≥ 33%) | Measure on full runner |
-| S102 | Pattern 6 → 0 (P11-02 Batch C+D) | 0 informational issues |
-| S103 | Coverage 50% gate + AAIS V5.0 | `fail_under = 50`, 100/100 |
+| **S101** | **CI workflow verification — all 3 workflows GREEN on first approved run** | ✅ **DONE** |
+| S102 | Coverage gap-fill (P11-01a) — `fail_under = 35` (needs measured ≥ 33%) | Measure on full runner |
+| S103 | Coverage 50% gate — `fail_under = 50` | `fail_under = 50`, Phase 11 final |
 
 ---
 
@@ -111,10 +111,11 @@
 Phase 11 is **complete** when all of the following hold:
 
 - [ ] `fail_under = 50` in `pyproject.toml` and CI passes
-- [ ] Pattern 6 informational issues = 0
-- [ ] OpenVINO backend smoke test passes (or `skipif` when absent)
-- [ ] CI parallel sharding active (≤ 3 min per shard)
-- [ ] AAIS ≥ 98.0/100
+- [x] Pattern 6 informational issues = 0 (S100)
+- [x] OpenVINO backend smoke test passes (or `skipif` when absent) (S100)
+- [x] CI parallel sharding active (≤ 3 min per shard) (S100)
+- [x] AAIS ≥ 98.0/100 → 100.0/100 (V5.0, S100)
+- [x] All CI workflows GREEN on approved run (S101)
 
 ---
 
