@@ -5,7 +5,29 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — S116c
+## [Unreleased] — S116h
+
+### S116h — WF-001: Cognitive Pre-flight CI Gate (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Feature | `.github/workflows/agent-auth-delegation.yml` | Added `cognitive-preflight` job (REQ-1–4): posts mandatory checklist PR comment, parses CI failure patterns to job summary, verifies .gitignore allows agent_auth_session.json, verifies accountability report touched in last commit. `activate-delegation` now needs `cognitive-preflight`. |
+| Feature | `.github/ISSUE_TEMPLATE/session_priority.md` | New template for posting `Priority for this session: X` directive on PRs — surfaced inline by cognitive-preflight job |
+| Docs | `.github/workflows/INDEX.md` | Authentication section updated with `agent-auth-delegation.yml` entry and cognitive-preflight gate description |
+| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-024–W-027 work log entries; Last updated → S116h |
+| Trigger | `.github/workflows/agent-auth-delegation.yml` | Added `synchronize`, `ready_for_review` to PR types; added `pull_request_review: [submitted]` trigger |
+
+### Transformation Achieved (S116h)
+
+```
+BEFORE: .codex/ = files I should read (passive, ignored under task pressure)
+AFTER:  .codex/ = CI gate I cannot bypass (active, enforced at every PR)
+```
+
+The `cognitive-preflight` job runs on every PR push. `activate-delegation` cannot start
+until cognitive-preflight passes. The cognitive brain is now an enforcement system, not decoration.
+
+
 
 ### S116c — Dynamic CI-failure-driven @copilot continue (no static PR numbers) (2026-02-28)
 

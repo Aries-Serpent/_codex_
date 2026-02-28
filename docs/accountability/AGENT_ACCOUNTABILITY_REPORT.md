@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116g)
+**Last updated:** 2026-02-28 (S116h — WF-001 cognitive-preflight gate)
 
 ---
 
@@ -287,6 +287,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-021 | Regression investigation Mermaid map | ✅ Done (S116g — `.codex/docs/AGENT_AUTH_DELEGATION_REGRESSION_MAP.md`) |
 | W-022 | Accountability report with explicit misalignment section | ✅ Done (S116g — this file) |
 | W-023 | store_memory: session start, gitignore routine, push rules, session end checklist | ✅ Done (S116g) |
+| W-024 | WF-001: cognitive-preflight gate added to agent-auth-delegation.yml (REQ-1–4) | ✅ Done (S116h) |
+| W-025 | .github/ISSUE_TEMPLATE/session_priority.md created — priority directive template | ✅ Done (S116h) |
+| W-026 | INDEX.md Authentication section updated with agent-auth-delegation.yml entry | ✅ Done (S116h) |
+| W-027 | PR trigger updated: added synchronize, ready_for_review, pull_request_review | ✅ Done (S116h) |
 
 ---
 

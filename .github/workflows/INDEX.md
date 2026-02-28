@@ -160,7 +160,14 @@ Authentication, secrets, and token management:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
+| [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate | PR, Manual | ✅ Active |
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
+
+**Cognitive Pre-flight Gate** (`cognitive-preflight` job inside `agent-auth-delegation.yml`):
+- REQ-1: Posts mandatory checklist as PR comment BEFORE `@copilot continue` fires
+- REQ-2: Parses `.codex/patterns/ci_failure_patterns.yaml` → outputs all patterns to job summary
+- REQ-3: Verifies `.gitignore` allows `.codex/agent_auth_session.json`
+- REQ-4: Verifies `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was touched in last commit
 
 **Note:** Auth security, rotation, and compliance workflows exist as documentation (`.md` files) but are not yet implemented as active workflows. See `.github/workflows/*.md` for specifications.
 

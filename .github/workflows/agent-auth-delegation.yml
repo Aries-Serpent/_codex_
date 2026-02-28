@@ -18,7 +18,9 @@ name: Agent Token Delegation
 
 on:
   pull_request:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -76,10 +78,260 @@ jobs:
           echo "✅ Owner approved agent token delegation for PR #${{ needs.detect-checkbox.outputs.pr_number }}"
           echo "Proceeding to activate COPILOT_AGENT_AUTH_ENABLED..."
 
-  # ── Job 3: activate delegation, set variable, post @copilot continue ─────────
+  # ── Job 3: cognitive-preflight — GATE ───────────────────────────────────────
+  # Runs in parallel with detect-checkbox / await-approval.
+  # activate-delegation cannot start until this passes.
+  #
+  # REQ-1: Post mandatory checklist as PR comment BEFORE @copilot fires
+  # REQ-2: Parse .codex/patterns/ci_failure_patterns.yaml → job summary
+  # REQ-3: Verify .gitignore ALLOWS .codex/agent_auth_session.json
+  # REQ-4: Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md touched in last commit
+  #
+  # Policy: .codex/CODEBASE_AGENCY_POLICY.md | WF-001-cognitive-preflight-FINAL.md
+  cognitive-preflight:
+    name: "🧠 Cognitive Pre-flight Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # Required: HEAD~1 diff check for REQ-4
+
+      # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
+      - name: Post Mandatory Agent Checklist to PR
+        uses: actions/github-script@v7
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha = (context.sha || 'unknown').slice(0, 7);
+            const MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';
+
+            // Dedup: skip if already posted for this SHA
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const alreadyPosted = comments.some(c =>
+              c.body.includes(MARKER) && c.body.includes(sha)
+            );
+            if (alreadyPosted) {
+              console.log(`Checklist already posted for SHA ${sha} — skipping duplicate.`);
+              return;
+            }
+
+            // Scan for existing priority directive to surface inline
+            const directive = comments.find(c =>
+              c.body.includes('Priority for this session:')
+            );
+            const priorityLine = directive
+              ? (() => {
+                  const m = directive.body.match(/Priority for this session:\s*(.+)/);
+                  return m
+                    ? `\n> ⚡ **ACTIVE SESSION PRIORITY:** ${m[1].trim()} _(set by @${directive.user.login})_\n`
+                    : '';
+                })()
+              : '\n> ℹ️ No session priority directive found. Post a comment with `Priority for this session: X` to set one.\n';
+
+            const body = [
+              `## 🧠 ${MARKER} — SHA: ${sha}`,
+              '',
+              '> **Auto-posted by `cognitive-preflight` job BEFORE session activation.**',
+              '> Treat this as active instruction — NOT background memory. This is a CI gate.',
+              priorityLine,
+              '---',
+              '',
+              '### ✅ Agent Pre-flight Checklist',
+              '',
+              '- [ ] **1.** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in your commit _(CI will fail if not touched)_',
+              '- [ ] **2.** Review CI failure patterns in the Actions job summary (Actions tab → this run → Job Summary)',
+              '- [ ] **3.** Confirm `.gitignore` allows `.codex/agent_auth_session.json` _(CI will fail if blocked)_',
+              '- [ ] **4.** Read the `Priority for this session: X` comment on this PR — that is your **PRIMARY directive**',
+              '- [ ] **5.** Post your Phase execution plan as a PR comment BEFORE making any file changes',
+              '- [ ] **6.** Follow `.codex/CODEBASE_AGENCY_POLICY.md` at all times — violations must be self-corrected',
+              '',
+              '### ⚙️ Policy Quick Reference',
+              '',
+              '| Rule | Requirement |',
+              '|------|-------------|',
+              '| Execution trigger | Within 60 seconds of reading a clear task |',
+              '| Self-review | Minimum 5 passes before session close |',
+              '| Deferral | NEVER without: documented blocker + 5 attempts + follow-up `@copilot` comment |',
+              '| Terminology | pre-commit/commit cycles — NOT days/weeks |',
+              '| Follow-up | Post `@copilot ...` PR comment if session ends with incomplete work |',
+              '',
+              '### 🔗 Policy References',
+              '',
+              '| File | Purpose |',
+              '|------|---------|',
+              '| `.codex/CODEBASE_AGENCY_POLICY.md` | Master policy |',
+              '| `.codex/patterns/ci_failure_patterns.yaml` | CI pattern library (19 patterns) |',
+              '| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session accountability |',
+              '',
+              '---',
+              `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            console.log(`✅ Checklist posted for SHA ${sha}`);
+
+      # ── REQ-2: Read ci_failure_patterns.yaml → output to job summary ──────
+      - name: Parse CI Failure Patterns → Job Summary
+        run: |
+          PATTERN_FILE=".codex/patterns/ci_failure_patterns.yaml"
+
+          echo "## 🧠 Active CI Failure Patterns" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$PATTERN_FILE" ]; then
+            echo "⚠️ Pattern file not found: \`${PATTERN_FILE}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "Agent should create this file from session learnings." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Source:** \`${PATTERN_FILE}\` (missing)" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "**Source:** \`${PATTERN_FILE}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          python3 - "$PATTERN_FILE" "$GITHUB_STEP_SUMMARY" << 'PYEOF'
+          import re, sys
+
+          pattern_file = sys.argv[1]
+          summary_file = sys.argv[2]
+
+          with open(pattern_file, "r", encoding="utf-8") as f:
+              content = f.read()
+
+          blocks = re.findall(r'```yaml\n(.*?)```', content, re.DOTALL)
+
+          rows = []
+          for block in blocks:
+              pid_m   = re.search(r'^pattern_id:\s*(.+)', block, re.MULTILINE)
+              name_m  = re.search(r'^name:\s*"?(.+?)"?\s*$', block, re.MULTILINE)
+              pri_m   = re.search(r'^priority:\s*(\d+)', block, re.MULTILINE)
+              sev_m   = re.search(r'^severity:\s*(\w+)', block, re.MULTILINE)
+              batch_m = re.search(r'batch_fix[_\s]*(?:potential|enabled)?:\s*(true)', block, re.IGNORECASE)
+              notes_m = re.search(r'cognitive_notes:\s*\|(.*?)(?=\n\w|\Z)', block, re.DOTALL)
+
+              if not pid_m:
+                  continue
+
+              pid   = pid_m.group(1).strip()
+              name  = name_m.group(1).strip() if name_m else "—"
+              pri   = f"P{pri_m.group(1).strip()}" if pri_m else "?"
+              sev   = sev_m.group(1).strip() if sev_m else "?"
+              batch = "✅" if batch_m else ""
+              note  = ""
+              if notes_m:
+                  lines = [l.strip() for l in notes_m.group(1).strip().split("\n") if l.strip()]
+                  note  = lines[0] if lines else ""
+
+              rows.append(f"| `{pid}` | {name} | {pri} | {sev} | {batch} | {note} |")
+
+          with open(summary_file, "a", encoding="utf-8") as out:
+              if rows:
+                  out.write("| Pattern ID | Name | Priority | Severity | Batch Fix | Key Insight |\n")
+                  out.write("|-----------|------|----------|----------|:---------:|-------------|\n")
+                  for row in rows:
+                      out.write(row + "\n")
+                  out.write(f"\n**Total patterns loaded:** {len(rows)}\n\n")
+                  p1 = [r for r in rows if "| P1 |" in r]
+                  if p1:
+                      out.write(f"⚠️ **{len(p1)} Priority-1 (blocking) pattern(s) active — review before coding.**\n\n")
+              else:
+                  out.write("No parseable patterns found in pattern file.\n\n")
+          PYEOF
+
+      # ── REQ-3: Verify .gitignore ALLOWS .codex/agent_auth_session.json ────
+      - name: Verify .gitignore allows .codex/agent_auth_session.json
+        id: gitignore_check
+        run: |
+          TARGET=".codex/agent_auth_session.json"
+          GITIGNORE=".gitignore"
+
+          echo "### 🔍 .gitignore Check: \`${TARGET}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$GITIGNORE" ]; then
+            echo "⚠️ No .gitignore found — \`${TARGET}\` is implicitly allowed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if git check-ignore -q "$TARGET" 2>/dev/null; then
+            NEGATION=$(grep -E "^!.*agent_auth_session" "$GITIGNORE" 2>/dev/null || true)
+            if [ -n "$NEGATION" ]; then
+              echo "✅ **PASS** — \`${TARGET}\` is explicitly un-ignored via negation: \`${NEGATION}\`" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "❌ **FAIL** — \`${TARGET}\` is BLOCKED by .gitignore with no negation rule." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Fix:** Add to \`.gitignore\`:" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "!.codex/agent_auth_session.json" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+          else
+            echo "✅ **PASS** — \`${TARGET}\` is NOT ignored by .gitignore." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # ── REQ-4: Verify accountability report touched in last commit ─────────
+      - name: Verify Accountability Report updated in last commit
+        id: accountability_check
+        run: |
+          REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+          echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$REPORT" ]; then
+            echo "❌ **FAIL** — \`${REPORT}\` does not exist." >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Create this file and commit it before activating a session." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$REPORT"; then
+            echo "✅ **PASS** — \`${REPORT}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          else
+            LAST_TOUCH=$(git log -1 --format="%ar" -- "$REPORT" 2>/dev/null || echo "unknown")
+            echo "❌ **FAIL** — \`${REPORT}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Update the accountability report in your next commit before session activation." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      # ── Final gate summary ────────────────────────────────────────────────
+      - name: Cognitive Pre-flight Final Status
+        if: always()
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "---" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "## 🟢 COGNITIVE PRE-FLIGHT: ALL CHECKS PASSED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Session activation is **unblocked**. \`activate-delegation\` may proceed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## 🚫 COGNITIVE PRE-FLIGHT: SESSION BLOCKED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Resolve all ❌ items above. \`activate-delegation\` will not run until this job passes." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Job 4: activate delegation, set variable, post @copilot continue ─────────
   activate-delegation:
     name: "Activate token delegation"
-    needs: [detect-checkbox, await-approval]
+    needs: [detect-checkbox, await-approval, cognitive-preflight]
     runs-on: ubuntu-latest
 
     steps:
