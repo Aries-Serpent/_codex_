@@ -731,7 +731,13 @@ def main():
         fixer.generate_json_report(args.json_output)
 
     # Print report
-    print(fixer.generate_report())
+    report = fixer.generate_json_report()
+    total = report.get("total_issues", 0)
+    auto_fix = report.get("auto_fixable", 0)
+    if total:
+        print(f"\n📊 Summary: {total} issue(s) found, {auto_fix} auto-fixable")
+    else:
+        print("\n✅ Summary: No issues found")
 
     # Exit with appropriate code
     # Only fail if there are unfixed auto-fixable issues

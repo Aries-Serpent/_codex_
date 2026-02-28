@@ -1103,7 +1103,10 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import sys as _sys  # noqa: PLC0415 - intentional local alias
+        import sys as _sys  # noqa: PLC0415
+
+        _torch = _sys.modules.get(
+            "torch"
         )  # use already-imported module, avoid duplicate import
         if _torch is None:
             raise ImportError("torch not loaded")
@@ -1128,8 +1131,9 @@ def _isolate_rng_state():
     Methodology report Fix 3: prevents RNG state leakage between tests that
     call set_seed/set_reproducible, ensuring repeatable results.
     """
-    import random as _random  # noqa: PLC0415 - intentional local alias
+    import random as _random  # noqa: PLC0415
 
+    py_state = _random.getstate()
 
     try:
         import numpy as _np

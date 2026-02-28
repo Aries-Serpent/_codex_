@@ -325,9 +325,33 @@ cmd_lint() {
 }
 
 # ===========================================================================
-# SUBCOMMAND: all
-# Runs fast + quick + premerge sequentially; always prints the summary.
+# SUBCOMMAND: preflight
+# Parallel batch pre-flight: mirrors resilient_validation.yml using
+# scripts/ci/rvs_preflight.py (ProcessPoolExecutor, JUnit aggregation).
+# ALL remaining args after 'preflight' are forwarded to rvs_preflight.py.
+#
+# Examples:
+#   bash scripts/ci_local.sh preflight                          # quick group
+#   bash scripts/ci_local.sh preflight --preview                # scope only
+#   bash scripts/ci_local.sh preflight --changed-only           # git delta
+#   bash scripts/ci_local.sh preflight --group slow --workers 4
+#   bash scripts/ci_local.sh preflight --group all --report /tmp/r.json
 # ===========================================================================
+cmd_preflight() {
+  ci_header "RVS PRE-FLIGHT (parallel batches)" "resilient_validation.yml"
+  activate_venv
+
+  local preflight_script="$ROOT/scripts/ci/rvs_preflight.py"
+  if [[ ! -f "$preflight_script" ]]; then
+    error "scripts/ci/rvs_preflight.py not found"
+    exit 2
+  fi
+
+  # Forward all remaining args (stored in REMAINING_ARGS by the entry point)
+  python "$preflight_script" "${REMAINING_ARGS[@]+"${REMAINING_ARGS[@]}"}"
+}
+
+
 cmd_all() {
   ci_header "ALL CHECKS (fast + quick + premerge)" "validate.yml + resilient_validation.yml + pre-merge-validation.yml"
 
@@ -384,6 +408,7 @@ case "$SUBCOMMAND" in
   integration) cmd_integration ;;
   docs)        cmd_docs        ;;
   premerge)    cmd_premerge    ;;
+  preflight)   cmd_preflight   ;;
   lint)        cmd_lint        ;;
   all)         cmd_all         ;;
   help|--help|-h) cmd_help    ;;

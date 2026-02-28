@@ -48,7 +48,7 @@ import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET  # noqa: N817 — stdlib safe for local JUnit parsing
-from concurrent.futures import ProcessPoolExecutor, as_completed, Future
+from concurrent.futures import Future, ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -233,14 +233,14 @@ def discover_tests(
         return []
 
     # Parse file paths from collected item ids (format: path::class::test)
-    seen: dict[Path, None] = {}
+    seen: set[Path] = set()
     for line in result.stdout.splitlines():
         if "::" in line:
             rel = line.split("::")[0].strip()
             p = REPO_ROOT / rel
-            if p.exists() and p not in seen:
-                seen[p] = None
-    return list(seen.keys())
+            if p.exists():
+                seen.add(p)
+    return list(seen)
 
 
 def batch_files(files: List[Path], batch_size: int) -> List[List[Path]]:
@@ -252,12 +252,23 @@ def batch_files(files: List[Path], batch_size: int) -> List[List[Path]]:
 # JUnit XML parser
 # ---------------------------------------------------------------------------
 
-def _parse_junit(xml_path: Path) -> Tuple[int, int, int, int, List[str]]:
-    """Return (passed, failed, errors, skipped, failed_names) from a JUnit XML."""
+def _parse_junit(xml_path: Path, allowed_parent: Optional[Path] = None) -> Tuple[int, int, int, int, List[str]]:
+    """Return (passed, failed, errors, skipped, failed_names) from a JUnit XML.
+
+    ``allowed_parent`` — when provided, validates that ``xml_path`` resolves
+    inside that directory, preventing path-traversal if the value is derived
+    from external input (e.g. subprocess stdout).  Callers that generate the
+    path internally may omit this argument.
+    """
     if not xml_path.exists():
         return 0, 0, 0, 0, []
+    if allowed_parent is not None:
+        try:
+            xml_path.resolve().relative_to(allowed_parent.resolve())
+        except ValueError:
+            return 0, 0, 0, 0, []   # path escapes allowed directory — skip silently
     try:
-        tree = ET.parse(str(xml_path))  # noqa: S314 — local file, not external
+        tree = ET.parse(str(xml_path))  # noqa: S314 — path validated above or caller-controlled
         root = tree.getroot()
         suites = root if root.tag == "testsuite" else root.findall(".//testsuite")
         if not isinstance(suites, list):
@@ -295,7 +306,9 @@ def _run_batch(
     junit_dir: str,
 ) -> dict:
     """Execute pytest on a subset of files. Returns a serialisable dict."""
-    import subprocess, sys, time  # noqa: PLC0415 - worker process, isolated namespace
+    import subprocess
+    import sys
+    import time  # noqa: PLC0415 - worker process, isolated namespace
     from pathlib import Path
 
     junit_path = Path(junit_dir) / f"batch_{batch_index:04d}.xml"
@@ -395,8 +408,10 @@ def run_group_parallel(
             for fut in as_completed(futures):
                 completed += 1
                 raw = fut.result()
+                junit_xml = Path(raw["junit_path"])
                 passed, failed, errors, skipped, failed_names = _parse_junit(
-                    Path(raw["junit_path"])
+                    junit_xml,
+                    allowed_parent=junit_xml.parent,
                 )
 
                 br = BatchResult(

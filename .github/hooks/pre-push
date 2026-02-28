@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# .github/hooks/pre-push
+#
+# Git pre-push hook: runs the RVS parallel batch pre-flight on changed files
+# before every push.  Blocks the push if any test fails.
+#
+# Install once per clone:
+#   cp .github/hooks/pre-push .git/hooks/pre-push
+#   chmod +x .git/hooks/pre-push
+#
+# Or use the install script:
+#   bash scripts/install_hooks.sh
+#
+# Skip in emergencies (NOT recommended):
+#   git push --no-verify
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PREFLIGHT="$ROOT/scripts/ci/rvs_preflight.py"
+
+# ── Colour helpers ─────────────────────────────────────────────────────────
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
+
+info()    { echo -e "${CYAN}[pre-push]${RESET} $*"; }
+success() { echo -e "${GREEN}[pre-push]${RESET} $*"; }
+warn()    { echo -e "${YELLOW}[pre-push]${RESET} $*"; }
+error()   { echo -e "${RED}[pre-push]${RESET} $*" >&2; }
+
+# ── Guard: skip if rvs_preflight.py is not present ───────────────────────
+if [[ ! -f "$PREFLIGHT" ]]; then
+  warn "scripts/ci/rvs_preflight.py not found — skipping RVS pre-flight"
+  exit 0
+fi
+
+# ── Guard: skip if no Python available ───────────────────────────────────
+PYTHON=""
+for candidate in python3 python; do
+  if command -v "$candidate" &>/dev/null; then
+    PYTHON="$candidate"
+    break
+  fi
+done
+if [[ -z "$PYTHON" ]]; then
+  warn "No Python interpreter found — skipping RVS pre-flight"
+  exit 0
+fi
+
+# ── Activate .venv_ci if present ─────────────────────────────────────────
+if [[ -d "$ROOT/.venv_ci" && -z "${VIRTUAL_ENV:-}" ]]; then
+  # shellcheck source=/dev/null
+  source "$ROOT/.venv_ci/bin/activate"
+fi
+
+# ── Run changed-only quick scan (fast — typically < 60 s) ────────────────
+echo ""
+echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════╗${RESET}"
+echo -e "${BOLD}${CYAN}║  RVS Pre-push Hook (parallel batch scan)         ║${RESET}"
+echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════════╝${RESET}"
+info "Scanning changed files before push …"
+info "To skip: git push --no-verify"
+echo ""
+
+set +e
+"$PYTHON" "$PREFLIGHT" \
+  --group quick \
+  --changed-only \
+  --workers 4 \
+  --fail-fast
+PREFLIGHT_EXIT=$?
+set -e
+
+echo ""
+if [[ $PREFLIGHT_EXIT -eq 0 ]]; then
+  success "✅  All changed-file tests passed — push proceeding"
+  exit 0
+else
+  error "❌  Test failures detected in changed files — push blocked"
+  error "    Fix the failing tests, then push again."
+  error "    To bypass (not recommended): git push --no-verify"
+  exit 1
+fi

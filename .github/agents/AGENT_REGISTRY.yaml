@@ -102,6 +102,7 @@ agents:
   integration_points: []
   priority: medium
 - id: ci-testing-agent
+  batch_scan_enabled: true
   name: Ci Testing Agent
   directory: .github/agents/ci-testing-agent
   status: active
@@ -396,6 +397,7 @@ agents:
   integration_points: []
   priority: medium
 - id: test-pattern-guardian
+  batch_scan_enabled: true
   name: Test Pattern Guardian
   directory: .github/agents
   file: test-pattern-guardian.md
@@ -448,6 +450,7 @@ agents:
   tools:
   - scripts/verify_hydra_configs.sh
 - id: unified-security-scanner
+  batch_scan_enabled: true
   name: Unified Security Scanner
   directory: .github/agents
   file: unified-security-scanner.md
@@ -506,6 +509,7 @@ agents:
   fix_patterns_registered: 11
   aais_contribution: 2.5
 - id: codeql-alert-resolution-agent
+  batch_scan_enabled: true
   name: CodeQL Alert Resolution Agent
   directory: .github/agents
   file: codeql-alert-resolution-agent.md
@@ -560,6 +564,7 @@ agents:
   fix_pattern: MP-S69-001
   aais_contribution: 1.8
 - id: ci-triage-pipeline-agent
+  batch_scan_enabled: true
   name: CI Triage Pipeline Agent
   directory: .github/agents
   file: ci-triage-pipeline-agent.md
@@ -584,6 +589,7 @@ agents:
   priority: high
   created: '2026-02-10T00:00:00Z'
 - id: recon-scout-agent
+  batch_scan_enabled: true
   name: Recon Scout Agent
   directory: .github/agents
   file: recon-scout-agent.md
@@ -716,6 +722,7 @@ agents:
   priority: high
   purpose: Coordinates multi-agent workflows, routing tasks to specialist agents.
 - id: artifact-monitor-agent
+  batch_scan_enabled: true
   name: Artifact Monitor Agent
   file: artifact-monitor-agent.md
   status: active
@@ -724,6 +731,7 @@ agents:
   priority: high
   purpose: Monitors CI/CD artifact health, detects stale or missing artifacts.
 - id: autonomous-test-healer-agent
+  batch_scan_enabled: true
   name: Autonomous Test Healer Agent
   file: autonomous-test-healer-agent.md
   status: active
@@ -756,6 +764,7 @@ agents:
   priority: medium
   purpose: Integration layer for cache management across workflow and composite actions.
 - id: ci-auto-healer-agent
+  batch_scan_enabled: true
   name: CI Auto-Healer Agent
   file: ci-auto-healer-agent.md
   status: active
@@ -764,6 +773,7 @@ agents:
   priority: critical
   purpose: Detects and repairs CI failures using P-001-P-035 pattern library.
 - id: ci-emergency-response-agent
+  batch_scan_enabled: true
   name: CI Emergency Response Agent
   file: ci-emergency-response-agent.md
   status: active
@@ -772,6 +782,7 @@ agents:
   priority: critical
   purpose: Emergency response for critical CI pipeline failures requiring immediate action.
 - id: ci-failure-resolution-agent
+  batch_scan_enabled: true
   name: CI Failure Resolution Agent
   file: ci-failure-resolution-agent.md
   status: active
@@ -780,6 +791,7 @@ agents:
   priority: high
   purpose: Resolves CI failures by diagnosing logs and applying structured fix patterns.
 - id: ci-importerror-agent
+  batch_scan_enabled: true
   name: CI ImportError Agent
   file: ci-importerror-agent.md
   status: active
@@ -796,6 +808,7 @@ agents:
   priority: high
   purpose: Retrieves authenticated GitHub Actions logs and summarizes failures.
 - id: ci-optimization-agent
+  batch_scan_enabled: true
   name: CI Optimization Agent
   file: ci-optimization-agent.md
   status: active
@@ -804,6 +817,7 @@ agents:
   priority: medium
   purpose: Identifies and applies optimizations to reduce CI pipeline runtime.
 - id: ci-parameter-mismatch-healer
+  batch_scan_enabled: true
   name: CI Parameter Mismatch Healer
   file: ci-parameter-mismatch-healer.md
   status: active
@@ -812,6 +826,7 @@ agents:
   priority: medium
   purpose: Detects and corrects parameter/argument mismatches in CI workflow calls.
 - id: ci-resilience-emergency-response-agent
+  batch_scan_enabled: true
   name: CI Resilience Emergency Response Agent
   file: ci-resilience-emergency-response-agent.md
   status: active
@@ -828,6 +843,7 @@ agents:
   priority: medium
   purpose: Verifies factual claims in commit messages and documentation.
 - id: code-analysis-agent
+  batch_scan_enabled: true
   name: Code Analysis Agent
   file: code-analysis-agent.md
   status: active
@@ -836,6 +852,7 @@ agents:
   priority: high
   purpose: Static code quality analysis with actionable improvement recommendations.
 - id: code-scanning-remediation-agent
+  batch_scan_enabled: true
   name: Code Scanning Remediation Agent
   file: code-scanning-remediation-agent.md
   status: active
@@ -844,6 +861,7 @@ agents:
   priority: high
   purpose: Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change fixes.
 - id: codebase-health-guardian
+  batch_scan_enabled: true
   name: Codebase Health Guardian
   file: codebase-health-guardian.md
   status: active
@@ -876,6 +894,7 @@ agents:
   priority: high
   purpose: Validates Hydra configuration files for schema compliance and type safety.
 - id: coverage-gapfill-agent
+  batch_scan_enabled: true
   name: Coverage Gapfill Agent
   file: coverage-gapfill-agent.md
   status: active
@@ -884,6 +903,7 @@ agents:
   priority: high
   purpose: Targets low-coverage modules and generates tests to close coverage gaps.
 - id: coverage-maintenance-agent
+  batch_scan_enabled: true
   name: Coverage Maintenance Agent
   file: coverage-maintenance-agent.md
   status: active
@@ -892,6 +912,7 @@ agents:
   priority: medium
   purpose: Maintains test coverage over time; alerts on regressions.
 - id: coverage-roadmap-agent
+  batch_scan_enabled: true
   name: Coverage Roadmap Agent
   file: coverage-roadmap-agent.md
   status: active
@@ -916,6 +937,7 @@ agents:
   priority: medium
   purpose: Validates filenames for cross-platform compatibility; blocks illegal characters.
 - id: datetime-modernizer
+  batch_scan_enabled: true
   name: Datetime Modernizer
   file: datetime-modernizer.agent.md
   status: active
@@ -940,6 +962,7 @@ agents:
   priority: high
   purpose: Reviews dependency security posture; flags CVEs and outdated packages.
 - id: dependency-vulnerability-scanner
+  batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
   file: dependency-vulnerability-scanner.agent.md
   status: active
@@ -980,6 +1003,7 @@ agents:
   priority: medium
   purpose: Automated documentation quality assessment; MkDocs validation; link checking.
 - id: fragile-test-guardian
+  batch_scan_enabled: true
   name: Fragile Test Guardian
   file: fragile-test-guardian.md
   status: active
@@ -997,6 +1021,7 @@ agents:
   version: 4.0.0-production
   purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.
 - id: integration-test-runner
+  batch_scan_enabled: true
   name: Integration Test Runner
   file: integration-test-runner.agent.md
   status: active
@@ -1029,6 +1054,7 @@ agents:
   priority: high
   purpose: Validates PyTorch model initialization patterns to prevent meta tensor issues.
 - id: ml-validation-suite-agent
+  batch_scan_enabled: true
   name: ML Validation Suite Agent
   file: ml-validation-suite-agent.md
   status: active
@@ -1045,6 +1071,7 @@ agents:
   priority: medium
   purpose: Monitors MSV dashboard metrics and alerts on regressions.
 - id: mutation-testing-agent
+  batch_scan_enabled: true
   name: Mutation Testing Agent
   file: mutation-testing-agent.md
   status: active
@@ -1085,6 +1112,7 @@ agents:
   priority: low
   purpose: Verifies that PR 3095 fixes have been correctly applied across the codebase.
 - id: pr-check-remediation-agent
+  batch_scan_enabled: true
   name: PR Check Remediation Agent
   file: pr-check-remediation-agent.md
   status: active
@@ -1093,6 +1121,7 @@ agents:
   priority: medium
   purpose: Remediates failed PR checks by analyzing failure patterns and applying fixes.
 - id: pr-test-infrastructure-fixer
+  batch_scan_enabled: true
   name: PR Test Infrastructure Fixer
   file: pr-test-infrastructure-fixer.md
   status: active
@@ -1109,6 +1138,7 @@ agents:
   priority: medium
   purpose: Manages PyPI package publishing operations and release workflows.
 - id: python-312-type-fixer
+  batch_scan_enabled: true
   name: Python 3.12 Type Fixer
   file: python-312-type-fixer.md
   status: active
@@ -1117,6 +1147,7 @@ agents:
   priority: medium
   purpose: Fixes Python 3.12 type annotation incompatibilities across the codebase.
 - id: qa-walkthrough-agent
+  batch_scan_enabled: true
   name: QA Walkthrough Agent
   file: qa-walkthrough-agent.md
   status: active
@@ -1221,6 +1252,7 @@ agents:
   priority: critical
   purpose: Validates GitHub security alerts, triage, and generates remediation plans.
 - id: security-audit-agent
+  batch_scan_enabled: true
   name: Security Audit Agent
   file: security-audit-agent.md
   status: active
@@ -1261,6 +1293,7 @@ agents:
   priority: low
   purpose: Enforces consistent terminology across documentation and code comments.
 - id: test-alignment-fixer
+  batch_scan_enabled: true
   name: Test Alignment Fixer
   file: test-alignment-fixer.agent.md
   status: active
@@ -1269,6 +1302,7 @@ agents:
   priority: high
   purpose: Fixes test alignment issues by updating tests to match API changes.
 - id: test-alignment-fixer-enhanced
+  batch_scan_enabled: true
   name: Test Alignment Fixer Enhanced
   file: test-alignment-fixer-enhanced.md
   status: active
@@ -1277,6 +1311,7 @@ agents:
   priority: high
   purpose: Enhanced test alignment fixer with broader coverage and smarter detection.
 - id: test-coverage-agent
+  batch_scan_enabled: true
   name: Test Coverage Agent
   file: test-coverage-agent.md
   status: active
@@ -1285,6 +1320,7 @@ agents:
   priority: medium
   purpose: Drives test coverage improvements; identifies uncovered code paths.
 - id: test-coverage-monitor
+  batch_scan_enabled: true
   name: Test Coverage Monitor
   file: test-coverage-monitor.agent.md
   status: active
@@ -1293,6 +1329,7 @@ agents:
   priority: high
   purpose: Monitors test coverage, enforces thresholds, validates documentation quality.
 - id: test-enhancement-agent
+  batch_scan_enabled: true
   name: Test Enhancement Agent
   file: test-enhancement-agent.md
   status: active
@@ -1301,6 +1338,7 @@ agents:
   priority: medium
   purpose: Improves test quality through refactoring, edge case coverage, assertion hardening.
 - id: test-failure-analyzer-agent
+  batch_scan_enabled: true
   name: Test Failure Analyzer Agent
   file: test-failure-analyzer-agent.md
   status: active
@@ -1309,6 +1347,7 @@ agents:
   priority: high
   purpose: Analyzes and diagnoses test failures with root cause classification.
 - id: tokenization-coverage-agent
+  batch_scan_enabled: true
   name: Tokenization Coverage Agent
   file: tokenization-coverage-agent.md
   status: active
@@ -1349,6 +1388,7 @@ agents:
   priority: medium
   purpose: Analyzes workflow performance, detects patterns, and recommends optimizations.
 - id: workflow-ci-fixer
+  batch_scan_enabled: true
   name: Workflow CI Fixer
   file: workflow-ci-fixer.agent.md
   status: active
@@ -1357,6 +1397,7 @@ agents:
   priority: high
   purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
 - id: workflow-health-monitor
+  batch_scan_enabled: true
   name: Workflow Health Monitor
   file: workflow-health-monitor.agent.md
   status: active
