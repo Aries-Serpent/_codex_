@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] — S116i
 
-### S116i — WF-002 + Grounded Enforcement Audit (2026-02-28)
+### S116i — WF-002 + Grounded Enforcement Audit + REQ-6 Timebox Gate (2026-02-28)
 
 | Type | File | Change |
 |------|------|--------|
 | Feature | `.github/workflows/session-watchdog.yml` | NEW: issue_comment trigger; timebox detection/recording/expiry; exploration session + do-not-auto-proceed enforcement |
-| Feature | `.github/workflows/agent-auth-delegation.yml` | REQ-1b: Surface Session-Type Directives step; REQ-5: CHANGELOG.md Tier-1 hard stop (git diff check) |
+| Feature | `.github/workflows/agent-auth-delegation.yml` | REQ-1b: Surface Session-Type Directives; REQ-5: CHANGELOG.md Tier-1 hard stop; REQ-6: SESSION_TIMEBOX_EXPIRED acknowledgment gate (Tier-2→Tier-1 promotion) |
 | Feature | `.github/workflows/token-probe.yml` | NEW: on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read+write probes; posts consolidated result to any PR |
 | Docs | `.github/docs/SessionContinuityPolicy.md` | NEW: 5-rule engineered session continuity policy with enforcement architecture |
 | Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | NEW: quadrant chart + tier table comparing ideal vs sort-of-works enforcement methods |

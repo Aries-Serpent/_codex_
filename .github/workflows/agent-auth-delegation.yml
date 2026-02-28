@@ -86,6 +86,8 @@ jobs:
   # REQ-2: Parse .codex/patterns/ci_failure_patterns.yaml → job summary
   # REQ-3: Verify .gitignore ALLOWS .codex/agent_auth_session.json
   # REQ-4: Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md touched in last commit
+  # REQ-5: Verify CHANGELOG.md touched in last commit
+  # REQ-6: Verify SESSION_TIMEBOX_EXPIRED acknowledged (Session Summary posted) before reactivation
   #
   # Policy: .codex/CODEBASE_AGENCY_POLICY.md | WF-001-cognitive-preflight-FINAL.md
   cognitive-preflight:
@@ -432,6 +434,73 @@ jobs:
             echo "**Fix:** Add a \`## [Unreleased]\` entry to \`CHANGELOG.md\` in your next commit." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+
+      # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
+      # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)
+      # to Tier-1 (CI blocks activate-delegation until a Session Summary is posted).
+      # Logic: scan PR comments for SESSION_TIMEBOX_EXPIRED; if found, require a
+      # "## 🧠 Session Summary" comment posted AFTER the expiry notice.
+      # Rationale: Timebox expiry was Tier-2 PARTIAL — agent could ignore the posted notice.
+      # Bypass cost (grounded): agent MUST post a Session Summary or no activation occurs.
+      - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
+        id: timebox_ack_check
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';
+            const SUMMARY_MARKER  = '## 🧠 Session Summary';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+
+            // Find most recent SESSION_TIMEBOX_EXPIRED comment
+            const expiredComment = comments
+              .filter(c => c.body.includes(EXPIRED_MARKER))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+            if (!expiredComment) {
+              core.summary.addRaw('### ⏱ Timebox Acknowledgment Check\n\n✅ **PASS** — No `SESSION_TIMEBOX_EXPIRED` found. No acknowledgment required.\n\n');
+              await core.summary.write();
+              return;
+            }
+
+            const expiredAt = new Date(expiredComment.created_at);
+
+            // Check for Session Summary comment posted AFTER the expiry notice
+            const summaryAfterExpiry = comments.find(c =>
+              c.body.includes(SUMMARY_MARKER) &&
+              new Date(c.created_at) > expiredAt
+            );
+
+            if (summaryAfterExpiry) {
+              const poster = summaryAfterExpiry.user.login;
+              const postedAt = summaryAfterExpiry.created_at;
+              core.summary.addRaw(
+                `### ⏱ Timebox Acknowledgment Check\n\n` +
+                `✅ **PASS** — Session Summary posted by @${poster} at ${postedAt}, after timebox expiry.\n\n`
+              );
+              await core.summary.write();
+            } else {
+              core.summary.addRaw(
+                `### ⏱ Timebox Acknowledgment Check\n\n` +
+                `❌ **FAIL** — \`SESSION_TIMEBOX_EXPIRED\` was posted at ${expiredComment.created_at} ` +
+                `but no \`## 🧠 Session Summary\` comment has been posted since then.\n\n` +
+                `**Fix:** Post a PR comment containing \`## 🧠 Session Summary\` covering:\n` +
+                `- Topics covered and key findings\n` +
+                `- Suggested follow-up \`@copilot\` prompt for the next session\n\n` +
+                `_Session activation is blocked until the Session Summary is posted._\n`
+              );
+              await core.summary.write();
+              core.setFailed('SESSION_TIMEBOX_EXPIRED requires a "## 🧠 Session Summary" comment before reactivation.');
+            }
 
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status

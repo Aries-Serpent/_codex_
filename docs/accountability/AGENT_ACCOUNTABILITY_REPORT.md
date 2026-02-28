@@ -299,6 +299,8 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-033 | .codex/docs/S116g_TO_S116i_CHANGE_MAP.md — Mermaid architecture map of all changes | ✅ Done (S116i) |
 | W-034 | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md — ideal vs sort-of-works comparison with quadrant chart | ✅ Done (S116i) |
 | W-035 | cognitive-preflight REQ-5: CHANGELOG.md check added — Tier-3 → Tier-1 promotion | ✅ Done (S116i) |
+| W-036 | cognitive-preflight REQ-6: SESSION_TIMEBOX_EXPIRED acknowledgment gate — Tier-2 → Tier-1 promotion | ✅ Done (S116i resume) |
+| W-037 | token-probe.yml cherry-pick to `main` via dedicated branch — workflow_dispatch visible in Actions UI | ✅ Done (S116i resume) |
 
 ---
 
