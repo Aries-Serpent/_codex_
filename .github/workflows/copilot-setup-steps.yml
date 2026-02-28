@@ -71,7 +71,6 @@ jobs:
       actions: read
       issues: write        # Allow agent to post @copilot follow-up comments
       pull-requests: write # Allow agent to post PR review comments
-      variables: read      # Read COGNITIVE_BRAIN_* repo variables for session injection
     # Baseline stability: skip LFS smudge and do not fetch LFS during initial checkout
     env:
       GIT_LFS_SKIP_SMUDGE: "1"

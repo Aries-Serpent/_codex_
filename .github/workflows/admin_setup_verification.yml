@@ -29,7 +29,6 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
-  variables: read
 
 jobs:
   verify-setup:
@@ -172,6 +171,7 @@ jobs:
 
       # ── Original §2–§8 checks continue below ─────────────────────────────────
 
+      - name: "§2 Verify repository variables"
         env:
           COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED }}
           COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
