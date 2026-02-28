@@ -24,6 +24,7 @@ Features:
 
 from __future__ import annotations
 import logging
+
 logger = logging.getLogger(__name__)
 
 # ruff: noqa: E402, I001
@@ -650,6 +651,7 @@ class NDJSONMetricsWriter:
         else:
             try:
                 import dataclasses as _dc
+
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()  # type: ignore[arg-type]
@@ -671,7 +673,9 @@ class NDJSONMetricsWriter:
             self.close()
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)  # Best effort cleanup; __del__ cannot raise exceptions
+            logger.warning(
+                f"Exception: {e}", exc_info=True
+            )  # Best effort cleanup; __del__ cannot raise exceptions
 
 
 class CSVMetricsWriter:
@@ -1027,7 +1031,7 @@ def run_hf_trainer(
         **tokenizer_kwargs,
     )
     if tokenizer.pad_token is None:
-        # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+        # nosemgrep: python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure  # noqa: E501
         # Note: "pad_token" and "eos_token" are tokenizer configuration, not credentials
         logger.warning(
             "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
@@ -1111,7 +1115,8 @@ def run_hf_trainer(
             )
             if lora_alpha is None:
                 lora_alpha = cast(
-                    Optional[int], lora_section.get("alpha") or lora_section.get("lora_alpha")
+                    Optional[int],
+                    lora_section.get("alpha") or lora_section.get("lora_alpha"),
                 )
             if lora_dropout is None:
                 lora_dropout = cast(
@@ -1270,7 +1275,9 @@ def run_hf_trainer(
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)  # Logging failure; continue with training
+            logger.warning(
+                f"Exception: {e}", exc_info=True
+            )  # Logging failure; continue with training
 
     # TensorBoard logging
     if tensorboard and SummaryWriter is not None:
@@ -1283,7 +1290,9 @@ def run_hf_trainer(
             writer.close()
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)  # TensorBoard logging failure; continue with training
+            logger.warning(
+                f"Exception: {e}", exc_info=True
+            )  # TensorBoard logging failure; continue with training
 
     # Persist metrics to JSON and NDJSON for downstream analytics
     metrics_json = output_dir / "metrics.json"

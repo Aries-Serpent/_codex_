@@ -126,6 +126,7 @@ class ResolutionIndex:
     def _tokenize(self, text: str) -> set[str]:
         """Tokenize text into word set."""
         import re
+
         words = re.findall(r"\b[a-z_][a-z0-9_]*\b", text.lower())
         return set(words)
 
@@ -202,11 +203,7 @@ class ResolutionIndex:
         results.sort(key=lambda x: x[1], reverse=True)
 
         # Return top k
-        return [
-            (self._samples[idx], score)
-            for idx, score in results[:top_k]
-            if score > 0
-        ]
+        return [(self._samples[idx], score) for idx, score in results[:top_k] if score > 0]
 
     def get_by_pattern(self, pattern_id: str) -> list[PatternSample]:
         """Get all samples for a pattern.
@@ -334,10 +331,7 @@ class ResolutionRecommender:
         for sample, similarity in matches:
             # Compute score
             success_score = sample.features.get("success_rate", 0.5)
-            score = (
-                self._similarity_weight * similarity +
-                self._success_weight * success_score
-            )
+            score = self._similarity_weight * similarity + self._success_weight * success_score
 
             if score < min_confidence:
                 continue
@@ -347,13 +341,15 @@ class ResolutionRecommender:
                 continue
             seen_resolutions.add(sample.resolution)
 
-            recommendations.append(Recommendation(
-                resolution=sample.resolution,
-                confidence=score,
-                pattern_id=sample.pattern_id,
-                category=sample.category,
-                supporting_evidence=sample.symptoms[:3],  # Include top symptoms
-            ))
+            recommendations.append(
+                Recommendation(
+                    resolution=sample.resolution,
+                    confidence=score,
+                    pattern_id=sample.pattern_id,
+                    category=sample.category,
+                    supporting_evidence=sample.symptoms[:3],  # Include top symptoms
+                )
+            )
 
         # Sort by confidence
         recommendations.sort(key=lambda r: r.confidence, reverse=True)
@@ -417,11 +413,14 @@ class ResolutionRecommender:
         self._index.save(dir_path / "index.json")
 
         with open(dir_path / "config.json", "w") as f:
-            json.dump({
-                "success_weight": self._success_weight,
-                "similarity_weight": self._similarity_weight,
-                "fitted": self._fitted,
-            }, f)
+            json.dump(
+                {
+                    "success_weight": self._success_weight,
+                    "similarity_weight": self._similarity_weight,
+                    "fitted": self._fitted,
+                },
+                f,
+            )
 
     @classmethod
     def load(cls, directory: str | Path) -> ResolutionRecommender:
@@ -476,7 +475,10 @@ class ResolutionRecommender:
 
             if sample.resolution in recommended_resolutions:
                 hits_at_k += 1
-                if result.recommendations and result.recommendations[0].resolution == sample.resolution:
+                if (
+                    result.recommendations
+                    and result.recommendations[0].resolution == sample.resolution
+                ):
                     hits_at_1 += 1
 
             total += 1
@@ -485,7 +487,12 @@ class ResolutionRecommender:
             "hit_rate_at_1": hits_at_1 / total if total > 0 else 0.0,
             f"hit_rate_at_{top_k}": hits_at_k / total if total > 0 else 0.0,
             "total_samples": total,
-            "mean_recommendations": sum(len(self.recommend(s.symptoms).recommendations) for s in samples) / total if total > 0 else 0.0,
+            "mean_recommendations": sum(
+                len(self.recommend(s.symptoms).recommendations) for s in samples
+            )
+            / total
+            if total > 0
+            else 0.0,
         }
 
 
@@ -509,7 +516,12 @@ class SuccessPredictor:
             return 1.0
         return 1.0 / (1.0 + math.exp(-x))
 
-    def fit(self, samples: list[PatternSample], learning_rate: float = 0.01, epochs: int = 100) -> SuccessPredictor:
+    def fit(
+        self,
+        samples: list[PatternSample],
+        learning_rate: float = 0.01,
+        epochs: int = 100,
+    ) -> SuccessPredictor:
         """Train the predictor.
 
         Args:
@@ -585,11 +597,14 @@ class SuccessPredictor:
     def save(self, path: str | Path) -> None:
         """Save predictor to file."""
         with open(path, "w") as f:
-            json.dump({
-                "weights": self._weights,
-                "bias": self._bias,
-                "fitted": self._fitted,
-            }, f)
+            json.dump(
+                {
+                    "weights": self._weights,
+                    "bias": self._bias,
+                    "fitted": self._fitted,
+                },
+                f,
+            )
 
     @classmethod
     def load(cls, path: str | Path) -> SuccessPredictor:

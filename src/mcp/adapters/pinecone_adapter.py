@@ -72,7 +72,7 @@ class PineconeAdapter(BaseAdapter):
         logger.info(
             "PineconeAdapter initialized: index=%s, env=%s",
             self._index_name,
-            self._environment or "not set"
+            self._environment or "not set",
         )
 
     @property
@@ -132,8 +132,7 @@ class PineconeAdapter(BaseAdapter):
         try:
             # Describe index to verify connectivity
             stats = await asyncio.get_event_loop().run_in_executor(
-                None,
-                self._index.describe_index_stats
+                None, self._index.describe_index_stats
             )
             return stats is not None
         except Exception as e:
@@ -180,16 +179,18 @@ class PineconeAdapter(BaseAdapter):
                     top_k=top_k,
                     filter=filters,
                     include_metadata=True,
-                )
+                ),
             )
 
             matches = []
             for match in result.get("matches", []):
-                matches.append({
-                    "id": match.id,
-                    "score": match.score,
-                    "metadata": match.metadata or {},
-                })
+                matches.append(
+                    {
+                        "id": match.id,
+                        "score": match.score,
+                        "metadata": match.metadata or {},
+                    }
+                )
 
             return QueryResult(
                 success=True,
@@ -236,11 +237,13 @@ class PineconeAdapter(BaseAdapter):
                 logger.warning("Vector dimension exceeds maximum: %d", len(values))
                 continue
 
-            formatted_vectors.append({
-                "id": str(vec_id),
-                "values": values,
-                "metadata": vec.get("metadata", {}),
-            })
+            formatted_vectors.append(
+                {
+                    "id": str(vec_id),
+                    "values": values,
+                    "metadata": vec.get("metadata", {}),
+                }
+            )
 
         if not formatted_vectors:
             return QueryResult(
@@ -253,11 +256,10 @@ class PineconeAdapter(BaseAdapter):
 
             # Batch upserts (safeguard: respect batch size limits)
             for i in range(0, len(formatted_vectors), MAX_BATCH_SIZE):
-                batch = formatted_vectors[i:i + MAX_BATCH_SIZE]
+                batch = formatted_vectors[i : i + MAX_BATCH_SIZE]
 
                 await asyncio.get_event_loop().run_in_executor(
-                    None,
-                    lambda b=batch: self._index.upsert(vectors=b)
+                    None, lambda b=batch: self._index.upsert(vectors=b)
                 )
 
                 total_upserted += len(batch)
@@ -293,8 +295,7 @@ class PineconeAdapter(BaseAdapter):
 
         try:
             await asyncio.get_event_loop().run_in_executor(
-                None,
-                lambda: self._index.delete(ids=ids)
+                None, lambda: self._index.delete(ids=ids)
             )
 
             return QueryResult(

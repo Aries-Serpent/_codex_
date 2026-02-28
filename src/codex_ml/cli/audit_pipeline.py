@@ -130,9 +130,9 @@ def audit_repo(
                     "error": repr(e),
                     "error_capture": {
                         "template": (
-                            "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "
+                            "Question for ChatGPT-5 {ts}:\nWhile performing [AUDIT_FILE:parse/extract], "  # noqa: E501
                             "encountered the following error:\n{err}\nContext: file={file}\n"
-                            "What are the possible causes, and how can this be resolved while preserving intended functionality?"
+                            "What are the possible causes, and how can this be resolved while preserving intended functionality?"  # noqa: E501
                         )
                     },
                 }

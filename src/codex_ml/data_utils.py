@@ -63,7 +63,9 @@ def split_dataset(
 
     # Apply safety filter with sanitization mapping
     items = apply_safety_filter(
-        items, filter_enabled, lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t)
+        items,
+        filter_enabled,
+        lambda t: sanitize_prompt(t, SafetyConfig()).get("text", t),
     )
 
     # Stable checksum over individual items to detect any content change
@@ -100,7 +102,10 @@ def split_dataset(
         with contextlib.suppress(Exception):
             Path(cache_path).parent.mkdir(parents=True, exist_ok=True)
             Path(cache_path).write_text(
-                json.dumps({"train": train, "val": val, "checksum": checksum}, ensure_ascii=False),
+                json.dumps(
+                    {"train": train, "val": val, "checksum": checksum},
+                    ensure_ascii=False,
+                ),
                 encoding="utf-8",
             )
 

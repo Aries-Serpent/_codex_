@@ -192,9 +192,7 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     # Constants defined at module level
 
     k1_memory = (avg_time_memory * (1.0 + actual_error_rate)) / CLASSICAL_BASELINE_MS
-    k1_baseline = (
-        avg_time_baseline * (1.0 + PHASE_8_0_ERROR_RATE)
-    ) / CLASSICAL_BASELINE_MS
+    k1_baseline = (avg_time_baseline * (1.0 + PHASE_8_0_ERROR_RATE)) / CLASSICAL_BASELINE_MS
     k1_improvement_pct = ((k1_baseline - k1_memory) / k1_baseline) * 100
 
     print("✓ Metrics calculated")
@@ -209,36 +207,32 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     print(f"  Avg time (with memory):    {avg_time_memory:.2f}ms")
     print(f"  Avg time (baseline):       {avg_time_baseline:.2f}ms")
     print(
-        f"  Time reduction:            {time_reduction_pct:.1%} {'✅' if time_reduction_pct >= 0.15 else '❌'} (target ≥ 15%)"
+        f"  Time reduction:            {time_reduction_pct:.1%} {'✅' if time_reduction_pct >= 0.15 else '❌'} (target ≥ 15%)"  # noqa: E501
     )
     print()
     print("Memory Performance:")
     print(
-        f"  Cache hit rate:            {cache_hit_rate:.1%} {'✅' if cache_hit_rate >= 0.30 else '❌'} (target > 30%)"
+        f"  Cache hit rate:            {cache_hit_rate:.1%} {'✅' if cache_hit_rate >= 0.30 else '❌'} (target > 30%)"  # noqa: E501
     )
     print(f"  Cache hits:                {memory_stats['cache_hits']}")
     print(f"  Cache misses:              {memory_stats['cache_misses']}")
     print()
     print("Accuracy:")
     print(
-        f"  Memory vs Baseline:        {accuracy:.1%} {'✅' if accuracy >= 0.95 else '❌'} (target ≥ 95%)"
+        f"  Memory vs Baseline:        {accuracy:.1%} {'✅' if accuracy >= 0.95 else '❌'} (target ≥ 95%)"  # noqa: E501
     )
     print(f"  Agreements:                {agreements}/{len(memory_decisions)}")
     print()
     print("k₁ Optimization:")
     print(
-        f"  k₁ (with memory):          {k1_memory:.4f} {'✅' if k1_memory <= 0.345 else '❌'} (target ≤ 0.345)"
+        f"  k₁ (with memory):          {k1_memory:.4f} {'✅' if k1_memory <= 0.345 else '❌'} (target ≤ 0.345)"  # noqa: E501
     )
     print(f"  k₁ (baseline):             {k1_baseline:.4f}")
     print(f"  k₁ improvement:            {k1_improvement_pct:.2f}%")
     print()
     print("Memory System Stats:")
-    print(
-        f"  STM size:                  {memory_stats['stm_size']}/{memory_stats['stm_capacity']}"
-    )
-    print(
-        f"  LTM size:                  {memory_stats['ltm_size']}/{memory_stats['ltm_capacity']}"
-    )
+    print(f"  STM size:                  {memory_stats['stm_size']}/{memory_stats['stm_capacity']}")
+    print(f"  LTM size:                  {memory_stats['ltm_size']}/{memory_stats['ltm_capacity']}")
     print(f"  Patterns stored:           {memory_stats['total_stored']}")
     print(f"  Patterns consolidated:     {memory_stats['total_consolidated']}")
     print(f"  Consolidation rate:        {memory_stats['consolidation_rate']:.1%}")
@@ -311,9 +305,7 @@ if __name__ == "__main__":
     # Summary
     print()
     print("EXP-5 Complete. Key findings:")
-    print(
-        f"- k₁ improved from {results.k1_without_memory:.4f} to {results.k1_with_memory:.4f}"
-    )
+    print(f"- k₁ improved from {results.k1_without_memory:.4f} to {results.k1_with_memory:.4f}")
     print(f"- Cache hit rate: {results.cache_hit_rate:.1%}")
     print(f"- Time savings: {results.time_reduction_pct:.1%}")
     print(f"- Accuracy maintained: {results.accuracy_vs_full:.1%}")

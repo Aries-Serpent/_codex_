@@ -91,7 +91,10 @@ def analyze_duplication(
     duplicate_count = sum(max(len(paths) - 1, 0) for paths in stem_groups.values())
     ratio = duplicate_count / max(total_files, 1)
     severity = _assess_severity(
-        ratio, acceptable=acceptable_ratio, warning=warning_ratio, critical=critical_ratio
+        ratio,
+        acceptable=acceptable_ratio,
+        warning=warning_ratio,
+        critical=critical_ratio,
     )
 
     def _format_paths(paths: list[Path]) -> list[str]:

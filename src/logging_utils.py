@@ -270,7 +270,9 @@ def init_mlflow(
         return mlflow, None
 
 
-def setup_logging(config: LoggingConfig | Mapping[str, object] | None) -> LoggingSession:
+def setup_logging(
+    config: LoggingConfig | Mapping[str, object] | None,
+) -> LoggingSession:
     """Initialise optional logging backends based on configuration."""
 
     if config is None:

@@ -6,6 +6,7 @@ current ``HEAD`` commit using ``git rev-parse``.  The function returns ``None``
 when the command fails (for example when ``git`` is not installed or the
 directory is not a repository).
 """
+
 from __future__ import annotations
 
 import logging

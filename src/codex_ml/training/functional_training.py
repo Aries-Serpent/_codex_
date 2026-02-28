@@ -480,7 +480,9 @@ def train(
                 if writer is not None:
                     try:
                         writer.add_scalar(
-                            "val/perplexity", float(metrics["val_perplexity"]), global_step
+                            "val/perplexity",
+                            float(metrics["val_perplexity"]),
+                            global_step,
                         )
                     except Exception as e:
                         logger.debug(f"Exception: {e}")

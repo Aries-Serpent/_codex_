@@ -172,7 +172,7 @@ _RECORDED_CORPORA: tuple[ReasoningCorpus, ...] = (
         artifacts=(
             CorpusArtifact(
                 "proof_logs.jsonl",
-                "65a62f2db28fdca5592e72a5e897862ee2dccae48a9d7608ecd1193f94d4b208",  # pragma: allowlist secret
+                "65a62f2db28fdca5592e72a5e897862ee2dccae48a9d7608ecd1193f94d4b208",  # pragma: allowlist secret  # noqa: E501
                 description="Two-entry sample of proof reasoning records.",
             ),
         ),
@@ -190,7 +190,7 @@ _RECORDED_CORPORA: tuple[ReasoningCorpus, ...] = (
         artifacts=(
             CorpusArtifact(
                 "math_word_problems.jsonl",
-                "bd5cd2727849af8b9fd1d78a7c45b90be11b05ba9989121c34708110e52a7afb",  # pragma: allowlist secret
+                "bd5cd2727849af8b9fd1d78a7c45b90be11b05ba9989121c34708110e52a7afb",  # pragma: allowlist secret  # noqa: E501
                 description="Two solved arithmetic reasoning problems.",
             ),
         ),
@@ -208,7 +208,7 @@ _RECORDED_CORPORA: tuple[ReasoningCorpus, ...] = (
         artifacts=(
             CorpusArtifact(
                 "tool_traces.jsonl",
-                "01aba359a56e1196e08d92f6f019c217b8d03492c702c9393f3f24ed280541d2",  # pragma: allowlist secret
+                "01aba359a56e1196e08d92f6f019c217b8d03492c702c9393f3f24ed280541d2",  # pragma: allowlist secret  # noqa: E501
                 description="Two examples capturing tool calls and natural language rationales.",
             ),
         ),
@@ -286,7 +286,9 @@ def build_corpus_selection(
 # Backwards compatibility helper ------------------------------------------------
 
 
-def iter_corpus_manifests(root: str | Path | None = None) -> Iterable[Mapping[str, object]]:
+def iter_corpus_manifests(
+    root: str | Path | None = None,
+) -> Iterable[Mapping[str, object]]:
     """Yield manifest payloads for all corpora (best-effort)."""
 
     base = _resolve_root(root)

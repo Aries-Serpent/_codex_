@@ -41,7 +41,7 @@ class MissingPyYAMLError(ModuleNotFoundError):
     def __init__(self) -> None:
         hint = _PY_YAML_INSTALL_HINT
         super().__init__(
-            f"PyYAML is required for this operation. Install it via ``{hint}`` to enable YAML parsing."
+            f"PyYAML is required for this operation. Install it via ``{hint}`` to enable YAML parsing."  # noqa: E501
         )
 
 

@@ -96,7 +96,9 @@ class D365CalendarClient:
         """True if D365 credentials are configured."""
         return self._available
 
-    def fetch_business_hours_schedule(self, businesshoursid: str | None = None) -> dict[str, Any] | None:
+    def fetch_business_hours_schedule(
+        self, businesshoursid: str | None = None
+    ) -> dict[str, Any] | None:
         """Fetch business hours schedule from D365.
 
         Returns a schedule dict compatible with SLAPolicy.calculate_deadline():
@@ -119,7 +121,7 @@ class D365CalendarClient:
             # Validate businesshoursid to prevent OData injection
             if businesshoursid is not None and not re.fullmatch(r"[\w\-]{1,128}", businesshoursid):
                 logger.warning(
-                    "D365CalendarClient: invalid businesshoursid %r; using default calendar filter.",
+                    "D365CalendarClient: invalid businesshoursid %r; using default calendar filter.",  # noqa: E501
                     businesshoursid,
                 )
                 businesshoursid = None
@@ -157,8 +159,13 @@ class D365CalendarClient:
             # Parse D365 calendar rules into our schedule format.
             # D365 calendar rules have: starttime, endtime, weekday (0=Sun … 6=Sat)
             day_map = {
-                0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
-                4: "thursday", 5: "friday", 6: "saturday",
+                0: "sunday",
+                1: "monday",
+                2: "tuesday",
+                3: "wednesday",
+                4: "thursday",
+                5: "friday",
+                6: "saturday",
             }
             hours: dict[str, Any] = {}
             tz_name = "UTC"
@@ -171,15 +178,18 @@ class D365CalendarClient:
                     rule_tz = rule.get("timezonecode", "UTC")
                     if not _TIME_HH_MM_RE.match(raw_start) or not _TIME_HH_MM_RE.match(raw_end):
                         logger.warning(
-                            "D365CalendarClient: skipping rule with malformed time "
-                            "start=%r end=%r", raw_start, raw_end
+                            "D365CalendarClient: skipping rule with malformed time start=%r end=%r",
+                            raw_start,
+                            raw_end,
                         )
                         continue
                     if rule_tz != tz_name and hours:
                         # Warn if rules carry conflicting timezone codes
                         logger.warning(
                             "D365CalendarClient: timezone mismatch in calendar rules "
-                            "(%r vs %r); using first value.", tz_name, rule_tz
+                            "(%r vs %r); using first value.",
+                            tz_name,
+                            rule_tz,
                         )
                     elif not hours:
                         tz_name = rule_tz
@@ -192,7 +202,9 @@ class D365CalendarClient:
             return {"timezone": tz_name, "hours": hours}
 
         except ImportError:
-            logger.warning("D365CalendarClient: requests library unavailable; using local schedule.")
+            logger.warning(
+                "D365CalendarClient: requests library unavailable; using local schedule."
+            )
             return None
         except Exception as exc:
             logger.warning("D365CalendarClient: fetch failed (%s); using local schedule.", exc)
@@ -302,9 +314,11 @@ class SLAPolicy(BaseModel):
 
         try:
             from zoneinfo import ZoneInfo
+
             tz = ZoneInfo(tz_name)
         except Exception:
             from datetime import timezone
+
             tz = timezone.utc
 
         # Ensure start_time is tz-aware in the target timezone
@@ -313,7 +327,15 @@ class SLAPolicy(BaseModel):
         else:
             current = start_time.astimezone(tz)
 
-        day_names = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        day_names = [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
         remaining = self.target_minutes
 
         # Validate that at least one business day is defined to prevent infinite loop
@@ -353,7 +375,9 @@ class SLAPolicy(BaseModel):
                         current = day_end
 
             # Advance to next day start
-            next_day = (current + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            next_day = (current + timedelta(days=1)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
             current = next_day
 
         return current
@@ -367,10 +391,7 @@ class SLAPolicy(BaseModel):
         Returns:
             True if any pause condition is met
         """
-        return any(
-            condition.evaluate(ticket_state)
-            for condition in self.pause_conditions
-        )
+        return any(condition.evaluate(ticket_state) for condition in self.pause_conditions)
 
     def diff(self, other: SLAPolicy) -> list[dict[str, Any]]:
         """Return JSON patch operations describing differences with ``other``.
@@ -393,16 +414,20 @@ class SLAPolicy(BaseModel):
             other_value = getattr(other, field_name)
 
             if self_value != other_value:
-                if isinstance(self_value, list) and hasattr(self_value[0] if self_value else None, "model_dump"):
+                if isinstance(self_value, list) and hasattr(
+                    self_value[0] if self_value else None, "model_dump"
+                ):
                     value = [item.model_dump() for item in self_value]
                 else:
                     value = self_value
 
-                patches.append({
-                    "op": "replace",
-                    "path": f"/{field_name}",
-                    "value": value,
-                })
+                patches.append(
+                    {
+                        "op": "replace",
+                        "path": f"/{field_name}",
+                        "value": value,
+                    }
+                )
 
         return patches
 
@@ -477,8 +502,7 @@ class SLAPolicyRegistry(BaseModel):
         """Add or update a policy in the registry."""
         # Remove existing policy with same name and version
         self.policies = [
-            p for p in self.policies
-            if not (p.name == policy.name and p.version == policy.version)
+            p for p in self.policies if not (p.name == policy.name and p.version == policy.version)
         ]
         self.policies.append(policy)
         self.last_updated = datetime.now(UTC).isoformat()

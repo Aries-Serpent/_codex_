@@ -64,10 +64,7 @@ class MetricsRegistry:
         self._labels: dict[str, dict[str, str]] = {}
 
     def increment_counter(
-        self,
-        name: str,
-        value: float = 1.0,
-        labels: Optional[dict[str, str]] = None
+        self, name: str, value: float = 1.0, labels: Optional[dict[str, str]] = None
     ) -> None:
         """Increment a counter metric.
 
@@ -82,12 +79,7 @@ class MetricsRegistry:
             if labels:
                 self._labels[key] = labels
 
-    def set_gauge(
-        self,
-        name: str,
-        value: float,
-        labels: Optional[dict[str, str]] = None
-    ) -> None:
+    def set_gauge(self, name: str, value: float, labels: Optional[dict[str, str]] = None) -> None:
         """set a gauge metric value.
 
         Args:
@@ -102,10 +94,7 @@ class MetricsRegistry:
                 self._labels[key] = labels
 
     def observe_histogram(
-        self,
-        name: str,
-        value: float,
-        labels: Optional[dict[str, str]] = None
+        self, name: str, value: float, labels: Optional[dict[str, str]] = None
     ) -> None:
         """Record an observation for a histogram metric.
 
@@ -122,11 +111,7 @@ class MetricsRegistry:
             if labels:
                 self._labels[key] = labels
 
-    def _make_key(
-        self,
-        name: str,
-        labels: Optional[dict[str, str]] = None
-    ) -> str:
+    def _make_key(self, name: str, labels: Optional[dict[str, str]] = None) -> str:
         """Make a unique key for a metric with labels."""
         if not labels:
             return name
@@ -156,40 +141,38 @@ class MetricsRegistry:
             for key, value in self._counters.items():
                 name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
-                metrics.append(MetricValue(
-                    name=name,
-                    value=value,
-                    labels=labels,
-                    metric_type="counter"
-                ))
+                metrics.append(
+                    MetricValue(name=name, value=value, labels=labels, metric_type="counter")
+                )
 
             for key, value in self._gauges.items():
                 name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
-                metrics.append(MetricValue(
-                    name=name,
-                    value=value,
-                    labels=labels,
-                    metric_type="gauge"
-                ))
+                metrics.append(
+                    MetricValue(name=name, value=value, labels=labels, metric_type="gauge")
+                )
 
             for key, values in self._histograms.items():
                 name = self._extract_metric_name(key)
                 labels = self._labels.get(key, {})
                 # Export histogram as multiple metrics
                 if values:
-                    metrics.append(MetricValue(
-                        name=f"{name}_count",
-                        value=float(len(values)),
-                        labels=labels,
-                        metric_type="counter"
-                    ))
-                    metrics.append(MetricValue(
-                        name=f"{name}_sum",
-                        value=sum(values),
-                        labels=labels,
-                        metric_type="counter"
-                    ))
+                    metrics.append(
+                        MetricValue(
+                            name=f"{name}_count",
+                            value=float(len(values)),
+                            labels=labels,
+                            metric_type="counter",
+                        )
+                    )
+                    metrics.append(
+                        MetricValue(
+                            name=f"{name}_sum",
+                            value=sum(values),
+                            labels=labels,
+                            metric_type="counter",
+                        )
+                    )
 
         return metrics
 
@@ -222,7 +205,7 @@ class Tracer:
         operation_name: str,
         trace_id: Optional[str] = None,
         parent_span_id: Optional[str] = None,
-        tags: Optional[dict[str, Any]] = None
+        tags: Optional[dict[str, Any]] = None,
     ) -> TraceSpan:
         """Start a new trace span.
 
@@ -240,7 +223,7 @@ class Tracer:
             span_id=self._generate_id(),
             parent_span_id=parent_span_id,
             operation_name=operation_name,
-            tags=tags or {}
+            tags=tags or {},
         )
 
         with self._lock:
@@ -262,7 +245,7 @@ class Tracer:
             "Span completed: %s (duration: %.2fms, status: %s)",
             span.operation_name,
             span.duration_ms or 0,
-            span.status
+            span.status,
         )
 
     def add_log(self, span: TraceSpan, event: str, **kwargs: Any) -> None:
@@ -273,11 +256,7 @@ class Tracer:
             event: Log event name.
             **kwargs: Additional log fields.
         """
-        span.logs.append({
-            "timestamp": time.time(),
-            "event": event,
-            **kwargs
-        })
+        span.logs.append({"timestamp": time.time(), "event": event, **kwargs})
 
     @contextmanager
     def trace(
@@ -285,7 +264,7 @@ class Tracer:
         operation_name: str,
         trace_id: Optional[str] = None,
         parent_span_id: Optional[str] = None,
-        tags: Optional[dict[str, Any]] = None
+        tags: Optional[dict[str, Any]] = None,
     ):
         """Context manager for tracing an operation.
 
@@ -299,10 +278,7 @@ class Tracer:
             The trace span.
         """
         span = self.start_span(
-            operation_name,
-            trace_id=trace_id,
-            parent_span_id=parent_span_id,
-            tags=tags
+            operation_name, trace_id=trace_id, parent_span_id=parent_span_id, tags=tags
         )
         try:
             yield span
@@ -345,12 +321,7 @@ class MCPMetrics:
         """
         self._registry = registry
 
-    def record_request(
-        self,
-        method: str,
-        duration_ms: float,
-        status: str = "success"
-    ) -> None:
+    def record_request(self, method: str, duration_ms: float, status: str = "success") -> None:
         """Record an MCP request.
 
         Args:
@@ -361,9 +332,7 @@ class MCPMetrics:
         labels = {"method": method, "status": status}
         self._registry.increment_counter("mcp_requests_total", labels=labels)
         self._registry.observe_histogram(
-            "mcp_request_duration_ms",
-            duration_ms,
-            labels={"method": method}
+            "mcp_request_duration_ms", duration_ms, labels={"method": method}
         )
 
     def record_error(self, method: str, error_type: str) -> None:
@@ -374,8 +343,7 @@ class MCPMetrics:
             error_type: Type of error.
         """
         self._registry.increment_counter(
-            "mcp_errors_total",
-            labels={"method": method, "error_type": error_type}
+            "mcp_errors_total", labels={"method": method, "error_type": error_type}
         )
 
     def set_active_connections(self, count: int) -> None:
@@ -387,10 +355,7 @@ class MCPMetrics:
         self._registry.set_gauge("mcp_active_connections", float(count))
 
     def record_tool_invocation(
-        self,
-        tool_name: str,
-        duration_ms: float,
-        status: str = "success"
+        self, tool_name: str, duration_ms: float, status: str = "success"
     ) -> None:
         """Record a tool invocation.
 
@@ -402,9 +367,7 @@ class MCPMetrics:
         labels = {"tool": tool_name, "status": status}
         self._registry.increment_counter("mcp_tool_invocations_total", labels=labels)
         self._registry.observe_histogram(
-            "mcp_tool_duration_ms",
-            duration_ms,
-            labels={"tool": tool_name}
+            "mcp_tool_duration_ms", duration_ms, labels={"tool": tool_name}
         )
 
 
@@ -417,6 +380,7 @@ def traced(operation_name: Optional[str] = None):
     Returns:
         Decorated function.
     """
+
     def decorator(func: Callable) -> Callable:
         op_name = operation_name or func.__name__
 

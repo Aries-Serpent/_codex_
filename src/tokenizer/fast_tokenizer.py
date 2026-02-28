@@ -129,10 +129,8 @@ def build_tokenizer(path: str | Path) -> object:
         targets.append(location)
         for target in targets:
             try:
-                tokenizer = (
-                    AutoTokenizer.from_pretrained(  # nosec B615
-                        str(target), use_fast=True, trust_remote_code=False
-                    )
+                tokenizer = AutoTokenizer.from_pretrained(  # nosec B615
+                    str(target), use_fast=True, trust_remote_code=False
                 )
                 # Ensure pad_token is set; many decoder-only models omit it.
                 if tokenizer.pad_token is None and tokenizer.eos_token is not None:

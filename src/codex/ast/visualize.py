@@ -17,7 +17,11 @@ class HTMLVisualizer:
         self.template_dir = Path(__file__).parent / "templates"
 
     def render_html(
-        self, nodes: list[StandardizedASTNode], graph: ASTGraph, metrics: dict, output_path: str
+        self,
+        nodes: list[StandardizedASTNode],
+        graph: ASTGraph,
+        metrics: dict,
+        output_path: str,
     ):
         """
         Generate HTML report.
@@ -63,15 +67,15 @@ class HTMLVisualizer:
             </div>
             <div class="metric-card">
                 <div class="metric-label">Complexity</div>
-                <div class="metric-value">{metrics.get('complexity', 'N/A')}</div>
+                <div class="metric-value">{metrics.get("complexity", "N/A")}</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Functions</div>
-                <div class="metric-value">{sum(1 for n in nodes_data if 'function' in n.get('type', '').lower())}</div>
+                <div class="metric-value">{sum(1 for n in nodes_data if "function" in n.get("type", "").lower())}</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Classes</div>
-                <div class="metric-value">{sum(1 for n in nodes_data if 'class' in n.get('type', '').lower())}</div>
+                <div class="metric-value">{sum(1 for n in nodes_data if "class" in n.get("type", "").lower())}</div>
             </div>
         </div>
 
@@ -127,7 +131,7 @@ class HTMLVisualizer:
     </div>
 </body>
 </html>
-"""
+"""  # noqa: E501
 
         Path(output_path).write_text(html)
 

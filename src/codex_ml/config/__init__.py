@@ -880,7 +880,7 @@ def load_yaml(path: str | Path) -> dict[str, Any]:
     """
     if OmegaConf is None:
         raise ImportError(
-            "omegaconf is required for YAML loading. " "Install with: pip install omegaconf"
+            "omegaconf is required for YAML loading. Install with: pip install omegaconf"
         )
 
     path_obj = Path(path)

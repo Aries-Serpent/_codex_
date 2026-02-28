@@ -3,6 +3,7 @@ Registry for AST analyzers.
 
 Provides registration and execution of multiple analyzers on AST trees.
 """
+
 from typing import Dict, List, Optional
 
 from codex_ml.ast.analysis.base_analyzer import (
@@ -115,7 +116,10 @@ class AnalyzerRegistry:
                             message=f"Analyzer '{analyzer.get_analyzer_type()}' failed: {str(e)}",
                             location=node.location,
                             analyzer="registry",
-                            metadata={"error": str(e), "analyzer": analyzer.get_analyzer_type()},
+                            metadata={
+                                "error": str(e),
+                                "analyzer": analyzer.get_analyzer_type(),
+                            },
                         )
                     )
 

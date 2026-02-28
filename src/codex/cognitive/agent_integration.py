@@ -39,9 +39,7 @@ class IntegratedAgent:
 
     agent_id: str
     category: AgentCategory
-    integration_date: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    integration_date: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     capabilities: list[str] = field(default_factory=list)
     patterns_accessed: int = 0
     learnings_submitted: int = 0
@@ -65,9 +63,7 @@ class IntegratedAgent:
         return cls(
             agent_id=data["agent_id"],
             category=AgentCategory(data["category"]),
-            integration_date=data.get(
-                "integration_date", datetime.now(timezone.utc).isoformat()
-            ),
+            integration_date=data.get("integration_date", datetime.now(timezone.utc).isoformat()),
             capabilities=data.get("capabilities", []),
             patterns_accessed=data.get("patterns_accessed", 0),
             learnings_submitted=data.get("learnings_submitted", 0),
@@ -111,9 +107,7 @@ class AgentIntegrationRegistry:
             "version": "1.0.0",
             "last_updated": datetime.now(timezone.utc).isoformat(),
             "total_agents": len(self._agents),
-            "agents": {
-                agent_id: agent.to_dict() for agent_id, agent in self._agents.items()
-            },
+            "agents": {agent_id: agent.to_dict() for agent_id, agent in self._agents.items()},
         }
         self.manifest_path.write_text(json.dumps(data, indent=2))
 
@@ -187,12 +181,8 @@ class AgentIntegrationRegistry:
         return {
             "total_agents": len(self._agents),
             "by_category": by_category,
-            "total_pattern_accesses": sum(
-                a.patterns_accessed for a in self._agents.values()
-            ),
-            "total_learnings": sum(
-                a.learnings_submitted for a in self._agents.values()
-            ),
+            "total_pattern_accesses": sum(a.patterns_accessed for a in self._agents.values()),
+            "total_learnings": sum(a.learnings_submitted for a in self._agents.values()),
         }
 
 
@@ -266,7 +256,9 @@ EXTENDED_AGENTS = {
 ALL_INTEGRATED_AGENTS = {**CORE_AGENTS, **EXTENDED_AGENTS}
 
 
-def integrate_core_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
+def integrate_core_agents(
+    manifest_path: Path | str | None = None,
+) -> list[IntegratedAgent]:
     """Integrate all core agents from Phase 1.2.
 
     Args:
@@ -294,7 +286,9 @@ def integrate_core_agents(manifest_path: Path | str | None = None) -> list[Integ
     return integrated
 
 
-def integrate_extended_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
+def integrate_extended_agents(
+    manifest_path: Path | str | None = None,
+) -> list[IntegratedAgent]:
     """Integrate all extended agents from Phase 1.3.
 
     This includes Documentation, RAG/ML, and Repository agents.
@@ -324,7 +318,9 @@ def integrate_extended_agents(manifest_path: Path | str | None = None) -> list[I
     return integrated
 
 
-def integrate_all_agents(manifest_path: Path | str | None = None) -> list[IntegratedAgent]:
+def integrate_all_agents(
+    manifest_path: Path | str | None = None,
+) -> list[IntegratedAgent]:
     """Integrate all agents (Core + Extended) from Phases 1.2 and 1.3.
 
     Args:

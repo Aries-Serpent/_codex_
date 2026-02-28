@@ -133,7 +133,7 @@ def _resolve_offline_model_path(
             if not local_only:
                 return str(env_path)
             raise FileNotFoundError(
-                f"Environment variable {specific_env} points to {env_path}, but no checkpoint was found."
+                f"Environment variable {specific_env} points to {env_path}, but no checkpoint was found."  # noqa: E501
             )
 
     offline_root = os.environ.get("CODEX_ML_OFFLINE_MODELS_DIR")
@@ -152,7 +152,7 @@ def _resolve_offline_model_path(
     if local_only:
         details = ", ".join(checked) if checked else "<no candidates>"
         raise FileNotFoundError(
-            "Local checkpoint for '{alias}' not found. Checked: {details}. Provide `model.local_path` or "
+            "Local checkpoint for '{alias}' not found. Checked: {details}. Provide `model.local_path` or "  # noqa: E501
             "set CODEX_ML_OFFLINE_MODELS_DIR to point at the weights, or disable offline mode with "
             "`local_files_only=false` to fallback to '{remote}'.".format(
                 alias=alias, details=details, remote=default_remote
@@ -189,7 +189,7 @@ def _resolve_offline_tokenizer_path(
             if env_path.exists():
                 return str(env_path)
             raise FileNotFoundError(
-                f"Environment variable {specific_env} points to {env_path}, but tokenizer files were not found."
+                f"Environment variable {specific_env} points to {env_path}, but tokenizer files were not found."  # noqa: E501
             )
 
     offline_root = os.environ.get("CODEX_ML_OFFLINE_TOKENIZERS_DIR") or os.environ.get(
@@ -227,7 +227,7 @@ def _resolve_offline_dataset_path(
         if target.exists():
             return str(target)
         raise FileNotFoundError(
-            f"Dataset fixture '{alias}' expected at {target}. Provide an existing file or directory."
+            f"Dataset fixture '{alias}' expected at {target}. Provide an existing file or directory."  # noqa: E501
         )
 
     checked: list[str] = []
@@ -274,7 +274,7 @@ def _resolve_offline_metric_path(
         if target.exists():
             return str(target)
         raise FileNotFoundError(
-            f"Offline metric resource '{alias}' expected at {target}. Provide an existing file or directory."
+            f"Offline metric resource '{alias}' expected at {target}. Provide an existing file or directory."  # noqa: E501
         )
 
     checked: list[str] = []
@@ -303,7 +303,7 @@ def _resolve_offline_metric_path(
 
     details = ", ".join(checked) if checked else "<no candidates>"
     raise FileNotFoundError(
-        f"Offline metric resource '{alias}' not found. Checked: {details}. Provide `weights_path` or set "
+        f"Offline metric resource '{alias}' not found. Checked: {details}. Provide `weights_path` or set "  # noqa: E501
         "CODEX_ML_WEIGHTED_ACCURACY_PATH / CODEX_ML_OFFLINE_METRICS_DIR."
     )
 
@@ -323,7 +323,7 @@ def _resolve_offline_support_file(
         if candidate.exists():
             return candidate
         raise FileNotFoundError(
-            f"Offline resource '{alias}' expected at {candidate}. Provide an existing file or directory."
+            f"Offline resource '{alias}' expected at {candidate}. Provide an existing file or directory."  # noqa: E501
         )
 
     checked: list[str] = []
@@ -359,7 +359,7 @@ def _resolve_offline_support_file(
         " or ".join(env_hint_parts) if env_hint_parts else "the appropriate environment variable"
     )
     raise FileNotFoundError(
-        "Offline resource '{alias}' not found. Checked: {details}. Provide an explicit path or set {env_hint}.".format(
+        "Offline resource '{alias}' not found. Checked: {details}. Provide an explicit path or set {env_hint}.".format(  # noqa: E501
             alias=alias,
             details=details,
             env_hint=env_hint,
@@ -527,7 +527,7 @@ def _model_tiny_sequence_offline(cfg: Any = None, **kwargs: Any):
         payload_path = payload_path / "model.json"
     if not payload_path.exists():
         raise FileNotFoundError(
-            "Model fixture for 'offline:tiny-sequence' expected at {path}. Provide `model.local_path` or set "
+            "Model fixture for 'offline:tiny-sequence' expected at {path}. Provide `model.local_path` or set "  # noqa: E501
             "CODEX_ML_TINY_SEQUENCE_PATH to point at the JSON file.".format(path=payload_path)
         )
     return TinySequenceModel.from_file(payload_path)
@@ -637,7 +637,7 @@ def _trainer_functional(**kwargs: Any):
     payload = json.loads(Path(resolved).read_text(encoding="utf-8"))
     if not isinstance(payload, Mapping):
         raise TypeError(
-            "Trainer defaults for 'offline:functional' must be a mapping of parameter names to values"
+            "Trainer defaults for 'offline:functional' must be a mapping of parameter names to values"  # noqa: E501
         )
 
     bound_kwargs: dict[str, Any] = dict(payload)

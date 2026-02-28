@@ -263,13 +263,13 @@ class PrometheusMetrics:
             for bucket in hist.buckets:
                 count = hist.counts[bucket]
                 lines.append(
-                    f'inference_request_latency_milliseconds_bucket{{endpoint="{endpoint}",le="{bucket}"}} {count}'
+                    f'inference_request_latency_milliseconds_bucket{{endpoint="{endpoint}",le="{bucket}"}} {count}'  # noqa: E501
                 )
             lines.append(
-                f'inference_request_latency_milliseconds_count{{endpoint="{endpoint}"}} {stats["count"]}'
+                f'inference_request_latency_milliseconds_count{{endpoint="{endpoint}"}} {stats["count"]}'  # noqa: E501
             )
             lines.append(
-                f'inference_request_latency_milliseconds_sum{{endpoint="{endpoint}"}} {stats["sum"]}'
+                f'inference_request_latency_milliseconds_sum{{endpoint="{endpoint}"}} {stats["sum"]}'  # noqa: E501
             )
 
         # Error metrics

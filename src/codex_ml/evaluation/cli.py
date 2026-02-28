@@ -185,7 +185,7 @@ def run_command(
         typer.echo(json.dumps(summary, indent=2))
     else:
         typer.echo(
-            f"Eval complete | loss={summary['loss']:.4f} | count={summary['count']} | metrics={summary['metrics']}"
+            f"Eval complete | loss={summary['loss']:.4f} | count={summary['count']} | metrics={summary['metrics']}"  # noqa: E501
         )
 
 

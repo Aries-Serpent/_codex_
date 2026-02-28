@@ -82,7 +82,7 @@ class EmbeddingWorker:
         logger.info(
             "EmbeddingWorker initialized: batch_size=%d, max_queue=%d",
             self.config.batch_size,
-            self.config.max_queue_size
+            self.config.max_queue_size,
         )
 
     async def start(self) -> None:
@@ -136,10 +136,7 @@ class EmbeddingWorker:
                 # Collect batch
                 while len(batch) < self.config.batch_size:
                     try:
-                        task = await asyncio.wait_for(
-                            self._queue.get(),
-                            timeout=1.0
-                        )
+                        task = await asyncio.wait_for(self._queue.get(), timeout=1.0)
                         batch.append(task)
                     except asyncio.TimeoutError:
                         break
@@ -152,8 +149,10 @@ class EmbeddingWorker:
                 batch = []
 
                 # Checkpoint if needed
-                if (self._processed_count % self.config.checkpoint_interval == 0
-                        and self.config.checkpoint_dir):
+                if (
+                    self._processed_count % self.config.checkpoint_interval == 0
+                    and self.config.checkpoint_dir
+                ):
                     await self._save_checkpoint()
 
             except Exception as e:
@@ -183,11 +182,7 @@ class EmbeddingWorker:
                 self._error_count += 1
 
         duration = time.time() - start_time
-        logger.debug(
-            "Processed batch of %d in %.2fs",
-            len(batch),
-            duration
-        )
+        logger.debug("Processed batch of %d in %.2fs", len(batch), duration)
 
     async def _save_checkpoint(self) -> None:
         """Save checkpoint for resume."""
@@ -198,6 +193,7 @@ class EmbeddingWorker:
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
 
         import json
+
         checkpoint = {
             "processed_count": self._processed_count,
             "error_count": self._error_count,

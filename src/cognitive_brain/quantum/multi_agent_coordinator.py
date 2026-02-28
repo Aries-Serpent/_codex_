@@ -95,9 +95,7 @@ class MultiAgentCoordinator:
         self.voting_strategy = voting_strategy
         self._lock = False  # Simple lock for concurrent operations
 
-        logger.info(
-            f"MultiAgentCoordinator initialized with strategy: {voting_strategy.value}"
-        )
+        logger.info(f"MultiAgentCoordinator initialized with strategy: {voting_strategy.value}")
 
     def register_agent(self, agent_id: str, role: str, weight: float = 1.0) -> None:
         """
@@ -227,9 +225,7 @@ class MultiAgentCoordinator:
         logger.info(f"Consensus reached: {consensus} from {len(decisions)} agents")
         return consensus
 
-    def _simulate_agent_decision(
-        self, agent_id: str, context: Dict[str, Any]
-    ) -> AgentDecision:
+    def _simulate_agent_decision(self, agent_id: str, context: Dict[str, Any]) -> AgentDecision:
         """
         Simulate an agent making a decision.
 
@@ -314,12 +310,8 @@ class MultiAgentCoordinator:
 
         # If tie, use confidence as tie-breaker
         if len(candidates) > 1:
-            logger.warning(
-                f"Tie in majority vote: {candidates}. Using confidence tie-breaker."
-            )
-            return self._confidence_based_vote(
-                [d for d in decisions if d.decision in candidates]
-            )
+            logger.warning(f"Tie in majority vote: {candidates}. Using confidence tie-breaker.")
+            return self._confidence_based_vote([d for d in decisions if d.decision in candidates])
 
         return candidates[0]
 
@@ -341,9 +333,7 @@ class MultiAgentCoordinator:
             agent_info = self.agents.get(decision.agent_id)
             weight = agent_info.weight if agent_info else 1.0
 
-            weighted_votes[decision.decision] = (
-                weighted_votes.get(decision.decision, 0.0) + weight
-            )
+            weighted_votes[decision.decision] = weighted_votes.get(decision.decision, 0.0) + weight
 
         # Find decision with max weighted votes
         max_weight = max(weighted_votes.values())
@@ -351,12 +341,8 @@ class MultiAgentCoordinator:
 
         # If tie, use confidence as tie-breaker
         if len(candidates) > 1:
-            logger.warning(
-                f"Tie in weighted vote: {candidates}. Using confidence tie-breaker."
-            )
-            return self._confidence_based_vote(
-                [d for d in decisions if d.decision in candidates]
-            )
+            logger.warning(f"Tie in weighted vote: {candidates}. Using confidence tie-breaker.")
+            return self._confidence_based_vote([d for d in decisions if d.decision in candidates])
 
         return candidates[0]
 
@@ -381,15 +367,11 @@ class MultiAgentCoordinator:
 
         # Find decision with max confidence
         max_confidence = max(confidence_sums.values())
-        candidates = [
-            d for d, c in confidence_sums.items() if abs(c - max_confidence) < 1e-6
-        ]
+        candidates = [d for d, c in confidence_sums.items() if abs(c - max_confidence) < 1e-6]
 
         # If still tied (very rare), use first alphabetically
         if len(candidates) > 1:
-            logger.warning(
-                f"Tie in confidence vote: {candidates}. Using alphabetical tie-breaker."
-            )
+            logger.warning(f"Tie in confidence vote: {candidates}. Using alphabetical tie-breaker.")
             return sorted(candidates)[0]
 
         return candidates[0]

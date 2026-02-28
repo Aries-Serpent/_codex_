@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from llama_cpp import Llama
+
     LLAMACPP_AVAILABLE = True
 except ImportError:
     LLAMACPP_AVAILABLE = False
@@ -62,8 +63,7 @@ class LlamaCppEmbeddingProvider:
         """
         if not LLAMACPP_AVAILABLE:
             raise ImportError(
-                "llama-cpp-python not installed. "
-                "Install with: pip install llama-cpp-python"
+                "llama-cpp-python not installed. Install with: pip install llama-cpp-python"
             )
 
         self.model_path = model_path
@@ -79,14 +79,14 @@ class LlamaCppEmbeddingProvider:
                 n_gpu_layers=n_gpu_layers,
                 n_threads=n_threads,
                 embedding=embedding,
-                verbose=False
+                verbose=False,
             )
             logger.info(f"Loaded llama.cpp model from {model_path}")
 
             # Auto-detect dimension
             test_embedding = self.model.create_embedding("test")
-            if isinstance(test_embedding, dict) and 'data' in test_embedding:
-                detected_dim = len(test_embedding['data'][0]['embedding'])
+            if isinstance(test_embedding, dict) and "data" in test_embedding:
+                detected_dim = len(test_embedding["data"][0]["embedding"])
                 self.dimension = detected_dim
                 logger.debug(f"Detected embedding dimension: {detected_dim}")
 
@@ -119,8 +119,8 @@ class LlamaCppEmbeddingProvider:
             try:
                 result = self.model.create_embedding(text)
 
-                if isinstance(result, dict) and 'data' in result:
-                    embedding = result['data'][0]['embedding']
+                if isinstance(result, dict) and "data" in result:
+                    embedding = result["data"][0]["embedding"]
                     embeddings.append(embedding)
                 else:
                     logger.error(f"Unexpected embedding format: {type(result)}")
@@ -141,5 +141,5 @@ class LlamaCppEmbeddingProvider:
 
     def __del__(self):
         """Cleanup model on deletion."""
-        if hasattr(self, 'model'):
+        if hasattr(self, "model"):
             del self.model

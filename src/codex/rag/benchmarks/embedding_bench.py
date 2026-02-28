@@ -12,9 +12,7 @@ from .runner import BenchmarkResult, BenchmarkRunner
 
 
 def benchmark_embedding_providers(
-    providers: List[str] = None,
-    corpus_sizes: List[int] = None,
-    runs: int = 5
+    providers: List[str] = None, corpus_sizes: List[int] = None, runs: int = 5
 ) -> Dict[str, Any]:
     """
     Benchmark all available embedding providers.
@@ -28,7 +26,7 @@ def benchmark_embedding_providers(
         Dictionary with benchmark results
     """
     if providers is None:
-        providers = ['tfidf', 'transformers']  # Available providers
+        providers = ["tfidf", "transformers"]  # Available providers
 
     if corpus_sizes is None:
         corpus_sizes = [10, 100, 1000]
@@ -37,8 +35,7 @@ def benchmark_embedding_providers(
 
     # Generate test corpus
     test_texts = {
-        size: [f"This is test document number {i} with some content."
-               for i in range(size)]
+        size: [f"This is test document number {i} with some content." for i in range(size)]
         for size in corpus_sizes
     }
 
@@ -54,26 +51,28 @@ def benchmark_embedding_providers(
                     name=f"{provider_name}_encode_{size}",
                     func=provider.encode,
                     texts=texts,
-                    runs=runs
+                    runs=runs,
                 )
 
                 # Calculate throughput
                 if result.success:
                     throughput = size / (result.duration_ms / 1000)
-                    result.metadata['throughput_texts_per_sec'] = throughput
+                    result.metadata["throughput_texts_per_sec"] = throughput
 
         except Exception as e:
-            runner.results.append(BenchmarkResult(
-                name=f"{provider_name}_error",
-                duration_ms=0.0,
-                memory_mb=0.0,
-                success=False,
-                error=str(e)
-            ))
+            runner.results.append(
+                BenchmarkResult(
+                    name=f"{provider_name}_error",
+                    duration_ms=0.0,
+                    memory_mb=0.0,
+                    success=False,
+                    error=str(e),
+                )
+            )
 
     return {
         "results": [r.to_dict() for r in runner.results],
-        "summary": runner.get_summary()
+        "summary": runner.get_summary(),
     }
 
 
@@ -81,27 +80,26 @@ def _get_provider(name: str):
     """Get embedding provider by name."""
     from codex.rag.embeddings import create_embedding_provider
 
-    if name == 'tfidf':
-        return create_embedding_provider('tfidf')
-    elif name == 'transformers':
+    if name == "tfidf":
+        return create_embedding_provider("tfidf")
+    elif name == "transformers":
         try:
-            return create_embedding_provider('transformers')
+            return create_embedding_provider("transformers")
         except Exception:
             # Fallback to TF-IDF if transformers not available
-            return create_embedding_provider('tfidf')
-    elif name == 'ollama':
-        return create_embedding_provider('ollama')
-    elif name == 'llamacpp':
-        return create_embedding_provider('llamacpp')
-    elif name == 'gpt4all':
-        return create_embedding_provider('gpt4all')
+            return create_embedding_provider("tfidf")
+    elif name == "ollama":
+        return create_embedding_provider("ollama")
+    elif name == "llamacpp":
+        return create_embedding_provider("llamacpp")
+    elif name == "gpt4all":
+        return create_embedding_provider("gpt4all")
     else:
         raise ValueError(f"Unknown provider: {name}")
 
 
 def benchmark_embedding_quality(
-    providers: List[str] = None,
-    test_queries: List[str] = None
+    providers: List[str] = None, test_queries: List[str] = None
 ) -> Dict[str, Any]:
     """
     Benchmark embedding quality using similarity tests.
@@ -114,13 +112,13 @@ def benchmark_embedding_quality(
         Quality metrics for each provider
     """
     if providers is None:
-        providers = ['tfidf']
+        providers = ["tfidf"]
 
     if test_queries is None:
         test_queries = [
             "machine learning algorithms",
             "data science python",
-            "natural language processing"
+            "natural language processing",
         ]
 
     results = {}
@@ -136,22 +134,17 @@ def benchmark_embedding_quality(
             similarities = []
             for i in range(len(query_embeddings)):
                 for j in range(i + 1, len(query_embeddings)):
-                    sim = _cosine_similarity(
-                        query_embeddings[i],
-                        query_embeddings[j]
-                    )
+                    sim = _cosine_similarity(query_embeddings[i], query_embeddings[j])
                     similarities.append(float(sim))
 
             results[provider_name] = {
                 "avg_similarity": np.mean(similarities),
                 "std_similarity": np.std(similarities),
-                "embedding_dim": len(query_embeddings[0])
+                "embedding_dim": len(query_embeddings[0]),
             }
 
         except Exception as e:
-            results[provider_name] = {
-                "error": str(e)
-            }
+            results[provider_name] = {"error": str(e)}
 
     return results
 

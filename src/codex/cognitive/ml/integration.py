@@ -135,19 +135,21 @@ class BrainMLBridge:
 
         for i, category in enumerate(categories):
             for j in range(5):  # 5 samples per category
-                samples.append(PatternSample(
-                    pattern_id=f"SYNTH-{category.upper()}-{j:03d}",
-                    category=category,
-                    symptoms=[f"sample symptom for {category} issue {j}"],
-                    resolution=f"resolution for {category} issue {j}",
-                    success=j % 2 == 0,  # Alternating success/failure
-                    context={"synthetic": True},
-                    features={
-                        "category_match": float(i) / len(categories),
-                        "has_error_keywords": float(j % 2 == 0),
-                        "word_count": float(10 + j),
-                    },
-                ))
+                samples.append(
+                    PatternSample(
+                        pattern_id=f"SYNTH-{category.upper()}-{j:03d}",
+                        category=category,
+                        symptoms=[f"sample symptom for {category} issue {j}"],
+                        resolution=f"resolution for {category} issue {j}",
+                        success=j % 2 == 0,  # Alternating success/failure
+                        context={"synthetic": True},
+                        features={
+                            "category_match": float(i) / len(categories),
+                            "has_error_keywords": float(j % 2 == 0),
+                            "word_count": float(10 + j),
+                        },
+                    )
+                )
 
         return samples
 
@@ -211,9 +213,20 @@ class BrainMLBridge:
     def _get_agents_for_category(self, category: str) -> list[str]:
         """Get recommended agents for a category."""
         category_agents = {
-            "testing": ["ci-testing-agent", "test-alignment-fixer", "coverage-roadmap-agent"],
-            "ci_cd": ["ci-testing-agent", "ci-log-retrieval-agent", "workflow-ci-fixer"],
-            "security": ["security-alert-verification-agent", "codeql-alert-resolution-agent"],
+            "testing": [
+                "ci-testing-agent",
+                "test-alignment-fixer",
+                "coverage-roadmap-agent",
+            ],
+            "ci_cd": [
+                "ci-testing-agent",
+                "ci-log-retrieval-agent",
+                "workflow-ci-fixer",
+            ],
+            "security": [
+                "security-alert-verification-agent",
+                "codeql-alert-resolution-agent",
+            ],
             "documentation": ["documentation-consolidator", "link-validator-agent"],
             "rag_ml": ["rag-index-manager", "meta-tensor-validator"],
             "repository": ["repository-hygiene-agent", "reference-updater-agent"],
@@ -422,11 +435,13 @@ class MLEnhancedPatternMatcher:
             similarity = self._compute_similarity(query_features, pattern_features)
 
             if similarity >= threshold:
-                results.append({
-                    **pattern,
-                    "ml_score": similarity,
-                    "ml_rank": 0,  # Will be set after sorting
-                })
+                results.append(
+                    {
+                        **pattern,
+                        "ml_score": similarity,
+                        "ml_rank": 0,  # Will be set after sorting
+                    }
+                )
 
         # Sort by ML score
         results.sort(key=lambda x: x["ml_score"], reverse=True)

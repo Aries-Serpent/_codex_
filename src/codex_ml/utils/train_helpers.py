@@ -8,6 +8,7 @@ from typing import Any, Iterable, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
+
 @contextmanager
 def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator[None]:
     """Enter a torch autocast context when available and enabled.

@@ -23,6 +23,7 @@ from typing import Any, Callable
 
 class MetricType(Enum):
     """Types of metrics to track."""
+
     ACCURACY = "accuracy"
     PRECISION = "precision"
     RECALL = "recall"
@@ -33,6 +34,7 @@ class MetricType(Enum):
 @dataclass
 class ValidationMetrics:
     """Container for validation metrics."""
+
     accuracy: float = 0.0
     precision: float = 0.0
     recall: float = 0.0
@@ -67,6 +69,7 @@ class ValidationMetrics:
 @dataclass
 class TuningResult:
     """Result of hyperparameter tuning."""
+
     best_params: dict[str, Any]
     best_score: float
     all_results: list[dict[str, Any]]
@@ -87,6 +90,7 @@ class TuningResult:
 @dataclass
 class ModelVersion:
     """Model version metadata."""
+
     version: str
     model_type: str
     metrics: ValidationMetrics
@@ -249,8 +253,11 @@ class ModelValidator:
         avg_recall = sum(recalls) / len(recalls) if recalls else 0
 
         # F1 score
-        f1 = (2 * avg_precision * avg_recall / (avg_precision + avg_recall)
-              if (avg_precision + avg_recall) > 0 else 0)
+        f1 = (
+            2 * avg_precision * avg_recall / (avg_precision + avg_recall)
+            if (avg_precision + avg_recall) > 0
+            else 0
+        )
 
         return ValidationMetrics(
             accuracy=accuracy,
@@ -316,11 +323,13 @@ class HyperparameterTuner:
             metrics = self.validator.validate(model, X, y)
             score = self._get_metric_value(metrics)
 
-            all_results.append({
-                "params": params,
-                "score": score,
-                "metrics": metrics.to_dict(),
-            })
+            all_results.append(
+                {
+                    "params": params,
+                    "score": score,
+                    "metrics": metrics.to_dict(),
+                }
+            )
 
             if score > best_score:
                 best_score = score
@@ -363,20 +372,19 @@ class HyperparameterTuner:
 
         for _ in range(n_iterations):
             # Sample random parameters
-            params = {
-                name: random.choice(values)
-                for name, values in param_distributions.items()
-            }
+            params = {name: random.choice(values) for name, values in param_distributions.items()}
 
             model = model_factory(**params)
             metrics = self.validator.validate(model, X, y)
             score = self._get_metric_value(metrics)
 
-            all_results.append({
-                "params": params,
-                "score": score,
-                "metrics": metrics.to_dict(),
-            })
+            all_results.append(
+                {
+                    "params": params,
+                    "score": score,
+                    "metrics": metrics.to_dict(),
+                }
+            )
 
             if score > best_score:
                 best_score = score
@@ -436,6 +444,7 @@ class HyperparameterTuner:
 @dataclass
 class PerformanceRecord:
     """Record of performance at a point in time."""
+
     timestamp: str
     metrics: ValidationMetrics
     model_version: str
@@ -497,13 +506,15 @@ class PerformanceTracker:
             drop = last_accuracy - metrics.accuracy
 
             if drop > self.alert_threshold:
-                self._alerts.append({
-                    "type": "performance_drop",
-                    "timestamp": record.timestamp,
-                    "previous_accuracy": last_accuracy,
-                    "current_accuracy": metrics.accuracy,
-                    "drop": drop,
-                })
+                self._alerts.append(
+                    {
+                        "type": "performance_drop",
+                        "timestamp": record.timestamp,
+                        "previous_accuracy": last_accuracy,
+                        "current_accuracy": metrics.accuracy,
+                        "drop": drop,
+                    }
+                )
 
         self._records.append(record)
         return record
@@ -593,9 +604,7 @@ class PerformanceTracker:
         """Load tracker from file."""
         data = json.loads(path.read_text())
         tracker = cls(alert_threshold=data.get("alert_threshold", 0.1))
-        tracker._records = [
-            PerformanceRecord.from_dict(r) for r in data.get("records", [])
-        ]
+        tracker._records = [PerformanceRecord.from_dict(r) for r in data.get("records", [])]
         tracker._alerts = data.get("alerts", [])
         return tracker
 
@@ -785,8 +794,7 @@ class ModelRegistry:
         data = json.loads(path.read_text())
         registry = cls(storage_path=path)
         registry._versions = {
-            k: ModelVersion.from_dict(v)
-            for k, v in data.get("versions", {}).items()
+            k: ModelVersion.from_dict(v) for k, v in data.get("versions", {}).items()
         }
         registry._production_version = data.get("production_version")
         registry._ab_tests = data.get("ab_tests", [])
@@ -845,9 +853,7 @@ class TuningPipeline:
         if search_method == "grid":
             result = self.tuner.grid_search(model_factory, param_grid, X, y)
         else:
-            result = self.tuner.random_search(
-                model_factory, param_grid, X, y, n_iterations
-            )
+            result = self.tuner.random_search(model_factory, param_grid, X, y, n_iterations)
 
         # Train final model with best params
         final_model = model_factory(**result.best_params)
@@ -958,6 +964,7 @@ class TuningPipeline:
 
 
 # Convenience functions
+
 
 def create_validator(n_folds: int = 5) -> ModelValidator:
     """Create a model validator."""

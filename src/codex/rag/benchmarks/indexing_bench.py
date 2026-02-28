@@ -12,9 +12,7 @@ from .runner import BenchmarkRunner
 
 
 def benchmark_indexing(
-    corpus_sizes: List[int] = None,
-    chunk_sizes: List[int] = None,
-    runs: int = 3
+    corpus_sizes: List[int] = None, chunk_sizes: List[int] = None, runs: int = 3
 ) -> Dict[str, Any]:
     """
     Benchmark indexing performance with various corpus sizes.
@@ -52,7 +50,7 @@ def benchmark_indexing(
                     index_name=index_name,
                     chunk_size=chunk_size,
                     tmpdir=tmpdir,
-                    runs=runs
+                    runs=runs,
                 )
 
                 # Calculate throughput
@@ -61,13 +59,13 @@ def benchmark_indexing(
                     avg_doc_size = 500  # Average document size in chars
                     estimated_chunks = (corpus_size * avg_doc_size) / chunk_size
                     throughput = estimated_chunks / (result.duration_ms / 1000)
-                    result.metadata['chunks_per_sec'] = throughput
-                    result.metadata['corpus_size'] = corpus_size
-                    result.metadata['chunk_size'] = chunk_size
+                    result.metadata["chunks_per_sec"] = throughput
+                    result.metadata["corpus_size"] = corpus_size
+                    result.metadata["chunk_size"] = chunk_size
 
     return {
         "results": [r.to_dict() for r in runner.results],
-        "summary": runner.get_summary()
+        "summary": runner.get_summary(),
     }
 
 
@@ -83,18 +81,13 @@ def _generate_test_corpus(size: int) -> List[str]:
     ]
 
 
-def _build_index(
-    documents: List[str],
-    index_name: str,
-    chunk_size: int,
-    tmpdir: str
-) -> None:
+def _build_index(documents: List[str], index_name: str, chunk_size: int, tmpdir: str) -> None:
     """Build RAG index from documents."""
     from codex.rag.embeddings import create_embedding_provider
     from codex.rag.indexer import chunk_text, persist_index
 
     # Use TF-IDF for fast benchmarking
-    provider = create_embedding_provider('tfidf')
+    provider = create_embedding_provider("tfidf")
 
     # Chunk all documents
     all_chunks = []
@@ -115,14 +108,11 @@ def _build_index(
         embeddings=embeddings,
         chunks=all_chunks,
         tenant_id="benchmark",
-        index_dir=str(tmpdir)
+        index_dir=str(tmpdir),
     )
 
 
-def benchmark_parallel_vs_sequential(
-    corpus_size: int = 1000,
-    runs: int = 3
-) -> Dict[str, Any]:
+def benchmark_parallel_vs_sequential(corpus_size: int = 1000, runs: int = 3) -> Dict[str, Any]:
     """
     Compare parallel vs sequential indexing.
 
@@ -145,7 +135,7 @@ def benchmark_parallel_vs_sequential(
             index_name="sequential",
             chunk_size=500,
             tmpdir=tmpdir,
-            runs=runs
+            runs=runs,
         )
 
     # Note: Parallel indexing would require threading/multiprocessing
@@ -153,5 +143,5 @@ def benchmark_parallel_vs_sequential(
 
     return {
         "results": [r.to_dict() for r in runner.results],
-        "summary": runner.get_summary()
+        "summary": runner.get_summary(),
     }

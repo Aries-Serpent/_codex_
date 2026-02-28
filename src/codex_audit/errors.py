@@ -36,9 +36,7 @@ class ErrorRecord:
     message: str
     brief_context: str
     ra_references: list[str] = field(default_factory=lambda: ["RA-1", "RA-3"])
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds")
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat(timespec="seconds"))
 
     def to_dict(self) -> dict[str, object]:
         return {

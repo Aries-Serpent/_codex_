@@ -145,7 +145,7 @@ def _required_revision(repo_id: RepoId, explicit: Optional[str]) -> Optional[str
 
     raise RuntimeError(
         "Hugging Face `revision` is required (Bandit B615). "
-        "Set HF_REVISION/HF_MODEL_REVISION/CODEX_HF_REVISION/HUGGINGFACE_REVISION env var or pass `revision=`."
+        "Set HF_REVISION/HF_MODEL_REVISION/CODEX_HF_REVISION/HUGGINGFACE_REVISION env var or pass `revision=`."  # noqa: E501
     )
 
 

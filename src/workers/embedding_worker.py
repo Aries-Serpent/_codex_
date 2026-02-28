@@ -7,7 +7,8 @@ Safety:
 - Uses EMBEDDER_CLASS for embedder (default: mock embedder)
 - Guards live provider operations via src/mcp/server/safety_checks.live_tests_enabled()
 - Uses retry_on_exception decorator and metrics hooks
-"""
+"""  # noqa: E501
+
 from __future__ import annotations
 
 import json
@@ -58,8 +59,7 @@ def _load_embedder_class(path: str):
         return MockEmbedder
     if path not in _EMBEDDER_ALLOWLIST:
         raise ValueError(
-            f"Unknown embedder class: {path!r}. "
-            f"Must be one of: {sorted(_EMBEDDER_ALLOWLIST)}"
+            f"Unknown embedder class: {path!r}. Must be one of: {sorted(_EMBEDDER_ALLOWLIST)}"
         )
     module_name, cls_name = path.rsplit(".", 1)
     mod = __import__(module_name, fromlist=[cls_name])
@@ -85,7 +85,9 @@ def run_worker(
     - load items from JSON array file
     - chunk/dedupe/checkpoint/batch/embed/upsert
     """
-    embedder_path = os.environ.get("EMBEDDER_CLASS", "src.mcp.embeddings.mock_embedder.MockEmbedder")
+    embedder_path = os.environ.get(
+        "EMBEDDER_CLASS", "src.mcp.embeddings.mock_embedder.MockEmbedder"
+    )
     EmbedderCls = _load_embedder_class(embedder_path)
     embedder = EmbedderCls()
 
@@ -134,12 +136,14 @@ def run_worker(
             # Guard live embedder calls behind ENABLE_LIVE_TESTS if embedder is a real provider
             if not live_tests_enabled():
                 # If live tests not enabled and embedder is not mock, prefer using mock behavior
-                # but embedder implementations should be safe; here we call embedder regardless (mock by default)
+                # but embedder implementations should be safe; here we call embedder regardless (mock by default)  # noqa: E501
                 pass
             embeddings = embedder.embed(texts)
         upsert_items = []
         for it, emb in zip(batch, embeddings):
-            upsert_items.append({"id": it["id"], "embedding": emb, "metadata": it.get("metadata", {})})
+            upsert_items.append(
+                {"id": it["id"], "embedding": emb, "metadata": it.get("metadata", {})}
+            )
         # Persist with retry/backoff
         try:
             increment("worker_batch_total")
@@ -161,11 +165,26 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True, help="Path to JSON array file with items")
-    parser.add_argument("--batch-size", type=int, default=int(os.environ.get("EMBEDDING_BATCH_SIZE", "32")))
-    parser.add_argument("--namespace", default=os.environ.get("EMBEDDING_WORKER_NAMESPACE_DEFAULT", "default"))
-    parser.add_argument("--checkpoint", default=os.environ.get("EMBEDDING_CHECKPOINT_PATH", "embeddings.checkpoint.json"))
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=int(os.environ.get("EMBEDDING_BATCH_SIZE", "32")),
+    )
+    parser.add_argument(
+        "--namespace",
+        default=os.environ.get("EMBEDDING_WORKER_NAMESPACE_DEFAULT", "default"),
+    )
+    parser.add_argument(
+        "--checkpoint",
+        default=os.environ.get("EMBEDDING_CHECKPOINT_PATH", "embeddings.checkpoint.json"),
+    )
     args = parser.parse_args()
-    run_worker(args.input, batch_size=args.batch_size, namespace_default=args.namespace, checkpoint_path=args.checkpoint)
+    run_worker(
+        args.input,
+        batch_size=args.batch_size,
+        namespace_default=args.namespace,
+        checkpoint_path=args.checkpoint,
+    )
 
 
 if __name__ == "__main__":

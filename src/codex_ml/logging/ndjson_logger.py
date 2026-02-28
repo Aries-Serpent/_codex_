@@ -2,7 +2,7 @@
 
 `codex_ml.logging.ndjson_logger.NDJSONLogger` is the canonical structured logging sink for training and evaluation flows.
 It writes newline-delimited JSON with atomic appends, optional rotation, and deterministic timestamp helpers.
-"""
+"""  # noqa: E501
 
 from __future__ import annotations
 
@@ -80,7 +80,9 @@ class NDJSONLogger:
         if self._closed:
             raise RuntimeError("NDJSONLogger is closed")
         payload = json.dumps(
-            self._prepare_record(record), ensure_ascii=self.ensure_ascii, separators=(",", ":")
+            self._prepare_record(record),
+            ensure_ascii=self.ensure_ascii,
+            separators=(",", ":"),
         )
         data = (payload + "\n").encode("utf-8")
         with self._lock:

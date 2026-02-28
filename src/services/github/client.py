@@ -171,9 +171,7 @@ class GitHubClient:
                 # Handle rate limiting
                 if response.status_code == 403:
                     if "rate limit" in response.text.lower():
-                        reset_at = int(
-                            response.headers.get("x-ratelimit-reset", 0)
-                        )
+                        reset_at = int(response.headers.get("x-ratelimit-reset", 0))
                         raise RateLimitError(
                             reset_at=reset_at,
                             remaining=0,
@@ -199,11 +197,9 @@ class GitHubClient:
 
             except httpx.RequestError as e:
                 if retry_count < self.max_retries:
-                    wait_time = self.RETRY_BACKOFF_BASE ** retry_count
+                    wait_time = self.RETRY_BACKOFF_BASE**retry_count
                     await asyncio.sleep(wait_time)
-                    return await self._request(
-                        method, path, json, params, retry_count + 1
-                    )
+                    return await self._request(method, path, json, params, retry_count + 1)
                 raise GitHubAPIError(f"Request failed: {e}")
 
     async def _get(
@@ -270,9 +266,7 @@ class GitHubClient:
         Returns:
             Workflow info object.
         """
-        data = await self._get(
-            f"/repos/{owner}/{repo}/actions/workflows/{workflow_id}"
-        )
+        data = await self._get(f"/repos/{owner}/{repo}/actions/workflows/{workflow_id}")
         return WorkflowInfo(**data)
 
     async def trigger_workflow(
@@ -309,9 +303,7 @@ class GitHubClient:
             await asyncio.sleep(2)  # Brief wait for run to be created
 
             # Get most recent run for this workflow
-            runs = await self.list_workflow_runs(
-                owner, repo, workflow_id, per_page=1
-            )
+            runs = await self.list_workflow_runs(owner, repo, workflow_id, per_page=1)
             if runs:
                 return runs[0].id
             return None
@@ -421,9 +413,7 @@ class GitHubClient:
 
             elapsed = time.time() - start_time
             if elapsed >= timeout:
-                raise TimeoutError(
-                    f"Workflow run {run_id} did not complete within {timeout}s"
-                )
+                raise TimeoutError(f"Workflow run {run_id} did not complete within {timeout}s")
 
             await asyncio.sleep(poll_interval)
 
@@ -444,9 +434,7 @@ class GitHubClient:
             True if cancellation was accepted.
         """
         try:
-            await self._post(
-                f"/repos/{owner}/{repo}/actions/runs/{run_id}/cancel"
-            )
+            await self._post(f"/repos/{owner}/{repo}/actions/runs/{run_id}/cancel")
             return True
         except GitHubAPIError as e:
             logger.debug(f"GitHubAPIError: {e}")
@@ -632,9 +620,7 @@ class GitHubClient:
         Returns:
             Check run object.
         """
-        data = await self._get(
-            f"/repos/{owner}/{repo}/check-runs/{check_run_id}"
-        )
+        data = await self._get(f"/repos/{owner}/{repo}/check-runs/{check_run_id}")
         return CheckRun(**data)
 
     async def list_check_runs_for_ref(
@@ -708,7 +694,7 @@ class GitHubClient:
             # This is a limitation of the GitHub API - check runs don't directly expose logs
             raise NotFoundError(
                 "check run logs",
-                f"{check_run_id} (note: logs may only be available via associated workflow job)"
+                f"{check_run_id} (note: logs may only be available via associated workflow job)",
             )
 
     # =========================================================================
@@ -726,9 +712,7 @@ class GitHubClient:
         return RateLimitInfo(
             limit=core.get("limit", 0),
             remaining=core.get("remaining", 0),
-            reset=datetime.fromtimestamp(
-                core.get("reset", 0), tz=timezone.utc
-            ),
+            reset=datetime.fromtimestamp(core.get("reset", 0), tz=timezone.utc),
             used=core.get("used", 0),
         )
 
@@ -761,30 +745,20 @@ class GitHubClientSync:
     def trigger_workflow(self, *args: Any, **kwargs: Any) -> Optional[int]:
         return self._run(self._async_client.trigger_workflow(*args, **kwargs))
 
-    def list_workflow_runs(
-        self, *args: Any, **kwargs: Any
-    ) -> list[WorkflowRun]:
-        return self._run(
-            self._async_client.list_workflow_runs(*args, **kwargs)
-        )
+    def list_workflow_runs(self, *args: Any, **kwargs: Any) -> list[WorkflowRun]:
+        return self._run(self._async_client.list_workflow_runs(*args, **kwargs))
 
     def get_workflow_run(self, *args: Any, **kwargs: Any) -> WorkflowRun:
         return self._run(self._async_client.get_workflow_run(*args, **kwargs))
 
     def list_workflow_jobs(self, *args: Any, **kwargs: Any) -> list[WorkflowJob]:
-        return self._run(
-            self._async_client.list_workflow_jobs(*args, **kwargs)
-        )
+        return self._run(self._async_client.list_workflow_jobs(*args, **kwargs))
 
     def get_job_logs(self, *args: Any, **kwargs: Any) -> str:
         return self._run(self._async_client.get_job_logs(*args, **kwargs))
 
-    def list_run_artifacts(
-        self, *args: Any, **kwargs: Any
-    ) -> list[ArtifactInfo]:
-        return self._run(
-            self._async_client.list_run_artifacts(*args, **kwargs)
-        )
+    def list_run_artifacts(self, *args: Any, **kwargs: Any) -> list[ArtifactInfo]:
+        return self._run(self._async_client.list_run_artifacts(*args, **kwargs))
 
     def download_artifact(self, *args: Any, **kwargs: Any) -> bytes:
         return self._run(self._async_client.download_artifact(*args, **kwargs))

@@ -121,7 +121,7 @@ class CircuitBreaker:
 
         logger.info(
             f"CircuitBreaker initialized: threshold={self.config.failure_threshold}, "
-            f"timeout={self.config.timeout}s, exponential_backoff={self.config.use_exponential_backoff}"
+            f"timeout={self.config.timeout}s, exponential_backoff={self.config.use_exponential_backoff}"  # noqa: E501
         )
 
     def call(self, func: Callable[..., Any], *args, **kwargs) -> Any:
@@ -389,8 +389,7 @@ class CircuitBreaker:
             self.metrics = state_data.get("metrics", self.metrics)
 
             logger.info(
-                f"Circuit breaker state loaded: {self.state.value}, "
-                f"failures={self.failure_count}"
+                f"Circuit breaker state loaded: {self.state.value}, failures={self.failure_count}"
             )
         except Exception as e:
             logger.debug(f"Exception: {e}")
@@ -483,7 +482,11 @@ class FallbackHandler:
         logger.info(f"FallbackHandler initialized: use_cache={use_cache}")
 
     def call_with_fallback(
-        self, func: Callable[..., Any], fallback_key: Optional[Any] = None, *args, **kwargs
+        self,
+        func: Callable[..., Any],
+        fallback_key: Optional[Any] = None,
+        *args,
+        **kwargs,
     ) -> Any:
         """Call function with fallback on failure
 

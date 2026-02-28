@@ -124,7 +124,10 @@ class U1GaugeTransform:
         return transformed_state
 
     def verify_invariance(
-        self, original_state: OrchestratorState, theta: float = np.pi / 4, tolerance: float = 1e-10
+        self,
+        original_state: OrchestratorState,
+        theta: float = np.pi / 4,
+        tolerance: float = 1e-10,
     ) -> TransformationResult:
         """
         Verify that probabilities are invariant under U(1) transformation.

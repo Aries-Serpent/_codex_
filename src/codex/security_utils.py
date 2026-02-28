@@ -35,21 +35,25 @@ def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> 
         >>> # DEV ONLY - DO NOT USE IN PRODUCTION
         >>> redact_sensitive_value("my-secret-key-12345", show_preview=True)
         'my-s...[REDACTED]...2345'
-    """
+    """  # noqa: E501
     if not value:
-        return '[EMPTY]'
+        return "[EMPTY]"
 
     # Production safety: Explicitly disable show_preview in production environments
     # Check for production environment indicators
-    codex_env = os.getenv('CODEX_ENV', '').lower()
-    is_production = codex_env in ('production', 'prod', 'prd')
+    codex_env = os.getenv("CODEX_ENV", "").lower()
+    is_production = codex_env in ("production", "prod", "prd")
 
     # Additional safety checks for common production indicators
     if not is_production:
         # Check for other common production environment variables
-        env_hints = os.getenv('ENVIRONMENT', '').lower()
-        app_env = os.getenv('APP_ENV', '').lower()
-        is_production = env_hints in ('production', 'prod', 'prd') or app_env in ('production', 'prod', 'prd')
+        env_hints = os.getenv("ENVIRONMENT", "").lower()
+        app_env = os.getenv("APP_ENV", "").lower()
+        is_production = env_hints in ("production", "prod", "prd") or app_env in (
+            "production",
+            "prod",
+            "prd",
+        )
 
     # Override show_preview in production
     if is_production:
@@ -60,7 +64,7 @@ def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> 
     if show_preview and len(value) > 8:
         return f"{value[:4]}...[REDACTED]...{value[-4:]}"
 
-    return '[REDACTED]'
+    return "[REDACTED]"
 
 
 def redact_secret_name(secret_name: str) -> str:
@@ -84,13 +88,17 @@ def redact_secret_name(secret_name: str) -> str:
         'secret:[REDACTED]'
     """
     if not secret_name:
-        return '[UNNAMED_SECRET]'
+        return "[UNNAMED_SECRET]"
 
     # Consistently redact all secret names to prevent information disclosure
     return "[REDACTED_SECRET_NAME]"
 
 
-def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, whitelist_patterns: Optional[list] = None) -> str:
+def sanitize_log_message(
+    message: str,
+    redact_patterns: Optional[list] = None,
+    whitelist_patterns: Optional[list] = None,
+) -> str:
     """
     Sanitize a log message by redacting potential sensitive information.
 
@@ -118,44 +126,44 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
         >>> # With whitelist to preserve commit SHAs
         >>> sanitize_log_message("Commit abc123, Token: ghp_realtoken", whitelist_patterns=[r'\\bCommit [a-f0-9]{6,40}\\b'])
         'Commit abc123, Token: [REDACTED_GITHUB_TOKEN]'
-    """
+    """  # noqa: E501
     # Default patterns for common sensitive data
     # Note: These patterns are tuned to balance security with false positive rate
     default_patterns = [
         # GitHub personal access tokens (ghp_*) - 6+ alphanumeric chars
-        (r'ghp_[a-zA-Z0-9]{6,}', '[REDACTED_GITHUB_TOKEN]'),
+        (r"ghp_[a-zA-Z0-9]{6,}", "[REDACTED_GITHUB_TOKEN]"),
         # GitHub OAuth tokens (gho_*)
-        (r'gho_[a-zA-Z0-9]{6,}', '[REDACTED_OAUTH_TOKEN]'),
+        (r"gho_[a-zA-Z0-9]{6,}", "[REDACTED_OAUTH_TOKEN]"),
         # Stripe/similar API keys (sk_live_*, sk_test_*) - with underscore
-        (r'sk_(?:live|test)_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        (r"sk_(?:live|test)_[a-zA-Z0-9]{6,}", "[REDACTED]"),
         # Generic sk_ prefixed keys (underscore separator)
-        (r'sk_[a-zA-Z0-9]{6,}', '[REDACTED]'),
+        (r"sk_[a-zA-Z0-9]{6,}", "[REDACTED]"),
         # Generic sk- prefixed keys (hyphen separator, e.g. OpenAI)
-        (r'sk-[a-zA-Z0-9]{4,}', '[REDACTED]'),
+        (r"sk-[a-zA-Z0-9]{4,}", "[REDACTED]"),
         # AWS access keys (AKIA*, ASIA*)
-        (r'A[KS]IA[A-Z0-9]{16}', '[REDACTED]'),
+        (r"A[KS]IA[A-Z0-9]{16}", "[REDACTED]"),
         # JWT tokens (three base64 segments separated by dots)
-        (r'eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '[REDACTED]'),
+        (r"eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", "[REDACTED]"),
         # Long base64-like strings (40+ chars) - catches tokens while avoiding short identifiers
         # This threshold balances security (catching tokens) with false positive reduction
         # Most legitimate short identifiers (UUIDs, SHAs) are <36 chars and whitelisted
-        (r'[A-Za-z0-9+/]{40,}={0,2}', '[REDACTED_TOKEN]'),
+        (r"[A-Za-z0-9+/]{40,}={0,2}", "[REDACTED_TOKEN]"),
     ]
 
     # Default whitelist patterns for common non-sensitive identifiers
     default_whitelist = [
         # UUID v4 (with or without hyphens)
-        r'[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}',
+        r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
         # UUID without hyphens (32 chars)
-        r'\b[0-9a-f]{32}\b',
+        r"\b[0-9a-f]{32}\b",
         # Git commit SHAs (40 hex chars or abbreviated 7-12 chars)
-        r'\b[a-f0-9]{7,40}\b',
+        r"\b[a-f0-9]{7,40}\b",
         # MD5 hashes (32 hex chars)
-        r'\b[a-f0-9]{32}\b',
+        r"\b[a-f0-9]{32}\b",
         # SHA-1 hashes (40 hex chars)
-        r'\b[a-f0-9]{40}\b',
+        r"\b[a-f0-9]{40}\b",
         # SHA-256 hashes (64 hex chars)
-        r'\b[a-f0-9]{64}\b',
+        r"\b[a-f0-9]{64}\b",
     ]
 
     # Build whitelist set
@@ -169,7 +177,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     for i, pattern in enumerate(whitelist):
         matches = re.finditer(pattern, temp_message, re.IGNORECASE)
         for match in matches:
-            placeholder = f'__WHITELIST_{i}_{len(whitelist_placeholders)}__'
+            placeholder = f"__WHITELIST_{i}_{len(whitelist_placeholders)}__"
             whitelist_placeholders[placeholder] = match.group(0)
             temp_message = temp_message.replace(match.group(0), placeholder, 1)
 
@@ -181,7 +189,7 @@ def sanitize_log_message(message: str, redact_patterns: Optional[list] = None, w
     # Apply custom patterns if provided
     if redact_patterns:
         for pattern in redact_patterns:
-            sanitized = re.sub(pattern, '[REDACTED]', sanitized)
+            sanitized = re.sub(pattern, "[REDACTED]", sanitized)
 
     # Restore whitelisted content
     for placeholder, original in whitelist_placeholders.items():
@@ -221,8 +229,15 @@ def safe_secret_reference(name: str = "", operation: str = "") -> str:
 
     # Sensitive keyword check — redact names that reveal production secrets
     _SENSITIVE_KEYWORDS = (
-        "PASSWORD", "SECRET", "PRIVATE_KEY", "PRIVATE", "CREDENTIAL",
-        "DATABASE_URL", "DB_PASS", "ACCESS_KEY", "TOKEN",
+        "PASSWORD",
+        "SECRET",
+        "PRIVATE_KEY",
+        "PRIVATE",
+        "CREDENTIAL",
+        "DATABASE_URL",
+        "DB_PASS",
+        "ACCESS_KEY",
+        "TOKEN",
     )
     name_upper = name.upper()
     if any(k in name_upper for k in _SENSITIVE_KEYWORDS):
@@ -250,7 +265,7 @@ def redact_dict_with_secret_keys(data: Optional[dict]) -> dict:
     if not data:
         return {}
 
-    return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())}
+    return {f"secret_{i + 1}": v for i, (k, v) in enumerate(data.items())}
 
 
 # WARNING: Do NOT log secret names, values, or any sensitive credentials.

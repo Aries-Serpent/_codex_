@@ -166,7 +166,10 @@ def _load_records(
 
 
 def _encode_labels(
-    values: Sequence[Any], metric_name: str, *, fallback: Optional[dict[Any, int]] = None
+    values: Sequence[Any],
+    metric_name: str,
+    *,
+    fallback: Optional[dict[Any, int]] = None,
 ) -> tuple[list[int], dict[Any, int]]:
     ints: list[int] = []
     mapping: dict[Any, int]
@@ -243,7 +246,7 @@ def _collect_perplexity_inputs(
             record_logits = list(rec["logits"])
             if len(record_logits) != len(tokens):
                 raise EvaluationError(
-                    f"Record {idx} logits length {len(record_logits)} != target length {len(tokens)}"
+                    f"Record {idx} logits length {len(record_logits)} != target length {len(tokens)}"  # noqa: E501
                 )
             logits.extend(record_logits)
         else:
@@ -607,7 +610,9 @@ def run_evaluation(
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
             except Exception as e:
                 logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore param logging errors
+                logger.warning(
+                    f"Exception: {e}", exc_info=True
+                )  # Silently ignore param logging errors
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
@@ -804,7 +809,7 @@ def run_evaluation(
     if "csv" in metrics_sinks:
 
         def _write_metrics_csv() -> Path:
-            # Use sink_target_path if csv is the primary sink, otherwise use default metrics_csv_path
+            # Use sink_target_path if csv is the primary sink, otherwise use default metrics_csv_path  # noqa: E501
             csv_target = (
                 sink_target_path if sink_kind == "csv" and sink_target_path else metrics_csv_path
             )

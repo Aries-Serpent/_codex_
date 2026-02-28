@@ -53,7 +53,7 @@ from codex_ml.utils.error_log import log_error
 
 logger = logging.getLogger(__name__)
 
-# SECURITY(B105): placeholder token used for UI redaction; documented in docs/security/Bandit_Fixes.md.
+# SECURITY(B105): placeholder token used for UI redaction; documented in docs/security/Bandit_Fixes.md.  # noqa: E501
 REDACT_PLACEHOLDER = "{REDACTED}"  # nosec B105
 REDACT_TOKEN = REDACT_PLACEHOLDER
 POLICY_ENV_VAR = "CODEX_SAFETY_POLICY_PATH"
@@ -781,7 +781,9 @@ class SafetyFilters:
                 return logits
         except Exception as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
             logger.debug(
-                "safety.filters: numpy masking failed; falling back: %s", exc, exc_info=True
+                "safety.filters: numpy masking failed; falling back: %s",
+                exc,
+                exc_info=True,
             )
         if isinstance(logits, list):
             for tid in banned_token_ids:
@@ -943,8 +945,16 @@ DEFAULT_POLICY_DATA: dict[str, Any] = {
     "log_path": str(DEFAULT_LOG_PATH),
     "redaction_token": REDACT_TOKEN,
     "rules": [
-        {"id": "deny.shell.rm_root", "action": "block", "match": {"literals": ["rm -rf /"]}},
-        {"id": "deny.shell.format_c", "action": "block", "match": {"literals": ["format c:"]}},
+        {
+            "id": "deny.shell.rm_root",
+            "action": "block",
+            "match": {"literals": ["rm -rf /"]},
+        },
+        {
+            "id": "deny.shell.format_c",
+            "action": "block",
+            "match": {"literals": ["format c:"]},
+        },
         {"id": "deny.shell.mkfs", "action": "block", "match": {"literals": ["mkfs"]}},
         {
             "id": "deny.shell.shutdown",
@@ -972,8 +982,16 @@ DEFAULT_POLICY_DATA: dict[str, Any] = {
             "action": "block",
             "match": {"literals": ["weapon schematic"]},
         },
-        {"id": "deny.selfharm", "action": "block", "match": {"literals": ["kill yourself"]}},
-        {"id": "allow.shell.rm_build", "action": "allow", "match": {"literals": ["rm -rf build"]}},
+        {
+            "id": "deny.selfharm",
+            "action": "block",
+            "match": {"literals": ["kill yourself"]},
+        },
+        {
+            "id": "allow.shell.rm_build",
+            "action": "allow",
+            "match": {"literals": ["rm -rf build"]},
+        },
         {
             "id": "allow.sql.drop_schema_example",
             "action": "allow",

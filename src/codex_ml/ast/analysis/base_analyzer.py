@@ -3,6 +3,7 @@ Abstract base class for AST analyzers.
 
 Defines the interface for all AST analyzers in the framework.
 """
+
 from abc import ABC, abstractmethod
 from typing import List
 
@@ -118,7 +119,7 @@ class ComplexityAnalyzer(ASTAnalyzer):
                 Finding(
                     type="high_complexity",
                     severity="warning",
-                    message=f"Function '{node.name}' has complexity {complexity} (threshold: {self.threshold})",
+                    message=f"Function '{node.name}' has complexity {complexity} (threshold: {self.threshold})",  # noqa: E501
                     location=node.location,
                     analyzer=self.get_analyzer_type(),
                     metadata={"complexity": complexity, "threshold": self.threshold},
@@ -274,10 +275,13 @@ class ParameterCountAnalyzer(ASTAnalyzer):
                 Finding(
                     type="too_many_parameters",
                     severity="info",
-                    message=f"Function '{node.name}' has {param_count} parameters (max: {self.max_parameters})",
+                    message=f"Function '{node.name}' has {param_count} parameters (max: {self.max_parameters})",  # noqa: E501
                     location=node.location,
                     analyzer=self.get_analyzer_type(),
-                    metadata={"parameter_count": param_count, "max_parameters": self.max_parameters},
+                    metadata={
+                        "parameter_count": param_count,
+                        "max_parameters": self.max_parameters,
+                    },
                 )
             ]
 

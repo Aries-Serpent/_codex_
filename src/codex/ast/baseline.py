@@ -1,4 +1,5 @@
 """AST baseline management for incremental analysis."""
+
 from __future__ import annotations
 
 import json
@@ -156,9 +157,7 @@ class BaselineManager:
             list of baseline records
         """
         with sqlite3.connect(self.db_path) as conn:
-            rows = conn.execute(
-                "SELECT * FROM baselines ORDER BY file_path"
-            ).fetchall()
+            rows = conn.execute("SELECT * FROM baselines ORDER BY file_path").fetchall()
             return [
                 {
                     "file_path": row[0],

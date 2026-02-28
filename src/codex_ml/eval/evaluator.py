@@ -147,7 +147,7 @@ def lite_sequence_evaluation(
         return {
             "token_accuracy": 0.0,  # nosec B105
             "exact_match": 0.0,
-            "perplexity_proxy": float('inf'),
+            "perplexity_proxy": float("inf"),
             "samples": 0.0,
         }
 
@@ -170,8 +170,10 @@ def lite_sequence_evaluation(
     exact_match = exact_matches / n_samples if n_samples > 0 else 0.0
 
     # Perplexity proxy: lower is better, based on length mismatch
-    avg_length_diff = sum(abs(len(p.split()) - len(r.split()))
-                          for p, r in zip(predictions, references)) / n_samples
+    avg_length_diff = (
+        sum(abs(len(p.split()) - len(r.split())) for p, r in zip(predictions, references))
+        / n_samples
+    )
     perplexity_proxy = 1.0 + avg_length_diff  # Simple proxy
 
     return {
@@ -239,7 +241,7 @@ def evaluate_dataloader(
                 except TypeError as e:
                     logger.debug(f"TypeError: {e}")
                     logger.warning(f"TypeError: {e}", exc_info=True)
-                    # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)
+                    # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)  # noqa: E501
                     output_mapping = {
                         name: value
                         for name in (n for n in dir(outputs) if not n.startswith("_"))

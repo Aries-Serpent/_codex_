@@ -70,8 +70,7 @@ def safe_isinstance(obj: Any, typ: Any) -> bool:
             return True
         key_type, value_type = args
         return all(
-            safe_isinstance(k, key_type) and safe_isinstance(v, value_type)
-            for k, v in obj.items()
+            safe_isinstance(k, key_type) and safe_isinstance(v, value_type) for k, v in obj.items()
         )
 
     # For other generic types, try to check against the origin

@@ -76,9 +76,7 @@ class ComplianceGate:
             policy: Policy name (GDPR, HIPAA, SOC2)
         """
         if policy not in self.SUPPORTED_POLICIES:
-            raise ValueError(
-                f"Unsupported policy: {policy}. " f"Supported: {self.SUPPORTED_POLICIES}"
-            )
+            raise ValueError(f"Unsupported policy: {policy}. Supported: {self.SUPPORTED_POLICIES}")
 
         self.policy = policy
         logger.info(f"ComplianceGate initialized for {policy}")

@@ -19,6 +19,7 @@ from ..security_utils import sanitize_log_message
 
 class TokenType(Enum):
     """Token types."""
+
     ACCESS = "access"
     REFRESH = "refresh"
     SESSION = "session"
@@ -27,6 +28,7 @@ class TokenType(Enum):
 @dataclass
 class TokenClaims:
     """JWT token claims."""
+
     sub: str  # Subject (user ID)
     iat: float  # Issued at
     exp: float  # Expiration
@@ -39,34 +41,35 @@ class TokenClaims:
     def to_dict(self) -> Dict[str, Any]:
         """Convert claims to dictionary."""
         return {
-            'sub': self.sub,
-            'iat': self.iat,
-            'exp': self.exp,
-            'type': self.type.value,
-            'scope': self.scope,
-            'jti': self.jti,
-            'iss': self.iss,
-            'aud': self.aud,
+            "sub": self.sub,
+            "iat": self.iat,
+            "exp": self.exp,
+            "type": self.type.value,
+            "scope": self.scope,
+            "jti": self.jti,
+            "iss": self.iss,
+            "aud": self.aud,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'TokenClaims':
+    def from_dict(cls, data: Dict[str, Any]) -> "TokenClaims":
         """Create claims from dictionary."""
         return cls(
-            sub=data['sub'],
-            iat=data['iat'],
-            exp=data['exp'],
-            type=TokenType(data['type']),
-            scope=data.get('scope'),
-            jti=data.get('jti'),
-            iss=data.get('iss', 'codex'),
-            aud=data.get('aud', 'codex-api'),
+            sub=data["sub"],
+            iat=data["iat"],
+            exp=data["exp"],
+            type=TokenType(data["type"]),
+            scope=data.get("scope"),
+            jti=data.get("jti"),
+            iss=data.get("iss", "codex"),
+            aud=data.get("aud", "codex-api"),
         )
 
 
 @dataclass
 class SessionInfo:
     """User session information."""
+
     session_id: str
     user_id: str
     created_at: float
@@ -115,10 +118,11 @@ class TokenManager:
         if secret_key is None:
             # Generate random secret for development only
             import warnings
+
             warnings.warn(
                 "Auto-generating secret key. This is ONLY for development. "
                 "In production, ALWAYS provide an explicit secret_key.",
-                UserWarning
+                UserWarning,
             )
             secret_key = secrets.token_urlsafe(64)
 
@@ -145,28 +149,24 @@ class TokenManager:
 
         # Create header
         header = {
-            'typ': 'JWT',
-            'alg': 'HS256',
+            "typ": "JWT",
+            "alg": "HS256",
         }
 
         # Encode header and payload
-        header_b64 = base64.urlsafe_b64encode(
-            json.dumps(header).encode()
-        ).decode().rstrip('=')
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).decode().rstrip("=")
 
-        payload_b64 = base64.urlsafe_b64encode(
-            json.dumps(claims.to_dict(), default=str).encode()
-        ).decode().rstrip('=')
+        payload_b64 = (
+            base64.urlsafe_b64encode(json.dumps(claims.to_dict(), default=str).encode())
+            .decode()
+            .rstrip("=")
+        )
 
         # Create signature
         message = f"{header_b64}.{payload_b64}"
-        signature = hmac.new(
-            self._secret_key.encode(),
-            message.encode(),
-            hashlib.sha256
-        ).digest()
+        signature = hmac.new(self._secret_key.encode(), message.encode(), hashlib.sha256).digest()
 
-        signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip('=')
+        signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
 
         # Combine all parts
         token = f"{header_b64}.{payload_b64}.{signature_b64}"
@@ -191,7 +191,7 @@ class TokenManager:
 
         try:
             # Split token parts
-            parts = token.split('.')
+            parts = token.split(".")
             if len(parts) != 3:
                 raise ValueError("Invalid token format")
 
@@ -200,20 +200,18 @@ class TokenManager:
             # Verify signature
             message = f"{header_b64}.{payload_b64}"
             expected_signature = hmac.new(
-                self._secret_key.encode(),
-                message.encode(),
-                hashlib.sha256
+                self._secret_key.encode(), message.encode(), hashlib.sha256
             ).digest()
 
             # Add padding if needed
-            signature_b64_padded = signature_b64 + '=' * (4 - len(signature_b64) % 4)
+            signature_b64_padded = signature_b64 + "=" * (4 - len(signature_b64) % 4)
             actual_signature = base64.urlsafe_b64decode(signature_b64_padded)
 
             if not secrets.compare_digest(expected_signature, actual_signature):
                 raise ValueError("Invalid token signature")
 
             # Decode payload
-            payload_b64_padded = payload_b64 + '=' * (4 - len(payload_b64) % 4)
+            payload_b64_padded = payload_b64 + "=" * (4 - len(payload_b64) % 4)
             payload_bytes = base64.urlsafe_b64decode(payload_b64_padded)
             payload = json.loads(payload_bytes.decode())
 
@@ -274,9 +272,13 @@ class TokenManager:
 
         return self._encode_token(claims)
 
-    def generate_session_token(self, user_id: str, mfa_verified: bool = False,
-                              ip_address: Optional[str] = None,
-                              user_agent: Optional[str] = None) -> Tuple[str, str]:
+    def generate_session_token(
+        self,
+        user_id: str,
+        mfa_verified: bool = False,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+    ) -> Tuple[str, str]:
         """
         Generate session token and create session.
 
@@ -340,7 +342,9 @@ class TokenManager:
 
         # Check type if specified
         if expected_type and claims.type != expected_type:
-            raise ValueError(f"Invalid token type: expected {expected_type.value}, got {claims.type.value}")
+            raise ValueError(
+                f"Invalid token type: expected {expected_type.value}, got {claims.type.value}"
+            )
 
         # Check revocation
         if claims.jti and claims.jti in self._revoked_tokens:
@@ -448,7 +452,8 @@ class TokenManager:
             List of active sessions
         """
         return [
-            session for session in self._sessions.values()
+            session
+            for session in self._sessions.values()
             if session.user_id == user_id and session.is_active()
         ]
 

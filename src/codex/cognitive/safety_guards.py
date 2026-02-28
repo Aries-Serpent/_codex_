@@ -32,6 +32,7 @@ from .objective_adjuster import (
 
 class AuditEventType(Enum):
     """Types of audit events."""
+
     ADJUSTMENT_PROPOSED = "adjustment_proposed"
     ADJUSTMENT_APPROVED = "adjustment_approved"
     ADJUSTMENT_REJECTED = "adjustment_rejected"
@@ -48,6 +49,7 @@ class AuditEventType(Enum):
 
 class OverrideType(Enum):
     """Types of human overrides."""
+
     PAUSE_AUTOMATION = "pause_automation"
     RESUME_AUTOMATION = "resume_automation"
     FORCE_ADJUSTMENT = "force_adjustment"
@@ -59,6 +61,7 @@ class OverrideType(Enum):
 @dataclass
 class AuditEvent:
     """An audit event for tracking changes."""
+
     id: str
     event_type: AuditEventType
     timestamp: datetime
@@ -74,7 +77,7 @@ class AuditEvent:
             "timestamp": self.timestamp.isoformat(),
             "actor": self.actor,
             "details": self.details,
-            "context": self.context
+            "context": self.context,
         }
 
     @classmethod
@@ -86,13 +89,14 @@ class AuditEvent:
             timestamp=datetime.fromisoformat(data["timestamp"]),
             actor=data["actor"],
             details=data["details"],
-            context=data.get("context", {})
+            context=data.get("context", {}),
         )
 
 
 @dataclass
 class RollbackRecord:
     """Record of a rollback action."""
+
     id: str
     original_adjustment_id: str
     original_state: dict
@@ -108,13 +112,14 @@ class RollbackRecord:
             "original_state": self.original_state,
             "rolled_back_at": self.rolled_back_at.isoformat(),
             "rolled_back_by": self.rolled_back_by,
-            "reason": self.reason
+            "reason": self.reason,
         }
 
 
 @dataclass
 class RateLimit:
     """Rate limit configuration."""
+
     action_type: str
     max_count: int
     window_hours: int
@@ -136,7 +141,10 @@ class RateLimit:
 
         # Check limit
         if self.current_count >= self.max_count:
-            return False, f"Rate limit exceeded: {self.action_type} ({self.current_count}/{self.max_count} in {self.window_hours}h)"
+            return (
+                False,
+                f"Rate limit exceeded: {self.action_type} ({self.current_count}/{self.max_count} in {self.window_hours}h)",  # noqa: E501
+            )
 
         self.current_count += 1
         return True, f"Allowed ({self.current_count}/{self.max_count})"
@@ -150,6 +158,7 @@ class RateLimit:
 @dataclass
 class ScopeRestriction:
     """Restriction on what autonomous actions can affect."""
+
     name: str
     description: str
     blocked_metric_types: list[str] = field(default_factory=list)
@@ -212,17 +221,14 @@ class AuditLog:
         """Save events to file."""
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.log_path, "w") as f:
-            json.dump({
-                "events": self._events,
-                "counter": self._event_counter
-            }, f, indent=2)
+            json.dump({"events": self._events, "counter": self._event_counter}, f, indent=2)
 
     def log_event(
         self,
         event_type: AuditEventType,
         actor: str,
         details: dict,
-        context: dict | None = None
+        context: dict | None = None,
     ) -> AuditEvent:
         """Log an audit event."""
         self._event_counter += 1
@@ -232,7 +238,7 @@ class AuditLog:
             timestamp=datetime.now(timezone.utc),
             actor=actor,
             details=details,
-            context=context or {}
+            context=context or {},
         )
         self._events.append(event.to_dict())
 
@@ -247,7 +253,7 @@ class AuditLog:
         self,
         event_type: AuditEventType | None = None,
         since: datetime | None = None,
-        limit: int = 100
+        limit: int = 100,
     ) -> list[AuditEvent]:
         """Get audit events with optional filtering."""
         events = [AuditEvent.from_dict(e) for e in self._events]
@@ -284,13 +290,12 @@ class SafetyGuard:
         self,
         audit_log: AuditLog | None = None,
         scope: ScopeRestriction | None = None,
-        rate_limits: list[RateLimit] | None = None
+        rate_limits: list[RateLimit] | None = None,
     ):
         """Initialize the safety guard."""
         self.audit_log = audit_log or AuditLog()
         self.scope = scope or ScopeRestriction(
-            name="default",
-            description="Default scope restrictions"
+            name="default", description="Default scope restrictions"
         )
         self.rate_limits = {r.action_type: r for r in (rate_limits or self.DEFAULT_RATE_LIMITS)}
         self._paused = False
@@ -308,7 +313,7 @@ class SafetyGuard:
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
-            {"override_type": OverrideType.PAUSE_AUTOMATION.value, "reason": reason}
+            {"override_type": OverrideType.PAUSE_AUTOMATION.value, "reason": reason},
         )
 
     def resume_automation(self, by: str) -> None:
@@ -317,7 +322,7 @@ class SafetyGuard:
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
-            {"override_type": OverrideType.RESUME_AUTOMATION.value}
+            {"override_type": OverrideType.RESUME_AUTOMATION.value},
         )
 
     def block_rule(self, rule_id: str, by: str, reason: str = "") -> None:
@@ -328,7 +333,11 @@ class SafetyGuard:
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
-            {"override_type": OverrideType.BLOCK_RULE.value, "rule_id": rule_id, "reason": reason}
+            {
+                "override_type": OverrideType.BLOCK_RULE.value,
+                "rule_id": rule_id,
+                "reason": reason,
+            },
         )
 
     def unblock_rule(self, rule_id: str, by: str) -> None:
@@ -338,7 +347,7 @@ class SafetyGuard:
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
-            {"override_type": OverrideType.UNBLOCK_RULE.value, "rule_id": rule_id}
+            {"override_type": OverrideType.UNBLOCK_RULE.value, "rule_id": rule_id},
         )
 
     def check_adjustment(self, adjustment: Adjustment) -> tuple[bool, str]:
@@ -356,7 +365,7 @@ class SafetyGuard:
             self.audit_log.log_event(
                 AuditEventType.SCOPE_VIOLATION,
                 "system",
-                {"adjustment_id": adjustment.id, "reason": scope_reason}
+                {"adjustment_id": adjustment.id, "reason": scope_reason},
             )
             return False, scope_reason
 
@@ -369,7 +378,11 @@ class SafetyGuard:
                 self.audit_log.log_event(
                     AuditEventType.RATE_LIMIT_HIT,
                     "system",
-                    {"adjustment_id": adjustment.id, "rate_limit": rate_limit_type, "reason": limit_reason}
+                    {
+                        "adjustment_id": adjustment.id,
+                        "rate_limit": rate_limit_type,
+                        "reason": limit_reason,
+                    },
                 )
                 return False, limit_reason
 
@@ -379,16 +392,15 @@ class SafetyGuard:
         """Get the rate limit type for an adjustment."""
         if adjustment.type == AdjustmentType.ADD_OBJECTIVE:
             return "objective_creation"
-        elif adjustment.type in (AdjustmentType.PRIORITY_INCREASE, AdjustmentType.PRIORITY_DECREASE):
+        elif adjustment.type in (
+            AdjustmentType.PRIORITY_INCREASE,
+            AdjustmentType.PRIORITY_DECREASE,
+        ):
             return "priority_change"
         return None
 
     def record_rollback(
-        self,
-        adjustment_id: str,
-        original_state: dict,
-        rolled_back_by: str,
-        reason: str
+        self, adjustment_id: str, original_state: dict, rolled_back_by: str, reason: str
     ) -> RollbackRecord:
         """Record a rollback action."""
         self._rollback_counter += 1
@@ -398,14 +410,18 @@ class SafetyGuard:
             original_state=original_state,
             rolled_back_at=datetime.now(timezone.utc),
             rolled_back_by=rolled_back_by,
-            reason=reason
+            reason=reason,
         )
         self._rollback_history.append(record)
 
         self.audit_log.log_event(
             AuditEventType.ADJUSTMENT_ROLLED_BACK,
             rolled_back_by,
-            {"rollback_id": record.id, "adjustment_id": adjustment_id, "reason": reason}
+            {
+                "rollback_id": record.id,
+                "adjustment_id": adjustment_id,
+                "reason": reason,
+            },
         )
 
         return record
@@ -421,7 +437,7 @@ class SafetyGuard:
         self.audit_log.log_event(
             AuditEventType.OVERRIDE_APPLIED,
             by,
-            {"override_type": OverrideType.RESET_RATE_LIMITS.value}
+            {"override_type": OverrideType.RESET_RATE_LIMITS.value},
         )
 
     def get_safety_status(self) -> dict[str, Any]:
@@ -434,13 +450,10 @@ class SafetyGuard:
                 for k, v in self.rate_limits.items()
             },
             "recent_events": len(self.audit_log.get_events(limit=100)),
-            "rollback_count": len(self._rollback_history)
+            "rollback_count": len(self._rollback_history),
         }
 
-    def generate_governance_report(
-        self,
-        period_days: int = 7
-    ) -> dict[str, Any]:
+    def generate_governance_report(self, period_days: int = 7) -> dict[str, Any]:
         """Generate a governance report for the specified period."""
         since = datetime.now(timezone.utc) - timedelta(days=period_days)
         events = self.audit_log.get_events(since=since, limit=1000)
@@ -465,7 +478,7 @@ class SafetyGuard:
             "scope_violations": by_type.get("scope_violation", 0),
             "rollbacks": by_type.get("adjustment_rolled_back", 0),
             "overrides": by_type.get("override_applied", 0),
-            "safety_status": self.get_safety_status()
+            "safety_status": self.get_safety_status(),
         }
 
 

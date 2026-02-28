@@ -115,6 +115,7 @@ _COMPLETE_MARKERS: re.Pattern = re.compile(
 # Dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class PlansetRecord:
     """Metadata about a discovered planset file."""
@@ -203,6 +204,7 @@ class OrchestrationState:
 # Orchestrator
 # ---------------------------------------------------------------------------
 
+
 class PlansetOrchestrator:
     """
     Surveys all unfinished plansets, maps them to ``ImprovementArea`` values,
@@ -273,10 +275,15 @@ class PlansetOrchestrator:
             except OSError:
                 pass
 
-            records.append(PlansetRecord(
-                path=p, stem=stem, area=area,
-                is_complete=is_complete, status_line=status_line,
-            ))
+            records.append(
+                PlansetRecord(
+                    path=p,
+                    stem=stem,
+                    area=area,
+                    is_complete=is_complete,
+                    status_line=status_line,
+                )
+            )
 
         return sorted(records, key=lambda r: (str(r.area or ""), r.stem))
 
@@ -390,9 +397,7 @@ class PlansetOrchestrator:
             self._state.completed_steps[key].append(step_id)
 
         # Each completed step ages the remaining ones by 1 session
-        self._state.decoherence_sessions[key] = (
-            self._state.decoherence_sessions.get(key, 0) + 1
-        )
+        self._state.decoherence_sessions[key] = self._state.decoherence_sessions.get(key, 0) + 1
         self._state.last_updated = datetime.now(timezone.utc).isoformat()
         self._save_state()
 

@@ -31,7 +31,7 @@ def get_hf_revision(env_var: str = "HF_REVISION") -> Optional[str]:
     if not rev:
         _LOG.warning(
             "No HF revision found in environment (%s/HF_MODEL_REVISION/CODEX_HF_REVISION). "
-            "Bandit B615 recommends pinning models by commit. Set HF_REVISION to a commit SHA in CI.",
+            "Bandit B615 recommends pinning models by commit. Set HF_REVISION to a commit SHA in CI.",  # noqa: E501
             env_var,
         )
     return rev

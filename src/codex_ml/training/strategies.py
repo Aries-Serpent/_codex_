@@ -29,6 +29,7 @@ from codex_ml.data.jsonl_loader import load_jsonl
 
 logger = logging.getLogger(__name__)
 
+
 @runtime_checkable
 class TrainingCallback(Protocol):
     def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None: ...

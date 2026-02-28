@@ -93,7 +93,8 @@ def migrate(
 
         else:
             typer.echo(
-                f"Error: Migration from {from_version} to {to_version} not supported", err=True
+                f"Error: Migration from {from_version} to {to_version} not supported",
+                err=True,
             )
             raise typer.Exit(1)
 

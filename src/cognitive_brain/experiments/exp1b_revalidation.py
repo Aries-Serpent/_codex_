@@ -140,7 +140,7 @@ def run_exp1b_revalidation(
 
     # Timed pass with aggregate timing for stable measurement
     # Use best-of-3 passes to minimize OS scheduling noise
-    best_quantum_ns = float('inf')
+    best_quantum_ns = float("inf")
     for _pass in range(3):
         quantum_start = time.perf_counter_ns()
         for audit, ground_truth, complexity in scenario_data:
@@ -153,19 +153,19 @@ def run_exp1b_revalidation(
                     correct_predictions += 1
                 else:
                     # Sprint 3: Log mismatch for analysis
-                    pattern = audit.audit_id.split('-')[1] if '-' in audit.audit_id else 'UNKNOWN'
+                    pattern = audit.audit_id.split("-")[1] if "-" in audit.audit_id else "UNKNOWN"
                     mismatch = {
-                        'audit_id': audit.audit_id,
-                        'pattern': pattern,
-                        'expected': ground_truth.value,
-                        'predicted': assessment.decision.value,
-                        'score': audit.score,
-                        'risk': audit.risk_level,
-                        'cost': audit.remediation_cost,
-                        'impact': audit.business_impact,
-                        'coherence': assessment.coherence,
-                        'confidence': assessment.confidence,
-                        'complexity': complexity.ambiguity_score
+                        "audit_id": audit.audit_id,
+                        "pattern": pattern,
+                        "expected": ground_truth.value,
+                        "predicted": assessment.decision.value,
+                        "score": audit.score,
+                        "risk": audit.risk_level,
+                        "cost": audit.remediation_cost,
+                        "impact": audit.business_impact,
+                        "coherence": assessment.coherence,
+                        "confidence": assessment.confidence,
+                        "complexity": complexity.ambiguity_score,
                     }
                     mismatches.append(mismatch)
 
@@ -180,7 +180,7 @@ def run_exp1b_revalidation(
     # Sprint 1 Optimization: Flush any batched metrics
     # CoherenceMonitor may have batched metrics for performance
     total_time_ms = best_quantum_ns / 1_000_000
-    if hasattr(monitor, 'flush_batch'):
+    if hasattr(monitor, "flush_batch"):
         monitor.flush_batch()
         print("  - Flushed batched metrics to database")
 
@@ -190,7 +190,7 @@ def run_exp1b_revalidation(
     for audit, _, _ in scenario_data:
         _ = _classical_assessment(audit)
     # Best-of-3 timed passes with nanosecond precision
-    best_classical_ns = float('inf')
+    best_classical_ns = float("inf")
     for _pass in range(3):
         classical_start = time.perf_counter_ns()
         for audit, _, _ in scenario_data:
@@ -207,8 +207,7 @@ def run_exp1b_revalidation(
 
     # Calculate classical error rate for quality-adjusted k₁
     classical_correct = sum(
-        1 for audit, gt, _ in scenario_data
-        if _classical_assessment(audit) == gt
+        1 for audit, gt, _ in scenario_data if _classical_assessment(audit) == gt
     )
     classical_error_rate = 1.0 - (classical_correct / len(scenario_data))
 
@@ -229,17 +228,15 @@ def run_exp1b_revalidation(
     print("\n" + "=" * 60)
     print("EXP-1B Revalidation Results (Phase 8.0)")
     print("=" * 60)
-    print(
-        f"k₁ Process Factor:        {k1:.4f} {'✅' if k1 <= 0.35 else '❌'} (target ≤ 0.35)"
-    )
+    print(f"k₁ Process Factor:        {k1:.4f} {'✅' if k1 <= 0.35 else '❌'} (target ≤ 0.35)")
     if use_verified_labels:
         note = "verified-mode (structural: filter removes high-ambiguity patterns)"
         print(f"k₁ (verified-mode):       {k1_verified:.4f}  [{note}]")
     print(
-        f"Accuracy:                 {accuracy:.1%} {'✅' if accuracy >= 0.84 else '❌'} (target ≥ 84%)"
+        f"Accuracy:                 {accuracy:.1%} {'✅' if accuracy >= 0.84 else '❌'} (target ≥ 84%)"  # noqa: E501
     )
     print(
-        f"Average Coherence:        {avg_coherence:.3f} {'✅' if avg_coherence >= 0.650 else '❌'} (target ≥ 0.650)"
+        f"Average Coherence:        {avg_coherence:.3f} {'✅' if avg_coherence >= 0.650 else '❌'} (target ≥ 0.650)"  # noqa: E501
     )
     print(f"Average Time:             {avg_time_ms:.2f}ms")
     print(f"Error Rate:               {error_rate:.1%}")
@@ -264,19 +261,20 @@ def run_exp1b_revalidation(
             print(f"  Pattern {pattern}: {len(failures)} failures")
 
             # Show common characteristics
-            avg_score = sum(m['score'] for m in failures) / len(failures)
-            avg_cost = sum(m['cost'] for m in failures) / len(failures)
-            avg_coherence = sum(m['coherence'] for m in failures) / len(failures)
+            avg_score = sum(m["score"] for m in failures) / len(failures)
+            avg_cost = sum(m["cost"] for m in failures) / len(failures)
+            avg_coherence = sum(m["coherence"] for m in failures) / len(failures)
 
-            print(f"    Avg Score: {avg_score:.2f}, Avg Cost: {avg_cost:.0f}, Avg Coherence: {avg_coherence:.3f}")
+            print(
+                f"    Avg Score: {avg_score:.2f}, Avg Cost: {avg_cost:.0f}, Avg Coherence: {avg_coherence:.3f}"  # noqa: E501
+            )
 
             # Show a few examples
             for i, m in enumerate(failures[:3]):
-                print(f"    Example {i+1}: {m['audit_id']}")
+                print(f"    Example {i + 1}: {m['audit_id']}")
                 print(f"      Expected: {m['expected']}, Got: {m['predicted']}")
                 print(f"      Score: {m['score']:.2f}, Risk: {m['risk']}, Cost: {m['cost']:.0f}")
         print("=" * 60)
-
 
     return EXP1BResults(
         k1=k1,
@@ -310,22 +308,14 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
     cost_normalized = min(audit.remediation_cost / 20000, 1.0)
 
     # Pass 1: Evaluate each decision path with multi-factor scoring
-    approve_score = (
-        audit.score * 0.50
-        + (1.0 - risk_factor) * 0.30
-        + audit.business_impact * 0.20
-    )
+    approve_score = audit.score * 0.50 + (1.0 - risk_factor) * 0.30 + audit.business_impact * 0.20
     monitor_score = (
         audit.score * 0.35
         + (1.0 - risk_factor) * 0.25
         + (1.0 - cost_normalized) * 0.20
         + audit.business_impact * 0.20
     )
-    reject_score = (
-        (1.0 - audit.score) * 0.40
-        + risk_factor * 0.35
-        + cost_normalized * 0.25
-    )
+    reject_score = (1.0 - audit.score) * 0.40 + risk_factor * 0.35 + cost_normalized * 0.25
     conditional_score = (
         audit.score * 0.30
         + (1.0 - risk_factor) * 0.20
@@ -354,14 +344,16 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
         normalized = scores
 
     # Pass 4: PII and violation checks (if available)
-    if hasattr(audit, 'pii_indicators') and audit.pii_indicators > 0:
+    if hasattr(audit, "pii_indicators") and audit.pii_indicators > 0:
         if audit.pii_indicators >= 3 or audit.risk_level == "high":
             normalized[ComplianceDecision.REJECT] += 0.2
         else:
             normalized[ComplianceDecision.CONDITIONAL_APPROVAL] += 0.1
-    if hasattr(audit, 'violation_count') and audit.violation_count >= 5:
-        severity = (1.0 - audit.score) * audit.violation_count * (
-            1.0 if audit.risk_level == "high" else 0.5
+    if hasattr(audit, "violation_count") and audit.violation_count >= 5:
+        severity = (
+            (1.0 - audit.score)
+            * audit.violation_count
+            * (1.0 if audit.risk_level == "high" else 0.5)
         )
         if severity > 4.0:
             normalized[ComplianceDecision.REJECT] += 0.15
@@ -581,9 +573,7 @@ if __name__ == "__main__":
     )
 
     # Validate success criteria
-    success = (
-        results.k1 <= 0.35 and results.accuracy >= 0.84 and results.coherence >= 0.650
-    )
+    success = results.k1 <= 0.35 and results.accuracy >= 0.84 and results.coherence >= 0.650
 
     if success:
         print("\n✅ Phase 8.0 SUCCESS: All criteria met!")

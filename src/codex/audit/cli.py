@@ -27,7 +27,9 @@ def audit_main(check_dependencies: bool, check_vulns: bool, format: str, output:
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "pip_audit", "--format", "json"],
-            capture_output=True, text=True, timeout=60,
+            capture_output=True,
+            text=True,
+            timeout=60,
         )
         if proc.returncode == 0 and proc.stdout:
             pip_audit_result = json.loads(proc.stdout)

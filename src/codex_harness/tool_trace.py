@@ -128,7 +128,10 @@ class ToolTraceLogger:
         self.record_invocation(invocation)
         if check and completed.returncode != 0:
             raise subprocess.CalledProcessError(
-                completed.returncode, argv, output=completed.stdout, stderr=completed.stderr
+                completed.returncode,
+                argv,
+                output=completed.stdout,
+                stderr=completed.stderr,
             )
         return invocation
 

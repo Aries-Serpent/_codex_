@@ -127,7 +127,7 @@ def read_text_safe_fallback(
                 path,
                 encoding=encoding,
                 max_bytes=max_bytes,
-                errors="strict"  # Try strict first
+                errors="strict",  # Try strict first
             )
             logger.info(f"Successfully decoded {path} with encoding {encoding}")
             return content, encoding
@@ -139,8 +139,7 @@ def read_text_safe_fallback(
 
     # All strict encodings failed, try utf-8 with replace
     logger.warning(
-        f"All strict encodings failed for {path}. "
-        f"Falling back to utf-8 with errors='replace'"
+        f"All strict encodings failed for {path}. Falling back to utf-8 with errors='replace'"
     )
     content = read_text_safe(path, encoding="utf-8", max_bytes=max_bytes, errors="replace")
     return content, "utf-8 (with replacements)"

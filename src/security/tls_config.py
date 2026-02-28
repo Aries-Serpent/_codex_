@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class TLSConfigError(Exception):
     """Raised when TLS configuration is invalid."""
+
     pass
 
 
@@ -72,9 +73,7 @@ def create_server_context(
     # Configure client authentication if required (mTLS)
     if require_client_cert:
         if ca_path is None:
-            raise TLSConfigError(
-                "CA certificate required for client authentication"
-            )
+            raise TLSConfigError("CA certificate required for client authentication")
 
         ca_path = Path(ca_path)
         if not ca_path.exists():
@@ -95,9 +94,7 @@ def create_server_context(
     # TLS 1.3 ciphersuites are secure by default (AES-GCM, ChaCha20-Poly1305)
     # No need to explicitly configure them as they're built into TLS 1.3
 
-    logger.info(
-        f"Created server TLS context (client cert required: {require_client_cert})"
-    )
+    logger.info(f"Created server TLS context (client cert required: {require_client_cert})")
     return context
 
 

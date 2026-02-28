@@ -4,6 +4,7 @@ SQLite storage for AST analysis results.
 Provides persistent storage for analysis results, enabling
 incremental analysis and historical comparison.
 """
+
 import json
 import sqlite3
 from contextlib import contextmanager
@@ -141,9 +142,7 @@ class ASTStorage:
                 "CREATE INDEX IF NOT EXISTS idx_findings_analysis ON findings(analysis_id)"
             )
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_findings_type ON findings(type)")
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_findings_severity ON findings(severity)"
-            )
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_findings_severity ON findings(severity)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_nodes_analysis ON nodes(analysis_id)")
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_metrics_analysis ON metrics(analysis_id)"
@@ -179,7 +178,7 @@ class ASTStorage:
                 INSERT OR REPLACE INTO analyses
                 (analysis_id, file_path, timestamp, language, node_count, finding_count, metrics, status)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+            """,  # noqa: E501
                 (
                     analysis_id,
                     file_path,
@@ -327,9 +326,7 @@ class ASTStorage:
         """
         with self._get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "SELECT * FROM analyses ORDER BY timestamp DESC LIMIT ?", (limit,)
-            )
+            cursor.execute("SELECT * FROM analyses ORDER BY timestamp DESC LIMIT ?", (limit,))
             rows = cursor.fetchall()
 
             return [
@@ -392,20 +389,20 @@ class ASTStorage:
             stats["total_findings"] = cursor.fetchone()["count"]
 
             # Findings by severity
-            cursor.execute(
-                "SELECT severity, COUNT(*) as count FROM findings GROUP BY severity"
-            )
-            stats["findings_by_severity"] = {row["severity"]: row["count"] for row in cursor.fetchall()}
+            cursor.execute("SELECT severity, COUNT(*) as count FROM findings GROUP BY severity")
+            stats["findings_by_severity"] = {
+                row["severity"]: row["count"] for row in cursor.fetchall()
+            }
 
             # Findings by type
             cursor.execute(
-                "SELECT type, COUNT(*) as count FROM findings GROUP BY type ORDER BY count DESC LIMIT 10"
+                "SELECT type, COUNT(*) as count FROM findings GROUP BY type ORDER BY count DESC LIMIT 10"  # noqa: E501
             )
             stats["top_finding_types"] = {row["type"]: row["count"] for row in cursor.fetchall()}
 
             # Recent activity
             cursor.execute(
-                "SELECT date(timestamp) as date, COUNT(*) as count FROM analyses GROUP BY date(timestamp) ORDER BY date DESC LIMIT 7"
+                "SELECT date(timestamp) as date, COUNT(*) as count FROM analyses GROUP BY date(timestamp) ORDER BY date DESC LIMIT 7"  # noqa: E501
             )
             stats["recent_activity"] = {row["date"]: row["count"] for row in cursor.fetchall()}
 
@@ -457,9 +454,7 @@ class ASTStorage:
                     (analysis_id, metric_name),
                 )
             else:
-                cursor.execute(
-                    "SELECT * FROM metrics WHERE analysis_id = ?", (analysis_id,)
-                )
+                cursor.execute("SELECT * FROM metrics WHERE analysis_id = ?", (analysis_id,))
 
             return [
                 {

@@ -77,7 +77,9 @@ class CodexModel:
         return "cpu"
 
     @staticmethod
-    def _normalise_lora(options: LoraOptions | Mapping[str, Any] | None) -> LoraOptions | None:
+    def _normalise_lora(
+        options: LoraOptions | Mapping[str, Any] | None,
+    ) -> LoraOptions | None:
         if options is None:
             return None
         if isinstance(options, LoraOptions):
@@ -167,7 +169,12 @@ class CodexModel:
         return self.model
 
     def generate(
-        self, prompt: str, *, max_tokens: int = 20, temperature: float = 0.8, **kwargs: Any
+        self,
+        prompt: str,
+        *,
+        max_tokens: int = 20,
+        temperature: float = 0.8,
+        **kwargs: Any,
     ) -> str:
         """Generate text from ``prompt`` using the wrapped model."""
 

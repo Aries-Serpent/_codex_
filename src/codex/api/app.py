@@ -49,7 +49,12 @@ app = FastAPI(title="codex", version="0.2.0")
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")
 _DEFAULT_MODEL_NAME = os.environ.get("CODEX_MODEL_NAME")
 _DEFAULT_TOKENIZER_FILE = os.environ.get("CODEX_TOKENIZER_FILE")
-_ALLOW_REMOTE = os.environ.get("CODEX_ALLOW_REMOTE", "0").lower() in {"1", "true", "on", "yes"}
+_ALLOW_REMOTE = os.environ.get("CODEX_ALLOW_REMOTE", "0").lower() in {
+    "1",
+    "true",
+    "on",
+    "yes",
+}
 _MAX_NEW_TOKENS = int(os.environ.get("CODEX_MAX_NEW_TOKENS", "32"))
 _RUNTIME_MODEL: AutoModelForCausalLM | None = None
 _RUNTIME_TOKENIZER: PreTrainedTokenizerBase | None = None

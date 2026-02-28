@@ -81,7 +81,9 @@ def _coerce_sequence(value: Any) -> Optional[list[Any]]:
 
 
 def _sanitize_prompt_list(items: list[Any]) -> tuple[list[Any], bool]:
-    if SafetyConfig is None or sanitize_prompt is None:  # pragma: no cover - optional dependency path
+    if (
+        SafetyConfig is None or sanitize_prompt is None
+    ):  # pragma: no cover - optional dependency path
         return list(items), False
 
     cfg = SafetyConfig()
@@ -170,7 +172,9 @@ def _resolve_checkpoint_dir(value: Optional[Union[str, Path]]) -> Optional[Path]
     return path
 
 
-def _load_latest_checkpoint_dir(checkpoint_dir: Optional[Union[str, Path]]) -> Optional[Path]:
+def _load_latest_checkpoint_dir(
+    checkpoint_dir: Optional[Union[str, Path]],
+) -> Optional[Path]:
     root = _resolve_checkpoint_dir(checkpoint_dir)
     if root is None:
         return None
@@ -201,7 +205,8 @@ def _load_latest_checkpoint_dir(checkpoint_dir: Optional[Union[str, Path]]) -> O
         return epoch_dirs[-1]
 
     fallback_dirs = sorted(
-        (item for item in root.iterdir() if item.is_dir()), key=lambda p: p.stat().st_mtime
+        (item for item in root.iterdir() if item.is_dir()),
+        key=lambda p: p.stat().st_mtime,
     )
     if fallback_dirs:
         return fallback_dirs[-1]
@@ -230,7 +235,10 @@ def evaluate(
     if model_name and get_model is not None and _HAS_TORCH:
         try:
             model = get_model(
-                name=model_name, device=device or "cpu", dtype=None, local_files_only=True
+                name=model_name,
+                device=device or "cpu",
+                dtype=None,
+                local_files_only=True,
             )
         except Exception as exc:  # pragma: no cover - defensive
             return {"error": f"Failed to load model: {exc}"}
@@ -334,9 +342,7 @@ def _run_dataset_evaluation(
 
     # Write summary.json
     summary = {"metrics": metric_results, "num_samples": len(records), "status": "ok"}
-    (out_path / "summary.json").write_text(
-        _json.dumps(summary, indent=2), encoding="utf-8"
-    )
+    (out_path / "summary.json").write_text(_json.dumps(summary, indent=2), encoding="utf-8")
 
     return summary
 
@@ -364,8 +370,12 @@ if _HAS_HYDRA:
             # Run dataset evaluation pipeline when dataset.path is provided
             dataset_cfg = cfg_map.get("dataset", {}) if isinstance(cfg_map, dict) else {}
             dataset_path = dataset_cfg.get("path") if isinstance(dataset_cfg, dict) else None
-            output_dir = cfg_map.get("output_dir", "outputs") if isinstance(cfg_map, dict) else "outputs"
-            metric_names = cfg_map.get("metrics", ["accuracy"]) if isinstance(cfg_map, dict) else ["accuracy"]
+            output_dir = (
+                cfg_map.get("output_dir", "outputs") if isinstance(cfg_map, dict) else "outputs"
+            )
+            metric_names = (
+                cfg_map.get("metrics", ["accuracy"]) if isinstance(cfg_map, dict) else ["accuracy"]
+            )
             limit = cfg_map.get("limit") if isinstance(cfg_map, dict) else None
             tokenizer_cfg = cfg_map.get("tokenizer", {}) if isinstance(cfg_map, dict) else {}
 
@@ -378,7 +388,9 @@ if _HAS_HYDRA:
                     tokenizer_cfg=tokenizer_cfg if isinstance(tokenizer_cfg, dict) else {},
                 )
             else:
-                result = evaluate(checkpoint_dir=checkpoint_dir, model_name=model_name, device=device)
+                result = evaluate(
+                    checkpoint_dir=checkpoint_dir, model_name=model_name, device=device
+                )
 
             print(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"

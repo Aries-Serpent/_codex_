@@ -257,7 +257,8 @@ class BatchConfig:
         return cls(
             concurrent=max(1, _coerce_int(payload.get("concurrent"), default=cls.concurrent)),
             progress_interval=max(
-                1, _coerce_int(payload.get("progress_interval"), default=cls.progress_interval)
+                1,
+                _coerce_int(payload.get("progress_interval"), default=cls.progress_interval),
             ),
             results_path=Path(payload["results_path"]) if payload.get("results_path") else None,
         )

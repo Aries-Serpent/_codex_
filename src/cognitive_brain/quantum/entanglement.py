@@ -165,9 +165,7 @@ class EntanglementManager:
             >>> pair_id = manager.create_entanglement("agent1", "agent2", 0.9)
         """
         if not 0 <= correlation_strength <= 1:
-            raise ValueError(
-                f"correlation_strength must be in [0, 1], got {correlation_strength}"
-            )
+            raise ValueError(f"correlation_strength must be in [0, 1], got {correlation_strength}")
 
         # Generate deterministic pair ID
         pair_key = f"{agent1_id}:{agent2_id}"
@@ -235,7 +233,9 @@ class EntanglementManager:
                     pair.observed_states.append((state, state))
                 else:
                     # Lower correlation - mix of same/different
-                    other_state = state if i % 3 != 0 else ("reject" if state == "approve" else "approve")
+                    other_state = (
+                        state if i % 3 != 0 else ("reject" if state == "approve" else "approve")
+                    )
                     pair.observed_states.append((state, other_state))
 
         # Convert states to numeric for correlation
@@ -252,12 +252,16 @@ class EntanglementManager:
         if n > 2:
             t_stat = correlation_coef * math.sqrt((n - 2) / (1 - correlation_coef**2 + 1e-10))
             # Rough p-value approximation
-            p_value = max(0.001, 2 * (1 - abs(t_stat) / (n ** 0.5)))
+            p_value = max(0.001, 2 * (1 - abs(t_stat) / (n**0.5)))
         else:
             p_value = 1.0  # Not enough data for significance
 
         # Calculate mutual information (simplified)
-        mutual_info = -correlation_coef * math.log(abs(correlation_coef) + 1e-10) if correlation_coef != 0 else 0.0
+        mutual_info = (
+            -correlation_coef * math.log(abs(correlation_coef) + 1e-10)
+            if correlation_coef != 0
+            else 0.0
+        )
 
         # Record measurement
         pair.last_measurement = time.time()
@@ -311,9 +315,7 @@ class EntanglementManager:
 
         # Find most common agent2 state when agent1 had this state
         matching_agent2_states = [
-            state2
-            for state1, state2 in pair.observed_states
-            if state1 == agent1_measurement
+            state2 for state1, state2 in pair.observed_states if state1 == agent1_measurement
         ]
 
         if not matching_agent2_states:
@@ -360,9 +362,7 @@ class EntanglementManager:
 
         return self.entangled_pairs[pair_id].correlation_strength
 
-    def update_correlation(
-        self, pair_id: str, agent1_state: Any, agent2_state: Any
-    ) -> None:
+    def update_correlation(self, pair_id: str, agent1_state: Any, agent2_state: Any) -> None:
         """
         Update correlation tracking with new observations.
 
@@ -547,9 +547,7 @@ class EntanglementManager:
             return state.lower() in ("approve", "accept", "pass", "true", "1", "yes")
         return bool(state)
 
-    def _mutual_information(
-        self, states_a: Tuple[Any, ...], states_b: Tuple[Any, ...]
-    ) -> float:
+    def _mutual_information(self, states_a: Tuple[Any, ...], states_b: Tuple[Any, ...]) -> float:
         """Compute mutual information in bits."""
         if len(states_a) != len(states_b) or len(states_a) < 2:
             return 0.0

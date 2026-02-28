@@ -54,9 +54,22 @@ def main(argv=None) -> None:
     if args.subcmd == "metadata":
         p = Path(args.path)
         suffix = p.suffix.lower()
-        kind_map = {".parquet": "parquet", ".arrow": "arrow", ".h5": "hdf5", ".hdf5": "hdf5"}
+        kind_map = {
+            ".parquet": "parquet",
+            ".arrow": "arrow",
+            ".h5": "hdf5",
+            ".hdf5": "hdf5",
+        }
         kind = kind_map.get(suffix, "generic")
-        print(json.dumps({"path": str(p), "kind": kind, "size": p.stat().st_size if p.exists() else 0}))
+        print(
+            json.dumps(
+                {
+                    "path": str(p),
+                    "kind": kind,
+                    "size": p.stat().st_size if p.exists() else 0,
+                }
+            )
+        )
         return
 
     # legacy stream / flat --paths mode

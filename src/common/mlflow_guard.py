@@ -40,6 +40,7 @@ from .provenance import _read_dvc_lock, collect_dvc_stage  # noqa: E402
 def _config_fingerprint(cfg: DictConfig) -> str:
     """Stable SHA256 of resolved config YAML (aligned with provenance)."""
     import yaml
+
     try:
         # OmegaConf.to_yaml doesn't exist in older versions, use to_container
         container = OmegaConf.to_container(cfg, resolve=True)

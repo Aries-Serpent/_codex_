@@ -206,7 +206,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     include_models = args.format == "json" or args.section in {"models", "all"}
     include_tokenizers = args.format == "json" or args.section in {"tokenizers", "all"}
     include_datasets = args.format == "json" or args.section in {"datasets", "all"}
-    include_programmatic = args.format == "json" or args.section in {"programmatic", "all"}
+    include_programmatic = args.format == "json" or args.section in {
+        "programmatic",
+        "all",
+    }
 
     models = _list_models_safe() if include_models else []
     tokenizers = _list_tokenizers_safe() if include_tokenizers else []

@@ -18,6 +18,7 @@ try:
         Statement,
     )
     from sqlparse.tokens import Keyword  # type: ignore[import-untyped]
+
     _SQLPARSE_AVAILABLE = True
 except ImportError:  # pragma: no cover
     sqlparse = None  # type: ignore[assignment]
@@ -47,8 +48,7 @@ class SQLASTAdapter(BaseASTAdapter):
         """Initialize SQL adapter."""
         if not _SQLPARSE_AVAILABLE:  # pragma: no cover
             raise ImportError(
-                "sqlparse is required for SQLASTAdapter. "
-                "Install it with: pip install sqlparse>=0.4"
+                "sqlparse is required for SQLASTAdapter. Install it with: pip install sqlparse>=0.4"
             )
         super().__init__()
         self._tables: List[str] = []
@@ -94,10 +94,7 @@ class SQLASTAdapter(BaseASTAdapter):
             column_start=0,
             column_end=0,
             children=[],
-            metadata={
-                "statement_count": len(parsed),
-                "source_length": len(source)
-            }
+            metadata={"statement_count": len(parsed), "source_length": len(source)},
         )
 
         self.root_node = root
@@ -111,7 +108,9 @@ class SQLASTAdapter(BaseASTAdapter):
 
         return root
 
-    def _process_statement(self, stmt: Statement, line_number: int) -> Optional[StandardizedASTNode]:
+    def _process_statement(
+        self, stmt: Statement, line_number: int
+    ) -> Optional[StandardizedASTNode]:
         """Process a single SQL statement.
 
         Args:
@@ -133,10 +132,7 @@ class SQLASTAdapter(BaseASTAdapter):
             column_start=0,
             column_end=0,
             children=[],
-            metadata={
-                "statement_type": stmt_type,
-                "sql": str(stmt).strip()
-            }
+            metadata={"statement_type": stmt_type, "sql": str(stmt).strip()},
         )
 
         # Extract components based on statement type
@@ -200,7 +196,7 @@ class SQLASTAdapter(BaseASTAdapter):
 
         # Check for WHERE clause in flattened tokens
         for token in stmt.flatten():
-            if token.ttype is Keyword and token.value.upper() == 'WHERE':
+            if token.ttype is Keyword and token.value.upper() == "WHERE":
                 has_where = True
                 break
 
@@ -208,11 +204,11 @@ class SQLASTAdapter(BaseASTAdapter):
         from_seen = False
 
         for token in stmt.tokens:
-            if token.ttype is Keyword and token.value.upper() == 'FROM':
+            if token.ttype is Keyword and token.value.upper() == "FROM":
                 from_seen = True
                 continue
 
-            if token.ttype is Keyword and token.value.upper() == 'WHERE':
+            if token.ttype is Keyword and token.value.upper() == "WHERE":
                 from_seen = False
                 continue
 
@@ -233,7 +229,7 @@ class SQLASTAdapter(BaseASTAdapter):
         # Extract column names (simplified - gets from SELECT clause)
         select_seen = False
         for token in stmt.tokens:
-            if token.ttype is Keyword and token.value.upper() == 'SELECT':
+            if token.ttype is Keyword and token.value.upper() == "SELECT":
                 select_seen = True
                 continue
 
@@ -244,20 +240,16 @@ class SQLASTAdapter(BaseASTAdapter):
                 if isinstance(token, IdentifierList):
                     for identifier in token.get_identifiers():
                         col_name = str(identifier).strip()
-                        if col_name and col_name != '*':
+                        if col_name and col_name != "*":
                             columns.append(col_name)
                             self._columns.append(col_name)
                 elif isinstance(token, Identifier):
                     col_name = str(token).strip()
-                    if col_name and col_name != '*':
+                    if col_name and col_name != "*":
                         columns.append(col_name)
                         self._columns.append(col_name)
 
-        node.metadata.update({
-            "tables": tables,
-            "columns": columns,
-            "has_where": has_where
-        })
+        node.metadata.update({"tables": tables, "columns": columns, "has_where": has_where})
 
     def _extract_insert_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from INSERT statement.
@@ -271,17 +263,14 @@ class SQLASTAdapter(BaseASTAdapter):
 
         # Find table name - look for identifier or function (table with columns)
         for token in stmt.tokens:
-            if isinstance(token, Identifier) or hasattr(token, 'get_real_name'):
-                name = token.get_real_name() if hasattr(token, 'get_real_name') else None
+            if isinstance(token, Identifier) or hasattr(token, "get_real_name"):
+                name = token.get_real_name() if hasattr(token, "get_real_name") else None
                 if name:
                     table_name = name
                     self._tables.append(table_name)
                     break
 
-        node.metadata.update({
-            "table": table_name,
-            "columns": columns
-        })
+        node.metadata.update({"table": table_name, "columns": columns})
 
     def _extract_update_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from UPDATE statement.
@@ -300,9 +289,7 @@ class SQLASTAdapter(BaseASTAdapter):
                     self._tables.append(table_name)
                     break
 
-        node.metadata.update({
-            "table": table_name
-        })
+        node.metadata.update({"table": table_name})
 
     def _extract_delete_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DELETE statement.
@@ -316,7 +303,7 @@ class SQLASTAdapter(BaseASTAdapter):
         # Find table name (after FROM)
         from_seen = False
         for token in stmt.tokens:
-            if token.ttype is Keyword and token.value.upper() == 'FROM':
+            if token.ttype is Keyword and token.value.upper() == "FROM":
                 from_seen = True
                 continue
 
@@ -326,9 +313,7 @@ class SQLASTAdapter(BaseASTAdapter):
                     self._tables.append(table_name)
                 break
 
-        node.metadata.update({
-            "table": table_name
-        })
+        node.metadata.update({"table": table_name})
 
     def _extract_ddl_components(self, stmt: Statement, node: StandardizedASTNode):
         """Extract components from DDL statement.
@@ -345,9 +330,7 @@ class SQLASTAdapter(BaseASTAdapter):
                 object_name = token.get_real_name()
                 break
 
-        node.metadata.update({
-            "object_name": object_name
-        })
+        node.metadata.update({"object_name": object_name})
 
     def get_tables(self) -> List[str]:
         """Get list of tables referenced in parsed SQL.

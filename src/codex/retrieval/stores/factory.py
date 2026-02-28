@@ -74,7 +74,7 @@ class VectorStoreFactory:
         if store_class is None:
             available = VectorStoreRegistry.list_types()
             raise ValueError(
-                f"Unknown vector store type: {store_type}. " f"Available types: {available}"
+                f"Unknown vector store type: {store_type}. Available types: {available}"
             )
 
         logger.info(f"Creating {store_type} vector store: {index_name}")
@@ -130,7 +130,10 @@ class VectorStoreFactory:
         }
 
         return VectorStoreFactory.create(
-            store_type=store_type, index_name=index_name, dimension=dimension, **other_params
+            store_type=store_type,
+            index_name=index_name,
+            dimension=dimension,
+            **other_params,
         )
 
 

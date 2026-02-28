@@ -29,6 +29,7 @@ from security.providers.github_provider import GitHubTokenProvider
 # AWS provider is optional (requires boto3)
 try:
     from security.providers.aws_provider import AWSSecretsManagerProvider
+
     __all__ = [
         # Base
         "ProviderType",

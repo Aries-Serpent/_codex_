@@ -26,6 +26,7 @@ from urllib.parse import quote
 @dataclass
 class MFASecret:
     """MFA secret data structure."""
+
     secret: str
     user_id: str
     issuer: str = "Codex"
@@ -60,6 +61,7 @@ class MFASecret:
 @dataclass
 class BackupCode:
     """Backup code data structure."""
+
     code: str
     code_hash: str
     used: bool = False
@@ -69,6 +71,7 @@ class BackupCode:
 @dataclass
 class MFAAttempt:
     """MFA verification attempt tracking."""
+
     user_id: str
     timestamp: float
     success: bool
@@ -118,7 +121,7 @@ class MFAProvider:
         # Generate 160-bit (20 byte) secret
         secret_bytes = secrets.token_bytes(20)
         # Base32 encode without padding
-        secret = b32encode(secret_bytes).decode('utf-8').rstrip('=')
+        secret = b32encode(secret_bytes).decode("utf-8").rstrip("=")
 
         mfa_secret = MFASecret(
             secret=secret,
@@ -147,18 +150,18 @@ class MFAProvider:
         key = self._base32_decode(secret)
 
         # Convert counter to 8-byte big-endian
-        counter_bytes = struct.pack('>Q', counter)
+        counter_bytes = struct.pack(">Q", counter)
 
         # HMAC-SHA1
         hmac_hash = hmac.new(key, counter_bytes, hashlib.sha1).digest()
 
         # Dynamic truncation
         offset = hmac_hash[-1] & 0x0F
-        truncated = struct.unpack('>I', hmac_hash[offset:offset+4])[0]
+        truncated = struct.unpack(">I", hmac_hash[offset : offset + 4])[0]
         truncated &= 0x7FFFFFFF
 
         # Generate token
-        token = str(truncated % (10 ** digits))
+        token = str(truncated % (10**digits))
         return token.zfill(digits)
 
     def _base32_decode(self, secret: str) -> bytes:
@@ -166,13 +169,19 @@ class MFAProvider:
         # Add padding if needed
         missing_padding = len(secret) % 8
         if missing_padding:
-            secret += '=' * (8 - missing_padding)
+            secret += "=" * (8 - missing_padding)
 
         from base64 import b32decode
+
         return b32decode(secret, casefold=True)
 
-    def generate_totp(self, secret: str, timestamp: Optional[float] = None,
-                     period: int = 30, digits: int = 6) -> str:
+    def generate_totp(
+        self,
+        secret: str,
+        timestamp: Optional[float] = None,
+        period: int = 30,
+        digits: int = 6,
+    ) -> str:
         """
         Generate TOTP token.
 
@@ -194,8 +203,15 @@ class MFAProvider:
         # Generate HOTP with counter
         return self._get_hotp_token(secret, counter, digits)
 
-    def verify_totp(self, secret: str, code: str, user_id: str,
-                   window: int = 1, period: int = 30, digits: int = 6) -> bool:
+    def verify_totp(
+        self,
+        secret: str,
+        code: str,
+        user_id: str,
+        window: int = 1,
+        period: int = 30,
+        digits: int = 6,
+    ) -> bool:
         """
         Verify TOTP code with time window.
 
@@ -257,14 +273,13 @@ class MFAProvider:
 
         # Clean old attempts (keep last hour)
         cutoff = time.time() - 3600
-        self._attempts[user_id] = [
-            a for a in self._attempts[user_id] if a.timestamp > cutoff
-        ]
+        self._attempts[user_id] = [a for a in self._attempts[user_id] if a.timestamp > cutoff]
 
         # Check for lockout
         if not success:
             recent_failures = [
-                a for a in self._attempts[user_id]
+                a
+                for a in self._attempts[user_id]
                 if not a.success and a.timestamp > time.time() - 300  # Last 5 minutes
             ]
 

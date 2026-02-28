@@ -83,6 +83,7 @@ class _RedisBackend(_RateLimitBackend):
 
     def __init__(self, redis_url: str, window: int = 1) -> None:
         import redis as _redis  # guarded import — optional dependency
+
         self._redis = _redis.Redis.from_url(redis_url, decode_responses=True)
         self._window = window  # sliding window size in seconds
 
@@ -106,9 +107,7 @@ class _RedisBackend(_RateLimitBackend):
         try:
             self._redis.close()
         except Exception as exc:
-            logging.getLogger(__name__).warning(
-                "Redis rate-limit backend close() error: %s", exc
-            )
+            logging.getLogger(__name__).warning("Redis rate-limit backend close() error: %s", exc)
 
 
 def _build_backend(rate: float, burst: int) -> _RateLimitBackend:
@@ -171,11 +170,15 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         backend: _RateLimitBackend | None = None,
     ):
         super().__init__(app)
-        self.rate = rate if rate is not None else int(
-            float(os.environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE)))
+        self.rate = (
+            rate
+            if rate is not None
+            else int(float(os.environ.get("RATE_LIMIT_RATE", str(DEFAULT_RATE))))
         )
-        self.burst = burst if burst is not None else int(
-            float(os.environ.get("RATE_LIMIT_BURST", str(BURST)))
+        self.burst = (
+            burst
+            if burst is not None
+            else int(float(os.environ.get("RATE_LIMIT_BURST", str(BURST))))
         )
         if backend is not None:
             self._backend = backend

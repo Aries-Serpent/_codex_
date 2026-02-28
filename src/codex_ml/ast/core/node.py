@@ -4,6 +4,7 @@ Core AST node data structures.
 Provides language-agnostic representations for AST nodes, source locations,
 and analysis findings.
 """
+
 import uuid
 import weakref
 from dataclasses import dataclass, field
@@ -202,7 +203,9 @@ class StandardizedASTNode:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any], parent: Optional["StandardizedASTNode"] = None) -> "StandardizedASTNode":
+    def from_dict(
+        cls, data: Dict[str, Any], parent: Optional["StandardizedASTNode"] = None
+    ) -> "StandardizedASTNode":
         """Create from dictionary."""
         location = SourceLocation.from_dict(data["location"]) if data.get("location") else None
         node = cls(
@@ -219,7 +222,7 @@ class StandardizedASTNode:
         return node
 
     def __repr__(self) -> str:
-        return f"StandardizedASTNode(type={self.type!r}, name={self.name!r}, children={len(self.children)})"
+        return f"StandardizedASTNode(type={self.type!r}, name={self.name!r}, children={len(self.children)})"  # noqa: E501
 
 
 @dataclass
@@ -280,4 +283,4 @@ class Finding:
         )
 
     def __repr__(self) -> str:
-        return f"Finding(type={self.type!r}, severity={self.severity!r}, message={self.message[:50]!r}...)"
+        return f"Finding(type={self.type!r}, severity={self.severity!r}, message={self.message[:50]!r}...)"  # noqa: E501

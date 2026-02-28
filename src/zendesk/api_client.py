@@ -252,7 +252,8 @@ class ZendeskAPIClient:
             }
         }
         response = self.session.post(
-            f"{self.config.base_url}/tickets/{target_ticket_id}/merge.json", json=payload
+            f"{self.config.base_url}/tickets/{target_ticket_id}/merge.json",
+            json=payload,
         )
         response.raise_for_status()
         return response.json()

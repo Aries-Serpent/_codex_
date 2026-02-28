@@ -10,12 +10,14 @@ from .yaml_adapter import YAMLASTAdapter
 
 try:
     from .python_adapter import PythonASTAdapter
+
     _PYTHON_ADAPTER_AVAILABLE = True
 except ImportError:  # pragma: no cover — libcst optional dependency
     _PYTHON_ADAPTER_AVAILABLE = False
 
 try:
     from .sql_adapter import SQLASTAdapter
+
     _SQL_ADAPTER_AVAILABLE = True
 except ImportError:  # pragma: no cover — sqlparse optional dependency
     _SQL_ADAPTER_AVAILABLE = False

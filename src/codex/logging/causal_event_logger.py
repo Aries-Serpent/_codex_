@@ -401,14 +401,12 @@ class CausalEventLogger:
             "root_causes": len(self.get_root_causes()),
             "terminal_effects": len(self.get_terminal_effects()),
             "avg_causes_per_event": (
-                sum(len(causes) for causes in self.reverse_graph.values())
-                / len(self.events)
+                sum(len(causes) for causes in self.reverse_graph.values()) / len(self.events)
                 if self.events
                 else 0.0
             ),
             "avg_effects_per_event": (
-                sum(len(effects) for effects in self.causation_graph.values())
-                / len(self.events)
+                sum(len(effects) for effects in self.causation_graph.values()) / len(self.events)
                 if self.events
                 else 0.0
             ),

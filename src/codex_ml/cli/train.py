@@ -201,7 +201,10 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
             ("texts", "train_texts", "val_texts", "eval_texts"),
         )
         if total_sanitised:
-            LOGGER.info("Sanitised %d prompt field(s) in training configuration", total_sanitised)
+            LOGGER.info(
+                "Sanitised %d prompt field(s) in training configuration",
+                total_sanitised,
+            )
     else:
         LOGGER.debug("Prompt sanitisation disabled via configuration")
 
@@ -437,7 +440,9 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
 
 
 @hydra.main(
-    version_base=None, config_path="../../../configs/training/profiles", config_name="default"
+    version_base=None,
+    config_path="../../../configs/training/profiles",
+    config_name="default",
 )
 def main(cfg: DictConfig) -> None:
     logger = init_json_logging()

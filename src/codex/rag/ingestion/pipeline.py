@@ -402,8 +402,7 @@ class IngestionPipeline:
             # Parallel processing
             with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
                 futures = {
-                    executor.submit(self._ingest_with_retry, path): path
-                    for path in file_paths
+                    executor.submit(self._ingest_with_retry, path): path for path in file_paths
                 }
 
                 for future in as_completed(futures):

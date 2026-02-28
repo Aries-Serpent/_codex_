@@ -11,9 +11,7 @@ from .runner import BenchmarkRunner
 
 
 def benchmark_retrieval(
-    index_sizes: List[int] = None,
-    top_k_values: List[int] = None,
-    runs: int = 10
+    index_sizes: List[int] = None, top_k_values: List[int] = None, runs: int = 10
 ) -> Dict[str, Any]:
     """
     Benchmark retrieval performance with various index sizes.
@@ -39,7 +37,7 @@ def benchmark_retrieval(
         "data processing pipeline",
         "neural network architecture",
         "information retrieval system",
-        "semantic search implementation"
+        "semantic search implementation",
     ]
 
     for index_size in index_sizes:
@@ -58,12 +56,12 @@ def benchmark_retrieval(
                         index_name=index_name,
                         top_k=top_k,
                         tmpdir=tmpdir,
-                        runs=runs
+                        runs=runs,
                     )
 
                     if result.success:
-                        result.metadata['index_size'] = index_size
-                        result.metadata['top_k'] = top_k
+                        result.metadata["index_size"] = index_size
+                        result.metadata["top_k"] = top_k
 
     # Calculate percentiles
     _calculate_percentiles(runner.results)
@@ -71,7 +69,7 @@ def benchmark_retrieval(
     return {
         "results": [r.to_dict() for r in runner.results],
         "summary": runner.get_summary(),
-        "percentiles": _get_latency_percentiles(runner.results)
+        "percentiles": _get_latency_percentiles(runner.results),
     }
 
 
@@ -80,13 +78,12 @@ def _build_test_index(size: int, index_name: str, tmpdir: str) -> None:
     from codex.rag.embeddings import create_embedding_provider
     from codex.rag.indexer import chunk_text, persist_index
 
-    provider = create_embedding_provider('tfidf')
+    provider = create_embedding_provider("tfidf")
 
     # Generate test documents
     documents = [
         f"Document {i} about topic {i % 10} with content related to "
-        f"machine learning, data science, algorithms, and testing. "
-        * (i % 5 + 1)
+        f"machine learning, data science, algorithms, and testing. " * (i % 5 + 1)
         for i in range(size)
     ]
 
@@ -105,24 +102,15 @@ def _build_test_index(size: int, index_name: str, tmpdir: str) -> None:
         embeddings=embeddings,
         chunks=all_chunks,
         tenant_id="benchmark",
-        index_dir=tmpdir
+        index_dir=tmpdir,
     )
 
 
-def _query_index(
-    query: str,
-    index_name: str,
-    top_k: int,
-    tmpdir: str
-) -> List[Dict[str, Any]]:
+def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> List[Dict[str, Any]]:
     """Query the index and return results."""
     from codex.rag.retriever import Retriever
 
-    retriever = Retriever(
-        index_name=index_name,
-        tenant_id="benchmark",
-        index_dir=tmpdir
-    )
+    retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 
     results = retriever.query(query, top_k=top_k)
     return results
@@ -143,9 +131,9 @@ def _calculate_percentiles(results: List) -> None:
 
     for result in results:
         if result.success and result.metadata:
-            result.metadata['p50_ms'] = p50
-            result.metadata['p95_ms'] = p95
-            result.metadata['p99_ms'] = p99
+            result.metadata["p50_ms"] = p50
+            result.metadata["p95_ms"] = p95
+            result.metadata["p99_ms"] = p99
 
 
 def _percentile(data: List[float], percentile: float) -> float:
@@ -170,14 +158,11 @@ def _get_latency_percentiles(results: List) -> Dict[str, float]:
         "p99_ms": _percentile(durations, 0.99),
         "mean_ms": statistics.mean(durations),
         "min_ms": min(durations),
-        "max_ms": max(durations)
+        "max_ms": max(durations),
     }
 
 
-def benchmark_cache_effectiveness(
-    index_size: int = 1000,
-    runs: int = 20
-) -> Dict[str, Any]:
+def benchmark_cache_effectiveness(index_size: int = 1000, runs: int = 20) -> Dict[str, Any]:
     """
     Benchmark cache hit rates and effectiveness.
 
@@ -193,5 +178,5 @@ def benchmark_cache_effectiveness(
     return {
         "note": "Cache benchmarking requires cache middleware implementation",
         "index_size": index_size,
-        "planned_runs": runs
+        "planned_runs": runs,
     }

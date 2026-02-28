@@ -393,7 +393,7 @@ def _resolve_metric_resource(
         if target.exists():
             return target
         raise FileNotFoundError(
-            f"Offline metric resource '{name}' expected at {target}. Provide an existing file or directory."
+            f"Offline metric resource '{name}' expected at {target}. Provide an existing file or directory."  # noqa: E501
         )
 
     if specific_env:
@@ -422,8 +422,8 @@ def _resolve_metric_resource(
 
     checked_msg = ", ".join(checked) if checked else "<no candidates>"
     raise FileNotFoundError(
-        f"Offline metric resource '{name}' not found. Checked: {checked_msg}. Provide `weights_path` or "
-        "set CODEX_ML_OFFLINE_METRICS_DIR / {specific_env or 'CODEX_ML_WEIGHTED_ACCURACY_PATH'} to point to the file."
+        f"Offline metric resource '{name}' not found. Checked: {checked_msg}. Provide `weights_path` or "  # noqa: E501
+        "set CODEX_ML_OFFLINE_METRICS_DIR / {specific_env or 'CODEX_ML_WEIGHTED_ACCURACY_PATH'} to point to the file."  # noqa: E501
     )
 
 

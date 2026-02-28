@@ -49,6 +49,7 @@ class SandboxConfig:
         env_overrides: Environment variable overrides
         working_dir: Optional working directory
     """
+
     timeout_seconds: int = DEFAULT_TIMEOUT
     memory_limit_mb: int = DEFAULT_MEMORY_MB
     network_enabled: bool = False
@@ -71,6 +72,7 @@ class ExecutionResult:
         file_operations: list of file operations detected
         network_attempts: list of network access attempts
     """
+
     exit_code: int
     stdout: str
     stderr: str

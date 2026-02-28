@@ -69,7 +69,9 @@ class Registry:
     def __contains__(self, key: str) -> bool:  # pragma: no cover - trivial
         return key in self._store
 
-    def items(self) -> Iterable[tuple[str, Callable[..., Any]]]:  # pragma: no cover - convenience
+    def items(
+        self,
+    ) -> Iterable[tuple[str, Callable[..., Any]]]:  # pragma: no cover - convenience
         return self._store.items()
 
 

@@ -122,17 +122,19 @@ class RotationEvent:
 
     def to_jsonl(self) -> str:
         """Serialize to JSONL format for audit log."""
-        return json.dumps({
-            "event_id": self.event_id,
-            "token_id": self.token_id,
-            "timestamp": self.timestamp.isoformat(),
-            "trigger": self.trigger.value,
-            "old_token_hash": self.old_token_hash,
-            "new_token_hash": self.new_token_hash,
-            "success": self.success,
-            "error_message": self.error_message,
-            "metadata": self.metadata,
-        })
+        return json.dumps(
+            {
+                "event_id": self.event_id,
+                "token_id": self.token_id,
+                "timestamp": self.timestamp.isoformat(),
+                "trigger": self.trigger.value,
+                "old_token_hash": self.old_token_hash,
+                "new_token_hash": self.new_token_hash,
+                "success": self.success,
+                "error_message": self.error_message,
+                "metadata": self.metadata,
+            }
+        )
 
 
 class TokenRotationManager:
@@ -203,9 +205,7 @@ class TokenRotationManager:
         )
         self.tokens[token_id] = metadata
 
-        logger.info(
-            f"Registered token {token_id} with expiry {expires_at.isoformat()}"
-        )
+        logger.info(f"Registered token {token_id} with expiry {expires_at.isoformat()}")
         return metadata
 
     def check_rotation_needed(self, token_id: str) -> tuple[bool, RotationTrigger | None]:
@@ -285,10 +285,7 @@ class TokenRotationManager:
         # Log audit event
         self._write_audit_log(event)
 
-        logger.info(
-            f"Rotated token {token_id}: trigger={trigger.value}, "
-            f"event_id={event.event_id}"
-        )
+        logger.info(f"Rotated token {token_id}: trigger={trigger.value}, event_id={event.event_id}")
 
         return event
 
@@ -347,14 +344,16 @@ class TokenRotationManager:
         for token_id, meta in self.tokens.items():
             needs_rotation, trigger = meta.should_rotate(self.policy)
 
-            schedule.append({
-                "token_id": token_id,
-                "days_until_expiry": meta.days_until_expiry(),
-                "rotation_needed": needs_rotation,
-                "trigger": trigger.value if trigger else None,
-                "state": meta.state.value,
-                "rotation_count": meta.rotation_count,
-            })
+            schedule.append(
+                {
+                    "token_id": token_id,
+                    "days_until_expiry": meta.days_until_expiry(),
+                    "rotation_needed": needs_rotation,
+                    "trigger": trigger.value if trigger else None,
+                    "state": meta.state.value,
+                    "rotation_count": meta.rotation_count,
+                }
+            )
 
         return sorted(schedule, key=lambda x: x["days_until_expiry"])
 

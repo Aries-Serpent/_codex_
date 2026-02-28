@@ -64,9 +64,7 @@ class JSONASTAdapter(BaseASTAdapter):
                 column_start=0,
                 column_end=0,
                 children=[],
-                metadata={
-                    "encoding": "utf-8"
-                }
+                metadata={"encoding": "utf-8"},
             )
 
             # Convert JSON data to AST nodes
@@ -86,7 +84,7 @@ class JSONASTAdapter(BaseASTAdapter):
         self,
         data: Any,
         parent: Optional[StandardizedASTNode] = None,
-        key: Optional[str] = None
+        key: Optional[str] = None,
     ) -> StandardizedASTNode:
         """
         Convert JSON data structure to StandardizedASTNode.
@@ -106,11 +104,8 @@ class JSONASTAdapter(BaseASTAdapter):
                 node_type="object",
                 name=key or "<object>",
                 children=[],
-                metadata={
-                    "keys": list(data.keys()),
-                    "size": len(data)
-                },
-                parent=parent
+                metadata={"keys": list(data.keys()), "size": len(data)},
+                parent=parent,
             )
 
             # Add child nodes for each key-value pair
@@ -129,9 +124,9 @@ class JSONASTAdapter(BaseASTAdapter):
                 children=[],
                 metadata={
                     "length": len(data),
-                    "item_types": [type(item).__name__ for item in data]
+                    "item_types": [type(item).__name__ for item in data],
                 },
-                parent=parent
+                parent=parent,
             )
 
             # Add child nodes for each item
@@ -151,9 +146,9 @@ class JSONASTAdapter(BaseASTAdapter):
                 metadata={
                     "value": data,
                     "value_type": type(data).__name__,
-                    "is_null": data is None
+                    "is_null": data is None,
                 },
-                parent=parent
+                parent=parent,
             )
 
             return node

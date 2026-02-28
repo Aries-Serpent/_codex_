@@ -65,9 +65,7 @@ AVAILABLE_MODELS: dict[str, ModelConfig] = {
         128000, cost_tier="medium", input_cost_per_1k=0.01, output_cost_per_1k=0.03
     ),
     # GPT-4 models
-    "gpt-4": ModelConfig(
-        8192, cost_tier="high", input_cost_per_1k=0.03, output_cost_per_1k=0.06
-    ),
+    "gpt-4": ModelConfig(8192, cost_tier="high", input_cost_per_1k=0.03, output_cost_per_1k=0.06),
     "gpt-4-32k": ModelConfig(
         32768, cost_tier="very-high", input_cost_per_1k=0.06, output_cost_per_1k=0.12
     ),
@@ -201,11 +199,7 @@ class CodexOpenAIClient:
             Selected model name
         """
         # Use preferred model if specified and valid (safeguard: validate input)
-        if (
-            preferred_model
-            and isinstance(preferred_model, str)
-            and preferred_model in self.models
-        ):
+        if preferred_model and isinstance(preferred_model, str) and preferred_model in self.models:
             return preferred_model
 
         cost_order = ["low", "medium", "high", "very-high"]
@@ -258,7 +252,7 @@ Physics-optimized principles:
 - 🔀 Redundancy: Build fallback mechanisms
 - ⚖️ Balance: Trade off speed vs. accuracy appropriately
 
-Execute the user's request autonomously, following _codex_ patterns and best practices."""
+Execute the user's request autonomously, following _codex_ patterns and best practices."""  # noqa: E501
 
     def estimate_cost(self, model: str, usage: dict[str, int]) -> float:
         """Estimate the cost of an API call."""
@@ -315,8 +309,7 @@ Execute the user's request autonomously, following _codex_ patterns and best pra
             "total_tokens": sum(e.tokens_used for e in self.audit_log),
             "total_cost": sum(e.estimated_cost for e in self.audit_log),
             "models_used": list(set(e.model for e in self.audit_log)),
-            "avg_duration_ms": sum(e.duration_ms for e in self.audit_log)
-            // len(self.audit_log),
+            "avg_duration_ms": sum(e.duration_ms for e in self.audit_log) // len(self.audit_log),
         }
 
 

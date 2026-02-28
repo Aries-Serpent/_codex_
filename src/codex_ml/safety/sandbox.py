@@ -25,6 +25,7 @@ import shutil
 
 try:
     import resource
+
     _HAS_RESOURCE = True
 except ImportError:  # Windows — resource is POSIX-only
     resource = None  # type: ignore[assignment]

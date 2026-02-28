@@ -1,6 +1,7 @@
 """
 Parallel AST parsing for improved performance.
 """
+
 import logging
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -40,7 +41,7 @@ class ParallelParser:
     def parse_files(
         self,
         file_paths: list[str],
-        progress_callback: Optional[Callable[[str, int, int], None]] = None
+        progress_callback: Optional[Callable[[str, int, int], None]] = None,
     ) -> dict[str, StandardizedASTNode]:
         """
         Parse multiple files in parallel.
@@ -58,10 +59,7 @@ class ParallelParser:
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Submit all parse tasks
-            future_to_path = {
-                executor.submit(self._parse_file, path): path
-                for path in file_paths
-            }
+            future_to_path = {executor.submit(self._parse_file, path): path for path in file_paths}
 
             # Collect results as they complete
             for future in as_completed(future_to_path):
@@ -93,7 +91,7 @@ class ParallelParser:
         self,
         directory: str,
         pattern: str = "**/*.py",
-        progress_callback: Optional[Callable[[str, int, int], None]] = None
+        progress_callback: Optional[Callable[[str, int, int], None]] = None,
     ) -> dict[str, StandardizedASTNode]:
         """
         Parse all files in directory in parallel.

@@ -252,8 +252,7 @@ def run(tasks: int, steps: int, dt: float, output: Optional[str], verbose: bool)
     click.echo("\n✅ Final State:")
     for task in orchestrator.orchestrator.state.tasks.values():
         click.echo(
-            f"  {task.task_id}: probability={task.probability:.4f}, "
-            f"energy={task.total_energy:.2f}"
+            f"  {task.task_id}: probability={task.probability:.4f}, energy={task.total_energy:.2f}"
         )
 
     # Save results if requested
@@ -547,7 +546,7 @@ def entangle(task_a: str, task_b: str, bell_state: str):
         click.echo("✅ Tasks entangled successfully!")
         click.echo(f"   Pair count: {len(manager.entangled_pairs)}")
         click.echo(
-            f"   Correlation: {manager.entangled_pairs[manager._canonical_key(task_a, task_b)].correlation_type}"
+            f"   Correlation: {manager.entangled_pairs[manager._canonical_key(task_a, task_b)].correlation_type}"  # noqa: E501
         )
     else:
         click.echo("❌ Entanglement failed", err=True)

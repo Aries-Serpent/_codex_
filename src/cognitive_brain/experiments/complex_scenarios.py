@@ -206,9 +206,7 @@ def generate_complex_scenarios(
         )
         # Ground truth: complex interaction of multiple factors
         severity_score = (
-            (1.0 - score)
-            * violation_count
-            * (1.0 if audit.risk_level == "high" else 0.5)
+            (1.0 - score) * violation_count * (1.0 if audit.risk_level == "high" else 0.5)
         )
         if severity_score > 4.0:
             ground_truth = ComplianceDecision.REJECT
@@ -338,12 +336,10 @@ def get_scenario_statistics(
 
     return {
         "count": len(scenarios),
-        "avg_ambiguity": sum(c.ambiguity_score for c in complexities)
-        / len(complexities),
+        "avg_ambiguity": sum(c.ambiguity_score for c in complexities) / len(complexities),
         "avg_conflicting_signals": sum(c.conflicting_signals for c in complexities)
         / len(complexities),
-        "avg_rule_coverage": sum(c.rule_coverage for c in complexities)
-        / len(complexities),
+        "avg_rule_coverage": sum(c.rule_coverage for c in complexities) / len(complexities),
         "decision_distribution": {
             decision.value: sum(1 for d in decisions if d == decision)
             for decision in ComplianceDecision

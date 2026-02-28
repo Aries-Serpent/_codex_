@@ -95,13 +95,9 @@ class MemoryPattern:
 
         # Validate confidence and success_rate ranges
         if not 0.0 <= self.confidence <= 1.0:
-            raise ValueError(
-                f"Confidence must be between 0 and 1, got {self.confidence}"
-            )
+            raise ValueError(f"Confidence must be between 0 and 1, got {self.confidence}")
         if not 0.0 <= self.success_rate <= 1.0:
-            raise ValueError(
-                f"Success rate must be between 0 and 1, got {self.success_rate}"
-            )
+            raise ValueError(f"Success rate must be between 0 and 1, got {self.success_rate}")
 
 
 class QuantumMemoryManager:
@@ -129,7 +125,7 @@ class QuantumMemoryManager:
         config: QuantumConfig,
         stm_capacity: int = 1000,
         ltm_capacity: int = 10000,
-        consolidation_threshold: float = 0.6,  # Lowered from 0.7 to allow high-quality patterns with moderate access
+        consolidation_threshold: float = 0.6,  # Lowered from 0.7 to allow high-quality patterns with moderate access  # noqa: E501
     ):
         """
         Initialize quantum memory manager.
@@ -299,9 +295,7 @@ class QuantumMemoryManager:
         # Track retrieval attempt (don't double-count with retrieve_similar call)
         self.total_retrievals += 1
 
-        similar_patterns = self.retrieve_similar(
-            query, k=5, search_ltm=True, count_retrieval=False
-        )
+        similar_patterns = self.retrieve_similar(query, k=5, search_ltm=True, count_retrieval=False)
 
         if not similar_patterns:
             return None  # No patterns found - novel case
@@ -312,9 +306,7 @@ class QuantumMemoryManager:
             return None  # Disagreement - run full assessment
 
         # Check average confidence
-        avg_confidence = sum(p.confidence for p in similar_patterns) / len(
-            similar_patterns
-        )
+        avg_confidence = sum(p.confidence for p in similar_patterns) / len(similar_patterns)
         if avg_confidence < confidence_threshold:
             return None  # Low confidence - run full assessment
 
@@ -373,9 +365,7 @@ class QuantumMemoryManager:
         access_score = min(pattern.access_count / 100.0, 1.0)
 
         # Weighted combination
-        score = (
-            0.4 * access_score + 0.4 * pattern.success_rate + 0.2 * pattern.confidence
-        )
+        score = 0.4 * access_score + 0.4 * pattern.success_rate + 0.2 * pattern.confidence
 
         return score
 
@@ -421,9 +411,7 @@ class QuantumMemoryManager:
             del self.ltm[pattern_id]
 
     @staticmethod
-    def _cosine_similarity(
-        features1: Dict[str, float], features2: Dict[str, float]
-    ) -> float:
+    def _cosine_similarity(features1: Dict[str, float], features2: Dict[str, float]) -> float:
         """
         Calculate cosine similarity between two feature vectors.
 
@@ -482,9 +470,7 @@ class QuantumMemoryManager:
             pruned_count += 1
 
         if pruned_count > 0:
-            logger.info(
-                f"Pruned {pruned_count} patterns older than {max_age_hours}h from LTM"
-            )
+            logger.info(f"Pruned {pruned_count} patterns older than {max_age_hours}h from LTM")
 
         return pruned_count
 
@@ -577,14 +563,10 @@ class QuantumMemoryManager:
         # Calculate average age
         now = datetime.now(timezone.utc)
         if ltm_size > 0:
-            ages = [
-                (now - p.timestamp).total_seconds() / 3600 for p in self.ltm.values()
-            ]
+            ages = [(now - p.timestamp).total_seconds() / 3600 for p in self.ltm.values()]
             avg_age_hours = sum(ages) / len(ages)
             staleness_score = (
-                sum(1 for age in ages if age > STALENESS_THRESHOLD_HOURS)
-                / len(ages)
-                * 100
+                sum(1 for age in ages if age > STALENESS_THRESHOLD_HOURS) / len(ages) * 100
             )
         else:
             avg_age_hours = 0.0
@@ -629,9 +611,7 @@ class QuantumMemoryManager:
         if health["ltm_utilization"] < ltm_threshold_pct * 100:
             return PruningResult()
 
-        logger.info(
-            f"Auto-pruning triggered: LTM at {health['ltm_utilization']:.1f}% capacity"
-        )
+        logger.info(f"Auto-pruning triggered: LTM at {health['ltm_utilization']:.1f}% capacity")
 
         # Strategy 1: Remove patterns older than 30 days
         aged_pruned = self.prune_by_age(max_age_hours=720)

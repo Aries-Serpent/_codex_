@@ -27,33 +27,31 @@ from typing import Any, Pattern
 # Patterns for detecting sensitive data
 SENSITIVE_PATTERNS: list[tuple[Pattern[str], str]] = [
     # API keys and tokens
-    (re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE),
-     r'\1=***REDACTED***'),
-
+    (
+        re.compile(r'(api[_-]?key|token|secret|password)\s*[=:]\s*["\']?(\S+)', re.IGNORECASE),
+        r"\1=***REDACTED***",
+    ),
     # Bearer tokens
-    (re.compile(r'Bearer\s+\S+', re.IGNORECASE),
-     'Bearer ***REDACTED***'),
-
+    (re.compile(r"Bearer\s+\S+", re.IGNORECASE), "Bearer ***REDACTED***"),
     # Base64-encoded secrets (40+ chars)
-    (re.compile(r'[a-zA-Z0-9+/]{40,}={0,2}'),
-     '***BASE64_REDACTED***'),
-
+    (re.compile(r"[a-zA-Z0-9+/]{40,}={0,2}"), "***BASE64_REDACTED***"),
     # Hex-encoded secrets (32+ chars)
-    (re.compile(r'\b[a-fA-F0-9]{32,}\b'),
-     '***HEX_REDACTED***'),
-
+    (re.compile(r"\b[a-fA-F0-9]{32,}\b"), "***HEX_REDACTED***"),
     # AWS keys
-    (re.compile(r'AKIA[0-9A-Z]{16}'),
-     '***AWS_KEY_REDACTED***'),
-
+    (re.compile(r"AKIA[0-9A-Z]{16}"), "***AWS_KEY_REDACTED***"),
     # JWT tokens
-    (re.compile(r'eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*'),
-     '***JWT_REDACTED***'),
-
+    (
+        re.compile(r"eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*"),
+        "***JWT_REDACTED***",
+    ),
     # Private keys
-    (re.compile(r'-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----.*?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----',
-                re.DOTALL),
-     '***PRIVATE_KEY_REDACTED***'),
+    (
+        re.compile(
+            r"-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----.*?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----",
+            re.DOTALL,
+        ),
+        "***PRIVATE_KEY_REDACTED***",
+    ),
 ]
 
 
@@ -86,14 +84,14 @@ def sanitize_log(value: Any, max_length: int = 500) -> str:
     # Remove control characters (newlines, tabs, etc.)
     # \x00-\x1f: C0 control characters
     # \x7f-\x9f: DEL and C1 control characters
-    sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', str_value)
+    sanitized = re.sub(r"[\n\r\t\x00-\x1f\x7f-\x9f]", "", str_value)
 
     # Remove ANSI escape codes (terminal color codes, etc.)
-    sanitized = re.sub(r'\x1b\[[0-9;]*m', '', sanitized)
+    sanitized = re.sub(r"\x1b\[[0-9;]*m", "", sanitized)
 
     # Truncate to max length
     if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length] + '...[truncated]'
+        sanitized = sanitized[:max_length] + "...[truncated]"
 
     return sanitized
 
@@ -182,13 +180,15 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500, mask_secrets: bool 
         elif isinstance(value, (list, tuple)):
             if mask_secrets:
                 result[key] = [
-                    mask_sensitive(sanitize_log(str(item), max_length)) if not isinstance(item, dict)
+                    mask_sensitive(sanitize_log(str(item), max_length))
+                    if not isinstance(item, dict)
                     else sanitize_dict_for_log(item, max_length, mask_secrets)
                     for item in value
                 ]
             else:
                 result[key] = [
-                    sanitize_log(str(item), max_length) if not isinstance(item, dict)
+                    sanitize_log(str(item), max_length)
+                    if not isinstance(item, dict)
                     else sanitize_dict_for_log(item, max_length, mask_secrets)
                     for item in value
                 ]
@@ -206,10 +206,10 @@ mask_secrets = mask_sensitive
 
 
 __all__ = [
-    'sanitize_log',
-    'mask_sensitive',
-    'safe_log_message',
-    'sanitize_dict_for_log',
-    'safe_log',
-    'mask_secrets',
+    "sanitize_log",
+    "mask_sensitive",
+    "safe_log_message",
+    "sanitize_dict_for_log",
+    "safe_log",
+    "mask_secrets",
 ]

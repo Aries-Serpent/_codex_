@@ -138,7 +138,8 @@ def emit_schema(dialect: str | None) -> None:
 @cli.command("store")
 @click.argument("repo")
 @click.argument(
-    "filepath", type=click.Path(path_type=Path, exists=True, dir_okay=False, readable=True)
+    "filepath",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False, readable=True),
 )
 @click.option(
     "--reason",
@@ -150,13 +151,19 @@ def emit_schema(dialect: str | None) -> None:
 @click.option("--by", "actor", required=True, help="Actor performing the archive")
 @click.option("--commit", default="HEAD", show_default=True, help="Git commit SHA for provenance")
 @click.option(
-    "--kind", default="code", show_default=True, type=click.Choice(["code", "doc", "asset"])
+    "--kind",
+    default="code",
+    show_default=True,
+    type=click.Choice(["code", "doc", "asset"]),
 )
 @click.option("--language", help="Optional language identifier")
 @click.option("--mime", help="Override MIME type")
 @click.option("--tag", "tags", multiple=True, help="Assign tags to the archived item")
 @click.option(
-    "--metadata", "metadata_entries", multiple=True, help="Extra metadata entries key=value"
+    "--metadata",
+    "metadata_entries",
+    multiple=True,
+    help="Extra metadata entries key=value",
 )
 def store(
     repo: str,
@@ -355,7 +362,9 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
     help="Optional path to write a JSON summary of the batch results.",
 )
 @click.option(
-    "--dry-run", is_flag=True, help="Load and validate the manifest without executing restores"
+    "--dry-run",
+    is_flag=True,
+    help="Load and validate the manifest without executing restores",
 )
 @click.option(
     "--config-file",

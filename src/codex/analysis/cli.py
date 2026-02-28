@@ -11,15 +11,34 @@ def _analyze_module(path: Path) -> dict:
     try:
         source = path.read_text(encoding="utf-8", errors="replace")
     except Exception:
-        return {"file": str(path), "lines": 0, "functions": 0, "classes": 0, "error": "unreadable"}
+        return {
+            "file": str(path),
+            "lines": 0,
+            "functions": 0,
+            "classes": 0,
+            "error": "unreadable",
+        }
     lines = len(source.splitlines())
     try:
         tree = ast.parse(source, filename=str(path))
     except SyntaxError:
-        return {"file": str(path), "lines": lines, "functions": 0, "classes": 0, "error": "syntax_error"}
-    functions = sum(1 for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)))
+        return {
+            "file": str(path),
+            "lines": lines,
+            "functions": 0,
+            "classes": 0,
+            "error": "syntax_error",
+        }
+    functions = sum(
+        1 for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+    )
     classes = sum(1 for n in ast.walk(tree) if isinstance(n, ast.ClassDef))
-    return {"file": str(path), "lines": lines, "functions": functions, "classes": classes}
+    return {
+        "file": str(path),
+        "lines": lines,
+        "functions": functions,
+        "classes": classes,
+    }
 
 
 @click.command()

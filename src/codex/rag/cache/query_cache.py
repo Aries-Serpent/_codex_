@@ -151,6 +151,7 @@ class QueryCache:
             data = query.encode()
         else:
             import json
+
             data = json.dumps(query, sort_keys=True).encode()
         return hashlib.sha256(data).hexdigest()[:16]
 

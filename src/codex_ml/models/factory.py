@@ -34,7 +34,7 @@ def _resolve_dtype(value: Any) -> Any:
         return value
     # Check if value is already a torch.dtype by checking its type name
     # Safe for Python 3.12+ where isinstance(x, torch.dtype) may fail
-    if hasattr(value, '__class__') and type(value).__name__ == 'dtype':
+    if hasattr(value, "__class__") and type(value).__name__ == "dtype":
         return value
     if isinstance(value, str):
         token = value.replace("torch.", "").lower()
@@ -50,7 +50,11 @@ def _resolve_dtype(value: Any) -> Any:
             return alias[token]
         candidate = getattr(torch, token, None)
         # Check if candidate is a torch.dtype by checking its type name
-        if candidate is not None and hasattr(candidate, '__class__') and type(candidate).__name__ == 'dtype':
+        if (
+            candidate is not None
+            and hasattr(candidate, "__class__")
+            and type(candidate).__name__ == "dtype"
+        ):
             return candidate
     raise ValueError(f"Unsupported dtype value: {value!r}")
 
@@ -60,7 +64,7 @@ def _resolve_device(value: Any) -> Any:
         return value
     # Check if value is already a torch.device by checking its type name
     # Safe for Python 3.12+ where isinstance(x, torch.device) may fail
-    if hasattr(value, '__class__') and type(value).__name__ == 'device':
+    if hasattr(value, "__class__") and type(value).__name__ == "device":
         return value
     if isinstance(value, str):
         token = value.strip().lower()
@@ -89,7 +93,7 @@ def _coerce_lora_cfg(cfg: Any) -> Optional[LoraBuildCfg]:
         filtered: dict[str, Any] = {key: value for key, value in cfg.items() if key in allowed}
         return LoraBuildCfg(**filtered)
     raise TypeError(
-        "LoRA configuration must be a mapping or LoraBuildCfg instance; " f"received {type(cfg)!r}."
+        f"LoRA configuration must be a mapping or LoraBuildCfg instance; received {type(cfg)!r}."
     )
 
 
@@ -190,8 +194,7 @@ def _apply_quantization_options(options: MutableMapping[str, Any], quantization:
         config_payload = data
     else:
         raise TypeError(
-            "quantization must be a string, mapping, or boolean flag; "
-            f"received {type(payload)!r}"
+            f"quantization must be a string, mapping, or boolean flag; received {type(payload)!r}"
         )
 
     for key, value in bool_flags.items():

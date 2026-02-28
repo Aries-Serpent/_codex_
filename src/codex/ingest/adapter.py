@@ -53,6 +53,7 @@ class Snapshot:
         manifest: Parsed ingestion manifest
         metadata: Additional metadata
     """
+
     snapshot_id: str
     source_path: str
     snapshot_dir: Path
@@ -149,22 +150,16 @@ def _check_size_bounds(path: Path) -> None:
     if path.is_file():
         size_mb = path.stat().st_size / (1024 * 1024)
         if size_mb > MAX_FILE_SIZE_MB:
-            raise ValueError(
-                f"File size {size_mb:.2f}MB exceeds limit {MAX_FILE_SIZE_MB}MB"
-            )
+            raise ValueError(f"File size {size_mb:.2f}MB exceeds limit {MAX_FILE_SIZE_MB}MB")
     elif path.is_dir():
         total_size = sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
         size_mb = total_size / (1024 * 1024)
         if size_mb > MAX_TOTAL_SIZE_MB:
-            raise ValueError(
-                f"Total size {size_mb:.2f}MB exceeds limit {MAX_TOTAL_SIZE_MB}MB"
-            )
+            raise ValueError(f"Total size {size_mb:.2f}MB exceeds limit {MAX_TOTAL_SIZE_MB}MB")
 
         file_count = sum(1 for f in path.rglob("*") if f.is_file())
         if file_count > MAX_FILES_COUNT:
-            raise ValueError(
-                f"File count {file_count} exceeds limit {MAX_FILES_COUNT}"
-            )
+            raise ValueError(f"File count {file_count} exceeds limit {MAX_FILES_COUNT}")
 
 
 def _extract_zip(zip_path: Path, dest_dir: Path) -> None:
@@ -199,6 +194,7 @@ def _extract_tar(tar_path: Path, dest_dir: Path) -> None:
         tar_path: Path to TAR file
         dest_dir: Destination directory
     """
+
     def is_safe_member(member_name: str) -> bool:
         member_path = Path(member_name)
         if member_path.is_absolute():

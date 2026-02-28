@@ -75,7 +75,11 @@ class WandBLogger:
             mode = os.getenv("WANDB_MODE", "offline")
 
             self.wandb_run = wandb.init(
-                project=self.project, name=self.name, config=self.config, mode=mode, reinit=False
+                project=self.project,
+                name=self.name,
+                config=self.config,
+                mode=mode,
+                reinit=False,
             )
 
             logger.info(f"✓ W&B initialized (mode={mode}, project={self.project})")

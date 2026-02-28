@@ -27,7 +27,7 @@ def load_tokenizer(*args: Any, **kwargs: Any) -> Any:
     global _warned
     if not _warned:
         warnings.warn(
-            "codex_ml.tokenization.compat.load_tokenizer is deprecated; use codex_ml.tokenization.api.load_tokenizer",
+            "codex_ml.tokenization.compat.load_tokenizer is deprecated; use codex_ml.tokenization.api.load_tokenizer",  # noqa: E501
             DeprecationWarning,
             stacklevel=2,
         )

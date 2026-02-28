@@ -144,9 +144,7 @@ class MemoryInterface(ABC):
     """
 
     @abstractmethod
-    def store(
-        self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None
-    ) -> bool:
+    def store(self, key: str, value: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
         """
         Store a value in memory.
 
@@ -259,7 +257,10 @@ class PhysicsOfThought:
         self.memory.store(
             f"input_{datetime.now(timezone.utc).isoformat()}",
             input_data,
-            metadata={"type": "input", "timestamp": datetime.now(timezone.utc).isoformat()},
+            metadata={
+                "type": "input",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            },
         )
 
         # Execute OODA loop
@@ -269,7 +270,10 @@ class PhysicsOfThought:
         self.memory.store(
             f"result_{datetime.now(timezone.utc).isoformat()}",
             result,
-            metadata={"type": "result", "timestamp": datetime.now(timezone.utc).isoformat()},
+            metadata={
+                "type": "result",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            },
         )
 
         return result

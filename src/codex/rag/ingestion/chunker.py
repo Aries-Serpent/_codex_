@@ -54,9 +54,7 @@ class ChunkingConfig:
 
     # Hierarchical parameters
     include_headers_in_chunks: bool = True
-    header_patterns: list[str] = field(
-        default_factory=lambda: [r"^#{1,6}\s+", r"^<h[1-6][^>]*>"]
-    )
+    header_patterns: list[str] = field(default_factory=lambda: [r"^#{1,6}\s+", r"^<h[1-6][^>]*>"])
 
     # Metadata
     include_position_info: bool = True
@@ -150,13 +148,15 @@ class FixedSizeChunker(BaseChunker):
 
         # If text is shorter than min_chunk_size, return as single chunk
         if len(text) < self.config.min_chunk_size:
-            return [self._create_chunk(
-                text=text,
-                index=0,
-                start_pos=0,
-                end_pos=len(text),
-                strategy="fixed_size",
-            )]
+            return [
+                self._create_chunk(
+                    text=text,
+                    index=0,
+                    start_pos=0,
+                    end_pos=len(text),
+                    strategy="fixed_size",
+                )
+            ]
 
         chunks = []
         start = 0
@@ -221,8 +221,8 @@ class SentenceChunker(BaseChunker):
     """
 
     SENTENCE_PATTERN = re.compile(
-        r'(?<=[.!?。！？])\s+(?=[A-Z\u4e00-\u9fff])|(?<=[.!?。！？])(?=\s*$)',
-        re.MULTILINE
+        r"(?<=[.!?。！？])\s+(?=[A-Z\u4e00-\u9fff])|(?<=[.!?。！？])(?=\s*$)",
+        re.MULTILINE,
     )
 
     def chunk(self, text: str) -> list[Chunk]:
@@ -316,9 +316,7 @@ class ParagraphChunker(BaseChunker):
                 continue
 
             # Check if adding this paragraph exceeds max size
-            potential_text = (
-                current_chunk_text + self.config.paragraph_separator + para
-            ).strip()
+            potential_text = (current_chunk_text + self.config.paragraph_separator + para).strip()
 
             if len(potential_text) > self.config.max_chunk_size and current_chunk_text:
                 # Save current chunk
@@ -419,10 +417,7 @@ class Chunker:
         self.config = config or ChunkingConfig()
 
         # Get appropriate chunker class
-        chunker_class = self.STRATEGY_MAP.get(
-            self.config.strategy,
-            FixedSizeChunker
-        )
+        chunker_class = self.STRATEGY_MAP.get(self.config.strategy, FixedSizeChunker)
         self._chunker = chunker_class(self.config)
 
     def chunk(self, text: str) -> list[Chunk]:

@@ -8,13 +8,13 @@ import sys
 def main():
     parser = argparse.ArgumentParser(
         description="🎵 Intelligent Audio Auto-Tune",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('path', type=str, help='Path to audio file or directory')
-    parser.add_argument('--output', '-o', type=str, help='Output directory')
-    parser.add_argument('--preview', '-p', action='store_true', help='Generate preview')
-    parser.add_argument('--aggressive', '-a', action='store_true', help='Aggressive cleaning')
-    parser.add_argument('--interactive', '-i', action='store_true', help='Interactive mode')
+    parser.add_argument("path", type=str, help="Path to audio file or directory")
+    parser.add_argument("--output", "-o", type=str, help="Output directory")
+    parser.add_argument("--preview", "-p", action="store_true", help="Generate preview")
+    parser.add_argument("--aggressive", "-a", action="store_true", help="Aggressive cleaning")
+    parser.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
 
     args = parser.parse_args()
 
@@ -24,18 +24,19 @@ def main():
 
     try:
         from services.audio.workflow.auto_tune_workflow import AutoTuneWorkflow
+
         workflow = AutoTuneWorkflow(cognitive_mode=True)
         result = workflow.process_path(
             input_path=args.path,
             output_dir=args.output,
             preview=args.preview,
             aggressive=args.aggressive,
-            interactive=args.interactive
+            interactive=args.interactive,
         )
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("PROCESSING COMPLETE")
-        print("="*60)
+        print("=" * 60)
 
         if result.success:
             print(f"✅ Successfully processed {result.total_files} file(s)")

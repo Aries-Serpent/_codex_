@@ -23,7 +23,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-_ALLOWED_CATEGORIES = {"VERIFIED", "INFERRED", "PLANNED", "SUMMARY", "AUDIT", "ASSERTED"}
+_ALLOWED_CATEGORIES = {
+    "VERIFIED",
+    "INFERRED",
+    "PLANNED",
+    "SUMMARY",
+    "AUDIT",
+    "ASSERTED",
+}
 
 
 def _utc_now() -> str:
@@ -81,7 +88,11 @@ class HonestyRecorder:
         return list(self._metadata.statements)
 
     def record_statement(
-        self, content: str, category: str, verified: bool, metadata: dict[str, Any] | None = None
+        self,
+        content: str,
+        category: str,
+        verified: bool,
+        metadata: dict[str, Any] | None = None,
     ) -> HonestyStatement:
         if not content:
             raise ValueError("content is required for honesty statements")

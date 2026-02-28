@@ -117,9 +117,7 @@ def load_dataset(file_path, **kwargs) -> Any:
     ext = path.suffix.lower()
 
     if ext not in _LOADERS:
-        raise ValueError(
-            f"Unsupported file extension: {ext}\n" f"Supported: {list(_LOADERS.keys())}"
-        )
+        raise ValueError(f"Unsupported file extension: {ext}\nSupported: {list(_LOADERS.keys())}")
 
     logger.info(f"Loading dataset: {path} (format: {ext})")
     loader_fn = _resolve_loader(_LOADERS[ext])

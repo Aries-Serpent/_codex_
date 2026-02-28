@@ -25,8 +25,8 @@ def _run(cmd: str, cwd: Path) -> int:
 def run_health_check(repo_root: Path) -> dict[str, int]:
     cmds = {
         "env_snapshot_rc": "python tools/codex_env_snapshot.py --out codex_env_snapshot.json",
-        "dependency_audit_rc": "python tools/codex_dependency_audit.py --repo-root . --json-out codex_dependency_report.json --md-out codex_dependency_report.md",
-        "secret_scan_rc": "python tools/codex_secret_scan_stub.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md",  # nosec B105
+        "dependency_audit_rc": "python tools/codex_dependency_audit.py --repo-root . --json-out codex_dependency_report.json --md-out codex_dependency_report.md",  # noqa: E501
+        "secret_scan_rc": "python tools/codex_secret_scan_stub.py --repo-root . --json-out codex_secret_scan_report.json --md-out codex_secret_scan_report.md",  # nosec B105  # noqa: E501
     }
     results: dict[str, int] = {}
     for key, cmd in cmds.items():

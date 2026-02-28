@@ -33,6 +33,7 @@ from typing import Any, Dict, List, Optional
 # Public dataclasses
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class CognitiveDecision:
     """
@@ -41,11 +42,11 @@ class CognitiveDecision:
     AGENT_USAGE: Use as the canonical decision format for agent chains.
     """
 
-    decision: str               # ComplianceDecision.value string
-    confidence: float           # 0.0–1.0
-    reasoning: str              # Human/agent-readable explanation
-    coherence: float            # Quantum state quality (≥0.650 = good)
-    used_superposition: bool    # Whether quantum path was taken
+    decision: str  # ComplianceDecision.value string
+    confidence: float  # 0.0–1.0
+    reasoning: str  # Human/agent-readable explanation
+    coherence: float  # Quantum state quality (≥0.650 = good)
+    used_superposition: bool  # Whether quantum path was taken
     alternatives: List[Dict[str, Any]] = field(default_factory=list)
     cognitive_state: Dict[str, Any] = field(default_factory=dict)
     agent_hints: Dict[str, str] = field(default_factory=dict)
@@ -55,15 +56,16 @@ class CognitiveDecision:
 class AgentHealthSnapshot:
     """Lightweight cognitive health summary for pre-decision checks."""
 
-    coherence: float        # Latest coherence reading
-    decision_count: int     # Total decisions this session
-    error_count: int        # Errors encountered this session
-    health_status: str      # "healthy" | "degraded" | "critical"
+    coherence: float  # Latest coherence reading
+    decision_count: int  # Total decisions this session
+    error_count: int  # Errors encountered this session
+    health_status: str  # "healthy" | "degraded" | "critical"
 
 
 # ---------------------------------------------------------------------------
 # CognitiveBrain
 # ---------------------------------------------------------------------------
+
 
 class CognitiveBrain:
     """
@@ -214,12 +216,12 @@ class CognitiveBrain:
 
         AGENT_USE_CASE: Pre-decision health gate in critical workflows.
         """
-        last_coherence = (
-            self._history[-1].coherence if self._history else 1.0
-        )
+        last_coherence = self._history[-1].coherence if self._history else 1.0
         status = (
-            "healthy" if last_coherence >= 0.750 and self._error_count == 0
-            else "degraded" if last_coherence >= 0.650
+            "healthy"
+            if last_coherence >= 0.750 and self._error_count == 0
+            else "degraded"
+            if last_coherence >= 0.650
             else "critical"
         )
         return AgentHealthSnapshot(
@@ -241,14 +243,18 @@ class CognitiveBrain:
         """
         if audience == "agent":
             import json as _json
-            return _json.dumps({
-                "decision": decision.decision,
-                "confidence": round(decision.confidence, 4),
-                "coherence": round(decision.coherence, 4),
-                "pattern": decision.cognitive_state.get("pattern"),
-                "quantum_mode": decision.used_superposition,
-                "agent_hints": decision.agent_hints,
-            }, indent=2)
+
+            return _json.dumps(
+                {
+                    "decision": decision.decision,
+                    "confidence": round(decision.confidence, 4),
+                    "coherence": round(decision.coherence, 4),
+                    "pattern": decision.cognitive_state.get("pattern"),
+                    "quantum_mode": decision.used_superposition,
+                    "agent_hints": decision.agent_hints,
+                },
+                indent=2,
+            )
         return decision.reasoning
 
     # ------------------------------------------------------------------
@@ -298,14 +304,10 @@ class CognitiveBrain:
         if decision_val == "reject":
             hints["next_action"] = "escalate_to_human_reviewer"
             hints["urgency"] = "high" if assessment.coherence < 0.650 else "medium"
-            hints["explanation_needed"] = (
-                "yes" if assessment.confidence < 0.80 else "no"
-            )
+            hints["explanation_needed"] = "yes" if assessment.confidence < 0.80 else "no"
         elif decision_val == "approve_with_monitoring":
             hints["next_action"] = "setup_monitoring_alerts"
-            hints["monitor_frequency"] = (
-                "daily" if assessment.confidence < 0.90 else "weekly"
-            )
+            hints["monitor_frequency"] = "daily" if assessment.confidence < 0.90 else "weekly"
             hints["auto_approve_allowed"] = "no"
         elif decision_val == "conditional_approval":
             hints["next_action"] = "request_additional_evidence"
@@ -313,9 +315,7 @@ class CognitiveBrain:
             hints["auto_approve_allowed"] = "no"
         else:  # approve
             hints["next_action"] = "finalize_approval"
-            hints["auto_approve_allowed"] = (
-                "yes" if assessment.confidence >= 0.95 else "no"
-            )
+            hints["auto_approve_allowed"] = "yes" if assessment.confidence >= 0.95 else "no"
             hints["audit_trail_required"] = "yes"
 
         if assessment.coherence < 0.650:

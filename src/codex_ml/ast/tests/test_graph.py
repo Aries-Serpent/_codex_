@@ -1,6 +1,7 @@
 """
 Tests for DependencyGraph.
 """
+
 import pytest
 
 from codex_ml.ast.core.exceptions import CycleDetectedError

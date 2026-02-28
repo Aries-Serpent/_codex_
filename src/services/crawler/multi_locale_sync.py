@@ -150,14 +150,16 @@ class MultiLocaleSyncManager:
         """
         schedule = []
         for locale in sorted(self.locales.values(), key=lambda x: -x.priority):
-            schedule.append({
-                "locale_code": locale.locale_code,
-                "priority": locale.priority,
-                "enabled": locale.enabled,
-                "needs_sync": locale.needs_sync(),
-                "last_sync": locale.last_sync.isoformat() if locale.last_sync else None,
-                "sync_interval_hours": locale.sync_interval_hours,
-            })
+            schedule.append(
+                {
+                    "locale_code": locale.locale_code,
+                    "priority": locale.priority,
+                    "enabled": locale.enabled,
+                    "needs_sync": locale.needs_sync(),
+                    "last_sync": locale.last_sync.isoformat() if locale.last_sync else None,
+                    "sync_interval_hours": locale.sync_interval_hours,
+                }
+            )
         return schedule
 
     def sync_locale(
@@ -243,7 +245,7 @@ class MultiLocaleSyncManager:
         # Get locales to sync, sorted by priority
         locales_to_sync = sorted(
             [loc for loc in self.locales.values() if loc.enabled],
-            key=lambda x: -x.priority
+            key=lambda x: -x.priority,
         )
 
         if only_due:
@@ -279,11 +281,13 @@ class MultiLocaleSyncManager:
                 results.append(result)
             except Exception as e:
                 locale_code = futures[future]
-                results.append(LocaleSyncResult(
-                    locale_code=locale_code,
-                    success=False,
-                    error_message=f"Execution error: {e}",
-                ))
+                results.append(
+                    LocaleSyncResult(
+                        locale_code=locale_code,
+                        success=False,
+                        error_message=f"Execution error: {e}",
+                    )
+                )
 
         # Aggregate results
         total_duration = time.time() - start_time

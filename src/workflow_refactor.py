@@ -10,6 +10,7 @@ Note: Logging is configured using the standard logging module. For production us
 ensure logging is properly configured via logging.basicConfig() or a logging
 configuration file before using this module.
 """
+
 from __future__ import annotations
 
 import logging
@@ -76,11 +77,11 @@ class WorkflowRefactorer:
             return False
 
         # Read workflow
-        with open(workflow_path, 'r') as f:
+        with open(workflow_path, "r") as f:
             content = f.read()
 
         # Check if workflow_dispatch already exists
-        if 'workflow_dispatch' in content:
+        if "workflow_dispatch" in content:
             logger.info(f"workflow_dispatch already present: {workflow_path.name}")
             return False
 
@@ -91,23 +92,23 @@ class WorkflowRefactorer:
             logger.error(f"Failed to parse {workflow_path.name}: {e}")
             return False
 
-        if not isinstance(data, dict) or 'on' not in data:
+        if not isinstance(data, dict) or "on" not in data:
             logger.warning(f"Invalid workflow structure: {workflow_path.name}")
             return False
 
         # Add workflow_dispatch
-        if isinstance(data['on'], dict):
-            data['on']['workflow_dispatch'] = None
-        elif isinstance(data['on'], list):
-            data['on'].append('workflow_dispatch')
-        elif isinstance(data['on'], str):
-            data['on'] = [data['on'], 'workflow_dispatch']
+        if isinstance(data["on"], dict):
+            data["on"]["workflow_dispatch"] = None
+        elif isinstance(data["on"], list):
+            data["on"].append("workflow_dispatch")
+        elif isinstance(data["on"], str):
+            data["on"] = [data["on"], "workflow_dispatch"]
         else:
             logger.warning(f"Unknown 'on' type: {workflow_path.name}")
             return False
 
         # Write back
-        with open(workflow_path, 'w') as f:
+        with open(workflow_path, "w") as f:
             yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
         logger.info(f"Added workflow_dispatch: {workflow_path.name}")
@@ -130,7 +131,7 @@ class WorkflowRefactorer:
             return {"modified": False, "error": "PyYAML not installed"}
 
         # Read workflow
-        with open(workflow_path, 'r') as f:
+        with open(workflow_path, "r") as f:
             content = f.read()
 
         # Parse YAML
@@ -140,49 +141,46 @@ class WorkflowRefactorer:
             logger.error(f"Failed to parse {workflow_path.name}: {e}")
             return {"modified": False, "error": str(e)}
 
-        if not isinstance(data, dict) or 'jobs' not in data:
+        if not isinstance(data, dict) or "jobs" not in data:
             return {"modified": False, "reason": "No jobs found"}
 
         modified = False
         jobs_updated = []
 
         # Process each job
-        for job_name, job_config in data['jobs'].items():
+        for job_name, job_config in data["jobs"].items():
             if not isinstance(job_config, dict):
                 continue
 
-            runs_on = job_config.get('runs-on')
+            runs_on = job_config.get("runs-on")
 
             # Check if already using self-hosted, linux
             if isinstance(runs_on, list):
-                if 'self-hosted' in runs_on and 'linux' in runs_on:
+                if "self-hosted" in runs_on and "linux" in runs_on:
                     continue  # Already correct
                 # Update to [self-hosted, linux]
-                job_config['runs-on'] = ['self-hosted', 'linux']
+                job_config["runs-on"] = ["self-hosted", "linux"]
                 modified = True
                 jobs_updated.append(job_name)
 
             elif isinstance(runs_on, str):
-                if runs_on not in ['self-hosted', '[self-hosted, linux]']:
+                if runs_on not in ["self-hosted", "[self-hosted, linux]"]:
                     # Replace with [self-hosted, linux]
-                    job_config['runs-on'] = ['self-hosted', 'linux']
+                    job_config["runs-on"] = ["self-hosted", "linux"]
                     modified = True
                     jobs_updated.append(job_name)
 
         if modified:
             # Write back
-            with open(workflow_path, 'w') as f:
+            with open(workflow_path, "w") as f:
                 yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
-            logger.info(
-                f"Updated runs-on for {workflow_path.name}: "
-                f"{', '.join(jobs_updated)}"
-            )
+            logger.info(f"Updated runs-on for {workflow_path.name}: {', '.join(jobs_updated)}")
 
         return {
             "modified": modified,
             "jobs_updated": jobs_updated,
-            "total_jobs": len(data['jobs'])
+            "total_jobs": len(data["jobs"]),
         }
 
     def add_codex_digest_step(self, workflow_path: Path) -> bool:
@@ -202,11 +200,11 @@ class WorkflowRefactorer:
             return False
 
         # Read workflow
-        with open(workflow_path, 'r') as f:
+        with open(workflow_path, "r") as f:
             content = f.read()
 
         # Check if codex_digest already present
-        if 'codex_digest' in content or 'codex-digest' in content:
+        if "codex_digest" in content or "codex-digest" in content:
             logger.info(f"codex_digest already present: {workflow_path.name}")
             return False
 
@@ -217,30 +215,30 @@ class WorkflowRefactorer:
             logger.error(f"Failed to parse {workflow_path.name}: {e}")
             return False
 
-        if not isinstance(data, dict) or 'jobs' not in data:
+        if not isinstance(data, dict) or "jobs" not in data:
             return False
 
         # Add codex_digest step to first job
         modified = False
-        for job_name, job_config in data['jobs'].items():
-            if not isinstance(job_config, dict) or 'steps' not in job_config:
+        for job_name, job_config in data["jobs"].items():
+            if not isinstance(job_config, dict) or "steps" not in job_config:
                 continue
 
             # Add step
             digest_step = {
-                'name': 'Generate context digest',
-                'run': 'python -m codex_digest --output context_summary.md',
-                'if': 'always()'
+                "name": "Generate context digest",
+                "run": "python -m codex_digest --output context_summary.md",
+                "if": "always()",
             }
 
-            job_config['steps'].append(digest_step)
+            job_config["steps"].append(digest_step)
             modified = True
             logger.info(f"Added codex_digest step to {job_name} in {workflow_path.name}")
             break  # Only add to first job
 
         if modified:
             # Write back
-            with open(workflow_path, 'w') as f:
+            with open(workflow_path, "w") as f:
                 yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
         return modified
@@ -249,7 +247,7 @@ class WorkflowRefactorer:
         self,
         add_dispatch: bool = True,
         ensure_self_hosted: bool = True,
-        add_digest: bool = False
+        add_digest: bool = False,
     ) -> Dict[str, Any]:
         """
         Refactor all workflows in directory.
@@ -269,7 +267,7 @@ class WorkflowRefactorer:
             "dispatch_added": 0,
             "runner_updated": 0,
             "digest_added": 0,
-            "errors": []
+            "errors": [],
         }
 
         for workflow_path in workflows:
@@ -289,10 +287,7 @@ class WorkflowRefactorer:
 
             except Exception as e:
                 logger.error(f"Error processing {workflow_path.name}: {e}")
-                results["errors"].append({
-                    "workflow": workflow_path.name,
-                    "error": str(e)
-                })
+                results["errors"].append({"workflow": workflow_path.name, "error": str(e)})
 
         return results
 
@@ -312,35 +307,35 @@ class WorkflowRefactorer:
             return {"valid": False, "error": "PyYAML not installed"}
 
         try:
-            with open(workflow_path, 'r') as f:
+            with open(workflow_path, "r") as f:
                 data = yaml.safe_load(f)
 
             # Basic validation
             if not isinstance(data, dict):
                 return {"valid": False, "error": "Not a valid YAML dict"}
 
-            if 'on' not in data:
+            if "on" not in data:
                 return {"valid": False, "error": "Missing 'on' trigger"}
 
-            if 'jobs' not in data:
+            if "jobs" not in data:
                 return {"valid": False, "error": "Missing 'jobs' section"}
 
             # Check for workflow_dispatch
             has_dispatch = False
-            if isinstance(data['on'], dict):
-                has_dispatch = 'workflow_dispatch' in data['on']
-            elif isinstance(data['on'], list):
-                has_dispatch = 'workflow_dispatch' in data['on']
+            if isinstance(data["on"], dict):
+                has_dispatch = "workflow_dispatch" in data["on"]
+            elif isinstance(data["on"], list):
+                has_dispatch = "workflow_dispatch" in data["on"]
 
             # Check runner tags
             jobs_with_self_hosted = 0
-            total_jobs = len(data['jobs'])
+            total_jobs = len(data["jobs"])
 
-            for job_config in data['jobs'].values():
+            for job_config in data["jobs"].values():
                 if isinstance(job_config, dict):
-                    runs_on = job_config.get('runs-on', [])
+                    runs_on = job_config.get("runs-on", [])
                     if isinstance(runs_on, list):
-                        if 'self-hosted' in runs_on and 'linux' in runs_on:
+                        if "self-hosted" in runs_on and "linux" in runs_on:
                             jobs_with_self_hosted += 1
 
             return {
@@ -348,7 +343,7 @@ class WorkflowRefactorer:
                 "has_workflow_dispatch": has_dispatch,
                 "total_jobs": total_jobs,
                 "jobs_with_self_hosted": jobs_with_self_hosted,
-                "compliance": jobs_with_self_hosted == total_jobs
+                "compliance": jobs_with_self_hosted == total_jobs,
             }
 
         except Exception as e:
@@ -356,9 +351,7 @@ class WorkflowRefactorer:
 
 
 def refactor_workflows(
-    add_dispatch: bool = True,
-    ensure_self_hosted: bool = True,
-    add_digest: bool = False
+    add_dispatch: bool = True, ensure_self_hosted: bool = True, add_digest: bool = False
 ) -> Dict[str, Any]:
     """
     Convenience function to refactor all workflows.
@@ -375,7 +368,7 @@ def refactor_workflows(
     return refactorer.refactor_all_workflows(
         add_dispatch=add_dispatch,
         ensure_self_hosted=ensure_self_hosted,
-        add_digest=add_digest
+        add_digest=add_digest,
     )
 
 
@@ -389,7 +382,7 @@ if __name__ == "__main__":
     results = refactor_workflows(
         add_dispatch=False,  # Dry run mode for safety
         ensure_self_hosted=False,
-        add_digest=False
+        add_digest=False,
     )
 
     print("Results:")

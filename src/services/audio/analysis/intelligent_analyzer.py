@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class AudioAnalysis:
     """Results from audio analysis."""
+
     file_path: Path
     duration: float
     sample_rate: int
@@ -27,13 +28,15 @@ class AudioAnalysis:
 @dataclass
 class ProfileMatch:
     """Matched processing profile."""
-    profile: 'ProcessingProfile'
+
+    profile: "ProcessingProfile"
     confidence: float
     reason: str
 
 
 class ProcessingProfile:
     """Audio processing profile."""
+
     def __init__(self, name: str, parameters: Dict[str, Any]):
         self.name = name
         self.parameters = parameters
@@ -54,11 +57,11 @@ class IntelligentAudioAnalyzer:
 
             # Placeholder features
             features = {
-                'zcr': np.array([0.1]),
-                'spectral_centroid': np.array([2000.0]),
-                'tempo': 120.0,
-                'has_strong_beat': True,
-                'rms_energy': 0.5
+                "zcr": np.array([0.1]),
+                "spectral_centroid": np.array([2000.0]),
+                "tempo": 120.0,
+                "has_strong_beat": True,
+                "rms_energy": 0.5,
             }
 
             # Classify content
@@ -78,27 +81,24 @@ class IntelligentAudioAnalyzer:
                 features=features,
                 problems=problems,
                 quality_score=quality_score,
-                metadata=self._extract_metadata(file_path)
+                metadata=self._extract_metadata(file_path),
             )
         except Exception as e:
             self.logger.error(f"Analysis failed: {e}")
             raise
 
     def _classify_content(
-        self,
-        audio: Optional[np.ndarray],
-        sr: int,
-        features: Dict[str, Any]
+        self, audio: Optional[np.ndarray], sr: int, features: Dict[str, Any]
     ) -> str:
         """Classify audio content type."""
-        zcr_mean = np.mean(features['zcr'])
-        spectral_centroid_mean = np.mean(features['spectral_centroid'])
-        tempo = features['tempo']
+        zcr_mean = np.mean(features["zcr"])
+        spectral_centroid_mean = np.mean(features["spectral_centroid"])
+        tempo = features["tempo"]
 
         # Decision tree classification
         if zcr_mean > 0.15 and spectral_centroid_mean > 3000:
             return "speech"
-        elif tempo > 80 and features.get('has_strong_beat'):
+        elif tempo > 80 and features.get("has_strong_beat"):
             return "music"
         elif zcr_mean < 0.05:
             return "ambient"
@@ -106,27 +106,20 @@ class IntelligentAudioAnalyzer:
             return "mixed"
 
     def _detect_problems(
-        self,
-        audio: Optional[np.ndarray],
-        sr: int,
-        features: Dict[str, Any]
+        self, audio: Optional[np.ndarray], sr: int, features: Dict[str, Any]
     ) -> List[str]:
         """Detect audio problems."""
         problems = []
 
         # Placeholder problem detection
         # In production, would analyze actual audio data
-        rms = features.get('rms_energy', 0.5)
+        rms = features.get("rms_energy", 0.5)
         if rms < 0.01:
             problems.append("low_volume")
 
         return problems
 
-    def _calculate_quality_score(
-        self,
-        features: Dict[str, Any],
-        problems: List[str]
-    ) -> float:
+    def _calculate_quality_score(self, features: Dict[str, Any], problems: List[str]) -> float:
         """Calculate quality score 0-10."""
         base_score = 8.0
         # Deduct points for each problem
@@ -136,24 +129,20 @@ class IntelligentAudioAnalyzer:
     def _extract_metadata(self, file_path: Path) -> Dict[str, Any]:
         """Extract file metadata."""
         return {
-            'filename': file_path.name,
-            'size_bytes': file_path.stat().st_size if file_path.exists() else 0,
-            'format': file_path.suffix[1:] if file_path.suffix else 'unknown'
+            "filename": file_path.name,
+            "size_bytes": file_path.stat().st_size if file_path.exists() else 0,
+            "format": file_path.suffix[1:] if file_path.suffix else "unknown",
         }
 
     def _load_profiles(self) -> List[ProcessingProfile]:
         """Load processing profiles."""
         return [
-            ProcessingProfile('speech', {'noise_reduction': 0.8, 'eq': 'vocal'}),
-            ProcessingProfile('music', {'noise_reduction': 0.5, 'eq': 'balanced'}),
-            ProcessingProfile('ambient', {'noise_reduction': 0.3, 'eq': 'natural'}),
+            ProcessingProfile("speech", {"noise_reduction": 0.8, "eq": "vocal"}),
+            ProcessingProfile("music", {"noise_reduction": 0.5, "eq": "balanced"}),
+            ProcessingProfile("ambient", {"noise_reduction": 0.3, "eq": "natural"}),
         ]
 
-    def select_profile(
-        self,
-        analysis: AudioAnalysis,
-        aggressive: bool = False
-    ) -> ProfileMatch:
+    def select_profile(self, analysis: AudioAnalysis, aggressive: bool = False) -> ProfileMatch:
         """Select optimal cleaning profile."""
         # Match based on content type
         for profile in self.profiles:

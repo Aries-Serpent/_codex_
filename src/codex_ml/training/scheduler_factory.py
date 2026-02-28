@@ -23,7 +23,6 @@ Example usage:
     ```
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -163,7 +162,9 @@ def create_scheduler(
     except (ImportError, TypeError) as e:
         logger.debug(f"ImportError or TypeError: {e}")
         logger.debug(f"transformers error: {e}")
-        LOGGER.warning("transformers not available or TypeError, falling back to PyTorch schedulers")
+        LOGGER.warning(
+            "transformers not available or TypeError, falling back to PyTorch schedulers"
+        )
         # Fall back to PyTorch native schedulers
         return _create_pytorch_scheduler(
             optimizer=optimizer,
@@ -198,7 +199,7 @@ def _create_pytorch_scheduler(
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         raise ImportError(
-            "PyTorch is required for scheduler creation. " "Install with: pip install torch"
+            "PyTorch is required for scheduler creation. Install with: pip install torch"
         )
 
     def _make_lambda_lr(lr_lambda):

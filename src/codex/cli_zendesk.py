@@ -54,7 +54,8 @@ app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 
 
 ResourceConfig = tuple[
-    type[BaseModel], Callable[[Iterable[object], Iterable[object]], list[dict[str, Any]]]
+    type[BaseModel],
+    Callable[[Iterable[object], Iterable[object]], list[dict[str, Any]]],
 ]
 _RESOURCE_CONFIG: dict[str, ResourceConfig] = {
     "triggers": (Trigger, diff_triggers),
@@ -751,7 +752,10 @@ def _export_zendesk_config(env: str) -> dict[str, Any]:
             or getattr(macro, "name", None)
             or getattr(macro, "id", None),
             "actions": [
-                {"field": getattr(action, "field", None), "value": getattr(action, "value", None)}
+                {
+                    "field": getattr(action, "field", None),
+                    "value": getattr(action, "value", None),
+                }
                 for action in getattr(macro, "actions", []) or []
             ],
             "active": getattr(macro, "active", None),

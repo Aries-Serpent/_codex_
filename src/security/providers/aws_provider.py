@@ -29,12 +29,14 @@ logger = logging.getLogger(__name__)
 try:
     import boto3
     from botocore.exceptions import ClientError
+
     HAS_BOTO3 = True
 except ImportError:
     # Create placeholder module for boto3 to allow test patching
     # This enables @patch("security.providers.aws_provider.boto3") to work
     import sys
     from types import ModuleType
+
     boto3 = ModuleType("boto3")  # type: ignore
     # Add common attributes to prevent AttributeErrors in tests
     boto3.client = lambda *args, **kwargs: None  # type: ignore
@@ -88,11 +90,7 @@ class AWSSecretsManagerProvider(SecretProvider):
             session_kwargs["aws_access_key_id"] = config.get("aws_access_key_id")
             session_kwargs["aws_secret_access_key"] = config.get("aws_secret_access_key")
 
-        self.client = boto3.client(
-            "secretsmanager",
-            region_name=self.region,
-            **session_kwargs
-        )
+        self.client = boto3.client("secretsmanager", region_name=self.region, **session_kwargs)
 
         logger.info(f"AWS Secrets Manager provider initialized (region={self.region})")
 
@@ -101,11 +99,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         """Get provider type."""
         return ProviderType.AWS_SECRETS_MANAGER
 
-    def rotate_secret(
-        self,
-        secret_id: str,
-        **kwargs: Any
-    ) -> RotationResult:
+    def rotate_secret(self, secret_id: str, **kwargs: Any) -> RotationResult:
         """Rotate AWS secret.
 
         Args:
@@ -136,7 +130,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 metadata={
                     "version_id": response["VersionId"],
                     "arn": response["ARN"],
-                }
+                },
             )
 
         except ClientError as e:
@@ -147,21 +141,13 @@ class AWSSecretsManagerProvider(SecretProvider):
             return RotationResult(
                 success=False,
                 old_secret_id=secret_id,
-                error_message=f"{error_code}: {error_msg}"
+                error_message=f"{error_code}: {error_msg}",
             )
         except Exception as e:
             logger.error(f"AWS rotation failed: {e}")
-            return RotationResult(
-                success=False,
-                old_secret_id=secret_id,
-                error_message=str(e)
-            )
+            return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
 
-    def validate_secret(
-        self,
-        secret_id: str,
-        secret_value: Optional[str] = None
-    ) -> bool:
+    def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
         """Validate AWS secret exists and is accessible.
 
         Args:
@@ -210,10 +196,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 updated_at = updated_at.replace(tzinfo=UTC)
 
             # Parse tags
-            tags = {
-                tag["Key"]: tag["Value"]
-                for tag in response.get("Tags", [])
-            }
+            tags = {tag["Key"]: tag["Value"] for tag in response.get("Tags", [])}
 
             return SecretMetadata(
                 secret_id=response["Name"],
@@ -263,6 +246,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 return response["SecretString"]
             else:
                 import base64
+
                 return base64.b64encode(response["SecretBinary"]).decode("utf-8")
 
         except ClientError as e:
@@ -273,7 +257,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         name: str,
         secret_value: str,
         description: Optional[str] = None,
-        tags: Optional[Dict[str, str]] = None
+        tags: Optional[Dict[str, str]] = None,
     ) -> RotationResult:
         """Create new AWS secret.
 
@@ -296,9 +280,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 create_kwargs["Description"] = description
 
             if tags:
-                create_kwargs["Tags"] = [
-                    {"Key": k, "Value": v} for k, v in tags.items()
-                ]
+                create_kwargs["Tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]
 
             response = self.client.create_secret(**create_kwargs)
 
@@ -310,21 +292,17 @@ class AWSSecretsManagerProvider(SecretProvider):
                 metadata={
                     "arn": response["ARN"],
                     "version_id": response["VersionId"],
-                }
+                },
             )
 
         except ClientError as e:
             return RotationResult(
                 success=False,
                 old_secret_id="",  # nosec B106
-                error_message=str(e)
+                error_message=str(e),
             )
 
-    def delete_secret(
-        self,
-        secret_id: str,
-        recovery_window_days: int = 30
-    ) -> bool:
+    def delete_secret(self, secret_id: str, recovery_window_days: int = 30) -> bool:
         """Delete AWS secret (with recovery window).
 
         Args:
@@ -335,20 +313,14 @@ class AWSSecretsManagerProvider(SecretProvider):
             True if deleted successfully
         """
         try:
-            self.client.delete_secret(
-                SecretId=secret_id,
-                RecoveryWindowInDays=recovery_window_days
-            )
+            self.client.delete_secret(SecretId=secret_id, RecoveryWindowInDays=recovery_window_days)
             return True
 
         except ClientError as e:
             logger.error(f"Failed to delete secret: {e}")
             return False
 
-    def list_secrets(
-        self,
-        filter_tags: Optional[Dict[str, str]] = None
-    ) -> List[SecretMetadata]:
+    def list_secrets(self, filter_tags: Optional[Dict[str, str]] = None) -> List[SecretMetadata]:
         """List all secrets in AWS Secrets Manager.
 
         Args:
@@ -365,14 +337,8 @@ class AWSSecretsManagerProvider(SecretProvider):
             filters = []
             if filter_tags:
                 for key, value in filter_tags.items():
-                    filters.append({
-                        "Key": "tag-key",
-                        "Values": [key]
-                    })
-                    filters.append({
-                        "Key": "tag-value",
-                        "Values": [value]
-                    })
+                    filters.append({"Key": "tag-key", "Values": [key]})
+                    filters.append({"Key": "tag-value", "Values": [value]})
 
             # Paginate through results
             for page in paginator.paginate(Filters=filters):

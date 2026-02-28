@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 class AuthMethod(Enum):
     """Supported authentication methods."""
+
     JWT = "jwt"
     API_KEY = "api_key"
     OAUTH = "oauth"
@@ -42,11 +43,14 @@ class AuthMethod(Enum):
 @dataclass
 class AuthConfig:
     """Authentication middleware configuration."""
+
     enabled: bool = True
     default_method: AuthMethod = AuthMethod.JWT
     api_key_header: str = "X-API-Key"
     bearer_header: str = "Authorization"
-    allowed_methods: Set[AuthMethod] = field(default_factory=lambda: {AuthMethod.JWT, AuthMethod.API_KEY})
+    allowed_methods: Set[AuthMethod] = field(
+        default_factory=lambda: {AuthMethod.JWT, AuthMethod.API_KEY}
+    )
     exempt_paths: Set[str] = field(default_factory=lambda: {"/health", "/ready", "/metrics"})
     rate_limit_requests: int = 100  # per minute
     rate_limit_window: int = 60  # seconds
@@ -55,6 +59,7 @@ class AuthConfig:
 @dataclass
 class AuthResult:
     """Authentication result."""
+
     authenticated: bool
     method: AuthMethod
     user_id: Optional[str] = None
@@ -94,7 +99,7 @@ class APIKeyValidator:
                 else:
                     raise ValueError(
                         "AUTH_SECRET_KEY environment variable must be set in production. "
-                        "Generate a secure random key: python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+                        "Generate a secure random key: python -c 'import secrets; print(secrets.token_urlsafe(32))'"  # noqa: E501
                     )
 
     def _compute_hmac(self, api_key: str) -> str:
@@ -115,8 +120,13 @@ class APIKeyValidator:
         )
         return derived_key.hex()
 
-    def register_key(self, key_hash: str, user_id: str, scopes: Optional[List[str]] = None,
-                    name: str = "default") -> None:
+    def register_key(
+        self,
+        key_hash: str,
+        user_id: str,
+        scopes: Optional[List[str]] = None,
+        name: str = "default",
+    ) -> None:
         """
         Register an API key.
 
@@ -278,8 +288,13 @@ class AuthMiddleware:
         app.add_middleware(AuthMiddleware, token_manager=token_manager)
     """
 
-    def __init__(self, app, token_manager: TokenManager, config: Optional[AuthConfig] = None,
-                 api_key_validator: Optional[APIKeyValidator] = None):
+    def __init__(
+        self,
+        app,
+        token_manager: TokenManager,
+        config: Optional[AuthConfig] = None,
+        api_key_validator: Optional[APIKeyValidator] = None,
+    ):
         """
         Initialize authentication middleware.
 
@@ -294,8 +309,7 @@ class AuthMiddleware:
         self.config = config or AuthConfig()
         self.api_key_validator = api_key_validator or APIKeyValidator()
         self.rate_limiter = RateLimiter(
-            self.config.rate_limit_requests,
-            self.config.rate_limit_window
+            self.config.rate_limit_requests, self.config.rate_limit_window
         )
 
     async def __call__(self, scope, receive, send):
@@ -362,7 +376,7 @@ class AuthMiddleware:
         return AuthResult(
             authenticated=False,
             method=AuthMethod.NONE,
-            error="No authentication credentials provided"
+            error="No authentication credentials provided",
         )
 
     def _authenticate_jwt(self, token: str) -> AuthResult:
@@ -384,7 +398,7 @@ class AuthMiddleware:
             return AuthResult(
                 authenticated=False,
                 method=AuthMethod.JWT,
-                error=f"Invalid token: {error_msg}"
+                error=f"Invalid token: {error_msg}",
             )
 
     def _authenticate_api_key(self, api_key: str) -> AuthResult:
@@ -400,55 +414,60 @@ class AuthMiddleware:
             )
 
         logger.warning("API key authentication failed: Invalid key")
-        return AuthResult(
-            authenticated=False,
-            method=AuthMethod.API_KEY,
-            error="Invalid API key"
-        )
+        return AuthResult(authenticated=False, method=AuthMethod.API_KEY, error="Invalid API key")
 
     async def _send_unauthorized(self, send, error: Optional[str] = None):
         """Send 401 Unauthorized response."""
         import json
 
-        body = json.dumps({
-            "error": "Unauthorized",
-            "detail": error or "Authentication required"
-        }).encode()
+        body = json.dumps(
+            {"error": "Unauthorized", "detail": error or "Authentication required"}
+        ).encode()
 
-        await send({
-            "type": "http.response.start",
-            "status": 401,
-            "headers": [
-                (b"content-type", b"application/json"),
-                (b"www-authenticate", b"Bearer"),
-            ],
-        })
-        await send({
-            "type": "http.response.body",
-            "body": body,
-        })
+        await send(
+            {
+                "type": "http.response.start",
+                "status": 401,
+                "headers": [
+                    (b"content-type", b"application/json"),
+                    (b"www-authenticate", b"Bearer"),
+                ],
+            }
+        )
+        await send(
+            {
+                "type": "http.response.body",
+                "body": body,
+            }
+        )
 
     async def _send_rate_limited(self, send):
         """Send 429 Too Many Requests response."""
         import json
 
-        body = json.dumps({
-            "error": "Too Many Requests",
-            "detail": "Rate limit exceeded. Please try again later."
-        }).encode()
+        body = json.dumps(
+            {
+                "error": "Too Many Requests",
+                "detail": "Rate limit exceeded. Please try again later.",
+            }
+        ).encode()
 
-        await send({
-            "type": "http.response.start",
-            "status": 429,
-            "headers": [
-                (b"content-type", b"application/json"),
-                (b"retry-after", str(self.config.rate_limit_window).encode()),
-            ],
-        })
-        await send({
-            "type": "http.response.body",
-            "body": body,
-        })
+        await send(
+            {
+                "type": "http.response.start",
+                "status": 429,
+                "headers": [
+                    (b"content-type", b"application/json"),
+                    (b"retry-after", str(self.config.rate_limit_window).encode()),
+                ],
+            }
+        )
+        await send(
+            {
+                "type": "http.response.body",
+                "body": body,
+            }
+        )
 
 
 def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[AuthMethod]] = None):
@@ -475,15 +494,18 @@ def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[Auth
 
             if not auth_result or not auth_result.authenticated:
                 from fastapi import HTTPException
+
                 raise HTTPException(status_code=401, detail="Authentication required")
 
             if auth_result.method not in allowed_methods:
                 from fastapi import HTTPException
+
                 raise HTTPException(status_code=401, detail="Invalid authentication method")
 
             # Check scopes if required
             if required_scopes and not (required_scopes & auth_result.scopes):
                 from fastapi import HTTPException
+
                 raise HTTPException(status_code=403, detail="Insufficient permissions")
 
             # Add user info to request state
@@ -494,6 +516,7 @@ def require_auth(scopes: Optional[List[str]] = None, methods: Optional[List[Auth
             return await func(request, *args, **kwargs)
 
         return wrapper
+
     return decorator
 
 

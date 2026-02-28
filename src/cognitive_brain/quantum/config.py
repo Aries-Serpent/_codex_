@@ -45,9 +45,9 @@ class QuantumConfig:
     # Phase 3: Quantum noise simulation parameters (IEEE standard noise model)
     # All default to 0/False for backward compatibility
     noise_enabled: bool = False
-    t1_decoherence_us: float = 100.0   # T1 relaxation time in microseconds
-    t2_decoherence_us: float = 50.0    # T2 dephasing time in microseconds
-    gate_error_rate: float = 0.0       # Depolarizing gate error probability (0.0-1.0)
+    t1_decoherence_us: float = 100.0  # T1 relaxation time in microseconds
+    t2_decoherence_us: float = 50.0  # T2 dephasing time in microseconds
+    gate_error_rate: float = 0.0  # Depolarizing gate error probability (0.0-1.0)
     measurement_error_rate: float = 0.0  # Measurement bit-flip probability (0.0-1.0)
 
     def __post_init__(self):
@@ -63,27 +63,19 @@ class QuantumConfig:
         """
         # Validate rollout percentage
         if not 0 <= self.rollout_percentage <= 100:
-            raise ValueError(
-                f"rollout_percentage must be 0-100, got {self.rollout_percentage}"
-            )
+            raise ValueError(f"rollout_percentage must be 0-100, got {self.rollout_percentage}")
 
         # Phase 3: Validate noise parameters
         if not 0.0 <= self.gate_error_rate <= 1.0:
-            raise ValueError(
-                f"gate_error_rate must be 0.0-1.0, got {self.gate_error_rate}"
-            )
+            raise ValueError(f"gate_error_rate must be 0.0-1.0, got {self.gate_error_rate}")
         if not 0.0 <= self.measurement_error_rate <= 1.0:
             raise ValueError(
                 f"measurement_error_rate must be 0.0-1.0, got {self.measurement_error_rate}"
             )
         if self.t1_decoherence_us < 0:
-            raise ValueError(
-                f"t1_decoherence_us must be >= 0, got {self.t1_decoherence_us}"
-            )
+            raise ValueError(f"t1_decoherence_us must be >= 0, got {self.t1_decoherence_us}")
         if self.t2_decoherence_us < 0:
-            raise ValueError(
-                f"t2_decoherence_us must be >= 0, got {self.t2_decoherence_us}"
-            )
+            raise ValueError(f"t2_decoherence_us must be >= 0, got {self.t2_decoherence_us}")
 
         # If quantum_mode is False, all features should be disabled
         if not self.quantum_mode:
@@ -164,9 +156,7 @@ class QuantumConfig:
             t1_decoherence_us=parse_float(os.getenv("CODEX_QUANTUM_T1_US"), 100.0),
             t2_decoherence_us=parse_float(os.getenv("CODEX_QUANTUM_T2_US"), 50.0),
             gate_error_rate=parse_float(os.getenv("CODEX_QUANTUM_GATE_ERROR"), 0.0),
-            measurement_error_rate=parse_float(
-                os.getenv("CODEX_QUANTUM_MEAS_ERROR"), 0.0
-            ),
+            measurement_error_rate=parse_float(os.getenv("CODEX_QUANTUM_MEAS_ERROR"), 0.0),
         )
 
     @property
@@ -200,8 +190,7 @@ class QuantumConfig:
 
         if feature not in feature_map:
             raise ValueError(
-                f"Invalid feature: {feature}. "
-                f"Valid features: {list(feature_map.keys())}"
+                f"Invalid feature: {feature}. Valid features: {list(feature_map.keys())}"
             )
 
         return feature_map[feature]

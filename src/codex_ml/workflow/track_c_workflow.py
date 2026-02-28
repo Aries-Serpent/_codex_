@@ -298,7 +298,10 @@ class WorkflowOrchestrator:
 
 
 def run_capability(
-    capability: str, *, offline_mode: bool = True, router: CapabilityRouter | None = None
+    capability: str,
+    *,
+    offline_mode: bool = True,
+    router: CapabilityRouter | None = None,
 ) -> WorkflowContext:
     orchestrator = WorkflowOrchestrator(router=router, offline_mode=offline_mode)
     return orchestrator.run(capability)

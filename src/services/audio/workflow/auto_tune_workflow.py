@@ -10,10 +10,17 @@ logger = logging.getLogger(__name__)
 
 class WorkflowResult:
     """Workflow execution result."""
-    def __init__(self, success: bool, total_files: int = 0,
-                 success_rate: float = 0.0, avg_improvement: float = 0.0,
-                 total_time: float = 0.0, output_dir: Optional[str] = None,
-                 error: Optional[str] = None):
+
+    def __init__(
+        self,
+        success: bool,
+        total_files: int = 0,
+        success_rate: float = 0.0,
+        avg_improvement: float = 0.0,
+        total_time: float = 0.0,
+        output_dir: Optional[str] = None,
+        error: Optional[str] = None,
+    ):
         self.success = success
         self.total_files = total_files
         self.success_rate = success_rate
@@ -25,8 +32,14 @@ class WorkflowResult:
 
 class FileProcessingResult:
     """Single file processing result."""
-    def __init__(self, success: bool, input_path: Optional[Path] = None,
-                 processing_time: float = 0.0, error: Optional[str] = None):
+
+    def __init__(
+        self,
+        success: bool,
+        input_path: Optional[Path] = None,
+        processing_time: float = 0.0,
+        error: Optional[str] = None,
+    ):
         self.success = success
         self.input_path = input_path
         self.processing_time = processing_time
@@ -40,9 +53,14 @@ class AutoTuneWorkflow:
         self.cognitive_mode = cognitive_mode
         self.logger = logging.getLogger(__name__)
 
-    def process_path(self, input_path: str, output_dir: Optional[str] = None,
-                     preview: bool = False, aggressive: bool = False,
-                     interactive: bool = False) -> WorkflowResult:
+    def process_path(
+        self,
+        input_path: str,
+        output_dir: Optional[str] = None,
+        preview: bool = False,
+        aggressive: bool = False,
+        interactive: bool = False,
+    ) -> WorkflowResult:
         """Process file or directory."""
         self.logger.info(f"Processing: {input_path}")
         files = self._discover_audio_files(input_path)
@@ -52,8 +70,9 @@ class AutoTuneWorkflow:
 
         # Stub implementation: processing_time set to 0.0 until real timing is implemented
         # TODO(audio-workflow): Add actual audio processing with time.perf_counter() timing
-        results = [FileProcessingResult(success=True, input_path=f, processing_time=0.0)
-                   for f in files]
+        results = [
+            FileProcessingResult(success=True, input_path=f, processing_time=0.0) for f in files
+        ]
 
         return WorkflowResult(
             success=True,
@@ -61,7 +80,7 @@ class AutoTuneWorkflow:
             success_rate=1.0,
             avg_improvement=8.5,  # Stub value
             total_time=sum(r.processing_time for r in results),
-            output_dir=output_dir or str(Path(input_path).parent)
+            output_dir=output_dir or str(Path(input_path).parent),
         )
 
     def _discover_audio_files(self, input_path: str) -> List[Path]:
@@ -70,7 +89,7 @@ class AutoTuneWorkflow:
         if not path.exists():
             raise FileNotFoundError(f"Path does not exist: {path}")
 
-        supported_formats = {'.wav', '.mp3', '.flac', '.ogg', '.m4a'}
+        supported_formats = {".wav", ".mp3", ".flac", ".ogg", ".m4a"}
 
         if path.is_file():
             if path.suffix.lower() in supported_formats:

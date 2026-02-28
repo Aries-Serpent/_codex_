@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 # Check for optional dependencies
 try:
     from psycopg_pool import AsyncConnectionPool
+
     HAS_PSYCOPG3 = True
 except ImportError:
     HAS_PSYCOPG3 = False
@@ -37,6 +38,7 @@ except ImportError:
 # the current hash-based sharding logic in PGVectorStore).
 try:
     from sklearn.cluster import KMeans  # noqa: F401
+
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
@@ -47,6 +49,7 @@ except ImportError:
 @dataclass
 class SearchResult:
     """Result from vector search."""
+
     document_id: str
     content: str
     score: float
@@ -122,8 +125,7 @@ class PGVectorStore:
         """
         if not HAS_PSYCOPG3:
             raise RuntimeError(
-                "PGVectorStore requires psycopg3. "
-                "Install: pip install psycopg[binary,pool]"
+                "PGVectorStore requires psycopg3. Install: pip install psycopg[binary,pool]"
             )
 
         conn_str = connection_string or self.connection_string
@@ -143,8 +145,7 @@ class PGVectorStore:
         await self._create_shard_tables()
 
         logger.info(
-            f"PGVectorStore initialized: {self.num_shards} shards, "
-            f"pool size {self.pool_size}"
+            f"PGVectorStore initialized: {self.num_shards} shards, pool size {self.pool_size}"
         )
 
     async def _create_shard_tables(self) -> None:
@@ -152,10 +153,7 @@ class PGVectorStore:
         if not self.pool:
             raise RuntimeError("Pool not initialized")
 
-        target_shards = (
-            [self.shard_id] if self.shard_id is not None
-            else range(self.num_shards)
-        )
+        target_shards = [self.shard_id] if self.shard_id is not None else range(self.num_shards)
 
         async with self.pool.connection() as conn:
             # Enable pgvector extension
@@ -202,9 +200,7 @@ class PGVectorStore:
             List of search results, globally re-ranked
         """
         if not HAS_PSYCOPG3:
-            raise RuntimeError(
-                "PGVectorStore not available in offline mode. Use FAISSStore."
-            )
+            raise RuntimeError("PGVectorStore not available in offline mode. Use FAISSStore.")
 
         if not self.pool:
             raise RuntimeError("Call initialize() first")
@@ -265,8 +261,7 @@ class PGVectorStore:
                 f"ORDER BY embedding <=> %s::vector LIMIT %s"
             )
             cursor = await conn.execute(
-                search_sql,
-                (query_vector.tolist(), query_vector.tolist(), limit)
+                search_sql, (query_vector.tolist(), query_vector.tolist(), limit)
             )
 
             rows = await cursor.fetchall()
@@ -302,15 +297,13 @@ class PGVectorStore:
             raise RuntimeError("Call initialize() first")
 
         # Group documents by shard
-        shard_groups: Dict[int, List[tuple]] = {
-            i: [] for i in range(self.num_shards)
-        }
+        shard_groups: Dict[int, List[tuple]] = {i: [] for i in range(self.num_shards)}
 
         for doc, emb in zip(documents, embeddings):
             if shard_mapper:
-                shard_id = shard_mapper(doc['id'])
+                shard_id = shard_mapper(doc["id"])
             elif self._kmeans is not None:
-                shard_id = self.semantic_shard_mapper(doc['id'], emb)
+                shard_id = self.semantic_shard_mapper(doc["id"], emb)
             else:
                 # Simple hash-based sharding using xxhash (faster than SHA-256)
                 # For production with multi-process sharding, xxhash is required
@@ -318,30 +311,31 @@ class PGVectorStore:
                 # across Python sessions/processes when xxhash is unavailable.
                 try:
                     import xxhash
-                    hash_val = xxhash.xxh64(doc['id'].encode()).intdigest()
+
+                    hash_val = xxhash.xxh64(doc["id"].encode()).intdigest()
                 except ImportError:
                     # Fallback to SHA-256 for deterministic sharding when xxhash unavailable
                     # SHA-256 provides better collision resistance than MD5 while maintaining
                     # deterministic behavior across sessions/processes.
                     import hashlib
+
                     hash_val = int.from_bytes(
-                        hashlib.sha256(doc['id'].encode()).digest()[:8],
-                        'big'
+                        hashlib.sha256(doc["id"].encode()).digest()[:8], "big"
                     )
                 shard_id = hash_val % self.num_shards
 
-            shard_groups[shard_id].append((
-                doc['id'],
-                emb.tolist(),
-                doc.get('content', ''),
-                doc.get('metadata', {}),
-            ))
+            shard_groups[shard_id].append(
+                (
+                    doc["id"],
+                    emb.tolist(),
+                    doc.get("content", ""),
+                    doc.get("metadata", {}),
+                )
+            )
 
         # Insert to each shard using pipeline
         tasks = [
-            self._insert_to_shard(shard_id, docs)
-            for shard_id, docs in shard_groups.items()
-            if docs
+            self._insert_to_shard(shard_id, docs) for shard_id, docs in shard_groups.items() if docs
         ]
         await asyncio.gather(*tasks)
 
@@ -370,10 +364,7 @@ class PGVectorStore:
                         f"content = EXCLUDED.content, "
                         f"metadata = EXCLUDED.metadata"
                     )
-                    await conn.execute(
-                        insert_sql,
-                        (doc_id, embedding, content, metadata)
-                    )
+                    await conn.execute(insert_sql, (doc_id, embedding, content, metadata))
             await conn.commit()
 
     async def close(self) -> None:
@@ -397,8 +388,7 @@ class PGVectorStore:
         """
         if not HAS_SKLEARN:
             raise RuntimeError(
-                "fit_semantic_sharding() requires scikit-learn. "
-                "Install: pip install scikit-learn"
+                "fit_semantic_sharding() requires scikit-learn. Install: pip install scikit-learn"
             )
         kmeans = KMeans(
             n_clusters=self.num_shards,
@@ -430,12 +420,14 @@ class PGVectorStore:
             # Hash-based fallback
             try:
                 import xxhash
+
                 hash_val = xxhash.xxh64(doc_id.encode()).intdigest()
             except ImportError:
                 import hashlib
+
                 hash_val = int.from_bytes(
                     hashlib.sha256(doc_id.encode()).digest()[:8],
-                    'big',
+                    "big",
                 )
             return hash_val % self.num_shards
         return int(self._kmeans.predict(embedding.reshape(1, -1))[0])

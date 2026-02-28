@@ -30,6 +30,7 @@ import uvicorn
 
 logger = logging.getLogger(__name__)
 
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run MCP FastAPI server")
     parser.add_argument(
@@ -39,7 +40,9 @@ def main() -> None:
     )
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--log-level", default="info")
-    parser.add_argument("--port-fallbacks", type=int, default=3, help="Number of fallback ports to try")
+    parser.add_argument(
+        "--port-fallbacks", type=int, default=3, help="Number of fallback ports to try"
+    )
     parser.add_argument("--diagnostics", action="store_true", help="Enable startup diagnostics")
     parser.add_argument(
         "--allow-public-bind",
@@ -86,16 +89,26 @@ def main() -> None:
     uvicorn.run(app, host=host, port=port, log_level=args.log_level)
 
 
-def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, diagnostics: bool) -> tuple[str, int]:
+def _select_port(
+    host: str, port: int, fallbacks: int, logger: logging.Logger, diagnostics: bool
+) -> tuple[str, int]:
     attempts = max(0, fallbacks)
     for offset in range(attempts + 1):
         candidate = port + offset
         ok, reason = _check_bind(host, candidate)
         if ok:
             if offset:
-                logger.warning("Port %s unavailable (%s). Falling back to %s.", port, reason, candidate)
+                logger.warning(
+                    "Port %s unavailable (%s). Falling back to %s.",
+                    port,
+                    reason,
+                    candidate,
+                )
                 if diagnostics:
-                    print(f"Port {port} unavailable ({reason}). Falling back to {candidate}.", flush=True)
+                    print(
+                        f"Port {port} unavailable ({reason}). Falling back to {candidate}.",
+                        flush=True,
+                    )
             return host, candidate
         logger.warning("Port %s unavailable on host %s (%s).", candidate, host, reason)
         if diagnostics:

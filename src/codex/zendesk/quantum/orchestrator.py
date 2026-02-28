@@ -43,6 +43,7 @@ from src.quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTas
 # Import scope validation infrastructure
 try:
     from security.scope_validator import ScopeValidator, TokenScope
+
     HAS_SCOPE_VALIDATION = True
 except ImportError:
     HAS_SCOPE_VALIDATION = False
@@ -52,8 +53,9 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 # Context variable for thread-safe scope validator storage
-_scope_validator_ctx: contextvars.ContextVar[Optional[ScopeValidator]] = \
-    contextvars.ContextVar('scope_validator', default=None)
+_scope_validator_ctx: contextvars.ContextVar[Optional[ScopeValidator]] = contextvars.ContextVar(
+    "scope_validator", default=None
+)
 
 
 class ZendeskTicket(_ZendeskBaseModel):
@@ -114,16 +116,13 @@ class ZendeskQuantumOrchestrator:
         self.enforce_scopes = enforce_scopes and HAS_SCOPE_VALIDATION
 
         if enforce_scopes and not HAS_SCOPE_VALIDATION:
-            logger.warning(
-                "Scope enforcement requested but validation module not available"
-            )
+            logger.warning("Scope enforcement requested but validation module not available")
 
         logger.info(
-            f"ZendeskQuantumOrchestrator initialized "
-            f"(scope enforcement: {self.enforce_scopes})"
+            f"ZendeskQuantumOrchestrator initialized (scope enforcement: {self.enforce_scopes})"
         )
 
-    def set_scope_validator(self, validator: 'ScopeValidator') -> None:
+    def set_scope_validator(self, validator: "ScopeValidator") -> None:
         """Set scope validator for this context.
 
         Args:
@@ -131,7 +130,7 @@ class ZendeskQuantumOrchestrator:
         """
         _scope_validator_ctx.set(validator)
 
-    def _check_scope(self, required_scopes: 'TokenScope') -> None:
+    def _check_scope(self, required_scopes: "TokenScope") -> None:
         """Check if current context has required scopes.
 
         Args:

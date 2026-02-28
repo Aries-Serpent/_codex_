@@ -41,7 +41,7 @@ class RetrievalEngine:
         store_key = f"{tenant_id}:{index_name}"
 
         if store_key not in self.tenant_stores:
-            # Create store via factory (DRQ-S81: use VectorStoreFactory instead of direct FAISSStore)
+            # Create store via factory (DRQ-S81: use VectorStoreFactory instead of direct FAISSStore)  # noqa: E501
             index_dir = self.index_base_dir / tenant_id / "faiss"
             store = VectorStoreFactory.create(
                 store_type="faiss",

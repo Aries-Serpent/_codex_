@@ -39,9 +39,7 @@ class OrchestrationDecision:
     confidence: float
     reasoning: str
     pattern_matches: list[str] = field(default_factory=list)
-    timestamp: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 
 @dataclass
@@ -229,13 +227,9 @@ class BrainAwareOrchestrator:
                 matches.append(pattern)
 
         # Sort by success rate
-        return sorted(
-            matches, key=lambda p: p.get("success_rate", 0.5), reverse=True
-        )
+        return sorted(matches, key=lambda p: p.get("success_rate", 0.5), reverse=True)
 
-    def recommend_agents(
-        self, task_description: str, min_success_rate: float = 0.7
-    ) -> list[str]:
+    def recommend_agents(self, task_description: str, min_success_rate: float = 0.7) -> list[str]:
         """Recommend agents based on task description and success rates.
 
         Args:
@@ -273,9 +267,7 @@ class BrainAwareOrchestrator:
             if data.get("category", "").lower() == category.lower()
         ]
 
-    def make_routing_decision(
-        self, task_description: str
-    ) -> OrchestrationDecision:
+    def make_routing_decision(self, task_description: str) -> OrchestrationDecision:
         """Make a brain-informed routing decision.
 
         Args:
@@ -444,9 +436,7 @@ class BrainAwareOrchestrator:
             learnings=learnings,
         )
 
-    def aggregate_learnings(
-        self, results: list[OrchestrationResult]
-    ) -> dict[str, Any]:
+    def aggregate_learnings(self, results: list[OrchestrationResult]) -> dict[str, Any]:
         """Aggregate learnings from multiple orchestration results.
 
         Args:

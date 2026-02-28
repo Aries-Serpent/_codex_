@@ -172,7 +172,9 @@ class UnifiedTrainingConfig:
     best_k: int = 0
     best_metric: str = "val_loss"
     continual: Any = None  # ContinualConfig | dict[str, Any] | None - validated in __post_init__
-    continual_phases: list[Any] | None = None  # list[ContinualPhase] for multi-phase continual learning
+    continual_phases: list[Any] | None = (
+        None  # list[ContinualPhase] for multi-phase continual learning
+    )
     callbacks: list[Any] | None = None  # list of TrainingCallback instances
 
     def __post_init__(self) -> None:

@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -141,7 +140,10 @@ def tokenizer() -> None:
 )
 @click.option("--dry-run", is_flag=True, help="Print the training plan without running.")
 def tokenizer_train(
-    config: str, streaming: Optional[bool], stream_chunk_size: Optional[int], dry_run: bool
+    config: str,
+    streaming: Optional[bool],
+    stream_chunk_size: Optional[int],
+    dry_run: bool,
 ) -> None:
     """Train a tokenizer according to the provided configuration."""
     tokenizer_pipeline = _get_tokenizer_pipeline()
@@ -337,7 +339,9 @@ def config_sweep(
     }
     try:
         git_sha = subprocess.check_output(
-            ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL, text=True
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
         ).strip()
     except (subprocess.CalledProcessError, FileNotFoundError):
         git_sha = ""

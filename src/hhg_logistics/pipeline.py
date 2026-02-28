@@ -113,7 +113,8 @@ def run_pipeline(cfg) -> Any:
                 tracked_columns,
             )
             log_dict_safe(
-                drift_summary, artifact_path=Path(".codex") / "reports" / "data_drift_summary.json"
+                drift_summary,
+                artifact_path=Path(".codex") / "reports" / "data_drift_summary.json",
             )
 
         # write reproducibility metadata

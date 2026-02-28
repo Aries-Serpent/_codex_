@@ -190,7 +190,11 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 # If it's a list from JSON, convert to tuple with inner tuple
                 if isinstance(python_state, list):
                     if len(python_state) >= 2 and isinstance(python_state[1], list):
-                        python_state = (python_state[0], tuple(python_state[1]), python_state[2])
+                        python_state = (
+                            python_state[0],
+                            tuple(python_state[1]),
+                            python_state[2],
+                        )
                     else:
                         python_state = tuple(python_state)
                 random.setstate(python_state)
@@ -216,10 +220,12 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     # Legacy format: convert from JSON-deserialized format
                     # If it's a tuple/list from JSON, ensure array element is converted
                     if isinstance(numpy_state, (tuple, list)) and len(numpy_state) >= 5:
-                        # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)
+                        # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)  # noqa: E501
                         state_tuple = (
                             numpy_state[0],
-                            np.array(numpy_state[1], dtype=np.uint32) if isinstance(numpy_state[1], list) else numpy_state[1],
+                            np.array(numpy_state[1], dtype=np.uint32)
+                            if isinstance(numpy_state[1], list)
+                            else numpy_state[1],
                             numpy_state[2],
                             numpy_state[3],
                             numpy_state[4],
@@ -462,6 +468,7 @@ def _deserialize_payload(
     # We need to use the RestrictedUnpickler directly with the buffer
     buf.seek(0)
     from utils.safe_pickle import RestrictedUnpickler
+
     return RestrictedUnpickler(buf).load()
 
 
@@ -516,7 +523,9 @@ def _metric_sort_key(entry: Mapping[str, Any], *, reverse: bool) -> float:
     return float(metric)
 
 
-def _prune_best_k(root: Path, idx: dict[str, Any], *, exclude: frozenset[str] | None = None) -> None:
+def _prune_best_k(
+    root: Path, idx: dict[str, Any], *, exclude: frozenset[str] | None = None
+) -> None:
     entries = idx.get("entries", [])
     top_k = int(idx.get("top_k", 1))
     mode = str(idx.get("mode", "min")).lower()
@@ -826,7 +835,9 @@ def load_checkpoint(
     return state, meta
 
 
-def load_best(checkpoint_dir: str | Path) -> tuple[dict[str, Any], CheckpointMeta, Path]:
+def load_best(
+    checkpoint_dir: str | Path,
+) -> tuple[dict[str, Any], CheckpointMeta, Path]:
     """
     Load the best checkpoint according to index.json (by metric and mode).
     """

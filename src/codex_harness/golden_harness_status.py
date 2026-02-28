@@ -23,8 +23,28 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-_STATUS_PASS = {"pass", "passed", "ok", "success", "green", "approved", "true", "1", "yes"}
-_STATUS_FAIL = {"fail", "failed", "block", "blocked", "reject", "red", "false", "0", "no"}
+_STATUS_PASS = {
+    "pass",
+    "passed",
+    "ok",
+    "success",
+    "green",
+    "approved",
+    "true",
+    "1",
+    "yes",
+}
+_STATUS_FAIL = {
+    "fail",
+    "failed",
+    "block",
+    "blocked",
+    "reject",
+    "red",
+    "false",
+    "0",
+    "no",
+}
 
 
 @dataclass
@@ -139,7 +159,9 @@ def _evaluate_honesty(path: Path) -> HarnessSignal:
             detail="Some honesty statements are incomplete; review required.",
         )
     return HarnessSignal(
-        name="honesty_metadata", status="green", detail="Honesty statements recorded and complete."
+        name="honesty_metadata",
+        status="green",
+        detail="Honesty statements recorded and complete.",
     )
 
 

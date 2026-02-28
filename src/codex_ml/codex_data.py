@@ -58,7 +58,10 @@ def _hash_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
 
 
 def _cache_key(
-    cfg: DataConfig, dataset_path: Path, *, checksum_fn: Callable[[Path], str] = _hash_file
+    cfg: DataConfig,
+    dataset_path: Path,
+    *,
+    checksum_fn: Callable[[Path], str] = _hash_file,
 ) -> str:
     h = hashlib.sha256()
     h.update(str(dataset_path.resolve()).encode("utf-8"))

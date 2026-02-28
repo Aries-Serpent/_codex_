@@ -51,9 +51,10 @@ def _validated_table_sql(table: str, columns: list[str]) -> tuple[str, str]:
     col_list = ", ".join(f'"{c}"' for c in safe_cols)
     col_defs = ", ".join(f'"{c}" TEXT' for c in safe_cols)
     placeholders = ", ".join("?" * len(safe_cols))
-    create_sql = f"CREATE TABLE IF NOT EXISTS {quoted_table} ({col_defs})"
-    insert_sql = f"INSERT INTO {quoted_table} ({col_list}) VALUES ({placeholders})"
+    create_sql = f"CREATE TABLE IF NOT EXISTS {quoted_table} ({col_defs})"  # nosec B608
+    insert_sql = f"INSERT INTO {quoted_table} ({col_list}) VALUES ({placeholders})"  # nosec B608
     return create_sql, insert_sql
+
 
 __all__ = [
     # Registry functions

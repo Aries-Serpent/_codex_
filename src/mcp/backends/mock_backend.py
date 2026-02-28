@@ -95,4 +95,8 @@ class InMemoryMockBackend(BackendAdapter):
 
     def health_check(self) -> dict[str, Any]:
         # simple health payload
-        return {"status": "ok", "backend": "mock", "namespaces": list(self._store.keys())}
+        return {
+            "status": "ok",
+            "backend": "mock",
+            "namespaces": list(self._store.keys()),
+        }

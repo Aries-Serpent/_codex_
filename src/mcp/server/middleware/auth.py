@@ -25,7 +25,10 @@ from starlette.responses import Response
 
 # Simple in-memory mapping for dev usage. Production should consult a secret manager.
 DEV_KEYS: dict[str, dict] = {
-    os.environ.get("DEV_API_KEY", "dev-key-1"): {"tenant": "dev-tenant", "scopes": ["read", "write"]},
+    os.environ.get("DEV_API_KEY", "dev-key-1"): {
+        "tenant": "dev-tenant",
+        "scopes": ["read", "write"],
+    },
 }
 
 
@@ -51,5 +54,9 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
             return Response("Unauthorized", status_code=401)
 
         # default anonymous principal (limited)
-        request.state.principal = principal or {"tenant": "anonymous", "api_key": api_key, "scopes": []}
+        request.state.principal = principal or {
+            "tenant": "anonymous",
+            "api_key": api_key,
+            "scopes": [],
+        }
         return await call_next(request)

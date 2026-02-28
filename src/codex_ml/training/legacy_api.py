@@ -1453,7 +1453,9 @@ def run_functional_training(
         train_kwargs["grad_accum"] = train_kwargs.pop("gradient_accumulation_steps")
     # Filter to only TrainConfig-known fields before construction.
     # This silently drops any remaining legacy keys not part of TrainConfig.
-    train_cfg = TrainCfg(**{k: v for k, v in train_kwargs.items() if k in TrainCfg.__dataclass_fields__})
+    train_cfg = TrainCfg(
+        **{k: v for k, v in train_kwargs.items() if k in TrainCfg.__dataclass_fields__}
+    )
     result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
         eval_batch_raw = (

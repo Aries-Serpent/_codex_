@@ -2,6 +2,7 @@
 Security input sanitization utilities.
 Provides functions to sanitize user input and prevent XSS, injection attacks.
 """
+
 import logging
 import re
 from typing import Union
@@ -31,42 +32,31 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
         return ""
 
     # Step 1: Remove dangerous protocols (case-insensitive)
-    dangerous_protocols = [
-        r'javascript:',
-        r'data:',
-        r'vbscript:',
-        r'file:',
-        r'about:'
-    ]
+    dangerous_protocols = [r"javascript:", r"data:", r"vbscript:", r"file:", r"about:"]
     for protocol in dangerous_protocols:
-        content = re.sub(protocol, '', content, flags=re.IGNORECASE)
+        content = re.sub(protocol, "", content, flags=re.IGNORECASE)
 
     # Step 2: Remove event handlers (onclick, onerror, onload, etc.)
     # Using raw string to properly handle \s for whitespace
-    content = re.sub(
-        r'\s*on\w+\s*=\s*["\']?[^"\'>\s]*["\']?',
-        '',
-        content,
-        flags=re.IGNORECASE
-    )
+    content = re.sub(r'\s*on\w+\s*=\s*["\']?[^"\'>\s]*["\']?', "", content, flags=re.IGNORECASE)
 
     # Step 3: Remove dangerous tags
     dangerous_tags = [
-        r'<script[^>]*>.*?</script>',
-        r'<iframe[^>]*>.*?</iframe>',
-        r'<object[^>]*>.*?</object>',
-        r'<embed[^>]*>.*?</embed>',
-        r'<applet[^>]*>.*?</applet>',
-        r'<meta[^>]*>',
-        r'<link[^>]*>',
-        r'<style[^>]*>.*?</style>',
+        r"<script[^>]*>.*?</script>",
+        r"<iframe[^>]*>.*?</iframe>",
+        r"<object[^>]*>.*?</object>",
+        r"<embed[^>]*>.*?</embed>",
+        r"<applet[^>]*>.*?</applet>",
+        r"<meta[^>]*>",
+        r"<link[^>]*>",
+        r"<style[^>]*>.*?</style>",
     ]
     for tag_pattern in dangerous_tags:
-        content = re.sub(tag_pattern, '', content, flags=re.IGNORECASE | re.DOTALL)
+        content = re.sub(tag_pattern, "", content, flags=re.IGNORECASE | re.DOTALL)
 
     # Step 4: Strip all HTML tags if not allowed
     if not allow_tags:
-        content = re.sub(r'<[^>]+>', '', content)
+        content = re.sub(r"<[^>]+>", "", content)
 
     # Note: HTML encoding of special characters is not performed here.
     # Tests expect tag/protocol removal rather than entity encoding.
@@ -80,7 +70,7 @@ def sanitize_integer(
     value: Union[str, int, float],
     default: int = 0,
     min_value: int = None,
-    max_value: int = None
+    max_value: int = None,
 ) -> int:
     """
     Safely convert input to integer.
@@ -137,7 +127,7 @@ def sanitize_string(
     value: str,
     max_length: int = 1000,
     allow_newlines: bool = True,
-    strip_html: bool = True
+    strip_html: bool = True,
 ) -> str:
     """
     Sanitize string input for safe storage/display.
@@ -155,7 +145,7 @@ def sanitize_string(
         return ""
 
     # Remove null bytes
-    value = value.replace('\x00', '')
+    value = value.replace("\x00", "")
 
     # Strip HTML if requested
     if strip_html:
@@ -163,7 +153,7 @@ def sanitize_string(
 
     # Remove/replace newlines if not allowed
     if not allow_newlines:
-        value = value.replace('\n', ' ').replace('\r', ' ')
+        value = value.replace("\n", " ").replace("\r", " ")
 
     # Truncate to max length
     if len(value) > max_length:

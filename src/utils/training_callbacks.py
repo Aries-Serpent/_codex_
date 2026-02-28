@@ -3,6 +3,7 @@
 
 Currently only exposes :class:`EarlyStopping`.
 """
+
 from __future__ import annotations
 
 from typing import Optional

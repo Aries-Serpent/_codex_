@@ -235,9 +235,7 @@ class FuzzyEngine:
             confidence=confidence,
         )
 
-    def apply_membership_tuning(
-        self, tuning_rules: Dict[str, Any]
-    ) -> "FuzzyEngine":
+    def apply_membership_tuning(self, tuning_rules: Dict[str, Any]) -> "FuzzyEngine":
         """
         Apply membership-function parameter tuning and return a NEW FuzzyEngine.
 
@@ -312,9 +310,6 @@ class FuzzyEngine:
         result = self.evaluate(score, business_impact, remediation_cost)
 
         # Only override if fuzzy is confident and disagrees
-        if (
-            result.dominant != crisp_decision
-            and result.confidence >= threshold
-        ):
+        if result.dominant != crisp_decision and result.confidence >= threshold:
             return result.dominant
         return crisp_decision

@@ -65,9 +65,7 @@ def generate_test_suite(num_tests: int = 100, seed: int = 42) -> List[TestCase]:
         # Last failure time (some never failed)
         if _rng.random() < historical_failure_rate:
             # Failed recently
-            last_failure = current_time - _rng.uniform(
-                0.0, 7 * 86400.0
-            )  # Within 7 days
+            last_failure = current_time - _rng.uniform(0.0, 7 * 86400.0)  # Within 7 days
         else:
             last_failure = None
 
@@ -146,22 +144,14 @@ def run_uncertainty_approach(
     # Optimize schedule
     current_time = 2000.0
     test_ids = [test.test_id for test in test_suite]
-    selected_ids, priorities = optimizer.optimize_test_schedule(
-        test_ids, time_budget, current_time
-    )
+    selected_ids, priorities = optimizer.optimize_test_schedule(test_ids, time_budget, current_time)
 
     # Count failures detected
-    selected_tests = {
-        test.test_id: test for test in test_suite if test.test_id in selected_ids
-    }
-    failures_detected = sum(
-        1 for test_id in selected_ids if selected_tests[test_id].will_fail
-    )
+    selected_tests = {test.test_id: test for test in test_suite if test.test_id in selected_ids}
+    failures_detected = sum(1 for test_id in selected_ids if selected_tests[test_id].will_fail)
 
     # Calculate actual time used
-    actual_time = sum(
-        selected_tests[test_id].execution_time for test_id in selected_ids
-    )
+    actual_time = sum(selected_tests[test_id].execution_time for test_id in selected_ids)
 
     return actual_time, len(selected_ids), failures_detected
 
@@ -240,6 +230,4 @@ def run_exp3_validation() -> dict:
 
 
 if __name__ == "__main__":
-    _results = (
-        run_exp3_validation()
-    )  # Copilot: Prefixed with _ to indicate intentionally unused
+    _results = run_exp3_validation()  # Copilot: Prefixed with _ to indicate intentionally unused

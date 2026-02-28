@@ -53,7 +53,7 @@ def _load_yaml_config(path: Path) -> dict[str, Any]:
     except MissingPyYAMLError as exc:
         logger.debug(f"MissingPyYAMLError: {exc}")
         raise TokenizerPipelineError(
-            'PyYAML is required to parse tokenizer configs. Install it via ``pip install "PyYAML>=6.0"`` '
+            'PyYAML is required to parse tokenizer configs. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
             "before running tokenizer commands."
         ) from exc
     except YAMLError as exc:

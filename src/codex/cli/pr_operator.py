@@ -42,6 +42,7 @@ class PRConfig:
         labels: Labels to add
         assignees: Users to assign
     """
+
     owner: str
     repo: str
     base_branch: str = "main"
@@ -61,6 +62,7 @@ class PRContent:
         files_changed: list of changed files
         snapshot_id: Reference snapshot ID
     """
+
     title: str
     body: str
     branch_name: str
@@ -78,6 +80,7 @@ class PRResult:
         pr_url: URL to the PR
         errors: Any errors encountered
     """
+
     success: bool
     pr_number: Optional[int] = None
     pr_url: Optional[str] = None
@@ -96,11 +99,11 @@ def _sanitize_branch_name(name: str) -> str:
         Sanitized branch name
     """
     # Remove invalid characters
-    sanitized = re.sub(r'[^a-zA-Z0-9/_-]', '-', name)
+    sanitized = re.sub(r"[^a-zA-Z0-9/_-]", "-", name)
     # Remove consecutive dashes
-    sanitized = re.sub(r'-+', '-', sanitized)
+    sanitized = re.sub(r"-+", "-", sanitized)
     # Trim dashes from ends
-    sanitized = sanitized.strip('-')
+    sanitized = sanitized.strip("-")
     # Limit length
     return sanitized[:100]
 
@@ -215,6 +218,7 @@ class PROperator:
         """Initialize GitHub client if available."""
         try:
             from github import Github
+
             token = os.environ.get("GITHUB_TOKEN")
             if token:
                 self._github = Github(token)
@@ -257,7 +261,9 @@ class PROperator:
         title = f"Codex: Refactor {snapshot_id}"
         if intent_summary:
             # Truncate for title
-            short_intent = intent_summary[:50] + "..." if len(intent_summary) > 50 else intent_summary
+            short_intent = (
+                intent_summary[:50] + "..." if len(intent_summary) > 50 else intent_summary
+            )
             title = f"Codex: {short_intent}"
 
         body = _generate_pr_body(
@@ -388,7 +394,8 @@ class PROperator:
 
         # Save PR description
         pr_file = output_dir / "pr-description.md"
-        pr_file.write_text(f"""# {content.title}
+        pr_file.write_text(
+            f"""# {content.title}
 
 **Branch:** `{content.branch_name}`
 **Snapshot:** `{content.snapshot_id}`
@@ -396,16 +403,24 @@ class PROperator:
 ---
 
 {content.body}
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         # Save metadata
         meta_file = output_dir / "pr-metadata.json"
-        meta_file.write_text(json.dumps({
-            "title": content.title,
-            "branch_name": content.branch_name,
-            "snapshot_id": content.snapshot_id,
-            "files_changed": content.files_changed,
-        }, indent=2), encoding="utf-8")
+        meta_file.write_text(
+            json.dumps(
+                {
+                    "title": content.title,
+                    "branch_name": content.branch_name,
+                    "snapshot_id": content.snapshot_id,
+                    "files_changed": content.files_changed,
+                },
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
 
         logger.info("Saved PR content to %s", output_dir)
 

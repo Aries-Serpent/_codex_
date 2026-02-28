@@ -1,6 +1,7 @@
 """
 Tests for AST core node data structures.
 """
+
 from pathlib import Path
 
 from codex_ml.ast.core.node import Finding, SourceLocation, StandardizedASTNode

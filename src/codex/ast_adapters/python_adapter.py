@@ -16,6 +16,7 @@ from typing import Any, Dict, Optional
 
 try:
     import libcst as cst  # type: ignore[import-untyped]
+
     _LIBCST_AVAILABLE = True
 except ImportError:  # pragma: no cover
     cst = None  # type: ignore[assignment]
@@ -66,7 +67,7 @@ class PythonASTAdapter(BaseASTAdapter):
             node_type="module",
             name="<module>",
             file_path=self.file_path,
-            metadata={"language": "python"}
+            metadata={"language": "python"},
         )
 
         # Process the CST tree
@@ -106,7 +107,7 @@ class PythonASTAdapter(BaseASTAdapter):
             return
 
         # Recursively process children for other compound statements
-        elif hasattr(cst_node, 'body'):
+        elif hasattr(cst_node, "body"):
             if isinstance(cst_node.body, cst.IndentedBlock):
                 for stmt in cst_node.body.body:
                     self._process_node(stmt, parent)
@@ -122,7 +123,7 @@ class PythonASTAdapter(BaseASTAdapter):
         # Note: Position metadata requires MetadataWrapper to be set up.
         # Without it, line_start/line_end will default to 0.
         # TODO: Consider wrapping module in MetadataWrapper for accurate positions.
-        pos = func.name.metadata.get('position', None) if hasattr(func.name, 'metadata') else None
+        pos = func.name.metadata.get("position", None) if hasattr(func.name, "metadata") else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
 
@@ -135,7 +136,7 @@ class PythonASTAdapter(BaseASTAdapter):
             line_start=line_start,
             line_end=line_end,
             parent=parent,
-            metadata=self._extract_function_metadata(func)
+            metadata=self._extract_function_metadata(func),
         )
 
         parent.children.append(func_node)
@@ -150,7 +151,7 @@ class PythonASTAdapter(BaseASTAdapter):
         cls_name = cls.name.value
 
         # Extract position info
-        pos = cls.name.metadata.get('position', None) if hasattr(cls.name, 'metadata') else None
+        pos = cls.name.metadata.get("position", None) if hasattr(cls.name, "metadata") else None
         line_start = pos.start.line if pos else 0
         line_end = pos.end.line if pos else 0
 
@@ -163,7 +164,7 @@ class PythonASTAdapter(BaseASTAdapter):
             line_start=line_start,
             line_end=line_end,
             parent=parent,
-            metadata=self._extract_class_metadata(cls)
+            metadata=self._extract_class_metadata(cls),
         )
 
         parent.children.append(cls_node)
@@ -195,7 +196,7 @@ class PythonASTAdapter(BaseASTAdapter):
                         name=import_name,
                         file_path=self.file_path,
                         parent=parent,
-                        metadata={"alias": name.asname.name.value if name.asname else None}
+                        metadata={"alias": name.asname.name.value if name.asname else None},
                     )
                     parent.children.append(import_node)
 
@@ -204,7 +205,9 @@ class PythonASTAdapter(BaseASTAdapter):
             module = self._get_full_name(imp.module) if imp.module else ""
             for name in imp.names:
                 if isinstance(name, cst.ImportAlias):
-                    imported_name = name.name.value if isinstance(name.name, cst.Name) else str(name.name)
+                    imported_name = (
+                        name.name.value if isinstance(name.name, cst.Name) else str(name.name)
+                    )
                     full_name = f"{module}.{imported_name}" if module else imported_name
 
                     import_node = StandardizedASTNode(
@@ -216,8 +219,8 @@ class PythonASTAdapter(BaseASTAdapter):
                         metadata={
                             "module": module,
                             "name": imported_name,
-                            "alias": name.asname.name.value if name.asname else None
-                        }
+                            "alias": name.asname.name.value if name.asname else None,
+                        },
                     )
                     parent.children.append(import_node)
 
@@ -234,7 +237,7 @@ class PythonASTAdapter(BaseASTAdapter):
                     name=var_name,
                     file_path=self.file_path,
                     parent=parent,
-                    metadata={}
+                    metadata={},
                 )
                 parent.children.append(assign_node)
 
@@ -255,7 +258,7 @@ class PythonASTAdapter(BaseASTAdapter):
             if isinstance(first_stmt, cst.SimpleStatementLine):
                 for node in first_stmt.body:
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
-                        metadata["docstring"] = node.value.value.strip('"""\'\'\'')
+                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")
                         break
 
         # Extract parameters
@@ -299,7 +302,7 @@ class PythonASTAdapter(BaseASTAdapter):
             if isinstance(first_stmt, cst.SimpleStatementLine):
                 for node in first_stmt.body:
                     if isinstance(node, cst.Expr) and isinstance(node.value, cst.SimpleString):
-                        metadata["docstring"] = node.value.value.strip('"""\'\'\'')
+                        metadata["docstring"] = node.value.value.strip("\"\"\"'''")
                         break
 
         return metadata

@@ -160,9 +160,7 @@ class CurriculumScheduler:
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         self.state = self._load_or_create_state()
 
-        logger.info(
-            f"Initialized CurriculumScheduler: {curriculum_name} " f"with {len(phases)} phases"
-        )
+        logger.info(f"Initialized CurriculumScheduler: {curriculum_name} with {len(phases)} phases")
 
     def _load_or_create_state(self) -> CurriculumState:
         """Load existing state or create new"""

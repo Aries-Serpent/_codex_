@@ -30,6 +30,7 @@ from .objective_analyzer import (
 
 class AdjustmentType(Enum):
     """Types of objective adjustments."""
+
     PRIORITY_INCREASE = "priority_increase"
     PRIORITY_DECREASE = "priority_decrease"
     ADD_OBJECTIVE = "add_objective"
@@ -41,6 +42,7 @@ class AdjustmentType(Enum):
 
 class AdjustmentTrigger(Enum):
     """Triggers that can cause adjustments."""
+
     THRESHOLD_BREACH = "threshold_breach"
     TREND_DEGRADATION = "trend_degradation"
     TREND_IMPROVEMENT = "trend_improvement"
@@ -52,16 +54,18 @@ class AdjustmentTrigger(Enum):
 
 class ObjectivePriority(Enum):
     """Priority levels for objectives."""
+
     P0_CRITICAL = 0  # Security issues, blocking problems
-    P1_HIGH = 1      # Core functionality, major bugs
-    P2_MEDIUM = 2    # Improvements, non-blocking issues
-    P3_LOW = 3       # Nice-to-have, optimizations
-    P4_BACKLOG = 4   # Future consideration
+    P1_HIGH = 1  # Core functionality, major bugs
+    P2_MEDIUM = 2  # Improvements, non-blocking issues
+    P3_LOW = 3  # Nice-to-have, optimizations
+    P4_BACKLOG = 4  # Future consideration
 
 
 @dataclass
 class Objective:
     """A single objective in the system."""
+
     id: str
     title: str
     description: str
@@ -89,7 +93,7 @@ class Objective:
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
             "deadline": self.deadline.isoformat() if self.deadline else None,
-            "tags": self.tags
+            "tags": self.tags,
         }
 
     @classmethod
@@ -107,13 +111,14 @@ class Objective:
             created_at=datetime.fromisoformat(data["created_at"]),
             updated_at=datetime.fromisoformat(data["updated_at"]),
             deadline=datetime.fromisoformat(data["deadline"]) if data.get("deadline") else None,
-            tags=data.get("tags", [])
+            tags=data.get("tags", []),
         )
 
 
 @dataclass
 class AdjustmentRule:
     """A rule that defines when and how to adjust objectives."""
+
     id: str
     name: str
     trigger: AdjustmentTrigger
@@ -147,6 +152,7 @@ class AdjustmentRule:
 @dataclass
 class Adjustment:
     """A proposed or applied adjustment."""
+
     id: str
     rule_id: str
     type: AdjustmentType
@@ -170,7 +176,7 @@ class Adjustment:
             "status": self.status,
             "proposed_at": self.proposed_at.isoformat(),
             "applied_at": self.applied_at.isoformat() if self.applied_at else None,
-            "applied_by": self.applied_by
+            "applied_by": self.applied_by,
         }
 
 
@@ -202,10 +208,11 @@ class ObjectiveStore:
         """Save to file."""
         self.store_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.store_path, "w") as f:
-            json.dump({
-                "objectives": self._objectives,
-                "adjustments": self._adjustments
-            }, f, indent=2)
+            json.dump(
+                {"objectives": self._objectives, "adjustments": self._adjustments},
+                f,
+                indent=2,
+            )
 
     def add_objective(self, objective: Objective) -> None:
         """Add or update an objective."""
@@ -253,7 +260,7 @@ class ObjectiveStore:
                 status=d["status"],
                 proposed_at=datetime.fromisoformat(d["proposed_at"]),
                 applied_at=datetime.fromisoformat(d["applied_at"]) if d.get("applied_at") else None,
-                applied_by=d.get("applied_by")
+                applied_by=d.get("applied_by"),
             )
             for d in self._adjustments[-limit:]
         ]
@@ -269,7 +276,7 @@ class ObjectiveAdjuster:
     def __init__(
         self,
         analyzer: ObjectiveAnalyzer | None = None,
-        store: ObjectiveStore | None = None
+        store: ObjectiveStore | None = None,
     ):
         """Initialize the objective adjuster."""
         self.analyzer = analyzer or create_analyzer()
@@ -281,92 +288,96 @@ class ObjectiveAdjuster:
     def _setup_default_rules(self) -> None:
         """Set up the default adjustment rules."""
         # Rule: Coverage below target
-        self.rules.append(AdjustmentRule(
-            id="coverage_below_target",
-            name="Coverage Below Target",
-            trigger=AdjustmentTrigger.THRESHOLD_BREACH,
-            condition=lambda r: any(
-                a.metric_type == MetricType.COVERAGE
-                for a in r.alerts
-            ),
-            action=AdjustmentType.ADD_OBJECTIVE,
-            parameters={
-                "objective_template": {
-                    "title": "Coverage Sprint",
-                    "description": "Increase test coverage to meet target",
-                    "priority": ObjectivePriority.P1_HIGH.value,
-                    "metric_type": MetricType.COVERAGE.value,
-                    "tags": ["coverage", "sprint", "auto-generated"]
-                }
-            },
-            priority=10
-        ))
+        self.rules.append(
+            AdjustmentRule(
+                id="coverage_below_target",
+                name="Coverage Below Target",
+                trigger=AdjustmentTrigger.THRESHOLD_BREACH,
+                condition=lambda r: any(a.metric_type == MetricType.COVERAGE for a in r.alerts),
+                action=AdjustmentType.ADD_OBJECTIVE,
+                parameters={
+                    "objective_template": {
+                        "title": "Coverage Sprint",
+                        "description": "Increase test coverage to meet target",
+                        "priority": ObjectivePriority.P1_HIGH.value,
+                        "metric_type": MetricType.COVERAGE.value,
+                        "tags": ["coverage", "sprint", "auto-generated"],
+                    }
+                },
+                priority=10,
+            )
+        )
 
         # Rule: Security regression
-        self.rules.append(AdjustmentRule(
-            id="security_regression",
-            name="Security Regression",
-            trigger=AdjustmentTrigger.THRESHOLD_BREACH,
-            condition=lambda r: any(
-                a.metric_type == MetricType.SECURITY and
-                a.severity == AlertSeverity.CRITICAL
-                for a in r.alerts
-            ),
-            action=AdjustmentType.ADD_OBJECTIVE,
-            parameters={
-                "objective_template": {
-                    "title": "Security Remediation",
-                    "description": "Address security vulnerabilities immediately",
-                    "priority": ObjectivePriority.P0_CRITICAL.value,
-                    "metric_type": MetricType.SECURITY.value,
-                    "tags": ["security", "critical", "auto-generated"]
-                }
-            },
-            priority=100  # Highest priority
-        ))
+        self.rules.append(
+            AdjustmentRule(
+                id="security_regression",
+                name="Security Regression",
+                trigger=AdjustmentTrigger.THRESHOLD_BREACH,
+                condition=lambda r: any(
+                    a.metric_type == MetricType.SECURITY and a.severity == AlertSeverity.CRITICAL
+                    for a in r.alerts
+                ),
+                action=AdjustmentType.ADD_OBJECTIVE,
+                parameters={
+                    "objective_template": {
+                        "title": "Security Remediation",
+                        "description": "Address security vulnerabilities immediately",
+                        "priority": ObjectivePriority.P0_CRITICAL.value,
+                        "metric_type": MetricType.SECURITY.value,
+                        "tags": ["security", "critical", "auto-generated"],
+                    }
+                },
+                priority=100,  # Highest priority
+            )
+        )
 
         # Rule: CI/CD degradation
-        self.rules.append(AdjustmentRule(
-            id="ci_degradation",
-            name="CI/CD Degradation",
-            trigger=AdjustmentTrigger.TREND_DEGRADATION,
-            condition=lambda r: any(
-                t.metric_type == MetricType.CI_CD and
-                t.direction == TrendDirection.DEGRADING and
-                t.change_percent < -5
-                for t in r.trends
-            ),
-            action=AdjustmentType.ADD_OBJECTIVE,
-            parameters={
-                "objective_template": {
-                    "title": "CI Health Sprint",
-                    "description": "Improve CI/CD pass rate",
-                    "priority": ObjectivePriority.P1_HIGH.value,
-                    "metric_type": MetricType.CI_CD.value,
-                    "tags": ["ci-cd", "sprint", "auto-generated"]
-                }
-            },
-            priority=20
-        ))
+        self.rules.append(
+            AdjustmentRule(
+                id="ci_degradation",
+                name="CI/CD Degradation",
+                trigger=AdjustmentTrigger.TREND_DEGRADATION,
+                condition=lambda r: any(
+                    t.metric_type == MetricType.CI_CD
+                    and t.direction == TrendDirection.DEGRADING
+                    and t.change_percent < -5
+                    for t in r.trends
+                ),
+                action=AdjustmentType.ADD_OBJECTIVE,
+                parameters={
+                    "objective_template": {
+                        "title": "CI Health Sprint",
+                        "description": "Improve CI/CD pass rate",
+                        "priority": ObjectivePriority.P1_HIGH.value,
+                        "metric_type": MetricType.CI_CD.value,
+                        "tags": ["ci-cd", "sprint", "auto-generated"],
+                    }
+                },
+                priority=20,
+            )
+        )
 
         # Rule: Sustained excellence
-        self.rules.append(AdjustmentRule(
-            id="sustained_excellence",
-            name="Sustained Excellence",
-            trigger=AdjustmentTrigger.SUSTAINED_EXCELLENCE,
-            condition=lambda r: (
-                r.overall_status == "healthy" and
-                len(r.alerts) == 0 and
-                all(t.direction != TrendDirection.DEGRADING for t in r.trends)
-            ),
-            action=AdjustmentType.MODIFY_TARGET,
-            parameters={
-                "target_increase_percent": 5,
-                "message": "All metrics healthy - raising targets"
-            },
-            priority=1,
-            cooldown_hours=168  # Once per week
-        ))
+        self.rules.append(
+            AdjustmentRule(
+                id="sustained_excellence",
+                name="Sustained Excellence",
+                trigger=AdjustmentTrigger.SUSTAINED_EXCELLENCE,
+                condition=lambda r: (
+                    r.overall_status == "healthy"
+                    and len(r.alerts) == 0
+                    and all(t.direction != TrendDirection.DEGRADING for t in r.trends)
+                ),
+                action=AdjustmentType.MODIFY_TARGET,
+                parameters={
+                    "target_increase_percent": 5,
+                    "message": "All metrics healthy - raising targets",
+                },
+                priority=1,
+                cooldown_hours=168,  # Once per week
+            )
+        )
 
     def add_rule(self, rule: AdjustmentRule) -> None:
         """Add a custom adjustment rule."""
@@ -410,13 +421,11 @@ class ObjectiveAdjuster:
             description=f"Triggered by rule: {rule.name}",
             parameters=rule.parameters.copy(),
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
     def apply_adjustment(
-        self,
-        adjustment: Adjustment,
-        applied_by: str = "autonomous"
+        self, adjustment: Adjustment, applied_by: str = "autonomous"
     ) -> Objective | None:
         """
         Apply an adjustment.
@@ -486,14 +495,16 @@ class ObjectiveAdjuster:
             title=template.get("title", "Untitled Objective"),
             description=template.get("description", ""),
             priority=ObjectivePriority(template.get("priority", 2)),
-            metric_type=MetricType(template["metric_type"]) if template.get("metric_type") else None,
+            metric_type=MetricType(template["metric_type"])
+            if template.get("metric_type")
+            else None,
             target_value=template.get("target_value"),
             current_value=template.get("current_value"),
             status="active",
             created_at=now,
             updated_at=now,
             deadline=None,
-            tags=template.get("tags", [])
+            tags=template.get("tags", []),
         )
 
     def get_active_objectives(self) -> list[Objective]:
@@ -517,7 +528,7 @@ class ObjectiveAdjuster:
         priority: ObjectivePriority = ObjectivePriority.P2_MEDIUM,
         metric_type: MetricType | None = None,
         target_value: float | None = None,
-        tags: list[str] | None = None
+        tags: list[str] | None = None,
     ) -> Objective:
         """Manually create a new objective."""
         now = datetime.now(timezone.utc)
@@ -532,7 +543,7 @@ class ObjectiveAdjuster:
             status="active",
             created_at=now,
             updated_at=now,
-            tags=tags or []
+            tags=tags or [],
         )
         self.store.add_objective(objective)
         return objective
@@ -552,7 +563,7 @@ class ObjectiveAdjuster:
             "total_adjustments": len(adjustments),
             "by_status": by_status,
             "by_type": by_type,
-            "recent": [a.to_dict() for a in adjustments[-5:]]
+            "recent": [a.to_dict() for a in adjustments[-5:]],
         }
 
 
@@ -575,9 +586,7 @@ def get_active_objectives() -> list[Objective]:
 
 
 def create_sprint_objective(
-    metric_type: MetricType,
-    target_value: float,
-    title: str | None = None
+    metric_type: MetricType, target_value: float, title: str | None = None
 ) -> Objective:
     """Create a sprint objective for a metric."""
     adjuster = create_adjuster()
@@ -587,5 +596,5 @@ def create_sprint_objective(
         priority=ObjectivePriority.P1_HIGH,
         metric_type=metric_type,
         target_value=target_value,
-        tags=["sprint", "auto-generated"]
+        tags=["sprint", "auto-generated"],
     )

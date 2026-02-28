@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
+
 def safe_exists(config_store: Any, name: str, group: Optional[str] = None) -> bool:
     """
     Check if a config name exists in the ConfigStore.

@@ -297,7 +297,11 @@ class ZendeskJSONGenerator:
                         "position": "{{POSITION}}",
                         "filter": {
                             "all": [
-                                {"field": "priority", "operator": "is", "value": "{{PRIORITY_FILTER}}"}
+                                {
+                                    "field": "priority",
+                                    "operator": "is",
+                                    "value": "{{PRIORITY_FILTER}}",
+                                }
                             ]
                         },
                         "policy_metrics": [

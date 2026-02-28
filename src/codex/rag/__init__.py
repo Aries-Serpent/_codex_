@@ -62,6 +62,7 @@ try:
         preprocess_text,
         validate_document,
     )
+
     _ingestion_available = True
 except ImportError:
     _ingestion_available = False

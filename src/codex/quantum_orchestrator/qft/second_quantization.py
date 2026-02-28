@@ -117,7 +117,8 @@ class CreationOperator:
 
         # Create new state
         new_state = FockState(
-            occupation_numbers=fock_state.occupation_numbers.copy(), statistics=self.statistics
+            occupation_numbers=fock_state.occupation_numbers.copy(),
+            statistics=self.statistics,
         )
         new_state.set_occupation(mode, n + 1)
 
@@ -155,7 +156,8 @@ class AnnihilationOperator:
 
         # Create new state
         new_state = FockState(
-            occupation_numbers=fock_state.occupation_numbers.copy(), statistics=self.statistics
+            occupation_numbers=fock_state.occupation_numbers.copy(),
+            statistics=self.statistics,
         )
         new_state.set_occupation(mode, n - 1)
 

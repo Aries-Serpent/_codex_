@@ -26,6 +26,7 @@ from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-
 # TODO: Remove after test migration
 try:
     from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
+
     mlflow_run = maybe_mlflow  # Alias for legacy tests
 except ImportError:  # pragma: no cover - mlflow optional
     mlflow_run = None  # type: ignore
