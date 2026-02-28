@@ -718,8 +718,8 @@ class TestErrorPaths:
         """Test else clause in try-except"""
         result = None  # Initialize outside try block
         try:
-            # Test that else clause executes when no exception is raised
-            result = "try"  # Succeeds without raising
+            # int("42") succeeds; else clause should execute
+            int("42")  # Could raise ValueError (e.g. int("abc"))
         except ValueError:
             result = "except"
         else:
