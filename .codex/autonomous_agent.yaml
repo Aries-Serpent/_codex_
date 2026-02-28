@@ -11,7 +11,7 @@ agent:
   organization: "Aries-Serpent"
 
   # HUMAN: Set to true only AFTER Genesis and secrets are verified
-  autonomous_actions_enabled: false
+  autonomous_actions_enabled: true
 
   allowed_operations:
     - maintenance
