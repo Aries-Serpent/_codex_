@@ -108,10 +108,6 @@ def test_legacy_proxy_getattr_with_warning():
         # Access attribute and capture warnings
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
-            try:
-                pass
-            except Exception:  # noqa: BLE001
-                pass
 
             # Verify warning was issued
             # The actual implementation issues a warning on attribute access

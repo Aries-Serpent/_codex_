@@ -11,8 +11,10 @@ import pytest
 
 def test_imports_exist():
     try:
-        pass
-    except Exception:  # noqa: BLE001
+        import peft  # noqa: F401
+
+        import transformers  # noqa: F401
+    except ImportError:
         pytest.skip("transformers/peft not installed in this environment")
 
 
