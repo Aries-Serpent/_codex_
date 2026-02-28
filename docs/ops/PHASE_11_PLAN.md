@@ -98,8 +98,8 @@
 |---------|--------------|-------------------|
 | S97 | CodeQL alerts, Pattern 6 222→118, P10-05 doc | This document |
 | **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** | ✅ **DONE** |
-| S99 | OpenVINO Phase C CI smoke test (P11-03); Pattern 6 77→40 | `test_openvino_smoke` on iGPU runner |
-| S100 | Coverage gap-fill (P11-01a) — `fail_under = 35` | Measured coverage ≥ 33% |
+| **S99** | **HOTFIX: YAML/auth/perms, Pattern 6 77→40, AAIS 98.9** | ✅ **DONE** |
+| S100 | OpenVINO Phase C CI smoke test (P11-03); Coverage gap-fill `fail_under = 35` | Measured coverage ≥ 33% |
 | S101 | CI parallel sharding (P11-04) | Sharded matrix |
 | S102 | Pattern 6 → 0 (P11-02 Batch C+D) | 0 informational issues |
 | S103 | Coverage 50% gate + AAIS V5.0 | `fail_under = 50`, 100/100 |
