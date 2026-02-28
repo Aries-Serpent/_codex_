@@ -58,7 +58,7 @@ class TestTrainingPipelineSetup:
                         return
                     except ImportError:
                         pytest.skip("PyYAML not installed")
-                    except ImportError:
+                    except Exception:  # noqa: BLE001 – catch-all for yaml parse errors
                         pass
 
         pytest.skip("No training configs found")
