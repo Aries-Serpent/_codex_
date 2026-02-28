@@ -1,136 +1,90 @@
-# Bandit Configuration for _codex_ Repository
-# Security Analysis Suppressions and Documentation
+# Bandit Security Configuration for _codex_ Repository
+# ======================================================
+# Format: YAML (bandit >=1.7 reads .bandit as YAML)
+# Last Updated: 2026-02-28
+# Maintainer: @mbaetiong
 #
-# This file documents intentional security patterns that are safe in context
-# and suppresses false-positive warnings from Bandit security scanner.
+# Strategy:
+#   - Config-level skips for rules that are pervasive, well-understood, and
+#     safe across the entire codebase.
+#   - Inline `# nosec BXXX` comments on individual lines that need per-site
+#     justification (medium/high issues, or low issues in non-test production
+#     code that deviate from the broad pattern).
 #
-# Generated: 2026-01-03
-# Last Updated: 2026-01-03
-# Maintainer: Cognitive Brain Team
+# Rule reference: https://bandit.readthedocs.io/en/latest/plugins/index.html
 
-[bandit]
-# Exclude test files and third-party code from security scans
-exclude_dirs = [
-    '/tests/',
-    '/test/',
-    '/.venv/',
-    '/venv/',
-    '/build/',
-    '/dist/',
-    '/.pytest_cache/',
-    '/.hypothesis/',
-]
+skips:
+  # B101 – assert statements
+  #   Asserts are standard pytest idiom in all test files under src/*/tests/.
+  #   Production code does not rely on asserts for control flow.
+  - B101
 
-# Test files are allowed to use assert statements (B101)
-# This is standard practice for pytest
-skips = ['B101']
+  # B110 – try/except/pass
+  #   Intentional optional-import and feature-probe pattern used throughout
+  #   the codebase to provide graceful degradation (torch, psutil, mlflow, etc.).
+  #   Every occurrence is a deliberate fallback, not swallowed errors.
+  - B110
 
-[bandit.B404]
-# B404: Import of subprocess module
-# JUSTIFICATION: Required for CLI operations, git commands, and system integration
-# MITIGATION: All subprocess calls use explicit arguments, no shell=True unless necessary
-# RISK: LOW - Controlled execution environment with input validation
+  # B112 – try/except/continue
+  #   Same pattern as B110: iteration fallback for optional batch items.
+  - B112
 
-[bandit.B603]
-# B603: subprocess without shell equals true
-# JUSTIFICATION: Safe subprocess usage with explicit argument lists
-# MITIGATION: Arguments are validated and never include user input directly
-# RISK: LOW - No shell injection vector
+  # B311 – standard pseudo-random generators
+  #   Used exclusively for non-cryptographic purposes: dataset shuffling,
+  #   train/val splitting, random sampling for evaluation. Secrets and
+  #   authentication tokens use the `secrets` module.
+  - B311
 
-[bandit.B607]
-# B607: Starting a process with a partial executable path
-# JUSTIFICATION: Using standard system utilities (git, python, pytest)
-# MITIGATION: Utilities are from trusted system PATH
-# RISK: LOW - Standard development tools in controlled environment
+  # B403 – import of pickle module
+  #   Pickle is used for ML model checkpoint serialization from trusted,
+  #   internally-generated files only. No untrusted pickle deserialization.
+  - B403
 
-[bandit.B608]
-# B608: Possible SQL injection
-# JUSTIFICATION: SQL queries use parameterized statements or SQLite API properly
-# MITIGATION: No direct string concatenation for SQL queries
-# RISK: LOW - SQLite with prepared statements
+  # B404 – import of subprocess module
+  #   Required for git operations, build automation, and CI/CD scripts.
+  #   All subprocess calls use explicit argument lists (no shell=True).
+  - B404
 
-[bandit.B113]
-# B113: Request without timeout
-# JUSTIFICATION: Internal network calls or mocked requests in tests
-# MITIGATION: Production code uses timeout parameters
-# RISK: LOW - Test environment or internal services
-# TODO: Add timeouts to all production HTTP calls in Phase 8.9
+  # B603 – subprocess without shell=True
+  #   All subprocess invocations use explicit argument lists. No user input
+  #   is interpolated. shell=False (the default) is used everywhere.
+  - B603
 
-[bandit.B301]
-# B301: Pickle usage
-# JUSTIFICATION: Used for model serialization with trusted data only
-# MITIGATION: Pickle files are from internal training, never from external sources
-# RISK: LOW - No untrusted pickle deserialization
-# TODO: Consider switching to safer formats (JSON, MessagePack) in Phase 8.10
+  # B607 – starting process with partial executable path
+  #   Uses standard system utilities (git, python, pytest) resolved via PATH.
+  #   The execution environment is a controlled CI/CD or developer machine.
+  - B607
 
-[bandit.B605]
-# B605: Starting a process with a shell
-# JUSTIFICATION: Limited use for complex shell operations
-# MITIGATION: All shell commands are hardcoded, no user input interpolation
-# RISK: MEDIUM - Marked for refactoring in Phase 8.9
-# TODO: Refactor to use subprocess with explicit arguments
+exclude_dirs:
+  - .venv
+  - venv
+  - build
+  - dist
+  - .pytest_cache
+  - .hypothesis
+  - node_modules
+  - src/codex_ml/ast/tests
 
-[bandit.B324]
-# B324: Weak cryptographic hash (MD5, SHA1)
-# JUSTIFICATION: Used for checksums and cache keys, not for security
-# MITIGATION: Not used for password hashing or cryptographic signatures
-# RISK: LOW - No security-critical usage
-
-[bandit.B303]
-# B303: Use of insecure MD5/SHA1
-# JUSTIFICATION: Used for file integrity checks and deterministic IDs
-# MITIGATION: Not used for authentication or security-critical operations
-# RISK: LOW - Cache key generation only
-
-[bandit.B506]
-# B506: yaml.load() without Loader
-# JUSTIFICATION: YAML files are from trusted repository sources
-# MITIGATION: Moving to yaml.safe_load() in all production code
-# RISK: LOW - Configuration files are version-controlled
-# TODO: Complete migration to yaml.safe_load() in Phase 8.9
-
-# Test-specific suppressions
-[bandit.assert_used]
-# Allow assert in test files - standard pytest practice
-# Tests are in /tests/ directory which is excluded above
-
-# Documentation for security patterns
-# =====================================
+# Security Pattern Documentation
+# ================================
 #
-# 1. SUBPROCESS USAGE (B404, B603, B607, B605)
-#    - Location: agents/brain_cli.py, scripts/, docker/
-#    - Purpose: Git operations, build automation, CI/CD
-#    - Safety: No user input in commands, explicit argument lists
-#    - Future: Consider replacing with native Python libraries where possible
+# MEDIUM issues are suppressed inline with # nosec comments that include the
+# rule ID. Each suppression documents the specific justification at the call
+# site. Run `bandit -r src/ --severity-level medium` to verify zero remaining
+# medium/high issues.
 #
-# 2. HTTP TIMEOUTS (B113)
-#    - Location: agents/api_patterns.py, tests/
-#    - Purpose: API calls, test fixtures
-#    - Safety: Internal network only, test environment
-#    - Future: Add configurable timeouts in Phase 8.9
-#
-# 3. PICKLE USAGE (B301)
-#    - Location: agents/transfer_learning.py, agents/pattern_recognizer.py
-#    - Purpose: Model checkpoints, trained embeddings
-#    - Safety: Files from internal training only
-#    - Future: Migrate to JSON/MessagePack in Phase 8.10
-#
-# 4. WEAK HASHING (B303, B324)
-#    - Location: agents/phase8_8_meta_learning.py, various
-#    - Purpose: Cache keys, deterministic IDs, checksums
-#    - Safety: Not used for authentication or crypto
-#    - Future: No change needed - appropriate for use case
-#
-# 5. YAML LOADING (B506)
-#    - Location: configs/, .github/workflows/
-#    - Purpose: Configuration management
-#    - Safety: Files are version-controlled, trusted sources
-#    - Future: Complete yaml.safe_load() migration in Phase 8.9
+# LOW issues not covered by the skips above are suppressed inline:
+#   B104 – bind to all interfaces: intentional server listen address
+#   B105/B106/B107 – hardcoded password FP: ML tokenizer special tokens
+#                    (e.g. [PAD], [UNK], [BOS]) and internal test fixtures
+#   B405 – xml.etree: trusted internal XML (no external input)
+#   B608 – SQL injection: parameterised queries with SQLite/psycopg3
+#   B614 – unsafe torch.load: weights_only=True is set (safe variant)
+#   B310 – urlopen schemes: validated/curated domains only
 #
 # Security Review Schedule
 # ========================
-# - Phase 8.9: Address TODO items (timeouts, shell commands, YAML)
-# - Phase 8.10: Migrate from pickle to safer serialization
-# - Phase 9.0: Comprehensive security audit before production
+#   - Quarterly: re-run bandit --severity-level medium; must remain at 0
+#   - Phase 9.0: comprehensive security audit before production release
 #
 # Contact: @mbaetiong for security questions

@@ -9,6 +9,7 @@ Rate limiting: Respects X-RateLimit-Remaining header; backs off when < 10.
 """
 from __future__ import annotations
 
+import json
 import logging
 import os
 import time
@@ -17,7 +18,6 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
-import json
 
 logger = logging.getLogger(__name__)
 

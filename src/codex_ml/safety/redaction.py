@@ -11,18 +11,18 @@ class SecretRedactor:
 
     DEFAULT_PATTERNS: Mapping[str, str] = {
         "api_key": r"api[_-]?key[\"'\s:=]+([a-zA-Z0-9\-_]+)",
-        "bearer_token": r"bearer[\"'\s:=]+([a-zA-Z0-9\-_.]+)",
-        "aws_secret": r"aws[_-]?secret[_-]?access[_-]?key[\"'\s:=]+([a-zA-Z0-9/+=]+)",
-        "password": r"password[\"'\s:=]+([^\s\"']+)",
+        "bearer_token": r"bearer[\"'\s:=]+([a-zA-Z0-9\-_.]+)",  # nosec B105
+        "aws_secret": r"aws[_-]?secret[_-]?access[_-]?key[\"'\s:=]+([a-zA-Z0-9/+=]+)",  # nosec B105
+        "password": r"password[\"'\s:=]+([^\s\"']+)",  # nosec B105
         "email": r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b",
     }
 
     KEY_HINT_LABELS: Mapping[str, str] = {
         "apikey": "API_KEY",  # pragma: allowlist secret
-        "token": "TOKEN",  # pragma: allowlist secret
-        "secret": "SECRET",  # pragma: allowlist secret
-        "password": "PASSWORD",  # pragma: allowlist secret
-        "passphrase": "PASSWORD",  # pragma: allowlist secret
+        "token": "TOKEN",  # pragma: allowlist secret  # nosec B105
+        "secret": "SECRET",  # pragma: allowlist secret  # nosec B105
+        "password": "PASSWORD",  # pragma: allowlist secret  # nosec B105
+        "passphrase": "PASSWORD",  # pragma: allowlist secret  # nosec B105
         "email": "EMAIL",  # pragma: allowlist secret
         "bearer": "BEARER_TOKEN",  # pragma: allowlist secret
     }

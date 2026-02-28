@@ -145,7 +145,7 @@ def lite_sequence_evaluation(
     """
     if not predictions or not references:
         return {
-            "token_accuracy": 0.0,
+            "token_accuracy": 0.0,  # nosec B105
             "exact_match": 0.0,
             "perplexity_proxy": float('inf'),
             "samples": 0.0,

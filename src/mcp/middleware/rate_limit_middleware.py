@@ -17,9 +17,9 @@ Author: Codex Team
 
 from __future__ import annotations
 
+import logging
 import os
 import time
-import logging
 from abc import ABC, abstractmethod
 
 from starlette.middleware.base import BaseHTTPMiddleware

@@ -304,7 +304,7 @@ class AWSSecretsManagerProvider(SecretProvider):
 
             return RotationResult(
                 success=True,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106
                 new_secret_id=response["Name"],
                 new_secret_value=secret_value,
                 metadata={
@@ -316,7 +316,7 @@ class AWSSecretsManagerProvider(SecretProvider):
         except ClientError as e:
             return RotationResult(
                 success=False,
-                old_secret_id="",
+                old_secret_id="",  # nosec B106
                 error_message=str(e)
             )
 

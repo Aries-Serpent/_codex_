@@ -131,7 +131,7 @@ def _generate_pr_body(
         Markdown PR body
     """
     # Icon mapping for verification result
-    verification_icons = {"pass": "✅", "fail": "❌"}
+    verification_icons = {"pass": "✅", "fail": "❌"}  # nosec B105
     verification_icon = verification_icons.get(verification_result, "⚠️")
 
     # Icon mapping for security issues

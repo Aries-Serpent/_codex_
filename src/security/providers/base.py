@@ -29,9 +29,9 @@ class ProviderType(Enum):
 
 class SecretType(Enum):
     """Types of secrets managed by providers."""
-    TOKEN = "token"
+    TOKEN = "token"  # nosec B105
     API_KEY = "api_key"
-    PASSWORD = "password"
+    PASSWORD = "password"  # nosec B105
     CERTIFICATE = "certificate"
     SSH_KEY = "ssh_key"
     GENERIC = "generic"

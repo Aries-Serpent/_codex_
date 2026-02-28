@@ -1057,7 +1057,7 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
         }
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        return {"token_accuracy": 0.0, "perplexity": 0.0}
+        return {"token_accuracy": 0.0, "perplexity": 0.0}  # nosec B105
 
 
 def _codex_write_metrics(run_dir: Path, record: dict):

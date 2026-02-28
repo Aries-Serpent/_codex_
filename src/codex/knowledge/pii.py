@@ -49,7 +49,7 @@ _GPL = re.compile(r"GNU GENERAL PUBLIC LICENSE|GPL v[23]", re.I)
 class RedactionMode(Enum):
     """Redaction modes for PII scrubbing."""
 
-    TOKEN_REPLACEMENT = "token"  # Replace with [TYPE_REDACTED]
+    TOKEN_REPLACEMENT = "token"  # Replace with [TYPE_REDACTED]  # nosec B105
     SEMANTIC_PRESERVATION = "semantic"  # Replace with type-appropriate placeholder
     HASH_PRESERVATION = "hash"  # Replace with hash for deduplication
 

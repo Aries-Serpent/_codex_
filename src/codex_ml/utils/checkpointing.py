@@ -446,7 +446,7 @@ def load_checkpoint(
                 kwargs: dict[str, Any] = {"weights_only": True}
                 if map_location is not None:
                     kwargs["map_location"] = map_location
-                return torch.load(p, **kwargs)
+                return torch.load(p, **kwargs)  # nosec B614
             except Exception as exc:
                 raise CheckpointLoadError(
                     f"safe load failed for {p}: {exc}"

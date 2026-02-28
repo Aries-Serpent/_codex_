@@ -9,11 +9,11 @@ OFFLINE_MODE=true: No external network calls.
 """
 from __future__ import annotations
 
-from .main import GitHubGuruAgent
-from .analyzers import PRAnalyzer, IssueAnalyzer, WorkflowAnalyzer
-from .triage import IssueTriage
-from .hygiene import RepoHygiene
+from .analyzers import IssueAnalyzer, PRAnalyzer, WorkflowAnalyzer
 from .guru_adapter import GitHubGuruAdapter
+from .hygiene import RepoHygiene
+from .main import GitHubGuruAgent
+from .triage import IssueTriage
 
 __all__ = [
     "GitHubGuruAgent",

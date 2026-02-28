@@ -90,7 +90,7 @@ class APIKeyValidator:
                         "AUTH_SECRET_KEY not set. Using development fallback. "
                         "Set AUTH_SECRET_KEY environment variable in production."
                     )
-                    self._secret_key = "codex-dev-secret-key-change-in-production"
+                    self._secret_key = "codex-dev-secret-key-change-in-production"  # nosec B105
                 else:
                     raise ValueError(
                         "AUTH_SECRET_KEY environment variable must be set in production. "

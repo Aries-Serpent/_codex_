@@ -257,14 +257,15 @@ class PGVectorStore:
 
         async with self.pool.connection() as conn:
             # Execute local HNSW search on shard
+            # table_name is derived from integer shard_id only — no user input.
+            search_sql = (  # nosec B608
+                f"SELECT id, content, metadata, "
+                f"1 - (embedding <=> %s::vector) as score "
+                f"FROM {table_name} "  # nosec B608 - table_name=f"vectors_shard_{shard_id:02d}", integer-derived
+                f"ORDER BY embedding <=> %s::vector LIMIT %s"
+            )
             cursor = await conn.execute(
-                f"""
-                SELECT id, content, metadata,
-                       1 - (embedding <=> %s::vector) as score
-                FROM {table_name}
-                ORDER BY embedding <=> %s::vector
-                LIMIT %s
-                """,
+                search_sql,
                 (query_vector.tolist(), query_vector.tolist(), limit)
             )
 
@@ -360,15 +361,17 @@ class PGVectorStore:
         async with self.pool.connection() as conn:
             async with conn.pipeline():
                 for doc_id, embedding, content, metadata in documents:
+                    # table_name is derived from integer shard_id only — no user input.
+                    insert_sql = (  # nosec B608
+                        f"INSERT INTO {table_name} (id, embedding, content, metadata) "  # nosec B608 - integer-derived
+                        f"VALUES (%s, %s::vector, %s, %s) "
+                        f"ON CONFLICT (id) DO UPDATE "
+                        f"SET embedding = EXCLUDED.embedding, "
+                        f"content = EXCLUDED.content, "
+                        f"metadata = EXCLUDED.metadata"
+                    )
                     await conn.execute(
-                        f"""
-                        INSERT INTO {table_name} (id, embedding, content, metadata)
-                        VALUES (%s, %s::vector, %s, %s)
-                        ON CONFLICT (id) DO UPDATE
-                        SET embedding = EXCLUDED.embedding,
-                            content = EXCLUDED.content,
-                            metadata = EXCLUDED.metadata
-                        """,
+                        insert_sql,
                         (doc_id, embedding, content, metadata)
                     )
             await conn.commit()

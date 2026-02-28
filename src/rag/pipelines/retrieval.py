@@ -106,7 +106,10 @@ class PGVectorStoreBackend(VectorStoreBackend):
     def __init__(self) -> None:
         self._store: Any = None
         try:
-            from codex.retrieval.stores.pgvector_store import PGVectorStore, HAS_PSYCOPG3
+            from codex.retrieval.stores.pgvector_store import (
+                HAS_PSYCOPG3,
+                PGVectorStore,
+            )
             if HAS_PSYCOPG3:
                 self._store = PGVectorStore()
         except Exception as exc:

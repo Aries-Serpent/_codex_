@@ -74,7 +74,7 @@ class OAuthManager:
 
     # GitHub OAuth endpoints
     GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
-    GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"
+    GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"  # nosec B105
     GITHUB_API_URL = "https://api.github.com"
 
     def __init__(self, config: Optional[OAuthConfig] = None):

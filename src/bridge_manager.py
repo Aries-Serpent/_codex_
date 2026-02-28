@@ -211,7 +211,7 @@ class BridgeManager:
         enable_compression: bool = True,
         max_clients: int = 10,
         # TLS configuration (for TCP_TLS mode)
-        tls_host: str = "0.0.0.0",
+        tls_host: str = "0.0.0.0",  # nosec B104
         tls_port: int = 8443,
         tls_server_cert: Optional[str] = None,
         tls_server_key: Optional[str] = None,

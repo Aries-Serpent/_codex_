@@ -223,7 +223,7 @@ class ZendeskKnowledgeSyncService:
         last_exc: Exception | None = None
         for attempt in range(self.retries):
             try:
-                with urllib.request.urlopen(req) as response:  # noqa: S310 - curated domains
+                with urllib.request.urlopen(req) as response:  # noqa: S310 - curated domains  # nosec B310
                     content = response.read()
                     headers = dict(response.headers)
                     return content, headers

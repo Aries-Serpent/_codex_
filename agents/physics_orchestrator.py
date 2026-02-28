@@ -12,8 +12,8 @@ Core Principles:
 5. Force Vectors: Decompose complex decisions into force components
 """
 
-import json
 import concurrent.futures
+import json
 import logging
 import os
 

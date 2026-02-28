@@ -166,13 +166,13 @@ def _csv_to_sqlite(
                 )
                 if len(buf) >= batch:
                     cur.executemany(  # nosec B608
-                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",  # nosec B608
                         buf,
                     )
                     buf.clear()
             if buf:
                 cur.executemany(  # nosec B608
-                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",  # nosec B608
                     buf,
                 )
         if create_index:

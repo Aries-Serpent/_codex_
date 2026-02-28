@@ -104,7 +104,7 @@ def _select_port(host: str, port: int, fallbacks: int, logger: logging.Logger, d
 
 
 def _is_public_bind(host: str) -> bool:
-    return host in {"0.0.0.0", "::"}
+    return host in {"0.0.0.0", "::"}  # nosec B104
 
 
 def _check_bind(host: str, port: int) -> tuple[bool, Optional[str]]:

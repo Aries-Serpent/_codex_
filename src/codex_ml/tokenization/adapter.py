@@ -145,7 +145,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         if special:
             self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})
         if self.tokenizer.pad_token_id is None:
-            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})
+            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # nosec B105
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
         return self.tokenizer.encode(text, **kwargs)

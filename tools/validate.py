@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
+
 def _load_et_module():
     """Load XML parser module, preferring defusedxml for safety.
 

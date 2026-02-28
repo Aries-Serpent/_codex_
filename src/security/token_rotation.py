@@ -253,7 +253,7 @@ class TokenRotationManager:
                     timestamp=datetime.now(UTC),
                     trigger=trigger,
                     old_token_hash=self._hash_token(old_token),
-                    new_token_hash="",
+                    new_token_hash="",  # nosec B106
                     success=False,
                     error_message="Rotation throttled - minimum interval not met",
                     metadata=metadata or {},
@@ -326,7 +326,7 @@ class TokenRotationManager:
                 event = self.rotate_token(
                     token_id=token_id,
                     trigger=RotationTrigger.SECURITY_EVENT,
-                    old_token="<redacted>",  # Would be retrieved securely
+                    old_token="<redacted>",  # Would be retrieved securely  # nosec B106
                     metadata={
                         "security_event_type": event_type,
                         **(metadata or {}),

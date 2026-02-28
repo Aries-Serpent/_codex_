@@ -448,10 +448,10 @@ class GitHubTokenProvider(TokenProvider):
             if resp.status_code == 200:
                 data = resp.json()
                 meta = SecretMetadata(
-                    secret_id="current_token",
+                    secret_id="current_token",  # nosec B106
                     name=f"GitHub PAT for {data.get('login', 'unknown')}",
                     created_at=datetime.now(UTC),
-                    tags={"github_login": data.get("login", ""), "token_type": "pat"},
+                    tags={"github_login": data.get("login", ""), "token_type": "pat"},  # nosec B105
                     scopes=None,  # scope info not available from /user
                 )
                 return [meta]

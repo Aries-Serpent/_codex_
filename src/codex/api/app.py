@@ -55,7 +55,7 @@ _RUNTIME_MODEL: AutoModelForCausalLM | None = None
 _RUNTIME_TOKENIZER: PreTrainedTokenizerBase | None = None
 _RUNTIME_DENYLIST: DenylistEnforcer | None = None
 PAD_TOKEN = "[PAD]"  # nosec B105 - conventional tokenizer pad token
-UNK_TOKEN = "[UNK]"  # nosec B105,B106 - conventional unknown token marker
+UNK_TOKEN = "[UNK]"  # nosec B105 B106 - conventional unknown token marker
 
 
 class PredictRequest(BaseModel):

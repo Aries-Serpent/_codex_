@@ -130,7 +130,7 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
             continue
         try:
             ts = datetime.datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        except Exception:  # pragma: no cover - defensive
+        except Exception:  # pragma: no cover - defensive  # nosec B112
             continue
         if best_ts is None or ts > best_ts:
             best_ts = ts

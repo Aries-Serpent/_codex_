@@ -40,7 +40,7 @@ def _scan_smells(src_root: Path, long_fn_threshold: int = 50, max_args: int = 5,
     for path in src_root.rglob("*.py"):
         try:
             source = path.read_text(encoding="utf-8", errors="replace")
-        except Exception:
+        except Exception:  # nosec B112
             continue
         lines = source.splitlines()
         if len(lines) > max_file_lines:
