@@ -94,6 +94,14 @@
 - [ ] **Capture Baseline** - Commits to `audit_artifacts/baselines/` (with rotation/archival)
 - [ ] **Create Draft PR with Artifacts + Diffs** - Opens draft PR with matrix and manifest diffs
 
+### 🔐 Agent Token Delegation
+
+- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
+  - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]` to use delegated tokens
+  - Triggers the [`agent-auth-delegation`](.github/workflows/agent-auth-delegation.yml) gated workflow
+  - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
+  - Once approved, `@copilot continue` is posted automatically
+
 ---
 
 ## ARCHIVAL OPERATIONS (if this PR removes or renames files)

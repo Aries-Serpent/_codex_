@@ -1,0 +1,219 @@
+name: Agent Token Delegation
+
+# Reads the "Enable Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)" checkbox
+# from the PR body. When checked:
+#   1. Pauses at the `agent-auth-delegation` environment gate — owner approves in GH UI.
+#   2. Sets `COPILOT_AGENT_AUTH_ENABLED=true` repo variable via CODEX_MASTER_KEY.
+#   3. Adds all three delegated agent identities to COGNITIVE_BRAIN_ALLOWED_ACTORS
+#      using the Set-based exact-match pattern (S110).
+#   4. Dispatches GitHub Guru agent to verify and document the variable change
+#      (maintainer role).
+#   5. Posts `@copilot continue` as a PR comment to resume the Copilot session.
+#
+# One-time admin setup required (see §9 in ADMIN_MANUAL_SETUP_GUIDE.md):
+#   • Create an environment named `agent-auth-delegation` in repo Settings → Environments
+#   • Add @mbaetiong as a required reviewer
+#
+# Secrets required: CODEX_MASTER_KEY (or CODEX_BACKUP_KEY as fallback)
+
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to activate delegation for"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ── Job 1: detect whether the checkbox is checked ───────────────────────────
+  detect-checkbox:
+    name: "Detect COPILOT_AGENT_AUTH_ENABLED checkbox"
+    runs-on: ubuntu-latest
+    outputs:
+      auth_requested: ${{ steps.check.outputs.auth_requested }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
+
+    steps:
+      - name: "Parse PR body for delegation checkbox"
+        id: check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+        run: |
+          echo "pr_number=${PR_NUM}" >> "$GITHUB_OUTPUT"
+
+          # Match a checked markdown checkbox that contains the variable name.
+          # Pattern: "- [x]" followed by anything then "COPILOT_AGENT_AUTH_ENABLED"
+          # Use POSIX extended regex (-E) for broad grep compatibility across runners.
+          if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
+            echo "auth_requested=true"  >> "$GITHUB_OUTPUT"
+            echo "✅ COPILOT_AGENT_AUTH_ENABLED checkbox is checked — requesting approval"
+          else
+            echo "auth_requested=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  COPILOT_AGENT_AUTH_ENABLED checkbox not checked — nothing to do"
+          fi
+
+  # ── Job 2: owner approval gate ───────────────────────────────────────────────
+  # This job is intentionally minimal — its only purpose is to pause here until
+  # @mbaetiong clicks "Approve" in the GitHub Actions "Waiting for approval" UI.
+  await-approval:
+    name: "⏳ Awaiting owner approval"
+    needs: detect-checkbox
+    if: needs.detect-checkbox.outputs.auth_requested == 'true'
+    runs-on: ubuntu-latest
+    environment: agent-auth-delegation   # ← protection rule triggers approval gate
+
+    steps:
+      - name: "Approval received"
+        run: |
+          echo "✅ Owner approved agent token delegation for PR #${{ needs.detect-checkbox.outputs.pr_number }}"
+          echo "Proceeding to activate COPILOT_AGENT_AUTH_ENABLED..."
+
+  # ── Job 3: activate delegation, set variable, post @copilot continue ─────────
+  activate-delegation:
+    name: "Activate token delegation"
+    needs: [detect-checkbox, await-approval]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
+      - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
+        id: set_vars
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          script: |
+            // Helper: upsert a repo variable (create if 404, patch if exists)
+            async function upsertVar(name, value) {
+              try {
+                await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  name,
+                  value,
+                });
+                core.info(`✅ PATCH ${name} = ${value}`);
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.request('POST /repos/{owner}/{repo}/actions/variables', {
+                    owner: context.repo.owner,
+                    repo:  context.repo.repo,
+                    name,
+                    value,
+                  });
+                  core.info(`✅ POST (create) ${name} = ${value}`);
+                } else {
+                  throw e;
+                }
+              }
+            }
+
+            // 1. Enable agent auth flag
+            await upsertVar('COPILOT_AGENT_AUTH_ENABLED', 'true');
+
+            // 2. Ensure all three delegated agent identities are present
+            //    (S110 Set-based exact-match pattern — no partial-name false positives)
+            const REQUIRED_AGENTS = [
+              'copilot-swe-agent[bot]',   // GitHub Copilot coding agent
+              'github-copilot[bot]',       // Copilot custom agents
+              'github-actions[bot]',       // CI/AI workflow agents
+            ];
+
+            let currentActors = 'mbaetiong,github-actions[bot]';
+            try {
+              const resp = await github.request(
+                'GET /repos/{owner}/{repo}/actions/variables/{name}',
+                { owner: context.repo.owner, repo: context.repo.repo,
+                  name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS' }
+              );
+              currentActors = resp.data.value || currentActors;
+            } catch (e) {
+              core.warning(`Could not fetch COGNITIVE_BRAIN_ALLOWED_ACTORS: ${e.message}`);
+            }
+
+            const actorSet = new Set(
+              currentActors.split(',').map(a => a.trim()).filter(a => a.length > 0)
+            );
+            for (const agent of REQUIRED_AGENTS) { actorSet.add(agent); }
+            const updatedActors = Array.from(actorSet).join(',');
+
+            await upsertVar('COGNITIVE_BRAIN_ALLOWED_ACTORS', updatedActors);
+            core.info(`✅ COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);
+
+            core.setOutput('updated_actors', updatedActors);
+
+      # ── 3b: Dispatch GitHub Guru to verify & document the variable change ────
+      # GitHub Guru acts as the "codebase maintainer" that audits the variable
+      # state and posts a structured PR comment confirming the change is visible.
+      - name: "Dispatch GitHub Guru (maintainer verification)"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                workflow_id: 'github-guru.yml',
+                ref:         context.ref || 'main',
+                inputs: {
+                  mode: 'pr_only',
+                },
+              });
+              core.info('✅ GitHub Guru dispatched for maintainer variable verification');
+            } catch (e) {
+              core.warning(`GitHub Guru dispatch skipped: ${e.message}`);
+            }
+
+      # ── 3c: Post @copilot continue on the PR ─────────────────────────────────
+      - name: "Post @copilot continue"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
+            if (!prNumber || prNumber <= 0) {
+              core.setFailed('Invalid PR number — cannot post comment');
+              return;
+            }
+            const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
+            const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const body = [
+              '## 🔐 Agent Token Delegation Activated',
+              '',
+              `Owner approval received ([workflow run](${runUrl})). Repo variables updated:`,
+              '',
+              '| Variable | Value |',
+              '|----------|-------|',
+              '| `COPILOT_AGENT_AUTH_ENABLED` | `true` |',
+              `| \`COGNITIVE_BRAIN_ALLOWED_ACTORS\` | \`${actors}\` |`,
+              '',
+              '**Delegated agent coverage:**',
+              '- ✅ `copilot-swe-agent[bot]` — GitHub Copilot coding agent',
+              '- ✅ `github-copilot[bot]` — Copilot custom agents',
+              '- ✅ `github-actions[bot]` — CI/AI workflow agents',
+              '',
+              '> GitHub Guru (maintainer) has been dispatched to verify variable state.',
+              '',
+              '@copilot continue',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
+            core.info(`✅ Posted @copilot continue on PR #${prNumber}`);
