@@ -87,6 +87,7 @@ jobs:
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY }}
+          ref: ${{ github.head_ref || github.ref_name }}
 
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
@@ -184,12 +185,12 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f .codex/agent_auth_session.json
+          git add .codex/agent_auth_session.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "chore(auth): write provenance session token [skip ci]"
-            git push origin HEAD
+            git push origin HEAD:refs/heads/${{ github.head_ref || github.ref_name }}
           fi
 
       # ── 3c: Dispatch GitHub Guru to verify & document the variable change ────

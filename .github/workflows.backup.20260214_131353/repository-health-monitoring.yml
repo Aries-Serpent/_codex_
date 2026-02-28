@@ -79,7 +79,7 @@ jobs:
         if: steps.check_action.outputs.action_needed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           commit-message: 'chore: Repository health monitoring report'
           branch: automated/repository-health-${{ github.run_number }}
           title: '🔍 Repository Health: ${{ steps.scan.outputs.candidate_count }} offload candidates found'

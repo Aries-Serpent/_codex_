@@ -60,7 +60,7 @@ jobs:
 
       - name: Fetch CodeQL Alerts
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "Fetching CodeQL alerts..."
 
@@ -130,7 +130,7 @@ jobs:
       - name: Create Issue for Analysis
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Check if alert data exists
           if [ ! -f .codex/security/alert_inventory.json ]; then

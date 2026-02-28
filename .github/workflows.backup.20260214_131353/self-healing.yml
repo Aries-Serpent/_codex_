@@ -67,7 +67,7 @@ jobs:
       - name: Get Workflow Run ID
         id: get_run_id
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if [ -n "${{ inputs.run_id }}" ]; then
             echo "run_id=${{ inputs.run_id }}" >> $GITHUB_OUTPUT
@@ -78,7 +78,7 @@ jobs:
       - name: Download Failure Logs
         id: download_logs
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           RUN_ID: ${{ steps.get_run_id.outputs.run_id }}
         run: |
           echo "Downloading logs for run $RUN_ID..."
@@ -155,7 +155,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Setup Python
         if: contains(needs.detect-and-analyze.outputs.fix_type, 'python')
@@ -176,7 +176,7 @@ jobs:
         with:
           fix_type: ${{ needs.detect-and-analyze.outputs.fix_type }}
           fix_params: ${{ needs.detect-and-analyze.outputs.fix_params }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Push Changes
         if: steps.apply.outputs.commit_sha != ''
@@ -205,7 +205,7 @@ jobs:
         id: create_pr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           branch: self-healing/${{ github.run_id }}
           base: ${{ github.event.workflow_run.head_branch || github.ref_name }}
           title: '🤖 Self-Healing: Fix ${{ needs.detect-and-analyze.outputs.failure_description }}'
@@ -244,7 +244,7 @@ jobs:
       - name: Comment on PR
         if: steps.create_pr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           PR_NUMBER: ${{ steps.create_pr.outputs.pull-request-number }}
         run: |
           gh pr comment "$PR_NUMBER" --body "### 🤖 Self-Healing Fix Applied

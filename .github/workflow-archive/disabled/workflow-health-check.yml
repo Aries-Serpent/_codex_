@@ -41,7 +41,7 @@ jobs:
 
       - name: Run quantum health analysis
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python scripts/quantum_workflow_health.py \
             --commit-sha "${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}" \

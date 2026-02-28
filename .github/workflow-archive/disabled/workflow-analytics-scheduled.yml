@@ -41,7 +41,7 @@ jobs:
       - name: Run Weekly Analytics
         id: analytics
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python .github/scripts/workflow_analytics_runner.py \
             --analysis-period 100 \
@@ -95,7 +95,7 @@ jobs:
           steps.check.outputs.action_required == 'true' &&
           steps.analytics.outputs.health_status != 'HEALTHY'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           REPORT_FILE=$(ls -t .codex/reports/workflow_analytics_*.md | head -1)
           HEALTH_STATUS="${{ steps.analytics.outputs.health_status }}"

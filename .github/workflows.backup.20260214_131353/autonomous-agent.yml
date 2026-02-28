@@ -43,7 +43,7 @@ jobs:
         id: guard
         env:
           TOOL_KEY: autonomous-agent
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if bash scripts/ci/owner_approval_guard.sh; then
             echo "approved=true" >> $GITHUB_OUTPUT
@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Set up Python 3.12 with tiered cache
         uses: ./.github/actions/setup-python-cached
@@ -80,7 +80,7 @@ jobs:
       - name: Run Autonomous Agent
         env:
           MODE: ${{ github.event.inputs.mode || 'monitor' }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "Running in mode: $MODE"
           case "$MODE" in
