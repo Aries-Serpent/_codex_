@@ -721,7 +721,7 @@ class TestErrorPaths:
             # Test that else clause executes when no exception is raised
             # The try block succeeds without raising an exception
             pass  # No exception raised
-        except Exception:
+        except Exception:  # noqa: BLE001
             result = "except"
         else:
             result = "else"

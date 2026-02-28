@@ -90,3 +90,58 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+
+  # P11-04: Parallel test sharding (S100)
+  # Splits the "quick" test group into 4 shards using pytest-split, reducing
+  # wall-clock time from ~N min to ~N/4 min on the quick test suite.
+  sharded-quick:
+    name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true  # Sharding is additive; do not block merges until stable
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+        total: [4]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python with shared cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          extras: 'dev'
+          install-torch: 'true'
+          install-preflight-extras: 'true'
+
+      - name: Install pytest-split
+        run: pip install pytest-split>=0.8 --quiet
+
+      - name: Run sharded quick tests
+        id: shard-run
+        timeout-minutes: 25
+        run: |
+          python -m pytest tests/ \
+            -m "not slow and not integration" \
+            --timeout=60 \
+            --tb=short \
+            --maxfail=20 \
+            --splits ${{ matrix.total }} \
+            --group ${{ matrix.shard }} \
+            --splitting-algorithm=least_duration \
+            -q
+          echo "Shard ${{ matrix.shard }}/${{ matrix.total }} exit: $?"
+
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
+          path: |
+            .test_durations
+            test-results/
+          retention-days: 3
+          if-no-files-found: ignore

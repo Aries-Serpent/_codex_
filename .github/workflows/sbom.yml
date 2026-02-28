@@ -93,6 +93,34 @@ jobs:
           fi
           echo "✅ SBOM validated: $SBOM_FILE (${SIZE} bytes)"
 
+      - name: Validate CycloneDX JSON structure (P2-03)
+        run: |
+          if [ ! -f sbom-cyclonedx.json ]; then
+            echo "ℹ️ No CycloneDX JSON found — skipping schema validation"
+            exit 0
+          fi
+          python3 << 'PY'
+          import json, sys
+
+          with open("sbom-cyclonedx.json", "r", encoding="utf-8") as f:
+              sbom = json.load(f)
+
+          # CycloneDX minimal required fields
+          required_top_keys = {"bomFormat", "specVersion", "version"}
+          missing = required_top_keys - set(sbom.keys())
+          if missing:
+              print(f"❌ CycloneDX SBOM missing required top-level keys: {missing}", file=sys.stderr)
+              sys.exit(1)
+
+          if sbom.get("bomFormat") != "CycloneDX":
+              print(f"❌ bomFormat is not 'CycloneDX': {sbom.get('bomFormat')}", file=sys.stderr)
+              sys.exit(1)
+
+          components = sbom.get("components", [])
+          print(f"✅ CycloneDX SBOM valid — specVersion={sbom['specVersion']!r}, "
+                f"{len(components)} component(s) listed")
+          PY
+
       - name: Upload SBOM artifacts
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,0 +1,89 @@
+name: OpenVINO Phase C — Intel Arc iGPU Smoke Tests
+
+# P10-05 Phase C (S100): Run live OpenVINO inference smoke tests on an Intel Arc iGPU.
+# These tests are skipped automatically when no GPU is present, so the job is
+# safe to run on any ubuntu runner — it will report "skipped" rather than fail.
+#
+# To run on a real Intel Arc runner, set the self-hosted label below to match
+# your runner registration (e.g. [self-hosted, intel-arc]).
+#
+# See docs/ops/openvino_integration.md Phase C for full context.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 0D_base_
+      - main
+    paths:
+      - 'src/codex_ml/backends/openvino_backend.py'
+      - 'tests/smoke/test_openvino_backend_smoke.py'
+  pull_request:
+    paths:
+      - 'src/codex_ml/backends/openvino_backend.py'
+      - 'tests/smoke/test_openvino_backend_smoke.py'
+
+permissions:
+  contents: read
+
+jobs:
+  openvino-cpu-guard:
+    name: OpenVINO smoke (CPU-only runner — Phase B)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          extras: 'dev'
+
+      - name: Run Phase B smoke tests (no GPU required)
+        run: |
+          python -m pytest tests/smoke/test_openvino_backend_smoke.py \
+            -v --tb=short \
+            -k "not TestOpenVINOPhaseC"
+          echo "Phase B: $? (expected 0)"
+
+  openvino-arc-gpu:
+    name: OpenVINO smoke (Intel Arc iGPU — Phase C)
+    # Switch to [self-hosted, intel-arc] once an Intel Arc runner is registered.
+    # Until then the job runs on ubuntu-latest and Phase C tests are auto-skipped.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true  # Phase C is optional Tier 2 — do not block merges
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          extras: 'dev'
+
+      - name: Install OpenVINO runtime (if available)
+        run: |
+          pip install openvino --quiet 2>/dev/null || echo "openvino not available on this runner"
+
+      - name: Run Phase C smoke tests (skip if GPU absent)
+        run: |
+          python -m pytest tests/smoke/test_openvino_backend_smoke.py::TestOpenVINOPhaseC \
+            -v --tb=short \
+            -rs  # show skip reasons
+          echo "Phase C result: $?"
+
+      - name: Report GPU detection status
+        if: always()
+        run: |
+          python -c "
+          try:
+              from codex_ml.backends.openvino_backend import is_available, DEVICES
+              print(f'OpenVINO devices: {DEVICES}')
+              print(f'GPU available: {is_available(\"GPU\")}')
+          except Exception as e:
+              print(f'OpenVINO unavailable: {e}')
+          "

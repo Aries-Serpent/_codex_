@@ -14,7 +14,7 @@ import pytest
 def _has_tokenizers() -> bool:
     try:
         pass  # type: ignore
-    except Exception:
+    except Exception:  # noqa: BLE001
         return False
     return True
 
