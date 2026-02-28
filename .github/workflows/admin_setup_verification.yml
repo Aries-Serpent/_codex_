@@ -24,6 +24,8 @@ on:
     paths:
       - ".codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md"
       - ".github/workflows/admin_setup_verification.yml"
+  repository_dispatch:
+    types: [run-admin-verification]
 
 permissions:
   contents: read
@@ -407,6 +409,20 @@ jobs:
 
           if [ -z "$TARGET_PR" ]; then
             echo "Could not determine target PR for branch '${GITHUB_REF_NAME}' — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Idempotency check — skip if @copilot continue already posted for this prompt
+          export PROMPT_FILE
+          EXISTING=$(curl -s \
+            -H "Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPO}/issues/${TARGET_PR}/comments?per_page=100" \
+            | python3 -c "import json,os,sys; cs=json.load(sys.stdin); p=os.environ.get('PROMPT_FILE',''); print('found' if isinstance(cs,list) and any('@copilot continue' in c.get('body','') and p in c.get('body','') for c in cs if isinstance(c,dict)) else '')" \
+            2>/dev/null || true)
+
+          if [ "$EXISTING" = "found" ]; then
+            echo "ℹ️ @copilot continue already posted for '${PROMPT_FILE}' on PR #${TARGET_PR} — skipping (idempotent)"
             exit 0
           fi
 

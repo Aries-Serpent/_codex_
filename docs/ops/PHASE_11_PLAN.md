@@ -108,6 +108,7 @@
 | **S113** | **owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter** | ✅ **DONE** |
 | **S114** | **Ruff 0 errors (F401/F841/I001), accountability report, full dep install** | ✅ **DONE** |
 | **S115** | **Provenance-chain autonomous agency: session token (A-001), agent-var-writer (A-002), PROVENANCE_CHAIN.md, access report** | ✅ **DONE** |
+| **S116** | **§8 auto-post @copilot continue on push (idempotent + repository_dispatch); AGENTIC_AGENCY_TIPS.md** | ✅ **DONE** |
 
 ---
 
@@ -127,4 +128,4 @@ Phase 11 is **complete** when all of the following hold:
 
 ---
 
-*Phase 11 plan authored S97 (2026-02-28). S115 session complete. Next: S116 autonomous PR creation + coverage gap-fill.*
+*Phase 11 plan authored S97 (2026-02-28). S116 session complete. Next: S117 coverage gap-fill (fail_under=65) + project.memory.md agentic memory spec.*

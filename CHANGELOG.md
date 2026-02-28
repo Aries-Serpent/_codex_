@@ -5,7 +5,30 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — S115
+## [Unreleased] — S116
+
+### S116 — Autonomous @copilot continue posting + Agentic Agency research (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | §8 step: auto-posts `@copilot continue` on push events (not just workflow_dispatch); discovers PR via branch name |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | Idempotency: checks for existing `@copilot continue` before re-posting (prevents duplicate comments on repeated pushes) |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | `repository_dispatch` trigger added — external systems can fire admin verification via API |
+| Docs | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | NEW: research-backed tips from GitHub Blog, arXiv, VS Code docs — memory tiers, event-driven patterns, idempotency, `copilot-instructions.md` best practices |
+| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S116 row added; W-001→W-011 work queue updated to ✅ Done |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S116 row added |
+
+### Root Cause Fixed (S116)
+
+`admin_setup_verification.yml` verified CODEX_MASTER_KEY/BACKUP_KEY as functional but never
+autonomously posted the `@copilot continue` prompt because:
+1. The only posting step had `if: inputs.pr_number != ''` (workflow_dispatch-only gate)
+2. That step posted a generic summary, not a `@copilot continue` command
+3. Push events were completely unhandled
+
+Fix: §8 step fires on both push (PR discovered via branch name API lookup) and workflow_dispatch.
+Idempotency added to prevent duplicate posts. `repository_dispatch` for cross-system triggers.
+
 
 ### S115 — Provenance-chain autonomous agentic agency (2026-02-28)
 
