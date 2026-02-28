@@ -59,7 +59,7 @@ jobs:
         id: agent
         env:
           OPENAI_API_KEY: ${{ secrets.GITHUB_CODEX }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           AGENT_TASK: ${{ inputs.agent_task }}
           MODEL_PREFERENCE: ${{ inputs.model_preference }}
           ORG_CONTEXT: 'Aries-Serpent'

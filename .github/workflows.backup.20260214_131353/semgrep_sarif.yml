@@ -156,7 +156,7 @@ jobs:
 
           echo "✅ Upload complete: $CHUNK_COUNT chunks processed"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Upload Semgrep results as artifact
         if: always()

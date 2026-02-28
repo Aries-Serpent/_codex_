@@ -5,7 +5,112 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — S115
+## [Unreleased] — S116i
+
+### S116i — WF-002 + Grounded Enforcement Audit (2026-02-28)
+
+| Type | File | Change |
+|------|------|--------|
+| Feature | `.github/workflows/session-watchdog.yml` | NEW: issue_comment trigger; timebox detection/recording/expiry; exploration session + do-not-auto-proceed enforcement |
+| Feature | `.github/workflows/agent-auth-delegation.yml` | REQ-1b: Surface Session-Type Directives step; REQ-5: CHANGELOG.md Tier-1 hard stop (git diff check) |
+| Feature | `.github/workflows/token-probe.yml` | NEW: on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read+write probes; posts consolidated result to any PR |
+| Docs | `.github/docs/SessionContinuityPolicy.md` | NEW: 5-rule engineered session continuity policy with enforcement architecture |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | NEW: quadrant chart + tier table comparing ideal vs sort-of-works enforcement methods |
+| Docs | `.codex/docs/S116g_TO_S116i_CHANGE_MAP.md` | NEW: Mermaid architecture map of all changes from S116g baseline to S116i HEAD |
+| Docs | `.github/workflows/INDEX.md` | session-watchdog.yml + token-probe.yml registered; count → 57 |
+
+---
+
+
+
+### S116h — WF-001: Cognitive Pre-flight CI Gate (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Feature | `.github/workflows/agent-auth-delegation.yml` | Added `cognitive-preflight` job (REQ-1–4): posts mandatory checklist PR comment, parses CI failure patterns to job summary, verifies .gitignore allows agent_auth_session.json, verifies accountability report touched in last commit. `activate-delegation` now needs `cognitive-preflight`. |
+| Feature | `.github/ISSUE_TEMPLATE/session_priority.md` | New template for posting `Priority for this session: X` directive on PRs — surfaced inline by cognitive-preflight job |
+| Docs | `.github/workflows/INDEX.md` | Authentication section updated with `agent-auth-delegation.yml` entry and cognitive-preflight gate description |
+| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-024–W-027 work log entries; Last updated → S116h |
+| Trigger | `.github/workflows/agent-auth-delegation.yml` | Added `synchronize`, `ready_for_review` to PR types; added `pull_request_review: [submitted]` trigger |
+
+### Transformation Achieved (S116h)
+
+```
+BEFORE: .codex/ = files I should read (passive, ignored under task pressure)
+AFTER:  .codex/ = CI gate I cannot bypass (active, enforced at every PR)
+```
+
+The `cognitive-preflight` job runs on every PR push. `activate-delegation` cannot start
+until cognitive-preflight passes. The cognitive brain is now an enforcement system, not decoration.
+
+
+
+### S116c — Dynamic CI-failure-driven @copilot continue (no static PR numbers) (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Bugfix/Feature | `.github/workflows/admin_setup_verification.yml` | §8 complete rewrite: no static PR numbers, no `PR-{N}-followup.md` file lookup. Dynamically builds prompt from live CI failure data (`/actions/runs?branch=...&per_page=15`). Posts `@copilot continue` followed by failure list + AAIS directive. |
+| Idempotency fix | `.github/workflows/admin_setup_verification.yml` | Replaced file-path substring idempotency check (false-positive prone) with time-based check: skip if `@copilot continue` was posted within last 2h (startswith check on comment body). |
+
+### Root Cause Fixed (S116c)
+
+Two separate bugs caused §8 to skip posting:
+1. **False-positive idempotency** (S116b): the check matched reply comments that merely
+   *mentioned* the prompt file path in passing text — e.g. Copilot's own reply
+   "The next push will post `.github/copilot-prompts/active/PR-3403-followup.md` correctly."
+   contained both `@copilot continue` (in the quoted block) and the path string.
+   Fix: replaced with a 2-hour time-window check using `startswith("@copilot continue")`.
+2. **Static PR-number dependency**: `PR-{N}-followup.md` files are not always present and
+   couple the posting mechanism to manually-created prompt files. Fix: removed entirely.
+
+New §8 behavior:
+- Queries `/actions/runs?branch={branch}&per_page=15` for recent failures
+- Builds dynamic `@copilot continue` body listing failed runs + AAIS directive
+- Falls back to generic improvement directive when no failures found
+- Idempotency: skip if already posted in last 2h
+
+## [S116b] — S116b — §8 prompt-ordering bugfix + webhook/app/chat-ops infra suite (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Bugfix | `.github/workflows/admin_setup_verification.yml` | §8 ordering fix: discover `TARGET_PR` BEFORE selecting `PROMPT_FILE` — so push events use `PR-{N}-followup.md` not an arbitrary `ls -t` result |
+| Agentic Infra | `scripts/ci/github_var_writer.py` | NEW: systematic repo variable writes (POST/PATCH `/actions/variables`); ALLOWED_VAR_NAMES allowlist; `--batch/--set/--list/--dry-run`; audit log |
+| Agentic Infra | `scripts/ci/webhook_configurator.py` | NEW: declarative webhook create/update/delete; idempotent `--apply`; registry JSON; audit log |
+| Agentic Infra | `scripts/ci/github_app_bootstrap.py` | NEW: GitHub App registration via App Manifest API using CODEX_BACKUP_KEY; `--generate-manifest-url/--convert-code/--show`; private key gitignored |
+| Config | `.codex/webhook_config.json` | NEW: declarative webhook config template for agentic event set |
+| Workflow | `.github/workflows/agent_infrastructure_manager.yml` | NEW: unified orchestrator for all three infra ops; `workflow_dispatch` + `repository_dispatch` + `@agent-infra` chat-ops |
+| Workflow | `.github/workflows/chatops_copilot_trigger.yml` | NEW: `issue_comment` webhook → `/copilot continue\|status\|verify\|help` slash commands |
+| Workflow | `.github/workflows/self_healing_ci.yml` | NEW: `workflow_run` failure → auto-fix → draft PR (self-healing CI) |
+
+### Root Cause Fixed (S116)
+
+`admin_setup_verification.yml` verified CODEX_MASTER_KEY/BACKUP_KEY as functional but never
+autonomously posted the `@copilot continue` prompt because:
+1. The only posting step had `if: inputs.pr_number != ''` (workflow_dispatch-only gate)
+2. That step posted a generic summary, not a `@copilot continue` command
+3. Push events were completely unhandled
+
+Fix: §8 step fires on both push (PR discovered via branch name API lookup) and workflow_dispatch.
+Idempotency added to prevent duplicate posts. `repository_dispatch` for cross-system triggers.
+
+### §8 Prompt Ordering Bug (S116b)
+
+On `push` events `PR_NUMBER_INPUT` is empty, so the original code fell back to `ls -t *-followup.md`
+which returned an arbitrary file (all files share the same `checkout` mtime). Fix: discover
+`TARGET_PR` via the branch→PR API lookup **first**, then use `PR-${TARGET_PR}-followup.md` for
+the PR-specific match before falling back to `ls -t`.
+
+## [S116] — S116 — Autonomous @copilot continue posting + Agentic Agency research (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | §8 step: auto-posts `@copilot continue` on push events (not just workflow_dispatch); discovers PR via branch name |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | Idempotency: checks for existing `@copilot continue` before re-posting (prevents duplicate comments on repeated pushes) |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | `repository_dispatch` trigger added — external systems can fire admin verification via API |
+| Docs | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | NEW: research-backed tips from GitHub Blog, arXiv, VS Code docs — memory tiers, event-driven patterns, idempotency, `copilot-instructions.md` best practices |
+| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S116 row added; W-001→W-011 work queue updated to ✅ Done |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S116 row added |
+
 
 ### S115 — Provenance-chain autonomous agentic agency (2026-02-28)
 

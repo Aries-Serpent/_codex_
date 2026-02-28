@@ -35,14 +35,14 @@ jobs:
         run: |
           python scripts/github_oauth_app_sync.py --validate
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
 
       - name: Sync OAuth configuration
         run: |
           python scripts/github_oauth_app_sync.py --sync
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           GITHUB_OAUTH_CLIENT_ID: ${{ secrets.GITHUB_OAUTH_CLIENT_ID }}
           GITHUB_OAUTH_CLIENT_SECRET: ${{ secrets.GITHUB_OAUTH_CLIENT_SECRET }}
 
@@ -51,12 +51,12 @@ jobs:
         run: |
           python scripts/github_oauth_app_sync.py --health-check
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Generate sync report
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const fs = require('fs');
             const healthData = JSON.parse(fs.readFileSync('oauth_health_check.json', 'utf8'));

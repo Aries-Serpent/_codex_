@@ -160,7 +160,24 @@ Authentication, secrets, and token management:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
+| [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate (REQ-1–5) | PR, Manual | ✅ Active |
+| [session-watchdog.yml](session-watchdog.yml) | 🆕 Timebox, exploration session & continuity enforcement | PR comment | ✅ Active |
+| [token-probe.yml](token-probe.yml) | 🆕 On-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write validation | Manual | ✅ Active |
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
+
+**Cognitive Pre-flight Gate** (`cognitive-preflight` job inside `agent-auth-delegation.yml`):
+- REQ-1: Posts mandatory checklist as PR comment BEFORE `@copilot continue` fires
+- REQ-2: Parses `.codex/patterns/ci_failure_patterns.yaml` → outputs all patterns to job summary
+- REQ-3: Verifies `.gitignore` allows `.codex/agent_auth_session.json`
+- REQ-4: Verifies `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was touched in last commit
+- REQ-5 (WF-002): Reads `SESSION_TIMEBOX_START`/`SESSION_TYPE_EXPLORATION` markers → injects enforcement items
+
+**Session Watchdog** (`session-watchdog.yml`):
+- Detects `~N minutes` in any PR comment → posts `SESSION_TIMEBOX_START` with expiry timestamp
+- Detects `exploration session`/`capability discussion` → posts `SESSION_TYPE_EXPLORATION` + continuity rules
+- Detects `Do NOT auto-proceed` → flags mandatory stop-gate in exploration comment
+- Checks expiry on every subsequent PR comment → posts `SESSION_TIMEBOX_EXPIRED` when time runs out
+- Policy: `.github/docs/SessionContinuityPolicy.md`
 
 **Note:** Auth security, rotation, and compliance workflows exist as documentation (`.md` files) but are not yet implemented as active workflows. See `.github/workflows/*.md` for specifications.
 
@@ -298,7 +315,7 @@ For issues or questions about workflows:
 ---
 
 **Last Updated:** 2026-02-07  
-**Total Workflows:** 55 active workflows + 11 misc utilities  
+**Total Workflows:** 57 active workflows + 11 misc utilities  
 **Consolidated Suites:** 10 unified workflows  
 **Python Version:** 3.12  
 **Cache Strategy:** Distributed (per-workflow)  

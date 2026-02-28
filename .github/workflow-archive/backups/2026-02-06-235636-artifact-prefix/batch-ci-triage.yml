@@ -86,7 +86,7 @@ jobs:
       - name: Run Batch Triage
         id: triage
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "::group::Running batch triage"
 
@@ -127,7 +127,7 @@ jobs:
       - name: Generate JSON Report
         if: steps.triage.outputs.triage_success == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "::group::Generating JSON report"
 

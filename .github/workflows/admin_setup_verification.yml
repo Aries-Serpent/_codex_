@@ -24,6 +24,8 @@ on:
     paths:
       - ".codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md"
       - ".github/workflows/admin_setup_verification.yml"
+  repository_dispatch:
+    types: [run-admin-verification]
 
 permissions:
   contents: read
@@ -365,6 +367,138 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> $GITHUB_STEP_SUMMARY
 
+      - name: "§8 Auto-post @copilot continue with dynamic CI failure context"
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER_INPUT: ${{ inputs.pr_number }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+        run: |
+          # Skip if no key is functional
+          if [ "${MASTER_KEY_FUNCTIONAL}" != "true" ] && [ "${BACKUP_KEY_FUNCTIONAL}" != "true" ]; then
+            echo "No functional key — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Discover target PR
+          TARGET_PR="$PR_NUMBER_INPUT"
+          if [ -z "$TARGET_PR" ]; then
+            TARGET_PR=$(curl -s \
+              -H "Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${GITHUB_OWNER}:${GITHUB_REF_NAME}&per_page=1" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d[0]['number'] if isinstance(d,list) and d else '')" \
+              2>/dev/null || true)
+          fi
+
+          if [ -z "$TARGET_PR" ]; then
+            echo "Could not determine target PR for branch '${GITHUB_REF_NAME}' — skipping @copilot continue post"
+            exit 0
+          fi
+
+          export TARGET_PR
+
+          # Build dynamic CI-failure-aware prompt and post — all in one Python block.
+          # No static PR numbers: prompt is dynamically assembled from live CI data.
+          # Idempotency: time-based (2-hour window) to avoid false positives from
+          # reply comments that merely mention "@copilot continue" in their body.
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error, datetime
+
+          token  = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY", "")
+          repo   = os.environ["GITHUB_REPO"]
+          branch = os.environ["GITHUB_REF_NAME"]
+          pr     = os.environ["TARGET_PR"]
+          marker = "@copilot continue"
+
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+
+          def gh_get(path, qs=""):
+              url = f"https://api.github.com/repos/{repo}{path}{qs}"
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as r:
+                  return json.load(r)
+
+          # --- Idempotency: skip if @copilot continue was posted in last 2h ---
+          try:
+              comments = gh_get(f"/issues/{pr}/comments", "?per_page=100")
+              cutoff   = datetime.datetime.utcnow() - datetime.timedelta(hours=2)
+              for c in (comments if isinstance(comments, list) else []):
+                  if c.get("body", "").lstrip().startswith(marker):
+                      try:
+                          ts = datetime.datetime.strptime(c["created_at"], "%Y-%m-%dT%H:%M:%SZ")
+                          if ts > cutoff:
+                              print(f"info: @copilot continue already posted within 2h on PR #{pr} — skipping (idempotent)")
+                              sys.exit(0)
+                      except Exception:
+                          pass
+          except Exception as e:
+              print(f"Warning: idempotency check failed ({e}) — proceeding", file=sys.stderr)
+
+          # --- Query recent CI runs on this branch (any status) ---
+          failure_lines = []
+          try:
+              runs_data = gh_get("/actions/runs", f"?branch={branch}&per_page=15")
+              all_runs  = runs_data.get("workflow_runs", []) if isinstance(runs_data, dict) else []
+              failed    = [r for r in all_runs if r.get("conclusion") in ("failure", "timed_out", "cancelled")][:6]
+              for run in failed:
+                  name       = run.get("name", "unknown")
+                  url        = run.get("html_url", "")
+                  run_id     = run.get("id", "")
+                  conclusion = run.get("conclusion", "failure")
+                  failure_lines.append(f"  - **[{name}]({url})** (run `{run_id}`, `{conclusion}`)")
+          except Exception as e:
+              print(f"Warning: could not fetch CI runs ({e})", file=sys.stderr)
+
+          # --- Build dynamic body (no static PR numbers) ---
+          date  = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+          lines = [
+              "@copilot continue",
+              "",
+              f"> **CI Auto-Diagnosis** — {date}",
+              f"> Branch: `{branch}` | PR: #{pr}",
+              ">",
+          ]
+          if failure_lines:
+              lines += ["> **Recently failed CI runs — address all per codebase policy:**"]
+              lines += [f">{fl}" for fl in failure_lines]
+              lines += [
+                  ">",
+                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
+                  "> **AAIS directive:** fix all failures, ruff clean (0 errors), update accountability report.",
+              ]
+          else:
+              lines += [
+                  "> No recent CI failures detected on this branch.",
+                  "> Policy: `.codex/CODEBASE_AGENCY_POLICY.md` — _Leave codebase better than found it._",
+                  "> **Next:** ruff clean, coverage gap-fill, update accountability report.",
+              ]
+          lines += [
+              ">",
+              "> _Auto-posted by Admin Setup Verification (keys confirmed functional)._",
+          ]
+          body = "\n".join(lines)
+
+          # --- Post ---
+          url  = f"https://api.github.com/repos/{repo}/issues/{pr}/comments"
+          data = json.dumps({"body": body}).encode()
+          req  = urllib.request.Request(url, data=data, method="POST", headers={**headers, "Content-Type": "application/json"})
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  result = json.load(resp)
+                  print(f"Posted @copilot continue to PR #{pr}: {result.get('html_url','?')}")
+          except urllib.error.HTTPError as e:
+              msg = e.read().decode(errors="replace")
+              print(f"::warning::Failed to post to PR #{pr} — HTTP {e.code}: {msg}", file=sys.stderr)
+              sys.exit(1)
+          PYEOF
+
       - name: "Post verification summary to PR (if CODEX_MASTER_KEY set)"
         if: inputs.pr_number != ''
         env:
@@ -393,7 +527,6 @@ jobs:
             "1. §1 Grant Copilot App `issues: write` — [org settings](https://github.com/organizations/Aries-Serpent/settings/installations)\n"
             "2. §3 Create `CODEX_MASTER_KEY` secret (if not done)\n"
             "3. §4 Enable GitHub Discussions (if not done)\n"
-            "4. §7 Post `@copilot Begin S109` comment on this PR\n\n"
             "See `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` for click-by-click instructions."
           )
           result = poster.post_pr_comment(os.environ.get("GITHUB_REPOSITORY", ""), pr, body)

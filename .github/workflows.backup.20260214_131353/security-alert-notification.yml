@@ -32,7 +32,7 @@ jobs:
         id: get-alerts
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const { data: alerts } = await github.rest.dependabot.listAlertsForRepo({
               owner: context.repo.owner,
@@ -82,7 +82,7 @@ jobs:
         if: steps.get-alerts.outputs.has-alerts == 'true'
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const alerts = JSON.parse('${{ steps.get-alerts.outputs.alerts }}');
 
@@ -151,7 +151,7 @@ jobs:
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const summary = `${{ steps.create-summary.outputs.summary }}`;
             const criticalCount = parseInt('${{ steps.get-alerts.outputs.critical-count }}');

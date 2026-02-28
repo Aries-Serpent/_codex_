@@ -47,7 +47,7 @@ jobs:
       - name: Run Self-Healing Analysis
         id: analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           CODEX_FORCE_CPU: "1"
         run: |
           python -c "
