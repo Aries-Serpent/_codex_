@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i — WF-002 session-watchdog + continuity policy)
+**Last updated:** 2026-02-28 (S116i — WF-002 complete + INDEX.md updated)
 
 ---
 
@@ -294,6 +294,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-028 | WF-002: session-watchdog.yml — timebox detection, exploration session, do-not-auto-proceed enforcement | ✅ Done (S116i) |
 | W-029 | WF-002: cognitive-preflight enhanced — surface session-type directives (timebox remaining, continuity rules) | ✅ Done (S116i) |
 | W-030 | .github/docs/SessionContinuityPolicy.md created — engineering-enforced session continuity policy | ✅ Done (S116i) |
+| W-031 | .github/workflows/INDEX.md updated — session-watchdog.yml entry + total count 56 | ✅ Done (S116i) |
 
 ---
 
