@@ -186,6 +186,99 @@ jobs:
             });
             console.log(`✅ Checklist posted for SHA ${sha}`);
 
+      # ── REQ-1b: Surface session-type directives (exploration/timebox/no-auto-proceed) ──
+      # Reads SESSION_TIMEBOX_START / SESSION_TYPE_EXPLORATION markers posted by session-watchdog.yml
+      # and injects matching enforcement items into the agent checklist.
+      # Policy: .github/docs/SessionContinuityPolicy.md | WF-002
+      - name: Surface Session-Type Directives to Checklist
+        uses: actions/github-script@v7
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha    = (context.sha || 'unknown').slice(0, 7);
+            const MARKER = 'COGNITIVE SESSION-TYPE DIRECTIVE';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Dedup: only post once per SHA
+            if (comments.some(c => c.body.includes(MARKER) && c.body.includes(sha))) {
+              console.log(`Session-type directive already posted for ${sha} — skipping.`);
+              return;
+            }
+
+            // Detect session signals from session-watchdog.yml markers
+            const hasExploration   = comments.some(c => c.body.includes('SESSION_TYPE_EXPLORATION'));
+            const doNotAutoProceed = comments.some(c => /do\s+not\s+auto.?proceed/i.test(c.body));
+
+            // Detect active (non-expired) timebox
+            let activeTimebox = null;
+            const now = new Date();
+            for (const c of comments.filter(c => c.body.includes('SESSION_TIMEBOX_START'))) {
+              const m = c.body.match(/\*\*Expires:\*\*\s*(\S+)/);
+              if (m) {
+                const exp = new Date(m[1]);
+                if (!isNaN(exp.getTime()) && now < exp) {
+                  const minsLeft = Math.round((exp - now) / 60000);
+                  activeTimebox = { expiresISO: m[1], minsLeft };
+                }
+              }
+            }
+
+            // Only post if there is something to surface
+            if (!hasExploration && !activeTimebox && !doNotAutoProceed) {
+              console.log('No session-type directives detected — skipping injection.');
+              return;
+            }
+
+            const lines = [
+              `## 🎯 ${MARKER} — SHA: ${sha}`,
+              '',
+              '> **Auto-posted by `cognitive-preflight` — session-type specific enforcement rules.**',
+              '> These items are IN ADDITION to the standard Pre-flight Checklist above.',
+              '',
+            ];
+
+            if (activeTimebox) {
+              lines.push(`> ⏱ **ACTIVE TIMEBOX: ~${activeTimebox.minsLeft} minutes remaining** (expires \`${activeTimebox.expiresISO}\`)`);
+              lines.push('> Complete your work and post `## 🧠 Session Summary` BEFORE this expires.');
+              lines.push('');
+            }
+
+            if (hasExploration) {
+              lines.push('### 🔍 Exploration Session Active — [Session Continuity Policy](.github/docs/SessionContinuityPolicy.md) applies:');
+              lines.push('');
+              lines.push('- [ ] **A.** After each agenda item: post PR comment with findings; ask "proceed or go deeper?"');
+              lines.push('- [ ] **B.** Every ~10 minutes: post an incremental progress summary as a PR comment');
+              lines.push('- [ ] **C.** Treat silence from human as PAUSE — do NOT auto-proceed to next item');
+              lines.push('- [ ] **D.** On session close: post `## 🧠 Session Summary` with topics, key findings, and a follow-up `@copilot` prompt');
+              lines.push('');
+            }
+
+            if (doNotAutoProceed) {
+              lines.push('### 🛑 "Do NOT Auto-Proceed" Directive Active:');
+              lines.push('');
+              lines.push('- [ ] After each agenda item: **STOP.** Post findings. Wait for explicit human "continue" reply.');
+              lines.push('- [ ] Do NOT start the next item without an explicit human response.');
+              lines.push('');
+            }
+
+            lines.push('_auto-posted by cognitive-preflight | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: lines.join('\n'),
+            });
+            console.log('Session-type directives surfaced in preflight comment.');
+
       # ── REQ-2: Read ci_failure_patterns.yaml → output to job summary ──────
       - name: Parse CI Failure Patterns → Job Summary
         run: |

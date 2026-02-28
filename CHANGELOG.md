@@ -5,6 +5,18 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — S116i
+
+### S116i — WF-002: Session Watchdog & Continuity Policy (2026-02-28)
+
+| Type | File | Change |
+|------|------|--------|
+| Feature | `.github/workflows/session-watchdog.yml` | NEW: Triggers on `issue_comment`. Detects timebox (`~N minutes`), exploration session, and `Do NOT auto-proceed` directives. Posts `SESSION_TIMEBOX_START`, `SESSION_TYPE_EXPLORATION`, and `SESSION_TIMEBOX_EXPIRED` enforcement comments. Anti-loop guard: skips `github-actions[bot]` comments. |
+| Feature | `.github/workflows/agent-auth-delegation.yml` | Enhanced `cognitive-preflight`: new "Surface Session-Type Directives" step reads watchdog markers and injects exploration continuity items, active timebox remaining, and no-auto-proceed gate into the mandatory checklist comment. |
+| Docs | `.github/docs/SessionContinuityPolicy.md` | NEW: Engineering-enforced session continuity policy. Defines 5 rules (no self-close, treat silence as pause, incremental summaries, session summary on close, timebox expiry protocol) and documents the enforcement architecture. |
+
+---
+
 ## [Unreleased] — S116h
 
 ### S116h — WF-001: Cognitive Pre-flight CI Gate (2026-02-28)

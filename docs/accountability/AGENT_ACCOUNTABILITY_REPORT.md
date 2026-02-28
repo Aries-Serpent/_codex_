@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116h — WF-001 cognitive-preflight gate)
+**Last updated:** 2026-02-28 (S116i — WF-002 session-watchdog + continuity policy)
 
 ---
 
@@ -291,6 +291,9 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-025 | .github/ISSUE_TEMPLATE/session_priority.md created — priority directive template | ✅ Done (S116h) |
 | W-026 | INDEX.md Authentication section updated with agent-auth-delegation.yml entry | ✅ Done (S116h) |
 | W-027 | PR trigger updated: added synchronize, ready_for_review, pull_request_review | ✅ Done (S116h) |
+| W-028 | WF-002: session-watchdog.yml — timebox detection, exploration session, do-not-auto-proceed enforcement | ✅ Done (S116i) |
+| W-029 | WF-002: cognitive-preflight enhanced — surface session-type directives (timebox remaining, continuity rules) | ✅ Done (S116i) |
+| W-030 | .github/docs/SessionContinuityPolicy.md created — engineering-enforced session continuity policy | ✅ Done (S116i) |
 
 ---
 
