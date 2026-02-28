@@ -191,4 +191,3 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if not self._backend.consume(key, self.rate, self.burst):
             return Response("Rate limit exceeded", status_code=429)
         return await call_next(request)
-

@@ -56,4 +56,3 @@ Use the new `FileLogger` sink to emit **NDJSON** (one JSON object per line) and/
 **CSV** into `./logs/`.
 NDJSON is a newline-delimited JSON format that plays nicely with tail/grep or
 streaming ingestion.
-

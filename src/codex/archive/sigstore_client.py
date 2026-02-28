@@ -243,4 +243,3 @@ class SignstoreClient:
         return (
             f"-----BEGIN CERTIFICATE-----\nMOCK_CERT_FOR_{actor}\n-----END CERTIFICATE-----"
         )
-

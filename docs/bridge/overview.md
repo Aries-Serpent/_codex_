@@ -57,4 +57,3 @@ CI containers because every component only requires standard tooling (`python`, 
 Every change to the contract should be reflected in `services/ita/openapi.yaml` and validated by the
 contract tests under `services/ita/tests`. Clients intentionally depend on the generated schema so
 that breaking changes surface quickly during development.
-

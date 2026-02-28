@@ -222,4 +222,3 @@ spawn or match a dedicated Codex Ubuntu VM.
 | Python NameError (any function) | Was function defined before use? | Emission order/truncation | Ensure function defined above Execute probes; rerun |
 | set -u expansion error | sanitize_env stage fails | Indirect expansion on unset var | Use declare -p probe (is_defined) |
 | Vendor violation | minmax_installed shows >0 or >size | Env drift or new deps | Inspect vendors[] roots; set CODEX_FAIL_ON_VIOLATION=1 to gate pipeline |
-

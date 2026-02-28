@@ -169,4 +169,3 @@ Before considering consolidation complete, verify:
 | Avg. Workflow Size | ~150 lines | ~200 lines | +33% (consolidation) |
 | CI Runtime | ~45 min | ~35 min | -22% (parallelization) |
 | Maintenance Burden | High | Medium | Reduced |
-

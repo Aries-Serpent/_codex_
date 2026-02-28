@@ -46,4 +46,3 @@ translation for operators:
 
 For deeper architectural context, read the [bridge overview](overview.md) and keep the knowledge base
 entries up to date so Codex can surface the latest operational expectations.
-

@@ -61,4 +61,3 @@ forbidden_modules =
 ignore_imports =
     # Allow imports from src.codex.quantum_orchestrator (modern)
     # Forbid imports from agents.* (legacy)
-

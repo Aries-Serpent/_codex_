@@ -28,4 +28,3 @@ jobs:
             -d "$PAYLOAD" | tee bridge_result.json
           echo "Result:"
           jq . bridge_result.json
-

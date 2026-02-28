@@ -240,4 +240,3 @@ Overall:   █████████████████░░░ 27/30 (9
 This was a comprehensive CI remediation effort spanning 4 sessions, 196 minutes, and 27 fixes. The codebase is significantly more robust and the test suite is now 85-90% passing.
 
 **Next Steps**: Merge this PR and address the remaining 3 edge cases in follow-up work if needed.
-

@@ -355,4 +355,3 @@ gate runner. For example (replace `<PHASE_ID>`):
          on_error:
            strategy: record_and_continue
 ````
-

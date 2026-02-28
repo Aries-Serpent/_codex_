@@ -203,4 +203,3 @@ src/codex/retrieval/stores/advanced_indexing.py
 src/codex_ml/serving/resilience.py
   Coverage: 0.00%
   Statements: 262, Missing: 262
-
