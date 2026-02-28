@@ -6,12 +6,14 @@
 #   scripts/ci/owner_approval_test.sh docker-build-push
 #   OWNER_APPROVED_DURATION=24h scripts/ci/owner_approval_test.sh docker-build-push
 #   COPILOT_AGENT_AUTH_ENABLED=true scripts/ci/owner_approval_test.sh docker-build-push
+#   COPILOT_AGENT_AUTH_ENABLED=true COPILOT_AGENT_AUTH_BYPASS_TOOLS=docker-build-push scripts/ci/owner_approval_test.sh docker-build-push
+#   COPILOT_AGENT_AUTH_ENABLED=true COPILOT_AGENT_AUTH_BYPASS_TOOLS=security-scans scripts/ci/owner_approval_test.sh docker-build-push  # → DENIED (not in allowlist)
 set -euo pipefail
 
 TOOL_KEY="${1:-docker-build-push}"
 
 echo "[test] TOOL_KEY=${TOOL_KEY}"
-echo "[test] Env overrides: OWNER_APPROVED_UNTIL='${OWNER_APPROVED_UNTIL:-}' OWNER_APPROVED_DURATION='${OWNER_APPROVED_DURATION:-}' COPILOT_AGENT_AUTH_ENABLED='${COPILOT_AGENT_AUTH_ENABLED:-}'"
+echo "[test] Env overrides: OWNER_APPROVED_UNTIL='${OWNER_APPROVED_UNTIL:-}' OWNER_APPROVED_DURATION='${OWNER_APPROVED_DURATION:-}' COPILOT_AGENT_AUTH_ENABLED='${COPILOT_AGENT_AUTH_ENABLED:-}' COPILOT_AGENT_AUTH_BYPASS_TOOLS='${COPILOT_AGENT_AUTH_BYPASS_TOOLS:-}'"
 if [ -f ".github/OWNER_APPROVAL.yml" ]; then
   echo "[test] File-based config present (.github/OWNER_APPROVAL.yml)"
 else

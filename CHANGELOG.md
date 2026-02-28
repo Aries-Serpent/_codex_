@@ -5,6 +5,27 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — S113
+
+### S113 — owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| Scope filter | `scripts/ci/owner_approval_guard.sh` | NEW: `COPILOT_AGENT_AUTH_BYPASS_TOOLS` comma-separated allowlist; if set, agent-auth bypass only fires for listed TOOL_KEYs |
+| Documentation | `scripts/ci/owner_approval_test.sh` | Added `COPILOT_AGENT_AUTH_BYPASS_TOOLS` usage examples |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S113 row added |
+| Cognitive brain | `.codex/COGNITIVE_BRAIN_STATUS_S113.md` | NEW: session status |
+
+### Metrics After S113
+
+- **Scope filter**: ✅ Bypass restricted to allowlist when `COPILOT_AGENT_AUTH_BYPASS_TOOLS` set
+- **Backward compat**: ✅ Unset/empty = allow all TOOL_KEYs (S112 behaviour unchanged)
+- **5/5 test scenarios**: ✅ Pass
+- **Ruff errors**: 0 ✅
+- **CodeQL alerts**: 0 ✅
+
+---
+
 ## [Unreleased] — S112
 
 ### S112 — owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass (2026-02-28)

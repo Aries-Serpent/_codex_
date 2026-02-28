@@ -6,8 +6,12 @@
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w") — repo/environment variables
 #   - COPILOT_AGENT_AUTH_ENABLED ("true") — set by agent-auth-delegation workflow after owner approval;
 #     acts as an implicit approval bypass for cost-gated workflows (S112).
+#   - COPILOT_AGENT_AUTH_BYPASS_TOOLS (comma-separated, optional, S113) — allowlist of TOOL_KEYs
+#     eligible for the COPILOT_AGENT_AUTH_ENABLED bypass. If unset or empty, all TOOL_KEYs are
+#     eligible (backward compatible). Set to e.g. "docker-build-push,security-scans" to restrict.
 # Behavior:
-#   - If COPILOT_AGENT_AUTH_ENABLED=true, bypass is granted (owner already approved via PR checkbox).
+#   - If COPILOT_AGENT_AUTH_ENABLED=true AND TOOL_KEY is in COPILOT_AGENT_AUTH_BYPASS_TOOLS
+#     (or COPILOT_AGENT_AUTH_BYPASS_TOOLS is unset/empty), bypass is granted.
 #   - Else if env overrides exist, they take precedence over file-based config.
 #   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed/awk).
 set -euo pipefail
@@ -88,11 +92,41 @@ approve_via_env() {
 
   # Bypass: COPILOT_AGENT_AUTH_ENABLED=true means the owner already approved agent
   # delegation via the PR checkbox + environment gate (agent-auth-delegation workflow).
-  # This implicit approval covers cost-gated workflows run by delegated agents (S112).
+  # COPILOT_AGENT_AUTH_BYPASS_TOOLS (optional, S113) restricts which TOOL_KEYs are eligible;
+  # if unset or empty every TOOL_KEY is eligible (backward compatible with S112).
   if [ "${COPILOT_AGENT_AUTH_ENABLED:-}" = "true" ]; then
-    echo "[approval] APPROVED via COPILOT_AGENT_AUTH_ENABLED=true (agent delegation) for TOOL_KEY=${TOOL_KEY}"
-    evidence "approved" "env-agent-auth" ""
-    return 0
+    local bypass_allowed="true"
+    local bypass_tools="${COPILOT_AGENT_AUTH_BYPASS_TOOLS:-}"
+    if [ -n "${bypass_tools}" ]; then
+      # Check whether TOOL_KEY appears in the comma-separated allowlist (exact match).
+      bypass_allowed="false"
+      while IFS=, read -r -d '' item || [ -n "${item}" ]; do
+        item_trimmed="$(printf '%s' "${item}" | trim)"
+        if [ "${item_trimmed}" = "${TOOL_KEY}" ]; then
+          bypass_allowed="true"
+          break
+        fi
+      done < <(printf '%s\0' "${bypass_tools}")
+      # Fallback: use a simple IFS loop for portability
+      if [ "${bypass_allowed}" = "false" ]; then
+        IFS=',' read -ra _tools <<< "${bypass_tools}"
+        for _t in "${_tools[@]}"; do
+          _t_clean="$(printf '%s' "${_t}" | trim)"
+          if [ "${_t_clean}" = "${TOOL_KEY}" ]; then
+            bypass_allowed="true"
+            break
+          fi
+        done
+      fi
+    fi
+
+    if [ "${bypass_allowed}" = "true" ]; then
+      echo "[approval] APPROVED via COPILOT_AGENT_AUTH_ENABLED=true (agent delegation) for TOOL_KEY=${TOOL_KEY}"
+      evidence "approved" "env-agent-auth" ""
+      return 0
+    else
+      echo "[approval] COPILOT_AGENT_AUTH_ENABLED=true but TOOL_KEY=${TOOL_KEY} not in COPILOT_AGENT_AUTH_BYPASS_TOOLS allowlist (${bypass_tools}); falling through" >&2
+    fi
   fi
 
   if [ -n "${OWNER_APPROVED_UNTIL:-}" ]; then

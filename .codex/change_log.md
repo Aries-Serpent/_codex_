@@ -2140,3 +2140,26 @@ Resolve 3100 QA walkthrough ruff E501 issues to 0, reduce Pattern 6 to ≤ 80, a
 - **Backward compat**: ✅ All existing approval paths unchanged
 - **Evidence**: ✅ Logged as `source=env-agent-auth`
 - **Ruff errors**: 0 ✅
+
+---
+
+## S113 — owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter — 2026-02-28
+
+**Session Goal**: Add optional `COPILOT_AGENT_AUTH_BYPASS_TOOLS` allowlist to restrict which TOOL_KEYs are eligible for the COPILOT_AGENT_AUTH_ENABLED bypass (PR #3402 Priority 3 Enhancement).
+
+### Changes
+
+| Area | File(s) | What |
+|------|---------|------|
+| Scope filter | `scripts/ci/owner_approval_guard.sh` | NEW: `COPILOT_AGENT_AUTH_BYPASS_TOOLS` comma-separated allowlist; if set, bypass only fires for listed TOOL_KEYs; unset = allow all (backward compat) |
+| Documentation | `scripts/ci/owner_approval_test.sh` | Added `COPILOT_AGENT_AUTH_BYPASS_TOOLS` to usage examples |
+| CHANGELOG | `CHANGELOG.md` | S113 section added |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S113 row added |
+| Cognitive brain | `.codex/COGNITIVE_BRAIN_STATUS_S113.md` | NEW: session status |
+
+### Metrics After S113
+
+- **Scope filter**: ✅ Bypass restricted to allowlist when COPILOT_AGENT_AUTH_BYPASS_TOOLS set
+- **Backward compat**: ✅ Unset/empty = bypass all TOOL_KEYs (S112 behavior unchanged)
+- **All 5 test scenarios**: ✅ Pass
+- **Bash syntax**: ✅ OK
