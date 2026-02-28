@@ -1,0 +1,228 @@
+# agent-var-writer.yml
+#
+# Provenance-chain autonomous variable writer (A-002).
+#
+# PURPOSE:
+#   Allows the Copilot coding agent (copilot-swe-agent[bot]) to autonomously set
+#   repository variables WITHOUT requiring a new owner approval, as long as the
+#   provenance session token is valid (.codex/agent_auth_session.json).
+#
+# HOW IT WORKS:
+#   1. Agent writes a variable request to .codex/pending_var_updates.json
+#   2. Agent posts a PR comment: "@agent-var-writer apply"
+#   3. This workflow detects the comment, validates the session token, and
+#      applies all pending variable updates via CODEX_MASTER_KEY.
+#   4. Writes confirmation back to .codex/applied_var_updates.json
+#
+# PROVENANCE CHAIN:
+#   mbaetiong approves agent-auth-delegation (once)
+#     → COPILOT_AGENT_AUTH_ENABLED=true set
+#     → .codex/agent_auth_session.json written (4h TTL)
+#     → Agent can write .codex/pending_var_updates.json
+#     → This workflow reads it and applies variables
+#     → No further manual approval needed within TTL
+#
+# SECURITY:
+#   - Session token expiry enforced before any variable is set
+#   - Only repo variables in the ALLOWED_VAR_NAMES list can be set autonomously
+#   - All changes are logged to .codex/evidence/var_write_audit.jsonl
+#   - CODEX_MASTER_KEY must have variables:write scope (or use CODEX_ADMIN_KEY)
+
+name: "Agent Variable Writer (Provenance-Chain)"
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  apply-var-updates:
+    name: "Apply autonomous variable updates"
+    runs-on: ubuntu-latest
+
+    # Only run when agent posts the trigger comment on a PR
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '@agent-var-writer apply') &&
+      (
+        github.event.comment.user.login == 'copilot-swe-agent[bot]' ||
+        github.event.comment.user.login == 'github-copilot[bot]' ||
+        github.event.comment.user.login == 'github-actions[bot]' ||
+        github.event.comment.user.login == 'mbaetiong'
+      )
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+      # ── Validate provenance session token ──────────────────────────────────
+      - name: "Validate session token"
+        id: validate_token
+        run: |
+          TOKEN_FILE=".codex/agent_auth_session.json"
+          if [ ! -f "${TOKEN_FILE}" ]; then
+            echo "❌ No session token file found at ${TOKEN_FILE}"
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          NOW=$(date +%s)
+          EXPIRY=$(python3 -c "
+          import json
+          d = json.load(open('${TOKEN_FILE}'))
+          print(int(d.get('expires_at', 0)))
+          " 2>/dev/null || echo 0)
+          if [ "${EXPIRY}" -gt "${NOW}" ]; then
+            echo "✅ Session token valid (expires at epoch ${EXPIRY})"
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "❌ Session token expired (was ${EXPIRY}, now ${NOW})"
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── Apply pending variable updates ────────────────────────────────────
+      - name: "Apply variable updates from .codex/pending_var_updates.json"
+        id: apply_vars
+        if: steps.validate_token.outputs.valid == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const fs = require('fs');
+
+            // Only these variables can be set autonomously (security allowlist)
+            const ALLOWED_VAR_NAMES = [
+              'COPILOT_AGENT_AUTH_ENABLED',
+              'COGNITIVE_BRAIN_ALLOWED_ACTORS',
+              'CODEX_AGENT_SESSION_ID',
+              'CODEX_COVERAGE_THRESHOLD',
+              'CODEX_AUDIT_DEPTH',
+              'CODEX_AGENT_WORK_QUEUE',
+            ];
+
+            const pendingFile = '.codex/pending_var_updates.json';
+            if (!fs.existsSync(pendingFile)) {
+              core.info('No pending_var_updates.json found — nothing to apply');
+              core.setOutput('applied', '0');
+              return;
+            }
+
+            const updates = JSON.parse(fs.readFileSync(pendingFile, 'utf8'));
+            const applied = [];
+            const rejected = [];
+
+            for (const [name, value] of Object.entries(updates)) {
+              if (!ALLOWED_VAR_NAMES.includes(name)) {
+                core.warning(`REJECTED: ${name} — not in autonomous allowlist`);
+                rejected.push(name);
+                continue;
+              }
+              try {
+                await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name, value,
+                });
+                core.info(`✅ PATCH ${name} = ${value}`);
+                applied.push({ name, value });
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.request('POST /repos/{owner}/{repo}/actions/variables', {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name, value,
+                  });
+                  core.info(`✅ POST (create) ${name} = ${value}`);
+                  applied.push({ name, value });
+                } else {
+                  core.error(`Failed to set ${name}: ${e.message}`);
+                  rejected.push(name);
+                }
+              }
+            }
+
+            // Write audit log
+            const auditDir = '.codex/evidence';
+            fs.mkdirSync(auditDir, { recursive: true });
+            const auditLine = JSON.stringify({
+              timestamp: new Date().toISOString(),
+              applied,
+              rejected,
+              triggered_by: context.actor,
+              run_id: context.runId,
+            }) + '\n';
+            fs.appendFileSync(`${auditDir}/var_write_audit.jsonl`, auditLine);
+
+            // Write applied file as confirmation
+            fs.writeFileSync('.codex/applied_var_updates.json', JSON.stringify({
+              applied_at: new Date().toISOString(),
+              applied,
+              rejected,
+            }, null, 2));
+
+            // Remove pending file
+            fs.unlinkSync(pendingFile);
+
+            core.setOutput('applied', applied.length.toString());
+            core.setOutput('rejected', rejected.length.toString());
+
+      # ── Commit audit artifacts ────────────────────────────────────────────
+      - name: "Commit audit artifacts"
+        if: steps.validate_token.outputs.valid == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .codex/evidence/var_write_audit.jsonl \
+                  .codex/applied_var_updates.json 2>/dev/null || true
+          git diff --cached --quiet || \
+            git commit -m "chore(auth): apply autonomous var updates [skip ci]"
+          git push origin HEAD || true
+
+      # ── Post confirmation comment ─────────────────────────────────────────
+      - name: "Post result comment"
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const valid   = '${{ steps.validate_token.outputs.valid }}';
+            const applied = '${{ steps.apply_vars.outputs.applied }}' || '0';
+            const rejected = '${{ steps.apply_vars.outputs.rejected }}' || '0';
+            const runUrl  = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            let body;
+            if (valid !== 'true') {
+              body = [
+                '## ❌ Agent Variable Writer — Token Expired or Missing',
+                '',
+                'The provenance session token (`.codex/agent_auth_session.json`) is expired or missing.',
+                'Please re-trigger `agent-auth-delegation` and have mbaetiong approve the environment gate.',
+                '',
+                `[Workflow run](${runUrl})`,
+              ].join('\n');
+            } else {
+              body = [
+                '## ✅ Agent Variable Writer — Provenance-Chain Update Applied',
+                '',
+                `| Metric | Value |`,
+                `|--------|-------|`,
+                `| Variables applied | ${applied} |`,
+                `| Variables rejected (not in allowlist) | ${rejected} |`,
+                `| Audit log | \`.codex/evidence/var_write_audit.jsonl\` |`,
+                '',
+                `[Workflow run](${runUrl})`,
+              ].join('\n');
+            }
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

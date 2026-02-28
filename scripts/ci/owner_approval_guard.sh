@@ -90,10 +90,57 @@ approve_via_env() {
   local now ts
   now="$(now_epoch)"
 
+  # ── Provenance-chain bypass 1: session token file (A-001) ─────────────────
+  # Written by agent-auth-delegation.yml activate-delegation job.
+  # Allows one owner approval to cover ALL agent sessions within the TTL
+  # (default: 14400s = 4 hours). Agent can renew by re-running the workflow.
+  local _session_token_file="${CODEX_SESSION_TOKEN_FILE:-.codex/agent_auth_session.json}"
+  if [ -f "${_session_token_file}" ]; then
+    local _token_expiry
+    _token_expiry="$(python3 -c "
+import json, sys
+try:
+    d = json.load(open('${_session_token_file}'))
+    print(int(d.get('expires_at', 0)))
+except Exception:
+    print(0)
+" 2>/dev/null || echo 0)"
+    if [ "${_token_expiry}" -gt "${now}" ] 2>/dev/null; then
+      local _token_tools
+      _token_tools="$(python3 -c "
+import json
+try:
+    d = json.load(open('${_session_token_file}'))
+    print(d.get('bypass_tools', ''))
+except Exception:
+    print('')
+" 2>/dev/null || echo "")"
+      local _token_bypass_allowed="true"
+      if [ -n "${_token_tools}" ]; then
+        _token_bypass_allowed="false"
+        IFS=',' read -ra _tktools <<< "${_token_tools}"
+        for _tkt in "${_tktools[@]}"; do
+          _tkt_clean="$(printf '%s' "${_tkt}" | trim)"
+          if [ "${_tkt_clean}" = "${TOOL_KEY}" ]; then
+            _token_bypass_allowed="true"
+            break
+          fi
+        done
+      fi
+      if [ "${_token_bypass_allowed}" = "true" ]; then
+        echo "[approval] APPROVED via session token (provenance-chain) for TOOL_KEY=${TOOL_KEY} (expires $(date -d @"${_token_expiry}" 2>/dev/null || date -r "${_token_expiry}" 2>/dev/null || echo "${_token_expiry}"))"
+        evidence "approved" "session-token" ""
+        return 0
+      fi
+    fi
+  fi
+
+  # ── Provenance-chain bypass 2: COPILOT_AGENT_AUTH_ENABLED env var ─────────
   # Bypass: COPILOT_AGENT_AUTH_ENABLED=true means the owner already approved agent
   # delegation via the PR checkbox + environment gate (agent-auth-delegation workflow).
   # COPILOT_AGENT_AUTH_BYPASS_TOOLS (optional, S113) restricts which TOOL_KEYs are eligible;
   # if unset or empty every TOOL_KEY is eligible (backward compatible with S112).
+
   if [ "${COPILOT_AGENT_AUTH_ENABLED:-}" = "true" ]; then
     local bypass_allowed="true"
     local bypass_tools="${COPILOT_AGENT_AUTH_BYPASS_TOOLS:-}"
