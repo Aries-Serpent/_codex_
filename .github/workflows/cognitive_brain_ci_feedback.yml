@@ -27,6 +27,7 @@ permissions:
   pull-requests: write  # post @copilot follow-up comments via mcp_poster
   issues: write         # post issue comments for escalations
   actions: read         # read workflow_run metadata
+  variables: read       # read COGNITIVE_BRAIN_INJECTION_ENABLED repo variable
 
 jobs:
   report-outcome:

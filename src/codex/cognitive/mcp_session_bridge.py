@@ -22,6 +22,7 @@ PDA loop integration
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any
 
 from codex.cognitive.agent_brain_api import AgentBrainAPI
@@ -92,8 +93,18 @@ def register_mcp_session_hook(mcp_context: dict[str, Any]) -> dict[str, Any]:
     Any exception during injection is caught and logged; the original context
     is returned to avoid breaking the session.
 
+    S109 org rollout: respects ``COGNITIVE_BRAIN_INJECTION_ENABLED`` env var
+    (repo variable).  Defaults to ``true``; set to ``false`` to disable globally
+    without a code change.
+
     AfterMath: records hook invocation for loop-continuity metrics.
     """
+    # S109: check global injection feature flag
+    injection_enabled = os.environ.get("COGNITIVE_BRAIN_INJECTION_ENABLED", "true").lower()
+    if injection_enabled not in ("1", "true", "yes"):
+        logger.debug("Cognitive brain injection disabled via COGNITIVE_BRAIN_INJECTION_ENABLED=%s", injection_enabled)
+        return mcp_context
+
     actor = mcp_context.get("actor", "")
     if not validate_actor(actor):
         logger.debug("Cognitive brain injection skipped for actor: %s", actor)

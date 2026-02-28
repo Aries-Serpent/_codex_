@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import time
 from dataclasses import dataclass
 from enum import IntEnum, unique
@@ -131,6 +132,33 @@ class StructuralPolicyManager:
                 # Only allow downgrading from SYSTEM_OWNER; never upgrade via extra_actors
                 if tier > PermissionTier.SYSTEM_OWNER:
                     self._actors[actor] = tier
+        # S109 org rollout: elevate actors from COGNITIVE_BRAIN_ALLOWED_ACTORS to ORG_OWNER
+        self._load_env_actors()
+
+    @staticmethod
+    def _parse_allowed_actors(raw: str) -> list[str]:
+        """Parse comma-separated actor list from env var value."""
+        return [a.strip() for a in raw.split(",") if a.strip()]
+
+    def _load_env_actors(self) -> None:
+        """Elevate actors listed in COGNITIVE_BRAIN_ALLOWED_ACTORS to ORG_OWNER tier.
+
+        This is the S109 org rollout mechanism: setting the GitHub repo variable
+        ``COGNITIVE_BRAIN_ALLOWED_ACTORS`` to a comma-separated list of GitHub
+        usernames automatically grants them ORG_OWNER permission tier without
+        requiring a code change.
+
+        SYSTEM_OWNER (mbaetiong) is never downgraded by this mechanism.
+        """
+        raw = os.environ.get("COGNITIVE_BRAIN_ALLOWED_ACTORS", "")
+        if not raw:
+            return
+        for actor in self._parse_allowed_actors(raw):
+            # Never downgrade existing SYSTEM_OWNER entries
+            existing = self._actors.get(actor, PermissionTier.DENIED)
+            if existing != PermissionTier.SYSTEM_OWNER:
+                self._actors[actor] = PermissionTier.ORG_OWNER
+                self._evict_cache(actor)
 
     # ------------------------------------------------------------------
     # Public API
