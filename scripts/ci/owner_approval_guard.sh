@@ -4,8 +4,11 @@
 # Inputs:
 #   - TOOL_KEY (string): logical workflow key e.g., "docker-build-push" (default), "security-scans", "all"
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w") — repo/environment variables
+#   - COPILOT_AGENT_AUTH_ENABLED ("true") — set by agent-auth-delegation workflow after owner approval;
+#     acts as an implicit approval bypass for cost-gated workflows (S112).
 # Behavior:
-#   - If env overrides exist, they take precedence over file-based config.
+#   - If COPILOT_AGENT_AUTH_ENABLED=true, bypass is granted (owner already approved via PR checkbox).
+#   - Else if env overrides exist, they take precedence over file-based config.
 #   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed/awk).
 set -euo pipefail
 
@@ -82,6 +85,15 @@ parse_duration_to_secs() {
 approve_via_env() {
   local now ts
   now="$(now_epoch)"
+
+  # Bypass: COPILOT_AGENT_AUTH_ENABLED=true means the owner already approved agent
+  # delegation via the PR checkbox + environment gate (agent-auth-delegation workflow).
+  # This implicit approval covers cost-gated workflows run by delegated agents (S112).
+  if [ "${COPILOT_AGENT_AUTH_ENABLED:-}" = "true" ]; then
+    echo "[approval] APPROVED via COPILOT_AGENT_AUTH_ENABLED=true (agent delegation) for TOOL_KEY=${TOOL_KEY}"
+    evidence "approved" "env-agent-auth" ""
+    return 0
+  fi
 
   if [ -n "${OWNER_APPROVED_UNTIL:-}" ]; then
     ts="$(parse_iso_to_epoch "${OWNER_APPROVED_UNTIL}")" || {

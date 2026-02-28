@@ -5,12 +5,13 @@
 # Examples:
 #   scripts/ci/owner_approval_test.sh docker-build-push
 #   OWNER_APPROVED_DURATION=24h scripts/ci/owner_approval_test.sh docker-build-push
+#   COPILOT_AGENT_AUTH_ENABLED=true scripts/ci/owner_approval_test.sh docker-build-push
 set -euo pipefail
 
 TOOL_KEY="${1:-docker-build-push}"
 
 echo "[test] TOOL_KEY=${TOOL_KEY}"
-echo "[test] Env overrides: OWNER_APPROVED_UNTIL='${OWNER_APPROVED_UNTIL:-}' OWNER_APPROVED_DURATION='${OWNER_APPROVED_DURATION:-}'"
+echo "[test] Env overrides: OWNER_APPROVED_UNTIL='${OWNER_APPROVED_UNTIL:-}' OWNER_APPROVED_DURATION='${OWNER_APPROVED_DURATION:-}' COPILOT_AGENT_AUTH_ENABLED='${COPILOT_AGENT_AUTH_ENABLED:-}'"
 if [ -f ".github/OWNER_APPROVAL.yml" ]; then
   echo "[test] File-based config present (.github/OWNER_APPROVAL.yml)"
 else

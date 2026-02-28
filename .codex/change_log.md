@@ -2117,3 +2117,26 @@ Resolve 3100 QA walkthrough ruff E501 issues to 0, reduce Pattern 6 to ≤ 80, a
 - **SBOM validation**: ✅ Active (CycloneDX JSON schema step)
 - **Release**: 0.9.0 ✅ (stable)
 - **AAIS**: 100.0/100 (V5.0) ✅
+
+---
+
+## S112 — owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass — 2026-02-28
+
+**Session Goal**: Next phase (S112) — extend `owner_approval_guard.sh` to accept `COPILOT_AGENT_AUTH_ENABLED=true` as a valid approval bypass for cost-gated workflows (PR #3402 Priority 3).
+
+### Changes
+
+| Area | File(s) | What |
+|------|---------|------|
+| P3 Enhancement | `scripts/ci/owner_approval_guard.sh` | NEW: `COPILOT_AGENT_AUTH_ENABLED=true` bypass in `approve_via_env()` — agent delegation = implicit approval (S112) |
+| Documentation | `scripts/ci/owner_approval_test.sh` | Added `COPILOT_AGENT_AUTH_ENABLED` to usage examples |
+| CHANGELOG | `CHANGELOG.md` | S112 section added |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S112 row added |
+| Cognitive brain | `.codex/COGNITIVE_BRAIN_STATUS_S112.md` | NEW: session status |
+
+### Metrics After S112
+
+- **owner_approval bypass**: ✅ `COPILOT_AGENT_AUTH_ENABLED=true` exits 0 for all TOOL_KEYs
+- **Backward compat**: ✅ All existing approval paths unchanged
+- **Evidence**: ✅ Logged as `source=env-agent-auth`
+- **Ruff errors**: 0 ✅
