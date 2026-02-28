@@ -945,7 +945,7 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
     """
     corpus = list(texts)
     # Strip kwargs that run_functional_training doesn't accept
-    _compat_keys = {"hydra_cfg", "seed"}
+    _compat_keys = {"hydra_cfg", "seed", "gradient_accumulation_steps", "deterministic"}
     compat = {k: v for k, v in kwargs.items() if k not in _compat_keys}
     return run_functional_training(
         corpus=corpus, demos=[], prefs=[], use_deeplearning=True, **compat
@@ -991,12 +991,19 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
+        lora_section = training_section.get("lora", {}) if isinstance(training_section, dict) else {}
+        repro_section = training_section.get("reproducibility", {}) if isinstance(training_section, dict) else {}
         run_hf_trainer(
             texts=texts,
-            output_dir=output_dir_val,
+            output_dir=Path(output_dir_val) if output_dir_val else None,
             seed=training_section.get("seed", args.seed),
             grad_accum=training_section.get("grad_accum", args.grad_accum),
             hydra_cfg=training_section,
+            lora_r=lora_section.get("r", args.lora_r),
+            lora_alpha=lora_section.get("alpha", args.lora_alpha),
+            lora_dropout=getattr(args, "lora_dropout", 0.05),
+            gradient_accumulation_steps=training_section.get("grad_accum", args.grad_accum),
+            deterministic=repro_section.get("cudnn_deterministic", False),
         )
         return
 
