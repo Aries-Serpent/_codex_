@@ -208,12 +208,6 @@ jobs:
               -d "$(python3 -c "import json,os; print(json.dumps({'body':'## 📋 Repo Variables\n\n```\n'+os.environ['OUTPUT']+'\n```'}))")" \
               > /dev/null
           fi
-        env:
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
-          REPO: ${{ github.repository }}
-          OUTPUT: ""
 
   # ── 4. List current webhooks ──────────────────────────────────────────────
   list-webhooks:
