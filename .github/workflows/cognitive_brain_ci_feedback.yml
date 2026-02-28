@@ -51,7 +51,7 @@ jobs:
 
       - name: Report completion to Cognitive Brain
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -195,7 +195,7 @@ jobs:
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
         run: |
           if [ -z "${CODEX_MASTER_KEY}" ] && [ -z "${CODEX_BACKUP_KEY}" ]; then
@@ -220,7 +220,7 @@ jobs:
       - name: Store failure as pattern candidate (PDA AfterMath)
         if: github.event.workflow_run.conclusion == 'failure'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
         run: |
           python - <<'EOF'

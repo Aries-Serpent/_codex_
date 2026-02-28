@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             let alerts;
             try {
@@ -100,7 +100,7 @@ jobs:
         env:
           ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');
 
@@ -175,7 +175,7 @@ jobs:
           CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}
           HIGH_COUNT: ${{ steps.get-alerts.outputs.high-count }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const summary = process.env.ISSUE_SUMMARY || '';
             const criticalCount = parseInt(process.env.CRITICAL_COUNT || '0', 10);

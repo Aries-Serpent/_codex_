@@ -102,7 +102,7 @@ jobs:
 
       - name: Run quantum health analysis
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if [ -f "scripts/quantum_workflow_health.py" ]; then
             python scripts/quantum_workflow_health.py \
@@ -151,7 +151,7 @@ jobs:
       - name: Run Weekly Analytics
         id: analytics
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if [ -f ".github/scripts/workflow_analytics_runner.py" ]; then
             python .github/scripts/workflow_analytics_runner.py \
@@ -170,7 +170,7 @@ jobs:
       - name: Create issue if patterns detected
         if: inputs.create_issue == true
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Create issue with findings
           if [ -f ".codex/reports/findings.md" ]; then
@@ -216,7 +216,7 @@ jobs:
 
       - name: Run Manual Analytics
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           mkdir -p .codex/reports
 
