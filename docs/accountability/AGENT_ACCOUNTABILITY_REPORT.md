@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116c)
+**Last updated:** 2026-02-28 (S116d)
 
 ---
 
@@ -65,6 +65,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-013 | §8 prompt-ordering fix: discover TARGET_PR before PROMPT_FILE selection | ✅ Done (S116b) |
 | W-014 | §8 false-positive idempotency fix: reply comments matching both substrings caused skip | ✅ Done (S116c) |
 | W-015 | §8 dynamic prompt: no static PR numbers; CI failure query + AAIS directive body | ✅ Done (S116c) |
+| W-016 | agent-auth-delegation: `git add` → `git add -f` for gitignored session token file | ✅ Done (S116d) |
 
 ---
 
