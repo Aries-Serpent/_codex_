@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i — WF-002 complete + INDEX.md updated)
+**Last updated:** 2026-02-28 (S116i — grounded enforcement audit + REQ-5 CHANGELOG gate)
 
 ---
 
@@ -295,6 +295,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-029 | WF-002: cognitive-preflight enhanced — surface session-type directives (timebox remaining, continuity rules) | ✅ Done (S116i) |
 | W-030 | .github/docs/SessionContinuityPolicy.md created — engineering-enforced session continuity policy | ✅ Done (S116i) |
 | W-031 | .github/workflows/INDEX.md updated — session-watchdog.yml entry + total count 56 | ✅ Done (S116i) |
+| W-032 | token-probe.yml created — on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write probe | ✅ Done (S116i) |
+| W-033 | .codex/docs/S116g_TO_S116i_CHANGE_MAP.md — Mermaid architecture map of all changes | ✅ Done (S116i) |
+| W-034 | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md — ideal vs sort-of-works comparison with quadrant chart | ✅ Done (S116i) |
+| W-035 | cognitive-preflight REQ-5: CHANGELOG.md check added — Tier-3 → Tier-1 promotion | ✅ Done (S116i) |
 
 ---
 

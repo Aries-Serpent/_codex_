@@ -405,6 +405,34 @@ jobs:
             exit 1
           fi
 
+      # ── REQ-5: Verify CHANGELOG.md touched in last commit ────────────────
+      # Tier-1 hard stop — same pattern as REQ-4.
+      # Rationale: CHANGELOG.md is frequently skipped (documented in grounded enforcement audit).
+      # Promoting from Tier-3 (policy text) → Tier-1 (CI hard block).
+      - name: Verify CHANGELOG.md updated in last commit
+        id: changelog_check
+        run: |
+          CHANGELOG="CHANGELOG.md"
+
+          echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$CHANGELOG" ]; then
+            echo "⚠️ **SKIP** — \`${CHANGELOG}\` does not exist in repo root." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
+            echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          else
+            LAST_TOUCH=$(git log -1 --format="%ar" -- "$CHANGELOG" 2>/dev/null || echo "unknown")
+            echo "❌ **FAIL** — \`${CHANGELOG}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Add a \`## [Unreleased]\` entry to \`CHANGELOG.md\` in your next commit." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status
         if: always()

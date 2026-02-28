@@ -160,8 +160,9 @@ Authentication, secrets, and token management:
 
 | Workflow | Description | Trigger | Status |
 |----------|-------------|---------|--------|
-| [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate | PR, Manual | ✅ Active |
+| [agent-auth-delegation.yml](agent-auth-delegation.yml) | 🆕 Agent session auth with cognitive pre-flight gate (REQ-1–5) | PR, Manual | ✅ Active |
 | [session-watchdog.yml](session-watchdog.yml) | 🆕 Timebox, exploration session & continuity enforcement | PR comment | ✅ Active |
+| [token-probe.yml](token-probe.yml) | 🆕 On-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read/write validation | Manual | ✅ Active |
 | [auth-tests.yml](auth-tests.yml) | Authentication testing | PR, Push | ✅ Active |
 
 **Cognitive Pre-flight Gate** (`cognitive-preflight` job inside `agent-auth-delegation.yml`):
@@ -314,7 +315,7 @@ For issues or questions about workflows:
 ---
 
 **Last Updated:** 2026-02-07  
-**Total Workflows:** 56 active workflows + 11 misc utilities  
+**Total Workflows:** 57 active workflows + 11 misc utilities  
 **Consolidated Suites:** 10 unified workflows  
 **Python Version:** 3.12  
 **Cache Strategy:** Distributed (per-workflow)  

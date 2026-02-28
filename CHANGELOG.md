@@ -7,17 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] — S116i
 
-### S116i — WF-002: Session Watchdog & Continuity Policy (2026-02-28)
+### S116i — WF-002 + Grounded Enforcement Audit (2026-02-28)
 
 | Type | File | Change |
 |------|------|--------|
-| Feature | `.github/workflows/session-watchdog.yml` | NEW: Triggers on `issue_comment`. Detects timebox (`~N minutes`), exploration session, and `Do NOT auto-proceed` directives. Posts `SESSION_TIMEBOX_START`, `SESSION_TYPE_EXPLORATION`, and `SESSION_TIMEBOX_EXPIRED` enforcement comments. Anti-loop guard: skips `github-actions[bot]` comments. |
-| Feature | `.github/workflows/agent-auth-delegation.yml` | Enhanced `cognitive-preflight`: new "Surface Session-Type Directives" step reads watchdog markers and injects exploration continuity items, active timebox remaining, and no-auto-proceed gate into the mandatory checklist comment. |
-| Docs | `.github/docs/SessionContinuityPolicy.md` | NEW: Engineering-enforced session continuity policy. Defines 5 rules (no self-close, treat silence as pause, incremental summaries, session summary on close, timebox expiry protocol) and documents the enforcement architecture. |
+| Feature | `.github/workflows/session-watchdog.yml` | NEW: issue_comment trigger; timebox detection/recording/expiry; exploration session + do-not-auto-proceed enforcement |
+| Feature | `.github/workflows/agent-auth-delegation.yml` | REQ-1b: Surface Session-Type Directives step; REQ-5: CHANGELOG.md Tier-1 hard stop (git diff check) |
+| Feature | `.github/workflows/token-probe.yml` | NEW: on-demand CODEX_MASTER_KEY + CODEX_BACKUP_KEY read+write probes; posts consolidated result to any PR |
+| Docs | `.github/docs/SessionContinuityPolicy.md` | NEW: 5-rule engineered session continuity policy with enforcement architecture |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | NEW: quadrant chart + tier table comparing ideal vs sort-of-works enforcement methods |
+| Docs | `.codex/docs/S116g_TO_S116i_CHANGE_MAP.md` | NEW: Mermaid architecture map of all changes from S116g baseline to S116i HEAD |
+| Docs | `.github/workflows/INDEX.md` | session-watchdog.yml + token-probe.yml registered; count → 57 |
 
 ---
 
-## [Unreleased] — S116h
+
 
 ### S116h — WF-001: Cognitive Pre-flight CI Gate (2026-02-28)
 
