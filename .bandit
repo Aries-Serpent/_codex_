@@ -1,6 +1,8 @@
 # Bandit Security Configuration for _codex_ Repository
 # ======================================================
-# Format: YAML (bandit >=1.7 reads .bandit as YAML)
+# Format: YAML — pass explicitly with: bandit -r src/ --configfile .bandit
+#   (Note: when bandit auto-discovers .bandit via --ini, it uses INI format.
+#    This file uses YAML and MUST be passed via --configfile, not --ini.)
 # Last Updated: 2026-02-28
 # Maintainer: @mbaetiong
 #

@@ -2,22 +2,25 @@
 """
 Automated fix script for common CI issues detected by workflows.
 
-This script automatically fixes the 8 most common patterns that cause workflow failures:
-1. Unused imports
-2. Unused variables
-3. YAML indentation
-4. Coverage threshold inconsistencies
-5. Missing tokenizer fallbacks
-6. Vague test assertions
-7. Redundant imports
-8. CodeQL scanning alerts
+This script automatically fixes the 11 most common patterns that cause workflow failures:
+1.  Unused imports
+2.  Unused variables
+3.  YAML indentation
+4.  Coverage threshold inconsistencies
+5.  Missing tokenizer fallbacks
+6.  Vague test assertions
+7.  Redundant imports
+8.  CodeQL scanning alerts
+9.  Unsorted imports (ruff I001) — auto-fixable
+10. Bandit medium/high security issues — detects missing # nosec annotations
+11. F-string missing placeholders (ruff F541) — auto-fixable
 
 Usage:
     python scripts/ci/auto_fix_common_issues.py [--check-only] [--pattern PATTERN]
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-8)
+    --pattern N     Only apply pattern N (1-11)
     --dry-run       Show what would be changed without making changes
 """
 
@@ -43,18 +46,22 @@ class CommonIssueFixer:
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {
-            "Unused Imports",      # Pattern 1 - ruff --fix
-            "Coverage Thresholds", # Pattern 4 - automated replacement
+            "Unused Imports",        # Pattern 1  - ruff --fix F401
+            "Coverage Thresholds",   # Pattern 4  - automated replacement
+            "Unsorted Imports",      # Pattern 9  - ruff --fix I001
+            "F-String Placeholders", # Pattern 11 - ruff --fix F541
         }
         self.manual_review_patterns = {
-            "Unused Variables",    # Pattern 2 - context-dependent
-            "YAML Indentation",    # Pattern 3 - manual review
-            "Tokenizer Fallbacks", # Pattern 5 - code-flow dependent
-            "Test Assertions",     # Pattern 6 - logic-dependent
-            "Redundant Imports",   # Pattern 7 - manual review
-            # Pattern 8 - informational only: F401 is already handled by Pattern 1
-            # (which has actual ruff --fix logic); F841 cannot be auto-fixed.
+            "Unused Variables",      # Pattern 2  - context-dependent
+            "YAML Indentation",      # Pattern 3  - manual review
+            "Tokenizer Fallbacks",   # Pattern 5  - code-flow dependent
+            "Test Assertions",       # Pattern 6  - logic-dependent
+            "Redundant Imports",     # Pattern 7  - manual review
+            # Pattern 8 - informational only: F401 handled by Pattern 1,
+            # F841 cannot be auto-fixed.
             "CodeQL Alerts",
+            # Pattern 10 - bandit medium/high issues require manual nosec review
+            "Bandit Security",
         }
 
     def run_all_patterns(self) -> bool:
@@ -62,14 +69,17 @@ class CommonIssueFixer:
         print("🔍 Scanning for common CI issues...\n")
 
         patterns = [
-            (1, "Unused Imports", self.fix_unused_imports),
-            (2, "Unused Variables", self.fix_unused_variables),
-            (3, "YAML Indentation", self.fix_yaml_indentation),
-            (4, "Coverage Thresholds", self.fix_coverage_thresholds),
-            (5, "Tokenizer Fallbacks", self.fix_tokenizer_fallbacks),
-            (6, "Test Assertions", self.fix_test_assertions),
-            (7, "Redundant Imports", self.fix_redundant_imports),
-            (8, "CodeQL Alerts", self.fix_codeql_alerts),
+            (1,  "Unused Imports",        self.fix_unused_imports),
+            (2,  "Unused Variables",       self.fix_unused_variables),
+            (3,  "YAML Indentation",       self.fix_yaml_indentation),
+            (4,  "Coverage Thresholds",    self.fix_coverage_thresholds),
+            (5,  "Tokenizer Fallbacks",    self.fix_tokenizer_fallbacks),
+            (6,  "Test Assertions",        self.fix_test_assertions),
+            (7,  "Redundant Imports",      self.fix_redundant_imports),
+            (8,  "CodeQL Alerts",          self.fix_codeql_alerts),
+            (9,  "Unsorted Imports",       self.fix_unsorted_imports),
+            (10, "Bandit Security",        self.fix_bandit_security),
+            (11, "F-String Placeholders",  self.fix_fstring_placeholders),
         ]
 
         any_issues = False
@@ -342,7 +352,120 @@ class CommonIssueFixer:
 
         return issues
 
-    def generate_report(self) -> str:
+    def fix_unsorted_imports(self) -> List[str]:
+        """Pattern 9: Fix unsorted/unformatted import blocks (ruff I001)."""
+        issues = []
+
+        try:
+            result = subprocess.run(
+                ["python", "-m", "ruff", "check", "--select", "I001",
+                 ".", "--output-format=json"],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root
+            )
+
+            if result.returncode != 0 and result.stdout:
+                try:
+                    ruff_output = json.loads(result.stdout)
+                    for item in ruff_output:
+                        issues.append(
+                            f"{item['filename']}:{item['location']['row']} - {item['message']}"
+                        )
+                except json.JSONDecodeError:
+                    pass
+
+            if issues and not self.check_only:
+                if not self.dry_run:
+                    subprocess.run(
+                        ["python", "-m", "ruff", "check", "--select", "I001", "--fix", "."],
+                        cwd=self.repo_root
+                    )
+                    self.fixes_applied["Unsorted Imports"] = len(issues)
+                else:
+                    print(f"  [DRY RUN] Would fix {len(issues)} unsorted import blocks")
+
+        except FileNotFoundError:
+            print("  ⚠️ ruff not installed, skipping unsorted import detection")
+
+        return issues
+
+    def fix_bandit_security(self) -> List[str]:
+        """Pattern 10: Detect medium/high bandit security issues lacking # nosec."""
+        issues = []
+
+        try:
+            result = subprocess.run(
+                ["python", "-m", "bandit", "-r", "src/", "--configfile", ".bandit",
+                 "--severity-level", "medium", "-q", "-f", "json"],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root
+            )
+
+            if result.stdout:
+                try:
+                    bandit_output = json.loads(result.stdout)
+                    for item in bandit_output.get("results", []):
+                        sev = item.get("issue_severity", "")
+                        if sev in ("MEDIUM", "HIGH"):
+                            fname = item.get("filename", "").replace(str(self.repo_root) + "/", "")
+                            line = item.get("line_number", 0)
+                            tid = item.get("test_id", "")
+                            text = item.get("issue_text", "")[:60]
+                            issues.append(f"{fname}:{line} - [{tid}] {text}")
+                except json.JSONDecodeError:
+                    pass
+
+            if issues:
+                print(
+                    "  ℹ️ Bandit medium/high issues require manual # nosec annotation review"
+                )
+
+        except FileNotFoundError:
+            print("  ⚠️ bandit not installed, skipping security detection")
+
+        return issues
+
+    def fix_fstring_placeholders(self) -> List[str]:
+        """Pattern 11: Fix f-strings missing placeholders (ruff F541)."""
+        issues = []
+
+        try:
+            result = subprocess.run(
+                ["python", "-m", "ruff", "check", "--select", "F541",
+                 ".", "--output-format=json"],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root
+            )
+
+            if result.returncode != 0 and result.stdout:
+                try:
+                    ruff_output = json.loads(result.stdout)
+                    for item in ruff_output:
+                        issues.append(
+                            f"{item['filename']}:{item['location']['row']} - {item['message']}"
+                        )
+                except json.JSONDecodeError:
+                    pass
+
+            if issues and not self.check_only:
+                if not self.dry_run:
+                    subprocess.run(
+                        ["python", "-m", "ruff", "check", "--select", "F541", "--fix", "."],
+                        cwd=self.repo_root
+                    )
+                    self.fixes_applied["F-String Placeholders"] = len(issues)
+                else:
+                    print(f"  [DRY RUN] Would fix {len(issues)} f-string placeholder issues")
+
+        except FileNotFoundError:
+            print("  ⚠️ ruff not installed, skipping f-string detection")
+
+        return issues
+
+
         """Generate summary report of issues and fixes."""
         report = [
             "\n" + "="*70,
@@ -455,6 +578,9 @@ class CommonIssueFixer:
             "Test Assertions": 6,
             "Redundant Imports": 7,
             "CodeQL Alerts": 8,
+            "Unsorted Imports": 9,
+            "Bandit Security": 10,
+            "F-String Placeholders": 11,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -523,8 +649,8 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 9),
-        help="Only run specific pattern (1-8)"
+        choices=range(1, 12),
+        help="Only run specific pattern (1-11)"
     )
     parser.add_argument(
         "--json-output",
