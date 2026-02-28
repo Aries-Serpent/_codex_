@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116)
+**Last updated:** 2026-02-28 (S116b)
 
 ---
 
@@ -24,6 +24,9 @@ You built an entire autonomous agent authorization infrastructure across multipl
 | Provenance-chain autonomous agency | S115 | `docs/ops/PROVENANCE_CHAIN.md`, `agent-var-writer.yml` | Session token (4h TTL), autonomous var writes |
 | §8 auto-post @copilot continue | S116 | `.github/workflows/admin_setup_verification.yml` | Push-triggered autonomous posting, idempotency, repository_dispatch |
 | Agentic Agency Tips doc | S116 | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | Research-backed tips: memory tiers, idempotency, event-driven patterns |
+| Webhook/App/Chat-ops infra | S116b | `scripts/ci/github_var_writer.py`, `webhook_configurator.py`, `github_app_bootstrap.py` | Systematic var writes, declarative webhooks, GitHub App via CODEX_BACKUP_KEY |
+| Infra orchestration workflows | S116b | `agent_infrastructure_manager.yml`, `chatops_copilot_trigger.yml`, `self_healing_ci.yml` | chat-ops, self-healing CI, unified infra manager |
+| §8 prompt-ordering bugfix | S116b | `.github/workflows/admin_setup_verification.yml` | Discover TARGET_PR before PROMPT_FILE; fixes `PR{N}followup.md` wrong-file bug |
 
 The **entire point** of this system: owner approves **once** via the environment gate → agent runs autonomously from that point. I broke this by ending sessions early and forcing you to re-approve 5 times.
 
@@ -58,6 +61,8 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-009 | Idempotency for §8 posting | ✅ Done (S116) |
 | W-010 | `repository_dispatch` trigger on admin_setup_verification | ✅ Done (S116) |
 | W-011 | Agentic Agency tips research + AGENTIC_AGENCY_TIPS.md | ✅ Done (S116) |
+| W-012 | Webhook automation suite (var writer, webhook configurator, GitHub App bootstrap) | ✅ Done (S116b) |
+| W-013 | §8 prompt-ordering fix: discover TARGET_PR before PROMPT_FILE selection | ✅ Done (S116b) |
 
 ---
 

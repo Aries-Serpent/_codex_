@@ -5,18 +5,20 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — S116
+## [Unreleased] — S116b
 
-### S116 — Autonomous @copilot continue posting + Agentic Agency research (2026-02-28)
+### S116b — §8 prompt-ordering bugfix + webhook/app/chat-ops infra suite (2026-02-28)
 
 | Area | File(s) | What |
 |------|---------|------|
-| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | §8 step: auto-posts `@copilot continue` on push events (not just workflow_dispatch); discovers PR via branch name |
-| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | Idempotency: checks for existing `@copilot continue` before re-posting (prevents duplicate comments on repeated pushes) |
-| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | `repository_dispatch` trigger added — external systems can fire admin verification via API |
-| Docs | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | NEW: research-backed tips from GitHub Blog, arXiv, VS Code docs — memory tiers, event-driven patterns, idempotency, `copilot-instructions.md` best practices |
-| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S116 row added; W-001→W-011 work queue updated to ✅ Done |
-| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S116 row added |
+| Bugfix | `.github/workflows/admin_setup_verification.yml` | §8 ordering fix: discover `TARGET_PR` BEFORE selecting `PROMPT_FILE` — so push events use `PR-{N}-followup.md` not an arbitrary `ls -t` result |
+| Agentic Infra | `scripts/ci/github_var_writer.py` | NEW: systematic repo variable writes (POST/PATCH `/actions/variables`); ALLOWED_VAR_NAMES allowlist; `--batch/--set/--list/--dry-run`; audit log |
+| Agentic Infra | `scripts/ci/webhook_configurator.py` | NEW: declarative webhook create/update/delete; idempotent `--apply`; registry JSON; audit log |
+| Agentic Infra | `scripts/ci/github_app_bootstrap.py` | NEW: GitHub App registration via App Manifest API using CODEX_BACKUP_KEY; `--generate-manifest-url/--convert-code/--show`; private key gitignored |
+| Config | `.codex/webhook_config.json` | NEW: declarative webhook config template for agentic event set |
+| Workflow | `.github/workflows/agent_infrastructure_manager.yml` | NEW: unified orchestrator for all three infra ops; `workflow_dispatch` + `repository_dispatch` + `@agent-infra` chat-ops |
+| Workflow | `.github/workflows/chatops_copilot_trigger.yml` | NEW: `issue_comment` webhook → `/copilot continue\|status\|verify\|help` slash commands |
+| Workflow | `.github/workflows/self_healing_ci.yml` | NEW: `workflow_run` failure → auto-fix → draft PR (self-healing CI) |
 
 ### Root Cause Fixed (S116)
 
@@ -28,6 +30,24 @@ autonomously posted the `@copilot continue` prompt because:
 
 Fix: §8 step fires on both push (PR discovered via branch name API lookup) and workflow_dispatch.
 Idempotency added to prevent duplicate posts. `repository_dispatch` for cross-system triggers.
+
+### §8 Prompt Ordering Bug (S116b)
+
+On `push` events `PR_NUMBER_INPUT` is empty, so the original code fell back to `ls -t *-followup.md`
+which returned an arbitrary file (all files share the same `checkout` mtime). Fix: discover
+`TARGET_PR` via the branch→PR API lookup **first**, then use `PR-${TARGET_PR}-followup.md` for
+the PR-specific match before falling back to `ls -t`.
+
+## [S116] — S116 — Autonomous @copilot continue posting + Agentic Agency research (2026-02-28)
+
+| Area | File(s) | What |
+|------|---------|------|
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | §8 step: auto-posts `@copilot continue` on push events (not just workflow_dispatch); discovers PR via branch name |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | Idempotency: checks for existing `@copilot continue` before re-posting (prevents duplicate comments on repeated pushes) |
+| CI/Autonomy | `.github/workflows/admin_setup_verification.yml` | `repository_dispatch` trigger added — external systems can fire admin verification via API |
+| Docs | `.codex/docs/AGENTIC_AGENCY_TIPS.md` | NEW: research-backed tips from GitHub Blog, arXiv, VS Code docs — memory tiers, event-driven patterns, idempotency, `copilot-instructions.md` best practices |
+| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S116 row added; W-001→W-011 work queue updated to ✅ Done |
+| Phase 11 | `docs/ops/PHASE_11_PLAN.md` | S116 row added |
 
 
 ### S115 — Provenance-chain autonomous agentic agency (2026-02-28)

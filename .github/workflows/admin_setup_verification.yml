@@ -382,21 +382,7 @@ jobs:
             exit 0
           fi
 
-          # Find the most recent active followup prompt file
-          PROMPT_DIR=".github/copilot-prompts/active"
-          PROMPT_FILE=""
-          if [ -n "$PR_NUMBER_INPUT" ] && [ -f "${PROMPT_DIR}/PR-${PR_NUMBER_INPUT}-followup.md" ]; then
-            PROMPT_FILE="${PROMPT_DIR}/PR-${PR_NUMBER_INPUT}-followup.md"
-          else
-            PROMPT_FILE=$(ls -t "${PROMPT_DIR}"/*-followup.md 2>/dev/null | head -1 || true)
-          fi
-
-          if [ -z "$PROMPT_FILE" ]; then
-            echo "No followup prompt file found — skipping @copilot continue post"
-            exit 0
-          fi
-
-          # Determine target PR: from input or by looking up the open PR for this branch
+          # Discover target PR first (needed for PR-specific prompt file selection)
           TARGET_PR="$PR_NUMBER_INPUT"
           if [ -z "$TARGET_PR" ]; then
             TARGET_PR=$(curl -s \
@@ -409,6 +395,20 @@ jobs:
 
           if [ -z "$TARGET_PR" ]; then
             echo "Could not determine target PR for branch '${GITHUB_REF_NAME}' — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Find prompt file: PR-specific match first, then latest *-followup.md
+          PROMPT_DIR=".github/copilot-prompts/active"
+          PROMPT_FILE=""
+          if [ -f "${PROMPT_DIR}/PR-${TARGET_PR}-followup.md" ]; then
+            PROMPT_FILE="${PROMPT_DIR}/PR-${TARGET_PR}-followup.md"
+          else
+            PROMPT_FILE=$(ls -t "${PROMPT_DIR}"/*-followup.md 2>/dev/null | head -1 || true)
+          fi
+
+          if [ -z "$PROMPT_FILE" ]; then
+            echo "No followup prompt file found — skipping @copilot continue post"
             exit 0
           fi
 
