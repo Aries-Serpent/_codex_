@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i resume — session-summary Tier-1 gate + CI_HEALTH enum fix)
+**Last updated:** 2026-02-28 (S116i resume — git diff exit 128 fix: fetch remote branch refs in copilot-setup-steps)
 
 ---
 
@@ -305,6 +305,8 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-039 | GROUNDED_VS_SOFT_ENFORCEMENT.md updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart updated; tier table expanded | ✅ Done (S116i resume) |
 | W-040 | cognitive_brain_ci_feedback.yml fix: `ImprovementArea.CI_HEALTH` → `ImprovementArea.CI_SELF_HEALING` (AttributeError on main) | ✅ Done (S116i resume) |
 | W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) |
+| W-042 | copilot-setup-steps.yml: added "🔀 Fetch remote branch refs for PR diff support" step after checkout — fixes `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`) in Copilot agent run 22530338486 | ✅ Done (S116i resume) |
+| W-043 | Verified cognitive-preflight REQ-4 + REQ-5 unaffected (use `HEAD~1 HEAD`, not base branch name) | ✅ Verified (S116i resume) |
 
 ---
 
