@@ -84,6 +84,18 @@ quick:
 test:
 	pytest -q
 
+# HFIX-001 Step 2: Local coverage baseline.
+# Generates coverage.json + coverage.xml so agents can read accurate numbers.
+# Use: make coverage
+# Output: coverage-report.txt, coverage.json, coverage.xml
+.PHONY: coverage
+coverage:
+	pip install -e ".[dev]" -q
+	python -m pytest tests/ -m "not slow and not integration" \
+	  --cov=src --cov-report=term-missing --cov-report=json \
+	  --cov-report=xml --no-header -q 2>&1 | tee coverage-report.txt
+	@echo "Coverage JSON → coverage.json | XML → coverage.xml"
+
 lint:
 	nox -s lint
 

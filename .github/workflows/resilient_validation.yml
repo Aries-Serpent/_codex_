@@ -40,7 +40,8 @@ jobs:
             quick)
               # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
               # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20
+              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20 \
+                --cov=src --cov-report=xml --cov-report=json -q
               ;;
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
@@ -56,6 +57,29 @@ jobs:
               python -m pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
               ;;
           esac
+
+      # HFIX-001 Step 5: Surface CI coverage numbers as PR comments (quick group only)
+      - name: Post coverage to PR
+        if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: coverage.xml
+          title: "📊 Coverage Report (quick tests)"
+          badge-title: "Coverage"
+          default-branch: "0D_base_"
+          unique-id-for-comment: "quick-coverage"
+
+      # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
+      - name: Upload coverage artifact
+        if: matrix.test-group == 'quick' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-baseline
+          path: |
+            coverage.json
+            coverage.xml
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: Upload results
         if: always()

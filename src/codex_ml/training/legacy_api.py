@@ -1153,6 +1153,11 @@ def run_functional_training(
 
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
+    # NOTE: All imports below are intentionally deferred (lazy-import pattern).
+    # This avoids circular dependency issues at module load time.
+    # To mock them in tests, patch the MODULE ATTRIBUTE — not sys.modules.
+    # Example: monkeypatch.setattr(legacy_api, "get_model", mock_fn)
+    # See: Pattern P-043 in docs/coverage/COVERAGE_ROADMAP_40_TO_75.md
     import numpy as np
 
     from codex_ml.models.registry import get_model

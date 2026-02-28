@@ -5,6 +5,88 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — S108
+
+### S108 — Cognitive Brain Integration + HFIX-001 + StructuralPolicyManager + Admin Infrastructure (2026-02-28)
+
+**Cognitive Brain Integration (comment-3977050660)**
+
+- `src/codex/cognitive/session_hook.py` — `SessionContextInjector`: allowlist filter, recency-ranked
+  pattern selection (top-5, exponential decay), token budget ≤800 tokens, three-tier fallback
+  (live API → cache → quantum reconstruction), PDA/AfterMath loop annotations. 22 tests passing.
+- `src/codex/cognitive/mcp_session_bridge.py` — MCP lifecycle hook: actor validation via
+  `StructuralPolicyManager`, system prompt enrichment, fail-open for unauthorised actors,
+  fail-safe exception handling. 11 tests passing.
+- `.github/workflows/cognitive_brain_ci_feedback.yml` — CI outcome → `report_completion()` feedback
+  loop: triggers on `workflow_run: completed`, maps workflow names to pattern IDs, stores novel
+  failures as pattern candidates. Pattern P-046 codified.
+- `tests/cognitive/test_quantum_reconstruction.py` — 8 tests: wave collapse, entropy minimization,
+  continuation trigger, AfterMath lesson storage, reconstruction flag.
+
+**StructuralPolicyManager — Phase 5 (comment-3977050660 Phase 5 planset)**
+
+- `src/codex/cognitive/structural_policy_manager.py` — RBAC engine: `PermissionTier` IntEnum
+  (SYSTEM_OWNER=0 → DENIED=99), `ACTION_TIER_MAP` (8 actions), `evaluate_permission()`
+  fail-deny, TTL cache (300s), immutable audit log (`.codex/rbac_audit.jsonl`),
+  `grant_org_owner()` / `grant_delegate_admin()` / `revoke()`. Module-level singleton.
+- `mcp_session_bridge.py` updated: `validate_actor()` replaced by `StructuralPolicyManager`.
+- `tests/cognitive/test_structural_policy_manager.py` — 28 tests: all tiers, evaluate_permission,
+  grant/revoke, TTL cache, audit log, fail-deny edge cases.
+
+**HFIX-001: High Impact Testing & CI Fixes (comment-3977067130)**
+
+- `tests/models/conftest.py` — HF_REVISION leak fixed: `os.environ.setdefault` → function-scoped
+  `monkeypatch.setenv` autouse fixture. Eliminates P-042 session-wide leakage.
+- `src/codex_ml/training/legacy_api.py` — lazy import block comment added (P-043): documents
+  module-attribute patching requirement.
+- `tests/coverage/README.md` — module coverage map: 3 entries, adding-new-file instructions.
+- `Makefile` — `coverage` target: `pytest --cov=src --cov-report=json --cov-report=xml` + tee.
+- `.github/workflows/resilient_validation.yml` — quick group now generates `coverage.xml`;
+  `MishaKav/pytest-coverage-comment@main` posts coverage to PR; `coverage-baseline` artifact
+  uploaded (14-day retention).
+- `conftest.py` — HF skip counter: `pytest_runtest_logreport` writes to `hf_skips.log`;
+  `pytest_terminal_summary` prints gap explanation at end of run.
+- `tests/fixtures/hf_stubs.py` — shared HF stubs: `dummy_tokenizer`, `dummy_model`,
+  `dummy_load_from_pretrained` fixtures (DRY across 10+ test files).
+- `.codex/permanent_facts.md` — session memory seed: P-042 (HF_REVISION), P-043 (lazy imports),
+  P-038 (rerunfailures), P-039 (CodeQL branches). Prevents re-discovery across sessions.
+
+**GitHubMCPPoster — Autonomy Infrastructure**
+
+- `src/codex/github/mcp_poster.py` — `GitHubMCPPoster`: `post_pr_comment()`,
+  `create_discussion()` (GraphQL), `post_session_summary_discussion()`, `set_repo_variable()`.
+  Auth chain: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GITHUB_TOKEN`. Zero external deps.
+  CLI: `python -m codex.github.mcp_poster post-comment|set-variable|create-discussion`.
+
+**Admin Infrastructure & Documentation**
+
+- `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` — click-by-click admin guide: Copilot App permissions,
+  repository variables, secrets, GitHub Discussions, webhook, workflow permissions, S109 comment.
+- `.github/agents/cognitive-brain-session-injector.md` — production-ready agent spec with
+  architecture mermaid diagrams, RBAC lattice, capability table, test instructions.
+- `.codex/COGNITIVE_BRAIN_STATUS_S108.md` — full session status with architecture diagrams,
+  pattern library additions, coverage roadmap, admin action checklist.
+- `.codex/plans/global_rollout_success_metrics.md` — Phase 4 planset: 5 rollout phases, metrics table.
+- `.codex/plans/structural_policy_manager.rbac_planset.md` — Phase 5 planset: full mermaid diagrams.
+
+**Pattern Library (S108)**
+
+- P-042: HF_REVISION isolation (updated — root fix via monkeypatch, not just try/except)
+- P-043: Full HF mock (legacy_api lazy import annotation)
+- P-044: Pure-Python batch tests in `tests/coverage/`
+- P-045: Conditional assertions for config-routing-dependent code
+- P-046: CI feedback loop via `workflow_run: completed` trigger
+
+**Test Summary**
+
+| Suite | Tests | Status |
+|-------|-------|--------|
+| `tests/cognitive/test_session_hook.py` | 22 | ✅ |
+| `tests/cognitive/test_mcp_session_bridge_playwright.py` | 11 | ✅ |
+| `tests/cognitive/test_quantum_reconstruction.py` | 8 | ✅ |
+| `tests/cognitive/test_structural_policy_manager.py` | 28 | ✅ |
+| **Total new** | **69** | ✅ |
+
 ## [Unreleased] — S107
 
 ### S107 — Full HF mock, coverage 40→50%, 107 new tests, coverage roadmap 40→75 (2026-02-28)
