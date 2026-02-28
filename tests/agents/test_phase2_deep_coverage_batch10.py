@@ -14,10 +14,9 @@ Target: +3-4% coverage gain (66% → 70%)
 
 
 import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-import pytest
-
 
 
 class TestPhase2_EdgeCases_ZeroHandling:

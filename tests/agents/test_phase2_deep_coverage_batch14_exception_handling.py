@@ -10,10 +10,9 @@ Version: 1.0.0
 
 
 import pytest
+
 pytest.importorskip("numpy", reason="numpy not installed")
 import numpy as np
-import pytest
-
 
 
 class TestExceptionHandling_PhysicsOrchestrator:
