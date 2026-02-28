@@ -70,4 +70,3 @@ The ITA will validate the configuration before attempting `/git/create-pr` with 
 - Re-run `pytest services/ita/tests` and `npm run lint --prefix copilot/extension` after upgrades.
 - Read the [governance guide](governance.md) for policies that apply once you promote beyond a local
   Ubuntu sandbox.
-

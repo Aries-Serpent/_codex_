@@ -355,7 +355,7 @@ def _write_markdown(out_path: Path, audits: Sequence[FileAudit]) -> None:
     for audit in audits:
         issue_summary = "; ".join(f"{iss.kind}: {iss.entry or iss.message}" for iss in audit.issues)
         lines.append(
-            "| {file} | {has_defaults} | {has_self} | {pos} | {unresolved} | {missing_req} | {missing_opt} | {issues} |".format(
+            "| {file} | {has_defaults} | {has_self} | {pos} | {unresolved} | {missing_req} | {missing_opt} | {issues} |".format(  # noqa: E501
                 file=audit.file,
                 has_defaults=str(audit.has_defaults),
                 has_self=str(audit.has_self),

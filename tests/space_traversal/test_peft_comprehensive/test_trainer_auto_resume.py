@@ -11,7 +11,7 @@ from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 try:  # pragma: no cover - optional dependency
     import torch  # type: ignore
-except Exception:  # pragma: no cover - torch missing
+except ImportError:  # pragma: no cover - torch missing
     torch = None  # type: ignore
 
 

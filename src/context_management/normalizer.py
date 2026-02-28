@@ -13,6 +13,8 @@ import re
 import unicodedata
 
 logger = logging.getLogger(__name__)
+
+
 class ContextNormalizer:
     """
     Normalize text for consistent fingerprinting and deduplication.
@@ -131,7 +133,12 @@ class ContextNormalizer:
         - test_names: Test names found
         - correlation_ids: Request/trace IDs found
         """
-        signals = {"errors": [], "file_paths": [], "test_names": [], "correlation_ids": []}
+        signals = {
+            "errors": [],
+            "file_paths": [],
+            "test_names": [],
+            "correlation_ids": [],
+        }
 
         # Error patterns
         error_patterns = [

@@ -29,7 +29,12 @@ def _load_metrics(n: int = 10) -> list[dict]:
 @click.command()
 @click.option("--format", type=click.Choice(["json", "yaml", "html", "pdf"]), default="html")
 @click.option("--output", type=click.Path(), required=False, default=None, help="Output file")
-@click.option("--type", "report_type", type=click.Choice(["summary", "detail", "trend"]), default="summary")
+@click.option(
+    "--type",
+    "report_type",
+    type=click.Choice(["summary", "detail", "trend"]),
+    default="summary",
+)
 def report_main(format: str, output: str, report_type: str):
     """Generate code quality reports.
 
@@ -93,6 +98,7 @@ def dashboard_main(output: str, open_browser: bool):
         click.echo(f"Dashboard written to {output}")
         if open_browser:
             import webbrowser
+
             webbrowser.open(f"file://{Path(output).resolve()}")
     else:
         click.echo(html)

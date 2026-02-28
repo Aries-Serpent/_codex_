@@ -5,6 +5,7 @@ This module provides context compression capabilities for summarizing
 session information and prioritizing relevant context for efficient
 cross-session knowledge transfer.
 """
+
 from __future__ import annotations
 
 import json
@@ -176,8 +177,8 @@ class SentenceScorer:
         length_score = min(len(words) / 20, 1.0)
 
         # Importance word boost
-        importance_score = (
-            len(words.intersection(self.IMPORTANCE_WORDS)) / len(self.IMPORTANCE_WORDS)
+        importance_score = len(words.intersection(self.IMPORTANCE_WORDS)) / len(
+            self.IMPORTANCE_WORDS
         )
 
         # Position bias (first sentences often more important)
@@ -406,9 +407,7 @@ class ContextCompressor:
             context_type=ContextType.SESSION_LOG,
             original_size=original_tokens,
             compressed_size=compressed_tokens,
-            compression_ratio=(
-                compressed_tokens / original_tokens if original_tokens > 0 else 0
-            ),
+            compression_ratio=(compressed_tokens / original_tokens if original_tokens > 0 else 0),
             summary=summary,
             key_points=key_points,
             preserved_items=preserved,
@@ -454,9 +453,7 @@ class ContextCompressor:
             context_type=ContextType.COMMIT_HISTORY,
             original_size=original_tokens,
             compressed_size=compressed_tokens,
-            compression_ratio=(
-                compressed_tokens / original_tokens if original_tokens > 0 else 0
-            ),
+            compression_ratio=(compressed_tokens / original_tokens if original_tokens > 0 else 0),
             summary=summary,
             key_points=key_points,
             preserved_items=[],
@@ -508,9 +505,7 @@ class ContextCompressor:
             context_type=ContextType.FILE_CHANGES,
             original_size=original_tokens,
             compressed_size=compressed_tokens,
-            compression_ratio=(
-                compressed_tokens / original_tokens if original_tokens > 0 else 0
-            ),
+            compression_ratio=(compressed_tokens / original_tokens if original_tokens > 0 else 0),
             summary=summary,
             key_points=key_points,
             preserved_items=[],

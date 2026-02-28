@@ -15,7 +15,7 @@ pytest.importorskip("omegaconf")
 
 try:  # optional dependency for RNG disturbance
     import numpy as np
-except Exception:  # pragma: no cover - numpy unavailable
+except ImportError:  # pragma: no cover - numpy unavailable
     np = None
 
 from codex_ml.config import DataConfig  # noqa: E402

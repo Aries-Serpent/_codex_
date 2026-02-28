@@ -55,4 +55,3 @@ logger.info(f"Input: {sanitize_log(user_data)}")
 **AST Module**: `src/codex/ast/` - Code analysis utilities  
 **Agent Directory**: `agents/` - Agent implementations  
 **Agent Scripts**: `scripts/agent/` - This directory - automation scripts
-

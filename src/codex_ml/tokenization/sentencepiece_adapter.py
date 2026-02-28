@@ -11,6 +11,7 @@ avoids heavy dependencies and therefore expects the caller to have the
     adapter.add_special_tokens(["<pad>", "<bos>"])
 
 """
+
 from __future__ import annotations
 
 import logging
@@ -107,7 +108,7 @@ def _get_sentencepiece():
 
                 Returns a bound reference to the get_piece_size method for 'GetPieceSize', 'piece_size', or 'vocab_size'
                 to mimic SentencePieceProcessor API variants. Raises AttributeError for all other names.
-                """
+                """  # noqa: E501
                 if name in {"GetPieceSize", "piece_size", "vocab_size"}:
                     return self.get_piece_size
                 raise AttributeError(name)
@@ -267,7 +268,16 @@ class SentencePieceAdapter:
         list[list[int]]
             List of encoded token ID sequences, optionally padded
         """
-        return [self.encode(text, add_special_tokens=add_special_tokens, padding=padding, max_length=max_length, **kwargs) for text in texts]
+        return [
+            self.encode(
+                text,
+                add_special_tokens=add_special_tokens,
+                padding=padding,
+                max_length=max_length,
+                **kwargs,
+            )
+            for text in texts
+        ]
 
     def add_special_tokens(
         self, tokens: Sequence[str], existing: Optional[dict[str, int]] = None

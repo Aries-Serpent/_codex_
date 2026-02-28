@@ -61,7 +61,7 @@ class ArrowLoader:
         """
         if not ARROW_AVAILABLE:
             raise ImportError(
-                "PyArrow required for Arrow support.\n" "Install: pip install pyarrow>=10.0.0"
+                "PyArrow required for Arrow support.\nInstall: pip install pyarrow>=10.0.0"
             )
 
         self.file_path = Path(file_path)

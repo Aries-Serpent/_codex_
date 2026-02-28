@@ -1,0 +1,701 @@
+name: Agent Token Delegation
+
+# Reads the "Enable Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)" checkbox
+# from the PR body. When checked:
+#   1. Pauses at the `agent-auth-delegation` environment gate — owner approves in GH UI.
+#   2. Sets `COPILOT_AGENT_AUTH_ENABLED=true` repo variable via CODEX_MASTER_KEY.
+#   3. Adds all three delegated agent identities to COGNITIVE_BRAIN_ALLOWED_ACTORS
+#      using the Set-based exact-match pattern (S110).
+#   4. Dispatches GitHub Guru agent to verify and document the variable change
+#      (maintainer role).
+#   5. Posts `@copilot continue` as a PR comment to resume the Copilot session.
+#
+# One-time admin setup required (see §9 in ADMIN_MANUAL_SETUP_GUIDE.md):
+#   • Create an environment named `agent-auth-delegation` in repo Settings → Environments
+#   • Add @mbaetiong as a required reviewer
+#
+# Secrets required: CODEX_MASTER_KEY (or CODEX_BACKUP_KEY as fallback)
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to activate delegation for"
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ── Job 1: detect whether the checkbox is checked ───────────────────────────
+  detect-checkbox:
+    name: "Detect COPILOT_AGENT_AUTH_ENABLED checkbox"
+    runs-on: ubuntu-latest
+    outputs:
+      auth_requested: ${{ steps.check.outputs.auth_requested }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
+
+    steps:
+      - name: "Parse PR body for delegation checkbox"
+        id: check
+        env:
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
+        run: |
+          echo "pr_number=${PR_NUM}" >> "$GITHUB_OUTPUT"
+
+          # Match a checked markdown checkbox that contains the variable name.
+          # Pattern: "- [x]" followed by anything then "COPILOT_AGENT_AUTH_ENABLED"
+          # Use POSIX extended regex (-E) for broad grep compatibility across runners.
+          if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
+            echo "auth_requested=true"  >> "$GITHUB_OUTPUT"
+            echo "✅ COPILOT_AGENT_AUTH_ENABLED checkbox is checked — requesting approval"
+          else
+            echo "auth_requested=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  COPILOT_AGENT_AUTH_ENABLED checkbox not checked — nothing to do"
+          fi
+
+  # ── Job 2: owner approval gate ───────────────────────────────────────────────
+  # This job is intentionally minimal — its only purpose is to pause here until
+  # @mbaetiong clicks "Approve" in the GitHub Actions "Waiting for approval" UI.
+  await-approval:
+    name: "⏳ Awaiting owner approval"
+    needs: detect-checkbox
+    if: needs.detect-checkbox.outputs.auth_requested == 'true'
+    runs-on: ubuntu-latest
+    environment: agent-auth-delegation   # ← protection rule triggers approval gate
+
+    steps:
+      - name: "Approval received"
+        run: |
+          echo "✅ Owner approved agent token delegation for PR #${{ needs.detect-checkbox.outputs.pr_number }}"
+          echo "Proceeding to activate COPILOT_AGENT_AUTH_ENABLED..."
+
+  # ── Job 3: cognitive-preflight — GATE ───────────────────────────────────────
+  # Runs in parallel with detect-checkbox / await-approval.
+  # activate-delegation cannot start until this passes.
+  #
+  # REQ-1: Post mandatory checklist as PR comment BEFORE @copilot fires
+  # REQ-2: Parse .codex/patterns/ci_failure_patterns.yaml → job summary
+  # REQ-3: Verify .gitignore ALLOWS .codex/agent_auth_session.json
+  # REQ-4: Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md touched in last commit
+  # REQ-5: Verify CHANGELOG.md touched in last commit
+  # REQ-6: Verify SESSION_TIMEBOX_EXPIRED acknowledged (Session Summary posted) before reactivation
+  #
+  # Policy: .codex/CODEBASE_AGENCY_POLICY.md | WF-001-cognitive-preflight-FINAL.md
+  cognitive-preflight:
+    name: "🧠 Cognitive Pre-flight Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # Required: HEAD~1 diff check for REQ-4
+
+      # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
+      - name: Post Mandatory Agent Checklist to PR
+        uses: actions/github-script@v7
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha = (context.sha || 'unknown').slice(0, 7);
+            const MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';
+
+            // Dedup: skip if already posted for this SHA
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const alreadyPosted = comments.some(c =>
+              c.body.includes(MARKER) && c.body.includes(sha)
+            );
+            if (alreadyPosted) {
+              console.log(`Checklist already posted for SHA ${sha} — skipping duplicate.`);
+              return;
+            }
+
+            // Scan for existing priority directive to surface inline
+            const directive = comments.find(c =>
+              c.body.includes('Priority for this session:')
+            );
+            const priorityLine = directive
+              ? (() => {
+                  const m = directive.body.match(/Priority for this session:\s*(.+)/);
+                  return m
+                    ? `\n> ⚡ **ACTIVE SESSION PRIORITY:** ${m[1].trim()} _(set by @${directive.user.login})_\n`
+                    : '';
+                })()
+              : '\n> ℹ️ No session priority directive found. Post a comment with `Priority for this session: X` to set one.\n';
+
+            const body = [
+              `## 🧠 ${MARKER} — SHA: ${sha}`,
+              '',
+              '> **Auto-posted by `cognitive-preflight` job BEFORE session activation.**',
+              '> Treat this as active instruction — NOT background memory. This is a CI gate.',
+              priorityLine,
+              '---',
+              '',
+              '### ✅ Agent Pre-flight Checklist',
+              '',
+              '- [ ] **1.** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in your commit _(CI will fail if not touched)_',
+              '- [ ] **2.** Review CI failure patterns in the Actions job summary (Actions tab → this run → Job Summary)',
+              '- [ ] **3.** Confirm `.gitignore` allows `.codex/agent_auth_session.json` _(CI will fail if blocked)_',
+              '- [ ] **4.** Read the `Priority for this session: X` comment on this PR — that is your **PRIMARY directive**',
+              '- [ ] **5.** Post your Phase execution plan as a PR comment BEFORE making any file changes',
+              '- [ ] **6.** Follow `.codex/CODEBASE_AGENCY_POLICY.md` at all times — violations must be self-corrected',
+              '',
+              '### ⚙️ Policy Quick Reference',
+              '',
+              '| Rule | Requirement |',
+              '|------|-------------|',
+              '| Execution trigger | Within 60 seconds of reading a clear task |',
+              '| Self-review | Minimum 5 passes before session close |',
+              '| Deferral | NEVER without: documented blocker + 5 attempts + follow-up `@copilot` comment |',
+              '| Terminology | pre-commit/commit cycles — NOT days/weeks |',
+              '| Follow-up | Post `@copilot ...` PR comment if session ends with incomplete work |',
+              '',
+              '### 🔗 Policy References',
+              '',
+              '| File | Purpose |',
+              '|------|---------|',
+              '| `.codex/CODEBASE_AGENCY_POLICY.md` | Master policy |',
+              '| `.codex/patterns/ci_failure_patterns.yaml` | CI pattern library (19 patterns) |',
+              '| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session accountability |',
+              '',
+              '---',
+              `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+            console.log(`✅ Checklist posted for SHA ${sha}`);
+
+      # ── REQ-1b: Surface session-type directives (exploration/timebox/no-auto-proceed) ──
+      # Reads SESSION_TIMEBOX_START / SESSION_TYPE_EXPLORATION markers posted by session-watchdog.yml
+      # and injects matching enforcement items into the agent checklist.
+      # Policy: .github/docs/SessionContinuityPolicy.md | WF-002
+      - name: Surface Session-Type Directives to Checklist
+        uses: actions/github-script@v7
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha    = (context.sha || 'unknown').slice(0, 7);
+            const MARKER = 'COGNITIVE SESSION-TYPE DIRECTIVE';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Dedup: only post once per SHA
+            if (comments.some(c => c.body.includes(MARKER) && c.body.includes(sha))) {
+              console.log(`Session-type directive already posted for ${sha} — skipping.`);
+              return;
+            }
+
+            // Detect session signals from session-watchdog.yml markers
+            const hasExploration   = comments.some(c => c.body.includes('SESSION_TYPE_EXPLORATION'));
+            const doNotAutoProceed = comments.some(c => /do\s+not\s+auto.?proceed/i.test(c.body));
+
+            // Detect active (non-expired) timebox
+            let activeTimebox = null;
+            const now = new Date();
+            for (const c of comments.filter(c => c.body.includes('SESSION_TIMEBOX_START'))) {
+              const m = c.body.match(/\*\*Expires:\*\*\s*(\S+)/);
+              if (m) {
+                const exp = new Date(m[1]);
+                if (!isNaN(exp.getTime()) && now < exp) {
+                  const minsLeft = Math.round((exp - now) / 60000);
+                  activeTimebox = { expiresISO: m[1], minsLeft };
+                }
+              }
+            }
+
+            // Only post if there is something to surface
+            if (!hasExploration && !activeTimebox && !doNotAutoProceed) {
+              console.log('No session-type directives detected — skipping injection.');
+              return;
+            }
+
+            const lines = [
+              `## 🎯 ${MARKER} — SHA: ${sha}`,
+              '',
+              '> **Auto-posted by `cognitive-preflight` — session-type specific enforcement rules.**',
+              '> These items are IN ADDITION to the standard Pre-flight Checklist above.',
+              '',
+            ];
+
+            if (activeTimebox) {
+              lines.push(`> ⏱ **ACTIVE TIMEBOX: ~${activeTimebox.minsLeft} minutes remaining** (expires \`${activeTimebox.expiresISO}\`)`);
+              lines.push('> Complete your work and post `## 🧠 Session Summary` BEFORE this expires.');
+              lines.push('');
+            }
+
+            if (hasExploration) {
+              lines.push('### 🔍 Exploration Session Active — [Session Continuity Policy](.github/docs/SessionContinuityPolicy.md) applies:');
+              lines.push('');
+              lines.push('- [ ] **A.** After each agenda item: post PR comment with findings; ask "proceed or go deeper?"');
+              lines.push('- [ ] **B.** Every ~10 minutes: post an incremental progress summary as a PR comment');
+              lines.push('- [ ] **C.** Treat silence from human as PAUSE — do NOT auto-proceed to next item');
+              lines.push('- [ ] **D.** On session close: post `## 🧠 Session Summary` with topics, key findings, and a follow-up `@copilot` prompt');
+              lines.push('');
+            }
+
+            if (doNotAutoProceed) {
+              lines.push('### 🛑 "Do NOT Auto-Proceed" Directive Active:');
+              lines.push('');
+              lines.push('- [ ] After each agenda item: **STOP.** Post findings. Wait for explicit human "continue" reply.');
+              lines.push('- [ ] Do NOT start the next item without an explicit human response.');
+              lines.push('');
+            }
+
+            lines.push('_auto-posted by cognitive-preflight | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: lines.join('\n'),
+            });
+            console.log('Session-type directives surfaced in preflight comment.');
+
+      # ── REQ-2: Read ci_failure_patterns.yaml → output to job summary ──────
+      - name: Parse CI Failure Patterns → Job Summary
+        run: |
+          PATTERN_FILE=".codex/patterns/ci_failure_patterns.yaml"
+
+          echo "## 🧠 Active CI Failure Patterns" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$PATTERN_FILE" ]; then
+            echo "⚠️ Pattern file not found: \`${PATTERN_FILE}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "Agent should create this file from session learnings." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Source:** \`${PATTERN_FILE}\` (missing)" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "**Source:** \`${PATTERN_FILE}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          python3 - "$PATTERN_FILE" "$GITHUB_STEP_SUMMARY" << 'PYEOF'
+          import re, sys
+
+          pattern_file = sys.argv[1]
+          summary_file = sys.argv[2]
+
+          with open(pattern_file, "r", encoding="utf-8") as f:
+              content = f.read()
+
+          blocks = re.findall(r'```yaml\n(.*?)```', content, re.DOTALL)
+
+          rows = []
+          for block in blocks:
+              pid_m   = re.search(r'^pattern_id:\s*(.+)', block, re.MULTILINE)
+              name_m  = re.search(r'^name:\s*"?(.+?)"?\s*$', block, re.MULTILINE)
+              pri_m   = re.search(r'^priority:\s*(\d+)', block, re.MULTILINE)
+              sev_m   = re.search(r'^severity:\s*(\w+)', block, re.MULTILINE)
+              batch_m = re.search(r'batch_fix[_\s]*(?:potential|enabled)?:\s*(true)', block, re.IGNORECASE)
+              notes_m = re.search(r'cognitive_notes:\s*\|(.*?)(?=\n\w|\Z)', block, re.DOTALL)
+
+              if not pid_m:
+                  continue
+
+              pid   = pid_m.group(1).strip()
+              name  = name_m.group(1).strip() if name_m else "—"
+              pri   = f"P{pri_m.group(1).strip()}" if pri_m else "?"
+              sev   = sev_m.group(1).strip() if sev_m else "?"
+              batch = "✅" if batch_m else ""
+              note  = ""
+              if notes_m:
+                  lines = [l.strip() for l in notes_m.group(1).strip().split("\n") if l.strip()]
+                  note  = lines[0] if lines else ""
+
+              rows.append(f"| `{pid}` | {name} | {pri} | {sev} | {batch} | {note} |")
+
+          with open(summary_file, "a", encoding="utf-8") as out:
+              if rows:
+                  out.write("| Pattern ID | Name | Priority | Severity | Batch Fix | Key Insight |\n")
+                  out.write("|-----------|------|----------|----------|:---------:|-------------|\n")
+                  for row in rows:
+                      out.write(row + "\n")
+                  out.write(f"\n**Total patterns loaded:** {len(rows)}\n\n")
+                  p1 = [r for r in rows if "| P1 |" in r]
+                  if p1:
+                      out.write(f"⚠️ **{len(p1)} Priority-1 (blocking) pattern(s) active — review before coding.**\n\n")
+              else:
+                  out.write("No parseable patterns found in pattern file.\n\n")
+          PYEOF
+
+      # ── REQ-3: Verify .gitignore ALLOWS .codex/agent_auth_session.json ────
+      - name: Verify .gitignore allows .codex/agent_auth_session.json
+        id: gitignore_check
+        run: |
+          TARGET=".codex/agent_auth_session.json"
+          GITIGNORE=".gitignore"
+
+          echo "### 🔍 .gitignore Check: \`${TARGET}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$GITIGNORE" ]; then
+            echo "⚠️ No .gitignore found — \`${TARGET}\` is implicitly allowed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if git check-ignore -q "$TARGET" 2>/dev/null; then
+            NEGATION=$(grep -E "^!.*agent_auth_session" "$GITIGNORE" 2>/dev/null || true)
+            if [ -n "$NEGATION" ]; then
+              echo "✅ **PASS** — \`${TARGET}\` is explicitly un-ignored via negation: \`${NEGATION}\`" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "❌ **FAIL** — \`${TARGET}\` is BLOCKED by .gitignore with no negation rule." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Fix:** Add to \`.gitignore\`:" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "!.codex/agent_auth_session.json" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+          else
+            echo "✅ **PASS** — \`${TARGET}\` is NOT ignored by .gitignore." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # ── REQ-4: Verify accountability report touched in last commit ─────────
+      - name: Verify Accountability Report updated in last commit
+        id: accountability_check
+        run: |
+          REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+          echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$REPORT" ]; then
+            echo "❌ **FAIL** — \`${REPORT}\` does not exist." >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Create this file and commit it before activating a session." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$REPORT"; then
+            echo "✅ **PASS** — \`${REPORT}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          else
+            LAST_TOUCH=$(git log -1 --format="%ar" -- "$REPORT" 2>/dev/null || echo "unknown")
+            echo "❌ **FAIL** — \`${REPORT}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Update the accountability report in your next commit before session activation." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      # ── REQ-5: Verify CHANGELOG.md touched in last commit ────────────────
+      # Tier-1 hard stop — same pattern as REQ-4.
+      # Rationale: CHANGELOG.md is frequently skipped (documented in grounded enforcement audit).
+      # Promoting from Tier-3 (policy text) → Tier-1 (CI hard block).
+      - name: Verify CHANGELOG.md updated in last commit
+        id: changelog_check
+        run: |
+          CHANGELOG="CHANGELOG.md"
+
+          echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "$CHANGELOG" ]; then
+            echo "⚠️ **SKIP** — \`${CHANGELOG}\` does not exist in repo root." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
+            echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+          else
+            LAST_TOUCH=$(git log -1 --format="%ar" -- "$CHANGELOG" 2>/dev/null || echo "unknown")
+            echo "❌ **FAIL** — \`${CHANGELOG}\` was NOT updated in the last commit." >> "$GITHUB_STEP_SUMMARY"
+            echo "Last modified: ${LAST_TOUCH}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Fix:** Add a \`## [Unreleased]\` entry to \`CHANGELOG.md\` in your next commit." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
+      # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)
+      # to Tier-1 (CI blocks activate-delegation until a Session Summary is posted).
+      # Logic: scan PR comments for SESSION_TIMEBOX_EXPIRED; if found, require a
+      # "## 🧠 Session Summary" comment posted AFTER the expiry notice.
+      # Rationale: Timebox expiry was Tier-2 PARTIAL — agent could ignore the posted notice.
+      # Bypass cost (grounded): agent MUST post a Session Summary or no activation occurs.
+      - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
+        id: timebox_ack_check
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const EXPIRED_MARKER  = 'SESSION_TIMEBOX_EXPIRED';
+            const SUMMARY_MARKER  = '## 🧠 Session Summary';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+
+            // Find most recent SESSION_TIMEBOX_EXPIRED comment
+            const expiredComment = comments
+              .filter(c => c.body.includes(EXPIRED_MARKER))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+            if (!expiredComment) {
+              core.summary.addRaw('### ⏱ Timebox Acknowledgment Check\n\n✅ **PASS** — No `SESSION_TIMEBOX_EXPIRED` found. No acknowledgment required.\n\n');
+              await core.summary.write();
+              return;
+            }
+
+            const expiredAt = new Date(expiredComment.created_at);
+
+            // Check for Session Summary comment posted AFTER the expiry notice
+            const summaryAfterExpiry = comments.find(c =>
+              c.body.includes(SUMMARY_MARKER) &&
+              new Date(c.created_at) > expiredAt
+            );
+
+            if (summaryAfterExpiry) {
+              const poster = summaryAfterExpiry.user.login;
+              const postedAt = summaryAfterExpiry.created_at;
+              core.summary.addRaw(
+                `### ⏱ Timebox Acknowledgment Check\n\n` +
+                `✅ **PASS** — Session Summary posted by @${poster} at ${postedAt}, after timebox expiry.\n\n`
+              );
+              await core.summary.write();
+            } else {
+              core.summary.addRaw(
+                `### ⏱ Timebox Acknowledgment Check\n\n` +
+                `❌ **FAIL** — \`SESSION_TIMEBOX_EXPIRED\` was posted at ${expiredComment.created_at} ` +
+                `but no \`## 🧠 Session Summary\` comment has been posted since then.\n\n` +
+                `**Fix:** Post a PR comment containing \`## 🧠 Session Summary\` covering:\n` +
+                `- Topics covered and key findings\n` +
+                `- Suggested follow-up \`@copilot\` prompt for the next session\n\n` +
+                `_Session activation is blocked until the Session Summary is posted._\n`
+              );
+              await core.summary.write();
+              core.setFailed('SESSION_TIMEBOX_EXPIRED requires a "## 🧠 Session Summary" comment before reactivation.');
+            }
+
+      # ── Final gate summary ────────────────────────────────────────────────
+      - name: Cognitive Pre-flight Final Status
+        if: always()
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "---" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "## 🟢 COGNITIVE PRE-FLIGHT: ALL CHECKS PASSED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Session activation is **unblocked**. \`activate-delegation\` may proceed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## 🚫 COGNITIVE PRE-FLIGHT: SESSION BLOCKED" >> "$GITHUB_STEP_SUMMARY"
+            echo "Resolve all ❌ items above. \`activate-delegation\` will not run until this job passes." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Job 4: activate delegation, set variable, post @copilot continue ─────────
+  activate-delegation:
+    name: "Activate token delegation"
+    needs: [detect-checkbox, await-approval, cognitive-preflight]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY }}
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
+      - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
+        id: set_vars
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          script: |
+            // Helper: upsert a repo variable (create if 404, patch if exists)
+            async function upsertVar(name, value) {
+              try {
+                await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  name,
+                  value,
+                });
+                core.info(`✅ PATCH ${name} = ${value}`);
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.request('POST /repos/{owner}/{repo}/actions/variables', {
+                    owner: context.repo.owner,
+                    repo:  context.repo.repo,
+                    name,
+                    value,
+                  });
+                  core.info(`✅ POST (create) ${name} = ${value}`);
+                } else {
+                  throw e;
+                }
+              }
+            }
+
+            // 1. Enable agent auth flag
+            await upsertVar('COPILOT_AGENT_AUTH_ENABLED', 'true');
+
+            // 2. Ensure all three delegated agent identities are present
+            //    (S110 Set-based exact-match pattern — no partial-name false positives)
+            const REQUIRED_AGENTS = [
+              'copilot-swe-agent[bot]',   // GitHub Copilot coding agent
+              'github-copilot[bot]',       // Copilot custom agents
+              'github-actions[bot]',       // CI/AI workflow agents
+            ];
+
+            let currentActors = 'mbaetiong,github-actions[bot]';
+            try {
+              const resp = await github.request(
+                'GET /repos/{owner}/{repo}/actions/variables/{name}',
+                { owner: context.repo.owner, repo: context.repo.repo,
+                  name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS' }
+              );
+              currentActors = resp.data.value || currentActors;
+            } catch (e) {
+              core.warning(`Could not fetch COGNITIVE_BRAIN_ALLOWED_ACTORS: ${e.message}`);
+            }
+
+            const actorSet = new Set(
+              currentActors.split(',').map(a => a.trim()).filter(a => a.length > 0)
+            );
+            for (const agent of REQUIRED_AGENTS) { actorSet.add(agent); }
+            const updatedActors = Array.from(actorSet).join(',');
+
+            await upsertVar('COGNITIVE_BRAIN_ALLOWED_ACTORS', updatedActors);
+            core.info(`✅ COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);
+
+            core.setOutput('updated_actors', updatedActors);
+
+      # ── 3b: Write session token file for provenance-chain bypass (A-001) ──────
+      # Writes .codex/agent_auth_session.json with a 4-hour expiry (TTL=14400s).
+      # owner_approval_guard.sh reads this file so ALL agent sessions within the TTL
+      # bypass the cost-gate without requiring a new environment gate approval.
+      # The agent (copilot-swe-agent[bot]) CAN write this file since it has full
+      # repo write access. The owner's one-time approval propagates across sessions.
+      - name: "Write provenance session token (.codex/agent_auth_session.json)"
+        run: |
+          mkdir -p .codex
+          EXPIRY=$(( $(date +%s) + 14400 ))
+          cat > .codex/agent_auth_session.json <<EOF
+          {
+            "issued_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "expires_at": ${EXPIRY},
+            "issued_by": "agent-auth-delegation",
+            "run_id": "${{ github.run_id }}",
+            "run_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "pr_number": "${{ needs.detect-checkbox.outputs.pr_number }}",
+            "bypass_tools": "",
+            "note": "Provenance-chain token. Allows all agent sessions to bypass owner_approval_guard within TTL. Renew by re-triggering agent-auth-delegation."
+          }
+          EOF
+          echo "✅ Session token written (expires in 4h at epoch ${EXPIRY})"
+          cat .codex/agent_auth_session.json
+        shell: bash
+
+      - name: "Commit session token to branch"
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .codex/agent_auth_session.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(auth): write provenance session token [skip ci]"
+            git push origin HEAD:refs/heads/${{ github.head_ref || github.ref_name }}
+          fi
+
+      # ── 3c: Dispatch GitHub Guru to verify & document the variable change ────
+      # GitHub Guru acts as the "codebase maintainer" that audits the variable
+      # state and posts a structured PR comment confirming the change is visible.
+      - name: "Dispatch GitHub Guru (maintainer verification)"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                workflow_id: 'github-guru.yml',
+                ref:         context.ref || 'main',
+                inputs: {
+                  mode: 'pr_only',
+                },
+              });
+              core.info('✅ GitHub Guru dispatched for maintainer variable verification');
+            } catch (e) {
+              core.warning(`GitHub Guru dispatch skipped: ${e.message}`);
+            }
+
+      # ── 3d: Post @copilot continue on the PR ─────────────────────────────────
+      - name: "Post @copilot continue"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
+            if (!prNumber || prNumber <= 0) {
+              core.setFailed('Invalid PR number — cannot post comment');
+              return;
+            }
+            const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
+            const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const body = [
+              '## 🔐 Agent Token Delegation Activated',
+              '',
+              `Owner approval received ([workflow run](${runUrl})). Repo variables updated:`,
+              '',
+              '| Variable | Value |',
+              '|----------|-------|',
+              '| `COPILOT_AGENT_AUTH_ENABLED` | `true` |',
+              `| \`COGNITIVE_BRAIN_ALLOWED_ACTORS\` | \`${actors}\` |`,
+              '',
+              '**Delegated agent coverage:**',
+              '- ✅ `copilot-swe-agent[bot]` — GitHub Copilot coding agent',
+              '- ✅ `github-copilot[bot]` — Copilot custom agents',
+              '- ✅ `github-actions[bot]` — CI/AI workflow agents',
+              '',
+              '> GitHub Guru (maintainer) has been dispatched to verify variable state.',
+              '',
+              '@copilot continue',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
+            core.info(`✅ Posted @copilot continue on PR #${prNumber}`);

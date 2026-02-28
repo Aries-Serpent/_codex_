@@ -115,9 +115,7 @@ class PatternCompressor:
         self.feature_std: Optional[np.ndarray] = None
         self.projection_matrix: Optional[np.ndarray] = None
         self.feature_importance: Optional[np.ndarray] = None  # New: importance scores
-        self.explained_variance_ratio: Optional[np.ndarray] = (
-            None  # For variable quantization
-        )
+        self.explained_variance_ratio: Optional[np.ndarray] = None  # For variable quantization
         self.is_fitted = False
 
         # Statistics
@@ -194,15 +192,11 @@ class PatternCompressor:
         if self.target_dimensions is None:
             # Find minimum dimensions to retain variance_threshold (default 95%)
             cumulative_variance = np.cumsum(explained_variance_ratio)
-            self.target_dimensions = (
-                np.argmax(cumulative_variance >= self.variance_threshold) + 1
-            )
+            self.target_dimensions = np.argmax(cumulative_variance >= self.variance_threshold) + 1
             # Ensure at least 1 dimension and at most 65% reduction (35% of original)
             min_dims = 1
             max_dims = max(1, int(X.shape[1] * 0.35))  # 65% reduction target
-            self.target_dimensions = max(
-                min_dims, min(self.target_dimensions, max_dims)
-            )
+            self.target_dimensions = max(min_dims, min(self.target_dimensions, max_dims))
 
         # Calculate feature importance scores based on loadings
         # Higher importance = more contribution to top principal components
@@ -211,9 +205,7 @@ class PatternCompressor:
         self.feature_importance /= self.feature_importance.sum()  # Normalize
 
         # Store explained variance for variable quantization
-        self.explained_variance_ratio = explained_variance_ratio[
-            : self.target_dimensions
-        ]
+        self.explained_variance_ratio = explained_variance_ratio[: self.target_dimensions]
 
         # Log compression info
         actual_variance = self.explained_variance_ratio.sum()
@@ -239,9 +231,7 @@ class PatternCompressor:
             RuntimeError: If compressor has not been fitted yet
         """
         if not self.is_fitted or self.feature_importance is None:
-            raise RuntimeError(
-                "Compressor must be fitted before getting importance scores"
-            )
+            raise RuntimeError("Compressor must be fitted before getting importance scores")
 
         return {
             feature: importance
@@ -308,9 +298,7 @@ class PatternCompressor:
             component_importance = np.linspace(1.0, 0.5, len(compressed_vec))
 
         variable_bits = (self.quantization_bits * component_importance).astype(int)
-        variable_bits = np.clip(
-            variable_bits, 4, self.quantization_bits
-        )  # 4-8 bit range
+        variable_bits = np.clip(variable_bits, 4, self.quantization_bits)  # 4-8 bit range
 
         # Apply variable quantization per component with correct signed integer range
         quantized = np.zeros_like(compressed_vec)
@@ -354,7 +342,7 @@ class PatternCompressor:
 
         logger.debug(
             f"Compressed pattern {pattern_id}: {original_size}→{compressed_size:.1f} bytes "
-            f"({compression_ratio:.1%} reduction, {compressed.compression_metadata['sparsity']:.1%} sparse)"
+            f"({compression_ratio:.1%} reduction, {compressed.compression_metadata['sparsity']:.1%} sparse)"  # noqa: E501
         )
 
         return compressed
@@ -393,9 +381,7 @@ class PatternCompressor:
         reconstructed = reconstructed_norm * self.feature_std + self.feature_mean
 
         # Convert back to dict
-        reconstructed_dict = {
-            k: float(v) for k, v in zip(compressed.feature_keys, reconstructed)
-        }
+        reconstructed_dict = {k: float(v) for k, v in zip(compressed.feature_keys, reconstructed)}
 
         self.total_decompressed += 1
 

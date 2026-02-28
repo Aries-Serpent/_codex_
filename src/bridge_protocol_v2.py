@@ -59,11 +59,11 @@ class ProtocolHeader:
     def to_bytes(self) -> bytes:
         """Serialize header to bytes."""
         return (
-            self.magic +
-            self.version.to_bytes(1, "big") +
-            int(self.flags).to_bytes(1, "big") +
-            self.length.to_bytes(4, "big") +
-            self.checksum.to_bytes(4, "big")
+            self.magic
+            + self.version.to_bytes(1, "big")
+            + int(self.flags).to_bytes(1, "big")
+            + self.length.to_bytes(4, "big")
+            + self.checksum.to_bytes(4, "big")
         )
 
     @classmethod
@@ -109,8 +109,7 @@ def compress_message(data: bytes, threshold: int = COMPRESSION_THRESHOLD) -> tup
     savings = 1.0 - (len(compressed) / len(data))
     if savings >= MIN_COMPRESSION_SAVINGS:
         logger.debug(
-            f"Compressed message: {len(data)} -> {len(compressed)} bytes "
-            f"({savings:.1%} savings)"
+            f"Compressed message: {len(data)} -> {len(compressed)} bytes ({savings:.1%} savings)"
         )
         return compressed, True
 
@@ -251,8 +250,7 @@ class MultiClientBridge:
         with self._lock:
             if len(self.clients) >= self.max_clients:
                 logger.warning(
-                    f"Cannot register client {client_id}: at capacity "
-                    f"({self.max_clients} clients)"
+                    f"Cannot register client {client_id}: at capacity ({self.max_clients} clients)"
                 )
                 return False
 
@@ -266,8 +264,7 @@ class MultiClientBridge:
             )
 
             logger.info(
-                f"Registered client {client_id} (priority={priority}, "
-                f"total={len(self.clients)})"
+                f"Registered client {client_id} (priority={priority}, total={len(self.clients)})"
             )
             return True
 
@@ -285,9 +282,7 @@ class MultiClientBridge:
                 return False
 
             del self.clients[client_id]
-            logger.info(
-                f"Unregistered client {client_id} (total={len(self.clients)})"
-            )
+            logger.info(f"Unregistered client {client_id} (total={len(self.clients)})")
             return True
 
     def heartbeat(self, client_id: str) -> bool:
@@ -325,10 +320,7 @@ class MultiClientBridge:
             Socket path or None if no clients available
         """
         with self._lock:
-            alive_clients = [
-                c for c in self.clients.values()
-                if c.is_alive(self.heartbeat_timeout)
-            ]
+            alive_clients = [c for c in self.clients.values() if c.is_alive(self.heartbeat_timeout)]
 
             if not alive_clients:
                 return None
@@ -349,10 +341,7 @@ class MultiClientBridge:
             Socket path or None if no clients available
         """
         with self._lock:
-            alive_clients = [
-                c for c in self.clients.values()
-                if c.is_alive(self.heartbeat_timeout)
-            ]
+            alive_clients = [c for c in self.clients.values() if c.is_alive(self.heartbeat_timeout)]
 
             if not alive_clients:
                 return None
@@ -372,9 +361,7 @@ class MultiClientBridge:
         """
         with self._lock:
             return [
-                c.socket_path
-                for c in self.clients.values()
-                if c.is_alive(self.heartbeat_timeout)
+                c.socket_path for c in self.clients.values() if c.is_alive(self.heartbeat_timeout)
             ]
 
     def get_stats(self) -> dict[str, Any]:
@@ -385,8 +372,7 @@ class MultiClientBridge:
         """
         with self._lock:
             alive_count = sum(
-                1 for c in self.clients.values()
-                if c.is_alive(self.heartbeat_timeout)
+                1 for c in self.clients.values() if c.is_alive(self.heartbeat_timeout)
             )
 
             return {
@@ -417,8 +403,7 @@ class MultiClientBridge:
 
             if dead_clients:
                 logger.info(
-                    f"Cleaned up {len(dead_clients)} dead clients, "
-                    f"{len(self.clients)} remaining"
+                    f"Cleaned up {len(dead_clients)} dead clients, {len(self.clients)} remaining"
                 )
 
 
@@ -472,23 +457,19 @@ def decode_message(data: bytes) -> tuple[bytes, ProtocolHeader]:
         raise ValueError(f"Message too short: {len(data)} bytes")
 
     # Parse header
-    header = ProtocolHeader.from_bytes(data[:ProtocolHeader.size()])
+    header = ProtocolHeader.from_bytes(data[: ProtocolHeader.size()])
 
     # Extract payload
-    payload = data[ProtocolHeader.size():ProtocolHeader.size() + header.length]
+    payload = data[ProtocolHeader.size() : ProtocolHeader.size() + header.length]
 
     if len(payload) != header.length:
-        raise ValueError(
-            f"Payload length mismatch: expected {header.length}, "
-            f"got {len(payload)}"
-        )
+        raise ValueError(f"Payload length mismatch: expected {header.length}, got {len(payload)}")
 
     # Verify checksum
     computed_checksum = compute_checksum(payload)
     if computed_checksum != header.checksum:
         raise ValueError(
-            f"Checksum mismatch: expected {header.checksum:08x}, "
-            f"got {computed_checksum:08x}"
+            f"Checksum mismatch: expected {header.checksum:08x}, got {computed_checksum:08x}"
         )
 
     # Decompress if needed

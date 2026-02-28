@@ -15,7 +15,7 @@ import pytest
 
 try:
     import numpy as np  # type: ignore
-except Exception:  # pragma: no cover - optional
+except ImportError:  # pragma: no cover - optional
     np = None  # type: ignore[assignment]
 
 

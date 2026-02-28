@@ -13,7 +13,7 @@ def test_init_mlflow_offline_import_only(monkeypatch, tmp_path):
         from codex_ml.tracking.init_offline import init_mlflow_offline
 
         assert callable(init_mlflow_offline)
-    except Exception:
+    except ImportError:
         # Import should still succeed even if mlflow is not installed.
         assert True
 

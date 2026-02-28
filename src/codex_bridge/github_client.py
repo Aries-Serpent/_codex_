@@ -48,7 +48,8 @@ def _auth_headers() -> dict[str, str]:
 def _cache_path(key: str) -> str:
     # nosec B324 - SHA1 used for cache key generation, not security
     return os.path.join(
-        CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json"
+        CACHE_DIR,
+        hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json",
     )
 
 
@@ -130,7 +131,7 @@ def most_recent_branch(owner: str = OWNER, repo: str = REPO) -> str:
             continue
         try:
             ts = datetime.datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-        except Exception:  # pragma: no cover - defensive
+        except Exception:  # pragma: no cover - defensive  # nosec B112
             continue
         if best_ts is None or ts > best_ts:
             best_ts = ts

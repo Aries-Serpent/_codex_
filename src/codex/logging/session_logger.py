@@ -416,8 +416,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
                 (sid,),
             ).fetchone()[0]
             rows = conn.execute(
-                "SELECT rowid FROM session_events WHERE session_id=? "
-                "AND seq IS NULL ORDER BY ts",
+                "SELECT rowid FROM session_events WHERE session_id=? AND seq IS NULL ORDER BY ts",
                 (sid,),
             ).fetchall()
             for row in rows:

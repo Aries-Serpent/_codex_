@@ -14,7 +14,7 @@ try:
         infer_probable_table,
         list_tables,
     )
-except Exception:
+except ImportError:
     from codex.logging.db_utils import (
         infer_columns,
         infer_probable_table,

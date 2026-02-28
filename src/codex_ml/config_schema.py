@@ -91,7 +91,7 @@ def load_yaml(path: str | Path) -> dict:
     except MissingPyYAMLError as exc:
         logger.debug(f"MissingPyYAMLError: {exc}")
         raise RuntimeError(
-            'PyYAML is required to validate configuration files. Install it via ``pip install "PyYAML>=6.0"`` '
+            'PyYAML is required to validate configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
             f"before loading {path}."
         ) from exc
 

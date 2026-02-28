@@ -100,7 +100,7 @@ def transform_data(data):
         groups = detector.scan()
 
         # Should find at least one similar group
-        assert len(groups) >= 0  # May or may not find similarities depending on threshold
+        assert isinstance(groups, (list, tuple, set, dict))  # May or may not find similarities depending on threshold
 
 
 def test_clustering():

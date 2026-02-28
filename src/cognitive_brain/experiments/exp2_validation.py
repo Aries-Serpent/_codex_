@@ -175,9 +175,7 @@ def run_exp2(sample_size: int = 500, seed: int = 42) -> Dict[str, Any]:
 
     # Calculate metrics
     entangled_stats = entangled_assessor.get_statistics()
-    avg_entangled_correlation = sum(entangled_correlations) / len(
-        entangled_correlations
-    )
+    avg_entangled_correlation = sum(entangled_correlations) / len(entangled_correlations)
     avg_control_correlation = sum(control_correlations) / len(control_correlations)
 
     redundancy_reduction = entangled_stats["redundancy_reduction"]
@@ -210,7 +208,7 @@ def run_exp2(sample_size: int = 500, seed: int = 42) -> Dict[str, Any]:
         "insights": [
             f"Entangled correlation: {avg_entangled_correlation:.3f}",
             f"Control correlation: {avg_control_correlation:.3f}",
-            f"Redundancy avoided: {entangled_stats['redundant_actions_avoided']}/{entangled_stats['total_assessments']}",
+            f"Redundancy avoided: {entangled_stats['redundant_actions_avoided']}/{entangled_stats['total_assessments']}",  # noqa: E501
             f"Latency overhead: {latency_overhead_ms:.1f}ms (target: <10ms)",
         ],
         "meets_criteria": {
@@ -232,9 +230,7 @@ if __name__ == "__main__":
     print(f"  - Entangled: {results['entangled_count']}")
     print(f"  - Control: {results['control_count']}")
     print("\nResults:")
-    print(
-        f"  Redundancy Reduction: {results['redundancy_reduction']:.1%} (target: ≥30%)"
-    )
+    print(f"  Redundancy Reduction: {results['redundancy_reduction']:.1%} (target: ≥30%)")
     print(
         f"  Avg Entangled Correlation: {results['avg_entangled_correlation']:.3f} (target: >0.80)"
     )

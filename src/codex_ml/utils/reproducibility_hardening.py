@@ -238,13 +238,19 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
     # 3. Git information
     try:
         git_commit = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL, timeout=5
+            ["git", "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
         ).strip()
         snapshot["git_commit"] = git_commit
 
         # Check for uncommitted changes
         git_status = subprocess.check_output(
-            ["git", "status", "--porcelain"], text=True, stderr=subprocess.DEVNULL, timeout=5
+            ["git", "status", "--porcelain"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
         ).strip()
         snapshot["git_dirty"] = bool(git_status)
 

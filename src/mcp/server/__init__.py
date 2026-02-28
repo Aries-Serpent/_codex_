@@ -47,7 +47,11 @@ class MCPServer:
             return None
 
         if method == "mcp.listTools":
-            return {"jsonrpc": "2.0", "id": request_id, "result": self.tool_registry.list_tools()}
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "result": self.tool_registry.list_tools(),
+            }
 
         if method == "mcp.negotiateVersion":
             supported = params.get("supported", [])

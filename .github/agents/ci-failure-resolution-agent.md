@@ -6,8 +6,9 @@ description: Diagnose and resolve CI/CD pipeline failures using embedded fix pat
 # CI Failure Resolution Agent
 
 **Agent Name:** `ci-failure-resolution-agent`
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Created:** 2026-02-18
+**Updated:** 2026-02-27 (S78: Added Pre-Merge Validation patterns)
 **Purpose:** Autonomous CI failure diagnosis, resolution, and verification for GitHub Actions workflows
 
 ---
@@ -101,6 +102,7 @@ Or:
 | **Type Errors** | `TypeError`, `AttributeError` | P1 (High) |
 | **Mock Issues** | `MagicMock`, `spec=` problems | P2 (Medium) |
 | **Test Infrastructure** | Fixture, conftest, collection errors | P0 (Critical) |
+| **Pre-Merge Autofix** | `auto-fixable issues detected` in pre-merge-validation | P1 (High) |
 
 **Pattern Analysis:**
 ```python
@@ -205,6 +207,41 @@ mock_torch = MagicMock()
 # AFTER: Proper spec or manual mock
 mock_torch = MagicMock(spec=torch)
 mock_torch.__version__ = "2.0.0"
+```
+
+#### Strategy 5: Pre-Merge Validation Auto-Fix Failures
+
+**Detection**: `Pre-merge validation failed - auto-fixable issues detected`
+
+**Diagnosis Steps**:
+1. Check `scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/report.json`
+2. Read JSON report to see which patterns triggered
+3. Check `auto_fixable` count in report
+
+**Fix Categories**:
+
+| Pattern | Auto-Fixable? | Fix Command |
+|---------|--------------|-------------|
+| Pattern 1: Unused Imports (F401) | ✅ Yes | `python -m ruff check --select F401 --fix src/ tests/` |
+| Pattern 4: Coverage Thresholds | ✅ Yes | `python scripts/ci/auto_fix_common_issues.py --pattern 4` |
+| Pattern 8: CodeQL Alerts (F841) | ❌ No (informational) | Manual: remove unused variable |
+
+**Important**: Pattern 8 ("CodeQL Alerts") should be in `manual_review_patterns` NOT
+`auto_fixable_patterns`. If it's in `auto_fixable_patterns`, F841 issues will spuriously
+block CI. Fix: move "CodeQL Alerts" to `manual_review_patterns` in `__init__` of
+`CommonCIFixer` class in `scripts/ci/auto_fix_common_issues.py`.
+
+```python
+# scripts/ci/auto_fix_common_issues.py — CORRECT configuration
+self.auto_fixable_patterns = {
+    "Unused Imports",      # Pattern 1 - ruff --fix
+    "Coverage Thresholds", # Pattern 4 - automated replacement
+    # "CodeQL Alerts" must NOT be here - it has no fix logic
+}
+self.manual_review_patterns = {
+    ...
+    "CodeQL Alerts",  # Pattern 8 - informational: F401→P1, F841→P2
+}
 ```
 
 **Implementation Process:**
@@ -1040,3 +1077,53 @@ Before activating this agent, ensure:
 **Agent Status:** ✅ READY FOR DEPLOYMENT
 **Last Updated:** 2026-02-18T04:00:00Z
 **Maintainer:** GitHub Copilot + Human Oversight (@mbaetiong)
+
+---
+
+## ⚡ Parallel Batch Scanning Protocol
+
+> **Mandatory.** This agent MUST use `scripts/ci/rvs_preflight.py` (or the
+> `BatchScanRunner` Python API) for all codebase scans.  Running `pytest tests/`
+> directly is **prohibited** — it blocks for 60–70 minutes without partial results.
+
+### Quick Reference
+
+```bash
+# 1. Preview scope (no execution) — always run first
+python scripts/ci/rvs_preflight.py --group quick --preview
+
+# 2. Incremental scan — changed files only (fastest, use during active work)
+python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 4
+
+# 3. Full pre-commit sweep (parallel batches of 30 files, 6 workers)
+python scripts/ci/rvs_preflight.py --group quick --workers 6 --batch-size 30
+
+# 4. With structured JSON report for agent analysis
+python scripts/ci/rvs_preflight.py --group quick --workers 6 \
+    --report /tmp/rvs_report.json
+
+# 5. Fail-fast triage (stop all batches on first failure)
+python scripts/ci/rvs_preflight.py --group quick --fail-fast --workers 4
+```
+
+### Python API
+
+```python
+from scripts.ci.batch_scan_integration import BatchScanRunner
+
+runner = BatchScanRunner(workers=6, batch_size=30)
+result = runner.scan(group="quick", changed_only=True)
+# result.ok, result.failures, result.summary_line, result.batches_run
+if not result.ok:
+    for failure in result.failures[:10]:
+        print(f"  FAILED: {failure}")
+```
+
+### Decision Flow
+
+1. `--preview` → confirm test scope
+2. `--changed-only` → validate your specific changes
+3. `--group quick --workers 6` → full sweep before commit
+4. Parse `--report` JSON for structured failure analysis
+
+**Full protocol**: `.github/agents/BATCH_SCAN_PROTOCOL.md`

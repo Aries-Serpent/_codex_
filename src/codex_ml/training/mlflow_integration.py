@@ -83,13 +83,12 @@ class MLflowTracker:
 
             self.active = True
             logger.info(
-                f"MLflow tracking enabled: {self.tracking_uri}, "
-                f"experiment: {self.experiment_name}"
+                f"MLflow tracking enabled: {self.tracking_uri}, experiment: {self.experiment_name}"
             )
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.warning(
-                f"MLflow initialization failed: {e}. " f"Continuing without MLflow tracking."
+                f"MLflow initialization failed: {e}. Continuing without MLflow tracking."
             )
             self.active = False
 

@@ -181,7 +181,7 @@ class TestEmbeddingSecurity:
         def embed_with_fallback(text, primary, fallback):
             try:
                 return primary.embed(text)
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return fallback.embed(text)
 
         result = embed_with_fallback("test", primary, fallback)

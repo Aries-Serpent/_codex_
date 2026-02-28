@@ -4,8 +4,15 @@
 # Inputs:
 #   - TOOL_KEY (string): logical workflow key e.g., "docker-build-push" (default), "security-scans", "all"
 #   - OWNER_APPROVED_UNTIL (ISO8601 UTC) or OWNER_APPROVED_DURATION ("2h", "4h", "1d", "3w") — repo/environment variables
+#   - COPILOT_AGENT_AUTH_ENABLED ("true") — set by agent-auth-delegation workflow after owner approval;
+#     acts as an implicit approval bypass for cost-gated workflows (S112).
+#   - COPILOT_AGENT_AUTH_BYPASS_TOOLS (comma-separated, optional, S113) — allowlist of TOOL_KEYs
+#     eligible for the COPILOT_AGENT_AUTH_ENABLED bypass. If unset or empty, all TOOL_KEYs are
+#     eligible (backward compatible). Set to e.g. "docker-build-push,security-scans" to restrict.
 # Behavior:
-#   - If env overrides exist, they take precedence over file-based config.
+#   - If COPILOT_AGENT_AUTH_ENABLED=true AND TOOL_KEY is in COPILOT_AGENT_AUTH_BYPASS_TOOLS
+#     (or COPILOT_AGENT_AUTH_BYPASS_TOOLS is unset/empty), bypass is granted.
+#   - Else if env overrides exist, they take precedence over file-based config.
 #   - Else read .github/OWNER_APPROVAL.yml (simple YAML parsing via grep/sed/awk).
 set -euo pipefail
 
@@ -82,6 +89,92 @@ parse_duration_to_secs() {
 approve_via_env() {
   local now ts
   now="$(now_epoch)"
+
+  # ── Provenance-chain bypass 1: session token file (A-001) ─────────────────
+  # Written by agent-auth-delegation.yml activate-delegation job.
+  # Allows one owner approval to cover ALL agent sessions within the TTL
+  # (default: 14400s = 4 hours). Agent can renew by re-running the workflow.
+  local _session_token_file="${CODEX_SESSION_TOKEN_FILE:-.codex/agent_auth_session.json}"
+  if [ -f "${_session_token_file}" ]; then
+    local _token_expiry
+    _token_expiry="$(python3 -c "
+import json, sys
+try:
+    d = json.load(open('${_session_token_file}'))
+    print(int(d.get('expires_at', 0)))
+except Exception:
+    print(0)
+" 2>/dev/null || echo 0)"
+    if [ "${_token_expiry}" -gt "${now}" ] 2>/dev/null; then
+      local _token_tools
+      _token_tools="$(python3 -c "
+import json
+try:
+    d = json.load(open('${_session_token_file}'))
+    print(d.get('bypass_tools', ''))
+except Exception:
+    print('')
+" 2>/dev/null || echo "")"
+      local _token_bypass_allowed="true"
+      if [ -n "${_token_tools}" ]; then
+        _token_bypass_allowed="false"
+        IFS=',' read -ra _tktools <<< "${_token_tools}"
+        for _tkt in "${_tktools[@]}"; do
+          _tkt_clean="$(printf '%s' "${_tkt}" | trim)"
+          if [ "${_tkt_clean}" = "${TOOL_KEY}" ]; then
+            _token_bypass_allowed="true"
+            break
+          fi
+        done
+      fi
+      if [ "${_token_bypass_allowed}" = "true" ]; then
+        echo "[approval] APPROVED via session token (provenance-chain) for TOOL_KEY=${TOOL_KEY} (expires $(date -d @"${_token_expiry}" 2>/dev/null || date -r "${_token_expiry}" 2>/dev/null || echo "${_token_expiry}"))"
+        evidence "approved" "session-token" ""
+        return 0
+      fi
+    fi
+  fi
+
+  # ── Provenance-chain bypass 2: COPILOT_AGENT_AUTH_ENABLED env var ─────────
+  # Bypass: COPILOT_AGENT_AUTH_ENABLED=true means the owner already approved agent
+  # delegation via the PR checkbox + environment gate (agent-auth-delegation workflow).
+  # COPILOT_AGENT_AUTH_BYPASS_TOOLS (optional, S113) restricts which TOOL_KEYs are eligible;
+  # if unset or empty every TOOL_KEY is eligible (backward compatible with S112).
+
+  if [ "${COPILOT_AGENT_AUTH_ENABLED:-}" = "true" ]; then
+    local bypass_allowed="true"
+    local bypass_tools="${COPILOT_AGENT_AUTH_BYPASS_TOOLS:-}"
+    if [ -n "${bypass_tools}" ]; then
+      # Check whether TOOL_KEY appears in the comma-separated allowlist (exact match).
+      bypass_allowed="false"
+      while IFS=, read -r -d '' item || [ -n "${item}" ]; do
+        item_trimmed="$(printf '%s' "${item}" | trim)"
+        if [ "${item_trimmed}" = "${TOOL_KEY}" ]; then
+          bypass_allowed="true"
+          break
+        fi
+      done < <(printf '%s\0' "${bypass_tools}")
+      # Fallback: use a simple IFS loop for portability
+      if [ "${bypass_allowed}" = "false" ]; then
+        IFS=',' read -ra _tools <<< "${bypass_tools}"
+        for _t in "${_tools[@]}"; do
+          _t_clean="$(printf '%s' "${_t}" | trim)"
+          if [ "${_t_clean}" = "${TOOL_KEY}" ]; then
+            bypass_allowed="true"
+            break
+          fi
+        done
+      fi
+    fi
+
+    if [ "${bypass_allowed}" = "true" ]; then
+      echo "[approval] APPROVED via COPILOT_AGENT_AUTH_ENABLED=true (agent delegation) for TOOL_KEY=${TOOL_KEY}"
+      evidence "approved" "env-agent-auth" ""
+      return 0
+    else
+      echo "[approval] COPILOT_AGENT_AUTH_ENABLED=true but TOOL_KEY=${TOOL_KEY} not in COPILOT_AGENT_AUTH_BYPASS_TOOLS allowlist (${bypass_tools}); falling through" >&2
+    fi
+  fi
 
   if [ -n "${OWNER_APPROVED_UNTIL:-}" ]; then
     ts="$(parse_iso_to_epoch "${OWNER_APPROVED_UNTIL}")" || {

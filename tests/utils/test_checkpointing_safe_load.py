@@ -15,7 +15,7 @@ import pytest
 # Resolve load_checkpoint from either layout:
 try:  # prefer top-level utils layout if available
     from utils.checkpointing import load_checkpoint  # type: ignore
-except Exception:  # pragma: no cover - fallback to package layout
+except ImportError:  # pragma: no cover - fallback to package layout
     from codex_ml.utils.checkpointing import load_checkpoint  # type: ignore
 
 

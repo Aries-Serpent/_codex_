@@ -112,7 +112,7 @@ def _resolve_offline_checkpoint(
             if not local_only:
                 return str(env_path)
             raise FileNotFoundError(
-                f"Environment variable {specific_env} points to {env_path}, but no checkpoint was found."
+                f"Environment variable {specific_env} points to {env_path}, but no checkpoint was found."  # noqa: E501
             )
 
     offline_root = os.environ.get("CODEX_ML_OFFLINE_MODELS_DIR")
@@ -131,7 +131,7 @@ def _resolve_offline_checkpoint(
         details = ", ".join(hints + checked) if (hints or checked) else "<no candidates>"
         raise FileNotFoundError(
             f"Local checkpoint for '{alias}' not found. Checked: {details}. Provide `local_path` "
-            f"or place weights under CODEX_ML_OFFLINE_MODELS_DIR/{default_subdir}, or disable offline "
+            f"or place weights under CODEX_ML_OFFLINE_MODELS_DIR/{default_subdir}, or disable offline "  # noqa: E501
             f"mode with `local_files_only=false` to fallback to '{default_remote}'."
         )
 
@@ -164,7 +164,7 @@ def _load_hf_model(task: str, cfg: dict[str, Any], default: str) -> HF_PreTraine
     except (OSError, HFModelUnavailableError) as exc:
         raise RuntimeError(
             f"Unable to load weights for {model_id!r} from local cache. "
-            "Provide a `local_path` or set `local_files_only=False` if remote downloads are permitted."
+            "Provide a `local_path` or set `local_files_only=False` if remote downloads are permitted."  # noqa: E501
         ) from exc
 
 
@@ -249,7 +249,7 @@ def _resolve_torch_dtype(value: Optional[Any]):
         return None
     # Check if value is already a torch.dtype by checking its type name
     # Safe for Python 3.12+ where isinstance(x, torch.dtype) may fail
-    if hasattr(value, '__class__') and type(value).__name__ == 'dtype':
+    if hasattr(value, "__class__") and type(value).__name__ == "dtype":
         return value
     text = str(value).strip().lower()
     if not text:
@@ -258,7 +258,11 @@ def _resolve_torch_dtype(value: Optional[Any]):
     attr = alias.split(".")[-1]
     torch_value = getattr(torch, attr, None)
     # Check if torch_value is a torch.dtype by checking its type name
-    if torch_value is not None and hasattr(torch_value, '__class__') and type(torch_value).__name__ == 'dtype':
+    if (
+        torch_value is not None
+        and hasattr(torch_value, "__class__")
+        and type(torch_value).__name__ == "dtype"
+    ):
         return torch_value
     return None
 

@@ -51,7 +51,7 @@ jobs:
 
       - name: Generate follow-up prompt
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           PR_NUMBER="${{ steps.pr_number.outputs.pr_number }}"
           echo "🚀 Generating follow-up prompt for PR #${PR_NUMBER}"

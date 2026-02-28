@@ -67,7 +67,10 @@ def readiness_check() -> dict[str, Any]:
     for dir_name in required_dirs:
         dir_path = Path(dir_name)
         exists = dir_path.exists()
-        checks[f"dir_{dir_name}"] = {"exists": exists, "status": "ok" if exists else "missing"}
+        checks[f"dir_{dir_name}"] = {
+            "exists": exists,
+            "status": "ok" if exists else "missing",
+        }
         if not exists:
             all_ready = False
 
@@ -75,7 +78,10 @@ def readiness_check() -> dict[str, Any]:
     env_vars = ["PYTHONPATH"]
     for var in env_vars:
         value = os.environ.get(var)
-        checks[f"env_{var}"] = {"set": value is not None, "status": "ok" if value else "not_set"}
+        checks[f"env_{var}"] = {
+            "set": value is not None,
+            "status": "ok" if value else "not_set",
+        }
 
     return {
         "ready": all_ready,
@@ -99,7 +105,7 @@ def get_health_router():
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         raise ImportError(
-            "FastAPI is required for health endpoints. " "Install with: pip install fastapi"
+            "FastAPI is required for health endpoints. Install with: pip install fastapi"
         )
 
     router = APIRouter(tags=["health"])

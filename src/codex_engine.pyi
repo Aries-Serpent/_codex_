@@ -33,9 +33,7 @@ class SwarmState:
         """Get the current count of registered agents."""
         ...
 
-    def set_agent_status(
-        self, agent_id: str, status: str, message: Optional[str] = None
-    ) -> None:
+    def set_agent_status(self, agent_id: str, status: str, message: Optional[str] = None) -> None:
         """
         Update an agent's status.
 

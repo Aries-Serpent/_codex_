@@ -21,7 +21,7 @@ def test_rng_roundtrip(tmp_path: Path):
         import numpy as np  # type: ignore
 
         np_seq1 = np.random.rand(3).tolist()
-    except Exception:
+    except ImportError:
         np_seq1 = None
 
     # 2) Save the RNG state to disk
@@ -36,7 +36,7 @@ def test_rng_roundtrip(tmp_path: Path):
         import numpy as np  # type: ignore
 
         _ = np.random.rand(5).tolist()
-    except Exception:
+    except ImportError:
         pass
 
     # 4) Restore RNG and re-sample; sequences should match
@@ -48,7 +48,7 @@ def test_rng_roundtrip(tmp_path: Path):
         import numpy as np  # type: ignore
 
         np_seq2 = np.random.rand(3).tolist()
-    except Exception:
+    except ImportError:
         np_seq2 = None
     if np_seq1 is not None and np_seq2 is not None:
         assert np_seq1 == np_seq2, "NumPy RNG did not restore deterministically"

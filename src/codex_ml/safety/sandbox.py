@@ -19,9 +19,17 @@ Author: Codex Team
 from __future__ import annotations
 
 import contextlib
+import logging
 import os
-import resource
 import shutil
+
+try:
+    import resource
+
+    _HAS_RESOURCE = True
+except ImportError:  # Windows — resource is POSIX-only
+    resource = None  # type: ignore[assignment]
+    _HAS_RESOURCE = False
 import subprocess  # nosec B404 - subprocess is required for sandboxing; see docs/security/Bandit_Fixes.md
 import tempfile
 from pathlib import Path
@@ -49,7 +57,19 @@ def run_in_sandbox(
     timeout: int = 10,
     mem_mb: int = 256,
     no_network: bool = True,
+    enforce_limits: bool = False,
 ) -> subprocess.CompletedProcess:
+    """Run *argv* in a restricted subprocess.
+
+    On POSIX (Linux / macOS) the child process is constrained by
+    ``resource`` limits (address space, CPU time, file descriptors).
+
+    On Windows, ``resource`` is unavailable.  If *enforce_limits* is ``True``
+    a ``RuntimeError`` is raised immediately so callers know limits cannot be
+    enforced — preventing silent sandbox escapes.  If *enforce_limits* is
+    ``False`` (the default) the sandbox still runs but **without** OS-level
+    resource limits; a warning is logged.
+    """
     work = Path(cwd) if cwd else Path(tempfile.mkdtemp(prefix="codex_sbx_"))
     _restrict_fs(work)
     env = _scrub_env()
@@ -64,13 +84,29 @@ def run_in_sandbox(
     ]:
         env.pop(key, None)
 
+    if not _HAS_RESOURCE:
+        if enforce_limits:
+            raise RuntimeError(
+                "run_in_sandbox: resource limits cannot be enforced on this platform "
+                "(Windows / no `resource` module). "
+                "Pass enforce_limits=False to run without OS-level constraints, "
+                "or deploy on Linux/macOS for full sandboxing."
+            )
+        logging.getLogger(__name__).warning(
+            "run_in_sandbox: resource module unavailable — "
+            "running WITHOUT memory/CPU limits (Windows). "
+            "Use enforce_limits=True to prevent execution on unsupported platforms."
+        )
+
     def _limits() -> None:
+        if not _HAS_RESOURCE:
+            return  # Already warned above; no-op here
         as_bytes = mem_mb * 1024 * 1024
         resource.setrlimit(resource.RLIMIT_AS, (as_bytes, as_bytes))
         resource.setrlimit(resource.RLIMIT_CPU, (timeout, timeout))
         resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
 
-    preexec = _limits if hasattr(resource, "setrlimit") else None
+    preexec = _limits if _HAS_RESOURCE else None
     if not argv:
         raise ValueError("sandbox.run: argv must be non-empty")
     exe = which(str(argv[0]))

@@ -162,7 +162,7 @@ jobs:
 
       - name: Create Issues for High-Priority Gaps
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Read gap analysis
           gaps=$(jq -r '.gaps[]' capability_gaps.json | head -5)

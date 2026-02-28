@@ -23,4 +23,3 @@ This document summarises how the inspected modules relate to the upcoming audit 
 - `src/codex_ml/tracking/writers.py` optionally inspects `codex_ml.monitoring.system_metrics` to record dependency availability, tying monitoring enablement to tracking summaries.
 - `training/engine_hf_trainer.py` depends on tracking utilities (e.g., `NDJSONMetricsWriter`, logging bootstrap) and checkpoint helpers; manifest or registry changes must be reflected in its logging payloads.
 - Hydra-based CLIs (`src/tokenization/train_tokenizer.py`, configs under `configs/`) expect directory layouts and config defaults that downstream runners (`src/codex_ml/eval/runner.py`, `training/engine_hf_trainer.py`) also consume.
-

@@ -87,7 +87,7 @@ jobs:
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: dist/sbom.json

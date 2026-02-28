@@ -317,13 +317,9 @@ class CoherenceMonitor:
         # Get recent metrics for other health indicators
         recent_metrics = self.repository.find_by_feature(feature, limit=100)
 
-        error_rates = [
-            m.metric_value for m in recent_metrics if m.metric_name == "error_rate"
-        ]
+        error_rates = [m.metric_value for m in recent_metrics if m.metric_name == "error_rate"]
 
-        latencies = [
-            m.metric_value for m in recent_metrics if m.metric_name == "latency_p99"
-        ]
+        latencies = [m.metric_value for m in recent_metrics if m.metric_name == "latency_p99"]
 
         return {
             "feature": feature,
@@ -432,14 +428,10 @@ class CoherenceMonitor:
 
         if older_than_hours:
             cutoff = datetime.now(UTC) - timedelta(hours=older_than_hours)
-            self._active_alerts = [
-                a for a in self._active_alerts if a.timestamp > cutoff
-            ]
+            self._active_alerts = [a for a in self._active_alerts if a.timestamp > cutoff]
 
         if feature:
-            self._active_alerts = [
-                a for a in self._active_alerts if a.feature != feature
-            ]
+            self._active_alerts = [a for a in self._active_alerts if a.feature != feature]
 
         if not older_than_hours and not feature:
             self._active_alerts = []
@@ -503,9 +495,7 @@ class CoherenceMonitor:
             return "critical"
         return "degraded"
 
-    def get_recent_alerts(
-        self, feature: any = None, hours: int = 24
-    ) -> List[Alert]:
+    def get_recent_alerts(self, feature: any = None, hours: int = 24) -> List[Alert]:
         """Get recent alerts optionally filtered by feature.
 
         Args:
@@ -517,7 +507,6 @@ class CoherenceMonitor:
             List of :class:`Alert` objects
         """
         feature_str = (
-            feature.value if feature is not None and hasattr(feature, "value")
-            else feature
+            feature.value if feature is not None and hasattr(feature, "value") else feature
         )
         return self.get_active_alerts(feature=feature_str)

@@ -67,7 +67,7 @@ class ConsistentHashRing:
         self,
         num_shards: int,
         virtual_nodes: int = 150,
-        hash_function: Optional[Callable[[str], int]] = None
+        hash_function: Optional[Callable[[str], int]] = None,
     ):
         """Initialize consistent hash ring.
 
@@ -109,6 +109,7 @@ class ConsistentHashRing:
         # to work correctly without it.
         try:
             import xxhash
+
             return xxhash.xxh64(key.encode()).intdigest()
         except ImportError:
             # Fallback to SHA-256 for deterministic hashing across sessions/processes.
@@ -116,7 +117,8 @@ class ConsistentHashRing:
             # deterministic behavior. We avoid built-in hash() as it's randomized
             # between Python runs for security reasons.
             import hashlib
-            return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], 'big')
+
+            return int.from_bytes(hashlib.sha256(key.encode()).digest()[:8], "big")
 
     def _build_ring(self) -> None:
         """Build the consistent hash ring with virtual nodes."""
@@ -164,10 +166,7 @@ class ConsistentHashRing:
 
         return shard_id
 
-    def get_shard_distribution(
-        self,
-        keys: List[str]
-    ) -> Dict[int, int]:
+    def get_shard_distribution(self, keys: List[str]) -> Dict[int, int]:
         """Analyze shard distribution for a list of keys.
 
         Useful for understanding load distribution and
@@ -222,10 +221,7 @@ class ConsistentHashRing:
             return False
 
         # Remove all virtual nodes for this shard
-        positions_to_remove = [
-            pos for pos, sid in self._ring_map.items()
-            if sid == shard_id
-        ]
+        positions_to_remove = [pos for pos, sid in self._ring_map.items() if sid == shard_id]
 
         for pos in positions_to_remove:
             self._ring.remove(pos)
@@ -235,11 +231,7 @@ class ConsistentHashRing:
         return True
 
 
-def get_shard_for_id(
-    doc_id: str,
-    total_shards: int,
-    use_consistent_hashing: bool = True
-) -> int:
+def get_shard_for_id(doc_id: str, total_shards: int, use_consistent_hashing: bool = True) -> int:
     """Get shard ID for a document ID.
 
     Convenience function for simple shard lookup.
@@ -264,7 +256,7 @@ def get_shard_for_id(
         # Simple modulo hashing - MD5 used for distribution, not security
         # nosec B324 - MD5 used for data distribution hashing, not cryptographic security
         hash_obj = hashlib.md5(doc_id.encode(), usedforsecurity=False)
-        hash_int = int.from_bytes(hash_obj.digest()[:4], 'big')
+        hash_int = int.from_bytes(hash_obj.digest()[:4], "big")
         return hash_int % total_shards
 
 
@@ -283,7 +275,7 @@ class ShardManager:
         self,
         num_shards: int,
         virtual_nodes: int = 150,
-        shard_name_prefix: str = "shard"
+        shard_name_prefix: str = "shard",
     ):
         """Initialize shard manager.
 
@@ -296,17 +288,13 @@ class ShardManager:
         self.shard_name_prefix = shard_name_prefix
 
         # Initialize consistent hash ring
-        self.hash_ring = ConsistentHashRing(
-            num_shards=num_shards,
-            virtual_nodes=virtual_nodes
-        )
+        self.hash_ring = ConsistentHashRing(num_shards=num_shards, virtual_nodes=virtual_nodes)
 
         # Initialize shard info
         self.shards: Dict[int, ShardInfo] = {}
         for shard_id in range(num_shards):
             self.shards[shard_id] = ShardInfo(
-                shard_id=shard_id,
-                shard_name=f"{shard_name_prefix}_{shard_id:02d}"
+                shard_id=shard_id, shard_name=f"{shard_name_prefix}_{shard_id:02d}"
             )
 
         logger.info(f"ShardManager initialized with {num_shards} shards")
@@ -351,7 +339,7 @@ class ShardManager:
         self,
         shard_id: int,
         doc_count: Optional[int] = None,
-        size_bytes: Optional[int] = None
+        size_bytes: Optional[int] = None,
     ) -> None:
         """Update statistics for a shard.
 
@@ -390,13 +378,9 @@ class ShardManager:
         distribution = {}
         for shard_id, shard_info in self.shards.items():
             doc_percentage = (
-                (shard_info.total_documents / total_docs * 100)
-                if total_docs > 0 else 0
+                (shard_info.total_documents / total_docs * 100) if total_docs > 0 else 0
             )
-            size_percentage = (
-                (shard_info.size_bytes / total_size * 100)
-                if total_size > 0 else 0
-            )
+            size_percentage = (shard_info.size_bytes / total_size * 100) if total_size > 0 else 0
 
             distribution[shard_id] = {
                 "shard_name": shard_info.shard_name,

@@ -92,7 +92,9 @@ def _load_checkpoint(torch_mod: Any, config: ModelConfig, map_location: str) -> 
             import torch.nn as nn
 
             model = nn.Sequential(
-                nn.Linear(input_dim, input_dim), nn.ReLU(), nn.Linear(input_dim, output_dim)
+                nn.Linear(input_dim, input_dim),
+                nn.ReLU(),
+                nn.Linear(input_dim, output_dim),
             )
         model.load_state_dict(state_dict, strict=False)
         return model
@@ -118,7 +120,9 @@ def build_codex_model(config: ModelConfig) -> Any:
         if peft_mod is None:
             raise RuntimeError("peft is required when enable_lora=True")
         task_type = getattr(
-            peft_mod.TaskType, config.lora_task_type, peft_mod.TaskType.FEATURE_EXTRACTION
+            peft_mod.TaskType,
+            config.lora_task_type,
+            peft_mod.TaskType.FEATURE_EXTRACTION,
         )
         lora_cfg = peft_mod.LoraConfig(
             task_type=task_type,

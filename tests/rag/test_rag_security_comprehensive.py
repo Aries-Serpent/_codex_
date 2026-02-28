@@ -340,7 +340,7 @@ class TestRAGRateLimiting:
                     results = retriever.retrieve(f"query {i}", top_k=5)
                     # Should not crash from rapid requests
                     assert isinstance(results, (list, type(None)))
-                except Exception:
+                except ImportError:
                     # If rate limited, should raise specific error
                     pass
         except ImportError:

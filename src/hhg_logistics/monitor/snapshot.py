@@ -50,7 +50,10 @@ def main() -> None:
         "--src", type=str, default=".codex/metrics", help="NDJSON directory or CSV file"
     )
     parser.add_argument(
-        "--out", type=str, default=".codex/metrics/serve-ref.csv", help="Reference CSV output"
+        "--out",
+        type=str,
+        default=".codex/metrics/serve-ref.csv",
+        help="Reference CSV output",
     )
     args = parser.parse_args()
 

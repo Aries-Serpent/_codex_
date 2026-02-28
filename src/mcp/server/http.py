@@ -73,8 +73,16 @@ class InMemoryVectorStore:
         """Create a store with seed data for smoke tests."""
         seed_items = [
             ContextItem(id="demo-1", content="codex mcp prototype", metadata={"scope": "repo"}),
-            ContextItem(id="demo-2", content="cloudflare workers edge", metadata={"scope": "edge"}),
-            ContextItem(id="demo-3", content="fly io persistent mcp", metadata={"scope": "container"}),
+            ContextItem(
+                id="demo-2",
+                content="cloudflare workers edge",
+                metadata={"scope": "edge"},
+            ),
+            ContextItem(
+                id="demo-3",
+                content="fly io persistent mcp",
+                metadata={"scope": "container"},
+            ),
         ]
         return cls(items=seed_items)
 
@@ -87,7 +95,9 @@ class InMemoryVectorStore:
         self._items = list(index.values())
         return len(new_items)
 
-    def query(self, query: str, top_k: int, filters: Optional[dict[str, Any]] = None) -> list[dict[str, Any]]:
+    def query(
+        self, query: str, top_k: int, filters: Optional[dict[str, Any]] = None
+    ) -> list[dict[str, Any]]:
         """Return top_k matches using naive scoring.
 
         The scoring is simple substring presence + metadata match to keep
@@ -141,7 +151,9 @@ def _enforce_rate_limit(enabled: bool = False) -> None:
     """
 
     if enabled:
-        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Rate limit exceeded")
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Rate limit exceeded"
+        )
 
 
 def _validate_auth(x_api_key: Optional[str], authorization: Optional[str]) -> None:
@@ -160,7 +172,10 @@ def create_app(store: Optional[InMemoryVectorStore] = None) -> FastAPI:
     app = FastAPI(title="Codex MCP HTTP Prototype", version="0.1.0")
     app.state.vector_store = store
 
-    def _auth_dependency(x_mcp_api_key: Optional[str] = Header(None), authorization: Optional[str] = Header(None)) -> None:
+    def _auth_dependency(
+        x_mcp_api_key: Optional[str] = Header(None),
+        authorization: Optional[str] = Header(None),
+    ) -> None:
         _validate_auth(x_mcp_api_key, authorization)
 
     def _rate_limit_dependency() -> None:
@@ -168,20 +183,32 @@ def create_app(store: Optional[InMemoryVectorStore] = None) -> FastAPI:
 
     @app.get("/mcp/v1/health")
     def health() -> dict[str, Any]:
-        return {"status": "healthy", "documents": app.state.vector_store.count(), "timestamp": int(time.time())}
+        return {
+            "status": "healthy",
+            "documents": app.state.vector_store.count(),
+            "timestamp": int(time.time()),
+        }
 
-    @app.post("/mcp/v1/query", dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)])
+    @app.post(
+        "/mcp/v1/query",
+        dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)],
+    )
     def query(request: QueryRequest) -> dict[str, Any]:
         results = app.state.vector_store.query(request.query, request.top_k, request.filters)
         return {"results": results}
 
-    @app.post("/mcp/v1/context", dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)])
+    @app.post(
+        "/mcp/v1/context",
+        dependencies=[Depends(_auth_dependency), Depends(_rate_limit_dependency)],
+    )
     def push_context(request: ContextUpsertRequest) -> dict[str, Any]:
         upserted = app.state.vector_store.upsert_many(request.items)
         return {"upserted": upserted}
 
     @app.exception_handler(HTTPException)
-    def http_exception_handler(_: Any, exc: HTTPException) -> JSONResponse:  # pragma: no cover - FastAPI standard hook
+    def http_exception_handler(
+        _: Any, exc: HTTPException
+    ) -> JSONResponse:  # pragma: no cover - FastAPI standard hook
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
     return app

@@ -113,16 +113,12 @@ class AgentOrchestrator:
 
         # Bounds check on capabilities (safeguard)
         if len(capabilities) > MAX_CAPABILITIES_PER_AGENT:
-            logger.warning(
-                f"Capabilities exceed limit, truncating to {MAX_CAPABILITIES_PER_AGENT}"
-            )
+            logger.warning(f"Capabilities exceed limit, truncating to {MAX_CAPABILITIES_PER_AGENT}")
             capabilities = capabilities[:MAX_CAPABILITIES_PER_AGENT]
 
         agent = Agent(id=agent_id, capabilities=capabilities)
         self.agents[agent_id] = agent
-        logger.info(
-            f"Registered agent: {agent_id} with {len(capabilities)} capabilities"
-        )
+        logger.info(f"Registered agent: {agent_id} with {len(capabilities)} capabilities")
         return agent
 
     def select_agent_for_task(self, task_type: str) -> Agent | None:
@@ -255,8 +251,7 @@ class AgentOrchestrator:
 
             # Check if we need to wait
             needs_wait = (
-                self.rate_limiter.current_requests
-                >= self.rate_limiter.requests_per_minute
+                self.rate_limiter.current_requests >= self.rate_limiter.requests_per_minute
                 or self.rate_limiter.current_tokens + estimated_tokens
                 > self.rate_limiter.tokens_per_minute
             )

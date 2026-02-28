@@ -81,7 +81,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     for item in items:
         try:
             path = Path(item.fspath).resolve()
-        except Exception:  # pragma: no cover - defensive
+        except Exception:  # pragma: no cover - defensive  # noqa: BLE001
             continue
         if not path.is_relative_to(_TRAINING_DIR):
             continue

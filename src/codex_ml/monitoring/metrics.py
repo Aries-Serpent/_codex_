@@ -39,7 +39,9 @@ class MetricsCollector:
 
             # Request counter
             self._request_counter = Counter(
-                "codex_requests_total", "Total number of requests", ["method", "endpoint", "status"]
+                "codex_requests_total",
+                "Total number of requests",
+                ["method", "endpoint", "status"],
             )
 
             # Latency histogram
@@ -64,7 +66,7 @@ class MetricsCollector:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning(
-                "prometheus_client not available. " "Install with: pip install prometheus-client"
+                "prometheus_client not available. Install with: pip install prometheus-client"
             )
 
     @property

@@ -121,7 +121,7 @@ class TestNetworkFailures:
                     "/infer",
                     json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Should handle connection errors gracefully
                 pass
 

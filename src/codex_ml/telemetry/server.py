@@ -31,11 +31,7 @@ except Exception:  # pragma: no cover - optional
 logger = logging.getLogger(__name__)
 
 
-def start_metrics_server(
-    port: int = 8000, addr: str = "127.0.0.1"
-) -> Optional[
-    bool
-]:
+def start_metrics_server(port: int = 8000, addr: str = "127.0.0.1") -> Optional[bool]:
     """Start a Prometheus metrics server if ``prometheus_client`` is available.
 
     Returns ``True`` if the server started, ``False`` if the dependency is missing.

@@ -102,10 +102,9 @@ class LifecycleManager:
             try:
                 cleanup = getattr(resource, "cleanup", None)
                 close = getattr(resource, "close", None)
-                has_cleanup = (
-                    "cleanup" in getattr(resource, "__dict__", {})
-                    or "cleanup" in getattr(resource.__class__, "__dict__", {})
-                )
+                has_cleanup = "cleanup" in getattr(
+                    resource, "__dict__", {}
+                ) or "cleanup" in getattr(resource.__class__, "__dict__", {})
                 if has_cleanup and callable(cleanup):
                     if asyncio.iscoroutinefunction(cleanup):
                         await cleanup()
@@ -136,6 +135,7 @@ class LifecycleManager:
         for check in self._health_checks:
             try:
                 if asyncio.iscoroutinefunction(check):
+
                     async def _run_check():
                         return await asyncio.wait_for(check(), timeout=self._health_check_timeout)
 

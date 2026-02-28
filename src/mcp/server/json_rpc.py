@@ -92,11 +92,7 @@ class JsonRpcHandler:
         self._methods: dict[str, MethodHandler] = {}
         self._logger = logging.getLogger(__name__)
 
-    def register_method(
-        self,
-        name: str,
-        handler: MethodHandler
-    ) -> None:
+    def register_method(self, name: str, handler: MethodHandler) -> None:
         """Register a method handler.
 
         Args:
@@ -129,15 +125,14 @@ class JsonRpcHandler:
         Returns:
             Decorator function.
         """
+
         def decorator(func: MethodHandler) -> MethodHandler:
             self.register_method(name, func)
             return func
+
         return decorator
 
-    def _parse_request(
-        self,
-        data: dict[str, Any]
-    ) -> Union[JsonRpcRequest, JsonRpcError]:
+    def _parse_request(self, data: dict[str, Any]) -> Union[JsonRpcRequest, JsonRpcError]:
         """Parse and validate a JSON-RPC request.
 
         Args:
@@ -149,24 +144,21 @@ class JsonRpcHandler:
         # Check jsonrpc version
         if data.get("jsonrpc") != "2.0":
             return JsonRpcError(
-                code=INVALID_REQUEST,
-                message="Invalid Request: jsonrpc must be '2.0'"
+                code=INVALID_REQUEST, message="Invalid Request: jsonrpc must be '2.0'"
             )
 
         # Check method
         method = data.get("method")
         if not isinstance(method, str):
             return JsonRpcError(
-                code=INVALID_REQUEST,
-                message="Invalid Request: method must be a string"
+                code=INVALID_REQUEST, message="Invalid Request: method must be a string"
             )
 
         # Get optional params
         params = data.get("params")
         if params is not None and not isinstance(params, (dict, list)):
             return JsonRpcError(
-                code=INVALID_PARAMS,
-                message="Invalid params: must be object or array"
+                code=INVALID_PARAMS, message="Invalid params: must be object or array"
             )
 
         # Get optional id (can be string, int, or None for notifications)
@@ -180,15 +172,10 @@ class JsonRpcHandler:
             # Array-style params are valid JSON-RPC but we only support named params
             self._logger.debug(
                 "Array-style params received for method %s, converting to positional",
-                method
+                method,
             )
 
-        return JsonRpcRequest(
-            method=method,
-            params=parsed_params,
-            id=request_id,
-            jsonrpc="2.0"
-        )
+        return JsonRpcRequest(method=method, params=parsed_params, id=request_id, jsonrpc="2.0")
 
     async def _dispatch(self, request: JsonRpcRequest) -> Any:
         """Dispatch a request to its handler.
@@ -204,17 +191,11 @@ class JsonRpcHandler:
         """
         handler = self._methods.get(request.method)
         if handler is None:
-            raise JsonRpcError(
-                code=METHOD_NOT_FOUND,
-                message=f"Method not found: {request.method}"
-            )
+            raise JsonRpcError(code=METHOD_NOT_FOUND, message=f"Method not found: {request.method}")
 
         return await handler(request.params)
 
-    async def handle_request(
-        self,
-        data: dict[str, Any]
-    ) -> Optional[dict[str, Any]]:
+    async def handle_request(self, data: dict[str, Any]) -> Optional[dict[str, Any]]:
         """Handle a single JSON-RPC request.
 
         Args:
@@ -229,10 +210,7 @@ class JsonRpcHandler:
         if isinstance(parsed, JsonRpcError):
             # Parse error - return error response
             request_id = data.get("id")
-            return JsonRpcResponse(
-                id=request_id,
-                error=parsed.to_dict()
-            ).to_dict()
+            return JsonRpcResponse(id=request_id, error=parsed.to_dict()).to_dict()
 
         request = parsed
 
@@ -243,48 +221,30 @@ class JsonRpcHandler:
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 # Log but don't respond to notifications
-                self._logger.warning(
-                    "Notification error for %s: %s",
-                    request.method,
-                    e
-                )
+                self._logger.warning("Notification error for %s: %s", request.method, e)
             return None
 
         # Handle normal request
         try:
             result = await self._dispatch(request)
-            return JsonRpcResponse(
-                id=request.id,
-                result=result
-            ).to_dict()
+            return JsonRpcResponse(id=request.id, result=result).to_dict()
 
         except JsonRpcError as e:
             logger.debug(f"JsonRpcError: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
-            return JsonRpcResponse(
-                id=request.id,
-                error=e.to_dict()
-            ).to_dict()
+            return JsonRpcResponse(id=request.id, error=e.to_dict()).to_dict()
 
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            self._logger.exception(
-                "Unhandled error in method %s",
-                request.method
-            )
+            self._logger.exception("Unhandled error in method %s", request.method)
             return JsonRpcResponse(
                 id=request.id,
                 error=JsonRpcError(
-                    code=INTERNAL_ERROR,
-                    message="Internal error",
-                    data=str(e)
-                ).to_dict()
+                    code=INTERNAL_ERROR, message="Internal error", data=str(e)
+                ).to_dict(),
             ).to_dict()
 
-    async def handle_batch(
-        self,
-        requests: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+    async def handle_batch(self, requests: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Handle a batch of JSON-RPC requests.
 
         Args:
@@ -294,13 +254,14 @@ class JsonRpcHandler:
             list of response dictionaries.
         """
         if not requests:
-            return [JsonRpcResponse(
-                id=None,
-                error=JsonRpcError(
-                    code=INVALID_REQUEST,
-                    message="Invalid Request: empty batch"
+            return [
+                JsonRpcResponse(
+                    id=None,
+                    error=JsonRpcError(
+                        code=INVALID_REQUEST, message="Invalid Request: empty batch"
+                    ).to_dict(),
                 ).to_dict()
-            ).to_dict()]
+            ]
 
         # Process all requests concurrently
         tasks = [self.handle_request(req) for req in requests]
@@ -310,21 +271,19 @@ class JsonRpcHandler:
         responses = []
         for result in results:
             if isinstance(result, Exception):
-                responses.append(JsonRpcResponse(
-                    id=None,
-                    error=JsonRpcError(
-                        code=INTERNAL_ERROR,
-                        message=str(result)
+                responses.append(
+                    JsonRpcResponse(
+                        id=None,
+                        error=JsonRpcError(code=INTERNAL_ERROR, message=str(result)).to_dict(),
                     ).to_dict()
-                ).to_dict())
+                )
             elif result is not None:
                 responses.append(result)
 
         return responses
 
     async def handle(
-        self,
-        data: Union[dict[str, Any], list[dict[str, Any]]]
+        self, data: Union[dict[str, Any], list[dict[str, Any]]]
     ) -> Optional[Union[dict[str, Any], list[dict[str, Any]]]]:
         """Handle a JSON-RPC request or batch.
 

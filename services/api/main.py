@@ -403,12 +403,32 @@ async def _startup() -> None:
                     "artifacts": str(run_dir),
                     "finished": time.time(),
                 }
+            except asyncio.CancelledError:
+                # Re-raise so the task loop exits cleanly on cancellation.
+                # Without this, CancelledError would be caught by the broad
+                # `except Exception` below and swallowed, causing task.cancel()
+                # in _shutdown() to hang waiting for the task to finish.
+                raise
             except Exception as exc:
                 JOBS[jid] = {"status": "failed", "error": str(exc)}
             finally:
                 QUEUE.task_done()
 
     app.state.worker_task = asyncio.create_task(worker())
+
+
+@app.on_event("shutdown")
+async def _shutdown() -> None:
+    worker_task = getattr(app.state, "worker_task", None)
+    if worker_task is not None and not worker_task.done():
+        worker_task.cancel()
+        try:
+            await worker_task
+        except asyncio.CancelledError:
+            # Intentionally suppressed: CancelledError is the expected outcome of
+            # task.cancel() and signals successful teardown.  In a shutdown handler
+            # there is no outer coroutine to propagate to, so swallowing is correct.
+            logger.info("Background worker task cancelled during shutdown")
 
 
 def _rate_key(_: InferRequest) -> str:

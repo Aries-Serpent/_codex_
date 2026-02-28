@@ -117,9 +117,18 @@ class FeatureExtractor:
 
     # Error pattern keywords
     ERROR_KEYWORDS = [
-        "error", "exception", "failed", "failure", "traceback",
-        "importerror", "modulenotfounderror", "attributeerror",
-        "typeerror", "valueerror", "keyerror", "indexerror",
+        "error",
+        "exception",
+        "failed",
+        "failure",
+        "traceback",
+        "importerror",
+        "modulenotfounderror",
+        "attributeerror",
+        "typeerror",
+        "valueerror",
+        "keyerror",
+        "indexerror",
     ]
 
     def __init__(self) -> None:
@@ -159,7 +168,9 @@ class FeatureExtractor:
         features["line_count"] = float(text.count("\n") + 1)
 
         # Code indicators (text pattern matching for error detection, not URL validation)
-        features["has_python_traceback"] = 1.0 if "Traceback (most recent call last)" in text else 0.0  # nosec
+        features["has_python_traceback"] = (
+            1.0 if "Traceback (most recent call last)" in text else 0.0
+        )  # nosec
         features["has_file_path"] = 1.0 if re.search(r"[\w/]+\.py", text) else 0.0
         features["has_line_number"] = 1.0 if re.search(r"line \d+", text, re.IGNORECASE) else 0.0
 
@@ -268,24 +279,30 @@ class DataPipeline:
         # Extract patterns
         patterns = data.get("patterns", {})
         for pattern_name, pattern_data in patterns.items():
-            records.append(RawDataRecord(
-                source_type=DataSourceType.PATTERN_STORE,
-                timestamp=datetime.fromisoformat(
-                    pattern_data.get("last_used", datetime.now(timezone.utc).isoformat())
-                ),
-                content={"name": pattern_name, **pattern_data},
-                metadata={"source_file": str(store_path)},
-            ))
+            records.append(
+                RawDataRecord(
+                    source_type=DataSourceType.PATTERN_STORE,
+                    timestamp=datetime.fromisoformat(
+                        pattern_data.get("last_used", datetime.now(timezone.utc).isoformat())
+                    ),
+                    content={"name": pattern_name, **pattern_data},
+                    metadata={"source_file": str(store_path)},
+                )
+            )
 
         # Extract learning log entries
         learning_log = data.get("learning_log", [])
         for entry in learning_log:
-            records.append(RawDataRecord(
-                source_type=DataSourceType.PATTERN_STORE,
-                timestamp=datetime.fromisoformat(entry.get("timestamp", datetime.now(timezone.utc).isoformat())),
-                content=entry,
-                metadata={"type": "learning_log", "source_file": str(store_path)},
-            ))
+            records.append(
+                RawDataRecord(
+                    source_type=DataSourceType.PATTERN_STORE,
+                    timestamp=datetime.fromisoformat(
+                        entry.get("timestamp", datetime.now(timezone.utc).isoformat())
+                    ),
+                    content=entry,
+                    metadata={"type": "learning_log", "source_file": str(store_path)},
+                )
+            )
 
         self._raw_data.extend(records)
         return records
@@ -312,14 +329,16 @@ class DataPipeline:
                     continue
                 try:
                     entry = json.loads(line)
-                    records.append(RawDataRecord(
-                        source_type=DataSourceType.ACTION_LOG,
-                        timestamp=datetime.fromisoformat(
-                            entry.get("timestamp", datetime.now(timezone.utc).isoformat())
-                        ),
-                        content=entry,
-                        metadata={"source_file": str(log_path)},
-                    ))
+                    records.append(
+                        RawDataRecord(
+                            source_type=DataSourceType.ACTION_LOG,
+                            timestamp=datetime.fromisoformat(
+                                entry.get("timestamp", datetime.now(timezone.utc).isoformat())
+                            ),
+                            content=entry,
+                            metadata={"source_file": str(log_path)},
+                        )
+                    )
                 except json.JSONDecodeError:
                     continue
 
@@ -352,7 +371,8 @@ class DataPipeline:
 
         # Group pattern store records
         pattern_records = [
-            r for r in self._raw_data
+            r
+            for r in self._raw_data
             if r.source_type == DataSourceType.PATTERN_STORE
             and r.metadata.get("type") != "learning_log"
         ]
@@ -363,7 +383,9 @@ class DataPipeline:
 
             symptoms = content.get("symptoms", [])
             solutions = content.get("solutions", [])
-            category = content.get("category", self._feature_extractor.categorize_symptoms(symptoms))
+            category = content.get(
+                "category", self._feature_extractor.categorize_symptoms(symptoms)
+            )
 
             # Create sample for each solution
             for solution in solutions:
@@ -408,12 +430,14 @@ class DataPipeline:
         n_val = int(n_samples * validation_ratio)
 
         train_samples = samples[:n_train]
-        val_samples = samples[n_train:n_train + n_val]
-        test_samples = samples[n_train + n_val:]
+        val_samples = samples[n_train : n_train + n_val]
+        test_samples = samples[n_train + n_val :]
 
         return train_samples, val_samples, test_samples
 
-    def export_samples(self, output_path: str | Path, samples: list[PatternSample] | None = None) -> None:
+    def export_samples(
+        self, output_path: str | Path, samples: list[PatternSample] | None = None
+    ) -> None:
         """Export samples to a JSON file.
 
         Args:
@@ -497,7 +521,9 @@ class TrainingDataGenerator:
 
         return symptoms, resolutions
 
-    def generate_success_prediction_data(self) -> tuple[list[dict[str, float]], list[bool]]:
+    def generate_success_prediction_data(
+        self,
+    ) -> tuple[list[dict[str, float]], list[bool]]:
         """Generate data for success prediction.
 
         Returns:

@@ -176,7 +176,11 @@ class AgentCore:
             # Bounds check on context (safeguard)
             total_context_length = sum(len(c) for c in all_context)
             if total_context_length > MAX_CONTEXT_LENGTH:
-                logger.warning("Context truncated: %d > %d", total_context_length, MAX_CONTEXT_LENGTH)
+                logger.warning(
+                    "Context truncated: %d > %d",
+                    total_context_length,
+                    MAX_CONTEXT_LENGTH,
+                )
                 # Truncate context by removing oldest entries
                 while sum(len(c) for c in all_context) > MAX_CONTEXT_LENGTH and all_context:
                     all_context.pop(0)
@@ -247,7 +251,11 @@ class AgentCore:
         # Bounds check on tool calls (safeguard)
         max_calls = min(self.config.max_tool_calls, MAX_TOOL_CALLS)
 
-        logger.info("Executing with %d available tools (max %d calls)", len(available_tools), max_calls)
+        logger.info(
+            "Executing with %d available tools (max %d calls)",
+            len(available_tools),
+            max_calls,
+        )
 
         # Placeholder: In production, this would call the LLM with tools
         # and iterate until task is complete or max calls reached
@@ -304,4 +312,5 @@ async def main() -> None:
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

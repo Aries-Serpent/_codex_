@@ -34,9 +34,7 @@ class TestComplexityAnalyzer:
         # Create function with many decision points
         func = StandardizedASTNode(node_id="f1", type="function", name="complex_func")
         for i in range(5):
-            func.add_child(
-                StandardizedASTNode(node_id=f"if_{i}", type="if", name=f"condition_{i}")
-            )
+            func.add_child(StandardizedASTNode(node_id=f"if_{i}", type="if", name=f"condition_{i}"))
 
         findings = analyzer.analyze(func)
         assert len(findings) == 1
@@ -210,9 +208,7 @@ class TestAnalyzerRegistry:
         for i in range(2):
             func = StandardizedASTNode(node_id=f"f{i}", type="function", name=f"func{i}")
             for j in range(3):
-                func.add_child(
-                    StandardizedASTNode(node_id=f"if_{i}_{j}", type="if", name="")
-                )
+                func.add_child(StandardizedASTNode(node_id=f"if_{i}_{j}", type="if", name=""))
             root.add_child(func)
 
         findings = registry.analyze_all(root)

@@ -11,9 +11,7 @@ from .runner import BenchmarkRunner
 
 
 def benchmark_e2e_pipeline(
-    corpus_sizes: List[int] = None,
-    query_counts: List[int] = None,
-    runs: int = 3
+    corpus_sizes: List[int] = None, query_counts: List[int] = None, runs: int = 3
 ) -> Dict[str, Any]:
     """
     Benchmark complete RAG pipeline end-to-end.
@@ -41,17 +39,17 @@ def benchmark_e2e_pipeline(
                 func=_run_complete_pipeline,
                 corpus_size=corpus_size,
                 query_count=query_count,
-                runs=runs
+                runs=runs,
             )
 
             if result.success:
-                result.metadata['corpus_size'] = corpus_size
-                result.metadata['query_count'] = query_count
-                result.metadata['total_operations'] = corpus_size + query_count
+                result.metadata["corpus_size"] = corpus_size
+                result.metadata["query_count"] = query_count
+                result.metadata["total_operations"] = corpus_size + query_count
 
     return {
         "results": [r.to_dict() for r in runner.results],
-        "summary": runner.get_summary()
+        "summary": runner.get_summary(),
     }
 
 
@@ -75,13 +73,12 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]
         documents = [
             f"Document {i}: Content about topic {i % 10} including "
             f"information on data science, machine learning, NLP, and AI. "
-            f"This document contains multiple sentences with varied content. "
-            * (i % 3 + 1)
+            f"This document contains multiple sentences with varied content. " * (i % 3 + 1)
             for i in range(corpus_size)
         ]
 
         # Step 2: Create embeddings provider
-        provider = create_embedding_provider('tfidf')
+        provider = create_embedding_provider("tfidf")
 
         # Step 3: Chunk documents
         all_chunks = []
@@ -100,15 +97,11 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]
             embeddings=embeddings,
             chunks=all_chunks,
             tenant_id="benchmark",
-            index_dir=tmpdir
+            index_dir=tmpdir,
         )
 
         # Step 6: Create retriever
-        retriever = Retriever(
-            index_name=index_name,
-            tenant_id="benchmark",
-            index_dir=tmpdir
-        )
+        retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 
         # Step 7: Execute queries
         queries = [
@@ -116,7 +109,7 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]
             "data science techniques",
             "natural language processing",
             "artificial intelligence applications",
-            "deep learning models"
+            "deep learning models",
         ]
 
         query_results = []
@@ -128,14 +121,11 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> Dict[str, Any]
         return {
             "chunks_indexed": len(all_chunks),
             "queries_executed": query_count,
-            "avg_results_per_query": sum(query_results) / len(query_results)
+            "avg_results_per_query": sum(query_results) / len(query_results),
         }
 
 
-def benchmark_multi_query_types(
-    index_size: int = 1000,
-    runs: int = 5
-) -> Dict[str, Any]:
+def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> Dict[str, Any]:
     """
     Benchmark different query types (simple, complex, multi-term).
 
@@ -156,7 +146,7 @@ def benchmark_multi_query_types(
             "simple": "algorithms",
             "compound": "machine learning algorithms",
             "complex": "machine learning algorithms for natural language processing",
-            "multi_term": "data science AND machine learning OR artificial intelligence"
+            "multi_term": "data science AND machine learning OR artificial intelligence",
         }
 
         for query_type, query in query_types.items():
@@ -166,16 +156,16 @@ def benchmark_multi_query_types(
                 query=query,
                 index_name="e2e_test",
                 tmpdir=tmpdir,
-                runs=runs
+                runs=runs,
             )
 
             if result.success:
-                result.metadata['query_type'] = query_type
-                result.metadata['query_length'] = len(query.split())
+                result.metadata["query_type"] = query_type
+                result.metadata["query_length"] = len(query.split())
 
     return {
         "results": [r.to_dict() for r in runner.results],
-        "summary": runner.get_summary()
+        "summary": runner.get_summary(),
     }
 
 
@@ -184,7 +174,7 @@ def _build_e2e_index(size: int, tmpdir: str) -> None:
     from codex.rag.embeddings import create_embedding_provider
     from codex.rag.indexer import chunk_text, persist_index
 
-    provider = create_embedding_provider('tfidf')
+    provider = create_embedding_provider("tfidf")
 
     documents = [
         f"Document {i} with content about various topics including "
@@ -205,7 +195,7 @@ def _build_e2e_index(size: int, tmpdir: str) -> None:
         embeddings=embeddings,
         chunks=all_chunks,
         tenant_id="benchmark",
-        index_dir=tmpdir
+        index_dir=tmpdir,
     )
 
 
@@ -213,10 +203,6 @@ def _execute_query(query: str, index_name: str, tmpdir: str) -> List:
     """Execute a single query."""
     from codex.rag.retriever import Retriever
 
-    retriever = Retriever(
-        index_name=index_name,
-        tenant_id="benchmark",
-        index_dir=tmpdir
-    )
+    retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 
     return retriever.query(query, top_k=5)

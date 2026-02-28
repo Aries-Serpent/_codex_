@@ -32,7 +32,11 @@ class Webhook(_ZendeskBaseModel):
             patches.append({"op": "replace", "path": "/http_method", "value": self.http_method})
         if self.request_format != other.request_format:
             patches.append(
-                {"op": "replace", "path": "/request_format", "value": self.request_format}
+                {
+                    "op": "replace",
+                    "path": "/request_format",
+                    "value": self.request_format,
+                }
             )
         if self.subscriptions != other.subscriptions:
             patches.append({"op": "replace", "path": "/subscriptions", "value": self.subscriptions})

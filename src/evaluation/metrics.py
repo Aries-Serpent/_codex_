@@ -82,7 +82,8 @@ class MetricsAggregator:
     def __init__(
         self,
         *metric_fns: Callable[
-            [torch.Tensor, torch.Tensor], float | tuple[float, ...] | Mapping[str, float]
+            [torch.Tensor, torch.Tensor],
+            float | tuple[float, ...] | Mapping[str, float],
         ],
     ) -> None:
         self._metric_fns = metric_fns

@@ -22,7 +22,10 @@ __all__ = [
 
 
 ALLOW_REMOTE_ENV = "MLFLOW_ALLOW_REMOTE"
-ADDITIONAL_ALLOW_REMOTE_ENVS = ("CODEX_ALLOW_REMOTE_TRACKING", "CODEX_MLFLOW_ALLOW_REMOTE")
+ADDITIONAL_ALLOW_REMOTE_ENVS = (
+    "CODEX_ALLOW_REMOTE_TRACKING",
+    "CODEX_MLFLOW_ALLOW_REMOTE",
+)
 
 
 @dataclass(frozen=True)
@@ -131,7 +134,10 @@ def _apply_guard(
     if local_override:
         parsed_override = urlparse(local_override)
         if parsed_override.scheme in {"", "file"}:
-            if parsed_override.scheme != "file" or parsed_override.netloc in {"", "localhost"}:
+            if parsed_override.scheme != "file" or parsed_override.netloc in {
+                "",
+                "localhost",
+            }:
                 preferred_local = local_override
         else:
             # ``Path`` treats things like ``C:\`` as absolute even though ``urlparse``

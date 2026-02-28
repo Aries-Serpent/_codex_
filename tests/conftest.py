@@ -88,6 +88,14 @@ skip_if_no_cuda = pytest.mark.skipif(
     not is_cuda_available(), reason="CUDA/GPU not available in this environment"
 )
 
+# Skip marker for tests that use real SentenceTransformer models.
+# These fail with IndexError on CPU-only CI runners (GitHub Actions).
+# Usage: @skip_real_st_models  (class-level or method-level decorator)
+skip_real_st_models = pytest.mark.skipif(
+    not is_cuda_available(),
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Relax coverage enforcement during collection-only runs.
@@ -1095,7 +1103,7 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import sys as _sys
+        import sys as _sys  # noqa: PLC0415
 
         _torch = _sys.modules.get(
             "torch"
@@ -1123,7 +1131,7 @@ def _isolate_rng_state():
     Methodology report Fix 3: prevents RNG state leakage between tests that
     call set_seed/set_reproducible, ensuring repeatable results.
     """
-    import random as _random
+    import random as _random  # noqa: PLC0415
 
     py_state = _random.getstate()
 
@@ -1272,7 +1280,7 @@ def set_deterministic_seed():
         import numpy as np
 
         np.random.seed(seed)
-    except Exception:  # pragma: no cover - numpy not required for all environments
+    except ImportError:  # pragma: no cover - numpy not required for all environments
         pass
 
     # Guard optional torch usage without adding a hard dependency
@@ -1286,7 +1294,7 @@ def set_deterministic_seed():
             # Optional deterministic flags (may slow tests)
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
-    except Exception:
+    except ImportError:
         # Torch not installed or not desired in CI; ignore.
         pass
 
@@ -1504,7 +1512,6 @@ def serializable_mock_model():
             return asdict(self)
 
         def to_json(self):
-            import json
 
             return json.dumps(self.to_dict())
 
@@ -1837,7 +1844,7 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except Exception:  # Best-effort cleanup; psutil may not be available
+    except Exception:  # Best-effort cleanup; psutil may not be available  # noqa: BLE001
         pass
 
 
@@ -1853,7 +1860,6 @@ def protect_stderr():
 
     Solution: Save and restore stderr/stdout for every test.
     """
-    import sys
     from typing import Any
 
     class _NonClosingStream:
@@ -1890,7 +1896,7 @@ def protect_stderr():
             sys.stderr = original_stderr
         if sys.stdout is not original_stdout:
             sys.stdout = original_stdout
-    except Exception:
+    except Exception:  # noqa: BLE001
         # Force restore on any error
         sys.stderr = original_stderr
         sys.stdout = original_stdout
@@ -1912,7 +1918,6 @@ def force_file_cleanup():
 
     # Cleanup phase
     import gc
-    import os
 
     gc.collect()
 
@@ -1928,8 +1933,6 @@ def force_file_cleanup():
         return
 
     # Close any lingering file objects found by garbage collector
-    import logging
-    import sys
 
     handler_streams = []
     for handler_ref in logging._handlerList:
@@ -1950,7 +1953,7 @@ def force_file_cleanup():
             close_method = getattr(obj, "close", None)
             closed_attr = getattr(obj, "closed", None)
             name_attr = getattr(obj, "name", None)
-        except Exception:
+        except Exception:  # noqa: BLE001
             continue  # Skip objects with unsafe attribute access
 
         try:
@@ -1968,7 +1971,7 @@ def force_file_cleanup():
                     # It's an open file object (not stdin/stdout/stderr which have int names)
                     try:
                         close_method()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         pass  # Already closed or not closeable
         except (ReferenceError, AttributeError):
             pass  # Object was garbage collected during iteration
@@ -1999,7 +2002,7 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except Exception:  # psutil optional; skip resource tracking if unavailable
+    except ImportError:  # psutil optional; skip resource tracking if unavailable
         pass
 
     yield
@@ -2026,7 +2029,7 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning,
             )
-    except Exception:  # psutil optional; skip leak check if unavailable
+    except Exception:  # psutil optional; skip leak check if unavailable  # noqa: BLE001
         pass
 
 

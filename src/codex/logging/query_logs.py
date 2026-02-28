@@ -126,7 +126,7 @@ def parse_when(s: str) -> datetime:
         return datetime.fromisoformat(s2)
     except Exception as exc:  # pragma: no cover - simple validation
         raise ValueError(
-            "Invalid datetime: " f"{s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
+            f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
 
 
@@ -261,8 +261,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         or os.environ.get("CODEX_DB_PATH")
         or str(DEFAULT_LOG_DB),
         help=(
-            "Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or "
-            f"{DEFAULT_LOG_DB})"
+            f"Path to SQLite DB (default: env CODEX_LOG_DB_PATH/CODEX_DB_PATH or {DEFAULT_LOG_DB})"
         ),
     )
     parser.add_argument("--session-id", help="Filter by session_id")

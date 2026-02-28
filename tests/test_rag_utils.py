@@ -52,10 +52,13 @@ class TestCheckForMetaTensors:
 
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
-        # Create a simple model without meta tensors
-        model = torch.nn.Linear(10, 5)
+        # Create a simple model without meta tensors on explicit CPU device
+        model = torch.nn.Linear(10, 5, device="cpu")
         has_meta = check_for_meta_tensors(model)
-        assert has_meta is False
+        param_devices = [(n, p.device) for n, p in model.named_parameters()]
+        assert has_meta is False, (
+            f"Expected False, got {has_meta!r} (params: {param_devices})"
+        )
 
     def test_model_with_meta_tensors(self):
         """Test detection on model with meta tensors"""
@@ -276,6 +279,7 @@ class TestProvenanceMetadata:
         assert restored.retrieval_score == original.retrieval_score
 
 
+@skip_if_no_cuda
 class TestIntegrationMetaTensorHandling:
     """Integration tests for meta tensor handling in real scenarios"""
 

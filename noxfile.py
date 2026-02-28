@@ -751,6 +751,43 @@ def precommit(session: nox.Session) -> None:
     )
 
 
+@nox.session(name="rvs_preflight", python=PY_VERSIONS)
+def rvs_preflight(session: nox.Session) -> None:
+    """Resilient Validation Suite — parallel batch pre-flight runner.
+
+    Mirrors ``resilient_validation.yml`` exactly but splits the test suite into
+    batches and runs them simultaneously so failures surface BEFORE pushing.
+
+    Usage (pass args after ``--``):
+      nox -s rvs_preflight                           # quick group, default workers
+      nox -s rvs_preflight -- --group slow           # slow group
+      nox -s rvs_preflight -- --changed-only         # only changed files
+      nox -s rvs_preflight -- --group all --workers 8 --report /tmp/r.json
+      nox -s rvs_preflight -- --preview              # dry-run: show scope only
+
+    Groups (exact mirrors of resilient_validation.yml matrix):
+      quick        pytest -m "not slow and not integration"  --timeout=60
+      slow         pytest -m "slow"                          --timeout=600
+      integration  pytest -m "integration and not slow"      --timeout=300
+      docs         markdown-link-check + validate_docs.py   (non-blocking)
+      all          All four groups in parallel
+
+    All flags are forwarded to scripts/ci/rvs_preflight.py — see its --help for
+    the full option list.
+    """
+    _choose_python(session)
+    session.install("-e", ".[dev]", silent=True)
+    session.install("pytest", "pytest-timeout", silent=True)
+
+    preflight = Path("scripts/ci/rvs_preflight.py")
+    if not preflight.exists():
+        session.error("scripts/ci/rvs_preflight.py not found")
+
+    # Forward any extra args passed after `--` verbatim
+    extra = session.posargs or []
+    session.run("python", str(preflight), *extra, external=True)
+
+
 @nox.session(name="gates", python=PY_VERSIONS)
 def gates(session: nox.Session) -> None:
     """Quality gates: run validation tools and enforce thresholds.

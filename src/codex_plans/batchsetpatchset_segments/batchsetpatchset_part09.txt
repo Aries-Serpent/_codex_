@@ -332,4 +332,3 @@ def test_dep_pin_check_detects_unpinned_requirements(tmp_path: Path):
     assert rc == 0
     assert json_out.exists()
     assert md_out.exists()
-

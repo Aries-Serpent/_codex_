@@ -116,7 +116,9 @@ def scaffold_template(package: dict[str, Any], out_dir: str | os.PathLike[str]) 
 
     # Create README.md
     readme_path = destination / "README.md"
-    readme_path.write_text("# Zendesk App\n\nScaffolded from legacy ZAF package.\n", encoding="utf-8")
+    readme_path.write_text(
+        "# Zendesk App\n\nScaffolded from legacy ZAF package.\n", encoding="utf-8"
+    )
     written.append(readme_path)
 
     return written

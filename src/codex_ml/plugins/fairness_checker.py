@@ -66,7 +66,11 @@ class FairnessCheckerPlugin(Plugin):
         logger.info("FairnessCheckerPlugin initialized")
 
     def execute(
-        self, predictions: Any, labels: Any, sensitive_attributes: dict[str, Any], **kwargs
+        self,
+        predictions: Any,
+        labels: Any,
+        sensitive_attributes: dict[str, Any],
+        **kwargs,
     ) -> dict[str, Any]:
         """Compute fairness metrics.
 

@@ -198,7 +198,12 @@ def _collect_reasoning_sections(
         else:
             scalars = _extract_scalars_from_text(
                 deploy_cfg,
-                ["rollout_ring", "CODEX_TRACE_MODE", "CODEX_CURRICULUM_PHASE", "CODEX_EVAL_PRESET"],
+                [
+                    "rollout_ring",
+                    "CODEX_TRACE_MODE",
+                    "CODEX_CURRICULUM_PHASE",
+                    "CODEX_EVAL_PRESET",
+                ],
             )
             ring = scalars.get("rollout_ring")
             trace = scalars.get("CODEX_TRACE_MODE")

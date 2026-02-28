@@ -45,8 +45,7 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 128) -> List[Tu
         if overlap == 128:
             adjusted_overlap = max(0, chunk_size - 1)
             logger.warning(
-                "overlap (%s) must be less than chunk_size (%s); "
-                "adjusting overlap to %s",
+                "overlap (%s) must be less than chunk_size (%s); adjusting overlap to %s",
                 overlap,
                 chunk_size,
                 adjusted_overlap,
@@ -105,8 +104,7 @@ def embed_chunks(
         import sentence_transformers  # noqa: F401
     except ImportError:
         logger.error(
-            "sentence-transformers not installed. "
-            "Install with: pip install sentence-transformers"
+            "sentence-transformers not installed. Install with: pip install sentence-transformers"
         )
         raise
 
@@ -140,9 +138,7 @@ def embed_chunks(
     if not texts_filtered:
         raise ValueError("No valid text chunks to encode after filtering empty inputs")
 
-    logger.debug(
-        f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}"
-    )
+    logger.debug(f"Encoding {len(texts_filtered)} texts, first sample: {texts_filtered[0][:100]}")
 
     # Generate embeddings with explicit device parameter and detailed error handling
     logger.info(f"Generating embeddings for {len(texts_filtered)} chunks")
@@ -154,7 +150,9 @@ def embed_chunks(
             convert_to_numpy=True,
             device="cpu",  # Explicit device specification
         )
-        logger.info(f"Successfully encoded {len(texts_filtered)} texts, embedding shape: {embeddings.shape}")
+        logger.info(
+            f"Successfully encoded {len(texts_filtered)} texts, embedding shape: {embeddings.shape}"
+        )
         return embeddings
     except IndexError as e:
         logger.error(f"IndexError during encoding: {e}")
@@ -163,8 +161,7 @@ def embed_chunks(
         logger.error(f"Model info: {model}")
         logger.error(f"Model max_seq_length: {getattr(model, 'max_seq_length', 'NOT SET')}")
         raise RuntimeError(
-            "Failed to encode texts due to IndexError. "
-            "Check input format and model compatibility."
+            "Failed to encode texts due to IndexError. Check input format and model compatibility."
         ) from e
 
 
@@ -500,7 +497,7 @@ def manage_tenant_indices(
             operation=IndexOperation.LIST,  # Default for invalid
             tenant_id=tenant_id,
             index_names=index_names,
-            message=f"Invalid operation: {operation}. Must be one of: create, update, delete, merge, list",
+            message=f"Invalid operation: {operation}. Must be one of: create, update, delete, merge, list",  # noqa: E501
         )
 
     tenant_dir = Path(index_dir) / tenant_id
@@ -650,7 +647,6 @@ def manage_tenant_indices(
             )
 
         try:
-
             # Load all indices to merge
             all_embeddings = []
             all_chunks = []
@@ -708,7 +704,7 @@ def manage_tenant_indices(
                 operation=op_enum,
                 tenant_id=tenant_id,
                 index_names=index_names,
-                message=f"Successfully merged {len(index_names)} indices into '{merge_name}' for tenant '{tenant_id}'",
+                message=f"Successfully merged {len(index_names)} indices into '{merge_name}' for tenant '{tenant_id}'",  # noqa: E501
                 details={
                     "merged_name": merge_name,
                     "source_indices": index_names,
@@ -736,7 +732,7 @@ def manage_tenant_indices(
                     operation=op_enum,
                     tenant_id=tenant_id,
                     index_names=[],
-                    message=f"No indices found for tenant '{tenant_id}' (tenant directory does not exist)",
+                    message=f"No indices found for tenant '{tenant_id}' (tenant directory does not exist)",  # noqa: E501
                     details={"indices": []},
                 )
 
@@ -831,7 +827,5 @@ class RAGIndexer:
         if not self.index_dir.exists():
             return []
         return [
-            d.name
-            for d in self.index_dir.iterdir()
-            if d.is_dir() and not d.name.startswith(".")
+            d.name for d in self.index_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
         ]

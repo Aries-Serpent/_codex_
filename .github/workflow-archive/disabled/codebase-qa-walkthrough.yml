@@ -540,7 +540,7 @@ jobs:
           needs.check-trigger.outputs.pr_number != ''
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('reports/qa-report.md', 'utf8');

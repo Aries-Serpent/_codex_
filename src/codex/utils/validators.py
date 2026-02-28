@@ -202,7 +202,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
     """
     checks = {
         "syntax_valid": True,
-        "linting_pass": True,
+        "linting_pass": True,  # nosec B105
     }
 
     path = Path(file_path)

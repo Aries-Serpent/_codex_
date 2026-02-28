@@ -83,9 +83,7 @@ class OutcomeAnalyzer:
         reward = self._calculate_reward(outcome_type, result_metrics, context)
 
         # Identify patterns
-        patterns_identified = self._identify_patterns(
-            outcome_type, result_metrics, context
-        )
+        patterns_identified = self._identify_patterns(outcome_type, result_metrics, context)
 
         # Extract lessons
         lessons_learned = self._extract_lessons(
@@ -270,17 +268,13 @@ class OutcomeAnalyzer:
             if context.complexity > 0.7:
                 lessons.append("Can handle high-complexity tasks successfully")
             if result_metrics.get("efficiency", 0) > 0.9:
-                lessons.append(
-                    "High efficiency achieved - consider reusing this strategy"
-                )
+                lessons.append("High efficiency achieved - consider reusing this strategy")
         elif outcome_type == OutcomeType.FAILURE:
             lessons.append(f"Strategy ineffective for {context.task_type}")
             if context.time_pressure > 0.8:
                 lessons.append("High time pressure may have contributed to failure")
             if context.complexity > 0.8:
-                lessons.append(
-                    "Task complexity exceeded capability - need better decomposition"
-                )
+                lessons.append("Task complexity exceeded capability - need better decomposition")
 
         # Pattern-based lessons
         if "multi_agent_success" in str(patterns):
@@ -361,9 +355,7 @@ class OutcomeAnalyzer:
         for pattern in patterns:
             self.patterns[pattern.pattern_id] = pattern
 
-        logger.info(
-            f"Extracted {len(patterns)} patterns from {len(recent_outcomes)} outcomes"
-        )
+        logger.info(f"Extracted {len(patterns)} patterns from {len(recent_outcomes)} outcomes")
 
         return pattern_set
 
@@ -375,9 +367,7 @@ class OutcomeAnalyzer:
             Dictionary with outcomes analyzed, patterns identified, avg reward
         """
         avg_reward = (
-            sum(self.reward_history) / len(self.reward_history)
-            if self.reward_history
-            else 0.0
+            sum(self.reward_history) / len(self.reward_history) if self.reward_history else 0.0
         )
 
         success_count = sum(
@@ -389,7 +379,5 @@ class OutcomeAnalyzer:
             "patterns_identified": len(self.patterns),
             "pattern_extractions": self.pattern_extraction_count,
             "average_reward": avg_reward,
-            "success_rate": success_count / len(self.outcomes)
-            if self.outcomes
-            else 0.0,
+            "success_rate": success_count / len(self.outcomes) if self.outcomes else 0.0,
         }

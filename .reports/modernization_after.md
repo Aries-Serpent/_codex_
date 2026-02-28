@@ -63,4 +63,3 @@
 |training.py|18|Consider using | None syntax instead of typing.Optional|suggestion|
 
 *...and 183 more*
-

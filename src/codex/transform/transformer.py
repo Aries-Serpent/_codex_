@@ -35,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 class Tier(Enum):
     """Transformation tier classification."""
+
     A = "safe_auto_apply"
     B = "apply_with_tests"
     C = "suggest_only"
@@ -53,6 +54,7 @@ class Patch:
         tier: Transformation tier
         description: Human-readable description
     """
+
     file_path: str
     original: str
     modified: str
@@ -85,6 +87,7 @@ class TransformResult:
         applied: Whether patches were applied
         errors: Any errors encountered
     """
+
     snapshot_id: str
     timestamp: datetime
     tier_a_patches: list[Patch] = field(default_factory=list)
@@ -135,7 +138,7 @@ class TransformResult:
             tier_c_dir = directory / "tier-c-suggestions"
             tier_c_dir.mkdir(exist_ok=True)
             for i, suggestion in enumerate(self.tier_c_suggestions):
-                path = tier_c_dir / f"suggestion-{i+1}.md"
+                path = tier_c_dir / f"suggestion-{i + 1}.md"
                 with path.open("w", encoding="utf-8") as f:
                     f.write(f"# {suggestion.get('rule_id', 'unknown')}\n\n")
                     f.write(f"## Description\n{suggestion.get('description', '')}\n\n")
@@ -222,12 +225,12 @@ def _apply_pathlib_migration(content: str) -> str:
     import re
 
     replacements = [
-        (r'os\.path\.join\(([^,]+),\s*([^)]+)\)', r'Path(\1) / \2'),
-        (r'os\.path\.exists\(([^)]+)\)', r'Path(\1).exists()'),
-        (r'os\.path\.dirname\(([^)]+)\)', r'str(Path(\1).parent)'),
-        (r'os\.path\.basename\(([^)]+)\)', r'Path(\1).name'),
-        (r'os\.path\.isfile\(([^)]+)\)', r'Path(\1).is_file()'),
-        (r'os\.path\.isdir\(([^)]+)\)', r'Path(\1).is_dir()'),
+        (r"os\.path\.join\(([^,]+),\s*([^)]+)\)", r"Path(\1) / \2"),
+        (r"os\.path\.exists\(([^)]+)\)", r"Path(\1).exists()"),
+        (r"os\.path\.dirname\(([^)]+)\)", r"str(Path(\1).parent)"),
+        (r"os\.path\.basename\(([^)]+)\)", r"Path(\1).name"),
+        (r"os\.path\.isfile\(([^)]+)\)", r"Path(\1).is_file()"),
+        (r"os\.path\.isdir\(([^)]+)\)", r"Path(\1).is_dir()"),
     ]
 
     modified = content
@@ -237,11 +240,7 @@ def _apply_pathlib_migration(content: str) -> str:
     # Add pathlib import if we made changes and it's not already imported
     if modified != content and "from pathlib import" not in modified:
         if "import os" in modified:
-            modified = modified.replace(
-                "import os",
-                "import os\nfrom pathlib import Path",
-                1
-            )
+            modified = modified.replace("import os", "import os\nfrom pathlib import Path", 1)
 
     return modified
 
@@ -288,15 +287,17 @@ def transform(
                     black_result = _run_black(file_path)
                     if black_result and black_result != original:
                         diff = _create_diff(original, black_result, rel_path)
-                        result.tier_a_patches.append(Patch(
-                            file_path=rel_path,
-                            original=original,
-                            modified=black_result,
-                            diff=diff,
-                            rule_id="format-black",
-                            tier=Tier.A,
-                            description="Apply Black code formatting",
-                        ))
+                        result.tier_a_patches.append(
+                            Patch(
+                                file_path=rel_path,
+                                original=original,
+                                modified=black_result,
+                                diff=diff,
+                                rule_id="format-black",
+                                tier=Tier.A,
+                                description="Apply Black code formatting",
+                            )
+                        )
                         original = black_result
 
                 # isort
@@ -304,15 +305,17 @@ def transform(
                     isort_result = _run_isort(file_path)
                     if isort_result and isort_result != original:
                         diff = _create_diff(original, isort_result, rel_path)
-                        result.tier_a_patches.append(Patch(
-                            file_path=rel_path,
-                            original=original,
-                            modified=isort_result,
-                            diff=diff,
-                            rule_id="sort-imports",
-                            tier=Tier.A,
-                            description="Sort imports with isort",
-                        ))
+                        result.tier_a_patches.append(
+                            Patch(
+                                file_path=rel_path,
+                                original=original,
+                                modified=isort_result,
+                                diff=diff,
+                                rule_id="sort-imports",
+                                tier=Tier.A,
+                                description="Sort imports with isort",
+                            )
+                        )
                         original = isort_result
 
                 # Pathlib migration
@@ -343,35 +346,41 @@ def transform(
                         if isinstance(node, ast.FunctionDef):
                             # Check if function lacks return annotation
                             if node.returns is None:
-                                result.tier_b_patches.append(Patch(
-                                    file_path=rel_path,
-                                    original="",
-                                    modified="",
-                                    diff="",
-                                    rule_id="add-type-hints",
-                                    tier=Tier.B,
-                                    description=f"Add type annotations to function '{node.name}' (requires validation)",
-                                ))
+                                result.tier_b_patches.append(
+                                    Patch(
+                                        file_path=rel_path,
+                                        original="",
+                                        modified="",
+                                        diff="",
+                                        rule_id="add-type-hints",
+                                        tier=Tier.B,
+                                        description=f"Add type annotations to function '{node.name}' (requires validation)",  # noqa: E501
+                                    )
+                                )
                                 break  # Only suggest once per file
                 except SyntaxError as e:
                     logger.debug(f"SyntaxError: {e}")
-                    logger.warning(f"SyntaxError: {e}", exc_info=True)  # Skip files with syntax errors
+                    logger.warning(
+                        f"SyntaxError: {e}", exc_info=True
+                    )  # Skip files with syntax errors
 
             # === Tier C: Suggest Only ===
             if tier is None or tier == Tier.C:
                 # Async conversion suggestion
                 if "requests." in original or "urllib" in original:
-                    result.tier_c_suggestions.append({
-                        "rule_id": "async-conversion",
-                        "file": rel_path,
-                        "description": "Consider converting synchronous HTTP calls to async",
-                        "warning": "Major API change; requires full rewrite of callers",
-                        "checklist": [
-                            "All callers identified and updated",
-                            "Event loop management reviewed",
-                            "Error handling preserved",
-                        ],
-                    })
+                    result.tier_c_suggestions.append(
+                        {
+                            "rule_id": "async-conversion",
+                            "file": rel_path,
+                            "description": "Consider converting synchronous HTTP calls to async",
+                            "warning": "Major API change; requires full rewrite of callers",
+                            "checklist": [
+                                "All callers identified and updated",
+                                "Event loop management reviewed",
+                                "Error handling preserved",
+                            ],
+                        }
+                    )
 
         except Exception as e:
             logger.debug(f"Exception: {e}")

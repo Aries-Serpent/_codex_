@@ -268,18 +268,15 @@ class TestDocumentationTools:
 
     def test_link_audit_tool_exists(self):
         """Test that link audit tool exists"""
-        tool_path = Path("tools/docs/link_audit.py")
-        assert tool_path.exists() or True  # May not exist in all environments
+        assert True  # was: 'tool_path.exists()' or True (always true); intent: optional env check
 
     def test_docs_scan_tool_exists(self):
         """Test that docs scan tool exists"""
-        tool_path = Path("tools/docs/scan_links.py")
-        assert tool_path.exists() or True
+        assert True  # was: 'tool_path.exists()' or True (always true); intent: optional env check
 
     def test_mkdocs_repair_exists(self):
         """Test that mkdocs repair tool exists"""
-        tool_path = Path("tools/mkdocs_repair.py")
-        assert tool_path.exists() or True
+        assert True  # was: 'tool_path.exists()' or True (always true); intent: optional env check
 
 
 class TestDocumentationAccessibility:

@@ -29,6 +29,7 @@ jobs:
           python-version: '3.12'
           extras: 'dev'
           install-torch: 'true'
+          install-preflight-extras: 'true'
           install-npm-tools: 'true'
 
       - name: Run validation
@@ -39,7 +40,8 @@ jobs:
             quick)
               # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
               # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery issues
-              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20
+              python -m pytest tests/ -v -m "not slow and not integration" --timeout=60 --tb=short --maxfail=20 \
+                --cov=src --cov-report=xml --cov-report=json -q
               ;;
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
@@ -55,6 +57,29 @@ jobs:
               python -m pytest tests/ -v -m "slow" --timeout=600 --maxfail=5 --tb=short
               ;;
           esac
+
+      # HFIX-001 Step 5: Surface CI coverage numbers as PR comments (quick group only)
+      - name: Post coverage to PR
+        if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: coverage.xml
+          title: "📊 Coverage Report (quick tests)"
+          badge-title: "Coverage"
+          default-branch: "0D_base_"
+          unique-id-for-comment: "quick-coverage"
+
+      # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
+      - name: Upload coverage artifact
+        if: matrix.test-group == 'quick' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-baseline
+          path: |
+            coverage.json
+            coverage.xml
+          retention-days: 14
+          if-no-files-found: ignore
 
       - name: Upload results
         if: always()
@@ -89,3 +114,86 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+
+  # P11-04: Parallel test sharding (S100)
+  # Splits the "quick" test group into 4 shards using pytest-split, reducing
+  # wall-clock time from ~N min to ~N/4 min on the quick test suite.
+  sharded-quick:
+    name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    continue-on-error: true  # Sharding is additive; do not block merges until stable
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+        total: [2]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python with shared cache
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          extras: 'dev'
+          install-torch: 'true'
+          install-preflight-extras: 'true'
+
+      - name: Install pytest-split
+        run: pip install pytest-split>=0.8 --quiet
+
+      - name: Restore test durations cache
+        uses: actions/cache@v4
+        with:
+          path: .test_durations
+          key: test-durations-${{ hashFiles('tests/**/*.py') }}
+          restore-keys: |
+            test-durations-
+
+      - name: Run sharded quick tests
+        id: shard-run
+        timeout-minutes: 50
+        run: |
+          # DRQ-S105-001: Disable pytest-rerunfailures in sharded runs.
+          # pytest-rerunfailures starts a background server socket thread; pytest-timeout
+          # (thread mode, the default) injects Timeout into ALL threads including that
+          # server thread, causing ValueError("I/O operation on closed file.") + "lost
+          # sys.stderr" when the server thread tries to write after teardown.
+          # Fix: -p no:rerunfailures eliminates the background thread.
+          # DRQ-S105-003: --store-durations accumulates timing data so future runs use
+          # least_duration correctly instead of falling back to count-based splitting.
+          python -m pytest tests/ \
+            -m "not slow and not integration" \
+            --timeout=60 \
+            --tb=short \
+            --maxfail=20 \
+            -p no:rerunfailures \
+            --store-durations \
+            --splits ${{ matrix.total }} \
+            --group ${{ matrix.shard }} \
+            --splitting-algorithm=least_duration \
+            --durations-path=.test_durations \
+            -q
+          echo "Shard ${{ matrix.shard }}/${{ matrix.total }} exit: $?"
+
+      - name: Save test durations cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .test_durations
+          key: test-durations-${{ hashFiles('tests/**/*.py') }}
+
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
+          path: |
+            .test_durations
+            test-results/
+          retention-days: 3
+          if-no-files-found: ignore

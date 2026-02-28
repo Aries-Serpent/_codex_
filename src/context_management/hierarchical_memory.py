@@ -180,7 +180,10 @@ class HierarchicalMemory:
                 # Update access info on duplicate
                 existing_item.last_accessed = datetime.now(UTC)
                 existing_item.access_count += 1
-                return True, f"Duplicate found in {existing_layer.value} memory, updated access"
+                return (
+                    True,
+                    f"Duplicate found in {existing_layer.value} memory, updated access",
+                )
 
         # Create item
         item = MemoryItem(
@@ -305,7 +308,11 @@ class HierarchicalMemory:
         current_layer = self._hash_to_layer[content_hash]
 
         # Validate promotion (working > episodic > semantic in priority)
-        layer_priority = {MemoryLayer.SEMANTIC: 1, MemoryLayer.EPISODIC: 2, MemoryLayer.WORKING: 3}
+        layer_priority = {
+            MemoryLayer.SEMANTIC: 1,
+            MemoryLayer.EPISODIC: 2,
+            MemoryLayer.WORKING: 3,
+        }
 
         if layer_priority[target_layer] <= layer_priority[current_layer]:
             return False  # Can only promote to higher priority
@@ -338,7 +345,11 @@ class HierarchicalMemory:
 
         current_layer = self._hash_to_layer[content_hash]
 
-        layer_priority = {MemoryLayer.SEMANTIC: 1, MemoryLayer.EPISODIC: 2, MemoryLayer.WORKING: 3}
+        layer_priority = {
+            MemoryLayer.SEMANTIC: 1,
+            MemoryLayer.EPISODIC: 2,
+            MemoryLayer.WORKING: 3,
+        }
 
         if layer_priority[target_layer] >= layer_priority[current_layer]:
             return False  # Can only demote to lower priority

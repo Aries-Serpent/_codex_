@@ -76,7 +76,8 @@ class PromptSanitizer:
                 if self.strict:
                     # Raise error in strict mode
                     logger.warning(
-                        "Unsafe prompt detected (pattern: %s). Prompt rejected.", pattern.pattern
+                        "Unsafe prompt detected (pattern: %s). Prompt rejected.",
+                        pattern.pattern,
                     )
                     raise ValueError(
                         f"Unsafe prompt detected (pattern: {pattern.pattern}). "

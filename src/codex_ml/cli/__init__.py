@@ -309,10 +309,16 @@ if _HAS_CLICK:
         help="Enable MLflow logging",
     )
     @click.option(
-        "--mlflow-uri", default="file:./mlruns", show_default=True, help="MLflow tracking URI"
+        "--mlflow-uri",
+        default="file:./mlruns",
+        show_default=True,
+        help="MLflow tracking URI",
     )
     @click.option(
-        "--mlflow-experiment", default="codex", show_default=True, help="MLflow experiment name"
+        "--mlflow-experiment",
+        default="codex",
+        show_default=True,
+        help="MLflow experiment name",
     )
     @click.option(
         "--telemetry.enable",
@@ -321,7 +327,12 @@ if _HAS_CLICK:
         default=False,
         help="Enable Prometheus telemetry",
     )
-    @click.option("--telemetry-port", default=8001, show_default=True, help="Telemetry server port")
+    @click.option(
+        "--telemetry-port",
+        default=8001,
+        show_default=True,
+        help="Telemetry server port",
+    )
     def train_model(**kwargs: Any) -> None:
         """Train a model using the unified training pipeline."""
 
@@ -330,7 +341,10 @@ if _HAS_CLICK:
     @cli.command()
     @click.option("--datasets", default="", help="Comma separated dataset names")
     @click.option(
-        "--metrics", default="accuracy", show_default=True, help="Comma separated metric names"
+        "--metrics",
+        default="accuracy",
+        show_default=True,
+        help="Comma separated metric names",
     )
     @click.option("--output-dir", default="runs/eval", show_default=True, help="Output directory")
     def evaluate(datasets: str, metrics: str, output_dir: str) -> None:

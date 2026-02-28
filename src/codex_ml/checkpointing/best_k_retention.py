@@ -130,7 +130,8 @@ def prune_checkpoints(
 
     # Sort by metric (and created_at for ties)
     sorted_entries = sorted(
-        entries, key=lambda e: (e.metric if metric_lower_better else -e.metric, e.created_at)
+        entries,
+        key=lambda e: (e.metric if metric_lower_better else -e.metric, e.created_at),
     )
 
     # Keep top-k
@@ -234,7 +235,8 @@ def save_checkpoint_with_retention(
 
     # Sort and keep top-k
     sorted_entries = sorted(
-        entries, key=lambda e: (e.metric if metric_lower_better else -e.metric, e.created_at)
+        entries,
+        key=lambda e: (e.metric if metric_lower_better else -e.metric, e.created_at),
     )
     kept_entries = sorted_entries[:keep_top_k]
 

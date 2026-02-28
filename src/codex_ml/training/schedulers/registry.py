@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
+
     # Verify torch is functional
     _ = torch.Tensor
     TORCH_AVAILABLE = True

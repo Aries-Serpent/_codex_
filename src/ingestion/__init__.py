@@ -93,7 +93,7 @@ else:
     deterministic_shuffle = _deterministic_shuffle  # type: ignore
 
 
-# Provide a detect_encoding wrapper that uses repo detector, io_text helper, or a conservative fallback.
+# Provide a detect_encoding wrapper that uses repo detector, io_text helper, or a conservative fallback.  # noqa: E501
 def detect_encoding(path: Union[str, Path]) -> str:
     """Best-effort detect the file encoding.
 

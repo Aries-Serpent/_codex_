@@ -6,6 +6,7 @@ token-friendly digest.md for AI agent context understanding.
 
 Part of Phase 5: AI Agent Tooling Enhancement
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -32,7 +33,7 @@ class ContextDistiller:
         self,
         src_dirs: Optional[List[Path]] = None,
         max_tokens: int = 100000,
-        output_path: Optional[Path] = None
+        output_path: Optional[Path] = None,
     ):
         """
         Initialize context distiller.
@@ -52,15 +53,20 @@ class ContextDistiller:
 
         # File extensions to process
         self.code_extensions = {
-            ".py", ".js", ".ts", ".jsx", ".tsx",
-            ".java", ".go", ".rs", ".cpp", ".c", ".h"
+            ".py",
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".java",
+            ".go",
+            ".rs",
+            ".cpp",
+            ".c",
+            ".h",
         }
-        self.doc_extensions = {
-            ".md", ".rst", ".txt"
-        }
-        self.config_extensions = {
-            ".yaml", ".yml", ".json", ".toml", ".ini"
-        }
+        self.doc_extensions = {".md", ".rst", ".txt"}
+        self.config_extensions = {".yaml", ".yml", ".json", ".toml", ".ini"}
 
         logger.info(f"ContextDistiller initialized: max_tokens={max_tokens}")
 
@@ -71,11 +77,7 @@ class ContextDistiller:
         Returns:
             Dictionary mapping categories to file lists
         """
-        results = {
-            "code": [],
-            "docs": [],
-            "configs": []
-        }
+        results = {"code": [], "docs": [], "configs": []}
 
         for src_dir in self.src_dirs:
             if not src_dir.exists():
@@ -138,7 +140,7 @@ class ContextDistiller:
             Dictionary with structure information
         """
         try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read()
         except Exception as e:
             logger.error(f"Failed to read {file_path}: {e}")
@@ -147,10 +149,10 @@ class ContextDistiller:
         structure = {
             "path": str(file_path.relative_to(REPO_ROOT)),
             "size": len(content),
-            "lines": content.count('\n'),
+            "lines": content.count("\n"),
             "classes": [],
             "functions": [],
-            "imports": []
+            "imports": [],
         }
 
         # Simple pattern matching for Python
@@ -158,23 +160,23 @@ class ContextDistiller:
             import re
 
             # Extract classes
-            class_pattern = r'^class\s+(\w+)'
+            class_pattern = r"^class\s+(\w+)"
             structure["classes"] = re.findall(class_pattern, content, re.MULTILINE)
 
             # Extract functions
-            func_pattern = r'^def\s+(\w+)'
+            func_pattern = r"^def\s+(\w+)"
             structure["functions"] = re.findall(func_pattern, content, re.MULTILINE)
 
             # Extract imports (handle both forms, skip relative and star imports)
-            import_pattern = r'^(?:from\s+([\w.]+)\s+)?import\s+([\w, ]+)'
+            import_pattern = r"^(?:from\s+([\w.]+)\s+)?import\s+([\w, ]+)"
             imports = []
             for match in re.finditer(import_pattern, content, re.MULTILINE):
                 module, names = match.groups()
                 # Skip relative imports (from . import) and star imports
-                if module and not module.startswith('.') and '*' not in names:
-                    imports.extend([n.strip() for n in names.split(',')])
-                elif not module and '*' not in names:
-                    imports.extend([n.strip() for n in names.split(',')])
+                if module and not module.startswith(".") and "*" not in names:
+                    imports.extend([n.strip() for n in names.split(",")])
+                elif not module and "*" not in names:
+                    imports.extend([n.strip() for n in names.split(",")])
             structure["imports"] = imports[:20]  # Limit to first 20 for brevity
 
         return structure
@@ -204,7 +206,7 @@ class ContextDistiller:
         # Code structure
         digest.append("## Code Structure\n\n")
 
-        for code_file in sorted(files['code'][:50]):  # Limit to 50 files
+        for code_file in sorted(files["code"][:50]):  # Limit to 50 files
             structure = self.extract_code_structure(code_file)
 
             if not structure:
@@ -213,25 +215,25 @@ class ContextDistiller:
             digest.append(f"### `{structure['path']}`\n")
             digest.append(f"- **Lines:** {structure['lines']}\n")
 
-            if structure.get('classes'):
+            if structure.get("classes"):
                 digest.append(f"- **Classes:** {', '.join(structure['classes'][:10])}\n")
 
-            if structure.get('functions'):
+            if structure.get("functions"):
                 digest.append(f"- **Functions:** {', '.join(structure['functions'][:10])}\n")
 
             digest.append("\n")
 
-        if len(files['code']) > 50:
+        if len(files["code"]) > 50:
             digest.append(f"... and {len(files['code']) - 50} more code files\n\n")
 
         # Key documentation
         digest.append("## Key Documentation\n\n")
 
-        for doc_file in sorted(files['docs'][:20]):
+        for doc_file in sorted(files["docs"][:20]):
             rel_path = doc_file.relative_to(REPO_ROOT)
             digest.append(f"- `{rel_path}`\n")
 
-        if len(files['docs']) > 20:
+        if len(files["docs"]) > 20:
             digest.append(f"- ... and {len(files['docs']) - 20} more docs\n")
 
         digest.append("\n")
@@ -239,11 +241,11 @@ class ContextDistiller:
         # Configuration files
         digest.append("## Configuration Files\n\n")
 
-        for config_file in sorted(files['configs'][:15]):
+        for config_file in sorted(files["configs"][:15]):
             rel_path = config_file.relative_to(REPO_ROOT)
             digest.append(f"- `{rel_path}`\n")
 
-        if len(files['configs']) > 15:
+        if len(files["configs"]) > 15:
             digest.append(f"- ... and {len(files['configs']) - 15} more configs\n")
 
         digest.append("\n")
@@ -289,24 +291,19 @@ class ContextDistiller:
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Write digest
-        with open(self.output_path, 'w', encoding='utf-8') as f:
+        with open(self.output_path, "w", encoding="utf-8") as f:
             f.write(content)
 
         # Calculate checksum
         checksum = hashlib.sha256(content.encode()).hexdigest()[:16]
 
         logger.info(
-            f"Digest saved: {self.output_path} "
-            f"({len(content)} chars, checksum: {checksum})"
+            f"Digest saved: {self.output_path} ({len(content)} chars, checksum: {checksum})"
         )
 
         return self.output_path
 
-    def compress_with_sentencepiece(
-        self,
-        content: str,
-        model_path: Optional[Path] = None
-    ) -> str:
+    def compress_with_sentencepiece(self, content: str, model_path: Optional[Path] = None) -> str:
         """
         Compress content using sentencepiece tokenization.
 
@@ -320,10 +317,7 @@ class ContextDistiller:
         try:
             import sentencepiece as spm
         except ImportError:
-            logger.warning(
-                "sentencepiece not installed. "
-                "Install with: pip install sentencepiece"
-            )
+            logger.warning("sentencepiece not installed. Install with: pip install sentencepiece")
             return content  # Return uncompressed
 
         if model_path and model_path.exists():
@@ -331,12 +325,9 @@ class ContextDistiller:
             tokens = sp.encode(content, out_type=str)
 
             # Reconstruct with token IDs for compression
-            compressed = " ".join(tokens[:self.max_tokens])
+            compressed = " ".join(tokens[: self.max_tokens])
 
-            logger.info(
-                f"Compressed with sentencepiece: "
-                f"{len(content)} → {len(compressed)} chars"
-            )
+            logger.info(f"Compressed with sentencepiece: {len(content)} → {len(compressed)} chars")
 
             return compressed
         else:
@@ -344,10 +335,7 @@ class ContextDistiller:
             return content
 
 
-def generate_context_digest(
-    output_path: Optional[Path] = None,
-    max_tokens: int = 100000
-) -> Path:
+def generate_context_digest(output_path: Optional[Path] = None, max_tokens: int = 100000) -> Path:
     """
     Convenience function to generate context digest.
 
@@ -358,10 +346,7 @@ def generate_context_digest(
     Returns:
         Path to generated digest
     """
-    distiller = ContextDistiller(
-        max_tokens=max_tokens,
-        output_path=output_path
-    )
+    distiller = ContextDistiller(max_tokens=max_tokens, output_path=output_path)
     return distiller.save_digest()
 
 

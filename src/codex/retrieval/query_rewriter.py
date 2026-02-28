@@ -114,9 +114,31 @@ class NormalizeRewriter(BaseQueryRewriter):
 
     # Common English stopwords
     STOPWORDS = {
-        "a", "an", "and", "are", "as", "at", "be", "by", "for",
-        "from", "has", "he", "in", "is", "it", "its", "of", "on",
-        "that", "the", "to", "was", "were", "will", "with",
+        "a",
+        "an",
+        "and",
+        "are",
+        "as",
+        "at",
+        "be",
+        "by",
+        "for",
+        "from",
+        "has",
+        "he",
+        "in",
+        "is",
+        "it",
+        "its",
+        "of",
+        "on",
+        "that",
+        "the",
+        "to",
+        "was",
+        "were",
+        "will",
+        "with",
     }
 
     def rewrite(self, query: str) -> RewrittenQuery:
@@ -129,16 +151,16 @@ class NormalizeRewriter(BaseQueryRewriter):
 
         # Remove punctuation
         if self.config.remove_punctuation:
-            normalized = re.sub(r'[^\w\s]', ' ', normalized)
+            normalized = re.sub(r"[^\w\s]", " ", normalized)
 
         # Normalize whitespace
-        normalized = ' '.join(normalized.split())
+        normalized = " ".join(normalized.split())
 
         # Remove stopwords
         if self.config.remove_stopwords:
             words = normalized.split()
             words = [w for w in words if w not in self.STOPWORDS]
-            normalized = ' '.join(words)
+            normalized = " ".join(words)
 
         return RewrittenQuery(
             original_query=query,
@@ -201,7 +223,7 @@ class ExpansionRewriter(BaseQueryRewriter):
                         break
                     expansions.add(synonym)
 
-        expansions = list(expansions)[:self.config.max_expansions]
+        expansions = list(expansions)[: self.config.max_expansions]
 
         # Build expanded query
         if expansions:
@@ -263,12 +285,12 @@ class DecomposeRewriter(BaseQueryRewriter):
                 # Create sub-queries from chunks
                 chunk_size = max(2, len(words) // 2)
                 for i in range(0, len(words), chunk_size):
-                    chunk = ' '.join(words[i:i + chunk_size])
+                    chunk = " ".join(words[i : i + chunk_size])
                     if chunk.strip():
                         sub_queries.append(chunk)
 
         # Limit sub-queries
-        sub_queries = sub_queries[:self.config.max_sub_queries]
+        sub_queries = sub_queries[: self.config.max_sub_queries]
 
         # If no decomposition possible, use original
         if not sub_queries:
@@ -349,17 +371,17 @@ class MultiQueryRewriter(BaseQueryRewriter):
                 # Keep only content words (simple heuristic: longer words)
                 key_words = [w for w in words if len(w) > 3]
                 if key_words and len(key_words) < len(words):
-                    variants.append(' '.join(key_words))
+                    variants.append(" ".join(key_words))
 
         # Variant 3: First half / second half for long queries
         if len(variants) < self.config.num_variants:
             words = normalized.rewritten_query.split()
             if len(words) > 6:
                 half = len(words) // 2
-                variants.append(' '.join(words[:half]))
+                variants.append(" ".join(words[:half]))
 
         # Limit variants
-        variants = variants[:self.config.num_variants]
+        variants = variants[: self.config.num_variants]
 
         return RewrittenQuery(
             original_query=query,
@@ -404,10 +426,7 @@ class QueryRewriter:
         if self.config.strategy == QueryRewriteStrategy.NONE:
             self._rewriter = None
         else:
-            rewriter_class = self.STRATEGY_MAP.get(
-                self.config.strategy,
-                NormalizeRewriter
-            )
+            rewriter_class = self.STRATEGY_MAP.get(self.config.strategy, NormalizeRewriter)
             self._rewriter = rewriter_class(self.config)
 
     def rewrite(self, query: str) -> RewrittenQuery:

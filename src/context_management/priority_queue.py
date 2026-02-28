@@ -326,7 +326,7 @@ class ContextPriorityQueue:
         if not self._items:
             return {
                 "size": 0,
-                "token_count": 0,
+                "token_count": 0,  # nosec B105
                 "priority_distribution": {},
                 "average_age_seconds": 0,
                 "average_effective_priority": 0,

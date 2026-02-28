@@ -136,7 +136,9 @@ class TokenizationCache:
 _global_cache: Optional[TokenizationCache] = None
 
 
-def get_global_cache(ttl_hours: int = TokenizationCache.DEFAULT_TTL_HOURS) -> TokenizationCache:
+def get_global_cache(
+    ttl_hours: int = TokenizationCache.DEFAULT_TTL_HOURS,
+) -> TokenizationCache:
     """Get or create the global tokenization cache instance.
 
     Args:

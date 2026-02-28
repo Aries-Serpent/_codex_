@@ -5,6 +5,7 @@ This module provides retrieval optimization capabilities for efficient
 context loading, pre-fetching likely-needed patterns, and adaptive
 retrieval based on task type.
 """
+
 from __future__ import annotations
 
 import json
@@ -82,15 +83,13 @@ class RetrievalMetrics:
 
         # Rolling averages
         self.average_result_count = (
-            (self.average_result_count * (self.total_queries - 1) + len(result.items))
-            / self.total_queries
-        )
+            self.average_result_count * (self.total_queries - 1) + len(result.items)
+        ) / self.total_queries
         if result.relevance_scores:
             avg_rel = sum(result.relevance_scores) / len(result.relevance_scores)
             self.average_relevance = (
-                (self.average_relevance * (self.total_queries - 1) + avg_rel)
-                / self.total_queries
-            )
+                self.average_relevance * (self.total_queries - 1) + avg_rel
+            ) / self.total_queries
 
     @property
     def cache_hit_rate(self) -> float:
@@ -100,11 +99,7 @@ class RetrievalMetrics:
     @property
     def average_retrieval_time_ms(self) -> float:
         """Get average retrieval time."""
-        return (
-            self.total_retrieval_time_ms / self.total_queries
-            if self.total_queries > 0
-            else 0
-        )
+        return self.total_retrieval_time_ms / self.total_queries if self.total_queries > 0 else 0
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -261,9 +256,7 @@ class ProactiveLoader:
 
     def __init__(self, knowledge_store_path: Path | None = None):
         """Initialize loader."""
-        self.store_path = knowledge_store_path or Path(
-            ".codex/knowledge/knowledge_store.json"
-        )
+        self.store_path = knowledge_store_path or Path(".codex/knowledge/knowledge_store.json")
         self._knowledge_cache: list[dict[str, Any]] = []
 
     def load_knowledge_store(self) -> list[dict[str, Any]]:
@@ -279,11 +272,7 @@ class ProactiveLoader:
 
     def get_critical_knowledge(self) -> list[dict[str, Any]]:
         """Get all critical knowledge items."""
-        return [
-            item
-            for item in self._knowledge_cache
-            if item.get("priority") == "critical"
-        ]
+        return [item for item in self._knowledge_cache if item.get("priority") == "critical"]
 
     def get_recent_knowledge(self, days: int = 7) -> list[dict[str, Any]]:
         """Get recent knowledge items."""
@@ -300,9 +289,7 @@ class ProactiveLoader:
 
         return results
 
-    def get_task_relevant_knowledge(
-        self, task_type: TaskType
-    ) -> list[dict[str, Any]]:
+    def get_task_relevant_knowledge(self, task_type: TaskType) -> list[dict[str, Any]]:
         """Get knowledge relevant to a task type."""
         task_keywords = TaskTypeDetector.TASK_KEYWORDS.get(task_type, [])
         results = []
@@ -434,9 +421,7 @@ class RetrievalOptimizer:
         if task_hint and config.include_task_relevant:
             task_type = self.task_detector.detect(task_hint)
             if task_type != TaskType.UNKNOWN:
-                task_items = self.proactive_loader.get_task_relevant_knowledge(
-                    task_type
-                )
+                task_items = self.proactive_loader.get_task_relevant_knowledge(task_type)
                 result["task_relevant"] = task_items[:10]
                 result["detected_task_type"] = task_type.value
 
@@ -517,9 +502,7 @@ class RetrievalOptimizer:
             sessions.setdefault(session_id, []).append(item)
 
         # Return sessions with most matches
-        session_scores = [
-            (sid, len(items), items) for sid, items in sessions.items()
-        ]
+        session_scores = [(sid, len(items), items) for sid, items in sessions.items()]
         session_scores.sort(key=lambda x: x[1], reverse=True)
 
         return [

@@ -76,55 +76,64 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 AGENT_CAPABILITIES: Dict[str, List[ImprovementArea]] = {
     # Security
-    "codeql-alert-resolution-agent":       [ImprovementArea.SECURITY_REMEDIATION],
-    "code-scanning-remediation-agent":     [ImprovementArea.SECURITY_REMEDIATION],
-    "security-audit-agent":                [ImprovementArea.SECURITY_REMEDIATION],
-    "dependency-vulnerability-scanner":    [ImprovementArea.SECURITY_REMEDIATION,
-                                            ImprovementArea.DEPENDENCY_MODERNISATION],
+    "codeql-alert-resolution-agent": [ImprovementArea.SECURITY_REMEDIATION],
+    "code-scanning-remediation-agent": [ImprovementArea.SECURITY_REMEDIATION],
+    "security-audit-agent": [ImprovementArea.SECURITY_REMEDIATION],
+    "dependency-vulnerability-scanner": [
+        ImprovementArea.SECURITY_REMEDIATION,
+        ImprovementArea.DEPENDENCY_MODERNISATION,
+    ],
     # Coverage / Testing
-    "coverage-gapfill-agent":              [ImprovementArea.COVERAGE_IMPROVEMENT],
-    "coverage-maintenance-agent":          [ImprovementArea.COVERAGE_IMPROVEMENT],
-    "test-alignment-fixer-enhanced":       [ImprovementArea.TEST_ASSERTION_UPDATE],
-    "autonomous-test-healer-agent":        [ImprovementArea.TEST_ASSERTION_UPDATE,
-                                            ImprovementArea.COVERAGE_IMPROVEMENT],
-    "mutation-testing-agent":              [ImprovementArea.COVERAGE_IMPROVEMENT],
+    "coverage-gapfill-agent": [ImprovementArea.COVERAGE_IMPROVEMENT],
+    "coverage-maintenance-agent": [ImprovementArea.COVERAGE_IMPROVEMENT],
+    "test-alignment-fixer-enhanced": [ImprovementArea.TEST_ASSERTION_UPDATE],
+    "autonomous-test-healer-agent": [
+        ImprovementArea.TEST_ASSERTION_UPDATE,
+        ImprovementArea.COVERAGE_IMPROVEMENT,
+    ],
+    "mutation-testing-agent": [ImprovementArea.COVERAGE_IMPROVEMENT],
     # CI / Workflow
-    "ci-failure-resolution-agent":         [ImprovementArea.CI_SELF_HEALING],
-    "ci-auto-healer-agent":                [ImprovementArea.CI_SELF_HEALING],
-    "workflow-health-monitor":             [ImprovementArea.WORKFLOW_HEALTH],
-    "workflow-ci-fixer":                   [ImprovementArea.WORKFLOW_HEALTH],
-    "workflow-analytics-agent":            [ImprovementArea.WORKFLOW_HEALTH],
-    "workflow-optimization-agent":         [ImprovementArea.WORKFLOW_HEALTH],
+    "ci-failure-resolution-agent": [ImprovementArea.CI_SELF_HEALING],
+    "ci-auto-healer-agent": [ImprovementArea.CI_SELF_HEALING],
+    "workflow-health-monitor": [ImprovementArea.WORKFLOW_HEALTH],
+    "workflow-ci-fixer": [ImprovementArea.WORKFLOW_HEALTH],
+    "workflow-analytics-agent": [ImprovementArea.WORKFLOW_HEALTH],
+    "workflow-optimization-agent": [ImprovementArea.WORKFLOW_HEALTH],
     # Cache
-    "cache-management-agent":             [ImprovementArea.CACHE_VALIDATION],
-    "cache-manager-integration":          [ImprovementArea.CACHE_VALIDATION],
+    "cache-management-agent": [ImprovementArea.CACHE_VALIDATION],
+    "cache-manager-integration": [ImprovementArea.CACHE_VALIDATION],
     # RAG / ML
-    "rag-module-management-agent":         [ImprovementArea.RAG_PIPELINE],
-    "rag-freshness-loop-agent":            [ImprovementArea.RAG_PIPELINE,
-                                            ImprovementArea.ML_PATTERN_FEEDING],
-    "ml-validation-suite-agent":           [ImprovementArea.ML_PATTERN_FEEDING],
+    "rag-module-management-agent": [ImprovementArea.RAG_PIPELINE],
+    "rag-freshness-loop-agent": [
+        ImprovementArea.RAG_PIPELINE,
+        ImprovementArea.ML_PATTERN_FEEDING,
+    ],
+    "ml-validation-suite-agent": [ImprovementArea.ML_PATTERN_FEEDING],
     # Agent Chaining
-    "agent-orchestrator":                  [ImprovementArea.AGENT_CHAINING],
-    "workflow-management-agent":           [ImprovementArea.AGENT_CHAINING],
+    "agent-orchestrator": [ImprovementArea.AGENT_CHAINING],
+    "workflow-management-agent": [ImprovementArea.AGENT_CHAINING],
     # QI / Quantum
-    "quantum-compliance-tuning-agent":     [ImprovementArea.QI_TESTING],
+    "quantum-compliance-tuning-agent": [ImprovementArea.QI_TESTING],
     # Documentation
-    "link-validator-agent":                [ImprovementArea.DOCUMENTATION_HYGIENE],
-    "doc-freshness-checker":               [ImprovementArea.DOCUMENTATION_HYGIENE],
-    "unified-doc-agent":                   [ImprovementArea.DOCUMENTATION_HYGIENE],
+    "link-validator-agent": [ImprovementArea.DOCUMENTATION_HYGIENE],
+    "doc-freshness-checker": [ImprovementArea.DOCUMENTATION_HYGIENE],
+    "unified-doc-agent": [ImprovementArea.DOCUMENTATION_HYGIENE],
     # Cognitive brain / general
-    "cognitive-brain-manager":             [ImprovementArea.ML_PATTERN_FEEDING,
-                                            ImprovementArea.AGENT_CHAINING],
-    "github-guru-agent":                   list(ImprovementArea),  # full access
+    "cognitive-brain-manager": [
+        ImprovementArea.ML_PATTERN_FEEDING,
+        ImprovementArea.AGENT_CHAINING,
+    ],
+    "github-guru-agent": list(ImprovementArea),  # full access
     # Copilot Coding Agent — the primary consumer
-    "copilot-coding-agent":                list(ImprovementArea),
-    "copilot-swe-agent":                   list(ImprovementArea),
+    "copilot-coding-agent": list(ImprovementArea),
+    "copilot-swe-agent": list(ImprovementArea),
 }
 
 
 # ---------------------------------------------------------------------------
 # Dataclasses
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class AgentSessionContext:
@@ -158,9 +167,7 @@ class AgentSessionContext:
     active_patterns: List[Dict[str, Any]]
     capabilities: List[str]
     continuation_prompt: str
-    generated_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    generated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
@@ -178,12 +185,10 @@ class CompletionReport:
     agent_id: str
     area: str
     step_id: str
-    outcome: str          # "success" | "failure" | "partial"
+    outcome: str  # "success" | "failure" | "partial"
     notes: str = ""
     artifacts: List[str] = field(default_factory=list)
-    reported_at: str = field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
+    reported_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -192,6 +197,7 @@ class CompletionReport:
 # ---------------------------------------------------------------------------
 # AgentBrainAPI
 # ---------------------------------------------------------------------------
+
 
 class AgentBrainAPI:
     """
@@ -313,10 +319,11 @@ class AgentBrainAPI:
 
         # 1. Get ranked next actions filtered to this agent's capabilities
         all_prompts = self._orch.generate_session(context=ctx, max_prompts=limit * 3)
-        filtered = [
-            p for p in all_prompts
-            if ImprovementArea(p.area) in self._capabilities
-        ] if self._capabilities != list(ImprovementArea) else all_prompts
+        filtered = (
+            [p for p in all_prompts if ImprovementArea(p.area) in self._capabilities]
+            if self._capabilities != list(ImprovementArea)
+            else all_prompts
+        )
         next_actions = filtered[:limit]
 
         # 2. Query brain for relevant patterns
@@ -329,10 +336,7 @@ class AgentBrainAPI:
         continuation_from = (
             f"Previous session completed {n_completed} step(s) across "
             f"{len(completed)} area(s): "
-            + ", ".join(
-                f"{area}[{', '.join(steps)}]"
-                for area, steps in completed.items()
-            )
+            + ", ".join(f"{area}[{', '.join(steps)}]" for area, steps in completed.items())
             if completed
             else "No previous session state — starting fresh."
         )
@@ -406,7 +410,10 @@ class AgentBrainAPI:
         )
         logger.info(
             "Completion reported: agent=%s area=%s step=%s outcome=%s",
-            self.agent_id, area.value, step_id, outcome,
+            self.agent_id,
+            area.value,
+            step_id,
+            outcome,
         )
         return report
 
@@ -433,8 +440,9 @@ class AgentBrainAPI:
         """
         ctx = session_context or {}
         prompts = self._orch.generate_session(context=ctx, max_prompts=5)
-        return self._build_continuation_prompt(prompts, ctx,
-                                               datetime.now(timezone.utc).strftime("session-%Y%m%d"))
+        return self._build_continuation_prompt(
+            prompts, ctx, datetime.now(timezone.utc).strftime("session-%Y%m%d")
+        )
 
     def get_agent_capabilities(self) -> List[ImprovementArea]:
         """Return the ``ImprovementArea`` values this agent is responsible for."""
@@ -507,9 +515,7 @@ class AgentBrainAPI:
                     "pattern_id": m.pattern_id,
                     "description": m.description,
                     "confidence": (
-                        m.confidence.value
-                        if hasattr(m.confidence, "value")
-                        else str(m.confidence)
+                        m.confidence.value if hasattr(m.confidence, "value") else str(m.confidence)
                     ),
                     "match_score": getattr(m, "match_score", 0.0),
                 }
@@ -538,6 +544,7 @@ class AgentBrainAPI:
 # ---------------------------------------------------------------------------
 # CognitiveBrain — unified, self-describing singleton
 # ---------------------------------------------------------------------------
+
 
 class CognitiveBrain:
     """
@@ -609,7 +616,7 @@ class CognitiveBrain:
         _root = Path(__file__).resolve().parents[3]
         _plans = planset_dir or (_root / ".codex" / "plans")
         _state = state_path or (_plans / ".orchestrator_state.json")
-        _bdir  = brain_data_dir or (_root / ".codex" / "brain")
+        _bdir = brain_data_dir or (_root / ".codex" / "brain")
 
         self.engine = QuantumPlansetEngine()
         self.orchestrator = PlansetOrchestrator(
@@ -619,7 +626,7 @@ class CognitiveBrain:
         )
         self._plans = _plans
         self._state = _state
-        self._bdir  = _bdir
+        self._bdir = _bdir
         self._api_cache: Dict[str, AgentBrainAPI] = {}
 
     # ------------------------------------------------------------------
@@ -746,7 +753,7 @@ class CognitiveBrain:
         areas = "\n".join(f"  • {a.value}" for a in ImprovementArea)
         agents = "\n".join(
             f"  {aid:<45} → {', '.join(c.value for c in caps[:2])}"
-            + (f" +{len(caps)-2} more" if len(caps) > 2 else "")
+            + (f" +{len(caps) - 2} more" if len(caps) > 2 else "")
             for aid, caps in list(AGENT_CAPABILITIES.items())[:12]
         )
         return f"""
@@ -818,10 +825,7 @@ CODEBASE AGENCY POLICY
             area.value: [r.stem for r in records if r.area == area and not r.is_complete]
             for area in ImprovementArea
         }
-        agent_routing = {
-            aid: [c.value for c in caps]
-            for aid, caps in AGENT_CAPABILITIES.items()
-        }
+        agent_routing = {aid: [c.value for c in caps] for aid, caps in AGENT_CAPABILITIES.items()}
         return {
             "version": self._VERSION,
             "description": "Advanced extension of GitHub Copilot Coding Agent",
@@ -829,8 +833,7 @@ CODEBASE AGENCY POLICY
             "agent_routing": agent_routing,
             "planset_coverage": planset_coverage,
             "engine_equation": (
-                "Score = (Impact × Confidence × Momentum) "
-                "/ (Energy × (1+Risk) × (1+Friction))"
+                "Score = (Impact × Confidence × Momentum) / (Energy × (1+Risk) × (1+Friction))"
             ),
             "amplitude": "sqrt(Score)",
             "collapse_rule": "Steps sorted by amplitude desc; entangled partners promoted",
@@ -847,11 +850,11 @@ CODEBASE AGENCY POLICY
             ),
             "modules": {
                 "QuantumPlansetEngine": "src/codex/cognitive/quantum_planset_engine.py",
-                "PlansetOrchestrator":  "src/codex/cognitive/planset_orchestrator.py",
-                "AgentBrainAPI":        "src/codex/cognitive/agent_brain_api.py",
-                "AgentBrainInterface":  "src/codex/cognitive/brain_interface.py",
-                "CognitiveBrain":       "src/codex/cognitive/agent_brain_api.py",
-                "orchestrate CLI":      "scripts/cognitive/orchestrate.py",
+                "PlansetOrchestrator": "src/codex/cognitive/planset_orchestrator.py",
+                "AgentBrainAPI": "src/codex/cognitive/agent_brain_api.py",
+                "AgentBrainInterface": "src/codex/cognitive/brain_interface.py",
+                "CognitiveBrain": "src/codex/cognitive/agent_brain_api.py",
+                "orchestrate CLI": "scripts/cognitive/orchestrate.py",
             },
         }
 
@@ -905,10 +908,7 @@ CODEBASE AGENCY POLICY
     @property
     def capabilities(self) -> Dict[str, List[str]]:
         """Return the full agent→capabilities mapping as a plain dict."""
-        return {
-            aid: [c.value for c in caps]
-            for aid, caps in AGENT_CAPABILITIES.items()
-        }
+        return {aid: [c.value for c in caps] for aid, caps in AGENT_CAPABILITIES.items()}
 
     def __repr__(self) -> str:  # pragma: no cover
         try:

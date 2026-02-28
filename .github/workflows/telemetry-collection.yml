@@ -41,7 +41,7 @@ jobs:
 
       - name: Collect telemetry data
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           DAYS="${{ github.event.inputs.days || '7' }}"
           BRANCH="${{ github.event.inputs.branch || 'main' }}"

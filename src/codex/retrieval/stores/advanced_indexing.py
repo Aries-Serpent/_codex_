@@ -192,7 +192,7 @@ class HNSWIndex:
 
         if vectors.shape[1] != self.dimension:
             raise ValueError(
-                f"Vector dimension {vectors.shape[1]} doesn't match index dimension {self.dimension}"
+                f"Vector dimension {vectors.shape[1]} doesn't match index dimension {self.dimension}"  # noqa: E501
             )
 
         # Normalize for cosine similarity
@@ -390,7 +390,7 @@ class IVFPQIndex:
 
         if training_vectors.shape[1] != self.dimension:
             raise ValueError(
-                f"Training vector dimension {training_vectors.shape[1]} doesn't match {self.dimension}"
+                f"Training vector dimension {training_vectors.shape[1]} doesn't match {self.dimension}"  # noqa: E501
             )
 
         min_train_size = self.config.nlist * 30
@@ -424,7 +424,7 @@ class IVFPQIndex:
 
         if vectors.shape[1] != self.dimension:
             raise ValueError(
-                f"Vector dimension {vectors.shape[1]} doesn't match index dimension {self.dimension}"
+                f"Vector dimension {vectors.shape[1]} doesn't match index dimension {self.dimension}"  # noqa: E501
             )
 
         self._index.add(vectors)

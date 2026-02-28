@@ -51,7 +51,7 @@ _torch_available = importlib.util.find_spec("torch") is not None
 try:
     import torch as _torch
     _cuda_available = _torch.cuda.is_available()
-except Exception:
+except (ImportError, RuntimeError):
     _cuda_available = False
 
 _skip_real_st_models = pytest.mark.skipif(
@@ -484,6 +484,7 @@ class TestCreateEmbeddingProvider:
             assert str(tmpdir) in str(provider.cache_dir)
 
 
+@_skip_real_st_models
 class TestEmbeddingsIntegration:
     """Integration tests for embeddings module"""
 

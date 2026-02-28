@@ -133,7 +133,7 @@ class DatasetManifest:
             actual = _sha256_file(target)
             if actual != shard.sha256:
                 raise ValueError(
-                    f"Checksum mismatch for {shard.path}: " f"expected {shard.sha256}, got {actual}"
+                    f"Checksum mismatch for {shard.path}: expected {shard.sha256}, got {actual}"
                 )
 
 

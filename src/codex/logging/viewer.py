@@ -108,7 +108,7 @@ def _validate_table_name(value: str | None) -> str | None:
         return value
     if re.fullmatch(r"[A-Za-z0-9_]+", value):
         return value
-    msg = f"Invalid table name: '{value}'. " "Only letters, digits, and underscore are allowed."
+    msg = f"Invalid table name: '{value}'. Only letters, digits, and underscore are allowed."
     raise argparse.ArgumentTypeError(msg)
 
 
@@ -195,7 +195,7 @@ def infer_schema(
         if sid and ts and msg:
             return {"table": table, "sid": sid, "ts": ts, "msg": msg, "lvl": lvl}
     raise RuntimeError(
-        "No suitable table found (need at least session_id, timestamp, " "message columns)."
+        "No suitable table found (need at least session_id, timestamp, message columns)."
     )
 
 
@@ -257,16 +257,13 @@ def build_query(
 def main(argv: Optional[list[str]] = None) -> int:
     ns = parse_args(argv)
     if ns.table and not re.fullmatch(r"[A-Za-z0-9_]+", ns.table):
-        msg = (
-            f"Invalid table name: '{ns.table}'. "
-            "Only letters, digits, and underscore are allowed."
-        )
+        msg = f"Invalid table name: '{ns.table}'. Only letters, digits, and underscore are allowed."
         raise SystemExit(msg)
     root = Path.cwd()
     db_path = Path(resolve_db_path(ns.db)) if ns.db else autodetect_db(root)
     if not db_path:
         print(
-            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite " "in repo.",
+            "ERROR: SQLite DB not found. Provide --db or place logs.db/logs.sqlite in repo.",
             file=sys.stderr,
         )
         return 2

@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -49,7 +48,9 @@ torch, _HAS_TORCH = optional_import("torch")
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 
 # Module-level sentinel so tests can monkeypatch `infer.AutoTokenizer`
-AutoTokenizer = transformers.AutoTokenizer if _HAS_TRANSFORMERS and transformers is not None else None
+AutoTokenizer = (
+    transformers.AutoTokenizer if _HAS_TRANSFORMERS and transformers is not None else None
+)
 
 
 _ = run_cmd
@@ -92,7 +93,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--moderation-policy",
         default=None,
-        help="Override the default moderation policy path (uses configs/base/safety/policy.yaml by default).",
+        help="Override the default moderation policy path (uses configs/base/safety/policy.yaml by default).",  # noqa: E501
     )
     parser.add_argument(
         "--moderation-fail-open",

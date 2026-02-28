@@ -81,8 +81,7 @@ def heuristic_coverage(rules: list[CodeownersRule]) -> dict[str, bool]:
         "src": any(p.startswith("src") or p.startswith("/src") for p in pats),
         "tests": any(p.startswith("tests") or p.startswith("/tests") for p in pats),
         "docs": any(
-            p.startswith("docs") or p.startswith("/docs") or p.startswith(".github")
-            for p in pats
+            p.startswith("docs") or p.startswith("/docs") or p.startswith(".github") for p in pats
         ),
     }
 
@@ -96,7 +95,7 @@ def validate_codeowners_text(text: str) -> CodeownersReport:
     any_missing_owners = [r for r in rules if not r.owners]
     if any_missing_owners:
         warns.append(
-            f"{len(any_missing_owners)} rule(s) missing owners (lines: {', '.join(str(r.line_no) for r in any_missing_owners)})"
+            f"{len(any_missing_owners)} rule(s) missing owners (lines: {', '.join(str(r.line_no) for r in any_missing_owners)})"  # noqa: E501
         )
     owners_ok = validate_owners(rules)
     if not owners_ok:
@@ -112,9 +111,7 @@ def validate_codeowners_text(text: str) -> CodeownersReport:
         coverage=cov,
         errors=errs,
         warnings=warns,
-        rules=[
-            {"pattern": r.pattern, "owners": r.owners, "line": r.line_no} for r in rules
-        ],
+        rules=[{"pattern": r.pattern, "owners": r.owners, "line": r.line_no} for r in rules],
     )
 
 

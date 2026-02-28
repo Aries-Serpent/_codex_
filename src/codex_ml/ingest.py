@@ -243,7 +243,9 @@ def _apply_preprocess(records: Iterable[dict[str, Any]], cfg: _DataConfig) -> li
         processed.append(
             {
                 key: _transform_value(
-                    value, lowercase=cfg.preprocess_lowercase, max_length=cfg.preprocess_max_length
+                    value,
+                    lowercase=cfg.preprocess_lowercase,
+                    max_length=cfg.preprocess_max_length,
                 )
                 for key, value in record.items()
             }

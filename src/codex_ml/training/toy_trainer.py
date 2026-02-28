@@ -8,7 +8,8 @@ Purpose:
 
 Usage:
     python -m src.codex_ml.training.toy_trainer --epochs 3 --batch-size 16 --log runs/examples/train.log
-"""
+"""  # noqa: E501
+
 from __future__ import annotations
 
 import argparse
@@ -36,7 +37,7 @@ def train(epochs: int, batch_size: int, log_path: Path) -> None:
             epoch_time = time.time() - epoch_start
             steps_per_sec = steps_per_epoch / max(1e-9, epoch_time)
             f.write(
-                f"epoch={e} loss={base_loss:.4f} steps/s: {steps_per_sec:.2f} epoch_time_s: {epoch_time:.2f}\n"
+                f"epoch={e} loss={base_loss:.4f} steps/s: {steps_per_sec:.2f} epoch_time_s: {epoch_time:.2f}\n"  # noqa: E501
             )
 
         total_time = time.time() - t0

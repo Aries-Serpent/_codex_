@@ -81,4 +81,3 @@
 |__init__.py|21|Consider using | None syntax instead of typing.Optional|suggestion|
 
 *...and 107 more*
-

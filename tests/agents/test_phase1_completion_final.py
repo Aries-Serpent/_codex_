@@ -193,7 +193,7 @@ class TestPhase1Completion_CrossModule:
             if hasattr(navigator, "register_workflow"):
                 # Method exists - implementation may vary
                 pass
-        except Exception:
+        except ImportError:
             pytest.skip("Workflow registration not available")
 
 

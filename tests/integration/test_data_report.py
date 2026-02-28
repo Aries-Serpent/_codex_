@@ -23,7 +23,7 @@ def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
 def test_data_report_smoke(tmp_path: Path) -> None:
     try:
         from hhg_logistics.monitor.data_report import build_data_drift
-    except Exception:  # pragma: no cover - optional dependency missing
+    except ImportError:  # pragma: no cover - optional dependency missing
         pytest.skip("evidently not installed")
 
     reference = tmp_path / "ref.csv"

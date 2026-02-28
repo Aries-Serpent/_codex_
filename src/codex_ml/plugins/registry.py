@@ -79,7 +79,7 @@ def _activate_editable_distribution(ep: Any) -> None:
         try:
             pth_path = Path(dist.locate_file(file))
             lines = pth_path.read_text(encoding="utf-8").splitlines()
-        except Exception:  # pragma: no cover - best effort
+        except Exception:  # pragma: no cover - best effort  # nosec B112
             continue
         for line in lines:
             entry = line.strip()
@@ -209,7 +209,7 @@ def discover(group: str = DEFAULT_GROUP) -> dict[str, object]:
         try:
             _activate_editable_distribution(ep)
             results[ep.name] = ep.load()
-        except Exception:  # pragma: no cover - skip broken entry points
+        except Exception:  # pragma: no cover - skip broken entry points  # nosec B112
             continue
     return results
 

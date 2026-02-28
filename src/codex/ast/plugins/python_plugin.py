@@ -1,6 +1,7 @@
 """
 Reference Python plugin implementation.
 """
+
 from pathlib import Path
 
 from codex.ast import parse_python
@@ -25,7 +26,7 @@ class PythonPlugin(ASTPlugin):
             author="Codex Team",
             description="Python AST parser using libcst",
             languages=["python"],
-            file_extensions=[".py", ".pyw"]
+            file_extensions=[".py", ".pyw"],
         )
 
     @property
@@ -52,6 +53,7 @@ class PythonPlugin(ASTPlugin):
         """Validate plugin is ready."""
         try:
             import libcst  # noqa: F401 - Testing optional dependency availability
+
             return True
         except ImportError:
             return False

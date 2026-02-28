@@ -141,7 +141,7 @@ if typer is not None:
         def _load_curriculum_preset(name: str) -> dict[str, Any]:
             if yaml is None:
                 raise typer.BadParameter(
-                    "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."
+                    "PyYAML is required to load curriculum presets; install with `pip install pyyaml`."  # noqa: E501
                 )
             preset_text: Optional[str] = None
 
@@ -181,7 +181,7 @@ if typer is not None:
             loaded = yaml.safe_load(preset_text) or {}
             if not isinstance(loaded, dict):
                 raise typer.BadParameter(
-                    f"Curriculum preset '{name}' must decode to a mapping, received {type(loaded).__name__}."
+                    f"Curriculum preset '{name}' must decode to a mapping, received {type(loaded).__name__}."  # noqa: E501
                 )
             if "continual" in loaded and isinstance(loaded["continual"], dict):
                 return dict(loaded["continual"])
@@ -450,11 +450,13 @@ if typer is not None:
     def _typer_cli_wrapper(args: Optional[list[str]] = None) -> int:
         """Wrapper around Typer app to handle --version/-V before Typer processes args."""
         import sys
+
         argv = args if args is not None else sys.argv[1:]
 
         # Handle --version and -V before Typer sees them
         if "--version" in argv or "-V" in argv:
             from codex import __version__ as codex_version
+
             print(f"codex-ml-cli {codex_version}")
             return 0
 

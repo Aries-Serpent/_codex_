@@ -21,6 +21,7 @@ from ..security_utils import sanitize_log_message
 @dataclass
 class OAuthToken:
     """OAuth token data structure."""
+
     access_token: str
     token_type: str
     expires_in: int
@@ -53,6 +54,7 @@ class OAuthToken:
 @dataclass
 class OAuthConfig:
     """OAuth provider configuration."""
+
     provider_name: str
     client_id: str
     client_secret: Optional[str]  # Not needed for PKCE flows
@@ -74,7 +76,7 @@ class OAuthManager:
 
     # GitHub OAuth endpoints
     GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
-    GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"
+    GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"  # nosec B105
     GITHUB_API_URL = "https://api.github.com"
 
     def __init__(self, config: Optional[OAuthConfig] = None):
@@ -86,10 +88,17 @@ class OAuthManager:
         """
         self.config = config
         self._state_store: Dict[str, Dict] = {}  # In-memory state storage (use Redis in production)
-        self._token_store: Dict[str, OAuthToken] = {}  # In-memory token storage (use database in production)
+        self._token_store: Dict[
+            str, OAuthToken
+        ] = {}  # In-memory token storage (use database in production)
 
-    def create_github_config(self, client_id: str, client_secret: Optional[str],
-                           redirect_uri: str, scope: str = "repo user") -> OAuthConfig:
+    def create_github_config(
+        self,
+        client_id: str,
+        client_secret: Optional[str],
+        redirect_uri: str,
+        scope: str = "repo user",
+    ) -> OAuthConfig:
         """
         Create GitHub OAuth configuration.
 
@@ -129,7 +138,7 @@ class OAuthManager:
         """
         digest = hashlib.sha256(verifier.encode()).digest()
         # Base64 URL-safe encoding without padding
-        challenge = base64.urlsafe_b64encode(digest).decode().rstrip('=')
+        challenge = base64.urlsafe_b64encode(digest).decode().rstrip("=")
         return challenge
 
     def initiate_flow(self, config: Optional[OAuthConfig] = None) -> Dict[str, str]:
@@ -156,11 +165,11 @@ class OAuthManager:
 
         # Prepare authorization parameters
         params = {
-            'client_id': config.client_id,
-            'redirect_uri': config.redirect_uri,
-            'scope': config.scope,
-            'state': state,
-            'response_type': 'code',
+            "client_id": config.client_id,
+            "redirect_uri": config.redirect_uri,
+            "scope": config.scope,
+            "state": state,
+            "response_type": "code",
         }
 
         # Add PKCE parameters if enabled
@@ -168,22 +177,22 @@ class OAuthManager:
         if config.use_pkce:
             code_verifier = self._generate_code_verifier()
             code_challenge = self._generate_code_challenge(code_verifier)
-            params['code_challenge'] = code_challenge
-            params['code_challenge_method'] = 'S256'
+            params["code_challenge"] = code_challenge
+            params["code_challenge_method"] = "S256"
 
         # Store state and code_verifier for validation
         self._state_store[state] = {
-            'created_at': time.time(),
-            'config': config,
-            'code_verifier': code_verifier,
+            "created_at": time.time(),
+            "config": config,
+            "code_verifier": code_verifier,
         }
 
         # Build authorization URL
         auth_url = f"{config.authorization_url}?{urlencode(params)}"
 
         return {
-            'auth_url': auth_url,
-            'state': state,
+            "auth_url": auth_url,
+            "state": state,
         }
 
     def validate_state(self, state: str) -> bool:
@@ -201,7 +210,7 @@ class OAuthManager:
 
         # Check state expiry (15 minutes)
         state_data = self._state_store[state]
-        age = time.time() - state_data['created_at']
+        age = time.time() - state_data["created_at"]
         if age > 900:  # 15 minutes
             del self._state_store[state]
             return False
@@ -228,28 +237,28 @@ class OAuthManager:
 
         # Retrieve stored state data
         state_data = self._state_store.pop(state)
-        config = state_data['config']
-        code_verifier = state_data.get('code_verifier')
+        config = state_data["config"]
+        code_verifier = state_data.get("code_verifier")
 
         # Prepare token request
         token_data = {
-            'client_id': config.client_id,
-            'code': code,
-            'redirect_uri': config.redirect_uri,
+            "client_id": config.client_id,
+            "code": code,
+            "redirect_uri": config.redirect_uri,
         }
 
         # Add client_secret if available (not using PKCE-only flow)
         if config.client_secret:
-            token_data['client_secret'] = config.client_secret
+            token_data["client_secret"] = config.client_secret
 
         # Add code_verifier for PKCE
         if code_verifier:
-            token_data['code_verifier'] = code_verifier
+            token_data["code_verifier"] = code_verifier
 
         # Make token request
         headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         try:
@@ -268,16 +277,16 @@ class OAuthManager:
             raise ValueError(error_msg)
 
         # Parse token response
-        access_token = token_response.get('access_token')
+        access_token = token_response.get("access_token")
         if not access_token:
             raise ValueError("No access token in response")
 
         token = OAuthToken(
             access_token=access_token,
-            token_type=token_response.get('token_type', 'bearer'),
-            expires_in=token_response.get('expires_in', 0),
-            refresh_token=token_response.get('refresh_token'),
-            scope=token_response.get('scope'),
+            token_type=token_response.get("token_type", "bearer"),
+            expires_in=token_response.get("expires_in", 0),
+            refresh_token=token_response.get("refresh_token"),
+            scope=token_response.get("scope"),
         )
 
         # Store token (use user ID as key in production)
@@ -308,15 +317,15 @@ class OAuthManager:
 
         # Prepare refresh request
         refresh_data = {
-            'client_id': config.client_id,
-            'client_secret': config.client_secret,
-            'refresh_token': refresh_token,
-            'grant_type': 'refresh_token',
+            "client_id": config.client_id,
+            "client_secret": config.client_secret,
+            "refresh_token": refresh_token,
+            "grant_type": "refresh_token",
         }
 
         headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
         }
 
         try:
@@ -334,16 +343,18 @@ class OAuthManager:
             raise ValueError(error_msg)
 
         # Parse refreshed token
-        access_token = token_response.get('access_token')
+        access_token = token_response.get("access_token")
         if not access_token:
             raise ValueError("No access token in refresh response")
 
         token = OAuthToken(
             access_token=access_token,
-            token_type=token_response.get('token_type', 'bearer'),
-            expires_in=token_response.get('expires_in', 0),
-            refresh_token=token_response.get('refresh_token', refresh_token),  # Use old if not provided
-            scope=token_response.get('scope'),
+            token_type=token_response.get("token_type", "bearer"),
+            expires_in=token_response.get("expires_in", 0),
+            refresh_token=token_response.get(
+                "refresh_token", refresh_token
+            ),  # Use old if not provided
+            scope=token_response.get("scope"),
         )
 
         return token
@@ -362,9 +373,9 @@ class OAuthManager:
             ValueError: If request fails
         """
         headers = {
-            'Authorization': f'Bearer {access_token}',
-            'Accept': 'application/vnd.github+json',
-            'X-GitHub-Api-Version': '2022-11-28',
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
         }
 
         try:

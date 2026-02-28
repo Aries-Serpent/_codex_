@@ -35,7 +35,15 @@ jobs:
       - name: Run auto-fix check
         id: autofix
         run: |
-          python scripts/ci/auto_fix_common_issues.py --check-only
+          python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/autofix_report.json
+        continue-on-error: true
+
+      - name: Verify agent batch-scan protocol coverage
+        id: batch_scan_protocol
+        run: |
+          python scripts/ci/inject_batch_scan_protocol.py --dry-run
+          # Fails (non-zero) if any applicable agent is missing the ⚡ section,
+          # preventing new agents from being added without the protocol.
         continue-on-error: true
 
       - name: Run quick tests
@@ -92,6 +100,10 @@ jobs:
         if: steps.autofix.outcome != 'success'
         run: |
           echo "::error::Pre-merge validation failed - auto-fixable issues detected"
+          if [ -f /tmp/autofix_report.json ]; then
+            python3 scripts/ci/print_autofix_issues.py
+          fi
+          echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
           exit 1
 
       - name: Cache health report

@@ -5,9 +5,9 @@ name: Art_"CodeQL"
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, '0D_base_', 'copilot/**']
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, '0D_base_', 'copilot/**']
   schedule:
     # Weekly scan on Sunday at 3 AM UTC
     - cron: '0 3 * * 0'
@@ -27,8 +27,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Languages detected in repository
-        language: ['python', 'javascript', 'typescript']
+        # CodeQL treats TypeScript as part of 'javascript' — no separate 'typescript' entry needed
+        # Go code exists in tools/github-secrets-cli/ — DRQ-S105-002: add go to resolve
+        # "N configurations not found" GHAS check (research: github.com/orgs/community/discussions/121836)
+        language: ['python', 'javascript', 'go']
 
     steps:
       - name: Checkout repository

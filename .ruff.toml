@@ -1,9 +1,9 @@
-line-length = 88
+line-length = 100
 target-version = "py310"
 
 [lint]
 select = ["E", "F", "W", "I"]
-ignore = ["E501"]  # Line too long - handled by Black
+ignore = ["E501"]  # Line too long - E501 suppressed; line-length=100 matches pyproject.toml
 
 [lint.per-file-ignores]
 # Standard exceptions

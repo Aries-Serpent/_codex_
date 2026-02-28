@@ -65,9 +65,7 @@ class YAMLASTAdapter(BaseASTAdapter):
                 column_start=0,
                 column_end=0,
                 children=[],
-                metadata={
-                    "yaml_version": "1.2"
-                }
+                metadata={"yaml_version": "1.2"},
             )
 
             # Convert YAML data to AST nodes
@@ -87,7 +85,7 @@ class YAMLASTAdapter(BaseASTAdapter):
         self,
         data: Any,
         parent: Optional[StandardizedASTNode] = None,
-        key: Optional[str] = None
+        key: Optional[str] = None,
     ) -> StandardizedASTNode:
         """
         Convert YAML data structure to StandardizedASTNode.
@@ -107,11 +105,8 @@ class YAMLASTAdapter(BaseASTAdapter):
                 node_type="mapping",
                 name=key or "<mapping>",
                 children=[],
-                metadata={
-                    "keys": list(data.keys()),
-                    "size": len(data)
-                },
-                parent=parent
+                metadata={"keys": list(data.keys()), "size": len(data)},
+                parent=parent,
             )
 
             # Add child nodes for each key-value pair
@@ -130,9 +125,9 @@ class YAMLASTAdapter(BaseASTAdapter):
                 children=[],
                 metadata={
                     "length": len(data),
-                    "item_types": [type(item).__name__ for item in data]
+                    "item_types": [type(item).__name__ for item in data],
                 },
-                parent=parent
+                parent=parent,
             )
 
             # Add child nodes for each item
@@ -152,9 +147,9 @@ class YAMLASTAdapter(BaseASTAdapter):
                 metadata={
                     "value": data,
                     "value_type": type(data).__name__,
-                    "is_null": data is None
+                    "is_null": data is None,
                 },
-                parent=parent
+                parent=parent,
             )
 
             return node

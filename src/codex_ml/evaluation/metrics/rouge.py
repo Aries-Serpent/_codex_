@@ -49,7 +49,10 @@ class RougeMetric(MetricAdapter):
     """
 
     def __init__(
-        self, rouge_types: list[str] = None, name: str = "rouge", use_stemmer: bool = True
+        self,
+        rouge_types: list[str] = None,
+        name: str = "rouge",
+        use_stemmer: bool = True,
     ):
         super().__init__(name)
         self.rouge_types = rouge_types or ["rouge1", "rougeL"]

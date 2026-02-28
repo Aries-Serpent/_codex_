@@ -36,6 +36,7 @@ try:
     from sigstore.sign import Signer  # type: ignore[import-untyped]
     from sigstore.verify import Verifier  # type: ignore[import-untyped]
     from sigstore.verify.policy import UnsafeNoOp  # type: ignore[import-untyped]
+
     _HAS_SIGSTORE = True
     logger.info("sigstore SDK available — production signing enabled")
 except ImportError:
@@ -86,6 +87,7 @@ class SignstoreClient:
 
         try:
             import requests as _requests
+
             resp = _requests.get(
                 token_url,
                 headers={"Authorization": f"bearer {token_request_token}"},
@@ -199,6 +201,7 @@ class SignstoreClient:
         """Verify using the real sigstore Python SDK."""
         try:
             from sigstore.models import Bundle  # type: ignore[import-untyped]
+
             record_bytes = json.dumps(record, sort_keys=True).encode("utf-8")
             bundle = Bundle.from_json(bundle_json)
             verifier = Verifier.production()
@@ -240,7 +243,4 @@ class SignstoreClient:
 
     def _mock_certificate(self, actor: str) -> str:
         """Generate mock certificate for development/testing."""
-        return (
-            f"-----BEGIN CERTIFICATE-----\nMOCK_CERT_FOR_{actor}\n-----END CERTIFICATE-----"
-        )
-
+        return f"-----BEGIN CERTIFICATE-----\nMOCK_CERT_FOR_{actor}\n-----END CERTIFICATE-----"

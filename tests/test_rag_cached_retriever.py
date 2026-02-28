@@ -27,6 +27,18 @@ pytestmark = pytest.mark.skipif(
     reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"
 )
 
+# Guard for tests that require real SentenceTransformer models on CPU
+try:
+    import torch as _torch
+    _cuda_available = _torch.cuda.is_available()
+except (ImportError, RuntimeError):
+    _cuda_available = False
+
+_skip_real_st_models = pytest.mark.skipif(
+    not _cuda_available,
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 class TestLRUCache:
     """Tests for LRUCache class"""
@@ -164,6 +176,7 @@ class TestLRUCache:
         assert stats["hit_rate"] == 0.0
 
 
+@_skip_real_st_models
 class TestCachedRetriever:
     """Tests for CachedRetriever class"""
 

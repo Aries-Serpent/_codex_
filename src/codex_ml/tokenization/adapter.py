@@ -128,7 +128,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
             from transformers import AutoTokenizer
         except Exception as exc:  # pragma: no cover - transformers optional
             warnings.warn(
-                f"transformers unavailable for HFTokenizerAdapter; falling back to WhitespaceTokenizer ({exc})",
+                f"transformers unavailable for HFTokenizerAdapter; falling back to WhitespaceTokenizer ({exc})",  # noqa: E501
                 RuntimeWarning,
             )
             self.tokenizer = WhitespaceTokenizer()
@@ -145,7 +145,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         if special:
             self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})
         if self.tokenizer.pad_token_id is None:
-            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})
+            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # nosec B105
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
         return self.tokenizer.encode(text, **kwargs)
@@ -396,7 +396,10 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 if not isinstance(value, int):
                     try:
                         value = int(value)
-                    except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+                    except (
+                        TypeError,
+                        ValueError,
+                    ) as exc:  # pragma: no cover - defensive
                         raise ValueError("special token ids must be integers") from exc
                 mapping[key] = int(value)
             return mapping, []

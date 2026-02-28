@@ -279,8 +279,8 @@ class PluginSandbox:
                         quarantined_time = datetime.fromisoformat(health.quarantined_at)
                         elapsed = int((datetime.now(UTC) - quarantined_time).total_seconds())
                     except (ValueError, TypeError):
-                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.
-                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.
+                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.  # noqa: E501
+                        # If quarantine timestamp is invalid or missing, default to zero elapsed time.  # noqa: E501
                         # Security note: This keeps the plugin quarantined for the full duration,
                         # which is the safe default behavior when timestamp parsing fails.
                         pass

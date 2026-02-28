@@ -54,11 +54,11 @@ def register(
 
     Example:
         python -m codex_ml.cli.feature_store register user_features 1.0.0 -d "User demographic features"
-    """
+    """  # noqa: E501
     try:
         store = FeatureStore(store_path)
 
-        # Create placeholder feature group (in real usage, features would be defined programmatically)
+        # Create placeholder feature group (in real usage, features would be defined programmatically)  # noqa: E501
         group = FeatureGroup(
             name=name,
             version=version,
@@ -236,7 +236,7 @@ def materialize(
         # In real usage, would need input data
         # This is a placeholder implementation
         console.print(
-            "[yellow]Note: Materialization requires input data (not implemented in CLI yet)[/yellow]"
+            "[yellow]Note: Materialization requires input data (not implemented in CLI yet)[/yellow]"  # noqa: E501
         )
         console.print(f"Features to materialize: {', '.join(feature_names)}")
         console.print(f"Output path: {output_path}")
@@ -347,7 +347,7 @@ def info(
         health_icon = "✓" if health.is_healthy else "✗"
         health_color = "green" if health.is_healthy else "red"
         console.print(
-            f"  Status: [{health_color}]{health_icon} {'Healthy' if health.is_healthy else 'Unhealthy'}[/{health_color}]"
+            f"  Status: [{health_color}]{health_icon} {'Healthy' if health.is_healthy else 'Unhealthy'}[/{health_color}]"  # noqa: E501
         )
         console.print(f"  Freshness: {health.freshness_level} ({health.freshness_minutes:.1f} min)")
         console.print(f"  Last Updated: {health.last_updated}")

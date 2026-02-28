@@ -78,8 +78,7 @@ class MockSecurityScanner:
         return {
             "decision": decision,
             "secrets_found": any(
-                "secret" in v.lower() or "credential" in v.lower()
-                for v in audit.violations
+                "secret" in v.lower() or "credential" in v.lower() for v in audit.violations
             ),
             "confidence": 0.85,
             "scan_time_ms": 5.0,
@@ -164,9 +163,7 @@ class EntangledComplianceSecurityAssessor:
             EntangledAssessmentResult with both assessments
         """
         if not self.pair_id:
-            raise ValueError(
-                "Entanglement not set up. Call setup_entanglement() first."
-            )
+            raise ValueError("Entanglement not set up. Call setup_entanglement() first.")
 
         self.total_assessments += 1
 

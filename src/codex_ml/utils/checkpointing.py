@@ -84,6 +84,7 @@ except Exception:  # pragma: no cover - fallback no-op
 
 try:  # pragma: no cover - optional torch dependency
     import torch
+
     # Verify torch is actually functional (not just a stub)
     _ = torch.manual_seed
     TORCH_AVAILABLE = True
@@ -284,7 +285,9 @@ def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
         with path.open("wb") as fh:
             pickle.dump(dict(payload), fh, protocol=pickle.HIGHEST_PROTOCOL)
     except TypeError as e:
-        if "issubclass() arg 2 must be a class" in str(e) or "isinstance() arg 2 must be a type" in str(e):
+        if "issubclass() arg 2 must be a class" in str(
+            e
+        ) or "isinstance() arg 2 must be a type" in str(e):
             with path.open("wb") as fh:
                 pickle.dump(dict(payload), fh, protocol=2)
         else:
@@ -297,7 +300,10 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
     save_kwargs: dict[str, Any] = {}
     try:
         signature = inspect.signature(torch.save)
-    except (TypeError, ValueError):  # pragma: no cover - signature may fail on older torch
+    except (
+        TypeError,
+        ValueError,
+    ):  # pragma: no cover - signature may fail on older torch
         signature = None
     if signature and "_use_new_zipfile_serialization" in signature.parameters:
         save_kwargs["_use_new_zipfile_serialization"] = True
@@ -305,8 +311,15 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
         torch.save(dict(payload), path, **save_kwargs)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "profiler" in _msg:
-            logger.warning("torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s", e)
+        if (
+            "issubclass() arg 2 must be a class" in _msg
+            or "isinstance() arg 2 must be a type" in _msg
+            or "profiler" in _msg
+        ):
+            logger.warning(
+                "torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s",  # noqa: E501
+                e,
+            )
             try:
                 torch.save(dict(payload), path, pickle_protocol=2)
             except Exception as e2:
@@ -362,6 +375,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
             # Use safe pickle loading to prevent code execution vulnerabilities
             try:
                 from codex_ml.utils.safe_pickle import safe_pickle_load
+
                 return safe_pickle_load(str(path), use_restricted_unpickler=True)
             except ImportError:
                 return pickle.load(_fh)  # nosec B301 - fallback when safe_pickle not available
@@ -446,11 +460,9 @@ def load_checkpoint(
                 kwargs: dict[str, Any] = {"weights_only": True}
                 if map_location is not None:
                     kwargs["map_location"] = map_location
-                return torch.load(p, **kwargs)
+                return torch.load(p, **kwargs)  # nosec B614
             except Exception as exc:
-                raise CheckpointLoadError(
-                    f"safe load failed for {p}: {exc}"
-                ) from exc
+                raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
 
     try:
         return _load_payload(p, map_location=map_location, fmt=fmt)
@@ -506,7 +518,9 @@ def _safe_git_commit() -> Optional[str]:
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         logger.info(
-            "checkpointing._safe_git_commit: provenance hook failed: %s", exc, exc_info=True
+            "checkpointing._safe_git_commit: provenance hook failed: %s",
+            exc,
+            exc_info=True,
         )
     return _fallback_git_commit()
 
@@ -523,7 +537,7 @@ def _safe_str_value(val: Any) -> Optional[str]:
     if val is None:
         return None
     # Check if it's a MagicMock or similar test object
-    if hasattr(val, '_mock_name') or type(val).__name__ == 'MagicMock':
+    if hasattr(val, "_mock_name") or type(val).__name__ == "MagicMock":
         return None
     # Try to convert to string
     try:
@@ -721,7 +735,10 @@ def save_checkpoint(
         )
     except Exception as exc:  # pragma: no cover - metadata best effort
         logger.info(
-            "save_checkpoint: unable to write metadata sidecar for %s: %s", p, exc, exc_info=True
+            "save_checkpoint: unable to write metadata sidecar for %s: %s",
+            p,
+            exc,
+            exc_info=True,
         )
 
     try:
@@ -730,11 +747,17 @@ def save_checkpoint(
             for chunk in iter(lambda: fh.read(1024 * 1024), b""):
                 h.update(chunk)
         maybe_emit_checkpoint_saved_event(
-            str(p), sha256=h.hexdigest(), num_bytes=p.stat().st_size, extra={"epoch": epoch}
+            str(p),
+            sha256=h.hexdigest(),
+            num_bytes=p.stat().st_size,
+            extra={"epoch": epoch},
         )
     except Exception as exc:  # pragma: no cover - telemetry best effort
         logger.info(
-            "save_checkpoint: telemetry emission skipped for %s due to %s", p, exc, exc_info=True
+            "save_checkpoint: telemetry emission skipped for %s due to %s",
+            p,
+            exc,
+            exc_info=True,
         )
 
 
@@ -792,7 +815,10 @@ def load_training_checkpoint(
     if data.get("epoch") is not None:
         try:
             data["epoch"] = int(data["epoch"])
-        except (TypeError, ValueError) as exc:  # pragma: no cover - fallback to raw value
+        except (
+            TypeError,
+            ValueError,
+        ) as exc:  # pragma: no cover - fallback to raw value
             logger.info(
                 "load_training_checkpoint: epoch value %r could not be coerced to int: %s",
                 data.get("epoch"),
@@ -814,7 +840,9 @@ def load_training_checkpoint(
             _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
         except Exception as exc:  # pragma: no cover - scheduler load is best effort
             logger.info(
-                "load_training_checkpoint: scheduler state not restored: %s", exc, exc_info=True
+                "load_training_checkpoint: scheduler state not restored: %s",
+                exc,
+                exc_info=True,
             )
 
     if not isinstance(data.get("extra"), dict):
@@ -866,7 +894,11 @@ def build_payload_bytes(
         torch.save(state, buf)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg or "FloatStorage" in _msg:
+        if (
+            "issubclass() arg 2 must be a class" in _msg
+            or "isinstance() arg 2 must be a type" in _msg
+            or "FloatStorage" in _msg
+        ):
             logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
             buf = io.BytesIO()
             torch.save(state, buf, pickle_protocol=2)
@@ -913,11 +945,13 @@ def load_payload(
 def _write_json(path: Path, data: dict[str, Any]) -> None:
     class _SafeEncoder(json.JSONEncoder):
         """Fallback encoder: renders non-serializable objects as their repr string."""
+
         def default(self, o: Any) -> Any:
             try:
                 return super().default(o)
             except TypeError:
                 return repr(o)
+
     path.write_text(json.dumps(data, indent=2, sort_keys=True, cls=_SafeEncoder), encoding="utf-8")
 
 
@@ -943,7 +977,9 @@ def _rng_dump() -> dict[str, Any]:
     py_state_current = random.getstate()
     state: dict[str, Any] = {
         "python": _python_state_payload(
-            _seed_registry._LAST_SEEDED_PYTHON_STATE if _seed_registry._LAST_SEEDED_PYTHON_STATE is not None else py_state_current
+            _seed_registry._LAST_SEEDED_PYTHON_STATE
+            if _seed_registry._LAST_SEEDED_PYTHON_STATE is not None
+            else py_state_current
         ),
         "python_resume": _python_state_payload(py_state_current),
     }
@@ -951,7 +987,9 @@ def _rng_dump() -> dict[str, Any]:
     if NUMPY_AVAILABLE:  # pragma: no branch
         np_state_current = np.random.get_state()
         state["numpy"] = _numpy_state_payload(
-            _seed_registry._LAST_SEEDED_NUMPY_STATE if _seed_registry._LAST_SEEDED_NUMPY_STATE is not None else np_state_current
+            _seed_registry._LAST_SEEDED_NUMPY_STATE
+            if _seed_registry._LAST_SEEDED_NUMPY_STATE is not None
+            else np_state_current
         )
         state["numpy_resume"] = _numpy_state_payload(np_state_current)
 
@@ -1108,7 +1146,10 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         torch.save(state, p)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
-        if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
+        if (
+            "issubclass() arg 2 must be a class" in _msg
+            or "isinstance() arg 2 must be a type" in _msg
+        ):
             logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
             torch.save(state, p, pickle_protocol=2)
         else:
@@ -1184,8 +1225,14 @@ class CheckpointManager:
                 torch.save(state, ep_dir / "state.pt")
             except (TypeError, RuntimeError) as e:
                 _msg = str(e)
-                if "issubclass() arg 2 must be a class" in _msg or "isinstance() arg 2 must be a type" in _msg:
-                    logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+                if (
+                    "issubclass() arg 2 must be a class" in _msg
+                    or "isinstance() arg 2 must be a type" in _msg
+                ):
+                    logger.warning(
+                        "torch.save compat error, retrying with pickle_protocol=2: %s",
+                        e,
+                    )
                     torch.save(state, ep_dir / "state.pt", pickle_protocol=2)
                 else:
                     raise
@@ -1268,7 +1315,9 @@ class CheckpointManager:
         state_payload: Any = payload
         if isinstance(payload, (bytes, bytearray)):
             try:
-                state_payload = torch.load(io.BytesIO(payload), map_location="cpu", weights_only=False)  # nosec B614 - RNG state may contain complex objects
+                state_payload = torch.load(
+                    io.BytesIO(payload), map_location="cpu", weights_only=False
+                )  # nosec B614 - RNG state may contain complex objects
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 state_payload = {"payload": payload}
@@ -1350,6 +1399,7 @@ class CheckpointManager:
             # Use safe pickle loading to prevent code execution vulnerabilities
             try:
                 from codex_ml.utils.safe_pickle import safe_pickle_load
+
                 state = safe_pickle_load(str(path / "state.pkl"), use_restricted_unpickler=True)
             except ImportError:
                 with open(path / "state.pkl", "rb") as _fh:

@@ -112,8 +112,10 @@ class ActiveLearningHook:
         count = self._daily_counts.get(today, 0)
         if count >= self.query_budget_per_day:
             import logging
+
             logging.getLogger(__name__).warning(
-                "Active learning query budget (%d/day) exceeded", self.query_budget_per_day
+                "Active learning query budget (%d/day) exceeded",
+                self.query_budget_per_day,
             )
             return False
         self._daily_counts[today] = count + 1

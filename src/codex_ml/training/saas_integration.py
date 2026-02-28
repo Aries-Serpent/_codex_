@@ -79,7 +79,8 @@ class SaaSKnowledgeLoader:
 
         # Find dated directories (YYYY-MM-DD format)
         sync_dirs = [
-            d for d in self.zendesk_docs_root.iterdir()
+            d
+            for d in self.zendesk_docs_root.iterdir()
             if d.is_dir() and d.name.replace("-", "").isdigit()
         ]
 
@@ -159,14 +160,16 @@ class SaaSKnowledgeLoader:
                     rel_path = html_file.relative_to(latest_sync)
                     parts = rel_path.parts
 
-                    documents.append({
-                        "source": "zendesk",
-                        "path": str(html_file),
-                        "section": parts[0] if len(parts) > 0 else "unknown",
-                        "bucket": parts[1] if len(parts) > 1 else "unknown",
-                        "sync_date": latest_sync.name,
-                        "type": "documentation",
-                    })
+                    documents.append(
+                        {
+                            "source": "zendesk",
+                            "path": str(html_file),
+                            "section": parts[0] if len(parts) > 0 else "unknown",
+                            "bucket": parts[1] if len(parts) > 1 else "unknown",
+                            "sync_date": latest_sync.name,
+                            "type": "documentation",
+                        }
+                    )
 
         if include_d365:
             policies = self.load_d365_policies()
@@ -174,14 +177,16 @@ class SaaSKnowledgeLoader:
             logger.info(f"Found {len(policy_list)} D365 policies")
 
             for policy in policy_list:
-                documents.append({
-                    "source": "dynamics365",
-                    "name": policy.get("name", "unknown"),
-                    "metric": policy.get("metric", "unknown"),
-                    "content": json.dumps(policy),
-                    "type": "policy",
-                    "version": policy.get("version", "1.0.0"),
-                })
+                documents.append(
+                    {
+                        "source": "dynamics365",
+                        "name": policy.get("name", "unknown"),
+                        "metric": policy.get("metric", "unknown"),
+                        "content": json.dumps(policy),
+                        "type": "policy",
+                        "version": policy.get("version", "1.0.0"),
+                    }
+                )
 
         logger.info(f"Collected {len(documents)} training documents")
         return documents

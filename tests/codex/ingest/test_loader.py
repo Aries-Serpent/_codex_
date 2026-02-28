@@ -77,6 +77,6 @@ class TestIngestLoaderFilters:
                 with patch.object(loader, 'filter_by_size') as mock_filter:
                     mock_filter.return_value = ["large_file.txt"]
                     result = loader.filter_by_size(["a.txt", "b.txt"], min_size=1000)
-                    assert len(result) >= 0
+                    assert isinstance(result, (list, tuple, set, dict))  # was: len() >= 0 (always true)
         except (ImportError, AttributeError):
             pytest.skip("filter_by_size not available")

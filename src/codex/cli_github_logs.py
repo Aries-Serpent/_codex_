@@ -19,11 +19,11 @@ def _get_github_client():
     """Get GitHub client instance."""
     try:
         from src.services.github.client import GitHubClientSync
+
         return GitHubClientSync()
     except ImportError as e:
         raise click.ClickException(
-            f"GitHub client not available: {e}. "
-            "Ensure httpx and pydantic are installed."
+            f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
         )
 
 
@@ -48,16 +48,13 @@ def cli():
 @click.argument("owner")
 @click.argument("repo")
 @click.argument("check_run_id", type=int)
+@click.option("--output", "-o", type=click.Path(), help="Output file path (default: stdout)")
 @click.option(
-    "--output", "-o",
-    type=click.Path(),
-    help="Output file path (default: stdout)"
-)
-@click.option(
-    "--format", "-f",
+    "--format",
+    "-f",
     type=click.Choice(["text", "json"]),
     default="text",
-    help="Output format"
+    help="Output format",
 )
 def fetch_check_run_logs(
     owner: str,
@@ -132,16 +129,13 @@ def fetch_check_run_logs(
 @click.argument("owner")
 @click.argument("repo")
 @click.argument("job_id", type=int)
+@click.option("--output", "-o", type=click.Path(), help="Output file path (default: stdout)")
 @click.option(
-    "--output", "-o",
-    type=click.Path(),
-    help="Output file path (default: stdout)"
-)
-@click.option(
-    "--format", "-f",
+    "--format",
+    "-f",
     type=click.Choice(["text", "json"]),
     default="text",
-    help="Output format"
+    help="Output format",
 )
 def fetch_job_logs(
     owner: str,
@@ -206,12 +200,9 @@ def fetch_job_logs(
 @click.option(
     "--status",
     type=click.Choice(["queued", "in_progress", "completed"]),
-    help="Filter by status"
+    help="Filter by status",
 )
-@click.option(
-    "--name",
-    help="Filter by check run name"
-)
+@click.option("--name", help="Filter by check run name")
 def list_check_runs(
     owner: str,
     repo: str,
@@ -232,19 +223,18 @@ def list_check_runs(
 
         # List only completed check runs
         codex github-logs list-check-runs Aries-Serpent _codex_ main --status completed
-    """
+    """  # noqa: E501
     try:
         client = _get_github_client()
 
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
 
         from src.services.github.types import CheckRunStatus
+
         status_enum = CheckRunStatus(status) if status else None
 
         check_runs = client.list_check_runs_for_ref(
-            owner, repo, ref,
-            check_name=name,
-            status=status_enum
+            owner, repo, ref, check_name=name, status=status_enum
         )
 
         if not check_runs:

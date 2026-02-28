@@ -52,46 +52,85 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
     """
     try:
         # Check if model has parameters method
-        if hasattr(model, 'parameters'):
+        if hasattr(model, "parameters"):
             for param in model.parameters():
                 # Use is_meta attribute for direct meta tensor detection (PyTorch 1.10+)
-                if hasattr(param, 'is_meta') and param.is_meta:
+                if hasattr(param, "is_meta") and param.is_meta:
                     logger.debug(f"Found meta tensor parameter: {param.shape}")
                     return True
                 # Fallback: Check device.type for older versions or mock objects
-                if hasattr(param, 'device') and hasattr(param.device, 'type'):
-                    if param.device.type == 'meta':
+                if hasattr(param, "device") and hasattr(param.device, "type"):
+                    if param.device.type == "meta":
                         logger.debug("Found meta device parameter via device.type")
                         return True
 
         # Also check buffers if available
-        if hasattr(model, 'buffers'):
+        if hasattr(model, "buffers"):
             for buffer in model.buffers():
-                if hasattr(buffer, 'is_meta') and buffer.is_meta:
+                if hasattr(buffer, "is_meta") and buffer.is_meta:
                     logger.debug(f"Found meta tensor buffer: {buffer.shape}")
                     return True
                 # Fallback: Check device.type
-                if hasattr(buffer, 'device') and hasattr(buffer.device, 'type'):
-                    if buffer.device.type == 'meta':
+                if hasattr(buffer, "device") and hasattr(buffer.device, "type"):
+                    if buffer.device.type == "meta":
                         logger.debug("Found meta device buffer via device.type")
                         return True
 
-        # NOTE: The named_modules check is intentionally omitted here because it
-        # duplicates the parameters() and buffers() iteration above. The model.device
-        # check below is only applied to non-nn.Module objects (e.g. SentenceTransformer
-        # wrapper) that may expose their device as an attribute without using standard
-        # parameters()/buffers() iteration.
         try:
             import torch as _torch
+
             _is_nn_module = isinstance(model, _torch.nn.Module)
         except Exception:
             _is_nn_module = False
 
         if not _is_nn_module:
-            # For non-nn.Module objects (e.g., SentenceTransformer wrappers),
-            # check the model's own device attribute
-            if hasattr(model, 'device') and hasattr(model.device, 'type'):
-                if model.device.type == 'meta':
+            # For non-nn.Module objects, model.parameters() may not recurse into
+            # submodules, so we also walk named_modules() to find meta tensors.
+            # (For real torch.nn.Module, parameters() already recurses through all
+            # submodules, so this check is only needed for custom wrappers / test fakes.)
+            if hasattr(model, "named_modules"):
+                for _, submodule in model.named_modules():
+                    if submodule is model:
+                        # Skip the root module – already checked via parameters/buffers above
+                        continue
+                    if hasattr(submodule, "named_parameters"):
+                        # Use recurse=False to check only directly-owned parameters and
+                        # avoid N² iteration across deeply nested submodule trees.
+                        try:
+                            param_iter = submodule.named_parameters(recurse=False)
+                        except TypeError:
+                            param_iter = submodule.named_parameters()
+                        for _, param in param_iter:
+                            if hasattr(param, "is_meta") and param.is_meta:
+                                logger.debug("Found meta tensor in submodule parameter")
+                                return True
+                            if hasattr(param, "device") and hasattr(param.device, "type"):
+                                if param.device.type == "meta":
+                                    logger.debug("Found meta device in submodule parameter")
+                                    return True
+                    if hasattr(submodule, "named_buffers"):
+                        # Also check directly-owned buffers on this submodule.
+                        # For wrapper objects, buffers() may not recurse, so
+                        # recurse=False avoids double-counting across the walk.
+                        try:
+                            buf_iter = submodule.named_buffers(recurse=False)
+                        except TypeError:
+                            # recurse= kwarg unsupported in older PyTorch or
+                            # custom module implementations – fall back to default.
+                            buf_iter = submodule.named_buffers()
+                        for _, buf in buf_iter:
+                            if hasattr(buf, "is_meta") and buf.is_meta:
+                                logger.debug("Found meta tensor in submodule buffer")
+                                return True
+                            if hasattr(buf, "device") and hasattr(buf.device, "type"):
+                                if buf.device.type == "meta":
+                                    logger.debug("Found meta device in submodule buffer")
+                                    return True
+
+            # Also check the model's own device attribute (e.g., SentenceTransformer
+            # wrappers that expose their device without standard parameters/buffers).
+            if hasattr(model, "device") and hasattr(model.device, "type"):
+                if model.device.type == "meta":
                     logger.debug("Found meta device on model itself")
                     return True
 
@@ -105,7 +144,7 @@ def safe_model_to_device(
     model: Any,
     device: str = "cpu",
     dtype: Optional[Any] = None,
-    non_blocking: bool = False
+    non_blocking: bool = False,
 ) -> Any:
     """
     Safely move a model to the specified device, handling meta tensors.
@@ -129,6 +168,7 @@ def safe_model_to_device(
         RuntimeError: If model cannot be moved to device
     """
     import time
+
     start_time = time.time()
 
     try:
@@ -145,14 +185,12 @@ def safe_model_to_device(
         if meta_status:
             # Model has meta tensors - must use to_empty()
             logger.warning(
-                f"Meta tensor detected in model. "
-                f"Using to_empty() for device transfer to {device}."
+                f"Meta tensor detected in model. Using to_empty() for device transfer to {device}."
             )
 
             if not hasattr(model, "to_empty"):
                 logger.error(
-                    "PyTorch version does not support to_empty(). "
-                    "Upgrade to PyTorch >= 2.0"
+                    "PyTorch version does not support to_empty(). Upgrade to PyTorch >= 2.0"
                 )
                 raise AttributeError("Model does not support to_empty()")
 
@@ -164,9 +202,9 @@ def safe_model_to_device(
             # Then reinitialize parameters (if needed)
             # This ensures all parameters have actual data
             # Skip if model doesn't support modules() (e.g., mock objects in tests)
-            if hasattr(model, 'modules'):
+            if hasattr(model, "modules"):
                 for module in model.modules():
-                    if hasattr(module, 'reset_parameters'):
+                    if hasattr(module, "reset_parameters"):
                         try:
                             module.reset_parameters()
                             logger.debug(f"Reset parameters for {module.__class__.__name__}")
@@ -183,8 +221,7 @@ def safe_model_to_device(
             # Log completion time for production monitoring
             duration = time.time() - start_time
             logger.info(
-                f"Meta tensor device transfer completed in {duration:.3f}s. "
-                f"Device: {device}"
+                f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}"
             )
 
             # Optional: Add metrics if you have a metrics system
@@ -217,7 +254,9 @@ def safe_model_to_device(
                 # Log standard transfer timing
                 duration = time.time() - start_time
                 if duration > 1.0:  # Only log if takes more than 1 second
-                    logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
+                    logger.info(
+                        f"Model device transfer completed in {duration:.3f}s. Device: {device}"
+                    )
 
                 return result
 
@@ -240,7 +279,9 @@ def safe_model_to_device(
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
 
 
-def _try_model_to(model: Any, device: str, dtype: Optional[Any] = None, non_blocking: bool = False) -> Any:
+def _try_model_to(
+    model: Any, device: str, dtype: Optional[Any] = None, non_blocking: bool = False
+) -> Any:
     """
     Helper function to attempt model.to() if available.
 

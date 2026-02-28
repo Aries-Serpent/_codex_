@@ -376,7 +376,7 @@ class TestKeyPointExtractor:
         text = "Fixed the bug in module.\nDecided to use new approach."
         points = extractor.extract(text, max_points=5)
 
-        assert len(points) >= 0  # May or may not find points
+        assert isinstance(points, (list, tuple, set, dict))# May or may not find points
 
 
 class TestExtractiveSummarizer:

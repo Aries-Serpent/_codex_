@@ -14,6 +14,7 @@ from typing import Any, Generator
 
 logger = logging.getLogger(__name__)
 
+
 @contextmanager
 def get_tb_writer(
     log_dir: str | Path | None = None, *, enabled: bool | None = None

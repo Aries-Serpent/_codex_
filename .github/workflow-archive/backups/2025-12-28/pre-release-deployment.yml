@@ -322,7 +322,7 @@ jobs:
 
       - name: Create GitHub Pre-Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           VERSION="${{ steps.create_tag.outputs.version }}"
 

@@ -71,14 +71,14 @@ def _write_readme(output: Path, config: PackageConfig) -> None:
 ## Quickstart
 
 ```bash
-python -m {config.python_package}.{config.entrypoint.replace('.py','')}
+python -m {config.python_package}.{config.entrypoint.replace(".py", "")}
 ```
 """
     (output / "README.md").write_text(content, encoding="utf-8")
 
 
 def _write_pyproject(output: Path, config: PackageConfig) -> None:
-    deps = "\n".join(f"  \"{dep}\"," for dep in config.dependencies)
+    deps = "\n".join(f'  "{dep}",' for dep in config.dependencies)
     content = f"""[project]
 name = "{config.python_package}"
 version = "0.1.0"

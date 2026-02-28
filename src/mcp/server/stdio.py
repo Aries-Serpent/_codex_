@@ -28,6 +28,7 @@ class TransportConfig:
 
 class TransportError(Exception):
     """Base exception for transport errors."""
+
     pass
 
 
@@ -37,9 +38,7 @@ class MessageTooLargeError(TransportError):
     def __init__(self, size: int, max_size: int) -> None:
         self.size = size
         self.max_size = max_size
-        super().__init__(
-            f"Message size {size} exceeds maximum {max_size}"
-        )
+        super().__init__(f"Message size {size} exceeds maximum {max_size}")
 
 
 class InvalidMessageError(TransportError):
@@ -63,7 +62,7 @@ class StdioTransport:
         self,
         config: Optional[TransportConfig] = None,
         reader: Optional[asyncio.StreamReader] = None,
-        writer: Optional[asyncio.StreamWriter] = None
+        writer: Optional[asyncio.StreamWriter] = None,
     ) -> None:
         """Initialize the stdio transport.
 
@@ -98,10 +97,7 @@ class StdioTransport:
 
         # Create writer to stdout
         loop = asyncio.get_event_loop()
-        transport, protocol = await loop.connect_write_pipe(
-            asyncio.Protocol,
-            sys.stdout
-        )
+        transport, protocol = await loop.connect_write_pipe(asyncio.Protocol, sys.stdout)
         writer = asyncio.StreamWriter(transport, protocol, None, loop)
         self._writer = writer
         return writer
@@ -121,8 +117,7 @@ class StdioTransport:
         try:
             # Read a line with timeout
             line = await asyncio.wait_for(
-                reader.readline(),
-                timeout=self._config.read_timeout_seconds
+                reader.readline(), timeout=self._config.read_timeout_seconds
             )
         except asyncio.TimeoutError:
             self._logger.warning("Read timeout reached")
@@ -134,10 +129,7 @@ class StdioTransport:
 
         # Check message size
         if len(line) > self._config.max_message_size:
-            raise MessageTooLargeError(
-                len(line),
-                self._config.max_message_size
-            )
+            raise MessageTooLargeError(len(line), self._config.max_message_size)
 
         # Decode and parse
         text: Optional[str] = None
@@ -148,15 +140,9 @@ class StdioTransport:
             return json.loads(text)
         except UnicodeDecodeError as e:
             logger.debug(f"UnicodeDecodeError: {e}")
-            raise InvalidMessageError(
-                f"Invalid encoding: {e}",
-                str(line[:100])
-            )
+            raise InvalidMessageError(f"Invalid encoding: {e}", str(line[:100]))
         except json.JSONDecodeError as e:
-            raise InvalidMessageError(
-                f"Invalid JSON: {e}",
-                text[:100] if text else None
-            )
+            raise InvalidMessageError(f"Invalid JSON: {e}", text[:100] if text else None)
 
     async def write_message(self, message: dict[str, Any]) -> None:
         """Write a JSON-RPC message to stdout.
@@ -172,10 +158,7 @@ class StdioTransport:
 
         # Check size
         if len(data) > self._config.max_message_size:
-            raise MessageTooLargeError(
-                len(data),
-                self._config.max_message_size
-            )
+            raise MessageTooLargeError(len(data), self._config.max_message_size)
 
         writer.write(data)
         await writer.drain()

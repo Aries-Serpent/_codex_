@@ -28,7 +28,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             pass
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_occurred = True
         assert error_occurred is False
 
@@ -37,7 +37,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             raise RuntimeError("test error")
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_occurred = True
         assert error_occurred is True
 
@@ -50,7 +50,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_type = "generic"
         assert error_type == "value_error"
 
@@ -63,7 +63,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_type = "generic"
         assert error_type == "type_error"
 
@@ -76,7 +76,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception:
+        except Exception:  # noqa: BLE001
             error_type = "generic"
         assert error_type == "generic"
 
@@ -85,7 +85,7 @@ class TestErrorHandlingBranches:
         finally_executed = False
         try:
             pass
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
         finally:
             finally_executed = True
@@ -96,7 +96,7 @@ class TestErrorHandlingBranches:
         finally_executed = False
         try:
             pass
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass
         finally:
             finally_executed = True

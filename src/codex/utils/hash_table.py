@@ -15,8 +15,8 @@ AAIS Contribution: +3.0 points (Runtime Introspection)
 
 from typing import Generic, List, Optional, Tuple, TypeVar
 
-K = TypeVar('K')
-V = TypeVar('V')
+K = TypeVar("K")
+V = TypeVar("V")
 
 
 def murmur_hash3_32(key: bytes, seed: int = 0) -> int:
@@ -34,19 +34,19 @@ def murmur_hash3_32(key: bytes, seed: int = 0) -> int:
 
     Reference: https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp
     """
-    c1 = 0xcc9e2d51
-    c2 = 0x1b873593
+    c1 = 0xCC9E2D51
+    c2 = 0x1B873593
     r1 = 15
     r2 = 13
     m = 5
-    n = 0xe6546b64
+    n = 0xE6546B64
 
     hash_val = seed
     length = len(key)
 
     # Process 4-byte chunks
     for i in range(0, length // 4):
-        k = int.from_bytes(key[i*4:(i+1)*4], byteorder='little', signed=False)
+        k = int.from_bytes(key[i * 4 : (i + 1) * 4], byteorder="little", signed=False)
 
         k = (k * c1) & 0xFFFFFFFF
         k = ((k << r1) | (k >> (32 - r1))) & 0xFFFFFFFF
@@ -70,11 +70,11 @@ def murmur_hash3_32(key: bytes, seed: int = 0) -> int:
 
     # Finalization
     hash_val ^= length
-    hash_val ^= (hash_val >> 16)
-    hash_val = (hash_val * 0x85ebca6b) & 0xFFFFFFFF
-    hash_val ^= (hash_val >> 13)
-    hash_val = (hash_val * 0xc2b2ae35) & 0xFFFFFFFF
-    hash_val ^= (hash_val >> 16)
+    hash_val ^= hash_val >> 16
+    hash_val = (hash_val * 0x85EBCA6B) & 0xFFFFFFFF
+    hash_val ^= hash_val >> 13
+    hash_val = (hash_val * 0xC2B2AE35) & 0xFFFFFFFF
+    hash_val ^= hash_val >> 16
 
     return hash_val
 
@@ -119,7 +119,7 @@ class RobinHoodHashTable(Generic[K, V]):
 
     def _hash(self, key: K) -> int:
         """Hash a key using MurmurHash3."""
-        key_bytes = str(key).encode('utf-8')
+        key_bytes = str(key).encode("utf-8")
         return murmur_hash3_32(key_bytes) % self.capacity
 
     def _resize(self) -> None:
@@ -311,12 +311,12 @@ class CuckooHashTable(Generic[K, V]):
 
     def _hash1(self, key: K) -> int:
         """First hash function using MurmurHash3 seed=0."""
-        key_bytes = str(key).encode('utf-8')
+        key_bytes = str(key).encode("utf-8")
         return murmur_hash3_32(key_bytes, seed=0) % self.capacity
 
     def _hash2(self, key: K) -> int:
         """Second hash function using MurmurHash3 seed=42."""
-        key_bytes = str(key).encode('utf-8')
+        key_bytes = str(key).encode("utf-8")
         return murmur_hash3_32(key_bytes, seed=42) % self.capacity
 
     def _resize(self) -> None:
@@ -475,8 +475,8 @@ if __name__ == "__main__":
     lookup_time = time.time() - start
 
     rh_metrics = rh_table.get_metrics()
-    print(f"  Insert time: {insert_time*1000:.2f}ms ({insert_time/10000*1e6:.2f}µs avg)")
-    print(f"  Lookup time: {lookup_time*1000:.2f}ms ({lookup_time/10000*1e6:.2f}µs avg)")
+    print(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
+    print(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
     print(f"  Load factor: {rh_metrics['load_factor']:.2f}")
     print(f"  Collision rate: {rh_metrics['collision_rate']:.1%}")
     print(f"  Avg probes/lookup: {rh_metrics['avg_probes_per_lookup']:.2f}\n")
@@ -496,8 +496,8 @@ if __name__ == "__main__":
     lookup_time = time.time() - start
 
     cuckoo_metrics = cuckoo_table.get_metrics()
-    print(f"  Insert time: {insert_time*1000:.2f}ms ({insert_time/10000*1e6:.2f}µs avg)")
-    print(f"  Lookup time: {lookup_time*1000:.2f}ms ({lookup_time/10000*1e6:.2f}µs avg)")
+    print(f"  Insert time: {insert_time * 1000:.2f}ms ({insert_time / 10000 * 1e6:.2f}µs avg)")
+    print(f"  Lookup time: {lookup_time * 1000:.2f}ms ({lookup_time / 10000 * 1e6:.2f}µs avg)")
     print(f"  Load factor: {cuckoo_metrics['load_factor']:.2f}")
     print(f"  Evictions/insert: {cuckoo_metrics['evictions_per_insert']:.2f}\n")
 

@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 import logging
+
 logger = logging.getLogger(__name__)
 
 import argparse  # noqa: E402
@@ -33,11 +34,18 @@ from codex_ml.monitoring.codex_logging import (  # noqa: E402
     _codex_log_all,
     _codex_logging_bootstrap,
 )
-from codex_ml.monitoring.codex_logging import _codex_patch_argparse as _codex_monitor_patch_argparse  # noqa: E402
+from codex_ml.monitoring.codex_logging import (  # noqa: E402
+    _codex_patch_argparse as _codex_monitor_patch_argparse,
+)
 from codex_ml.monitoring.codex_logging import (  # noqa: E402
     _codex_sample_system,
 )
-from codex_ml.safety import SafetyConfig, SafetyFilters, SafetyViolation, sanitize_prompt  # noqa: E402
+from codex_ml.safety import (  # noqa: E402
+    SafetyConfig,
+    SafetyFilters,
+    SafetyViolation,
+    sanitize_prompt,
+)
 from codex_ml.symbolic_pipeline import (  # noqa: E402
     PretrainCfg,
     RewardModelCfg,
@@ -70,6 +78,7 @@ except ImportError as e:
 
         epochs: int = 1
         batch_size: int = 1
+        grad_accum: int = 1
         log_every: int = 1
         save_every: int = 0
         max_steps: int = 2
@@ -457,7 +466,7 @@ def _run_minilm_training(
     grad_clip: Optional[float] = None,
     grad_accum: int = 1,
     precision: str = "fp32",
-    # Legacy flag (kept for backward compatibility). If `scheduler` is provided, it takes precedence.
+    # Legacy flag (kept for backward compatibility). If `scheduler` is provided, it takes precedence.  # noqa: E501
     use_scheduler: bool = False,
     checkpoint_dir: Optional[str] = None,
     resume_from: Optional[str] = None,
@@ -592,7 +601,10 @@ def _run_minilm_training(
             try:
                 resume_path = Path(resume_from)
                 load_info: Optional[dict[str, Any]] = None
-                if resume_path.is_file() and resume_path.name in {"state.pt", "state.pkl"}:
+                if resume_path.is_file() and resume_path.name in {
+                    "state.pt",
+                    "state.pkl",
+                }:
                     load_info = mgr.resume_from(
                         resume_path.parent, model=model, optimizer=opt, scheduler=sched
                     )
@@ -912,6 +924,7 @@ def load_training_cfg(**kwargs: Any) -> Any:
     """
     try:
         from omegaconf import OmegaConf
+
         return OmegaConf.create({"training": kwargs})
     except ImportError:
         return {"training": kwargs}
@@ -932,19 +945,33 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
         Dict with at minimum a ``loss`` key.
     """
     corpus = list(texts)
-    # Strip kwargs that run_functional_training doesn't accept
-    _compat_keys = {"hydra_cfg", "seed"}
+    # Strip kwargs that run_functional_training doesn't accept.
+    # gradient_accumulation_steps and deterministic are passed by main() for
+    # test observability but run_functional_training uses grad_accum directly.
+    _compat_keys = {"hydra_cfg", "seed", "gradient_accumulation_steps", "deterministic"}
     compat = {k: v for k, v in kwargs.items() if k not in _compat_keys}
-    return run_functional_training(corpus=corpus, demos=[], prefs=[], use_deeplearning=True, **compat) or {"loss": 0.0}
+    return run_functional_training(
+        corpus=corpus, demos=[], prefs=[], use_deeplearning=True, **compat
+    ) or {"loss": 0.0}
 
 
 def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience CLI
     parser = build_parser()
     # Add engine and output-dir args used by peft-comprehensive tests
-    parser.add_argument("--engine", type=str, default=None, choices=["hf", "custom", None],
-                        help="training engine selector (hf=HuggingFace, custom=custom engine)")
-    parser.add_argument("--output-dir", type=str, default=None, dest="output_dir",
-                        help="output directory for training artefacts")
+    parser.add_argument(
+        "--engine",
+        type=str,
+        default=None,
+        choices=["hf", "custom", None],
+        help="training engine selector (hf=HuggingFace, custom=custom engine)",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=None,
+        dest="output_dir",
+        help="output directory for training artefacts",
+    )
     args = parser.parse_args(argv)
 
     # Determine scheduler preference with backward compatibility
@@ -961,18 +988,85 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
         )
         try:
             from omegaconf import OmegaConf
+
             training_section = OmegaConf.to_container(cfg.get("training", cfg), resolve=True)
         except Exception:
             training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
+        lora_section = (
+            training_section.get("lora", {})
+            if isinstance(training_section, dict) else {}
+        )
+        repro_section = (
+            training_section.get("reproducibility", {})
+            if isinstance(training_section, dict) else {}
+        )
         run_hf_trainer(
             texts=texts,
-            output_dir=output_dir_val,
+            output_dir=Path(output_dir_val) if output_dir_val else None,
             seed=training_section.get("seed", args.seed),
             grad_accum=training_section.get("grad_accum", args.grad_accum),
             hydra_cfg=training_section,
+            lora_r=lora_section.get("r", args.lora_r),
+            lora_alpha=lora_section.get("alpha", args.lora_alpha),
+            lora_dropout=getattr(args, "lora_dropout", 0.05),
+            gradient_accumulation_steps=training_section.get("grad_accum", args.grad_accum),
+            deterministic=repro_section.get("cudnn_deterministic", False),
         )
+        return
+
+    # Custom engine path — tokenize texts, create labels, call run_custom_trainer
+    if getattr(args, "engine", None) == "custom":
+        cfg = load_training_cfg(
+            output_dir=getattr(args, "output_dir", None),
+            seed=args.seed,
+            grad_accum=args.grad_accum,
+        )
+        try:
+            from omegaconf import OmegaConf
+
+            ts = OmegaConf.to_container(
+                cfg.get("training", cfg), resolve=True,
+            )
+        except Exception:
+            ts = (
+                dict(cfg.get("training", cfg))
+                if hasattr(cfg, "get") else {}
+            )
+        import importlib
+
+        tf_mod = importlib.import_module("transformers")
+        ds_mod = importlib.import_module("datasets")
+        model_name = ts.get("model", "gpt2")
+        tokenizer = tf_mod.AutoTokenizer.from_pretrained(model_name)
+        model = tf_mod.AutoModelForCausalLM.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        def _encode_with_labels(tok, txts):
+            """Tokenize *txts* and create labels (padding → -100)."""
+            enc = tok(txts, padding=True, return_tensors="pt")
+            ids = enc["input_ids"]
+            mask = enc["attention_mask"]
+            lbl = ids.clone()
+            lbl[mask == 0] = -100
+            return ds_mod.Dataset.from_dict({
+                "input_ids": ids,
+                "attention_mask": mask,
+                "labels": lbl,
+            })
+
+        texts = ts.get("texts", ["hello world"])
+        train_ds = _encode_with_labels(tokenizer, texts)
+        val_ds = None
+        val_texts = ts.get("val_texts")
+        if val_texts:
+            val_ds = _encode_with_labels(tokenizer, val_texts)
+        train_cfg = TrainCfg(
+            grad_accum=ts.get("grad_accum", args.grad_accum),
+        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
         return
 
     if not args.use_deeplearning:
@@ -1057,7 +1151,7 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
         }
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        return {"token_accuracy": 0.0, "perplexity": 0.0}
+        return {"token_accuracy": 0.0, "perplexity": 0.0}  # nosec B105
 
 
 def _codex_write_metrics(run_dir: Path, record: dict):

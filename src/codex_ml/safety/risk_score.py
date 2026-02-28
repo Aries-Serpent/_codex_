@@ -24,7 +24,7 @@ _classifier = None
 
 # keyword weights used by the fallback logistic model
 WEIGHTS: dict[str, float] = {
-    "password": 1.0,
+    "password": 1.0,  # nosec B105
     "api_key": 1.0,
     "ssn": 1.0,
     "rm -rf /": 2.0,

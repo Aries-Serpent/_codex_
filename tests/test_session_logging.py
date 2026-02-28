@@ -182,7 +182,6 @@ def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
     logger_mod = _import_any(["src.codex.logging.session_logger"])
     if not hooks or not logger_mod:
         pytest.skip("logging modules not available")
-    import importlib
 
     importlib.reload(hooks)
     with hooks.session():
@@ -229,7 +228,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
                 parsed = json.loads(out)
                 assert isinstance(parsed, list)
                 messages = [r.get("message") or r.get("content") for r in parsed]
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Tolerate non-JSON lines containing messages
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
@@ -261,7 +260,7 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
             try:
                 data = json.loads(out)
                 messages = [r.get("message") or r.get("content") for r in data]
-            except Exception:
+            except Exception:  # noqa: BLE001
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
             assert any("hey" in m for m in messages)

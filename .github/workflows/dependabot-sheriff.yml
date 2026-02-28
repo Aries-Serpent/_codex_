@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: CacheManager health check
         continue-on-error: true
@@ -64,14 +64,14 @@ jobs:
           gh --version
 
           # Authenticate with GitHub token
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          echo "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}" | gh auth login --with-token
 
       - name: Run DependaBot Sheriff
         id: consolidate
         env:
           BASE_BRANCH: ${{ inputs.base_branch || 'main' }}
           DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Make script executable
           chmod +x scripts/dependabot_sheriff.sh

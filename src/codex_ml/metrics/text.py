@@ -25,6 +25,7 @@ if TYPE_CHECKING:
 
 try:  # pragma: no cover - optional dependency
     import torch as _torch
+
     # Verify torch is functional
     _ = _torch.Tensor
 except Exception:  # pragma: no cover - torch may be unavailable in minimal envs

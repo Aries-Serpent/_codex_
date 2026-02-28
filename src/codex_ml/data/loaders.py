@@ -175,9 +175,7 @@ def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 continue
             if not isinstance(obj, dict):
                 raise ValueError(
-                    "Line "
-                    f"{line_number}: expected JSON object but received "
-                    f"{type(obj).__name__}"
+                    f"Line {line_number}: expected JSON object but received {type(obj).__name__}"
                 )
             records.append(obj)
     checksum = compute_file_checksum(p)

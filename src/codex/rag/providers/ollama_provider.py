@@ -15,6 +15,7 @@ try:
     import requests
     from requests.adapters import HTTPAdapter
     from urllib3.util.retry import Retry
+
     REQUESTS_AVAILABLE = True
 except ImportError:
     REQUESTS_AVAILABLE = False
@@ -72,7 +73,7 @@ class OllamaEmbeddingProvider:
         # Configure session with retries
         self.session = requests.Session()
         retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
-        self.session.mount('http://', HTTPAdapter(max_retries=retries))
+        self.session.mount("http://", HTTPAdapter(max_retries=retries))
 
         # Check if server is running
         if not self._check_health():
@@ -113,16 +114,13 @@ class OllamaEmbeddingProvider:
             try:
                 response = self.session.post(
                     f"{self.base_url}/api/embeddings",
-                    json={
-                        "model": self.model_name,
-                        "prompt": text
-                    },
-                    timeout=self.timeout
+                    json={"model": self.model_name, "prompt": text},
+                    timeout=self.timeout,
                 )
 
                 if response.status_code == 200:
                     data = response.json()
-                    embedding = data.get('embedding', [])
+                    embedding = data.get("embedding", [])
                     embeddings.append(embedding)
                 else:
                     logger.error(f"Ollama request failed: {response.status_code}")

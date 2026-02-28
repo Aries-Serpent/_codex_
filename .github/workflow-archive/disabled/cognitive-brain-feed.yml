@@ -51,7 +51,7 @@ jobs:
 
       - name: Extract workflow patterns
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python scripts/cognitive/extract_workflow_patterns.py \
             --days-back ${{ github.event.inputs.days_back || '30' }} \

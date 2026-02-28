@@ -116,9 +116,7 @@ class TopologyManager:
         # Initialize correlation matrix
         self.correlation_matrix = np.zeros((num_agents, num_agents))
 
-        logger.info(
-            f"Configured {topology_type.value} topology with {num_agents} agents"
-        )
+        logger.info(f"Configured {topology_type.value} topology with {num_agents} agents")
         return self.adjacency_matrix.copy()
 
     def _create_star_topology(self, num_agents: int) -> np.ndarray:
@@ -256,9 +254,7 @@ class TopologyManager:
         neighbors = [self.agent_ids[idx] for idx in neighbor_indices]
         return neighbors
 
-    def update_correlation(
-        self, agent1_id: str, agent2_id: str, correlation: float
-    ) -> None:
+    def update_correlation(self, agent1_id: str, agent2_id: str, correlation: float) -> None:
         """
         Update the correlation value between two agents.
 
@@ -281,9 +277,7 @@ class TopologyManager:
             raise ValueError(f"Agent {agent2_id} not found in topology")
 
         if not -1.0 <= correlation <= 1.0:
-            logger.warning(
-                f"Correlation {correlation} outside expected range [-1, 1], clamping"
-            )
+            logger.warning(f"Correlation {correlation} outside expected range [-1, 1], clamping")
             correlation = max(-1.0, min(1.0, correlation))
 
         idx1 = self.agent_ids.index(agent1_id)
@@ -293,9 +287,7 @@ class TopologyManager:
         self.correlation_matrix[idx1, idx2] = correlation
         self.correlation_matrix[idx2, idx1] = correlation
 
-        logger.debug(
-            f"Updated correlation between {agent1_id} and {agent2_id}: {correlation:.3f}"
-        )
+        logger.debug(f"Updated correlation between {agent1_id} and {agent2_id}: {correlation:.3f}")
 
     def optimize_topology(self, correlation_threshold: float = 0.75) -> int:
         """
@@ -377,9 +369,7 @@ class TopologyManager:
         if self.adjacency_matrix is None:
             return {"configured": False}
 
-        total_connections = (
-            int(np.sum(self.adjacency_matrix)) // 2
-        )  # Divide by 2 for undirected
+        total_connections = int(np.sum(self.adjacency_matrix)) // 2  # Divide by 2 for undirected
         max_possible = (self.num_agents * (self.num_agents - 1)) // 2
         density = total_connections / max_possible if max_possible > 0 else 0
 
@@ -401,9 +391,7 @@ class TopologyManager:
 
         # Add correlation stats if available
         if self.correlation_matrix is not None:
-            correlations = self.correlation_matrix[
-                np.triu_indices(self.num_agents, k=1)
-            ]
+            correlations = self.correlation_matrix[np.triu_indices(self.num_agents, k=1)]
             measured = correlations[correlations != 0]
             if len(measured) > 0:
                 stats["avg_correlation"] = float(np.mean(np.abs(measured)))

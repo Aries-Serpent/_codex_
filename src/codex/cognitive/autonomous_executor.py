@@ -28,6 +28,7 @@ from .objective_adjuster import (
 
 class AutomationLevel(Enum):
     """Levels of automation for objective adjustments."""
+
     LEVEL_1_ADVISORY = 1
     LEVEL_2_SEMI_AUTONOMOUS = 2
     LEVEL_3_FULLY_AUTONOMOUS = 3
@@ -35,6 +36,7 @@ class AutomationLevel(Enum):
 
 class ApprovalStatus(Enum):
     """Status of approval for an adjustment."""
+
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -45,6 +47,7 @@ class ApprovalStatus(Enum):
 @dataclass
 class ApprovalRequest:
     """A request for approval of an adjustment."""
+
     id: str
     adjustment: Adjustment
     automation_level: AutomationLevel
@@ -66,13 +69,14 @@ class ApprovalRequest:
             "created_at": self.created_at.isoformat(),
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
             "approved_by": self.approved_by,
-            "approved_at": self.approved_at.isoformat() if self.approved_at else None
+            "approved_at": self.approved_at.isoformat() if self.approved_at else None,
         }
 
 
 @dataclass
 class ExecutionResult:
     """Result of executing an adjustment."""
+
     success: bool
     adjustment_id: str
     objective: Objective | None
@@ -90,14 +94,17 @@ class ExecutionResult:
             "message": self.message,
             "executed_at": self.executed_at.isoformat(),
             "automation_level": self.automation_level.value,
-            "required_approval": self.required_approval
+            "required_approval": self.required_approval,
         }
 
 
 class ExecutionPolicy:
     """Policy that determines what can be auto-executed."""
 
-    def __init__(self, automation_level: AutomationLevel = AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS):
+    def __init__(
+        self,
+        automation_level: AutomationLevel = AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS,
+    ):
         """Initialize the execution policy."""
         self.automation_level = automation_level
 
@@ -133,10 +140,16 @@ class ExecutionPolicy:
 
         # Level 2: Semi-autonomous
         if adjustment.type in self._level_2_auto_approve:
-            return True, f"{adjustment.type.value} is auto-approvable in semi-autonomous mode"
+            return (
+                True,
+                f"{adjustment.type.value} is auto-approvable in semi-autonomous mode",
+            )
 
         if adjustment.type in self._level_2_require_approval:
-            return False, f"{adjustment.type.value} requires approval in semi-autonomous mode"
+            return (
+                False,
+                f"{adjustment.type.value} requires approval in semi-autonomous mode",
+            )
 
         return False, "Unknown adjustment type"
 
@@ -165,7 +178,7 @@ class AutonomousExecutor:
     def __init__(
         self,
         adjuster: ObjectiveAdjuster | None = None,
-        policy: ExecutionPolicy | None = None
+        policy: ExecutionPolicy | None = None,
     ):
         """Initialize the autonomous executor."""
         self.adjuster = adjuster or create_adjuster()
@@ -185,8 +198,7 @@ class AutonomousExecutor:
         self.policy.automation_level = level
 
     def process_adjustments(
-        self,
-        adjustments: list[Adjustment] | None = None
+        self, adjustments: list[Adjustment] | None = None
     ) -> list[ExecutionResult]:
         """
         Process a list of adjustments according to the automation policy.
@@ -221,7 +233,7 @@ class AutonomousExecutor:
                 message=f"Auto-executed: {reason}",
                 executed_at=now,
                 automation_level=self.automation_level,
-                required_approval=False
+                required_approval=False,
             )
         else:
             # Request approval
@@ -235,14 +247,10 @@ class AutonomousExecutor:
                 message=f"Awaiting approval: {reason}. Request ID: {approval.id}",
                 executed_at=now,
                 automation_level=self.automation_level,
-                required_approval=True
+                required_approval=True,
             )
 
-    def _create_approval_request(
-        self,
-        adjustment: Adjustment,
-        reason: str
-    ) -> ApprovalRequest:
+    def _create_approval_request(self, adjustment: Adjustment, reason: str) -> ApprovalRequest:
         """Create an approval request."""
         self._approval_counter += 1
         now = datetime.now(timezone.utc)
@@ -257,7 +265,7 @@ class AutonomousExecutor:
             status=ApprovalStatus.PENDING,
             reason=reason,
             created_at=now,
-            expires_at=expires_at
+            expires_at=expires_at,
         )
 
     def approve(self, request_id: str, approved_by: str) -> ExecutionResult | None:
@@ -278,7 +286,7 @@ class AutonomousExecutor:
                 message="Approval request expired",
                 executed_at=now,
                 automation_level=self.automation_level,
-                required_approval=True
+                required_approval=True,
             )
 
         # Approve and execute
@@ -297,7 +305,7 @@ class AutonomousExecutor:
             message=f"Approved by {approved_by} and executed",
             executed_at=now,
             automation_level=self.automation_level,
-            required_approval=True
+            required_approval=True,
         )
         self._execution_history.append(result)
         return result
@@ -351,7 +359,7 @@ class AutonomousExecutor:
                 "adjustments_proposed": 0,
                 "adjustments_executed": 0,
                 "approvals_pending": len(self._pending_approvals),
-                "message": "No adjustments triggered"
+                "message": "No adjustments triggered",
             }
 
         # Process adjustments
@@ -366,7 +374,7 @@ class AutonomousExecutor:
             "adjustments_executed": executed,
             "adjustments_pending_approval": pending,
             "approvals_pending": len(self._pending_approvals),
-            "results": [r.to_dict() for r in results]
+            "results": [r.to_dict() for r in results],
         }
 
     def get_status(self) -> dict[str, Any]:
@@ -378,13 +386,13 @@ class AutonomousExecutor:
             "active_objectives": len(self.adjuster.get_active_objectives()),
             "policy": {
                 "max_priority_change": self.policy.max_priority_change,
-                "max_objectives_per_day": self.policy.max_objectives_per_day
-            }
+                "max_objectives_per_day": self.policy.max_objectives_per_day,
+            },
         }
 
 
 def create_executor(
-    automation_level: AutomationLevel = AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS
+    automation_level: AutomationLevel = AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS,
 ) -> AutonomousExecutor:
     """Factory function to create an AutonomousExecutor."""
     policy = ExecutionPolicy(automation_level)

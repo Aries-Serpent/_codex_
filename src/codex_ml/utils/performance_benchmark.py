@@ -336,16 +336,16 @@ class BenchmarkSuite:
 
     def print_summary(self):
         """Print summary of all benchmarks."""
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Benchmark Suite: {self.name}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         for result in self.results:
             print(f"\n{result}")
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Total benchmarks: {len(self.results)}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
     def save_results(self, path: str):
         """Save results to JSON file.

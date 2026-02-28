@@ -122,9 +122,7 @@ class Assemblage:
     def remove_agent(self, agent: Agent) -> None:
         """Remove an agent from the assemblage."""
         self.agents.discard(agent)
-        LOGGER.debug(
-            f"Removed agent {agent.agent_id} from assemblage {self.assemblage_id}"
-        )
+        LOGGER.debug(f"Removed agent {agent.agent_id} from assemblage {self.assemblage_id}")
 
     def territorialize(self, amount: float) -> None:
         """
@@ -135,8 +133,7 @@ class Assemblage:
         """
         self.territorialization = min(1.0, self.territorialization + amount)
         LOGGER.debug(
-            f"Assemblage {self.assemblage_id} territorialized to "
-            f"{self.territorialization:.2%}"
+            f"Assemblage {self.assemblage_id} territorialized to {self.territorialization:.2%}"
         )
 
     def deterritorialize(self, amount: float) -> None:
@@ -148,8 +145,7 @@ class Assemblage:
         """
         self.territorialization = max(0.0, self.territorialization - amount)
         LOGGER.debug(
-            f"Assemblage {self.assemblage_id} deterritorialized to "
-            f"{self.territorialization:.2%}"
+            f"Assemblage {self.assemblage_id} deterritorialized to {self.territorialization:.2%}"
         )
 
 
@@ -195,9 +191,7 @@ class AssemblageMapper:
             del self.agents[agent_id]
             LOGGER.info(f"Unregistered agent {agent_id}")
 
-    def find_agents_with_capability(
-        self, capability: AgentCapability
-    ) -> List[Agent]:
+    def find_agents_with_capability(self, capability: AgentCapability) -> List[Agent]:
         """Find all agents with a specific capability."""
         return [
             agent
@@ -235,9 +229,7 @@ class AssemblageMapper:
 
             agents_with_cap = self.find_agents_with_capability(capability)
             if not agents_with_cap:
-                LOGGER.warning(
-                    f"No agents available with capability {capability.value}"
-                )
+                LOGGER.warning(f"No agents available with capability {capability.value}")
                 return None
 
             # Add first available agent with this capability
@@ -253,9 +245,7 @@ class AssemblageMapper:
         )
 
         self.assemblages[assemblage_id] = assemblage
-        LOGGER.info(
-            f"Formed assemblage {assemblage_id} with {len(selected_agents)} agents"
-        )
+        LOGGER.info(f"Formed assemblage {assemblage_id} with {len(selected_agents)} agents")
 
         return assemblage
 
@@ -286,9 +276,7 @@ class AssemblageMapper:
 
     def get_active_assemblages(self) -> List[Assemblage]:
         """Get all active assemblages."""
-        return [
-            a for a in self.assemblages.values() if a.state == AssemblageState.ACTIVE
-        ]
+        return [a for a in self.assemblages.values() if a.state == AssemblageState.ACTIVE]
 
     def get_agent_assemblages(self, agent_id: str) -> List[Assemblage]:
         """Get all assemblages that include a specific agent."""
@@ -297,9 +285,7 @@ class AssemblageMapper:
             return []
 
         return [
-            assemblage
-            for assemblage in self.assemblages.values()
-            if agent in assemblage.agents
+            assemblage for assemblage in self.assemblages.values() if agent in assemblage.agents
         ]
 
     def calculate_assemblage_capacity(self, assemblage: Assemblage) -> float:

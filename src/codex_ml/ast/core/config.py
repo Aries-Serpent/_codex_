@@ -4,6 +4,7 @@ Configuration management for AST analysis.
 Provides configuration dataclass with environment variable overrides
 and sensible defaults.
 """
+
 import os
 from dataclasses import dataclass, field
 from pathlib import Path

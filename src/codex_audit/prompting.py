@@ -46,7 +46,7 @@ def _render_gate_bullets(results: Sequence[Mapping[str, object]]) -> str:
         )
         ra = gate.get("ra_rule", "RA-1")
         lines.append(
-            f"- {icon} {gate.get('gate_id')} ({gate.get('category')}): {gate.get('detail')} [RA: {ra}]"
+            f"- {icon} {gate.get('gate_id')} ({gate.get('category')}): {gate.get('detail')} [RA: {ra}]"  # noqa: E501
         )
     return "\n".join(lines) if lines else "- No gates recorded"
 
@@ -67,7 +67,9 @@ def prepare_repo_status_prompt(
     gates = _load_gate_results(gates_path)
     policy_map = _load_policy_map(policy_path)
     render_scorecard(
-        gate_results_path=gates_path, policy_map=policy_map, output_path=scorecard_target
+        gate_results_path=gates_path,
+        policy_map=policy_map,
+        output_path=scorecard_target,
     )
 
     ra_rules = policy_map.get("ra_rules", {})

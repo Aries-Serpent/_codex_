@@ -47,12 +47,13 @@ class AuditLogger:
             user: User performing action
         """
         from datetime import datetime, timezone
+
         log_entry = {
             "timestamp": datetime.now(tz=timezone.utc).isoformat(),
             "event_type": event_type,
             "resource": resource,
             "action": action,
-            "user": user
+            "user": user,
         }
         self.append(log_entry)
 

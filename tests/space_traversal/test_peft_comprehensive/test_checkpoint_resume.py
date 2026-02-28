@@ -23,7 +23,10 @@ class _Tok:
 
 
 def _build_ds():
-    texts = ["0 1 2 3 4 5"] * 4
+    # 10 texts → ~9 train + 1 val; with batch_size=2 and drop_last=True that
+    # yields 4 full training batches per epoch, enough for max_steps=4 and
+    # save_every=2 to both trigger reliably.
+    texts = ["0 1 2 3 4 5"] * 10
     train_txt, val_txt = split_texts(texts, seed=0)
     tok = _Tok()
     return (
@@ -76,4 +79,6 @@ def test_checkpoint_resume(tmp_path) -> None:
     result = run_custom_trainer(model, tok, train_ds, val_ds, cfg2)
     assert result["global_step"] == 4
     for k, v in base_state.items():
-        assert torch.allclose(model.state_dict()[k], v)
+        # Cast to float to avoid "Boolean value of Tensor with more than one
+        # element is ambiguous" when dtypes differ across torch versions.
+        assert torch.allclose(model.state_dict()[k].float(), v.float(), atol=1e-5)

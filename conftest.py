@@ -298,3 +298,39 @@ def pytest_report_header(config):
             "    Tip: on GPU runners, include `gpu` in CODEX_SYNC_GROUPS and install a CUDA wheel."
         )
     return None
+
+
+# ---------------------------------------------------------------------------
+# HFIX-001 Step 6: HF skip counter
+# Counts tests skipped due to HF model unavailability and logs them to
+# hf_skips.log so CI can report the local-vs-CI coverage gap.
+# Pattern P-042 companion: explains why local coverage < CI coverage.
+# ---------------------------------------------------------------------------
+
+_HF_SKIP_LOG = _Path(__file__).resolve().parent / "hf_skips.log"
+_hf_skip_count: int = 0
+
+
+def pytest_runtest_logreport(report: pytest.TestReport) -> None:  # type: ignore[override]
+    """Count and log tests skipped due to HF model unavailability (P-042)."""
+    global _hf_skip_count  # noqa: PLW0603
+    if not report.skipped:
+        return
+    longrepr = str(getattr(report, "longrepr", "") or "")
+    if "HF model unavailable" in longrepr or "HFModelUnavailableError" in longrepr:
+        _hf_skip_count += 1
+        try:
+            with _HF_SKIP_LOG.open("a") as _fh:
+                _fh.write(f"{report.nodeid}\n")
+        except OSError:
+            pass  # best-effort
+
+
+def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: pytest.Config) -> None:
+    """Print HF skip summary so the coverage gap is always visible."""
+    if _hf_skip_count:
+        terminalreporter.write_sep(  # type: ignore[attr-defined]
+            "-",
+            f"HF model skips: {_hf_skip_count} (see hf_skips.log) — "
+            "these inflate CI coverage vs local; see .codex/permanent_facts.md",
+        )

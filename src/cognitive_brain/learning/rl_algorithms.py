@@ -119,9 +119,7 @@ class RLAlgorithm(ABC):
         pass
 
     @abstractmethod
-    def update(
-        self, state: Any, action: Any, reward: float, next_state: Any, done: bool
-    ):
+    def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
         Update algorithm with experience.
 
@@ -229,9 +227,7 @@ class QLearning(RLAlgorithm):
         """Set Q-value for state-action pair."""
         self.q_table[(state, action)] = value
 
-    def select_action(
-        self, state: Any, available_actions: Optional[List[Any]] = None
-    ) -> Any:
+    def select_action(self, state: Any, available_actions: Optional[List[Any]] = None) -> Any:
         """
         Select action using ε-greedy policy.
 
@@ -258,14 +254,10 @@ class QLearning(RLAlgorithm):
             q_values = [self._get_q_value(state, a) for a in available_actions]
             max_q = max(q_values)
             # Handle ties randomly
-            best_actions = [
-                a for a, q in zip(available_actions, q_values) if q == max_q
-            ]
+            best_actions = [a for a, q in zip(available_actions, q_values) if q == max_q]
             return np.random.choice(best_actions)
 
-    def update(
-        self, state: Any, action: Any, reward: float, next_state: Any, done: bool
-    ):
+    def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
         Update Q-values using Bellman equation.
 
@@ -460,9 +452,7 @@ class DQN(RLAlgorithm):
             q_values = self._get_q_values(state)
             return max(q_values, key=q_values.get)
 
-    def update(
-        self, state: Any, action: Any, reward: float, next_state: Any, done: bool
-    ):
+    def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
         Store experience and perform batch update.
 
@@ -534,8 +524,7 @@ class DQN(RLAlgorithm):
                 self.target_weights[action] = self.q_weights[action]
             else:
                 self.target_weights[action] = (
-                    tau * self.q_weights[action]
-                    + (1 - tau) * self.target_weights[action]
+                    tau * self.q_weights[action] + (1 - tau) * self.target_weights[action]
                 )
 
     def get_policy(self) -> Dict[Any, Any]:
@@ -628,8 +617,7 @@ class PPO(RLAlgorithm):
         # Compute logits
         state_feature = float(hash(str(state)) % 1000) / 1000.0
         logits = {
-            action: self.policy_weights[action] * state_feature
-            for action in self.policy_weights
+            action: self.policy_weights[action] * state_feature for action in self.policy_weights
         }
 
         # Softmax to get probabilities
@@ -671,9 +659,7 @@ class PPO(RLAlgorithm):
 
         return np.random.choice(actions, p=probabilities)
 
-    def update(
-        self, state: Any, action: Any, reward: float, next_state: Any, done: bool
-    ):
+    def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """
         Store transition in trajectory buffer.
 
@@ -723,14 +709,10 @@ class PPO(RLAlgorithm):
                 gae = delta
             else:
                 next_value = (
-                    self.trajectory[i + 1]["value"]
-                    if i + 1 < len(self.trajectory)
-                    else 0.0
+                    self.trajectory[i + 1]["value"] if i + 1 < len(self.trajectory) else 0.0
                 )
                 delta = (
-                    transition["reward"]
-                    + self.discount_factor * next_value
-                    - transition["value"]
+                    transition["reward"] + self.discount_factor * next_value - transition["value"]
                 )
                 gae = delta + self.discount_factor * self.gae_lambda * gae
 
@@ -766,9 +748,7 @@ class PPO(RLAlgorithm):
                 )
 
                 # Update actor (policy network)
-                current_prob = self._get_action_probs(transition["state"])[
-                    transition["action"]
-                ]
+                current_prob = self._get_action_probs(transition["state"])[transition["action"]]
                 old_prob = transition["action_prob"]
 
                 # Probability ratio
@@ -781,9 +761,7 @@ class PPO(RLAlgorithm):
                 # Gradient update (simplified)
                 state_feature = float(hash(str(transition["state"])) % 1000) / 1000.0
                 gradient = advantage * state_feature
-                self.policy_weights[transition["action"]] += (
-                    self.learning_rate * gradient
-                )
+                self.policy_weights[transition["action"]] += self.learning_rate * gradient
 
             self.value_loss_history.append(value_loss / len(self.trajectory))
             self.policy_loss_history.append(policy_loss / len(self.trajectory))

@@ -334,7 +334,7 @@ class RangeCheckRule(ValidationRule):
 
         if range_violations:
             errors = [
-                f"Column '{v['column']}': {v['count']} value(s) {v['violation']} (threshold: {v['threshold']})"
+                f"Column '{v['column']}': {v['count']} value(s) {v['violation']} (threshold: {v['threshold']})"  # noqa: E501
                 for v in range_violations
             ]
 

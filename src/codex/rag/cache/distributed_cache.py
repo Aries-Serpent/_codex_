@@ -93,10 +93,12 @@ class MemoryCacheBackend(BaseCacheBackend):
 
     def __init__(self, config: DistributedCacheConfig):
         self.config = config
-        self._cache = QueryCache(QueryCacheConfig(
-            max_size=config.memory_max_size,
-            default_ttl=config.memory_ttl,
-        ))
+        self._cache = QueryCache(
+            QueryCacheConfig(
+                max_size=config.memory_max_size,
+                default_ttl=config.memory_ttl,
+            )
+        )
 
     def get(self, key: str) -> Optional[Any]:
         return self._cache.get(key)
@@ -158,9 +160,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 return self._client
 
             except ImportError:
-                logger.warning(
-                    "redis package not installed. Install with: pip install redis"
-                )
+                logger.warning("redis package not installed. Install with: pip install redis")
                 self._connected = False
                 return None
             except Exception as e:
@@ -178,6 +178,7 @@ class RedisCacheBackend(BaseCacheBackend):
 
         if self.config.compress and len(data) > self.config.compression_threshold:
             import zlib
+
             data = zlib.compress(data)
             # Prefix with marker to indicate compression
             data = b"Z" + data
@@ -196,6 +197,7 @@ class RedisCacheBackend(BaseCacheBackend):
 
         if marker == b"Z":
             import zlib
+
             payload = zlib.decompress(payload)
 
         return json.loads(payload.decode())
@@ -432,9 +434,8 @@ class DistributedCache:
             return self._redis_backend.contains(key)
 
         # Hybrid: check both
-        return (
-            self._memory_backend.contains(key) or
-            (self._redis_backend and self._redis_backend.contains(key))
+        return self._memory_backend.contains(key) or (
+            self._redis_backend and self._redis_backend.contains(key)
         )
 
     def get_stats(self) -> dict[str, Any]:

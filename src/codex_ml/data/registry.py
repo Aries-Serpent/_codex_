@@ -261,7 +261,7 @@ def _resolve_dataset_fixture(
     searched = ", ".join(checked) if checked else "<no candidates>"
     raise FileNotFoundError(
         f"Dataset fixture '{name}' not found. Checked: {searched}. Provide `path=` or "
-        "set CODEX_ML_OFFLINE_DATASETS_DIR / {specific_env or 'CODEX_ML_TINY_CORPUS_PATH'} to point to the dataset."
+        "set CODEX_ML_OFFLINE_DATASETS_DIR / {specific_env or 'CODEX_ML_TINY_CORPUS_PATH'} to point to the dataset."  # noqa: E501
     )
 
 

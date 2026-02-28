@@ -72,7 +72,6 @@ class TestPython312Performance:
         Python 3.12 has faster import machinery.
         """
         import importlib
-        import sys
 
         modules_to_test = [
             "json",

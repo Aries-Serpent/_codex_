@@ -23,6 +23,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 logger = logging.getLogger(__name__)
+
+
 class EmbedderInterface(ABC):
     """
     Embedding provider interface.

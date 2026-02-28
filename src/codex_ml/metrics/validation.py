@@ -7,7 +7,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class MetricValidationError(Exception):
     """Exception raised when metric validation fails."""
 

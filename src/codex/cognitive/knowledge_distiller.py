@@ -5,6 +5,7 @@ This module provides knowledge distillation capabilities for extracting,
 generalizing, and storing key learnings from each session for cross-session
 context retention.
 """
+
 from __future__ import annotations
 
 import json
@@ -181,9 +182,7 @@ class KnowledgeStore:
             KnowledgePriority.MEDIUM: 2,
             KnowledgePriority.LOW: 3,
         }
-        min_priority_value = (
-            priority_order.get(min_priority, 3) if min_priority else 3
-        )
+        min_priority_value = priority_order.get(min_priority, 3) if min_priority else 3
 
         for item in self._knowledge.values():
             # Filter by type
@@ -211,18 +210,12 @@ class KnowledgeStore:
 
     def get_by_type(self, knowledge_type: KnowledgeType) -> list[KnowledgeItem]:
         """Get all items of a specific type."""
-        return [
-            item
-            for item in self._knowledge.values()
-            if item.knowledge_type == knowledge_type
-        ]
+        return [item for item in self._knowledge.values() if item.knowledge_type == knowledge_type]
 
     def get_critical(self) -> list[KnowledgeItem]:
         """Get all critical knowledge items."""
         return [
-            item
-            for item in self._knowledge.values()
-            if item.priority == KnowledgePriority.CRITICAL
+            item for item in self._knowledge.values() if item.priority == KnowledgePriority.CRITICAL
         ]
 
     def prune_low_priority(self, max_age_days: int = 30) -> int:
@@ -483,7 +476,9 @@ class KnowledgeDistiller:
         return item
 
     def get_session_context(
-        self, limit: int = 20, min_priority: KnowledgePriority = KnowledgePriority.MEDIUM
+        self,
+        limit: int = 20,
+        min_priority: KnowledgePriority = KnowledgePriority.MEDIUM,
     ) -> list[KnowledgeItem]:
         """Get relevant context for starting a new session."""
         # Get all critical items
@@ -501,11 +496,7 @@ class KnowledgeDistiller:
         }
         min_value = priority_order[min_priority]
 
-        filtered = [
-            item
-            for item in all_items
-            if priority_order[item.priority] <= min_value
-        ]
+        filtered = [item for item in all_items if priority_order[item.priority] <= min_value]
 
         # Combine, deduplicate, and limit
         seen_ids = set()
@@ -521,11 +512,7 @@ class KnowledgeDistiller:
 
     def summarize_for_handoff(self, session_id: str) -> str:
         """Generate a summary of session knowledge for handoff."""
-        items = [
-            item
-            for item in self.store._knowledge.values()
-            if item.session_id == session_id
-        ]
+        items = [item for item in self.store._knowledge.values() if item.session_id == session_id]
 
         if not items:
             return "No knowledge distilled from this session."

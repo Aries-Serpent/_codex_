@@ -213,7 +213,6 @@ def test_log_params_missing_mlflow(monkeypatch):
 
 def test_ensure_mlflow_available(monkeypatch):
     """Test MLflow availability detection and module loading."""
-    import importlib
 
     MU._mlf = None
     MU._HAS_MLFLOW = False
@@ -244,7 +243,6 @@ def test_coerce_config_object():
 def test_mlflow_config_env_default(monkeypatch):
     """MlflowConfig uses CODEX_MLFLOW_URI when set."""
     monkeypatch.setenv("CODEX_MLFLOW_URI", "file:/tmp/mlruns")
-    import importlib
 
     mod = importlib.reload(importlib.import_module("codex_ml.tracking.mlflow_utils"))
     cfg = mod.MlflowConfig()

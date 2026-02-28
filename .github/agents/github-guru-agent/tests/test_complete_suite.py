@@ -22,7 +22,6 @@ from pathlib import Path
 from typing import Any, Dict
 from unittest.mock import MagicMock
 
-
 # ---------------------------------------------------------------------------
 # Path setup — make the agent package importable
 # ---------------------------------------------------------------------------
@@ -36,24 +35,24 @@ if str(_REPO_ROOT / "src") not in sys.path:
 # ---------------------------------------------------------------------------
 # Import agent modules
 # ---------------------------------------------------------------------------
+from analyzers import PRAnalyzer, WorkflowAnalyzer  # noqa: E402
 from github_client import GitHubAPIClient, GitHubAPIResponse  # noqa: E402
+from guru_adapter import GitHubGuruAdapter, _physics_score  # noqa: E402
+from hygiene import RepoHygiene  # noqa: E402
+from learning import LearningEngine  # noqa: E402
+from main import GitHubGuruAgent  # noqa: E402
 from patterns import (  # noqa: E402
+    PATTERNS,
     PatternCategory,
     PatternSeverity,
     get_pattern,
     get_patterns_by_category,
     get_patterns_by_severity,
     match_patterns,
-    PATTERNS,
 )
-from analyzers import PRAnalyzer, WorkflowAnalyzer  # noqa: E402
-from triage import IssueTriage, LABEL_TAXONOMY  # noqa: E402
-from hygiene import RepoHygiene  # noqa: E402
-from metrics import MetricsCollector  # noqa: E402
-from learning import LearningEngine  # noqa: E402
-from guru_adapter import GitHubGuruAdapter, _physics_score  # noqa: E402
-from main import GitHubGuruAgent  # noqa: E402
+from triage import LABEL_TAXONOMY, IssueTriage  # noqa: E402
 
+from metrics import MetricsCollector  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Shared helpers

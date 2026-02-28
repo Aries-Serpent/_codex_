@@ -98,7 +98,7 @@ class EmbeddingCache:
             Shorthand for ``EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=cache_dir)``.
         max_size:
             Shorthand for ``EmbeddingCacheConfig(max_entries=max_size)``.
-        """
+        """  # noqa: E501
         if config is None:
             kw: dict = {}
             if cache_dir is not None:
@@ -154,10 +154,7 @@ class EmbeddingCache:
             return
 
         # Sort by created_at and remove oldest
-        sorted_entries = sorted(
-            self._cache.items(),
-            key=lambda x: x[1].created_at
-        )
+        sorted_entries = sorted(self._cache.items(), key=lambda x: x[1].created_at)
 
         # Remove oldest 10%
         num_to_remove = max(1, len(sorted_entries) // 10)
@@ -382,10 +379,7 @@ class EmbeddingCache:
         hit_rate = self._hits / total if total > 0 else 0.0
 
         # Calculate memory usage
-        total_memory = sum(
-            entry.embedding.nbytes
-            for entry in self._cache.values()
-        )
+        total_memory = sum(entry.embedding.nbytes for entry in self._cache.values())
 
         return {
             "size": len(self._cache),

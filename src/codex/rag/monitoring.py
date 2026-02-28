@@ -33,6 +33,7 @@ class MetricsConfig:
         required. Increase the window sizes if you need tighter confidence
         intervals or more stable aggregates.
     """
+
     # Minimum number of samples required in a metric window to consider the
     # resulting aggregate statistics (mean, percentiles) minimally meaningful.
     # This is a heuristic default rather than a hard statistical guarantee and
@@ -53,7 +54,7 @@ class MetricsConfig:
         if self.embedding_throughput_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
                 f"embedding_throughput_window must be >= {self.MIN_WINDOW_SIZE} to "
-                f"ensure statistically meaningful metrics (current: {self.embedding_throughput_window})"
+                f"ensure statistically meaningful metrics (current: {self.embedding_throughput_window})"  # noqa: E501
             )
         if self.index_build_time_window < self.MIN_WINDOW_SIZE:
             raise ValueError(
@@ -65,6 +66,7 @@ class MetricsConfig:
 @dataclass
 class MetricDataPoint:
     """Single data point for a metric."""
+
     timestamp: float
     value: float
     labels: Dict[str, str] = field(default_factory=dict)
@@ -132,7 +134,7 @@ class RAGMetrics:
         duration_ms: float,
         tenant_id: Optional[str] = None,
         index_name: Optional[str] = None,
-        cache_hit: Optional[bool] = None
+        cache_hit: Optional[bool] = None,
     ):
         """
         Track query latency for performance monitoring.
@@ -151,11 +153,7 @@ class RAGMetrics:
         if cache_hit is not None:
             labels["cache_hit"] = str(cache_hit)
 
-        data_point = MetricDataPoint(
-            timestamp=time.time(),
-            value=duration_ms,
-            labels=labels
-        )
+        data_point = MetricDataPoint(timestamp=time.time(), value=duration_ms, labels=labels)
 
         self.query_latencies.append(data_point)
 
@@ -165,13 +163,7 @@ class RAGMetrics:
 
         logger.debug(f"Query latency: {duration_ms:.2f}ms (labels={labels})")
 
-    def track_index_size(
-        self,
-        num_chunks: int,
-        size_mb: float,
-        tenant_id: str,
-        index_name: str
-    ):
+    def track_index_size(self, num_chunks: int, size_mb: float, tenant_id: str, index_name: str):
         """
         Track FAISS index size metrics.
 
@@ -189,8 +181,8 @@ class RAGMetrics:
             labels={
                 "tenant_id": tenant_id,
                 "index_name": index_name,
-                "num_chunks": str(num_chunks)
-            }
+                "num_chunks": str(num_chunks),
+            },
         )
 
         logger.info(f"Index size tracked: {key} = {size_mb:.2f}MB ({num_chunks} chunks)")
@@ -218,11 +210,7 @@ class RAGMetrics:
         Args:
             texts_per_sec: Number of texts embedded per second
         """
-        data_point = MetricDataPoint(
-            timestamp=time.time(),
-            value=texts_per_sec,
-            labels={}
-        )
+        data_point = MetricDataPoint(timestamp=time.time(), value=texts_per_sec, labels={})
 
         self.embedding_throughputs.append(data_point)
 
@@ -234,7 +222,7 @@ class RAGMetrics:
         tenant_id: str,
         index_name: str,
         num_files: int,
-        num_chunks: int
+        num_chunks: int,
     ):
         """
         Track index build time for capacity planning.
@@ -253,8 +241,8 @@ class RAGMetrics:
                 "tenant_id": tenant_id,
                 "index_name": index_name,
                 "num_files": str(num_files),
-                "num_chunks": str(num_chunks)
-            }
+                "num_chunks": str(num_chunks),
+            },
         )
 
         self.index_build_times.append(data_point)
@@ -296,16 +284,14 @@ class RAGMetrics:
                 "p95_ms": latencies[int(n * 0.95)] if n > 0 else 0,
                 "p99_ms": latencies[int(n * 0.99)] if n > 0 else 0,
                 "min_ms": min(latencies),
-                "max_ms": max(latencies)
+                "max_ms": max(latencies),
             }
         else:
             query_stats = {}
 
         # Cache stats
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
-        cache_hit_rate = (
-            self.cache_stats["hits"] / total_cache if total_cache > 0 else 0.0
-        )
+        cache_hit_rate = self.cache_stats["hits"] / total_cache if total_cache > 0 else 0.0
 
         # Embedding throughput stats
         if self.embedding_throughputs:
@@ -313,7 +299,7 @@ class RAGMetrics:
             embedding_stats = {
                 "mean_texts_per_sec": sum(throughputs) / len(throughputs),
                 "max_texts_per_sec": max(throughputs),
-                "min_texts_per_sec": min(throughputs)
+                "min_texts_per_sec": min(throughputs),
             }
         else:
             embedding_stats = {}
@@ -324,7 +310,7 @@ class RAGMetrics:
             build_stats = {
                 "mean_seconds": sum(build_times) / len(build_times),
                 "max_seconds": max(build_times),
-                "min_seconds": min(build_times)
+                "min_seconds": min(build_times),
             }
         else:
             build_stats = {}
@@ -335,14 +321,14 @@ class RAGMetrics:
             "cache": {
                 "hits": self.cache_stats["hits"],
                 "misses": self.cache_stats["misses"],
-                "hit_rate": cache_hit_rate
+                "hit_rate": cache_hit_rate,
             },
             "embedding_throughput": embedding_stats,
             "index_build_time": build_stats,
             "index_count": len(self.index_sizes),
             "total_queries": sum(self.query_counts.values()),
             "total_errors": sum(self.error_counts.values()),
-            "error_breakdown": self.error_counts
+            "error_breakdown": self.error_counts,
         }
 
     def export_prometheus(self) -> str:
@@ -368,8 +354,8 @@ class RAGMetrics:
                 lines.append(f'rag_query_latency_ms_bucket{{le="{bucket}"}} {count}')
 
             lines.append(f'rag_query_latency_ms_bucket{{le="+Inf"}} {len(latencies)}')
-            lines.append(f'rag_query_latency_ms_sum {sum(latencies)}')
-            lines.append(f'rag_query_latency_ms_count {len(latencies)}')
+            lines.append(f"rag_query_latency_ms_sum {sum(latencies)}")
+            lines.append(f"rag_query_latency_ms_count {len(latencies)}")
 
         # Cache hit rate
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
@@ -385,13 +371,17 @@ class RAGMetrics:
             lines.append("# TYPE rag_index_size_mb gauge")
 
             for key, data_point in self.index_sizes.items():
-                labels = ','.join(f'{k}="{v}"' for k, v in data_point.labels.items())
+                labels = ",".join(f'{k}="{v}"' for k, v in data_point.labels.items())
                 lines.append(f"rag_index_size_mb{{{labels}}} {data_point.value:.2f}")
 
         # Embedding throughput
         if self.embedding_throughputs:
-            avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(self.embedding_throughputs)
-            lines.append("# HELP rag_embedding_throughput_texts_per_sec Embedding generation throughput")
+            avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(
+                self.embedding_throughputs
+            )
+            lines.append(
+                "# HELP rag_embedding_throughput_texts_per_sec Embedding generation throughput"
+            )
             lines.append("# TYPE rag_embedding_throughput_texts_per_sec gauge")
             lines.append(f"rag_embedding_throughput_texts_per_sec {avg_throughput:.2f}")
 
@@ -424,73 +414,81 @@ class RAGMetrics:
             latencies.sort()
             n = len(latencies)
 
-            metric_data.append({
-                "MetricName": "QueryLatency",
-                "Timestamp": timestamp.isoformat(),
-                "Value": sum(latencies) / n,
-                "Unit": "Milliseconds",
-                "StatisticValues": {
-                    "SampleCount": n,
-                    "Sum": sum(latencies),
-                    "Minimum": min(latencies),
-                    "Maximum": max(latencies)
+            metric_data.append(
+                {
+                    "MetricName": "QueryLatency",
+                    "Timestamp": timestamp.isoformat(),
+                    "Value": sum(latencies) / n,
+                    "Unit": "Milliseconds",
+                    "StatisticValues": {
+                        "SampleCount": n,
+                        "Sum": sum(latencies),
+                        "Minimum": min(latencies),
+                        "Maximum": max(latencies),
+                    },
                 }
-            })
+            )
 
         # Cache hit rate
         total_cache = self.cache_stats["hits"] + self.cache_stats["misses"]
         if total_cache > 0:
             hit_rate = self.cache_stats["hits"] / total_cache
-            metric_data.append({
-                "MetricName": "CacheHitRate",
-                "Timestamp": timestamp.isoformat(),
-                "Value": hit_rate,
-                "Unit": "Percent"
-            })
+            metric_data.append(
+                {
+                    "MetricName": "CacheHitRate",
+                    "Timestamp": timestamp.isoformat(),
+                    "Value": hit_rate,
+                    "Unit": "Percent",
+                }
+            )
 
         # Index sizes
         for key, data_point in self.index_sizes.items():
-            metric_data.append({
-                "MetricName": "IndexSize",
-                "Timestamp": timestamp.isoformat(),
-                "Value": data_point.value,
-                "Unit": "Megabytes",
-                "Dimensions": [
-                    {"Name": k, "Value": v}
-                    for k, v in data_point.labels.items()
-                ]
-            })
+            metric_data.append(
+                {
+                    "MetricName": "IndexSize",
+                    "Timestamp": timestamp.isoformat(),
+                    "Value": data_point.value,
+                    "Unit": "Megabytes",
+                    "Dimensions": [{"Name": k, "Value": v} for k, v in data_point.labels.items()],
+                }
+            )
 
         # Embedding throughput
         if self.embedding_throughputs:
-            avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(self.embedding_throughputs)
-            metric_data.append({
-                "MetricName": "EmbeddingThroughput",
-                "Timestamp": timestamp.isoformat(),
-                "Value": avg_throughput,
-                "Unit": "Count/Second"
-            })
+            avg_throughput = sum(dp.value for dp in self.embedding_throughputs) / len(
+                self.embedding_throughputs
+            )
+            metric_data.append(
+                {
+                    "MetricName": "EmbeddingThroughput",
+                    "Timestamp": timestamp.isoformat(),
+                    "Value": avg_throughput,
+                    "Unit": "Count/Second",
+                }
+            )
 
         # Query count
-        metric_data.append({
-            "MetricName": "QueryCount",
-            "Timestamp": timestamp.isoformat(),
-            "Value": sum(self.query_counts.values()),
-            "Unit": "Count"
-        })
+        metric_data.append(
+            {
+                "MetricName": "QueryCount",
+                "Timestamp": timestamp.isoformat(),
+                "Value": sum(self.query_counts.values()),
+                "Unit": "Count",
+            }
+        )
 
         # Error count
-        metric_data.append({
-            "MetricName": "ErrorCount",
-            "Timestamp": timestamp.isoformat(),
-            "Value": sum(self.error_counts.values()),
-            "Unit": "Count"
-        })
+        metric_data.append(
+            {
+                "MetricName": "ErrorCount",
+                "Timestamp": timestamp.isoformat(),
+                "Value": sum(self.error_counts.values()),
+                "Unit": "Count",
+            }
+        )
 
-        return {
-            "Namespace": "Codex/RAG",
-            "MetricData": metric_data
-        }
+        return {"Namespace": "Codex/RAG", "MetricData": metric_data}
 
     def reset(self):
         """Reset all metrics (useful for testing)."""

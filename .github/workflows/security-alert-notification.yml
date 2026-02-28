@@ -31,18 +31,33 @@ jobs:
           python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification 2>/dev/null || echo "Cache health: check skipped"
       - name: Get Dependabot alerts
         id: get-alerts
+        continue-on-error: true
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
-            const { data: alerts } = await github.rest.dependabot.listAlertsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              sort: 'created',
-              direction: 'desc',
-              per_page: 100
-            });
+            let alerts;
+            try {
+              const response = await github.rest.dependabot.listAlertsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                sort: 'created',
+                direction: 'desc',
+                per_page: 100
+              });
+              alerts = response.data;
+            } catch (err) {
+              core.warning(`Unable to fetch Dependabot alerts: ${err.message} (status ${err.status})`);
+              core.setOutput('alert-count', 0);
+              core.setOutput('critical-count', 0);
+              core.setOutput('high-count', 0);
+              core.setOutput('moderate-count', 0);
+              core.setOutput('low-count', 0);
+              core.setOutput('alerts', '[]');
+              core.setOutput('has-alerts', false);
+              return { count: 0, alerts: [] };
+            }
 
             // Filter alerts created in last 24 hours
             const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -82,10 +97,12 @@ jobs:
         id: create-summary
         if: steps.get-alerts.outputs.has-alerts == 'true'
         uses: actions/github-script@v8
+        env:
+          ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
-            const alerts = JSON.parse('${{ steps.get-alerts.outputs.alerts }}');
+            const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');
 
             let summary = '## 🚨 New Security Alerts Detected\n\n';
             summary += `**Total New Alerts:** ${alerts.length}\n\n`;
@@ -151,12 +168,18 @@ jobs:
       - name: Create GitHub Issue for new alerts
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
         uses: actions/github-script@v8
+        env:
+          # Pass outputs via env vars to avoid backtick/apostrophe injection in JS
+          # template literals. DRQ-S105: review comment — security-alert-notification.yml:51-59
+          ISSUE_SUMMARY: ${{ steps.create-summary.outputs.summary }}
+          CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}
+          HIGH_COUNT: ${{ steps.get-alerts.outputs.high-count }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
-            const summary = `${{ steps.create-summary.outputs.summary }}`;
-            const criticalCount = parseInt('${{ steps.get-alerts.outputs.critical-count }}');
-            const highCount = parseInt('${{ steps.get-alerts.outputs.high-count }}');
+            const summary = process.env.ISSUE_SUMMARY || '';
+            const criticalCount = parseInt(process.env.CRITICAL_COUNT || '0', 10);
+            const highCount = parseInt(process.env.HIGH_COUNT || '0', 10);
 
             // Only create issue for critical/high severity alerts
             if (criticalCount > 0 || highCount > 0) {

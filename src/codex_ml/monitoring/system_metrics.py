@@ -184,7 +184,7 @@ def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
     if resource is not None:
         try:
             usage = resource.getrusage(resource.RUSAGE_SELF)
-            # ``ru_maxrss`` is reported in KiB on Linux and bytes on macOS; normalise to bytes when possible.
+            # ``ru_maxrss`` is reported in KiB on Linux and bytes on macOS; normalise to bytes when possible.  # noqa: E501
             rss = float(usage.ru_maxrss)
             if rss and not _IS_DARWIN:
                 rss *= 1024.0

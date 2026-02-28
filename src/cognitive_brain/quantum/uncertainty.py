@@ -101,13 +101,9 @@ class UncertaintyOptimizer:
         self.test_history[metrics.test_id] = metrics
 
         if self.monitor:
-            self.monitor.record_metric(
-                QuantumFeature.UNCERTAINTY.value, "test_update", 1.0
-            )
+            self.monitor.record_metric(QuantumFeature.UNCERTAINTY.value, "test_update", 1.0)
 
-    def calculate_priority(
-        self, test_id: str, current_time: float
-    ) -> ExecutionPriority:
+    def calculate_priority(self, test_id: str, current_time: float) -> ExecutionPriority:
         """
         Calculate priority for a test using uncertainty principles.
 
@@ -221,8 +217,7 @@ class UncertaintyOptimizer:
         """
         # Calculate priorities for all tests
         priorities = {
-            test_id: self.calculate_priority(test_id, current_time)
-            for test_id in test_ids
+            test_id: self.calculate_priority(test_id, current_time) for test_id in test_ids
         }
 
         # Sort by priority (highest first)
@@ -262,9 +257,7 @@ class UncertaintyOptimizer:
             self.monitor.record_metric(
                 QuantumFeature.UNCERTAINTY.value,
                 "time_utilization",
-                (time_budget - remaining_time) / time_budget
-                if time_budget > 0
-                else 0.0,
+                (time_budget - remaining_time) / time_budget if time_budget > 0 else 0.0,
             )
 
         return selected, priorities
@@ -302,9 +295,7 @@ class UncertaintyOptimizer:
         total = len(self.test_history)
         avg_time = sum(m.execution_time for m in self.test_history.values()) / total
         avg_failure = sum(m.failure_rate for m in self.test_history.values()) / total
-        avg_coverage = (
-            sum(m.coverage_contribution for m in self.test_history.values()) / total
-        )
+        avg_coverage = sum(m.coverage_contribution for m in self.test_history.values()) / total
 
         return {
             "total_tests": total,

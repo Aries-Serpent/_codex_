@@ -288,9 +288,7 @@ class StrategyOptimizer:
 
         return f"state_c{complexity_bin}_p{pressure_bin}"
 
-    def _train_episode(
-        self, states: List[Any], actions: List[Any], rewards: List[float]
-    ) -> float:
+    def _train_episode(self, states: List[Any], actions: List[Any], rewards: List[float]) -> float:
         """
         Train one episode.
 
@@ -364,16 +362,12 @@ class StrategyOptimizer:
         Args:
             converged: Whether training converged
         """
-        avg_reward = (
-            np.mean(self.training_history[-100:]) if self.training_history else 0.0
-        )
+        avg_reward = np.mean(self.training_history[-100:]) if self.training_history else 0.0
         improvement = self._calculate_improvement()
 
         # Calculate stability (lower is better)
         stability = (
-            np.std(self.training_history[-100:])
-            if len(self.training_history) >= 100
-            else 1.0
+            np.std(self.training_history[-100:]) if len(self.training_history) >= 100 else 1.0
         )
 
         # Find convergence episode
@@ -413,9 +407,7 @@ class StrategyOptimizer:
             else 0.0,
             "improvement_percentage": self._calculate_improvement(),
             "converged": self.metrics.is_converged if self.metrics else False,
-            "convergence_episode": self.metrics.convergence_episode
-            if self.metrics
-            else None,
+            "convergence_episode": self.metrics.convergence_episode if self.metrics else None,
             "training_history": self.training_history.copy(),
             "policy": self.algorithm.get_policy() if self.algorithm else None,
         }

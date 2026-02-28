@@ -25,7 +25,9 @@ from tokenizers import Tokenizer
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
 
-def _ensure_special_tokens(tokenizer: PreTrainedTokenizerFast) -> PreTrainedTokenizerFast:
+def _ensure_special_tokens(
+    tokenizer: PreTrainedTokenizerFast,
+) -> PreTrainedTokenizerFast:
     """Ensure the tokenizer has padding and EOS tokens configured."""
 
     if tokenizer.pad_token is None:

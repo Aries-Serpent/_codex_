@@ -28,6 +28,7 @@ def test_emit_checkpoint_respects_retention(monkeypatch, tmp_path: Path) -> None
         metric_value,
         metric_key,
         config,
+        metadata=None,
         mode="min",
         top_k=3,
         prefix="ckpt",
@@ -88,7 +89,7 @@ class _DummyStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_end(0, {}, {})
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         return _DummyResult()
 

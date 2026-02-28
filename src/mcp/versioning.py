@@ -32,7 +32,7 @@ MAX_VERSIONS_COUNT = 100
 # Matches simple semantic versions: MAJOR.MINOR or MAJOR.MINOR.PATCH
 # Restricted to formats matching MCP_VERSIONS (no pre-release/build metadata)
 # Examples: "1.0", "2.1.3"
-VERSION_PATTERN = r'^(\d+)\.(\d+)(?:\.(\d+))?$'
+VERSION_PATTERN = r"^(\d+)\.(\d+)(?:\.(\d+))?$"
 
 
 def _validate_version_string(version: str) -> bool:
@@ -161,7 +161,7 @@ def supports_feature(feature: str, version: str) -> bool:
     # and a list of version strings where it's available.
     feature_matrix = {
         "basic_tools": ["1.0"],  # Core MCP tool support
-        "streaming": ["1.0"],     # Streaming response support
+        "streaming": ["1.0"],  # Streaming response support
     }
 
     supported_versions = feature_matrix.get(feature, [])

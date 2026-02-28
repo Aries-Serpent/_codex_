@@ -167,7 +167,7 @@ class TestJobProcessing:
                         self.job.result = processor(self.job.payload)
                         self.job.status = JobStatus.COMPLETED
                         return True
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         if self.attempts >= self.max_retries:
                             self.job.status = JobStatus.FAILED
                             return False

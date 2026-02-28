@@ -50,7 +50,7 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
     """
     text = _ensure_str(value)
     # Remove newlines and control characters that could be used for log injection
-    sanitized = re.sub(r'[\r\n\t\x00-\x1f\x7f]', ' ', text)
+    sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
     # Truncate to reasonable length
     if len(sanitized) > max_length:
         sanitized = sanitized[:max_length] + "...[truncated]"

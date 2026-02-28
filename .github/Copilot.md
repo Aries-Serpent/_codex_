@@ -193,4 +193,3 @@ Before marking work complete:
 | `artifacts/` | Runtime artifacts | **No** |
 
 For complete documentation, see: `.github/docs/CI_Coverage_Implementation_Copilot.md`
-

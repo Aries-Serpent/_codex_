@@ -58,7 +58,7 @@ except ImportError:
         if value is None:
             return "None"
         str_value = str(value)
-        sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', str_value)
+        sanitized = re.sub(r"[\n\r\t\x00-\x1f\x7f-\x9f]", "", str_value)
         if len(sanitized) > max_length:
             return sanitized[:max_length] + "...[truncated]"
         return sanitized
@@ -89,7 +89,7 @@ def sanitize_log(value: Any, max_length: int = 500) -> str:
     return sanitize_log_input(value, max_length)
 
 
-def hash_secure(data: str, algorithm: str = 'sha256') -> str:
+def hash_secure(data: str, algorithm: str = "sha256") -> str:
     """
     Securely hash data using SHA-256 or SHA-512.
 
@@ -111,14 +111,12 @@ def hash_secure(data: str, algorithm: str = 'sha256') -> str:
         For password hashing, use specialized libraries like bcrypt,
         argon2, or scrypt instead of this function.
     """
-    if algorithm == 'sha256':
-        return hashlib.sha256(data.encode('utf-8')).hexdigest()
-    elif algorithm == 'sha512':
-        return hashlib.sha512(data.encode('utf-8')).hexdigest()
+    if algorithm == "sha256":
+        return hashlib.sha256(data.encode("utf-8")).hexdigest()
+    elif algorithm == "sha512":
+        return hashlib.sha512(data.encode("utf-8")).hexdigest()
     else:
-        raise ValueError(
-            f"Unsupported algorithm: {algorithm}. Use 'sha256' or 'sha512'."
-        )
+        raise ValueError(f"Unsupported algorithm: {algorithm}. Use 'sha256' or 'sha512'.")
 
 
 def mask_sensitive(value: str, show_chars: int = 4) -> str:
@@ -187,8 +185,8 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         netloc = parsed.netloc.lower()
 
         # Remove port if present
-        if ':' in netloc:
-            netloc = netloc.split(':', 1)[0]
+        if ":" in netloc:
+            netloc = netloc.split(":", 1)[0]
 
         # If no allowed domains specified, just check that we have a valid domain
         if allowed_domains is None:
@@ -197,7 +195,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
         # Check if domain matches exactly or is a subdomain
         for allowed_domain in allowed_domains:
             allowed_lower = allowed_domain.lower()
-            if netloc == allowed_lower or netloc.endswith('.' + allowed_lower):
+            if netloc == allowed_lower or netloc.endswith("." + allowed_lower):
                 return True
 
         return False
@@ -209,15 +207,15 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
 # Convenience re-exports for common use cases
 __all__ = [
     # Masking functions
-    'mask_token',
-    'mask_email',
-    'mask_password',
-    'mask_sensitive',
+    "mask_token",
+    "mask_email",
+    "mask_password",
+    "mask_sensitive",
     # Sanitization functions
-    'sanitize_log',
-    'sanitize_log_input',
-    'sanitize_dict_for_log',
-    'sanitize_url',
+    "sanitize_log",
+    "sanitize_log_input",
+    "sanitize_dict_for_log",
+    "sanitize_url",
     # Hashing functions
-    'hash_secure',
+    "hash_secure",
 ]

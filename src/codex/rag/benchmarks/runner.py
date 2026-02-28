@@ -44,12 +44,7 @@ class BenchmarkRunner:
         self.results: List[BenchmarkResult] = []
 
     def run_benchmark(
-        self,
-        name: str,
-        func: Callable,
-        *args,
-        runs: int = 5,
-        **kwargs
+        self, name: str, func: Callable, *args, runs: int = 5, **kwargs
     ) -> BenchmarkResult:
         """
         Run a benchmark function multiple times and collect metrics.
@@ -115,7 +110,7 @@ class BenchmarkRunner:
                 "p50_duration_ms": statistics.median(durations),
                 "p95_duration_ms": self._percentile(durations, 0.95),
                 "stddev_duration_ms": statistics.stdev(durations) if len(durations) > 1 else 0.0,
-            }
+            },
         )
 
         self.results.append(result)
@@ -146,11 +141,11 @@ class BenchmarkRunner:
         """Export results to JSON file."""
         data = {
             "summary": self.get_summary(),
-            "results": [r.to_dict() for r in self.results]
+            "results": [r.to_dict() for r in self.results],
         }
 
         Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             json.dump(data, f, indent=2)
 
     def export_csv(self, filepath: str) -> None:
@@ -159,16 +154,14 @@ class BenchmarkRunner:
             return
 
         Path(filepath).parent.mkdir(parents=True, exist_ok=True)
-        with open(filepath, 'w', newline='') as f:
+        with open(filepath, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.results[0].to_dict().keys())
             writer.writeheader()
             for result in self.results:
                 writer.writerow(result.to_dict())
 
     def compare_with_baseline(
-        self,
-        baseline_file: str,
-        threshold_percent: float = 10.0
+        self, baseline_file: str, threshold_percent: float = 10.0
     ) -> Dict[str, Any]:
         """
         Compare current results with baseline file.
@@ -180,10 +173,10 @@ class BenchmarkRunner:
         Returns:
             Comparison results with regressions
         """
-        with open(baseline_file, 'r') as f:
+        with open(baseline_file, "r") as f:
             baseline_data = json.load(f)
 
-        baseline_results = {r['name']: r for r in baseline_data.get('results', [])}
+        baseline_results = {r["name"]: r for r in baseline_data.get("results", [])}
 
         comparisons = []
         regressions = []
@@ -193,16 +186,18 @@ class BenchmarkRunner:
                 continue
 
             baseline = baseline_results[current.name]
-            duration_change = ((current.duration_ms - baseline['duration_ms'])
-                             / baseline['duration_ms'] * 100)
-            memory_change = ((current.memory_mb - baseline['memory_mb'])
-                           / baseline['memory_mb'] * 100)
+            duration_change = (
+                (current.duration_ms - baseline["duration_ms"]) / baseline["duration_ms"] * 100
+            )
+            memory_change = (
+                (current.memory_mb - baseline["memory_mb"]) / baseline["memory_mb"] * 100
+            )
 
             comparison = {
                 "name": current.name,
                 "duration_change_percent": duration_change,
                 "memory_change_percent": memory_change,
-                "is_regression": duration_change > threshold_percent
+                "is_regression": duration_change > threshold_percent,
             }
 
             comparisons.append(comparison)
@@ -213,5 +208,5 @@ class BenchmarkRunner:
         return {
             "comparisons": comparisons,
             "regressions": regressions,
-            "has_regressions": len(regressions) > 0
+            "has_regressions": len(regressions) > 0,
         }

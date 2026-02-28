@@ -62,7 +62,11 @@ def write_splits(
     digest = hashlib.sha256(canonical).hexdigest()[:16]
     manifest = {
         "seed": int(seed),
-        "counts": {"train": len(train_items), "val": len(val_items), "test": len(test_items)},
+        "counts": {
+            "train": len(train_items),
+            "val": len(val_items),
+            "test": len(test_items),
+        },
         "dataset_hash": digest,
         "ratios": ratios,
     }

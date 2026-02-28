@@ -40,9 +40,7 @@ REQUEST_RATE_LIMIT = 1000
 
 # API Key Security
 API_KEY_NAME = "X-API-Key"
-API_KEY_HEADER = (
-    APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
-)
+API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
 
 
 class ModelLoadError(Exception):
@@ -120,9 +118,7 @@ class AuthManager:
         try:
             from jose import JWTError, jwt
 
-            payload = jwt.decode(
-                token, self.jwt_secret, algorithms=[self.jwt_algorithm]
-            )
+            payload = jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
             return payload
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
@@ -185,9 +181,7 @@ class ModelConfig:
 
 
 class RateLimiter:
-    def __init__(
-        self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60
-    ):
+    def __init__(self, max_requests: int = REQUEST_RATE_LIMIT, window_seconds: int = 60):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
         self.state: dict[str, list[float]] = defaultdict(list)
@@ -204,9 +198,7 @@ class RateLimiter:
 
 class ModelServer:
     def __init__(self, config: Optional[ModelConfig] = None) -> None:
-        self.config = config or ModelConfig(
-            model_name="codex-default", model_type="stub"
-        )
+        self.config = config or ModelConfig(model_name="codex-default", model_type="stub")
         if not self.config.model_name:
             self.config.model_name = "codex-default"
         self.model_name = self.config.model_name
@@ -222,17 +214,13 @@ class ModelServer:
         try:
             from codex_ml.serving.resilience import CircuitBreaker, CircuitBreakerConfig
 
-            self.circuit_breaker = CircuitBreaker(
-                CircuitBreakerConfig(failure_threshold=5)
-            )
+            self.circuit_breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5))
             logger.info("Circuit breaker enabled")
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             self.circuit_breaker = None
-            logger.warning(
-                "Circuit breaker not available (resilience module not found)"
-            )
+            logger.warning("Circuit breaker not available (resilience module not found)")
 
     def load_model(self) -> dict[str, Any]:
         try:
@@ -240,10 +228,7 @@ class ModelServer:
                 raise ModelLoadError("Unsupported model type")
 
             if self.config.model_type in {"huggingface", "onnx"}:
-                if (
-                    not self.config.model_path
-                    or not Path(self.config.model_path).exists()
-                ):
+                if not self.config.model_path or not Path(self.config.model_path).exists():
                     raise ModelLoadError("Model path does not exist")
 
             if self.model is None:
@@ -371,7 +356,7 @@ if FASTAPI_AVAILABLE:
         """Reject model names containing path-traversal or injection sequences."""
         if model_name is None:
             return
-        # Block path traversal and SQL/shell injection; allow '/' for namespaced models (e.g. org/model)
+        # Block path traversal and SQL/shell injection; allow '/' for namespaced models (e.g. org/model)  # noqa: E501
         for bad in ("..", "\\", ";", "'", '"', "<", ">"):
             if bad in model_name:
                 raise HTTPException(
@@ -426,15 +411,11 @@ if FASTAPI_AVAILABLE:
                 # API key path
                 if auth_manager.api_keys is not None:
                     if not auth_manager.verify_api_key(api_key):
-                        raise HTTPException(
-                            status_code=401, detail="Invalid or missing API key"
-                        )
+                        raise HTTPException(status_code=401, detail="Invalid or missing API key")
                     return
                 # JWT configured but no bearer token provided
                 if auth_manager.jwt_secret:
-                    raise HTTPException(
-                        status_code=401, detail="Authorization header required"
-                    )
+                    raise HTTPException(status_code=401, detail="Authorization header required")
 
             auth_dependencies = [Security(verify_auth)]
 
@@ -485,9 +466,7 @@ if FASTAPI_AVAILABLE:
         )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host
-                if getattr(http_request, "client", None)
-                else "global"
+                http_request.client.host if getattr(http_request, "client", None) else "global"
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
@@ -526,9 +505,7 @@ if FASTAPI_AVAILABLE:
             """Batch inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
 
-        @app.post(
-            "/infer", response_model=PredictionResponse, dependencies=auth_dependencies
-        )
+        @app.post("/infer", response_model=PredictionResponse, dependencies=auth_dependencies)
         def infer(request: PredictionRequest, http_request: Request):
             """Inference endpoint (alias for /predict with same logic)"""
             return predict(request, http_request)
@@ -558,6 +535,4 @@ if FASTAPI_AVAILABLE:
 else:
 
     def create_app() -> None:  # pragma: no cover
-        raise RuntimeError(
-            "FastAPI not installed. Install with: pip install fastapi uvicorn"
-        )
+        raise RuntimeError("FastAPI not installed. Install with: pip install fastapi uvicorn")

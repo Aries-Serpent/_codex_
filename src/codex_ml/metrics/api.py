@@ -17,8 +17,44 @@ logger = logging.getLogger(__name__)
 
 import csv  # noqa: E402
 import json  # noqa: E402
+import re as _re  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Callable, Optional, Sequence  # noqa: E402
+
+# ---------------------------------------------------------------------------
+# SQL identifier validation helper (eliminates B608 SQL injection vector)
+# ---------------------------------------------------------------------------
+_IDENT_RE = _re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
+
+
+def _validated_table_sql(table: str, columns: list[str]) -> tuple[str, str]:
+    """Return validated (CREATE TABLE, INSERT INTO) SQL statement pair.
+
+    Validates that *table* and every column in *columns* are safe SQL
+    identifiers (letters/digits/underscore, max 64 chars).  Raises
+    ``ValueError`` for any name that fails the check, eliminating the
+    B608 SQL-injection vector at source rather than suppressing it with
+    a nosec comment.
+
+    Returns:
+        ``(create_sql, insert_sql)`` — both are parameterised statements
+        ready for ``sqlite3.Connection.execute``.
+    """
+    if not _IDENT_RE.match(table):
+        raise ValueError(f"Invalid table identifier: {table!r}")
+    safe_cols: list[str] = []
+    for col in columns:
+        if not _IDENT_RE.match(col):
+            raise ValueError(f"Invalid column identifier: {col!r}")
+        safe_cols.append(col)
+    quoted_table = f'"{table}"'
+    col_list = ", ".join(f'"{c}"' for c in safe_cols)
+    col_defs = ", ".join(f'"{c}" TEXT' for c in safe_cols)
+    placeholders = ", ".join("?" * len(safe_cols))
+    create_sql = f"CREATE TABLE IF NOT EXISTS {quoted_table} ({col_defs})"  # nosec B608
+    insert_sql = f"INSERT INTO {quoted_table} ({col_list}) VALUES ({placeholders})"  # nosec B608
+    return create_sql, insert_sql
+
 
 __all__ = [
     # Registry functions
@@ -343,18 +379,9 @@ def summarize_ndjson_to_sqlite(
 
     conn = sqlite3.connect(str(db_path_obj))
     try:
-        # Create table with TEXT columns (flexible schema)
-        columns_def = ", ".join(
-            f'"{col}" TEXT' for col in columns
-        )  # nosec B608
-        conn.execute(f'CREATE TABLE IF NOT EXISTS "{table_name}" ({columns_def})')
+        create_sql, insert_sql = _validated_table_sql(table_name, columns)
+        conn.execute(create_sql)
 
-        # Insert rows
-        placeholders = ", ".join("?" * len(columns))
-        column_names = ", ".join(f'"{c}"' for c in columns)
-        insert_sql = (
-            f'INSERT INTO "{table_name}" ({column_names}) VALUES ({placeholders})'  # nosec B608
-        )
         for log in logs:
             # Convert values to strings for TEXT columns
             values = [

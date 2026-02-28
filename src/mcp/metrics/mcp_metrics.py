@@ -135,7 +135,7 @@ class MetricCollector:
             self._histograms[key].append(value)
             # Bound histogram size (safeguard)
             if len(self._histograms[key]) > self._max_history:
-                self._histograms[key] = self._histograms[key][-self._max_history:]
+                self._histograms[key] = self._histograms[key][-self._max_history :]
             self._record_point(name, value, labels)
 
     def _make_key(self, name: str, labels: dict[str, str]) -> str:
@@ -143,10 +143,7 @@ class MetricCollector:
         if not labels:
             return name
         # Truncate labels (safeguard)
-        truncated = {
-            k[:MAX_LABEL_LENGTH]: v[:MAX_LABEL_LENGTH]
-            for k, v in labels.items()
-        }
+        truncated = {k[:MAX_LABEL_LENGTH]: v[:MAX_LABEL_LENGTH] for k, v in labels.items()}
         label_str = ",".join(f"{k}={v}" for k, v in sorted(truncated.items()))
         return f"{name}{{{label_str}}}"
 
@@ -167,7 +164,7 @@ class MetricCollector:
 
         # Bound history (safeguard)
         if len(self._history) > self._max_history:
-            self._history = self._history[-self._max_history:]
+            self._history = self._history[-self._max_history :]
 
     def get_counter(self, name: str, labels: dict[str, str] | None = None) -> float:
         """Get current counter value."""
@@ -250,12 +247,8 @@ class MCPMetrics:
 
         self.collector.increment("mcp_queries_total", labels=labels)
         adapter_labels = {"adapter": adapter}
-        self.collector.observe(
-            "mcp_query_duration_ms", duration_ms, labels=adapter_labels
-        )
-        self.collector.observe(
-            "mcp_query_results", result_count, labels=adapter_labels
-        )
+        self.collector.observe("mcp_query_duration_ms", duration_ms, labels=adapter_labels)
+        self.collector.observe("mcp_query_results", result_count, labels=adapter_labels)
 
     def record_upsert(
         self,
@@ -269,26 +262,19 @@ class MCPMetrics:
 
         self.collector.increment("mcp_upserts_total", labels=labels)
         adapter_labels = {"adapter": adapter}
-        self.collector.observe(
-            "mcp_upsert_duration_ms", duration_ms, labels=adapter_labels
-        )
-        self.collector.increment(
-            "mcp_vectors_upserted", vector_count, labels=adapter_labels
-        )
+        self.collector.observe("mcp_upsert_duration_ms", duration_ms, labels=adapter_labels)
+        self.collector.increment("mcp_vectors_upserted", vector_count, labels=adapter_labels)
 
     def record_error(self, adapter: str, error_type: str) -> None:
         """Record an error."""
         self.collector.increment(
-            "mcp_errors_total",
-            labels={"adapter": adapter, "error_type": error_type}
+            "mcp_errors_total", labels={"adapter": adapter, "error_type": error_type}
         )
 
     def set_connection_status(self, adapter: str, connected: bool) -> None:
         """Set connection status gauge."""
         self.collector.set_gauge(
-            "mcp_connected",
-            1.0 if connected else 0.0,
-            labels={"adapter": adapter}
+            "mcp_connected", 1.0 if connected else 0.0, labels={"adapter": adapter}
         )
 
     def get_summary(self) -> dict[str, Any]:

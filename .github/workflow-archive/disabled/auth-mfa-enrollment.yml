@@ -40,7 +40,7 @@ jobs:
         run: |
           python scripts/mfa_enrollment_automation.py --detect
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
 
       - name: Generate MFA secrets
@@ -52,13 +52,13 @@ jobs:
             python scripts/mfa_enrollment_automation.py --auto
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
 
       - name: Send enrollment notifications
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const fs = require('fs');
             const enrollmentData = JSON.parse(fs.readFileSync('enrollment_results.json', 'utf8'));
@@ -109,7 +109,7 @@ jobs:
         run: |
           python scripts/mfa_enrollment_automation.py --report
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Upload enrollment report
         uses: actions/upload-artifact@v6
@@ -121,7 +121,7 @@ jobs:
       - name: Post summary
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('mfa_enrollment_report_latest.md', 'utf8');

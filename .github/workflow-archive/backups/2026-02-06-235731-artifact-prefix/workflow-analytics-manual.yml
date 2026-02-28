@@ -78,7 +78,7 @@ jobs:
       - name: Run Workflow Analytics
         id: analytics
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           python .github/scripts/workflow_analytics_runner.py \
             --analysis-period "${{ inputs.analysis_period }}" \
@@ -101,7 +101,7 @@ jobs:
       - name: Create Issue with Findings
         if: inputs.create_issue == true && steps.analytics.outputs.patterns_detected == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           REPORT_FILE=$(ls -t .codex/reports/workflow_analytics_*.md | head -1)
 
@@ -117,7 +117,7 @@ jobs:
       - name: Create Improvement PR
         if: inputs.create_pr == true && steps.analytics.outputs.has_suggestions == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # Create branch for improvements
           BRANCH_NAME="workflow-improvements-$(date +%s)"

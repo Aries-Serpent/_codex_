@@ -178,7 +178,10 @@ def get_lineage_command(args: argparse.Namespace) -> int:
 def main(argv: Optional[list[str]] = None) -> int:
     """Main CLI entry point"""
     if not _HAS_MLFLOW:
-        print("Error: MLflow not installed. Install with: pip install mlflow", file=sys.stderr)
+        print(
+            "Error: MLflow not installed. Install with: pip install mlflow",
+            file=sys.stderr,
+        )
         return 1
 
     parser = argparse.ArgumentParser(

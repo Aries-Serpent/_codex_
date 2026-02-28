@@ -206,7 +206,7 @@ def test_postprocess_output_full_pipeline():
 
     assert "USER QUERY START" not in processed
     assert "Response text" in processed
-    assert len(evidence) >= 0
+    assert isinstance(evidence, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
 
 def test_postprocess_output_with_redaction():

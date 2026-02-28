@@ -33,7 +33,9 @@ class MockAdapter:
     def connect(self) -> None:
         return None
 
-    def query_top_k(self, namespace: str, query_embedding: list[float], top_k: int = 5, filters=None):
+    def query_top_k(
+        self, namespace: str, query_embedding: list[float], top_k: int = 5, filters=None
+    ):
         self.query_calls.append(
             {
                 "namespace": namespace,

@@ -15,7 +15,7 @@ import pytest
 
 try:
     import jsonschema  # type: ignore
-except Exception:  # pragma: no cover - optional dependency not installed
+except ImportError:  # pragma: no cover - optional dependency not installed
     jsonschema = None  # type: ignore[assignment]
     pytestmark = pytest.mark.skip(reason="jsonschema not installed")
 

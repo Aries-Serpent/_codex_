@@ -6,6 +6,7 @@ between cognitive brain and Copilot watcher.
 
 Part of Phase 2: Fragile Bridge Elimination
 """
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -16,6 +17,7 @@ from typing import Any, Dict, Optional, Union
 
 class MessageType(Enum):
     """Enumeration of valid message types."""
+
     CONTEXT_UPDATE = "context_update"
     QUERY = "query"
     RESPONSE = "response"
@@ -26,6 +28,7 @@ class MessageType(Enum):
 
 class SourceType(Enum):
     """Enumeration of valid message sources."""
+
     COGNITIVE_BRAIN = "cognitive_brain"
     COPILOT_WATCHER = "copilot_watcher"
     ORCHESTRATOR = "orchestrator"
@@ -35,6 +38,7 @@ class SourceType(Enum):
 @dataclass
 class BaseMessage:
     """Base message structure with common fields."""
+
     timestamp: str  # ISO 8601 format
     source: str
     message_type: str
@@ -53,6 +57,7 @@ class ContextUpdate(BaseMessage):
     Shares current cognitive state, execution context, and
     decision-making information.
     """
+
     context: Dict[str, Any]
     execution_state: Optional[str] = None  # "observing", "orienting", "deciding", "acting"
     confidence: Optional[float] = None
@@ -64,6 +69,7 @@ class QueryMessage(BaseMessage):
     """
     Query message requesting information or action.
     """
+
     query: str
     query_type: str  # "info", "action", "validation"
     parameters: Optional[Dict[str, Any]] = None
@@ -75,6 +81,7 @@ class ResponseMessage(BaseMessage):
     """
     Response message to a query.
     """
+
     response_to: str  # message_id of original query
     status: str  # "success", "error", "pending"
     data: Optional[Any] = None
@@ -86,6 +93,7 @@ class StatusMessage(BaseMessage):
     """
     Status update message.
     """
+
     component: str  # "cognitive_brain", "orchestrator", "agent"
     status: str  # "running", "idle", "error", "stopped"
     metrics: Optional[Dict[str, Any]] = None
@@ -96,6 +104,7 @@ class ErrorMessage(BaseMessage):
     """
     Error notification message.
     """
+
     error_type: str
     error_message: str
     stack_trace: Optional[str] = None
@@ -107,6 +116,7 @@ class HeartbeatMessage(BaseMessage):
     """
     Heartbeat message for connection monitoring.
     """
+
     uptime_seconds: float
     last_activity: str  # ISO 8601 timestamp
 
@@ -118,7 +128,7 @@ BridgeMessage = Union[
     ResponseMessage,
     StatusMessage,
     ErrorMessage,
-    HeartbeatMessage
+    HeartbeatMessage,
 ]
 
 
@@ -126,7 +136,7 @@ def create_context_update(
     source: str,
     context: Dict[str, Any],
     execution_state: Optional[str] = None,
-    confidence: Optional[float] = None
+    confidence: Optional[float] = None,
 ) -> ContextUpdate:
     """
     Factory function to create context update message.
@@ -146,7 +156,7 @@ def create_context_update(
         message_type=MessageType.CONTEXT_UPDATE.value,
         context=context,
         execution_state=execution_state,
-        confidence=confidence
+        confidence=confidence,
     )
 
 
@@ -155,7 +165,7 @@ def create_query(
     query: str,
     query_type: str = "info",
     parameters: Optional[Dict[str, Any]] = None,
-    message_id: Optional[str] = None
+    message_id: Optional[str] = None,
 ) -> QueryMessage:
     """
     Factory function to create query message.
@@ -177,7 +187,7 @@ def create_query(
         message_id=message_id or f"query_{datetime.now(timezone.utc).timestamp()}",
         query=query,
         query_type=query_type,
-        parameters=parameters
+        parameters=parameters,
     )
 
 
@@ -186,7 +196,7 @@ def create_response(
     response_to: str,
     status: str = "success",
     data: Optional[Any] = None,
-    error: Optional[str] = None
+    error: Optional[str] = None,
 ) -> ResponseMessage:
     """
     Factory function to create response message.
@@ -208,15 +218,12 @@ def create_response(
         response_to=response_to,
         status=status,
         data=data,
-        error=error
+        error=error,
     )
 
 
 def create_status(
-    source: str,
-    component: str,
-    status: str,
-    metrics: Optional[Dict[str, Any]] = None
+    source: str, component: str, status: str, metrics: Optional[Dict[str, Any]] = None
 ) -> StatusMessage:
     """
     Factory function to create status message.
@@ -236,7 +243,7 @@ def create_status(
         message_type=MessageType.STATUS.value,
         component=component,
         status=status,
-        metrics=metrics
+        metrics=metrics,
     )
 
 
@@ -245,7 +252,7 @@ def create_error(
     error_type: str,
     error_message: str,
     stack_trace: Optional[str] = None,
-    recovery_action: Optional[str] = None
+    recovery_action: Optional[str] = None,
 ) -> ErrorMessage:
     """
     Factory function to create error message.
@@ -267,7 +274,7 @@ def create_error(
         error_type=error_type,
         error_message=error_message,
         stack_trace=stack_trace,
-        recovery_action=recovery_action
+        recovery_action=recovery_action,
     )
 
 
@@ -287,5 +294,5 @@ def create_heartbeat(source: str, uptime_seconds: float) -> HeartbeatMessage:
         source=source,
         message_type=MessageType.HEARTBEAT.value,
         uptime_seconds=uptime_seconds,
-        last_activity=datetime.now(timezone.utc).isoformat()
+        last_activity=datetime.now(timezone.utc).isoformat(),
     )

@@ -17,7 +17,6 @@ Functions:
 Author: Codex Team
 """
 
-
 import logging
 
 logger = logging.getLogger(__name__)

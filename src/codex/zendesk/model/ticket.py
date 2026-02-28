@@ -197,11 +197,13 @@ class Ticket(_ZendeskBaseModel):
             other_value = getattr(other, field_name)
 
             if self_value != other_value:
-                patches.append({
-                    "op": "replace",
-                    "path": f"/{field_name}",
-                    "value": self_value,
-                })
+                patches.append(
+                    {
+                        "op": "replace",
+                        "path": f"/{field_name}",
+                        "value": self_value,
+                    }
+                )
 
         return patches
 
@@ -225,20 +227,27 @@ class Ticket(_ZendeskBaseModel):
 
             # Optional fields for creation
             optional_fields = [
-                "type", "priority", "status", "tags",
-                "assignee_id", "group_id", "custom_fields",
-                "collaborator_ids", "external_id", "problem_id",
-                "brand_id", "via", "due_at", "submitter_id",
+                "type",
+                "priority",
+                "status",
+                "tags",
+                "assignee_id",
+                "group_id",
+                "custom_fields",
+                "collaborator_ids",
+                "external_id",
+                "problem_id",
+                "brand_id",
+                "via",
+                "due_at",
+                "submitter_id",
             ]
 
             for field in optional_fields:
                 value = getattr(self, field)
                 if value is not None and (not isinstance(value, list) or value):
                     if field == "custom_fields":
-                        payload[field] = [
-                            {"id": cf.id, "value": cf.value}
-                            for cf in value
-                        ]
+                        payload[field] = [{"id": cf.id, "value": cf.value} for cf in value]
                     elif hasattr(value, "model_dump"):
                         payload[field] = value.model_dump(exclude_none=True)
                     else:

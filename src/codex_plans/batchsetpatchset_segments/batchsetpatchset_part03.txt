@@ -288,5 +288,3 @@ def build_manifest(
             "local_gate": _summarize_local_gate(local_gate),
         },
     }
-
-

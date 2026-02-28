@@ -19,7 +19,7 @@ try:
     from src.tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
 
     HFTokenizerAdapter = _HF
-except Exception:
+except ImportError:
     HFTokenizerAdapter = None
 
 
@@ -32,7 +32,7 @@ def test_legacy_tokenizer_triggers_warning(monkeypatch):
             # Call path (may raise ImportError if optional deps missing)
             try:
                 legacy_tokenizer()  # type: ignore[call-arg]
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
         except ImportError:
             # Accept missing underlying implementation in minimal envs

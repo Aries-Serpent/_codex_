@@ -36,13 +36,16 @@ class ListCheckRunsInput(BaseModel):
     owner: str = Field(..., description="Repository owner (e.g., 'Aries-Serpent')")
     repo: str = Field(..., description="Repository name (e.g., '_codex_')")
     ref: str = Field(..., description="Git reference (commit SHA, branch, or tag)")
-    status: Optional[str] = Field(None, description="Filter by status (queued, in_progress, completed)")
+    status: Optional[str] = Field(
+        None, description="Filter by status (queued, in_progress, completed)"
+    )
     check_name: Optional[str] = Field(None, description="Filter by check run name")
 
 
 def _get_github_client():
     """Get GitHub client instance."""
     from src.services.github.client import GitHubClientSync
+
     return GitHubClientSync()
 
 
@@ -78,18 +81,10 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
         client = _get_github_client()
 
         # Fetch check run details
-        check_run = client.get_check_run(
-            input_data.owner,
-            input_data.repo,
-            input_data.check_run_id
-        )
+        check_run = client.get_check_run(input_data.owner, input_data.repo, input_data.check_run_id)
 
         # Fetch logs
-        logs = client.get_check_run_logs(
-            input_data.owner,
-            input_data.repo,
-            input_data.check_run_id
-        )
+        logs = client.get_check_run_logs(input_data.owner, input_data.repo, input_data.check_run_id)
 
         return {
             "success": True,
@@ -103,7 +98,9 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
                 "conclusion": check_run.conclusion,
                 "html_url": check_run.html_url,
                 "started_at": check_run.started_at.isoformat() if check_run.started_at else None,
-                "completed_at": check_run.completed_at.isoformat() if check_run.completed_at else None,
+                "completed_at": check_run.completed_at.isoformat()
+                if check_run.completed_at
+                else None,
             },
             "logs": logs,
         }
@@ -149,11 +146,7 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
         client = _get_github_client()
 
         # Fetch logs
-        logs = client.get_job_logs(
-            input_data.owner,
-            input_data.repo,
-            input_data.job_id
-        )
+        logs = client.get_job_logs(input_data.owner, input_data.repo, input_data.job_id)
 
         return {
             "success": True,
@@ -208,6 +201,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
         client = _get_github_client()
 
         from src.services.github.types import CheckRunStatus
+
         status_enum = CheckRunStatus(input_data.status) if input_data.status else None
 
         # Fetch check runs
@@ -216,7 +210,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             input_data.repo,
             input_data.ref,
             check_name=input_data.check_name,
-            status=status_enum
+            status=status_enum,
         )
 
         # Convert to serializable format

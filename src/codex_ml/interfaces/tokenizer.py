@@ -409,10 +409,10 @@ class HFTokenizer(TokenizerAdapter):
                 self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
                 self._tk.add_special_tokens(
                     {
-                        "pad_token": "[PAD]",
-                        "bos_token": "[BOS]",
-                        "eos_token": "[EOS]",
-                        "unk_token": "[UNK]",
+                        "pad_token": "[PAD]",  # nosec B105
+                        "bos_token": "[BOS]",  # nosec B105
+                        "eos_token": "[EOS]",  # nosec B105
+                        "unk_token": "[UNK]",  # nosec B105
                     }
                 )
             else:

@@ -120,7 +120,7 @@ class my_class:
         code = """
 try:
     risky()
-except Exception:
+except Exception:  # noqa: BLE001
     pass
 """
         detector = CodeSmellDetector()
@@ -134,7 +134,7 @@ except Exception:
         code = """
 try:
     risky()
-except Exception:
+except Exception:  # noqa: BLE001
     pass
 """
         detector = CodeSmellDetector()

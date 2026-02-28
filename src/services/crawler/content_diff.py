@@ -46,8 +46,12 @@ class DiffSegment:
         """Serialize to dictionary."""
         return {
             "change_type": self.change_type,
-            "old_content_preview": self.old_content[:100] + "..." if len(self.old_content) > 100 else self.old_content,
-            "new_content_preview": self.new_content[:100] + "..." if len(self.new_content) > 100 else self.new_content,
+            "old_content_preview": self.old_content[:100] + "..."
+            if len(self.old_content) > 100
+            else self.old_content,
+            "new_content_preview": self.new_content[:100] + "..."
+            if len(self.new_content) > 100
+            else self.new_content,
             "line_start": self.line_start,
             "line_end": self.line_end,
         }
@@ -142,7 +146,7 @@ class ContentDiffer:
     @staticmethod
     def _hash_content(content: str) -> str:
         """Generate SHA-256 hash of content."""
-        return hashlib.sha256(content.encode('utf-8')).hexdigest()[:16]
+        return hashlib.sha256(content.encode("utf-8")).hexdigest()[:16]
 
     def _normalize_content(self, content: str) -> str:
         """Normalize content for comparison.
@@ -155,14 +159,14 @@ class ContentDiffer:
         """
         if self.strip_html:
             # Remove HTML tags
-            content = re.sub(r'<[^>]+>', ' ', content)
+            content = re.sub(r"<[^>]+>", " ", content)
             # Decode HTML entities
-            content = re.sub(r'&[a-z]+;', ' ', content)
+            content = re.sub(r"&[a-z]+;", " ", content)
 
         if self.ignore_whitespace:
             # Normalize whitespace
-            content = re.sub(r'\s+', ' ', content)
-            content = '\n'.join(line.strip() for line in content.split('\n'))
+            content = re.sub(r"\s+", " ", content)
+            content = "\n".join(line.strip() for line in content.split("\n"))
 
         return content.strip()
 
@@ -237,9 +241,9 @@ class ContentDiffer:
         differ = difflib.Differ()
         diff_lines = list(differ.compare(old_lines, new_lines))
 
-        lines_added = sum(1 for line in diff_lines if line.startswith('+ '))
-        lines_removed = sum(1 for line in diff_lines if line.startswith('- '))
-        lines_modified = sum(1 for line in diff_lines if line.startswith('? '))
+        lines_added = sum(1 for line in diff_lines if line.startswith("+ "))
+        lines_removed = sum(1 for line in diff_lines if line.startswith("- "))
+        lines_modified = sum(1 for line in diff_lines if line.startswith("? "))
 
         # Extract diff segments
         segments = self._extract_segments(old_lines, new_lines)
@@ -278,50 +282,52 @@ class ContentDiffer:
         segments = []
 
         # Use unified diff for segment extraction
-        diff = list(difflib.unified_diff(
-            old_lines,
-            new_lines,
-            lineterm='',
-        ))
+        diff = list(
+            difflib.unified_diff(
+                old_lines,
+                new_lines,
+                lineterm="",
+            )
+        )
 
         current_segment = None
         line_num = 0
 
         for line in diff:
-            if line.startswith('@@'):
+            if line.startswith("@@"):
                 # Parse line numbers from diff header
-                match = re.match(r'@@ -(\d+)', line)
+                match = re.match(r"@@ -(\d+)", line)
                 if match:
                     line_num = int(match.group(1))
-            elif line.startswith('-') and not line.startswith('---'):
-                if current_segment and current_segment.change_type == 'delete':
-                    current_segment.old_content += '\n' + line[1:]
+            elif line.startswith("-") and not line.startswith("---"):
+                if current_segment and current_segment.change_type == "delete":
+                    current_segment.old_content += "\n" + line[1:]
                     current_segment.line_end = line_num
                 else:
                     if current_segment:
                         segments.append(current_segment)
                     current_segment = DiffSegment(
-                        change_type='delete',
+                        change_type="delete",
                         old_content=line[1:],
-                        new_content='',
+                        new_content="",
                         line_start=line_num,
                         line_end=line_num,
                     )
                 line_num += 1
-            elif line.startswith('+') and not line.startswith('+++'):
-                if current_segment and current_segment.change_type == 'insert':
-                    current_segment.new_content += '\n' + line[1:]
+            elif line.startswith("+") and not line.startswith("+++"):
+                if current_segment and current_segment.change_type == "insert":
+                    current_segment.new_content += "\n" + line[1:]
                     current_segment.line_end = line_num
-                elif current_segment and current_segment.change_type == 'delete':
+                elif current_segment and current_segment.change_type == "delete":
                     # Convert delete to replace
-                    current_segment.change_type = 'replace'
+                    current_segment.change_type = "replace"
                     current_segment.new_content = line[1:]
                 else:
                     if current_segment:
                         segments.append(current_segment)
                     current_segment = DiffSegment(
-                        change_type='insert',
-                        old_content='',
+                        change_type="insert",
+                        old_content="",
                         new_content=line[1:],
                         line_start=line_num,
                         line_end=line_num,
@@ -471,25 +477,22 @@ class SemanticDiffer:
             try:
                 from sklearn.feature_extraction.text import TfidfVectorizer
                 from sklearn.metrics.pairwise import cosine_similarity
+
                 self._cosine_similarity = cosine_similarity
                 self._vectorizer = TfidfVectorizer(
-                    max_features=1000,
-                    stop_words='english',
-                    ngram_range=ngram_range
+                    max_features=1000, stop_words="english", ngram_range=ngram_range
                 )
                 self._embedding_available = True
-                logger.info(f"SemanticDiffer initialized with TF-IDF embeddings (ngram_range={ngram_range})")
+                logger.info(
+                    f"SemanticDiffer initialized with TF-IDF embeddings (ngram_range={ngram_range})"
+                )
             except ImportError:
                 logger.warning(
                     "scikit-learn not available - semantic diffing will use "
                     "basic text similarity. Install with: pip install scikit-learn"
                 )
 
-    def compute_semantic_similarity(
-        self,
-        text1: str,
-        text2: str
-    ) -> float:
+    def compute_semantic_similarity(self, text1: str, text2: str) -> float:
         """Compute semantic similarity between two texts.
 
         Args:
@@ -556,11 +559,7 @@ class SemanticDiffer:
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
 
-    def compute_semantic_diff(
-        self,
-        old_content: str,
-        new_content: str
-    ) -> Dict[str, Any]:
+    def compute_semantic_diff(self, old_content: str, new_content: str) -> Dict[str, Any]:
         """Compute semantic diff between content versions.
 
         Args:
@@ -575,10 +574,7 @@ class SemanticDiffer:
         new_normalized = self._normalize_text(new_content)
 
         # Compute semantic similarity
-        similarity = self.compute_semantic_similarity(
-            old_normalized,
-            new_normalized
-        )
+        similarity = self.compute_semantic_similarity(old_normalized, new_normalized)
 
         # Determine if semantically similar
         is_similar = similarity >= self.similarity_threshold
@@ -620,18 +616,14 @@ class SemanticDiffer:
         text = text.lower()
 
         # Normalize whitespace
-        text = re.sub(r'\s+', ' ', text)
+        text = re.sub(r"\s+", " ", text)
 
         # Remove leading/trailing whitespace
         text = text.strip()
 
         return text
 
-    def should_resync(
-        self,
-        old_content: str,
-        new_content: str
-    ) -> Tuple[bool, Dict[str, Any]]:
+    def should_resync(self, old_content: str, new_content: str) -> Tuple[bool, Dict[str, Any]]:
         """Determine if content should be resynced based on semantic diff.
 
         Args:

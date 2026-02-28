@@ -3,14 +3,13 @@ Cross-platform path utilities for _codex_.
 
 Ensures filename compatibility across Windows, Linux, and macOS.
 """
+
 from datetime import datetime, timezone
 from typing import Optional
 
 
 def windows_safe_timestamp(
-    dt: Optional[datetime] = None,
-    fmt: str = "iso",
-    include_seconds: bool = True
+    dt: Optional[datetime] = None, fmt: str = "iso", include_seconds: bool = True
 ) -> str:
     """
     Generate Windows-safe timestamp string for use in filenames.
@@ -73,11 +72,12 @@ def sanitize_filename(filename: str) -> str:
         Sanitized filename safe for Windows, Linux, macOS
     """
     import re
+
     # Replace illegal characters with underscores
     illegal_chars = r'[<>:"/\\|?*]'
-    sanitized = re.sub(illegal_chars, '_', filename)
+    sanitized = re.sub(illegal_chars, "_", filename)
 
     # Replace multiple underscores with single
-    sanitized = re.sub(r'_+', '_', sanitized)
+    sanitized = re.sub(r"_+", "_", sanitized)
 
     return sanitized

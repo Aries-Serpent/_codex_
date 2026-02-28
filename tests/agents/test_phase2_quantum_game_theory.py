@@ -418,7 +418,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
             except TypeError:
                 # num_players not a parameter
                 pytest.skip("num_players not supported")
-        except Exception:
+        except ImportError:
             pytest.skip("Many players not supported")
 
     def test_strategy_space_high_dimension(self):
@@ -431,7 +431,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
                 assert space is not None
             except TypeError:
                 pytest.skip("dimension not a parameter")
-        except Exception:
+        except ImportError:
             pytest.skip("High dimension not supported")
 
     def test_payoff_matrix_asymmetric(self):
@@ -445,5 +445,5 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
                 assert op is not None or True
             except (TypeError, ValueError):
                 assert True
-        except Exception:
+        except ImportError:
             pytest.skip("Payoff matrix configuration not supported")

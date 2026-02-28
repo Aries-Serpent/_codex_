@@ -13,8 +13,8 @@ import pytest
 
 def _has_tokenizers() -> bool:
     try:
-        pass  # type: ignore
-    except Exception:
+        importlib.import_module("tokenizers")  # type: ignore
+    except ImportError:
         return False
     return True
 

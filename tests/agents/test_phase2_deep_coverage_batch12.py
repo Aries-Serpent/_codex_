@@ -13,10 +13,10 @@ Target: Final push toward 95% coverage (75% → 95%+)
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestPhase2_APIMismatches:

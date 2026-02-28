@@ -19,7 +19,7 @@ try:
     from codex_ml.training.unified_training import (
         UnifiedTrainingConfig as _Cfg,  # type: ignore
     )
-except Exception:
+except ImportError:
 
     @dataclasses.dataclass
     class _Cfg:

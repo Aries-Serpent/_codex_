@@ -164,12 +164,19 @@ class PineconeAdapter(BackendAdapter):
             return []
 
         if not live_tests_enabled():
-            logger.debug("ENABLE_LIVE_TESTS not set; returning empty list for Pinecone query (safety).")
+            logger.debug(
+                "ENABLE_LIVE_TESTS not set; returning empty list for Pinecone query (safety)."
+            )
             return []
 
         try:
             with Timer("pinecone_query_latency"):
-                resp = self._index_query(vector=query_embedding, top_k=top_k, filter=filters, namespace=namespace)
+                resp = self._index_query(
+                    vector=query_embedding,
+                    top_k=top_k,
+                    filter=filters,
+                    namespace=namespace,
+                )
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
@@ -191,7 +198,9 @@ class PineconeAdapter(BackendAdapter):
                     {
                         "id": m.get("id"),
                         "score": float(m.get("score", 0.0)),
-                        "content": m.get("metadata", {}).get("content", "") if isinstance(m.get("metadata", {}), dict) else "",
+                        "content": m.get("metadata", {}).get("content", "")
+                        if isinstance(m.get("metadata", {}), dict)
+                        else "",
                         "metadata": m.get("metadata", {}),
                     }
                 )

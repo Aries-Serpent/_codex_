@@ -1,0 +1,204 @@
+name: Self-Healing CI
+
+# Webhook-driven self-healing pipeline.
+# Triggers on `workflow_run` completion for any failing workflow on this repo.
+# Analyzes the failure, applies known auto-fix patterns, and opens a PR if a fix is found.
+#
+# Pattern (from research):
+#   workflow_run failure → fetch logs → classify failure type →
+#   apply auto-fix → push branch → open PR referencing failed run
+#
+# Security:
+#   - Only acts on workflow_run events (no external trigger needed)
+#   - Auto-created PRs are always draft, never auto-merged
+#   - Requires CODEX_MASTER_KEY with contents:write + pull-requests:write scopes
+#
+# Sources:
+#   https://smartscope.blog/en/ai-development/github-actions-self-healing-workflows-2025/
+#   https://semaphore.io/blog/copilot-agent-cloud
+#   https://developers.openai.com/cookbook/examples/codex/autofix-github-actions
+#   https://lasse.be/posts/copilot-auto-issues/
+
+on:
+  workflow_run:
+    # Watch all workflows — filter to failures below
+    workflows:
+      - "Art_Validation Pipeline"
+      - "Art_RAG Module Tests"
+      - "Pre-Merge Validation"
+      - "Auto-Fix Common CI Issues"
+      - "Resilient Validation Suite"
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  analyze-and-heal:
+    name: Analyze failure and apply auto-fix
+    runs-on: ubuntu-latest
+    # Only run on failures
+    if: github.event.workflow_run.conclusion == 'failure'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Fetch failure context
+        id: context
+        env:
+          FAILED_RUN_ID: ${{ github.event.workflow_run.id }}
+          FAILED_WORKFLOW: ${{ github.event.workflow_run.name }}
+          FAILED_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO: ${{ github.repository }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        run: |
+          echo "FAILED_RUN_ID=${FAILED_RUN_ID}" >> $GITHUB_OUTPUT
+          echo "FAILED_WORKFLOW=${FAILED_WORKFLOW}" >> $GITHUB_OUTPUT
+          echo "FAILED_BRANCH=${FAILED_BRANCH}" >> $GITHUB_OUTPUT
+          echo "FAILED_SHA=${FAILED_SHA}" >> $GITHUB_OUTPUT
+
+          # Fetch the failed jobs list
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          curl -s \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/actions/runs/${FAILED_RUN_ID}/jobs" \
+            > /tmp/failed_jobs.json
+
+          FAILED_JOB_COUNT=$(python3 -c "import json; d=json.load(open('/tmp/failed_jobs.json')); print(len([j for j in d.get('jobs',[]) if j.get('conclusion')=='failure']))" 2>/dev/null || echo "0")
+          echo "FAILED_JOB_COUNT=${FAILED_JOB_COUNT}" >> $GITHUB_OUTPUT
+
+      - name: Run auto-fix patterns
+        id: autofix
+        continue-on-error: true
+        run: |
+          pip install ruff -q
+          python scripts/ci/auto_fix_common_issues.py --json-output /tmp/healing_report.json 2>/dev/null || true
+
+          # Check if any fixes were applied
+          FIXES=$(python3 -c "import json; r=json.load(open('/tmp/healing_report.json')) if __import__('pathlib').Path('/tmp/healing_report.json').exists() else {}; print(len(r.get('fixes_applied',{})))" 2>/dev/null || echo "0")
+          echo "FIXES_APPLIED=${FIXES}" >> $GITHUB_OUTPUT
+
+      - name: Check for ruff-fixable issues
+        id: ruff
+        continue-on-error: true
+        run: |
+          ruff check . --fix --exit-zero -q 2>/dev/null || true
+          CHANGED=$(git diff --name-only | wc -l | xargs)
+          echo "RUFF_FIXED=${CHANGED}" >> $GITHUB_OUTPUT
+
+      - name: Open draft PR with fixes (if any found)
+        if: |
+          steps.autofix.outputs.FIXES_APPLIED != '0' ||
+          steps.ruff.outputs.RUFF_FIXED != '0'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          FAILED_RUN_ID: ${{ steps.context.outputs.FAILED_RUN_ID }}
+          FAILED_WORKFLOW: ${{ steps.context.outputs.FAILED_WORKFLOW }}
+          FAILED_BRANCH: ${{ steps.context.outputs.FAILED_BRANCH }}
+          FAILED_SHA: ${{ steps.context.outputs.FAILED_SHA }}
+          FIXES_APPLIED: ${{ steps.autofix.outputs.FIXES_APPLIED }}
+          RUFF_FIXED: ${{ steps.ruff.outputs.RUFF_FIXED }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          HEAL_BRANCH="self-heal/run-${FAILED_RUN_ID}"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${HEAL_BRANCH}"
+          git add -A
+          git commit -m "fix(self-heal): auto-fix for failed run #${FAILED_RUN_ID} (${FAILED_WORKFLOW})" \
+            --allow-empty || true
+          git push origin "${HEAL_BRANCH}" || exit 0
+
+          # Open draft PR — build JSON payload via Python heredoc
+          export HEAL_BRANCH FAILED_BRANCH FAILED_RUN_ID FAILED_WORKFLOW REPO FIXES_APPLIED RUFF_FIXED FAILED_SHA
+          python3 - <<'PY' > /tmp/pr_payload.json
+          import json, os
+          rid = os.environ["FAILED_RUN_ID"]
+          wf  = os.environ["FAILED_WORKFLOW"]
+          repo = os.environ["REPO"]
+          branch = os.environ["FAILED_BRANCH"]
+          sha = os.environ.get("FAILED_SHA", "")[:8]
+          fixes = os.environ.get("FIXES_APPLIED", "0")
+          ruff = os.environ.get("RUFF_FIXED", "0")
+          body = (
+              f"## \U0001f527 Self-Healing CI \u2014 Auto-Fix\n\n"
+              f"**Triggered by:** [{wf} #{rid}](https://github.com/{repo}/actions/runs/{rid})\n"
+              f"**Failed branch:** `{branch}`\n"
+              f"**Failed commit:** `{sha}`\n\n"
+              "### Fixes Applied\n\n"
+              "| Fix Type | Count |\n"
+              "|----------|-------|\n"
+              f"| Auto-fix patterns | {fixes} |\n"
+              f"| Ruff auto-fixable | {ruff} |\n\n"
+              "> Auto-generated by `.github/workflows/self_healing_ci.yml`. Always review before merging."
+          )
+          print(json.dumps({
+              "title": f"fix(self-heal): auto-fix for failed run #{rid}",
+              "body": body,
+              "head": os.environ["HEAL_BRANCH"],
+              "base": branch,
+              "draft": True,
+          }))
+          PY
+
+          curl -s -X POST \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls" \
+            -d @/tmp/pr_payload.json > /tmp/new_pr.json
+
+          NEW_PR_URL=$(python3 -c "import json; d=json.load(open('/tmp/new_pr.json')); print(d.get('html_url',''))" 2>/dev/null || echo "")
+          echo "✅ Draft PR opened: ${NEW_PR_URL}"
+
+      - name: Post failure notice (no auto-fix available)
+        if: |
+          steps.autofix.outputs.FIXES_APPLIED == '0' &&
+          steps.ruff.outputs.RUFF_FIXED == '0'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          FAILED_RUN_ID: ${{ steps.context.outputs.FAILED_RUN_ID }}
+          FAILED_WORKFLOW: ${{ steps.context.outputs.FAILED_WORKFLOW }}
+          FAILED_BRANCH: ${{ steps.context.outputs.FAILED_BRANCH }}
+          FAILED_JOB_COUNT: ${{ steps.context.outputs.FAILED_JOB_COUNT }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+
+          # Find the PR for this branch
+          PR_NUMBER=$(curl -s \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&head=${GITHUB_REPOSITORY_OWNER}:${FAILED_BRANCH}&per_page=1" \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print(d[0]['number'] if isinstance(d,list) and d else '')" \
+            2>/dev/null || true)
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No open PR found for branch '${FAILED_BRANCH}' — skipping comment"
+            exit 0
+          fi
+
+          curl -s -X POST \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            -d "{\"body\":\"## ⚠️ Self-Healing CI — No Auto-Fix Available\n\n**Workflow:** ${FAILED_WORKFLOW}\n**Run:** [#${FAILED_RUN_ID}](https://github.com/${REPO}/actions/runs/${FAILED_RUN_ID})\n**Failed jobs:** ${FAILED_JOB_COUNT}\n\nNo auto-fixable patterns matched. Manual investigation required.\n\nQuick fix commands:\n\`\`\`bash\npython scripts/ci/auto_fix_common_issues.py --check-only\nruff check . --fix\n\`\`\`\"}" \
+            > /dev/null
+          echo "⚠️ No auto-fix available — posted notice to PR #${PR_NUMBER}"

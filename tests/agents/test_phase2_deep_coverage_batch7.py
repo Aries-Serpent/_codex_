@@ -13,10 +13,10 @@ Target: +4-5% coverage gain (52% → 57%)
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestPhase2_AgentMemory:

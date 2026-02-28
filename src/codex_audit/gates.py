@@ -138,7 +138,7 @@ def run_gates(repo_root: Path | None = None, output_path: Path | None = None) ->
             "No action required; gate is read-only."
             if status == "pass"
             else (
-                f"Restore or create {definition.category} assets referenced by {definition.gate_id}."
+                f"Restore or create {definition.category} assets referenced by {definition.gate_id}."  # noqa: E501
             )
         )
         results.append(

@@ -22,7 +22,11 @@ from typing import Any
 
 def checksum_for_item(item: dict[str, Any]) -> str:
     s = json.dumps(
-        {"id": item.get("id"), "content": item.get("content"), "metadata": item.get("metadata", {})},
+        {
+            "id": item.get("id"),
+            "content": item.get("content"),
+            "metadata": item.get("metadata", {}),
+        },
         sort_keys=True,
     )
     return hashlib.sha256(s.encode("utf-8")).hexdigest()

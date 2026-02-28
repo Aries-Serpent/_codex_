@@ -44,9 +44,7 @@ TARGET_REDUNDANCY_REDUCTION = 0.40  # 40% reduction
 TARGET_CONSENSUS_LATENCY_MS = 20.0  # < 20ms
 
 
-def measure_multi_agent_correlation(
-    agent_counts: List[int], trials: int = 50
-) -> Dict[str, float]:
+def measure_multi_agent_correlation(agent_counts: List[int], trials: int = 50) -> Dict[str, float]:
     """
     Measure multi-agent correlation across different agent counts.
 
@@ -163,15 +161,13 @@ def measure_decision_quality_improvement(
     }
 
     logger.info(
-        f"Quality improvement: {improvement * 100:.2f}% (target: {TARGET_QUALITY_IMPROVEMENT * 100}%)"
+        f"Quality improvement: {improvement * 100:.2f}% (target: {TARGET_QUALITY_IMPROVEMENT * 100}%)"  # noqa: E501
     )
 
     return results
 
 
-def measure_redundancy_reduction(
-    num_scenarios: int = 100, num_agents: int = 5
-) -> Dict[str, float]:
+def measure_redundancy_reduction(num_scenarios: int = 100, num_agents: int = 5) -> Dict[str, float]:
     """
     Measure redundancy reduction through intelligent agent coordination.
 
@@ -210,15 +206,13 @@ def measure_redundancy_reduction(
     }
 
     logger.info(
-        f"Redundancy reduction: {redundancy_reduction * 100:.2f}% (target: {TARGET_REDUNDANCY_REDUCTION * 100}%)"
+        f"Redundancy reduction: {redundancy_reduction * 100:.2f}% (target: {TARGET_REDUNDANCY_REDUCTION * 100}%)"  # noqa: E501
     )
 
     return results
 
 
-def measure_consensus_latency(
-    agent_counts: List[int], trials: int = 100
-) -> Dict[str, float]:
+def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dict[str, float]:
     """
     Measure consensus decision latency.
 
@@ -270,7 +264,7 @@ def measure_consensus_latency(
         }
 
         logger.info(
-            f"N={num_agents}: latency = {avg_latency:.2f}ms (max: {max_latency:.2f}ms, p95: {p95_latency:.2f}ms)"
+            f"N={num_agents}: latency = {avg_latency:.2f}ms (max: {max_latency:.2f}ms, p95: {p95_latency:.2f}ms)"  # noqa: E501
         )
 
     return results
@@ -308,9 +302,7 @@ def calculate_k1_impact(
 
     # Time reduction from multi-agent orchestration
     # Factor 1: Redundancy reduction saves processing time
-    redundancy_factor = 1.0 - (
-        redundancy_results["redundancy_reduction_pct"] / 100 * 0.5
-    )
+    redundancy_factor = 1.0 - (redundancy_results["redundancy_reduction_pct"] / 100 * 0.5)
 
     # Factor 2: Consensus latency adds overhead
     avg_consensus_latency = latency_results["agents_4"]["mean_ms"]
@@ -324,9 +316,7 @@ def calculate_k1_impact(
     phase_8_2_error_rate = phase_8_1_error_rate * (1.0 - quality_improvement * 0.3)
 
     # Calculate k₁
-    k1_phase_8_2 = (
-        phase_8_2_time_ms * (1 + phase_8_2_error_rate)
-    ) / CLASSICAL_BASELINE_MS
+    k1_phase_8_2 = (phase_8_2_time_ms * (1 + phase_8_2_error_rate)) / CLASSICAL_BASELINE_MS
     k1_improvement = ((PHASE_8_1_K1 - k1_phase_8_2) / PHASE_8_1_K1) * 100
 
     results = {
@@ -338,12 +328,8 @@ def calculate_k1_impact(
         "target_met": k1_phase_8_2 <= TARGET_K1,
     }
 
-    logger.info(
-        f"k₁: {PHASE_8_1_K1:.4f} → {k1_phase_8_2:.4f} (improvement: {k1_improvement:.2f}%)"
-    )
-    logger.info(
-        f"Target k₁ ≤ {TARGET_K1}: {'✅ MET' if results['target_met'] else '❌ NOT MET'}"
-    )
+    logger.info(f"k₁: {PHASE_8_1_K1:.4f} → {k1_phase_8_2:.4f} (improvement: {k1_improvement:.2f}%)")
+    logger.info(f"Target k₁ ≤ {TARGET_K1}: {'✅ MET' if results['target_met'] else '❌ NOT MET'}")
 
     return results
 
@@ -373,9 +359,7 @@ def run_validation(
     logger.info("=" * 80)
 
     # Measure all metrics
-    correlation_results = measure_multi_agent_correlation(
-        agent_counts, correlation_trials
-    )
+    correlation_results = measure_multi_agent_correlation(agent_counts, correlation_trials)
     quality_results = measure_decision_quality_improvement(num_scenarios, num_agents)
     redundancy_results = measure_redundancy_reduction(num_scenarios, num_agents + 1)
     latency_results = measure_consensus_latency(agent_counts, latency_trials)
@@ -411,9 +395,7 @@ def run_validation(
 
     logger.info("\n3. Redundancy Reduction:")
     status = "✅" if redundancy_results["target_met"] else "❌"
-    logger.info(
-        f"   Reduction: {redundancy_results['redundancy_reduction_pct']:.2f}% {status}"
-    )
+    logger.info(f"   Reduction: {redundancy_results['redundancy_reduction_pct']:.2f}% {status}")
 
     logger.info("\n4. Consensus Latency:")
     for key, val in latency_results.items():
@@ -454,9 +436,7 @@ def main():
     parser.add_argument(
         "--scenarios", type=int, default=100, help="Number of scenarios (default: 100)"
     )
-    parser.add_argument(
-        "--seed", type=int, default=42, help="Random seed (default: 42)"
-    )
+    parser.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
 
     args = parser.parse_args()
 
@@ -464,9 +444,7 @@ def main():
     np.random.seed(args.seed)
 
     # Run validation
-    run_validation(
-        agent_counts=[3, 4, 5, 6], num_scenarios=args.scenarios, num_agents=args.agents
-    )
+    run_validation(agent_counts=[3, 4, 5, 6], num_scenarios=args.scenarios, num_agents=args.agents)
 
     return 0
 

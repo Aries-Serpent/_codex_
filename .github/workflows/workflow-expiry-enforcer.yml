@@ -22,6 +22,8 @@ jobs:
           python scripts/ci/generate_cache_keys.py --health --workflow workflow-expiry-enforcer 2>/dev/null || echo "Cache health: check skipped"
       - name: Raw checkout (git)
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           set -euo pipefail
           REPO="https://github.com/${{ github.repository }}.git"

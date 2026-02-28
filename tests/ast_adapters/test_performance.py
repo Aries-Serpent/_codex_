@@ -14,7 +14,11 @@ Performance Targets:
 
 import time
 
-from codex.ast_adapters import (
+import pytest
+
+pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
+
+from codex.ast_adapters import (  # noqa: E402
     JSONASTAdapter,
     PythonASTAdapter,
     SQLASTAdapter,

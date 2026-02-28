@@ -51,6 +51,7 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
 
     raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
+
 # Add rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -58,18 +59,23 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # === Request/Response Models ===
 
+
 class BuildIndexRequest(BaseModel):
     """Request to build an index."""
+
     files: List[str] = Field(..., description="File patterns to index (glob)")
     index_name: str = Field(..., description="Name for the index")
     tenant_id: str = Field(default="default", description="Tenant ID")
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
-    provider: str = Field(default="auto", description="Embedding provider (auto, tfidf, local, openai)")
+    provider: str = Field(
+        default="auto", description="Embedding provider (auto, tfidf, local, openai)"
+    )
 
 
 class BuildIndexResponse(BaseModel):
     """Response from building an index."""
+
     success: bool
     index_name: str
     tenant_id: str
@@ -80,6 +86,7 @@ class BuildIndexResponse(BaseModel):
 
 class QueryRequest(BaseModel):
     """Request to query an index."""
+
     query: str = Field(..., min_length=1, description="Query text")
     index_name: str = Field(..., description="Index to query")
     tenant_id: str = Field(default="default", description="Tenant ID")
@@ -89,6 +96,7 @@ class QueryRequest(BaseModel):
 
 class QueryResult(BaseModel):
     """Single query result."""
+
     text: str
     file: str
     score: float
@@ -97,6 +105,7 @@ class QueryResult(BaseModel):
 
 class QueryResponse(BaseModel):
     """Response from querying an index."""
+
     query: str
     results: List[QueryResult]
     count: int
@@ -105,6 +114,7 @@ class QueryResponse(BaseModel):
 
 class IndexInfo(BaseModel):
     """Information about an index."""
+
     name: str
     tenant_id: str
     chunks_count: int
@@ -115,12 +125,14 @@ class IndexInfo(BaseModel):
 
 class ListIndicesResponse(BaseModel):
     """Response listing indices."""
+
     indices: List[IndexInfo]
     count: int
 
 
 class DeleteIndexRequest(BaseModel):
     """Request to delete an index."""
+
     index_name: str
     tenant_id: str = "default"
     force: bool = False
@@ -128,6 +140,7 @@ class DeleteIndexRequest(BaseModel):
 
 class DeleteIndexResponse(BaseModel):
     """Response from deleting an index."""
+
     success: bool
     index_name: str
     tenant_id: str
@@ -136,6 +149,7 @@ class DeleteIndexResponse(BaseModel):
 
 class MergeIndicesRequest(BaseModel):
     """Request to merge indices."""
+
     source_indices: List[str] = Field(..., min_items=2)
     target_index: str
     tenant_id: str = "default"
@@ -143,6 +157,7 @@ class MergeIndicesRequest(BaseModel):
 
 class MergeIndicesResponse(BaseModel):
     """Response from merging indices."""
+
     success: bool
     target_index: str
     tenant_id: str
@@ -152,6 +167,7 @@ class MergeIndicesResponse(BaseModel):
 
 class StatsResponse(BaseModel):
     """Index statistics response."""
+
     index_name: str
     tenant_id: str
     chunks_count: int
@@ -163,12 +179,14 @@ class StatsResponse(BaseModel):
 
 class MetricsResponse(BaseModel):
     """Metrics response."""
+
     metrics: Dict
     timestamp: str
 
 
 class HealthResponse(BaseModel):
     """Health check response."""
+
     status: str
     version: str
     timestamp: str
@@ -176,6 +194,7 @@ class HealthResponse(BaseModel):
 
 
 # === API Endpoints ===
+
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 @limiter.limit("100/minute")
@@ -189,7 +208,7 @@ async def health_check(request: Request):
             "api": "healthy",
             "rag": "healthy",
             "embeddings": "healthy",
-        }
+        },
     )
 
 
@@ -215,6 +234,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
         chunks_count = None
         if metadata_file.exists():
             import json
+
             with open(metadata_file) as f:
                 metadata = json.load(f)
                 chunks_count = metadata.get("num_chunks")
@@ -225,7 +245,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
             tenant_id=build_request.tenant_id,
             chunks_count=chunks_count,
             index_path=str(index_path),
-            message=f"Index '{build_request.index_name}' built successfully"
+            message=f"Index '{build_request.index_name}' built successfully",
         )
 
     except ImportError as e:
@@ -239,6 +259,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
 async def query_index(request: Request, query_request: QueryRequest):
     """Query a RAG index."""
     import time
+
     start_time = time.time()
 
     try:
@@ -285,7 +306,9 @@ async def query_index(request: Request, query_request: QueryRequest):
 
 @app.get("/rag/indices", response_model=ListIndicesResponse, tags=["RAG"])
 @limiter.limit("30/minute")
-async def list_indices(request: Request, tenant_id: str = "default", index_dir: Optional[str] = None):
+async def list_indices(
+    request: Request, tenant_id: str = "default", index_dir: Optional[str] = None
+):
     """List all indices for a tenant."""
     try:
         import json
@@ -328,16 +351,18 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
                 metadata = json.load(f)
 
             # Calculate size
-            size_bytes = sum(f.stat().st_size for f in index_path.rglob('*') if f.is_file())
+            size_bytes = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())
 
-            indices.append(IndexInfo(
-                name=index_path.name,
-                tenant_id=tenant_id,
-                chunks_count=metadata.get("num_chunks", 0),
-                embedding_dim=metadata.get("embedding_dim", 0),
-                created_at=metadata.get("created_at", ""),
-                size_bytes=size_bytes,
-            ))
+            indices.append(
+                IndexInfo(
+                    name=index_path.name,
+                    tenant_id=tenant_id,
+                    chunks_count=metadata.get("num_chunks", 0),
+                    embedding_dim=metadata.get("embedding_dim", 0),
+                    created_at=metadata.get("created_at", ""),
+                    size_bytes=size_bytes,
+                )
+            )
 
         return ListIndicesResponse(indices=indices, count=len(indices))
 
@@ -347,7 +372,9 @@ async def list_indices(request: Request, tenant_id: str = "default", index_dir: 
 
 @app.delete("/rag/indices/{index_name}", response_model=DeleteIndexResponse, tags=["RAG"])
 @limiter.limit("10/minute")
-async def delete_index(request: Request, index_name: str, tenant_id: str = "default", force: bool = False):
+async def delete_index(
+    request: Request, index_name: str, tenant_id: str = "default", force: bool = False
+):
     """Delete an index."""
     try:
         import shutil
@@ -368,7 +395,7 @@ async def delete_index(request: Request, index_name: str, tenant_id: str = "defa
             success=True,
             index_name=index_name,
             tenant_id=tenant_id,
-            message=f"Index '{index_name}' deleted successfully"
+            message=f"Index '{index_name}' deleted successfully",
         )
 
     except HTTPException:
@@ -429,7 +456,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
             metadata = json.load(f)
 
         # Calculate size
-        size_bytes = sum(f.stat().st_size for f in index_path.rglob('*') if f.is_file())
+        size_bytes = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())
 
         return StatsResponse(
             index_name=index_name,
@@ -467,25 +494,21 @@ async def get_metrics(request: Request):
 
 # === Error Handlers ===
 
+
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc: HTTPException):
     """Handle 404 errors."""
-    return JSONResponse(
-        status_code=404,
-        content={"detail": str(exc.detail), "status": "not_found"}
-    )
+    return JSONResponse(status_code=404, content={"detail": str(exc.detail), "status": "not_found"})
 
 
 @app.exception_handler(500)
 async def internal_error_handler(request: Request, exc: HTTPException):
     """Handle 500 errors."""
-    return JSONResponse(
-        status_code=500,
-        content={"detail": str(exc.detail), "status": "error"}
-    )
+    return JSONResponse(status_code=500, content={"detail": str(exc.detail), "status": "error"})
 
 
 # === Startup/Shutdown ===
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -502,4 +525,5 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # nosec B104

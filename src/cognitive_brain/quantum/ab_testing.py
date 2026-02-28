@@ -145,9 +145,7 @@ class ABTestFramework:
         """
         self.repository = repository
         self._experiments: Dict[str, ExperimentConfig] = {}
-        self._assignments: Dict[
-            Tuple[str, str], Variant
-        ] = {}  # (exp_id, user_id) -> variant
+        self._assignments: Dict[Tuple[str, str], Variant] = {}  # (exp_id, user_id) -> variant
 
     def create_experiment(self, config: ExperimentConfig) -> None:
         """
@@ -309,9 +307,7 @@ class ABTestFramework:
 
         return values
 
-    def analyze_experiment(
-        self, experiment_id: str, alpha: float = 0.05
-    ) -> ExperimentResult:
+    def analyze_experiment(self, experiment_id: str, alpha: float = 0.05) -> ExperimentResult:
         """
         Analyze experiment results with statistical significance testing.
 

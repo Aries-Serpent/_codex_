@@ -32,11 +32,26 @@ except ImportError:  # pragma: no cover - optional dependency
 
         def __init__(self, *args, **kwargs):
             raise ImportError(
-                "RAGIndexer requires codex.rag extras. "
-                "Install with: pip install -e '.[rag]'"
+                "RAGIndexer requires codex.rag extras. Install with: pip install -e '.[rag]'"
             )
 
-__all__ = ["app", "RAGIndexer"]
+
+# Re-export RAGRetriever (alias for Retriever) so tests can patch
+# codex.cli_rag.RAGRetriever and query() picks up the patched class.
+try:
+    from codex.rag.retriever import Retriever as RAGRetriever
+except ImportError:  # pragma: no cover - optional dependency
+
+    class RAGRetriever:  # type: ignore[no-redef]
+        """Stub when codex.rag is not installed."""
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                "RAGRetriever requires codex.rag extras. Install with: pip install -e '.[rag]'"
+            )
+
+
+__all__ = ["app", "RAGIndexer", "RAGRetriever"]
 
 # Create Typer app for RAG commands
 app = typer.Typer(
@@ -253,8 +268,6 @@ def query(
         codex rag query "logging" --format json
     """
     try:
-        from codex.rag import Retriever
-
         console.print(f"[cyan]🔍 Querying index '{index_name}' for tenant '{tenant_id}'[/cyan]\n")
 
         with Progress(
@@ -264,7 +277,7 @@ def query(
         ) as progress:
             task = progress.add_task("Loading index...", total=None)
 
-            retriever = Retriever(
+            retriever = RAGRetriever(
                 index_name=index_name,
                 tenant_id=tenant_id,
             )
@@ -364,13 +377,15 @@ def list_indices(
                 if metadata_file.exists():
                     try:
                         metadata = json.loads(metadata_file.read_text())
-                        indices.append({
-                            "name": index_path.name,
-                            "chunks": metadata.get("num_chunks", 0),
-                            "created": metadata.get("created_at", "unknown"),
-                            "model": metadata.get("model_name", "unknown"),
-                            "path": index_path,
-                        })
+                        indices.append(
+                            {
+                                "name": index_path.name,
+                                "chunks": metadata.get("num_chunks", 0),
+                                "created": metadata.get("created_at", "unknown"),
+                                "model": metadata.get("model_name", "unknown"),
+                                "path": index_path,
+                            }
+                        )
                     except Exception as e:
                         logger.warning(f"Failed to read metadata for {index_path}: {e}")
 
@@ -509,7 +524,9 @@ def merge(
             console.print("[red]❌ At least 2 source indices required for merge[/red]")
             raise typer.Exit(1)
 
-        console.print(f"[cyan]🔀 Merging {len(source_indices)} indices into '{target_index}'[/cyan]\n")
+        console.print(
+            f"[cyan]🔀 Merging {len(source_indices)} indices into '{target_index}'[/cyan]\n"
+        )
 
         with Progress(
             SpinnerColumn(),
@@ -601,7 +618,9 @@ def stats(
         # Calculate directory size
         total_size = sum(f.stat().st_size for f in index_path.rglob("*") if f.is_file())
 
-        console.print(f"[cyan]📊 Statistics for index '{index_name}' (tenant: {tenant_id})[/cyan]\n")
+        console.print(
+            f"[cyan]📊 Statistics for index '{index_name}' (tenant: {tenant_id})[/cyan]\n"
+        )
 
         table = Table(show_header=False, box=None)
         table.add_column("Property", style="bold blue")
@@ -690,37 +709,22 @@ def benchmark(
         "all",
         "--type",
         "-t",
-        help="Benchmark type: embedding, indexing, retrieval, e2e, all"
+        help="Benchmark type: embedding, indexing, retrieval, e2e, all",
     ),
     corpus_size: Optional[int] = typer.Option(
         None,
         "--corpus-size",
         "-c",
-        help="Corpus size for benchmarks (defaults vary by type)"
+        help="Corpus size for benchmarks (defaults vary by type)",
     ),
-    runs: int = typer.Option(
-        5,
-        "--runs",
-        "-r",
-        help="Number of runs per benchmark"
-    ),
+    runs: int = typer.Option(5, "--runs", "-r", help="Number of runs per benchmark"),
     output: Optional[str] = typer.Option(
-        None,
-        "--output",
-        "-o",
-        help="Output file for results (JSON or CSV)"
+        None, "--output", "-o", help="Output file for results (JSON or CSV)"
     ),
     baseline: Optional[str] = typer.Option(
-        None,
-        "--baseline",
-        "-b",
-        help="Baseline JSON file for regression detection"
+        None, "--baseline", "-b", help="Baseline JSON file for regression detection"
     ),
-    threshold: float = typer.Option(
-        10.0,
-        "--threshold",
-        help="Regression threshold percentage"
-    ),
+    threshold: float = typer.Option(10.0, "--threshold", help="Regression threshold percentage"),
 ):
     """
     Run performance benchmarks on RAG pipeline.
@@ -776,28 +780,25 @@ def benchmark(
 
         for r in results:
             status = "✅" if r["success"] else "❌"
-            table.add_row(
-                r["name"],
-                f"{r['duration_ms']:.2f}",
-                f"{r['memory_mb']:.2f}",
-                status
-            )
+            table.add_row(r["name"], f"{r['duration_ms']:.2f}", f"{r['memory_mb']:.2f}", status)
 
         console.print(table)
 
         # Export results
         if output:
             import json
+
             output_path = Path(output)
             output_path.parent.mkdir(parents=True, exist_ok=True)
 
-            if output.endswith('.json'):
-                with open(output, 'w') as f:
+            if output.endswith(".json"):
+                with open(output, "w") as f:
                     json.dump({"results": results}, f, indent=2)
                 console.print(f"[green]✅ Results exported to {output}[/green]")
-            elif output.endswith('.csv'):
+            elif output.endswith(".csv"):
                 import csv
-                with open(output, 'w', newline='') as f:
+
+                with open(output, "w", newline="") as f:
                     if results:
                         writer = csv.DictWriter(f, fieldnames=results[0].keys())
                         writer.writeheader()
@@ -807,8 +808,9 @@ def benchmark(
         # Check for regressions
         if baseline:
             from codex.rag.benchmarks.runner import BenchmarkRunner
+
             runner = BenchmarkRunner()
-            runner.results = [type('obj', (), r) for r in results]
+            runner.results = [type("obj", (), r) for r in results]
 
             comparison = runner.compare_with_baseline(baseline, threshold)
 
@@ -816,8 +818,7 @@ def benchmark(
                 console.print("\n[red]⚠️  Performance regressions detected:[/red]")
                 for reg in comparison["regressions"]:
                     console.print(
-                        f"  • {reg['name']}: "
-                        f"{reg['duration_change_percent']:.1f}% slower"
+                        f"  • {reg['name']}: {reg['duration_change_percent']:.1f}% slower"
                     )
                 raise typer.Exit(1)
             else:

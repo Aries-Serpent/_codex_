@@ -64,9 +64,7 @@ def load_tokenizer(
         return adapter
     adapter = _load_hf_adapter()
     instance = adapter.load(target, use_fast=use_fast)
-    if all(
-        hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")
-    ):
+    if all(hasattr(instance, name) for name in ("encode", "decode", "add_special_tokens")):
         validate_tokenizer_contract(instance)
     return instance
 
@@ -84,7 +82,7 @@ def _load_sp_tokenizer():
         missing = (exc.name or "").split(".", 1)[0]
         if missing == "sentencepiece":
             raise ModuleNotFoundError(
-                "Tokenizer operations that rely on SentencePiece require the optional 'sentencepiece' dependency.",
+                "Tokenizer operations that rely on SentencePiece require the optional 'sentencepiece' dependency.",  # noqa: E501
                 name="sentencepiece",
             ) from exc
         raise
@@ -155,7 +153,7 @@ def pad_sequences(
         if len(current) > target:
             if not truncate:
                 raise ValueError(
-                    f"Sequence length {len(current)} exceeds max_length {target} and truncate is False"
+                    f"Sequence length {len(current)} exceeds max_length {target} and truncate is False"  # noqa: E501
                 )
             current = current[:target]
         pad_needed = target - len(current)
@@ -187,7 +185,7 @@ def deprecated_legacy_access(name: str):
     if provider is None:
         return None
     warnings.warn(
-        "Accessing 'codex_ml.tokenization.%s' is deprecated; import from 'codex_ml.tokenization.api' instead."
+        "Accessing 'codex_ml.tokenization.%s' is deprecated; import from 'codex_ml.tokenization.api' instead."  # noqa: E501
         % name,
         DeprecationWarning,
         stacklevel=3,

@@ -107,7 +107,7 @@ def _resolve_tokenizer_target(
         if candidate.exists():
             return str(candidate)
         raise FileNotFoundError(
-            f"Tokenizer assets for '{alias}' expected at {candidate}. Provide a valid path or use the generic 'hf' tokenizer "
+            f"Tokenizer assets for '{alias}' expected at {candidate}. Provide a valid path or use the generic 'hf' tokenizer "  # noqa: E501
             "with `local_files_only=false` to download resources."
         )
 
@@ -118,7 +118,7 @@ def _resolve_tokenizer_target(
             if env_path.exists():
                 return str(env_path)
             raise FileNotFoundError(
-                f"Environment variable {specific_env} points to {env_path}, but no tokenizer files were found."
+                f"Environment variable {specific_env} points to {env_path}, but no tokenizer files were found."  # noqa: E501
             )
 
     offline_root = os.environ.get("CODEX_ML_OFFLINE_MODELS_DIR") or os.environ.get(
@@ -136,8 +136,8 @@ def _resolve_tokenizer_target(
             return str(candidate)
 
     raise FileNotFoundError(
-        f"Tokenizer assets for '{alias}' not found. Checked: {', '.join(checked) if checked else '<no candidates>'}. "
-        "Provide `name_or_path` or set CODEX_ML_OFFLINE_MODELS_DIR / CODEX_ML_OFFLINE_TOKENIZERS_DIR."
+        f"Tokenizer assets for '{alias}' not found. Checked: {', '.join(checked) if checked else '<no candidates>'}. "  # noqa: E501
+        "Provide `name_or_path` or set CODEX_ML_OFFLINE_MODELS_DIR / CODEX_ML_OFFLINE_TOKENIZERS_DIR."  # noqa: E501
     )
 
 
@@ -299,7 +299,8 @@ def _call_tokenizer(
             encode_fn = getattr(tokenizer, "encode", None)
             if callable(encode_fn):
                 ids = encode_fn(
-                    text, **{k: v for k, v in kwargs.items() if k != "return_attention_mask"}
+                    text,
+                    **{k: v for k, v in kwargs.items() if k != "return_attention_mask"},
                 )
                 if not isinstance(ids, Sequence):
                     raise TypeError("tokenizer.encode must return a sequence of token ids")

@@ -9,6 +9,7 @@ from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
+
 def check_cuda_available() -> bool:
     """
     Check if CUDA is available.
@@ -18,6 +19,7 @@ def check_cuda_available() -> bool:
     """
     try:
         import torch
+
         available = torch.cuda.is_available()
         if available:
             logger.info(f"✓ CUDA available: {torch.cuda.get_device_name(0)}")
@@ -39,6 +41,7 @@ def get_gpu_memory() -> Tuple[int, int]:
     """
     try:
         import torch
+
         if torch.cuda.is_available():
             free, total = torch.cuda.mem_get_info()
             logger.debug(f"GPU memory: {free / 1e9:.2f}GB free / {total / 1e9:.2f}GB total")
@@ -117,7 +120,7 @@ def try_gpu_index(index, data, device: str = "cuda"):
         import faiss
 
         # Check if GPU version is available
-        if not hasattr(faiss, 'StandardGpuResources'):
+        if not hasattr(faiss, "StandardGpuResources"):
             logger.warning("faiss-gpu not available, using CPU")
             return index
 

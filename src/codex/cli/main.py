@@ -29,9 +29,11 @@ from typing import Optional
 _TYPER_IMPORT_ERROR: Optional[str] = None
 try:
     import typer
+
     # Verify typer is actually the real package
-    if hasattr(typer, 'Typer'):
+    if hasattr(typer, "Typer"):
         from typing import Annotated
+
         TYPER_AVAILABLE = True
     else:
         TYPER_AVAILABLE = False
@@ -54,8 +56,12 @@ if TYPER_AVAILABLE:
     @app.command()
     def ingest(
         source: Annotated[str, typer.Argument(help="File path, ZIP, or Git URL")],
-        manifest: Annotated[Optional[Path], typer.Option("--manifest", "-m", help="Manifest file path")] = None,
-        snapshot_id: Annotated[Optional[str], typer.Option("--snapshot-id", help="Custom snapshot ID")] = None,
+        manifest: Annotated[
+            Optional[Path], typer.Option("--manifest", "-m", help="Manifest file path")
+        ] = None,
+        snapshot_id: Annotated[
+            Optional[str], typer.Option("--snapshot-id", help="Custom snapshot ID")
+        ] = None,
     ):
         """Ingest a Python file or repository."""
         from src.codex.ingest import ingest as do_ingest
@@ -73,8 +79,12 @@ if TYPER_AVAILABLE:
     @app.command()
     def analyze(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to analyze")],
-        static_only: Annotated[bool, typer.Option("--static-only", help="Run only static analysis")] = False,
-        runtime_only: Annotated[bool, typer.Option("--runtime-only", help="Run only runtime analysis")] = False,
+        static_only: Annotated[
+            bool, typer.Option("--static-only", help="Run only static analysis")
+        ] = False,
+        runtime_only: Annotated[
+            bool, typer.Option("--runtime-only", help="Run only runtime analysis")
+        ] = False,
     ):
         """Run analysis on a snapshot."""
         from src.codex.analyze.static import analyze as static_analyze
@@ -91,7 +101,9 @@ if TYPER_AVAILABLE:
             report = static_analyze(source_dir, snapshot_id)
             report.save(artifacts_dir / "static-report.json")
             typer.echo(f"✅ Static analysis complete: {len(report.files)} files")
-            typer.echo(f"   Lint issues: {report.summary.get('lint_error_count', 0)} errors, {report.summary.get('lint_warning_count', 0)} warnings")
+            typer.echo(
+                f"   Lint issues: {report.summary.get('lint_error_count', 0)} errors, {report.summary.get('lint_warning_count', 0)} warnings"  # noqa: E501
+            )
             typer.echo(f"   Security issues: {report.summary.get('security_issue_count', 0)}")
 
         if not static_only:
@@ -100,7 +112,10 @@ if TYPER_AVAILABLE:
     @app.command()
     def transform(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to transform")],
-        tier: Annotated[Optional[str], typer.Option("--tier", "-t", help="Tier to apply (A, B, or C)")] = None,
+        tier: Annotated[
+            Optional[str],
+            typer.Option("--tier", "-t", help="Tier to apply (A, B, or C)"),
+        ] = None,
         auto: Annotated[bool, typer.Option("--auto", help="Auto-apply Tier A changes")] = False,
         dry_run: Annotated[bool, typer.Option("--dry-run", help="Don't modify files")] = True,
     ):
@@ -120,7 +135,9 @@ if TYPER_AVAILABLE:
             tier_enum = Tier[tier.upper()]
 
         typer.echo(f"Transforming snapshot {snapshot_id}...")
-        result = do_transform(source_dir, snapshot_id, tier=tier_enum, auto_apply=auto, dry_run=dry_run)
+        result = do_transform(
+            source_dir, snapshot_id, tier=tier_enum, auto_apply=auto, dry_run=dry_run
+        )
         result.save(artifacts_dir / "patches")
 
         typer.echo("✅ Transform complete:")
@@ -135,8 +152,12 @@ if TYPER_AVAILABLE:
     @app.command()
     def verify(
         snapshot_id: Annotated[str, typer.Argument(help="Snapshot ID to verify")],
-        compare_mode: Annotated[bool, typer.Option("--compare", help="Run behavior comparison")] = False,
-        tolerance: Annotated[str, typer.Option("--tolerance", help="Comparison tolerance")] = "strict",
+        compare_mode: Annotated[
+            bool, typer.Option("--compare", help="Run behavior comparison")
+        ] = False,
+        tolerance: Annotated[
+            str, typer.Option("--tolerance", help="Comparison tolerance")
+        ] = "strict",
     ):
         """Verify behavior preservation."""
         from src.codex.verify.comparator import ComparisonMode, compare
@@ -148,7 +169,9 @@ if TYPER_AVAILABLE:
 
         if compare_mode:
             baseline_dir = artifacts_dir / "source"
-            patched_dir = artifacts_dir / "patched" if (artifacts_dir / "patched").exists() else baseline_dir
+            patched_dir = (
+                artifacts_dir / "patched" if (artifacts_dir / "patched").exists() else baseline_dir
+            )
 
             mode = ComparisonMode[tolerance.upper()]
             result = compare(baseline_dir, patched_dir, mode=mode)
@@ -214,7 +237,11 @@ if TYPER_AVAILABLE:
         # Emit typer import error warning if it occurred
         if _TYPER_IMPORT_ERROR:
             import sys
-            print(f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.", file=sys.stderr)
+
+            print(
+                f"Warning: typer import failed ({_TYPER_IMPORT_ERROR}). Using limited CLI.",
+                file=sys.stderr,
+            )
         app()
 
 else:
@@ -237,14 +264,18 @@ else:
         # Analyze command
         analyze_parser = subparsers.add_parser("analyze", help="Run analysis on a snapshot")
         analyze_parser.add_argument("snapshot_id", help="Snapshot ID to analyze")
-        analyze_parser.add_argument("--static-only", action="store_true", help="Run only static analysis")
+        analyze_parser.add_argument(
+            "--static-only", action="store_true", help="Run only static analysis"
+        )
 
         # Transform command
         transform_parser = subparsers.add_parser("transform", help="Apply transformations")
         transform_parser.add_argument("snapshot_id", help="Snapshot ID to transform")
         transform_parser.add_argument("--tier", "-t", help="Tier to apply (A, B, or C)")
         transform_parser.add_argument("--auto", action="store_true", help="Auto-apply Tier A")
-        transform_parser.add_argument("--dry-run", action="store_true", default=True, help="Don't modify files")
+        transform_parser.add_argument(
+            "--dry-run", action="store_true", default=True, help="Don't modify files"
+        )
 
         # List command
         list_parser = subparsers.add_parser("list", help="List all snapshots")

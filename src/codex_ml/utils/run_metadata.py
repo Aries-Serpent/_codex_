@@ -28,6 +28,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+
 def _sha256_file(path: Path) -> str | None:
     try:
         hasher = hashlib.sha256()

@@ -379,6 +379,7 @@ def _load_legacy_checkpoint_payload(
         try:
             # Use safe pickle loading to prevent code execution vulnerabilities
             from utils.safe_pickle import safe_pickle_load
+
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)

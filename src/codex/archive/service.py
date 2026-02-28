@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import logging
+
 logger = logging.getLogger(__name__)
 import mimetypes  # noqa: E402
 import os  # noqa: E402

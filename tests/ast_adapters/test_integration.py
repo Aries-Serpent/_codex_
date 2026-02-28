@@ -8,7 +8,9 @@ import time
 
 import pytest
 
-from codex.ast_adapters import (
+pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
+
+from codex.ast_adapters import (  # noqa: E402
     JSONASTAdapter,
     PythonASTAdapter,
     StandardizedASTNode,

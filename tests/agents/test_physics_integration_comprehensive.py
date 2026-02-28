@@ -90,7 +90,7 @@ class TestHybridPhysicsOrchestrator:
 
         assert result is not None
         assert "paradigms_used" in result
-        assert len(result["paradigms_used"]) >= 0
+        assert isinstance(result["paradigms_used"], (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     def test_orchestrate_tracks_decision_history(self, orchestrator):
         """Test that decisions are tracked in history."""

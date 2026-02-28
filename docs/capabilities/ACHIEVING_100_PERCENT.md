@@ -142,4 +142,3 @@ The CI pipeline enforces:
 - Detectors: `scripts/space_traversal/detectors/`
 - Scored Results: `audit_artifacts/capabilities_scored.json`
 - Status Report: `reports/codex_status_update_*.md`
-

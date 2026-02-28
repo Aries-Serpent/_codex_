@@ -34,7 +34,7 @@ def test_resolve_dtype_and_device_no_crash():
         # bf16 may be None on older Torch builds; allow None
         assert out_bf16 in (None, getattr(torch, "bfloat16", None)) or str(out_bf16) in ('bfloat16', 'torch.bfloat16', 'None')
         assert out_fp16 in (None, torch.float16) or str(out_fp16) in ('float16', 'torch.float16', 'None')
-    except Exception:
+    except ImportError:
         assert out_f32 is None and out_bf16 is None and out_fp16 is None
 
     # device resolution returns a device or "cpu" string fallback when torch missing
@@ -44,5 +44,5 @@ def test_resolve_dtype_and_device_no_crash():
         import torch  # type: ignore
 
         assert isinstance(dev, torch.device) or str(dev) == "cpu" or dev == "cpu"
-    except Exception:
+    except ImportError:
         assert dev == "cpu"

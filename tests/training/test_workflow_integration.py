@@ -346,7 +346,7 @@ class TestWorkflowOrchestration:
                 while self.attempts < self.max_attempts:
                     try:
                         return operation()
-                    except Exception:
+                    except Exception:  # noqa: BLE001
                         self.attempts += 1
                 raise RuntimeError("Max attempts exceeded")
 

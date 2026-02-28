@@ -115,7 +115,10 @@ def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     try:
         import jsonschema
     except Exception:  # pragma: no cover - import guards
-        print("[metrics-cli] jsonschema not installed; skipping validation", file=sys.stderr)
+        print(
+            "[metrics-cli] jsonschema not installed; skipping validation",
+            file=sys.stderr,
+        )
         return
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -166,18 +169,18 @@ def _csv_to_sqlite(
                 )
                 if len(buf) >= batch:
                     cur.executemany(  # nosec B608
-                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                        f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",  # nosec B608
                         buf,
                     )
                     buf.clear()
             if buf:
                 cur.executemany(  # nosec B608
-                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",
+                    f"INSERT INTO {table_safe} (run_id, epoch, key, value) VALUES (?, ?, ?, ?)",  # nosec B608
                     buf,
                 )
         if create_index:
             cur.execute(  # nosec B608
-                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"
+                f"CREATE INDEX IF NOT EXISTS idx_{table_safe}_rke ON {table_safe}(run_id, key, epoch)"  # noqa: E501
             )
         con.commit()
     finally:
@@ -216,7 +219,7 @@ def _csv_to_duckdb(
             )
         elif mode_normalized == "append":
             con.execute(
-                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",  # nosec B608
+                f"CREATE TABLE IF NOT EXISTS {table_safe} AS SELECT * FROM read_csv_auto(?) WHERE 1=0",  # nosec B608  # noqa: E501
                 [csvp],
             )
             con.execute(

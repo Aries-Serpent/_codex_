@@ -1153,6 +1153,11 @@ def run_functional_training(
 
         return {"metrics": metrics, "checkpoint_dir": None, "resumed_from": None}
 
+    # NOTE: All imports below are intentionally deferred (lazy-import pattern).
+    # This avoids circular dependency issues at module load time.
+    # To mock them in tests, patch the MODULE ATTRIBUTE — not sys.modules.
+    # Example: monkeypatch.setattr(legacy_api, "get_model", mock_fn)
+    # See: Pattern P-043 in docs/coverage/COVERAGE_ROADMAP_40_TO_75.md
     import numpy as np
 
     from codex_ml.models.registry import get_model
@@ -1343,7 +1348,7 @@ def run_functional_training(
     train_kwargs.setdefault("lr", cfg.learning_rate)
     train_kwargs.setdefault("batch_size", cfg.batch_size)
     train_kwargs.setdefault("epochs", cfg.max_epochs)
-    train_kwargs.setdefault("grad_accum", cfg.gradient_accumulation)
+    train_kwargs.setdefault("gradient_accumulation_steps", cfg.gradient_accumulation)
     train_kwargs.setdefault("save_every", cfg.checkpoint_every_n_steps)
     train_kwargs.setdefault("warmup_steps", cfg.scheduler.warmup_steps)
     train_kwargs.setdefault("weight_decay", cfg.optimizer.weight_decay)
@@ -1355,7 +1360,7 @@ def run_functional_training(
     train_kwargs["lr"] = float(train_kwargs["lr"])
     train_kwargs["batch_size"] = int(train_kwargs["batch_size"])
     train_kwargs["epochs"] = int(train_kwargs["epochs"])
-    train_kwargs["grad_accum"] = int(train_kwargs["grad_accum"])
+    train_kwargs["gradient_accumulation_steps"] = int(train_kwargs["gradient_accumulation_steps"])
     train_kwargs["save_every"] = int(train_kwargs["save_every"])
     train_kwargs["warmup_steps"] = int(train_kwargs["warmup_steps"])
     train_kwargs["weight_decay"] = float(train_kwargs["weight_decay"])
@@ -1448,7 +1453,14 @@ def run_functional_training(
             with contextlib.suppress(Exception):
                 load_training_checkpoint(str(resume_path))
 
-    train_cfg = TrainCfg(**train_kwargs)
+    # Map legacy key names to TrainCfg field names before filtering.
+    if "gradient_accumulation_steps" in train_kwargs and "grad_accum" not in train_kwargs:
+        train_kwargs["grad_accum"] = train_kwargs.pop("gradient_accumulation_steps")
+    # Filter to only TrainConfig-known fields before construction.
+    # This silently drops any remaining legacy keys not part of TrainConfig.
+    train_cfg = TrainCfg(
+        **{k: v for k, v in train_kwargs.items() if k in TrainCfg.__dataclass_fields__}
+    )
     result = run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
     if val_ds is not None and isinstance(result, dict):
         eval_batch_raw = (

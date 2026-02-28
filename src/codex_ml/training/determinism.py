@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import numpy as np  # type: ignore
+
     NUMPY_AVAILABLE = True
 except ImportError:
     np = None  # type: ignore
@@ -44,7 +45,9 @@ def set_seed(seed: int = 42) -> None:
             torch.cuda.manual_seed_all(seed)
 
 
-def set_deterministic_mode(enabled: bool = True, warn: bool = True, seed: Optional[int] = None) -> bool:
+def set_deterministic_mode(
+    enabled: bool = True, warn: bool = True, seed: Optional[int] = None
+) -> bool:
     """Enable or disable deterministic mode for reproducibility.
 
     Warning: Enabling deterministic mode may reduce performance SIGNIFICANTLY

@@ -8,6 +8,7 @@ This module provides workflow analysis and optimization capabilities for:
 - Tracking immutable components
 - Providing markers/checkpoints for workflow state
 """
+
 from __future__ import annotations
 
 import json
@@ -399,9 +400,7 @@ class WorkflowAnalyzer:
         """Find workflows that require approval."""
         return [w for w in self._workflows.values() if w.approval_required]
 
-    def get_workflows_by_category(
-        self, category: WorkflowCategory
-    ) -> list[WorkflowInfo]:
+    def get_workflows_by_category(self, category: WorkflowCategory) -> list[WorkflowInfo]:
         """Get workflows by category."""
         return [w for w in self._workflows.values() if w.category == category]
 
@@ -413,9 +412,7 @@ class CacheOptimizer:
         """Initialize optimizer."""
         self._cache_analysis: dict[str, Any] = {}
 
-    def analyze_cache_usage(
-        self, workflows: list[WorkflowInfo]
-    ) -> dict[str, Any]:
+    def analyze_cache_usage(self, workflows: list[WorkflowInfo]) -> dict[str, Any]:
         """Analyze cache usage across workflows."""
         cache_users = [w for w in workflows if w.uses_cache]
         non_cache_users = [w for w in workflows if not w.uses_cache]
@@ -473,9 +470,7 @@ class CacheOptimizer:
             recommendations.append(
                 OptimizationRecommendation(
                     optimization_type=OptimizationType.CACHING,
-                    target_workflows=list(
-                        set(w for wl in shared.values() for w in wl)
-                    )[:5],
+                    target_workflows=list(set(w for wl in shared.values() for w in wl))[:5],
                     description="Optimize shared cache keys for better hit rates",
                     estimated_savings_min=3,
                     priority=3,
@@ -493,9 +488,7 @@ class CacheOptimizer:
 class RedundancyDetector:
     """Detect redundant workflows."""
 
-    def find_similar_workflows(
-        self, workflows: list[WorkflowInfo]
-    ) -> list[tuple[list[str], str]]:
+    def find_similar_workflows(self, workflows: list[WorkflowInfo]) -> list[tuple[list[str], str]]:
         """Find workflows that might be duplicates."""
         similar_groups: list[tuple[list[str], str]] = []
 
@@ -545,9 +538,7 @@ class ImmutableRegistry:
 
     def __init__(self, registry_path: Path | None = None):
         """Initialize registry."""
-        self.registry_path = registry_path or Path(
-            ".codex/knowledge/immutable_registry.json"
-        )
+        self.registry_path = registry_path or Path(".codex/knowledge/immutable_registry.json")
         self._components: dict[str, ImmutableComponent] = {}
         self._load()
 
@@ -625,9 +616,7 @@ class CheckpointManager:
 
     def __init__(self, checkpoint_path: Path | None = None):
         """Initialize manager."""
-        self.checkpoint_path = checkpoint_path or Path(
-            ".codex/knowledge/checkpoints.json"
-        )
+        self.checkpoint_path = checkpoint_path or Path(".codex/knowledge/checkpoints.json")
         self._checkpoints: dict[str, WorkflowCheckpoint] = {}
         self._load()
 
@@ -685,28 +674,18 @@ class CheckpointManager:
         self.save()
         return cp
 
-    def get_latest_checkpoint(
-        self, workflow_name: str
-    ) -> WorkflowCheckpoint | None:
+    def get_latest_checkpoint(self, workflow_name: str) -> WorkflowCheckpoint | None:
         """Get latest checkpoint for a workflow."""
         workflow_cps = [
-            cp
-            for cp in self._checkpoints.values()
-            if cp.workflow_name == workflow_name
+            cp for cp in self._checkpoints.values() if cp.workflow_name == workflow_name
         ]
         if not workflow_cps:
             return None
         return max(workflow_cps, key=lambda x: x.created_at)
 
-    def get_all_for_workflow(
-        self, workflow_name: str
-    ) -> list[WorkflowCheckpoint]:
+    def get_all_for_workflow(self, workflow_name: str) -> list[WorkflowCheckpoint]:
         """Get all checkpoints for a workflow."""
-        return [
-            cp
-            for cp in self._checkpoints.values()
-            if cp.workflow_name == workflow_name
-        ]
+        return [cp for cp in self._checkpoints.values() if cp.workflow_name == workflow_name]
 
 
 class WorkflowOptimizer:
@@ -723,12 +702,8 @@ class WorkflowOptimizer:
         self.redundancy_detector = RedundancyDetector()
 
         knowledge_dir = knowledge_dir or Path(".codex/knowledge")
-        self.immutable_registry = ImmutableRegistry(
-            knowledge_dir / "immutable_registry.json"
-        )
-        self.checkpoint_manager = CheckpointManager(
-            knowledge_dir / "checkpoints.json"
-        )
+        self.immutable_registry = ImmutableRegistry(knowledge_dir / "immutable_registry.json")
+        self.checkpoint_manager = CheckpointManager(knowledge_dir / "checkpoints.json")
 
         self._workflows: list[WorkflowInfo] = []
 
@@ -747,9 +722,7 @@ class WorkflowOptimizer:
             self.scan()
 
         cache_analysis = self.cache_optimizer.analyze_cache_usage(self._workflows)
-        similar_groups = self.redundancy_detector.find_similar_workflows(
-            self._workflows
-        )
+        similar_groups = self.redundancy_detector.find_similar_workflows(self._workflows)
 
         return {
             "total_workflows": len(self._workflows),
@@ -770,15 +743,11 @@ class WorkflowOptimizer:
         recommendations = []
 
         # Cache recommendations
-        recommendations.extend(
-            self.cache_optimizer.recommend_cache_improvements(self._workflows)
-        )
+        recommendations.extend(self.cache_optimizer.recommend_cache_improvements(self._workflows))
 
         # Consolidation recommendations
         similar = self.redundancy_detector.find_similar_workflows(self._workflows)
-        recommendations.extend(
-            self.redundancy_detector.recommend_consolidations(similar)
-        )
+        recommendations.extend(self.redundancy_detector.recommend_consolidations(similar))
 
         # Sort by priority
         recommendations.sort(key=lambda r: r.priority)
@@ -794,9 +763,7 @@ class WorkflowOptimizer:
         reason: str,
     ) -> ImmutableComponent:
         """Register an immutable component."""
-        return self.immutable_registry.register(
-            name, path, checksum, verified_by, reason
-        )
+        return self.immutable_registry.register(name, path, checksum, verified_by, reason)
 
     def create_checkpoint(
         self,
@@ -806,9 +773,7 @@ class WorkflowOptimizer:
         metadata: dict[str, Any] | None = None,
     ) -> WorkflowCheckpoint:
         """Create a workflow checkpoint."""
-        return self.checkpoint_manager.create_checkpoint(
-            workflow_name, step_name, status, metadata
-        )
+        return self.checkpoint_manager.create_checkpoint(workflow_name, step_name, status, metadata)
 
     def get_optimization_report(self) -> str:
         """Generate a human-readable optimization report."""
@@ -839,12 +804,8 @@ class WorkflowOptimizer:
 
         lines.extend(["", "## Cache Analysis", ""])
         cache = analysis["cache_analysis"]
-        lines.append(
-            f"- Using cache: {cache.get('using_cache', 0)} workflows"
-        )
-        lines.append(
-            f"- Cache adoption: {cache.get('cache_adoption_rate', 0) * 100:.1f}%"
-        )
+        lines.append(f"- Using cache: {cache.get('using_cache', 0)} workflows")
+        lines.append(f"- Cache adoption: {cache.get('cache_adoption_rate', 0) * 100:.1f}%")
 
         if recommendations:
             lines.extend(["", "## Recommendations", ""])

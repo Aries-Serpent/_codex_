@@ -150,7 +150,10 @@ class LoopGuardrail:
         return None
 
     def check_before_action(
-        self, action_type: str, tool_name: Optional[str] = None, parameters: Optional[dict] = None
+        self,
+        action_type: str,
+        tool_name: Optional[str] = None,
+        parameters: Optional[dict] = None,
     ) -> Optional[str]:
         """
         Pre-check if action would violate guardrails.

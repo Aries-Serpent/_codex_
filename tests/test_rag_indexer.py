@@ -39,6 +39,18 @@ pytestmark = pytest.mark.skipif(
     reason="RAG indexer dependencies (sentence_transformers, faiss) not installed"
 )
 
+# Guard for tests that require real SentenceTransformer models on CPU
+try:
+    import torch as _torch
+    _cuda_available = _torch.cuda.is_available()
+except (ImportError, RuntimeError):
+    _cuda_available = False
+
+_skip_real_st_models = pytest.mark.skipif(
+    not _cuda_available,
+    reason="SentenceTransformer real model tests may fail on CPU-only runners",
+)
+
 
 class TestChunkText:
     """Tests for chunk_text function"""
@@ -90,6 +102,7 @@ class TestChunkText:
             chunk_text("test", chunk_size=100, overlap=100)
 
 
+@_skip_real_st_models
 class TestEmbedChunks:
     """Tests for embed_chunks function"""
 
@@ -205,6 +218,7 @@ class TestPersistAndLoadIndex:
                 )
 
 
+@_skip_real_st_models
 class TestBuildIndexFromFiles:
     """Tests for build_index_from_files function"""
 
@@ -292,6 +306,7 @@ class TestBuildIndexFromFiles:
             assert loaded_index.ntotal > 0
 
 
+@_skip_real_st_models
 class TestEndToEnd:
     """End-to-end integration tests"""
 
@@ -514,6 +529,7 @@ class TestManageTenantIndices:
             assert "requires 'files' parameter" in result.message
 
 
+@_skip_real_st_models
 class TestEmbedChunksErrorPaths:
     """Error path tests for embed_chunks function"""
 

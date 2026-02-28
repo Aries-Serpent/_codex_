@@ -104,11 +104,13 @@ class MockBackend(BaseAdapter):
         # Return random subset of stored vectors
         results = []
         for vec_id, vec_data in list(self._vectors.items())[:top_k]:
-            results.append({
-                "id": vec_id,
-                "score": 0.9 - 0.1 * len(results),  # Fake scores
-                "metadata": vec_data.get("metadata", {}),
-            })
+            results.append(
+                {
+                    "id": vec_id,
+                    "score": 0.9 - 0.1 * len(results),  # Fake scores
+                    "metadata": vec_data.get("metadata", {}),
+                }
+            )
 
         logger.debug("Mock query returned %d results", len(results))
 

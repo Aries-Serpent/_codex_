@@ -53,7 +53,7 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
             f"While performing [{step_no}:{step_desc}], encountered the following error:\n"
             f"{err_msg}\n"
             f"Context: {ctx}\n"
-            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"
+            "What are the possible causes, and how can this be resolved while preserving intended functionality?\n"  # noqa: E501
         )
     )
 

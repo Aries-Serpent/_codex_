@@ -356,8 +356,7 @@ class DocumentValidator:
         # Check length
         if len(text) > self.config.max_text_length:
             result.add_error(
-                f"Text too long: {len(text)} characters "
-                f"(maximum: {self.config.max_text_length})"
+                f"Text too long: {len(text)} characters (maximum: {self.config.max_text_length})"
             )
             return
 
@@ -369,9 +368,7 @@ class DocumentValidator:
         if self.config.check_malicious:
             for pattern in self.MALICIOUS_PATTERNS:
                 if pattern.search(text):
-                    result.add_warning(
-                        f"Potentially malicious content detected: {pattern.pattern}"
-                    )
+                    result.add_warning(f"Potentially malicious content detected: {pattern.pattern}")
 
         # Store content statistics
         result.metadata["char_count"] = len(text)

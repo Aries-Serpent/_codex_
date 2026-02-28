@@ -86,9 +86,7 @@ class AutonomousAgent:
 
         # Bounds check (safeguard)
         if len(task) > MAX_TASK_LENGTH:
-            logger.warning(
-                f"Task exceeds maximum length: {len(task)} > {MAX_TASK_LENGTH}"
-            )
+            logger.warning(f"Task exceeds maximum length: {len(task)} > {MAX_TASK_LENGTH}")
             task = task[:MAX_TASK_LENGTH]
 
         logger.info("🚀 Starting autonomous agent execution...")
@@ -174,9 +172,7 @@ class AutonomousAgent:
             "result": {
                 "success": result.success,
                 "model": result.model,
-                "response": result.response[:MAX_RESPONSE_LENGTH]
-                if result.response
-                else None,
+                "response": result.response[:MAX_RESPONSE_LENGTH] if result.response else None,
                 "error": result.error,
                 "usage": result.usage,
                 "duration_ms": result.duration_ms,

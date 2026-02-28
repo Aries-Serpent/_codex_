@@ -8,6 +8,7 @@ context that may render prompts to HTML or untrusted viewers.
 If later you need richer sanitization (strip tags, allowlist), replace these
 helpers with a vetted library such as 'bleach' and add focused tests.
 """
+
 import html
 import re
 from typing import Optional
@@ -56,14 +57,14 @@ def sanitize_prompt(prompt: Optional[str], max_length: Optional[int] = None) -> 
 
     # Step 1: Remove control characters (U+0000 to U+001F and U+007F)
     # These include null bytes, carriage returns in middle of text, etc.
-    prompt = re.sub(r'[\x00-\x1F\x7F]', '', prompt)
+    prompt = re.sub(r"[\x00-\x1F\x7F]", "", prompt)
 
     # Step 2: Remove ANSI escape sequences (terminal color codes, cursor movement)
     # Pattern handles both 2-character sequences and CSI (Control Sequence Introducer) sequences
     # Format: ESC followed by:
     #   - [@-Z\\-_] for 2-char sequences (Fe)
     #   - \[[0-?]*[ -/]*[@-~] for CSI sequences (most common)
-    prompt = re.sub(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '', prompt)
+    prompt = re.sub(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", prompt)
 
     # Step 3: Truncate to max_length if specified
     if max_length is not None:

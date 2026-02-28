@@ -90,7 +90,9 @@ class FeatureHealthMonitor:
     }
 
     def __init__(
-        self, feature_store: Optional["FeatureStore"] = None, freshness_threshold_minutes: int = 60
+        self,
+        feature_store: Optional["FeatureStore"] = None,
+        freshness_threshold_minutes: int = 60,
     ):
         """Initialize feature health monitor.
 
@@ -172,7 +174,7 @@ class FeatureHealthMonitor:
 
         if age > self.freshness_threshold:
             warnings.append(
-                f"Feature is stale (>{self.freshness_threshold.total_seconds()/60:.0f} min)"
+                f"Feature is stale (>{self.freshness_threshold.total_seconds() / 60:.0f} min)"
             )
             is_healthy = False
 
@@ -328,7 +330,7 @@ class FeatureHealthMonitor:
                     HealthAlert(
                         feature_name=feature_name,
                         severity="WARNING",
-                        message=f"Feature approaching SLA violation ({status.freshness_minutes:.0f}/{sla_minutes} min)",
+                        message=f"Feature approaching SLA violation ({status.freshness_minutes:.0f}/{sla_minutes} min)",  # noqa: E501
                         timestamp=now.isoformat(),
                         metric_value=status.freshness_minutes,
                     )
@@ -418,9 +420,9 @@ class FeatureHealthMonitor:
         total_count = len(health_statuses)
         lines.append("## Summary\n")
         lines.append(f"- Total Features: {total_count}")
-        lines.append(f"- Healthy: {healthy_count} ({healthy_count/total_count*100:.1f}%)")
+        lines.append(f"- Healthy: {healthy_count} ({healthy_count / total_count * 100:.1f}%)")
         lines.append(
-            f"- Unhealthy: {total_count - healthy_count} ({(total_count-healthy_count)/total_count*100:.1f}%)"
+            f"- Unhealthy: {total_count - healthy_count} ({(total_count - healthy_count) / total_count * 100:.1f}%)"  # noqa: E501
         )
 
         # Freshness Distribution
@@ -483,7 +485,7 @@ class FeatureHealthMonitor:
         ]
         if error_features:
             recommendations.append(
-                f"Investigate {len(error_features)} feature(s) with high error rates: {', '.join(error_features[:5])}"
+                f"Investigate {len(error_features)} feature(s) with high error rates: {', '.join(error_features[:5])}"  # noqa: E501
                 + (" ..." if len(error_features) > 5 else "")
             )
 
@@ -522,7 +524,11 @@ class FeatureHealthMonitor:
                                     latest.created_at
                                 )
                             except (ValueError, AttributeError) as e:
-                                logger.debug("Failed to parse feature timestamp for '%s': %s", name, e)
+                                logger.debug(
+                                    "Failed to parse feature timestamp for '%s': %s",
+                                    name,
+                                    e,
+                                )
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Could not load features from store: {e}")

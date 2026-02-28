@@ -51,7 +51,11 @@ class LatencyMetric(MetricAdapter):
         pass
 
     def add_batch_with_time(
-        self, predictions: Any, references: Any, elapsed_time: float, batch_size: int = 1
+        self,
+        predictions: Any,
+        references: Any,
+        elapsed_time: float,
+        batch_size: int = 1,
     ) -> None:
         """
         Add batch with timing information.

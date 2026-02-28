@@ -51,7 +51,7 @@ jobs:
           python scripts/rotate_jwt_secret.py
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           TOKEN_SECRET_KEY: ${{ secrets.TOKEN_SECRET_KEY }}
           FORCE_ROTATION: ${{ github.event.inputs.force_rotation || 'false' }}
 
@@ -64,7 +64,7 @@ jobs:
       - name: Update GitHub Secrets
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             // Note: The new secret is not passed via outputs for security reasons.
             // The rotation script handles GitHub secret updates directly via the API
@@ -76,7 +76,7 @@ jobs:
         if: success()
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const date = new Date().toISOString().split('T')[0];
             const body = `## JWT Secret Rotation Complete
@@ -110,7 +110,7 @@ jobs:
         if: failure()
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const date = new Date().toISOString().split('T')[0];
             const body = `## ⚠️ JWT Secret Rotation Failed

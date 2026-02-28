@@ -14,10 +14,10 @@ Target: +4-5% coverage gain (47% → 52%)
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+pytest.importorskip("numpy", reason="numpy not installed")
+import numpy as np
 
 
 class TestPhase2_ChaoticAttractors:

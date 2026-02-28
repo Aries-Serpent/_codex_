@@ -96,7 +96,7 @@ class FeatureFreshnessDriftDetector:
         if status.freshness_minutes > (self.freshness_threshold_hours * 2 * 60):
             logger.warning(
                 f"Skipping drift check for {feature_name}: "
-                f"feature is very stale ({status.freshness_minutes/60:.1f}h)"
+                f"feature is very stale ({status.freshness_minutes / 60:.1f}h)"
             )
             return True
 

@@ -98,7 +98,7 @@ class TestCodexCLIFunctions:
             try:
                 pipeline = _get_tokenizer_pipeline()
                 assert pipeline is not None
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Expected if tokenizers not installed
                 pass
         except ImportError as e:

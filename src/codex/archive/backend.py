@@ -371,7 +371,10 @@ class ArchiveDAL:
                 reference_count = int(raw_count)
                 blob_scrubbed = reference_count <= 1
             now = utcnow()
-            for actor, tag in ((primary_actor, "primary"), (secondary_actor, "secondary")):
+            for actor, tag in (
+                (primary_actor, "primary"),
+                (secondary_actor, "secondary"),
+            ):
                 context_payload = {"role": tag, "reason": reason}
                 if apply:
                     context_payload.update(
@@ -548,7 +551,12 @@ class ArchiveDAL:
         return None
 
     def _sqlalchemy_execute(
-        self, connection: Any, sql: str, params: Params | None, fetchone: bool, fetchall: bool
+        self,
+        connection: Any,
+        sql: str,
+        params: Params | None,
+        fetchone: bool,
+        fetchall: bool,
     ) -> Any:
         statement = sa.text(sql)
         result = connection.execute(statement, params or {})
@@ -561,7 +569,9 @@ class ArchiveDAL:
 
     def _get_artifact_by_sha(self, execute: Callable[..., Any], sha: str) -> dict[str, Any] | None:
         return execute(
-            "SELECT * FROM artifact WHERE content_sha256 = :sha", {"sha": sha}, fetchone=True
+            "SELECT * FROM artifact WHERE content_sha256 = :sha",
+            {"sha": sha},
+            fetchone=True,
         )
 
     def _get_artifact_by_id(self, execute: Callable[..., Any], artifact_id: str) -> dict[str, Any]:
@@ -576,7 +586,9 @@ class ArchiveDAL:
         self, execute: Callable[..., Any], tombstone_id: str
     ) -> dict[str, Any] | None:
         return execute(
-            "SELECT * FROM item WHERE tombstone_id = :tomb", {"tomb": tombstone_id}, fetchone=True
+            "SELECT * FROM item WHERE tombstone_id = :tomb",
+            {"tomb": tombstone_id},
+            fetchone=True,
         )
 
 

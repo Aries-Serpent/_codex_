@@ -74,7 +74,7 @@ class MLPScorer:
         model: torch.nn.Module,
         normalize: bool = True,
         device: Optional[Union[str, torch.device]] = None,
-        epsilon: float = 1e-10
+        epsilon: float = 1e-10,
     ):
         """
         Initialize the MLP scorer.
@@ -176,9 +176,7 @@ class MLPScorer:
         return mlp_activations, layer_names
 
     def compute_neuron_importance(
-        self,
-        mlp_activations: List[torch.Tensor],
-        method: str = "mean_abs"
+        self, mlp_activations: List[torch.Tensor], method: str = "mean_abs"
     ) -> np.ndarray:
         """
         Compute importance score for each neuron based on activation patterns.
@@ -231,8 +229,7 @@ class MLPScorer:
         return np.stack(importance_per_layer)
 
     def compute_activation_statistics(
-        self,
-        mlp_activations: List[torch.Tensor]
+        self, mlp_activations: List[torch.Tensor]
     ) -> Dict[str, np.ndarray]:
         """
         Compute activation statistics across layers.
@@ -244,11 +241,11 @@ class MLPScorer:
             Dictionary with statistics (mean, std, min, max, sparsity)
         """
         stats = {
-            'mean': [],
-            'std': [],
-            'min': [],
-            'max': [],
-            'sparsity': []  # Fraction of near-zero activations
+            "mean": [],
+            "std": [],
+            "min": [],
+            "max": [],
+            "sparsity": [],  # Fraction of near-zero activations
         }
 
         for activation in mlp_activations:
@@ -258,14 +255,14 @@ class MLPScorer:
             else:
                 flat = activation
 
-            stats['mean'].append(flat.mean(dim=0).numpy())
-            stats['std'].append(flat.std(dim=0).numpy())
-            stats['min'].append(flat.min(dim=0)[0].numpy())
-            stats['max'].append(flat.max(dim=0)[0].numpy())
+            stats["mean"].append(flat.mean(dim=0).numpy())
+            stats["std"].append(flat.std(dim=0).numpy())
+            stats["min"].append(flat.min(dim=0)[0].numpy())
+            stats["max"].append(flat.max(dim=0)[0].numpy())
 
             # Sparsity: fraction of activations below threshold
             sparsity = (flat.abs() < 0.01).float().mean(dim=0).numpy()
-            stats['sparsity'].append(sparsity)
+            stats["sparsity"].append(sparsity)
 
         # Stack across layers
         return {k: np.stack(v) for k, v in stats.items()}
@@ -274,7 +271,7 @@ class MLPScorer:
         self,
         input_ids: torch.Tensor,
         attention_mask: Optional[torch.Tensor] = None,
-        importance_method: str = "mean_abs"
+        importance_method: str = "mean_abs",
     ) -> MLPAnalysis:
         """
         Perform complete MLP analysis on input.
@@ -288,17 +285,13 @@ class MLPScorer:
             MLPAnalysis object with all results
         """
         # Extract MLP activations
-        activations, layer_names = self.extract_mlp_activations(
-            input_ids, attention_mask
-        )
+        activations, layer_names = self.extract_mlp_activations(input_ids, attention_mask)
 
         if not activations:
             raise ValueError("Failed to extract MLP activations from model")
 
         # Compute neuron importance
-        importance = self.compute_neuron_importance(
-            activations, method=importance_method
-        )
+        importance = self.compute_neuron_importance(activations, method=importance_method)
 
         # Compute activation statistics
         stats = self.compute_activation_statistics(activations)
@@ -319,13 +312,11 @@ class MLPScorer:
             neuron_importance=importance,
             layer_stats=stats,
             layer_names=layer_names,
-            input_shape=input_ids.shape
+            input_shape=input_ids.shape,
         )
 
     def get_top_neurons(
-        self,
-        analysis: MLPAnalysis,
-        top_k: int = 10
+        self, analysis: MLPAnalysis, top_k: int = 10
     ) -> Dict[int, List[Tuple[int, float]]]:
         """
         Get the top-k most important neurons in each layer.
@@ -344,16 +335,13 @@ class MLPScorer:
             top_indices = np.argsort(layer_importance)[-top_k:][::-1]
 
             top_neurons[layer_idx] = [
-                (int(idx), float(layer_importance[idx]))
-                for idx in top_indices
+                (int(idx), float(layer_importance[idx])) for idx in top_indices
             ]
 
         return top_neurons
 
     def get_dead_neurons(
-        self,
-        analysis: MLPAnalysis,
-        threshold: float = 0.99
+        self, analysis: MLPAnalysis, threshold: float = 0.99
     ) -> Dict[int, List[int]]:
         """
         Identify "dead" neurons with very sparse activations.
@@ -367,7 +355,7 @@ class MLPScorer:
         """
         dead_neurons = {}
 
-        sparsity = analysis.layer_stats['sparsity']
+        sparsity = analysis.layer_stats["sparsity"]
 
         for layer_idx in range(sparsity.shape[0]):
             dead_indices = np.where(sparsity[layer_idx] > threshold)[0]
@@ -413,7 +401,7 @@ class MLPScorer:
 
             # Check for constant arrays (zero variance) to avoid correlation errors
             if np.std(act1) < 1e-10 or np.std(act2) < 1e-10:
-                # If either array is constant, correlation is undefined; use 0 or 1 based on equality
+                # If either array is constant, correlation is undefined; use 0 or 1 based on equality  # noqa: E501
                 corr = 1.0 if np.allclose(act1, act2) else 0.0
             else:
                 corr = np.corrcoef(act1, act2)[0, 1]
@@ -424,7 +412,7 @@ class MLPScorer:
         distances = np.linalg.norm(diff, axis=1)
 
         return {
-            'diff': diff,
-            'correlation': np.array(correlations),
-            'l2_distance': distances
+            "diff": diff,
+            "correlation": np.array(correlations),
+            "l2_distance": distances,
         }

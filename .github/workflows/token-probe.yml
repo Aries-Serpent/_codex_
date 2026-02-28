@@ -1,0 +1,239 @@
+name: Token Probe — CODEX_MASTER_KEY & CODEX_BACKUP_KEY Validation
+
+# Standalone on-demand token validator.
+# Tests BOTH CODEX_MASTER_KEY and CODEX_BACKUP_KEY with real read + write API probes
+# against a specified PR number.
+#
+# Mirrors the §3a / §3b logic from admin_setup_verification.yml but:
+#   - Dispatched manually (no push required)
+#   - Accepts any PR number as input
+#   - Posts a consolidated pass/fail summary comment on the target PR
+#   - Fails the job if either key is non-functional
+#
+# Usage: Actions → Token Probe → Run workflow → enter PR number
+# Created: 2026-02-28 | S117 | token validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to post validation results on'
+        required: true
+        type: number
+      require_both_keys:
+        description: 'Fail if CODEX_BACKUP_KEY is also non-functional (default: true)'
+        required: false
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+
+  probe-master-key:
+    name: "🔑 Probe CODEX_MASTER_KEY"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      functional: ${{ steps.probe.outputs.functional }}
+      read_status: ${{ steps.probe.outputs.read_status }}
+      write_status: ${{ steps.probe.outputs.write_status }}
+      comment_url: ${{ steps.probe.outputs.comment_url }}
+
+    steps:
+      - name: "§3a — Read + write probe"
+        id: probe
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "## 🔑 CODEX_MASTER_KEY Probe" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -z "${CODEX_MASTER_KEY}" ]; then
+            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+            echo "read_status=missing" >> "$GITHUB_OUTPUT"
+            echo "write_status=missing" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          # ── Probe 1: read ──────────────────────────────────────────────────
+          READ_STATUS=$(curl -s -o /tmp/master_read.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}" 2>/dev/null)
+          echo "read_status=${READ_STATUS}" >> "$GITHUB_OUTPUT"
+
+          if [ "$READ_STATUS" = "200" ]; then
+            REPO_NAME=$(python3 -c "import json; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))" 2>/dev/null || echo "?")
+            echo "| Read (GET /repo) | ✅ HTTP 200 — \`${REPO_NAME}\` |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Read (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+            echo "write_status=skipped" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          # ── Probe 2: write — POST comment ─────────────────────────────────
+          WRITE_STATUS=$(curl -s -o /tmp/master_write.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "{\"body\":\"🔑 **[CODEX_MASTER_KEY probe — S117]** Read ✅ HTTP ${READ_STATUS} · Write probe in progress — token-probe.yml validation run\"}" \
+            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" 2>/dev/null)
+          echo "write_status=${WRITE_STATUS}" >> "$GITHUB_OUTPUT"
+
+          if [ "$WRITE_STATUS" = "201" ]; then
+            COMMENT_URL=$(python3 -c "import json; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
+            echo "| Write (POST comment) | ✅ HTTP 201 — [View probe comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=true" >> "$GITHUB_OUTPUT"
+            echo "comment_url=${COMMENT_URL}" >> "$GITHUB_OUTPUT"
+          else
+            WRITE_MSG=$(python3 -c "import json; d=json.load(open('/tmp/master_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
+            echo "| Write (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+  probe-backup-key:
+    name: "🔑 Probe CODEX_BACKUP_KEY"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      functional: ${{ steps.probe.outputs.functional }}
+      read_status: ${{ steps.probe.outputs.read_status }}
+      write_status: ${{ steps.probe.outputs.write_status }}
+      comment_url: ${{ steps.probe.outputs.comment_url }}
+
+    steps:
+      - name: "§3b — Read + write probe"
+        id: probe
+        env:
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "## 🔑 CODEX_BACKUP_KEY Probe" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -z "${CODEX_BACKUP_KEY}" ]; then
+            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+            echo "read_status=missing" >> "$GITHUB_OUTPUT"
+            echo "write_status=missing" >> "$GITHUB_OUTPUT"
+            # BACKUP_KEY failure is non-blocking unless require_both_keys=true
+            exit 0
+          fi
+
+          # ── Probe 1: read ──────────────────────────────────────────────────
+          READ_STATUS=$(curl -s -o /tmp/backup_read.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}" 2>/dev/null)
+          echo "read_status=${READ_STATUS}" >> "$GITHUB_OUTPUT"
+
+          if [ "$READ_STATUS" = "200" ]; then
+            echo "| Read (GET /repo) | ✅ HTTP 200 |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Read (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+            echo "write_status=skipped" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # ── Probe 2: write — POST comment ─────────────────────────────────
+          WRITE_STATUS=$(curl -s -o /tmp/backup_write.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "{\"body\":\"🔑 **[CODEX_BACKUP_KEY probe — S117]** Read ✅ HTTP ${READ_STATUS} · Write probe in progress — token-probe.yml validation run\"}" \
+            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" 2>/dev/null)
+          echo "write_status=${WRITE_STATUS}" >> "$GITHUB_OUTPUT"
+
+          if [ "$WRITE_STATUS" = "201" ]; then
+            COMMENT_URL=$(python3 -c "import json; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
+            echo "| Write (POST comment) | ✅ HTTP 201 — [View probe comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=true" >> "$GITHUB_OUTPUT"
+            echo "comment_url=${COMMENT_URL}" >> "$GITHUB_OUTPUT"
+          else
+            WRITE_MSG=$(python3 -c "import json; d=json.load(open('/tmp/backup_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
+            echo "| Write (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` |" >> "$GITHUB_STEP_SUMMARY"
+            echo "functional=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  summary:
+    name: "📋 Post Validation Summary"
+    needs: [probe-master-key, probe-backup-key]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+
+    steps:
+      - name: Post consolidated result to PR
+        uses: actions/github-script@v7
+        env:
+          MASTER_FUNCTIONAL: ${{ needs.probe-master-key.outputs.functional }}
+          MASTER_READ: ${{ needs.probe-master-key.outputs.read_status }}
+          MASTER_WRITE: ${{ needs.probe-master-key.outputs.write_status }}
+          BACKUP_FUNCTIONAL: ${{ needs.probe-backup-key.outputs.functional }}
+          BACKUP_READ: ${{ needs.probe-backup-key.outputs.read_status }}
+          BACKUP_WRITE: ${{ needs.probe-backup-key.outputs.write_status }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const prNumber = parseInt('${{ github.event.inputs.pr_number }}', 10);
+            const runUrl   = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+
+            const mFn = process.env.MASTER_FUNCTIONAL === 'true';
+            const bFn = process.env.BACKUP_FUNCTIONAL === 'true';
+
+            const mRow = `| \`CODEX_MASTER_KEY\` | Read: HTTP ${process.env.MASTER_READ} | Write: HTTP ${process.env.MASTER_WRITE} | ${mFn ? '✅ FUNCTIONAL' : '❌ NON-FUNCTIONAL'} |`;
+            const bRow = `| \`CODEX_BACKUP_KEY\`  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}  | ${bFn ? '✅ FUNCTIONAL' : '⚠️ NON-FUNCTIONAL (fallback)'} |`;
+
+            const overall = mFn ? '🟢 PRIMARY KEY OPERATIONAL' : '🔴 PRIMARY KEY FAILURE — REQUIRES IMMEDIATE ACTION';
+
+            const body = [
+              `## 🔑 Token Probe Result — S117`,
+              '',
+              `| Secret | Read Probe | Write Probe | Status |`,
+              `|--------|-----------|------------|--------|`,
+              mRow,
+              bRow,
+              '',
+              `**Overall:** ${overall}`,
+              '',
+              `**Tested at:** ${new Date().toISOString()}`,
+              `**Run:** [${process.env.GITHUB_RUN_NUMBER || '?'}](${runUrl})`,
+              '',
+              mFn
+                ? '`@copilot continue` automation is **operational**. Sessions can activate.'
+                : '⛔ Fix `CODEX_MASTER_KEY` before activating any agent session. See repo Settings → Secrets.',
+              '',
+              '_token-probe.yml | S117 | admin_setup_verification.yml §3a/§3b_',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
+
+            // Also write to job summary
+            const fs = require('fs');
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n${body}\n`);
+
+            // Fail the summary job if master key is broken
+            if (!mFn) {
+              core.setFailed('CODEX_MASTER_KEY is non-functional. Agent sessions cannot activate.');
+            }

@@ -54,17 +54,17 @@ def sanitize_log_input(value: Any, max_length: int = 500) -> str:
     str_value = str(value)
 
     # Remove ANSI escape codes (terminal color codes, etc.) before stripping control chars
-    sanitized = re.sub(r'\x1b\[[0-9;]*m', '', str_value)
-    sanitized = re.sub(r'\[[0-9;]*m', '', sanitized)
+    sanitized = re.sub(r"\x1b\[[0-9;]*m", "", str_value)
+    sanitized = re.sub(r"\[[0-9;]*m", "", sanitized)
 
     # Remove control characters (newlines, tabs, etc.)
     # \\x00-\\x1f: C0 control characters
     # \\x7f-\\x9f: DEL and C1 control characters
-    sanitized = re.sub(r'[\n\r\t\x00-\x1f\x7f-\x9f]', '', sanitized)
+    sanitized = re.sub(r"[\n\r\t\x00-\x1f\x7f-\x9f]", "", sanitized)
 
     # Truncate to max length
     if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length] + '...[truncated]'
+        sanitized = sanitized[:max_length] + "...[truncated]"
 
     return sanitized
 
@@ -88,6 +88,7 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500) -> dict:
         >>> sanitize_dict_for_log({"user": "test\\ninjection", "id": 123})
         {'user': 'testinjection', 'id': '123'}
     """
+
     def _sanitize_value(value: Any) -> Any:
         """Recursively sanitize a value."""
         if isinstance(value, dict):
@@ -107,4 +108,4 @@ safe_log = sanitize_log_input
 sanitize_log = sanitize_log_input
 
 # Ensure it's in __all__ if defined
-__all__ = ['sanitize_log_input', 'safe_log', 'sanitize_log', 'sanitize_dict_for_log']
+__all__ = ["sanitize_log_input", "safe_log", "sanitize_log", "sanitize_dict_for_log"]

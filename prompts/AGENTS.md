@@ -46,4 +46,3 @@ user_prompt = sanitize_log(user_input)
 **AST Module**: `src/codex/ast/` - Code parsing for prompt generation  
 **Agent Directory**: `agents/` - Agent configurations  
 **Agent Scripts**: `scripts/agent/` - Automation scripts
-

@@ -115,7 +115,9 @@ class BaseMetricsWriter:
         payload["tags"] = tags
         return payload
 
-    def close(self) -> None:  # pragma: no cover - convenience for parity with logging APIs
+    def close(
+        self,
+    ) -> None:  # pragma: no cover - convenience for parity with logging APIs
         """Close writer resources if necessary."""
 
     def write(self, record: Mapping[str, Any] | MetricsRecord) -> None:
@@ -138,7 +140,15 @@ class NDJSONMetricsWriter(BaseMetricsWriter):
 class CSVMetricsWriter(BaseMetricsWriter):
     """Persist metrics to CSV with a stable header."""
 
-    _FIELDS: Sequence[str] = ("metric", "value", "step", "split", "ts", "run_id", "tags")
+    _FIELDS: Sequence[str] = (
+        "metric",
+        "value",
+        "step",
+        "split",
+        "ts",
+        "run_id",
+        "tags",
+    )
 
     def __init__(self, path: str | Path, **kwargs: Any) -> None:
         super().__init__(path, **kwargs)

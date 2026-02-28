@@ -89,7 +89,7 @@ jobs:
 
       - name: Run cascade review
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           if [ -f "scripts/copilot/cascade_review.py" ]; then
             python scripts/copilot/cascade_review.py \

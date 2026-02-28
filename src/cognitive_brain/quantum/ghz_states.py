@@ -68,8 +68,7 @@ class GHZState:
         n_agents = len(self.agent_ids)
         if n_agents not in SUPPORTED_AGENT_COUNTS:
             raise ValueError(
-                f"N={n_agents} agents not supported. "
-                f"Supported counts: {SUPPORTED_AGENT_COUNTS}"
+                f"N={n_agents} agents not supported. Supported counts: {SUPPORTED_AGENT_COUNTS}"
             )
 
         if not (0.0 <= self.fidelity <= 1.0):
@@ -108,9 +107,7 @@ class GHZStateManager:
 
         logger.info("GHZStateManager initialized")
 
-    def create_ghz_state(
-        self, agent_ids: List[str], state_id: Optional[str] = None
-    ) -> GHZState:
+    def create_ghz_state(self, agent_ids: List[str], state_id: Optional[str] = None) -> GHZState:
         """
         Create new GHZ state for N agents.
 
@@ -168,9 +165,7 @@ class GHZStateManager:
         self.states[state_id] = ghz_state
         self.total_states_created += 1
 
-        logger.info(
-            f"Created GHZ state '{state_id}' with {n_agents} agents: {agent_ids}"
-        )
+        logger.info(f"Created GHZ state '{state_id}' with {n_agents} agents: {agent_ids}")
 
         return ghz_state
 
@@ -200,8 +195,7 @@ class GHZStateManager:
 
         if agent_id not in ghz_state.agent_ids:
             raise ValueError(
-                f"Agent '{agent_id}' not in state '{state_id}'. "
-                f"Valid agents: {ghz_state.agent_ids}"
+                f"Agent '{agent_id}' not in state '{state_id}'. Valid agents: {ghz_state.agent_ids}"
             )
 
         # Determine measurement outcome
@@ -225,9 +219,7 @@ class GHZStateManager:
         ghz_state.measurement_history.append(measurement_record)
         self.measurement_count += 1
 
-        logger.debug(
-            f"Measured agent '{agent_id}' in state '{state_id}': outcome={outcome}"
-        )
+        logger.debug(f"Measured agent '{agent_id}' in state '{state_id}': outcome={outcome}")
 
         return outcome
 

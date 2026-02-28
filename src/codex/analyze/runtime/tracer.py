@@ -38,6 +38,7 @@ MAX_CALL_DEPTH = 100
 @dataclass
 class TraceEntry:
     """A single trace entry."""
+
     timestamp: float
     event_type: str  # call, return, exception
     function_name: str
@@ -60,6 +61,7 @@ class RuntimeReport:
         execution_results: Results of each execution
         call_traces: Function call traces (if enabled)
     """
+
     snapshot_id: str
     timestamp: datetime
     sandbox_config: dict[str, Any]
@@ -205,11 +207,13 @@ class RuntimeTracer:
                     "memory_limit_mb": self.config.memory_limit_mb,
                     "network_enabled": self.config.network_enabled,
                 },
-                execution_results=[{
-                    "input_ref": "(no entry point)",
-                    "exit_code": -1,
-                    "error": "No entry point found",
-                }],
+                execution_results=[
+                    {
+                        "input_ref": "(no entry point)",
+                        "exit_code": -1,
+                        "error": "No entry point found",
+                    }
+                ],
             )
 
         logger.info("Found entry point: %s", entry_point)
@@ -219,12 +223,14 @@ class RuntimeTracer:
         # Try to get help output first
         help_output = self._detect_argparse_help(source_dir, entry_point)
         if help_output:
-            execution_results.append({
-                "input_ref": "(--help probe)",
-                "exit_code": 0,
-                "stdout_snapshot": help_output[:5000],
-                "duration_ms": 0,
-            })
+            execution_results.append(
+                {
+                    "input_ref": "(--help probe)",
+                    "exit_code": 0,
+                    "stdout_snapshot": help_output[:5000],
+                    "duration_ms": 0,
+                }
+            )
 
         # Execute with sample inputs
         if sample_inputs:
@@ -251,10 +257,12 @@ class RuntimeTracer:
                         stdin_input=stdin_input,
                     )
 
-                execution_results.append({
-                    "input_ref": input_ref,
-                    **result.to_dict(),
-                })
+                execution_results.append(
+                    {
+                        "input_ref": input_ref,
+                        **result.to_dict(),
+                    }
+                )
         else:
             # Execute without input
             if enable_tracing:
@@ -262,10 +270,12 @@ class RuntimeTracer:
             else:
                 result = self.sandbox.execute_in_tempdir(source_dir, entry_point)
 
-            execution_results.append({
-                "input_ref": "(no input)",
-                **result.to_dict(),
-            })
+            execution_results.append(
+                {
+                    "input_ref": "(no input)",
+                    **result.to_dict(),
+                }
+            )
 
         return RuntimeReport(
             snapshot_id=self.snapshot_id,

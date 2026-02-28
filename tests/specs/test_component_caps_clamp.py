@@ -39,7 +39,7 @@ def test_component_caps_reduce_component_value(tmp_path):
         pytest.skip("audit runner missing")
     try:
         import yaml  # noqa: F401
-    except Exception:
+    except ImportError:
         pytest.skip("pyyaml not installed")
 
     # Ensure audit_artifacts directory exists

@@ -64,9 +64,7 @@ class LocalSentenceTransformerProvider:
 
             logger.info(f"Loading local embedding model: {self.model_name}")
 
-            self.model = safe_load_sentence_transformer(
-                self.model_name, self.cache_dir
-            )
+            self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
             logger.info("Local embedding model loaded successfully on CPU")
 
@@ -186,7 +184,7 @@ class OpenAIEmbeddingProvider:
                 embeddings.extend(batch_embeddings)
 
             except Exception as e:
-                logger.error(f"Error encoding batch {i}-{i+len(batch)}: {e}")
+                logger.error(f"Error encoding batch {i}-{i + len(batch)}: {e}")
                 raise
 
         return np.array(embeddings)
@@ -390,7 +388,7 @@ def create_embedding_provider(
         - 'gpt4all': GPT4All (requires gpt4all package)
         - 'tfidf': TF-IDF (offline-capable, no setup)
         - 'openai': OpenAI API (requires API key)
-    """
+    """  # noqa: E501
     # Auto-fallback logic with intelligent provider selection
     if provider_type == "auto":
         logger.info("Auto-selecting embedding provider...")
@@ -558,7 +556,7 @@ class TfidfEmbeddingProvider:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
         except ImportError:
-            logger.error("scikit-learn not installed. " "Install with: pip install scikit-learn")
+            logger.error("scikit-learn not installed. Install with: pip install scikit-learn")
             raise
 
         self.max_features = max_features
@@ -570,9 +568,7 @@ class TfidfEmbeddingProvider:
             max_df=0.95,  # Maximum document frequency (filter common words)
         )
         self.is_fitted = False
-        logger.info(
-            f"Initialized TF-IDF provider (dimension={max_features}, " f"offline-capable=True)"
-        )
+        logger.info(f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)")
 
     def encode(self, texts: List[str], **kwargs) -> np.ndarray:
         """
@@ -599,8 +595,7 @@ class TfidfEmbeddingProvider:
                 self.vectorizer.fit(texts)
                 self.is_fitted = True
                 logger.info(
-                    f"TF-IDF vectorizer fitted. "
-                    f"Vocabulary size: {len(self.vectorizer.vocabulary_)}"
+                    f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
             except Exception as e:
                 logger.error(f"Error fitting TF-IDF vectorizer: {e}")
@@ -609,7 +604,7 @@ class TfidfEmbeddingProvider:
         # Transform texts to embeddings
         try:
             embeddings = self.vectorizer.transform(texts).toarray()
-            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} " f"(TF-IDF)")
+            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")
             return embeddings
         except Exception as e:
             logger.error(f"Error transforming texts with TF-IDF: {e}")

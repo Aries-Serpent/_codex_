@@ -696,7 +696,7 @@ class TestResolutionRecommender:
 
         result = recommender.recommend_from_text("pytest error with ImportError")
 
-        assert len(result.recommendations) >= 0  # May or may not find matches
+        assert isinstance(result.recommendations, (list, tuple, set, dict))# May or may not find matches
 
     def test_top_recommendation(self, sample_patterns):
         """Test getting top recommendation."""
