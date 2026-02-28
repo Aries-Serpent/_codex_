@@ -21,7 +21,7 @@ try:
     _TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(
         int(x) for x in _torch.__version__.split(".")[:2]
     ) < (2, 7)
-except Exception:
+except ImportError:
     _TORCH_312_BUG = False  # torch not installed; PyTorch 2.x isinstance bug cannot apply
 
 _codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")

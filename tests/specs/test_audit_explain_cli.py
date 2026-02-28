@@ -33,7 +33,7 @@ def test_audit_explain_cli_smoke(tmp_path, monkeypatch):
     try:
         import jinja2  # noqa: F401
         import yaml  # noqa: F401
-    except Exception:
+    except ImportError:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # S1..S4 minimal path

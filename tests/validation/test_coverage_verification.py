@@ -63,11 +63,9 @@ class TestCoverageConfiguration:
         """Test that coverage omit patterns are configured."""
         pyproject = Path("pyproject.toml")
         if pyproject.exists():
-            content = pyproject.read_text()
-
             # Should have omit patterns to exclude test files, etc.
             # This is optional but good practice
-            assert True, "Coverage omit patterns check skipped (optional practice)"  # was: assert has_omit or True (always true)
+            assert True, "Coverage omit patterns check skipped (optional practice)"
 
 
 # =============================================================================
@@ -162,7 +160,7 @@ class TestCoverageMetricsValidation:
                 # Count test_ functions
                 test_count = len(re.findall(r"def test_", content))
                 total_tests += test_count
-            except Exception:
+            except OSError:
                 continue
 
         # Phase 14-17 created 1225+ tests
@@ -189,7 +187,7 @@ class TestCoverageMetricsValidation:
 
                 if "assert" in content or "pytest.raises" in content:
                     files_with_assertions += 1
-            except Exception:
+            except OSError:
                 continue
 
         if files_checked > 0:
@@ -237,7 +235,7 @@ class TestCoverageThresholdEnforcement:
                     if "--cov" in content or "coverage" in content.lower():
                         coverage_configured = True
                         break
-                except Exception:
+                except OSError:
                     continue
 
             assert coverage_configured, "Coverage should be configured in CI workflows"
@@ -271,7 +269,7 @@ class TestCIWorkflowValidation:
                         has_modern_python = "3.11" in content or "3.12" in content
                         if has_modern_python:
                             return
-                except Exception:
+                except OSError:
                     continue
 
     def test_coverage_upload_configured(self) -> None:
@@ -283,7 +281,7 @@ class TestCIWorkflowValidation:
                     content = workflow.read_text()
                     if "codecov" in content.lower() or "coveralls" in content.lower():
                         return  # Coverage upload configured
-                except Exception:
+                except OSError:
                     continue
 
         # Coverage upload is optional

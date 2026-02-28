@@ -228,7 +228,7 @@ def test_audit_runner_trends_integration(tmp_path: Path):
         report_content = trend_files[0].read_text()
         assert "Capability Audit Trend Report" in report_content
 
-    except Exception:
+    except OSError:
         # Trends may fail if no data, that's ok
         pass
 

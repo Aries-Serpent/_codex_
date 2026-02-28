@@ -306,7 +306,6 @@ def _run_batch(
     junit_dir: str,
 ) -> dict:
     """Execute pytest on a subset of files. Returns a serialisable dict."""
-    import subprocess
     import sys
     import time  # noqa: PLC0415 - worker process, isolated namespace
     from pathlib import Path
@@ -387,12 +386,9 @@ def run_group_parallel(
 
     with tempfile.TemporaryDirectory(prefix="rvs_junit_") as junit_dir:
         futures: dict[Future, int] = {}
-        cancelled = False
 
         with ProcessPoolExecutor(max_workers=w) as pool:
             for idx, batch in enumerate(batches):
-                if cancelled:
-                    break
                 fut = pool.submit(
                     _run_batch,
                     idx,
@@ -457,7 +453,6 @@ def run_group_parallel(
 
                 if fail_fast and (br.failed > 0 or br.errors > 0):
                     print(_red("\n  ✗ --fail-fast: stopping after first batch failure"))
-                    cancelled = True
                     for remaining in futures:
                         remaining.cancel()
                     break

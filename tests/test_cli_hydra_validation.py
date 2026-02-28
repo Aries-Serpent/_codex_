@@ -66,7 +66,7 @@ def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
 
     try:
         from hydra.core.global_hydra import GlobalHydra
-    except Exception:  # pragma: no cover - hydra optional in CI
+    except ImportError:  # pragma: no cover - hydra optional in CI
         return
     if GlobalHydra().is_initialized():
         GlobalHydra.instance().clear()

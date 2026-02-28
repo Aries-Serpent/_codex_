@@ -95,8 +95,8 @@ def _flush_metrics():
     out.parent.mkdir(parents=True, exist_ok=True)
     try:
         out.write_text(json.dumps(_AST_METRICS, indent=2), encoding="utf-8")
-    except ImportError:
-        pass
+    except OSError:
+        pass  # best-effort audit write; ignore filesystem errors
 
 
 @pytest.fixture(scope="session", autouse=True)

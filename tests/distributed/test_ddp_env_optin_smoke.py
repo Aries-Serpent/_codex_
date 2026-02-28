@@ -16,7 +16,7 @@ def _torch_distributed_available() -> bool:
         import torch.distributed as dist  # type: ignore
 
         return bool(getattr(dist, "is_available", lambda: False)())
-    except Exception:
+    except ImportError:
         return False
 
 

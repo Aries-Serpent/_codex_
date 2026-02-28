@@ -427,7 +427,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass
+                    pass  # ruff JSON output malformed – skip unsorted-import detection
 
             if issues and not self.check_only:
                 if not self.dry_run:
@@ -469,7 +469,7 @@ class CommonIssueFixer:
                             text = item.get("issue_text", "")[:60]
                             issues.append(f"{fname}:{line} - [{tid}] {text}")
                 except json.JSONDecodeError:
-                    pass
+                    pass  # bandit JSON output malformed – skip security detection
 
             if issues:
                 print(
@@ -502,7 +502,7 @@ class CommonIssueFixer:
                             f"{item['filename']}:{item['location']['row']} - {item['message']}"
                         )
                 except json.JSONDecodeError:
-                    pass
+                    pass  # ruff JSON output malformed – skip f-string placeholder detection
 
             if issues and not self.check_only:
                 if not self.dry_run:

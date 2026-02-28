@@ -16,7 +16,7 @@ import pytest
 
 try:
     from cryptography.exceptions import InvalidTag  # type: ignore[import-not-found]
-except Exception:  # pragma: no cover - cryptography optional
+except ImportError:  # pragma: no cover - cryptography optional
     InvalidTag = Exception  # type: ignore[misc,assignment]
 
 try:
@@ -27,7 +27,7 @@ try:
     decrypt = encryption_mod.decrypt
     EncryptionError = encryption_mod.EncryptionError
     _CRYPTO_AVAILABLE = getattr(encryption_mod, "_CRYPTO_AVAILABLE", True)
-except Exception:
+except ImportError:
     _CRYPTO_AVAILABLE = False
 
 

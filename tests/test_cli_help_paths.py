@@ -34,7 +34,7 @@ def test_tokenization_cli_help_lists_commands():
     output = result.stdout + result.stderr
     try:  # Typer is optional; importing may fail if the extra isn't installed.
         import typer  # type: ignore
-    except Exception:
+    except ImportError:
         typer_available = False
     else:
         typer_available = hasattr(typer, "Typer")

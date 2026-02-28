@@ -1280,7 +1280,7 @@ def set_deterministic_seed():
         import numpy as np
 
         np.random.seed(seed)
-    except Exception:  # pragma: no cover - numpy not required for all environments
+    except ImportError:  # pragma: no cover - numpy not required for all environments
         pass
 
     # Guard optional torch usage without adding a hard dependency
@@ -1294,7 +1294,7 @@ def set_deterministic_seed():
             # Optional deterministic flags (may slow tests)
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
-    except Exception:
+    except ImportError:
         # Torch not installed or not desired in CI; ignore.
         pass
 
@@ -2002,7 +2002,7 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except Exception:  # psutil optional; skip resource tracking if unavailable
+    except ImportError:  # psutil optional; skip resource tracking if unavailable
         pass
 
     yield

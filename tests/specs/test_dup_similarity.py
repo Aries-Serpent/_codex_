@@ -37,7 +37,7 @@ def test_dup_heuristic_switch_fallback(tmp_path):
         pytest.skip("audit runner missing")
     try:
         import yaml  # noqa: F401
-    except Exception:
+    except ImportError:
         pytest.skip("pyyaml not installed")
 
     # S1..S3

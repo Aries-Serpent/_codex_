@@ -16,7 +16,7 @@ from omegaconf import OmegaConf
 def test_eval_guard(tmp_path, monkeypatch):
     try:
         import hhg_logistics.eval.harness as harness
-    except Exception:
+    except ImportError:
         pytest.skip("lm-eval or transformers missing")
 
     cfg = OmegaConf.create(

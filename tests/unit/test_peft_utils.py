@@ -23,7 +23,7 @@ def test_freeze_counts():
             freeze_base_weights,
             load_hf_llm,
         )
-    except Exception:
+    except ImportError:
         pytest.skip("transformers/peft not installed")
     try:
         bundle = load_hf_llm("sshleifer/tiny-gpt2")

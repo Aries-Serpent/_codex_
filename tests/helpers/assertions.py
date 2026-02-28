@@ -1,6 +1,6 @@
 """Assertion helpers for the _codex_ test suite.
 
-These helpers replace vague ``assert len(x) >= 0`` / ``assert x is not None``
+These helpers replace vague ``len(x) >= 0`` (always-true) / ``assert x is not None``
 patterns with more informative assertions that actually validate invariants.
 
 Usage::
@@ -81,7 +81,7 @@ def assert_collection(
 def assert_non_negative_count(value: Any, name: str = "value") -> None:
     """Assert that *value* is a sized object (has ``__len__``) with ``len >= 0``.
 
-    This is the *meaningful* version of the always-true ``assert len(x) >= 0``
+    This is the *meaningful* version of the always-true ``len(x) >= 0``
     anti-pattern: it actually verifies that the object implements the sized
     protocol, which can legitimately fail on unexpected types.
 

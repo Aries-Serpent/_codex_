@@ -19,12 +19,12 @@ from codex_ml.utils.repro import (
 
 try:
     import numpy as np
-except Exception:  # pragma: no cover - numpy optional
+except ImportError:  # pragma: no cover - numpy optional
     np = None  # type: ignore[assignment]
 
 try:
     import torch
-except Exception:  # pragma: no cover - torch optional
+except ImportError:  # pragma: no cover - torch optional
     torch = None  # type: ignore[assignment]
 
 

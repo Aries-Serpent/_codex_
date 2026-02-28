@@ -171,7 +171,7 @@ class TestCodexMLExceptionHandling:
                 if "ExceptionGroup" in code:
                     exception_group_found = True
                     break
-            except Exception:
+            except OSError:
                 continue
 
         # This is informational, not a failure

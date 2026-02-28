@@ -11,6 +11,7 @@ from numbers import Number
 import pytest
 
 try:
+    import pynvml  # noqa: F401
     _HAS_NVML = True
 except ImportError:
     _HAS_NVML = False

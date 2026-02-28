@@ -155,7 +155,7 @@ class TestTestFunctionValidation:
 
                 if not has_assert:
                     files_without_asserts.append(str(test_file))
-            except Exception:
+            except OSError:
                 continue
 
         assert len(files_without_asserts) == 0, (
@@ -189,7 +189,7 @@ class TestTestIsolation:
                         if "monkeypatch" not in content and "fixture" not in content:
                             files_with_issues.append(str(test_file))
                             break
-            except Exception:
+            except OSError:
                 continue
 
         # Allow some files with controlled state modification
@@ -225,7 +225,7 @@ class TestTestIsolation:
                         if not re.search(r'#.*' + pattern, content):
                             files_with_hardcoded_paths.append(str(test_file))
                             break
-            except Exception:
+            except OSError:
                 continue
 
         assert len(files_with_hardcoded_paths) == 0, (
@@ -266,7 +266,7 @@ class TestTestMarkers:
                 content = test_file.read_text()
                 if "@pytest.mark.parametrize" in content:
                     files_with_parametrize.append(str(test_file))
-            except Exception:
+            except OSError:
                 continue
 
         # Should have some parametrized tests
@@ -340,7 +340,7 @@ class TestCIValidation:
                     if "python" in content.lower() and "matrix" in content.lower():
                         # Found a workflow with Python matrix
                         return
-                except Exception:
+                except OSError:
                     continue
 
 

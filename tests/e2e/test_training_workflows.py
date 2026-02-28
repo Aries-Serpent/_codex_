@@ -58,7 +58,7 @@ class TestTrainingPipelineSetup:
                         return
                     except ImportError:
                         pytest.skip("PyYAML not installed")
-                    except Exception:
+                    except ImportError:
                         pass
 
         pytest.skip("No training configs found")

@@ -66,7 +66,7 @@ def _maybe_invoke(app_factory: Callable[[], object]) -> None:
 
     try:
         from typer.testing import CliRunner
-    except Exception:
+    except ImportError:
         pytest.skip("typer not available")
 
     runner = CliRunner()

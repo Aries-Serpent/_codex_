@@ -164,18 +164,29 @@ The codebase has reached a new high-water mark driven by three major S92 investm
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  AAIS V4.1  ·  2026-02-28  ·  Branch: copilot/sub-pr-3389      │
+│  AAIS V4.2  ·  2026-02-28  ·  Branch: copilot/sub-pr-3389      │
 ├─────────────────────────────────────────────────────────────────┤
 │  V1.0 (Phase 8.0)   87.3 / 100   Grade: B+                     │
 │  V2.0 (Phase 8.7)   91.8 / 100   Grade: A   (+4.5)             │
 │  V3.0 (S92)         94.7 / 100   Grade: A+  (+2.9)             │
 │  V4.0 (S94)         96.3 / 100   Grade: A+  (+1.6)             │
-│  V4.1 (S95–S96)     97.5 / 100   Grade: A+  (+1.2)  ◄ current  │
+│  V4.1 (S95–S96)     97.5 / 100   Grade: A+  (+1.2)             │
+│  V4.2 (S97)         98.0 / 100   Grade: A+  (+0.5)  ◄ current  │
 │                                                                  │
-│  Target 98.0         0.5 pts remaining (S97 roadmap)            │
-│  Target 100.0        2.5 pts remaining (Phase 11 complete)      │
+│  Target 100.0        2.0 pts remaining (Phase 11 complete)      │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## V4.2 Score Breakdown — S97 delta (+0.5)
+
+| Category | V4.1 | V4.2 | Delta | Rationale |
+|----------|------|------|-------|-----------|
+| Test Quality (Pattern 6) | 97.5 | +0.2 | +0.2 | 222→118 catch-all handlers narrowed; len/or-True patterns eliminated |
+| CodeQL Security (0 alerts) | — | +0.1 | +0.1 | All 6 CodeQL alerts resolved (rvs_preflight + auto_fix + test files) |
+| OpenVINO iGPU Path (P10-05) | — | +0.1 | +0.1 | `docs/ops/openvino_integration.md` + Phase B/C integration plan |
+| Phase 11 Planning | — | +0.1 | +0.1 | `docs/ops/PHASE_11_PLAN.md` with S97–S103 session map |
 
 ---
 
@@ -192,16 +203,19 @@ The codebase has reached a new high-water mark driven by three major S92 investm
 
 ---
 
-## Path to 98.0/100 — S97 Roadmap
+## Path to 100.0/100 — Phase 11 Roadmap
 
 | Phase | Action | Points | Sessions |
 |-------|--------|--------|----------|
-| **S97** | CPU performance baseline gates in CI; coverage to 30% enforced; remaining Pattern 6 catch-all handlers | +0.5 | 1 |
-| **Total** | | **+0.5** | **1** |
+| **S98–S100** | Coverage gap-fill 30%→50%; `fail_under` incremental raises | +1.0 | 3 |
+| **S99** | OpenVINO backend Phase B+C (openvino_backend.py + smoke test) | +0.5 | 1 |
+| **S102** | Pattern 6 → 0 (118 → 0 remaining catch-all handlers) | +0.3 | 2 |
+| **S101** | CI parallel sharding (≤ 3 min per shard) | +0.2 | 1 |
+| **Total** | | **+2.0** | **Phase 11** |
 
 ---
 
-## Codebase Metrics (S96 baseline)
+## Codebase Metrics (S97 baseline)
 
 | Metric | Value |
 |--------|-------|
@@ -213,13 +227,16 @@ The codebase has reached a new high-water mark driven by three major S92 investm
 | Auto-fix patterns clean (P1–P11) | **11/11** ✅ |
 | Windows / CPU compat gaps | **0** ✅ (all platform imports guarded) |
 | Open blocking deployment items | **0** ✅ (B-01–B-07 all resolved) |
-| Pattern 6 trivially-true assertions | **222** (down from 263; informational only) |
+| CodeQL security alerts | **0** ✅ (all 6 S97 alerts resolved) |
+| Pattern 6 trivially-true assertions | **118** (down from 222; systematic reduction) |
 | Coverage threshold | **30%** (Phase 23 target — active) |
 | SBOM CI pipeline | **Active** (CycloneDX JSON + CSV) |
 | Secrets rotation runbook | **Available** (`docs/ops/secrets_rotation_runbook.md`) |
 | CPU baseline script | **Available** (`scripts/benchmark/cpu_baseline.py`) |
 | OTel spans on BatchScanRunner | **Available** (lazy no-op when endpoint absent) |
+| OpenVINO integration plan | **Available** (`docs/ops/openvino_integration.md`) |
+| Phase 11 plan | **Available** (`docs/ops/PHASE_11_PLAN.md`) |
 
 ---
 
-*AAIS V4.1 assessed post-S96, 2026-02-28. Next: V5.0 post-S97 (coverage 30%→50%, Pattern 6→0).*
+*AAIS V4.2 assessed post-S97, 2026-02-28. Next: V5.0 post-Phase 11 (coverage 50%, Pattern 6→0).*

@@ -11,10 +11,10 @@ from pathlib import Path
 # Prefer stdlib tomllib (3.11+); fallback to tomli if installed
 try:
     import tomllib as _toml  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     try:
         import tomli as _toml  # type: ignore
-    except Exception:  # pragma: no cover
+    except ImportError:  # pragma: no cover
         _toml = None
 
 

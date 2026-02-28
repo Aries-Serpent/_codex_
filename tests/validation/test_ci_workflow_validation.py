@@ -70,7 +70,7 @@ class TestWorkflowFileValidation:
                     content = workflow.read_text()
                     if "name:" not in content:
                         files_without_name.append(str(workflow))
-                except Exception:
+                except OSError:
                     continue
 
             assert len(files_without_name) == 0, (
@@ -97,7 +97,7 @@ class TestWorkflowTriggerValidation:
                     has_trigger = "on:" in content
                     if not has_trigger:
                         files_without_triggers.append(str(workflow))
-                except Exception:
+                except OSError:
                     continue
 
             assert len(files_without_triggers) == 0, (
@@ -113,7 +113,7 @@ class TestWorkflowTriggerValidation:
                     content = workflow.read_text()
                     has_push_or_pr = "push" in content or "pull_request" in content
                     assert has_push_or_pr, f"{workflow} should trigger on push or PR"
-                except Exception:
+                except OSError:
                     continue
 
 
@@ -135,7 +135,7 @@ class TestWorkflowJobValidation:
                     content = workflow.read_text()
                     if "jobs:" not in content:
                         files_without_jobs.append(str(workflow))
-                except Exception:
+                except OSError:
                     continue
 
             # Some workflows might be valid without explicit jobs section
@@ -155,7 +155,7 @@ class TestWorkflowJobValidation:
                         assert "runs-on" in content, (
                             f"{workflow} jobs should have runs-on"
                         )
-                except Exception:
+                except OSError:
                     continue
 
     def test_jobs_have_steps(self) -> None:
@@ -170,7 +170,7 @@ class TestWorkflowJobValidation:
                         assert "steps:" in content, (
                             f"{workflow} jobs should have steps"
                         )
-                except Exception:
+                except OSError:
                     continue
 
 
@@ -200,7 +200,7 @@ class TestWorkflowSecurityValidation:
                             # Allow if it's using secrets context
                             if "secrets." not in content[max(0, match.start()-50):match.end()+50]:
                                 pytest.fail(f"Potential hardcoded secret in {workflow}")
-                except Exception:
+                except OSError:
                     continue
 
     def test_secrets_use_secrets_context(self) -> None:
@@ -213,7 +213,7 @@ class TestWorkflowSecurityValidation:
                     # If using secrets, should use ${{ secrets.* }}
                     if "GITHUB_TOKEN" in content:
                         assert "secrets.GITHUB_TOKEN" in content or "${{" in content
-                except Exception:
+                except OSError:
                     continue
 
     def test_checkout_action_version_secure(self) -> None:
@@ -228,7 +228,7 @@ class TestWorkflowSecurityValidation:
                         if "actions/checkout@v1" in content or "actions/checkout@v2" in content:
                             # v2 is acceptable but v3+ is preferred
                             pass
-                except Exception:
+                except OSError:
                     continue
 
 
@@ -251,7 +251,7 @@ class TestPythonSetupValidation:
                     if "python-version" in content or "setup-python" in content:
                         python_configured = True
                         break
-                except Exception:
+                except OSError:
                     continue
 
             # At least one workflow should have Python
@@ -269,7 +269,7 @@ class TestPythonSetupValidation:
                         assert "3.7" not in content or "3.17" in content, (
                             f"{workflow} uses outdated Python version"
                         )
-                except Exception:
+                except OSError:
                     continue
 
     def test_pip_cache_configured(self) -> None:
@@ -283,7 +283,7 @@ class TestPythonSetupValidation:
                         # Caching is optional but recommended
                         # Just verify - don't fail
                         pass
-                except Exception:
+                except OSError:
                     continue
 
 
@@ -312,7 +312,7 @@ class TestTestWorkflowValidation:
                     runs_pytest = "pytest" in content
                     if runs_pytest:
                         return  # Found a workflow that runs pytest
-                except Exception:
+                except OSError:
                     continue
 
     def test_test_workflows_have_coverage(self) -> None:
@@ -327,7 +327,7 @@ class TestTestWorkflowValidation:
                     if "--cov" in content or "coverage" in content.lower():
                         coverage_configured = True
                         break
-                except Exception:
+                except OSError:
                     continue
 
             assert coverage_configured, "Test workflows should have coverage"
@@ -353,7 +353,7 @@ class TestArtifactValidation:
                         # Should use v4.1.3 or later
                         if "download-artifact@v4.0" in content or "download-artifact@v4.1.0" in content:
                             pytest.fail(f"{workflow} uses vulnerable download-artifact version")
-                except Exception:
+                except OSError:
                     continue
 
     def test_artifact_upload_configured(self) -> None:
@@ -368,5 +368,5 @@ class TestArtifactValidation:
                     if "coverage" in content.lower():
                         # Just check - don't require
                         pass
-                except Exception:
+                except OSError:
                     continue

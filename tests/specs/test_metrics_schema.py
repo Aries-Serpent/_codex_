@@ -13,7 +13,7 @@ import pytest
 
 try:
     import jsonschema  # type: ignore
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     jsonschema = None  # type: ignore
 
 
