@@ -36,7 +36,22 @@ except ImportError:  # pragma: no cover - optional dependency
                 "Install with: pip install -e '.[rag]'"
             )
 
-__all__ = ["app", "RAGIndexer"]
+# Re-export RAGRetriever (alias for Retriever) so tests can patch
+# codex.cli_rag.RAGRetriever and query() picks up the patched class.
+try:
+    from codex.rag.retriever import Retriever as RAGRetriever
+except ImportError:  # pragma: no cover - optional dependency
+
+    class RAGRetriever:  # type: ignore[no-redef]
+        """Stub when codex.rag is not installed."""
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                "RAGRetriever requires codex.rag extras. "
+                "Install with: pip install -e '.[rag]'"
+            )
+
+__all__ = ["app", "RAGIndexer", "RAGRetriever"]
 
 # Create Typer app for RAG commands
 app = typer.Typer(
@@ -253,8 +268,6 @@ def query(
         codex rag query "logging" --format json
     """
     try:
-        from codex.rag import Retriever
-
         console.print(f"[cyan]🔍 Querying index '{index_name}' for tenant '{tenant_id}'[/cyan]\n")
 
         with Progress(
@@ -264,7 +277,7 @@ def query(
         ) as progress:
             task = progress.add_task("Loading index...", total=None)
 
-            retriever = Retriever(
+            retriever = RAGRetriever(
                 index_name=index_name,
                 tenant_id=tenant_id,
             )

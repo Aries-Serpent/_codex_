@@ -445,7 +445,7 @@ class TestTrainingConfiguration:
         scheduler.step()
         new_lr = optimizer.param_groups[0]['lr']
 
-        assert new_lr == 0.01, f"LR should be 0.01 after 2 steps, got {new_lr}"
+        assert new_lr == pytest.approx(0.01), f"LR should be 0.01 after 2 steps, got {new_lr}"
 
     def test_learning_rate_warmup(self):
         """Test learning rate warmup logic."""

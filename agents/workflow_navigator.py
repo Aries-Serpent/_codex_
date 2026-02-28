@@ -519,7 +519,7 @@ class WorkflowNavigator:
             Dictionary with workflow status information
         """
         workflow = self.workflows.get(workflow_id.upper())
-        if not workflow:
+        if workflow is None:
             return {"exists": False, "error": "Workflow not found"}
 
         completed_steps = sum(1 for step in workflow.steps if step.status == StepStatus.COMPLETED)

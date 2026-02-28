@@ -30,6 +30,7 @@ from typing import Any, Callable, Mapping, Optional, Sequence
 import numpy as np
 
 import torch
+import torch.nn.functional as F
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
@@ -706,7 +707,30 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             device_type=device.type, dtype=autocast_dtype, enabled=use_amp
                         ):
                             out = model(**batch)
-                            loss_t = out["loss"] if isinstance(out, dict) else out.loss
+                            if isinstance(out, dict):
+                                loss_t = out["loss"]
+                            elif hasattr(out, "loss") and out.loss is not None:
+                                loss_t = out.loss
+                            else:
+                                # Model returned a raw logits tensor (e.g. MiniLM).
+                                # Compute next-token cross-entropy from labels in batch.
+                                # Prefer 'labels' (next-token targets) over 'input_ids'
+                                # as fallback for causal-LM datasets without separate labels.
+                                labels = batch.get("labels") or batch.get("input_ids")
+                                if labels is None:
+                                    raise ValueError(
+                                        "Model returned a raw tensor but batch has no "
+                                        "'labels' or 'input_ids' key for loss computation."
+                                    )
+                                if out.dim() < 2:
+                                    raise ValueError(
+                                        f"Model output tensor has unexpected shape {out.shape}; "
+                                        "expected at least 2 dimensions (batch, vocab) or "
+                                        "(batch, seq_len, vocab)."
+                                    )
+                                loss_t = F.cross_entropy(
+                                    out.view(-1, out.size(-1)), labels.view(-1)
+                                )
                             loss_t = loss_t / cfg.grad_accum
                         if cfg.dtype == "fp16":
                             scaler.scale(loss_t).backward()
