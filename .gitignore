@@ -391,3 +391,6 @@ audit_artifacts/
 
 # Validation virtual environment (created by validate.py)
 .venv_validation/
+
+# GitHub App private key — never commit (github_app_bootstrap.py)
+.codex/github_app/private_key.pem
