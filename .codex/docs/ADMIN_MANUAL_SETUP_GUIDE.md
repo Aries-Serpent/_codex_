@@ -97,10 +97,21 @@ cognitive brain context injection for non-SYSTEM_OWNER actors. Setting it to
    Click **"Add variable"**
 
    #### Variable 4 — Pilot Actor Allowlist
+
+   > **Token delegation:** This list controls which actors can use the delegated
+   > `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY` tokens autonomously. Include all three
+   > agent categories so each can post comments and interact with the repo:
+   >
+   > | Actor | Category |
+   > |-------|----------|
+   > | `copilot-swe-agent[bot]` | GitHub Copilot coding agent |
+   > | `github-copilot[bot]` | Copilot custom agents |
+   > | `github-actions[bot]` | CI/CD AI workflow agents |
+
    | Field | Value |
    |-------|-------|
    | **Name** | `COGNITIVE_BRAIN_ALLOWED_ACTORS` |
-   | **Value** | `mbaetiong,github-actions[bot]` |
+   | **Value** | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
 
    Click **"Add variable"**
 
