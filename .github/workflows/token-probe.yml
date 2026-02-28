@@ -188,19 +188,31 @@ jobs:
           BACKUP_FUNCTIONAL: ${{ needs.probe-backup-key.outputs.functional }}
           BACKUP_READ: ${{ needs.probe-backup-key.outputs.read_status }}
           BACKUP_WRITE: ${{ needs.probe-backup-key.outputs.write_status }}
+          REQUIRE_BOTH: ${{ github.event.inputs.require_both_keys }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const prNumber = parseInt('${{ github.event.inputs.pr_number }}', 10);
             const runUrl   = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`;
+            const requireBoth = process.env.REQUIRE_BOTH === 'true';
 
             const mFn = process.env.MASTER_FUNCTIONAL === 'true';
             const bFn = process.env.BACKUP_FUNCTIONAL === 'true';
+            const bothFn = mFn && bFn;
 
             const mRow = `| \`CODEX_MASTER_KEY\` | Read: HTTP ${process.env.MASTER_READ} | Write: HTTP ${process.env.MASTER_WRITE} | ${mFn ? '✅ FUNCTIONAL' : '❌ NON-FUNCTIONAL'} |`;
-            const bRow = `| \`CODEX_BACKUP_KEY\`  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}  | ${bFn ? '✅ FUNCTIONAL' : '⚠️ NON-FUNCTIONAL (fallback)'} |`;
+            const bRow = `| \`CODEX_BACKUP_KEY\`  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}  | ${bFn ? '✅ FUNCTIONAL' : '❌ NON-FUNCTIONAL'} |`;
 
-            const overall = mFn ? '🟢 PRIMARY KEY OPERATIONAL' : '🔴 PRIMARY KEY FAILURE — REQUIRES IMMEDIATE ACTION';
+            let overall;
+            if (bothFn) {
+              overall = '🟢 BOTH KEYS OPERATIONAL (100% coverage)';
+            } else if (mFn && !bFn) {
+              overall = '🟡 PRIMARY KEY ONLY — backup key non-functional (50% coverage)';
+            } else if (!mFn && bFn) {
+              overall = '🟡 BACKUP KEY ONLY — primary key non-functional (50% coverage)';
+            } else {
+              overall = '🔴 BOTH KEYS FAILED — REQUIRES IMMEDIATE ACTION';
+            }
 
             const body = [
               `## 🔑 Token Probe Result — S117`,
@@ -211,13 +223,16 @@ jobs:
               bRow,
               '',
               `**Overall:** ${overall}`,
+              `**Require both keys:** ${requireBoth ? 'YES' : 'NO'}`,
               '',
               `**Tested at:** ${new Date().toISOString()}`,
               `**Run:** [${process.env.GITHUB_RUN_NUMBER || '?'}](${runUrl})`,
               '',
-              mFn
-                ? '`@copilot continue` automation is **operational**. Sessions can activate.'
-                : '⛔ Fix `CODEX_MASTER_KEY` before activating any agent session. See repo Settings → Secrets.',
+              bothFn
+                ? '✅ Both `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` validated. `@copilot continue` automation is **fully operational**.'
+                : mFn
+                  ? '⚠️ `CODEX_MASTER_KEY` works but `CODEX_BACKUP_KEY` is non-functional. Sessions can activate but failover is unavailable.'
+                  : '⛔ Fix `CODEX_MASTER_KEY` before activating any agent session. See repo Settings → Secrets.',
               '',
               '_token-probe.yml | S117 | admin_setup_verification.yml §3a/§3b_',
             ].join('\n');
@@ -233,7 +248,11 @@ jobs:
             const fs = require('fs');
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n${body}\n`);
 
-            // Fail the summary job if master key is broken
+            // Fail conditions:
+            // 1. Always fail if master key is broken
+            // 2. Fail if require_both_keys=true and backup key is also broken
             if (!mFn) {
               core.setFailed('CODEX_MASTER_KEY is non-functional. Agent sessions cannot activate.');
+            } else if (requireBoth && !bFn) {
+              core.setFailed('CODEX_BACKUP_KEY is non-functional and require_both_keys=true. Both keys must pass.');
             }
