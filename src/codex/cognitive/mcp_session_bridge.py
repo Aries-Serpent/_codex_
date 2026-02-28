@@ -102,7 +102,10 @@ def register_mcp_session_hook(mcp_context: dict[str, Any]) -> dict[str, Any]:
     # S109: check global injection feature flag
     injection_enabled = os.environ.get("COGNITIVE_BRAIN_INJECTION_ENABLED", "true").lower()
     if injection_enabled not in ("1", "true", "yes"):
-        logger.debug("Cognitive brain injection disabled via COGNITIVE_BRAIN_INJECTION_ENABLED=%s", injection_enabled)
+        logger.debug(
+            "Cognitive brain injection disabled via COGNITIVE_BRAIN_INJECTION_ENABLED=%s",
+            injection_enabled,
+        )
         return mcp_context
 
     actor = mcp_context.get("actor", "")
@@ -126,9 +129,7 @@ def register_mcp_session_hook(mcp_context: dict[str, Any]) -> dict[str, Any]:
 
         # Append cognitive brain block to system prompt
         existing_prompt: str = mcp_context.get("system_prompt", "")
-        mcp_context["system_prompt"] = (
-            existing_prompt + "\n\n" + payload.to_prompt_block()
-        )
+        mcp_context["system_prompt"] = existing_prompt + "\n\n" + payload.to_prompt_block()
         mcp_context["cognitive_brain_injected"] = True
         mcp_context["cognitive_brain_session_id"] = payload.session_id
 

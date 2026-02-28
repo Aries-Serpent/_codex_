@@ -49,13 +49,13 @@ logger = logging.getLogger(__name__)
 CONTEXT_FIELD_ALLOWLIST: frozenset[str] = frozenset(
     {
         "session_id",
-        "pattern_ids",          # P-001 → P-N references only
-        "store_memory_facts",   # verbatim store_memory entries
-        "last_session_summary", # non-PII summary string
-        "active_pr_refs",       # PR numbers only, no user data
-        "recency_scores",       # float vector, no raw content
-        "continuation_trigger", # "continue with next phase task" flag
-        "cognitive_status",     # COGNITIVE_BRAIN_STATUS_S*.md pointer
+        "pattern_ids",  # P-001 → P-N references only
+        "store_memory_facts",  # verbatim store_memory entries
+        "last_session_summary",  # non-PII summary string
+        "active_pr_refs",  # PR numbers only, no user data
+        "recency_scores",  # float vector, no raw content
+        "continuation_trigger",  # "continue with next phase task" flag
+        "cognitive_status",  # COGNITIVE_BRAIN_STATUS_S*.md pointer
     }
 )
 
@@ -80,12 +80,12 @@ class SessionContextPayload:
     """
 
     session_id: str
-    injected_patterns: list[str]       # e.g. ["P-043", "P-038"]
+    injected_patterns: list[str]  # e.g. ["P-043", "P-038"]
     store_memory_facts: list[str]
     continuation_trigger: str | None
     cognitive_status_ref: str | None
     token_estimate: int
-    reconstructed: bool = False        # True when quantum fallback used
+    reconstructed: bool = False  # True when quantum fallback used
     reconstruction_method: str | None = None
 
     def to_prompt_block(self) -> str:
@@ -319,9 +319,7 @@ class SessionContextInjector:
                     reconstructed_patterns.append(pf.stem)
 
         # Entropy minimisation: read latest status file
-        status_files = sorted(
-            Path(".codex").glob("COGNITIVE_BRAIN_STATUS_S*.md"), reverse=True
-        )
+        status_files = sorted(Path(".codex").glob("COGNITIVE_BRAIN_STATUS_S*.md"), reverse=True)
         if status_files:
             latest = status_files[0].read_text(errors="ignore")
             for line in latest.splitlines():
@@ -344,9 +342,7 @@ class SessionContextInjector:
             pass  # best-effort; cannot fail the session for a memory write
 
         return SessionContextPayload(
-            session_id=(
-                f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"
-            ),
+            session_id=(f"reconstructed-{hashlib.sha256(str(meta).encode()).hexdigest()[:8]}"),
             injected_patterns=reconstructed_patterns[:5],
             store_memory_facts=reconstructed_facts,
             continuation_trigger="continue with next phase task",
