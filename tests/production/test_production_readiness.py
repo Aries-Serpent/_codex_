@@ -226,7 +226,7 @@ class TestGracefulDegradation:
             for handler in handlers:
                 try:
                     return handler()
-                except Exception:
+                except Exception:  # noqa: BLE001
                     continue
             return "all_failed"
 

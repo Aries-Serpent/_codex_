@@ -86,7 +86,7 @@ def test_legacy_proxy_call_with_warning():
             warnings.simplefilter("always")
             try:
                 proxy()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass  # We're mainly testing the warning
 
             # Verify deprecation warning was issued
@@ -108,10 +108,6 @@ def test_legacy_proxy_getattr_with_warning():
         # Access attribute and capture warnings
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
-            try:
-                pass
-            except Exception:
-                pass
 
             # Verify warning was issued
             # The actual implementation issues a warning on attribute access
@@ -276,6 +272,6 @@ def test_legacy_proxy_forwards_with_args_kwargs():
                 result = proxy("arg1", "arg2", key="value")
                 # If it doesn't raise, verify the mock was instantiated
                 assert hasattr(result, 'args') or True  # Flexible assertion
-            except Exception:
+            except Exception:  # noqa: BLE001
                 # Warning mechanism may interfere, that's okay
                 pass

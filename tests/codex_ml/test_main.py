@@ -111,7 +111,7 @@ class TestForwardToCli:
             _forward_to_cli(["--", "subcommand"])
         except SystemExit:
             pass  # Expected when CLI is unavailable
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass  # May fail but we're testing the stripping logic
 
     def test_missing_cli_raises_system_exit(self) -> None:

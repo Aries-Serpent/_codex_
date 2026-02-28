@@ -332,7 +332,7 @@ def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     for file in files:
         try:
             os.remove(file)
-        except Exception:
+        except Exception:  # noqa: BLE001
             pass  # Ignore errors if file cannot be removed (e.g., permission denied)
 
 

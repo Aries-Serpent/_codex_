@@ -57,7 +57,7 @@ class DummyLogger:
             try:
                 self.fh.close()
                 self.fh = None
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
 
     def __del__(self):

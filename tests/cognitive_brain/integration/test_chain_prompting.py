@@ -87,7 +87,7 @@ try:
 
     _REAL_IMPL = True
 
-except Exception:
+except Exception:  # noqa: BLE001
     _REAL_IMPL = False
 
 

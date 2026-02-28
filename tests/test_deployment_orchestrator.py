@@ -676,7 +676,7 @@ class TestDeploymentOrchestrator:
             success = orchestrator.execute()
             # Should fail gracefully
             assert success is False
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail("Exception should be caught and handled")
         finally:
             # Restore original method

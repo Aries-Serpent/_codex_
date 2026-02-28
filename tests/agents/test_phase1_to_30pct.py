@@ -197,7 +197,7 @@ class TestRelativitySchedulerProperties:
                 # Try minimal parameters
                 try:
                     scheduler.add_agent("agent1")
-                except Exception:
+                except Exception:  # noqa: BLE001
                     pass  # Method exists, just different signature
 
     def test_lorentz_factor_method(self):

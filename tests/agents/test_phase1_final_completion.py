@@ -274,13 +274,13 @@ class TestCoverageUpliftQuickWins:
         if hasattr(orch, "get_state"):
             try:
                 orch.get_state()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
 
         if hasattr(orch, "get_config"):
             try:
                 orch.get_config()
-            except Exception:
+            except Exception:  # noqa: BLE001
                 pass
 
     def test_decision_state_default_values(self):

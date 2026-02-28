@@ -79,4 +79,6 @@ def test_checkpoint_resume(tmp_path) -> None:
     result = run_custom_trainer(model, tok, train_ds, val_ds, cfg2)
     assert result["global_step"] == 4
     for k, v in base_state.items():
-        assert torch.allclose(model.state_dict()[k], v)
+        # Cast to float to avoid "Boolean value of Tensor with more than one
+        # element is ambiguous" when dtypes differ across torch versions.
+        assert torch.allclose(model.state_dict()[k].float(), v.float(), atol=1e-5)

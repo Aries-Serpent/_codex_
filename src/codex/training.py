@@ -78,6 +78,7 @@ except ImportError as e:
 
         epochs: int = 1
         batch_size: int = 1
+        grad_accum: int = 1
         log_every: int = 1
         save_every: int = 0
         max_steps: int = 2
@@ -944,8 +945,10 @@ def run_hf_trainer(texts: Any, output_dir: Any, **kwargs: Any) -> dict:
         Dict with at minimum a ``loss`` key.
     """
     corpus = list(texts)
-    # Strip kwargs that run_functional_training doesn't accept
-    _compat_keys = {"hydra_cfg", "seed"}
+    # Strip kwargs that run_functional_training doesn't accept.
+    # gradient_accumulation_steps and deterministic are passed by main() for
+    # test observability but run_functional_training uses grad_accum directly.
+    _compat_keys = {"hydra_cfg", "seed", "gradient_accumulation_steps", "deterministic"}
     compat = {k: v for k, v in kwargs.items() if k not in _compat_keys}
     return run_functional_training(
         corpus=corpus, demos=[], prefs=[], use_deeplearning=True, **compat
@@ -991,13 +994,79 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
+        lora_section = (
+            training_section.get("lora", {})
+            if isinstance(training_section, dict) else {}
+        )
+        repro_section = (
+            training_section.get("reproducibility", {})
+            if isinstance(training_section, dict) else {}
+        )
         run_hf_trainer(
             texts=texts,
-            output_dir=output_dir_val,
+            output_dir=Path(output_dir_val) if output_dir_val else None,
             seed=training_section.get("seed", args.seed),
             grad_accum=training_section.get("grad_accum", args.grad_accum),
             hydra_cfg=training_section,
+            lora_r=lora_section.get("r", args.lora_r),
+            lora_alpha=lora_section.get("alpha", args.lora_alpha),
+            lora_dropout=getattr(args, "lora_dropout", 0.05),
+            gradient_accumulation_steps=training_section.get("grad_accum", args.grad_accum),
+            deterministic=repro_section.get("cudnn_deterministic", False),
         )
+        return
+
+    # Custom engine path — tokenize texts, create labels, call run_custom_trainer
+    if getattr(args, "engine", None) == "custom":
+        cfg = load_training_cfg(
+            output_dir=getattr(args, "output_dir", None),
+            seed=args.seed,
+            grad_accum=args.grad_accum,
+        )
+        try:
+            from omegaconf import OmegaConf
+
+            ts = OmegaConf.to_container(
+                cfg.get("training", cfg), resolve=True,
+            )
+        except Exception:
+            ts = (
+                dict(cfg.get("training", cfg))
+                if hasattr(cfg, "get") else {}
+            )
+        import importlib
+
+        tf_mod = importlib.import_module("transformers")
+        ds_mod = importlib.import_module("datasets")
+        model_name = ts.get("model", "gpt2")
+        tokenizer = tf_mod.AutoTokenizer.from_pretrained(model_name)
+        model = tf_mod.AutoModelForCausalLM.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        def _encode_with_labels(tok, txts):
+            """Tokenize *txts* and create labels (padding → -100)."""
+            enc = tok(txts, padding=True, return_tensors="pt")
+            ids = enc["input_ids"]
+            mask = enc["attention_mask"]
+            lbl = ids.clone()
+            lbl[mask == 0] = -100
+            return ds_mod.Dataset.from_dict({
+                "input_ids": ids,
+                "attention_mask": mask,
+                "labels": lbl,
+            })
+
+        texts = ts.get("texts", ["hello world"])
+        train_ds = _encode_with_labels(tokenizer, texts)
+        val_ds = None
+        val_texts = ts.get("val_texts")
+        if val_texts:
+            val_ds = _encode_with_labels(tokenizer, val_texts)
+        train_cfg = TrainCfg(
+            grad_accum=ts.get("grad_accum", args.grad_accum),
+        )
+        run_custom_trainer(model, tokenizer, train_ds, val_ds, train_cfg)
         return
 
     if not args.use_deeplearning:

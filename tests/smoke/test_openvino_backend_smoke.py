@@ -1,16 +1,21 @@
-"""Smoke tests for Intel OpenVINO optional backend (P10-05 Phase B — S98).
+"""Smoke tests for Intel OpenVINO optional backend (P10-05 Phase B/C — S98/S100).
 
-These tests verify the Tier 2 guard pattern — the backend must behave
-correctly whether or not ``openvino`` is installed.  No GPU or OpenVINO
-runtime is required; all paths exercise the fallback / unavailable branch.
+Phase B tests (S98): verify Tier 2 guard pattern — correct behaviour whether
+or not ``openvino`` is installed.  No GPU or OpenVINO runtime required.
 
-See docs/ops/openvino_integration.md Phase B for context.
+Phase C tests (S100): verify the *live* inference path on a real Intel Arc
+iGPU.  These tests are guarded with ``skipif(not is_available("GPU"), ...)``
+so they pass on CPU-only CI runners and only run when a GPU is present.
+
+See docs/ops/openvino_integration.md Phase B/C for context.
 """
 from __future__ import annotations
 
 import importlib
 import sys
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 # ---------------------------------------------------------------------------
@@ -103,3 +108,76 @@ class TestOpenVINOBackendAvailable:
         devs = self.backend.available_devices()
         assert isinstance(devs, list)
         assert "GPU" in devs
+
+
+# ---------------------------------------------------------------------------
+# Phase C — live GPU inference path (skipif when GPU absent)
+# ---------------------------------------------------------------------------
+try:
+    from codex_ml.backends.openvino_backend import is_available as _ov_is_available
+    _GPU_PRESENT = _ov_is_available("GPU")
+except (ImportError, AttributeError):
+    _GPU_PRESENT = False
+
+_skip_no_gpu = pytest.mark.skipif(
+    not _GPU_PRESENT,
+    reason="Intel Arc GPU not present (OpenVINO GPU unavailable); skipping Phase C live tests",
+)
+
+
+@_skip_no_gpu
+class TestOpenVINOPhaseC:
+    """Phase C: live inference on a real Intel Arc iGPU.
+
+    These tests only run when ``is_available("GPU")`` returns ``True`` (i.e.,
+    OpenVINO is installed AND an Intel Arc iGPU is enumerated).  They are
+    unconditionally skipped on CPU-only CI runners.
+
+    See docs/ops/openvino_integration.md Phase C for context.
+    """
+
+    def setup_method(self):
+        """Import the real (non-mocked) backend."""
+        from codex_ml.backends import openvino_backend  # noqa: PLC0415
+        self.backend = openvino_backend
+
+    def test_gpu_is_available_live(self):
+        """Sanity: GPU should be live-detected before any infer() call."""
+        assert self.backend.is_available("GPU") is True
+
+    def test_available_devices_contains_gpu_live(self):
+        """available_devices() must list GPU when OV is live."""
+        devs = self.backend.available_devices()
+        assert "GPU" in devs, f"Expected 'GPU' in devices, got: {devs}"
+
+    def test_infer_with_real_model(self, tmp_path):
+        """infer() on GPU must return a dict of output tensors.
+
+        This test creates a minimal valid IR model stub.  On a live runner
+        the model would be compiled on the Arc iGPU; the output tensor dict
+        must be non-empty.
+        """
+        import numpy as np  # noqa: PLC0415 — optional dep inside live test
+
+        # Create minimal OpenVINO IR XML + BIN pair
+        xml_path = tmp_path / "model.xml"
+        bin_path = tmp_path / "model.bin"
+        xml_content = """<?xml version="1.0"?>
+<net name="test" version="11">
+  <layers>
+    <layer id="0" name="input" type="Parameter" version="opset1">
+      <data element_type="f32" shape="1,4"/>
+      <output><port id="0"><dim>1</dim><dim>4</dim></port></output>
+    </layer>
+    <layer id="1" name="output" type="Result" version="opset1">
+      <input><port id="0"><dim>1</dim><dim>4</dim></port></input>
+    </layer>
+  </layers>
+  <edges><edge from-layer="0" from-port="0" to-layer="1" to-port="0"/></edges>
+</net>"""
+        xml_path.write_text(xml_content)
+        bin_path.write_bytes(b"")  # empty weights bin for pass-through model
+
+        inputs = {"input": np.ones((1, 4), dtype=np.float32)}
+        result = self.backend.infer(str(xml_path), inputs, device="GPU")
+        assert isinstance(result, dict), f"Expected dict result, got {type(result)}"

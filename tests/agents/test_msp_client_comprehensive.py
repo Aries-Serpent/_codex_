@@ -278,13 +278,16 @@ class TestMSPClientIntegration:
         """Test complete request lifecycle."""
         client = MSPClient(base_url="https://test.msp/api", api_key="test")
 
-        # Mock the entire request flow
-        with patch("requests.request") as mock_request:
-            mock_response = Mock()
-            mock_response.status_code = 200
-            mock_response.json.return_value = {"data": "test"}
-            mock_request.return_value = mock_response
+        # Mock the httpx transport (MSPClient uses httpx, not requests)
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = {"data": "test"}
+        mock_response.raise_for_status = Mock()
+        mock_response.is_closed = True
+        mock_response.stream = Mock()
 
+        with patch.object(client.client, "request", return_value=mock_response):
             if hasattr(client, "request"):
                 result = client.request("GET", "/test")
                 assert result is not None

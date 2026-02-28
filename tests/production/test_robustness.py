@@ -28,7 +28,7 @@ def test_network_timeout_handling():
             try:
                 result = fetch_with_timeout(url)
                 return result
-            except Exception:
+            except Exception:  # noqa: BLE001
                 if attempt == max_retries - 1:
                     raise
                 time.sleep(0.01 * (attempt + 1))  # Exponential backoff
@@ -114,7 +114,7 @@ def test_circuit_breaker_pattern():
                 self.failure_count = 0
                 self.state = 'closed'
                 return result
-            except Exception:
+            except Exception:  # noqa: BLE001
                 self.failure_count += 1
                 self.last_failure_time = time.time()
 
