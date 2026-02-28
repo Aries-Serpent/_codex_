@@ -365,6 +365,94 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> $GITHUB_STEP_SUMMARY
 
+      - name: "§8 Auto-post @copilot continue prompt (keys functional + prompt file present)"
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER_INPUT: ${{ inputs.pr_number }}
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+        run: |
+          # Skip if no key is functional
+          if [ "${MASTER_KEY_FUNCTIONAL}" != "true" ] && [ "${BACKUP_KEY_FUNCTIONAL}" != "true" ]; then
+            echo "No functional key — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Find the most recent active followup prompt file
+          PROMPT_DIR=".github/copilot-prompts/active"
+          PROMPT_FILE=""
+          if [ -n "$PR_NUMBER_INPUT" ] && [ -f "${PROMPT_DIR}/PR-${PR_NUMBER_INPUT}-followup.md" ]; then
+            PROMPT_FILE="${PROMPT_DIR}/PR-${PR_NUMBER_INPUT}-followup.md"
+          else
+            PROMPT_FILE=$(ls -t "${PROMPT_DIR}"/*-followup.md 2>/dev/null | head -1 || true)
+          fi
+
+          if [ -z "$PROMPT_FILE" ]; then
+            echo "No followup prompt file found — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Determine target PR: from input or by looking up the open PR for this branch
+          TARGET_PR="$PR_NUMBER_INPUT"
+          if [ -z "$TARGET_PR" ]; then
+            TARGET_PR=$(curl -s \
+              -H "Authorization: Bearer ${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPO}/pulls?state=open&head=${GITHUB_OWNER}:${GITHUB_REF_NAME}&per_page=1" \
+              | python3 -c "import json,sys; d=json.load(sys.stdin); print(d[0]['number'] if isinstance(d,list) and d else '')" \
+              2>/dev/null || true)
+          fi
+
+          if [ -z "$TARGET_PR" ]; then
+            echo "Could not determine target PR for branch '${GITHUB_REF_NAME}' — skipping @copilot continue post"
+            exit 0
+          fi
+
+          # Post the @copilot continue comment
+          # Build body without leading > characters (YAML block scalar conflict)
+          BODY_LINE1="@copilot continue \`${PROMPT_FILE}\`"
+          BODY_LINE2="Auto-posted by Admin Setup Verification (keys confirmed functional)."
+          BODY_LINE3="Activates: store_memory context + cognitive brain autonomous improvement."
+
+          export TARGET_PR
+          export BODY_LINE1 BODY_LINE2 BODY_LINE3
+          if POST_STATUS=$(python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error
+
+          token = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY", "")
+          repo  = os.environ["GITHUB_REPO"]
+          pr    = os.environ["TARGET_PR"]
+          body  = "\n\n".join([
+              os.environ["BODY_LINE1"],
+              "> " + os.environ["BODY_LINE2"],
+              "> " + os.environ["BODY_LINE3"],
+          ])
+
+          url  = f"https://api.github.com/repos/{repo}/issues/{pr}/comments"
+          data = json.dumps({"body": body}).encode()
+          req  = urllib.request.Request(url, data=data, method="POST")
+          req.add_header("Authorization", f"Bearer {token}")
+          req.add_header("Accept", "application/vnd.github+json")
+          req.add_header("X-GitHub-Api-Version", "2022-11-28")
+          req.add_header("Content-Type", "application/json")
+          try:
+              with urllib.request.urlopen(req) as resp:
+                  result = json.load(resp)
+                  print(result.get("html_url", "?"))
+                  sys.exit(0)
+          except urllib.error.HTTPError as e:
+              msg = e.read().decode(errors="replace")
+              print(f"HTTP {e.code}: {msg}", file=sys.stderr)
+              sys.exit(1)
+          PYEOF
+          ); then
+            echo "✅ Posted @copilot continue to PR #${TARGET_PR}: ${POST_STATUS}"
+          else
+            echo "::warning::Failed to post @copilot continue to PR #${TARGET_PR} — check token scopes"
+          fi
+
       - name: "Post verification summary to PR (if CODEX_MASTER_KEY set)"
         if: inputs.pr_number != ''
         env:
@@ -393,7 +481,6 @@ jobs:
             "1. §1 Grant Copilot App `issues: write` — [org settings](https://github.com/organizations/Aries-Serpent/settings/installations)\n"
             "2. §3 Create `CODEX_MASTER_KEY` secret (if not done)\n"
             "3. §4 Enable GitHub Discussions (if not done)\n"
-            "4. §7 Post `@copilot Begin S109` comment on this PR\n\n"
             "See `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` for click-by-click instructions."
           )
           result = poster.post_pr_comment(os.environ.get("GITHUB_REPOSITORY", ""), pr, body)
