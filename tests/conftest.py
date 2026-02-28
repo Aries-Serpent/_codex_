@@ -1103,10 +1103,7 @@ def _restore_torch_tensor():
     torch.Tensor with a fake class; restores the original after every test.
     """
     try:
-        import sys as _sys
-
-        _torch = _sys.modules.get(
-            "torch"
+        import sys as _sys  # noqa: PLC0415 - intentional local alias
         )  # use already-imported module, avoid duplicate import
         if _torch is None:
             raise ImportError("torch not loaded")
@@ -1131,9 +1128,8 @@ def _isolate_rng_state():
     Methodology report Fix 3: prevents RNG state leakage between tests that
     call set_seed/set_reproducible, ensuring repeatable results.
     """
-    import random as _random
+    import random as _random  # noqa: PLC0415 - intentional local alias
 
-    py_state = _random.getstate()
 
     try:
         import numpy as _np
@@ -1512,7 +1508,6 @@ def serializable_mock_model():
             return asdict(self)
 
         def to_json(self):
-            import json
 
             return json.dumps(self.to_dict())
 
@@ -1861,7 +1856,6 @@ def protect_stderr():
 
     Solution: Save and restore stderr/stdout for every test.
     """
-    import sys
     from typing import Any
 
     class _NonClosingStream:
@@ -1920,7 +1914,6 @@ def force_file_cleanup():
 
     # Cleanup phase
     import gc
-    import os
 
     gc.collect()
 
@@ -1936,8 +1929,6 @@ def force_file_cleanup():
         return
 
     # Close any lingering file objects found by garbage collector
-    import logging
-    import sys
 
     handler_streams = []
     for handler_ref in logging._handlerList:

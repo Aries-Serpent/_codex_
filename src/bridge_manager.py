@@ -14,7 +14,11 @@ Enhanced with Bridge Protocol v2 (2026-01-09):
 """
 from __future__ import annotations
 
-import fcntl
+try:
+    import fcntl
+    _HAS_FCNTL = True
+except ImportError:  # Windows — fcntl is POSIX-only
+    _HAS_FCNTL = False
 import json
 import logging
 import os
@@ -100,9 +104,11 @@ class ContextMessage:
 
 class BridgeLock:
     """
-    File-based locking mechanism using fcntl.
+    File-based locking mechanism using fcntl (POSIX) or no-op stub (Windows).
 
     Prevents race conditions when multiple processes access the bridge.
+    On Windows, where fcntl is unavailable, acquire() always returns True
+    (single-process use assumed).
     """
 
     def __init__(self, lock_path: Path):
@@ -120,6 +126,17 @@ class BridgeLock:
         Returns:
             True if lock acquired, False on timeout
         """
+        if not _HAS_FCNTL:
+            # Windows: fcntl is POSIX-only; skip file locking.
+            # ⚠️  This means NO cross-process locking on Windows — safe only for
+            # single-process deployments.  Multi-process writers on Windows must
+            # use an OS-level lock (e.g. msvcrt.locking) instead.
+            logger.warning(
+                "BridgeLock: fcntl unavailable on this platform — "
+                "file locking is disabled (single-process use only)."
+            )
+            return True
+
         try:
             # Ensure lock file exists
             self.lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -148,6 +165,8 @@ class BridgeLock:
 
     def release(self) -> None:
         """Release the lock."""
+        if not _HAS_FCNTL:
+            return
         if self.lock_fd is not None:
             try:
                 fcntl.flock(self.lock_fd, fcntl.LOCK_UN)

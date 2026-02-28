@@ -33,6 +33,24 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
+# ---------------------------------------------------------------------------
+# Shared utility: triple-quoted string tracker
+# ---------------------------------------------------------------------------
+
+def _advance_triple_quote_state(line: str, in_str: bool, delim: str) -> tuple[bool, str]:
+    """Update multiline-string tracking state for one source line.
+
+    Returns ``(in_str, delim)`` after processing the line.  The caller should
+    call this *before* deciding whether the line is inside a string literal.
+    """
+    stripped = line.strip()
+    for d in ('"""', "'''"):
+        count = stripped.count(d)
+        if not in_str and count % 2 == 1:
+            return True, d
+        elif in_str and delim == d and count % 2 == 1:
+            return False, ""
+    return in_str, delim
 
 class CommonIssueFixer:
     """Automatically fix common CI issues."""
@@ -231,10 +249,13 @@ class CommonIssueFixer:
         return issues
 
     def fix_tokenizer_fallbacks(self) -> List[str]:
-        """Pattern 5: Check for missing tokenizer pad_token fallbacks."""
+        """Pattern 5: Check for missing tokenizer pad_token fallbacks.
+
+        Only flags files where AutoTokenizer.from_pretrained appears in actual
+        executable code (not inside comments, string literals, or docstrings).
+        """
         issues = []
 
-        # Find files with AutoTokenizer.from_pretrained
         src_dir = self.repo_root / "src"
         if not src_dir.exists():
             return issues
@@ -242,16 +263,28 @@ class CommonIssueFixer:
         for py_file in src_dir.rglob("*.py"):
             content = py_file.read_text()
 
-            # Check if file loads tokenizer
-            if "AutoTokenizer.from_pretrained" in content:
-                # Check if it has fallback logic
+            if "AutoTokenizer.from_pretrained" not in content:
+                continue
+
+            # Check each line: skip commented-out and docstring lines
+            real_usage = False
+            in_str, str_delim = False, ""
+            for line in content.splitlines():
+                in_str, str_delim = _advance_triple_quote_state(line, in_str, str_delim)
+                if in_str:
+                    continue
+                if line.strip().startswith("#"):
+                    continue
+                if "AutoTokenizer.from_pretrained" in line:
+                    real_usage = True
+                    break
+
+            if real_usage:
                 has_fallback = "pad_token" in content and "eos_token" in content
-
                 if not has_fallback:
-                    issues.append(f"{py_file.relative_to(self.repo_root)}: Missing pad_token fallback")
-
-                    # Note: Adding fallback requires understanding code context,
-                    # so we only report, don't auto-fix
+                    issues.append(
+                        f"{py_file.relative_to(self.repo_root)}: Missing pad_token fallback"
+                    )
                     print(f"  ℹ️ {py_file.name}: Manual review needed for tokenizer fallback")
 
         return issues
@@ -287,7 +320,12 @@ class CommonIssueFixer:
         return issues
 
     def fix_redundant_imports(self) -> List[str]:
-        """Pattern 7: Detect redundant imports (module + function level)."""
+        """Pattern 7: Detect redundant imports (module + function level).
+
+        Uses ``_advance_triple_quote_state`` to skip imports that appear inside
+        string literals (e.g. triple-quoted code samples used as test fixtures).
+        Also handles aliased forms (``import json as j``) and ``# noqa`` lines.
+        """
         issues = []
 
         tests_dir = self.repo_root / "tests"
@@ -297,26 +335,42 @@ class CommonIssueFixer:
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text()
 
-            # Find module-level imports
-            module_imports = set()
-            for match in re.finditer(r'^import\s+(\w+)', content, re.MULTILINE):
-                module_imports.add(match.group(1))
+            # ----------------------------------------------------------------
+            # Step 1: collect real top-level imports (not inside strings/funcs)
+            # ----------------------------------------------------------------
+            module_imports: set = set()
+            in_str, str_delim = False, ""
+            for line in content.splitlines():
+                in_str, str_delim = _advance_triple_quote_state(line, in_str, str_delim)
+                if in_str:
+                    continue  # skip imports inside string literals
+                # Match `import X` or `import X as Y` at column 0
+                m = re.match(r'^import\s+(\w+)(?:\s+as\s+\w+)?\s*(?:#.*)?$', line)
+                if m:
+                    module_imports.add(m.group(1))
 
-            # Find function-level imports
+            # ----------------------------------------------------------------
+            # Step 2: find function-level re-imports of already-imported mods
+            # ----------------------------------------------------------------
             in_function = False
+            in_str, str_delim = False, ""
             for line_num, line in enumerate(content.split('\n'), 1):
+                in_str, str_delim = _advance_triple_quote_state(line, in_str, str_delim)
+
                 if re.match(r'^\s*def\s+', line):
                     in_function = True
                 elif re.match(r'^\S', line) and not line.startswith('#'):
                     in_function = False
 
-                if in_function:
-                    match = re.match(r'^\s+import\s+(\w+)', line)
+                if in_function and not in_str:
+                    # Match `import X` or `import X as Y` inside function body
+                    match = re.match(r'^\s+import\s+(\w+)(?:\s+as\s+\w+)?\s*$', line)
                     if match and match.group(1) in module_imports:
-                        issues.append(
-                            f"{py_file.relative_to(self.repo_root)}:{line_num} - "
-                            f"Redundant import of {match.group(1)}"
-                        )
+                        if "# noqa" not in line:
+                            issues.append(
+                                f"{py_file.relative_to(self.repo_root)}:{line_num} - "
+                                f"Redundant import of {match.group(1)}"
+                            )
 
         if issues:
             print("  ℹ️ Redundant imports require manual review")

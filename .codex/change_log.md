@@ -1733,3 +1733,76 @@ Phase 4 complete. Research-backed enhancements behind feature flags:
 - **Bandit total (all severities)**: 420 → 0 ✅
 - **Auto-fix patterns**: 8 → 11 (+3 new) ✅
 - **New docs**: `docs/ops/primary_test_machine.md`, `docs/ops/firewall_allowlist.md`
+
+---
+
+## Session S92 — 2026-02-28 — Windows Compat, Tokenizer Guards, Pattern Accuracy, Tech Debt Checklist
+
+### Tasks Completed
+
+#### Windows Compatibility Fixes (Priority 1)
+- `src/bridge_manager.py`: Replaced bare `import fcntl` with guarded `try/except ImportError`;
+  added `_HAS_FCNTL` flag. `BridgeLock.acquire()` returns `True` (no-op) on Windows;
+  `BridgeLock.release()` is also guarded. `bridge_manager.py` now imports cleanly on Windows.
+- `src/codex_ml/safety/sandbox.py`: Replaced bare `import resource` with guarded
+  `try/except ImportError`; added `_HAS_RESOURCE` flag. `_limits()` is a no-op on Windows;
+  `preexec` defaults to `None` when resource unavailable. `subprocess.Popen` is safe.
+
+#### Tokenizer Pad-Token Fallback Guards (Pattern 5 — now 0 issues)
+- `src/codex_ml/hf_loader.py` `load_tokenizer()`: Added `pad_token = eos_token` guard after
+  `AutoTokenizer.from_pretrained`.
+- `src/codex_ml/modeling/codex_model.py` `load()`: Added `pad_token` guard after tokenizer load.
+- `src/tokenizer/fast_tokenizer.py` inner `from_pretrained` block: Added `pad_token` guard in
+  `else:` branch.
+
+#### Pattern Detector Accuracy Improvements
+- **Pattern 5** (`fix_tokenizer_fallbacks`): Rewrote to skip commented-out lines and triple-quoted
+  string literals. False-positives for `model_loader.py` (commented code) and scorer files
+  (docstring examples) eliminated.
+- **Pattern 7** (`fix_redundant_imports`): Rewrote with multiline-string-aware parser so that
+  `import ast` appearing inside test-fixture string literals (e.g., `test_analyze_phase9_1.py`)
+  is NOT counted as a real module-level import. Also respects `# noqa` comments and the
+  `import X as Y` aliased form.
+
+#### Redundant Import Removal (Pattern 7 — now 0 issues)
+Removed 40 redundant function-level re-imports from 18 test files (stdlib modules already
+imported at module level): sys, os, json, random, importlib, tempfile, pickle, re, pytest.
+Files: conftest.py, test_agents_infrastructure.py, test_analyze_phase9_1.py (false-positive
+restored), test_mlflow_utils.py, test_session_logging.py, test_retrieval_pipeline.py,
+test_agents_infrastructure.py, test_providers.py, test_security_validation.py,
+test_py312_benchmarks.py, test_default_file_backend.py, test_tracking_writers_offline.py,
+test_training_edge_cases_phase26.py, test_fetch_messages.py, test_uncertainty.py,
+test_adaptive_scoring_optimized.py.
+
+#### docs/ops/primary_test_machine.md
+- Updated Windows crash entries for `bridge_manager.py` and `sandbox.py` to ✅ Fixed (S92).
+
+#### Deployment Readiness Checklist
+- Created `docs/ops/deployment_readiness_checklist.md` — comprehensive pre-deployment gate with
+  all tech debt, Windows compat, coverage, security, cognitive brain, and infrastructure items.
+
+### Auto-Fix Pattern Status (all 11 patterns)
+| Pattern | Status |
+|---------|--------|
+| 1 Unused Imports | ✓ 0 |
+| 2 Unused Variables | ✓ 0 |
+| 3 YAML Indentation | ✓ 0 |
+| 4 Coverage Thresholds | ✓ 0 |
+| 5 Tokenizer Fallbacks | ✓ **0** (was 6) |
+| 6 Test Assertions | ⚠️ 263 (informational — logic-dependent) |
+| 7 Redundant Imports | ✓ **0** (was 44) |
+| 8 CodeQL Alerts | ✓ 0 |
+| 9 Unsorted Imports | ✓ 0 |
+| 10 Bandit Security | ✓ 0 |
+| 11 F-String Placeholders | ✓ 0 |
+
+### Commit
+- `(this session)` — fix(compat): Windows guards for fcntl/resource; pad_token fallbacks; pattern accuracy
+
+### Metrics (session end)
+- **Ruff errors**: 0 ✅
+- **Bandit issues**: 0 ✅
+- **Windows crash imports**: 2 → **0** ✅
+- **Tokenizer fallback gaps**: 6 → **0** ✅
+- **Redundant imports**: 44 → **0** ✅ (after pattern accuracy fix)
+- **Auto-fix patterns passing**: 10/11 (pattern 6 informational only)

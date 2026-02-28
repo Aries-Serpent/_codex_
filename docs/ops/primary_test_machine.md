@@ -138,8 +138,8 @@ shell-dependent operations inside Docker.
 | Module / API | Status | Notes |
 |-------------|--------|-------|
 | `fcntl` (file locking) | ⚠️ Gracefully degraded | `training/data_utils.py` and `src/training/data_utils.py` catch `ImportError` and fall back to unlocked write — safe for single-process use |
-| `src/bridge_manager.py:17 import fcntl` | ❌ Will Crash on Windows | **No Windows guard** — hard import, no try/except. `BridgeManager` will fail to import on Windows |
-| `resource` module (`RLIMIT_*`) | ⚠️ Gracefully degraded | `tests/conftest.py` and `codex_utils/logging_setup.py` wrap in `try/except`; `src/codex_ml/safety/sandbox.py` has a bare `import resource` — will fail on Windows |
+| `src/bridge_manager.py:17 import fcntl` | ✅ Fixed (S92) | Wrapped in `try/except ImportError`; `BridgeLock.acquire()` returns `True` (no-op) on Windows — safe for single-process use |
+| `resource` module (`RLIMIT_*`) | ✅ Fixed (S92) | `src/codex_ml/safety/sandbox.py` now guards `import resource` with `try/except ImportError`; `_limits()` is a no-op when `_HAS_RESOURCE=False` |
 | `signal.SIGHUP` | ❌ Not on Windows | `tests/cli/test_cli_edge_cases_phase26.py` skips when SIGHUP unavailable |
 | `os.symlink` (checkpoint best-symlink) | ⚠️ Requires admin | `training/checkpoint_manager.py` uses `os.symlink`; Windows requires Developer Mode or elevated prompt |
 | `psutil` | ✅ Works | Cross-platform; available for Windows |
@@ -230,8 +230,8 @@ to a GPU workstation or CI** for this primary test machine.
 | `bitsandbytes` INT8/INT4 quantization | CUDA required | GPU instance |
 | `triton` JIT kernels | CUDA required | GitHub Actions / GPU runner |
 | Shell script execution (`.sh` files) | Windows OS | WSL 2 or GitHub Actions |
-| `src/bridge_manager.py` (hard `fcntl` import) | Windows crash | Linux / WSL 2 only |
-| `src/codex_ml/safety/sandbox.py` (bare `resource` import) | Windows crash | Linux / WSL 2 only |
+| `src/bridge_manager.py` (hard `fcntl` import) | ✅ Fixed S92 | Guarded with `try/except ImportError` + `_HAS_FCNTL` flag |
+| `src/codex_ml/safety/sandbox.py` (bare `resource` import) | ✅ Fixed S92 | Guarded with `try/except ImportError` + `_HAS_RESOURCE` flag |
 | GPU vendor wheel validation (`nvidia-*` / `triton` guard) | No GPU | CI vendor-guard session |
 | Sustained long-running training runs | Mobile CPU thermal limits | Workstation / cloud |
 

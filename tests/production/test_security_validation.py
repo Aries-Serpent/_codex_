@@ -213,7 +213,6 @@ def test_csrf_double_submit_cookie():
 
 def test_input_sanitization_email():
     """Test email input validation and sanitization."""
-    import re
 
     # More strict email pattern that disallows consecutive dots
     email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')

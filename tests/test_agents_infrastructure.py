@@ -324,7 +324,6 @@ class TestCLIEndToEnd:
         runner = CliRunner()
 
         # Set up environment
-        import os
 
         db_path = str(tmp_path / "e2e_test.db")
         os.environ["CODEX_LOG_DB_PATH"] = db_path
@@ -404,7 +403,6 @@ class TestNewCLICommands:
         runner = CliRunner()
 
         # Set up test database
-        import os
 
         db_path = str(tmp_path / "list_test.db")
 
@@ -470,14 +468,12 @@ class TestMissingMethods:
         assert handler.logger.level == logging.INFO
 
         # Test invalid level
-        import pytest
 
         with pytest.raises(ValueError, match="Invalid log level"):
             handler.set_log_level("INVALID")
 
     def test_public_validate_method(self):
         """Test public validate() method."""
-        import os
         from unittest.mock import patch
 
         from codex.config.env_vars import EnvironmentManager
@@ -499,10 +495,7 @@ class TestMissingMethods:
 
     def test_validate_with_invalid_env(self):
         """Test validate() detects invalid environment."""
-        import os
         from unittest.mock import patch
-
-        import pytest
 
         from codex.config.env_vars import EnvironmentManager
 
@@ -539,8 +532,6 @@ class TestEdgeCases:
         """Test DBManager with invalid/read-only path."""
         from pathlib import Path
 
-        import pytest
-
         from codex.logging.db_manager import DBManager
 
         # Invalid path should raise error on init_schema
@@ -551,7 +542,6 @@ class TestEdgeCases:
 
     def test_environment_manager_missing_optional_vars(self):
         """Test EnvironmentManager with missing optional variables."""
-        import os
         from unittest.mock import patch
 
         from codex.config.env_vars import EnvironmentManager
@@ -578,7 +568,6 @@ class TestEdgeCases:
 
     def test_export_env_with_empty_config(self):
         """Test export-env with minimal environment."""
-        import os
         from unittest.mock import patch
 
         from click.testing import CliRunner
@@ -797,7 +786,6 @@ class TestViewerCLIWrapper:
 
     def test_viewer_wrapper_with_actual_main(self, tmp_path):
         """Test that viewer wrapper works end-to-end with actual main()."""
-        import os
         import time
         from unittest.mock import patch
 

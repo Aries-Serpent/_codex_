@@ -556,7 +556,6 @@ class TestGitHubTokenProvider:
 
     def test_validate_secret_no_token(self, github_config):
         """Test validation fails when no token provided."""
-        import os
         # Ensure no token in config or environment
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
         with patch.dict(os.environ, {}, clear=False):

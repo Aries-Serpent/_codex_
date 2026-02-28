@@ -105,6 +105,9 @@ class CodexModel:
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.tokenizer_name, **self._tokenizer_kwargs
         )
+        # Ensure pad_token is set; many decoder-only models omit it.
+        if self.tokenizer.pad_token is None and self.tokenizer.eos_token is not None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
 
         lora_enabled = self._lora_cfg is not None and bool(
             self._lora_cfg.adapter_path or get_peft_model
