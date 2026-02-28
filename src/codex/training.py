@@ -78,6 +78,7 @@ except ImportError as e:
 
         epochs: int = 1
         batch_size: int = 1
+        grad_accum: int = 1
         log_every: int = 1
         save_every: int = 0
         max_steps: int = 2
@@ -1012,6 +1013,68 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             lora_dropout=getattr(args, "lora_dropout", 0.05),
             gradient_accumulation_steps=training_section.get("grad_accum", args.grad_accum),
             deterministic=repro_section.get("cudnn_deterministic", False),
+        )
+        return
+
+    # Custom engine path — tokenize texts, create labels, call run_custom_trainer
+    if getattr(args, "engine", None) == "custom":
+        cfg = load_training_cfg(
+            output_dir=getattr(args, "output_dir", None),
+            seed=args.seed,
+            grad_accum=args.grad_accum,
+        )
+        try:
+            from omegaconf import OmegaConf
+
+            ts = OmegaConf.to_container(
+                cfg.get("training", cfg), resolve=True,
+            )
+        except Exception:
+            ts = (
+                dict(cfg.get("training", cfg))
+                if hasattr(cfg, "get") else {}
+            )
+        import importlib
+
+        _tf = importlib.import_module("transformers")
+        _ds = importlib.import_module("datasets")
+        model_name = ts.get("model", "gpt2")
+        tokenizer = _tf.AutoTokenizer.from_pretrained(model_name)
+        model = _tf.AutoModelForCausalLM.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        texts = ts.get("texts", ["hello world"])
+        enc = tokenizer(texts, padding=True, return_tensors="pt")
+        ids = enc["input_ids"]
+        mask = enc["attention_mask"]
+        labels = ids.clone()
+        labels[mask == 0] = -100
+        train_data = {
+            "input_ids": ids,
+            "attention_mask": mask,
+            "labels": labels,
+        }
+        train_ds = _ds.Dataset.from_dict(train_data)
+        val_ds = None
+        val_texts = ts.get("val_texts")
+        if val_texts:
+            venc = tokenizer(
+                val_texts, padding=True, return_tensors="pt",
+            )
+            vids = venc["input_ids"]
+            vmask = venc["attention_mask"]
+            vlabels = vids.clone()
+            vlabels[vmask == 0] = -100
+            val_ds = _ds.Dataset.from_dict({
+                "input_ids": vids,
+                "attention_mask": vmask,
+                "labels": vlabels,
+            })
+        train_cfg = TrainCfg(
+            grad_accum=ts.get("grad_accum", args.grad_accum),
+        )
+        run_custom_trainer(
+            model, tokenizer, train_ds, val_ds, train_cfg,
         )
         return
 

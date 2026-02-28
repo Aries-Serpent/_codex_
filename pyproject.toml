@@ -482,7 +482,7 @@ precision = 2
 # - Phase 26: 90% (target: 2026-04-15)
 # - Phase 27+: 100% (aspirational: 2026-05-01)
 # Owner: @mbaetiong
-fail_under = 30
+fail_under = 35
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

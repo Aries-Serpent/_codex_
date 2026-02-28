@@ -717,9 +717,9 @@ class TestErrorPaths:
     def test_error_else_clause(self):
         """Test else clause in try-except"""
         result = None  # Initialize outside try block
+        numeric = "42"  # Indirection — value could be non-numeric
         try:
-            # int("42") succeeds; else clause should execute
-            int("42")  # Could raise ValueError (e.g. int("abc"))
+            int(numeric)
         except ValueError:
             result = "except"
         else:

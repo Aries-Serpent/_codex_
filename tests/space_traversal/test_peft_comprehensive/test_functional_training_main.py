@@ -40,7 +40,6 @@ def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
     assert called["hydra_cfg"].get("seed") == 123
 
 
-@pytest.mark.xfail(reason="custom engine path not yet wired in main() CLI — P11-01 backlog", strict=False)
 def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) -> None:
     cfg = OmegaConf.create(
         {"training": {"texts": ["hi"], "val_texts": ["bye"], "seed": 0, "grad_accum": 3}}
