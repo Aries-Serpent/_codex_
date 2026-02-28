@@ -22,6 +22,7 @@ jobs:
   triage:
     name: AI Issue Triage
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     # Only run when a write key is available
     if: github.actor != 'dependabot[bot]'
 
@@ -125,17 +126,22 @@ jobs:
               ? `\n\n> ⚠️ **More information needed** — please provide additional context (logs, steps to reproduce, etc.)`
               : '';
 
-            const body = `### ${typeEmoji} AI Triage Summary
-
-| Field | Value |
-|-------|-------|
-| **Type** | ${triage.type} |
-| **Severity** | ${severityEmoji} ${triage.severity} |
-| **Component** | \`${triage.affected_component}\` |
-| **Summary** | ${triage.summary} |
-${brainNote}${patternNote}${needsInfo}
-
-<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1.0.0) — S108 cognitive brain integration</sub>`;
+            const bodyLines = [
+              `### ${typeEmoji} AI Triage Summary`,
+              '',
+              '| Field | Value |',
+              '|-------|-------|',
+              `| **Type** | ${triage.type} |`,
+              `| **Severity** | ${severityEmoji} ${triage.severity} |`,
+              `| **Component** | \`${triage.affected_component}\` |`,
+              `| **Summary** | ${triage.summary} |`,
+            ];
+            if (brainNote)   bodyLines.push(brainNote);
+            if (patternNote) bodyLines.push(patternNote);
+            if (needsInfo)   bodyLines.push(needsInfo);
+            bodyLines.push('');
+            bodyLines.push('<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1.0.0) — S108 cognitive brain integration</sub>');
+            const body = bodyLines.join('\n');
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
