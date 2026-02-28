@@ -10,7 +10,7 @@ from common.randomness import set_seed
 
 try:
     import numpy as np
-except Exception:
+except ImportError:
     np = None
 
 

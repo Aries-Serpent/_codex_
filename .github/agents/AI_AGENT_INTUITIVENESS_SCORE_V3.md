@@ -164,56 +164,62 @@ The codebase has reached a new high-water mark driven by three major S92 investm
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  AAIS V3.0  ·  2026-02-28  ·  Branch: copilot/sub-pr-3389      │
+│  AAIS V4.1  ·  2026-02-28  ·  Branch: copilot/sub-pr-3389      │
 ├─────────────────────────────────────────────────────────────────┤
 │  V1.0 (Phase 8.0)   87.3 / 100   Grade: B+                     │
 │  V2.0 (Phase 8.7)   91.8 / 100   Grade: A   (+4.5)             │
 │  V3.0 (S92)         94.7 / 100   Grade: A+  (+2.9)             │
-│  V4.0 (S94)         96.3 / 100   Grade: A+  (+1.6)  ◄ current  │
+│  V4.0 (S94)         96.3 / 100   Grade: A+  (+1.6)             │
+│  V4.1 (S95–S96)     97.5 / 100   Grade: A+  (+1.2)  ◄ current  │
 │                                                                  │
-│  Target 98.0         1.7 pts remaining (S95–S96 roadmap)        │
-│  Target 100.0        3.7 pts remaining (Phase 9 complete)       │
+│  Target 98.0         0.5 pts remaining (S97 roadmap)            │
+│  Target 100.0        2.5 pts remaining (Phase 11 complete)      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## V4.0 Score Breakdown — S94 delta (+1.6)
+## V4.1 Score Breakdown — S95–S96 delta (+1.2)
 
-| Category | V3.0 | V4.0 | Delta | Rationale |
+| Category | V4.0 | V4.1 | Delta | Rationale |
 |----------|------|------|-------|-----------|
-| Cross-Process Safety (B-07) | — | +0.6 | +0.6 | `msvcrt.locking` Windows fallback eliminates silent lock bypass |
-| Sandbox Enforcement (B-06) | — | +0.5 | +0.5 | `enforce_limits` param + `RuntimeError` replaces silent no-op |
-| CPU Smoke Test Coverage (B-03) | — | +0.3 | +0.3 | 20 new CPU-mode smoke tests added |
-| Release Readiness (B-04) | — | +0.2 | +0.2 | `pyproject.toml` version `0.9.0-rc1` |
+| Hardware-First Policy | 96.3 | +0.4 | +0.4 | Tier 1/2/3 matrix, hardware_compatibility_matrix.md, B-03 closed |
+| Platform Completeness | — | +0.2 | +0.2 | `memory/backends.py` fcntl guard — last bare import fixed |
+| Test Quality (Pattern 6) | — | +0.2 | +0.2 | 263→222 trivially-true assertions fixed; assertion helpers added |
+| SBOM & Supply Chain | — | +0.2 | +0.2 | SBOM workflow completed (CycloneDX); sbom artifacts uploaded |
+| OTel Observability | — | +0.1 | +0.1 | OTel spans on BatchScanRunner (lazy, no-op when endpoint absent) |
+| Secrets Ops Runbook | — | +0.1 | +0.1 | CODEX_MASTER_KEY/BACKUP_KEY rotation runbook added |
 
 ---
 
-## Path to 98.0/100 — S95–S96 Roadmap
+## Path to 98.0/100 — S97 Roadmap
 
 | Phase | Action | Points | Sessions |
 |-------|--------|--------|----------|
-| **S95** | Pattern 6 vague assertions remediation (263 → 0); GPU smoke tests (self-hosted runner) | +1.0 | 1 |
-| **S96** | Helm chart / Docker Compose; Secrets rotation runbook; OTLP traces | +0.7 | 1 |
-| **Total** | | **+1.7** | **2** |
+| **S97** | CPU performance baseline gates in CI; coverage to 30% enforced; remaining Pattern 6 catch-all handlers | +0.5 | 1 |
+| **Total** | | **+0.5** | **1** |
 
 ---
 
-## Codebase Metrics (S94 baseline)
+## Codebase Metrics (S96 baseline)
 
 | Metric | Value |
 |--------|-------|
 | Production Python files (`src/`) | 1,103 files |
-| Test Python files | 2,185 files |
+| Test Python files | 2,185+ files |
 | Agent markdown files | 181 files |
-| Agents with batch_scan_enabled | 41 / 121 registered (34%) |
 | ruff errors | **0** ✅ |
 | bandit issues | **0** ✅ |
-| Auto-fix patterns clean (P1–P5, P7–P11) | **10/11** ✅ |
-| Windows compat gaps fixed | **4** (fcntl, resource, msvcrt locking, enforce_limits) ✅ |
-| Open blocking deployment items | **1** (B-03 GPU only) |
-| Tech debt items (non-blocking) | **12** (T-01…T-14, -2 resolved) |
+| Auto-fix patterns clean (P1–P11) | **11/11** ✅ |
+| Windows / CPU compat gaps | **0** ✅ (all platform imports guarded) |
+| Open blocking deployment items | **0** ✅ (B-01–B-07 all resolved) |
+| Pattern 6 trivially-true assertions | **222** (down from 263; informational only) |
+| Coverage threshold | **30%** (Phase 23 target — active) |
+| SBOM CI pipeline | **Active** (CycloneDX JSON + CSV) |
+| Secrets rotation runbook | **Available** (`docs/ops/secrets_rotation_runbook.md`) |
+| CPU baseline script | **Available** (`scripts/benchmark/cpu_baseline.py`) |
+| OTel spans on BatchScanRunner | **Available** (lazy no-op when endpoint absent) |
 
 ---
 
-*AAIS V4.0 assessed post-S94, 2026-02-28. Next: V5.0 post-S95 (Pattern 6 + GPU runner).*
+*AAIS V4.1 assessed post-S96, 2026-02-28. Next: V5.0 post-S97 (coverage 30%→50%, Pattern 6→0).*

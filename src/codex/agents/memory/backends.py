@@ -6,10 +6,10 @@ Provides JSONL and SQLite implementations of the MemoryProtocol.
 from __future__ import annotations
 
 import json
-import sys as _sys
 import logging
 import os
 import sqlite3
+import sys as _sys
 from pathlib import Path
 from typing import Any
 from uuid import UUID

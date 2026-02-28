@@ -95,7 +95,7 @@ def _flush_metrics():
     out.parent.mkdir(parents=True, exist_ok=True)
     try:
         out.write_text(json.dumps(_AST_METRICS, indent=2), encoding="utf-8")
-    except Exception:
+    except ImportError:
         pass
 
 
@@ -402,7 +402,7 @@ def test_build_query_selects_columns_and_orders():
 
     try:
         sig = inspect.signature(build_query)
-    except Exception:
+    except ImportError:
         sig = None
 
     mapcol = {"timestamp": ts, "select": exp_cols}

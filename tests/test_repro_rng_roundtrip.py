@@ -21,7 +21,7 @@ def test_rng_roundtrip(tmp_path: Path):
         import numpy as np  # type: ignore
 
         np_seq1 = np.random.rand(3).tolist()
-    except Exception:
+    except ImportError:
         np_seq1 = None
 
     # 2) Save the RNG state to disk

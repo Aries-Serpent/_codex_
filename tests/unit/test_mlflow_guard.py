@@ -17,7 +17,7 @@ def test_ensure_local_tracking_file_uri(monkeypatch):
 
     try:
         ml = importlib.import_module("mlflow")
-    except Exception:
+    except ImportError:
         return
 
     from common.mlflow_guard import ensure_local_tracking

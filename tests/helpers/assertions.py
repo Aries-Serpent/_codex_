@@ -18,7 +18,7 @@ All helpers raise ``AssertionError`` with a descriptive message on failure.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Collection, Iterable, Sequence, TypeVar
+from typing import Any, Callable, TypeVar
 
 __all__ = [
     "assert_non_empty_list",

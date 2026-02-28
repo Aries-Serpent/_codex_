@@ -19,7 +19,7 @@ try:
     from src.tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
 
     HFTokenizerAdapter = _HF
-except Exception:
+except ImportError:
     HFTokenizerAdapter = None
 
 

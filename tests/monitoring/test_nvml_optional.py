@@ -12,7 +12,7 @@ import pytest
 
 try:
     _HAS_NVML = True
-except Exception:
+except ImportError:
     _HAS_NVML = False
 
 from codex_ml.monitoring.microhelpers import get_gpu_stats

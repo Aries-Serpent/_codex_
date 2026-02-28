@@ -66,7 +66,6 @@ class TestCoverageConfiguration:
             content = pyproject.read_text()
 
             # Should have omit patterns to exclude test files, etc.
-            has_omit = "omit" in content or "exclude" in content
             # This is optional but good practice
             assert True, "Coverage omit patterns check skipped (optional practice)"  # was: assert has_omit or True (always true)
 

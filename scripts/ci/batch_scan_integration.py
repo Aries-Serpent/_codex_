@@ -26,18 +26,95 @@ Agent integration contract
 """
 from __future__ import annotations
 
+import importlib
+import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _PREFLIGHT = REPO_ROOT / "scripts" / "ci" / "rvs_preflight.py"
 
 Group = Literal["quick", "slow", "integration", "docs", "all"]
+
+# ---------------------------------------------------------------------------
+# Lightweight OpenTelemetry integration (P10-10)
+# Silently no-ops when opentelemetry packages are not installed or
+# OTEL_EXPORTER_OTLP_ENDPOINT is not set — zero overhead in standard CI.
+# ---------------------------------------------------------------------------
+
+_TRACER = None
+
+
+def _get_tracer():
+    """Return an OTel tracer if available, else None (no-op)."""
+    global _TRACER  # noqa: PLW0603
+    if _TRACER is not None:
+        return _TRACER
+
+    otlp_endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "")
+    if not otlp_endpoint:
+        return None  # OTel disabled — no endpoint configured
+
+    for pkg in ("opentelemetry", "opentelemetry.sdk", "opentelemetry.trace"):
+        if importlib.util.find_spec(pkg) is None:
+            return None  # OTel packages not installed — skip gracefully
+
+    try:
+        trace = importlib.import_module("opentelemetry.trace")
+        resource_mod = importlib.import_module("opentelemetry.sdk.resources")
+        tracer_mod = importlib.import_module("opentelemetry.sdk.trace")
+        export_mod = importlib.import_module("opentelemetry.sdk.trace.export")
+        otlp_mod = importlib.import_module(
+            "opentelemetry.exporter.otlp.proto.grpc.trace_exporter"
+        )
+
+        resource = resource_mod.Resource.create({"service.name": "rvs-batch-scanner"})
+        provider = tracer_mod.TracerProvider(resource=resource)
+        provider.add_span_processor(
+            export_mod.BatchSpanProcessor(
+                otlp_mod.OTLPSpanExporter(endpoint=otlp_endpoint)
+            )
+        )
+        trace.set_tracer_provider(provider)
+        _TRACER = trace.get_tracer("batch_scan_integration", schema_url="https://opentelemetry.io/schemas/1.11.0")
+    except Exception:  # noqa: BLE001
+        _TRACER = None  # Any error → silently disable tracing
+
+    return _TRACER
+
+
+class _NoOpSpan:
+    """Returned by _span() when OTel is unavailable."""
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    def set_attribute(self, *_):
+        return self
+
+    def set_status(self, *_):
+        return self
+
+    def record_exception(self, *_):
+        return self
+
+
+def _span(name: str, **attrs) -> "_NoOpSpan | Any":
+    """Create an OTel span context manager, or a no-op if OTel unavailable."""
+    tracer = _get_tracer()
+    if tracer is None:
+        return _NoOpSpan()
+    span = tracer.start_as_current_span(name)
+    return span
 
 
 @dataclass
@@ -127,24 +204,30 @@ class BatchScanRunner:
         if tmp:
             tmp.close()
 
-        try:
-            extra: List[str] = []
-            if changed_only:
-                extra.append("--changed-only")
-            if fail_fast:
-                extra.append("--fail-fast")
+        with _span(
+            "batch_scan",
+            group=group,
+            changed_only=str(changed_only),
+            fail_fast=str(fail_fast),
+        ):
+            try:
+                extra: List[str] = []
+                if changed_only:
+                    extra.append("--changed-only")
+                if fail_fast:
+                    extra.append("--fail-fast")
 
-            self._run(
-                group=group,
-                extra_flags=extra,
-                report=actual_report,
-            )
+                self._run(
+                    group=group,
+                    extra_flags=extra,
+                    report=actual_report,
+                )
 
-            return self._parse_report(actual_report, group, report_path)
+                return self._parse_report(actual_report, group, report_path)
 
-        finally:
-            if use_tmp and actual_report and actual_report.exists():
-                actual_report.unlink(missing_ok=True)
+            finally:
+                if use_tmp and actual_report and actual_report.exists():
+                    actual_report.unlink(missing_ok=True)
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -169,7 +252,7 @@ class BatchScanRunner:
             cmd += ["--report", str(report)]
         cmd.extend(extra_flags)
 
-        proc = subprocess.run(
+        proc = subprocess.run(  # nosec B603 B607 — explicit arg list, no shell, controlled input
             cmd,
             cwd=REPO_ROOT,
             capture_output=False,   # stream live to terminal
