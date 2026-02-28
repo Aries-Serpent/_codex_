@@ -91,11 +91,82 @@ jobs:
           echo "Rejected unauthorized actor: ${ACTOR}"
           exit 0
 
+      # ── Session summary gate (Tier-1 hard block) ───────────────────────────
+      # If SESSION_TIMEBOX_EXPIRED exists on this PR and no "## 🧠 Session Summary"
+      # was posted after it, block the /copilot continue dispatch.
+      # Promotes "Session summary on close" from Soft → Tier-1.
+      # See: .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md
+      - name: Session summary gate
+        id: summary_gate
+        if: |
+          steps.parse.outputs.AUTHORIZED == 'true' &&
+          (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            const EXPIRED_MARKER = 'SESSION_TIMEBOX_EXPIRED';
+            const SUMMARY_MARKER = '## 🧠 Session Summary';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            // Find most recent SESSION_TIMEBOX_EXPIRED comment
+            const expiredComment = comments
+              .filter(c => c.body.includes(EXPIRED_MARKER))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+
+            if (!expiredComment) {
+              core.setOutput('blocked', 'false');
+              return;
+            }
+
+            const expiredAt = new Date(expiredComment.created_at);
+
+            // Check for Session Summary posted AFTER the expiry
+            const summaryAfterExpiry = comments.find(c =>
+              c.body.includes(SUMMARY_MARKER) &&
+              new Date(c.created_at) > expiredAt
+            );
+
+            if (summaryAfterExpiry) {
+              core.setOutput('blocked', 'false');
+            } else {
+              core.setOutput('blocked', 'true');
+              // Post rejection comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: [
+                  '⛔ **Chat-Ops: Session Summary Required**',
+                  '',
+                  `\`SESSION_TIMEBOX_EXPIRED\` was posted at ${expiredComment.created_at} but no \`## 🧠 Session Summary\` has been posted since.`,
+                  '',
+                  '**Action required:** Post a PR comment containing `## 🧠 Session Summary` with:',
+                  '- Topics covered and key findings',
+                  '- Suggested follow-up `@copilot` prompt for the next session',
+                  '',
+                  'Once posted, re-run `/copilot continue`.',
+                  '',
+                  '_chatops session-summary gate | Tier-1 enforcement | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',
+                ].join('\n'),
+              });
+            }
+        env:
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+
       # ── /copilot continue <prompt-file> ─────────────────────────────────────
       - name: Execute /copilot continue
         if: |
           steps.parse.outputs.AUTHORIZED == 'true' &&
-          (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run')
+          (steps.parse.outputs.SUBCMD == 'continue' || steps.parse.outputs.SUBCMD == 'run') &&
+          steps.summary_gate.outputs.blocked != 'true'
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}

@@ -5,6 +5,19 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — S116i resume
+
+### S116i resume — Session Summary Tier-1 Gate + CI Feedback Fix (2026-02-28)
+
+| Type | File | Change |
+|------|------|--------|
+| Feature | `.github/workflows/chatops_copilot_trigger.yml` | Session-summary gate: `/copilot continue` blocked when `SESSION_TIMEBOX_EXPIRED` active and no `## 🧠 Session Summary` posted — promotes "Session summary on close" from Soft → Tier-1 |
+| Bugfix | `.github/workflows/cognitive_brain_ci_feedback.yml` | Fix `AttributeError: ImprovementArea.CI_HEALTH` → `CI_SELF_HEALING` (run 22530335616) |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart 2→9; Tier-1 examples expanded |
+| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-038–W-041 added; last-updated → S116i resume |
+
+---
+
 ## [Unreleased] — S116i
 
 ### S116i — WF-002 + Grounded Enforcement Audit + REQ-6 Timebox Gate (2026-02-28)

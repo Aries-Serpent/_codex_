@@ -132,14 +132,14 @@ flowchart TD
 | Timebox respected | `session-watchdog.yml` + `SESSION_TIMEBOX_EXPIRED` | 🟡 **PARTIAL** | Expiry posts a comment. Agent CAN ignore it. No hard block yet. |
 | Exploration: never self-close | `SESSION_TYPE_EXPLORATION` → checklist injection | 🟡 **PARTIAL** | Checklist is present-tense but not a hard stop. |
 | "Do NOT auto-proceed" | `session-watchdog` detection + checklist item | 🟡 **PARTIAL** | Same — visible, but no structural gate |
-| Session summary on close | Checklist item only | ⚠️ **SOFT** | No detection mechanism for "session close" event |
+| Session summary on close | `chatops_copilot_trigger.yml` session-summary gate: blocks `/copilot continue` until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` | ✅ **GROUNDED** | Tier-1 hard block in chat-ops dispatch (S116i resume) |
 | ~10min incremental summaries | Checklist item only | ⚠️ **SOFT** | No timer / no detection |
 | Tokens functional | `token-probe.yml` real HTTP probe | ✅ **GROUNDED** | Must be dispatched manually (not automatic yet) |
 | Read README_FIRST_MANDATORY | `store_memory` + naming | ❌ **SOFT** | No gate. V-012: failed despite memory entry |
 | Pre-commit gitignore check | `store_memory` + REQ-3 gate | ✅ **GROUNDED** | REQ-3 catches it at PR time — grounded |
 | 5-pass self-review before close | Policy text only | ❌ **SOFT** | No mechanism can detect review quality |
 | NEVER stop after one commit | `store_memory` + policy text | ❌ **SOFT** | No gate. Still happens. Most serious violation. |
-| Update CHANGELOG.md | Policy text only | ❌ **SOFT** | No check. Frequently missed. |
+| Update CHANGELOG.md | `cognitive-preflight` REQ-5: `git diff HEAD~1 HEAD` → `exit 1` | ✅ **GROUNDED** | Tier-1 hard stop — same pattern as REQ-4 (S116i) |
 | CI failure patterns reviewed | `cognitive-preflight` REQ-2: table in job summary | ✅ **GROUNDED** | Summary is visible. Not a hard stop but present-tense. |
 
 ---
@@ -152,16 +152,16 @@ flowchart TD
 
         G1["NEVER stop after one commit\n──────────────\nCurrent: store_memory (fails)\nGrounded fix:\nAdd session-duration check to cognitive-preflight:\n• Read SESSION_START timestamp from agent_auth_session.json\n• If only 1 commit since session start AND\n  work queue has open items → exit 1\nBlocker: requires session-start tracking to be reliable"]
 
-        G2["CHANGELOG.md update required\n──────────────\nCurrent: policy text (fails)\nGrounded fix:\ncognitive-preflight REQ-5:\ngit diff HEAD~1 HEAD | grep CHANGELOG.md\nIf not touched → exit 1 (same pattern as REQ-4)\nCost: 8 lines of bash — trivially implementable"]
+        G2["✅ CHANGELOG.md update required\n──────────────\n✅ PROMOTED TO TIER-1 (S116i)\ncognitive-preflight REQ-5:\ngit diff HEAD~1 HEAD | grep CHANGELOG.md\nIf not touched → exit 1 (same pattern as REQ-4)"]
 
-        G3["Session summary on close\n──────────────\nCurrent: checklist item (soft)\nGrounded fix:\nPost a PR comment template when SESSION_TIMEBOX_EXPIRED\nfires that BLOCKS the next @copilot continue\nuntil a ## 🧠 Session Summary comment is detected.\nRequires: chatops_copilot_trigger.yml check\nfor Session Summary marker before dispatching"]
+        G3["✅ Session summary on close\n──────────────\n✅ PROMOTED TO TIER-1 (S116i resume)\nchatops_copilot_trigger.yml session-summary gate:\n/copilot continue is BLOCKED until\n## 🧠 Session Summary is posted after\nSESSION_TIMEBOX_EXPIRED.\nBypass cost: must post a real summary"]
 
         G4["~10min incremental summaries\n──────────────\nCurrent: checklist item (soft)\nGrounded fix:\nScheduled workflow (cron: every 10 min) that checks\nif SESSION_TYPE_EXPLORATION is active and last\nagent comment was >10min ago → posts reminder\nBlocker: GitHub Actions minimum cron interval = 5min\nCost: medium — requires cron + comment timestamp logic"]
 
         G5["5-pass self-review\n──────────────\nCurrent: policy text (soft)\nGrounded fix: NONE POSSIBLE\nReasoning: review quality is subjective.\nCannot be CI-gated.\nBest available: checklist item that is\npresent-tense (already implemented in REQ-1)"]
     end
 
-    NEXT["Highest ROI next steps:\n1. CHANGELOG check (trivial — 8 lines)\n2. Session summary gate in chatops trigger\n3. NEVER-stop-early: session duration tracking"]
+    NEXT["Highest ROI next steps:\n1. ✅ CHANGELOG check — DONE (REQ-5)\n2. ✅ Session summary gate — DONE (chatops Tier-1)\n3. NEVER-stop-early: session duration tracking"]
 
     REMAINING_GAPS --> NEXT
 
@@ -177,8 +177,8 @@ xychart-beta
     title "Policy Enforcement Reliability (0 = always bypassed, 10 = never bypassed)"
     x-axis ["gitignore\ngate", "accountability\nreport gate", "CI patterns\nin summary", "token\nprobe", "timebox\nwarning", "exploration\nchecklist", "CHANGELOG\ncheck", "self-review\nrule", "stop-early\nrule", "session\nsummary"]
     y-axis "Reliability" 0 --> 10
-    bar [9, 9, 7, 8, 5, 5, 2, 1, 1, 2]
-    line [9, 9, 7, 8, 5, 5, 2, 1, 1, 2]
+    bar [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
+    line [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
 ```
 
 ---
@@ -187,7 +187,7 @@ xychart-beta
 
 | Tier | Mechanism | Bypass Cost | Examples built |
 |------|-----------|-------------|----------------|
-| **Tier 1 — Hard Block** | `exit 1` in CI job that `activate-delegation needs:` | Must fix the actual condition | REQ-3 gitignore, REQ-4 accountability report |
+| **Tier 1 — Hard Block** | `exit 1` in CI job that `activate-delegation needs:` | Must fix the actual condition | REQ-3 gitignore, REQ-4 accountability report, REQ-5 CHANGELOG, chatops session-summary gate |
 | **Tier 2 — Present-Tense Injection** | PR comment posted with every push (visible in current context) | Must consciously ignore a visible checklist | REQ-1 checklist, session-type directives, timebox remaining |
 | **Tier 3 — Background Memory** | `store_memory`, `.md` files, README naming | Zero — bypassed passively under task pressure | All pre-WF-001 policies |
 
@@ -195,4 +195,4 @@ xychart-beta
 
 ---
 
-*Generated: 2026-02-28 | S116i | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+*Generated: 2026-02-28 | S116i resume | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

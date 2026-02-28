@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i — grounded enforcement audit + REQ-5 CHANGELOG gate)
+**Last updated:** 2026-02-28 (S116i resume — session-summary Tier-1 gate + CI_HEALTH enum fix)
 
 ---
 
@@ -301,6 +301,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-035 | cognitive-preflight REQ-5: CHANGELOG.md check added — Tier-3 → Tier-1 promotion | ✅ Done (S116i) |
 | W-036 | cognitive-preflight REQ-6: SESSION_TIMEBOX_EXPIRED acknowledgment gate — Tier-2 → Tier-1 promotion | ✅ Done (S116i resume) |
 | W-037 | token-probe.yml cherry-pick to `main` via dedicated branch — workflow_dispatch visible in Actions UI | ✅ Done (S116i resume) |
+| W-038 | chatops_copilot_trigger.yml session-summary gate: `/copilot continue` blocked until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` — Soft → Tier-1 promotion | ✅ Done (S116i resume) |
+| W-039 | GROUNDED_VS_SOFT_ENFORCEMENT.md updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart updated; tier table expanded | ✅ Done (S116i resume) |
+| W-040 | cognitive_brain_ci_feedback.yml fix: `ImprovementArea.CI_HEALTH` → `ImprovementArea.CI_SELF_HEALING` (AttributeError on main) | ✅ Done (S116i resume) |
+| W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) |
 
 ---
 

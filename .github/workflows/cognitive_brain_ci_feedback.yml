@@ -71,7 +71,7 @@ jobs:
           # Keyword → (pattern_id, ImprovementArea) mapping.
           # Pattern P-046: extend this map as new patterns are codified.
           PATTERN_KEYWORD_MAP = {
-              "sharded":      ("P-038", ImprovementArea.CI_HEALTH),
+              "sharded":      ("P-038", ImprovementArea.CI_SELF_HEALING),
               "codeql":       ("P-039", ImprovementArea.SECURITY_REMEDIATION),
               "huggingface":  ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
               "hf":           ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
