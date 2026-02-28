@@ -203,7 +203,7 @@ jobs:
       - name: Create GitHub Release
         if: inputs.version != ''
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           gh release create "v${{ inputs.version }}" \
             --title "Pre-Release v${{ inputs.version }}" \

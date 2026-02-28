@@ -65,7 +65,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: CacheManager health check
         continue-on-error: true
@@ -140,7 +140,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -154,7 +154,7 @@ jobs:
 
       - name: Extract workflow patterns
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           DAYS_BACK: ${{ inputs.days_back || '30' }}
         run: |
           if [ -f "scripts/cognitive/extract_workflow_patterns.py" ]; then

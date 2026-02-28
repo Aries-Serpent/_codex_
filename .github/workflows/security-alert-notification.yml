@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             let alerts;
             try {
@@ -100,7 +100,7 @@ jobs:
         env:
           ALERTS_JSON: ${{ steps.get-alerts.outputs.alerts }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');
 
@@ -168,12 +168,18 @@ jobs:
       - name: Create GitHub Issue for new alerts
         if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count > 0 || steps.get-alerts.outputs.high-count > 0)
         uses: actions/github-script@v8
+        env:
+          # Pass outputs via env vars to avoid backtick/apostrophe injection in JS
+          # template literals. DRQ-S105: review comment — security-alert-notification.yml:51-59
+          ISSUE_SUMMARY: ${{ steps.create-summary.outputs.summary }}
+          CRITICAL_COUNT: ${{ steps.get-alerts.outputs.critical-count }}
+          HIGH_COUNT: ${{ steps.get-alerts.outputs.high-count }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
-            const summary = `${{ steps.create-summary.outputs.summary }}`;
-            const criticalCount = parseInt('${{ steps.get-alerts.outputs.critical-count }}');
-            const highCount = parseInt('${{ steps.get-alerts.outputs.high-count }}');
+            const summary = process.env.ISSUE_SUMMARY || '';
+            const criticalCount = parseInt(process.env.CRITICAL_COUNT || '0', 10);
+            const highCount = parseInt(process.env.HIGH_COUNT || '0', 10);
 
             // Only create issue for critical/high severity alerts
             if (criticalCount > 0 || highCount > 0) {

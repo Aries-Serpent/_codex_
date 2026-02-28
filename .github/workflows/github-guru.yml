@@ -64,7 +64,7 @@ jobs:
 
       - name: Run GitHub Guru Agent
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           GURU_EVENT_TYPE: ${{ steps.mode.outputs.event_type }}
           GURU_ENTITY_ID: ${{ steps.mode.outputs.entity_id }}
           GURU_MODE: ${{ steps.mode.outputs.mode }}

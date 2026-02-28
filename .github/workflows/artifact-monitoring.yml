@@ -62,8 +62,8 @@ jobs:
       - name: Run monitoring check
         id: monitor
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           WORKFLOW_FILTER: ${{ github.event.inputs.workflow_filter || '' }}
         run: |
@@ -126,7 +126,7 @@ jobs:
       - name: Check rate limit
         if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           echo "## 🔍 GitHub API Rate Limit" >> $GITHUB_STEP_SUMMARY
           gh api rate_limit | jq -r '.resources.core | "- **Remaining**: \(.remaining)/\(.limit)\n- **Reset**: \(.reset | strflocaltime("%Y-%m-%d %H:%M:%S UTC"))"' >> $GITHUB_STEP_SUMMARY || true

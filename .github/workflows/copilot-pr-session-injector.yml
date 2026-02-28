@@ -1,0 +1,186 @@
+name: Copilot PR Session Injector
+
+# Uses mvkaran/gh-copilot@v1.0.0 to enrich every new PR with:
+#   1. Cognitive brain context injection (relevant patterns, session history)
+#   2. Structured PR analysis (affected components, risk level, test coverage gaps)
+#   3. A ready-to-use @copilot prompt seeded with the analysis
+#
+# This replaces the manual "post S109 follow-up" step — every PR gets
+# a Copilot-generated cognitive brain briefing automatically.
+#
+# Requires:
+#   secrets.CODEX_MASTER_KEY — fine-grained PAT with:
+#     - Copilot Requests (for copilot-token)
+#     - pull-requests: write (for PR comment)
+#   See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  inject-context:
+    name: Inject Cognitive Brain Context
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collect changed files and PR metadata
+        id: meta
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | head -50 | tr '\n' ',' | sed 's/,$//')
+          echo "changed_files=${CHANGED}" >> $GITHUB_OUTPUT
+
+          # Detect cognitive brain touch
+          BRAIN_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "cognitive\|mcp_session\|structural_policy\|session_hook" || echo 0)
+          echo "brain_touched=${BRAIN_TOUCHED}" >> $GITHUB_OUTPUT
+
+          # Detect CI touch
+          CI_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "\.github/workflows" || echo 0)
+          echo "ci_touched=${CI_TOUCHED}" >> $GITHUB_OUTPUT
+
+      - name: Analyze PR with GitHub Copilot
+        id: pr_analysis
+        uses: mvkaran/gh-copilot@v1.0.0
+        with:
+          copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
+          github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
+          timeout: "5"
+          output-format: json
+          output-schema: |
+            {
+              "risk_level": "critical|high|medium|low",
+              "affected_components": ["array of component paths"],
+              "relevant_patterns": ["e.g. P-038, P-042"],
+              "test_coverage_gaps": ["list of untested areas or empty array"],
+              "cognitive_brain_impact": "none|low|medium|high",
+              "review_focus": "one sentence on what reviewer should focus on",
+              "suggested_copilot_task": "one sentence task for @copilot to continue"
+            }
+          system-prompt: |
+            You are a senior code reviewer for the Aries-Serpent/_codex_ Python repository.
+            Core modules: src/codex/cognitive/ (brain, RBAC, session injection),
+            src/codex_ml/ (ML training, HF models), src/codex/github/ (MCP poster, discussions),
+            tests/ (pytest, coverage tracking), .github/workflows/ (CI/CD).
+
+            Known patterns: P-038 (shard crash), P-039 (CodeQL), P-042 (HF_REVISION),
+            P-043 (HF mock), P-044 (pure coverage tests), P-046 (CI feedback).
+
+            cognitive_brain_impact levels:
+              none: no cognitive/ files touched
+              low: docs or tests only
+              medium: session_hook, mcp_session_bridge
+              high: structural_policy_manager, agent_brain_api, planset_orchestrator
+
+            Return ONLY valid JSON. No markdown fences.
+          prompt: |
+            Analyze this pull request for the _codex_ repository:
+
+            PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}
+            Author: ${{ github.event.pull_request.user.login }}
+            Base: ${{ github.base_ref }} ← Head: ${{ github.head_ref }}
+            Changed files (${{ steps.meta.outputs.brain_touched }} cognitive brain files,
+            ${{ steps.meta.outputs.ci_touched }} CI files):
+            ${{ steps.meta.outputs.changed_files }}
+
+            PR Description:
+            ${{ github.event.pull_request.body }}
+
+            Provide a structured analysis JSON.
+
+      - name: Post cognitive brain briefing on PR
+        if: steps.pr_analysis.outputs.validation-status == 'valid'
+        uses: actions/github-script@v7
+        env:
+          ANALYSIS_JSON: ${{ steps.pr_analysis.outputs.response }}
+          BRAIN_TOUCHED: ${{ steps.meta.outputs.brain_touched }}
+          CI_TOUCHED: ${{ steps.meta.outputs.ci_touched }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          script: |
+            const analysis = JSON.parse(process.env.ANALYSIS_JSON);
+            const brainTouched = parseInt(process.env.BRAIN_TOUCHED || '0') > 0;
+            const ciTouched    = parseInt(process.env.CI_TOUCHED    || '0') > 0;
+
+            const riskEmoji = {
+              critical: '🔴', high: '🟠', medium: '🟡', low: '🟢'
+            }[analysis.risk_level] || '⚪';
+
+            const impactEmoji = {
+              high: '🧠🔴', medium: '🧠🟡', low: '🧠🟢', none: ''
+            }[analysis.cognitive_brain_impact] || '';
+
+            const patterns = analysis.relevant_patterns?.length
+              ? analysis.relevant_patterns.map(p => `\`${p}\``).join(', ')
+              : '_none detected_';
+
+            const gaps = analysis.test_coverage_gaps?.length
+              ? analysis.test_coverage_gaps.map(g => `- ${g}`).join('\n')
+              : '- None identified';
+
+            const components = analysis.affected_components?.length
+              ? analysis.affected_components.map(c => `\`${c}\``).join(', ')
+              : '_unknown_';
+
+            const brainBadge = brainTouched ? ' 🧠 **Cognitive Brain files modified**' : '';
+            const ciBadge    = ciTouched    ? ' ⚙️ **CI/CD files modified**'            : '';
+
+            // Build @copilot follow-up seeded with analysis
+            const copilotTask = analysis.suggested_copilot_task || 'Continue implementation following the plan.';
+
+            const gapsText = analysis.test_coverage_gaps?.length
+              ? analysis.test_coverage_gaps.map(g => `- ${g}`).join('\n            ')
+              : '- None identified';
+
+            const bodyLines = [
+              '## 🧠 Cognitive Brain PR Briefing',
+              '',
+              `${riskEmoji} **Risk:** ${analysis.risk_level}${impactEmoji ? ' · ' + impactEmoji : ''}${brainBadge}${ciBadge}`,
+              '',
+              '| Field | Value |',
+              '|-------|-------|',
+              `| **Affected components** | ${components} |`,
+              `| **Relevant patterns** | ${patterns} |`,
+              `| **Cognitive brain impact** | ${analysis.cognitive_brain_impact} |`,
+              `| **Review focus** | ${analysis.review_focus} |`,
+              '',
+              '### 🔍 Test Coverage Gaps',
+              gapsText,
+              '',
+              '---',
+              '',
+              '### 🤖 Suggested @copilot continuation task',
+              `> ${copilotTask}`,
+              '',
+              'To trigger immediately, reply with:',
+              '```',
+              `@copilot ${copilotTask}`,
+              '```',
+              '',
+              `<sub>Generated by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1.0.0) · S108 Cognitive Brain Integration · \`.github/workflows/copilot-pr-session-injector.yml\`</sub>`,
+            ];
+            const body = bodyLines.join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });
+            core.info(`✅ Cognitive brain briefing posted on PR #${context.payload.pull_request.number}`);
+
+      - name: Fallback (Copilot unavailable or key missing)
+        if: steps.pr_analysis.outputs.validation-status != 'valid'
+        run: |
+          echo "ℹ️ Copilot PR analysis skipped — status: ${{ steps.pr_analysis.outputs.validation-status }}"
+          echo "Ensure CODEX_MASTER_KEY has 'Copilot Requests' fine-grained permission."
+          echo "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3"

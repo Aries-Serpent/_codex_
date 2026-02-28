@@ -56,7 +56,7 @@ jobs:
 
       - name: Run resolution pipeline (collect + analyse)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           STAGES="${{ github.event.inputs.stages || 'collect,analyse' }}"
           DRY_RUN_FLAG=""

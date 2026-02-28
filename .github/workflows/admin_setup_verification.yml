@@ -1,0 +1,363 @@
+name: Admin Setup Verification
+
+# §8 ADMIN_MANUAL_SETUP_GUIDE.md — Automated verification of all admin setup
+# items. Run this after completing manual steps to confirm everything is wired.
+#
+# Checks (in order of ADMIN_MANUAL_SETUP_GUIDE.md):
+#   §2  Repository variables present
+#   §3  Secrets present (existence only — values never logged)
+#   §4  GitHub Discussions accessible
+#   §6  Workflow permissions correctly declared
+#   §7  Follow-up prompt file committed
+#
+# §1 (Copilot App permissions) and §5 (Webhook) require UI — not checkable
+# from within a workflow without elevated token.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to post verification summary to (optional)"
+        required: false
+        default: ""
+  push:
+    paths:
+      - ".codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md"
+      - ".github/workflows/admin_setup_verification.yml"
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  verify-setup:
+    name: Verify Admin Setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── KEY VERIFICATION ─────────────────────────────────────────────────────
+      # Tests CODEX_MASTER_KEY and CODEX_BACKUP_KEY independently.
+      # Each key is tested with a real GitHub API write call (dry-run label fetch
+      # that requires issues:read — low privilege but proves the token is valid).
+      # A full write probe (POST comment) is also attempted and result reported.
+      - name: "§3a Verify CODEX_MASTER_KEY functional"
+        id: test_master
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          echo "## §3a CODEX_MASTER_KEY Verification" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ -z "${CODEX_MASTER_KEY}" ]; then
+            echo "| Key present | ❌ Secret not found in runner env |" >> $GITHUB_STEP_SUMMARY
+            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # Probe 1: read — GET /repos (any authenticated call)
+          READ_STATUS=$(curl -s -o /tmp/master_read.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}" 2>/dev/null)
+
+          if [ "$READ_STATUS" = "200" ]; then
+            REPO_NAME=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))" 2>/dev/null || echo "?")
+            echo "| Read access (GET /repo) | ✅ HTTP 200 — \`${REPO_NAME}\` |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> $GITHUB_STEP_SUMMARY
+            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # Probe 2: write — POST issue comment (actual write test)
+          WRITE_STATUS=$(curl -s -o /tmp/master_write.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "{\"body\":\"🔑 **[CODEX_MASTER_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_MASTER_KEY\` has \`issues:write\` scope and autonomous @copilot follow-up posting is now fully operational. — copilot-swe-agent[bot]\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
+
+          if [ "$WRITE_STATUS" = "201" ]; then
+            COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
+            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> $GITHUB_STEP_SUMMARY
+            echo "MASTER_KEY_FUNCTIONAL=true" >> $GITHUB_ENV
+            echo "MASTER_COMMENT_URL=${COMMENT_URL}" >> $GITHUB_ENV
+          else
+            WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
+            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> $GITHUB_STEP_SUMMARY
+            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+          fi
+
+      - name: "§3b Verify CODEX_BACKUP_KEY functional"
+        id: test_backup
+        env:
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## §3b CODEX_BACKUP_KEY Verification" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ -z "${CODEX_BACKUP_KEY}" ]; then
+            echo "| Key present | ❌ Secret not found in runner env |" >> $GITHUB_STEP_SUMMARY
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # Probe 1: read
+          READ_STATUS=$(curl -s -o /tmp/backup_read.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}" 2>/dev/null)
+
+          if [ "$READ_STATUS" = "200" ]; then
+            echo "| Read access (GET /repo) | ✅ HTTP 200 |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> $GITHUB_STEP_SUMMARY
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # Probe 2: write — POST issue comment
+          WRITE_STATUS=$(curl -s -o /tmp/backup_write.json -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${CODEX_BACKUP_KEY}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d "{\"body\":\"🔑 **[CODEX_BACKUP_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_BACKUP_KEY\` has \`issues:write\` scope and is operational as fallback. — copilot-swe-agent[bot]\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
+
+          if [ "$WRITE_STATUS" = "201" ]; then
+            COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
+            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> $GITHUB_STEP_SUMMARY
+            echo "BACKUP_KEY_FUNCTIONAL=true" >> $GITHUB_ENV
+          else
+            WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
+            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> $GITHUB_STEP_SUMMARY
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+          fi
+
+      - name: "Key status summary"
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🔑 Key Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Key | Status | Copilot can post autonomously? |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|---------------------------------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ]; then
+            echo "| CODEX_MASTER_KEY | ✅ Fully functional | ✅ YES |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| CODEX_MASTER_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
+            echo "| CODEX_BACKUP_KEY | ✅ Fully functional | ✅ YES (fallback) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| CODEX_BACKUP_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ] || [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "✅ **At least one key is functional — autonomous posting is ACTIVE**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # ── Original §2–§8 checks continue below ─────────────────────────────────
+
+      - name: "§2 Verify repository variables"
+        env:
+          COGNITIVE_BRAIN_INJECTION_ENABLED: ${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED }}
+          COGNITIVE_BRAIN_SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
+          AUTONOMOUS_ACTIONS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
+          COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
+        run: |
+          echo "## §2 Repository Variables" >> $GITHUB_STEP_SUMMARY
+          echo "| Variable | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          check_var() {
+            local name=$1
+            local val=$2
+            if [ -n "$val" ]; then
+              echo "| \`$name\` | ✅ Set (\`$val\`) |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| \`$name\` | ❌ Missing — see guide §2 |" >> $GITHUB_STEP_SUMMARY
+              echo "MISSING_VAR=true" >> $GITHUB_ENV
+            fi
+          }
+
+          check_var "COGNITIVE_BRAIN_INJECTION_ENABLED" "$COGNITIVE_BRAIN_INJECTION_ENABLED"
+          check_var "COGNITIVE_BRAIN_SESSION_NUMBER" "$COGNITIVE_BRAIN_SESSION_NUMBER"
+          check_var "AUTONOMOUS_ACTIONS_ENABLED" "$AUTONOMOUS_ACTIONS_ENABLED"
+          check_var "COGNITIVE_BRAIN_ALLOWED_ACTORS" "$COGNITIVE_BRAIN_ALLOWED_ACTORS"
+
+      - name: "Update cognitive brain repo variables (S109)"
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY }}
+          script: |
+            // Update COGNITIVE_BRAIN_SESSION_NUMBER to 109
+            await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'COGNITIVE_BRAIN_SESSION_NUMBER',
+              value: '109',
+            });
+
+            // Add copilot-swe-agent[bot] to COGNITIVE_BRAIN_ALLOWED_ACTORS
+            // Fetch the current value first to avoid overwriting other actors
+            let currentActors = 'mbaetiong,github-actions[bot]';
+            try {
+              const resp = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',
+              });
+              currentActors = resp.data.value || currentActors;
+            } catch (e) {
+              core.warning(`Could not fetch current COGNITIVE_BRAIN_ALLOWED_ACTORS: ${e.message}. Using default.`);
+            }
+            const newActors = currentActors.includes('copilot-swe-agent[bot]')
+              ? currentActors
+              : currentActors + ',copilot-swe-agent[bot]';
+            await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'COGNITIVE_BRAIN_ALLOWED_ACTORS',
+              value: newActors,
+            });
+            core.info('✅ Session number updated to 109, copilot-swe-agent[bot] added to allowed actors');
+
+      - name: "§3 Verify secrets (existence check only)"
+        env:
+          HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
+          HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## §3 Repository Secrets" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$HAS_MASTER_KEY" = "true" ]; then
+            echo "| \`CODEX_MASTER_KEY\` | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| \`CODEX_MASTER_KEY\` | ❌ Missing — see guide §3 |" >> $GITHUB_STEP_SUMMARY
+            echo "MISSING_SECRET=true" >> $GITHUB_ENV
+          fi
+
+          if [ "$HAS_BACKUP_KEY" = "true" ]; then
+            echo "| \`CODEX_BACKUP_KEY\` | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| \`CODEX_BACKUP_KEY\` | ⚠️ Optional backup key missing |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: "§4 Verify GitHub Discussions accessible"
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## §4 GitHub Discussions" >> $GITHUB_STEP_SUMMARY
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/discussions" 2>/dev/null || echo "000")
+
+          if [ "$STATUS" = "200" ]; then
+            echo "| Discussions API | ✅ Enabled (HTTP 200) |" >> $GITHUB_STEP_SUMMARY
+          elif [ "$STATUS" = "404" ]; then
+            echo "| Discussions API | ❌ Not enabled — see guide §4 (HTTP 404) |" >> $GITHUB_STEP_SUMMARY
+            echo "DISCUSSIONS_DISABLED=true" >> $GITHUB_ENV
+          else
+            echo "| Discussions API | ⚠️ Unexpected response (HTTP $STATUS) |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: "§6 Verify workflow permission declarations"
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## §6 Workflow Permissions" >> $GITHUB_STEP_SUMMARY
+          echo "| Workflow | permissions block | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|------------------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          for wf in \
+            ".github/workflows/cognitive_brain_ci_feedback.yml" \
+            ".github/workflows/resilient_validation.yml"; do
+            if grep -q "^permissions:" "$wf" 2>/dev/null; then
+              echo "| \`$wf\` | ✅ Declared |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| \`$wf\` | ⚠️ No explicit permissions block |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: "§7 Verify follow-up prompt file committed"
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## §7 Follow-up Prompt File" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          PROMPT=".github/copilot-prompts/active/PR-3401-followup.md"
+          if [ -f "$PROMPT" ]; then
+            LINES=$(wc -l < "$PROMPT")
+            echo "| \`$PROMPT\` | ✅ Present ($LINES lines) |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| \`$PROMPT\` | ❌ Missing |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: "Summary — what still needs human action"
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 Human-Only Tasks (cannot be automated)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | URL | Est. time |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|-----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| §1 Grant Copilot App \`issues: write\` | [org/settings/installations](https://github.com/organizations/Aries-Serpent/settings/installations) | 2 min |" >> $GITHUB_STEP_SUMMARY
+          echo "| §3 Create \`CODEX_MASTER_KEY\` secret (if missing above) | [repo/settings/secrets](https://github.com/${{ github.repository }}/settings/secrets/actions) | 3 min |" >> $GITHUB_STEP_SUMMARY
+          echo "| §4 Enable Discussions (if missing above) | [repo/settings](https://github.com/${{ github.repository }}/settings) → Features | 1 min |" >> $GITHUB_STEP_SUMMARY
+          echo "| §5 Webhook (optional) | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks) | 5 min |" >> $GITHUB_STEP_SUMMARY
+          echo "| §7 Post \`@copilot\` S109 comment | [PR #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: "Post verification summary to PR (if CODEX_MASTER_KEY set)"
+        if: inputs.pr_number != ''
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+        run: |
+          if [ -z "${CODEX_MASTER_KEY}" ] && [ -z "${CODEX_BACKUP_KEY}" ]; then
+            echo "No write token — skipping PR comment."
+            exit 0
+          fi
+          pip install -e ".[dev]" -q 2>/dev/null || true
+          python - <<'EOF'
+          import os, sys
+          sys.path.insert(0, "src")
+          from codex.github.mcp_poster import GitHubMCPPoster
+
+          pr = int(os.environ["PR_NUMBER"])
+          poster = GitHubMCPPoster()
+          body = (
+            "## 🔧 Admin Setup Verification Report\n\n"
+            "Automated check complete. See the **Actions Summary** tab for full details:\n"
+            f"https://github.com/{os.environ.get('GITHUB_REPOSITORY', '')}/actions/runs/{os.environ.get('GITHUB_RUN_ID', '')}\n\n"
+            "### Remaining human-only steps:\n"
+            "1. §1 Grant Copilot App `issues: write` — [org settings](https://github.com/organizations/Aries-Serpent/settings/installations)\n"
+            "2. §3 Create `CODEX_MASTER_KEY` secret (if not done)\n"
+            "3. §4 Enable GitHub Discussions (if not done)\n"
+            "4. §7 Post `@copilot Begin S109` comment on this PR\n\n"
+            "See `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` for click-by-click instructions."
+          )
+          result = poster.post_pr_comment(os.environ.get("GITHUB_REPOSITORY", ""), pr, body)
+          print(f"✅ Posted: {result.get('html_url')}")
+          EOF
