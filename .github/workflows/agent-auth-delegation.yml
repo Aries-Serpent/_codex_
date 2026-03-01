@@ -557,6 +557,9 @@ jobs:
         if: always()
         run: |
           echo "### REQ-8: Memory System Health Check" >> "$GITHUB_STEP_SUMMARY"
+          # Temporarily disable set -e so python3 non-zero exit (server unreachable) is
+          # captured in MEMORY_OK rather than hard-failing this soft gate.
+          set +e
           echo "aW1wb3J0IHVybGxpYi5yZXF1ZXN0LCBqc29uLCBzeXMKdHJ5OgogICAgd2l0aCB1cmxsaWIucmVxdWVzdC51cmxvcGVuKCJodHRwOi8vbG9jYWxob3N0Ojg3NjUvYXBpL21lbW9yeS9zdGF0ZSIsIHRpbWVvdXQ9MykgYXMgcjoKICAgICAgICBkID0ganNvbi5sb2FkcyhyLnJlYWQoKSkKICAgICAgICBzeXMuZXhpdCgwIGlmIGQuZ2V0KCJzdG1fY291bnQiLCAwKSA+PSAwIGVsc2UgMSkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHN5cy5leGl0KDIpCg==" | base64 -d | python3 2>/dev/null
           # Decoded equivalent (for review):
           # import urllib.request, json, sys
@@ -567,6 +570,7 @@ jobs:
           # except Exception:
           #     sys.exit(2)
           MEMORY_OK=$?
+          set -e
           if [ "$MEMORY_OK" = "0" ]; then
             echo "PASS: Memory system reachable; STM/LTM tables initialised." >> "$GITHUB_STEP_SUMMARY"
           elif [ "$MEMORY_OK" = "2" ]; then
