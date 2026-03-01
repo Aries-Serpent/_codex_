@@ -207,26 +207,26 @@ jobs:
       # Phase 2: Language Runtimes Setup
       # ============================================================================
 
-      - name: "🐍 Set up Python ${{ env.PYTHON_VERSION }}"
+      - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           cache: 'pip'
           cache-dependency-path: |
             requirements*.txt
             pyproject.toml
 
-      - name: "📦 Set up Node.js ${{ env.NODE_VERSION }}"
+      - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION || '20' }}
           cache: 'npm'
         if: hashFiles('package.json') != ''
 
-      - name: "🦀 Set up Rust ${{ env.RUST_VERSION }}"
+      - name: "🦀 Set up Rust ${{ env.RUST_VERSION || 'stable' }}"
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ env.RUST_VERSION }}
+          toolchain: ${{ env.RUST_VERSION || 'stable' }}
         if: hashFiles('Cargo.toml') != ''
 
       # ============================================================================
