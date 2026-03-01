@@ -62,20 +62,10 @@ jobs:
               echo '{"summary":{"total_runs":0,"failed_runs":0,"failure_rate":0},"pattern_distribution":{}}' > /tmp/telemetry_report.json
             }
 
-          # Extract key metrics for downstream steps (single pass, DRY)
-          METRICS=$(python3 -c "
-import json, sys
-try:
-    d = json.load(open('/tmp/telemetry_report.json'))
-    s = d.get('summary', {})
-    rate = s.get('failure_rate', 0)
-    print(f'FAILURE_RATE={rate*100:.1f}')
-    print(f'FAILED_RUNS={s.get(\"failed_runs\", 0)}')
-    print(f'TOTAL_RUNS={s.get(\"total_runs\", 0)}')
-except Exception:
-    print('FAILURE_RATE=0'); print('FAILED_RUNS=0'); print('TOTAL_RUNS=0')
-" 2>/dev/null || echo -e 'FAILURE_RATE=0\nFAILED_RUNS=0\nTOTAL_RUNS=0')
-          eval "$METRICS" 
+          # Extract metrics via base64-encoded script (no heredoc/YAML issues)
+          METRICS=$(echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KGNocigzNCkrImZhaWxlZF9ydW5zIitjaHIoMzQpLDApfScpCiAgICBwcmludChmJ1RPVEFMX1JVTlM9e3MuZ2V0KGNocigzNCkrInRvdGFsX3J1bnMiK2NocigzNCksMCl9JykKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHByaW50KCdGQUlMVVJFX1JBVEU9MCcpO3ByaW50KCdGQUlMRURfUlVOUz0wJyk7cHJpbnQoJ1RPVEFMX1JVTlM9MCcpCg==' | base64 -d | python3) || METRICS='FAILURE_RATE=0\nFAILED_RUNS=0\nTOTAL_RUNS=0'
+          eval "$(echo -e "$METRICS")"
+
 
           echo "failure_rate=${FAILURE_RATE}" >> "$GITHUB_OUTPUT"
           echo "failed_runs=${FAILED_RUNS}"   >> "$GITHUB_OUTPUT"
