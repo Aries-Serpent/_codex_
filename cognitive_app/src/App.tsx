@@ -10,6 +10,7 @@ import { MemoryManagementDashboard } from '@/components/quantum/MemoryManagement
 import { AgentOrchestrationPanel } from '@/components/quantum/AgentOrchestrationPanel';
 import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
 import { CliTerminal, ApiClient } from '@/components/cli';
+import { XtermTerminal } from '@/components/cli/XtermTerminal';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -134,7 +135,7 @@ function App() {
 
           <TabsContent value="cli">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <CliTerminal />
+              <XtermTerminal />
               <ApiClient />
             </div>
           </TabsContent>

@@ -35,7 +35,7 @@ import termios
 import threading
 import time
 from collections import deque
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Deque, Dict, Optional
 
 import httpx
@@ -109,6 +109,8 @@ app.add_middleware(
 
 # ── Sprint 2: SQLite-backed command history ───────────────────────────────────
 MAX_HISTORY = 200
+# P4.2: Maximum entries across STM+LTM (tunable via CODEX_MEMORY_CAPACITY)
+MEMORY_CAPACITY = int(os.environ.get("CODEX_MEMORY_CAPACITY", "1000"))
 
 # DB path: CODEX_DB_PATH env var → default ~/.codex/cli_history.db
 _DB_PATH = os.environ.get(
@@ -133,6 +135,33 @@ def _init_history_db() -> sqlite3.Connection:
             duration_ms REAL,
             cwd       TEXT,
             timestamp TEXT NOT NULL
+        )
+        """
+    )
+    # P4.2: Short-term memory table (last 50 OODA executions / ad-hoc stores)
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS stm_entries (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            key          TEXT NOT NULL UNIQUE,
+            value        TEXT NOT NULL,
+            metadata     TEXT,
+            timestamp    TEXT NOT NULL,
+            access_count INTEGER DEFAULT 0
+        )
+        """
+    )
+    # P4.2: Long-term memory table (consolidated patterns)
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS ltm_entries (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            key          TEXT NOT NULL UNIQUE,
+            value        TEXT NOT NULL,
+            metadata     TEXT,
+            pattern_type TEXT,
+            confidence   REAL DEFAULT 1.0,
+            timestamp    TEXT NOT NULL
         )
         """
     )
@@ -245,9 +274,9 @@ async def ooda_process(req: Dict[str, Any]):
     try:
         app_instance = _get_cognitive_app()
         if not app_instance._orchestrator:
-            # Auto-initialize with lightweight stubs when not yet wired
-            if _BRAIN_BASE_AVAILABLE and _Planner and _MemoryInterface:
-                app_instance.initialize(_Planner(), _MemoryInterface())
+            # Auto-initialize with SQLiteMemory (P4.2) when not yet wired
+            if _BRAIN_BASE_AVAILABLE and _Planner:
+                app_instance.initialize(_Planner(), SQLiteMemory())
         result = app_instance.process(
             input_data=req.get("input", {}),
             context=req.get("context"),
@@ -266,6 +295,106 @@ async def ooda_process(req: Dict[str, Any]):
             "metrics": {},
             "errors": [str(exc)],
         }
+
+
+# ── P4.2: SQLiteMemory concrete class ────────────────────────────────────────
+
+class SQLiteMemory:
+    """
+    Concrete MemoryInterface backed by the same CODEX_DB_PATH SQLite database.
+    Implements the same store/retrieve/search/delete contract as MemoryInterface,
+    but wires directly to the stm_entries table so the OODA loop persists memories.
+    """
+
+    def store(self, key: str, value: Any, metadata: Any = None) -> bool:
+        with _db_lock:
+            _db.execute(
+                "INSERT OR REPLACE INTO stm_entries (key, value, metadata, timestamp) "
+                "VALUES (?, ?, ?, ?)",
+                (key, json.dumps(value), json.dumps(metadata), datetime.now(timezone.utc).isoformat()),
+            )
+            _db.commit()
+        return True
+
+    def retrieve(self, key: str) -> Any:
+        row = _db.execute(
+            "SELECT value FROM stm_entries WHERE key = ?", (key,)
+        ).fetchone()
+        return json.loads(row["value"]) if row else None
+
+    def search(self, query: Dict[str, Any], limit: int = 10) -> list:
+        q = next(iter(query.values()), "") if query else ""
+        rows = _db.execute(
+            "SELECT key, value FROM stm_entries WHERE value LIKE ? LIMIT ?",
+            (f"%{q}%", limit),
+        ).fetchall()
+        return [(r["key"], json.loads(r["value"])) for r in rows]
+
+    def delete(self, key: str) -> bool:
+        with _db_lock:
+            _db.execute("DELETE FROM stm_entries WHERE key = ?", (key,))
+            _db.commit()
+        return True
+
+
+# ── P4.2: Memory REST endpoints ───────────────────────────────────────────────
+
+@app.get("/api/memory/state")
+async def memory_state():
+    """
+    Return STM/LTM counts and cache metrics.
+    Drives MemoryManagementDashboard (P4.1 + P4.2).
+    """
+    try:
+        with _db_lock:
+            stm_count = _db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
+            ltm_count = _db.execute("SELECT COUNT(*) FROM ltm_entries").fetchone()[0]
+        capacity = MEMORY_CAPACITY
+        compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+        return {
+            "stm_count": stm_count,
+            "ltm_count": ltm_count,
+            "capacity": capacity,
+            "cache_hit_rate": 0.0,
+            "compression_rate": round(compression_rate, 4),
+            "patterns": [],
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as exc:
+        log.warning("memory_state error: %s", exc)
+        return {
+            "stm_count": 0,
+            "ltm_count": 0,
+            "capacity": MEMORY_CAPACITY,
+            "cache_hit_rate": 0.0,
+            "compression_rate": 0.0,
+            "patterns": [],
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "error": str(exc),
+        }
+
+
+@app.get("/api/memory/search")
+async def memory_search(q: str = "", limit: int = 20):
+    """
+    Full-text search over STM + LTM entries.
+    Drives MemoryManagementDashboard search (P4.1 + P4.2).
+    """
+    try:
+        with _db_lock:
+            rows = _db.execute(
+                "SELECT key, value, metadata, 'stm' as tier FROM stm_entries "
+                "WHERE key LIKE ? OR value LIKE ? "
+                "UNION ALL "
+                "SELECT key, value, metadata, 'ltm' as tier FROM ltm_entries "
+                "WHERE key LIKE ? OR value LIKE ? "
+                "LIMIT ?",
+                (f"%{q}%", f"%{q}%", f"%{q}%", f"%{q}%", limit),
+            ).fetchall()
+        return {"items": [dict(r) for r in rows], "total": len(rows)}
+    except Exception as exc:
+        log.warning("memory_search error: %s", exc)
+        return {"items": [], "total": 0, "error": str(exc)}
 
 
 @app.get("/api/ooda/metrics")
@@ -388,6 +517,14 @@ async def api_proxy(req: ApiProxyRequest):
         url = req.base_url.rstrip("/") + "/" + url.lstrip("/")
 
     headers = dict(req.headers or {})
+    # P4.3: Auto-inject GitHub auth header when target is api.github.com
+    if "api.github.com" in url and "Authorization" not in headers:
+        master_key = os.environ.get("CODEX_MASTER_KEY") or ""
+        backup_key = os.environ.get("CODEX_BACKUP_KEY") or ""
+        token = master_key if master_key else backup_key
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+            log.debug("Auto-injected GitHub auth header (CODEX_MASTER_KEY)")
     # Auto Content-Type for JSON body
     if req.body is not None and "content-type" not in {k.lower() for k in headers}:
         headers["Content-Type"] = "application/json"
@@ -450,7 +587,7 @@ async def ws_cli(ws: WebSocket):
     master_fd, slave_fd = pty.openpty()
     shell = os.environ.get("SHELL", "/bin/bash")
 
-    proc = subprocess.Popen(
+    proc = subprocess.Popen(  # nosec B603 — shell binary sourced from SHELL env (trusted system path, not user input)
         [shell, "--login"],
         stdin=slave_fd,
         stdout=slave_fd,
