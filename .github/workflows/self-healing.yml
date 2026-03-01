@@ -188,6 +188,12 @@ jobs:
       - name: Push Changes
         if: steps.apply.outputs.commit_sha != ''
         run: |
+          # GROUNDED: Verify there are actual changes before creating a remote branch.
+          # Prevents branch proliferation during cascade incidents.
+          if git diff --quiet HEAD~1 HEAD 2>/dev/null; then
+            echo "ℹ️ No effective changes in commit — skipping branch push"
+            exit 0
+          fi
           echo "Pushing fix commit ${{ steps.apply.outputs.commit_sha }}..."
           git push origin HEAD:self-healing/${{ github.run_id }} || {
             echo "::error::Failed to push changes"
