@@ -995,12 +995,12 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
         lora_section = (
-            training_section.get("lora", {})
-            if isinstance(training_section, dict) else {}
+            training_section.get("lora", {}) if isinstance(training_section, dict) else {}
         )
         repro_section = (
             training_section.get("reproducibility", {})
-            if isinstance(training_section, dict) else {}
+            if isinstance(training_section, dict)
+            else {}
         )
         run_hf_trainer(
             texts=texts,
@@ -1027,13 +1027,11 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             from omegaconf import OmegaConf
 
             ts = OmegaConf.to_container(
-                cfg.get("training", cfg), resolve=True,
+                cfg.get("training", cfg),
+                resolve=True,
             )
         except Exception:
-            ts = (
-                dict(cfg.get("training", cfg))
-                if hasattr(cfg, "get") else {}
-            )
+            ts = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         import importlib
 
         tf_mod = importlib.import_module("transformers")
@@ -1051,11 +1049,13 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             mask = enc["attention_mask"]
             lbl = ids.clone()
             lbl[mask == 0] = -100
-            return ds_mod.Dataset.from_dict({
-                "input_ids": ids,
-                "attention_mask": mask,
-                "labels": lbl,
-            })
+            return ds_mod.Dataset.from_dict(
+                {
+                    "input_ids": ids,
+                    "attention_mask": mask,
+                    "labels": lbl,
+                }
+            )
 
         texts = ts.get("texts", ["hello world"])
         train_ds = _encode_with_labels(tokenizer, texts)
