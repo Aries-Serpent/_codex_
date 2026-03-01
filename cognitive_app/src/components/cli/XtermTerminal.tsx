@@ -49,7 +49,7 @@ export function XtermTerminal() {
         if (msg.type === 'output') term.write(msg.data as string);
       } catch {
         // Non-JSON frame — write raw (log for debugging)
-        console.warn('XtermTerminal: non-JSON message received', e.data);
+        console.warn('XtermTerminal: non-JSON message received');
         term.write(e.data as string);
       }
     };

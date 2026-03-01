@@ -1536,7 +1536,7 @@ agents:
   version: "1.0.0"
   file: .github/agents/memory-sync-agent.md
   status: active
-  maturity: production
+  maturity: beta
   has_prompts: false
   has_tests: false
   has_docs: true
@@ -1558,7 +1558,7 @@ agents:
   version: "1.0.0"
   file: .github/agents/telemetry-classifier-agent.md
   status: active
-  maturity: production
+  maturity: beta
   has_prompts: false
   has_tests: false
   has_docs: true
