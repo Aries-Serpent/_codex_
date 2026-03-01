@@ -28,8 +28,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | S9 | Docs | `.github/agents/telemetry-classifier-agent.md` | P4.6: new agent — CI unknown pattern analysis + classifier PR generation (new file) |
 | S9 | Docs | `.github/agents/AGENT_REGISTRY.yaml` | P4.7: v1.7.0 — 2 new agents (126→128) |
 | S10 | Feature | `.github/workflows/agent-auth-delegation.yml` | P4.8: REQ-8 GROUNDED soft gate — memory system health check via `/api/memory/state` |
+| S10 | Feature | `.github/workflows/agent-auth-delegation.yml` | REQ-9: iterative 5-pass self-review CI gate (AST/YAML/CHANGELOG/tmp/registry) |
+| S10 | Docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3422.md` | Phase 4 completion summary, Phase 5 plan, 5-pass self-review results (new file) |
+| S10 | Docs | `cognitive_app/COGNITIVE_BRAIN_STATUS_V2.md` | Phase 40 update: Phase 4 changes applied, Phase 41 goals |
+| S10 | Docs | `.github/agents/cognitive-ooda-loop-agent.md` | v2.0: Phase 4 full architecture diagram + SQLiteMemory/auth/xterm.js codebase alignment |
+| S10 | Docs | `.github/agents/memory-sync-agent.md` | v2.0: production-grade with architecture diagram, Python implementation, constraint table |
+| S10 | Docs | `.github/agents/telemetry-classifier-agent.md` | v2.0: production-grade with architecture diagram, discovery algorithm, success metrics |
+| S10 | Docs | `.github/copilot-prompts/active/PR-3422-followup.md` | Phase 5 chain prompt: Sprint 11–15 with Sprint 11–15 tasks, self-review protocol |
+| Sec | Fix | `cognitive_app/src/server/cli_api_server.py` | Bandit B603 `# nosec` annotation with justification on `subprocess.Popen` PTY call |
 | Gov | Docs | `CHANGELOG.md` | `[Unreleased]` entry — unblocks WF-001 cognitive pre-flight gate |
-| Gov | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-061–W-068 entries; Last updated timestamp |
+| Gov | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-061–W-069 entries; Last updated timestamp |
 
 ---
 

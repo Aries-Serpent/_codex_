@@ -585,7 +585,7 @@ async def ws_cli(ws: WebSocket):
     master_fd, slave_fd = pty.openpty()
     shell = os.environ.get("SHELL", "/bin/bash")
 
-    proc = subprocess.Popen(
+    proc = subprocess.Popen(  # nosec B603 — shell binary sourced from SHELL env (trusted system path, not user input)
         [shell, "--login"],
         stdin=slave_fd,
         stdout=slave_fd,
