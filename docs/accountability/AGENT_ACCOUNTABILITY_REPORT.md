@@ -315,6 +315,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-049 | `cognitive_brain_ci_feedback.yml`: added self-exclusion filter — job skips when triggered by own name or `Art_Workflow Analytics & Health (Unified)` to break A↔B cascade loop | ✅ Done (S116i resume) |
 | W-050 | `workflow-analytics-unified.yml`: removed `workflow_run: ["*"]` wildcard trigger, demoted to hourly schedule (`cron: '0 * * * *'`) — same cadence as `batch-ci-triage.yml`. Removed `*/30` cron (redundant with wildcard). Added concurrency control | ✅ Done (S116i resume) |
 | W-051 | `token-probe.yml`: fix `require_both_keys` input — was accepted but never enforced in summary job. Now properly: (1) shows 100%/50%/0% coverage in overall status, (2) fails when `require_both_keys=true` and backup key is non-functional, (3) reports both keys with equal weight | ✅ Done (S116i resume) |
+| W-052 | `flush-queued-runs.yml`: new emergency workflow_dispatch workflow — bulk-cancels queued/waiting/in_progress runs. Supports dry-run mode, max cap, workflow exclusion, self-protection (never cancels own run). Created for 600+ queue emergency from cascade incident | ✅ Done (S117) |
 
 ---
 
