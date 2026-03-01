@@ -1,6 +1,6 @@
-version: 1.6.0
-last_updated: '2026-03-01T04:26:49Z'
-total_agents: 126  # registered in this YAML; +3 from PR #3421 Sprint 4
+version: 1.7.0
+last_updated: '2026-03-01T07:07:09Z'
+total_agents: 128  # +2 from PR #3422: memory-sync-agent + telemetry-classifier-agent
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -1531,6 +1531,50 @@ agents:
     primary: ooda_loop
     secondary: feedback
 
+- id: memory-sync-agent
+  name: Memory Sync Agent
+  version: "1.0.0"
+  file: .github/agents/memory-sync-agent.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: cognitive
+  subcategory: memory
+  description: >
+    Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library.
+    Consolidates hot STM entries into LTM when capacity exceeds 80%, tags
+    patterns with ImprovementArea, and prunes stale LTM entries.
+  added_in_pr: 3422
+  sprint: Sprint 6
+  physics_model:
+    primary: memory_consolidation
+    secondary: compression
+
+- id: telemetry-classifier-agent
+  name: Telemetry Classifier Agent
+  version: "1.0.0"
+  file: .github/agents/telemetry-classifier-agent.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci
+  subcategory: telemetry
+  description: >
+    Reads CI telemetry artifacts, identifies top-N unknown failure patterns,
+    and generates new classifier entries for collect_telemetry.py. Drives the
+    unknown pattern bucket from ~60% toward <20%.
+  added_in_pr: 3422
+  sprint: Sprint 8
+  physics_model:
+    primary: pattern_recognition
+    secondary: feedback
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
@@ -1577,3 +1621,9 @@ standardization_status:
 # - total_agents 123 → 126
 # - 91/91 workflow compliance achieved
 # - iterative-self-healing-ci.yml added
+
+# PR #3422 changelog (2026-03-01):
+# - version 1.6.0 → 1.7.0
+# - memory-sync-agent added (PR #3422 Sprint 6)
+# - telemetry-classifier-agent added (PR #3422 Sprint 8)
+# - total_agents 126 → 128

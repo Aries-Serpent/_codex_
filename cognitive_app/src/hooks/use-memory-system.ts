@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { CodexAPIClient, MemoryStateResponse, MemoryEntry } from '@/lib/codex-api-client';
 import { MockCodexAPIClient } from '@/lib/mock-api-client';
 
-const API_URL = import.meta.env.VITE_CODEX_API || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_CLI_API_URL
+             ?? import.meta.env.VITE_CODEX_API
+             ?? 'http://localhost:8765';
 const API_KEY = import.meta.env.VITE_CODEX_KEY || 'demo-key';
 
 const client = new CodexAPIClient(API_URL, API_KEY);
