@@ -1,6 +1,6 @@
-version: 1.4.0
-last_updated: '2026-02-28T00:00:00Z'
-total_agents: 121  # registered in this YAML; 98 operational agent .md files + 23 sub-directory agents in .github/agents/
+version: 1.5.0
+last_updated: '2026-03-01T04:26:49Z'
+total_agents: 123  # registered in this YAML; +2 from PR #3421
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -1422,6 +1422,48 @@ agents:
   priority: medium
   purpose: Identifies and applies workflow optimizations for speed and cost reduction.
 
+- id: cognitive-brain-cli-agent
+  name: Cognitive Brain CLI Agent
+  version: "1.0.0"
+  file: .github/agents/cognitive-brain-cli-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: operations
+  subcategory: cli
+  description: >
+    Production agent for operating the Cognitive Brain CLI console.
+    Executes shell commands, HTTP requests, and drives the cognitive_app
+    dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
+  added_in_pr: 3421
+  physics_model:
+    primary: flow
+    secondary: signal
+
+- id: workflow-compliance-guardian
+  name: Workflow Compliance Guardian
+  version: "1.0.0"
+  file: .github/agents/workflow-compliance-guardian.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci
+  subcategory: enforcement
+  description: >
+    Enforces and auto-heals branch-scoped concurrency + timeout rules
+    across all 91 GitHub Actions workflows. Runs compliance audit on
+    every PR push and self-heals non-compliant files within the session.
+  added_in_pr: 3421
+  physics_model:
+    primary: balance
+    secondary: constraint
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
@@ -1456,3 +1498,11 @@ standardization_status:
 # - BATCH_SCAN_PROTOCOL.md canonical protocol document added
 # - S93_RVS_CONTINUATION_PROMPT.md added
 # - AI_AGENT_INTUITIVENESS_SCORE_V3.md: 91.8 → 94.7/100
+
+# S116j changelog (2026-03-01):
+# - version 1.4.0 → 1.5.0
+# - cognitive-brain-cli-agent added (PR #3421)
+# - workflow-compliance-guardian added (PR #3421)
+# - total_agents 121 → 123
+# - 91/91 workflow compliance achieved
+# - iterative-self-healing-ci.yml added

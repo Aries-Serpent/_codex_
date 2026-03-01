@@ -56,12 +56,12 @@ You are resuming mid-session with the following **staged but uncommitted** files
 ## 📋 REMAINING CHECKLIST (pick up here)
 
 - [ ] **IMMEDIATE**: `report_progress` to commit the 6 uncommitted files above
-- [ ] **CODE REVIEW**: Run `code_review` tool on all changes
-- [ ] **CODEQL**: Run `codeql_checker` — fix any findings
-- [ ] **iterative-self-healing-ci.yml**: Validate YAML parses + compliance check (1 parse error in audit — find and fix)
+- [x] **CODE REVIEW**: 6 issues found + fixed
+- [x] **CODEQL**: 0 alerts (untrusted-checkout fixed)
+- [x] **iterative-self-healing-ci.yml**: Validate YAML parses + compliance check (1 parse error in audit — find and fix)
 - [ ] **Follow-up prompt**: Post `@copilot` continuation comment on PR #3421 with next-session chain prompt
 - [ ] **Sprint 1**: CI health telemetry feedback loop (see `COGNITIVE_BRAIN_STATUS_PR3421.md`)
-- [ ] **AGENT_REGISTRY.yaml**: Add `cognitive-brain-cli-agent` + `workflow-compliance-guardian`
+- [x] **AGENT_REGISTRY.yaml**: Add `cognitive-brain-cli-agent` + `workflow-compliance-guardian`
 - [ ] **`CODEX_BACKUP_KEY`**: Still at 50% probe coverage — needs rotation by @mbaetiong
 - [ ] **`cli_api_server.py` xterm.js**: WebSocket PTY frontend (true real-time terminal via `xterm` npm package)
 
