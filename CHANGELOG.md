@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Sec | Fix | `cognitive_app/src/server/cli_api_server.py` | Bandit B603 `# nosec` annotation with justification on `subprocess.Popen` PTY call |
 | Gov | Docs | `CHANGELOG.md` | `[Unreleased]` entry — unblocks WF-001 cognitive pre-flight gate |
 | Gov | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-061–W-069 entries; Last updated timestamp |
+| Fix | CI | `.github/workflows/copilot-pr-session-injector.yml` | `continue-on-error: true` on Copilot analysis step; Fallback now triggers on `outcome == 'failure'` (fixes run 22538611500 auth error) |
+| Fix | CI | `scripts/ci/collect_telemetry.py` | `session-injector` classifier — stops "Copilot PR Session Injector" runs landing in unknown bucket |
 
 ---
 

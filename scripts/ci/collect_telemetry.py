@@ -121,6 +121,12 @@ class TelemetryCollector:
             "pep 621", "pep621", "setuptools", "dynamic",
             "requires-python", "build-backend", "flit_core",
         ],
+        # SESSION_INJECTOR: Copilot PR session injection / context briefing workflows
+        "session-injector": [
+            "session-inject", "session injector", "copilot-pr-session",
+            "inject cognitive", "cognitive brain context", "pr-session",
+            "session_inject", "brain context",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):
