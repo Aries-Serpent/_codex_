@@ -62,7 +62,10 @@ jobs:
               echo '{"summary":{"total_runs":0,"failed_runs":0,"failure_rate":0},"pattern_distribution":{}}' > /tmp/telemetry_report.json
             }
 
-          # Extract metrics via base64-encoded script (no heredoc/YAML issues)
+          # Extract metrics via base64-encoded script.
+          # NOTE: base64 encoding is required here because GitHub Actions YAML cannot
+          # handle multi-line python3 -c strings or << 'EOF' heredocs inside run: | blocks
+          # (the << sequence is a YAML merge key at column 0; embedded quotes break parsing).
           METRICS=$(echo 'aW1wb3J0IGpzb24sc3lzCnRyeToKICAgIGQ9anNvbi5sb2FkKG9wZW4oJy90bXAvdGVsZW1ldHJ5X3JlcG9ydC5qc29uJykpCiAgICBzPWQuZ2V0KCdzdW1tYXJ5Jyx7fSkKICAgIHJhdGU9cy5nZXQoJ2ZhaWx1cmVfcmF0ZScsMCkKICAgIHByaW50KGYnRkFJTFVSRV9SQVRFPXtyYXRlKjEwMDouMWZ9JykKICAgIHByaW50KGYnRkFJTEVEX1JVTlM9e3MuZ2V0KGNocigzNCkrImZhaWxlZF9ydW5zIitjaHIoMzQpLDApfScpCiAgICBwcmludChmJ1RPVEFMX1JVTlM9e3MuZ2V0KGNocigzNCkrInRvdGFsX3J1bnMiK2NocigzNCksMCl9JykKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHByaW50KCdGQUlMVVJFX1JBVEU9MCcpO3ByaW50KCdGQUlMRURfUlVOUz0wJyk7cHJpbnQoJ1RPVEFMX1JVTlM9MCcpCg==' | base64 -d | python3) || METRICS='FAILURE_RATE=0\nFAILED_RUNS=0\nTOTAL_RUNS=0'
           eval "$(echo -e "$METRICS")"
 

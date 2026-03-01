@@ -85,7 +85,7 @@ jobs:
 
           # Add workflow metadata
           context["_meta"] = {
-              "generated_at":   datetime.datetime.utcnow().isoformat() + "Z",
+              "generated_at":   datetime.datetime.now(datetime.timezone.utc).isoformat(),
               "workflow":       "copilot-agent-vars-bootstrap",
               "sha":            os.environ.get("GITHUB_SHA", "")[:8],
               "ref":            os.environ.get("GITHUB_REF", ""),

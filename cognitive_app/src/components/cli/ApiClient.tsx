@@ -21,7 +21,6 @@ interface ApiEntry {
   statusCode: number;
   durationMs: number;
   body: unknown;
-  responseHeaders: Record<string, string>;
   timestamp: string;
   error?: string;
   expanded: boolean;
@@ -115,7 +114,7 @@ export function ApiClient() {
           statusCode: resp.status,
           durationMs: 0,
           body: data,
-          responseHeaders: {},
+
           timestamp: new Date().toISOString(),
           error: ('detail' in data ? data.detail : undefined) || resp.statusText,
           expanded: true,
@@ -131,7 +130,7 @@ export function ApiClient() {
         statusCode: r.status_code,
         durationMs: r.duration_ms,
         body: r.body,
-        responseHeaders: r.headers,
+
         timestamp: new Date().toISOString(),
         expanded: true,
       }, ...prev]);
@@ -141,7 +140,6 @@ export function ApiClient() {
         statusCode: 0,
         durationMs: 0,
         body: null,
-        responseHeaders: {},
         timestamp: new Date().toISOString(),
         error: `Network error: ${err instanceof Error ? err.message : String(err)}`,
         expanded: true,

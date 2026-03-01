@@ -114,11 +114,15 @@ jobs:
         iteration: [1, 2, 3]
 
     steps:
-      - name: Checkout
+      - name: Checkout (default branch only — never checkout untrusted PR code)
+        # SECURITY: workflow_run-triggered workflows must NEVER checkout using
+        # the triggering PR's ref/sha directly — that executes untrusted code with
+        # elevated permissions. We checkout the default branch (main) to apply
+        # our own verified auto-fix scripts.
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
-          ref: ${{ needs.triage.outputs.head_sha }}
+          ref: main
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
@@ -203,6 +207,9 @@ jobs:
             --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
 
           if [ -n "$PR_NUMBER" ]; then
+            # base64-encoded PR comment body (decodes to: Self-Healing Escalation message
+            # with RUN_ID and PATTERN placeholders, then envsubst fills them in).
+            # Encoding avoids YAML quote/asterisk parsing issues.
             BODY=$(echo 'IyMgU2VsZi1IZWFsaW5nIEVzY2FsYXRpb24KClJ1biBJRDogJHtSVU5fSUR9ClBhdHRlcm46ICR7UEFUVEVSTn0KClRoZSBpdGVyYXRpdmUgc2VsZi1oZWFsaW5nIENJIGNvdWxkIG5vdCBhdXRvbWF0aWNhbGx5IGZpeCB0aGlzIGZhaWx1cmUuCgpSZWNvbW1lbmRlZCBhY3Rpb25zOgoxLiBDaGVjayB0aGUgd29ya2Zsb3cgcnVuIGxvZ3MgYXQ6CiAgIGh0dHBzOi8vZ2l0aHViLmNvbS9Bcmllcy1TZXJwZW50L19jb2RleF8vYWN0aW9ucy9ydW5zLyR7UlVOX0lEfQoyLiBSZXZpZXcgLmNvZGV4L3BhdHRlcm5zL2NpX2ZhaWx1cmVfcGF0dGVybnMueWFtbCBmb3IgbWFudWFsIGZpeCBndWlkYW5jZQozLiBQb3N0IEBjb3BpbG90IGZpeCBDSSBmYWlsdXJlIHBhdHRlcm46ICR7UEFUVEVSTn0KICAgYXMgYSBQUiBjb21tZW50IHRvIHRyaWdnZXIgYWdlbnQgcmVzb2x1dGlvbgoKUG9zdGVkIGJ5OiBpdGVyYXRpdmUtc2VsZi1oZWFsaW5nLWNpLnltbA==' | base64 -d | RUN_ID="$RUN_ID" PATTERN="$PATTERN" envsubst)
             gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ --body "$BODY"
           fi

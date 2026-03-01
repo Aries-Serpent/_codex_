@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -63,8 +63,8 @@ export function CliTerminal() {
     } catch { setServerOnline(false); }
   }, []);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useState(() => { checkServer(); });
+  // Check server health on mount
+  useEffect(() => { checkServer(); }, [checkServer]);
 
   const append = (entry: Omit<CliEntry, 'id'>) => {
     setEntries(prev => {
