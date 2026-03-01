@@ -1,9 +1,9 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_  
-**Branch:** copilot/sub-pr-3389-another-one  
+**Branch:** copilot/investigate-ci-failure-rate  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i resume — token-probe require_both_keys enforcement fix)
+**Last updated:** 2026-03-01 (PR #3421 — CI health fix + GROUNDED enforcement + CLI console + agent empowerment)
 
 ---
 

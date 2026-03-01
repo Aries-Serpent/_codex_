@@ -299,12 +299,16 @@ async def ws_cli(ws: WebSocket):
                                 "type": "output",
                                 "data": chunk.decode(errors="replace"),
                             })
-                    except OSError:
-                        pass
+                    except OSError as exc:
+                        # Best-effort drain: PTY may already be closed; ignore and exit.
+                        log.debug("Ignoring OSError while draining PTY output: %s", exc)
                     await ws.send_json({"type": "exit", "code": proc.returncode or 0})
                     break
-        except (WebSocketDisconnect, RuntimeError):
+        except WebSocketDisconnect:
+            # Client disconnected — normal control flow; stop reading silently.
             pass
+        except RuntimeError as exc:
+            log.debug("Unexpected RuntimeError in read_pty: %s", exc)
 
     async def write_pty() -> None:
         """Forward WebSocket keystrokes to the PTY."""
@@ -320,8 +324,11 @@ async def ws_cli(ws: WebSocket):
                     rows = max(1, int(msg.get("rows", 24)))
                     winsize = struct.pack("HHHH", rows, cols, 0, 0)
                     fcntl.ioctl(master_fd, termios.TIOCSWINSZ, winsize)
-        except (WebSocketDisconnect, RuntimeError):
+        except WebSocketDisconnect:
+            # Client disconnected — normal control flow; stop writing silently.
             pass
+        except RuntimeError as exc:
+            log.debug("Unexpected RuntimeError in write_pty: %s", exc)
 
     try:
         await asyncio.gather(read_pty(), write_pty())
@@ -334,6 +341,7 @@ async def ws_cli(ws: WebSocket):
                 proc.kill()
         try:
             os.close(master_fd)
-        except OSError:
-            pass
+        except OSError as exc:
+            # Best-effort cleanup: master_fd may already be closed or invalid.
+            log.debug("Error while closing PTY master_fd: %s", exc)
         log.info("WS PTY session closed (pid=%s rc=%s)", proc.pid, proc.returncode)
