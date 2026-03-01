@@ -50,6 +50,11 @@ permissions:
   pull-requests: write
   actions: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: agent-orchestration-unified
+  cancel-in-progress: true
+
 jobs:
   orchestrate_agent_chain:
     name: Orchestrate Entangled Agents

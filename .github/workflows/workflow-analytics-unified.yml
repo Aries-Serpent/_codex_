@@ -1,15 +1,14 @@
 name: Art_Workflow Analytics & Health (Unified)
 
 on:
-  # Scheduled weekly analytics
+  # Scheduled analytics — hourly health check + weekly deep analysis.
+  # GROUNDED: Removed workflow_run: ["*"] trigger that caused exponential cascade.
+  # Each workflow completion was triggering this + cognitive_brain_ci_feedback,
+  # whose completions triggered each other → 200+ queued runs.
+  # Hourly schedule (same cadence as batch-ci-triage.yml) is sufficient.
   schedule:
-    - cron: '0 0 * * 1'  # Weekly on Monday at 00:00 UTC
-    - cron: '*/30 * * * *'  # Health checks every 30 minutes
-
-  # After any workflow completes
-  workflow_run:
-    workflows: ["*"]
-    types: [completed]
+    - cron: '0 0 * * 1'  # Weekly on Monday at 00:00 UTC (deep analytics)
+    - cron: '0 * * * *'  # Hourly health checks (was */30 — reduced to match batch-ci-triage)
 
   # Manual trigger with all options
   workflow_dispatch:
@@ -74,13 +73,19 @@ permissions:
   issues: write
   actions: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+# Only one health check or analytics job runs at a time.
+concurrency:
+  group: workflow-analytics-unified-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   # Health check job (runs frequently)
   quantum-health-check:
     name: Quantum-Inspired Health Check
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: github.event_name == 'workflow_run' || github.event_name == 'schedule' && github.event.schedule == '*/30 * * * *' || inputs.mode == 'health-check' || inputs.mode == 'quantum-analysis'
+    if: github.event_name == 'schedule' || inputs.mode == 'health-check' || inputs.mode == 'quantum-analysis'
 
     steps:
       - name: Checkout repository

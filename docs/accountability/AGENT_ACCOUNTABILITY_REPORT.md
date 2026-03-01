@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/sub-pr-3389-another-one  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-02-28 (S116i — grounded enforcement audit + REQ-5 CHANGELOG gate)
+**Last updated:** 2026-02-28 (S116i resume — token-probe require_both_keys enforcement fix)
 
 ---
 
@@ -301,6 +301,21 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-035 | cognitive-preflight REQ-5: CHANGELOG.md check added — Tier-3 → Tier-1 promotion | ✅ Done (S116i) |
 | W-036 | cognitive-preflight REQ-6: SESSION_TIMEBOX_EXPIRED acknowledgment gate — Tier-2 → Tier-1 promotion | ✅ Done (S116i resume) |
 | W-037 | token-probe.yml cherry-pick to `main` via dedicated branch — workflow_dispatch visible in Actions UI | ✅ Done (S116i resume) |
+| W-038 | chatops_copilot_trigger.yml session-summary gate: `/copilot continue` blocked until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` — Soft → Tier-1 promotion | ✅ Done (S116i resume) |
+| W-039 | GROUNDED_VS_SOFT_ENFORCEMENT.md updated: Session summary + CHANGELOG rows → ✅ GROUNDED; reliability chart updated; tier table expanded | ✅ Done (S116i resume) |
+| W-040 | cognitive_brain_ci_feedback.yml fix: `ImprovementArea.CI_HEALTH` → `ImprovementArea.CI_SELF_HEALING` (AttributeError on main) | ✅ Done (S116i resume) |
+| W-041 | token-probe.yml validated: YAML correct, secrets referenced (CODEX_MASTER_KEY, CODEX_BACKUP_KEY), 0 prior runs — awaiting manual dispatch with PR #3405 | ✅ Verified (S116i resume) |
+| W-042 | copilot-setup-steps.yml: added "🔀 Fetch remote branch refs for PR diff support" step after checkout — fixes `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`) in Copilot agent run 22530338486 | ✅ Done (S116i resume) |
+| W-043 | Verified cognitive-preflight REQ-4 + REQ-5 unaffected (use `HEAD~1 HEAD`, not base branch name) | ✅ Verified (S116i resume) |
+| W-044 | Confirmed git diff fix working: copilot-setup-steps run 22531062773 step 3 "🔀 Fetch remote branch refs" → SUCCESS | ✅ Verified (S116i resume) |
+| W-045 | Token delegation activated: COPILOT_AGENT_AUTH_ENABLED=true, COGNITIVE_BRAIN_ALLOWED_ACTORS set (workflow run 22531062732) | ✅ Verified (S116i resume) |
+| W-046 | copilot-pr-session-injector.yml: added "🔀 Fetch base branch ref for diff" step — same base_ref vulnerability as original git diff 128 bug | ✅ Done (S116i resume) |
+| W-047 | Repo-wide grounded enforcement audit: 86 workflows scanned, 8 cross-branch diff workflows evaluated, grounded-first pattern documented in GROUNDED_VS_SOFT_ENFORCEMENT.md | ✅ Done (S116i resume) |
+| W-048 | Fix 214 queued workflow cascade: added `concurrency: { cancel-in-progress: true }` to all 7 `workflow_run`-triggered workflows. Root cause: `cognitive_brain_ci_feedback.yml` + `workflow-analytics-unified.yml` both used `workflow_run: ["*"]` wildcard with zero concurrency — each completion triggered both, creating exponential queue growth | ✅ Done (S116i resume) |
+| W-049 | `cognitive_brain_ci_feedback.yml`: added self-exclusion filter — job skips when triggered by own name or `Art_Workflow Analytics & Health (Unified)` to break A↔B cascade loop | ✅ Done (S116i resume) |
+| W-050 | `workflow-analytics-unified.yml`: removed `workflow_run: ["*"]` wildcard trigger, demoted to hourly schedule (`cron: '0 * * * *'`) — same cadence as `batch-ci-triage.yml`. Removed `*/30` cron (redundant with wildcard). Added concurrency control | ✅ Done (S116i resume) |
+| W-051 | `token-probe.yml`: fix `require_both_keys` input — was accepted but never enforced in summary job. Now properly: (1) shows 100%/50%/0% coverage in overall status, (2) fails when `require_both_keys=true` and backup key is non-functional, (3) reports both keys with equal weight | ✅ Done (S116i resume) |
+| W-052 | `flush-queued-runs.yml`: new emergency workflow_dispatch workflow — bulk-cancels queued/waiting/in_progress runs. Supports dry-run mode, max cap, workflow exclusion, self-protection (never cancels own run). Created for 600+ queue emergency from cascade incident | ✅ Done (S117) |
 
 ---
 

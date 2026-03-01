@@ -96,6 +96,18 @@ jobs:
           clean: true
           show-progress: true
 
+      # Fix: actions/checkout only fetches the checked-out branch even with
+      # fetch-depth: 0. The Copilot coding agent's internal diff (report_progress)
+      # needs the PR base branch ref to be resolvable. Without this, git fails:
+      #   "fatal: ambiguous argument '<base_branch>': unknown revision"
+      # Shallow-fetch all remote branch tips so any base branch name resolves.
+      # See: https://github.com/actions/checkout/issues/1262
+      - name: "🔀 Fetch remote branch refs for PR diff support"
+        run: |
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
+            && echo "✅ Remote branch refs fetched" \
+            || echo "⚠️ Remote ref fetch failed (non-blocking)"
+
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}

@@ -19,6 +19,14 @@ on:
     workflows: ["*"]
     types: [completed]
 
+# GROUNDED: Concurrency control prevents exponential cascade.
+# This workflow fires on every workflow completion. Without concurrency control,
+# its own completion triggers workflow-analytics-unified → which triggers this → ∞ queue.
+# cancel-in-progress: true ensures only the latest run executes; duplicates are dropped.
+concurrency:
+  group: cognitive-brain-ci-feedback
+  cancel-in-progress: true
+
 # §6 ADMIN_MANUAL_SETUP_GUIDE.md: explicit permissions block replaces the
 # need to set "Read and write" manually in GitHub Settings → Actions.
 # This is the least-privilege declaration for this specific workflow.
@@ -34,9 +42,14 @@ jobs:
     runs-on: ubuntu-latest
     # Pilot phase: internal actor only (Q3-B airtight system).
     # Expand to ORG_OWNER tier when Phase 5 StructuralPolicyManager ships.
+    #
+    # GROUNDED: Self-exclusion filter breaks the cascade loop.
+    # Skip when the triggering workflow is this one or workflow-analytics-unified
+    # to prevent A→B→A→B infinite re-trigger chains.
     if: |
-      github.actor == 'mbaetiong' ||
-      github.actor == 'github-actions[bot]'
+      (github.actor == 'mbaetiong' || github.actor == 'github-actions[bot]') &&
+      github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
+      github.event.workflow_run.name != 'Art_Workflow Analytics & Health (Unified)'
 
     steps:
       - uses: actions/checkout@v4
@@ -71,7 +84,7 @@ jobs:
           # Keyword → (pattern_id, ImprovementArea) mapping.
           # Pattern P-046: extend this map as new patterns are codified.
           PATTERN_KEYWORD_MAP = {
-              "sharded":      ("P-038", ImprovementArea.CI_HEALTH),
+              "sharded":      ("P-038", ImprovementArea.CI_SELF_HEALING),
               "codeql":       ("P-039", ImprovementArea.SECURITY_REMEDIATION),
               "huggingface":  ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
               "hf":           ("P-043", ImprovementArea.ML_PATTERN_FEEDING),

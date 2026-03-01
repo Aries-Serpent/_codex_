@@ -5,6 +5,25 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — S116i resume
+
+### S116i resume — Session Summary Tier-1 Gate + CI Feedback Fix + Base Ref Fix + Grounded Audit (2026-02-28)
+
+| Type | File | Change |
+|------|------|--------|
+| Feature | `.github/workflows/chatops_copilot_trigger.yml` | Session-summary gate: `/copilot continue` blocked when `SESSION_TIMEBOX_EXPIRED` active and no `## 🧠 Session Summary` posted — promotes "Session summary on close" from Soft → Tier-1 |
+| Bugfix | `.github/workflows/cognitive_brain_ci_feedback.yml` | Fix `AttributeError: ImprovementArea.CI_HEALTH` → `CI_SELF_HEALING` (run 22530335616) |
+| Bugfix | `.github/workflows/copilot-setup-steps.yml` | Fix `git diff` exit 128 (`fatal: ambiguous argument '0D_base_'`): added step to fetch all remote branch refs after checkout so Copilot agent's internal diff can resolve the PR base branch (run 22530338486) |
+| Bugfix | `.github/workflows/copilot-pr-session-injector.yml` | Fix same base_ref vulnerability: added "🔀 Fetch base branch ref for diff" step before `origin/${{ github.base_ref }}...HEAD` diffs — prevents silent failure on non-default base branches |
+| **Bugfix** | **7 `workflow_run` workflows** | **Fix 214 queued run cascade: added `concurrency: { cancel-in-progress: true }` to all 7 `workflow_run`-triggered workflows. Added self-exclusion filter to `cognitive_brain_ci_feedback.yml`. Demoted `workflow-analytics-unified.yml` from `workflow_run: ["*"]` wildcard to hourly schedule. Root cause: two wildcard triggers firing on every completion including each other's → exponential queue growth** |
+| **Bugfix** | **`.github/workflows/token-probe.yml`** | **Fix `require_both_keys` input: was accepted but never enforced — summary job only failed on master key, ignoring backup key. Now properly fails when `require_both_keys=true` and backup key is non-functional. Overall status shows 100%/50%/0% coverage** |
+| **Feature** | **`.github/workflows/flush-queued-runs.yml`** | **Emergency queue flush: bulk-cancel queued/waiting/in_progress runs via workflow_dispatch. Supports dry-run, max cap, workflow exclusion, self-protection. Created for 600+ queue emergency.** |
+| Docs | `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` | Repo-wide grounded enforcement audit: 86 workflows scanned, lifecycle chain documented, grounded-first pattern template added, cascade prevention pattern documented |
+| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-044–W-047 added; last-updated → S116i resume (grounded audit) |
+| Note | _Dependabot_ | Transient Dependabot graph submission failure (`github.com:443 EOF`) — non-blocking, no action required |
+
+---
+
 ## [Unreleased] — S116i
 
 ### S116i — WF-002 + Grounded Enforcement Audit + REQ-6 Timebox Gate (2026-02-28)

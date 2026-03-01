@@ -132,14 +132,14 @@ flowchart TD
 | Timebox respected | `session-watchdog.yml` + `SESSION_TIMEBOX_EXPIRED` | 🟡 **PARTIAL** | Expiry posts a comment. Agent CAN ignore it. No hard block yet. |
 | Exploration: never self-close | `SESSION_TYPE_EXPLORATION` → checklist injection | 🟡 **PARTIAL** | Checklist is present-tense but not a hard stop. |
 | "Do NOT auto-proceed" | `session-watchdog` detection + checklist item | 🟡 **PARTIAL** | Same — visible, but no structural gate |
-| Session summary on close | Checklist item only | ⚠️ **SOFT** | No detection mechanism for "session close" event |
+| Session summary on close | `chatops_copilot_trigger.yml` session-summary gate: blocks `/copilot continue` until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` | ✅ **GROUNDED** | Tier-1 hard block in chat-ops dispatch (S116i resume) |
 | ~10min incremental summaries | Checklist item only | ⚠️ **SOFT** | No timer / no detection |
 | Tokens functional | `token-probe.yml` real HTTP probe | ✅ **GROUNDED** | Must be dispatched manually (not automatic yet) |
 | Read README_FIRST_MANDATORY | `store_memory` + naming | ❌ **SOFT** | No gate. V-012: failed despite memory entry |
 | Pre-commit gitignore check | `store_memory` + REQ-3 gate | ✅ **GROUNDED** | REQ-3 catches it at PR time — grounded |
 | 5-pass self-review before close | Policy text only | ❌ **SOFT** | No mechanism can detect review quality |
 | NEVER stop after one commit | `store_memory` + policy text | ❌ **SOFT** | No gate. Still happens. Most serious violation. |
-| Update CHANGELOG.md | Policy text only | ❌ **SOFT** | No check. Frequently missed. |
+| Update CHANGELOG.md | `cognitive-preflight` REQ-5: `git diff HEAD~1 HEAD` → `exit 1` | ✅ **GROUNDED** | Tier-1 hard stop — same pattern as REQ-4 (S116i) |
 | CI failure patterns reviewed | `cognitive-preflight` REQ-2: table in job summary | ✅ **GROUNDED** | Summary is visible. Not a hard stop but present-tense. |
 
 ---
@@ -152,16 +152,16 @@ flowchart TD
 
         G1["NEVER stop after one commit\n──────────────\nCurrent: store_memory (fails)\nGrounded fix:\nAdd session-duration check to cognitive-preflight:\n• Read SESSION_START timestamp from agent_auth_session.json\n• If only 1 commit since session start AND\n  work queue has open items → exit 1\nBlocker: requires session-start tracking to be reliable"]
 
-        G2["CHANGELOG.md update required\n──────────────\nCurrent: policy text (fails)\nGrounded fix:\ncognitive-preflight REQ-5:\ngit diff HEAD~1 HEAD | grep CHANGELOG.md\nIf not touched → exit 1 (same pattern as REQ-4)\nCost: 8 lines of bash — trivially implementable"]
+        G2["✅ CHANGELOG.md update required\n──────────────\n✅ PROMOTED TO TIER-1 (S116i)\ncognitive-preflight REQ-5:\ngit diff HEAD~1 HEAD | grep CHANGELOG.md\nIf not touched → exit 1 (same pattern as REQ-4)"]
 
-        G3["Session summary on close\n──────────────\nCurrent: checklist item (soft)\nGrounded fix:\nPost a PR comment template when SESSION_TIMEBOX_EXPIRED\nfires that BLOCKS the next @copilot continue\nuntil a ## 🧠 Session Summary comment is detected.\nRequires: chatops_copilot_trigger.yml check\nfor Session Summary marker before dispatching"]
+        G3["✅ Session summary on close\n──────────────\n✅ PROMOTED TO TIER-1 (S116i resume)\nchatops_copilot_trigger.yml session-summary gate:\n/copilot continue is BLOCKED until\n## 🧠 Session Summary is posted after\nSESSION_TIMEBOX_EXPIRED.\nBypass cost: must post a real summary"]
 
         G4["~10min incremental summaries\n──────────────\nCurrent: checklist item (soft)\nGrounded fix:\nScheduled workflow (cron: every 10 min) that checks\nif SESSION_TYPE_EXPLORATION is active and last\nagent comment was >10min ago → posts reminder\nBlocker: GitHub Actions minimum cron interval = 5min\nCost: medium — requires cron + comment timestamp logic"]
 
         G5["5-pass self-review\n──────────────\nCurrent: policy text (soft)\nGrounded fix: NONE POSSIBLE\nReasoning: review quality is subjective.\nCannot be CI-gated.\nBest available: checklist item that is\npresent-tense (already implemented in REQ-1)"]
     end
 
-    NEXT["Highest ROI next steps:\n1. CHANGELOG check (trivial — 8 lines)\n2. Session summary gate in chatops trigger\n3. NEVER-stop-early: session duration tracking"]
+    NEXT["Highest ROI next steps:\n1. ✅ CHANGELOG check — DONE (REQ-5)\n2. ✅ Session summary gate — DONE (chatops Tier-1)\n3. NEVER-stop-early: session duration tracking"]
 
     REMAINING_GAPS --> NEXT
 
@@ -177,8 +177,8 @@ xychart-beta
     title "Policy Enforcement Reliability (0 = always bypassed, 10 = never bypassed)"
     x-axis ["gitignore\ngate", "accountability\nreport gate", "CI patterns\nin summary", "token\nprobe", "timebox\nwarning", "exploration\nchecklist", "CHANGELOG\ncheck", "self-review\nrule", "stop-early\nrule", "session\nsummary"]
     y-axis "Reliability" 0 --> 10
-    bar [9, 9, 7, 8, 5, 5, 2, 1, 1, 2]
-    line [9, 9, 7, 8, 5, 5, 2, 1, 1, 2]
+    bar [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
+    line [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
 ```
 
 ---
@@ -187,7 +187,7 @@ xychart-beta
 
 | Tier | Mechanism | Bypass Cost | Examples built |
 |------|-----------|-------------|----------------|
-| **Tier 1 — Hard Block** | `exit 1` in CI job that `activate-delegation needs:` | Must fix the actual condition | REQ-3 gitignore, REQ-4 accountability report |
+| **Tier 1 — Hard Block** | `exit 1` in CI job that `activate-delegation needs:` | Must fix the actual condition | REQ-3 gitignore, REQ-4 accountability report, REQ-5 CHANGELOG, chatops session-summary gate |
 | **Tier 2 — Present-Tense Injection** | PR comment posted with every push (visible in current context) | Must consciously ignore a visible checklist | REQ-1 checklist, session-type directives, timebox remaining |
 | **Tier 3 — Background Memory** | `store_memory`, `.md` files, README naming | Zero — bypassed passively under task pressure | All pre-WF-001 policies |
 
@@ -195,4 +195,137 @@ xychart-beta
 
 ---
 
-*Generated: 2026-02-28 | S116i | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+## Repo-Wide Audit: Copilot Agent Process & Operation Enforcement
+
+> Traversal date: 2026-02-28 | 86 workflows scanned
+
+### Copilot Agent Lifecycle — Grounded Enforcement Chain
+
+```
+ ┌──────────────────────────────────────────────────────────────────┐
+ │  GROUNDED (Primary — bypass requires intentional YAML edit)     │
+ │                                                                  │
+ │  1. copilot-setup-steps.yml                                      │
+ │     └─ "🔀 Fetch remote branch refs" after checkout             │
+ │        Ensures base branch resolvable for report_progress diff   │
+ │                                                                  │
+ │  2. agent-auth-delegation.yml → cognitive-preflight job          │
+ │     ├─ REQ-1: Mandatory checklist posted as PR comment           │
+ │     ├─ REQ-2: CI failure patterns from ci_failure_patterns.yaml  │
+ │     ├─ REQ-3: git check-ignore → exit 1 (gitignore gate)        │
+ │     ├─ REQ-4: git diff HEAD~1 → exit 1 (accountability report)  │
+ │     ├─ REQ-5: git diff HEAD~1 → exit 1 (CHANGELOG.md)           │
+ │     └─ REQ-6: SESSION_TIMEBOX_EXPIRED ack → exit 1               │
+ │     All feed into: activate-delegation needs: [cognitive-preflight]│
+ │                                                                  │
+ │  3. chatops_copilot_trigger.yml                                  │
+ │     └─ Session-summary gate: blocks /copilot continue dispatch   │
+ │        when SESSION_TIMEBOX_EXPIRED active without summary       │
+ │                                                                  │
+ │  4. session-watchdog.yml                                         │
+ │     ├─ Timebox detection → SESSION_TIMEBOX_START posted          │
+ │     ├─ Expiry check → SESSION_TIMEBOX_EXPIRED posted             │
+ │     └─ Exploration session detection → SESSION_TYPE_EXPLORATION  │
+ │                                                                  │
+ │  5. token-probe.yml                                              │
+ │     └─ Real HTTP probe (GET /repo + POST /comments)              │
+ │        Returns objective pass/fail — cannot be faked             │
+ │                                                                  │
+ │  6. copilot-pr-session-injector.yml                              │
+ │     └─ "🔀 Fetch base branch ref" before origin/base_ref diff   │
+ │        Grounded: prevents silent diff failure on non-default base│
+ └──────────────────────────────────────────────────────────────────┘
+ 
+ ┌──────────────────────────────────────────────────────────────────┐
+ │  SOFT (Fallback — used when grounded method unavailable)        │
+ │                                                                  │
+ │  • store_memory facts → injected at session start               │
+ │  • .codex/README_FIRST_MANDATORY.md → naming convention only    │
+ │  • CODEBASE_AGENCY_POLICY.md → 38 MUST/NEVER lines, 0 hooks    │
+ │  • .codex/CONTINUATION_PROMPT_*.md → may not be picked up       │
+ │  • Accountability report text → reactive, not preventive         │
+ │  • "5-pass self-review" → subjective, ungatable                 │
+ │  • "NEVER stop after one commit" → no session-duration gate     │
+ └──────────────────────────────────────────────────────────────────┘
+```
+
+### Workflow-by-Workflow: `git diff` / `base_ref` Vulnerability Scan
+
+| Workflow | Uses `base_ref` or cross-branch diff? | Has fetch step? | Status |
+|----------|---------------------------------------|-----------------|--------|
+| `copilot-setup-steps.yml` | `report_progress` internal diff vs base branch | ✅ `git fetch origin '+refs/heads/*:...' --depth=1` | ✅ **GROUNDED** |
+| `copilot-pr-session-injector.yml` | `origin/${{ github.base_ref }}...HEAD` (3 diffs) | ✅ `git fetch origin "${{ github.base_ref }}" --depth=1` | ✅ **GROUNDED** (fixed this session) |
+| `agent-auth-delegation.yml` (cognitive-preflight) | `HEAD~1 HEAD` only | N/A — uses `fetch-depth: 2` | ✅ **SAFE** (no base_ref needed) |
+| `pr-size-analyzer.yml` | `${{ github.event.pull_request.base.sha }}` | ✅ `git fetch origin "$BASE_SHA"` + `HEAD~1` fallback | ✅ **GROUNDED** (has fallback) |
+| `validate.yml` | `VALIDATE_BASE_REF` env var (optional) | Uses `fetch-depth: 0` | 🟡 **PARTIAL** (fetch-depth: 0 may not include all branch refs) |
+| `auto-fix-pr-check.yml` | `git diff` (staged only) | N/A — no cross-branch diff | ✅ **SAFE** |
+| `auto-fix-common-issues.yml` | `git diff --staged` only | N/A — no cross-branch diff | ✅ **SAFE** |
+| `agent-var-writer.yml` | `git diff --cached` only | N/A | ✅ **SAFE** |
+
+### Grounded-First Pattern (recommended for all new workflows)
+
+```yaml
+# PATTERN: Grounded base-ref resolution with soft fallback
+# Use this in ANY workflow that diffs against the PR base branch.
+
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+
+# Grounded method (primary): explicitly fetch base branch
+- name: "🔀 Fetch base branch ref for diff"
+  run: |
+    git fetch origin "${{ github.base_ref }}" --depth=1 2>/dev/null \
+      && echo "✅ Base branch '${{ github.base_ref }}' fetched" \
+      || echo "⚠️ Base branch fetch failed — diffs will use fallback"
+
+# Soft fallback: HEAD~1 when base_ref unavailable
+- name: "Compute diff"
+  run: |
+    if git diff --name-only "origin/${{ github.base_ref }}...HEAD" >/dev/null 2>&1; then
+      # Grounded: precise base-branch diff
+      FILES=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+    else
+      # Soft fallback: last-commit diff only
+      echo "⚠️ Falling back to HEAD~1 diff (base branch not available)"
+      FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+    fi
+    echo "$FILES"
+```
+
+### Workflow Cascade Prevention — Concurrency & Self-Exclusion
+
+> Incident: 2026-02-28 — 214 queued runs from exponential `workflow_run: ["*"]` cascade
+
+**Root cause:** Two workflows (`cognitive_brain_ci_feedback.yml`, `workflow-analytics-unified.yml`) used `workflow_run: workflows: ["*"]` (wildcard) — they fire on **every** workflow completion including each other's. With zero concurrency controls, completions triggered an exponential cascade: A completes → B fires → B completes → A fires → ∞.
+
+**Grounded fix (3 layers, no overlap):**
+
+| Layer | Mechanism | Effect |
+|-------|-----------|--------|
+| **1. Concurrency groups** | `concurrency: { group: <name>, cancel-in-progress: true }` | Only one instance per workflow runs at a time; duplicates are auto-cancelled |
+| **2. Self-exclusion filter** | Job-level `if:` excludes own name and known cascade partners | Breaks A↔B infinite loop at the trigger level |
+| **3. Schedule demotion** | Replaced `workflow_run: ["*"]` with `schedule: cron: '0 * * * *'` (hourly) | Eliminates the wildcard trigger entirely where real-time reaction is not needed |
+
+**Workflows patched:**
+
+| Workflow | Trigger before | Trigger after | Concurrency | Self-exclusion |
+|----------|---------------|---------------|-------------|----------------|
+| `cognitive_brain_ci_feedback.yml` | `workflow_run: ["*"]` | `workflow_run: ["*"]` (kept — needs `workflow_run` context) | ✅ `cognitive-brain-ci-feedback` | ✅ Skips own name + analytics |
+| `workflow-analytics-unified.yml` | `workflow_run: ["*"]` + `*/30` cron | `schedule: hourly` + `weekly` (wildcard removed) | ✅ `workflow-analytics-unified-${{ event }}` | N/A — no longer a `workflow_run` trigger |
+| `self_healing_ci.yml` | Named workflows, no concurrency | Unchanged trigger | ✅ `self-healing-ci` | N/A — targeted trigger |
+| `self-healing.yml` | Named workflows, no concurrency | Unchanged trigger | ✅ `self-healing` | N/A — targeted trigger |
+| `cognitive-action-decision.yml` | Named + schedule, no concurrency | Unchanged trigger | ✅ `cognitive-action-decision` | N/A — targeted trigger |
+| `cognitive-analysis-feed.yml` | Named + schedule, no concurrency | Unchanged trigger | ✅ `cognitive-analysis-feed` | N/A — targeted trigger |
+| `agent-orchestration-unified.yml` | Named, no concurrency | Unchanged trigger | ✅ `agent-orchestration-unified` | N/A — targeted trigger |
+
+```yaml
+# PATTERN: Concurrency control for workflow_run workflows (no-overlap guarantee)
+concurrency:
+  group: <workflow-name>
+  cancel-in-progress: true
+```
+
+---
+
+*Updated: 2026-02-28 | S116i resume (cascade fix + repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

@@ -34,6 +34,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Grounded: fetch base branch ref so git diff origin/<base>...HEAD resolves.
+      # actions/checkout only fetches the checked-out branch even with fetch-depth: 0.
+      # Without this, non-default base branches (e.g. 0D_base_) cause exit 128.
+      # See: https://github.com/actions/checkout/issues/1262
+      - name: "🔀 Fetch base branch ref for diff"
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=1 2>/dev/null \
+            && echo "✅ Base branch '${{ github.base_ref }}' fetched" \
+            || echo "⚠️ Base branch fetch failed — diffs will use fallback"
+
       - name: Collect changed files and PR metadata
         id: meta
         run: |

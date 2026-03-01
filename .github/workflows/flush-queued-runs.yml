@@ -1,0 +1,193 @@
+name: "🚿 Flush Queued Workflow Runs"
+
+# Emergency bulk-cancel for queued/waiting workflow runs.
+# Dispatch manually when queue exceeds acceptable threshold.
+#
+# Created: 2026-03-01 | S117 | queue emergency response
+# Context: 600+ queued runs from workflow_run cascade (fixed in 86e1fb3)
+
+on:
+  workflow_dispatch:
+    inputs:
+      status_filter:
+        description: 'Run status to cancel (queued | waiting | in_progress | all-stale)'
+        required: true
+        default: 'queued'
+        type: choice
+        options:
+          - queued
+          - waiting
+          - in_progress
+          - all-stale
+      max_cancellations:
+        description: 'Maximum runs to cancel (safety cap)'
+        required: true
+        default: '1000'
+        type: number
+      dry_run:
+        description: 'Dry run — list runs without cancelling'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+      exclude_workflow:
+        description: 'Workflow name to EXCLUDE from cancellation (optional)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: flush-queued-runs
+  cancel-in-progress: false
+
+jobs:
+  flush:
+    name: "🚿 Cancel ${{ github.event.inputs.status_filter }} runs (max ${{ github.event.inputs.max_cancellations }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: "🔍 Enumerate and cancel runs"
+        uses: actions/github-script@v7
+        env:
+          STATUS_FILTER: ${{ github.event.inputs.status_filter }}
+          MAX_CANCEL: ${{ github.event.inputs.max_cancellations }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          EXCLUDE_WF: ${{ github.event.inputs.exclude_workflow }}
+          THIS_RUN_ID: ${{ github.run_id }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const statusFilter = process.env.STATUS_FILTER;
+            const maxCancel    = parseInt(process.env.MAX_CANCEL, 10);
+            const dryRun       = process.env.DRY_RUN === 'true';
+            const excludeWf    = process.env.EXCLUDE_WF || '';
+            const thisRunId    = parseInt(process.env.THIS_RUN_ID, 10);
+
+            const statuses = statusFilter === 'all-stale'
+              ? ['queued', 'waiting']
+              : [statusFilter];
+
+            let cancelled = 0;
+            let skipped   = 0;
+            let errors    = 0;
+            const summary = {};
+
+            core.info(`🚿 Flush mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
+            core.info(`   Status filter: ${statuses.join(', ')}`);
+            core.info(`   Max cancellations: ${maxCancel}`);
+            core.info(`   Exclude workflow: ${excludeWf || '(none)'}`);
+            core.info(`   This run ID (protected): ${thisRunId}`);
+            core.info('');
+
+            for (const status of statuses) {
+              let page = 1;
+              let hasMore = true;
+
+              while (hasMore && cancelled < maxCancel) {
+                const { data: { workflow_runs: runs } } = await github.rest.actions.listWorkflowRunsForRepo({
+                  owner, repo,
+                  status,
+                  per_page: 100,
+                  page,
+                });
+
+                if (runs.length === 0) {
+                  hasMore = false;
+                  break;
+                }
+
+                for (const run of runs) {
+                  if (cancelled >= maxCancel) break;
+
+                  // Never cancel ourselves
+                  if (run.id === thisRunId) {
+                    skipped++;
+                    continue;
+                  }
+
+                  // Exclude specific workflow if requested
+                  if (excludeWf && run.name && run.name.includes(excludeWf)) {
+                    skipped++;
+                    continue;
+                  }
+
+                  const wfName = run.name || run.workflow_id || '?';
+                  summary[wfName] = (summary[wfName] || 0) + 1;
+
+                  if (dryRun) {
+                    core.info(`[DRY] Would cancel: ${run.id} — ${wfName} (${status})`);
+                    cancelled++;
+                  } else {
+                    try {
+                      await github.rest.actions.cancelWorkflowRun({
+                        owner, repo,
+                        run_id: run.id,
+                      });
+                      cancelled++;
+                      if (cancelled % 50 === 0) {
+                        core.info(`   ...cancelled ${cancelled} runs so far`);
+                      }
+                    } catch (e) {
+                      // Run may have already completed or been cancelled
+                      if (e.status === 409) {
+                        skipped++;
+                      } else {
+                        errors++;
+                        core.warning(`Failed to cancel run ${run.id}: ${e.message}`);
+                      }
+                    }
+                  }
+                }
+
+                page++;
+                // GitHub API returns max 100 per page
+                if (runs.length < 100) hasMore = false;
+              }
+            }
+
+            // Build summary
+            const fs = require('fs');
+            const lines = [
+              `## 🚿 Flush Results`,
+              '',
+              `| Metric | Value |`,
+              `|--------|-------|`,
+              `| Mode | ${dryRun ? '🔍 DRY RUN' : '🚿 LIVE'} |`,
+              `| Status filter | ${statuses.join(', ')} |`,
+              `| Runs ${dryRun ? 'found' : 'cancelled'} | **${cancelled}** |`,
+              `| Runs skipped | ${skipped} |`,
+              `| Errors | ${errors} |`,
+              '',
+              `### By Workflow`,
+              '',
+              `| Workflow | Count |`,
+              `|----------|-------|`,
+            ];
+
+            const sorted = Object.entries(summary).sort((a, b) => b[1] - a[1]);
+            for (const [name, count] of sorted) {
+              lines.push(`| ${name} | ${count} |`);
+            }
+
+            if (sorted.length === 0) {
+              lines.push(`| _(none found)_ | 0 |`);
+            }
+
+            lines.push('');
+            lines.push(`_flush-queued-runs.yml | ${new Date().toISOString()}_`);
+
+            const body = lines.join('\n');
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\n${body}\n`);
+            core.info('');
+            core.info(body);
+
+            if (errors > 10) {
+              core.setFailed(`Too many errors (${errors}) — check logs`);
+            }
