@@ -33,23 +33,22 @@ quadrantChart
     x-axis Low Cost --> High Cost
     y-axis Unreliable --> Reliable
 
-    quadrant-1 Ideal — Build more of these
-    quadrant-2 Over-engineered — simplify
-    quadrant-3 Avoid — waste of effort
-    quadrant-4 Acceptable — quick wins
+    quadrant-1 Ideal - Build more of these
+    quadrant-2 Over-engineered - simplify
+    quadrant-3 Avoid - waste of effort
+    quadrant-4 Acceptable - quick wins
 
     store_memory: [0.10, 0.15]
-    Policy text files: [0.05, 0.10]
-    CONTINUATION_PROMPT files: [0.15, 0.20]
+    Policy-text-files: [0.05, 0.10]
+    CONTINUATION_PROMPT-files: [0.15, 0.20]
     README_FIRST_MANDATORY: [0.08, 0.18]
-    Accountability report text: [0.12, 0.25]
-
-    git check-ignore CI gate: [0.55, 0.95]
-    needs-dependency chain: [0.45, 0.98]
-    cognitive-preflight checklist: [0.60, 0.88]
-    session-watchdog timebox: [0.65, 0.82]
-    token-probe workflow: [0.50, 0.92]
-    PR comment injection: [0.40, 0.85]
+    Accountability-report-text: [0.12, 0.25]
+    git-check-ignore-CI-gate: [0.55, 0.95]
+    needs-dependency-chain: [0.45, 0.98]
+    cognitive-preflight-checklist: [0.60, 0.88]
+    session-watchdog-timebox: [0.65, 0.82]
+    token-probe-workflow: [0.50, 0.92]
+    PR-comment-injection: [0.40, 0.85]
 ```
 
 ---
