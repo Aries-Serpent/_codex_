@@ -49,6 +49,11 @@ permissions:
   pull-requests: write
   actions: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: cognitive-analysis-feed
+  cancel-in-progress: true
+
 jobs:
   aftermath_evaluator:
     name: Evaluate Outcomes and Learn

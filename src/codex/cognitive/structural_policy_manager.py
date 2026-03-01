@@ -44,11 +44,11 @@ _AUDIT_LOG: Path = Path(".codex/rbac_audit.jsonl")
 class PermissionTier(IntEnum):
     """RBAC permission tiers, ordered from most to least privileged."""
 
-    SYSTEM_OWNER = 0   # mbaetiong — all operations
-    ORG_OWNER = 1      # Aries-Serpent org owners — read/write/report
-    DELEGATE_ADMIN = 2 # token-granted delegates — read/write, no promote
-    READ_ONLY_AGENT = 3 # CI bots, external contributors — read only
-    DENIED = 99        # not a known actor; all actions denied
+    SYSTEM_OWNER = 0  # mbaetiong — all operations
+    ORG_OWNER = 1  # Aries-Serpent org owners — read/write/report
+    DELEGATE_ADMIN = 2  # token-granted delegates — read/write, no promote
+    READ_ONLY_AGENT = 3  # CI bots, external contributors — read only
+    DENIED = 99  # not a known actor; all actions denied
 
 
 # ---------------------------------------------------------------------------
@@ -191,7 +191,9 @@ class StructuralPolicyManager:
         Fail-deny: unknown actions → DENIED (no implicit allow).
         """
         if not actor or not action:
-            self._audit(actor, action, resource, PermissionTier.DENIED, allowed=False, reason="empty_input")
+            self._audit(
+                actor, action, resource, PermissionTier.DENIED, allowed=False, reason="empty_input"
+            )
             return False
 
         actor_tier = self._resolve_tier(actor)

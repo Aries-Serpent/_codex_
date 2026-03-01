@@ -257,9 +257,7 @@ class GitHubMCPPoster:
         url = f"{_GITHUB_API}/graphql"
         return self._post(url, {"query": query, "variables": variables})
 
-    def _resolve_discussion_ids(
-        self, owner: str, repo: str, category_slug: str
-    ) -> tuple[str, str]:
+    def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
         """Return (repository_node_id, category_node_id) for GraphQL mutations."""
         query = """
         query GetRepoAndCategory($owner: String!, $repo: String!) {
@@ -277,7 +275,10 @@ class GitHubMCPPoster:
         categories = repo_data.get("discussionCategories", {}).get("nodes", [])
         category_id = ""
         for cat in categories:
-            if cat.get("slug") == category_slug or cat.get("name", "").lower().replace(" ", "-") == category_slug:
+            if (
+                cat.get("slug") == category_slug
+                or cat.get("name", "").lower().replace(" ", "-") == category_slug
+            ):
                 category_id = cat["id"]
                 break
         if not category_id and categories:

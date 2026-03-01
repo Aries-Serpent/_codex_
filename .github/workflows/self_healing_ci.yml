@@ -36,6 +36,11 @@ permissions:
   issues: write
   actions: read
 
+# GROUNDED: Concurrency control prevents duplicate queued runs.
+concurrency:
+  group: self-healing-ci
+  cancel-in-progress: true
+
 jobs:
   analyze-and-heal:
     name: Analyze failure and apply auto-fix
@@ -53,6 +58,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Cleanup old self-heal branches (max 20)
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/ci/cleanup_stale_branches.py --execute --prefix "self-heal/run-" 2>&1 | head -50 || true
 
       - name: Fetch failure context
         id: context
@@ -120,10 +133,17 @@ jobs:
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "${HEAL_BRANCH}"
+
+          # GROUNDED: Only create branch if there are actual changes to commit.
+          # --allow-empty was causing branch proliferation during cascade incidents.
           git add -A
-          git commit -m "fix(self-heal): auto-fix for failed run #${FAILED_RUN_ID} (${FAILED_WORKFLOW})" \
-            --allow-empty || true
+          if git diff --cached --quiet; then
+            echo "ℹ️ No changes to commit — skipping branch creation"
+            exit 0
+          fi
+
+          git checkout -b "${HEAL_BRANCH}"
+          git commit -m "fix(self-heal): auto-fix for failed run #${FAILED_RUN_ID} (${FAILED_WORKFLOW})"
           git push origin "${HEAL_BRANCH}" || exit 0
 
           # Open draft PR — build JSON payload via Python heredoc

@@ -18,6 +18,7 @@ See Also
 docs/ops/openvino_integration.md — full Phase A/B/C integration plan.
 docs/ops/hardware_compatibility_matrix.md — Tier 2 guard policy.
 """
+
 from __future__ import annotations
 
 import logging
