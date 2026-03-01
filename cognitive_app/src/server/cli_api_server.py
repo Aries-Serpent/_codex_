@@ -26,7 +26,7 @@ import secrets
 import select
 import sqlite3
 import struct
-import subprocess
+import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 
 # ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
 # REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
@@ -371,18 +371,25 @@ async def memory_state(_auth: None = Depends(_require_memory_auth)):
     """
     Return STM/LTM counts and cache metrics.
     Drives MemoryManagementDashboard (P4.1 + P4.2).
+
+    cache_hit_rate = warm_entries / stm_count where warm = access_count >= 1.
+    This reflects the fraction of STM that has been retrieved at least once.
     """
     try:
         with _db_lock:
             stm_count = _db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
             ltm_count = _db.execute("SELECT COUNT(*) FROM ltm_entries").fetchone()[0]
+            warm_count = _db.execute(
+                "SELECT COUNT(*) FROM stm_entries WHERE access_count >= 1"
+            ).fetchone()[0]
         capacity = MEMORY_CAPACITY
         compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+        cache_hit_rate = warm_count / stm_count if stm_count > 0 else 0.0
         return {
             "stm_count": stm_count,
             "ltm_count": ltm_count,
             "capacity": capacity,
-            "cache_hit_rate": 0.0,
+            "cache_hit_rate": round(cache_hit_rate, 4),
             "compression_rate": round(compression_rate, 4),
             "patterns": [],
             "timestamp": datetime.now(timezone.utc).isoformat(),

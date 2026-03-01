@@ -274,6 +274,59 @@ class TestMemoryStateEndpoint:
         assert "capacity" in body
         assert "compression_rate" in body
 
+    def test_cache_hit_rate_zero_when_no_retrievals(self, client):
+        """cache_hit_rate must be 0.0 when no entries have been retrieved (access_count=0)."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("cold1", "x")
+        mem.store("cold2", "y")
+
+        resp = tc.get(
+            "/api/memory/state",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["stm_count"] == 2
+        assert body["cache_hit_rate"] == 0.0
+
+    def test_cache_hit_rate_increases_after_retrieve(self, client):
+        """cache_hit_rate must reflect warm entries (access_count >= 1)."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("warm", "w")
+        mem.store("cold", "c")
+
+        # Retrieve one entry — makes it warm
+        mem.retrieve("warm")
+
+        resp = tc.get(
+            "/api/memory/state",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        # 1 of 2 entries is warm → rate must be exactly 0.5
+        assert body["stm_count"] == 2
+        assert body["cache_hit_rate"] == 0.5
+
+    def test_cache_hit_rate_is_one_when_all_warm(self, client):
+        """cache_hit_rate == 1.0 when every STM entry has been retrieved at least once."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("e1", 1)
+        mem.store("e2", 2)
+        mem.retrieve("e1")
+        mem.retrieve("e2")
+
+        resp = tc.get(
+            "/api/memory/state",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["cache_hit_rate"] == 1.0
+
 
 # ---------------------------------------------------------------------------
 # Agent registry promotion checks (memory-sync-agent & telemetry-classifier)

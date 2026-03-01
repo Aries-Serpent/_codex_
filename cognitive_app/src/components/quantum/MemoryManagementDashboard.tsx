@@ -1,14 +1,27 @@
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Database, MagnifyingGlass, Brain } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Database, MagnifyingGlass, Brain, ArrowsClockwise } from '@phosphor-icons/react';
 import { useMemorySystem } from '@/hooks/use-memory-system';
 import { MemoryEntryCard } from './MemoryEntryCard';
 import { PatternLibraryBrowser } from './PatternLibraryBrowser';
 import { useState } from 'react';
 
+const STM_CONSOLIDATE_THRESHOLD = 0.8; // suggest consolidation at 80% fill
+
 export function MemoryManagementDashboard() {
-  const { state, searchResults, loading, searching, error, searchMemories } = useMemorySystem(true, 10000);
+  const {
+    state,
+    searchResults,
+    loading,
+    searching,
+    consolidating,
+    lastConsolidation,
+    error,
+    searchMemories,
+    consolidateMemory,
+  } = useMemorySystem(true, 10000);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (query: string) => {
@@ -41,8 +54,10 @@ export function MemoryManagementDashboard() {
 
   const stmPercentage = (state.stm_count / state.capacity) * 100;
   const ltmPercentage = (state.ltm_count / state.capacity) * 100;
+  const stmFill = state.stm_count / state.capacity;
   const cacheHitTarget = 30;
   const compressionTarget = 60;
+  const stmNeedsConsolidation = stmFill >= STM_CONSOLIDATE_THRESHOLD;
 
   return (
     <div className="space-y-6">
@@ -57,23 +72,62 @@ export function MemoryManagementDashboard() {
               <p className="text-sm text-muted-foreground">Hippocampus-Cortex Architecture</p>
             </div>
           </div>
-          <Badge variant="outline" className="border-accent text-accent">
-            {state.stm_count + state.ltm_count} / {state.capacity} Total
-          </Badge>
+          <div className="flex items-center gap-3">
+            {stmNeedsConsolidation && (
+              <Badge
+                variant="outline"
+                className="border-yellow-500 text-yellow-500 animate-pulse"
+                role="status"
+                aria-label={`STM ${(stmFill * 100).toFixed(0)}% full — consolidation recommended`}
+              >
+                ⚠ STM {(stmFill * 100).toFixed(0)}% — consolidation recommended
+              </Badge>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={consolidateMemory}
+              disabled={consolidating}
+              className="flex items-center gap-2"
+              title="Promote hot STM entries (access_count ≥ 3) into LTM"
+            >
+              <ArrowsClockwise
+                weight="bold"
+                className={`w-4 h-4 ${consolidating ? 'animate-spin' : ''}`}
+              />
+              {consolidating ? 'Consolidating…' : 'Consolidate'}
+            </Button>
+            <Badge variant="outline" className="border-accent text-accent">
+              {state.stm_count + state.ltm_count} / {state.capacity} Total
+            </Badge>
+          </div>
         </div>
+
+        {lastConsolidation && !lastConsolidation.error && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mb-4 px-4 py-2 rounded-md bg-green-500/10 border border-green-500/30 text-sm text-green-400"
+          >
+            ✓ Last consolidation: promoted <strong>{lastConsolidation.consolidated}</strong> STM →
+            LTM, pruned <strong>{lastConsolidation.pruned}</strong> stale LTM entries
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="p-4 bg-muted/30">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-muted-foreground">STM (Short-Term)</span>
-              <span className="text-xs text-[oklch(0.70_0.18_40)]">Hot Storage</span>
+              <span className={`text-xs ${stmNeedsConsolidation ? 'text-yellow-500' : 'text-[oklch(0.70_0.18_40)]'}`}>
+                {stmNeedsConsolidation ? `${(stmFill * 100).toFixed(0)}% Full` : 'Hot Storage'}
+              </span>
             </div>
-            <div className="text-3xl font-mono font-bold text-[oklch(0.70_0.18_40)]">
+            <div className={`text-3xl font-mono font-bold ${stmNeedsConsolidation ? 'text-yellow-500' : 'text-[oklch(0.70_0.18_40)]'}`}>
               {state.stm_count}
             </div>
             <div className="mt-2 h-2 bg-background/50 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[oklch(0.70_0.18_40)] transition-all"
+                className={`h-full transition-all ${stmNeedsConsolidation ? 'bg-yellow-500' : 'bg-[oklch(0.70_0.18_40)]'}`}
                 style={{ width: `${stmPercentage}%` }}
               />
             </div>
