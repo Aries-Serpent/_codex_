@@ -555,6 +555,7 @@ jobs:
       - name: "REQ-8: Memory system health check"
         id: req8
         if: always()
+        continue-on-error: true  # soft gate — warning only (server not started in CI is expected)
         run: |
           echo "### REQ-8: Memory System Health Check" >> "$GITHUB_STEP_SUMMARY"
           # Temporarily disable set -e so python3 non-zero exit (server unreachable) is
