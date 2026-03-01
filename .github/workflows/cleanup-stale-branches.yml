@@ -1,0 +1,66 @@
+name: Cleanup Stale Self-Heal Branches
+
+# Removes orphaned self-heal/run-* branches and closes their associated draft PRs.
+# Runs weekly on schedule AND can be dispatched manually from the Actions UI.
+#
+# GROUNDED: workflow_dispatch MUST be on main to appear in the Actions UI.
+# Merge this file to main before attempting manual dispatch.
+
+on:
+  schedule:
+    # Every Sunday at 03:00 UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — show what would be deleted without deleting'
+        required: false
+        type: boolean
+        default: false
+      prefix:
+        description: 'Branch prefix to match (default: self-heal/run-)'
+        required: false
+        type: string
+        default: 'self-heal/run-'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: cleanup-stale-branches
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Delete stale branches & close PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/ci/cleanup_stale_branches.py
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          PREFIX="${{ inputs.prefix || 'self-heal/run-' }}"
+          DRY_RUN="${{ inputs.dry_run }}"
+
+          ARGS="--prefix ${PREFIX}"
+
+          # Schedule runs always execute; manual runs respect the dry_run input
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${DRY_RUN}" != "true" ]; then
+            ARGS="${ARGS} --execute"
+          fi
+
+          python scripts/ci/cleanup_stale_branches.py ${ARGS}

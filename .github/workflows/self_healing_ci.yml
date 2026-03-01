@@ -59,6 +59,14 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cleanup old self-heal branches (max 20)
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/ci/cleanup_stale_branches.py --execute --prefix "self-heal/run-" 2>&1 | head -50 || true
+
       - name: Fetch failure context
         id: context
         env:
