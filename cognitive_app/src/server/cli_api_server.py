@@ -22,6 +22,7 @@ import logging
 import os
 import pty
 import re
+import secrets
 import select
 import sqlite3
 import struct
@@ -39,8 +40,9 @@ from datetime import datetime, timezone
 from typing import Any, Deque, Dict, Optional
 
 import httpx
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
 
@@ -106,6 +108,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Memory endpoint auth ──────────────────────────────────────────────────────
+_memory_bearer = HTTPBearer(auto_error=False)
+
+
+def _require_memory_auth(
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(_memory_bearer),
+) -> None:
+    """Require a valid Bearer token (CODEX_MASTER_KEY or CODEX_BACKUP_KEY) on
+    memory endpoints to prevent unauthorised access to potentially sensitive
+    STM/LTM data."""
+    expected = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or ""
+    if not expected:
+        raise HTTPException(status_code=503, detail="Memory auth not configured on server")
+    if creds is None or not secrets.compare_digest(creds.credentials, expected):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
 
 # ── Sprint 2: SQLite-backed command history ───────────────────────────────────
 MAX_HISTORY = 200
@@ -340,7 +359,7 @@ class SQLiteMemory:
 # ── P4.2: Memory REST endpoints ───────────────────────────────────────────────
 
 @app.get("/api/memory/state")
-async def memory_state():
+async def memory_state(_auth: None = Depends(_require_memory_auth)):
     """
     Return STM/LTM counts and cache metrics.
     Drives MemoryManagementDashboard (P4.1 + P4.2).
@@ -370,12 +389,12 @@ async def memory_state():
             "compression_rate": 0.0,
             "patterns": [],
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "error": str(exc),
+            "error": "Internal error retrieving memory state",
         }
 
 
 @app.get("/api/memory/search")
-async def memory_search(q: str = "", limit: int = 20):
+async def memory_search(q: str = "", limit: int = 20, _auth: None = Depends(_require_memory_auth)):
     """
     Full-text search over STM + LTM entries.
     Drives MemoryManagementDashboard search (P4.1 + P4.2).
@@ -394,7 +413,7 @@ async def memory_search(q: str = "", limit: int = 20):
         return {"items": [dict(r) for r in rows], "total": len(rows)}
     except Exception as exc:
         log.warning("memory_search error: %s", exc)
-        return {"items": [], "total": 0, "error": str(exc)}
+        return {"items": [], "total": 0, "error": "Internal error searching memory"}
 
 
 @app.get("/api/ooda/metrics")
@@ -518,7 +537,7 @@ async def api_proxy(req: ApiProxyRequest):
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
-    if "api.github.com" in url and "Authorization" not in headers:
+    if url.startswith("https://api.github.com/") and "Authorization" not in headers:
         master_key = os.environ.get("CODEX_MASTER_KEY") or ""
         backup_key = os.environ.get("CODEX_BACKUP_KEY") or ""
         token = master_key if master_key else backup_key

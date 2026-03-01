@@ -50,6 +50,11 @@ jobs:
     if: |
       (github.actor == 'mbaetiong' || github.actor == 'github-actions[bot]') &&
       github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
+      github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
+      github.event.workflow_run.name != 'Self-Healing CI' &&
+      github.event.workflow_run.name != 'Art_Self-Healing CI/CD' &&
+      github.event.workflow_run.name != 'Art_Cognitive Action & Decision (Unified)' &&
+      github.event.workflow_run.name != 'Art_Cognitive Analysis & Learning (Unified)' &&
       github.event.workflow_run.name != 'Art_Workflow Analytics & Health (Unified)'
 
     steps:

@@ -100,17 +100,19 @@ Automatic trigger: when `stm_count / capacity > 0.8` (configurable via `CODEX_ME
 ## API Interaction
 
 ```python
-import sqlite3, json, os
+import sqlite3, os
 from datetime import datetime, timezone, timedelta
 
 DB_PATH = os.environ.get("CODEX_DB_PATH",
     os.path.expanduser("~/.codex/cli_history.db"))
 MEMORY_CAPACITY = int(os.environ.get("CODEX_MEMORY_CAPACITY", "1000"))
 STM_THRESHOLD = 0.80  # trigger consolidation at 80% fill
+HOT_ENTRIES_LIMIT = 50  # max STM entries to promote per sync cycle
+CLI_API_URL = os.environ.get("CODEX_CLI_API_URL", "http://localhost:8765")
 
 def run_memory_sync():
     import requests
-    state = requests.get("http://localhost:8765/api/memory/state", timeout=5).json()
+    state = requests.get(f"{CLI_API_URL}/api/memory/state", timeout=5).json()
     fill = state["stm_count"] / state["capacity"]
     if fill < STM_THRESHOLD:
         return {"skipped": True, "fill": round(fill, 3)}
@@ -121,7 +123,7 @@ def run_memory_sync():
     # 1. Consolidate hot STM entries → LTM
     hot = conn.execute(
         "SELECT key, value, metadata, access_count FROM stm_entries "
-        "WHERE access_count >= 3 ORDER BY access_count DESC LIMIT 50"
+        f"WHERE access_count >= 3 ORDER BY access_count DESC LIMIT {HOT_ENTRIES_LIMIT}"
     ).fetchall()
 
     consolidated, pruned = 0, 0
