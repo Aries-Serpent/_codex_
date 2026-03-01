@@ -17,6 +17,10 @@ on:
       - 'tests/**'
       - 'pytest.ini'
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   pre-flight-validation:
     runs-on: ubuntu-latest

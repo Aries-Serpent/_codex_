@@ -41,7 +41,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: flush-queued-runs
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 
 jobs:

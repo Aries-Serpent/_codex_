@@ -8,6 +8,10 @@ on:
 # Optimized with caching and parallelization
 # Target runtime: ≤ 10 minutes
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   validate-imports:
     runs-on: ubuntu-latest

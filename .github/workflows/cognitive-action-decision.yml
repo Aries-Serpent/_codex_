@@ -42,7 +42,7 @@ permissions:
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
 concurrency:
-  group: cognitive-action-decision
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:

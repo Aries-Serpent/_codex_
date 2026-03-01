@@ -38,13 +38,14 @@ permissions:
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
 concurrency:
-  group: self-healing-ci
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   analyze-and-heal:
     name: Analyze failure and apply auto-fix
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # Only run on failures
     if: github.event.workflow_run.conclusion == 'failure'
 

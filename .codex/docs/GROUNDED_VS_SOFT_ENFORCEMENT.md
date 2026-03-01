@@ -1,8 +1,9 @@
 # Enforcement Methods: Ideal (Grounded) vs. Sort-of-Works
 
-> **Generated:** 2026-02-28 | S116i analysis
+> **Generated:** 2026-02-28 | S116i analysis | **Updated:** 2026-03-01 | GROUNDED-promotion phase complete
 > **Context:** Aries-Serpent/_codex_ agent behavioral enforcement audit
 > **Question:** What mechanisms actually prevent the agent from forgetting / bypassing policy under task pressure?
+> **Status:** ✅ All achievable SOFT→GROUNDED promotions complete. Two policies remain ungatable (self-review, README read).
 
 ---
 
@@ -133,14 +134,15 @@ flowchart TD
 | Exploration: never self-close | `SESSION_TYPE_EXPLORATION` → checklist injection | 🟡 **PARTIAL** | Checklist is present-tense but not a hard stop. |
 | "Do NOT auto-proceed" | `session-watchdog` detection + checklist item | 🟡 **PARTIAL** | Same — visible, but no structural gate |
 | Session summary on close | `chatops_copilot_trigger.yml` session-summary gate: blocks `/copilot continue` until `## 🧠 Session Summary` posted after `SESSION_TIMEBOX_EXPIRED` | ✅ **GROUNDED** | Tier-1 hard block in chat-ops dispatch (S116i resume) |
-| ~10min incremental summaries | Checklist item only | ⚠️ **SOFT** | No timer / no detection |
+| ~10min incremental summaries | `session-incremental-summary-reminder.yml` (WF-003): cron/5min, posts `INCREMENTAL_SUMMARY_REMINDER` when exploration active + agent silent >10min | ✅ **GROUNDED** | **✅ PROMOTED TO TIER-2 (WF-003)** — present-tense injection via automated cron reminder |
 | Tokens functional | `token-probe.yml` real HTTP probe | ✅ **GROUNDED** | Must be dispatched manually (not automatic yet) |
 | Read README_FIRST_MANDATORY | `store_memory` + naming | ❌ **SOFT** | No gate. V-012: failed despite memory entry |
 | Pre-commit gitignore check | `store_memory` + REQ-3 gate | ✅ **GROUNDED** | REQ-3 catches it at PR time — grounded |
-| 5-pass self-review before close | Policy text only | ❌ **SOFT** | No mechanism can detect review quality |
-| NEVER stop after one commit | `store_memory` + policy text | ❌ **SOFT** | No gate. Still happens. Most serious violation. |
+| 5-pass self-review before close | Policy text only | ❌ **SOFT** | No mechanism can detect review quality — subjective, ungatable |
+| NEVER stop after one commit | `cognitive-preflight` REQ-7: commit-count check → `::warning::` annotation + job summary | 🟡 **TIER-2** | **✅ PROMOTED TO TIER-2 (REQ-7)** — warning posted in job summary on every push when PR has ≤1 commit |
 | Update CHANGELOG.md | `cognitive-preflight` REQ-5: `git diff HEAD~1 HEAD` → `exit 1` | ✅ **GROUNDED** | Tier-1 hard stop — same pattern as REQ-4 (S116i) |
 | CI failure patterns reviewed | `cognitive-preflight` REQ-2: table in job summary | ✅ **GROUNDED** | Summary is visible. Not a hard stop but present-tense. |
+| CI failure rate monitored | `ci-health-monitor.yml`: runs every 6h, classifies failures into 16 patterns, creates GitHub issue when rate >20% | ✅ **GROUNDED** | **✅ PROMOTED TO TIER-1 (ci-health-monitor fix)** — automated alerting with expanded pattern library |
 
 ---
 
@@ -150,18 +152,18 @@ flowchart TD
 flowchart TD
     subgraph REMAINING_GAPS ["Remaining Soft Policies — Engineering Path to Grounded"]
 
-        G1["NEVER stop after one commit\n──────────────\nCurrent: store_memory (fails)\nGrounded fix:\nAdd session-duration check to cognitive-preflight:\n• Read SESSION_START timestamp from agent_auth_session.json\n• If only 1 commit since session start AND\n  work queue has open items → exit 1\nBlocker: requires session-start tracking to be reliable"]
+        G1["✅ NEVER stop after one commit\n──────────────\n✅ PROMOTED TO TIER-2 (WF-003 / REQ-7)\ncognitive-preflight REQ-7:\ngit rev-list count origin/BASE..HEAD\nIf ≤1 commit → ::warning:: annotation + job summary\nAgent reads annotation in present-tense context.\nNote: Hard block (Tier-1) requires session-duration\ntracking — tracked as future improvement."]
 
         G2["✅ CHANGELOG.md update required\n──────────────\n✅ PROMOTED TO TIER-1 (S116i)\ncognitive-preflight REQ-5:\ngit diff HEAD~1 HEAD | grep CHANGELOG.md\nIf not touched → exit 1 (same pattern as REQ-4)"]
 
         G3["✅ Session summary on close\n──────────────\n✅ PROMOTED TO TIER-1 (S116i resume)\nchatops_copilot_trigger.yml session-summary gate:\n/copilot continue is BLOCKED until\n## 🧠 Session Summary is posted after\nSESSION_TIMEBOX_EXPIRED.\nBypass cost: must post a real summary"]
 
-        G4["~10min incremental summaries\n──────────────\nCurrent: checklist item (soft)\nGrounded fix:\nScheduled workflow (cron: every 10 min) that checks\nif SESSION_TYPE_EXPLORATION is active and last\nagent comment was >10min ago → posts reminder\nBlocker: GitHub Actions minimum cron interval = 5min\nCost: medium — requires cron + comment timestamp logic"]
+        G4["✅ ~10min incremental summaries\n──────────────\n✅ PROMOTED TO TIER-2 (WF-003)\nsession-incremental-summary-reminder.yml:\ncron */5 * * * * (every 5 min)\nFor each open PR with SESSION_TYPE_EXPLORATION:\nIf last agent comment >10min ago → posts\nINCREMENTAL_SUMMARY_REMINDER with required steps\nBypass cost: must consciously ignore a PR comment"]
 
         G5["5-pass self-review\n──────────────\nCurrent: policy text (soft)\nGrounded fix: NONE POSSIBLE\nReasoning: review quality is subjective.\nCannot be CI-gated.\nBest available: checklist item that is\npresent-tense (already implemented in REQ-1)"]
     end
 
-    NEXT["Highest ROI next steps:\n1. ✅ CHANGELOG check — DONE (REQ-5)\n2. ✅ Session summary gate — DONE (chatops Tier-1)\n3. NEVER-stop-early: session duration tracking"]
+    NEXT["All achievable promotions complete:\n1. ✅ CHANGELOG check — DONE (REQ-5, Tier-1)\n2. ✅ Session summary gate — DONE (chatops, Tier-1)\n3. ✅ 10min summaries — DONE (WF-003, Tier-2)\n4. ✅ NEVER stop early — DONE (REQ-7, Tier-2)\n5. ⏳ NEVER stop early Tier-1: requires session-duration tracking"]
 
     REMAINING_GAPS --> NEXT
 
@@ -170,16 +172,19 @@ flowchart TD
 
 ---
 
-## Reliability Spectrum — Current State
+## Reliability Spectrum — Updated State
 
 ```mermaid
 xychart-beta
     title "Policy Enforcement Reliability (0 = always bypassed, 10 = never bypassed)"
-    x-axis ["gitignore\ngate", "accountability\nreport gate", "CI patterns\nin summary", "token\nprobe", "timebox\nwarning", "exploration\nchecklist", "CHANGELOG\ncheck", "self-review\nrule", "stop-early\nrule", "session\nsummary"]
+    x-axis ["gitignore\ngate", "accountability\nreport gate", "CI patterns\nin summary", "token\nprobe", "timebox\nwarning", "exploration\nchecklist", "CHANGELOG\ncheck", "self-review\nrule", "stop-early\nrule", "session\nsummary", "10min\nreminder"]
     y-axis "Reliability" 0 --> 10
-    bar [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
-    line [9, 9, 7, 8, 5, 5, 9, 1, 1, 9]
+    bar [9, 9, 7, 8, 5, 5, 9, 1, 5, 9, 6]
+    line [9, 9, 7, 8, 5, 5, 9, 1, 5, 9, 6]
 ```
+
+> **Updated:** stop-early-rule raised from 1→5 (Tier-3→Tier-2 via REQ-7 present-tense warning).
+> **Updated:** 10min-reminder added at 6 (Tier-3→Tier-2 via WF-003 automated cron reminder).
 
 ---
 
@@ -188,10 +193,14 @@ xychart-beta
 | Tier | Mechanism | Bypass Cost | Examples built |
 |------|-----------|-------------|----------------|
 | **Tier 1 — Hard Block** | `exit 1` in CI job that `activate-delegation needs:` | Must fix the actual condition | REQ-3 gitignore, REQ-4 accountability report, REQ-5 CHANGELOG, chatops session-summary gate |
-| **Tier 2 — Present-Tense Injection** | PR comment posted with every push (visible in current context) | Must consciously ignore a visible checklist | REQ-1 checklist, session-type directives, timebox remaining |
+| **Tier 2 — Present-Tense Injection** | PR comment or job annotation posted on every push/cron (visible in current context) | Must consciously ignore a visible checklist or annotation | REQ-1 checklist, REQ-7 commit-count warning, session-type directives, timebox remaining, WF-003 10min reminder |
 | **Tier 3 — Background Memory** | `store_memory`, `.md` files, README naming | Zero — bypassed passively under task pressure | All pre-WF-001 policies |
 
 **Rule:** Every Tier-3 policy that has caused a documented violation should be promoted to Tier-1 or Tier-2.
+
+**Remaining Tier-3 (ungatable):**
+- `5-pass self-review` — subjective, review quality cannot be CI-detected
+- `Read README_FIRST_MANDATORY` — file-read cannot be CI-verified
 
 ---
 
@@ -215,7 +224,8 @@ xychart-beta
  │     ├─ REQ-3: git check-ignore → exit 1 (gitignore gate)        │
  │     ├─ REQ-4: git diff HEAD~1 → exit 1 (accountability report)  │
  │     ├─ REQ-5: git diff HEAD~1 → exit 1 (CHANGELOG.md)           │
- │     └─ REQ-6: SESSION_TIMEBOX_EXPIRED ack → exit 1               │
+ │     ├─ REQ-6: SESSION_TIMEBOX_EXPIRED ack → exit 1               │
+ │     └─ REQ-7: commit-count ≤1 → ::warning:: annotation (Tier-2) │
  │     All feed into: activate-delegation needs: [cognitive-preflight]│
  │                                                                  │
  │  3. chatops_copilot_trigger.yml                                  │
@@ -234,6 +244,18 @@ xychart-beta
  │  6. copilot-pr-session-injector.yml                              │
  │     └─ "🔀 Fetch base branch ref" before origin/base_ref diff   │
  │        Grounded: prevents silent diff failure on non-default base│
+ │                                                                  │
+ │  7. session-incremental-summary-reminder.yml (WF-003)            │
+ │     └─ cron */5 * * * * — every 5 min                           │
+ │        For each PR with SESSION_TYPE_EXPLORATION active:         │
+ │        If last agent comment >10min ago → posts                  │
+ │        INCREMENTAL_SUMMARY_REMINDER in PR comments               │
+ │        Bypass cost: must consciously ignore a PR comment         │
+ │                                                                  │
+ │  8. ci-health-monitor.yml                                        │
+ │     └─ cron every 6h — collects telemetry, classifies failures   │
+ │        into 16 patterns, creates issue when rate >20%           │
+ │        Uses expanded PATTERN_KEYWORDS (collect_telemetry.py)     │
  └──────────────────────────────────────────────────────────────────┘
  
  ┌──────────────────────────────────────────────────────────────────┐
@@ -245,7 +267,6 @@ xychart-beta
  │  • .codex/CONTINUATION_PROMPT_*.md → may not be picked up       │
  │  • Accountability report text → reactive, not preventive         │
  │  • "5-pass self-review" → subjective, ungatable                 │
- │  • "NEVER stop after one commit" → no session-duration gate     │
  └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -255,7 +276,7 @@ xychart-beta
 |----------|---------------------------------------|-----------------|--------|
 | `copilot-setup-steps.yml` | `report_progress` internal diff vs base branch | ✅ `git fetch origin '+refs/heads/*:...' --depth=1` | ✅ **GROUNDED** |
 | `copilot-pr-session-injector.yml` | `origin/${{ github.base_ref }}...HEAD` (3 diffs) | ✅ `git fetch origin "${{ github.base_ref }}" --depth=1` | ✅ **GROUNDED** (fixed this session) |
-| `agent-auth-delegation.yml` (cognitive-preflight) | `HEAD~1 HEAD` only | N/A — uses `fetch-depth: 2` | ✅ **SAFE** (no base_ref needed) |
+| `agent-auth-delegation.yml` (cognitive-preflight) | `HEAD~1 HEAD` + `origin/BASE..HEAD` (REQ-7) | ✅ `fetch-depth: 0` + explicit base fetch in REQ-7 step | ✅ **GROUNDED** |
 | `pr-size-analyzer.yml` | `${{ github.event.pull_request.base.sha }}` | ✅ `git fetch origin "$BASE_SHA"` + `HEAD~1` fallback | ✅ **GROUNDED** (has fallback) |
 | `validate.yml` | `VALIDATE_BASE_REF` env var (optional) | Uses `fetch-depth: 0` | 🟡 **PARTIAL** (fetch-depth: 0 may not include all branch refs) |
 | `auto-fix-pr-check.yml` | `git diff` (staged only) | N/A — no cross-branch diff | ✅ **SAFE** |

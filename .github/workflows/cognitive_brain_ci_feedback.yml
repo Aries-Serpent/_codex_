@@ -24,7 +24,7 @@ on:
 # its own completion triggers workflow-analytics-unified → which triggers this → ∞ queue.
 # cancel-in-progress: true ensures only the latest run executes; duplicates are dropped.
 concurrency:
-  group: cognitive-brain-ci-feedback
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 # §6 ADMIN_MANUAL_SETUP_GUIDE.md: explicit permissions block replaces the
@@ -40,6 +40,7 @@ jobs:
   report-outcome:
     name: Report CI Outcome to Cognitive Brain
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # Pilot phase: internal actor only (Q3-B airtight system).
     # Expand to ORG_OWNER tier when Phase 5 StructuralPolicyManager ships.
     #
@@ -91,6 +92,9 @@ jobs:
               "training":     ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
               "coverage":     ("P-044", ImprovementArea.COVERAGE_IMPROVEMENT),
               "cognitive":    ("P-046", ImprovementArea.AGENT_CHAINING),
+              "health":       ("P-047", ImprovementArea.CI_SELF_HEALING),
+              "monitor":      ("P-047", ImprovementArea.CI_SELF_HEALING),
+              "self.heal":    ("P-047", ImprovementArea.CI_SELF_HEALING),
           }
 
           workflow_lower = workflow.lower()

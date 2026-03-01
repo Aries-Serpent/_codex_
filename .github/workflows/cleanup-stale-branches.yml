@@ -28,7 +28,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: cleanup-stale-branches
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:

@@ -45,6 +45,10 @@ permissions:
   issues: write
   pull-requests: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   cascade_review:
     name: Cascade PR Review
@@ -214,6 +218,7 @@ jobs:
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [cascade_review, self_evolution]
     if: always()
 

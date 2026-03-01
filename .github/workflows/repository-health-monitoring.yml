@@ -16,6 +16,10 @@ permissions:
   contents: write
   pull-requests: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   monitor_repository_health:
     runs-on: ubuntu-latest

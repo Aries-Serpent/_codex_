@@ -28,11 +28,16 @@ permissions:
   issues: write
   contents: read
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
 
   watchdog:
     name: "⏱ Session Watchdog"
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     # Only run on PR comments (not issue comments).
     # Skip the watchdog's own posted comments to prevent infinite trigger loops.
     if: >

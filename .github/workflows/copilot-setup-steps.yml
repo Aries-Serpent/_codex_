@@ -61,6 +61,10 @@ env:
   NODE_VERSION: "20"
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
@@ -111,6 +115,19 @@ jobs:
       # Guard: git show <base_sha> -- <file> exits 128 for files added after
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
+      - name: "🔑 Inject repo variable context for agent"
+        run: |
+          if [ -f .codex/agent_context.json ]; then
+            echo "Injecting repo variable context from .codex/agent_context.json"
+            # base64-encoded Python script: reads agent_context.json and writes all
+            # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
+            # session sees them as environment variables.
+            # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3
+          else
+            echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
+          fi
+
       - name: "🛡️ Install safe-git-show guard on PATH"
         run: |
           if [ -f scripts/ci/safe_git_show.sh ]; then
@@ -413,6 +430,30 @@ jobs:
           if [ -d cognitive/ ]; then
             echo "✅ Cognitive brain components available"
             ls -la cognitive/ | head -10
+          fi
+
+      - name: "💻 Start CLI API Server (background)"
+        # Sprint 2: auto-start FastAPI :8765 so the CLI tab is live when the
+        # Copilot agent session begins. Guarded — non-blocking on missing deps.
+        continue-on-error: true
+        run: |
+          if [ ! -f cognitive_app/src/server/cli_api_server.py ]; then
+            echo "⚠️ cli_api_server.py not found — skipping (non-blocking)"
+            exit 0
+          fi
+          pip install fastapi uvicorn ptyprocess --quiet 2>/dev/null || true
+          nohup uvicorn cognitive_app.src.server.cli_api_server:app \
+            --host 0.0.0.0 \
+            --port 8765 \
+            --log-level warning \
+            > "${RUNNER_TEMP}/cli_api_server.log" 2>&1 &
+          echo "CLI_API_SERVER_PID=$!" >> "$GITHUB_ENV"
+          sleep 2
+          if curl -sf http://localhost:8765/api/health > /dev/null 2>&1; then
+            echo "✅ CLI API Server started on :8765 (PID=$!)"
+          else
+            echo "⚠️ CLI API Server did not respond to health check — see RUNNER_TEMP/cli_api_server.log"
+            cat "${RUNNER_TEMP}/cli_api_server.log" 2>/dev/null | tail -20 || true
           fi
 
       - name: "📊 Generate Environment Report (temp path)"

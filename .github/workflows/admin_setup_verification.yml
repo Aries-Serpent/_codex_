@@ -32,10 +32,15 @@ permissions:
   pull-requests: write
   issues: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   verify-setup:
     name: Verify Admin Setup
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4

@@ -9,6 +9,7 @@ import { QuantumDecisionEngine } from '@/components/quantum/QuantumDecisionEngin
 import { MemoryManagementDashboard } from '@/components/quantum/MemoryManagementDashboard';
 import { AgentOrchestrationPanel } from '@/components/quantum/AgentOrchestrationPanel';
 import { MetricsDashboard } from '@/components/quantum/MetricsDashboard';
+import { CliTerminal, ApiClient } from '@/components/cli';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -49,7 +50,7 @@ function App() {
 
       <main className="container mx-auto px-6 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 max-w-4xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-8 max-w-4xl mx-auto mb-8">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <ChartLine weight="duotone" className="w-4 h-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -77,6 +78,10 @@ function App() {
             <TabsTrigger value="physics" className="flex items-center gap-2">
               <span>🔬</span>
               <span className="hidden sm:inline">Physics</span>
+            </TabsTrigger>
+            <TabsTrigger value="cli" className="flex items-center gap-2">
+              <span>💻</span>
+              <span className="hidden sm:inline">CLI</span>
             </TabsTrigger>
           </TabsList>
 
@@ -125,6 +130,13 @@ function App() {
 
           <TabsContent value="physics">
             <QuantumDecisionEngine />
+          </TabsContent>
+
+          <TabsContent value="cli">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <CliTerminal />
+              <ApiClient />
+            </div>
           </TabsContent>
         </Tabs>
       </main>

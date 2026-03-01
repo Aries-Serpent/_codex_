@@ -14,6 +14,10 @@ on:
       - 'tests/auth/**'
   workflow_dispatch:
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   test-authentication:
     name: Test Authentication Module

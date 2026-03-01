@@ -46,6 +46,10 @@ permissions:
 env:
   PYTHON_VERSION: '3.12'
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   validate-workflow-links:
     name: Validate Workflow Documentation Links

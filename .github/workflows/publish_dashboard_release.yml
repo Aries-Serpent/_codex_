@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: "15 10 * * 1" # weekly Monday 10:15 UTC
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: false  # deployment: never cancel in-progress — leaves prod in unknown state
 jobs:
   publish-dashboard:
     runs-on: ubuntu-latest

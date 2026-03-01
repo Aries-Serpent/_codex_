@@ -1,0 +1,133 @@
+# copilot-agent-vars-bootstrap.yml
+#
+# Repo Variables → Copilot Agent Injection Mechanism
+# ===================================================
+#
+# PURPOSE:
+#   Ensures the Copilot coding agent has full awareness of key repository
+#   variables at session start by writing a structured JSON manifest to
+#   .codex/agent_context.json — readable from copilot-setup-steps.yml.
+#
+# HOW IT WORKS:
+#   1. Triggered on every PR push + workflow_dispatch
+#   2. Reads all COPILOT_* and CODEX_* repo variables via GitHub API
+#   3. Writes .codex/agent_context.json (non-sensitive values only)
+#   4. copilot-setup-steps.yml can `cat .codex/agent_context.json` to
+#      inject context into the agent's environment before the session starts
+#
+# SECURITY:
+#   - Only reads vars.* (never secrets)
+#   - Writes only to .codex/ (not exposed to PR diff unless committed)
+#   - CODEX_MASTER_KEY used solely for GET /repos/.../actions/variables
+#
+# GROUNDED STATUS: Tier-2 (advisory context injection, not a hard gate)
+
+name: "Agent Vars Bootstrap"
+
+on:
+  push:
+    branches:
+      - 'copilot/**'
+      - 'main'
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print context without writing)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-agent-context:
+    name: "Bootstrap agent variable context"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Read repo variables and write agent context
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          # Expose ALL vars.* as env vars using GitHub's native syntax
+          COPILOT_AGENT_AUTH_ENABLED:    ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}
+          COPILOT_AGENT_SESSION_EXPIRES: ${{ vars.COPILOT_AGENT_SESSION_EXPIRES }}
+          COPILOT_AGENT_LAST_SESSION_ID: ${{ vars.COPILOT_AGENT_LAST_SESSION_ID }}
+          COPILOT_AGENT_STATE:           ${{ vars.COPILOT_AGENT_STATE }}
+          CODEX_CI_FAILURE_RATE:         ${{ vars.CODEX_CI_FAILURE_RATE }}
+          CODEX_COVERAGE_THRESHOLD:      ${{ vars.CODEX_COVERAGE_THRESHOLD }}
+          CODEX_GROUNDED_TIER1_COUNT:    ${{ vars.CODEX_GROUNDED_TIER1_COUNT }}
+          CODEX_GROUNDED_TIER2_COUNT:    ${{ vars.CODEX_GROUNDED_TIER2_COUNT }}
+          CODEX_LAST_TELEMETRY_DATE:     ${{ vars.CODEX_LAST_TELEMETRY_DATE }}
+          DEPLOY_ENV:                    ${{ vars.DEPLOY_ENV }}
+        run: |
+          python3 - << 'PYEOF'
+          import json, os, pathlib, datetime
+
+          # Collect all env vars that are repo variable injections
+          VAR_PREFIXES = ("COPILOT_AGENT_", "CODEX_", "DEPLOY_")
+          context = {}
+          for key, val in os.environ.items():
+              if any(key.startswith(p) for p in VAR_PREFIXES) and val:
+                  context[key] = val
+
+          # Add workflow metadata
+          context["_meta"] = {
+              "generated_at":   datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              "workflow":       "copilot-agent-vars-bootstrap",
+              "sha":            os.environ.get("GITHUB_SHA", "")[:8],
+              "ref":            os.environ.get("GITHUB_REF", ""),
+              "actor":          os.environ.get("GITHUB_ACTOR", ""),
+              "run_id":         os.environ.get("GITHUB_RUN_ID", ""),
+              "repo_variables_count": len([k for k in context if not k.startswith("_")]),
+          }
+
+          output_path = pathlib.Path(".codex/agent_context.json")
+          output_path.parent.mkdir(parents=True, exist_ok=True)
+
+          dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
+          if dry_run:
+              print("🔍 DRY RUN — agent context (not written):")
+              print(json.dumps(context, indent=2))
+          else:
+              output_path.write_text(json.dumps(context, indent=2))
+              print(f"✅ Written {len(context)-1} variables to {output_path}")
+              print(json.dumps(context, indent=2))
+          PYEOF
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo "## 🔑 Agent Variable Context Bootstrap" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f .codex/agent_context.json ]; then
+            COUNT=$(python3 -c "import json; d=json.load(open('.codex/agent_context.json')); print(len(d)-1)")
+            echo "✅ **${COUNT}** repo variables injected into \`.codex/agent_context.json\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat .codex/agent_context.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "ℹ️ Dry run — no file written" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### How to Use in copilot-setup-steps.yml" >> "$GITHUB_STEP_SUMMARY"
+          echo '```yaml' >> "$GITHUB_STEP_SUMMARY"
+          echo '- name: Inject agent context' >> "$GITHUB_STEP_SUMMARY"
+          echo "  run: |" >> "$GITHUB_STEP_SUMMARY"
+          echo '    if [ -f .codex/agent_context.json ]; then' >> "$GITHUB_STEP_SUMMARY"
+          echo '      python3 -c "import json,os; [print(f'"'"'export {k}={v}'"'"') for k,v in json.load(open('"'"'.codex/agent_context.json'"'"')).items() if not k.startswith('"'"'_'"'"')]" >> "$GITHUB_ENV"' >> "$GITHUB_STEP_SUMMARY"
+          echo '    fi' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

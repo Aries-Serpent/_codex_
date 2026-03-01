@@ -12,10 +12,15 @@ env:
   # Enforce deterministic test execution
   RUST_TEST_THREADS: "1"
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   rust_tests:
     name: Rust Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - name: Free disk space
@@ -75,6 +80,7 @@ jobs:
   rust_benchmarks:
     name: Rust Benchmarks
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: rust_tests
 
     steps:
@@ -133,6 +139,7 @@ jobs:
   code_coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: rust_tests
 
     steps:
@@ -191,6 +198,7 @@ jobs:
   python_integration:
     name: Python Integration Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: rust_tests
 
     steps:
@@ -281,6 +289,7 @@ jobs:
   performance_regression:
     name: Performance Regression Detection
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [rust_benchmarks]
     permissions:
       contents: read
@@ -362,6 +371,7 @@ jobs:
   security_audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - uses:  actions/checkout@v6
@@ -385,6 +395,7 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - uses:  actions/checkout@v6
@@ -405,6 +416,7 @@ jobs:
   release:
     name: Build Release
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     needs: [rust_tests, python_integration, code_coverage]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -439,6 +451,7 @@ jobs:
   status_check:
     name:  Overall Status
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     needs: [rust_tests, rust_benchmarks, code_coverage, python_integration, security_audit]
     if: always()
 

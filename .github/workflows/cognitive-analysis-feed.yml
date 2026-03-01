@@ -51,7 +51,7 @@ permissions:
 
 # GROUNDED: Concurrency control prevents duplicate queued runs.
 concurrency:
-  group: cognitive-analysis-feed
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -203,6 +203,7 @@ jobs:
   generate_summary:
     name: Generate Analysis Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [aftermath_evaluator, feed_patterns]
     if: always()
 
