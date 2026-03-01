@@ -26,6 +26,11 @@ import select
 import sqlite3
 import struct
 import subprocess
+
+# ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
+# REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
+# modify sys.path on every request (avoids reviewer concern about per-request mutation).
+import sys as _sys
 import termios
 import threading
 import time
@@ -38,10 +43,7 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
-# REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
-# modify sys.path on every request (avoids reviewer concern about per-request mutation).
-import sys as _sys
+
 def _find_repo_root() -> str:
     """Walk up from this file until we find a pyproject.toml or .git — repo root marker."""
     from pathlib import Path  # noqa: PLC0415 (module-level import order doesn't matter here)
