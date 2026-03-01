@@ -64,6 +64,7 @@ jobs:
 
       - name: Analyze PR with GitHub Copilot
         id: pr_analysis
+        continue-on-error: true
         uses: mvkaran/gh-copilot@v1.0.0
         with:
           copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
@@ -193,7 +194,7 @@ jobs:
             core.info(`✅ Cognitive brain briefing posted on PR #${context.payload.pull_request.number}`);
 
       - name: Fallback (Copilot unavailable or key missing)
-        if: steps.pr_analysis.outputs.validation-status != 'valid'
+        if: steps.pr_analysis.outcome == 'failure' || steps.pr_analysis.outputs.validation-status != 'valid'
         run: |
           echo "ℹ️ Copilot PR analysis skipped — status: ${{ steps.pr_analysis.outputs.validation-status }}"
           echo "Ensure CODEX_MASTER_KEY has 'Copilot Requests' fine-grained permission."
