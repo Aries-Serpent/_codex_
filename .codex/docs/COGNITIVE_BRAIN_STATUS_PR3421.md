@@ -59,7 +59,7 @@ src/codex/cognitive/                    Status
 |--------|----------------|----------------|--------|
 | CI failure rate | 30.7% | In progress | <10% |
 | "unknown" pattern | 303/307 (98.7%) | ~60% (16 classifiers) | <20% |
-| Workflow compliance | 88/89 (98.9%) | **90/90 (100%)** | 100% ✅ |
+| Workflow compliance | 88/89 (98.9%) | **91/91 (100%)** | 100% ✅ |
 | GROUNDED gates | 6 Tier-1 | 8 Tier-1 + 2 Tier-2 | Grow |
 | Agent definitions | 54 | **56** | 60+ |
 | CLI console | ❌ | **✅** | ✅ |
@@ -70,11 +70,11 @@ src/codex/cognitive/                    Status
 ### Sprint 1 — CI Health (target: <10% failure rate)
 - [ ] Deploy telemetry classifiers to main; collect 7-day sample
 - [ ] Identify top-3 remaining "unknown" patterns; add to `collect_telemetry.py`
-- [ ] Wire `ci-health-monitor.yml` → `cognitive_brain_ci_feedback.yml` feedback loop
-- [ ] CODEX_CI_FAILURE_RATE repo variable auto-updated after each monitor run
+- [x] Wire `ci-health-monitor.yml` → `cognitive_brain_ci_feedback.yml` feedback loop (P-047 keyword map added)
+- [x] CODEX_CI_FAILURE_RATE repo variable auto-updated after each monitor run (PATCH/POST step added)
 
 ### Sprint 2 — CLI Console Production Hardening
-- [ ] Start `cli_api_server.py` automatically in `copilot-setup-steps.yml`
+- [x] Start `cli_api_server.py` automatically in `copilot-setup-steps.yml` (💻 Sprint 2 step added)
 - [ ] Add CORS allowlist from `CODEX_ALLOWED_ORIGINS` repo variable
 - [ ] `xterm.js` WebSocket PTY integration for true real-time terminal
 - [ ] CLI history persistence across sessions (SQLite via `CODEX_DB_PATH`)

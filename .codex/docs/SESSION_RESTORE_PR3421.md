@@ -60,7 +60,7 @@ You are resuming mid-session with the following **staged but uncommitted** files
 - [x] **CODEQL**: 0 alerts (untrusted-checkout fixed)
 - [x] **iterative-self-healing-ci.yml**: Validate YAML parses + compliance check (1 parse error in audit — find and fix)
 - [ ] **Follow-up prompt**: Post `@copilot` continuation comment on PR #3421 with next-session chain prompt
-- [ ] **Sprint 1**: CI health telemetry feedback loop (see `COGNITIVE_BRAIN_STATUS_PR3421.md`)
+- [x] **Sprint 1**: CI feedback loop wired (P-047 mapping + CODEX_CI_FAILURE_RATE auto-update)
 - [x] **AGENT_REGISTRY.yaml**: Add `cognitive-brain-cli-agent` + `workflow-compliance-guardian`
 - [ ] **`CODEX_BACKUP_KEY`**: Still at 50% probe coverage — needs rotation by @mbaetiong
 - [ ] **`cli_api_server.py` xterm.js**: WebSocket PTY frontend (true real-time terminal via `xterm` npm package)

@@ -92,6 +92,9 @@ jobs:
               "training":     ("P-043", ImprovementArea.ML_PATTERN_FEEDING),
               "coverage":     ("P-044", ImprovementArea.COVERAGE_IMPROVEMENT),
               "cognitive":    ("P-046", ImprovementArea.AGENT_CHAINING),
+              "health":       ("P-047", ImprovementArea.CI_SELF_HEALING),
+              "monitor":      ("P-047", ImprovementArea.CI_SELF_HEALING),
+              "self.heal":    ("P-047", ImprovementArea.CI_SELF_HEALING),
           }
 
           workflow_lower = workflow.lower()
