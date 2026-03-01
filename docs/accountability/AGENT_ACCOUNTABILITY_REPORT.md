@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/investigate-ci-failure-rate  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-03-01 (PR #3421 Sprint 2+3+4 — CORS allowlist + SQLite history + OODA endpoints + 3 new agents)
+**Last updated:** 2026-03-01 (PR #3422 Phase 4 — SQLite STM/LTM + memory endpoints + xterm.js + auth forwarding + telemetry classifiers + 2 new agents)
 
 ---
 
@@ -324,6 +324,14 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-058 | `cli_api_server.py` Sprint 2: SQLite history persistence via `CODEX_DB_PATH`; in-memory `deque` pre-loaded from DB on start; INSERT on each run; DELETE on clear (PR #3421) | ✅ Done (PR #3421) |
 | W-059 | `cli_api_server.py` Sprint 3: `POST /api/ooda/process` wires `CognitiveAppMain.process()` to FastAPI; `GET /api/ooda/metrics` exposes K1 factor; lazy import with graceful fallback (PR #3421) | ✅ Done (PR #3421) |
 | W-060 | Sprint 4: 3 new agent definitions — `ci-health-alert-agent.md`, `repo-var-sync-agent.md`, `cognitive-ooda-loop-agent.md`; AGENT_REGISTRY.yaml v1.6.0 (123→126) (PR #3421) | ✅ Done (PR #3421) |
+| W-061 | P4.2: `stm_entries` + `ltm_entries` SQLite tables added to `_init_history_db()`; `SQLiteMemory` concrete class; `GET /api/memory/state` + `GET /api/memory/search` endpoints (PR #3422) | ✅ Done (PR #3422) |
+| W-062 | P4.1: `use-memory-system.ts`, `use-quantum-state.ts`, `use-agent-orchestration.ts` rewired to `VITE_CLI_API_URL ?? VITE_CODEX_API ?? :8765`; `cognitive_app/.env.example` created (PR #3422) | ✅ Done (PR #3422) |
+| W-063 | P4.3: `api_proxy()` auto-injects `Authorization: Bearer <CODEX_MASTER_KEY>` for `api.github.com` requests; token never logged or returned in response headers (PR #3422) | ✅ Done (PR #3422) |
+| W-064 | P4.4: `XtermTerminal.tsx` — real xterm.js PTY WebSocket terminal with FitAddon + WebLinksAddon; wired into `App.tsx` CLI tab replacing `<CliTerminal />` (PR #3422) | ✅ Done (PR #3422) |
+| W-065 | P4.5: 3 new classifiers in `collect_telemetry.py` — `datetime-error` (offset-aware/naive), `build-config` (SPDX/pyproject), `packaging` (PEP 621/setuptools) — drive unknown bucket toward <20% (PR #3422) | ✅ Done (PR #3422) |
+| W-066 | P4.6: `memory-sync-agent.md` — STM→LTM consolidation on 80% capacity; LTM pruning for entries >30d confidence<0.3 (PR #3422) | ✅ Done (PR #3422) |
+| W-067 | P4.6: `telemetry-classifier-agent.md` — CI unknown pattern analysis + `collect_telemetry.py` classifier PR generation (PR #3422) | ✅ Done (PR #3422) |
+| W-068 | P4.7: AGENT_REGISTRY.yaml v1.7.0 (126→128) — memory-sync-agent + telemetry-classifier-agent registered (PR #3422) | ✅ Done (PR #3422) |
 
 ---
 

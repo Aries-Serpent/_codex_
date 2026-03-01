@@ -5,6 +5,34 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3422 (Phase 4 — Memory Layer + xterm.js + Auth Forwarding)
+
+### PR #3422 — SQLite STM/LTM + Frontend Hook Rewiring + xterm.js PTY + Telemetry Classifiers (2026-03-01)
+
+| Sprint | Type | File | Change |
+|--------|------|------|--------|
+| S6 | Feature | `cognitive_app/src/server/cli_api_server.py` | P4.2: `stm_entries` + `ltm_entries` SQLite tables added to `_init_history_db()` |
+| S6 | Feature | `cognitive_app/src/server/cli_api_server.py` | P4.2: `SQLiteMemory` concrete class implements store/retrieve/search/delete against `stm_entries` |
+| S6 | Feature | `cognitive_app/src/server/cli_api_server.py` | P4.2: `GET /api/memory/state` endpoint returns STM/LTM counts + capacity + compression rate |
+| S6 | Feature | `cognitive_app/src/server/cli_api_server.py` | P4.2: `GET /api/memory/search` endpoint — full-text search over STM + LTM UNION |
+| S6 | Feature | `cognitive_app/src/server/cli_api_server.py` | P4.2: OODA auto-init wired to `SQLiteMemory()` instead of abstract `MemoryInterface()` stub |
+| S6 | Feature | `cognitive_app/src/hooks/use-memory-system.ts` | P4.1: `VITE_CLI_API_URL ?? VITE_CODEX_API ?? :8765` — real FastAPI backend, mock preserved as fallback |
+| S6 | Feature | `cognitive_app/src/hooks/use-quantum-state.ts` | P4.1: same `VITE_CLI_API_URL` priority chain |
+| S6 | Feature | `cognitive_app/src/hooks/use-agent-orchestration.ts` | P4.1: same `VITE_CLI_API_URL` priority chain |
+| S6 | Docs | `cognitive_app/.env.example` | P4.1: documents `VITE_CLI_API_URL=http://localhost:8765` (new file) |
+| S7 | Security | `cognitive_app/src/server/cli_api_server.py` | P4.3: `api_proxy()` auto-injects `Authorization: Bearer <CODEX_MASTER_KEY>` for `api.github.com` requests only |
+| S7 | Feature | `cognitive_app/src/components/cli/XtermTerminal.tsx` | P4.4: real xterm.js PTY WebSocket terminal (new file; xterm dep already in package.json) |
+| S7 | Feature | `cognitive_app/src/App.tsx` | P4.4: CLI tab uses `<XtermTerminal />` (replaces `<CliTerminal />`) |
+| S8 | Feature | `scripts/ci/collect_telemetry.py` | P4.5: 3 new classifiers — `datetime-error`, `build-config`, `packaging` — reduce unknown bucket |
+| S9 | Docs | `.github/agents/memory-sync-agent.md` | P4.6: new agent — STM→LTM consolidation + LTM pruning (new file) |
+| S9 | Docs | `.github/agents/telemetry-classifier-agent.md` | P4.6: new agent — CI unknown pattern analysis + classifier PR generation (new file) |
+| S9 | Docs | `.github/agents/AGENT_REGISTRY.yaml` | P4.7: v1.7.0 — 2 new agents (126→128) |
+| S10 | Feature | `.github/workflows/agent-auth-delegation.yml` | P4.8: REQ-8 GROUNDED soft gate — memory system health check via `/api/memory/state` |
+| Gov | Docs | `CHANGELOG.md` | `[Unreleased]` entry — unblocks WF-001 cognitive pre-flight gate |
+| Gov | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-061–W-068 entries; Last updated timestamp |
+
+---
+
 ## [Unreleased] — PR #3421 (Sprint 1–5)
 
 ### PR #3421 — CI Feedback Loop + CLI Hardening + OODA Endpoints + Agent Fleet (2026-03-01)

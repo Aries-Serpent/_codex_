@@ -105,6 +105,22 @@ class TelemetryCollector:
             "root-org", "file-validation", "directory", "filesystem",
             "flatten-repo", "root_organizer",
         ],
+        # ── P4.5: New classifiers — drive unknown bucket from ~60% → <30% ────
+        # DATETIME_001: offset-aware vs offset-naive mixing (common after Python 3.11+)
+        "datetime-error": [
+            "offset-aware", "offset-naive", "cannot mix", "tzinfo",
+            "astimezone", "utcnow", "timezone-aware",
+        ],
+        # BUILD_001: pyproject.toml SPDX license-expression incompatibility
+        "build-config": [
+            "license-expression", "spdx", "pyproject.toml",
+            "configuration error", "license must be string",
+        ],
+        # PKG_001: PEP 621 / setuptools dynamic metadata issues
+        "packaging": [
+            "pep 621", "pep621", "setuptools", "dynamic",
+            "requires-python", "build-backend", "flit_core",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):

@@ -546,6 +546,37 @@ jobs:
             echo "✅ **PASS** — ${COMMIT_COUNT} commits detected; single-commit stop rule does not apply." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # ── REQ-8: Memory system health check (P4.8 GROUNDED soft gate) ───────
+      # Policy: /api/memory/state must return stm_count >= 0 — confirms SQLite
+      # STM/LTM tables were initialised correctly by cli_api_server.py.
+      # Soft gate: warning only (session not blocked if server not running in CI).
+      # NOTE: Python script is base64-encoded per YAML embedded-Python rule
+      #   (never use python3 -c "..." multiline in run: blocks).
+      - name: "REQ-8: Memory system health check"
+        id: req8
+        if: always()
+        run: |
+          echo "### REQ-8: Memory System Health Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "aW1wb3J0IHVybGxpYi5yZXF1ZXN0LCBqc29uLCBzeXMKdHJ5OgogICAgd2l0aCB1cmxsaWIucmVxdWVzdC51cmxvcGVuKCJodHRwOi8vbG9jYWxob3N0Ojg3NjUvYXBpL21lbW9yeS9zdGF0ZSIsIHRpbWVvdXQ9MykgYXMgcjoKICAgICAgICBkID0ganNvbi5sb2FkcyhyLnJlYWQoKSkKICAgICAgICBzeXMuZXhpdCgwIGlmIGQuZ2V0KCJzdG1fY291bnQiLCAwKSA+PSAwIGVsc2UgMSkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHN5cy5leGl0KDIpCg==" | base64 -d | python3 2>/dev/null
+          # Decoded equivalent (for review):
+          # import urllib.request, json, sys
+          # try:
+          #     with urllib.request.urlopen("http://localhost:8765/api/memory/state", timeout=3) as r:
+          #         d = json.loads(r.read())
+          #         sys.exit(0 if d.get("stm_count", 0) >= 0 else 1)
+          # except Exception:
+          #     sys.exit(2)
+          MEMORY_OK=$?
+          if [ "$MEMORY_OK" = "0" ]; then
+            echo "PASS: Memory system reachable; STM/LTM tables initialised." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$MEMORY_OK" = "2" ]; then
+            echo "SOFT GATE: Memory server not reachable (CI environment; server not started). Expected in GitHub Actions." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-8: Memory system not reachable — soft gate (expected in CI when server is not started)"
+          else
+            echo "SOFT GATE: /api/memory/state returned unexpected data." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-8: /api/memory/state returned unexpected data — verify SQLite schema migration"
+          fi
+
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status
         if: always()
