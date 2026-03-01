@@ -14,6 +14,10 @@ name: Art_RAG Module Tests
       - 'tests/test_rag_**'
       - 'pyproject.toml'
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   test-rag:
     runs-on: ubuntu-latest

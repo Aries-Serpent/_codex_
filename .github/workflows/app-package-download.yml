@@ -43,6 +43,10 @@ permissions:
   contents: read
   actions: read
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   package-app:
     name: Package Application

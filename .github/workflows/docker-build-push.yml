@@ -8,8 +8,8 @@ permissions:
   packages: write
 
 concurrency:
-  group: docker-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: false  # deployment: never cancel in-progress — leaves prod in unknown state
 
 on:
   push:

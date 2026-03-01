@@ -61,6 +61,10 @@ env:
   NODE_VERSION: "20"
   RUST_VERSION: "stable"  # Use stable to support Cargo.lock v4 format (requires 1.78+)
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"

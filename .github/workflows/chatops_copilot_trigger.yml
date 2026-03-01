@@ -28,10 +28,15 @@ permissions:
   issues: write
   pull-requests: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   dispatch:
     name: Parse slash command and dispatch
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # Only process comments that start with /copilot
     if: startsWith(github.event.comment.body, '/copilot')
 

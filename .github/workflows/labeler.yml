@@ -3,6 +3,10 @@ on:
   pull_request_target:
     branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   triage:
     permissions:

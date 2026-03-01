@@ -5,6 +5,10 @@ on:
     branches: [ "0D_base_", "copilot/integrate-codex-status-template", "main", "master" ]
   workflow_dispatch:
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   status-gate:
     runs-on: ubuntu-latest

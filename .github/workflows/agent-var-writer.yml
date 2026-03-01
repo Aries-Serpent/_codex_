@@ -39,10 +39,15 @@ permissions:
   issues: write
   pull-requests: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   apply-var-updates:
     name: "Apply autonomous variable updates"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     # Only run when agent posts the trigger comment on a PR
     if: |

@@ -20,6 +20,10 @@ permissions:
   actions: write
   contents: read
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   prune-caches:
     name: Prune stale GitHub Actions caches

@@ -17,6 +17,10 @@ on:
     # Run weekly to catch broken external links
     - cron: '0 0 * * 0'
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   check-links:
     runs-on: ubuntu-latest

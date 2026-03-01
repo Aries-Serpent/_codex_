@@ -3,7 +3,7 @@
 CI Telemetry Collection Script
 
 Collects workflow runs, jobs, and artifacts from GitHub Actions.
-Maps failures to 5 identified patterns for automated analysis.
+Maps failures to 16 pattern categories for automated analysis.
 
 Usage:
     python scripts/ci/collect_telemetry.py --owner Aries-Serpent --repo _codex_ --branch main --days 7
@@ -22,13 +22,89 @@ import requests
 class TelemetryCollector:
     """Collects and analyzes CI telemetry data."""
 
-    # Pattern keywords for automatic classification
+    # Pattern keywords for automatic classification.
+    # Ordered by specificity — more specific patterns should appear first.
+    # Each failure is matched against run name + job names (case-insensitive).
     PATTERN_KEYWORDS = {
-        "auto-fix": ["auto-fix", "detect-and-fix", "detect ci issues"],
-        "test-infrastructure": ["resilient", "validation-suite", "test-runner"],
-        "coverage-timeout": ["coverage", "pytest-cov", "coverage report"],
-        "filesystem-deadlock": ["root-org", "file-validation", "directory"],
-        "pre-merge-cascade": ["pre-merge", "final-checks", "merge validation"],
+        # ── High-frequency CI patterns ───────────────────────────────────────
+        "coverage-timeout": [
+            "coverage", "pytest-cov", "coverage report", "coverage-with-timeout",
+            "sharded coverage", "coverage shard",
+        ],
+        "auto-fix": [
+            "auto-fix", "detect-and-fix", "detect ci issues", "auto fix",
+            "fix-pr", "auto_fix", "autofix", "common issues",
+        ],
+        "pre-merge-cascade": [
+            "pre-merge", "final-checks", "merge validation", "pre-merge-validation",
+            "pre_merge",
+        ],
+        # ── Workflow-cascade / concurrency patterns ───────────────────────────
+        "workflow-cascade": [
+            "workflow-analytics", "workflow analytics", "cognitive-brain",
+            "cognitive brain", "cascade", "art_workflow",
+        ],
+        # ── Auth / delegation patterns ────────────────────────────────────────
+        "auth-delegation": [
+            "agent-auth", "delegation", "token-probe", "token probe",
+            "auth-compliance", "auth-mfa", "auth-secret", "auth-security",
+            "auth-token", "auth-tests", "agent token",
+        ],
+        # ── Self-healing / watchdog patterns ─────────────────────────────────
+        "self-healing": [
+            "self-heal", "self_healing", "self healing", "session-watchdog",
+            "watchdog",
+        ],
+        # ── Security / scanning patterns ─────────────────────────────────────
+        "security-scan": [
+            "codeql", "security", "dependabot", "vulnerability",
+            "secret-scan", "secret scan", "scan-trivy", "sbom",
+            "code-scanning",
+        ],
+        # ── Build / container patterns ────────────────────────────────────────
+        "docker-build": [
+            "docker", "build-image", "container", "push_image",
+            "buildx", "qemu",
+        ],
+        # ── Test infrastructure ───────────────────────────────────────────────
+        "test-infrastructure": [
+            "resilient", "validation-suite", "test-runner", "pytest",
+            "validate_test", "test_structure", "audit-qa",
+        ],
+        # ── Documentation / link validation ───────────────────────────────────
+        "documentation": [
+            "docs", "documentation", "link-validator", "doc-freshness",
+            "doc_refactor", "api-documentation",
+        ],
+        # ── Cache management ──────────────────────────────────────────────────
+        "cache": [
+            "cache-pruning", "cache-warmup", "cache-cleanup",
+            "cache management", "cache-management",
+        ],
+        # ── Cognitive brain / AI patterns ─────────────────────────────────────
+        "cognitive-brain": [
+            "cognitive", "quantum", "agent-brain", "brain-analysis",
+            "cognitive_brain", "cognitive-action", "cognitive-analysis",
+        ],
+        # ── CI health / triage ────────────────────────────────────────────────
+        "ci-health": [
+            "health-monitor", "health check", "ci-health", "batch-ci-triage",
+            "batch_ci", "batch_triage", "ci_triage",
+        ],
+        # ── Deployment / release ──────────────────────────────────────────────
+        "deployment": [
+            "deploy", "release", "publish", "pypi", "pages",
+        ],
+        # ── Lint / formatting ─────────────────────────────────────────────────
+        "lint": [
+            "lint", "ruff", "black", "isort", "pre-commit", "format",
+            "auto-update-configs",
+        ],
+        # ── Filesystem / directory ────────────────────────────────────────────
+        "filesystem-deadlock": [
+            "root-org", "file-validation", "directory", "filesystem",
+            "flatten-repo", "root_organizer",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):

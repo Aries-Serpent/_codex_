@@ -15,9 +15,14 @@ on:
         description: 'Recommended validation strategy'
         value: ${{ jobs.analyze-size.outputs.validation_strategy }}
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   analyze-size:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write

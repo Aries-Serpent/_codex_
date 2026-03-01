@@ -62,6 +62,10 @@ env:
   PYTEST_TIMEOUT: 300
   PYTEST_WORKERS: 'auto'
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   pytest-execution:
     name: Pytest Execution (Python ${{ matrix.python-version }}, Group ${{ matrix.test-group }})

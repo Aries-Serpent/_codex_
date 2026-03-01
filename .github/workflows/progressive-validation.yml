@@ -11,10 +11,15 @@ on:
         default: 'false'
         type: boolean
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   # Analyze PR size first
   analyze:
     uses: ./.github/workflows/pr-size-analyzer.yml
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write
@@ -23,9 +28,9 @@ jobs:
   smoke-tests:
     needs: analyze
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
-    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -218,6 +223,7 @@ jobs:
     needs: [analyze, smoke-tests, unit-tests, integration-tests, slow-tests]
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: write

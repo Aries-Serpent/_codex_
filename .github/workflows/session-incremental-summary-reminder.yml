@@ -1,0 +1,164 @@
+name: Session Incremental Summary Reminder
+
+# WF-003 — GROUNDED Tier-2 enforcement for "~10min incremental summaries" policy.
+#
+# PROMOTION: "~10min incremental summaries" was previously Tier-3 SOFT
+#   (checklist item only, no active detection mechanism).
+# This workflow promotes it to Tier-2 (present-tense injection):
+#   • Runs on the minimum GitHub Actions cron interval (5 min)
+#   • For each open PR with SESSION_TYPE_EXPLORATION active,
+#     checks if the last agent comment was >10 minutes ago
+#   • If so, posts a reminder comment directly into the PR conversation
+#
+# Effect: The reminder appears as an ACTIVE PR comment (present-tense context),
+# not background memory. Agent reads it as present-tense instruction.
+# Bypass cost: must consciously ignore a visible comment in the active thread.
+#
+# Policy: .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md (Tier-2 definition)
+# Complements: session-watchdog.yml (WF-002) which posts SESSION_TYPE_EXPLORATION
+
+on:
+  schedule:
+    # Every 5 minutes — GitHub Actions minimum cron interval.
+    # At this cadence the reminder fires within ~5min of a 10min silence.
+    - cron: '*/5 * * * *'
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+# GROUNDED: concurrency control — only one instance runs at a time.
+# cancel-in-progress: true — newest cron run wins; prevents queue build-up if a run
+# takes longer than 5 min. Posts are idempotent (dedup check inside the script).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  remind:
+    name: "📝 Incremental Summary Reminder"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Post incremental summary reminders to active exploration PRs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const EXPLORATION_MARKER    = 'SESSION_TYPE_EXPLORATION';
+            const REMINDER_MARKER       = 'INCREMENTAL_SUMMARY_REMINDER';
+            const SILENCE_THRESHOLD_MS  = 10 * 60 * 1000;   // 10 minutes
+            const REMINDER_COOLDOWN_MS  = 10 * 60 * 1000;   // Don't re-remind within 10 min
+
+            // Bot/agent actor logins — suppress reminder if last comment is from a human
+            const AGENT_LOGINS = new Set([
+              'copilot-swe-agent[bot]',
+              'github-copilot[bot]',
+              'github-actions[bot]',
+            ]);
+
+            const now = new Date();
+
+            // Fetch recently-updated open PRs (limit: 30 — enough for active repos)
+            const { data: prs } = await github.rest.pulls.list({
+              owner:     context.repo.owner,
+              repo:      context.repo.repo,
+              state:     'open',
+              sort:      'updated',
+              direction: 'desc',
+              per_page:  30,
+            });
+
+            let remindedCount = 0;
+            for (const pr of prs) {
+              try {
+                // Fetch all comments on this PR
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner:      context.repo.owner,
+                  repo:       context.repo.repo,
+                  issue_number: pr.number,
+                  per_page:   100,
+                });
+
+                // Skip if no SESSION_TYPE_EXPLORATION marker active
+                if (!comments.some(c => c.body.includes(EXPLORATION_MARKER))) {
+                  continue;
+                }
+
+                // Skip if SESSION_TIMEBOX_EXPIRED is present (session already ended)
+                if (comments.some(c => c.body.includes('SESSION_TIMEBOX_EXPIRED'))) {
+                  continue;
+                }
+
+                // Find the most recent agent comment
+                const agentComments = comments.filter(c => AGENT_LOGINS.has(c.user.login));
+                if (agentComments.length === 0) {
+                  continue;  // No agent activity yet — no need to remind
+                }
+                agentComments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                const lastAgentComment = agentComments[0];
+                const lastAgentTime    = new Date(lastAgentComment.created_at);
+                const silenceDuration  = now - lastAgentTime;
+
+                if (silenceDuration < SILENCE_THRESHOLD_MS) {
+                  continue;  // Agent was active within the last 10 min — no reminder needed
+                }
+
+                // Dedup: check if a reminder was already posted within the cooldown window
+                const recentReminder = comments.find(
+                  c => c.body.includes(REMINDER_MARKER) &&
+                       (now - new Date(c.created_at)) < REMINDER_COOLDOWN_MS
+                );
+                if (recentReminder) {
+                  continue;  // Reminder already posted within cooldown — skip
+                }
+
+                // Compute elapsed time in human-readable format
+                const elapsedMin = Math.round(silenceDuration / 60000);
+
+                const body = [
+                  `## 📝 ${REMINDER_MARKER} — Incremental Progress Summary Due`,
+                  '',
+                  `> **Auto-posted by Session Reminder Workflow (WF-003)**`,
+                  `> An exploration session is active on this PR. The last agent update was **${elapsedMin} minutes ago**.`,
+                  '',
+                  '**Policy:** During an exploration session, the agent must post an incremental progress',
+                  'summary approximately every **~10 minutes**. This is **Tier-2 grounded enforcement**',
+                  '(present-tense injection — not background memory).',
+                  '',
+                  '### Required Action',
+                  '',
+                  '- [ ] Post a PR comment with `## 📊 Incremental Progress Summary` containing:',
+                  '  - Topics covered so far',
+                  '  - Key findings / decisions made',
+                  '  - What remains to be done',
+                  '  - Explicit question for the human: "Proceed to X, or go deeper on Y?"',
+                  '',
+                  `_Last agent activity: ${lastAgentComment.created_at} (${elapsedMin}min ago)_`,
+                  `_Exploration marker detected: ${EXPLORATION_MARKER}_`,
+                  '',
+                  '_WF-003 | session-incremental-summary-reminder | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',
+                ].join('\n');
+
+                await github.rest.issues.createComment({
+                  owner:        context.repo.owner,
+                  repo:         context.repo.repo,
+                  issue_number: pr.number,
+                  body,
+                });
+
+                core.info(`✅ Posted incremental summary reminder on PR #${pr.number} (${elapsedMin}min silence)`);
+                remindedCount++;
+
+              } catch (prError) {
+                core.warning(`PR #${pr.number}: ${prError.message}`);
+              }
+            }
+
+            if (remindedCount === 0) {
+              core.info('No active exploration sessions require reminders at this time.');
+            } else {
+              core.info(`Posted ${remindedCount} incremental summary reminder(s).`);
+            }

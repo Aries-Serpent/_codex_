@@ -30,6 +30,10 @@ permissions:
   pull-requests: write
   issues: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   pre-validation:
     name: Pre-Move Validation
@@ -128,6 +132,7 @@ jobs:
   reference-check:
     name: Reference Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: pre-validation
 
     steps:
@@ -218,6 +223,7 @@ jobs:
   post-validation:
     name: Post-Move Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [pre-validation, reference-check]
     if: always()
 
@@ -336,6 +342,7 @@ jobs:
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [pre-validation, reference-check, post-validation]
     if: always()
 

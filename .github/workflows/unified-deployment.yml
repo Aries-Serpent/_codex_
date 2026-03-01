@@ -38,7 +38,7 @@ permissions:
   packages: write
 
 concurrency:
-  group: "unified-deployment-${{ inputs.mode || 'cognitive-app' }}"
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 
 jobs:

@@ -39,6 +39,10 @@ env:
   TF_DETERMINISTIC_OPS: "1"
   CUBLAS_WORKSPACE_CONFIG: ":4096:8"
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   data_validation:
     name: Data Validation (Manifest & Drift)

@@ -33,11 +33,16 @@ permissions:
   pull-requests: write
   issues: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   # ── Job 1: detect whether the checkbox is checked ───────────────────────────
   detect-checkbox:
     name: "Detect COPILOT_AGENT_AUTH_ENABLED checkbox"
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       auth_requested: ${{ steps.check.outputs.auth_requested }}
       pr_number: ${{ steps.check.outputs.pr_number }}
@@ -70,6 +75,7 @@ jobs:
     needs: detect-checkbox
     if: needs.detect-checkbox.outputs.auth_requested == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: agent-auth-delegation   # ← protection rule triggers approval gate
 
     steps:
@@ -88,6 +94,7 @@ jobs:
   # REQ-4: Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md touched in last commit
   # REQ-5: Verify CHANGELOG.md touched in last commit
   # REQ-6: Verify SESSION_TIMEBOX_EXPIRED acknowledged (Session Summary posted) before reactivation
+  # REQ-7: Warn when PR has only 1 commit (NEVER stop after one commit — Tier-2 enforcement)
   #
   # Policy: .codex/CODEBASE_AGENCY_POLICY.md | WF-001-cognitive-preflight-FINAL.md
   cognitive-preflight:
@@ -99,7 +106,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2   # Required: HEAD~1 diff check for REQ-4
+          fetch-depth: 50  # Enough for commit-count check (REQ-7); avoids full-clone cost
 
       # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
       - name: Post Mandatory Agent Checklist to PR
@@ -502,6 +509,43 @@ jobs:
               core.setFailed('SESSION_TIMEBOX_EXPIRED requires a "## 🧠 Session Summary" comment before reactivation.');
             }
 
+      # ── REQ-7: Warn when PR has only 1 commit (Tier-2: present-tense injection) ──────
+      # Promotes "NEVER stop after one commit" from Tier-3 (store_memory) to Tier-2
+      # (present-tense warning in job summary, visible on every push).
+      # A single-commit PR may indicate a premature session close — surface this prominently.
+      # This is a WARNING, not a hard block (hard block would require session-duration tracking).
+      # Policy: .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md REQ-7
+      - name: Warn on single-commit PR (REQ-7 — NEVER stop after one commit)
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Fetch base branch so we can count commits precisely
+          git fetch origin "${BASE_REF}" --depth=50 2>/dev/null || true
+
+          # Count commits on this PR (HEAD not in base)
+          COMMIT_COUNT=$(git rev-list --count "origin/${BASE_REF}..HEAD" 2>/dev/null || echo "0")
+
+          echo "### 🔢 REQ-7: Commit Count Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "PR commits since base: **${COMMIT_COUNT}**" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${COMMIT_COUNT}" -le 1 ]; then
+            echo "⚠️ **WARNING** — Only ${COMMIT_COUNT} commit(s) on this PR." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> **Policy:** The agent MUST NOT stop after a single commit. Continue working" >> "$GITHUB_STEP_SUMMARY"
+            echo "> until all open tasks are complete. A single commit indicates an incomplete session." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> _See: \`.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md\` — REQ-7 Tier-2 enforcement._" >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-7: Only ${COMMIT_COUNT} commit(s) on this PR — agent must not stop after a single commit (policy: NEVER stop after one commit)"
+          else
+            echo "✅ **PASS** — ${COMMIT_COUNT} commits detected; single-commit stop rule does not apply." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status
         if: always()
@@ -523,6 +567,7 @@ jobs:
     name: "Activate token delegation"
     needs: [detect-checkbox, await-approval, cognitive-preflight]
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4

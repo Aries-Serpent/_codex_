@@ -54,11 +54,16 @@ permissions:
   issues: write
   pull-requests: write
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   # ── Guard: only allow authorized actors via issue_comment trigger ────────
   auth-check:
     name: Authorization check
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       authorized: ${{ steps.check.outputs.authorized }}
       operation: ${{ steps.check.outputs.operation }}
@@ -122,6 +127,7 @@ jobs:
   apply-vars:
     name: Apply repo variable updates
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: auth-check
     if: |
       needs.auth-check.outputs.authorized == 'true' &&
@@ -161,6 +167,7 @@ jobs:
   apply-webhooks:
     name: Apply webhook configuration
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: auth-check
     if: |
       needs.auth-check.outputs.authorized == 'true' &&
@@ -184,6 +191,7 @@ jobs:
   list-vars:
     name: List repo variables
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: auth-check
     if: |
       needs.auth-check.outputs.authorized == 'true' &&
@@ -213,6 +221,7 @@ jobs:
   list-webhooks:
     name: List repo webhooks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: auth-check
     if: |
       needs.auth-check.outputs.authorized == 'true' &&
@@ -229,6 +238,7 @@ jobs:
   app-status:
     name: GitHub App status
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: auth-check
     if: |
       needs.auth-check.outputs.authorized == 'true' &&
