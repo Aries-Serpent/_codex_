@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/investigate-ci-failure-rate  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-03-01 (PR #3421 — CI health fix + GROUNDED enforcement + CLI console + agent empowerment)
+**Last updated:** 2026-03-01 (PR #3421 Sprint 1+2+5 — CI feedback loop + CODEX_CI_FAILURE_RATE + CLI auto-start + BACKUP_KEY 100% + CHANGELOG gate fix)
 
 ---
 
@@ -316,6 +316,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-050 | `workflow-analytics-unified.yml`: removed `workflow_run: ["*"]` wildcard trigger, demoted to hourly schedule (`cron: '0 * * * *'`) — same cadence as `batch-ci-triage.yml`. Removed `*/30` cron (redundant with wildcard). Added concurrency control | ✅ Done (S116i resume) |
 | W-051 | `token-probe.yml`: fix `require_both_keys` input — was accepted but never enforced in summary job. Now properly: (1) shows 100%/50%/0% coverage in overall status, (2) fails when `require_both_keys=true` and backup key is non-functional, (3) reports both keys with equal weight | ✅ Done (S116i resume) |
 | W-052 | `flush-queued-runs.yml`: new emergency workflow_dispatch workflow — bulk-cancels queued/waiting/in_progress runs. Supports dry-run mode, max cap, workflow exclusion, self-protection (never cancels own run). Created for 600+ queue emergency from cascade incident | ✅ Done (S117) |
+| W-053 | `ci-health-monitor.yml`: Sprint 1 — new step auto-updates `CODEX_CI_FAILURE_RATE` repo variable to `<rate>:<status>` (ok/degraded/critical) via GitHub API PATCH+POST fallback after every telemetry run (PR #3421) | ✅ Done (PR #3421) |
+| W-054 | `cognitive_brain_ci_feedback.yml`: Sprint 1 — add P-047 keyword map (`health`/`monitor`/`self.heal` → `CI_SELF_HEALING`) so CI Health Monitor completions are reported to cognitive brain (PR #3421) | ✅ Done (PR #3421) |
+| W-055 | `copilot-setup-steps.yml`: Sprint 2 — `💻 Start CLI API Server` step auto-starts FastAPI :8765 in background with health-check guard; log to `RUNNER_TEMP` (PR #3421) | ✅ Done (PR #3421) |
+| W-056 | Sprint 5 complete — `CODEX_BACKUP_KEY` rotated; token-probe S117 confirms 100%/100% coverage (both keys HTTP 200 read + HTTP 201 write); pre-flight CHANGELOG gate unblocked (PR #3421) | ✅ Done (PR #3421) |
 
 ---
 
