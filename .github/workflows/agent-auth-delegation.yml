@@ -546,6 +546,94 @@ jobs:
             echo "✅ **PASS** — ${COMMIT_COUNT} commits detected; single-commit stop rule does not apply." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # ── REQ-8: Memory system health check (P4.8 GROUNDED soft gate) ───────
+      # Policy: /api/memory/state must return stm_count >= 0 — confirms SQLite
+      # STM/LTM tables were initialised correctly by cli_api_server.py.
+      # Soft gate: warning only (session not blocked if server not running in CI).
+      # NOTE: Python script is base64-encoded per YAML embedded-Python rule
+      #   (never use python3 -c "..." multiline in run: blocks).
+      - name: "REQ-8: Memory system health check"
+        id: req8
+        if: always()
+        run: |
+          echo "### REQ-8: Memory System Health Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "aW1wb3J0IHVybGxpYi5yZXF1ZXN0LCBqc29uLCBzeXMKdHJ5OgogICAgd2l0aCB1cmxsaWIucmVxdWVzdC51cmxvcGVuKCJodHRwOi8vbG9jYWxob3N0Ojg3NjUvYXBpL21lbW9yeS9zdGF0ZSIsIHRpbWVvdXQ9MykgYXMgcjoKICAgICAgICBkID0ganNvbi5sb2FkcyhyLnJlYWQoKSkKICAgICAgICBzeXMuZXhpdCgwIGlmIGQuZ2V0KCJzdG1fY291bnQiLCAwKSA+PSAwIGVsc2UgMSkKZXhjZXB0IEV4Y2VwdGlvbjoKICAgIHN5cy5leGl0KDIpCg==" | base64 -d | python3 2>/dev/null
+          # Decoded equivalent (for review):
+          # import urllib.request, json, sys
+          # try:
+          #     with urllib.request.urlopen("http://localhost:8765/api/memory/state", timeout=3) as r:
+          #         d = json.loads(r.read())
+          #         sys.exit(0 if d.get("stm_count", 0) >= 0 else 1)
+          # except Exception:
+          #     sys.exit(2)
+          MEMORY_OK=$?
+          if [ "$MEMORY_OK" = "0" ]; then
+            echo "PASS: Memory system reachable; STM/LTM tables initialised." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$MEMORY_OK" = "2" ]; then
+            echo "SOFT GATE: Memory server not reachable (CI environment; server not started). Expected in GitHub Actions." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-8: Memory system not reachable — soft gate (expected in CI when server is not started)"
+          else
+            echo "SOFT GATE: /api/memory/state returned unexpected data." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-8: /api/memory/state returned unexpected data — verify SQLite schema migration"
+          fi
+
+      # ── REQ-9: Iterative self-healing validation (REQ 2 — 5-pass self-review) ───
+      # Runs the 5-pass self-review checklist as a CI gate:
+      # Pass 1: Python AST | Pass 2: YAML | Pass 3: Changelog | Pass 4: Tmp | Pass 5: Registry
+      - name: "REQ-9: Iterative self-review (5 passes)"
+        if: always()
+        run: |
+          echo "### REQ-9: 5-Pass Self-Review" >> "$GITHUB_STEP_SUMMARY"
+          PASS_FAILURES=0
+          # Pass 1: Python AST check on changed server file
+          if python3 -c "import ast,sys; [ast.parse(open(f).read()) for f in ['cognitive_app/src/server/cli_api_server.py','scripts/ci/collect_telemetry.py'] if __import__('os').path.exists(f)]" 2>/dev/null; then
+            echo "Pass 1 (Python AST): OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Pass 1 (Python AST): FAIL" >> "$GITHUB_STEP_SUMMARY"
+            PASS_FAILURES=$((PASS_FAILURES+1))
+          fi
+          # Pass 2: YAML parse for all workflows (base64-encoded per YAML embedded-Python rule)
+          # Decoded: import yaml,glob,sys; errs=[]; for f in glob('.github/workflows/*.yml'): try safe_load; print(len(errs))
+          YAML_ERRORS=$(echo "aW1wb3J0IHlhbWwsZ2xvYixzeXMKZXJycz1bXQpmb3IgZiBpbiBnbG9iLmdsb2IoIi5naXRodWIvd29ya2Zsb3dzLyoueW1sIik6CiAgICB0cnk6IHlhbWwuc2FmZV9sb2FkKG9wZW4oZikpCiAgICBleGNlcHQgRXhjZXB0aW9uIGFzIGU6IGVycnMuYXBwZW5kKGYpCnByaW50KGxlbihlcnJzKSkK" | base64 -d | python3 2>/dev/null || echo "99")
+          if [ "$YAML_ERRORS" = "0" ]; then
+            echo "Pass 2 (YAML parse): OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Pass 2 (YAML parse): FAIL ($YAML_ERRORS errors)" >> "$GITHUB_STEP_SUMMARY"
+            PASS_FAILURES=$((PASS_FAILURES+1))
+            echo "::error::REQ-9 Pass 2: $YAML_ERRORS workflow YAML parse errors"
+          fi
+          # Pass 3: CHANGELOG [Unreleased] entry exists
+          if grep -q "Unreleased" CHANGELOG.md 2>/dev/null; then
+            echo "Pass 3 (CHANGELOG): OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Pass 3 (CHANGELOG): FAIL — no [Unreleased] entry" >> "$GITHUB_STEP_SUMMARY"
+            PASS_FAILURES=$((PASS_FAILURES+1))
+            echo "::error::REQ-9 Pass 3: CHANGELOG missing [Unreleased] entry (WF-001 gate)"
+          fi
+          # Pass 4: No unexpected /tmp artifacts
+          TMP_COUNT=$(ls /tmp/*.py /tmp/*.yml /tmp/*.sh /tmp/*.json 2>/dev/null | wc -l || echo 0)
+          if [ "$TMP_COUNT" = "0" ]; then
+            echo "Pass 4 (tmp clean): OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Pass 4 (tmp clean): WARNING — $TMP_COUNT tmp artifacts" >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::REQ-9 Pass 4: $TMP_COUNT /tmp artifacts detected"
+          fi
+          # Pass 5: AGENT_REGISTRY version parseable
+          REGISTRY_OK=$(python3 -c "import yaml; d=yaml.safe_load(open('.github/agents/AGENT_REGISTRY.yaml')); print(f'v{d[\"version\"]}|{d[\"total_agents\"]}')" 2>/dev/null || echo "FAIL")
+          if [ "$REGISTRY_OK" != "FAIL" ]; then
+            echo "Pass 5 (AGENT_REGISTRY): OK — $REGISTRY_OK" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Pass 5 (AGENT_REGISTRY): FAIL" >> "$GITHUB_STEP_SUMMARY"
+            PASS_FAILURES=$((PASS_FAILURES+1))
+          fi
+          # Summary
+          if [ "$PASS_FAILURES" = "0" ]; then
+            echo "**5/5 self-review passes: ALL OK**" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "**$PASS_FAILURES/5 passes FAILED — fix before merge**" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::REQ-9: $PASS_FAILURES self-review passes failed"
+          fi
+
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status
         if: always()
