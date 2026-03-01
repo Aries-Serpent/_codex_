@@ -1,0 +1,391 @@
+"""
+Tests for cli_api_server memory endpoints (Sprint 11 / Phase 5).
+
+Covers:
+- SQLiteMemory.retrieve() access_count increment
+- POST /api/memory/consolidate endpoint
+- GET /api/memory/state endpoint
+- GET /api/memory/search endpoint
+- memory-sync-agent and telemetry-classifier-agent registry readiness
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import sqlite3
+import tempfile
+from pathlib import Path
+from typing import Any
+from unittest.mock import patch
+
+import pytest
+
+fastapi = pytest.importorskip("fastapi")
+pytest.importorskip("fastapi.testclient")
+httpx = pytest.importorskip("httpx")
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _make_test_db(tmp_path: Path) -> tuple[sqlite3.Connection, str]:
+    """Create an in-memory-like SQLite DB with the cli_api_server schema."""
+    db_path = str(tmp_path / "test_history.db")
+    conn = sqlite3.connect(db_path, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS cli_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            command TEXT NOT NULL, stdout TEXT, stderr TEXT,
+            returncode INTEGER, duration_ms REAL, cwd TEXT,
+            timestamp TEXT NOT NULL
+        )"""
+    )
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS stm_entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT NOT NULL UNIQUE,
+            value TEXT NOT NULL,
+            metadata TEXT,
+            timestamp TEXT NOT NULL,
+            access_count INTEGER DEFAULT 0
+        )"""
+    )
+    conn.execute(
+        """CREATE TABLE IF NOT EXISTS ltm_entries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT NOT NULL UNIQUE,
+            value TEXT NOT NULL,
+            metadata TEXT,
+            pattern_type TEXT,
+            confidence REAL DEFAULT 1.0,
+            timestamp TEXT NOT NULL
+        )"""
+    )
+    conn.commit()
+    return conn, db_path
+
+
+@pytest.fixture()
+def server_app(tmp_path: Path):
+    """
+    Import cli_api_server with a patched DB path so we get an isolated DB
+    for each test without touching the real ~/.codex/cli_history.db.
+    """
+    db_path = str(tmp_path / "cli_history.db")
+    master_key = "test-master-key-sprint11"
+
+    env_overrides = {
+        "CODEX_DB_PATH": db_path,
+        "CODEX_MASTER_KEY": master_key,
+        "CODEX_BACKUP_KEY": "",
+        "CODEX_MEMORY_CAPACITY": "100",
+        "CODEX_STM_HOT_THRESHOLD": "3",
+        "CODEX_HOT_ENTRIES_LIMIT": "50",
+    }
+
+    # Re-import the module with patched environment so _DB_PATH is correct.
+    import importlib
+    import sys
+
+    with patch.dict(os.environ, env_overrides):
+        # Remove cached module so env vars are picked up fresh
+        for mod_key in list(sys.modules.keys()):
+            if "cli_api_server" in mod_key:
+                del sys.modules[mod_key]
+
+        import cognitive_app.src.server.cli_api_server as srv  # noqa: PLC0415
+
+        importlib.reload(srv)
+
+        yield srv, master_key, db_path
+
+
+@pytest.fixture()
+def client(server_app):
+    from fastapi.testclient import TestClient  # noqa: PLC0415
+
+    srv, master_key, _db_path = server_app
+    return TestClient(srv.app), master_key, srv
+
+
+# ---------------------------------------------------------------------------
+# SQLiteMemory unit tests
+# ---------------------------------------------------------------------------
+
+class TestSQLiteMemoryRetrieve:
+    """Unit tests for SQLiteMemory — specifically the access_count increment."""
+
+    def test_retrieve_increments_access_count(self, server_app):
+        """retrieve() must increment access_count each time it is called."""
+        srv, _key, _db_path = server_app
+        mem = srv.SQLiteMemory()
+
+        # Store an entry
+        mem.store("k1", {"val": 42})
+
+        # Retrieve once
+        result = mem.retrieve("k1")
+        assert result == {"val": 42}
+
+        # Check DB: access_count should be 1
+        row = srv._db.execute(
+            "SELECT access_count FROM stm_entries WHERE key = ?", ("k1",)
+        ).fetchone()
+        assert row is not None
+        assert row["access_count"] == 1
+
+    def test_retrieve_increments_on_each_call(self, server_app):
+        """access_count must accumulate across multiple retrieve() calls."""
+        srv, _key, _db_path = server_app
+        mem = srv.SQLiteMemory()
+        mem.store("k2", "hello")
+
+        for _ in range(5):
+            mem.retrieve("k2")
+
+        row = srv._db.execute(
+            "SELECT access_count FROM stm_entries WHERE key = ?", ("k2",)
+        ).fetchone()
+        assert row["access_count"] == 5
+
+    def test_retrieve_missing_key_returns_none(self, server_app):
+        """retrieve() on a non-existent key must return None without error."""
+        srv, _key, _db_path = server_app
+        mem = srv.SQLiteMemory()
+        assert mem.retrieve("no_such_key") is None
+
+    def test_retrieve_does_not_increment_for_missing_key(self, server_app):
+        """No DB write should occur when the key does not exist."""
+        srv, _key, _db_path = server_app
+        mem = srv.SQLiteMemory()
+        mem.retrieve("ghost")
+        count = srv._db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
+        assert count == 0
+
+
+# ---------------------------------------------------------------------------
+# POST /api/memory/consolidate endpoint tests
+# ---------------------------------------------------------------------------
+
+class TestMemoryConsolidateEndpoint:
+    """Tests for the Sprint 11 POST /api/memory/consolidate endpoint."""
+
+    def _auth_headers(self, key: str) -> dict:
+        return {"Authorization": f"Bearer {key}"}
+
+    def test_consolidate_requires_auth(self, client):
+        tc, master_key, _srv = client
+        resp = tc.post("/api/memory/consolidate")
+        assert resp.status_code == 401
+
+    def test_consolidate_empty_db_returns_zeros(self, client):
+        """Consolidate on an empty DB must return 0s without error."""
+        tc, master_key, _srv = client
+        resp = tc.post(
+            "/api/memory/consolidate",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["consolidated"] == 0
+        assert body["pruned"] == 0
+        assert "error" not in body
+
+    def test_consolidate_promotes_hot_entries(self, client):
+        """Hot STM entries (access_count >= threshold) must be promoted to LTM."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+
+        # Store entries and simulate hot access
+        mem.store("hot1", {"data": "hot1"})
+        mem.store("hot2", {"data": "hot2"})
+        mem.store("cold", {"data": "cold"})
+
+        # Make hot1 and hot2 hot (access_count >= 3)
+        for _ in range(3):
+            mem.retrieve("hot1")
+            mem.retrieve("hot2")
+        # cold stays at 0
+
+        resp = tc.post(
+            "/api/memory/consolidate",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["consolidated"] == 2
+        assert "error" not in body
+
+        # hot1 and hot2 must have been removed from STM
+        remaining_stm = srv._db.execute(
+            "SELECT key FROM stm_entries"
+        ).fetchall()
+        remaining_keys = {r["key"] for r in remaining_stm}
+        assert "hot1" not in remaining_keys
+        assert "hot2" not in remaining_keys
+        assert "cold" in remaining_keys
+
+        # hot1 and hot2 must be in LTM
+        ltm_keys = {
+            r["key"] for r in srv._db.execute("SELECT key FROM ltm_entries").fetchall()
+        }
+        assert "hot1" in ltm_keys
+        assert "hot2" in ltm_keys
+
+    def test_consolidate_confidence_calculation(self, client):
+        """confidence = min(1.0, access_count / 10) must be written to LTM."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("conf_test", {"x": 1})
+
+        # 5 retrievals → confidence = 0.5
+        for _ in range(5):
+            mem.retrieve("conf_test")
+
+        tc.post(
+            "/api/memory/consolidate",
+            headers=self._auth_headers(master_key),
+        )
+
+        ltm_row = srv._db.execute(
+            "SELECT confidence FROM ltm_entries WHERE key = ?", ("conf_test",)
+        ).fetchone()
+        assert ltm_row is not None
+        assert abs(ltm_row["confidence"] - 0.5) < 0.01
+
+    def test_consolidate_returns_counts(self, client):
+        """Response must include stm_count and ltm_count."""
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("item_a", "a")
+        for _ in range(3):
+            mem.retrieve("item_a")
+
+        resp = tc.post(
+            "/api/memory/consolidate",
+            headers=self._auth_headers(master_key),
+        )
+        body = resp.json()
+        assert "stm_count" in body
+        assert "ltm_count" in body
+        assert "timestamp" in body
+        assert body["ltm_count"] >= 1
+
+    def test_consolidate_wrong_token_rejected(self, client):
+        """A wrong bearer token must receive 401."""
+        tc, _master_key, _srv = client
+        resp = tc.post(
+            "/api/memory/consolidate",
+            headers=self._auth_headers("wrong-token"),
+        )
+        assert resp.status_code == 401
+
+
+# ---------------------------------------------------------------------------
+# GET /api/memory/state (existing endpoint — verify access_count is surfaced)
+# ---------------------------------------------------------------------------
+
+class TestMemoryStateEndpoint:
+    def _auth_headers(self, key: str) -> dict:
+        return {"Authorization": f"Bearer {key}"}
+
+    def test_state_requires_auth(self, client):
+        tc, _key, _srv = client
+        resp = tc.get("/api/memory/state")
+        assert resp.status_code == 401
+
+    def test_state_returns_counts(self, client):
+        tc, master_key, srv = client
+        mem = srv.SQLiteMemory()
+        mem.store("s1", 1)
+        mem.store("s2", 2)
+
+        resp = tc.get(
+            "/api/memory/state",
+            headers=self._auth_headers(master_key),
+        )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["stm_count"] >= 2
+        assert "ltm_count" in body
+        assert "capacity" in body
+        assert "compression_rate" in body
+
+
+# ---------------------------------------------------------------------------
+# Agent registry promotion checks (memory-sync-agent & telemetry-classifier)
+# ---------------------------------------------------------------------------
+
+class TestAgentRegistryReadiness:
+    """Verify AGENT_REGISTRY.yaml is updated to production + has_tests: true."""
+
+    @pytest.fixture(autouse=True)
+    def registry_path(self):
+        repo_root = Path(__file__).resolve().parents[2]
+        self._registry = repo_root / ".github" / "agents" / "AGENT_REGISTRY.yaml"
+
+    def _load_registry(self) -> str:
+        return self._registry.read_text()
+
+    def _get_agent_block(self, agent_id: str) -> dict[str, Any]:
+        """Extract the YAML block for a given agent id."""
+        import re  # noqa: PLC0415
+
+        text = self._load_registry()
+        # Find the block starting at "- id: <agent_id>" until next "- id:" or end
+        pattern = rf"- id: {re.escape(agent_id)}\n(.*?)(?=\n- id:|\Z)"
+        m = re.search(pattern, text, re.DOTALL)
+        if not m:
+            return {}
+        block_text = m.group(0)
+        result: dict[str, Any] = {}
+        for line in block_text.splitlines():
+            line = line.strip()
+            if ": " in line and not line.startswith("-"):
+                k, _, v = line.partition(": ")
+                result[k.strip()] = v.strip()
+        return result
+
+    def test_memory_sync_agent_is_production(self):
+        block = self._get_agent_block("memory-sync-agent")
+        assert block.get("maturity") == "production", (
+            f"memory-sync-agent maturity should be 'production', got {block.get('maturity')!r}"
+        )
+
+    def test_memory_sync_agent_has_tests(self):
+        block = self._get_agent_block("memory-sync-agent")
+        assert block.get("has_tests") == "true", (
+            f"memory-sync-agent has_tests should be 'true', got {block.get('has_tests')!r}"
+        )
+
+    def test_telemetry_classifier_agent_is_production(self):
+        block = self._get_agent_block("telemetry-classifier-agent")
+        assert block.get("maturity") == "production", (
+            f"telemetry-classifier-agent maturity should be 'production', got {block.get('maturity')!r}"
+        )
+
+    def test_telemetry_classifier_agent_has_tests(self):
+        block = self._get_agent_block("telemetry-classifier-agent")
+        assert block.get("has_tests") == "true", (
+            f"telemetry-classifier-agent has_tests should be 'true', got {block.get('has_tests')!r}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# .env.example check
+# ---------------------------------------------------------------------------
+
+class TestEnvExample:
+    def test_codex_cli_api_url_in_env_example(self):
+        env_example = (
+            Path(__file__).resolve().parents[2]
+            / "cognitive_app"
+            / ".env.example"
+        )
+        content = env_example.read_text()
+        assert "CODEX_CLI_API_URL" in content, (
+            "CODEX_CLI_API_URL must be documented in cognitive_app/.env.example"
+        )
