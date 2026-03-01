@@ -466,8 +466,13 @@ async def memory_consolidate(_auth: None = Depends(_require_memory_auth)):
                 _db.execute(
                     "INSERT OR REPLACE INTO ltm_entries "
                     "(key, value, metadata, confidence, timestamp) VALUES (?,?,?,?,?)",
-                    (row["key"], row["value"], row["metadata"],
-                     round(confidence, 3), now.isoformat()),
+                    (
+                        row["key"],
+                        row["value"],
+                        row["metadata"],
+                        round(confidence, 3),
+                        now.isoformat(),
+                    ),
                 )
                 _db.execute("DELETE FROM stm_entries WHERE key = ?", (row["key"],))
                 consolidated += 1

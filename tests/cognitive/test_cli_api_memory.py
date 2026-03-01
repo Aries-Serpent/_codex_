@@ -11,10 +11,7 @@ Covers:
 
 from __future__ import annotations
 
-import json
 import os
-import sqlite3
-import tempfile
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -29,43 +26,6 @@ httpx = pytest.importorskip("httpx")
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-def _make_test_db(tmp_path: Path) -> tuple[sqlite3.Connection, str]:
-    """Create an in-memory-like SQLite DB with the cli_api_server schema."""
-    db_path = str(tmp_path / "test_history.db")
-    conn = sqlite3.connect(db_path, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS cli_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            command TEXT NOT NULL, stdout TEXT, stderr TEXT,
-            returncode INTEGER, duration_ms REAL, cwd TEXT,
-            timestamp TEXT NOT NULL
-        )"""
-    )
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS stm_entries (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key TEXT NOT NULL UNIQUE,
-            value TEXT NOT NULL,
-            metadata TEXT,
-            timestamp TEXT NOT NULL,
-            access_count INTEGER DEFAULT 0
-        )"""
-    )
-    conn.execute(
-        """CREATE TABLE IF NOT EXISTS ltm_entries (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key TEXT NOT NULL UNIQUE,
-            value TEXT NOT NULL,
-            metadata TEXT,
-            pattern_type TEXT,
-            confidence REAL DEFAULT 1.0,
-            timestamp TEXT NOT NULL
-        )"""
-    )
-    conn.commit()
-    return conn, db_path
 
 
 @pytest.fixture()
@@ -327,50 +287,48 @@ class TestAgentRegistryReadiness:
         repo_root = Path(__file__).resolve().parents[2]
         self._registry = repo_root / ".github" / "agents" / "AGENT_REGISTRY.yaml"
 
-    def _load_registry(self) -> str:
-        return self._registry.read_text()
+    def _load_agents(self) -> list[dict[str, Any]]:
+        """Parse AGENT_REGISTRY.yaml with PyYAML and return the list of agent dicts."""
+        yaml = pytest.importorskip("yaml")
+        data = yaml.safe_load(self._registry.read_text())
+        # The registry is a mapping whose values may include lists of agent dicts.
+        # Walk the top-level values to find a list containing dicts with an 'id' key.
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            for v in data.values():
+                if isinstance(v, list) and v and isinstance(v[0], dict) and "id" in v[0]:
+                    return v
+        return []
 
-    def _get_agent_block(self, agent_id: str) -> dict[str, Any]:
-        """Extract the YAML block for a given agent id."""
-        import re  # noqa: PLC0415
-
-        text = self._load_registry()
-        # Find the block starting at "- id: <agent_id>" until next "- id:" or end
-        pattern = rf"- id: {re.escape(agent_id)}\n(.*?)(?=\n- id:|\Z)"
-        m = re.search(pattern, text, re.DOTALL)
-        if not m:
-            return {}
-        block_text = m.group(0)
-        result: dict[str, Any] = {}
-        for line in block_text.splitlines():
-            line = line.strip()
-            if ": " in line and not line.startswith("-"):
-                k, _, v = line.partition(": ")
-                result[k.strip()] = v.strip()
-        return result
+    def _get_agent(self, agent_id: str) -> dict[str, Any]:
+        for agent in self._load_agents():
+            if isinstance(agent, dict) and agent.get("id") == agent_id:
+                return agent
+        return {}
 
     def test_memory_sync_agent_is_production(self):
-        block = self._get_agent_block("memory-sync-agent")
-        assert block.get("maturity") == "production", (
-            f"memory-sync-agent maturity should be 'production', got {block.get('maturity')!r}"
+        agent = self._get_agent("memory-sync-agent")
+        assert agent.get("maturity") == "production", (
+            f"memory-sync-agent maturity should be 'production', got {agent.get('maturity')!r}"
         )
 
     def test_memory_sync_agent_has_tests(self):
-        block = self._get_agent_block("memory-sync-agent")
-        assert block.get("has_tests") == "true", (
-            f"memory-sync-agent has_tests should be 'true', got {block.get('has_tests')!r}"
+        agent = self._get_agent("memory-sync-agent")
+        assert agent.get("has_tests") is True, (
+            f"memory-sync-agent has_tests should be True, got {agent.get('has_tests')!r}"
         )
 
     def test_telemetry_classifier_agent_is_production(self):
-        block = self._get_agent_block("telemetry-classifier-agent")
-        assert block.get("maturity") == "production", (
-            f"telemetry-classifier-agent maturity should be 'production', got {block.get('maturity')!r}"
+        agent = self._get_agent("telemetry-classifier-agent")
+        assert agent.get("maturity") == "production", (
+            f"telemetry-classifier-agent maturity should be 'production', got {agent.get('maturity')!r}"
         )
 
     def test_telemetry_classifier_agent_has_tests(self):
-        block = self._get_agent_block("telemetry-classifier-agent")
-        assert block.get("has_tests") == "true", (
-            f"telemetry-classifier-agent has_tests should be 'true', got {block.get('has_tests')!r}"
+        agent = self._get_agent("telemetry-classifier-agent")
+        assert agent.get("has_tests") is True, (
+            f"telemetry-classifier-agent has_tests should be True, got {agent.get('has_tests')!r}"
         )
 
 
