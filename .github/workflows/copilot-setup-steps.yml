@@ -108,6 +108,18 @@ jobs:
             && echo "✅ Remote branch refs fetched" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
 
+      # Guard: git show <base_sha> -- <file> exits 128 for files added after
+      # the base commit.  Make the safe wrapper available on PATH so any CI
+      # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
+      - name: "🛡️ Install safe-git-show guard on PATH"
+        run: |
+          if [ -f scripts/ci/safe_git_show.sh ]; then
+            install -m 0755 scripts/ci/safe_git_show.sh /usr/local/bin/safe_git_show.sh
+            echo "✅ safe_git_show.sh installed to /usr/local/bin"
+          else
+            echo "⚠️ scripts/ci/safe_git_show.sh not found (non-blocking)"
+          fi
+
       # Guarded: selectively reintroduce LFS behavior if workflow_dispatch requested
       - name: "🔭 LFS diagnostics"
         if: ${{ github.event_name == 'workflow_dispatch' && (inputs.lfs_mode == 'full' || (inputs.lfs_mode == 'targeted' && inputs.lfs_include_paths != '')) }}

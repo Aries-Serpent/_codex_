@@ -21,8 +21,8 @@ import argparse
 import json
 import os
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 
 
 def gh_api(method: str, path: str, token: str, data: bytes | None = None) -> dict | list | None:
@@ -92,7 +92,7 @@ def close_pr(repo: str, token: str, pr_number: int) -> bool:
 
 def delete_branch(repo: str, token: str, branch: str) -> bool:
     """Delete a branch ref. GitHub refs API uses literal slashes in the path."""
-    result = gh_api("DELETE", f"/repos/{repo}/git/refs/heads/{branch}", token)
+    gh_api("DELETE", f"/repos/{repo}/git/refs/heads/{branch}", token)
     return True  # DELETE returns 204 on success, handled in gh_api
 
 
@@ -145,17 +145,17 @@ def main() -> int:
         # Delete branch
         if args.execute:
             delete_branch(args.repo, token, name)
-            print(f"     └─ ✅ Branch deleted")
+            print("     └─ ✅ Branch deleted")
             deleted_branches += 1
         else:
-            print(f"     └─ Would delete branch")
+            print("     └─ Would delete branch")
 
     print(f"\n{'='*60}")
     if args.execute:
         print(f"  ✅ Done: {deleted_branches} branches deleted, {closed_prs} PRs closed")
     else:
         print(f"  🟡 Dry-run: {len(branches)} branches would be deleted")
-        print(f"  Run with --execute to apply changes")
+        print("  Run with --execute to apply changes")
     print(f"{'='*60}\n")
 
     return 0
