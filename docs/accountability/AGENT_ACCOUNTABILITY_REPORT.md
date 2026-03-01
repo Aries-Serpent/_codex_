@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_  
 **Branch:** copilot/investigate-ci-failure-rate  
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`  
-**Last updated:** 2026-03-01 (PR #3421 Sprint 1+2+5 — CI feedback loop + CODEX_CI_FAILURE_RATE + CLI auto-start + BACKUP_KEY 100% + CHANGELOG gate fix)
+**Last updated:** 2026-03-01 (PR #3421 Sprint 2+3+4 — CORS allowlist + SQLite history + OODA endpoints + 3 new agents)
 
 ---
 
@@ -320,6 +320,10 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-054 | `cognitive_brain_ci_feedback.yml`: Sprint 1 — add P-047 keyword map (`health`/`monitor`/`self.heal` → `CI_SELF_HEALING`) so CI Health Monitor completions are reported to cognitive brain (PR #3421) | ✅ Done (PR #3421) |
 | W-055 | `copilot-setup-steps.yml`: Sprint 2 — `💻 Start CLI API Server` step auto-starts FastAPI :8765 in background with health-check guard; log to `RUNNER_TEMP` (PR #3421) | ✅ Done (PR #3421) |
 | W-056 | Sprint 5 complete — `CODEX_BACKUP_KEY` rotated; token-probe S117 confirms 100%/100% coverage (both keys HTTP 200 read + HTTP 201 write); pre-flight CHANGELOG gate unblocked (PR #3421) | ✅ Done (PR #3421) |
+| W-057 | `cli_api_server.py` Sprint 2: CORS allowlist from `CODEX_ALLOWED_ORIGINS` env var (comma-separated) with localhost fallback; `_build_cors_origins()` helper (PR #3421) | ✅ Done (PR #3421) |
+| W-058 | `cli_api_server.py` Sprint 2: SQLite history persistence via `CODEX_DB_PATH`; in-memory `deque` pre-loaded from DB on start; INSERT on each run; DELETE on clear (PR #3421) | ✅ Done (PR #3421) |
+| W-059 | `cli_api_server.py` Sprint 3: `POST /api/ooda/process` wires `CognitiveAppMain.process()` to FastAPI; `GET /api/ooda/metrics` exposes K1 factor; lazy import with graceful fallback (PR #3421) | ✅ Done (PR #3421) |
+| W-060 | Sprint 4: 3 new agent definitions — `ci-health-alert-agent.md`, `repo-var-sync-agent.md`, `cognitive-ooda-loop-agent.md`; AGENT_REGISTRY.yaml v1.6.0 (123→126) (PR #3421) | ✅ Done (PR #3421) |
 
 ---
 

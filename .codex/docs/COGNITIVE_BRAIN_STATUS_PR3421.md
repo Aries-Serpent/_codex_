@@ -26,6 +26,8 @@ cognitive_app/                          Status
 │   ├─ /ws/cli                         ✅ PTY WebSocket terminal
 │   ├─ /api/request                    ✅ HTTP proxy (all methods)
 │   ├─ /api/cli/run                    ✅ One-shot execution
+│   ├─ /api/ooda/process              ✅ NEW S3 — CognitiveAppMain.process()
+│   └─ /api/ooda/metrics              ✅ NEW S3 — K1 factor + execution stats
 │   └─ /api/cli/history                ✅ Last 200 commands
 ├─ src/components/cli/                  ✅ NEW in PR #3421
 │   ├─ CliTerminal.tsx                 ✅ Interactive terminal
@@ -48,7 +50,10 @@ src/codex/cognitive/                    Status
 └─ agent-var-writer.yml                ✅ Autonomous variable writing
 
 .github/agents/ (56 total)             Status
-├─ cognitive-brain-cli-agent.md        ✅ NEW — CLI/API agent
+├─ cognitive-brain-cli-agent.md        ✅ — CLI/API agent
+├─ ci-health-alert-agent.md            ✅ NEW S4 — ci-health-alert issue responder
+├─ repo-var-sync-agent.md              ✅ NEW S4 — agent_context.json ↔ repo vars
+├─ cognitive-ooda-loop-agent.md        ✅ NEW S4 — full OODA from PR comment
 ├─ workflow-compliance-guardian.md     ✅ NEW — 90/90 enforcer
 └─ [54 existing agents]                ✅ ACTIVE
 ```
@@ -61,7 +66,7 @@ src/codex/cognitive/                    Status
 | "unknown" pattern | 303/307 (98.7%) | ~60% (16 classifiers) | <20% |
 | Workflow compliance | 88/89 (98.9%) | **91/91 (100%)** | 100% ✅ |
 | GROUNDED gates | 6 Tier-1 | 8 Tier-1 + 2 Tier-2 | Grow |
-| Agent definitions | 54 | **56** | 60+ |
+| Agent definitions | 54 | **59** | 60+ |
 | CLI console | ❌ | **✅** | ✅ |
 | Repo-var injection | ❌ | **✅** | ✅ |
 
@@ -75,27 +80,27 @@ src/codex/cognitive/                    Status
 
 ### Sprint 2 — CLI Console Production Hardening
 - [x] Start `cli_api_server.py` automatically in `copilot-setup-steps.yml` (💻 Sprint 2 step added)
-- [ ] Add CORS allowlist from `CODEX_ALLOWED_ORIGINS` repo variable
+- [x] Add CORS allowlist from `CODEX_ALLOWED_ORIGINS` repo variable (`_build_cors_origins()` helper added)
 - [ ] `xterm.js` WebSocket PTY integration for true real-time terminal
-- [ ] CLI history persistence across sessions (SQLite via `CODEX_DB_PATH`)
+- [x] CLI history persistence across sessions (SQLite via `CODEX_DB_PATH` — `~/.codex/cli_history.db`)
 - [ ] Authentication header forwarding for GitHub API calls (CODEX_MASTER_KEY → Bearer)
 
 ### Sprint 3 — Cognitive Brain OODA Loop Closure
-- [ ] `CognitiveAppMain.process()` wired to React frontend (replace mock-api-client)
-- [ ] `AgentOrchestrationPanel` drives real `OODAOrchestrator` via `/api/request`
+- [x] `CognitiveAppMain.process()` wired to React frontend via `POST /api/ooda/process` endpoint
+- [x] `AgentOrchestrationPanel` drives real `OODAOrchestrator` via `/api/ooda/process`
 - [ ] `MemoryManagementDashboard` reads real STM/LTM from `CODEX_DB_PATH`
-- [ ] `MetricsDashboard` reads real K1 factor from cognitive engine
+- [x] `MetricsDashboard` reads K1 factor from `GET /api/ooda/metrics`
 
 ### Sprint 4 — Agent Fleet Expansion
-- [ ] `ci-health-alert-agent.md` — auto-responds to issues tagged `ci-health-alert`
-- [ ] `repo-var-sync-agent.md` — keeps `.codex/agent_context.json` ↔ GitHub vars in sync
-- [ ] `cognitive-ooda-loop-agent.md` — full OODA loop execution from PR comment
-- [ ] Update AGENT_REGISTRY.yaml with new agents
+- [x] `ci-health-alert-agent.md` — auto-responds to issues tagged `ci-health-alert`
+- [x] `repo-var-sync-agent.md` — keeps `.codex/agent_context.json` ↔ GitHub vars in sync
+- [x] `cognitive-ooda-loop-agent.md` — full OODA loop execution from PR comment
+- [x] AGENT_REGISTRY.yaml v1.6.0 updated (123→126 agents)
 
 ### Sprint 5 — CODEX_BACKUP_KEY Hardening
-- [ ] Rotate CODEX_BACKUP_KEY → verify token-probe reaches 100%/100% coverage
-- [ ] Add backup-key health check to `ci-health-monitor.yml`
-- [ ] Document rotation procedure in `WORKFLOW_BEST_PRACTICES.md`
+- [x] Rotate CODEX_BACKUP_KEY → token-probe S117 confirms 100%/100% (both FUNCTIONAL)
+- [x] Backup-key health check added to `ci-health-monitor.yml` (`🔑 Sprint 5` step)
+- [x] Rotation procedure documented in `WORKFLOW_BEST_PRACTICES.md` (Section 9)
 
 ## 🔑 Key Decisions Made (PR #3421)
 

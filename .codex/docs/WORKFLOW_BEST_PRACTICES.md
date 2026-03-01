@@ -440,3 +440,52 @@ jobs:
 - [Exercism — GitHub Actions Best Practices](https://exercism.org/docs/building/github/gha-best-practices)
 
 *Updated: 2026-03-01 | Applies to all 89 workflows in `.github/workflows/`*
+
+---
+
+## 9. CODEX_BACKUP_KEY Rotation Procedure (Sprint 5)
+
+> **Status:** ✅ COMPLETE — token-probe S117 confirms 100%/100% (2026-03-01)
+
+### When to Rotate
+
+Rotate `CODEX_BACKUP_KEY` when:
+- `ci-health-monitor.yml` backup key health check returns non-200
+- `token-probe.yml` shows backup key at < 100% coverage
+- A Personal Access Token (PAT) expiry warning appears in GitHub settings
+
+### Rotation Steps
+
+1. **Generate new PAT** (repo owner: @mbaetiong):
+   ```
+   GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
+   Permissions: Actions (read/write), Contents (write), Issues (write), Pull requests (write)
+   Expiry: 90 days (recommended)
+   ```
+
+2. **Update repository secret**:
+   ```
+   Repository → Settings → Secrets and variables → Actions → Secrets
+   Update CODEX_BACKUP_KEY with new token value
+   ```
+
+3. **Verify with token-probe**:
+   ```
+   Actions → Token Probe → Run workflow → enter PR number
+   Expected: CODEX_BACKUP_KEY Read: HTTP 200, Write: HTTP 201
+   ```
+
+4. **Confirm in ci-health-monitor**:
+   The `🔑 Sprint 5: Backup key health check` step will show:
+   ```
+   ✅ CODEX_BACKUP_KEY healthy (HTTP 200)
+   ```
+
+5. **Update AGENT_ACCOUNTABILITY_REPORT.md** with rotation date and W-number.
+
+### Enforcement
+- `ci-health-monitor.yml` checks backup key health on every run (every 6 hours)
+- `token-probe.yml` provides on-demand detailed coverage report
+- `agent-auth-delegation.yml` REQ-7 gates require both keys active
+
+*Updated: 2026-03-01 | Applies to: `.github/workflows/ci-health-monitor.yml`, `token-probe.yml`*

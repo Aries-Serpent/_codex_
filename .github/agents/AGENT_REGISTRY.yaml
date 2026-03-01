@@ -1,6 +1,6 @@
-version: 1.5.0
+version: 1.6.0
 last_updated: '2026-03-01T04:26:49Z'
-total_agents: 123  # registered in this YAML; +2 from PR #3421
+total_agents: 126  # registered in this YAML; +3 from PR #3421 Sprint 4
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -1464,6 +1464,73 @@ agents:
     primary: balance
     secondary: constraint
 
+- id: ci-health-alert-agent
+  name: CI Health Alert Agent
+  version: "1.0.0"
+  file: .github/agents/ci-health-alert-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci
+  subcategory: health
+  description: >
+    Auto-responds to GitHub issues tagged ci-health-alert. Classifies
+    failure patterns via ci_failure_patterns.yaml, proposes batch fixes,
+    and updates CODEX_CI_FAILURE_RATE repo variable after remediation.
+  added_in_pr: 3421
+  sprint: Sprint 4
+  physics_model:
+    primary: feedback
+    secondary: correction
+
+- id: repo-var-sync-agent
+  name: Repo Var Sync Agent
+  version: "1.0.0"
+  file: .github/agents/repo-var-sync-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: infrastructure
+  subcategory: configuration
+  description: >
+    Keeps .codex/agent_context.json bidirectionally in sync with GitHub
+    Actions repository variables (COPILOT_* / CODEX_*). Supports both
+    bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
+  added_in_pr: 3421
+  sprint: Sprint 4
+  physics_model:
+    primary: synchronization
+    secondary: consistency
+
+- id: cognitive-ooda-loop-agent
+  name: Cognitive OODA Loop Agent
+  version: "1.0.0"
+  file: .github/agents/cognitive-ooda-loop-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: cognitive
+  subcategory: orchestration
+  description: >
+    Executes a full OODA loop from a PR comment. Drives the real
+    OODAOrchestrator via POST /api/ooda/process on the CLI API server
+    (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also
+    exposes GET /api/ooda/metrics for MetricsDashboard K1 factor display.
+  added_in_pr: 3421
+  sprint: Sprint 3 + Sprint 4
+  physics_model:
+    primary: ooda_loop
+    secondary: feedback
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
@@ -1504,5 +1571,9 @@ standardization_status:
 # - cognitive-brain-cli-agent added (PR #3421)
 # - workflow-compliance-guardian added (PR #3421)
 # - total_agents 121 → 123
+# - ci-health-alert-agent added (PR #3421 Sprint 4)
+# - repo-var-sync-agent added (PR #3421 Sprint 4)
+# - cognitive-ooda-loop-agent added (PR #3421 Sprint 4)
+# - total_agents 123 → 126
 # - 91/91 workflow compliance achieved
 # - iterative-self-healing-ci.yml added

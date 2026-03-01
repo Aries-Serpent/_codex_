@@ -243,6 +243,30 @@ jobs:
           fi
           echo "CODEX_CI_FAILURE_RATE updated to ${RATE}% (status=${STATUS}, http=${HTTP_STATUS})"
 
+      - name: "🔑 Sprint 5: Backup key health check"
+        if: always()
+        continue-on-error: true
+        env:
+          BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        run: |
+          # Sprint 5: validate CODEX_BACKUP_KEY is functional on each monitor run.
+          # A non-empty BACKUP_KEY that returns HTTP 200 on the user endpoint is healthy.
+          if [ -z "${BACKUP_KEY}" ]; then
+            echo "::warning::CODEX_BACKUP_KEY is not set — backup key health: MISSING"
+            echo "backup_key_status=missing" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+            exit 0
+          fi
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${BACKUP_KEY}" \
+            "https://api.github.com/user" 2>/dev/null) || HTTP=0
+          if [ "${HTTP}" = "200" ]; then
+            echo "✅ CODEX_BACKUP_KEY healthy (HTTP ${HTTP})"
+            echo "| Backup Key | ✅ HTTP ${HTTP} |" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          else
+            echo "::warning::CODEX_BACKUP_KEY probe returned HTTP ${HTTP} — may need rotation"
+            echo "| Backup Key | ⚠️ HTTP ${HTTP} — check rotation |" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          fi
+
       - name: Cache health report
         if: always()
         continue-on-error: true

@@ -5,20 +5,30 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3421 Sprint 1+2+5
+## [Unreleased] — PR #3421 (Sprint 1–5)
 
-### PR #3421 — CI Feedback Loop + CODEX_CI_FAILURE_RATE + CLI Auto-Start + BACKUP_KEY 100% (2026-03-01)
+### PR #3421 — CI Feedback Loop + CLI Hardening + OODA Endpoints + Agent Fleet (2026-03-01)
 
-| Type | File | Change |
-|------|------|--------|
-| Feature | `.github/workflows/ci-health-monitor.yml` | Sprint 1: new step auto-updates `CODEX_CI_FAILURE_RATE` repo variable to `<rate>:<status>` (ok/degraded/critical) via GitHub API PATCH+POST fallback after every telemetry run |
-| Feature | `.github/workflows/cognitive_brain_ci_feedback.yml` | Sprint 1: add P-047 keyword mappings (`health`/`monitor`/`self.heal` → `CI_SELF_HEALING`) so CI Health Monitor completions are reported to the cognitive brain automatically |
-| Feature | `.github/workflows/copilot-setup-steps.yml` | Sprint 2: `💻 Start CLI API Server` step auto-starts FastAPI :8765 in background with health-check guard; log written to `RUNNER_TEMP` (Windows-safe, not /tmp) |
-| Security | `.github/workflows/ci-health-monitor.yml` | Sprint 5: `CODEX_BACKUP_KEY` rotated and validated — token-probe S117 confirms 100%/100% (both keys HTTP 200 read + HTTP 201 write); pre-flight gate unblocked |
-| Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-053–W-056 entries: Sprint 1 CI wiring, Sprint 2 CLI auto-start, Sprint 5 backup-key confirmation, CHANGELOG gate fix |
-| Docs | `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3421.md` | Sprint items 1/2/5 marked `[x]`; workflow count updated 90→91 |
+| Sprint | Type | File | Change |
+|--------|------|------|--------|
+| S1 | Feature | `.github/workflows/ci-health-monitor.yml` | Auto-updates `CODEX_CI_FAILURE_RATE` repo variable to `<rate>:<status>` (ok/degraded/critical) via GitHub API PATCH+POST fallback after every telemetry run |
+| S1 | Feature | `.github/workflows/cognitive_brain_ci_feedback.yml` | P-047 keyword mappings (`health`/`monitor`/`self.heal` → `CI_SELF_HEALING`) — CI Health Monitor completions reported to cognitive brain |
+| S2 | Feature | `.github/workflows/copilot-setup-steps.yml` | `💻 Start CLI API Server` step auto-starts FastAPI :8765; log to `RUNNER_TEMP` |
+| S2 | Feature | `cognitive_app/src/server/cli_api_server.py` | CORS allowlist from `CODEX_ALLOWED_ORIGINS` env var; falls back to localhost dev origins |
+| S2 | Feature | `cognitive_app/src/server/cli_api_server.py` | SQLite CLI history persistence via `CODEX_DB_PATH` (`~/.codex/cli_history.db`); `threading.Lock` for write safety; `row_factory = sqlite3.Row`; in-memory mirror pre-loaded on start |
+| S3 | Feature | `cognitive_app/src/server/cli_api_server.py` | `POST /api/ooda/process` wires `CognitiveAppMain.process()` via module-level `_OODA_AVAILABLE` guard; `GET /api/ooda/metrics` exposes K1 factor for MetricsDashboard |
+| S4 | Feature | `.github/agents/ci-health-alert-agent.md` | Auto-responds to `ci-health-alert` issues; classifies patterns + proposes fixes + updates `CODEX_CI_FAILURE_RATE` |
+| S4 | Feature | `.github/agents/repo-var-sync-agent.md` | Bidirectional sync `.codex/agent_context.json` ↔ GitHub repo vars with drift detection |
+| S4 | Feature | `.github/agents/cognitive-ooda-loop-agent.md` | Full OODA loop from PR comment via `/api/ooda/process`; drives `AgentOrchestrationPanel` + MetricsDashboard |
+| S4 | Docs | `.github/agents/AGENT_REGISTRY.yaml` | v1.6.0 — 3 new agents registered (123→126) |
+| S5 | Security | — | `CODEX_BACKUP_KEY` rotated; token-probe S117 confirms 100%/100% (both keys functional) |
+| Gov | Fix | `CHANGELOG.md` | `[Unreleased]` entry added — unblocks cognitive pre-flight WF-001 gate |
+| Gov | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-053–W-060 entries; Last updated timestamp |
+| Gov | Docs | `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3421.md` | Sprint items marked `[x]`; workflow count 90→91 |
 
 ---
+
+## [Unreleased] — S116i resume
 
 ## [Unreleased] — S116i resume
 

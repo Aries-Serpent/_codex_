@@ -23,9 +23,11 @@ import os
 import pty
 import re
 import select
+import sqlite3
 import struct
 import subprocess
 import termios
+import threading
 import time
 from collections import deque
 from datetime import datetime
@@ -36,9 +38,56 @@ from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+# ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
+# REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
+# modify sys.path on every request (avoids reviewer concern about per-request mutation).
+import sys as _sys
+def _find_repo_root() -> str:
+    """Walk up from this file until we find a pyproject.toml or .git — repo root marker."""
+    from pathlib import Path  # noqa: PLC0415 (module-level import order doesn't matter here)
+    candidate = Path(__file__).resolve()
+    for _ in range(8):  # max 8 levels up; avoids infinite loop on broken installs
+        candidate = candidate.parent
+        if (candidate / "pyproject.toml").exists() or (candidate / ".git").exists():
+            return str(candidate)
+    # Fallback: 4 levels up from this file (cognitive_app/src/server/ → repo root)
+    return str(Path(__file__).resolve().parents[3])
+
+_repo_root_for_import = _find_repo_root()
+if _repo_root_for_import not in _sys.path:
+    _sys.path.insert(0, _repo_root_for_import)
+try:
+    from cognitive_app.src.orchestrator import get_cognitive_app as _get_cognitive_app
+    _OODA_AVAILABLE = True
+except ImportError:
+    _get_cognitive_app = None  # type: ignore[assignment]
+    _OODA_AVAILABLE = False
+
+# Also try to import Planner/MemoryInterface at module level for auto-init
+try:
+    from cognitive_brain.base import MemoryInterface as _MemoryInterface  # noqa: E402
+    from cognitive_brain.base import Planner as _Planner  # noqa: E402
+    _BRAIN_BASE_AVAILABLE = True
+except ImportError:
+    _Planner = None  # type: ignore[assignment,misc]
+    _MemoryInterface = None  # type: ignore[assignment,misc]
+    _BRAIN_BASE_AVAILABLE = False
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("cli_api_server")
+
+
+# ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
+def _build_cors_origins() -> list[str]:
+    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to dev defaults."""
+    env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
+    if env_val:
+        origins = [o.strip() for o in env_val.split(",") if o.strip()]
+        log.info("CORS origins from CODEX_ALLOWED_ORIGINS: %s", origins)
+        return origins
+    return ["http://localhost:5173", "http://127.0.0.1:5173"]
+
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -49,14 +98,72 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    # Sprint 2: CORS allowlist from CODEX_ALLOWED_ORIGINS env var (comma-separated).
+    # Falls back to localhost dev origins when the env var is absent.
+    allow_origins=_build_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Command history store ─────────────────────────────────────────────────────
+# ── Sprint 2: SQLite-backed command history ───────────────────────────────────
 MAX_HISTORY = 200
+
+# DB path: CODEX_DB_PATH env var → default ~/.codex/cli_history.db
+_DB_PATH = os.environ.get(
+    "CODEX_DB_PATH",
+    os.path.join(os.path.expanduser("~"), ".codex", "cli_history.db"),
+)
+
+
+def _init_history_db() -> sqlite3.Connection:
+    """Open (or create) the SQLite history database and return a connection."""
+    os.makedirs(os.path.dirname(_DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(_DB_PATH, check_same_thread=False)
+    conn.row_factory = sqlite3.Row  # enables named column access
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS cli_history (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            command   TEXT NOT NULL,
+            stdout    TEXT,
+            stderr    TEXT,
+            returncode INTEGER,
+            duration_ms REAL,
+            cwd       TEXT,
+            timestamp TEXT NOT NULL
+        )
+        """
+    )
+    conn.commit()
+    return conn
+
+
+_db: sqlite3.Connection = _init_history_db()
+_db_lock = threading.Lock()  # SQLite single-writer guard for async/multi-thread safety
+
+# In-memory mirror for O(1) recent-N access (still capped at MAX_HISTORY)
 _history: Deque[Dict[str, Any]] = deque(maxlen=MAX_HISTORY)
+
+# Pre-load last MAX_HISTORY records from DB so history survives server restarts
+try:
+    _rows = _db.execute(
+        "SELECT command,stdout,stderr,returncode,duration_ms,cwd,timestamp "
+        "FROM cli_history ORDER BY id DESC LIMIT ?",
+        (MAX_HISTORY,),
+    ).fetchall()
+    for _r in reversed(_rows):
+        _history.append({
+            "command": _r["command"], "stdout": _r["stdout"], "stderr": _r["stderr"],
+            "returncode": _r["returncode"], "duration_ms": _r["duration_ms"],
+            "cwd": _r["cwd"], "timestamp": _r["timestamp"],
+        })
+    log.info("Loaded %d history entries from SQLite (%s)", len(_rows), _DB_PATH)
+except sqlite3.OperationalError as _e:
+    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", _e)
+except sqlite3.DatabaseError as _e:
+    log.warning("SQLite database error pre-loading history (connection failure?): %s", _e)
+except Exception as _e:
+    log.warning("Unexpected error pre-loading history from SQLite: %s", _e)
 
 # Repo root (4 levels up from this file: server/ → src/ → cognitive_app/ → repo/)
 REPO_ROOT = str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -109,7 +216,71 @@ async def health():
         "status": "ok",
         "repo_root": REPO_ROOT,
         "timestamp": datetime.utcnow().isoformat(),
+        "history_db": _DB_PATH,
     }
+
+
+# ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend
+# The orchestrator.py global instance is imported lazily to avoid import errors
+# when the cognitive_brain.base deps are not installed (CI environment).
+
+@app.post("/api/ooda/process")
+async def ooda_process(req: Dict[str, Any]):
+    """
+    Route input through the real CognitiveAppMain.process() OODA loop.
+    Sprint 3: replaces mock-api-client in AgentOrchestrationPanel.
+
+    Request body: { "input": {...}, "context": {...} }
+    Response: ActionResult serialized as JSON.
+    """
+    if not _OODA_AVAILABLE or _get_cognitive_app is None:
+        return {
+            "success": False,
+            "output": None,
+            "metrics": {},
+            "errors": ["Cognitive orchestrator not available in this environment"],
+        }
+    try:
+        app_instance = _get_cognitive_app()
+        if not app_instance._orchestrator:
+            # Auto-initialize with lightweight stubs when not yet wired
+            if _BRAIN_BASE_AVAILABLE and _Planner and _MemoryInterface:
+                app_instance.initialize(_Planner(), _MemoryInterface())
+        result = app_instance.process(
+            input_data=req.get("input", {}),
+            context=req.get("context"),
+        )
+        return {
+            "success": result.success,
+            "output": result.output,
+            "metrics": result.metrics,
+            "errors": result.errors,
+        }
+    except Exception as exc:
+        log.warning("OODA process error (returning graceful fallback): %s", exc)
+        return {
+            "success": False,
+            "output": None,
+            "metrics": {},
+            "errors": [str(exc)],
+        }
+
+
+@app.get("/api/ooda/metrics")
+async def ooda_metrics():
+    """
+    Return aggregated OODA execution metrics.
+    Sprint 3: drives MetricsDashboard K1 factor display.
+    """
+    if not _OODA_AVAILABLE or _get_cognitive_app is None:
+        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(),
+                "error": "Cognitive orchestrator not available"}
+    try:
+        metrics = _get_cognitive_app().get_metrics()
+        return {"metrics": metrics, "timestamp": datetime.utcnow().isoformat()}
+    except Exception as exc:
+        log.warning("OODA metrics error: %s", exc)
+        return {"metrics": {}, "timestamp": datetime.utcnow().isoformat(), "error": str(exc)}
 
 
 # ── CLI one-shot endpoint ─────────────────────────────────────────────────────
@@ -160,21 +331,39 @@ async def cli_run(req: CliRunRequest):
         "timestamp":   datetime.utcnow().isoformat(),
     }
     _history.append(record)
+    # Sprint 2: persist to SQLite for cross-session history
+    try:
+        with _db_lock:
+            _db.execute(
+                "INSERT INTO cli_history (command,stdout,stderr,returncode,duration_ms,cwd,timestamp) "
+                "VALUES (?,?,?,?,?,?,?)",
+                (record["command"], record["stdout"], record["stderr"],
+                 record["returncode"], record["duration_ms"], record["cwd"], record["timestamp"]),
+            )
+            _db.commit()
+    except Exception as _e:
+        log.debug("SQLite history write failed (non-blocking): %s", _e)
     log.info("cli_run rc=%s %.0fms cmd=%r", record["returncode"], duration_ms, req.command[:80])
     return record
 
 
 @app.get("/api/cli/history")
 async def cli_history(limit: int = 50):
-    """Return the last N command executions."""
+    """Return the last N command executions (in-memory mirror; survives restarts via SQLite)."""
     items = list(_history)
     return {"items": items[-limit:], "total": len(items)}
 
 
 @app.delete("/api/cli/history")
 async def cli_clear_history():
-    """Clear command history."""
+    """Clear command history (both in-memory and SQLite)."""
     _history.clear()
+    try:
+        with _db_lock:
+            _db.execute("DELETE FROM cli_history")
+            _db.commit()
+    except Exception as _e:
+        log.debug("SQLite history clear failed (non-blocking): %s", _e)
     return {"cleared": True}
 
 
