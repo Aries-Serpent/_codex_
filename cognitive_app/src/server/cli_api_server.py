@@ -26,7 +26,7 @@ import secrets
 import select
 import sqlite3
 import struct
-import subprocess
+import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 
 # ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
 # REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
@@ -336,10 +336,18 @@ class SQLiteMemory:
         return True
 
     def retrieve(self, key: str) -> Any:
-        row = _db.execute(
-            "SELECT value FROM stm_entries WHERE key = ?", (key,)
-        ).fetchone()
-        return json.loads(row["value"]) if row else None
+        with _db_lock:
+            row = _db.execute(
+                "SELECT value FROM stm_entries WHERE key = ?", (key,)
+            ).fetchone()
+            if row is None:
+                return None
+            _db.execute(
+                "UPDATE stm_entries SET access_count = access_count + 1 WHERE key = ?",
+                (key,),
+            )
+            _db.commit()
+        return json.loads(row["value"])
 
     def search(self, query: Dict[str, Any], limit: int = 10) -> list:
         q = next(iter(query.values()), "") if query else ""
@@ -363,18 +371,25 @@ async def memory_state(_auth: None = Depends(_require_memory_auth)):
     """
     Return STM/LTM counts and cache metrics.
     Drives MemoryManagementDashboard (P4.1 + P4.2).
+
+    cache_hit_rate = warm_entries / stm_count where warm = access_count >= 1.
+    This reflects the fraction of STM that has been retrieved at least once.
     """
     try:
         with _db_lock:
             stm_count = _db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
             ltm_count = _db.execute("SELECT COUNT(*) FROM ltm_entries").fetchone()[0]
+            warm_count = _db.execute(
+                "SELECT COUNT(*) FROM stm_entries WHERE access_count >= 1"
+            ).fetchone()[0]
         capacity = MEMORY_CAPACITY
         compression_rate = ltm_count / (stm_count + ltm_count) if (stm_count + ltm_count) > 0 else 0.0
+        cache_hit_rate = warm_count / stm_count if stm_count > 0 else 0.0
         return {
             "stm_count": stm_count,
             "ltm_count": ltm_count,
             "capacity": capacity,
-            "cache_hit_rate": 0.0,
+            "cache_hit_rate": round(cache_hit_rate, 4),
             "compression_rate": round(compression_rate, 4),
             "patterns": [],
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -414,6 +429,93 @@ async def memory_search(q: str = "", limit: int = 20, _auth: None = Depends(_req
     except Exception as exc:
         log.warning("memory_search error: %s", exc)
         return {"items": [], "total": 0, "error": "Internal error searching memory"}
+
+
+# Sprint 11 / Phase 5: tunable consolidation thresholds
+_HOT_THRESHOLD = int(os.environ.get("CODEX_STM_HOT_THRESHOLD", "3"))
+_HOT_ENTRIES_LIMIT = int(os.environ.get("CODEX_HOT_ENTRIES_LIMIT", "50"))
+
+
+@app.post("/api/memory/consolidate")
+async def memory_consolidate(_auth: None = Depends(_require_memory_auth)):
+    """
+    Sprint 11 / Phase 5: Consolidate hot STM entries into LTM.
+
+    Promotes STM entries whose ``access_count >= CODEX_STM_HOT_THRESHOLD`` (default 3)
+    into the ``ltm_entries`` table and deletes them from STM.  Confidence is
+    computed as ``min(1.0, access_count / 10)``.
+
+    Also prunes stale LTM entries older than 30 days with confidence < 0.3.
+
+    Returns:
+        consolidated  - number of STM->LTM promotions
+        pruned        - number of stale LTM entries removed
+        stm_count     - remaining STM entries after consolidation
+        ltm_count     - total LTM entries after consolidation
+    """
+    from datetime import timedelta as _timedelta  # noqa: PLC0415
+
+    now = datetime.now(timezone.utc)
+    cutoff = (now - _timedelta(days=30)).isoformat()
+
+    try:
+        with _db_lock:
+            # 1. Fetch hot STM entries
+            hot_rows = _db.execute(
+                "SELECT key, value, metadata, access_count FROM stm_entries "
+                "WHERE access_count >= ? ORDER BY access_count DESC LIMIT ?",
+                (_HOT_THRESHOLD, _HOT_ENTRIES_LIMIT),
+            ).fetchall()
+
+            consolidated = 0
+            for row in hot_rows:
+                confidence = min(1.0, row["access_count"] / 10)
+                _db.execute(
+                    "INSERT OR REPLACE INTO ltm_entries "
+                    "(key, value, metadata, confidence, timestamp) VALUES (?,?,?,?,?)",
+                    (
+                        row["key"],
+                        row["value"],
+                        row["metadata"],
+                        round(confidence, 3),
+                        now.isoformat(),
+                    ),
+                )
+                _db.execute("DELETE FROM stm_entries WHERE key = ?", (row["key"],))
+                consolidated += 1
+
+            # 2. Prune stale LTM entries
+            pruned = _db.execute(
+                "DELETE FROM ltm_entries WHERE timestamp < ? AND confidence < 0.3",
+                (cutoff,),
+            ).rowcount
+
+            _db.commit()
+
+            stm_count = _db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
+            ltm_count = _db.execute("SELECT COUNT(*) FROM ltm_entries").fetchone()[0]
+
+        log.info(
+            "memory_consolidate: consolidated=%d pruned=%d stm=%d ltm=%d",
+            consolidated, pruned, stm_count, ltm_count,
+        )
+        return {
+            "consolidated": consolidated,
+            "pruned": pruned,
+            "stm_count": stm_count,
+            "ltm_count": ltm_count,
+            "timestamp": now.isoformat(),
+        }
+    except Exception as exc:
+        log.warning("memory_consolidate error: %s", exc)
+        return {
+            "consolidated": 0,
+            "pruned": 0,
+            "stm_count": 0,
+            "ltm_count": 0,
+            "timestamp": now.isoformat(),
+            "error": "Internal error during memory consolidation",
+        }
 
 
 @app.get("/api/ooda/metrics")

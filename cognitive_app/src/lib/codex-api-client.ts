@@ -111,6 +111,15 @@ const DashboardMetricsSchema = z.object({
   }),
 });
 
+const ConsolidateResponseSchema = z.object({
+  consolidated: z.number(),
+  pruned: z.number(),
+  stm_count: z.number(),
+  ltm_count: z.number(),
+  timestamp: z.string(),
+  error: z.string().optional(),
+});
+
 export type CodexRequest = z.infer<typeof CodexRequestSchema>;
 export type CodexResponse = z.infer<typeof CodexResponseSchema>;
 export type StatusResponse = z.infer<typeof StatusResponseSchema>;
@@ -122,6 +131,7 @@ export type Agent = z.infer<typeof AgentSchema>;
 export type Task = z.infer<typeof TaskSchema>;
 export type AgentStateResponse = z.infer<typeof AgentStateResponseSchema>;
 export type DashboardMetrics = z.infer<typeof DashboardMetricsSchema>;
+export type ConsolidateResponse = z.infer<typeof ConsolidateResponseSchema>;
 
 export class CodexAPIError extends Error {
   constructor(public statusCode: number, message: string) {
@@ -291,5 +301,19 @@ export class CodexAPIClient {
 
     const data = await response.json();
     return DashboardMetricsSchema.parse(data);
+  }
+
+  async consolidateMemory(): Promise<ConsolidateResponse> {
+    const response = await fetch(`${this.baseURL}/api/memory/consolidate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${this.apiKey}` },
+    });
+
+    if (!response.ok) {
+      throw new CodexAPIError(response.status, 'Failed to consolidate memory');
+    }
+
+    const data = await response.json();
+    return ConsolidateResponseSchema.parse(data);
   }
 }

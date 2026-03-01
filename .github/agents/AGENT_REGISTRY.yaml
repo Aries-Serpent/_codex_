@@ -1533,12 +1533,12 @@ agents:
 
 - id: memory-sync-agent
   name: Memory Sync Agent
-  version: "1.0.0"
+  version: "2.1.0"
   file: .github/agents/memory-sync-agent.md
   status: active
-  maturity: beta
+  maturity: production
   has_prompts: false
-  has_tests: false
+  has_tests: true
   has_docs: true
   has_src: false
   category: cognitive
@@ -1549,18 +1549,20 @@ agents:
     patterns with ImprovementArea, and prunes stale LTM entries.
   added_in_pr: 3422
   sprint: Sprint 6
+  promoted_in_pr: 3424
+  test_file: tests/cognitive/test_cli_api_memory.py
   physics_model:
     primary: memory_consolidation
     secondary: compression
 
 - id: telemetry-classifier-agent
   name: Telemetry Classifier Agent
-  version: "1.0.0"
+  version: "2.1.0"
   file: .github/agents/telemetry-classifier-agent.md
   status: active
-  maturity: beta
+  maturity: production
   has_prompts: false
-  has_tests: false
+  has_tests: true
   has_docs: true
   has_src: false
   category: ci
@@ -1571,6 +1573,8 @@ agents:
     unknown pattern bucket from ~60% toward <20%.
   added_in_pr: 3422
   sprint: Sprint 8
+  promoted_in_pr: 3424
+  test_file: tests/cognitive/test_cli_api_memory.py
   physics_model:
     primary: pattern_recognition
     secondary: feedback

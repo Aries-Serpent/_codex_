@@ -7,6 +7,7 @@ import {
   MemoryEntry,
   AgentStateResponse,
   DashboardMetrics,
+  ConsolidateResponse,
   Agent,
   Task
 } from './codex-api-client';
@@ -335,6 +336,17 @@ if __name__ == "__main__":
       composite_score: (correctness + conflict + importance + experience + adaptive) / 5,
       timestamp: new Date().toISOString(),
       phase: 'Phase 12 - PS-14 Implementation',
+    };
+  }
+
+  async consolidateMemory(): Promise<ConsolidateResponse> {
+    await this.mockDelay(600);
+    return {
+      consolidated: Math.floor(Math.random() * 5) + 1,
+      pruned: Math.floor(Math.random() * 3),
+      stm_count: Math.floor(Math.random() * 50),
+      ltm_count: 150 + Math.floor(Math.random() * 10),
+      timestamp: new Date().toISOString(),
     };
   }
 }
