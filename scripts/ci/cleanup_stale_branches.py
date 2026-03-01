@@ -91,9 +91,8 @@ def close_pr(repo: str, token: str, pr_number: int) -> bool:
 
 
 def delete_branch(repo: str, token: str, branch: str) -> bool:
-    """Delete a branch ref."""
-    encoded = branch.replace("/", "%2F") if "/" in branch else branch
-    result = gh_api("DELETE", f"/repos/{repo}/git/refs/heads/{encoded}", token)
+    """Delete a branch ref. GitHub refs API uses literal slashes in the path."""
+    result = gh_api("DELETE", f"/repos/{repo}/git/refs/heads/{branch}", token)
     return True  # DELETE returns 204 on success, handled in gh_api
 
 
