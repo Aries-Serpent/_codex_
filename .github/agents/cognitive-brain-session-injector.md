@@ -137,7 +137,7 @@ python -m codex.github.mcp_poster post-comment \
 
 ## Limitations (Pending Admin Setup)
 
-- ⚠️ `GitHubMCPPoster` requires `CODEX_MASTER_KEY` secret — see [Admin Guide](.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md)
+- ⚠️ `GitHubMCPPoster` requires `CODEX_MASTER_KEY` secret — see [Admin Guide](../../.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md)
 - ⚠️ GitHub Discussions require Discussions to be enabled on repo — see [Admin Guide § 4]
 - ⚠️ Org rollout (ORG_OWNER tier) pending `COGNITIVE_BRAIN_ALLOWED_ACTORS` variable — see [Admin Guide § 2]
 
