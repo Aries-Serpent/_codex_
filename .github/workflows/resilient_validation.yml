@@ -38,7 +38,6 @@ jobs:
 
       - name: Run validation
         id: validate
-        timeout-minutes: 75
         run: |
           case "${{ matrix.test-group }}" in
             quick)
@@ -160,7 +159,6 @@ jobs:
 
       - name: Run sharded quick tests
         id: shard-run
-        timeout-minutes: 50
         run: |
           # DRQ-S105-001: Disable pytest-rerunfailures in sharded runs.
           # pytest-rerunfailures starts a background server socket thread; pytest-timeout

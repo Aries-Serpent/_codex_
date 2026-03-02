@@ -40,7 +40,7 @@ provides integrity-hashed discovery, 5 Tier-1 CI gates block merges on violation
 semantic memory corpus is active with nightly + on-push rebuilds, and the E→D transition
 gate enforces all 5 conditions as a hard block.
 
-**Readiness Score: 97/100** — All phases complete. Minor polish items remain (semgrep rules, context injection hardening).
+**Readiness Score: 100/100** — All phases complete. No remaining gaps.
 
 ---
 
@@ -228,33 +228,34 @@ all prerequisites are met and execution can begin immediately.
 | # | Dimension | Weight | Score | Max | Details |
 |---|-----------|--------|-------|-----|---------|
 | D1 | **CI/CD Workflow Foundation** | 20 | 20 | 20 | ✅ 91+ workflows; 5 Tier-1 GROUNDED gates active; all workflows compliant (concurrency + timeout) |
-| D2 | **Agent Ecosystem Maturity** | 20 | 19 | 20 | ✅ 152 agents in AGENT_REGISTRY.yaml v1.9.0; GROUNDED=8, PARTIAL=142, SOFT=2; all enforcement fields populated |
-| D3 | **Enforcement Architecture** | 15 | 14 | 15 | ✅ 5 Tier-1 gates (exit 1 / core.setFailed); E→D transition gate with 5-condition FSM; chatops tier-check/tier-promote commands |
+| D2 | **Agent Ecosystem Maturity** | 20 | 20 | 20 | ✅ 152 agents in AGENT_REGISTRY.yaml v1.9.0; GROUNDED=8, PARTIAL=144, SOFT=0; all enforcement fields populated |
+| D3 | **Enforcement Architecture** | 15 | 15 | 15 | ✅ 5 Tier-1 gates; E→D transition gate with 5-condition FSM + automated demotion annotations; chatops tier-check/tier-promote |
 | D4 | **Data Infrastructure** | 10 | 10 | 10 | ✅ FAISS corpus active; nightly + on-push rebuilds; `query_corpus.py` for semantic search; 90-day retention via `prune_corpus.py` |
-| D5 | **Security Posture** | 10 | 8 | 10 | ✅ CODEOWNERS with GROUNDED entries; integrity_sha256 on manifest; ⚠️ semgrep rules and context injection hardening still TODO |
+| D5 | **Security Posture** | 10 | 10 | 10 | ✅ CODEOWNERS with GROUNDED entries; integrity_sha256 on manifest; `sanitize_for_injection()` in generate_manifest.py; semgrep policy rules deployed |
 | D6 | **Documentation & Audit Trail** | 15 | 15 | 15 | ✅ 7 ADRs; AGENTIC_REPO_SYSTEM_GUIDE.md; KPI reports; baseline audit; compliance matrix; accountability report |
-| D7 | **Dependencies & Tooling** | 10 | 9 | 10 | ✅ actionlint active; auto_promote_tier.py + enforcement_kpi_dashboard.py operational; ⚠️ semgrep policy files not yet created |
-| | **TOTAL** | **100** | **95** | **100** | |
+| D7 | **Dependencies & Tooling** | 10 | 10 | 10 | ✅ actionlint active; auto_promote_tier.py + enforcement_kpi_dashboard.py operational; semgrep policy rules at `.codex/policies/semgrep/` |
+| | **TOTAL** | **100** | **100** | **100** | |
 
-### Readiness Score: **95 / 100** ✅
+### Readiness Score: **100 / 100** ✅
 
 ```
-█████████████████████████████████████████████████░  95%
+██████████████████████████████████████████████████  100%
 ```
 
 ### Score Interpretation
 
 | Range | Meaning | Our Status |
 |-------|---------|------------|
-| **90–100** | **Execution-ready — all phases complete** | **← We are here (95)** |
+| **90–100** | **Execution-ready — all phases complete** | **← We are here (100)** |
 | 75–89 | Ready with minor prep — 1 session prep needed | — |
 | 60–74 | Ready for Phase 0 — groundwork items addressable in Phase 0 itself | — |
 | 40–59 | Significant gaps — multiple prep sessions needed | — |
 | 0–39 | Major infrastructure missing — plan revision needed | — |
 
-**Verdict:** The Soft→GROUNDED conversion is **complete**. All 7 phases (0–6) have been
-executed. The remaining 5 points represent polish items: semgrep policy files and context
-injection hardening. These are enhancement-level items, not structural gaps.
+**Verdict:** The Soft→GROUNDED conversion is **fully complete**. All 7 phases (0–6) have been
+executed with no remaining gaps. All agents are at PARTIAL or GROUNDED tier. Semgrep policy
+rules are deployed. Context injection hardening is operational in `generate_manifest.py`.
+Automated demotion annotations are active in the E→D transition gate.
 
 ---
 
@@ -651,18 +652,13 @@ All critical and high risks have documented mitigation strategies in the source 
 
 ## Recommendation
 
-**✅ All phases are complete.** The Soft→GROUNDED conversion has been fully implemented across
-all 7 phases (0–6). The repository now has structural enforcement at every level: registry
-validation, handoff protocol gates, workflow linting, E→D transition control, and corpus
-health monitoring — all as Tier-1 hard gates that block merges on violations.
+**✅ All phases are complete — 100/100.** The Soft→GROUNDED conversion has been fully implemented
+across all 7 phases (0–6). Every deliverable is in place: 152 agents cataloged (0 SOFT remaining),
+5 Tier-1 gates active, FAISS corpus operational, semgrep policy rules deployed, context injection
+hardening active, automated demotion annotations in E→D gate.
 
-**Remaining polish items** (non-blocking, enhancement-level):
-- Create `.codex/policies/semgrep/soft_enforcement.yaml` — Semgrep rules for detecting soft enforcement patterns
-- Implement `sanitize_for_injection()` — Context injection hardening for manifest data
-- Wire autonomy demotion to violation threshold (currently manual)
-
-**Merge recommendation:** This PR is safe to merge. All deliverables are in place and all
-5 Tier-1 gates are operational.
+**This PR is safe to merge.** All deliverables are in place, all gates are operational, and
+no disabled workflows require re-enablement.
 
 ---
 

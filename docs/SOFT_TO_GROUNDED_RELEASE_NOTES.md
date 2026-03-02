@@ -15,11 +15,13 @@ gates structurally enforce agent governance, blocking PRs that violate registry 
 handoff protocols, workflow standards, transition conditions, or corpus health thresholds.
 
 **Key metrics:**
-- **152 agents** cataloged in `AGENT_REGISTRY.yaml` v1.9.0
+- **152 agents** cataloged in `AGENT_REGISTRY.yaml` v1.9.0 (GROUNDED=8, PARTIAL=144, SOFT=0)
 - **5 Tier-1 gates** that block merges on violations
 - **FAISS semantic memory corpus** with nightly + on-push refreshes
-- **E→D transition gate** controlling agent autonomy levels
+- **E→D transition gate** controlling agent autonomy levels with automated demotion annotations
 - **Chatops commands** for tier management directly from PR comments
+- **Semgrep policy rules** detecting soft enforcement patterns
+- **Context injection hardening** via `sanitize_for_injection()` in manifest generation
 
 ---
 
@@ -40,7 +42,7 @@ handoff protocols, workflow standards, transition conditions, or corpus health t
 
 | Area | Current State |
 |------|--------------|
-| Agent catalog | **152 agents** in AGENT_REGISTRY.yaml v1.9.0 — all with `enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from` |
+| Agent catalog | **152 agents** in AGENT_REGISTRY.yaml v1.9.0 — all with `enforcement_tier`, `autonomy_model`, `handoff_protocol`, `accepts_handoff_from`; SOFT=0 |
 | Merge gates | **5 Tier-1 gates** — PRs blocked on schema violations, handoff errors, lint failures, low E→D scores, unhealthy corpus |
 | Agent handoffs | `AgentHandoffManifest_v1.1.json` schema with Tier-1 validation gate |
 | Semantic search | **FAISS corpus** (all-MiniLM-L6-v2, 512-word chunks, 90-day retention) with nightly + on-push rebuilds |

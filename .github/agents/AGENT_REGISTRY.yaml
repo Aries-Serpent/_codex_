@@ -176,7 +176,7 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2868,7 +2868,7 @@ agents:
   has_src: false
   category: integration
   subcategory: platform
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []

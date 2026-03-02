@@ -125,6 +125,35 @@ jobs:
               core.setFailed(`E\u2192D transition not ready: ${score}/5 conditions met`);
             }
 
+      - name: Emit demotion annotations for non-compliant agents
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import yaml, sys, os
+          registry_path = ".github/agents/AGENT_REGISTRY.yaml"
+          if not os.path.exists(registry_path):
+              sys.exit(0)
+          with open(registry_path) as f:
+              data = yaml.safe_load(f)
+          agents = data.get("agents", [])
+          demotions = []
+          for a in agents:
+              tier = a.get("enforcement_tier", "SOFT")
+              model = a.get("autonomy_model", "E")
+              # D_CAPABLE agents that lack structured handoff are demotion candidates
+              if model == "D_CAPABLE" and a.get("handoff_protocol") != "structured":
+                  demotions.append(f"{a.get('id','?')}: D_CAPABLE without structured handoff")
+              # GROUNDED agents without accepts_handoff_from are incomplete
+              if tier == "GROUNDED" and not a.get("accepts_handoff_from"):
+                  demotions.append(f"{a.get('id','?')}: GROUNDED but no accepts_handoff_from")
+          if demotions:
+              print(f"::warning::Demotion candidates ({len(demotions)}):")
+              for d in demotions:
+                  print(f"::warning::  - {d}")
+          else:
+              print("No demotion candidates found.")
+          PY
+
       - name: Post readiness comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
