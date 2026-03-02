@@ -320,7 +320,7 @@ CODEX_MANIFEST.json:  152 agents / 96 workflows · SHA-256 integrity ✅
 E→D FSM gate:         5/5 ✅ (C3: SOFT≤2 ✅ · C5: GROUNDED≥8 ✅)
 d_capable_agents:     0 (transition_active: false)
 Tier-1 gates:         agent-registry-validation.yml ✅ · agent-handoff-gate.yml ✅ · actionlint-audit.yml ✅ · e-to-d-transition-gate.yml ✅ · embedding-index-rebuild.yml REQ-10 ✅
-FAISS index:          ACTIVE (seeded via workflow_dispatch; nightly rebuild at 2AM UTC)
+FAISS index:          ACTIVE (seeded via workflow_dispatch; nightly rebuild at 2AM UTC; triggered on registry changes via agent-registry-validation.yml)
 ```
 
 ---

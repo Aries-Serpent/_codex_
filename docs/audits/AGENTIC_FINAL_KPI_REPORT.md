@@ -59,6 +59,7 @@ now operates with hard enforcement on critical agent behaviors.
 | Chunk size | 512 words with 64-word overlap |
 | Source directories | 4 (`.codex/docs/`, `.github/agents/`, `src/codex/cognitive/`, registry) |
 | Nightly rebuild | ✅ `embedding-index-rebuild.yml` (2AM UTC) |
+| On-push rebuild | ✅ Triggered by `agent-registry-validation.yml` on push to main |
 | REQ-10 health annotation | ✅ Tier-1 GROUNDED (exit 1 on chunk count < 100) |
 
 ### Phase 4 — E→D Transition Gate (C3, C5)
@@ -145,7 +146,7 @@ First D_CAPABLE promotion requires owner approval + `e-to-d-transition-gate.yml`
 ## Next Steps
 
 1. **Tier-1 promotions complete**: `e-to-d-transition-gate.yml` ✅, `embedding-index-rebuild.yml` REQ-10 ✅
-2. **FAISS index active**: Seeded via manual `workflow_dispatch`; nightly rebuild at 2AM UTC
+2. **FAISS index active**: Seeded via manual `workflow_dispatch`; nightly rebuild at 2AM UTC; on-push rebuild via `agent-registry-validation.yml`
 3. **First D_CAPABLE promotion**: Define criteria for `autonomy_model: "D_CAPABLE"` assignment per agent
 4. **ADR documentation**: ✅ Created `docs/arch/ADR-20260302-*.md` for each phase decision
 5. **Semgrep**: Run `semgrep/soft_enforcement.yaml` in CI to detect SOFT pattern regressions

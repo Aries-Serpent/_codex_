@@ -23,6 +23,7 @@ on:
       - 'CODEX_MANIFEST.json'
 
 permissions:
+  actions: write
   contents: read
   pull-requests: write
 
@@ -226,3 +227,12 @@ jobs:
               issue_number: context.issue.number,
               body: body,
             });
+
+      - name: Trigger embedding index refresh (if registry changed on main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          gh workflow run embedding-index-rebuild.yml --ref main \
+            && echo "✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh" \
+            || echo "::warning::Failed to trigger embedding index rebuild — index may become stale"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
