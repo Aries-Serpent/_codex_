@@ -55,11 +55,11 @@ jobs:
           echo "changed_files=${CHANGED}" >> $GITHUB_OUTPUT
 
           # Detect cognitive brain touch
-          BRAIN_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "cognitive\|mcp_session\|structural_policy\|session_hook" || echo 0)
+          BRAIN_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "cognitive\|mcp_session\|structural_policy\|session_hook" || true)
           echo "brain_touched=${BRAIN_TOUCHED}" >> $GITHUB_OUTPUT
 
           # Detect CI touch
-          CI_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "\.github/workflows" || echo 0)
+          CI_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "\.github/workflows" || true)
           echo "ci_touched=${CI_TOUCHED}" >> $GITHUB_OUTPUT
 
       - name: Analyze PR with GitHub Copilot
