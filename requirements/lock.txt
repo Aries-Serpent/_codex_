@@ -1246,7 +1246,7 @@ urllib3==2.6.3
     #   sentry-sdk
 uuid6==2025.0.1
     # via evidently
-uvicorn==0.40.0
+uvicorn==0.41.0
     # via
     #   evidently
     #   fastapi
