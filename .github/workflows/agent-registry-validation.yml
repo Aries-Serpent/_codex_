@@ -228,11 +228,11 @@ jobs:
               body: body,
             });
 
-      - name: Trigger embedding index refresh (if registry changed on main)
+      - name: Trigger embedding index refresh
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           gh workflow run embedding-index-rebuild.yml --ref main \
             && echo "✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh" \
-            || echo "::warning::Failed to trigger embedding index rebuild — index may become stale"
+            || echo "::warning::Failed to trigger embedding index rebuild — run manually: gh workflow run embedding-index-rebuild.yml --ref main"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
