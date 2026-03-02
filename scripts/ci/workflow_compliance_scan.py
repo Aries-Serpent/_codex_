@@ -7,8 +7,9 @@ Output: docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md
 from __future__ import annotations
 
 import pathlib
-import yaml
 from dataclasses import dataclass, field
+
+import yaml
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 WF_DIR    = REPO_ROOT / ".github" / "workflows"
