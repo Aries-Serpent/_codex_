@@ -145,7 +145,7 @@ jobs:
 
       - name: Download chain plan (if available)
         if: needs.orchestrate_agent_chain.outputs.chain_generated == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: agent-chain-plan-${{ github.run_number }}
           path: .codex/agents/
