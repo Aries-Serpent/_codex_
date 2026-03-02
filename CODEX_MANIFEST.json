@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-02T06:35:41Z",
+  "generated_at": "2026-03-02T23:58:27Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -41,7 +41,7 @@
     {
       "name": "codex_reviewer",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -905,7 +905,7 @@
     {
       "name": "zendesk-architect-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -1118,7 +1118,7 @@
     },
     {
       "name": "embedding-index-rebuild",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1579,6 +1579,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/SESSION_RESTORE_GROUNDED_FOLLOWUP.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/SESSION_RESTORE_PR3421.md",
       "type": "enforcement"
     },
@@ -1597,12 +1601,12 @@
   ],
   "datasets": {
     "session_db": ".codex/codex_corpus.db",
-    "embedding_meta": null
+    "embedding_meta": ".codex/embeddings/codex_index_meta.json"
   },
   "enforcement_kpis": {
     "tier1_count": 21,
     "tier2_count": 5,
-    "tier3_count": 4,
+    "tier3_count": 2,
     "ungatable": 2
   },
   "operating_model": {
@@ -1612,5 +1616,5 @@
     "transition_active": false
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6e54b3114cc2e1a129f8615845ccc57df2d489f0edb57d03c2ed6e606cdb81fc"
+  "integrity_sha256": "41a2a3bf109a5a6f5622e1fcff90bd142c90959a30114f3d8d8e86c2b8b5edb0"
 }

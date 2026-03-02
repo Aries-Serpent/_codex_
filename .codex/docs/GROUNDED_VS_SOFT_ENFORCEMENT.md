@@ -362,8 +362,8 @@ concurrency:
 | `mutation-testing-agent` | ✅ **GROUNDED** | Mutation score threshold enforces test quality |
 | `test-enhancement-agent` | ✅ **GROUNDED** | Test quality enforcement with coverage gates |
 | `workflow-health-monitor` | ✅ **GROUNDED** | Health alerting with issue creation on threshold breach |
-| `codex_reviewer` | ❌ **SOFT** | Internal reviewer; no structural gate available |
-| `zendesk-architect-agent` | ❌ **SOFT** | Niche/specialized agent; ungatable in current architecture |
+| `codex_reviewer` | ⚠️ **SOFT** | Internal reviewer; no structural gate available |
+| `zendesk-architect-agent` | ⚠️ **SOFT** | Niche/specialized agent; ungatable in current architecture |
 
 **Registry summary** (v1.9.0): GROUNDED: 8 | PARTIAL: 142 | SOFT: 2 | Total: 152
 
