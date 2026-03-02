@@ -138,6 +138,8 @@ manifests/k8s/*/secret.yaml
 !.codex/knowledge_graph/**
 !.codex/docs/
 !.codex/docs/**
+!.codex/embeddings/
+!.codex/embeddings/codex_index_meta.json
 !.codex/archive/
 !.codex/archive/**
 !.codex/automation_out/
