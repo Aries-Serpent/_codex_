@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Aries-Serpent/_codex_/schemas/AgentRegistry/v1.0",
+  "title": "AgentRegistry",
+  "description": "JSON Schema for .github/agents/AGENT_REGISTRY.yaml — Aries-Serpent/_codex_",
+  "type": "object",
+  "required": ["version", "last_updated", "total_agents", "agents"],
+  "properties": {
+    "version": { "type": ["string", "number"] },
+    "last_updated": { "type": "string" },
+    "total_agents": { "type": "integer", "minimum": 1 },
+    "agents": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/AgentEntry" },
+      "minItems": 1
+    },
+    "standardization_status": { "type": "object" }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "AgentEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status",
+        "enforcement_tier",
+        "autonomy_model",
+        "handoff_protocol"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique kebab-case identifier for the agent"
+        },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "directory": { "type": "string" },
+        "file": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["active", "inactive", "archived", "beta", "experimental"]
+        },
+        "maturity": {
+          "type": "string",
+          "enum": ["production", "beta", "alpha", "experimental", "deprecated"]
+        },
+        "role": {
+          "type": "string",
+          "enum": ["orchestrator", "specialist", "utility", "worker"],
+          "description": "Agent role in the multi-agent system"
+        },
+        "enforcement_tier": {
+          "type": "string",
+          "enum": ["GROUNDED", "PARTIAL", "SOFT", "ARCHIVED"],
+          "description": "Policy enforcement tier: GROUNDED=hard gates, PARTIAL=warning, SOFT=advisory"
+        },
+        "autonomy_model": {
+          "type": "string",
+          "enum": ["E", "D_CAPABLE", "D"],
+          "description": "E=executor (current), D_CAPABLE=ready for D, D=director (future)"
+        },
+        "handoff_protocol": {
+          "type": "string",
+          "enum": ["structured", "soft", "none"],
+          "description": "Handoff capability: structured=AgentHandoffManifest v1.1, soft=best-effort, none=no handoff"
+        },
+        "accepts_handoff_from": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of agent IDs or roles this agent accepts handoffs from"
+        },
+        "consolidation_priority": {
+          "type": "boolean",
+          "description": "true = in top-20 by activation frequency; Phase 2 consolidation target"
+        },
+        "activation_frequency_rank": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Rank from Phase 0 frequency analysis (1 = most frequently activated)"
+        },
+        "primary_workflow": { "type": "string" },
+        "category": { "type": "string" },
+        "subcategory": { "type": "string" },
+        "description": { "type": "string" },
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "capability_tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "integration_points": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "policy_compliance": { "type": "object" },
+        "endpoints": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "has_prompts": { "type": "boolean" },
+        "has_tests": { "type": "boolean" },
+        "has_docs": { "type": "boolean" },
+        "has_src": { "type": "boolean" },
+        "safe_mode": { "type": "boolean" },
+        "network_access": { "type": "boolean" },
+        "batch_scan_enabled": { "type": "boolean" },
+        "test_coverage": { "type": "string" },
+        "priority": { "type": "string" },
+        "owner": { "type": "string" },
+        "maintainer": { "type": "string" },
+        "created": { "type": "string" },
+        "updated": { "type": "string" },
+        "physics_model": { "type": "object" },
+        "cognitive_brain_layer": { "type": "string" },
+        "primary_skill": { "type": "string" },
+        "secondary_skill": { "type": "string" },
+        "purpose": { "type": "string" },
+        "added_in_pr": { "type": ["integer", "string"] },
+        "sprint": { "type": "string" },
+        "promoted_in_pr": { "type": ["integer", "string"] },
+        "test_file": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,10 +1,10 @@
-version: 1.7.0
-last_updated: '2026-03-01T07:07:09Z'
-total_agents: 128  # +2 from PR #3422: memory-sync-agent + telemetry-classifier-agent
+version: 1.8.0
+last_updated: '2026-03-02T05:12:26Z'
+total_agents: 151
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
-  version: "1.1.0"
+  version: 1.1.0
   directory: .github/agents/github-guru-agent
   file: github-guru-agent.agent.md
   status: active
@@ -19,36 +19,42 @@ agents:
     primary: balance
     secondary: path
     energy: 5
-  primary_skill: "GitHub repository intelligence, PR analysis, issue triage, workflow health"
-  secondary_skill: "Pattern synthesis, cross-repo knowledge surfacing, developer guidance"
-  purpose: >
-    Full-spectrum GitHub repository intelligence: PR analysis, issue triage,
-    workflow health monitoring, branch governance, dependency drift detection,
-    repository hygiene reporting, and label taxonomy enforcement.
+  primary_skill: GitHub repository intelligence, PR analysis, issue triage, workflow health
+  secondary_skill: Pattern synthesis, cross-repo knowledge surfacing, developer guidance
+  purpose: 'Full-spectrum GitHub repository intelligence: PR analysis, issue triage, workflow health monitoring, branch governance,
+    dependency drift detection, repository hygiene reporting, and label taxonomy enforcement.
+
+    '
   capabilities:
-    - pr_analysis
-    - issue_triage
-    - workflow_health_monitoring
-    - branch_governance
-    - contributor_intelligence
-    - repository_hygiene_reporting
-    - codebase_navigation_guidance
-    - dependency_drift_detection
-    - stale_resource_detection
-    - label_taxonomy_enforcement
+  - pr_analysis
+  - issue_triage
+  - workflow_health_monitoring
+  - branch_governance
+  - contributor_intelligence
+  - repository_hygiene_reporting
+  - codebase_navigation_guidance
+  - dependency_drift_detection
+  - stale_resource_detection
+  - label_taxonomy_enforcement
   integration_points:
-    - .github/workflows/github-guru.yml
-    - .github/agents/github-guru-agent/main.py
-    - .github/agents/AGENT_REGISTRY.yaml
-    - .github/agents/AGENT_REGISTRY.md
+  - .github/workflows/github-guru.yml
+  - .github/agents/github-guru-agent/main.py
+  - .github/agents/AGENT_REGISTRY.yaml
+  - .github/agents/AGENT_REGISTRY.md
   cognitive_brain_layer: orchestration
   safe_mode: true
   network_access: false
-  test_coverage: "109 tests passing"
+  test_coverage: 109 tests passing
   priority: critical
   created: '2026-02-21T01:50:00Z'
   updated: '2026-02-21T01:50:00Z'
   maintainer: mbaetiong
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ast-analysis-agent
   name: Ast Analysis Agent
   directory: .github/agents/ast-analysis-agent
@@ -62,6 +68,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cache-logic-validator
   name: Cache Logic Validator
   directory: .github/agents/cache-logic-validator
@@ -75,6 +87,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-failure-diagnostician
   name: Ci Failure Diagnostician
   directory: .github/agents/ci-failure-diagnostician
@@ -88,6 +106,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-optimizer-agent
   name: Ci Optimizer Agent
   directory: .github/agents/ci-optimizer-agent
@@ -101,6 +125,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-testing-agent
   batch_scan_enabled: true
   name: Ci Testing Agent
@@ -111,8 +141,7 @@ agents:
   has_tests: true
   has_docs: true
   has_src: true
-  purpose: Specialized agent for debugging and fixing CI/CD pipeline issues, test
-    failures, and build problems
+  purpose: Specialized agent for debugging and fixing CI/CD pipeline issues, test failures, and build problems
   capabilities:
   - ci_failure_diagnosis
   - test_failure_analysis
@@ -124,6 +153,16 @@ agents:
   - pytest
   - cargo
   priority: high
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-health-alert-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 1
+  role: specialist
 - id: codex_reviewer
   name: Codex_Reviewer
   directory: .github/agents/codex_reviewer
@@ -137,6 +176,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cognitive-brain-agent
   name: Cognitive Brain Agent
   directory: .github/agents/cognitive-brain-agent
@@ -150,6 +195,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: compliance-checker-agent
   name: Compliance Checker Agent
   directory: .github/agents/compliance-checker-agent
@@ -163,6 +214,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: dep-upgrade-agent
   name: Dep Upgrade Agent
   directory: .github/agents/dep-upgrade-agent
@@ -176,6 +233,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: documentation-agent
   name: Documentation Agent
   directory: .github/agents/documentation-agent
@@ -189,6 +252,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ecosystem-coordinator-agent
   name: Ecosystem Coordinator Agent
   directory: .github/agents/ecosystem-coordinator-agent
@@ -202,6 +271,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: emergent-intelligence-agent
   name: Emergent Intelligence Agent
   directory: .github/agents/emergent-intelligence-agent
@@ -215,6 +290,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: flaky-triage-agent
   name: Flaky Triage Agent
   directory: .github/agents/flaky-triage-agent
@@ -228,6 +309,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: infra-linter-agent
   name: Infra Linter Agent
   directory: .github/agents/infra-linter-agent
@@ -241,6 +328,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: performance-monitor-agent
   name: Performance Monitor Agent
   directory: .github/agents/performance-monitor-agent
@@ -254,6 +347,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: project-architect-researcher
   name: Project Architect Researcher
   directory: .github/agents/project-architect-researcher
@@ -273,6 +372,12 @@ agents:
   - notebooklm_api
   - cognitive_brain
   priority: high
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pyo3-integration-tester
   name: Pyo3 Integration Tester
   directory: .github/agents/pyo3-integration-tester
@@ -292,6 +397,12 @@ agents:
   - pytest
   - cargo
   priority: high
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: reasoning-advisor-agent
   name: Reasoning Advisor Agent
   directory: .github/agents/reasoning-advisor-agent
@@ -305,6 +416,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: release-gate-agent
   name: Release Gate Agent
   directory: .github/agents/release-gate-agent
@@ -318,6 +435,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: rust-error-validator
   name: Rust Error Validator
   directory: .github/agents/rust-error-validator
@@ -337,6 +460,15 @@ agents:
   - clippy
   - cognitive_brain
   priority: high
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 20
+  role: specialist
 - id: security-advisory-resolver
   name: Security Advisory Resolver
   directory: .github/agents/security-advisory-resolver
@@ -350,6 +482,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: security-scan-agent
   name: Security Scan Agent
   directory: .github/agents/security-scan-agent
@@ -363,6 +501,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-assertion-updater
   name: Test Assertion Updater
   directory: .github/agents/test-assertion-updater
@@ -372,8 +516,7 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Fixes test alignment issues by updating tests to match API changes and
-    ensuring test assertions are correct
+  purpose: Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are correct
   capabilities:
   - test_alignment
   - assertion_updates
@@ -383,6 +526,16 @@ agents:
   - unittest
   - cognitive_brain
   priority: high
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 3
+  role: specialist
 - id: utf8-safety-linter
   name: Utf8 Safety Linter
   directory: .github/agents/utf8-safety-linter
@@ -396,6 +549,12 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-pattern-guardian
   batch_scan_enabled: true
   name: Test Pattern Guardian
@@ -407,7 +566,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues, and fixture independence
+  purpose: Proactive test quality enforcement through AST-based pattern detection for mock exhaustion, serialization issues,
+    and fixture independence
   capabilities:
   - ast_pattern_detection
   - mock_exhaustion_prevention
@@ -423,6 +583,12 @@ agents:
   created: '2026-01-23T06:35:00Z'
   tools:
   - scripts/analyze_test_patterns.py
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: config-validator-enhanced
   name: Config Validator (Enhanced)
   directory: .github/agents
@@ -433,7 +599,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are schema-compliant
+  purpose: Hydra config integrity and coverage validation, ensures all experiment configs referenced in tests exist and are
+    schema-compliant
   capabilities:
   - config_existence_validation
   - cross_reference_checking
@@ -449,6 +616,12 @@ agents:
   updated: '2026-01-23T07:20:00Z'
   tools:
   - scripts/verify_hydra_configs.sh
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: unified-security-scanner
   batch_scan_enabled: true
   name: Unified Security Scanner
@@ -478,6 +651,12 @@ agents:
   created: '2026-02-05T00:00:00Z'
   batch: M-01
   aais_contribution: 6.0
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cross-agent-knowledge-graph
   name: Cross-Agent Knowledge Graph
   directory: .github/agents
@@ -489,7 +668,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic blocker querying between agents
+  purpose: Persistent JSON-LD knowledge graph enabling cross-session pattern sharing, fix pattern deduplication, and semantic
+    blocker querying between agents
   capabilities:
   - node_registration
   - edge_creation
@@ -508,6 +688,12 @@ agents:
   batch: E-10
   fix_patterns_registered: 11
   aais_contribution: 2.5
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: codeql-alert-resolution-agent
   batch_scan_enabled: true
   name: CodeQL Alert Resolution Agent
@@ -520,7 +706,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false positives, and contributes to AAIS scoring
+  purpose: Autonomous CodeQL alert triage and resolution — classifies CWE categories, applies fix patterns, dismisses false
+    positives, and contributes to AAIS scoring
   capabilities:
   - codeql_alert_ingestion
   - cwe_classification
@@ -537,6 +724,12 @@ agents:
   created: '2026-01-26T17:40:00Z'
   updated: '2026-02-23T00:00:00Z'
   aais_contribution: 2.0
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: rag-meta-tensor-regression-agent
   name: RAG Meta-Tensor Regression Agent
   directory: .github/agents
@@ -548,7 +741,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device() call order (has_meta_tensors before isinstance)
+  purpose: Prevents and resolves meta-tensor initialization regressions in the RAG pipeline — guards safe_model_to_device()
+    call order (has_meta_tensors before isinstance)
   capabilities:
   - meta_tensor_detection
   - device_placement_validation
@@ -563,6 +757,12 @@ agents:
   created: '2026-02-22T00:00:00Z'
   fix_pattern: MP-S69-001
   aais_contribution: 1.8
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-triage-pipeline-agent
   batch_scan_enabled: true
   name: CI Triage Pipeline Agent
@@ -575,7 +775,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix patterns from DRQ library
+  purpose: Systematic CI failure triage using GitHub MCP tools — downloads logs, classifies failures by pattern, applies fix
+    patterns from DRQ library
   capabilities:
   - ci_log_retrieval
   - failure_classification
@@ -588,6 +789,12 @@ agents:
   - cognitive_brain
   priority: high
   created: '2026-02-10T00:00:00Z'
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: recon-scout-agent
   batch_scan_enabled: true
   name: Recon Scout Agent
@@ -600,7 +807,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and architecture drift, tagging each as DRQ entries for deep research
+  purpose: Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality issues, and
+    architecture drift, tagging each as DRQ entries for deep research
   capabilities:
   - ci_blocker_detection
   - security_tripwire_scan
@@ -622,6 +830,12 @@ agents:
   aais_contribution: 3.0
   scan_categories: 6
   rules_defined: 28
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: policy-coach-agent
   name: Policy Coach Agent
   directory: .github/agents
@@ -633,11 +847,11 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: >
-    Monitors Copilot Agent sessions for codebase policy violations and re-aligns
-    behaviour at 3 mandatory checkpoints: plan declaration (T-1), mid-session
-    violation detection (T-2), and pre-close gate (T-3). Contains 14 violation
-    patterns (P-01..P-14) with verbatim re-alignment prompts.
+  purpose: 'Monitors Copilot Agent sessions for codebase policy violations and re-aligns behaviour at 3 mandatory checkpoints:
+    plan declaration (T-1), mid-session violation detection (T-2), and pre-close gate (T-3). Contains 14 violation patterns
+    (P-01..P-14) with verbatim re-alignment prompts.
+
+    '
   capabilities:
   - policy_violation_detection
   - session_re_alignment
@@ -656,6 +870,12 @@ agents:
   created: '2026-02-24T00:00:00Z'
   trigger_points: 3
   violation_patterns: 14
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: python-architect-agent
   name: Python Architect Agent
   directory: .github/agents
@@ -667,7 +887,8 @@ agents:
   has_tests: false
   has_docs: true
   has_src: false
-  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure compliance for the cognitive brain and ML pipeline
+  purpose: Advanced Python architecture design and review — enforces patterns, refactoring strategies, and module structure
+    compliance for the cognitive brain and ML pipeline
   capabilities:
   - architecture_review
   - refactoring_guidance
@@ -679,32 +900,44 @@ agents:
   priority: medium
   created: '2026-02-22T12:00:00Z'
   energy_level: 5
-
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-auto-healer
   name: CI Auto-Healer Agent
-  version: "1.0.0"
+  version: 1.0.0
   file: ci-auto-healer-agent.md
   status: active
   maturity: production
   category: ci_cd
-  primary_skill: "Autonomous CI failure detection, pattern-matching, and self-healing"
-  secondary_skill: "Pattern library management, DRQ filing, cognitive brain integration"
-  purpose: >
-    Detects CI failures, matches them to a known pattern library (P-001 to P-029),
-    applies validated fixes, and escalates unrecognized patterns as DRQ entries.
+  primary_skill: Autonomous CI failure detection, pattern-matching, and self-healing
+  secondary_skill: Pattern library management, DRQ filing, cognitive brain integration
+  purpose: 'Detects CI failures, matches them to a known pattern library (P-001 to P-029), applies validated fixes, and escalates
+    unrecognized patterns as DRQ entries.
+
+    '
   capabilities:
-    - ci_failure_detection
-    - pattern_matching
-    - automated_code_fix
-    - local_test_validation
-    - drq_filing
-    - cognitive_brain_update
+  - ci_failure_detection
+  - pattern_matching
+  - automated_code_fix
+  - local_test_validation
+  - drq_filing
+  - cognitive_brain_update
   cognitive_brain_layer: healing
   safe_mode: false
   network_access: false
   created: '2026-02-24T18:00:00Z'
   updated: '2026-02-24T18:00:00Z'
   maintainer: mbaetiong
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: agent-iq-scoring-gate
   name: Agent IQ Scoring Gate
   file: agent-iq-scoring-gate.md
@@ -713,6 +946,12 @@ agents:
   category: governance
   priority: medium
   purpose: Evaluates agent IQ and gates deployments based on scoring thresholds.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: agent-orchestrator
   name: Agent Orchestrator
   file: agent-orchestrator.md
@@ -721,6 +960,12 @@ agents:
   category: orchestration
   priority: high
   purpose: Coordinates multi-agent workflows, routing tasks to specialist agents.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: orchestrator
 - id: artifact-monitor-agent
   batch_scan_enabled: true
   name: Artifact Monitor Agent
@@ -730,6 +975,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Monitors CI/CD artifact health, detects stale or missing artifacts.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: autonomous-test-healer-agent
   batch_scan_enabled: true
   name: Autonomous Test Healer Agent
@@ -739,6 +990,12 @@ agents:
   category: testing
   priority: high
   purpose: Auto-heals failing tests by identifying root causes and applying targeted fixes.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: bridge-security-monitor
   name: Bridge Security Monitor
   file: bridge-security-monitor.agent.md
@@ -747,6 +1004,12 @@ agents:
   category: security
   priority: critical
   purpose: Monitors IPC bridge security, detects unauthorized access, validates message integrity.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: cache-management-agent
   name: Cache Management Agent
   file: cache-management-agent.md
@@ -755,6 +1018,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Manages CI/CD caching strategies; prunes stale caches, validates cache keys.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cache-manager-integration
   name: Cache Manager Integration
   file: cache-manager-integration.md
@@ -763,6 +1032,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Integration layer for cache management across workflow and composite actions.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-auto-healer-agent
   batch_scan_enabled: true
   name: CI Auto-Healer Agent
@@ -772,6 +1047,12 @@ agents:
   category: ci_cd
   priority: critical
   purpose: Detects and repairs CI failures using P-001-P-035 pattern library.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-emergency-response-agent
   batch_scan_enabled: true
   name: CI Emergency Response Agent
@@ -781,6 +1062,12 @@ agents:
   category: ci_cd
   priority: critical
   purpose: Emergency response for critical CI pipeline failures requiring immediate action.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-failure-resolution-agent
   batch_scan_enabled: true
   name: CI Failure Resolution Agent
@@ -790,6 +1077,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Resolves CI failures by diagnosing logs and applying structured fix patterns.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-importerror-agent
   batch_scan_enabled: true
   name: CI ImportError Agent
@@ -799,6 +1092,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Diagnoses and remediates ImportError/ModuleNotFoundError in test suites.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-log-retrieval-agent
   name: CI Log Retrieval Agent
   file: ci-log-retrieval-agent.md
@@ -807,6 +1106,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Retrieves authenticated GitHub Actions logs and summarizes failures.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-optimization-agent
   batch_scan_enabled: true
   name: CI Optimization Agent
@@ -816,6 +1121,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Identifies and applies optimizations to reduce CI pipeline runtime.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-parameter-mismatch-healer
   batch_scan_enabled: true
   name: CI Parameter Mismatch Healer
@@ -825,6 +1136,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Detects and corrects parameter/argument mismatches in CI workflow calls.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ci-resilience-emergency-response-agent
   batch_scan_enabled: true
   name: CI Resilience Emergency Response Agent
@@ -834,6 +1151,12 @@ agents:
   category: ci_cd
   priority: critical
   purpose: Resilience-focused emergency CI recovery with retry and fallback strategies.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: claim-verification-agent
   name: Claim Verification Agent
   file: claim-verification-agent.md
@@ -842,6 +1165,12 @@ agents:
   category: documentation
   priority: medium
   purpose: Verifies factual claims in commit messages and documentation.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: code-analysis-agent
   batch_scan_enabled: true
   name: Code Analysis Agent
@@ -851,6 +1180,12 @@ agents:
   category: quality
   priority: high
   purpose: Static code quality analysis with actionable improvement recommendations.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: code-scanning-remediation-agent
   batch_scan_enabled: true
   name: Code Scanning Remediation Agent
@@ -860,6 +1195,12 @@ agents:
   category: security
   priority: high
   purpose: Remediates code scanning alerts (CodeQL, Semgrep) with minimal-change fixes.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: codebase-health-guardian
   batch_scan_enabled: true
   name: Codebase Health Guardian
@@ -869,6 +1210,12 @@ agents:
   category: quality
   priority: high
   purpose: Continuous monitoring of overall codebase health metrics and trends.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: cognitive-brain-manager
   name: Cognitive Brain Manager
   file: cognitive-brain-manager.md
@@ -877,6 +1224,12 @@ agents:
   category: cognitive
   priority: critical
   purpose: Manages cognitive brain system state, phase transitions, and health scoring.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: config-migration-assistant
   name: Config Migration Assistant
   file: config-migration-assistant.agent.md
@@ -885,6 +1238,12 @@ agents:
   category: configuration
   priority: medium
   purpose: Migrates legacy configurations to Hydra-based format with validation.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: config-validator
   name: Config Validator
   file: config-validator.agent.md
@@ -893,6 +1252,15 @@ agents:
   category: configuration
   priority: high
   purpose: Validates Hydra configuration files for schema compliance and type safety.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 15
+  role: specialist
 - id: coverage-gapfill-agent
   batch_scan_enabled: true
   name: Coverage Gapfill Agent
@@ -902,6 +1270,12 @@ agents:
   category: testing
   priority: high
   purpose: Targets low-coverage modules and generates tests to close coverage gaps.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: coverage-maintenance-agent
   batch_scan_enabled: true
   name: Coverage Maintenance Agent
@@ -911,6 +1285,12 @@ agents:
   category: testing
   priority: medium
   purpose: Maintains test coverage over time; alerts on regressions.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: coverage-roadmap-agent
   batch_scan_enabled: true
   name: Coverage Roadmap Agent
@@ -920,6 +1300,12 @@ agents:
   category: testing
   priority: high
   purpose: Drives coverage threshold roadmap, tracks phase completion, validates thresholds.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cpu-only-ci-config-agent
   name: CPU-Only CI Config Agent
   file: cpu-only-ci-config-agent.md
@@ -928,6 +1314,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Configures CI workflows for CPU-only environments (no GPU dependencies).
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cross-platform-filename-validator
   name: Cross-Platform Filename Validator
   file: cross-platform-filename-validator.md
@@ -936,6 +1328,12 @@ agents:
   category: quality
   priority: medium
   purpose: Validates filenames for cross-platform compatibility; blocks illegal characters.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: datetime-modernizer
   batch_scan_enabled: true
   name: Datetime Modernizer
@@ -945,6 +1343,12 @@ agents:
   category: quality
   priority: medium
   purpose: Migrates datetime.utcnow() to datetime.now(tz=timezone.utc) across codebase.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: dependency-conflict-agent
   name: Dependency Conflict Agent
   file: dependency-conflict-agent.md
@@ -953,6 +1357,12 @@ agents:
   category: dependencies
   priority: high
   purpose: Diagnoses pip resolver conflicts; recommends compatible version ranges.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: dependency-security-review-agent
   name: Dependency Security Review Agent
   file: dependency-security-review-agent.md
@@ -961,6 +1371,12 @@ agents:
   category: security
   priority: high
   purpose: Reviews dependency security posture; flags CVEs and outdated packages.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: dependency-vulnerability-scanner
   batch_scan_enabled: true
   name: Dependency Vulnerability Scanner
@@ -970,6 +1386,16 @@ agents:
   category: security
   priority: critical
   purpose: Scans dependencies against multiple CVE databases; generates remediation plans.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - security-audit-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 14
+  role: specialist
 - id: doc-freshness-checker
   name: Doc Freshness Checker
   file: doc-freshness-checker.agent.md
@@ -978,6 +1404,15 @@ agents:
   category: documentation
   priority: medium
   purpose: Validates documentation freshness; identifies stale docs and broken links.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 6
+  role: specialist
 - id: doc-refactor-test-agent
   name: Doc Refactor Test Agent
   file: doc-refactor-test-agent.md
@@ -986,6 +1421,12 @@ agents:
   category: documentation
   priority: low
   purpose: Refactors documentation tests and validates documentation test infrastructure.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: documentation-consolidator
   name: Documentation Consolidator
   file: documentation-consolidator.md
@@ -994,6 +1435,16 @@ agents:
   category: documentation
   priority: medium
   purpose: Consolidates fragmented documentation with semantic analysis and content preservation.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - documentation-quality-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 17
+  role: specialist
 - id: documentation-quality-agent
   name: Documentation Quality Agent
   file: documentation-quality-agent.md
@@ -1002,6 +1453,15 @@ agents:
   category: documentation
   priority: medium
   purpose: Automated documentation quality assessment; MkDocs validation; link checking.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 11
+  role: specialist
 - id: fragile-test-guardian
   batch_scan_enabled: true
   name: Fragile Test Guardian
@@ -1011,6 +1471,12 @@ agents:
   category: testing
   priority: high
   purpose: Identifies and stabilizes fragile/flaky tests before they cause CI failures.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: github-pages-manager
   name: GitHub Pages Manager
   file: github-pages-manager.md
@@ -1019,7 +1485,18 @@ agents:
   category: documentation
   priority: high
   version: 4.0.0-production
-  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live site validation. Resolves all scheduled GitHub Pages validation issues.
+  purpose: Manages GitHub Pages deployment, MkDocs builds, documentation validation, cognitive_app accessibility and live
+    site validation. Resolves all scheduled GitHub Pages validation issues.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - documentation-consolidator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 18
+  role: specialist
 - id: integration-test-runner
   batch_scan_enabled: true
   name: Integration Test Runner
@@ -1029,6 +1506,16 @@ agents:
   category: testing
   priority: high
   purpose: Runs integration tests across services; validates cross-component interactions.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 9
+  role: specialist
 - id: json-serialization-expert
   name: JSON Serialization Expert
   file: json-serialization-expert.md
@@ -1037,6 +1524,12 @@ agents:
   category: quality
   priority: medium
   purpose: Diagnoses and fixes JSON serialization issues in API responses and data pipelines.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: link-validator-agent
   name: Link Validator Agent
   file: link-validator-agent.md
@@ -1045,6 +1538,16 @@ agents:
   category: documentation
   priority: medium
   purpose: Cross-reference and link validation for documentation; detects broken links.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - documentation-quality-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 12
+  role: specialist
 - id: meta-tensor-validator
   name: Meta Tensor Validator
   file: meta-tensor-validator.md
@@ -1053,6 +1556,12 @@ agents:
   category: ml
   priority: high
   purpose: Validates PyTorch model initialization patterns to prevent meta tensor issues.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: ml-validation-suite-agent
   batch_scan_enabled: true
   name: ML Validation Suite Agent
@@ -1062,6 +1571,12 @@ agents:
   category: ml
   priority: medium
   purpose: Comprehensive ML model validation including determinism and reproducibility checks.
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: msv-dashboard-monitor
   name: MSV Dashboard Monitor
   file: msv-dashboard-monitor.md
@@ -1070,6 +1585,12 @@ agents:
   category: monitoring
   priority: medium
   purpose: Monitors MSV dashboard metrics and alerts on regressions.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: mutation-testing-agent
   batch_scan_enabled: true
   name: Mutation Testing Agent
@@ -1079,6 +1600,12 @@ agents:
   category: testing
   priority: medium
   purpose: Performs mutation testing to evaluate test suite effectiveness.
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: owner-approval-guard
   name: Owner Approval Guard
   file: owner-approval-guard.agent.md
@@ -1087,6 +1614,12 @@ agents:
   category: governance
   priority: critical
   purpose: Enforces owner approval requirements for autonomous operations.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: performance-regression-detector
   name: Performance Regression Detector
   file: performance-regression-detector.agent.md
@@ -1095,6 +1628,12 @@ agents:
   category: performance
   priority: high
   purpose: Detects performance regressions by comparing metrics against baselines.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pii-scrubber
   name: PII Scrubber
   file: pii-scrubber.agent.md
@@ -1103,6 +1642,12 @@ agents:
   category: security
   priority: high
   purpose: Scrubs PII from text content before processing; ensures GDPR/CCPA compliance.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pr-3095-verification-agent
   name: PR-3095 Verification Agent
   file: pr-3095-verification-agent.md
@@ -1111,6 +1656,12 @@ agents:
   category: governance
   priority: low
   purpose: Verifies that PR 3095 fixes have been correctly applied across the codebase.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pr-check-remediation-agent
   batch_scan_enabled: true
   name: PR Check Remediation Agent
@@ -1120,6 +1671,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Remediates failed PR checks by analyzing failure patterns and applying fixes.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pr-test-infrastructure-fixer
   batch_scan_enabled: true
   name: PR Test Infrastructure Fixer
@@ -1129,6 +1686,12 @@ agents:
   category: testing
   priority: medium
   purpose: Fixes test infrastructure issues introduced by PR changes.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: pypi-publishing-operations-agent
   name: PyPI Publishing Operations Agent
   file: pypi-publishing-operations-agent.md
@@ -1137,6 +1700,12 @@ agents:
   category: operations
   priority: medium
   purpose: Manages PyPI package publishing operations and release workflows.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: python-312-type-fixer
   batch_scan_enabled: true
   name: Python 3.12 Type Fixer
@@ -1146,6 +1715,12 @@ agents:
   category: quality
   priority: medium
   purpose: Fixes Python 3.12 type annotation incompatibilities across the codebase.
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: qa-walkthrough-agent
   batch_scan_enabled: true
   name: QA Walkthrough Agent
@@ -1155,6 +1730,15 @@ agents:
   category: testing
   priority: high
   purpose: Executes repository-wide QA walkthrough with evidence-based audit steps.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 2
+  role: specialist
 - id: quantum-compliance-tuning-agent
   name: Quantum Compliance Tuning Agent
   file: quantum-compliance-tuning-agent.md
@@ -1163,6 +1747,12 @@ agents:
   category: cognitive
   priority: medium
   purpose: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: rag-freshness-loop-agent
   name: RAG Freshness Loop Agent
   file: rag-freshness-loop-agent.md
@@ -1171,6 +1761,12 @@ agents:
   category: ml
   priority: medium
   purpose: Maintains RAG index freshness through continuous update and validation loops.
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: rag-index-manager
   name: RAG Index Manager
   file: rag-index-manager.agent.md
@@ -1179,6 +1775,15 @@ agents:
   category: ml
   priority: high
   purpose: Manages RAG index operations including building, updating, and querying.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 10
+  role: specialist
 - id: rag-meta-tensor-guardian
   name: RAG Meta Tensor Guardian
   file: rag-meta-tensor-guardian.md
@@ -1187,6 +1792,12 @@ agents:
   category: ml
   priority: high
   purpose: Guards RAG tensor operations against meta tensor initialization errors.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: rag-module-management-agent
   name: RAG Module Management Agent
   file: rag-module-management-agent.md
@@ -1195,6 +1806,12 @@ agents:
   category: ml
   priority: high
   purpose: Manages RAG module lifecycle including initialization and hot-swapping.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: reference-updater-agent
   name: Reference Updater Agent
   file: reference-updater-agent.md
@@ -1203,6 +1820,12 @@ agents:
   category: quality
   priority: medium
   purpose: Atomic reference updates across entire codebase with transaction-like behavior.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: repository-hygiene-agent
   name: Repository Hygiene Agent
   file: repository-hygiene-agent.md
@@ -1211,6 +1834,12 @@ agents:
   category: operations
   priority: medium
   purpose: Autonomous repository cleanup, maintenance, and codebase hygiene specialist.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: repository-organization-agent
   name: Repository Organization Agent
   file: repository-organization-agent.md
@@ -1219,6 +1848,12 @@ agents:
   category: operations
   priority: medium
   purpose: Organizes repository structure per LFS policy and directory conventions.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: root-organizer-agent
   name: Root Organizer Agent
   file: root-organizer-agent.md
@@ -1227,6 +1862,12 @@ agents:
   category: operations
   priority: high
   purpose: Safe incremental root folder reorganization; zero-break guarantee.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: rust-config-validator
   name: Rust Config Validator
   file: rust-config-validator.md
@@ -1235,6 +1876,12 @@ agents:
   category: configuration
   priority: medium
   purpose: Validates Rust configurations in hybrid Python/Rust swarm components.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: secret-detection-agent
   name: Secret Detection Agent
   file: secret-detection-agent.md
@@ -1243,6 +1890,12 @@ agents:
   category: security
   priority: critical
   purpose: Scans codebase for accidentally committed secrets and credentials.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: security-alert-verification-agent
   name: Security Alert Verification Agent
   file: security-alert-verification-agent.md
@@ -1251,6 +1904,12 @@ agents:
   category: security
   priority: critical
   purpose: Validates GitHub security alerts, triage, and generates remediation plans.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: security-audit-agent
   batch_scan_enabled: true
   name: Security Audit Agent
@@ -1260,6 +1919,12 @@ agents:
   category: security
   priority: critical
   purpose: Comprehensive security audits across code, dependencies, and workflows.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: semantic-search
   name: Semantic Search Agent
   file: semantic-search.agent.md
@@ -1268,6 +1933,15 @@ agents:
   category: ml
   priority: high
   purpose: Semantic search over codebase and documentation using vector embeddings.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 8
+  role: specialist
 - id: session-analysis-agent
   name: Session Analysis Agent
   file: session-analysis-agent.md
@@ -1276,6 +1950,12 @@ agents:
   category: cognitive
   priority: high
   purpose: Analyzes Copilot sessions, verifies commits, extracts patterns for learning.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: session-log-retrieval-agent
   name: Session Log Retrieval Agent
   file: session-log-retrieval-agent.md
@@ -1284,6 +1964,12 @@ agents:
   category: cognitive
   priority: high
   purpose: Recalls previous Copilot sessions, extracts uncommitted work, searches history.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: terminology-consistency-agent
   name: Terminology Consistency Agent
   file: terminology-consistency-agent.md
@@ -1292,6 +1978,12 @@ agents:
   category: documentation
   priority: low
   purpose: Enforces consistent terminology across documentation and code comments.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-alignment-fixer
   batch_scan_enabled: true
   name: Test Alignment Fixer
@@ -1301,6 +1993,16 @@ agents:
   category: testing
   priority: high
   purpose: Fixes test alignment issues by updating tests to match API changes.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 7
+  role: specialist
 - id: test-alignment-fixer-enhanced
   batch_scan_enabled: true
   name: Test Alignment Fixer Enhanced
@@ -1310,6 +2012,12 @@ agents:
   category: testing
   priority: high
   purpose: Enhanced test alignment fixer with broader coverage and smarter detection.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-coverage-agent
   batch_scan_enabled: true
   name: Test Coverage Agent
@@ -1319,6 +2027,12 @@ agents:
   category: testing
   priority: medium
   purpose: Drives test coverage improvements; identifies uncovered code paths.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-coverage-monitor
   batch_scan_enabled: true
   name: Test Coverage Monitor
@@ -1328,6 +2042,16 @@ agents:
   category: testing
   priority: high
   purpose: Monitors test coverage, enforces thresholds, validates documentation quality.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 5
+  role: utility
 - id: test-enhancement-agent
   batch_scan_enabled: true
   name: Test Enhancement Agent
@@ -1337,6 +2061,12 @@ agents:
   category: testing
   priority: medium
   purpose: Improves test quality through refactoring, edge case coverage, assertion hardening.
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: test-failure-analyzer-agent
   batch_scan_enabled: true
   name: Test Failure Analyzer Agent
@@ -1346,6 +2076,12 @@ agents:
   category: testing
   priority: high
   purpose: Analyzes and diagnoses test failures with root cause classification.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: tokenization-coverage-agent
   batch_scan_enabled: true
   name: Tokenization Coverage Agent
@@ -1355,6 +2091,12 @@ agents:
   category: testing
   priority: medium
   purpose: Improves src/tokenization test coverage, CLI validation, and coverage reporting.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: tracking-document-qa-agent
   name: Tracking Document QA Agent
   file: tracking-document-qa-agent.md
@@ -1363,6 +2105,12 @@ agents:
   category: documentation
   priority: low
   purpose: QA validation of tracking documents, completion reports, and session summaries.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: unified-doc-agent
   name: Unified Doc Agent
   file: unified-doc-agent.md
@@ -1371,6 +2119,12 @@ agents:
   category: documentation
   priority: medium
   purpose: Unified documentation management combining freshness, quality, and consolidation.
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: unified-governance-gate
   name: Unified Governance Gate
   file: unified-governance-gate.md
@@ -1379,6 +2133,12 @@ agents:
   category: governance
   priority: critical
   purpose: Unified governance enforcement across all operations, merges, and deployments.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: workflow-analytics-agent
   name: Workflow Analytics Agent
   file: workflow-analytics-agent.md
@@ -1387,6 +2147,12 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Analyzes workflow performance, detects patterns, and recommends optimizations.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: workflow-ci-fixer
   batch_scan_enabled: true
   name: Workflow CI Fixer
@@ -1396,6 +2162,16 @@ agents:
   category: ci_cd
   priority: high
   purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-health-alert-agent
+  - agent-orchestrator
+  consolidation_priority: true
+  activation_frequency_rank: 13
+  role: specialist
 - id: workflow-health-monitor
   batch_scan_enabled: true
   name: Workflow Health Monitor
@@ -1405,6 +2181,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Real-time workflow health monitoring with alerting and trend analysis.
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: workflow-management-agent
   name: Workflow Management Agent
   file: workflow-management-agent.md
@@ -1413,6 +2195,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Orchestrates workflow operations including scheduling, triggers, and lifecycle.
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: soft
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: workflow-optimization-agent
   name: Workflow Optimization Agent
   file: workflow-optimization-agent.md
@@ -1421,10 +2209,15 @@ agents:
   category: ci_cd
   priority: medium
   purpose: Identifies and applies workflow optimizations for speed and cost reduction.
-
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cognitive-brain-cli-agent
   name: Cognitive Brain CLI Agent
-  version: "1.0.0"
+  version: 1.0.0
   file: .github/agents/cognitive-brain-cli-agent.md
   status: active
   maturity: production
@@ -1434,18 +2227,23 @@ agents:
   has_src: false
   category: operations
   subcategory: cli
-  description: >
-    Production agent for operating the Cognitive Brain CLI console.
-    Executes shell commands, HTTP requests, and drives the cognitive_app
-    dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
+  description: 'Production agent for operating the Cognitive Brain CLI console. Executes shell commands, HTTP requests, and
+    drives the cognitive_app dev server. Backend: FastAPI :8765 with PTY WebSocket and HTTP proxy.
+
+    '
   added_in_pr: 3421
   physics_model:
     primary: flow
     secondary: signal
-
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: workflow-compliance-guardian
   name: Workflow Compliance Guardian
-  version: "1.0.0"
+  version: 1.0.0
   file: .github/agents/workflow-compliance-guardian.md
   status: active
   maturity: production
@@ -1455,18 +2253,23 @@ agents:
   has_src: false
   category: ci
   subcategory: enforcement
-  description: >
-    Enforces and auto-heals branch-scoped concurrency + timeout rules
-    across all 91 GitHub Actions workflows. Runs compliance audit on
-    every PR push and self-heals non-compliant files within the session.
+  description: 'Enforces and auto-heals branch-scoped concurrency + timeout rules across all 91 GitHub Actions workflows.
+    Runs compliance audit on every PR push and self-heals non-compliant files within the session.
+
+    '
   added_in_pr: 3421
   physics_model:
     primary: balance
     secondary: constraint
-
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
 - id: ci-health-alert-agent
   name: CI Health Alert Agent
-  version: "1.0.0"
+  version: 1.0.0
   file: .github/agents/ci-health-alert-agent.md
   status: active
   maturity: production
@@ -1476,19 +2279,24 @@ agents:
   has_src: false
   category: ci
   subcategory: health
-  description: >
-    Auto-responds to GitHub issues tagged ci-health-alert. Classifies
-    failure patterns via ci_failure_patterns.yaml, proposes batch fixes,
-    and updates CODEX_CI_FAILURE_RATE repo variable after remediation.
+  description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies failure patterns via ci_failure_patterns.yaml,
+    proposes batch fixes, and updates CODEX_CI_FAILURE_RATE repo variable after remediation.
+
+    '
   added_in_pr: 3421
   sprint: Sprint 4
   physics_model:
     primary: feedback
     secondary: correction
-
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: repo-var-sync-agent
   name: Repo Var Sync Agent
-  version: "1.0.0"
+  version: 1.0.0
   file: .github/agents/repo-var-sync-agent.md
   status: active
   maturity: production
@@ -1498,19 +2306,24 @@ agents:
   has_src: false
   category: infrastructure
   subcategory: configuration
-  description: >
-    Keeps .codex/agent_context.json bidirectionally in sync with GitHub
-    Actions repository variables (COPILOT_* / CODEX_*). Supports both
-    bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
+  description: 'Keeps .codex/agent_context.json bidirectionally in sync with GitHub Actions repository variables (COPILOT_*
+    / CODEX_*). Supports both bootstrap sync (vars→file) and propagation (file→vars) with drift detection.
+
+    '
   added_in_pr: 3421
   sprint: Sprint 4
   physics_model:
     primary: synchronization
     secondary: consistency
-
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: cognitive-ooda-loop-agent
   name: Cognitive OODA Loop Agent
-  version: "1.0.0"
+  version: 1.0.0
   file: .github/agents/cognitive-ooda-loop-agent.md
   status: active
   maturity: production
@@ -1520,20 +2333,25 @@ agents:
   has_src: false
   category: cognitive
   subcategory: orchestration
-  description: >
-    Executes a full OODA loop from a PR comment. Drives the real
-    OODAOrchestrator via POST /api/ooda/process on the CLI API server
-    (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also
-    exposes GET /api/ooda/metrics for MetricsDashboard K1 factor display.
+  description: 'Executes a full OODA loop from a PR comment. Drives the real OODAOrchestrator via POST /api/ooda/process on
+    the CLI API server (:8765). Replaces mock-api-client in AgentOrchestrationPanel. Also exposes GET /api/ooda/metrics for
+    MetricsDashboard K1 factor display.
+
+    '
   added_in_pr: 3421
   sprint: Sprint 3 + Sprint 4
   physics_model:
     primary: ooda_loop
     secondary: feedback
-
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: orchestrator
 - id: memory-sync-agent
   name: Memory Sync Agent
-  version: "2.1.0"
+  version: 2.1.0
   file: .github/agents/memory-sync-agent.md
   status: active
   maturity: production
@@ -1543,10 +2361,10 @@ agents:
   has_src: false
   category: cognitive
   subcategory: memory
-  description: >
-    Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library.
-    Consolidates hot STM entries into LTM when capacity exceeds 80%, tags
-    patterns with ImprovementArea, and prunes stale LTM entries.
+  description: 'Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries into LTM
+    when capacity exceeds 80%, tags patterns with ImprovementArea, and prunes stale LTM entries.
+
+    '
   added_in_pr: 3422
   sprint: Sprint 6
   promoted_in_pr: 3424
@@ -1554,10 +2372,15 @@ agents:
   physics_model:
     primary: memory_consolidation
     secondary: compression
-
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
 - id: telemetry-classifier-agent
   name: Telemetry Classifier Agent
-  version: "2.1.0"
+  version: 2.1.0
   file: .github/agents/telemetry-classifier-agent.md
   status: active
   maturity: production
@@ -1567,10 +2390,10 @@ agents:
   has_src: false
   category: ci
   subcategory: telemetry
-  description: >
-    Reads CI telemetry artifacts, identifies top-N unknown failure patterns,
-    and generates new classifier entries for collect_telemetry.py. Drives the
-    unknown pattern bucket from ~60% toward <20%.
+  description: 'Reads CI telemetry artifacts, identifies top-N unknown failure patterns, and generates new classifier entries
+    for collect_telemetry.py. Drives the unknown pattern bucket from ~60% toward <20%.
+
+    '
   added_in_pr: 3422
   sprint: Sprint 8
   promoted_in_pr: 3424
@@ -1578,56 +2401,484 @@ agents:
   physics_model:
     primary: pattern_recognition
     secondary: feedback
-
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
+- id: admin-automation-agent
+  name: Admin Automation Agent
+  directory: .github/agents/admin-automation-agent
+  file: admin-automation-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: true
+  category: operations
+  subcategory: automation
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  role: specialist
+  consolidation_priority: true
+  activation_frequency_rank: 4
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: batch-triage-agent
+  name: Batch Triage Agent
+  directory: .github/agents/batch-triage-agent
+  file: batch-triage-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: true
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: ci
+  subcategory: triage
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: ci-diagnostic-agent
+  name: CI Diagnostic Agent
+  directory: .github/agents/ci-diagnostic-agent
+  file: ci-diagnostic-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci
+  subcategory: diagnostics
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: codebase-qa-walkthrough-agent
+  name: Codebase QA Walkthrough Agent
+  directory: .github/agents/codebase-qa-walkthrough-agent
+  file: codebase-qa-walkthrough-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: quality
+  subcategory: qa
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: cognitive-brain-session-injector
+  name: Cognitive Brain Session Injector
+  file: cognitive-brain-session-injector.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: cognitive
+  subcategory: session_management
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: dependency-conflict-resolver
+  name: Dependency Conflict Resolver
+  directory: .github/agents/dependency-conflict-resolver
+  file: dependency-conflict-resolver/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: dependencies
+  subcategory: conflict_resolution
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: doc-test-scribe
+  name: Doc Test Scribe
+  directory: .github/agents/doc-test-scribe
+  file: doc-test-scribe/README.md
+  status: active
+  maturity: beta
+  has_prompts: true
+  has_tests: false
+  has_docs: true
+  has_src: true
+  category: documentation
+  subcategory: test_docs
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - documentation-quality-agent
+  - agent-orchestrator
+  role: specialist
+  consolidation_priority: true
+  activation_frequency_rank: 16
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: documentation-sync-validator
+  name: Documentation Sync Validator
+  directory: .github/agents/documentation-sync-validator
+  file: documentation-sync-validator/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: documentation
+  subcategory: validation
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - documentation-consolidator
+  - agent-orchestrator
+  role: specialist
+  consolidation_priority: true
+  activation_frequency_rank: 19
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: dynamics365-powerplatform-architect-agent
+  name: Dynamics365 PowerPlatform Architect Agent
+  directory: .github/agents/dynamics365-powerplatform-architect-agent
+  file: dynamics365-powerplatform-architect-agent/README.md
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: integration
+  subcategory: platform
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-auth-manager
+  name: GitHub Auth Manager
+  directory: .github/agents/github-auth-manager
+  file: github-auth-manager/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: auth
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-code-reviewer
+  name: GitHub Code Reviewer
+  directory: .github/agents/github-code-reviewer
+  file: github-code-reviewer/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: quality
+  subcategory: code_review
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-deployment-gatekeeper
+  name: GitHub Deployment Gatekeeper
+  directory: .github/agents/github-deployment-gatekeeper
+  file: github-deployment-gatekeeper/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: operations
+  subcategory: deployment
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: utility
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-security-enforcer
+  name: GitHub Security Enforcer
+  directory: .github/agents/github-security-enforcer
+  file: github-security-enforcer/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: enforcement
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-security-validator-agent
+  name: GitHub Security Validator Agent
+  directory: .github/agents/github-security-validator-agent
+  file: github-security-validator-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: validation
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-test-orchestrator
+  name: GitHub Test Orchestrator
+  directory: .github/agents/github-test-orchestrator
+  file: github-test-orchestrator/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: testing
+  subcategory: orchestration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: orchestrator
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-testing-orchestrator-agent
+  name: GitHub Testing Orchestrator Agent
+  directory: .github/agents/github-testing-orchestrator-agent
+  file: github-testing-orchestrator-agent/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: testing
+  subcategory: orchestration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: orchestrator
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: github-workflow-optimizer
+  name: GitHub Workflow Optimizer
+  directory: .github/agents/github-workflow-optimizer
+  file: github-workflow-optimizer/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: operations
+  subcategory: optimization
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: ml-threat-detector
+  name: ML Threat Detector
+  directory: .github/agents/ml-threat-detector
+  file: ml-threat-detector/README.md
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: ml_security
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: repo-health-guardian
+  name: Repo Health Guardian
+  directory: .github/agents/repo-health-guardian
+  file: repo-health-guardian/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: operations
+  subcategory: health
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: utility
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: security-vulnerability-patcher
+  name: Security Vulnerability Patcher
+  directory: .github/agents/security-vulnerability-patcher
+  file: security-vulnerability-patcher/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: patching
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: service-integration-tester
+  name: Service Integration Tester
+  directory: .github/agents/service-integration-tester
+  file: service-integration-tester/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: testing
+  subcategory: integration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: test-coverage-enforcer
+  name: Test Coverage Enforcer
+  directory: .github/agents/test-coverage-enforcer
+  file: test-coverage-enforcer/README.md
+  status: active
+  maturity: beta
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: testing
+  subcategory: coverage
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: zendesk-architect-agent
+  name: Zendesk Architect Agent
+  directory: .github/agents/zendesk-architect-agent
+  file: zendesk-architect-agent/README.md
+  status: active
+  maturity: experimental
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: integration
+  subcategory: platform
+  enforcement_tier: SOFT
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  role: specialist
+  consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
   non_compliant: 3
   target: 100%
   deadline: '2026-03-15'
-
-# S83 changelog (2026-02-24):
-# - version 1.0.0 → 1.1.0
-# - marshmallow 3.26.1 → 4.2.2 (great-expectations made optional)
-# - transformers 5.1.0 → 5.2.0 (getattr compat guard added)
-# - RAGIndexer facade class added (src/codex/rag/indexer.py)
-# - MSPClient.request() method added (agents/msp_client.py)
-# - 48 CVEs fixed (was 26), 1500+ tests (was 1300+), 54 agents (was 53)
-# - Knowledge graph v1.4.0, AAIS V3.2 (95.3/100)
-#
-# S85 changelog (2026-02-24):
-# - version 1.1.0 → 1.2.0
-# - ci-auto-healer agent added (ci-auto-healer-agent.md)
-# - total_agents 35 → 36
-# - Knowledge graph v1.6.0 (P-023 through P-029 added)
-# - Health score 96/100 → 97/100
-#
-# S89 changelog (2026-02-25):
-# - version 1.2.0 → 1.3.0
-# - 62 new operational agents registered from .github/agents/ enumeration
-# - total_agents 36 → 121
-#
-# S92 changelog (2026-02-28):
-# - version 1.3.0 → 1.4.0
-# - batch_scan_enabled: true added to 41 applicable agents
-# - BATCH_SCAN_PROTOCOL.md canonical protocol document added
-# - S93_RVS_CONTINUATION_PROMPT.md added
-# - AI_AGENT_INTUITIVENESS_SCORE_V3.md: 91.8 → 94.7/100
-
-# S116j changelog (2026-03-01):
-# - version 1.4.0 → 1.5.0
-# - cognitive-brain-cli-agent added (PR #3421)
-# - workflow-compliance-guardian added (PR #3421)
-# - total_agents 121 → 123
-# - ci-health-alert-agent added (PR #3421 Sprint 4)
-# - repo-var-sync-agent added (PR #3421 Sprint 4)
-# - cognitive-ooda-loop-agent added (PR #3421 Sprint 4)
-# - total_agents 123 → 126
-# - 91/91 workflow compliance achieved
-# - iterative-self-healing-ci.yml added
-
-# PR #3422 changelog (2026-03-01):
-# - version 1.6.0 → 1.7.0
-# - memory-sync-agent added (PR #3422 Sprint 6)
-# - telemetry-classifier-agent added (PR #3422 Sprint 8)
-# - total_agents 126 → 128

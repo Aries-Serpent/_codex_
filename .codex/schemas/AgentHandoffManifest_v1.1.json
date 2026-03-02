@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Aries-Serpent/_codex_/schemas/AgentHandoffManifest/v1.1",
+  "title": "AgentHandoffManifest",
+  "description": "Structured handoff between _codex_ agents. Validates at agent-handoff-gate.yml.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "handoff_id",
+    "delegating_agent",
+    "receiving_agent",
+    "task_id",
+    "handoff_timestamp",
+    "operating_model"
+  ],
+  "properties": {
+    "schema_version":     { "type": "string", "const": "1.1" },
+    "handoff_id":         { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "delegating_agent":   { "type": "string" },
+    "receiving_agent":    { "type": "string" },
+    "task_id":            { "type": "string" },
+    "handoff_timestamp":  { "type": "string", "format": "date-time" },
+    "operating_model":    { "type": "string", "enum": ["E", "D"] },
+    "delegation_trace": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "timestamp"],
+        "properties": {
+          "from":      { "type": "string" },
+          "to":        { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "context_snapshot": {
+      "type": "object",
+      "properties": {
+        "files_in_scope":           { "type": "array", "items": { "type": "string" } },
+        "open_checklist_items":     { "type": "array", "items": { "type": "string" } },
+        "current_enforcement_tier": { "type": "string", "enum": ["GROUNDED", "PARTIAL", "SOFT"] },
+        "pr_number":                { "type": "integer" },
+        "relevant_prior_context":   { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "policy_compliance": {
+      "type": "object",
+      "properties": {
+        "tier1_gates_passed": { "type": "array", "items": { "type": "string" } },
+        "tier2_annotations":  { "type": "array", "items": { "type": "string" } },
+        "violation_count":    { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "checklist_items": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Aries-Serpent/_codex_/schemas/CodexManifest/v1.0",
+  "title": "CodexManifest",
+  "description": "JSON Schema for CODEX_MANIFEST.json — root discovery index for Aries-Serpent/_codex_",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "agents",
+    "workflows",
+    "policies",
+    "datasets",
+    "enforcement_kpis",
+    "operating_model",
+    "integrity_sha256"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "generated_at":   { "type": "string", "format": "date-time" },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "enforcement_tier", "autonomy_model"],
+        "properties": {
+          "name":             { "type": "string" },
+          "role":             { "type": "string" },
+          "enforcement_tier": { "type": "string", "enum": ["GROUNDED", "PARTIAL", "SOFT", "ARCHIVED"] },
+          "autonomy_model":   { "type": "string", "enum": ["E", "D_CAPABLE", "D"] }
+        },
+        "additionalProperties": true
+      }
+    },
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "enforcement_tier"],
+        "properties": {
+          "name":             { "type": "string" },
+          "path":             { "type": "string" },
+          "enforcement_tier": { "type": "string", "enum": ["GROUNDED", "PARTIAL", "SOFT"] },
+          "has_concurrency":  { "type": "boolean" },
+          "has_timeout":      { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "type"],
+        "properties": {
+          "path": { "type": "string" },
+          "type": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "datasets": {
+      "type": "object",
+      "properties": {
+        "session_db":     { "type": ["string", "null"] },
+        "embedding_meta": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "enforcement_kpis": {
+      "type": "object",
+      "properties": {
+        "tier1_count": { "type": "integer", "minimum": 0 },
+        "tier2_count": { "type": "integer", "minimum": 0 },
+        "tier3_count": { "type": "integer", "minimum": 0 },
+        "ungatable":   { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "operating_model": {
+      "type": "object",
+      "required": ["current", "target"],
+      "properties": {
+        "current":            { "type": "string", "enum": ["E", "D"] },
+        "target":             { "type": "string", "enum": ["E", "D"] },
+        "d_capable_agents":   { "type": "integer", "minimum": 0 },
+        "transition_active":  { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "violation_rate_30d": { "type": "number", "minimum": 0 },
+    "integrity_sha256":   { "type": "string", "minLength": 64, "maxLength": 64 }
+  },
+  "additionalProperties": true
+}

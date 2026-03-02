@@ -1,0 +1,219 @@
+name: Agent Registry Validation
+
+# Phase 1 — satisfies C1: validate AGENT_REGISTRY.yaml against
+# .codex/schemas/AgentRegistrySchema.json on every PR and push to main.
+# Also validates CODEX_MANIFEST.json integrity when present.
+#
+# Tier: PARTIAL (::warning:: on issues, not blocking exit 1 yet)
+# TODO: Promote to Tier-1 (exit 1) after 2-sprint observation period.
+
+on:
+  pull_request:
+    paths:
+      - '.github/agents/AGENT_REGISTRY.yaml'
+      - '.codex/schemas/**'
+      - 'CODEX_MANIFEST.json'
+      - 'scripts/ci/generate_manifest.py'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/agents/AGENT_REGISTRY.yaml'
+      - '.codex/schemas/**'
+      - 'CODEX_MANIFEST.json'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: agent-registry-validation-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-registry:
+    name: Validate Agent Registry + Manifest
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install jsonschema pyyaml --quiet
+
+      - name: Validate AGENT_REGISTRY.yaml schema
+        id: registry_validation
+        run: |
+          python3 - << 'PYEOF'
+          import json
+          import os
+          import sys
+          import yaml
+
+          try:
+              import jsonschema
+          except ImportError:
+              print("::warning::jsonschema not installed — skipping schema validation")
+              sys.exit(0)
+
+          schema_path = ".codex/schemas/AgentRegistrySchema.json"
+          registry_path = ".github/agents/AGENT_REGISTRY.yaml"
+
+          if not os.path.exists(schema_path):
+              print(f"::warning::AgentRegistrySchema.json not found at {schema_path}")
+              sys.exit(0)
+
+          if not os.path.exists(registry_path):
+              print(f"::warning::AGENT_REGISTRY.yaml not found at {registry_path}")
+              sys.exit(0)
+
+          with open(schema_path) as f:
+              schema = json.load(f)
+          with open(registry_path) as f:
+              data = yaml.safe_load(f)
+
+          errors = []
+
+          # Top-level validation
+          try:
+              jsonschema.validate(data, schema)
+          except jsonschema.ValidationError as e:
+              errors.append(f"Top-level: {e.message}")
+
+          # Per-agent validation
+          agent_schema = schema.get("definitions", {}).get("AgentEntry", {})
+          if agent_schema:
+              for agent in data.get("agents", []):
+                  try:
+                      jsonschema.validate(agent, agent_schema)
+                  except jsonschema.ValidationError as e:
+                      errors.append(f"Agent '{agent.get('id', '?')}': {e.message}")
+
+          # Check total_agents count matches actual
+          declared = data.get("total_agents", 0)
+          actual = len(data.get("agents", []))
+          if declared != actual:
+              errors.append(f"total_agents={declared} but actual count={actual}")
+
+          output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
+          if errors:
+              error_summary = "; ".join(errors[:5])
+              print(f"::warning::agent-registry-validation: {len(errors)} schema issues found: {error_summary}")
+              with open(output_file, "a") as f:
+                  f.write("registry_valid=false\n")
+                  f.write(f"error_count={len(errors)}\n")
+          else:
+              print(f"✅ AGENT_REGISTRY.yaml valid: {actual} agents, all schema-compliant")
+              with open(output_file, "a") as f:
+                  f.write("registry_valid=true\n")
+                  f.write("error_count=0\n")
+          PYEOF
+
+      - name: Validate CODEX_MANIFEST.json integrity
+        id: manifest_validation
+        run: |
+          python3 - << 'PYEOF'
+          import hashlib
+          import json
+          import os
+          import sys
+
+          try:
+              import jsonschema
+          except ImportError:
+              jsonschema = None
+
+          manifest_path = "CODEX_MANIFEST.json"
+          schema_path = ".codex/schemas/CodexManifestSchema.json"
+
+          if not os.path.exists(manifest_path):
+              print("::warning::CODEX_MANIFEST.json not found — run scripts/ci/generate_manifest.py")
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("manifest_valid=absent\n")
+              sys.exit(0)
+
+          data = json.loads(open(manifest_path).read())
+
+          # Verify integrity hash
+          stored = data.pop("integrity_sha256", None)
+          if not stored:
+              print("::warning::CODEX_MANIFEST.json missing integrity_sha256 field")
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("manifest_valid=false\n")
+              sys.exit(0)
+
+          content = json.dumps(data, sort_keys=True, separators=(",", ":"))
+          computed = hashlib.sha256(content.encode()).hexdigest()
+
+          if computed != stored:
+              print(f"::warning::CODEX_MANIFEST.json integrity FAILED — regenerate with generate_manifest.py")
+              with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+                  f.write("manifest_valid=false\n")
+              sys.exit(0)
+
+          # Validate against schema if available
+          if jsonschema is not None and os.path.exists(schema_path):
+              try:
+                  data["integrity_sha256"] = stored  # restore for schema validation
+                  manifest_schema = json.load(open(schema_path))
+                  jsonschema.validate(data, manifest_schema)
+              except jsonschema.ValidationError as e:
+                  print(f"::warning::CODEX_MANIFEST.json schema validation issue: {e.message}")
+
+          print(f"✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)")
+          with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+              f.write("manifest_valid=true\n")
+          PYEOF
+
+      - name: Post validation summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
+          MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
+          ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const registryValid = process.env.REGISTRY_VALID;
+            const manifestValid = process.env.MANIFEST_VALID;
+            const errorCount = process.env.ERROR_COUNT || '0';
+
+            // Only post a comment if there are issues to report
+            if (registryValid === 'true' && manifestValid === 'true') {
+              core.info('Registry and manifest validation passed — no comment needed');
+              return;
+            }
+
+            let body = '## 🔍 Agent Registry Validation\n\n';
+
+            if (registryValid !== 'true') {
+              body += `⚠️ **AGENT_REGISTRY.yaml**: ${errorCount} schema issue(s) found\n`;
+              body += '  Run: `python3 -c "import yaml,json,jsonschema; ..."`\n\n';
+            }
+
+            if (manifestValid === 'absent') {
+              body += '⚠️ **CODEX_MANIFEST.json**: Not found — regenerate:\n';
+              body += '  ```bash\n  python scripts/ci/generate_manifest.py\n  ```\n\n';
+            } else if (manifestValid !== 'true') {
+              body += '⚠️ **CODEX_MANIFEST.json**: Integrity check failed — regenerate:\n';
+              body += '  ```bash\n  python scripts/ci/generate_manifest.py\n  ```\n\n';
+            }
+
+            body += '_[agent-registry-validation.yml] | Tier-2 canary — promoting to Tier-1 after 2-sprint observation_';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body,
+            });
