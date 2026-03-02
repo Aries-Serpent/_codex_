@@ -232,7 +232,7 @@ class GitHubMCPPoster:
         return self._request("POST", url, payload)
 
     def _request(self, method: str, url: str, payload: dict[str, Any]) -> dict[str, Any]:
-        if not url.startswith(("https://",)):
+        if not url.startswith("https://"):
             raise ValueError(f"URL scheme must be https: {url}")
         data = json.dumps(payload).encode()
         req = urllib.request.Request(
