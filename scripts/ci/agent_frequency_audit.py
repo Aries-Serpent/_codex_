@@ -13,9 +13,10 @@ from __future__ import annotations
 
 import pathlib
 import re
-import yaml
 from collections import Counter
 from dataclasses import dataclass, field
+
+import yaml
 
 REPO_ROOT    = pathlib.Path(__file__).resolve().parents[2]
 AGENTS_DIR   = REPO_ROOT / ".github" / "agents"
@@ -253,7 +254,7 @@ def run_audit() -> None:
         f"| `.github/agents/*.md` total        | {len(list(AGENTS_DIR.glob('*.md')))} |",
         f"| Agent definition `.md` files       | {len(fs_agents)} |",
         f"| AGENT_REGISTRY.yaml registered     | {len(registered_ids)} |",
-        f"| Plan reference count (soft_to_GROUNDED.md) | 193 |",
+        "| Plan reference count (soft_to_GROUNDED.md) | 193 |",
         f"| **Union (known unique agents)**    | **{len(all_agents)}** |",
         f"| In registry only (no .md def)      | {registry_only} |",
         f"| In filesystem only (not registered) | {fs_only} |",
