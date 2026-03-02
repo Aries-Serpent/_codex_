@@ -139,6 +139,7 @@ manifests/k8s/*/secret.yaml
 !.codex/docs/
 !.codex/docs/**
 !.codex/embeddings/
+.codex/embeddings/*
 !.codex/embeddings/codex_index_meta.json
 !.codex/archive/
 !.codex/archive/**
