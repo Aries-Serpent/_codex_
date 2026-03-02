@@ -136,7 +136,7 @@ jobs:
 
       - name: Upload Analysis Results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: failure-analysis-${{ steps.get_run_id.outputs.run_id }}
           path: |
@@ -377,7 +377,7 @@ jobs:
 
       - name: Upload Healing Report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: healing-report-${{ github.run_id }}
           path: healing_report.json

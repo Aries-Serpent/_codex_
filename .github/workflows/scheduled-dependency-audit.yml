@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload wheelhouse with manifest
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: baseline-wheelhouse-${{ replace(matrix.platform, '/', '-') }}
           path: ./wheelhouse
@@ -148,7 +148,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-${{ matrix.variant }}
           path: |

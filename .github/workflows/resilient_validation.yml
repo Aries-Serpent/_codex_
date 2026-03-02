@@ -76,7 +76,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-baseline
           path: |
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -193,7 +193,7 @@ jobs:
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |

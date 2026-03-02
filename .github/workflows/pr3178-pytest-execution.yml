@@ -340,7 +340,7 @@ jobs:
 
       - name: Upload test artifacts
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pytest-logs-py${{ matrix.python-version }}-group${{ matrix.test-group }}-${{ github.run_number }}
           path: |

@@ -320,7 +320,7 @@ jobs:
 
       - name: Upload triage report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ci-triage-report-${{ github.run_id }}
           path: ci-triage-report.md
