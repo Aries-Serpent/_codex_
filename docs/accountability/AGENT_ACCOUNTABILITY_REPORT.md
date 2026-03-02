@@ -339,6 +339,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-073 | Phase 0 WU-0.3: `docs/architecture/E_TO_D_TRANSITION_MAP.md` created — Mermaid FSM state diagram, 5-condition table (C1–C5), per-phase satisfaction map, Phase 0 gap summary. Current score: 0/5 conditions met | ✅ Done (Phase 0) |
 | W-074 | Phase 0 Task 5: `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` KPI baseline section complete — all metrics filled with real numbers: 151 total agents, 5 GROUNDED, 125 PARTIAL, 21 SOFT, 0 structured handoff, 144 no-handoff, E→D score 0/5 | ✅ Done (Phase 0) |
 | W-075 | Phase 0 complete: `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` + `scripts/ci/workflow_compliance_scan.py` + `scripts/ci/agent_frequency_audit.py` + `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` + `docs/architecture/E_TO_D_TRANSITION_MAP.md` all committed | ✅ Done (Phase 0) |
+| W-076 | Self-heal CI: run #22569851729 (Pre-Merge Validation on `dependabot/pip/evidently-0.7.20`) applied 2 ruff auto-fixable patterns via PR #3469. The follow-up Agent Token Delegation run #22571809557 (triggered by the PR review) then failed at the cognitive pre-flight `Verify Accountability Report updated in last commit` gate because the auto-fix commit did not include this file. Fixed by adding this entry. | ✅ Done (PR #3469) |
 
 ---
 
