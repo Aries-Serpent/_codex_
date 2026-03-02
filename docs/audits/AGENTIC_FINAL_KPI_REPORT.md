@@ -59,14 +59,14 @@ now operates with hard enforcement on critical agent behaviors.
 | Chunk size | 512 words with 64-word overlap |
 | Source directories | 4 (`.codex/docs/`, `.github/agents/`, `src/codex/cognitive/`, registry) |
 | Nightly rebuild | ✅ `embedding-index-rebuild.yml` (2AM UTC) |
-| REQ-10 health annotation | ✅ Tier-2 canary |
+| REQ-10 health annotation | ✅ Tier-1 GROUNDED (exit 1 on chunk count < 100) |
 
 ### Phase 4 — E→D Transition Gate (C3, C5)
 
 | KPI | Value |
 |-----|-------|
 | FSM conditions | 5/5 ✅ |
-| `e-to-d-transition-gate.yml` tier | Tier-2 canary (TODO: promote after 2-sprint observation) |
+| `e-to-d-transition-gate.yml` tier | Tier-1 GROUNDED (promoted from Tier-2 canary) |
 | Orchestrator agent | `orchestrator-agent.md` active |
 | Routing strategies | 3 (FAISS semantic → keyword → safe default) |
 | D_CAPABLE agents | 0 (awaiting first promotion) |
@@ -136,18 +136,18 @@ First D_CAPABLE promotion requires owner approval + `e-to-d-transition-gate.yml`
 | Risk | Severity | Mitigation |
 |------|:--------:|------------|
 | C2 (manifest age) fails if `generate_manifest.py` not run in CI | Medium | ✅ Added to `agent-registry-validation.yml` |
-| `e-to-d-transition-gate.yml` still Tier-2 canary | Low | Promote to Tier-1 after 2-sprint observation |
-| FAISS index not yet populated in CI | Low | Run `embedding-index-rebuild.yml` manually once |
+| `e-to-d-transition-gate.yml` promoted to Tier-1 | Resolved | ✅ Promoted from Tier-2 canary after observation |
+| FAISS index populated in CI | Resolved | ✅ Manual `workflow_dispatch` completed successfully |
 | 0 `D_CAPABLE` agents — no autonomous promotion path defined | Low | Define `autonomy_model: "D_CAPABLE"` criteria per agent |
 
 ---
 
 ## Next Steps
 
-1. **Tier-2 → Tier-1 promotions pending**: `e-to-d-transition-gate.yml`, `embedding-index-rebuild.yml`
-2. **FAISS index activation**: Trigger `embedding-index-rebuild.yml` manually to populate index
+1. **Tier-1 promotions complete**: `e-to-d-transition-gate.yml` ✅, `embedding-index-rebuild.yml` REQ-10 ✅
+2. **FAISS index active**: Seeded via manual `workflow_dispatch`; nightly rebuild at 2AM UTC
 3. **First D_CAPABLE promotion**: Define criteria for `autonomy_model: "D_CAPABLE"` assignment per agent
-4. **ADR documentation**: Create `docs/arch/ADR-*.md` for each phase decision
+4. **ADR documentation**: ✅ Created `docs/arch/ADR-20260302-*.md` for each phase decision
 5. **Semgrep**: Run `semgrep/soft_enforcement.yaml` in CI to detect SOFT pattern regressions
 
 ---
