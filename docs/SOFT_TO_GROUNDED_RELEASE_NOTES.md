@@ -65,8 +65,8 @@ Comment on any PR to see how agents are distributed across enforcement tiers:
 ```
 📊 Agent Tier Distribution
 GROUNDED: 8 agents
-PARTIAL: 142 agents
-SOFT: 2 agents
+PARTIAL: 144 agents
+SOFT: 0 agents
 Total: 152 agents
 ```
 
@@ -178,10 +178,8 @@ These 5 gates run on every PR and block merges on violations:
 
 | Enhancement | Description | Impact |
 |-------------|-------------|--------|
-| **Semgrep policy rules** | Create `.codex/policies/semgrep/soft_enforcement.yaml` to detect soft enforcement patterns in new code | Prevents regression to soft enforcement in new workflows |
-| **Context injection hardening** | Implement `sanitize_for_injection()` with `SAFE_INJECTION_FIELDS` allowlist and `INJECTION_BLOCKLIST` regex | Hardens `CODEX_MANIFEST.json` against CVE-2025-55319-class attacks |
-| **Automated autonomy demotion** | Wire violation threshold to automatic `autonomy_model: E` demotion | Agents that repeatedly fail gates get downgraded without manual intervention |
 | **D_CAPABLE promotion workflow** | Create `d-capable-promotion.yml` that runs when E→D gate reaches 5/5 consistently | Enables first agent transition from advisory (E) to autonomous (D) |
+| **Enhanced demotion automation** | Wire violation count threshold to automatic `autonomy_model: E` demotion (currently advisory annotations only) | Agents that repeatedly fail gates get downgraded without manual intervention |
 
 ### Medium-Term (Next Quarter)
 

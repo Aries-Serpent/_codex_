@@ -57,7 +57,7 @@ gate enforces all 5 conditions as a hard block.
 The canonical active count is **152 agents** registered in AGENT_REGISTRY.yaml v1.9.0.
 The 372 `.md` files include sub-components, templates, and archived agents. All 152 agents
 now have `enforcement_tier`, `autonomy_model`, `handoff_protocol`, and `accepts_handoff_from` fields.
-Distribution: GROUNDED=8, PARTIAL=142, SOFT=2.
+Distribution: GROUNDED=8, PARTIAL=144, SOFT=0.
 
 ---
 
