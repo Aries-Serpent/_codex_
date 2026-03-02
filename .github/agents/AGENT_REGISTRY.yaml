@@ -585,8 +585,10 @@ agents:
   - scripts/analyze_test_patterns.py
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
   consolidation_priority: false
   role: utility
 - id: config-validator-enhanced
@@ -1602,8 +1604,10 @@ agents:
   purpose: Performs mutation testing to evaluate test suite effectiveness.
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
   consolidation_priority: false
   role: specialist
 - id: owner-approval-guard
@@ -1616,8 +1620,10 @@ agents:
   purpose: Enforces owner approval requirements for autonomous operations.
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
   consolidation_priority: false
   role: specialist
 - id: performance-regression-detector
@@ -2063,8 +2069,10 @@ agents:
   purpose: Improves test quality through refactoring, edge case coverage, assertion hardening.
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
   consolidation_priority: false
   role: specialist
 - id: test-failure-analyzer-agent
@@ -2183,8 +2191,11 @@ agents:
   purpose: Real-time workflow health monitoring with alerting and trend analysis.
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
+  - ci-health-alert-agent
   consolidation_priority: false
   role: utility
 - id: workflow-management-agent
@@ -2263,8 +2274,10 @@ agents:
     secondary: constraint
   enforcement_tier: GROUNDED
   autonomy_model: E
-  handoff_protocol: none
-  accepts_handoff_from: []
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - agent-orchestrator
   consolidation_priority: false
   role: utility
 - id: ci-health-alert-agent

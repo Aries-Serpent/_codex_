@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3477 CI fixes (2026-03-02)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-077 | Fix | `.github/agents/AGENT_REGISTRY.yaml` | 6 GROUNDED agents (`test-pattern-guardian`, `mutation-testing-agent`, `owner-approval-guard`, `test-enhancement-agent`, `workflow-health-monitor`, `workflow-compliance-guardian`) had `accepts_handoff_from: []` — promoted to `structured` handoff with explicit `accepts_handoff_from` list; E→D gate now shows 0 demotion candidates |
+| W-076 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-076/W-077 entries added for this session per cognitive pre-flight REQ-4 |
+| W-078 | Fix | `.github/workflows/pr-size-analyzer.yml` | Concurrency group conflict between `pull_request` and `workflow_call` triggers — added `${{ github.event_name }}` to group key to prevent cross-event cancellation |
+
 ## [Unreleased] — Phase 0 (Soft → GROUNDED Baseline Audit)
 
 ### Phase 0 — Workflow Compliance + Agent Frequency Audit + E→D Transition Map (2026-03-02)
