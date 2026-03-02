@@ -235,8 +235,6 @@ all prerequisites are met and execution can begin immediately.
 | D6 | **Documentation & Audit Trail** | 15 | 15 | 15 | ✅ 7 ADRs; AGENTIC_REPO_SYSTEM_GUIDE.md; KPI reports; baseline audit; compliance matrix; accountability report |
 | D7 | **Dependencies & Tooling** | 10 | 9 | 10 | ✅ actionlint active; auto_promote_tier.py + enforcement_kpi_dashboard.py operational; ⚠️ semgrep policy files not yet created |
 | | **TOTAL** | **100** | **95** | **100** | |
-| D7 | **Dependencies & Tooling** | 10 | 9 | 10 | ✅ actionlint active; auto_promote_tier.py + enforcement_kpi_dashboard.py operational; ⚠️ semgrep policy files not yet created |
-| | **TOTAL** | **100** | **95** | **100** | |
 
 ### Readiness Score: **95 / 100** ✅
 
