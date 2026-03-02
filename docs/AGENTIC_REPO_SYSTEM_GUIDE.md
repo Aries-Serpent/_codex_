@@ -70,7 +70,7 @@ operating_model:
 ```
 
 Check transition readiness by running the
-[E→D Transition Readiness Gate](.github/workflows/e-to-d-transition-gate.yml)
+[E→D Transition Readiness Gate](../.github/workflows/e-to-d-transition-gate.yml)
 workflow.
 
 ---
