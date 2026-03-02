@@ -341,6 +341,7 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-075 | Phase 0 complete: `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` + `scripts/ci/workflow_compliance_scan.py` + `scripts/ci/agent_frequency_audit.py` + `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` + `docs/architecture/E_TO_D_TRANSITION_MAP.md` all committed | ✅ Done (Phase 0) |
 | W-076 | CI failure triage (PR #3474): investigated 3 failing CI runs — E→D Transition Readiness Gate (run 22599723381), Agent Token Delegation Cognitive Pre-flight (run 22599723390), Progressive Validation Suite (run 22599723468) | ✅ Done (PR #3477) |
 | W-077 | Fix E→D Transition Readiness Gate: 6 GROUNDED agents in AGENT_REGISTRY.yaml had empty `accepts_handoff_from: []` triggering demotion warnings. Added `accepts_handoff_from: [orchestrator, agent-orchestrator]` (+ ci-health-alert-agent for workflow-health-monitor) and promoted `handoff_protocol: none → structured` for test-pattern-guardian, mutation-testing-agent, owner-approval-guard, test-enhancement-agent, workflow-health-monitor, workflow-compliance-guardian. Gate now returns 0 demotion candidates. | ✅ Done (PR #3477) |
+| W-078 | Fix Cognitive Pre-flight REQ-5 (CHANGELOG.md check): CHANGELOG.md was not updated in commit `54c8433`. Added `## [Unreleased] — PR #3477 CI fixes (2026-03-02)` section with W-076/W-077/W-078 entries. | ✅ Done (PR #3477) |
 
 ---
 
