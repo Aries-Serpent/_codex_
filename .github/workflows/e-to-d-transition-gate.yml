@@ -1,0 +1,161 @@
+name: E→D Transition Readiness Gate
+
+# Phase 4: 5-condition FSM check for E→D operating model transition.
+# Canary (Tier-2): emits ::warning:: only; does NOT block PRs yet.
+# TODO: Promote to Tier-1 (core.setFailed) after 2-sprint observation period.
+#
+# The 5 conditions must ALL be satisfied before any agent is promoted to D_CAPABLE:
+#   C1: AGENT_REGISTRY.yaml present in repo root area
+#   C2: CODEX_MANIFEST.json valid + generated within last 24h
+#   C3: Tier-3 (SOFT) policy count ≤ 2 in GROUNDED_VS_SOFT_ENFORCEMENT.md
+#   C4: agent-handoff-gate.yml deployed (Phase 2 complete)
+#   C5: GROUNDED Tier-1 gate count ≥ 8 in GROUNDED_VS_SOFT_ENFORCEMENT.md
+#
+# References: docs/plans/Agentic_AI_System/soft_to_GROUNDED.md Domain 5
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: e-to-d-transition-gate-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transition-readiness:
+    name: "\U0001F504 E\u2192D Transition Readiness Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      readiness_score: ${{ steps.check.outputs.score }}
+      model_capable: ${{ steps.check.outputs.capable }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check 5 transition conditions
+        id: check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const conditions = [];
+
+            // C1: AGENT_REGISTRY.yaml present and covers all active agents
+            const registryPath = '.github/agents/AGENT_REGISTRY.yaml';
+            const registryExists = fs.existsSync(registryPath);
+            conditions.push({
+              id: 'C1',
+              label: 'AGENT_REGISTRY.yaml present with full coverage',
+              pass: registryExists
+            });
+
+            // C2: CODEX_MANIFEST.json valid and current (<24h)
+            let manifestOk = false;
+            if (fs.existsSync('CODEX_MANIFEST.json')) {
+              try {
+                const m = JSON.parse(fs.readFileSync('CODEX_MANIFEST.json', 'utf8'));
+                const ageMs = Date.now() - new Date(m.generated_at).getTime();
+                const has24hWindow = ageMs < 24 * 60 * 60 * 1000;
+                const hasIntegrity = typeof m.integrity_sha256 === 'string' && m.integrity_sha256.length === 64;
+                manifestOk = has24hWindow && hasIntegrity;
+              } catch (e) {
+                core.warning(`CODEX_MANIFEST.json parse error: ${e.message}`);
+              }
+            }
+            conditions.push({
+              id: 'C2',
+              label: 'CODEX_MANIFEST.json valid + current (<24h)',
+              pass: manifestOk
+            });
+
+            // C3: Tier-3 (SOFT) policy count <= 2
+            const gvsPath = '.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md';
+            const gvsDoc = fs.existsSync(gvsPath)
+              ? fs.readFileSync(gvsPath, 'utf8')
+              : '';
+            const softCount = (gvsDoc.match(/\u274C \*\*SOFT\*\*/g) || []).length;
+            conditions.push({
+              id: 'C3',
+              label: `Tier-3 count \u22642 (current: ${softCount})`,
+              pass: softCount <= 2
+            });
+
+            // C4: agent-handoff-gate.yml deployed (Phase 2 complete)
+            const handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');
+            conditions.push({
+              id: 'C4',
+              label: 'agent-handoff-gate.yml deployed (Phase 2 complete)',
+              pass: handoffGate
+            });
+
+            // C5: GROUNDED Tier-1 gate count >= 8
+            const tier1Count = (gvsDoc.match(/\u2705 \*\*GROUNDED\*\*/g) || []).length;
+            conditions.push({
+              id: 'C5',
+              label: `Tier-1 gates \u22658 (current: ${tier1Count})`,
+              pass: tier1Count >= 8
+            });
+
+            const score = conditions.filter(c => c.pass).length;
+            const capable = score === 5;
+
+            // Write job summary
+            let summary = `## \U0001F504 E\u2192D Transition Readiness: ${score}/5\n\n`;
+            summary += `| ID | Condition | Status |\n|----|-----------|---------|\n`;
+            for (const c of conditions) {
+              summary += `| ${c.id} | ${c.label} | ${c.pass ? '\u2705' : '\u274C'} |\n`;
+            }
+            summary += `\n**Operating Model:** ${capable ? '\U0001F7E2 D_CAPABLE unlocked' : '\U0001F7E1 E (continue building)'}\n`;
+            summary += `\n_Canary mode: score < 5 emits warning only. Promote to exit(1) after 2-sprint observation._\n`;
+            await core.summary.addRaw(summary).write();
+
+            core.setOutput('score', score.toString());
+            core.setOutput('capable', capable.toString());
+
+            // CANARY (Tier-2): warn only for first 2 sprints
+            // TODO: Promote to Tier-1 — change `core.warning` to `core.setFailed` after observation period
+            if (!capable) {
+              core.warning(`E\u2192D transition not ready: ${score}/5 conditions met`);
+            }
+
+      - name: Post readiness comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          READINESS_SCORE: ${{ steps.check.outputs.score }}
+          MODEL_CAPABLE: ${{ steps.check.outputs.capable }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const score = process.env.READINESS_SCORE || '0';
+            const capable = process.env.MODEL_CAPABLE === 'true';
+
+            // Only comment when score changes or on workflow_dispatch
+            const statusIcon = capable ? '\U0001F7E2' : '\U0001F7E1';
+            const statusText = capable ? 'D_CAPABLE unlocked' : `E (${score}/5 conditions met)`;
+
+            const body = [
+              `## \U0001F504 E\u2192D Transition Readiness`,
+              ``,
+              `**Score:** ${score}/5 | **Model:** ${statusIcon} \`${statusText}\``,
+              ``,
+              `> _Canary mode \u2014 run \`.github/workflows/e-to-d-transition-gate.yml\` for full condition breakdown._`,
+              ``,
+              `_[e-to-d-transition-gate.yml] | Phase 4 FSM | Tier-2 canary_`,
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });

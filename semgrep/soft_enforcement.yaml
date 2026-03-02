@@ -1,0 +1,95 @@
+rules:
+  # ──────────────────────────────────────────────────────────────────────────────
+  # Soft Enforcement Regression Detection
+  # Phase 6 — Governance: detect SOFT enforcement patterns in CI workflows.
+  #
+  # Purpose: prevent regression of GROUNDED enforcement back to SOFT patterns.
+  # Runs on .github/workflows/*.yml files in CI.
+  #
+  # Severity key:
+  #   ERROR   — blocks merge (Tier-1 equivalent)
+  #   WARNING — advisory annotation (Tier-2 equivalent)
+  #
+  # Usage:
+  #   semgrep --config semgrep/soft_enforcement.yaml .github/workflows/
+  #   semgrep --config semgrep/soft_enforcement.yaml --severity ERROR .github/workflows/
+  # ──────────────────────────────────────────────────────────────────────────────
+
+  - id: soft-enforcement-warn-only-gate
+    patterns:
+      - pattern-regex: "::warning::.*gate"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      Soft enforcement pattern detected: `::warning::` used in a gate step.
+      Gates should use `exit 1` or `core.setFailed()` (Tier-1 GROUNDED) not `::warning::` (Tier-2 SOFT).
+      If this is intentional canary mode, add a comment: `# CANARY: Tier-2 — promote after 2-sprint observation`.
+    languages: [yaml]
+    severity: WARNING
+
+  - id: soft-enforcement-todo-promote
+    patterns:
+      - pattern-regex: "# TODO: Promote to (exit 1|Tier-1)"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      Unresolved Tier-2 canary TODO found. This workflow step is still in canary mode
+      and should be promoted to Tier-1 (exit 1) after the observation period.
+      Review: is the 2-sprint observation period complete?
+    languages: [yaml]
+    severity: WARNING
+
+  - id: soft-enforcement-sys-exit-zero-in-gate
+    patterns:
+      - pattern-regex: "sys\\.exit\\(0\\)"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      `sys.exit(0)` in a gate step may suppress failures. Confirm this is not replacing
+      a `sys.exit(1)` that should block on policy violations.
+    languages: [yaml]
+    severity: WARNING
+
+  # NOTE: Semgrep YAML-mode does not support structural cross-block matching.
+  # The concurrency and timeout rules below are file-level advisory checks only.
+  # For structural compliance scanning, use scripts/ci/workflow_compliance_scan.py instead.
+
+  - id: soft-enforcement-likely-missing-concurrency
+    pattern-regex: "^on:\n"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      Advisory: verify this workflow has a top-level `concurrency:` block.
+      All GROUNDED workflows require branch-scoped concurrency to prevent cascade races.
+      Run: python scripts/ci/workflow_compliance_scan.py for structural compliance.
+    languages: [generic]
+    severity: WARNING
+
+  - id: soft-enforcement-likely-missing-timeout
+    pattern-regex: "runs-on: ubuntu"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      Advisory: verify this job has `timeout-minutes:` set.
+      All GROUNDED workflow jobs require a timeout (compliance requirement).
+      Run: python scripts/ci/workflow_compliance_scan.py for structural compliance.
+    languages: [generic]
+    severity: WARNING
+
+  - id: soft-enforcement-agent-handoff-no-schema
+    patterns:
+      - pattern-regex: "AGENT_HANDOFF:"
+      - pattern-not-regex: "AgentHandoffManifest"
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+    message: >
+      `AGENT_HANDOFF:` trigger present but no `AgentHandoffManifest` schema reference found.
+      All handoffs must be validated against `.codex/schemas/AgentHandoffManifest_v1.1.json`.
+    languages: [yaml]
+    severity: ERROR

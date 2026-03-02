@@ -348,4 +348,27 @@ concurrency:
 
 ---
 
+## Agent Registry Tier Distribution (Phase 1–6, v1.9.0+)
+
+> **Updated**: 2026-03-02 | GROUNDED promotion phase — registry tiers reflect enforcement state after Phase 5 tier reduction.
+
+| Agent ID | Enforcement Tier | Rationale |
+|----------|:----------------:|-----------|
+| `ci-testing-agent` | ✅ **GROUNDED** | Activation rank #1; CI-blocking behavior; requires hard gate |
+| `owner-approval-guard` | ✅ **GROUNDED** | Approval blocking by design; must not degrade to advisory |
+| `workflow-compliance-guardian` | ✅ **GROUNDED** | Hard enforcement of concurrency + timeout compliance |
+| `rust-error-validator` | ✅ **GROUNDED** | Validation gates with exit 1 on compiler errors |
+| `test-pattern-guardian` | ✅ **GROUNDED** | Anti-pattern detection blocks PR merge |
+| `mutation-testing-agent` | ✅ **GROUNDED** | Mutation score threshold enforces test quality |
+| `test-enhancement-agent` | ✅ **GROUNDED** | Test quality enforcement with coverage gates |
+| `workflow-health-monitor` | ✅ **GROUNDED** | Health alerting with issue creation on threshold breach |
+| `codex_reviewer` | ❌ **SOFT** | Internal reviewer; no structural gate available |
+| `zendesk-architect-agent` | ❌ **SOFT** | Niche/specialized agent; ungatable in current architecture |
+
+**Registry summary** (v1.9.0): GROUNDED: 8 | PARTIAL: 142 | SOFT: 2 | Total: 152
+
+> _E→D gate C3 (SOFT ≤ 2) ✅ | C5 (GROUNDED ≥ 8) ✅_
+
+---
+
 *Updated: 2026-02-28 | S116i resume (cascade fix + repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

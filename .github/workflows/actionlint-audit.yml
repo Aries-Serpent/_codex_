@@ -1,0 +1,92 @@
+name: Workflow Compliance Audit (actionlint)
+
+# Phase 6: Continuous workflow compliance linting with actionlint.
+# Tier-1 hard gate: exits 1 on syntax errors in .github/workflows/*.yml
+#
+# actionlint checks:
+#   - Workflow YAML syntax
+#   - Expression syntax (${{ }})
+#   - Job/step name correctness
+#   - Unknown action references
+#
+# References:
+#   docs/plans/Agentic_AI_System/soft_to_GROUNDED.md Domain 7
+#   https://github.com/rhysd/actionlint
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: actionlint-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-workflows:
+    name: "actionlint — Workflow Compliance"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install actionlint
+        run: |
+          # Pinned version with fallback to latest on API failure
+          PINNED="v1.7.7"
+          LATEST=$(curl -fsSL --max-time 10 https://api.github.com/repos/rhysd/actionlint/releases/latest \
+            | python3 -c "import sys,json; print(json.load(sys.stdin)['tag_name'])" 2>/dev/null \
+            || echo "${PINNED}")
+          TARGET="${LATEST:-${PINNED}}"
+          VERSION="${TARGET#v}"
+          curl -fsSL \
+            "https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz" \
+            | tar xz actionlint
+          sudo mv actionlint /usr/local/bin/
+          actionlint --version
+
+      - name: Run actionlint on all workflows
+        id: actionlint
+        run: |
+          # Run and capture output; save to file for summary
+          actionlint \
+            -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}' \
+            .github/workflows/*.yml 2>&1 | tee /tmp/actionlint_results.txt || true
+
+          ERROR_COUNT=$(grep -c "::error" /tmp/actionlint_results.txt || echo "0")
+          echo "error_count=${ERROR_COUNT}" >> "$GITHUB_OUTPUT"
+
+          if [ "${ERROR_COUNT}" -gt 0 ]; then
+            echo "::error::actionlint found ${ERROR_COUNT} workflow compliance issue(s) — see annotations above"
+            exit 1
+          fi
+          echo "✅ actionlint: 0 errors across $(ls .github/workflows/*.yml | wc -l) workflow files"
+
+      - name: Post summary
+        if: always()
+        run: |
+          {
+            echo "## Workflow Compliance Audit (actionlint)"
+            echo ""
+            if [ -f /tmp/actionlint_results.txt ] && [ -s /tmp/actionlint_results.txt ]; then
+              echo "\`\`\`"
+              cat /tmp/actionlint_results.txt
+              echo "\`\`\`"
+            else
+              TOTAL=$(ls .github/workflows/*.yml | wc -l)
+              echo "✅ No issues found across ${TOTAL} workflow files."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
