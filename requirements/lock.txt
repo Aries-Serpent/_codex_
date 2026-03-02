@@ -770,7 +770,7 @@ pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-polyfactory==3.0.0
+polyfactory==3.3.0
     # via litestar
 portalocker==3.2.0
     # via sacrebleu
