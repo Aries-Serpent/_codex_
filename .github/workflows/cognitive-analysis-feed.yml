@@ -122,7 +122,7 @@ jobs:
 
       - name: Upload evaluation results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: aftermath-evaluation-${{ github.run_number }}
           path: |
@@ -191,7 +191,7 @@ jobs:
           fi
 
       - name: Upload pattern artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cognitive-patterns-${{ github.run_number }}
           path: |

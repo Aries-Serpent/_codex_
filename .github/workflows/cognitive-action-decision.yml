@@ -103,7 +103,7 @@ jobs:
 
       - name: Upload decision artifacts
         if: steps.decide.outputs.has_decisions == 'true'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cognitive-decisions-${{ github.run_number }}
           path: |
@@ -138,7 +138,7 @@ jobs:
 
       - name: Download decision artifacts (if from decision job)
         if: needs.decision_engine.outputs.has_decisions == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: cognitive-decisions-${{ github.run_number }}
           path: cognitive/decisions/
@@ -164,7 +164,7 @@ jobs:
 
       - name: Upload execution results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cognitive-execution-${{ github.run_number }}
           path: |

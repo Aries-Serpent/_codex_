@@ -58,7 +58,7 @@ jobs:
           echo "✅ Health dashboard up to date"
 
       - name: Upload health report artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: repository-health-report
           path: |
