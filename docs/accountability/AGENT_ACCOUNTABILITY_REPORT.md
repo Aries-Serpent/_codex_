@@ -339,6 +339,8 @@ The **entire point** of this system: owner approves **once** via the environment
 | W-073 | Phase 0 WU-0.3: `docs/architecture/E_TO_D_TRANSITION_MAP.md` created — Mermaid FSM state diagram, 5-condition table (C1–C5), per-phase satisfaction map, Phase 0 gap summary. Current score: 0/5 conditions met | ✅ Done (Phase 0) |
 | W-074 | Phase 0 Task 5: `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` KPI baseline section complete — all metrics filled with real numbers: 151 total agents, 5 GROUNDED, 125 PARTIAL, 21 SOFT, 0 structured handoff, 144 no-handoff, E→D score 0/5 | ✅ Done (Phase 0) |
 | W-075 | Phase 0 complete: `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` + `scripts/ci/workflow_compliance_scan.py` + `scripts/ci/agent_frequency_audit.py` + `docs/audits/AGENTIC_BASELINE_AUDIT_v2.md` + `docs/architecture/E_TO_D_TRANSITION_MAP.md` all committed | ✅ Done (Phase 0) |
+| W-076 | CI failure triage (PR #3474): investigated 3 failing CI runs — E→D Transition Readiness Gate (run 22599723381), Agent Token Delegation Cognitive Pre-flight (run 22599723390), Progressive Validation Suite (run 22599723468) | ✅ Done (PR #3477) |
+| W-077 | Fix E→D Transition Readiness Gate: 6 GROUNDED agents in AGENT_REGISTRY.yaml had empty `accepts_handoff_from: []` triggering demotion warnings. Added `accepts_handoff_from: [orchestrator, agent-orchestrator]` (+ ci-health-alert-agent for workflow-health-monitor) and promoted `handoff_protocol: none → structured` for test-pattern-guardian, mutation-testing-agent, owner-approval-guard, test-enhancement-agent, workflow-health-monitor, workflow-compliance-guardian. Gate now returns 0 demotion candidates. | ✅ Done (PR #3477) |
 
 ---
 
