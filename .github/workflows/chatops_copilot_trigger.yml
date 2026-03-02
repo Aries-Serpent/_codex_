@@ -8,6 +8,8 @@ name: Chat-Ops — @copilot Webhook Trigger
 #   /copilot run <prompt-file>        — alias for /copilot continue
 #   /copilot status                   — post current session + AAIS status summary
 #   /copilot verify                   — trigger admin_setup_verification workflow
+#   /copilot tier-check               — run enforcement tier scan (dry-run) and post results
+#   /copilot tier-promote             — generate tier promotion stubs and post as artifact
 #   /copilot help                     — post usage guide as a comment
 #
 # Security: only actors in COGNITIVE_BRAIN_ALLOWED_ACTORS (or org owners) may activate commands.
@@ -289,6 +291,50 @@ jobs:
             "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
             -d "{\"body\":\"${MSG}\"}" > /dev/null
 
+      # ── /copilot tier-check | tier-promote ─────────────────────────────────
+      - name: Execute /copilot tier-check or tier-promote
+        if: |
+          steps.parse.outputs.AUTHORIZED == 'true' &&
+          (steps.parse.outputs.SUBCMD == 'tier-check' || steps.parse.outputs.SUBCMD == 'tier-promote')
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+          SUBCMD: ${{ steps.parse.outputs.SUBCMD }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          pip install pyyaml --quiet 2>/dev/null
+
+          if [ "$SUBCMD" = "tier-check" ]; then
+            python scripts/ci/auto_promote_tier.py --check-only > /tmp/tier_report.txt 2>&1 || true
+            TITLE="🔰 Tier Enforcement Scan"
+            FOOTER="_[auto_promote_tier.py --check-only | dry-run only]_"
+          else
+            python scripts/ci/auto_promote_tier.py > /tmp/tier_report.txt 2>&1 || true
+            TITLE="🔰 Tier Promotion Stubs (Dry-Run)"
+            FOOTER="_[auto_promote_tier.py | dry-run stub generator | Domain 8]_"
+          fi
+
+          REPORT=$(cat /tmp/tier_report.txt | head -200)
+          export TITLE FOOTER REPORT
+          python3 - <<'PY' > /tmp/tier_body.json
+          import json, os
+          title = os.environ['TITLE']
+          footer = os.environ['FOOTER']
+          report = os.environ.get('REPORT', '')
+          body = f"## {title}\n\n```\n{report}\n```\n\n{footer}"
+          print(json.dumps({"body": body}))
+          PY
+
+          curl -s -X POST \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            -d @/tmp/tier_body.json \
+            > /dev/null
+          echo "✅ Posted tier report on PR #${PR_NUMBER}"
+
       # ── /copilot help ────────────────────────────────────────────────────────
       - name: Execute /copilot help
         if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'help'
@@ -303,5 +349,5 @@ jobs:
             -H "Authorization: Bearer ${TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
+            -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot tier-check` | Run enforcement tier scan (dry-run) and post results |\n| `/copilot tier-promote` | Generate tier promotion stubs (dry-run only, Domain 8) |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
             > /dev/null
