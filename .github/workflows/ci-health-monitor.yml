@@ -273,3 +273,11 @@ jobs:
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow ci-health-monitor 2>/dev/null || echo "Cache health: check skipped"
 
+
+      - name: Enforcement gap scan + KPI dashboard
+        if: always()
+        continue-on-error: true
+        run: |
+          python3 scripts/ci/auto_promote_tier.py --check-only 2>/dev/null || true
+          pip install pyyaml --quiet 2>/dev/null || true
+          python3 scripts/ci/enforcement_kpi_dashboard.py

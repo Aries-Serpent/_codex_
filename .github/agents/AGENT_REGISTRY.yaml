@@ -1,5 +1,5 @@
 version: 1.9.0
-last_updated: '2026-03-02T06:14:17Z'
+last_updated: '2026-03-02T06:35:09Z'
 total_agents: 152
 agents:
 - id: github-guru-agent
@@ -153,7 +153,7 @@ agents:
   - pytest
   - cargo
   priority: high
-  enforcement_tier: PARTIAL
+  enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
   accepts_handoff_from:
@@ -214,7 +214,7 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -233,7 +233,7 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -501,7 +501,7 @@ agents:
   capabilities: []
   integration_points: []
   priority: medium
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -616,7 +616,7 @@ agents:
   updated: '2026-01-23T07:20:00Z'
   tools:
   - scripts/verify_hydra_configs.sh
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -651,7 +651,7 @@ agents:
   created: '2026-02-05T00:00:00Z'
   batch: M-01
   aais_contribution: 6.0
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -900,7 +900,7 @@ agents:
   priority: medium
   created: '2026-02-22T12:00:00Z'
   energy_level: 5
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -932,7 +932,7 @@ agents:
   created: '2026-02-24T18:00:00Z'
   updated: '2026-02-24T18:00:00Z'
   maintainer: mbaetiong
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -1571,7 +1571,7 @@ agents:
   category: ml
   priority: medium
   purpose: Comprehensive ML model validation including determinism and reproducibility checks.
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -1614,7 +1614,7 @@ agents:
   category: governance
   priority: critical
   purpose: Enforces owner approval requirements for autonomous operations.
-  enforcement_tier: PARTIAL
+  enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -1715,7 +1715,7 @@ agents:
   category: quality
   priority: medium
   purpose: Fixes Python 3.12 type annotation incompatibilities across the codebase.
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -1747,7 +1747,7 @@ agents:
   category: cognitive
   priority: medium
   purpose: Tunes quantum-inspired compliance parameters for cognitive brain optimization.
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: soft
   accepts_handoff_from: []
@@ -1761,7 +1761,7 @@ agents:
   category: ml
   priority: medium
   purpose: Maintains RAG index freshness through continuous update and validation loops.
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2119,7 +2119,7 @@ agents:
   category: documentation
   priority: medium
   purpose: Unified documentation management combining freshness, quality, and consolidation.
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2261,7 +2261,7 @@ agents:
   physics_model:
     primary: balance
     secondary: constraint
-  enforcement_tier: PARTIAL
+  enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2315,7 +2315,7 @@ agents:
   physics_model:
     primary: synchronization
     secondary: consistency
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2343,7 +2343,7 @@ agents:
   physics_model:
     primary: ooda_loop
     secondary: feedback
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2372,7 +2372,7 @@ agents:
   physics_model:
     primary: memory_consolidation
     secondary: compression
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []
@@ -2564,7 +2564,7 @@ agents:
   has_src: true
   category: documentation
   subcategory: validation
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: structured
   accepts_handoff_from:
@@ -2788,7 +2788,7 @@ agents:
   has_src: false
   category: operations
   subcategory: health
-  enforcement_tier: SOFT
+  enforcement_tier: PARTIAL
   autonomy_model: E
   handoff_protocol: none
   accepts_handoff_from: []

@@ -4,8 +4,8 @@ name: Agent Registry Validation
 # .codex/schemas/AgentRegistrySchema.json on every PR and push to main.
 # Also validates CODEX_MANIFEST.json integrity when present.
 #
-# Tier: PARTIAL (::warning:: on issues, not blocking exit 1 yet)
-# TODO: Promote to Tier-1 (exit 1) after 2-sprint observation period.
+# Tier: GROUNDED — Tier-1 hard gate (exit 1 on schema violations or integrity failure).
+# Promoted from Tier-2 canary after 2-sprint observation period.
 
 on:
   pull_request:
@@ -49,6 +49,13 @@ jobs:
 
       - name: Install dependencies
         run: pip install jsonschema pyyaml --quiet
+
+      - name: Refresh CODEX_MANIFEST.json
+        run: |
+          # Regenerate the manifest on every validation run so generated_at is always fresh.
+          # This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.
+          python3 scripts/ci/generate_manifest.py
+          echo "✅ CODEX_MANIFEST.json refreshed"
 
       - name: Validate AGENT_REGISTRY.yaml schema
         id: registry_validation
@@ -107,10 +114,11 @@ jobs:
           output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
           if errors:
               error_summary = "; ".join(errors[:5])
-              print(f"::warning::agent-registry-validation: {len(errors)} schema issues found: {error_summary}")
+              print(f"::error::agent-registry-validation: {len(errors)} schema issues found: {error_summary}")
               with open(output_file, "a") as f:
                   f.write("registry_valid=false\n")
                   f.write(f"error_count={len(errors)}\n")
+              sys.exit(1)
           else:
               print(f"✅ AGENT_REGISTRY.yaml valid: {actual} agents, all schema-compliant")
               with open(output_file, "a") as f:
@@ -136,29 +144,29 @@ jobs:
           schema_path = ".codex/schemas/CodexManifestSchema.json"
 
           if not os.path.exists(manifest_path):
-              print("::warning::CODEX_MANIFEST.json not found — run scripts/ci/generate_manifest.py")
+              print("::error::CODEX_MANIFEST.json not found — run scripts/ci/generate_manifest.py")
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
                   f.write("manifest_valid=absent\n")
-              sys.exit(0)
+              sys.exit(1)
 
           data = json.loads(open(manifest_path).read())
 
           # Verify integrity hash
           stored = data.pop("integrity_sha256", None)
           if not stored:
-              print("::warning::CODEX_MANIFEST.json missing integrity_sha256 field")
+              print("::error::CODEX_MANIFEST.json missing integrity_sha256 field — regenerate with generate_manifest.py")
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
                   f.write("manifest_valid=false\n")
-              sys.exit(0)
+              sys.exit(1)
 
           content = json.dumps(data, sort_keys=True, separators=(",", ":"))
           computed = hashlib.sha256(content.encode()).hexdigest()
 
           if computed != stored:
-              print(f"::warning::CODEX_MANIFEST.json integrity FAILED — regenerate with generate_manifest.py")
+              print(f"::error::CODEX_MANIFEST.json integrity FAILED — regenerate with generate_manifest.py")
               with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
                   f.write("manifest_valid=false\n")
-              sys.exit(0)
+              sys.exit(1)
 
           # Validate against schema if available
           if jsonschema is not None and os.path.exists(schema_path):
@@ -167,7 +175,8 @@ jobs:
                   manifest_schema = json.load(open(schema_path))
                   jsonschema.validate(data, manifest_schema)
               except jsonschema.ValidationError as e:
-                  print(f"::warning::CODEX_MANIFEST.json schema validation issue: {e.message}")
+                  print(f"::error::CODEX_MANIFEST.json schema validation failed: {e.message}")
+                  sys.exit(1)
 
           print(f"✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)")
           with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
@@ -209,7 +218,7 @@ jobs:
               body += '  ```bash\n  python scripts/ci/generate_manifest.py\n  ```\n\n';
             }
 
-            body += '_[agent-registry-validation.yml] | Tier-2 canary — promoting to Tier-1 after 2-sprint observation_';
+            body += `_[agent-registry-validation.yml] | Tier-1 GROUNDED gate — blocks merge on schema violations_`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,

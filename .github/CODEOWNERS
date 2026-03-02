@@ -231,3 +231,28 @@
 
 # Logs
 /logs/** @Aries-Serpent/owners
+
+# =============================================================================
+# Agentic System GROUNDED Enforcement (Phases 1-6)
+# =============================================================================
+
+# Agent registry and schemas — require owners review on all changes
+/.github/agents/AGENT_REGISTRY.yaml @Aries-Serpent/owners
+/.codex/schemas/** @Aries-Serpent/owners
+/CODEX_MANIFEST.json @Aries-Serpent/owners
+
+# CI enforcement gates — require owners review
+/.github/workflows/agent-registry-validation.yml @Aries-Serpent/owners
+/.github/workflows/agent-handoff-gate.yml @Aries-Serpent/owners
+/.github/workflows/e-to-d-transition-gate.yml @Aries-Serpent/owners
+/.github/workflows/actionlint-audit.yml @Aries-Serpent/owners
+
+# Corpus and orchestration
+/scripts/ci/build_embeddings.py @Aries-Serpent/owners
+/scripts/ci/generate_manifest.py @Aries-Serpent/owners
+/scripts/ci/orchestrator_routing.py @Aries-Serpent/owners
+
+# Governance documentation
+/docs/AGENTIC_REPO_SYSTEM_GUIDE.md @Aries-Serpent/docs-team
+/docs/audits/** @Aries-Serpent/docs-team
+/semgrep/** @Aries-Serpent/owners

@@ -1,10 +1,10 @@
 name: Agent Handoff Gate
 
-# Tier-2 CANARY: validates AgentHandoffManifest v1.1 payloads posted in PR comments.
+# Tier-1 GROUNDED gate: validates AgentHandoffManifest v1.1 payloads posted in PR comments.
 # Trigger: issue_comment containing "AGENT_HANDOFF:" on pull_request context.
 #
-# Phase 2 implementation — Canary mode (::warning:: only, NOT exit 1).
-# TODO: Promote to Tier-1 (exit 1) after 2-sprint observation period.
+# Tier: GROUNDED — Tier-1 hard gate (exit 1 on schema violations).
+# Promoted from Tier-2 canary after 2-sprint observation period.
 #
 # Schema: .codex/schemas/AgentHandoffManifest_v1.1.json
 # Protocol: docs/plans/Agentic_AI_System/soft_to_GROUNDED.md Domain 3
@@ -127,8 +127,9 @@ jobs:
               if errors:
                   f.write("validation_status=invalid\n")
                   f.write(f"schema_errors={json.dumps(errors)}\n")
-                  # CANARY: warn only — TODO: promote to exit(1) after 2-sprint observation
-                  print(f"::warning::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}: {errors[0]}")
+                  # TIER-1: exit 1 — blocks merge on schema violations
+                  print(f"::error::agent-handoff-gate: Schema validation failed for {delegating}→{receiving}: {errors[0]}")
+                  sys.exit(1)
               else:
                   f.write("validation_status=valid\n")
                   print(f"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving} (model={operating_model})")
@@ -184,15 +185,13 @@ jobs:
                 errors.forEach(e => { body += `- ${e}\n`; });
                 body += `\n`;
               }
-              // CANARY: Tier-2 warning only — not a hard block
-              // TODO: Promote to exit 1 (Tier-1) after 2-sprint observation period
-              body += `> ⚠️ **Canary Mode** — schema violation logged but not blocking (Tier-2).\n`;
-              body += `> Promote to Tier-1 gate after validation observation period.\n\n`;
+              // TIER-1: hard block on schema violations
+              body += `> ❌ **Blocked** — schema violation detected. Fix the handoff manifest before proceeding.\n\n`;
             }
 
             body += `_[agent-handoff-gate.yml](.github/workflows/agent-handoff-gate.yml) | `;
             body += `[AgentHandoffManifest v1.1](.codex/schemas/AgentHandoffManifest_v1.1.json) | `;
-            body += `GROUNDED enforcement_`;
+            body += `Tier-1 GROUNDED gate_`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-02T06:14:28Z",
+  "generated_at": "2026-03-02T06:35:41Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -35,7 +35,7 @@
     {
       "name": "ci-testing-agent",
       "role": "specialist",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "autonomy_model": "E"
     },
     {
@@ -53,13 +53,13 @@
     {
       "name": "compliance-checker-agent",
       "role": "utility",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "dep-upgrade-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -137,7 +137,7 @@
     {
       "name": "security-scan-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -161,13 +161,13 @@
     {
       "name": "config-validator-enhanced",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "unified-security-scanner",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -209,13 +209,13 @@
     {
       "name": "python-architect-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "ci-auto-healer",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -467,7 +467,7 @@
     {
       "name": "ml-validation-suite-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -485,7 +485,7 @@
     {
       "name": "owner-approval-guard",
       "role": "specialist",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "autonomy_model": "E"
     },
     {
@@ -527,7 +527,7 @@
     {
       "name": "python-312-type-fixer",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -539,13 +539,13 @@
     {
       "name": "quantum-compliance-tuning-agent",
       "role": "utility",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "rag-freshness-loop-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -689,7 +689,7 @@
     {
       "name": "unified-doc-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -737,7 +737,7 @@
     {
       "name": "workflow-compliance-guardian",
       "role": "utility",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "autonomy_model": "E"
     },
     {
@@ -749,19 +749,19 @@
     {
       "name": "repo-var-sync-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "cognitive-ooda-loop-agent",
       "role": "orchestrator",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
       "name": "memory-sync-agent",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -815,7 +815,7 @@
     {
       "name": "documentation-sync-validator",
       "role": "specialist",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -881,7 +881,7 @@
     {
       "name": "repo-health-guardian",
       "role": "utility",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
     },
     {
@@ -1600,9 +1600,9 @@
     "embedding_meta": null
   },
   "enforcement_kpis": {
-    "tier1_count": 13,
+    "tier1_count": 21,
     "tier2_count": 5,
-    "tier3_count": 2,
+    "tier3_count": 4,
     "ungatable": 2
   },
   "operating_model": {
@@ -1612,5 +1612,5 @@
     "transition_active": false
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "d5ddd249b9d9973802a4e352f528de4dd072e1ecd9c57d1196324d4a9460bbf4"
+  "integrity_sha256": "6e54b3114cc2e1a129f8615845ccc57df2d489f0edb57d03c2ed6e606cdb81fc"
 }
