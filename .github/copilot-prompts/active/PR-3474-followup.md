@@ -17,7 +17,7 @@
 - [`3248e4ce`] chore(phase-3): update embedding index metadata [skip ci] (github-actions[bot], 2026-03-02)
 
 ### Files Modified
-No files modified
+- `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` – corrected relative link to `e-to-d-transition-gate.yml`
 
 ---
 
@@ -25,11 +25,6 @@ No files modified
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
 - [ ] No tasks specified
-
-**Validation**:
-```bash
-echo "Add validation commands"
-```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
 - [ ] No tasks specified
