@@ -1,6 +1,6 @@
-version: 1.8.0
-last_updated: '2026-03-02T05:12:26Z'
-total_agents: 151
+version: 1.9.0
+last_updated: '2026-03-02T06:14:17Z'
+total_agents: 152
 agents:
 - id: github-guru-agent
   name: GitHub Guru Agent
@@ -2874,6 +2874,28 @@ agents:
   accepts_handoff_from: []
   role: specialist
   consolidation_priority: false
+  created: '2026-03-02T00:00:00Z'
+  updated: '2026-03-02T00:00:00Z'
+- id: orchestrator-agent
+  name: Orchestrator Agent
+  version: 1.0.0
+  file: orchestrator-agent.md
+  status: active
+  maturity: beta
+  role: orchestrator
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - agent-orchestrator
+  - ci-health-alert-agent
+  consolidation_priority: false
+  category: operations
+  subcategory: orchestration
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
   created: '2026-03-02T00:00:00Z'
   updated: '2026-03-02T00:00:00Z'
 standardization_status:

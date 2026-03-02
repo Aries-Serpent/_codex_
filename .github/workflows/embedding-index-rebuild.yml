@@ -1,0 +1,102 @@
+name: Embedding Index Rebuild
+
+# Phase 3: Nightly FAISS index rebuild — Tier-2 enforcement for corpus freshness.
+# Runs nightly at 2 AM UTC and on workflow_dispatch (manual trigger for testing).
+#
+# Only .codex/embeddings/codex_index_meta.json is committed back to git.
+# The FAISS binary index (.faiss) is git-ignored (too large) and rebuilt each run.
+#
+# Acceptance criteria (Phase 3):
+#   - Build time < 5 minutes for ~10K chunks
+#   - Model: all-MiniLM-L6-v2 (offline, Apache 2.0, ~80 MB)
+#   - REQ-10: corpus health annotation emitted after each rebuild
+#
+# References: docs/plans/Agentic_AI_System/soft_to_GROUNDED.md Domain 4
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: embedding-index-rebuild
+  cancel-in-progress: true
+
+jobs:
+  rebuild:
+    name: Rebuild FAISS Embedding Index
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install embedding dependencies
+        run: pip install sentence-transformers faiss-cpu numpy --quiet
+
+      - name: Rebuild embedding index
+        id: rebuild
+        run: |
+          python scripts/ci/build_embeddings.py
+          python3 -c "
+          import json
+          meta = json.load(open('.codex/embeddings/codex_index_meta.json'))
+          import os
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f\"chunk_count={meta['chunk_count']}\n\")
+              f.write(f\"build_time={meta['build_time_seconds']}\n\")
+          "
+
+      - name: Emit REQ-10 corpus health annotation (Tier-2)
+        run: |
+          CHUNK_COUNT="${{ steps.rebuild.outputs.chunk_count }}"
+          BUILD_TIME="${{ steps.rebuild.outputs.build_time }}"
+          if [ -z "$CHUNK_COUNT" ] || [ "$CHUNK_COUNT" -lt 100 ]; then
+            echo "::warning::REQ-10 corpus health: chunk count ${CHUNK_COUNT} below threshold (expected ≥100)"
+          else
+            echo "✅ REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s"
+          fi
+
+      - name: Commit updated index metadata
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .codex/embeddings/codex_index_meta.json
+          git diff --staged --quiet || \
+            git commit -m "chore(phase-3): update embedding index metadata [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post rebuild summary
+        if: always()
+        run: |
+          echo "## 🧠 Embedding Index Rebuild" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f ".codex/embeddings/codex_index_meta.json" ]; then
+            python3 -c "
+          import json
+          meta = json.load(open('.codex/embeddings/codex_index_meta.json'))
+          print(f'| Field | Value |')
+          print(f'|-------|-------|')
+          print(f'| Chunks | {meta[\"chunk_count\"]} |')
+          print(f'| Model | {meta[\"model\"]} |')
+          print(f'| Dimensions | {meta[\"dim\"]} |')
+          print(f'| Build time | {meta[\"build_time_seconds\"]}s |')
+          print(f'| Generated | {meta[\"generated_at\"]} |')
+          " >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Index metadata not found — build may have failed." >> "$GITHUB_STEP_SUMMARY"
+          fi

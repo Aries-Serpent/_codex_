@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-02T05:18:22Z",
+  "generated_at": "2026-03-02T06:14:28Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -907,9 +907,20 @@
       "role": "specialist",
       "enforcement_tier": "SOFT",
       "autonomy_model": "E"
+    },
+    {
+      "name": "orchestrator-agent",
+      "role": "orchestrator",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
     }
   ],
   "workflows": [
+    {
+      "name": "actionlint-audit",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
     {
       "name": "admin_setup_verification",
       "enforcement_tier": "PARTIAL",
@@ -1098,6 +1109,16 @@
     {
       "name": "documentation-link-checker",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "e-to-d-transition-gate",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "embedding-index-rebuild",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1591,5 +1612,5 @@
     "transition_active": false
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6bfa319d3c44abb03b80e81b0fcd0f505239c00154b1cbac60540c46f21f4a4e"
+  "integrity_sha256": "d5ddd249b9d9973802a4e352f528de4dd072e1ecd9c57d1196324d4a9460bbf4"
 }
