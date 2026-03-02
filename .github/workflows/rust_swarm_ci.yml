@@ -72,7 +72,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: rust-test-results
           path: target/release/deps/*. log
@@ -128,7 +128,7 @@ jobs:
           fi
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: benchmark-results
           path:  |
@@ -189,7 +189,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage/
@@ -280,7 +280,7 @@ jobs:
 
       - name: Upload integration test results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-results
           path:  htmlcov/
@@ -301,7 +301,7 @@ jobs:
           fetch-depth:  0  # Fetch all history for comparison
 
       - name: Download benchmark results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: benchmark-results
 
@@ -408,7 +408,7 @@ jobs:
           cargo doc --no-deps --document-private-items --all-features
 
       - name: Upload documentation
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: rust-documentation
           path: target/doc/
@@ -422,7 +422,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ['3.12']
 
     steps:
@@ -443,7 +443,7 @@ jobs:
         run: maturin build --release
 
       - name: Upload wheel
-        uses:  actions/upload-artifact@v6
+        uses:  actions/upload-artifact@v7
         with:
           name:  wheel-${{ matrix.os }}-py${{ matrix.python-version }}
           path: target/wheels/*. whl

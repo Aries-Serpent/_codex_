@@ -1,0 +1,51 @@
+# .codex/policies/semgrep/soft_enforcement.yaml
+# Phase 6: Detect soft enforcement patterns in workflow YAML and Python files
+# Run: semgrep --config .codex/policies/semgrep/ .github/workflows/
+rules:
+  - id: store-memory-no-gate
+    patterns:
+      - pattern: |
+          store_memory(...)
+    message: >
+      store_memory call detected without a corresponding CI gate.
+      This is Tier-3 (soft) enforcement. Consider promoting to Tier-1
+      (exit 1 in a GROUNDED gate workflow) if this policy has been
+      violated before.
+    languages: [python]
+    severity: WARNING
+    metadata:
+      enforcement_tier: Tier-3
+      promotion_path: GROUNDED gate workflow
+
+  - id: policy-md-no-hook
+    pattern-regex: "CODEBASE_AGENCY_POLICY\\.md"
+    message: >
+      Reference to CODEBASE_AGENCY_POLICY.md without associated CI hook.
+      Policy documents without structural gates are Tier-3 (soft).
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      enforcement_tier: Tier-3
+      promotion_path: Create a dedicated gate workflow
+
+  - id: missing-concurrency-workflow
+    pattern-regex: "^on:"
+    message: >
+      Workflow trigger block found. Verify this workflow has a
+      branch-scoped concurrency group to prevent cascade runs.
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      enforcement_tier: Tier-1
+      gate: workflow_compliance_scan.py
+
+  - id: warning-annotation-not-gate
+    pattern-regex: "::warning::"
+    message: >
+      Warning annotation found. If this enforces a policy, consider
+      promoting to Tier-1 after a 2-sprint observation period.
+    languages: [generic]
+    severity: INFO
+    metadata:
+      enforcement_tier: Tier-2
+      promotion_path: "Change to error annotation + exit 1"

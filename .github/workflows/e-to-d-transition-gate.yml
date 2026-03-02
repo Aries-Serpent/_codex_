@@ -1,8 +1,7 @@
 name: E→D Transition Readiness Gate
 
 # Phase 4: 5-condition FSM check for E→D operating model transition.
-# Canary (Tier-2): emits ::warning:: only; does NOT block PRs yet.
-# TODO: Promote to Tier-1 (core.setFailed) after 2-sprint observation period.
+# Tier-1 GROUNDED gate: emits core.setFailed when score < 5/5.
 #
 # The 5 conditions must ALL be satisfied before any agent is promoted to D_CAPABLE:
 #   C1: AGENT_REGISTRY.yaml present in repo root area
@@ -115,17 +114,45 @@ jobs:
               summary += `| ${c.id} | ${c.label} | ${c.pass ? '\u2705' : '\u274C'} |\n`;
             }
             summary += `\n**Operating Model:** ${capable ? '\U0001F7E2 D_CAPABLE unlocked' : '\U0001F7E1 E (continue building)'}\n`;
-            summary += `\n_Canary mode: score < 5 emits warning only. Promote to exit(1) after 2-sprint observation._\n`;
+            summary += `\n_Tier-1 GROUNDED gate: score < 5 blocks PR._\n`;
             await core.summary.addRaw(summary).write();
 
             core.setOutput('score', score.toString());
             core.setOutput('capable', capable.toString());
 
-            // CANARY (Tier-2): warn only for first 2 sprints
-            // TODO: Promote to Tier-1 — change `core.warning` to `core.setFailed` after observation period
+            // Tier-1 GROUNDED gate: block PR when score < 5/5
             if (!capable) {
-              core.warning(`E\u2192D transition not ready: ${score}/5 conditions met`);
+              core.setFailed(`E\u2192D transition not ready: ${score}/5 conditions met`);
             }
+
+      - name: Emit demotion annotations for non-compliant agents
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import yaml, sys, os
+          registry_path = ".github/agents/AGENT_REGISTRY.yaml"
+          if not os.path.exists(registry_path):
+              sys.exit(0)
+          with open(registry_path) as f:
+              data = yaml.safe_load(f)
+          agents = data.get("agents", [])
+          demotions = []
+          for a in agents:
+              tier = a.get("enforcement_tier", "SOFT")
+              model = a.get("autonomy_model", "E")
+              # D_CAPABLE agents that lack structured handoff are demotion candidates
+              if model == "D_CAPABLE" and a.get("handoff_protocol") != "structured":
+                  demotions.append(f"{a.get('id','?')}: D_CAPABLE without structured handoff")
+              # GROUNDED agents without accepts_handoff_from are incomplete
+              if tier == "GROUNDED" and not a.get("accepts_handoff_from"):
+                  demotions.append(f"{a.get('id','?')}: GROUNDED but no accepts_handoff_from")
+          if demotions:
+              print(f"::warning::Demotion candidates ({len(demotions)}):")
+              for d in demotions:
+                  print(f"::warning::  - {d}")
+          else:
+              print("No demotion candidates found.")
+          PY
 
       - name: Post readiness comment on PR
         if: github.event_name == 'pull_request'
@@ -148,9 +175,9 @@ jobs:
               ``,
               `**Score:** ${score}/5 | **Model:** ${statusIcon} \`${statusText}\``,
               ``,
-              `> _Canary mode \u2014 run \`.github/workflows/e-to-d-transition-gate.yml\` for full condition breakdown._`,
+              `> _Tier-1 GROUNDED gate \u2014 run \`.github/workflows/e-to-d-transition-gate.yml\` for full condition breakdown._`,
               ``,
-              `_[e-to-d-transition-gate.yml] | Phase 4 FSM | Tier-2 canary_`,
+              `_[e-to-d-transition-gate.yml] | Phase 4 FSM | Tier-1 GROUNDED gate_`,
             ].join('\n');
 
             await github.rest.issues.createComment({

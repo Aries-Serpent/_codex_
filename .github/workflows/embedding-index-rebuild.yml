@@ -1,6 +1,6 @@
 name: Embedding Index Rebuild
 
-# Phase 3: Nightly FAISS index rebuild — Tier-2 enforcement for corpus freshness.
+# Phase 3: Nightly FAISS index rebuild — Tier-1 GROUNDED enforcement for corpus freshness.
 # Runs nightly at 2 AM UTC and on workflow_dispatch (manual trigger for testing).
 #
 # Only .codex/embeddings/codex_index_meta.json is committed back to git.
@@ -59,12 +59,13 @@ jobs:
               f.write(f\"build_time={meta['build_time_seconds']}\n\")
           "
 
-      - name: Emit REQ-10 corpus health annotation (Tier-2)
+      - name: Emit REQ-10 corpus health annotation (Tier-1 GROUNDED)
         run: |
           CHUNK_COUNT="${{ steps.rebuild.outputs.chunk_count }}"
           BUILD_TIME="${{ steps.rebuild.outputs.build_time }}"
           if [ -z "$CHUNK_COUNT" ] || [ "$CHUNK_COUNT" -lt 100 ]; then
-            echo "::warning::REQ-10 corpus health: chunk count ${CHUNK_COUNT} below threshold (expected ≥100)"
+            echo "::error::REQ-10 corpus health: chunk count ${CHUNK_COUNT} below threshold (expected ≥100)"
+            exit 1
           else
             echo "✅ REQ-10 corpus health: ${CHUNK_COUNT} chunks indexed in ${BUILD_TIME}s"
           fi
@@ -73,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .codex/embeddings/codex_index_meta.json
+          git add -f .codex/embeddings/codex_index_meta.json
           git diff --staged --quiet || \
             git commit -m "chore(phase-3): update embedding index metadata [skip ci]"
           git push

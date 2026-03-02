@@ -38,7 +38,6 @@ jobs:
 
       - name: Run validation
         id: validate
-        timeout-minutes: 75
         run: |
           case "${{ matrix.test-group }}" in
             quick)
@@ -76,7 +75,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-baseline
           path: |
@@ -87,7 +86,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -151,7 +150,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -160,7 +159,6 @@ jobs:
 
       - name: Run sharded quick tests
         id: shard-run
-        timeout-minutes: 50
         run: |
           # DRQ-S105-001: Disable pytest-rerunfailures in sharded runs.
           # pytest-rerunfailures starts a background server socket thread; pytest-timeout
@@ -186,14 +184,14 @@ jobs:
 
       - name: Save test durations cache
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |

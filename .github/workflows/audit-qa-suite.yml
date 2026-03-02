@@ -169,7 +169,7 @@ jobs:
 
       - name: Upload audit results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: audit-results-${{ github.run_number }}
           path: |
@@ -258,7 +258,7 @@ jobs:
 
       - name: Upload QA results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: qa-walkthrough-${{ github.run_number }}
           path: |

@@ -72,7 +72,7 @@ jobs:
             --output validation_summary.json
 
       - name: Upload validation log
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-log-fast-${{ github.run_id }}
@@ -81,7 +81,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload JUnit XML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-junit-fast-${{ github.run_id }}
@@ -90,7 +90,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload JSON summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-summary-fast-${{ github.run_id }}
@@ -131,7 +131,7 @@ jobs:
             --output validation_summary.json
 
       - name: Upload validation log
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-log-full-${{ github.run_id }}
@@ -140,7 +140,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload JUnit XML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-junit-full-${{ github.run_id }}
@@ -149,7 +149,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-coverage-${{ github.run_id }}
@@ -158,7 +158,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload JSON summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: validation-summary-full-${{ github.run_id }}
