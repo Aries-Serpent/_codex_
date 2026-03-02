@@ -33,8 +33,8 @@ bypassed) to **GROUNDED** (structurally enforced CI gates that require conscious
 - Self-healing CI enforcement gap detection loop
 - Policy-as-Code validation infrastructure
 
-**Current Repository State:** The repository has extensive existing infrastructure (84 workflows,
-372 agent definitions, comprehensive accountability reporting) but lacks the structural registry,
+**Current Repository State:** The repository has extensive existing infrastructure (91 workflows,
+128 registered agents per `AGENT_REGISTRY.yaml` v1.7.0, comprehensive accountability reporting) but lacks the structural registry at root level,
 manifest, and gate system described in the plan. The planning is thorough and research-validated;
 the codebase needs targeted preparation before execution can begin.
 
@@ -48,13 +48,15 @@ the codebase needs targeted preparation before execution can begin.
 
 | Aspect | Document States | Actual Repo |
 |--------|----------------|-------------|
-| Agent definitions | 193 agents | 372 `.md` files in `.github/agents/` |
-| Active workflows | ~90 workflows | 84 `.yml` files in `.github/workflows/` |
+| Agent definitions | 193 agents | 372 `.md` files across `.github/agents/**`; 128 registered in `.github/agents/AGENT_REGISTRY.yaml` v1.7.0 |
+| Active workflows | ~90 workflows | 91 `.yml` files in `.github/workflows/` |
 
 **Challenge:** The document references 193 agents throughout, but the repo contains 372 agent
-`.md` files. This discrepancy must be resolved in Phase 0 — likely many files are archived,
-duplicated, or represent sub-components. The Phase 0 frequency audit (Task 2) must establish
-the canonical active agent count before the registry can be built.
+`.md` files spread across nested subdirectories, with 128 formally registered in the existing
+`.github/agents/AGENT_REGISTRY.yaml`. This discrepancy (372 files vs. 128 registered vs. 193
+referenced in the plan) must be resolved in Phase 0 — likely many files are sub-components,
+templates, or archived agents not yet tagged. The Phase 0 frequency audit (Task 2) must establish
+the canonical active agent count before a root-level registry can be built.
 
 **Mitigation:** Phase 0 Task 2 (`agent_frequency_audit.py`) explicitly addresses this by
 scanning for actual activation frequency. Inactive/archived agents can be tagged
@@ -64,11 +66,11 @@ scanning for actual activation frequency. Inactive/archived agents can be tagged
 
 ### C-2: No Existing Registry or Manifest Infrastructure (Impact: High)
 
-The following critical files referenced throughout the document **do not exist yet**:
+The following critical files referenced throughout the document **do not exist yet** in their plan-specified form:
 
 | File | Referenced In | Current Status |
 |------|--------------|----------------|
-| `AGENT_REGISTRY.yaml` | Phases 1–6 | ❌ Does not exist |
+| `AGENT_REGISTRY.yaml` (root-level, plan schema) | Phases 1–6 | ⚠️ `.github/agents/AGENT_REGISTRY.yaml` exists (128 agents, v1.7.0) — Phase 1 must extend or migrate this to the root-level format |
 | `CODEX_MANIFEST.json` | Phases 1–6 | ❌ Does not exist |
 | `scripts/ci/generate_manifest.py` | Phases 1, 3, 5 | ❌ Does not exist |
 | `.codex/schemas/AgentRegistrySchema.json` | Phase 1 | ❌ Does not exist |
@@ -76,6 +78,11 @@ The following critical files referenced throughout the document **do not exist y
 | `.codex/schemas/AgentHandoffManifest_v1.1.json` | Phase 2 | ❌ Does not exist |
 | `scripts/ci/workflow_compliance_scan.py` | Phase 0 | ❌ Does not exist |
 | `scripts/ci/build_embeddings.py` | Phase 3 | ❌ Does not exist |
+
+**Note on AGENT_REGISTRY.yaml:** The existing `.github/agents/AGENT_REGISTRY.yaml` (128 agents,
+Microsoft AgentSchema–inspired, v1.7.0) is a strong foundation. Phase 1 should extend this
+registry rather than create a duplicate — either by migrating it to the root or expanding its
+schema to include the plan's `enforcement_tier`, `autonomy_model`, and `handoff_protocol` fields.
 
 **Challenge:** All downstream phases (1–6) depend on Phase 0 and Phase 1 artifacts.
 The registry is the foundation — errors in its structure cascade through every subsequent phase.
@@ -187,7 +194,7 @@ posts the completion gate checklist; the human approves before the next phase st
 
 | # | Groundwork Item | Status | Priority | Effort |
 |---|----------------|--------|----------|--------|
-| G-1 | Confirm active agent count (372 files → deduplicated count) | ❌ Not started | **P0** | 1 session |
+| G-1 | Confirm active agent count (372 files; 128 in AGENT_REGISTRY.yaml → reconcile with doc's 193) | ⚠️ Partially done (registry exists, reconciliation needed) | **P0** | 1 session |
 | G-2 | Create `docs/audits/` directory | ❌ Not started | **P0** | Trivial |
 | G-3 | Verify `jsonschema` importable in current Python env | ✅ In pyproject.toml | Done | — |
 | G-4 | Verify `pyyaml` importable in current Python env | ✅ In pyproject.toml | Done | — |
@@ -196,7 +203,7 @@ posts the completion gate checklist; the human approves before the next phase st
 | G-7 | Confirm `CHANGELOG.md` format for new Phase entries | ✅ Exists at root | Done | — |
 | G-8 | Confirm `AGENT_ACCOUNTABILITY_REPORT.md` W-NNN format | ✅ Exists | Needs format check | 30 min |
 | G-9 | Ensure no merge conflicts with `main` branch | ❌ Not checked | **P0** | Variable |
-| G-10 | Review and reconcile document's "193 agents" with actual 372 files | ❌ Not started | **P0** | 1 session |
+| G-10 | Assess `.github/agents/AGENT_REGISTRY.yaml` (v1.7.0, 128 agents) and determine extend vs. migrate strategy for Phase 1 | ❌ Not started | **P0** | 1 session |
 
 ### Existing Infrastructure That Supports Execution
 
@@ -235,8 +242,8 @@ all prerequisites are met and execution can begin immediately.
 
 | # | Dimension | Weight | Score | Max | Details |
 |---|-----------|--------|-------|-----|---------|
-| D1 | **CI/CD Workflow Foundation** | 20 | 16 | 20 | 84 workflows exist; 8 key workflows confirmed present; needs 4 new workflows (Phase 2–6 scope, not Phase 0 blockers) |
-| D2 | **Agent Ecosystem Maturity** | 20 | 12 | 20 | 372 agent defs exist but count discrepancy with doc's 193; no registry or manifest yet (Phase 1 scope) |
+| D1 | **CI/CD Workflow Foundation** | 20 | 16 | 20 | 91 workflows exist; 8 key workflows confirmed present; needs 4 new workflows (Phase 2–6 scope, not Phase 0 blockers) |
+| D2 | **Agent Ecosystem Maturity** | 20 | 12 | 20 | 128 agents in AGENT_REGISTRY.yaml (v1.7.0); 372 total .md files across nested dirs; count discrepancy with doc's 193 still to reconcile; no GROUNDED registry schema yet (Phase 1 scope) |
 | D3 | **Enforcement Architecture** | 15 | 9 | 15 | GROUNDED_VS_SOFT doc exists; enforcement tiers documented; cognitive-preflight in agent-auth-delegation; no REQ-9/10 gates yet |
 | D4 | **Data Infrastructure** | 10 | 6 | 10 | FAISS/sentence-transformers used in RAG modules; sqlite3 available; no unified corpus yet (Phase 3 scope) |
 | D5 | **Security Posture** | 10 | 6 | 10 | CODEOWNERS exists (234 lines); no agentic-specific entries yet; no injection hardening (Phase 1 scope) |
@@ -330,7 +337,7 @@ and verification criteria.
 **Objective:** Create and run the workflow compliance scanning script.
 
 **Inputs:**
-- `.github/workflows/*.yml` (84 files)
+- `.github/workflows/*.yml` (all matching files; currently 91)
 - Pattern from `soft_to_GROUNDED.md` Domain 7
 
 **Tasks:**
@@ -344,7 +351,7 @@ and verification criteria.
 - `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md`
 
 **Verification:**
-- Matrix covers all 84 workflow files
+- Matrix covers all workflow files in `.github/workflows/` (use `glob("*.yml")` count at runtime, not a hard-coded number)
 - KPI counts are real numbers (not placeholders)
 
 ---
@@ -354,7 +361,8 @@ and verification criteria.
 **Objective:** Determine active agent count, rank by activation frequency, classify enforcement tiers.
 
 **Inputs:**
-- `.github/agents/*.md` (372 files)
+- `.github/agents/**/*.md` (recursive; 372 files across nested subdirectories)
+- `.github/agents/AGENT_REGISTRY.yaml` (128 formally registered agents, v1.7.0)
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
 - `.github/workflows/*.yml` (agent name references)
 
@@ -435,8 +443,8 @@ and verification criteria.
 **Objective:** Create the complete agent registry from Phase 0 audit data.
 
 **Tasks:**
-1. Create `AGENT_REGISTRY.yaml` header with correct agent count
-2. For each active agent in `.github/agents/`:
+1. Extend `.github/agents/AGENT_REGISTRY.yaml` (or migrate to root-level `AGENT_REGISTRY.yaml`) with GROUNDED schema fields
+2. For each active agent (from Phase 0 frequency audit):
    - Populate `name`, `role`, `enforcement_tier`, `primary_workflow`
    - Set `autonomy_model: "E"` for all
    - Set `handoff_protocol` from Phase 0 classification
@@ -444,13 +452,18 @@ and verification criteria.
    - Flag top-20: `consolidation_priority: true`
 3. Validate against `AgentRegistrySchema.json`
 
+**Decision point (resolve in Phase 0):** Determine whether to:
+- **Option A (extend):** Add new fields to existing `.github/agents/AGENT_REGISTRY.yaml` in-place
+- **Option B (migrate):** Create root-level `AGENT_REGISTRY.yaml` and cross-reference the existing one
+
 **Outputs:**
-- `AGENT_REGISTRY.yaml` (all agents registered)
+- `AGENT_REGISTRY.yaml` (all agents registered, with GROUNDED schema fields)
 
 **Verification:**
 - `total_agents` matches actual list length
 - All entries pass schema validation
 - Top-20 agents have `consolidation_priority: true`
+- No duplicate registry with identical data exists
 
 ---
 

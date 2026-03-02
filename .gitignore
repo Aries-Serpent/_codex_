@@ -395,3 +395,7 @@ audit_artifacts/
 
 # GitHub App private key — never commit (github_app_bootstrap.py)
 .codex/github_app/private_key.pem
+
+# Compiled Go binaries in tools/ — large executables should not be committed to git
+# Use `go build` in the tools directory to regenerate them locally
+tools/github-secrets-cli/github-secrets-cli

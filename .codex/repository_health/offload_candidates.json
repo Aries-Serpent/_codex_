@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-02-23T02:54:40.430252+00:00",
+    "scan_time": "2026-03-02T02:49:49.622475+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -15,19 +15,18 @@
       "large": 2
     },
     "by_category": {
-      "logs": 1,
-      "unknown": 1
+      "unknown": 2
     },
-    "total_size_mb": 13.4
+    "total_size_mb": 15.46
   },
   "candidates": [
     {
-      "path": ".codex/validation/20250910T135035Z/pre-commit.log",
-      "category": "logs",
+      "path": ".secrets.baseline",
+      "category": "unknown",
       "age_days": 0,
-      "size_mb": 1.04,
+      "size_mb": 3.11,
       "reasons": [
-        "large_file_1.0mb"
+        "large_file_3.1mb"
       ],
       "recommendation": "review_manually"
     },
