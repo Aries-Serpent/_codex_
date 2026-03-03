@@ -32,7 +32,6 @@ jobs:
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache-tier: 'live'
 
       # SECURITY: Read-only cache from main branch
       - name: Restore cache from main (read-only)

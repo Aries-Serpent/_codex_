@@ -19,13 +19,16 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import os
 import pathlib
 import sqlite3
 import sys
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
-RETENTION_DAYS = 90
+# Wired to COGNITIVE_BRAIN_LTM_RETENTION_DAYS repo variable (P2.2) so the
+# retention window can be adjusted without a code change.  Defaults to 90 days.
+RETENTION_DAYS: int = int(os.environ.get("COGNITIVE_BRAIN_LTM_RETENTION_DAYS", 90))
 
 
 def get_stats(conn: sqlite3.Connection) -> dict:

@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import pathlib
 import re
 import sqlite3
@@ -56,7 +57,9 @@ INJECTION_BLOCKLIST = [
 # R-12: Maximum serialised context size allowed for injection into agent_context.json.
 # Prevents prompt-injection surface expansion via manifest inflation.
 # Current safe payload is ~30 KB; 32 KB provides headroom while blocking malicious growth.
-CONTEXT_WINDOW_BUDGET: int = 32_000
+# Wired to COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS repo variable (P2.1) so CI can override
+# without a code change.  Defaults to 32 000 if the variable is absent.
+CONTEXT_WINDOW_BUDGET: int = int(os.environ.get("COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS", 32_000))
 
 
 # ── KPI extraction from GROUNDED_VS_SOFT_ENFORCEMENT.md ─────────────────────

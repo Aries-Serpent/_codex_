@@ -5,7 +5,22 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3483 CI fix — actionlint-audit SC2016/SC2012 + repo variable expansion + Mermaid audit (2026-03-03)
+## [Unreleased] — Post-PR #3483 — actionlint fix + Group D wiring + cache alignment (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-086a | fix | `.github/workflows/admin_setup_verification.yml` | Removed duplicate `§3b test_backup` step (SC1073/SC1078 truncated JSON + duplicate step ID) — fixes actionlint-audit Tier-1 gate |
+| W-086b | wire | `.github/workflows/chatops_copilot_trigger.yml` | Added `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step (Group D) — auto-increments session counter via GitHub API after every authorized `/copilot` command |
+| W-086c | wire | `scripts/ci/generate_manifest.py` | `CONTEXT_WINDOW_BUDGET` now reads `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` env var (P2.1); defaults to 32 000 |
+| W-086d | wire | `scripts/ci/prune_corpus.py` | `RETENTION_DAYS` now reads `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` env var (P2.2); defaults to 90 |
+| W-086e | wire | `.github/workflows/ci-health-monitor.yml` | Replaced hardcoded `THRESHOLD=20` with `${{ vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10' }}` (P2.3); `Update CODEX_CI_FAILURE_RATE` step threshold also wired |
+| W-086f | wire | `.github/workflows/agent-handoff-gate.yml` | `timeout-minutes` wired to `AGENT_HANDOFF_TIMEOUT_SECONDS` repo variable (P2.4) |
+| W-086g | cache | `.github/workflows/copilot-setup-steps.yml` | Replaced `cache: 'pip'` with explicit L1 pip (`~/.cache/pip`) + L3 venv (`.venv_ci`) cache steps using keys matching `setup-python-cached` composite action; all env-specific pip installs now use `--cache-dir ~/.cache/pip` and `.venv_ci` |
+| W-086h | cache | `.github/workflows/pr-checks.yml` | Removed unsupported `cache-tier: 'live'` input from `setup-python-cached` call |
+
+
 
 ### Fixed
 

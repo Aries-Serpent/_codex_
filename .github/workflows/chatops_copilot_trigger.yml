@@ -351,3 +351,28 @@ jobs:
             "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
             -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot tier-check` | Run enforcement tier scan (dry-run) and post results |\n| `/copilot tier-promote` | Generate tier promotion stubs (dry-run only, Domain 8) |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
             > /dev/null
+
+      # ── Group D: COGNITIVE_BRAIN_SESSION_NUMBER auto-increment ───────────────
+      # Runs after every successfully authorized /copilot command.
+      # Increments the session counter so each agent invocation carries a unique,
+      # monotonically increasing session number used by the Cognitive Brain.
+      # Requires CODEX_MASTER_KEY with variables:write scope.
+      - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
+        if: steps.parse.outputs.AUTHORIZED == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "⚠️ CODEX_MASTER_KEY not available — session number increment skipped"
+            exit 0
+          fi
+          NEXT=$((CURRENT + 1))
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
+            -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+            -f value="${NEXT}" \
+            > /dev/null 2>&1 || true
+          echo "✅ Session number incremented: ${CURRENT} → ${NEXT}"

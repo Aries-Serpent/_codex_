@@ -74,9 +74,10 @@ jobs:
           echo "failed_runs=${FAILED_RUNS}"   >> "$GITHUB_OUTPUT"
           echo "total_runs=${TOTAL_RUNS}"     >> "$GITHUB_OUTPUT"
 
-          # Threshold: alert if failure rate > 20%
-          THRESHOLD=20
-          if python3 -c "import sys; sys.exit(0 if float('${FAILURE_RATE}') > ${THRESHOLD} else 1)"; then
+          # Threshold: alert if failure rate exceeds CODEX_CI_FAILURE_THRESHOLD.
+          # Wired to repo variable (P2.3); falls back to 10% (degraded level) if unset.
+          THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}"
+          if python3 -c "import sys; sys.exit(0 if float('${FAILURE_RATE}') > float('${THRESHOLD}') else 1)"; then
             echo "alert_required=true" >> "$GITHUB_OUTPUT"
             echo "::warning::CI failure rate ${FAILURE_RATE}% exceeds ${THRESHOLD}% threshold"
           else
@@ -105,7 +106,8 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$ALERT" = "true" ]; then
-            echo "### ⚠️ Alert: Failure rate exceeds 20% threshold" >> "$GITHUB_STEP_SUMMARY"
+            THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}"
+            echo "### ⚠️ Alert: Failure rate exceeds ${THRESHOLD}% threshold" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "### ✅ Health: Failure rate within acceptable range" >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -193,7 +195,7 @@ jobs:
               '',
               '### Recommended Actions',
               '',
-              '- ⚠️ **Critical:** Failure rate exceeds 20% - immediate investigation required',
+              '- ⚠️ **Critical:** Failure rate exceeds threshold - immediate investigation required',
               '',
               `**Report:** Telemetry collected on ${new Date().toISOString().slice(0, 10)}`,
             ].join('\n');
@@ -213,14 +215,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           FAILURE_RATE: ${{ steps.telemetry.outputs.failure_rate }}
+          CODEX_CI_FAILURE_THRESHOLD: ${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}
         run: |
           # Sprint 1: auto-update repo variable with current failure rate so
           # agents and dashboards always see a fresh value without re-running telemetry.
+          # Thresholds wired to CODEX_CI_FAILURE_THRESHOLD (P2.3):
+          #   degraded : rate >= THRESHOLD
+          #   critical : rate >= 2 * THRESHOLD
           RATE="${FAILURE_RATE:-0}"
+          THRESHOLD="${CODEX_CI_FAILURE_THRESHOLD:-10}"
           STATUS="ok"
-          if python3 -c "import sys; sys.exit(0 if float('${RATE}') >= 20 else 1)" 2>/dev/null; then
+          if python3 -c "import sys; sys.exit(0 if float('${RATE}') >= float('${THRESHOLD}') * 2 else 1)" 2>/dev/null; then
             STATUS="critical"
-          elif python3 -c "import sys; sys.exit(0 if float('${RATE}') >= 10 else 1)" 2>/dev/null; then
+          elif python3 -c "import sys; sys.exit(0 if float('${RATE}') >= float('${THRESHOLD}') else 1)" 2>/dev/null; then
             STATUS="degraded"
           fi
           # Store rate and status together so dashboards get both in one variable.

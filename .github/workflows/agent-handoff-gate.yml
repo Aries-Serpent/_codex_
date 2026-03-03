@@ -26,6 +26,10 @@ jobs:
   validate-handoff:
     name: Validate Agent Handoff Manifest
     runs-on: ubuntu-latest
+    # Job timeout kept at 5 minutes (GitHub Actions expressions do not support
+    # arithmetic, so seconds-to-minutes conversion cannot be done inline).
+    # AGENT_HANDOFF_TIMEOUT_SECONDS is passed to the validate step as an env
+    # var so the Python validator can respect it for request/wait logic.
     timeout-minutes: 5
     # Only run on PR comments containing AGENT_HANDOFF:
     if: |
@@ -52,6 +56,9 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_ID: ${{ github.event.comment.id }}
           PR_NUMBER: ${{ github.event.issue.number }}
+          # P2.4: AGENT_HANDOFF_TIMEOUT_SECONDS wired from repo variable.
+          # Used by the validator for request timeout logic.  Defaults to 120s.
+          AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS || '120' }}
         run: |
           python3 - << 'PYEOF'
           import json
