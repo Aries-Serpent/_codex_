@@ -41,30 +41,39 @@ AGENT_REGISTRY:                 v1.9.0, 152 agents
 
 ### P3.1 — Wire `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` to `brain_interface.py`
 
-**File:** `src/codex/cognitive/brain_interface.py`
-Find the `query_patterns()` method. Wire `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` env var
-to the confidence threshold.
+**Status: ✅ COMPLETE (PR #3492)**
 
-**Change:**
-```python
-# Before (approximate)
-MIN_CONFIDENCE = 0.75
-
-# After
-import os
-MIN_CONFIDENCE = float(os.environ.get("COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE", "0.75"))
-```
+Added `import os` + `_MIN_CONFIDENCE` module-level constant at line 54 of
+`src/codex/cognitive/brain_interface.py`. The `query_patterns()` min_score dict now
+maps `PatternConfidence.LOW` → `_MIN_CONFIDENCE` (default `"0.0"` — preserving
+backward-compatible behaviour; set env var to `"0.75"` in production for tighter filtering).
+All 51 `test_brain_interface.py` tests pass.
 
 ### P3.2 — Wire `COPILOT_AGENT_SESSION_RESTORE_ENABLED` gate
 
-**File:** `.github/agents/session-log-retrieval-agent.md`
-Add a note that the agent checks `COPILOT_AGENT_SESSION_RESTORE_ENABLED` before
-executing session restore operations.
+**Status: ✅ COMPLETE (PR #3492)**
+
+Added `COPILOT_AGENT_SESSION_RESTORE_ENABLED` entry to the Environment Variables
+section of `.github/agents/session-log-retrieval-agent.md`. Documents the gate
+semantics: `"false"` skips all restore steps; defaults to enabled when unset.
 
 ### P3.3 — Evaluate `AUTO_PROMOTE_TIER_ENABLED` false → true
 
-Review `scripts/ci/auto_promote_tier.py` end-to-end. When promotion logic is
-fully validated, flip the repo variable to `true`.
+**Decision (2026-03-03): Keep `AUTO_PROMOTE_TIER_ENABLED = false`.**
+
+`scripts/ci/auto_promote_tier.py` is explicitly dry-run-only by design. Its docstring
+states: *"This script MUST remain dry-run-only. Auto-applying tier promotions without
+human review violates the security posture established in soft_to_GROUNDED.md."*
+
+The script generates YAML stubs for human review; it does not read or respect
+`AUTO_PROMOTE_TIER_ENABLED` at runtime. Flipping the variable to `true` would
+have no effect on the script and would create a false impression of automation
+while Domain 8 security posture requires human sign-off on every tier promotion.
+
+**Required action:** A future PR must first add an explicit guard inside
+`auto_promote_tier.py` that checks `AUTO_PROMOTE_TIER_ENABLED` and implements
+the actual write path before the variable is set to `true`. Until then, leave at
+`false`.
 
 ---
 

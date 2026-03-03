@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-095 P3.1 | feat | `src/codex/cognitive/brain_interface.py` | Add `import os` + `_MIN_CONFIDENCE` constant wired to `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` env var; `PatternConfidence.LOW` floor now configurable at runtime (default `0.0`) |
+| W-095 P3.2 | docs | `.github/agents/session-log-retrieval-agent.md` | Document `COPILOT_AGENT_SESSION_RESTORE_ENABLED` gate in Environment Variables section |
+| W-095 P3.3 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Document keep-`false` decision for `AUTO_PROMOTE_TIER_ENABLED` — Domain 8 security posture prohibits autonomous tier promotion without human review |
+
 ## [Unreleased] — W-094 fix actionlint-audit ERROR_COUNT double-zero (PR #3492, 2026-03-03)
 
 ### Fixed

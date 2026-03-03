@@ -248,6 +248,11 @@ python -m codex.logging.import_ndjson \
 - **`CODEX_SESSION_LOG_DIR`** - Session log directory (default: `.codex/sessions`)
 - **`CODEX_LOG_DB_PATH`** or **`CODEX_DB_PATH`** - SQLite database path
 - **`CODEX_SQLITE_POOL`** - Set to "1" to enable connection pooling
+- **`COPILOT_AGENT_SESSION_RESTORE_ENABLED`** - Gate for session restore operations.
+  When set to `"false"`, the agent skips all session restore steps (log retrieval,
+  uncommitted-work recovery, and session context injection) and exits immediately.
+  Defaults to enabled when unset. Set via repo variable to pause restoration
+  without a code change.
 
 ---
 
