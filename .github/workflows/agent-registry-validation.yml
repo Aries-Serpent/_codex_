@@ -229,7 +229,7 @@ jobs:
             });
 
       - name: Trigger embedding index refresh
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
         run: |
           gh workflow run embedding-index-rebuild.yml --ref main \
             && echo "✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh" \

@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-092 cognitive brain objectives (PR #3492, 2026-03-03)
+
+### Added / Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-092a | feat | `.github/workflows/ci-health-monitor.yml` | Added `Write CODEX_CI_LAST_GREEN_SHA when CI is healthy` step (P2.6) — writes current SHA to `CODEX_CI_LAST_GREEN_SHA` repo variable when failure rate < threshold |
+| W-092b | feat | `.github/workflows/agent-registry-validation.yml` | Gated `Trigger embedding index refresh` step on `vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'` — allows operator to pause FAISS rebuilds without a workflow commit |
+
 ## [Unreleased] — W-091 update user access levels (PR #3492, 2026-03-03)
 
 ### Added

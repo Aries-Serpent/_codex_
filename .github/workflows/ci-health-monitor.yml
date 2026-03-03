@@ -250,6 +250,41 @@ jobs:
           fi
           echo "CODEX_CI_FAILURE_RATE updated to ${RATE}% (status=${STATUS}, http=${HTTP_STATUS})"
 
+      - name: Write CODEX_CI_LAST_GREEN_SHA when CI is healthy
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          FAILURE_RATE: ${{ steps.telemetry.outputs.failure_rate }}
+          CODEX_CI_FAILURE_THRESHOLD: ${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}
+        run: |
+          # P2.6: write CODEX_CI_LAST_GREEN_SHA when failure rate is below threshold.
+          # Enables bisect commands: git bisect good "$CODEX_CI_LAST_GREEN_SHA"
+          RATE="${FAILURE_RATE:-0}"
+          THRESHOLD="${CODEX_CI_FAILURE_THRESHOLD:-10}"
+          if python3 -c "import sys; sys.exit(0 if float('${RATE}') < float('${THRESHOLD}') else 1)" 2>/dev/null; then
+            SHA="${{ github.sha }}"
+            # SHA is always a 40-char hex string from github.sha — safe to embed in JSON.
+            PAYLOAD="{\"value\":\"${SHA}\"}"
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -X PATCH \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_LAST_GREEN_SHA" \
+              -d "${PAYLOAD}" 2>/dev/null) || HTTP_STATUS=0
+            if [ "${HTTP_STATUS}" = "404" ]; then
+              curl -s -X POST \
+                -H "Authorization: Bearer ${GH_TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables" \
+                -d "{\"name\":\"CODEX_CI_LAST_GREEN_SHA\",\"value\":\"${SHA}\"}" \
+                > /dev/null 2>&1 || true
+            fi
+            echo "CODEX_CI_LAST_GREEN_SHA updated to ${SHA} (rate=${RATE}% < threshold=${THRESHOLD}%, http=${HTTP_STATUS})"
+          else
+            echo "CI health degraded (rate=${RATE}% >= threshold=${THRESHOLD}%) — CODEX_CI_LAST_GREEN_SHA not updated"
+          fi
+
       - name: "🔑 Sprint 5: Backup key health check"
         if: always()
         continue-on-error: true
