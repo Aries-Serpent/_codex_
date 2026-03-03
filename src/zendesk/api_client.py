@@ -326,6 +326,36 @@ class ZendeskAPIClient:
         response.raise_for_status()
         return response.json()
 
+    def update_user(
+        self,
+        user_id: int,
+        **updates: Any,
+    ) -> dict[str, Any]:
+        """
+        Update a user's attributes.
+
+        Swagger: PUT /api/v2/users/{user_id}.json
+
+        Args:
+            user_id: User ID
+            **updates: Fields to update (role, name, email, phone, etc.)
+                       Use ``role`` to change access level:
+                       end-user, agent, admin
+
+        Returns:
+            Updated user object
+
+        Example:
+            >>> client.update_user(1001, role="agent")
+            >>> client.update_user(1001, role="admin", phone="+15551234567")
+        """
+        payload = {"user": updates}
+        response = self.session.put(
+            f"{self.config.base_url}/users/{user_id}.json", json=payload
+        )
+        response.raise_for_status()
+        return response.json()
+
     # ========================================================================
     # ORGANIZATIONS API
     # ========================================================================

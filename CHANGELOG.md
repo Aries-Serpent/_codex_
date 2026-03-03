@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-091 update user access levels (PR #3492, 2026-03-03)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-091a | feat | `src/zendesk/api_client.py` | Added `update_user(user_id, **updates)` method — `PUT /api/v2/users/{user_id}.json`; supports role (access-level) changes and general field updates |
+| W-091b | test | `tests/zendesk/test_api_client.py` | Added `test_update_user_role` and `test_update_user_multiple_fields` covering the new endpoint |
+
 ## [Unreleased] — W-090 reviewer feedback fixes (2026-03-03)
 
 ### Fixed
