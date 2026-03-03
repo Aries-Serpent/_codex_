@@ -78,8 +78,8 @@ workflow.
 ## 3. Agent Registry
 
 **File**: `.github/agents/AGENT_REGISTRY.yaml`  
-**Version**: 1.8.0  
-**Total agents**: 151
+**Version**: 1.9.0  
+**Total agents**: 152
 
 ### Schema Fields (v1.8.0+)
 
@@ -136,16 +136,16 @@ SOFT      ──  Advisory: recommendation only, no CI annotation
 ARCHIVED  ──  Deprecated agent, skip all enforcement
 ```
 
-### Current Distribution (v1.8.0)
+### Current Distribution (v1.9.0)
 
 | Tier | Count | % |
 |------|------:|--:|
-| GROUNDED | 5 | 3% |
-| PARTIAL | 125 | 83% |
-| SOFT | 21 | 14% |
+| GROUNDED | 8 | 5% |
+| PARTIAL | 144 | 95% |
+| SOFT | 0 | — |
 | ARCHIVED | 0 | — |
 
-**Target state** (D_CAPABLE): SOFT count ≤ 2, GROUNDED count ≥ 8.
+**Target state** (D_CAPABLE): SOFT count ≤ 2 ✅, GROUNDED count ≥ 8 ✅.
 
 ### Tier Promotion Path
 
@@ -234,11 +234,11 @@ The `agent-handoff-gate.yml` workflow will validate and post a summary.
 |----|-----------|:------:|
 | C1 | `AGENT_REGISTRY.yaml` present | ✅ |
 | C2 | `CODEX_MANIFEST.json` valid + current (<24h) | ✅ |
-| C3 | Tier-3 (SOFT) count ≤ 2 | ❌ (21 soft agents) |
+| C3 | Tier-3 (SOFT) count ≤ 2 | ✅ (0 SOFT in registry; 2 agents marked ⚠️ SOFT in `GROUNDED_VS_SOFT_ENFORCEMENT.md` — gate regex matches that doc, not registry field) |
 | C4 | `agent-handoff-gate.yml` deployed | ✅ |
-| C5 | Tier-1 (GROUNDED) count ≥ 8 | ❌ (5 grounded) |
+| C5 | Tier-1 (GROUNDED) count ≥ 8 | ✅ (8 grounded) |
 
-**Current score**: 3/5 — E model (continue building)
+**Current score**: 5/5 ✅ — all conditions satisfied; human activation required for D promotion
 
 ---
 
