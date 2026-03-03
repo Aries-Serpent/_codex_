@@ -155,10 +155,16 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         run: |
-          STATUS=$(cat .codex/evidence/var_write_audit.jsonl 2>/dev/null | tail -5 || echo "no audit log")
-          FENCE='```'
-          BODY=$(printf '{"body":"✅ **Agent Infrastructure:** Variable write complete.\\n%s\\n%s\\n%s"}' \
-            "${FENCE}" "${STATUS}" "${FENCE}")
+          STATUS=$(tail -n 5 .codex/evidence/var_write_audit.jsonl 2>/dev/null || echo "no audit log")
+          export STATUS
+          BODY=$(python3 - << 'PY'
+import json, os, sys
+status = os.environ.get("STATUS", "")
+fence = "```"
+body = f"✅ **Agent Infrastructure:** Variable write complete.\n{fence}\n{status}\n{fence}"
+sys.stdout.write(json.dumps({"body": body}))
+PY
+          )
           curl -s -X POST \
             -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
             -H "Accept: application/vnd.github+json" \

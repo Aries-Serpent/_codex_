@@ -90,7 +90,11 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          echo "pr_title=${PR_TITLE}" >> $GITHUB_OUTPUT
+          {
+            echo 'pr_title<<EOF'
+            echo "${PR_TITLE}"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           echo "pr_author=${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
 
       - name: Run cascade review

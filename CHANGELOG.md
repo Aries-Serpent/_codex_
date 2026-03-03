@@ -5,7 +5,17 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-089 actionlint gate fix + accountability (2026-03-03)
+## [Unreleased] — W-090 reviewer feedback fixes (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-090a | fix | `.github/actionlint.yaml` | Updated header comment from "info/style-level" to "info, style, and warning" to accurately reflect SC2155/SC2046/SC2034/SC1012 warning-level suppressions |
+| W-090b | fix | `.github/workflows/agent_infrastructure_manager.yml` | Fixed `tail` pipeline — replaced `cat file \| tail -5 \|\| echo` (unreliable fallback) with `tail -n 5 file 2>/dev/null \|\| echo`; fixed JSON body injection by building payload via Python `json.dumps()` heredoc |
+| W-090c | fix | `.github/workflows/copilot-evolution-suite.yml` | Fixed `$GITHUB_OUTPUT` injection — replaced `echo "pr_title=${PR_TITLE}"` with multiline `name<<EOF ... EOF` format to safely handle newlines and `key=value` sequences in PR titles |
+
+
 
 ### Fixed
 

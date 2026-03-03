@@ -6,7 +6,7 @@ self-hosted-runner:
 # organization. `null` means disabling configuration variables check.
 config-variables: null
 
-# Suppress info/style-level shellcheck findings repo-wide.
+# Suppress selected non-error ShellCheck findings (info, style, and warning) repo-wide.
 # SC1xxx (parse errors) and other error-level findings remain hard-fail.
 #
 # Suppressed codes:
