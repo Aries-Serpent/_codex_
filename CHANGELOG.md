@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-088 .actionlint.yaml + accountability verify (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-088a | fix | `.github/actionlint.yaml` | Created repo-wide actionlint config suppressing info/style shellcheck codes (SC2086, SC2012, SC2016, SC2002, SC2129) while keeping error-level findings (SC1xxx) hard-fail |
+| W-088b | docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-088 entry added (REQ-4); accountability report verified current for PR branch |
+
 ## [Unreleased] — Post-PR #3483 — review fixes + CI hardening (2026-03-03)
 
 ### Fixed
