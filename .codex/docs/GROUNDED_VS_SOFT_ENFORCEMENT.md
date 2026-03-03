@@ -256,7 +256,7 @@ xychart-beta
  │        into 16 patterns, creates issue when rate >20%           │
  │        Uses expanded PATTERN_KEYWORDS (collect_telemetry.py)     │
  └──────────────────────────────────────────────────────────────────┘
- 
+
  ┌──────────────────────────────────────────────────────────────────┐
  │  SOFT (Fallback — used when grounded method unavailable)        │
  │                                                                  │
