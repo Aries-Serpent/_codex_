@@ -96,4 +96,21 @@ Post structured comment to the `ci-health-alert` issue:
 ## Constraints
 - Never create branches for fix-only issues that can be resolved in-workflow
 - Always post a resolution comment before closing the issue
-- CODEX_CI_FAILURE_RATE value format: `<float>:<status>` (e.g. `15.2:degraded`)
+- `CODEX_CI_FAILURE_RATE` value format: `<float>:<status>` (e.g. `15.2:degraded`)
+- Compare rate against `CODEX_CI_FAILURE_THRESHOLD` repo variable (default `10.0`) — not hardcoded value
+- Status thresholds: `ok` = rate < THRESHOLD; `degraded` = rate ≥ THRESHOLD; `critical` = rate ≥ 2×THRESHOLD
+- When `CODEX_CI_LAST_GREEN_SHA` is set, include it in resolution comments for bisect reference
+
+## Variable Integration (PR #3483)
+
+```mermaid
+flowchart TD
+    RATE["CODEX_CI_FAILURE_RATE\n= '11.0:degraded'"] --> PARSE["Parse: float=11.0\nstatus=degraded"]
+    THRESHOLD["CODEX_CI_FAILURE_THRESHOLD\n= '10.0'"] --> CMP{"11.0 ≥ 10.0?"}
+    PARSE --> CMP
+    CMP -->|Yes| ALERT["Create ci-health-alert issue\nInvoke CI Health Alert Agent"]
+    CMP -->|No| CLEAR["Status ok\nWrite CODEX_CI_LAST_GREEN_SHA"]
+    ALERT --> TRIAGE["Classify patterns\nPropose fixes"]
+    TRIAGE --> FIX["Apply fix\nUpdate CODEX_CI_FAILURE_RATE"]
+    FIX --> CLEAR
+```

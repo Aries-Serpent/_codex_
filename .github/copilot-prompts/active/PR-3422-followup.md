@@ -55,7 +55,7 @@ cat CHANGELOG.md | head -50                          # [Unreleased] PR #3422 ent
 - SQLite writes: always use `_db_lock` (threading.Lock)
 - CHANGELOG.md MUST have `[Unreleased]` BEFORE first commit
 - AGENT_ACCOUNTABILITY_REPORT.md MUST be touched in every commit
-- All 91 workflows must YAML-parse before commit
+- All 96 workflows must YAML-parse before commit
 
 ### Sprint 11 — Memory Consolidation REST API
 ```

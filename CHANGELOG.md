@@ -5,6 +5,29 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3483 CI fix — actionlint-audit SC2016/SC2012 + repo variable expansion + Mermaid audit (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Added `# shellcheck disable=SC2016` before `actionlint -format` invocation — `$e` is Go template syntax, not a shell variable; SC2016 false positive suppressed |
+| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Replaced 2× `$(ls .github/workflows/*.yml \| wc -l)` with `$(find .github/workflows -maxdepth 1 -name '*.yml' \| wc -l)` — SC2012 non-alphanumeric filename safety |
+| W-084 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-084 entry added per cognitive pre-flight REQ-4 |
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-085 | Docs | `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` | Created — technical guide for 13 new repo variables with 5 Mermaid diagrams (architecture, wiring, state machine, sequence, dependency) |
+| W-085 | Docs | `docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md` | Created — human admin action guide with checkboxes, copy-paste CLI block, step-by-step UI instructions, and Mermaid setup flow + mindmap + timeline |
+| W-085 | Audit | 9 active docs | Codebase-wide Mermaid diagram audit — corrected stale "91 workflows" count to "96" in all non-archive files |
+| W-085 | Agent | `.github/agents/repo-var-sync-agent.md` | Updated v1.0 → v1.1: extended tracked prefix coverage to COGNITIVE_BRAIN_\*, AGENT_\*, EMBEDDING_\*, AUTO_\*; added Mermaid architecture diagram; updated variable count to 25 |
+| W-085 | Agent | `.github/agents/cognitive-brain-manager.md` | Updated v1.0 → v2.0: replaced stale AAIS score with current system metrics (152 agents, GROUNDED=8, PARTIAL=144, SOFT=0, 96 workflows, 5/5 gate, 100/100 score); added Mermaid architecture diagram |
+| W-085 | Agent | `.github/agents/ci-health-alert-agent.md` | Added CODEX_CI_FAILURE_THRESHOLD variable integration + Mermaid state machine for threshold comparison |
+| W-085 | CB | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3483.md` | Created — cognitive brain status and next-phase plan for PR #3483 |
+| W-085 | Docs | `.codex/docs/FOLLOWUP_PROMPT_PR3483.md` | Created — post-merge continuation prompt for P1/P2/P3 wiring tasks |
+
 ## [Unreleased] — PR #3474 CI fixes + documentation sync (2026-03-03)
 
 ### Fixed

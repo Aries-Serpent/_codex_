@@ -60,7 +60,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | Area | Gap | Priority | Owner |
 |------|-----|:--------:|-------|
 | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` | Section 9 CI workflows table missing `embedding-index-rebuild.yml` as Tier-1 (promoted from Tier-2 in PR #3448) | Medium | next agent session |
-| `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` | Generated at Phase 0 against 91 workflows; current count may differ; stale KPIs | Low | scheduled refresh |
+| `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` | Generated at Phase 0 against 91 workflows; updated to 96 at Phase 7 | Low | complete |
 | `docs/arch/ADR-*.md` | 5 ADRs written but not linked from system guide Section 12 | Medium | next agent session |
 | `docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md` | Does not reference PR #3477/#3478 final polish items (handoff protocol fix, R-12 hardening) | Low | next agent session |
 | `.github/copilot-prompts/active/` | PR-3474/3477/3478 followup prompts have placeholder validation commands | Low | resolved in PR #3474 (reviewer comment) |

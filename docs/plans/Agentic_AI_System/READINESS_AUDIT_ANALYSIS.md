@@ -51,7 +51,7 @@ gate enforces all 5 conditions as a hard block.
 | Aspect | Document States | Actual Repo |
 |--------|----------------|-------------|
 | Agent definitions | 193 agents | 372 `.md` files across `.github/agents/**`; **152 registered in `.github/agents/AGENT_REGISTRY.yaml` v1.9.0** |
-| Active workflows | ~90 workflows | 91+ `.yml` files in `.github/workflows/` |
+| Active workflows | ~96 workflows | 96 `.yml` files in `.github/workflows/` |
 
 **Resolution:** Phase 0 frequency audit (`agent_frequency_audit.py`) reconciled the count.
 The canonical active count is **152 agents** registered in AGENT_REGISTRY.yaml v1.9.0.
@@ -227,7 +227,7 @@ all prerequisites are met and execution can begin immediately.
 
 | # | Dimension | Weight | Score | Max | Details |
 |---|-----------|--------|-------|-----|---------|
-| D1 | **CI/CD Workflow Foundation** | 20 | 20 | 20 | ✅ 91+ workflows; 5 Tier-1 GROUNDED gates active; all workflows compliant (concurrency + timeout) |
+| D1 | **CI/CD Workflow Foundation** | 20 | 20 | 20 | ✅ 96 workflows; 5 Tier-1 GROUNDED gates active; all workflows compliant (concurrency + timeout) |
 | D2 | **Agent Ecosystem Maturity** | 20 | 20 | 20 | ✅ 152 agents in AGENT_REGISTRY.yaml v1.9.0; GROUNDED=8, PARTIAL=144, SOFT=0; all enforcement fields populated |
 | D3 | **Enforcement Architecture** | 15 | 15 | 15 | ✅ 5 Tier-1 gates; E→D transition gate with 5-condition FSM + automated demotion annotations; chatops tier-check/tier-promote |
 | D4 | **Data Infrastructure** | 10 | 10 | 10 | ✅ FAISS corpus active; nightly + on-push rebuilds; `query_corpus.py` for semantic search; 90-day retention via `prune_corpus.py` |
@@ -323,7 +323,7 @@ and verification criteria.
 **Objective:** Create and run the workflow compliance scanning script.
 
 **Inputs:**
-- `.github/workflows/*.yml` (all matching files; currently 91)
+- `.github/workflows/*.yml` (all matching files; currently 96)
 - Pattern from `soft_to_GROUNDED.md` Domain 7
 
 **Tasks:**

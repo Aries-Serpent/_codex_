@@ -194,7 +194,7 @@ jobs:
 - Redundant setup steps
 
 **After Consolidation:**
-- 91 active workflows (3 consolidated into suites)
+- 96 active workflows (3 consolidated into suites)
 - 71 workflows with optimized caching (up from 51)
 - 100% Python 3.12 compliance
 - Shared cache infrastructure

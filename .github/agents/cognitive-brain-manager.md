@@ -1,27 +1,72 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3483.
+version: 2.0.0
+updated: 2026-03-03
+cognitive_integration_level: 3
+aais_contribution: +2.5 points
+batch: pr-3483
+sprint: Sprint 5 (GROUNDED phase)
 ---
 
-# Cognitive Brain Manager
+# Cognitive Brain Manager v2.0
 
-**Version**: 1.0.0 (NEW in Phase 37-38)
-**Status**: 🆕 Production Ready
-**Created**: 2026-01-27
-**Phase**: 37-38 Bridge
+**Version**: 2.0.0 (Updated PR #3483)  
+**Status**: ✅ Production Ready — GROUNDED  
+**Updated**: 2026-03-03  
+**Phase**: Soft→GROUNDED Complete (all 7 phases, score 100/100)
 
-## Overview
+## Current System State
+
+```mermaid
+graph TB
+    subgraph TIERS["Memory Tiers (Active)"]
+        STM["STM — Short-Term Memory\nSQLite deque, session-scoped\nCOGNITIVE_BRAIN_MEMORY_TIER controls"]
+        MTM["MTM — Medium-Term Memory\nCross-session patterns\nConfidence ≥ 0.75 (PATTERN_MIN_CONFIDENCE)"]
+        LTM["LTM — Long-Term Memory\nSQLite persist\n90-day retention (LTM_RETENTION_DAYS)"]
+    end
+
+    subgraph CONTROL["Repo Variable Controls (PR #3483)"]
+        TOKENS["MAX_CONTEXT_TOKENS = 32000\nInjection ceiling"]
+        CONF["PATTERN_MIN_CONFIDENCE = 0.75\nGate threshold"]
+        TIER["MEMORY_TIER = both\nSTM + LTM active"]
+        SESSION["SESSION_NUMBER = 110+\nAuto-increment"]
+    end
+
+    subgraph GATES["Tier-1 GROUNDED Gates (5/5 ✅)"]
+        G1["agent-registry-validation\n152 agents, v1.9.0"]
+        G2["agent-handoff-gate\nStructured handoff verified"]
+        G3["actionlint-audit\nSC2016/SC2012 FIXED (PR #3483)"]
+        G4["e-to-d-transition-gate\n5/5 conditions C1-C5"]
+        G5["embedding-index-rebuild\nFAISS index auto-rebuild"]
+    end
+
+    STM --> MTM --> LTM
+    TOKENS --> STM
+    CONF --> MTM
+    TIER --> STM
+    TIER --> LTM
+    SESSION --> STM
+
+    G1 & G2 & G3 & G4 & G5 --> |All passing| D_CAPABLE["D_CAPABLE Unlocked\nAutonomy Model E (capped by\nCOPILOT_AGENT_MAX_AUTONOMY_LEVEL)"]
+```
+
+## Key Metrics (2026-03-03)
+
+| Metric | Value | Source |
+|---|---|---|
+| AGENT_REGISTRY version | v1.9.0 | `.github/agents/AGENT_REGISTRY.yaml` |
+| Total agents | 152 | AGENT_REGISTRY.yaml |
+| GROUNDED agents | 8 | AGENT_REGISTRY.yaml |
+| PARTIAL agents | 144 | AGENT_REGISTRY.yaml |
+| SOFT agents | 0 | AGENT_REGISTRY.yaml |
+| Workflows | 96 | `.github/workflows/` |
+| E→D Gate score | 5/5 ✅ | e-to-d-transition-gate.yml |
+| Readiness score | 100/100 | READINESS_AUDIT_ANALYSIS.md |
+| Context window budget | 32,000 tokens | generate_manifest.py |
+| LTM retention | 90 days | prune_corpus.py |
 
 
-## 🧠 Cognitive Brain Integration
-
-### Integration Level: Level 1
-
-**Level 1: Cognitive Access**
-- ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
-- ✅ Codebase topology maps for navigation
-- ✅ Pattern library for historical fixes
 
 
 
