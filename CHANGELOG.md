@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3483 CI fix — actionlint-audit SC2016/SC2012 (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Added `# shellcheck disable=SC2016` before `actionlint -format` invocation — `$e` is Go template syntax, not a shell variable; SC2016 false positive suppressed |
+| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Replaced 2× `$(ls .github/workflows/*.yml \| wc -l)` with `$(find .github/workflows -maxdepth 1 -name '*.yml' \| wc -l)` — SC2012 non-alphanumeric filename safety |
+| W-084 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-084 entry added per cognitive pre-flight REQ-4 |
+
 ## [Unreleased] — PR #3474 CI fixes + documentation sync (2026-03-03)
 
 ### Fixed
