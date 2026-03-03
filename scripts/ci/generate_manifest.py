@@ -53,6 +53,11 @@ INJECTION_BLOCKLIST = [
     r"<!--",
 ]
 
+# R-12: Maximum serialised context size allowed for injection into agent_context.json.
+# Prevents prompt-injection surface expansion via manifest inflation.
+# Current safe payload is ~30 KB; 32 KB provides headroom while blocking malicious growth.
+CONTEXT_WINDOW_BUDGET: int = 32_000
+
 
 # ── KPI extraction from GROUNDED_VS_SOFT_ENFORCEMENT.md ─────────────────────
 def extract_enforcement_kpis() -> dict[str, int]:
@@ -128,12 +133,21 @@ def get_operating_model_status() -> dict[str, Any]:
 
 
 # ── Security: sanitize manifest before injection ─────────────────────────────
-def sanitize_for_injection(manifest: dict[str, Any]) -> dict[str, Any]:
+def sanitize_for_injection(
+    manifest: dict[str, Any],
+    context_window_budget: int = CONTEXT_WINDOW_BUDGET,
+) -> dict[str, Any]:
+    """Return only safe injection fields, enforcing blocklist and budget (R-12)."""
     safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
     safe_str = json.dumps(safe)
     for pattern in INJECTION_BLOCKLIST:
         if re.search(pattern, safe_str, re.IGNORECASE):
             raise ValueError(f"Injection pattern blocked: {pattern}")
+    if len(safe_str) > context_window_budget:
+        raise ValueError(
+            f"Context window budget exceeded: {len(safe_str)} chars"
+            f" > {context_window_budget} limit (R-12)"
+        )
     return safe
 
 

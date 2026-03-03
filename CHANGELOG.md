@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | W-081 | Docs | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` | v1.0→v1.1.0: readiness 68→100/100, gate 3/5→5/5, 151→152 agents, phase table corrected, KPIs at v1.9.0 |
 | W-081 | Docs | `.codex/plans/COGNITIVE_BRAIN_STATUS_PR3478.md` | New: cognitive brain current state, component status, KPI dashboard, next-phase roadmap |
 | W-081 | Docs | `.github/copilot-prompts/active/PR-3478-followup.md` | v2.1.0: complete session history, 5-pass self-review results, next-phase task guide |
+| W-082 | Security | `scripts/ci/generate_manifest.py` | R-12 hardening: added `CONTEXT_WINDOW_BUDGET = 32_000` and `context_window_budget` param to `sanitize_for_injection()` — raises `ValueError` when safe payload > budget, blocking manifest inflation attacks |
 
 ## [Unreleased] — PR #3477 CI fixes (2026-03-02)
 

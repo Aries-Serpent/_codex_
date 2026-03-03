@@ -56,41 +56,36 @@ ls .codex/embeddings/codex_index_meta.json
 
 **File to modify**: `.github/workflows/agent-registry-validation.yml` — add optional embedding rebuild step on push to main (see `SESSION_RESTORE_GROUNDED_FOLLOWUP.md` TASK 1 for exact code).
 
-### Priority 2: chatops `/copilot tier-check` Integration 🟡
+### ✅ Priority 2: chatops `/copilot tier-check` Integration — ALREADY DONE
 
-**Goal**: Expose `auto_promote_tier.py` as a slash command in `.github/workflows/chatops_copilot_trigger.yml`.
+`/copilot tier-check` is fully wired in `.github/workflows/chatops_copilot_trigger.yml` (lines 294–340).
+Dispatches `auto_promote_tier.py --check-only` (dry-run only per Domain 8 guardrails). No changes needed.
 
-```yaml
-# In chatops_copilot_trigger.yml, add case for 'tier-check':
-elif [[ "$COMMAND" == "tier-check" ]]; then
-  python scripts/ci/auto_promote_tier.py --dry-run >> "$GITHUB_STEP_SUMMARY"
-```
+### ✅ Priority 3: 5 Architecture Decision Records (ADRs) — ALREADY DONE
 
-**SAFETY**: DRY-RUN ONLY. Never add `--apply` to live workflow per Domain 8 guardrails.
+All 5 ADRs already exist in `docs/arch/`:
+- `ADR-20260302-agent-registry-schema-v1.9.md` — Why AGENT_REGISTRY.yaml
+- `ADR-20260302-tier1-gate-promotion.md` — Why Tier-1 core.setFailed
+- `ADR-20260302-faiss-memory-corpus.md` — Why FAISS
+- `ADR-20260302-e-to-d-transition-gate.md` — Why E→D gate 5 conditions
+- `ADR-20260302-agentic-governance.md` — Why semgrep/governance
 
-### Priority 3: 5 Architecture Decision Records (ADRs) 🟢
+### ✅ Priority 5: R-12 Context Injection Hardening — DONE (PR #3478)
 
-**Goal**: Document design decisions for Phases 1–6 in `docs/arch/ADR-202603*.md`.
-
-Use existing template: `docs/arch/adr-template.md`
-
-| ADR | Topic |
-|-----|-------|
-| ADR-20260302-001 | Why AGENT_REGISTRY.yaml over dynamic discovery |
-| ADR-20260302-002 | Why Tier-1 `core.setFailed` over advisory warnings |
-| ADR-20260302-003 | Why FAISS over pure keyword search for agent routing |
-| ADR-20260302-004 | Why E→D gate uses 5 discrete conditions (not score-based) |
-| ADR-20260302-005 | Why semgrep rules enforce SOFT-pattern prevention |
+`sanitize_for_injection()` in `scripts/ci/generate_manifest.py` now enforces a `context_window_budget`
+(default `CONTEXT_WINDOW_BUDGET = 32_000` chars). Raises `ValueError` when serialised safe payload
+exceeds the budget, blocking manifest-inflation prompt injection attacks. Commit `W-082`.
 
 ---
 
-## 🔍 5-PASS SELF-REVIEW (PR #3478)
+## 🔍 5-PASS SELF-REVIEW (PR #3478 — all sessions)
 
 ### ✅ Pass 1: Correctness
 - [x] C3 regex fix is surgical — only `❌` → `⚠️` on 2 agent-table rows
 - [x] `CODEX_MANIFEST.json` integrity_sha256 is valid 64-char hex
 - [x] `.secrets.baseline` has 258 entries (257 original + 1 CODEX_MANIFEST.json)
 - [x] No regressions in E→D gate conditions
+- [x] `CONTEXT_WINDOW_BUDGET = 32_000` > current safe payload (29,841 chars) — no false positives
 
 ### ✅ Pass 2: CI / Validation
 - [x] E→D gate: 5/5 ✅
@@ -98,22 +93,29 @@ Use existing template: `docs/arch/adr-template.md`
 - [x] pre-commit end-of-file-fixer: Passed
 - [x] detect-secrets baseline: Updated correctly (258 entries, not wiped)
 - [x] gitleaks: Passed
+- [x] bandit: Passed on generate_manifest.py
+- [x] R-12 hardening: 3/3 test cases verified (normal pass, budget exceeded, blocklist active)
 
 ### ✅ Pass 3: Documentation
-- [x] CHANGELOG.md updated (REQ-5 satisfied)
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated W-079 + W-080 (REQ-4 satisfied)
+- [x] CHANGELOG.md updated (W-079/W-080/W-081/W-082 entries)
+- [x] AGENT_ACCOUNTABILITY_REPORT.md updated W-079→W-082 (REQ-4 satisfied)
 - [x] AGENTIC_REPO_SYSTEM_GUIDE.md updated to v1.1.0 with accurate metrics
 - [x] Follow-up prompt reflects all completed and pending work
+- [x] COGNITIVE_BRAIN_STATUS_PR3478.md updated with current component status
 
 ### ✅ Pass 4: Security
 - [x] No secrets committed
 - [x] `integrity_sha256` in `.secrets.baseline` is hashed (not raw value)
 - [x] No new network calls or auth changes
+- [x] R-12: `context_window_budget` raises `ValueError` on oversized payloads — cannot be bypassed
+- [x] R-12: blocklist patterns still evaluated before budget check — no regression
 
 ### ✅ Pass 5: Integration
 - [x] `⚠️ **SOFT**` rows do NOT affect C5 GROUNDED count (21 ≥ 8)
 - [x] `CODEX_MANIFEST.json` trailing newline confirmed (`\n` at EOF)
 - [x] Pre-existing PEFT test failure confirmed on base branch — not introduced by this PR
+- [x] P2 chatops tier-check confirmed already wired (lines 294–340 chatops_copilot_trigger.yml)
+- [x] P3 all 5 ADRs confirmed already present in docs/arch/
 
 **Self-review result: 0 open concerns — safe to merge.**
 
@@ -127,18 +129,18 @@ Use existing template: `docs/arch/adr-template.md`
 2. Load `.codex/docs/SESSION_RESTORE_GROUNDED_FOLLOWUP.md` (TASK 1–5 detail)
 3. Verify PR #3478 is merged; if not, check CI and unblock
 4. Execute Priority 1 (FAISS seed) — requires `gh workflow run` (owner token)
-5. Execute Priority 2 (chatops `tier-check` command integration)
-6. Execute Priority 3 (5 ADRs using `docs/arch/adr-template.md`)
-7. Defer Tier-1 promotions (TASK 4+5) until 2-sprint observation window passes
-8. Update this file, post status comment, regenerate if work remains
+5. P2, P3, P5 are all **DONE** — do NOT redo them
+6. Remaining: P4 (2-sprint observation before Tier-1 promotion of embedding gate)
+7. Update this file, post status comment
 
 **Safety guards**:
 - `auto_promote_tier.py`: DRY-RUN ONLY — never `--apply` in CI
 - Tier-1 promotions: observation window required before `core.setFailed` / `exit 1`
 - CODEX_MANIFEST.json: regenerate on each commit touching AGENT_REGISTRY.yaml
+- `sanitize_for_injection()`: `CONTEXT_WINDOW_BUDGET = 32_000` — raise if exceeded (R-12)
 
 ---
 
 **Generated**: 2026-03-03
-**Template Version**: 2.1.0
-**Last Updated**: 2026-03-03 00:08:00Z
+**Template Version**: 2.2.0
+**Last Updated**: 2026-03-03 00:33:00Z

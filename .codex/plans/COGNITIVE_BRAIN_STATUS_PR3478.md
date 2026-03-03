@@ -51,11 +51,11 @@ Operating Model:            E (advisory) — D_CAPABLE once human activates
 | build_embeddings.py | ✅ Deployed | FAISS all-MiniLM-L6-v2, 512 chunks, 90-day retention |
 | query_corpus.py | ✅ Deployed | Semantic search with keyword fallback |
 | orchestrator_routing.py | ⚠️ Fallback | FAISS index not seeded in CI — keyword search active |
-| auto_promote_tier.py | ✅ CLI only | Dry-run CLI; chatops integration pending (TASK 2) |
+| auto_promote_tier.py | ✅ CLI + chatops | `/copilot tier-check` wired in `chatops_copilot_trigger.yml` (lines 294–340) |
 | enforcement_kpi_dashboard.py | ✅ Deployed | CI KPI reporting |
 | semgrep/soft_enforcement.yaml | ✅ Active | 6 rules detecting SOFT patterns |
 | CODEOWNERS | ✅ Active | 12 paths protected |
-| sanitize_for_injection() | ✅ Active | R-12 context injection hardening |
+| sanitize_for_injection() | ✅ R-12 hardened | blocklist + `CONTEXT_WINDOW_BUDGET=32_000` (PR #3478 W-082) |
 
 ---
 
@@ -88,13 +88,13 @@ Tier-1 Gates Active:
 
 ### Immediate (post-merge PR #3478)
 
-| Priority | Task | Owner | Blocker |
-|----------|------|-------|---------|
-| 🔴 P1 | Seed FAISS index via `gh workflow run embedding-index-rebuild.yml` | Human (owner token) | Manual trigger |
-| 🟡 P2 | Add `auto_promote_tier.py --dry-run` as `/copilot tier-check` chatops command | Copilot | None |
-| 🟢 P3 | Write 5 ADRs (`docs/arch/ADR-20260302-00[1-5].md`) | Copilot | None |
-| 🔵 P4 | Verify 2-sprint observation window for e-to-d gate (Tier-1 already active) | Review | 2 sprints |
-| 🔵 P5 | Add `context_window_budget` enforcement to `sanitize_for_injection()` (R-12 hardening) | Copilot | None |
+| Priority | Task | Owner | Status |
+|----------|------|-------|--------|
+| 🔴 P1 | Seed FAISS index via `gh workflow run embedding-index-rebuild.yml` | Human (owner token) | ⏳ Requires manual trigger post-merge |
+| 🟡 P2 | `/copilot tier-check` chatops command | ✅ Done | Already wired in `chatops_copilot_trigger.yml` lines 294–340 |
+| 🟢 P3 | Write 5 ADRs (`docs/arch/ADR-20260302-*.md`) | ✅ Done | All 5 already present in `docs/arch/` |
+| 🔵 P4 | Verify 2-sprint observation window for e-to-d gate | Review | Tier-1 already active; defer promotion decision |
+| 🟢 P5 | `context_window_budget` R-12 hardening in `sanitize_for_injection()` | ✅ Done (W-082) | `CONTEXT_WINDOW_BUDGET=32_000` in `generate_manifest.py` |
 
 ### Continuation Prompt
 
