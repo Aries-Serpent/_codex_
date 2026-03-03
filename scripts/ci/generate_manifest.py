@@ -137,7 +137,22 @@ def sanitize_for_injection(
     manifest: dict[str, Any],
     context_window_budget: int = CONTEXT_WINDOW_BUDGET,
 ) -> dict[str, Any]:
-    """Return only safe injection fields, enforcing blocklist and budget (R-12)."""
+    """Return only safe injection fields, enforcing blocklist and budget (R-12).
+
+    Args:
+        manifest: Raw manifest dict (as loaded from CODEX_MANIFEST.json).
+        context_window_budget: Maximum allowed size (chars) for the serialised
+            safe payload.  Defaults to ``CONTEXT_WINDOW_BUDGET`` (32 000).
+            Raise ``ValueError`` when the payload exceeds this limit to prevent
+            prompt-injection surface expansion via manifest inflation (R-12).
+
+    Returns:
+        Dict containing only the fields in ``SAFE_INJECTION_FIELDS``.
+
+    Raises:
+        ValueError: If any ``INJECTION_BLOCKLIST`` pattern is found, or if the
+            serialised payload exceeds ``context_window_budget``.
+    """
     safe = {k: v for k, v in manifest.items() if k in SAFE_INJECTION_FIELDS}
     safe_str = json.dumps(safe)
     for pattern in INJECTION_BLOCKLIST:
