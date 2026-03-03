@@ -55,6 +55,7 @@ jobs:
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "## §3a CODEX_MASTER_KEY Verification" >> $GITHUB_STEP_SUMMARY
           echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
@@ -105,6 +106,7 @@ jobs:
         env:
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## §3b CODEX_BACKUP_KEY Verification" >> $GITHUB_STEP_SUMMARY
           echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
@@ -151,6 +153,7 @@ jobs:
 
       - name: "Key status summary"
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 🔑 Key Summary" >> $GITHUB_STEP_SUMMARY
           echo "| Key | Status | Copilot can post autonomously? |" >> $GITHUB_STEP_SUMMARY
@@ -178,6 +181,7 @@ jobs:
 
       - name: "§1b Delegated agent token coverage"
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 🤖 Delegated Agent Token Coverage" >> $GITHUB_STEP_SUMMARY
           echo "| Agent | Category | Token actionable? |" >> $GITHUB_STEP_SUMMARY
@@ -207,6 +211,7 @@ jobs:
           AUTONOMOUS_ACTIONS_ENABLED: ${{ vars.AUTONOMOUS_ACTIONS_ENABLED }}
           COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "## §2 Repository Variables" >> $GITHUB_STEP_SUMMARY
           echo "| Variable | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
@@ -286,6 +291,7 @@ jobs:
           HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
           HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## §3 Repository Secrets" >> $GITHUB_STEP_SUMMARY
           echo "| Secret | Status |" >> $GITHUB_STEP_SUMMARY
@@ -308,6 +314,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## §4 GitHub Discussions" >> $GITHUB_STEP_SUMMARY
 
@@ -327,6 +334,7 @@ jobs:
 
       - name: "§6 Verify workflow permission declarations"
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## §6 Workflow Permissions" >> $GITHUB_STEP_SUMMARY
           echo "| Workflow | permissions block | Status |" >> $GITHUB_STEP_SUMMARY
@@ -344,6 +352,7 @@ jobs:
 
       - name: "§7 Verify follow-up prompt file committed"
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## §7 Follow-up Prompt File" >> $GITHUB_STEP_SUMMARY
           echo "| File | Status |" >> $GITHUB_STEP_SUMMARY
@@ -359,6 +368,7 @@ jobs:
 
       - name: "Summary — what still needs human action"
         run: |
+          # shellcheck disable=SC2086,SC2129
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📋 Human-Only Tasks (cannot be automated)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
