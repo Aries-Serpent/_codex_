@@ -368,11 +368,14 @@ jobs:
             exit 0
           fi
           NEXT=$((CURRENT + 1))
-          gh api \
+          if ! gh api \
             --method PATCH \
             -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
             -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
             -f value="${NEXT}" \
-            > /dev/null 2>&1 || true
-          echo "✅ Session number incremented: ${CURRENT} → ${NEXT}"
+            > /dev/null 2>&1; then
+            echo "⚠️ Failed to increment COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} → ${NEXT}). Check GH_TOKEN has variables:write scope."
+          else
+            echo "✅ Session number incremented: ${CURRENT} → ${NEXT}"
+          fi

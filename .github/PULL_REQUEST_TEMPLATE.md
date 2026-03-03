@@ -1,8 +1,8 @@
 # Pull Request Template
 
-> **Version:** 2.1.0  
-> **Updated:** 2026-01-18  
-> **Repository:** Aries-Serpent/_codex_  
+> **Version:** 2.1.0
+> **Updated:** 2026-01-18
+> **Repository:** Aries-Serpent/_codex_
 > **Status:** 🏆 Level 4 MLOps Certified | 1225+ Tests | 90% Coverage Threshold
 
 ---
@@ -156,6 +156,42 @@ yamllint -c .yamllint.yml .github/workflows/
 - [ ] No hardcoded secrets or sensitive data
 - [ ] No new warnings introduced
 - [ ] Error handling is appropriate
+
+---
+
+## 🚨 CI Failure Triage (Frequently Failing Jobs)
+
+> **Instructions for @mbaetiong:** Check any boxes below for jobs that are currently failing on this PR.
+> Checking a box automatically queues a `@copilot` resolution command in the PR comment template below.
+> Leave all boxes unchecked if CI is green.
+
+### Check all that are currently failing:
+
+| | Workflow | Typical Failure | Copilot Fix Prompt |
+|---|---------|-----------------|-------------------|
+| - [ ] `actionlint-gate` | Workflow Compliance Audit (actionlint) | SC2086/SC1073 shellcheck errors or duplicate step IDs | `@copilot Fix actionlint-audit failure: check .github/workflows/ for SC2086 unquoted vars, SC1073 parse errors, or duplicate step IDs. Run: actionlint .github/workflows/*.yml` |
+| - [ ] `art-validation-fast` | Art_Validation Pipeline / Fast Validation | pre-commit trailing whitespace / EOF / detect-secrets | `@copilot Fix Art_Validation fast failure: run pre-commit hooks on changed files. Check trailing whitespace, end-of-file newlines, detect-secrets baseline, and check-yaml on .github/workflows/. Run: pre-commit run --files <changed_files>` |
+| - [ ] `agent-token-delegation` | Agent Token Delegation (REQ-4/REQ-5) | Missing `AGENT_ACCOUNTABILITY_REPORT.md` or `CHANGELOG.md` touch in last commit | `@copilot Fix Agent Token Delegation failure (REQ-4/REQ-5): touch docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md with appropriate W-NNN entries in the last commit. Both files must appear in git diff HEAD~1 HEAD.` |
+| - [ ] `resilient-validation` | Resilient Validation Suite | pytest failures or import errors in src/codex | `@copilot Fix Resilient Validation Suite failure: check the failing job log for import errors or test failures. Run: pytest tests/ -x --tb=short and fix any broken imports or assertions.` |
+| - [ ] `progressive-validation` | Progressive Validation Suite | Coverage threshold or test regressions | `@copilot Fix Progressive Validation Suite failure: check coverage thresholds in pyproject.toml (currently 90%). Run: pytest --cov=src --cov-report=term-missing --cov-fail-under=90 and add tests for uncovered lines.` |
+| - [ ] `e-to-d-gate` | E→D Transition Readiness Gate | One of 5 transition conditions not met (GROUNDED count, CI rate, manifests) | `@copilot Fix E→D Transition Gate failure: run scripts/ci/enforcement_kpi_dashboard.py to see which of the 5 conditions is failing. Typically: GROUNDED agent count < threshold, CODEX_CI_FAILURE_RATE too high, or CODEX_MANIFEST.json stale. Regenerate: python scripts/ci/generate_manifest.py` |
+| - [ ] `rust-swarm-ci` | Art_Rust-Python Hybrid Swarm CI/CD | Rust compilation errors or cargo test failures | `@copilot Fix Rust Swarm CI failure: check the failing job log for cargo errors. Run: cargo test --workspace in the repo root and fix any compilation or test failures. Note: matrix is restricted to ubuntu-latest only.` |
+| - [ ] `security-scanning` | Art_Security Scanning Suite | Bandit B310/B601 or CodeQL alert | `@copilot Fix Security Scanning failure: run bandit -r src/ and check CodeQL alerts. For B310 add HTTPS-only URL validation + nosec annotation. See .bandit for existing skip list.` |
+| - [ ] `codeql` | Art_"CodeQL" | New CWE finding in changed Python files | `@copilot Fix CodeQL failure: check the code scanning alerts tab for the new finding. Common fixes: parameterize SQL queries, validate URL schemes before urlopen, avoid shell=True in subprocess calls.` |
+| - [ ] `auto-fix-check` | PR Auto-Fix Check | ruff F401 unused imports or SC2086 in workflows | `@copilot Fix PR Auto-Fix Check: run python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/diag.json and then python scripts/ci/copilot_agent_auto_fix.py to apply all auto-fixable patterns.` |
+| - [ ] `pre-merge-validation` | Pre-Merge Validation | Same as auto-fix-check or test failure | `@copilot Fix Pre-Merge Validation failure: run python scripts/ci/auto_fix_common_issues.py and then pytest tests/ -x --tb=short to ensure all checks pass before merge.` |
+| - [ ] `workflow-link-validation` | Art_Workflow Documentation Link Validation | Dead link in .github/workflows/*.yml or docs/ | `@copilot Fix Workflow Link Validation failure: run the link-validator-agent to find and fix broken Markdown/YAML links. Check .github/workflows/*.yml for references to deleted files or renamed steps.` |
+| - [ ] `dependency-submission` | Automatic Dependency Submission | pip dependency graph submission failed | `@copilot Fix Dependency Submission failure: this is usually a transient GitHub API issue. Re-run the workflow. If persistent, check that the GITHUB_TOKEN has dependency-graph write permissions.` |
+| - [ ] `semgrep-sast` | Art_Semgrep SAST (SARIF Upload) | New semgrep policy violation in changed Python | `@copilot Fix Semgrep SAST failure: run semgrep --config .codex/policies/semgrep/ src/ and fix any new findings. Check .codex/policies/semgrep/soft_enforcement.yaml for the active rule set.` |
+| - [ ] `generate-followup` | Generate PR Follow-Up Prompt | Missing required context file or CODEX_MANIFEST.json stale | `@copilot Fix Generate PR Follow-Up Prompt failure: regenerate CODEX_MANIFEST.json with python scripts/ci/generate_manifest.py and ensure .codex/docs/FOLLOWUP_PROMPT_PR3483.md exists and is valid Markdown.` |
+| - [ ] `admin-setup-verify` | Admin Setup Verification | CODEX_MASTER_KEY or CODEX_BACKUP_KEY not functional | `@copilot Fix Admin Setup Verification failure: check that secrets CODEX_MASTER_KEY and CODEX_BACKUP_KEY are set and have issues:write scope. Re-run the workflow manually with the PR number to test probes.` |
+| - [ ] `embedding-rebuild` | Embedding Index Rebuild | FAISS index build failure or missing corpus files | `@copilot Fix Embedding Index Rebuild failure: run python scripts/ci/build_embeddings.py --verify to check corpus integrity. If the corpus is empty, run python scripts/ci/prune_corpus.py --stats first to confirm DB state.` |
+| - [ ] `copilot-swe-agent` | Copilot coding agent | Agent failed to process the request | `@copilot Fix the Copilot SWE agent failure: check the failing run log for the specific error (API timeout, context overflow, or tool execution failure). If context overflow: regenerate CODEX_MANIFEST.json with a lower budget: COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS=16000 python scripts/ci/generate_manifest.py` |
+
+---
+
+> **Auto-fill comment:** Copy the resolution prompt(s) from the checked row(s) above and paste them as a PR comment to queue Copilot for automated resolution.
+> Each prompt is self-contained and provides the specific commands to run.
 
 ---
 

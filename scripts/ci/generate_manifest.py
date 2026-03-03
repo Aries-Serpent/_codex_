@@ -57,9 +57,25 @@ INJECTION_BLOCKLIST = [
 # R-12: Maximum serialised context size allowed for injection into agent_context.json.
 # Prevents prompt-injection surface expansion via manifest inflation.
 # Current safe payload is ~30 KB; 32 KB provides headroom while blocking malicious growth.
+# Budget is enforced via len(json.dumps(payload)) — i.e., serialised byte count, not
+# token count — despite the repo-variable name COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS.
 # Wired to COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS repo variable (P2.1) so CI can override
 # without a code change.  Defaults to 32 000 if the variable is absent.
-CONTEXT_WINDOW_BUDGET: int = int(os.environ.get("COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS", 32_000))
+# Defensive: float() handles "32000.0"; int() handles plain integers; falls back to
+# 32 000 if the variable is set to a non-numeric value.
+try:
+    CONTEXT_WINDOW_BUDGET: int = int(
+        float(os.environ.get("COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS", "32000"))
+    )
+except (ValueError, TypeError):
+    import warnings as _w
+
+    _w.warn(
+        "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS is not a valid number; defaulting to 32 000",
+        RuntimeWarning,
+        stacklevel=1,
+    )
+    CONTEXT_WINDOW_BUDGET = 32_000
 
 
 # ── KPI extraction from GROUNDED_VS_SOFT_ENFORCEMENT.md ─────────────────────

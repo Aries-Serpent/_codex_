@@ -56,13 +56,14 @@ jobs:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "## §3a CODEX_MASTER_KEY Verification" >> $GITHUB_STEP_SUMMARY
-          echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "## §3a CODEX_MASTER_KEY Verification" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -z "${CODEX_MASTER_KEY}" ]; then
-            echo "| Key present | ❌ Secret not found in runner env |" >> $GITHUB_STEP_SUMMARY
-            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
+            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
             exit 0
           fi
 
@@ -74,10 +75,10 @@ jobs:
 
           if [ "$READ_STATUS" = "200" ]; then
             REPO_NAME=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_read.json')); print(d.get('full_name','?'))" 2>/dev/null || echo "?")
-            echo "| Read access (GET /repo) | ✅ HTTP 200 — \`${REPO_NAME}\` |" >> $GITHUB_STEP_SUMMARY
+            echo "| Read access (GET /repo) | ✅ HTTP 200 — \`${REPO_NAME}\` |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> $GITHUB_STEP_SUMMARY
-            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
+            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
             exit 0
           fi
 
@@ -92,13 +93,13 @@ jobs:
 
           if [ "$WRITE_STATUS" = "201" ]; then
             COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> $GITHUB_STEP_SUMMARY
-            echo "MASTER_KEY_FUNCTIONAL=true" >> $GITHUB_ENV
-            echo "MASTER_COMMENT_URL=${COMMENT_URL}" >> $GITHUB_ENV
+            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "MASTER_KEY_FUNCTIONAL=true" >> "$GITHUB_ENV"
+            echo "MASTER_COMMENT_URL=${COMMENT_URL}" >> "$GITHUB_ENV"
           else
             WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> $GITHUB_STEP_SUMMARY
-            echo "MASTER_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "MASTER_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
           fi
 
       - name: "§3b Verify CODEX_BACKUP_KEY functional"
@@ -107,14 +108,15 @@ jobs:
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## §3b CODEX_BACKUP_KEY Verification" >> $GITHUB_STEP_SUMMARY
-          echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## §3b CODEX_BACKUP_KEY Verification" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Test | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           if [ -z "${CODEX_BACKUP_KEY}" ]; then
-            echo "| Key present | ❌ Secret not found in runner env |" >> $GITHUB_STEP_SUMMARY
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Key present | ❌ Secret not found in runner env |" >> "$GITHUB_STEP_SUMMARY"
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
             exit 0
           fi
 
@@ -125,10 +127,10 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}" 2>/dev/null)
 
           if [ "$READ_STATUS" = "200" ]; then
-            echo "| Read access (GET /repo) | ✅ HTTP 200 |" >> $GITHUB_STEP_SUMMARY
+            echo "| Read access (GET /repo) | ✅ HTTP 200 |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> $GITHUB_STEP_SUMMARY
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Read access (GET /repo) | ❌ HTTP ${READ_STATUS} — token invalid or expired |" >> "$GITHUB_STEP_SUMMARY"
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
             exit 0
           fi
 
@@ -143,49 +145,51 @@ jobs:
 
           if [ "$WRITE_STATUS" = "201" ]; then
             COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> $GITHUB_STEP_SUMMARY
-            echo "BACKUP_KEY_FUNCTIONAL=true" >> $GITHUB_ENV
+            echo "| Write access (POST comment) | ✅ HTTP 201 — [View comment](${COMMENT_URL}) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "BACKUP_KEY_FUNCTIONAL=true" >> "$GITHUB_ENV"
           else
             WRITE_MSG=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('message','?'))" 2>/dev/null || echo "?")
-            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> $GITHUB_STEP_SUMMARY
-            echo "BACKUP_KEY_FUNCTIONAL=false" >> $GITHUB_ENV
+            echo "| Write access (POST comment) | ❌ HTTP ${WRITE_STATUS}: \`${WRITE_MSG}\` — grant \`issues:write\` (guide §1) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "BACKUP_KEY_FUNCTIONAL=false" >> "$GITHUB_ENV"
           fi
 
       - name: "Key status summary"
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 🔑 Key Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Key | Status | Copilot can post autonomously? |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|--------|---------------------------------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 🔑 Key Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Key | Status | Copilot can post autonomously? |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|--------|---------------------------------|" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ]; then
-            echo "| CODEX_MASTER_KEY | ✅ Fully functional | ✅ YES |" >> $GITHUB_STEP_SUMMARY
+            echo "| CODEX_MASTER_KEY | ✅ Fully functional | ✅ YES |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| CODEX_MASTER_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> $GITHUB_STEP_SUMMARY
+            echo "| CODEX_MASTER_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
-            echo "| CODEX_BACKUP_KEY | ✅ Fully functional | ✅ YES (fallback) |" >> $GITHUB_STEP_SUMMARY
+            echo "| CODEX_BACKUP_KEY | ✅ Fully functional | ✅ YES (fallback) |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| CODEX_BACKUP_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> $GITHUB_STEP_SUMMARY
+            echo "| CODEX_BACKUP_KEY | ❌ Write blocked | ❌ NO — fix §1 |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ] || [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "✅ **At least one key is functional — autonomous posting is ACTIVE**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "✅ **At least one key is functional — autonomous posting is ACTIVE**" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "❌ **No functional write key — complete §1 in ADMIN_MANUAL_SETUP_GUIDE.md**" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: "§1b Delegated agent token coverage"
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 🤖 Delegated Agent Token Coverage" >> $GITHUB_STEP_SUMMARY
-          echo "| Agent | Category | Token actionable? |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|----------|-------------------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 🤖 Delegated Agent Token Coverage" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Agent | Category | Token actionable? |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|----------|-------------------|" >> "$GITHUB_STEP_SUMMARY"
 
           # Determine whether at least one key works
           if [ "${MASTER_KEY_FUNCTIONAL}" = "true" ] || [ "${BACKUP_KEY_FUNCTIONAL}" = "true" ]; then
@@ -196,11 +200,13 @@ jobs:
             COPILOT_SETUP="❌ NO — fix §1/§3 first"
           fi
 
-          echo "| \`copilot-swe-agent[bot]\` | GitHub Copilot coding agent | ${COPILOT_SETUP} |" >> $GITHUB_STEP_SUMMARY
-          echo "| \`github-copilot[bot]\` | Copilot custom agents | ${STATUS} |" >> $GITHUB_STEP_SUMMARY
-          echo "| \`github-actions[bot]\` | CI/CD AI workflow agents | ${STATUS} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> All three agent identities are added to \`COGNITIVE_BRAIN_ALLOWED_ACTORS\` by the §2 update step above." >> $GITHUB_STEP_SUMMARY
+          {
+            echo "| \`copilot-swe-agent[bot]\` | GitHub Copilot coding agent | ${COPILOT_SETUP} |"
+            echo "| \`github-copilot[bot]\` | Copilot custom agents | ${STATUS} |"
+            echo "| \`github-actions[bot]\` | CI/CD AI workflow agents | ${STATUS} |"
+            echo ""
+            echo "> All three agent identities are added to \`COGNITIVE_BRAIN_ALLOWED_ACTORS\` by the §2 update step above."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # ── Original §2–§8 checks continue below ─────────────────────────────────
 
@@ -212,18 +218,19 @@ jobs:
           COGNITIVE_BRAIN_ALLOWED_ACTORS: ${{ vars.COGNITIVE_BRAIN_ALLOWED_ACTORS }}
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "## §2 Repository Variables" >> $GITHUB_STEP_SUMMARY
-          echo "| Variable | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "## §2 Repository Variables" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Variable | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           check_var() {
             local name=$1
             local val=$2
             if [ -n "$val" ]; then
-              echo "| \`$name\` | ✅ Set (\`$val\`) |" >> $GITHUB_STEP_SUMMARY
+              echo "| \`$name\` | ✅ Set (\`$val\`) |" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "| \`$name\` | ❌ Missing — see guide §2 |" >> $GITHUB_STEP_SUMMARY
-              echo "MISSING_VAR=true" >> $GITHUB_ENV
+              echo "| \`$name\` | ❌ Missing — see guide §2 |" >> "$GITHUB_STEP_SUMMARY"
+              echo "MISSING_VAR=true" >> "$GITHUB_ENV"
             fi
           }
 
@@ -292,22 +299,23 @@ jobs:
           HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## §3 Repository Secrets" >> $GITHUB_STEP_SUMMARY
-          echo "| Secret | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## §3 Repository Secrets" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Secret | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           if [ "$HAS_MASTER_KEY" = "true" ]; then
-            echo "| \`CODEX_MASTER_KEY\` | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+            echo "| \`CODEX_MASTER_KEY\` | ✅ Present |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| \`CODEX_MASTER_KEY\` | ❌ Missing — see guide §3 |" >> $GITHUB_STEP_SUMMARY
-            echo "MISSING_SECRET=true" >> $GITHUB_ENV
+            echo "| \`CODEX_MASTER_KEY\` | ❌ Missing — see guide §3 |" >> "$GITHUB_STEP_SUMMARY"
+            echo "MISSING_SECRET=true" >> "$GITHUB_ENV"
           fi
 
           if [ "$HAS_BACKUP_KEY" = "true" ]; then
-            echo "| \`CODEX_BACKUP_KEY\` | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+            echo "| \`CODEX_BACKUP_KEY\` | ✅ Present |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| \`CODEX_BACKUP_KEY\` | ⚠️ Optional backup key missing |" >> $GITHUB_STEP_SUMMARY
+            echo "| \`CODEX_BACKUP_KEY\` | ⚠️ Optional backup key missing |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: "§4 Verify GitHub Discussions accessible"
@@ -315,8 +323,9 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## §4 GitHub Discussions" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## §4 GitHub Discussions" >> "$GITHUB_STEP_SUMMARY"
 
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -H "Authorization: Bearer $GH_TOKEN" \
@@ -324,63 +333,66 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/discussions" 2>/dev/null || echo "000")
 
           if [ "$STATUS" = "200" ]; then
-            echo "| Discussions API | ✅ Enabled (HTTP 200) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Discussions API | ✅ Enabled (HTTP 200) |" >> "$GITHUB_STEP_SUMMARY"
           elif [ "$STATUS" = "404" ]; then
-            echo "| Discussions API | ❌ Not enabled — see guide §4 (HTTP 404) |" >> $GITHUB_STEP_SUMMARY
-            echo "DISCUSSIONS_DISABLED=true" >> $GITHUB_ENV
+            echo "| Discussions API | ❌ Not enabled — see guide §4 (HTTP 404) |" >> "$GITHUB_STEP_SUMMARY"
+            echo "DISCUSSIONS_DISABLED=true" >> "$GITHUB_ENV"
           else
-            echo "| Discussions API | ⚠️ Unexpected response (HTTP $STATUS) |" >> $GITHUB_STEP_SUMMARY
+            echo "| Discussions API | ⚠️ Unexpected response (HTTP $STATUS) |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: "§6 Verify workflow permission declarations"
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## §6 Workflow Permissions" >> $GITHUB_STEP_SUMMARY
-          echo "| Workflow | permissions block | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|------------------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## §6 Workflow Permissions" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Workflow | permissions block | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|----------|------------------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           for wf in \
             ".github/workflows/cognitive_brain_ci_feedback.yml" \
             ".github/workflows/resilient_validation.yml"; do
             if grep -q "^permissions:" "$wf" 2>/dev/null; then
-              echo "| \`$wf\` | ✅ Declared |" >> $GITHUB_STEP_SUMMARY
+              echo "| \`$wf\` | ✅ Declared |" >> "$GITHUB_STEP_SUMMARY"
             else
-              echo "| \`$wf\` | ⚠️ No explicit permissions block |" >> $GITHUB_STEP_SUMMARY
+              echo "| \`$wf\` | ⚠️ No explicit permissions block |" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
 
       - name: "§7 Verify follow-up prompt file committed"
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## §7 Follow-up Prompt File" >> $GITHUB_STEP_SUMMARY
-          echo "| File | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## §7 Follow-up Prompt File" >> "$GITHUB_STEP_SUMMARY"
+          echo "| File | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|--------|" >> "$GITHUB_STEP_SUMMARY"
 
           PROMPT=".github/copilot-prompts/active/PR-3401-followup.md"
           if [ -f "$PROMPT" ]; then
             LINES=$(wc -l < "$PROMPT")
-            echo "| \`$PROMPT\` | ✅ Present ($LINES lines) |" >> $GITHUB_STEP_SUMMARY
+            echo "| \`$PROMPT\` | ✅ Present ($LINES lines) |" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "| \`$PROMPT\` | ❌ Missing |" >> $GITHUB_STEP_SUMMARY
+            echo "| \`$PROMPT\` | ❌ Missing |" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: "Summary — what still needs human action"
         run: |
           # shellcheck disable=SC2086,SC2129
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## 📋 Human-Only Tasks (cannot be automated)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Item | URL | Est. time |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|-----|-----------|" >> $GITHUB_STEP_SUMMARY
-          echo "| §1 Grant Copilot App \`issues: write\` | [org/settings/installations](https://github.com/organizations/Aries-Serpent/settings/installations) | 2 min |" >> $GITHUB_STEP_SUMMARY
-          echo "| §3 Create \`CODEX_MASTER_KEY\` secret (if missing above) | [repo/settings/secrets](https://github.com/${{ github.repository }}/settings/secrets/actions) | 3 min |" >> $GITHUB_STEP_SUMMARY
-          echo "| §4 Enable Discussions (if missing above) | [repo/settings](https://github.com/${{ github.repository }}/settings) → Features | 1 min |" >> $GITHUB_STEP_SUMMARY
-          echo "| §5 Webhook (optional) | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks) | 5 min |" >> $GITHUB_STEP_SUMMARY
-          echo "| §7 Post \`@copilot\` S109 comment | [PR #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 📋 Human-Only Tasks (cannot be automated)" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | URL | Est. time |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|-----|-----------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| §1 Grant Copilot App \`issues: write\` | [org/settings/installations](https://github.com/organizations/Aries-Serpent/settings/installations) | 2 min |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| §3 Create \`CODEX_MASTER_KEY\` secret (if missing above) | [repo/settings/secrets](https://github.com/${{ github.repository }}/settings/secrets/actions) | 3 min |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| §4 Enable Discussions (if missing above) | [repo/settings](https://github.com/${{ github.repository }}/settings) → Features | 1 min |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| §5 Webhook (optional) | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks) | 5 min |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| §7 Post \`@copilot\` S109 comment | [PR #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: "§8 Auto-post @copilot continue with dynamic CI failure context"
         env:

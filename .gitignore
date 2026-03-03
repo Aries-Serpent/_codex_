@@ -257,6 +257,7 @@ artifacts/coverage.xml
 artifacts/docs/api/
 logs/*
 validation.log
+validation-junit.xml
 report.xml
 coverage.xml
 validation_summary.json
