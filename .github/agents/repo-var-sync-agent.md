@@ -1,18 +1,20 @@
 ---
 name: Repo Var Sync Agent
-description: Keeps `.codex/agent_context.json` bidirectionally in sync with GitHub Actions repository variables (COPILOT_* / CODEX_*)
-version: 1.0.0
-updated: 2026-03-01
+description: Keeps `.codex/agent_context.json` bidirectionally in sync with GitHub Actions repository variables (COPILOT_* / CODEX_* / COGNITIVE_BRAIN_* / AGENT_* / EMBEDDING_*)
+version: 1.1.0
+updated: 2026-03-03
 cognitive_integration_level: 3
 aais_contribution: +2.5 points
-batch: pr-3421
-sprint: Sprint 4
+batch: pr-3483
+sprint: Sprint 4 (updated)
 ---
 
-# Repo Var Sync Agent v1.0
+# Repo Var Sync Agent v1.1
 
-> **Sprint 4 agent**: Ensures `.codex/agent_context.json` and GitHub Actions repo variables
-> (`COPILOT_*` / `CODEX_*`) are always in sync. Runs as part of `copilot-agent-vars-bootstrap.yml`
+> **Updated PR #3483**: Extended to sync all 13 new variables added in PR #3483.  
+> Ensures `.codex/agent_context.json` and GitHub Actions repo variables
+> (`COPILOT_*` / `CODEX_*` / `COGNITIVE_BRAIN_*` / `AGENT_*` / `EMBEDDING_*` / `AUTO_*`)
+> are always in sync. Runs as part of `copilot-agent-vars-bootstrap.yml`
 > and can be triggered manually for drift detection.
 
 ## Activation
@@ -23,11 +25,35 @@ sprint: Sprint 4
 
 ## Architecture
 
+```mermaid
+flowchart LR
+    subgraph GH["GitHub Repo Variables"]
+        CB["COGNITIVE_BRAIN_*\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
+        CLI["COPILOT_*\nCLI_BASE_URL\nCLI_ENABLED\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED\nAGENT_SESSION_RESTORE_ENABLED\nAGENT_MAX_AUTONOMY_LEVEL"]
+        CICD["CODEX_*\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nLOG_LEVEL\nNETWORK_MODE"]
+        MISC["AGENT_HANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED\nAUDIT_RETENTION_DAYS"]
+    end
+
+    subgraph FILE[".codex/agent_context.json"]
+        CONTEXT["All COPILOT_* CODEX_*\nCOGNITIVE_BRAIN_* AGENT_*\nEMBEDDING_* AUTO_*\nkeys and values"]
+    end
+
+    GH -->|Direction A: bootstrap sync| FILE
+    FILE -->|Direction B: propagate changes| GH
+    GH <-->|Drift detection: diff| FILE
 ```
-Direction A (vars → file):   GitHub API repo vars  →  .codex/agent_context.json
-Direction B (file → vars):   .codex/agent_context.json  →  GitHub API PATCH/POST
-Drift detection:             diff both sources → report mismatches
-```
+
+## Tracked Variable Prefixes (v1.1)
+
+| Prefix | Variables | Count |
+|---|---|---|
+| `COGNITIVE_BRAIN_` | MAX_CONTEXT_TOKENS, LTM_RETENTION_DAYS, PATTERN_MIN_CONFIDENCE, MEMORY_TIER, SESSION_NUMBER, INJECTION_ENABLED, ALLOWED_ACTORS | 7 |
+| `COPILOT_` | CLI_BASE_URL, CLI_ENABLED, AGENT_AUTH_ENABLED, AGENT_FIREWALL_ENABLED, AGENT_SESSION_RESTORE_ENABLED, AGENT_MAX_AUTONOMY_LEVEL | 6 |
+| `CODEX_` | CI_FAILURE_RATE, CI_FAILURE_THRESHOLD, CI_LAST_GREEN_SHA, LOG_LEVEL, NETWORK_MODE, ORG_NAME, AGENT_NAME, API_VERSION, ISOLATED_PATH | 9 |
+| `AGENT_` | HANDOFF_TIMEOUT_SECONDS | 1 |
+| `EMBEDDING_` | INDEX_AUTO_REBUILD | 1 |
+| `AUTO_` | PROMOTE_TIER_ENABLED | 1 |
+| **Total tracked** | | **25** |
 
 ## Responsibilities
 
@@ -46,9 +72,9 @@ headers = {"Authorization": f"Bearer {token}", "Accept": "application/vnd.github
 resp = requests.get(url, headers=headers)
 vars_data = {v["name"]: v["value"] for v in resp.json().get("variables", [])}
 
-# Write only COPILOT_* and CODEX_* prefixed vars
-context = {k: v for k, v in vars_data.items()
-           if k.startswith(("COPILOT_", "CODEX_"))}
+# Sync all tracked prefixes (updated PR #3483)
+TRACKED_PREFIXES = ("COPILOT_", "CODEX_", "COGNITIVE_BRAIN_", "AGENT_", "EMBEDDING_", "AUTO_")
+context = {k: v for k, v in vars_data.items() if k.startswith(TRACKED_PREFIXES)}
 
 os.makedirs(".codex", exist_ok=True)
 with open(".codex/agent_context.json", "w") as f:
@@ -92,6 +118,7 @@ DRIFT REPORT:
 
 ## Constraints
 - Never write secrets to `.codex/agent_context.json` (plain-text file)
-- Only sync `COPILOT_*` and `CODEX_*` prefixed variables
+- Sync prefixes: `COPILOT_*`, `CODEX_*`, `COGNITIVE_BRAIN_*`, `AGENT_*`, `EMBEDDING_*`, `AUTO_*`
 - Always use `CODEX_MASTER_KEY` for write operations; fall back to `CODEX_BACKUP_KEY`
 - Rate limit: max 10 API calls per sync operation
+- **Never overwrite** human governance flags: `AUTONOMOUS_ACTIONS_ENABLED`, `COPILOT_AGENT_AUTH_ENABLED`, `COPILOT_AGENT_FIREWALL_ENABLED`, `COGNITIVE_BRAIN_INJECTION_ENABLED`
