@@ -200,7 +200,7 @@ jobs:
           2. Remove disabled comment header when ready to activate
           3. Test workflow execution in a safe environment
 
-            REPORT_DISABLED
+          REPORT_DISABLED
           fi
 
           cat >> /tmp/restoration-report.md <<REPORT_FINAL

@@ -5,7 +5,39 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-088 .actionlint.yaml + accountability verify (2026-03-03)
+## [Unreleased] — W-090 reviewer feedback fixes (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-090a | fix | `.github/actionlint.yaml` | Updated header comment from "info/style-level" to "info, style, and warning" to accurately reflect SC2155/SC2046/SC2034/SC1012 warning-level suppressions |
+| W-090b | fix | `.github/workflows/agent_infrastructure_manager.yml` | Fixed `tail` pipeline — replaced `cat file \| tail -5 \|\| echo` (unreliable fallback) with `tail -n 5 file 2>/dev/null \|\| echo`; fixed JSON body injection by building payload via Python `json.dumps()` heredoc |
+| W-090c | fix | `.github/workflows/copilot-evolution-suite.yml` | Fixed `$GITHUB_OUTPUT` injection — replaced `echo "pr_title=${PR_TITLE}"` with multiline `name<<EOF ... EOF` format to safely handle newlines and `key=value` sequences in PR titles |
+
+
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-089a | fix | `.github/actions/setup-python-cached/action.yml` | Added `cache-tier` optional input (informational, no functional effect) — resolves 50+ actionlint `[action]` errors across 35 workflows introduced by PR #3484 |
+| W-089b | fix | `.github/workflows/agent_infrastructure_manager.yml` | Fixed SC1073/SC1072 shell parse errors (line 157: FENCE variable for markdown backticks; line 207: single-line Python JSON builder; line 83: `${var#prefix}` parameter expansion replacing sed) |
+| W-089c | fix | `.github/workflows/auto-fix-common-issues.yml` | Replaced empty string `''` choice option with `'all'` — resolves actionlint `string should not be empty` |
+| W-089d | fix | `.github/actions/apply-ci-fix/action.yml` | Changed `branding.icon` from invalid `'tool'` to valid `'settings'` |
+| W-089e | fix | `.github/workflows/auth-tests.yml` | `file: ./coverage.xml` → `files: ./coverage.xml` for `codecov/codecov-action@v5` |
+| W-089f | fix | `.github/workflows/workflow-restore.yml` | Fixed heredoc end token `REPORT_DISABLED` indentation (12→10 spaces YAML) — resolves SC1039/SC1073/SC1072 cascade |
+| W-089g | fix | `.github/workflows/agent-auth-delegation.yml` | Moved `github.head_ref` to `env: TARGET_BRANCH` before git push — resolves untrusted expression security alert |
+| W-089h | fix | `.github/workflows/copilot-evolution-suite.yml` | Moved `github.event.pull_request.title` to `env: PR_TITLE` — resolves untrusted expression security alert |
+| W-089i | fix | `.github/workflows/scheduled-dependency-audit.yml` | Replaced `replace(matrix.platform, '/', '-')` with a prior `id: safe-platform` step — resolves undefined function error |
+| W-089j | fix | `.github/workflows/optimized-ci.yml` | Added `id: cache` to Setup Python step — resolves undefined `steps.cache` job output |
+| W-089k | fix | `.github/workflows/repo-organization.yml` | Added `id: analyze` step producing `root_files`/`orphan_files`/`archive_candidates` outputs |
+| W-089l | fix | `.github/workflows/audit-qa-suite.yml` | Added `post_comment` string input to `workflow_call` inputs block |
+| W-089m | fix | `.github/workflows/workflow-analytics-unified.yml` | Added `commit_sha` string input to `workflow_dispatch` inputs block |
+| W-089n | fix | `.github/actionlint.yaml` | Expanded suppression list: SC2001/SC2006/SC2155/SC2046/SC2034/SC1012/SC2026/SC2153/SC2223/SC2162 |
+| W-089o | docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-089 entry added (REQ-4) |
+
+
 
 ### Fixed
 

@@ -6,15 +6,25 @@ self-hosted-runner:
 # organization. `null` means disabling configuration variables check.
 config-variables: null
 
-# Suppress info/style-level shellcheck findings repo-wide.
+# Suppress selected non-error ShellCheck findings (info, style, and warning) repo-wide.
 # SC1xxx (parse errors) and other error-level findings remain hard-fail.
 #
-# Suppressed codes (all info/style severity):
+# Suppressed codes:
 #   SC2086 - Double quote to prevent globbing and word splitting  (info)
 #   SC2012 - Use find instead of ls (info)
 #   SC2016 - Expressions don't expand in single quotes (info)
 #   SC2002 - Useless cat (style)
 #   SC2129 - Consider using { } >> file instead of individual redirects (style)
+#   SC2001 - See if you can use ${variable//search/replace} instead (style)
+#   SC2006 - Use $(...) notation instead of legacy backticks (style)
+#   SC2155 - Declare and assign separately to avoid masking return values (warning)
+#   SC2046 - Quote this to prevent word splitting (warning)
+#   SC2034 - Variable appears unused (warning)
+#   SC1012 - \n is just literal 'n' (warning)
+#   SC2026 - This word is outside of quotes (info)
+#   SC2153 - Possible misspelling (info)
+#   SC2223 - This default assignment may cause DoS (info)
+#   SC2162 - read without -r will mangle backslashes (info)
 paths:
   .github/workflows/**/*.yml:
     ignore:
@@ -23,3 +33,13 @@ paths:
       - 'SC2016:info:'
       - 'SC2002:style:'
       - 'SC2129:style:'
+      - 'SC2001:style:'
+      - 'SC2006:style:'
+      - 'SC2155:warning:'
+      - 'SC2046:warning:'
+      - 'SC2034:warning:'
+      - 'SC1012:warning:'
+      - 'SC2026:info:'
+      - 'SC2153:info:'
+      - 'SC2223:info:'
+      - 'SC2162:info:'

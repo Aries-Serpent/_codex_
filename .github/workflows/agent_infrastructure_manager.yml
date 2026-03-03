@@ -91,7 +91,7 @@ jobs:
           fi
 
           if [ "$EVENT_NAME" = "repository_dispatch" ]; then
-            OP=$(echo "$DISPATCH_OPERATION" | sed 's/agent-infra-//')
+            OP="${DISPATCH_OPERATION#agent-infra-}"
             echo "authorized=true" >> $GITHUB_OUTPUT
             echo "operation=${OP}" >> $GITHUB_OUTPUT
             echo "extra_args=${{ github.event.client_payload.extra_args }}" >> $GITHUB_OUTPUT
@@ -155,12 +155,21 @@ jobs:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         run: |
-          STATUS=$(cat .codex/evidence/var_write_audit.jsonl 2>/dev/null | tail -5 || echo "no audit log")
+          STATUS=$(tail -n 5 .codex/evidence/var_write_audit.jsonl 2>/dev/null || echo "no audit log")
+          export STATUS
+          BODY=$(python3 - << 'PY'
+import json, os, sys
+status = os.environ.get("STATUS", "")
+fence = "```"
+body = f"✅ **Agent Infrastructure:** Variable write complete.\n{fence}\n{status}\n{fence}"
+sys.stdout.write(json.dumps({"body": body}))
+PY
+          )
           curl -s -X POST \
             -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"✅ **Agent Infrastructure:** Variable write complete.\\n\\`\\`\\`\\n${STATUS}\\n\\`\\`\\`\"}" \
+            -d "${BODY}" \
             > /dev/null
 
   # ── 2. Apply webhook configuration from .codex/webhook_config.json ───────
@@ -209,11 +218,14 @@ jobs:
           echo "$OUTPUT"
 
           if [ -n "$PR_NUMBER" ]; then
+            FENCE=$(python3 -c 'print(chr(96)*3)')
+            BODY=$(OUTPUT="${OUTPUT}" FENCE="${FENCE}" python3 -c \
+              'import json,os; output=os.environ.get("OUTPUT",""); fence=os.environ.get("FENCE","```"); print(json.dumps({"body":"## Repo Variables\n\n"+fence+"\n"+output+"\n"+fence}))')
             curl -s -X POST \
               -H "Authorization: Bearer ${CODEX_MASTER_KEY}" \
               -H "Accept: application/vnd.github+json" \
               "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-              -d "$(python3 -c "import json,os; print(json.dumps({'body':'## 📋 Repo Variables\n\n```\n'+os.environ['OUTPUT']+'\n```'}))")" \
+              -d "${BODY}" \
               > /dev/null
           fi
 

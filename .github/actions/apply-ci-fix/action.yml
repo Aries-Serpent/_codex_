@@ -302,5 +302,5 @@ runs:
         esac
 
 branding:
-  icon: 'tool'
+  icon: 'settings'
   color: 'green'

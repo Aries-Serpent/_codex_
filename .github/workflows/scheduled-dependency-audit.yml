@@ -81,11 +81,16 @@ jobs:
             --platform ${{ matrix.platform }} \
             --python-version ${{ env.PYTHON_VERSION }}
 
+      - name: Set safe artifact platform name
+        id: safe-platform
+        if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+        run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
+
       - name: Upload wheelhouse with manifest
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: baseline-wheelhouse-${{ replace(matrix.platform, '/', '-') }}
+          name: baseline-wheelhouse-${{ steps.safe-platform.outputs.name }}
           path: ./wheelhouse
           retention-days: 30
 

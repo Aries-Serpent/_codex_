@@ -34,6 +34,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Python
+        id: cache
         uses: ./.github/actions/setup-python-cached
         with:
           python-version: 3.12

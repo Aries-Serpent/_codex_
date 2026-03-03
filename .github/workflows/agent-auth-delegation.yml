@@ -762,6 +762,8 @@ jobs:
         shell: bash
 
       - name: "Commit session token to branch"
+        env:
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -770,7 +772,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore(auth): write provenance session token [skip ci]"
-            git push origin HEAD:refs/heads/${{ github.head_ref || github.ref_name }}
+            git push origin HEAD:refs/heads/${TARGET_BRANCH}
           fi
 
       # ── 3c: Dispatch GitHub Guru to verify & document the variable change ────

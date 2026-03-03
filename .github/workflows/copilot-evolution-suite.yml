@@ -86,9 +86,15 @@ jobs:
       - name: Get PR information
         if: github.event_name == 'pull_request'
         id: pr
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
-          echo "pr_title=${{ github.event.pull_request.title }}" >> $GITHUB_OUTPUT
+          {
+            echo 'pr_title<<EOF'
+            echo "${PR_TITLE}"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           echo "pr_author=${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
 
       - name: Run cascade review
