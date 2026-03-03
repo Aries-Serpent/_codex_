@@ -205,15 +205,17 @@ jobs:
 
       - name: "🔍 Detect Environment Type"
         id: detect_env
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           ENV_TYPE="${{ github.event.inputs.environment_type || 'standard' }}"
           # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
-            if [[ "${{ github.head_ref }}" == *"ml"* ]] || [[ "${{ github.head_ref }}" == *"rag"* ]]; then
+            if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then
               ENV_TYPE="ml-heavy"
-            elif [[ "${{ github.head_ref }}" == *"security"* ]] || [[ "${{ github.head_ref }}" == *"sec"* ]]; then
+            elif [[ "${HEAD_REF}" == *"security"* ]] || [[ "${HEAD_REF}" == *"sec"* ]]; then
               ENV_TYPE="security-scan"
-            elif [[ "${{ github.head_ref }}" == *"docs"* ]] || [[ "${{ github.head_ref }}" == *"documentation"* ]]; then
+            elif [[ "${HEAD_REF}" == *"docs"* ]] || [[ "${HEAD_REF}" == *"documentation"* ]]; then
               ENV_TYPE="documentation"
             fi
           fi
@@ -228,10 +230,34 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
-          cache: 'pip'
-          cache-dependency-path: |
-            requirements*.txt
-            pyproject.toml
+          # No automatic pip cache — managed explicitly below so keys match
+          # the 4-layer hierarchy in .github/actions/setup-python-cached and
+          # all CI workflows share the same cache entries.
+
+      # ── Cache alignment: shared with .github/actions/setup-python-cached ────
+      # L1 — pip download cache: same key format as setup-python-cached so
+      # packages downloaded by any workflow are available to the agent session.
+      - name: "💾 L1 — pip download cache (~/.cache/pip)"
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-
+
+      # L3 — installed venv (.venv_ci): same key as setup-python-cached (extras=dev).
+      # Populating .venv_ci here means CI workflows immediately benefit from the
+      # agent-warmed venv and vice-versa.
+      - name: "💾 L3 — installed venv (.venv_ci)"
+        id: cache-venv
+        uses: actions/cache@v4
+        with:
+          path: .venv_ci
+          key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-
+            ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-
 
       - name: "📦 Set up Node.js ${{ env.NODE_VERSION || '20' }}"
         uses: actions/setup-node@v6
@@ -275,58 +301,60 @@ jobs:
 
       - name: "🔧 Upgrade pip and install build tools"
         run: |
-          python -m pip install --upgrade pip wheel setuptools
-          pip --version
+          # Create .venv_ci if it wasn't restored from cache
+          if [ ! -d ".venv_ci" ]; then
+            python -m venv .venv_ci
+          fi
+          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          # Add venv to PATH for all subsequent steps in this job
+          echo "$GITHUB_WORKSPACE/.venv_ci/bin" >> "$GITHUB_PATH"
 
       - name: "📦 Install Python Dependencies (Standard)"
         if: steps.detect_env.outputs.environment_type == 'standard'
+        env:
+          VENV_CACHE_HIT: ${{ steps.cache-venv.outputs.cache-hit }}
         run: |
-          # Install core dependencies
-          pip install -e ".[dev]" --no-cache-dir
-          # Install additional tooling
-          pip install \
-            ruff \
-            black \
-            mypy \
-            pytest \
-            pytest-cov \
-            pytest-xdist
+          # Install core project deps into .venv_ci (skip full rebuild on exact cache hit)
+          if [ "${VENV_CACHE_HIT}" != "true" ]; then
+            pip install --cache-dir ~/.cache/pip \
+              pytest==8.4.2 pytest-timeout==2.4.0 pytest-xdist==3.8.0 \
+              pytest-cov==5.0.0 pytest-asyncio==1.3.0 pytest-mock==3.15.1 \
+              pytest-randomly pytest-rerunfailures --quiet
+            pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
+          else
+            pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
+          fi
+          # Install additional agent tooling
+          pip install --cache-dir ~/.cache/pip \
+            ruff black mypy --quiet
 
       - name: "🤖 Install Python Dependencies (ML-Heavy)"
         if: steps.detect_env.outputs.environment_type == 'ml-heavy'
         run: |
           # Force CPU-only PyTorch for faster installs
-          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install --cache-dir ~/.cache/pip \
+            torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu --quiet
           # Install with ML extras
-          pip install -e ".[dev,ml]" --no-cache-dir
+          pip install --cache-dir ~/.cache/pip -e ".[dev,ml]" --quiet
           # Install ML-specific tools
-          pip install \
-            transformers \
-            sentence-transformers \
-            scikit-learn \
-            mlflow
+          pip install --cache-dir ~/.cache/pip \
+            transformers sentence-transformers scikit-learn mlflow --quiet
 
       - name: "🔒 Install Python Dependencies (Security-Scan)"
         if: steps.detect_env.outputs.environment_type == 'security-scan'
         run: |
-          pip install -e ".[dev]" --no-cache-dir
+          pip install --cache-dir ~/.cache/pip -e ".[dev]" --quiet
           # Install security scanning tools
-          pip install \
-            bandit \
-            safety \
-            pip-audit \
-            semgrep
+          pip install --cache-dir ~/.cache/pip \
+            bandit safety pip-audit semgrep --quiet
 
       - name: "📝 Install Python Dependencies (Documentation)"
         if: steps.detect_env.outputs.environment_type == 'documentation'
         run: |
-          pip install -e ".[dev,docs]" --no-cache-dir
+          pip install --cache-dir ~/.cache/pip -e ".[dev,docs]" --quiet
           # Install documentation tools
-          pip install \
-            mkdocs \
-            mkdocs-material \
-            mkdocstrings \
-            mkdocstrings-python
+          pip install --cache-dir ~/.cache/pip \
+            mkdocs mkdocs-material mkdocstrings mkdocstrings-python --quiet
 
       # ============================================================================
       # Phase 5: Rust Dependencies

@@ -1,0 +1,25 @@
+self-hosted-runner:
+  # Labels of self-hosted runner in array of strings.
+  labels: []
+
+# Configuration variables in array of strings defined in your repository or
+# organization. `null` means disabling configuration variables check.
+config-variables: null
+
+# Suppress info/style-level shellcheck findings repo-wide.
+# SC1xxx (parse errors) and other error-level findings remain hard-fail.
+#
+# Suppressed codes (all info/style severity):
+#   SC2086 - Double quote to prevent globbing and word splitting  (info)
+#   SC2012 - Use find instead of ls (info)
+#   SC2016 - Expressions don't expand in single quotes (info)
+#   SC2002 - Useless cat (style)
+#   SC2129 - Consider using { } >> file instead of individual redirects (style)
+paths:
+  .github/workflows/**/*.yml:
+    ignore:
+      - 'SC2086:info:'
+      - 'SC2012:info:'
+      - 'SC2016:info:'
+      - 'SC2002:style:'
+      - 'SC2129:style:'

@@ -1,9 +1,12 @@
 """
 scripts/ci/prune_corpus.py
-Phase 3 — 90-day retention policy for the SQLite agent memory corpus.
+Phase 3 — Configurable retention policy for the SQLite agent memory corpus.
 
-Removes agent_sessions entries older than 90 days from .codex/codex_corpus.db
+Removes agent_sessions entries older than RETENTION_DAYS from .codex/codex_corpus.db
 and logs the pruning operation to the accountability report.
+
+The retention window defaults to 90 days and can be overridden by setting the
+COGNITIVE_BRAIN_LTM_RETENTION_DAYS repository variable without a code change.
 
 Usage:
   python scripts/ci/prune_corpus.py               # dry-run (default)
@@ -19,13 +22,28 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import os
 import pathlib
 import sqlite3
 import sys
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
-RETENTION_DAYS = 90
+# Wired to COGNITIVE_BRAIN_LTM_RETENTION_DAYS repo variable (P2.2) so the
+# retention window can be adjusted without a code change.  Defaults to 90 days.
+# Defensive: float() handles "90.0"; int() handles integers; falls back to 90
+# if the variable is absent or contains a non-numeric value.
+try:
+    RETENTION_DAYS: int = int(float(os.environ.get("COGNITIVE_BRAIN_LTM_RETENTION_DAYS", "90")))
+except (ValueError, TypeError):
+    import warnings as _w
+
+    _w.warn(
+        "COGNITIVE_BRAIN_LTM_RETENTION_DAYS is not a valid number; defaulting to 90 days",
+        RuntimeWarning,
+        stacklevel=1,
+    )
+    RETENTION_DAYS = 90
 
 
 def get_stats(conn: sqlite3.Connection) -> dict:

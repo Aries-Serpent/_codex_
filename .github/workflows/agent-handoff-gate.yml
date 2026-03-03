@@ -26,6 +26,10 @@ jobs:
   validate-handoff:
     name: Validate Agent Handoff Manifest
     runs-on: ubuntu-latest
+    # Job timeout kept at 5 minutes (GitHub Actions expressions do not support
+    # arithmetic, so seconds-to-minutes conversion cannot be done inline).
+    # AGENT_HANDOFF_TIMEOUT_SECONDS is passed to the validate step as an env
+    # var so the Python validator can respect it for request/wait logic.
     timeout-minutes: 5
     # Only run on PR comments containing AGENT_HANDOFF:
     if: |
@@ -52,6 +56,9 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
           COMMENT_ID: ${{ github.event.comment.id }}
           PR_NUMBER: ${{ github.event.issue.number }}
+          # P2.4: AGENT_HANDOFF_TIMEOUT_SECONDS wired from repo variable.
+          # Used by the validator for request timeout logic.  Defaults to 120s.
+          AGENT_HANDOFF_TIMEOUT_SECONDS: ${{ vars.AGENT_HANDOFF_TIMEOUT_SECONDS || '120' }}
         run: |
           python3 - << 'PYEOF'
           import json
@@ -61,6 +68,20 @@ jobs:
 
           comment = os.environ["COMMENT_BODY"]
           pr_number = os.environ["PR_NUMBER"]
+          # P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.
+          try:
+              _timeout_val = os.environ.get("AGENT_HANDOFF_TIMEOUT_SECONDS", "120")
+              HANDOFF_TIMEOUT = int(float(_timeout_val))
+          except (ValueError, TypeError):
+              print(f"::warning::AGENT_HANDOFF_TIMEOUT_SECONDS={_timeout_val!r} is not a valid number; defaulting to 120s")
+              HANDOFF_TIMEOUT = 120
+
+          # Apply hard deadline to the entire validation block.
+          import signal
+          def _timeout_handler(signum, frame):
+              raise TimeoutError(f"agent-handoff validation exceeded {HANDOFF_TIMEOUT}s (AGENT_HANDOFF_TIMEOUT_SECONDS)")
+          signal.signal(signal.SIGALRM, _timeout_handler)
+          signal.alarm(HANDOFF_TIMEOUT)
 
           # Extract JSON block after "AGENT_HANDOFF:"
           match = re.search(r"AGENT_HANDOFF:\s*```(?:json)?\s*(\{.*?\})\s*```", comment, re.DOTALL)
@@ -133,6 +154,7 @@ jobs:
               else:
                   f.write("validation_status=valid\n")
                   print(f"✅ agent-handoff-gate: Valid handoff {delegating}→{receiving} (model={operating_model})")
+          signal.alarm(0)  # cancel deadline — validation completed within timeout
           PYEOF
 
       - name: Post handoff summary comment

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-02T23:58:27Z",
+  "generated_at": "2026-03-03T05:58:59Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -1499,7 +1499,15 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3483.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/HOTFIX_CHECKPOINT_POST_PR3483.md",
       "type": "enforcement"
     },
     {
@@ -1616,5 +1624,5 @@
     "transition_active": false
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "41a2a3bf109a5a6f5622e1fcff90bd142c90959a30114f3d8d8e86c2b8b5edb0"
+  "integrity_sha256": "2e0d03bbdf60b479bdac6569db91ab075a2cb1e8754c62d955c5087b8cc3bb4f"
 }

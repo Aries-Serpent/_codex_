@@ -5,15 +5,44 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3483 CI fix — actionlint-audit SC2016/SC2012 + repo variable expansion + Mermaid audit (2026-03-03)
+## [Unreleased] — W-088 .actionlint.yaml + accountability verify (2026-03-03)
 
 ### Fixed
 
 | Task | Type | File | Change |
 |------|------|------|--------|
-| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Added `# shellcheck disable=SC2016` before `actionlint -format` invocation — `$e` is Go template syntax, not a shell variable; SC2016 false positive suppressed |
-| W-084 | Fix | `.github/workflows/actionlint-audit.yml` | Replaced 2× `$(ls .github/workflows/*.yml \| wc -l)` with `$(find .github/workflows -maxdepth 1 -name '*.yml' \| wc -l)` — SC2012 non-alphanumeric filename safety |
-| W-084 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-084 entry added per cognitive pre-flight REQ-4 |
+| W-088a | fix | `.github/actionlint.yaml` | Created repo-wide actionlint config suppressing info/style shellcheck codes (SC2086, SC2012, SC2016, SC2002, SC2129) while keeping error-level findings (SC1xxx) hard-fail |
+| W-088b | docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-088 entry added (REQ-4); accountability report verified current for PR branch |
+
+## [Unreleased] — Post-PR #3483 — review fixes + CI hardening (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-087a | fix | `.github/workflows/admin_setup_verification.yml` | Quoted all $GITHUB_STEP_SUMMARY/$GITHUB_ENV redirects (SC2086 fix); blank line after shellcheck disable makes it file-level; SC2129 group-redirect fix |
+| W-087b | fix | `.github/workflows/agent-handoff-gate.yml` | AGENT_HANDOFF_TIMEOUT_SECONDS consumed via signal.alarm() deadline in Python validator |
+| W-087c | fix | `scripts/ci/prune_corpus.py` | Defensive float()→int() parsing + updated module docstring |
+| W-087d | fix | `scripts/ci/generate_manifest.py` | Defensive float()→int() parsing + unit clarification comment |
+| W-087e | fix | `.github/workflows/chatops_copilot_trigger.yml` | Increment step: replaced silently-swallowed || true with if ! gh api error check |
+| W-087f | fix | `CHANGELOG.md` | Removed duplicate ### Fixed heading; corrected W-086f description |
+| W-087g | feat | `.github/PULL_REQUEST_TEMPLATE.md` | Added 18-row CI failure triage table with Copilot auto-fill resolution prompts |
+| W-087h | fix | `.gitignore` | Added validation-junit.xml to prevent future accidental commits |
+
+## [Unreleased] — Post-PR #3483 — actionlint fix + Group D wiring + cache alignment (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-086a | fix | `.github/workflows/admin_setup_verification.yml` | Removed duplicate `§3b test_backup` step (SC1073/SC1078 truncated JSON + duplicate step ID) — fixes actionlint-audit Tier-1 gate |
+| W-086b | wire | `.github/workflows/chatops_copilot_trigger.yml` | Added `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step (Group D) — auto-increments session counter via GitHub API after every authorized `/copilot` command |
+| W-086c | wire | `scripts/ci/generate_manifest.py` | `CONTEXT_WINDOW_BUDGET` now reads `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` env var (P2.1); defaults to 32 000 |
+| W-086d | wire | `scripts/ci/prune_corpus.py` | `RETENTION_DAYS` now reads `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` env var (P2.2); defaults to 90 |
+| W-086e | wire | `.github/workflows/ci-health-monitor.yml` | Replaced hardcoded `THRESHOLD=20` with `${{ vars.CODEX_CI_FAILURE_THRESHOLD \|\| '10' }}` (P2.3); `Update CODEX_CI_FAILURE_RATE` step threshold also wired |
+| W-086f | wire | `.github/workflows/agent-handoff-gate.yml` | `AGENT_HANDOFF_TIMEOUT_SECONDS` repo variable passed as env var into validate step (P2.4); consumed as `HANDOFF_TIMEOUT` for `signal.alarm()` deadline on the Python validator |
+| W-086g | cache | `.github/workflows/copilot-setup-steps.yml` | Replaced `cache: 'pip'` with explicit L1 pip (`~/.cache/pip`) + L3 venv (`.venv_ci`) cache steps using keys matching `setup-python-cached` composite action; all env-specific pip installs now use `--cache-dir ~/.cache/pip` and `.venv_ci` |
+| W-086h | cache | `.github/workflows/pr-checks.yml` | Removed unsupported `cache-tier: 'live'` input from `setup-python-cached` call |
 
 ### Added
 
@@ -1030,7 +1059,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 ### Fixed
 - **Test Infrastructure**: Added missing pytest plugins to fix CI test failures
   - Added `pytest-xdist>=3.3` to enable parallel test execution with `-n auto` flag
-  - Added `pytest-rerunfailures>=12.0` to support `--reruns` and `--reruns-delay` flags  
+  - Added `pytest-rerunfailures>=12.0` to support `--reruns` and `--reruns-delay` flags
   - Updated both `requirements-test.txt` (pinned versions) and `pyproject.toml` (minimum versions)
   - Fixed plugin installation order in CI workflow to install plugins before editable package
   - Added `scripts/validate_test_env.py` to validate pytest environment before running tests
@@ -1411,5 +1440,5 @@ Closes #123
 
 ---
 
-**Maintained by:** GitHub Copilot Agents  
+**Maintained by:** GitHub Copilot Agents
 **License:** See repository LICENSE file
