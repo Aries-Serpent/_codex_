@@ -37,7 +37,7 @@ interface ApiProxyResponse {
 
 // ── Constants ─────────────────────────────────────────────────────────────
 
-const CLI_API = 'http://localhost:8765';
+const CLI_API = (import.meta.env.VITE_CLI_API_URL as string | undefined) ?? 'http://localhost:8765';
 
 const METHOD_COLORS: Record<HttpMethod, string> = {
   GET:    'bg-blue-500/20 text-blue-300 border-blue-500/40',
@@ -82,6 +82,7 @@ export function ApiClient() {
   const sendRequest = useCallback(async () => {
     setLoading(true);
     const id = entryId.current++;
+    const start = Date.now();
 
     let parsedHeaders: Record<string, string> = {};
     let parsedParams:  Record<string, string> = {};
@@ -112,7 +113,7 @@ export function ApiClient() {
         setEntries(prev => [{
           id, method, url,
           statusCode: resp.status,
-          durationMs: 0,
+          durationMs: Date.now() - start,
           body: data,
 
           timestamp: new Date().toISOString(),
@@ -135,6 +136,30 @@ export function ApiClient() {
         expanded: true,
       }, ...prev]);
     } catch (err) {
+      // Backend proxy unreachable (e.g. static GitHub Pages deploy without local server).
+      // Fall back to a direct browser fetch so public URLs like api.github.com still work.
+      if (err instanceof TypeError) {
+        try {
+          const directUrl = new URL(url);
+          for (const [k, v] of Object.entries(parsedParams)) directUrl.searchParams.set(k, v);
+          const directResp = await fetch(directUrl.toString(), {
+            method,
+            headers: Object.keys(parsedHeaders).length ? (parsedHeaders as HeadersInit) : undefined,
+            body: method !== 'GET' && method !== 'DELETE' && parsedBody !== undefined
+              ? JSON.stringify(parsedBody) : undefined,
+          });
+          const directData: unknown = await directResp.json().catch(async () => directResp.text());
+          setEntries(prev => [{
+            id, method, url: directUrl.toString(),
+            statusCode: directResp.status,
+            durationMs: Date.now() - start,
+            body: directData,
+            timestamp: new Date().toISOString(),
+            expanded: true,
+          }, ...prev]);
+          return;
+        } catch { /* fall through to original error entry */ }
+      }
       setEntries(prev => [{
         id, method, url,
         statusCode: 0,
