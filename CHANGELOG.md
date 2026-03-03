@@ -5,6 +5,17 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-093 cognitive brain agent updates + status docs (PR #3492, 2026-03-03)
+
+### Added / Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-093a | feat | `.github/agents/cognitive-brain-manager.md` | v2.0→v3.0: RBAC + CI Health subgraphs, PR #3492 metrics (ALLOWED_ACTORS, CODEX_CI_LAST_GREEN_SHA, update_user), version history updated |
+| W-093b | fix | `.github/agents/cognitive-brain-session-injector.md` | v1.0→v1.1: COGNITIVE_BRAIN_ALLOWED_ACTORS now ✅ active (4 actors set via repo variable) |
+| W-093c | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3492.md` | Session status: W-091/W-092/W-093 summary, all P2.x wiring complete (7/7), next-phase flowchart |
+| W-093d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Chain prompt: P3.x enhancement tasks (brain_interface.py, SESSION_RESTORE, AUTO_PROMOTE), D_CAPABLE guide, self-review checklist |
+
 ## [Unreleased] — W-092 cognitive brain objectives (PR #3492, 2026-03-03)
 
 ### Added / Changed
