@@ -5,6 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-094 fix actionlint-audit ERROR_COUNT double-zero (PR #3492, 2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-094 | fix | `.github/workflows/actionlint-audit.yml` | `grep -c … \|\| echo "0"` → `grep -c … 2>/dev/null; true` — prevents `"0\n0"` double output that broke `$GITHUB_OUTPUT` (Invalid format) and `-gt 0` integer test |
+
 ## [Unreleased] — W-093 cognitive brain agent updates + status docs (PR #3492, 2026-03-03)
 
 ### Added / Changed

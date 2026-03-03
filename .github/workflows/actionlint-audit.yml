@@ -67,7 +67,7 @@ jobs:
             -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}' \
             .github/workflows/*.yml 2>&1 | tee /tmp/actionlint_results.txt || true
 
-          ERROR_COUNT=$(grep -c "::error" /tmp/actionlint_results.txt || echo "0")
+          ERROR_COUNT=$(grep -c "::error" /tmp/actionlint_results.txt 2>/dev/null; true)
           echo "error_count=${ERROR_COUNT}" >> "$GITHUB_OUTPUT"
 
           if [ "${ERROR_COUNT}" -gt 0 ]; then
