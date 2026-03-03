@@ -5,6 +5,17 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3474 CI fixes + documentation sync (2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-083 | Fix | `.codex/embeddings/codex_index_meta.json` | Added missing EOF newline — pre-commit `end-of-file-fixer` was failing in fast-validation pipeline (run 22603733594) |
+| W-083 | Fix | `.secrets.baseline` | Registered 15 false-positive detections from `.codex/embeddings/codex_index_meta.json` (embedding vectors triggered Base64/PrivateKey/AWS/GitHub token detectors) — unblocks `detect-secrets` pre-commit hook |
+| W-083 | Docs | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` | v1.1.0→v1.1.1: Section 3 registry version 1.8.0→1.9.0 (151→152 agents); Section 4 distribution table updated to current v1.9.0 counts (GROUNDED=8, PARTIAL=144, SOFT=0); Section 7 E→D gate C3+C5 updated ❌→✅, score 3/5→5/5 |
+| W-083 | Docs | `docs/architecture/E_TO_D_TRANSITION_MAP.md` | Updated current state header and score from 0/5 baseline → 5/5 ✅; agent count 128+→152; structured handoff status corrected |
+
 ## [Unreleased] — PR #3478 CI fixes (2026-03-03)
 
 ### Fixed
