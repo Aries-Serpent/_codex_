@@ -1,5 +1,5 @@
 # Workflow Compliance Matrix
-> Generated: Phase 0 audit (WU-0.1) | 91 workflows scanned
+> Generated: Phase 0 audit (WU-0.1) | 96 workflows scanned
 
 | Workflow | Concurrency | Timeout | Cascade Risk | Base-Ref Fetch | Enforcement Tier | Notes |
 |----------|:-----------:|:-------:|:------------:|:--------------:|:----------------:|-------|

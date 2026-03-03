@@ -70,7 +70,7 @@ This registry catalogs all custom GitHub Copilot agents in the repository, track
   - scripts/monitoring/agent_orchestrator.py (routes to 6+ specialized agents)
   - scripts/agents/artifact_monitor_cli.py (interactive CLI)
 - **Capabilities**:
-  - workflow_health_monitoring (91 workflows, 27 with artifacts)
+  - workflow_health_monitoring (96 workflows, 27 with artifacts)
   - failure_pattern_recognition (30+ signatures across 8 categories)
   - intelligent_agent_routing (CI Testing, Dependency Conflict, Coverage, Security, Hygiene, Docs)
   - rich_issue_generation (diagnostic links, pattern analysis, agent recommendations)

@@ -556,7 +556,7 @@ CRITICAL RULES:
 - SQLite writes MUST use _db_lock (threading.Lock)
 - VITE_CLI_API_URL not VITE_CODEX_API (backward compat)
 - sys.path modified once at module level only
-- All 91 workflows must parse cleanly (run compliance check before commit)
+- All 96 workflows must parse cleanly (run compliance check before commit)
 
 Token status: CODEX_MASTER_KEY ✅ 100% | CODEX_BACKUP_KEY ✅ 100% (S117)
 ```

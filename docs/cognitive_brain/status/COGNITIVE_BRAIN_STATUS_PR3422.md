@@ -139,7 +139,7 @@ Agents (128 total)
 - Auth key precedence: `master_key if master_key else backup_key`
 
 ### Pass 2: Testing & Validation ✅
-- YAML parse: 0 errors across all 91 workflows
+- YAML parse: 0 errors across all 96 workflows
 - `# nosec B603` annotation with justification on `subprocess.Popen`
 - `console.warn` in XtermTerminal.tsx catch block for debuggability
 - Base64-decoded comment in REQ-8 step for reviewer auditability

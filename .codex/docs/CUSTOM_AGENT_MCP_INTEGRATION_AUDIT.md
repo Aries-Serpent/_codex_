@@ -43,7 +43,7 @@ For each agent, evaluate:
 
 | Agent | Current Version | MCP Aware? | Update Priority | Reason |
 |-------|----------------|------------|-----------------|--------|
-| **artifact-monitor-agent** | 1.0.0 | ❌ No | ⚠️ HIGH | Monitors 91 workflows but lacks MCP workflow recipes |
+| **artifact-monitor-agent** | 1.0.0 | ❌ No | ⚠️ HIGH | Monitors 96 workflows but lacks MCP workflow recipes |
 | **ci-testing-agent** | 2.1.0 | ❌ No | ⚠️ HIGH | Debugs CI but no E2E test integration |
 | **ci-log-retrieval-agent** | ? | ✅ Yes | 📊 MEDIUM | Mentions GitHub MCP but needs update examples |
 | **ci-emergency-response-agent** | ? | ❌ No | ⚠️ HIGH | Emergency fixes need MCP context workflows |
@@ -185,7 +185,7 @@ For each agent, evaluate:
 
 **Current State**:
 - Version 1.0.0
-- Monitors 91 workflows
+- Monitors 96 workflows
 - No MCP workflow integration
 - No Playwright/E2E monitoring
 
