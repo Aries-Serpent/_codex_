@@ -42,6 +42,10 @@ inputs:
     description: 'Install npm tools such as markdown-link-check (true/false)'
     required: false
     default: 'false'
+  cache-tier:
+    description: 'Cache tier hint (live/common/ephemeral). Informational only — no functional effect on caching.'
+    required: false
+    default: ''
 
 outputs:
   venv-python:

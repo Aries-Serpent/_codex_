@@ -68,6 +68,12 @@ on:
         type: boolean
         default: false
 
+      commit_sha:
+        description: 'Commit SHA to analyze (defaults to current commit)'
+        required: false
+        type: string
+        default: ''
+
 permissions:
   contents: write
   issues: write

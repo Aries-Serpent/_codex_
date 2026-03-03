@@ -56,3 +56,13 @@ jobs:
         with:
           python-version: '3.12'
           cache-tier: 'common'
+
+      - name: Analyze repository structure
+        id: analyze
+        run: |
+          root_files=$(find . -maxdepth 1 -type f | wc -l)
+          orphan_files=$(find . -maxdepth 2 -name "*.py" -not -path "./.venv*" | wc -l)
+          archive_candidates=$(find . -maxdepth 2 -name "*.bak" -o -name "*.old" 2>/dev/null | wc -l || echo "0")
+          echo "root_files=${root_files}" >> "$GITHUB_OUTPUT"
+          echo "orphan_files=${orphan_files}" >> "$GITHUB_OUTPUT"
+          echo "archive_candidates=${archive_candidates}" >> "$GITHUB_OUTPUT"
