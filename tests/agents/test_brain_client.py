@@ -477,8 +477,7 @@ class TestAuthHeaderSentOnRequests:
 
     def test_no_auth_header_when_no_key(self) -> None:
         captured, fake = self._capture_headers({"status": "ok"})
-        env_copy = {k: v for k, v in os.environ.items()
-                    if k not in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY")}
+        env_copy = {k: v for k, v in os.environ.items() if k not in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY")}
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
