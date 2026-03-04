@@ -98,6 +98,7 @@ manifests/k8s/*/secret.yaml
 .codex/*
 !.codex/README.md
 !.codex/*.md
+!.codex/agent_context.json
 !.codex/policies/
 !.codex/policies/**
 !.codex/schemas/
