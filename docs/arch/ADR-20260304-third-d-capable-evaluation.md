@@ -5,7 +5,7 @@
 **Date:** 2026-03-04
 **PR:** #3495
 **Session:** COGNITIVE_BRAIN_SESSION_NUMBER 112
-**Status:** ACCEPTED — third promotion **DEFERRED**
+**Status:** SUPERSEDED — third promotion **COMPLETE** (see ADR-20260304-rust-error-validator-d-capable-promotion.md)
 
 This ADR records the evaluation of candidates for the **third D_CAPABLE agent** promotion,
 following the clean 2-sprint observation window for `workflow-ci-fixer` (second D_CAPABLE,

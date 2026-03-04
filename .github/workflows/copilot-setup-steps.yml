@@ -480,14 +480,12 @@ jobs:
             > "${RUNNER_TEMP}/cli_api_server.log" 2>&1 &
           CLI_API_PID=$!
           echo "CLI_API_SERVER_PID=${CLI_API_PID}" >> "$GITHUB_ENV"
-          # Export URL so BrainClient (src/codex/agents/brain_client.py) and
-          # any agent Python code can discover the server without hard-coding it.
-          # CODEX_CLI_API_URL is the canonical name consumed by BrainClient.
-          # COPILOT_CLI_BASE_URL is the repo-variable name (set via GitHub UI).
-          # Both names are bridged here so either works in agent code.
-          # See ADR-20260304-copilot-agent-cli-api-gaps.md RC-2 for rationale.
-          CLI_URL="${COPILOT_CLI_BASE_URL:-http://localhost:8765}"
-          echo "CODEX_CLI_API_URL=${CLI_URL}" >> "$GITHUB_ENV"
+          # Always export http://localhost:8765 — the server is started on that
+          # fixed address above.  Deriving from COPILOT_CLI_BASE_URL was
+          # misleading: if that variable pointed to a different host/port the
+          # exported URL would be wrong while the health check (which always
+          # hits localhost:8765) still passed.  Hard-code the actual address.
+          echo "CODEX_CLI_API_URL=http://localhost:8765" >> "$GITHUB_ENV"
           # Retry health-check up to 5 s to accommodate slower startup
           SERVER_READY=0
           for i in 1 2 3 4 5; do

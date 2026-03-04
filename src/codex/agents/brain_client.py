@@ -22,9 +22,11 @@ caller can handle them cleanly.
 
 Environment variables
 ---------------------
-CODEX_CLI_API_URL   Override the default server URL (default: http://localhost:8765).
-CODEX_MASTER_KEY    Bearer token for authenticated memory endpoints.
-CODEX_BACKUP_KEY    Fallback bearer token (used if CODEX_MASTER_KEY is absent).
+CODEX_CLI_API_URL      Override the default server URL (default: http://localhost:8765).
+COPILOT_CLI_BASE_URL   Legacy/alternative override for the server URL.  Used as a
+                       fallback if CODEX_CLI_API_URL is not set.
+CODEX_MASTER_KEY       Bearer token for authenticated memory endpoints.
+CODEX_BACKUP_KEY       Fallback bearer token (used if CODEX_MASTER_KEY is absent).
 """
 
 from __future__ import annotations
@@ -61,12 +63,32 @@ class BrainClient:
         base_url: Optional[str] = None,
         timeout: int = 30,
     ) -> None:
-        self.base_url = (
+        raw = (
             base_url
             or os.environ.get("CODEX_CLI_API_URL")
             or os.environ.get("COPILOT_CLI_BASE_URL")
             or _DEFAULT_URL
-        ).rstrip("/")
+        ).strip()
+
+        # Normalise a bare "host:port" (no scheme) to "http://host:port" so that
+        # common mis-configurations fail with a clear message rather than a
+        # cryptic "disallowed URL scheme ''" from _safe_urlopen.
+        # urlparse("localhost:8765") yields scheme="localhost", netloc="" — treat
+        # any non-http/https scheme with no netloc as a bare host:port.
+        parsed = urllib.parse.urlparse(raw)
+        if parsed.scheme not in ("http", "https") and not parsed.netloc:
+            raw = f"http://{raw}"
+            parsed = urllib.parse.urlparse(raw)
+
+        scheme = parsed.scheme.lower()
+        if scheme not in ("http", "https") or not parsed.netloc:
+            raise BrainClientError(
+                f"Invalid base URL for BrainClient ('{raw}'); expected an http:// or "
+                "https:// URL with a host.  Check the 'base_url' argument or the "
+                "CODEX_CLI_API_URL / COPILOT_CLI_BASE_URL environment variables."
+            )
+
+        self.base_url = raw.rstrip("/")
         self.timeout = timeout
 
     # ── Internal helpers ──────────────────────────────────────────────────────
@@ -99,7 +121,9 @@ class BrainClient:
         url = f"{self.base_url}{path}"
         if params:
             url = f"{url}?{urllib.parse.urlencode(params)}"
-        req = urllib.request.Request(url, headers={"Accept": "application/json"})
+        headers = {"Accept": "application/json"}
+        headers.update(self._auth_header())
+        req = urllib.request.Request(url, headers=headers)
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]
@@ -114,6 +138,7 @@ class BrainClient:
         url = f"{self.base_url}{path}"
         data = json.dumps(body).encode()
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        headers.update(self._auth_header())
         if extra_headers:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
@@ -130,7 +155,9 @@ class BrainClient:
 
     def _delete(self, path: str) -> Dict[str, Any]:
         url = f"{self.base_url}{path}"
-        req = urllib.request.Request(url, headers={"Accept": "application/json"}, method="DELETE")
+        headers = {"Accept": "application/json"}
+        headers.update(self._auth_header())
+        req = urllib.request.Request(url, headers=headers, method="DELETE")
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]

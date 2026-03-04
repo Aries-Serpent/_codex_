@@ -406,3 +406,100 @@ class TestConvenienceHelpers:
         with patch("urllib.request.urlopen", return_value=_make_response(proxy_payload)):
             result = b.github_workflow_runs()
         assert result == []
+
+
+# ---------------------------------------------------------------------------
+# URL validation in __init__
+# ---------------------------------------------------------------------------
+
+class TestBaseUrlValidation:
+    def test_bare_host_port_normalised_to_http(self) -> None:
+        b = BrainClient(base_url="localhost:8765")
+        assert b.base_url == "http://localhost:8765"
+
+    def test_invalid_scheme_raises(self) -> None:
+        with pytest.raises(BrainClientError, match="Invalid base URL"):
+            BrainClient(base_url="ftp://bad-scheme:8765")
+
+    def test_no_netloc_raises(self) -> None:
+        with pytest.raises(BrainClientError, match="Invalid base URL"):
+            BrainClient(base_url="http://")
+
+    def test_valid_https_accepted(self) -> None:
+        b = BrainClient(base_url="https://remote-brain.example.com:9000")
+        assert b.base_url == "https://remote-brain.example.com:9000"
+
+
+# ---------------------------------------------------------------------------
+# Auth header actually sent on requests (regression guard)
+# ---------------------------------------------------------------------------
+
+class TestAuthHeaderSentOnRequests:
+    """Verify that Authorization is included in the outgoing Request when a
+    key is configured.  These tests catch the regression where _auth_header()
+    was defined but never applied in _get / _post / _delete."""
+
+    def _capture_headers(self, response_body: Any):
+        """Return (captured_headers, mock side-effect) pair."""
+        captured: list = []
+
+        def fake_urlopen(req, timeout=None):
+            captured.append(dict(req.headers))
+            return _make_response(response_body)
+
+        return captured, fake_urlopen
+
+    def test_memory_state_sends_auth_header(self) -> None:
+        payload = {
+            "stm_count": 1, "ltm_count": 0, "capacity": 100,
+            "cache_hit_rate": 0.0, "compression_rate": 0.0,
+            "patterns": [], "timestamp": "2026-03-04T00:00:00",
+        }
+        captured, fake = self._capture_headers(payload)
+        with patch.dict(os.environ, {"CODEX_MASTER_KEY": "secretkey"}, clear=False):
+            b = BrainClient(base_url="http://x")
+            with patch("urllib.request.urlopen", side_effect=fake):
+                b.memory_state()
+        assert len(captured) == 1
+        # urllib capitalises the first letter of each header word
+        auth = captured[0].get("Authorization") or captured[0].get("authorization")
+        assert auth == "Bearer secretkey"
+
+    def test_memory_search_sends_auth_header(self) -> None:
+        captured, fake = self._capture_headers({"items": [], "total": 0})
+        with patch.dict(os.environ, {"CODEX_MASTER_KEY": "searchkey"}, clear=False):
+            b = BrainClient(base_url="http://x")
+            with patch("urllib.request.urlopen", side_effect=fake):
+                b.memory_search("test query")
+        assert len(captured) == 1
+        auth = captured[0].get("Authorization") or captured[0].get("authorization")
+        assert auth == "Bearer searchkey"
+
+    def test_no_auth_header_when_no_key(self) -> None:
+        captured, fake = self._capture_headers({"status": "ok"})
+        env_copy = {k: v for k, v in os.environ.items()
+                    if k not in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY")}
+        with patch.dict(os.environ, env_copy, clear=True):
+            b = BrainClient(base_url="http://x")
+            with patch("urllib.request.urlopen", side_effect=fake):
+                b.health()
+        assert len(captured) == 1
+        auth = captured[0].get("Authorization") or captured[0].get("authorization")
+        assert auth is None
+
+    def test_backup_key_sent_when_master_absent(self) -> None:
+        payload = {
+            "stm_count": 0, "ltm_count": 0, "capacity": 100,
+            "cache_hit_rate": 0.0, "compression_rate": 0.0,
+            "patterns": [], "timestamp": "2026-03-04T00:00:00",
+        }
+        captured, fake = self._capture_headers(payload)
+        env_copy = {k: v for k, v in os.environ.items() if k != "CODEX_MASTER_KEY"}
+        env_copy["CODEX_BACKUP_KEY"] = "backuptoken"
+        with patch.dict(os.environ, env_copy, clear=True):
+            b = BrainClient(base_url="http://x")
+            with patch("urllib.request.urlopen", side_effect=fake):
+                b.memory_state()
+        assert len(captured) == 1
+        auth = captured[0].get("Authorization") or captured[0].get("authorization")
+        assert auth == "Bearer backuptoken"

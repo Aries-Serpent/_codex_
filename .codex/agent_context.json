@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-synced from GitHub repo variables by repo-var-sync-agent. Do not edit manually — run repo-var-sync-agent to pull latest values from GitHub API. Keys starting with _ are skipped during GITHUB_ENV injection. Secrets (CODEX_MASTER_KEY, CODEX_BACKUP_KEY) are injected separately via copilot-setup-steps.yml env: block and must NOT be stored here.",
-  "_last_synced": "2026-03-04T23:04:00Z",
+  "_last_synced": "2026-03-04T23:25:00Z",
   "_sync_agent": "repo-var-sync-agent",
   "_sync_command": "Use repo-var-sync-agent to update: it reads all COPILOT_*/CODEX_*/COGNITIVE_BRAIN_*/AGENT_*/EMBEDDING_* repo variables via GitHub API and rewrites this file",
   "_pr": "3495",
@@ -15,7 +15,12 @@
   "CODEX_CI_FAILURE_RATE": "6.8:ok",
   "CODEX_CI_FAILURE_THRESHOLD": "10.0",
   "CODEX_CI_LAST_GREEN_SHA": "1ea502627b765c79b579b5fba1a765e078b3e1c3",
+  "CODEX_CLI_API_URL": "http://localhost:8765",
+  "CODEX_COVERAGE_THRESHOLD": "60",
+  "CODEX_GROUNDED_TIER1_COUNT": "21",
+  "CODEX_GROUNDED_TIER2_COUNT": "2",
   "CODEX_ISOLATED_PATH": "/codex/network/isolated",
+  "CODEX_LAST_TELEMETRY_DATE": "2026-03-04",
   "CODEX_LOG_LEVEL": "INFO",
   "CODEX_NETWORK_MODE": "isolated",
   "CODEX_ORG_NAME": "Aries-Serpent",
@@ -30,13 +35,16 @@
 
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
+  "COPILOT_AGENT_LAST_SESSION_ID": "S112",
   "COPILOT_AGENT_MAX_AUTONOMY_LEVEL": "D",
+  "COPILOT_AGENT_SESSION_EXPIRES": "2026-03-05T03:00:31Z",
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
+  "COPILOT_AGENT_STATE": "active",
 
   "COPILOT_CLI_BASE_URL": "http://localhost:8765",
   "COPILOT_CLI_ENABLED": "true",
 
-  "CODEX_CLI_API_URL": "http://localhost:8765",
+  "DEPLOY_ENV": "production",
 
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",
   "GENESIS_TIMESTAMP": "2025-12-26T16:04:45Z",

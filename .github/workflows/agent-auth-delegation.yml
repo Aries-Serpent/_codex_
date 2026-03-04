@@ -70,12 +70,14 @@ jobs:
   # ── Job 2: owner approval gate ───────────────────────────────────────────────
   # This job is intentionally minimal — its only purpose is to pause here until
   # @mbaetiong clicks "Approve" in the GitHub Actions "Waiting for approval" UI.
+  # timeout-minutes: 120 — gives the owner a 2-hour window to approve.
+  # (Previously 30; raised per S112 requirement: delegation must stay open for 2 h.)
   await-approval:
     name: "⏳ Awaiting owner approval"
     needs: detect-checkbox
     if: needs.detect-checkbox.outputs.auth_requested == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 120
     environment: agent-auth-delegation   # ← protection rule triggers approval gate
 
     steps:
