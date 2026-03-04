@@ -5,6 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-099 Fix agent-auth-delegation.yml checkout ref for pull_request_review events (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-099 | fix | `.github/workflows/agent-auth-delegation.yml` | Checkout ref in "Activate token delegation" job: `github.head_ref \|\| github.ref_name` → `github.event.pull_request.head.ref \|\| github.head_ref \|\| github.ref_name` — `github.head_ref` is undefined for `pull_request_review` events (only set for `pull_request`/`pull_request_target`), causing fallback to `github.ref_name` which resolves to `3494/merge` (a non-existent branch ref), failing checkout. Fixes run 22681530883. |
+
 ## [Unreleased] — W-098 Agent Token Delegation activation + auto_promote_tier write-path tests (PR #3494, 2026-03-04)
 
 ### Added
