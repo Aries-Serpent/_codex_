@@ -1,20 +1,20 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3483.
-version: 2.0.0
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3492.
+version: 3.0.0
 updated: 2026-03-03
 cognitive_integration_level: 3
 aais_contribution: +2.5 points
-batch: pr-3483
-sprint: Sprint 5 (GROUNDED phase)
+batch: pr-3492
+sprint: Sprint 6 (Post-GROUNDED — Repo Variable Wiring)
 ---
 
-# Cognitive Brain Manager v2.0
+# Cognitive Brain Manager v3.0
 
-**Version**: 2.0.0 (Updated PR #3483)  
-**Status**: ✅ Production Ready — GROUNDED  
-**Updated**: 2026-03-03  
-**Phase**: Soft→GROUNDED Complete (all 7 phases, score 100/100)
+**Version**: 3.0.0 (Updated PR #3492)
+**Status**: ✅ Production Ready — GROUNDED
+**Updated**: 2026-03-03
+**Phase**: Post-GROUNDED — Repo Variable Wiring + Agent Token Delegation Active
 
 ## Current System State
 
@@ -26,19 +26,31 @@ graph TB
         LTM["LTM — Long-Term Memory\nSQLite persist\n90-day retention (LTM_RETENTION_DAYS)"]
     end
 
-    subgraph CONTROL["Repo Variable Controls (PR #3483)"]
+    subgraph CONTROL["Repo Variable Controls (PR #3483 + #3492)"]
         TOKENS["MAX_CONTEXT_TOKENS = 32000\nInjection ceiling"]
         CONF["PATTERN_MIN_CONFIDENCE = 0.75\nGate threshold"]
         TIER["MEMORY_TIER = both\nSTM + LTM active"]
         SESSION["SESSION_NUMBER = 110+\nAuto-increment"]
+        GREEN["CODEX_CI_LAST_GREEN_SHA\nAuto-written on green CI (P2.6)"]
+        EMBED["EMBEDDING_INDEX_AUTO_REBUILD\nGuards FAISS trigger (PR #3492)"]
     end
 
     subgraph GATES["Tier-1 GROUNDED Gates (5/5 ✅)"]
-        G1["agent-registry-validation\n152 agents, v1.9.0"]
+        G1["agent-registry-validation\n152 agents, v1.9.0\nEMBEDDING_INDEX_AUTO_REBUILD guarded"]
         G2["agent-handoff-gate\nStructured handoff verified"]
         G3["actionlint-audit\nSC2016/SC2012 FIXED (PR #3483)"]
         G4["e-to-d-transition-gate\n5/5 conditions C1-C5"]
         G5["embedding-index-rebuild\nFAISS index auto-rebuild"]
+    end
+
+    subgraph RBAC["RBAC — StructuralPolicyManager (PR #3492)"]
+        SPM["StructuralPolicyManager\nCOGNITIVE_BRAIN_ALLOWED_ACTORS ACTIVE\n4 actors: mbaetiong, actions-bot,\ncopilot-swe-agent-bot, copilot-bot"]
+        TIERS_RBAC["SYSTEM_OWNER → ORG_OWNER\n→ DELEGATE_ADMIN → READ_ONLY_AGENT"]
+    end
+
+    subgraph HEALTH["CI Health Tracking (PR #3492 W-092)"]
+        RATE["CODEX_CI_FAILURE_RATE\nformat: rate:status"]
+        GREEN2["CODEX_CI_LAST_GREEN_SHA\nWritten when rate < THRESHOLD (P2.6)"]
     end
 
     STM --> MTM --> LTM
@@ -47,8 +59,12 @@ graph TB
     TIER --> STM
     TIER --> LTM
     SESSION --> STM
+    GREEN --> HEALTH
+    EMBED --> G1
 
     G1 & G2 & G3 & G4 & G5 --> |All passing| D_CAPABLE["D_CAPABLE Unlocked\nAutonomy Model E (capped by\nCOPILOT_AGENT_MAX_AUTONOMY_LEVEL)"]
+    SPM --> D_CAPABLE
+    RATE --> GREEN2
 ```
 
 ## Key Metrics (2026-03-03)
@@ -65,6 +81,9 @@ graph TB
 | Readiness score | 100/100 | READINESS_AUDIT_ANALYSIS.md |
 | Context window budget | 32,000 tokens | generate_manifest.py |
 | LTM retention | 90 days | prune_corpus.py |
+| COGNITIVE_BRAIN_ALLOWED_ACTORS | 4 actors active | repo variable (PR #3492) |
+| CODEX_CI_LAST_GREEN_SHA | Auto-wired ✅ | ci-health-monitor.yml P2.6 |
+| ZendeskAPIClient.update_user | ✅ Added | src/zendesk/api_client.py (PR #3492) |
 
 
 
@@ -427,14 +446,18 @@ Agent Actions:
 
 ## Version History
 
-### v3.0.0-cognitive (2026-02-17) - PR-10
-- ✅ Cognitive brain integration (Level 1)
-- ✅ MCP tool integration (general category)
-- ✅ Topology navigation (code patterns)
-- ✅ Cache awareness (4-layer hierarchy)
-- ✅ Hash table optimization (40% faster)
+### v3.0.0 (2026-03-03) — PR #3492
+- ✅ COGNITIVE_BRAIN_ALLOWED_ACTORS active (4 actors: mbaetiong, github-actions[bot], copilot-swe-agent[bot], github-copilot[bot])
+- ✅ CODEX_CI_LAST_GREEN_SHA auto-wired in ci-health-monitor.yml (P2.6)
+- ✅ EMBEDDING_INDEX_AUTO_REBUILD guard in agent-registry-validation.yml
+- ✅ ZendeskAPIClient.update_user added (user access level changes)
+- ✅ Mermaid diagram updated with RBAC + CI Health tracking subgraphs
 
-- ✅ AAIS contribution: +1.0 points
+### v2.0.0 (2026-03-03) — PR #3483 (Previous)
+- ✅ GROUNDED phase complete (all 7 phases, score 100/100)
+- ✅ SC2016/SC2012 fixes in actionlint-audit.yml
+- ✅ 13 new repo variables documented
+- ✅ Codebase-wide Mermaid audit (9 files fixed to 96 workflows)
 
-### v2.0.0 (Previous)
-- See git history for previous changes
+### v1.0.0 (Previous)
+- See git history for earlier changes

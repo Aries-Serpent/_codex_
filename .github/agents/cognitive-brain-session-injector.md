@@ -7,11 +7,11 @@ description: >
   the system prompt, and closes the AfterMath/PDA loop by calling
   report_completion() after each task. Implements quantum reconstruction
   fallback, RBAC via StructuralPolicyManager, and token-budget enforcement.
-version: 1.0.0
+version: 1.1.0
 author: GitHub Copilot (S108)
 status: active
 created: 2026-02-28
-updated: 2026-02-28
+updated: 2026-03-03
 autonomous_actions_enabled: true
 ---
 
@@ -137,9 +137,9 @@ python -m codex.github.mcp_poster post-comment \
 
 ## Limitations (Pending Admin Setup)
 
-- ⚠️ `GitHubMCPPoster` requires `CODEX_MASTER_KEY` secret — see [Admin Guide](../../.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md)
-- ⚠️ GitHub Discussions require Discussions to be enabled on repo — see [Admin Guide § 4]
-- ⚠️ Org rollout (ORG_OWNER tier) pending `COGNITIVE_BRAIN_ALLOWED_ACTORS` variable — see [Admin Guide § 2]
+- ✅ `GitHubMCPPoster` requires `CODEX_MASTER_KEY` secret — see [Admin Guide](../../.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md)
+- ✅ GitHub Discussions require Discussions to be enabled on repo — see [Admin Guide § 4]
+- ✅ Org rollout (ORG_OWNER tier) **now active** — `COGNITIVE_BRAIN_ALLOWED_ACTORS` set to `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` (PR #3492)
 
 ## Tests
 

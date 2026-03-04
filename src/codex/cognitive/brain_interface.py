@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -47,6 +48,17 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+# Minimum match score for PatternConfidence.LOW results.
+# Override via COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE env variable (float, 0–1).
+_raw_min_conf = os.environ.get("COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE", "0.0")
+try:
+    _MIN_CONFIDENCE: float = float(_raw_min_conf)
+except ValueError:
+    raise ValueError(
+        f"COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE must be a float between 0 and 1, "
+        f"got: {_raw_min_conf!r}"
+    ) from None
 
 
 class AgentCategory(Enum):
@@ -486,10 +498,10 @@ class AgentBrainInterface:
 
         matches: List[PatternMatch] = []
         min_score = {
-            PatternConfidence.LOW: 0.0,
+            PatternConfidence.LOW: _MIN_CONFIDENCE,
             PatternConfidence.MEDIUM: 0.60,
             PatternConfidence.HIGH: 0.85,
-        }.get(min_confidence, 0.0)
+        }.get(min_confidence, _MIN_CONFIDENCE)
 
         for pattern_name, pattern_data in self._patterns.items():
             # Apply category filter if specified

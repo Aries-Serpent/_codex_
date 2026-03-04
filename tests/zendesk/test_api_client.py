@@ -329,6 +329,51 @@ class TestUsersAPI:
         assert result["user"]["id"] == 9999
         assert result["user"]["email"] == "newuser@example.com"
 
+    @responses.activate
+    def test_update_user_role(self, api_client: ZendeskAPIClient) -> None:
+        """Test updating a user's role (access level)."""
+        responses.add(
+            responses.PUT,
+            "https://testcompany.zendesk.com/api/v2/users/1001.json",
+            json={
+                "user": {
+                    "id": 1001,
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                    "role": "agent",
+                }
+            },
+            status=200,
+        )
+
+        result = api_client.update_user(1001, role="agent")
+
+        assert result["user"]["id"] == 1001
+        assert result["user"]["role"] == "agent"
+
+    @responses.activate
+    def test_update_user_multiple_fields(self, api_client: ZendeskAPIClient) -> None:
+        """Test updating multiple user fields at once."""
+        responses.add(
+            responses.PUT,
+            "https://testcompany.zendesk.com/api/v2/users/1001.json",
+            json={
+                "user": {
+                    "id": 1001,
+                    "name": "Jane Doe",
+                    "role": "admin",
+                    "phone": "+15551234567",
+                }
+            },
+            status=200,
+        )
+
+        result = api_client.update_user(1001, name="Jane Doe", role="admin", phone="+15551234567")
+
+        assert result["user"]["name"] == "Jane Doe"
+        assert result["user"]["role"] == "admin"
+        assert result["user"]["phone"] == "+15551234567"
+
 
 # ==============================================================================
 # TEST ORGANIZATIONS API

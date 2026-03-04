@@ -5,6 +5,53 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-095 P3.1 | feat | `src/codex/cognitive/brain_interface.py` | Add `import os` + `_MIN_CONFIDENCE` constant wired to `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` env var; `PatternConfidence.LOW` floor now configurable at runtime (default `0.0`) |
+| W-095 P3.2 | docs | `.github/agents/session-log-retrieval-agent.md` | Document `COPILOT_AGENT_SESSION_RESTORE_ENABLED` gate in Environment Variables section |
+| W-095 P3.3 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Document keep-`false` decision for `AUTO_PROMOTE_TIER_ENABLED` — Domain 8 security posture prohibits autonomous tier promotion without human review |
+
+## [Unreleased] — W-094 fix actionlint-audit ERROR_COUNT double-zero (PR #3492, 2026-03-03)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-094 | fix | `.github/workflows/actionlint-audit.yml` | `grep -c … \|\| echo "0"` → `grep -c … 2>/dev/null; true` — prevents `"0\n0"` double output that broke `$GITHUB_OUTPUT` (Invalid format) and `-gt 0` integer test |
+
+## [Unreleased] — W-093 cognitive brain agent updates + status docs (PR #3492, 2026-03-03)
+
+### Added / Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-093a | feat | `.github/agents/cognitive-brain-manager.md` | v2.0→v3.0: RBAC + CI Health subgraphs, PR #3492 metrics (ALLOWED_ACTORS, CODEX_CI_LAST_GREEN_SHA, update_user), version history updated |
+| W-093b | fix | `.github/agents/cognitive-brain-session-injector.md` | v1.0→v1.1: COGNITIVE_BRAIN_ALLOWED_ACTORS now ✅ active (4 actors set via repo variable) |
+| W-093c | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3492.md` | Session status: W-091/W-092/W-093 summary, all P2.x wiring complete (7/7), next-phase flowchart |
+| W-093d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Chain prompt: P3.x enhancement tasks (brain_interface.py, SESSION_RESTORE, AUTO_PROMOTE), D_CAPABLE guide, self-review checklist |
+
+## [Unreleased] — W-092 cognitive brain objectives (PR #3492, 2026-03-03)
+
+### Added / Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-092a | feat | `.github/workflows/ci-health-monitor.yml` | Added `Write CODEX_CI_LAST_GREEN_SHA when CI is healthy` step (P2.6) — writes current SHA to `CODEX_CI_LAST_GREEN_SHA` repo variable when failure rate < threshold |
+| W-092b | feat | `.github/workflows/agent-registry-validation.yml` | Gated `Trigger embedding index refresh` step on `vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'` — allows operator to pause FAISS rebuilds without a workflow commit |
+
+## [Unreleased] — W-091 update user access levels (PR #3492, 2026-03-03)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-091a | feat | `src/zendesk/api_client.py` | Added `update_user(user_id, **updates)` method — `PUT /api/v2/users/{user_id}.json`; supports role (access-level) changes and general field updates |
+| W-091b | test | `tests/zendesk/test_api_client.py` | Added `test_update_user_role` and `test_update_user_multiple_fields` covering the new endpoint |
+
 ## [Unreleased] — W-090 reviewer feedback fixes (2026-03-03)
 
 ### Fixed
