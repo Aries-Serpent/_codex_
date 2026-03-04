@@ -21,7 +21,9 @@ Output (dry-run):
 
 Output (AUTO_PROMOTE_TIER_ENABLED=true):
   Updates enforcement_tier from SOFT to PARTIAL for qualifying agents
-  directly in AGENT_REGISTRY.yaml and regenerates CODEX_MANIFEST.json.
+  directly in AGENT_REGISTRY.yaml.  CODEX_MANIFEST.json is NOT automatically
+  regenerated; run ``python scripts/ci/generate_manifest.py`` separately after
+  the write path completes to keep the manifest in sync.
 
 Security note (Domain 8):
   AUTO_PROMOTE_TIER_ENABLED must stay ``false`` until this write path has

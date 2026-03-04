@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-097 CI fixes: EOF newline + detect-secrets baseline + docstring (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-097a | fix | `CODEX_MANIFEST.json` | Add missing EOF newline (end-of-file-fixer hook) |
+| W-097b | fix | `.secrets.baseline` | Update `CODEX_MANIFEST.json` entry — line 1619→1631, new integrity_sha256 hash (false positive, detect-secrets hook) |
+| W-097c | fix | `scripts/ci/auto_promote_tier.py` | Docstring correction: remove claim that write path regenerates CODEX_MANIFEST.json (per PR review comment); instruct caller to run `generate_manifest.py` separately |
+
 ## [Unreleased] — W-096 BEC objective — First D_CAPABLE Promotion (PR #3494, 2026-03-04)
 
 ### Added
