@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-106 CI fixes: Art_Validation EOF + detect-secrets false positive (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-106 | ci-fix | `CODEX_MANIFEST.json` | Added missing EOF newline — unblocked `end-of-file-fixer` pre-commit hook (Art_Validation run 22685833400) |
+| W-106 | ci-fix | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added `<!-- pragma: allowlist secret -->` suppressor on line 360 (W-097 entry containing `integrity_sha256` keyword) — unblocked `detect-secrets` hook (Secret Keyword false positive) |
+
 ## [Unreleased] — W-105 5th Token Delegation Activation recorded (PR #3494, 2026-03-04)
 
 ### Changed
