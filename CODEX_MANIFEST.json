@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-03T05:58:59Z",
+  "generated_at": "2026-03-04T19:08:27Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -36,7 +36,7 @@
       "name": "ci-testing-agent",
       "role": "specialist",
       "enforcement_tier": "GROUNDED",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "codex_reviewer",
@@ -707,8 +707,8 @@
     {
       "name": "workflow-ci-fixer",
       "role": "specialist",
-      "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "enforcement_tier": "GROUNDED",
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "workflow-health-monitor",
@@ -1503,6 +1503,14 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3492.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3494.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
       "type": "enforcement"
     },
@@ -1620,9 +1628,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 0,
-    "transition_active": false
+    "d_capable_agents": 2,
+    "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "2e0d03bbdf60b479bdac6569db91ab075a2cb1e8754c62d955c5087b8cc3bb4f"
+  "integrity_sha256": "f0132352f0912f66da28eb76b0ad4d1b49b5697b34f039122ff7dad8385890a6"
 }

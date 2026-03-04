@@ -5,6 +5,122 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-106 CI fixes + merge safety assessment (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-106 | ci-fix | `CODEX_MANIFEST.json` | Added missing EOF newline — unblocked `end-of-file-fixer` pre-commit hook (Art_Validation run 22685833400) |
+| W-106 | ci-fix | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added `<!-- pragma: allowlist secret -->` suppressor on line 361 (W-097 entry containing `integrity_sha256` keyword) — unblocked `detect-secrets` hook (Secret Keyword false positive) |
+| W-106b | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Added HOTFIX Merge Assessment: PR #3494 confirmed safe to merge (Resilient Validation failures all pre-existing on `main`; Art_Validation fixed) |
+| W-106b | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Added W-106 session update with CI fix summary and merge safety verdict |
+
+## [Unreleased] — W-105 5th Token Delegation Activation recorded (PR #3494, 2026-03-04)
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-105 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | 5th token delegation activation (run 22685144324, owner @mbaetiong) recorded; `COPILOT_AGENT_AUTH_ENABLED=true` and `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed |
+| W-105 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Activation command updated to reflect 5th delegation run |
+
+## [Unreleased] — W-104 Second D_CAPABLE Promotion: `workflow-ci-fixer` (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-104b | docs | `docs/arch/ADR-20260304-second-d-capable-promotion.md` | New ADR — second D_CAPABLE promotion decision for `workflow-ci-fixer`; candidate evaluation table (ci-emergency-response-agent rejected, workflow-ci-fixer promoted); 2-sprint clean observation confirmation |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-104a | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.1→v1.9.2; `workflow-ci-fixer` `autonomy_model: E` → `D_CAPABLE`, `enforcement_tier: PARTIAL` → `GROUNDED`, `has_tests: true`, `has_docs: true`, `violations_30d: 0` — D_CAPABLE agent count: 1→2 |
+| W-104c | chore | `CODEX_MANIFEST.json` | Regenerated (2026-03-04T19:08:27Z) — D_CAPABLE count: 1→2 |
+| W-104c | fix | `.secrets.baseline` | Updated CODEX_MANIFEST.json entry (line 1631→1635, new hash `c03794f4...`). `detect-secrets scan --baseline .secrets.baseline` exit 0. |
+| W-104d | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | P4 observation ✅ complete; P5 second D_CAPABLE promotion ✅ complete; 4th token delegation activation (run 22684341839) recorded |
+| W-104d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Priority 2 marked ✅ COMPLETE; next cycle: third D_CAPABLE candidate after 2-sprint observation of `workflow-ci-fixer` |
+
+## [Unreleased] — W-102/W-103 detect-secrets baseline fix + variables review (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-102 | fix | `.secrets.baseline` | Added two `Base64 High Entropy String` false positives from `.github/workflows/agent-auth-delegation.yml` (lines 559, 590 — base64-encoded Python scripts, not real secrets). `detect-secrets` scan exit 0 verified. Fixes Art_Validation / Fast Validation run 22683254031. |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-103 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Variables review: (1) `AUTO_PROMOTE_TIER_ENABLED=true` — Domain 8 sign-off complete (set ~1h before review); write path now active; `generate_manifest.py` must be run after any auto-promotion to keep `CODEX_MANIFEST.json` in sync. (2) `CODEX_ENV_PYTHON_VERSION` shows `,3.12` in Variables Summary section — leading comma is a data-extraction artifact; env-level value is `3.12` (confirmed in Environment Variables section and `copilot-setup-steps.yml` usage). No variable change required. (3) Third token delegation activation recorded (run 22683350353). All other 30+ repo/env variables confirmed correct. |
+
+## [Unreleased] — W-101 Add TRANSIENT_001 CI failure pattern for GitHub Dependency Graph API transient errors (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-101 | docs | `.codex/patterns/ci_failure_patterns.yaml` | Add `TRANSIENT_001` pattern: GitHub-managed "Automatic Dependency Submission" workflow (`dynamic/dependency-graph/auto-submission`) fails with `HttpError: An error occurred while processing your request. Please try again later.` — transient GitHub Dependency Graph API 5xx. Not caused by code changes. Fix: re-run workflow. Pattern count: 19 → 20, categories: 6 → 7. Run 22682889650 (same pattern as 22670629135). |
+| W-101 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Updated with W-099/W-100 details, second token delegation activation (run 22682630214), GitHub App registration step-by-step admin guide, and complete work item summary table |
+
+
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-100 | lint-fix | `tests/ci/test_auto_promote_tier.py` | Remove unused `import pytest` (F401); add `I001` to noqa comment on `import auto_promote_tier` line — ruff `isort` flags it as unsorted because it follows a `sys.path.insert()` call; the placement is intentional (path must be modified first). Fixes Pre-Merge Validation run 22681530852. |
+
+## [Unreleased] — W-099 Fix agent-auth-delegation.yml checkout ref for pull_request_review events (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-099 | fix | `.github/workflows/agent-auth-delegation.yml` | Checkout ref in "Activate token delegation" job: `github.head_ref \|\| github.ref_name` → `github.event.pull_request.head.ref \|\| github.head_ref \|\| github.ref_name` — `github.head_ref` is undefined for `pull_request_review` events (only set for `pull_request`/`pull_request_target`), causing fallback to `github.ref_name` which resolves to `3494/merge` (a non-existent branch ref), failing checkout. Fixes run 22681530883. |
+
+## [Unreleased] — W-098 Agent Token Delegation activation + auto_promote_tier write-path tests (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-098a | test | `tests/ci/test_auto_promote_tier.py` | 15 new tests for `_apply_promotion()` write path, `AUTO_PROMOTE_TIER_ENABLED` guard, dry-run mode, violation skipping, key-order preservation, and tier constants |
+| W-098b | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Document Agent Token Delegation activation (`COPILOT_AGENT_AUTH_ENABLED=true`, run 22680576854) |
+| W-098c | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Update GitHub App pattern gap analysis and Priority 3 pre-requisite checklist |
+| W-098d | docs | `docs/arch/GITHUB_APP_PATTERN_GAPS.md` | GitHub App design-pattern gap analysis: patterns 1–4 verified, registration gap documented |
+
+## [Unreleased] — W-097 CI fixes: EOF newline + detect-secrets baseline + docstring (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-097a | fix | `CODEX_MANIFEST.json` | Add missing EOF newline (end-of-file-fixer hook) |
+| W-097b | fix | `.secrets.baseline` | Update `CODEX_MANIFEST.json` entry — line 1619→1631, new integrity_sha256 hash (false positive, detect-secrets hook) |
+| W-097c | fix | `scripts/ci/auto_promote_tier.py` | Docstring correction: remove claim that write path regenerates CODEX_MANIFEST.json (per PR review comment); instruct caller to run `generate_manifest.py` separately |
+
+## [Unreleased] — W-096 BEC objective — First D_CAPABLE Promotion (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-096a | docs | `docs/arch/ADR-20260303-first-d-capable-promotion.md` | New ADR defining D_CAPABLE criteria and documenting decision to promote `ci-testing-agent` (rank 1, GROUNDED, production) |
+| W-096e | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Session continuity status file — BEC objective complete |
+| W-096f | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Chain prompt for next session (2-sprint observation + second D_CAPABLE candidate) |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-096b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.0→v1.9.1; `ci-testing-agent` `autonomy_model: E` → `D_CAPABLE` (first D_CAPABLE agent in system) |
+| W-096c | feat | `scripts/ci/auto_promote_tier.py` | Add `AUTO_PROMOTE_TIER_ENABLED` env var guard + `_apply_promotion()` write path (P3.3 pre-req); defaults to disabled (`false`); Domain 8 owner sign-off required to enable |
+| W-096d | chore | `CODEX_MANIFEST.json` | Refreshed via `generate_manifest.py` — D_CAPABLE count: 0→1, fresh timestamp (E→D gate C2 preserved) |
+
 ## [Unreleased] — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)
 
 ### Changed

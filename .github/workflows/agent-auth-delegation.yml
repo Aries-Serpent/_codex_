@@ -667,7 +667,7 @@ jobs:
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY }}
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
 
       # ── 3a: Set COPILOT_AGENT_AUTH_ENABLED + update COGNITIVE_BRAIN_ALLOWED_ACTORS ──
       - name: "Set repo variables via CODEX_MASTER_KEY (maintainer auth)"
