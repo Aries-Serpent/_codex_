@@ -228,6 +228,21 @@ Should print App ID, installation ID, and permissions.
 
 ---
 
+## W-106 Session Update (2026-03-04 — CI fix + merge safety assessment)
+
+### W-106 — Art_Validation CI Fix
+Two `Art_Validation / Fast Validation` failures (run 22685833400) resolved:
+1. **end-of-file-fixer**: `CODEX_MANIFEST.json` missing trailing newline — added (same pattern as W-097a)
+2. **detect-secrets Secret Keyword**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry with `integrity_sha256` keyword) — added `<!-- pragma: allowlist secret -->` inline suppressor
+
+### Merge Safety Assessment
+**PR #3494 is SAFE TO MERGE.** Resilient Validation Suite failures confirmed pre-existing on `main` — none caused by this PR's changes. Full evidence table in `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` HOTFIX section.
+
+### Next Session
+`workflow-ci-fixer` 2-sprint observation window started 2026-03-04. Next D_CAPABLE cycle begins after clean observation.
+
+---
+
 ## W-105 Session Update (2026-03-04 — 5th token delegation activation)
 
 ### 5th Token Delegation Activation
