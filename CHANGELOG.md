@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-105 5th Token Delegation Activation recorded (PR #3494, 2026-03-04)
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-105 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | 5th token delegation activation (run 22685144324, owner @mbaetiong) recorded; `COPILOT_AGENT_AUTH_ENABLED=true` and `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed |
+| W-105 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Activation command updated to reflect 5th delegation run |
+
 ## [Unreleased] — W-104 Second D_CAPABLE Promotion: `workflow-ci-fixer` (PR #3494, 2026-03-04)
 
 ### Added

@@ -228,6 +228,17 @@ Should print App ID, installation ID, and permissions.
 
 ---
 
+## W-105 Session Update (2026-03-04 — 5th token delegation activation)
+
+### 5th Token Delegation Activation
+Owner @mbaetiong activated Agent Token Delegation (workflow run 22685144324).
+- `COPILOT_AGENT_AUTH_ENABLED=true` confirmed
+- `COGNITIVE_BRAIN_ALLOWED_ACTORS`: `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]`
+
+All D_CAPABLE promotions complete for this PR cycle. `workflow-ci-fixer` now in 2-sprint observation window. REQ-4/REQ-5 compliance maintained (W-105 entry added to AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md).
+
+---
+
 ## W-104 Session Update (2026-03-04 — 4th token delegation activation)
 
 ### 4th Token Delegation Activation
@@ -285,5 +296,5 @@ Both are **code**, not secrets. Added to `.secrets.baseline` with correct `hashe
 
 ---
 
-*Created: 2026-03-04 | Updated: 2026-03-04 (W-104/second-D_CAPABLE/4th-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
+*Created: 2026-03-04 | Updated: 2026-03-04 (W-105/5th-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
 *Author: copilot-swe-agent[bot]*
