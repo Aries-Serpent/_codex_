@@ -48,12 +48,13 @@
 
 ### Action Items for @mbaetiong
 
-| Priority | Action | Why |
-|----------|--------|-----|
-| **P1 — IMMEDIATE** | Verify `CODEX_MASTER_KEY` org secret is not empty; rotate if needed | Memory endpoints (`/api/memory/*`) return 503 without it |
-| **P1** | Add `CODEX_CLI_API_URL=http://localhost:8765` as repo variable | Canonical BrainClient URL discovery |
-| **P2** | Update `COGNITIVE_BRAIN_SESSION_NUMBER` repo variable to `112` | Session tracking |
-| **P3** | Schedule `repo-var-sync-agent` run to keep `agent_context.json` current | Prevent silent injection failure regression |
+| Priority | Action | Status |
+|----------|--------|--------|
+| **P1 — DONE** | Rotate `CODEX_MASTER_KEY` org secret | ✅ Updated 2026-03-04 |
+| **P1 — DONE** | Add `CODEX_CLI_API_URL=http://localhost:8765` as repo variable | ✅ Confirmed |
+| **P2 — DONE** | Update `COGNITIVE_BRAIN_SESSION_NUMBER` repo variable to `112` | ✅ Confirmed |
+| **P3** | Schedule `repo-var-sync-agent` run to keep `agent_context.json` current | Pending |
+| **P3** | Validate `rust-error-validator` for `maturity: production` (2 sprints) | Pending |
 
 ---
 
@@ -102,7 +103,7 @@ Demotion candidates: 0
 | `GET /api/cli/history` | ✅ YES | `BrainClient().cli_history()` | |
 | `POST /api/request` | ✅ YES | `BrainClient().proxy_request(method, url)` | GitHub API auto-auth if `CODEX_MASTER_KEY` set |
 | `GET /api/ooda/metrics` | ✅ YES | `BrainClient().ooda_metrics()` | Returns empty without brain wired |
-| `GET /api/memory/state` | ⚠️ PENDING | `BrainClient().memory_state()` | Requires `CODEX_MASTER_KEY` rotation (RC-4) |
+| `GET /api/memory/state` | ✅ YES | `BrainClient().memory_state()` | `CODEX_MASTER_KEY` rotated 2026-03-04 (RC-4 resolved) |
 | GitHub Pages browser | ❌ BLOCKED | N/A | Sandbox policy; use REST directly |
 
 ---

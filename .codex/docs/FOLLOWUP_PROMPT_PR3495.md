@@ -46,60 +46,52 @@ COGNITIVE_BRAIN_SESSION_NUMBER: 112
 
 ### P1.1 — Rotate `CODEX_MASTER_KEY` org secret
 
-**Status: BLOCKED — awaiting @mbaetiong**
+**Status: ✅ COMPLETE — confirmed by @mbaetiong 2026-03-04**
 
-The `CODEX_MASTER_KEY` org secret appears empty in the active agent session. Memory endpoints
-(`/api/memory/state`, `/api/memory/search`, `/api/memory/consolidate`) return HTTP 503 without it.
-
-**Action:** In GitHub Settings → Org Secrets → `CODEX_MASTER_KEY` → Update. Set a strong
-random value (e.g. `openssl rand -hex 32`). The `CODEX_BACKUP_KEY` (updated 4 days ago) may
-already be valid — verify both.
+`CODEX_MASTER_KEY` rotated (last updated ~29 minutes before confirmation). Memory endpoints
+(`/api/memory/state`, `/api/memory/search`, `/api/memory/consolidate`) are now unblocked.
+`CODEX_BACKUP_KEY` last updated 4 days ago — both keys valid.
 
 ### P1.2 — Add `CODEX_CLI_API_URL` repo variable
 
-**Status: PENDING — 1 minute task**
+**Status: ✅ COMPLETE — confirmed by @mbaetiong 2026-03-04**
 
-`BrainClient` checks `CODEX_CLI_API_URL` first. Currently falls back to `COPILOT_CLI_BASE_URL`.
-Formalise as an explicit repo variable.
-
-**Action:** GitHub Settings → Variables → Add `CODEX_CLI_API_URL` = `http://localhost:8765`.
+`CODEX_CLI_API_URL=http://localhost:8765` added as repo variable. `agent_context.json` updated.
 
 ### P1.3 — Update `COGNITIVE_BRAIN_SESSION_NUMBER` to 112
 
-**Action:** GitHub Settings → Variables → `COGNITIVE_BRAIN_SESSION_NUMBER` → set to `112`.
+**Status: ✅ COMPLETE — confirmed by @mbaetiong 2026-03-04**
 
 ---
 
 ## 🟡 Priority 2 — Third D_CAPABLE Candidate Evaluation
 
-**Status: READY — zero demotion annotations from workflow-ci-fixer 2-sprint window**
+**Status: ✅ COMPLETE — W-108 (commit 44d2ebc)**
 
-Evaluate `ci-emergency-response-agent` as next D_CAPABLE candidate:
+`ci-emergency-response-agent` evaluated and **rejected** (PARTIAL tier, `handoff_protocol: none`,
+empty `accepts_handoff_from`). `rust-error-validator` designated as deferred third candidate.
 
-Criteria checklist:
-- [ ] `enforcement_tier: GROUNDED` ?
-- [ ] `handoff_protocol: structured` ?
-- [ ] `accepts_handoff_from` non-empty list ?
-- [ ] `violations_30d: 0` ?
-- [ ] `has_tests: true`, `has_docs: true` ?
-- [ ] `maturity: production` ?
-- [ ] Top-20 `activation_frequency_rank` ?
+ADR: `docs/arch/ADR-20260304-third-d-capable-evaluation.md`
 
-If all ✅ → create ADR `docs/arch/ADR-20260304-third-d-capable-promotion.md` → update
-`AGENT_REGISTRY.yaml` → regenerate `CODEX_MANIFEST.json`.
+Criteria for `rust-error-validator`:
+- [x] `enforcement_tier: GROUNDED` ✅
+- [x] `handoff_protocol: structured` ✅
+- [x] `accepts_handoff_from` non-empty ✅
+- [ ] `violations_30d: 0` ❌ — unset (needs 30-day observation)
+- [x] `has_tests: true`, `has_docs: true` ✅
+- [ ] `maturity: production` ❌ — currently `beta` (needs @mbaetiong sign-off)
+- [x] `activation_frequency_rank: 20` ✅
+
+**Next:** @mbaetiong validates `rust-error-validator` production stability over 2 sprints.
 
 ---
 
 ## 🟡 Priority 3 — BrainClient Tests
 
-**Status: PENDING**
+**Status: ✅ COMPLETE — W-108 (commit 44d2ebc)**
 
-The `src/codex/agents/brain_client.py` module has no tests yet.
-Create `tests/agents/test_brain_client.py` with:
-- Unit tests for URL resolution order (`CODEX_CLI_API_URL` → `COPILOT_CLI_BASE_URL` → default)
-- Unit tests for `_auth_header()` with/without env vars set
-- Integration test for `is_available()` using `unittest.mock` to mock `urlopen`
-- Tests for `run_command`, `proxy_request`, `memory_state` with mock responses
+`tests/agents/test_brain_client.py` — 35 tests, all passing. Covers URL resolution, auth
+headers, all public methods, error propagation, and all convenience helpers.
 
 ---
 

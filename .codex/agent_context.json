@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-synced from GitHub repo variables by repo-var-sync-agent. Do not edit manually — run repo-var-sync-agent to pull latest values from GitHub API. Keys starting with _ are skipped during GITHUB_ENV injection. Secrets (CODEX_MASTER_KEY, CODEX_BACKUP_KEY) are injected separately via copilot-setup-steps.yml env: block and must NOT be stored here.",
-  "_last_synced": "2026-03-04T22:36:00Z",
+  "_last_synced": "2026-03-04T23:04:00Z",
   "_sync_agent": "repo-var-sync-agent",
   "_sync_command": "Use repo-var-sync-agent to update: it reads all COPILOT_*/CODEX_*/COGNITIVE_BRAIN_*/AGENT_*/EMBEDDING_* repo variables via GitHub API and rewrites this file",
   "_pr": "3495",
