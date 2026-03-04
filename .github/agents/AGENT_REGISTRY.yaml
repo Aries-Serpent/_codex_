@@ -1,4 +1,4 @@
-version: 1.9.2
+version: 1.9.3
 last_updated: '2026-03-04T19:04:00Z'
 total_agents: 152
 agents:
@@ -445,7 +445,7 @@ agents:
   name: Rust Error Validator
   directory: .github/agents/rust-error-validator
   status: active
-  maturity: beta
+  maturity: production
   has_prompts: false
   has_tests: true
   has_docs: true
@@ -461,13 +461,14 @@ agents:
   - cognitive_brain
   priority: high
   enforcement_tier: GROUNDED
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from:
   - orchestrator
   - agent-orchestrator
   consolidation_priority: true
   activation_frequency_rank: 20
+  violations_30d: 0
   role: specialist
 - id: security-advisory-resolver
   name: Security Advisory Resolver

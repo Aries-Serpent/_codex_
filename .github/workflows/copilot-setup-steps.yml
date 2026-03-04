@@ -463,24 +463,44 @@ jobs:
       - name: "💻 Start CLI API Server (background)"
         # Sprint 2: auto-start FastAPI :8765 so the CLI tab is live when the
         # Copilot agent session begins. Guarded — non-blocking on missing deps.
+        # Gap-fix (S112): export CODEX_CLI_API_URL so BrainClient + agents can
+        # discover the server URL without hard-coding it.  Also add a retry loop
+        # (up to 5 × 1 s) so slow startup does not produce a false-negative.
         continue-on-error: true
         run: |
           if [ ! -f cognitive_app/src/server/cli_api_server.py ]; then
             echo "⚠️ cli_api_server.py not found — skipping (non-blocking)"
             exit 0
           fi
-          pip install fastapi uvicorn ptyprocess --quiet 2>/dev/null || true
+          pip install fastapi uvicorn httpx ptyprocess --quiet 2>/dev/null || true
           nohup uvicorn cognitive_app.src.server.cli_api_server:app \
             --host 0.0.0.0 \
             --port 8765 \
             --log-level warning \
             > "${RUNNER_TEMP}/cli_api_server.log" 2>&1 &
-          echo "CLI_API_SERVER_PID=$!" >> "$GITHUB_ENV"
-          sleep 2
-          if curl -sf http://localhost:8765/api/health > /dev/null 2>&1; then
-            echo "✅ CLI API Server started on :8765 (PID=$!)"
+          CLI_API_PID=$!
+          echo "CLI_API_SERVER_PID=${CLI_API_PID}" >> "$GITHUB_ENV"
+          # Always export http://localhost:8765 — the server is started on that
+          # fixed address above.  Deriving from COPILOT_CLI_BASE_URL was
+          # misleading: if that variable pointed to a different host/port the
+          # exported URL would be wrong while the health check (which always
+          # hits localhost:8765) still passed.  Hard-code the actual address.
+          echo "CODEX_CLI_API_URL=http://localhost:8765" >> "$GITHUB_ENV"
+          # Retry health-check up to 5 s to accommodate slower startup
+          SERVER_READY=0
+          for i in 1 2 3 4 5; do
+            sleep 1
+            if curl -sf http://localhost:8765/api/health > /dev/null 2>&1; then
+              SERVER_READY=1
+              break
+            fi
+          done
+          if [ "$SERVER_READY" = "1" ]; then
+            echo "✅ CLI API Server ready on :8765 (PID=${CLI_API_PID})"
+            echo "   BrainClient URL: http://localhost:8765"
+            echo "   Import: from codex.agents.brain_client import BrainClient"
           else
-            echo "⚠️ CLI API Server did not respond to health check — see RUNNER_TEMP/cli_api_server.log"
+            echo "⚠️ CLI API Server did not respond after 5 s — see RUNNER_TEMP/cli_api_server.log"
             cat "${RUNNER_TEMP}/cli_api_server.log" 2>/dev/null | tail -20 || true
           fi
 

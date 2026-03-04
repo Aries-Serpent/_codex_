@@ -5,7 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-106 CI fixes + merge safety assessment (PR #3494, 2026-03-04)
+## [Unreleased] — W-107 Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-107 | feat | `src/codex/agents/brain_client.py` | New `BrainClient` class — typed Python client for the CLI API server (`localhost:8765`); methods: `health`, `is_available`, `run_command`, `cli_history`, `clear_history`, `proxy_request`, `memory_state`, `memory_search`, `ooda_metrics`, `ooda_process`; convenience helpers: `git_status`, `git_log`, `github_repo_info`, `github_workflow_runs`; zero stdlib-only dependencies; env var discovery: `CODEX_CLI_API_URL` → `COPILOT_CLI_BASE_URL` → default |
+| W-107 | config | `.codex/agent_context.json` | Created missing repo-variable context file — contains all 28 repo variables (COPILOT_*, CODEX_*, COGNITIVE_BRAIN_*, AGENT_*, EMBEDDING_*); injection step in `copilot-setup-steps.yml` was silently skipped every session because this file was absent |
+| W-107 | docs | `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md` | Capability matrix (before/after), 6 root causes, action items for @mbaetiong, usage examples for BrainClient and curl |
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-107 | fix | `.github/workflows/copilot-setup-steps.yml` | CLI API Server startup step: (1) export `CODEX_CLI_API_URL` to `GITHUB_ENV` using `${COPILOT_CLI_BASE_URL:-http://localhost:8765}` — repo-variable-driven; (2) add `httpx` to `pip install` line (required by `/api/request` proxy endpoint); (3) retry health-check loop (5×1 s) instead of single `sleep 2` |
+| W-107 | fix | `.gitignore` | Added `!.codex/agent_context.json` allowlist entry — file was matched by `.codex/*` catch-all and would not have been tracked |
+
+
 
 ### Fixed
 
