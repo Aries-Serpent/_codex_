@@ -82,7 +82,7 @@ PR #3494 (This PR) → Priority 2: BEC = Becoming D_CAPABLE ✅
 
 ## W-098 Session Update (2026-03-04 ~17:21Z)
 
-### Agent Token Delegation Activated
+### Agent Token Delegation Activated (1st activation)
 
 Owner @mbaetiong approved Agent Token Delegation via workflow run
 [22680576854](https://github.com/Aries-Serpent/_codex_/actions/runs/22680576854):
@@ -105,17 +105,121 @@ Owner @mbaetiong approved Agent Token Delegation via workflow run
 
 ---
 
+## W-099–W-100 Session Update (2026-03-04 ~17:40–18:10Z)
+
+### W-099 — CI Fix: `agent-auth-delegation.yml` checkout ref (commit `8097414`)
+
+Root cause: `github.head_ref` is empty for `pull_request_review` events — caused
+`actions/checkout@v4` to fail with exit 1 when fallback resolved to `3494/merge`.
+
+Fix applied to `.github/workflows/agent-auth-delegation.yml` line 670:
+```
+ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
+```
+Fixes Pre-Merge Validation run 22681530883.
+
+### W-100 — Lint Fix: `tests/ci/test_auto_promote_tier.py` (commit `9c88cb0`)
+
+Two ruff violations introduced in W-098a fixed:
+- **F401**: removed unused `import pytest`
+- **I001**: added `I001` to `# noqa: E402,I001` on `auto_promote_tier` import line
+  (ruff/isort flags it as out-of-order because it follows a mandatory `sys.path.insert()`)
+
+Fixes Pre-Merge Validation run 22681530852. All 15 tests continue to pass, ruff CLEAN.
+
+### Agent Token Delegation Re-Activated (2nd activation)
+
+Owner @mbaetiong re-confirmed Agent Token Delegation via workflow run
+[22682630214](https://github.com/Aries-Serpent/_codex_/actions/runs/22682630214):
+
+| Variable | Value |
+|----------|-------|
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
+
+**Delegated agent coverage:**
+- ✅ `copilot-swe-agent[bot]` — GitHub Copilot coding agent
+- ✅ `github-copilot[bot]` — Copilot custom agents
+- ✅ `github-actions[bot]` — CI/AI workflow agents
+
+---
+
+## GitHub App Registration — Admin Action Required
+
+All four GitHub App design patterns have complete code-layer implementations
+(`docs/arch/GITHUB_APP_PATTERN_GAPS.md`). The sole remaining gap is registration.
+
+### Step-by-Step Registration (Human Action)
+
+**Step 1 — Review `administration: read` permission** (5 min)
+- Open `scripts/ci/github_app_bootstrap.py` and inspect `APP_MANIFEST`
+- Decide whether `administration: read` is needed (flagged for audit)
+- Remove it from the manifest if not required before proceeding
+
+**Step 2 — Generate registration URL** (terminal)
+```bash
+cd /path/to/_codex_
+python scripts/ci/github_app_bootstrap.py --generate-manifest-url
+```
+Copy the printed URL.
+
+**Step 3 — Register the App in GitHub** (browser ~2 min)
+1. Open the URL from Step 2 (must be logged in as `mbaetiong`)
+2. Review the pre-filled App registration form
+3. Click **"Create GitHub App"**
+4. Copy the `code=<value>` from the redirect URL
+
+**Step 4 — Exchange code for credentials** (terminal)
+```bash
+python scripts/ci/github_app_bootstrap.py --convert-code <CODE_FROM_URL>
+```
+Credentials saved to `.codex/github_app/app_credentials.json`.
+
+**Step 5 — Add secrets to repository** (GitHub UI)
+1. Go to: `https://github.com/Aries-Serpent/_codex_/settings/secrets/actions`
+2. Add `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET`
+
+**Step 6 — Install the App**
+1. Go to: `https://github.com/apps/<app-slug>/installations/new`
+2. Select `Aries-Serpent` org → `_codex_` repo → Click **"Install"**
+
+**Step 7 — Verify**
+```bash
+python scripts/ci/github_app_bootstrap.py --show
+```
+Should print App ID, installation ID, and permissions.
+
+---
+
 ## Next Phase Plan
 
 | Priority | Item | Status |
 |----------|------|--------|
 | P4 | 2-sprint observation of ci-testing-agent D_CAPABLE behaviour | ⏳ In progress |
-| P5 | Promote second D_CAPABLE agent (rank 2–3 candidate: workflow-ci-fixer or ci-emergency-response-agent) | 🔮 Future |
+| P5 | Promote second D_CAPABLE agent (ci-emergency-response-agent rank 2 or workflow-ci-fixer rank 3) | 🔮 After P4 observation |
 | P6 | Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off | 🔮 Future |
 | P7 | FAISS index freshness check (codex_index_meta.json age) | 🔮 Future |
-| P8 | GitHub App registration: run `github_app_bootstrap.py --generate-manifest-url` | 🔮 Future (admin action) |
+| P8 | GitHub App registration (admin action — steps above) | 🔮 Admin action required |
 
 ---
 
-*Created: 2026-03-04 | Updated: 2026-03-04 (W-098) | Branch: copilot/continue-bec-objective | PR #3494*
+## All Work Items Summary (PR #3494)
+
+| Item | Description | Status |
+|------|-------------|--------|
+| W-096a | ADR-20260303-first-d-capable-promotion.md | ✅ |
+| W-096b | AGENT_REGISTRY.yaml v1.9.1 — ci-testing-agent D_CAPABLE | ✅ |
+| W-096c | auto_promote_tier.py — guard + write path | ✅ |
+| W-096d | CODEX_MANIFEST.json refreshed | ✅ |
+| W-097a | CODEX_MANIFEST.json EOF newline | ✅ |
+| W-097b | .secrets.baseline CODEX_MANIFEST entry updated | ✅ |
+| W-097c | auto_promote_tier.py docstring correction | ✅ |
+| W-098a | test_auto_promote_tier.py — 15 tests | ✅ |
+| W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ |
+| W-099 | agent-auth-delegation.yml checkout ref fix | ✅ |
+| W-100 | test_auto_promote_tier.py ruff lint fix | ✅ |
+
+---
+
+*Created: 2026-03-04 | Updated: 2026-03-04 (W-099/W-100/2nd-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
 *Author: copilot-swe-agent[bot]*

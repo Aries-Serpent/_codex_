@@ -709,12 +709,85 @@ cognitive_notes: |
 ---
 ```
 
+---
+
+### Category 7: Transient GitHub API Failures
+
+```yaml
+---
+pattern_id: TRANSIENT_001
+name: "GitHub Dependency Graph API Transient Error (auto-submission)"
+category: transient_github_api
+priority: 3
+severity: warning
+
+description: |
+  The GitHub-managed "Automatic Dependency Submission" workflow
+  (dynamic/dependency-graph/auto-submission, triggered by github-advanced-security[bot])
+  fails when the GitHub Dependency Graph REST API returns a transient 5xx error while
+  the component-detection-dependency-submission-action attempts to submit a snapshot.
+  This is NOT a code defect — it is a GitHub infrastructure blip.
+
+detection:
+  workflow_path: "dynamic/dependency-graph/auto-submission"
+  triggering_actor: "github-advanced-security[bot]"
+  job_name: "submit-pypi (dynamic)"
+  error_signatures:
+    - "An error occurred while processing your request. Please try again later."
+    - "HttpError: An error occurred while processing your request."
+    - "Failed to submit snapshot: HttpError"
+    - "dependency-submission#create-a-snapshot-of-dependencies-for-a-repository"
+  log_locations:
+    - "component-detection-dependency-submission-action"
+
+root_cause:
+  technical: |
+    GitHub's Dependency Graph API (POST /repos/{owner}/{repo}/dependency-graph/snapshots)
+    returned a 5xx/transient error. The component-detection action correctly detects all
+    Python packages but the final snapshot POST fails due to GitHub-side infrastructure load.
+  not_caused_by: "Repository code changes or workflow configuration"
+
+fix:
+  automated: false
+  manual_steps:
+    - "Navigate to: https://github.com/Aries-Serpent/_codex_/actions/runs/<RUN_ID>"
+    - "Click 'Re-run all jobs'"
+    - "The workflow will succeed on retry when the GitHub API recovers"
+  prevention:
+    - "No code change needed — this is a GitHub infrastructure issue"
+    - "The workflow auto-retries on the next push/event"
+
+examples:
+  - run_id: 22670629135
+    date: "2026-03-04"
+    error: "socket hang up (component-detection binary download)"
+    resolution: "Transient — re-run resolved"
+  - run_id: 22682889650
+    date: "2026-03-04"
+    error: "HttpError: An error occurred while processing your request. Please try again later."
+    resolution: "Transient — re-run resolves"
+
+cognitive_notes: |
+  This pattern recurs whenever GitHub's Dependency Graph API experiences load spikes.
+  It is always safe to re-run the workflow. The self-healing CI should classify this
+  as TRANSIENT and not escalate unless it fails 3+ consecutive times on the same commit.
+  PR #3494 documented two occurrences (runs 22670629135 and 22682889650) on the same day.
+
+metadata:
+  reuse_count: 2
+  effectiveness: "100% (re-run resolves)"
+  confidence: 1.0
+  auto_fixable: false
+
+---
+```
+
 ## Statistics
 
 ### Current Library Stats
 
-**Total Patterns:** 19 (7 core + 12 derived)
-**Categories:** 6
+**Total Patterns:** 20 (8 core + 12 derived)
+**Categories:** 7
 **Batch Fix Patterns:** 4
 **Proven Patterns:** 19 (100%)
 **Confidence > 95%:** 17 (89%)

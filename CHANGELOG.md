@@ -5,7 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-100 Fix ruff lint violations in tests/ci/test_auto_promote_tier.py (PR #3494, 2026-03-04)
+## [Unreleased] — W-101 Add TRANSIENT_001 CI failure pattern for GitHub Dependency Graph API transient errors (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-101 | docs | `.codex/patterns/ci_failure_patterns.yaml` | Add `TRANSIENT_001` pattern: GitHub-managed "Automatic Dependency Submission" workflow (`dynamic/dependency-graph/auto-submission`) fails with `HttpError: An error occurred while processing your request. Please try again later.` — transient GitHub Dependency Graph API 5xx. Not caused by code changes. Fix: re-run workflow. Pattern count: 19 → 20, categories: 6 → 7. Run 22682889650 (same pattern as 22670629135). |
+| W-101 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Updated with W-099/W-100 details, second token delegation activation (run 22682630214), GitHub App registration step-by-step admin guide, and complete work item summary table |
+
+
 
 ### Fixed
 
