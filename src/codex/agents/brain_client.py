@@ -71,9 +71,28 @@ class BrainClient:
 
     # ── Internal helpers ──────────────────────────────────────────────────────
 
+    @staticmethod
+    def _safe_urlopen(req: urllib.request.Request, timeout: int):  # type: ignore[return]
+        """Validate the request URL scheme is http/https then call urlopen.
+
+        Bandit B310: urllib.request.urlopen is flagged when the URL scheme is
+        not validated, as file:/ and custom schemes can be exploited.
+        All BrainClient URLs are constructed from ``self.base_url`` (always
+        http:// or https://) so this guard is defensive-in-depth.
+        """
+        scheme = urllib.parse.urlparse(req.full_url).scheme.lower()
+        if scheme not in ("http", "https"):
+            raise BrainClientError(
+                f"Blocked request to disallowed URL scheme '{scheme}://' "
+                f"(only http/https are permitted)"
+            )
+        return urllib.request.urlopen(req, timeout=timeout)  # nosec B310
+
     def _auth_header(self) -> Dict[str, str]:
         """Return a Bearer auth header if CODEX_MASTER_KEY / CODEX_BACKUP_KEY is set."""
-        token = (os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or "").strip()
+        token = (
+            os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or ""
+        ).strip()
         return {"Authorization": f"Bearer {token}"} if token else {}
 
     def _get(self, path: str, params: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
@@ -82,14 +101,16 @@ class BrainClient:
             url = f"{url}?{urllib.parse.urlencode(params)}"
         req = urllib.request.Request(url, headers={"Accept": "application/json"})
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"GET {path} failed: HTTP {exc.code}") from exc
         except OSError as exc:
             raise BrainClientError(f"GET {path} unreachable: {exc}") from exc
 
-    def _post(self, path: str, body: Any, extra_headers: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    def _post(
+        self, path: str, body: Any, extra_headers: Optional[Dict[str, str]] = None
+    ) -> Dict[str, Any]:
         url = f"{self.base_url}{path}"
         data = json.dumps(body).encode()
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
@@ -97,7 +118,7 @@ class BrainClient:
             headers.update(extra_headers)
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
@@ -111,7 +132,7 @@ class BrainClient:
         url = f"{self.base_url}{path}"
         req = urllib.request.Request(url, headers={"Accept": "application/json"}, method="DELETE")
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            with self._safe_urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"DELETE {path} failed: HTTP {exc.code}") from exc
@@ -291,9 +312,11 @@ class BrainClient:
     def git_log(self, n: int = 10) -> List[str]:
         """Return the last N git log lines as a list."""
         result = self.run_command(f"git --no-pager log --oneline -{n}", timeout=10)
-        return [l for l in result.get("stdout", "").splitlines() if l]
+        return [line for line in result.get("stdout", "").splitlines() if line]
 
-    def github_repo_info(self, owner: str = "Aries-Serpent", repo: str = "_codex_") -> Dict[str, Any]:
+    def github_repo_info(
+        self, owner: str = "Aries-Serpent", repo: str = "_codex_"
+    ) -> Dict[str, Any]:
         """Fetch basic GitHub repo metadata via the proxy endpoint.
 
         Returns
