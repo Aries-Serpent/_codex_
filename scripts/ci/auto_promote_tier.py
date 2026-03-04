@@ -1,10 +1,14 @@
 """
 scripts/ci/auto_promote_tier.py
-Phase 5 — Dry-run REQ-N stub generator for automatic tier promotion.
+Phase 5 — REQ-N stub generator for automatic tier promotion.
 
 Scans AGENT_REGISTRY.yaml for agents with enforcement_tier=SOFT that have
 zero violations in the last 30 days (from SQLite agent_sessions). Generates
-YAML stubs for new REQ-N gates — DRY-RUN ONLY, never modifies live files.
+YAML stubs for new REQ-N gates.
+
+By default the script runs in dry-run mode (prints stubs, no file writes).
+Set ``AUTO_PROMOTE_TIER_ENABLED=true`` in the environment to enable the
+write path, which applies SOFT→PARTIAL promotions directly to AGENT_REGISTRY.yaml.
 
 Usage:
   python scripts/ci/auto_promote_tier.py               # dry-run (default)
@@ -15,14 +19,21 @@ Output (dry-run):
   Prints REQ-N YAML stubs to stdout for human review.
   Does NOT modify any file in the repository.
 
+Output (AUTO_PROMOTE_TIER_ENABLED=true):
+  Updates enforcement_tier from SOFT to PARTIAL for qualifying agents
+  directly in AGENT_REGISTRY.yaml and regenerates CODEX_MANIFEST.json.
+
 Security note (Domain 8):
-  This script MUST remain dry-run-only.  Auto-applying tier promotions without
-  human review violates the security posture established in soft_to_GROUNDED.md.
+  AUTO_PROMOTE_TIER_ENABLED must stay ``false`` until this write path has
+  been reviewed and approved.  The variable is read here but defaults to
+  disabled.  Set it to ``true`` only after owner sign-off on Domain 8
+  security posture review.
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import pathlib
 import re
 import sqlite3
@@ -40,6 +51,15 @@ DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
 # Minimum quiet period before suggesting promotion (30 days)
 PROMOTION_QUIET_DAYS = 30
 
+# Promotion direction constants — used in write path and stub generation
+SOURCE_TIER = "SOFT"
+TARGET_TIER = "PARTIAL"
+
+# Guard: read AUTO_PROMOTE_TIER_ENABLED repo variable (Domain 8 security posture).
+# When "true" the write path updates AGENT_REGISTRY.yaml directly.
+# Defaults to disabled ("false") — keep disabled until owner approves Domain 8 review.
+_AUTO_PROMOTE_ENABLED: bool = os.environ.get("AUTO_PROMOTE_TIER_ENABLED", "false").lower() == "true"
+
 
 def _load_soft_agents() -> list[dict[str, Any]]:
     """Return agents with enforcement_tier=SOFT from the registry."""
@@ -49,7 +69,7 @@ def _load_soft_agents() -> list[dict[str, Any]]:
     return [
         a
         for a in data.get("agents", [])
-        if a.get("enforcement_tier") == "SOFT" and a.get("status") == "active"
+        if a.get("enforcement_tier") == SOURCE_TIER and a.get("status") == "active"
     ]
 
 
@@ -85,7 +105,7 @@ def generate_req_stub(agent_id: str, req_num: int) -> str:
     return textwrap.dedent(
         f"""\
         # REQ-{req_num}: Auto-generated tier promotion stub (DRY-RUN)
-        # Agent: {agent_id}  |  Proposed: SOFT → PARTIAL
+        # Agent: {agent_id}  |  Proposed: {SOURCE_TIER} → {TARGET_TIER}
         # Generated: {time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
         # Action required: review + merge this step into cognitive-preflight job
         - name: "REQ-{req_num}: {agent_id} enforcement check (Canary Tier-2)"
@@ -101,9 +121,9 @@ def generate_req_stub(agent_id: str, req_num: int) -> str:
         if not agent:
             print('::warning::REQ-{req_num}: {agent_id} not found in registry')
             sys.exit(0)
-        tier = agent.get('enforcement_tier', 'SOFT')
-        if tier == 'SOFT':
-            print('::warning::REQ-{req_num}: {agent_id} still at SOFT tier — promote to PARTIAL')
+        tier = agent.get('enforcement_tier', '{SOURCE_TIER}')
+        if tier == '{SOURCE_TIER}':
+            print('::warning::REQ-{req_num}: {agent_id} still at {SOURCE_TIER} tier — promote to {TARGET_TIER}')
         else:
             print(f'REQ-{req_num}: {{agent_id}} tier={{tier}} OK')
         PYEOF
@@ -111,9 +131,45 @@ def generate_req_stub(agent_id: str, req_num: int) -> str:
     )
 
 
+def _apply_promotion(agent_ids: list[str]) -> int:
+    """
+    Write path: update enforcement_tier from SOURCE_TIER to TARGET_TIER for *agent_ids*
+    directly in AGENT_REGISTRY.yaml.
+
+    Only called when AUTO_PROMOTE_TIER_ENABLED=true (Domain 8 guard).
+    Returns the number of agents actually updated.
+    """
+    if not REGISTRY_PATH.exists():
+        print("::error::REGISTRY_PATH not found — cannot apply promotions.", file=sys.stderr)
+        return 0
+
+    data = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
+    updated = 0
+    for agent in data.get("agents", []):
+        if agent.get("id") in agent_ids and agent.get("enforcement_tier") == SOURCE_TIER:
+            agent["enforcement_tier"] = TARGET_TIER
+            updated += 1
+            print(f"  ✅ Promoted: {agent['id']}  {SOURCE_TIER} → {TARGET_TIER}")
+
+    if updated:
+        REGISTRY_PATH.write_text(
+            # sort_keys=False preserves the original YAML key order which is critical
+            # for readable git diffs and human review of AGENT_REGISTRY.yaml.
+            yaml.dump(data, default_flow_style=False, allow_unicode=True, sort_keys=False),
+            encoding="utf-8",
+        )
+        print(f"\n  {updated} agent(s) updated in {REGISTRY_PATH}")
+
+    return updated
+
+
 def run(check_only: bool = False, output_dir: pathlib.Path | None = None) -> int:
     """
-    Main dry-run logic.
+    Main logic.
+
+    When AUTO_PROMOTE_TIER_ENABLED=true, applies SOFT→PARTIAL promotions to
+    AGENT_REGISTRY.yaml directly (write path).  Otherwise generates dry-run
+    YAML stubs for human review (default).
 
     Args:
         check_only: If True, exit 1 when promotable agents are found.
@@ -145,6 +201,16 @@ def run(check_only: bool = False, output_dir: pathlib.Path | None = None) -> int
         f"⬆️  {len(promotable)} agent(s) qualify for SOFT→PARTIAL promotion "
         f"(0 violations in last {PROMOTION_QUIET_DAYS} days):\n"
     )
+
+    if _AUTO_PROMOTE_ENABLED:
+        print("🔓 AUTO_PROMOTE_TIER_ENABLED=true — applying write path...\n")
+        applied = _apply_promotion([a["id"] for a in promotable])
+        if check_only and applied:
+            print(
+                f"::warning::auto_promote_tier: {applied} agent(s) promoted SOFT→PARTIAL"
+            )
+            sys.exit(1)
+        return applied
 
     next_req = _next_req_number()
     stubs: list[str] = []

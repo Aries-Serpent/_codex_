@@ -5,6 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-096 BEC objective — First D_CAPABLE Promotion (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-096a | docs | `docs/arch/ADR-20260303-first-d-capable-promotion.md` | New ADR defining D_CAPABLE criteria and documenting decision to promote `ci-testing-agent` (rank 1, GROUNDED, production) |
+| W-096e | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Session continuity status file — BEC objective complete |
+| W-096f | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Chain prompt for next session (2-sprint observation + second D_CAPABLE candidate) |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-096b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.0→v1.9.1; `ci-testing-agent` `autonomy_model: E` → `D_CAPABLE` (first D_CAPABLE agent in system) |
+| W-096c | feat | `scripts/ci/auto_promote_tier.py` | Add `AUTO_PROMOTE_TIER_ENABLED` env var guard + `_apply_promotion()` write path (P3.3 pre-req); defaults to disabled (`false`); Domain 8 owner sign-off required to enable |
+| W-096d | chore | `CODEX_MANIFEST.json` | Refreshed via `generate_manifest.py` — D_CAPABLE count: 0→1, fresh timestamp (E→D gate C2 preserved) |
+
 ## [Unreleased] — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)
 
 ### Changed
