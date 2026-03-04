@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-04T02:30:51Z",
+  "generated_at": "2026-03-04T19:08:27Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -707,8 +707,8 @@
     {
       "name": "workflow-ci-fixer",
       "role": "specialist",
-      "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "enforcement_tier": "GROUNDED",
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "workflow-health-monitor",
@@ -1507,6 +1507,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3494.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
       "type": "enforcement"
     },
@@ -1624,9 +1628,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 1,
+    "d_capable_agents": 2,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "f0ed59e9f7740e06aab6ac3a1a761b8b956563e169afe3a405100ba35d9088ef"
+  "integrity_sha256": "f0132352f0912f66da28eb76b0ad4d1b49b5697b34f039122ff7dad8385890a6"
 }

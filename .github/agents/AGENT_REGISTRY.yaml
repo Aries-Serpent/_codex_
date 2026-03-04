@@ -1,5 +1,5 @@
-version: 1.9.1
-last_updated: '2026-03-04T02:25:00Z'
+version: 1.9.2
+last_updated: '2026-03-04T19:04:00Z'
 total_agents: 152
 agents:
 - id: github-guru-agent
@@ -2170,9 +2170,12 @@ agents:
   category: ci_cd
   priority: high
   purpose: Fixes GitHub Actions workflow syntax errors, permission issues, and CI failures.
-  enforcement_tier: PARTIAL
-  autonomy_model: E
+  enforcement_tier: GROUNDED
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
+  has_tests: true
+  has_docs: true
+  violations_30d: 0
   accepts_handoff_from:
   - orchestrator
   - ci-health-alert-agent

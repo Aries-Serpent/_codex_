@@ -47,19 +47,14 @@ Monitor `ci-testing-agent` D_CAPABLE behaviour over the next 2 sprints:
 
 ## 🟡 Priority 2 — Second D_CAPABLE Promotion
 
-After 2-sprint observation period (no violations):
+**Status: ✅ COMPLETE — `workflow-ci-fixer` promoted to D_CAPABLE (2026-03-04, W-104)**
 
-**Candidates** (ranked by activation frequency):
-1. `ci-emergency-response-agent` (rank 2, GROUNDED, production)
-2. `workflow-ci-fixer` (rank 3, GROUNDED, production)
+`workflow-ci-fixer` promoted: `autonomy_model: E` → `D_CAPABLE`, `enforcement_tier: PARTIAL` → `GROUNDED`.
+ADR: `docs/arch/ADR-20260304-second-d-capable-promotion.md`.
+CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2.
 
-Steps:
-1. Verify candidate meets all D_CAPABLE criteria (ADR-20260303 Section 2)
-2. Update `AGENT_REGISTRY.yaml`: `autonomy_model: D_CAPABLE`
-3. Bump version to v1.9.2
-4. Run `python scripts/ci/generate_manifest.py`
-5. Add ADR if criteria change; otherwise reference ADR-20260303
-6. Update REQ-4 + REQ-5
+Next cycle: promote third D_CAPABLE agent (`ci-emergency-response-agent` or highest-ranked GROUNDED candidate)
+after 2-sprint clean observation of `workflow-ci-fixer`.
 
 ---
 

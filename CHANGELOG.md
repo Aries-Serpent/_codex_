@@ -5,6 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-104 Second D_CAPABLE Promotion: `workflow-ci-fixer` (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-104b | docs | `docs/arch/ADR-20260304-second-d-capable-promotion.md` | New ADR — second D_CAPABLE promotion decision for `workflow-ci-fixer`; candidate evaluation table (ci-emergency-response-agent rejected, workflow-ci-fixer promoted); 2-sprint clean observation confirmation |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-104a | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.1→v1.9.2; `workflow-ci-fixer` `autonomy_model: E` → `D_CAPABLE`, `enforcement_tier: PARTIAL` → `GROUNDED`, `has_tests: true`, `has_docs: true`, `violations_30d: 0` — D_CAPABLE agent count: 1→2 |
+| W-104c | chore | `CODEX_MANIFEST.json` | Regenerated (2026-03-04T19:08:27Z) — D_CAPABLE count: 1→2 |
+| W-104c | fix | `.secrets.baseline` | Updated CODEX_MANIFEST.json entry (line 1631→1635, new hash `c03794f4...`). `detect-secrets scan --baseline .secrets.baseline` exit 0. |
+| W-104d | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | P4 observation ✅ complete; P5 second D_CAPABLE promotion ✅ complete; 4th token delegation activation (run 22684341839) recorded |
+| W-104d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Priority 2 marked ✅ COMPLETE; next cycle: third D_CAPABLE candidate after 2-sprint observation of `workflow-ci-fixer` |
+
 ## [Unreleased] — W-102/W-103 detect-secrets baseline fix + variables review (PR #3494, 2026-03-04)
 
 ### Fixed

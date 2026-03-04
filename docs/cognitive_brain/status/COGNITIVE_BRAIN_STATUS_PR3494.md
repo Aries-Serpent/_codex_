@@ -195,8 +195,8 @@ Should print App ID, installation ID, and permissions.
 
 | Priority | Item | Status |
 |----------|------|--------|
-| P4 | 2-sprint observation of ci-testing-agent D_CAPABLE behaviour | ⏳ In progress |
-| P5 | Promote second D_CAPABLE agent (ci-emergency-response-agent rank 2 or workflow-ci-fixer rank 3) | 🔮 After P4 observation |
+| P4 | 2-sprint observation of ci-testing-agent D_CAPABLE behaviour | ✅ Complete — zero violations |
+| P5 | Promote second D_CAPABLE agent (workflow-ci-fixer) | ✅ Complete — W-104 |
 | P6 | Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off | 🔮 Future |
 | P7 | FAISS index freshness check (codex_index_meta.json age) | 🔮 Future |
 | P8 | GitHub App registration (admin action — steps above) | 🔮 Admin action required |
@@ -220,11 +220,44 @@ Should print App ID, installation ID, and permissions.
 | W-100 | test_auto_promote_tier.py ruff lint fix | ✅ |
 | W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | ✅ |
 | W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ |
-| W-103 | Variables review — AUTO_PROMOTE_TIER_ENABLED=true (Domain 8 sign-off), CODEX_ENV_PYTHON_VERSION comma artifact, 3rd delegation run 22683350353 | ✅ |
+| W-104a | AGENT_REGISTRY.yaml v1.9.2 — workflow-ci-fixer D_CAPABLE | ✅ |
+| W-104b | ADR-20260304-second-d-capable-promotion.md | ✅ |
+| W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated | ✅ |
+| W-104d | Status / follow-up prompt updated (P2 → ✅ COMPLETE) | ✅ |
+| W-104e | REQ-4 + REQ-5 updated | ✅ |
 
 ---
 
-## W-102/W-103 Session Update (2026-03-04)
+## W-104 Session Update (2026-03-04 — 4th token delegation activation)
+
+### 4th Token Delegation Activation
+Owner @mbaetiong activated Agent Token Delegation (workflow run 22684341839).
+- `COPILOT_AGENT_AUTH_ENABLED=true` confirmed
+- `COGNITIVE_BRAIN_ALLOWED_ACTORS`: `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]`
+
+### W-104 — Second D_CAPABLE Promotion: `workflow-ci-fixer`
+
+2-sprint observation of `ci-testing-agent` completed with zero demotion annotations
+and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
+
+**Candidate evaluation summary:**
+
+| Candidate | Tier | Handoff | Rank | Decision |
+|-----------|------|---------|------|----------|
+| `ci-emergency-response-agent` | PARTIAL (no structured handoff) | none | unranked | ❌ Not promoted |
+| `workflow-ci-fixer` | GROUNDED | structured | 13 | ✅ **PROMOTED** |
+
+**Registry changes (v1.9.1 → v1.9.2):**
+- `workflow-ci-fixer`: `enforcement_tier` PARTIAL → GROUNDED, `autonomy_model` E → D_CAPABLE
+- `has_tests: true`, `has_docs: true`, `violations_30d: 0` added
+- ADR: `docs/arch/ADR-20260304-second-d-capable-promotion.md` created
+
+**Manifest:** regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 → 2.
+**`.secrets.baseline`:** updated (CODEX_MANIFEST.json line 1631 → 1635, new hash `c03794f4...`).
+
+---
+
+
 
 ### W-102 — detect-secrets baseline fix (Art_Validation run 22683254031)
 
@@ -252,5 +285,5 @@ Both are **code**, not secrets. Added to `.secrets.baseline` with correct `hashe
 
 ---
 
-*Created: 2026-03-04 | Updated: 2026-03-04 (W-102/W-103/3rd-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
+*Created: 2026-03-04 | Updated: 2026-03-04 (W-104/second-D_CAPABLE/4th-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
 *Author: copilot-swe-agent[bot]*
