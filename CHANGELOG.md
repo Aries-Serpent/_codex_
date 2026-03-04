@@ -5,6 +5,17 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-098 Agent Token Delegation activation + auto_promote_tier write-path tests (PR #3494, 2026-03-04)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-098a | test | `tests/ci/test_auto_promote_tier.py` | 15 new tests for `_apply_promotion()` write path, `AUTO_PROMOTE_TIER_ENABLED` guard, dry-run mode, violation skipping, key-order preservation, and tier constants |
+| W-098b | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Document Agent Token Delegation activation (`COPILOT_AGENT_AUTH_ENABLED=true`, run 22680576854) |
+| W-098c | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Update GitHub App pattern gap analysis and Priority 3 pre-requisite checklist |
+| W-098d | docs | `docs/arch/GITHUB_APP_PATTERN_GAPS.md` | GitHub App design-pattern gap analysis: patterns 1–4 verified, registration gap documented |
+
 ## [Unreleased] — W-097 CI fixes: EOF newline + detect-secrets baseline + docstring (PR #3494, 2026-03-04)
 
 ### Fixed

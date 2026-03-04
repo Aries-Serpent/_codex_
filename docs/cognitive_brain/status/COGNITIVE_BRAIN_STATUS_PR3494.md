@@ -75,7 +75,33 @@ graph TB
 PR #3492 (Merged) → P2.x All wiring complete ✅ · P3.1 MIN_CONFIDENCE ✅ · P3.2 SESSION_RESTORE ✅
 PR #3494 (This PR) → Priority 2: BEC = Becoming D_CAPABLE ✅
                    → P3.3: AUTO_PROMOTE_TIER_ENABLED write path added ✅
+                   → W-098: _apply_promotion() write-path tests (15/15) ✅
 ```
+
+---
+
+## W-098 Session Update (2026-03-04 ~17:21Z)
+
+### Agent Token Delegation Activated
+
+Owner @mbaetiong approved Agent Token Delegation via workflow run
+[22680576854](https://github.com/Aries-Serpent/_codex_/actions/runs/22680576854):
+
+| Variable | Value |
+|----------|-------|
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
+
+### Test Coverage Added (W-098a)
+
+`tests/ci/test_auto_promote_tier.py` — 15 tests, all passing:
+
+| Suite | Tests | Coverage |
+|-------|-------|----------|
+| `TestLoadSoftAgents` | 3 | `_load_soft_agents()` — missing registry, filtering SOFT active, multiple |
+| `TestApplyPromotion` | 5 | Write path — single, non-SOFT skipped, missing registry, multiple, key-order |
+| `TestAutoPromoteTierGuard` | 5 | Guard disabled default, dry-run (no write), write path called, no agents, violations skip |
+| `TestTierConstants` | 2 | `SOURCE_TIER == "SOFT"`, `TARGET_TIER == "PARTIAL"` |
 
 ---
 
@@ -87,8 +113,9 @@ PR #3494 (This PR) → Priority 2: BEC = Becoming D_CAPABLE ✅
 | P5 | Promote second D_CAPABLE agent (rank 2–3 candidate: workflow-ci-fixer or ci-emergency-response-agent) | 🔮 Future |
 | P6 | Set AUTO_PROMOTE_TIER_ENABLED=true after Domain 8 owner sign-off | 🔮 Future |
 | P7 | FAISS index freshness check (codex_index_meta.json age) | 🔮 Future |
+| P8 | GitHub App registration: run `github_app_bootstrap.py --generate-manifest-url` | 🔮 Future (admin action) |
 
 ---
 
-*Created: 2026-03-04 | Branch: copilot/continue-bec-objective | PR #3494*
+*Created: 2026-03-04 | Updated: 2026-03-04 (W-098) | Branch: copilot/continue-bec-objective | PR #3494*
 *Author: copilot-swe-agent[bot]*
