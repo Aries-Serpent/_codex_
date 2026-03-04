@@ -127,7 +127,7 @@ def _stub_modules(monkeypatch):
             "load_from_pretrained",
             lambda factory, identifier, **kwargs: _DummyTokenizer(),
         )
-    except Exception:  # pragma: no cover - best-effort
+    except (ImportError, AttributeError):  # pragma: no cover - best-effort
         pass
 
 

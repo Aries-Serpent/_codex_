@@ -104,7 +104,7 @@ def assert_no_exception(callable_: Callable[..., Any], *args: Any, **kwargs: Any
 
     Returns the return value so callers can chain further assertions.
 
-    Replaces ``try: fn(); except Exception: pass`` patterns in tests.
+    Replaces broad ``try/except`` suppression patterns in tests.
 
     >>> assert_no_exception(int, "42")
     42
