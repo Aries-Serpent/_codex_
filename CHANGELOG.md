@@ -5,6 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-100 Fix ruff lint violations in tests/ci/test_auto_promote_tier.py (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-100 | lint-fix | `tests/ci/test_auto_promote_tier.py` | Remove unused `import pytest` (F401); add `I001` to noqa comment on `import auto_promote_tier` line — ruff `isort` flags it as unsorted because it follows a `sys.path.insert()` call; the placement is intentional (path must be modified first). Fixes Pre-Merge Validation run 22681530852. |
+
 ## [Unreleased] — W-099 Fix agent-auth-delegation.yml checkout ref for pull_request_review events (PR #3494, 2026-03-04)
 
 ### Fixed
