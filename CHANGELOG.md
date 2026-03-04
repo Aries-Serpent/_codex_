@@ -5,6 +5,20 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-102/W-103 detect-secrets baseline fix + variables review (PR #3494, 2026-03-04)
+
+### Fixed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-102 | fix | `.secrets.baseline` | Added two `Base64 High Entropy String` false positives from `.github/workflows/agent-auth-delegation.yml` (lines 559, 590 — base64-encoded Python scripts, not real secrets). `detect-secrets` scan exit 0 verified. Fixes Art_Validation / Fast Validation run 22683254031. |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-103 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Variables review: (1) `AUTO_PROMOTE_TIER_ENABLED=true` — Domain 8 sign-off complete (set ~1h before review); write path now active; `generate_manifest.py` must be run after any auto-promotion to keep `CODEX_MANIFEST.json` in sync. (2) `CODEX_ENV_PYTHON_VERSION` shows `,3.12` in Variables Summary section — leading comma is a data-extraction artifact; env-level value is `3.12` (confirmed in Environment Variables section and `copilot-setup-steps.yml` usage). No variable change required. (3) Third token delegation activation recorded (run 22683350353). All other 30+ repo/env variables confirmed correct. |
+
 ## [Unreleased] — W-101 Add TRANSIENT_001 CI failure pattern for GitHub Dependency Graph API transient errors (PR #3494, 2026-03-04)
 
 ### Added

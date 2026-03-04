@@ -28,7 +28,7 @@ When you read this, PR #3494 has merged. This prompt defines your next session o
 AGENT_REGISTRY.yaml:          v1.9.1 (152 agents, 1 D_CAPABLE)
 ci-testing-agent:             autonomy_model: D_CAPABLE  (first promotion)
 E→D Gate:                     5/5 ✅
-AUTO_PROMOTE_TIER_ENABLED:    false (write path implemented but disabled)
+AUTO_PROMOTE_TIER_ENABLED:    TRUE — Domain 8 sign-off complete (set 2026-03-04)
 CODEX_MANIFEST.json:          fresh (generated PR merge time)
 ```
 
@@ -63,20 +63,18 @@ Steps:
 
 ---
 
-## 🟡 Priority 3 — AUTO_PROMOTE_TIER_ENABLED Production Enablement
+## 🟢 Priority 3 — AUTO_PROMOTE_TIER_ENABLED Production Enablement
 
-**Prerequisite:** Domain 8 owner sign-off required before setting to `true`.
+**Status: ✅ COMPLETE — Domain 8 sign-off received (2026-03-04)**
 
-Current state of `auto_promote_tier.py`:
+`AUTO_PROMOTE_TIER_ENABLED=true` was set in repo variables by @mbaetiong. The write path in `auto_promote_tier.py` is now active.
+
+**Important**: after any auto-promotion run, execute `python scripts/ci/generate_manifest.py` to keep `CODEX_MANIFEST.json` in sync with the registry changes.
+
+Current state:
 - `AUTO_PROMOTE_TIER_ENABLED` guard: ✅ implemented (PR #3494)
 - Write path (`_apply_promotion()`): ✅ implemented (PR #3494)
-- Variable value: `false` (disabled, default)
-
-To enable:
-1. Owner reviews `_apply_promotion()` function in `auto_promote_tier.py`
-2. Owner grants Domain 8 approval in security posture document
-3. Set `AUTO_PROMOTE_TIER_ENABLED=true` in repo variables
-4. Add explicit test coverage for the write path
+- Variable value: ✅ `true` (enabled, Domain 8 sign-off 2026-03-04)
 
 ---
 

@@ -218,8 +218,39 @@ Should print App ID, installation ID, and permissions.
 | W-098b–e | Agent Token Delegation + GitHub App gap analysis | ✅ |
 | W-099 | agent-auth-delegation.yml checkout ref fix | ✅ |
 | W-100 | test_auto_promote_tier.py ruff lint fix | ✅ |
+| W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added | ✅ |
+| W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) | ✅ |
+| W-103 | Variables review — AUTO_PROMOTE_TIER_ENABLED=true (Domain 8 sign-off), CODEX_ENV_PYTHON_VERSION comma artifact, 3rd delegation run 22683350353 | ✅ |
 
 ---
 
-*Created: 2026-03-04 | Updated: 2026-03-04 (W-099/W-100/2nd-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
+## W-102/W-103 Session Update (2026-03-04)
+
+### W-102 — detect-secrets baseline fix (Art_Validation run 22683254031)
+
+`Art_Validation / Fast Validation` failed: detect-secrets flagged two `Base64 High Entropy String` false positives in `.github/workflows/agent-auth-delegation.yml`:
+- **Line 559**: base64-encoded Python script — REQ-8 memory health check (`urllib` ping to localhost:8765)
+- **Line 590**: base64-encoded Python script — REQ-9 YAML parse helper (`yaml.safe_load` glob over workflows)
+
+Both are **code**, not secrets. Added to `.secrets.baseline` with correct `hashed_secret` values.
+
+### W-103 — Variables review
+
+| Variable | Value | Status | Notes |
+|----------|-------|--------|-------|
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | ✅ **NEWLY ENABLED** | Domain 8 sign-off complete (~1h before review). Write path in `auto_promote_tier.py` now active. **Action**: run `generate_manifest.py` after any auto-promotion. |
+| `CODEX_ENV_PYTHON_VERSION` | `,3.12` | ⚠️ display artifact | Leading comma in Variables Summary data extraction; env-level value confirmed `3.12`. No action required. |
+| `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | ✅ | Correct |
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` | ✅ | Correct (3rd delegation run 22683350353) |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | correct set | ✅ | Correct |
+| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | ✅ | Correct |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | `110` | ✅ | Correct |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | ✅ | Correct |
+| All other variables (~28) | various | ✅ | Confirmed correct |
+
+**3rd token delegation activation**: run 22683350353, owner @mbaetiong — `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed.
+
+---
+
+*Created: 2026-03-04 | Updated: 2026-03-04 (W-102/W-103/3rd-delegation) | Branch: copilot/continue-bec-objective | PR #3494*
 *Author: copilot-swe-agent[bot]*
