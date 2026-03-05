@@ -5,6 +5,12 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)
+
+### Fixed (W-119b)
+
+- `.github/workflows/copilot-setup-steps.yml` — Removed duplicate `run:` mapping key from "🔑 Export Auth Tokens to Agent Environment" step. An orphaned `if:` + `run:` fragment (load-agent-config logic) had been accidentally appended inside the auth-token step's YAML mapping, causing `yaml: mapping key "run" already defined` on unmarshal and preventing all Copilot Coding Agent sessions from starting. Fixed by extracting the fragment into its own properly-scoped step "⚙️ Load Custom Agent Configuration".
+
 ## [Unreleased] — W-119 User documentation clarity improvements (PR #3499, 2026-03-05)
 
 ### Fixed (W-119)

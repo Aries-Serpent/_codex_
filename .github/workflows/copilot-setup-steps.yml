@@ -429,7 +429,7 @@ jobs:
           echo "           Variable create/update/delete requires CODEX_MASTER_KEY (PAT, repo scope)."
           echo "── Auth token export complete ─────────────────────────────────"
 
-
+      - name: "⚙️ Load Custom Agent Configuration"
         if: hashFiles('.codex/agent_environment_config.yaml') != ''
         run: |
           if [ -f .codex/agent_environment_config.yaml ]; then
