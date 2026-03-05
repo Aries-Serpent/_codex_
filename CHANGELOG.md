@@ -5,11 +5,21 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-121 Larger runners: Mermaid diagrams + AAIS autonomous switch (PR #3499, 2026-03-05)
+
+### Changed (W-121)
+
+- `.github/workflows/copilot-setup-steps.yml` — Three changes:
+  1. `runs-on: ubuntu-latest` → `runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}` — AAIS-aligned autonomous runner switch: the Cognitive Brain can pre-set `COPILOT_RUNNER_PROFILE` via the Variables API (using `CODEX_MASTER_KEY`) before dispatching a heavy session; falls back safely to `ubuntu-latest` when variable is unset.
+  2. `timeout-minutes: 30` → `timeout-minutes: 59` — raised to maximum allowed; eliminates timeout risk on `ml-heavy` sessions.
+  3. Added "🧠 AAIS Runner Adequacy Check" step (`id: runner_check`) — Runtime Introspection for AAIS Pillar 3: reads `nproc` + `MemTotal`, classifies runner tier, checks adequacy against detected environment type, emits AAIS-formatted assessment, sets `runner_adequate` output. Non-blocking.
+- `docs/plans/larger-runners-upgrade.md` — Fully rewritten with 8 Mermaid diagrams: architecture overview (Copilot agent ↔ runner ↔ Cognitive Brain), Gantt setup timeline (before/after), autonomous switch sequence diagram, runner selection decision tree, token hierarchy, change timeline (W-119/W-119b/W-120/W-121), AAIS contribution table and radar chart. AAIS V4 sub-dimension impact quantified (+3.5 overall contribution).
+
 ## [Unreleased] — W-120 Plan: upgrade Copilot agent to larger GitHub-hosted runners (PR #3499, 2026-03-05)
 
 ### Added (W-120)
 
-- `docs/plans/larger-runners-upgrade.md` — Implementation plan for upgrading the Copilot coding agent from the standard `ubuntu-latest` (2-core / 7 GB) runner to `ubuntu-4-core` (4-core / 16 GB). Documents org-admin prerequisites, the single-line `runs-on` change required, optional `timeout-minutes` increase, rollback procedure, and expected performance improvements. Awaiting org runner-group provisioning by @mbaetiong before code change executes.
+- `docs/plans/larger-runners-upgrade.md` — Initial implementation plan (superseded by W-121 above).
 
 ## [Unreleased] — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)
 

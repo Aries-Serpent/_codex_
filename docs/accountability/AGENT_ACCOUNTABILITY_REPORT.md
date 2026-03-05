@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-05 (PR #3499 W-120 — created docs/plans/larger-runners-upgrade.md: plan for upgrading Copilot agent from ubuntu-latest (2-core) to ubuntu-4-core larger runner)
+**Last updated:** 2026-03-05 (PR #3499 W-121 — AAIS autonomous runner switch: copilot-setup-steps.yml runs-on uses COPILOT_RUNNER_PROFILE variable, timeout raised to 59 min, AAIS Runner Adequacy Check step added; plan doc rewritten with 8 Mermaid diagrams)
 
 ---
 
