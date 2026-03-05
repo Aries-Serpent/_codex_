@@ -1,5 +1,8 @@
 # Runtime Variables Documentation
 
+> ⚠️ **SUPERSEDED** — This document is preserved for historical reference only.  
+> **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
+
 **Generated:** 2025-12-26  
 **Purpose:** Central documentation for all operational variables used across the _codex_ repository  
 **Audience:** Developers, CI/CD systems, and autonomous agents

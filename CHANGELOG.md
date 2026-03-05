@@ -5,6 +5,23 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-128: Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05)
+
+### Added (W-128)
+
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` — **single source of truth** for all GitHub variable and secret storage layers. Covers org secrets (8 present + 1 missing), repo secrets (6 entries), environment secrets/variables (Aries_Serpent_codex_), repository variables (52 entries across 6 subsystem groups), and Codespace secrets (8 declared). Each entry has status checkboxes (✅/⚠️/❌), GitHub UI deep links, and troubleshooting steps for common misconfigurations.
+- `docs/admin/INDEX.md` — new "Variables & Secrets" section surfaces the master guide at the top of the admin index.
+
+### Fixed (W-128)
+
+- Identified and documented 7 actionable configuration issues: `CODEX_ENV_NODE_VERSION` stored as secret (should be variable), Python version conflict (`3.11` env vs `3.12` repo), missing `CODEX_ADMIN_KEY` org secret, missing `WEBHOOK_RECEIVER_URL` repo variable, unconfirmed Codespace secrets blocking agent Codespace sessions, duplicate `D365_SLA_POLICY_PATH` variable, and approaching `CODEX_MASTER_KEY` rotation window.
+
+### Changed (W-128)
+
+- `.codex/runtime_variables.md` — added superseded notice pointing to master guide.
+- `docs/security/CURRENT_EXPECTED_VARIABLES.md` — added superseded notice pointing to master guide.
+- `.codex/QUICK_REFERENCE_TOKEN_STATUS.md` — added superseded notice pointing to master guide.
+
 ## [Unreleased] — W-127: CI fix — Cognitive Pre-flight REQ-4 gate (PR #3503, 2026-03-05)
 
 ### Fixed (W-127)
