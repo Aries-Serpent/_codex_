@@ -5,7 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-115 Cognitive App CLI connection guide + full API audit (PR #3497, 2026-03-05)
+## [Unreleased] — W-116 BrainClient as Copilot Agent API gateway — intent docs (PR #3497, 2026-03-05)
+
+### Updated (W-116)
+
+- `src/codex/agents/brain_client.py` — module header rewritten to state `proxy_request()` is the **primary/sole** mechanism for agent external API calls; `proxy_request()` docstring updated with intent, enforcement rationale, and examples
+- `cognitive_app/src/server/cli_api_server.py` — `POST /api/request` route docstring updated to state it is the "Primary API request gateway for Copilot Agent sessions"; notes prohibition on direct urllib/requests/httpx from agent code
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — guide restructured to lead with intended-use framing; new "Intended Use" section with minimal agent session pattern, comparison table (BrainClient vs curl), and enforcement rationale
+
+
 
 ### Added (W-115)
 

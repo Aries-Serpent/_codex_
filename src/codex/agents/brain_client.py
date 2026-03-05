@@ -1,31 +1,68 @@
 """
-Cognitive Brain CLI API Client
-==============================
-Thin synchronous wrapper around the FastAPI CLI/API Gateway server
-(``cognitive_app/src/server/cli_api_server.py``) that Copilot Coding Agents
-can import and call directly during an active session.
+Cognitive Brain CLI API Client — Copilot Agent API Request Gateway
+==================================================================
 
-The server is auto-started by ``copilot-setup-steps.yml`` before the agent
-session begins; it listens on ``http://localhost:8765`` by default.
+**Primary use**: Copilot Coding Agent sessions MUST use ``BrainClient.proxy_request()``
+(or ``POST /api/request`` via curl) as the **sole mechanism** for making external API
+calls during a session.  Direct use of ``urllib``, ``requests``, or ``httpx`` from
+agent code is discouraged — route all outbound HTTP through this client so that:
 
-Usage inside a Copilot session
--------------------------------
+  * GitHub auth tokens (``CODEX_MASTER_KEY``) are auto-injected for api.github.com calls
+  * All API calls are logged to the session history DB for audit/replay
+  * Timeouts, retries and error handling are applied consistently
+  * The cognitive brain server acts as a single observable egress point
+
+Quick start (every session)
+----------------------------
     from codex.agents.brain_client import BrainClient
 
-    brain = BrainClient()
-    health = brain.health()
-    result = brain.run_command("git status --short")
-    response = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
+    brain = BrainClient()             # auto-discovers URL from env / defaults
+    brain.is_available()              # True when server is up → proceed
+
+    # ── Making API requests (primary use case) ─────────────────────────────
+    # GET  any URL
+    resp = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
+
+    # GET  workflow runs
+    resp = brain.proxy_request(
+        "GET",
+        "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
+        params={"per_page": "5"},
+    )
+
+    # POST / PUT / PATCH / DELETE
+    resp = brain.proxy_request("POST", "https://api.example.com/data", body={"key": "val"})
+
+    # Convenience wrappers (GitHub-specific)
+    info = brain.github_repo_info("Aries-Serpent", "_codex_")
+    runs = brain.github_workflow_runs("Aries-Serpent", "_codex_", per_page=10)
+
+    # ── Shell commands ──────────────────────────────────────────────────────
+    result = brain.run_command("git log --oneline -5")
+    print(result["stdout"])
+
+    # ── Session history ─────────────────────────────────────────────────────
+    history = brain.cli_history(limit=10)
 
 All methods raise ``BrainClientError`` on network or HTTP errors so the
 caller can handle them cleanly.
 
+Server auto-start
+-----------------
+The FastAPI server (``cognitive_app/src/server/cli_api_server.py``) is
+auto-started by ``copilot-setup-steps.yml`` before the agent session begins.
+It listens on ``http://localhost:8765`` by default.  If it is not running,
+call ``brain.is_available()`` first and handle the ``False`` case.
+
+See ``docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`` for the complete reference,
+troubleshooting, and live audit results.
+
 Environment variables
 ---------------------
-CODEX_CLI_API_URL      Override the default server URL (default: http://localhost:8765).
-COPILOT_CLI_BASE_URL   Legacy/alternative override for the server URL.  Used as a
-                       fallback if CODEX_CLI_API_URL is not set.
-CODEX_MASTER_KEY       Bearer token for authenticated memory endpoints.
+CODEX_CLI_API_URL      Primary URL override (default: http://localhost:8765).
+COPILOT_CLI_BASE_URL   Fallback URL override if CODEX_CLI_API_URL is not set.
+CODEX_MASTER_KEY       Bearer token — auto-injected for api.github.com calls;
+                       also required for memory endpoints (/api/memory/*).
 CODEX_BACKUP_KEY       Fallback bearer token (used if CODEX_MASTER_KEY is absent).
 """
 
@@ -243,24 +280,47 @@ class BrainClient:
         body: Any = None,
         timeout: int = 30,
     ) -> Dict[str, Any]:
-        """Proxy an HTTP request through the server and return the response.
+        """Proxy an HTTP request through the server — **primary agent API call mechanism**.
 
-        Useful for calling external APIs (e.g. GitHub REST API) from within
-        the agent session.  When the target is ``api.github.com`` and
-        ``CODEX_MASTER_KEY`` is set, the server auto-injects the auth header.
+        Copilot Agent sessions MUST use this method (or ``POST /api/request`` via curl)
+        for ALL outbound HTTP/API calls.  Do NOT use ``urllib``, ``requests``, or ``httpx``
+        directly from agent code.  Routing through this method ensures:
+
+        * ``Authorization: Bearer $CODEX_MASTER_KEY`` is auto-injected for api.github.com
+        * All calls are persisted to the session history DB for audit and replay
+        * Consistent timeout and error handling across all agent API interactions
 
         Parameters
         ----------
-        method:  HTTP method (GET, POST, PUT, PATCH, DELETE).
-        url:     Full URL to proxy the request to.
-        headers: Optional request headers.
-        params:  Optional query parameters.
-        body:    Optional request body (dict / list / str).
-        timeout: Request timeout in seconds.
+        method:  HTTP method — GET, POST, PUT, PATCH, DELETE, HEAD, or OPTIONS.
+        url:     Full target URL (e.g. ``https://api.github.com/repos/owner/repo``).
+        headers: Additional request headers (dict).  GitHub auth is injected automatically.
+        params:  Query-string parameters (dict).  Appended to the URL before sending.
+        body:    Request body (dict / list / str).  Serialised as JSON automatically.
+        timeout: Per-request timeout in seconds (default 30).
 
         Returns
         -------
-        dict with keys: status_code, headers, body, duration_ms, url, method.
+        dict with keys: status_code (int), headers (dict), body (any), error (str|None).
+
+        Raises
+        ------
+        BrainClientError on network failure or when the proxy server itself returns 4xx/5xx.
+
+        Examples
+        --------
+        # GitHub repo info
+        resp = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
+
+        # GitHub Actions runs
+        resp = brain.proxy_request(
+            "GET",
+            "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
+            params={"per_page": "1"},
+        )
+
+        # POST to any API
+        resp = brain.proxy_request("POST", "https://api.example.com/data", body={"k": "v"})
         """
         payload: Dict[str, Any] = {
             "method": method.upper(),

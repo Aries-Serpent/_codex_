@@ -8,6 +8,50 @@
 
 ---
 
+## Intended Use: Copilot Agent API Requests
+
+**The CLI API Client is the Copilot Agent's designated gateway for all external API calls.**
+
+When a Copilot Coding Agent session needs to call any external HTTP API — GitHub REST,
+workflow runs, any third-party service — it **MUST** use:
+
+| Method | When to use |
+|--------|-------------|
+| `BrainClient.proxy_request()` | Python code inside the agent session |
+| `curl -X POST http://localhost:8765/api/request` | bash tool / shell scripts |
+
+**Do NOT use** `urllib`, `requests`, or `httpx` directly from agent code. Routing through
+the CLI API client ensures:
+
+- ✅ `Authorization: Bearer $CODEX_MASTER_KEY` auto-injected for `api.github.com` calls
+- ✅ All outbound calls logged to session history DB for audit and replay
+- ✅ Consistent timeout, retry, and error handling
+- ✅ Single observable egress point for all agent HTTP activity
+
+### Minimal agent session pattern
+
+```python
+from codex.agents.brain_client import BrainClient
+
+brain = BrainClient()
+assert brain.is_available(), "Start server before session"
+
+# ── Every external API call goes through proxy_request ──────────────────────
+repo  = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
+runs  = brain.proxy_request("GET",
+          "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
+          params={"per_page": "5"})
+```
+
+```bash
+# Equivalent via curl (bash tool)
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
+```
+
+---
+
 ## Quick-Start Checklist (Every Session)
 
 Run these four lines at the start of every Copilot Coding Agent session to confirm connectivity:
