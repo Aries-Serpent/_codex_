@@ -1,0 +1,151 @@
+# syntax=docker/dockerfile:1
+# ── Codex Cognitive Brain — Preview Image ─────────────────────────────────────
+#
+# Dedicated multi-stage image for the cognitive_app CLI API server.
+# Separate from the ML Dockerfile to keep CI pull times minimal.
+#
+# Targets:
+#   preview-base    — Python 3.12 + all runtime deps
+#   preview         — production image (non-root, health-checked)
+#   preview-dev     — development image with full toolchain + test deps
+#
+# Build examples:
+#   docker build -f Dockerfile.preview --target preview \
+#       -t ghcr.io/aries-serpent/_codex_/preview:latest .
+#
+#   docker build -f Dockerfile.preview --target preview-dev \
+#       -t ghcr.io/aries-serpent/_codex_/preview-dev:latest .
+#
+# Run:
+#   docker run --rm -p 8765:8765 \
+#     -e CODEX_MASTER_KEY="$CODEX_MASTER_KEY" \
+#     -e CODEX_BACKUP_KEY="$CODEX_BACKUP_KEY" \
+#     -e GITHUB_APP_ID="$GITHUB_APP_ID" \
+#     -e GITHUB_APP_PRIVATE_KEY="$GITHUB_APP_PRIVATE_KEY" \
+#     ghcr.io/aries-serpent/_codex_/preview:latest
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Stage 1: dependency builder ───────────────────────────────────────────────
+FROM python:3.12-slim AS preview-base
+
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.description="Codex Cognitive Brain — Preview base"
+LABEL org.opencontainers.image.licenses="MIT"
+
+WORKDIR /build
+
+# System build deps (cryptography wheel requires libffi / openssl headers)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        libffi-dev \
+        libssl-dev \
+        curl \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip before anything else
+RUN pip install --no-cache-dir --upgrade pip
+
+# Install only the runtime packages needed by the CLI server + auth system
+# Pinned versions match pyproject.toml ranges for reproducibility.
+COPY pyproject.toml README.md ./
+RUN pip install --no-cache-dir \
+        "uvicorn[standard]>=0.29.0,<1.0" \
+        "fastapi>=0.110.0,<1.0" \
+        "httpx>=0.27.0,<1.0" \
+        "cryptography>=42.0.0,<47.0.0" \
+        "pydantic>=2.0,<3.0" \
+ && pip install --no-cache-dir -e "." 2>/dev/null || true
+
+# ── Stage 2: production runtime ───────────────────────────────────────────────
+FROM python:3.12-slim AS preview
+
+LABEL org.opencontainers.image.title="Codex Cognitive Brain — Preview"
+LABEL org.opencontainers.image.description="CLI API server + GitHub App auth for Copilot sessions"
+LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Non-root user — principle of least privilege
+RUN groupadd --gid 1001 codex \
+ && useradd  --uid 1001 --gid codex --shell /bin/bash --create-home codex
+
+# Minimal runtime packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy installed Python packages from builder stage
+COPY --from=preview-base /usr/local /usr/local
+
+WORKDIR /app
+
+# Copy source — ordered least-to-most volatile for cache efficiency
+COPY --chown=codex:codex pyproject.toml README.md ./
+COPY --chown=codex:codex src/ ./src/
+COPY --chown=codex:codex cognitive_app/ ./cognitive_app/
+COPY --chown=codex:codex .codex/ ./.codex/
+COPY --chown=codex:codex policies/ ./policies/
+
+# Re-install editable to wire entry-points
+RUN pip install --no-cache-dir -e . 2>/dev/null || true
+
+# Writable runtime dirs
+RUN mkdir -p /home/codex/.codex /app/artifacts \
+ && chown -R codex:codex /home/codex /app/artifacts
+
+USER codex
+
+# Environment defaults (overridable at runtime)
+ENV CODEX_DB_PATH="/home/codex/.codex/codex.db"
+ENV CODEX_SESSION_LOG_DIR="/home/codex/.codex/sessions"
+ENV CODEX_CLI_API_URL="http://localhost:8765"
+ENV PYTHONUNBUFFERED="1"
+
+EXPOSE 8765
+
+# Start the CLI API server
+CMD ["uvicorn", \
+     "cognitive_app.src.server.cli_api_server:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8765", \
+     "--workers", "1", \
+     "--log-level", "info"]
+
+# Health check
+HEALTHCHECK --interval=15s --timeout=5s --start-period=25s --retries=3 \
+    CMD curl -sf http://localhost:8765/api/health || exit 1
+
+# ── Stage 3: development image ────────────────────────────────────────────────
+FROM preview AS preview-dev
+
+LABEL org.opencontainers.image.description="Codex Cognitive Brain — Preview (dev)"
+
+USER root
+
+# Full dev toolchain
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        vim \
+        less \
+        jq \
+        make \
+        openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Dev Python deps
+RUN pip install --no-cache-dir \
+        pytest \
+        ruff \
+        black \
+        mypy \
+        ipython \
+        pre-commit \
+        detect-secrets
+
+# Copy test suite
+COPY --chown=codex:codex tests/ ./tests/
+
+USER codex
+
+# Dev image opens a shell by default
+CMD ["/bin/bash"]

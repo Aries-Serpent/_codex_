@@ -2,7 +2,6 @@
 Tests for UserStore and PasswordHasher.
 """
 
-import time
 
 import pytest
 

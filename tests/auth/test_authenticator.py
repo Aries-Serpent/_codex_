@@ -14,7 +14,6 @@ from src.codex.auth.mfa_provider import MFAProvider
 from src.codex.auth.token_manager import TokenManager, TokenType
 from src.codex.auth.user_store import UserStore
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -97,7 +96,6 @@ class TestLogin:
 
     def test_login_tokens_are_valid(self):
         auth = _make_auth()
-        store = auth._store
         tokens = auth._tokens
         auth.register("iris", "iris@example.com", "Str0ngPass!")
         result = auth.login("iris", "Str0ngPass!")

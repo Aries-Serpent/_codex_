@@ -340,10 +340,11 @@ class GitHubApp:
         return self._api_get("/app/installations", bearer=jwt)  # type: ignore[return-value]
 
     # ------------------------------------------------------------------ #
-    # Internal HTTP helper                                                 #
+    # Internal HTTP helpers                                                #
     # ------------------------------------------------------------------ #
 
     def _api_get(self, path: str, bearer: str) -> Any:
+        """Low-level GET using an explicit bearer token (e.g. App JWT)."""
         url = self._config.api_base_url + path
         req = urllib.request.Request(
             url,
@@ -364,6 +365,71 @@ class GitHubApp:
             ) from exc
         except Exception as exc:
             raise AuthenticationError(f"Network error on GET {path}: {exc}") from exc
+
+    def pat_api_get(self, url: str) -> Any:
+        """
+        Perform an authenticated GET using environment-sourced PAT tokens.
+
+        Token resolution order (mirrors the rest of the Codex platform):
+
+        1. ``CODEX_MASTER_KEY``  — full-scope PAT (preferred)
+        2. ``CODEX_BACKUP_KEY``  — fallback PAT (tried when master key absent
+           *or* when the master key returns HTTP 401 / 403)
+        3. ``AGENT_GITHUB_TOKEN`` / ``GITHUB_TOKEN`` — last-resort
+
+        This method is intended for PAT-authenticated endpoints (e.g. listing
+        repository variables) that do *not* accept a GitHub App JWT.
+
+        Args:
+            url: Absolute URL to fetch.
+
+        Returns:
+            Parsed JSON response.
+
+        Raises:
+            AuthenticationError: If all tokens fail or no token is available.
+        """
+        tokens = _resolve_github_token()
+        last_exc: Optional[Exception] = None
+
+        for token_value, token_name in tokens:
+            if not token_value:
+                continue
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "Accept": "application/vnd.github+json",
+                    "Authorization": f"Bearer {token_value}",
+                    "X-GitHub-Api-Version": "2022-11-28",
+                    "User-Agent": f"codex-github-app/{self._config.app_id}",
+                },
+            )
+            try:
+                with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                    logger.debug("pat_api_get succeeded with %s: %s", token_name, url)
+                    return json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                if exc.code in (401, 403):
+                    # Auth failure — try next token
+                    logger.debug(
+                        "pat_api_get: %s returned HTTP %d with %s — trying next token",
+                        url, exc.code, token_name,
+                    )
+                    last_exc = exc
+                    continue
+                body = exc.read().decode("utf-8", errors="replace")
+                raise AuthenticationError(
+                    f"PAT API GET {url} failed: HTTP {exc.code} — {body}"
+                ) from exc
+            except Exception as exc:
+                raise AuthenticationError(
+                    f"Network error on PAT GET {url}: {exc}"
+                ) from exc
+
+        raise AuthenticationError(
+            f"All PAT tokens exhausted for GET {url}. "
+            "Set CODEX_MASTER_KEY or CODEX_BACKUP_KEY environment variables."
+        ) from last_exc
 
 
 # ---------------------------------------------------------------------------
@@ -529,6 +595,32 @@ def build_app_manifest(
 # ---------------------------------------------------------------------------
 # Private utilities
 # ---------------------------------------------------------------------------
+
+
+def _resolve_github_token() -> List[tuple]:
+    """
+    Resolve GitHub PAT tokens from the environment in priority order.
+
+    Returns a list of ``(token_value, token_name)`` pairs so callers can
+    iterate and retry with the next token on a 401/403 response.
+
+    Priority order (matches ``BrainClient._auth_header()`` and
+    ``VariableManager._resolve_token()`` across the Codex platform):
+
+    1. ``CODEX_MASTER_KEY``   — full-scope classic PAT (preferred)
+    2. ``CODEX_BACKUP_KEY``   — fallback PAT (tried when master key absent
+       or when it returns HTTP 401 / 403)
+    3. ``AGENT_GITHUB_TOKEN`` — alias for ``GITHUB_TOKEN`` with a stable name
+    4. ``GITHUB_TOKEN``       — last-resort installation token
+    """
+    import os as _os
+
+    return [
+        (_os.environ.get("CODEX_MASTER_KEY", ""), "CODEX_MASTER_KEY"),
+        (_os.environ.get("CODEX_BACKUP_KEY", ""), "CODEX_BACKUP_KEY"),
+        (_os.environ.get("AGENT_GITHUB_TOKEN", ""), "AGENT_GITHUB_TOKEN"),
+        (_os.environ.get("GITHUB_TOKEN", ""), "GITHUB_TOKEN"),
+    ]
 
 
 def _b64url(text: str) -> str:

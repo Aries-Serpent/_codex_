@@ -26,9 +26,9 @@ from src.codex.auth.github_app import (
     _b64url,
     _b64url_bytes,
     _parse_iso8601,
+    _resolve_github_token,
     build_app_manifest,
 )
-
 
 # ---------------------------------------------------------------------------
 # RSA key fixture — 2048-bit key generated once for the whole test session
@@ -37,8 +37,8 @@ from src.codex.auth.github_app import (
 @pytest.fixture(scope="session")
 def rsa_private_key_pem() -> str:
     """Generate a throwaway RSA-2048 private key (PEM) for tests."""
-    from cryptography.hazmat.primitives.asymmetric import rsa
     from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import rsa
 
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     return key.private_bytes(
@@ -143,7 +143,7 @@ class TestGenerateJWT:
 class TestInstallationToken:
 
     def _make_mock_response(self, token: str, expires_delta: int = 3600) -> mock.MagicMock:
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
         expires = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
         body = json.dumps({
             "token": token,
@@ -184,7 +184,7 @@ class TestInstallationToken:
         mock_resp1 = self._make_mock_response("ghs_expired", expires_delta=-1)
         mock_resp2 = self._make_mock_response("ghs_new")
         with mock.patch("urllib.request.urlopen", side_effect=[mock_resp1, mock_resp2]):
-            t1 = github_app.get_installation_token(installation_id=555)
+            github_app.get_installation_token(installation_id=555)
             t2 = github_app.get_installation_token(installation_id=555)
         assert t2.token == "ghs_new"
 
@@ -385,3 +385,81 @@ class TestUtilities:
     def test_parse_iso8601_invalid_fallback(self):
         ts = _parse_iso8601("not-a-date")
         assert ts > time.time()
+
+
+# ---------------------------------------------------------------------------
+# Token-resolution fallback chain
+# ---------------------------------------------------------------------------
+
+
+class TestResolveGitHubToken:
+    """Tests for CODEX_MASTER_KEY → CODEX_BACKUP_KEY → fallback chain."""
+
+    def test_master_key_first(self, monkeypatch):
+        monkeypatch.setenv("CODEX_MASTER_KEY", "master-token")
+        monkeypatch.setenv("CODEX_BACKUP_KEY", "backup-token")
+        tokens = _resolve_github_token()
+        assert tokens[0] == ("master-token", "CODEX_MASTER_KEY")
+        assert tokens[1] == ("backup-token", "CODEX_BACKUP_KEY")
+
+    def test_backup_key_present_when_master_absent(self, monkeypatch):
+        monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
+        monkeypatch.setenv("CODEX_BACKUP_KEY", "backup-only")
+        # _resolve_github_token returns [(value, name), ...]; swap for name→value lookup
+        tokens = {name: value for value, name in _resolve_github_token()}
+        assert tokens["CODEX_MASTER_KEY"] == ""
+        assert tokens["CODEX_BACKUP_KEY"] == "backup-only"
+
+    def test_fallback_uses_backup_on_401(self, github_app, monkeypatch):
+        """pat_api_get retries with CODEX_BACKUP_KEY when master returns 401."""
+        import urllib.error
+
+        monkeypatch.setenv("CODEX_MASTER_KEY", "bad-master-key")
+        monkeypatch.setenv("CODEX_BACKUP_KEY", "good-backup-key")
+        monkeypatch.delenv("AGENT_GITHUB_TOKEN", raising=False)
+        monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+
+        good_response_body = json.dumps({"id": 1, "name": "test-repo"}).encode()
+        good_resp = mock.MagicMock()
+        good_resp.read.return_value = good_response_body
+        good_resp.__enter__ = lambda s: s
+        good_resp.__exit__ = mock.MagicMock(return_value=False)
+
+        call_count = 0
+
+        def side_effect(req, timeout=30):
+            nonlocal call_count
+            call_count += 1
+            auth = req.get_header("Authorization")
+            if "bad-master-key" in auth:
+                raise urllib.error.HTTPError(
+                    url="", code=401, msg="Unauthorized", hdrs=None, fp=None
+                )
+            return good_resp
+
+        with mock.patch("urllib.request.urlopen", side_effect=side_effect):
+            result = github_app.pat_api_get(
+                "https://api.github.com/repos/Aries-Serpent/_codex_"
+            )
+
+        assert result["name"] == "test-repo"
+        assert call_count == 2  # tried master (401), then backup (200)
+
+    def test_all_tokens_fail_raises(self, github_app, monkeypatch):
+        """pat_api_get raises AuthenticationError when all tokens are exhausted."""
+        import urllib.error
+
+        for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY",
+                    "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
+            monkeypatch.setenv(var, "bad-token")
+
+        def side_effect(req, timeout=30):
+            raise urllib.error.HTTPError(
+                url="", code=403, msg="Forbidden", hdrs=None, fp=None
+            )
+
+        with mock.patch("urllib.request.urlopen", side_effect=side_effect):
+            with pytest.raises(AuthenticationError, match="exhausted"):
+                github_app.pat_api_get(
+                    "https://api.github.com/repos/Aries-Serpent/_codex_"
+                )

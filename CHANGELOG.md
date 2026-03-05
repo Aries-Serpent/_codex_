@@ -5,7 +5,26 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-119 CI fix (cherry-picked from PR #3501): Cognitive Pre-flight REQ-4 gate — accountability report missing from last commit (2026-03-05)
+## [Unreleased] — W-126: User auth + GitHub App + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114)
+
+### Added (W-126)
+
+- `src/codex/auth/user_store.py` — `User`, `PasswordHasher` (PBKDF2-SHA256), `UserStore` in-memory CRUD store.
+- `src/codex/auth/authenticator.py` — `Authenticator` + `LoginResult`: login/logout/MFA/password-change service.
+- `src/codex/auth/github_app.py` — `GitHubApp` (RS256 JWT, installation tokens), `GitHubAppConfig` (SSRF-safe), `InstallationToken`, `WebhookVerifier`, `build_app_manifest()`, `_resolve_github_token()` (MASTER→BACKUP→AGENT→GITHUB fallback chain), `pat_api_get()` (auto-retry on 401/403 with CODEX_BACKUP_KEY).
+- `.github/agents/github-app-manager.md` — new production Copilot agent v1.0.0 (operations/integrations category).
+- `.devcontainer/devcontainer.json` — full Codespace configuration mirroring `copilot-setup-steps.yml`; 8 secrets, 5 devcontainer features, 3 forwarded ports, 11 VS Code extensions, Copilot-agent settings.
+- `.devcontainer/scripts/` — 5 lifecycle scripts (on-create, update-content, post-create, post-start, post-attach) with parity to every phase of `copilot-setup-steps.yml`.
+- `Dockerfile.preview` — multi-stage `preview` / `preview-dev` targets for GHCR.
+- `.github/workflows/build-preview-image.yml` — GHCR build + push + smoke-test workflow.
+- `docs/agent/GITHUB_APP_CLI_MAPPING.md` — CLI ↔ GitHub App integration mapping with token chain diagrams.
+- `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md` — complete Codespace configuration guide for Copilot agents.
+- `docs/plans/custom-preview-image.md` — custom preview image plan.
+- `.codex/COGNITIVE_BRAIN_STATUS_S114.md` — session S114 status.
+- `.codex/cognitive_brain/COGNITIVE_BRAIN_PHASE_23_OBJECTIVES.md` — Phase 23 objectives.
+- `tests/auth/test_user_store.py` (34), `tests/auth/test_authenticator.py` (25), `tests/auth/test_github_app.py` (52) — 111 new tests, all pass.
+
+
 
 ### Fixed (W-119, from PR #3501)
 
