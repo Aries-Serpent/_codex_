@@ -1,15 +1,13 @@
 {
-  "_comment": "Auto-synced from GitHub repo variables by repo-var-sync-agent. Do not edit manually — run repo-var-sync-agent to pull latest values from GitHub API. Keys starting with _ are skipped during GITHUB_ENV injection. Secrets (CODEX_MASTER_KEY, CODEX_BACKUP_KEY) are injected separately via copilot-setup-steps.yml env: block and must NOT be stored here.",
+  "_comment": "Auto-synced from GitHub repo variables by repo-var-sync-agent. Do not edit manually \u2014 run repo-var-sync-agent to pull latest values from GitHub API. Keys starting with _ are skipped during GITHUB_ENV injection. Secrets (CODEX_MASTER_KEY, CODEX_BACKUP_KEY) are injected separately via copilot-setup-steps.yml env: block and must NOT be stored here.",
   "_last_synced": "2026-03-04T23:25:00Z",
   "_sync_agent": "repo-var-sync-agent",
   "_sync_command": "Use repo-var-sync-agent to update: it reads all COPILOT_*/CODEX_*/COGNITIVE_BRAIN_*/AGENT_*/EMBEDDING_* repo variables via GitHub API and rewrites this file",
   "_pr": "3495",
-
   "AGENT_HANDOFF_TIMEOUT_SECONDS": "120",
   "AUDIT_RETENTION_DAYS": "90",
   "AUTONOMOUS_ACTIONS_ENABLED": "true",
   "AUTO_PROMOTE_TIER_ENABLED": "true",
-
   "CODEX_AGENT_NAME": "ai_org_repo_admin",
   "CODEX_API_VERSION": "2022-11-28",
   "CODEX_CI_FAILURE_RATE": "6.8:ok",
@@ -24,15 +22,13 @@
   "CODEX_LOG_LEVEL": "INFO",
   "CODEX_NETWORK_MODE": "isolated",
   "CODEX_ORG_NAME": "Aries-Serpent",
-
   "COGNITIVE_BRAIN_ALLOWED_ACTORS": "mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]",
   "COGNITIVE_BRAIN_INJECTION_ENABLED": "true",
   "COGNITIVE_BRAIN_LTM_RETENTION_DAYS": "90",
   "COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS": "128000",
   "COGNITIVE_BRAIN_MEMORY_TIER": "both",
   "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE": "0.75",
-  "COGNITIVE_BRAIN_SESSION_NUMBER": "112",
-
+  "COGNITIVE_BRAIN_SESSION_NUMBER": "113",
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
   "COPILOT_AGENT_LAST_SESSION_ID": "S112",
@@ -40,14 +36,10 @@
   "COPILOT_AGENT_SESSION_EXPIRES": "2026-03-05T03:00:31Z",
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
   "COPILOT_AGENT_STATE": "active",
-
   "COPILOT_CLI_BASE_URL": "http://localhost:8765",
   "COPILOT_CLI_ENABLED": "true",
-
   "DEPLOY_ENV": "production",
-
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",
   "GENESIS_TIMESTAMP": "2025-12-26T16:04:45Z",
-
   "COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS": "https://github.com/Aries-Serpent/*,https://github.com/*,scanning-api.github.com,https://*.github.com/*,https://api.github.com/*,https://github.com/Aries-Serpent/_codex_/*,objects.githubusercontent.com,registry.npmjs.org,pypi.org,files.pythonhosted.org,api.openai.com,https://gh.io/copilot/firewall-config,https://gh.io/copilot/actions-setup-steps,https://gh.io/copilot/*,https://api.github.com/repos/Aries-Serpent/_codex_/*,https://api.github.com/repos/Aries-Serpent/*,https://api.github.com/repos/*,https://api.github.com/repos/Aries-Serpent/_codex_/issues/*,https://*github.com/*,huggingface.co,https://*.huggingface.co/*,https://api.github.com/installation/token,https://www.google.com,https://www.bing.com,cas-server.xethub.hf.co,https://cas-server.xethub.hf.co,https://pypi.org,https://files.pythonhosted.org,download.pytorch.org,https://download.pytorch.org,test.pypi.org,https://test.pypi.org,api.github.com,https://api.github.com,uploads.github.com,https://uploads.github.com,raw.githubusercontent.com,https://raw.githubusercontent.com,codeload.github.com,https://codeload.github.com,https://objects.githubusercontent.com,marketplace.github.com,https://marketplace.github.com,token.actions.githubusercontent.com,https://token.actions.githubusercontent.com,aries-serpent.github.io,https://aries-serpent.github.io,https://huggingface.co,cdn-lfs.huggingface.co,https://cdn-lfs.huggingface.co,production.cloudflare.docker.com,https://production.cloudflare.docker.com,auth.docker.io,https://auth.docker.io,api.wandb.ai,https://api.wandb.ai,cdn-lfs-us-1.huggingface.co,https://cdn-lfs-us-1.huggingface.co,files.wandb.ai,https://files.wandb.ai,ghcr.io,https://ghcr.io,registry-1.docker.io,https://registry-1.docker.io,fulcio.sigstore.dev,https://fulcio.sigstore.dev,rekor.sigstore.dev,https://rekor.sigstore.dev,codecov.io,https://codecov.io,keybase.io,https://keybase.io,crates.io,https://crates.io,static.crates.io,https://static.crates.io,index.crates.io,https://index.crates.io,rustsec.org,https://rustsec.org,cdn.jsdelivr.net,https://cdn.jsdelivr.net,d3js.org,https://d3js.org,api.duckduckgo.com,https://api.duckduckgo.com,apt.llvm.org,https://apt.llvm.org,packages.microsoft.com,https://packages.microsoft.com,visualstudio.microsoft.com,https://visualstudio.microsoft.com,pre-commit.com,https://pre-commit.com,astral.sh"
 }

@@ -5,6 +5,74 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)
+
+### Root Cause Fixed (W-112a)
+
+`detect-secrets` exit code 3 in Art_Validation / Fast Validation: `.secrets.baseline` had stale
+line numbers (559→561, 590→592 in `agent-auth-delegation.yml`) and a stale `generated_at`
+timestamp. Fix: targeted `detect-secrets scan` on the two tracked files only.
+
+### Root Cause Fixed (W-112b — auto-increment)
+
+`COGNITIVE_BRAIN_SESSION_NUMBER` required manual updates after every PR because
+`chatops_copilot_trigger.yml`'s increment step only fires on `/copilot` (slash) commands,
+while all real agent invocations use `@copilot continue` (at-sign). The chatops workflow
+never saw `@copilot` comments and the counter never advanced. Fix: added
+`Increment COGNITIVE_BRAIN_SESSION_NUMBER` step to `agent-auth-delegation.yml`
+`activate-delegation` job — fires automatically on every token delegation approval.
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-112a | fix | `.secrets.baseline` | Line numbers updated (agent-auth-delegation.yml: 559→561, 590→592); `generated_at` refreshed to 2026-03-05. Fixes detect-secrets exit code 3 / Art_Validation failure |
+| W-112b | feat | `.github/workflows/agent-auth-delegation.yml` | `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step added as step 3e in `activate-delegation` job — auto-increments on every token delegation approval via `CODEX_MASTER_KEY`; eliminates manual variable update requirement |
+| W-112c | feat | `.codex/agent_context.json` | `COGNITIVE_BRAIN_SESSION_NUMBER` 112→113; confirmed live by @mbaetiong 2026-03-05 |
+
+### 6th Token Delegation Activation
+
+Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122358) — owner @mbaetiong approved 2026-03-05T01:59:16Z.
+`COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed.
+
+
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-111a | docs | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | C8 gap marked RESOLVED ✅; §5 updated to record @mbaetiong explicit sign-off on top-25 threshold relaxation (2026-03-05); promotion status updated to PENDING C4 only |
+| W-111b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.4→v1.9.5: `workflow-health-monitor` — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added; promotion now unblocked pending C4 observation window end (2026-04-04) |
+
+## [Unreleased] — W-110 Fourth D_CAPABLE candidate designation: `workflow-health-monitor` (PR #3496, 2026-03-05)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-110a | docs | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | New ADR — fourth D_CAPABLE candidate evaluation; full 8-criterion scorecard for `owner-approval-guard` (QUEUED as 5th) and `workflow-health-monitor` (DESIGNATED 4th); selection rationale; C8 rank threshold evolution discussion; promotion DEFERRED on C4 observation + C8 @mbaetiong sign-off |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-110b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3→v1.9.4: `workflow-health-monitor` — `has_tests: true`, `has_docs: true`, `activation_frequency_rank: 21`, `violations_30d: 0`, `observation_started: '2026-03-05'`, `observation_window_days: 30`, `observation_baseline` added; `owner-approval-guard` — `has_tests: true`, `has_docs: true` added |
+
+## [Unreleased] — W-109 Schedule repo-var-sync-agent + rust-error-validator observation (PR #3496, 2026-03-05)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-109a | feat | `.github/workflows/repo-var-sync-schedule.yml` | New scheduled workflow — daily at 06:00 UTC; syncs 25 repo variables (COPILOT_* CODEX_* COGNITIVE_BRAIN_* AGENT_* EMBEDDING_* AUTO_*) to `.codex/agent_context.json`; drift detection and auto-commit; workflow_dispatch with dry-run + force-sync inputs; explicitly scheduled by active Copilot Agent per Priority 3 of FOLLOWUP_PROMPT_PR3495.md |
+| W-109b | feat | `.github/workflows/rust-error-validator-observation.yml` | New weekly observation workflow (Mondays 08:00 UTC) — tracks 30-day post-promotion window (2026-03-04 → 2026-04-03); elapsed-day counter; violations_30d check; explicit historical evidence baseline from ADR-20260304-rust-error-validator-d-capable-promotion.md and PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md; workflow_dispatch with override_date for testing |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-109b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3 — `rust-error-validator` observation fields added: `observation_started: '2026-03-04'`, `observation_window_days: 30`, `observation_baseline: docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md` |
+
 ## [Unreleased] — W-107 Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04)
 
 ### Added
