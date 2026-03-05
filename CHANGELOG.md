@@ -5,6 +5,20 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-110 Fourth D_CAPABLE candidate designation: `workflow-health-monitor` (PR #3496, 2026-03-05)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-110a | docs | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | New ADR — fourth D_CAPABLE candidate evaluation; full 8-criterion scorecard for `owner-approval-guard` (QUEUED as 5th) and `workflow-health-monitor` (DESIGNATED 4th); selection rationale; C8 rank threshold evolution discussion; promotion DEFERRED on C4 observation + C8 @mbaetiong sign-off |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-110b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3→v1.9.4: `workflow-health-monitor` — `has_tests: true`, `has_docs: true`, `activation_frequency_rank: 21`, `violations_30d: 0`, `observation_started: '2026-03-05'`, `observation_window_days: 30`, `observation_baseline` added; `owner-approval-guard` — `has_tests: true`, `has_docs: true` added |
+
 ## [Unreleased] — W-109 Schedule repo-var-sync-agent + rust-error-validator observation (PR #3496, 2026-03-05)
 
 ### Added
