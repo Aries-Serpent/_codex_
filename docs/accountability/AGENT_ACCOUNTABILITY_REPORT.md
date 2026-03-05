@@ -1,9 +1,9 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/fix-lint-workflows-error
+**Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-03 (PR #3483 CI fix — actionlint-audit SC2016/SC2012 shellcheck failures + deep research agentic infrastructure analysis)
+**Last updated:** 2026-03-05 (PR #3499 W-119 — user documentation clarity improvements: removed duplicate LoRA content, corrected Python version, fixed misleading link, refreshed stale date)
 
 ---
 

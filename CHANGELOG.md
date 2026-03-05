@@ -5,7 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-118 Full token tooling: export fix, variable manager, token guide (PR #3497, 2026-03-05)
+## [Unreleased] — W-119 User documentation clarity improvements (PR #3499, 2026-03-05)
+
+### Fixed (W-119)
+
+- `docs/getting-started.md` — Removed two duplicate "Typical ranges" / "Defaults live in" paragraphs that were repeated three times after the LoRA flag description; content now appears exactly once.
+- `docs/NEWCOMER_GUIDE.md` — Corrected prerequisite Python version from "3.10+" to "3.12+" to match `pyproject.toml` `requires-python = ">=3.12"`. Fixed misleading "Start here" link whose display text said `docs/README_ROOT.md` but href pointed to `./index.md` (the Documentation Hub); label now reads "Documentation Hub".
+- `docs/Usage_Guide.md` — Updated stale "Last reviewed" date from 2025-10-19 to 2026-03-05.
+
 
 ### Added (W-118)
 
