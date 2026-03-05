@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-04T19:08:27Z",
+  "generated_at": "2026-03-05T03:07:30Z",
   "agents": [
     {
       "name": "github-guru-agent",
@@ -126,7 +126,7 @@
       "name": "rust-error-validator",
       "role": "specialist",
       "enforcement_tier": "GROUNDED",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "security-advisory-resolver",
@@ -1247,6 +1247,11 @@
       "has_concurrency": true
     },
     {
+      "name": "repo-var-sync-schedule",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "repository-health-monitoring",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1264,6 +1269,11 @@
     {
       "name": "runner-diagnostics",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "rust-error-validator-observation",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1511,6 +1521,14 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3495.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/FOLLOWUP_PROMPT_PR3496.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md",
       "type": "enforcement"
     },
@@ -1628,9 +1646,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 2,
+    "d_capable_agents": 3,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "f0132352f0912f66da28eb76b0ad4d1b49b5697b34f039122ff7dad8385890a6"
+  "integrity_sha256": "40decb5362bf3d8897295eeb11682c940afac10adaa3113f39838873678f132d"
 }

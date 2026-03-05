@@ -57,8 +57,7 @@ try:
     from .db import init_db as _shared_init_db
     from .db import log_event as _shared_log_event
 except Exception:
-    logger.warning("Exception occurred", exc_info=True)
-    logger.warning("Exception occurred", exc_info=True)
+    logger.debug("codex.logging.db not available; using built-in fallbacks", exc_info=True)
     _shared_DB_LOCK = None
     _shared_init_db = None
     try:  # Fallback: rely on monkeypatch adapters
@@ -227,8 +226,7 @@ def _fallback_log_event(
         )
         conn.commit()
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred in _fallback_log_event", exc_info=True)
         if USE_POOL:
             try:
                 conn.close()
