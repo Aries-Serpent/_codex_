@@ -841,3 +841,31 @@ jobs:
               body,
             });
             core.info(`✅ Posted @copilot continue on PR #${prNumber}`);
+
+      # ── 3e: Auto-increment COGNITIVE_BRAIN_SESSION_NUMBER ────────────────────
+      # Fires on every successful token delegation approval — the natural per-session
+      # gate. Eliminates the need for manual variable updates in GitHub Settings.
+      # The chatops_copilot_trigger.yml increment only fires for /copilot (slash)
+      # commands; @copilot continue (at-sign) never triggers it, so the counter
+      # historically required a manual bump after every PR. This step closes that gap.
+      - name: "Increment COGNITIVE_BRAIN_SESSION_NUMBER"
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          CURRENT="${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}"
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "⚠️ CODEX_MASTER_KEY not available — session number increment skipped"
+            exit 0
+          fi
+          NEXT=$((CURRENT + 1))
+          if gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER" \
+            -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+            -f value="${NEXT}" \
+            > /dev/null 2>&1; then
+            echo "✅ COGNITIVE_BRAIN_SESSION_NUMBER: ${CURRENT} → ${NEXT}"
+          else
+            echo "⚠️ Failed to increment COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} → ${NEXT}). Check CODEX_MASTER_KEY has variables:write scope."
+          fi

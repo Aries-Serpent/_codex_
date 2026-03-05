@@ -5,7 +5,37 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-111 @mbaetiong C8 sign-off recorded; fourth D_CAPABLE promotion unblocked (PR #3496, 2026-03-05)
+## [Unreleased] — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)
+
+### Root Cause Fixed (W-112a)
+
+`detect-secrets` exit code 3 in Art_Validation / Fast Validation: `.secrets.baseline` had stale
+line numbers (559→561, 590→592 in `agent-auth-delegation.yml`) and a stale `generated_at`
+timestamp. Fix: targeted `detect-secrets scan` on the two tracked files only.
+
+### Root Cause Fixed (W-112b — auto-increment)
+
+`COGNITIVE_BRAIN_SESSION_NUMBER` required manual updates after every PR because
+`chatops_copilot_trigger.yml`'s increment step only fires on `/copilot` (slash) commands,
+while all real agent invocations use `@copilot continue` (at-sign). The chatops workflow
+never saw `@copilot` comments and the counter never advanced. Fix: added
+`Increment COGNITIVE_BRAIN_SESSION_NUMBER` step to `agent-auth-delegation.yml`
+`activate-delegation` job — fires automatically on every token delegation approval.
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-112a | fix | `.secrets.baseline` | Line numbers updated (agent-auth-delegation.yml: 559→561, 590→592); `generated_at` refreshed to 2026-03-05. Fixes detect-secrets exit code 3 / Art_Validation failure |
+| W-112b | feat | `.github/workflows/agent-auth-delegation.yml` | `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step added as step 3e in `activate-delegation` job — auto-increments on every token delegation approval via `CODEX_MASTER_KEY`; eliminates manual variable update requirement |
+| W-112c | feat | `.codex/agent_context.json` | `COGNITIVE_BRAIN_SESSION_NUMBER` 112→113; confirmed live by @mbaetiong 2026-03-05 |
+
+### 6th Token Delegation Activation
+
+Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122358) — owner @mbaetiong approved 2026-03-05T01:59:16Z.
+`COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed.
+
+
 
 ### Changed
 
