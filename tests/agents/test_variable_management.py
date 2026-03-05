@@ -11,7 +11,7 @@ import json
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 # Ensure scripts/ and src/ are importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -19,14 +19,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 # scripts/tools is on the path directly so `import variable_manager` works
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "tools"))
 
-import variable_manager as _vm_module  # noqa: E402
 from variable_manager import (  # noqa: E402
     GitHubAPIError,
     VariableManager,
     _resolve_token,
-    _gh_request,
 )
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Token resolution tests
@@ -339,7 +336,7 @@ class TestBrainClientMechanism(unittest.TestCase):
 
         os.environ["CODEX_MASTER_KEY"] = "tok"
         vm = VariableManager(brain=mock_brain)
-        result = vm.list_repo_vars("Aries-Serpent", "_codex_")
+        vm.list_repo_vars("Aries-Serpent", "_codex_")
         mock_brain.proxy_request.assert_called_once()
         call_args = mock_brain.proxy_request.call_args
         self.assertEqual(call_args.args[0], "GET")

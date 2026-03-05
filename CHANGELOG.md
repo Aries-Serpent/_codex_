@@ -5,7 +5,11 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-124 apply-webhooks: dry-run executed, WEBHOOK_RECEIVER_URL wired (PR #3499, 2026-03-05)
+## [Unreleased] — CI auto-fix: remove unused imports in test_variable_management.py (PR #3499, 2026-03-05)
+
+### Fixed (CI auto-fix)
+
+- `tests/agents/test_variable_management.py` — Remove unused imports flagged by ruff F401: `unittest.mock.call`, `variable_manager` (module alias `_vm_module`), `variable_manager._gh_request`. Remove unused variable `result` (F841). Fix import sort order (I001). All 26 tests continue to pass.
 
 ### Changed (W-124)
 
