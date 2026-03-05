@@ -5,7 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-113 PR #3497 CI fixes: secrets baseline 561/592, CodeQL JS, CHANGELOG gate (2026-03-05)
+## [Unreleased] — W-115 Cognitive App CLI connection guide + full API audit (PR #3497, 2026-03-05)
+
+### Added (W-115)
+
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — complete Copilot session connection guide:
+  every API endpoint (GET/POST/PUT/PATCH/DELETE) with curl examples, BrainClient Python usage,
+  GitHub Pages limitations, troubleshooting, and live audit results from PR #3497 W-114
+
+
 
 ### Fixed (W-113)
 
