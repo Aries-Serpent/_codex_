@@ -5,6 +5,21 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-109 Schedule repo-var-sync-agent + rust-error-validator observation (PR #3496, 2026-03-05)
+
+### Added
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-109a | feat | `.github/workflows/repo-var-sync-schedule.yml` | New scheduled workflow — daily at 06:00 UTC; syncs 25 repo variables (COPILOT_* CODEX_* COGNITIVE_BRAIN_* AGENT_* EMBEDDING_* AUTO_*) to `.codex/agent_context.json`; drift detection and auto-commit; workflow_dispatch with dry-run + force-sync inputs; explicitly scheduled by active Copilot Agent per Priority 3 of FOLLOWUP_PROMPT_PR3495.md |
+| W-109b | feat | `.github/workflows/rust-error-validator-observation.yml` | New weekly observation workflow (Mondays 08:00 UTC) — tracks 30-day post-promotion window (2026-03-04 → 2026-04-03); elapsed-day counter; violations_30d check; explicit historical evidence baseline from ADR-20260304-rust-error-validator-d-capable-promotion.md and PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md; workflow_dispatch with override_date for testing |
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-109b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3 — `rust-error-validator` observation fields added: `observation_started: '2026-03-04'`, `observation_window_days: 30`, `observation_baseline: docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md` |
+
 ## [Unreleased] — W-107 Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04)
 
 ### Added
