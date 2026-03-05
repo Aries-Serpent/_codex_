@@ -5,6 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-118 Full token tooling: export fix, variable manager, token guide (PR #3497, 2026-03-05)
+
+### Added (W-118)
+
+- `scripts/tools/variable_manager.py` — Complete CRUD tool for GitHub Actions repo / env / org variables. Implements 3-tier mechanism: BrainClient secondary → direct urllib fallback. Auto-resolves best available token (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN). Full CLI interface and Python API.
+- `tests/agents/test_variable_management.py` — 26-test suite covering: token priority resolution, repo/env/org variable CRUD, BrainClient secondary mechanism, urllib fallback, full create→verify→update→verify→delete lifecycle (mocked), graceful 403 handling. All 26 pass.
+- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Complete Copilot Coding Agent token reference: token priority table, how each token reaches the agent session, accurate permission matrix (key: `GITHUB_TOKEN` CANNOT access variables API — requires `CODEX_MASTER_KEY`), usage examples (BrainClient / VariableManager / CLI / curl), Agent Token Delegation section, troubleshooting guide, quick verification script.
+
+### Fixed (W-118)
+
+- `copilot-setup-steps.yml` — Added "🔑 Export Auth Tokens to Agent Environment" step (after "Set Codex Environment Variables") that explicitly writes `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, and `AGENT_GITHUB_TOKEN` to `GITHUB_ENV`. Previously these were only job-level env vars (available to setup steps) but never persisted to the Copilot agent process. Also: CLI server startup now explicitly `export`s all three tokens to the uvicorn process; startup log now reports which auth token is active and its capability; permissions block updated to `actions: write` with accurate comment noting variables API still requires `CODEX_MASTER_KEY`.
+- `cognitive_app/src/server/cli_api_server.py` — Auto-inject logic now resolves tokens in priority order: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `AGENT_GITHUB_TOKEN` → `GITHUB_TOKEN`; logs source name for each injected call.
+- `src/codex/agents/brain_client.py` — `_auth_header()` updated with same 4-token priority chain and comprehensive docstring.
+
+### Constraint documented (W-118)
+
+GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Grained PAT with `Variables: write`. **`GITHUB_TOKEN` cannot access the variables API** regardless of `actions:` permission level. `CODEX_MASTER_KEY` must be configured as an org/repo secret for live variable management. Unit tests (26/26) confirm all tooling works correctly via mock; live test will pass once `CODEX_MASTER_KEY` secret is populated.
+
 ## [Unreleased] — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)
 
 ### Fixed (W-117)

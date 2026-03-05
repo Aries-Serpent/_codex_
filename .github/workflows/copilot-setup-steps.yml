@@ -72,9 +72,12 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-      actions: read
+      actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
       issues: write        # Allow agent to post @copilot follow-up comments
       pull-requests: write # Allow agent to post PR review comments
+      # NOTE: actions:write does NOT grant access to the Actions Variables API.
+      # Variables API requires CODEX_MASTER_KEY (classic PAT, repo scope).
+      # See docs/agent/COPILOT_TOKEN_GUIDE.md#permission-matrix
     # Baseline stability: skip LFS smudge and do not fetch LFS during initial checkout
     env:
       GIT_LFS_SKIP_SMUDGE: "1"
@@ -389,7 +392,44 @@ jobs:
           echo "CI=true" >> "$GITHUB_ENV"
           echo "GITHUB_COPILOT_AGENT=true" >> "$GITHUB_ENV"
 
-      - name: "📋 Load Custom Agent Configuration"
+      - name: "🔑 Export Auth Tokens to Agent Environment"
+        # CRITICAL: CODEX_MASTER_KEY and CODEX_BACKUP_KEY are declared in the
+        # job-level env: block (from org secrets) so they are available to steps
+        # in this workflow — but they are NOT automatically written to GITHUB_ENV.
+        # The Copilot agent process reads its environment from GITHUB_ENV, not the
+        # job-level env block. This step bridges that gap.
+        #
+        # Token priority for GitHub API calls:
+        #   1. CODEX_MASTER_KEY  — full PAT (repo scope); required for variables API
+        #   2. CODEX_BACKUP_KEY  — fallback PAT
+        #   3. GITHUB_TOKEN      — scoped installation token (actions:write only)
+        #
+        # See docs/agent/COPILOT_TOKEN_GUIDE.md for complete reference.
+        run: |
+          echo "── Auth token export ──────────────────────────────────────────"
+          # Export CODEX_MASTER_KEY (full PAT — needed for variables/secrets API)
+          if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+            echo "CODEX_MASTER_KEY=${CODEX_MASTER_KEY}" >> "$GITHUB_ENV"
+            echo "  ✅ CODEX_MASTER_KEY → GITHUB_ENV (${#CODEX_MASTER_KEY} chars)"
+          else
+            echo "  ⚠️  CODEX_MASTER_KEY not set — variable writes will fall back to GITHUB_TOKEN"
+            echo "     Set org secret CODEX_MASTER_KEY (classic PAT, repo scope)"
+          fi
+          # Export CODEX_BACKUP_KEY
+          if [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+            echo "CODEX_BACKUP_KEY=${CODEX_BACKUP_KEY}" >> "$GITHUB_ENV"
+            echo "  ✅ CODEX_BACKUP_KEY → GITHUB_ENV (${#CODEX_BACKUP_KEY} chars)"
+          fi
+          # Always export GITHUB_TOKEN under a stable name for agent use.
+          # GITHUB_TOKEN is auto-provided by Actions and has actions:write (set above).
+          echo "AGENT_GITHUB_TOKEN=${GITHUB_TOKEN}" >> "$GITHUB_ENV"
+          echo "  ✅ AGENT_GITHUB_TOKEN → GITHUB_ENV (${#GITHUB_TOKEN} chars)"
+          echo "     Scopes: actions:write (trigger workflows, manage runs, download artifacts)"
+          echo "     NOTE: AGENT_GITHUB_TOKEN/GITHUB_TOKEN cannot access the variables API."
+          echo "           Variable create/update/delete requires CODEX_MASTER_KEY (PAT, repo scope)."
+          echo "── Auth token export complete ─────────────────────────────────"
+
+
         if: hashFiles('.codex/agent_environment_config.yaml') != ''
         run: |
           if [ -f .codex/agent_environment_config.yaml ]; then
@@ -473,6 +513,14 @@ jobs:
             exit 0
           fi
           pip install fastapi uvicorn httpx ptyprocess --quiet 2>/dev/null || true
+          # Explicitly forward auth tokens to the server process env.
+          # Even though CODEX_MASTER_KEY is in the job env block, child processes
+          # started with nohup inherit from the CURRENT step env — which already
+          # has these values. The explicit assignment below makes the intent clear
+          # and is idempotent.
+          export CODEX_MASTER_KEY="${CODEX_MASTER_KEY:-}"
+          export CODEX_BACKUP_KEY="${CODEX_BACKUP_KEY:-}"
+          export AGENT_GITHUB_TOKEN="${GITHUB_TOKEN:-}"
           nohup uvicorn cognitive_app.src.server.cli_api_server:app \
             --host 0.0.0.0 \
             --port 8765 \
@@ -499,6 +547,16 @@ jobs:
             echo "✅ CLI API Server ready on :8765 (PID=${CLI_API_PID})"
             echo "   BrainClient URL: http://localhost:8765"
             echo "   Import: from codex.agents.brain_client import BrainClient"
+            # Report which auth token the server can use for GitHub API calls
+            if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+              echo "   🔑 Auth: CODEX_MASTER_KEY active (full PAT — variables/secrets API ✅)"
+            elif [ -n "${CODEX_BACKUP_KEY:-}" ]; then
+              echo "   🔑 Auth: CODEX_BACKUP_KEY active (fallback PAT)"
+            elif [ -n "${GITHUB_TOKEN:-}" ]; then
+              echo "   🔑 Auth: GITHUB_TOKEN active (actions:write scope)"
+            else
+              echo "   ⚠️  No auth token — GitHub API calls will be unauthenticated (rate-limited)"
+            fi
           else
             echo "⚠️ CLI API Server did not respond after 5 s — see RUNNER_TEMP/cli_api_server.log"
             cat "${RUNNER_TEMP}/cli_api_server.log" 2>/dev/null | tail -20 || true

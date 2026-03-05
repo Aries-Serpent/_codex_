@@ -157,9 +157,24 @@ class BrainClient:
         return urllib.request.urlopen(req, timeout=timeout)  # nosec B310
 
     def _auth_header(self) -> Dict[str, str]:
-        """Return a Bearer auth header if CODEX_MASTER_KEY / CODEX_BACKUP_KEY is set."""
+        """Return a Bearer auth header using the best available token.
+
+        Token priority (highest → lowest):
+        1. ``CODEX_MASTER_KEY``    — full PAT (repo scope); required for variables/secrets API
+        2. ``CODEX_BACKUP_KEY``    — fallback PAT
+        3. ``AGENT_GITHUB_TOKEN``  — stable alias for GITHUB_TOKEN exported by setup steps
+        4. ``GITHUB_TOKEN``        — scoped installation token (actions:write)
+
+        All four are exported to ``GITHUB_ENV`` by the
+        "🔑 Export Auth Tokens" step in ``copilot-setup-steps.yml``.
+        See ``docs/agent/COPILOT_TOKEN_GUIDE.md`` for the full reference.
+        """
         token = (
-            os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY") or ""
+            os.environ.get("CODEX_MASTER_KEY")
+            or os.environ.get("CODEX_BACKUP_KEY")
+            or os.environ.get("AGENT_GITHUB_TOKEN")
+            or os.environ.get("GITHUB_TOKEN")
+            or ""
         ).strip()
         return {"Authorization": f"Bearer {token}"} if token else {}
 

@@ -649,13 +649,22 @@ async def api_proxy(req: ApiProxyRequest):
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
+    # Token priority: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > AGENT_GITHUB_TOKEN > GITHUB_TOKEN
     if url.startswith("https://api.github.com/") and "Authorization" not in headers:
-        master_key = os.environ.get("CODEX_MASTER_KEY") or ""
-        backup_key = os.environ.get("CODEX_BACKUP_KEY") or ""
-        token = master_key if master_key else backup_key
+        master_key   = os.environ.get("CODEX_MASTER_KEY") or ""
+        backup_key   = os.environ.get("CODEX_BACKUP_KEY") or ""
+        agent_token  = os.environ.get("AGENT_GITHUB_TOKEN") or ""
+        github_token = os.environ.get("GITHUB_TOKEN") or ""
+        token = master_key or backup_key or agent_token or github_token
         if token:
             headers["Authorization"] = f"Bearer {token}"
-            log.debug("Auto-injected GitHub auth header (CODEX_MASTER_KEY)")
+            source = (
+                "CODEX_MASTER_KEY" if master_key else
+                "CODEX_BACKUP_KEY" if backup_key else
+                "AGENT_GITHUB_TOKEN" if agent_token else
+                "GITHUB_TOKEN"
+            )
+            log.debug("Auto-injected GitHub auth header (%s)", source)
     # Auto Content-Type for JSON body
     if req.body is not None and "content-type" not in {k.lower() for k in headers}:
         headers["Content-Type"] = "application/json"
