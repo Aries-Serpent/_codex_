@@ -5,21 +5,31 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-123 Task: identify and document repository webhooks (PR #3499, 2026-03-05)
+
+### Added (W-123)
+
+- `docs/plans/webhook-identification.md` — New task document defining the webhook audit and documentation work: inventories the existing webhook infrastructure (`webhook_configurator.py`, `agent_infrastructure_manager.yml`, `.codex/webhook_config.json`, `ADMIN_MANUAL_SETUP_GUIDE.md §5`), catalogues all 220 workflow GitHub event triggers (issue_comment, pull_request, push, workflow_run, etc.), documents 6 webhook-driven critical workflows, defines 5 planned webhook deliverables, and provides a full implementation checklist for the follow-up PR.
+
+## [Unreleased] — W-122 Runner live: ubuntu-latest-m / AS Larger Runners / Custom Image Preview (PR #3499, 2026-03-05)
+
+### Changed (W-122)
+
+- `.github/workflows/copilot-setup-steps.yml` — Activated the provisioned runner:
+  - `runs-on` default fallback updated `ubuntu-latest` → `ubuntu-latest-m` (runner now live in `AS Larger Runners` group, 4-core / 16 GB / 150 GB SSD, Ubuntu 24.04, Custom image generation: Enabled Preview).
+  - Workflow header comment updated with full runner spec (group, platform, image, custom-image capability).
+  - All `ubuntu-4-core` references in AAIS adequacy-check step replaced with `ubuntu-latest-m`.
+- `docs/plans/larger-runners-upgrade.md` — Updated with confirmed runner specification table (`ubuntu-latest-m`, group `AS Larger Runners`, Custom image generation Enabled Preview), §5 "Custom Image Generation (Preview)" covering future cold-start reduction plan (~4 min → ~30 sec), all implementation checklist items marked done, timeline diagram updated through W-122.
+
 ## [Unreleased] — W-121 Larger runners: Mermaid diagrams + AAIS autonomous switch (PR #3499, 2026-03-05)
 
 ### Changed (W-121)
 
 - `.github/workflows/copilot-setup-steps.yml` — Three changes:
-  1. `runs-on: ubuntu-latest` → `runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}` — AAIS-aligned autonomous runner switch: the Cognitive Brain can pre-set `COPILOT_RUNNER_PROFILE` via the Variables API (using `CODEX_MASTER_KEY`) before dispatching a heavy session; falls back safely to `ubuntu-latest` when variable is unset.
-  2. `timeout-minutes: 30` → `timeout-minutes: 59` — raised to maximum allowed; eliminates timeout risk on `ml-heavy` sessions.
-  3. Added "🧠 AAIS Runner Adequacy Check" step (`id: runner_check`) — Runtime Introspection for AAIS Pillar 3: reads `nproc` + `MemTotal`, classifies runner tier, checks adequacy against detected environment type, emits AAIS-formatted assessment, sets `runner_adequate` output. Non-blocking.
-- `docs/plans/larger-runners-upgrade.md` — Fully rewritten with 8 Mermaid diagrams: architecture overview (Copilot agent ↔ runner ↔ Cognitive Brain), Gantt setup timeline (before/after), autonomous switch sequence diagram, runner selection decision tree, token hierarchy, change timeline (W-119/W-119b/W-120/W-121), AAIS contribution table and radar chart. AAIS V4 sub-dimension impact quantified (+3.5 overall contribution).
-
-## [Unreleased] — W-120 Plan: upgrade Copilot agent to larger GitHub-hosted runners (PR #3499, 2026-03-05)
-
-### Added (W-120)
-
-- `docs/plans/larger-runners-upgrade.md` — Initial implementation plan (superseded by W-121 above).
+  1. `runs-on: ubuntu-latest` → `runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}` — AAIS-aligned autonomous runner switch via repo variable.
+  2. `timeout-minutes: 30` → `timeout-minutes: 59` — maximum allowed; eliminates `ml-heavy` timeout risk.
+  3. Added "🧠 AAIS Runner Adequacy Check" step (`id: runner_check`) — AAIS Pillar 3 Runtime Introspection; output surfaced in Phase 7 validation summary.
+- `docs/plans/larger-runners-upgrade.md` — Rewritten with Mermaid architecture, Gantt timeline, sequence diagram, decision tree, change timeline, AAIS contribution table.
 
 ## [Unreleased] — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)
 
