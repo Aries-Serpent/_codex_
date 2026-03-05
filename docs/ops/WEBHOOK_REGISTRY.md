@@ -2,9 +2,42 @@
 
 **Audit date:** 2026-03-05T06:53:00Z
 **Audited by:** Copilot agent W-123 (`@agent-infra list-webhooks`)
+**Apply attempted:** 2026-03-05T07:02:00Z
+**Apply attempted by:** Copilot agent W-124 (`@agent-infra apply-webhooks` — dry-run in sandbox)
 **Method:** `GET /repos/Aries-Serpent/_codex_/hooks` + static codebase analysis
 **Reference:** [GitHub Webhooks Guide](https://docs.github.com/en/webhooks) |
 [GitHub REST API: Webhooks](https://docs.github.com/en/rest/repos/webhooks)
+
+---
+
+## Apply Status (W-124)
+
+| Condition | Status |
+|-----------|--------|
+| `CODEX_MASTER_KEY` available in workflow | ✅ (via `secrets.CODEX_MASTER_KEY`) |
+| `WEBHOOK_SECRET` available in workflow | ✅ (via `secrets.WEBHOOK_SECRET`) |
+| `WEBHOOK_RECEIVER_URL` repo variable set | ❌ **Not set** — placeholder URL still in use |
+| Cognitive Brain API server deployed | ❌ **Not deployed** — blocking real activation |
+| Hooks `active: true` | ❌ Both hooks have `active: false` (intentional) |
+| **Apply result** | ⏳ **DEFERRED** — awaiting server deployment + `WEBHOOK_RECEIVER_URL` |
+
+> **To activate:** Set the `WEBHOOK_RECEIVER_URL` repo variable to the real Cognitive Brain API
+> endpoint, then comment `@agent-infra apply-webhooks` on this PR.
+> `webhook_configurator.py` will automatically substitute the placeholder URL.
+> Update both hooks to `active: true` in `.codex/webhook_config.json` before the
+> second apply run.
+
+### Dry-run output (W-124)
+
+```
+Creating webhook 'cognitive-brain-ci-feedback' ...
+  DRY-RUN  CREATE webhook → https://api.your-cognitive-brain-server.com/webhook/github
+           events=[push, pull_request, issue_comment, pull_request_review_comment,
+                   workflow_run, repository_dispatch, check_run, check_suite]
+Creating webhook 'runner-health-notification' ...
+  DRY-RUN  CREATE webhook → https://api.your-cognitive-brain-server.com/webhook/github
+           events=[workflow_run]
+```
 
 ---
 
@@ -210,16 +243,24 @@ python scripts/ci/webhook_configurator.py --list
 ### Apply desired-state config (idempotent)
 
 ```bash
-# Via ChatOps comment on any PR:
+# Via ChatOps comment on any PR (uses WEBHOOK_RECEIVER_URL repo variable automatically):
 @agent-infra apply-webhooks
 
-# Directly:
+# Directly with WEBHOOK_RECEIVER_URL override:
 export CODEX_ADMIN_KEY=<PAT with Webhooks:write>
+export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
 python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json
 
-# Dry-run first:
+# Dry-run first (safe — no API writes):
+export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
 python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
 ```
+
+> **`WEBHOOK_RECEIVER_URL` override**: If this environment variable is set, it replaces
+> the placeholder URL `https://api.your-cognitive-brain-server.com/webhook/github` in all
+> webhook config entries. Set this as a GitHub repo variable
+> (`Settings → Variables → Repository variables`) so `@agent-infra apply-webhooks`
+> picks it up automatically without editing `.codex/webhook_config.json`.
 
 ### Delete a hook
 
@@ -233,13 +274,17 @@ python scripts/ci/webhook_configurator.py --delete <hook_id>
 
 ```
 [ ] Deploy Cognitive Brain API server
-[ ] Update .codex/webhook_config.json:
-      "url": "https://REAL-SERVER-URL/webhook/github"
-      "active": true  (both hooks)
+[ ] Set repo variable WEBHOOK_RECEIVER_URL = https://REAL-SERVER-URL/webhook/github
+      (Settings → Variables → Repository variables)
+      webhook_configurator.py will substitute the placeholder URL automatically.
 [ ] Ensure WEBHOOK_SECRET org secret is set (same value as HMAC key on server)
-[ ] Run dry-run:
+[ ] Run dry-run to confirm URLs:
+      export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
       python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
-[ ] Apply:
+[ ] Apply (creates hooks with active=false initially):
+      @agent-infra apply-webhooks
+[ ] Update .codex/webhook_config.json: set "active": true on both hooks
+[ ] Apply again to activate:
       @agent-infra apply-webhooks
 [ ] Verify at: https://github.com/Aries-Serpent/_codex_/settings/hooks
       Both hooks show green checkmark on first delivery

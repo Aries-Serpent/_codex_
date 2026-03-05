@@ -39,10 +39,16 @@
   "_meta": {
     "last_audited": "2026-03-05T06:53:00Z",
     "audited_by": "webhook_configurator.py --list (copilot agent W-123)",
+    "last_apply_attempt": "2026-03-05T07:02:00Z",
+    "apply_attempted_by": "webhook_configurator.py --apply --dry-run (copilot agent W-124)",
     "live_hooks_count": 0,
     "audit_method": "GET /repos/Aries-Serpent/_codex_/hooks — 403 via GITHUB_TOKEN (expected; requires admin:repo_hook PAT). Static analysis confirms 0 hooks deployed.",
+    "apply_result": "DRY-RUN ONLY — CODEX_MASTER_KEY not available in coding-agent sandbox. Real apply requires CODEX_MASTER_KEY (admin:repo_hook) via agent_infrastructure_manager.yml workflow.",
+    "apply_blocker": "WEBHOOK_RECEIVER_URL repo variable not set — placeholder URL still in use. Set WEBHOOK_RECEIVER_URL to the real Cognitive Brain API endpoint, then re-run @agent-infra apply-webhooks.",
+    "dry_run_output": "Creating webhook 'cognitive-brain-ci-feedback' → DRY-RUN CREATE → https://api.your-cognitive-brain-server.com/webhook/github events=[push,pull_request,issue_comment,pull_request_review_comment,workflow_run,repository_dispatch,check_run,check_suite] | Creating webhook 'runner-health-notification' → DRY-RUN CREATE → https://api.your-cognitive-brain-server.com/webhook/github events=[workflow_run]",
     "apply_command": "python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json",
     "list_command": "python scripts/ci/webhook_configurator.py --list",
-    "token_required": "CODEX_ADMIN_KEY (Webhooks:write) or CODEX_MASTER_KEY (admin:repo_hook)"
+    "token_required": "CODEX_ADMIN_KEY (Webhooks:write) or CODEX_MASTER_KEY (admin:repo_hook)",
+    "url_override": "Set WEBHOOK_RECEIVER_URL repo variable to override placeholder URL without editing this file"
   }
 }

@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-124 apply-webhooks: dry-run executed, WEBHOOK_RECEIVER_URL wired (PR #3499, 2026-03-05)
+
+### Changed (W-124)
+
+- `scripts/ci/webhook_configurator.py` — Add `WEBHOOK_RECEIVER_URL` environment variable support: if set, automatically substitutes the placeholder URL (`https://api.your-cognitive-brain-server.com/webhook/github`) in all config entries before applying. Enables URL-less activation via repo variable without editing `webhook_config.json` directly. Add `PLACEHOLDER_URL` sentinel constant. Update docstring.
+- `.github/workflows/agent_infrastructure_manager.yml` — Wire `WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}` into `apply-webhooks` job env so the repo variable is forwarded to `webhook_configurator.py` automatically.
+- `.codex/webhook_config.json` — Update `_meta`: add `last_apply_attempt`, `apply_result`, `apply_blocker`, `dry_run_output`, and `url_override` fields documenting W-124 dry-run result.
+- `.codex/webhook_registry.json` — Update with W-124 apply-attempt timestamp, `apply_status`, and updated `next_steps` (6-step activation path: set `WEBHOOK_RECEIVER_URL` → first apply → set `active: true` → second apply → verify → list).
+- `docs/ops/WEBHOOK_REGISTRY.md` — Add W-124 `Apply Status` table, dry-run output block, `WEBHOOK_RECEIVER_URL` override instructions, and updated activation checklist.
+
 ## [Unreleased] — W-123 Webhook audit executed: 0 live hooks, registry + config created (PR #3499, 2026-03-05)
 
 ### Added (W-123 — execution)

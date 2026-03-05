@@ -28,9 +28,14 @@ Usage:
   python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
 
 Environment:
-  CODEX_ADMIN_KEY    — PAT with admin:repo_hook (preferred)
-  CODEX_MASTER_KEY   — fallback
-  GITHUB_REPOSITORY  — defaults to Aries-Serpent/_codex_
+  CODEX_ADMIN_KEY        — PAT with admin:repo_hook (preferred)
+  CODEX_MASTER_KEY       — fallback
+  GITHUB_REPOSITORY      — defaults to Aries-Serpent/_codex_
+  WEBHOOK_RECEIVER_URL   — override placeholder URL in config entries whose URL
+                           contains "your-cognitive-brain-server.com" or is the
+                           PLACEHOLDER_URL sentinel. Set this repo variable once
+                           the Cognitive Brain API server is deployed, then run
+                           @agent-infra apply-webhooks to activate the hooks.
 
 Webhook config file format (.codex/webhook_config.json):
   {
@@ -64,6 +69,11 @@ REPO = os.environ.get("GITHUB_REPOSITORY", "Aries-Serpent/_codex_")
 BASE_URL = f"https://api.github.com/repos/{REPO}/hooks"
 REGISTRY = Path(".codex/webhook_registry.json")
 AUDIT_LOG = Path(".codex/evidence/webhook_audit.jsonl")
+
+# Sentinel in webhook_config.json indicating the real URL has not been set yet.
+# When WEBHOOK_RECEIVER_URL env var is set it replaces all entries that still
+# carry this placeholder value.
+PLACEHOLDER_URL = "https://api.your-cognitive-brain-server.com/webhook/github"
 
 # The full set of webhook events the cognitive brain agents care about
 AGENTIC_EVENTS: list[str] = [
@@ -243,6 +253,17 @@ def apply_config(config_path: str, dry_run: bool = False) -> int:
 
     config = json.loads(path.read_text())
     desired = config.get("webhooks", [])
+
+    # If WEBHOOK_RECEIVER_URL is set in the environment, replace placeholder
+    # URLs so the operator can drive apply-webhooks entirely via a repo variable
+    # without editing webhook_config.json directly.
+    receiver_url_override = os.environ.get("WEBHOOK_RECEIVER_URL", "").strip()
+    if receiver_url_override:
+        for wh in desired:
+            if wh.get("url", "") == PLACEHOLDER_URL or "your-cognitive-brain-server.com" in wh.get("url", ""):
+                print(f"  ↳ Overriding placeholder URL with WEBHOOK_RECEIVER_URL for '{wh.get('name', wh['url'])}'")
+                wh["url"] = receiver_url_override
+
     existing = {h["config"]["url"]: h for h in list_hooks() if h.get("config", {}).get("url")}
     registry = _load_registry()
     errors = 0

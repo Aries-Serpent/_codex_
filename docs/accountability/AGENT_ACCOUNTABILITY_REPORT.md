@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-05 (PR #3499 W-123 execution — @agent-infra list-webhooks audit: 0 live hooks confirmed; created docs/ops/WEBHOOK_REGISTRY.md, .codex/webhook_config.json (2 planned hooks, active=false), .codex/webhook_registry.json)
+**Last updated:** 2026-03-05 (PR #3499 W-124 — @agent-infra apply-webhooks dry-run executed; WEBHOOK_RECEIVER_URL wired into webhook_configurator.py + agent_infrastructure_manager.yml apply-webhooks job; docs/ops/WEBHOOK_REGISTRY.md updated with apply status + activation checklist)
 
 ---
 
