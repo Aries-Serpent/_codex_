@@ -5,6 +5,12 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-127: CI fix — Cognitive Pre-flight REQ-4 gate (PR #3503, 2026-03-05)
+
+### Fixed (W-127)
+
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — W-127 entry added to satisfy REQ-4 gate for new CI triggers. Root cause: intermediate code-review commits `a189432` and `3e95fc3` did not touch the accountability report, causing self-healing CI runs 22710605987 and 22711289287 to fail REQ-4. The fix was already present in commit `5167be5`; this commit closes the loop for any subsequent CI run against HEAD. Pattern: `PREFLIGHT_001`.
+
 ## [Unreleased] — W-126: User auth + GitHub App + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114)
 
 ### Added (W-126)
