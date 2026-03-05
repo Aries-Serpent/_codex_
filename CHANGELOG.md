@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-113 PR #3497 CI fixes: secrets baseline 561/592, CodeQL JS, CHANGELOG gate (2026-03-05)
+
+### Fixed (W-113)
+
+- `.secrets.baseline`: corrected `agent-auth-delegation.yml` entries to actual detect-secrets line numbers 561/592 (hashes `417c84ca`/`1565169a` unchanged) — exit 3 resolved
+- `codeql-analysis.yml`: added `continue-on-error: ${{ matrix.language == 'javascript' }}` (no JS source in repo); restored `queries: +security-extended`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: updated with W-112/W-113 session entries (Cognitive Pre-flight gate)
+- `CHANGELOG.md`: updated in commit to satisfy REQ-5 Cognitive Pre-flight CHANGELOG gate
+
 ## [Unreleased] — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)
 
 ### Root Cause Fixed (W-112a)
