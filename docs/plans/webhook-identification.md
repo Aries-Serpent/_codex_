@@ -31,7 +31,7 @@ The repository has a full webhook management stack already in place:
 | Configurator script | `scripts/ci/webhook_configurator.py` | CRUD operations against GitHub Webhooks REST API |
 | Declarative config | `.codex/webhook_config.json` | Desired-state webhook definitions (idempotent apply) |
 | Registry | `.codex/webhook_registry.json` | Hook IDs returned by GitHub after creation |
-| Audit log | `.codex/webhook_audit.log` | Create / update / delete audit trail |
+| Audit log | `.codex/evidence/webhook_audit.jsonl` | Create / update / delete audit trail |
 | Workflow (apply) | `.github/workflows/agent_infrastructure_manager.yml` | `@agent-infra apply-webhooks` comment command |
 | Workflow (list) | `.github/workflows/agent_infrastructure_manager.yml` | `@agent-infra list-webhooks` comment command |
 | Admin setup guide | `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md §5` | Manual setup steps for Cognitive Brain CI Feedback webhook |

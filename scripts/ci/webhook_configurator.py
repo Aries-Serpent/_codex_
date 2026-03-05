@@ -28,8 +28,8 @@ Usage:
   python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
 
 Environment:
-  CODEX_ADMIN_KEY        — PAT with admin:repo_hook (preferred)
-  CODEX_MASTER_KEY       — fallback
+  CODEX_ADMIN_KEY        — Fine-grained PAT with "Webhooks: write" (preferred)
+  CODEX_MASTER_KEY       — Classic PAT with "admin:repo_hook" (fallback)
   GITHUB_REPOSITORY      — defaults to Aries-Serpent/_codex_
   WEBHOOK_RECEIVER_URL   — override placeholder URL in config entries whose URL
                            contains "your-cognitive-brain-server.com" or is the
