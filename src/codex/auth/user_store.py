@@ -22,8 +22,6 @@ from typing import Dict, List, Optional
 
 from ..security_utils import sanitize_log_message
 from .exceptions import (
-    AuthenticationError,
-    AuthorizationError,
     InvalidCredentialsError,
 )
 
