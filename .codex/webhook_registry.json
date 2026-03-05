@@ -1,0 +1,17 @@
+{
+  "last_synced": "2026-03-05T07:02:00Z",
+  "synced_by": "copilot agent W-124 — @agent-infra apply-webhooks (dry-run in sandbox)",
+  "repo": "Aries-Serpent/_codex_",
+  "live_hooks": [],
+  "audit_result": "0 live webhooks registered as of 2026-03-05. Apply attempted via dry-run — CODEX_MASTER_KEY not available in coding-agent sandbox. Real apply via agent_infrastructure_manager.yml workflow with CODEX_MASTER_KEY secret.",
+  "apply_status": "PENDING — Blockers: (1) WEBHOOK_RECEIVER_URL repo variable not set (placeholder URL still in use); (2) hooks have active=false (intentional until server deployed). Once WEBHOOK_RECEIVER_URL is set, @agent-infra apply-webhooks will create both hooks with HMAC signing.",
+  "next_steps": [
+    "Deploy Cognitive Brain API server",
+    "Set repo variable WEBHOOK_RECEIVER_URL to real server endpoint",
+    "Set WEBHOOK_SECRET org secret (HMAC signing key must match server)",
+    "Run: @agent-infra apply-webhooks  (sets active=false hooks; change to active=true when ready)",
+    "Update webhook_config.json: set active=true on both hooks after server is deployed and validated",
+    "Run: @agent-infra apply-webhooks  (second pass activates the hooks)",
+    "Run: @agent-infra list-webhooks  (confirm hook IDs and update this registry)"
+  ]
+}

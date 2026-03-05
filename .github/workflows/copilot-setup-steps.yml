@@ -68,8 +68,24 @@ concurrency:
 jobs:
   copilot-setup-steps:
     name: "Copilot Agent Environment Preparation"
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # AAIS-aligned autonomous runner switch.
+    # Runner: ubuntu-latest-m (4-core / 16 GB RAM / 150 GB SSD)
+    #   Group : AS Larger Runners | Platform: Linux x64
+    #   Image : Ubuntu Latest (24.04) | Custom image generation: Enabled (Preview)
+    #   Custom image generation (Preview) allows building a tailored runner snapshot
+    #   with project dependencies pre-baked, cutting cold-start time to near zero.
+    #   See docs/plans/larger-runners-upgrade.md § 5 for the custom-image build plan.
+    #
+    # Default: ubuntu-latest-m (provisioned 2026-03-05 — AS Larger Runners group).
+    # Set repo variable COPILOT_RUNNER_PROFILE to override:
+    #   ubuntu-latest-m → standard sessions (default)
+    #   ubuntu-8-core   → ml-heavy sessions (PyTorch, RAG embeddings) if provisioned
+    #   ubuntu-16-core  → security-scan / full Rust release builds if provisioned
+    # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
+    # (using CODEX_MASTER_KEY) before dispatching a heavy session.
+    # See: docs/plans/larger-runners-upgrade.md § 4 — Autonomous Switch
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+    timeout-minutes: 59
     permissions:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
@@ -224,6 +240,67 @@ jobs:
           fi
           echo "environment_type=$ENV_TYPE" >> "$GITHUB_OUTPUT"
           echo "✅ Detected environment type: $ENV_TYPE"
+
+      - name: "🧠 AAIS Runner Adequacy Check"
+        id: runner_check
+        # AAIS alignment: Runtime Introspection (Pillar 3 — Observability).
+        # Classifies the active runner tier against the detected environment type,
+        # emits an AAIS-formatted assessment, and sets runner_adequate output.
+        # If the runner tier is insufficient, the step logs a clear recommendation
+        # but does NOT fail — setup continues on whatever runner is available.
+        # The runner_adequate output is consumed by "✅ Validate Environment Setup"
+        # (Phase 7) which surfaces it in the AAIS environment summary.
+        run: |
+          set -euo pipefail
+
+          # ── Detect runner hardware tier ────────────────────────────────────
+          CPUS=$(nproc)
+          MEM_KB=$(grep MemTotal /proc/meminfo 2>/dev/null | awk '{print $2}' || echo "0")
+          MEM_GB=$(( ${MEM_KB:-0} / 1024 / 1024 ))
+
+          if   [[ $CPUS -ge 16 ]]; then RUNNER_TIER="large"
+          elif [[ $CPUS -ge  8 ]]; then RUNNER_TIER="medium"
+          elif [[ $CPUS -ge  4 ]]; then RUNNER_TIER="standard-plus"
+          else                          RUNNER_TIER="standard"
+          fi
+
+          echo "runner_tier=$RUNNER_TIER"  >> "$GITHUB_OUTPUT"
+          echo "runner_cpus=$CPUS"         >> "$GITHUB_OUTPUT"
+          echo "runner_mem_gb=$MEM_GB"     >> "$GITHUB_OUTPUT"
+
+          # ── Map env type → minimum required tier ──────────────────────────
+          ENV_TYPE="${{ steps.detect_env.outputs.environment_type }}"
+          RUNNER_PROFILE="${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+
+          case "$ENV_TYPE" in
+            ml-heavy)         MIN_TIER="medium"       ; MIN_CPUS=8  ; RECOMMENDED="ubuntu-8-core"    ;;
+            security-scan)    MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
+            documentation)    MIN_TIER="standard"     ; MIN_CPUS=2  ; RECOMMENDED="ubuntu-latest-m"  ;;
+            *)                MIN_TIER="standard-plus"; MIN_CPUS=4  ; RECOMMENDED="ubuntu-latest-m"  ;;
+          esac
+
+          # ── AAIS Runtime Introspection output ─────────────────────────────
+          echo ""
+          echo "╔══════════════════════════════════════════════════════════════╗"
+          echo "║  🧠 AAIS Runner Adequacy Assessment (Pillar 3: Observability) ║"
+          echo "╠══════════════════════════════════════════════════════════════╣"
+          echo "║  Active runner    : ${RUNNER_PROFILE} (${CPUS} vCPU / ${MEM_GB} GB RAM)"
+          echo "║  Runner tier      : ${RUNNER_TIER}"
+          echo "║  Environment type : ${ENV_TYPE}"
+          echo "║  Required tier    : ${MIN_TIER} (≥ ${MIN_CPUS} vCPU)"
+          echo "╠══════════════════════════════════════════════════════════════╣"
+
+          if [[ $CPUS -ge $MIN_CPUS ]]; then
+            echo "║  ✅ ADEQUATE — runner meets requirements for ${ENV_TYPE}"
+            echo "runner_adequate=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "║  ⚠️  UNDER-PROVISIONED — ${ENV_TYPE} needs ≥ ${MIN_CPUS} vCPU (got ${CPUS})"
+            echo "║     → Set repo variable COPILOT_RUNNER_PROFILE=${RECOMMENDED}"
+            echo "║     → See docs/plans/larger-runners-upgrade.md"
+            echo "runner_adequate=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "╚══════════════════════════════════════════════════════════════╝"
+          echo ""
 
       # ============================================================================
       # Phase 2: Language Runtimes Setup
@@ -429,7 +506,7 @@ jobs:
           echo "           Variable create/update/delete requires CODEX_MASTER_KEY (PAT, repo scope)."
           echo "── Auth token export complete ─────────────────────────────────"
 
-
+      - name: "⚙️ Load Custom Agent Configuration"
         if: hashFiles('.codex/agent_environment_config.yaml') != ''
         run: |
           if [ -f .codex/agent_environment_config.yaml ]; then
@@ -459,6 +536,12 @@ jobs:
           echo "==================== Disk Space ===================="
           df -h | grep -E "^/dev"
           echo ""
+          echo "==================== AAIS Runner Summary ===================="
+          echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"
+          echo "Runner tier      : ${{ steps.runner_check.outputs.runner_tier }}"
+          echo "Runner CPUs      : ${{ steps.runner_check.outputs.runner_cpus }}"
+          echo "Runner RAM (GB)  : ${{ steps.runner_check.outputs.runner_mem_gb }}"
+          echo "Runner adequate  : ${{ steps.runner_check.outputs.runner_adequate }}"
           echo "✅ Environment setup complete for type: ${{ steps.detect_env.outputs.environment_type }}"
 
       - name: "🏥 Run Health Check"

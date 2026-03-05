@@ -70,7 +70,7 @@ _codex_/
 
 ### Prerequisites
 
-- **Python 3.10+** (3.12 recommended)
+- **Python 3.12+**
 - **Git**
 - (Optional) Docker for containerized workflows
 
@@ -406,7 +406,7 @@ Before committing:
 
 ### Documentation Resources
 
-1. **Start here**: [docs/README_ROOT.md](./index.md)
+1. **Start here**: [Documentation Hub](./index.md)
 2. **Architecture**: [./ARCHITECTURE.md](./ARCHITECTURE.md)
 3. **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
 4. **Changelog**: [docs/CHANGELOG.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGELOG.md)

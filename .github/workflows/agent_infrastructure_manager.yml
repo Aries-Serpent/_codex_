@@ -181,6 +181,7 @@ jobs:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}
           EXTRA_ARGS: ${{ needs.auth-check.outputs.extra_args }}
         run: |
           if [ -f ".codex/webhook_config.json" ]; then

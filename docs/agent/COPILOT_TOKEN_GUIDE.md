@@ -1,6 +1,6 @@
 # Copilot Coding Agent — Token & Authentication Guide
 
-> **Status:** ✅ CURRENT (PR #3497 W-118, 2026-03-05)
+> **Status:** ✅ CURRENT (PR #3499 W-125, 2026-03-05 — webhook token requirements added)
 > **Audience:** Copilot Coding Agent sessions, CI/CD pipeline authors
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `scripts/tools/variable_manager.py`
 
@@ -22,6 +22,10 @@ how it reaches your session, how to use it, and what it can and cannot do.
 | **2** | `CODEX_BACKUP_KEY` | Job `env:` → `secrets.CODEX_BACKUP_KEY` | ✅ same step | Fallback PAT — same capability as above, used when master key is absent. |
 | **3** | `AGENT_GITHUB_TOKEN` | Derived from `GITHUB_TOKEN` | ✅ same step | Alias for `GITHUB_TOKEN`; stable env var name for agent code. **Cannot access variables API.** |
 | **4** | `GITHUB_TOKEN` | Auto-provided by GitHub Actions | Already in env | Scoped installation token. Can push code, comment on PRs, dispatch workflows. **Cannot access the Actions Variables API** (requires PAT `repo` scope). |
+
+> **Webhook operations also accept `CODEX_ADMIN_KEY`** (a fine-grained PAT with Webhooks:write)
+> as the highest-priority auth source. `webhook_configurator.py` resolves tokens in the order:
+> `CODEX_ADMIN_KEY` → `CODEX_MASTER_KEY`. `GITHUB_TOKEN` **cannot** manage webhooks.
 
 All four tokens are resolved automatically by `BrainClient._auth_header()` and
 `VariableManager._resolve_token()` — **no manual header construction needed**.
@@ -73,6 +77,8 @@ copilot-setup-steps.yml
 | **Issues / PRs** | ✅ | ✅ | ✅ (issues/pull-requests:write) |
 | **Workflow dispatch** | ✅ | ✅ | ✅ (actions:write) |
 | **GitHub API (read-only)** — repos, runs, PRs | ✅ | ✅ | ✅ |
+| **Webhooks** — list | ✅ (`admin:repo_hook`) | ✅ (`admin:repo_hook`) | ❌ 403 — requires PAT with `admin:repo_hook` or fine-grained Webhooks:read |
+| **Webhooks** — create/update/delete | ✅ (`admin:repo_hook`) | ✅ (`admin:repo_hook`) | ❌ 403 — requires `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (`admin:repo_hook`) |
 
 > **Key constraint:** GitHub's Actions Variables API requires a classic PAT with `repo` scope
 > OR a fine-grained PAT with `Variables: read/write`. **`GITHUB_TOKEN` cannot access
@@ -81,6 +87,15 @@ copilot-setup-steps.yml
 
 > **Summary:** Use `CODEX_MASTER_KEY` for any GitHub API call. Use `GITHUB_TOKEN`
 > / `AGENT_GITHUB_TOKEN` as a fallback for repo/env variable management only.
+
+> **Webhook operations (scripts/ci/webhook_configurator.py)** use a dedicated token hierarchy:
+> 1. `CODEX_ADMIN_KEY` — fine-grained PAT with **Webhooks: write** scope (preferred for least-privilege)
+> 2. `CODEX_MASTER_KEY` — classic PAT with `admin:repo_hook` scope (fallback)
+>
+> `GITHUB_TOKEN` returns HTTP 403 for all webhook API calls — this is expected and correct.
+> Set `CODEX_ADMIN_KEY` as a repo/org secret with only Webhooks:read+write to follow least-privilege.
+> The `apply-webhooks` job in `agent_infrastructure_manager.yml` also accepts `WEBHOOK_RECEIVER_URL`
+> as a repo variable (not a secret) to override the placeholder URL without editing config files.
 
 ---
 

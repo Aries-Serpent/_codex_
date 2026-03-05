@@ -99,6 +99,8 @@ manifests/k8s/*/secret.yaml
 !.codex/README.md
 !.codex/*.md
 !.codex/agent_context.json
+!.codex/webhook_config.json
+!.codex/webhook_registry.json
 !.codex/policies/
 !.codex/policies/**
 !.codex/schemas/

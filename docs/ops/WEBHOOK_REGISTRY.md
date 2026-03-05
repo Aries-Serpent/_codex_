@@ -1,0 +1,309 @@
+# Repository Webhook Registry — Aries-Serpent/_codex_
+
+**Audit date:** 2026-03-05T06:53:00Z
+**Audited by:** Copilot agent W-123 (`@agent-infra list-webhooks`)
+**Apply attempted:** 2026-03-05T07:02:00Z
+**Apply attempted by:** Copilot agent W-124 (`@agent-infra apply-webhooks` — dry-run in sandbox)
+**Method:** `GET /repos/Aries-Serpent/_codex_/hooks` + static codebase analysis
+**Reference:** [GitHub Webhooks Guide](https://docs.github.com/en/webhooks) |
+[GitHub REST API: Webhooks](https://docs.github.com/en/rest/repos/webhooks)
+
+---
+
+## Apply Status (W-124)
+
+| Condition | Status |
+|-----------|--------|
+| `CODEX_MASTER_KEY` available in workflow | ✅ (via `secrets.CODEX_MASTER_KEY`) |
+| `WEBHOOK_SECRET` available in workflow | ✅ (via `secrets.WEBHOOK_SECRET`) |
+| `WEBHOOK_RECEIVER_URL` repo variable set | ❌ **Not set** — placeholder URL still in use |
+| Cognitive Brain API server deployed | ❌ **Not deployed** — blocking real activation |
+| Hooks `active: true` | ❌ Both hooks have `active: false` (intentional) |
+| **Apply result** | ⏳ **DEFERRED** — awaiting server deployment + `WEBHOOK_RECEIVER_URL` |
+
+> **To activate:** Set the `WEBHOOK_RECEIVER_URL` repo variable to the real Cognitive Brain API
+> endpoint, then comment `@agent-infra apply-webhooks` on this PR.
+> `webhook_configurator.py` will automatically substitute the placeholder URL.
+> Update both hooks to `active: true` in `.codex/webhook_config.json` before the
+> second apply run.
+
+### Dry-run output (W-124)
+
+```
+Creating webhook 'cognitive-brain-ci-feedback' ...
+  DRY-RUN  CREATE webhook → https://api.your-cognitive-brain-server.com/webhook/github
+           events=[push, pull_request, issue_comment, pull_request_review_comment,
+                   workflow_run, repository_dispatch, check_run, check_suite]
+Creating webhook 'runner-health-notification' ...
+  DRY-RUN  CREATE webhook → https://api.your-cognitive-brain-server.com/webhook/github
+           events=[workflow_run]
+```
+
+---
+
+## Audit Summary
+
+| Item | Value |
+|------|-------|
+| **Live webhooks registered** | **0** |
+| **Planned / desired hooks** | 2 (see §3) |
+| **API endpoint** | `GET /repos/Aries-Serpent/_codex_/hooks` |
+| **API result** | `403` via `GITHUB_TOKEN` (expected — scoped token lacks `admin:repo_hook`) |
+| **Confirmed via** | Static analysis + absence of `.codex/webhook_registry.json` entries |
+| **Tooling** | `scripts/ci/webhook_configurator.py` |
+| **Declarative config** | `.codex/webhook_config.json` |
+| **Apply command** | `@agent-infra apply-webhooks` or `python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json` |
+
+> **Why 403?** The coding-agent sandbox only has `GITHUB_TOKEN` which does not carry
+> `admin:repo_hook` scope. To list or manage hooks you need `CODEX_ADMIN_KEY`
+> (fine-grained PAT with Webhooks: write) or `CODEX_MASTER_KEY` (classic PAT with
+> `admin:repo_hook`). Run `@agent-infra list-webhooks` on a PR comment to invoke
+> the workflow with the correct secret.
+
+---
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph GitHub["GitHub Platform"]
+        REPO["Aries-Serpent/_codex_"]
+        HOOKS["Repository Webhooks\n(Settings → Hooks)\n— 0 registered —"]
+        EVENTS["Event Sources\n(push / PR / issue_comment\n/ workflow_run / etc.)"]
+    end
+    subgraph CognitiveBrain["Cognitive Brain (target)"]
+        CB_API["Cognitive Brain API Server\nhttps://api.your-cognitive-brain-server.com\n⚠️ NOT YET DEPLOYED"]
+        CB_MEM["Memory Layer\n(CI feedback ingestion)"]
+        CB_RUN["Runner Profile Manager\n(COPILOT_RUNNER_PROFILE\nauto-adjustment)"]
+    end
+    subgraph Tooling["Webhook Management Tooling"]
+        WC["scripts/ci/webhook_configurator.py"]
+        WCF[".codex/webhook_config.json\n(desired state)"]
+        WCR[".codex/webhook_registry.json\n(live state / hook IDs)"]
+        AIM[".github/workflows/\nagent_infrastructure_manager.yml\n@agent-infra apply/list-webhooks"]
+    end
+
+    EVENTS -->|POST payload| HOOKS
+    HOOKS -.pending deployment.-> CB_API
+    CB_API --> CB_MEM & CB_RUN
+
+    WCF -->|apply| WC
+    WC -->|GitHub REST API| HOOKS
+    WC -->|writes| WCR
+    AIM -->|invokes| WC
+
+    style CB_API fill:#ef4444,color:#fff
+    style HOOKS fill:#f59e0b,color:#000
+    style WC fill:#10b981,color:#fff
+```
+
+---
+
+## Live Hook Inventory (as of 2026-03-05)
+
+**Result: No hooks registered.**
+
+| # | Hook ID | Name | URL | Events | Active | SSL | Created |
+|---|---------|------|-----|--------|--------|-----|---------|
+| — | — | — | *none* | — | — | — | — |
+
+*The table above will be populated after the first `@agent-infra apply-webhooks` run.*
+
+---
+
+## Planned Hooks (Desired State)
+
+Defined in `.codex/webhook_config.json`. Will be created by
+`python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json`
+once the Cognitive Brain API server is deployed.
+
+### Hook 1: `cognitive-brain-ci-feedback`
+
+```mermaid
+sequenceDiagram
+    participant GH as GitHub
+    participant WH as Webhook (Hook 1)
+    participant CB as Cognitive Brain API
+    participant MEM as Memory Layer
+
+    GH->>WH: POST payload (workflow_run completed)
+    WH->>CB: POST https://api.your-cognitive-brain-server.com/webhook/github
+    Note over WH,CB: HMAC-SHA256 signature in X-Hub-Signature-256 header
+    CB->>CB: verify HMAC(WEBHOOK_SECRET)
+    CB->>MEM: store CI outcome
+    MEM-->>CB: ack
+    CB-->>WH: HTTP 200
+```
+
+| Field | Value |
+|-------|-------|
+| **Name** | `cognitive-brain-ci-feedback` |
+| **URL** | `https://api.your-cognitive-brain-server.com/webhook/github` *(placeholder)* |
+| **Events** | `push`, `pull_request`, `issue_comment`, `pull_request_review_comment`, `workflow_run`, `repository_dispatch`, `check_run`, `check_suite` |
+| **Content type** | `application/json` |
+| **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256) |
+| **SSL verification** | ✅ Enabled |
+| **Active** | `false` — pending server deployment |
+| **Status** | ⏳ PENDING DEPLOYMENT |
+
+### Hook 2: `runner-health-notification`
+
+Shares the same endpoint as Hook 1. Provides the AAIS autonomous runner-selection
+feedback loop: after `copilot-setup-steps` completes, the Cognitive Brain receives
+the `runner_adequate` output and can auto-adjust `COPILOT_RUNNER_PROFILE` for the
+next session.
+
+| Field | Value |
+|-------|-------|
+| **Name** | `runner-health-notification` |
+| **URL** | `https://api.your-cognitive-brain-server.com/webhook/github` *(shared with Hook 1)* |
+| **Events** | `workflow_run` only |
+| **Status** | ⏳ PENDING DEPLOYMENT — activate alongside Hook 1 |
+
+---
+
+## Event-to-Workflow Trigger Map
+
+These are **internal GitHub event triggers** (not external webhooks) but are listed
+here for completeness — they are the upstream source of the POST payloads that
+external webhooks would relay.
+
+```mermaid
+graph LR
+    subgraph "External Webhook Events (outbound POST to receiver)"
+        WR["workflow_run\n(copilot-setup-steps,\ncognitive_brain_ci_feedback)"]
+        PR["pull_request\n(opened, sync, close)"]
+        IC["issue_comment\n(@copilot, @agent-infra)"]
+        PS["push\n(branch push CI)"]
+        CR["check_run / check_suite\n(status checks)"]
+    end
+    subgraph "Critical Internal Listeners (workflows)"
+        WL1["chatops_copilot_trigger.yml"]
+        WL2["agent-auth-delegation.yml"]
+        WL3["cognitive_brain_ci_feedback.yml"]
+        WL4["agent-handoff-gate.yml"]
+        WL5["session-watchdog.yml"]
+        WL6["agent-var-writer.yml"]
+    end
+
+    IC --> WL1 & WL4 & WL5 & WL6
+    PR --> WL2
+    WR --> WL3
+```
+
+| GitHub Event | Webhook-Triggerable | Critical Workflows | AAIS Relevance |
+|---|---|---|---|
+| `workflow_run` | ✅ | `cognitive_brain_ci_feedback.yml` | Pillar 2: Adaptive Learning |
+| `pull_request` | ✅ | `agent-auth-delegation.yml` | Pillar 3: Reliability |
+| `issue_comment` | ✅ | `chatops_copilot_trigger.yml`, `agent-handoff-gate.yml`, `session-watchdog.yml`, `agent-var-writer.yml` | Pillar 3: Automation Coverage |
+| `push` | ✅ | 20+ workflows | Pillar 1: CI/CD Maturity |
+| `check_run` / `check_suite` | ✅ | Status monitoring | Pillar 3: Observability |
+| `repository_dispatch` | ✅ | `agent_infrastructure_manager.yml` | Pillar 3: Automation |
+| `schedule` | ❌ (cron, not webhook) | 15+ workflows | — |
+| `workflow_dispatch` | ❌ (manual, not webhook) | 60+ workflows | — |
+
+---
+
+## Security
+
+```mermaid
+graph LR
+    GH["GitHub\n(sender)"] -->|POST + X-Hub-Signature-256| RECV["Receiver endpoint"]
+    RECV -->|HMAC-SHA256(body, WEBHOOK_SECRET)| VERIFY{"Signature\nvalid?"}
+    VERIFY -->|✅ Yes| PROCESS["Process payload"]
+    VERIFY -->|❌ No| REJECT["HTTP 403\nDrop payload"]
+
+    style VERIFY fill:#f59e0b,color:#000
+    style REJECT fill:#ef4444,color:#fff
+    style PROCESS fill:#10b981,color:#fff
+```
+
+| Security Control | Status | Implementation |
+|---|---|---|
+| HMAC-SHA256 signature | ✅ Configured in schema | `WEBHOOK_SECRET` org secret → `webhook_configurator.py` |
+| SSL/TLS verification | ✅ `insecure_ssl: "0"` | Set in `create_hook()` body |
+| Secret rotation runbook | ✅ Exists | `docs/ops/HMAC_rotation.md` |
+| Token for management | ✅ Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
+| Receiver HMAC validation | ⏳ Pending | Cognitive Brain API server not yet deployed |
+
+---
+
+## Tooling Reference
+
+### List live hooks (requires CODEX_ADMIN_KEY)
+
+```bash
+# Via ChatOps comment on any PR:
+@agent-infra list-webhooks
+
+# Directly (needs CODEX_ADMIN_KEY env var set):
+python scripts/ci/webhook_configurator.py --list
+```
+
+### Apply desired-state config (idempotent)
+
+```bash
+# Via ChatOps comment on any PR (uses WEBHOOK_RECEIVER_URL repo variable automatically):
+@agent-infra apply-webhooks
+
+# Directly with WEBHOOK_RECEIVER_URL override:
+export CODEX_ADMIN_KEY=<PAT with Webhooks:write>
+export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
+python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json
+
+# Dry-run first (safe — no API writes):
+export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
+python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
+```
+
+> **`WEBHOOK_RECEIVER_URL` override**: If this environment variable is set, it replaces
+> the placeholder URL `https://api.your-cognitive-brain-server.com/webhook/github` in all
+> webhook config entries. Set this as a GitHub repo variable
+> (`Settings → Variables → Repository variables`) so `@agent-infra apply-webhooks`
+> picks it up automatically without editing `.codex/webhook_config.json`.
+
+### Delete a hook
+
+```bash
+python scripts/ci/webhook_configurator.py --delete <hook_id>
+```
+
+---
+
+## Activation Checklist
+
+```
+[ ] Deploy Cognitive Brain API server
+[ ] Set repo variable WEBHOOK_RECEIVER_URL = https://REAL-SERVER-URL/webhook/github
+      (Settings → Variables → Repository variables)
+      webhook_configurator.py will substitute the placeholder URL automatically.
+[ ] Ensure WEBHOOK_SECRET org secret is set (same value as HMAC key on server)
+[ ] Run dry-run to confirm URLs:
+      export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
+      python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
+[ ] Apply (creates hooks with active=false initially):
+      @agent-infra apply-webhooks
+[ ] Update .codex/webhook_config.json: set "active": true on both hooks
+[ ] Apply again to activate:
+      @agent-infra apply-webhooks
+[ ] Verify at: https://github.com/Aries-Serpent/_codex_/settings/hooks
+      Both hooks show green checkmark on first delivery
+[ ] Run list to confirm hook IDs written to .codex/webhook_registry.json:
+      @agent-infra list-webhooks
+[ ] Update this registry file with live hook IDs and creation timestamps
+[ ] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+[ ] Update CHANGELOG.md
+```
+
+---
+
+## Related Documents
+
+- `docs/plans/webhook-identification.md` — Task definition and event-trigger inventory
+- `.codex/webhook_config.json` — Desired-state declarative config
+- `.codex/webhook_registry.json` — Live hook IDs (populated after apply)
+- `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md §5` — Manual setup steps
+- `scripts/ci/webhook_configurator.py` — CRUD implementation
+- `.github/workflows/agent_infrastructure_manager.yml` — ChatOps interface
+- `docs/ops/HMAC_rotation.md` — Secret rotation runbook
+- `docs/plans/larger-runners-upgrade.md §5b` — Runner-health notification hook plan
