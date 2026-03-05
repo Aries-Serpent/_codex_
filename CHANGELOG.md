@@ -5,7 +5,11 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — CI auto-fix: remove unused imports in test_variable_management.py (PR #3499, 2026-03-05)
+## [Unreleased] — W-125: add webhook token requirements to COPILOT_TOKEN_GUIDE.md (PR #3499, 2026-03-05)
+
+### Added (W-125)
+
+- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Add `CODEX_ADMIN_KEY` note to Token Priority section (fine-grained PAT with Webhooks:write, highest-priority for `webhook_configurator.py`). Add two webhook rows to the Permission Matrix (list; create/update/delete) documenting that `GITHUB_TOKEN` returns 403. Add dedicated webhook token hierarchy note block explaining `CODEX_ADMIN_KEY` → `CODEX_MASTER_KEY` resolution order and `WEBHOOK_RECEIVER_URL` repo variable.
 
 ### Fixed (CI auto-fix)
 

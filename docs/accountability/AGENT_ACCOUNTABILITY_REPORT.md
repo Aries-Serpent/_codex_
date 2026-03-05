@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-05 (PR #3499 CI auto-fix — remove unused imports/variable in tests/agents/test_variable_management.py: call, _vm_module, _gh_request, result; fix import sort order; 26 tests pass)
+**Last updated:** 2026-03-05 (PR #3499 W-125 — docs/agent/COPILOT_TOKEN_GUIDE.md: add webhook token requirements — CODEX_ADMIN_KEY note, webhook permission matrix rows, CODEX_ADMIN_KEY→CODEX_MASTER_KEY hierarchy note)
 
 ---
 
