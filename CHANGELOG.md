@@ -5,7 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-116 BrainClient as Copilot Agent API gateway — intent docs (PR #3497, 2026-03-05)
+## [Unreleased] — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)
+
+### Fixed (W-117)
+
+- `src/codex/agents/brain_client.py` — corrected incorrect "prohibited" language: established 3-tier hierarchy: (1) Primary = MCP Server + Playwright, (2) Secondary = CLI API Client (`proxy_request()`), (3) Fallback = direct urllib/requests/httpx
+- `cognitive_app/src/server/cli_api_server.py` — `/api/request` route docstring updated to reflect same 3-tier hierarchy
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — "Intended Use" section replaced with "Agent API Request Priority Hierarchy" table; new "GitHub Variables Management" section with curl + BrainClient examples for repo/env/org variables; live test results showing hierarchy demonstration (MCP primary ✅, CLI Client secondary with correct 401-when-no-key behavior documented); new troubleshooting entry for 401 on GitHub API calls
+
+
 
 ### Updated (W-116)
 

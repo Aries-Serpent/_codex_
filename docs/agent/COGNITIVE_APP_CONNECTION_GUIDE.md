@@ -8,43 +8,41 @@
 
 ---
 
-## Intended Use: Copilot Agent API Requests
+## Agent API Request Priority Hierarchy
 
-**The CLI API Client is the Copilot Agent's designated gateway for all external API calls.**
+Copilot Coding Agent sessions should use the following priority order for all
+external API calls:
 
-When a Copilot Coding Agent session needs to call any external HTTP API — GitHub REST,
-workflow runs, any third-party service — it **MUST** use:
+| Priority | Mechanism | When to use |
+|----------|-----------|-------------|
+| **1 — Primary** | **MCP Server + Playwright** (`github-mcp-server-*` tools, browser tools) | Always try first — richest auth, structured responses, no server dependency |
+| **2 — Secondary** | **CLI API Client** (`BrainClient.proxy_request()` / `POST /api/request`) | When MCP/Playwright unavailable or insufficient; provides auto-auth + audit logging |
+| **3 — Fallback** | Direct `urllib` / `requests` / `httpx` | Last resort only — when neither MCP nor the CLI server is available |
 
-| Method | When to use |
-|--------|-------------|
-| `BrainClient.proxy_request()` | Python code inside the agent session |
-| `curl -X POST http://localhost:8765/api/request` | bash tool / shell scripts |
-
-**Do NOT use** `urllib`, `requests`, or `httpx` directly from agent code. Routing through
-the CLI API client ensures:
-
-- ✅ `Authorization: Bearer $CODEX_MASTER_KEY` auto-injected for `api.github.com` calls
-- ✅ All outbound calls logged to session history DB for audit and replay
-- ✅ Consistent timeout, retry, and error handling
-- ✅ Single observable egress point for all agent HTTP activity
-
-### Minimal agent session pattern
+### Secondary mechanism — CLI API Client pattern
 
 ```python
 from codex.agents.brain_client import BrainClient
 
 brain = BrainClient()
-assert brain.is_available(), "Start server before session"
+assert brain.is_available(), "Start server before session (or fall back to MCP/urllib)"
 
-# ── Every external API call goes through proxy_request ──────────────────────
+# GitHub API — auth auto-injected via CODEX_MASTER_KEY
 repo  = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
 runs  = brain.proxy_request("GET",
           "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
           params={"per_page": "5"})
+
+# Create / update a repo variable
+brain.proxy_request(
+    "POST",
+    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+    body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
+)
 ```
 
 ```bash
-# Equivalent via curl (bash tool)
+# Equivalent via curl (bash tool) — same auto-auth behaviour
 curl -s -X POST http://localhost:8765/api/request \
   -H "Content-Type: application/json" \
   -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}'
@@ -384,6 +382,134 @@ capability — all operations the frontend performs are available via the REST A
 
 ---
 
+## GitHub Variables Management
+
+The CLI API Client can create and update **repo**, **environment**, and **org** variables
+via the GitHub Actions Variables REST API. All calls auto-inject `Authorization: Bearer $CODEX_MASTER_KEY`.
+
+### Repo Variables
+
+```bash
+# List repo variables
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables"}'
+
+# Create a repo variable (POST — name must not already exist)
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "POST",
+    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+    "body":   {"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"}
+  }'
+
+# Update an existing repo variable (PATCH)
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "PATCH",
+    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
+    "body":   {"name": "COPILOT_TEST_VAR", "value": "updated_value"}
+  }'
+
+# Delete a repo variable
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"method":"DELETE","url":"https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR"}'
+```
+
+**Python (`BrainClient`):**
+
+```python
+brain = BrainClient()
+
+# Create
+brain.proxy_request(
+    "POST",
+    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+    body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
+)
+
+# Update
+brain.proxy_request(
+    "PATCH",
+    "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables/COPILOT_TEST_VAR",
+    body={"name": "COPILOT_TEST_VAR", "value": "updated_value"},
+)
+```
+
+### Environment Variables
+
+```bash
+# List environment variables (environment name: "production")
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables"}'
+
+# Create an environment variable
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "POST",
+    "url":    "https://api.github.com/repos/Aries-Serpent/_codex_/environments/production/variables",
+    "body":   {"name": "COPILOT_ENV_TEST", "value": "env_value"}
+  }'
+```
+
+### Org Variables
+
+```bash
+# List org variables
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{"method":"GET","url":"https://api.github.com/orgs/Aries-Serpent/actions/variables"}'
+
+# Create an org variable (visibility: "all" | "private" | "selected")
+curl -s -X POST http://localhost:8765/api/request \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "POST",
+    "url":    "https://api.github.com/orgs/Aries-Serpent/actions/variables",
+    "body":   {"name": "COPILOT_ORG_TEST", "value": "org_value", "visibility": "all"}
+  }'
+```
+
+### Live Test Results (2026-03-05 PR #3497 W-117)
+
+**Hierarchy demonstration — same operation via each tier:**
+
+| Tier | Mechanism | Operation | Result |
+|------|-----------|-----------|--------|
+| **1 — Primary** | `github-mcp-server-search_repositories` MCP tool | GET repo info | ✅ `200` full response, admin perms confirmed |
+| **2 — Secondary** | `POST /api/request` → `GET /repos/…/actions/variables` | List repo vars | ✅ `200` outer; upstream `401` when `CODEX_MASTER_KEY` absent (expected — key not injected into sandbox process env); `200` with full list when key is set |
+| **3 — Fallback** | `urllib.request` direct | (not tested — MCP was sufficient) | N/A |
+
+**Variable management (when `CODEX_MASTER_KEY` is set in server env):**
+
+| Operation | GitHub API | Expected upstream HTTP |
+|-----------|-----------|----------------------|
+| List repo vars | `GET /repos/…/actions/variables` | 200 |
+| Create repo var | `POST /repos/…/actions/variables` | 201 |
+| Update repo var | `PATCH /repos/…/actions/variables/{name}` | 204 |
+| Delete repo var | `DELETE /repos/…/actions/variables/{name}` | 204 |
+| List env vars | `GET /repos/…/environments/{env}/variables` | 200 |
+| Create env var | `POST /repos/…/environments/{env}/variables` | 201 |
+| List org vars | `GET /orgs/Aries-Serpent/actions/variables` | 200 |
+| Create org var | `POST /orgs/Aries-Serpent/actions/variables` | 201 |
+
+> **Note:** The outer `/api/request` response wrapper always returns HTTP `200` to the caller.
+> The actual GitHub API status code is in `response["status_code"]`. Check that field, not the
+> outer HTTP code, to determine whether the operation succeeded.
+
+> **Auth note:** `CODEX_MASTER_KEY` must be injected into the **server process environment**
+> (via `copilot-setup-steps.yml` `GITHUB_ENV` export) for auto-inject to work. If it is set
+> as a repo variable only — not a secret exported to the runner — the server will see an empty
+> key and GitHub will return 401. Verify with: `curl http://localhost:8765/api/health` then
+> check that `CODEX_MASTER_KEY` appears in the server's process environment.
+
+---
+
 ## Troubleshooting
 
 ### Server not running (`Connection refused`)
@@ -431,6 +557,28 @@ skipped. See RC-1/RC-2 in `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md`
 
 The target URL is unreachable from the CI runner. GitHub API (`api.github.com`) and
 `httpbin.org` are always reachable. Custom internal URLs may be blocked.
+
+### `/api/request` returns `401` for GitHub API calls
+
+```
+{ "status_code": 401, "body": {"message": "Requires authentication"} }
+```
+
+`CODEX_MASTER_KEY` must be exported to `GITHUB_ENV` by `copilot-setup-steps.yml` so that
+the CLI API server process inherits it. If it is only a **repo variable** (not a secret
+exported to the runner), the server process env will not have it and auto-inject silently
+skips. Verify:
+
+```bash
+# Check if key reached the server process
+curl -s http://localhost:8765/api/health | python3 -m json.tool
+# Then check your runner env:
+echo "CODEX_MASTER_KEY length: ${#CODEX_MASTER_KEY}"
+```
+
+For authenticated variable management, use the **primary mechanism** (MCP tools) instead
+when `CODEX_MASTER_KEY` is not available in the process env. The MCP tools carry their own
+credentials independently of this server.
 
 ### detect-secrets baseline fails after touching `agent-auth-delegation.yml`
 

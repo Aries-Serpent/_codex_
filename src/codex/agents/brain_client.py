@@ -1,16 +1,21 @@
 """
-Cognitive Brain CLI API Client — Copilot Agent API Request Gateway
-==================================================================
+Cognitive Brain CLI API Client — Copilot Agent API Request Tool
+===============================================================
 
-**Primary use**: Copilot Coding Agent sessions MUST use ``BrainClient.proxy_request()``
-(or ``POST /api/request`` via curl) as the **sole mechanism** for making external API
-calls during a session.  Direct use of ``urllib``, ``requests``, or ``httpx`` from
-agent code is discouraged — route all outbound HTTP through this client so that:
+**Agent API request priority hierarchy:**
 
-  * GitHub auth tokens (``CODEX_MASTER_KEY``) are auto-injected for api.github.com calls
-  * All API calls are logged to the session history DB for audit/replay
-  * Timeouts, retries and error handling are applied consistently
-  * The cognitive brain server acts as a single observable egress point
+1. **Primary — MCP Server + Playwright**: Use GitHub MCP tools (``github-mcp-server-*``
+   functions) and Playwright browser tools when available. These provide the richest,
+   most structured access to GitHub and web resources with full auth handling.
+
+2. **Secondary — CLI API Client** (this module / ``POST /api/request``):
+   Use ``BrainClient.proxy_request()`` when MCP/Playwright tools are unavailable or
+   insufficient for the required operation. This provides: auto GitHub auth injection,
+   session audit logging, and consistent timeout/error handling through a single egress point.
+
+3. **Fallback — direct urllib / requests / httpx**: Acceptable as a last resort when
+   neither MCP nor the CLI API server is available (e.g., server not started, network
+   constraint). Use sparingly and prefer one of the above tiers when possible.
 
 Quick start (every session)
 ----------------------------
@@ -19,7 +24,7 @@ Quick start (every session)
     brain = BrainClient()             # auto-discovers URL from env / defaults
     brain.is_available()              # True when server is up → proceed
 
-    # ── Making API requests (primary use case) ─────────────────────────────
+    # ── Making API requests (secondary mechanism via CLI API Client) ────────
     # GET  any URL
     resp = brain.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
 
@@ -30,8 +35,12 @@ Quick start (every session)
         params={"per_page": "5"},
     )
 
-    # POST / PUT / PATCH / DELETE
-    resp = brain.proxy_request("POST", "https://api.example.com/data", body={"key": "val"})
+    # POST / PUT / PATCH / DELETE — e.g. create a repo variable
+    resp = brain.proxy_request(
+        "POST",
+        "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+        body={"name": "COPILOT_TEST_VAR", "value": "test_value"},
+    )
 
     # Convenience wrappers (GitHub-specific)
     info = brain.github_repo_info("Aries-Serpent", "_codex_")
@@ -280,15 +289,20 @@ class BrainClient:
         body: Any = None,
         timeout: int = 30,
     ) -> Dict[str, Any]:
-        """Proxy an HTTP request through the server — **primary agent API call mechanism**.
+        """Proxy an HTTP request through the server (secondary agent API mechanism).
 
-        Copilot Agent sessions MUST use this method (or ``POST /api/request`` via curl)
-        for ALL outbound HTTP/API calls.  Do NOT use ``urllib``, ``requests``, or ``httpx``
-        directly from agent code.  Routing through this method ensures:
+        **Agent API priority hierarchy:**
 
-        * ``Authorization: Bearer $CODEX_MASTER_KEY`` is auto-injected for api.github.com
-        * All calls are persisted to the session history DB for audit and replay
-        * Consistent timeout and error handling across all agent API interactions
+        1. **Primary** — MCP Server tools (``github-mcp-server-*``) and Playwright.
+           Use these first when available.
+        2. **Secondary (this method)** — Route the call through the CLI API server.
+           Preferred over direct HTTP when the server is running; provides auto GitHub
+           auth injection, session audit logging, and consistent timeout handling.
+        3. **Fallback** — Direct ``urllib`` / ``requests`` / ``httpx``.
+           Use only when neither MCP nor the CLI server is available.
+
+        When the target URL starts with ``https://api.github.com/`` and
+        ``CODEX_MASTER_KEY`` is set, the server auto-injects the auth header.
 
         Parameters
         ----------
@@ -317,6 +331,13 @@ class BrainClient:
             "GET",
             "https://api.github.com/repos/Aries-Serpent/_codex_/actions/runs",
             params={"per_page": "1"},
+        )
+
+        # Create a repo variable
+        resp = brain.proxy_request(
+            "POST",
+            "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables",
+            body={"name": "COPILOT_TEST_VAR", "value": "hello_from_agent"},
         )
 
         # POST to any API

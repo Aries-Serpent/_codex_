@@ -624,13 +624,15 @@ async def cli_clear_history():
 @app.post("/api/request", response_model=ApiProxyResponse)
 async def api_proxy(req: ApiProxyRequest):
     """
-    Primary API request gateway for Copilot Agent sessions.
+    CLI API Client — secondary agent API mechanism (MCP/Playwright is primary).
 
-    Copilot Coding Agent sessions MUST route ALL outbound HTTP calls through
-    this endpoint (or via ``BrainClient.proxy_request()``).  Direct use of
-    urllib / requests / httpx from agent code is not permitted — this route
-    provides: auto GitHub auth injection, session-level audit logging, and
-    consistent timeout/error handling.
+    **Agent API priority hierarchy:**
+    1. Primary  — MCP Server tools + Playwright (use first when available)
+    2. Secondary — this endpoint / BrainClient.proxy_request() (use when MCP unavailable)
+    3. Fallback — direct urllib / requests / httpx (last resort only)
+
+    This endpoint provides: auto GitHub auth injection (CODEX_MASTER_KEY),
+    session-level audit logging, and consistent timeout/error handling.
 
     Supports GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS.
     Auto-injects ``Authorization: Bearer $CODEX_MASTER_KEY`` for api.github.com.
