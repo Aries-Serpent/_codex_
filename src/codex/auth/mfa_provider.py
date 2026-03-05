@@ -417,6 +417,19 @@ class MFAProvider:
         """
         return user_id in self._secret_store
 
+    def get_secret(self, user_id: str) -> Optional["MFASecret"]:
+        """
+        Return the stored :class:`MFASecret` for *user_id*, or ``None``.
+
+        Args:
+            user_id: User identifier.
+
+        Returns:
+            The :class:`MFASecret` associated with *user_id*, or ``None`` if
+            MFA has not been set up for this user.
+        """
+        return self._secret_store.get(user_id)
+
     def get_mfa_user_count(self) -> int:
         """
         Get the number of users with MFA enabled.

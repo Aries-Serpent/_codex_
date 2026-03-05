@@ -161,7 +161,7 @@ class Authenticator:
         if self._mfa is not None and self._mfa.is_mfa_enabled(user.user_id):
             if totp_code is None:
                 raise MFARequiredError()
-            mfa_secret = self._mfa._secret_store.get(user.user_id)
+            mfa_secret = self._mfa.get_secret(user.user_id)
             if mfa_secret is None or not self._mfa.verify_totp(
                 mfa_secret.secret, totp_code, user.user_id
             ):

@@ -94,6 +94,23 @@ class GitHubAppConfig:
             raise ValueError("app_id must be a positive integer")
         if not self.private_key_pem or "PRIVATE KEY" not in self.private_key_pem:
             raise ValueError("private_key_pem must be a valid PEM-encoded RSA private key")
+        # Validate api_base_url to prevent open-redirect / SSRF.
+        # Accepted forms:
+        #   - "https://api.github.com"               (GitHub.com)
+        #   - "https://<hostname>/api/v3"             (GHES)
+        _url = self.api_base_url.rstrip("/")
+        if not _url.startswith("https://"):
+            raise ValueError(
+                "api_base_url must use HTTPS (got: %r)" % self.api_base_url
+            )
+        # Reject obviously local / private addresses.
+        from urllib.parse import urlparse as _urlparse
+
+        _host = _urlparse(_url).hostname or ""
+        if _host in ("", "localhost", "127.0.0.1", "::1"):
+            raise ValueError(
+                "api_base_url must point to a remote GitHub endpoint, not %r" % _host
+            )
 
 
 # ---------------------------------------------------------------------------
