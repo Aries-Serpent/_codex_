@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-111 @mbaetiong C8 sign-off recorded; fourth D_CAPABLE promotion unblocked (PR #3496, 2026-03-05)
+
+### Changed
+
+| Task | Type | File | Change |
+|------|------|------|--------|
+| W-111a | docs | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | C8 gap marked RESOLVED ✅; §5 updated to record @mbaetiong explicit sign-off on top-25 threshold relaxation (2026-03-05); promotion status updated to PENDING C4 only |
+| W-111b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.4→v1.9.5: `workflow-health-monitor` — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added; promotion now unblocked pending C4 observation window end (2026-04-04) |
+
 ## [Unreleased] — W-110 Fourth D_CAPABLE candidate designation: `workflow-health-monitor` (PR #3496, 2026-03-05)
 
 ### Added

@@ -1,5 +1,5 @@
 # Cognitive Brain Status — PR #3496
-# Schedule repo-var-sync-agent + rust-error-validator observation + Fourth D_CAPABLE designation
+# Schedule repo-var-sync-agent + rust-error-validator observation + Fourth D_CAPABLE designation + C8 sign-off
 
 **Status:** ✅ COMPLETE
 **PR:** #3496
@@ -19,8 +19,10 @@
 | W-109b | **`rust-error-validator-observation.yml`** — weekly observation tracker; elapsed-day counter; violations check; historical evidence report; workflow_dispatch with override_date | ✅ Done |
 | W-110a | **`ADR-20260305-fourth-d-capable-evaluation.md`** — full 8-criterion scorecard; `workflow-health-monitor` designated 4th D_CAPABLE candidate; `owner-approval-guard` queued as 5th | ✅ Done |
 | W-110b | **`AGENT_REGISTRY.yaml`** v1.9.4 — `workflow-health-monitor` + `owner-approval-guard` fields populated; observation window started for designated candidate | ✅ Done |
-| REQ-4 | `AGENT_ACCOUNTABILITY_REPORT.md` updated (W-109 + W-110 entries) | ✅ Done |
-| REQ-5 | `CHANGELOG.md` updated (W-109 + W-110 sections) | ✅ Done |
+| W-111a | **`ADR-20260305-fourth-d-capable-evaluation.md`** updated — C8 gap RESOLVED ✅; @mbaetiong sign-off (2026-03-05) recorded; status: PENDING C4 only | ✅ Done |
+| W-111b | **`AGENT_REGISTRY.yaml`** v1.9.5 — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added | ✅ Done |
+| REQ-4 | `AGENT_ACCOUNTABILITY_REPORT.md` updated (W-109 + W-110 + W-111 entries) | ✅ Done |
+| REQ-5 | `CHANGELOG.md` updated (W-109 + W-110 + W-111 sections) | ✅ Done |
 
 ---
 
@@ -85,7 +87,7 @@ AGENT_REGISTRY.yaml updated with:
 
 | Agent | Rank | Status | Gaps |
 |-------|------|--------|------|
-| `workflow-health-monitor` | 21 | **DESIGNATED** (4th) | C4 observation window (→ 2026-04-04); C8 rank threshold sign-off (@mbaetiong) |
+| `workflow-health-monitor` | 21 | **DESIGNATED** (4th) | C4 observation window only (→ 2026-04-04); C8 ✅ RESOLVED (@mbaetiong sign-off 2026-03-05) |
 | `owner-approval-guard` | NOT SET | QUEUED (5th) | C4 unset, C8 unset |
 
 **ADR:** `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md`
@@ -111,13 +113,13 @@ repo-var-sync-schedule.yml will keep agent_context.json current from now on.
 |------|--------|
 | `.github/workflows/repo-var-sync-schedule.yml` | Created — daily scheduled repo-var-sync |
 | `.github/workflows/rust-error-validator-observation.yml` | Created — weekly D_CAPABLE observation |
-| `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3→v1.9.4 — observation fields + candidate fields |
-| `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | Created — 4th D_CAPABLE candidate evaluation |
+| `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3→v1.9.5 — observation fields + candidate fields + C8 sign-off |
+| `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | Created + C8 gap resolved (W-111) |
 | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3496.md` | This file |
-| `.codex/docs/FOLLOWUP_PROMPT_PR3496.md` | Updated |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 W-109 + W-110 entries added |
-| `CHANGELOG.md` | REQ-5 W-109 + W-110 sections added |
+| `.codex/docs/FOLLOWUP_PROMPT_PR3496.md` | Updated (v1.2.0) |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 W-109 + W-110 + W-111 entries added |
+| `CHANGELOG.md` | REQ-5 W-109 + W-110 + W-111 sections added |
 
 ---
 
-*Created: 2026-03-05 | Updated: 2026-03-05 (W-110) | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*
+*Created: 2026-03-05 | Updated: 2026-03-05 (W-111 — C8 sign-off) | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*

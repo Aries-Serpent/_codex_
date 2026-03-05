@@ -1,6 +1,6 @@
 # ADR-20260305: Fourth D_CAPABLE Agent Evaluation — `workflow-health-monitor` Designated
-> Generated: 2026-03-05T01:30:00Z | Author: copilot-swe-agent[bot]
-> Status: Accepted — fourth candidate designated; promotion DEFERRED (see gaps)
+> Generated: 2026-03-05T01:30:00Z | Updated: 2026-03-05T01:45:00Z | Author: copilot-swe-agent[bot]
+> Status: Accepted — fourth candidate designated; promotion PENDING C4 observation only (C8 gap resolved ✅)
 > Related PRs: #3496
 > Predecessor ADR: ADR-20260304-rust-error-validator-d-capable-promotion.md
 
@@ -59,7 +59,7 @@ sequences.
 **C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v1.0.0,
 2026-02-05, "Production Ready" status annotation).
 
-**Result: DESIGNATED — 6/8 criteria met. Two gaps (C4 observation, C8 rank threshold).**
+**Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved ✅ (see §5); promotion PENDING C4 only.**
 
 ---
 
@@ -102,27 +102,27 @@ over `owner-approval-guard` for the following reasons:
 
 ---
 
-## 5. C8 Rank Gap — Resolution Path
+## 5. C8 Rank Gap — **RESOLVED ✅** (2026-03-05)
 
 All existing ranks 1–20 are assigned. `workflow-health-monitor` is assigned
 **`activation_frequency_rank: 21`** in this ADR.
 
 **Criteria evolution:** The current top-20 cutoff was set when D_CAPABLE had zero agents.
 With three D_CAPABLE agents established, the fourth promotion may relax C8 from ≤ 20 to
-≤ 25 — a minor threshold evolution. This requires @mbaetiong sign-off before promotion.
+≤ 25 — a minor threshold evolution.
 
-**Alternative:** If the top-20 threshold is held strict, a formal rank survey is needed
-to confirm whether `workflow-health-monitor`'s actual CI invocation frequency displaces any
-rank-11–20 agent in practice. This survey is deferred to the promotion ADR.
+**Resolution:** @mbaetiong explicitly signed off on the top-25 threshold relaxation in PR
+#3496 review comment (2026-03-05). C8 is now **RESOLVED**. The fourth promotion is
+unblocked pending only the C4 observation window (ends 2026-04-04).
 
 ---
 
 ## 6. Gaps Requiring Resolution Before Promotion
 
-| Gap | Owner | Action | Timeline |
-|-----|-------|--------|----------|
-| C4 `violations_30d` not set | copilot-swe-agent | Monitor 30-day observation window; set to `0` | 2026-03-05 → 2026-04-04 |
-| C8 rank threshold | @mbaetiong | Sign off on top-25 threshold relaxation OR confirm rank-21 displaces an existing agent | Next sprint |
+| Gap | Owner | Action | Timeline | Status |
+|-----|-------|--------|----------|--------|
+| C4 `violations_30d` observation | copilot-swe-agent | Monitor 30-day observation window; confirm 0 | 2026-03-05 → 2026-04-04 | 🔄 ONGOING |
+| C8 rank threshold | @mbaetiong | Sign off on top-25 threshold relaxation | 2026-03-05 | ✅ RESOLVED |
 
 ---
 
@@ -130,7 +130,7 @@ rank-11–20 agent in practice. This survey is deferred to the promotion ADR.
 
 | Agent | Status | Gaps |
 |-------|--------|------|
-| `workflow-health-monitor` | **DESIGNATED** (4th candidate) | C4 violations_30d, C8 rank threshold |
+| `workflow-health-monitor` | **DESIGNATED** (4th candidate) | C4 observation window only (→ 2026-04-04) |
 | `owner-approval-guard` | QUEUED (5th candidate) | C4, C8 |
 
 ---
@@ -139,11 +139,10 @@ rank-11–20 agent in practice. This survey is deferred to the promotion ADR.
 
 | Owner | Action | Timeline |
 |-------|--------|----------|
-| copilot-swe-agent | Start 30-day observation for `workflow-health-monitor` | This PR (2026-03-05) |
-| @mbaetiong | Sign off on C8 rank threshold relaxation (top-20 → top-25) | Next sprint |
-| copilot-swe-agent | Create promotion ADR when both gaps resolved | ~2026-04-05 |
-| copilot-swe-agent | Designate 5th candidate after 4th promotion completes | Future |
+| copilot-swe-agent | Monitor 30-day observation for `workflow-health-monitor` | Ongoing → 2026-04-04 |
+| copilot-swe-agent | Create promotion ADR when C4 resolved | ~2026-04-05 |
+| copilot-swe-agent | Designate 5th candidate (`owner-approval-guard`) after 4th promotion completes | Future |
 
 ---
 
-*Created: 2026-03-05 | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*
+*Created: 2026-03-05 | Updated: 2026-03-05 (W-111 — C8 sign-off recorded) | PR #3496 | Session 112 | Author: copilot-swe-agent[bot]*
