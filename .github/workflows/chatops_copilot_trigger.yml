@@ -38,7 +38,7 @@ jobs:
   dispatch:
     name: Parse slash command and dispatch
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     # Only process comments that start with /copilot
     if: startsWith(github.event.comment.body, '/copilot')
 

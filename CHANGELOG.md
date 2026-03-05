@@ -5,6 +5,57 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-118 Full token tooling: export fix, variable manager, token guide (PR #3497, 2026-03-05)
+
+### Added (W-118)
+
+- `scripts/tools/variable_manager.py` — Complete CRUD tool for GitHub Actions repo / env / org variables. Implements 3-tier mechanism: BrainClient secondary → direct urllib fallback. Auto-resolves best available token (CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN). Full CLI interface and Python API.
+- `tests/agents/test_variable_management.py` — 26-test suite covering: token priority resolution, repo/env/org variable CRUD, BrainClient secondary mechanism, urllib fallback, full create→verify→update→verify→delete lifecycle (mocked), graceful 403 handling. All 26 pass.
+- `docs/agent/COPILOT_TOKEN_GUIDE.md` — Complete Copilot Coding Agent token reference: token priority table, how each token reaches the agent session, accurate permission matrix (key: `GITHUB_TOKEN` CANNOT access variables API — requires `CODEX_MASTER_KEY`), usage examples (BrainClient / VariableManager / CLI / curl), Agent Token Delegation section, troubleshooting guide, quick verification script.
+
+### Fixed (W-118)
+
+- `copilot-setup-steps.yml` — Added "🔑 Export Auth Tokens to Agent Environment" step (after "Set Codex Environment Variables") that explicitly writes `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, and `AGENT_GITHUB_TOKEN` to `GITHUB_ENV`. Previously these were only job-level env vars (available to setup steps) but never persisted to the Copilot agent process. Also: CLI server startup now explicitly `export`s all three tokens to the uvicorn process; startup log now reports which auth token is active and its capability; permissions block updated to `actions: write` with accurate comment noting variables API still requires `CODEX_MASTER_KEY`.
+- `cognitive_app/src/server/cli_api_server.py` — Auto-inject logic now resolves tokens in priority order: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `AGENT_GITHUB_TOKEN` → `GITHUB_TOKEN`; logs source name for each injected call.
+- `src/codex/agents/brain_client.py` — `_auth_header()` updated with same 4-token priority chain and comprehensive docstring.
+
+### Constraint documented (W-118)
+
+GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Grained PAT with `Variables: write`. **`GITHUB_TOKEN` cannot access the variables API** regardless of `actions:` permission level. `CODEX_MASTER_KEY` must be configured as an org/repo secret for live variable management. Unit tests (26/26) confirm all tooling works correctly via mock; live test will pass once `CODEX_MASTER_KEY` secret is populated.
+
+## [Unreleased] — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)
+
+### Fixed (W-117)
+
+- `src/codex/agents/brain_client.py` — corrected incorrect "prohibited" language: established 3-tier hierarchy: (1) Primary = MCP Server + Playwright, (2) Secondary = CLI API Client (`proxy_request()`), (3) Fallback = direct urllib/requests/httpx
+- `cognitive_app/src/server/cli_api_server.py` — `/api/request` route docstring updated to reflect same 3-tier hierarchy
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — "Intended Use" section replaced with "Agent API Request Priority Hierarchy" table; new "GitHub Variables Management" section with curl + BrainClient examples for repo/env/org variables; live test results showing hierarchy demonstration (MCP primary ✅, CLI Client secondary with correct 401-when-no-key behavior documented); new troubleshooting entry for 401 on GitHub API calls
+
+
+
+### Updated (W-116)
+
+- `src/codex/agents/brain_client.py` — module header rewritten to state `proxy_request()` is the **primary/sole** mechanism for agent external API calls; `proxy_request()` docstring updated with intent, enforcement rationale, and examples
+- `cognitive_app/src/server/cli_api_server.py` — `POST /api/request` route docstring updated to state it is the "Primary API request gateway for Copilot Agent sessions"; notes prohibition on direct urllib/requests/httpx from agent code
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — guide restructured to lead with intended-use framing; new "Intended Use" section with minimal agent session pattern, comparison table (BrainClient vs curl), and enforcement rationale
+
+
+
+### Added (W-115)
+
+- `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md` — complete Copilot session connection guide:
+  every API endpoint (GET/POST/PUT/PATCH/DELETE) with curl examples, BrainClient Python usage,
+  GitHub Pages limitations, troubleshooting, and live audit results from PR #3497 W-114
+
+
+
+### Fixed (W-113)
+
+- `.secrets.baseline`: corrected `agent-auth-delegation.yml` entries to actual detect-secrets line numbers 561/592 (hashes `417c84ca`/`1565169a` unchanged) — exit 3 resolved
+- `codeql-analysis.yml`: added `continue-on-error: ${{ matrix.language == 'javascript' }}` (no JS source in repo); restored `queries: +security-extended`
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: updated with W-112/W-113 session entries (Cognitive Pre-flight gate)
+- `CHANGELOG.md`: updated in commit to satisfy REQ-5 Cognitive Pre-flight CHANGELOG gate
+
 ## [Unreleased] — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)
 
 ### Root Cause Fixed (W-112a)

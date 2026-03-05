@@ -624,8 +624,18 @@ async def cli_clear_history():
 @app.post("/api/request", response_model=ApiProxyResponse)
 async def api_proxy(req: ApiProxyRequest):
     """
-    Proxy an HTTP request to any URL and return the response.
+    CLI API Client — secondary agent API mechanism (MCP/Playwright is primary).
+
+    **Agent API priority hierarchy:**
+    1. Primary  — MCP Server tools + Playwright (use first when available)
+    2. Secondary — this endpoint / BrainClient.proxy_request() (use when MCP unavailable)
+    3. Fallback — direct urllib / requests / httpx (last resort only)
+
+    This endpoint provides: auto GitHub auth injection (CODEX_MASTER_KEY),
+    session-level audit logging, and consistent timeout/error handling.
+
     Supports GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS.
+    Auto-injects ``Authorization: Bearer $CODEX_MASTER_KEY`` for api.github.com.
     """
     method = req.method.upper()
     allowed_methods = {"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
@@ -639,13 +649,22 @@ async def api_proxy(req: ApiProxyRequest):
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
+    # Token priority: CODEX_MASTER_KEY > CODEX_BACKUP_KEY > AGENT_GITHUB_TOKEN > GITHUB_TOKEN
     if url.startswith("https://api.github.com/") and "Authorization" not in headers:
-        master_key = os.environ.get("CODEX_MASTER_KEY") or ""
-        backup_key = os.environ.get("CODEX_BACKUP_KEY") or ""
-        token = master_key if master_key else backup_key
+        master_key   = os.environ.get("CODEX_MASTER_KEY") or ""
+        backup_key   = os.environ.get("CODEX_BACKUP_KEY") or ""
+        agent_token  = os.environ.get("AGENT_GITHUB_TOKEN") or ""
+        github_token = os.environ.get("GITHUB_TOKEN") or ""
+        token = master_key or backup_key or agent_token or github_token
         if token:
             headers["Authorization"] = f"Bearer {token}"
-            log.debug("Auto-injected GitHub auth header (CODEX_MASTER_KEY)")
+            source = (
+                "CODEX_MASTER_KEY" if master_key else
+                "CODEX_BACKUP_KEY" if backup_key else
+                "AGENT_GITHUB_TOKEN" if agent_token else
+                "GITHUB_TOKEN"
+            )
+            log.debug("Auto-injected GitHub auth header (%s)", source)
     # Auto Content-Type for JSON body
     if req.body is not None and "content-type" not in {k.lower() for k in headers}:
         headers["Content-Type"] = "application/json"

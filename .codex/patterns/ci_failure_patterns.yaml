@@ -780,17 +780,226 @@ metadata:
   auto_fixable: false
 
 ---
+
+---
+pattern_id: DETECT_SECRETS_002
+name: "detect-secrets Baseline Line Number Drift (agent-auth-delegation.yml)"
+category: security_baseline
+priority: 2
+severity: error
+
+description: |
+  detect-secrets exits with code 3 ("baseline file was updated") because
+  `agent-auth-delegation.yml` gained or lost lines (due to a merge or new step being added),
+  shifting the line numbers for the two Base64 High Entropy String false-positive entries.
+  The hashes themselves do NOT change — only the line_number fields in `.secrets.baseline`.
+
+  Common mistake: manually computing line numbers via Python `readlines()[N]` picks the WRONG
+  token (a nearby base64 string). Always use `detect-secrets scan` to get canonical positions.
+
+detection:
+  workflow_path: ".github/workflows/validate.yml"
+  job_name: "Fast Validation"
+  hook_id: "detect-secrets"
+  error_signatures:
+    - "hook id: detect-secrets"
+    - "exit code: 3"
+    - "The baseline file was updated."
+    - "Probably to keep line numbers of secrets up-to-date."
+  affected_file: ".secrets.baseline"
+  tracked_secrets_file: ".github/workflows/agent-auth-delegation.yml"
+
+root_cause:
+  technical: |
+    `.secrets.baseline` stores the line number of every detected secret. When
+    `agent-auth-delegation.yml` has lines inserted or deleted (e.g., a new workflow step),
+    the two base64-encoded Python scripts (REQ-8 REQ-9) shift position. detect-secrets
+    compares stored line numbers against the actual file and exits 3 on mismatch.
+  not_caused_by: "Hash value changes — hashes for these entries remain 417c84ca (REQ-8) and 1565169a (REQ-9)"
+
+fix:
+  automated: true
+  manual_steps:
+    - "Run: detect-secrets scan .github/workflows/agent-auth-delegation.yml CODEX_MANIFEST.json"
+    - "Copy the exact line_number values reported by detect-secrets into .secrets.baseline"
+    - "Update generated_at timestamp to current UTC"
+    - "Verify: detect-secrets scan --baseline .secrets.baseline exits 0"
+  prevention:
+    - "After ANY modification to agent-auth-delegation.yml, re-run the scan immediately"
+    - "Never use manual Python readlines() counting — always use detect-secrets scan output"
+    - "CODEX_MANIFEST.json entry stays at line 1653 hash f88d271f unless integrity_sha256 changes"
+
+examples:
+  - run_id: 22701614369
+    date: "2026-03-05"
+    commit: "8e1d59e"
+    error: "exit code: 3 — The baseline file was updated."
+    resolution: "Re-ran detect-secrets scan locally; corrected lines to 561/592 (hash unchanged)"
+  - run_id: 22701029372
+    date: "2026-03-05"
+    commit: "52afd2d"
+    error: "exit code: 3 — stale line numbers after main merge c0a71f3"
+    resolution: "Updated .secrets.baseline with correct line numbers"
+
+cognitive_notes: |
+  REQ-8 token (hash 417c84ca): base64-encoded Python URL-lib memory check script.
+  REQ-9 token (hash 1565169a): base64-encoded Python YAML-parse helper.
+  Both are intentional false positives — they ARE base64 high-entropy strings but not secrets.
+  The line numbers as of 2026-03-05 after main merge c0a71f3: REQ-8=561, REQ-9=592.
+  These shift every time agent-auth-delegation.yml gains/loses lines above them.
+
+metadata:
+  reuse_count: 3
+  effectiveness: "100% (re-scan resolves)"
+  confidence: 1.0
+  auto_fixable: true
+
+---
+pattern_id: PREFLIGHT_001
+name: "Cognitive Pre-flight REQ-5: CHANGELOG.md Not Touched in Last Commit"
+category: preflight_gate
+priority: 2
+severity: error
+
+description: |
+  The `agent-auth-delegation.yml` Cognitive Pre-flight Check (REQ-5) runs
+  `git diff --name-only HEAD~1 HEAD | grep -qF "CHANGELOG.md"` and exits 1 if
+  CHANGELOG.md is not in the diff. This blocks the `activate-delegation` job from running.
+
+  Every commit to this branch must touch CHANGELOG.md with a new `## [Unreleased]` entry.
+  Failure to do so produces: "Failing step: Verify CHANGELOG.md updated in last commit".
+
+detection:
+  workflow_path: ".github/workflows/agent-auth-delegation.yml"
+  job_name: "🧠 Cognitive Pre-flight Check"
+  step_name: "Verify CHANGELOG.md updated in last commit"
+  error_signatures:
+    - "FAIL — `CHANGELOG.md` was NOT updated in the last commit"
+    - "Verify CHANGELOG.md updated in last commit"
+    - "Process completed with exit code 1"
+  check_command: "git diff --name-only HEAD~1 HEAD | grep -qF CHANGELOG.md"
+
+root_cause:
+  technical: |
+    REQ-5 in agent-auth-delegation.yml requires CHANGELOG.md to appear in every commit's diff.
+    When a commit only changes workflow files, test fixtures, or baselines — but not CHANGELOG.md —
+    the gate exits 1 and blocks session activation (activate-delegation never runs).
+  not_caused_by: "CHANGELOG.md content — any non-empty change (even a comment line) satisfies the gate"
+
+fix:
+  automated: false
+  manual_steps:
+    - "Add a new ## [Unreleased] — <description> (PR #XXXX, YYYY-MM-DD) section to CHANGELOG.md"
+    - "Include at least one ### Fixed, ### Added, or ### Changed bullet"
+    - "Ensure CHANGELOG.md already contains 'Unreleased' to satisfy REQ-9 Pass 3"
+    - "Include CHANGELOG.md in the next commit along with other changes"
+  prevention:
+    - "Make CHANGELOG.md part of the standard commit checklist"
+    - "Template: '## [Unreleased] — W-XXX <short description> (PR #YYYY, YYYY-MM-DD)'"
+
+examples:
+  - run_id: 22701760735
+    date: "2026-03-05"
+    commit: "8e1d59e"
+    error: "FAIL — CHANGELOG.md was NOT updated in the last commit"
+    resolution: "Added W-113/W-114 [Unreleased] entry to CHANGELOG.md in next commit"
+  - run_id: 22701307692
+    date: "2026-03-05"
+    commit: "52afd2d"
+    error: "FAIL — AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
+    note: "Different gate (accountability), same pattern — every commit must touch both files"
+
+cognitive_notes: |
+  Two required-in-every-commit files for the Cognitive Pre-flight gate:
+  1. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 gate)
+  2. CHANGELOG.md (REQ-5 gate)
+  Missing EITHER causes the pre-flight job to exit 1. The self-healing CI reports these
+  as 'Pattern: unknown' because they're not in the patterns library — now they are.
+  These are the two most common pre-flight failures.
+
+metadata:
+  reuse_count: 2
+  effectiveness: "100% (adding entry resolves)"
+  confidence: 1.0
+  auto_fixable: false
+
+---
+pattern_id: CODEQL_001
+name: "CodeQL Language Matrix Leg Fails — No Source Files Found"
+category: codeql_configuration
+priority: 3
+severity: warning
+
+description: |
+  A CodeQL language matrix leg (e.g., `javascript`) fails with exit code 32 because
+  the repository has no source files of that language type. CodeQL cannot build an
+  extraction database for a language that has no files, and exits with:
+  "Only found files that were empty or contained syntax errors."
+
+  This does NOT indicate a code defect. It happens when the GHAS configuration includes
+  a language that existed historically or is planned but has no current source files.
+
+detection:
+  workflow_path: ".github/workflows/codeql-analysis.yml"
+  job_name: "Analyze (javascript)"
+  step_name: "Perform CodeQL Analysis"
+  error_signatures:
+    - "Only found files that were empty or contained syntax errors"
+    - "No source files for javascript"
+    - "Process completed with exit code 32"
+    - "Analyze (javascript) › Perform CodeQL Analysis"
+  ghas_symptom: "6 configurations not found (when python+go+javascript each have +security-extended)"
+
+root_cause:
+  technical: |
+    The codeql-analysis.yml matrix includes 'javascript' but the repository has no .js/.ts files.
+    CodeQL exits 32 when it cannot produce a SARIF output. GitHub GHAS then reports the matrix
+    leg as failed. When `queries: +security-extended` is used, GHAS expects 6 configurations
+    (3 languages × 2 query suites) but only finds results from python+go (4 configurations).
+  not_caused_by: "Actual security vulnerabilities — this is a configuration gap"
+
+fix:
+  automated: false
+  manual_steps:
+    - "Add `continue-on-error: ${{ matrix.language == 'javascript' }}` at the job level"
+    - "This allows python and go to complete and upload SARIF while JS fails gracefully"
+    - "Do NOT remove javascript from matrix — it may cause GHAS rule count drift on main"
+  prevention:
+    - "When adding a new language to CodeQL matrix, verify source files exist first"
+    - "Use continue-on-error for any language leg that may have zero source files"
+
+examples:
+  - run_id: 22701029363
+    date: "2026-03-05"
+    commit: "52afd2d"
+    error: "Perform CodeQL Analysis — exit code 32"
+    resolution: "Added continue-on-error at job level in codeql-analysis.yml (commit 8e1d59e)"
+
+cognitive_notes: |
+  The 'javascript' matrix leg was added to codeql-analysis.yml to match GHAS configuration.
+  The repo (Aries-Serpent/_codex_) is a Python project with Go in tools/github-secrets-cli/.
+  There are no .js/.ts source files. The JS leg will always fail without continue-on-error.
+  The "6 configurations not found" GHAS check is a pre-existing condition on main that requires
+  a main branch GHAS configuration update to fully resolve — it is not blocking for this PR.
+
+metadata:
+  reuse_count: 1
+  effectiveness: "100% (continue-on-error resolves blocking)"
+  confidence: 0.95
+  auto_fixable: false
+
+---
 ```
 
 ## Statistics
 
 ### Current Library Stats
 
-**Total Patterns:** 20 (8 core + 12 derived)
-**Categories:** 7
+**Total Patterns:** 23 (8 core + 15 derived)
+**Categories:** 9
 **Batch Fix Patterns:** 4
-**Proven Patterns:** 19 (100%)
-**Confidence > 95%:** 17 (89%)
+**Proven Patterns:** 22 (96%)
+**Confidence > 95%:** 20 (87%)
 
 ### Effectiveness Metrics
 
