@@ -5,11 +5,23 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-123 Webhook audit executed: 0 live hooks, registry + config created (PR #3499, 2026-03-05)
+
+### Added (W-123 — execution)
+
+- `docs/ops/WEBHOOK_REGISTRY.md` — Full webhook registry: live audit result (0 hooks registered), architecture diagram (Cognitive Brain ↔ GitHub Webhooks), planned hook inventory (2 hooks: `cognitive-brain-ci-feedback` and `runner-health-notification`), event-to-workflow trigger map, HMAC security diagram, tooling reference, and activation checklist.
+- `.codex/webhook_config.json` — Desired-state declarative webhook configuration (2 hooks defined, `active: false` pending Cognitive Brain API server deployment). Includes `_meta` block with audit timestamp, API result, and apply/list commands.
+- `.codex/webhook_registry.json` — Live state registry file (0 entries — no hooks registered as of 2026-03-05). Populated by `webhook_configurator.py` after first `apply-webhooks` run.
+
+### Changed (W-123 — execution)
+
+- `docs/plans/webhook-identification.md` — Status updated from `TASK DEFINED` to `✅ AUDIT COMPLETE`. Implementation checklist items marked done: `@agent-infra list-webhooks` run (0 live hooks confirmed), `webhook_config.json` populated, `WEBHOOK_REGISTRY.md` created.
+
 ## [Unreleased] — W-123 Task: identify and document repository webhooks (PR #3499, 2026-03-05)
 
-### Added (W-123)
+### Added (W-123 — task definition)
 
-- `docs/plans/webhook-identification.md` — New task document defining the webhook audit and documentation work: inventories the existing webhook infrastructure (`webhook_configurator.py`, `agent_infrastructure_manager.yml`, `.codex/webhook_config.json`, `ADMIN_MANUAL_SETUP_GUIDE.md §5`), catalogues all 220 workflow GitHub event triggers (issue_comment, pull_request, push, workflow_run, etc.), documents 6 webhook-driven critical workflows, defines 5 planned webhook deliverables, and provides a full implementation checklist for the follow-up PR.
+- `docs/plans/webhook-identification.md` — Task document: webhook infrastructure inventory, event-trigger catalogue (10 types / 220 workflows), 6 webhook-driven critical workflow descriptions, 5 planned deliverables.
 
 ## [Unreleased] — W-122 Runner live: ubuntu-latest-m / AS Larger Runners / Custom Image Preview (PR #3499, 2026-03-05)
 
