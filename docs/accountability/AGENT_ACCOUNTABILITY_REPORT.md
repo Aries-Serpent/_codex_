@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-05 (PR #3499 W-119b — fix duplicate `run:` key in copilot-setup-steps.yml: orphaned load-agent-config fragment caused YAML unmarshal error blocking all Copilot Agent sessions)
+**Last updated:** 2026-03-05 (PR #3499 W-120 — created docs/plans/larger-runners-upgrade.md: plan for upgrading Copilot agent from ubuntu-latest (2-core) to ubuntu-4-core larger runner)
 
 ---
 

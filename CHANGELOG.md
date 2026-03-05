@@ -5,6 +5,12 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-120 Plan: upgrade Copilot agent to larger GitHub-hosted runners (PR #3499, 2026-03-05)
+
+### Added (W-120)
+
+- `docs/plans/larger-runners-upgrade.md` — Implementation plan for upgrading the Copilot coding agent from the standard `ubuntu-latest` (2-core / 7 GB) runner to `ubuntu-4-core` (4-core / 16 GB). Documents org-admin prerequisites, the single-line `runs-on` change required, optional `timeout-minutes` increase, rollback procedure, and expected performance improvements. Awaiting org runner-group provisioning by @mbaetiong before code change executes.
+
 ## [Unreleased] — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)
 
 ### Fixed (W-119b)
