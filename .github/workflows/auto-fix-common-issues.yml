@@ -57,10 +57,11 @@ jobs:
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow auto-fix-common-issues 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |

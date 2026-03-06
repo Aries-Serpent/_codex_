@@ -5,6 +5,20 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)
+
+### Fixed (post-merge hotfix S116)
+- Verified GHCR preview image build workflow (`build-preview-image.yml`) triggers on push to `main`
+- Wired 20/51 remaining Python workflows to `setup-python-cached` composite action (`cache-tier: common`)
+  replacing bare `actions/setup-python@v5` calls — eliminates redundant pip fetches on every run
+- Removed redundant manual `actions/cache` step from `agent-registry-validation.yml`
+  (now handled by `setup-python-cached` L1 pip layer)
+- Confirmed `COPILOT_ACCESS_TEST` repo variable auto-created by `post-start.sh`
+- No duplicate D365 policy variable found (already clean)
+
+### Added (S116)
+- Codespace secrets admin-request issue filed (SAR-G01) — 7 org-level secrets required
+
 ## [Unreleased] — W-142 S115: CI triage · test mock pattern fix · code review cleanup (2026-03-06)
 
 ### Fixed (W-142 S115 — ModelLoader wrong-patch pattern)

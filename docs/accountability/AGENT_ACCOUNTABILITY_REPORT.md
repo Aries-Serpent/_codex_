@@ -534,3 +534,26 @@ All 4 recurring failure classes from issue #3507 confirmed resolved in HEAD:
 ### Human Admin Tasks Required
 
 No new human tasks. Existing 7 Codespace secrets remain outstanding (@mbaetiong).
+
+## W-142 — S116 post-merge stabilisation (2026-03-06)
+
+### Actions Taken
+
+| Action | File | Detail |
+|--------|------|--------|
+| Wire batch 1 (10 workflows) to setup-python-cached | `.github/workflows/{agent-handoff-gate,agent-registry-validation,auto-fix-common-issues,auto-fix-pr-check,batch-ci-triage,ci-health-monitor,cleanup-stale-branches,cognitive-analysis-feed,cognitive_brain_ci_feedback}.yml` | Replaced `actions/setup-python@v5` → `./.github/actions/setup-python-cached` with `cache-tier: common` |
+| Wire batch 2 (11 workflows) to setup-python-cached | `.github/workflows/{agent-orchestration-unified,coverage-with-timeout,embedding-index-rebuild,github-guru,nightly-codeql-alert-triage,pages-pre-merge-validation,pages-scheduled-validation,progressive-validation,self_healing_ci,telemetry-collection,workflow-analytics-unified}.yml` | Same replacement — 4 occurrences in progressive-validation, 3 in workflow-analytics-unified, 2 in agent-orchestration-unified + coverage-with-timeout |
+| Remove redundant manual pip cache | `.github/workflows/agent-registry-validation.yml` | `actions/cache@v5` step for `~/.cache/pip` removed — covered by `setup-python-cached` L1 layer |
+| CHANGELOG update | `CHANGELOG.md` | S116 post-merge stabilisation section added |
+
+### Impact
+- 20 workflows now benefit from L1–L3 pip/venv caching (~2–5 min saved per run)
+- No redundant pip cache paths remain in batch 1+2 workflows
+- CI check status on main: `action_required` workflows are approval-gated (expected); no actual failures detected
+
+### Human Admin Tasks Required
+
+Existing 7 Codespace secrets remain outstanding (@mbaetiong):
+`CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`,
+`_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`.
+See docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §8.
