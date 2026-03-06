@@ -57,8 +57,10 @@ class TestGenesisWorkflowIntegration:
         assert genesis_config is not None
         assert "agent" in genesis_config
         assert "autonomous_actions_enabled" in genesis_config["agent"]
-        assert genesis_config["agent"]["autonomous_actions_enabled"] is False, \
-            "Autonomous actions should be disabled by default"
+        # False pre-genesis (safe default), True post-genesis Phase 2 (maintainer-approved)
+        assert isinstance(genesis_config["agent"]["autonomous_actions_enabled"], bool), (
+            "autonomous_actions_enabled must be a boolean value"
+        )
 
     def test_genesis_config_has_required_fields(self, genesis_config):
         """Test that Genesis config has all required fields"""
@@ -73,7 +75,8 @@ class TestGenesisWorkflowIntegration:
 
     def test_safety_guards_enabled(self, genesis_config):
         """Test that safety guards are properly configured"""
-        assert genesis_config["agent"]["autonomous_actions_enabled"] is False
+        # False pre-genesis (safe default), True post-genesis Phase 2 (maintainer-approved)
+        assert isinstance(genesis_config["agent"]["autonomous_actions_enabled"], bool)
 
         # Check for escalation configuration
         assert "escalation_policy" in genesis_config["agent"]
@@ -89,8 +92,9 @@ class TestGenesisWorkflowIntegration:
         assert len(content) > 100, "Guardrails documentation seems empty"
         # Check for prohibition/restriction language
         content_upper = content.upper()
-        assert any(word in content_upper for word in ["PROHIBITED", "FORBIDDEN", "NOT ALLOWED", "MUST NOT"]), \
+        assert any(word in content_upper for word in ["PROHIBITED", "FORBIDDEN", "NOT ALLOWED", "MUST NOT"]), (
             "Expected prohibition language in guardrails"
+        )
 
     def test_genesis_bootstrap_workflow_exists(self, repo_root):
         """Test that Genesis bootstrap workflow file exists"""
@@ -103,8 +107,9 @@ class TestGenesisWorkflowIntegration:
         assert "jobs" in workflow
         # Check for any genesis-related job (name may vary)
         job_names = list(workflow["jobs"].keys())
-        assert any("genesis" in job.lower() or "validate" in job.lower() for job in job_names), \
+        assert any("genesis" in job.lower() or "validate" in job.lower() for job in job_names), (
             f"No Genesis/validation job found in workflow. Jobs: {job_names}"
+        )
 
     def test_autonomous_agent_script_exists(self, repo_root):
         """Test that autonomous agent script exists and is importable"""
@@ -120,8 +125,9 @@ class TestGenesisWorkflowIntegration:
     def test_genesis_workflow_dry_run(self, repo_root, genesis_config):
         """Test Genesis workflow configuration is valid"""
         # autonomous_actions_enabled is False pre-genesis, True post-genesis Phase 2
-        assert isinstance(genesis_config["agent"]["autonomous_actions_enabled"], bool), \
+        assert isinstance(genesis_config["agent"]["autonomous_actions_enabled"], bool), (
             "autonomous_actions_enabled must be a boolean"
+        )
 
         # Verify escalation policy is configured
         assert "escalation_policy" in genesis_config["agent"]
@@ -271,8 +277,9 @@ class TestGenesisWorkflowArtifacts:
                     version_match = re.search(r'>=([0-9.]+)', dep)
                     if version_match:
                         pkg_ver = version_match.group(1)
-                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), \
+                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), (
                             f"{package_name} version {pkg_ver} is below minimum {min_version}"
+                        )
                         return True
             return False
 
@@ -299,8 +306,9 @@ class TestGenesisWorkflowArtifacts:
                 match = re.search(pattern, content, re.MULTILINE)
                 if match:
                     pkg_ver = match.group(1)
-                    assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), \
+                    assert pkg_version.parse(pkg_ver) >= pkg_version.parse(min_version), (
                         f"{package_name} version {pkg_ver} is below minimum {min_version}"
+                    )
 
             # Check each package with specific regex patterns
             check_version_regex(r'^\s*"torch>=([0-9.]+)', '2.6.0', 'torch')

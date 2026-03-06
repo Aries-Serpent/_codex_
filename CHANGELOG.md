@@ -5,6 +5,12 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-141: Fix stale genesis test assertions + backslash continuations (2026-03-06)
+
+### Fixed (W-141 — test_genesis_workflow.py stale assertions)
+- `tests/integration/test_genesis_workflow.py`: `test_genesis_config_loads` and `test_safety_guards_enabled` — replaced stale `is False` assertions (broken since genesis Phase 2 activation set `autonomous_actions_enabled: true`) with `isinstance(..., bool)` checks matching the pattern used in the sibling test `test_autonomous_actions_disabled_by_default`
+- `tests/integration/test_genesis_workflow.py`: All remaining backslash-continuation asserts (`\`) converted to parenthesised form per reviewer feedback (6 occurrences in asserts on lines 60, 92, 106, 123, 280, 308)
+
 ## [Unreleased] — W-140: SAR P1 sprint · model-drift-retrain · Feast PoC · OTel stub · Level 3.9 (2026-03-06)
 
 ### Added (W-140 — SAR P1 gap closure sprint)
