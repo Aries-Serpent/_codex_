@@ -1,20 +1,20 @@
 codebase_snapshot:
   metadata:
-    timestamp: '2025-01-16T13:54:12.696060+00:00'
+    timestamp: '2026-03-06T06:00:00.000000+00:00'
     repository: _codex_
     scan_version: 1.0.0
   directories:
     src:
       exists: true
-      python_files: 1013
+      python_files: 1115
       subdirectories: 39
     tests:
       exists: true
-      python_files: 1689
+      python_files: 2207
       subdirectories: 139
     scripts:
       exists: true
-      python_files: 331
+      python_files: 511
       subdirectories: 43
     docs:
       exists: true
@@ -60,6 +60,6 @@ codebase_snapshot:
     pyproject_toml: present
     requirements_files: 9
   testing:
-    test_files: 1641
+    test_files: 1997
     pytest_ini: true
     conftest: true

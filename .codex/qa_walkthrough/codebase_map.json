@@ -1,22 +1,22 @@
 {
   "metadata": {
-    "generated_at": "2026-02-04T02:39:00.000000+00:00",
+    "generated_at": "2026-03-06T06:00:00.000000+00:00",
     "repository": "_codex_",
     "branch": "copilot/qa-walkthrough-codebase-update",
     "last_commit": "current",
-    "phase": "41",
-    "phase_status": "COMPLETE_QA_WALKTHROUGH_UPDATE",
-    "previous_phase": "37"
+    "phase": "55",
+    "phase_status": "W131_QA_REFRESH",
+    "previous_phase": "41"
   },
   "directory_structure": {
     "src": {
       "total_files": 1350,
-      "python_files": 1052,
+      "python_files": 1115,
       "path": "src"
     },
     "tests": {
       "total_files": 2400,
-      "python_files": 2040,
+      "python_files": 2207,
       "path": "tests"
     },
     "docs": {
@@ -138,5 +138,46 @@
       "phase": "22.1",
       "status": "complete"
     }
+  },
+  "new_modules_w126_w131": {
+    "src/codex/auth": {
+      "files": 9,
+      "added": "W-126",
+      "note": "Full auth package: user_store, authenticator, github_app, middleware, oauth, mfa, token_manager, exceptions"
+    },
+    "cognitive_app/src/server": {
+      "files": 1,
+      "added": "W-130",
+      "note": "POST /webhook/github + GET /api/webhooks/recent + webhook_events SQLite"
+    },
+    ".devcontainer": {
+      "files": 6,
+      "added": "W-126",
+      "note": "devcontainer.json + 5 lifecycle scripts mirroring copilot-setup-steps.yml"
+    },
+    "tests/auth": {
+      "files": 10,
+      "added": "W-126",
+      "note": "10 test files: 111 tests across all auth module files"
+    },
+    "tests/server": {
+      "files": 2,
+      "added": "W-130",
+      "note": "test_webhook_endpoint.py"
+    },
+    ".github/workflows/build-preview-image.yml": {
+      "files": 1,
+      "added": "W-126",
+      "note": "GHCR multi-stage image build + smoke test"
+    }
+  },
+  "repository_statistics": {
+    "src_python_files": 1115,
+    "test_python_files": 2207,
+    "test_functions_approx": 4203,
+    "markdown_files": 3967,
+    "workflow_files": 101,
+    "registered_agents": 153,
+    "last_updated": "2026-03-06"
   }
 }

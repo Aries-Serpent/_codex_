@@ -46,10 +46,20 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Cache pip packages
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-agent-registry-pip-${{ vars.CODEX_CACHE_VERSION || 'v2' }}-jsonschema-pyyaml
+          restore-keys: |
+            ${{ runner.os }}-agent-registry-pip-${{ vars.CODEX_CACHE_VERSION || 'v2' }}-
+            ${{ runner.os }}-live-pip-${{ vars.CODEX_CACHE_VERSION || 'v2' }}-py3.12-
 
       - name: Install dependencies
-        run: pip install jsonschema pyyaml --quiet
+        run: pip install --cache-dir ~/.cache/pip jsonschema pyyaml --quiet
 
       - name: Refresh CODEX_MANIFEST.json
         run: |

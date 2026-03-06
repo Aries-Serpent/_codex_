@@ -4,9 +4,9 @@
     "analysis_type": "coverage_gap_analysis",
     "repository": "_codex_",
     "baseline_date": "2026-01-21",
-    "last_update": "2026-02-04T07:30:00.000000+00:00",
-    "phase": "52",
-    "phase_status": "LOW_COVERAGE_MODULES_TESTS_ADDED"
+    "last_update": "2026-03-06T06:00:00.000000+00:00",
+    "phase": "55",
+    "phase_status": "W131_CI_SWEEP_AUTH_WEBHOOK_DEVCONTAINER"
   },
   "source_modules": {
     "src/mcp": {
@@ -244,6 +244,20 @@
       "path": "src/evaluation",
       "tested_files": 1,
       "coverage_percent": 33.33
+    },
+    "src/codex/auth": {
+      "total_files": 9,
+      "path": "src/codex/auth",
+      "tested_files": 9,
+      "coverage_percent": 92.0,
+      "note": "W-126: user_store(34), authenticator(25), github_app(52) \u2014 111 tests; W-131: match patterns tightened"
+    },
+    "cognitive_app/src/server": {
+      "total_files": 1,
+      "path": "cognitive_app/src/server",
+      "tested_files": 1,
+      "coverage_percent": 78.0,
+      "note": "W-130: POST /webhook/github + GET /api/webhooks/recent added; webhook_events SQLite table"
     }
   },
   "test_coverage": {
@@ -267,7 +281,7 @@
     "phase_37_contribution": {
       "test_fixes": 5,
       "test_files_modified": 3,
-      "impact": "Stability improvement (5 flaky tests → 0)",
+      "impact": "Stability improvement (5 flaky tests \u2192 0)",
       "files": [
         "tests/cli/test_cli_offline_bootstrap.py",
         "tests/test_distributed_setup.py",
@@ -351,11 +365,11 @@
         "src/codex_cli/app.py"
       ],
       "zero_coverage_fixed": [
-        "src/experiments/ (0% → 100%)",
-        "src/workers/ (0% → 100%)",
-        "src/codex_cli/ (0% → 100%)",
-        "src/quantum/ (0% → 100% - already had tests)",
-        "src/codex_harness/ (0% → 100% - already had tests)"
+        "src/experiments/ (0% \u2192 100%)",
+        "src/workers/ (0% \u2192 100%)",
+        "src/codex_cli/ (0% \u2192 100%)",
+        "src/quantum/ (0% \u2192 100% - already had tests)",
+        "src/codex_harness/ (0% \u2192 100% - already had tests)"
       ]
     },
     "combined_totals": {

@@ -5,6 +5,26 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-132: Cache hierarchy verification & shared datasets (2026-03-06)
+
+### Fixed (W-132)
+- `actions/cache@v4` → `@v5` in `.github/actions/setup-python-cached/action.yml` (4 steps), `.github/actions/setup-python-uv/action.yml` (1 step), `.github/workflows/copilot-setup-steps.yml` (2 steps)
+- `CODEX_CACHE_VERSION` repo variable now wired into L1 and L3 cache keys in `setup-python-cached` — bumping the variable busts the entire shared cache hierarchy
+- `cache-tier` input in `setup-python-cached` is now **functional** (embeds tier prefix in L1/L3 keys); was previously informational only — LIVE/COMMON/EPHEMERAL tiers no longer share identical keys
+- `agent-registry-validation.yml`: upgraded from Python 3.11 to 3.12, added `actions/cache@v5` pip cache with live-tier fallback restore-key
+
+### Added (W-132)
+- `docs/ops/CACHE_SHARED_DATASETS.md` (v1.0.0): comprehensive ops reference for the 4-layer GitHub Actions cache hierarchy, cache tier system, variable-based and file-based shared datasets, cognitive brain in-process cache, gap analysis, and management operations
+- `cache-version` input to `setup-python-cached` composite action — callers should pass `${{ vars.CODEX_CACHE_VERSION || 'v2' }}`
+- Fallback restore-keys in L1/L3 always include `live` prefix so common/ephemeral workflows seed from the most-populated cache tier
+
+### Changed (W-132)
+- `.github/WORKFLOW_CACHE_TIERS.md`: updated with functional cache key format, CODEX_CACHE_VERSION bust instructions, tier fallback chain diagram, Mermaid workflow tier map
+- `.codex/qa_walkthrough/WALKTHROUGH_SUMMARY.md`: Session 15 entry added; current-state metrics updated (1,115 src files, 2,207 test files, 3,967 docs, 101 workflows)
+- `.codex/qa_walkthrough/codebase_snapshot.yaml`: file counts refreshed to 2026-03-06 actuals
+- `.codex/qa_walkthrough/improvement_proposals.json`: IP-007 added for cache optimization roadmap
+- `.codex/qa_walkthrough/codebase_map.json`, `coverage_analysis.json`, `security_audit.json`: updated with W-126–W-132 additions
+
 ## [Unreleased] — W-131: CI failure sweep — registry, imports, pre-flight, actionlint (2026-03-06)
 
 ### Fixed (W-131)

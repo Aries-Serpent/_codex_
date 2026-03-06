@@ -2,8 +2,9 @@
   "metadata": {
     "generated_at": "2026-01-21T22:12:00.000000+00:00",
     "repository": "_codex_",
-    "phase": "21.1",
-    "total_proposals": 6
+    "phase": "55",
+    "total_proposals": 6,
+    "last_update": "2026-03-06T06:00:00.000000+00:00"
   },
   "proposals": [
     {
@@ -93,6 +94,28 @@
         "Improve agent test coverage",
         "Document all agent specifications"
       ]
+    },
+    {
+      "id": "IP-007",
+      "title": "Cache Shared Datasets \u2014 Complete 4-Layer Hierarchy Activation",
+      "status": "\ud83d\udd04 In Progress",
+      "priority": "High",
+      "created": "2026-03-06",
+      "description": "Wire CODEX_CACHE_VERSION into all workflow cache keys; add cache-tier to setup-python-cached; add pip cache to the 51 uncached Python workflows.",
+      "completed_items": [
+        "actions/cache@v4 \u2192 @v5 upgrade (7 files)",
+        "CODEX_CACHE_VERSION wired into L1/L3 keys",
+        "cache-tier made functional in setup-python-cached",
+        "agent-registry-validation.yml now uses pip cache",
+        "CACHE_SHARED_DATASETS.md ops doc created",
+        "WORKFLOW_CACHE_TIERS.md updated with functional tier system"
+      ],
+      "pending_items": [
+        "Add setup-python-cached to 51 uncached Python workflows (priority: audit-qa-suite, nox_gates, pre-flight-validation)",
+        "Add optional L5 cognitive brain SQLite cache layer",
+        "Wire cache-tier and cache-version into copilot-setup-steps.yml L1/L3 keys"
+      ],
+      "related_doc": "docs/ops/CACHE_SHARED_DATASETS.md"
     }
   ]
 }

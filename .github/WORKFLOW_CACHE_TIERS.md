@@ -1,6 +1,44 @@
 # Workflow Cache Tier Assignments
 
-This document defines which cache tier each workflow should use for optimal performance and cost management.
+> **Last Updated**: 2026-03-06 (W-132)
+> **Status**: ✅ Tier system now **functional** — tier prefix is embedded in L1/L3 cache keys
+> via `setup-python-cached` composite action (see `.github/actions/setup-python-cached/action.yml`).
+> All tiers fall back to the `live` prefix so even ephemeral workflows benefit from seeded caches.
+
+## Cache Key Structure (as of W-132)
+
+```
+L1 (pip downloads):  {OS}-{tier}-pip-{CODEX_CACHE_VERSION}-py{version}-{pyproject_hash}
+L2 (PyTorch wheels): {OS}-torch-cpu-py{version}-slot2x
+L3 (installed venv): {OS}-{tier}-venv-{CODEX_CACHE_VERSION}-py{version}-extras={extras}-torch={t}-preflight={p}-{hash}
+L4 (npm tools):      {OS}-npm-mlc-v1
+```
+
+### Cache-Busting via `CODEX_CACHE_VERSION`
+
+Set `CODEX_CACHE_VERSION` repo variable (currently `v2`) to bust the entire shared hierarchy:
+
+```bash
+gh variable set CODEX_CACHE_VERSION --body "v3" --repo Aries-Serpent/_codex_
+```
+
+Pass it into the composite action:
+
+```yaml
+- uses: ./.github/actions/setup-python-cached
+  with:
+    cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+    cache-tier: live      # or: common | ephemeral
+```
+
+### Fallback Chain (restore-keys)
+
+For `common` or `ephemeral` tier workflows, restore-keys fall back to `live`:
+1. Exact match in specified tier  →  `common-pip-v2-py3.12-<hash>`
+2. Any cache in specified tier    →  `common-pip-v2-py3.12-`
+3. **Live tier fallback**         →  `live-pip-v2-py3.12-`  ← seeds from most-used cache
+
+---
 
 ## 🟢 LIVE Tier Workflows (Permanent Cache)
 
