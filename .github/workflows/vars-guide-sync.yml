@@ -184,3 +184,15 @@ jobs:
               body: `## Variable Audit Blocker\n\nThe auto-sync workflow detected **${absent} required variables** that are absent.\n\nSee [§13 of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing) for the full list and CLI commands to fix.\n\n**Auto-detected:** ${new Date().toISOString()}\n**Workflow:** ${context.workflow}`,
               labels: ['variable-blocker', 'ops', 'priority: high'],
             });
+
+      # ── CI gate: fail when required variables absent (workflow_dispatch only) ──
+      # For scheduled runs we open an issue (above) and succeed so the guide is
+      # still committed. For manual / workflow_dispatch runs we hard-fail so the
+      # operator knows immediately that action is required.
+      - name: Fail gate — absent required variables (workflow_dispatch)
+        if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch' && inputs.dry_run != true
+        run: |
+          echo "::error::variable_audit_cli check: ${{ steps.audit.outputs.absent_required }} required variable(s) absent."
+          echo "Run: python scripts/tools/variable_audit_cli.py check --fail-on-absent"
+          echo "See docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §13 for the set-secret CLI commands."
+          exit 1

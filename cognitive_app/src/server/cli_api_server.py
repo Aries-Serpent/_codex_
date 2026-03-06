@@ -38,6 +38,40 @@ try:
 except ImportError:  # pragma: no cover — fallback when package not installed
     _safe_json_loads = json.loads  # type: ignore[assignment]
 
+# ── SAR-G05: OpenTelemetry distributed tracing stub ─────────────────────────
+# Full OTel SDK is optional; the stub is a no-op when the SDK is absent so the
+# server starts in environments that don't have the OTel packages installed.
+try:
+    from opentelemetry import trace as _otel_trace
+    from opentelemetry.sdk.trace import TracerProvider as _TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor as _BatchSpanProcessor
+
+    # Configure provider — exporter is wired from env OTEL_EXPORTER_OTLP_ENDPOINT.
+    # Falls back to a no-op provider when the endpoint is not configured.
+    _otel_endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "")
+    if _otel_endpoint:
+        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore[import]
+            OTLPSpanExporter as _OTLPSpanExporter,
+        )
+        _provider = _TracerProvider()
+        _provider.add_span_processor(_BatchSpanProcessor(_OTLPSpanExporter(endpoint=_otel_endpoint)))
+        _otel_trace.set_tracer_provider(_provider)
+
+    tracer = _otel_trace.get_tracer("cognitive-brain.cli-api", schema_url="https://opentelemetry.io/schemas/1.24.0")
+    _OTEL_ENABLED = True
+except ImportError:  # pragma: no cover — OTel SDK not installed
+    import contextlib as _contextlib
+
+    class _NoopTracer:
+        """Stub tracer that returns a no-op context manager for every start_as_current_span call."""
+
+        @_contextlib.contextmanager  # type: ignore[misc]
+        def start_as_current_span(self, name: str, **kwargs: Any):  # noqa: ANN401
+            yield None
+
+    tracer = _NoopTracer()  # type: ignore[assignment]
+    _OTEL_ENABLED = False
+
 # ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
 # REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
 # modify sys.path on every request (avoids reviewer concern about per-request mutation).
@@ -119,6 +153,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── SAR-G05: Wire OTel FastAPI auto-instrumentation (no-op when SDK absent) ──
+if _OTEL_ENABLED:
+    try:
+        from opentelemetry.instrumentation.fastapi import (
+            FastAPIInstrumentor,  # type: ignore[import]
+        )
+        FastAPIInstrumentor.instrument_app(app)
+        log.info("OpenTelemetry FastAPI auto-instrumentation enabled (endpoint=%s)",
+                 os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "<no endpoint>"))
+    except ImportError:
+        log.debug("opentelemetry-instrumentation-fastapi not installed; per-request spans disabled")
 
 # ── Memory endpoint auth ──────────────────────────────────────────────────────
 _memory_bearer = HTTPBearer(auto_error=False)
@@ -286,12 +332,14 @@ class ApiProxyResponse(BaseModel):
 
 @app.get("/api/health")
 async def health():
-    return {
-        "status": "ok",
-        "repo_root": REPO_ROOT,
-        "timestamp": datetime.utcnow().isoformat(),
-        "history_db": _DB_PATH,
-    }
+    with tracer.start_as_current_span("health"):
+        return {
+            "status": "ok",
+            "repo_root": REPO_ROOT,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "history_db": _DB_PATH,
+            "otel_enabled": _OTEL_ENABLED,
+        }
 
 
 # ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend

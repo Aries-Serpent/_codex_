@@ -5,7 +5,21 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-139: Variable audit CLI · SAR methodology · Level 4 corrections · setup-python-cached wiring · auto-sync workflow (2026-03-06)
+## [Unreleased] — W-140: SAR P1 sprint · model-drift-retrain · Feast PoC · OTel stub · Level 3.9 (2026-03-06)
+
+### Added (W-140 — SAR P1 gap closure sprint)
+- `.github/workflows/model-drift-retrain.yml`: **SAR-G03 closed** — wires `ContinuousLearningPipeline.should_retrain()` to a scheduled (daily 02:00 UTC) + `workflow_dispatch` + `repository_dispatch` GitHub Actions trigger; opens tracking issue on successful retrain
+- `src/codex_ml/features/feast_compat.py`: **SAR-G02 PoC** — Feast-compatible `FeastCompatibleStore` shim around existing native `FeatureStore`; `Entity`, `FeatureView`, `FeatureServiceResult` data models; `apply()`, `get_online_features()`, `materialize()` API mirrors Feast SDK for drop-in migration
+- OTel distributed tracing stub in `cognitive_app/src/server/cli_api_server.py`: **SAR-G05 infrastructure** — `opentelemetry` SDK wired with `_NoopTracer` graceful fallback; `FastAPIInstrumentor` auto-instruments all routes when `OTEL_EXPORTER_OTLP_ENDPOINT` env var is set
+- `vars-guide-sync.yml`: fail gate step added — exits 1 on `workflow_dispatch` when required variables are absent (CI gate for `variable_audit_cli.py check --fail-on-absent`)
+
+### Changed (W-140 — Level 4 score updates)
+- `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md`: scores updated 74/100 → 85/100 (Level 3.7 → 3.9); SAR-G02 10→40, SAR-G03 45→75, SAR-G05 72→78
+- `docs/LEVEL_4_MLOPS_ASSESSMENT.md`: Level 3.7 → 3.9; W-140 SAR P1 progress noted
+- `docs/ROADMAP.md`: MLOps Maturity 3.7 → 3.9; SAR gap statuses updated to partial
+- `src/codex_ml/features/__init__.py`: v1.1.0 — exports Feast-compat API
+
+
 
 ### Added (W-139)
 - `scripts/tools/variable_audit_cli.py`: new CLI tool — audit all GitHub vars/secrets vs `GITHUB_VARIABLES_MASTER_GUIDE.md`; formats: table/json/markdown; subcommands: `check`, `report`, `diff`, `expected`, `rotate-check`

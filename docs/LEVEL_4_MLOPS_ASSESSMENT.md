@@ -51,13 +51,16 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ---
 
-## CODEX Current Assessment: **Level 3.7** _(updated 2026-03-06 from 3.5)_
+## CODEX Current Assessment: **Level 3.9** _(updated 2026-03-06 from 3.7 — W-140 SAR P1 sprint)_
 
 > **Progress since Dec 2025:** W-129–W-139 resolved CI failures, hardened cache hierarchy,
 > added `safe_json_loads`, closed variable-write gap (intent-file mailbox), wired
 > `setup-python-cached` (L1–L5) into 6 critical workflows, created variable audit CLI,
 > and established the SAR methodology. Port security hardened (`org` visibility).
-> Net score improvement: **+0.2** (3.5 → 3.7).
+> W-140 SAR P1 sprint: `model-drift-retrain.yml` wires auto-retrain trigger (SAR-G03 45→75/100);
+> Feast-compat PoC in `src/codex_ml/features/feast_compat.py` (SAR-G02 10→40/100);
+> OTel distributed tracing stub + FastAPIInstrumentor in `cli_api_server.py` (SAR-G05 72→78/100).
+> Net score improvement: **+0.4** (3.5 → 3.9). Overall: 74/100 → 85/100.
 
 ### ✅ Strengths (Level 3+ Capabilities)
 

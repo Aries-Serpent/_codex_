@@ -449,3 +449,35 @@ python3 -m ruff check src/codex/utils/json_safe.py tests/utils/test_json_safe.py
 grep "pip install.*true\|2>/dev/null" Dockerfile.preview
 # Expected: no output
 ```
+
+---
+
+## W-140 — SAR P1 Gap Closure Sprint (2026-03-06)
+
+**Session**: PR #3503 continuation  
+**Work item**: W-140 — Level 3.7 → Level 3.9 via SAR P1 sprint  
+**Scope**: SAR-G02 Feature Store PoC, SAR-G03 auto-retrain trigger, SAR-G05 OTel stub, `vars-guide-sync` fail gate, `3503/merge` branch assessment
+
+### Changes Made
+
+| Change | File(s) | Reason |
+|--------|---------|--------|
+| SAR-G03: Auto-retrain GHA workflow | `.github/workflows/model-drift-retrain.yml` | Wire `ContinuousLearningPipeline.should_retrain()` to scheduled + dispatch trigger |
+| SAR-G02: Feast-compat PoC | `src/codex_ml/features/feast_compat.py` | Feast SDK-compatible shim over native FeatureStore; closes feature-store gap |
+| SAR-G02: features __init__.py | `src/codex_ml/features/__init__.py` | Export Feast-compat API; bump version to 1.1.0 |
+| SAR-G05: OTel tracing stub | `cognitive_app/src/server/cli_api_server.py` | OpenTelemetry tracer + FastAPIInstrumentor; graceful no-op fallback |
+| CI gate: vars-guide-sync | `.github/workflows/vars-guide-sync.yml` | Fail on `workflow_dispatch` when required variables absent |
+| Level 3.9 score update | `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` | 74/100 → 85/100; SAR gaps updated to partial |
+| ROADMAP update | `docs/ROADMAP.md` | Level 3.7 → Level 3.9; SAR gap status updated |
+| LEVEL_4 update | `docs/LEVEL_4_MLOPS_ASSESSMENT.md` | Level 3.7 → 3.9; W-140 progress noted |
+
+### 3503/merge Branch Assessment
+
+`3503/merge` is GitHub's auto-maintained merge ref for PR #3503. The only unique commit
+(`aa67f94 chore(auth): write provenance session token`) is a CI-written timestamp file.
+All real work is in `copilot/implement-user-authentication`. No cherry-pick needed.
+Branch will be cleaned up automatically by GitHub when PR #3503 is merged/closed.
+
+### Human Admin Tasks Required
+
+All tasks from W-137/W-138/W-139 remain (7 Codespace secrets). No new human tasks added.
