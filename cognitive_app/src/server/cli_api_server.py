@@ -3,11 +3,13 @@ Cognitive Brain — CLI & API Gateway Server
 ==========================================
 FastAPI server that exposes two capabilities to the React frontend:
 
-  WebSocket  /ws/cli          — real-time bidirectional terminal (PTY)
-  REST       /api/request     — HTTP proxy (GET/POST/PUT/PATCH/DELETE)
-  REST       /api/cli/run     — one-shot command execution (stdout + stderr)
-  REST       /api/cli/history — last N commands with results
-  GET        /api/health      — liveness check
+  WebSocket  /ws/cli                — real-time bidirectional terminal (PTY)
+  REST       /api/request           — HTTP proxy (GET/POST/PUT/PATCH/DELETE)
+  REST       /api/cli/run           — one-shot command execution (stdout + stderr)
+  REST       /api/cli/history       — last N commands with results
+  GET        /api/health            — liveness check
+  POST       /webhook/github        — inbound GitHub webhook receiver (HMAC-SHA256)
+  GET        /api/webhooks/recent   — recent webhook event log
 
 Run:
     uvicorn cognitive_app.src.server.cli_api_server:app --host 0.0.0.0 --port 8765 --reload
@@ -17,6 +19,8 @@ from __future__ import annotations
 
 import asyncio
 import fcntl
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -40,8 +44,9 @@ from datetime import datetime, timezone
 from typing import Any, Deque, Dict, Optional
 
 import httpx
-from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
@@ -180,6 +185,19 @@ def _init_history_db() -> sqlite3.Connection:
             metadata     TEXT,
             pattern_type TEXT,
             confidence   REAL DEFAULT 1.0,
+            timestamp    TEXT NOT NULL
+        )
+        """
+    )
+    # Inbound GitHub webhook event log
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS webhook_events (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            delivery_id  TEXT,
+            event_type   TEXT NOT NULL,
+            payload      TEXT NOT NULL,
+            signature    TEXT,
             timestamp    TEXT NOT NULL
         )
         """
@@ -617,6 +635,89 @@ async def cli_clear_history():
     except Exception as _e:
         log.debug("SQLite history clear failed (non-blocking): %s", _e)
     return {"cleared": True}
+
+
+# ── Inbound GitHub webhook receiver ──────────────────────────────────────────
+
+@app.post("/webhook/github")
+async def webhook_github(request: Request):
+    """
+    Receive inbound GitHub webhook payloads (HMAC-SHA256 verified).
+
+    Security: uses X-Hub-Signature-256 header for HMAC verification against
+    WEBHOOK_SECRET env var.  Returns 401 and fails closed if the secret is
+    not configured (unless CODEX_WEBHOOK_DEV_MODE=true bypasses for local dev).
+    """
+    raw_body = await request.body()
+    sig_header = request.headers.get("X-Hub-Signature-256", "")
+    secret = os.environ.get("WEBHOOK_SECRET", "")
+
+    if not secret:
+        dev_mode = os.environ.get("CODEX_WEBHOOK_DEV_MODE", "").lower() == "true"
+        if dev_mode:
+            log.warning("CODEX_WEBHOOK_DEV_MODE active — skipping HMAC verification")
+        else:
+            return JSONResponse(status_code=401, content={"error": "Webhook secret not configured"})
+
+    if secret:
+        expected = "sha256=" + hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+        if not sig_header or not hmac.compare_digest(expected, sig_header):
+            log.warning("Webhook HMAC verification failed (delivery=%s)",
+                        request.headers.get("X-GitHub-Delivery", "unknown"))
+            return JSONResponse(status_code=401, content={"error": "Invalid signature"})
+
+    event_type = request.headers.get("X-GitHub-Event", "unknown")
+    delivery_id = request.headers.get("X-GitHub-Delivery", "")
+
+    try:
+        payload = json.loads(raw_body)
+    except json.JSONDecodeError:
+        return JSONResponse(status_code=400, content={"error": "Invalid JSON payload"})
+
+    timestamp = datetime.now(timezone.utc).isoformat()
+    try:
+        with _db_lock:
+            _db.execute(
+                "INSERT INTO webhook_events (delivery_id, event_type, payload, signature, timestamp) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (delivery_id, event_type, json.dumps(payload), sig_header, timestamp),
+            )
+            _db.commit()
+    except Exception as _e:
+        log.warning("webhook_events SQLite write failed (non-blocking): %s", _e)
+
+    log.info("webhook_github event=%r delivery=%r", event_type, delivery_id)
+    return {"status": "accepted", "delivery_id": delivery_id}
+
+
+@app.get("/api/webhooks/recent")
+async def webhooks_recent(limit: int = 50):
+    """Return the most recent webhook events from the webhook_events table."""
+    limit = min(limit, 200)
+    try:
+        with _db_lock:
+            rows = _db.execute(
+                "SELECT id, delivery_id, event_type, payload, timestamp "
+                "FROM webhook_events ORDER BY id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        events = []
+        for row in rows:
+            try:
+                parsed_payload = json.loads(row["payload"])
+            except (json.JSONDecodeError, TypeError):
+                parsed_payload = {}
+            events.append({
+                "id": row["id"],
+                "delivery_id": row["delivery_id"],
+                "event_type": row["event_type"],
+                "payload": parsed_payload,
+                "timestamp": row["timestamp"],
+            })
+        return {"events": events, "total": len(events)}
+    except Exception as exc:
+        log.warning("webhooks_recent error: %s", exc)
+        return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
 
 
 # ── HTTP API proxy endpoint ───────────────────────────────────────────────────

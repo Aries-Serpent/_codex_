@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-06 (W-129 — GITHUB_VARIABLES_MASTER_GUIDE.md reconciled against authoritative 2026-03-06 export: CODEX_ADMIN_KEY ✅ resolved; 4 new _GITHUB_APP_* org secrets documented; OPENAI_API_KEY repo secret added; Issues 1/2/5 marked resolved; §13 "Still Missing" section added with setup instructions for WEBHOOK_RECEIVER_URL + 9 Codespace secrets)
+**Last updated:** 2026-03-06 (W-130 — Inbound webhook receiver endpoint (`POST /webhook/github` + `GET /api/webhooks/recent`) added to `cli_api_server.py`; `webhook_events` SQLite table; Codespace auto-URL step in `post-start.sh`; `_GITHUB_APP_*` naming corrected throughout; `GITHUB_VARIABLES_MASTER_GUIDE.md` v1.2.0: Issue 6 RESOLVED, Codespace secrets table corrected 9→8 items with `_GITHUB_APP_*` names; `WEBHOOK_REGISTRY.md` updated with Codespace auto-URL section)
 
 ---
 

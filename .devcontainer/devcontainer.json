@@ -135,24 +135,20 @@
       "description": "Fine-grained PAT with Webhooks:write. Required for webhook_configurator.py. Resolution order for webhooks: CODEX_ADMIN_KEY → CODEX_MASTER_KEY.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/WEBHOOK_REGISTRY.md"
     },
-    "GITHUB_APP_ID": {
+    "_GITHUB_APP_ID": {
       "description": "Numeric GitHub App ID (from the App settings page). Used by GitHubApp.generate_jwt() to sign App JWTs.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
     },
-    "GITHUB_APP_PRIVATE_KEY": {
-      "description": "PEM-encoded RSA-2048 private key for the GitHub App. Used with GITHUB_APP_ID to authenticate as the App. Never commit this value.",
+    "_GITHUB_APP_PRIVATE_KEY": {
+      "description": "PEM-encoded RSA-2048 private key for the GitHub App. Used with _GITHUB_APP_ID to authenticate as the App. Never commit this value.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
     },
-    "GITHUB_APP_INSTALLATION_ID": {
+    "_GITHUB_APP_INSTALLATION_ID": {
       "description": "GitHub App installation ID for the Aries-Serpent org. Used to exchange the App JWT for an installation access token.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
     },
     "WEBHOOK_SECRET": {
       "description": "Shared HMAC-SHA256 secret for GitHub webhook signature verification (X-Hub-Signature-256 header). Must match the value set on the webhook in GitHub.",
-      "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/WEBHOOK_REGISTRY.md"
-    },
-    "WEBHOOK_RECEIVER_URL": {
-      "description": "Public URL where GitHub delivers webhook payloads. Set once the Cognitive Brain API server is deployed. Used by webhook_configurator.py --apply.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/WEBHOOK_REGISTRY.md"
     }
   },
