@@ -147,6 +147,10 @@
       "description": "GitHub App installation ID for the Aries-Serpent org. Used to exchange the App JWT for an installation access token.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
     },
+    "_GITHUB_APP_CLIENT_SECRET": {
+      "description": "GitHub App OAuth client secret. Used for OAuth web flow and device-flow installations. Required alongside _GITHUB_APP_ID for OAuth-based GitHub App auth.",
+      "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/agent/GITHUB_APP_CLI_MAPPING.md"
+    },
     "WEBHOOK_SECRET": {
       "description": "Shared HMAC-SHA256 secret for GitHub webhook signature verification (X-Hub-Signature-256 header). Must match the value set on the webhook in GitHub.",
       "documentationUrl": "https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/WEBHOOK_REGISTRY.md"

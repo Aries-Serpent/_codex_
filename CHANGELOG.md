@@ -5,7 +5,13 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-133: Fix stale test assertions for genesis activation + telemetry growth (2026-03-06)
+## [Unreleased] — W-134: devcontainer secrets parity + Issue 3 D365 duplicate resolution (2026-03-06)
+
+### Fixed (W-134)
+- `.devcontainer/devcontainer.json`: added `_GITHUB_APP_CLIENT_SECRET` to `"secrets"` block — devcontainer now declares all 8 required Codespace secrets matching §8 of `GITHUB_VARIABLES_MASTER_GUIDE.md`
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: Issue 3 updated with clear recommendation + `gh variable delete D365_SLA_POLICY_PATH` command added to §13; Summary Checklist updated to link §13
+- `docs/configuration/ENVIRONMENT_VARIABLES.md`: removed deprecated `D365_SLA_POLICY_PATH` example from D365 credentials section; replaced with note directing to `CODEX_D365_POLICIES_PATH` (canonical name)
+
 
 ### Fixed (W-133)
 - `tests/ci/test_telemetry_collection.py`: `test_pattern_keywords_defined` updated from hard-coded `== 5` to `>= 5` — `PATTERN_KEYWORDS` has grown from 5 to 20 entries since S112 (all original 5 keys still present; pattern coverage expanded)

@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-06 (W-133 — Stale test assertion fixes: `test_pattern_keywords_defined` updated `== 5` → `>= 5` (production PATTERN_KEYWORDS grew from 5→20 in S112); `test_autonomous_actions_disabled_by_default` and `test_genesis_workflow_dry_run` updated to `isinstance(..., bool)` — genesis Phase 2 activated W-107/W-108 so `autonomous_actions_enabled = True` is intentional)
+**Last updated:** 2026-03-06 (W-134 — devcontainer secrets parity + Issue 3 D365 duplicate resolution: added `_GITHUB_APP_CLIENT_SECRET` to devcontainer.json secrets block; updated GITHUB_VARIABLES_MASTER_GUIDE.md Issue 3 with clear recommendation + gh delete command in §13; removed deprecated `D365_SLA_POLICY_PATH` from ENVIRONMENT_VARIABLES.md example)
 
 ---
 

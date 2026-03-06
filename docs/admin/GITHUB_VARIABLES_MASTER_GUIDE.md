@@ -239,7 +239,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
 | 14 | `CODEX_TEST_PARALLELISM` | ✅ | `auto` | Pytest parallel execution mode |
 | 15 | `CODEX_ZENDESK_DOCS_ROOT` | ✅ | `docs/vendors/zendesk` | Zendesk documentation root |
-| 16 | `D365_SLA_POLICY_PATH` | ⚠️ | `configs/deployment/d365/sla_policies.json` | Duplicate of `CODEX_D365_POLICIES_PATH` — consider removing one |
+| 16 | `D365_SLA_POLICY_PATH` | ⚠️ | `configs/deployment/d365/sla_policies.json` | Duplicate of `CODEX_D365_POLICIES_PATH` — pending deletion (see §13) |
 | 17 | `ENABLE_LIVE_TESTS` | ✅ | `true` | Enable live/integration tests in CI |
 
 ### 6f. 🤖 ML / HuggingFace / Weights & Biases
@@ -373,7 +373,8 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | **Problem** | Both variables point to `configs/deployment/d365/sla_policies.json`. |
-| **Fix** | Audit which workflows use each. Delete the unused one to reduce clutter. |
+| **Recommendation** | Keep `CODEX_D365_POLICIES_PATH` (follows the `CODEX_` naming convention used across this codebase). Delete `D365_SLA_POLICY_PATH` (legacy name; no workflow or Python source file references it directly). |
+| **Admin action** | `gh variable delete D365_SLA_POLICY_PATH --repo Aries-Serpent/_codex_` (see §13 for full command) |
 
 ### ⚠️ Issue 4 — Stale secrets (> 90-day rotation guideline)
 
@@ -547,6 +548,17 @@ gh variable set WEBHOOK_RECEIVER_URL \
 
 ---
 
+### 🟡 Issue 3 — Delete duplicate `D365_SLA_POLICY_PATH` repo variable
+
+**Action:** Delete the legacy duplicate variable. `CODEX_D365_POLICIES_PATH` is the preferred name (follows `CODEX_` convention) and points to the same file.  
+**No code change needed:** Neither variable is referenced by any workflow YAML or Python source file.
+
+```bash
+gh variable delete D365_SLA_POLICY_PATH --repo Aries-Serpent/_codex_
+```
+
+---
+
 ### 🔴 Codespace Secrets (8 items) — blocks Codespace agent sessions
 
 **What they are:** Secrets mirrored from Actions org secrets, required inside active Codespace containers.  
@@ -601,7 +613,7 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 
 ### 🟡 Should Fix (Non-blocking)
 
-- [ ] Fix Issue 3: Remove duplicate `D365_SLA_POLICY_PATH` or `CODEX_D365_POLICIES_PATH`
+- [ ] Issue 3: Delete `D365_SLA_POLICY_PATH` repo variable (duplicate of `CODEX_D365_POLICIES_PATH`) — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for delete command
 
 ### 🟢 Monitor / Maintenance
 
