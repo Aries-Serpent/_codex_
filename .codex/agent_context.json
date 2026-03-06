@@ -1,4 +1,5 @@
 {
+  "CODEX_COVERAGE_THRESHOLD": "80",
   "AUTO_PROMOTE_TIER_ENABLED": "true",
   "COPILOT_CLI_BASE_URL": "http://localhost:8765",
   "CODEX_LOG_LEVEL": "INFO",
@@ -10,8 +11,8 @@
   "COGNITIVE_BRAIN_INJECTION_ENABLED": "true",
   "COGNITIVE_BRAIN_ALLOWED_ACTORS": "mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]",
   "CODEX_CLI_API_URL": "http://localhost:8765",
-  "CODEX_CI_LAST_GREEN_SHA": "e1c42153834126d8f484bd07b1b03e90cb0278ae",
-  "CODEX_CI_FAILURE_RATE": "5.1:ok",
+  "CODEX_CI_LAST_GREEN_SHA": "16212669003d6776bb38eda369fc23dd14044eb7",
+  "CODEX_CI_FAILURE_RATE": "10.7:degraded",
   "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE": "0.75",
   "COGNITIVE_BRAIN_LTM_RETENTION_DAYS": "90",
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",
@@ -20,16 +21,16 @@
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
-  "COGNITIVE_BRAIN_SESSION_NUMBER": "116",
+  "COGNITIVE_BRAIN_SESSION_NUMBER": "119",
   "AGENT_TOOLSDIRECTORY": "/opt/hostedtoolcache",
   "_meta": {
-    "generated_at": "2026-03-05T06:26:32.208447+00:00",
+    "generated_at": "2026-03-06T06:24:52.898907+00:00",
     "workflow": "repo-var-sync-schedule",
-    "sha": "e1c42153",
+    "sha": "27263961",
     "ref": "refs/heads/main",
     "actor": "mbaetiong",
-    "run_id": "22705363074",
-    "repo_variables_count": 23,
-    "drift_entries": 16
+    "run_id": "22751915322",
+    "repo_variables_count": 24,
+    "drift_entries": 4
   }
 }
