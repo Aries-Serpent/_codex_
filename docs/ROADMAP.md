@@ -37,9 +37,9 @@
 | **Agent System Core** | ✅ Complete | 100% | Workflow, quantum, physics orchestration |
 | **RAG & Verification** | ✅ Complete | 100% | CoVe, MCP adapters, embeddings |
 | **MCP Package System** | ✅ Complete | 100% | 9 topics, workflow automation, 93+ KB docs |
-| **CI/CD Infrastructure** | ✅ Complete | 100% | 49 workflows, cache optimization, auto-fix |
-| **Security Infrastructure** | ✅ Complete | 100% | Secrets scan, SAST, CodeQL, 26 CVEs fixed |
-| **Test Suite** | ✅ Complete | 100% | 1300+ tests, 90% coverage threshold |
+| **CI/CD Infrastructure** | ✅ Complete | 100% | 100 workflows active, cache L1–L5 wired, self-healing CI |
+| **Security Infrastructure** | ✅ Complete | 100% | Secrets scan, SAST, CodeQL, 48 CVEs fixed |
+| **Test Suite** | ✅ Complete | 100% | 1500+ tests, 90% coverage threshold |
 | **Documentation Hub** | ✅ Complete | 95% | 693+ files, evolution center, cognitive brain |
 | **Cognitive Brain** | ✅ Complete | 100% | 100+ files, 22 cognitive modules, pattern detection |
 | **Genesis Protocol** | 🟡 Foundation Ready | 80% | 3-layer safety, awaiting secret injection |
@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 4 | Level 4 | ✅ None |
+| **MLOps Maturity** | Level 3.7 ⚠️ | Level 4 | 3 P1 gaps open — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -260,6 +260,19 @@
 
 ### High Priority
 
+#### 0. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🔴 BLOCKER
+**Timeline**: 2026-03-15 to 2026-05-31  
+**Status**: 🔴 Blocked — required for Level 4 certification  
+**Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
+
+| Gap | Owner | Playbook | ETA |
+|-----|-------|----------|-----|
+| SAR-G01: 7 Codespace secrets | @mbaetiong (human admin only) | §13 GITHUB_VARIABLES_MASTER_GUIDE.md | 2026-03-15 |
+| SAR-G02: Feature store design + PoC | @mbaetiong | New design — Feast or Tecton | 2026-04-30 |
+| SAR-G03: Auto-retrain pipeline wired | @copilot | SAR-004 | 2026-05-31 |
+
+**Success criterion:** All 3 gaps resolved → ROADMAP MLOps level updated to **Level 4** → `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` approval updated.
+
 #### 1. **MCP Package Merge & Diff Tools** (Phase 14)
 **Timeline**: 2026-04-01 to 2026-04-30
 **Features**: Package merge (4 strategies), diff tool with multiple formats
@@ -343,7 +356,7 @@
 
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
-| **Test Coverage** | 72% | 80%+ | 85%+ | 90%+ |
+| **Test Coverage** | 90% | 95%+ | 97%+ | 98%+ |
 | **CI/CD Build Time** | <5 min | <3 min | <2 min | <2 min |
 | **Cache Hit Rate** | 90%+ | 95%+ | 97%+ | 98%+ |
 | **Security Score** | 100% | 100% | 100% | 100% |
@@ -372,13 +385,20 @@
 ## 🚧 Known Blockers & Dependencies
 
 ### Current Blockers
-None active.
+
+> ⚠️ Updated 2026-03-06 (W-139): Three SAR P1 gaps now block Level 4 MLOps certification.
+
+| Blocker | Impact | Mitigation | Status |
+|---------|--------|------------|--------|
+| **SAR-G01: 7 Codespace secrets missing** (`CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`) | High | Set at org level — human admin required (see §13 of `GITHUB_VARIABLES_MASTER_GUIDE.md`) | 🔴 Blocked — awaiting @mbaetiong |
+| **SAR-G02: Feature store absent** | High | Design & implement (Feast or Tecton) — Phase 1 2026 | 🔴 Open |
+| **SAR-G03: Auto-retrain pipeline not wired** | High | Wire `check_drift_and_retrain()` to GH Actions trigger — Phase 2 2026 | 🔴 Open |
 
 ### Potential Blockers
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
-| **Genesis secrets not ready** | Medium | Continue other work, document requirements | 🟡 Monitored |
+| **Genesis secrets not ready** | Medium | `CODEX_MASTER_KEY` ✅ confirmed org-level; 7 Codespace secrets still missing (see SAR-G01 above) | 🟠 Partially mitigated |
 | **Cache limit constraints** | Low | Emergency cleanup, monitoring | ✅ Mitigated |
 | **CI/CD quota limits** | Low | Optimized workflows, selective triggering | ✅ Mitigated |
 | **Token budget per session** | Low | Duration-aware planning, continuation prompts | ✅ Mitigated |
@@ -415,9 +435,9 @@ None active.
 ---
 
 **Roadmap Status**: 🟢 Active & Current
-**Last Updated**: 2025-12-30 20:40 UTC
+**Last Updated**: 2026-03-06 (W-139 — MLOps level corrected 4.0→3.7; SAR blockers added)
 **Next Review**: 2026-01-06
-**Version**: 1.0.0
+**Version**: 2.1.0
 
 **Questions?** Check [Dashboard](./system/CODEBASE_DASHBOARD.md) for current status.
 

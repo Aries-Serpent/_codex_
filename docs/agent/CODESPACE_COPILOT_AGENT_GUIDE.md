@@ -237,7 +237,7 @@ jwt = app.generate_jwt()
 
 # ── 3. Get installation token ────────────────────────────────────────────────
 token = app.get_installation_token(
-    installation_id=int(os.environ["GITHUB_APP_INSTALLATION_ID"]),
+    installation_id=int(os.environ["_GITHUB_APP_INSTALLATION_ID"]),
 )
 print(token.token)           # ghs_xxxx
 print(token.is_expired())    # False
@@ -331,8 +331,8 @@ bash .devcontainer/scripts/update-content.sh   # re-install deps
 
 ### GitHub App JWT fails
 ```bash
-# Check GITHUB_APP_PRIVATE_KEY is in PEM format
-echo "$GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE KEY-----"
+# Check _GITHUB_APP_PRIVATE_KEY is in PEM format
+echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE KEY-----"
 ```
 
 ---

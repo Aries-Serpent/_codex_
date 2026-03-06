@@ -1,16 +1,25 @@
 # Level 4 MLOps Capability Assessment & Implementation Plan
 
-**Date:** Dec 6, 2025  
-**Current Status:** Level 4 MLOps Achieved  
-**Assessment:** Complete capability mapping against Microsoft Azure MLOps Maturity Model
+**Original Date:** Dec 6, 2025 | **Last Updated:** 2026-03-06 (W-139)  
+**Current Status:** ⚠️ Level 3.7 / 4.0 — NOT YET ACHIEVED  
+**Assessment:** Capability mapping against Microsoft Azure MLOps Maturity Model  
+**SAR Reference:** See [`docs/ops/SAR_METHODOLOGY.md`](../ops/SAR_METHODOLOGY.md) for the active gap-closure plan
+
+> ⚠️ **Correction Notice (2026-03-06):** The original Dec 6 2025 assessment overstated maturity.
+> A thorough SAR analysis (W-139) identified **three open P1 gaps** (feature store, auto-retrain,
+> data drift) that prevent Level 4 certification. Scores have been corrected below. The system
+> remains at **Level 3.7** until all P1 gaps in the SAR gap registry are resolved.
 
 ---
 
 ## Executive Summary
 
-The _codex_ system has achieved **Level 4 MLOps maturity** with 95% of required capabilities implemented. This assessment maps current implementation against the six core Level 4 requirements.
+The _codex_ system is operating at **Level 3.7 / 4.0 MLOps maturity**. Core DevOps, CI/CD, security,
+and cognitive-memory layers are fully Level 4 compliant. Three capability gaps — feature store,
+automated drift-triggered retraining, and real-time advanced drift detection — prevent full
+Level 4 certification. The SAR Methodology document defines the executable remediation plan.
 
-**Overall Score:** 95/100 ✅
+**Overall Score:** 74/100 ⚠️ (corrected from original Dec 2025 claim of 95/100)
 
 ---
 
@@ -29,7 +38,7 @@ Data ingestion, feature pipelines, training, evaluation, packaging, and deployme
 | **Evaluation** | ✅ Complete | Validation loops, metrics API | None |
 | **Packaging** | ✅ Complete | `pyproject.toml`, pip installable | None |
 | **Deployment** | ✅ Complete | Docker, health probes, K8s-ready | None |
-| **CI/CD Pipeline** | ✅ Complete | Nox sessions, pre-commit hooks, security scans | GitHub Actions disabled (by design) |
+| **CI/CD Pipeline** | ✅ Complete | 100 GitHub Actions workflows active; Nox; pre-commit hooks; security scans | None |
 
 **Evidence:**
 ```python
@@ -53,7 +62,7 @@ noxfile.py
 ```
 
 **Score:** 95/100 ✅  
-**Gap:** None (GitHub Actions intentionally disabled for cost control)
+**Gap:** None — 100 GitHub Actions workflows now active (as of W-121, Mar 2026)
 
 ---
 
@@ -62,41 +71,25 @@ noxfile.py
 ### Requirement
 Production metrics (performance, drift, data quality) automatically trigger retraining, with successful candidates pushed through CI/CD into production.
 
-### Current Implementation ✅ (100%)
+### Current Implementation ⚠️ (45%) — SAR-G03 OPEN
+
+> ⚠️ **Corrected 2026-03-06:** The Dec 2025 assessment incorrectly marked this as 100% complete.
+> `ContinuousLearningPipeline.check_drift_and_retrain()` exists as library code but is **not wired
+> into any live production trigger**. No GitHub Actions workflow fires it on drift; retraining
+> remains manually triggered by the data science team (see `docs/LEVEL_4_MLOPS_ASSESSMENT.md §3`).
 
 | Component | Status | Implementation | Gap |
 |-----------|--------|----------------|-----|
-| **Drift Detection** | ✅ Complete | 3 detector types (data, config, model) | None |
-| **Auto-Trigger Retraining** | ✅ Complete | `ContinuousLearningPipeline.check_drift_and_retrain()` | None |
+| **Drift Detection** | ⚠️ Partial | Basic KS test per 4-5 commit cycles (batch only) | No real-time; no multivariate |
+| **Auto-Trigger Retraining** | ❌ Missing | `check_drift_and_retrain()` exists but unwired | **SAR-G03 — P1 BLOCKER** |
 | **Model Versioning** | ✅ Complete | `ModelRegistry` with version tracking | None |
 | **Automated Deployment** | ✅ Complete | `deploy_model()` with health checks | None |
 | **Rollback Mechanism** | ✅ Complete | `rollback_to_version()` on failure | None |
 | **Performance Tracking** | ✅ Complete | Metrics collection + comparison | None |
 
-**Evidence:**
-```python
-# Drift-triggered retraining
-src/codex_ml/training/continuous_learning.py:
-  class ContinuousLearningPipeline:
-    def check_drift_and_retrain(self):
-      # Detect drift
-      if self.drift_detector.detect(current, baseline):
-        # Trigger retraining
-        new_model = self.retrain()
-        # Validate
-        if self.validate(new_model):
-          # Deploy
-          self.deploy_model(new_model)
-
-# Drift detection
-src/codex_ml/monitoring/drift_detection.py:
-  - DataDriftDetector (statistical comparison)
-  - ConfigDriftDetector (configuration changes)
-  - ModelDriftDetector (performance degradation)
-```
-
-**Score:** 100/100 ✅  
-**Gap:** None - Fully automated closed-loop retraining
+**Score:** 45/100 ⚠️  
+**Gap (SAR-G03 — P1):** Auto-trigger retraining pipeline not wired into production.  
+**Remediation:** See SAR Playbook SAR-004 in `docs/ops/SAR_METHODOLOGY.md`.
 
 ---
 
@@ -105,20 +98,26 @@ src/codex_ml/monitoring/drift_detection.py:
 ### Requirement
 Centralized monitoring for model performance, data drift, latency, errors, and resource use. Signals feed back into pipelines.
 
-### Current Implementation ✅ (100%)
+### Current Implementation ⚠️ (72%)
+
+> ⚠️ **Corrected 2026-03-06:** Distributed tracing is absent (SAR-G05). Real-time multivariate
+> drift detection is not implemented. The CI health monitor covers workflow-level observability
+> but not model-serving latency in production (SAR-G05 P2).
 
 | Component | Status | Implementation | Gap |
 |-----------|--------|----------------|-----|
 | **Model Performance** | ✅ Complete | Prometheus metrics, custom metrics API | None |
-| **Data Drift** | ✅ Complete | Statistical monitoring, alerts | None |
+| **Data Drift** | ⚠️ Partial | Statistical monitoring (batch KS), alerts | No real-time; no Evidently/Alibi |
 | **Data Quality** | ✅ Complete | Dataset integrity validation (SHA256) | None |
 | **Latency Monitoring** | ✅ Complete | Request duration metrics | None |
 | **Error Tracking** | ✅ Complete | Error rate metrics, health probes | None |
 | **Resource Monitoring** | ✅ Complete | GPU/CPU usage, memory tracking | None |
-| **Feedback Loops** | ✅ Complete | Metrics → drift detection → retraining | None |
+| **Feedback Loops** | ⚠️ Partial | CI health → `CODEX_CI_FAILURE_RATE`; no model-loop trigger | Auto-retrain loop absent |
+| **Distributed Tracing** | ❌ Missing | Not implemented | **SAR-G05 — P2** |
 | **Alerting** | ✅ Complete | Severity levels (critical → low) | None |
 
-**Evidence:**
+**Score:** 72/100 ⚠️  
+**Gap (SAR-G05 — P2):** Distributed tracing absent; real-time drift not wired to feedback loop.
 ```python
 # Prometheus metrics
 src/codex_ml/monitoring/metrics.py:
@@ -316,25 +315,29 @@ scripts/generate_sbom.py:
 
 ## Overall Level 4 MLOps Score
 
-| Requirement | Score | Status |
-|-------------|-------|--------|
-| 1. End-to-End Automation | 95/100 | ✅ Complete |
-| 2. Automatic Retraining & Redeployment | 100/100 | ✅ Complete |
-| 3. Strong Observability & Feedback Loops | 100/100 | ✅ Complete |
-| 4. Production-Grade Engineering | 100/100 | ✅ Complete |
-| 5. Cross-Functional De-Siloed Teams | 90/100 | ✅ Complete |
-| 6. Governance & Compliance | 85/100 | ✅ Complete |
-| **Overall** | **95/100** | **✅ Level 4 Achieved** |
+> ⚠️ **Updated 2026-03-06 (W-139):** Corrected from Dec 2025 assessment. Three P1 gaps prevent
+> Level 4 certification. See SAR Gap Registry in `docs/ops/SAR_METHODOLOGY.md §10`.
 
----
+| Requirement | Score | Status | SAR Gap |
+|-------------|-------|--------|---------|
+| 1. End-to-End Automation | 95/100 | ✅ Complete | — |
+| 2. Automatic Retraining & Redeployment | 45/100 | ❌ Incomplete | SAR-G03 (P1) |
+| 3. Strong Observability & Feedback Loops | 72/100 | ⚠️ Partial | SAR-G05 (P2) |
+| 4. Production-Grade Engineering | 92/100 | ✅ Complete | — |
+| 5. Cross-Functional De-Siloed Teams | 88/100 | ✅ Near-complete | — |
+| 6. Governance & Compliance | 85/100 | ✅ Near-complete | — |
+| 7. Feature Store | 10/100 | ❌ Missing | SAR-G02 (P1) |
+| **Overall** | **74/100** | **⚠️ Level 3.7 — NOT YET Level 4** | 3 P1 gaps open |
 
-## Gap Analysis
+### P1 Gaps Blocking Level 4 Certification
 
-### Critical Gaps (None) ✅
+| ID | Gap | Owner | Playbook | ETA |
+|----|-----|-------|----------|-----|
+| SAR-G02 | Feature store absent (ad-hoc feature computation) | @mbaetiong | New design | Phase 1 2026 |
+| SAR-G03 | Auto-retrain on drift not wired to production trigger | @mbaetiong | SAR-004 | Phase 2 2026 |
+| SAR-G05 | Distributed tracing + real-time drift loop absent | @mbaetiong | New design | Phase 2 2026 |
 
-All critical Level 4 requirements are met.
-
-### Minor Gaps (Low Priority)
+**Certification target:** Level 4.0 after all three P1 gaps resolved (Phase 2 2026)
 
 1. **Operational Runbooks** (Priority: P2)
    - Current: Documentation covers usage
@@ -520,27 +523,28 @@ Total Time: 6-8 phases for complete Level 4+ implementation
 
 ## Conclusion
 
-The _codex_ system has **achieved Level 4 MLOps maturity** with a score of **95/100**.
+The _codex_ system is operating at **Level 3.7 / 4.0 MLOps maturity** as of 2026-03-06.
 
-**Strengths:**
-- ✅ Fully automated retraining and deployment
-- ✅ Comprehensive drift detection and monitoring
-- ✅ Production-grade engineering practices
-- ✅ Self-service capabilities (no heroic DS needed)
-- ✅ Strong governance and audit trails
+**Confirmed Strengths (Level 4 capable):**
+- ✅ 100 GitHub Actions CI/CD workflows — fully automated pipeline
+- ✅ Cognitive Brain SQLite LTM/STM — persistent agent memory (unique L5 capability)
+- ✅ 48 CVEs fixed; CodeQL + detect-secrets in CI — production-grade security
+- ✅ Self-healing CI with iterative pattern classifier
+- ✅ Model registry, rollback, canary deployments
+- ✅ Variable audit CLI + intent-file mailbox for ops gap closure
 
-**Remaining Work:**
-- Operational runbooks (low priority)
-- Domain-specific fairness checks (optional)
-- Regulatory policy gates (industry-dependent)
+**Open P1 Gaps (block Level 4 certification):**
+- ❌ Feature store — ad-hoc feature computation not replaced (SAR-G02)
+- ❌ Auto-retrain pipeline — `check_drift_and_retrain()` not wired to production triggers (SAR-G03)
+- ⚠️ Real-time drift detection + feedback loop — batch KS test only (SAR-G05)
 
-**Status:** ✅ **Production Ready - Level 4 MLOps Certified**
-
-The system is a **fully automated, closed-loop ML production system** where data → training → validation → deployment → monitoring → retraining run with minimal manual intervention, driven by production signals.
+**Remediation Plan:** `docs/ops/SAR_METHODOLOGY.md` — executable planset for Copilot agent
 
 ---
 
-**Assessment Date:** Dec 6, 2025  
-**Assessor:** Automated + Manual Verification  
-**Next Review:** Phase 3 Current Cycle (Quarterly)  
-**Approval:** ✅ Level 4 MLOps Achieved
+**Original Assessment Date:** Dec 6, 2025  
+**Correction Date:** 2026-03-06 (W-139 SAR Analysis)  
+**Assessor:** Copilot Coding Agent + @mbaetiong  
+**Next Review:** After Phase 1 2026 P1 gaps closed  
+**Status:** ⚠️ **Level 3.7 — Level 4 Certification Pending (3 P1 gaps)**  
+**Approval:** ⚠️ Level 4 NOT yet achieved — see SAR Gap Registry

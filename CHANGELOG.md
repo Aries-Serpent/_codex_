@@ -5,7 +5,32 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-137/W-138: CI fixes · safe_json_loads · variable-write gap closure · PR review fixes (2026-03-06)
+## [Unreleased] — W-139: Variable audit CLI · SAR methodology · Level 4 corrections · setup-python-cached wiring · auto-sync workflow (2026-03-06)
+
+### Added (W-139)
+- `scripts/tools/variable_audit_cli.py`: new CLI tool — audit all GitHub vars/secrets vs `GITHUB_VARIABLES_MASTER_GUIDE.md`; formats: table/json/markdown; subcommands: `check`, `report`, `diff`, `expected`, `rotate-check`
+- `tests/tools/test_variable_audit_cli.py`: 37 unit tests (all passing)
+- `.github/workflows/vars-guide-sync.yml`: scheduled daily auto-sync of variable audit report + master guide timestamp; opens blocker issue when required vars absent
+- `.github/actions/setup-python-cached/action.yml`: L5 cognitive brain SQLite cache layer (`enable-l5-brain-cache` input)
+- `docs/ops/SAR_METHODOLOGY.md`: Search and Rescue methodology for Level 4 MLOps alignment; 9 Mermaid diagrams; 6 playbooks (SAR-001–006); executable planset; gap registry; watchdog coverage map
+
+### Fixed (W-139)
+- `scripts/tools/variable_audit_cli.py` `run_audit()`: `auth_ok` now defaults `False`; only set `True` after successful token resolution (was incorrectly `True` when `_VM_AVAILABLE=False`)
+- `scripts/tools/variable_intent_writer.py`: empty `except` replaced with logged warning (ruff B001/E722 compliance)
+- `tests/utils/test_json_safe.py`: import order corrected (ruff I001)
+- `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`: all `GITHUB_APP_*` references corrected to `_GITHUB_APP_*`
+
+### Changed (W-139 — workflow cache wiring)
+- `.github/workflows/pre-flight-validation.yml`: `actions/setup-python@v5` → `setup-python-cached` with `cache-tier: common`
+- `.github/workflows/iterative-self-healing-ci.yml`: both setup-python steps → `setup-python-cached`; `pip install` → `.venv_ci/bin/pip install`
+- `.github/workflows/qa-walkthrough.yml`: `setup-python@v5` + `cache: pip` → `setup-python-cached`; `pip install` → `.venv_ci/bin/pip install`
+
+### Corrected (W-139 — Level 4 MLOps accuracy)
+- `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md`: corrected from "Level 4 Achieved 95/100" → "Level 3.7 — NOT YET ACHIEVED 74/100"; three P1 gaps documented (SAR-G02 feature store, SAR-G03 auto-retrain, SAR-G05 distributed tracing); GitHub Actions claim "disabled" → "100 workflows active"
+- `docs/LEVEL_4_MLOPS_ASSESSMENT.md`: updated Level 3.5 → 3.7; W-129–W-139 progress noted; metrics updated (deployment freq 12→20/month, automated 70%→85%)
+- `docs/ROADMAP.md` v1.0.0→v2.1.0: MLOps Maturity Level 4→3.7 ⚠️; CI/CD 49→100 workflows; Security 26→48 CVEs; Test Suite 1300+→1500+; Test Coverage 72%→90%; Current Blockers updated (none→3 SAR P1 gaps); Genesis secret status updated; Phase 2 SAR sprint task added
+
+
 
 ### Fixed (W-137 — CI + safe JSON)
 - `.github/actions/setup-python-cached/action.yml`: removed `${{ vars.CODEX_CACHE_VERSION || 'v2' }}` template expression from `description:` field (line 55). GitHub Actions runner now rejects `${{ }}` in `description:` fields of composite action inputs — replaced with plain text. Unblocks pre-merge validation run #22755225950.

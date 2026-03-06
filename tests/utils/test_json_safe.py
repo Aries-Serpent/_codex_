@@ -100,6 +100,7 @@ class TestSafeJsonLoads:
         monkeypatch.setenv("CODEX_JSON_DEBUG_DIR", str(tmp_path))
         # Reload module so it picks up the new env var
         import importlib
+
         import codex.utils.json_safe as jm
         importlib.reload(jm)
 

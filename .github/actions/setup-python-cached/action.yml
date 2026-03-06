@@ -42,6 +42,15 @@ inputs:
     description: 'Install npm tools such as markdown-link-check (true/false)'
     required: false
     default: 'false'
+  enable-l5-brain-cache:
+    description: >
+      Layer 5 — Cognitive Brain SQLite cache.  When 'true', restores the
+      cognitive brain SQLite DB (.codex/cognitive_brain/) from the L5 cache
+      before the run and saves it afterwards.  This gives agents fast access
+      to accumulated session patterns without a cold-start rebuild.
+      Only effective when the DB path exists in the repo.
+    required: false
+    default: 'false'
   cache-tier:
     description: >
       Cache tier: live | common | ephemeral.
@@ -281,6 +290,20 @@ runs:
       run: |
         echo "venv-python=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_OUTPUT"
         echo "VENV_PYTHON=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_ENV"
+
+    # ─────────────────────────────────────────────────────────────────
+    # L5 — Cognitive Brain SQLite cache (optional)
+    # Restores accumulated session patterns to avoid cold-start rebuild.
+    # ─────────────────────────────────────────────────────────────────
+    - name: L5 Cognitive Brain cache — restore
+      if: inputs.enable-l5-brain-cache == 'true'
+      uses: actions/cache@v5
+      with:
+        path: .codex/cognitive_brain
+        key: ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-${{ hashFiles('.codex/cognitive_brain/**') }}
+        restore-keys: |
+          ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-
+          ${{ runner.os }}-l5-brain-
 
     - name: Report cache status
       shell: bash

@@ -117,7 +117,9 @@ def list_intents() -> list[dict]:
         try:
             intents.append(json.loads(f.read_text(encoding="utf-8")))
         except json.JSONDecodeError:
-            pass
+            # Malformed intent file — skip silently with a warning so corrupt
+            # files don't block the queue but are visible in logs.
+            print(f"  ⚠️  Skipping malformed intent file: {f.name}", file=sys.stderr)
     return intents
 
 
