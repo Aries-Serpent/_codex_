@@ -5,6 +5,20 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-142: Fix unresolved code-review conversations (2026-03-06)
+
+### Fixed (W-142 — code-review conversation fixes)
+- `scripts/tools/variable_audit_cli.py`: Replace two empty `except Exception: pass` blocks with diagnostic `print(..., file=sys.stderr)` so token-resolution failures and unparseable `updated_at` timestamps are surfaced to developers without changing exit codes or control flow
+- `scripts/tools/variable_audit_cli.py`: Remove unused global `_GUIDE` constant (dead code)
+- All 10 unresolved conversations verified/confirmed fixed:
+  - `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`: `_GITHUB_APP_*` names already correct (W-139)
+  - `.devcontainer/scripts/post-attach.sh`: banner checks `_GITHUB_APP_ID` (already correct)
+  - `.devcontainer/scripts/post-create.sh`: JSON status list checks `_GITHUB_APP_*` (already correct)
+  - `tests/integration/test_genesis_workflow.py`: no backslash-continuation asserts remain (W-141)
+  - `src/codex/auth/user_store.py`: `User` docstring updated to "Mutable" (already correct)
+  - `.github/workflows/build-preview-image.yml`: GHCR login + push gated on `push_image` (already correct)
+  - `.github/workflows/agent-registry-validation.yml`: only one pip-caching mechanism present (already correct)
+
 ## [Unreleased] — W-141: Fix stale genesis test assertions + backslash continuations (2026-03-06)
 
 ### Fixed (W-141 — test_genesis_workflow.py stale assertions)

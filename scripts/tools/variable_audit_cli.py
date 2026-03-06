@@ -61,7 +61,6 @@ except Exception:  # pragma: no cover
 _OWNER = "Aries-Serpent"
 _REPO  = "_codex_"
 _ENV   = "Aries_Serpent_codex_"
-_GUIDE = _REPO_ROOT / "docs" / "admin" / "GITHUB_VARIABLES_MASTER_GUIDE.md"
 
 # Storage-layer identifiers used in the registry
 LAYER_ORG_SECRETS   = "org-secrets"
@@ -770,8 +769,8 @@ def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
         if _VM_AVAILABLE:
             try:
                 token, _ = _resolve_token()
-            except Exception:
-                pass
+            except Exception as exc:  # best-effort — failure falls through to "No token" branch
+                print(f"[variable_audit_cli] token resolution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
 
         if not token:
             lines.append(_c(_YELLOW, "❌ No token — cannot fetch live rotation timestamps."))
@@ -797,8 +796,12 @@ def main(argv: Optional[List[str]] = None) -> int:  # noqa: C901
                     age = (now - dt).days
                     if age >= args.days:
                         lines.append(_c(_RED, f"⚠️  {label}/{name}  —  {age}d ago  (last: {updated[:10]})"))
-                except Exception:
-                    pass
+                except Exception as exc:  # skip entries with unparseable timestamps
+                    print(
+                        f"[variable_audit_cli] could not parse updated_at={updated!r}: "
+                        f"{type(exc).__name__}: {exc}",
+                        file=sys.stderr,
+                    )
         print("\n".join(lines))
         return 0
 
