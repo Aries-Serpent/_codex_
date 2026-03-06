@@ -36,7 +36,7 @@ _HASH_BYTES = 32
 
 @dataclass
 class User:
-    """Immutable user identity record."""
+    """Mutable user identity record (password, active flag, and updated_at are updated in-place)."""
 
     user_id: str
     username: str

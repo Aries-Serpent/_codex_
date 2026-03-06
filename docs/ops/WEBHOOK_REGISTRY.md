@@ -278,12 +278,12 @@ For interactive Codespace sessions, the webhook receiver URL is **automatically 
 | **URL format** | `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
 | **Set by** | `.devcontainer/scripts/post-start.sh` |
 | **Repo variable** | `WEBHOOK_RECEIVER_URL` (auto-updated via `gh variable set`) |
-| **Token required** | `CODEX_MASTER_KEY` Codespace secret (or `GITHUB_TOKEN` if available) |
-| **Port visibility** | Port 8765 must be **public** for GitHub to deliver webhooks |
+| **Token required** | `CODEX_MASTER_KEY` Codespace secret — required for `gh variable set` (Actions Variables API). `GITHUB_TOKEN` cannot access the Variables API and will always return 403. |
+| **Port visibility** | Port 8765 must be **org** visibility (not public) for GitHub to deliver webhooks while preventing unauthenticated internet access |
 | **Receiver endpoint** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` |
 
 ### Requirements
-1. Port 8765 must be set to **public** visibility in the Codespace Ports panel
+1. Port 8765 must be set to **org** visibility in the Codespace Ports panel (not public — org restricts access to GitHub organization members only)
 2. `WEBHOOK_SECRET` must be set as a Codespace secret (matches the HMAC key on the webhook)
 3. `CODEX_MASTER_KEY` must be set as a Codespace secret (needed to update the repo variable)
 

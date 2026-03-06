@@ -133,10 +133,12 @@ if [ -n "${CODESPACE_NAME:-}" ]; then
         echo "     Manual fix: gh variable set CODEX_ACTIVE_CODESPACE --body '${CODESPACE_NAME}' --repo Aries-Serpent/_codex_"
     fi
 
-    # Attempt to make port public for webhook delivery.
+    # Attempt to make port visible to the organization for webhook delivery.
     # Requires: gh CLI >= 2.28.0 and Codespace token with port-visibility permission.
-    gh codespace ports visibility "${CLI_API_PORT}:public" -c "${CODESPACE_NAME}" 2>/dev/null || \
-        echo "  ⚠️  Could not auto-set port ${CLI_API_PORT} to public. Manually set it in the Ports panel for webhook delivery."
+    # NOTE: org visibility (not public) limits exposure to GitHub org members only,
+    # preventing unauthenticated access to /api/cli/run and /api/request endpoints.
+    gh codespace ports visibility "${CLI_API_PORT}:org" -c "${CODESPACE_NAME}" 2>/dev/null || \
+        echo "  ⚠️  Could not auto-set port ${CLI_API_PORT} to org visibility. Manually adjust it in the Ports panel if needed."
 else
     echo "  ℹ️  Not running in Codespace — Codespace-scoped repo variables not updated"
 fi

@@ -41,7 +41,7 @@ echo ""
 
 # ── Token status ──────────────────────────────────────────────────────────────
 echo "  Auth tokens:"
-for VAR in CODEX_MASTER_KEY CODEX_BACKUP_KEY GITHUB_APP_ID WEBHOOK_SECRET; do
+for VAR in CODEX_MASTER_KEY CODEX_BACKUP_KEY _GITHUB_APP_ID WEBHOOK_SECRET; do
     VAL="${!VAR:-}"
     if [ -n "$VAL" ]; then
         printf "    ✅  %-32s set\n" "$VAR"

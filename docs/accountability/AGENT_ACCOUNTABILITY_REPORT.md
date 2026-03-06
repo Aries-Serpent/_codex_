@@ -396,3 +396,56 @@ The **entire point** of this system: owner approves **once** via the environment
 This session does not end until W-001 through W-007 are all ✅.
 No more single-commit stops. No more re-exploration waste.
 The auth system you built works. I will not regress it.
+
+---
+
+## W-137 / W-138 — CI fixes · safe_json_loads · variable-write gap closure · PR review 3902237330 + 3902317943 (2026-03-06)
+
+### Actions Taken
+
+| Item | File(s) | Change |
+|------|---------|--------|
+| CI unblock | `.github/actions/setup-python-cached/action.yml` | Removed `${{ }}` template expression from `description:` field |
+| safe_json_loads | `src/codex/utils/json_safe.py` | New helper: sanitises C0 control chars, retries, writes debug artefact |
+| Tests | `tests/utils/test_json_safe.py` | 19 unit tests; removed unused `from pathlib import Path` (review 3902317943) |
+| cli_api_server wiring | `cognitive_app/src/server/cli_api_server.py` | `json.loads` → `safe_json_loads` on webhook POST + WebSocket |
+| variable_manager wiring | `scripts/tools/variable_manager.py` | `json.loads` → `safe_json_loads` on GitHub API success + error responses |
+| CI JSON validation | `.github/workflows/copilot-setup-steps.yml` | Added "🔍 Validate repo JSON files" step after checkout |
+| Variable-write gap | `scripts/tools/variable_intent_writer.py` | Intent-file mailbox writer for queuing variable ops |
+| Variable-write gap | `.github/workflows/process-variable-intents.yml` | On-push workflow processes intents via CODEX_MASTER_KEY |
+| Dockerfile fail-fast | `Dockerfile.preview` lines 58+91 | Removed `2>/dev/null \|\| true` from both `pip install -e .` calls |
+| WEBHOOK_REGISTRY doc | `docs/ops/WEBHOOK_REGISTRY.md` | Clarified GITHUB_TOKEN limitation; port `public` → `org` visibility |
+| Redundant pip cache | `.github/workflows/agent-registry-validation.yml` | Removed `cache: 'pip'` from setup-python (kept manual `actions/cache`) |
+| build-preview-image | `.github/workflows/build-preview-image.yml` | `inputs.image_tag` → `github.event.inputs.image_tag`; gated GHCR login + push on main/dispatch |
+| User docstring | `src/codex/auth/user_store.py` | "Immutable" → "Mutable" user identity record docstring |
+| Assert style | `tests/integration/test_genesis_workflow.py` | Backslash continuation → parenthesised `assert` |
+| _GITHUB_APP_* naming | `.devcontainer/scripts/post-create.sh`, `post-attach.sh` | `GITHUB_APP_ID` → `_GITHUB_APP_ID` to match actual Codespace secret names |
+| _GITHUB_APP_* naming | `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md` | All three occurrences updated to `_GITHUB_APP_*` |
+| Security audit | `.codex/qa_walkthrough/security_audit.json` | PasswordHasher iterations: `100k` → `600k` |
+| Port security | `.devcontainer/scripts/post-start.sh` | Port visibility `public` → `org` (prevents unauthenticated internet access) |
+
+### Human Admin Tasks Required
+
+The following cannot be completed by the agent (require CODEX_MASTER_KEY in Codespace or GitHub Settings UI):
+
+1. **Set 7 remaining Codespace secrets at org level** (Settings → Aries-Serpent → Codespaces → Secrets):
+   `CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`
+
+2. **`COPILOT_ACCESS_TEST` repo variable**: queued via intent file `.codex/pending_ops/variable_set_COPILOT_ACCESS_TEST_*.json`; will be auto-created by `process-variable-intents.yml` workflow on merge using CODEX_MASTER_KEY.
+
+### Verification Commands
+
+```bash
+# All json_safe tests
+python3 -m pytest tests/utils/test_json_safe.py -v
+
+# Genesis integration tests
+python3 -m pytest tests/integration/test_genesis_workflow.py -v -k "autonomous_actions or dry_run"
+
+# Ruff clean
+python3 -m ruff check src/codex/utils/json_safe.py tests/utils/test_json_safe.py scripts/tools/variable_intent_writer.py
+
+# Confirm Dockerfile fail-fast (no || true in pip install lines)
+grep "pip install.*true\|2>/dev/null" Dockerfile.preview
+# Expected: no output
+```

@@ -56,6 +56,14 @@ from __future__ import annotations
 
 import argparse
 import json
+
+# Safe JSON parser for external/untrusted inputs (GitHub API responses).
+try:
+    import sys as _sys
+    _sys.path.insert(0, str(__import__("pathlib").Path(__file__).parents[2] / "src"))
+    from codex.utils.json_safe import safe_json_loads as _safe_json_loads
+except Exception:  # pragma: no cover
+    _safe_json_loads = json.loads  # type: ignore[assignment]
 import os
 import sys
 import urllib.error
@@ -156,11 +164,11 @@ def _gh_request(
     try:
         with urllib.request.urlopen(req) as resp:  # nosec B310
             raw = resp.read()
-            return resp.status, json.loads(raw) if raw else None
+            return resp.status, _safe_json_loads(raw, source=url) if raw else None
     except urllib.error.HTTPError as exc:
         raw = exc.read()
         try:
-            body_err = json.loads(raw)
+            body_err = _safe_json_loads(raw, source=f"{url} (error body)")
         except Exception:
             body_err = raw.decode(errors="replace")
         raise GitHubAPIError(exc.code, str(body_err)) from exc

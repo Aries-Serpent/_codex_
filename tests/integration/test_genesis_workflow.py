@@ -333,8 +333,9 @@ class TestGenesisWorkflowSafety:
 
         # autonomous_actions_enabled is False pre-genesis (safe default),
         # True post-genesis Phase 2 activation (intentional, approved by maintainer)
-        assert isinstance(config["agent"]["autonomous_actions_enabled"], bool), \
+        assert isinstance(config["agent"]["autonomous_actions_enabled"], bool), (
             "autonomous_actions_enabled must be a boolean value"
+        )
 
     def test_workflow_safety_guards(self, repo_root):
         """Test that workflow has safety guards"""

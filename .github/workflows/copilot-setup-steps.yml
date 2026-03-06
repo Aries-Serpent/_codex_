@@ -131,6 +131,22 @@ jobs:
             && echo "✅ Remote branch refs fetched" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
 
+      - name: "🔍 Validate repo JSON files"
+        run: |
+          echo "── Validating JSON files in .codex/ and docs/ ──"
+          FAIL=0
+          while IFS= read -r -d '' f; do
+            if ! python3 -m json.tool "$f" > /dev/null 2>&1; then
+              echo "::error file=${f}::Invalid JSON: ${f}"
+              FAIL=$((FAIL + 1))
+            fi
+          done < <(find .codex docs -name "*.json" -not -path "*/__pycache__/*" -print0 2>/dev/null)
+          if [ "$FAIL" -gt 0 ]; then
+            echo "::error::${FAIL} invalid JSON file(s) found — fix before proceeding"
+            exit 1
+          fi
+          echo "✅ All JSON files valid"
+
       # Guard: git show <base_sha> -- <file> exits 128 for files added after
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.

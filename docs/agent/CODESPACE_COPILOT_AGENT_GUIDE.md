@@ -53,9 +53,9 @@ these **Codespace secrets** (Settings → Codespaces → Secrets):
 | `CODEX_MASTER_KEY` | **Yes** | Primary GitHub PAT (`repo` scope). Enables Variables API, Secrets API, Webhooks API. |
 | `CODEX_BACKUP_KEY` | **Yes** | Fallback PAT — used automatically when master returns 401/403. |
 | `CODEX_ADMIN_KEY` | For webhooks | Fine-grained PAT (Webhooks:write). Webhook management only. |
-| `GITHUB_APP_ID` | For GitHub App | Numeric App ID from github.com/settings/apps. |
-| `GITHUB_APP_PRIVATE_KEY` | For GitHub App | PEM RSA-2048 private key. Multi-line — paste as-is. |
-| `GITHUB_APP_INSTALLATION_ID` | For install tokens | Get from `GET /app/installations`. |
+| `_GITHUB_APP_ID` | For GitHub App | Numeric App ID from github.com/settings/apps. |
+| `_GITHUB_APP_PRIVATE_KEY` | For GitHub App | PEM RSA-2048 private key. Multi-line — paste as-is. |
+| `_GITHUB_APP_INSTALLATION_ID` | For install tokens | Get from `GET /app/installations`. |
 | `WEBHOOK_SECRET` | For webhook verify | Shared HMAC secret set on the GitHub webhook. |
 | `WEBHOOK_RECEIVER_URL` | For activation | Public URL for webhook delivery. |
 
@@ -147,9 +147,9 @@ exactly.
 | `CODEX_MASTER_KEY` | Codespace secret | Primary PAT — auto-injected by Codespaces |
 | `CODEX_BACKUP_KEY` | Codespace secret | Fallback — tried on 401/403 |
 | `CODEX_ADMIN_KEY` | Codespace secret | Webhook operations only |
-| `GITHUB_APP_ID` | Codespace secret | Numeric App ID |
-| `GITHUB_APP_PRIVATE_KEY` | Codespace secret | PEM key (multi-line OK) |
-| `GITHUB_APP_INSTALLATION_ID` | Codespace secret | Installation ID |
+| `_GITHUB_APP_ID` | Codespace secret | Numeric App ID |
+| `_GITHUB_APP_PRIVATE_KEY` | Codespace secret | PEM key (multi-line OK) |
+| `_GITHUB_APP_INSTALLATION_ID` | Codespace secret | Installation ID |
 | `WEBHOOK_SECRET` | Codespace secret | HMAC secret |
 
 ---
@@ -226,10 +226,10 @@ for val, name in _resolve_github_token():
     status = "✅" if val else "❌"
     print(f"  {status} {name}")
 
-# ── 2. Generate App JWT (needs GITHUB_APP_ID + GITHUB_APP_PRIVATE_KEY) ──────
+# ── 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) ──────
 cfg = GitHubAppConfig(
-    app_id=int(os.environ["GITHUB_APP_ID"]),
-    private_key_pem=os.environ["GITHUB_APP_PRIVATE_KEY"],
+    app_id=int(os.environ["_GITHUB_APP_ID"]),
+    private_key_pem=os.environ["_GITHUB_APP_PRIVATE_KEY"],
     webhook_secret=os.environ.get("WEBHOOK_SECRET"),
 )
 app = GitHubApp(cfg)

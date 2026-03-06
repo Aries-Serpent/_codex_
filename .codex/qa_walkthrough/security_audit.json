@@ -116,7 +116,7 @@
   "new_capabilities_w126_w131": {
     "WebhookVerifier": "HMAC-SHA256 X-Hub-Signature-256 verification (fails closed)",
     "GitHubAppConfig": "SSRF-safe URL validation via allowlist (no private-IP targets)",
-    "PasswordHasher": "PBKDF2-SHA256 with per-user salt (100k iterations)",
+    "PasswordHasher": "PBKDF2-SHA256 with per-user salt (600k iterations)",
     "AuthMiddleware": "JWT middleware with dev fallback guard (raises in prod if key absent)",
     "InstallationToken": "Cached GitHub App installation token with 60s expiry buffer"
   },

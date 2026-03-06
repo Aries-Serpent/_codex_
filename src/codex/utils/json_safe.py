@@ -76,7 +76,7 @@ def _write_debug_artifact(sanitized: str, source: str) -> Path | None:
     try:
         _DEBUG_DIR.mkdir(parents=True, exist_ok=True)
         ts = int(time.time())
-        safe_src = re.sub(r"[^\w\-]", "_", source)[:40]
+        safe_src = re.sub(r"[^\w]", "_", source)[:40]
         path = _DEBUG_DIR / f"sanitized_{safe_src}_{ts}.json"
         path.write_text(sanitized, encoding="utf-8")
         return path

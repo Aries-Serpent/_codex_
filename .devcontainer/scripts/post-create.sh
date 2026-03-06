@@ -68,8 +68,8 @@ _report_token() {
 _report_token "CODEX_MASTER_KEY"
 _report_token "CODEX_BACKUP_KEY"
 _report_token "CODEX_ADMIN_KEY"
-_report_token "GITHUB_APP_ID"
-_report_token "GITHUB_APP_PRIVATE_KEY"
+_report_token "_GITHUB_APP_ID"
+_report_token "_GITHUB_APP_PRIVATE_KEY"
 _report_token "WEBHOOK_SECRET"
 
 # Write a non-secret summary to .codex/codespace_auth_status.json
@@ -78,7 +78,7 @@ python3 - << PYEOF
 import json, os, time
 secrets = [
     "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "CODEX_ADMIN_KEY",
-    "GITHUB_APP_ID", "GITHUB_APP_PRIVATE_KEY", "GITHUB_APP_INSTALLATION_ID",
+    "_GITHUB_APP_ID", "_GITHUB_APP_PRIVATE_KEY", "_GITHUB_APP_INSTALLATION_ID",
     "WEBHOOK_SECRET", "WEBHOOK_RECEIVER_URL",
 ]
 status = {s: bool(os.environ.get(s)) for s in secrets}
