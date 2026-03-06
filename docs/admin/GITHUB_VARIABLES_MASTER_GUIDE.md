@@ -1,8 +1,8 @@
 # GitHub Variables & Secrets — Master Reference Guide
 
-> **Version:** 1.2.0 (W-130, 2026-03-06)  
+> **Version:** 1.3.0 (W-135, 2026-03-06)  
 > **Owner:** @mbaetiong  
-> **Status:** ✅ Current — reflects live state as of 2026-03-06 (authoritative export from mbaetiong)  
+> **Status:** ✅ Current — reflects live state as of 2026-03-06 (authoritative export from mbaetiong, second pass)  
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
 > **Auto-synced by:** `repo-var-sync-schedule.yml` (daily 06:00 UTC → `.codex/agent_context.json`)
 
