@@ -1,7 +1,36 @@
-version: 1.9.5
-last_updated: '2026-03-05T01:45:00Z'
-total_agents: 152
+version: 2.0.0
+last_updated: '2026-03-05T08:59:00Z'
+total_agents: 153
 agents:
+- id: github-app-manager
+  name: GitHub App Manager
+  version: 1.0.0
+  directory: .github/agents/github-app-manager
+  file: github-app-manager.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: true
+  has_docs: true
+  has_src: true
+  category: operations
+  subcategory: integrations
+  autonomy_model: E
+  enforcement_tier: PARTIAL
+  violations_30d: 0
+  capability_tags:
+    - github_app_jwt
+    - installation_tokens
+    - webhook_verification
+    - pat_token_fallback
+    - codex_master_key
+    - codex_backup_key
+    - app_manifest
+    - codespace_config
+  physics_model:
+    primary: bayesian
+  handoff_protocol: none
+
 - id: github-guru-agent
   name: GitHub Guru Agent
   version: 1.1.0

@@ -2,6 +2,12 @@
 
 Administrative documentation including policies, governance, and tracking.
 
+## 🔑 Variables & Secrets (Unified Reference)
+
+- **[GITHUB_VARIABLES_MASTER_GUIDE.md](./GITHUB_VARIABLES_MASTER_GUIDE.md)** — **Single source of truth** for ALL GitHub variables and secrets: org secrets, repo secrets, environment secrets/variables, Codespace secrets, repo variables. Includes status checkboxes, troubleshooting, and links to GitHub UI. *(W-128, 2026-03-05)*
+- [REPO_VARIABLES_IMPLEMENTATION_GUIDE.md](./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md) — Technical architecture and subsystem wiring for repo variables
+- [HUMAN_ADMIN_REPO_VARIABLES_SETUP.md](./HUMAN_ADMIN_REPO_VARIABLES_SETUP.md) — Step-by-step admin CLI/UI setup guide
+
 ## Policies
 - [AI Agency Policy Verification](AI_AGENCY_POLICY_VERIFICATION.md) - AI agent operational policies
 - [Governance](GOVERNANCE.md) - Repository governance structure

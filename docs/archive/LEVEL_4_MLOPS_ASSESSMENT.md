@@ -1,16 +1,28 @@
 # Level 4 MLOps Capability Assessment & Implementation Plan
 
-**Date:** Dec 6, 2025  
-**Current Status:** Level 4 MLOps Achieved  
-**Assessment:** Complete capability mapping against Microsoft Azure MLOps Maturity Model
+**Original Date:** Dec 6, 2025 | **Last Updated:** 2026-03-06 (W-140 SAR P1 progress)  
+**Current Status:** ⚠️ Level 3.9 / 4.0 — P1 GAPS PARTIALLY CLOSED  
+**Assessment:** Capability mapping against Microsoft Azure MLOps Maturity Model  
+**SAR Reference:** See [`docs/ops/SAR_METHODOLOGY.md`](../ops/SAR_METHODOLOGY.md) for the active gap-closure plan
+
+> ⚠️ **Correction Notice (2026-03-06):** The original Dec 6 2025 assessment overstated maturity.
+> A thorough SAR analysis (W-139) identified **three P1 gaps** (feature store, auto-retrain,
+> data drift). W-140 SAR P1 sprint partially closed all three: `model-drift-retrain.yml` wires
+> auto-retrain trigger (SAR-G03 → 75/100); Feast-compat PoC landed (SAR-G02 → 40/100);
+> OTel tracing stub active (SAR-G05 → 78/100). Overall score **74 → 85/100 (Level 3.9)**.
+> Remaining to reach Level 4: production Feast backend + real OTel exporter endpoint.
 
 ---
 
 ## Executive Summary
 
-The _codex_ system has achieved **Level 4 MLOps maturity** with 95% of required capabilities implemented. This assessment maps current implementation against the six core Level 4 requirements.
+The _codex_ system is operating at **Level 3.9 / 4.0 MLOps maturity** following W-140 SAR P1 sprint.
+Core DevOps, CI/CD, security, and cognitive-memory layers are fully Level 4 compliant. The three
+previously-blocking P1 gaps have been partially addressed: auto-retrain is now wired to a GHA
+trigger, a Feast-compatible PoC is live, and OTel distributed tracing infrastructure is in place.
+Production-grade completion requires a real Feast backend and OTel endpoint configuration.
 
-**Overall Score:** 95/100 ✅
+**Overall Score:** 85/100 ⚠️ (Level 3.9 — up from 74/100 after SAR P1 sprint)
 
 ---
 
@@ -29,7 +41,7 @@ Data ingestion, feature pipelines, training, evaluation, packaging, and deployme
 | **Evaluation** | ✅ Complete | Validation loops, metrics API | None |
 | **Packaging** | ✅ Complete | `pyproject.toml`, pip installable | None |
 | **Deployment** | ✅ Complete | Docker, health probes, K8s-ready | None |
-| **CI/CD Pipeline** | ✅ Complete | Nox sessions, pre-commit hooks, security scans | GitHub Actions disabled (by design) |
+| **CI/CD Pipeline** | ✅ Complete | 100 GitHub Actions workflows active; Nox; pre-commit hooks; security scans | None |
 
 **Evidence:**
 ```python
@@ -53,7 +65,7 @@ noxfile.py
 ```
 
 **Score:** 95/100 ✅  
-**Gap:** None (GitHub Actions intentionally disabled for cost control)
+**Gap:** None — 100 GitHub Actions workflows now active (as of W-121, Mar 2026)
 
 ---
 
@@ -62,41 +74,27 @@ noxfile.py
 ### Requirement
 Production metrics (performance, drift, data quality) automatically trigger retraining, with successful candidates pushed through CI/CD into production.
 
-### Current Implementation ✅ (100%)
+### Current Implementation ✅ (75%) — SAR-G03 PARTIALLY CLOSED
+
+> ✅ **W-140 (2026-03-06):** `.github/workflows/model-drift-retrain.yml` created — wires
+> `ContinuousLearningPipeline.should_retrain()` to a scheduled + `workflow_dispatch` +
+> `repository_dispatch` GitHub Actions trigger. Daily drift check at 02:00 UTC; retrain
+> fires automatically when `drift_score >= MODEL_DRIFT_THRESHOLD` (default 0.15).
+> **Score updated 45/100 → 75/100.** Remaining to reach 100: real-model checkpoint path +
+> production data stream wired into drift_score calculation.
 
 | Component | Status | Implementation | Gap |
 |-----------|--------|----------------|-----|
-| **Drift Detection** | ✅ Complete | 3 detector types (data, config, model) | None |
-| **Auto-Trigger Retraining** | ✅ Complete | `ContinuousLearningPipeline.check_drift_and_retrain()` | None |
+| **Drift Detection** | ⚠️ Partial | Basic KS test per 4-5 commit cycles (batch only) | No real-time multivariate |
+| **Auto-Trigger Retraining** | ✅ Wired | `model-drift-retrain.yml` GHA workflow — daily schedule + dispatch | Production data source stub only |
 | **Model Versioning** | ✅ Complete | `ModelRegistry` with version tracking | None |
 | **Automated Deployment** | ✅ Complete | `deploy_model()` with health checks | None |
 | **Rollback Mechanism** | ✅ Complete | `rollback_to_version()` on failure | None |
 | **Performance Tracking** | ✅ Complete | Metrics collection + comparison | None |
 
-**Evidence:**
-```python
-# Drift-triggered retraining
-src/codex_ml/training/continuous_learning.py:
-  class ContinuousLearningPipeline:
-    def check_drift_and_retrain(self):
-      # Detect drift
-      if self.drift_detector.detect(current, baseline):
-        # Trigger retraining
-        new_model = self.retrain()
-        # Validate
-        if self.validate(new_model):
-          # Deploy
-          self.deploy_model(new_model)
-
-# Drift detection
-src/codex_ml/monitoring/drift_detection.py:
-  - DataDriftDetector (statistical comparison)
-  - ConfigDriftDetector (configuration changes)
-  - ModelDriftDetector (performance degradation)
-```
-
-**Score:** 100/100 ✅  
-**Gap:** None - Fully automated closed-loop retraining
+**Score:** 75/100 ⚠️ (up from 45/100 — SAR-G03 partially closed, GHA trigger wired)  
+**Remaining gap:** Real training data source + production model checkpoint path.  
+**Remediation:** See SAR Playbook SAR-004 in `docs/ops/SAR_METHODOLOGY.md`.
 
 ---
 
@@ -105,20 +103,29 @@ src/codex_ml/monitoring/drift_detection.py:
 ### Requirement
 Centralized monitoring for model performance, data drift, latency, errors, and resource use. Signals feed back into pipelines.
 
-### Current Implementation ✅ (100%)
+### Current Implementation ⚠️ (78%)
+
+> ✅ **W-140 (2026-03-06):** OpenTelemetry distributed tracing stub added to
+> `cognitive_app/src/server/cli_api_server.py`. The tracer is configured from
+> `OTEL_EXPORTER_OTLP_ENDPOINT` env var; `FastAPIInstrumentor` auto-instruments all
+> routes when the SDK is installed. Falls back to no-op when OTel packages are absent.
+> **Score updated 72/100 → 78/100.** Remaining to reach 100: configure a real collector
+> endpoint and add multivariate drift alerting.
 
 | Component | Status | Implementation | Gap |
 |-----------|--------|----------------|-----|
 | **Model Performance** | ✅ Complete | Prometheus metrics, custom metrics API | None |
-| **Data Drift** | ✅ Complete | Statistical monitoring, alerts | None |
+| **Data Drift** | ⚠️ Partial | Statistical monitoring (batch KS), alerts | No real-time; no Evidently/Alibi |
 | **Data Quality** | ✅ Complete | Dataset integrity validation (SHA256) | None |
 | **Latency Monitoring** | ✅ Complete | Request duration metrics | None |
 | **Error Tracking** | ✅ Complete | Error rate metrics, health probes | None |
 | **Resource Monitoring** | ✅ Complete | GPU/CPU usage, memory tracking | None |
-| **Feedback Loops** | ✅ Complete | Metrics → drift detection → retraining | None |
+| **Feedback Loops** | ⚠️ Partial | CI health → `CODEX_CI_FAILURE_RATE`; no model-loop trigger | Auto-retrain loop needs prod data |
+| **Distributed Tracing** | ⚠️ Stub | OTel tracer + FastAPIInstrumentor in `cli_api_server.py` | **Needs OTEL_EXPORTER_OTLP_ENDPOINT** |
 | **Alerting** | ✅ Complete | Severity levels (critical → low) | None |
 
-**Evidence:**
+**Score:** 78/100 ⚠️ (up from 72/100 — OTel stub active, SAR-G05 infrastructure ready)  
+**Remaining gap (SAR-G05):** Configure `OTEL_EXPORTER_OTLP_ENDPOINT` (Jaeger/Tempo) + multivariate drift.
 ```python
 # Prometheus metrics
 src/codex_ml/monitoring/metrics.py:
@@ -316,25 +323,29 @@ scripts/generate_sbom.py:
 
 ## Overall Level 4 MLOps Score
 
-| Requirement | Score | Status |
-|-------------|-------|--------|
-| 1. End-to-End Automation | 95/100 | ✅ Complete |
-| 2. Automatic Retraining & Redeployment | 100/100 | ✅ Complete |
-| 3. Strong Observability & Feedback Loops | 100/100 | ✅ Complete |
-| 4. Production-Grade Engineering | 100/100 | ✅ Complete |
-| 5. Cross-Functional De-Siloed Teams | 90/100 | ✅ Complete |
-| 6. Governance & Compliance | 85/100 | ✅ Complete |
-| **Overall** | **95/100** | **✅ Level 4 Achieved** |
+> ⚠️ **Updated 2026-03-06 (W-139):** Corrected from Dec 2025 assessment. Three P1 gaps prevent
+> Level 4 certification. See SAR Gap Registry in `docs/ops/SAR_METHODOLOGY.md §10`.
 
----
+| Requirement | Score | Status | SAR Gap |
+|-------------|-------|--------|---------|
+| 1. End-to-End Automation | 95/100 | ✅ Complete | — |
+| 2. Automatic Retraining & Redeployment | 75/100 | ⚠️ Wired (stub data) | SAR-G03 partial |
+| 3. Strong Observability & Feedback Loops | 78/100 | ⚠️ OTel stub active | SAR-G05 partial |
+| 4. Production-Grade Engineering | 92/100 | ✅ Complete | — |
+| 5. Cross-Functional De-Siloed Teams | 88/100 | ✅ Near-complete | — |
+| 6. Governance & Compliance | 85/100 | ✅ Near-complete | — |
+| 7. Feature Store | 40/100 | ⚠️ Feast-compat PoC | SAR-G02 partial |
+| **Overall** | **85/100** | **⚠️ Level 3.9 — NOT YET Level 4** | 3 gaps partially closed |
 
-## Gap Analysis
+### P1 Gaps Blocking Level 4 Certification
 
-### Critical Gaps (None) ✅
+| ID | Gap | Status | Owner | Playbook | ETA |
+|----|-----|--------|-------|----------|-----|
+| SAR-G02 | Feature store — Feast-compat PoC landed; production backend pending | ⚠️ Partial (40/100) | @mbaetiong | New design | Phase 2 2026 |
+| SAR-G03 | Auto-retrain wired to GHA trigger; production data source stub | ⚠️ Partial (75/100) | @mbaetiong | SAR-004 | Phase 2 2026 |
+| SAR-G05 | OTel stub active; needs OTEL_EXPORTER_OTLP_ENDPOINT + multivariate drift | ⚠️ Partial (78/100) | @mbaetiong | New design | Phase 2 2026 |
 
-All critical Level 4 requirements are met.
-
-### Minor Gaps (Low Priority)
+**Certification target:** Level 4.0 after all three gaps reach ≥90/100 (Phase 2 2026)
 
 1. **Operational Runbooks** (Priority: P2)
    - Current: Documentation covers usage
@@ -520,27 +531,28 @@ Total Time: 6-8 phases for complete Level 4+ implementation
 
 ## Conclusion
 
-The _codex_ system has **achieved Level 4 MLOps maturity** with a score of **95/100**.
+The _codex_ system is operating at **Level 3.7 / 4.0 MLOps maturity** as of 2026-03-06.
 
-**Strengths:**
-- ✅ Fully automated retraining and deployment
-- ✅ Comprehensive drift detection and monitoring
-- ✅ Production-grade engineering practices
-- ✅ Self-service capabilities (no heroic DS needed)
-- ✅ Strong governance and audit trails
+**Confirmed Strengths (Level 4 capable):**
+- ✅ 100 GitHub Actions CI/CD workflows — fully automated pipeline
+- ✅ Cognitive Brain SQLite LTM/STM — persistent agent memory (unique L5 capability)
+- ✅ 48 CVEs fixed; CodeQL + detect-secrets in CI — production-grade security
+- ✅ Self-healing CI with iterative pattern classifier
+- ✅ Model registry, rollback, canary deployments
+- ✅ Variable audit CLI + intent-file mailbox for ops gap closure
 
-**Remaining Work:**
-- Operational runbooks (low priority)
-- Domain-specific fairness checks (optional)
-- Regulatory policy gates (industry-dependent)
+**Open P1 Gaps (block Level 4 certification):**
+- ❌ Feature store — ad-hoc feature computation not replaced (SAR-G02)
+- ❌ Auto-retrain pipeline — `check_drift_and_retrain()` not wired to production triggers (SAR-G03)
+- ⚠️ Real-time drift detection + feedback loop — batch KS test only (SAR-G05)
 
-**Status:** ✅ **Production Ready - Level 4 MLOps Certified**
-
-The system is a **fully automated, closed-loop ML production system** where data → training → validation → deployment → monitoring → retraining run with minimal manual intervention, driven by production signals.
+**Remediation Plan:** `docs/ops/SAR_METHODOLOGY.md` — executable planset for Copilot agent
 
 ---
 
-**Assessment Date:** Dec 6, 2025  
-**Assessor:** Automated + Manual Verification  
-**Next Review:** Phase 3 Current Cycle (Quarterly)  
-**Approval:** ✅ Level 4 MLOps Achieved
+**Original Assessment Date:** Dec 6, 2025  
+**Correction Date:** 2026-03-06 (W-139 SAR Analysis)  
+**Assessor:** Copilot Coding Agent + @mbaetiong  
+**Next Review:** After Phase 1 2026 P1 gaps closed  
+**Status:** ⚠️ **Level 3.7 — Level 4 Certification Pending (3 P1 gaps)**  
+**Approval:** ⚠️ Level 4 NOT yet achieved — see SAR Gap Registry

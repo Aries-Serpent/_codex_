@@ -27,6 +27,7 @@ Usage:
         return {"user": request.state.user_id}
 """
 
+from .authenticator import Authenticator, LoginResult
 from .exceptions import (
     APIKeyError,
     APIKeyRevokedError,
@@ -48,6 +49,13 @@ from .exceptions import (
     TokenExpiredError,
     TokenRevokedError,
 )
+from .github_app import (
+    GitHubApp,
+    GitHubAppConfig,
+    InstallationToken,
+    WebhookVerifier,
+    build_app_manifest,
+)
 from .mfa_provider import BackupCode, MFAProvider, MFASecret
 from .middleware import (
     APIKeyValidator,
@@ -66,8 +74,22 @@ try:
 except ImportError:  # httpx or other optional dep missing
     OAuthConfig = OAuthManager = OAuthToken = None  # type: ignore[assignment,misc]
 from .token_manager import SessionInfo, TokenClaims, TokenManager, TokenType
+from .user_store import PasswordHasher, User, UserStore
 
 __all__ = [
+    # Authenticator (high-level service)
+    "Authenticator",
+    "LoginResult",
+    # GitHub App
+    "GitHubApp",
+    "GitHubAppConfig",
+    "InstallationToken",
+    "WebhookVerifier",
+    "build_app_manifest",
+    # User store
+    "User",
+    "PasswordHasher",
+    "UserStore",
     # OAuth
     "OAuthManager",
     "OAuthToken",

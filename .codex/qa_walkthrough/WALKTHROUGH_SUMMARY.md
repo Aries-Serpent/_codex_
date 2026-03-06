@@ -1,8 +1,8 @@
 # QA Walkthrough Summary - _codex_ Repository
 
-**Last Updated**: 2026-02-12
+**Last Updated**: 2026-03-06
 **Repository**: _codex_
-**Status**: Session 13 Complete — PS-13 Agent Task Router, Test Collection Fix
+**Status**: Session 15 Complete — W-129–W-132: Auth, Webhook, Devcontainer, Cache Verification
 
 ---
 
@@ -10,23 +10,22 @@
 
 This document provides a comprehensive summary of the QA walkthrough for the _codex_ repository, covering test coverage, documentation quality, security posture, and improvement proposals. The repository is currently executing a **100% Coverage Initiative** across tests, documentation, and plans.
 
-**Recent Update (2026-02-12)**: Session 13 — PS-13 Agent Task Router implemented, test collection fix (zendesk importorskip), nox session updated, fragile tests scanner added, PS-14 MSV dashboard design complete.
+**Recent Update (2026-03-06)**: Sessions 14–15 (W-126–W-132) — full `src/codex/auth/` package (9 files, 10 test modules), inbound GitHub webhook receiver (`POST /webhook/github` + HMAC-SHA256 verification), `.devcontainer/` Codespace lifecycle scripts, `Dockerfile.preview` multi-stage image, cache hierarchy fixes (cache@v4→v5, CODEX_CACHE_VERSION wired into L1/L3 keys, tier system made functional).
 
-### Current State (2026-02-12)
+### Current State (2026-03-06)
 
-| Metric | Current | Target | Gap |
-|--------|---------|--------|-----|
-| **Test Coverage** | 17.59% (185/1052 modules) | 100% | 82.41% |
-| **Total Test Functions** | 16,710+ | - | - |
-| **Documentation Coverage** | ~68% (estimated) | 100% | 32% |
-| **Plan Coverage** | ~85% (major features) | 100% | 15% |
-| **Python Files** | 4,325 total | - | - |
-| **Test Files** | 2,040 tests | - | - |
-| **Markdown Files** | 2,953 docs | - | - |
-| **GitHub Actions Workflows** | 107 workflows | - | - |
-| **Custom Agents** | 290 agents | - | - |
-| **Services Modules** | 48 Python files | - | - |
-| **Repository Size Reduction** | ~6.8MB offloaded | - | - |
+| Metric | Session 13 (2026-02-12) | **Now (2026-03-06)** | Target | Gap |
+|--------|------------------------|----------------------|--------|-----|
+| **src/ Python Files** | ~1,052 | **1,115** (+63) | — | — |
+| **Test Python Files** | ~2,040 | **2,207** (+167) | — | — |
+| **Test Functions** | 16,710+ | **~4,203 (tests/ only)** | — | — |
+| **Markdown Files** | 2,953 | **3,967** (+1,014) | — | — |
+| **GitHub Actions Workflows** | 107 | **101** (-6 consolidated) | — | — |
+| **Registered Agents** | 290 | **153 (AGENT_REGISTRY.yaml)** | — | — |
+| **Auth Package Coverage** | 0% (new) | **~92%** (9/9 files) | 100% | 8% |
+| **Webhook Endpoint Coverage** | 0% (new) | **~78%** | 100% | 22% |
+| **Cache Tier System** | Informational only | **Functional (W-132)** | Active | ✅ |
+| **CODEX_CACHE_VERSION wired** | ❌ disconnected | **✅ wired into L1/L3** | Active | ✅ |
 
 ### GitHub Pages Status (https://aries-serpent.github.io/_codex_/)
 
@@ -40,6 +39,26 @@ This document provides a comprehensive summary of the QA walkthrough for the _co
 | Navigation Structure | ✅ Valid | 2026-02-04 |
 
 ### Recent Progress
+
+**Session 15 (2026-03-06): Cache Verification & Shared Datasets (W-132)** ✅
+- ✅ **Cache @v4→v5**: Upgraded all `actions/cache@v4` → `@v5` in composite actions + `copilot-setup-steps.yml`
+- ✅ **CODEX_CACHE_VERSION wired**: L1 and L3 cache keys now embed `{tier}-{VER}` so `CODEX_CACHE_VERSION` bump busts all caches
+- ✅ **Tier system functional**: `cache-tier` input in `setup-python-cached` now embeds tier prefix in keys (was informational only)
+- ✅ **Fallback chain**: L1/L3 restore-keys always include `live` prefix as final fallback — common/ephemeral workflows seed from live cache
+- ✅ **agent-registry-validation.yml**: Added `actions/cache@v5` pip cache (was cold on every run)
+- ✅ **`CACHE_SHARED_DATASETS.md`**: Comprehensive ops doc covering all 4 layers, variable-based shared state, file-based datasets, cognitive brain in-process cache, gap analysis
+- ✅ **`WORKFLOW_CACHE_TIERS.md`**: Updated with functional key format, bust instructions, Mermaid diagram
+- ⚠️ **GAP identified**: 51 Python workflows still missing cache — see `docs/ops/CACHE_SHARED_DATASETS.md §7`
+- ⚠️ **GAP identified**: Cognitive brain SQLite not persisted to Actions cache (L5 layer recommended)
+
+**Session 14 (2026-03-06): Auth Package, Webhook, Devcontainer (W-126–W-131)** ✅
+- ✅ **`src/codex/auth/`**: 9-file auth package — `user_store`, `authenticator`, `github_app`, `middleware`, `oauth_manager`, `mfa_provider`, `token_manager`, `exceptions`, `__init__`
+- ✅ **`tests/auth/`**: 10 test modules, ~92% auth coverage
+- ✅ **`POST /webhook/github`**: Inbound webhook receiver with HMAC-SHA256 (fails closed). `GET /api/webhooks/recent`. `webhook_events` SQLite table
+- ✅ **`tests/server/test_webhook_endpoint.py`**: Webhook endpoint test suite
+- ✅ **`.devcontainer/`**: Full Codespace lifecycle (devcontainer.json, post-create, post-start, post-attach, on-create, update-content)
+- ✅ **`Dockerfile.preview`** + **`build-preview-image.yml`**: Multi-stage GHCR container with smoke test
+- ✅ **CI sweep (W-131)**: actionlint fix, Ruff I001 fix, pre-flight `pytest.raises` match tightening, AGENT_REGISTRY `handoff_protocol` field
 
 **Session 13 (2026-02-12): PS-13 Agent Task Router & Test Collection Fix** ✅
 - ✅ **PS-13 Complete**: `TaskRouter` class with keyword→agent mapping (7 categories, 70+ keywords)

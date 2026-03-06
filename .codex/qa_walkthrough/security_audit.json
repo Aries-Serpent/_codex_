@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "generated_at": "2026-02-04T02:40:00.000000+00:00",
+    "generated_at": "2026-03-06T06:00:00.000000+00:00",
     "repository": "_codex_",
-    "phase": "41",
-    "phase_status": "COMPLETE_QA_WALKTHROUGH"
+    "phase": "55",
+    "phase_status": "W131_SECURITY_SWEEP"
   },
   "security_tools": {
     "bandit": {
@@ -37,13 +37,14 @@
   "security_critical_files": {
     "count": 150,
     "categories": {
-      "authentication": 25,
+      "authentication": 34,
       "authorization": 18,
       "secrets_management": 22,
       "encryption": 15,
       "input_validation": 35,
       "security_middleware": 12,
-      "token_management": 23
+      "token_management": 23,
+      "webhook_verification": 3
     }
   },
   "vulnerability_status": {
@@ -111,5 +112,15 @@
       }
     ],
     "ip_005_summary": "IP-005 Security Vulnerability Remediation completed 2026-01-17"
-  }
+  },
+  "new_capabilities_w126_w131": {
+    "WebhookVerifier": "HMAC-SHA256 X-Hub-Signature-256 verification (fails closed)",
+    "GitHubAppConfig": "SSRF-safe URL validation via allowlist (no private-IP targets)",
+    "PasswordHasher": "PBKDF2-SHA256 with per-user salt (600k iterations)",
+    "AuthMiddleware": "JWT middleware with dev fallback guard (raises in prod if key absent)",
+    "InstallationToken": "Cached GitHub App installation token with 60s expiry buffer"
+  },
+  "open_findings": [],
+  "known_vulnerabilities": 0,
+  "vulnerabilities_fixed_total": 48
 }

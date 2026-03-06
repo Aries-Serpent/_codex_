@@ -1,0 +1,198 @@
+name: Auto-Sync Variables Master Guide
+
+on:
+  # Daily at 06:00 UTC — captures any overnight variable/secret changes
+  schedule:
+    - cron: '0 6 * * *'
+  # Manual trigger with optional partial refresh
+  workflow_dispatch:
+    inputs:
+      layers:
+        description: 'Layers to refresh (comma-separated: org-secrets,repo-secrets,repo-vars,env-vars or "all")'
+        required: false
+        default: 'all'
+      dry_run:
+        description: 'Dry run — generate report but do not commit'
+        required: false
+        default: 'false'
+        type: boolean
+  # Also run after any variable-intent is processed (so guide stays in sync)
+  workflow_run:
+    workflows: ['Process Variable Intents']
+    types: [completed]
+
+concurrency:
+  group: vars-guide-sync
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-guide:
+    name: Sync GITHUB_VARIABLES_MASTER_GUIDE.md
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python (cached)
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      # ── Run the variable audit CLI to generate a fresh report ───────────
+      - name: Generate audit report
+        id: audit
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+        run: |
+          set -euo pipefail
+
+          REPORT_PATH="docs/admin/variable_audit_latest.md"
+          JSON_PATH=".codex/variable_audit_latest.json"
+
+          # Generate Markdown report
+          .venv_ci/bin/python scripts/tools/variable_audit_cli.py report \
+            --out "$REPORT_PATH" 2>&1 || {
+              echo "⚠️ Audit CLI failed — falling back to offline (expected-only) mode"
+              CODEX_MASTER_KEY="" .venv_ci/bin/python scripts/tools/variable_audit_cli.py report \
+                --out "$REPORT_PATH"
+          }
+
+          # Generate JSON snapshot for machine-readable diff
+          .venv_ci/bin/python scripts/tools/variable_audit_cli.py check \
+            --format json --out "$JSON_PATH" 2>&1 || true
+
+          # Emit absent-required count as output
+          ABSENT=$(python3 -c "
+          import json, sys
+          try:
+              d = json.load(open('$JSON_PATH'))
+              count = sum(1 for r in d.get('results', []) if r['status'] == 'absent' and r['required'])
+              print(count)
+          except Exception:
+              print(0)
+          ")
+          echo "absent_required=$ABSENT" >> "$GITHUB_OUTPUT"
+          echo "report_path=$REPORT_PATH" >> "$GITHUB_OUTPUT"
+          echo "json_path=$JSON_PATH"     >> "$GITHUB_OUTPUT"
+
+      # ── Update last-synced timestamp in the guide ────────────────────────
+      - name: Stamp sync timestamp in guide
+        run: |
+          STAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          GUIDE="docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+
+          # Update or append the "Last synced" line in the guide header
+          if grep -q "^> \*\*Last synced" "$GUIDE"; then
+            sed -i "s|^> \*\*Last synced.*|> **Last synced:** \`$STAMP\` (auto-sync workflow)|" "$GUIDE"
+          else
+            # Insert after the first version line
+            sed -i "1s|^|> **Last synced:** \`$STAMP\` (auto-sync workflow)\n\n|" "$GUIDE"
+          fi
+
+          echo "Stamped: $STAMP"
+
+      # ── Check if anything changed ────────────────────────────────────────
+      - name: Detect changes
+        id: detect
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changed files:"
+            git diff --name-only
+          fi
+
+      # ── Commit and push if changed and not dry-run ───────────────────────
+      - name: Commit sync artifacts
+        if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/admin/variable_audit_latest.md \
+                  docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md \
+                  .codex/variable_audit_latest.json 2>/dev/null || true
+          git commit -m "chore(vars): auto-sync variable audit report [skip ci]
+
+          Absent required variables: ${{ steps.audit.outputs.absent_required }}
+          Triggered by: ${{ github.event_name }}
+          " || echo "Nothing to commit"
+          git push
+
+      # ── Post summary ──────────────────────────────────────────────────────
+      - name: Job summary
+        run: |
+          ABSENT="${{ steps.audit.outputs.absent_required }}"
+          CHANGED="${{ steps.detect.outputs.changed }}"
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ## 🔄 Variable Audit Auto-Sync
+
+          | Metric | Value |
+          |--------|-------|
+          | Absent required variables | $ABSENT |
+          | Report updated | $CHANGED |
+          | Dry run | ${{ inputs.dry_run || 'false' }} |
+          | Trigger | ${{ github.event_name }} |
+
+          $( [ "$ABSENT" -gt 0 ] 2>/dev/null && echo "### ⚠️ Action Required" && echo "" && echo "$ABSENT required variables are absent. See [GITHUB_VARIABLES_MASTER_GUIDE.md §13](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing)." || echo "### ✅ All required variables present" )
+
+          **Report:** \`docs/admin/variable_audit_latest.md\`
+          **JSON snapshot:** \`.codex/variable_audit_latest.json\`
+          EOF
+
+      # ── Open issue if blockers found ─────────────────────────────────────
+      - name: Open blocker issue if absent required variables
+        if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const absent = parseInt('${{ steps.audit.outputs.absent_required }}', 10);
+            if (isNaN(absent) || absent === 0) return;
+
+            // Check for existing open blocker issue
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'variable-blocker',
+              state: 'open',
+            });
+
+            if (issues.length > 0) {
+              console.log(`Existing blocker issue #${issues[0].number} already open`);
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔐 Variable Blockers: ${absent} required variable(s) absent`,
+              body: `## Variable Audit Blocker\n\nThe auto-sync workflow detected **${absent} required variables** that are absent.\n\nSee [§13 of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing) for the full list and CLI commands to fix.\n\n**Auto-detected:** ${new Date().toISOString()}\n**Workflow:** ${context.workflow}`,
+              labels: ['variable-blocker', 'ops', 'priority: high'],
+            });
+
+      # ── CI gate: fail when required variables absent (workflow_dispatch only) ──
+      # For scheduled runs we open an issue (above) and succeed so the guide is
+      # still committed. For manual / workflow_dispatch runs we hard-fail so the
+      # operator knows immediately that action is required.
+      - name: Fail gate — absent required variables (workflow_dispatch)
+        if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch' && inputs.dry_run != true
+        run: |
+          echo "::error::variable_audit_cli check: ${{ steps.audit.outputs.absent_required }} required variable(s) absent."
+          echo "Run: python scripts/tools/variable_audit_cli.py check --fail-on-absent"
+          echo "See docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §13 for the set-secret CLI commands."
+          exit 1

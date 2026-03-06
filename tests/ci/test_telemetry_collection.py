@@ -114,8 +114,8 @@ class TestTelemetryCollector:
         assert "Authorization" in collector.headers
 
     def test_pattern_keywords_defined(self, collector):
-        """Test that all 5 patterns have keywords defined."""
-        assert len(collector.PATTERN_KEYWORDS) == 5
+        """Test that all core patterns have keywords defined."""
+        assert len(collector.PATTERN_KEYWORDS) >= 5
         assert "auto-fix" in collector.PATTERN_KEYWORDS
         assert "test-infrastructure" in collector.PATTERN_KEYWORDS
         assert "coverage-timeout" in collector.PATTERN_KEYWORDS

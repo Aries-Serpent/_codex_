@@ -3,11 +3,13 @@ Cognitive Brain — CLI & API Gateway Server
 ==========================================
 FastAPI server that exposes two capabilities to the React frontend:
 
-  WebSocket  /ws/cli          — real-time bidirectional terminal (PTY)
-  REST       /api/request     — HTTP proxy (GET/POST/PUT/PATCH/DELETE)
-  REST       /api/cli/run     — one-shot command execution (stdout + stderr)
-  REST       /api/cli/history — last N commands with results
-  GET        /api/health      — liveness check
+  WebSocket  /ws/cli                — real-time bidirectional terminal (PTY)
+  REST       /api/request           — HTTP proxy (GET/POST/PUT/PATCH/DELETE)
+  REST       /api/cli/run           — one-shot command execution (stdout + stderr)
+  REST       /api/cli/history       — last N commands with results
+  GET        /api/health            — liveness check
+  POST       /webhook/github        — inbound GitHub webhook receiver (HMAC-SHA256)
+  GET        /api/webhooks/recent   — recent webhook event log
 
 Run:
     uvicorn cognitive_app.src.server.cli_api_server:app --host 0.0.0.0 --port 8765 --reload
@@ -17,6 +19,8 @@ from __future__ import annotations
 
 import asyncio
 import fcntl
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -27,6 +31,46 @@ import select
 import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
+
+# Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
+try:
+    from codex.utils.json_safe import safe_json_loads as _safe_json_loads
+except ImportError:  # pragma: no cover — fallback when package not installed
+    _safe_json_loads = json.loads  # type: ignore[assignment]
+
+# ── SAR-G05: OpenTelemetry distributed tracing stub ─────────────────────────
+# Full OTel SDK is optional; the stub is a no-op when the SDK is absent so the
+# server starts in environments that don't have the OTel packages installed.
+try:
+    from opentelemetry import trace as _otel_trace
+    from opentelemetry.sdk.trace import TracerProvider as _TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor as _BatchSpanProcessor
+
+    # Configure provider — exporter is wired from env OTEL_EXPORTER_OTLP_ENDPOINT.
+    # Falls back to a no-op provider when the endpoint is not configured.
+    _otel_endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "")
+    if _otel_endpoint:
+        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore[import]
+            OTLPSpanExporter as _OTLPSpanExporter,
+        )
+        _provider = _TracerProvider()
+        _provider.add_span_processor(_BatchSpanProcessor(_OTLPSpanExporter(endpoint=_otel_endpoint)))
+        _otel_trace.set_tracer_provider(_provider)
+
+    tracer = _otel_trace.get_tracer("cognitive-brain.cli-api", schema_url="https://opentelemetry.io/schemas/1.24.0")
+    _OTEL_ENABLED = True
+except ImportError:  # pragma: no cover — OTel SDK not installed
+    import contextlib as _contextlib
+
+    class _NoopTracer:
+        """Stub tracer that returns a no-op context manager for every start_as_current_span call."""
+
+        @_contextlib.contextmanager  # type: ignore[misc]
+        def start_as_current_span(self, name: str, **kwargs: Any):  # noqa: ANN401
+            yield None
+
+    tracer = _NoopTracer()  # type: ignore[assignment]
+    _OTEL_ENABLED = False
 
 # ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
 # REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
@@ -40,8 +84,9 @@ from datetime import datetime, timezone
 from typing import Any, Deque, Dict, Optional
 
 import httpx
-from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
@@ -108,6 +153,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── SAR-G05: Wire OTel FastAPI auto-instrumentation (no-op when SDK absent) ──
+if _OTEL_ENABLED:
+    try:
+        from opentelemetry.instrumentation.fastapi import (
+            FastAPIInstrumentor,  # type: ignore[import]
+        )
+        FastAPIInstrumentor.instrument_app(app)
+        log.info("OpenTelemetry FastAPI auto-instrumentation enabled (endpoint=%s)",
+                 os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "<no endpoint>"))
+    except ImportError:
+        log.debug("opentelemetry-instrumentation-fastapi not installed; per-request spans disabled")
 
 # ── Memory endpoint auth ──────────────────────────────────────────────────────
 _memory_bearer = HTTPBearer(auto_error=False)
@@ -180,6 +237,19 @@ def _init_history_db() -> sqlite3.Connection:
             metadata     TEXT,
             pattern_type TEXT,
             confidence   REAL DEFAULT 1.0,
+            timestamp    TEXT NOT NULL
+        )
+        """
+    )
+    # Inbound GitHub webhook event log
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS webhook_events (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            delivery_id  TEXT,
+            event_type   TEXT NOT NULL,
+            payload      TEXT NOT NULL,
+            signature    TEXT,
             timestamp    TEXT NOT NULL
         )
         """
@@ -262,12 +332,14 @@ class ApiProxyResponse(BaseModel):
 
 @app.get("/api/health")
 async def health():
-    return {
-        "status": "ok",
-        "repo_root": REPO_ROOT,
-        "timestamp": datetime.utcnow().isoformat(),
-        "history_db": _DB_PATH,
-    }
+    with tracer.start_as_current_span("health"):
+        return {
+            "status": "ok",
+            "repo_root": REPO_ROOT,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "history_db": _DB_PATH,
+            "otel_enabled": _OTEL_ENABLED,
+        }
 
 
 # ── Sprint 3: OODA loop endpoints — wire CognitiveAppMain to the React frontend
@@ -619,6 +691,89 @@ async def cli_clear_history():
     return {"cleared": True}
 
 
+# ── Inbound GitHub webhook receiver ──────────────────────────────────────────
+
+@app.post("/webhook/github")
+async def webhook_github(request: Request):
+    """
+    Receive inbound GitHub webhook payloads (HMAC-SHA256 verified).
+
+    Security: uses X-Hub-Signature-256 header for HMAC verification against
+    WEBHOOK_SECRET env var.  Returns 401 and fails closed if the secret is
+    not configured (unless CODEX_WEBHOOK_DEV_MODE=true bypasses for local dev).
+    """
+    raw_body = await request.body()
+    sig_header = request.headers.get("X-Hub-Signature-256", "")
+    secret = os.environ.get("WEBHOOK_SECRET", "")
+
+    if not secret:
+        dev_mode = os.environ.get("CODEX_WEBHOOK_DEV_MODE", "").lower() == "true"
+        if dev_mode:
+            log.warning("CODEX_WEBHOOK_DEV_MODE active — skipping HMAC verification")
+        else:
+            return JSONResponse(status_code=401, content={"error": "Webhook secret not configured"})
+
+    if secret:
+        expected = "sha256=" + hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()
+        if not sig_header or not hmac.compare_digest(expected, sig_header):
+            log.warning("Webhook HMAC verification failed (delivery=%s)",
+                        request.headers.get("X-GitHub-Delivery", "unknown"))
+            return JSONResponse(status_code=401, content={"error": "Invalid signature"})
+
+    event_type = request.headers.get("X-GitHub-Event", "unknown")
+    delivery_id = request.headers.get("X-GitHub-Delivery", "")
+
+    try:
+        payload = _safe_json_loads(raw_body, source="POST /webhook/github")
+    except json.JSONDecodeError:
+        return JSONResponse(status_code=400, content={"error": "Invalid JSON payload"})
+
+    timestamp = datetime.now(timezone.utc).isoformat()
+    try:
+        with _db_lock:
+            _db.execute(
+                "INSERT INTO webhook_events (delivery_id, event_type, payload, signature, timestamp) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (delivery_id, event_type, json.dumps(payload), sig_header, timestamp),
+            )
+            _db.commit()
+    except Exception as _e:
+        log.warning("webhook_events SQLite write failed (non-blocking): %s", _e)
+
+    log.info("webhook_github event=%r delivery=%r", event_type, delivery_id)
+    return {"status": "accepted", "delivery_id": delivery_id}
+
+
+@app.get("/api/webhooks/recent")
+async def webhooks_recent(limit: int = 50):
+    """Return the most recent webhook events from the webhook_events table."""
+    limit = min(limit, 200)
+    try:
+        with _db_lock:
+            rows = _db.execute(
+                "SELECT id, delivery_id, event_type, payload, timestamp "
+                "FROM webhook_events ORDER BY id DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        events = []
+        for row in rows:
+            try:
+                parsed_payload = json.loads(row["payload"])
+            except (json.JSONDecodeError, TypeError):
+                parsed_payload = {}
+            events.append({
+                "id": row["id"],
+                "delivery_id": row["delivery_id"],
+                "event_type": row["event_type"],
+                "payload": parsed_payload,
+                "timestamp": row["timestamp"],
+            })
+        return {"events": events, "total": len(events)}
+    except Exception as exc:
+        log.warning("webhooks_recent error: %s", exc)
+        return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
+
+
 # ── HTTP API proxy endpoint ───────────────────────────────────────────────────
 
 @app.post("/api/request", response_model=ApiProxyResponse)
@@ -783,7 +938,7 @@ async def ws_cli(ws: WebSocket):
         try:
             while True:
                 raw = await ws.receive_text()
-                msg = json.loads(raw)
+                msg = _safe_json_loads(raw, source="ws /ws/cli")
                 kind = msg.get("type")
                 if kind == "input":
                     os.write(master_fd, msg["data"].encode())

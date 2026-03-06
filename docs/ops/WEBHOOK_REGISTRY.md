@@ -10,22 +10,21 @@
 
 ---
 
-## Apply Status (W-124)
+## Apply Status (W-124 / W-130)
 
 | Condition | Status |
 |-----------|--------|
 | `CODEX_MASTER_KEY` available in workflow | ✅ (via `secrets.CODEX_MASTER_KEY`) |
 | `WEBHOOK_SECRET` available in workflow | ✅ (via `secrets.WEBHOOK_SECRET`) |
-| `WEBHOOK_RECEIVER_URL` repo variable set | ❌ **Not set** — placeholder URL still in use |
-| Cognitive Brain API server deployed | ❌ **Not deployed** — blocking real activation |
-| Hooks `active: true` | ❌ Both hooks have `active: false` (intentional) |
-| **Apply result** | ⏳ **DEFERRED** — awaiting server deployment + `WEBHOOK_RECEIVER_URL` |
+| `WEBHOOK_RECEIVER_URL` repo variable set | ✅ **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
+| `POST /webhook/github` endpoint | ✅ **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
+| Port 8765 public visibility | ⚠️ Must be set manually in Codespace Ports panel for GitHub delivery |
+| Hooks `active: true` | ❌ Both hooks have `active: false` (intentional — activate after confirming delivery works) |
+| **Apply result** | ⏳ **READY** — once port 8765 is public and hooks are set to `active: true` |
 
-> **To activate:** Set the `WEBHOOK_RECEIVER_URL` repo variable to the real Cognitive Brain API
-> endpoint, then comment `@agent-infra apply-webhooks` on this PR.
-> `webhook_configurator.py` will automatically substitute the placeholder URL.
-> Update both hooks to `active: true` in `.codex/webhook_config.json` before the
-> second apply run.
+> **To activate:** Set port 8765 to **public** in the Codespace Ports panel. Update both hooks to `active: true`
+> in `.codex/webhook_config.json`, then comment `@agent-infra apply-webhooks` on a PR.
+> `WEBHOOK_RECEIVER_URL` is now auto-updated on every Codespace start/resume.
 
 ### Dry-run output (W-124)
 
@@ -224,7 +223,7 @@ graph LR
 | SSL/TLS verification | ✅ `insecure_ssl: "0"` | Set in `create_hook()` body |
 | Secret rotation runbook | ✅ Exists | `docs/ops/HMAC_rotation.md` |
 | Token for management | ✅ Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
-| Receiver HMAC validation | ⏳ Pending | Cognitive Brain API server not yet deployed |
+| Receiver HMAC validation | ✅ **Implemented** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` — fails closed if `WEBHOOK_SECRET` not set |
 
 ---
 
@@ -270,21 +269,44 @@ python scripts/ci/webhook_configurator.py --delete <hook_id>
 
 ---
 
+## Interactive Codespace Sessions (Auto-URL)
+
+For interactive Codespace sessions, the webhook receiver URL is **automatically set** on every Codespace start/resume:
+
+| Property | Value |
+|---|---|
+| **URL format** | `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
+| **Set by** | `.devcontainer/scripts/post-start.sh` |
+| **Repo variable** | `WEBHOOK_RECEIVER_URL` (auto-updated via `gh variable set`) |
+| **Token required** | `CODEX_MASTER_KEY` Codespace secret — required for `gh variable set` (Actions Variables API). `GITHUB_TOKEN` cannot access the Variables API and will always return 403. |
+| **Port visibility** | Port 8765 must be **org** visibility (not public) for GitHub to deliver webhooks while preventing unauthenticated internet access |
+| **Receiver endpoint** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` |
+
+### Requirements
+1. Port 8765 must be set to **org** visibility in the Codespace Ports panel (not public — org restricts access to GitHub organization members only)
+2. `WEBHOOK_SECRET` must be set as a Codespace secret (matches the HMAC key on the webhook)
+3. `CODEX_MASTER_KEY` must be set as a Codespace secret (needed to update the repo variable)
+
+### Limitations
+- The URL changes every time a new Codespace is created (Codespace name is unique)
+- Webhooks only work while the Codespace is running and the server is healthy
+- Port visibility resets on Codespace rebuild — must be re-set to public
+
+---
+
 ## Activation Checklist
 
 ```
-[ ] Deploy Cognitive Brain API server
-[ ] Set repo variable WEBHOOK_RECEIVER_URL = https://REAL-SERVER-URL/webhook/github
-      (Settings → Variables → Repository variables)
-      webhook_configurator.py will substitute the placeholder URL automatically.
+[ ] For Codespace: Start/resume Codespace → post-start.sh auto-sets WEBHOOK_RECEIVER_URL
+    [ ] Ensure port 8765 is public in Codespace (Ports panel → right-click → Port Visibility → Public)
+    OR
+[ ] For non-Codespace: gh variable set WEBHOOK_RECEIVER_URL --body "https://your-host/webhook/github" --repo Aries-Serpent/_codex_
 [ ] Ensure WEBHOOK_SECRET org secret is set (same value as HMAC key on server)
 [ ] Run dry-run to confirm URLs:
       export WEBHOOK_RECEIVER_URL=https://REAL-SERVER-URL/webhook/github
       python scripts/ci/webhook_configurator.py --apply .codex/webhook_config.json --dry-run
-[ ] Apply (creates hooks with active=false initially):
-      @agent-infra apply-webhooks
 [ ] Update .codex/webhook_config.json: set "active": true on both hooks
-[ ] Apply again to activate:
+[ ] Apply (creates hooks with active=true):
       @agent-infra apply-webhooks
 [ ] Verify at: https://github.com/Aries-Serpent/_codex_/settings/hooks
       Both hooks show green checkmark on first delivery

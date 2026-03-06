@@ -42,10 +42,31 @@ inputs:
     description: 'Install npm tools such as markdown-link-check (true/false)'
     required: false
     default: 'false'
-  cache-tier:
-    description: 'Cache tier hint (live/common/ephemeral). Informational only — no functional effect on caching.'
+  enable-l5-brain-cache:
+    description: >
+      Layer 5 — Cognitive Brain SQLite cache.  When 'true', restores the
+      cognitive brain SQLite DB (.codex/cognitive_brain/) from the L5 cache
+      before the run and saves it afterwards.  This gives agents fast access
+      to accumulated session patterns without a cold-start rebuild.
+      Only effective when the DB path exists in the repo.
     required: false
-    default: ''
+    default: 'false'
+  cache-tier:
+    description: >
+      Cache tier: live | common | ephemeral.
+      Prefix is embedded in the L1/L3 cache keys so each tier maintains
+      its own cache namespace.  Fallback restore-keys always include the
+      'live' prefix so ephemeral/common workflows can still seed from
+      the most-used cache.  Defaults to 'live' when unset.
+    required: false
+    default: 'live'
+  cache-version:
+    description: >
+      Cache-bust version token — mirrors the CODEX_CACHE_VERSION repo variable (default v2).
+      Increment to invalidate the entire shared cache hierarchy without deleting
+      individual entries.  Pass in as: cache-version: vars.CODEX_CACHE_VERSION (fallback v2).
+    required: false
+    default: 'v2'
 
 outputs:
   venv-python:
@@ -72,12 +93,13 @@ runs:
     #    A restore-key without the hash means any prior run can seed it.
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L1: pip downloads (~/.cache/pip)'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ runner.os }}-pip-py${{ inputs.python-version }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-
+          ${{ runner.os }}-live-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-
 
     # ─────────────────────────────────────────────────────────────────
     # 3. LAYER 2 — PyTorch CPU wheel cache (~/.cache/torch-whl)
@@ -87,7 +109,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L2: PyTorch CPU wheels (~/.cache/torch-whl)'
       if: inputs.install-torch == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/torch-whl
         key: ${{ runner.os }}-torch-cpu-py${{ inputs.python-version }}-slot2x
@@ -107,14 +129,15 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L3: installed venv (.venv_ci)'
       id: cache-venv
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .venv_ci
-        key: ${{ runner.os }}-venv-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
         restore-keys: |
-          ${{ runner.os }}-venv-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-
-          ${{ runner.os }}-venv-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-
-          ${{ runner.os }}-venv-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-
+          ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-
+          ${{ runner.os }}-live-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-
 
     # ─────────────────────────────────────────────────────────────────
     # 5. Build / refresh venv
@@ -244,7 +267,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L4: npm tools (~/.npm)'
       if: inputs.install-npm-tools == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-mlc-v1
@@ -267,6 +290,20 @@ runs:
       run: |
         echo "venv-python=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_OUTPUT"
         echo "VENV_PYTHON=$GITHUB_WORKSPACE/.venv_ci/bin/python" >> "$GITHUB_ENV"
+
+    # ─────────────────────────────────────────────────────────────────
+    # L5 — Cognitive Brain SQLite cache (optional)
+    # Restores accumulated session patterns to avoid cold-start rebuild.
+    # ─────────────────────────────────────────────────────────────────
+    - name: L5 Cognitive Brain cache — restore
+      if: inputs.enable-l5-brain-cache == 'true'
+      uses: actions/cache@v5
+      with:
+        path: .codex/cognitive_brain
+        key: ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-${{ hashFiles('.codex/cognitive_brain/**') }}
+        restore-keys: |
+          ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-
+          ${{ runner.os }}-l5-brain-
 
     - name: Report cache status
       shell: bash

@@ -63,10 +63,12 @@ jobs:
           fetch-depth: 50
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python (cached)
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Classify failure
         id: classify
@@ -76,7 +78,7 @@ jobs:
           TRIGGERING_RUN_NAME: ${{ github.event.workflow_run.name }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
-          pip install requests --quiet
+          .venv_ci/bin/pip install requests --quiet
           echo "run_id=${TRIGGERING_RUN_ID}" >> "$GITHUB_OUTPUT"
           echo "head_sha=${HEAD_SHA}"         >> "$GITHUB_OUTPUT"
 
@@ -130,14 +132,16 @@ jobs:
           ref: main
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python (cached)
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install tools
         run: |
-          pip install ruff black isort --quiet
+          .venv_ci/bin/pip install ruff black isort --quiet
 
       - name: Apply auto-fix
         id: apply_fix

@@ -33,10 +33,11 @@ D365_URL=https://your-org.crm.dynamics.com
 D365_CLIENT_ID=your_client_id_here
 D365_CLIENT_SECRET=your_client_secret_here
 D365_TENANT_ID=your_tenant_id_here
-
-# Optional: SLA Configuration
-D365_SLA_POLICY_PATH=configs/deployment/d365/sla_policies.json
 ```
+
+> **Note:** Use `CODEX_D365_POLICIES_PATH` (defined in the MLOps section below) as the SLA policy config path.
+> The legacy `D365_SLA_POLICY_PATH` GitHub repo variable is a duplicate and is pending deletion
+> (see `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §13`).
 
 ### Obtaining Credentials
 
