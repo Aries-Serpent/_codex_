@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (now handled by `setup-python-cached` L1 pip layer)
 - Confirmed `COPILOT_ACCESS_TEST` repo variable auto-created by `post-start.sh`
 - No duplicate D365 policy variable found (already clean)
+- **Fixed invalid JSON:** `.codex/validation/structure_audit.json` and
+  `.codex/validation/tests_docs_links_audit.json` had Markdown text appended after
+  the closing `}` (corrupted in main-branch merge commit); truncated to valid JSON
+  — resolves `🔍 Validate repo JSON files` gate failure in copilot-setup-steps
 
 ### Added (S116)
 - Codespace secrets admin-request issue filed (SAR-G01) — 7 org-level secrets required

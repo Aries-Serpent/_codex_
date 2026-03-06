@@ -557,3 +557,19 @@ Existing 7 Codespace secrets remain outstanding (@mbaetiong):
 `CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`,
 `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`.
 See docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §8.
+
+## W-142 — S116 hotfix: invalid JSON gate fix (2026-03-06)
+
+### Actions Taken
+
+| Action | File | Detail |
+|--------|------|--------|
+| Fix invalid JSON (Markdown trailer removed) | `.codex/validation/structure_audit.json` | Markdown text (`# Structure Audit` + bullet lines) was appended after closing `}` in main-branch merge commit; stripped to valid JSON only |
+| Fix invalid JSON (Markdown trailer removed) | `.codex/validation/tests_docs_links_audit.json` | Same corruption pattern — `# Tests/Docs/Links Audit` Markdown trailer removed |
+
+### Root Cause
+Both files were written by a previous agent session using a tool that appended a Markdown summary after the JSON object. This caused the `🔍 Validate repo JSON files` pre-flight gate in `copilot-setup-steps.yml` to exit 1, blocking all subsequent Copilot agent job steps.
+
+### Impact
+- `copilot-setup-steps.yml` pre-flight gate now passes
+- All `find .codex docs -name "*.json"` files pass `python3 -m json.tool` validation
