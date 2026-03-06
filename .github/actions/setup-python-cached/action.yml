@@ -55,7 +55,7 @@ inputs:
     description: >
       Cache-bust version token — mirrors the CODEX_CACHE_VERSION repo variable (default v2).
       Increment to invalidate the entire shared cache hierarchy without deleting
-      individual entries.  Passed in as: cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+      individual entries.  Pass in as: cache-version: vars.CODEX_CACHE_VERSION (fallback v2).
     required: false
     default: 'v2'
 
