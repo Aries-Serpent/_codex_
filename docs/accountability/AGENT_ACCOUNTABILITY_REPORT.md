@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-05 (PR #3499 cherry-pick W-119 from PR #3501 — CI fix: Pre-flight REQ-4 gate; review fixes: webhook_configurator.py docstring + audit log path in webhook-identification.md)
+**Last updated:** 2026-03-06 (W-129 — GITHUB_VARIABLES_MASTER_GUIDE.md reconciled against authoritative 2026-03-06 export: CODEX_ADMIN_KEY ✅ resolved; 4 new _GITHUB_APP_* org secrets documented; OPENAI_API_KEY repo secret added; Issues 1/2/5 marked resolved; §13 "Still Missing" section added with setup instructions for WEBHOOK_RECEIVER_URL + 9 Codespace secrets)
 
 ---
 

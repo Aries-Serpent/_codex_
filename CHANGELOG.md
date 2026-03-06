@@ -5,6 +5,23 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-129: GitHub Variables Master Guide — authoritative export reconciliation (2026-03-06)
+
+### Changed (W-129)
+
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` (v1.0.0 → v1.1.0) — full reconciliation against mbaetiong's 2026-03-06 authoritative export:
+  - **§3 Org Secrets:** `CODEX_ADMIN_KEY` promoted from ❌ Missing → ✅ Present (updated 3 h ago). `CODEX_MASTER_KEY` updated "yesterday" — recently rotated (rotation alert removed, next due ~2026-06-03). Added 4 new org secrets: `_GITHUB_APP_CLIENT_SECRET`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_PRIVATE_KEY` (all updated 1 h ago). Added GitHub App Authentication note explaining the `_GITHUB_APP_*` naming convention.
+  - **§4 Repo Secrets:** Added `OPENAI_API_KEY` (new, 5 h ago). Updated `CODEX_REPO_ID` age (3 months → 6 h) and `CODEX_WEBHOOK_SECRET` age (3 months → 12 min).
+  - **§5 Env Secrets:** Removed `CODEX_ENV_NODE_VERSION` row (was ⚠️ Wrong type — Issue 1 resolved ✅). Added resolution note.
+  - **§6e Repo Variables:** Added `CODEX_SESSION_ID` row (now persisted as a repo variable, UUID v4). Updated `CODEX_CI_FAILURE_RATE` current value to `6.5:ok`. Fixed `CODEX_PYTHON_VERSION` row to remove conflict warning (Issue 2 resolved).
+  - **§7 Env Variables:** `CODEX_ENV_NODE_VERSION` row updated ⚠️→✅ (Issue 1 resolved). `CODEX_ENV_PYTHON_VERSION` updated `3.11`→`3.12` and ⚠️→✅ (Issue 2 resolved).
+  - **§8 Codespace Secrets:** Expanded table to 9 rows (added `GITHUB_APP_CLIENT_SECRET`). Added "Actions Org Secret Equivalent" column cross-referencing `_GITHUB_APP_*`. Added CLI/UI setup instructions block.
+  - **§9 Workflow env:** `CODEX_SESSION_ID` note updated to reflect dual storage (workflow + repo var).
+  - **§10 Known Issues:** Issues 1, 2, 5 marked ✅ RESOLVED with resolution details. Issue 4 stale secrets updated: `CODEX_MASTER_KEY` now ✅ rotated.
+  - **§11 Troubleshooting:** Python version and Node.js version entries updated to reflect resolved status.
+  - **§13 (new):** "⛔ Still Missing — Variables/Secrets Not Yet Provided" — consolidates `WEBHOOK_RECEIVER_URL` and all 9 Codespace secrets into a single actionable section with CLI commands, UI paths, and source-value mapping table.
+  - **Summary Checklist:** Resolved items moved to ✅ Resolved section. Blockers updated to link §13. Rotation schedule updated.
+
 ## [Unreleased] — W-128: Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05)
 
 ### Added (W-128)
