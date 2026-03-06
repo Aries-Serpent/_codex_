@@ -5,7 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-135: GITHUB_VARIABLES_MASTER_GUIDE.md v1.3.0 full reconciliation + CODEX_ACTIVE_CODESPACE (2026-03-06)
+## [Unreleased] — W-136: GITHUB_VARIABLES_MASTER_GUIDE.md v1.4.0 — CODEX_MASTER_KEY Codespace secret confirmed (2026-03-06)
+
+### Fixed (W-136)
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.3.0 → v1.4.0:
+  - §3: `CODEX_MASTER_KEY` rotation timestamp updated to "now" (re-rotated by @mbaetiong 2026-03-06, third rotation of this session).
+  - §8: `CODEX_MASTER_KEY` status updated from "❌ Not confirmed" to "✅ Confirmed (org-level)". The repo-level Codespace override was removed by @mbaetiong — the org-level Codespace secret now applies directly. Remaining blockers: 7 (was 8).
+  - §8 CLI block + §13 CLI block: `CODEX_MASTER_KEY` marked as already-set (skip comment added).
+  - §13 source-values table: `CODEX_MASTER_KEY` row struck through as ✅ completed.
+  - Summary Checklist: blocker count updated from 8 → 7.
+
 
 ### Added (W-135)
 - `CODEX_ACTIVE_CODESPACE` repo variable: auto-created and kept in sync by `.devcontainer/scripts/post-start.sh` step 4b on every Codespace start/resume. Stores the active Codespace name (`upgraded-engine-5pp4ggrr7jphvpp7`). No manual seeding required — `gh variable set` creates it on first run.

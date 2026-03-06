@@ -1,8 +1,8 @@
 # GitHub Variables & Secrets — Master Reference Guide
 
-> **Version:** 1.3.0 (W-135, 2026-03-06)  
+> **Version:** 1.4.0 (W-136, 2026-03-06)  
 > **Owner:** @mbaetiong  
-> **Status:** ✅ Current — reflects live state as of 2026-03-06 (authoritative export from mbaetiong, second pass)  
+> **Status:** ✅ Current — reflects live state as of 2026-03-06 (third pass: CODEX_MASTER_KEY Codespace secret confirmed; repo-level override removed)  
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
 > **Auto-synced by:** `repo-var-sync-schedule.yml` (daily 06:00 UTC → `.codex/agent_context.json`)
 
@@ -89,7 +89,7 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
 | 1 | `CODECOV_TOKEN` | ✅ Present | 2 months ago | Code coverage upload to codecov.io | `coverage*.yml` workflows |
 | 2 | `CODEX_ADMIN_KEY` | ✅ Present | 3 hours ago | Fine-grained PAT (`Webhooks:write`). Used for `webhook_configurator.py` least-privilege mode. | `apply-webhooks` job in `agent_infrastructure_manager.yml` |
 | 3 | `CODEX_BACKUP_KEY` | ✅ Present | **2 hours ago** | Fallback GitHub PAT — auto-used on 401/403 from `CODEX_MASTER_KEY`. Same scope as master. | All auth-delegation workflows, `variable_manager.py`, `brain_client.py`, `github_app.py` |
-| 4 | `CODEX_MASTER_KEY` | ✅ Present | **2 hours ago** | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Rotated again 2026-03-06 — next rotation due ~2026-06-04. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` |
+| 4 | `CODEX_MASTER_KEY` | ✅ Present | **now** (2026-03-06) | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Re-rotated 2026-03-06 — next rotation due ~2026-06-04. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` |
 | 5 | `HF_TOKEN` | ✅ Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows |
 | 6 | `NPM_TOKEN` | ✅ Present | 2 months ago | npm publish authentication | Node.js package publish workflows |
 | 7 | `PYPI_TOKEN` | ✅ Present | 2 months ago | PyPI publish authentication | Python package publish workflows |
@@ -100,7 +100,7 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
 | 12 | `_GITHUB_APP_INSTALLATION_ID` | ✅ Present | 8 hours ago | App installation ID for generating installation access tokens | `github_app.py`, installation token flows |
 | 13 | `_GITHUB_APP_PRIVATE_KEY` | ✅ Present | 8 hours ago | RSA-2048 PEM private key for signing GitHub App JWTs | `github_app.py`, RS256 JWT signing |
 
-> ✅ **`CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` rotated 2026-03-06** (2 hours before this export). Next rotation due ~2026-06-04 (90-day cycle).  
+> ✅ **`CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` rotated 2026-03-06** (latest rotation "now" per @mbaetiong — repo-level Codespace override removed, org secret active directly). Next rotation due ~2026-06-04 (90-day cycle).  
 > See [`docs/ops/secrets_rotation_runbook.md`](../ops/secrets_rotation_runbook.md) for the full rotation procedure.
 
 **Token chain in code:** `CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN`  
@@ -316,7 +316,7 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 
 | # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent |
 |---|---|---|---|---|---|
-| 1 | `CODEX_MASTER_KEY` | ❌ **Not confirmed** | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets **or** user secrets | `CODEX_MASTER_KEY` (org secret ✅) |
+| 1 | `CODEX_MASTER_KEY` | ✅ **Confirmed** (org-level) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | `CODEX_MASTER_KEY` (org secret ✅) |
 | 2 | `CODEX_BACKUP_KEY` | ❌ **Not confirmed** | Fallback PAT for 401/403 retries | Org Codespace secrets **or** user secrets | `CODEX_BACKUP_KEY` (org secret ✅) |
 | 3 | `CODEX_ADMIN_KEY` | ❌ **Not confirmed** | Fine-grained PAT (`Webhooks:write`) for webhook management | Org Codespace secrets **or** user secrets | `CODEX_ADMIN_KEY` (org secret ✅) |
 | 4 | `_GITHUB_APP_ID` | ❌ **Not confirmed** | Numeric GitHub App ID for RS256 JWT auth | Org Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) |
@@ -328,11 +328,13 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 > **Note:** Secrets 4–7 use the same `_GITHUB_APP_*` naming as the corresponding org Actions secrets (leading underscore is the standard convention for these system/infrastructure secrets).  
 > See [`docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md) for detailed setup instructions.
 
-### ⚠️ How to set Codespace secrets (all 8 items above)
+> **Note (2026-03-06):** `CODEX_MASTER_KEY` was briefly set as a *repository-level* Codespace secret (overriding the org secret). That repo-level override has been **removed** by @mbaetiong — the org-level Codespace secret is now active directly. Secret was re-rotated at this time.
+
+### ⚠️ How to set remaining Codespace secrets (7 items outstanding)
 
 ```bash
 # Option A — GitHub CLI (requires admin scope)
-gh secret set CODEX_MASTER_KEY             --app codespaces --org Aries-Serpent
+# CODEX_MASTER_KEY is already set at org level ✅ — skip
 gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
 gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
 gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
@@ -569,7 +571,7 @@ gh variable set WEBHOOK_RECEIVER_URL \
 
 ---
 
-### 🔴 Codespace Secrets (8 items) — blocks Codespace agent sessions
+### 🔴 Codespace Secrets (7 items remaining) — blocks Codespace agent sessions
 
 **What they are:** Secrets mirrored from Actions org secrets, required inside active Codespace containers.  
 **Why they're missing:** Codespace secrets are not auto-mirrored from Actions secrets — they require a separate admin action.  
@@ -580,7 +582,7 @@ gh variable set WEBHOOK_RECEIVER_URL \
 ```bash
 # Navigate to: https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces
 # OR use gh CLI (each command will prompt for the secret value):
-gh secret set CODEX_MASTER_KEY             --app codespaces --org Aries-Serpent
+# CODEX_MASTER_KEY is already set at org level ✅ — skip
 gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
 gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
 gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
@@ -594,7 +596,7 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 
 | Codespace Secret | Copy value from Actions Secret |
 |---|---|
-| `CODEX_MASTER_KEY` | Org secret: `CODEX_MASTER_KEY` |
+| ~~`CODEX_MASTER_KEY`~~ | ✅ Already set at org level (rotated 2026-03-06) |
 | `CODEX_BACKUP_KEY` | Org secret: `CODEX_BACKUP_KEY` |
 | `CODEX_ADMIN_KEY` | Org secret: `CODEX_ADMIN_KEY` |
 | `_GITHUB_APP_ID` | Org secret: `_GITHUB_APP_ID` |
@@ -612,7 +614,7 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 
 ### 🔴 Action Required (Blockers)
 
-- [ ] **Set 8 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions)
+- [ ] **Set 7 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions); `CODEX_MASTER_KEY` ✅ already confirmed
 
 ### ✅ Resolved
 
@@ -631,4 +633,4 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-06 (W-130 — webhook endpoint + _GITHUB_APP_* naming + authoritative variable export)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-06 (W-136 — CODEX_MASTER_KEY Codespace secret confirmed; repo-level override removed; v1.4.0)*
