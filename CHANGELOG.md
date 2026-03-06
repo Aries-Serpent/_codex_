@@ -5,11 +5,28 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-134: devcontainer secrets parity + Issue 3 D365 duplicate resolution (2026-03-06)
+## [Unreleased] — W-135: GITHUB_VARIABLES_MASTER_GUIDE.md v1.3.0 full reconciliation + CODEX_ACTIVE_CODESPACE (2026-03-06)
 
-### Fixed (W-134)
-- `.devcontainer/devcontainer.json`: added `_GITHUB_APP_CLIENT_SECRET` to `"secrets"` block — devcontainer now declares all 8 required Codespace secrets matching §8 of `GITHUB_VARIABLES_MASTER_GUIDE.md`
-- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`: Issue 3 updated with clear recommendation + `gh variable delete D365_SLA_POLICY_PATH` command added to §13; Summary Checklist updated to link §13
+### Added (W-135)
+- `CODEX_ACTIVE_CODESPACE` repo variable: auto-created and kept in sync by `.devcontainer/scripts/post-start.sh` step 4b on every Codespace start/resume. Stores the active Codespace name (`upgraded-engine-5pp4ggrr7jphvpp7`). No manual seeding required — `gh variable set` creates it on first run.
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` §8: new "Quick Start — Active Codespace" table with resume URL, new-from-PR URL, branch, and `CODEX_ACTIVE_CODESPACE` reference.
+
+### Fixed (W-135)
+- `.devcontainer/scripts/post-start.sh`: step 4b refactored — now updates both `WEBHOOK_RECEIVER_URL` and new `CODEX_ACTIVE_CODESPACE` in a single auth token resolution block; error messages include manual-fix commands for both variables.
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` v1.2.0 → v1.3.0:
+  - §3: `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotation timestamps updated (rotated 2026-03-06); `_GITHUB_APP_*` timestamps updated (8 h ago); rotation note updated to next-due 2026-06-04.
+  - §4: `_CODEX_BOT_RUNNER` ⚠️ 7-months → ✅ rotated 45 min ago.
+  - §5: All 3 env runner secrets ⚠️ 7-months → ✅ rotated 48–50 min ago.
+  - §6a: `COGNITIVE_BRAIN_SESSION_NUMBER` 118 → 120.
+  - §6c: `CODEX_CI_FAILURE_RATE` `6.5:ok` → `10.7:degraded`.
+  - §6e: `D365_SLA_POLICY_PATH` row removed (variable deleted from GitHub — confirmed absent in live export).
+  - §6g: `CODEX_ACTIVE_CODESPACE` added; `WEBHOOK_RECEIVER_URL` current value updated (includes `preview.` subdomain).
+  - §10 Issue 3: ✅ RESOLVED — `D365_SLA_POLICY_PATH` deleted.
+  - §10 Issue 4: ✅ RESOLVED — all stale runner secrets rotated 2026-03-06.
+  - §13: Issue 3 block → ✅ RESOLVED; Issue 4 removed from open blockers.
+  - Summary Checklist: Issues 3 + 4 moved to ✅ Resolved; maintenance rotation window updated to 2026-06-04.
+
+
 - `docs/configuration/ENVIRONMENT_VARIABLES.md`: removed deprecated `D365_SLA_POLICY_PATH` example from D365 credentials section; replaced with note directing to `CODEX_D365_POLICIES_PATH` (canonical name)
 
 

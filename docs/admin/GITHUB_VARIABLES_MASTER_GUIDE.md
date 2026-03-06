@@ -88,19 +88,19 @@ Token access:  CODEX_MASTER_KEY > CODEX_BACKUP_KEY > GITHUB_TOKEN
 |---|---|---|---|---|---|
 | 1 | `CODECOV_TOKEN` | ✅ Present | 2 months ago | Code coverage upload to codecov.io | `coverage*.yml` workflows |
 | 2 | `CODEX_ADMIN_KEY` | ✅ Present | 3 hours ago | Fine-grained PAT (`Webhooks:write`). Used for `webhook_configurator.py` least-privilege mode. | `apply-webhooks` job in `agent_infrastructure_manager.yml` |
-| 3 | `CODEX_BACKUP_KEY` | ✅ Present | 5 days ago | Fallback GitHub PAT — auto-used on 401/403 from `CODEX_MASTER_KEY`. Same scope as master. | All auth-delegation workflows, `variable_manager.py`, `brain_client.py`, `github_app.py` |
-| 4 | `CODEX_MASTER_KEY` | ✅ Present | yesterday | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Recently rotated — next rotation due ~90 days from 2026-03-05. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` |
+| 3 | `CODEX_BACKUP_KEY` | ✅ Present | **2 hours ago** | Fallback GitHub PAT — auto-used on 401/403 from `CODEX_MASTER_KEY`. Same scope as master. | All auth-delegation workflows, `variable_manager.py`, `brain_client.py`, `github_app.py` |
+| 4 | `CODEX_MASTER_KEY` | ✅ Present | **2 hours ago** | Primary full-scope GitHub PAT (classic, `repo` scope + `admin:repo_hook`). **Required for Variables API, Secrets API, Webhooks API.** Rotated again 2026-03-06 — next rotation due ~2026-06-04. | `agent-auth-delegation.yml`, `variable_manager.py`, `webhook_configurator.py`, `brain_client.py` |
 | 5 | `HF_TOKEN` | ✅ Present | 2 months ago | HuggingFace API token for model downloads | ML training workflows |
 | 6 | `NPM_TOKEN` | ✅ Present | 2 months ago | npm publish authentication | Node.js package publish workflows |
 | 7 | `PYPI_TOKEN` | ✅ Present | 2 months ago | PyPI publish authentication | Python package publish workflows |
 | 8 | `RAG_OPENAI_KEY` | ✅ Present | 3 weeks ago | OpenAI API key for RAG embeddings | RAG index build workflows |
 | 9 | `_CODEX_ACTION_RUNNER` | ✅ Present | 2 months ago | Runner registration token for self-hosted Actions runners | Runner registration |
-| 10 | `_GITHUB_APP_CLIENT_SECRET` | ✅ Present | 1 hour ago | GitHub App OAuth client secret for web-flow App authentication | `github_app.py`, OAuth web-flow auth |
-| 11 | `_GITHUB_APP_ID` | ✅ Present | 1 hour ago | Numeric GitHub App ID for RS256 JWT generation | `github_app.py`, App JWT auth flows |
-| 12 | `_GITHUB_APP_INSTALLATION_ID` | ✅ Present | 1 hour ago | App installation ID for generating installation access tokens | `github_app.py`, installation token flows |
-| 13 | `_GITHUB_APP_PRIVATE_KEY` | ✅ Present | 1 hour ago | RSA-2048 PEM private key for signing GitHub App JWTs | `github_app.py`, RS256 JWT signing |
+| 10 | `_GITHUB_APP_CLIENT_SECRET` | ✅ Present | 8 hours ago | GitHub App OAuth client secret for web-flow App authentication | `github_app.py`, OAuth web-flow auth |
+| 11 | `_GITHUB_APP_ID` | ✅ Present | 8 hours ago | Numeric GitHub App ID for RS256 JWT generation | `github_app.py`, App JWT auth flows |
+| 12 | `_GITHUB_APP_INSTALLATION_ID` | ✅ Present | 8 hours ago | App installation ID for generating installation access tokens | `github_app.py`, installation token flows |
+| 13 | `_GITHUB_APP_PRIVATE_KEY` | ✅ Present | 8 hours ago | RSA-2048 PEM private key for signing GitHub App JWTs | `github_app.py`, RS256 JWT signing |
 
-> ✅ **`CODEX_MASTER_KEY` was rotated on 2026-03-05.** Next rotation due ~2026-06-03 (90-day cycle).  
+> ✅ **`CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` rotated 2026-03-06** (2 hours before this export). Next rotation due ~2026-06-04 (90-day cycle).  
 > See [`docs/ops/secrets_rotation_runbook.md`](../ops/secrets_rotation_runbook.md) for the full rotation procedure.
 
 **Token chain in code:** `CODEX_MASTER_KEY → CODEX_BACKUP_KEY → AGENT_GITHUB_TOKEN → GITHUB_TOKEN`  
@@ -131,7 +131,7 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 | 4 | `CODEX_REPO_ID` | ✅ Present | 6 hours ago | Repository numeric ID (GitHub internal) | Used in manifest generation |
 | 5 | `CODEX_WEBHOOK_SECRET` | ✅ Present | 12 minutes ago | HMAC-SHA256 shared secret for incoming webhook verification | `WebhookVerifier` in `src/codex/auth/github_app.py` |
 | 6 | `OPENAI_API_KEY` | ✅ Present | 5 hours ago | OpenAI API key for LLM agent operations | Consumed by `brain_client.py` and LLM-based CI workflows |
-| 7 | `_CODEX_BOT_RUNNER` | ⚠️ Present | **7 months ago** | Bot runner registration token | Potentially stale — consider rotating. 90-day guideline exceeded. |
+| 7 | `_CODEX_BOT_RUNNER` | ✅ Present | **45 minutes ago** | Bot runner registration token | ✅ Rotated 2026-03-06 |
 
 ### Token Decoder Priority Order
 
@@ -149,11 +149,11 @@ The four `_GITHUB_APP_*` secrets were added 2026-03-06 to support GitHub App–b
 > **Location:** [Settings → Environments → Aries_Serpent_codex_](https://github.com/Aries-Serpent/_codex_/settings/environments)  
 > **Override scope:** These override org/repo secrets for jobs using `environment: Aries_Serpent_codex_`
 
-| # | Secret Name | Status | Last Updated | Value | Issue |
+| # | Secret Name | Status | Last Updated | Value | Notes |
 |---|---|---|---|---|---|
-| 1 | `CODEX_ENVIRONMENT_RUNNER` | ✅ Present | 7 months ago | *(secret)* | May need rotation |
-| 2 | `CODEX_RUNNER_SHA256` | ✅ Present | 7 months ago | *(secret hash)* | May need rotation |
-| 3 | `CODEX_RUNNER_TOKEN` | ⚠️ Present | **7 months ago** | *(secret)* | Potentially stale — runner tokens typically expire. Verify or rotate. |
+| 1 | `CODEX_ENVIRONMENT_RUNNER` | ✅ Present | **48 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 |
+| 2 | `CODEX_RUNNER_SHA256` | ✅ Present | **50 minutes ago** | *(secret hash)* | ✅ Rotated 2026-03-06 |
+| 3 | `CODEX_RUNNER_TOKEN` | ✅ Present | **50 minutes ago** | *(secret)* | ✅ Rotated 2026-03-06 |
 
 > ✅ **Issue 1 resolved (2026-03-06):** `CODEX_ENV_NODE_VERSION` was previously stored here as an
 > environment secret. It has been **deleted** from env secrets and **recreated** as an environment
@@ -181,7 +181,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 4 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | ✅ | `128000` | Maximum tokens for context injection |
 | 5 | `COGNITIVE_BRAIN_MEMORY_TIER` | ✅ | `both` | Memory tier: `stm`, `ltm`, or `both` |
 | 6 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | ✅ | `0.75` | Minimum confidence to inject a pattern |
-| 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `118` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
+| 7 | `COGNITIVE_BRAIN_SESSION_NUMBER` | ✅ | `120` (auto-increments) | Current session number — auto-incremented by `agent-auth-delegation.yml` activate-delegation step |
 
 ### 6b. 🖥️ Copilot Agent Runtime
 
@@ -202,7 +202,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 1 | `AGENT_HANDOFF_TIMEOUT_SECONDS` | ✅ | `120` | Timeout for agent handoff operations |
 | 2 | `AUTO_PROMOTE_TIER_ENABLED` | ✅ | `true` | Auto-promotion tier for agent capabilities |
 | 3 | `AUTONOMOUS_ACTIONS_ENABLED` | ✅ | `true` | ⚠️ **Human governance flag** — gates autonomous agent actions |
-| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `6.5:ok` (auto-updated) | Current CI failure rate — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
+| 4 | `CODEX_CI_FAILURE_RATE` | ✅ | `10.7:degraded` (auto-updated) | Current CI failure rate — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
 | 5 | `CODEX_CI_FAILURE_THRESHOLD` | ✅ | `10.0` | CI failure rate threshold for `degraded` state |
 | 6 | `CODEX_CI_LAST_GREEN_SHA` | ✅ | *(sha)* (auto-updated) | Last commit SHA with all-green CI |
 | 7 | `EMBEDDING_INDEX_AUTO_REBUILD` | ✅ | `true` | Auto-rebuild FAISS embedding index on changes |
@@ -239,8 +239,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 13 | `CODEX_SESSION_LOG_DIR` | ✅ | `.codex/sessions` | Session log directory |
 | 14 | `CODEX_TEST_PARALLELISM` | ✅ | `auto` | Pytest parallel execution mode |
 | 15 | `CODEX_ZENDESK_DOCS_ROOT` | ✅ | `docs/vendors/zendesk` | Zendesk documentation root |
-| 16 | `D365_SLA_POLICY_PATH` | ⚠️ | `configs/deployment/d365/sla_policies.json` | Duplicate of `CODEX_D365_POLICIES_PATH` — pending deletion (see §13) |
-| 17 | `ENABLE_LIVE_TESTS` | ✅ | `true` | Enable live/integration tests in CI |
+| 16 | `ENABLE_LIVE_TESTS` | ✅ | `true` | Enable live/integration tests in CI |
 
 ### 6f. 🤖 ML / HuggingFace / Weights & Biases
 
@@ -259,9 +258,13 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 ### 6g. Webhook / Infra
 
-| # | Variable | Status | Current Value | Purpose | Fix Required |
-|---|---|---|---|---|---|
-| 1 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github` | Public URL for webhook delivery. Auto-updated on every Codespace start/resume via `post-start.sh`. | No manual action needed for Codespace sessions. For non-Codespace deployment, set manually: `gh variable set WEBHOOK_RECEIVER_URL --body "https://your-host/webhook/github" --repo Aries-Serpent/_codex_` |
+| # | Variable | Status | Current Value | Purpose |
+|---|---|---|---|---|
+| 1 | `CODEX_ACTIVE_CODESPACE` | ✅ **Auto-set by Codespace** | `upgraded-engine-5pp4ggrr7jphvpp7` | Name of the currently active Codespace. Created automatically on first Codespace start; updated on every subsequent start/resume via `post-start.sh`. Changes whenever a new Codespace is created — never hardcode this value. |
+| 2 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://upgraded-engine-5pp4ggrr7jphvpp7-8765.preview.app.github.dev/webhook/github` | Public URL for webhook delivery. Derived from `CODEX_ACTIVE_CODESPACE`; updated automatically alongside it. |
+
+> Both variables are written atomically by step 4b in `.devcontainer/scripts/post-start.sh` on every Codespace start and resume.  
+> `gh variable set` creates the variable if absent, so **no manual seeding is required** — the first Codespace start after this commit will provision both variables automatically.
 
 ---
 
@@ -294,6 +297,18 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 > **Location (user):** [github.com/settings/secrets/codespaces](https://github.com/settings/secrets/codespaces)  
 > **Injected by:** `.devcontainer/devcontainer.json` `"secrets":` block  
 > **When:** Only available inside an active GitHub Codespace session
+
+### 🚀 Quick Start — Active Codespace
+
+| | |
+|---|---|
+| **Codespace name** | `upgraded-engine-5pp4ggrr7jphvpp7` |
+| **Resume existing** | [https://github.com/codespaces/upgraded-engine-5pp4ggrr7jphvpp7](https://github.com/codespaces/upgraded-engine-5pp4ggrr7jphvpp7) |
+| **New from PR** | [https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503](https://github.com/codespaces/new/Aries-Serpent/_codex_/pull/3503) |
+| **Branch** | `copilot/implement-user-authentication` |
+| **Repo variable** | `CODEX_ACTIVE_CODESPACE` — auto-updated on every start/resume |
+
+> The Codespace name changes when a new Codespace is created. `CODEX_ACTIVE_CODESPACE` is always kept in sync by `post-start.sh` automatically.
 
 These secrets mirror the Actions org secrets but are injected into Codespace containers for interactive agent sessions.
 
@@ -368,23 +383,23 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | ~~**Problem**~~ | ~~`CODEX_ENV_PYTHON_VERSION` (env variable) = `3.11` conflicted with `CODEX_PYTHON_VERSION` (repo variable) = `3.12`.~~ |
 | **Resolution** | `CODEX_ENV_PYTHON_VERSION` updated to `3.12` (verified in 2026-03-06 export). Both layers now agree on Python 3.12. CI should no longer have version discrepancies between environment and non-environment jobs. |
 
-### ⚠️ Issue 3 — Duplicate path variable: `CODEX_D365_POLICIES_PATH` and `D365_SLA_POLICY_PATH`
+### ✅ Issue 3 — Duplicate path variable: `CODEX_D365_POLICIES_PATH` and `D365_SLA_POLICY_PATH` — **RESOLVED 2026-03-06**
 
 | | Detail |
 |---|---|
-| **Problem** | Both variables point to `configs/deployment/d365/sla_policies.json`. |
-| **Recommendation** | Keep `CODEX_D365_POLICIES_PATH` (follows the `CODEX_` naming convention used across this codebase). Delete `D365_SLA_POLICY_PATH` (legacy name; no workflow or Python source file references it directly). |
-| **Admin action** | `gh variable delete D365_SLA_POLICY_PATH --repo Aries-Serpent/_codex_` (see §13 for full command) |
+| ~~**Problem**~~ | ~~Both variables pointed to `configs/deployment/d365/sla_policies.json`.~~ |
+| **Resolution** | `D365_SLA_POLICY_PATH` has been **deleted** from GitHub repo variables (confirmed absent in 2026-03-06 live export). `CODEX_D365_POLICIES_PATH` remains as the canonical name. |
 
-### ⚠️ Issue 4 — Stale secrets (> 90-day rotation guideline)
+### ✅ Issue 4 — Stale secrets (> 90-day rotation guideline) — **RESOLVED 2026-03-06**
 
-| Secret | Age | Action |
+| Secret | Previous Age | Resolution |
 |---|---|---|
-| `CODEX_MASTER_KEY` | ✅ Rotated 2026-03-05 | Next rotation due ~2026-06-03 |
-| `_CODEX_BOT_RUNNER` | 7 months | Verify if still in use; rotate or delete |
-| `CODEX_ENVIRONMENT_RUNNER` | 7 months | Verify if still in use; rotate or delete |
-| `CODEX_RUNNER_TOKEN` | 7 months | Runner tokens often expire — verify or regenerate |
-| `CODEX_RUNNER_SHA256` | 7 months | Regenerate after runner token rotation |
+| `CODEX_MASTER_KEY` | Rotated 2026-03-05 | ✅ Re-rotated 2026-03-06 (~2 h before export). Next due ~2026-06-04. |
+| `CODEX_BACKUP_KEY` | 5+ days | ✅ Re-rotated 2026-03-06 (~2 h before export). |
+| `_CODEX_BOT_RUNNER` | 7 months | ✅ Rotated 2026-03-06 (~45 min before export). |
+| `CODEX_ENVIRONMENT_RUNNER` | 7 months | ✅ Rotated 2026-03-06 (~48 min before export). |
+| `CODEX_RUNNER_TOKEN` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). |
+| `CODEX_RUNNER_SHA256` | 7 months | ✅ Rotated 2026-03-06 (~50 min before export). |
 
 ### ✅ Issue 5 — `CODEX_ADMIN_KEY` missing — **RESOLVED 2026-03-06**
 
@@ -494,9 +509,9 @@ Invalid examples: "6.3", "ok", "6.3-ok", "6.3 ok"
 Fix: gh variable set CODEX_CI_FAILURE_RATE --body "6.3:ok" --repo Aries-Serpent/_codex_
 
 Variable: COGNITIVE_BRAIN_SESSION_NUMBER
-Required format: Integer (e.g. "118")
-Invalid examples: "S118", "session-118", "118.0"
-Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "118" --repo Aries-Serpent/_codex_
+Required format: Integer (e.g. "120")
+Invalid examples: "S120", "session-120", "120.0"
+Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Serpent/_codex_
 ```
 
 ---
@@ -548,14 +563,9 @@ gh variable set WEBHOOK_RECEIVER_URL \
 
 ---
 
-### 🟡 Issue 3 — Delete duplicate `D365_SLA_POLICY_PATH` repo variable
+### ✅ Issue 3 — Delete duplicate `D365_SLA_POLICY_PATH` repo variable — **RESOLVED 2026-03-06**
 
-**Action:** Delete the legacy duplicate variable. `CODEX_D365_POLICIES_PATH` is the preferred name (follows `CODEX_` convention) and points to the same file.  
-**No code change needed:** Neither variable is referenced by any workflow YAML or Python source file.
-
-```bash
-gh variable delete D365_SLA_POLICY_PATH --repo Aries-Serpent/_codex_
-```
+`D365_SLA_POLICY_PATH` is **absent** from the 2026-03-06 live export — the variable has been deleted. No further action needed.
 
 ---
 
@@ -604,23 +614,19 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 
 - [ ] **Set 8 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions)
 
-### ✅ Resolved (Previously "Should Fix")
+### ✅ Resolved
 
 - [x] ~~Fix Issue 1: Delete `CODEX_ENV_NODE_VERSION` env secret; recreate as env variable~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 2: Update `CODEX_ENV_PYTHON_VERSION` env variable from `3.11` → `3.12`~~ — **Done 2026-03-06**
+- [x] ~~Fix Issue 3: Remove duplicate `D365_SLA_POLICY_PATH` repo variable~~ — **Done 2026-03-06** (deleted from GitHub; absent in live export)
+- [x] ~~Fix Issue 4: Rotate stale runner secrets (7 months old)~~ — **Done 2026-03-06** (`_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` all rotated; `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotated)
 - [x] ~~Fix Issue 5: Create `CODEX_ADMIN_KEY` org secret (fine-grained PAT, `Webhooks:write`)~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 6: Set `WEBHOOK_RECEIVER_URL` repo variable~~ — **Done 2026-03-06** (auto-set by Codespace `post-start.sh`)
 
-### 🟡 Should Fix (Non-blocking)
-
-- [ ] Issue 3: Delete `D365_SLA_POLICY_PATH` repo variable (duplicate of `CODEX_D365_POLICIES_PATH`) — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for delete command
-
 ### 🟢 Monitor / Maintenance
 
-- [ ] Rotate `CODEX_MASTER_KEY` before 2026-06-03 (rotated 2026-03-05 — 90-day window opens)
-- [ ] Verify/rotate `_CODEX_BOT_RUNNER` (7 months old — exceeds 90-day guideline)
-- [ ] Verify/rotate `CODEX_RUNNER_TOKEN` (7 months old — runner tokens often expire)
-- [ ] Verify/rotate `CODEX_ENVIRONMENT_RUNNER` (7 months old)
+- [ ] Rotate `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` before **2026-06-04** (rotated 2026-03-06 — 90-day window)
+- [ ] Rotate `_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` before **2026-06-04**
 
 ---
 

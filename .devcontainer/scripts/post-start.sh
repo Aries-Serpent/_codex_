@@ -85,13 +85,15 @@ else
     # Non-fatal — Copilot agent can still work without the server
 fi
 
-# ── 4b. Auto-update WEBHOOK_RECEIVER_URL repo variable ────────────────────────
+# ── 4b. Auto-update Codespace-scoped repo variables ──────────────────────────
 # If running in a Codespace, construct the public forwarded URL and update
 # the repo variable so GitHub webhooks can deliver to this Codespace.
+# Also records the active Codespace name so tooling can reference it.
 if [ -n "${CODESPACE_NAME:-}" ]; then
     PUBLIC_URL="https://${CODESPACE_NAME}-${CLI_API_PORT}.preview.app.github.dev/webhook/github"
-    echo "  🌐 Codespace detected — setting WEBHOOK_RECEIVER_URL"
-    echo "     URL: ${PUBLIC_URL}"
+    echo "  🌐 Codespace detected — updating Codespace-scoped repo variables"
+    echo "     CODESPACE_NAME: ${CODESPACE_NAME}"
+    echo "     WEBHOOK_RECEIVER_URL: ${PUBLIC_URL}"
 
     # Determine which token to use for gh CLI authentication
     GH_TOKEN_FOR_VAR=""
@@ -104,18 +106,31 @@ if [ -n "${CODESPACE_NAME:-}" ]; then
     fi
 
     if [ -n "${GH_TOKEN_FOR_VAR}" ]; then
+        # Update WEBHOOK_RECEIVER_URL
         if GH_TOKEN="${GH_TOKEN_FOR_VAR}" gh variable set WEBHOOK_RECEIVER_URL \
             --body "${PUBLIC_URL}" \
             --repo Aries-Serpent/_codex_ 2>&1; then
-            echo "  ✅ WEBHOOK_RECEIVER_URL updated successfully"
+            echo "  ✅ WEBHOOK_RECEIVER_URL updated"
         else
             echo "  ⚠️  Failed to update WEBHOOK_RECEIVER_URL"
             echo "     Manual fix: gh variable set WEBHOOK_RECEIVER_URL --body '${PUBLIC_URL}' --repo Aries-Serpent/_codex_"
         fi
+
+        # Update CODEX_ACTIVE_CODESPACE — records the current Codespace name
+        # (changes on every new Codespace; stale after Codespace deletion)
+        if GH_TOKEN="${GH_TOKEN_FOR_VAR}" gh variable set CODEX_ACTIVE_CODESPACE \
+            --body "${CODESPACE_NAME}" \
+            --repo Aries-Serpent/_codex_ 2>&1; then
+            echo "  ✅ CODEX_ACTIVE_CODESPACE updated → ${CODESPACE_NAME}"
+        else
+            echo "  ⚠️  Failed to update CODEX_ACTIVE_CODESPACE"
+            echo "     Manual fix: gh variable set CODEX_ACTIVE_CODESPACE --body '${CODESPACE_NAME}' --repo Aries-Serpent/_codex_"
+        fi
     else
-        echo "  ⚠️  No token available to update WEBHOOK_RECEIVER_URL"
+        echo "  ⚠️  No token available to update repo variables"
         echo "     Set CODEX_MASTER_KEY as a Codespace secret, then restart the Codespace."
         echo "     Manual fix: gh variable set WEBHOOK_RECEIVER_URL --body '${PUBLIC_URL}' --repo Aries-Serpent/_codex_"
+        echo "     Manual fix: gh variable set CODEX_ACTIVE_CODESPACE --body '${CODESPACE_NAME}' --repo Aries-Serpent/_codex_"
     fi
 
     # Attempt to make port public for webhook delivery.
@@ -123,7 +138,7 @@ if [ -n "${CODESPACE_NAME:-}" ]; then
     gh codespace ports visibility "${CLI_API_PORT}:public" -c "${CODESPACE_NAME}" 2>/dev/null || \
         echo "  ⚠️  Could not auto-set port ${CLI_API_PORT} to public. Manually set it in the Ports panel for webhook delivery."
 else
-    echo "  ℹ️  Not running in Codespace — WEBHOOK_RECEIVER_URL not updated"
+    echo "  ℹ️  Not running in Codespace — Codespace-scoped repo variables not updated"
 fi
 
 # ── 5. Verify GitHub App credentials are available ────────────────────────────

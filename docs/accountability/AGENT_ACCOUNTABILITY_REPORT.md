@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-06 (W-134 — devcontainer secrets parity + Issue 3 D365 duplicate resolution: added `_GITHUB_APP_CLIENT_SECRET` to devcontainer.json secrets block; updated GITHUB_VARIABLES_MASTER_GUIDE.md Issue 3 with clear recommendation + gh delete command in §13; removed deprecated `D365_SLA_POLICY_PATH` from ENVIRONMENT_VARIABLES.md example)
+**Last updated:** 2026-03-06 (W-135 — GITHUB_VARIABLES_MASTER_GUIDE.md v1.3.0: CODEX_ACTIVE_CODESPACE auto-variable added; post-start.sh step 4b auto-sets both CODEX_ACTIVE_CODESPACE + WEBHOOK_RECEIVER_URL; Issues 3 + 4 resolved; all stale secrets rotated; session 120; CI rate 10.7:degraded)
 
 ---
 
