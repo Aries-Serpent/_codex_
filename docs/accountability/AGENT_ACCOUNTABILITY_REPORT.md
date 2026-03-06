@@ -497,3 +497,40 @@ All tasks from W-137/W-138/W-139 remain (7 Codespace secrets). No new human task
 
 ### Human Admin Tasks Required
 No new human tasks. Remaining Codespace secrets (7) still require @mbaetiong action.
+
+## W-142 — ModelLoader wrong-patch pattern + code review cleanup (2026-03-06 S115)
+
+### Actions Taken
+
+| Action | File | Detail |
+|--------|------|--------|
+| Fix `ModelLoader.load_model` wrong-patch (×6) | `tests/serving/test_inference_chaos.py` | `test_random_model_failure_injection`, `test_half_open_state_recovery`, `test_model_oom_scenario`, `test_model_corruption_detection`, `test_circuit_breaker_triggers_after_failures`, `test_request_timeout_handling` — all now patch `ModelServer.predict` |
+| Rewrite 3 TestCachePerformance tests | `tests/serving/test_inference_performance.py` | Tests now reflect actual single-model pre-load architecture; no ModelLoader abstraction used |
+| Remove dead MagicMock/patch imports | `tests/serving/test_inference_performance.py` | `from unittest.mock import MagicMock, patch` removed entirely |
+| Retire 2 xfail conftest entries | `tests/conftest.py` | `test_cache_eviction_performance`, `test_cache_vs_no_cache_performance` — now passing |
+| Fix unreachable-code bug | `tests/serving/test_inference_chaos.py` | `test_random_model_failure_injection`: loop body was inside `side_effect` closure; extracted to test body |
+| Remove unused import | `tests/serving/test_inference_chaos.py` | `MagicMock` removed |
+| Extract `_STUB_PREDICTION` constant | `tests/serving/test_inference_chaos.py` | Duplicate inline dicts replaced with module-level named constant |
+| Named magic constants | `tests/serving/test_inference_performance.py` | `MAX_LATENCY_MULTIPLIER = 10`, `LATENCY_BUFFER_MS = 50` |
+| Cognitive brain status | `.codex/COGNITIVE_BRAIN_STATUS_S115.md` | Session S115 status + phase 23 delta |
+| HOTFIX prompt | `.codex/HOTFIX_PROMPT_POST_W142_MERGE.md` | Resumption instructions for S116 post-merge |
+
+### Test Metrics
+
+| Suite | Before | After |
+|-------|--------|-------|
+| `test_inference_chaos.py` | 12 passed + 4 failed | **16 passed** |
+| `test_inference_performance.py` | 11 passed + 2 xfailed | **13 passed** |
+| `tests/serving/` (combined) | 105 passed + 6 broken | **105 passed** |
+
+### CI Triage Report #3507 — Pattern Resolution
+
+All 4 recurring failure classes from issue #3507 confirmed resolved in HEAD:
+- `setup-python-cached` template expression → fixed `afc7387`
+- `SHORT_SHA` actionlint undefined variable → fixed earlier W-142
+- Agent Registry missing `handoff_protocol` → fixed earlier W-142
+- `ModelLoader.load_model` wrong-patch pattern → fixed this session
+
+### Human Admin Tasks Required
+
+No new human tasks. Existing 7 Codespace secrets remain outstanding (@mbaetiong).

@@ -216,8 +216,13 @@ class TestCachePerformance:
         last = latencies[-1]
         print(f"\nFirst request: {first:.2f}ms  Last request: {last:.2f}ms")
 
-        # Last request must not be dramatically slower than the first (no per-request regression)
-        assert last < first * 10 + 50, (
+        # Guard against per-request accumulation: last must stay within
+        # MAX_LATENCY_MULTIPLIER × first + LATENCY_BUFFER_MS.
+        # The 10× multiplier absorbs OS scheduler jitter on shared CI runners;
+        # the 50 ms floor prevents false failures when first latency is ~0 ms.
+        MAX_LATENCY_MULTIPLIER = 10
+        LATENCY_BUFFER_MS = 50
+        assert last < first * MAX_LATENCY_MULTIPLIER + LATENCY_BUFFER_MS, (
             f"Latency grew unexpectedly: first={first:.1f}ms last={last:.1f}ms"
         )
 

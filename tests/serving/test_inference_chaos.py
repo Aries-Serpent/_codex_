@@ -5,10 +5,22 @@ Tests failure scenarios, resilience, and recovery mechanisms.
 """
 
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
+
+# Reusable stub prediction result returned by mocked ModelServer.predict calls.
+# Using descriptive values so assertion failures are immediately legible in CI logs.
+_STUB_PREDICTION = [
+    {
+        "prediction": "ok",
+        "label": "test_label",
+        "score": 1.0,
+        "text": "test_text",
+        "model": "test_model",
+    }
+]
 
 
 @pytest.fixture
@@ -37,7 +49,7 @@ class TestModelFailures:
                 call_count[0] += 1
                 if call_count[0] % 2 == 0:
                     raise RuntimeError("Simulated model failure")
-                return [{"prediction": "ok", "label": "l", "score": 1.0, "text": "t", "model": "m"}]
+                return _STUB_PREDICTION
 
             mock_predict.side_effect = side_effect
 
@@ -221,7 +233,7 @@ class TestCircuitBreakerRecovery:
                 fail_count[0] += 1
                 if fail_count[0] <= 5:
                     raise RuntimeError("Simulated failure")
-                return [{"prediction": "ok", "label": "l", "score": 1.0, "text": "t", "model": "m"}]
+                return _STUB_PREDICTION
 
             mock_predict.side_effect = controlled_failure
 

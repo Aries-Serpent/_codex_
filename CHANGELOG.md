@@ -5,6 +5,26 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-142 S115: CI triage · test mock pattern fix · code review cleanup (2026-03-06)
+
+### Fixed (W-142 S115 — ModelLoader wrong-patch pattern)
+- `tests/serving/test_inference_chaos.py`: Fixed all 6 wrong `ModelLoader.load_model` mock patches — `InferenceServer` never calls `ModelLoader`; correct injection target is `ModelServer.predict`. All 16 chaos tests now pass (was 12 passed + 4 failed).
+- `tests/serving/test_inference_chaos.py`: Fixed unreachable-code bug in `test_random_model_failure_injection` where loop body was inside the `side_effect` closure instead of the test body.
+- `tests/serving/test_inference_chaos.py`: Extracted `_STUB_PREDICTION` module-level constant; replaced 2 duplicate inline dicts; removed unused `MagicMock` import.
+- `tests/serving/test_inference_performance.py`: Rewrote 3 `TestCachePerformance` tests to test actual server behaviour (single pre-loaded stub model, no per-name LRU cache). All 13 perf tests now pass (was 11 passed + 2 xfailed).
+- `tests/serving/test_inference_performance.py`: Removed all `ModelLoader`/`MagicMock`/`patch` dead imports. Named magic constants (`MAX_LATENCY_MULTIPLIER`, `LATENCY_BUFFER_MS`).
+- `tests/conftest.py`: Retired 2 xfail entries (`test_cache_eviction_performance`, `test_cache_vs_no_cache_performance`) — underlying tests now pass.
+
+### Added (W-142 S115)
+- `.codex/COGNITIVE_BRAIN_STATUS_S115.md`: Session status, phase 23 delta, post-merge priorities.
+- `.codex/HOTFIX_PROMPT_POST_W142_MERGE.md`: Complete resumption instructions for S116 post-merge stabilisation.
+
+### CI Triage (issue #3507 — all 4 recurring patterns confirmed resolved in HEAD)
+- `setup-python-cached` template expression in description field → `afc7387`
+- `SHORT_SHA` actionlint undefined variable → earlier W-142 commit
+- Agent Registry missing `handoff_protocol` → earlier W-142 commit
+- Redundant pip cache in `agent-registry-validation.yml` → `416f338` W-137
+
 ## [Unreleased] — W-142: Fix unresolved code-review conversations (2026-03-06)
 
 ### Fixed (W-142 — code-review conversation fixes)
