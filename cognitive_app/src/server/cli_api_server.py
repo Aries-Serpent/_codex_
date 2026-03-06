@@ -32,6 +32,12 @@ import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
 
+# Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
+try:
+    from codex.utils.json_safe import safe_json_loads as _safe_json_loads
+except ImportError:  # pragma: no cover — fallback when package not installed
+    _safe_json_loads = json.loads  # type: ignore[assignment]
+
 # ── Sprint 3: cognitive orchestrator — module-level import with env-safe fallback ──
 # REPO_ROOT computed later; sys.path extended once here so OODA endpoints don't
 # modify sys.path on every request (avoids reviewer concern about per-request mutation).
@@ -670,7 +676,7 @@ async def webhook_github(request: Request):
     delivery_id = request.headers.get("X-GitHub-Delivery", "")
 
     try:
-        payload = json.loads(raw_body)
+        payload = _safe_json_loads(raw_body, source="POST /webhook/github")
     except json.JSONDecodeError:
         return JSONResponse(status_code=400, content={"error": "Invalid JSON payload"})
 
@@ -884,7 +890,7 @@ async def ws_cli(ws: WebSocket):
         try:
             while True:
                 raw = await ws.receive_text()
-                msg = json.loads(raw)
+                msg = _safe_json_loads(raw, source="ws /ws/cli")
                 kind = msg.get("type")
                 if kind == "input":
                     os.write(master_fd, msg["data"].encode())
