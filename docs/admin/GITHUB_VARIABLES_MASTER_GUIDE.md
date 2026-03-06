@@ -1,6 +1,6 @@
 # GitHub Variables & Secrets — Master Reference Guide
 
-> **Version:** 1.1.0 (W-129, 2026-03-06)  
+> **Version:** 1.2.0 (W-130, 2026-03-06)  
 > **Owner:** @mbaetiong  
 > **Status:** ✅ Current — reflects live state as of 2026-03-06 (authoritative export from mbaetiong)  
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
@@ -257,11 +257,11 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
 
-### 6g. Webhook / Infra (Missing or incomplete)
+### 6g. Webhook / Infra
 
 | # | Variable | Status | Current Value | Purpose | Fix Required |
 |---|---|---|---|---|---|
-| 1 | `WEBHOOK_RECEIVER_URL` | ❌ **Missing** | — | Public URL for webhook delivery (Cognitive Brain API server). Required before webhooks can be activated (currently `active=false`). | Deploy Cognitive Brain API server, then set to its public URL. See [`docs/ops/WEBHOOK_REGISTRY.md`](../ops/WEBHOOK_REGISTRY.md). |
+| 1 | `WEBHOOK_RECEIVER_URL` | ✅ **Auto-set by Codespace** | `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github` | Public URL for webhook delivery. Auto-updated on every Codespace start/resume via `post-start.sh`. | No manual action needed for Codespace sessions. For non-Codespace deployment, set manually: `gh variable set WEBHOOK_RECEIVER_URL --body "https://your-host/webhook/github" --repo Aries-Serpent/_codex_` |
 
 ---
 
@@ -304,29 +304,27 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 | 1 | `CODEX_MASTER_KEY` | ❌ **Not confirmed** | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets **or** user secrets | `CODEX_MASTER_KEY` (org secret ✅) |
 | 2 | `CODEX_BACKUP_KEY` | ❌ **Not confirmed** | Fallback PAT for 401/403 retries | Org Codespace secrets **or** user secrets | `CODEX_BACKUP_KEY` (org secret ✅) |
 | 3 | `CODEX_ADMIN_KEY` | ❌ **Not confirmed** | Fine-grained PAT (`Webhooks:write`) for webhook management | Org Codespace secrets **or** user secrets | `CODEX_ADMIN_KEY` (org secret ✅) |
-| 4 | `GITHUB_APP_ID` | ❌ **Not confirmed** | Numeric GitHub App ID for RS256 JWT auth | Org Codespace secrets | `_GITHUB_APP_ID` (org secret ✅ — note leading underscore in Actions) |
-| 5 | `GITHUB_APP_PRIVATE_KEY` | ❌ **Not confirmed** | PEM RSA-2048 private key for GitHub App | Org Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) |
-| 6 | `GITHUB_APP_INSTALLATION_ID` | ❌ **Not confirmed** | App installation ID for generating installation tokens | Org Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) |
-| 7 | `GITHUB_APP_CLIENT_SECRET` | ❌ **Not confirmed** | GitHub App OAuth client secret | Org Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) |
+| 4 | `_GITHUB_APP_ID` | ❌ **Not confirmed** | Numeric GitHub App ID for RS256 JWT auth | Org Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) |
+| 5 | `_GITHUB_APP_PRIVATE_KEY` | ❌ **Not confirmed** | PEM RSA-2048 private key for GitHub App | Org Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) |
+| 6 | `_GITHUB_APP_INSTALLATION_ID` | ❌ **Not confirmed** | App installation ID for generating installation tokens | Org Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) |
+| 7 | `_GITHUB_APP_CLIENT_SECRET` | ❌ **Not confirmed** | GitHub App OAuth client secret | Org Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) |
 | 8 | `WEBHOOK_SECRET` | ❌ **Not confirmed** | HMAC-SHA256 shared secret for webhook signature verification | Org Codespace secrets | `CODEX_WEBHOOK_SECRET` (repo secret ✅) |
-| 9 | `WEBHOOK_RECEIVER_URL` | ❌ **Not confirmed** | Public URL for webhook delivery (needed when activating webhooks) | Org Codespace secrets | ❌ No equivalent yet — `WEBHOOK_RECEIVER_URL` repo variable still missing |
 
-> **Note:** Secrets 4–7 correspond to the `_GITHUB_APP_*` org Actions secrets added 2026-03-06. The leading underscore is the Actions naming convention for these system secrets; Codespace-side names drop the underscore for clarity.  
+> **Note:** Secrets 4–7 use the same `_GITHUB_APP_*` naming as the corresponding org Actions secrets (leading underscore is the standard convention for these system/infrastructure secrets).  
 > See [`docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md) for detailed setup instructions.
 
-### ⚠️ How to set Codespace secrets (all 9 items above)
+### ⚠️ How to set Codespace secrets (all 8 items above)
 
 ```bash
 # Option A — GitHub CLI (requires admin scope)
-gh secret set CODEX_MASTER_KEY    --app codespaces --org Aries-Serpent
-gh secret set CODEX_BACKUP_KEY    --app codespaces --org Aries-Serpent
-gh secret set CODEX_ADMIN_KEY     --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_ID       --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_PRIVATE_KEY --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_INSTALLATION_ID --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_CLIENT_SECRET   --app codespaces --org Aries-Serpent
-gh secret set WEBHOOK_SECRET      --app codespaces --org Aries-Serpent
-# WEBHOOK_RECEIVER_URL: set once Cognitive Brain API is deployed (see §13 — Still Missing)
+gh secret set CODEX_MASTER_KEY             --app codespaces --org Aries-Serpent
+gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
+gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces --org Aries-Serpent
+gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ```
 
 ```
@@ -394,24 +392,21 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | ~~**Problem**~~ | ~~`webhook_configurator.py` preferred `CODEX_ADMIN_KEY` but it was missing.~~ |
 | **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 3 hours before 2026-03-06 export). `webhook_configurator.py` can now use least-privilege webhook management without falling back to `CODEX_MASTER_KEY`. |
 
-### ❌ Issue 6 — `WEBHOOK_RECEIVER_URL` missing (blocks webhook activation)
+### ✅ Issue 6 — `WEBHOOK_RECEIVER_URL` missing — **RESOLVED 2026-03-06**
 
 | | Detail |
 |---|---|
-| **Problem** | 2 webhooks are configured in `.codex/webhook_config.json` but `active=false` because `WEBHOOK_RECEIVER_URL` is not set. |
-| **Impact** | `workflow_run` and `pull_request` webhook events cannot be delivered to the Cognitive Brain API. The OODA loop and webhook-driven automation are inactive. |
-| **Blocker** | Cognitive Brain API server must be deployed and have a public URL first. |
-| **Fix** | Deploy Cognitive Brain API (`uvicorn` behind a tunnel or public host). Then set `WEBHOOK_RECEIVER_URL` as a repo variable. Run `apply-webhooks` job. |
-| **How to set** | `gh variable set WEBHOOK_RECEIVER_URL --body "https://your-api-host/webhook" --repo Aries-Serpent/_codex_` |
+| ~~**Problem**~~ | ~~2 webhooks configured but `active=false` because `WEBHOOK_RECEIVER_URL` not set.~~ |
+| **Resolution** | `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by `.devcontainer/scripts/post-start.sh`. The URL format is `https://${CODESPACE_NAME}-8765.app.github.dev/webhook/github`. The `POST /webhook/github` endpoint is now implemented in `cognitive_app/src/server/cli_api_server.py` with HMAC-SHA256 verification. For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace. |
 
-### ❌ Issue 7 — Codespace secrets not confirmed present
+### ⚠️ Issue 7 — Codespace secrets not confirmed present
 
 | | Detail |
 |---|---|
-| **Problem** | The 9 Codespace secrets declared in `.devcontainer/devcontainer.json` have not been confirmed as set in org Codespace settings. |
+| **Problem** | The 8 Codespace secrets declared in `.devcontainer/devcontainer.json` have not been confirmed as set in org Codespace settings. |
 | **Impact** | Codespace-based Copilot agent sessions will lack authentication tokens; `post-start.sh` will fail to start the CLI server. |
-| **Fix** | Set all 9 secrets listed in [§8](#8-codespace-secrets) at the org Codespace level. |
-| **Instructions** | See [§8 How to set Codespace secrets](#%EF%B8%8F-how-to-set-codespace-secrets-all-9-items-above) for the CLI/UI steps |
+| **Fix** | Set all 8 secrets listed in [§8](#8-codespace-secrets) at the org Codespace level. |
+| **Instructions** | See [§8 How to set Codespace secrets](#%EF%B8%8F-how-to-set-codespace-secrets-all-8-items-above) for the CLI/UI steps |
 
 ---
 
@@ -534,36 +529,25 @@ Each is grouped with clear instructions on how to provide the value.
 
 ---
 
-### 🔴 WEBHOOK_RECEIVER_URL (Repo Variable) — blocks webhook activation
+### ✅ WEBHOOK_RECEIVER_URL (Repo Variable) — **RESOLVED 2026-03-06**
 
-**What it is:** The public HTTPS URL that GitHub will POST webhook payloads to.  
-**Why it's missing:** The Cognitive Brain API server has not been deployed to a public host yet.  
-**Impact:** Both planned webhooks remain `active=false`. OODA loop automation is disabled.
+**Resolution:** `WEBHOOK_RECEIVER_URL` is now **auto-set** on every Codespace start/resume by
+`.devcontainer/scripts/post-start.sh`. The URL format is:
+`https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github`
 
-**How to set it (once deployed):**
+The `POST /webhook/github` endpoint is implemented in `cognitive_app/src/server/cli_api_server.py`.
+For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace Ports panel.
 
+For non-Codespace deployment, set the variable manually:
 ```bash
-# Step 1: Deploy cognitive_app to a public URL (e.g., via ngrok, Railway, Fly.io, etc.)
-#         Record the public URL, e.g. https://codex-brain.example.com
-
-# Step 2: Set the repo variable
 gh variable set WEBHOOK_RECEIVER_URL \
-  --body "https://your-deployed-url.com" \
+  --body "https://your-deployed-url.com/webhook/github" \
   --repo Aries-Serpent/_codex_
-
-# Step 3: Activate webhooks
-gh workflow run apply-webhooks --repo Aries-Serpent/_codex_
 ```
-
-**UI path:** [Settings → Secrets and variables → Actions → Variables tab](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) → **New repository variable**  
-| Field | Value |
-|---|---|
-| **Name** | `WEBHOOK_RECEIVER_URL` |
-| **Value** | `https://<your-deployed-cognitive-brain-api-host>` |
 
 ---
 
-### 🔴 Codespace Secrets (9 items) — blocks Codespace agent sessions
+### 🔴 Codespace Secrets (8 items) — blocks Codespace agent sessions
 
 **What they are:** Secrets mirrored from Actions org secrets, required inside active Codespace containers.  
 **Why they're missing:** Codespace secrets are not auto-mirrored from Actions secrets — they require a separate admin action.  
@@ -574,15 +558,14 @@ gh workflow run apply-webhooks --repo Aries-Serpent/_codex_
 ```bash
 # Navigate to: https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces
 # OR use gh CLI (each command will prompt for the secret value):
-gh secret set CODEX_MASTER_KEY            --app codespaces --org Aries-Serpent
-gh secret set CODEX_BACKUP_KEY            --app codespaces --org Aries-Serpent
-gh secret set CODEX_ADMIN_KEY             --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_ID               --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_PRIVATE_KEY      --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_INSTALLATION_ID  --app codespaces --org Aries-Serpent
-gh secret set GITHUB_APP_CLIENT_SECRET    --app codespaces --org Aries-Serpent
-gh secret set WEBHOOK_SECRET              --app codespaces --org Aries-Serpent
-# WEBHOOK_RECEIVER_URL: add after deploying Cognitive Brain API (see above)
+gh secret set CODEX_MASTER_KEY             --app codespaces --org Aries-Serpent
+gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
+gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces --org Aries-Serpent
+gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces --org Aries-Serpent
+gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ```
 
 **Source values to copy from (all exist as Actions org/repo secrets):**
@@ -592,10 +575,10 @@ gh secret set WEBHOOK_SECRET              --app codespaces --org Aries-Serpent
 | `CODEX_MASTER_KEY` | Org secret: `CODEX_MASTER_KEY` |
 | `CODEX_BACKUP_KEY` | Org secret: `CODEX_BACKUP_KEY` |
 | `CODEX_ADMIN_KEY` | Org secret: `CODEX_ADMIN_KEY` |
-| `GITHUB_APP_ID` | Org secret: `_GITHUB_APP_ID` |
-| `GITHUB_APP_PRIVATE_KEY` | Org secret: `_GITHUB_APP_PRIVATE_KEY` |
-| `GITHUB_APP_INSTALLATION_ID` | Org secret: `_GITHUB_APP_INSTALLATION_ID` |
-| `GITHUB_APP_CLIENT_SECRET` | Org secret: `_GITHUB_APP_CLIENT_SECRET` |
+| `_GITHUB_APP_ID` | Org secret: `_GITHUB_APP_ID` |
+| `_GITHUB_APP_PRIVATE_KEY` | Org secret: `_GITHUB_APP_PRIVATE_KEY` |
+| `_GITHUB_APP_INSTALLATION_ID` | Org secret: `_GITHUB_APP_INSTALLATION_ID` |
+| `_GITHUB_APP_CLIENT_SECRET` | Org secret: `_GITHUB_APP_CLIENT_SECRET` |
 | `WEBHOOK_SECRET` | Repo secret: `CODEX_WEBHOOK_SECRET` |
 
 > After setting, confirm in `.devcontainer/devcontainer.json` that all secret names match
@@ -607,14 +590,14 @@ gh secret set WEBHOOK_SECRET              --app codespaces --org Aries-Serpent
 
 ### 🔴 Action Required (Blockers)
 
-- [ ] **Set 9 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions)
-- [ ] **Set `WEBHOOK_RECEIVER_URL`** repo variable once Cognitive Brain API is deployed — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for steps (blocks webhook activation)
+- [ ] **Set 8 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions)
 
 ### ✅ Resolved (Previously "Should Fix")
 
 - [x] ~~Fix Issue 1: Delete `CODEX_ENV_NODE_VERSION` env secret; recreate as env variable~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 2: Update `CODEX_ENV_PYTHON_VERSION` env variable from `3.11` → `3.12`~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 5: Create `CODEX_ADMIN_KEY` org secret (fine-grained PAT, `Webhooks:write`)~~ — **Done 2026-03-06**
+- [x] ~~Fix Issue 6: Set `WEBHOOK_RECEIVER_URL` repo variable~~ — **Done 2026-03-06** (auto-set by Codespace `post-start.sh`)
 
 ### 🟡 Should Fix (Non-blocking)
 
@@ -630,4 +613,4 @@ gh secret set WEBHOOK_SECRET              --app codespaces --org Aries-Serpent
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-06 (W-129 — authoritative export reconciliation)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-06 (W-130 — webhook endpoint + _GITHUB_APP_* naming + authoritative variable export)*

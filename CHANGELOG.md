@@ -5,7 +5,40 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-129: GitHub Variables Master Guide — authoritative export reconciliation (2026-03-06)
+## [Unreleased] — W-130: Inbound webhook receiver + Codespace auto-URL + variable doc update (2026-03-06)
+
+### Added (W-130)
+
+- `cognitive_app/src/server/cli_api_server.py` — **`POST /webhook/github`** inbound webhook endpoint:
+  - HMAC-SHA256 signature verification using `WEBHOOK_SECRET` env var (fail closed if missing)
+  - `CODEX_WEBHOOK_DEV_MODE=true` bypasses HMAC for local development
+  - Persists received events to new `webhook_events` SQLite table
+  - Returns `{"status": "accepted", "delivery_id": "..."}` on success
+- `cognitive_app/src/server/cli_api_server.py` — **`GET /api/webhooks/recent`** endpoint returning last N webhook events (default 50, max 200) with parsed JSON payloads
+- `cognitive_app/src/server/cli_api_server.py` — `webhook_events` SQLite table added to `_init_history_db()` (id, delivery_id, event_type, payload, signature, timestamp)
+- `tests/server/test_webhook_endpoint.py` — 6 new tests covering: valid signature (200), invalid signature (401), missing secret (401 fail-closed), invalid JSON (400), recent events query, dev-mode bypass
+
+### Changed (W-130)
+
+- `.devcontainer/scripts/post-start.sh` — added step 4b: auto-updates `WEBHOOK_RECEIVER_URL` repo variable on every Codespace start/resume using `gh variable set`. Uses `CODEX_MASTER_KEY` or `GITHUB_TOKEN`. Also attempts `gh codespace ports visibility 8765:public` for webhook delivery.
+- `.devcontainer/scripts/post-start.sh` — step 5 GitHub App JWT check now reads `_GITHUB_APP_ID` / `_GITHUB_APP_PRIVATE_KEY` (correct `_GITHUB_APP_*` naming, was `GITHUB_APP_ID` / `GITHUB_APP_PRIVATE_KEY`)
+- `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` (v1.1.0 → v1.2.0):
+  - **§6g** `WEBHOOK_RECEIVER_URL` row: ❌ Missing → ✅ Auto-set by Codespace. URL: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github`
+  - **§8 Codespace Secrets:** Renamed rows 4–7 from `GITHUB_APP_*` → `_GITHUB_APP_*` to match actual org Actions secret names. Removed row 9 (`WEBHOOK_RECEIVER_URL` — no longer needed as Codespace secret, auto-set as repo variable). 9 items → 8 items.
+  - **§10 Issue 6:** ❌ Open → ✅ RESOLVED 2026-03-06
+  - **§13:** `WEBHOOK_RECEIVER_URL` section updated to show resolution. Codespace secrets CLI commands updated to use `_GITHUB_APP_*` names.
+  - Summary Checklist: Issue 6 resolved; blockers reduced to 8 Codespace secrets.
+- `docs/ops/WEBHOOK_REGISTRY.md`:
+  - Apply Status table updated: `WEBHOOK_RECEIVER_URL` ✅ auto-set; receiver HMAC ✅ implemented
+  - Added "Interactive Codespace Sessions (Auto-URL)" section
+  - Activation checklist updated for Codespace auto-URL workflow
+  - Security table: Receiver HMAC validation ✅ Implemented
+
+### Fixed (W-130)
+
+- `_GITHUB_APP_*` variable naming: `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_APP_INSTALLATION_ID`, `GITHUB_APP_CLIENT_SECRET` → all renamed to `_GITHUB_APP_*` throughout documentation and `post-start.sh` to match actual org Actions secret names.
+
+
 
 ### Changed (W-129)
 

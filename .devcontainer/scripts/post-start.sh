@@ -12,6 +12,7 @@
 set -euo pipefail
 
 WORKSPACE="${CODESPACE_VSCODE_FOLDER:-/workspaces/_codex_}"
+CLI_API_PORT=8765
 cd "$WORKSPACE"
 
 # Source env profile so exported vars are available
@@ -49,7 +50,7 @@ export PYTHONPATH="${WORKSPACE}/src:${PYTHONPATH:-}"
 
 nohup uvicorn cognitive_app.src.server.cli_api_server:app \
     --host 0.0.0.0 \
-    --port 8765 \
+    --port "${CLI_API_PORT}" \
     --log-level warning \
     > "$LOG_FILE" 2>&1 &
 CLI_API_PID=$!
@@ -60,14 +61,14 @@ echo "  Started CLI API server (PID=${CLI_API_PID}) → $LOG_FILE"
 SERVER_READY=0
 for i in 1 2 3 4 5; do
     sleep 1
-    if curl -sf http://localhost:8765/api/health > /dev/null 2>&1; then
+    if curl -sf "http://localhost:${CLI_API_PORT}/api/health" > /dev/null 2>&1; then
         SERVER_READY=1
         break
     fi
 done
 
 if [ "$SERVER_READY" = "1" ]; then
-    echo "  ✅ CLI API server ready on http://localhost:8765"
+    echo "  ✅ CLI API server ready on http://localhost:${CLI_API_PORT}"
     # Auth token report (mirrors copilot-setup-steps.yml auth banner)
     if   [ -n "${CODEX_MASTER_KEY:-}" ]; then
         echo "  🔑 Auth: CODEX_MASTER_KEY active (full PAT — variables/secrets API ✅)"
@@ -84,9 +85,51 @@ else
     # Non-fatal — Copilot agent can still work without the server
 fi
 
+# ── 4b. Auto-update WEBHOOK_RECEIVER_URL repo variable ────────────────────────
+# If running in a Codespace, construct the public forwarded URL and update
+# the repo variable so GitHub webhooks can deliver to this Codespace.
+if [ -n "${CODESPACE_NAME:-}" ]; then
+    PUBLIC_URL="https://${CODESPACE_NAME}-${CLI_API_PORT}.preview.app.github.dev/webhook/github"
+    echo "  🌐 Codespace detected — setting WEBHOOK_RECEIVER_URL"
+    echo "     URL: ${PUBLIC_URL}"
+
+    # Determine which token to use for gh CLI authentication
+    GH_TOKEN_FOR_VAR=""
+    if [ -n "${CODEX_MASTER_KEY:-}" ]; then
+        GH_TOKEN_FOR_VAR="${CODEX_MASTER_KEY}"
+        echo "     Token: CODEX_MASTER_KEY"
+    elif [ -n "${GITHUB_TOKEN:-}" ]; then
+        GH_TOKEN_FOR_VAR="${GITHUB_TOKEN}"
+        echo "     Token: GITHUB_TOKEN"
+    fi
+
+    if [ -n "${GH_TOKEN_FOR_VAR}" ]; then
+        if GH_TOKEN="${GH_TOKEN_FOR_VAR}" gh variable set WEBHOOK_RECEIVER_URL \
+            --body "${PUBLIC_URL}" \
+            --repo Aries-Serpent/_codex_ 2>&1; then
+            echo "  ✅ WEBHOOK_RECEIVER_URL updated successfully"
+        else
+            echo "  ⚠️  Failed to update WEBHOOK_RECEIVER_URL"
+            echo "     Manual fix: gh variable set WEBHOOK_RECEIVER_URL --body '${PUBLIC_URL}' --repo Aries-Serpent/_codex_"
+        fi
+    else
+        echo "  ⚠️  No token available to update WEBHOOK_RECEIVER_URL"
+        echo "     Set CODEX_MASTER_KEY as a Codespace secret, then restart the Codespace."
+        echo "     Manual fix: gh variable set WEBHOOK_RECEIVER_URL --body '${PUBLIC_URL}' --repo Aries-Serpent/_codex_"
+    fi
+
+    # Attempt to make port public for webhook delivery.
+    # Requires: gh CLI >= 2.28.0 and Codespace token with port-visibility permission.
+    gh codespace ports visibility "${CLI_API_PORT}:public" -c "${CODESPACE_NAME}" 2>/dev/null || \
+        echo "  ⚠️  Could not auto-set port ${CLI_API_PORT} to public. Manually set it in the Ports panel for webhook delivery."
+else
+    echo "  ℹ️  Not running in Codespace — WEBHOOK_RECEIVER_URL not updated"
+fi
+
 # ── 5. Verify GitHub App credentials are available ────────────────────────────
-if [ -n "${GITHUB_APP_ID:-}" ] && [ -n "${GITHUB_APP_PRIVATE_KEY:-}" ]; then
-    python3 - << 'PYEOF' 2>/dev/null && echo "  ✅ GitHub App JWT generation: OK" || echo "  ⚠️  GitHub App JWT: check GITHUB_APP_PRIVATE_KEY format"
+if [ -n "${_GITHUB_APP_ID:-}" ] && [ -n "${_GITHUB_APP_PRIVATE_KEY:-}" ]; then
+    GITHUB_APP_ID="${_GITHUB_APP_ID}" GITHUB_APP_PRIVATE_KEY="${_GITHUB_APP_PRIVATE_KEY}" \
+    python3 - << 'PYEOF' 2>/dev/null && echo "  ✅ GitHub App JWT generation: OK" || echo "  ⚠️  GitHub App JWT: check _GITHUB_APP_PRIVATE_KEY format"
 import os
 from codex.auth.github_app import GitHubApp, GitHubAppConfig
 cfg = GitHubAppConfig(
