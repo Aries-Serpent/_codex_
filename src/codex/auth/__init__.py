@@ -27,6 +27,7 @@ Usage:
         return {"user": request.state.user_id}
 """
 
+from .authenticator import Authenticator, LoginResult
 from .exceptions import (
     APIKeyError,
     APIKeyRevokedError,
@@ -48,7 +49,6 @@ from .exceptions import (
     TokenExpiredError,
     TokenRevokedError,
 )
-from .authenticator import Authenticator, LoginResult
 from .github_app import (
     GitHubApp,
     GitHubAppConfig,

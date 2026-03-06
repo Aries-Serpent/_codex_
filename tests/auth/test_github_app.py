@@ -77,7 +77,7 @@ class TestGitHubAppConfig:
             GitHubAppConfig(app_id=0, private_key_pem=rsa_private_key_pem)
 
     def test_missing_private_key_raises(self):
-        with pytest.raises(ValueError, match="PEM"):
+        with pytest.raises(ValueError, match="valid PEM-encoded"):
             GitHubAppConfig(app_id=1, private_key_pem="not-a-pem-key")
 
     def test_custom_api_base_url(self, rsa_private_key_pem):
@@ -126,7 +126,7 @@ class TestGenerateJWT:
         assert payload["exp"] - now < 360
 
     def test_jwt_expiry_exceeds_max_raises(self, github_app):
-        with pytest.raises(ValueError, match="600"):
+        with pytest.raises(ValueError, match="expiry_seconds must"):
             github_app.generate_jwt(expiry_seconds=601)
 
     def test_jwt_signature_is_base64url(self, github_app):
@@ -272,7 +272,7 @@ class TestWebhookVerifier:
             v.verify(b"payload", "md5=abcd1234")
 
     def test_empty_secret_raises(self):
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match="must not be empty"):
             WebhookVerifier("")
 
     def test_verify_empty_payload(self):

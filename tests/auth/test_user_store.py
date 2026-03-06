@@ -36,7 +36,7 @@ class TestPasswordHasher:
 
     def test_hash_empty_password_raises(self):
         h = PasswordHasher()
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match="must not be empty"):
             h.hash("")
 
     def test_verify_malformed_hash(self):
@@ -134,7 +134,7 @@ class TestUserStore:
 
     def test_create_user_empty_username_raises(self):
         store = UserStore()
-        with pytest.raises(ValueError, match="empty"):
+        with pytest.raises(ValueError, match="must not be empty"):
             store.create_user("", "a@b.com", "Str0ngPass!")
 
     def test_create_user_weak_password_raises(self):

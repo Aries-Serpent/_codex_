@@ -87,7 +87,8 @@ jobs:
           REPO="ghcr.io/${{ github.repository_owner }}/_codex_"
           SHORT_SHA="${{ github.sha }}"
           SHORT_SHA="${SHORT_SHA:0:7}"
-          TAG="${{ inputs.image_tag || SHORT_SHA }}"
+          INPUT_TAG="${{ inputs.image_tag }}"
+          TAG="${INPUT_TAG:-$SHORT_SHA}"
           TARGET="${{ matrix.target }}"
 
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then

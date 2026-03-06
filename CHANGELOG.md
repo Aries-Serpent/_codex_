@@ -5,6 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-131: CI failure sweep — registry, imports, pre-flight, actionlint (2026-03-06)
+
+### Fixed (W-131)
+
+- `.github/agents/AGENT_REGISTRY.yaml` — added missing `handoff_protocol: none` to `github-app-manager`
+  entry; resolves Agent Registry Validation schema error and unblocks E→D Transition Readiness Gate C4.
+- `src/codex/auth/__init__.py`, `tests/server/test_webhook_endpoint.py` — fixed unsorted import blocks
+  (Ruff I001 / isort); resolves Auto-Fix Common CI Issues + PR Auto-Fix Check failures.
+- `tests/auth/test_user_store.py` — tightened two `pytest.raises(match=...)` patterns from single-word
+  `"empty"` to `"must not be empty"` to pass the Pre-Flight CI Validation broad-match-pattern check.
+- `tests/auth/test_github_app.py` — tightened three `pytest.raises(match=...)` patterns: `"PEM"` →
+  `"valid PEM-encoded"`, `"600"` → `"expiry_seconds must"`, `"empty"` → `"must not be empty"`.
+- `.github/actionlint.yaml` — added `ubuntu-latest-m` to `self-hosted-runner.labels`; silences the
+  spurious "unknown label" error on all workflows that use the AS Larger Runners custom runner.
+- `.github/workflows/build-preview-image.yml` — replaced `${{ inputs.image_tag || SHORT_SHA }}` (invalid
+  use of a shell variable inside a `${{ }}` expression) with `INPUT_TAG="${{ inputs.image_tag }}"` +
+  `TAG="${INPUT_TAG:-$SHORT_SHA}"` pure-bash fallback; resolves actionlint `undefined variable SHORT_SHA`.
+
 ## [Unreleased] — W-130: Inbound webhook receiver + Codespace auto-URL + variable doc update (2026-03-06)
 
 ### Added (W-130)

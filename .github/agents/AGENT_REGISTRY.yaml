@@ -29,6 +29,7 @@ agents:
     - codespace_config
   physics_model:
     primary: bayesian
+  handoff_protocol: none
 
 - id: github-guru-agent
   name: GitHub Guru Agent
