@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-user-documentation
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-06 (W-132 — Cache hierarchy verification: `actions/cache@v4→v5` in 7 files; `CODEX_CACHE_VERSION` wired into L1/L3 keys of `setup-python-cached`; `cache-tier` made functional (tier prefix in keys, not just informational); `agent-registry-validation.yml` pip cache added + Python 3.11→3.12; `CACHE_SHARED_DATASETS.md` ops doc created; `WORKFLOW_CACHE_TIERS.md` updated; QA walkthrough refreshed with Session 15 metrics)
+**Last updated:** 2026-03-06 (W-133 — Stale test assertion fixes: `test_pattern_keywords_defined` updated `== 5` → `>= 5` (production PATTERN_KEYWORDS grew from 5→20 in S112); `test_autonomous_actions_disabled_by_default` and `test_genesis_workflow_dry_run` updated to `isinstance(..., bool)` — genesis Phase 2 activated W-107/W-108 so `autonomous_actions_enabled = True` is intentional)
 
 ---
 
