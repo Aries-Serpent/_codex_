@@ -21,12 +21,12 @@
 
   // Use the preview-dev image when already built; fall back to building locally.
   // The preview-dev image ships Python 3.12 + all runtime deps pre-installed.
-  "image": "ghcr.io/aries-serpent/_codex_/preview-dev:latest",
+  "image": "ghcr.io/aries-serpent/codex/preview-dev:latest",
   "build": {
     "dockerfile": "../Dockerfile.preview",
     "target": "preview-dev",
     "context": "..",
-    "cacheFrom": "ghcr.io/aries-serpent/_codex_/preview-dev:latest"
+    "cacheFrom": "ghcr.io/aries-serpent/codex/preview-dev:latest"
   },
 
   // ── devcontainer Features ──────────────────────────────────────────────────

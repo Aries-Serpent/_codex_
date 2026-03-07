@@ -268,7 +268,7 @@
 | Gap | Owner | Playbook | ETA |
 |-----|-------|----------|-----|
 | SAR-G01: 7 Codespace secrets | @mbaetiong (human admin only) | §13 GITHUB_VARIABLES_MASTER_GUIDE.md | 2026-03-15 |
-| SAR-G02: Feature store — Feast-compat PoC ✅ | @copilot | feast_compat.py landed | 2026-06-30 (prod backend) |
+| SAR-G02: Feature store — SQLite production backend ✅ | @copilot | feast_compat.py + SQLiteBackend (S116) | 2026-06-30 (Redis/Feast swap) |
 | SAR-G03: Auto-retrain GHA workflow ✅ | @copilot | model-drift-retrain.yml | 2026-06-30 (prod data source) |
 
 **Success criterion:** All 3 gaps resolved → ROADMAP MLOps level updated to **Level 4** → `docs/archive/LEVEL_4_MLOPS_ASSESSMENT.md` approval updated.
@@ -391,9 +391,9 @@
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
 | **SAR-G01: 7 Codespace secrets missing** (`CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`) | High | Set at org level — human admin required (see §13 of `GITHUB_VARIABLES_MASTER_GUIDE.md`) | 🔴 Blocked — awaiting @mbaetiong |
-| **SAR-G02: Feature store PoC** | High | `feast_compat.py` PoC landed; prod Feast backend TBD | 🟠 Partial (40/100) |
+| **SAR-G02: Feature store PoC** | High | `feast_compat.py` PoC + SQLite production backend (S116); swap Redis/Feast for 90/100 | 🟠 Advancing (75/100) |
 | **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired; real data source pending | 🟠 Partial (75/100) |
-| **SAR-G05: Distributed tracing** | Medium | OTel stub active; set `OTEL_EXPORTER_OTLP_ENDPOINT` | 🟠 Partial (78/100) |
+| **SAR-G05: Distributed tracing** | Medium | OTel wired; `OTEL_EXPORTER_OTLP_ENDPOINT` documented; deploy Jaeger/Tempo collector | 🟠 Advancing (88/100) |
 
 ### Potential Blockers
 

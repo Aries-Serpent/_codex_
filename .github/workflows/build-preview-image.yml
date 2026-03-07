@@ -84,7 +84,7 @@ jobs:
       - name: Compute image tags
         id: tags
         run: |
-          REPO="ghcr.io/${{ github.repository_owner }}/_codex_"
+          REPO="ghcr.io/${{ github.repository_owner }}/codex"
           SHORT_SHA="${{ github.sha }}"
           SHORT_SHA="${SHORT_SHA:0:7}"
           INPUT_TAG="${{ github.event.inputs.image_tag }}"
@@ -151,5 +151,5 @@ jobs:
           echo "| \`preview\` | ${{ needs.build.result == 'success' && '✅ passed' || '❌ failed' }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "| \`preview-dev\` | ${{ needs.build.result == 'success' && '✅ passed' || '❌ failed' }} |" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Images pushed to: \`ghcr.io/aries-serpent/_codex_/preview\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "Images pushed to: \`ghcr.io/aries-serpent/codex/preview\`" >> "$GITHUB_STEP_SUMMARY"
           echo "Devcontainer spec: \`.devcontainer/devcontainer.json\`" >> "$GITHUB_STEP_SUMMARY"

@@ -263,6 +263,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 8 | `WANDB_MODE` | ✅ | `offline` | Weights & Biases run mode |
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
+| 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and OTel SDK packages are installed, `init_tracing()` activates distributed tracing. Leave unset for offline/local environments. **SAR-G05.** |
 
 ### 6g. Webhook / Infra
 
