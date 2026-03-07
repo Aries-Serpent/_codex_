@@ -38,6 +38,7 @@ __all__ = [
     "FeastBackend",
     "InMemoryBackend",
     "SQLiteBackend",
+    "RedisBackend",
     "create_backend",
 ]
 
@@ -293,23 +294,23 @@ class FeastBackend(Protocol):
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
         """Write / update feature values for an entity key."""
-        ...
+        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
         """Read the latest feature values for an entity key (None if missing)."""
-        ...
+        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
 
     def delete(self, view_name: str, entity_key: str) -> None:
         """Delete feature values for an entity key."""
-        ...
+        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
 
     def list_views(self) -> list[str]:
         """Return all view names stored in this backend."""
-        ...
+        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
 
     def close(self) -> None:
         """Release any resources (connections, files)."""
-        ...
+        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
 
 
 class InMemoryBackend:
@@ -426,19 +427,85 @@ class SQLiteBackend:
             self._conn.close()
 
 
+class RedisBackend:
+    """Redis-backed production online feature store.
+
+    Persists feature values in Redis. Suitable for multi-node, high-throughput
+    production deployments. Falls back gracefully when ``redis`` package is not
+    installed — ``create_backend("redis", ...)`` will raise ``ImportError`` with
+    a clear install instruction.
+
+    Key schema::
+
+        {view_name}:{entity_key}  →  JSON-encoded feature dict (with ``__written_at``)
+
+    Args:
+        url:  Redis connection URL (default: ``"redis://localhost:6379/0"``).
+        ttl:  Optional key TTL in seconds (default: ``None`` — keys persist forever).
+
+    Example::
+
+        backend = create_backend("redis", url="redis://localhost:6379/0", ttl=3600)
+        backend.write("user_profile", "user:1", {"age": 30})
+        result = backend.read("user_profile", "user:1")
+    """
+
+    def __init__(self, url: str = "redis://localhost:6379/0", ttl: int | None = None) -> None:
+        try:
+            import redis as _redis  # type: ignore[import]
+        except ImportError as exc:  # pragma: no cover
+            raise ImportError(
+                "RedisBackend requires the 'redis' package. "
+                "Install with: pip install redis"
+            ) from exc
+        self._redis = _redis.from_url(url, decode_responses=True)
+        self._ttl = ttl
+        logger.info("RedisBackend initialized at %s (ttl=%s)", url, ttl)
+
+    @staticmethod
+    def _key(view_name: str, entity_key: str) -> str:
+        return f"{view_name}:{entity_key}"
+
+    def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        payload = json.dumps({
+            **features,
+            "__written_at": datetime.now(timezone.utc).isoformat(),
+        })
+        if self._ttl is not None:
+            self._redis.setex(self._key(view_name, entity_key), self._ttl, payload)
+        else:
+            self._redis.set(self._key(view_name, entity_key), payload)
+
+    def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        raw = self._redis.get(self._key(view_name, entity_key))
+        return json.loads(raw) if raw is not None else None
+
+    def delete(self, view_name: str, entity_key: str) -> None:
+        self._redis.delete(self._key(view_name, entity_key))
+
+    def list_views(self) -> list[str]:
+        keys = self._redis.keys("*:*")
+        return list({k.rsplit(":", 1)[0] for k in keys})
+
+    def close(self) -> None:
+        self._redis.close()
+
+
 def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
     """Factory function to create a Feast production backend.
 
     Args:
-        backend_type: One of ``"memory"`` (default) or ``"sqlite"``.
+        backend_type: One of ``"memory"`` (default), ``"sqlite"``, or ``"redis"``.
         **kwargs: Backend-specific keyword arguments.
                   ``sqlite``: accepts ``db_path`` (str | Path).
+                  ``redis``:  accepts ``url`` (str), ``ttl`` (int | None).
 
     Returns:
         A ``FeastBackend`` instance.
 
     Raises:
-        ValueError: If ``backend_type`` is unknown.
+        ValueError:    If ``backend_type`` is unknown.
+        ImportError:   If ``backend_type="redis"`` and the ``redis`` package is not installed.
 
     Example::
 
@@ -447,12 +514,20 @@ def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
 
         # Production (single-node)
         backend = create_backend("sqlite", db_path=".feature_store/online.db")
+
+        # Production (multi-node / high-throughput)
+        backend = create_backend("redis", url="redis://localhost:6379/0", ttl=3600)
     """
     if backend_type == "memory":
         return InMemoryBackend()
     if backend_type == "sqlite":
         return SQLiteBackend(db_path=kwargs.get("db_path", ":memory:"))
+    if backend_type == "redis":
+        return RedisBackend(
+            url=kwargs.get("url", "redis://localhost:6379/0"),
+            ttl=kwargs.get("ttl"),
+        )
     raise ValueError(
         f"Unknown backend_type '{backend_type}'. "
-        "Supported: 'memory', 'sqlite'."
+        "Supported: 'memory', 'sqlite', 'redis'."
     )

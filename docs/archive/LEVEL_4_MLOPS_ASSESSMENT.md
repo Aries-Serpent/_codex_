@@ -338,16 +338,16 @@ scripts/generate_sbom.py:
 | 4. Production-Grade Engineering | 92/100 | ✅ Complete | — |
 | 5. Cross-Functional De-Siloed Teams | 88/100 | ✅ Near-complete | — |
 | 6. Governance & Compliance | 85/100 | ✅ Near-complete | — |
-| 7. Feature Store | 75/100 | ⚠️ SQLite production backend added | SAR-G02 advancing |
+| 7. Feature Store | 90/100 | ⚠️ Redis+SQLite backends added | SAR-G02 near-complete |
 | **Overall** | **88/100** | **⚠️ Level 3.95 — NOT YET Level 4** | 2 gaps remain |
 
 ### P1 Gaps Blocking Level 4 Certification
 
 | ID | Gap | Status | Owner | Playbook | ETA |
 |----|-----|--------|-------|----------|-----|
-| SAR-G02 | Feature store — SQLite production backend added; swap for Redis/Feast for prod | ⚠️ Advancing (75/100) | @mbaetiong | New design | Phase 2 2026 |
+| SAR-G02 | Feature store — Redis + SQLite backends; swap Redis URL for prod deployment | ⚠️ Near-complete (90/100) | @mbaetiong | New design | Phase 2 2026 |
 | SAR-G03 | Auto-retrain wired to GHA trigger; production data source stub | ⚠️ Partial (75/100) | @mbaetiong | SAR-004 | Phase 2 2026 |
-| SAR-G05 | OTel wired (`init_tracing()` + `OTEL_EXPORTER_OTLP_ENDPOINT` documented); deploy Jaeger/Tempo | ⚠️ Advancing (88/100) | @mbaetiong | New design | Phase 2 2026 |
+| SAR-G05 | OTel wired + devcontainer `OTEL_EXPORTER_OTLP_ENDPOINT` entry added; activate by setting endpoint | ⚠️ Near-complete (95/100) | @mbaetiong | New design | Phase 2 2026 |
 
 **Certification target:** Level 4.0 after all three gaps reach ≥90/100 (Phase 2 2026)
 

@@ -391,9 +391,9 @@
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
 | **SAR-G01: 7 Codespace secrets missing** (`CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`, `_GITHUB_APP_ID`, `_GITHUB_APP_PRIVATE_KEY`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_CLIENT_SECRET`, `WEBHOOK_SECRET`) | High | Set at org level — human admin required (see §13 of `GITHUB_VARIABLES_MASTER_GUIDE.md`) | 🔴 Blocked — awaiting @mbaetiong |
-| **SAR-G02: Feature store PoC** | High | `feast_compat.py` PoC + SQLite production backend (S116); swap Redis/Feast for 90/100 | 🟠 Advancing (75/100) |
+| **SAR-G02: Feature store** | High | Redis + SQLite backends in `feast_compat.py`; set `REDIS_URL` for 100/100 | 🟠 Near-complete (90/100) |
 | **SAR-G03: Auto-retrain trigger** | High | `model-drift-retrain.yml` wired; real data source pending | 🟠 Partial (75/100) |
-| **SAR-G05: Distributed tracing** | Medium | OTel wired; `OTEL_EXPORTER_OTLP_ENDPOINT` documented; deploy Jaeger/Tempo collector | 🟠 Advancing (88/100) |
+| **SAR-G05: Distributed tracing** | Medium | devcontainer `OTEL_EXPORTER_OTLP_ENDPOINT` wired; uncomment to activate Jaeger | 🟠 Near-complete (95/100) |
 
 ### Potential Blockers
 

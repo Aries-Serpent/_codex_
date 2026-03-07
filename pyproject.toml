@@ -480,12 +480,13 @@ precision = 2
 # - Phase 25: 40% (target: 2026-02-28 — completed ✅ S106)
 # - Phase 26: 50% (target: 2026-02-28 — completed ✅ S107 — archive+metrics+health+path_utils tests)
 # - Phase 27: 60% (target: 2026-03-07 — completed ✅ S116 — autonomy tests added)
-# - Phase 28: 65% (target: 2026-03-14 — add Feast/OTel/autonomy coverage batch)
-# - Phase 29: 75% (target: 2026-03-21 — add cli/training/codex_ml batch tests)
-# - Phase 30: 90% (target: 2026-04-15)
-# - Phase 31+: 100% (aspirational: 2026-05-01)
+# - Phase 28: 65% (target: 2026-03-14 — completed ✅ S116/W-142 — feast+budget exhaustion tests)
+# - Phase 29: 75% (target: 2026-03-21 — completed ✅ S116/W-142 — feast backends + integration tests)
+# - Phase 30: 85% (target: 2026-04-01)
+# - Phase 31: 90% (target: 2026-04-15)
+# - Phase 32+: 100% (aspirational: 2026-05-01)
 # Owner: @mbaetiong
-fail_under = 65
+fail_under = 75
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

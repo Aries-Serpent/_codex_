@@ -10,9 +10,7 @@ from __future__ import annotations
 
 import importlib
 import json
-import os
 import sys
-import uuid
 from pathlib import Path
 from unittest.mock import patch
 
@@ -94,7 +92,7 @@ class TestCurrentSessionPointer:
             pytest.skip("start_session not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
-            session_id = mod.start_session(label="ptr-test")
+            _ = mod.start_session(label="ptr-test")
 
         ptr = tmp_path / ".current_session.json"
         if ptr.exists():
@@ -122,8 +120,8 @@ class TestSessionList:
             pytest.skip("start_session / list_sessions not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
-            id1 = mod.start_session(label="list-a")
-            id2 = mod.start_session(label="list-b")
+            mod.start_session(label="list-a")
+            mod.start_session(label="list-b")
             sessions = mod.list_sessions()
 
         assert len(sessions) >= 2

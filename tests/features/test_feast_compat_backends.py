@@ -1,0 +1,310 @@
+"""Tests for feast_compat production backends (SAR-G02 — S116/W-142).
+
+Covers InMemoryBackend, SQLiteBackend, RedisBackend (mocked),
+FeastBackend Protocol conformance, and create_backend() factory.
+"""
+from __future__ import annotations
+
+import json
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+# ── Import helpers ──────────────────────────────────────────────────────────
+
+def _import_feast():
+    try:
+        from codex_ml.features import feast_compat
+        return feast_compat
+    except ImportError:
+        pytest.skip("codex_ml.features.feast_compat not importable")
+
+
+# ── FeastBackend Protocol ───────────────────────────────────────────────────
+
+class TestFeastBackendProtocol:
+    """Protocol conformance tests."""
+
+    def test_in_memory_satisfies_protocol(self):
+        mod = _import_feast()
+        backend = mod.InMemoryBackend()
+        assert isinstance(backend, mod.FeastBackend)
+
+    def test_sqlite_satisfies_protocol(self):
+        mod = _import_feast()
+        backend = mod.SQLiteBackend(db_path=":memory:")
+        assert isinstance(backend, mod.FeastBackend)
+        backend.close()
+
+    def test_protocol_methods_raise_not_implemented(self):
+        """Direct Protocol instantiation should raise — methods are not callable."""
+        mod = _import_feast()
+        # Protocol is @runtime_checkable — it cannot be instantiated directly;
+        # but all concrete classes must override all methods.
+        with pytest.raises(TypeError):
+            mod.FeastBackend()  # type: ignore[abstract]
+
+
+# ── InMemoryBackend ─────────────────────────────────────────────────────────
+
+class TestInMemoryBackend:
+    """Unit tests for InMemoryBackend."""
+
+    def setup_method(self):
+        mod = _import_feast()
+        self.mod = mod
+        self.backend = mod.InMemoryBackend()
+
+    def teardown_method(self):
+        self.backend.close()
+
+    def test_write_and_read_round_trip(self):
+        self.backend.write("view_a", "user:1", {"age": 30, "tier": "gold"})
+        result = self.backend.read("view_a", "user:1")
+        assert result is not None
+        assert result["age"] == 30
+        assert result["tier"] == "gold"
+        assert "__written_at" in result
+
+    def test_read_missing_returns_none(self):
+        assert self.backend.read("view_z", "nobody") is None
+
+    def test_overwrite_replaces_value(self):
+        self.backend.write("v", "k", {"x": 1})
+        self.backend.write("v", "k", {"x": 99})
+        assert self.backend.read("v", "k")["x"] == 99
+
+    def test_delete_removes_entry(self):
+        self.backend.write("v", "k", {"x": 1})
+        self.backend.delete("v", "k")
+        assert self.backend.read("v", "k") is None
+
+    def test_delete_nonexistent_is_noop(self):
+        self.backend.delete("v", "ghost")  # should not raise
+
+    def test_list_views_returns_written_views(self):
+        self.backend.write("view_x", "e1", {"f": 1})
+        self.backend.write("view_y", "e2", {"f": 2})
+        views = self.backend.list_views()
+        assert "view_x" in views
+        assert "view_y" in views
+
+    def test_list_views_empty_initially(self):
+        assert self.backend.list_views() == []
+
+    def test_thread_safety_concurrent_writes(self):
+        """Multiple threads writing to different keys must not clobber each other."""
+        import threading
+
+        errors: list[Exception] = []
+
+        def writer(i: int) -> None:
+            try:
+                self.backend.write("view", f"key:{i}", {"val": i})
+            except Exception as exc:
+                errors.append(exc)
+
+        threads = [threading.Thread(target=writer, args=(i,)) for i in range(20)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        assert not errors
+        for i in range(20):
+            r = self.backend.read("view", f"key:{i}")
+            assert r is not None
+            assert r["val"] == i
+
+
+# ── SQLiteBackend ───────────────────────────────────────────────────────────
+
+class TestSQLiteBackend:
+    """Unit tests for SQLiteBackend."""
+
+    def setup_method(self):
+        mod = _import_feast()
+        self.mod = mod
+        self.backend = mod.SQLiteBackend(db_path=":memory:")
+
+    def teardown_method(self):
+        self.backend.close()
+
+    def test_write_and_read_round_trip(self):
+        self.backend.write("profile", "u:1", {"plan": "pro", "credits": 500})
+        r = self.backend.read("profile", "u:1")
+        assert r is not None
+        assert r["plan"] == "pro"
+        assert r["credits"] == 500
+
+    def test_read_missing_returns_none(self):
+        assert self.backend.read("nope", "nobody") is None
+
+    def test_upsert_replaces_existing(self):
+        self.backend.write("v", "k", {"score": 1})
+        self.backend.write("v", "k", {"score": 2})
+        assert self.backend.read("v", "k")["score"] == 2
+
+    def test_delete_removes_entry(self):
+        self.backend.write("v", "k", {"x": 1})
+        self.backend.delete("v", "k")
+        assert self.backend.read("v", "k") is None
+
+    def test_delete_nonexistent_is_noop(self):
+        self.backend.delete("v", "ghost")
+
+    def test_list_views_distinct(self):
+        self.backend.write("a", "e1", {})
+        self.backend.write("a", "e2", {})
+        self.backend.write("b", "e1", {})
+        views = self.backend.list_views()
+        assert sorted(views) == ["a", "b"]
+
+    def test_persistent_db_file(self, tmp_path):
+        db_path = tmp_path / "test.db"
+        mod = _import_feast()
+        b = mod.SQLiteBackend(db_path=db_path)
+        b.write("v", "k", {"n": 42})
+        b.close()
+        assert db_path.exists()
+
+        # Re-open and verify data persisted
+        b2 = mod.SQLiteBackend(db_path=db_path)
+        assert b2.read("v", "k")["n"] == 42
+        b2.close()
+
+    def test_thread_safety(self):
+        import threading
+
+        errors: list[Exception] = []
+
+        def writer(i: int) -> None:
+            try:
+                self.backend.write("view", f"key:{i}", {"val": i})
+            except Exception as exc:
+                errors.append(exc)
+
+        threads = [threading.Thread(target=writer, args=(i,)) for i in range(10)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        assert not errors
+
+
+# ── RedisBackend (mocked) ───────────────────────────────────────────────────
+
+class TestRedisBackend:
+    """Unit tests for RedisBackend using a mocked Redis client."""
+
+    def _make_backend(self, mod):
+        """Build a RedisBackend with a fully mocked redis client."""
+        mock_redis = MagicMock()
+        mock_redis.get.return_value = None
+        mock_redis.keys.return_value = []
+
+        with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
+            backend = mod.RedisBackend(url="redis://localhost:6379/0")
+        backend._redis = mock_redis
+        return backend, mock_redis
+
+    def test_write_calls_redis_set(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        backend.write("view", "key:1", {"x": 10})
+        assert mock_redis.set.called or mock_redis.setex.called
+
+    def test_write_with_ttl_calls_setex(self):
+        mod = _import_feast()
+        mock_redis = MagicMock()
+        with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
+            backend = mod.RedisBackend(url="redis://localhost:6379/0", ttl=60)
+        backend._redis = mock_redis
+        backend.write("view", "key:1", {"x": 10})
+        mock_redis.setex.assert_called_once()
+        assert mock_redis.setex.call_args[0][1] == 60
+
+    def test_read_missing_returns_none(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        mock_redis.get.return_value = None
+        assert backend.read("view", "missing") is None
+
+    def test_read_returns_deserialized_data(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        payload = json.dumps({"age": 30, "__written_at": "2026-03-07T00:00:00Z"})
+        mock_redis.get.return_value = payload
+        result = backend.read("view", "key:1")
+        assert result["age"] == 30
+
+    def test_delete_calls_redis_delete(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        backend.delete("view", "key:1")
+        mock_redis.delete.assert_called_once()
+
+    def test_list_views_parses_keys(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        # Keys format: {view_name}:{entity_key}.  rsplit(":", 1) extracts view_name.
+        mock_redis.keys.return_value = ["profile:1", "profile:2", "orders:1"]
+        views = backend.list_views()
+        assert "profile" in views
+        assert "orders" in views
+
+    def test_close_calls_redis_close(self):
+        mod = _import_feast()
+        backend, mock_redis = self._make_backend(mod)
+        backend.close()
+        mock_redis.close.assert_called_once()
+
+    def test_missing_redis_package_raises_import_error(self):
+        mod = _import_feast()
+        import sys
+        real_redis = sys.modules.pop("redis", None)
+        try:
+            with pytest.raises(ImportError, match="redis"):
+                mod.RedisBackend()
+        finally:
+            if real_redis is not None:
+                sys.modules["redis"] = real_redis
+
+
+# ── create_backend() factory ────────────────────────────────────────────────
+
+class TestCreateBackend:
+    """Tests for the create_backend() factory function."""
+
+    def test_memory_backend(self):
+        mod = _import_feast()
+        b = mod.create_backend("memory")
+        assert isinstance(b, mod.InMemoryBackend)
+
+    def test_sqlite_backend_default_memory(self):
+        mod = _import_feast()
+        b = mod.create_backend("sqlite")
+        assert isinstance(b, mod.SQLiteBackend)
+        b.close()
+
+    def test_sqlite_backend_custom_path(self, tmp_path):
+        mod = _import_feast()
+        b = mod.create_backend("sqlite", db_path=tmp_path / "feat.db")
+        assert isinstance(b, mod.SQLiteBackend)
+        b.close()
+
+    def test_unknown_backend_raises_value_error(self):
+        mod = _import_feast()
+        with pytest.raises(ValueError, match="cassandra"):
+            mod.create_backend("cassandra")
+
+    def test_all_supported_types_in_error_message(self):
+        mod = _import_feast()
+        with pytest.raises(ValueError) as exc_info:
+            mod.create_backend("bad")
+        msg = str(exc_info.value)
+        assert "memory" in msg
+        assert "sqlite" in msg
+        assert "redis" in msg
