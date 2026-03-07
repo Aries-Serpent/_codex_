@@ -160,9 +160,8 @@ def reflect(target: str, depth: int = 1) -> ReflectionReport:
             if candidate.suffix == ".py":
                 metrics = _analyze_python_file(candidate)
             else:
-                metrics = {
-                    "lines": len(candidate.read_text(encoding="utf-8", errors="replace").splitlines())
-                }
+                text = candidate.read_text(encoding="utf-8", errors="replace")
+                metrics = {"lines": len(text.splitlines())}
 
             rel = candidate.relative_to(REPO_ROOT)
             summary_parts = [f"{rel}: {metrics.get('lines', '?')} lines"]
