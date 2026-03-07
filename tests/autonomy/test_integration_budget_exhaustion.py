@@ -28,9 +28,11 @@ def _import(name: str):
     # Always re-import with cleared cache to pick up patched env
     sys.modules.pop(name, None)
     try:
-        return importlib.import_module(name)
+        mod = importlib.import_module(name)
     except ImportError:
         pytest.skip(f"{name} not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
+    return mod
 
 
 # ── budget_uncertainty (Phase 4/5) ──────────────────────────────────────────

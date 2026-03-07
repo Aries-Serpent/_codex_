@@ -23,9 +23,11 @@ def _import_tracker():
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
     try:
-        return importlib.import_module("session_tracker")
+        mod = importlib.import_module("session_tracker")
     except ImportError:
         pytest.skip("session_tracker not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
+    return mod
 
 
 class TestSessionStart:

@@ -26,9 +26,11 @@ def _import_scheduler():
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
     try:
-        return importlib.import_module("autonomy_scheduler")
+        mod = importlib.import_module("autonomy_scheduler")
     except ImportError:
         pytest.skip("autonomy_scheduler not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
+    return mod
 
 
 class TestBudgetCap:

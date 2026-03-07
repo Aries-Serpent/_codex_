@@ -18,6 +18,7 @@ def _import_feast():
         return feast_compat
     except ImportError:
         pytest.skip("codex_ml.features.feast_compat not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
 
 
 # ── FeastBackend Protocol ───────────────────────────────────────────────────

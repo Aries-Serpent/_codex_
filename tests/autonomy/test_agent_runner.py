@@ -26,9 +26,11 @@ def _import_runner():
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
     try:
-        return importlib.import_module("agent_runner")
+        mod = importlib.import_module("agent_runner")
     except ImportError:
         pytest.skip("agent_runner not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
+    return mod
 
 
 class TestKillSwitchHalt:
