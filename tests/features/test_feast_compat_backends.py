@@ -196,29 +196,33 @@ class TestSQLiteBackend:
 
 # ── RedisBackend (mocked) ───────────────────────────────────────────────────
 
+@pytest.fixture
+def mock_redis_backend():
+    """Pytest fixture: returns (backend, mock_redis) with a mocked Redis client."""
+    mod = _import_feast()
+    mock_redis = MagicMock()
+    mock_redis.get.return_value = None
+    # scan() returns (cursor, keys); cursor=0 means iteration complete.
+    mock_redis.scan.return_value = (0, [])
+
+    with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
+        backend = mod.RedisBackend(url="redis://localhost:6379/0")
+    backend._redis = mock_redis
+    return backend, mock_redis, mod
+
+
 class TestRedisBackend:
     """Unit tests for RedisBackend using a mocked Redis client."""
 
-    def _make_backend(self, mod):
-        """Build a RedisBackend with a fully mocked redis client."""
-        mock_redis = MagicMock()
-        mock_redis.get.return_value = None
-        mock_redis.keys.return_value = []
-
-        with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
-            backend = mod.RedisBackend(url="redis://localhost:6379/0")
-        backend._redis = mock_redis
-        return backend, mock_redis
-
-    def test_write_calls_redis_set(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
+    def test_write_calls_redis_set(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
         backend.write("view", "key:1", {"x": 10})
         assert mock_redis.set.called or mock_redis.setex.called
 
     def test_write_with_ttl_calls_setex(self):
         mod = _import_feast()
         mock_redis = MagicMock()
+        mock_redis.scan.return_value = (0, [])
         with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
             backend = mod.RedisBackend(url="redis://localhost:6379/0", ttl=60)
         backend._redis = mock_redis
@@ -226,38 +230,34 @@ class TestRedisBackend:
         mock_redis.setex.assert_called_once()
         assert mock_redis.setex.call_args[0][1] == 60
 
-    def test_read_missing_returns_none(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
+    def test_read_missing_returns_none(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
         mock_redis.get.return_value = None
         assert backend.read("view", "missing") is None
 
-    def test_read_returns_deserialized_data(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
+    def test_read_returns_deserialized_data(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
         payload = json.dumps({"age": 30, "__written_at": "2026-03-07T00:00:00Z"})
         mock_redis.get.return_value = payload
         result = backend.read("view", "key:1")
         assert result["age"] == 30
 
-    def test_delete_calls_redis_delete(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
+    def test_delete_calls_redis_delete(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
         backend.delete("view", "key:1")
         mock_redis.delete.assert_called_once()
 
-    def test_list_views_parses_keys(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
-        # Keys format: {view_name}:{entity_key}.  rsplit(":", 1) extracts view_name.
-        mock_redis.keys.return_value = ["profile:1", "profile:2", "orders:1"]
+    def test_list_views_parses_keys(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
+        # Keys format: {view_name}:{entity_key}. rsplit(":", 1) extracts view_name.
+        # SCAN returns (cursor=0, keys) — cursor=0 means scan complete.
+        mock_redis.scan.return_value = (0, ["profile:1", "profile:2", "orders:1"])
         views = backend.list_views()
         assert "profile" in views
         assert "orders" in views
 
-    def test_close_calls_redis_close(self):
-        mod = _import_feast()
-        backend, mock_redis = self._make_backend(mod)
+    def test_close_calls_redis_close(self, mock_redis_backend):
+        backend, mock_redis, _ = mock_redis_backend
         backend.close()
         mock_redis.close.assert_called_once()
 

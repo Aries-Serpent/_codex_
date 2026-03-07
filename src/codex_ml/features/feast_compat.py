@@ -440,8 +440,11 @@ class RedisBackend:
         {view_name}:{entity_key}  →  JSON-encoded feature dict (with ``__written_at``)
 
     Args:
-        url:  Redis connection URL (default: ``"redis://localhost:6379/0"``).
-        ttl:  Optional key TTL in seconds (default: ``None`` — keys persist forever).
+        url:             Redis connection URL (default: ``"redis://localhost:6379/0"``).
+        ttl:             Optional key TTL in seconds (default: ``None`` — keys persist forever).
+        max_connections: Maximum connections in the pool (default: ``None`` — unlimited).
+        socket_timeout:  Socket read/write timeout in seconds (default: ``None``).
+        socket_connect_timeout: Socket connect timeout in seconds (default: ``None``).
 
     Example::
 
@@ -450,7 +453,14 @@ class RedisBackend:
         result = backend.read("user_profile", "user:1")
     """
 
-    def __init__(self, url: str = "redis://localhost:6379/0", ttl: int | None = None) -> None:
+    def __init__(
+        self,
+        url: str = "redis://localhost:6379/0",
+        ttl: int | None = None,
+        max_connections: int | None = None,
+        socket_timeout: float | None = None,
+        socket_connect_timeout: float | None = None,
+    ) -> None:
         try:
             import redis as _redis  # type: ignore[import]
         except ImportError as exc:  # pragma: no cover
@@ -458,7 +468,14 @@ class RedisBackend:
                 "RedisBackend requires the 'redis' package. "
                 "Install with: pip install redis"
             ) from exc
-        self._redis = _redis.from_url(url, decode_responses=True)
+        pool_kwargs: dict[str, Any] = {"decode_responses": True}
+        if max_connections is not None:
+            pool_kwargs["max_connections"] = max_connections
+        if socket_timeout is not None:
+            pool_kwargs["socket_timeout"] = socket_timeout
+        if socket_connect_timeout is not None:
+            pool_kwargs["socket_connect_timeout"] = socket_connect_timeout
+        self._redis = _redis.from_url(url, **pool_kwargs)
         self._ttl = ttl
         logger.info("RedisBackend initialized at %s (ttl=%s)", url, ttl)
 
@@ -484,8 +501,17 @@ class RedisBackend:
         self._redis.delete(self._key(view_name, entity_key))
 
     def list_views(self) -> list[str]:
-        keys = self._redis.keys("*:*")
-        return list({k.rsplit(":", 1)[0] for k in keys})
+        # Use SCAN instead of KEYS to avoid blocking the Redis server during
+        # a full-keyspace scan in production environments with many keys.
+        views: set[str] = set()
+        cursor = 0
+        while True:
+            cursor, keys = self._redis.scan(cursor, match="*:*", count=100)
+            for k in keys:
+                views.add(k.rsplit(":", 1)[0])
+            if cursor == 0:
+                break
+        return list(views)
 
     def close(self) -> None:
         self._redis.close()

@@ -123,12 +123,15 @@
     // comment out) to run in no-op / offline mode — the server starts fine
     // without a live collector.
     //
-    // Activate by uncommenting the line below and restarting the Codespace.
+    // Activate by setting the endpoint below and restarting the Codespace:
     //   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317",
     //
     // Jaeger UI (when running): http://localhost:16686
     // gRPC collector: http://localhost:4317
     // HTTP collector: http://localhost:4318
+    //
+    // Empty string ("") is treated as no-op by init_tracing() — tracing is
+    // disabled and no connection is attempted.  Safe for offline/CI use.
     "OTEL_SERVICE_NAME": "codex-mcp",
     "OTEL_EXPORTER_OTLP_ENDPOINT": ""
   },
