@@ -32,7 +32,7 @@
 10. [Known Issues & Inconsistencies](#10-known-issues--inconsistencies)
 11. [Troubleshooting](#11-troubleshooting)
 12. [Related Documentation](#12-related-documentation)
-13. [⛔ Still Missing — Variables/Secrets Not Yet Provided](#13--still-missing--variablessecrets-not-yet-provided)
+13. [✅ Previously Missing — All Resolved (2026-03-07)](#13--previously-missing--all-resolved-2026-03-07)
 
 ---
 
@@ -283,14 +283,14 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 | # | Variable | Status | Recommended Value | Script Default | Purpose |
 |---|---|---|---|---|---|
-| 1 | `AGENT_KILL_SWITCH` | ⚠️ **New** | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **Default is `"0"` so CI passes by default when the variable is unset.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
-| 2 | `AUTONOMY_BUDGET_SECONDS` | ⚠️ **New** | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Recommended CI value: 60. |
-| 3 | `AUTONOMY_MAX_ITERATIONS` | ⚠️ **New** | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). Recommended CI value: 3. |
-| 4 | `AUTONOMY_DRY_RUN` | ⚠️ **New** | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |
-| 5 | `AGENT_RUNNER_BUDGET_SECONDS` | ⚠️ **New** | `120` | `180` | Total wall-clock budget per `agent_runner.py` orchestration daemon invocation (Phase 7). |
-| 6 | `AGENT_RUNNER_ITERATIONS` | ⚠️ **New** | `2` | `3` | Number of full-phase loops per `agent_runner.py` invocation (Phase 7). |
-| 7 | `AGENT_RUNNER_DRY_RUN` | ⚠️ **New** | `0` | `0` | Set to `"1"` to skip all write operations in `agent_runner.py` (Phase 7). |
-| 8 | `UNCERTAINTY_BUDGET_SECONDS` | ⚠️ **New** | `10` | `10` | Per-query wall-time cap for Dirichlet inference in `budget_uncertainty.py` (Phases 4/5). |
+| 1 | `AGENT_KILL_SWITCH` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **Default is `"0"` so CI passes by default when the variable is unset.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
+| 2 | `AUTONOMY_BUDGET_SECONDS` | ✅ **Set** `90` (2026-03-07) | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Admin chose 90s (between recommended CI=60 and script default=300). |
+| 3 | `AUTONOMY_MAX_ITERATIONS` | ✅ **Set** `3` (2026-03-07) | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). |
+| 4 | `AUTONOMY_DRY_RUN` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |
+| 5 | `AGENT_RUNNER_BUDGET_SECONDS` | ✅ **Set** `180` (2026-03-07) | `120` | `180` | Total wall-clock budget per `agent_runner.py` orchestration daemon invocation (Phase 7). Admin chose script default of 180s. |
+| 6 | `AGENT_RUNNER_ITERATIONS` | ✅ **Set** `2` (2026-03-07) | `2` | `3` | Number of full-phase loops per `agent_runner.py` invocation (Phase 7). |
+| 7 | `AGENT_RUNNER_DRY_RUN` | ✅ **Set** `0` (2026-03-07) | `0` | `0` | Set to `"1"` to skip all write operations in `agent_runner.py` (Phase 7). |
+| 8 | `UNCERTAINTY_BUDGET_SECONDS` | ✅ **Set** `20` (2026-03-07) | `10` | `10` | Per-query wall-time cap for Dirichlet inference in `budget_uncertainty.py` (Phases 4/5). Admin chose 20s for extra safety margin. |
 
 > **Governance note:** `AGENT_KILL_SWITCH` is analogous to `AUTONOMOUS_ACTIONS_ENABLED` — both are human-governance flags.
 > `AGENT_KILL_SWITCH=1` provides a fast path to halt agent loops without changing `AUTONOMOUS_ACTIONS_ENABLED`,
@@ -358,39 +358,40 @@ These secrets mirror the Actions org secrets but are injected into Codespace con
 
 | # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent |
 |---|---|---|---|---|---|
-| 1 | `CODEX_MASTER_KEY` | ✅ **Confirmed** (org-level) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | `CODEX_MASTER_KEY` (org secret ✅) |
-| 2 | `CODEX_BACKUP_KEY` | ❌ **Not confirmed** | Fallback PAT for 401/403 retries | Org Codespace secrets **or** user secrets | `CODEX_BACKUP_KEY` (org secret ✅) |
-| 3 | `CODEX_ADMIN_KEY` | ❌ **Not confirmed** | Fine-grained PAT (`Webhooks:write`) for webhook management | Org Codespace secrets **or** user secrets | `CODEX_ADMIN_KEY` (org secret ✅) |
-| 4 | `_GITHUB_APP_ID` | ❌ **Not confirmed** | Numeric GitHub App ID for RS256 JWT auth | Org Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) |
-| 5 | `_GITHUB_APP_PRIVATE_KEY` | ❌ **Not confirmed** | PEM RSA-2048 private key for GitHub App | Org Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) |
-| 6 | `_GITHUB_APP_INSTALLATION_ID` | ❌ **Not confirmed** | App installation ID for generating installation tokens | Org Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) |
-| 7 | `_GITHUB_APP_CLIENT_SECRET` | ❌ **Not confirmed** | GitHub App OAuth client secret | Org Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) |
-| 8 | `WEBHOOK_SECRET` | ❌ **Not confirmed** | HMAC-SHA256 shared secret for webhook signature verification | Org Codespace secrets | `CODEX_WEBHOOK_SECRET` (repo secret ✅) |
+| 1 | `CODEX_MASTER_KEY` | ✅ **Confirmed** (org-level, 2026-03-06) | Primary GitHub PAT for Variables API, Secrets API, Webhooks API | Org Codespace secrets | `CODEX_MASTER_KEY` (org secret ✅) |
+| 2 | `CODEX_BACKUP_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fallback PAT for 401/403 retries | User Codespace secrets | `CODEX_BACKUP_KEY` (org secret ✅) |
+| 3 | `CODEX_ADMIN_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | Fine-grained PAT (`Webhooks:write`) for webhook management | User Codespace secrets | `CODEX_ADMIN_KEY` (org secret ✅) |
+| 4 | `_GITHUB_APP_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | Numeric GitHub App ID for RS256 JWT auth | User Codespace secrets | `_GITHUB_APP_ID` (org secret ✅) |
+| 5 | `_GITHUB_APP_PRIVATE_KEY` | ✅ **Confirmed** (user secret, 2026-03-06) | PEM RSA-2048 private key for GitHub App | User Codespace secrets (multi-line value) | `_GITHUB_APP_PRIVATE_KEY` (org secret ✅) |
+| 6 | `_GITHUB_APP_INSTALLATION_ID` | ✅ **Confirmed** (user secret, 2026-03-06) | App installation ID for generating installation tokens | User Codespace secrets | `_GITHUB_APP_INSTALLATION_ID` (org secret ✅) |
+| 7 | `_GITHUB_APP_CLIENT_SECRET` | ✅ **Confirmed** (user secret, 2026-03-07) | GitHub App OAuth client secret | User Codespace secrets | `_GITHUB_APP_CLIENT_SECRET` (org secret ✅) |
+| 8 | `WEBHOOK_SECRET` | ✅ **Confirmed** (user secret, 2026-03-06) | HMAC-SHA256 shared secret for webhook signature verification | User Codespace secrets | `CODEX_WEBHOOK_SECRET` (repo secret ✅) |
+| 9 | `WEBHOOK_RECEIVER_URL` | ✅ **Confirmed** (user secret + repo var, 2026-03-06) | Webhook receiver URL (also auto-set as repo var by `post-start.sh`) | User Codespace secrets | Repo variable `WEBHOOK_RECEIVER_URL` ✅ |
+
+> ✅ **SAR-G01 COMPLETE (2026-03-07)** — All 9 Codespace secrets confirmed set by @mbaetiong.
+> Secrets are stored as **user-level** Codespace secrets (not org-level), which works identically for personal Codespace sessions.
 
 > **Note:** Secrets 4–7 use the same `_GITHUB_APP_*` naming as the corresponding org Actions secrets (leading underscore is the standard convention for these system/infrastructure secrets).  
 > See [`docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`](../agent/CODESPACE_COPILOT_AGENT_GUIDE.md) for detailed setup instructions.
 
 > **Note (2026-03-06):** `CODEX_MASTER_KEY` was briefly set as a *repository-level* Codespace secret (overriding the org secret). That repo-level override has been **removed** by @mbaetiong — the org-level Codespace secret is now active directly. Secret was re-rotated at this time.
 
-### ⚠️ How to set remaining Codespace secrets (7 items outstanding)
+### ✅ All Codespace secrets confirmed (SAR-G01 COMPLETE 2026-03-07)
 
+All 9 Codespace secrets were set by @mbaetiong as **user-level** Codespace secrets on 2026-03-06/07.
+No further admin action is required for Codespace agent sessions.
+
+For reference, the CLI commands used were:
 ```bash
-# Option A — GitHub CLI (requires admin scope)
-# CODEX_MASTER_KEY is already set at org level ✅ — skip
-gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
-gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces --org Aries-Serpent
-gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
-```
-
-```
-# Option B — GitHub UI
-https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces
-→ "New organization secret" for each item above
-→ Set repository access to: Aries-Serpent/_codex_
+# All secrets are now set — commands below are for documentation/recovery only
+gh secret set CODEX_BACKUP_KEY             --app codespaces  # user-level
+gh secret set CODEX_ADMIN_KEY              --app codespaces  # user-level
+gh secret set _GITHUB_APP_ID              --app codespaces  # user-level
+gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces  # user-level
+gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces  # user-level
+gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces  # user-level
+gh secret set WEBHOOK_SECRET               --app codespaces  # user-level
+gh secret set WEBHOOK_RECEIVER_URL         --app codespaces  # user-level
 ```
 
 ---
@@ -517,7 +518,7 @@ Status:  ✅ RESOLVED (2026-03-06) — CODEX_ENV_NODE_VERSION deleted from env s
 ```
 Symptom: post-start.sh health check fails; uvicorn :8765 not reachable
 Cause:   CODEX_MASTER_KEY or CODEX_BACKUP_KEY not set as Codespace secrets
-Fix:     Set all 9 Codespace secrets per §8 and §13 at org level
+Fix:     All 9 Codespace secrets are now set (SAR-G01 COMPLETE 2026-03-07) — see §8
          Reference: docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md
 ```
 
@@ -580,12 +581,9 @@ Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Se
 
 ---
 
-## 13. ⛔ Still Missing — Variables/Secrets Not Yet Provided
+## 13. ✅ Previously Missing — All Resolved (2026-03-07)
 
-The following entries are **not yet present** in the repository but are required for full functionality.
-Each is grouped with clear instructions on how to provide the value.
-
-> **Admin:** @mbaetiong — these require human action. Agents cannot create secrets or environment-level secrets.
+All previously-blocked items are now **resolved**. This section is retained as an audit trail.
 
 ---
 
@@ -598,66 +596,50 @@ Each is grouped with clear instructions on how to provide the value.
 The `POST /webhook/github` endpoint is implemented in `cognitive_app/src/server/cli_api_server.py`.
 For webhook delivery to work, port 8765 must be set to **public** visibility in the Codespace Ports panel.
 
-For non-Codespace deployment, set the variable manually:
-```bash
-gh variable set WEBHOOK_RECEIVER_URL \
-  --body "https://your-deployed-url.com/webhook/github" \
-  --repo Aries-Serpent/_codex_
-```
-
 ---
 
 ### ✅ Issue 3 — Delete duplicate `D365_SLA_POLICY_PATH` repo variable — **RESOLVED 2026-03-06**
 
-`D365_SLA_POLICY_PATH` is **absent** from the 2026-03-06 live export — the variable has been deleted. No further action needed.
+`D365_SLA_POLICY_PATH` is absent from the 2026-03-06 live export — the variable has been deleted.
 
 ---
 
-### 🔴 Codespace Secrets (7 items remaining) — blocks Codespace agent sessions
+### ✅ Codespace Secrets (9 items) — **RESOLVED 2026-03-07** (SAR-G01 COMPLETE)
 
-**What they are:** Secrets mirrored from Actions org secrets, required inside active Codespace containers.  
-**Why they're missing:** Codespace secrets are not auto-mirrored from Actions secrets — they require a separate admin action.  
-**Impact:** Any Copilot coding session running in a Codespace will fail to authenticate; `post-start.sh` cannot start the CLI server.
+All 9 Codespace secrets confirmed set by @mbaetiong as user-level Codespace secrets.
+See [§8](#8-codespace-secrets) for the complete confirmed status table.
 
-**How to set them:**
-
-```bash
-# Navigate to: https://github.com/organizations/Aries-Serpent/settings/secrets/codespaces
-# OR use gh CLI (each command will prompt for the secret value):
-# CODEX_MASTER_KEY is already set at org level ✅ — skip
-gh secret set CODEX_BACKUP_KEY             --app codespaces --org Aries-Serpent
-gh secret set CODEX_ADMIN_KEY              --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_ID              --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_PRIVATE_KEY     --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_INSTALLATION_ID --app codespaces --org Aries-Serpent
-gh secret set _GITHUB_APP_CLIENT_SECRET   --app codespaces --org Aries-Serpent
-gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
-```
-
-**Source values to copy from (all exist as Actions org/repo secrets):**
-
-| Codespace Secret | Copy value from Actions Secret |
+| Codespace Secret | Resolution |
 |---|---|
-| ~~`CODEX_MASTER_KEY`~~ | ✅ Already set at org level (rotated 2026-03-06) |
-| `CODEX_BACKUP_KEY` | Org secret: `CODEX_BACKUP_KEY` |
-| `CODEX_ADMIN_KEY` | Org secret: `CODEX_ADMIN_KEY` |
-| `_GITHUB_APP_ID` | Org secret: `_GITHUB_APP_ID` |
-| `_GITHUB_APP_PRIVATE_KEY` | Org secret: `_GITHUB_APP_PRIVATE_KEY` |
-| `_GITHUB_APP_INSTALLATION_ID` | Org secret: `_GITHUB_APP_INSTALLATION_ID` |
-| `_GITHUB_APP_CLIENT_SECRET` | Org secret: `_GITHUB_APP_CLIENT_SECRET` |
-| `WEBHOOK_SECRET` | Repo secret: `CODEX_WEBHOOK_SECRET` |
+| `CODEX_MASTER_KEY` | ✅ Org-level (2026-03-06) |
+| `CODEX_BACKUP_KEY` | ✅ User secret (2026-03-06) |
+| `CODEX_ADMIN_KEY` | ✅ User secret (2026-03-06) |
+| `_GITHUB_APP_ID` | ✅ User secret (2026-03-06) |
+| `_GITHUB_APP_PRIVATE_KEY` | ✅ User secret (2026-03-06) |
+| `_GITHUB_APP_INSTALLATION_ID` | ✅ User secret (2026-03-06) |
+| `_GITHUB_APP_CLIENT_SECRET` | ✅ User secret (2026-03-07) |
+| `WEBHOOK_SECRET` | ✅ User secret (2026-03-06) |
+| `WEBHOOK_RECEIVER_URL` | ✅ User secret + repo var (2026-03-06) |
 
-> After setting, confirm in `.devcontainer/devcontainer.json` that all secret names match
-> the `"secrets"` array entries. Reference: `docs/agent/CODESPACE_COPILOT_AGENT_GUIDE.md`
+---
+
+### ✅ Autonomous Agent Config Variables (8 items) — **RESOLVED 2026-03-07**
+
+All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6h](#6h--autonomous-agent-config) for details.
+
+---
+
+> **Note:** If any of these need to be re-provisioned in the future (e.g., after secret rotation),
+> refer to the historical CLI commands preserved in the sub-sections above.
 
 ---
 
 ## Summary Checklist
 
-### 🔴 Action Required (Blockers)
+### ✅ Previously Blocked — All Resolved (2026-03-07)
 
-- [ ] **Set 7 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions); `CODEX_MASTER_KEY` ✅ already confirmed
-- [ ] **Set 8 autonomous agent repo variables** from [§6h](#6h--autonomous-agent-config) — currently using script-default values; set to CI-appropriate values to prevent runaway loops (`AUTONOMY_BUDGET_SECONDS=60`, `AGENT_KILL_SWITCH=0`, etc.)
+- [x] ~~**Set 9 Codespace secrets**~~ — **RESOLVED 2026-03-07** (SAR-G01 COMPLETE) — all set as user Codespace secrets by @mbaetiong; see [§8](#8-codespace-secrets)
+- [x] ~~**Set 8 autonomous agent repo variables**~~ — **RESOLVED 2026-03-07** — all 8 set: `AGENT_KILL_SWITCH=0`, `AUTONOMY_BUDGET_SECONDS=90`, `AUTONOMY_MAX_ITERATIONS=3`, `AUTONOMY_DRY_RUN=0`, `AGENT_RUNNER_BUDGET_SECONDS=180`, `AGENT_RUNNER_ITERATIONS=2`, `AGENT_RUNNER_DRY_RUN=0`, `UNCERTAINTY_BUDGET_SECONDS=20`; see [§6h](#6h--autonomous-agent-config)
 
 ### ✅ Resolved
 
@@ -677,4 +659,4 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 — §6h Autonomous Agent Config added; AGENT_KILL_SWITCH wired into Phase 1 + Phase 7 scripts; v1.5.0)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 — §6h all 8 autonomous agent vars confirmed ✅; SAR-G01 all 9 Codespace secrets confirmed ✅; §13 converted to resolved archive; v1.6.0)*

@@ -234,15 +234,16 @@ _REGISTRY: List[ExpectedEntry] = [
     ExpectedEntry("CODEX_ENV_NODE_VERSION",   LAYER_ENV_VARS, True, "Build", "Node.js version"),
     ExpectedEntry("CODEX_ENV_PYTHON_VERSION", LAYER_ENV_VARS, True, "Build", "Python version"),
 
-    # ── §8 Codespace Secrets ─────────────────────────────────────────────
-    ExpectedEntry("CODEX_MASTER_KEY",              LAYER_CODESPACE, True,  "Auth",       "Primary PAT (org-level, auto-forwarded)"),
-    ExpectedEntry("CODEX_BACKUP_KEY",              LAYER_CODESPACE, True,  "Auth",       "Fallback PAT — BLOCKER: not yet set"),
-    ExpectedEntry("CODEX_ADMIN_KEY",               LAYER_CODESPACE, True,  "Auth",       "Admin PAT — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_ID",                LAYER_CODESPACE, True,  "GitHub App", "App ID — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_PRIVATE_KEY",       LAYER_CODESPACE, True,  "GitHub App", "PEM key — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_INSTALLATION_ID",   LAYER_CODESPACE, True,  "GitHub App", "Installation ID — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_CLIENT_SECRET",     LAYER_CODESPACE, True,  "GitHub App", "OAuth client secret — BLOCKER: not yet set"),
-    ExpectedEntry("WEBHOOK_SECRET",                LAYER_CODESPACE, True,  "Webhook/Infra","Webhook HMAC secret — BLOCKER: not yet set"),
+    # ── §8 Codespace Secrets — ALL CONFIRMED ✅ (SAR-G01 COMPLETE 2026-03-07) ──────
+    ExpectedEntry("CODEX_MASTER_KEY",              LAYER_CODESPACE, True,  "Auth",       "Primary PAT (org-level Codespace secret ✅)"),
+    ExpectedEntry("CODEX_BACKUP_KEY",              LAYER_CODESPACE, True,  "Auth",       "Fallback PAT (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("CODEX_ADMIN_KEY",               LAYER_CODESPACE, True,  "Auth",       "Admin PAT (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_ID",                LAYER_CODESPACE, True,  "GitHub App", "App ID (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_PRIVATE_KEY",       LAYER_CODESPACE, True,  "GitHub App", "PEM key (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_INSTALLATION_ID",   LAYER_CODESPACE, True,  "GitHub App", "Installation ID (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_CLIENT_SECRET",     LAYER_CODESPACE, True,  "GitHub App", "OAuth client secret (user Codespace secret ✅ 2026-03-07)"),
+    ExpectedEntry("WEBHOOK_SECRET",                LAYER_CODESPACE, True,  "Webhook/Infra","Webhook HMAC secret (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("WEBHOOK_RECEIVER_URL",          LAYER_CODESPACE, False, "Webhook/Infra","Receiver URL (user Codespace secret ✅ 2026-03-06; also auto-set as repo var)"),
 ]
 
 

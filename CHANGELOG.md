@@ -5,7 +5,23 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — W-142 S116: post-merge stabilisation · CI fix · 7-phase autonomy (2026-03-07)
+## [Unreleased] — W-142 S116: variable sync · SAR-G01 complete · Codespace secrets confirmed (2026-03-07)
+
+### Updated (S116 variable audit sync)
+- **`GITHUB_VARIABLES_MASTER_GUIDE.md` v1.6.0:** Reconciled with live variable export from @mbaetiong.
+  **SAR-G01 COMPLETE** — all 9 Codespace secrets confirmed set (as user-level secrets 2026-03-06/07):
+  `CODEX_MASTER_KEY` ✅, `CODEX_BACKUP_KEY` ✅, `CODEX_ADMIN_KEY` ✅, `_GITHUB_APP_ID` ✅,
+  `_GITHUB_APP_PRIVATE_KEY` ✅, `_GITHUB_APP_INSTALLATION_ID` ✅, `_GITHUB_APP_CLIENT_SECRET` ✅,
+  `WEBHOOK_SECRET` ✅, `WEBHOOK_RECEIVER_URL` ✅.
+  **§6h all 8 autonomous agent vars confirmed provisioned** with actual live values:
+  `AGENT_KILL_SWITCH=0`, `AUTONOMY_BUDGET_SECONDS=90`, `AUTONOMY_MAX_ITERATIONS=3`,
+  `AUTONOMY_DRY_RUN=0`, `AGENT_RUNNER_BUDGET_SECONDS=180`, `AGENT_RUNNER_ITERATIONS=2`,
+  `AGENT_RUNNER_DRY_RUN=0`, `UNCERTAINTY_BUDGET_SECONDS=20`.
+  §13 "Still Missing" converted to "✅ Previously Missing — All Resolved" archive section.
+  Summary Checklist blockers cleared; §8 table updated to show all ✅ CONFIRMED status.
+- **`variable_audit_cli.py` §8 entries:** Updated all 8 Codespace secret entries to remove
+  "BLOCKER: not yet set" labels; added `WEBHOOK_RECEIVER_URL` as 9th Codespace entry.
+
 
 ### Fixed (S116 post-merge — CI)
 - **detect-secrets baseline fix:** `Art_Validation Pipeline` failed with exit code 3 because
