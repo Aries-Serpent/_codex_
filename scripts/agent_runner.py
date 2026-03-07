@@ -92,7 +92,7 @@ def _phase3_reflect(deadline: float) -> dict[str, Any]:
         src_path = str(REPO_ROOT / "src")
         if src_path not in sys.path:
             sys.path.insert(0, src_path)
-        from codex.reflection import reflect, persist_reflection  # type: ignore[import]
+        from codex.reflection import persist_reflection, reflect  # type: ignore[import]
         report = reflect("src/codex/cli.py", depth=1)
         persist_reflection(report, label="agent_runner_cycle")
         return {"summary": report.summary, "metrics": report.metrics}

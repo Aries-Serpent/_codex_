@@ -45,6 +45,7 @@ __all__ = [
 
 # ── Data model ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class Entity:
     """Feast Entity — uniquely identifies an item in the feature store.
@@ -71,10 +72,10 @@ class FeatureView:
     """
 
     name: str
-    entities: list[str]                     # entity names
-    features: list[str]                     # feature column names
+    entities: list[str]  # entity names
+    features: list[str]  # feature column names
     ttl_seconds: int = 3600
-    source: Optional[str] = None            # data source tag (used in lineage)
+    source: Optional[str] = None  # data source tag (used in lineage)
     tags: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -107,6 +108,7 @@ class FeatureServiceResult:
 
 
 # ── FeastCompatibleStore ─────────────────────────────────────────────────────
+
 
 class FeastCompatibleStore:
     """Feast-compatible feature store shim backed by the native FeatureStore.
@@ -283,6 +285,7 @@ class FeastCompatibleStore:
 
 # ── Production Backends (SAR-G02 — S116/W-142) ────────────────────────────────
 
+
 @runtime_checkable
 class FeastBackend(Protocol):
     """Protocol that all Feast production backends must satisfy.
@@ -294,23 +297,33 @@ class FeastBackend(Protocol):
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
         """Write / update feature values for an entity key."""
-        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
+        raise NotImplementedError(
+            "FeastBackend is a protocol; implement this method in a concrete backend"
+        )
 
     def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
         """Read the latest feature values for an entity key (None if missing)."""
-        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
+        raise NotImplementedError(
+            "FeastBackend is a protocol; implement this method in a concrete backend"
+        )
 
     def delete(self, view_name: str, entity_key: str) -> None:
         """Delete feature values for an entity key."""
-        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
+        raise NotImplementedError(
+            "FeastBackend is a protocol; implement this method in a concrete backend"
+        )
 
     def list_views(self) -> list[str]:
         """Return all view names stored in this backend."""
-        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
+        raise NotImplementedError(
+            "FeastBackend is a protocol; implement this method in a concrete backend"
+        )
 
     def close(self) -> None:
         """Release any resources (connections, files)."""
-        raise NotImplementedError("FeastBackend is a protocol; implement this method in a concrete backend")
+        raise NotImplementedError(
+            "FeastBackend is a protocol; implement this method in a concrete backend"
+        )
 
 
 class InMemoryBackend:
@@ -465,8 +478,7 @@ class RedisBackend:
             import redis as _redis  # type: ignore[import]
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
-                "RedisBackend requires the 'redis' package. "
-                "Install with: pip install redis"
+                "RedisBackend requires the 'redis' package. Install with: pip install redis"
             ) from exc
         pool_kwargs: dict[str, Any] = {"decode_responses": True}
         if max_connections is not None:
@@ -484,10 +496,12 @@ class RedisBackend:
         return f"{view_name}:{entity_key}"
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
-        payload = json.dumps({
-            **features,
-            "__written_at": datetime.now(timezone.utc).isoformat(),
-        })
+        payload = json.dumps(
+            {
+                **features,
+                "__written_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
         if self._ttl is not None:
             self._redis.setex(self._key(view_name, entity_key), self._ttl, payload)
         else:
@@ -554,6 +568,5 @@ def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
             ttl=kwargs.get("ttl"),
         )
     raise ValueError(
-        f"Unknown backend_type '{backend_type}'. "
-        "Supported: 'memory', 'sqlite', 'redis'."
+        f"Unknown backend_type '{backend_type}'. Supported: 'memory', 'sqlite', 'redis'."
     )
