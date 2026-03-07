@@ -5,6 +5,39 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-142 S116: post-merge stabilisation · CI fix · 7-phase autonomy (2026-03-07)
+
+### Fixed (S116 post-merge — CI)
+- **detect-secrets baseline fix:** `Art_Validation Pipeline` failed with exit code 3 because
+  `ci-health-monitor.yml` and `copilot-setup-steps.yml` (modified in this PR) contain
+  intentional base64-encoded scripts that triggered `Base64HighEntropyString` detections,
+  and `CHANGELOG.md` triggered a `SecretKeyword` detection — none of which are real secrets.
+  Added `# pragma: allowlist secret` to the two YAML `run: |` block lines and an inline
+  HTML comment to the CHANGELOG entry; restored `is_ignored_due_to_verification_policies`
+  filter to `.secrets.baseline` for compatibility with detect-secrets v1.4.0 used by CI.
+
+### Added (S116 post-merge — 7-Phase Autonomous Agent)
+- **Phase 1 — Full Autonomy Enhancement:** `scripts/autonomy_scheduler.py`
+  Self-driving health-sense → decide → act loop with configurable budget enforcement
+  (`AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`) and session persistence.
+- **Phase 2 — Session-Based Execution:** `scripts/session_tracker.py`
+  JSON-backed session lifecycle tracker with start/end/status/resume/list commands;
+  auto-persists Markdown summaries to `memory/sessions/`.
+- **Phase 3 — Self-Referential Loops:** `src/codex/reflection.py`
+  AST-driven code introspection with `RecursionGuard` (depth-limited recursion),
+  structural metrics extraction, and `persist_reflection()` to `memory/reflections/`.
+- **Phase 4 & 5 — Epistemic Uncertainty + Budget Enforcement:** `scripts/budget_uncertainty.py`
+  Dirichlet conjugate-prior belief updates for multi-option decisions; `@budget_cap` decorator
+  enforces per-call wall-time limits; `ci_health` and `decision` scenarios included.
+- **Phase 6 — Philosophy Reading/Writing Automation:** `scripts/philosophy_parser.py`
+  Parses Markdown docs from `docs/` for headings/concepts/action-items; generates synthesis
+  documents from templates; persists outputs to `memory/philosophy/`.
+- **Phase 7 — Integration:** `scripts/agent_runner.py`
+  Persistent orchestration daemon wiring all phases into a single loop; respects budget,
+  supports `--once` (single pass), `--dry-run`; auto-resumes from last session state.
+- **Memory directory structure:** `memory/{sessions,reflections,budget,philosophy}/`
+  created with `.gitkeep` files for git tracking.
+
 ## [Unreleased] — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)
 
 ### Fixed (post-merge hotfix S116)
@@ -252,7 +285,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed (W-129)
 
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` (v1.0.0 → v1.1.0) — full reconciliation against mbaetiong's 2026-03-06 authoritative export:
-  - **§3 Org Secrets:** `CODEX_ADMIN_KEY` promoted from ❌ Missing → ✅ Present (updated 3 h ago). `CODEX_MASTER_KEY` updated "yesterday" — recently rotated (rotation alert removed, next due ~2026-06-03). Added 4 new org secrets: `_GITHUB_APP_CLIENT_SECRET`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_PRIVATE_KEY` (all updated 1 h ago). Added GitHub App Authentication note explaining the `_GITHUB_APP_*` naming convention.
+  - **§3 Org Secrets:** `CODEX_ADMIN_KEY` promoted from ❌ Missing → ✅ Present (updated 3 h ago). `CODEX_MASTER_KEY` updated "yesterday" — recently rotated (rotation alert removed, next due ~2026-06-03). Added 4 new org secrets: `_GITHUB_APP_CLIENT_SECRET`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_PRIVATE_KEY` (all updated 1 h ago). Added GitHub App Authentication note explaining the `_GITHUB_APP_*` naming convention. <!-- pragma: allowlist secret -->
   - **§4 Repo Secrets:** Added `OPENAI_API_KEY` (new, 5 h ago). Updated `CODEX_REPO_ID` age (3 months → 6 h) and `CODEX_WEBHOOK_SECRET` age (3 months → 12 min).
   - **§5 Env Secrets:** Removed `CODEX_ENV_NODE_VERSION` row (was ⚠️ Wrong type — Issue 1 resolved ✅). Added resolution note.
   - **§6e Repo Variables:** Added `CODEX_SESSION_ID` row (now persisted as a repo variable, UUID v4). Updated `CODEX_CI_FAILURE_RATE` current value to `6.5:ok`. Fixed `CODEX_PYTHON_VERSION` row to remove conflict warning (Issue 2 resolved).

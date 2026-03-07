@@ -161,14 +161,14 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |
+        run: |  # pragma: allowlist secret
           if [ -f .codex/agent_context.json ]; then
             echo "Injecting repo variable context from .codex/agent_context.json"
             # base64-encoded Python script: reads agent_context.json and writes all
             # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
             # session sees them as environment variables.
             # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
           else
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi
