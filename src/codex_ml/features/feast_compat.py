@@ -373,13 +373,13 @@ class SQLiteBackend:
 
     def __init__(self, db_path: str | Path = ":memory:") -> None:
         self._db_path = str(db_path)
-        # check_same_thread=False: we serialise via self._lock
+        # check_same_thread=False: we serialize access via self._lock
         self._conn = sqlite3.connect(self._db_path, check_same_thread=False)
         self._lock = threading.Lock()
         with self._lock:
             self._conn.execute(self._CREATE_TABLE)
             self._conn.commit()
-        logger.info("SQLiteBackend initialised at %s", self._db_path)
+        logger.info("SQLiteBackend initialized at %s", self._db_path)
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
         written_at = datetime.now(timezone.utc).isoformat()

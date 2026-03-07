@@ -54,11 +54,9 @@ class TestSessionStart:
             session_id = mod.start_session(label="schema-test")
             session_file = tmp_path / f"{session_id}.json"
             if not session_file.exists():
-                # May be stored differently
-                for f in tmp_path.glob("*.json"):
-                    if session_id in f.read_text():
-                        session_file = f
-                        break
+                # May be stored with a different naming convention — check by filename
+                candidates = [f for f in tmp_path.glob("*.json") if session_id in f.stem]
+                session_file = candidates[0] if candidates else session_file
 
         if session_file.exists():
             data = json.loads(session_file.read_text())

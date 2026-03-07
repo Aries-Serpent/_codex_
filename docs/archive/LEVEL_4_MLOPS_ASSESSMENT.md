@@ -334,7 +334,7 @@ scripts/generate_sbom.py:
 |-------------|-------|--------|---------|
 | 1. End-to-End Automation | 95/100 | ✅ Complete | — |
 | 2. Automatic Retraining & Redeployment | 75/100 | ⚠️ Wired (stub data) | SAR-G03 partial |
-| 3. Strong Observability & Feedback Loops | 88/100 | ⚠️ OTel wired; needs deployed collector | SAR-G05 nearly complete |
+| 3. Strong Observability & Feedback Loops | 88/100 | ⚠️ OTel wired; requires a deployed collector | SAR-G05 nearly complete |
 | 4. Production-Grade Engineering | 92/100 | ✅ Complete | — |
 | 5. Cross-Functional De-Siloed Teams | 88/100 | ✅ Near-complete | — |
 | 6. Governance & Compliance | 85/100 | ✅ Near-complete | — |
