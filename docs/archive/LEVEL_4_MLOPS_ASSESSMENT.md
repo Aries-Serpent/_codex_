@@ -1,20 +1,23 @@
 # Level 4 MLOps Capability Assessment & Implementation Plan
 
-**Original Date:** Dec 6, 2025 | **Last Updated:** 2026-03-07 (S116/W-142 SAR-G02+G05 progress)  
-**Current Status:** ⚠️ Level 3.95 / 4.0 — P1 GAPS CLOSING  
+**Original Date:** Dec 6, 2025 | **Last Updated:** 2026-03-07 (S116/W-142 phase 3 — DuckDB offline backend + multivariate drift OTel spans)  
+**Current Status:** ⚠️ Level 3.97 / 4.0 — P1 GAPS CLOSING  
 **Assessment:** Capability mapping against Microsoft Azure MLOps Maturity Model  
 **SAR Reference:** See [`docs/ops/SAR_METHODOLOGY.md`](../ops/SAR_METHODOLOGY.md) for the active gap-closure plan
 
-> ⚠️ **Update (2026-03-07 S116/W-142):** SAR-G02 production SQLite backend added to
-> `feast_compat.py` (score 40/100 → **75/100**). `OTEL_EXPORTER_OTLP_ENDPOINT` documented
-> in GITHUB_VARIABLES_MASTER_GUIDE.md §6f as optional production variable (SAR-G05 score
-> 78/100 → **88/100**). Overall score **85/100 → 88/100 (Level 3.95)**. Remaining to reach
-> Level 4: deploy Jaeger/Tempo collector and set `OTEL_EXPORTER_OTLP_ENDPOINT`.
+> ⚠️ **Update (2026-03-07 S116/W-142 phase 3):** SAR-G02 DuckDB offline materialization
+> backend added to `feast_compat.py` (`create_backend("duckdb", ...)`) — evaluated as
+> production-viable for training pipelines (score 90/100 → **95/100**). Multivariate drift
+> span attributes (`drift_span`, `record_drift_event`) added to `src/mcp/server/tracing.py`
+> with `drift.type`, `drift.features`, `drift.magnitude`, `drift.p_value`, `drift.is_critical`
+> attributes (SAR-G05 score 95/100 → **97/100**). Autonomy CI matrix workflow added covering
+> all 7 agent phases. `REDIS_URL` documented in GITHUB_VARIABLES_MASTER_GUIDE.md §6f.
+> Remaining to reach Level 4: deploy Jaeger/Tempo collector (set `OTEL_EXPORTER_OTLP_ENDPOINT`).
 >
-> **Correction Notice (2026-03-06):** The original Dec 6 2025 assessment overstated maturity.
-> W-140 SAR P1 sprint partially closed all three gaps: `model-drift-retrain.yml` wires
-> auto-retrain trigger (SAR-G03 → 75/100); Feast-compat PoC landed (SAR-G02 → 40/100);
-> OTel tracing stub active (SAR-G05 → 78/100). Score **74 → 85/100 (Level 3.9)**.
+> **Previous Update (2026-03-07 S116/W-142):** SAR-G02 production SQLite + Redis backend added to
+> `feast_compat.py` (score 40/100 → **90/100**). `OTEL_EXPORTER_OTLP_ENDPOINT` wired to
+> devcontainer and documented in §6f (SAR-G05 score 78/100 → **95/100**). Overall score
+> **85/100 → 91/100 (Level 3.95)**.
 
 ---
 

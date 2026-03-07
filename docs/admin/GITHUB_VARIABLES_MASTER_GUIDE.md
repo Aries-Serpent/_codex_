@@ -2,9 +2,9 @@
 
 # GitHub Variables & Secrets — Master Reference Guide
 
-> **Version:** 1.4.0 (W-136, 2026-03-06)  
+> **Version:** 1.7.0 (W-142/S116 phase 3, 2026-03-07)  
 > **Owner:** @mbaetiong  
-> **Status:** ✅ Current — reflects live state as of 2026-03-06 (third pass: CODEX_MASTER_KEY Codespace secret confirmed; repo-level override removed)  
+> **Status:** ✅ Current — reflects live state as of 2026-03-07 (phase 3: REDIS_URL §6f added for SAR-G02 RedisBackend; DuckDB offline materialization evaluated; multivariate drift OTel spans added SAR-G05; autonomy CI matrix all 7 phases)  
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
 > **Auto-synced by:** `repo-var-sync-schedule.yml` (daily 06:00 UTC → `.codex/agent_context.json`)
 
@@ -266,6 +266,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 | 9 | `ZENDESK_RATE_LIMIT` | ✅ | `100` | Zendesk API rate limit |
 | 10 | `ZENDESK_SYNC_INTERVAL` | ✅ | `3600` | Zendesk sync interval (seconds) |
 | 11 | `OTEL_EXPORTER_OTLP_ENDPOINT` | ⚙️ **Optional** | *(not set — no-op mode)* | OpenTelemetry OTLP gRPC endpoint (e.g. `http://jaeger:4317`). When set and OTel SDK packages are installed, `init_tracing()` activates distributed tracing. Leave unset for offline/local environments. **SAR-G05.** |
+| 12 | `REDIS_URL` | ⚙️ **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for the Feast production backend (e.g. `redis://localhost:6379/0` or `rediss://user:pass@host:6380/0`). When set, `create_backend("redis", url=os.environ["REDIS_URL"])` switches the feature store to a Redis-backed online store for multi-node / high-throughput production use. Leave unset to use the default `SQLiteBackend` or `InMemoryBackend`. **SAR-G02.** |
 
 ### 6g. Webhook / Infra
 
@@ -662,4 +663,4 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 — §6h all 8 autonomous agent vars confirmed ✅; SAR-G01 all 9 Codespace secrets confirmed ✅; §13 converted to resolved archive; v1.6.0)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ✅; SAR-G01 all 9 Codespace secrets confirmed ✅; §13 converted to resolved archive; v1.7.0)*

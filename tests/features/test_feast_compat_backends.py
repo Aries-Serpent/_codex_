@@ -307,3 +307,184 @@ class TestCreateBackend:
         assert "memory" in msg
         assert "sqlite" in msg
         assert "redis" in msg
+        assert "duckdb" in msg
+
+    def test_duckdb_backend(self):
+        mod = _import_feast()
+        b = mod.create_backend("duckdb")
+        assert isinstance(b, mod.DuckDBBackend)
+        b.close()
+
+    def test_duckdb_backend_custom_path(self, tmp_path):
+        mod = _import_feast()
+        db_path = tmp_path / "offline.duckdb"
+        b = mod.create_backend("duckdb", db_path=db_path)
+        assert isinstance(b, mod.DuckDBBackend)
+        b.close()
+
+
+def _import_duckdb():
+    """Skip the test if duckdb is not installed."""
+    try:
+        import duckdb  # noqa: F401
+
+        from codex_ml.features import feast_compat
+        return feast_compat
+    except ImportError:
+        pytest.skip("duckdb or feast_compat not importable")
+        return None  # pragma: no cover — pytest.skip() always raises
+
+
+# ── DuckDB Backend ──────────────────────────────────────────────────────────
+
+
+class TestDuckDBBackend:
+    """Tests for DuckDBBackend — offline materialization via DuckDB + Arrow."""
+
+    def test_write_and_read(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("views", "k1", {"x": 1, "y": "hello"})
+        result = b.read("views", "k1")
+        assert result is not None
+        assert result["x"] == 1
+        assert result["y"] == "hello"
+        b.close()
+
+    def test_read_missing_returns_none(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        assert b.read("views", "nonexistent") is None
+        b.close()
+
+    def test_upsert_overwrites(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("views", "k1", {"x": 1})
+        b.write("views", "k1", {"x": 99})
+        assert b.read("views", "k1")["x"] == 99
+        b.close()
+
+    def test_delete(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("views", "k1", {"x": 1})
+        b.delete("views", "k1")
+        assert b.read("views", "k1") is None
+        b.close()
+
+    def test_list_views(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("view_a", "k1", {"x": 1})
+        b.write("view_b", "k2", {"y": 2})
+        views = b.list_views()
+        assert "view_a" in views
+        assert "view_b" in views
+        b.close()
+
+    def test_list_views_empty(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        assert b.list_views() == []
+        b.close()
+
+    def test_row_count(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("v", "k1", {"x": 1})
+        b.write("v", "k2", {"x": 2})
+        assert b.row_count("v") == 2
+        b.close()
+
+    def test_row_count_empty_view(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        assert b.row_count("empty_view") == 0
+        b.close()
+
+    def test_satisfies_feast_backend_protocol(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        assert isinstance(b, mod.FeastBackend)
+        b.close()
+
+    def test_materialize_to_parquet(self, tmp_path):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("feats", "u1", {"age": 25, "score": 0.8})
+        b.write("feats", "u2", {"age": 40, "score": 0.6})
+        out = tmp_path / "feats.parquet"
+        result_path = b.materialize_to_parquet("feats", out)
+        assert result_path == out
+        assert out.exists()
+        import pyarrow.parquet as pq
+        table = pq.read_table(str(out))
+        assert table.num_rows == 2
+        b.close()
+
+    def test_materialize_creates_parent_dirs(self, tmp_path):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("feats", "u1", {"val": 1})
+        out = tmp_path / "nested" / "dir" / "feats.parquet"
+        b.materialize_to_parquet("feats", out)
+        assert out.exists()
+        b.close()
+
+    def test_thread_safety_concurrent_writes(self):
+        import threading
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        errors: list[Exception] = []
+
+        def write_batch(start: int) -> None:
+            for i in range(start, start + 5):
+                try:
+                    b.write("v", f"key_{i}", {"val": i})
+                except Exception as exc:  # noqa: BLE001
+                    errors.append(exc)
+
+        threads = [threading.Thread(target=write_batch, args=(i * 5,)) for i in range(4)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        assert not errors, f"Thread errors: {errors}"
+        assert b.row_count("v") == 20
+        b.close()
+
+    def test_missing_duckdb_package_raises_import_error(self):
+        mod = _import_duckdb()
+        import sys
+        original = sys.modules.get("duckdb")
+        sys.modules["duckdb"] = None  # type: ignore[assignment]
+        try:
+            with pytest.raises(ImportError, match="duckdb"):
+                mod.DuckDBBackend()
+        finally:
+            if original is None:
+                del sys.modules["duckdb"]
+            else:
+                sys.modules["duckdb"] = original
+
+    def test_custom_table_prefix(self):
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend(table_prefix="_custom_")
+        b.write("myview", "k1", {"a": 1})
+        views = b.list_views()
+        assert "myview" in views
+        b.close()
+
+    def test_persistence_across_close_reopen(self, tmp_path):
+        mod = _import_duckdb()
+        db_path = tmp_path / "persist.duckdb"
+        b1 = mod.DuckDBBackend(db_path=db_path)
+        b1.write("v", "k1", {"stored": True})
+        b1.close()
+        b2 = mod.DuckDBBackend(db_path=db_path)
+        result = b2.read("v", "k1")
+        assert result is not None
+        assert result["stored"] is True
+        b2.close()

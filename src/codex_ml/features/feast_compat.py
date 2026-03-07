@@ -39,6 +39,7 @@ __all__ = [
     "InMemoryBackend",
     "SQLiteBackend",
     "RedisBackend",
+    "DuckDBBackend",
     "create_backend",
 ]
 
@@ -531,21 +532,195 @@ class RedisBackend:
         self._redis.close()
 
 
+class DuckDBBackend:
+    """SAR-G02 offline-materialization backend using DuckDB + Apache Arrow.
+
+    DuckDB provides an in-process OLAP engine ideal for offline feature
+    materialization:  bulk-writing large batches of feature rows and
+    exporting them as Parquet files for consumption by training pipelines.
+
+    For *online* serving ``InMemoryBackend`` or ``SQLiteBackend`` are more
+    efficient; use ``DuckDBBackend`` when you need:
+
+    - Offline feature snapshots serialised to Parquet / Arrow IPC.
+    - Vectorised aggregation over historical feature tables.
+    - Zero external-service dependencies (DuckDB is in-process like SQLite).
+
+    Requires the ``duckdb`` package (``pip install duckdb``).
+
+    Args:
+        db_path: DuckDB database file path.  Use ``:memory:`` (default) for
+                 transient state, or a file path for persistence across restarts.
+        table_prefix: SQL table-name prefix; avoids naming conflicts between
+                      multiple stores sharing one DuckDB file.
+
+    Example::
+
+        backend = create_backend("duckdb")                              # transient
+        backend = create_backend("duckdb", db_path=".features/store.duckdb")
+        backend.write("user_features", "user_42", {"age": 30, "score": 0.9})
+        assert backend.read("user_features", "user_42")["age"] == 30
+        parquet_path = backend.materialize_to_parquet("user_features", "/tmp/uf.parquet")
+    """
+
+    def __init__(
+        self,
+        db_path: str | Path = ":memory:",
+        *,
+        table_prefix: str = "_feast_",
+    ) -> None:
+        try:
+            import duckdb  # noqa: PLC0415
+        except ImportError as exc:
+            raise ImportError(
+                "DuckDBBackend requires the 'duckdb' package: pip install duckdb"
+            ) from exc
+        self._duckdb = duckdb
+        self._db_path = str(db_path)
+        self._prefix = table_prefix
+        self._conn = duckdb.connect(self._db_path)
+        self._lock = threading.Lock()
+
+    # ── helpers ───────────────────────────────────────────────────────────────
+
+    def _table(self, view_name: str) -> str:
+        """Return the qualified DuckDB table name for *view_name*.
+
+        Note: Non-alphanumeric characters (except underscores) are replaced with
+        underscores to prevent SQL injection.  Two view names that differ only in
+        special characters (e.g. ``"view-1"`` and ``"view_1"``) will map to the
+        same table — use exclusively word-character view names to avoid collisions.
+        """
+        # Sanitise: keep only word chars + underscores to avoid SQL injection.
+        safe = "".join(c if c.isalnum() or c == "_" else "_" for c in view_name)
+        return f"{self._prefix}{safe}"
+
+    def _ensure_table(self, view_name: str) -> None:
+        tbl = self._table(view_name)
+        self._conn.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {tbl} (
+                entity_key  TEXT PRIMARY KEY,
+                features    TEXT NOT NULL,
+                written_at  TEXT NOT NULL
+            )
+            """
+        )
+
+    # ── FeastBackend protocol ─────────────────────────────────────────────────
+
+    def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            payload = json.dumps(
+                {**features, "__written_at": datetime.now(timezone.utc).isoformat()}
+            )
+            self._conn.execute(
+                f"""
+                INSERT INTO {tbl} (entity_key, features, written_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT (entity_key) DO UPDATE SET
+                    features   = excluded.features,
+                    written_at = excluded.written_at
+                """,
+                [entity_key, payload, datetime.now(timezone.utc).isoformat()],
+            )
+
+    def read(self, view_name: str, entity_key: str) -> dict[str, Any] | None:
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            row = self._conn.execute(
+                f"SELECT features FROM {tbl} WHERE entity_key = ?", [entity_key]
+            ).fetchone()
+        return json.loads(row[0]) if row else None
+
+    def delete(self, view_name: str, entity_key: str) -> None:
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            self._conn.execute(
+                f"DELETE FROM {tbl} WHERE entity_key = ?", [entity_key]
+            )
+
+    def list_views(self) -> list[str]:
+        with self._lock:
+            rows = self._conn.execute(
+                "SELECT table_name FROM information_schema.tables "
+                "WHERE table_type = 'BASE TABLE'"
+            ).fetchall()
+        prefix = self._prefix
+        return [
+            row[0][len(prefix) :]
+            for row in rows
+            if row[0].startswith(prefix)
+        ]
+
+    def close(self) -> None:
+        self._conn.close()
+
+    # ── Offline-materialization extra ─────────────────────────────────────────
+
+    def materialize_to_parquet(
+        self,
+        view_name: str,
+        output_path: str | Path,
+    ) -> Path:
+        """Export all feature rows for *view_name* to a Parquet file.
+
+        This is the primary offline-materialization method: downstream training
+        pipelines can read the Parquet file with pandas / PyArrow / Polars
+        without needing the DuckDB connection.
+
+        Args:
+            view_name:   Feature view to export.
+            output_path: Destination Parquet file path (created if absent).
+
+        Returns:
+            ``Path`` to the written Parquet file.
+        """
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            self._conn.execute(
+                f"COPY (SELECT * FROM {tbl}) TO ? (FORMAT PARQUET)",
+                [str(output_path)],
+            )
+        logger.info("Materialized view '%s' → %s", view_name, output_path)
+        return output_path
+
+    def row_count(self, view_name: str) -> int:
+        """Return the number of feature rows stored for *view_name*."""
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            row = self._conn.execute(f"SELECT COUNT(*) FROM {tbl}").fetchone()
+        return int(row[0]) if row else 0
+
+
 def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
     """Factory function to create a Feast production backend.
 
     Args:
-        backend_type: One of ``"memory"`` (default), ``"sqlite"``, or ``"redis"``.
+        backend_type: One of ``"memory"`` (default), ``"sqlite"``, ``"redis"``,
+                      or ``"duckdb"``.
         **kwargs: Backend-specific keyword arguments.
-                  ``sqlite``: accepts ``db_path`` (str | Path).
-                  ``redis``:  accepts ``url`` (str), ``ttl`` (int | None).
+                  ``sqlite``:  accepts ``db_path`` (str | Path).
+                  ``redis``:   accepts ``url`` (str), ``ttl`` (int | None).
+                  ``duckdb``:  accepts ``db_path`` (str | Path),
+                               ``table_prefix`` (str).
 
     Returns:
         A ``FeastBackend`` instance.
 
     Raises:
         ValueError:    If ``backend_type`` is unknown.
-        ImportError:   If ``backend_type="redis"`` and the ``redis`` package is not installed.
+        ImportError:   If ``backend_type="redis"`` and the ``redis`` package is
+                       not installed, or ``backend_type="duckdb"`` and the
+                       ``duckdb`` package is not installed.
 
     Example::
 
@@ -557,6 +732,9 @@ def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
 
         # Production (multi-node / high-throughput)
         backend = create_backend("redis", url="redis://localhost:6379/0", ttl=3600)
+
+        # Offline materialization / training pipelines
+        backend = create_backend("duckdb", db_path=".feature_store/offline.duckdb")
     """
     if backend_type == "memory":
         return InMemoryBackend()
@@ -567,6 +745,12 @@ def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
             url=kwargs.get("url", "redis://localhost:6379/0"),
             ttl=kwargs.get("ttl"),
         )
+    if backend_type == "duckdb":
+        return DuckDBBackend(
+            db_path=kwargs.get("db_path", ":memory:"),
+            table_prefix=kwargs.get("table_prefix", "_feast_"),
+        )
     raise ValueError(
-        f"Unknown backend_type '{backend_type}'. Supported: 'memory', 'sqlite', 'redis'."
+        f"Unknown backend_type '{backend_type}'. "
+        "Supported: 'memory', 'sqlite', 'redis', 'duckdb'."
     )
