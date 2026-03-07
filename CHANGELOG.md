@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `.codex/validation/tests_docs_links_audit.json` had Markdown text appended after
   the closing `}` (corrupted in main-branch merge commit); truncated to valid JSON
   — resolves `🔍 Validate repo JSON files` gate failure in copilot-setup-steps
+- **Fixed `git diff main` failure in Copilot agent sessions:** `copilot-setup-steps.yml`
+  `🔀 Fetch remote branch refs` step fetched remote branches into `refs/remotes/origin/*`
+  only; `git diff main` requires `refs/heads/main` (a local branch ref). Added
+  `git branch -f main origin/main` to promote the remote-tracking ref to a local ref
+  so bare `main` resolves in all git commands inside agent sessions
 
 ### Added (S116)
 - Codespace secrets admin-request issue filed (SAR-G01) — 7 org-level secrets required

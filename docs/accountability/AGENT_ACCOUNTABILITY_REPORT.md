@@ -573,3 +573,19 @@ Both files were written by a previous agent session using a tool that appended a
 ### Impact
 - `copilot-setup-steps.yml` pre-flight gate now passes
 - All `find .codex docs -name "*.json"` files pass `python3 -m json.tool` validation
+
+## W-142 — S116 hotfix: git diff main resolution fix (2026-03-07)
+
+### Actions Taken
+
+| Action | File | Detail |
+|--------|------|--------|
+| Fix `git diff main` failure in agent sessions | `.github/workflows/copilot-setup-steps.yml` | `🔀 Fetch remote branch refs` step fetched into `refs/remotes/origin/*` only; `git diff main` needs a local `refs/heads/main` ref. Added `git branch -f main origin/main` after the fetch to create the local ref. |
+
+### Root Cause
+`git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1` creates `refs/remotes/origin/main` (accessible as `origin/main`) but NOT `refs/heads/main` (accessible as `main`). Git's ref resolution for `git diff main` checks `refs/heads/main`, `refs/remotes/main`, etc. — it does NOT check `refs/remotes/origin/main` for a bare `main` argument (DWIM applies only to `git checkout`, not `git diff`).
+
+### Impact
+- All git commands using bare `main` (e.g., `git diff main..HEAD`, `git log main`) now resolve correctly inside Copilot agent sessions
+- The `report_progress` tool's internal diff no longer fails with "fatal: ambiguous argument 'main'"
+- Fix is non-blocking: `git branch -f main origin/main 2>/dev/null` prints a warning rather than failing the workflow if `origin/main` is unavailable

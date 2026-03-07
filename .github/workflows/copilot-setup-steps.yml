@@ -121,15 +121,25 @@ jobs:
 
       # Fix: actions/checkout only fetches the checked-out branch even with
       # fetch-depth: 0. The Copilot coding agent's internal diff (report_progress)
-      # needs the PR base branch ref to be resolvable. Without this, git fails:
+      # needs the PR base branch ref to be resolvable as a *local* branch name.
+      # Without this, git fails:
       #   "fatal: ambiguous argument '<base_branch>': unknown revision"
-      # Shallow-fetch all remote branch tips so any base branch name resolves.
+      # Step 1: shallow-fetch all remote branch tips into remote tracking refs
+      #         so 'origin/main' (and friends) resolve.
+      # Step 2: promote 'origin/main' to a local branch ref so that bare 'main'
+      #         also resolves (git-diff, git-log, git-show etc. require a local ref
+      #         or the full 'origin/main' spelling; DWIM does NOT map 'main' →
+      #         'refs/remotes/origin/main').
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
-            && echo "✅ Remote branch refs fetched" \
+            && echo "✅ Remote branch refs fetched (as origin/*)" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
+          # Create local 'main' branch ref so 'git diff main' resolves correctly.
+          git branch -f main origin/main 2>/dev/null \
+            && echo "✅ main available as local branch ref" \
+            || echo "⚠️ Could not create local main ref (non-blocking)"
 
       - name: "🔍 Validate repo JSON files"
         run: |
