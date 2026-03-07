@@ -61,9 +61,18 @@ def _import_script(name: str) -> Any:
     if spec is None or spec.loader is None:
         raise ImportError(f"Cannot import {name} from {path}")
     mod = importlib.util.module_from_spec(spec)
-    # Register in sys.modules before exec so @dataclass and similar decorators work
+    # Register in sys.modules before exec so @dataclass and similar decorators work.
+    # Undo the registration on failure so we don't leave a broken stub in sys.modules
+    # (which would poison subsequent imports in the same process, e.g. in tests).
     sys.modules[name] = mod
-    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    try:
+        spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    except (ImportError, AttributeError, SyntaxError, FileNotFoundError, OSError):
+        # Clean up the partially-initialised stub so subsequent imports in the
+        # same process (e.g. in tests) get a fresh attempt rather than a broken
+        # cached module.
+        sys.modules.pop(name, None)
+        raise
     return mod
 
 
@@ -252,6 +261,36 @@ def main() -> int:
         dry_run=args.dry_run,
         once=args.once,
     )
+
+
+# ── Programmatic API (for test harness and external callers) ──────────────────
+
+def run_once(budget_seconds: int = 60, dry_run: bool = True) -> int:
+    """Run exactly one agent iteration and return.
+
+    This is a convenience wrapper around ``run(once=True, iterations=1, ...)``
+    intended for CI single-shot mode and direct test-harness calls.
+    """
+    return run(iterations=1, budget_seconds=budget_seconds, dry_run=dry_run, once=True)
+
+
+def _write_kill_switch_audit(run_id: str, audit_dir: Path) -> None:
+    """Write a kill-switch audit record to *audit_dir*.
+
+    Creates ``kill_switch_{run_id}.json`` containing ``{kill_switch: true, ...}``.
+    This helper exposes the audit-record logic so it can be called and verified
+    by tests without triggering a full run.
+    """
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    record = {
+        "run_id": run_id,
+        "kill_switch": True,
+        "status": "kill_switch",
+        "reason": "AGENT_KILL_SWITCH=1",
+        "written_at": datetime.now(timezone.utc).isoformat(),
+    }
+    path = audit_dir / f"kill_switch_{run_id}.json"
+    path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

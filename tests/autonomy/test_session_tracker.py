@@ -82,7 +82,7 @@ class TestSessionEnd:
             if session_id in text:
                 data = json.loads(text)
                 status = data.get("status", "")
-                assert status in {"complete", "ended", "finished", ""}
+                assert status in {"complete", "completed", "ended", "finished", ""}
 
 
 class TestCurrentSessionPointer:

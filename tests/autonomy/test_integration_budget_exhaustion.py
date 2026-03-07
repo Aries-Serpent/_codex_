@@ -191,9 +191,11 @@ class TestAutonomySchedulerBudgetExhaustion:
 
         call_count: list[int] = []
 
-        original_sense = getattr(mod, "_sense_health", None)
+        # Instrument sense_json_health (a real function in autonomy_scheduler)
+        # to count how many sense calls the loop makes.
+        original_sense = getattr(mod, "sense_json_health", None)
         if original_sense is None:
-            pytest.skip("_sense_health internal not accessible for instrumentation")
+            pytest.skip("sense_json_health not accessible for instrumentation")
 
         def counting_sense(*args, **kwargs):
             call_count.append(1)
@@ -204,7 +206,7 @@ class TestAutonomySchedulerBudgetExhaustion:
              patch.object(mod, "MAX_ITERATIONS", 2), \
              patch.object(mod, "BUDGET_SECONDS", 60), \
              patch.object(mod, "KILL_SWITCH", False), \
-             patch.object(mod, "_sense_health", counting_sense):
+             patch.object(mod, "sense_json_health", counting_sense):
             mod.run_autonomy_loop()
 
         assert len(call_count) <= 2

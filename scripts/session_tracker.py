@@ -27,6 +27,15 @@ REPO_ROOT = Path(__file__).parent.parent
 SESSION_DIR = REPO_ROOT / "memory" / "sessions"
 CURRENT_SESSION_FILE = SESSION_DIR / ".current_session.json"
 
+# ── Session status constants ──────────────────────────────────────────────────
+# Use these constants instead of bare string literals to ensure consistency
+# across cmd_* CLI functions, start_session/end_session programmatic API,
+# and any test assertions.
+
+STATUS_ACTIVE = "active"
+STATUS_COMPLETED = "completed"
+STATUS_ERROR = "error"
+
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -79,7 +88,7 @@ def cmd_start(label: str = "") -> int:
         "label": label or f"session-{session_id[:8]}",
         "started_at": _now(),
         "ended_at": None,
-        "status": "active",
+        "status": STATUS_ACTIVE,
         "outcome": "pending",
         "events": [{"timestamp": _now(), "type": "start", "detail": label or ""}],
     }
@@ -107,7 +116,7 @@ def cmd_end(session_id: Optional[str] = None, outcome: str = "success") -> int:
         return 1
 
     session["ended_at"] = _now()
-    session["status"] = "completed"
+    session["status"] = STATUS_COMPLETED
     session["outcome"] = outcome
     session["events"].append({"timestamp": _now(), "type": "end", "detail": outcome})
 
@@ -159,7 +168,7 @@ def cmd_resume() -> int:
         if ".current" in path.name:
             continue
         session = _load_json(path)
-        if session and session.get("status") == "completed":
+        if session and session.get("status") == STATUS_COMPLETED:
             print(f"Last completed session: {session['session_id']}")
             print(json.dumps(session, indent=2, default=str))
             return 0
@@ -177,7 +186,7 @@ def cmd_list(limit: int = 10) -> int:
         session = _load_json(path)
         if session is None:
             continue
-        status_icon = {"active": "🟡", "completed": "✅", "error": "❌"}.get(session.get("status", ""), "❓")
+        status_icon = {STATUS_ACTIVE: "🟡", STATUS_COMPLETED: "✅", STATUS_ERROR: "❌"}.get(session.get("status", ""), "❓")
         print(f"{status_icon}  {session['session_id'][:12]}  {session.get('started_at', '')[:19]}  {session.get('label', '')}")
         shown += 1
         if shown >= limit:
@@ -219,6 +228,76 @@ def main() -> int:
     elif args.cmd == "list":
         return cmd_list(limit=args.limit)
     return 0
+
+
+# ── Programmatic API (for test harness and external callers) ──────────────────
+
+def start_session(label: str = "") -> str:
+    """Start a new session and return its UUID string.
+
+    Unlike ``cmd_start`` (which is the CLI entry point returning an exit code),
+    this function returns the session_id directly so callers can reference the
+    session in subsequent ``end_session`` or ``list_sessions`` calls.
+    """
+    session_id = str(uuid.uuid4())
+    session: dict[str, Any] = {
+        "session_id": session_id,
+        "label": label or f"session-{session_id[:8]}",
+        "started_at": _now(),
+        "ended_at": None,
+        "status": STATUS_ACTIVE,
+        "outcome": "pending",
+        "events": [{"timestamp": _now(), "type": "start", "detail": label or ""}],
+    }
+    _save_json(_session_path(session_id), session)
+    # Use SESSION_DIR dynamically so test patches to SESSION_DIR are respected.
+    _save_json(SESSION_DIR / ".current_session.json", {"session_id": session_id})
+    _write_markdown(session)
+    return session_id
+
+
+def end_session(session_id: Optional[str] = None, outcome: str = "success") -> None:
+    """End a session by ID (or the current session if *session_id* is None).
+
+    Unlike ``cmd_end`` (CLI entry point), this function raises ``ValueError``
+    on error rather than returning a non-zero exit code.
+    """
+    if session_id is None:
+        current = _load_json(SESSION_DIR / ".current_session.json")
+        if current is None:
+            raise ValueError("No current session. Pass session_id explicitly.")
+        session_id = current["session_id"]
+
+    path = _session_path(session_id)
+    session = _load_json(path)
+    if session is None:
+        raise ValueError(f"Session not found: {session_id}")
+
+    session["ended_at"] = _now()
+    session["status"] = STATUS_COMPLETED
+    session["outcome"] = outcome
+    session["events"].append({"timestamp": _now(), "type": "end", "detail": outcome})
+    _save_json(path, session)
+    _write_markdown(session)
+
+
+def list_sessions(limit: int = 10) -> list[dict[str, Any]]:
+    """Return a list of recent session dicts (most recent first).
+
+    Unlike ``cmd_list`` (CLI entry point), this function returns the parsed
+    session data directly for programmatic inspection.
+    """
+    paths = sorted(SESSION_DIR.glob("session_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+    result: list[dict[str, Any]] = []
+    for path in paths:
+        if ".current" in path.name:
+            continue
+        session = _load_json(path)
+        if session is not None:
+            result.append(session)
+        if len(result) >= limit:
+            break
+    return result
 
 
 if __name__ == "__main__":

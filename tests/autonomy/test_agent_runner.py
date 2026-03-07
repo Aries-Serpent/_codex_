@@ -89,6 +89,10 @@ class TestSinglePassMode:
         if not hasattr(mod, "run_once"):
             pytest.skip("run_once not exported from agent_runner")
 
+        # Patch REPO_ROOT to tmp_path so reflection/session writes go to a temporary
+        # directory instead of polluting the real repo.  _import_script will fail to
+        # load phase scripts (they don't exist in tmp_path/scripts/) but handles that
+        # gracefully — phases return {"error": ...} and the run still completes.
         session_dir = tmp_path / "memory" / "sessions"
         session_dir.mkdir(parents=True)
         with patch.object(mod, "REPO_ROOT", tmp_path):

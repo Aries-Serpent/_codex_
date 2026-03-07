@@ -27,6 +27,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+# Re-export budget_cap from budget_uncertainty so callers don't need to know
+# the exact module location.  Import is deferred / optional to avoid circular
+# deps if budget_uncertainty is not installed.
+try:
+    from budget_uncertainty import budget_cap  # noqa: F401 — re-exported for tests
+except ImportError:
+    budget_cap = None  # type: ignore[assignment]
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 BUDGET_SECONDS = int(os.environ.get("AUTONOMY_BUDGET_SECONDS", "300"))
@@ -268,6 +276,42 @@ def main() -> int:
     parser.add_argument("--budget-seconds", type=int, default=BUDGET_SECONDS)
     args = parser.parse_args()
     return run(dry_run=args.dry_run, max_iterations=args.max_iterations, budget_seconds=args.budget_seconds)
+
+
+# ── Programmatic API aliases (for test harness and external callers) ───────────
+
+def run_autonomy_loop() -> int:
+    """Run the autonomy loop using the current module-level configuration.
+
+    Unlike calling ``run()`` directly (where default argument values are frozen
+    at import time), this function reads ``DRY_RUN``, ``MAX_ITERATIONS``, and
+    ``BUDGET_SECONDS`` from the module namespace at *call* time.  This makes it
+    possible for tests to patch those module attributes and have the patched
+    values take effect without passing explicit keyword arguments.
+    """
+    return run(dry_run=DRY_RUN, max_iterations=MAX_ITERATIONS, budget_seconds=BUDGET_SECONDS)
+
+
+def _write_session_record(
+    path: Path,
+    session_id: str,
+    status: str,
+    iterations: int,
+    actions: list[dict[str, Any]],
+) -> None:
+    """Write a minimal JSON session record to *path*.
+
+    This helper exposes the session-persistence logic as a callable API so it
+    can be exercised directly by tests without running the full scheduler loop.
+    """
+    record: dict[str, Any] = {
+        "session_id": session_id,
+        "status": status,
+        "iterations": iterations,
+        "actions": actions,
+        "written_at": datetime.now(timezone.utc).isoformat(),
+    }
+    path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

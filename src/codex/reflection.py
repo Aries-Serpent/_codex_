@@ -101,7 +101,7 @@ def _analyze_python_file(path: Path) -> dict[str, Any]:
                     break
 
     lines = source.splitlines()
-    sha = hashlib.sha1(source.encode()).hexdigest()[:12]
+    sha = hashlib.sha256(source.encode()).hexdigest()[:12]
 
     return {
         "lines": len(lines),
@@ -160,9 +160,12 @@ def reflect(target: str, depth: int = 1) -> ReflectionReport:
             if candidate.suffix == ".py":
                 metrics = _analyze_python_file(candidate)
             else:
-                metrics = {"lines": len(candidate.read_text(encoding="utf-8", errors="replace").splitlines())}
+                metrics = {
+                    "lines": len(candidate.read_text(encoding="utf-8", errors="replace").splitlines())
+                }
 
-            summary_parts = [f"{candidate.relative_to(REPO_ROOT)}: {metrics.get('lines', '?')} lines"]
+            rel = candidate.relative_to(REPO_ROOT)
+            summary_parts = [f"{rel}: {metrics.get('lines', '?')} lines"]
             if metrics.get("functions"):
                 summary_parts.append(f"{metrics['functions']} functions")
             if metrics.get("classes"):

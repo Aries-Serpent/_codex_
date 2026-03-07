@@ -34,14 +34,14 @@ def _import_scheduler():
 
 
 class TestBudgetCap:
-    """Tests for the @budget_cap / wall-time enforcement decorator."""
+    """Tests for the budget_cap / wall-time enforcement decorator."""
 
     def test_budget_cap_allows_fast_function(self):
         mod = _import_scheduler()
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
 
-        @mod.budget_cap(budget_seconds=5)
+        @mod.budget_cap(max_seconds=5)
         def fast():
             return "done"
 
@@ -52,7 +52,7 @@ class TestBudgetCap:
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
 
-        @mod.budget_cap(budget_seconds=0.01)
+        @mod.budget_cap(max_seconds=0.01)
         def slow():
             time.sleep(1)
             return "never"

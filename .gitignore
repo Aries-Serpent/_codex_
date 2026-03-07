@@ -406,3 +406,10 @@ audit_artifacts/
 # Compiled Go binaries in tools/ — large executables should not be committed to git
 # Use `go build` in the tools directory to regenerate them locally
 tools/github-secrets-cli/github-secrets-cli
+
+# Runtime-generated agent memory files — regenerated on each run, not source-controlled
+# (existing tracked files in memory/ are kept for history; new ones are excluded)
+memory/reflections/reflection_*_cycle.json
+memory/sessions/session_*.json
+memory/sessions/session_*.md
+memory/sessions/.current_session.json

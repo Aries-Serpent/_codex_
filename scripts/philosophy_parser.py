@@ -14,11 +14,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+
+log = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).parent.parent
 PHILOSOPHY_DIR = REPO_ROOT / "memory" / "philosophy"
