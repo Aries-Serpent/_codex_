@@ -1,3 +1,5 @@
+> **Last synced:** `2026-03-07T06:08:39Z` (auto-sync workflow)
+
 # GitHub Variables & Secrets — Master Reference Guide
 
 > **Version:** 1.4.0 (W-136, 2026-03-06)  
