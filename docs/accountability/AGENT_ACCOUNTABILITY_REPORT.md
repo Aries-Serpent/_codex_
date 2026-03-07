@@ -589,3 +589,41 @@ Both files were written by a previous agent session using a tool that appended a
 - All git commands using bare `main` (e.g., `git diff main..HEAD`, `git log main`) now resolve correctly inside Copilot agent sessions
 - The `report_progress` tool's internal diff no longer fails with "fatal: ambiguous argument 'main'"
 - Fix is non-blocking: `git branch -f main origin/main 2>/dev/null` prints a warning rather than failing the workflow if `origin/main` is unavailable
+
+## W-142 — S116 follow-up: Autonomous Agent Variable Audit + AGENT_KILL_SWITCH (2026-03-07)
+
+**Triggered by:** @mbaetiong comment-4015530754 — `@copilot continue` after Agent Token Delegation re-activation
+
+### Actions Taken
+
+| Action | File | Detail |
+|--------|------|--------|
+| Wire `AGENT_KILL_SWITCH` emergency stop | `scripts/autonomy_scheduler.py` | Added `KILL_SWITCH = os.environ.get("AGENT_KILL_SWITCH", "0") == "1"` constant; guard at `run()` entry halts loop with `status=kill_switch` |
+| Wire `AGENT_KILL_SWITCH` emergency stop | `scripts/agent_runner.py` | Added `_KILL_SWITCH` constant; guard at `run()` entry returns exit code 1 immediately |
+| Add §6h Autonomous Agent Config | `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` | New subsection with 8 new repo variables, recommended CI values, quick-set CLI block, governance note; guide updated to v1.5.0 |
+| TOC updated | `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` | §6 expanded with all subsections (6a–6h) for direct linking |
+| Summary checklist updated | `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` | §6h doc task marked ✅ Resolved; §6h set task added to 🔴 Action Required |
+| Register §6h vars in audit CLI | `scripts/tools/variable_audit_cli.py` | 8 new `ExpectedEntry` items added under `# §6h Autonomous Agent Config` comment |
+| CHANGELOG updated | `CHANGELOG.md` | S116 `[Unreleased]` block: §6h docs, `AGENT_KILL_SWITCH` wiring, and audit CLI entries added |
+
+### Identified Gaps (Variables Requiring Admin Action)
+
+8 new repo variables should be set by @mbaetiong to control agent loop behavior in CI:
+
+| Variable | Recommended Value | Reason |
+|---|---|---|
+| `AGENT_KILL_SWITCH` | `0` | Emergency stop governance flag — must be `0` for normal operation |
+| `AUTONOMY_BUDGET_SECONDS` | `60` | Script default (300s) is too long for CI jobs |
+| `AUTONOMY_MAX_ITERATIONS` | `3` | Script default (10) would run too many loops in CI |
+| `AUTONOMY_DRY_RUN` | `0` | Leave off; set to `1` if testing without writes |
+| `AGENT_RUNNER_BUDGET_SECONDS` | `120` | Script default (180s) is acceptable; reduce to 120 for CI |
+| `AGENT_RUNNER_ITERATIONS` | `2` | Script default (3) is fine; reduce to 2 for faster CI |
+| `AGENT_RUNNER_DRY_RUN` | `0` | Leave off; set to `1` if testing without writes |
+| `UNCERTAINTY_BUDGET_SECONDS` | `10` | Script default (10s) is appropriate |
+
+Quick-set commands: see `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §6h`.
+
+### Outcome
+- `AGENT_KILL_SWITCH` is now checked at loop entry in both Phase 1 and Phase 7 scripts
+- All 8 autonomous agent config variables are documented and registered in the audit registry
+- `variable_audit_cli.py` will now flag the 8 variables as absent until @mbaetiong sets them

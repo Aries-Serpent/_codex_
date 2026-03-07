@@ -18,6 +18,14 @@
 4. [Repository Secrets](#4-repository-secrets)
 5. [Environment Secrets (Aries_Serpent_codex_)](#5-environment-secrets-aries_serpent_codex_)
 6. [Repository Variables](#6-repository-variables)
+   - [6a. Cognitive Brain](#6a--cognitive-brain)
+   - [6b. Copilot Agent Runtime](#6b--copilot-agent-runtime)
+   - [6c. CI/CD Health](#6c--cicd-health)
+   - [6d. Identity & Static Config](#6d--identity--static-config)
+   - [6e. Runtime / Build Config](#6e--runtime--build-config)
+   - [6f. ML / HuggingFace / Weights & Biases](#6f--ml--huggingface--weights--biases)
+   - [6g. Webhook / Infra](#6g-webhook--infra)
+   - [6h. 🤖 Autonomous Agent Config](#6h--autonomous-agent-config) ⬅️ **New (S116)**
 7. [Environment Variables (Aries_Serpent_codex_)](#7-environment-variables-aries_serpent_codex_)
 8. [Codespace Secrets](#8-codespace-secrets)
 9. [Workflow-Defined env: Variables](#9-workflow-defined-env-variables)
@@ -265,6 +273,40 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 > Both variables are written atomically by step 4b in `.devcontainer/scripts/post-start.sh` on every Codespace start and resume.  
 > `gh variable set` creates the variable if absent, so **no manual seeding is required** — the first Codespace start after this commit will provision both variables automatically.
+
+### 6h. 🤖 Autonomous Agent Config
+
+Variables controlling the 7-phase autonomous agent framework introduced in S116 (PR #3508).
+All scripts fall back to safe coded defaults when variables are unset.
+
+> **Set via:** `gh variable set <NAME> --body "<VALUE>" --repo Aries-Serpent/_codex_`
+
+| # | Variable | Status | Recommended Value | Script Default | Purpose |
+|---|---|---|---|---|---|
+| 1 | `AGENT_KILL_SWITCH` | ⚠️ **New** | `0` | `0` | ⚠️ **Human governance flag** — set to `"1"` to immediately halt all agent loops (Phases 1 & 7). Checked at loop entry before any work runs. **Default is `"0"` so CI passes by default when the variable is unset.** Any workflow step that calls `autonomy_scheduler.py` or `agent_runner.py` with `AGENT_KILL_SWITCH=1` will receive exit code 1 — ensure such steps use `continue-on-error: true` if non-blocking is required. |
+| 2 | `AUTONOMY_BUDGET_SECONDS` | ⚠️ **New** | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Recommended CI value: 60. |
+| 3 | `AUTONOMY_MAX_ITERATIONS` | ⚠️ **New** | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). Recommended CI value: 3. |
+| 4 | `AUTONOMY_DRY_RUN` | ⚠️ **New** | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |
+| 5 | `AGENT_RUNNER_BUDGET_SECONDS` | ⚠️ **New** | `120` | `180` | Total wall-clock budget per `agent_runner.py` orchestration daemon invocation (Phase 7). |
+| 6 | `AGENT_RUNNER_ITERATIONS` | ⚠️ **New** | `2` | `3` | Number of full-phase loops per `agent_runner.py` invocation (Phase 7). |
+| 7 | `AGENT_RUNNER_DRY_RUN` | ⚠️ **New** | `0` | `0` | Set to `"1"` to skip all write operations in `agent_runner.py` (Phase 7). |
+| 8 | `UNCERTAINTY_BUDGET_SECONDS` | ⚠️ **New** | `10` | `10` | Per-query wall-time cap for Dirichlet inference in `budget_uncertainty.py` (Phases 4/5). |
+
+> **Governance note:** `AGENT_KILL_SWITCH` is analogous to `AUTONOMOUS_ACTIONS_ENABLED` — both are human-governance flags.
+> `AGENT_KILL_SWITCH=1` provides a fast path to halt agent loops without changing `AUTONOMOUS_ACTIONS_ENABLED`,
+> which gates the broader token delegation workflow.
+>
+> **Quick-set all agent config vars:**
+> ```bash
+> gh variable set AGENT_KILL_SWITCH            --body "0"   --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_BUDGET_SECONDS      --body "60"  --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_MAX_ITERATIONS      --body "3"   --repo Aries-Serpent/_codex_
+> gh variable set AUTONOMY_DRY_RUN             --body "0"   --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_BUDGET_SECONDS  --body "120" --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_ITERATIONS      --body "2"   --repo Aries-Serpent/_codex_
+> gh variable set AGENT_RUNNER_DRY_RUN         --body "0"   --repo Aries-Serpent/_codex_
+> gh variable set UNCERTAINTY_BUDGET_SECONDS   --body "10"  --repo Aries-Serpent/_codex_
+> ```
 
 ---
 
@@ -615,6 +657,7 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ### 🔴 Action Required (Blockers)
 
 - [ ] **Set 7 Codespace secrets** listed in [§8](#8-codespace-secrets) at org level — see [§13](#13--still-missing--variablessecrets-not-yet-provided) for CLI commands (blocks Codespace agent sessions); `CODEX_MASTER_KEY` ✅ already confirmed
+- [ ] **Set 8 autonomous agent repo variables** from [§6h](#6h--autonomous-agent-config) — currently using script-default values; set to CI-appropriate values to prevent runaway loops (`AUTONOMY_BUDGET_SECONDS=60`, `AGENT_KILL_SWITCH=0`, etc.)
 
 ### ✅ Resolved
 
@@ -624,6 +667,7 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 - [x] ~~Fix Issue 4: Rotate stale runner secrets (7 months old)~~ — **Done 2026-03-06** (`_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` all rotated; `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotated)
 - [x] ~~Fix Issue 5: Create `CODEX_ADMIN_KEY` org secret (fine-grained PAT, `Webhooks:write`)~~ — **Done 2026-03-06**
 - [x] ~~Fix Issue 6: Set `WEBHOOK_RECEIVER_URL` repo variable~~ — **Done 2026-03-06** (auto-set by Codespace `post-start.sh`)
+- [x] ~~Document autonomous agent env vars (§6h)~~ — **Done 2026-03-07** (S116 PR #3508, 8 variables: `AGENT_KILL_SWITCH`, `AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`, `AUTONOMY_DRY_RUN`, `AGENT_RUNNER_BUDGET_SECONDS`, `AGENT_RUNNER_ITERATIONS`, `AGENT_RUNNER_DRY_RUN`, `UNCERTAINTY_BUDGET_SECONDS`)
 
 ### 🟢 Monitor / Maintenance
 
@@ -633,4 +677,4 @@ gh secret set WEBHOOK_SECRET               --app codespaces --org Aries-Serpent
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-06 (W-136 — CODEX_MASTER_KEY Codespace secret confirmed; repo-level override removed; v1.4.0)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 — §6h Autonomous Agent Config added; AGENT_KILL_SWITCH wired into Phase 1 + Phase 7 scripts; v1.5.0)*

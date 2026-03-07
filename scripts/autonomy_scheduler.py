@@ -32,6 +32,8 @@ from typing import Any
 BUDGET_SECONDS = int(os.environ.get("AUTONOMY_BUDGET_SECONDS", "300"))
 MAX_ITERATIONS = int(os.environ.get("AUTONOMY_MAX_ITERATIONS", "10"))
 DRY_RUN = os.environ.get("AUTONOMY_DRY_RUN", "0") == "1"
+# Emergency stop: set AGENT_KILL_SWITCH=1 to immediately halt all agent loops
+KILL_SWITCH = os.environ.get("AGENT_KILL_SWITCH", "0") == "1"
 
 REPO_ROOT = Path(__file__).parent.parent
 SESSION_DIR = REPO_ROOT / "memory" / "sessions"
@@ -190,6 +192,11 @@ def run(dry_run: bool = DRY_RUN, max_iterations: int = MAX_ITERATIONS, budget_se
     }
 
     log.info("Autonomy scheduler started (session=%s, budget=%ds, dry_run=%s)", session_id[:8], budget_seconds, dry_run)
+
+    if KILL_SWITCH:
+        log.warning("AGENT_KILL_SWITCH=1 — autonomy scheduler halted immediately")
+        session["status"] = "kill_switch"
+        return 1
 
     try:
         for iteration in range(max_iterations):

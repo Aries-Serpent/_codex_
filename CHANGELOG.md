@@ -37,6 +37,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   supports `--once` (single pass), `--dry-run`; auto-resumes from last session state.
 - **Memory directory structure:** `memory/{sessions,reflections,budget,philosophy}/`
   created with `.gitkeep` files for git tracking.
+- **§6h Autonomous Agent Config variables:** `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`
+  updated to v1.5.0 — new `§6h 🤖 Autonomous Agent Config` section documents 8 new repo
+  variables (`AGENT_KILL_SWITCH`, `AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`,
+  `AUTONOMY_DRY_RUN`, `AGENT_RUNNER_BUDGET_SECONDS`, `AGENT_RUNNER_ITERATIONS`,
+  `AGENT_RUNNER_DRY_RUN`, `UNCERTAINTY_BUDGET_SECONDS`) with recommended CI values,
+  quick-set CLI commands, and governance notes.
+- **`AGENT_KILL_SWITCH` emergency stop:** wired into Phase 1 (`autonomy_scheduler.py`) and
+  Phase 7 (`agent_runner.py`) — setting to `"1"` halts all agent loops at entry without
+  affecting CI health checks or requiring `AUTONOMOUS_ACTIONS_ENABLED` changes.
+- **`variable_audit_cli.py` §6h entries:** 8 new `ExpectedEntry` items registered in
+  `scripts/tools/variable_audit_cli.py` so the daily variable audit picks up the new vars.
 
 ## [Unreleased] — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)
 

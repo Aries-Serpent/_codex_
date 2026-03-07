@@ -23,6 +23,7 @@ Environment Variables:
     AGENT_RUNNER_ITERATIONS     Loop iterations per invocation (default: 3)
     AGENT_RUNNER_BUDGET_SECONDS Total budget per invocation (default: 180)
     AGENT_RUNNER_DRY_RUN        Set to "1" to skip writes
+    AGENT_KILL_SWITCH           Set to "1" to immediately halt all agent loops
 """
 from __future__ import annotations
 
@@ -40,6 +41,8 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).parent.parent
+# Emergency stop: set AGENT_KILL_SWITCH=1 to immediately halt all agent loops
+_KILL_SWITCH = os.environ.get("AGENT_KILL_SWITCH", "0") == "1"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -135,6 +138,23 @@ def run(iterations: int, budget_seconds: int, dry_run: bool, once: bool = False)
     deadline = time.monotonic() + budget_seconds
 
     log.info("Agent runner started (run=%s, iters=%d, budget=%ds, dry_run=%s)", run_id, iterations, budget_seconds, dry_run)
+
+    if _KILL_SWITCH:
+        log.warning("AGENT_KILL_SWITCH=1 — agent runner halted immediately")
+        # Write a minimal audit record so the halt is traceable
+        try:
+            audit_dir = REPO_ROOT / "memory" / "sessions"
+            audit_dir.mkdir(parents=True, exist_ok=True)
+            audit_path = audit_dir / f"kill_switch_{run_id}.json"
+            audit_path.write_text(
+                json.dumps({"run_id": run_id, "started_at": started.isoformat(),
+                            "status": "kill_switch", "reason": "AGENT_KILL_SWITCH=1"}, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            log.info("Kill-switch audit record written: %s", audit_path.name)
+        except Exception:  # noqa: BLE001
+            pass
+        return 1
 
     # Resume context from last session if available
     session_file = REPO_ROOT / "memory" / "sessions" / ".current_session.json"
