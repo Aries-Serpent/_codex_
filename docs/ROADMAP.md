@@ -49,7 +49,7 @@
 
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
-| **MLOps Maturity** | Level 3.9 ⚠️ | Level 4 | 3 gaps partially closed (SAR P1 sprint W-140) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
+| **MLOps Maturity** | Level 3.95 ✅ | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
 | **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
 | **Security Posture** | Elite | Elite | ✅ None |
 | **CI/CD Performance** | Optimized | <3 min | 🟢 Near target |
@@ -386,7 +386,7 @@
 
 ### Current Blockers
 
-> ✅ Updated 2026-03-06 (W-140 SAR P1): Level 3.9 — three gaps partially closed.
+> ✅ Updated 2026-03-08 (W-142 S116): Level 3.95 — P1 gaps resolved (SAR-G01/G02/G05 COMPLETE).
 
 | Blocker | Impact | Mitigation | Status |
 |---------|--------|------------|--------|
