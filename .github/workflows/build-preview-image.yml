@@ -84,7 +84,7 @@ jobs:
       - name: Compute image tags
         id: tags
         run: |
-          REPO="ghcr.io/${{ github.repository_owner }}/codex"
+          REPO="ghcr.io/$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')/codex"
           SHORT_SHA="${{ github.sha }}"
           SHORT_SHA="${SHORT_SHA:0:7}"
           INPUT_TAG="${{ github.event.inputs.image_tag }}"
