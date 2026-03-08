@@ -488,3 +488,43 @@ class TestDuckDBBackend:
         assert result is not None
         assert result["stored"] is True
         b2.close()
+
+    def test_materialize_to_arrow_ipc(self, tmp_path):
+        """Arrow IPC export produces a valid file readable by pyarrow."""
+        pytest.importorskip("pyarrow")
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("feats", "u1", {"age": 25, "score": 0.8})
+        b.write("feats", "u2", {"age": 40, "score": 0.6})
+        out = tmp_path / "feats.arrow"
+        result_path = b.materialize_to_arrow_ipc("feats", out)
+        assert result_path == out
+        assert out.exists()
+        import pyarrow.ipc as pa_ipc
+        reader = pa_ipc.open_file(str(out))
+        table = reader.read_all()
+        assert table.num_rows == 2
+        b.close()
+
+    def test_materialize_to_arrow_ipc_creates_parent_dirs(self, tmp_path):
+        """Arrow IPC export creates missing parent directories."""
+        pytest.importorskip("pyarrow")
+        mod = _import_duckdb()
+        b = mod.DuckDBBackend()
+        b.write("feats", "u1", {"val": 99})
+        out = tmp_path / "deep" / "nested" / "feats.ipc"
+        b.materialize_to_arrow_ipc("feats", out)
+        assert out.exists()
+        b.close()
+
+    def test_materialize_to_arrow_ipc_no_pyarrow(self, tmp_path, monkeypatch):
+        """materialize_to_arrow_ipc raises ImportError when pyarrow is absent."""
+        mod = _import_duckdb()
+        import sys
+        monkeypatch.setitem(sys.modules, "pyarrow", None)
+        monkeypatch.setitem(sys.modules, "pyarrow.ipc", None)
+        b = mod.DuckDBBackend()
+        b.write("feats", "u1", {"val": 1})
+        with pytest.raises(ImportError, match="pyarrow"):
+            b.materialize_to_arrow_ipc("feats", tmp_path / "out.arrow")
+        b.close()

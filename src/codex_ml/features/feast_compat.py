@@ -698,6 +698,49 @@ class DuckDBBackend:
         logger.info("Materialized view '%s' → %s", view_name, output_path)
         return output_path
 
+    def materialize_to_arrow_ipc(
+        self,
+        view_name: str,
+        output_path: str | Path,
+    ) -> Path:
+        """Export all feature rows for *view_name* to an Arrow IPC file.
+
+        Arrow IPC (also known as the Feather v2 / Arrow file format) is a
+        column-oriented interchange format compatible with PyArrow, Polars,
+        and any language with an Arrow implementation.  It is faster to
+        read/write than Parquet for streaming / inter-process communication
+        scenarios where compression is less important than latency.
+
+        Args:
+            view_name:   Feature view to export.
+            output_path: Destination ``.arrow`` or ``.ipc`` file path.
+
+        Returns:
+            ``Path`` to the written Arrow IPC file.
+
+        Raises:
+            ImportError: if ``pyarrow`` is not installed.
+        """
+        try:
+            import pyarrow as pa  # noqa: PLC0415
+            import pyarrow.ipc as pa_ipc  # noqa: PLC0415
+        except ImportError as exc:
+            raise ImportError(
+                "materialize_to_arrow_ipc() requires pyarrow: pip install pyarrow"
+            ) from exc
+        output_path = Path(output_path)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with self._lock:
+            self._ensure_table(view_name)
+            tbl = self._table(view_name)
+            arrow_table: pa.Table = self._conn.execute(
+                f"SELECT * FROM {tbl}"  # nosec B608 — tbl validated by _table()
+            ).arrow().read_all()
+        with pa_ipc.new_file(str(output_path), arrow_table.schema) as writer:
+            writer.write_table(arrow_table)
+        logger.info("Materialized view '%s' → %s (Arrow IPC)", view_name, output_path)
+        return output_path
+
     def row_count(self, view_name: str) -> int:
         """Return the number of feature rows stored for *view_name*."""
         with self._lock:

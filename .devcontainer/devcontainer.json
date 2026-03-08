@@ -133,7 +133,7 @@
     // Empty string ("") is treated as no-op by init_tracing() — tracing is
     // disabled and no connection is attempted.  Safe for offline/CI use.
     "OTEL_SERVICE_NAME": "codex-mcp",
-    "OTEL_EXPORTER_OTLP_ENDPOINT": ""
+    "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
   },
 
   // ── Codespace secrets → container env ─────────────────────────────────────
