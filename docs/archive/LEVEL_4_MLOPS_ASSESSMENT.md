@@ -1,7 +1,7 @@
 # Level 4 MLOps Capability Assessment & Implementation Plan
 
 **Original Date:** Dec 6, 2025 | **Last Updated:** 2026-03-07 (S116/W-142 phase 3 — DuckDB offline backend + multivariate drift OTel spans)  
-**Current Status:** ⚠️ Level 3.97 / 4.0 — P1 GAPS CLOSING  
+**Current Status:** ⚠️ Level 3.95 / 4.0 — P1 GAPS CLOSING  
 **Assessment:** Capability mapping against Microsoft Azure MLOps Maturity Model  
 **SAR Reference:** See [`docs/ops/SAR_METHODOLOGY.md`](../ops/SAR_METHODOLOGY.md) for the active gap-closure plan
 

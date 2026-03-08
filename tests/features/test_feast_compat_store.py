@@ -95,12 +95,6 @@ class TestFeatureServiceResult:
 class TestFeastCompatibleStore:
     """Tests for the Parquet-backed FeastCompatibleStore shim."""
 
-    def _make_store(self, mod, tmp_path):
-        """Create a store with a mocked native FeatureStore."""
-        with patch("codex_ml.features.feature_store.FeatureStore"):
-            store = mod.FeastCompatibleStore(repo_path=tmp_path / ".feature_store")
-            return store
-
     def test_apply_registers_feature_view(self, tmp_path):
         mod = _import()
         with patch("codex_ml.features.feast_compat.FeastCompatibleStore.__init__",

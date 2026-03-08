@@ -457,17 +457,9 @@ class TestDuckDBBackend:
 
     def test_missing_duckdb_package_raises_import_error(self):
         mod = _import_duckdb()
-        import sys
-        original = sys.modules.get("duckdb")
-        sys.modules["duckdb"] = None  # type: ignore[assignment]
-        try:
+        with patch.dict("sys.modules", {"duckdb": None}):
             with pytest.raises(ImportError, match="duckdb"):
                 mod.DuckDBBackend()
-        finally:
-            if original is None:
-                del sys.modules["duckdb"]
-            else:
-                sys.modules["duckdb"] = original
 
     def test_custom_table_prefix(self):
         mod = _import_duckdb()

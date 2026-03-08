@@ -267,7 +267,7 @@
 
 | Gap | Owner | Playbook | ETA |
 |-----|-------|----------|-----|
-| SAR-G01: 7 Codespace secrets | @mbaetiong (human admin only) | §13 GITHUB_VARIABLES_MASTER_GUIDE.md | 2026-03-15 |
+| SAR-G01: 7 Codespace secrets ✅ RESOLVED | @mbaetiong | §13 GITHUB_VARIABLES_MASTER_GUIDE.md | Complete (2026-03-07) |
 | SAR-G02: Feature store — SQLite production backend ✅ | @copilot | feast_compat.py + SQLiteBackend (S116) | 2026-06-30 (Redis/Feast swap) |
 | SAR-G03: Auto-retrain GHA workflow ✅ | @copilot | model-drift-retrain.yml | 2026-06-30 (prod data source) |
 

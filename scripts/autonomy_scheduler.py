@@ -301,11 +301,16 @@ def main() -> int:
 def run_autonomy_loop() -> int:
     """Run the autonomy loop using the current module-level configuration.
 
-    Unlike calling ``run()`` directly (where default argument values are frozen
-    at import time), this function reads ``DRY_RUN``, ``MAX_ITERATIONS``, and
-    ``BUDGET_SECONDS`` from the module namespace at *call* time.  This makes it
-    possible for tests to patch those module attributes and have the patched
-    values take effect without passing explicit keyword arguments.
+    This function explicitly reads ``DRY_RUN``, ``MAX_ITERATIONS``, and
+    ``BUDGET_SECONDS`` from the module namespace at *call* time and passes
+    them as keyword arguments to ``run()``.  This allows tests to patch
+    module attributes and have the patched values take effect.
+
+    Note: ``run()`` also accepts keyword arguments directly
+    (``run(dry_run=..., max_iterations=..., budget_seconds=...)``), so tests
+    can equally call ``run()`` with explicit values.  The default argument
+    values of ``run()`` are evaluated once at *definition* time; only the
+    keyword-argument path (used here) re-reads the module globals.
     """
     return run(dry_run=DRY_RUN, max_iterations=MAX_ITERATIONS, budget_seconds=BUDGET_SECONDS)
 

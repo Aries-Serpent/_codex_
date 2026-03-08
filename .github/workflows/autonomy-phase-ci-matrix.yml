@@ -21,12 +21,7 @@ on:
       - 'scripts/philosophy_parser.py'
       - 'scripts/agent_runner.py'
       - 'tests/autonomy/**'
-  workflow_dispatch:
-    inputs:
-      phase:
-        description: 'Phase to test (1-7, or "all")'
-        required: false
-        default: 'all'
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

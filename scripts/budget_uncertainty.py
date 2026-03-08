@@ -75,7 +75,11 @@ class DirichletBeliefs:
     def __post_init__(self) -> None:
         if not self.alphas:
             self.alphas = [1.0] * len(self.options)
-        assert len(self.options) == len(self.alphas)
+        if len(self.options) != len(self.alphas):
+            raise ValueError(
+                f"options and alphas must have the same length, "
+                f"got {len(self.options)} and {len(self.alphas)}"
+            )
 
     def observe(self, option: str, weight: float = 1.0) -> None:
         """Update beliefs on observing evidence for an option."""

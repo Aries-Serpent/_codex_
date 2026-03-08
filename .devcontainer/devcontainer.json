@@ -118,20 +118,17 @@
     "GIT_LFS_SKIP_SMUDGE": "1",
 
     // ── SAR-G05: OpenTelemetry distributed tracing ─────────────────────────
-    // Point to the local Jaeger all-in-one instance started by the
-    // "jaeger" devcontainer feature / post-create step.  Leave blank (or
-    // comment out) to run in no-op / offline mode — the server starts fine
-    // without a live collector.
+    // OTEL_EXPORTER_OTLP_ENDPOINT is set to the local Jaeger gRPC address.
+    // This requires a running Jaeger all-in-one instance (started by the
+    // "jaeger" devcontainer feature / post-create step).
     //
-    // Activate by setting the endpoint below and restarting the Codespace:
-    //   "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317",
+    // If you do not have Jaeger running, change the value to "" (empty string)
+    // or remove the key.  init_tracing() treats "" as no-op — tracing is
+    // disabled and no connection is attempted.  Safe for offline/CI use.
     //
     // Jaeger UI (when running): http://localhost:16686
     // gRPC collector: http://localhost:4317
     // HTTP collector: http://localhost:4318
-    //
-    // Empty string ("") is treated as no-op by init_tracing() — tracing is
-    // disabled and no connection is attempted.  Safe for offline/CI use.
     "OTEL_SERVICE_NAME": "codex-mcp",
     "OTEL_EXPORTER_OTLP_ENDPOINT": "http://localhost:4317"
   },

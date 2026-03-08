@@ -76,13 +76,12 @@ class TestSessionEnd:
             session_id = mod.start_session(label="end-test")
             mod.end_session(session_id=session_id)
 
-        # The session file should now reflect ended status
-        for f in tmp_path.glob("*.json"):
-            text = f.read_text()
-            if session_id in text:
-                data = json.loads(text)
-                status = data.get("status", "")
-                assert status in {"complete", "completed", "ended", "finished", ""}
+        # Locate the session file by name (avoids reading the .current_session.json
+        # pointer file which does not contain a "status" field).
+        session_file = tmp_path / f"session_{session_id}.json"
+        assert session_file.exists(), f"Session file not found: {session_file}"
+        data = json.loads(session_file.read_text())
+        assert data.get("status") in {"complete", "completed", "ended", "finished"}
 
 
 class TestCurrentSessionPointer:

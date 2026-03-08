@@ -41,7 +41,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Sequence
 
@@ -341,7 +341,7 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
                 try:
                     m["agent_count"] = int(line.split(":")[1].strip())
                 except ValueError:
-                    pass
+                    pass  # line format unexpected; fall back to default below
                 break
     m.setdefault("agent_count", 153)
 
@@ -353,7 +353,7 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
                 try:
                     m["coverage_threshold"] = int(line.split("=")[1].strip())
                 except ValueError:
-                    pass
+                    pass  # line format unexpected; fall back to default below
                 break
     m.setdefault("coverage_threshold", 75)
 
@@ -366,7 +366,7 @@ def gather_metrics(repo_root: Path) -> dict[str, str]:  # noqa: C901 (complexity
                 count += tf.read_text(errors="ignore").count("\ndef test_")
                 count += tf.read_text(errors="ignore").count("\n    def test_")
             except OSError:
-                pass
+                pass  # skip unreadable test files; count may be lower than actual
     # Floor to nearest 500 for a conservative round-number claim
     display = max(500, (count // 500) * 500)
     m["test_count_display"] = f"{display}+"
