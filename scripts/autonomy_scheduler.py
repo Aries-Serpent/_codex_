@@ -27,13 +27,31 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-# Re-export budget_cap from budget_uncertainty so callers don't need to know
-# the exact module location.  Import is deferred / optional to avoid circular
-# deps if budget_uncertainty is not installed.
+# Re-export budget_cap from budget_uncertainty so callers can access it via
+# this module's namespace without knowing the exact source location.
+# Import is deferred / optional to avoid circular deps if budget_uncertainty
+# is not installed.  Listed in __all__ to satisfy static-analysis re-export checks.
 try:
-    from budget_uncertainty import budget_cap  # noqa: F401 — re-exported for tests
+    from budget_uncertainty import budget_cap
 except ImportError:
     budget_cap = None  # type: ignore[assignment]
+
+__all__ = [
+    "budget_cap",
+    "BudgetExceededError",
+    "BUDGET_SECONDS",
+    "MAX_ITERATIONS",
+    "DRY_RUN",
+    "KILL_SWITCH",
+    "sense_json_health",
+    "sense_yaml_health",
+    "sense_test_health",
+    "decide_actions",
+    "write_session",
+    "run",
+    "run_autonomy_loop",
+    "main",
+]
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
