@@ -49,8 +49,8 @@ def budget_cap(max_seconds: float = 10.0, label: str = ""):
             start = time.monotonic()
             result = func(*args, **kwargs)
             elapsed = time.monotonic() - start
-            env_cap = float(os.environ.get("UNCERTAINTY_BUDGET_SECONDS", max_seconds))
-            cap = min(max_seconds, env_cap)
+            env_max_seconds = float(os.environ.get("UNCERTAINTY_BUDGET_SECONDS", max_seconds))
+            cap = min(max_seconds, env_max_seconds)
             if elapsed > cap:
                 raise BudgetExceeded(
                     f"{label or func.__name__} took {elapsed:.2f}s, exceeded {cap}s cap"
