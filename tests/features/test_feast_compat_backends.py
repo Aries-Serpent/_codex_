@@ -265,7 +265,7 @@ class TestRedisBackend:
         import sys
         real_redis = sys.modules.pop("redis", None)
         try:
-            with pytest.raises(ImportError, match="redis"):
+            with pytest.raises(ImportError, match="RedisBackend requires"):
                 mod.RedisBackend()
         finally:
             if real_redis is not None:
