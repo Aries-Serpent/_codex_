@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-09T10:18Z (PR #3514 — agent token delegation activated; all CI checks green on 65b0821; manifest refreshed for E→D gate C2 freshness)
+**Last updated:** 2026-03-09T20:20Z (PR #3514 — agent token delegation re-confirmed (run 22848882427); manifest refreshed for E→D gate C2 freshness)
 
 ---
 
