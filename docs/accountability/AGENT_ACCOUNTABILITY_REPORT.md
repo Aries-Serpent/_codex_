@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-09T09:30Z (PR #3514 — cognitive preflight step 8 fix: CHANGELOG.md updated; code-review improvements applied to sentencepiece_adapter.py and test stub)
+**Last updated:** 2026-03-09T09:47Z (PR #3514 — cherry-picked dependabot PRs #3515-#3528; CHANGELOG.md + manifest refreshed in this commit to satisfy preflight steps 7+8)
 
 ---
 
