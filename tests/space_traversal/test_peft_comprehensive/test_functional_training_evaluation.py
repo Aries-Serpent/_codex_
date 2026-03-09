@@ -39,6 +39,8 @@ class DummyDataset(torch.utils.data.Dataset):
 class DummyTokenizer:
     pad_token: int = 0
     eos_token: int = 0
+    pad_token_id: int = 0
+    eos_token_id: int = 0
 
     @classmethod
     def from_pretrained(cls, name: str, **kwargs) -> "DummyTokenizer":
@@ -46,8 +48,10 @@ class DummyTokenizer:
         return cls()
 
     def __call__(
-        self, texts: List[str], padding: bool = True, return_tensors: str = "pt"
+        self, texts, padding: bool = True, return_tensors: str = "pt", **kwargs
     ) -> Dict[str, Any]:
+        if isinstance(texts, str):
+            texts = [texts]
         max_len = max(len(text.split()) for text in texts)
         input_ids = []
         attention = []
@@ -79,15 +83,37 @@ def test_run_functional_training_appends_validation_metrics(monkeypatch):
 
     from codex_ml import training
 
+    # Bypass HF pinning check and tokenizer loading entirely.
+    # DummyTokenizer has all attributes that legacy_api expects after loading.
+    monkeypatch.setattr(
+        "codex_ml.training.legacy_api.load_from_pretrained",
+        lambda *_, **__: DummyTokenizer(),
+    )
+
     monkeypatch.setitem(sys.modules, "datasets", types.SimpleNamespace(Dataset=DummyDataset))
     monkeypatch.setitem(
-        sys.modules, "transformers", types.SimpleNamespace(AutoTokenizer=DummyTokenizer)
+        sys.modules,
+        "transformers",
+        types.SimpleNamespace(
+            AutoTokenizer=DummyTokenizer,
+            # registry.py accesses these at import-time; provide None stubs so
+            # the module loads when sys.modules["transformers"] is mocked.
+            AutoModelForCausalLM=None,
+            AutoModelForMaskedLM=None,
+        ),
     )
 
     monkeypatch.setattr("codex_ml.models.registry.get_model", lambda *_, **__: DummyModel())
 
     def fake_run_custom_trainer(model: Any, tokenizer: Any, train_ds: Any, val_ds: Any, cfg: Any):
         return {"metrics": {"train_loss": 0.25}, "trainer_cfg": cfg}
+
+    # The local run_custom_trainer in legacy_api delegates to functional_training.train;
+    # mock that function directly so training doesn't attempt real optimizer steps.
+    monkeypatch.setattr(
+        "codex_ml.training.functional_training.train",
+        lambda *_, **__: {"train_loss": 0.25, "eval_loss": 0.30, "perplexity": 1.35},
+    )
 
     monkeypatch.setattr(
         "training.functional_training.run_custom_trainer",
