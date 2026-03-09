@@ -5,6 +5,89 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — W-142 S116: variable sync · SAR-G01 complete · Codespace secrets confirmed (2026-03-07)
+
+### Updated (S116 variable audit sync)
+- **`GITHUB_VARIABLES_MASTER_GUIDE.md` v1.6.0:** Reconciled with live variable export from @mbaetiong.
+  **SAR-G01 COMPLETE** — all 9 Codespace secrets confirmed set (as user-level secrets 2026-03-06/07):
+  `CODEX_MASTER_KEY` ✅, `CODEX_BACKUP_KEY` ✅, `CODEX_ADMIN_KEY` ✅, `_GITHUB_APP_ID` ✅,
+  `_GITHUB_APP_PRIVATE_KEY` ✅, `_GITHUB_APP_INSTALLATION_ID` ✅, `_GITHUB_APP_CLIENT_SECRET` ✅,
+  `WEBHOOK_SECRET` ✅, `WEBHOOK_RECEIVER_URL` ✅.
+  **§6h all 8 autonomous agent vars confirmed provisioned** with actual live values:
+  `AGENT_KILL_SWITCH=0`, `AUTONOMY_BUDGET_SECONDS=90`, `AUTONOMY_MAX_ITERATIONS=3`,
+  `AUTONOMY_DRY_RUN=0`, `AGENT_RUNNER_BUDGET_SECONDS=180`, `AGENT_RUNNER_ITERATIONS=2`,
+  `AGENT_RUNNER_DRY_RUN=0`, `UNCERTAINTY_BUDGET_SECONDS=20`.
+  §13 "Still Missing" converted to "✅ Previously Missing — All Resolved" archive section.
+  Summary Checklist blockers cleared; §8 table updated to show all ✅ CONFIRMED status.
+- **`variable_audit_cli.py` §8 entries:** Updated all 8 Codespace secret entries to remove
+  "BLOCKER: not yet set" labels; added `WEBHOOK_RECEIVER_URL` as 9th Codespace entry.
+
+
+### Fixed (S116 post-merge — CI)
+- **detect-secrets baseline fix:** `Art_Validation Pipeline` failed with exit code 3 because
+  `ci-health-monitor.yml` and `copilot-setup-steps.yml` (modified in this PR) contain
+  intentional base64-encoded scripts that triggered `Base64HighEntropyString` detections,
+  and `CHANGELOG.md` triggered a `SecretKeyword` detection — none of which are real secrets.
+  Added `# pragma: allowlist secret` to the two YAML `run: |` block lines and an inline
+  HTML comment to the CHANGELOG entry; restored `is_ignored_due_to_verification_policies`
+  filter to `.secrets.baseline` for compatibility with detect-secrets v1.4.0 used by CI.
+
+### Added (S116 post-merge — 7-Phase Autonomous Agent)
+- **Phase 1 — Full Autonomy Enhancement:** `scripts/autonomy_scheduler.py`
+  Self-driving health-sense → decide → act loop with configurable budget enforcement
+  (`AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`) and session persistence.
+- **Phase 2 — Session-Based Execution:** `scripts/session_tracker.py`
+  JSON-backed session lifecycle tracker with start/end/status/resume/list commands;
+  auto-persists Markdown summaries to `memory/sessions/`.
+- **Phase 3 — Self-Referential Loops:** `src/codex/reflection.py`
+  AST-driven code introspection with `RecursionGuard` (depth-limited recursion),
+  structural metrics extraction, and `persist_reflection()` to `memory/reflections/`.
+- **Phase 4 & 5 — Epistemic Uncertainty + Budget Enforcement:** `scripts/budget_uncertainty.py`
+  Dirichlet conjugate-prior belief updates for multi-option decisions; `@budget_cap` decorator
+  enforces per-call wall-time limits; `ci_health` and `decision` scenarios included.
+- **Phase 6 — Philosophy Reading/Writing Automation:** `scripts/philosophy_parser.py`
+  Parses Markdown docs from `docs/` for headings/concepts/action-items; generates synthesis
+  documents from templates; persists outputs to `memory/philosophy/`.
+- **Phase 7 — Integration:** `scripts/agent_runner.py`
+  Persistent orchestration daemon wiring all phases into a single loop; respects budget,
+  supports `--once` (single pass), `--dry-run`; auto-resumes from last session state.
+- **Memory directory structure:** `memory/{sessions,reflections,budget,philosophy}/`
+  created with `.gitkeep` files for git tracking.
+- **§6h Autonomous Agent Config variables:** `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`
+  updated to v1.5.0 — new `§6h 🤖 Autonomous Agent Config` section documents 8 new repo
+  variables (`AGENT_KILL_SWITCH`, `AUTONOMY_BUDGET_SECONDS`, `AUTONOMY_MAX_ITERATIONS`,
+  `AUTONOMY_DRY_RUN`, `AGENT_RUNNER_BUDGET_SECONDS`, `AGENT_RUNNER_ITERATIONS`,
+  `AGENT_RUNNER_DRY_RUN`, `UNCERTAINTY_BUDGET_SECONDS`) with recommended CI values,
+  quick-set CLI commands, and governance notes.
+- **`AGENT_KILL_SWITCH` emergency stop:** wired into Phase 1 (`autonomy_scheduler.py`) and
+  Phase 7 (`agent_runner.py`) — setting to `"1"` halts all agent loops at entry without
+  affecting CI health checks or requiring `AUTONOMOUS_ACTIONS_ENABLED` changes.
+- **`variable_audit_cli.py` §6h entries:** 8 new `ExpectedEntry` items registered in
+  `scripts/tools/variable_audit_cli.py` so the daily variable audit picks up the new vars.
+
+## [Unreleased] — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)
+
+### Fixed (post-merge hotfix S116)
+- Verified GHCR preview image build workflow (`build-preview-image.yml`) triggers on push to `main`
+- Wired 20/51 remaining Python workflows to `setup-python-cached` composite action (`cache-tier: common`)
+  replacing bare `actions/setup-python@v5` calls — eliminates redundant pip fetches on every run
+- Removed redundant manual `actions/cache` step from `agent-registry-validation.yml`
+  (now handled by `setup-python-cached` L1 pip layer)
+- Confirmed `COPILOT_ACCESS_TEST` repo variable auto-created by `post-start.sh`
+- No duplicate D365 policy variable found (already clean)
+- **Fixed invalid JSON:** `.codex/validation/structure_audit.json` and
+  `.codex/validation/tests_docs_links_audit.json` had Markdown text appended after
+  the closing `}` (corrupted in main-branch merge commit); truncated to valid JSON
+  — resolves `🔍 Validate repo JSON files` gate failure in copilot-setup-steps
+- **Fixed `git diff main` failure in Copilot agent sessions:** `copilot-setup-steps.yml`
+  `🔀 Fetch remote branch refs` step fetched remote branches into `refs/remotes/origin/*`
+  only; `git diff main` requires `refs/heads/main` (a local branch ref). Added
+  `git branch -f main origin/main` to promote the remote-tracking ref to a local ref
+  so bare `main` resolves in all git commands inside agent sessions
+
+### Added (S116)
+- Codespace secrets admin-request issue filed (SAR-G01) — 7 org-level secrets required
+
 ## [Unreleased] — W-142 S115: CI triage · test mock pattern fix · code review cleanup (2026-03-06)
 
 ### Fixed (W-142 S115 — ModelLoader wrong-patch pattern)
@@ -229,7 +312,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed (W-129)
 
 - `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` (v1.0.0 → v1.1.0) — full reconciliation against mbaetiong's 2026-03-06 authoritative export:
-  - **§3 Org Secrets:** `CODEX_ADMIN_KEY` promoted from ❌ Missing → ✅ Present (updated 3 h ago). `CODEX_MASTER_KEY` updated "yesterday" — recently rotated (rotation alert removed, next due ~2026-06-03). Added 4 new org secrets: `_GITHUB_APP_CLIENT_SECRET`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_PRIVATE_KEY` (all updated 1 h ago). Added GitHub App Authentication note explaining the `_GITHUB_APP_*` naming convention.
+  - **§3 Org Secrets:** `CODEX_ADMIN_KEY` promoted from ❌ Missing → ✅ Present (updated 3 h ago). `CODEX_MASTER_KEY` updated "yesterday" — recently rotated (rotation alert removed, next due ~2026-06-03). Added 4 new org secrets: `_GITHUB_APP_CLIENT_SECRET`, `_GITHUB_APP_ID`, `_GITHUB_APP_INSTALLATION_ID`, `_GITHUB_APP_PRIVATE_KEY` (all updated 1 h ago). Added GitHub App Authentication note explaining the `_GITHUB_APP_*` naming convention. <!-- pragma: allowlist secret -->
   - **§4 Repo Secrets:** Added `OPENAI_API_KEY` (new, 5 h ago). Updated `CODEX_REPO_ID` age (3 months → 6 h) and `CODEX_WEBHOOK_SECRET` age (3 months → 12 min).
   - **§5 Env Secrets:** Removed `CODEX_ENV_NODE_VERSION` row (was ⚠️ Wrong type — Issue 1 resolved ✅). Added resolution note.
   - **§6e Repo Variables:** Added `CODEX_SESSION_ID` row (now persisted as a repo variable, UUID v4). Updated `CODEX_CI_FAILURE_RATE` current value to `6.5:ok`. Fixed `CODEX_PYTHON_VERSION` row to remove conflict warning (Issue 2 resolved).

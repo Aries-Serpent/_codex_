@@ -44,9 +44,11 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Run cleanup
         env:

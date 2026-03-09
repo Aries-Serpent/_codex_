@@ -36,6 +36,8 @@ jobs:
           python-version: '3.12'
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+
+      - name: Run pre-flight check
         id: pre_flight
         run: |
           python scripts/ci/pre_flight_check.py

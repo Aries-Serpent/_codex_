@@ -264,3 +264,12 @@ repos:
         pass_filenames: false
         stages: [manual]
         # Runs fast tests only (use: pre-commit run quick-tests)
+
+      # Doc Metrics Sync — keeps Mermaid diagrams and KPI numbers aligned with code
+      - id: doc-metrics-check
+        name: Doc Metrics Check (Mermaid/KPI alignment)
+        entry: python scripts/tools/doc_metrics_sync.py --check
+        language: system
+        pass_filenames: false
+        # Run: pre-commit run doc-metrics-check
+        # Fix: python scripts/tools/doc_metrics_sync.py --fix
