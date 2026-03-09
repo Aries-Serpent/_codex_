@@ -588,7 +588,7 @@ nltk==3.9.3
     #   rouge-score
 nodeenv==1.10.0
     # via pre-commit
-notebook==7.4.7
+notebook==7.5.4
     # via great-expectations
 notebook-shim==0.2.4
     # via
