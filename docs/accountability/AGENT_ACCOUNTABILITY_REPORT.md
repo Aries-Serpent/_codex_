@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-09T21:20Z (PR #3514 — workflow `pr3178-pytest-execution.yml` genericized: name, comment title, artifact paths, branch trigger all de-referenced from PR #3178; manifest refreshed)
+**Last updated:** 2026-03-09T21:47Z (PR #3514 — agent token delegation re-confirmed ×4 (run 22875570021); manifest refreshed for E→D gate C2 freshness)
 
 ---
 
