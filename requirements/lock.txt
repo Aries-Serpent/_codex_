@@ -109,7 +109,7 @@ cffi==2.0.0
     #   argon2-cffi-bindings
     #   cryptography
     #   pygit2
-cfgv==3.4.0
+cfgv==3.5.0
     # via pre-commit
 chardet==5.2.0
     # via mbstrdecoder
