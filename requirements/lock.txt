@@ -990,7 +990,7 @@ rich==14.3.3
     #   rich-click
     #   rich-toolkit
     #   typer
-rich-click==1.9.3
+rich-click==1.9.7
     # via litestar
 rich-toolkit==0.17.1
     # via fastapi-cli
