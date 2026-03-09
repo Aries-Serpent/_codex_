@@ -6,7 +6,7 @@ absl-py==2.3.1
     # via
     #   rouge-score
     #   tensorboard
-accelerate==1.12.0
+accelerate==1.13.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1167,7 +1167,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.2.0
+transformers==5.3.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
