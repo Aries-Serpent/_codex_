@@ -262,7 +262,7 @@ class SentencePieceAdapter:
                 self.load()
             else:
                 raise RuntimeError("adapter not loaded")
-        if not isinstance(ids, (list, tuple)) or not all(isinstance(i, int) for i in ids):
+        if not isinstance(ids, (list, tuple)) or any(not isinstance(i, int) for i in ids):
             raise ValueError(
                 "SentencePieceAdapter.decode requires a list or tuple of int ids"
             )

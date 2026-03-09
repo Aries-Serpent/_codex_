@@ -75,9 +75,10 @@ def test_use_fast_flag():
         raise
     # In transformers >= 4.37 GPT-2's slow Python tokenizer was rewritten using the
     # Rust backend, so use_fast=False may still return a tokenizer with is_fast=True.
-    # Verify the tokenizer loaded correctly and can encode rather than asserting
-    # the is_fast attribute, which now varies by transformers version.
+    # Verify the tokenizer loaded correctly and can encode text.
     assert tok_slow is not None
+    tokens = tok_slow.encode("hello world")
+    assert isinstance(tokens, list) and len(tokens) > 0
 
 
 def test_load_sentencepiece_adapter(tmp_path, monkeypatch):
