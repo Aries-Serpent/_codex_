@@ -7,7 +7,7 @@ Test module for functional training evaluation.
 from __future__ import annotations
 
 import types
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import pytest
 
