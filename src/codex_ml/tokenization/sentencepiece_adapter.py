@@ -137,6 +137,25 @@ class SentencePieceAdapter:
         """Set the model prefix, updating ``model_path`` accordingly."""
         self.model_path = Path(value).with_suffix(".model")
 
+    @property
+    def vocab_size(self) -> int:
+        """Return the vocabulary size, as required by the tokenizer contract."""
+        if self.sp is not None:
+            if hasattr(self.sp, "GetPieceSize") and callable(self.sp.GetPieceSize):
+                return int(self.sp.GetPieceSize())
+            for attr in ("piece_size", "vocab_size"):
+                val = getattr(self.sp, attr, None)
+                if val is not None:
+                    return int(val() if callable(val) else val)
+        if hasattr(self, "_trained_vocab_size"):
+            return int(self._trained_vocab_size)
+        return 0
+
+    @property
+    def name_or_path(self) -> str:
+        """Return the model path, as required by the tokenizer contract."""
+        return str(self.model_path)
+
     def train_or_load(
         self,
         input_path: str | Path,
@@ -217,6 +236,11 @@ class SentencePieceAdapter:
             else:
                 raise RuntimeError("adapter not loaded")
 
+        if not isinstance(text, str):
+            raise TypeError(
+                f"SentencePieceAdapter.encode requires a str input, got {type(text).__name__}"
+            )
+
         encoded = list(self.sp.encode(text, out_type=int))
 
         # Apply padding if requested
@@ -238,6 +262,10 @@ class SentencePieceAdapter:
                 self.load()
             else:
                 raise RuntimeError("adapter not loaded")
+        if not isinstance(ids, (list, tuple)) or not all(isinstance(i, int) for i in ids):
+            raise ValueError(
+                "SentencePieceAdapter.decode requires a list or tuple of int ids"
+            )
         return self.sp.decode(ids)
 
     def batch_encode(

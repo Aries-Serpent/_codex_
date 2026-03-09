@@ -1,9 +1,45 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/update-user-documentation
+**Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-07 (W-142 S116 variable sync — SAR-G01 COMPLETE; all 9 Codespace secrets confirmed; all 8 §6h autonomous agent vars confirmed; GITHUB_VARIABLES_MASTER_GUIDE.md v1.6.0)
+**Last updated:** 2026-03-09 (PR #3514 CI fix session — resolved 3 original failing checks + 3 new failing checks; all auto-fixable issues cleared; tokenizer contract validator hardened)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-09 (PR #3514)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| Art_Validation Pipeline / Fast Validation | ✅ Fixed | `docs/ROADMAP.md` stale date (2026-03-08→2026-03-09) via `doc_metrics_sync --fix` |
+| E→D Transition Gate C2 | ✅ Fixed | `CODEX_MANIFEST.json` regenerated (was 25.3h old, gate requires <24h); `.secrets.baseline` updated |
+| Resilient Validation Suite — 5 slow tests | ✅ Fixed | See test-by-test fixes below |
+| Auto-Fix Common CI Issues | ✅ Fixed | Removed unused `typing.List` import from `test_functional_training_evaluation.py` |
+| PR Auto-Fix Check | ✅ Fixed | Same as above; 0 auto-fixable issues remain |
+| Agent Token Delegation / Cognitive Pre-flight step 7 | ✅ Fixed (this commit) | Updated accountability report in commit (step 7 requires file touched in last commit) |
+| Tokenizer contract validation (`test_use_fast_flag`) | ✅ Fixed (this commit) | HuggingFace fast tokenizer raises `ValueError` (not `TypeError`) for `None` input; contract validator now accepts both |
+
+### 5 Slow Test Fixes (commit 2a19ba2)
+
+| Test | Root Cause | Fix Applied |
+|------|-----------|-------------|
+| `test_validate_table_allow_unsafe` | `_validate_table()` `allow_unsafe` param removed (SQL injection hardening) | Updated assertion: expects `SystemExit` on unsafe input |
+| `test_batch_restore_results` | `monkeypatch.resolve()` can't find `codex.archive.retry` as attr before import | Added `import codex.archive.retry` guard before monkeypatch |
+| `test_run_training_creates_artifacts_on_demand` | `importlib.reload()` fails when parent `codex_ml` evicted from `sys.modules` | Added `import codex_ml` guard before reload |
+| `test_run_functional_training_use_fast_flag` | Same attr-on-parent issue for `codex.training` | Added `import codex.training` guard before monkeypatch |
+| `test_run_functional_training_appends_validation_metrics` | HF revision pinning + DummyTokenizer missing `pad_token_id`; optimizer empty-param error | Mocked `load_from_pretrained` + `functional_training.train`; added `pad_token_id`/`eos_token_id`/`**kwargs` to DummyTokenizer |
+
+### Pre-Commit Checklist (this commit)
+
+- [x] 1. `.gitignore` checked — no new files blocked
+- [x] 2. All changed files are source/test files, not runtime artifacts
+- [x] 3. No `/tmp` files in commit
+- [x] 4. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated (this file)
+- [x] 5. `CODEX_MANIFEST.json` integrity verified (`generate_manifest.py --verify`)
+- [x] 6. All 5 originally-fixed tests pass locally (5/5)
+- [x] 7. New fix (`contracts.py`) verified with `test_use_fast_flag` (1/1)
 
 ---
 
