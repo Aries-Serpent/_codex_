@@ -42,7 +42,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
         with:
           context: .
@@ -121,7 +121,7 @@ jobs:
           fi
 
       - name: Build image for SBOM
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ${{ steps.dockerfile.outputs.file }}
@@ -185,7 +185,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Test build with Python ${{ matrix.python_version }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile

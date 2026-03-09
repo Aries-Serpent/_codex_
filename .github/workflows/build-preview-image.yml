@@ -99,7 +99,7 @@ jobs:
           echo "cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml') }}" >> "$GITHUB_OUTPUT"
 
       - name: Build (and push on main)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: Dockerfile.preview
