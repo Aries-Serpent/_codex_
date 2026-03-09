@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-09T09:47Z (PR #3514 — cherry-picked dependabot PRs #3515-#3528; CHANGELOG.md + manifest refreshed in this commit to satisfy preflight steps 7+8)
+**Last updated:** 2026-03-09T10:18Z (PR #3514 — agent token delegation activated; all CI checks green on 65b0821; manifest refreshed for E→D gate C2 freshness)
 
 ---
 
