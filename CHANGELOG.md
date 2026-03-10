@@ -5,7 +5,7 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3514: CI fix session · tokenizer contract hardening · slow-test fixes · dependabot #3515-3528 · agent token delegation re-confirmed ×4+5 · pytest-execution workflow genericized · Resilient Validation Suite fixes · SentencePieceAdapter contract coverage · shard timeout fix (2026-03-10)
+## [Unreleased] — PR #3514: CI fix session · tokenizer contract hardening · slow-test fixes · dependabot #3515-3528 · agent token delegation re-confirmed ×4+5+6 · pytest-execution workflow genericized · Resilient Validation Suite fixes · SentencePieceAdapter contract coverage · shard timeout fix (2026-03-10)
 
 ### Added (PR #3514 — 2026-03-10 session 2)
 - **`tests/tokenization/test_sentencepiece_contract.py`**: dedicated contract-coverage
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   are absent; added a repository-ownership guard on the push step so the workflow no
   longer fails in fork contexts where push rights are unavailable.
 - **Agent Token Delegation re-confirmed ×5** (workflow run 22889389811).
+- **Agent Token Delegation re-confirmed ×6** (workflow run 22890123135).
 
 ### Fixed (PR #3514 — 2026-03-10)
 - **`Art_Validation Pipeline / Fast Validation`** (doc-metrics-check stale date 2026-03-09→2026-03-10):
