@@ -32,7 +32,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer + Click<br/>🔧 Training/Eval/Serve]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + Metrics<br/>📊 75% Coverage]
+            Eval[Evaluation Engine<br/>lm-eval + Metrics<br/>📊 80% Coverage]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production Ready]
         end
 
