@@ -17,6 +17,12 @@ from typing import Callable, Optional, TypeVar
 
 T = TypeVar("T")
 
+# Accept "0"/"1" (legacy) and "true"/"false" (GitHub Actions repo-variable style).
+# Validators use .lower() so "True", "TRUE", "yes", "YES" etc. are all accepted.
+_BOOL_STR_TRUE = frozenset(("1", "true", "yes"))
+_BOOL_STR_FALSE = frozenset(("0", "false", "no"))
+_BOOL_STR_VALID = _BOOL_STR_TRUE | _BOOL_STR_FALSE
+
 
 @dataclass
 class EnvVarConfig:
@@ -88,43 +94,43 @@ class EnvironmentManager:
         "CODEX_SQLITE_POOL": EnvVarConfig(
             name="CODEX_SQLITE_POOL",
             default="0",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Enable SQLite connection pooling (0=disabled, 1=enabled)",
         ),
         "CODEX_FORCE_CPU": EnvVarConfig(
             name="CODEX_FORCE_CPU",
             default="1",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Enforce CPU-only torch installation",
         ),
         "CODEX_CPU_MINIMAL": EnvVarConfig(
             name="CODEX_CPU_MINIMAL",
             default="0",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Slim ML augmentation (lean subset)",
         ),
         "CODEX_VENDOR_PURGE": EnvVarConfig(
             name="CODEX_VENDOR_PURGE",
             default="1",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Activate purge phase (uninstall vendor wheels)",
         ),
         "CODEX_ABORT_ON_GPU_PULL": EnvVarConfig(
             name="CODEX_ABORT_ON_GPU_PULL",
             default="0",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Hard fail if GPU wheels observed",
         ),
         "CODEX_DEPENDENCY_EVIDENCE_ENABLE": EnvVarConfig(
             name="CODEX_DEPENDENCY_EVIDENCE_ENABLE",
             default="1",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Record dependency operations",
         ),
         "CODEX_COLLECT_COVERAGE": EnvVarConfig(
             name="CODEX_COLLECT_COVERAGE",
             default="0",
-            validator=lambda v: v in ("0", "1"),
+            validator=lambda v: v.lower() in _BOOL_STR_VALID,
             description="Enable coverage collection in tests",
         ),
     }
@@ -235,7 +241,7 @@ class EnvironmentManager:
 
     def is_sqlite_pool_enabled(self) -> bool:
         """Check if SQLite connection pooling is enabled."""
-        return self.get("CODEX_SQLITE_POOL") == "1"
+        return self.get("CODEX_SQLITE_POOL").lower() in _BOOL_STR_TRUE
 
     def dump_config(self) -> dict[str, str]:
         """Dump current environment configuration.

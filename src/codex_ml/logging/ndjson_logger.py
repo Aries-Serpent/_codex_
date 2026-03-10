@@ -89,7 +89,15 @@ class NDJSONLogger:
             self._rotate_if_needed(len(data))
             # Security: See permissions.py for policy documentation
             file_mode = get_log_file_mode()
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
+            # Temporarily clear the process umask so os.open() honours the
+            # exact mode from get_log_file_mode() (default: 0o600 – owner
+            # read/write only).  This prevents more-restrictive CI umask values
+            # from stripping group-read bits configured via CODEX_LOG_FILE_MODE.
+            old_umask = os.umask(0)
+            try:
+                fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
+            finally:
+                os.umask(old_umask)
             try:
                 os.write(fd, data)
             finally:
@@ -111,7 +119,15 @@ class NDJSONLogger:
             self._rotate_if_needed(len(blob))
             # Security: See permissions.py for policy documentation
             file_mode = get_log_file_mode()
-            fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
+            # Temporarily clear the process umask so os.open() honours the
+            # exact mode from get_log_file_mode() (default: 0o600 – owner
+            # read/write only).  This prevents more-restrictive CI umask values
+            # from stripping group-read bits configured via CODEX_LOG_FILE_MODE.
+            old_umask = os.umask(0)
+            try:
+                fd = os.open(self.path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, file_mode)
+            finally:
+                os.umask(old_umask)
             try:
                 os.write(fd, blob)
             finally:

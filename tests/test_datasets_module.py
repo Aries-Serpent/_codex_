@@ -38,7 +38,7 @@ class StubTokenizer:
 
 def test_build_text_classification_dataloaders(tmp_path):
     dataset_path = tmp_path / "dataset.tsv"
-    dataset_path.write_text("hello\t0\nworld\t1\n", encoding="utf-8")
+    dataset_path.write_text("hello\t0\nworld\t1\nfoo\t0\nbar\t1\n", encoding="utf-8")
 
     tokenizer = StubTokenizer()
     config = DataLoaderConfig(

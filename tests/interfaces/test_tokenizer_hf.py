@@ -146,6 +146,11 @@ def test_decode_cache_returns_canonical_form(monkeypatch) -> None:
         "codex_ml.interfaces.tokenizer._AutoTokenizer",
         NormalizingAutoTokenizer,
     )
+    # Bypass HF revision check so load_from_pretrained uses the stub directly.
+    monkeypatch.setattr(
+        "codex_ml.interfaces.tokenizer.load_from_pretrained",
+        lambda cls, name, **kwargs: cls.from_pretrained(name),
+    )
 
     tk = HFTokenizer("normalising-tokenizer", padding=False, truncation=True, max_length=32)
     ids = tk.encode("Hello World")

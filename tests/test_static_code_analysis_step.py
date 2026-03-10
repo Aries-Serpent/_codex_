@@ -11,9 +11,12 @@ from analysis.audit_pipeline import step_static_code_analysis
 
 
 def test_static_code_analysis_logs(tmp_path: Path) -> None:
+    # Use a small synthetic directory to avoid compiling thousands of repo files.
+    (tmp_path / "valid.py").write_text("x = 1\n", encoding="utf-8")
+    (tmp_path / "another.py").write_text("def f():\n    return 42\n", encoding="utf-8")
+
     metrics = tmp_path / "m.jsonl"
-    repo_root = Path(__file__).resolve().parents[1]
-    step_static_code_analysis(repo_root, metrics)
+    step_static_code_analysis(tmp_path, metrics)
     data = metrics.read_text().strip().splitlines()
     assert data
     record = json.loads(data[-1])
