@@ -49,7 +49,17 @@ def budget_cap(max_seconds: float = 10.0, label: str = ""):
             start = time.monotonic()
             result = func(*args, **kwargs)
             elapsed = time.monotonic() - start
-            env_max_seconds = float(os.environ.get("UNCERTAINTY_BUDGET_SECONDS", max_seconds))
+            try:
+                env_max_seconds = float(
+                    os.environ.get("UNCERTAINTY_BUDGET_SECONDS", max_seconds)
+                )
+            except ValueError:
+                log.warning(
+                    "Invalid UNCERTAINTY_BUDGET_SECONDS value %r; using max_seconds=%s",
+                    os.environ.get("UNCERTAINTY_BUDGET_SECONDS"),
+                    max_seconds,
+                )
+                env_max_seconds = max_seconds
             cap = min(max_seconds, env_max_seconds)
             if elapsed > cap:
                 raise BudgetExceeded(
@@ -122,10 +132,15 @@ def scenario_ci_health() -> dict[str, Any]:
     if summary_path.exists():
         try:
             data = json.loads(summary_path.read_text(encoding="utf-8"))
-            status = data.get("status", "")
-            if status == "ok":
+            # tools/validate.py writes exit_code (not status).  Derive health
+            # from exit_code and optional junit failure/error counts.
+            exit_code = data.get("exit_code", -1)
+            junit = data.get("junit") or {}
+            failures = junit.get("failures", 0)
+            errors = junit.get("errors", 0)
+            if exit_code == 0 and failures == 0 and errors == 0:
                 beliefs.observe("healthy", 5.0)
-            elif status in ("warning",):
+            elif exit_code == 0 or (failures + errors < 3):
                 beliefs.observe("degraded", 3.0)
                 beliefs.observe("healthy", 1.0)
             else:

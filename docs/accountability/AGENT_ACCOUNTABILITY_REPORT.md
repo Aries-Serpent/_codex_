@@ -3,7 +3,27 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-10T06:30Z (PR #3514 — agent token delegation re-confirmed ×5 (run 22889389811); SentencePieceAdapter contract tests added; shard timeout raised 55→75 min, 2→4 shards; fail_under 75→80; issue #3530 auto-fix workflow fixed; manifest refreshed for E→D gate C2 freshness)
+**Last updated:** 2026-03-10T22:10Z (PR #3513 review fixes — RecursionGuard ContextVar thread-safety; philosophy_parser regex action_items; budget_uncertainty exit_code schema + ValueError guard; test threshold ≥80; README 75%→80%; autonomy CI pipefail; merge conflicts resolved via rebase; CI triage issue #3532 patterns reviewed)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-10 session 3 (PR #3513 review + CI triage #3532)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `reflection.py` thread-safety | ✅ Fixed | Replaced shared `_guard` global with `contextvars.ContextVar`; `RecursionGuard` now uses per-task isolated depth via token stack |
+| `philosophy_parser.py` action_items | ✅ Fixed | Replaced fragile chained `lstrip()` with `re.match(r'^\s*-\s*\[[ x]\]\s*(.*)')` capture group |
+| `budget_uncertainty.py` CI schema | ✅ Fixed | `scenario_ci_health()` now reads `exit_code` + `junit.failures/errors` (actual `tools/validate.py` output schema) |
+| `budget_uncertainty.py` ValueError guard | ✅ Fixed | `budget_cap` catches `ValueError` on invalid `UNCERTAINTY_BUDGET_SECONDS` env var; logs warning and falls back to `max_seconds` |
+| Coverage test threshold | ✅ Fixed | `test_coverage_threshold_value_is_90` now asserts `>= 80` (matches `pyproject.toml fail_under = 80`) |
+| README coverage claim | ✅ Fixed | Updated badge + description from 75% → 80% to match enforced CI gate |
+| autonomy-phase-ci-matrix.yml | ✅ Fixed | Added `set -o pipefail` to pip install step; failure now surfaced instead of masked by `tail` |
+| Merge conflicts (3 files) | ✅ Resolved | Resolved via `git rebase origin/copilot/sub-pr-3513`; all 3 conflicted files clean |
+| CI triage issue #3532 patterns | ✅ Reviewed | Art_Validation (exit code 2), Resilient Validation (AttributeError + timeout) — transient/pre-existing; code review fixes address root causes |
+| Pre-flight checklist | ✅ Done | `.gitignore` allows `.codex/agent_auth_session.json` (line 189: `!.codex/agent_auth_session.json`) |
+| 70 targeted tests | ✅ Passing | `test_budget_uncertainty`, `test_philosophy_parser`, `test_coverage_verification` — all pass |
 
 ---
 

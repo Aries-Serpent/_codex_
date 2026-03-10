@@ -14,6 +14,7 @@ Usage (programmatic):
 from __future__ import annotations
 
 import ast
+import contextvars
 import hashlib
 import json
 import logging
@@ -30,25 +31,42 @@ MAX_DEPTH = 4  # hard cap to prevent infinite recursion
 
 # ── Recursion guard ───────────────────────────────────────────────────────────
 
+# ContextVar ensures each thread/async-task has its own depth counter, preventing
+# concurrent reflect() calls from interfering with each other's recursion limits.
+_REFLECT_DEPTH: contextvars.ContextVar[int] = contextvars.ContextVar(
+    "_reflect_depth", default=0
+)
+
+
 class RecursionGuard:
-    """Context manager enforcing a max recursion depth for self-referential analysis."""
+    """Context manager enforcing a max recursion depth for self-referential analysis.
+
+    Uses a ``contextvars.ContextVar`` so that concurrent threads and async tasks
+    each maintain an isolated depth counter, preventing false ``RecursionError``s
+    or negative depth when calls interleave.
+
+    A new instance should be created per :func:`reflect` call so that each
+    invocation owns its own token stack and cleanup is always correct.
+    """
 
     def __init__(self, max_depth: int = MAX_DEPTH) -> None:
         self.max_depth = max_depth
-        self._depth = 0
+        self._tokens: list[contextvars.Token[int]] = []
 
     @property
     def depth(self) -> int:
-        return self._depth
+        return _REFLECT_DEPTH.get()
 
     def __enter__(self) -> "RecursionGuard":
-        if self._depth >= self.max_depth:
+        current = _REFLECT_DEPTH.get()
+        if current >= self.max_depth:
             raise RecursionError(f"RecursionGuard: max depth {self.max_depth} exceeded")
-        self._depth += 1
+        self._tokens.append(_REFLECT_DEPTH.set(current + 1))
         return self
 
     def __exit__(self, *_) -> None:
-        self._depth -= 1
+        if self._tokens:
+            _REFLECT_DEPTH.reset(self._tokens.pop())
 
 
 # ── Reflection report ─────────────────────────────────────────────────────────
@@ -115,8 +133,6 @@ def _analyze_python_file(path: Path) -> dict[str, Any]:
 
 # ── Core reflect function ─────────────────────────────────────────────────────
 
-_guard = RecursionGuard(max_depth=MAX_DEPTH)
-
 
 def reflect(target: str, depth: int = 1) -> ReflectionReport:
     """
@@ -155,7 +171,7 @@ def reflect(target: str, depth: int = 1) -> ReflectionReport:
         )
 
     try:
-        with _guard:
+        with RecursionGuard(max_depth=MAX_DEPTH):
             # Analyze this file
             if candidate.suffix == ".py":
                 metrics = _analyze_python_file(candidate)

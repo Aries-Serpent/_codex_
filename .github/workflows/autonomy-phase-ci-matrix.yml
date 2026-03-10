@@ -81,7 +81,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -e ".[dev,test]" --quiet 2>&1 | tail -5 || pip install pytest pytest-mock --quiet
+          set -o pipefail
+          if ! pip install -e ".[dev,test]" --quiet 2>&1 | tail -5; then
+            echo "Editable install failed; falling back to minimal pytest dependencies."
+            pip install pytest pytest-mock --quiet
+          fi
 
       - name: "Run Phase ${{ matrix.phase }} smoke test (${{ matrix.script }})"
         env:
