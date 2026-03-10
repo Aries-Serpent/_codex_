@@ -5,7 +5,25 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3514: CI fix session · tokenizer contract hardening · slow-test fixes · dependabot #3515-3528 · agent token delegation re-confirmed ×4 · pytest-execution workflow genericized · Resilient Validation Suite fixes (2026-03-10)
+## [Unreleased] — PR #3514: CI fix session · tokenizer contract hardening · slow-test fixes · dependabot #3515-3528 · agent token delegation re-confirmed ×4+5 · pytest-execution workflow genericized · Resilient Validation Suite fixes · SentencePieceAdapter contract coverage · shard timeout fix (2026-03-10)
+
+### Added (PR #3514 — 2026-03-10 session 2)
+- **`tests/tokenization/test_sentencepiece_contract.py`**: dedicated contract-coverage
+  tests for `SentencePieceAdapter` — 25 tests covering `vocab_size`, `name_or_path`,
+  `encode()` TypeError guards, `decode()` ValueError guards, roundtrip behaviour, and
+  full `validate_tokenizer_contract()` integration (Priority 3a).
+- **Resilient Validation Suite shard fix** (Priority 1): doubled shards from 2→4 and
+  raised `timeout-minutes` from 55→75 in `resilient_validation.yml` — each shard now has
+  ~3,500 tests and ~63 min of available wall-clock time, preventing cancellation.
+- **`pyproject.toml` `fail_under = 80`** (Priority 3b): incremental raise from 75→80
+  (Phase 30 of the coverage roadmap).
+
+### Fixed (PR #3514 — 2026-03-10 session 2)
+- **Issue #3530 (CI health alert — auto-fix failures)**: `auto-fix-common-issues.yml`
+  now falls back to `github.token` when `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` secrets
+  are absent; added a repository-ownership guard on the push step so the workflow no
+  longer fails in fork contexts where push rights are unavailable.
+- **Agent Token Delegation re-confirmed ×5** (workflow run 22889389811).
 
 ### Fixed (PR #3514 — 2026-03-10)
 - **`Art_Validation Pipeline / Fast Validation`** (doc-metrics-check stale date 2026-03-09→2026-03-10):
