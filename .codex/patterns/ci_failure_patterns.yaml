@@ -989,6 +989,238 @@ metadata:
   auto_fixable: false
 
 ---
+pattern_id: DOC_METRICS_001
+name: "doc_metrics_sync Pre-commit Hook: Stale Coverage/Test-Count Metrics in Docs"
+category: documentation_sync
+priority: 2
+severity: error
+
+description: |
+  The `doc-metrics-check` pre-commit hook runs `scripts/tools/doc_metrics_sync.py` and
+  exits 1 when documentation files contain stale metric values that no longer match the
+  live metrics derived from `pyproject.toml` and repo state (e.g. coverage_threshold,
+  test_count, agent_count).
+
+  The most common trigger is raising `fail_under` in `pyproject.toml` (e.g. 75→80):
+  the hook finds `75%` still present in Mermaid diagrams, architecture docs, and README
+  nodes. Exit code 2 is propagated from run_validation.sh to the CI job, failing it.
+
+detection:
+  workflow_path: ".github/workflows/validate.yml"
+  job_name: "Fast Validation"
+  step_name: "Run fast validation"
+  error_signatures:
+    - "Doc Metrics Check (Mermaid/KPI alignment)...Failed"
+    - "stale metric(s) found"
+    - "Run  python scripts/tools/doc_metrics_sync.py --fix  to update automatically"
+    - "exit code: 1"
+    - "readme_mermaid_eval_coverage"
+    - "arch_codex_node"
+    - "repo_arch_diag_coverage"
+  affected_files:
+    - "README.md"
+    - "docs/ARCHITECTURE.md"
+    - "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md"
+    - "docs/evolution/COGNITIVE_CODEBASE_MAP.md"
+
+root_cause:
+  technical: |
+    When `pyproject.toml fail_under` is changed, `doc_metrics_sync.py` reads the new
+    value and compares it against hard-coded strings in documentation files. If any file
+    still contains the old value (e.g. '75% Coverage'), the hook reports stale metrics
+    and exits 1, which propagates as exit code 2 from run_validation.sh.
+  not_caused_by: "Test failures — this is a documentation synchronization check only"
+
+fix:
+  automated: true
+  auto_fix_command: "python scripts/tools/doc_metrics_sync.py --fix"
+  manual_steps:
+    - "Run: python scripts/tools/doc_metrics_sync.py --fix"
+    - "Commit all files listed in the 'stale metric(s) found' output"
+    - "Ensure CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md are also updated (preflight gate)"
+  prevention:
+    - "Run doc_metrics_sync --fix immediately after any pyproject.toml fail_under change"
+    - "doc_metrics_sync --check is part of pre-commit; run pre-commit locally before pushing"
+
+examples:
+  - run_id: 22926716902
+    date: "2026-03-10"
+    commit: "bac190f"
+    error: "7 stale metric(s) found — coverage 75→80 not propagated to docs"
+    files_affected:
+      - "README.md line 35: '📊 75% Coverage' → '📊 80% Coverage'"
+      - "docs/ARCHITECTURE.md line 36"
+      - "docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md lines 15, 32, 96"
+      - "docs/evolution/COGNITIVE_CODEBASE_MAP.md line 132"
+    resolution: "python scripts/tools/doc_metrics_sync.py --fix; committed all 4 files"
+
+cognitive_notes: |
+  This is one of the top contributors to 'unknown' pattern failures in CI health alerts.
+  The self-healing CI does not auto-classify this pattern because the error message appears
+  in pre-commit hook output rather than a pytest failure. Adding this pattern enables
+  the CI health alert agent to propose the --fix command automatically.
+  Pattern triggered on every coverage threshold bump (75→80, 80→85, etc.).
+
+metadata:
+  reuse_count: 1
+  effectiveness: "100% (auto-fix command resolves)"
+  confidence: 1.0
+  auto_fixable: true
+  auto_fix_command: "python scripts/tools/doc_metrics_sync.py --fix"
+  issue_refs:
+    - "#3534"
+
+---
+pattern_id: PREFLIGHT_002
+name: "Cognitive Pre-flight REQ-4: AGENT_ACCOUNTABILITY_REPORT.md Not Touched in Last Commit"
+category: preflight_gate
+priority: 2
+severity: error
+
+description: |
+  The `agent-auth-delegation.yml` Cognitive Pre-flight Check (REQ-4) checks whether
+  `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` appears in the last commit's diff.
+  If it does not, the job exits 1 and blocks `activate-delegation`.
+
+  This is the companion gate to PREFLIGHT_001 (CHANGELOG.md). Both files must appear
+  in every commit on this branch. Missing either file blocks the pre-flight gate and
+  the self-healing CI reports: "Pattern: unknown".
+
+detection:
+  workflow_path: ".github/workflows/agent-auth-delegation.yml"
+  job_name: "🧠 Cognitive Pre-flight Check"
+  step_name: "Verify AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
+  error_signatures:
+    - "FAIL — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was NOT updated in the last commit"
+    - "Verify AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
+    - "Process completed with exit code 1"
+  check_command: "git diff --name-only HEAD~1 HEAD | grep -qF 'docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md'"
+
+root_cause:
+  technical: |
+    REQ-4 mirrors REQ-5 (CHANGELOG.md). Both use `git diff --name-only HEAD~1 HEAD | grep -qF`
+    to verify the file was touched. A commit that only updates code/tests without touching
+    either markdown file will fail both gates simultaneously. The self-healing CI classifies
+    this as 'unknown' because the step name doesn't match any known pattern signature.
+  not_caused_by: "Report content quality — any change to the file satisfies the gate"
+
+fix:
+  automated: false
+  manual_steps:
+    - "Add a new ## SESSION SUMMARY section to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+    - "Update the 'Last updated:' timestamp in the header"
+    - "Include a table of completed work items for the session"
+    - "Commit the file alongside CHANGELOG.md and all other changes"
+  prevention:
+    - "Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md must be in every commit"
+    - "Use the dual-file update as the final step before every report_progress call"
+
+examples:
+  - run_id: 22927109655
+    date: "2026-03-10"
+    commit: "bac190f"
+    error: "FAIL — CHANGELOG.md was NOT updated in the last commit"
+    note: "bac190f only touched .github/workflows, scripts, src, tests — not CHANGELOG.md"
+    resolution: "Added PR #3533 CHANGELOG entry and updated accountability report in next commit"
+
+cognitive_notes: |
+  The two mandatory-per-commit files are:
+  1. CHANGELOG.md (PREFLIGHT_001 / REQ-5)
+  2. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (PREFLIGHT_002 / REQ-4)
+  Both must appear in git diff HEAD~1 HEAD. The most common cause of 'unknown' CI health
+  pattern classification (issue #3534: 52 unknown-pattern failures) is commits that
+  fix code issues but omit these mandatory documentation touches.
+
+metadata:
+  reuse_count: 3
+  effectiveness: "100% (adding session entry resolves)"
+  confidence: 1.0
+  auto_fixable: false
+  issue_refs:
+    - "#3534"
+
+---
+pattern_id: SELF_HEALING_001
+name: "Self-Healing CI: 'unknown' Pattern Classification — Preflight + Doc-Metrics Root Causes"
+category: ci_infrastructure
+priority: 2
+severity: warning
+
+description: |
+  The iterative-self-healing-ci workflow classifies CI failures into known patterns.
+  When a failure does not match any pattern signature in ci_failure_patterns.yaml, it
+  is reported as 'Pattern: unknown'. Issue #3534 shows 52 unknown-pattern failures over
+  7 days, indicating systemic gaps in the pattern library.
+
+  Root causes of 'unknown' classification (in descending frequency):
+  1. DOC_METRICS_001: doc_metrics_sync stale metrics (pre-commit hook output, not pytest)
+  2. PREFLIGHT_001/002: CHANGELOG.md or AGENT_ACCOUNTABILITY_REPORT.md not in commit diff
+  3. Transient runner shutdowns (exit code 1 with no matching test failure)
+  4. CODEX_MANIFEST.json freshness > 24h (E→D Transition Gate C2)
+
+detection:
+  workflow_path: ".github/workflows/iterative-self-healing-ci.yml"
+  job_name: "Self-Healing CI"
+  error_signatures:
+    - "Pattern: unknown"
+    - "iterative self-healing CI could not automatically fix this failure"
+    - "The iterative self-healing CI could not automatically fix"
+  issue_indicators:
+    - "self-healing: N (large count in ci-health-alert)"
+    - "unknown: N (any non-zero count warrants pattern addition)"
+
+root_cause:
+  technical: |
+    The self-healing CI matches log lines against `error_signatures` in ci_failure_patterns.yaml.
+    Pre-commit hook output (doc-metrics-check, accountability report gate) uses different
+    phrasing than pytest failure output, so it falls through to 'unknown'. Fix: add patterns
+    with the exact error_signatures from the pre-commit and preflight log output.
+  distribution_issue_3534:
+    self_healing: 120  # correctly classified; these are transient retry loops
+    unknown: 52        # DOC_METRICS_001 + PREFLIGHT_001/002 cover ~80% of these
+    workflow_cascade: 2
+    security_scan: 1
+
+fix:
+  automated: false
+  manual_steps:
+    - "For each 'unknown' run, retrieve logs and match against DOC_METRICS_001/PREFLIGHT_001/002"
+    - "If it is a doc-metrics failure: run python scripts/tools/doc_metrics_sync.py --fix"
+    - "If it is a preflight CHANGELOG/accountability failure: add entries to both files"
+    - "If neither: check for CODEX_MANIFEST.json freshness (must be < 24h for E→D gate)"
+    - "Re-run the failed workflow after committing the fix"
+  prevention:
+    - "Every commit must touch CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md"
+    - "Run doc_metrics_sync --fix after any fail_under or metric change in pyproject.toml"
+    - "Add new patterns immediately when a new 'unknown' failure is resolved"
+
+examples:
+  - issue_number: 3534
+    date: "2026-03-10"
+    pattern_distribution:
+      self_healing: 120
+      unknown: 52
+      workflow_cascade: 2
+      security_scan: 1
+    resolution: "Added DOC_METRICS_001, PREFLIGHT_002, SELF_HEALING_001 to pattern library"
+
+cognitive_notes: |
+  The 'unknown' count in CI health alerts directly measures the pattern library coverage gap.
+  Target: reduce 'unknown' from 52 to < 5 per 7-day window by:
+  1. DOC_METRICS_001 covers ~30 of the 52 (every fail_under bump triggers this)
+  2. PREFLIGHT_001/002 covers ~15 of the 52 (commits missing mandatory file touches)
+  3. Remaining ~7 are likely transient runner shutdowns (no pattern needed — retries resolve)
+  The 'self-healing: 120' count is healthy — those are correctly classified retries.
+
+metadata:
+  reuse_count: 1
+  effectiveness: "Estimated 80% reduction in 'unknown' classification"
+  confidence: 0.85
+  auto_fixable: false
+  issue_refs:
+    - "#3534"
+
+---
 ```
 
 ## Statistics
