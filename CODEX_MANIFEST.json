@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-08T06:54:39Z",
+  "generated_at": "2026-03-10T21:26:24Z",
   "agents": [
+    {
+      "name": "github-app-manager",
+      "role": "specialist",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
     {
       "name": "github-guru-agent",
       "role": "specialist",
@@ -997,8 +1003,18 @@
       "has_concurrency": true
     },
     {
+      "name": "autonomy-phase-ci-matrix",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "batch-ci-triage",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "build-preview-image",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1073,7 +1089,7 @@
     },
     {
       "name": "copilot-setup-steps",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1147,6 +1163,11 @@
       "has_concurrency": true
     },
     {
+      "name": "model-drift-retrain",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "nightly-codeql-alert-triage",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1214,6 +1235,11 @@
     {
       "name": "pre-merge-validation",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "process-variable-intents",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1384,6 +1410,11 @@
     {
       "name": "validate",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "vars-guide-sync",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1650,5 +1681,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "0714fdbf1f1daec0bd7a4c53bbc448f327deb755ae7aa4dce6cc6ffc66947083"
+  "integrity_sha256": "b9c751c102fc8ec0ce9a3351385d15ea39adcf7519b180a8382b5ec1650c8ea7"
 }

@@ -74,10 +74,10 @@ class TestValidateTable:
                 metrics_cli._validate_table("table$name")
 
     def test_validate_table_allow_unsafe(self):
-        """Test validation with allow_unsafe flag."""
+        """Test that unsafe names raise SystemExit (allow_unsafe bypass was removed for SQL injection prevention)."""
         if hasattr(metrics_cli, "_validate_table"):
-            result = metrics_cli._validate_table("invalid-name", allow_unsafe=True)
-            assert result == "invalid-name"
+            with pytest.raises(SystemExit):
+                metrics_cli._validate_table("invalid-name")
 
 
 class TestIterNdjson:

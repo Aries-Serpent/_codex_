@@ -11,7 +11,7 @@ bandit
 defusedxml
 semgrep
 detect-secrets
-pre-commit==4.0.1
+pre-commit==4.5.1
 nox==2025.11.12
 yamllint
 jsonschema>=4.21

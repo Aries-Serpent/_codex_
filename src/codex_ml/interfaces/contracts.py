@@ -97,11 +97,14 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.encode(None)
-    except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+    except (TypeError, ValueError) as e:
+        # HuggingFace fast tokenizers raise ValueError for non-string input;
+        # slow/custom tokenizers may raise TypeError.  Both are acceptable.
+        logger.debug(f"TypeError/ValueError on encode(None): {e}")
     else:  # pragma: no cover - enforce strict error mode
-        raise TokenizationContractError("encode must reject non-string input with TypeError")
+        raise TokenizationContractError(
+            "encode must reject non-string input with TypeError or ValueError"
+        )
 
     try:
         adapter.decode([0, 1])
@@ -110,11 +113,14 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode(["bad"])
-    except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+    except (ValueError, TypeError) as e:
+        # HuggingFace fast tokenizers may raise TypeError for non-integer ids;
+        # slow tokenizers may raise ValueError.  Both are acceptable.
+        logger.debug(f"ValueError/TypeError on decode(['bad']): {e}")
     else:  # pragma: no cover - enforce strict error mode
-        raise TokenizationContractError("decode must raise ValueError for non-integer ids")
+        raise TokenizationContractError(
+            "decode must raise ValueError or TypeError for non-integer ids"
+        )
 
 
 def validate_training_model(

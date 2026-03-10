@@ -1,6 +1,6 @@
-name: PR#3178 Pytest Full Suite Execution
+name: Pytest Full Suite Execution
 
-# Purpose: Execute comprehensive pytest suite for PR #3178 test failure analysis
+# Purpose: Execute comprehensive pytest suite for failure analysis on any PR
 # Context: P0 validation phase - environment setup complete, now running full test discovery
 # Output: Test execution log with failure categorization for P1 fixes
 
@@ -40,7 +40,7 @@ on:
         type: boolean
 
   pull_request:
-    branches: ["0D_base_", "copilot/sub-pr-3178-again"]
+    branches: ["0D_base_"]
     paths:
       - 'tests/**'
       - 'src/**'
@@ -87,7 +87,7 @@ jobs:
       - name: CacheManager health check
         continue-on-error: true
         run: |
-          python scripts/ci/generate_cache_keys.py --health --workflow pr3178-pytest-execution 2>/dev/null || echo "Cache health: check skipped"
+          python scripts/ci/generate_cache_keys.py --health --workflow pytest-full-suite-execution 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6
         with:
@@ -257,8 +257,8 @@ jobs:
             exit 0
           fi
 
-          cat > .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
-          # PR #3178 Test Failures - Categorized
+          cat > .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
+          # Pytest Full Suite Failures - Categorized
 
           **Generated**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
           **Log Source**: $(basename $LOG_FILE)
@@ -273,10 +273,10 @@ jobs:
 
           # Add counts
           if [ -f .codex/failure_counts.txt ]; then
-            cat .codex/failure_counts.txt >> .codex/PR3178_FAILURES_CATEGORIZED.md
+            cat .codex/failure_counts.txt >> .codex/PYTEST_FAILURES_CATEGORIZED.md
           fi
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ---
 
@@ -286,41 +286,41 @@ jobs:
 
           EOF
 
-          grep -E "ImportError|ModuleNotFoundError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No ImportError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
+          grep -E "ImportError|ModuleNotFoundError" .codex/failures_raw.txt | head -20 >> .codex/PYTEST_FAILURES_CATEGORIZED.md || echo "No ImportError failures" >> .codex/PYTEST_FAILURES_CATEGORIZED.md
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ### TypeError - API Mismatches
 
           EOF
 
-          grep -E "TypeError.*argument" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No TypeError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
+          grep -E "TypeError.*argument" .codex/failures_raw.txt | head -20 >> .codex/PYTEST_FAILURES_CATEGORIZED.md || echo "No TypeError failures" >> .codex/PYTEST_FAILURES_CATEGORIZED.md
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ### AssertionError
 
           EOF
 
-          grep "AssertionError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No AssertionError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
+          grep "AssertionError" .codex/failures_raw.txt | head -20 >> .codex/PYTEST_FAILURES_CATEGORIZED.md || echo "No AssertionError failures" >> .codex/PYTEST_FAILURES_CATEGORIZED.md
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ### AttributeError
 
           EOF
 
-          grep "AttributeError" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No AttributeError failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
+          grep "AttributeError" .codex/failures_raw.txt | head -20 >> .codex/PYTEST_FAILURES_CATEGORIZED.md || echo "No AttributeError failures" >> .codex/PYTEST_FAILURES_CATEGORIZED.md
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ### StopIteration
 
           EOF
 
-          grep "StopIteration" .codex/failures_raw.txt | head -20 >> .codex/PR3178_FAILURES_CATEGORIZED.md || echo "No StopIteration failures" >> .codex/PR3178_FAILURES_CATEGORIZED.md
+          grep "StopIteration" .codex/failures_raw.txt | head -20 >> .codex/PYTEST_FAILURES_CATEGORIZED.md || echo "No StopIteration failures" >> .codex/PYTEST_FAILURES_CATEGORIZED.md
 
-          cat >> .codex/PR3178_FAILURES_CATEGORIZED.md << 'EOF'
+          cat >> .codex/PYTEST_FAILURES_CATEGORIZED.md << 'EOF'
 
           ---
 
@@ -332,11 +332,9 @@ jobs:
           4. **P2 Priority**: Fix AttributeError issues (API changes)
           5. **P3 Priority**: Fix remaining error types
 
-          **Reference**: `.codex/PR3178_COMPREHENSIVE_FIX_PLANSETS.md`
-
           EOF
 
-          echo "Categorization complete: .codex/PR3178_FAILURES_CATEGORIZED.md"
+          echo "Categorization complete: .codex/PYTEST_FAILURES_CATEGORIZED.md"
 
       - name: Upload test artifacts
         if: always()
@@ -347,19 +345,19 @@ jobs:
             .codex/test_run_complete_*.log
             .codex/failures_raw.txt
             .codex/failure_counts.txt
-            .codex/PR3178_FAILURES_CATEGORIZED.md
+            .codex/PYTEST_FAILURES_CATEGORIZED.md
           if-no-files-found: warn
           retention-days: 30
 
       - name: Display summary
         if: always()
         run: |
-          echo "=== PR #3178 Pytest Execution Summary ==="
+          echo "=== Pytest Full Suite Execution Summary ==="
           echo ""
 
-          if [ -f .codex/PR3178_FAILURES_CATEGORIZED.md ]; then
+          if [ -f .codex/PYTEST_FAILURES_CATEGORIZED.md ]; then
             echo "✅ Categorization complete"
-            cat .codex/PR3178_FAILURES_CATEGORIZED.md
+            cat .codex/PYTEST_FAILURES_CATEGORIZED.md
           else
             echo "⚠️  Categorization file not created"
           fi
@@ -371,8 +369,8 @@ jobs:
           echo ""
           echo "=== Next Steps ==="
           echo "1. Download artifacts from this workflow run"
-          echo "2. Review .codex/PR3178_FAILURES_CATEGORIZED.md"
-          echo "3. Begin P1 fixes per .codex/PR3178_COMPREHENSIVE_FIX_PLANSETS.md"
+          echo "2. Review .codex/PYTEST_FAILURES_CATEGORIZED.md"
+          echo "3. Begin P1 fixes for any categorized failures"
 
       - name: Post summary comment
         if: always() && github.event_name == 'pull_request'
@@ -380,9 +378,9 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const failureFile = '.codex/PR3178_FAILURES_CATEGORIZED.md';
+            const failureFile = '.codex/PYTEST_FAILURES_CATEGORIZED.md';
 
-            let body = '## 🧪 PR #3178 Pytest Execution Complete\n\n';
+            let body = '## 🧪 Pytest Full Suite Execution Complete\n\n';
 
             if (fs.existsSync(failureFile)) {
               const content = fs.readFileSync(failureFile, 'utf8');

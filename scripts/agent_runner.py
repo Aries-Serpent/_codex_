@@ -141,6 +141,94 @@ def _phase6_philosophy(deadline: float, dry_run: bool) -> dict[str, Any]:
 # ── Main orchestration loop ────────────────────────────────────────────────────
 
 
+def _handle_kill_switch(run_id: str, audit_dir: Path) -> int:
+    """Log the kill-switch halt, write an audit record to *audit_dir*, and return exit code 1."""
+    log.warning("AGENT_KILL_SWITCH=1 — agent runner halted immediately")
+    try:
+        _write_kill_switch_audit(run_id=run_id, audit_dir=audit_dir)
+        log.info("Kill-switch audit record written: kill_switch_%s.json", run_id)
+    except Exception:  # noqa: BLE001
+        pass
+    return 1
+
+
+def _resume_session(session_file: Path) -> None:
+    """Load and log the current session context if the file exists."""
+    if session_file.exists():
+        try:
+            current = json.loads(session_file.read_text(encoding="utf-8"))
+            log.info("Resuming from session: %s", current.get("session_id", "?")[:12])
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def _run_autonomy_loop(
+    iterations: int,
+    deadline: float,
+    dry_run: bool,
+    once: bool,
+    summary: dict[str, Any],
+) -> None:
+    """Execute the autonomy loop for *iterations* passes, updating *summary* in place.
+
+    Args:
+        iterations: Maximum number of loop passes to attempt.
+        deadline: ``time.monotonic()`` threshold — loop exits early if exceeded.
+        dry_run: When ``True``, phase executors skip filesystem writes.
+        once: Break after the first completed iteration regardless of *iterations*.
+        summary: Mutable run-summary dict; ``status`` and ``iterations`` are written here.
+    """
+    for i in range(iterations):
+        if time.monotonic() > deadline:
+            log.warning("Budget exceeded before iteration %d", i + 1)
+            summary["status"] = "budget_exceeded"
+            return
+
+        iter_start = time.monotonic()
+        log.info("─── Iteration %d/%d ───", i + 1, iterations)
+
+        iter_result: dict[str, Any] = {"iteration": i + 1}
+
+        # Phase 1: health
+        iter_result["phase1"] = _phase1_health_sense(deadline, dry_run=dry_run)
+
+        # Phase 3: reflection
+        iter_result["phase3"] = _phase3_reflect(deadline)
+
+        # Phase 4: uncertainty
+        iter_result["phase4"] = _phase4_uncertainty(deadline)
+
+        # Phase 6: philosophy (every 3rd iteration to avoid noise)
+        if (i + 1) % 3 == 0:
+            iter_result["phase6"] = _phase6_philosophy(deadline, dry_run=dry_run)
+
+        iter_result["elapsed_s"] = round(time.monotonic() - iter_start, 2)
+        summary["iterations"].append(iter_result)
+
+        log.info("Iteration %d done in %.1fs", i + 1, iter_result["elapsed_s"])
+
+        if once:
+            break
+
+        # Inter-iteration pause (respect budget)
+        if i < iterations - 1 and time.monotonic() + 5 < deadline:
+            time.sleep(2)
+
+    summary["status"] = "completed"
+
+
+def _persist_summary(summary: dict[str, Any], run_id: str, dry_run: bool) -> None:
+    """Write the run summary to memory/sessions/ (no-op when *dry_run* is True)."""
+    if not dry_run:
+        run_log = REPO_ROOT / "memory" / "sessions"
+        run_log.mkdir(parents=True, exist_ok=True)
+        log_path = run_log / f"agent_run_{run_id}.json"
+        log_path.write_text(json.dumps(summary, indent=2, default=str) + "\n", encoding="utf-8")
+        log.info("Run log: %s", log_path)
+    else:
+        log.info("DRY RUN — not persisting run log")
+
+
 def run(iterations: int, budget_seconds: int, dry_run: bool, once: bool = False) -> int:
     run_id = str(uuid.uuid4())[:8]
     started = datetime.now(timezone.utc)
@@ -149,30 +237,9 @@ def run(iterations: int, budget_seconds: int, dry_run: bool, once: bool = False)
     log.info("Agent runner started (run=%s, iters=%d, budget=%ds, dry_run=%s)", run_id, iterations, budget_seconds, dry_run)
 
     if _KILL_SWITCH:
-        log.warning("AGENT_KILL_SWITCH=1 — agent runner halted immediately")
-        # Write a minimal audit record so the halt is traceable
-        try:
-            audit_dir = REPO_ROOT / "memory" / "sessions"
-            audit_dir.mkdir(parents=True, exist_ok=True)
-            audit_path = audit_dir / f"kill_switch_{run_id}.json"
-            audit_path.write_text(
-                json.dumps({"run_id": run_id, "started_at": started.isoformat(),
-                            "status": "kill_switch", "reason": "AGENT_KILL_SWITCH=1"}, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            log.info("Kill-switch audit record written: %s", audit_path.name)
-        except Exception:  # noqa: BLE001
-            pass
-        return 1
+        return _handle_kill_switch(run_id, REPO_ROOT / "memory" / "sessions")
 
-    # Resume context from last session if available
-    session_file = REPO_ROOT / "memory" / "sessions" / ".current_session.json"
-    if session_file.exists():
-        try:
-            current = json.loads(session_file.read_text(encoding="utf-8"))
-            log.info("Resuming from session: %s", current.get("session_id", "?")[:12])
-        except Exception:  # noqa: BLE001
-            pass
+    _resume_session(REPO_ROOT / "memory" / "sessions" / ".current_session.json")
 
     summary: dict[str, Any] = {
         "run_id": run_id,
@@ -182,62 +249,16 @@ def run(iterations: int, budget_seconds: int, dry_run: bool, once: bool = False)
     }
 
     try:
-        for i in range(iterations):
-            if time.monotonic() > deadline:
-                log.warning("Budget exceeded before iteration %d", i + 1)
-                summary["status"] = "budget_exceeded"
-                break
-
-            iter_start = time.monotonic()
-            log.info("─── Iteration %d/%d ───", i + 1, iterations)
-
-            iter_result: dict[str, Any] = {"iteration": i + 1}
-
-            # Phase 1: health
-            iter_result["phase1"] = _phase1_health_sense(deadline, dry_run=dry_run)
-
-            # Phase 3: reflection
-            iter_result["phase3"] = _phase3_reflect(deadline)
-
-            # Phase 4: uncertainty
-            iter_result["phase4"] = _phase4_uncertainty(deadline)
-
-            # Phase 6: philosophy (every 3rd iteration to avoid noise)
-            if (i + 1) % 3 == 0:
-                iter_result["phase6"] = _phase6_philosophy(deadline, dry_run=dry_run)
-
-            iter_result["elapsed_s"] = round(time.monotonic() - iter_start, 2)
-            summary["iterations"].append(iter_result)
-
-            log.info("Iteration %d done in %.1fs", i + 1, iter_result["elapsed_s"])
-
-            if once:
-                break
-
-            # Inter-iteration pause (respect budget)
-            if i < iterations - 1 and time.monotonic() + 5 < deadline:
-                time.sleep(2)
-
-        summary["status"] = "completed"
-
+        _run_autonomy_loop(iterations, deadline, dry_run, once, summary)
     except Exception as exc:  # noqa: BLE001
         log.error("Agent runner error: %s", exc)
         log.debug(traceback.format_exc())
         summary["status"] = "error"
         summary["error"] = str(exc)
-
     finally:
         summary["ended_at"] = datetime.now(timezone.utc).isoformat()
         summary["elapsed_s"] = round(time.monotonic() - (deadline - budget_seconds), 2)
-
-        if not dry_run:
-            run_log = REPO_ROOT / "memory" / "sessions"
-            run_log.mkdir(parents=True, exist_ok=True)
-            log_path = run_log / f"agent_run_{run_id}.json"
-            log_path.write_text(json.dumps(summary, indent=2, default=str) + "\n", encoding="utf-8")
-            log.info("Run log: %s", log_path)
-        else:
-            log.info("DRY RUN — not persisting run log")
+        _persist_summary(summary, run_id, dry_run)
 
     return 0 if summary["status"] == "completed" else 1
 

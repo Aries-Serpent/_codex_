@@ -74,6 +74,22 @@ TEMPLATES: dict[str, str] = {
 """,
 }
 
+# ── Default content constants ─────────────────────────────────────────────────
+
+_DEFAULT_PREMISE = (
+    "Autonomous agents operate more effectively when they maintain persistent "
+    "memory, reason under uncertainty, and enforce finite resource budgets."
+)
+_DEFAULT_CONCLUSION = (
+    "Continuous introspection and bounded computation enable sustainable "
+    "autonomous operation with minimal human intervention."
+)
+_DEFAULT_QUESTIONS = (
+    "- How should confidence decay over stale observations?\n"
+    "- What is the optimal session cadence for this codebase?\n"
+    "- How to balance exploration vs exploitation in action selection?"
+)
+
 # ── Parser ─────────────────────────────────────────────────────────────────────
 
 
@@ -180,20 +196,10 @@ def cmd_write(topic: str = "Agent Reasoning Synthesis", template: str = "basic")
         topic=topic,
         timestamp=ts.isoformat(),
         confidence="medium",
-        premise=(
-            "Autonomous agents operate more effectively when they maintain persistent "
-            "memory, reason under uncertainty, and enforce finite resource budgets."
-        ),
+        premise=_DEFAULT_PREMISE,
         observations="\n".join(observations_lines) or "- No recent session data available",
-        conclusion=(
-            "Continuous introspection and bounded computation enable sustainable "
-            "autonomous operation with minimal human intervention."
-        ),
-        questions=(
-            "- How should confidence decay over stale observations?\n"
-            "- What is the optimal session cadence for this codebase?\n"
-            "- How to balance exploration vs exploitation in action selection?"
-        ),
+        conclusion=_DEFAULT_CONCLUSION,
+        questions=_DEFAULT_QUESTIONS,
     )
 
     slug = re.sub(r'\W+', '_', topic.lower())[:30]

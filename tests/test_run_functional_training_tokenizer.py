@@ -16,6 +16,7 @@ if not hasattr(transformers, "AutoTokenizer"):
 
 
 def test_run_functional_training_use_fast_flag(monkeypatch):
+    import codex.training  # noqa: F401 — ensure submodule attribute is set on codex package before monkeypatching
     from codex.training import run_functional_training
 
     called = {}
