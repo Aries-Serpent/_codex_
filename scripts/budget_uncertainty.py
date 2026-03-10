@@ -135,7 +135,9 @@ def scenario_ci_health() -> dict[str, Any]:
             # tools/validate.py writes exit_code (not status).  Derive health
             # from exit_code and optional junit failure/error counts.
             exit_code = data.get("exit_code", -1)
-            junit = data.get("junit") or {}
+            junit = data.get("junit")
+            if not isinstance(junit, dict):
+                junit = {}
             failures = junit.get("failures", 0)
             errors = junit.get("errors", 0)
             if exit_code == 0 and failures == 0 and errors == 0:

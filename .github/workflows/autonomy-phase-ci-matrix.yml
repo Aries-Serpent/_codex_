@@ -82,7 +82,7 @@ jobs:
       - name: Install dependencies
         run: |
           set -o pipefail
-          if ! pip install -e ".[dev,test]" --quiet 2>&1 | tail -5; then
+          if ! pip install -e ".[dev,test]" --quiet 2>&1; then
             echo "Editable install failed; falling back to minimal pytest dependencies."
             pip install pytest pytest-mock --quiet
           fi

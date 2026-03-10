@@ -51,6 +51,10 @@ class RecursionGuard:
 
     def __init__(self, max_depth: int = MAX_DEPTH) -> None:
         self.max_depth = max_depth
+        # A list of tokens supports nested calls on the same guard instance:
+        # each __enter__ pushes a token and __exit__ pops+resets in LIFO order,
+        # ensuring the ContextVar is always restored to its pre-entry value even
+        # when the same guard is entered multiple times in sequence.
         self._tokens: list[contextvars.Token[int]] = []
 
     @property

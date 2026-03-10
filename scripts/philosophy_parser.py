@@ -126,10 +126,11 @@ def parse_document(path: Path) -> dict[str, Any]:
 
     # Extract action items using a regex capture to reliably extract text after
     # the "- [ ]" / "- [x]" prefix, avoiding lstrip() mangling of content.
+    # The trailing .strip() removes any surrounding whitespace from the capture.
     action_items = [
         m.group(1).strip()
         for line in lines
-        if (m := re.match(r'^\s*-\s*\[[ x]\]\s*(.*)', line))
+        if (m := re.match(r'^\s*-\s*\[[ x]\]\s*(.*)$', line))
     ]
 
     return {
