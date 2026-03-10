@@ -124,9 +124,14 @@ def parse_document(path: Path) -> dict[str, Any]:
     # Extract key concepts (capitalized multi-word phrases, simplified)
     concepts = list(dict.fromkeys(re.findall(r'\b[A-Z][A-Za-z]+(?: [A-Z][A-Za-z]+)+', text)))[:10]
 
-    # Extract action items (lines starting with - [ ])
-    action_items = [line.lstrip("- ").lstrip("[ ]").lstrip("x]").strip()
-                    for line in lines if re.match(r'^\s*-\s*\[[ x]\]', line)]
+    # Extract action items using a regex capture to reliably extract text after
+    # the "- [ ]" / "- [x]" prefix, avoiding lstrip() mangling of content.
+    # The trailing .strip() removes any surrounding whitespace from the capture.
+    action_items = [
+        m.group(1).strip()
+        for line in lines
+        if (m := re.match(r'^\s*-\s*\[[ x]\]\s*(.*)$', line))
+    ]
 
     return {
         "path": str(path.relative_to(REPO_ROOT)),

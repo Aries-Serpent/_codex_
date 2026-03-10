@@ -5,7 +5,28 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR #3514: CI fix session · tokenizer contract hardening · slow-test fixes · dependabot #3515-3528 · agent token delegation re-confirmed ×4+5+6 · pytest-execution workflow genericized · Resilient Validation Suite fixes · SentencePieceAdapter contract coverage · shard timeout fix (2026-03-10)
+## [Unreleased] — PR #3533: review fixes · doc-metrics sync · CI health patterns PREFLIGHT+DOC_METRICS (2026-03-10)
+
+### Fixed (PR #3533 — 2026-03-10 session 3)
+- **`src/codex/reflection.py`**: replaced shared `_guard` global with `contextvars.ContextVar`
+  + per-call `RecursionGuard` instances for thread/async-safe recursion depth isolation
+- **`scripts/philosophy_parser.py`**: replaced chained `lstrip()` with regex capture group
+  `r'^\s*-\s*\[[ x]\]\s*(.*)$'` to prevent action_items content mangling
+- **`scripts/budget_uncertainty.py`**: `scenario_ci_health()` now reads `exit_code` +
+  `junit.failures/errors` (actual `tools/validate.py` schema); `budget_cap` catches
+  `ValueError` on malformed `UNCERTAINTY_BUDGET_SECONDS` env var
+- **`tests/validation/test_coverage_verification.py`**: threshold assertion updated
+  `>= 75 → >= 80` to match `pyproject.toml fail_under = 80`
+- **`README.md`, `docs/ARCHITECTURE.md`, `docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md`,
+  `docs/evolution/COGNITIVE_CODEBASE_MAP.md`**: all 75% coverage metrics synced to 80%
+  via `doc_metrics_sync --fix` (7 stale rules resolved)
+- **`.github/workflows/autonomy-phase-ci-matrix.yml`**: added `set -o pipefail`; removed
+  `| tail -5` to expose full pip install errors
+- **`.codex/patterns/ci_failure_patterns.yaml`**: added DOC_METRICS_001 (doc_metrics_sync
+  stale coverage), PREFLIGHT_002 (AGENT_ACCOUNTABILITY_REPORT not touched), and
+  SELF_HEALING_001 (unknown pattern classification) to resolve issue #3534 pattern gaps
+
+
 
 ### Added (PR #3514 — 2026-03-10 session 2)
 - **`tests/tokenization/test_sentencepiece_contract.py`**: dedicated contract-coverage

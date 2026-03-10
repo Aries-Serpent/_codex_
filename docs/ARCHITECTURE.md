@@ -33,7 +33,7 @@ graph TB
     Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
     Agents[153 Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>19500+ Tests | 75% Coverage]
+    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>19500+ Tests | 80% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage]
     MCP[MCP System<br/>Model Context Protocol]
