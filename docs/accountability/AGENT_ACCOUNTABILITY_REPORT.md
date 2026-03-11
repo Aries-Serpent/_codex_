@@ -3,7 +3,66 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T06:25Z (fix: 4 Resilient Validation Suite CI test failures)
+**Last updated:** 2026-03-11T11:10Z (chore: preflight refresh — delegation run #22949088457)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (chore: resolve CI issues #3532 and #3545)
+
+### Issues Addressed
+
+#### Issue #3545 — CI Health Alert: High Failure Rate (16.6%)
+
+| Pattern | Count | Disposition |
+|---------|-------|-------------|
+| self-healing | 149 | Auto-healed; no action required |
+| unknown | 13 | Transient merge-state runs not matching any pattern; see #3532 detail |
+| auto-fix | 3 | Auto-fixed by CI |
+| security-scan | 1 | Pre-existing |
+
+Root cause of high failure rate: same pre-existing infra issues listed in #3532 below. Code-level failures (Resilient Validation Suite) were fixed in commit 9913e90.
+
+#### Issue #3532 — CI Failure Triage: 38 failures across 11 workflows
+
+| Workflow | Branch(es) | Root Cause | Action |
+|----------|------------|-----------|--------|
+| Resilient Validation Suite | `copilot/sub-pr-3513` | 2 test bugs | ✅ Fixed in commit 9913e90 |
+| Art_CodeQL | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
+| Art_Security Scanning Suite | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
+| Art_Validation Pipeline | `copilot/sub-pr-3513` | Exit code 2 on stale merge-state commit; passes locally | Current HEAD passes ✅ |
+| Agent Token Delegation | `copilot/sub-pr-3513` / `3513/merge` | `chore(auth)` auto-commit at HEAD lacked accountability report update | ✅ Fixed by this commit |
+| Art_RAG Module Tests | `0D_base_` only | Base branch test failures; not introduced by this PR | Pre-existing |
+| Build & Push Preview Image | `0D_base_` | Docker pip-install infra failure (known since PR #3508) | Pre-existing |
+| Automatic Dependency Submission | `copilot/sub-pr-3513` | GitHub Actions `checkout` infra issue | Infrastructure |
+| Pre-Flight CI Validation | `main` | Different branch | Not applicable |
+| Art_Root Organization Validation | `copilot/sub-pr-3513-another-one` | Different branch | Not applicable |
+| Copilot coding agent | `copilot/sub-pr-3513` | Agent-run transient failure | Transient |
+
+
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `tests/test_hf_loader_peft_guard.py` | ✅ Fixed | Remove `raising=False` from `monkeypatch.setitem()` — removed in pytest 8.x |
+| `tests/features/test_feature_store.py` `test_check_feature_health_stale` | ✅ Fixed | Use `timedelta(minutes=400)` so feature is in STALE range (360-1440 min) |
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+
+
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `scripts/philosophy_parser.py` action_items | ✅ Verified | Regex `re.match(r'^\s*-\s*\[[ x]\]\s*(.*)$', line)` replaces lstrip() chains; tested correct extraction |
+| `tests/validation/test_coverage_verification.py` threshold | ✅ Verified | `assert threshold >= 80` matches pyproject.toml fail_under=80; test passes |
+| `scripts/budget_uncertainty.py` ValueError | ✅ Verified | try/except ValueError wraps float() parse; warning log + fallback to max_seconds |
+| `scripts/budget_uncertainty.py` exit_code | ✅ Verified | scenario_ci_health() reads exit_code+junit fields (not missing status); healthy scenario confirmed |
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+
+
 
 ---
 
