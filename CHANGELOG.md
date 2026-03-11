@@ -5,6 +5,19 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — chore: refresh CODEX_MANIFEST + secrets baseline; verify review comment fixes (2026-03-11)
+
+### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continuation)
+- **`CODEX_MANIFEST.json`**: Regenerated with fresh `generated_at` timestamp (`2026-03-11T05:49:58Z`);
+  ensures E→D Transition Gate C2 (manifest freshness <24h) remains green
+- **`.secrets.baseline`**: Updated `hashed_secret` for `CODEX_MANIFEST.json` to `71fa1fd6fa1275c0c45020fd466dd6ddec144d59`
+  (sha1 of new `integrity_sha256` `618a8b30...`); prevents detect-secrets exit-3 on stale hash
+- Verified all four previously-unresolved PR review comments are addressed:
+  - `scripts/philosophy_parser.py`: uses regex capture for action item extraction (not lstrip)
+  - `scripts/budget_uncertainty.py` (`budget_cap`): ValueError on invalid env var is caught
+  - `scripts/budget_uncertainty.py` (`scenario_ci_health`): uses `exit_code` field (not `status`)
+  - `tests/validation/test_coverage_verification.py`: asserts `threshold >= 80` matching `pyproject.toml`
+
 ## [Unreleased] — fix: SentencePieceAdapter.decode accepts any iterable (2026-03-11)
 
 ### Fixed (PR copilot/sub-pr-3513-another-one — 2026-03-11)

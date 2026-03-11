@@ -3,7 +3,22 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T03:58Z (CI fix: SentencePieceAdapter.decode accepts any iterable)
+**Last updated:** 2026-03-11T05:50Z (chore: refresh CODEX_MANIFEST + verify review comment fixes)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (continuation: CODEX_MANIFEST refresh + review verification)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp keeps E→D Gate C2 green |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256` |
+| PR review: `philosophy_parser.py` regex | ✅ Verified | Already uses regex capture (not lstrip) |
+| PR review: `budget_cap` ValueError | ✅ Verified | Already catches ValueError with fallback |
+| PR review: `scenario_ci_health` schema | ✅ Verified | Already uses `exit_code` field |
+| PR review: coverage threshold assert | ✅ Verified | Already asserts `>= 80` matching pyproject.toml |
 
 ---
 
