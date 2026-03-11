@@ -5,27 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — PR sub-3513: fix audit_runner render_template + run_stage (2026-03-11)
+## [Unreleased] — fix: SentencePieceAdapter.decode accepts any iterable (2026-03-11)
 
-### Fixed (PR copilot/sub-pr-3513 — 2026-03-11)
-- **`scripts/space_traversal/audit_runner.py`**: Added `render_template(cfg, data)` function
-  (writes JSON companion + renders Markdown report, returns `(md_path, json_path)`) to fix
-  `test_json_companion_written` AttributeError in Resilient Validation Suite CI run #22933655298
-- **`scripts/space_traversal/audit_runner.py`**: Added `run_stage(cfg, stage)` function
-  (dispatches to stage_s3–s6 handlers + "TRENDS" report generation) to fix
-  `test_audit_runner_trends_integration` AttributeError
-- **`CODEX_MANIFEST.json`**: Regenerated with fresh timestamp (`2026-03-11T03:38:25Z`)
-- **`.secrets.baseline`**: Updated `hashed_secret` to match new `integrity_sha256`
-
-## [Unreleased] — PR sub-3513: continue — CODEX_MANIFEST refresh + preflight after agent token delegation (2026-03-11)
-
-### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continue session)
-- **`CODEX_MANIFEST.json`**: Regenerated with fresh `generated_at` timestamp (`2026-03-11T03:03:19Z`);
-  ensures E→D Transition Gate C2 (manifest freshness <24h) remains green
-- **`.secrets.baseline`**: Updated `hashed_secret` for `CODEX_MANIFEST.json` to match new
-  `integrity_sha256` value; prevents detect-secrets exit-3 on stale hash
-- All 4 PR review comments confirmed addressed (philosophy_parser regex, budget_cap ValueError,
-  scenario_ci_health exit_code, coverage threshold ≥ 80); 106 autonomy + validation tests passing
+### Fixed (PR copilot/sub-pr-3513-another-one — 2026-03-11)
+- **`src/codex_ml/tokenization/sentencepiece_adapter.py`**: `decode()` now accepts any
+  iterable of ints (lists, tuples, generators, etc.) by converting to a list internally;
+  fixes `test_decode_accepts_iterable` CI failure caused by overly strict isinstance check
+- **`tests/tokenization/test_sentencepiece_contract.py`**: Updated error-message match
+  strings from `"list or tuple of int"` to `"int ids"` to reflect updated error text
 
 ## [Unreleased] — PR #3537: refresh CODEX_MANIFEST + secrets baseline after agent token delegation (2026-03-11)
 

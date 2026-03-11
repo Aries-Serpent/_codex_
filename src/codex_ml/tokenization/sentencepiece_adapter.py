@@ -22,7 +22,7 @@ import json  # noqa: E402
 import numbers  # noqa: E402
 import os  # noqa: E402
 from pathlib import Path  # noqa: E402
-from typing import Optional, Sequence  # noqa: E402
+from typing import Iterable, Optional, Sequence  # noqa: E402
 
 spm = None
 
@@ -255,18 +255,20 @@ class SentencePieceAdapter:
 
         return encoded
 
-    def decode(self, ids: list[int] | tuple[int, ...]) -> str:
+    def decode(self, ids: Iterable[int]) -> str:
         # Auto-load if not already loaded (for convenience)
         if self.sp is None:
             if self.model_path.exists():
                 self.load()
             else:
                 raise RuntimeError("adapter not loaded")
-        if not isinstance(ids, (list, tuple)) or any(not isinstance(i, int) for i in ids):
+        # Accept any iterable of int ids (lists, tuples, generators, etc.)
+        ids_list = list(ids)
+        if any(not isinstance(i, int) for i in ids_list):
             raise ValueError(
-                "SentencePieceAdapter.decode requires a list or tuple of int ids"
+                "SentencePieceAdapter.decode requires int ids"
             )
-        return self.sp.decode(ids)
+        return self.sp.decode(ids_list)
 
     def batch_encode(
         self,

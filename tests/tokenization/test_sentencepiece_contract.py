@@ -162,15 +162,15 @@ class TestDecodeContract:
         assert isinstance(text, str)
 
     def test_decode_raises_value_error_for_non_int_ids(self, adapter):
-        with pytest.raises(ValueError, match="list or tuple of int"):
+        with pytest.raises(ValueError, match="int ids"):
             adapter.decode(["bad"])  # type: ignore[arg-type]
 
     def test_decode_raises_value_error_for_float_ids(self, adapter):
-        with pytest.raises(ValueError, match="list or tuple of int"):
+        with pytest.raises(ValueError, match="int ids"):
             adapter.decode([1.5])  # type: ignore[arg-type]
 
     def test_decode_raises_value_error_for_mixed_ids(self, adapter):
-        with pytest.raises(ValueError, match="list or tuple of int"):
+        with pytest.raises(ValueError, match="int ids"):
             adapter.decode([1, "two"])  # type: ignore[arg-type]
 
 

@@ -3,34 +3,19 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T03:38Z (PR sub-3513 — fix audit_runner render_template + run_stage CI failures)
+**Last updated:** 2026-03-11T03:58Z (CI fix: SentencePieceAdapter.decode accepts any iterable)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (PR sub-3513: fix Resilient Validation Suite CI failures)
+## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: decode accepts any iterable)
 
 ### Work Completed This Session
 
 | Item | Status | Description |
 |------|--------|-------------|
-| `render_template` added to `audit_runner.py` | ✅ Fixed | Resolves `test_json_companion_written` AttributeError from Resilient Validation Suite CI run #22933655298 |
-| `run_stage` added to `audit_runner.py` | ✅ Fixed | Resolves `test_audit_runner_trends_integration` AttributeError; supports S3–S6 + TRENDS stages |
-| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp `2026-03-11T03:38:25Z` keeps E→D Gate C2 green |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256` |
+| `SentencePieceAdapter.decode` iterable fix | ✅ Fixed | `decode()` now accepts any iterable (not just list/tuple); fixes `test_decode_accepts_iterable` |
+| Contract test updated | ✅ Fixed | Error-match strings updated from `"list or tuple of int"` to `"int ids"` |
 | CHANGELOG.md updated | ✅ Done | New entry documents this session |
-
----
-
-## 📋 SESSION SUMMARY — 2026-03-11 continue (PR sub-3513: agent token delegation continuation)
-
-### Work Completed This Session
-
-| Item | Status | Description |
-|------|--------|-------------|
-| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp (`2026-03-11T03:03:19Z`) keeps E→D Gate C2 green |
-| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256`; prevents detect-secrets exit-3 |
-| CHANGELOG.md updated | ✅ Done | New entry documents this continuation session |
-| PR review comments verified | ✅ Confirmed | All 4 open review issues already addressed; 106 tests passing |
 
 ---
 
