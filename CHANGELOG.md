@@ -5,6 +5,17 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix(ci): fix 4 locally-failing Resilient Validation Suite tests (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 CI failure investigation)
+- **`tests/validation/test_ci_workflow_validation.py`**: Three test fixes:
+  - `test_test_workflows_trigger_on_push_and_pr`: Skip dispatch-only workflows (e.g., `test-analytics-failure-sim.yml`) that are intentional manual tools and don't need push/PR triggers
+  - `test_no_hardcoded_secrets`: Allow shell variable expansions (`token="${VAR}"`) as they are not hardcoded secrets
+  - `test_modern_python_versions_used`: Use regex to extract only actual `python-version:` values, not arbitrary mentions of version strings in comments
+- **`src/mcp/middleware/rate_limit_middleware.py`**: Add module-level `_BUCKETS` dict and have `_InMemoryBackend` use it; removes unnecessary empty `__init__`; fixes `test_rate_limit_429` which called `_BUCKETS.clear()`
+- **`src/cli/__init__.py`**: Add `main()` entry point to the `src/cli` package; fixes `test_cli_missing_required_arguments` where `import src.cli` imports the package (not `src/cli.py`) and expects `cli.main()` to exist
+- **`CODEX_MANIFEST.json`** / **`.secrets.baseline`**: Refreshed manifest + updated `hashed_secret`
+
 ## [Unreleased] — chore: refresh CODEX_MANIFEST + secrets baseline; verify review comment fixes (2026-03-11)
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continuation)

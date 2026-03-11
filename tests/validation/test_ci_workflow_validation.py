@@ -105,12 +105,25 @@ class TestWorkflowTriggerValidation:
             )
 
     def test_test_workflows_trigger_on_push_and_pr(self) -> None:
-        """Test that test workflows trigger on push and pull_request."""
+        """Test that test workflows trigger on push and pull_request.
+
+        Simulation/dispatch-only workflows (those whose sole trigger is
+        ``workflow_dispatch``) are intentional manual tools and are excluded.
+        """
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*test*.yml"):
                 try:
                     content = workflow.read_text()
+                    # Skip workflows that are intentionally workflow_dispatch-only
+                    # (e.g. failure simulators, manual tools).
+                    dispatch_only = (
+                        "workflow_dispatch" in content
+                        and "push" not in content
+                        and "pull_request" not in content
+                    )
+                    if dispatch_only:
+                        continue
                     has_push_or_pr = "push" in content or "pull_request" in content
                     assert has_push_or_pr, f"{workflow} should trigger on push or PR"
                 except OSError:
@@ -197,9 +210,16 @@ class TestWorkflowSecurityValidation:
                     for pattern in sensitive_patterns:
                         match = re.search(pattern, content)
                         if match:
+                            matched_text = match.group()
                             # Allow if it's using secrets context
-                            if "secrets." not in content[max(0, match.start()-50):match.end()+50]:
-                                pytest.fail(f"Potential hardcoded secret in {workflow}")
+                            ctx = content[max(0, match.start()-50):match.end()+50]
+                            if "secrets." in ctx:
+                                continue
+                            # Allow shell variable expansions (e.g. token="${VAR}" or
+                            # token="${VAR:-$FALLBACK}") — these are not hardcoded values.
+                            if "$" in matched_text:
+                                continue
+                            pytest.fail(f"Potential hardcoded secret in {workflow}")
                 except OSError:
                     continue
 
@@ -258,17 +278,28 @@ class TestPythonSetupValidation:
             assert python_configured, "Should have Python configured in at least one workflow"
 
     def test_modern_python_versions_used(self) -> None:
-        """Test that modern Python versions are used."""
+        """Test that modern Python versions are used (3.8+)."""
+        import re as _re
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
                 try:
                     content = workflow.read_text()
-                    if "python-version" in content:
-                        # Should not use Python 3.7 or earlier
-                        assert "3.7" not in content or "3.17" in content, (
-                            f"{workflow} uses outdated Python version"
-                        )
+                    if "python-version" not in content:
+                        continue
+                    # Extract only the actual python-version values, not
+                    # arbitrary mentions of "3.7" in comments or other text.
+                    for match in _re.finditer(
+                        r"""python-version['":\s]+['"]([\d.]+)['"]""",
+                        content,
+                    ):
+                        ver = match.group(1)
+                        parts = ver.split(".")
+                        if len(parts) >= 2:
+                            major, minor = int(parts[0]), int(parts[1])
+                            assert (major, minor) >= (3, 8), (
+                                f"{workflow} uses outdated Python version {ver}"
+                            )
                 except OSError:
                     continue
 

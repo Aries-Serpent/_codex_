@@ -3,7 +3,23 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T05:50Z (chore: refresh CODEX_MANIFEST + verify review comment fixes)
+**Last updated:** 2026-03-11T06:25Z (fix: 4 Resilient Validation Suite CI test failures)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: Resilient Validation Suite failures)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `test_test_workflows_trigger_on_push_and_pr` | ✅ Fixed | Skip dispatch-only simulation workflows; they don't need push/PR triggers |
+| `test_no_hardcoded_secrets` | ✅ Fixed | Shell variable expansions (`$VAR`) are not hardcoded secrets; add `$` check |
+| `test_modern_python_versions_used` | ✅ Fixed | Use regex to extract `python-version:` values; don't flag version strings in comments |
+| `test_rate_limit_429` | ✅ Fixed | Add module-level `_BUCKETS` to `rate_limit_middleware`; remove unnecessary `__init__` |
+| `test_cli_missing_required_arguments` | ✅ Fixed | Add `main()` to `src/cli/__init__.py`; package shadows `src/cli.py` |
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
 
 ---
 
