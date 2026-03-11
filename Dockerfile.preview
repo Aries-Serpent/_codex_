@@ -25,8 +25,16 @@
 #     ghcr.io/aries-serpent/_codex_/preview:latest
 # ──────────────────────────────────────────────────────────────────────────────
 
+# Stub directories that pyproject.toml [tool.setuptools.package-dir] maps but
+# are NOT copied into every stage.  setuptools requires each mapped directory to
+# exist when it builds the editable egg-info; empty stubs are sufficient.
+# NOTE: Keep this list in sync with [tool.setuptools.package-dir] in pyproject.toml.
+ARG STUB_DIRS="agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli services"
+
 # ── Stage 1: dependency builder ───────────────────────────────────────────────
 FROM python:3.12-slim AS preview-base
+
+ARG STUB_DIRS
 
 LABEL org.opencontainers.image.source="https://github.com/Aries-Serpent/_codex_"
 LABEL org.opencontainers.image.description="Codex Cognitive Brain — Preview base"
@@ -52,6 +60,10 @@ RUN pip install --no-cache-dir --upgrade pip
 # ray, etc.) that are not used by the cognitive_app CLI server.
 COPY pyproject.toml README.md ./
 COPY src/ ./src/
+# Create stub directories for all package-dir entries in pyproject.toml.
+# setuptools requires every mapped directory to exist during editable install;
+# these empty stubs satisfy that requirement without bloating the image.
+RUN mkdir -p ${STUB_DIRS}
 RUN pip install --no-cache-dir \
         "uvicorn[standard]>=0.29.0,<1.0" \
         "fastapi>=0.110.0,<1.0" \
@@ -62,6 +74,8 @@ RUN pip install --no-cache-dir \
 
 # ── Stage 2: production runtime ───────────────────────────────────────────────
 FROM python:3.12-slim AS preview
+
+ARG STUB_DIRS
 
 LABEL org.opencontainers.image.title="Codex Cognitive Brain — Preview"
 LABEL org.opencontainers.image.description="CLI API server + GitHub App auth for Copilot sessions"
@@ -89,6 +103,10 @@ COPY --chown=codex:codex src/ ./src/
 COPY --chown=codex:codex cognitive_app/ ./cognitive_app/
 COPY --chown=codex:codex .codex/ ./.codex/
 COPY --chown=codex:codex policies/ ./policies/
+
+# Create stubs for package-dir entries not shipped in the runtime image
+# (setuptools requires them to exist for editable install discovery)
+RUN mkdir -p ${STUB_DIRS}
 
 # Re-install editable to wire entry-points; --no-deps avoids pulling
 # heavy ML packages (torch, transformers, etc.) not used by the CLI server.

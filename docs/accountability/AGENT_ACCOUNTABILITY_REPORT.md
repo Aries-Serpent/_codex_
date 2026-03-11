@@ -1,17 +1,34 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/sub-pr-3513
+**Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T11:10Z (chore: preflight refresh — delegation run #22949088457)
+**Last updated:** 2026-03-11T16:00Z (fix: Docker preview build — editable install stub dirs)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (chore: resolve CI issues #3532 and #3545)
+## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image failures)
 
 ### Issues Addressed
 
-#### Issue #3545 — CI Health Alert: High Failure Rate (16.6%)
+#### PR #3552 — Build & Push Preview Image failing (preview and preview-dev targets)
+
+| Root Cause | Fix |
+|------------|-----|
+| `preview-base` stage missing `src/` → `error: 'src' does not exist` | Added `COPY src/ ./src/` |
+| `preview-base` and `preview` stages missing all other `package-dir` directories → `error: package directory 'services' does not exist` | Added `RUN mkdir -p agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli services` in both stages |
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `Dockerfile.preview` — `preview-base` stage | ✅ Fixed | Added `COPY src/ ./src/` + stub dirs for all package-dir entries |
+| `Dockerfile.preview` — `preview` stage | ✅ Fixed | Added stub dirs before `pip install -e .` |
+| AGENT_ACCOUNTABILITY_REPORT.md | ✅ Updated | This document |
+
+---
+
+
 
 | Pattern | Count | Disposition |
 |---------|-------|-------------|
