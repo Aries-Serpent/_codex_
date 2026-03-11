@@ -7,6 +7,9 @@ cognitive_integration_level: 3
 aais_contribution: +2.5 points
 batch: pr-3483
 sprint: Sprint 4 (updated)
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — GitHub Actions repo variable synchronization
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Repo Var Sync Agent v1.1

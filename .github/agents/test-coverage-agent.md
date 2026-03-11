@@ -1,7 +1,13 @@
 ---
 name: Test Coverage Agent
 description: Track and improve test coverage metrics across modules and ensure threshold compliance
+deprecated: true
+superseded_by: unified-coverage-agent.md (v1.0.0, 2026-03-11)
 ---
+
+> ⚠️ **DEPRECATED** — Coverage tracking and improvement capabilities have been consolidated into
+> **[Unified Coverage Agent v1.0](unified-coverage-agent.md)**.
+> Use `unified-coverage-agent` for all new coverage analysis and suggestion invocations.
 
 # Test Coverage Agent
 

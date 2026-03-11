@@ -1,8 +1,37 @@
 # Custom Agent Consolidation Report
 
 **Generated:** 2026-02-05T08:40:00Z  
-**Status:** ✅ COMPLETE  
-**Total Agents Identified:** 30 (User List) → 53 (Repository)
+**Updated:** 2026-03-11T19:32:00Z (Phase 2 – Consolidations Implemented)  
+**Status:** ✅ PHASE 2 COMPLETE  
+**Total Agents:** 109 active + 23 deprecated → **86 active canonical agents**
+
+---
+
+## Phase 2 Implementation Summary (2026-03-11)
+
+### Consolidations Implemented
+
+| Group | Deprecated Agents | Canonical Agent | Status |
+|-------|-------------------|-----------------|--------|
+| **Coverage (5 → 1)** | coverage-gapfill, coverage-maintenance, coverage-roadmap, test-coverage-agent, test-coverage-monitor | **unified-coverage-agent.md** (NEW) | ✅ Done |
+| **CI Failure Resolution (→ ci-testing-agent v4.0)** | ci-failure-resolution-agent, ci-emergency-response-agent | ci-testing-agent.md | ✅ Done |
+| **CI Triage (→ ci-triage-pipeline-agent v1.0)** | ci-log-retrieval-agent, ci-importerror-agent | ci-triage-pipeline-agent.md | ✅ Done |
+| **Security Scanning (→ unified-security-scanner v1.0)** | dependency-vulnerability-scanner, dependency-security-review-agent, security-alert-verification-agent, secret-detection-agent | unified-security-scanner.md | ✅ Done |
+| **CodeQL (2 → 1)** | code-scanning-remediation-agent | codeql-alert-resolution-agent.md | ✅ Done |
+| **Documentation (→ unified-doc-agent v1.0)** | documentation-quality-agent, doc-freshness-checker, link-validator-agent, documentation-consolidator | unified-doc-agent.md | ✅ Done |
+| **Governance (→ unified-governance-gate v1.0)** | owner-approval-guard, config-validator | unified-governance-gate.md | ✅ Done |
+| **Workflow CI Fixer** | workflow-ci-fixer | codebase-health-guardian.md | ✅ (pre-existing) |
+| **Workflow Health Monitor (2 → 1)** | workflow-health-monitor.md (duplicate) | workflow-health-monitor.agent.md | ✅ Done |
+| **Test Alignment Fixer (2 → 1)** | test-alignment-fixer-enhanced | test-alignment-fixer.agent.md | ✅ Done |
+
+### Runner Compatibility
+
+All **86 active agents** now have explicit `runner_compatibility` front-matter documenting support for:
+- `ubuntu-latest` (default 2-core GitHub-hosted runner)
+- `ubuntu-latest-large` (large 4-core runner)
+
+**Before:** 0/109 agents documented runner compatibility  
+**After:** 86/86 active agents have `runner_compatibility` metadata
 
 ---
 
@@ -262,43 +291,62 @@ This report provides a comprehensive analysis of all custom GitHub Copilot agent
 
 ## Consolidation Plan
 
-### Phase 1: High-Impact Consolidations (4 merges)
+### ✅ Phase 1: High-Impact Consolidations — IMPLEMENTED (2026-03-11)
 
-1. **CI Diagnostic Consolidation**
-   - Merge: ci-testing-agent + ci-emergency-response-agent
-   - New: `ci-diagnostic-orchestrator`
-   - Benefit: Single entry point for CI debugging
+1. **✅ CI Diagnostic Consolidation** (absorbed into ci-testing-agent v4.0)
+   - Deprecated: ci-emergency-response-agent → ci-testing-agent.md
+   - Deprecated: ci-failure-resolution-agent → ci-testing-agent.md
 
-2. **Workflow Orchestration**
-   - Merge: workflow-ci-fixer + workflow-management-agent
-   - New: `workflow-orchestrator`
-   - Benefit: Unified workflow management
+2. **✅ Workflow CI Fixer** (deprecated, superseded by codebase-health-guardian v2.0)
+   - Deprecated: workflow-ci-fixer → codebase-health-guardian.md
 
-3. **Coverage Orchestration**
-   - Merge: coverage-gapfill + coverage-maintenance + coverage-roadmap
-   - New: `test-coverage-orchestrator`
-   - Benefit: Centralized coverage management
+3. **✅ Coverage Orchestration** (5 agents → unified-coverage-agent)
+   - Deprecated: coverage-gapfill-agent → unified-coverage-agent.md
+   - Deprecated: coverage-maintenance-agent → unified-coverage-agent.md
+   - Deprecated: coverage-roadmap-agent → unified-coverage-agent.md
+   - Deprecated: test-coverage-agent → unified-coverage-agent.md
+   - Deprecated: test-coverage-monitor → unified-coverage-agent.md
+   - **New canonical agent:** `unified-coverage-agent.md`
 
-4. **CodeQL Security**
-   - Merge: code-scanning-remediation + codeql-alert-resolution
-   - New: `codeql-security-orchestrator`
-   - Benefit: Unified security alert handling
+4. **✅ CodeQL/Security Consolidation**
+   - Deprecated: code-scanning-remediation → codeql-alert-resolution-agent.md
+   - Deprecated: dependency-vulnerability-scanner → unified-security-scanner.md
+   - Deprecated: dependency-security-review-agent → unified-security-scanner.md
+   - Deprecated: security-alert-verification-agent → unified-security-scanner.md
+   - Deprecated: secret-detection-agent → unified-security-scanner.md
 
-### Phase 2: Enhanced Chaining (10 agents)
+5. **✅ Documentation Consolidation** (4 agents → unified-doc-agent v1.0)
+   - Deprecated: documentation-quality-agent → unified-doc-agent.md
+   - Deprecated: doc-freshness-checker → unified-doc-agent.md
+   - Deprecated: link-validator-agent → unified-doc-agent.md
+   - Deprecated: documentation-consolidator → unified-doc-agent.md
+
+6. **✅ Governance Consolidation** (2 agents → unified-governance-gate v1.0)
+   - Deprecated: owner-approval-guard → unified-governance-gate.md
+   - Deprecated: config-validator → unified-governance-gate.md
+
+7. **✅ CI Triage Pipeline** (log retrieval + importerror merged)
+   - Deprecated: ci-log-retrieval-agent → ci-triage-pipeline-agent.md
+   - Deprecated: ci-importerror-agent → ci-triage-pipeline-agent.md
+
+8. **✅ Test Alignment Fixer** (enhanced v2.0 → v3.0)
+   - Deprecated: test-alignment-fixer-enhanced → test-alignment-fixer.agent.md
+
+9. **✅ Workflow Health Monitor** (duplicate file removed)
+   - Deprecated: workflow-health-monitor.md (duplicate) → workflow-health-monitor.agent.md
+
+10. **✅ Runner Compatibility** — ALL 86 active agents now document `runner_compatibility`
+
+### Phase 2: Enhanced Chaining (future work)
 
 Add orchestration capabilities to:
-- ci-log-retrieval-agent
-- dependency-conflict-agent
-- documentation-quality-agent
-- qa-walkthrough-agent
-- security-alert-verification-agent
-- test-alignment-fixer
-- test-coverage-monitor
-- repository-hygiene-agent
-- performance-monitor-agent
-- security-audit-agent
+- dependency-conflict-agent (→ should chain to unified-security-scanner)
+- qa-walkthrough-agent (→ should chain to ci-testing-agent + unified-coverage-agent)
+- repository-hygiene-agent (→ should chain to reference-updater-agent)
+- performance-monitor-agent (→ should chain to performance-regression-detector)
+- security-audit-agent (→ should chain to unified-security-scanner)
 
-### Phase 3: Standardization (53 agents)
+### Phase 3: Standardization (86 active agents)
 
 - Migrate all agents to directory structure
 - Standardize naming to `.agent.yml` + `README.md`

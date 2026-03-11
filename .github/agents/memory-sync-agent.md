@@ -12,6 +12,9 @@ pattern_id: P-048
 endpoints:
   read:  "GET  http://localhost:8765/api/memory/state"
   search: "GET  http://localhost:8765/api/memory/search"
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — SQLiteMemory STM→LTM consolidation, stale eviction
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Memory Sync Agent v2.0

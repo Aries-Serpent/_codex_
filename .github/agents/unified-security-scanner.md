@@ -5,12 +5,16 @@ version: 1.0.0-m01
 updated: 2026-02-21
 merged_agents:
   - dependency-vulnerability-scanner (deprecated)
+  - dependency-security-review-agent (deprecated)
   - security-alert-verification-agent (deprecated)
-  - secret-detection-agent
+  - secret-detection-agent (deprecated)
   - bridge-security-monitor (retained as sub-agent)
 cognitive_integration_level: 4
 aais_contribution: +6.0 points
 batch: m-01
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — SAST, secret scan, dependency scan all supported
+  large:   ubuntu-latest-large  # 4-core — parallel SAST + dependency + secrets scans
 ---
 
 # Unified Security Scanner v1.0 (M-01 Merge)

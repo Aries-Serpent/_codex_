@@ -1,6 +1,9 @@
 ---
 name: CI Parameter Mismatch Healer
 description: Detect and fix parameter mismatches between workflow callers and reusable workflow definitions
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — workflow caller/reusable workflow parameter mismatch fixes
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # CI Parameter-Mismatch Healer Agent v1.0

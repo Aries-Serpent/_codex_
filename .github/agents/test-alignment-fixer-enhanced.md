@@ -1,7 +1,14 @@
 ---
 name: Test Alignment Fixer Enhanced
 description: Fix test alignment issues after API changes with enhanced pattern coverage and automated remediation
+deprecated: true
+superseded_by: test-alignment-fixer.agent.md (v3.0.0-cognitive, 2026-02-17)
 ---
+
+> ⚠️ **DEPRECATED** — This v2.0 "Enhanced" variant has been superseded by
+> **[Test Alignment Fixer v3.0](test-alignment-fixer.agent.md)**, which incorporates
+> all enhanced signature-validation and automated-remediation capabilities plus
+> Cognitive Brain integration. Use `test-alignment-fixer` for all new invocations.
 
 # Test Alignment Fixer Agent - Enhanced
 

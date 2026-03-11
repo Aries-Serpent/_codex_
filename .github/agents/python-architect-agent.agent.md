@@ -1,6 +1,9 @@
 ---
 name: Python Architect Agent
 description: Design and iteratively build Python GUI applications using PySide6/PyQt6 with modern styling and theme support
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Python GUI application design with PySide6/PyQt6
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 ## 🎯 Mission Overview

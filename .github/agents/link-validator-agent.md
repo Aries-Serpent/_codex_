@@ -7,7 +7,13 @@ cognitive_integration_level: 1
 aais_contribution: +1.5 points
 batch: pr-8
 pr: "#3365"
+deprecated: true
+superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — Link validation capabilities have been merged into
+> **[Unified Documentation Agent v1.0](unified-doc-agent.md)** (M-02 merge).
+> Use `unified-doc-agent` for all link validation and broken-reference fixes.
 
 # Link Validator Agent
 

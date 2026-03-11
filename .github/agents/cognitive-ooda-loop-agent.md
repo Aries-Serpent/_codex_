@@ -12,6 +12,9 @@ metrics_endpoint: "GET /api/ooda/metrics"
 memory_endpoint: "GET /api/memory/state"
 improvement_area: CI_SELF_HEALING
 pattern_id: P-047
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — OODA loop execution, OODAOrchestrator FastAPI wiring
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Cognitive OODA Loop Agent v2.0

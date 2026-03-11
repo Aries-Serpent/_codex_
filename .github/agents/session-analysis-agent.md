@@ -1,6 +1,9 @@
 ---
 name: Session Analysis Agent
 description: Analyze Copilot sessions, verify committed changes, and track objective completion patterns
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — session analysis, commit verification, pattern learning
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Session Analysis Agent

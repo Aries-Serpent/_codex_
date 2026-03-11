@@ -1,6 +1,9 @@
 ---
 name: Artifact Monitor Agent
 description: Monitor CI/CD artifact health, track workflow outputs, and provide autonomous diagnostics with pattern recognition
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — CI/CD monitoring, pattern recognition
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Artifact Monitor Agent

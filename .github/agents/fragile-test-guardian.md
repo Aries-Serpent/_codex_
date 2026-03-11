@@ -1,6 +1,9 @@
 ---
 name: Fragile Test Guardian
 description: Detect fragile tests prone to flakiness and apply stabilization patterns
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — fragile test detection and stabilization
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Fragile Test Guardian Agent

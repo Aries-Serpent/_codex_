@@ -9,6 +9,9 @@ batch: pr-3421
 sprint: Sprint 4
 pattern_ids:
   - P-047  # CI health monitoring (CI_SELF_HEALING)
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — CI health alert classification and CODEX_CI_FAILURE_RATE updates
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # CI Health Alert Agent v1.0

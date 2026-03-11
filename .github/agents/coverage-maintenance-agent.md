@@ -1,7 +1,13 @@
 ---
 name: Coverage Maintenance Agent
 description: Maintain and improve test coverage thresholds across the codebase over time
+deprecated: true
+superseded_by: unified-coverage-agent.md (v1.0.0, 2026-03-11)
 ---
+
+> ⚠️ **DEPRECATED** — Coverage maintenance capabilities have been consolidated into
+> **[Unified Coverage Agent v1.0](unified-coverage-agent.md)**.
+> Use `unified-coverage-agent` for all new coverage maintenance invocations.
 
 # Coverage Maintenance Agent
 

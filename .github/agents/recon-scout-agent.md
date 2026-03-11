@@ -11,6 +11,9 @@ batch: s70
 status: active
 maturity: production
 author: mbaetiong
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — codebase reconnaissance, undocumented API discovery
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # [Agent]: Recon Scout — Codebase Blocker Discovery & DRQ Tagging
