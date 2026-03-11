@@ -127,6 +127,23 @@ class TelemetryCollector:
             "inject cognitive", "cognitive brain context", "pr-session",
             "session_inject", "brain context",
         ],
+        # SMOKE_TEST_001: Docker smoke-test / health-check failures (registry denial,
+        # image-not-found, health endpoint timeout) — distinct from generic docker-build
+        "docker-smoke-test": [
+            "smoke-test", "smoke test", "health check", "health-check",
+            "/api/health", "registry denied", "denied", "not found in manifest",
+            "load=true", "unable to find image",
+        ],
+        # CODESPACES_001: Codespaces prebuild failures
+        "codespaces": [
+            "codespaces", "prebuild", "devcontainer", "prebuilds",
+            "create template", "codespace",
+        ],
+        # EMBEDDING_001: Embedding / RAG index rebuild failures
+        "embedding-rebuild": [
+            "embedding", "index rebuild", "rag-index", "rag index",
+            "vector store", "faiss", "embedding-rebuild",
+        ],
     }
 
     def __init__(self, owner: str, repo: str, token: str):

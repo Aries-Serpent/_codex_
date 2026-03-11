@@ -4,7 +4,7 @@ description: >
   Diagnose and fix Docker build failures in CI — specifically editable install errors
   in multi-stage Dockerfiles using src-layout Python projects with setuptools.
   Also covers smoke-test registry denial patterns and .dockerignore optimisation.
-version: 1.1.0
+version: 1.2.0
 updated: 2026-03-11
 pr: 3552
 tags:
@@ -41,32 +41,25 @@ docker: Error response from daemon: … "not found"
 
 ## Diagnostic Decision Tree
 
-```
-Build failure in Docker stage with pip install -e .
-│
-├─ "error in 'egg_base' option: 'src' does not exist"
-│   └─ FIX: Add `COPY src/ ./src/` before the pip install step
-│
-├─ "package directory '<TOP_LEVEL>' does not exist"
-│   └─ The top-level package-dir stub is missing
-│       └─ FIX: Add to `STUB_DIRS` ARG or `COPY <dir>/ ./<dir>/`
-│
-├─ "package directory '<TOP_LEVEL>/<SUB>' does not exist"
-│   └─ Root cause: `COPY src/ ./src/` copies `src/<dir>/` which has sub-packages.
-│      setuptools `find` with `where=[".", "src"]` discovers `<pkg>.<sub>` from
-│      `src/<dir>/<sub>/__init__.py` and maps it via `package-dir <pkg> = "<dir>"`
-│      to root `<dir>/<sub>` — which the flat stub does not provide.
-│      └─ FIX: `COPY <dir>/ ./<dir>/` (real tree) instead of empty mkdir stub
-│
-└─ Smoke-test fails: docker pull denied / unable to find image
-    └─ Root cause: On PR builds, `push=false` so image is only in buildx cache.
-       Without `load: true`, the local Docker daemon has no knowledge of the image.
-       The smoke-test tag (e.g. `ghcr.io/.../preview:pr-N-SHA`) does not exist in GHCR.
-       └─ FIX: Add `load: true` in `docker/build-push-action` when NOT pushing
-          (condition: `github.ref != 'refs/heads/main' && NOT workflow_dispatch push`)
-          Use a single `should_push` step output as the source of truth:
-            push: ${{ steps.tags.outputs.should_push == 'true' }}
-            load: ${{ steps.tags.outputs.should_push != 'true' }}
+```mermaid
+flowchart TD
+    A[Build failure:\npip install -e . in Docker stage] --> B{Error type?}
+
+    B -->|egg_base: 'src' does not exist| C[FIX: Add\nCOPY src/ ./src/\nbefore pip install]
+
+    B -->|package directory\n'TOP_LEVEL' does not exist| D{src/ shadow\nexists?}
+    D -->|No| E[FIX: Add to\nSTUB_DIRS ARG\nmkdir -p]
+    D -->|Yes, has sub-packages\nin find.include| F[FIX: COPY dir/ ./dir/\nreal tree — stub\ninsufficient]
+    D -->|Yes, no sub-packages\nor excluded| E
+
+    B -->|package directory\n'TOP_LEVEL/SUB' does not exist| G[Root cause:\nCOPY src/ also copies\nsrc/dir/ with sub-pkgs.\nsetuptools discovers pkg.sub\nand maps to root dir/sub]
+    G --> F
+
+    B -->|Smoke-test: denied\nor image not found| H{Build event type?}
+    H -->|PR build: push=false| I[Root cause:\nno load=true → image only\nin buildx cache, not daemon]
+    I --> J[FIX: load=true\nwhen should_push!=true\nPR: platforms=amd64 only]
+    H -->|workflow_dispatch\npush_image=false| K[Root cause:\ngithub.event.number is EMPTY\n→ invalid pr-- tag]
+    K --> L[FIX: explicit\nelif workflow_dispatch branch\ntag=manual-run_id-SHA]
 ```
 
 ## Systematic Analysis Protocol
@@ -206,69 +199,42 @@ Docker's `.dockerignore` uses Go `filepath.Match` semantics:
 
 ## Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                   Build & Push Preview Image workflow                    │
-│                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Lint Dockerfile.preview (hadolint)                              │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-│              ↓                                  ↓                        │
-│  ┌───────────────────────────┐   ┌───────────────────────────────────┐  │
-│  │  Build (preview target)   │   │  Build (preview-dev target)       │  │
-│  │                           │   │                                   │  │
-│  │  Compute tags             │   │  Compute tags                     │  │
-│  │  ↓ should_push            │   │  ↓ should_push                    │  │
-│  │  Log in to GHCR (skip PR) │   │  Log in to GHCR (skip PR)        │  │
-│  │  ↓                        │   │  ↓                                │  │
-│  │  docker/build-push-action │   │  docker/build-push-action         │  │
-│  │    push=false (PR)        │   │    push=false (PR)                │  │
-│  │    load=true  (PR) ←FIX7  │   │    load=true  (PR) ←FIX7         │  │
-│  │  ↓ image in local daemon  │   │  ↓ image in local daemon          │  │
-│  │  Smoke-test health check  │   │  (smoke-test skipped for dev)     │  │
-│  │    docker run <local-tag> │   │                                   │  │
-│  │    → /api/health → 200 ✅  │   │                                   │  │
-│  └───────────────────────────┘   └───────────────────────────────────┘  │
-│              ↓                                  ↓                        │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │  Image build summary                                             │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph WF["Build & Push Preview Image workflow"]
+        LINT[Lint Dockerfile.preview\nhadolint ✅]
+        LINT --> PREV[Build preview target]
+        LINT --> PREVD[Build preview-dev target]
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                     Dockerfile.preview                              │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │  preview-base stage                                 │           │
-│  │                                                     │           │
-│  │  COPY src/          →  /build/src/                  │           │
-│  │    └─ src/services/ →  /build/src/services/mcp etc. │ ← ALSO   │
-│  │    └─ src/codex_utils/ → /build/src/codex_utils/    │   copied  │
-│  │                                                     │           │
-│  │  COPY services/     →  /build/services/ (full tree) │ ← FIX3   │
-│  │  COPY codex_utils/  →  /build/codex_utils/ (full)   │ ← FIX4   │
-│  │  RUN mkdir -p $STUB_DIRS → flat stubs for safe dirs  │           │
-│  │                                                     │           │
-│  │  setuptools find(where=[".", "src"]):                │           │
-│  │    discovers services.mcp → maps to services/mcp ✅  │           │
-│  │    discovers codex_utils.tracking → maps to .../ ✅  │           │
-│  │  pip install -e . → SUCCESS ✅                       │           │
-│  └─────────────────────────────────────────────────────┘           │
-│                           │                                         │
-│              COPY --from=preview-base /usr/local                    │
-│                           ↓                                         │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │  preview stage (production)                         │           │
-│  │  Same COPY pattern + pip install -e . → SUCCESS ✅   │           │
-│  └─────────────────────────────────────────────────────┘           │
-│                           │                                         │
-│            FROM preview (inherits all COPYs)                        │
-│                           ↓                                         │
-│  ┌─────────────────────────────────────────────────────┐           │
-│  │  preview-dev stage (development)                    │           │
-│  │  No additional install — inherits from preview ✅    │           │
-│  └─────────────────────────────────────────────────────┘           │
-└─────────────────────────────────────────────────────────────────────┘
+        subgraph PREV["Build preview image"]
+            direction TB
+            P1[Set up QEMU\narm64 emulation]
+            P1 --> P2[Set up Docker Buildx]
+            P2 --> P3[Compute image tags\nshould_push + platforms]
+            P3 -->|should_push=false\nPR / manual no-push| P4A[load=true\nplatforms=amd64\nTag: pr-N-SHA\nor manual-run_id-SHA]
+            P3 -->|should_push=true\nmain / dispatch push| P4B[push=true\nplatforms=amd64+arm64\nTag: latest + SHA]
+            P4A --> P5[Build via\nbuild-push-action\nGHA layer cache]
+            P4B --> P5
+            P5 -->|preview target only| P6[Smoke-test\ndocker run /api/health\n→ 200 ✅]
+        end
+
+        subgraph PREVD["Build preview-dev target"]
+            direction TB
+            D1[Same QEMU+Buildx setup]
+            D1 --> D2[Compute tags]
+            D2 --> D3[Build via\nbuild-push-action]
+        end
+
+        PREV --> SUM[Image build summary]
+        PREVD --> SUM
+    end
+
+    subgraph DF["Dockerfile.preview stages"]
+        direction TB
+        BASE[preview-base\nCOPY src/ services/ codex_utils/\nmkdir STUB_DIRS\npip install -e . ✅]
+        BASE --> PROD[preview production\nCOPY src/ services/ codex_utils/\npip install -e . ✅]
+        PROD --> DEV[preview-dev\ninherits from preview ✅]
+    end
 ```
 
 ## Related Agents
@@ -285,3 +251,4 @@ Docker's `.dockerignore` uses Go `filepath.Match` semantics:
 | 2026-03-11 | #3552 | 1.0.0 | Initial creation — fixed `services/mcp` + `codex_utils/tracking` editable install failures |
 | 2026-03-11 | #3552 | 1.0.1 | Added smoke-test pattern: `load: true` needed for PR builds when image is not pushed to GHCR |
 | 2026-03-11 | #3552 | 1.1.0 | Sprint 3: `.dockerignore` recursive patterns (`**/__pycache__`, `**/*.egg-info`); full codebase alignment verification section; workflow architecture diagram; v#64 end-to-end verified |
+| 2026-03-11 | #3552 | 1.2.0 | Mermaid diagrams: ASCII decision tree → flowchart TD; ASCII arch → flowchart TB with subgraphs; workflow_dispatch fix (r2920097250) documented |

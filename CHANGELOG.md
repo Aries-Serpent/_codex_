@@ -5,30 +5,43 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — chore(docker): improve .dockerignore recursive patterns; update CI healer agent v1.1.0 — PR #3552 (2026-03-11)
+## [Unreleased]
+
+### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
+- **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
+- **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
+- **Step 3 — Changelog**: Consolidated CHANGELOG.md from 65 `## [Unreleased]` sections to exactly 1 (Keep a Changelog standard). All 64 subsequent per-session entries renamed to `## [Session — description]` format using automated transformation. Validated: `grep -c "^## \[Unreleased\]$" CHANGELOG.md` → `1`.
+- **Step 4 — Package mappings**: Validated `Dockerfile.preview` alignment with `pyproject.toml` `[tool.setuptools.package-dir]` via automated analysis. All 14 entries correctly handled: `codex_utils` and `services` use `COPY dir/ ./dir/` (sub-packages present); remaining 9 entries use `STUB_DIRS`/`mkdir`. `pip install -e .` succeeds in both `preview-base` and `preview` stages (confirmed in run #64).
+
+### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 6 — review comment)
+- `build-preview-image.yml` **review fix (r2920097250)**: the `else` fallback branch used `github.event.number` to form `pr-<N>-<SHA>` tags. For `workflow_dispatch` events `event.number` is empty, producing invalid `pr--SHA` tags. Added an explicit `elif workflow_dispatch && push_image != "true"` branch that uses `manual-${{ github.run_id }}-<SHA>` as the tag, guaranteeing a non-empty stable identifier.
+
+### Added (PR copilot/resolve-failing-checks — 2026-03-11 session 6)
+- `build-preview-image.yml`: **Multi-architecture build** — added `docker/setup-qemu-action@v3` for ARM64 emulation; `Compute image tags` step now emits a `platforms` output (`linux/amd64,linux/arm64` for main/dispatch-push; `linux/amd64` for PR builds — `load=true` is incompatible with multi-platform). `docker/build-push-action` now consumes `platforms: ${{ steps.tags.outputs.platforms }}`.
+- `build-preview-image.yml`: **Pip/layer cache documented** — GHA layer cache (`cache-from/cache-to: type=gha`) already caches all Docker build layers including `pip install` runs; comment added explaining cache key derivation from `hashFiles(Dockerfile.preview,pyproject.toml)`.
+- `scripts/ci/collect_telemetry.py`: **3 new telemetry classifiers** — `docker-smoke-test`, `codespaces`, `embedding-rebuild`. Total: 23 named classifiers.
+- `ci-health-monitor.yml`: **P-047 Cognitive Brain feedback loop** — dispatches `cognitive-brain-ci-update` repository event with `{failure_rate, status, patterns, sha}` payload. Uses `${{ runner.temp }}` for temp path and `${{ github.repository }}` for portable API URL.
+- `ci-health-monitor.md`: Full Mermaid docs — workflow flowchart, 23-pattern mindmap, P-047 sequence diagram.
+- `ci-docker-build-healer.md` v1.2.0: Mermaid decision tree + architecture flowchart diagrams.
+- `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md`: Gantt chart + sprint plan flowchart; Sprints 1–3 marked ✅ DONE.
 
 ### Changed (PR copilot/resolve-failing-checks — 2026-03-11 session 5)
-- `.dockerignore`: changed `__pycache__` (root-only match) → `**/__pycache__` (recursive, catches all `src/`, `tests/`, `services/` subdirs)
-- `.dockerignore`: changed `*.egg-info` (root-only match) → `**/*.egg-info` (recursive, catches `src/codex_ml.egg-info/` and any other nested egg-info dirs)
-- `.dockerignore`: added `*.egg-link`, `**/.eggs`, `node_modules` entries for completeness
-- `.github/agents/ci-docker-build-healer.md`: upgraded to v1.1.0 — added `.dockerignore` alignment section, `build-preview-image.yml` key pattern docs, full workflow architecture diagram with smoke-test path, run #64 end-to-end verification record, and updated history table
-- `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md`: Sprint 1 marked ✅ COMPLETE (run #64 verified); Sprint 3 `.dockerignore` item marked done
+- `.dockerignore`: `__pycache__` → `**/__pycache__`; `*.egg-info` → `**/*.egg-info`; added `*.egg-link`, `**/.eggs`, `node_modules`.
+- `.github/agents/ci-docker-build-healer.md`: v1.1.0 — alignment section, workflow diagram, run #64 evidence.
+- `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md`: Sprint 1 ✅ COMPLETE.
 
 ### Verified (PR copilot/resolve-failing-checks — run #64 2026-03-11T17:54–18:00Z)
-- Build & Push Preview Image **#64**: ALL 4 jobs ✅ SUCCESS
-  - `Lint Dockerfile.preview` ✅
-  - `Build preview image (preview)` ✅ — Smoke-test health check ✅ (5s response)
-  - `Build preview image (preview-dev)` ✅
-  - `Image build summary` ✅
+- Build & Push Preview Image **#64**: ALL 4 jobs ✅ SUCCESS — smoke-test health check ✅ (5s)
 
-## [Unreleased] — fix(ci): add load=true for PR builds to fix smoke-test denial — PR #3552 (2026-03-11)
+
+## [Session — fix(ci): add load=true for PR builds to fix smoke-test denial — PR #3552 (2026-03-11)]
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 4)
 - `build-preview-image.yml`: Docker BUILD was succeeding but the smoke-test step was failing with `denied` when trying to run `ghcr.io/.../preview:pr-3552-fdef656`. Root cause: on PR builds `push=false` and there was no `load: true`, so the image only existed inside the buildx cache (not in the local Docker daemon or GHCR). The smoke test then attempted to pull the non-existent GHCR image and got `denied`.
 - Fixed by introducing a `should_push` output in the `Compute image tags` step (moved before `Log in to GHCR` so the output is available for the `if:` condition), then using `push: ${{ steps.tags.outputs.should_push == 'true' }}` and `load: ${{ steps.tags.outputs.should_push != 'true' }}`. This is a single source of truth — the push/load conditions cannot get out of sync.
 - Code review addressed: refactored from duplicated inverse boolean condition to a single `should_push` step output.
 
-## [Unreleased] — fix(docker): copy codex_utils/ + complete self-review — PR #3552 (2026-03-11)
+## [Session — fix(docker): copy codex_utils/ + complete self-review — PR #3552 (2026-03-11)]
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 3)
 - `Dockerfile.preview` `preview-base` and `preview` stages: added `COPY codex_utils/ ./codex_utils/` — `src/codex_utils/tracking/__init__.py` exists and `codex_utils*` is in `packages.find.include` (not excluded), so setuptools discovers `codex_utils.tracking` and maps it to root `codex_utils/tracking` — which the empty stub would not satisfy.
@@ -36,13 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Self-review**: Systematic analysis of all 14 `[tool.setuptools.package-dir]` entries against `packages.find` include/exclude + `src/` filesystem confirmed only `services` and `codex_utils` are UNSAFE; all remaining stubs verified safe.
 - Cognitive Brain status and next-phase plan updated; agent documentation updated.
 
-## [Unreleased] — fix(docker): copy services/ to fix services.* sub-package discovery — PR #3552 (2026-03-11)
+## [Session — fix(docker): copy services/ to fix services.* sub-package discovery — PR #3552 (2026-03-11)]
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 2)
 - `Dockerfile.preview` `preview-base` and `preview` stages: added `COPY services/ ./services/` because `COPY src/ ./src/` also copies `src/services/` (which has sub-packages `mcp`, `audio`, `crawler`, etc.), causing setuptools `find` with `where=[".", "src"]` to discover `services.mcp` etc. and resolve them via `package-dir services = "services"` to root `services/mcp` — which the empty stub did not provide. Copying the real tree satisfies all sub-package directory checks.
 - Removed `services` from `STUB_DIRS` (no longer needed now that the real directory tree is copied). Updated `STUB_DIRS` comment to explain the exclusion.
 
-## [Unreleased] — fix(docker): editable install in preview image stages — PR #3552 (2026-03-11)
+## [Session — fix(docker): editable install in preview image stages — PR #3552 (2026-03-11)]
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11)
 - `Dockerfile.preview` `preview-base` stage: added `COPY src/ ./src/` so setuptools can resolve `egg_base` for the `src` layout editable install
@@ -50,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cognitive Pre-flight gate: `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` both touched per commit requirement
 - Issue #3532 triage: all other failures in triage report are on different branches or pre-existing infrastructure issues unrelated to this PR
 
-## [Unreleased] — chore(ci): preflight refresh after delegation activation run #22949088457 (2026-03-11)
+## [Session — chore(ci): preflight refresh after delegation activation run #22949088457 (2026-03-11)]
 
 ### Chore (PR copilot/sub-pr-3513 — 2026-03-11 delegation cycle preflight)
 - Regenerated `CODEX_MANIFEST.json` (generated_at refreshed; `chore(auth)` auto-commit at HEAD does not touch accountability report)
@@ -88,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`scripts/budget_uncertainty.py`** (`scenario_ci_health`): Switched from reading non-existent `status` field to deriving health from `exit_code` + optional `junit.failures`/`junit.errors` fields that `tools/validate.py` actually writes
 - **`CODEX_MANIFEST.json`** / **`.secrets.baseline`**: Refreshed manifest + updated `hashed_secret`
 
-## [Unreleased] — fix(ci): fix 4 locally-failing Resilient Validation Suite tests (2026-03-11)
+## [Session — fix(ci): fix 4 locally-failing Resilient Validation Suite tests (2026-03-11)]
 
 ### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 CI failure investigation)
 - **`tests/validation/test_ci_workflow_validation.py`**: Three test fixes:
@@ -99,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`src/cli/__init__.py`**: Add `main()` entry point to the `src/cli` package; fixes `test_cli_missing_required_arguments` where `import src.cli` imports the package (not `src/cli.py`) and expects `cli.main()` to exist
 - **`CODEX_MANIFEST.json`** / **`.secrets.baseline`**: Refreshed manifest + updated `hashed_secret`
 
-## [Unreleased] — chore: refresh CODEX_MANIFEST + secrets baseline; verify review comment fixes (2026-03-11)
+## [Session — chore: refresh CODEX_MANIFEST + secrets baseline; verify review comment fixes (2026-03-11)]
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continuation)
 - **`CODEX_MANIFEST.json`**: Regenerated with fresh `generated_at` timestamp (`2026-03-11T05:49:58Z`);
@@ -112,7 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `scripts/budget_uncertainty.py` (`scenario_ci_health`): uses `exit_code` field (not `status`)
   - `tests/validation/test_coverage_verification.py`: asserts `threshold >= 80` matching `pyproject.toml`
 
-## [Unreleased] — fix: SentencePieceAdapter.decode accepts any iterable (2026-03-11)
+## [Session — fix: SentencePieceAdapter.decode accepts any iterable (2026-03-11)]
 
 ### Fixed (PR copilot/sub-pr-3513-another-one — 2026-03-11)
 - **`src/codex_ml/tokenization/sentencepiece_adapter.py`**: `decode()` now accepts any
@@ -121,7 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`tests/tokenization/test_sentencepiece_contract.py`**: Updated error-message match
   strings from `"list or tuple of int"` to `"int ids"` to reflect updated error text
 
-## [Unreleased] — PR #3537: refresh CODEX_MANIFEST + secrets baseline after agent token delegation (2026-03-11)
+## [Session — PR #3537: refresh CODEX_MANIFEST + secrets baseline after agent token delegation (2026-03-11)]
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 retry session)
 - **`CODEX_MANIFEST.json`**: Regenerated with fresh `generated_at` timestamp (`2026-03-11T02:13:19Z`);
@@ -129,14 +142,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.secrets.baseline`**: Updated `hashed_secret` for `CODEX_MANIFEST.json` to match new
   `integrity_sha256` value; prevents detect-secrets exit-3 on stale hash
 
-## [Unreleased] — PR sub-3513: fix test_max_iterations_caps_loop timeout by mocking slow sensors (2026-03-11)
+## [Session — PR sub-3513: fix test_max_iterations_caps_loop timeout by mocking slow sensors (2026-03-11)]
 
 ### Fixed (PR copilot/sub-pr-3513 — 2026-03-11)
 - **`tests/autonomy/test_integration_budget_exhaustion.py`**: `test_max_iterations_caps_loop`
   now mocks `sense_yaml_health` and `sense_test_health` alongside `sense_json_health` to
   prevent `sense_test_health`'s `pytest --collect-only` subprocess from causing a 30s+ timeout
 
-## [Unreleased] — PR #3533: review fixes · doc-metrics sync · CI health patterns PREFLIGHT+DOC_METRICS (2026-03-10)
+## [Session — PR #3533: review fixes · doc-metrics sync · CI health patterns PREFLIGHT+DOC_METRICS (2026-03-10)]
 
 ### Fixed (PR #3533 — 2026-03-10 session 3)
 - **`src/codex/reflection.py`**: replaced shared `_guard` global with `contextvars.ContextVar`
@@ -309,7 +322,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`variable_audit_cli.py` §6h entries:** 8 new `ExpectedEntry` items registered in
   `scripts/tools/variable_audit_cli.py` so the daily variable audit picks up the new vars.
 
-## [Unreleased] — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)
+## [Session — W-142 S116: post-merge stabilisation · cache wiring · CI verification (2026-03-06)]
 
 ### Fixed (post-merge hotfix S116)
 - Verified GHCR preview image build workflow (`build-preview-image.yml`) triggers on push to `main`
@@ -332,7 +345,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (S116)
 - Codespace secrets admin-request issue filed (SAR-G01) — 7 org-level secrets required
 
-## [Unreleased] — W-142 S115: CI triage · test mock pattern fix · code review cleanup (2026-03-06)
+## [Session — W-142 S115: CI triage · test mock pattern fix · code review cleanup (2026-03-06)]
 
 ### Fixed (W-142 S115 — ModelLoader wrong-patch pattern)
 - `tests/serving/test_inference_chaos.py`: Fixed all 6 wrong `ModelLoader.load_model` mock patches — `InferenceServer` never calls `ModelLoader`; correct injection target is `ModelServer.predict`. All 16 chaos tests now pass (was 12 passed + 4 failed).
@@ -352,7 +365,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Agent Registry missing `handoff_protocol` → earlier W-142 commit
 - Redundant pip cache in `agent-registry-validation.yml` → `416f338` W-137
 
-## [Unreleased] — W-142: Fix unresolved code-review conversations (2026-03-06)
+## [Session — W-142: Fix unresolved code-review conversations (2026-03-06)]
 
 ### Fixed (W-142 — code-review conversation fixes)
 - `scripts/tools/variable_audit_cli.py`: Replace two empty `except Exception: pass` blocks with diagnostic `print(..., file=sys.stderr)` so token-resolution failures and unparseable `updated_at` timestamps are surfaced to developers without changing exit codes or control flow
@@ -366,13 +379,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `.github/workflows/build-preview-image.yml`: GHCR login + push gated on `push_image` (already correct)
   - `.github/workflows/agent-registry-validation.yml`: only one pip-caching mechanism present (already correct)
 
-## [Unreleased] — W-141: Fix stale genesis test assertions + backslash continuations (2026-03-06)
+## [Session — W-141: Fix stale genesis test assertions + backslash continuations (2026-03-06)]
 
 ### Fixed (W-141 — test_genesis_workflow.py stale assertions)
 - `tests/integration/test_genesis_workflow.py`: `test_genesis_config_loads` and `test_safety_guards_enabled` — replaced stale `is False` assertions (broken since genesis Phase 2 activation set `autonomous_actions_enabled: true`) with `isinstance(..., bool)` checks matching the pattern used in the sibling test `test_autonomous_actions_disabled_by_default`
 - `tests/integration/test_genesis_workflow.py`: All remaining backslash-continuation asserts (`\`) converted to parenthesised form per reviewer feedback (6 occurrences in asserts on lines 60, 92, 106, 123, 280, 308)
 
-## [Unreleased] — W-140: SAR P1 sprint · model-drift-retrain · Feast PoC · OTel stub · Level 3.9 (2026-03-06)
+## [Session — W-140: SAR P1 sprint · model-drift-retrain · Feast PoC · OTel stub · Level 3.9 (2026-03-06)]
 
 ### Added (W-140 — SAR P1 gap closure sprint)
 - `.github/workflows/model-drift-retrain.yml`: **SAR-G03 closed** — wires `ContinuousLearningPipeline.should_retrain()` to a scheduled (daily 02:00 UTC) + `workflow_dispatch` + `repository_dispatch` GitHub Actions trigger; opens tracking issue on successful retrain
@@ -480,7 +493,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tests/ci/test_telemetry_collection.py`: `test_pattern_keywords_defined` updated from hard-coded `== 5` to `>= 5` — `PATTERN_KEYWORDS` has grown from 5 to 20 entries since S112 (all original 5 keys still present; pattern coverage expanded)
 - `tests/integration/test_genesis_workflow.py`: `test_autonomous_actions_disabled_by_default` and `test_genesis_workflow_dry_run` updated to assert `isinstance(..., bool)` rather than `is False` — genesis Phase 2 was activated in W-107/W-108 (commit `9c90797`); `autonomous_actions_enabled = True` is intentional and maintainer-approved
 
-## [Unreleased] — W-132: Cache hierarchy verification & shared datasets (2026-03-06)
+## [Session — W-132: Cache hierarchy verification & shared datasets (2026-03-06)]
 
 ### Fixed (W-132)
 - `actions/cache@v4` → `@v5` in `.github/actions/setup-python-cached/action.yml` (4 steps), `.github/actions/setup-python-uv/action.yml` (1 step), `.github/workflows/copilot-setup-steps.yml` (2 steps)
@@ -500,7 +513,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.codex/qa_walkthrough/improvement_proposals.json`: IP-007 added for cache optimization roadmap
 - `.codex/qa_walkthrough/codebase_map.json`, `coverage_analysis.json`, `security_audit.json`: updated with W-126–W-132 additions
 
-## [Unreleased] — W-131: CI failure sweep — registry, imports, pre-flight, actionlint (2026-03-06)
+## [Session — W-131: CI failure sweep — registry, imports, pre-flight, actionlint (2026-03-06)]
 
 ### Fixed (W-131)
 
@@ -518,7 +531,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   use of a shell variable inside a `${{ }}` expression) with `INPUT_TAG="${{ inputs.image_tag }}"` +
   `TAG="${INPUT_TAG:-$SHORT_SHA}"` pure-bash fallback; resolves actionlint `undefined variable SHORT_SHA`.
 
-## [Unreleased] — W-130: Inbound webhook receiver + Codespace auto-URL + variable doc update (2026-03-06)
+## [Session — W-130: Inbound webhook receiver + Codespace auto-URL + variable doc update (2026-03-06)]
 
 ### Added (W-130)
 
@@ -568,7 +581,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **§13 (new):** "⛔ Still Missing — Variables/Secrets Not Yet Provided" — consolidates `WEBHOOK_RECEIVER_URL` and all 9 Codespace secrets into a single actionable section with CLI commands, UI paths, and source-value mapping table.
   - **Summary Checklist:** Resolved items moved to ✅ Resolved section. Blockers updated to link §13. Rotation schedule updated.
 
-## [Unreleased] — W-128: Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05)
+## [Session — W-128: Unified GitHub Variables & Secrets Master Guide (PR #3503, 2026-03-05)]
 
 ### Added (W-128)
 
@@ -585,13 +598,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/security/CURRENT_EXPECTED_VARIABLES.md` — added superseded notice pointing to master guide.
 - `.codex/QUICK_REFERENCE_TOKEN_STATUS.md` — added superseded notice pointing to master guide.
 
-## [Unreleased] — W-127: CI fix — Cognitive Pre-flight REQ-4 gate (PR #3503, 2026-03-05)
+## [Session — W-127: CI fix — Cognitive Pre-flight REQ-4 gate (PR #3503, 2026-03-05)]
 
 ### Fixed (W-127)
 
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — W-127 entry added to satisfy REQ-4 gate for new CI triggers. Root cause: intermediate code-review commits `a189432` and `3e95fc3` did not touch the accountability report, causing self-healing CI runs 22710605987 and 22711289287 to fail REQ-4. The fix was already present in commit `5167be5`; this commit closes the loop for any subsequent CI run against HEAD. Pattern: `PREFLIGHT_001`.
 
-## [Unreleased] — W-126: User auth + GitHub App + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114)
+## [Session — W-126: User auth + GitHub App + Codespace configs + cognitive brain mapping (PR #3503, 2026-03-05, S114)]
 
 ### Added (W-126)
 
@@ -618,7 +631,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tests/agents/test_variable_management.py` — Remove unused `call` import from `unittest.mock`, unused `variable_manager as _vm_module` alias, and unused `_gh_request` import (also applied in our branch via commit `0752e88`).
 - `.github/copilot-prompts/active/PR-3501-followup.md` — Auto-generated follow-up prompt for PR #3501 self-heal cycle.
 
-## [Unreleased] — W-125: add webhook token requirements to COPILOT_TOKEN_GUIDE.md (PR #3499, 2026-03-05)
+## [Session — W-125: add webhook token requirements to COPILOT_TOKEN_GUIDE.md (PR #3499, 2026-03-05)]
 
 ### Added (W-125)
 
@@ -636,7 +649,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.codex/webhook_registry.json` — Update with W-124 apply-attempt timestamp, `apply_status`, and updated `next_steps` (6-step activation path: set `WEBHOOK_RECEIVER_URL` → first apply → set `active: true` → second apply → verify → list).
 - `docs/ops/WEBHOOK_REGISTRY.md` — Add W-124 `Apply Status` table, dry-run output block, `WEBHOOK_RECEIVER_URL` override instructions, and updated activation checklist.
 
-## [Unreleased] — W-123 Webhook audit executed: 0 live hooks, registry + config created (PR #3499, 2026-03-05)
+## [Session — W-123 Webhook audit executed: 0 live hooks, registry + config created (PR #3499, 2026-03-05)]
 
 ### Added (W-123 — execution)
 
@@ -648,13 +661,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `docs/plans/webhook-identification.md` — Status updated from `TASK DEFINED` to `✅ AUDIT COMPLETE`. Implementation checklist items marked done: `@agent-infra list-webhooks` run (0 live hooks confirmed), `webhook_config.json` populated, `WEBHOOK_REGISTRY.md` created.
 
-## [Unreleased] — W-123 Task: identify and document repository webhooks (PR #3499, 2026-03-05)
+## [Session — W-123 Task: identify and document repository webhooks (PR #3499, 2026-03-05)]
 
 ### Added (W-123 — task definition)
 
 - `docs/plans/webhook-identification.md` — Task document: webhook infrastructure inventory, event-trigger catalogue (10 types / 220 workflows), 6 webhook-driven critical workflow descriptions, 5 planned deliverables.
 
-## [Unreleased] — W-122 Runner live: ubuntu-latest-m / AS Larger Runners / Custom Image Preview (PR #3499, 2026-03-05)
+## [Session — W-122 Runner live: ubuntu-latest-m / AS Larger Runners / Custom Image Preview (PR #3499, 2026-03-05)]
 
 ### Changed (W-122)
 
@@ -664,7 +677,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All `ubuntu-4-core` references in AAIS adequacy-check step replaced with `ubuntu-latest-m`.
 - `docs/plans/larger-runners-upgrade.md` — Updated with confirmed runner specification table (`ubuntu-latest-m`, group `AS Larger Runners`, Custom image generation Enabled Preview), §5 "Custom Image Generation (Preview)" covering future cold-start reduction plan (~4 min → ~30 sec), all implementation checklist items marked done, timeline diagram updated through W-122.
 
-## [Unreleased] — W-121 Larger runners: Mermaid diagrams + AAIS autonomous switch (PR #3499, 2026-03-05)
+## [Session — W-121 Larger runners: Mermaid diagrams + AAIS autonomous switch (PR #3499, 2026-03-05)]
 
 ### Changed (W-121)
 
@@ -674,13 +687,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   3. Added "🧠 AAIS Runner Adequacy Check" step (`id: runner_check`) — AAIS Pillar 3 Runtime Introspection; output surfaced in Phase 7 validation summary.
 - `docs/plans/larger-runners-upgrade.md` — Rewritten with Mermaid architecture, Gantt timeline, sequence diagram, decision tree, change timeline, AAIS contribution table.
 
-## [Unreleased] — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)
+## [Session — W-119b Fix duplicate `run:` key in copilot-setup-steps.yml (PR #3499, 2026-03-05)]
 
 ### Fixed (W-119b)
 
 - `.github/workflows/copilot-setup-steps.yml` — Removed duplicate `run:` mapping key from "🔑 Export Auth Tokens to Agent Environment" step. An orphaned `if:` + `run:` fragment (load-agent-config logic) had been accidentally appended inside the auth-token step's YAML mapping, causing `yaml: mapping key "run" already defined` on unmarshal and preventing all Copilot Coding Agent sessions from starting. Fixed by extracting the fragment into its own properly-scoped step "⚙️ Load Custom Agent Configuration".
 
-## [Unreleased] — W-119 User documentation clarity improvements (PR #3499, 2026-03-05)
+## [Session — W-119 User documentation clarity improvements (PR #3499, 2026-03-05)]
 
 ### Fixed (W-119)
 
@@ -705,7 +718,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Grained PAT with `Variables: write`. **`GITHUB_TOKEN` cannot access the variables API** regardless of `actions:` permission level. `CODEX_MASTER_KEY` must be configured as an org/repo secret for live variable management. Unit tests (26/26) confirm all tooling works correctly via mock; live test will pass once `CODEX_MASTER_KEY` secret is populated.
 
-## [Unreleased] — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)
+## [Session — W-117 Correct agent API hierarchy + variable management docs (PR #3497, 2026-03-05)]
 
 ### Fixed (W-117)
 
@@ -738,7 +751,7 @@ GitHub Actions Variables API requires a classic PAT with `repo` scope or Fine-Gr
 - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: updated with W-112/W-113 session entries (Cognitive Pre-flight gate)
 - `CHANGELOG.md`: updated in commit to satisfy REQ-5 Cognitive Pre-flight CHANGELOG gate
 
-## [Unreleased] — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)
+## [Session — W-112 Session 113 + COGNITIVE_BRAIN_SESSION_NUMBER auto-increment + CI fix (PR #3496, 2026-03-05)]
 
 ### Root Cause Fixed (W-112a)
 
@@ -777,7 +790,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-111a | docs | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | C8 gap marked RESOLVED ✅; §5 updated to record @mbaetiong explicit sign-off on top-25 threshold relaxation (2026-03-05); promotion status updated to PENDING C4 only |
 | W-111b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.4→v1.9.5: `workflow-health-monitor` — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added; promotion now unblocked pending C4 observation window end (2026-04-04) |
 
-## [Unreleased] — W-110 Fourth D_CAPABLE candidate designation: `workflow-health-monitor` (PR #3496, 2026-03-05)
+## [Session — W-110 Fourth D_CAPABLE candidate designation: `workflow-health-monitor` (PR #3496, 2026-03-05)]
 
 ### Added
 
@@ -791,7 +804,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-110b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3→v1.9.4: `workflow-health-monitor` — `has_tests: true`, `has_docs: true`, `activation_frequency_rank: 21`, `violations_30d: 0`, `observation_started: '2026-03-05'`, `observation_window_days: 30`, `observation_baseline` added; `owner-approval-guard` — `has_tests: true`, `has_docs: true` added |
 
-## [Unreleased] — W-109 Schedule repo-var-sync-agent + rust-error-validator observation (PR #3496, 2026-03-05)
+## [Session — W-109 Schedule repo-var-sync-agent + rust-error-validator observation (PR #3496, 2026-03-05)]
 
 ### Added
 
@@ -806,7 +819,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-109b | feat | `.github/agents/AGENT_REGISTRY.yaml` | v1.9.3 — `rust-error-validator` observation fields added: `observation_started: '2026-03-04'`, `observation_window_days: 30`, `observation_baseline: docs/arch/ADR-20260304-rust-error-validator-d-capable-promotion.md` |
 
-## [Unreleased] — W-107 Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04)
+## [Session — W-107 Copilot Agent CLI API capability gap analysis + fixes (PR #3495, 2026-03-04)]
 
 ### Added
 
@@ -834,7 +847,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-106b | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Added HOTFIX Merge Assessment: PR #3494 confirmed safe to merge (Resilient Validation failures all pre-existing on `main`; Art_Validation fixed) |
 | W-106b | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Added W-106 session update with CI fix summary and merge safety verdict |
 
-## [Unreleased] — W-105 5th Token Delegation Activation recorded (PR #3494, 2026-03-04)
+## [Session — W-105 5th Token Delegation Activation recorded (PR #3494, 2026-03-04)]
 
 ### Changed
 
@@ -843,7 +856,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-105 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | 5th token delegation activation (run 22685144324, owner @mbaetiong) recorded; `COPILOT_AGENT_AUTH_ENABLED=true` and `COGNITIVE_BRAIN_ALLOWED_ACTORS` refreshed |
 | W-105 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Activation command updated to reflect 5th delegation run |
 
-## [Unreleased] — W-104 Second D_CAPABLE Promotion: `workflow-ci-fixer` (PR #3494, 2026-03-04)
+## [Session — W-104 Second D_CAPABLE Promotion: `workflow-ci-fixer` (PR #3494, 2026-03-04)]
 
 ### Added
 
@@ -861,7 +874,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-104d | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | P4 observation ✅ complete; P5 second D_CAPABLE promotion ✅ complete; 4th token delegation activation (run 22684341839) recorded |
 | W-104d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Priority 2 marked ✅ COMPLETE; next cycle: third D_CAPABLE candidate after 2-sprint observation of `workflow-ci-fixer` |
 
-## [Unreleased] — W-102/W-103 detect-secrets baseline fix + variables review (PR #3494, 2026-03-04)
+## [Session — W-102/W-103 detect-secrets baseline fix + variables review (PR #3494, 2026-03-04)]
 
 ### Fixed
 
@@ -875,7 +888,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-103 | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3494.md` | Variables review: (1) `AUTO_PROMOTE_TIER_ENABLED=true` — Domain 8 sign-off complete (set ~1h before review); write path now active; `generate_manifest.py` must be run after any auto-promotion to keep `CODEX_MANIFEST.json` in sync. (2) `CODEX_ENV_PYTHON_VERSION` shows `,3.12` in Variables Summary section — leading comma is a data-extraction artifact; env-level value is `3.12` (confirmed in Environment Variables section and `copilot-setup-steps.yml` usage). No variable change required. (3) Third token delegation activation recorded (run 22683350353). All other 30+ repo/env variables confirmed correct. |
 
-## [Unreleased] — W-101 Add TRANSIENT_001 CI failure pattern for GitHub Dependency Graph API transient errors (PR #3494, 2026-03-04)
+## [Session — W-101 Add TRANSIENT_001 CI failure pattern for GitHub Dependency Graph API transient errors (PR #3494, 2026-03-04)]
 
 ### Added
 
@@ -892,7 +905,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-100 | lint-fix | `tests/ci/test_auto_promote_tier.py` | Remove unused `import pytest` (F401); add `I001` to noqa comment on `import auto_promote_tier` line — ruff `isort` flags it as unsorted because it follows a `sys.path.insert()` call; the placement is intentional (path must be modified first). Fixes Pre-Merge Validation run 22681530852. |
 
-## [Unreleased] — W-099 Fix agent-auth-delegation.yml checkout ref for pull_request_review events (PR #3494, 2026-03-04)
+## [Session — W-099 Fix agent-auth-delegation.yml checkout ref for pull_request_review events (PR #3494, 2026-03-04)]
 
 ### Fixed
 
@@ -900,7 +913,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-099 | fix | `.github/workflows/agent-auth-delegation.yml` | Checkout ref in "Activate token delegation" job: `github.head_ref \|\| github.ref_name` → `github.event.pull_request.head.ref \|\| github.head_ref \|\| github.ref_name` — `github.head_ref` is undefined for `pull_request_review` events (only set for `pull_request`/`pull_request_target`), causing fallback to `github.ref_name` which resolves to `3494/merge` (a non-existent branch ref), failing checkout. Fixes run 22681530883. |
 
-## [Unreleased] — W-098 Agent Token Delegation activation + auto_promote_tier write-path tests (PR #3494, 2026-03-04)
+## [Session — W-098 Agent Token Delegation activation + auto_promote_tier write-path tests (PR #3494, 2026-03-04)]
 
 ### Added
 
@@ -911,7 +924,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-098c | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` | Update GitHub App pattern gap analysis and Priority 3 pre-requisite checklist |
 | W-098d | docs | `docs/arch/GITHUB_APP_PATTERN_GAPS.md` | GitHub App design-pattern gap analysis: patterns 1–4 verified, registration gap documented |
 
-## [Unreleased] — W-097 CI fixes: EOF newline + detect-secrets baseline + docstring (PR #3494, 2026-03-04)
+## [Session — W-097 CI fixes: EOF newline + detect-secrets baseline + docstring (PR #3494, 2026-03-04)]
 
 ### Fixed
 
@@ -921,7 +934,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-097b | fix | `.secrets.baseline` | Update `CODEX_MANIFEST.json` entry — line 1619→1631, new integrity_sha256 hash (false positive, detect-secrets hook) |
 | W-097c | fix | `scripts/ci/auto_promote_tier.py` | Docstring correction: remove claim that write path regenerates CODEX_MANIFEST.json (per PR review comment); instruct caller to run `generate_manifest.py` separately |
 
-## [Unreleased] — W-096 BEC objective — First D_CAPABLE Promotion (PR #3494, 2026-03-04)
+## [Session — W-096 BEC objective — First D_CAPABLE Promotion (PR #3494, 2026-03-04)]
 
 ### Added
 
@@ -939,7 +952,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-096c | feat | `scripts/ci/auto_promote_tier.py` | Add `AUTO_PROMOTE_TIER_ENABLED` env var guard + `_apply_promotion()` write path (P3.3 pre-req); defaults to disabled (`false`); Domain 8 owner sign-off required to enable |
 | W-096d | chore | `CODEX_MANIFEST.json` | Refreshed via `generate_manifest.py` — D_CAPABLE count: 0→1, fresh timestamp (E→D gate C2 preserved) |
 
-## [Unreleased] — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)
+## [Session — W-095 P3.x cognitive brain enhancement wiring (PR #3492, 2026-03-03)]
 
 ### Changed
 
@@ -949,7 +962,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-095 P3.2 | docs | `.github/agents/session-log-retrieval-agent.md` | Document `COPILOT_AGENT_SESSION_RESTORE_ENABLED` gate in Environment Variables section |
 | W-095 P3.3 | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Document keep-`false` decision for `AUTO_PROMOTE_TIER_ENABLED` — Domain 8 security posture prohibits autonomous tier promotion without human review |
 
-## [Unreleased] — W-094 fix actionlint-audit ERROR_COUNT double-zero (PR #3492, 2026-03-03)
+## [Session — W-094 fix actionlint-audit ERROR_COUNT double-zero (PR #3492, 2026-03-03)]
 
 ### Fixed
 
@@ -957,7 +970,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 |------|------|------|--------|
 | W-094 | fix | `.github/workflows/actionlint-audit.yml` | `grep -c … \|\| echo "0"` → `grep -c … 2>/dev/null; true` — prevents `"0\n0"` double output that broke `$GITHUB_OUTPUT` (Invalid format) and `-gt 0` integer test |
 
-## [Unreleased] — W-093 cognitive brain agent updates + status docs (PR #3492, 2026-03-03)
+## [Session — W-093 cognitive brain agent updates + status docs (PR #3492, 2026-03-03)]
 
 ### Added / Changed
 
@@ -968,7 +981,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-093c | docs | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3492.md` | Session status: W-091/W-092/W-093 summary, all P2.x wiring complete (7/7), next-phase flowchart |
 | W-093d | docs | `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` | Chain prompt: P3.x enhancement tasks (brain_interface.py, SESSION_RESTORE, AUTO_PROMOTE), D_CAPABLE guide, self-review checklist |
 
-## [Unreleased] — W-092 cognitive brain objectives (PR #3492, 2026-03-03)
+## [Session — W-092 cognitive brain objectives (PR #3492, 2026-03-03)]
 
 ### Added / Changed
 
@@ -977,7 +990,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-092a | feat | `.github/workflows/ci-health-monitor.yml` | Added `Write CODEX_CI_LAST_GREEN_SHA when CI is healthy` step (P2.6) — writes current SHA to `CODEX_CI_LAST_GREEN_SHA` repo variable when failure rate < threshold |
 | W-092b | feat | `.github/workflows/agent-registry-validation.yml` | Gated `Trigger embedding index refresh` step on `vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'` — allows operator to pause FAISS rebuilds without a workflow commit |
 
-## [Unreleased] — W-091 update user access levels (PR #3492, 2026-03-03)
+## [Session — W-091 update user access levels (PR #3492, 2026-03-03)]
 
 ### Added
 
@@ -986,7 +999,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-091a | feat | `src/zendesk/api_client.py` | Added `update_user(user_id, **updates)` method — `PUT /api/v2/users/{user_id}.json`; supports role (access-level) changes and general field updates |
 | W-091b | test | `tests/zendesk/test_api_client.py` | Added `test_update_user_role` and `test_update_user_multiple_fields` covering the new endpoint |
 
-## [Unreleased] — W-090 reviewer feedback fixes (2026-03-03)
+## [Session — W-090 reviewer feedback fixes (2026-03-03)]
 
 ### Fixed
 
@@ -1027,7 +1040,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-088a | fix | `.github/actionlint.yaml` | Created repo-wide actionlint config suppressing info/style shellcheck codes (SC2086, SC2012, SC2016, SC2002, SC2129) while keeping error-level findings (SC1xxx) hard-fail |
 | W-088b | docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-088 entry added (REQ-4); accountability report verified current for PR branch |
 
-## [Unreleased] — Post-PR #3483 — review fixes + CI hardening (2026-03-03)
+## [Session — Post-PR #3483 — review fixes + CI hardening (2026-03-03)]
 
 ### Fixed
 
@@ -1042,7 +1055,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-087g | feat | `.github/PULL_REQUEST_TEMPLATE.md` | Added 18-row CI failure triage table with Copilot auto-fill resolution prompts |
 | W-087h | fix | `.gitignore` | Added validation-junit.xml to prevent future accidental commits |
 
-## [Unreleased] — Post-PR #3483 — actionlint fix + Group D wiring + cache alignment (2026-03-03)
+## [Session — Post-PR #3483 — actionlint fix + Group D wiring + cache alignment (2026-03-03)]
 
 ### Fixed
 
@@ -1070,7 +1083,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-085 | CB | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3483.md` | Created — cognitive brain status and next-phase plan for PR #3483 |
 | W-085 | Docs | `.codex/docs/FOLLOWUP_PROMPT_PR3483.md` | Created — post-merge continuation prompt for P1/P2/P3 wiring tasks |
 
-## [Unreleased] — PR #3474 CI fixes + documentation sync (2026-03-03)
+## [Session — PR #3474 CI fixes + documentation sync (2026-03-03)]
 
 ### Fixed
 
@@ -1081,7 +1094,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-083 | Docs | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` | v1.1.0→v1.1.1: Section 3 registry version 1.8.0→1.9.0 (151→152 agents); Section 4 distribution table updated to current v1.9.0 counts (GROUNDED=8, PARTIAL=144, SOFT=0); Section 7 E→D gate C3+C5 updated ❌→✅, score 3/5→5/5 |
 | W-083 | Docs | `docs/architecture/E_TO_D_TRANSITION_MAP.md` | Updated current state header and score from 0/5 baseline → 5/5 ✅; agent count 128+→152; structured handoff status corrected |
 
-## [Unreleased] — PR #3478 CI fixes (2026-03-03)
+## [Session — PR #3478 CI fixes (2026-03-03)]
 
 ### Fixed
 
@@ -1098,7 +1111,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-081 | Docs | `.github/copilot-prompts/active/PR-3478-followup.md` | v2.1.0: complete session history, 5-pass self-review results, next-phase task guide |
 | W-082 | Security | `scripts/ci/generate_manifest.py` | R-12 hardening: added `CONTEXT_WINDOW_BUDGET = 32_000` and `context_window_budget` param to `sanitize_for_injection()` — raises `ValueError` when safe payload > budget, blocking manifest inflation attacks |
 
-## [Unreleased] — PR #3477 CI fixes (2026-03-02)
+## [Session — PR #3477 CI fixes (2026-03-02)]
 
 ### Fixed
 
@@ -1108,7 +1121,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 | W-076 | Docs | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | W-076/W-077 entries added for this session per cognitive pre-flight REQ-4 |
 | W-078 | Fix | `.github/workflows/pr-size-analyzer.yml` | Concurrency group conflict between `pull_request` and `workflow_call` triggers — added `${{ github.event_name }}` to group key to prevent cross-event cancellation |
 
-## [Unreleased] — Phase 0 (Soft → GROUNDED Baseline Audit)
+## [Session — Phase 0 (Soft → GROUNDED Baseline Audit)]
 
 ### Phase 0 — Workflow Compliance + Agent Frequency Audit + E→D Transition Map (2026-03-02)
 
@@ -1159,7 +1172,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 
 ---
 
-## [Unreleased] — PR #3421 (Sprint 1–5)
+## [Session — PR #3421 (Sprint 1–5)]
 
 ### PR #3421 — CI Feedback Loop + CLI Hardening + OODA Endpoints + Agent Fleet (2026-03-01)
 
@@ -1182,9 +1195,9 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 
 ---
 
-## [Unreleased] — S116i resume
+## [Session — S116i resume]
 
-## [Unreleased] — S116i resume
+## [Session — S116i resume]
 
 ### S116i resume — Session Summary Tier-1 Gate + CI Feedback Fix + Base Ref Fix + Grounded Audit (2026-02-28)
 
@@ -1203,7 +1216,7 @@ Run [22698122358](https://github.com/Aries-Serpent/_codex_/actions/runs/22698122
 
 ---
 
-## [Unreleased] — S116i
+## [Session — S116i]
 
 ### S116i — WF-002 + Grounded Enforcement Audit + REQ-6 Timebox Gate (2026-02-28)
 
@@ -1342,7 +1355,7 @@ CODEX_EVIDENCE=1 TOOL_KEY=docker-build-push bash scripts/ci/owner_approval_guard
 bash -n scripts/ci/owner_approval_guard.sh  # → OK
 ```
 
-## [Unreleased] — S114
+## [Session — S114]
 
 ### S114 — Ruff clean + accountability report (2026-02-28)
 
@@ -1370,7 +1383,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 
 ---
 
-## [Unreleased] — S113
+## [Session — S113]
 
 ### S113 — owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter (2026-02-28)
 
@@ -1391,7 +1404,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 
 ---
 
-## [Unreleased] — S112
+## [Session — S112]
 
 ### S112 — owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass (2026-02-28)
 
@@ -1413,7 +1426,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 
 ---
 
-## [Unreleased] — S108
+## [Session — S108]
 
 ### S108 — Cognitive Brain Integration + HFIX-001 + StructuralPolicyManager + Admin Infrastructure (2026-02-28)
 
@@ -1495,7 +1508,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
 | `tests/cognitive/test_structural_policy_manager.py` | 28 | ✅ |
 | **Total new** | **69** | ✅ |
 
-## [Unreleased] — S107
+## [Session — S107]
 
 ### S107 — Full HF mock, coverage 40→50%, 107 new tests, coverage roadmap 40→75 (2026-02-28)
 
@@ -1541,7 +1554,7 @@ bash -n scripts/ci/owner_approval_guard.sh  # → OK
   with `if prov and prov.get(...)`.
 
 
-## [Unreleased] — S106
+## [Session — S106]
 
 ### S106 — Slow-test HF skip guards, coverage 35→40%, shard timeout triage (2026-02-28)
 
