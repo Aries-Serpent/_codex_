@@ -3,11 +3,42 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T08:10Z (fix: 2 Resilient Validation Suite test failures from CI run #22940511129)
+**Last updated:** 2026-03-11T08:55Z (chore: resolve CI issues #3532 + #3545 — preflight refresh)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: 2 Resilient Validation Suite test failures)
+## 📋 SESSION SUMMARY — 2026-03-11 (chore: resolve CI issues #3532 and #3545)
+
+### Issues Addressed
+
+#### Issue #3545 — CI Health Alert: High Failure Rate (16.6%)
+
+| Pattern | Count | Disposition |
+|---------|-------|-------------|
+| self-healing | 149 | Auto-healed; no action required |
+| unknown | 13 | Transient merge-state runs not matching any pattern; see #3532 detail |
+| auto-fix | 3 | Auto-fixed by CI |
+| security-scan | 1 | Pre-existing |
+
+Root cause of high failure rate: same pre-existing infra issues listed in #3532 below. Code-level failures (Resilient Validation Suite) were fixed in commit 9913e90.
+
+#### Issue #3532 — CI Failure Triage: 38 failures across 11 workflows
+
+| Workflow | Branch(es) | Root Cause | Action |
+|----------|------------|-----------|--------|
+| Resilient Validation Suite | `copilot/sub-pr-3513` | 2 test bugs | ✅ Fixed in commit 9913e90 |
+| Art_CodeQL | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
+| Art_Security Scanning Suite | `copilot/sub-pr-3513` | CodeQL `JOB_STATUS_CONFIGURATION_ERROR` (infra) | Pre-existing; not code |
+| Art_Validation Pipeline | `copilot/sub-pr-3513` | Exit code 2 on stale merge-state commit; passes locally | Current HEAD passes ✅ |
+| Agent Token Delegation | `copilot/sub-pr-3513` / `3513/merge` | `chore(auth)` auto-commit at HEAD lacked accountability report update | ✅ Fixed by this commit |
+| Art_RAG Module Tests | `0D_base_` only | Base branch test failures; not introduced by this PR | Pre-existing |
+| Build & Push Preview Image | `0D_base_` | Docker pip-install infra failure (known since PR #3508) | Pre-existing |
+| Automatic Dependency Submission | `copilot/sub-pr-3513` | GitHub Actions `checkout` infra issue | Infrastructure |
+| Pre-Flight CI Validation | `main` | Different branch | Not applicable |
+| Art_Root Organization Validation | `copilot/sub-pr-3513-another-one` | Different branch | Not applicable |
+| Copilot coding agent | `copilot/sub-pr-3513` | Agent-run transient failure | Transient |
+
+
 
 ### Work Completed This Session
 

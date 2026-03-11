@@ -5,7 +5,22 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — fix(tests): fix 2 locally-failing Resilient Validation Suite tests (2026-03-11)
+## [Unreleased] — chore(ci): resolve issues #3532 and #3545 — CI triage analysis + preflight refresh (2026-03-11)
+
+### Investigation (issues #3532 / #3545)
+- **Classified 11 failing workflows** from CI triage report #3532; identified root cause and disposition for each
+- **Resilient Validation Suite** — ✅ already fixed in commit 9913e90 (pytest 8.x `raising=False` kwarg + `timedelta(minutes=400)` for stale threshold)
+- **Art_CodeQL / Art_Security Scanning Suite** — `JOB_STATUS_CONFIGURATION_ERROR` on all three languages (Python/JS/Go): pre-existing CodeQL infrastructure issue unrelated to this PR; present across multiple branches
+- **Art_RAG Module Tests** — failing on base branch `0D_base_` only; not introduced by this PR
+- **Build & Push Preview Image** — pre-existing Docker pip-install infrastructure failure (tracked separately since PR #3508)
+- **Automatic Dependency Submission** — GitHub infrastructure `checkout` failure; not caused by code changes
+- **Pre-Flight CI Validation** on `main` — different branch, not related to this PR
+- **Art_Root Organization Validation** on `copilot/sub-pr-3513-another-one` — different branch
+- **Art_Validation Pipeline** — passed locally (`python tools/validate.py --mode fast` exits 0); CI failure was on a stale merge-state commit (`5ac24c3a`) that no longer represents the branch HEAD
+- **Agent Token Delegation** Cognitive Pre-flight — failed because the auto-generated `chore(auth): write provenance session token` commit at HEAD did not touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`; fixed by this preflight-refresh commit
+- **CI Health Alert (issue #3545)** — 16.6% failure rate driven by the same pre-existing infra issues above; "unknown" pattern (13) cases are transient merge-state runs not matching any pattern rule
+
+
 
 ### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 CI failure investigation run #22940511129)
 - **`tests/test_hf_loader_peft_guard.py`**: Removed `raising=False` kwarg from `monkeypatch.setitem()` — this argument was removed in pytest 8.x; `setitem` always works when setting a key so `raising=False` is not needed
