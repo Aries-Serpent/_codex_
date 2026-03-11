@@ -1,6 +1,9 @@
 ---
 name: PR 3095 Verification Agent
 description: Verify fixes related to PR #3095 patterns and prevent regressions in CI workflows
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — PR #3095 fix verification
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # PR #3095 Verification Agent

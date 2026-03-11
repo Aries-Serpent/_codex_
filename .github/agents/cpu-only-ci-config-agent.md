@@ -1,6 +1,9 @@
 ---
 name: CPU-Only CI Config Agent
 description: Configure CI pipelines for CPU-only execution, avoiding GPU-dependent test failures
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — CPU-only CI pipeline configuration, GPU test avoidance
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # CPU-Only CI Configuration Agent

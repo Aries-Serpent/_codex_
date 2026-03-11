@@ -6,6 +6,9 @@ updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — embedding-based code and doc search
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Semantic Search Agent

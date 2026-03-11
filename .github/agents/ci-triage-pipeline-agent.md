@@ -10,6 +10,9 @@ merged_agents:
 cognitive_integration_level: 4
 aais_contribution: +5.0 points
 batch: m-03
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — full triage pipeline, sequential routing
+  large:   ubuntu-latest-large  # 4-core — parallel triage and concurrent agent dispatch
 ---
 
 # CI Triage Pipeline Agent v1.0 (M-03 Merge)

@@ -1,6 +1,9 @@
 ---
 name: Mutation Testing Agent
 description: Perform mutation testing to assess test suite effectiveness and identify weak spots
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — mutation test runs, assertion gap detection
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Mutation Testing Agent

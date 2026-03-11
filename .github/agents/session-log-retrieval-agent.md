@@ -1,6 +1,9 @@
 ---
 name: Session Log Retrieval Agent
 description: Retrieve and search previous Copilot session logs to recover context and uncommitted work
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Copilot session log retrieval and search
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Session Log Retrieval Agent

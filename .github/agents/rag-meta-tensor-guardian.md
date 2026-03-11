@@ -1,6 +1,9 @@
 ---
 name: RAG Meta Tensor Guardian
 description: Guard RAG tensor operations against meta-tensor initialization and materialization issues
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — RAG tensor operation guards
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # RAG Meta Tensor Guardian Agent

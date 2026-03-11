@@ -6,6 +6,9 @@ created: 2026-02-19
 updated: 2026-02-19
 cognitive_integration_level: 2
 aais_contribution: +1.5
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — quantum compliance probability calibration (Bayesian/Fuzzy)
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Quantum Compliance Tuning Agent

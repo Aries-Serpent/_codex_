@@ -6,6 +6,9 @@ updated: 2026-02-25
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-fix-cognitive-app-issues
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — GitHub Pages deployment, theme config, live doc sync
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # GitHub Pages Manager Agent v4.0

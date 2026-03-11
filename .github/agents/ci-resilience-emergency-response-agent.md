@@ -1,6 +1,9 @@
 ---
 name: CI Resilience Emergency Response Agent
 description: Provide emergency resilience fixes for fragile CI/CD configurations and transient failures
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — emergency resilience fixes for fragile CI configurations
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # CI Resilience & Emergency Response Agent

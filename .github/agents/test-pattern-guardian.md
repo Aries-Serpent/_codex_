@@ -1,6 +1,9 @@
 ---
 name: Test Pattern Guardian
 description: Guard against anti-patterns in tests and enforce testing best practices across the codebase
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — test anti-pattern detection and enforcement
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Test Pattern Guardian Agent

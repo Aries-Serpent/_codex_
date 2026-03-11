@@ -8,6 +8,9 @@ aais_contribution: +3.5 points
 batch: pr-6
 supersedes: workflow-ci-fixer.agent.md (scope expanded)
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-3
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — all 4 enforcement domains (D1-D4) supported
+  large:   ubuntu-latest-large  # 4-core — parallel domain checks and faster artifact hygiene
 ---
 
 # Codebase Health Guardian v2.0

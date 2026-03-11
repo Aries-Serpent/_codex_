@@ -1,6 +1,9 @@
 ---
 name: Repository Organization Agent
 description: Organize and restructure repository layout for improved navigation and maintainability
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — repo layout restructuring, navigation improvement
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Repository Organization Agent

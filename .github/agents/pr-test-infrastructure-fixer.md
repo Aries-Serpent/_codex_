@@ -1,6 +1,9 @@
 ---
 name: PR Test Infrastructure Fixer
 description: Fix broken test infrastructure in PRs to restore CI/CD pipeline functionality
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — broken test infrastructure repair in PRs
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # PR Test Infrastructure Fixer Agent

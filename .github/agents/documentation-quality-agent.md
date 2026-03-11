@@ -6,7 +6,13 @@ updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.5 points
 batch: pr-8
+deprecated: true
+superseded_by: unified-doc-agent.md (v1.0.0-m02, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — Quality assessment capabilities have been merged into
+> **[Unified Documentation Agent v1.0](unified-doc-agent.md)** (M-02 merge).
+> Use `unified-doc-agent` for all documentation quality work.
 
 # Documentation Quality Agent
 

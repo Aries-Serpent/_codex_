@@ -5,7 +5,13 @@ version: 2.0.0-e09
 updated: 2026-02-21
 entropy_patterns: true
 cognitive_integration_level: 3
+deprecated: true
+superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — Secret detection capabilities have been merged into
+> **[Unified Security Scanner v1.0](unified-security-scanner.md)** (M-01 merge).
+> Use `unified-security-scanner` for all secrets detection and credential-leak remediation.
 
 # Secret Detection Agent v2.0 (ENTROPY-PATTERN-EXPAND)
 

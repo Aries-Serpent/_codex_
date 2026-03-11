@@ -17,6 +17,9 @@ activation_commands:
   - "@copilot use cognitive-brain-cli-agent"
   - "@copilot run CLI command: <cmd>"
   - "@copilot API: <METHOD> <url>"
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Cognitive Brain CLI console operations, API calls, dev server
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Cognitive Brain CLI Agent

@@ -1,6 +1,9 @@
 ---
 name: MSV Dashboard Monitor
 description: Monitor MSV dashboard metrics and alert on anomalies or threshold violations
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — MSV dashboard metrics monitoring and anomaly alerting
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # MSV Dashboard Monitoring Agent

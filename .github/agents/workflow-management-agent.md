@@ -1,6 +1,9 @@
 ---
 name: Workflow Management Agent
 description: Manage GitHub Actions workflow operations including creation, updates, and consolidation
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — workflow CRUD operations, consolidation analysis
+  large:   ubuntu-latest-large  # 4-core — parallel workflow validation
 ---
 
 # Workflow Management Agent

@@ -15,6 +15,9 @@ activation_commands:
   - "@copilot use workflow-compliance-guardian"
   - "@copilot audit workflows"
   - "@copilot fix workflow compliance"
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — branch-scoped concurrency and timeout enforcement
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Workflow Compliance Guardian
