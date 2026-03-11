@@ -68,18 +68,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # QEMU is required for cross-platform emulation (linux/arm64 on amd64 runners).
+      # Only needed when building multi-platform images (main / workflow_dispatch push).
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver-opts: image=moby/buildkit:latest
-
-      - name: Log in to GHCR
-        if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_image == 'true')
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compute image tags
         id: tags
@@ -93,10 +92,37 @@ jobs:
 
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=true" >> "$GITHUB_OUTPUT"
+            # Multi-arch on main: build both amd64 and arm64
+            echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true" ]]; then
+            echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=true" >> "$GITHUB_OUTPUT"
+            echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" != "true" ]]; then
+            # workflow_dispatch with push_image=false (or unset): local smoke-test only.
+            # github.event.number is EMPTY for workflow_dispatch — use run_id instead to
+            # guarantee a unique, non-empty tag (fixes Copilot review r2920097250).
+            echo "tags=${REPO}/${TARGET}:manual-${{ github.run_id }}-${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=false" >> "$GITHUB_OUTPUT"
+            # load=true is incompatible with multi-platform; amd64 only for local runs
+            echo "platforms=linux/amd64" >> "$GITHUB_OUTPUT"
           else
+            # Pull request
             echo "tags=${REPO}/${TARGET}:pr-${{ github.event.number }}-${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=false" >> "$GITHUB_OUTPUT"
+            # PR builds: amd64 only — load=true is incompatible with multi-platform builds
+            echo "platforms=linux/amd64" >> "$GITHUB_OUTPUT"
           fi
           echo "cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        if: steps.tags.outputs.should_push == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build (and push on main)
         uses: docker/build-push-action@v6
@@ -104,8 +130,18 @@ jobs:
           context: .
           file: Dockerfile.preview
           target: ${{ matrix.target }}
-          push: ${{ github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_image == 'true') }}
+          push: ${{ steps.tags.outputs.should_push == 'true' }}
+          # load=true exports the image to the local Docker daemon on PR builds so
+          # the smoke-test step can run it without pulling from GHCR (which would
+          # fail because the image has not been pushed yet on non-main branches).
+          # NOTE: load=true is INCOMPATIBLE with multi-platform builds; PR builds
+          # therefore use platforms=linux/amd64 only (set in Compute image tags step).
+          load: ${{ steps.tags.outputs.should_push != 'true' }}
+          # platforms: amd64 only for PR builds (load=true); amd64+arm64 for main/dispatch
+          platforms: ${{ steps.tags.outputs.platforms }}
           tags: ${{ steps.tags.outputs.tags }}
+          # GHA layer cache — Docker build layers (including pip install) are cached
+          # across runs keyed on Dockerfile.preview + pyproject.toml hash.
           cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
           cache-to:   type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max
           labels: |

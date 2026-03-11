@@ -325,3 +325,62 @@ jobs:
           python3 scripts/ci/auto_promote_tier.py --check-only 2>/dev/null || true
           pip install pyyaml --quiet 2>/dev/null || true
           python3 scripts/ci/enforcement_kpi_dashboard.py
+
+      # P-047: Cognitive Brain Feedback Loop
+      # Dispatches a repository_dispatch event so the cognitive brain system can
+      # ingest the latest CI health metrics without polling. The payload includes
+      # failure_rate, pattern_distribution, and a health status string that maps
+      # to CODEX_CI_FAILURE_RATE (ok / degraded / critical).
+      # Keyword map: "cognitive-brain" pattern in collect_telemetry.py PATTERN_KEYWORDS.
+      - name: "P-047: Cognitive Brain CI feedback dispatch"
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          FAILURE_RATE: ${{ steps.telemetry.outputs.failure_rate }}
+          FAILED_RUNS: ${{ steps.telemetry.outputs.failed_runs }}
+          TOTAL_RUNS: ${{ steps.telemetry.outputs.total_runs }}
+          CODEX_CI_FAILURE_THRESHOLD: ${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}
+        run: |
+          RATE="${FAILURE_RATE:-0}"
+          THRESHOLD="${CODEX_CI_FAILURE_THRESHOLD:-10}"
+          STATUS="ok"
+          if python3 -c "import sys; sys.exit(0 if float('${RATE}') >= float('${THRESHOLD}') * 2 else 1)" 2>/dev/null; then
+            STATUS="critical"
+          elif python3 -c "import sys; sys.exit(0 if float('${RATE}') >= float('${THRESHOLD}') else 1)" 2>/dev/null; then
+            STATUS="degraded"
+          fi
+          # Load pattern distribution for payload
+          PATTERNS=$(python3 -c "
+import json, sys
+try:
+    d = json.load(open('${{ runner.temp }}/telemetry_report.json'))
+    print(json.dumps(d.get('pattern_distribution', {})))
+except Exception:
+    print('{}')
+" 2>/dev/null || echo '{}')
+          PAYLOAD=$(python3 -c "
+import json, sys
+payload = {
+    'event_type': 'cognitive-brain-ci-update',
+    'client_payload': {
+        'source': 'ci-health-monitor',
+        'failure_rate': '${RATE}',
+        'failed_runs': '${FAILED_RUNS}',
+        'total_runs': '${TOTAL_RUNS}',
+        'status': '${STATUS}',
+        'threshold': '${THRESHOLD}',
+        'sha': '${{ github.sha }}',
+        'run_id': '${{ github.run_id }}',
+        'pattern_distribution': ${PATTERNS},
+    }
+}
+print(json.dumps(payload))
+" 2>/dev/null) || PAYLOAD='{"event_type":"cognitive-brain-ci-update","client_payload":{"source":"ci-health-monitor","status":"unknown"}}'
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+            -d "${PAYLOAD}" 2>/dev/null) || HTTP_STATUS=0
+          echo "P-047 cognitive brain feedback dispatch: status=${STATUS} rate=${RATE}% http=${HTTP_STATUS}"

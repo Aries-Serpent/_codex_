@@ -19,3 +19,18 @@ config/*.yaml
 # Allow completion summaries
 !*COMPLETE*.md
 !*_SUMMARY.md
+
+# ── Security: agent auth session files ───────────────────────────────────────
+# agent_auth_session.json is INTENTIONALLY tracked (whitelisted in root .gitignore
+# via !.codex/agent_auth_session.json). It contains ONLY provenance metadata:
+#   issued_at, expires_at, issued_by, run_id, run_url, pr_number, bypass_tools, note
+# It contains NO actual API tokens, secrets, or credentials.
+#
+# Guard against accidental future commits of token-bearing variants:
+agent_auth_session.*.json
+*.token.json
+*.secret.json
+agent_token_*.json
+# Runtime / ephemeral files that must never be committed:
+session_token.json
+live_token.json
