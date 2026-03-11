@@ -51,6 +51,7 @@ RUN pip install --no-cache-dir --upgrade pip
 # --no-deps on the editable install skips heavy ML packages (torch, transformers,
 # ray, etc.) that are not used by the cognitive_app CLI server.
 COPY pyproject.toml README.md ./
+COPY src/ ./src/
 RUN pip install --no-cache-dir \
         "uvicorn[standard]>=0.29.0,<1.0" \
         "fastapi>=0.110.0,<1.0" \
