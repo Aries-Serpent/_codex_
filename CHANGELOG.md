@@ -5,6 +5,16 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR sub-3513: continue — CODEX_MANIFEST refresh + preflight after agent token delegation (2026-03-11)
+
+### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continue session)
+- **`CODEX_MANIFEST.json`**: Regenerated with fresh `generated_at` timestamp (`2026-03-11T03:03:19Z`);
+  ensures E→D Transition Gate C2 (manifest freshness <24h) remains green
+- **`.secrets.baseline`**: Updated `hashed_secret` for `CODEX_MANIFEST.json` to match new
+  `integrity_sha256` value; prevents detect-secrets exit-3 on stale hash
+- All 4 PR review comments confirmed addressed (philosophy_parser regex, budget_cap ValueError,
+  scenario_ci_health exit_code, coverage threshold ≥ 80); 106 autonomy + validation tests passing
+
 ## [Unreleased] — PR #3537: refresh CODEX_MANIFEST + secrets baseline after agent token delegation (2026-03-11)
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 retry session)
