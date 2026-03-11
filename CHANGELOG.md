@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/sub-pr-3554 — 2026-03-11 session 8 — Codebase policy compliance)
+- **Workflow YAML syntax**: `ci-health-monitor.yml` line 356 — replaced inline Python `-c` blocks with heredoc syntax (`<<'EOF'`) to avoid YAML parsing conflicts with quotes and special characters. Fixes actionlint syntax error and `test_workflow_files_valid_yaml` failure.
+- **Test mocking pattern**: `tests/test_modeling_utils.py` — added `fake_load_from_pretrained` mock to bypass HuggingFace revision pinning check for test stub model identifiers. Fixes `test_load_model_and_tokenizer_minimal` failure in sharded quick tests (shard 1/4).
+- **Accountability policy violation**: Updated `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to document commits 919a5b7 and 077756e, which violated the mandatory preflight re-touch pattern requiring both files to be updated in every commit to copilot branches.
+
 ### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
 - **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
