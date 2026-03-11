@@ -76,6 +76,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
 
     sessions_dir = tmp_path / ".codex" / "sessions"
     sessions_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setenv("CODEX_SESSION_LOG_DIR", str(sessions_dir))
     ndjson_file = sessions_dir / f"{session_id}.ndjson"
 
     # Try Python context manager first
@@ -177,6 +178,9 @@ def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
     monkeypatch.setenv("CODEX_SESSION_ID", session_id)
     db_path = tmp_path / "session_logs.db"
     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
+    sessions_dir = tmp_path / ".codex" / "sessions"
+    sessions_dir.mkdir(parents=True, exist_ok=True)
+    monkeypatch.setenv("CODEX_SESSION_LOG_DIR", str(sessions_dir))
 
     hooks = _import_any(["src.codex.logging.session_hooks"])
     logger_mod = _import_any(["src.codex.logging.session_logger"])
