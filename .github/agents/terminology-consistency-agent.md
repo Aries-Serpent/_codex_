@@ -1,6 +1,9 @@
 ---
 name: Terminology Consistency Agent
 description: Enforce consistent use of terminology across documentation, code comments, and APIs
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — terminology enforcement across docs and code
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Terminology Consistency Agent

@@ -1,6 +1,9 @@
 ---
 name: Tracking Document QA Agent
 description: QA tracking documents for accuracy, completeness, and consistency with implementation status
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — tracking doc accuracy and consistency QA
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Tracking Document QA Agent

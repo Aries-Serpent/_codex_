@@ -16,6 +16,9 @@ tags:
   - smoke-test
   - dockerignore
 cognitive_integration_level: 2
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Docker build failure detection and auto-remediation
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Docker Build CI Healer Agent

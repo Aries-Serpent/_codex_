@@ -9,6 +9,9 @@ merged_agents:
 cognitive_integration_level: 4
 aais_contribution: +4.0 points
 batch: m-04
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — ML model accuracy and pipeline validation
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # ML Validation Suite Agent v1.0 (M-04 Merge)

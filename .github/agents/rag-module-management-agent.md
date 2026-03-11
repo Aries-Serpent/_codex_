@@ -1,6 +1,9 @@
 ---
 name: RAG Module Management Agent
 description: Manage RAG module lifecycle including indexing, retrieval, and module updates
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — RAG module lifecycle, indexing, retrieval
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # RAG Module Management Agent

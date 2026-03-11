@@ -1,6 +1,14 @@
 ---
 name: Workflow Health Monitor Agent
 description: Monitor GitHub Actions workflow health and alert on failures, slowdowns, or anomalies
+version: 1.1.0
+updated: 2026-03-11
+cognitive_integration_level: 3
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — all monitoring features supported
+  large:   ubuntu-latest-large  # 4-core — parallel log analysis enabled
+consolidated_from:
+  - workflow-health-monitor.md (v1.0.0, 2026-02-04) — now deprecated
 ---
 
 # Workflow Health Monitor Agent
@@ -16,6 +24,16 @@ description: Monitor GitHub Actions workflow health and alert on failures, slowd
 ## 🎯 Purpose
 
 Monitor GitHub Actions workflow health, detect false positive failures, and autonomously fix common workflow issues.
+
+---
+
+## 🏃 Runner Compatibility
+
+| Runner | Support |
+|--------|---------|
+| `ubuntu-latest` (default, 2-core) | ✅ Full — sequential log analysis, all monitoring features |
+| `ubuntu-latest-large` (4+ core) | ✅ Full — parallel log analysis for faster failure triage |
+| Self-hosted | ✅ if GitHub MCP server tools are available |
 
 ---
 

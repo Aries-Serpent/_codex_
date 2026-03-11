@@ -6,6 +6,9 @@ updated: 2026-02-22
 enhancement: E-12
 cognitive_integration_level: 4
 aais_contribution: +4.5 points
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — agent IQ metric scoring and quality threshold enforcement
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Agent IQ Scoring CI Gate v1.0 (E-12)

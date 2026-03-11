@@ -11,6 +11,9 @@ merged_agents:
 cognitive_integration_level: 3
 aais_contribution: +4.5 points
 batch: m-02
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — all doc management features supported
+  large:   ubuntu-latest-large  # 4-core — parallel link validation across large doc sets
 ---
 
 # Unified Documentation Agent v1.0 (M-02 Merge)

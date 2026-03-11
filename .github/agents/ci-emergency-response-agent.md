@@ -1,7 +1,13 @@
 ---
 name: CI Emergency Response Agent
 description: Rapid diagnosis and resolution of blocking CI/CD failures that prevent PR merges
+deprecated: true
+superseded_by: ci-testing-agent.md (v4.0.0-unified, 2026-02-20)
 ---
+
+> ⚠️ **DEPRECATED** — This agent has been absorbed into **[CI Testing Agent v4.0](ci-testing-agent.md)**.
+> Emergency triage, rapid-fix, and blocking-failure resolution capabilities are fully preserved in
+> the unified agent's Phase 2 triage step. Use `ci-testing-agent` for all new invocations.
 
 # CI Emergency Response Agent
 

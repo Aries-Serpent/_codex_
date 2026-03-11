@@ -1,6 +1,9 @@
 ---
 name: Python 3.12 Type Fixer
 description: Fix Python 3.12 type annotation and compatibility issues across the codebase
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Python 3.12 type annotation and compatibility fixes
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Python 3.12 Type Migration Agent

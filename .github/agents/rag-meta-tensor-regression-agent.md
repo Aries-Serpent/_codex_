@@ -6,6 +6,9 @@ updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +1.8 points
 batch: pr-9
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — RAG meta-tensor regression prevention
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # RAG Meta Tensor Regression Agent

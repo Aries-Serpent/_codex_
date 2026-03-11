@@ -1,7 +1,13 @@
 ---
 name: Coverage Gapfill Agent
 description: Identify low-coverage modules and generate targeted tests to close coverage gaps
+deprecated: true
+superseded_by: unified-coverage-agent.md (v1.0.0, 2026-03-11)
 ---
+
+> ⚠️ **DEPRECATED** — Gap-fill capabilities have been consolidated into
+> **[Unified Coverage Agent v1.0](unified-coverage-agent.md)**.
+> Use `unified-coverage-agent` for all new coverage gap-fill invocations.
 
 # Coverage Gapfill Agent
 

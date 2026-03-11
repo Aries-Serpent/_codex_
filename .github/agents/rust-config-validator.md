@@ -1,6 +1,9 @@
 ---
 name: Rust Config Validator
 description: Validate Rust configuration files and Cargo.toml for correctness and best practices
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Rust configuration files and Cargo.toml validation
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Rust Configuration Validator Agent

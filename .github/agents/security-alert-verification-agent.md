@@ -6,7 +6,13 @@ updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-7
+deprecated: true
+superseded_by: unified-security-scanner.md (v1.0.0-m01, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — Alert verification capabilities have been merged into
+> **[Unified Security Scanner v1.0](unified-security-scanner.md)** (M-01 merge).
+> Use `unified-security-scanner` for all security alert verification work.
 
 # Security Alert Verification Agent
 

@@ -1,6 +1,9 @@
 ---
 name: Cache Manager Integration Agent
 description: Integrate and coordinate cache management operations across repository systems
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — cache management operations coordination across repo systems
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Cache Manager Workflow Integration Agent

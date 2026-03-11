@@ -1,6 +1,9 @@
 ---
 name: Workflow Analytics Agent
 description: Analyze GitHub Actions workflow performance, trends, and optimization opportunities
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — analytics, trend analysis, reporting
+  large:   ubuntu-latest-large  # 4-core — parallel data processing for large run histories
 ---
 
 # Workflow Analytics Agent

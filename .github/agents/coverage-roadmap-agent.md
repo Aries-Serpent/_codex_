@@ -6,7 +6,13 @@ updated: 2026-02-17
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-5
+deprecated: true
+superseded_by: unified-coverage-agent.md (v1.0.0, 2026-03-11)
 ---
+
+> ⚠️ **DEPRECATED** — Coverage roadmap capabilities have been consolidated into
+> **[Unified Coverage Agent v1.0](unified-coverage-agent.md)**.
+> Use `unified-coverage-agent` for all new roadmap and threshold-increment invocations.
 
 # Coverage Roadmap Agent
 

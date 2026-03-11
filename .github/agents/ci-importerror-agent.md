@@ -3,7 +3,14 @@ name: CI ImportError Fixer Agent
 description: Diagnose and remediate ImportError/ModuleNotFoundError failures in the test suite by fixing sys.path issues, missing dependencies, and import path errors.
 version: 2.1.0
 last_updated: 2026-02-15
+deprecated: true
+superseded_by: ci-triage-pipeline-agent.md (v1.0.0-m03, 2026-02-21)
 ---
+
+> ⚠️ **DEPRECATED** — ImportError/ModuleNotFoundError triage has been merged into
+> **[CI Triage Pipeline Agent v1.0](ci-triage-pipeline-agent.md)** (M-03 merge).
+> All sys.path, missing-dependency, and import-path-error patterns are preserved there.
+> Use `ci-triage-pipeline-agent` for all new invocations.
 
 # CI ImportError Fixer Agent
 
