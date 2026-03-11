@@ -78,13 +78,17 @@ services = "services"   ✅ (many)     services.mcp, .audio, etc. ✅ (services*
 
 ## 🗺 Next-Phase Plan (Phase 3 Completion)
 
-### Sprint 1 — PR #3552 Follow-up (immediate)
+### Sprint 1 — PR #3552 Follow-up (immediate) ✅ COMPLETE
 - [x] Fix Docker preview image editable install failures
 - [x] Activate Agent Token Delegation
 - [x] Build & Push Preview Image #63 ran — Docker BUILD passed; smoke-test failed with GHCR `denied` (no `load: true`)
 - [x] Fixed: added `load: true` in `build-preview-image.yml` for PR builds
-- [ ] Verify Build & Push Preview Image passes end-to-end after this fix
-- [ ] Keep `STUB_DIRS` in sync if `[tool.setuptools.package-dir]` adds new entries
+- [x] **VERIFIED**: Build & Push Preview Image **#64** — ALL 4 JOBS ✅ SUCCESS (2026-03-11T17:54-18:00Z)
+  - Lint Dockerfile.preview ✅
+  - Build preview image (preview) ✅ — Smoke-test health check ✅ passed in 5s
+  - Build preview image (preview-dev) ✅
+  - Image build summary ✅
+- [x] Keep `STUB_DIRS` in sync: `.github/agents/ci-docker-build-healer.md` maintenance rules document the sync requirement
 
 ### Sprint 2 — CI Health (target: <10% failure rate)
 - [ ] Deploy telemetry classifiers to main; collect 7-day sample
@@ -92,8 +96,8 @@ services = "services"   ✅ (many)     services.mcp, .audio, etc. ✅ (services*
 - [ ] Wire `ci-health-monitor.yml` → cognitive brain feedback loop (P-047 keyword map)
 - [ ] Auto-update `CODEX_CI_FAILURE_RATE` repo variable after each monitor run
 
-### Sprint 3 — Docker Hardening
-- [ ] Add `.dockerignore` to exclude `src/codex_ml.egg-info/`, `*.pyc`, `__pycache__/`
+### Sprint 3 — Docker Hardening (In Progress)
+- [x] **DONE**: Fix `.dockerignore` — change root-only `__pycache__` → `**/__pycache__` and `*.egg-info` → `**/*.egg-info` (recursive; catches `src/codex_ml.egg-info/`)
 - [ ] Consider switching from `pip install -e .` to explicit package installs in production image
 - [ ] Add multi-architecture build (`linux/amd64,linux/arm64`) for preview image
 - [ ] Cache pip downloads between CI runs (GHA cache layer)

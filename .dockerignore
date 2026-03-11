@@ -1,5 +1,6 @@
 .venv
-__pycache__
+# Recursive __pycache__ exclusion (Docker: root-only without **)
+**/__pycache__
 .git
 .gitignore
 .github
@@ -8,7 +9,8 @@ __pycache__
 **/*.pyd
 dist
 build
-*.egg-info
+# Recursive egg-info exclusion — catches src/codex_ml.egg-info/ etc.
+**/*.egg-info
 artifacts
 mlruns
 .coverage
@@ -17,3 +19,7 @@ mlruns
 .env.*
 .DS_Store
 Thumbs.db
+# Additional build/cache artefacts
+*.egg-link
+**/.eggs
+node_modules

@@ -3,7 +3,80 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T17:20Z (fix: build-preview-image.yml — add load=true for PR smoke-test fix)
+**Last updated:** 2026-03-11T18:20Z (session 5: `.dockerignore` fix + CI healer v1.1.0 + Sprint 1 verified + Sprint 3 started)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 SESSION 5 (Docker hardening + Sprint 1 verification)
+
+### Pre-flight Checklist
+- [x] 1. `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit
+- [x] 2. CI failure patterns reviewed (Build & Push Preview Image #64 ✅ SUCCESS end-to-end)
+- [x] 3. `.gitignore` checked — allows `.codex/agent_auth_session.json` ✅
+- [x] 4. Primary directive: verify Docker fix + P3 enhancements + CI triage
+- [x] 5. Execution plan posted in PR comment before changes
+- [x] 6. Codebase Agency Policy followed
+
+### Issues Addressed This Session
+
+#### P1 — Verified: Build & Push Preview Image #64 ✅ ALL SUCCESS
+- `Lint Dockerfile.preview` ✅
+- `Build preview image (preview)` ✅ — Smoke-test health check ✅ (5s)
+- `Build preview image (preview-dev)` ✅
+- `Image build summary` ✅
+
+#### P2 — Smoke-test health check: ✅ PASSED in 5s (no timeout)
+- `/api/health` endpoint responding — no investigation needed
+
+#### P3 — `.dockerignore` recursive patterns (Sprint 3)
+- `__pycache__` → `**/__pycache__` — recursive catch for src/, tests/, services/ subdirs
+- `*.egg-info` → `**/*.egg-info` — recursive catch for `src/codex_ml.egg-info/`
+- Added: `*.egg-link`, `**/.eggs`, `node_modules`
+
+#### CI Failure Triage (#3532) — Status on our branch
+On commit `24964c4` (our PR branch), all key CI checks pass:
+- ✅ Build & Push Preview Image #64
+- ✅ Art_"CodeQL" #2993
+- ✅ Art_Security Scanning Suite #2951
+- ✅ Art_Validation Pipeline #609
+- ✅ Pre-Flight CI Validation #1022
+- ✅ Coverage with Timeout Guards #1063
+- ✅ E→D Transition Readiness Gate #323
+- ✅ Auto-Fix Common CI Issues #1242
+All other failures in #3532 confirmed to be on different branches (sub-pr-3513, 0D_base_, main) — pre-existing infra issues unrelated to this PR.
+
+#### Agent Documentation — ci-docker-build-healer.md → v1.1.0
+- Added `.dockerignore` alignment section with Docker glob semantics
+- Added `build-preview-image.yml` key pattern (push XOR load, should_push single source of truth)
+- Added full workflow architecture diagram (lint → build×2 → smoke-test → summary)
+- Added run #64 end-to-end verification record
+- Added 5th maintenance rule (smoke-test step)
+- History table extended with version numbers
+
+#### Cognitive Brain Status — COGNITIVE_BRAIN_STATUS_PR3552.md
+- Sprint 1: ALL items ✅ COMPLETE
+- Sprint 3: `.dockerignore` item ✅ done
+
+### Self-Review — 7 Passes Completed
+| Pass | Finding | Resolution |
+|------|---------|-----------|
+| 1 | `.dockerignore` root-only `__pycache__` misses subdirs | Fixed: `**/__pycache__` |
+| 2 | `.dockerignore` root-only `*.egg-info` misses `src/codex_ml.egg-info/` | Fixed: `**/*.egg-info` |
+| 3 | `ci-docker-build-healer.md` missing `.dockerignore` alignment table | Added alignment section |
+| 4 | `ci-docker-build-healer.md` missing workflow arch diagram | Added full diagram |
+| 5 | Sprint 1 verification checkbox not marked complete | Marked ✅ in cognitive brain status |
+| 6 | Sprint 3 `.dockerignore` task not marked done | Marked ✅ in cognitive brain status |
+| 7 | `CHANGELOG.md` session 5 entry not present | Added session 5 entry |
+
+### Work Completed This Session
+
+| Item | Status | Notes |
+|------|--------|-------|
+| `.dockerignore` recursive patterns | ✅ Fixed | `**/__pycache__`, `**/*.egg-info` |
+| `.github/agents/ci-docker-build-healer.md` v1.1.0 | ✅ Updated | Full alignment verification + diagrams |
+| `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md` | ✅ Updated | Sprint 1 ✅ complete; Sprint 3 partial |
+| `CHANGELOG.md` session 5 entry | ✅ Updated | Run #64 verification documented |
+| `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Updated | This update |
 
 ---
 
@@ -21,7 +94,9 @@
 | 4 | Cognitive Pre-flight step 8: `CHANGELOG.md` not touched | Updated | afdbba7 |
 | 5 | `COPY src/` copies `src/services/` → `services.mcp` discovered → `services/mcp` missing | `COPY services/ ./services/`; removed from `STUB_DIRS` | d73c17d |
 | 6 | `src/codex_utils/tracking` → `codex_utils.tracking` discovered → `codex_utils/tracking` missing | `COPY codex_utils/ ./codex_utils/`; removed from `STUB_DIRS` | 40634ca |
-| 7 | Smoke-test step: `docker run ghcr.io/...` fails with `denied` — image not in GHCR (push=false on PR), not in local daemon (no `load: true`) | Added `load: true` for PR builds in `build-preview-image.yml` | this commit |
+| 7 | Smoke-test step: `docker run ghcr.io/...` fails with `denied` — image not in GHCR (push=false on PR), not in local daemon (no `load: true`) | Added `load: true` for PR builds in `build-preview-image.yml` | 24964c4 |
+
+
 
 #### Agent Token Delegation (comment 4040738683)
 - Second activation confirmation: `COPILOT_AGENT_AUTH_ENABLED = true`

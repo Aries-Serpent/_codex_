@@ -5,6 +5,22 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — chore(docker): improve .dockerignore recursive patterns; update CI healer agent v1.1.0 — PR #3552 (2026-03-11)
+
+### Changed (PR copilot/resolve-failing-checks — 2026-03-11 session 5)
+- `.dockerignore`: changed `__pycache__` (root-only match) → `**/__pycache__` (recursive, catches all `src/`, `tests/`, `services/` subdirs)
+- `.dockerignore`: changed `*.egg-info` (root-only match) → `**/*.egg-info` (recursive, catches `src/codex_ml.egg-info/` and any other nested egg-info dirs)
+- `.dockerignore`: added `*.egg-link`, `**/.eggs`, `node_modules` entries for completeness
+- `.github/agents/ci-docker-build-healer.md`: upgraded to v1.1.0 — added `.dockerignore` alignment section, `build-preview-image.yml` key pattern docs, full workflow architecture diagram with smoke-test path, run #64 end-to-end verification record, and updated history table
+- `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md`: Sprint 1 marked ✅ COMPLETE (run #64 verified); Sprint 3 `.dockerignore` item marked done
+
+### Verified (PR copilot/resolve-failing-checks — run #64 2026-03-11T17:54–18:00Z)
+- Build & Push Preview Image **#64**: ALL 4 jobs ✅ SUCCESS
+  - `Lint Dockerfile.preview` ✅
+  - `Build preview image (preview)` ✅ — Smoke-test health check ✅ (5s response)
+  - `Build preview image (preview-dev)` ✅
+  - `Image build summary` ✅
+
 ## [Unreleased] — fix(ci): add load=true for PR builds to fix smoke-test denial — PR #3552 (2026-03-11)
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 4)

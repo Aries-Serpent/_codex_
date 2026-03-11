@@ -3,7 +3,8 @@ name: Docker Build CI Healer
 description: >
   Diagnose and fix Docker build failures in CI — specifically editable install errors
   in multi-stage Dockerfiles using src-layout Python projects with setuptools.
-version: 1.0.0
+  Also covers smoke-test registry denial patterns and .dockerignore optimisation.
+version: 1.1.0
 updated: 2026-03-11
 pr: 3552
 tags:
@@ -12,7 +13,9 @@ tags:
   - setuptools
   - editable-install
   - build-failure
-cognitive_integration_level: 1
+  - smoke-test
+  - dockerignore
+cognitive_integration_level: 2
 ---
 
 # Docker Build CI Healer Agent
@@ -21,7 +24,8 @@ cognitive_integration_level: 1
 
 Specialized agent for diagnosing and healing Docker build failures that involve
 Python editable installs (`pip install -e .`) in multi-stage Dockerfiles using
-`src`-layout projects with `setuptools`.
+`src`-layout projects with `setuptools`. Also handles smoke-test registry denial
+and `.dockerignore` optimisation to reduce Docker build-context size.
 
 ## Activation
 
@@ -31,6 +35,8 @@ Activate when any of these errors appear in `Build & Push * Image` CI jobs:
 error: error in 'egg_base' option: 'src' does not exist or is not a directory
 error: package directory '<name>' does not exist
 ERROR: Failed to build 'file:///build' when getting requirements to build editable
+docker: Error response from daemon: … "denied"
+docker: Error response from daemon: … "not found"
 ```
 
 ## Diagnostic Decision Tree
@@ -58,6 +64,9 @@ Build failure in Docker stage with pip install -e .
        The smoke-test tag (e.g. `ghcr.io/.../preview:pr-N-SHA`) does not exist in GHCR.
        └─ FIX: Add `load: true` in `docker/build-push-action` when NOT pushing
           (condition: `github.ref != 'refs/heads/main' && NOT workflow_dispatch push`)
+          Use a single `should_push` step output as the source of truth:
+            push: ${{ steps.tags.outputs.should_push == 'true' }}
+            load: ${{ steps.tags.outputs.should_push != 'true' }}
 ```
 
 ## Systematic Analysis Protocol
@@ -114,13 +123,14 @@ for pkg, src_dir in pkg_dir.items():
 ☐ 6. For smoke-test steps: ensure `load: true` is set in docker/build-push-action
      when building for PR (not pushing to registry). Without it, image only exists
      in buildx cache and `docker run` will fail with GHCR `denied`.
-☐ 7. Update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in same commit
-☐ 8. Push and wait for CI to validate
+☐ 7. Verify .dockerignore uses recursive glob patterns (**/__pycache__, **/*.egg-info)
+☐ 8. Update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in same commit
+☐ 9. Push and wait for CI to validate
 ```
 
-## Codebase Alignment
+## Codebase Alignment Verification
 
-### Current Status in `Dockerfile.preview` (as of PR #3552, commit d73c17d → follow-up)
+### Current Status in `Dockerfile.preview` (PR #3552, verified via run #64 ✅)
 
 ```
 Strategy         Directory       Reason
@@ -139,15 +149,92 @@ STUB             examples        Excluded: exclude=[examples, examples.*]
 STUB             cli             Excluded: exclude=[cli, cli.*]
 ```
 
+### `.dockerignore` Alignment (as of PR #3552 Sprint 3)
+
+Docker's `.dockerignore` uses Go `filepath.Match` semantics:
+- `pattern` = matches ONLY at root of build context
+- `**/pattern` = matches recursively at any depth
+
+| Pattern | Before | After | Reason |
+|---------|--------|-------|--------|
+| `__pycache__` | root only | `**/__pycache__` | Cache dirs exist throughout `src/`, `services/`, `tests/` |
+| `*.egg-info` | root only | `**/*.egg-info` | `src/codex_ml.egg-info/` is inside `src/` — root glob misses it |
+| (new) `*.egg-link` | — | `*.egg-link` | Created by editable installs |
+| (new) `**/.eggs` | — | `**/.eggs` | Created by `python setup.py egg_info` |
+| (new) `node_modules` | — | `node_modules` | Cognitive app / React frontend |
+
+### build-preview-image.yml Key Pattern (as of commit 24964c4)
+
+```yaml
+# Compute image tags — MUST run before Log in to GHCR so output is available
+- name: Compute image tags
+  id: tags
+  run: |
+    if [[ "${{ github.ref }}" == "refs/heads/main" ]] || \
+       [[ "${{ github.event_name }}" == "workflow_dispatch" && ... ]]; then
+      echo "should_push=true" >> "$GITHUB_OUTPUT"
+    else
+      echo "should_push=false" >> "$GITHUB_OUTPUT"   # PR builds
+    fi
+
+# Log in only when pushing
+- name: Log in to GHCR
+  if: steps.tags.outputs.should_push == 'true'
+  uses: docker/login-action@v3
+
+# Single source of truth: push XOR load
+- name: Build (and push on main)
+  uses: docker/build-push-action@v6
+  with:
+    push: ${{ steps.tags.outputs.should_push == 'true' }}
+    load: ${{ steps.tags.outputs.should_push != 'true' }}   # ← loads to daemon on PRs
+```
+
+**Verified**: Build & Push Preview Image run #64 (commit `24964c4`):
+- `Build preview image (preview)` ✅ Smoke-test health check ✅ (5s)
+- `Build preview image (preview-dev)` ✅
+- `Lint Dockerfile.preview` ✅
+- `Image build summary` ✅
+
 ## Maintenance Rules
 
 1. **After any `[tool.setuptools.package-dir]` change in `pyproject.toml`**: Run analysis script and update Dockerfile accordingly.
 2. **After any `src/<dir>/` directory creation**: Check if `<dir>` is in `package-dir` and has sub-packages that would be discovered.
 3. **After any `packages.find.include` or `exclude` change**: Re-run analysis to check if stub/copy strategy needs updating.
+4. **`.dockerignore` health**: Ensure recursive globs (`**/`) are used for patterns that should match subdirectories.
+5. **smoke-test step**: If the workflow uses a registry tag for smoke-test, ensure `load: true` is set for non-push builds.
 
 ## Architecture Diagram
 
 ```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                   Build & Push Preview Image workflow                    │
+│                                                                          │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  Lint Dockerfile.preview (hadolint)                              │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+│              ↓                                  ↓                        │
+│  ┌───────────────────────────┐   ┌───────────────────────────────────┐  │
+│  │  Build (preview target)   │   │  Build (preview-dev target)       │  │
+│  │                           │   │                                   │  │
+│  │  Compute tags             │   │  Compute tags                     │  │
+│  │  ↓ should_push            │   │  ↓ should_push                    │  │
+│  │  Log in to GHCR (skip PR) │   │  Log in to GHCR (skip PR)        │  │
+│  │  ↓                        │   │  ↓                                │  │
+│  │  docker/build-push-action │   │  docker/build-push-action         │  │
+│  │    push=false (PR)        │   │    push=false (PR)                │  │
+│  │    load=true  (PR) ←FIX7  │   │    load=true  (PR) ←FIX7         │  │
+│  │  ↓ image in local daemon  │   │  ↓ image in local daemon          │  │
+│  │  Smoke-test health check  │   │  (smoke-test skipped for dev)     │  │
+│  │    docker run <local-tag> │   │                                   │  │
+│  │    → /api/health → 200 ✅  │   │                                   │  │
+│  └───────────────────────────┘   └───────────────────────────────────┘  │
+│              ↓                                  ↓                        │
+│  ┌──────────────────────────────────────────────────────────────────┐   │
+│  │  Image build summary                                             │   │
+│  └──────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
+
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     Dockerfile.preview                              │
 │                                                                     │
@@ -158,8 +245,8 @@ STUB             cli             Excluded: exclude=[cli, cli.*]
 │  │    └─ src/services/ →  /build/src/services/mcp etc. │ ← ALSO   │
 │  │    └─ src/codex_utils/ → /build/src/codex_utils/    │   copied  │
 │  │                                                     │           │
-│  │  COPY services/     →  /build/services/ (full tree) │ ← FIX    │
-│  │  COPY codex_utils/  →  /build/codex_utils/ (full)   │ ← FIX    │
+│  │  COPY services/     →  /build/services/ (full tree) │ ← FIX3   │
+│  │  COPY codex_utils/  →  /build/codex_utils/ (full)   │ ← FIX4   │
 │  │  RUN mkdir -p $STUB_DIRS → flat stubs for safe dirs  │           │
 │  │                                                     │           │
 │  │  setuptools find(where=[".", "src"]):                │           │
@@ -193,7 +280,8 @@ STUB             cli             Excluded: exclude=[cli, cli.*]
 
 ## History
 
-| Date | PR | Fix |
-|------|-----|-----|
-| 2026-03-11 | #3552 | Initial creation — fixed `services/mcp` + `codex_utils/tracking` editable install failures |
-| 2026-03-11 | #3552 | Added smoke-test pattern: `load: true` needed for PR builds when image is not pushed to GHCR |
+| Date | PR | Version | Fix |
+|------|-----|---------|-----|
+| 2026-03-11 | #3552 | 1.0.0 | Initial creation — fixed `services/mcp` + `codex_utils/tracking` editable install failures |
+| 2026-03-11 | #3552 | 1.0.1 | Added smoke-test pattern: `load: true` needed for PR builds when image is not pushed to GHCR |
+| 2026-03-11 | #3552 | 1.1.0 | Sprint 3: `.dockerignore` recursive patterns (`**/__pycache__`, `**/*.egg-info`); full codebase alignment verification section; workflow architecture diagram; v#64 end-to-end verified |
