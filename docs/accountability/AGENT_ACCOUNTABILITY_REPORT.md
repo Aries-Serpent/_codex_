@@ -3,11 +3,22 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T07:40Z (fix: verify all unresolved PR review comments addressed)
+**Last updated:** 2026-03-11T08:10Z (fix: 2 Resilient Validation Suite test failures from CI run #22940511129)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (review: verify + confirm all unresolved PR review comments)
+## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: 2 Resilient Validation Suite test failures)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `tests/test_hf_loader_peft_guard.py` | ✅ Fixed | Remove `raising=False` from `monkeypatch.setitem()` — removed in pytest 8.x |
+| `tests/features/test_feature_store.py` `test_check_feature_health_stale` | ✅ Fixed | Use `timedelta(minutes=400)` so feature is in STALE range (360-1440 min) |
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+
+
 
 ### Work Completed This Session
 

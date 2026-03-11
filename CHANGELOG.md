@@ -5,7 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — fix(review): verify all unresolved PR review comments addressed (2026-03-11)
+## [Unreleased] — fix(tests): fix 2 locally-failing Resilient Validation Suite tests (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 CI failure investigation run #22940511129)
+- **`tests/test_hf_loader_peft_guard.py`**: Removed `raising=False` kwarg from `monkeypatch.setitem()` — this argument was removed in pytest 8.x; `setitem` always works when setting a key so `raising=False` is not needed
+- **`tests/features/test_feature_store.py`**: Changed `timedelta(minutes=30)` to `timedelta(minutes=400)` in `test_check_feature_health_stale` — 30-minute-old feature was FRESH by the fixed class-level threshold (< 60 min = FRESH), so `freshness_level in ["STALE","ACCEPTABLE"]` failed; 400 minutes puts it in the STALE range (360-1440 min)
+- **`CODEX_MANIFEST.json`** / **`.secrets.baseline`**: Refreshed manifest + updated `hashed_secret`
+
+
 
 ### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 review comment verification)
 - **`scripts/philosophy_parser.py`**: Replaced chained `lstrip()` calls with `re.match(r'^\s*-\s*\[[ x]\]\s*(.*)$', line)` regex capture to reliably extract action item text without mangling leading characters

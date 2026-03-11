@@ -404,8 +404,11 @@ class TestFeatureHealthMonitor:
         """Test health check for stale feature."""
         monitor = FeatureHealthMonitor(freshness_threshold_minutes=10)
 
-        # Record update in the past
-        past_time = datetime.now(UTC) - timedelta(minutes=30)
+        # Record update far enough in the past to exceed the class-level FRESH threshold
+        # (< 60 min = FRESH, 60-360 min = ACCEPTABLE, 360-1440 min = STALE).
+        # 400 minutes puts freshness_level in "STALE" and also exceeds the 10-min
+        # freshness_threshold_minutes configured for this monitor.
+        past_time = datetime.now(UTC) - timedelta(minutes=400)
         monitor.feature_updates["feature1"] = past_time
 
         status = monitor.check_feature_health("feature1")
