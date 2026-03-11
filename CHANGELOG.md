@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix: SentencePieceAdapter.decode accepts any iterable (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513-another-one — 2026-03-11)
+- **`src/codex_ml/tokenization/sentencepiece_adapter.py`**: `decode()` now accepts any
+  iterable of ints (lists, tuples, generators, etc.) by converting to a list internally;
+  fixes `test_decode_accepts_iterable` CI failure caused by overly strict isinstance check
+- **`tests/tokenization/test_sentencepiece_contract.py`**: Updated error-message match
+  strings from `"list or tuple of int"` to `"int ids"` to reflect updated error text
+
 ## [Unreleased] — PR #3537: refresh CODEX_MANIFEST + secrets baseline after agent token delegation (2026-03-11)
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 retry session)

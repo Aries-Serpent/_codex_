@@ -3,7 +3,19 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T02:13Z (PR #3537 — retry: regenerate CODEX_MANIFEST.json + refresh .secrets.baseline after agent token delegation)
+**Last updated:** 2026-03-11T03:58Z (CI fix: SentencePieceAdapter.decode accepts any iterable)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: decode accepts any iterable)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `SentencePieceAdapter.decode` iterable fix | ✅ Fixed | `decode()` now accepts any iterable (not just list/tuple); fixes `test_decode_accepts_iterable` |
+| Contract test updated | ✅ Fixed | Error-match strings updated from `"list or tuple of int"` to `"int ids"` |
+| CHANGELOG.md updated | ✅ Done | New entry documents this session |
 
 ---
 
