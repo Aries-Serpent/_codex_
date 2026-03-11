@@ -3,7 +3,38 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T03:58Z (CI fix: SentencePieceAdapter.decode accepts any iterable)
+**Last updated:** 2026-03-11T06:25Z (fix: 4 Resilient Validation Suite CI test failures)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (CI fix: Resilient Validation Suite failures)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| `test_test_workflows_trigger_on_push_and_pr` | ✅ Fixed | Skip dispatch-only simulation workflows; they don't need push/PR triggers |
+| `test_no_hardcoded_secrets` | ✅ Fixed | Shell variable expansions (`$VAR`) are not hardcoded secrets; add `$` check |
+| `test_modern_python_versions_used` | ✅ Fixed | Use regex to extract `python-version:` values; don't flag version strings in comments |
+| `test_rate_limit_429` | ✅ Fixed | Add module-level `_BUCKETS` to `rate_limit_middleware`; remove unnecessary `__init__` |
+| `test_cli_missing_required_arguments` | ✅ Fixed | Add `main()` to `src/cli/__init__.py`; package shadows `src/cli.py` |
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh timestamp |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new integrity_sha256 |
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 (continuation: CODEX_MANIFEST refresh + review verification)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp keeps E→D Gate C2 green |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` updated to match new `integrity_sha256` |
+| PR review: `philosophy_parser.py` regex | ✅ Verified | Already uses regex capture (not lstrip) |
+| PR review: `budget_cap` ValueError | ✅ Verified | Already catches ValueError with fallback |
+| PR review: `scenario_ci_health` schema | ✅ Verified | Already uses `exit_code` field |
+| PR review: coverage threshold assert | ✅ Verified | Already asserts `>= 80` matching pyproject.toml |
 
 ---
 
