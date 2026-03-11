@@ -5,6 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix(docker): editable install in preview image stages — PR #3552 (2026-03-11)
+
+### Fixed (PR copilot/resolve-failing-checks — 2026-03-11)
+- `Dockerfile.preview` `preview-base` stage: added `COPY src/ ./src/` so setuptools can resolve `egg_base` for the `src` layout editable install
+- `Dockerfile.preview` all stages: added `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` to create empty stubs for all `[tool.setuptools.package-dir]` entries not copied into each stage (`agents`, `cli`, `services`, etc.) — setuptools requires each mapped directory to exist during editable install discovery
+- Cognitive Pre-flight gate: `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` both touched per commit requirement
+- Issue #3532 triage: all other failures in triage report are on different branches or pre-existing infrastructure issues unrelated to this PR
+
 ## [Unreleased] — chore(ci): preflight refresh after delegation activation run #22949088457 (2026-03-11)
 
 ### Chore (PR copilot/sub-pr-3513 — 2026-03-11 delegation cycle preflight)

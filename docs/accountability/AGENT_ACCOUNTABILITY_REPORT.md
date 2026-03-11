@@ -3,20 +3,29 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T16:00Z (fix: Docker preview build — editable install stub dirs)
+**Last updated:** 2026-03-11T16:22Z (chore: touch CHANGELOG.md + accountability report for preflight gate)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image failures)
+## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image + Cognitive Pre-flight)
 
 ### Issues Addressed
 
 #### PR #3552 — Build & Push Preview Image failing (preview and preview-dev targets)
 
-| Root Cause | Fix |
-|------------|-----|
-| `preview-base` stage missing `src/` → `error: 'src' does not exist` | Added `COPY src/ ./src/` |
-| `preview-base` and `preview` stages missing all other `package-dir` directories → `error: package directory 'services' does not exist` | Added `RUN mkdir -p agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli services` in both stages |
+| Root Cause | Fix | Commit |
+|------------|-----|--------|
+| `preview-base` stage missing `src/` → `error: 'src' does not exist` | Added `COPY src/ ./src/` | 4f5eaa0 |
+| Both stages missing package-dir dirs → `error: package directory 'services' does not exist` | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` in both stages | 6010272 |
+| Cognitive Pre-flight: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated in commit | 6010272 |
+| Cognitive Pre-flight: `CHANGELOG.md` not touched in last commit | Updated in this commit | this commit |
+
+#### Issue #3532 — CI Failure Triage Report
+
+All other failures listed in #3532 are either:
+- On different branches (`0D_base_`, `copilot/sub-pr-3513-again`, `main`, etc.)
+- Pre-existing infrastructure issues (CodeQL JOB_STATUS_CONFIGURATION_ERROR, Codespaces Prebuilds, RAG Module Tests on base branch, Automatic Dependency Submission GitHub infrastructure checkout failure)
+- Not caused by changes in this PR
 
 ### Work Completed This Session
 
@@ -24,6 +33,8 @@
 |------|--------|-------------|
 | `Dockerfile.preview` — `preview-base` stage | ✅ Fixed | Added `COPY src/ ./src/` + stub dirs for all package-dir entries |
 | `Dockerfile.preview` — `preview` stage | ✅ Fixed | Added stub dirs before `pip install -e .` |
+| `Dockerfile.preview` — `ARG STUB_DIRS` | ✅ Improved | Single ARG at top of file, re-declared in each stage (no duplication) |
+| CHANGELOG.md | ✅ Updated | Added `[Unreleased]` entry for PR #3552 fixes |
 | AGENT_ACCOUNTABILITY_REPORT.md | ✅ Updated | This document |
 
 ---
