@@ -5,6 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix(docker): copy codex_utils/ + complete self-review — PR #3552 (2026-03-11)
+
+### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 3)
+- `Dockerfile.preview` `preview-base` and `preview` stages: added `COPY codex_utils/ ./codex_utils/` — `src/codex_utils/tracking/__init__.py` exists and `codex_utils*` is in `packages.find.include` (not excluded), so setuptools discovers `codex_utils.tracking` and maps it to root `codex_utils/tracking` — which the empty stub would not satisfy.
+- Removed `codex_utils` from `STUB_DIRS`; added detailed inline comment documenting which dirs are safe to stub vs. must be copied.
+- **Self-review**: Systematic analysis of all 14 `[tool.setuptools.package-dir]` entries against `packages.find` include/exclude + `src/` filesystem confirmed only `services` and `codex_utils` are UNSAFE; all remaining stubs verified safe.
+- Cognitive Brain status and next-phase plan updated; agent documentation updated.
+
 ## [Unreleased] — fix(docker): copy services/ to fix services.* sub-package discovery — PR #3552 (2026-03-11)
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 2)

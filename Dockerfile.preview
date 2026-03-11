@@ -29,12 +29,22 @@
 # are NOT copied into every stage.  setuptools requires each mapped directory to
 # exist when it builds the editable egg-info; empty stubs are sufficient.
 # NOTE: Keep this list in sync with [tool.setuptools.package-dir] in pyproject.toml.
-# NOTE: `services` is intentionally absent — it is COPY'd directly (see below)
-# because COPY src/ also copies src/services/ which has sub-packages (mcp, audio,
-# etc.), causing setuptools `find` with where=[".", "src"] to discover services.*
-# packages and resolve them to root services/<sub>. Empty stubs would not satisfy
-# those sub-package directory checks; copying the real tree does.
-ARG STUB_DIRS="agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli"
+#
+# SAFE to stub (flat top-level only; setuptools find EXCLUDES them or no src/ shadow):
+#   agents        — src/agents only has top-level __init__.py; no sub-packages discovered
+#   codex_addons  — excluded from packages.find (exclude: codex_addons*)
+#   codex_digest  — excluded from packages.find (exclude: codex_digest*)
+#   codex_regression — excluded from packages.find (exclude: codex_regression*)
+#   configs       — excluded from packages.find (exclude: configs*, config*)
+#   interfaces    — excluded from packages.find (exclude: interfaces, interfaces.*)
+#   tools         — src/tools only has top-level __init__.py; no sub-packages discovered
+#   examples      — excluded from packages.find (exclude: examples, examples.*)
+#   cli           — excluded from packages.find (exclude: cli, cli.*)
+#
+# NOT safe to stub (COPY'd directly instead — see below):
+#   services   — src/services/ has sub-packages (mcp, audio, etc.) discovered by find
+#   codex_utils — src/codex_utils/ has tracking sub-package; included via codex_utils*
+ARG STUB_DIRS="agents codex_addons codex_digest codex_regression configs interfaces tools examples cli"
 
 # ── Stage 1: dependency builder ───────────────────────────────────────────────
 FROM python:3.12-slim AS preview-base
@@ -69,6 +79,9 @@ COPY src/ ./src/
 # (src/services/ is included in COPY src/ above, which causes find to discover
 # services.mcp etc.; package-dir maps services → root services/, not src/services/).
 COPY services/ ./services/
+# Copy root codex_utils/ — src/codex_utils/tracking is discovered by find (codex_utils*)
+# and package-dir maps codex_utils → root codex_utils/; stub would miss the sub-dir.
+COPY codex_utils/ ./codex_utils/
 # Create stub directories for all package-dir entries in pyproject.toml.
 # setuptools requires every mapped directory to exist during editable install;
 # these empty stubs satisfy that requirement without bloating the image.
@@ -112,6 +125,8 @@ COPY --chown=codex:codex src/ ./src/
 # Copy root services/ so setuptools can resolve all services.* sub-packages
 # (see preview-base stage comment for full explanation).
 COPY --chown=codex:codex services/ ./services/
+# Copy root codex_utils/ — same reason as services/ (tracking sub-package).
+COPY --chown=codex:codex codex_utils/ ./codex_utils/
 COPY --chown=codex:codex cognitive_app/ ./cognitive_app/
 COPY --chown=codex:codex .codex/ ./.codex/
 COPY --chown=codex:codex policies/ ./policies/

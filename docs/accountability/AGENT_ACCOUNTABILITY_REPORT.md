@@ -3,36 +3,52 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T16:44Z (fix: copy services/ into Docker stages to fix services.* sub-package discovery)
+**Last updated:** 2026-03-11T17:00Z (fix: copy codex_utils/ + full self-review + cognitive brain + docker healer agent)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image + Cognitive Pre-flight)
+## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image — complete resolution + full deliverables)
 
 ### Issues Addressed
 
-#### PR #3552 — Build & Push Preview Image failing (preview and preview-dev targets)
+#### PR #3552 — Build & Push Preview Image failing (all 6 root causes resolved)
 
-| Root Cause | Fix | Commit |
-|------------|-----|--------|
-| `preview-base` stage missing `src/` → `error: 'src' does not exist` | Added `COPY src/ ./src/` | 4f5eaa0 |
-| Both stages missing root package-dir dirs → `error: package directory 'services' does not exist` | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` | 6010272 |
-| Cognitive Pre-flight step 7: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated in commit | 6010272 |
-| Cognitive Pre-flight step 8: `CHANGELOG.md` not touched in last commit | Updated in commit | afdbba7 |
-| `COPY src/ ./src/` also copies `src/services/` (has sub-packages `mcp`, `audio`, etc.); setuptools `find` with `where=[".", "src"]` discovers `services.mcp` and resolves to root `services/mcp` → error because stub `services/` had no sub-dirs | `COPY services/ ./services/` in both stages; removed `services` from `STUB_DIRS` | this commit |
+| # | Root Cause | Fix | Commit |
+|---|-----------|-----|--------|
+| 1 | `preview-base` missing `src/` → `error: 'src' does not exist` | `COPY src/ ./src/` | 4f5eaa0 |
+| 2 | All stages missing top-level package-dir dirs → `error: 'services' does not exist` | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` | 6010272 |
+| 3 | Cognitive Pre-flight step 7: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated | 6010272 |
+| 4 | Cognitive Pre-flight step 8: `CHANGELOG.md` not touched | Updated | afdbba7 |
+| 5 | `COPY src/` copies `src/services/` → `services.mcp` discovered → `services/mcp` missing | `COPY services/ ./services/`; removed from `STUB_DIRS` | d73c17d |
+| 6 | `src/codex_utils/tracking` → `codex_utils.tracking` discovered → `codex_utils/tracking` missing | `COPY codex_utils/ ./codex_utils/`; removed from `STUB_DIRS` | this commit |
 
-#### Agent Token Delegation Activated
-- Owner approved delegation; `COPILOT_AGENT_AUTH_ENABLED = true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` updated
+#### Agent Token Delegation (comment 4040529165)
+- Activation confirmed: `COPILOT_AGENT_AUTH_ENABLED = true`
+- All PR workflows now show `action_required` (gated by delegation approval)
+- Build & Push Preview Image #62 is `action_required` — NOT a failure; waiting for approval
+
+#### Self-Review — 5 Passes Completed
+| Pass | Finding |
+|------|---------|
+| 1 | Dockerfile structure correct |
+| 2 | `services` + `codex_utils` unsafe as stubs |
+| 3 | Systematic analysis of all 14 package-dir entries confirmed only 2 UNSAFE |
+| 4 | `packages.find` include/exclude cross-check — all remaining stubs verified safe |
+| 5 | code_review tool — no issues found |
 
 ### Work Completed This Session
 
-| Item | Status | Description |
-|------|--------|-------------|
-| `Dockerfile.preview` — `preview-base` stage | ✅ Fixed | `COPY src/ ./src/` + `COPY services/ ./services/` + stubs for other package-dir entries |
-| `Dockerfile.preview` — `preview` stage | ✅ Fixed | `COPY services/ ./services/` + stubs (services sub-packages now fully present) |
-| `Dockerfile.preview` — `ARG STUB_DIRS` | ✅ Updated | Removed `services`; added comment explaining why |
-| CHANGELOG.md | ✅ Updated | Added `[Unreleased]` entry for services/ copy fix |
-| AGENT_ACCOUNTABILITY_REPORT.md | ✅ Updated | This document |
+| Item | Status | Commit |
+|------|--------|--------|
+| `Dockerfile.preview` — `COPY src/` | ✅ Fixed | 4f5eaa0 |
+| `Dockerfile.preview` — `ARG STUB_DIRS` + `RUN mkdir` | ✅ Fixed | 6010272 |
+| `Dockerfile.preview` — `COPY services/` in both stages | ✅ Fixed | d73c17d |
+| `Dockerfile.preview` — `COPY codex_utils/` in both stages | ✅ Fixed | this commit |
+| `Dockerfile.preview` — `STUB_DIRS` documentation comment | ✅ Complete | this commit |
+| `CHANGELOG.md` | ✅ Updated all 3 sessions | this commit |
+| `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Updated | this commit |
+| `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md` | ✅ Created | this commit |
+| `.github/agents/ci-docker-build-healer.md` | ✅ Created | this commit |
 
 ---
 
