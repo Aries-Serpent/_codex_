@@ -40,6 +40,7 @@ import json
 import logging
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -606,6 +607,124 @@ def stage_s6_render(
     report_path.write_text("\n".join(lines))
     logger.info("Stage S6 render complete: %s", report_path)
     return report_path
+
+
+def render_template(cfg: dict, data: dict) -> tuple:
+    """
+    Render a Markdown report and write a JSON companion file.
+
+    This is the public API expected by tests and external callers. Internally it
+    calls ``stage_s6_render`` for the Markdown portion and writes a JSON
+    companion alongside the report.
+
+    Args:
+        cfg: Configuration dict with ``output.artifacts_dir``,
+            ``output.reports_dir``, and optional ``metrics_schema_version``.
+        data: Dict containing ``capabilities``, ``gaps``, ``weights``,
+            ``scoring``, and ``timestamp`` keys.
+
+    Returns:
+        A ``(md_path, json_path)`` tuple of Paths pointing to the written
+        Markdown report and its JSON companion.
+    """
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    reports_dir = Path(cfg.get("output", {}).get("reports_dir", str(artifacts_dir)))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
+
+    scored_caps = data.get("capabilities", [])
+    gaps = data.get("gaps")
+
+    md_path = stage_s6_render(cfg, scored_caps=scored_caps, gaps=gaps)
+
+    # Write JSON companion with full data payload
+    companion = {
+        "capabilities": scored_caps,
+        "gaps": gaps if gaps is not None else [],
+        "weights": data.get("weights", {}),
+        "scoring": data.get("scoring", {}),
+        "timestamp": data.get("timestamp", datetime.now(timezone.utc).isoformat()),
+        "metrics_schema_version": cfg.get("metrics_schema_version", "2.0.0"),
+    }
+    json_path = artifacts_dir / "report.json"
+    json_path.write_text(json.dumps(companion, indent=2))
+    logger.info("JSON companion written: %s", json_path)
+    return md_path, json_path
+
+
+def run_stage(cfg: dict, stage: str) -> None:
+    """
+    Execute a named pipeline stage.
+
+    Supported stages:
+    - ``"S3"`` / ``"CAPABILITIES"`` → ``stage_s3_capabilities``
+    - ``"S4"`` / ``"SCORING"`` → ``stage_s4_scoring``
+    - ``"S5"`` / ``"GAPS"`` → ``stage_s5_gaps``
+    - ``"S6"`` / ``"RENDER"`` → ``stage_s6_render``
+    - ``"TRENDS"`` → generate a trend-comparison report from historical data
+
+    Args:
+        cfg: Configuration dict (same format as the individual stage functions).
+        stage: Case-insensitive stage name string.
+
+    Raises:
+        ValueError: If ``stage`` is not a recognised stage name.
+    """
+    stage_upper = stage.upper()
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+
+    if stage_upper in ("S3", "CAPABILITIES"):
+        stage_s3_capabilities(cfg, [])
+    elif stage_upper in ("S4", "SCORING"):
+        stage_s4_scoring(cfg, [])
+    elif stage_upper in ("S5", "GAPS"):
+        stage_s5_gaps(cfg, [])
+    elif stage_upper in ("S6", "RENDER"):
+        stage_s6_render(cfg)
+    elif stage_upper == "TRENDS":
+        trends_cfg = cfg.get("trends", {})
+        lookback_days = trends_cfg.get("lookback_days", 30)
+        cutoff = time.time() - lookback_days * 86400
+
+        # Collect historical scored-caps files
+        historical: list[Dict[str, Any]] = []
+        for hist_file in sorted(artifacts_dir.glob("capabilities_scored*.json")):
+            try:
+                hist_data = json.loads(hist_file.read_text())
+                ts = hist_data.get("timestamp", 0)
+                if isinstance(ts, str):
+                    try:
+                        ts = datetime.fromisoformat(ts.replace("Z", "+00:00")).timestamp()
+                    except ValueError:
+                        ts = 0
+                if ts >= cutoff:
+                    historical.append(hist_data)
+            except (json.JSONDecodeError, OSError):
+                continue
+
+        trends_dir = artifacts_dir / "trends"
+        trends_dir.mkdir(parents=True, exist_ok=True)
+        timestamp_str = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        report_path = trends_dir / f"trend_report_{timestamp_str}.md"
+        lines = [
+            "# Capability Audit Trend Report",
+            "",
+            f"Generated: {datetime.now(timezone.utc).isoformat()}",
+            f"Lookback: {lookback_days} days ({len(historical)} historical snapshots found)",
+            "",
+        ]
+        for snap in historical:
+            snap_ts = snap.get("timestamp", "unknown")
+            caps = snap.get("capabilities", [])
+            lines.append(f"## Snapshot: {snap_ts}  ({len(caps)} capabilities)")
+            for cap in caps[:5]:
+                lines.append(f"- {cap.get('id', '?')}: {cap.get('score', 0):.2f}")
+            lines.append("")
+        report_path.write_text("\n".join(lines))
+        logger.info("Trends stage complete: %s", report_path)
+    else:
+        raise ValueError(f"Unknown stage: {stage!r}")
 
 
 def apply_overrides(capabilities: list[Dict[str, Any]], cfg: Dict[str, Any]) -> list[Dict[str, Any]]:
