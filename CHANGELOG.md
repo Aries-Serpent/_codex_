@@ -5,7 +5,14 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — chore(ci): resolve issues #3532 and #3545 — CI triage analysis + preflight refresh (2026-03-11)
+## [Unreleased] — chore(ci): preflight refresh after delegation activation run #22949088457 (2026-03-11)
+
+### Chore (PR copilot/sub-pr-3513 — 2026-03-11 delegation cycle preflight)
+- Regenerated `CODEX_MANIFEST.json` (generated_at refreshed; `chore(auth)` auto-commit at HEAD does not touch accountability report)
+- Updated `.secrets.baseline` `hashed_secret` to match new integrity_sha256
+- Refreshed `AGENT_ACCOUNTABILITY_REPORT.md` timestamp per Cognitive Pre-flight gate requirement
+
+
 
 ### Investigation (issues #3532 / #3545)
 - **Classified 11 failing workflows** from CI triage report #3532; identified root cause and disposition for each
