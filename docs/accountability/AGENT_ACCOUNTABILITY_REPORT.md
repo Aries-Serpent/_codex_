@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T16:22Z (chore: touch CHANGELOG.md + accountability report for preflight gate)
+**Last updated:** 2026-03-11T16:44Z (fix: copy services/ into Docker stages to fix services.* sub-package discovery)
 
 ---
 
@@ -16,25 +16,22 @@
 | Root Cause | Fix | Commit |
 |------------|-----|--------|
 | `preview-base` stage missing `src/` → `error: 'src' does not exist` | Added `COPY src/ ./src/` | 4f5eaa0 |
-| Both stages missing package-dir dirs → `error: package directory 'services' does not exist` | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` in both stages | 6010272 |
-| Cognitive Pre-flight: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated in commit | 6010272 |
-| Cognitive Pre-flight: `CHANGELOG.md` not touched in last commit | Updated in this commit | this commit |
+| Both stages missing root package-dir dirs → `error: package directory 'services' does not exist` | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` | 6010272 |
+| Cognitive Pre-flight step 7: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated in commit | 6010272 |
+| Cognitive Pre-flight step 8: `CHANGELOG.md` not touched in last commit | Updated in commit | afdbba7 |
+| `COPY src/ ./src/` also copies `src/services/` (has sub-packages `mcp`, `audio`, etc.); setuptools `find` with `where=[".", "src"]` discovers `services.mcp` and resolves to root `services/mcp` → error because stub `services/` had no sub-dirs | `COPY services/ ./services/` in both stages; removed `services` from `STUB_DIRS` | this commit |
 
-#### Issue #3532 — CI Failure Triage Report
-
-All other failures listed in #3532 are either:
-- On different branches (`0D_base_`, `copilot/sub-pr-3513-again`, `main`, etc.)
-- Pre-existing infrastructure issues (CodeQL JOB_STATUS_CONFIGURATION_ERROR, Codespaces Prebuilds, RAG Module Tests on base branch, Automatic Dependency Submission GitHub infrastructure checkout failure)
-- Not caused by changes in this PR
+#### Agent Token Delegation Activated
+- Owner approved delegation; `COPILOT_AGENT_AUTH_ENABLED = true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` updated
 
 ### Work Completed This Session
 
 | Item | Status | Description |
 |------|--------|-------------|
-| `Dockerfile.preview` — `preview-base` stage | ✅ Fixed | Added `COPY src/ ./src/` + stub dirs for all package-dir entries |
-| `Dockerfile.preview` — `preview` stage | ✅ Fixed | Added stub dirs before `pip install -e .` |
-| `Dockerfile.preview` — `ARG STUB_DIRS` | ✅ Improved | Single ARG at top of file, re-declared in each stage (no duplication) |
-| CHANGELOG.md | ✅ Updated | Added `[Unreleased]` entry for PR #3552 fixes |
+| `Dockerfile.preview` — `preview-base` stage | ✅ Fixed | `COPY src/ ./src/` + `COPY services/ ./services/` + stubs for other package-dir entries |
+| `Dockerfile.preview` — `preview` stage | ✅ Fixed | `COPY services/ ./services/` + stubs (services sub-packages now fully present) |
+| `Dockerfile.preview` — `ARG STUB_DIRS` | ✅ Updated | Removed `services`; added comment explaining why |
+| CHANGELOG.md | ✅ Updated | Added `[Unreleased]` entry for services/ copy fix |
 | AGENT_ACCOUNTABILITY_REPORT.md | ✅ Updated | This document |
 
 ---

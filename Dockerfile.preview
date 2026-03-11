@@ -29,7 +29,12 @@
 # are NOT copied into every stage.  setuptools requires each mapped directory to
 # exist when it builds the editable egg-info; empty stubs are sufficient.
 # NOTE: Keep this list in sync with [tool.setuptools.package-dir] in pyproject.toml.
-ARG STUB_DIRS="agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli services"
+# NOTE: `services` is intentionally absent — it is COPY'd directly (see below)
+# because COPY src/ also copies src/services/ which has sub-packages (mcp, audio,
+# etc.), causing setuptools `find` with where=[".", "src"] to discover services.*
+# packages and resolve them to root services/<sub>. Empty stubs would not satisfy
+# those sub-package directory checks; copying the real tree does.
+ARG STUB_DIRS="agents codex_addons codex_digest codex_utils codex_regression configs interfaces tools examples cli"
 
 # ── Stage 1: dependency builder ───────────────────────────────────────────────
 FROM python:3.12-slim AS preview-base
@@ -60,6 +65,10 @@ RUN pip install --no-cache-dir --upgrade pip
 # ray, etc.) that are not used by the cognitive_app CLI server.
 COPY pyproject.toml README.md ./
 COPY src/ ./src/
+# Copy root services/ so setuptools can resolve all services.* sub-packages
+# (src/services/ is included in COPY src/ above, which causes find to discover
+# services.mcp etc.; package-dir maps services → root services/, not src/services/).
+COPY services/ ./services/
 # Create stub directories for all package-dir entries in pyproject.toml.
 # setuptools requires every mapped directory to exist during editable install;
 # these empty stubs satisfy that requirement without bloating the image.
@@ -100,6 +109,9 @@ WORKDIR /app
 # Copy source — ordered least-to-most volatile for cache efficiency
 COPY --chown=codex:codex pyproject.toml README.md ./
 COPY --chown=codex:codex src/ ./src/
+# Copy root services/ so setuptools can resolve all services.* sub-packages
+# (see preview-base stage comment for full explanation).
+COPY --chown=codex:codex services/ ./services/
 COPY --chown=codex:codex cognitive_app/ ./cognitive_app/
 COPY --chown=codex:codex .codex/ ./.codex/
 COPY --chown=codex:codex policies/ ./policies/
