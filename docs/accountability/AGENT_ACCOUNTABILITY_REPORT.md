@@ -3,7 +3,19 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3513
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T00:53Z (PR copilot/sub-pr-3513 — test fix: mock slow sensors in test_max_iterations_caps_loop to prevent pytest subprocess timeout)
+**Last updated:** 2026-03-11T02:13Z (PR #3537 — retry: regenerate CODEX_MANIFEST.json + refresh .secrets.baseline after agent token delegation)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 retry (PR #3537: CODEX_MANIFEST refresh + secrets baseline)
+
+### Work Completed This Session
+
+| Item | Status | Description |
+|------|--------|-------------|
+| CODEX_MANIFEST.json regenerated | ✅ Done | Fresh `generated_at` timestamp keeps E→D Gate C2 (manifest freshness <24h) green |
+| `.secrets.baseline` updated | ✅ Done | `hashed_secret` for CODEX_MANIFEST.json updated to match new `integrity_sha256`; prevents detect-secrets exit-3 |
+| CHANGELOG.md updated | ✅ Done | New entry documents this retry session |
 
 ---
 
