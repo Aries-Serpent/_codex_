@@ -44,10 +44,11 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |

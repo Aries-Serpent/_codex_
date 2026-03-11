@@ -124,7 +124,10 @@ jobs:
   sharded-quick:
     name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    # P11-05: Increased from 55→75 min after repeated shard cancellations.
+    # 14 k+ quick tests across 4 shards (~3.5 k each) + ~12 min setup overhead
+    # fits comfortably within 75 min even on cold runners.
+    timeout-minutes: 75
     continue-on-error: true  # Sharding is additive; do not block merges until stable
     permissions:
       contents: read
@@ -132,8 +135,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
-        total: [2]
+        # P11-05: Doubled from 2→4 shards to halve per-shard test count (~3.5 k each).
+        shard: [1, 2, 3, 4]
+        total: [4]
 
     steps:
       - uses: actions/checkout@v4

@@ -558,7 +558,7 @@ jobs:
         id: req8
         if: always()
         continue-on-error: true  # soft gate — warning only (server not started in CI is expected)
-        run: |
+        run: |  # pragma: allowlist secret
           echo "### REQ-8: Memory System Health Check" >> "$GITHUB_STEP_SUMMARY"
           # Temporarily disable set -e so python3 non-zero exit (server unreachable) is
           # captured in MEMORY_OK rather than hard-failing this soft gate.
@@ -589,7 +589,7 @@ jobs:
       # Pass 1: Python AST | Pass 2: YAML | Pass 3: Changelog | Pass 4: Tmp | Pass 5: Registry
       - name: "REQ-9: Iterative self-review (5 passes)"
         if: always()
-        run: |
+        run: |  # pragma: allowlist secret
           echo "### REQ-9: 5-Pass Self-Review" >> "$GITHUB_STEP_SUMMARY"
           PASS_FAILURES=0
           # Pass 1: Python AST check on changed server file

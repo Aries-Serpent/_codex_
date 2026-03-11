@@ -31,9 +31,9 @@ The Codex ML system provides a comprehensive framework for ML model training, ev
 graph TB
     User[Data Scientist / ML Engineer<br/>v0.1.0 User]
     Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
-    Agents[53 Autonomous Agents<br/>🤖 MCP-enabled]
+    Agents[153 Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>1300+ Tests | 90% Coverage]
+    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>19500+ Tests | 80% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage]
     MCP[MCP System<br/>Model Context Protocol]
@@ -72,7 +72,7 @@ graph TB
 
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot / ChatGPT**: AI assistants that help navigate the codebase and generate code
-- **53 Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
+- **153 Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
 - **CI/CD Systems**: Automated workflows for testing, deployment, and self-healing
 
 ### External Systems
@@ -95,7 +95,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 1300+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 19500+ Tests]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]
@@ -121,7 +121,7 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (54 Agents)"
+        subgraph "Agent System (153 Agents)"
             AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]

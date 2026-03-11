@@ -1,7 +1,13 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-05T03:07:30Z",
+  "generated_at": "2026-03-11T11:08:53Z",
   "agents": [
+    {
+      "name": "github-app-manager",
+      "role": "specialist",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
     {
       "name": "github-guru-agent",
       "role": "specialist",
@@ -997,8 +1003,18 @@
       "has_concurrency": true
     },
     {
+      "name": "autonomy-phase-ci-matrix",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "batch-ci-triage",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "build-preview-image",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1073,7 +1089,7 @@
     },
     {
       "name": "copilot-setup-steps",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1147,6 +1163,11 @@
       "has_concurrency": true
     },
     {
+      "name": "model-drift-retrain",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "nightly-codeql-alert-triage",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1214,6 +1235,11 @@
     {
       "name": "pre-merge-validation",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "process-variable-intents",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1384,6 +1410,11 @@
     {
       "name": "validate",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "vars-guide-sync",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1650,5 +1681,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "40decb5362bf3d8897295eeb11682c940afac10adaa3113f39838873678f132d"
+  "integrity_sha256": "0c3aeb6d791281f588f0fb105006cd02cfb2367e5df98cefe9eff279bacd1f45"
 }

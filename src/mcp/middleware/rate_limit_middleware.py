@@ -46,19 +46,26 @@ class _RateLimitBackend(ABC):
         """Optional cleanup."""
 
 
+# Module-level bucket store used by _InMemoryBackend.
+# Exposed at module scope so tests can call ``rate_limit_middleware._BUCKETS.clear()``
+# to reset state between runs without needing to reload the module.
+# All _InMemoryBackend instances share this dict (process-local singleton state).
+_BUCKETS: dict[str, dict] = {}
+
+
 class _InMemoryBackend(_RateLimitBackend):
     """Process-local in-memory token bucket.
+
+    All instances share the module-level ``_BUCKETS`` dict (singleton state).
+    Tests can reset state by calling ``rate_limit_middleware._BUCKETS.clear()``.
 
     WARNING: Each worker process has an independent state.  In a multi-worker
     deployment (Gunicorn/uvicorn with ``--workers N``) each client gets N× the
     configured rate limit.  Use ``_RedisBackend`` for shared-state rate limiting.
     """
 
-    def __init__(self) -> None:
-        self._buckets: dict[str, dict] = {}
-
     def consume(self, key: str, rate: float, burst: int) -> bool:
-        b = self._buckets.setdefault(key, {"tokens": float(burst), "last": time.time()})
+        b = _BUCKETS.setdefault(key, {"tokens": float(burst), "last": time.time()})
         now = time.time()
         elapsed = now - b["last"]
         b["tokens"] = min(burst, b["tokens"] + elapsed * rate)
@@ -69,7 +76,7 @@ class _InMemoryBackend(_RateLimitBackend):
         return True
 
     def clear(self) -> None:
-        self._buckets.clear()
+        _BUCKETS.clear()
 
 
 class _RedisBackend(_RateLimitBackend):

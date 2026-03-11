@@ -121,15 +121,25 @@ jobs:
 
       # Fix: actions/checkout only fetches the checked-out branch even with
       # fetch-depth: 0. The Copilot coding agent's internal diff (report_progress)
-      # needs the PR base branch ref to be resolvable. Without this, git fails:
+      # needs the PR base branch ref to be resolvable as a *local* branch name.
+      # Without this, git fails:
       #   "fatal: ambiguous argument '<base_branch>': unknown revision"
-      # Shallow-fetch all remote branch tips so any base branch name resolves.
+      # Step 1: shallow-fetch all remote branch tips into remote tracking refs
+      #         so 'origin/main' (and friends) resolve.
+      # Step 2: promote 'origin/main' to a local branch ref so that bare 'main'
+      #         also resolves (git-diff, git-log, git-show etc. require a local ref
+      #         or the full 'origin/main' spelling; DWIM does NOT map 'main' →
+      #         'refs/remotes/origin/main').
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
-            && echo "✅ Remote branch refs fetched" \
+            && echo "✅ Remote branch refs fetched (as origin/*)" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
+          # Create local 'main' branch ref so 'git diff main' resolves correctly.
+          git branch -f main origin/main 2>/dev/null \
+            && echo "✅ main available as local branch ref" \
+            || echo "⚠️ Could not create local main ref (non-blocking)"
 
       - name: "🔍 Validate repo JSON files"
         run: |
@@ -151,14 +161,14 @@ jobs:
       # the base commit.  Make the safe wrapper available on PATH so any CI
       # step or agent tool can call `safe_git_show.sh <ref> <file>` instead.
       - name: "🔑 Inject repo variable context for agent"
-        run: |
+        run: |  # pragma: allowlist secret
           if [ -f .codex/agent_context.json ]; then
             echo "Injecting repo variable context from .codex/agent_context.json"
             # base64-encoded Python script: reads agent_context.json and writes all
             # COPILOT_*/CODEX_* repo variables into GITHUB_ENV so the Copilot agent
             # session sees them as environment variables.
             # Encoding avoids YAML heredoc/quote parsing issues (see WORKFLOW_BEST_PRACTICES.md).
-            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3
+            echo 'aW1wb3J0IGpzb24sb3MKdHJ5OgogICAgY3R4PWpzb24ubG9hZChvcGVuKCcuY29kZXgvYWdlbnRfY29udGV4dC5qc29uJykpCiAgICBnaF9lbnY9b3Blbihvcy5lbnZpcm9uWydHSVRIVUJfRU5WJ10sJ2EnKQogICAgbj0wCiAgICBmb3Igayx2IGluIGN0eC5pdGVtcygpOgogICAgICAgIGlmIG5vdCBrLnN0YXJ0c3dpdGgoJ18nKSBhbmQgdjogZ2hfZW52LndyaXRlKGYne2t9PXt2fVxuJyk7IG4rPTEKICAgIGdoX2Vudi5jbG9zZSgpCiAgICBwcmludChmJ0luamVjdGVkIHtufSB2YXJpYWJsZXMgaW50byBHSVRIVUJfRU5WJykKZXhjZXB0IEV4Y2VwdGlvbiBhcyBlOgogICAgcHJpbnQoZidXYXJuaW5nOiB7ZX0nKQo=' | base64 -d | python3  # pragma: allowlist secret
           else
             echo "No .codex/agent_context.json — skipping (run copilot-agent-vars-bootstrap first)"
           fi

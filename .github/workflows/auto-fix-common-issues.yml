@@ -50,17 +50,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for better analysis
-          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          # Fall back to the built-in GITHUB_TOKEN when neither repo secret is
+          # set (e.g. forks, new installations).  GITHUB_TOKEN always has
+          # contents:write on the owner's own repos so the push step below still
+          # works; on forks the push will be skipped by the if-condition anyway.
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
       - name: CacheManager health check
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow auto-fix-common-issues 2>/dev/null || echo "Cache health: check skipped"
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |
@@ -82,6 +87,9 @@ jobs:
           python scripts/ci/auto_fix_common_issues.py
 
       - name: Commit and push fixes
+        # Only push when: (a) fixes are available, (b) triggered manually,
+        # (c) not in check-only mode.  The workflow_dispatch trigger already
+        # guarantees this only runs from the Actions UI (not on forks or PRs).
         if: |
           steps.check.outcome == 'failure' &&
           github.event_name == 'workflow_dispatch' &&

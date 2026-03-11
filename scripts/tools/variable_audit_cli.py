@@ -220,19 +220,30 @@ _REGISTRY: List[ExpectedEntry] = [
     ExpectedEntry("CODEX_ACTIVE_CODESPACE",  LAYER_REPO_VARS, True, "Webhook/Infra", "Active Codespace name (auto-set)"),
     ExpectedEntry("WEBHOOK_RECEIVER_URL",    LAYER_REPO_VARS, True, "Webhook/Infra", "Public webhook receiver URL (auto-set)"),
 
+    # §6h Autonomous Agent Config (S116/PR #3508)
+    ExpectedEntry("AGENT_KILL_SWITCH",            LAYER_REPO_VARS, True,  "Autonomous Agent", "Emergency stop for all agent loops (0=run, 1=halt)", human_governance=True),
+    ExpectedEntry("AUTONOMY_BUDGET_SECONDS",      LAYER_REPO_VARS, False, "Autonomous Agent", "Max wall-clock budget for autonomy_scheduler (Phase 1)"),
+    ExpectedEntry("AUTONOMY_MAX_ITERATIONS",      LAYER_REPO_VARS, False, "Autonomous Agent", "Max iterations per autonomy_scheduler run (Phase 1)"),
+    ExpectedEntry("AUTONOMY_DRY_RUN",             LAYER_REPO_VARS, False, "Autonomous Agent", "Disable mutating writes in autonomy_scheduler (0/1)"),
+    ExpectedEntry("AGENT_RUNNER_BUDGET_SECONDS",  LAYER_REPO_VARS, False, "Autonomous Agent", "Total wall-clock budget for agent_runner (Phase 7)"),
+    ExpectedEntry("AGENT_RUNNER_ITERATIONS",      LAYER_REPO_VARS, False, "Autonomous Agent", "Phase loop iterations per agent_runner invocation"),
+    ExpectedEntry("AGENT_RUNNER_DRY_RUN",         LAYER_REPO_VARS, False, "Autonomous Agent", "Skip write operations in agent_runner (0/1)"),
+    ExpectedEntry("UNCERTAINTY_BUDGET_SECONDS",   LAYER_REPO_VARS, False, "Autonomous Agent", "Per-query cap for Dirichlet inference (Phases 4/5)"),
+
     # ── §7 Environment Variables (Aries_Serpent_codex_) ─────────────────
     ExpectedEntry("CODEX_ENV_NODE_VERSION",   LAYER_ENV_VARS, True, "Build", "Node.js version"),
     ExpectedEntry("CODEX_ENV_PYTHON_VERSION", LAYER_ENV_VARS, True, "Build", "Python version"),
 
-    # ── §8 Codespace Secrets ─────────────────────────────────────────────
-    ExpectedEntry("CODEX_MASTER_KEY",              LAYER_CODESPACE, True,  "Auth",       "Primary PAT (org-level, auto-forwarded)"),
-    ExpectedEntry("CODEX_BACKUP_KEY",              LAYER_CODESPACE, True,  "Auth",       "Fallback PAT — BLOCKER: not yet set"),
-    ExpectedEntry("CODEX_ADMIN_KEY",               LAYER_CODESPACE, True,  "Auth",       "Admin PAT — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_ID",                LAYER_CODESPACE, True,  "GitHub App", "App ID — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_PRIVATE_KEY",       LAYER_CODESPACE, True,  "GitHub App", "PEM key — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_INSTALLATION_ID",   LAYER_CODESPACE, True,  "GitHub App", "Installation ID — BLOCKER: not yet set"),
-    ExpectedEntry("_GITHUB_APP_CLIENT_SECRET",     LAYER_CODESPACE, True,  "GitHub App", "OAuth client secret — BLOCKER: not yet set"),
-    ExpectedEntry("WEBHOOK_SECRET",                LAYER_CODESPACE, True,  "Webhook/Infra","Webhook HMAC secret — BLOCKER: not yet set"),
+    # ── §8 Codespace Secrets — ALL CONFIRMED ✅ (SAR-G01 COMPLETE 2026-03-07) ──────
+    ExpectedEntry("CODEX_MASTER_KEY",              LAYER_CODESPACE, True,  "Auth",       "Primary PAT (org-level Codespace secret ✅)"),
+    ExpectedEntry("CODEX_BACKUP_KEY",              LAYER_CODESPACE, True,  "Auth",       "Fallback PAT (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("CODEX_ADMIN_KEY",               LAYER_CODESPACE, True,  "Auth",       "Admin PAT (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_ID",                LAYER_CODESPACE, True,  "GitHub App", "App ID (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_PRIVATE_KEY",       LAYER_CODESPACE, True,  "GitHub App", "PEM key (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_INSTALLATION_ID",   LAYER_CODESPACE, True,  "GitHub App", "Installation ID (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("_GITHUB_APP_CLIENT_SECRET",     LAYER_CODESPACE, True,  "GitHub App", "OAuth client secret (user Codespace secret ✅ 2026-03-07)"),
+    ExpectedEntry("WEBHOOK_SECRET",                LAYER_CODESPACE, True,  "Webhook/Infra","Webhook HMAC secret (user Codespace secret ✅ 2026-03-06)"),
+    ExpectedEntry("WEBHOOK_RECEIVER_URL",          LAYER_CODESPACE, False, "Webhook/Infra","Receiver URL (user Codespace secret ✅ 2026-03-06; also auto-set as repo var)"),
 ]
 
 

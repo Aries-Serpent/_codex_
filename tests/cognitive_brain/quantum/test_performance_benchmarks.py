@@ -182,13 +182,14 @@ class TestPerformanceBenchmarks:
         """Test consolidation throughput: target 100 STM→LTM/second."""
         manager = QuantumMemoryManager(QuantumConfig(), stm_capacity=100, ltm_capacity=1000)
 
-        # Fill STM
+        # Fill STM — use confidence=1.0 so promotion score (0.4*success_rate + 0.2*confidence)
+        # meets the consolidation_threshold=0.6 even before patterns have been accessed.
         for i in range(100):
             pattern = MemoryPattern(
                 pattern_id=f"consol_pat_{i}",
                 features={"f1": float(i) / 100, "f2": float(i) / 80},
                 decision="approve",
-                confidence=0.9,  # High confidence for promotion
+                confidence=1.0,
             )
             manager.store_pattern(pattern)
 

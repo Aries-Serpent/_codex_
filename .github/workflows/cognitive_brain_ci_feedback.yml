@@ -61,9 +61,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
-          python-version: "3.12"
+          python-version: '3.12'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install cognitive brain dependencies
         run: pip install -e ".[dev]" --quiet

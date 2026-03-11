@@ -36,10 +36,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install minimal dependencies
         run: |
@@ -104,10 +105,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |
@@ -149,10 +151,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |
@@ -191,10 +194,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: |

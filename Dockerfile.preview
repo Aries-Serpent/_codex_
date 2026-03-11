@@ -46,8 +46,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Upgrade pip before anything else
 RUN pip install --no-cache-dir --upgrade pip
 
-# Install only the runtime packages needed by the CLI server + auth system
+# Install only the runtime packages needed by the CLI server + auth system.
 # Pinned versions match pyproject.toml ranges for reproducibility.
+# --no-deps on the editable install skips heavy ML packages (torch, transformers,
+# ray, etc.) that are not used by the cognitive_app CLI server.
 COPY pyproject.toml README.md ./
 RUN pip install --no-cache-dir \
         "uvicorn[standard]>=0.29.0,<1.0" \
@@ -55,7 +57,7 @@ RUN pip install --no-cache-dir \
         "httpx>=0.27.0,<1.0" \
         "cryptography>=42.0.0,<47.0.0" \
         "pydantic>=2.0,<3.0" \
- && pip install --no-cache-dir -e "."
+ && pip install --no-cache-dir --no-deps -e "."
 
 # ── Stage 2: production runtime ───────────────────────────────────────────────
 FROM python:3.12-slim AS preview
@@ -87,8 +89,9 @@ COPY --chown=codex:codex cognitive_app/ ./cognitive_app/
 COPY --chown=codex:codex .codex/ ./.codex/
 COPY --chown=codex:codex policies/ ./policies/
 
-# Re-install editable to wire entry-points; fail fast if installation breaks
-RUN pip install --no-cache-dir -e .
+# Re-install editable to wire entry-points; --no-deps avoids pulling
+# heavy ML packages (torch, transformers, etc.) not used by the CLI server.
+RUN pip install --no-cache-dir --no-deps -e .
 
 # Writable runtime dirs
 RUN mkdir -p /home/codex/.codex /app/artifacts \

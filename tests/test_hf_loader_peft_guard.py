@@ -38,7 +38,7 @@ def test_load_causal_lm_handles_missing_peft(monkeypatch, caplog):
 
     monkeypatch.setattr(hf_loader, "AutoModelForCausalLM", StubLoader)
     monkeypatch.setattr(hf_loader, "_required_revision", lambda repo_id, revision: "rev")
-    monkeypatch.setitem(sys.modules, "peft", object(), raising=False)
+    monkeypatch.setitem(sys.modules, "peft", object())
 
     caplog.set_level(logging.INFO)
     model = hf_loader.load_causal_lm(

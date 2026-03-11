@@ -43,9 +43,11 @@ jobs:
           fetch-depth: 1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: ./.github/actions/setup-python-cached
         with:
           python-version: '3.11'
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
       - name: Install dependencies
         run: pip install jsonschema pyyaml --quiet

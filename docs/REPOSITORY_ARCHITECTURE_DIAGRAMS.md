@@ -12,7 +12,7 @@
 
 This document presents all key architecture diagrams aligned with v0.1.0 pre-release:
 1. **1500+ Tests**: Comprehensive test coverage across all components
-2. **90% Coverage**: Production-grade quality threshold achieved
+2. **80% Coverage**: Production-grade quality threshold achieved
 3. **48 CVEs Fixed**: Security-hardened through IP-005 remediation
 4. **54 Autonomous Agents**: Full agent ecosystem operational
 5. **MCP System**: Model Context Protocol fully integrated
@@ -29,7 +29,7 @@ This document presents all key architecture diagrams aligned with v0.1.0 pre-rel
 ```mermaid
 graph TB
     subgraph "codex-ml v0.1.0 CI/CD Pipeline"
-        TC[test-comprehensive.yml<br/>✅ 1500+ Tests<br/>✅ 90% Coverage<br/>✅ pytest-rerunfailures]
+        TC[test-comprehensive.yml<br/>✅ 1500+ Tests<br/>✅ 80% Coverage<br/>✅ pytest-rerunfailures]
         TR[test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini]
         SH[self-healing.yml<br/>✅ Auto-Fix + Self-Heal<br/>✅ 75-87% Time Savings<br/>✅ PyYAML dependency order]
         SEC[security-scan.yml<br/>✅ 48 CVEs Fixed<br/>🔒 CodeQL + Bandit<br/>🔒 Safety + Semgrep]
@@ -93,7 +93,7 @@ graph TB
 
 ### v0.1.0 Key Improvements
 - **1500+ Tests**: Comprehensive coverage across all modules
-- **90% Coverage**: Production-grade quality threshold
+- **80% Coverage**: Production-grade quality threshold
 - **48 CVEs Fixed**: Security hardening complete
 - **Auto-Fix**: 75-87% time savings (2-4 hours → 15-30 minutes)
 - **Self-Healing**: Automatic issue detection and remediation

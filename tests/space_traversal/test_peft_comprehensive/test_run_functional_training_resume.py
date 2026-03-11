@@ -152,14 +152,19 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
         )
         return {"result": "ok"}
 
-    monkeypatch.setattr("codex_ml.utils.checkpointing.load_training_checkpoint", fake_load_ckpt)
+    # Patch at the legacy_api module level so the already-imported symbol is replaced.
+    import codex_ml.training.legacy_api as _lapi  # noqa: PLC0415
+
+    monkeypatch.setattr(_lapi, "load_training_checkpoint", fake_load_ckpt)
+    # _evaluate_model uses a raw DataLoader that expects integer-indexed datasets;
+    # the test's Dataset stub is dict-based, so skip the evaluation entirely.
+    monkeypatch.setattr(_lapi, "_evaluate_model", lambda *args, **kwargs: {})
     training_module = sys.modules["training.functional_training"]
     monkeypatch.setattr(training_module, "run_custom_trainer", fake_run_custom_trainer)
 
     config = {
         "training": {
             "texts": ["hello"],
-            "val_texts": ["world"],
             "checkpoint_dir": str(checkpoint_dir),
         }
     }
