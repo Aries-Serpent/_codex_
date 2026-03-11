@@ -5,6 +5,15 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix(review): verify all unresolved PR review comments addressed (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 review comment verification)
+- **`scripts/philosophy_parser.py`**: Replaced chained `lstrip()` calls with `re.match(r'^\s*-\s*\[[ x]\]\s*(.*)$', line)` regex capture to reliably extract action item text without mangling leading characters
+- **`tests/validation/test_coverage_verification.py`**: Strengthened `test_coverage_threshold_value_is_90` assertion to `threshold >= 80`, matching `pyproject.toml fail_under = 80` and preventing inadvertent threshold reduction
+- **`scripts/budget_uncertainty.py`** (`budget_cap`): Added `try/except ValueError` around `float(os.environ.get("UNCERTAINTY_BUDGET_SECONDS", ...))` with fallback to `max_seconds` and a warning log
+- **`scripts/budget_uncertainty.py`** (`scenario_ci_health`): Switched from reading non-existent `status` field to deriving health from `exit_code` + optional `junit.failures`/`junit.errors` fields that `tools/validate.py` actually writes
+- **`CODEX_MANIFEST.json`** / **`.secrets.baseline`**: Refreshed manifest + updated `hashed_secret`
+
 ## [Unreleased] — fix(ci): fix 4 locally-failing Resilient Validation Suite tests (2026-03-11)
 
 ### Fixed (PR copilot/sub-pr-3513 — 2026-03-11 CI failure investigation)
