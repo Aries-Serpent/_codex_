@@ -201,12 +201,20 @@ class TestAutonomySchedulerBudgetExhaustion:
             call_count.append(1)
             return original_sense(*args, **kwargs)
 
+        # Stub the other sensors so no subprocesses or heavy I/O are spawned
+        # during the test (sense_test_health runs `pytest --collect-only` as a
+        # subprocess which is far too slow for a unit test).
+        def _stub_sensor_ok(*args, **kwargs):
+            return {"status": "ok"}
+
         with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
              patch.object(mod, "DRY_RUN", True), \
              patch.object(mod, "MAX_ITERATIONS", 2), \
              patch.object(mod, "BUDGET_SECONDS", 60), \
              patch.object(mod, "KILL_SWITCH", False), \
-             patch.object(mod, "sense_json_health", counting_sense):
+             patch.object(mod, "sense_json_health", counting_sense), \
+             patch.object(mod, "sense_yaml_health", _stub_sensor_ok), \
+             patch.object(mod, "sense_test_health", _stub_sensor_ok):
             mod.run_autonomy_loop()
 
         assert len(call_count) <= 2

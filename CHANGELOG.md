@@ -5,6 +5,13 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR sub-3513: fix test_max_iterations_caps_loop timeout by mocking slow sensors (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513 — 2026-03-11)
+- **`tests/autonomy/test_integration_budget_exhaustion.py`**: `test_max_iterations_caps_loop`
+  now mocks `sense_yaml_health` and `sense_test_health` alongside `sense_json_health` to
+  prevent `sense_test_health`'s `pytest --collect-only` subprocess from causing a 30s+ timeout
+
 ## [Unreleased] — PR #3533: review fixes · doc-metrics sync · CI health patterns PREFLIGHT+DOC_METRICS (2026-03-10)
 
 ### Fixed (PR #3533 — 2026-03-10 session 3)
