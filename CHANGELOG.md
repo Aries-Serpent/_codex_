@@ -5,6 +5,18 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR sub-3513: fix audit_runner render_template + run_stage (2026-03-11)
+
+### Fixed (PR copilot/sub-pr-3513 — 2026-03-11)
+- **`scripts/space_traversal/audit_runner.py`**: Added `render_template(cfg, data)` function
+  (writes JSON companion + renders Markdown report, returns `(md_path, json_path)`) to fix
+  `test_json_companion_written` AttributeError in Resilient Validation Suite CI run #22933655298
+- **`scripts/space_traversal/audit_runner.py`**: Added `run_stage(cfg, stage)` function
+  (dispatches to stage_s3–s6 handlers + "TRENDS" report generation) to fix
+  `test_audit_runner_trends_integration` AttributeError
+- **`CODEX_MANIFEST.json`**: Regenerated with fresh timestamp (`2026-03-11T03:38:25Z`)
+- **`.secrets.baseline`**: Updated `hashed_secret` to match new `integrity_sha256`
+
 ## [Unreleased] — PR sub-3513: continue — CODEX_MANIFEST refresh + preflight after agent token delegation (2026-03-11)
 
 ### Changed (PR copilot/sub-pr-3513 — 2026-03-11 continue session)
