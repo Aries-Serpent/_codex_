@@ -5,6 +5,13 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — fix(ci): add load=true for PR builds to fix smoke-test denial — PR #3552 (2026-03-11)
+
+### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 4)
+- `build-preview-image.yml`: Docker BUILD was succeeding but the smoke-test step was failing with `denied` when trying to run `ghcr.io/.../preview:pr-3552-fdef656`. Root cause: on PR builds `push=false` and there was no `load: true`, so the image only existed inside the buildx cache (not in the local Docker daemon or GHCR). The smoke test then attempted to pull the non-existent GHCR image and got `denied`.
+- Fixed by introducing a `should_push` output in the `Compute image tags` step (moved before `Log in to GHCR` so the output is available for the `if:` condition), then using `push: ${{ steps.tags.outputs.should_push == 'true' }}` and `load: ${{ steps.tags.outputs.should_push != 'true' }}`. This is a single source of truth — the push/load conditions cannot get out of sync.
+- Code review addressed: refactored from duplicated inverse boolean condition to a single `should_push` step output.
+
 ## [Unreleased] — fix(docker): copy codex_utils/ + complete self-review — PR #3552 (2026-03-11)
 
 ### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 3)

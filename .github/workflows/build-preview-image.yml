@@ -73,14 +73,6 @@ jobs:
         with:
           driver-opts: image=moby/buildkit:latest
 
-      - name: Log in to GHCR
-        if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_image == 'true')
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Compute image tags
         id: tags
         run: |
@@ -93,10 +85,23 @@ jobs:
 
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=true" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.push_image }}" == "true" ]]; then
+            echo "tags=${REPO}/${TARGET}:latest,${REPO}/${TARGET}:${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=true" >> "$GITHUB_OUTPUT"
           else
             echo "tags=${REPO}/${TARGET}:pr-${{ github.event.number }}-${TAG}" >> "$GITHUB_OUTPUT"
+            echo "should_push=false" >> "$GITHUB_OUTPUT"
           fi
           echo "cache_key=${TARGET}-${{ hashFiles('Dockerfile.preview','pyproject.toml') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        if: steps.tags.outputs.should_push == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build (and push on main)
         uses: docker/build-push-action@v6
@@ -104,7 +109,11 @@ jobs:
           context: .
           file: Dockerfile.preview
           target: ${{ matrix.target }}
-          push: ${{ github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.push_image == 'true') }}
+          push: ${{ steps.tags.outputs.should_push == 'true' }}
+          # load=true exports the image to the local Docker daemon on PR builds so
+          # the smoke-test step can run it without pulling from GHCR (which would
+          # fail because the image has not been pushed yet on non-main branches).
+          load: ${{ steps.tags.outputs.should_push != 'true' }}
           tags: ${{ steps.tags.outputs.tags }}
           cache-from: type=gha,scope=${{ steps.tags.outputs.cache_key }}
           cache-to:   type=gha,scope=${{ steps.tags.outputs.cache_key }},mode=max

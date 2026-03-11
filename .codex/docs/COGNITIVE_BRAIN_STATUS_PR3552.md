@@ -23,7 +23,7 @@ Genesis Protocol
 ## 🐳 PR #3552 — Docker Preview Image Fix (2026-03-11)
 
 ### Problem
-`Build & Push Preview Image` was failing for `preview` and `preview-dev` targets due to cascading setuptools editable install failures.
+`Build & Push Preview Image` was failing for `preview` and `preview-dev` targets due to cascading setuptools editable install failures, then a smoke-test registry denial.
 
 ### Root Cause Analysis
 
@@ -35,6 +35,7 @@ Genesis Protocol
 | 4 | (prospective) `package directory 'codex_utils/tracking' does not exist` | Same pattern: `src/codex_utils/tracking` exists, `codex_utils*` included in `packages.find.include`, not excluded | `COPY codex_utils/ ./codex_utils/` |
 | 5 | Cognitive Pre-flight step 7: accountability report not touched | Commit didn't touch required file | Updated `AGENT_ACCOUNTABILITY_REPORT.md` |
 | 6 | Cognitive Pre-flight step 8: CHANGELOG.md not touched | Commit didn't touch required file | Updated `CHANGELOG.md` |
+| 7 | Smoke-test: `docker run ghcr.io/...` → `denied` | On PR builds `push=false` and no `load: true` → image only in buildx cache, not in local daemon or GHCR | Added `load: true` in `build-preview-image.yml` for non-main builds |
 
 ### Self-Review Analysis: All 14 Package-Dir Entries
 
@@ -80,8 +81,9 @@ services = "services"   ✅ (many)     services.mcp, .audio, etc. ✅ (services*
 ### Sprint 1 — PR #3552 Follow-up (immediate)
 - [x] Fix Docker preview image editable install failures
 - [x] Activate Agent Token Delegation
-- [ ] Owner to approve Build & Push Preview Image run (action_required gate)
-- [ ] Verify smoke test health check passes for `preview` target post-approval
+- [x] Build & Push Preview Image #63 ran — Docker BUILD passed; smoke-test failed with GHCR `denied` (no `load: true`)
+- [x] Fixed: added `load: true` in `build-preview-image.yml` for PR builds
+- [ ] Verify Build & Push Preview Image passes end-to-end after this fix
 - [ ] Keep `STUB_DIRS` in sync if `[tool.setuptools.package-dir]` adds new entries
 
 ### Sprint 2 — CI Health (target: <10% failure rate)

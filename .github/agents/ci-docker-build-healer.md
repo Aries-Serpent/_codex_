@@ -45,12 +45,19 @@ Build failure in Docker stage with pip install -e .
 │   └─ The top-level package-dir stub is missing
 │       └─ FIX: Add to `STUB_DIRS` ARG or `COPY <dir>/ ./<dir>/`
 │
-└─ "package directory '<TOP_LEVEL>/<SUB>' does not exist"
-    └─ Root cause: `COPY src/ ./src/` copies `src/<dir>/` which has sub-packages.
-       setuptools `find` with `where=[".", "src"]` discovers `<pkg>.<sub>` from
-       `src/<dir>/<sub>/__init__.py` and maps it via `package-dir <pkg> = "<dir>"`
-       to root `<dir>/<sub>` — which the flat stub does not provide.
-       └─ FIX: `COPY <dir>/ ./<dir>/` (real tree) instead of empty mkdir stub
+├─ "package directory '<TOP_LEVEL>/<SUB>' does not exist"
+│   └─ Root cause: `COPY src/ ./src/` copies `src/<dir>/` which has sub-packages.
+│      setuptools `find` with `where=[".", "src"]` discovers `<pkg>.<sub>` from
+│      `src/<dir>/<sub>/__init__.py` and maps it via `package-dir <pkg> = "<dir>"`
+│      to root `<dir>/<sub>` — which the flat stub does not provide.
+│      └─ FIX: `COPY <dir>/ ./<dir>/` (real tree) instead of empty mkdir stub
+│
+└─ Smoke-test fails: docker pull denied / unable to find image
+    └─ Root cause: On PR builds, `push=false` so image is only in buildx cache.
+       Without `load: true`, the local Docker daemon has no knowledge of the image.
+       The smoke-test tag (e.g. `ghcr.io/.../preview:pr-N-SHA`) does not exist in GHCR.
+       └─ FIX: Add `load: true` in `docker/build-push-action` when NOT pushing
+          (condition: `github.ref != 'refs/heads/main' && NOT workflow_dispatch push`)
 ```
 
 ## Systematic Analysis Protocol
@@ -104,8 +111,11 @@ for pkg, src_dir in pkg_dir.items():
 ☐ 3. Remove unsafe dirs from STUB_DIRS ARG
 ☐ 4. Update STUB_DIRS comment documenting safe vs. unsafe reasoning
 ☐ 5. Verify COPY exists in EVERY stage that runs `pip install -e .`
-☐ 6. Update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in same commit
-☐ 7. Push and wait for CI to validate
+☐ 6. For smoke-test steps: ensure `load: true` is set in docker/build-push-action
+     when building for PR (not pushing to registry). Without it, image only exists
+     in buildx cache and `docker run` will fail with GHCR `denied`.
+☐ 7. Update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in same commit
+☐ 8. Push and wait for CI to validate
 ```
 
 ## Codebase Alignment
@@ -186,3 +196,4 @@ STUB             cli             Excluded: exclude=[cli, cli.*]
 | Date | PR | Fix |
 |------|-----|-----|
 | 2026-03-11 | #3552 | Initial creation — fixed `services/mcp` + `codex_utils/tracking` editable install failures |
+| 2026-03-11 | #3552 | Added smoke-test pattern: `load: true` needed for PR builds when image is not pushed to GHCR |

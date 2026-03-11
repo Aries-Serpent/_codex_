@@ -3,15 +3,15 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/resolve-failing-checks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T17:00Z (fix: copy codex_utils/ + full self-review + cognitive brain + docker healer agent)
+**Last updated:** 2026-03-11T17:20Z (fix: build-preview-image.yml — add load=true for PR smoke-test fix)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image — complete resolution + full deliverables)
+## 📋 SESSION SUMMARY — 2026-03-11 (fix: Build & Push Preview Image — complete resolution + full deliverables + smoke-test fix)
 
 ### Issues Addressed
 
-#### PR #3552 — Build & Push Preview Image failing (all 6 root causes resolved)
+#### PR #3552 — Build & Push Preview Image failing (all 7 root causes resolved)
 
 | # | Root Cause | Fix | Commit |
 |---|-----------|-----|--------|
@@ -20,14 +20,14 @@
 | 3 | Cognitive Pre-flight step 7: `AGENT_ACCOUNTABILITY_REPORT.md` not touched | Updated | 6010272 |
 | 4 | Cognitive Pre-flight step 8: `CHANGELOG.md` not touched | Updated | afdbba7 |
 | 5 | `COPY src/` copies `src/services/` → `services.mcp` discovered → `services/mcp` missing | `COPY services/ ./services/`; removed from `STUB_DIRS` | d73c17d |
-| 6 | `src/codex_utils/tracking` → `codex_utils.tracking` discovered → `codex_utils/tracking` missing | `COPY codex_utils/ ./codex_utils/`; removed from `STUB_DIRS` | this commit |
+| 6 | `src/codex_utils/tracking` → `codex_utils.tracking` discovered → `codex_utils/tracking` missing | `COPY codex_utils/ ./codex_utils/`; removed from `STUB_DIRS` | 40634ca |
+| 7 | Smoke-test step: `docker run ghcr.io/...` fails with `denied` — image not in GHCR (push=false on PR), not in local daemon (no `load: true`) | Added `load: true` for PR builds in `build-preview-image.yml` | this commit |
 
-#### Agent Token Delegation (comment 4040529165)
-- Activation confirmed: `COPILOT_AGENT_AUTH_ENABLED = true`
-- All PR workflows now show `action_required` (gated by delegation approval)
-- Build & Push Preview Image #62 is `action_required` — NOT a failure; waiting for approval
+#### Agent Token Delegation (comment 4040738683)
+- Second activation confirmation: `COPILOT_AGENT_AUTH_ENABLED = true`
+- Build & Push Preview Image #63 ran (sha=40634ca5): **Docker BUILD passed**, smoke-test failed with registry `denied` error → fixed this session
 
-#### Self-Review — 5 Passes Completed
+#### Self-Review — 6 Passes Completed
 | Pass | Finding |
 |------|---------|
 | 1 | Dockerfile structure correct |
@@ -35,6 +35,7 @@
 | 3 | Systematic analysis of all 14 package-dir entries confirmed only 2 UNSAFE |
 | 4 | `packages.find` include/exclude cross-check — all remaining stubs verified safe |
 | 5 | code_review tool — no issues found |
+| 6 | Smoke-test step uses GHCR tag; on PR builds no `load: true` → GHCR `denied`; fixed |
 
 ### Work Completed This Session
 
@@ -43,12 +44,13 @@
 | `Dockerfile.preview` — `COPY src/` | ✅ Fixed | 4f5eaa0 |
 | `Dockerfile.preview` — `ARG STUB_DIRS` + `RUN mkdir` | ✅ Fixed | 6010272 |
 | `Dockerfile.preview` — `COPY services/` in both stages | ✅ Fixed | d73c17d |
-| `Dockerfile.preview` — `COPY codex_utils/` in both stages | ✅ Fixed | this commit |
-| `Dockerfile.preview` — `STUB_DIRS` documentation comment | ✅ Complete | this commit |
-| `CHANGELOG.md` | ✅ Updated all 3 sessions | this commit |
+| `Dockerfile.preview` — `COPY codex_utils/` in both stages | ✅ Fixed | 40634ca |
+| `Dockerfile.preview` — `STUB_DIRS` documentation comment | ✅ Complete | 40634ca |
+| `build-preview-image.yml` — `load: true` for PR builds | ✅ Fixed | this commit |
+| `CHANGELOG.md` | ✅ Updated all 4 sessions | this commit |
 | `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Updated | this commit |
-| `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md` | ✅ Created | this commit |
-| `.github/agents/ci-docker-build-healer.md` | ✅ Created | this commit |
+| `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md` | ✅ Created | 40634ca |
+| `.github/agents/ci-docker-build-healer.md` | ✅ Created | 40634ca |
 
 ---
 
