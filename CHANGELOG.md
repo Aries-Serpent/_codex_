@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 8 — CI failures and review feedback)
+- `ci-health-monitor.yml`: Rewrote Python multi-line inline code blocks (in the P-047 dispatch step) as single-line commands. The original blocks had Python code starting at column 1, which caused actionlint/YAML to fail with "could not find expected ':'". Used `os.path.exists()` + `os.environ` to preserve original behavior.
+- `.github/agents/workflow-health-monitor.md`: Renamed to `workflow-health-monitor.deprecated.md` so the `agent_orchestrator.py` resolution order (`.md` before `.agent.md`) no longer shadows the canonical `.agent.md` definition.
+- `.github/agents/unified-coverage-agent.md`: Fixed internally inconsistent runner guidance — changed `--workers 6` recommendation to `--workers 4` to match the stated 4-core `ubuntu-latest-large` runner spec.
+
 ### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
 - **Step 2 — Security**: Verified `.codex/agent_auth_session.json` contains ONLY provenance metadata (`issued_at`, `expires_at`, `issued_by`, `run_id`, `run_url`, `pr_number`, `bypass_tools`, `note`) — NO actual API tokens, secrets, or credentials. File is intentionally tracked via `!.codex/agent_auth_session.json` in root `.gitignore`. Added security guard entries to `.codex/.gitignore` to block accidental future commits of token-bearing variants (`agent_auth_session.*.json`, `*.token.json`, `*.secret.json`, `agent_token_*.json`, `session_token.json`, `live_token.json`).
