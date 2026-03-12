@@ -184,7 +184,7 @@ runs:
         # Self-healing: if the Python binary in the restored venv is broken
         # (e.g. venv cached on Python 3.12.12, runner now has 3.12.13),
         # rebuild the whole venv before attempting the incremental refresh.
-        if ! .venv_ci/bin/python --version &>/dev/null 2>&1; then
+        if ! .venv_ci/bin/python --version &>/dev/null; then
           echo "::warning::Stale venv — Python binary broken (Python patch version mismatch). Rebuilding."
           rm -rf .venv_ci
           python -m venv .venv_ci
