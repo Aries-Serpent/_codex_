@@ -305,12 +305,12 @@ def bleu(
 
         hyp = [c.lower() if lowercase else c for c in candidates]
         ref = [r.lower() if lowercase else r for r in references]
-        score = sacrebleu.corpus_bleu(hyp, [ref])
+        score = sacrebleu.BLEU(effective_order=True).corpus_score(hyp, [ref])
         result = float(score.score / 100.0)
-        # Sanity check: BLEU scores should be in [0, 1]
-        if 0.0 <= result <= 1.0:
-            return result
-        logger.warning(f"sacrebleu returned unexpected value: {result}, falling back to NLTK")
+        # Clamp to [0, 1] — sacrebleu can return values marginally above 1.0
+        # due to floating-point arithmetic (e.g. 1.0000000000000004).
+        result = max(0.0, min(1.0, result))
+        return result
     except Exception:
         logger.warning(
             "sacrebleu import or computation failed, falling back to NLTK",

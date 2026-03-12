@@ -119,6 +119,16 @@ jobs:
           clean: true
           show-progress: true
 
+      # Configure git for non-interactive operation in the CI agent environment.
+      # core.editor=true: prevents 'git rebase --continue' and similar commands
+      # from opening an interactive editor (e.g. nano) and hanging the runner.
+      # advice.mergeConflict=false: suppresses verbose rebase/merge hint spam.
+      - name: "⚙️ Configure git for non-interactive CI operation"
+        run: |
+          git config --global core.editor "true"
+          git config --global advice.mergeConflict false
+          echo "✅ git configured: core.editor=true, advice.mergeConflict=false"
+
       # Fix: actions/checkout only fetches the checked-out branch even with
       # fetch-depth: 0. The Copilot coding agent's internal diff (report_progress)
       # needs the PR base branch ref to be resolvable as a *local* branch name.
@@ -130,16 +140,27 @@ jobs:
       #         also resolves (git-diff, git-log, git-show etc. require a local ref
       #         or the full 'origin/main' spelling; DWIM does NOT map 'main' →
       #         'refs/remotes/origin/main').
+      # Step 3: promote the PR base branch (${{ github.base_ref }}) to a local ref
+      #         so that 'git diff <base_ref>' always resolves — even when the base
+      #         branch is not 'main' (e.g. copilot/resolve-failing-checks).
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch remote branch refs for PR diff support"
         run: |
           git fetch origin '+refs/heads/*:refs/remotes/origin/*' --depth=1 2>/dev/null \
             && echo "✅ Remote branch refs fetched (as origin/*)" \
             || echo "⚠️ Remote ref fetch failed (non-blocking)"
-          # Create local 'main' branch ref so 'git diff main' resolves correctly.
+          # Always promote 'main' to a local branch ref.
           git branch -f main origin/main 2>/dev/null \
             && echo "✅ main available as local branch ref" \
             || echo "⚠️ Could not create local main ref (non-blocking)"
+          # Promote the PR base branch to a local ref so 'git diff <base_ref>'
+          # resolves correctly regardless of which branch the PR targets.
+          BASE="${{ github.base_ref }}"
+          if [ -n "$BASE" ] && [ "$BASE" != "main" ]; then
+            git branch -f "$BASE" "origin/$BASE" 2>/dev/null \
+              && echo "✅ $BASE available as local branch ref" \
+              || echo "⚠️ Could not create local $BASE ref (non-blocking)"
+          fi
 
       - name: "🔍 Validate repo JSON files"
         run: |
