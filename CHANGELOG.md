@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/sub-pr-3554 — 2026-03-12 session 15 — copilot-setup-steps git editor + base branch promotion)
+- **`.github/workflows/copilot-setup-steps.yml`**: Added `git config --global core.editor "true"` step immediately after checkout so `git rebase --continue` never opens an interactive editor (nano) and hangs the CI runner. Also suppresses merge-conflict advice spam via `advice.mergeConflict=false`.
+- **`.github/workflows/copilot-setup-steps.yml`**: Extended "Fetch remote branch refs for PR diff support" step to promote the PR's actual base branch (`github.base_ref`) to a local ref in addition to `main`. Fixes `git diff` exit-128 failures when the base branch is e.g. `copilot/resolve-failing-checks` rather than `main` (job 66848479871, run 23018572899).
+
 ### Fixed (PR copilot/sub-pr-3554 — 2026-03-12 session 14 — Resilient Validation Suite test failures)
 - **`src/codex_ml/eval/metrics.py`**: Used `sacrebleu.BLEU(effective_order=True).corpus_score()` instead of `corpus_bleu()` so that short perfect-match sentences score 1.0; also clamp result to `[0.0, 1.0]` to absorb floating-point overshoot. Fixes `test_metrics_correctness`.
 - **`src/codex_ml/cli/metrics_cli.py`**: Added `--allow-unsafe-table-name` flag to the `ingest` sub-command argparser (was silently missing). Restored bypass logic in `_validate_table()` via a `_RELAXED_IDENT` pattern when `allow_unsafe=True` (accepts `$#@` while still rejecting whitespace, quotes, semicolons). Both `_csv_to_sqlite()` and `_csv_to_duckdb()` now forward the flag. Fixes `test_allows_unsafe_with_override`.

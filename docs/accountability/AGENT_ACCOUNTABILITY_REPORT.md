@@ -3,7 +3,30 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3563
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T18:58Z (session 14: CI escalation response — venv healing already in place, pre-flight confirmed)
+**Last updated:** 2026-03-12T19:32Z (session 15: copilot-setup-steps git editor + base branch promotion)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 15 (copilot-setup-steps: git editor + base branch promotion)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI job 66848479871 (run 23018572899) diagnosed: (a) rebase hangs on interactive nano editor; (b) `git diff` exit-128 due to `copilot/resolve-failing-checks` not promoted to local ref ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: fix copilot-setup-steps to prevent rebase editor hang + promote all PR base branches ✅
+- [x] **5.** Execution plan committed as report_progress checklist ✅
+- [x] **6.** Codebase Agency Policy followed ✅
+
+### Actions Taken
+
+| Change | File | Root Cause |
+|--------|------|------------|
+| Add `git config --global core.editor "true"` step | `.github/workflows/copilot-setup-steps.yml` | `git rebase --continue` opens nano and hangs CI runner |
+| Promote `${{ github.base_ref }}` to local branch ref | `.github/workflows/copilot-setup-steps.yml` | `git diff copilot/resolve-failing-checks` exits 128 (ref not in working tree) |
+
+### Outcome
+- Both fixes are non-breaking (all existing `|| true` / non-blocking guards preserved) ✅
+- Pre-flight gates satisfied ✅
 
 ---
 
