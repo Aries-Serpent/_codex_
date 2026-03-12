@@ -25,6 +25,7 @@ Updated: 2026-02-12 (PS-13: Agent Task Router)
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -151,13 +152,12 @@ class AgentOrchestrator:
         Returns:
             Agent recommendation or None
         """
-        # Load agent definition
-        agent_path = Path(f'.github/agents/{agent_name}.md')
+        # Load agent definition — prefer .agent.md to avoid shadowing by deprecated .md files
+        agent_path = Path(f'.github/agents/{agent_name}.agent.md')
         if not agent_path.exists():
-            # Try alternative formats
-            agent_path = Path(f'.github/agents/{agent_name}.agent.md')
+            agent_path = Path(f'.github/agents/{agent_name}.agent.yml')
             if not agent_path.exists():
-                agent_path = Path(f'.github/agents/{agent_name}.agent.yml')
+                agent_path = Path(f'.github/agents/{agent_name}.md')
                 if not agent_path.exists():
                     logger.warning(f"Agent definition not found: {agent_name}")
                     return self._generate_fallback_recommendation(agent_name, failure_data, pattern_matches)
@@ -176,6 +176,16 @@ class AgentOrchestrator:
             logger.error(f"Failed to read agent definition {agent_path}: {e}")
             return None
 
+        # Check for deprecated front-matter and redirect to superseded_by agent
+        canonical_name = self._resolve_canonical_agent(agent_name, agent_definition)
+        if canonical_name and canonical_name != agent_name:
+            logger.info(
+                "Agent '%s' is deprecated, redirecting to canonical agent '%s'",
+                agent_name,
+                canonical_name,
+            )
+            return self._invoke_agent(canonical_name, failure_data, pattern_matches)
+
         # In dry-run mode or for this implementation,
         # generate simulated recommendations based on patterns
         if self.dry_run:
@@ -186,6 +196,51 @@ class AgentOrchestrator:
         # In a full implementation, this would invoke the actual agent
         # through subprocess, API, or GitHub Copilot mechanism
         return self._generate_recommendation_from_patterns(agent_name, failure_data, pattern_matches)
+
+    def _resolve_canonical_agent(
+        self, agent_name: str, agent_definition: str
+    ) -> Optional[str]:
+        """Parse YAML front-matter to detect deprecated agents and return canonical name.
+
+        When an agent definition contains ``deprecated: true`` and a
+        ``superseded_by`` field in its YAML front-matter, this method returns
+        the name of the canonical agent so the caller can redirect.  The
+        ``superseded_by`` value may include a version/date suffix
+        (e.g. ``unified-governance-gate.md (v1.0.0-m05, 2026-02-22)``); only
+        the base filename stem is extracted.
+
+        Args:
+            agent_name: Name of the agent that was originally requested.
+            agent_definition: Raw file contents (may start with ``---`` front-matter).
+
+        Returns:
+            Canonical agent name to redirect to, or ``None`` if the agent is
+            not deprecated / no redirect is needed.
+        """
+        # Only inspect YAML front-matter (between the first pair of ``---`` delimiters).
+        # Use \s* (zero or more) to tolerate CRLF line endings, empty front-matter,
+        # and varying whitespace around the --- delimiters.
+        fm_match = re.match(r'^---\s*(.*?)\s*---', agent_definition, re.DOTALL)
+        if not fm_match:
+            return None
+        front_matter = fm_match.group(1)
+
+        # Check for deprecated: true (YAML convention is lowercase; reject any other case)
+        if not re.search(r'^\s*deprecated\s*:\s*true\s*$', front_matter, re.MULTILINE):
+            return None
+
+        # Extract superseded_by value (take only the first word/token before space/paren)
+        sb_match = re.search(r'^\s*superseded_by\s*:\s*(.+)$', front_matter, re.MULTILINE)
+        if not sb_match:
+            return None
+        superseded_raw = sb_match.group(1).strip()
+        # Strip optional version suffix like " (v1.0.0-m05, 2026-02-22)" and ".md" extension
+        canonical = re.split(r'[\s(]', superseded_raw)[0]
+        canonical = re.sub(r'\.(?:agent\.)?md$', '', canonical)
+        if canonical and canonical != agent_name:
+            return canonical
+        return None
+
 
     def _generate_recommendation_from_patterns(
         self,

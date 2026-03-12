@@ -84,6 +84,11 @@ def test_bf16_guard_called_during_model_load(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *a, **k: fake_model),
     )
+    monkeypatch.setattr(
+        modeling,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
 
     config = {"model_name": "stub", "bf16_require_capability": True}
     modeling.load_model(config)

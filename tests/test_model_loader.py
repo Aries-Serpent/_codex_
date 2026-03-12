@@ -110,6 +110,11 @@ def test_lora_enabled_with_peft_available(monkeypatch, tmp_path):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: base_model),
     )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
 
     # Mock PEFT components
     mock_lora_config = Mock()
@@ -175,6 +180,11 @@ def test_model_loading_with_custom_kwargs(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=capture_kwargs),
     )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
 
     custom_kwargs = {"device_map": "auto", "trust_remote_code": True}
 
@@ -201,6 +211,11 @@ def test_error_handling_during_model_load(monkeypatch):
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=failing_load),
+    )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
 
     # Test that the error propagates appropriately

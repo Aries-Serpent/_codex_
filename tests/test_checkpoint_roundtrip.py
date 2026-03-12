@@ -57,6 +57,7 @@ def test_checkpoint_roundtrip_restores_states(tmp_path, use_scheduler):
     ckpt_dir = tmp_path / "ckpt"
     # Capture the torch state just before saving (torch RNG was advanced by
     # model/optimizer creation, so it no longer equals the initial torch_state).
+    # This state is used later to derive the expected post-restore tensor values.
     torch_state_at_save = torch.random.get_rng_state()
     save_checkpoint(
         model=model,
