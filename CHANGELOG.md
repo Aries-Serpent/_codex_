@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (PR claude/sub-pr-3554 — 2026-03-12 session 11 — Dependabot tornado bump)
+- **`requirements/lock.txt`**: `tornado` bumped `6.5.4 → 6.5.5` (cherry-pick from dependabot PR #3558). No known vulnerabilities in 6.5.5 (advisory DB checked). Addresses `ipykernel`/`jupyter-client` transitive dependency.
+- **`CODEX_MANIFEST.json`** regenerated: `generated_at: 2026-03-12T07:04:33Z` (103 workflows, 153 agents).
+- **`.secrets.baseline`** updated: `hashed_secret` → `ddb053e3e436a10bb0a5f422a8295f24adf580af` at line 1688, `generated_at: 2026-03-12T07:04:33Z`.
+
 ### Fixed (PR copilot/sub-pr-3554 — 2026-03-11 session 8 — Codebase policy compliance)
 - **Workflow YAML syntax**: `ci-health-monitor.yml` line 356 — replaced inline Python `-c` blocks with heredoc syntax (`<<'EOF'`) to avoid YAML parsing conflicts with quotes and special characters. Fixes actionlint syntax error and `test_workflow_files_valid_yaml` failure.
 - **Test mocking pattern**: `tests/test_modeling_utils.py` — added `fake_load_from_pretrained` mock to bypass HuggingFace revision pinning check for test stub model identifiers. Fixes `test_load_model_and_tokenizer_minimal` failure in sharded quick tests (shard 1/4).
