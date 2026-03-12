@@ -1,17 +1,17 @@
 # Variable / Secret Audit Report
 
 **Repository:** `Aries-Serpent/_codex_`  
-**Generated:** `2026-03-11T06:14:38.095809+00:00`  
+**Generated:** `2026-03-12T06:13:17.694800+00:00`  
 **Auth:** ❌ no token (expected-only mode)
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
-| Total expected | 90 |
+| Total expected | 99 |
 | ✅ Present | 0 |
 | ❌ Absent (required) | 0 |
-| ❓ Unknown (no API access) | 90 |
+| ❓ Unknown (no API access) | 99 |
 | ➕ Extra (not in guide) | 0 |
 
 
@@ -114,6 +114,14 @@
 | ❓ | `ZENDESK_SYNC_INTERVAL` | ML | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `CODEX_ACTIVE_CODESPACE` | Webhook/Infra | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `WEBHOOK_RECEIVER_URL` | Webhook/Infra | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AGENT_KILL_SWITCH` 🔒 | Autonomous Agent | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AUTONOMY_BUDGET_SECONDS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AUTONOMY_MAX_ITERATIONS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AUTONOMY_DRY_RUN` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AGENT_RUNNER_BUDGET_SECONDS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AGENT_RUNNER_ITERATIONS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AGENT_RUNNER_DRY_RUN` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `UNCERTAINTY_BUDGET_SECONDS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 
 ## Layer: `env-vars`
 
@@ -134,6 +142,7 @@
 | ❓ | `_GITHUB_APP_INSTALLATION_ID` | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `_GITHUB_APP_CLIENT_SECRET` | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `WEBHOOK_SECRET` | Webhook/Infra | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `WEBHOOK_RECEIVER_URL` | Webhook/Infra | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 
 ---
 
