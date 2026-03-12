@@ -48,12 +48,21 @@ class _FailingStrategy:
 def test_final_status_reflects_strategy_result(monkeypatch, tmp_path) -> None:
     recorded = {}
 
-    def fake_save(out_dir: str | Path, *, payload, metadata, **kwargs):
-        recorded["metadata"] = dict(metadata)
-        recorded["payload"] = dict(payload)
-        return Path(out_dir) / "state.pt"
+    def fake_save(out_dir: str | Path, *, state=None, metadata=None, **kwargs):
+        if metadata is not None:
+            recorded["metadata"] = dict(metadata)
+        if state is not None:
+            recorded["payload"] = dict(state)
+        path = Path(out_dir) / "state.pt"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch()
+        return path, {}
 
-    monkeypatch.setattr(checkpoint_core, "save_checkpoint", fake_save)
+    # Patch the module-level binding in unified_training (not checkpoint_core)
+    # because unified_training imports `save_checkpoint` by name at module level.
+    # See comment in unified_training.py: "tests can monkeypatch
+    # `codex_ml.training.unified_training.save_checkpoint`"
+    monkeypatch.setattr(unified_training, "save_checkpoint", fake_save)
     monkeypatch.setattr(
         strategies, "resolve_strategy", lambda name: _FailingStrategy()
     )

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from codex_ml.cli import infer
+import codex_ml.cli.infer as infer
 
 pytestmark = pytest.mark.requires_torch
 
@@ -44,10 +44,15 @@ def test_infer_passes_lora_args(monkeypatch, tmp_path: Path) -> None:
 
     class DummyAutoTokenizer:
         @staticmethod
-        def from_pretrained(name: str) -> DummyTokenizer:  # pragma: no cover - simple stub
+        def from_pretrained(name: str, **kwargs) -> DummyTokenizer:  # pragma: no cover - simple stub
             return DummyTokenizer()
 
     monkeypatch.setattr(infer, "AutoTokenizer", DummyAutoTokenizer)
+    # Also mock load_from_pretrained so HF revision-pinning doesn't raise
+    monkeypatch.setattr(
+        "codex_ml.cli.infer.load_from_pretrained",
+        lambda factory, identifier, **kw: factory.from_pretrained(identifier, **kw),
+    )
     monkeypatch.setattr(infer, "load_model_with_optional_lora", fake_loader)
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path))
 

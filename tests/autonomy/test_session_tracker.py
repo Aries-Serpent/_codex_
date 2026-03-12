@@ -196,3 +196,35 @@ class TestSessionArchive:
         archived = [s for s in sessions if s["session_id"] == session_id]
         assert len(archived) == 1
         assert archived[0]["status"] == "archived"
+
+
+class TestSessionArchiveDryRun:
+    """Tests for the --dry-run flag added in Phase 22."""
+
+    def test_dry_run_does_not_create_file(self, tmp_path):
+        mod = _import_tracker()
+        if not hasattr(mod, "cmd_archive"):
+            pytest.skip("cmd_archive not exported")
+
+        session_id = "aaaabbbb-cccc-dddd-eeee-ffffffffffff"
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            rc = mod.cmd_archive(session_id=session_id, reason="dry test", dry_run=True)
+
+        assert rc == 0
+        assert not (tmp_path / f"session_{session_id}.json").exists(), \
+            "dry-run must not write any files"
+
+    def test_dry_run_existing_session_unchanged(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "cmd_archive") and hasattr(mod, "start_session")):
+            pytest.skip("cmd_archive / start_session not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            sid = mod.start_session(label="dry-run-live")
+            original_status = mod._load_json(mod._session_path(sid))["status"]
+            rc = mod.cmd_archive(session_id=sid, reason="dry-run check", dry_run=True)
+            after_status = mod._load_json(mod._session_path(sid))["status"]
+
+        assert rc == 0
+        assert after_status == original_status, \
+            "dry-run must leave the session file unchanged"

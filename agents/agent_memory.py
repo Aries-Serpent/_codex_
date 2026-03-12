@@ -1193,8 +1193,11 @@ class AgentMemorySystem:
     def invalidate_stale_contexts(self, age_days: int = 30) -> int:
         """Invalidate and clean up stale contexts older than specified days.
 
-        Reduces confidence of old, rarely-accessed memories and
-        removes very low confidence entries.
+        Reduces confidence of old, rarely-accessed memories, removes very low
+        confidence entries, and archives any active Copilot task sessions that
+        are older than *age_days* via ``scripts.session_tracker.archive_session``
+        (Phase 22.2 wiring — creates tombstone records for stale task sessions
+        so they no longer appear as "active" in the UI or metrics).
 
         Args:
             age_days: Age threshold in days for considering context stale
@@ -1244,6 +1247,26 @@ class AgentMemorySystem:
             conn.commit()
 
         logger.info(f"Invalidated {invalidated} stale contexts older than {age_days} days")
+
+        # Phase 22.2 — archive any stale Copilot task sessions so their
+        # lifecycle state stays consistent with the memory invalidation sweep.
+        try:
+            from scripts.stale_session_detector import archive_stale_sessions
+
+            archived_ids = archive_stale_sessions(
+                max_age_days=age_days,
+                check_prs=False,  # offline-safe; avoids network I/O in tests
+                dry_run=False,
+            )
+            if archived_ids:
+                logger.info(
+                    f"Phase 22.2: archived {len(archived_ids)} stale task session(s): "
+                    + ", ".join(archived_ids[:5])
+                    + ("…" if len(archived_ids) > 5 else "")
+                )
+        except Exception as exc:  # noqa: BLE001 — best-effort; never block invalidation
+            logger.debug(f"Phase 22.2 session archive skipped: {exc}")
+
         return invalidated
 
 

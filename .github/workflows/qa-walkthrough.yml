@@ -169,12 +169,27 @@ jobs:
             > Run \`@copilot run qa-walkthrough --heal\` to auto-fix lint/style issues`;
 
             if (context.eventName === 'pull_request') {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: body
-              });
+              const totalIssues = qaIssues + ruffIssues + banditIssues;
+              const status = totalIssues > 0 ? 'warning' : 'success';
+              const summary = totalIssues > 0
+                ? `${totalIssues} issue(s): AST=${qaIssues}, Ruff=${ruffIssues}, Bandit=${banditIssues}`
+                : 'All checks clean (0 issues)';
+              const details = [
+                '| Tool | Issues Found |',
+                '|------|-------------|',
+                `| AST Analysis | ${qaIssues} |`,
+                `| Ruff Lint | ${ruffIssues} |`,
+                `| Bandit Security | ${banditIssues} |`,
+                `| CI Artifacts Sourced | ${artifactCount} |`,
+                '',
+                '> 📎 Detailed reports available in workflow artifacts',
+                '> Run `@copilot run qa-walkthrough --heal` to auto-fix lint/style issues',
+              ].join('\n');
+
+              // Write inputs for the consolidator action
+              require('fs').writeFileSync('.dashboard-status', JSON.stringify({
+                workflow: 'QA Walkthrough', status, summary, details
+              }));
             }
             core.setOutput('total_issues', qaIssues + ruffIssues + banditIssues);
 
@@ -189,3 +204,13 @@ jobs:
             bandit-report.json
           retention-days: 30
           if-no-files-found: warn
+
+      - name: Update consolidated PR dashboard
+        if: github.event_name == 'pull_request' && always()
+        uses: ./.github/actions/post-pr-summary
+        with:
+          workflow-name: 'QA Walkthrough'
+          status: ${{ steps.run_qa.outputs.total_issues != '0' && 'warning' || 'success' }}
+          summary: 'QA checks complete — see details'
+          details: 'Results posted to dashboard above via pr_comment_consolidator.'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

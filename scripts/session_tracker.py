@@ -198,19 +198,27 @@ def cmd_list(limit: int = 10) -> int:
     return 0
 
 
-def cmd_archive(session_id: str, reason: str = "", pr_number: Optional[int] = None) -> int:
+def cmd_archive(
+    session_id: str,
+    reason: str = "",
+    pr_number: Optional[int] = None,
+    dry_run: bool = False,
+) -> int:
     """Force-archive a session by ID.
 
     Works for both locally tracked sessions and stale/cached sessions that only
     exist in an external system (e.g. a GitHub Copilot task that can no longer
     be archived via the UI).  When no local session file is found a tombstone
     record is created so the decision is permanently documented in the repo.
+
+    Pass ``--dry-run`` to preview the action without writing any files.
     """
     path = _session_path(session_id)
     session = _load_json(path)
 
     now = _now()
-    if session is None:
+    is_tombstone = session is None
+    if is_tombstone:
         # Session does not exist locally — create a tombstone record so the
         # archive action is traceable in the repository's own audit trail.
         session = {
@@ -238,6 +246,17 @@ def cmd_archive(session_id: str, reason: str = "", pr_number: Optional[int] = No
     session.setdefault("events", []).append(
         {"timestamp": now, "type": "archive", "detail": reason or "force-archived"}
     )
+
+    if dry_run:
+        print(f"[DRY RUN] Would archive session: {session_id}")
+        print(f"  Tombstone: {is_tombstone}")
+        if reason:
+            print(f"  Reason: {reason}")
+        if pr_number is not None:
+            print(f"  PR: #{pr_number}")
+        print(f"  Archive record would be written to: {path}")
+        print(f"  Preview payload:\n{json.dumps(session, indent=4, default=str)}")
+        return 0
 
     _save_json(path, session)
     _write_markdown(session)
@@ -282,6 +301,10 @@ def main() -> int:
     p_archive.add_argument("--session-id", required=True, help="Session UUID to archive")
     p_archive.add_argument("--reason", default="", help="Human-readable reason for archiving")
     p_archive.add_argument("--pr-number", type=int, default=None, help="Associated PR number")
+    p_archive.add_argument(
+        "--dry-run", action="store_true", default=False,
+        help="Preview what would be archived without writing any files",
+    )
 
     args = parser.parse_args()
 
@@ -300,6 +323,7 @@ def main() -> int:
             session_id=args.session_id,
             reason=args.reason,
             pr_number=args.pr_number,
+            dry_run=args.dry_run,
         )
     return 0
 

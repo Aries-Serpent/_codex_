@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 17 — Phase 22 features + PR comment consolidation + CI test fixes)
+- **`scripts/session_tracker.py`**: Added `--dry-run` flag to `cmd_archive()` — previews tombstone/archive action without writing any files. Prints the would-be payload as JSON for safe inspection before committing.
+- **`scripts/stale_session_detector.py`** (Phase 22.1): New script that scans local session files for `active` sessions older than `--max-age-days` (default 30), optionally cross-references GitHub PR merge dates (`--check-prs`), and auto-archives stale sessions via `archive_session()`. Supports `--dry-run`, `--output-json`, and offline-safe operation.
+- **`agents/agent_memory.py`** (Phase 22.2): Wired `invalidate_stale_contexts()` to invoke `archive_stale_sessions()` from Phase 22.1 after the memory confidence sweep, ensuring stale task sessions are archived in sync with memory invalidation.
+- **`scripts/ci/pr_comment_consolidator.py`**: New script for grouping all workflow status comments into a single "📊 PR Status Dashboard" comment per PR. Informational results appear in collapsible `<details>` sections; only failures surface at the top. Finds-or-creates the dashboard comment via GitHub Issues API.
+- **`.github/actions/post-pr-summary/action.yml`**: Composite GitHub Action wrapping the consolidator. Any workflow can call `uses: ./.github/actions/post-pr-summary` with `workflow-name`, `status`, `summary`, `details` to contribute to the consolidated dashboard.
+- **`.github/workflows/consolidated-pr-status.yml`**: Reusable workflow (via `workflow_call`) for posting to the dashboard, with duration-seconds input for triage reporting. Includes migration guide from old standalone-comment pattern.
+- **`tests/autonomy/test_session_tracker.py`**: Added `TestSessionArchiveDryRun` class (2 tests): `--dry-run` on stale session (no file created) and `--dry-run` on existing session (file unchanged).
+
+### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 17 — CI test failures)
+- **`tests/test_semgrep_suppressions.py`**: `test_no_over_suppression` — skip `.venv_ci`, `.venv`, `node_modules`, `.git` directories in rglob, and handle `UnicodeDecodeError` for binary files. Prevents CI crash on non-UTF-8 `.venv_ci` artifacts.
+- **`tests/test_api_infer.py`**: `_clear_app_state` — catch `KeyError` in addition to `AttributeError` when cleaning Starlette `app.state` to prevent `test_infer_masks_secrets` from failing on test-ordering-dependent state.
+- **`tests/cli/test_infer_cli_lora.py`**: Changed `from codex_ml.cli import infer` to `import codex_ml.cli.infer as infer` — fixes `AttributeError: <Group cli> has no attribute 'AutoTokenizer'` caused by `__init__.py` re-exporting `app as infer`. Also adds `load_from_pretrained` mock with `**kw` support.
+- **`tests/agents/test_phase2_deep_coverage_batch15_integration_depth.py`**: Fixed 3 tests — `retrieve_memory("key")` → `retrieve_memory(key="key")` for string return; `current.step_id` → `current.id` to match `WorkflowStep.id` attribute.
+- **`tests/utils/test_codex_utils_offline.py`**: `test_sample_system_metrics_with_psutil` — patch real `psutil` module callables directly (not the module reference) to bypass conftest autouse fixture interference.
+- **`tests/space_traversal/test_peft_comprehensive/test_scheduler_amp_resume_parity.py`**: Fixed `fake_save` signature (`state=None, metadata=None, **kwargs`), return tuple `(path, {})`, and patch `unified_training.save_checkpoint` (not `checkpoint_core.save_checkpoint`).
+- **`training/functional_training.py`** and **`src/training/functional_training.py`**: Fixed `RuntimeError: Boolean value of Tensor with more than one value is ambiguous` — replaced `batch.get("labels") or batch.get("input_ids")` with explicit `is not None` check.
+- **`"CLI test message"` (root)**: Removed stale SQLite database artifact accidentally committed to repo root. This file caused `test_repo_map_lists_visible_top_level_entries` to fail (repo-map listed it; `line.split()[-1]` parsed `"message"` which doesn't exist as a path).
+- **`.github/workflows/qa-walkthrough.yml`** and **`semgrep_sarif.yml`**: Migrated standalone `createComment` calls to the new `post-pr-summary` composite action to eliminate redundant PR comment noise.
+
 ### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 16 — stale session archive + CI triage #3565)
 - **`scripts/session_tracker.py`**: Added `STATUS_ARCHIVED = "archived"` constant and `cmd_archive()` CLI subcommand. The `archive` subcommand force-archives any session by ID — including stale/cached sessions whose local file does not exist — by creating a tombstone record so the decision is permanently documented in the repo audit trail. Accepts `--reason` and `--pr-number` flags. `list` output now shows 🗄 icon for archived sessions.
 - **`scripts/session_tracker.py`**: Added `archive_session(session_id, reason, pr_number)` programmatic API function (mirrors `start_session` / `end_session` pattern). Returns the final session dict for programmatic inspection.

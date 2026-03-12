@@ -340,7 +340,7 @@ class TestIntegration_MultiModuleChains:
         memory.store_memory(key="graph_size", value=str(metrics["num_nodes"]))
 
         # Cycle 3: Memory -> Graph (updated)
-        size = int(memory.retrieve_memory("graph_size"))
+        size = int(memory.retrieve_memory(key="graph_size"))
         for i in range(size):
             model.create_node(NodeType.CONCEPT, {"index": i})
 
@@ -416,7 +416,7 @@ class TestIntegration_ErrorRecovery:
 
         # System should continue
         memory.store_memory(key="recovery", value="successful")
-        assert memory.retrieve_memory("recovery") == "successful"
+        assert memory.retrieve_memory(key="recovery") == "successful"
 
 
 class TestIntegration_PerformanceScaling:
@@ -479,7 +479,7 @@ class TestIntegration_PerformanceScaling:
 
         current = navigator.current_step()
         assert current is not None
-        assert current.step_id == "step50"
+        assert current.id == "step50"
 
 
 if __name__ == "__main__":

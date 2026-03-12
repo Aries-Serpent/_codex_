@@ -735,7 +735,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 # Compute next-token cross-entropy from labels in batch.
                                 # Prefer 'labels' (next-token targets) over 'input_ids'
                                 # as fallback for causal-LM datasets without separate labels.
-                                labels = batch.get("labels") or batch.get("input_ids")
+                                labels = batch.get("labels") if batch.get("labels") is not None else batch.get("input_ids")
                                 if labels is None:
                                     raise ValueError(
                                         "Model returned a raw tensor but batch has no "

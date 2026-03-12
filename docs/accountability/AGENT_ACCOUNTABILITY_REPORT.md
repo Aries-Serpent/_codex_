@@ -1436,3 +1436,46 @@ Quick-set commands: see `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §6h`.
 
 ### Outcome
 - Delegation state confirmed active ✅
+
+## Session 17: 2026-03-12 — Phase 22 features + CI test fixes + PR comment consolidation
+
+### Pre-flight Checklist
+- [x] CHANGELOG.md updated
+- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] CI failures analyzed via GitHub Actions MCP tools
+- [x] Tests run locally before and after changes
+- [x] Ruff linting clean on all changed files
+
+### CI Triage: Resilient Validation Suite (shards 1-4, PR #3566)
+Failures assessed and root-cause resolved. 10 distinct failures fixed:
+
+| Test | Root Cause | Fix |
+|------|-----------|-----|
+| `test_no_over_suppression` | rglob included `.venv_ci` with non-UTF-8 files | Skip `.venv_ci` + catch `UnicodeDecodeError` |
+| `test_infer_masks_secrets` | `KeyError: 'tokenizer'` in `_clear_app_state` | Catch `(AttributeError, KeyError)` |
+| `test_infer_passes_lora_args` | `from codex_ml.cli import infer` → Click Group | `import codex_ml.cli.infer as infer` + `load_from_pretrained` mock |
+| `test_repo_map_lists_visible_top_level_entries` | Stale "CLI test message" SQLite artifact in root | Remove artifact |
+| `test_recovery_from_graph_error` | `retrieve_memory("key")` returns `MemoryEntry` | Use `key=` kwarg form |
+| `test_cyclic_data_flow` | Same `retrieve_memory` typing mismatch | Use `key=` kwarg form |
+| `test_complex_workflow_scaling` | `current.step_id` → `WorkflowStep.id` | Fix attribute name |
+| `test_final_status_reflects_strategy_result` | Wrong `fake_save` signature + wrong monkeypatch target | Fix to `(state=None, metadata=None)`, patch `unified_training.save_checkpoint` |
+| `test_checkpoint_resume` | `batch.get("labels") or batch.get("input_ids")` ambiguous tensor bool | `is not None` check |
+| `test_sample_system_metrics_with_psutil` | conftest `session_resource_manager` calls real psutil pre-test | Patch real psutil module callables directly |
+
+### Phase 22 Implementation
+- **Phase 22.1**: `scripts/stale_session_detector.py` — automated stale session detection and archive
+- **Phase 22.2**: `agents/agent_memory.py` `invalidate_stale_contexts()` wired to call `archive_stale_sessions()`
+- **`--dry-run`**: Added to `cmd_archive()` and `archive` CLI subcommand
+- **`STATUS_ARCHIVED`**: Already surfaced in `cmd_list()` 🗄 icon; confirmed in Phase 22 tests
+
+### PR Comment Consolidation (new infrastructure)
+- `scripts/ci/pr_comment_consolidator.py` — finds-or-creates a single dashboard comment per PR
+- `.github/actions/post-pr-summary/action.yml` — composite action wrapping the consolidator
+- `.github/workflows/consolidated-pr-status.yml` — reusable workflow with duration-seconds input
+- Migrated `qa-walkthrough.yml` and `semgrep_sarif.yml` from standalone `createComment` to consolidated pattern
+
+### Outcome
+- 10/10 targeted test failures fixed ✅
+- All Phase 22 features implemented and tested (13/13 session tracker tests pass) ✅
+- PR comment consolidation infrastructure deployed ✅
+- Ruff clean on all changed files ✅
