@@ -218,28 +218,28 @@ class AgentOrchestrator:
             not deprecated / no redirect is needed.
         """
         # Only inspect YAML front-matter (between the first pair of ``---`` delimiters).
-        # Use \s* to tolerate zero or more whitespace/newline chars after each ``---``.
-        fm_match = re.match(r'^---\s*(.*?)\s*---', agent_definition, re.DOTALL)
+        # Use \s+ to tolerate CRLF line endings and varying whitespace.
+        fm_match = re.match(r'^---\s+(.*?)\s+---', agent_definition, re.DOTALL)
         if not fm_match:
             return None
         front_matter = fm_match.group(1)
 
         # Check for deprecated: true (YAML convention is lowercase; reject any other case)
-        if not re.search(r'(?m)^deprecated:\s+true\s*$', front_matter):
+        if not re.search(r'^\s*deprecated\s*:\s*true\s*$', front_matter, re.MULTILINE):
             return None
 
-        # Extract the superseded_by value (everything after the colon on that line)
-        sb_match = re.search(r'(?m)^superseded_by:\s+(.+)$', front_matter)
+        # Extract superseded_by value (take only the first word/token before space/paren)
+        sb_match = re.search(r'^\s*superseded_by\s*:\s*(.+)$', front_matter, re.MULTILINE)
         if not sb_match:
             return None
+        superseded_raw = sb_match.group(1).strip()
+        # Strip optional version suffix like " (v1.0.0-m05, 2026-02-22)" and ".md" extension
+        canonical = re.split(r'[\s(]', superseded_raw)[0]
+        canonical = re.sub(r'\.(?:agent\.)?md$', '', canonical)
+        if canonical and canonical != agent_name:
+            return canonical
+        return None
 
-        # Strip optional parenthesised version/date suffix and whitespace
-        raw_value = sb_match.group(1).strip()
-        # Take only the first token (filename, possibly with .md/.agent.md extension)
-        filename = raw_value.split()[0]
-        # Remove file extension to get the agent name
-        stem = re.sub(r'\.(agent\.(?:md|yml)|md|yml)$', '', filename)
-        return stem if stem else None
 
     def _generate_recommendation_from_patterns(
         self,

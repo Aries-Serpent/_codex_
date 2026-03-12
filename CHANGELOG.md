@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (PR copilot/sub-pr-3554-again — 2026-03-12 session 13 — cherry-pick sub-pr-3554 diffs)
-- **`agent_orchestrator.py`**: Prefer `.agent.md` resolution order over `.md` to prevent deprecated `.md` files from shadowing canonical `.agent.md` files. Added `_resolve_canonical_agent()` method that follows `deprecated: true` + `superseded_by` front-matter and redirects to the canonical agent.
-- **`tests/codex/config/test_env_vars.py`**: Fixed `clean_env` fixture env-var leak in both `TestEnvironmentManager` and `TestEnvironmentManagerValidation` — test-added `CODEX_*` vars now cleaned up before restoring originals, preventing `CODEX_SQLITE_POOL=invalid` cross-test contamination.
-- **`unified-coverage-agent.md`**: Corrected `--workers 6→4` and `'4+ core'→'4-core'` (resolves internal inconsistency: Copilot review comment on `unified-coverage-agent.md:48-52`).
-- **`config-validator.agent.md`**: Removed `runner_compatibility` block from deprecated agent (Gemini review).
-- **`owner-approval-guard.agent.md`**: Removed `runner_compatibility` block from deprecated agent (Gemini review).
-- **`CUSTOM_AGENT_CONSOLIDATION_REPORT.md`**: Fixed 3 file stem references: `workflow-ci-fixer` → `workflow-ci-fixer.agent`, `code-scanning-remediation` → `code-scanning-remediation-agent`, `config-validator` → `config-validator.agent` (Gemini review).
-
 ### Changed (PR claude/sub-pr-3554 — 2026-03-12 session 11 — Dependabot tornado bump)
 - **`requirements/lock.txt`**: `tornado` bumped `6.5.4 → 6.5.5` (cherry-pick from dependabot PR #3558). No known vulnerabilities in 6.5.5 (advisory DB checked). Addresses `ipykernel`/`jupyter-client` transitive dependency.
 - **`CODEX_MANIFEST.json`** regenerated: `generated_at: 2026-03-12T07:04:33Z` (103 workflows, 153 agents).
