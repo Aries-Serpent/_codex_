@@ -351,9 +351,32 @@ jobs:
             STATUS="degraded"
           fi
           # Load pattern distribution for payload
-          PATTERNS=$(python3 -c "import json,os; f='${{ runner.temp }}/telemetry_report.json'; d=(json.load(open(f)) if os.path.exists(f) else {}); print(json.dumps(d.get('pattern_distribution', {})))" 2>/dev/null || echo '{}')
-          export PATTERNS
-          PAYLOAD=$(python3 -c "import json,os; pat=json.loads(os.environ.get('PATTERNS','{}')); print(json.dumps({'event_type':'cognitive-brain-ci-update','client_payload':{'source':'ci-health-monitor','failure_rate':'${RATE}','failed_runs':'${FAILED_RUNS}','total_runs':'${TOTAL_RUNS}','status':'${STATUS}','threshold':'${THRESHOLD}','sha':'${{ github.sha }}','run_id':'${{ github.run_id }}','pattern_distribution':pat}}))" 2>/dev/null) || PAYLOAD='{"event_type":"cognitive-brain-ci-update","client_payload":{"source":"ci-health-monitor","status":"unknown"}}'
+          PATTERNS=$(python3 <<'PATTERNS_EOF' 2>/dev/null || echo '{}')
+          import json, sys
+          try:
+              d = json.load(open("${{ runner.temp }}/telemetry_report.json"))
+              print(json.dumps(d.get("pattern_distribution", {})))
+          except Exception:
+              print("{}")
+          PATTERNS_EOF
+          PAYLOAD=$(python3 <<PAYLOAD_EOF 2>/dev/null) || PAYLOAD='{"event_type":"cognitive-brain-ci-update","client_payload":{"source":"ci-health-monitor","status":"unknown"}}'
+          import json, sys
+          payload = {
+              "event_type": "cognitive-brain-ci-update",
+              "client_payload": {
+                  "source": "ci-health-monitor",
+                  "failure_rate": "${RATE}",
+                  "failed_runs": "${FAILED_RUNS}",
+                  "total_runs": "${TOTAL_RUNS}",
+                  "status": "${STATUS}",
+                  "threshold": "${THRESHOLD}",
+                  "sha": "${{ github.sha }}",
+                  "run_id": "${{ github.run_id }}",
+                  "pattern_distribution": ${PATTERNS},
+              }
+          }
+          print(json.dumps(payload))
+          PAYLOAD_EOF
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X POST \
             -H "Authorization: Bearer ${GH_TOKEN}" \
