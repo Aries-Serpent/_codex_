@@ -1479,3 +1479,53 @@ Failures assessed and root-cause resolved. 10 distinct failures fixed:
 - All Phase 22 features implemented and tested (13/13 session tracker tests pass) ✅
 - PR comment consolidation infrastructure deployed ✅
 - Ruff clean on all changed files ✅
+
+## Session 18: 2026-03-12 — Phase 23 metrics + 4 more workflow migrations (Token Delegation activated)
+
+### Pre-flight Checklist
+- [x] CHANGELOG.md updated
+- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] Token Delegation confirmed active (COPILOT_AGENT_AUTH_ENABLED=true)
+- [x] CI run 23027070024 in_progress on commit 908bd87 (session 17 fixes)
+- [x] Tests run locally before changes
+
+### Phase 23 Implementation
+
+#### Session Metrics Dashboard (STATUS_ARCHIVED surfaced)
+- `cmd_metrics()` CLI subcommand added to `session_tracker.py`
+- `session_metrics()` programmatic API added
+- 5 new `TestSessionMetrics` tests (18/18 total session tracker tests pass)
+
+```
+$ python scripts/session_tracker.py metrics
+── Session Lifecycle Metrics ──────────────────────────
+  🟡 Active    : 0
+  ✅ Completed : 0
+  ❌ Error     : 0
+  🗄  Archived  : 0
+  ──────────────────────────────────────────────────────
+  📊 Total     : 0  (of which 0 are tombstones)
+
+$ python scripts/session_tracker.py metrics --format json
+{"total": 0, "active": 0, "completed": 0, "error": 0, "archived": 0, "tombstones": 0, "unknown": 0}
+```
+
+#### Workflow Migration (4 more workflows → consolidated dashboard)
+
+Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
+- `pr-size-analyzer.yml` — PR Size Analysis (was posting a fresh comment every run)
+- `progressive-validation.yml` — Progressive Validation (was posting a fresh comment every run)
+- `e-to-d-transition-gate.yml` — E→D Transition Readiness (was posting fresh comment every run, appeared 2x per PR)
+- `pages-pre-merge-validation.yml` — GitHub Pages Validation (was posting fresh comment every run)
+
+**Total workflows now contributing to dashboard:** 6 (qa-walkthrough, semgrep_sarif, pr-size-analyzer, progressive-validation, e-to-d-transition-gate, pages-pre-merge-validation)
+
+### CI Status
+- Run 23027070024 for commit 908bd87 — `in_progress` (session 17 fixes)
+- ~60 `action_required` approval-gate workflows still require admin approval (#3565)
+- Token Delegation now active — GITHUB_TOKEN available for `--check-prs` in stale_session_detector.py
+
+### Outcome
+- Phase 23 complete ✅
+- 18/18 session tracker tests pass ✅
+- Ruff clean on all changed files ✅

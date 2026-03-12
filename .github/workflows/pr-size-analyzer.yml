@@ -95,71 +95,18 @@ jobs:
           echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
           echo "================================"
 
-      - name: Add PR Comment
-        # Only add comment when triggered directly by PR, not via workflow_call
+      - name: Post to PR Status Dashboard
+        # Only post when triggered directly by PR, not via workflow_call
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: ./.github/actions/post-pr-summary
         with:
-          script: |
-            const prSize = '${{ steps.analyze.outputs.pr_size }}';
-            const fileCount = '${{ steps.analyze.outputs.changed_files_count }}';
-            const strategy = '${{ steps.analyze.outputs.validation_strategy }}';
+          workflow-name: 'PR Size Analysis'
+          status: 'info'
+          summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
+          details: |
+            | Field | Value |
+            |-------|-------|
+            | Size Category | `${{ steps.analyze.outputs.pr_size }}` (${{ steps.analyze.outputs.changed_files_count }} files) |
+            | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
 
-            const sizeEmoji = {
-              'small': '🟢',
-              'medium': '🟡',
-              'large': '🟠',
-              'refactor': '🔴'
-            };
-
-            const strategyDescription = {
-              'full_validation': 'Full test suite execution',
-              'targeted_tests': 'Targeted test execution for affected areas',
-              'smoke_tests': 'Smoke tests only (on-demand full validation available)',
-              'import_validation': 'Import validation only (on-demand testing available)'
-            };
-
-            const comment = `## ${sizeEmoji[prSize]} PR Size Analysis
-
-            - **Size Category:** \`${prSize}\` (${fileCount} files changed)
-            - **Validation Strategy:** ${strategyDescription[strategy]}
-
-            <details>
-            <summary>Size Thresholds</summary>
-
-            - **Small:** < 20 files → Full validation
-            - **Medium:** 20-99 files → Targeted tests
-            - **Large:** 100-499 files → Smoke tests
-            - **Refactor:** 500+ files → Import validation
-
-            </details>`;
-
-            // Find existing comment
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const botComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('PR Size Analysis')
-            );
-
-            if (botComment) {
-              // Update existing comment
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: comment
-              });
-            } else {
-              // Create new comment
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: comment
-              });
-            }
+            **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted · Large (100-499) → Smoke · Refactor (500+) → Import only

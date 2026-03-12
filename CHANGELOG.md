@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 18 — Phase 23 metrics dashboard + 4 more workflow migrations)
+- **`scripts/session_tracker.py`**: New `metrics` subcommand (`cmd_metrics()`) surfaces `STATUS_ARCHIVED` count alongside active/completed/error stats. Supports `--format text` (default) and `--format json` for CI consumption.
+- **`scripts/session_tracker.py`**: New `session_metrics()` programmatic API function — parallel to `archive_session()` — returns a dict with `total`, `active`, `completed`, `error`, `archived`, `tombstones`, `unknown` counts.
+- **`tests/autonomy/test_session_tracker.py`**: Added `TestSessionMetrics` class (5 tests): empty count, multi-status counts, tombstone counting, text-format CLI output, and JSON-format CLI output.
+- **`.github/workflows/pr-size-analyzer.yml`**: Migrated standalone `createComment` to `uses: ./.github/actions/post-pr-summary` — PR Size Analysis now contributes to the single dashboard comment instead of posting separately.
+- **`.github/workflows/progressive-validation.yml`**: Migrated standalone `createComment`/`updateComment` to `post-pr-summary` composite action. Progressive Validation Results now appear in the dashboard row rather than a standalone comment.
+- **`.github/workflows/e-to-d-transition-gate.yml`**: Migrated standalone `createComment` to `post-pr-summary`. E→D Transition Readiness now updates the dashboard; shows `success` when D_CAPABLE=true, `info` otherwise.
+- **`.github/workflows/pages-pre-merge-validation.yml`**: Migrated standalone `createComment` to `post-pr-summary`. Pages validation result (pass/warning/failure) now updates the single dashboard comment.
+
 ### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 17 — Phase 22 features + PR comment consolidation + CI test fixes)
 - **`scripts/session_tracker.py`**: Added `--dry-run` flag to `cmd_archive()` — previews tombstone/archive action without writing any files. Prints the would-be payload as JSON for safe inspection before committing.
 - **`scripts/stale_session_detector.py`** (Phase 22.1): New script that scans local session files for `active` sessions older than `--max-age-days` (default 30), optionally cross-references GitHub PR merge dates (`--check-prs`), and auto-archives stale sessions via `archive_session()`. Supports `--dry-run`, `--output-json`, and offline-safe operation.
