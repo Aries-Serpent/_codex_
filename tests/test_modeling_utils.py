@@ -19,12 +19,20 @@ def test_load_model_and_tokenizer_minimal(monkeypatch):
     fake_tok = types.SimpleNamespace()
     fake_model = types.SimpleNamespace(state_dict=lambda: {})
 
+    def fake_load_from_pretrained(factory, identifier, **kwargs):  # pragma: no cover
+        """Mock load_from_pretrained to bypass HF pinning check."""
+        if hasattr(factory, "from_pretrained"):
+            return factory.from_pretrained(identifier, **kwargs)
+        return factory(identifier, **kwargs)
+
     def fake_tok_loader(*a, **k):  # pragma: no cover - trivial
         return fake_tok
 
     def fake_model_loader(*a, **k):  # pragma: no cover - trivial
         return fake_model
 
+    # Mock load_from_pretrained to bypass revision checking
+    monkeypatch.setattr(modeling, "load_from_pretrained", fake_load_from_pretrained)
     monkeypatch.setattr(
         modeling, "AutoTokenizer", types.SimpleNamespace(from_pretrained=fake_tok_loader)
     )
