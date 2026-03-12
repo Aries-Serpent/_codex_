@@ -60,6 +60,11 @@ def test_lora_disabled_returns_base_model(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: fake_model),
     )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
 
     model = mod.load_model_with_optional_lora("model_stub", lora_enabled=False)
     assert model is fake_model
@@ -77,6 +82,11 @@ def test_lora_missing_dependency_fallback(monkeypatch):
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: fake_model),
+    )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
     # Mock the PEFT import helper to return None (indicating unavailable)
     monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
@@ -212,7 +222,11 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *args, **kwargs: test_model),
     )
-
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
     # Mock PEFT as unavailable to ensure consistent base model behavior
     monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
 
@@ -233,6 +247,11 @@ def test_device_map_passes_through(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=fake_from_pretrained),
     )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
 
     mod.load_model_with_optional_lora("m", device_map="sequential")
     assert captured["device_map"] == "sequential"
@@ -244,6 +263,11 @@ def test_missing_lora_path_raises(tmp_path, monkeypatch):
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *a, **k: object()),
+    )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
     missing = tmp_path / "missing"
     with pytest.raises(FileNotFoundError):
