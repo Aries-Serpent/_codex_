@@ -48,11 +48,11 @@ Provide a single, authoritative agent for every aspect of test coverage in the
 | Runner | Support |
 |--------|---------|
 | `ubuntu-latest` (default, 2-core) | ✅ Full — all features, sequential workers |
-| `ubuntu-latest-large` (4+ core) | ✅ Full — parallel workers enabled (`--workers 6`) |
+| `ubuntu-latest-large` (4-core) | ✅ Full — parallel workers enabled (`--workers 4`) |
 | Self-hosted | ✅ if Python 3.11+ and pytest-cov installed |
 
 > **Default runner note**: Reduce `--workers` to 2 and `--batch-size` to 20 when running
-> on the standard 2-core runner to avoid OOM. The large runner supports `--workers 6
+> on the standard 2-core runner to avoid OOM. The large runner supports `--workers 4
 > --batch-size 30`.
 
 ---
