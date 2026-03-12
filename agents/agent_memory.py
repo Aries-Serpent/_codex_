@@ -1250,13 +1250,23 @@ class AgentMemorySystem:
 
         # Phase 22.2 — archive any stale Copilot task sessions so their
         # lifecycle state stays consistent with the memory invalidation sweep.
+        # Import is deferred and guarded so that sys.path mutation in
+        # stale_session_detector (needed for standalone CLI use) does not affect
+        # library callers.  verbose=False suppresses stdout in library context.
         try:
-            from scripts.stale_session_detector import archive_stale_sessions
+            import importlib
+            import sys as _sys
 
-            archived_ids = archive_stale_sessions(
+            repo_root = str(__file__).rsplit("agents", 1)[0].rstrip("/\\")
+            if repo_root not in _sys.path:
+                _sys.path.insert(0, repo_root)
+
+            _mod = importlib.import_module("scripts.stale_session_detector")
+            archived_ids: list[str] = _mod.archive_stale_sessions(
                 max_age_days=age_days,
                 check_prs=False,  # offline-safe; avoids network I/O in tests
                 dry_run=False,
+                verbose=False,  # suppress stdout; callers use logger
             )
             if archived_ids:
                 logger.info(

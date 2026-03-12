@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — code review + Phase 24)
+- **`agents/agent_memory.py`**: Replaced `from scripts.stale_session_detector import` with import-safe `importlib.import_module` pattern to avoid sys.path side effects when called from library context; added `verbose=False` to suppress stdout during memory invalidation sweeps.
+- **`scripts/ci/pr_comment_consolidator.py`**: `_api_request()` return type annotation corrected to `Any` — the list-comments endpoint returns a JSON array, not a dict, so the previous `dict[str, Any]` annotation was incorrect.
+- **`training/functional_training.py`** and **`src/training/functional_training.py`**: Replaced double `batch.get('labels')` evaluation with a local variable (`labels = batch.get("labels")`) before the `is None` fallback check — cleaner, avoids redundant dict lookup.
+- **`scripts/session_tracker.py`**: `cmd_archive()` now uses `SESSION_DIR / ".current_session.json"` dynamically instead of module-level `CURRENT_SESSION_FILE` so test patches to `SESSION_DIR` are respected.
+- **`.github/actions/post-pr-summary/action.yml`**: Implemented `comment-id` output — the consolidator's printed "id NNNNN" is now parsed and written to `$GITHUB_OUTPUT`; action output is no longer a misleading stub.
+- **`.github/workflows/qa-walkthrough.yml`**: Fixed wrong step reference `steps.run_qa.outputs` → `steps.summary.outputs`; removed dead `.dashboard-status` file write; wired `summary` and `details` outputs through to the dashboard update step.
+- **`.github/workflows/semgrep_sarif.yml`**: Fixed wrong step id `steps.semgrep_scan.outcome` → `steps.semgrep.outcome` in the dashboard update expressions.
+- **`.github/workflows/consolidated-pr-status.yml`**: Added `.github/actions/post-pr-summary/` to sparse-checkout list so the local composite action can be resolved at runtime.
+- **`scripts/stale_session_detector.py`**: Fixed docstring ("GitHub Copilot Tasks API" → "GitHub Pull Requests REST API"); removed unused `SESSION_DIR`, `_load_json`, `STATUS_ACTIVE`, and `session_id` references; added `verbose` parameter to `archive_stale_sessions()` — defaults `False` for library callers, `True` in CLI.
+
+### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — Phase 24 workflow migrations + automation)
+- **`scripts/stale_session_detector.py`**: `--check-prs` now auto-enables when `GITHUB_TOKEN` (or `CODEX_MASTER_KEY`) is detected in the environment — unblocked by `COPILOT_AGENT_AUTH_ENABLED=true` token delegation.
+- **`.github/workflows/copilot-setup-steps.yml`**: Added "📊 Session Lifecycle Metrics" step — runs `session_tracker.py metrics --format json` and writes output to `$GITHUB_STEP_SUMMARY` for every Copilot agent session.
+- **`scripts/ci/rotate_cognitive_brain_status.py`**: New script for rotating `.codex/cognitive_brain/status/` files — moves oldest files to `archive/` when count exceeds threshold (default: threshold=60, keep=50). Writes a rotation manifest JSON.
+- **`.github/workflows/copilot-setup-steps.yml`**: Added "🔄 Rotate Cognitive Brain Status Files" step — runs rotation script automatically with `continue-on-error: true`.
+- **`.github/workflows/auto-fix-pr-check.yml`**: Migrated standalone `createComment` to `uses: ./.github/actions/post-pr-summary` — auto-fix diagnostics now appear as a failure/warning row in the PR Status Dashboard.
+- **`.github/workflows/copilot-pr-session-injector.yml`**: Migrated standalone `createComment` to `uses: ./.github/actions/post-pr-summary` — cognitive brain briefings now contribute to the dashboard as an informational row.
+- **`.github/workflows/audit-qa-suite.yml`**: Migrated standalone `actions/github-script createComment` to `uses: ./.github/actions/post-pr-summary` — QA walkthrough results now surface in the dashboard (failure for critical issues, warning for any issues, success otherwise).
+- **`.codex/cognitive_brain/status/archive/`**: First rotation performed — 24 of 74 old status files moved to archive; rotation manifest created at `archive/rotation_manifest.json`.
+
 ### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 18 — Phase 23 metrics dashboard + 4 more workflow migrations)
 - **`scripts/session_tracker.py`**: New `metrics` subcommand (`cmd_metrics()`) surfaces `STATUS_ARCHIVED` count alongside active/completed/error stats. Supports `--format text` (default) and `--format json` for CI consumption.
 - **`scripts/session_tracker.py`**: New `session_metrics()` programmatic API function — parallel to `archive_session()` — returns a dict with `total`, `active`, `completed`, `error`, `archived`, `tombstones`, `unknown` counts.

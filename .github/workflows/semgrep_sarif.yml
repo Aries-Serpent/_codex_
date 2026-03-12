@@ -175,9 +175,9 @@ jobs:
         with:
           workflow-name: 'Semgrep Security Scan'
           status: >-
-            ${{ steps.semgrep_scan.outcome == 'failure' && 'failure' || 'success' }}
+            ${{ steps.semgrep.outcome == 'failure' && 'failure' || 'success' }}
           summary: >-
-            ${{ steps.semgrep_scan.outcome == 'failure'
+            ${{ steps.semgrep.outcome == 'failure'
                 && 'Security issues detected — review required'
                 || 'No security issues found' }}
           details: |

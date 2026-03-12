@@ -2,7 +2,7 @@
 """
 Phase 22.1 — Automated Stale Session Detection & Archive
 
-Scans local session files and (optionally) the GitHub Copilot Tasks API for
+Scans local session files and (optionally) the GitHub Pull Requests REST API for
 sessions that remain ``active`` past their PR's merge date, then automatically
 invokes ``archive_session()`` to create a tombstone and mark them archived.
 
@@ -35,15 +35,11 @@ REPO_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.session_tracker import (  # noqa: E402
-    SESSION_DIR,
-    STATUS_ACTIVE,
     STATUS_ARCHIVED,
     STATUS_COMPLETED,
-    _load_json,
     archive_session,
     list_sessions,
 )
-
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -114,7 +110,6 @@ def detect_stale_sessions(
             continue  # already handled
 
         started_at = _parse_iso(session.get("started_at"))
-        session_id = session.get("session_id", "")
 
         # Age-based staleness
         if started_at and started_at < cutoff:
@@ -142,12 +137,22 @@ def archive_stale_sessions(
     max_age_days: int = 30,
     check_prs: bool = False,
     dry_run: bool = False,
+    verbose: bool = False,
 ) -> list[str]:
-    """Detect and archive stale sessions; return list of archived session IDs."""
+    """Detect and archive stale sessions; return list of archived session IDs.
+
+    Args:
+        max_age_days: Archive active sessions older than this many days.
+        check_prs: Cross-reference GitHub PR merge dates (requires GITHUB_TOKEN).
+        dry_run: Preview what would be archived without writing any files.
+        verbose: Print progress to stdout (disabled by default so callers that
+            import this as a library do not receive unexpected output).
+    """
     stale = detect_stale_sessions(max_age_days=max_age_days, check_prs=check_prs)
 
     if not stale:
-        print("✅  No stale sessions found.")
+        if verbose:
+            print("✅  No stale sessions found.")
         return []
 
     archived_ids: list[str] = []
@@ -157,12 +162,14 @@ def archive_stale_sessions(
         pr = session.get("pr_number")
 
         if dry_run:
-            print(f"[DRY RUN] Would archive: {sid}")
-            print(f"          Reason: {reason}")
+            if verbose:
+                print(f"[DRY RUN] Would archive: {sid}")
+                print(f"          Reason: {reason}")
         else:
             archive_session(session_id=sid, reason=reason, pr_number=pr)
-            print(f"🗄  Archived: {sid}")
-            print(f"   Reason: {reason}")
+            if verbose:
+                print(f"🗄  Archived: {sid}")
+                print(f"   Reason: {reason}")
 
         archived_ids.append(sid)
 
@@ -203,10 +210,19 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    # Auto-enable --check-prs when GITHUB_TOKEN is available in the environment
+    # (unblocked by COPILOT_AGENT_AUTH_ENABLED=true token delegation)
+    check_prs = args.check_prs or bool(
+        os.environ.get("GITHUB_TOKEN") or os.environ.get("CODEX_MASTER_KEY")
+    )
+
     stale = detect_stale_sessions(
         max_age_days=args.max_age_days,
-        check_prs=args.check_prs,
+        check_prs=check_prs,
     )
+
+    if check_prs and not args.check_prs:
+        print("ℹ️  --check-prs auto-enabled (GITHUB_TOKEN detected in environment)")
 
     if args.output_json:
         out_path = Path(args.output_json)
@@ -235,8 +251,9 @@ def main() -> int:
 
     archived = archive_stale_sessions(
         max_age_days=args.max_age_days,
-        check_prs=args.check_prs,
+        check_prs=check_prs,
         dry_run=args.dry_run,
+        verbose=True,
     )
 
     if args.dry_run:

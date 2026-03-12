@@ -186,12 +186,10 @@ jobs:
                 '> Run `@copilot run qa-walkthrough --heal` to auto-fix lint/style issues',
               ].join('\n');
 
-              // Write inputs for the consolidator action
-              require('fs').writeFileSync('.dashboard-status', JSON.stringify({
-                workflow: 'QA Walkthrough', status, summary, details
-              }));
+              core.setOutput('total_issues', qaIssues + ruffIssues + banditIssues);
+              core.setOutput('summary', summary);
+              core.setOutput('details', details);
             }
-            core.setOutput('total_issues', qaIssues + ruffIssues + banditIssues);
 
       - name: Upload QA reports
         uses: actions/upload-artifact@v7
@@ -210,7 +208,7 @@ jobs:
         uses: ./.github/actions/post-pr-summary
         with:
           workflow-name: 'QA Walkthrough'
-          status: ${{ steps.run_qa.outputs.total_issues != '0' && 'warning' || 'success' }}
-          summary: 'QA checks complete — see details'
-          details: 'Results posted to dashboard above via pr_comment_consolidator.'
+          status: ${{ steps.summary.outputs.total_issues != '0' && 'warning' || 'success' }}
+          summary: ${{ steps.summary.outputs.summary || 'QA checks complete' }}
+          details: ${{ steps.summary.outputs.details || '' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}

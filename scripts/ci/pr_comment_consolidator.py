@@ -72,7 +72,7 @@ def _api_request(
     path: str,
     body: Optional[dict] = None,
     token: str = "",
-) -> dict[str, Any]:
+) -> Any:
     url = f"https://api.github.com{path}"
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(

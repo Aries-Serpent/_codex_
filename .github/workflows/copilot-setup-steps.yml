@@ -605,6 +605,23 @@ jobs:
           which black && echo "✅ black available" || echo "⚠️  black not available"
           which pytest && echo "✅ pytest available" || echo "⚠️  pytest not available"
 
+      - name: "📊 Session Lifecycle Metrics"
+        continue-on-error: true
+        run: |
+          if [ -f scripts/session_tracker.py ]; then
+            echo "──────── Session Lifecycle Metrics ────────"
+            python scripts/session_tracker.py metrics || true
+            echo ""
+            # Write JSON metrics to GITHUB_STEP_SUMMARY
+            METRICS_JSON=$(python scripts/session_tracker.py metrics --format json 2>/dev/null || echo '{}')
+            echo "## 📊 Session Lifecycle Metrics" >> "$GITHUB_STEP_SUMMARY"
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            echo "$METRICS_JSON" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠️  session_tracker.py not found — skipping metrics"
+          fi
+
       # ============================================================================
       # Phase 8: Cache Preparation (Optional)
       # ============================================================================
@@ -618,6 +635,13 @@ jobs:
       # ============================================================================
       # Phase 9: Agent-Specific Initialization
       # ============================================================================
+
+      - name: "🔄 Rotate Cognitive Brain Status Files"
+        continue-on-error: true
+        run: |
+          if [ -f scripts/ci/rotate_cognitive_brain_status.py ]; then
+            python scripts/ci/rotate_cognitive_brain_status.py --keep 50 --threshold 60 || true
+          fi
 
       - name: "🤖 Initialize Cognitive Brain Context"
         run: |

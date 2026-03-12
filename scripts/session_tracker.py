@@ -262,9 +262,11 @@ def cmd_archive(
     _write_markdown(session)
 
     # Remove from current-session pointer if it referenced this session.
-    current = _load_json(CURRENT_SESSION_FILE)
+    # Use SESSION_DIR dynamically so test patches to SESSION_DIR are respected.
+    current_session_file = SESSION_DIR / ".current_session.json"
+    current = _load_json(current_session_file)
     if current and current.get("session_id") == session_id:
-        CURRENT_SESSION_FILE.unlink(missing_ok=True)
+        current_session_file.unlink(missing_ok=True)
 
     print(f"Session archived: {session_id}")
     if reason:
@@ -332,7 +334,7 @@ def cmd_metrics(output_format: str = "text") -> int:
         print(f"  🗄  Archived  : {counts[STATUS_ARCHIVED]}")
         if counts["unknown"]:
             print(f"  ❓ Unknown   : {counts['unknown']}")
-        print(f"  ──────────────────────────────────────────────────────")
+        print("  ──────────────────────────────────────────────────────")
         print(f"  📊 Total     : {total}  (of which {tombstones} are tombstones)")
     return 0
 

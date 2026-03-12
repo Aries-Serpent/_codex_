@@ -55,10 +55,17 @@ runs:
           exit 0
         fi
 
-        python "${{ github.workspace }}/scripts/ci/pr_comment_consolidator.py" \
+        OUTPUT=$(python "${{ github.workspace }}/scripts/ci/pr_comment_consolidator.py" \
           --pr-number  "${PR_NUMBER}" \
           --workflow   "${WORKFLOW_NAME}" \
           --status     "${STATUS}" \
           --summary    "${SUMMARY}" \
           --details    "${DETAILS}" \
-          --run-url    "${RUN_URL}"
+          --run-url    "${RUN_URL}")
+        echo "$OUTPUT"
+
+        # Parse comment id from output line like: "✅ ... (id 12345)"
+        COMMENT_ID=$(echo "$OUTPUT" | grep -oP '(?<=\(id )\d+(?=\))' || true)
+        if [ -n "${COMMENT_ID}" ]; then
+          echo "comment-id=${COMMENT_ID}" >> "$GITHUB_OUTPUT"
+        fi

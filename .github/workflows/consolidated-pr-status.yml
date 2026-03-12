@@ -91,6 +91,7 @@ jobs:
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py
+            .github/actions/post-pr-summary/
           sparse-checkout-cone-mode: false
 
       - name: Set up Python
