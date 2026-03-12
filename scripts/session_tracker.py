@@ -275,6 +275,68 @@ def cmd_archive(
     return 0
 
 
+def cmd_metrics(output_format: str = "text") -> int:
+    """Print lifecycle counts for all local sessions.
+
+    Output includes counts for each status (active, completed, error, archived)
+    plus a total, giving a quick health-check of the session audit trail.
+    Supports ``--format json`` for machine consumption in CI dashboards.
+    """
+    counts: dict[str, int] = {
+        STATUS_ACTIVE: 0,
+        STATUS_COMPLETED: 0,
+        STATUS_ERROR: 0,
+        STATUS_ARCHIVED: 0,
+        "unknown": 0,
+    }
+    tombstones = 0
+
+    for path in SESSION_DIR.glob("session_*.json"):
+        if ".current" in path.name:
+            continue
+        session = _load_json(path)
+        if session is None:
+            continue
+        status = session.get("status", "unknown")
+        if status in counts:
+            counts[status] += 1
+        else:
+            counts["unknown"] += 1
+        if session.get("tombstone"):
+            tombstones += 1
+
+    total = sum(counts.values())
+
+    if output_format == "json":
+        import json as _json
+
+        print(
+            _json.dumps(
+                {
+                    "total": total,
+                    "active": counts[STATUS_ACTIVE],
+                    "completed": counts[STATUS_COMPLETED],
+                    "error": counts[STATUS_ERROR],
+                    "archived": counts[STATUS_ARCHIVED],
+                    "tombstones": tombstones,
+                    "unknown": counts["unknown"],
+                },
+                indent=2,
+            )
+        )
+    else:
+        print("── Session Lifecycle Metrics ──────────────────────────")
+        print(f"  🟡 Active    : {counts[STATUS_ACTIVE]}")
+        print(f"  ✅ Completed : {counts[STATUS_COMPLETED]}")
+        print(f"  ❌ Error     : {counts[STATUS_ERROR]}")
+        print(f"  🗄  Archived  : {counts[STATUS_ARCHIVED]}")
+        if counts["unknown"]:
+            print(f"  ❓ Unknown   : {counts['unknown']}")
+        print(f"  ──────────────────────────────────────────────────────")
+        print(f"  📊 Total     : {total}  (of which {tombstones} are tombstones)")
+    return 0
+
+
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -306,6 +368,9 @@ def main() -> int:
         help="Preview what would be archived without writing any files",
     )
 
+    p_metrics = sub.add_parser("metrics", help="Show session lifecycle counts (active/completed/archived/error)")
+    p_metrics.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+
     args = parser.parse_args()
 
     if args.cmd == "start":
@@ -325,6 +390,8 @@ def main() -> int:
             pr_number=args.pr_number,
             dry_run=args.dry_run,
         )
+    elif args.cmd == "metrics":
+        return cmd_metrics(output_format=args.format)
     return 0
 
 
@@ -455,6 +522,49 @@ def archive_session(
         current_ptr.unlink(missing_ok=True)
 
     return session
+
+
+def session_metrics() -> dict[str, int]:
+    """Return lifecycle counts for all local sessions as a dict.
+
+    Provides a programmatic counterpart to ``cmd_metrics --format json`` for
+    use in dashboards, monitoring scripts, or CI health checks.
+
+    Returns:
+        dict with keys: total, active, completed, error, archived, tombstones, unknown
+    """
+    counts: dict[str, int] = {
+        STATUS_ACTIVE: 0,
+        STATUS_COMPLETED: 0,
+        STATUS_ERROR: 0,
+        STATUS_ARCHIVED: 0,
+        "unknown": 0,
+    }
+    tombstones = 0
+
+    for path in SESSION_DIR.glob("session_*.json"):
+        if ".current" in path.name:
+            continue
+        session = _load_json(path)
+        if session is None:
+            continue
+        status = session.get("status", "unknown")
+        if status in counts:
+            counts[status] += 1
+        else:
+            counts["unknown"] += 1
+        if session.get("tombstone"):
+            tombstones += 1
+
+    return {
+        "total": sum(counts.values()),
+        "active": counts[STATUS_ACTIVE],
+        "completed": counts[STATUS_COMPLETED],
+        "error": counts[STATUS_ERROR],
+        "archived": counts[STATUS_ARCHIVED],
+        "tombstones": tombstones,
+        "unknown": counts["unknown"],
+    }
 
 
 if __name__ == "__main__":

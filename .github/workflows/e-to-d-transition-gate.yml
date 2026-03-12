@@ -154,35 +154,16 @@ jobs:
               print("No demotion candidates found.")
           PY
 
-      - name: Post readiness comment on PR
+      - name: Post readiness to PR Status Dashboard
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        env:
-          READINESS_SCORE: ${{ steps.check.outputs.score }}
-          MODEL_CAPABLE: ${{ steps.check.outputs.capable }}
+        uses: ./.github/actions/post-pr-summary
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const score = process.env.READINESS_SCORE || '0';
-            const capable = process.env.MODEL_CAPABLE === 'true';
+          workflow-name: 'E→D Transition Readiness'
+          status: ${{ steps.check.outputs.capable == 'true' && 'success' || 'info' }}
+          summary: 'Score ${{ steps.check.outputs.score }}/5 · ${{ steps.check.outputs.capable == ''true'' && ''D_CAPABLE unlocked 🟢'' || ''E model (conditions not yet met) 🟡'' }}'
+          details: |
+            **Score:** ${{ steps.check.outputs.score }}/5 | **D_CAPABLE:** ${{ steps.check.outputs.capable }}
 
-            // Only comment when score changes or on workflow_dispatch
-            const statusIcon = capable ? '\U0001F7E2' : '\U0001F7E1';
-            const statusText = capable ? 'D_CAPABLE unlocked' : `E (${score}/5 conditions met)`;
+            Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition breakdown.
 
-            const body = [
-              `## \U0001F504 E\u2192D Transition Readiness`,
-              ``,
-              `**Score:** ${score}/5 | **Model:** ${statusIcon} \`${statusText}\``,
-              ``,
-              `> _Tier-1 GROUNDED gate \u2014 run \`.github/workflows/e-to-d-transition-gate.yml\` for full condition breakdown._`,
-              ``,
-              `_[e-to-d-transition-gate.yml] | Phase 4 FSM | Tier-1 GROUNDED gate_`,
-            ].join('\n');
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body,
-            });
+            _Phase 4 FSM | [e-to-d-transition-gate.yml]_
