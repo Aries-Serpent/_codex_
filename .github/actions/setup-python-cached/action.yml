@@ -142,15 +142,24 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     # 5. Build / refresh venv
     #
-    #    5a. Full build (cache miss) — create venv from scratch.
-    #    5b. Refresh (restore-key hit) — venv exists but pyproject.toml
-    #        changed; run pip install --upgrade to sync to new versions.
+    #    5a. Full build (cache miss or restore-key hit) — create venv from
+    #         scratch. Also clears any stale venv left by a restore-key
+    #         partial cache hit that has a broken Python binary (e.g. venv
+    #         was cached on Python 3.12.12 but runner now has 3.12.13 —
+    #         the cache key only pins the minor version, not the patch).
+    #    5b. Refresh (exact cache hit) — venv exists; run pip install
+    #         --upgrade to sync pyproject changes. Includes a self-healing
+    #         fallback: if the Python binary in the restored venv is broken
+    #         (cross-patch-version cache artifact), rebuild from scratch.
     # ─────────────────────────────────────────────────────────────────
-    - name: 'Venv: full build (cache miss)'
+    - name: 'Venv: full build (cache miss or restore-key hit)'
       if: steps.cache-venv.outputs.cache-hit != 'true'
       shell: bash
       run: |
         echo "::group::Create venv and install base packages"
+        # Remove any stale venv from a restore-key partial hit to prevent
+        # broken Python binary symlinks across Python patch upgrades.
+        rm -rf .venv_ci 2>/dev/null || true
         python -m venv .venv_ci
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
         # Pinned pytest plugin set — keeps CI reproducible
@@ -167,11 +176,30 @@ runs:
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
         echo "::endgroup::"
 
-    - name: 'Venv: refresh on restore-key hit (pyproject changed)'
+    - name: 'Venv: refresh on exact cache hit (pyproject changed)'
       if: steps.cache-venv.outputs.cache-hit == 'true'
       shell: bash
       run: |
-        echo "::group::Refresh venv after restore-key hit"
+        echo "::group::Refresh venv after exact cache hit"
+        # Self-healing: if the Python binary in the restored venv is broken
+        # (e.g. venv cached on Python 3.12.12, runner now has 3.12.13),
+        # rebuild the whole venv before attempting the incremental refresh.
+        if ! .venv_ci/bin/python --version &>/dev/null; then
+          echo "::warning::Stale venv — Python binary broken (Python patch version mismatch). Rebuilding."
+          rm -rf .venv_ci
+          python -m venv .venv_ci
+          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
+          .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
+            pytest==8.4.2 \
+            pytest-timeout==2.4.0 \
+            pytest-xdist==3.8.0 \
+            pytest-cov==5.0.0 \
+            pytest-asyncio==1.3.0 \
+            pytest-mock==3.15.1 \
+            "pytest-randomly>=3.15" \
+            "pytest-rerunfailures>=12.0"
+          .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]"
+        fi
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip -e ".[${{ inputs.extras }}]" --quiet
         echo "::endgroup::"

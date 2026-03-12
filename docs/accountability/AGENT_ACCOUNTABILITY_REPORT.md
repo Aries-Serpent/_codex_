@@ -3,7 +3,37 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3554
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T09:00Z (session 12: PR #3554 review-comment fixes + CI healing)
+**Last updated:** 2026-03-12T11:45Z (session 13: stale venv cache + ROADMAP date + preflight fix)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 13 (Stale Venv Cache + Doc Metrics + Preflight)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI patterns reviewed: stale `.venv_ci` cached on Python 3.12.12 broken on 3.12.13 runners; `doc-metrics-check` date drift in `docs/ROADMAP.md`; cognitive pre-flight gate requires AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md touched
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: fix all 7 failing checks (Cognitive Pre-flight, GitHub Guru, Scan Secrets, Coverage(1)/(4), Rust-Python Hybrid, Fast Validation)
+- [x] **5.** Execution plan committed ✅
+- [x] **6.** Codebase Agency Policy followed ✅
+
+### Actions Taken
+
+| Change | File(s) | Reason |
+|--------|---------|--------|
+| Step 5a: `rm -rf .venv_ci` before `python -m venv` | `.github/actions/setup-python-cached/action.yml` | Restore-key partial cache hits leave stale venv with broken Python binary symlinks |
+| Step 5b: self-healing fallback for broken Python binary | `.github/actions/setup-python-cached/action.yml` | Exact cache hits with Python 3.12.12 venv fail on 3.12.13 runner; `pip: cannot execute: required file not found` |
+| Date `2026-03-11` → `2026-03-12` in roadmap note | `docs/ROADMAP.md:389` | `doc-metrics-check` pre-commit hook requires current date |
+| Updated `CHANGELOG.md` [Unreleased] session entry | `CHANGELOG.md` | Pre-flight REQ-9 Pass 3 gate |
+
+### Root Cause Analysis: Python Patch Version Cache Mismatch
+
+The CI cache key includes `py3.12` (minor version) but NOT the patch version (`3.12.12` vs `3.12.13`). When GitHub's hosted runner upgrades Python 3.12.12 → 3.12.13, all cached `.venv_ci` directories have broken symlinks and shebangs pointing to the old Python path. This affects:
+- Step 5a (restore-key partial hit): `python -m venv .venv_ci` on the stale directory produces a broken pip shebang → `Error: [Errno 2] No such file`
+- Step 5b (exact cache hit): `.venv_ci/bin/pip` shebang points to old Python → `cannot execute: required file not found`
+
+### Outcome
+- 7 failing CI checks fixed: GitHub Guru, Scan Secrets, Coverage(1)/(4), Rust-Python Hybrid, Fast Validation, Cognitive Pre-flight ✅
 
 ---
 
