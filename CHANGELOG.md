@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/sub-pr-3563 — 2026-03-12 session 14 — CI escalation response)
+- **CI triage**: Diagnosed and confirmed `unit-tests (2)` failure (run 23017866101) as Python patch-version venv mismatch (3.12.12 → 3.12.13). Self-healing venv check already in place from session 13; no new code change required.
+
 ### Fixed (PR copilot/sub-pr-3554 — 2026-03-12 session 12 — Stale venv cache + doc-metrics + preflight)
 - **`.github/actions/setup-python-cached/action.yml`**: Fixed stale cached venv breaking CI when the runner upgrades Python patch versions (e.g. 3.12.12 → 3.12.13). Step 5a now removes `.venv_ci` before `python -m venv` to avoid broken symlinks from restore-key partial hits; step 5b adds a self-healing fallback that detects a broken Python binary and rebuilds the venv before the incremental pip refresh. Fixes GitHub Guru Agent, Scan Secrets, Coverage (1)/(4), and Rust-Python Hybrid CI failures.
 - **`docs/ROADMAP.md`**: Updated roadmap note timestamp from `2026-03-11` → `2026-03-12` to clear `doc-metrics-check` pre-commit hook failure in Fast Validation.
