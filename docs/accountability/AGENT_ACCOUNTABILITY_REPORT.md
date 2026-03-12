@@ -3,9 +3,33 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3554
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T07:04Z (session 11: Dependabot — tornado 6.5.4→6.5.5, cherry-pick from PR #3558)
+**Last updated:** 2026-03-12T09:12Z (session 13: cherry-pick all diffs from copilot/sub-pr-3554)
 
 ---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 13 (Cherry-pick sub-pr-3554 diffs)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI failure Run ID 22993581632 investigated: `Art_Root Organization Validation` on `copilot/resolve-failing-checks`
+- [x] **3.** Self-Healing escalation pattern identified: diffs from `copilot/sub-pr-3554` need cherry-picking
+- [x] **4.** All 8 files diffed and applied from `origin/copilot/sub-pr-3554`
+- [x] **5.** `tests/codex/config/test_env_vars.py` tests pass locally ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed — both accountability files touched
+
+### Actions Taken
+
+#### Files Modified
+| File | Change |
+|------|--------|
+| `scripts/monitoring/agent_orchestrator.py` | Prefer `.agent.md` resolution; `_resolve_canonical_agent()` method; `import re` |
+| `tests/codex/config/test_env_vars.py` | Fix `clean_env` env-var leak in both test classes |
+| `.github/agents/unified-coverage-agent.md` | `--workers 6→4`, `'4+ core'→'4-core'` |
+| `.github/agents/config-validator.agent.md` | Remove `runner_compatibility` from deprecated agent |
+| `.github/agents/owner-approval-guard.agent.md` | Remove `runner_compatibility` from deprecated agent |
+| `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` | Fix 3 file stem references |
+| `CHANGELOG.md` | Session 13 entry under `## [Unreleased]` |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This section |
 
 ## 📋 SESSION SUMMARY — 2026-03-12 SESSION 11 (Dependabot Dependency Bump)
 
