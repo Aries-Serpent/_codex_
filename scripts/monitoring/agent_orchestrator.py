@@ -197,6 +197,50 @@ class AgentOrchestrator:
         # through subprocess, API, or GitHub Copilot mechanism
         return self._generate_recommendation_from_patterns(agent_name, failure_data, pattern_matches)
 
+    def _resolve_canonical_agent(
+        self, agent_name: str, agent_definition: str
+    ) -> Optional[str]:
+        """Parse YAML front-matter to detect deprecated agents and return canonical name.
+
+        When an agent definition contains ``deprecated: true`` and a
+        ``superseded_by`` field in its YAML front-matter, this method returns
+        the name of the canonical agent so the caller can redirect.  The
+        ``superseded_by`` value may include a version/date suffix
+        (e.g. ``unified-governance-gate.md (v1.0.0-m05, 2026-02-22)``); only
+        the base filename stem is extracted.
+
+        Args:
+            agent_name: Name of the agent that was originally requested.
+            agent_definition: Raw file contents (may start with ``---`` front-matter).
+
+        Returns:
+            Canonical agent name to redirect to, or ``None`` if the agent is
+            not deprecated / no redirect is needed.
+        """
+        # Only inspect YAML front-matter (between the first pair of ``---`` delimiters).
+        # Use \s+ to tolerate CRLF line endings and varying whitespace.
+        fm_match = re.match(r'^---\s+(.*?)\s+---', agent_definition, re.DOTALL)
+        if not fm_match:
+            return None
+        front_matter = fm_match.group(1)
+
+        # Check for deprecated: true (YAML convention is lowercase; reject any other case)
+        if not re.search(r'^\s*deprecated\s*:\s*true\s*$', front_matter, re.MULTILINE):
+            return None
+
+        # Extract superseded_by value (take only the first word/token before space/paren)
+        sb_match = re.search(r'^\s*superseded_by\s*:\s*(.+)$', front_matter, re.MULTILINE)
+        if not sb_match:
+            return None
+        superseded_raw = sb_match.group(1).strip()
+        # Strip optional version suffix like " (v1.0.0-m05, 2026-02-22)" and ".md" extension
+        canonical = re.split(r'[\s(]', superseded_raw)[0]
+        canonical = re.sub(r'\.(?:agent\.)?md$', '', canonical)
+        if canonical and canonical != agent_name:
+            return canonical
+        return None
+
+
     def _generate_recommendation_from_patterns(
         self,
         agent_name: str,

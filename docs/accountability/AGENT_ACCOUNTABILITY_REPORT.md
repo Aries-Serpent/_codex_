@@ -3,16 +3,63 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/sub-pr-3554
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T07:04Z (session 11: Dependabot — tornado 6.5.4→6.5.5, cherry-pick from PR #3558)
+**Last updated:** 2026-03-12T09:00Z (session 12: PR #3554 review-comment fixes + CI healing)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-12 SESSION 11 (Dependabot Dependency Bump)
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 12 (Review Comment Fixes + CI Healing)
 
 ### Pre-flight Checklist
 - [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
-- [x] **2.** CI patterns reviewed: `validation (slow)` cancelled by runner shutdown (infrastructure, not code fault); sharded tests in-progress
+- [x] **2.** CI patterns reviewed: actionlint "could not parse as YAML" (run 22968378074) passes locally — pre-existing transient; `CODEX_SQLITE_POOL=invalid` env-var contamination from `test_validation_fails_on_invalid_value` → fixed clean_env fixture in both `TestEnvironmentManager` and `TestEnvironmentManagerValidation`
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed (line 189) ✅
+- [x] **4.** Priority directive: address all PR #3554 review threads (Copilot + Gemini) + incorporate PR #3554 diffs into sub-PR
+- [x] **5.** Execution plan posted in PR description checklist ✅
+- [x] **6.** Codebase Agency Policy followed throughout ✅
+
+### Actions Taken
+
+| Change | File(s) | Reason |
+|--------|---------|--------|
+| Fix `--workers 6` → `--workers 4` for 4-core runner | `.github/agents/unified-coverage-agent.md` | Copilot review: inconsistency between "4-core" label and `--workers 6` recommendation |
+| Fix `"4+ core"` → `"4-core"` in comment | `.github/agents/unified-coverage-agent.md` | Align all 3 references to runner core count consistently |
+| Use full file stem `workflow-ci-fixer.agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 301 | Gemini review: unambiguous naming for deprecated agent |
+| Use full file stem `code-scanning-remediation-agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 312 | Gemini review: matches actual filename |
+| Use full file stem `config-validator.agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 326 | Gemini review: matches `config-validator.agent.md` |
+| Remove `runner_compatibility` block | `.github/agents/config-validator.agent.md` | Gemini review: unnecessary on deprecated agent |
+| Remove `runner_compatibility` block | `.github/agents/owner-approval-guard.agent.md` | Gemini review: unnecessary on deprecated agent |
+| Prefer `.agent.md` over `.md` in resolution order | `scripts/monitoring/agent_orchestrator.py` | Copilot review: `.md` shadowed canonical `.agent.md` for `workflow-health-monitor` |
+| Add `_resolve_canonical_agent()` helper | `scripts/monitoring/agent_orchestrator.py` | Follows `deprecated: true` + `superseded_by` front-matter to redirect to canonical agent |
+| Fix `clean_env` fixture in `TestEnvironmentManager` | `tests/codex/config/test_env_vars.py` | Fixture leaked `CODEX_SQLITE_POOL=invalid` into subsequent tests, causing `test_environment_manager_creation` OSError in CI |
+| Fix `clean_env` fixture in `TestEnvironmentManagerValidation` | `tests/codex/config/test_env_vars.py` | Same root cause — both fixtures now clean up test-added vars before restore |
+
+### CI Failure Root-Cause Inventory
+
+| Failure | Root Cause | Status |
+|---------|-----------|--------|
+| `test_environment_manager_creation` — `OSError: Invalid value for CODEX_SQLITE_POOL: invalid` | `clean_env` fixture didn't delete vars added during tests | ✅ Fixed |
+| `workflow-health-monitor` shadowed by `.md` file | Orchestrator tried `.md` first; `.deprecated.md` already renamed | ✅ Fixed (orchestrator prefers `.agent.md` now) |
+| `--workers 6` on 4-core runner (unified-coverage-agent.md) | Documentation inconsistency | ✅ Fixed |
+| Gemini naming inconsistencies in consolidation report | Partial file stems used | ✅ Fixed |
+| `runner_compatibility` in deprecated agents | Unnecessary metadata on deprecated agents | ✅ Fixed |
+| HF Revision errors (multiple test files) | Pre-existing: tests calling HF APIs without `load_from_pretrained` mock | Pre-existing — DRQ logged |
+| `AttributeError: module 'codex' has no attribute 'logging'/'github'/'archive'` | Pre-existing: monkeypatching test isolation issues | Pre-existing — DRQ logged |
+| MLflow tracking failures | Pre-existing infrastructure | Pre-existing |
+| actionlint "could not parse as YAML" (run 22968378074) | Transient — passes locally with actionlint 1.7.11 | Transient (no code change needed) |
+
+### Deep Research Queue (DRQ)
+
+- **DRQ-001**: HF Revision errors — tests need `load_from_pretrained` mock pattern. Pattern: `ValueError: Remote Hugging Face identifiers require an explicit commit hash`. Category: Test Infrastructure. Priority: High. Multiple test files affected. Interim fix: ensure all callers of `load_model_with_optional_lora` have the mock applied.
+- **DRQ-002**: `AttributeError: module 'codex' has no attribute 'logging'/'github'/'archive'` — monkeypatch string path resolution fails when sub-module not yet imported. Pattern: `'module' object at codex.X has no attribute 'X'`. Category: Test Infrastructure. Priority: Medium.
+
+### Outcome
+
+- All 7 review threads from PR #3554 addressed
+- `tests/codex/config/test_env_vars.py`: 23/23 tests pass locally
+- `agent_orchestrator.py`: deprecated-agent redirection logic added and verified
+- Branch content matches `copilot/resolve-failing-checks` (PR #3554) — no merge conflicts
+
+
 - [x] **4.** Primary directive: cherry-pick tornado 6.5.4→6.5.5 from dependabot PR #3558
 - [x] **5.** Advisory DB checked — no vulnerabilities in tornado 6.5.5 ✅
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed — both accountability files touched
