@@ -218,8 +218,9 @@ class AgentOrchestrator:
             not deprecated / no redirect is needed.
         """
         # Only inspect YAML front-matter (between the first pair of ``---`` delimiters).
-        # Use \s+ to tolerate CRLF line endings and varying whitespace.
-        fm_match = re.match(r'^---\s+(.*?)\s+---', agent_definition, re.DOTALL)
+        # Use \s* (zero or more) to tolerate CRLF line endings, empty front-matter,
+        # and varying whitespace around the --- delimiters.
+        fm_match = re.match(r'^---\s*(.*?)\s*---', agent_definition, re.DOTALL)
         if not fm_match:
             return None
         front_matter = fm_match.group(1)

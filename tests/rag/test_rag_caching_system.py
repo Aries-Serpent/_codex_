@@ -11,6 +11,7 @@ Comprehensive testing for RAG caching layer:
 import tempfile
 import time
 
+import numpy as np
 import pytest
 
 
@@ -54,7 +55,7 @@ class TestEmbeddingCache:
                 cached_emb = cache.get(text)
 
                 if cached_emb is not None:
-                    assert cached_emb == embedding
+                    np.testing.assert_allclose(cached_emb, embedding)
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -98,7 +99,7 @@ class TestEmbeddingCache:
                 cached_emb = cache2.get(text)
 
                 if cached_emb is not None:
-                    assert cached_emb == embedding
+                    np.testing.assert_allclose(cached_emb, embedding)
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
