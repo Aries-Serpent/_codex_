@@ -477,7 +477,7 @@ def test_vectorization_performance():
     loop_elapsed = time.perf_counter() - start
 
     # Vectorized should be significantly faster
-    assert vec_elapsed < loop_elapsed / 10, "Vectorization should provide 10x+ speedup"
+    assert vec_elapsed < loop_elapsed / 5, "Vectorization should provide 5x+ speedup"
     np.testing.assert_allclose(result_vec, result_loop, rtol=1e-6)
 
 

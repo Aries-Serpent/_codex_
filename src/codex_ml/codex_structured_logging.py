@@ -355,7 +355,12 @@ class _CaptureExceptionsContext:
         if etype is None:
             return False
         if isinstance(evalue, SystemExit):
-            code = int(getattr(evalue, "code", 0) or 0)
+            raw_code = getattr(evalue, "code", 0)
+            try:
+                code = int(raw_code or 0)
+            except (TypeError, ValueError):
+                # SystemExit.code can be a string message (e.g. from raise SystemExit("msg"))
+                code = 1
             if code == 0:
                 log_event(self.logger, "cli.exit", exit_status="success", code=code)
                 return False

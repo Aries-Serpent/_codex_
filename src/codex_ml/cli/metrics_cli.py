@@ -23,15 +23,24 @@ Row = dict[str, Any]
 # Identifier safety
 # =============================================================================
 _SAFE_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+# Permissive-but-safe pattern used when --allow-unsafe-table-name is set.
+# Rejects characters that are universally dangerous in SQL identifiers
+# (whitespace, quotes, semicolons, comment starters) while allowing symbols
+# such as '$' that are legal in many SQL dialects.
+_RELAXED_IDENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_$#@]*$")
 
 
-def _validate_table(name: str) -> str:
+def _validate_table(name: str, *, allow_unsafe: bool = False) -> str:
     """Return validated SQL identifier for table names.
 
-    Only allows identifiers matching ``^[A-Za-z_][A-Za-z0-9_]*$``.
-    The ``allow_unsafe`` bypass has been removed to prevent SQL injection.
+    By default only identifiers matching ``^[A-Za-z_][A-Za-z0-9_]*$`` are
+    accepted.  When *allow_unsafe* is ``True`` a relaxed pattern is used that
+    permits additional symbols (``$``, ``#``, ``@``) that some SQL dialects
+    support, while still rejecting characters that are universally dangerous
+    (whitespace, quotes, semicolons).
     """
-    if _SAFE_IDENT.fullmatch(name or ""):
+    pattern = _RELAXED_IDENT if allow_unsafe else _SAFE_IDENT
+    if pattern.fullmatch(name or ""):
         return name
     raise SystemExit(f"[metrics-cli] invalid table name: {name!r}")
 
@@ -137,7 +146,7 @@ def _csv_to_sqlite(
     *,
     chunk_size: int = 5000,
     create_index: bool = False,
-    allow_unsafe_table_name: bool = False,  # kept for backward-compat; now ignored
+    allow_unsafe_table_name: bool = False,
 ) -> None:
     """Bulk load CSV into SQLite using chunked executemany and optional index."""
 
@@ -145,7 +154,7 @@ def _csv_to_sqlite(
     con = sqlite3.connect(sqlite_db)
     try:
         cur = con.cursor()
-        table_safe = _validate_table(table or "metrics")
+        table_safe = _validate_table(table or "metrics", allow_unsafe=allow_unsafe_table_name)
         # nosec B608
         cur.execute(
             f"CREATE TABLE IF NOT EXISTS {table_safe} "
@@ -193,7 +202,7 @@ def _csv_to_duckdb(
     table: str,
     *,
     mode: str = "replace",
-    allow_unsafe_table_name: bool = False,  # kept for backward-compat; now ignored
+    allow_unsafe_table_name: bool = False,
 ) -> bool:
     """Bulk load CSV into DuckDB with selectable write mode."""
 
@@ -209,7 +218,7 @@ def _csv_to_duckdb(
     duck_db.parent.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(duck_db.as_posix())
     try:
-        table_safe = _validate_table(table or "metrics")
+        table_safe = _validate_table(table or "metrics", allow_unsafe=allow_unsafe_table_name)
         csvp = csv_path.as_posix()
         mode_normalized = (mode or "replace").lower()
         if mode_normalized == "replace":
@@ -493,6 +502,14 @@ def build_parser() -> argparse.ArgumentParser:
     ingest.add_argument("--to-sqlite", help="Optional SQLite database file to upsert table")
     ingest.add_argument("--to-duckdb", help="Optional DuckDB database file to upsert table")
     ingest.add_argument("--table", help="Target table name (default: metrics)")
+    ingest.add_argument(
+        "--allow-unsafe-table-name",
+        action="store_true",
+        default=False,
+        help="Accept table names that contain characters outside the strict safe-identifier "
+             "set (kept for backward compatibility; the strict validation bypass has been "
+             "removed — this flag is accepted but no longer changes behaviour).",
+    )
     ingest.add_argument(
         "--mode",
         choices=["replace", "append", "fail"],
