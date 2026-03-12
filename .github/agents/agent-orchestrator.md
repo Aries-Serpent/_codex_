@@ -8,6 +8,9 @@ aais_contribution: +5.0 points
 batch: pr-6
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-2
 type: NEW
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — multi-agent orchestration, task routing via FAISS/registry
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Agent Orchestrator

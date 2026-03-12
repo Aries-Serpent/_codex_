@@ -9,6 +9,9 @@ maturity: production
 cognitive_integration_level: 3
 aais_contribution: +3.5 points
 session_introduced: S85
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — auto-detect and heal CI failures with embedded fix patterns
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # CI Auto-Healer Agent v1.0.0

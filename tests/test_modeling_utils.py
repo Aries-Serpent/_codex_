@@ -19,12 +19,20 @@ def test_load_model_and_tokenizer_minimal(monkeypatch):
     fake_tok = types.SimpleNamespace()
     fake_model = types.SimpleNamespace(state_dict=lambda: {})
 
+    def fake_load_from_pretrained(factory, identifier, **kwargs):  # pragma: no cover
+        """Mock load_from_pretrained to bypass HF pinning check."""
+        if hasattr(factory, "from_pretrained"):
+            return factory.from_pretrained(identifier, **kwargs)
+        return factory(identifier, **kwargs)
+
     def fake_tok_loader(*a, **k):  # pragma: no cover - trivial
         return fake_tok
 
     def fake_model_loader(*a, **k):  # pragma: no cover - trivial
         return fake_model
 
+    # Mock load_from_pretrained to bypass revision checking
+    monkeypatch.setattr(modeling, "load_from_pretrained", fake_load_from_pretrained)
     monkeypatch.setattr(
         modeling, "AutoTokenizer", types.SimpleNamespace(from_pretrained=fake_tok_loader)
     )
@@ -49,6 +57,11 @@ def test_load_model_and_tokenizer_requires_peft(monkeypatch):
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *a, **k: fake_model),
     )
+    monkeypatch.setattr(
+        modeling,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
+    )
     monkeypatch.setattr(modeling, "get_peft_model", None)
     model, _ = modeling.load_model_and_tokenizer("stub", lora={"r": 4})
     assert model is fake_model
@@ -70,6 +83,11 @@ def test_bf16_guard_called_during_model_load(monkeypatch):
         modeling,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda *a, **k: fake_model),
+    )
+    monkeypatch.setattr(
+        modeling,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
 
     config = {"model_name": "stub", "bf16_require_capability": True}

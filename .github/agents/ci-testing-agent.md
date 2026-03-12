@@ -10,6 +10,9 @@ merged_agents:
   - ci-failure-resolution-agent (deprecated)
   - ci-emergency-response-agent (deprecated)
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-1
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — all 17 fix patterns, sequential self-healing loop
+  large:   ubuntu-latest-large  # 4-core — parallel log retrieval and faster fix validation
 ---
 
 # CI Testing Agent v4.0 (Unified CI Failure Resolver)

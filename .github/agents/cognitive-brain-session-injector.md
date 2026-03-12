@@ -13,6 +13,9 @@ status: active
 created: 2026-02-28
 updated: 2026-03-03
 autonomous_actions_enabled: true
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — session context injection, AfterMath PDA loop closure
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # 🧠 Cognitive Brain Session Injector Agent

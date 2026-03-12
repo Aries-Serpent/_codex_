@@ -1,9 +1,154 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/resolve-failing-checks
+**Branch:** copilot/sub-pr-3554
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-11T19:30Z (session 7: GAP-DCK-001 — tag fix, security docs, CHANGELOG consolidation, package validation)
+**Last updated:** 2026-03-12T09:00Z (session 12: PR #3554 review-comment fixes + CI healing)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 12 (Review Comment Fixes + CI Healing)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI patterns reviewed: actionlint "could not parse as YAML" (run 22968378074) passes locally — pre-existing transient; `CODEX_SQLITE_POOL=invalid` env-var contamination from `test_validation_fails_on_invalid_value` → fixed clean_env fixture in both `TestEnvironmentManager` and `TestEnvironmentManagerValidation`
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed (line 189) ✅
+- [x] **4.** Priority directive: address all PR #3554 review threads (Copilot + Gemini) + incorporate PR #3554 diffs into sub-PR
+- [x] **5.** Execution plan posted in PR description checklist ✅
+- [x] **6.** Codebase Agency Policy followed throughout ✅
+
+### Actions Taken
+
+| Change | File(s) | Reason |
+|--------|---------|--------|
+| Fix `--workers 6` → `--workers 4` for 4-core runner | `.github/agents/unified-coverage-agent.md` | Copilot review: inconsistency between "4-core" label and `--workers 6` recommendation |
+| Fix `"4+ core"` → `"4-core"` in comment | `.github/agents/unified-coverage-agent.md` | Align all 3 references to runner core count consistently |
+| Use full file stem `workflow-ci-fixer.agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 301 | Gemini review: unambiguous naming for deprecated agent |
+| Use full file stem `code-scanning-remediation-agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 312 | Gemini review: matches actual filename |
+| Use full file stem `config-validator.agent` | `.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md` line 326 | Gemini review: matches `config-validator.agent.md` |
+| Remove `runner_compatibility` block | `.github/agents/config-validator.agent.md` | Gemini review: unnecessary on deprecated agent |
+| Remove `runner_compatibility` block | `.github/agents/owner-approval-guard.agent.md` | Gemini review: unnecessary on deprecated agent |
+| Prefer `.agent.md` over `.md` in resolution order | `scripts/monitoring/agent_orchestrator.py` | Copilot review: `.md` shadowed canonical `.agent.md` for `workflow-health-monitor` |
+| Add `_resolve_canonical_agent()` helper | `scripts/monitoring/agent_orchestrator.py` | Follows `deprecated: true` + `superseded_by` front-matter to redirect to canonical agent |
+| Fix `clean_env` fixture in `TestEnvironmentManager` | `tests/codex/config/test_env_vars.py` | Fixture leaked `CODEX_SQLITE_POOL=invalid` into subsequent tests, causing `test_environment_manager_creation` OSError in CI |
+| Fix `clean_env` fixture in `TestEnvironmentManagerValidation` | `tests/codex/config/test_env_vars.py` | Same root cause — both fixtures now clean up test-added vars before restore |
+
+### CI Failure Root-Cause Inventory
+
+| Failure | Root Cause | Status |
+|---------|-----------|--------|
+| `test_environment_manager_creation` — `OSError: Invalid value for CODEX_SQLITE_POOL: invalid` | `clean_env` fixture didn't delete vars added during tests | ✅ Fixed |
+| `workflow-health-monitor` shadowed by `.md` file | Orchestrator tried `.md` first; `.deprecated.md` already renamed | ✅ Fixed (orchestrator prefers `.agent.md` now) |
+| `--workers 6` on 4-core runner (unified-coverage-agent.md) | Documentation inconsistency | ✅ Fixed |
+| Gemini naming inconsistencies in consolidation report | Partial file stems used | ✅ Fixed |
+| `runner_compatibility` in deprecated agents | Unnecessary metadata on deprecated agents | ✅ Fixed |
+| HF Revision errors (multiple test files) | Pre-existing: tests calling HF APIs without `load_from_pretrained` mock | Pre-existing — DRQ logged |
+| `AttributeError: module 'codex' has no attribute 'logging'/'github'/'archive'` | Pre-existing: monkeypatching test isolation issues | Pre-existing — DRQ logged |
+| MLflow tracking failures | Pre-existing infrastructure | Pre-existing |
+| actionlint "could not parse as YAML" (run 22968378074) | Transient — passes locally with actionlint 1.7.11 | Transient (no code change needed) |
+
+### Deep Research Queue (DRQ)
+
+- **DRQ-001**: HF Revision errors — tests need `load_from_pretrained` mock pattern. Pattern: `ValueError: Remote Hugging Face identifiers require an explicit commit hash`. Category: Test Infrastructure. Priority: High. Multiple test files affected. Interim fix: ensure all callers of `load_model_with_optional_lora` have the mock applied.
+- **DRQ-002**: `AttributeError: module 'codex' has no attribute 'logging'/'github'/'archive'` — monkeypatch string path resolution fails when sub-module not yet imported. Pattern: `'module' object at codex.X has no attribute 'X'`. Category: Test Infrastructure. Priority: Medium.
+
+### Outcome
+
+- All 7 review threads from PR #3554 addressed
+- `tests/codex/config/test_env_vars.py`: 23/23 tests pass locally
+- `agent_orchestrator.py`: deprecated-agent redirection logic added and verified
+- Branch content matches `copilot/resolve-failing-checks` (PR #3554) — no merge conflicts
+
+
+- [x] **4.** Primary directive: cherry-pick tornado 6.5.4→6.5.5 from dependabot PR #3558
+- [x] **5.** Advisory DB checked — no vulnerabilities in tornado 6.5.5 ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed — both accountability files touched
+
+### Actions Taken
+
+#### Files Modified
+| File | Change |
+|------|--------|
+| `requirements/lock.txt` | `tornado==6.5.4` → `tornado==6.5.5` (cherry-pick from PR #3558 commit e72cba21) |
+| `CHANGELOG.md` | Session 11 entry under `## [Unreleased]` |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This section |
+| `CODEX_MANIFEST.json` | Regenerated — `generated_at: 2026-03-12T07:04:33Z` (103 workflows, 153 agents) |
+| `.secrets.baseline` | `hashed_secret` → `ddb053e3e436a10bb0a5f422a8295f24adf580af` at line 1688, `generated_at: 2026-03-12T07:04:33Z` |
+
+#### Security Verification
+- Advisory DB: tornado 6.5.5 — **0 known vulnerabilities** ✅
+- tornado 6.5.5 is a patch release (security/bug fix) over 6.5.4
+
+#### CI Status at Time of Commit
+- `validation (slow)` — CANCELLED by runner shutdown (infrastructure, not code failure)
+- `validation (integration)` — ✅ SUCCESS
+- `validation (documentation)` — ✅ SUCCESS
+- `validation (quick)`, shards 1–4 — in-progress at time of commit
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-11 SESSION 8 (Codebase Policy Compliance)
+
+### Pre-flight Checklist
+- [x] 1. `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] 2. `CHANGELOG.md` updated in this commit ✅
+- [x] 3. Read `.codex/CODEBASE_AGENCY_POLICY.md` and repository memories
+- [x] 4. Identified violation: commits 919a5b7 and 077756e missing accountability updates
+- [x] 5. Codebase Agency Policy followed — leaving codebase better than found
+
+### Policy Violation Addressed
+
+**Issue:** Commits 919a5b7 and 077756e violated the mandatory "preflight re-touch pattern":
+> Every commit to copilot/resolve-failing-checks MUST touch CHANGELOG.md + docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md. Cognitive Pre-flight checks git diff HEAD~1 HEAD for both files.
+
+**Root Cause:** The two commits made technical fixes but failed to update accountability documentation, violating the repository's codebase agency policy.
+
+### Commits Documented (Retroactive)
+
+#### Commit 919a5b7 (2026-03-11T20:39:33Z)
+**Title:** `fix(workflows): resolve YAML syntax error in ci-health-monitor.yml`
+
+**Changes:**
+- File: `.github/workflows/ci-health-monitor.yml`
+- Issue: Line 356 actionlint syntax error
+- Fix: Replaced inline Python `-c` blocks with heredoc syntax (`<<'EOF'`)
+- Pattern: YAML inline Python code with quotes causes parsing errors
+- Solution: Use bash heredoc for multiline Python code in workflow files
+- Tests Fixed: `test_workflow_files_valid_yaml`
+
+#### Commit 077756e (2026-03-11T20:45:XX+Z)
+**Title:** `fix(tests): mock load_from_pretrained to bypass HF revision check`
+
+**Changes:**
+- File: `tests/test_modeling_utils.py`
+- Issue: `test_load_model_and_tokenizer_minimal` failing with HF revision validation error
+- Fix: Added `fake_load_from_pretrained` mock at module level
+- Pattern: Tests using non-existent model names fail HF revision validation
+- Solution: Mock `load_from_pretrained` to bypass check for test stubs
+- Tests Fixed: `test_load_model_and_tokenizer_minimal` (sharded quick tests shard 1/4)
+- Related: 4 more HF revision tests may need similar fix
+
+### Files Modified This Session
+
+| File | Change | Validation |
+|------|--------|-----------|
+| `CHANGELOG.md` | Added session 8 entry documenting commits 919a5b7 and 077756e | `grep "session 8" CHANGELOG.md` ✅ |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added session 8 summary | This update ✅ |
+
+### Self-Review — Policy Compliance
+
+| Check | Status | Evidence |
+|-------|--------|----------|
+| Both accountability files updated | ✅ | This commit touches both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md |
+| Violation documented and corrected | ✅ | Retroactive entries added for commits 919a5b7 and 077756e |
+| Pattern learned for future | ✅ | All future commits will include accountability updates |
+| Codebase left better than found | ✅ | Documentation now complete and policy-compliant |
+
+### Lessons Learned
+
+**Key Insight:** The "preflight re-touch pattern" is not optional — it is a mandatory requirement for ALL commits to copilot branches, regardless of whether the commit is a technical fix, documentation update, or any other change type.
+
+**Prevention:** Future commits will ALWAYS include updates to both `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` as the FIRST action before making any other changes.
 
 ---
 

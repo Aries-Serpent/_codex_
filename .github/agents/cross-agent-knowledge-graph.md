@@ -1,6 +1,9 @@
 ---
 name: Cross-Agent Knowledge Graph Agent
 description: Build and maintain a knowledge graph connecting insights across all specialized agents
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — knowledge graph connecting insights across specialized agents
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # [Agent]: Cross-Agent Knowledge Graph (E-10)

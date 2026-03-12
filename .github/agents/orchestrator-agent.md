@@ -4,6 +4,9 @@ description: >
   Multi-agent orchestrator for Aries-Serpent/_codex_. Routes tasks to specialist agents
   via semantic search over the FAISS corpus (Phase 3) and AGENT_REGISTRY.yaml
   capability_tags. Operates in E model (advisory); D_CAPABLE when transition gate passes.
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — agent orchestration and workflow coordination
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Agent: Orchestrator Agent

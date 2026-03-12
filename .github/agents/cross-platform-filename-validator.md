@@ -1,6 +1,9 @@
 ---
 name: Cross-Platform Filename Validator
 description: Validate filenames for Windows/Linux/macOS compatibility and enforce naming conventions
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — Windows/Linux/macOS filename compatibility
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # GitHub Copilot Agent: Cross-Platform Filename Validator

@@ -1,7 +1,15 @@
 ---
 name: Workflow Health Monitor
 description: Monitor GitHub Actions workflow health status and track reliability metrics over time
+deprecated: true
+superseded_by: workflow-health-monitor.agent.md (v1.1.0, 2026-03-11)
 ---
+
+> ⚠️ **DEPRECATED** — This file is a duplicate of
+> **[Workflow Health Monitor Agent](workflow-health-monitor.agent.md)**, which is the
+> canonical definition (preferred `.agent.md` naming convention). All content including
+> the 8 failure patterns and Agent Architecture diagram have been consolidated there.
+> Use `workflow-health-monitor` (`.agent.md`) for all new invocations.
 
 # Workflow Health Monitor Agent
 

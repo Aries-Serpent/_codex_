@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-11T11:08:53Z",
+  "generated_at": "2026-03-12T07:04:33Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1508,6 +1508,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COPILOT_AGENT_PROMPT_GUIDE.md",
       "type": "enforcement"
     },
@@ -1681,5 +1685,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "0c3aeb6d791281f588f0fb105006cd02cfb2367e5df98cefe9eff279bacd1f45"
+  "integrity_sha256": "9360521e86663761473ad7dc33fa8a2f92d4c3264d3597ee69eca33991076314"
 }

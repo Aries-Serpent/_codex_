@@ -10,6 +10,9 @@ merged_agents:
 cognitive_integration_level: 4
 aais_contribution: +5.0 points
 batch: m-05
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — governance checks, ownership enforcement, config validation
+  large:   ubuntu-latest-large  # 4-core — parallel policy gate evaluation
 ---
 
 # Unified Governance Gate Agent v1.0 (M-05 Merge)

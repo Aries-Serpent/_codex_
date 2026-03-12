@@ -1,6 +1,9 @@
 ---
 name: Doc Refactor Test Agent
 description: Refactor and test documentation for accuracy, clarity, and structural consistency
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — documentation refactoring and accuracy testing
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Custom GitHub Copilot Agent: Documentation Refactoring Test Compatibility Agent

@@ -1,7 +1,14 @@
 ---
 name: Code Scanning Remediation Agent
 description: Remediate code scanning alerts from GitHub Advanced Security and static analysis tools
+deprecated: true
+superseded_by: codeql-alert-resolution-agent.md (v3.1.0-self-healing)
 ---
+
+> ⚠️ **DEPRECATED** — Remediation capabilities are fully covered by
+> **[CodeQL Alert Resolution Agent v3.1](codeql-alert-resolution-agent.md)**, which provides
+> a complete self-healing pipeline with 25+ fix patterns, Playwright integration, and
+> automated PR creation. Use `codeql-alert-resolution-agent` for all new invocations.
 
 # Code Scanning Remediation Agent
 

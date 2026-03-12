@@ -7,6 +7,9 @@ cognitive_integration_level: 3
 aais_contribution: +2.5 points
 batch: pr-3492
 sprint: Sprint 6 (Post-GROUNDED — Repo Variable Wiring)
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Cognitive Brain Manager v3.0

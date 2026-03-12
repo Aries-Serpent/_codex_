@@ -1,6 +1,9 @@
 ---
 name: Autonomous Test Healer Agent
 description: Automatically detect, diagnose, and fix failing tests to maintain CI/CD pipeline health
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — auto-fix failing tests, self-healing loop
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # GitHub Copilot Custom Agent: Autonomous Test Healer

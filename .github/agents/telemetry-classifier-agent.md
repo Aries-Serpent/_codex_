@@ -10,6 +10,9 @@ sprint: Sprint 8
 improvement_area: CI_SELF_HEALING
 pattern_id: P-047
 trigger_label: ci-health-alert
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — CI telemetry classification, failure pattern tagging
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Telemetry Classifier Agent v2.0

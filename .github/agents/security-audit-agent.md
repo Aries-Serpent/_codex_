@@ -1,6 +1,9 @@
 ---
 name: Security Audit Agent
 description: Perform comprehensive security audits covering SAST, dependency vulnerabilities, and compliance checks
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — SAST, dependency audits, compliance
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Security Audit Agent

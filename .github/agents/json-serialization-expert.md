@@ -1,6 +1,9 @@
 ---
 name: JSON Serialization Expert Agent
 description: Diagnose and fix JSON serialization and deserialization issues across the codebase
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — JSON serialization/deserialization issue diagnosis and fixes
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # JSON Serialization Expert Agent

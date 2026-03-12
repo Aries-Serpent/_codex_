@@ -1,6 +1,9 @@
 ---
 name: PR Check Remediation Agent
 description: Remediate failing PR checks by applying automated fixes and validation steps
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — failing PR check remediation and automated fixes
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # Custom Copilot Agent: PR Check Remediation Specialist

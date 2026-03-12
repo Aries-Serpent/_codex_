@@ -1,7 +1,13 @@
 ---
 name: CI Failure Resolution Agent
 description: Diagnose and resolve CI/CD pipeline failures using embedded fix patterns and self-healing loops
+deprecated: true
+superseded_by: ci-testing-agent.md (v4.0.0-unified, 2026-02-20)
 ---
+
+> ⚠️ **DEPRECATED** — This agent has been absorbed into **[CI Testing Agent v4.0](ci-testing-agent.md)**.
+> All capabilities (log retrieval, pattern matching, self-healing loop, regression detection) are
+> fully preserved in the unified agent. Use `ci-testing-agent` for all new invocations.
 
 # CI Failure Resolution Agent
 

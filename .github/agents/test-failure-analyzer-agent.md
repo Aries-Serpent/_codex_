@@ -1,6 +1,9 @@
 ---
 name: Test Failure Analyzer Agent
 description: Analyze test failures to identify root causes and recommend targeted remediation steps
+runner_compatibility:
+  default: ubuntu-latest        # 2-core — failure root-cause analysis, remediation
+  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
 # GitHub Copilot Custom Agent: Test Failure Analyzer

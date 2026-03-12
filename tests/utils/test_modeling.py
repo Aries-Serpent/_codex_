@@ -34,12 +34,17 @@ def test_lora_missing(monkeypatch):
     monkeypatch.setattr(
         mod,
         "AutoTokenizer",
-        types.SimpleNamespace(from_pretrained=lambda m, use_fast=True: object()),
+        types.SimpleNamespace(from_pretrained=lambda m, **kw: object()),
     )
     monkeypatch.setattr(
         mod,
         "AutoModelForCausalLM",
         types.SimpleNamespace(from_pretrained=lambda m, **kw: object()),
+    )
+    monkeypatch.setattr(
+        mod,
+        "load_from_pretrained",
+        lambda factory, identifier, **kwargs: factory.from_pretrained(identifier, **kwargs),
     )
     try:
         model, _ = mod.load_model_and_tokenizer("m", lora={"r": 4})
