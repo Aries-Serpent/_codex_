@@ -6,9 +6,6 @@ updated: 2026-02-17
 cognitive_integration_level: 1
 aais_contribution: +1.0 points
 batch: pr-10
-runner_compatibility:
-  default: ubuntu-latest        # 2-core — approval enforcement for sensitive operations
-  large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 deprecated: true
 superseded_by: unified-governance-gate.md (v1.0.0-m05, 2026-02-22)
 

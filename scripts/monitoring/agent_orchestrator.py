@@ -25,6 +25,7 @@ Updated: 2026-02-12 (PS-13: Agent Task Router)
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -151,13 +152,12 @@ class AgentOrchestrator:
         Returns:
             Agent recommendation or None
         """
-        # Load agent definition
-        agent_path = Path(f'.github/agents/{agent_name}.md')
+        # Load agent definition — prefer .agent.md to avoid shadowing by deprecated .md files
+        agent_path = Path(f'.github/agents/{agent_name}.agent.md')
         if not agent_path.exists():
-            # Try alternative formats
-            agent_path = Path(f'.github/agents/{agent_name}.agent.md')
+            agent_path = Path(f'.github/agents/{agent_name}.agent.yml')
             if not agent_path.exists():
-                agent_path = Path(f'.github/agents/{agent_name}.agent.yml')
+                agent_path = Path(f'.github/agents/{agent_name}.md')
                 if not agent_path.exists():
                     logger.warning(f"Agent definition not found: {agent_name}")
                     return self._generate_fallback_recommendation(agent_name, failure_data, pattern_matches)
@@ -175,6 +175,16 @@ class AgentOrchestrator:
         except Exception as e:
             logger.error(f"Failed to read agent definition {agent_path}: {e}")
             return None
+
+        # Check for deprecated front-matter and redirect to superseded_by agent
+        canonical_name = self._resolve_canonical_agent(agent_name, agent_definition)
+        if canonical_name and canonical_name != agent_name:
+            logger.info(
+                "Agent '%s' is deprecated, redirecting to canonical agent '%s'",
+                agent_name,
+                canonical_name,
+            )
+            return self._invoke_agent(canonical_name, failure_data, pattern_matches)
 
         # In dry-run mode or for this implementation,
         # generate simulated recommendations based on patterns

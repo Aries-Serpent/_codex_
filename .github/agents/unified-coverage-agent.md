@@ -125,8 +125,8 @@ Provide a single, authoritative agent for every aspect of test coverage in the
 # Default runner (2-core) — conservative settings
 python scripts/ci/rvs_preflight.py --group quick --workers 2 --batch-size 20
 
-# Large runner (4+ core) — full parallelism
-python scripts/ci/rvs_preflight.py --group quick --workers 6 --batch-size 30
+# Large runner (4-core) — full parallelism
+python scripts/ci/rvs_preflight.py --group quick --workers 4 --batch-size 30
 
 # Changed-files-only (fastest, use during active development)
 python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 4

@@ -298,7 +298,7 @@ This report provides a comprehensive analysis of all custom GitHub Copilot agent
    - Deprecated: ci-failure-resolution-agent → ci-testing-agent.md
 
 2. **✅ Workflow CI Fixer** (deprecated, superseded by codebase-health-guardian v2.0)
-   - Deprecated: workflow-ci-fixer → codebase-health-guardian.md
+   - Deprecated: workflow-ci-fixer.agent → codebase-health-guardian.md
 
 3. **✅ Coverage Orchestration** (5 agents → unified-coverage-agent)
    - Deprecated: coverage-gapfill-agent → unified-coverage-agent.md
@@ -309,7 +309,7 @@ This report provides a comprehensive analysis of all custom GitHub Copilot agent
    - **New canonical agent:** `unified-coverage-agent.md`
 
 4. **✅ CodeQL/Security Consolidation**
-   - Deprecated: code-scanning-remediation → codeql-alert-resolution-agent.md
+   - Deprecated: code-scanning-remediation-agent → codeql-alert-resolution-agent.md
    - Deprecated: dependency-vulnerability-scanner → unified-security-scanner.md
    - Deprecated: dependency-security-review-agent → unified-security-scanner.md
    - Deprecated: security-alert-verification-agent → unified-security-scanner.md
@@ -323,7 +323,7 @@ This report provides a comprehensive analysis of all custom GitHub Copilot agent
 
 6. **✅ Governance Consolidation** (2 agents → unified-governance-gate v1.0)
    - Deprecated: owner-approval-guard → unified-governance-gate.md
-   - Deprecated: config-validator → unified-governance-gate.md
+   - Deprecated: config-validator.agent → unified-governance-gate.md
 
 7. **✅ CI Triage Pipeline** (log retrieval + importerror merged)
    - Deprecated: ci-log-retrieval-agent → ci-triage-pipeline-agent.md
