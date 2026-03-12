@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR copilot/remove-stale-cached-session — 2026-03-12 session 16 — stale session archive + CI triage #3565)
+- **`scripts/session_tracker.py`**: Added `STATUS_ARCHIVED = "archived"` constant and `cmd_archive()` CLI subcommand. The `archive` subcommand force-archives any session by ID — including stale/cached sessions whose local file does not exist — by creating a tombstone record so the decision is permanently documented in the repo audit trail. Accepts `--reason` and `--pr-number` flags. `list` output now shows 🗄 icon for archived sessions.
+- **`scripts/session_tracker.py`**: Added `archive_session(session_id, reason, pr_number)` programmatic API function (mirrors `start_session` / `end_session` pattern). Returns the final session dict for programmatic inspection.
+- **`tests/autonomy/test_session_tracker.py`**: 5 new tests — `TestSessionArchive` class covering archive of existing sessions, tombstone creation for stale sessions (no local file), current-session pointer cleanup, `STATUS_ARCHIVED` constant presence, and session listing showing archived status.
+- **`memory/sessions/session_f50f76f3-161d-4776-aa72-f9f0d6202fc2.json`**: Tombstone record archiving stale GitHub Copilot task session for merged PR #3221. Resolves `https://github.com/Aries-Serpent/_codex_/tasks/f50f76f3-161d-4776-aa72-f9f0d6202fc2` showing as "active" with no UI archive option due to cached/stale data.
+- **`.github/agents/session-analysis-agent.md`**: Extended agent spec with stale-session detection and force-archive capability, self-review loop, and updated architecture diagram to include `SessionArchiver` component.
+
 ### Fixed (PR copilot/sub-pr-3554 — 2026-03-12 session 15 — copilot-setup-steps git editor + base branch promotion)
 - **`.github/workflows/copilot-setup-steps.yml`**: Added `git config --global core.editor "true"` step immediately after checkout so `git rebase --continue` never opens an interactive editor (nano) and hangs the CI runner. Also suppresses merge-conflict advice spam via `advice.mergeConflict=false`.
 - **`.github/workflows/copilot-setup-steps.yml`**: Extended "Fetch remote branch refs for PR diff support" step to promote the PR's actual base branch (`github.base_ref`) to a local ref in addition to `main`. Fixes `git diff` exit-128 failures when the base branch is e.g. `copilot/resolve-failing-checks` rather than `main` (job 66848479871, run 23018572899).

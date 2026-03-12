@@ -1,9 +1,60 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/sub-pr-3563
+**Branch:** copilot/remove-stale-cached-session
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T19:32Z (session 15: copilot-setup-steps git editor + base branch promotion)
+**Last updated:** 2026-03-12T20:45Z (session 16: stale session archive + CI triage issue #3565)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 16 (Stale Session Archive + CI Triage #3565)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI triage issue #3565 reviewed via GitHub tools — 75 failures across 29 workflows identified; majority are `action_required` (owner-approval-guard gates, not code failures); 4 actionable failure types diagnosed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: complete PR #3566 checklist, archive stale session `f50f76f3-161d-4776-aa72-f9f0d6202fc2`, respond to triage issue #3565 ✅
+- [x] **5.** Execution plan committed as `report_progress` checklist ✅
+- [x] **6.** Codebase Agency Policy followed ✅
+- [x] **7.** `CHANGELOG.md` [Unreleased] section updated (session 16 entry) ✅
+- [x] **8.** All 11 tests pass (6 existing + 5 new archive tests) ✅
+- [x] **9.** `session-analysis-agent.md` updated with stale-session archive capability and self-review loop ✅
+- [x] **10.** Cognitive Brain status updated to reflect session 16 completion ✅
+
+### Actions Taken
+
+| Change | File | Root Cause / Purpose |
+|--------|------|----------------------|
+| Add `STATUS_ARCHIVED`, `cmd_archive()`, `archive_session()` | `scripts/session_tracker.py` | Stale GitHub Copilot task `f50f76f3` has no UI archive option; needs code-side tombstone mechanism |
+| Register `archive` CLI subcommand | `scripts/session_tracker.py` | Completes the session lifecycle (start → end → archive) |
+| Add 5 archive tests in `TestSessionArchive` | `tests/autonomy/test_session_tracker.py` | Validates tombstone creation, pointer cleanup, constant presence |
+| Create tombstone record for stale session | `memory/sessions/session_f50f76f3-….json` | Documents archive decision in repo audit trail for PR #3221 stale task |
+| Update `CHANGELOG.md` | `CHANGELOG.md` | Pre-flight REQ-7 Pass gate; session 16 entry ✅ |
+| Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Pre-flight REQ-1 ✅ |
+| Extend session-analysis-agent spec | `.github/agents/session-analysis-agent.md` | Add `SessionArchiver` component, stale detection, self-review loop |
+| Update cognitive brain status | `.codex/cognitive_brain/status/` | Session 16 completion record |
+
+### CI Triage Issue #3565 Analysis
+
+**Issue:** 75 total failures across 29 workflows  
+**Root cause breakdown:**
+
+| Category | Count | Resolution |
+|----------|-------|------------|
+| `action_required` (owner-approval-guard) | ~60 | Require human admin approval; not code failures |
+| `pages-build-deployment` build › Set up job | 1 | GitHub Pages infra issue on `main`; not caused by code changes |
+| `Art_Validation Pipeline` Fast Validation | 5 | `dependabot/pip/requirements/pip-c36b02d424` branch — venv mismatch resolved by session 13 venv healing (already merged) |
+| `Art_"CodeQL"` Analyze (python) | 4 | CodeQL analysis timeouts on `copilot/sub-pr-3554` (merged) — no action needed |
+| Duplicate Detection Set up Python | 1 | Infra-level Python setup issue on merged branch — no action needed |
+
+**Conclusion:** No code changes required for triage issue #3565. Failures are either: (a) approval-gated workflows awaiting human action, (b) transient infra issues on already-merged branches, or (c) already resolved by sessions 12–15.
+
+### Outcome
+- Stale session tombstone created and archived ✅
+- `archive` command available for future stale session scenarios ✅
+- All 11 session tracker tests pass ✅
+- CI triage #3565 assessed — no new code changes needed beyond this PR ✅
+- Pre-flight gates satisfied ✅
 
 ---
 
