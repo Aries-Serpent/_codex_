@@ -69,11 +69,15 @@ class TestEnvironmentManager:
 
     @pytest.fixture
     def clean_env(self):
-        """Clear CODEX environment variables for testing."""
+        """Clear CODEX environment variables for testing, restoring them after."""
         env_vars = [k for k in os.environ if k.startswith("CODEX_")]
         saved = {k: os.environ.pop(k) for k in env_vars}
         yield
-        # Restore
+        # Remove any CODEX_ vars added during the test (prevents leaking invalid values)
+        test_added_keys = [k for k in os.environ if k.startswith("CODEX_")]
+        for k in test_added_keys:
+            os.environ.pop(k, None)
+        # Restore original values
         for k, v in saved.items():
             os.environ[k] = v
 
@@ -194,11 +198,15 @@ class TestEnvironmentManagerValidation:
 
     @pytest.fixture
     def clean_env(self):
-        """Clear CODEX environment variables for testing."""
+        """Clear CODEX environment variables for testing, restoring them after."""
         env_vars = [k for k in os.environ if k.startswith("CODEX_")]
         saved = {k: os.environ.pop(k) for k in env_vars}
         yield
-        # Restore
+        # Remove any CODEX_ vars added during the test (prevents leaking invalid values)
+        test_added_keys = [k for k in os.environ if k.startswith("CODEX_")]
+        for k in test_added_keys:
+            os.environ.pop(k, None)
+        # Restore original values
         for k, v in saved.items():
             os.environ[k] = v
 
