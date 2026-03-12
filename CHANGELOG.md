@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (PR copilot/resolve-failing-checks — 2026-03-11 session 8 — CI failures and review feedback)
-- `ci-health-monitor.yml`: Rewrote Python multi-line inline code blocks (in the P-047 dispatch step) as single-line commands. The original blocks had Python code starting at column 1, which caused actionlint/YAML to fail with "could not find expected ':'". Used `os.path.exists()` + `os.environ` to preserve original behavior.
-- `.github/agents/workflow-health-monitor.md`: Renamed to `workflow-health-monitor.deprecated.md` so the `agent_orchestrator.py` resolution order (`.md` before `.agent.md`) no longer shadows the canonical `.agent.md` definition.
-- `.github/agents/unified-coverage-agent.md`: Fixed internally inconsistent runner guidance — changed `--workers 6` recommendation to `--workers 4` to match the stated 4-core `ubuntu-latest-large` runner spec.
+### Fixed (PR copilot/sub-pr-3554 — 2026-03-11 session 8 — Codebase policy compliance)
+- **Workflow YAML syntax**: `ci-health-monitor.yml` line 356 — replaced inline Python `-c` blocks with heredoc syntax (`<<'EOF'`) to avoid YAML parsing conflicts with quotes and special characters. Fixes actionlint syntax error and `test_workflow_files_valid_yaml` failure.
+- **Test mocking pattern**: `tests/test_modeling_utils.py` — added `fake_load_from_pretrained` mock to bypass HuggingFace revision pinning check for test stub model identifiers. Fixes `test_load_model_and_tokenizer_minimal` failure in sharded quick tests (shard 1/4).
+- **Accountability policy violation**: Updated `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` to document commits 919a5b7 and 077756e, which violated the mandatory preflight re-touch pattern requiring both files to be updated in every commit to copilot branches.
 
 ### Fixed (GAP-DCK-001 — 2026-03-11 session 7 — Docker config issues)
 - **Step 1 — Tag generation bug**: `build-preview-image.yml` `workflow_dispatch` with `push_image=false` now uses `manual-${{ github.run_id }}-<SHA>` tag instead of `pr-${{ github.event.number }}-<SHA>` — `github.event.number` is empty for dispatch events, producing invalid `pr--SHA` tags (Copilot review r2920097250). The explicit `elif [[ ... push_image != "true" ]]` branch guarantees a valid, non-empty tag.
