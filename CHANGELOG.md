@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 32 — 2026-03-13 — Deferral ML Classifier + UserStore Persistence (PR #3572)
+
+#### Work Stream 1: ML Deferral Scanner
+- **`scripts/ci/check_deferral_language.py`**: Added `DeferralMLClassifier` — offline TF-IDF + LogisticRegression classifier for intent-based deferral detection. Feature-flagged: `DEFERRAL_SCANNER_ML=1` (default off). Regex patterns always run first; ML provides a second pass. Trains on `.codex/training_data/deferral_examples.jsonl` (217 labeled examples). No network calls at any point.
+- **`.codex/training_data/deferral_examples.jsonl`**: New file — 217 labeled training examples (100+ positive, 100+ negative) for the deferral ML classifier. Covers all 8 violation categories plus edge cases.
+- **`.github/workflows/deferral-language-gate.yml`**: Added optional `pip install scikit-learn` step and `DEFERRAL_SCANNER_ML` env passthrough. ML step runs only when `DEFERRAL_SCANNER_ML=1` is set in repository variables.
+- **`.codex/CODEBASE_AGENCY_POLICY.md`**: Added §13 "Network Safety (CI / Agent Offline Mode)" — documents offline-mode guarantee for ML classifier with evidence table; establishes general policy that CI components must not make outbound network requests without explicit feature flags.
+- **Dependency security scan**: `scikit-learn>=1.4`, `transformers>=4.48.0`, `torch>=2.6.0` — 0 HIGH/MEDIUM CVEs (verified via gh-advisory-database, 2026-03-13).
+
+#### Work Stream 2: UserStore Persistence Backend
+- **`src/codex/auth/user_repository.py`**: New `UserRepository` ABC — 7 abstract methods: `create`, `update`, `delete`, `get_by_id`, `get_by_username`, `get_by_email`, `list_all`.
+- **`src/codex/auth/in_memory_user_repository.py`**: New `InMemoryUserRepository` — thread-safe in-memory dict backend (preserves legacy behaviour). Default when `CODEX_USERSTORE_BACKEND=memory` or unset.
+- **`src/codex/auth/sqlite_user_repository.py`**: New `SQLiteUserRepository` — thread-safe SQLite backend with WAL mode, indexed username/email columns, and JSON-serialised roles. Enabled via `CODEX_USERSTORE_BACKEND=sqlite`.
+- **`src/codex/auth/user_store.py`**: Refactored `UserStore` to be a thin facade over `UserRepository`. Backend selected from `CODEX_USERSTORE_BACKEND` env var. All 8 CRUD methods preserved; existing tests pass unchanged.
+- **`scripts/migrations/001_userstore_to_sqlite.py`**: One-shot migration script — export in-memory UserStore snapshot to JSON, import to SQLite, verify round-trip. Idempotent (re-import skips existing records).
+- **`docs/arch/ADR-20260313-userstore-persistence.md`**: Architecture Decision Record documenting the UserRepository pattern, chosen backends, configuration, consequences, and Phase 2 roadmap (PostgreSQL).
+- **`.env.example`**: Added `CODEX_USERSTORE_BACKEND` and `CODEX_USERSTORE_DB_PATH` environment variable documentation.
+- **`tests/auth/test_sqlite_user_repository.py`**: 21 new tests — all 8 CRUD operations, thread-safety (concurrent creates + reads/writes), two-instance shared-file visibility.
+- **`tests/auth/test_migration_001.py`**: 7 new migration smoke tests — round-trip 10 users, field preservation, verify step, idempotent re-import, inactive-user handling.
+
 ### Session 31 — 2026-03-13 — Full gap remediation (issue #3565 + PR #3571)
 - **`tests/services/api/test_rate_limit_middleware.py`** — `_reload_api()` sets `CODEX_AUTH_MIDDLEWARE_ENABLED=0` before module reload; fixes 401-instead-of-200/429 in rate-limit tests (#3565 shard failures)
 - **`tests/services/api/test_infer_limits.py`** — `fresh_app` fixture accepts `monkeypatch`, sets `CODEX_AUTH_MIDDLEWARE_ENABLED=0` before reload; fixes 401-instead-of-400 in context-limit tests

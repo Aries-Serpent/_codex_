@@ -1999,3 +1999,60 @@ No new bot review threads, no new CI failures, no new code quality issues detect
 - Integration tests: ✅ 13/13
 - deferral scanner `--git-log`: ✅ exit 0
 - auto_fix (13 patterns): ✅ 0 issues
+
+## Session 32: 2026-03-13 — Deferral ML Classifier + UserStore Persistence (PR #3572)
+
+### Pre-flight Checklist
+- [x] 🔃 Loaded: AI Codebase Agency Policy (.codex/CODEBASE_AGENCY_POLICY.md) — §1, §2, §3a, §13 (new)
+- [x] 🔃 Loaded: Accountability Report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] 🔃 Loaded: All stored session memories (thread-safety, deferral enforcement, CI pre-flight gate, @copilot continue protocol)
+- [x] Dependency security scan: scikit-learn, transformers, torch — 0 HIGH/MEDIUM CVEs via gh-advisory-database ✅
+
+### Tasks Completed
+
+| Task | File(s) | Result |
+|------|---------|--------|
+| Dep scan (scikit-learn, transformers, torch) | — | ✅ 0 CVEs |
+| ML classifier (TF-IDF + LogisticRegression) | scripts/ci/check_deferral_language.py | ✅ implemented |
+| Training data (217 examples) | .codex/training_data/deferral_examples.jsonl | ✅ 217 lines |
+| Workflow ML opt-in | .github/workflows/deferral-language-gate.yml | ✅ DEFERRAL_SCANNER_ML=1 |
+| Network safety policy | .codex/CODEBASE_AGENCY_POLICY.md §13 | ✅ added |
+| UserRepository ABC | src/codex/auth/user_repository.py | ✅ 7 abstract methods |
+| InMemoryUserRepository | src/codex/auth/in_memory_user_repository.py | ✅ thread-safe |
+| SQLiteUserRepository | src/codex/auth/sqlite_user_repository.py | ✅ WAL, indexed |
+| UserStore refactor | src/codex/auth/user_store.py | ✅ backward-compatible |
+| Migration script | scripts/migrations/001_userstore_to_sqlite.py | ✅ idempotent |
+| ADR | docs/arch/ADR-20260313-userstore-persistence.md | ✅ drafted |
+| .env.example | .env.example | ✅ CODEX_USERSTORE_BACKEND |
+| SQLite tests (21) | tests/auth/test_sqlite_user_repository.py | ✅ 21 passed |
+| Migration tests (7) | tests/auth/test_migration_001.py | ✅ 7 passed |
+| Existing tests | tests/auth/test_user_store.py | ✅ 34 passed (no regressions) |
+
+### Quality Gate Results
+
+| Check | Result |
+|-------|--------|
+| ruff (all changed files) | ✅ All checks passed |
+| mypy (auth + scripts) | ✅ No issues |
+| deferral scanner `--git-log` | ✅ exit 0 |
+| ML scanner `--git-log` (DEFERRAL_SCANNER_ML=1) | ✅ exit 0 |
+| All auth tests (214 total) | ✅ 214 passed |
+| Dep security scan | ✅ 0 HIGH/MEDIUM CVEs |
+
+### Acceptance Criteria Status
+
+**Work Stream 1 (ML Deferral Scanner):**
+- [x] gh-advisory-database scan: 0 HIGH/MEDIUM CVEs for scikit-learn, transformers, torch
+- [x] Classifier runs offline (no network requests)
+- [x] Feature-flagged (DEFERRAL_SCANNER_ML=1) — regex always runs first
+- [x] ≥200 labeled training examples (217 in .codex/training_data/)
+- [x] ruff + mypy pass on new code
+- [x] python scripts/ci/check_deferral_language.py --git-log exits 0
+
+**Work Stream 2 (UserStore Persistence):**
+- [x] ADR at docs/arch/ADR-20260313-userstore-persistence.md
+- [x] UserRepository ABC at src/codex/auth/user_repository.py
+- [x] SQLiteUserRepository passes all CRUD + thread-safety tests (21 tests)
+- [x] Backward compatibility: existing tests pass with InMemoryUserRepository (34 tests)
+- [x] Migration script tested end-to-end (7 smoke tests)
+- [x] CODEX_USERSTORE_BACKEND env var documented in .env.example

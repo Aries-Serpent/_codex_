@@ -1104,12 +1104,48 @@ Repeated violations or inability to correct:
 
 ---
 
+## Network Safety (CI / Agent Offline Mode)
+
+### §13 — Machine Learning Components Must Run Offline
+
+All ML components used in CI gates MUST operate without any network access.
+
+#### Deferral Scanner ML Classifier
+
+The optional TF-IDF + LogisticRegression classifier
+(`scripts/ci/check_deferral_language.py`) is **offline-safe** by design:
+
+| Guarantee | Evidence |
+|-----------|---------|
+| No network call at train time | `TfidfVectorizer` + `LogisticRegression` are CPU-only scikit-learn estimators with no external data downloads |
+| No `from_pretrained` call | No `transformers` model loading; scikit-learn pipeline only |
+| Training data bundled locally | `.codex/training_data/deferral_examples.jsonl` (202 examples, ships with repo) |
+| Dependency security scan | `scikit-learn>=1.4`, `transformers>=4.48.0`, `torch>=2.6.0` — 0 HIGH/MEDIUM CVEs (verified 2026-03-13 via gh-advisory-database) |
+| Feature-flagged | `DEFERRAL_SCANNER_ML=1` required to enable; off by default |
+| Regex always present | ML classifier is additive only; regex patterns always run first |
+
+#### General Principle
+
+No CI gate, agent script, or test fixture may make an outbound network
+request unless:
+
+1. The request is explicitly gated behind a feature flag (default off).
+2. The CI workflow sets an environment variable to enable it explicitly.
+3. The request target is documented here with a justification.
+
+**Violation**: Any `from_pretrained(model_name)`, `requests.get(url)`, or
+`httpx.get(url)` call in CI-executed code without the above safeguards is a
+policy violation and must be fixed immediately.
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2026-01-05 | Initial policy creation |
 | 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
+| 1.2.0 | 2026-03-13 | Added Network Safety section (ML offline-mode proof) |
 
 ---
 

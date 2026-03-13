@@ -19,6 +19,12 @@ Usage:
   python scripts/ci/check_deferral_language.py --session-log FILE
   python scripts/ci/check_deferral_language.py --text "raw text to scan"
 
+ML enhancement (optional, feature-flagged):
+  DEFERRAL_SCANNER_ML=1 python scripts/ci/check_deferral_language.py ...
+  Enables TF-IDF + LinearSVC classifier trained on labeled examples in
+  .codex/training_data/deferral_examples.jsonl.
+  Regex patterns always run first; ML adds a second pass for uncaught intent.
+
 Exit codes:
   0  — no deferral language found
   1  — deferral language detected (policy violation)
@@ -27,9 +33,15 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import json
+import logging
+import os
 import re
 import sys
 from pathlib import Path
+from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # ── Canonical deferral trigger phrases ────────────────────────────────────────
 # These are the exact patterns that constitute policy violations.
@@ -91,6 +103,154 @@ EXEMPTION_PATTERNS: list[str] = [
 ]
 
 
+# ── ML Classifier (optional — enabled by DEFERRAL_SCANNER_ML=1) ───────────────
+# Uses scikit-learn TF-IDF + LinearSVC for intent detection.
+# Falls back gracefully when scikit-learn is unavailable or training data is
+# missing.  Runs OFFLINE (no network calls at any point).
+
+_TRAINING_DATA_PATH = Path(__file__).parent.parent.parent / ".codex" / "training_data" / "deferral_examples.jsonl"
+
+# Minimum precision/recall thresholds for model acceptance
+_MIN_PRECISION = 0.95
+_MIN_RECALL = 0.90
+
+
+class DeferralMLClassifier:
+    """Lightweight TF-IDF + LinearSVC classifier for intent detection.
+
+    Falls back to regex patterns if scikit-learn is unavailable or training
+    data is missing.  Trained on labeled examples in
+    ``.codex/training_data/deferral_examples.jsonl``.
+
+    Runs entirely offline — no network requests at any point.
+
+    Feature flag: set environment variable ``DEFERRAL_SCANNER_ML=1`` to enable.
+    """
+
+    def __init__(self, training_data_path: Path | None = None) -> None:
+        self._pipeline: Any = None
+        self._available = False
+        self._training_data_path = training_data_path or _TRAINING_DATA_PATH
+
+    def _load_training_data(self) -> tuple[list[str], list[int]]:
+        """Load labeled training examples from JSONL file."""
+        texts: list[str] = []
+        labels: list[int] = []
+        path = self._training_data_path
+        if not path.exists():
+            raise FileNotFoundError(f"Training data not found: {path}")
+        with path.open(encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                record = json.loads(line)
+                texts.append(record["text"])
+                labels.append(int(record["label"]))
+        return texts, labels
+
+    def train(self) -> dict[str, float]:
+        """Train the classifier and return evaluation metrics.
+
+        Returns:
+            Dict with 'precision', 'recall', 'f1', 'n_train', 'n_test'.
+
+        Raises:
+            ImportError: If scikit-learn is not installed.
+            FileNotFoundError: If training data is missing.
+        """
+        from sklearn.feature_extraction.text import TfidfVectorizer  # noqa: PLC0415
+        from sklearn.linear_model import LogisticRegression  # noqa: PLC0415
+        from sklearn.metrics import precision_recall_fscore_support  # noqa: PLC0415
+        from sklearn.model_selection import train_test_split  # noqa: PLC0415
+        from sklearn.pipeline import Pipeline  # noqa: PLC0415
+
+        texts, labels = self._load_training_data()
+        x_train, x_test, y_train, y_test = train_test_split(
+            texts, labels, test_size=0.20, random_state=42, stratify=labels
+        )
+
+        self._pipeline = Pipeline([
+            ("tfidf", TfidfVectorizer(
+                analyzer="word",
+                ngram_range=(1, 3),
+                min_df=1,
+                max_features=5000,
+                sublinear_tf=True,
+            )),
+            # LogisticRegression: fast, interpretable, calibrated probabilities
+            ("clf", LogisticRegression(C=1.0, max_iter=1000, random_state=42)),
+        ])
+        self._pipeline.fit(x_train, y_train)
+
+        preds = self._pipeline.predict(x_test)
+        precision, recall, f1, _ = precision_recall_fscore_support(
+            y_test, preds, average="binary", pos_label=1
+        )
+        self._available = True
+        return {
+            "precision": float(precision),
+            "recall": float(recall),
+            "f1": float(f1),
+            "n_train": len(x_train),
+            "n_test": len(x_test),
+        }
+
+    def is_available(self) -> bool:
+        """Return True if the classifier is trained and ready."""
+        return self._available and self._pipeline is not None
+
+    def predict(self, text: str) -> bool:
+        """Return True if *text* is classified as deferral language.
+
+        Always returns False if the classifier is not available.
+        """
+        if not self.is_available() or self._pipeline is None:
+            return False
+        result: int = self._pipeline.predict([text])[0]
+        return bool(result)
+
+
+def _get_ml_classifier() -> DeferralMLClassifier | None:
+    """Return a trained ML classifier if DEFERRAL_SCANNER_ML=1, else None."""
+    if os.environ.get("DEFERRAL_SCANNER_ML", "0") != "1":
+        return None
+    classifier = DeferralMLClassifier()
+    try:
+        metrics = classifier.train()
+        logger.info(
+            "ML classifier trained: precision=%.3f recall=%.3f f1=%.3f "
+            "(n_train=%d n_test=%d)",
+            metrics["precision"],
+            metrics["recall"],
+            metrics["f1"],
+            metrics["n_train"],
+            metrics["n_test"],
+        )
+        if metrics["precision"] < _MIN_PRECISION or metrics["recall"] < _MIN_RECALL:
+            logger.warning(
+                "ML classifier below quality threshold "
+                "(precision≥%.2f recall≥%.2f required). "
+                "Disabling ML enhancement.",
+                _MIN_PRECISION,
+                _MIN_RECALL,
+            )
+            return None
+        return classifier
+    except ImportError:
+        logger.warning(
+            "scikit-learn not available — ML classifier disabled. "
+            "Install with: pip install scikit-learn"
+        )
+        return None
+    except FileNotFoundError as exc:
+        logger.warning("ML classifier disabled: %s", exc)
+        return None
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("ML classifier training failed (%s) — using regex only.", exc)
+        return None
+
+
 def _load_text(source: str | Path) -> str:
     """Load text from a file path or return the string directly."""
     path = Path(source)
@@ -104,9 +264,17 @@ def _line_is_exempt(line: str) -> bool:
     return any(re.search(p, line, re.IGNORECASE) for p in EXEMPTION_PATTERNS)
 
 
-def scan(text: str, source_label: str = "<input>") -> list[dict]:
+def scan(
+    text: str,
+    source_label: str = "<input>",
+    ml_classifier: "DeferralMLClassifier | None" = None,
+) -> list[dict]:
     """
     Scan *text* for deferral language.
+
+    Regex patterns always run first.  If *ml_classifier* is provided and
+    the line was not already flagged by regex, the ML classifier provides a
+    second pass to catch semantically similar deferral intent.
 
     Returns a list of violation dicts with keys: line_no, line, pattern, reason.
     """
@@ -114,6 +282,7 @@ def scan(text: str, source_label: str = "<input>") -> list[dict]:
     for line_no, line in enumerate(text.splitlines(), start=1):
         if _line_is_exempt(line):
             continue
+        flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:
             if re.search(pattern, line, re.IGNORECASE):
                 violations.append(
@@ -123,9 +292,22 @@ def scan(text: str, source_label: str = "<input>") -> list[dict]:
                         "line": line.strip(),
                         "pattern": pattern,
                         "reason": reason,
+                        "detector": "regex",
                     }
                 )
+                flagged = True
                 break  # one violation per line is enough
+        if not flagged and ml_classifier is not None and ml_classifier.predict(line.strip()):
+            violations.append(
+                {
+                    "source": source_label,
+                    "line_no": line_no,
+                    "line": line.strip(),
+                    "pattern": "<ml-classifier>",
+                    "reason": "ML classifier detected deferral intent",
+                    "detector": "ml",
+                }
+            )
     return violations
 
 
@@ -190,6 +372,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    # Initialise ML classifier (no-op if DEFERRAL_SCANNER_ML != "1")
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
+    ml_classifier = _get_ml_classifier()
+    if ml_classifier is not None:
+        print("🤖 ML classifier enabled (DEFERRAL_SCANNER_ML=1)", file=sys.stderr)
+
     all_violations: list[dict] = []
 
     if args.pr_body:
@@ -197,24 +385,36 @@ def main(argv: list[str] | None = None) -> int:
         if not path.exists():
             print(f"ERROR: File not found: {path}", file=sys.stderr)
             return 2
-        all_violations += scan(path.read_text(encoding="utf-8"), f"PR body ({path.name})")
+        all_violations += scan(
+            path.read_text(encoding="utf-8"),
+            f"PR body ({path.name})",
+            ml_classifier,
+        )
 
     elif args.commit_msg:
         path = Path(args.commit_msg)
         if not path.exists():
             print(f"ERROR: File not found: {path}", file=sys.stderr)
             return 2
-        all_violations += scan(path.read_text(encoding="utf-8"), f"commit msg ({path.name})")
+        all_violations += scan(
+            path.read_text(encoding="utf-8"),
+            f"commit msg ({path.name})",
+            ml_classifier,
+        )
 
     elif args.session_log:
         path = Path(args.session_log)
         if not path.exists():
             print(f"ERROR: File not found: {path}", file=sys.stderr)
             return 2
-        all_violations += scan(path.read_text(encoding="utf-8"), f"session log ({path.name})")
+        all_violations += scan(
+            path.read_text(encoding="utf-8"),
+            f"session log ({path.name})",
+            ml_classifier,
+        )
 
     elif args.text:
-        all_violations += scan(args.text, "<inline>")
+        all_violations += scan(args.text, "<inline>", ml_classifier)
 
     elif args.git_log:
         import subprocess  # noqa: PLC0415
@@ -223,7 +423,7 @@ def main(argv: list[str] | None = None) -> int:
                 ["git", "log", "--format=%B", "-n", "10"],  # noqa: S607
                 capture_output=True, text=True, check=True,
             )
-            all_violations += scan(result.stdout, "git log (last 10 commits)")
+            all_violations += scan(result.stdout, "git log (last 10 commits)", ml_classifier)
         except subprocess.CalledProcessError as exc:
             print(f"ERROR: git log failed: {exc}", file=sys.stderr)
             return 2
