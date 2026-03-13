@@ -159,8 +159,20 @@ runs:
         echo "::group::Create venv and install base packages"
         # Remove any stale venv from a restore-key partial hit to prevent
         # broken Python binary symlinks across Python patch upgrades.
-        rm -rf .venv_ci 2>/dev/null || true
+        # Use chmod to handle read-only files left by pip inside the
+        # restored cache (fixes silent rm -rf failures — see #3565/#3569).
+        if [ -d .venv_ci ]; then
+          chmod -R u+w .venv_ci 2>/dev/null || true
+          rm -rf .venv_ci
+        fi
         python -m venv .venv_ci
+        # Verify the venv was created successfully before proceeding.
+        # If python -m venv silently fails (e.g. disk full, permission
+        # denied), catch it here instead of a cryptic pip error later.
+        if [ ! -x .venv_ci/bin/python ]; then
+          echo "::error::Venv creation failed — .venv_ci/bin/python does not exist or is not executable"
+          exit 1
+        fi
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel
         # Pinned pytest plugin set — keeps CI reproducible
         .venv_ci/bin/pip install --cache-dir ~/.cache/pip \
@@ -186,6 +198,7 @@ runs:
         # rebuild the whole venv before attempting the incremental refresh.
         if ! .venv_ci/bin/python --version &>/dev/null; then
           echo "::warning::Stale venv — Python binary broken (Python patch version mismatch). Rebuilding."
+          chmod -R u+w .venv_ci 2>/dev/null || true
           rm -rf .venv_ci
           python -m venv .venv_ci
           .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel

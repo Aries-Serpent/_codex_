@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`tests/cli/test_cli_keyring.py`**: Keyring backend + JSON file fallback + CLI auth status tests (10 tests).
 - **`tests/test_accountability_autoupdate.py`**: Accountability auto-update unit + integration tests (45 tests).
 
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI venv self-healing, issues #3565/#3569)
+- **`.github/actions/setup-python-cached/action.yml`**: Hardened venv creation — added `chmod -R u+w` before `rm -rf` to handle read-only cached files; added post-creation verification that `.venv_ci/bin/python` exists; prevents silent venv failures that caused 68+ self-healing CI cascade failures.
+- **`.github/workflows/copilot-setup-steps.yml`**: Applied same venv self-healing pattern to Phase 4 — detects broken Python binary in restored cache and rebuilds from scratch instead of silently failing. Added accountability auto-update dry-run step.
+
 ### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — code review + Phase 24)
 - **`agents/agent_memory.py`**: Replaced `from scripts.stale_session_detector import` with import-safe `importlib.import_module` pattern to avoid sys.path side effects when called from library context; added `verbose=False` to suppress stdout during memory invalidation sweeps.
 - **`scripts/ci/pr_comment_consolidator.py`**: `_api_request()` return type annotation corrected to `Any` — the list-comments endpoint returns a JSON array, not a dict, so the previous `dict[str, Any]` annotation was incorrect.

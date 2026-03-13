@@ -428,9 +428,20 @@ jobs:
 
       - name: "🔧 Upgrade pip and install build tools"
         run: |
-          # Create .venv_ci if it wasn't restored from cache
-          if [ ! -d ".venv_ci" ]; then
+          # Create .venv_ci if it wasn't restored from cache, or if the
+          # restored venv has a broken Python binary (cross-patch-version
+          # cache artifact — see #3565/#3569 for the failure pattern).
+          if [ ! -d ".venv_ci" ] || [ ! -x ".venv_ci/bin/python" ] || ! .venv_ci/bin/python --version &>/dev/null; then
+            if [ -d ".venv_ci" ]; then
+              echo "::warning::Stale or broken venv detected — rebuilding from scratch"
+              chmod -R u+w .venv_ci 2>/dev/null || true
+              rm -rf .venv_ci
+            fi
             python -m venv .venv_ci
+            if [ ! -x ".venv_ci/bin/python" ]; then
+              echo "::error::Venv creation failed — .venv_ci/bin/python does not exist"
+              exit 1
+            fi
           fi
           .venv_ci/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
           # Add venv to PATH for all subsequent steps in this job
@@ -631,6 +642,23 @@ jobs:
           mkdir -p .codex/cache
           mkdir -p .codex/sessions
           echo "✅ Cache directories prepared"
+
+      - name: "📊 Accountability Auto-Update (session close hook)"
+        continue-on-error: true
+        env:
+          CODEX_SESSION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          # Run accountability auto-update in dry-run mode during setup to
+          # pre-validate the script. The actual --commit run is triggered at
+          # session close by the agent itself or post-job hooks.
+          if [ -f src/codex/session/accountability_autoupdate.py ]; then
+            echo "✅ Accountability auto-update script available"
+            python -m src.codex.session.accountability_autoupdate --dry-run 2>/dev/null \
+              && echo "  → dry-run validation passed" \
+              || echo "  ⚠️ dry-run validation skipped (non-blocking)"
+          else
+            echo "⚠️ accountability_autoupdate.py not found — skipping"
+          fi
 
       # ============================================================================
       # Phase 9: Agent-Specific Initialization

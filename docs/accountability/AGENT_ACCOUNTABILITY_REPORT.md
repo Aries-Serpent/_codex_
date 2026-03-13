@@ -3,40 +3,39 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/add-user-login-feature
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-13T06:11Z (session 18: auth Phase 3 — token lifecycle tests, keyring tests, middleware enforcement — PR #3570)
+**Last updated:** 2026-03-13T06:43Z (session 19: CI venv self-healing + accountability workflow step — issues #3565/#3569 — PR #3570)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-13 SESSION 18 (Auth Phase 3 — PR #3570)
+## 📋 SESSION SUMMARY — 2026-03-13 SESSION 19 (CI Venv Self-Healing + Workflow Step — PR #3570)
 
 ### Pre-flight Checklist
 - [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
 - [x] **2.** Codebase Agency Policy loaded and followed ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
-- [x] **4.** Priority: token lifecycle tests + keyring coverage + middleware enforcement ✅
+- [x] **4.** Priority: fix CI venv failures (#3565/#3569), insert accountability workflow step ✅
 - [x] **5.** Execution plan committed as `report_progress` checklist ✅
 - [x] **6.** Guardrails and Cognitive Brain status reviewed ✅
-- [x] **7.** All code-quality review comments resolved (7/7) ✅
+- [x] **7.** Agent Token Delegation activated by owner — COPILOT_AGENT_AUTH_ENABLED=true ✅
 - [x] **8.** CI pre-flight CHANGELOG gate addressed ✅
 - [x] **9.** CodeQL check passed — no new alerts ✅
-- [x] **10.** New tests added and passing ✅
+- [x] **10.** Codebase-wide pattern fix applied ✅
 
 ### Actions Taken
 
 | Change | File | Root Cause / Purpose |
 |--------|------|----------------------|
-| Token rotation/revocation tests | `tests/api/test_auth_token_lifecycle.py` (13 tests) | No integration tests for refresh → new access, logout → revoked, session isolation, revoke-all |
-| Keyring backend tests | `tests/cli/test_cli_keyring.py` (10 tests) | Keyring code path was `# pragma: no cover` — now tested via mock |
-| Enable AuthMiddleware by default | `services/api/main.py` | Changed default from `CODEX_AUTH_MIDDLEWARE_ENABLED=0` to `=1` so middleware is active in production |
-| Code-quality fixes | 3 files | Removed unused imports (`auth_group`, `pathlib`, `textwrap`); replaced 4 empty `except` blocks with `logger.debug()` |
-| CHANGELOG Phase 3 entry | `CHANGELOG.md` | Updated `[Unreleased]` with new test suites and middleware change |
+| Harden venv step 5a | `.github/actions/setup-python-cached/action.yml` | `rm -rf .venv_ci 2>/dev/null \|\| true` silently fails on read-only cached files, then `python -m venv` creates incomplete venv → 68+ self-healing failures (#3565/#3569) |
+| Harden venv step 5b | `.github/actions/setup-python-cached/action.yml` | Same `chmod -R u+w` fix applied to the exact-cache-hit self-healing branch |
+| Harden copilot venv Phase 4 | `.github/workflows/copilot-setup-steps.yml` | Same pattern: detect broken Python binary in restored cache and rebuild from scratch |
+| Add accountability step | `.github/workflows/copilot-setup-steps.yml` | Owner-approved insertion — dry-run validates script availability during agent setup |
+| CHANGELOG entry | `CHANGELOG.md` | Document venv self-healing fix under `### Fixed` |
 
 ### Outcome
-- Phase 3 complete ✅
-- 114+ new tests across PR (33 P1 + 58 P2 + 23 P3)
-- All code-quality review comments resolved ✅
-- Middleware enabled by default ✅
-- Workflow step insertion deferred (prohibited by repo policy)
+- Session 19 complete ✅
+- Codebase-wide CI venv fix applied (addresses 68 self-healing + 11 auto-fix failures)
+- Accountability auto-update workflow step inserted (owner-approved)
+- All 110 existing tests still passing ✅
 
 ---
 
