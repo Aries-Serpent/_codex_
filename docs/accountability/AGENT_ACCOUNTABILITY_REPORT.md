@@ -1,9 +1,50 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/remove-stale-cached-session
+**Branch:** copilot/add-user-login-feature
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T20:45Z (session 16: stale session archive + CI triage issue #3565)
+**Last updated:** 2026-03-13T04:40Z (session 17: wire auth module into API + CLI — PR #3570)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-13 SESSION 17 (Auth API + CLI — PR #3570)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** Codebase Agency Policy loaded and followed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: wire existing `codex.auth` module into FastAPI API and CLI ✅
+- [x] **5.** Execution plan committed as `report_progress` checklist ✅
+- [x] **6.** Guardrails and Cognitive Brain status reviewed ✅
+- [x] **7.** All 319 tests pass (286 existing auth + 26 new API + 7 new CLI) ✅
+- [x] **8.** Security hardening: email validation, audit logging, token masking, generic errors ✅
+- [x] **9.** CodeQL check passed — no new alerts ✅
+- [x] **10.** CI failure diagnosed and fixed (accountability report update) ✅
+
+### Actions Taken
+
+| Change | File | Root Cause / Purpose |
+|--------|------|----------------------|
+| New auth API router factory | `src/codex/api/auth_routes.py` | `codex.auth` module had zero API surface — no HTTP endpoints exposed |
+| Mount auth router | `services/api/main.py` (+8 lines) | Wire router into main API server with graceful fallback |
+| Add CLI auth commands | `src/codex/cli.py` (+95 lines) | `codex auth register/login/logout` subcommands |
+| Export auth_group in facade | `src/codex/cli/__init__.py` (+3 lines) | Required because `cli/` package shadows `cli.py` |
+| 26 API endpoint tests | `tests/api/test_auth_routes.py` | Full coverage: register, login, logout, refresh, edge cases |
+| 7 CLI auth tests | `tests/cli/test_cli_auth.py` | CLI command coverage |
+| Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | CI pre-flight REQ-1 ✅ |
+
+### Security Hardening Applied
+- Email format validation via Pydantic `field_validator` (avoids `email-validator` dependency)
+- Generic "Invalid credentials" error message prevents account enumeration
+- Audit logging on all auth events (register, login, logout, refresh)
+- Token masking in CLI output (`prefix…suffix`)
+- `CODEX_AUTH_SECRET` env var with fallback warning
+- Duck-typed exception handling for dual import path robustness
+
+### Key Design Decisions
+- **Duck-typed exceptions**: `codex.auth.exceptions` classes differ across `codex.*` vs `src.codex.*` paths — routes use `hasattr(exc, "code")` instead of `except InvalidCredentialsError`
+- **`field_validator` over `EmailStr`**: `email-validator` package absent from CI
+- **Generic error messages**: All login failures return same message regardless of user existence
 
 ---
 
