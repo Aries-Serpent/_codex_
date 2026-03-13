@@ -2145,3 +2145,48 @@ For `pull_request_review` events, `github.head_ref` is empty; `github.ref_name` 
 ### Verification
 - Checked: checkout step (line 672) already used the correct 3-way fallback — now "Commit session token" step matches
 - Pattern matches push failures from concurrent CI runs
+
+## Session 36: 2026-03-13 — Fix cyclic imports (github-advanced-security PR #3572 review #3947224679)
+
+### Trigger
+New requirement: "address all and apply changes based on the comments in [this thread](https://github.com/Aries-Serpent/_codex_/pull/3572#pullrequestreview-3947215064)" (copilot-pull-request-reviewer review #3947215064) — plus pending github-advanced-security cyclic-import alerts.
+
+### Actions
+
+#### A. copilot-pull-request-reviewer review #3947215064 — 11 threads verified
+
+| Thread | File | Status |
+|--------|------|--------|
+| 1 | `tests/auth/test_migration_001.py:8` | ✅ Fixed in S-34: `test_main_missing_snapshot_returns_exit_code_2` added (line 145–149), all 8 migration tests pass |
+| 2 | `src/codex/auth/in_memory_user_repository.py:40-42` | ✅ Resolved/outdated (S-34) |
+| 3 | `src/codex/auth/user_store.py:276-280` | ✅ Resolved/outdated (S-34) |
+| 4 | `CHANGELOG.md:35` | ✅ Fixed in S-34: both CHANGELOG and CODEBASE_AGENCY_POLICY.md now say 217 |
+| 5 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2017` | ✅ Fixed in S-34: consistent at 217 |
+| 6 | `src/codex/auth/user_store.py:292-298` | ✅ Resolved/outdated (S-34) |
+| 7 | `scripts/migrations/001_userstore_to_sqlite.py:88-89` | ✅ Resolved/outdated (S-34) |
+| 8 | `src/codex/auth/sqlite_user_repository.py:129-132` | ✅ Fixed in S-34: `sanitize_log_message(user.username)` at line 131 |
+| 9 | `src/codex/auth/sqlite_user_repository.py:134` | ✅ Resolved/outdated (S-34) |
+| 10 | `scripts/ci/check_deferral_language.py:22-26` | ✅ Fixed in S-34: "LogisticRegression" in docstring |
+| 11 | `.codex/CODEBASE_AGENCY_POLICY.md:1122` | ✅ Resolved/outdated (S-34) |
+
+#### B. github-advanced-security review #3947224679 — 8 cyclic-import alerts fixed
+
+| CodeQL Alert | File | Fix |
+|-------------|------|-----|
+| #12553 | `in_memory_user_repository.py:14` | Import `user_repository` no longer cycles via `user_store` |
+| #12554 | `in_memory_user_repository.py:15` | Removed `from .user_store import User` → now `from .user_model import User` |
+| #12555 | `sqlite_user_repository.py:23` | Same pattern |
+| #12556 | `sqlite_user_repository.py:24` | Removed `from .user_store import User` → now `from .user_model import User` |
+| #12557 | `user_store.py:198` | No longer cyclic (repos don't import user_store) |
+| #12558 | `user_store.py:202` | Same |
+| #12559 | `user_repository.py:16` | Removed `from .user_store import User` → now `from .user_model import User` |
+| #12560 | `user_store.py:37` | TYPE_CHECKING-only import; no runtime cycle |
+
+**Root cause**: `User` was defined in `user_store.py` but imported by `user_repository.py`, `in_memory_user_repository.py`, and `sqlite_user_repository.py`. Since `user_store.py` also lazy-imports those repositories (at runtime), a circular dependency existed.
+
+**Solution**: Created `src/codex/auth/user_model.py` as a dependency-free module containing `User`, `PasswordHasher`, and PBKDF2 constants. `user_store.py` now imports and re-exports these for full backward compatibility.
+
+### Verification
+- `python -c "from src.codex.auth import User, PasswordHasher, UserStore"` — ✅ imports work
+- `python -m pytest tests/auth/ -q` — 315/315 tests pass ✅
+- `python -m ruff check src/codex/auth/` — ✅ All checks passed

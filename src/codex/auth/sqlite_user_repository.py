@@ -20,8 +20,8 @@ from pathlib import Path
 from typing import Optional
 
 from ..security_utils import sanitize_log_message
+from .user_model import User
 from .user_repository import UserRepository
-from .user_store import User
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS users (

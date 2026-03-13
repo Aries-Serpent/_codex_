@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 36 — 2026-03-13 — Fix cyclic imports (github-advanced-security, PR #3572, review #3947224679)
+
+#### Fix
+- **`src/codex/auth/user_model.py`** *(new file)*: Extracted `User` dataclass, `PasswordHasher`, and PBKDF2 constants (`_PBKDF2_HASH`, `_PBKDF2_ITERATIONS`, `_SALT_BYTES`, `_HASH_BYTES`) out of `user_store.py`. This breaks the 8 circular-import cycles flagged by github-advanced-security (CodeQL alerts #12553–#12560).
+- **`src/codex/auth/user_store.py`**: Removed `User`/`PasswordHasher` definitions; imports them from `user_model.py`. `User` and `PasswordHasher` are still re-exported from `user_store` for full backward compatibility.
+- **`src/codex/auth/user_repository.py`**: Changed `from .user_store import User` → `from .user_model import User` (breaks primary cycle source).
+- **`src/codex/auth/in_memory_user_repository.py`**: Same import fix.
+- **`src/codex/auth/sqlite_user_repository.py`**: Same import fix.
+- All 315 auth tests pass, `ruff` clean, `python -c "from src.codex.auth import User, PasswordHasher, UserStore"` confirmed.
+
+Addresses github-advanced-security review #3947224679 (CodeQL cyclic-import alerts 12553–12560).
+All 11 copilot-pull-request-reviewer (review #3947215064) threads confirmed addressed in code (5 open threads were fixed in Session 34 but not auto-resolved by GitHub; code verified correct for all 11).
+
 ### Session 35 — 2026-03-13 — CI fix: agent-auth-delegation push failure (PR #3572, run 23072721266)
 
 #### Fix

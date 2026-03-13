@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from .user_store import User
+from .user_model import User
 
 
 class UserRepository(ABC):
