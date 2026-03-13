@@ -1670,9 +1670,102 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
             )
 
 
+# ---------------------------------------------------------------------------
+# Auth commands                                                              #
+# ---------------------------------------------------------------------------
+
+@cli.group(
+    "auth",
+    invoke_without_command=True,
+    help=(
+        "Authentication utilities.\n\n"
+        "Register, login, and manage sessions from the command line."
+    ),
+)
+@click.pass_context
+def auth_group(ctx: click.Context) -> None:
+    """Authentication utilities."""
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _emit_group_help(ctx)
+
+
+@auth_group.command("register")
+@click.option("--username", "-u", required=True, help="Username for the new account")
+@click.option("--email", "-e", required=True, help="E-mail address")
+@click.option("--password", "-p", prompt=True, hide_input=True, confirmation_prompt=True,
+              help="Password (prompted if not supplied)")
+@click.option("--role", "-r", multiple=True, default=None, help="Roles to assign (repeatable)")
+def auth_register(username: str, email: str, password: str, role: tuple[str, ...]) -> None:
+    """Register a new user account."""
+    from codex.auth.authenticator import Authenticator
+    from codex.auth.token_manager import TokenManager
+    from codex.auth.user_store import UserStore
+
+    store = UserStore()
+    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
+    auth = Authenticator(user_store=store, token_manager=tokens)
+
+    roles = list(role) if role else None
+    try:
+        user = auth.register(username, email, password, roles=roles)
+    except ValueError as exc:
+        click.echo(f"Registration failed: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(f"✅ Registered user: {user.username} (id={user.user_id})")
+
+
+@auth_group.command("login")
+@click.option("--username", "-u", required=True, help="Username or e-mail")
+@click.option("--password", "-p", prompt=True, hide_input=True,
+              help="Password (prompted if not supplied)")
+@click.option("--totp", default=None, help="TOTP code (if MFA enabled)")
+def auth_login(username: str, password: str, totp: str | None) -> None:
+    """Authenticate and display session tokens."""
+    from codex.auth.authenticator import Authenticator
+    from codex.auth.exceptions import AuthError
+    from codex.auth.token_manager import TokenManager
+    from codex.auth.user_store import UserStore
+
+    store = UserStore()
+    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
+    auth = Authenticator(user_store=store, token_manager=tokens)
+
+    try:
+        result = auth.login(username, password, totp_code=totp)
+    except AuthError as exc:
+        click.echo(f"Login failed: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(f"✅ Logged in as {result.username}")
+    click.echo(f"   access_token:  {result.access_token}")
+    click.echo(f"   refresh_token: {result.refresh_token}")
+    click.echo(f"   session_id:    {result.session_id}")
+
+
+@auth_group.command("logout")
+@click.option("--session-token", "-s", required=True, help="Session token to revoke")
+def auth_logout(session_token: str) -> None:
+    """Revoke a session token."""
+    from codex.auth.authenticator import Authenticator
+    from codex.auth.token_manager import TokenManager
+    from codex.auth.user_store import UserStore
+
+    store = UserStore()
+    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
+    auth = Authenticator(user_store=store, token_manager=tokens)
+
+    if auth.logout(session_token):
+        click.echo("✅ Session revoked")
+    else:
+        click.echo("⚠️  Token was already invalid or expired")
+
+
 # Expose CLI groups as module attributes for testing and dynamic imports
 # These are already defined above and don't need reassignment
-__all__ = ["cli", "logs", "tokenizer_group", "repro_group"]
+__all__ = ["cli", "logs", "tokenizer_group", "repro_group", "auth_group"]
 
 
 if __name__ == "__main__":

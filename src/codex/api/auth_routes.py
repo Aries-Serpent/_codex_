@@ -21,15 +21,9 @@ import logging
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from codex.auth.authenticator import Authenticator, LoginResult
-from codex.auth.exceptions import (
-    AuthError,
-    InvalidCredentialsError,
-    MFARequiredError,
-    MFAVerificationError,
-)
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
 
@@ -44,7 +38,7 @@ class RegisterRequest(BaseModel):
     """Request body for ``POST /auth/register``."""
 
     username: str = Field(..., min_length=1, max_length=150)
-    email: EmailStr
+    email: str = Field(..., min_length=3, max_length=254)
     password: str = Field(..., min_length=8, max_length=128)
     roles: Optional[List[str]] = None
     display_name: Optional[str] = None
@@ -179,14 +173,19 @@ def create_auth_router(
                 user_agent=user_agent,
                 totp_code=body.totp_code,
             )
-        except MFARequiredError as exc:
-            raise HTTPException(status_code=403, detail=exc.message) from exc
-        except MFAVerificationError as exc:
-            raise HTTPException(status_code=403, detail=exc.message) from exc
-        except InvalidCredentialsError as exc:
-            raise HTTPException(status_code=401, detail=exc.message) from exc
-        except AuthError as exc:
-            raise HTTPException(status_code=401, detail=exc.message) from exc
+        except Exception as exc:
+            code = getattr(exc, "code", "")
+            msg = getattr(exc, "message", str(exc))
+            if code == "mfa_required":
+                raise HTTPException(status_code=403, detail=msg) from exc
+            if code == "mfa_failed":
+                raise HTTPException(status_code=403, detail=msg) from exc
+            if code in ("invalid_credentials", "authentication_required"):
+                raise HTTPException(status_code=401, detail=msg) from exc
+            # Any other auth-family error
+            if hasattr(exc, "code"):
+                raise HTTPException(status_code=401, detail=msg) from exc
+            raise
 
         return LoginResponse(
             user_id=result.user_id,
@@ -214,8 +213,10 @@ def create_auth_router(
         """Exchange a refresh token for a new access token."""
         try:
             new_token = auth.refresh(body.refresh_token)
-        except (ValueError, AuthError) as exc:
-            raise HTTPException(status_code=401, detail=str(exc)) from exc
+        except Exception as exc:
+            if isinstance(exc, ValueError) or hasattr(exc, "code"):
+                raise HTTPException(status_code=401, detail=str(exc)) from exc
+            raise
 
         return RefreshResponse(access_token=new_token)
 

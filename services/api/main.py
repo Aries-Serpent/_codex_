@@ -134,6 +134,14 @@ ARTIFACTS.mkdir(parents=True, exist_ok=True)
 app = FastAPI(title="Codex API", version="0.1.0")
 logger = logging.getLogger("codex_ml.api")
 
+# --- Authentication routes ------------------------------------------------
+try:
+    from codex.api.auth_routes import create_auth_router as _create_auth_router
+
+    app.include_router(_create_auth_router())
+except Exception:  # pragma: no cover - auth module may be absent in some deploys
+    logger.debug("Auth routes not available; skipping registration")
+
 _AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
 SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (

@@ -51,6 +51,7 @@ cli = _load_click_cli()
 logs = None
 tokenizer_group = None
 repro_group = None
+auth_group = None
 _fix_pool = None
 init_db_cmd = None
 export_env_cmd = None
@@ -68,6 +69,7 @@ if cli is not None:
         logs = getattr(_cli_module, "logs", None)
         tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
         repro_group = getattr(_cli_module, "repro_group", None)
+        auth_group = getattr(_cli_module, "auth_group", None)
         _fix_pool = getattr(_cli_module, "_fix_pool", None)
         init_db_cmd = getattr(_cli_module, "init_db_cmd", None)
         export_env_cmd = getattr(_cli_module, "export_env_cmd", None)
@@ -85,6 +87,7 @@ __all__ = [
     "logs",
     "tokenizer_group",
     "repro_group",
+    "auth_group",
     "_fix_pool",
     "init_db_cmd",
     "export_env_cmd",
