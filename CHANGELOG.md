@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 35 — 2026-03-13 — CI fix: agent-auth-delegation push failure (PR #3572, run 23072721266)
+
+#### Fix
+- **`.github/workflows/agent-auth-delegation.yml`**: Fixed "Commit session token to branch" step. `TARGET_BRANCH` was resolved via `github.head_ref || github.ref_name`; for `pull_request_review` events `github.head_ref` is empty so `github.ref_name` resolved to `3572/merge` (a PR merge ref), causing the push to fail. Updated to `github.event.pull_request.head.ref || github.head_ref || github.ref_name` (consistent with the existing checkout step on line 672). Added `git pull --rebase` before the push to tolerate concurrent commits on the branch.
+
 ### Session 34 — 2026-03-13 — Code review fixes (PR #3572, copilot-pull-request-reviewer)
 
 #### Fixes

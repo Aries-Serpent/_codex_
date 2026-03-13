@@ -2122,3 +2122,26 @@ No open bot review threads, no CI failures. All Session 32 changes validated. PR
 - All auth tests: ✅ passing (315 tests including new exit-code-2 test)
 - Ruff lint: ✅ 0 issues
 - `check_deferral_language.py --git-log`: ✅ exit 0
+
+## Session 35: 2026-03-13 — CI fix: agent-auth-delegation push failure (PR #3572, comment #4058356423)
+
+### Trigger
+Self-healing CI escalation comment (comment #4058356423) — run 23072721266 failed, pattern: unknown.
+
+### Root Cause Analysis
+`agent-auth-delegation.yml` "Commit session token to branch" step used:
+```
+TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+```
+For `pull_request_review` events, `github.head_ref` is empty; `github.ref_name` resolves to `3572/merge` (the PR merge ref), not the actual branch. The push to `refs/heads/3572/merge` failed with "rejected: fetch first" because concurrent commits (Session 34) had been pushed.
+
+### Fix Applied
+
+| File | Change |
+|------|--------|
+| `.github/workflows/agent-auth-delegation.yml:768` | Changed `TARGET_BRANCH` to use `github.event.pull_request.head.ref || github.head_ref || github.ref_name` (same pattern as checkout step on line 672) |
+| `.github/workflows/agent-auth-delegation.yml:777` | Added `git pull --rebase origin "${TARGET_BRANCH}" \|\| true` before push to tolerate concurrent commits |
+
+### Verification
+- Checked: checkout step (line 672) already used the correct 3-way fallback — now "Commit session token" step matches
+- Pattern matches push failures from concurrent CI runs
