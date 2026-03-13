@@ -230,7 +230,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-
+    steps:
       - name: Checkout (needed for post-pr-summary action)
         uses: actions/checkout@v4
 

@@ -11,7 +11,6 @@ from typing import Any, Iterable
 
 from codex_ml.training import strategies, unified_training
 from codex_ml.training.strategies import TrainingCallback, TrainingResult
-from codex_ml.utils import checkpoint_core
 
 
 class _NoOpCallback:
