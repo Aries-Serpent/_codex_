@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CodeQL empty-except remediation)
+- **`src/codex/cli.py`**: Replaced all `pass` statements in `except` blocks with `logger.debug()` calls in credential helpers (`_cache_credentials`, `_load_cached_credentials`, `_clear_cached_credentials`) and XML defusal — resolves CodeQL `py/empty-except` alerts.
+
 ### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Bot review compliance)
 - **`src/codex/cli.py`**: Added explanatory comments to empty `except ImportError` blocks in `_load_cached_credentials` and `_clear_cached_credentials` (resolves github-advanced-security #12549, #12550 and github-code-quality alerts).
 - **`tests/autonomy/test_session_tracker.py`**: Removed unused `_sid1` variable — call `start_session()` for side-effect only (resolves github-advanced-security #12551).

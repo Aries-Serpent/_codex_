@@ -12,7 +12,7 @@ try:
 
     defusedxml.defuse_stdlib()
 except (ImportError, AttributeError):  # pragma: no cover - optional dep
-    pass
+    logger.debug("defusedxml not available — skipping XML defusal")
 
 import importlib  # noqa: E402
 import json  # noqa: E402
@@ -1819,7 +1819,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         click.echo("   Credentials cached (keyring)")
         return
     except ImportError:
-        pass  # keyring not installed — fall through to file-based storage
+        logger.debug("keyring not installed — fall through to file-based storage")
     except Exception as exc:  # pragma: no cover — runtime keyring backend error
         click.echo(
             f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
@@ -1832,7 +1832,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
     try:
         _CACHE_FILE.chmod(0o600)
     except OSError:  # pragma: no cover — Windows may not support chmod
-        pass
+        logger.debug("chmod 600 failed — Windows may not support POSIX permissions")
     click.echo("   Credentials cached (~/.codex/credentials.json)")
 
 
@@ -1845,9 +1845,9 @@ def _load_cached_credentials() -> dict | None:
         if raw:
             return json.loads(raw)
     except ImportError:
-        pass  # keyring not installed — fall through to file-based lookup
+        logger.debug("keyring not installed — fall through to file-based lookup")
     except Exception:  # pragma: no cover — runtime keyring read error
-        pass  # silently degrade to file-based lookup
+        logger.debug("keyring read error — falling back to file-based lookup")
 
     if _CACHE_FILE.exists():
         try:
@@ -1864,9 +1864,9 @@ def _clear_cached_credentials() -> None:
 
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
     except ImportError:
-        pass  # keyring not installed — nothing to clear
+        logger.debug("keyring not installed — nothing to clear")
     except Exception:  # pragma: no cover — runtime keyring delete error
-        pass  # silently ignore — entry may not exist or backend unavailable
+        logger.debug("keyring delete error — entry may not exist or backend unavailable")
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)
 

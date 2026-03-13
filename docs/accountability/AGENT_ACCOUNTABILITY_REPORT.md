@@ -1673,3 +1673,12 @@ Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
 ### Outcome
 - 136 PR tests + 26 pre-existing tests in affected files passing ✅
 - All 6 unresolved bot review threads addressed (3 from github-advanced-security review #3942364550, 3 from github-code-quality review #3942279194) ✅
+
+## Session 22: 2026-03-13 — Phase 9: CodeQL empty-except remediation (PR #3570)
+
+### Changes
+- **`src/codex/cli.py`**: Replaced all 6 `pass` statements in `except` blocks with `logger.debug()` calls — resolves CodeQL `py/empty-except` rule in `_cache_credentials` (L1822, L1835), `_load_cached_credentials` (L1848, L1850), `_clear_cached_credentials` (L1867, L1869), and XML defusal (L15).
+
+### Outcome
+- All empty-except CodeQL alerts resolved ✅
+- CLI keyring + auth tests passing (15/15) ✅
