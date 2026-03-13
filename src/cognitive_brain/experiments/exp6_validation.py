@@ -335,7 +335,7 @@ def calculate_k1_impact(
 
 
 def run_validation(
-    agent_counts: List[int] = [3, 4, 5, 6],
+    agent_counts: List[int] | None = None,
     num_scenarios: int = 100,
     num_agents: int = 4,
     correlation_trials: int = 50,
@@ -357,6 +357,9 @@ def run_validation(
     logger.info("=" * 80)
     logger.info("EXP-6: Phase 8.2 Multi-Agent Orchestration Validation")
     logger.info("=" * 80)
+
+    if agent_counts is None:
+        agent_counts = [3, 4, 5, 6]
 
     # Measure all metrics
     correlation_results = measure_multi_agent_correlation(agent_counts, correlation_trials)

@@ -366,7 +366,7 @@ class TenantRegistry:
 
             try:
                 cursor.execute(
-                    f"UPDATE tenants SET {', '.join(set_clauses)} WHERE tenant_id = ?",
+                    f"UPDATE tenants SET {', '.join(set_clauses)} WHERE tenant_id = ?",  # nosec B608 — set_clauses contain only hardcoded column-name literals; values are fully parameterised
                     params,
                 )
                 conn.commit()

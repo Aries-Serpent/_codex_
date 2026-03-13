@@ -150,7 +150,7 @@ class DeleteIndexResponse(BaseModel):
 class MergeIndicesRequest(BaseModel):
     """Request to merge indices."""
 
-    source_indices: List[str] = Field(..., min_items=2)
+    source_indices: List[str] = Field(..., min_length=2)
     target_index: str
     tenant_id: str = "default"
 

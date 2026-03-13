@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (PR copilot/feature-user-authentication — 2026-03-13 — Session 20 / Phase 25 iterative gap analysis)
+- **`src/codex/session/accountability_autoupdate.py`**: Added `usedforsecurity=False` to `hashlib.sha1()` call — resolves Bandit B324 HIGH severity. SHA1 is used only as a 12-char session ID nonce (not for security); the explicit flag documents this intent.
+- **`services/msp_gateway/middleware/tenant_context.py`**: Added `# nosec B608` comment to SQL UPDATE query — Bandit MEDIUM false positive; `set_clauses` contains only hardcoded column-name literals, all user values are parameterised.
+
+### Fixed (PR copilot/feature-user-authentication — 2026-03-13 — Session 20 / Phase 25 iterative gap analysis)
+- **`src/codex/api/rag_api.py`**: Changed `Field(..., min_items=2)` to `Field(..., min_length=2)` in `MergeIndicesRequest.source_indices` — `min_items` is a Pydantic v1 parameter that is silently ignored in Pydantic v2; `min_length` is the correct v2 validator for list fields.
+- **`src/cognitive_brain/experiments/exp6_validation.py`**: Replaced mutable list default `[3, 4, 5, 6]` in `run_validation()` with `None` + in-body initialization — resolves B006 mutable-argument-default (ruff) to prevent shared-state mutation across calls.
+
 ### Changed (PR copilot/add-user-login-feature — 2026-03-13 — Gap analysis verification)
 - Verified all 9 open bot review threads are code-fixed (token boosting, auth middleware, keyring handling, password tests, empty excepts, unused variable). 0 remaining HIGH-severity gaps. 207 tests passing.
 

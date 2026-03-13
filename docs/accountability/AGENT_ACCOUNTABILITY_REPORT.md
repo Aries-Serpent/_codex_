@@ -1,33 +1,44 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/add-user-login-feature
+**Branch:** copilot/feature-user-authentication
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-13T09:40Z (session 24: iterative gap analysis + CI compliance — PR #3570)
+**Last updated:** 2026-03-13T16:05Z (session 20: Phase 25 iterative gap analysis — PR #3571)
 
 ---
 
-## SESSION SUMMARY — 2026-03-13 SESSION 24 (Iterative Gap Analysis + Bot Alert Verification — PR #3570)
+## SESSION SUMMARY — 2026-03-13 SESSION 20 (Phase 25: Iterative Gap Analysis + Production Hardening — PR #3571)
 
 ### Pre-flight Checklist
 - [x] Read `.codex/CODEBASE_AGENCY_POLICY.md`
 - [x] Read `.codex/guardrails.md`
-- [x] Loaded accountability report history
-- [x] Loaded lessons learned from stored memories
-- [x] Reviewed ALL bot-posted alerts (9 open threads verified code-fixed)
+- [x] Loaded accountability report history (Sessions 1–24)
+- [x] Loaded lessons learned from stored memories (auth, CI gate, @copilot continue protocol)
+- [x] Reviewed all bot-posted PR threads on #3571 (0 unresolved open threads)
+- [x] Loaded cognitive brain status (Sessions 16–19)
 
 ### Work Completed
-1. **Bot alert verification (9 OPEN threads)** — reviewed all open threads from `copilot-pull-request-reviewer`, `github-advanced-security[bot]`, and `github-code-quality[bot]`. All 9 confirmed code-fixed in previous sessions:
-   - Token boosting: uses tokenized word-set intersection (not substring)
-   - AuthMiddleware: uses `exempt_prefixes=["/auth/"]` for prefix matching
-   - Auth secret: raises `RuntimeError` in production when unset
-   - Keyring: separates `ImportError` from runtime errors with user warning
-   - Password tests: exact `== 201` assertions
-   - Empty excepts: all have `logger.debug()` calls
-   - Unused `_sid1`: removed
-2. **CI pre-flight compliance** — updated accountability report + CHANGELOG in same commit (REQ-6/REQ-7)
-3. **Gap analysis (27 items reviewed)** — 0 remaining HIGH-severity issues:
-   - Zero pass-only except blocks in PR files (AST-verified)
+1. **Bandit B324 HIGH (SHA1 security)** — `src/codex/session/accountability_autoupdate.py:118`: Added `usedforsecurity=False` to `hashlib.sha1()`. This was the 1 issue flagged in the QA Walkthrough Bandit scanner visible in the PR Status Dashboard. SHA1 is used only as a 12-char session ID nonce; the flag documents the non-security intent.
+2. **Pydantic v2 silent validation gap** — `src/codex/api/rag_api.py:153`: Fixed `min_items=2` → `min_length=2`. With Pydantic v2.12.5, `min_items` is silently ignored; `min_length` is the correct v2 list validator. This prevented the `MergeIndicesRequest` from validating that at least 2 source indices are provided.
+3. **Bandit B608 MEDIUM false positive** — `services/msp_gateway/middleware/tenant_context.py:369`: Added `# nosec B608` with inline explanation. The `set_clauses` list contains only hardcoded column-name string literals; all user values are fully parameterised in the `params` list.
+4. **B006 mutable default** — `src/cognitive_brain/experiments/exp6_validation.py:338`: Replaced `[3, 4, 5, 6]` mutable default with `None` + in-body initialization. Prevents shared mutation across calls.
+5. **Cognitive brain status** — Created `SESSION_20_PHASE25_PRODUCTION_HARDENING_2026_03_13.md` with full gap analysis summary and next-phase recommendations.
+6. **CI pre-flight compliance** — Updated both `CHANGELOG.md` and this report in same commit (required by CI gate).
+
+### Test Results
+- `tests/test_accountability_autoupdate.py` — 45/45 PASSED ✅
+- `tests/api/test_auth_routes.py` — 26/26 PASSED ✅
+- Total: 71 tests PASSED ✅
+
+### Outcome
+- 0 HIGH-severity security issues remaining (was 1: Bandit B324) ✅
+- 0 MEDIUM-severity issues remaining (was 1: Bandit B608 false positive) ✅
+- All ruff actionable errors fixed in key modules ✅
+- Cognitive brain status updated ✅
+
+---
+
+
    - All exception handlers have logging
    - All imports verified working
    - 136 PR tests + 71 pre-existing tests passing
