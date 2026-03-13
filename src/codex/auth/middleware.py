@@ -52,6 +52,7 @@ class AuthConfig:
         default_factory=lambda: {AuthMethod.JWT, AuthMethod.API_KEY}
     )
     exempt_paths: Set[str] = field(default_factory=lambda: {"/health", "/ready", "/metrics"})
+    exempt_prefixes: list[str] = field(default_factory=list)
     rate_limit_requests: int = 100  # per minute
     rate_limit_window: int = 60  # seconds
 
@@ -321,6 +322,9 @@ class AuthMiddleware:
         # Check if path is exempt
         path = scope.get("path", "")
         if path in self.config.exempt_paths:
+            await self.app(scope, receive, send)
+            return
+        if any(path.startswith(prefix) for prefix in self.config.exempt_prefixes):
             await self.app(scope, receive, send)
             return
 

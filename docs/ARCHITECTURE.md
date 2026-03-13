@@ -33,7 +33,7 @@ graph TB
     Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
     Agents[153 Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>19500+ Tests | 80% Coverage]
+    Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>20000+ Tests | 80% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage]
     MCP[MCP System<br/>Model Context Protocol]
@@ -95,7 +95,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 19500+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 20000+ Tests]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]

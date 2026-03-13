@@ -12,7 +12,7 @@ try:
 
     defusedxml.defuse_stdlib()
 except (ImportError, AttributeError):  # pragma: no cover - optional dep
-    pass
+    logger.debug("defusedxml not available — skipping XML defusal")
 
 import importlib  # noqa: E402
 import json  # noqa: E402
@@ -1328,7 +1328,6 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
             except (OSError, UnicodeDecodeError) as e:
                 logger.debug(f"Exception: {e}")
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
-                pass
 
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
@@ -1433,7 +1432,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 files_scanned += 1
             except (OSError, UnicodeDecodeError):
                 # Skip files that can't be read or decoded
-                pass
+                logger.debug("Skipping unreadable file: %s", py_file)
 
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
@@ -1589,7 +1588,7 @@ try:
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
 except Exception:  # pragma: no cover - optional module
-    pass
+    logger.debug("quantum_orchestrator CLI not available — skipping registration")
 
 
 _register_external_cli()
@@ -1670,9 +1669,217 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
             )
 
 
+# ---------------------------------------------------------------------------
+# Auth commands                                                              #
+# ---------------------------------------------------------------------------
+
+@cli.group(
+    "auth",
+    invoke_without_command=True,
+    help=(
+        "Authentication utilities.\n\n"
+        "Register, login, and manage sessions from the command line."
+    ),
+)
+@click.pass_context
+def auth_group(ctx: click.Context) -> None:
+    """Authentication utilities."""
+
+    if ctx.invoked_subcommand or ctx.resilient_parsing or ctx.args:
+        return
+    _emit_group_help(ctx)
+
+
+# ---------------------------------------------------------------------------
+# Shared auth stack (module-level singleton so register → login works
+# within the same CLI process).  The UserStore is in-memory, so state is
+# NOT persisted across separate process invocations — use the API server
+# for persistent multi-process workflows.
+# ---------------------------------------------------------------------------
+
+_cli_user_store = None
+_cli_auth = None
+
+
+def _get_auth():
+    """Return a (lazily initialised) singleton Authenticator for CLI use."""
+    global _cli_user_store, _cli_auth  # noqa: PLW0603
+    if _cli_auth is None:
+        from codex.auth.authenticator import Authenticator
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.user_store import UserStore
+
+        _cli_user_store = UserStore()
+        _secret = os.getenv("CODEX_AUTH_SECRET", "")
+        if not _secret:
+            import secrets as _sec
+
+            _secret = _sec.token_urlsafe(32)
+            logger.debug("Generated ephemeral CLI auth secret (in-process only)")
+        _tm = TokenManager(secret_key=_secret)
+        _cli_auth = Authenticator(user_store=_cli_user_store, token_manager=_tm)
+    return _cli_auth
+
+
+@auth_group.command("register")
+@click.option("--username", "-u", required=True, help="Username for the new account")
+@click.option("--email", "-e", required=True, help="E-mail address")
+@click.option("--password", "-p", prompt=True, hide_input=True, confirmation_prompt=True,
+              help="Password (prompted if not supplied)")
+@click.option("--role", "-r", multiple=True, default=None, help="Roles to assign (repeatable)")
+def auth_register(username: str, email: str, password: str, role: tuple[str, ...]) -> None:
+    """Register a new user account.
+
+    NOTE: The CLI uses an in-memory user store.  Registered users persist
+    only within the same process (e.g. ``codex auth register … && codex
+    auth login …`` in a single shell pipeline).  For persistent storage,
+    use the API server.
+    """
+    auth = _get_auth()
+
+    roles = list(role) if role else None
+    try:
+        user = auth.register(username, email, password, roles=roles)
+    except ValueError as exc:
+        click.echo(f"Registration failed: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(f"✅ Registered user: {user.username} (id={user.user_id})")
+
+
+@auth_group.command("login")
+@click.option("--username", "-u", required=True, help="Username or e-mail")
+@click.option("--password", "-p", prompt=True, hide_input=True,
+              help="Password (prompted if not supplied)")
+@click.option("--totp", default=None, help="TOTP code (if MFA enabled)")
+@click.option("--save/--no-save", default=False, help="Cache credentials via keyring")
+def auth_login(username: str, password: str, totp: str | None, save: bool) -> None:
+    """Authenticate and display session tokens."""
+    from codex.auth.exceptions import AuthError
+
+    auth = _get_auth()
+
+    try:
+        result = auth.login(username, password, totp_code=totp)
+    except AuthError as exc:
+        click.echo(f"Login failed: {exc}", err=True)
+        raise SystemExit(1) from exc
+
+    click.echo(f"✅ Logged in as {result.username}")
+    click.echo(f"   access_token:  {result.access_token[:8]}…{result.access_token[-4:]}")
+    click.echo(f"   refresh_token: {result.refresh_token[:8]}…{result.refresh_token[-4:]}")
+    click.echo(f"   session_id:    {result.session_id}")
+
+    if save:
+        _cache_credentials(result.username, result.access_token, result.refresh_token)
+
+
+@auth_group.command("logout")
+@click.option("--session-token", "-s", required=True, help="Session token to revoke")
+def auth_logout(session_token: str) -> None:
+    """Revoke a session token."""
+    auth = _get_auth()
+
+    if auth.logout(session_token):
+        click.echo("✅ Session revoked")
+        _clear_cached_credentials()
+    else:
+        click.echo("⚠️  Token was already invalid or expired")
+
+
+@auth_group.command("status")
+def auth_status() -> None:
+    """Show cached credential status."""
+    creds = _load_cached_credentials()
+    if creds is None:
+        click.echo("No cached credentials found. Run 'codex auth login --save' first.")
+        return
+    click.echo(f"✅ Cached credentials for: {creds['username']}")
+    token = creds.get("access_token", "")
+    if token:
+        click.echo(f"   access_token: {token[:8]}…{token[-4:]}")
+    click.echo("   Use 'codex auth logout -s <token>' to clear.")
+
+
+# ---------------------------------------------------------------------------
+# Credential caching helpers (keyring with JSON file fallback)
+# ---------------------------------------------------------------------------
+
+_KEYRING_SERVICE = "codex-cli"
+_CACHE_DIR = Path.home() / ".codex"
+_CACHE_FILE = _CACHE_DIR / "credentials.json"
+
+
+def _cache_credentials(username: str, access_token: str, refresh_token: str) -> None:
+    """Store credentials via *keyring*; fall back to a local JSON file."""
+    data = json.dumps({
+        "username": username,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    })
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        keyring.set_password(_KEYRING_SERVICE, "credentials", data)
+        click.echo("   Credentials cached (keyring)")
+        return
+    except ImportError:
+        logger.debug("keyring not installed — fall through to file-based storage")
+    except Exception as exc:  # pragma: no cover — runtime keyring backend error
+        click.echo(
+            f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
+            err=True,
+        )
+
+    # Fallback: write to ~/.codex/credentials.json with restrictive perms
+    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    _CACHE_FILE.write_text(data, encoding="utf-8")
+    try:
+        _CACHE_FILE.chmod(0o600)
+    except OSError:  # pragma: no cover — Windows may not support chmod
+        logger.debug("chmod 600 failed — Windows may not support POSIX permissions")
+    click.echo("   Credentials cached (~/.codex/credentials.json)")
+
+
+def _load_cached_credentials() -> dict | None:
+    """Load previously cached credentials."""
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        raw = keyring.get_password(_KEYRING_SERVICE, "credentials")
+        if raw:
+            return json.loads(raw)
+    except ImportError:
+        logger.debug("keyring not installed — fall through to file-based lookup")
+    except Exception:  # pragma: no cover — runtime keyring read error
+        logger.debug("keyring read error — falling back to file-based lookup")
+
+    if _CACHE_FILE.exists():
+        try:
+            return json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.debug("Failed to load cached credentials file: %s", exc)
+            return None
+    return None
+
+
+def _clear_cached_credentials() -> None:
+    """Remove cached credentials from keyring and local file."""
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        keyring.delete_password(_KEYRING_SERVICE, "credentials")
+    except ImportError:
+        logger.debug("keyring not installed — nothing to clear")
+    except Exception:  # pragma: no cover — runtime keyring delete error
+        logger.debug("keyring delete error — entry may not exist or backend unavailable")
+    if _CACHE_FILE.exists():
+        _CACHE_FILE.unlink(missing_ok=True)
+
+
 # Expose CLI groups as module attributes for testing and dynamic imports
 # These are already defined above and don't need reassignment
-__all__ = ["cli", "logs", "tokenizer_group", "repro_group"]
+__all__ = ["cli", "logs", "tokenizer_group", "repro_group", "auth_group"]
 
 
 if __name__ == "__main__":

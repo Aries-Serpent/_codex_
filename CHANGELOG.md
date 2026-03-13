@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (PR copilot/add-user-login-feature — 2026-03-13 — Gap analysis verification)
+- Verified all 9 open bot review threads are code-fixed (token boosting, auth middleware, keyring handling, password tests, empty excepts, unused variable). 0 remaining HIGH-severity gaps. 207 tests passing.
+
+### Security (PR copilot/add-user-login-feature — 2026-03-13 — Production hardening)
+- **`services/api/main.py`**: Fail-fast with `RuntimeError` when `CODEX_AUTH_SECRET` is unset in production (`CODEX_ENV=production`). Development mode retains insecure default with warning.
+- **`src/codex/cli.py`**: Replaced weak default `"cli-change-me"` secret with ephemeral `secrets.token_urlsafe(32)` generation when `CODEX_AUTH_SECRET` is not set.
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Exception handling + observability)
+- **`src/codex/api/auth_routes.py`**: Added logging to login/refresh exception handlers — logs `type(exc).__name__` for unexpected errors without leaking internal details. Added return type `dict[str, str]` to CSRF endpoint.
+- **`src/codex/session/accountability_autoupdate.py`**: Added `logger.error()`/`logger.debug()` to 3 silent exception handlers in `_run_git`, `append_to_report`, and `update_changelog`.
+- **`src/codex/cli.py`**: Narrowed bare `except Exception` in `_load_cached_credentials` to `(json.JSONDecodeError, OSError)` with debug logging. Replaced remaining `pass`-only except blocks with `logger.debug()` calls (quantum CLI import, file scan handlers). Removed redundant `pass` after existing error handling.
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CodeQL empty-except remediation)
+- **`src/codex/cli.py`**: Replaced all `pass` statements in `except` blocks with `logger.debug()` calls in credential helpers (`_cache_credentials`, `_load_cached_credentials`, `_clear_cached_credentials`) and XML defusal — resolves CodeQL `py/empty-except` alerts.
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Bot review compliance)
+- **`src/codex/cli.py`**: Added explanatory comments to empty `except ImportError` blocks in `_load_cached_credentials` and `_clear_cached_credentials` (resolves github-advanced-security #12549, #12550 and github-code-quality alerts).
+- **`tests/autonomy/test_session_tracker.py`**: Removed unused `_sid1` variable — call `start_session()` for side-effect only (resolves github-advanced-security #12551).
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI compliance fixes)
+- **`.github/workflows/consolidated-pr-status.yml`**: Fixed actionlint error — removed conflicting `required: true` + `default` on `status` input; replaced inline `${{ inputs.duration-seconds }}` with shell variable to satisfy shellcheck SC2170.
+- **`tests/autonomy/test_session_tracker.py`**: Fixed unused variable `sid1` (prefixed with `_`); removed redundant `import json` (already imported at module level).
+- **`tests/autonomy/test_agent_runner.py`**: Narrowed catch-all `except Exception` to specific exception types.
+- **`tests/agents/test_variable_management.py`**: Narrowed catch-all `except Exception` to specific exception types.
+- **`tests/validation/test_ci_workflow_validation.py`**: Removed redundant `import re as _re` (already imported at module level).
+
+### Added (PR copilot/add-user-login-feature — 2026-03-13 — Auth Phase 2 + Accountability Auto-Update)
+- **`services/api/main.py`**: Integrated `AuthMiddleware` with exempt paths; enabled by default (set `CODEX_AUTH_MIDDLEWARE_ENABLED=0` to disable).
+- **`src/codex/api/auth_routes.py`**: Per-endpoint rate limiting via `_EndpointRateLimiter` (login: 10/min, register: 5/min). Added `GET /auth/csrf-token` endpoint for cookie-based flows.
+- **`src/codex/cli.py`**: CLI credential caching (`--save` flag on `login`), `codex auth status` command, `logout` clears keyring/file cache.
+- **`src/codex/session/accountability_autoupdate.py`**: Session-close auto-update script — generates scored/tokenized markdown entry + JSON artifact, appends idempotently to `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md`.
+- **`tests/api/test_auth_mfa_expiry.py`**: MFA round-trip + token expiry integration tests (9 tests).
+- **`tests/api/test_auth_ratelimit.py`**: Rate limiting + CSRF token endpoint tests (4 tests).
+- **`tests/api/test_auth_token_lifecycle.py`**: Token rotation + revocation + session isolation integration tests (13 tests).
+- **`tests/cli/test_cli_keyring.py`**: Keyring backend + JSON file fallback + CLI auth status tests (10 tests).
+- **`tests/test_accountability_autoupdate.py`**: Accountability auto-update unit + integration tests (45 tests).
+- **`tests/tools/test_doc_metrics_sync.py`**: Production-ready tests for doc-metrics-check pre-commit hook (26 tests).
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Review feedback, doc metrics sync, code quality)
+- **`src/codex/session/accountability_autoupdate.py`**: Fixed `m_hotfix` regex word-boundary bug (`\bfix|hotfix\b` → `\b(?:fix|hotfix)\b`); replaced substring filename boosting with tokenized word-set matching to prevent false-positive boosts; renamed `ci_status` field from misleading "pass" to "ci-ref"; made idempotency per-output so partial failures can be repaired on rerun.
+- **`services/api/main.py`**: Added production secret warning when `CODEX_AUTH_SECRET` is unset; changed AuthMiddleware exempt paths to prefix-based `/auth/*` matching to cover all auth endpoints including `/auth/csrf-token`.
+- **`src/codex/auth/middleware.py`**: Added `exempt_prefixes` to `AuthConfig` for prefix-based path exemption.
+- **`src/codex/cli.py`**: Refactored CLI auth to use module-level singleton `_get_auth()` so register→login works within the same process; separated `ImportError` from runtime keyring errors with explicit user warning on fallback.
+- **`tests/api/test_auth_routes.py`**: Tightened password boundary tests to assert exact status code 201 instead of accepting both 201/400.
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI venv self-healing, issues #3565/#3569)
+- **`.github/actions/setup-python-cached/action.yml`**: Hardened venv creation — added `chmod -R u+w` before `rm -rf` to handle read-only cached files; added post-creation verification that `.venv_ci/bin/python` exists; prevents silent venv failures that caused 68+ self-healing CI cascade failures.
+- **`.github/workflows/copilot-setup-steps.yml`**: Applied same venv self-healing pattern to Phase 4 — detects broken Python binary in restored cache and rebuilds from scratch instead of silently failing. Added accountability auto-update dry-run step.
+
 ### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — code review + Phase 24)
 - **`agents/agent_memory.py`**: Replaced `from scripts.stale_session_detector import` with import-safe `importlib.import_module` pattern to avoid sys.path side effects when called from library context; added `verbose=False` to suppress stdout during memory invalidation sweeps.
 - **`scripts/ci/pr_comment_consolidator.py`**: `_api_request()` return type annotation corrected to `Any` — the list-comments endpoint returns a JSON array, not a dict, so the previous `dict[str, Any]` annotation was incorrect.

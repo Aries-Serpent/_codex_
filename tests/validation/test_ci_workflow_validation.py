@@ -279,7 +279,6 @@ class TestPythonSetupValidation:
 
     def test_modern_python_versions_used(self) -> None:
         """Test that modern Python versions are used (3.8+)."""
-        import re as _re
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
@@ -289,7 +288,7 @@ class TestPythonSetupValidation:
                         continue
                     # Extract only the actual python-version values, not
                     # arbitrary mentions of "3.7" in comments or other text.
-                    for match in _re.finditer(
+                    for match in re.finditer(
                         r"""python-version['":\s]+['"]([\d.]+)['"]""",
                         content,
                     ):
