@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added (PR copilot/add-user-login-feature — 2026-03-13 — Auth Phase 2 + Accountability Auto-Update)
-- **`services/api/main.py`**: Integrated `AuthMiddleware` with exempt paths; gated behind `CODEX_AUTH_MIDDLEWARE_ENABLED=1`.
+- **`services/api/main.py`**: Integrated `AuthMiddleware` with exempt paths; enabled by default (set `CODEX_AUTH_MIDDLEWARE_ENABLED=0` to disable).
 - **`src/codex/api/auth_routes.py`**: Per-endpoint rate limiting via `_EndpointRateLimiter` (login: 10/min, register: 5/min). Added `GET /auth/csrf-token` endpoint for cookie-based flows.
 - **`src/codex/cli.py`**: CLI credential caching (`--save` flag on `login`), `codex auth status` command, `logout` clears keyring/file cache.
 - **`src/codex/session/accountability_autoupdate.py`**: Session-close auto-update script — generates scored/tokenized markdown entry + JSON artifact, appends idempotently to `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md`.
 - **`tests/api/test_auth_mfa_expiry.py`**: MFA round-trip + token expiry integration tests (9 tests).
 - **`tests/api/test_auth_ratelimit.py`**: Rate limiting + CSRF token endpoint tests (4 tests).
+- **`tests/api/test_auth_token_lifecycle.py`**: Token rotation + revocation + session isolation integration tests (13 tests).
+- **`tests/cli/test_cli_keyring.py`**: Keyring backend + JSON file fallback + CLI auth status tests (10 tests).
 - **`tests/test_accountability_autoupdate.py`**: Accountability auto-update unit + integration tests (45 tests).
 
 ### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — code review + Phase 24)

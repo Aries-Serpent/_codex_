@@ -3,7 +3,40 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/add-user-login-feature
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-13T04:40Z (session 17: wire auth module into API + CLI — PR #3570)
+**Last updated:** 2026-03-13T06:11Z (session 18: auth Phase 3 — token lifecycle tests, keyring tests, middleware enforcement — PR #3570)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-13 SESSION 18 (Auth Phase 3 — PR #3570)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** Codebase Agency Policy loaded and followed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: token lifecycle tests + keyring coverage + middleware enforcement ✅
+- [x] **5.** Execution plan committed as `report_progress` checklist ✅
+- [x] **6.** Guardrails and Cognitive Brain status reviewed ✅
+- [x] **7.** All code-quality review comments resolved (7/7) ✅
+- [x] **8.** CI pre-flight CHANGELOG gate addressed ✅
+- [x] **9.** CodeQL check passed — no new alerts ✅
+- [x] **10.** New tests added and passing ✅
+
+### Actions Taken
+
+| Change | File | Root Cause / Purpose |
+|--------|------|----------------------|
+| Token rotation/revocation tests | `tests/api/test_auth_token_lifecycle.py` (13 tests) | No integration tests for refresh → new access, logout → revoked, session isolation, revoke-all |
+| Keyring backend tests | `tests/cli/test_cli_keyring.py` (10 tests) | Keyring code path was `# pragma: no cover` — now tested via mock |
+| Enable AuthMiddleware by default | `services/api/main.py` | Changed default from `CODEX_AUTH_MIDDLEWARE_ENABLED=0` to `=1` so middleware is active in production |
+| Code-quality fixes | 3 files | Removed unused imports (`auth_group`, `pathlib`, `textwrap`); replaced 4 empty `except` blocks with `logger.debug()` |
+| CHANGELOG Phase 3 entry | `CHANGELOG.md` | Updated `[Unreleased]` with new test suites and middleware change |
+
+### Outcome
+- Phase 3 complete ✅
+- 114+ new tests across PR (33 P1 + 58 P2 + 23 P3)
+- All code-quality review comments resolved ✅
+- Middleware enabled by default ✅
+- Workflow step insertion deferred (prohibited by repo policy)
 
 ---
 

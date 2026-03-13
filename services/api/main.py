@@ -149,7 +149,7 @@ try:
         "/auth/register", "/auth/login", "/auth/refresh", "/auth/logout",
     }
     _auth_cfg = AuthConfig(
-        enabled=os.getenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0") == "1",
+        enabled=os.getenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "1") == "1",
         exempt_paths=_exempt,
         rate_limit_requests=int(os.getenv("CODEX_AUTH_RATE_LIMIT", "100")),
         rate_limit_window=60,
