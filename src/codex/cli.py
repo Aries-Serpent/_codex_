@@ -1845,9 +1845,9 @@ def _load_cached_credentials() -> dict | None:
         if raw:
             return json.loads(raw)
     except ImportError:
-        pass
+        pass  # keyring not installed — fall through to file-based lookup
     except Exception:  # pragma: no cover — runtime keyring read error
-        pass
+        pass  # silently degrade to file-based lookup
 
     if _CACHE_FILE.exists():
         try:
@@ -1864,9 +1864,9 @@ def _clear_cached_credentials() -> None:
 
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
     except ImportError:
-        pass
+        pass  # keyring not installed — nothing to clear
     except Exception:  # pragma: no cover — runtime keyring delete error
-        pass
+        pass  # silently ignore — entry may not exist or backend unavailable
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)
 

@@ -1663,3 +1663,13 @@ Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
 - Phase 23 complete ✅
 - 18/18 session tracker tests pass ✅
 - Ruff clean on all changed files ✅
+
+## Session 21: 2026-03-13 — Phase 8: Bot review compliance (PR #3570)
+
+### Changes
+- **`src/codex/cli.py`**: Added explanatory comments to 4 empty `except` blocks in `_load_cached_credentials` and `_clear_cached_credentials` — satisfies github-advanced-security (#12549, #12550) and github-code-quality empty-except alerts.
+- **`tests/autonomy/test_session_tracker.py`**: Removed unused `_sid1` variable assignment; call retained for side-effect — satisfies github-advanced-security #12551 and github-code-quality unused-variable alert.
+
+### Outcome
+- 136 PR tests + 26 pre-existing tests in affected files passing ✅
+- All 6 unresolved bot review threads addressed (3 from github-advanced-security review #3942364550, 3 from github-code-quality review #3942279194) ✅

@@ -251,7 +251,7 @@ class TestSessionMetrics:
             pytest.skip("required functions not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
-            _sid1 = mod.start_session(label="active-one")
+            mod.start_session(label="active-one")  # side-effect: creates active session
             sid2 = mod.start_session(label="to-archive")
             mod.archive_session(session_id=sid2, reason="test metrics")
             result = mod.session_metrics()

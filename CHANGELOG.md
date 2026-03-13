@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Bot review compliance)
+- **`src/codex/cli.py`**: Added explanatory comments to empty `except ImportError` blocks in `_load_cached_credentials` and `_clear_cached_credentials` (resolves github-advanced-security #12549, #12550 and github-code-quality alerts).
+- **`tests/autonomy/test_session_tracker.py`**: Removed unused `_sid1` variable — call `start_session()` for side-effect only (resolves github-advanced-security #12551).
+
 ### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI compliance fixes)
 - **`.github/workflows/consolidated-pr-status.yml`**: Fixed actionlint error — removed conflicting `required: true` + `default` on `status` input; replaced inline `${{ inputs.duration-seconds }}` with shell variable to satisfy shellcheck SC2170.
 - **`tests/autonomy/test_session_tracker.py`**: Fixed unused variable `sid1` (prefixed with `_`); removed redundant `import json` (already imported at module level).
