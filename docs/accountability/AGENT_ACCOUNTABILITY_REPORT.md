@@ -1768,3 +1768,60 @@ Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
 - All 9 OPEN review threads verified as code-fixed ✅
 - 0 remaining HIGH-severity gaps ✅
 - 3 MEDIUM-severity items documented as residual risks with mitigations ✅
+
+## Session 26: 2026-03-13 — Phase 26: CI gate fixes + deferral enforcement + production hardening (PR #3571)
+
+### Pre-flight Checklist
+- [x] Loaded: AI Codebase Agency Policy (.codex/CODEBASE_AGENCY_POLICY.md)
+- [x] Loaded: Accountability Report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] Loaded: All stored session memories
+- [x] Reviewed all open CI failures: 3 failing checks (Auto-Fix, E→D Gate, PR Auto-Fix)
+- [x] No deferred work — every issue addressed in this session
+
+### Root Cause Analysis: "✅ Validate Environment Setup" Failure
+
+**Question**: Why did the Validate Environment Setup step fail?
+**Root Cause**: `copilot-setup-steps.yml` defaulted to `ubuntu-latest-m` runner. This runner is in the "AS Larger Runners" group and is NOT available in all GitHub Copilot agent session contexts (particularly for new PR sessions initiated from the Copilot Tasks UI). When the runner is unavailable, the entire job fails before any step executes — which surfaces as "Validate Environment Setup failed" because no step ever ran.
+
+**Fix**: Changed default runner from `ubuntu-latest-m` → `ubuntu-latest` (always-available GitHub-hosted runner). Larger runners remain opt-in via `COPILOT_RUNNER_PROFILE` repo variable.
+
+**Systematic Prevention**:
+1. Default runner is now `ubuntu-latest` (guaranteed availability)
+2. Larger runner opt-in is explicit via `COPILOT_RUNNER_PROFILE` variable
+3. Added inline documentation of the root cause + fallback chain in the workflow file
+
+### CI Failures Fixed
+
+| Check | Root Cause | Fix Applied |
+|-------|-----------|-------------|
+| Auto-Fix CI Issues | I001 unsorted imports (6 files) + E501 line-too-long (4 files) | `ruff --fix --select=I001`; manual E501 wraps |
+| E→D Transition Gate | C2 failing: CODEX_MANIFEST.json was 34h old (>24h limit) | Re-ran `scripts/ci/generate_manifest.py` |
+| PR Auto-Fix Check | Same I001 + E501 issues as above | Same fixes |
+
+### Deferral Language Enforcement (NEW SYSTEMATIC MECHANISM)
+
+**Problem**: Agent sessions 20–25 repeatedly used deferral language ("pre-existing issue", "different branch", "out of scope") to avoid fixing issues.
+
+**Implementation**:
+1. `scripts/ci/check_deferral_language.py` — scanner with 18 trigger-phrase categories
+2. `.github/workflows/deferral-language-gate.yml` — CI gate on every PR
+3. `.codex/CODEBASE_AGENCY_POLICY.md §3a` — formal trigger table + enforcement reference
+4. `.github/copilot-instructions.md` — hard-stop block at top (visible to every agent)
+5. `.pre-commit-config.yaml` — commit-msg hook catches violations before CI
+
+### Code Quality Changes
+
+- **services/api/main.py**: `_resolve_context_limit` refactored (complexity 15→4); `_get_model_vocab_size` refactored (complexity 13→4) — 5 module-level helpers extracted
+- **src/codex/auth/user_store.py**: `threading.RLock` added — all 8 public methods thread-safe
+- **src/codex/api/rag_api.py**: mypy `add_exception_handler` type mismatch fixed via `_rate_limit_handler` wrapper
+
+### Tests Added
+
+- `tests/api/test_rag_api_validation.py`: 12 parameterized tests for `MergeIndicesRequest` validation + `_ensure_subpath` path-traversal guard
+- `tests/integration/test_tenant_context_update.py`: 11 integration tests for `TenantRegistry.update_tenant()` SQL path
+
+### Outcome
+- 112 tests passing (new + existing) ✅
+- All 3 failing CI checks resolved ✅
+- 0 deferral language violations in git log ✅
+- Deferral enforcement system deployed (CI + pre-commit + policy + instructions) ✅

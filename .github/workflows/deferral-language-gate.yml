@@ -1,0 +1,88 @@
+name: "🚨 Deferral Language Gate"
+
+# Enforces the AI Codebase Agency Policy:
+#   Any deferral language in PR body or commit messages triggers a hard failure
+#   and forces the agent to reload policy + memory before continuing.
+#
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md
+# Script: scripts/ci/check_deferral_language.py
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: deferral-gate-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  deferral-language-check:
+    name: "🚨 Deferral Language Policy Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+      contents: read
+
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v4
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "📝 Write PR body to file"
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" > /tmp/pr_body.txt
+          echo "PR body written ($(wc -c < /tmp/pr_body.txt) bytes)"
+
+      - name: "🔍 Scan PR body for deferral language"
+        id: scan_pr_body
+        run: |
+          python scripts/ci/check_deferral_language.py --pr-body /tmp/pr_body.txt
+        continue-on-error: true
+
+      - name: "🔍 Scan last 10 commit messages for deferral language"
+        id: scan_commits
+        run: |
+          python scripts/ci/check_deferral_language.py --git-log
+        continue-on-error: true
+
+      - name: "📊 Evaluate results and enforce policy"
+        env:
+          PR_SCAN: ${{ steps.scan_pr_body.outcome }}
+          COMMIT_SCAN: ${{ steps.scan_commits.outcome }}
+        run: |
+          set -euo pipefail
+          FAIL=0
+
+          if [ "$PR_SCAN" = "failure" ]; then
+            echo "::error::PR body contains deferral language — policy violation"
+            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+            FAIL=1
+          fi
+
+          if [ "$COMMIT_SCAN" = "failure" ]; then
+            echo "::error::Commit message(s) contain deferral language — policy violation"
+            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+            FAIL=1
+          fi
+
+          if [ "$FAIL" -eq 1 ]; then
+            echo ""
+            echo "════════════════════════════════════════════════════════"
+            echo "  CODEBASE AGENCY POLICY VIOLATION"
+            echo "  Deferral language detected. Required actions:"
+            echo "  1. Load .codex/CODEBASE_AGENCY_POLICY.md"
+            echo "  2. Load docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+            echo "  3. Load all stored session memories"
+            echo "  4. Fix the deferred issue immediately"
+            echo "════════════════════════════════════════════════════════"
+            exit 1
+          fi
+
+          echo "✅ No deferral language detected — policy compliant"

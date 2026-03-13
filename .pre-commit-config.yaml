@@ -273,3 +273,14 @@ repos:
         pass_filenames: false
         # Run: pre-commit run doc-metrics-check
         # Fix: python scripts/tools/doc_metrics_sync.py --fix
+
+      # Deferral Language Gate — enforces Codebase Agency Policy §3a
+      # Triggers on any commit message containing deferral language.
+      # See: .codex/CODEBASE_AGENCY_POLICY.md §3a and scripts/ci/check_deferral_language.py
+      - id: deferral-language-check
+        name: "🚨 Deferral Language Policy Check (Agency Policy §3a)"
+        entry: python scripts/ci/check_deferral_language.py --commit-msg
+        language: system
+        stages: [commit-msg]
+        pass_filenames: true
+        # If this fails: load .codex/CODEBASE_AGENCY_POLICY.md and fix immediately

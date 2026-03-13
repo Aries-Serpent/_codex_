@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (PR copilot/feature-user-authentication — 2026-03-13 — Session 26 / Phase 26)
+- **`src/codex/auth/user_store.py`**: Added `threading.RLock` to `UserStore` — all read/write operations (`create_user`, `update_password`, `deactivate_user`, `delete_user`, `get_user`, `find_by_username`, `find_by_email`, `list_users`) are now lock-protected, making `UserStore` thread-safe for multi-worker deployments.
+
+### Fixed (PR copilot/feature-user-authentication — 2026-03-13 — Session 26 / Phase 26 CI + code hardening)
+- **CI: I001 unsorted imports** — Fixed 6 test files: `tests/api/test_auth_mfa_expiry.py`, `tests/api/test_auth_routes.py`, `tests/api/test_auth_token_lifecycle.py`, `tests/cli/test_cli_auth.py`, `tests/test_accountability_autoupdate.py`, `tests/tools/test_doc_metrics_sync.py`.
+- **CI: E501 line-too-long** — Fixed `src/codex/api/auth_routes.py:311`, `src/codex/session/accountability_autoupdate.py:297`, `tests/tools/test_doc_metrics_sync.py:406,420`.
+- **CI: E→D Transition Gate (C2)** — Regenerated stale `CODEX_MANIFEST.json` (was 34h old; C2 requires <24h). Gate now passes 4/5 → 5/5.
+- **`src/codex/api/rag_api.py`**: Fixed mypy `add_exception_handler` type mismatch — added `_rate_limit_handler` wrapper that widens `(Request, RateLimitExceeded)` signature to `(Request, Exception)` to satisfy FastAPI's type contract without losing runtime behaviour. Removed unused `Callable` import.
+- **`services/api/main.py`**: Refactored `_resolve_context_limit` (C901 complexity 15→4) and `_get_model_vocab_size` (C901 complexity 13→4) — extracted inner functions `_coerce_positive_int`, `_get_nested_attr`, `_parse_env_context_limit`, `_valid_vocab_size`, `_get_vocab_size_from_embeddings` to module level.
+- **`.github/workflows/copilot-setup-steps.yml`**: Changed default runner from `ubuntu-latest-m` to `ubuntu-latest` — `ubuntu-latest-m` is not available in all runner groups/regions, causing "Validate Environment Setup" step failures in new Copilot agent sessions. `ubuntu-latest` is GitHub-hosted and always available; `ubuntu-latest-m` remains opt-in via `COPILOT_RUNNER_PROFILE`.
+
+### Added (PR copilot/feature-user-authentication — 2026-03-13 — Session 26 / Phase 26)
+- **`scripts/ci/check_deferral_language.py`**: New deferral-language enforcement scanner — detects 18 categories of deferral phrases (attribution, scope, future, responsibility, delegation) in PR bodies, commit messages, and session logs. Exits 1 on violation with mandatory policy-load reminder.
+- **`.github/workflows/deferral-language-gate.yml`**: New CI workflow — runs deferral scanner on every PR body and last 10 commit messages. Hard fails with policy reminder if triggered.
+- **`.codex/CODEBASE_AGENCY_POLICY.md §3a`**: New "Deferral Language Trigger Protocol" section — canonical trigger phrase table, CI enforcement reference, and rationale citing Sessions 20–25 recurrence.
+- **`.github/copilot-instructions.md`**: Hard-stop deferral block added at top of file — visible to every agent session before any other instruction.
+- **`.pre-commit-config.yaml`**: Added `deferral-language-check` commit-msg hook — runs scanner on each commit message before it is recorded.
+- **`tests/api/test_rag_api_validation.py`**: 12 new parameterized tests for `MergeIndicesRequest.source_indices` `min_length=2` constraint, `target_index` required, `tenant_id` default, and `_ensure_subpath` path-traversal guard.
+- **`tests/integration/test_tenant_context_update.py`**: 11 new integration tests for `TenantRegistry.update_tenant()` SQL path — covers each field individually, multi-field combinations, cache sync, non-existent tenant, `deactivate_tenant()` delegation, and empty-update no-op.
+
 ### Security (PR copilot/feature-user-authentication — 2026-03-13 — Session 20 / Phase 25 iterative gap analysis)
 - **`src/codex/session/accountability_autoupdate.py`**: Added `usedforsecurity=False` to `hashlib.sha1()` call — resolves Bandit B324 HIGH severity. SHA1 is used only as a 12-char session ID nonce (not for security); the explicit flag documents this intent.
 - **`services/msp_gateway/middleware/tenant_context.py`**: Added `# nosec B608` comment to SQL UPDATE query — Bandit MEDIUM false positive; `set_clauses` contains only hardcoded column-name literals, all user values are parameterised.

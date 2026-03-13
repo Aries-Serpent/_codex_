@@ -2,6 +2,46 @@
 
 Guidelines for contributors and Codex automation. Keep this file updated as conventions change.
 
+---
+
+## 🚨 HARD STOP — DEFERRAL LANGUAGE TRIGGER PROTOCOL
+
+**This rule fires BEFORE any other instruction.**
+
+If you are about to write — or have just written — ANY of the following, you MUST STOP and:
+
+1. 🔃 **LOAD** `.codex/CODEBASE_AGENCY_POLICY.md` (read it fully)
+2. 🔃 **LOAD** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (read it fully)
+3. 🔃 **LOAD** all stored session memories
+4. **FIX** the issue NOW
+
+**Trigger phrases (any variation triggers the protocol):**
+
+```
+"This was from a different branch/agent/PR/session"
+"Not from our current feature/branch/PR"
+"Pre-existing issue / pre-existing code / pre-existing and safe"
+"Not introduced by this PR/change/commit"
+"Out of scope / outside the scope / not related to this PR"
+"Not my responsibility / not my problem / not my concern"
+"Will address in a future PR/task/session/iteration"
+"Future PR / follow-up PR / follow-up task"
+"Address incrementally / address separately / address later"
+"Can be addressed later / will fix later / will resolve later"
+"Another session/agent should handle this"
+"Not actionable in this PR"
+"Can be deferred / should be deferred"
+```
+
+**Why:** These phrases have recurred across Sessions 20–25 of this repository.
+Automated enforcement via `.github/workflows/deferral-language-gate.yml` runs
+`scripts/ci/check_deferral_language.py` on every PR.  CI will fail.
+
+**The only acceptable response to finding an issue is to fix it.**
+Origin (branch / PR / agent / session) is irrelevant per Codebase Agency Policy §2 and §3a.
+
+---
+
 ## Environment Variables
 
 - `CODEX_ENV_PYTHON_VERSION`, `CODEX_ENV_NODE_VERSION`, `CODEX_ENV_RUST_VERSION`, `CODEX_ENV_GO_VERSION`, `CODEX_ENV_SWIFT_VERSION` – select language versions during environment setup.
