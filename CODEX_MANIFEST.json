@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-12T07:04:33Z",
+  "generated_at": "2026-03-13T17:15:40Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1068,6 +1068,11 @@
       "has_concurrency": true
     },
     {
+      "name": "consolidated-pr-status",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": false
+    },
+    {
       "name": "copilot-agent-vars-bootstrap",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1219,7 +1224,7 @@
     },
     {
       "name": "pr-size-analyzer",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1259,7 +1264,7 @@
     },
     {
       "name": "qa-walkthrough",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1354,7 +1359,7 @@
     },
     {
       "name": "semgrep_sarif",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1685,5 +1690,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "9360521e86663761473ad7dc33fa8a2f92d4c3264d3597ee69eca33991076314"
+  "integrity_sha256": "2af3d444a2ee3042f157f38d60a22fc20b08766d0ea33533adca57c9ec7d5f49"
 }

@@ -294,7 +294,9 @@ def tokenize_narrative(
 # ---------------------------------------------------------------------------
 
 
-def generate_markdown_entry(metadata: Dict[str, Any], score: float, tokens: List[Dict[str, Any]]) -> str:
+def generate_markdown_entry(
+    metadata: Dict[str, Any], score: float, tokens: List[Dict[str, Any]]
+) -> str:
     """Generate a structured markdown entry for the accountability report.
 
     Returns a single string ready to be appended (includes trailing ``---``).

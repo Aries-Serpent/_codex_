@@ -13,16 +13,14 @@ the unit-test level rather than in a remote CI run.
 
 from __future__ import annotations
 
+# Import the module under test -------------------------------------------
+import importlib
+import sys
 import textwrap
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
-# Import the module under test -------------------------------------------
-
-import importlib
-import sys
 
 # The script lives outside ``src/``, so we load it via importlib from its
 # filesystem path rather than relying on PYTHONPATH/package install.
@@ -405,7 +403,8 @@ class TestProductionRules:
 
     def test_all_rules_have_unique_ids(self) -> None:
         ids = [r.id for r in doc_metrics_sync.RULES]
-        assert len(ids) == len(set(ids)), f"Duplicate rule IDs: {[i for i in ids if ids.count(i) > 1]}"
+        duplicates = [i for i in ids if ids.count(i) > 1]
+        assert len(ids) == len(set(ids)), f"Duplicate rule IDs: {duplicates}"
 
     def test_all_rule_patterns_compile(self) -> None:
         import re
@@ -419,7 +418,8 @@ class TestProductionRules:
     def test_all_rule_files_are_relative(self) -> None:
         for rule in doc_metrics_sync.RULES:
             for f in rule.files:
-                assert not f.startswith("/"), f"Rule {rule.id!r}: file path must be relative, got {f!r}"
+                msg = f"Rule {rule.id!r}: file path must be relative, got {f!r}"
+                assert not f.startswith("/"), msg
 
     def test_gather_metrics_returns_all_keys_used_by_rules(self) -> None:
         """Ensure no rule references a metric key that gather_metrics doesn't produce."""
