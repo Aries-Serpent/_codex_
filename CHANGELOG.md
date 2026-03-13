@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/feature-user-authentication — 2026-03-13 — Session 27 / Phase 26 @copilot continue)
+- **`tests/integration/test_tenant_context_update.py`**: Removed unused `import tempfile` — resolves open `github-code-quality[bot]` review thread (F401 unused import). `tmp_path` pytest fixture is used instead.
+
 ### Security (PR copilot/feature-user-authentication — 2026-03-13 — Session 26 / Phase 26)
 - **`src/codex/auth/user_store.py`**: Added `threading.RLock` to `UserStore` — all read/write operations (`create_user`, `update_password`, `deactivate_user`, `delete_user`, `get_user`, `find_by_username`, `find_by_email`, `list_users`) are now lock-protected, making `UserStore` thread-safe for multi-worker deployments.
 
