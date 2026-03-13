@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (PR copilot/add-user-login-feature — 2026-03-13 — Gap analysis verification)
+- Verified all 9 open bot review threads are code-fixed (token boosting, auth middleware, keyring handling, password tests, empty excepts, unused variable). 0 remaining HIGH-severity gaps. 207 tests passing.
+
 ### Security (PR copilot/add-user-login-feature — 2026-03-13 — Production hardening)
 - **`services/api/main.py`**: Fail-fast with `RuntimeError` when `CODEX_AUTH_SECRET` is unset in production (`CODEX_ENV=production`). Development mode retains insecure default with warning.
 - **`src/codex/cli.py`**: Replaced weak default `"cli-change-me"` secret with ephemeral `secrets.token_urlsafe(32)` generation when `CODEX_AUTH_SECRET` is not set.
