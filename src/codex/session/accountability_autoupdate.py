@@ -82,7 +82,8 @@ def _run_git(args: List[str], fallback: str = "") -> str:
             timeout=15,
         )
         return result.stdout.strip() if result.returncode == 0 else fallback
-    except Exception:
+    except Exception as exc:
+        logger.debug("Git command %s failed: %s", args, exc)
         return fallback
 
 
@@ -395,7 +396,8 @@ def append_to_report(
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
         shutil.move(tmp_path, str(report_path))
-    except Exception:
+    except Exception as exc:
+        logger.error("Failed to write accountability report: %s", exc)
         # Best-effort cleanup: ignore failure to remove temporary report file.
         try:
             os.unlink(tmp_path)
@@ -487,7 +489,8 @@ def update_changelog(
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
         shutil.move(tmp_path, str(changelog_path))
-    except Exception:
+    except Exception as exc:
+        logger.error("Failed to write changelog: %s", exc)
         # Best-effort cleanup: ignore failure to remove temporary changelog file.
         try:
             os.unlink(tmp_path)

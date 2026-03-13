@@ -303,10 +303,12 @@ def create_auth_router(
                     status_code=403, detail="MFA verification failed"
                 ) from exc
             if hasattr(exc, "code"):
-                logger.warning("Login failed from %s", ip_address)
+                logger.warning("Login failed from %s: %s", ip_address, type(exc).__name__)
                 raise HTTPException(
                     status_code=401, detail="Invalid credentials"
                 ) from exc
+            # Not an auth-domain exception — log and re-raise as 500
+            logger.error("Unexpected error during login from %s: %s", ip_address, type(exc).__name__)
             raise
 
         logger.info("Login success: user=%s from %s", result.username, ip_address)
@@ -343,7 +345,9 @@ def create_auth_router(
             new_token = auth.refresh(body.refresh_token)
         except Exception as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
+                logger.warning("Token refresh failed: %s", type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid or expired token") from exc
+            logger.error("Unexpected error during token refresh: %s", type(exc).__name__)
             raise
 
         return RefreshResponse(access_token=new_token)
@@ -351,7 +355,7 @@ def create_auth_router(
     # ---- CSRF token (for cookie-based auth flows) ------------------------
 
     @router.get("/csrf-token")
-    async def csrf_token(request: Request):
+    async def csrf_token(request: Request) -> dict[str, str]:
         """Return a fresh CSRF token for cookie-based auth flows.
 
         Clients using cookie-based authentication should call this endpoint

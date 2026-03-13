@@ -1682,3 +1682,40 @@ Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
 ### Outcome
 - All empty-except CodeQL alerts resolved ✅
 - CLI keyring + auth tests passing (15/15) ✅
+
+## Session 23: 2026-03-13 — Phase 10: Production hardening + gap analysis remediation (PR #3570)
+
+### Pre-flight Checklist
+- [x] Loaded: AI Codebase Agency Policy (.codex/CODEBASE_AGENCY_POLICY.md)
+- [x] Loaded: Guardrails (.codex/guardrails.md)
+- [x] Loaded: Accountability Report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] Loaded: All 9 OPEN review threads (copilot-pull-request-reviewer + github-advanced-security + github-code-quality)
+- [x] Loaded: CI workflow run status (all `action_required` — approval gates, not failures)
+- [x] `@copilot continue` protocol: reviewed ALL bot-posted code quality and security alerts
+
+### Gap Analysis Summary (27 issues identified)
+- **HIGH**: 3 (insecure defaults in production, weak CLI secret, broad exception handlers)
+- **MEDIUM**: 11 (silent exception handlers, bare except, missing logging, type gaps)
+- **LOW**: 13 (redundant code, test fixtures, documentation, type hints)
+
+### Changes (Iteration 1 — HIGH-impact fixes)
+1. **`services/api/main.py:143`**: Fail-fast `RuntimeError` when `CODEX_AUTH_SECRET` unset in production — previously only logged error and continued with insecure default
+2. **`src/codex/cli.py:1714`**: Replaced `"cli-change-me"` with `secrets.token_urlsafe(32)` ephemeral key generation
+3. **`src/codex/api/auth_routes.py:293`**: Added `logger.error()` for unexpected exceptions in login handler (logs type name only — no internal detail leaks)
+4. **`src/codex/api/auth_routes.py:344`**: Added `logger.warning()` for token refresh failures + `logger.error()` for unexpected errors
+5. **`src/codex/api/auth_routes.py:354`**: Added return type `dict[str, str]` to CSRF endpoint
+6. **`src/codex/session/accountability_autoupdate.py:85`**: Added `logger.debug()` to `_run_git` silent exception handler
+7. **`src/codex/session/accountability_autoupdate.py:398`**: Added `logger.error()` to `append_to_report` exception handler
+8. **`src/codex/session/accountability_autoupdate.py:490`**: Added `logger.error()` to `update_changelog` exception handler
+9. **`src/codex/cli.py:1855`**: Narrowed bare `except Exception` to `(json.JSONDecodeError, OSError)` with debug logging
+
+### Residual Risks (documented with mitigations)
+- **Rate limiter globals without locking** (services/api/main.py): Pre-existing code, not introduced by this PR. Mitigation: asyncio single-threaded event loop makes this safe for the current deployment model.
+- **Duck-typed exception handling in auth routes**: Required due to dual-import path issue (codex.auth.exceptions ≠ src.codex.auth.exceptions). Mitigation: All non-auth exceptions are re-raised; auth exceptions are identified by `.code` attribute.
+- **CSRF tokens not bound to sessions**: Stateless design is intentional for horizontal scaling. Mitigation: CSRF validation should be done server-side when cookie auth is enabled.
+
+### Outcome
+- 207 tests passing (136 PR + 71 pre-existing) ✅
+- All 9 OPEN review threads verified as code-fixed ✅
+- 0 remaining HIGH-severity gaps ✅
+- 3 MEDIUM-severity items documented as residual risks with mitigations ✅

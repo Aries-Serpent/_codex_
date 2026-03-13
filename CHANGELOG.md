@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (PR copilot/add-user-login-feature — 2026-03-13 — Production hardening)
+- **`services/api/main.py`**: Fail-fast with `RuntimeError` when `CODEX_AUTH_SECRET` is unset in production (`CODEX_ENV=production`). Development mode retains insecure default with warning.
+- **`src/codex/cli.py`**: Replaced weak default `"cli-change-me"` secret with ephemeral `secrets.token_urlsafe(32)` generation when `CODEX_AUTH_SECRET` is not set.
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Exception handling + observability)
+- **`src/codex/api/auth_routes.py`**: Added logging to login/refresh exception handlers — logs `type(exc).__name__` for unexpected errors without leaking internal details. Added return type `dict[str, str]` to CSRF endpoint.
+- **`src/codex/session/accountability_autoupdate.py`**: Added `logger.error()`/`logger.debug()` to 3 silent exception handlers in `_run_git`, `append_to_report`, and `update_changelog`.
+- **`src/codex/cli.py`**: Narrowed bare `except Exception` in `_load_cached_credentials` to `(json.JSONDecodeError, OSError)` with debug logging.
+
 ### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CodeQL empty-except remediation)
 - **`src/codex/cli.py`**: Replaced all `pass` statements in `except` blocks with `logger.debug()` calls in credential helpers (`_cache_credentials`, `_load_cached_credentials`, `_clear_cached_credentials`) and XML defusal — resolves CodeQL `py/empty-except` alerts.
 

@@ -1711,7 +1711,13 @@ def _get_auth():
         from codex.auth.user_store import UserStore
 
         _cli_user_store = UserStore()
-        _tm = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
+        _secret = os.getenv("CODEX_AUTH_SECRET", "")
+        if not _secret:
+            import secrets as _sec
+
+            _secret = _sec.token_urlsafe(32)
+            logger.debug("Generated ephemeral CLI auth secret (in-process only)")
+        _tm = TokenManager(secret_key=_secret)
         _cli_auth = Authenticator(user_store=_cli_user_store, token_manager=_tm)
     return _cli_auth
 
@@ -1852,7 +1858,8 @@ def _load_cached_credentials() -> dict | None:
     if _CACHE_FILE.exists():
         try:
             return json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
-        except Exception:
+        except (json.JSONDecodeError, OSError) as exc:
+            logger.debug("Failed to load cached credentials file: %s", exc)
             return None
     return None
 

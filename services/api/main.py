@@ -140,19 +140,19 @@ try:
     from codex.auth.middleware import AuthConfig, AuthMiddleware
     from codex.auth.token_manager import TokenManager as _AuthTokenManager
 
-    _auth_secret = os.getenv("CODEX_AUTH_SECRET", "codex-auth-change-me-in-production")
-    if _auth_secret == "codex-auth-change-me-in-production":
+    _auth_secret = os.getenv("CODEX_AUTH_SECRET", "")
+    if not _auth_secret:
         _env = os.getenv("CODEX_ENV", "development")
         if _env == "production":
-            logger.error(
-                "CODEX_AUTH_SECRET is not set — using insecure default in production! "
+            raise RuntimeError(
+                "CODEX_AUTH_SECRET must be explicitly set in production. "
                 "Set the CODEX_AUTH_SECRET environment variable to a strong secret."
             )
-        else:
-            logger.warning(
-                "CODEX_AUTH_SECRET not set — using insecure default. "
-                "Set CODEX_AUTH_SECRET for production deployments."
-            )
+        logger.warning(
+            "CODEX_AUTH_SECRET not set — using insecure default. "
+            "Set CODEX_AUTH_SECRET for production deployments."
+        )
+        _auth_secret = "codex-auth-change-me-in-production"  # nosec B105 — dev only
     _auth_tm = _AuthTokenManager(secret_key=_auth_secret)
 
     # Auth routes must be exempt from the middleware since they are public.
