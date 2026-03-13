@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Verified (PR copilot/feature-user-authentication — 2026-03-13 — Session 29 / @copilot continue)
+- **CI state confirmed GREEN** on latest commit (`665563e`): deferral-language-gate ✅ success, CodeQL ✅ all passing, auto_fix 0 issues, 13/13 integration tests passing. No new bot review threads. No new issues identified. PR ready for merge review.
+
 ### Fixed (PR copilot/feature-user-authentication — 2026-03-13 — Session 28 / @copilot continue)
 - **`services/msp_gateway/middleware/tenant_context.py`**: `TenantRegistry._init_sqlite()` now stores the resolved database path as `self._db_path: str`. This fixes the 1 failing integration test (`test_update_name_persists_to_db`) which called `_read_row(reg._db_path, ...)` but the attribute did not exist; it also enables introspection of the active database file.
 - **`scripts/ci/check_deferral_language.py`**: Fixed regex false positives in two patterns — `follow[-\s]?up (?:pr|...)` matched "follow-up pr**ompt**" and `future (?:pr|...)` could match "future pr**ocess**". Added `\b` word boundary after each `pr`/`task`/etc. alternative. The scanner now returns `exit 0` on a clean git log while still catching all real deferral violations.
