@@ -1328,7 +1328,6 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
             except (OSError, UnicodeDecodeError) as e:
                 logger.debug(f"Exception: {e}")
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
-                pass
 
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
@@ -1433,7 +1432,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
                 files_scanned += 1
             except (OSError, UnicodeDecodeError):
                 # Skip files that can't be read or decoded
-                pass
+                logger.debug("Skipping unreadable file: %s", py_file)
 
         # Calculate ratio
         ratio = calculate_duplication_ratio(duplicates, total_lines)
@@ -1589,7 +1588,7 @@ try:
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
 except Exception:  # pragma: no cover - optional module
-    pass
+    logger.debug("quantum_orchestrator CLI not available — skipping registration")
 
 
 _register_external_cli()
