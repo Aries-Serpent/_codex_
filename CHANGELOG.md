@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI compliance fixes)
+- **`.github/workflows/consolidated-pr-status.yml`**: Fixed actionlint error — removed conflicting `required: true` + `default` on `status` input; replaced inline `${{ inputs.duration-seconds }}` with shell variable to satisfy shellcheck SC2170.
+- **`tests/autonomy/test_session_tracker.py`**: Fixed unused variable `sid1` (prefixed with `_`); removed redundant `import json` (already imported at module level).
+- **`tests/autonomy/test_agent_runner.py`**: Narrowed catch-all `except Exception` to specific exception types.
+- **`tests/agents/test_variable_management.py`**: Narrowed catch-all `except Exception` to specific exception types.
+- **`tests/validation/test_ci_workflow_validation.py`**: Removed redundant `import re as _re` (already imported at module level).
+
 ### Added (PR copilot/add-user-login-feature — 2026-03-13 — Auth Phase 2 + Accountability Auto-Update)
 - **`services/api/main.py`**: Integrated `AuthMiddleware` with exempt paths; enabled by default (set `CODEX_AUTH_MIDDLEWARE_ENABLED=0` to disable).
 - **`src/codex/api/auth_routes.py`**: Per-endpoint rate limiting via `_EndpointRateLimiter` (login: 10/min, register: 5/min). Added `GET /auth/csrf-token` endpoint for cookie-based flows.

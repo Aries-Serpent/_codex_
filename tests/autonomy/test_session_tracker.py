@@ -251,7 +251,7 @@ class TestSessionMetrics:
             pytest.skip("required functions not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
-            sid1 = mod.start_session(label="active-one")
+            _sid1 = mod.start_session(label="active-one")
             sid2 = mod.start_session(label="to-archive")
             mod.archive_session(session_id=sid2, reason="test metrics")
             result = mod.session_metrics()
@@ -296,7 +296,6 @@ class TestSessionMetrics:
 
         captured = capsys.readouterr()
         assert rc == 0
-        import json
         data = json.loads(captured.out)
         assert "archived" in data
         assert "total" in data

@@ -3,7 +3,37 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/add-user-login-feature
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-13T07:45Z (session 20: Review feedback + doc metrics sync + cherry-pick merge ref — PR #3570)
+**Last updated:** 2026-03-13T07:52Z (session 21: CI compliance fixes — PR #3570)
+
+---
+
+## SESSION SUMMARY — 2026-03-13 SESSION 21 (CI Compliance Fixes — PR #3570)
+
+### Pre-flight Checklist
+- [x] Read `.codex/CODEBASE_AGENCY_POLICY.md`
+- [x] Read `.codex/guardrails.md`
+- [x] Loaded accountability report history
+- [x] Loaded lessons learned from stored memories
+
+### Work Completed
+1. **actionlint compliance** — fixed `consolidated-pr-status.yml` dual errors: removed conflicting `required: true` + `default` on `status` input; replaced inline expression with shell variable for shellcheck SC2170
+2. **5 auto-fixable CI issues resolved** across 4 pre-existing test files:
+   - `tests/autonomy/test_session_tracker.py`: unused variable `sid1` → `_sid1`; removed redundant `import json`
+   - `tests/autonomy/test_agent_runner.py`: narrowed catch-all `except Exception`
+   - `tests/agents/test_variable_management.py`: narrowed catch-all `except Exception`
+   - `tests/validation/test_ci_workflow_validation.py`: removed redundant `import re as _re`
+3. **CHANGELOG.md** updated with CI compliance fixes
+4. All 136 PR tests + all affected pre-existing tests passing
+
+### Impact Score
+- Files changed: 5
+- Tests validated: 136+ (all PR tests + 71 pre-existing tests in affected files)
+- CI checks targeted: actionlint compliance, PR Auto-Fix Check
+
+### Lessons Learned
+- `workflow_call` inputs with `required: true` must NOT have a `default` — actionlint catches this contradiction
+- Inline `${{ inputs.* }}` in shell `-gt` comparisons triggers shellcheck SC2170; assign to a shell variable first
+- Pre-existing catch-all `except Exception` blocks in tests propagate through CI auto-fix checks
 
 ---
 

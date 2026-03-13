@@ -98,7 +98,7 @@ class TestSinglePassMode:
         with patch.object(mod, "REPO_ROOT", tmp_path):
             try:
                 mod.run_once(budget_seconds=5, dry_run=True)
-            except Exception:
+            except (RuntimeError, OSError, KeyError, ValueError):
                 pass  # session may not be written in every code path
         # Session files are JSON if written
         for f in session_dir.glob("*.json"):

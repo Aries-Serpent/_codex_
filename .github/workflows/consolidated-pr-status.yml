@@ -57,7 +57,6 @@ on:
         description: 'success | failure | warning | info | skipped | in_progress'
         type: string
         required: true
-        default: 'success'
       summary:
         description: 'One-line result description'
         type: string
@@ -104,9 +103,10 @@ jobs:
         shell: bash
         run: |
           DETAILS="${{ inputs.details }}"
-          if [ "${{ inputs.duration-seconds }}" -gt 0 ]; then
-            DURATION_MIN=$(( ${{ inputs.duration-seconds }} / 60 ))
-            DURATION_SEC=$(( ${{ inputs.duration-seconds }} % 60 ))
+          DURATION_INPUT="${{ inputs.duration-seconds }}"
+          if [ "${DURATION_INPUT:-0}" -gt 0 ] 2>/dev/null; then
+            DURATION_MIN=$(( DURATION_INPUT / 60 ))
+            DURATION_SEC=$(( DURATION_INPUT % 60 ))
             DETAILS="${DETAILS}\n\n_⏱ Duration: ${DURATION_MIN}m ${DURATION_SEC}s_"
           fi
           # Escape for GitHub Actions output
