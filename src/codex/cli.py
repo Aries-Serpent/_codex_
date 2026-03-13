@@ -1722,7 +1722,8 @@ def auth_register(username: str, email: str, password: str, role: tuple[str, ...
 @click.option("--password", "-p", prompt=True, hide_input=True,
               help="Password (prompted if not supplied)")
 @click.option("--totp", default=None, help="TOTP code (if MFA enabled)")
-def auth_login(username: str, password: str, totp: str | None) -> None:
+@click.option("--save/--no-save", default=False, help="Cache credentials via keyring")
+def auth_login(username: str, password: str, totp: str | None, save: bool) -> None:
     """Authenticate and display session tokens."""
     from codex.auth.authenticator import Authenticator
     from codex.auth.exceptions import AuthError
@@ -1744,6 +1745,9 @@ def auth_login(username: str, password: str, totp: str | None) -> None:
     click.echo(f"   refresh_token: {result.refresh_token[:8]}…{result.refresh_token[-4:]}")
     click.echo(f"   session_id:    {result.session_id}")
 
+    if save:
+        _cache_credentials(result.username, result.access_token, result.refresh_token)
+
 
 @auth_group.command("logout")
 @click.option("--session-token", "-s", required=True, help="Session token to revoke")
@@ -1759,8 +1763,89 @@ def auth_logout(session_token: str) -> None:
 
     if auth.logout(session_token):
         click.echo("✅ Session revoked")
+        _clear_cached_credentials()
     else:
         click.echo("⚠️  Token was already invalid or expired")
+
+
+@auth_group.command("status")
+def auth_status() -> None:
+    """Show cached credential status."""
+    creds = _load_cached_credentials()
+    if creds is None:
+        click.echo("No cached credentials found. Run 'codex auth login --save' first.")
+        return
+    click.echo(f"✅ Cached credentials for: {creds['username']}")
+    token = creds.get("access_token", "")
+    if token:
+        click.echo(f"   access_token: {token[:8]}…{token[-4:]}")
+    click.echo("   Use 'codex auth logout -s <token>' to clear.")
+
+
+# ---------------------------------------------------------------------------
+# Credential caching helpers (keyring with JSON file fallback)
+# ---------------------------------------------------------------------------
+
+_KEYRING_SERVICE = "codex-cli"
+_CACHE_DIR = Path.home() / ".codex"
+_CACHE_FILE = _CACHE_DIR / "credentials.json"
+
+
+def _cache_credentials(username: str, access_token: str, refresh_token: str) -> None:
+    """Store credentials via *keyring*; fall back to a local JSON file."""
+    data = json.dumps({
+        "username": username,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    })
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        keyring.set_password(_KEYRING_SERVICE, "credentials", data)
+        click.echo("   Credentials cached (keyring)")
+        return
+    except Exception:  # pragma: no cover — keyring unavailable in CI
+        pass
+
+    # Fallback: write to ~/.codex/credentials.json with restrictive perms
+    _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    _CACHE_FILE.write_text(data, encoding="utf-8")
+    try:
+        _CACHE_FILE.chmod(0o600)
+    except OSError:  # pragma: no cover — Windows may not support chmod
+        pass
+    click.echo("   Credentials cached (~/.codex/credentials.json)")
+
+
+def _load_cached_credentials() -> dict | None:
+    """Load previously cached credentials."""
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        raw = keyring.get_password(_KEYRING_SERVICE, "credentials")
+        if raw:
+            return json.loads(raw)
+    except Exception:  # pragma: no cover
+        pass
+
+    if _CACHE_FILE.exists():
+        try:
+            return json.loads(_CACHE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+    return None
+
+
+def _clear_cached_credentials() -> None:
+    """Remove cached credentials from keyring and local file."""
+    try:
+        import keyring  # type: ignore[import-untyped]
+
+        keyring.delete_password(_KEYRING_SERVICE, "credentials")
+    except Exception:  # pragma: no cover
+        pass
+    if _CACHE_FILE.exists():
+        _CACHE_FILE.unlink(missing_ok=True)
 
 
 # Expose CLI groups as module attributes for testing and dynamic imports

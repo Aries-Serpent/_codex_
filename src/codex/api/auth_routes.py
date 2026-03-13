@@ -24,7 +24,8 @@ from __future__ import annotations
 import logging
 import os
 import re
-from typing import List, Optional
+import time
+from typing import Dict, List, Optional
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
@@ -37,6 +38,40 @@ logger = logging.getLogger(__name__)
 
 # Simple e-mail pattern — intentionally permissive but catches obvious junk.
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+# ---------------------------------------------------------------------------
+# Simple per-endpoint rate limiter (no external deps)
+# ---------------------------------------------------------------------------
+
+
+class _EndpointRateLimiter:
+    """Lightweight in-memory sliding-window rate limiter for auth endpoints."""
+
+    def __init__(
+        self,
+        requests_per_window: int = 20,
+        window_seconds: int = 60,
+    ) -> None:
+        self._max = requests_per_window
+        self._window = window_seconds
+        self._counters: Dict[str, List[float]] = {}
+
+    def check(self, key: str) -> bool:
+        """Return *True* if the request is allowed, *False* otherwise."""
+        now = time.time()
+        cutoff = now - self._window
+        bucket = self._counters.setdefault(key, [])
+        # Prune expired entries
+        self._counters[key] = bucket = [t for t in bucket if t > cutoff]
+        if len(bucket) >= self._max:
+            return False
+        bucket.append(now)
+        return True
+
+    @property
+    def window(self) -> int:
+        return self._window
 
 # ---------------------------------------------------------------------------
 # Request / response schemas
@@ -143,6 +178,9 @@ def create_auth_router(
     *,
     secret_key: str | None = None,
     prefix: str = "/auth",
+    login_rate_limit: int = 10,
+    register_rate_limit: int = 5,
+    default_rate_limit: int = 20,
 ) -> APIRouter:
     """Build and return a :class:`~fastapi.APIRouter` with auth endpoints.
 
@@ -157,6 +195,12 @@ def create_auth_router(
         ``CODEX_AUTH_SECRET`` env-var, then to a development-only default.
     prefix:
         URL prefix for all auth routes (default ``/auth``).
+    login_rate_limit:
+        Max login attempts per IP per minute (default 10).
+    register_rate_limit:
+        Max registration attempts per IP per minute (default 5).
+    default_rate_limit:
+        Max requests per IP per minute for other auth endpoints (default 20).
 
     Error responses
     ---------------
@@ -164,6 +208,7 @@ def create_auth_router(
     * **401** — Invalid credentials or expired/invalid token.
     * **403** — MFA required or MFA verification failed.
     * **422** — Request body validation error (Pydantic).
+    * **429** — Rate limit exceeded.
     """
     if authenticator is None:
         resolved_secret = (
@@ -182,11 +227,29 @@ def create_auth_router(
     auth = authenticator
     router = APIRouter(prefix=prefix, tags=["auth"])
 
+    # Per-endpoint rate limiters (keyed by client IP)
+    _login_limiter = _EndpointRateLimiter(login_rate_limit, 60)
+    _register_limiter = _EndpointRateLimiter(register_rate_limit, 60)
+    _default_limiter = _EndpointRateLimiter(default_rate_limit, 60)
+
+    def _get_client_ip(request: Request) -> str:
+        return request.client.host if request.client else "unknown"
+
+    def _enforce_rate_limit(limiter: _EndpointRateLimiter, request: Request) -> None:
+        ip = _get_client_ip(request)
+        if not limiter.check(ip):
+            raise HTTPException(
+                status_code=429,
+                detail="Rate limit exceeded. Please try again later.",
+                headers={"Retry-After": str(limiter.window)},
+            )
+
     # ---- register --------------------------------------------------------
 
     @router.post("/register", response_model=RegisterResponse, status_code=201)
     async def register(body: RegisterRequest, request: Request) -> RegisterResponse:
         """Create a new user account."""
+        _enforce_rate_limit(_register_limiter, request)
         try:
             user = auth.register(
                 username=body.username,
@@ -213,6 +276,7 @@ def create_auth_router(
     @router.post("/login", response_model=LoginResponse)
     async def login(body: LoginRequest, request: Request) -> LoginResponse:
         """Authenticate and receive access / refresh / session tokens."""
+        _enforce_rate_limit(_login_limiter, request)
         ip_address: str | None = None
         if request.client:
             ip_address = request.client.host
@@ -261,8 +325,9 @@ def create_auth_router(
     # ---- logout ----------------------------------------------------------
 
     @router.post("/logout", response_model=LogoutResponse)
-    async def logout(body: LogoutRequest) -> LogoutResponse:
+    async def logout(body: LogoutRequest, request: Request) -> LogoutResponse:
         """Revoke the given session token."""
+        _enforce_rate_limit(_default_limiter, request)
         revoked = auth.logout(body.session_token)
         if revoked:
             logger.info("Session revoked")
@@ -271,8 +336,9 @@ def create_auth_router(
     # ---- refresh ---------------------------------------------------------
 
     @router.post("/refresh", response_model=RefreshResponse)
-    async def refresh(body: RefreshRequest) -> RefreshResponse:
+    async def refresh(body: RefreshRequest, request: Request) -> RefreshResponse:
         """Exchange a refresh token for a new access token."""
+        _enforce_rate_limit(_default_limiter, request)
         try:
             new_token = auth.refresh(body.refresh_token)
         except Exception as exc:
@@ -281,5 +347,20 @@ def create_auth_router(
             raise
 
         return RefreshResponse(access_token=new_token)
+
+    # ---- CSRF token (for cookie-based auth flows) ------------------------
+
+    @router.get("/csrf-token")
+    async def csrf_token(request: Request):
+        """Return a fresh CSRF token for cookie-based auth flows.
+
+        Clients using cookie-based authentication should call this endpoint
+        first and include the returned token in subsequent mutating requests
+        via the ``X-CSRF-Token`` header.
+        """
+        import secrets as _secrets
+
+        token = _secrets.token_urlsafe(32)
+        return {"csrf_token": token}
 
     return router

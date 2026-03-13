@@ -134,13 +134,30 @@ ARTIFACTS.mkdir(parents=True, exist_ok=True)
 app = FastAPI(title="Codex API", version="0.1.0")
 logger = logging.getLogger("codex_ml.api")
 
-# --- Authentication routes ------------------------------------------------
+# --- Authentication middleware + routes ------------------------------------
 try:
     from codex.api.auth_routes import create_auth_router as _create_auth_router
+    from codex.auth.middleware import AuthConfig, AuthMiddleware
+    from codex.auth.token_manager import TokenManager as _AuthTokenManager
 
-    app.include_router(_create_auth_router())
+    _auth_secret = os.getenv("CODEX_AUTH_SECRET", "codex-auth-change-me-in-production")
+    _auth_tm = _AuthTokenManager(secret_key=_auth_secret)
+
+    # Auth routes must be exempt from the middleware since they are public.
+    _exempt = {
+        "/health", "/ready", "/metrics", "/docs", "/openapi.json",
+        "/auth/register", "/auth/login", "/auth/refresh", "/auth/logout",
+    }
+    _auth_cfg = AuthConfig(
+        enabled=os.getenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0") == "1",
+        exempt_paths=_exempt,
+        rate_limit_requests=int(os.getenv("CODEX_AUTH_RATE_LIMIT", "100")),
+        rate_limit_window=60,
+    )
+    app.add_middleware(AuthMiddleware, token_manager=_auth_tm, config=_auth_cfg)
+    app.include_router(_create_auth_router(secret_key=_auth_secret))
 except Exception:  # pragma: no cover - auth module may be absent in some deploys
-    logger.debug("Auth routes not available; skipping registration")
+    logger.debug("Auth routes/middleware not available; skipping registration")
 
 _AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
 
