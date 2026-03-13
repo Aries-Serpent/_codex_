@@ -230,53 +230,81 @@ def _extract_logits(output: Any) -> torch.Tensor:
     raise TypeError("model output does not contain logits tensor")
 
 
-def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
-    env_override = os.getenv("API_MAX_PROMPT_TOKENS")
-    if env_override:
-        try:
-            parsed = int(env_override)
-        except ValueError:
-            logger.warning("Invalid API_MAX_PROMPT_TOKENS value", extra={"value": env_override})
-        else:
-            if parsed > 0:
-                return parsed
-            logger.warning("API_MAX_PROMPT_TOKENS must be positive", extra={"value": env_override})
+# ---------------------------------------------------------------------------
+# Helpers for context-limit and vocab-size resolution (extracted from inner
+# functions to keep cyclomatic complexity below the C901 threshold of 10).
+# ---------------------------------------------------------------------------
 
-    def _coerce_int(value: Any) -> Optional[int]:
-        if isinstance(value, bool):  # bool is subclass of int
-            return None
-        if isinstance(value, int) and value > 0:
-            return value
-        if isinstance(value, float) and value > 0 and value.is_integer():
-            return int(value)
+def _coerce_positive_int(value: Any) -> Optional[int]:
+    """Return *value* as a positive int, or ``None`` if not coercible."""
+    if isinstance(value, bool):  # bool subclasses int — reject it
         return None
+    if isinstance(value, int) and value > 0:
+        return value
+    if isinstance(value, float) and value > 0 and value.is_integer():
+        return int(value)
+    return None
 
-    def _get_attr(obj: Any, *names: str) -> Optional[int]:
-        current = obj
-        for name in names:
-            current = getattr(current, name, None)
-            if current is None:
-                return None
-        return _coerce_int(current)
 
-    candidate_attrs = (
-        (model, ("cfg", "max_seq_len")),
-        (model, ("config", "max_position_embeddings")),
-        (model, ("config", "n_positions")),
-        (model, ("config", "n_ctx")),
-        (model, ("config", "seq_length")),
-        (model, ("max_seq_len",)),
-        (model, ("max_position_embeddings",)),
-        (tokenizer, ("model_max_length",)),
-        (tokenizer, ("max_length",)),
-    )
+def _get_nested_attr(obj: Any, *names: str) -> Optional[int]:
+    """Walk a dotted attribute path and coerce the leaf to a positive int."""
+    current: Any = obj
+    for name in names:
+        current = getattr(current, name, None)
+        if current is None:
+            return None
+    return _coerce_positive_int(current)
 
-    for obj, path in candidate_attrs:
-        limit = _get_attr(obj, *path)
-        if limit is None:
-            continue
-        # Hugging Face uses extremely large sentinels for "no limit"
-        if limit >= 10**8:
+
+def _parse_env_context_limit() -> Optional[int]:
+    """Parse ``API_MAX_PROMPT_TOKENS`` env-var; return ``None`` if absent/invalid."""
+    raw = os.getenv("API_MAX_PROMPT_TOKENS")
+    if not raw:
+        return None
+    try:
+        parsed = int(raw)
+    except ValueError:
+        logger.warning("Invalid API_MAX_PROMPT_TOKENS value", extra={"value": raw})
+        return None
+    if parsed > 0:
+        return parsed
+    logger.warning("API_MAX_PROMPT_TOKENS must be positive", extra={"value": raw})
+    return None
+
+
+_CONTEXT_LIMIT_ATTR_PATHS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("model", ("cfg", "max_seq_len")),
+    ("model", ("config", "max_position_embeddings")),
+    ("model", ("config", "n_positions")),
+    ("model", ("config", "n_ctx")),
+    ("model", ("config", "seq_length")),
+    ("model", ("max_seq_len",)),
+    ("model", ("max_position_embeddings",)),
+    ("tokenizer", ("model_max_length",)),
+    ("tokenizer", ("max_length",)),
+)
+
+_HF_SENTINEL = 10**8  # Hugging Face uses huge values to mean "no limit"
+
+
+def _valid_vocab_size(value: Any) -> Optional[int]:
+    """Return *value* as a positive int vocab size, or ``None``."""
+    if isinstance(value, bool):  # pragma: no cover - defensive
+        return None
+    if isinstance(value, int) and value > 0:
+        return value
+    return None
+
+
+def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
+    env_limit = _parse_env_context_limit()
+    if env_limit is not None:
+        return env_limit
+
+    objs = {"model": model, "tokenizer": tokenizer}
+    for obj_key, path in _CONTEXT_LIMIT_ATTR_PATHS:
+        limit = _get_nested_attr(objs[obj_key], *path)
+        if limit is None or limit >= _HF_SENTINEL:
             continue
         return limit
 
@@ -285,42 +313,32 @@ def _resolve_context_limit(tokenizer: Any, model: Any) -> Optional[int]:
 
 def _get_model_vocab_size(model: Any) -> Optional[int]:
     """Best-effort extraction of a model's vocabulary size."""
-
-    def _valid_size(value: Any) -> Optional[int]:
-        if isinstance(value, bool):  # pragma: no cover - defensive
-            return None
-        if isinstance(value, int) and value > 0:
-            return value
-        return None
-
-    cfg = getattr(model, "cfg", None)
-    if cfg is not None:
-        size = _valid_size(getattr(cfg, "vocab_size", None))
-        if size:
-            return size
-
-    config = getattr(model, "config", None)
-    if config is not None:
-        size = _valid_size(getattr(config, "vocab_size", None))
-        if size:
-            return size
-
-    get_input_embeddings = getattr(model, "get_input_embeddings", None)
-    if callable(get_input_embeddings):
-        embeddings = get_input_embeddings()
-        num_embeddings = _valid_size(getattr(embeddings, "num_embeddings", None))
-        if num_embeddings:
-            return num_embeddings
-        weight = getattr(embeddings, "weight", None)
-        if weight is not None and hasattr(weight, "shape") and weight.shape:
-            size = _valid_size(weight.shape[0])
+    for attr in ("cfg", "config"):
+        container = getattr(model, attr, None)
+        if container is not None:
+            size = _valid_vocab_size(getattr(container, "vocab_size", None))
             if size:
                 return size
 
-    size = _valid_size(getattr(model, "vocab_size", None))
+    size = _valid_vocab_size(getattr(model, "vocab_size", None))
     if size:
         return size
 
+    return _get_vocab_size_from_embeddings(model)
+
+
+def _get_vocab_size_from_embeddings(model: Any) -> Optional[int]:
+    """Probe ``get_input_embeddings()`` for the model's vocabulary size."""
+    get_input_embeddings = getattr(model, "get_input_embeddings", None)
+    if not callable(get_input_embeddings):
+        return None
+    embeddings = get_input_embeddings()
+    size = _valid_vocab_size(getattr(embeddings, "num_embeddings", None))
+    if size:
+        return size
+    weight = getattr(embeddings, "weight", None)
+    if weight is not None and hasattr(weight, "shape") and weight.shape:
+        return _valid_vocab_size(weight.shape[0])
     return None
 
 

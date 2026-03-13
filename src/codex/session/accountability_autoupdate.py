@@ -115,7 +115,7 @@ def collect_metadata(
         session_id = os.environ.get("CODEX_SESSION_ID")
     if not session_id:
         raw = f"{commit_sha}:{timestamp}".encode()
-        session_id = hashlib.sha1(raw).hexdigest()[:12]  # noqa: S324
+        session_id = hashlib.sha1(raw, usedforsecurity=False).hexdigest()[:12]  # noqa: S324
 
     # Author ---------------------------------------------------------------
     author = (
@@ -294,7 +294,9 @@ def tokenize_narrative(
 # ---------------------------------------------------------------------------
 
 
-def generate_markdown_entry(metadata: Dict[str, Any], score: float, tokens: List[Dict[str, Any]]) -> str:
+def generate_markdown_entry(
+    metadata: Dict[str, Any], score: float, tokens: List[Dict[str, Any]]
+) -> str:
     """Generate a structured markdown entry for the accountability report.
 
     Returns a single string ready to be appended (includes trailing ``---``).

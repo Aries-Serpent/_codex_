@@ -16,6 +16,7 @@ import hashlib
 import logging
 import os
 import secrets
+import threading
 import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
@@ -158,13 +159,16 @@ class UserStore:
     All lookups are O(n) except by user_id which is O(1).
     For production, replace with a persistent, indexed store.
 
-    Thread-safety: not thread-safe by default.  Wrap with a lock if
-    the store is shared across threads.
+    Thread-safety: all mutating and read operations are protected by an
+    internal ``threading.RLock``.  Re-entrant locking allows the same
+    thread to call write helpers that themselves acquire the lock (e.g.
+    ``_require_user`` called from within ``update_password``).
     """
 
     def __init__(self, hasher: Optional[PasswordHasher] = None) -> None:
         self._hasher = hasher or PasswordHasher()
         self._users: Dict[str, User] = {}  # user_id -> User
+        self._lock: threading.RLock = threading.RLock()
 
     # ------------------------------------------------------------------ #
     # Write operations                                                     #
@@ -208,20 +212,21 @@ class UserStore:
 
         self._validate_password_strength(password)
 
-        if self.find_by_username(username) is not None:
-            raise ValueError(f"Username '{sanitize_log_message(username)}' is already taken")
-        if self.find_by_email(email) is not None:
-            raise ValueError(f"Email '{sanitize_log_message(email)}' is already registered")
+        with self._lock:
+            if self.find_by_username(username) is not None:
+                raise ValueError(f"Username '{sanitize_log_message(username)}' is already taken")
+            if self.find_by_email(email) is not None:
+                raise ValueError(f"Email '{sanitize_log_message(email)}' is already registered")
 
-        user = User(
-            user_id=secrets.token_hex(16),
-            username=username,
-            email=email,
-            password_hash=self._hasher.hash(password),
-            roles=list(roles) if roles else ["user"],
-            display_name=display_name,
-        )
-        self._users[user.user_id] = user
+            user = User(
+                user_id=secrets.token_hex(16),
+                username=username,
+                email=email,
+                password_hash=self._hasher.hash(password),
+                roles=list(roles) if roles else ["user"],
+                display_name=display_name,
+            )
+            self._users[user.user_id] = user
         logger.info("User created: %s", sanitize_log_message(username))
         return user
 
@@ -237,10 +242,11 @@ class UserStore:
             KeyError: If *user_id* does not exist.
             ValueError: If *new_password* does not meet requirements.
         """
-        user = self._require_user(user_id)
         self._validate_password_strength(new_password)
-        user.password_hash = self._hasher.hash(new_password)
-        user.updated_at = time.time()
+        with self._lock:
+            user = self._require_user(user_id)
+            user.password_hash = self._hasher.hash(new_password)
+            user.updated_at = time.time()
 
     def deactivate_user(self, user_id: str) -> None:
         """
@@ -252,9 +258,10 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
-        user = self._require_user(user_id)
-        user.is_active = False
-        user.updated_at = time.time()
+        with self._lock:
+            user = self._require_user(user_id)
+            user.is_active = False
+            user.updated_at = time.time()
         logger.info("User deactivated: %s", sanitize_log_message(user.username))
 
     def delete_user(self, user_id: str) -> None:
@@ -267,8 +274,9 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
-        self._require_user(user_id)
-        del self._users[user_id]
+        with self._lock:
+            self._require_user(user_id)
+            del self._users[user_id]
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
@@ -276,22 +284,25 @@ class UserStore:
 
     def get_user(self, user_id: str) -> Optional[User]:
         """Return the :class:`User` for *user_id*, or ``None``."""
-        return self._users.get(user_id)
+        with self._lock:
+            return self._users.get(user_id)
 
     def find_by_username(self, username: str) -> Optional[User]:
         """Return the :class:`User` with *username*, or ``None``."""
         username = username.strip()
-        for user in self._users.values():
-            if user.username == username:
-                return user
+        with self._lock:
+            for user in self._users.values():
+                if user.username == username:
+                    return user
         return None
 
     def find_by_email(self, email: str) -> Optional[User]:
         """Return the :class:`User` with *email*, or ``None``."""
         email = email.strip().lower()
-        for user in self._users.values():
-            if user.email == email:
-                return user
+        with self._lock:
+            for user in self._users.values():
+                if user.email == email:
+                    return user
         return None
 
     def list_users(self, include_inactive: bool = False) -> List[User]:
@@ -302,9 +313,10 @@ class UserStore:
             include_inactive: If ``False`` (default) only active users are
                 returned.
         """
-        if include_inactive:
-            return list(self._users.values())
-        return [u for u in self._users.values() if u.is_active]
+        with self._lock:
+            if include_inactive:
+                return list(self._users.values())
+            return [u for u in self._users.values() if u.is_active]
 
     # ------------------------------------------------------------------ #
     # Authentication helper                                                #
@@ -327,9 +339,10 @@ class UserStore:
             InvalidCredentialsError: If the credentials are wrong or the
                 account is not active.
         """
-        # Normalise
         identifier = username_or_email.strip()
 
+        # find_by_* already acquires the lock, so we snapshot the user
+        # reference outside the write-critical section
         user = self.find_by_username(identifier)
         if user is None:
             user = self.find_by_email(identifier)
@@ -349,6 +362,7 @@ class UserStore:
     # ------------------------------------------------------------------ #
 
     def _require_user(self, user_id: str) -> User:
+        """Return user by id; **caller must hold** ``self._lock``."""
         user = self._users.get(user_id)
         if user is None:
             raise KeyError(f"User '{user_id}' not found")

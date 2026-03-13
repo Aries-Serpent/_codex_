@@ -12,6 +12,9 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 
 def _reload_api(monkeypatch: pytest.MonkeyPatch) -> ModuleType:
+    # Disable JWT auth middleware so rate-limit and context-guard tests
+    # are not intercepted by the auth layer before reaching the target logic.
+    monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
     module = importlib.reload(importlib.import_module("services.api.main"))
     module._rate_ts = 0.0
     module._rate_count = 0

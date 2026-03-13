@@ -22,7 +22,6 @@ from src.codex.auth.authenticator import Authenticator
 from src.codex.auth.token_manager import TokenManager, TokenType
 from src.codex.auth.user_store import UserStore
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

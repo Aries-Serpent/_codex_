@@ -308,7 +308,8 @@ def create_auth_router(
                     status_code=401, detail="Invalid credentials"
                 ) from exc
             # Not an auth-domain exception — log and re-raise as 500
-            logger.error("Unexpected error during login from %s: %s", ip_address, type(exc).__name__)
+            exc_type = type(exc).__name__
+            logger.error("Unexpected error during login from %s: %s", ip_address, exc_type)
             raise
 
         logger.info("Login success: user=%s from %s", result.username, ip_address)

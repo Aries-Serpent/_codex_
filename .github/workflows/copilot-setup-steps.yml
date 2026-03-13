@@ -84,7 +84,16 @@ jobs:
     # The Cognitive Brain can set COPILOT_RUNNER_PROFILE via the Variables API
     # (using CODEX_MASTER_KEY) before dispatching a heavy session.
     # See: docs/plans/larger-runners-upgrade.md § 4 — Autonomous Switch
-    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
+    #
+    # Runner fallback chain:
+    #   1. COPILOT_RUNNER_PROFILE repo variable (e.g. ubuntu-latest-m, ubuntu-8-core)
+    #   2. ubuntu-latest — GitHub-hosted, always available, prevents "no runner" failures
+    #
+    # Root cause of "✅ Validate Environment Setup" failures (sessions f62db13c etc.):
+    #   ubuntu-latest-m may not be available in all runner groups/regions, causing
+    #   the job to fail before any step runs.  Falling back to ubuntu-latest ensures
+    #   the Copilot agent session can always start; larger runners remain opt-in.
+    runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
     timeout-minutes: 59
     permissions:
       contents: read

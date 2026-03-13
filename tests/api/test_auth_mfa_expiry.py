@@ -24,7 +24,6 @@ from src.codex.auth.mfa_provider import MFAProvider
 from src.codex.auth.token_manager import TokenManager
 from src.codex.auth.user_store import UserStore
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

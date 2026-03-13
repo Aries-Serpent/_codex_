@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -52,9 +52,16 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
 
+# mypy: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response
+# but add_exception_handler expects (Request, Exception) -> Response.
+# The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
+def _rate_limit_handler(request: Request, exc: Exception) -> Response:
+    return _rate_limit_exceeded_handler(request, exc)  # type: ignore[arg-type]
+
+
 # Add rate limiting
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 
 
 # === Request/Response Models ===
@@ -150,7 +157,7 @@ class DeleteIndexResponse(BaseModel):
 class MergeIndicesRequest(BaseModel):
     """Request to merge indices."""
 
-    source_indices: List[str] = Field(..., min_items=2)
+    source_indices: List[str] = Field(..., min_length=2)
     target_index: str
     tenant_id: str = "default"
 

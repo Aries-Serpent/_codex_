@@ -84,6 +84,50 @@ This is NOT chaos - it's strategic pattern-breaking for quality.
 - Best-effort solution attempts (minimum 5 iterations)
 - Clear next steps for future agent
 
+---
+
+### 3a. Deferral Language Trigger Protocol (MANDATORY AUTO-ENFORCEMENT)
+
+**ANY phrase matching the list below is a HARD STOP.**
+The moment you produce such a phrase — in any comment, commit message, PR
+body, or agent output — you MUST IMMEDIATELY:
+
+1. 🔃 **LOAD** `.codex/CODEBASE_AGENCY_POLICY.md` (this file, in full)
+2. 🔃 **LOAD** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+3. 🔃 **LOAD** all stored session memories
+4. **FIX** the issue NOW — origin (branch / agent / PR / session) is irrelevant
+
+**Trigger Phrases (non-exhaustive — intent matters, not exact wording):**
+
+| Category | Example Trigger Phrase |
+|----------|----------------------|
+| Attribution | "This was from a different branch/agent/PR" |
+| Attribution | "Not from our current feature branch" |
+| Pre-existing | "Pre-existing issue / pre-existing code" |
+| Pre-existing | "Not introduced by this PR/change" |
+| Scope | "Out of scope / outside the scope" |
+| Scope | "Not related to this PR/task/change" |
+| Responsibility | "Not my responsibility / not my problem" |
+| Future | "Will address in a future PR/session/task" |
+| Future | "Future PR / follow-up PR / follow-up task" |
+| Future | "Address incrementally / address separately" |
+| Future | "Can be addressed later / will fix later" |
+| Delegation | "Another session/agent should handle this" |
+| Non-actionable | "Not actionable in this PR" |
+| Safety assumption | "Pre-existing and safe" (without verified mitigation) |
+
+**CI Enforcement:**
+The workflow `.github/workflows/deferral-language-gate.yml` runs
+`scripts/ci/check_deferral_language.py` on every PR body and commit
+message.  A match causes a hard CI failure with the policy reminder.
+
+**Rationale:** The trigger phrase "This was from [origin]" is the canonical
+deferral that this policy was written to eliminate.  It has recurred across
+multiple sessions (Sessions 20, 21, 22, 23, 24, 25).  Automated enforcement
+ensures no future session can silently violate it.
+
+---
+
 ### 4. "Deep Research First for Recurring/Systemic Patterns"
 
 **BEFORE** attempting to fix any recurring or systemic CI failure pattern, you **MUST**:
