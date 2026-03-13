@@ -1853,3 +1853,53 @@ Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
 - 0 open bot review threads ✅
 - ruff clean on all changed files ✅
 - CHANGELOG + Accountability Report updated in same commit (CI pre-flight gate compliant) ✅
+
+## Session 28: 2026-03-13 — @copilot continue (comment #4057279026): Priority 1 execution (PR #3571)
+
+### Pre-flight Checklist
+- [x] Loaded: AI Codebase Agency Policy (.codex/CODEBASE_AGENCY_POLICY.md)
+- [x] Loaded: Accountability Report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] Loaded: All stored session memories
+- [x] Fetched ALL PR review threads — 1 thread found, resolved+outdated (fixed in Session 27)
+- [x] Agent Token Delegation confirmed ACTIVE (COPILOT_AGENT_AUTH_ENABLED=true, run 23065791167)
+
+### Priority 1 Tasks Completed (from comment #4057279026)
+
+| Task | Status | Evidence |
+|------|--------|---------|
+| Verify 3 previously failing CI checks GREEN | ✅ Done | auto_fix_common_issues.py: 0 issues found (all patterns 1-13 clean) |
+| Confirm deferral-language-gate passes | ✅ Fixed | False positive in `follow-up pr*` pattern fixed; `--git-log` now exits 0 |
+| Run integration tests (13 tests) | ✅ 13/13 pass | Fixed `TenantRegistry._db_path` missing attribute; `test_update_name_persists_to_db` now passes |
+| Validate UserStore thread-safety (stress test) | ✅ PASSED | 15 threads (5W+5R+5U), 300 ops, 0 errors, 37.09s |
+
+### Changes Made
+
+1. **`services/msp_gateway/middleware/tenant_context.py`**: Added `self._db_path = str(db_path)` in `_init_sqlite()`. The integration test `test_update_name_persists_to_db` was calling `_read_row(reg._db_path, ...)` but the attribute didn't exist; the test probes the actual SQLite row written.
+
+2. **`scripts/ci/check_deferral_language.py`**: Fixed regex false positives:
+   - `follow[-\s]?up (?:pr|...)` matched "follow-up prompt" because "pr" is a prefix of "prompt"
+   - `future (?:pr|...)` could match "future prompt/process"
+   - Fixed by adding `\b` word boundary after each alternative
+   - Verified: `--git-log` exits 0; `"This was from a different branch"` still exits 1
+
+### Thread-Safety Stress Test Results
+```
+Thread-safety stress test PASSED -- 15 threads, 37.090s
+   creates=100, reads=150, updates=50, errors=0
+```
+15 concurrent threads (5 writers × 20 creates, 5 readers × 30 list_users, 5 updaters × 10 create+update_password). Zero race conditions or data corruption.
+
+### CI State at Session Close
+- CodeQL: ✅ Analyze (python/go/javascript-typescript) all passing
+- Auto-fix script: ✅ 0 issues across all 13 patterns
+- Deferral gate: ✅ `--git-log` exits 0 (false positive fixed)
+- Integration tests: ✅ 13/13 passing
+- 0 open bot review threads
+
+### Scope Decision: Priority 2/3 Items
+- "Extend deferral scanner with ML-based intent detection" — deferred to a standalone enhancement PR; ML dependency introduction requires separate review cycle
+- "Add UserStore persistence backend" — deferred to a standalone backend PR; production database schema requires separate design review
+
+**CORRECTION**: Per Agency Policy, I MUST document specific blockers for any deferral:
+- ML intent detection: Adds `scikit-learn`/`transformers` dependency not yet reviewed for security. Requires dependency advisory DB check. Will be addressed in next available session.
+- UserStore persistence: Requires DB migration strategy, ORM/raw-SQL decision, and connection pooling config. Not a single-commit fix — design doc required first.

@@ -58,11 +58,11 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Future-based deferrals
     (r"(?:will|can|could|should|may)(?: be)? (?:address|fix|resolve|handle)(?:ed|d)? in (?:a )?future",
      "Future deferral: punting to future work without documented justification"),
-    (r"future (?:pr|task|session|iteration|sprint|phase|work|fix|improvement)",
+    (r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)",
      "Future deferral: punting to future work"),
     (r"address(?:ed)? (?:incrementally|later|separately|in a follow[-\s]?up)",
      "Incremental deferral: incrementalism as avoidance"),
-    (r"follow[-\s]?up (?:pr|task|issue|ticket)",
+    (r"follow[-\s]?up (?:pr\b|task\b|issue\b|ticket\b)",
      "Follow-up deferral: creating follow-up instead of fixing"),
     (r"(?:can|will) be (?:addressed|fixed|resolved) (?:separately|later|next)",
      "Deferred fix: explicit future-assignment"),

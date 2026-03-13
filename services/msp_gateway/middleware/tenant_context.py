@@ -38,6 +38,7 @@ class TenantRegistry:
         """Initialize SQLite database for tenant registry"""
         db_path = Path(settings.db_path)
         db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._db_path: str = str(db_path)
 
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
