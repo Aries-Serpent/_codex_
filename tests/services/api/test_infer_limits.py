@@ -42,9 +42,11 @@ class _StubModel:
 
         return {"logits": api_main.torch.tensor(logits)}
 
-
 @pytest.fixture
-def fresh_app() -> TestClient:
+def fresh_app(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    # Disable JWT auth middleware so infer-limit tests are not blocked by
+    # the authentication layer before reaching the context-guard logic.
+    monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
     module = importlib.reload(importlib.import_module("services.api.main"))
     module.app.state.__dict__.pop("tokenizer", None)
     module.app.state.__dict__.pop("model", None)

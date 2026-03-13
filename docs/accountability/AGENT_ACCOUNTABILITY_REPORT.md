@@ -1961,3 +1961,41 @@ No new bot review threads, no new CI failures, no new code quality issues detect
 - All required checks GREEN
 - 0 open bot review threads
 - PR is ready for merge review
+
+## Session 31: 2026-03-13 — Full gap remediation (issue #3565 + PR #3571 + #4057676904)
+
+### Pre-flight Checklist
+- [x] 🔃 Loaded: AI Codebase Agency Policy (.codex/CODEBASE_AGENCY_POLICY.md) — §1 Leave Codebase Better, §2 Address ALL Concerns, §3 No Deferral Without Plan
+- [x] 🔃 Loaded: Accountability Report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] 🔃 Loaded: All stored session memories (thread-safety, tenant-registry, deferral enforcement, copilot-continue protocol, CI pre-flight gate)
+- [x] Fetched ALL PR review threads — 1 thread, resolved+outdated ✅
+- [x] Fetched issue #3565 full body — 59 failures, 18 workflows catalogued
+- [x] Agent Token Delegation confirmed ACTIVE (run 23068416588)
+
+### Issues Fixed
+
+| Fix | File(s) | Root Cause | Verification |
+|-----|---------|-----------|-------------|
+| Auth 401 in rate-limit tests | test_rate_limit_middleware.py | JWT auth middleware enabled by default, intercepted before rate-limit logic | 18 passed, 1 xpassed |
+| Auth 401 in infer-limit tests | test_infer_limits.py | `fresh_app` fixture didn't disable JWT auth before reload | 18 passed, 1 xpassed |
+| Auth 401 in api-infer test | test_api_infer.py | Module-level `app` import had JWT auth baked in | 18 passed, 1 xpassed |
+| Auth 401 in middleware-security | test_middleware_security.py | JWT auth intercepted API_KEY tests | 18 passed (xpassed) |
+| validate-internal-links failure | docs/cognitive_brain/INDEX.md | Broken relative path to missing Phase 3 status file | 0 link errors (1851 files) |
+| Missing Phase 3 status doc | docs/cognitive_brain/status/ | File never created | Created with complete Phase 3 record |
+
+### Cognitive Brain Updates
+- Session 31 entry: `.codex/cognitive_brain/SESSION_31_PHASE31_COMPLETE_2026_03_13.md`
+- Phase 3 status doc: `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md`
+
+### Phase 4 Scoping
+- HOTFIX follow-up prompt created: `.github/copilot-prompts/active/HOTFIX-deferral-ml-userstore-db.md`
+- Work Stream 1: scikit-learn/transformers dep review + ML deferral classifier
+- Work Stream 2: UserStore persistence ADR + SQLite backend + migration script
+
+### CI State at Session 31 Close
+- ruff: ✅ All checks passed (changed files)
+- validate-internal-links: ✅ 0 errors
+- Auth middleware tests: ✅ 18 passed, 1 xpassed
+- Integration tests: ✅ 13/13
+- deferral scanner `--git-log`: ✅ exit 0
+- auto_fix (13 patterns): ✅ 0 issues

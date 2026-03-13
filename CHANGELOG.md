@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 31 — 2026-03-13 — Full gap remediation (issue #3565 + PR #3571)
+- **`tests/services/api/test_rate_limit_middleware.py`** — `_reload_api()` sets `CODEX_AUTH_MIDDLEWARE_ENABLED=0` before module reload; fixes 401-instead-of-200/429 in rate-limit tests (#3565 shard failures)
+- **`tests/services/api/test_infer_limits.py`** — `fresh_app` fixture accepts `monkeypatch`, sets `CODEX_AUTH_MIDDLEWARE_ENABLED=0` before reload; fixes 401-instead-of-400 in context-limit tests
+- **`tests/test_api_infer.py`** — `_set_env` sets `CODEX_AUTH_MIDDLEWARE_ENABLED=0`, reloads module; test uses live `app` from reloaded module (not stale module-level import); fixes 401-instead-of-200
+- **`tests/services/api/test_middleware_security.py`** — both tests set `CODEX_AUTH_MIDDLEWARE_ENABLED=0`; JWT auth no longer intercepts API-key tests; `test_api_key_required` xpassed (was xfail)
+- **`docs/cognitive_brain/INDEX.md`** — fixed broken relative path (`../../.codex/cognitive_brain/status/` → `status/`) for Phase 3 status link; 0 validate-internal-links errors (was: 1)
+- **`docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md`** — created; Phase 3 Production Hardening completion record
+- **`.codex/cognitive_brain/SESSION_31_PHASE31_COMPLETE_2026_03_13.md`** — Session 31 cognitive brain status entry
+- **`.github/copilot-prompts/active/HOTFIX-deferral-ml-userstore-db.md`** — HOTFIX follow-up prompt for separate PR: scikit-learn/transformers dep security review + UserStore DB migration design doc
+
 ### Verified (PR copilot/feature-user-authentication — 2026-03-13 — Session 30 / @copilot continue)
 - **CI state confirmed GREEN** on latest commit (`48e7685`): CodeQL (python/go/js) ✅ all passing, submit-pypi ✅, deferral scanner `--git-log` ✅ exit 0, auto_fix 0 issues (13 patterns), 13/13 integration tests passing. 0 open bot review threads (sole thread resolved+outdated). Agent Token Delegation run 23068416588 acknowledged. PR remains ready for merge review.
 
