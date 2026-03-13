@@ -1740,8 +1740,8 @@ def auth_login(username: str, password: str, totp: str | None) -> None:
         raise SystemExit(1) from exc
 
     click.echo(f"✅ Logged in as {result.username}")
-    click.echo(f"   access_token:  {result.access_token}")
-    click.echo(f"   refresh_token: {result.refresh_token}")
+    click.echo(f"   access_token:  {result.access_token[:8]}…{result.access_token[-4:]}")
+    click.echo(f"   refresh_token: {result.refresh_token[:8]}…{result.refresh_token[-4:]}")
     click.echo(f"   session_id:    {result.session_id}")
 
 
