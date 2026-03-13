@@ -169,60 +169,18 @@ jobs:
             sarif-chunks/
           retention-days: 30
 
-      - name: Comment on PR with findings
+      - name: Post findings to PR dashboard
         if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v8
+        uses: ./.github/actions/post-pr-summary
         with:
-          script: |
-            const fs = require('fs');
-            let comment = '## 🔍 Semgrep Security Scan Results\n\n';
-
-            try {
-              // Check for chunking
-              if (fs.existsSync('sarif-chunks')) {
-                const chunkFiles = fs.readdirSync('sarif-chunks').filter(f => f.endsWith('.sarif'));
-                if (chunkFiles.length > 1) {
-                  comment += `📊 Results uploaded in **${chunkFiles.length} chunks** due to GitHub's 5000-result limit\n\n`;
-                }
-              }
-
-              if (fs.existsSync('semgrep-results.txt')) {
-                const results = fs.readFileSync('semgrep-results.txt', 'utf8');
-                const lines = results.split('\n');
-                const findingCount = lines.filter(l => l.includes('✗')).length;
-
-                if (findingCount > 0) {
-                  comment += `⚠️  Found **${findingCount}** potential security issues\n\n`;
-                  const MAX_PREVIEW_LENGTH = 2000;
-                  let preview = results;
-                  if (results.length > MAX_PREVIEW_LENGTH) {
-                    let safeCut = results.lastIndexOf('\n', MAX_PREVIEW_LENGTH);
-                    if (safeCut === -1) {
-                      safeCut = MAX_PREVIEW_LENGTH;
-                    }
-                    if (safeCut > 0) {
-                      const codeUnit = results.charCodeAt(safeCut - 1);
-                      if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
-                        safeCut -= 1;
-                      }
-                    }
-                    preview = results.slice(0, safeCut) + '\n... (truncated; see artifact for full results) ...';
-                  }
-                  comment += '```\n' + preview + '\n```\n\n';
-                  comment += 'See the uploaded artifacts for full details.';
-                } else {
-                  comment += '✅ No security issues found!\n';
-                }
-              } else {
-                comment += '✅ Scan completed successfully\n';
-              }
-            } catch (error) {
-              comment += '⚠️  Could not read scan results\n';
-            }
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+          workflow-name: 'Semgrep Security Scan'
+          status: >-
+            ${{ steps.semgrep.outcome == 'failure' && 'failure' || 'success' }}
+          summary: >-
+            ${{ steps.semgrep.outcome == 'failure'
+                && 'Security issues detected — review required'
+                || 'No security issues found' }}
+          details: |
+            Semgrep scan completed. See workflow artifacts for full SARIF output.
+            Run `@copilot Use code-scanning-remediation-agent to fix alerts` to auto-remediate.
+          github-token: ${{ secrets.GITHUB_TOKEN }}

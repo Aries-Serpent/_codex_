@@ -1,6 +1,6 @@
 ---
 name: Session Analysis Agent
-description: Analyze Copilot sessions, verify committed changes, and track objective completion patterns
+description: Analyze Copilot sessions, verify committed changes, track objective completion patterns, and force-archive stale/cached sessions
 runner_compatibility:
   default: ubuntu-latest        # 2-core — session analysis, commit verification, pattern learning
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
@@ -8,17 +8,24 @@ runner_compatibility:
 
 # Session Analysis Agent
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Status:** ✅ Active
 **Type:** Specialized - Session Management & Analytics
-**Last Updated:** 2026-02-05T09:45:00Z
+**Last Updated:** 2026-03-12T20:45:00Z
 **Author:** GitHub Copilot Coding Agent
 
 ---
 
 ## 🎯 Purpose
 
-
+The Session Analysis Agent provides comprehensive analysis of GitHub Copilot Coding Agent sessions, enabling:
+- Commit verification and file tracking
+- Pattern recognition and learning
+- Session continuity optimization
+- Objective alignment monitoring
+- Cross-session knowledge transfer
+- **Stale session detection and force-archive** (v1.1.0)
+- **Iterative self-review with autonomous self-healing** (v1.1.0)
 ## 🧠 Cognitive Brain Integration
 
 ### Integration Level: Level 1
@@ -126,36 +133,51 @@ The Session Analysis Agent provides comprehensive analysis of GitHub Copilot Cod
 ## 📊 Agent Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      Session Analysis Agent                              │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌─────────────┐ │
-│  │   Session    │  │   Commit     │  │   Pattern    │  │  Objective  │ │
-│  │   Retriever  │  │   Verifier   │  │   Analyzer   │  │  Aligner    │ │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬──────┘ │
-│         │                  │                  │                  │       │
-│         └──────────────────┼──────────────────┼──────────────────┘       │
-│                            │                  │                          │
-│                   ┌────────┴──────────────────┴────────┐                │
-│                   │       Session Manager Core          │                │
-│                   └────────────────┬───────────────────┘                │
-│                                    │                                     │
-│         ┌──────────────────────────┼──────────────────────────┐         │
-│         │                          │                          │         │
-│  ┌──────┴──────┐          ┌────────┴────────┐        ┌───────┴───────┐ │
-│  │   Report    │          │    Cognitive    │        │   Continuation│ │
-│  │  Generator  │          │     Brain       │        │    Prompter   │ │
-│  └─────────────┘          └─────────────────┘        └───────────────┘ │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                    ┌───────────────┼───────────────┐
-                    │               │               │
-              ┌─────┴─────┐  ┌──────┴──────┐  ┌────┴────┐
-              │  Session  │  │   Pattern   │  │Objectives│
-              │   Logs    │  │   Store     │  │ Tracker  │
-              └───────────┘  └─────────────┘  └──────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        Session Analysis Agent v1.1                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐ │
+│  │   Session    │  │   Commit     │  │   Pattern    │  │    Objective     │ │
+│  │   Retriever  │  │   Verifier   │  │   Analyzer   │  │    Aligner       │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘ │
+│         │                  │                  │                   │          │
+│         └──────────────────┼──────────────────┼───────────────────┘          │
+│                            │                  │                              │
+│                   ┌────────┴──────────────────┴────────┐                    │
+│                   │       Session Manager Core          │                    │
+│                   └────────────────┬───────────────────┘                    │
+│                                    │                                         │
+│    ┌───────────────────────────────┼───────────────────────────────┐        │
+│    │                               │                               │        │
+│  ┌─┴───────────┐        ┌──────────┴───────┐        ┌─────────────┴──────┐  │
+│  │   Report    │        │    Cognitive     │        │   Continuation     │  │
+│  │  Generator  │        │     Brain        │        │    Prompter        │  │
+│  └─────────────┘        └──────────────────┘        └────────────────────┘  │
+│                                                                               │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │                  SessionArchiver  (v1.1.0 — NEW)                     │   │
+│  │  • Detects sessions stuck in "active" with no UI archive option      │   │
+│  │  • Creates tombstone records for stale/cached GitHub task sessions   │   │
+│  │  • force-archive via: scripts/session_tracker.py archive --session-id│   │
+│  │  • STATUS_ARCHIVED constant ensures type-safe status transitions     │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                               │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │               Self-Review Loop  (v1.1.0 — NEW)                       │   │
+│  │  1. run tests → 2. check CI → 3. scan CodeQL → 4. lint/ruff         │   │
+│  │  5. if failures: diagnose → patch → re-run (max 3 iterations)       │   │
+│  │  6. update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT on every commit  │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                      ┌───────────────┼─────────────────┐
+                      │               │                 │
+                ┌─────┴─────┐  ┌──────┴──────┐  ┌──────┴──────────┐
+                │  Session  │  │   Pattern   │  │  Objectives /   │
+                │   Logs    │  │   Store     │  │  Tombstones     │
+                └───────────┘  └─────────────┘  └─────────────────┘
 ```
 
 ---
@@ -172,6 +194,8 @@ The Session Analysis Agent provides comprehensive analysis of GitHub Copilot Cod
 | **Objective Tracking** | Monitor and adjust codebase objectives | ✅ Active |
 | **Report Generation** | Create comprehensive analysis reports | ✅ Active |
 | **Continuation Prompts** | Generate session handoff prompts | ✅ Active |
+| **Stale Session Archive** | Force-archive sessions stuck in "active" (tombstone records) | ✅ Active (v1.1.0) |
+| **Self-Review Loop** | Iterative autonomous self-healing (test→CI→CodeQL→lint→patch) | ✅ Active (v1.1.0) |
 
 ### Advanced Capabilities
 
@@ -180,6 +204,72 @@ The Session Analysis Agent provides comprehensive analysis of GitHub Copilot Cod
 | **ML Pattern Recognition** | AI-based issue recognition | 📋 Planned |
 | **Autonomous Adjustment** | Self-adjusting objectives | 📋 Planned |
 | **Cross-Session Learning** | Knowledge transfer optimization | 📋 Planned |
+
+---
+
+## 🗄️ Stale Session Archive Workflow (v1.1.0)
+
+When a GitHub Copilot task session is stuck as "active" with no UI archive option (due to stale/cached data), this agent uses the `archive` subcommand to create a permanent tombstone record:
+
+```bash
+# Force-archive a stale GitHub Copilot task session
+python scripts/session_tracker.py archive \
+  --session-id <UUID> \
+  --reason "PR #NNNN merged — stale GitHub Copilot task; UI archive unavailable" \
+  --pr-number NNNN
+```
+
+**How it works:**
+1. Checks for a local session file at `memory/sessions/session_<UUID>.json`
+2. If missing (stale/cached), creates a tombstone record with `"tombstone": true`
+3. Sets `status = "archived"`, `archived_at`, `archive_reason`, and `pr_number`
+4. Removes the session from `.current_session.json` if referenced
+5. Writes both JSON and Markdown records for permanent audit trail
+
+**Programmatic API:**
+```python
+from scripts.session_tracker import archive_session, STATUS_ARCHIVED
+
+result = archive_session(
+    session_id="f50f76f3-161d-4776-aa72-f9f0d6202fc2",
+    reason="PR #3221 merged — stale cached session",
+    pr_number=3221,
+)
+assert result["status"] == STATUS_ARCHIVED  # "archived"
+assert result["tombstone"] is True
+```
+
+---
+
+## 🔄 Self-Review Loop (v1.1.0)
+
+After completing any task, this agent executes an iterative self-healing cycle:
+
+```
+┌─────────────────────────────────────────────────────┐
+│                 Self-Review Loop                     │
+│                                                     │
+│  ① Run tests    → pass? ──────────────────────────┐ │
+│       │ fail                                       │ │
+│       ▼                                            │ │
+│  ② Diagnose failure                               │ │
+│       │                                            │ │
+│       ▼                                            │ │
+│  ③ Apply minimal patch                            │ │
+│       │                                            │ │
+│       └──► re-run (max 3 iterations)               │ │
+│                                                    │ │
+│  ④ Check CI runs via GitHub MCP tools ◄────────── ┘ │
+│       │                                             │
+│  ⑤ Run CodeQL scan                                 │
+│       │                                             │
+│  ⑥ Run ruff lint                                   │
+│       │                                             │
+│  ⑦ Update CHANGELOG.md + AGENT_ACCOUNTABILITY      │
+│       │                                             │
+│  ⑧ report_progress (commit + push)                │
+└─────────────────────────────────────────────────────┘
+```
 
 ---
 

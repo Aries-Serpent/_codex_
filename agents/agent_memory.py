@@ -1193,8 +1193,11 @@ class AgentMemorySystem:
     def invalidate_stale_contexts(self, age_days: int = 30) -> int:
         """Invalidate and clean up stale contexts older than specified days.
 
-        Reduces confidence of old, rarely-accessed memories and
-        removes very low confidence entries.
+        Reduces confidence of old, rarely-accessed memories, removes very low
+        confidence entries, and archives any active Copilot task sessions that
+        are older than *age_days* via ``scripts.session_tracker.archive_session``
+        (Phase 22.2 wiring — creates tombstone records for stale task sessions
+        so they no longer appear as "active" in the UI or metrics).
 
         Args:
             age_days: Age threshold in days for considering context stale
@@ -1244,6 +1247,36 @@ class AgentMemorySystem:
             conn.commit()
 
         logger.info(f"Invalidated {invalidated} stale contexts older than {age_days} days")
+
+        # Phase 22.2 — archive any stale Copilot task sessions so their
+        # lifecycle state stays consistent with the memory invalidation sweep.
+        # Import is deferred and guarded so that sys.path mutation in
+        # stale_session_detector (needed for standalone CLI use) does not affect
+        # library callers.  verbose=False suppresses stdout in library context.
+        try:
+            import importlib
+            import sys as _sys
+
+            repo_root = str(__file__).rsplit("agents", 1)[0].rstrip("/\\")
+            if repo_root not in _sys.path:
+                _sys.path.insert(0, repo_root)
+
+            _mod = importlib.import_module("scripts.stale_session_detector")
+            archived_ids: list[str] = _mod.archive_stale_sessions(
+                max_age_days=age_days,
+                check_prs=False,  # offline-safe; avoids network I/O in tests
+                dry_run=False,
+                verbose=False,  # suppress stdout; callers use logger
+            )
+            if archived_ids:
+                logger.info(
+                    f"Phase 22.2: archived {len(archived_ids)} stale task session(s): "
+                    + ", ".join(archived_ids[:5])
+                    + ("…" if len(archived_ids) > 5 else "")
+                )
+        except Exception as exc:  # noqa: BLE001 — best-effort; never block invalidation
+            logger.debug(f"Phase 22.2 session archive skipped: {exc}")
+
         return invalidated
 
 

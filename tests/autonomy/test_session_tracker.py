@@ -126,3 +126,178 @@ class TestSessionList:
             sessions = mod.list_sessions()
 
         assert len(sessions) >= 2
+
+
+class TestSessionArchive:
+    """Tests for the archive command and archive_session programmatic API."""
+
+    def test_archive_existing_session(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session")):
+            pytest.skip("start_session / archive_session not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            session_id = mod.start_session(label="to-archive")
+            result = mod.archive_session(session_id=session_id, reason="test archive")
+
+        assert result["status"] == "archived"
+        assert result["outcome"] == "archived"
+        assert result.get("archive_reason") == "test archive"
+        assert "archived_at" in result
+
+    def test_archive_stale_session_creates_tombstone(self, tmp_path):
+        """Archiving a session with no local file creates a tombstone record."""
+        mod = _import_tracker()
+        if not hasattr(mod, "archive_session"):
+            pytest.skip("archive_session not exported")
+
+        stale_id = "f50f76f3-161d-4776-aa72-f9f0d6202fc2"
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            result = mod.archive_session(
+                session_id=stale_id,
+                reason="PR #3221 merged - stale cached session",
+                pr_number=3221,
+            )
+
+        assert result["session_id"] == stale_id
+        assert result["status"] == "archived"
+        assert result.get("tombstone") is True
+        assert result.get("pr_number") == 3221
+        session_file = tmp_path / f"session_{stale_id}.json"
+        assert session_file.exists()
+
+    def test_archive_session_removes_current_pointer(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session")):
+            pytest.skip("start_session / archive_session not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            session_id = mod.start_session(label="ptr-archive-test")
+            ptr = tmp_path / ".current_session.json"
+            assert ptr.exists()
+            mod.archive_session(session_id=session_id)
+            assert not ptr.exists()
+
+    def test_archive_session_status_constant(self):
+        mod = _import_tracker()
+        assert hasattr(mod, "STATUS_ARCHIVED"), "STATUS_ARCHIVED constant missing"
+        assert mod.STATUS_ARCHIVED == "archived"
+
+    def test_archive_session_in_list(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session") and hasattr(mod, "list_sessions")):
+            pytest.skip("start_session / archive_session / list_sessions not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            session_id = mod.start_session(label="archive-list-test")
+            mod.archive_session(session_id=session_id, reason="list test")
+            sessions = mod.list_sessions()
+
+        archived = [s for s in sessions if s["session_id"] == session_id]
+        assert len(archived) == 1
+        assert archived[0]["status"] == "archived"
+
+
+class TestSessionArchiveDryRun:
+    """Tests for the --dry-run flag added in Phase 22."""
+
+    def test_dry_run_does_not_create_file(self, tmp_path):
+        mod = _import_tracker()
+        if not hasattr(mod, "cmd_archive"):
+            pytest.skip("cmd_archive not exported")
+
+        session_id = "aaaabbbb-cccc-dddd-eeee-ffffffffffff"
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            rc = mod.cmd_archive(session_id=session_id, reason="dry test", dry_run=True)
+
+        assert rc == 0
+        assert not (tmp_path / f"session_{session_id}.json").exists(), \
+            "dry-run must not write any files"
+
+    def test_dry_run_existing_session_unchanged(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "cmd_archive") and hasattr(mod, "start_session")):
+            pytest.skip("cmd_archive / start_session not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            sid = mod.start_session(label="dry-run-live")
+            original_status = mod._load_json(mod._session_path(sid))["status"]
+            rc = mod.cmd_archive(session_id=sid, reason="dry-run check", dry_run=True)
+            after_status = mod._load_json(mod._session_path(sid))["status"]
+
+        assert rc == 0
+        assert after_status == original_status, \
+            "dry-run must leave the session file unchanged"
+
+
+class TestSessionMetrics:
+    """Tests for the ``metrics`` command and ``session_metrics()`` API (Phase 23)."""
+
+    def test_metrics_empty(self, tmp_path):
+        mod = _import_tracker()
+        if not hasattr(mod, "session_metrics"):
+            pytest.skip("session_metrics not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            result = mod.session_metrics()
+
+        assert result["total"] == 0
+        assert result["active"] == 0
+        assert result["archived"] == 0
+
+    def test_metrics_counts_statuses(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session") and hasattr(mod, "session_metrics")):
+            pytest.skip("required functions not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            sid1 = mod.start_session(label="active-one")
+            sid2 = mod.start_session(label="to-archive")
+            mod.archive_session(session_id=sid2, reason="test metrics")
+            result = mod.session_metrics()
+
+        assert result["active"] >= 1
+        assert result["archived"] >= 1
+        assert result["total"] == result["active"] + result["completed"] + result["error"] + result["archived"] + result["unknown"]
+
+    def test_metrics_tombstone_counted(self, tmp_path):
+        mod = _import_tracker()
+        if not (hasattr(mod, "archive_session") and hasattr(mod, "session_metrics")):
+            pytest.skip("required functions not exported")
+
+        stale_id = "cccccccc-dddd-eeee-ffff-000000000001"
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            mod.archive_session(session_id=stale_id, reason="tombstone test")
+            result = mod.session_metrics()
+
+        assert result["tombstones"] == 1
+        assert result["archived"] >= 1
+
+    def test_cmd_metrics_text_output(self, tmp_path, capsys):
+        mod = _import_tracker()
+        if not hasattr(mod, "cmd_metrics"):
+            pytest.skip("cmd_metrics not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            rc = mod.cmd_metrics(output_format="text")
+
+        captured = capsys.readouterr()
+        assert rc == 0
+        assert "Archived" in captured.out or "archived" in captured.out.lower()
+        assert "Total" in captured.out or "total" in captured.out.lower()
+
+    def test_cmd_metrics_json_output(self, tmp_path, capsys):
+        mod = _import_tracker()
+        if not hasattr(mod, "cmd_metrics"):
+            pytest.skip("cmd_metrics not exported")
+
+        with patch.object(mod, "SESSION_DIR", tmp_path):
+            rc = mod.cmd_metrics(output_format="json")
+
+        captured = capsys.readouterr()
+        assert rc == 0
+        import json
+        data = json.loads(captured.out)
+        assert "archived" in data
+        assert "total" in data
+        assert "tombstones" in data

@@ -1,9 +1,60 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/sub-pr-3563
+**Branch:** copilot/remove-stale-cached-session
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-12T19:32Z (session 15: copilot-setup-steps git editor + base branch promotion)
+**Last updated:** 2026-03-12T20:45Z (session 16: stale session archive + CI triage issue #3565)
+
+---
+
+## 📋 SESSION SUMMARY — 2026-03-12 SESSION 16 (Stale Session Archive + CI Triage #3565)
+
+### Pre-flight Checklist
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
+- [x] **2.** CI triage issue #3565 reviewed via GitHub tools — 75 failures across 29 workflows identified; majority are `action_required` (owner-approval-guard gates, not code failures); 4 actionable failure types diagnosed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: complete PR #3566 checklist, archive stale session `f50f76f3-161d-4776-aa72-f9f0d6202fc2`, respond to triage issue #3565 ✅
+- [x] **5.** Execution plan committed as `report_progress` checklist ✅
+- [x] **6.** Codebase Agency Policy followed ✅
+- [x] **7.** `CHANGELOG.md` [Unreleased] section updated (session 16 entry) ✅
+- [x] **8.** All 11 tests pass (6 existing + 5 new archive tests) ✅
+- [x] **9.** `session-analysis-agent.md` updated with stale-session archive capability and self-review loop ✅
+- [x] **10.** Cognitive Brain status updated to reflect session 16 completion ✅
+
+### Actions Taken
+
+| Change | File | Root Cause / Purpose |
+|--------|------|----------------------|
+| Add `STATUS_ARCHIVED`, `cmd_archive()`, `archive_session()` | `scripts/session_tracker.py` | Stale GitHub Copilot task `f50f76f3` has no UI archive option; needs code-side tombstone mechanism |
+| Register `archive` CLI subcommand | `scripts/session_tracker.py` | Completes the session lifecycle (start → end → archive) |
+| Add 5 archive tests in `TestSessionArchive` | `tests/autonomy/test_session_tracker.py` | Validates tombstone creation, pointer cleanup, constant presence |
+| Create tombstone record for stale session | `memory/sessions/session_f50f76f3-….json` | Documents archive decision in repo audit trail for PR #3221 stale task |
+| Update `CHANGELOG.md` | `CHANGELOG.md` | Pre-flight REQ-7 Pass gate; session 16 entry ✅ |
+| Update accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Pre-flight REQ-1 ✅ |
+| Extend session-analysis-agent spec | `.github/agents/session-analysis-agent.md` | Add `SessionArchiver` component, stale detection, self-review loop |
+| Update cognitive brain status | `.codex/cognitive_brain/status/` | Session 16 completion record |
+
+### CI Triage Issue #3565 Analysis
+
+**Issue:** 75 total failures across 29 workflows  
+**Root cause breakdown:**
+
+| Category | Count | Resolution |
+|----------|-------|------------|
+| `action_required` (owner-approval-guard) | ~60 | Require human admin approval; not code failures |
+| `pages-build-deployment` build › Set up job | 1 | GitHub Pages infra issue on `main`; not caused by code changes |
+| `Art_Validation Pipeline` Fast Validation | 5 | `dependabot/pip/requirements/pip-c36b02d424` branch — venv mismatch resolved by session 13 venv healing (already merged) |
+| `Art_"CodeQL"` Analyze (python) | 4 | CodeQL analysis timeouts on `copilot/sub-pr-3554` (merged) — no action needed |
+| Duplicate Detection Set up Python | 1 | Infra-level Python setup issue on merged branch — no action needed |
+
+**Conclusion:** No code changes required for triage issue #3565. Failures are either: (a) approval-gated workflows awaiting human action, (b) transient infra issues on already-merged branches, or (c) already resolved by sessions 12–15.
+
+### Outcome
+- Stale session tombstone created and archived ✅
+- `archive` command available for future stale session scenarios ✅
+- All 11 session tracker tests pass ✅
+- CI triage #3565 assessed — no new code changes needed beyond this PR ✅
+- Pre-flight gates satisfied ✅
 
 ---
 
@@ -1385,3 +1436,96 @@ Quick-set commands: see `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md §6h`.
 
 ### Outcome
 - Delegation state confirmed active ✅
+
+## Session 17: 2026-03-12 — Phase 22 features + CI test fixes + PR comment consolidation
+
+### Pre-flight Checklist
+- [x] CHANGELOG.md updated
+- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] CI failures analyzed via GitHub Actions MCP tools
+- [x] Tests run locally before and after changes
+- [x] Ruff linting clean on all changed files
+
+### CI Triage: Resilient Validation Suite (shards 1-4, PR #3566)
+Failures assessed and root-cause resolved. 10 distinct failures fixed:
+
+| Test | Root Cause | Fix |
+|------|-----------|-----|
+| `test_no_over_suppression` | rglob included `.venv_ci` with non-UTF-8 files | Skip `.venv_ci` + catch `UnicodeDecodeError` |
+| `test_infer_masks_secrets` | `KeyError: 'tokenizer'` in `_clear_app_state` | Catch `(AttributeError, KeyError)` |
+| `test_infer_passes_lora_args` | `from codex_ml.cli import infer` → Click Group | `import codex_ml.cli.infer as infer` + `load_from_pretrained` mock |
+| `test_repo_map_lists_visible_top_level_entries` | Stale "CLI test message" SQLite artifact in root | Remove artifact |
+| `test_recovery_from_graph_error` | `retrieve_memory("key")` returns `MemoryEntry` | Use `key=` kwarg form |
+| `test_cyclic_data_flow` | Same `retrieve_memory` typing mismatch | Use `key=` kwarg form |
+| `test_complex_workflow_scaling` | `current.step_id` → `WorkflowStep.id` | Fix attribute name |
+| `test_final_status_reflects_strategy_result` | Wrong `fake_save` signature + wrong monkeypatch target | Fix to `(state=None, metadata=None)`, patch `unified_training.save_checkpoint` |
+| `test_checkpoint_resume` | `batch.get("labels") or batch.get("input_ids")` ambiguous tensor bool | `is not None` check |
+| `test_sample_system_metrics_with_psutil` | conftest `session_resource_manager` calls real psutil pre-test | Patch real psutil module callables directly |
+
+### Phase 22 Implementation
+- **Phase 22.1**: `scripts/stale_session_detector.py` — automated stale session detection and archive
+- **Phase 22.2**: `agents/agent_memory.py` `invalidate_stale_contexts()` wired to call `archive_stale_sessions()`
+- **`--dry-run`**: Added to `cmd_archive()` and `archive` CLI subcommand
+- **`STATUS_ARCHIVED`**: Already surfaced in `cmd_list()` 🗄 icon; confirmed in Phase 22 tests
+
+### PR Comment Consolidation (new infrastructure)
+- `scripts/ci/pr_comment_consolidator.py` — finds-or-creates a single dashboard comment per PR
+- `.github/actions/post-pr-summary/action.yml` — composite action wrapping the consolidator
+- `.github/workflows/consolidated-pr-status.yml` — reusable workflow with duration-seconds input
+- Migrated `qa-walkthrough.yml` and `semgrep_sarif.yml` from standalone `createComment` to consolidated pattern
+
+### Outcome
+- 10/10 targeted test failures fixed ✅
+- All Phase 22 features implemented and tested (13/13 session tracker tests pass) ✅
+- PR comment consolidation infrastructure deployed ✅
+- Ruff clean on all changed files ✅
+
+## Session 18: 2026-03-12 — Phase 23 metrics + 4 more workflow migrations (Token Delegation activated)
+
+### Pre-flight Checklist
+- [x] CHANGELOG.md updated
+- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] Token Delegation confirmed active (COPILOT_AGENT_AUTH_ENABLED=true)
+- [x] CI run 23027070024 in_progress on commit 908bd87 (session 17 fixes)
+- [x] Tests run locally before changes
+
+### Phase 23 Implementation
+
+#### Session Metrics Dashboard (STATUS_ARCHIVED surfaced)
+- `cmd_metrics()` CLI subcommand added to `session_tracker.py`
+- `session_metrics()` programmatic API added
+- 5 new `TestSessionMetrics` tests (18/18 total session tracker tests pass)
+
+```
+$ python scripts/session_tracker.py metrics
+── Session Lifecycle Metrics ──────────────────────────
+  🟡 Active    : 0
+  ✅ Completed : 0
+  ❌ Error     : 0
+  🗄  Archived  : 0
+  ──────────────────────────────────────────────────────
+  📊 Total     : 0  (of which 0 are tombstones)
+
+$ python scripts/session_tracker.py metrics --format json
+{"total": 0, "active": 0, "completed": 0, "error": 0, "archived": 0, "tombstones": 0, "unknown": 0}
+```
+
+#### Workflow Migration (4 more workflows → consolidated dashboard)
+
+Migrated 4 more workflows from standalone comments to `post-pr-summary` action:
+- `pr-size-analyzer.yml` — PR Size Analysis (was posting a fresh comment every run)
+- `progressive-validation.yml` — Progressive Validation (was posting a fresh comment every run)
+- `e-to-d-transition-gate.yml` — E→D Transition Readiness (was posting fresh comment every run, appeared 2x per PR)
+- `pages-pre-merge-validation.yml` — GitHub Pages Validation (was posting fresh comment every run)
+
+**Total workflows now contributing to dashboard:** 6 (qa-walkthrough, semgrep_sarif, pr-size-analyzer, progressive-validation, e-to-d-transition-gate, pages-pre-merge-validation)
+
+### CI Status
+- Run 23027070024 for commit 908bd87 — `in_progress` (session 17 fixes)
+- ~60 `action_required` approval-gate workflows still require admin approval (#3565)
+- Token Delegation now active — GITHUB_TOKEN available for `--check-prs` in stale_session_detector.py
+
+### Outcome
+- Phase 23 complete ✅
+- 18/18 session tracker tests pass ✅
+- Ruff clean on all changed files ✅

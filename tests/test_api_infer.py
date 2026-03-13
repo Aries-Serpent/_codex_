@@ -26,7 +26,7 @@ def _set_env(monkeypatch):
         for state_attr in ("tokenizer", "model"):
             try:
                 delattr(app.state, state_attr)
-            except AttributeError:
+            except (AttributeError, KeyError):
                 pass
 
     _clear_app_state()

@@ -12,6 +12,7 @@ Usage:
     python scripts/session_tracker.py status
     python scripts/session_tracker.py resume
     python scripts/session_tracker.py list [--limit N]
+    python scripts/session_tracker.py archive --session-id ID [--reason REASON] [--pr-number N]
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ CURRENT_SESSION_FILE = SESSION_DIR / ".current_session.json"
 STATUS_ACTIVE = "active"
 STATUS_COMPLETED = "completed"
 STATUS_ERROR = "error"
+STATUS_ARCHIVED = "archived"
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -186,13 +188,154 @@ def cmd_list(limit: int = 10) -> int:
         session = _load_json(path)
         if session is None:
             continue
-        status_icon = {STATUS_ACTIVE: "🟡", STATUS_COMPLETED: "✅", STATUS_ERROR: "❌"}.get(session.get("status", ""), "❓")
+        status_icon = {STATUS_ACTIVE: "🟡", STATUS_COMPLETED: "✅", STATUS_ERROR: "❌", STATUS_ARCHIVED: "🗄"}.get(session.get("status", ""), "❓")
         print(f"{status_icon}  {session['session_id'][:12]}  {session.get('started_at', '')[:19]}  {session.get('label', '')}")
         shown += 1
         if shown >= limit:
             break
     if shown == 0:
         print("No sessions recorded yet.")
+    return 0
+
+
+def cmd_archive(
+    session_id: str,
+    reason: str = "",
+    pr_number: Optional[int] = None,
+    dry_run: bool = False,
+) -> int:
+    """Force-archive a session by ID.
+
+    Works for both locally tracked sessions and stale/cached sessions that only
+    exist in an external system (e.g. a GitHub Copilot task that can no longer
+    be archived via the UI).  When no local session file is found a tombstone
+    record is created so the decision is permanently documented in the repo.
+
+    Pass ``--dry-run`` to preview the action without writing any files.
+    """
+    path = _session_path(session_id)
+    session = _load_json(path)
+
+    now = _now()
+    is_tombstone = session is None
+    if is_tombstone:
+        # Session does not exist locally — create a tombstone record so the
+        # archive action is traceable in the repository's own audit trail.
+        session = {
+            "session_id": session_id,
+            "label": f"archived-stale-{session_id[:8]}",
+            "started_at": now,
+            "ended_at": now,
+            "status": STATUS_ARCHIVED,
+            "outcome": "archived",
+            "tombstone": True,
+            "events": [],
+        }
+        print(f"NOTE: No local session file found for {session_id}; creating tombstone record.")
+    else:
+        session["ended_at"] = session.get("ended_at") or now
+        session["status"] = STATUS_ARCHIVED
+        session["outcome"] = "archived"
+
+    session["archived_at"] = now
+    if reason:
+        session["archive_reason"] = reason
+    if pr_number is not None:
+        session["pr_number"] = pr_number
+
+    session.setdefault("events", []).append(
+        {"timestamp": now, "type": "archive", "detail": reason or "force-archived"}
+    )
+
+    if dry_run:
+        print(f"[DRY RUN] Would archive session: {session_id}")
+        print(f"  Tombstone: {is_tombstone}")
+        if reason:
+            print(f"  Reason: {reason}")
+        if pr_number is not None:
+            print(f"  PR: #{pr_number}")
+        print(f"  Archive record would be written to: {path}")
+        print(f"  Preview payload:\n{json.dumps(session, indent=4, default=str)}")
+        return 0
+
+    _save_json(path, session)
+    _write_markdown(session)
+
+    # Remove from current-session pointer if it referenced this session.
+    # Use SESSION_DIR dynamically so test patches to SESSION_DIR are respected.
+    current_session_file = SESSION_DIR / ".current_session.json"
+    current = _load_json(current_session_file)
+    if current and current.get("session_id") == session_id:
+        current_session_file.unlink(missing_ok=True)
+
+    print(f"Session archived: {session_id}")
+    if reason:
+        print(f"  Reason: {reason}")
+    if pr_number is not None:
+        print(f"  PR: #{pr_number}")
+    print(f"  Archive record: {path}")
+    return 0
+
+
+def cmd_metrics(output_format: str = "text") -> int:
+    """Print lifecycle counts for all local sessions.
+
+    Output includes counts for each status (active, completed, error, archived)
+    plus a total, giving a quick health-check of the session audit trail.
+    Supports ``--format json`` for machine consumption in CI dashboards.
+    """
+    counts: dict[str, int] = {
+        STATUS_ACTIVE: 0,
+        STATUS_COMPLETED: 0,
+        STATUS_ERROR: 0,
+        STATUS_ARCHIVED: 0,
+        "unknown": 0,
+    }
+    tombstones = 0
+
+    for path in SESSION_DIR.glob("session_*.json"):
+        if ".current" in path.name:
+            continue
+        session = _load_json(path)
+        if session is None:
+            continue
+        status = session.get("status", "unknown")
+        if status in counts:
+            counts[status] += 1
+        else:
+            counts["unknown"] += 1
+        if session.get("tombstone"):
+            tombstones += 1
+
+    total = sum(counts.values())
+
+    if output_format == "json":
+        import json as _json
+
+        print(
+            _json.dumps(
+                {
+                    "total": total,
+                    "active": counts[STATUS_ACTIVE],
+                    "completed": counts[STATUS_COMPLETED],
+                    "error": counts[STATUS_ERROR],
+                    "archived": counts[STATUS_ARCHIVED],
+                    "tombstones": tombstones,
+                    "unknown": counts["unknown"],
+                },
+                indent=2,
+            )
+        )
+    else:
+        print("── Session Lifecycle Metrics ──────────────────────────")
+        print(f"  🟡 Active    : {counts[STATUS_ACTIVE]}")
+        print(f"  ✅ Completed : {counts[STATUS_COMPLETED]}")
+        print(f"  ❌ Error     : {counts[STATUS_ERROR]}")
+        print(f"  🗄  Archived  : {counts[STATUS_ARCHIVED]}")
+        if counts["unknown"]:
+            print(f"  ❓ Unknown   : {counts['unknown']}")
+        print("  ──────────────────────────────────────────────────────")
+        print(f"  📊 Total     : {total}  (of which {tombstones} are tombstones)")
     return 0
 
 
@@ -215,6 +358,21 @@ def main() -> int:
     p_list = sub.add_parser("list", help="List recent sessions")
     p_list.add_argument("--limit", type=int, default=10)
 
+    p_archive = sub.add_parser(
+        "archive",
+        help="Force-archive a session (including stale/cached sessions without a local file)",
+    )
+    p_archive.add_argument("--session-id", required=True, help="Session UUID to archive")
+    p_archive.add_argument("--reason", default="", help="Human-readable reason for archiving")
+    p_archive.add_argument("--pr-number", type=int, default=None, help="Associated PR number")
+    p_archive.add_argument(
+        "--dry-run", action="store_true", default=False,
+        help="Preview what would be archived without writing any files",
+    )
+
+    p_metrics = sub.add_parser("metrics", help="Show session lifecycle counts (active/completed/archived/error)")
+    p_metrics.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+
     args = parser.parse_args()
 
     if args.cmd == "start":
@@ -227,6 +385,15 @@ def main() -> int:
         return cmd_resume()
     elif args.cmd == "list":
         return cmd_list(limit=args.limit)
+    elif args.cmd == "archive":
+        return cmd_archive(
+            session_id=args.session_id,
+            reason=args.reason,
+            pr_number=args.pr_number,
+            dry_run=args.dry_run,
+        )
+    elif args.cmd == "metrics":
+        return cmd_metrics(output_format=args.format)
     return 0
 
 
@@ -298,6 +465,108 @@ def list_sessions(limit: int = 10) -> list[dict[str, Any]]:
         if len(result) >= limit:
             break
     return result
+
+
+def archive_session(
+    session_id: str,
+    reason: str = "",
+    pr_number: Optional[int] = None,
+) -> dict[str, Any]:
+    """Force-archive a session by ID and return the final session dict.
+
+    Unlike ``cmd_archive`` (CLI entry point), this function returns the
+    archived session data directly for programmatic inspection and raises
+    ``RuntimeError`` only on unrecoverable I/O errors.
+
+    When no local session file is found a tombstone record is created so
+    the archive action is permanently documented in the repository's own
+    audit trail.  This is specifically designed to handle stale/cached
+    sessions that exist only in an external system (e.g. a GitHub Copilot
+    task whose "Archive" button is unavailable due to stale data).
+    """
+    path = _session_path(session_id)
+    session = _load_json(path)
+
+    now = _now()
+    if session is None:
+        session = {
+            "session_id": session_id,
+            "label": f"archived-stale-{session_id[:8]}",
+            "started_at": now,
+            "ended_at": now,
+            "status": STATUS_ARCHIVED,
+            "outcome": "archived",
+            "tombstone": True,
+            "events": [],
+        }
+    else:
+        session["ended_at"] = session.get("ended_at") or now
+        session["status"] = STATUS_ARCHIVED
+        session["outcome"] = "archived"
+
+    session["archived_at"] = now
+    if reason:
+        session["archive_reason"] = reason
+    if pr_number is not None:
+        session["pr_number"] = pr_number
+
+    session.setdefault("events", []).append(
+        {"timestamp": now, "type": "archive", "detail": reason or "force-archived"}
+    )
+
+    _save_json(path, session)
+    _write_markdown(session)
+
+    # Remove from current-session pointer if it referenced this session.
+    current_ptr = SESSION_DIR / ".current_session.json"
+    current = _load_json(current_ptr)
+    if current and current.get("session_id") == session_id:
+        current_ptr.unlink(missing_ok=True)
+
+    return session
+
+
+def session_metrics() -> dict[str, int]:
+    """Return lifecycle counts for all local sessions as a dict.
+
+    Provides a programmatic counterpart to ``cmd_metrics --format json`` for
+    use in dashboards, monitoring scripts, or CI health checks.
+
+    Returns:
+        dict with keys: total, active, completed, error, archived, tombstones, unknown
+    """
+    counts: dict[str, int] = {
+        STATUS_ACTIVE: 0,
+        STATUS_COMPLETED: 0,
+        STATUS_ERROR: 0,
+        STATUS_ARCHIVED: 0,
+        "unknown": 0,
+    }
+    tombstones = 0
+
+    for path in SESSION_DIR.glob("session_*.json"):
+        if ".current" in path.name:
+            continue
+        session = _load_json(path)
+        if session is None:
+            continue
+        status = session.get("status", "unknown")
+        if status in counts:
+            counts[status] += 1
+        else:
+            counts["unknown"] += 1
+        if session.get("tombstone"):
+            tombstones += 1
+
+    return {
+        "total": sum(counts.values()),
+        "active": counts[STATUS_ACTIVE],
+        "completed": counts[STATUS_COMPLETED],
+        "error": counts[STATUS_ERROR],
+        "archived": counts[STATUS_ARCHIVED],
+        "tombstones": tombstones,
+        "unknown": counts["unknown"],
+    }
 
 
 if __name__ == "__main__":

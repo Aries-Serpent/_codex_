@@ -1,0 +1,71 @@
+name: 'Post PR Summary to Dashboard'
+description: |
+  Posts a workflow result to the consolidated "PR Status Dashboard" comment.
+  All workflows that call this action contribute to ONE comment instead of
+  posting separate comments — reducing noise on every pull request.
+
+  Informational results are grouped into a collapsible <details> section.
+  Only failures surface prominently at the top of the dashboard.
+
+inputs:
+  workflow-name:
+    description: 'Human-readable workflow/check name shown in the dashboard table'
+    required: true
+  status:
+    description: 'Outcome: success | failure | warning | info | skipped | in_progress'
+    required: true
+    default: 'success'
+  summary:
+    description: 'One-line result description shown in the summary table'
+    required: true
+    default: ''
+  details:
+    description: 'Extended markdown details shown in the expandable section (optional)'
+    required: false
+    default: ''
+  github-token:
+    description: 'GitHub token with issues:write permission (defaults to github.token)'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  comment-id:
+    description: 'ID of the created or updated dashboard comment'
+    value: ${{ steps.post.outputs.comment-id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Post to PR Status Dashboard
+      id: post
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        WORKFLOW_NAME: ${{ inputs.workflow-name }}
+        STATUS: ${{ inputs.status }}
+        SUMMARY: ${{ inputs.summary }}
+        DETAILS: ${{ inputs.details }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        # Only post on pull_request events (skip push/workflow_dispatch etc.)
+        if [ -z "${PR_NUMBER}" ] || [ "${PR_NUMBER}" = "null" ]; then
+          echo "Not a pull_request event — skipping dashboard update."
+          exit 0
+        fi
+
+        OUTPUT=$(python "${{ github.workspace }}/scripts/ci/pr_comment_consolidator.py" \
+          --pr-number  "${PR_NUMBER}" \
+          --workflow   "${WORKFLOW_NAME}" \
+          --status     "${STATUS}" \
+          --summary    "${SUMMARY}" \
+          --details    "${DETAILS}" \
+          --run-url    "${RUN_URL}")
+        echo "$OUTPUT"
+
+        # Parse comment id from output line like: "✅ ... (id 12345)"
+        COMMENT_ID=$(echo "$OUTPUT" | grep -oP '(?<=\(id )\d+(?=\))' || true)
+        if [ -n "${COMMENT_ID}" ]; then
+          echo "comment-id=${COMMENT_ID}" >> "$GITHUB_OUTPUT"
+        fi

@@ -230,9 +230,12 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-
     steps:
+      - name: Checkout (needed for post-pr-summary action)
+        uses: actions/checkout@v4
+
       - name: Generate summary
+        id: gen-summary
         uses: actions/github-script@v7
         with:
           script: |
@@ -253,58 +256,28 @@ jobs:
               'cancelled': '🚫'
             };
 
-            let summary = `## Progressive Validation Results\n\n`;
-            summary += `**PR Size:** ${prSize}\n`;
-            summary += `**Strategy:** ${validationStrategy}\n\n`;
-            summary += `### Test Layers\n\n`;
+            const anyFailed = Object.values(layerResults).some(r => r === 'failure');
+            const overallStatus = anyFailed ? 'failure' : 'success';
 
-            summary += `| Layer | Status | Notes |\n`;
-            summary += `|-------|--------|-------|\n`;
-            summary += `| 🔥 Smoke | ${statusEmoji[layerResults.smoke] || '❓'} ${layerResults.smoke} | Always runs |\n`;
-            summary += `| 🧪 Unit | ${statusEmoji[layerResults.unit] || '❓'} ${layerResults.unit} | Small/Medium PRs |\n`;
-            summary += `| 🔗 Integration | ${statusEmoji[layerResults.integration] || '❓'} ${layerResults.integration} | Small PRs only |\n`;
-            summary += `| 🐌 Slow | ${statusEmoji[layerResults.slow] || '❓'} ${layerResults.slow} | On-demand |\n`;
+            const summaryLine = `${prSize} PR · ${validationStrategy} · smoke=${layerResults.smoke} unit=${layerResults.unit}`;
+            const details = [
+              `| Layer | Status | Notes |`,
+              `|-------|--------|-------|`,
+              `| 🔥 Smoke | ${statusEmoji[layerResults.smoke] || '❓'} ${layerResults.smoke} | Always runs |`,
+              `| 🧪 Unit | ${statusEmoji[layerResults.unit] || '❓'} ${layerResults.unit} | Small/Medium PRs |`,
+              `| 🔗 Integration | ${statusEmoji[layerResults.integration] || '❓'} ${layerResults.integration} | Small PRs only |`,
+              `| 🐌 Slow | ${statusEmoji[layerResults.slow] || '❓'} ${layerResults.slow} | On-demand |`,
+            ].join('\n');
 
-            summary += `\n### Progressive Strategy\n\n`;
-            if (prSize === 'small') {
-              summary += 'Full validation executed (all layers)';
-            } else if (prSize === 'medium') {
-              summary += 'Targeted validation (smoke + unit tests)';
-            } else if (prSize === 'large') {
-              summary += 'Smoke tests only (use workflow_dispatch for full validation)';
-            } else {
-              summary += 'Import validation only (use workflow_dispatch for testing)';
-            }
+            core.setOutput('status', overallStatus);
+            core.setOutput('summary-line', summaryLine);
+            core.setOutput('details', details);
 
-            // Post comment (only for PR context)
-            if (context.issue && context.issue.number) {
-              const { data: comments } = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-              });
-
-              const botComment = comments.find(comment =>
-                comment.user.type === 'Bot' &&
-                comment.body.includes('Progressive Validation Results')
-              );
-
-              if (botComment) {
-                await github.rest.issues.updateComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  comment_id: botComment.id,
-                  body: summary
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: summary
-                });
-              }
-            } else {
-              // For workflow_dispatch, just output to step summary
-              console.log('No PR context - results available in workflow summary');
-            }
+      - name: Post to PR Status Dashboard
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/post-pr-summary
+        with:
+          workflow-name: 'Progressive Validation'
+          status: ${{ steps.gen-summary.outputs.status }}
+          summary: ${{ steps.gen-summary.outputs.summary-line }}
+          details: ${{ steps.gen-summary.outputs.details }}

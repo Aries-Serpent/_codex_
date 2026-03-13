@@ -126,8 +126,14 @@ def test_no_over_suppression(repo_root: Path) -> None:
     """Confirm suppressions are only applied to intended files."""
     allowed_paths = set(EXPECTED_SUPPRESSION_FILES.keys())
 
+    _SKIP_DIRS = {".venv_ci", ".venv", "venv", "node_modules", ".git", "__pycache__", "target", ".tox"}
     for path in repo_root.rglob("*.py"):
-        content = path.read_text(encoding="utf-8")
+        if any(part in _SKIP_DIRS for part in path.parts):
+            continue
+        try:
+            content = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
         if re.search(r"#\s+nosemgrep:\s+url-substring-check", content):
             relative_path = path.relative_to(repo_root).as_posix()
             assert relative_path in allowed_paths, (

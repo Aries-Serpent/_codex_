@@ -226,12 +226,17 @@ def test_sample_system_metrics_with_psutil(monkeypatch):
         cpu_percent=lambda interval=None: 7.0,
         memory_info=lambda: types.SimpleNamespace(rss=512 * 1024**2),
     )
-    fake_psutil = types.SimpleNamespace(
-        cpu_percent=lambda interval=None: 42.0,
-        virtual_memory=lambda: types.SimpleNamespace(percent=33.0, used=2 * 1024**3),
-        Process=lambda: process,
+    # Patch the real psutil module's callables directly rather than replacing the
+    # module reference in codex_utils.logging_setup.  This is robust against test-
+    # ordering and conftest autouse fixtures that call psutil before the patch is
+    # applied (which can otherwise cause the cached CPU percentage to "leak").
+    import psutil as _real_psutil
+    monkeypatch.setattr(_real_psutil, "cpu_percent", lambda interval=None: 42.0)
+    monkeypatch.setattr(
+        _real_psutil, "virtual_memory",
+        lambda: types.SimpleNamespace(percent=33.0, used=2 * 1024**3),
     )
-    monkeypatch.setattr("codex_utils.logging_setup.psutil", fake_psutil)
+    monkeypatch.setattr(_real_psutil, "Process", lambda: process)
 
     payload = sample_system_metrics()
     assert payload["cpu_percent"] == pytest.approx(42.0)
