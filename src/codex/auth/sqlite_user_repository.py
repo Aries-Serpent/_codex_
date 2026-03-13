@@ -19,6 +19,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
+from ..security_utils import sanitize_log_message
 from .user_repository import UserRepository
 from .user_store import User
 
@@ -127,11 +128,11 @@ class SQLiteUserRepository(UserRepository):
                     msg = str(exc).lower()
                     if "username" in msg:
                         raise ValueError(
-                            f"Username '{user.username}' is already taken"
+                            f"Username '{sanitize_log_message(user.username)}' is already taken"
                         ) from exc
                     if "email" in msg:
                         raise ValueError(
-                            f"Email '{user.email}' is already registered"
+                            f"Email '{sanitize_log_message(user.email)}' is already registered"
                         ) from exc
                     raise ValueError(str(exc)) from exc
         return user

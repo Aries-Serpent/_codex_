@@ -272,12 +272,13 @@ class UserStore:
             ValueError: If *new_password* does not meet requirements.
         """
         self._validate_password_strength(new_password)
-        user = self._repository.get_by_id(user_id)
-        if user is None:
-            raise KeyError(f"User '{user_id}' not found")
-        user.password_hash = self._hasher.hash(new_password)
-        user.updated_at = time.time()
-        self._repository.update(user)
+        with self._lock:
+            user = self._repository.get_by_id(user_id)
+            if user is None:
+                raise KeyError(f"User '{user_id}' not found")
+            user.password_hash = self._hasher.hash(new_password)
+            user.updated_at = time.time()
+            self._repository.update(user)
 
     def deactivate_user(self, user_id: str) -> None:
         """
@@ -289,12 +290,13 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
-        user = self._repository.get_by_id(user_id)
-        if user is None:
-            raise KeyError(f"User '{user_id}' not found")
-        user.is_active = False
-        user.updated_at = time.time()
-        self._repository.update(user)
+        with self._lock:
+            user = self._repository.get_by_id(user_id)
+            if user is None:
+                raise KeyError(f"User '{user_id}' not found")
+            user.is_active = False
+            user.updated_at = time.time()
+            self._repository.update(user)
         logger.info("User deactivated: %s", sanitize_log_message(user.username))
 
     def delete_user(self, user_id: str) -> None:

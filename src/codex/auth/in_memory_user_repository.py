@@ -10,6 +10,7 @@ from __future__ import annotations
 import threading
 from typing import Optional
 
+from ..security_utils import sanitize_log_message
 from .user_repository import UserRepository
 from .user_store import User
 
@@ -37,9 +38,13 @@ class InMemoryUserRepository(UserRepository):
         """
         with self._lock:
             if self.get_by_username(user.username) is not None:
-                raise ValueError(f"Username '{user.username}' is already taken")
+                raise ValueError(
+                    f"Username '{sanitize_log_message(user.username)}' is already taken"
+                )
             if self.get_by_email(user.email) is not None:
-                raise ValueError(f"Email '{user.email}' is already registered")
+                raise ValueError(
+                    f"Email '{sanitize_log_message(user.email)}' is already registered"
+                )
             self._users[user.user_id] = user
         return user
 

@@ -141,3 +141,9 @@ class TestMigration001RoundTrip:
         data = json.loads(snapshot.read_text())
         inactive = [r for r in data["users"] if not r["is_active"]]
         assert len(inactive) == 1
+
+    def test_main_missing_snapshot_returns_exit_code_2(self, tmp_path: Path) -> None:
+        """main() with --import pointing to a non-existent file exits with code 2."""
+        missing = str(tmp_path / "does_not_exist.json")
+        result = _migration.main(["--import", missing, "--db-path", str(tmp_path / "out.db")])
+        assert result == 2

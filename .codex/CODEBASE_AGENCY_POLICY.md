@@ -1119,7 +1119,7 @@ The optional TF-IDF + LogisticRegression classifier
 |-----------|---------|
 | No network call at train time | `TfidfVectorizer` + `LogisticRegression` are CPU-only scikit-learn estimators with no external data downloads |
 | No `from_pretrained` call | No `transformers` model loading; scikit-learn pipeline only |
-| Training data bundled locally | `.codex/training_data/deferral_examples.jsonl` (202 examples, ships with repo) |
+| Training data bundled locally | `.codex/training_data/deferral_examples.jsonl` (217 examples, ships with repo) |
 | Dependency security scan | `scikit-learn>=1.4`, `transformers>=4.48.0`, `torch>=2.6.0` — 0 HIGH/MEDIUM CVEs (verified 2026-03-13 via gh-advisory-database) |
 | Feature-flagged | `DEFERRAL_SCANNER_ML=1` required to enable; off by default |
 | Regex always present | ML classifier is additive only; regex patterns always run first |

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 34 — 2026-03-13 — Code review fixes (PR #3572, copilot-pull-request-reviewer)
+
+#### Fixes
+- **`scripts/ci/check_deferral_language.py`**: Fixed module docstring — "LinearSVC" corrected to "LogisticRegression" (reflects actual implementation).
+- **`.codex/CODEBASE_AGENCY_POLICY.md §13`**: Reconciled training-data example count — updated 202 → 217 to match CHANGELOG and accountability report.
+- **`src/codex/auth/in_memory_user_repository.py`**: Sanitize `user.username` and `user.email` via `sanitize_log_message()` in duplicate-check `ValueError` messages to prevent log/terminal injection.
+- **`src/codex/auth/sqlite_user_repository.py`**: Same sanitization applied to `IntegrityError`-derived `ValueError` messages.
+- **`src/codex/auth/user_store.py`**: Wrapped `update_password()` and `deactivate_user()` read-modify-write sequences in `self._lock` to prevent concurrent interleaving (spurious `KeyError` / lost update).
+- **`scripts/migrations/001_userstore_to_sqlite.py`**: Reformatted `json.dumps(...)` call to Black-compatible style.
+- **`tests/auth/test_migration_001.py`**: Added `test_main_missing_snapshot_returns_exit_code_2` — exercises the `main()` CLI path with a missing import file; verifies exit code 2 as documented in the module docstring.
+
 ### Session 33 — 2026-03-13 — @copilot continue verification (PR #3572, comment #4058220103)
 - **CI verified GREEN**: Deferral Language Gate ✅, E→D Gate 5/5 ✅, QA Suite 0 issues ✅, Progressive Validation (smoke+unit+integration) ✅
 - **Agent Token Delegation activated**: `COPILOT_AGENT_AUTH_ENABLED=true` confirmed via run 23072149610

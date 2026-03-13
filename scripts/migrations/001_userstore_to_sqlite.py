@@ -85,8 +85,10 @@ def export_userstore_snapshot(store: "UserStore", output_path: Path) -> int:
         records.append(record)
 
     output_path.write_text(
-        json.dumps({"version": 1, "exported_at": time.time(), "users": records},
-                   indent=2),
+        json.dumps(
+            {"version": 1, "exported_at": time.time(), "users": records},
+            indent=2,
+        ),
         encoding="utf-8",
     )
     return len(records)

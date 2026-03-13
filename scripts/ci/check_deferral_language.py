@@ -21,7 +21,7 @@ Usage:
 
 ML enhancement (optional, feature-flagged):
   DEFERRAL_SCANNER_ML=1 python scripts/ci/check_deferral_language.py ...
-  Enables TF-IDF + LinearSVC classifier trained on labeled examples in
+  Enables TF-IDF + LogisticRegression classifier trained on labeled examples in
   .codex/training_data/deferral_examples.jsonl.
   Regex patterns always run first; ML adds a second pass for uncaught intent.
 

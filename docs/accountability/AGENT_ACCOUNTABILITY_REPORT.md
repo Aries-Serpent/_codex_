@@ -2093,3 +2093,32 @@ No open bot review threads, no CI failures. All Session 32 changes validated. PR
 - CodeQL (go, javascript-typescript): ✅ success
 - CodeQL (python): in_progress at session start
 - 314 auth tests: ✅ all passing
+
+## Session 34: 2026-03-13 — Code review fixes (PR #3572, comment #4058307168)
+
+### Trigger
+`@copilot continue` from @mbaetiong; 11 open `copilot-pull-request-reviewer` threads addressed.
+
+### Pre-flight Checklist
+- [x] 🔃 Loaded: AI Codebase Agency Policy
+- [x] 🔃 Loaded: Accountability Report
+- [x] 🔃 Loaded: All stored session memories
+- [x] Fetched ALL PR review threads — 11 open `copilot-pull-request-reviewer` threads addressed
+
+### Issues Fixed
+
+| # | File | Issue | Fix |
+|---|------|-------|-----|
+| 1 | `scripts/ci/check_deferral_language.py:24` | Docstring said "TF-IDF + LinearSVC" | Corrected to "LogisticRegression" |
+| 2 | `.codex/CODEBASE_AGENCY_POLICY.md:1122` | Training data count 202 ≠ 217 | Updated 202 → 217 |
+| 3 | `src/codex/auth/in_memory_user_repository.py:40-42` | Unsanitized username/email in ValueError | Added `sanitize_log_message()` |
+| 4 | `src/codex/auth/sqlite_user_repository.py:128-134` | Unsanitized username/email in ValueError | Added `sanitize_log_message()` |
+| 5 | `src/codex/auth/user_store.py:276-280` | `update_password()` read-modify-write not locked | Wrapped in `self._lock` |
+| 6 | `src/codex/auth/user_store.py:292-298` | `deactivate_user()` read-modify-write not locked | Wrapped in `self._lock` |
+| 7 | `scripts/migrations/001_userstore_to_sqlite.py:88-89` | `json.dumps` not Black-formatted | Reformatted per Black |
+| 8 | `tests/auth/test_migration_001.py:8` | Docstring claimed missing-file test; none existed | Added `test_main_missing_snapshot_returns_exit_code_2` |
+
+### Test Results
+- All auth tests: ✅ passing (315 tests including new exit-code-2 test)
+- Ruff lint: ✅ 0 issues
+- `check_deferral_language.py --git-log`: ✅ exit 0
