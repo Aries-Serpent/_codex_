@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (PR copilot/add-user-login-feature — 2026-03-13 — Auth Phase 2 + Accountability Auto-Update)
+- **`services/api/main.py`**: Integrated `AuthMiddleware` with exempt paths; gated behind `CODEX_AUTH_MIDDLEWARE_ENABLED=1`.
+- **`src/codex/api/auth_routes.py`**: Per-endpoint rate limiting via `_EndpointRateLimiter` (login: 10/min, register: 5/min). Added `GET /auth/csrf-token` endpoint for cookie-based flows.
+- **`src/codex/cli.py`**: CLI credential caching (`--save` flag on `login`), `codex auth status` command, `logout` clears keyring/file cache.
+- **`src/codex/session/accountability_autoupdate.py`**: Session-close auto-update script — generates scored/tokenized markdown entry + JSON artifact, appends idempotently to `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md`.
+- **`tests/api/test_auth_mfa_expiry.py`**: MFA round-trip + token expiry integration tests (9 tests).
+- **`tests/api/test_auth_ratelimit.py`**: Rate limiting + CSRF token endpoint tests (4 tests).
+- **`tests/test_accountability_autoupdate.py`**: Accountability auto-update unit + integration tests (45 tests).
+
 ### Fixed (PR copilot/remove-stale-cached-session — 2026-03-12 session 19 — code review + Phase 24)
 - **`agents/agent_memory.py`**: Replaced `from scripts.stale_session_detector import` with import-safe `importlib.import_module` pattern to avoid sys.path side effects when called from library context; added `verbose=False` to suppress stdout during memory invalidation sweeps.
 - **`scripts/ci/pr_comment_consolidator.py`**: `_api_request()` return type annotation corrected to `Any` — the list-comments endpoint returns a JSON array, not a dict, so the previous `dict[str, Any]` annotation was incorrect.

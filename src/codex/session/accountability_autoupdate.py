@@ -137,11 +137,11 @@ def collect_metadata(
             try:
                 lines_added += int(parts[0])
             except ValueError:
-                pass
+                logger.debug("Skipping non-numeric added count in: %s", line)
             try:
                 lines_removed += int(parts[1])
             except ValueError:
-                pass
+                logger.debug("Skipping non-numeric removed count in: %s", line)
 
     # Commit message -------------------------------------------------------
     commit_message = _run_git(["log", "-1", "--pretty=%B"])
@@ -390,11 +390,11 @@ def append_to_report(
             fh.write(updated)
         shutil.move(tmp_path, str(report_path))
     except Exception:
-        # Clean up temp file on failure
+        # Best-effort cleanup: ignore failure to remove temporary report file.
         try:
             os.unlink(tmp_path)
         except OSError:
-            pass
+            logger.debug("Failed to remove temp file %s", tmp_path, exc_info=True)
         raise
 
 
@@ -482,10 +482,11 @@ def update_changelog(
             fh.write(updated)
         shutil.move(tmp_path, str(changelog_path))
     except Exception:
+        # Best-effort cleanup: ignore failure to remove temporary changelog file.
         try:
             os.unlink(tmp_path)
         except OSError:
-            pass
+            logger.debug("Failed to remove temp file %s", tmp_path, exc_info=True)
         raise
 
     return True
