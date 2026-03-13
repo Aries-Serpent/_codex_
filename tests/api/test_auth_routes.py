@@ -143,7 +143,7 @@ class TestRegisterEndpoint:
                 "password": "Abcd1!xy",
             },
         )
-        assert resp.status_code in (201, 400)  # 400 if complexity rules reject it
+        assert resp.status_code == 201, f"8-char password should be accepted; got {resp.json()}"
 
     def test_register_password_at_max_boundary(self, client):
         """128-character password should be accepted."""
@@ -156,7 +156,7 @@ class TestRegisterEndpoint:
                 "password": long_pw,
             },
         )
-        assert resp.status_code in (201, 400)
+        assert resp.status_code == 201, f"128-char password should be accepted; got {resp.json()}"
 
     def test_register_password_over_max_rejected(self, client):
         """>128-character password should be rejected at validation level."""

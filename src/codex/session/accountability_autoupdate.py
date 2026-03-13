@@ -212,7 +212,7 @@ def compute_score(
     m_test_impact = min(1.0, tests_touched_count / 20)
     m_security = 1.0 if security_findings else 0.0
     m_doc = 0.5 if docs_changed else 0.0
-    m_hotfix = 1.0 if re.search(r"\bfix|hotfix\b", commit_message, re.I) else 0.0
+    m_hotfix = 1.0 if re.search(r"\b(?:fix|hotfix)\b", commit_message, re.I) else 0.0
 
     score = (
         0.30 * m_files
@@ -248,7 +248,12 @@ def tokenize_narrative(
     descending weight.
     """
     modified_filenames = modified_filenames or []
-    flat_filenames = " ".join(modified_filenames).lower()
+    # Tokenize filenames into individual path components / words so that
+    # the substring check doesn't accidentally boost unrelated tokens
+    # (e.g. "auth" matching "oauth", "py" matching ".py").
+    filename_tokens: set[str] = set()
+    for fname in modified_filenames:
+        filename_tokens.update(re.findall(r"[a-zA-Z0-9]+", fname.lower()))
 
     # Sentence split → word tokenise
     sentences = re.split(r"[.!?]+", narrative)
@@ -269,7 +274,7 @@ def tokenize_narrative(
     for token, count in counter.items():
         base_tf = count / max_count
         boost = 0.0
-        if token in flat_filenames:
+        if token in filename_tokens:
             boost += 0.3
         weighted[token] = base_tf + boost
 
@@ -304,8 +309,9 @@ def generate_markdown_entry(metadata: Dict[str, Any], score: float, tokens: List
     primary_topic = tokens[0]["token"].title() if tokens else "Session"
     summary = narrative[:120]
 
-    # CI status
-    ci_status = "pass" if metadata.get("run_id") else "unknown"
+    # CI reference — presence of a run_id only means a CI run exists, not that it
+    # passed.  Label it as a reference rather than implying success.
+    ci_status = "ci-ref" if metadata.get("run_id") else "no-ci-run"
 
     # Build entry
     lines = [
@@ -546,13 +552,25 @@ def run(
 
     Updates both the accountability report **and** the CHANGELOG
     (``[Unreleased]`` section).  Returns the generated artifact dict.
+
+    Idempotency is checked **per-output**: if the report entry already
+    exists but the CHANGELOG or artifact is missing (e.g. a previous run
+    failed mid-way), rerunning will repair the missing outputs.
     """
     metadata = collect_metadata(session_id=session_id, narrative=narrative)
     sid = metadata["session_id"]
 
-    # Idempotency check
-    if session_exists_in_report(sid, report_path):
-        logger.info("Session %s already in report — skipping.", sid)
+    # Per-output idempotency checks
+    report_exists = session_exists_in_report(sid, report_path)
+    changelog_exists = (
+        session_exists_in_changelog(sid, changelog_path)
+        if changelog_path is not None
+        else True
+    )
+    artifact_exists = (sessions_dir / f"{sid}.json").exists()
+
+    if report_exists and changelog_exists and artifact_exists:
+        logger.info("Session %s already in all outputs — skipping.", sid)
         return {"skipped": True, "session_id": sid}
 
     # Score
@@ -593,17 +611,20 @@ def run(
             "metadata": metadata,
         }
 
-    # Persist accountability report
-    append_to_report(entry, report_path)
+    # Persist accountability report (skip if already present)
+    if not report_exists:
+        append_to_report(entry, report_path)
 
-    # Persist CHANGELOG
+    # Persist CHANGELOG (skip if already present)
     changelog_updated = False
-    if changelog_path is not None:
-        if not session_exists_in_changelog(sid, changelog_path):
-            changelog_updated = update_changelog(changelog_entry, changelog_path)
+    if changelog_path is not None and not changelog_exists:
+        changelog_updated = update_changelog(changelog_entry, changelog_path)
 
-    # Persist JSON artifact
-    artifact_path = write_session_artifact(metadata, score, tokens, sessions_dir)
+    # Persist JSON artifact (skip if already present)
+    if not artifact_exists:
+        artifact_path = write_session_artifact(metadata, score, tokens, sessions_dir)
+    else:
+        artifact_path = sessions_dir / f"{sid}.json"
 
     logger.info(
         "Session %s appended to report%s, artifact at %s (score=%.2f)",

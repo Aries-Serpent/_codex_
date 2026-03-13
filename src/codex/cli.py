@@ -1691,6 +1691,31 @@ def auth_group(ctx: click.Context) -> None:
     _emit_group_help(ctx)
 
 
+# ---------------------------------------------------------------------------
+# Shared auth stack (module-level singleton so register → login works
+# within the same CLI process).  The UserStore is in-memory, so state is
+# NOT persisted across separate process invocations — use the API server
+# for persistent multi-process workflows.
+# ---------------------------------------------------------------------------
+
+_cli_user_store = None
+_cli_auth = None
+
+
+def _get_auth():
+    """Return a (lazily initialised) singleton Authenticator for CLI use."""
+    global _cli_user_store, _cli_auth  # noqa: PLW0603
+    if _cli_auth is None:
+        from codex.auth.authenticator import Authenticator
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.user_store import UserStore
+
+        _cli_user_store = UserStore()
+        _tm = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
+        _cli_auth = Authenticator(user_store=_cli_user_store, token_manager=_tm)
+    return _cli_auth
+
+
 @auth_group.command("register")
 @click.option("--username", "-u", required=True, help="Username for the new account")
 @click.option("--email", "-e", required=True, help="E-mail address")
@@ -1698,14 +1723,14 @@ def auth_group(ctx: click.Context) -> None:
               help="Password (prompted if not supplied)")
 @click.option("--role", "-r", multiple=True, default=None, help="Roles to assign (repeatable)")
 def auth_register(username: str, email: str, password: str, role: tuple[str, ...]) -> None:
-    """Register a new user account."""
-    from codex.auth.authenticator import Authenticator
-    from codex.auth.token_manager import TokenManager
-    from codex.auth.user_store import UserStore
+    """Register a new user account.
 
-    store = UserStore()
-    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
-    auth = Authenticator(user_store=store, token_manager=tokens)
+    NOTE: The CLI uses an in-memory user store.  Registered users persist
+    only within the same process (e.g. ``codex auth register … && codex
+    auth login …`` in a single shell pipeline).  For persistent storage,
+    use the API server.
+    """
+    auth = _get_auth()
 
     roles = list(role) if role else None
     try:
@@ -1725,14 +1750,9 @@ def auth_register(username: str, email: str, password: str, role: tuple[str, ...
 @click.option("--save/--no-save", default=False, help="Cache credentials via keyring")
 def auth_login(username: str, password: str, totp: str | None, save: bool) -> None:
     """Authenticate and display session tokens."""
-    from codex.auth.authenticator import Authenticator
     from codex.auth.exceptions import AuthError
-    from codex.auth.token_manager import TokenManager
-    from codex.auth.user_store import UserStore
 
-    store = UserStore()
-    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
-    auth = Authenticator(user_store=store, token_manager=tokens)
+    auth = _get_auth()
 
     try:
         result = auth.login(username, password, totp_code=totp)
@@ -1753,13 +1773,7 @@ def auth_login(username: str, password: str, totp: str | None, save: bool) -> No
 @click.option("--session-token", "-s", required=True, help="Session token to revoke")
 def auth_logout(session_token: str) -> None:
     """Revoke a session token."""
-    from codex.auth.authenticator import Authenticator
-    from codex.auth.token_manager import TokenManager
-    from codex.auth.user_store import UserStore
-
-    store = UserStore()
-    tokens = TokenManager(secret_key=os.getenv("CODEX_AUTH_SECRET", "cli-change-me"))
-    auth = Authenticator(user_store=store, token_manager=tokens)
+    auth = _get_auth()
 
     if auth.logout(session_token):
         click.echo("✅ Session revoked")
@@ -1804,8 +1818,13 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         keyring.set_password(_KEYRING_SERVICE, "credentials", data)
         click.echo("   Credentials cached (keyring)")
         return
-    except Exception:  # pragma: no cover — keyring unavailable in CI
-        pass
+    except ImportError:
+        pass  # keyring not installed — fall through to file-based storage
+    except Exception as exc:  # pragma: no cover — runtime keyring backend error
+        click.echo(
+            f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
+            err=True,
+        )
 
     # Fallback: write to ~/.codex/credentials.json with restrictive perms
     _CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -1825,7 +1844,9 @@ def _load_cached_credentials() -> dict | None:
         raw = keyring.get_password(_KEYRING_SERVICE, "credentials")
         if raw:
             return json.loads(raw)
-    except Exception:  # pragma: no cover
+    except ImportError:
+        pass
+    except Exception:  # pragma: no cover — runtime keyring read error
         pass
 
     if _CACHE_FILE.exists():
@@ -1842,7 +1863,9 @@ def _clear_cached_credentials() -> None:
         import keyring  # type: ignore[import-untyped]
 
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
-    except Exception:  # pragma: no cover
+    except ImportError:
+        pass
+    except Exception:  # pragma: no cover — runtime keyring delete error
         pass
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)

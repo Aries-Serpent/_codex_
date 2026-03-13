@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`tests/api/test_auth_token_lifecycle.py`**: Token rotation + revocation + session isolation integration tests (13 tests).
 - **`tests/cli/test_cli_keyring.py`**: Keyring backend + JSON file fallback + CLI auth status tests (10 tests).
 - **`tests/test_accountability_autoupdate.py`**: Accountability auto-update unit + integration tests (45 tests).
+- **`tests/tools/test_doc_metrics_sync.py`**: Production-ready tests for doc-metrics-check pre-commit hook (26 tests).
+
+### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — Review feedback, doc metrics sync, code quality)
+- **`src/codex/session/accountability_autoupdate.py`**: Fixed `m_hotfix` regex word-boundary bug (`\bfix|hotfix\b` → `\b(?:fix|hotfix)\b`); replaced substring filename boosting with tokenized word-set matching to prevent false-positive boosts; renamed `ci_status` field from misleading "pass" to "ci-ref"; made idempotency per-output so partial failures can be repaired on rerun.
+- **`services/api/main.py`**: Added production secret warning when `CODEX_AUTH_SECRET` is unset; changed AuthMiddleware exempt paths to prefix-based `/auth/*` matching to cover all auth endpoints including `/auth/csrf-token`.
+- **`src/codex/auth/middleware.py`**: Added `exempt_prefixes` to `AuthConfig` for prefix-based path exemption.
+- **`src/codex/cli.py`**: Refactored CLI auth to use module-level singleton `_get_auth()` so register→login works within the same process; separated `ImportError` from runtime keyring errors with explicit user warning on fallback.
+- **`tests/api/test_auth_routes.py`**: Tightened password boundary tests to assert exact status code 201 instead of accepting both 201/400.
 
 ### Fixed (PR copilot/add-user-login-feature — 2026-03-13 — CI venv self-healing, issues #3565/#3569)
 - **`.github/actions/setup-python-cached/action.yml`**: Hardened venv creation — added `chmod -R u+w` before `rm -rf` to handle read-only cached files; added post-creation verification that `.venv_ci/bin/python` exists; prevents silent venv failures that caused 68+ self-healing CI cascade failures.

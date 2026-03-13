@@ -141,16 +141,31 @@ try:
     from codex.auth.token_manager import TokenManager as _AuthTokenManager
 
     _auth_secret = os.getenv("CODEX_AUTH_SECRET", "codex-auth-change-me-in-production")
+    if _auth_secret == "codex-auth-change-me-in-production":
+        _env = os.getenv("CODEX_ENV", "development")
+        if _env == "production":
+            logger.error(
+                "CODEX_AUTH_SECRET is not set — using insecure default in production! "
+                "Set the CODEX_AUTH_SECRET environment variable to a strong secret."
+            )
+        else:
+            logger.warning(
+                "CODEX_AUTH_SECRET not set — using insecure default. "
+                "Set CODEX_AUTH_SECRET for production deployments."
+            )
     _auth_tm = _AuthTokenManager(secret_key=_auth_secret)
 
     # Auth routes must be exempt from the middleware since they are public.
+    # Use startswith-based prefix matching so all current and future /auth/*
+    # endpoints (including /auth/csrf-token) are automatically exempt.
     _exempt = {
         "/health", "/ready", "/metrics", "/docs", "/openapi.json",
-        "/auth/register", "/auth/login", "/auth/refresh", "/auth/logout",
     }
+    _auth_prefix = "/auth/"
     _auth_cfg = AuthConfig(
         enabled=os.getenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "1") == "1",
         exempt_paths=_exempt,
+        exempt_prefixes=[_auth_prefix],
         rate_limit_requests=int(os.getenv("CODEX_AUTH_RATE_LIMIT", "100")),
         rate_limit_window=60,
     )

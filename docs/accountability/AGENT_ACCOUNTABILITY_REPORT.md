@@ -3,11 +3,42 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/add-user-login-feature
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-13T06:43Z (session 19: CI venv self-healing + accountability workflow step — issues #3565/#3569 — PR #3570)
+**Last updated:** 2026-03-13T07:45Z (session 20: Review feedback + doc metrics sync + cherry-pick merge ref — PR #3570)
 
 ---
 
-## 📋 SESSION SUMMARY — 2026-03-13 SESSION 19 (CI Venv Self-Healing + Workflow Step — PR #3570)
+## SESSION SUMMARY — 2026-03-13 SESSION 20 (Review Feedback + Doc Metrics Sync — PR #3570)
+
+### Pre-flight Checklist
+- [x] Read `.codex/CODEBASE_AGENCY_POLICY.md`
+- [x] Read `.codex/guardrails.md`
+- [x] Loaded accountability report history
+- [x] Loaded lessons learned from stored memories
+
+### Work Completed
+1. **Doc metrics sync** — fixed 11 stale metrics (19500+ to 20000+ tests) across 7 files
+2. **26 production-ready tests** for `doc_metrics_sync.py` covering gather, apply, run, main, RULES
+3. **10 review comment fixes** from copilot-pull-request-reviewer thread:
+   - Fixed m_hotfix regex word-boundary bug
+   - Fixed filename token boosting substring false-positives
+   - Renamed misleading ci_status field
+   - Made idempotency per-output for partial failure repair
+   - AuthMiddleware prefix-based /auth/* exemption
+   - Production secret warning when CODEX_AUTH_SECRET unset
+   - CLI singleton auth store for register-then-login
+   - Separated ImportError from runtime keyring errors
+   - Tightened password boundary test assertions
+4. **Cherry-picked** provenance session token from 3570/merge ref
+
+### Metrics
+- **Score**: 0.85 (est.)
+- **Files changed**: 12
+- **Tests**: 136 passing (110 + 26 new)
+- **CI status**: ci-ref
+
+---
+
+## SESSION SUMMARY — 2026-03-13 SESSION 19 (CI Venv Self-Healing + Workflow Step — PR #3570)
 
 ### Pre-flight Checklist
 - [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit ✅
