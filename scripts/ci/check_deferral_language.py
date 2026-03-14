@@ -117,20 +117,27 @@ EXEMPTION_PATTERNS: list[str] = [
 # This prevents false positives from documentation that uses inline code to *describe*
 # deferral phrases (e.g., describing what the scanner catches).
 #
-# Two variants are handled:
-#   1. Double-backtick spans: `` `content` `` — GitHub Markdown syntax for code spans
+# Three variants are handled (MUST be checked in this priority order):
+#   1. Outer-single-backtick display wrapper: ` `` `content` `` ` — GitHub Markdown syntax
+#      for showing a double-backtick code span as literal text, e.g. ` `` `future task` `` `.
+#      These MUST be stripped FIRST, before the inner double-backtick span, otherwise the
+#      single-backtick pattern greedily consumes the outer ` `` ` separators and leaves the
+#      inner text visible.  Example: "`outer ` `` `future task` `` ` wrapper`" is stripped
+#      to an empty string.
+#   2. Double-backtick spans: `` `content` `` — GitHub Markdown syntax for code spans
 #      that themselves contain literal backtick characters (e.g. `` `future task` ``).
 #      These MUST be stripped before single-backtick spans, otherwise the single-backtick
 #      pattern greedily strips the outer `` ` `` separators first and leaves the inner
 #      text still visible to the scanner.
-#   2. Single-backtick spans: `content` — ordinary inline code.
+#   3. Single-backtick spans: `content` — ordinary inline code.
 #
 # Triple-backtick fenced blocks span multiple lines and are handled line-by-line
 # (each fence line after stripping becomes empty or only punctuation, which never
 # matches a deferral trigger).
 _INLINE_CODE_SPAN = re.compile(
-    r"``[^`]*(?:`(?!`)[^`]*)*``"  # double-backtick span (may contain single backticks)
-    r"|`[^`\n]+`"                  # single-backtick span (no newlines)
+    r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
+    r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span (may contain single backticks)
+    r"|`[^`\n]+`"                          # single-backtick span (no newlines)
 )
 
 
