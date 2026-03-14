@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T19:00:28Z",
+  "generated_at": "2026-03-14T19:24:23Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1208,6 +1208,11 @@
       "has_concurrency": true
     },
     {
+      "name": "mypy-baseline",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "nightly-codeql-alert-triage",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1735,5 +1740,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "2b1d76be4c13021b5d4d8fae1bc990a976bb915581e9b0976cbfc3d2d53588c8"
+  "integrity_sha256": "eb45a1fc3c932cd221bae5bedc84b02b4e2e13e3770df8dc820440d1165173a4"
 }
