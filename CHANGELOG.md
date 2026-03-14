@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session 39 — 2026-03-14 — @copilot continue (PR #3572, comment #4058912523)
+
+#### Verified (all open copilot-pull-request-reviewer threads confirmed fixed in current code)
+
+| Thread (file:line) | Status |
+|--------------------|--------|
+| `tests/auth/test_migration_001.py:8` | ✅ `test_main_missing_snapshot_returns_exit_code_2` present at line 145 |
+| `CHANGELOG.md:72-73` | ✅ Consistent at 217 across CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEBASE_AGENCY_POLICY |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2017` | ✅ 217 |
+| `src/codex/auth/sqlite_user_repository.py:129-132` | ✅ `sanitize_log_message(user.username)` at line 131 |
+| `scripts/ci/check_deferral_language.py:22-26` | ✅ All references say LogisticRegression |
+
+#### CI Status
+All workflow runs on HEAD are `action_required` — awaiting environment protection approval, not failures.
+
 ### Session 38 — 2026-03-14 — @copilot continue (PR #3572, comment #4058818880)
 
 #### Verified (all open copilot-pull-request-reviewer threads confirmed fixed in current code)
