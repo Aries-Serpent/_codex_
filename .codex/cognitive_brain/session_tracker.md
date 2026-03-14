@@ -8,17 +8,36 @@
 
 ## 🎯 Session State
 
-### Current Session (Session 28 — PR #3575)
+### Current Session (Session 30 — PR #3576 post-merge)
+```yaml
+session_id: "copilot/fix-comments-from-review-thread"
+pr_number: 3576
+phase: "session-30-post-merge-verification"
+started: "2026-03-14T10:12:00Z"
+status: "in-progress"
+cognitive_brain_session_number: 184
+```
+
+### Session Objectives
+- [x] §0 pre-session review — reviewed PR #3576 review thread (1 comment: PR-3576-followup.md too generic)
+- [x] Load `.codex/HOTFIX_CHECKPOINT_PR3575.md` — executed post-merge work queue
+- [x] Run CI capability tests: `python -m pytest tests/capabilities/ci_test/ -q` — 50/50 ✅
+- [x] Run ruff: `ruff check scripts/ tests/ src/ --select F401,F841,I001` — 0 issues ✅
+- [x] Fix PR #3576 review comment: updated `PR-3576-followup.md` with concrete PR summary and tasks
+- [x] Run `docs_lint --fix` — fixed 5 BROKEN_CLOSER errors (2 in `templates/intent_validation_gate.md`, 3 in `templates/status/codex_status_template_v1.2.md`)
+- [x] Created missing `.nojekyll` in repo root (required for GitHub Pages, was present in `docs/` but not root)
+
+### Previous Session (Session 28/29 — PR #3575, merged)
 ```yaml
 session_id: "copilot/ci-failure-triage-report"
 pr_number: 3575
 phase: "session-28-code-quality-main-sync-checkpoint"
 started: "2026-03-14T06:42:00Z"
-status: "checkpoint-ready"
+status: "merged"
 cognitive_brain_session_number: 183
 ```
 
-### Session Objectives
+### Session 28 Objectives
 - [x] §0 pre-session review — reviewed all bot-posted comments (github-code-quality bot)
 - [x] Fix ruff F401 — `textwrap.indent` unused in `scripts/ci/docs_sync.py`
 - [x] Fix ruff F401 — `typing.Optional` unused in `scripts/ci/generate_mermaid.py`
