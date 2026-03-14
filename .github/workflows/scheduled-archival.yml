@@ -29,10 +29,26 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
+  # ── 💰 Cost Gate ─────────────────────────────────────────────────────────────
+  # RED tier: 3 jobs × 60 min = 180 effective minutes (scheduled, recurring)
+  cost-gate:
+    name: "💰 Cost Gate"
+    uses: ./.github/workflows/cost-gate.yml
+    with:
+      workflow_name:   "Scheduled Archival"
+      runner:          "ubuntu-latest"
+      timeout_minutes: 60
+      matrix_count:    3
+      pushes_to_ghcr:  false
+    permissions:
+      contents:      read
+      pull-requests: write
+
   identify-candidates:
     name: Identify Archival Candidates
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    needs: cost-gate
     outputs:
       candidates: ${{ steps.find.outputs.candidates }}
       count: ${{ steps.find.outputs.count }}

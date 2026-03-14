@@ -1,0 +1,278 @@
+# Cost Gate — Reusable Workflow
+#
+# Every high-cost job in this repository MUST call this workflow as a
+# `needs:` dependency before running expensive steps.
+#
+# Cost tiers (GitHub Team plan: 3,000 Linux-equivalent minutes/month):
+#   GREEN  (<30 eff-min, no GHCR push) — auto-approved, job proceeds immediately
+#   YELLOW (30–90 eff-min)             — warning posted, proceeds after 5-min window
+#   RED    (>90 eff-min OR GHCR push)  — BLOCKED until PR checkbox is ticked
+#
+# Stakeholder approval mechanism:
+#   In the PR description, tick:  - [x] 💰 Cost Proposal Approved
+#   The cost-gate job polls the PR body every 60 s for up to 10 min.
+#   On workflow_dispatch, the gate is bypassed (owner already approved).
+
+name: 💰 Cost Gate
+
+on:
+  workflow_call:
+    inputs:
+      workflow_name:
+        description: "Human-readable name of the calling workflow"
+        required: true
+        type: string
+      runner:
+        description: "Runner type used by the expensive job"
+        required: false
+        default: "ubuntu-latest"
+        type: string
+      timeout_minutes:
+        description: "timeout-minutes of the expensive job"
+        required: false
+        default: 30
+        type: number
+      matrix_count:
+        description: "Number of parallel matrix jobs"
+        required: false
+        default: 1
+        type: number
+      pushes_to_ghcr:
+        description: "Whether the job pushes an image to GHCR"
+        required: false
+        default: false
+        type: boolean
+    outputs:
+      tier:
+        description: "GREEN | YELLOW | RED"
+        value: ${{ jobs.estimate.outputs.tier }}
+      approved:
+        description: "true if job may proceed"
+        value: ${{ jobs.gate.outputs.approved }}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # ── Step 1: Estimate cost ──────────────────────────────────────────────────
+  estimate:
+    name: "💰 Estimate cost (${{ inputs.workflow_name }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tier:              ${{ steps.estimate.outputs.tier }}
+      effective_minutes: ${{ steps.estimate.outputs.effective_minutes }}
+      reason:            ${{ steps.estimate.outputs.reason }}
+      proposal_md:       ${{ steps.proposal.outputs.proposal_md }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Estimate cost
+        id: estimate
+        run: |
+          GHCR_FLAG=""
+          if [ "${{ inputs.pushes_to_ghcr }}" = "true" ]; then
+            GHCR_FLAG="--pushes-to-ghcr"
+          fi
+          python scripts/ci/cost_estimator.py \
+            --runner       "${{ inputs.runner }}" \
+            --timeout      "${{ inputs.timeout_minutes }}" \
+            --matrix-count "${{ inputs.matrix_count }}" \
+            --workflow     "${{ inputs.workflow_name }}" \
+            --github-output \
+            $GHCR_FLAG \
+            2>/dev/null || true
+          # cost_estimator exits 0/1/2 — we capture via GITHUB_OUTPUT, not exit code
+
+      # T-004: Log this estimate to NDJSON for monthly budget tracking
+      - name: Log usage (T-004)
+        id: usage_log
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python scripts/ci/usage_logger.py \
+            --workflow     "${{ inputs.workflow_name }}" \
+            --runner       "${{ inputs.runner }}" \
+            --effective-minutes "${{ steps.estimate.outputs.effective_minutes || '0' }}" \
+            --tier         "${{ steps.estimate.outputs.tier || 'GREEN' }}" \
+            --pr-number    "${PR_NUMBER}" \
+            --branch       "${GITHUB_REF_NAME}" \
+            --sha          "${GITHUB_SHA}" \
+            2>/dev/null || true
+
+      - name: Build proposal markdown
+        id: proposal
+        run: |
+          GHCR_FLAG=""
+          if [ "${{ inputs.pushes_to_ghcr }}" = "true" ]; then
+            GHCR_FLAG="--pushes-to-ghcr"
+          fi
+          PROPOSAL=$(python scripts/ci/cost_estimator.py \
+            --runner       "${{ inputs.runner }}" \
+            --timeout      "${{ inputs.timeout_minutes }}" \
+            --matrix-count "${{ inputs.matrix_count }}" \
+            --workflow     "${{ inputs.workflow_name }}" \
+            $GHCR_FLAG 2>/dev/null || true)
+
+          # Write multiline output safely
+          EOF_MARKER=$(openssl rand -hex 8)
+          echo "proposal_md<<${EOF_MARKER}" >> "$GITHUB_OUTPUT"
+          echo "${PROPOSAL}" >> "$GITHUB_OUTPUT"
+          echo "${EOF_MARKER}" >> "$GITHUB_OUTPUT"
+
+      - name: Post cost proposal to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
+          WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        with:
+          script: |
+            const tier = '${{ steps.estimate.outputs.tier }}';
+            const proposal = process.env.PROPOSAL_MD || '';
+            const workflowName = process.env.WORKFLOW_NAME || '';
+            const marker = '<!-- cost-gate-proposal -->';
+
+            // Find existing cost-gate comment and update, or create new
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.data.find(c =>
+              c.body.includes(marker) &&
+              c.body.includes(workflowName)
+            );
+
+            const body = `${marker}\n${proposal}`;
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+  # ── Step 2: Gate ─────────────────────────────────────────────────────────
+  gate:
+    name: "🚦 Cost gate (${{ needs.estimate.outputs.tier }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: estimate
+    outputs:
+      approved: ${{ steps.decision.outputs.approved }}
+
+    steps:
+      - name: Auto-approve GREEN tier
+        id: green
+        if: needs.estimate.outputs.tier == 'GREEN'
+        run: |
+          echo "✅ GREEN tier — auto-approved (effective minutes: ${{ needs.estimate.outputs.effective_minutes }})"
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: Auto-approve on workflow_dispatch (owner override)
+        id: dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "✅ workflow_dispatch — owner-approved bypass"
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: Auto-approve on push to main (post-merge)
+        id: main_push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "✅ push to main — post-merge auto-approved"
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: Auto-approve on feature branch push (non-main)
+        id: feature_push
+        if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+        run: |
+          echo "✅ feature branch push — auto-approved (cost enforcement is at PR merge time via pr-cost-check)"
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: YELLOW — warn and proceed after window
+        id: yellow
+        if: needs.estimate.outputs.tier == 'YELLOW' && github.event_name == 'pull_request'
+        run: |
+          echo "⚠️  YELLOW tier — warning posted. Auto-proceeding in 60s."
+          echo "Reason: ${{ needs.estimate.outputs.reason }}"
+          sleep 60
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: RED — poll PR for stakeholder checkbox approval
+        id: red_poll
+        if: needs.estimate.outputs.tier == 'RED' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const maxAttempts = 10;   // 10 × 60s = 10 minutes
+            const pollInterval = 60;  // seconds
+
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+              const pr = await github.rest.pulls.get({
+                owner:       context.repo.owner,
+                repo:        context.repo.repo,
+                pull_number: context.issue.number,
+              });
+
+              const body = pr.data.body || '';
+              // Normalize: strip bold/italic markdown so "**💰 Cost Proposal Approved**"
+              // matches the same as the plain "💰 Cost Proposal Approved" variant.
+              const normalizedBody = body.replace(/\*\*/g, '').replace(/__/g, '');
+              // Accept ticked checkbox in any of these formats
+              if (
+                normalizedBody.includes('- [x] 💰 Cost Proposal Approved') ||
+                normalizedBody.includes('- [X] 💰 Cost Proposal Approved') ||
+                normalizedBody.includes('[x] Cost Proposal Approved') ||
+                normalizedBody.includes('[X] Cost Proposal Approved')
+              ) {
+                console.log(`✅ Stakeholder approval detected on attempt ${attempt}`);
+                core.setOutput('approved', 'true');
+                return;
+              }
+
+              if (attempt < maxAttempts) {
+                console.log(`⏳ Attempt ${attempt}/${maxAttempts}: waiting ${pollInterval}s for stakeholder to tick the checkbox...`);
+                await new Promise(r => setTimeout(r, pollInterval * 1000));
+              }
+            }
+
+            // Timeout — fail the gate
+            core.setFailed(
+              '🔴 Cost gate timed out after 10 minutes.\n' +
+              'Tick the checkbox in the PR description to approve:\n' +
+              '  - [x] 💰 Cost Proposal Approved — stakeholder sign-off\n' +
+              'Or trigger via workflow_dispatch to bypass.'
+            );
+
+      - name: Resolve final approval
+        id: decision
+        run: |
+          APPROVED="${{ steps.green.outputs.approved || steps.dispatch.outputs.approved || steps.main_push.outputs.approved || steps.feature_push.outputs.approved || steps.yellow.outputs.approved || steps.red_poll.outputs.approved }}"
+          echo "approved=${APPROVED:-false}" >> "$GITHUB_OUTPUT"
+          if [ "${APPROVED:-false}" != "true" ]; then
+            echo "::error::Cost gate not approved"
+            exit 1
+          fi
+          echo "✅ Cost gate passed — job may proceed."

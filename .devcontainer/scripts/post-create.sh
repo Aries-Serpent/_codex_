@@ -137,6 +137,60 @@ python3 -c "from codex.auth.github_app import GitHubApp; print('  auth.github_ap
 python3 -c "from codex.agents.brain_client import BrainClient; print('  brain_client: ✅ importable')" 2>/dev/null || \
     echo "  brain_client: ⚠️  not importable"
 
+# ── L6 agent venv (.venv_agent) ─────────────────────────────────────────────
+# Mirror the GitHub Actions L6b cache locally so the agent env is always ready.
+# The volume `codex-agent-venv` persists across rebuilds — only re-installs
+# when requirements/agent.txt or pyproject.toml have changed.
+echo ""
+echo "── Copilot agent venv (.venv_agent) ───────────────────────────────────"
+AGENT_VENV="${WORKSPACE}/.venv_agent"
+AGENT_REQ="${WORKSPACE}/requirements/agent.txt"
+AGENT_STAMP="${WORKSPACE}/.venv_agent/.build-stamp"
+CURRENT_HASH=$(sha256sum "${AGENT_REQ}" "${WORKSPACE}/pyproject.toml" 2>/dev/null | sha256sum | cut -d' ' -f1)
+
+needs_build=false
+if [ ! -d "${AGENT_VENV}" ] || [ ! -x "${AGENT_VENV}/bin/python" ]; then
+    needs_build=true
+    echo "  Agent venv missing or broken — building"
+elif [ ! -f "${AGENT_STAMP}" ] || [ "$(cat ${AGENT_STAMP})" != "${CURRENT_HASH}" ]; then
+    needs_build=true
+    echo "  Agent requirements changed — rebuilding"
+else
+    echo "  Agent venv up-to-date ✅ (hash: ${CURRENT_HASH:0:12}…)"
+fi
+
+if [ "$needs_build" = "true" ]; then
+    [ -d "${AGENT_VENV}" ] && { chmod -R u+w "${AGENT_VENV}" 2>/dev/null || true; rm -rf "${AGENT_VENV}"; }
+    python -m venv "${AGENT_VENV}"
+    "${AGENT_VENV}/bin/pip" install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+    "${AGENT_VENV}/bin/pip" install --cache-dir ~/.cache/pip -r "${AGENT_REQ}" --quiet
+    "${AGENT_VENV}/bin/pip" install --cache-dir ~/.cache/pip -e ".[dev]" --no-deps --quiet
+    echo "${CURRENT_HASH}" > "${AGENT_STAMP}"
+    echo "  Agent venv built ✅"
+fi
+echo "AGENT_VENV_PATH=${AGENT_VENV}" >> "${PROFILE_SNIPPET}"
+echo "  AGENT_VENV_PATH=${AGENT_VENV}"
+
+# ── cognitive_app npm dependencies ──────────────────────────────────────────
+# node_modules volume persists; only re-installs when package.json changes.
+echo ""
+echo "── cognitive_app npm dependencies ─────────────────────────────────────"
+if [ -f "${WORKSPACE}/cognitive_app/package.json" ]; then
+    cd "${WORKSPACE}/cognitive_app"
+    # Fast path: skip install if node_modules already up-to-date
+    if [ ! -d node_modules ] || [ package.json -nt node_modules/.install-stamp 2>/dev/null ]; then
+        echo "  Running npm install (cache: ~/.npm)…"
+        npm install --prefer-offline --cache ~/.npm --loglevel=warn
+        touch node_modules/.install-stamp
+        echo "  npm install complete ✅"
+    else
+        echo "  node_modules up-to-date ✅"
+    fi
+    cd "${WORKSPACE}"
+else
+    echo "  cognitive_app/package.json not found — skipping"
+fi
+
 echo ""
 echo "✅ post-create complete"
 echo ""

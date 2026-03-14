@@ -30,6 +30,28 @@ from codex.cognitive.brain_interface import (  # noqa: E402
 )
 
 # =========================================================================
+# Environment isolation
+# =========================================================================
+
+@pytest.fixture(autouse=True)
+def _reset_pattern_min_confidence():
+    """Isolate tests from COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE environment variable.
+
+    The module-level ``_MIN_CONFIDENCE`` constant is read once at import time from
+    the environment.  CI runners set this to 0.75 to tighten production matching,
+    which causes Jaccard-score ~0.43 pattern tests to return empty results.
+    Reset to 0.0 for the duration of each test so pattern-query tests are
+    environment-independent.
+    """
+    import codex.cognitive.brain_interface as _bm
+
+    original = _bm._MIN_CONFIDENCE
+    _bm._MIN_CONFIDENCE = 0.0
+    yield
+    _bm._MIN_CONFIDENCE = original
+
+
+# =========================================================================
 # Fixtures
 # =========================================================================
 

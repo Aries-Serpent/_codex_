@@ -17,7 +17,7 @@
 Let M₀ = Base Codex (pretrained)
 Codex:
  M₀ — SFT(curated code demos) → M₁ — RLHF(reward model, PPO) → M₂ (deployed utility)
-```text
+```
 Where the RLHF reward model is trained from human preference comparisons over model outputs. ([OpenAI][3])
 
 The reference implementation in `src/codex_ml/symbolic_pipeline.py` provides
@@ -84,3 +84,5 @@ training loops and evaluation metrics:
 [3]: https://openai.com/index/instruction-following/?utm_source=chatgpt.com "Aligning language models to follow instructions"
 [4]: https://cdn.openai.com/papers/Training_language_models_to_follow_instructions_with_human_feedback.pdf?utm_source=chatgpt.com "Training language models to follow instructions with human feedback"
 [5]: https://openai.com/codex/?utm_source=chatgpt.com "OpenAI Codex"
+```
+```

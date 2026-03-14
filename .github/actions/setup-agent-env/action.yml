@@ -1,0 +1,193 @@
+name: 'Setup Copilot Agent Environment'
+description: >
+  Layer 6 of the Codex cache hierarchy — a lean, pre-warmed Python venv
+  (.venv_agent) tailored for Copilot coding agent sessions.
+
+  Installs only what the agent needs (lint, test, docs, auth, CI scripts)
+  with NO PyTorch / heavy ML. Cold-build: ~75 s. Cache hit: ~4 s.
+
+  Cache key encodes OS + Python version + hash of requirements/agent.txt
+  and pyproject.toml so any dependency change triggers a rebuild.
+
+  Layer layout inside this action:
+    L6a — pip download cache  (~/.cache/pip)        restored from L1 key
+    L6b — agent venv          (.venv_agent)          own key + restore-keys
+    L6c — Cognitive Brain DB  (.codex/cognitive_brain/)  optional (enable-brain-cache)
+
+  Outputs:
+    venv-python   — absolute path to .venv_agent/bin/python
+    cache-hit     — 'true' when L6b was an exact hit
+    mode          — 'hit' | 'restored' | 'built'
+
+author: 'Aries-Serpent'
+
+inputs:
+  python-version:
+    description: 'Python version (must be >=3.12 per pyproject.toml)'
+    required: false
+    default: '3.12'
+  cache-version:
+    description: 'Cache-bust token — mirrors CODEX_CACHE_VERSION repo variable'
+    required: false
+    default: 'v2'
+  enable-brain-cache:
+    description: 'Restore Cognitive Brain SQLite DB from cache (L6c)'
+    required: false
+    default: 'false'
+  install-editable:
+    description: 'pip install -e ".[dev]" --no-deps after venv build'
+    required: false
+    default: 'true'
+  verify:
+    description: 'Run verify_agent_env.py after setup to confirm env health'
+    required: false
+    default: 'true'
+
+outputs:
+  venv-python:
+    description: 'Absolute path to the agent venv Python binary'
+    value: ${{ steps.venv-path.outputs.venv-python }}
+  cache-hit:
+    description: 'Whether the agent venv cache was an exact hit'
+    value: ${{ steps.cache-agent-venv.outputs.cache-hit }}
+  mode:
+    description: 'hit | restored | built'
+    value: ${{ steps.report-mode.outputs.mode }}
+
+runs:
+  using: 'composite'
+  steps:
+
+    # ── 1. Python interpreter ────────────────────────────────────────────────
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    # ── 2. L6a — seed from shared L1 pip download cache ─────────────────────
+    - name: 'L6a: pip download cache (~/.cache/pip)'
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-live-pip-${{ inputs.cache-version }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-live-pip-${{ inputs.cache-version }}-py${{ inputs.python-version }}-
+          ${{ runner.os }}-live-pip-${{ inputs.cache-version }}-
+
+    # ── 3. L6b — agent venv (.venv_agent) ───────────────────────────────────
+    - name: 'L6b: agent venv (.venv_agent)'
+      id: cache-agent-venv
+      uses: actions/cache@v5
+      with:
+        path: .venv_agent
+        key: ${{ runner.os }}-agent-venv-${{ inputs.cache-version }}-py${{ inputs.python-version }}-${{ hashFiles('requirements/agent.txt', 'pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-agent-venv-${{ inputs.cache-version }}-py${{ inputs.python-version }}-
+          ${{ runner.os }}-agent-venv-${{ inputs.cache-version }}-
+
+    # ── 4. L6c — Cognitive Brain SQLite DB (optional) ───────────────────────
+    - name: 'L6c: Cognitive Brain DB (.codex/cognitive_brain/)'
+      if: inputs.enable-brain-cache == 'true'
+      uses: actions/cache@v5
+      with:
+        path: .codex/cognitive_brain
+        key: ${{ runner.os }}-brain-db-${{ inputs.cache-version }}-${{ github.ref_name }}
+        restore-keys: |
+          ${{ runner.os }}-brain-db-${{ inputs.cache-version }}-main
+          ${{ runner.os }}-brain-db-${{ inputs.cache-version }}-
+
+    # ── 5. Build / heal agent venv ───────────────────────────────────────────
+    - name: 'Build or heal agent venv'
+      shell: bash
+      env:
+        CACHE_HIT: ${{ steps.cache-agent-venv.outputs.cache-hit }}
+        INSTALL_EDITABLE: ${{ inputs.install-editable }}
+        PY_VER: ${{ inputs.python-version }}
+      run: |
+        set -euo pipefail
+
+        # ── Heal: test Python binary is valid (cross-patch cache artifacts) ──
+        NEEDS_BUILD=false
+        if [ "${CACHE_HIT}" = "true" ]; then
+          if ! .venv_agent/bin/python --version &>/dev/null 2>&1; then
+            echo "::warning::Agent venv Python binary invalid after cache restore — rebuilding"
+            NEEDS_BUILD=true
+            chmod -R u+w .venv_agent 2>/dev/null || true
+            rm -rf .venv_agent
+          else
+            echo "✅ L6b cache hit — agent venv healthy"
+          fi
+        else
+          NEEDS_BUILD=true
+        fi
+
+        # ── Build from scratch ───────────────────────────────────────────────
+        if [ "$NEEDS_BUILD" = "true" ]; then
+          echo "::group::Build agent venv from requirements/agent.txt"
+          [ -d .venv_agent ] && { chmod -R u+w .venv_agent 2>/dev/null || true; rm -rf .venv_agent; }
+          python -m venv .venv_agent
+
+          if [ ! -x .venv_agent/bin/python ]; then
+            echo "::error::Agent venv creation failed"
+            exit 1
+          fi
+
+          .venv_agent/bin/pip install --cache-dir ~/.cache/pip -U pip setuptools wheel --quiet
+          .venv_agent/bin/pip install --cache-dir ~/.cache/pip \
+            -r requirements/agent.txt --quiet
+
+          if [ "${INSTALL_EDITABLE}" = "true" ]; then
+            .venv_agent/bin/pip install --cache-dir ~/.cache/pip \
+              -e ".[dev]" --no-deps --quiet
+          fi
+          echo "::endgroup::"
+        fi
+
+        # ── Refresh: quick --upgrade on exact cache hit ──────────────────────
+        if [ "${CACHE_HIT}" = "true" ] && [ "$NEEDS_BUILD" = "false" ]; then
+          echo "::group::Refresh agent venv (exact cache hit)"
+          .venv_agent/bin/pip install --cache-dir ~/.cache/pip \
+            -r requirements/agent.txt --upgrade --quiet || true
+          if [ "${INSTALL_EDITABLE}" = "true" ]; then
+            .venv_agent/bin/pip install --cache-dir ~/.cache/pip \
+              -e ".[dev]" --no-deps --quiet || true
+          fi
+          echo "::endgroup::"
+        fi
+
+        # ── Activate: add .venv_agent/bin to PATH for all subsequent steps ──
+        echo "${GITHUB_WORKSPACE}/.venv_agent/bin" >> "$GITHUB_PATH"
+        echo "AGENT_VENV_PATH=${GITHUB_WORKSPACE}/.venv_agent" >> "$GITHUB_ENV"
+        echo "VIRTUAL_ENV=${GITHUB_WORKSPACE}/.venv_agent"     >> "$GITHUB_ENV"
+        echo "PYTHONPATH=${GITHUB_WORKSPACE}/src:${PYTHONPATH:-}" >> "$GITHUB_ENV"
+
+    # ── 6. Expose venv-python output ─────────────────────────────────────────
+    - name: Expose venv-python path
+      id: venv-path
+      shell: bash
+      run: echo "venv-python=${GITHUB_WORKSPACE}/.venv_agent/bin/python" >> "$GITHUB_OUTPUT"
+
+    # ── 7. Report mode ───────────────────────────────────────────────────────
+    - name: Report cache mode
+      id: report-mode
+      shell: bash
+      env:
+        CACHE_HIT: ${{ steps.cache-agent-venv.outputs.cache-hit }}
+      run: |
+        if [ "${CACHE_HIT}" = "true" ]; then
+          echo "mode=hit"     >> "$GITHUB_OUTPUT"
+          echo "🚀 Agent env: L6b exact hit — ~4 s load time"
+        else
+          echo "mode=built"   >> "$GITHUB_OUTPUT"
+          echo "🔨 Agent env: built from requirements/agent.txt (will be cached)"
+        fi
+
+    # ── 8. Verify env health ─────────────────────────────────────────────────
+    - name: Verify agent env health
+      if: inputs.verify == 'true'
+      shell: bash
+      run: |
+        python scripts/ci/verify_agent_env.py \
+          --venv .venv_agent \
+          --requirements requirements/agent.txt \
+          || echo "::warning::Agent env verification found issues — check output above"

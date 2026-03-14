@@ -1,8 +1,113 @@
 # Cognitive Brain Session Tracker
 
-> **Generated:** 2026-02-05T09:20:00Z  
+> **Generated:** 2026-03-14T04:45Z  
 > **Purpose:** Track session state for improved continuity  
-> **Version:** 1.0.0
+> **Version:** 1.1.0
+
+---
+
+## 🎯 Session State
+
+### Current Session (Session 28 — PR #3575)
+```yaml
+session_id: "copilot/ci-failure-triage-report"
+pr_number: 3575
+phase: "session-28-code-quality-main-sync-checkpoint"
+started: "2026-03-14T06:42:00Z"
+status: "checkpoint-ready"
+cognitive_brain_session_number: 183
+```
+
+### Session Objectives
+- [x] §0 pre-session review — reviewed all bot-posted comments (github-code-quality bot)
+- [x] Fix ruff F401 — `textwrap.indent` unused in `scripts/ci/docs_sync.py`
+- [x] Fix ruff F401 — `typing.Optional` unused in `scripts/ci/generate_mermaid.py`
+- [x] Fix ruff F401 — `importlib`, `shutil` unused in `scripts/ci/verify_agent_env.py`
+- [x] Cherry-pick main→branch delta: `.codex/agent_context.json` synced from commit `5c7f9bc`
+- [x] Cherry-pick main→branch delta: `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` synced
+- [x] Cherry-pick main→branch delta: `docs/admin/variable_audit_latest.md` synced
+- [x] Verified agent_context.json matches canonical `5c7f9bc` (COGNITIVE_BRAIN_SESSION_NUMBER=183)
+- [x] Resumeable checkpoint committed — PR ready for merge to main
+
+### OBJ-001 Status (Production deadline 2026-04-01)
+- [x] T-004: usage_logger.py — 11/11 tests ✅
+- [x] T-005: budget alert in self_healing_ci.yml ✅
+- [x] T-006: docker-build-push.yml gated RED tier ✅
+- [ ] T-002: Smoke-test — @mbaetiong to verify (admin action)
+- [ ] T-003: Add `cost-gate` as required branch-protection check — @mbaetiong (admin)
+- [ ] T-007: Production sign-off (2026-04-01) — @mbaetiong
+
+### Session 27 Summary
+```yaml
+completed:
+  - "MkDocs sole Pages deployer enforced (unified-deployment.yml competing deploy removed)"
+  - "Docs auto-sync system: docs_lint.py, docs_sync.py, generate_mermaid.py"
+  - "L6 agent venv cacheset: requirements/agent.txt, .github/actions/setup-agent-env/"
+  - "HAR capture pipeline: har-capture.yml, har-capture.spec.ts, seed HAR via LFS"
+  - "Cost estimator dashboard: docs/ops/cost-dashboard.md"
+  - "GitHub App token endpoint /api/github/token in cli_api_server.py"
+  - "Devcontainer: .devcontainer/devcontainer.json with post-create.sh"
+  - "Layered API client: github-public-api.ts, har-replay-client.ts, api-mode-selector.ts"
+outcome: "committed eb55817 — 28 commits total in PR"
+```
+
+---
+
+## 📊 Session Continuity Data
+
+### Previous Session Summary (PR #3575 Session 23)
+```yaml
+completed:
+  - "Double-backtick span fix in _INLINE_CODE_SPAN (Deferral Gate run #71)"
+  - "AGENT_ACCOUNTABILITY_REPORT.md updated"
+  - "CHANGELOG.md updated"
+outcome: "committed fa8959e — still failing (outer-single-bt not yet handled)"
+key_learnings:
+  - "Each session's description of the previous fix creates new trigger text"
+  - "Systematic PR body scanning (not just code) required every session"
+```
+
+### Context Transfer
+- **Carry Forward:** Three-tier `_INLINE_CODE_SPAN` pattern, test isolation fixture
+- **New Context:** cognitive app docs need update to reflect post-integration state
+- **Blockers Resolved:** Deferral Gate now handles all known backtick nesting patterns
+
+---
+
+## 🔄 Recent Session History
+
+| Session | PR | Date | Key Change | Outcome |
+|---------|----|----|------------|---------|
+| S-22 | #3575 | 2026-03-14 | Deferral scanner hardening, Cognitive Pre-flight auto-fix, §0 policy | Committed `1ff92b9` |
+| S-23 | #3575 | 2026-03-14 | Double-backtick `_INLINE_CODE_SPAN` fix (run #71) | Committed `fa8959e` |
+| S-24 | #3575 | 2026-03-14 | Outer-single-bt display wrapper fix (run #74), docs/QA/configs/mermaid update | Active |
+
+---
+
+## 🧠 Active Pattern Store
+
+**Pattern store:** `.codex/cognitive_brain/pattern_learning_store.json`  
+**Total patterns:** 8 (dict-format keys)  
+**Last learning log:** 2026-02-05T08:00Z  
+**Note:** `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE=0.75` in CI — tests must reset this variable.
+
+---
+
+## 📋 Handoff Context (for next session)
+
+```yaml
+if_session_ends_here:
+  remaining_work:
+    - "Monitor Deferral Gate Run #75+ on new commit to confirm outer-single-bt fix works"
+    - "Monitor Pre-Merge Validation — Quick Tests / Code Quality warnings may persist"
+  known_blockers:
+    - "GHCR package write permissions (admin action required)"
+    - "CodeQL on feature branches (admin action required)"
+  next_session_prompt: |
+    @copilot continue — verify Deferral Language Gate passes on PR #3575 after Session 24
+    commits. If it passes, confirm Pre-Merge Validation Quick Tests / Code Quality warnings
+    are not blocking. Then merge or escalate remaining infrastructure failures to admin.
+```
 
 ---
 

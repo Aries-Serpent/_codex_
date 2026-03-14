@@ -58,8 +58,14 @@
   },
 
   // ── Port forwarding ────────────────────────────────────────────────────────
-  "forwardPorts": [8765, 8766, 3000],
+  "forwardPorts": [5173, 8765, 8766, 3000],
   "portsAttributes": {
+    "5173": {
+      "label": "⚡ Vite dev server (cognitive_app)",
+      "protocol": "http",
+      "onAutoForward": "openPreview",
+      "requireLocalPort": false
+    },
     "8765": {
       "label": "🧠 Cognitive Brain CLI API",
       "protocol": "http",
@@ -285,7 +291,12 @@
     // Persist pip cache across rebuilds to speed up re-creation
     "source=codex-pipcache,target=/home/codex/.cache/pip,type=volume",
     // Persist the Codex SQLite DB across rebuilds
-    "source=codex-db,target=/home/codex/.codex,type=volume"
+    "source=codex-db,target=/home/codex/.codex,type=volume",
+    // Persist the Copilot agent lean venv across rebuilds
+    // This mirrors the L6b GitHub Actions cache so the agent starts instantly
+    "source=codex-agent-venv,target=/workspaces/_codex_/.venv_agent,type=volume",
+    // Persist npm cache for cognitive_app across rebuilds
+    "source=codex-npm-cache,target=/home/codex/.npm,type=volume"
   ],
 
   // ── Shutdown + resource limits ────────────────────────────────────────────

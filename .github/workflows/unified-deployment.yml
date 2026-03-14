@@ -32,7 +32,7 @@ on:
 
 permissions:
   contents: write
-  pages: write
+  # pages: write  # REMOVED — pages deployment is exclusively via pages-mkdocs.yml
   id-token: write
   pull-requests: write
   packages: write
@@ -96,8 +96,15 @@ jobs:
           fi
 
   # Cognitive app build
+  # NOTE: This job builds the cognitive app but uploads a standard artifact
+  # (NOT a Pages artifact). The MkDocs workflow (pages-mkdocs.yml) is the ONLY
+  # authorised GitHub Pages deployer. It already includes the cognitive_app
+  # build via its "Build cognitive_app dashboard" step.
+  # Removed: configure-pages, upload-pages-artifact — they competed with
+  # pages-mkdocs.yml and caused the MkDocs site to be overwritten on every
+  # cognitive_app/** push.
   build_cognitive_app:
-    name: Build Cognitive App
+    name: Build Cognitive App (artifact only — no Pages deploy)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     if: |
@@ -125,30 +132,18 @@ jobs:
           GITHUB_ACTIONS: true
         run: npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      # Upload as a plain artifact for inspection/caching.
+      # Pages deployment is handled exclusively by pages-mkdocs.yml.
+      - name: Upload cognitive_app build artifact
+        uses: actions/upload-artifact@v7
         with:
+          name: cognitive-app-dist-${{ github.sha }}
           path: cognitive_app/dist
+          retention-days: 7
 
-  # Cognitive app deployment
-  deploy_cognitive_app:
-    name: Deploy Cognitive App to Pages
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    needs: build_cognitive_app
-    if: |
-      needs.build_cognitive_app.result == 'success'
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # deploy_cognitive_app REMOVED — was competing with pages-mkdocs.yml.
+  # The MkDocs workflow is the single authorised GitHub Pages deployer.
+  # It merges the cognitive_app into site/cognitive_app/ at build time.
 
   # Pre-release build
   pre_release_build:
@@ -216,7 +211,7 @@ jobs:
     name: Generate Deployment Summary
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    needs: [build_cognitive_app, deploy_cognitive_app, pre_release_validate, pre_release_build, pre_release_publish]
+    needs: [build_cognitive_app, pre_release_validate, pre_release_build, pre_release_publish]
     if: always()
 
     steps:
@@ -228,7 +223,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Job Status" >> $GITHUB_STEP_SUMMARY
           echo "- Cognitive App Build: ${{ needs.build_cognitive_app.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Cognitive App Deploy: ${{ needs.deploy_cognitive_app.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Cognitive App Deploy: handled by pages-mkdocs.yml (MkDocs is the sole Pages deployer)" >> $GITHUB_STEP_SUMMARY
           echo "- Pre-Release Validation: ${{ needs.pre_release_validate.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Pre-Release Build: ${{ needs.pre_release_build.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Pre-Release Publish: ${{ needs.pre_release_publish.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY

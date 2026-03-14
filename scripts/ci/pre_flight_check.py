@@ -314,7 +314,28 @@ class PreFlightValidator:
                 elif result.name == "Module-level importorskip":
                     self._fix_module_level_importorskip()
 
+                elif result.name == "Workflow Timeouts":
+                    self._fix_workflow_timeouts()
+
         print("\n✅ Fixes applied. Re-run validation to verify.")
+
+    def _fix_workflow_timeouts(self):
+        """Add timeout-minutes to jobs in workflows that use pytest but lack it."""
+        import re as _re
+        workflow_files = list(self.repo_root.glob(".github/workflows/*.yml"))
+        for workflow_file in workflow_files:
+            content = workflow_file.read_text()
+            if "pytest" in content and "timeout-minutes:" not in content:
+                # Insert timeout-minutes after the first runs-on line in a job
+                fixed = _re.sub(
+                    r'(    runs-on: [^\n]+\n)(?!    timeout-minutes:)',
+                    r'\1    timeout-minutes: 30\n',
+                    content,
+                    count=1,
+                )
+                if fixed != content:
+                    workflow_file.write_text(fixed)
+                    print(f"  Added timeout-minutes: 30 to {workflow_file.name}")
 
     def _fix_pytest_plugin_loading(self):
         """Fix pytest plugin loading in workflows."""

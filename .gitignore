@@ -394,6 +394,12 @@ RESOLUTION_SUMMARY.md
 ACCOUNTABILITY_REPORT_DRAFT.md
 audit_artifacts/
 
+# Session-local runtime telemetry and analysis artifacts (never commit to repo root)
+system_metrics.ndjson
+failing_checks.md
+pr[0-9]*_final_collection_template.json
+*_collection_template.json
+
 # Planset orchestrator runtime state (session-local, not for VCS)
 **/.orchestrator_state.json
 
@@ -413,3 +419,7 @@ memory/sessions/session_*.json
 memory/sessions/session_*.md
 memory/sessions/.current_session.json
 memory/philosophy/*.md
+
+# actionlint binary (download artifact - not for repo)
+actionlint
+

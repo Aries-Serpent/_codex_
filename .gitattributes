@@ -133,6 +133,9 @@ dist/** linguist-generated=true
 htmlcov/** linguist-generated=true
 .coverage linguist-generated=true
 
+# HAR cache files — stored as regular files (no LFS required for small demo HARs)
+# Recorded by: .github/workflows/har-capture.yml (Playwright walkthrough)
+
 # Export-ignore (files excluded from export archives)
 .gitattributes export-ignore
 .gitignore export-ignore

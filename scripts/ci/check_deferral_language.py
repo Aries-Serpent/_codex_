@@ -46,6 +46,12 @@ logger = logging.getLogger(__name__)
 # ── Canonical deferral trigger phrases ────────────────────────────────────────
 # These are the exact patterns that constitute policy violations.
 # Edit only via PR with AGENT_ACCOUNTABILITY_REPORT update.
+
+# Extracted as a module constant so scan() can apply a word-boundary-aware
+# negation check (e.g. "no future work") without variable-width lookbehinds,
+# which Python's re module does not support.
+_FUTURE_WORK_PATTERN = r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)"
+
 DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Attribution-based deferrals
     (r"this was from (?:a )?different (?:branch|agent|pr|pull request|task|session)",
@@ -70,7 +76,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Future-based deferrals
     (r"(?:will|can|could|should|may)(?: be)? (?:address|fix|resolve|handle)(?:ed|d)? in (?:a )?future",
      "Future deferral: punting to future work without documented justification"),
-    (r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)",
+    (_FUTURE_WORK_PATTERN,
      "Future deferral: punting to future work"),
     (r"address(?:ed)? (?:incrementally|later|separately|in a follow[-\s]?up)",
      "Incremental deferral: incrementalism as avoidance"),
@@ -98,9 +104,41 @@ EXEMPTION_PATTERNS: list[str] = [
     r"check_deferral_language",     # this script name
     r"deferral.language.gate",      # workflow name
     r"Prohibited Statements",       # policy itself listing what's prohibited
-    r"#\s*noqa:\s*deferral",        # explicit per-line suppression
+    r"#\s*noqa:\s*deferral",        # explicit per-line suppression (code files)
     r"noqa.*deferral",
+    r"<!--\s*noqa:\s*deferral\s*-->",  # HTML comment suppression (PR bodies / markdown docs)
+    r"\bDeferral Enforcement\b",    # anchored policy heading (e.g., "**Deferral Enforcement:**")
+    # Exact heading-line format: "Follow-Up Prompt" + a path/URL/view placeholder only
+    r"^\**\s*(?:📋\s*)?Follow-Up Prompt\**\s*[:\*]\s*(?:View\b|https?://|\.github/)",
+    r"\.github/copilot-prompts/\S+$",  # path-only reference (must be at end of line; prevents bypass like ".../ will fix in a future task")
 ]
+
+# Pre-compiled pattern to strip inline code spans before scanning.
+# This prevents false positives from documentation that uses inline code to *describe*
+# deferral phrases (e.g., describing what the scanner catches).
+#
+# Three variants are handled (MUST be checked in this priority order):
+#   1. Outer-single-backtick display wrapper: ` `` `content` `` ` — GitHub Markdown syntax
+#      for showing a double-backtick code span as literal text, e.g. ` `` `future task` `` `.
+#      These MUST be stripped FIRST, before the inner double-backtick span, otherwise the
+#      single-backtick pattern greedily consumes the outer ` `` ` separators and leaves the
+#      inner text visible.  Example: "`outer ` `` `future task` `` ` wrapper`" is stripped
+#      to an empty string.
+#   2. Double-backtick spans: `` `content` `` — GitHub Markdown syntax for code spans
+#      that themselves contain literal backtick characters (e.g. `` `future task` ``).
+#      These MUST be stripped before single-backtick spans, otherwise the single-backtick
+#      pattern greedily strips the outer `` ` `` separators first and leaves the inner
+#      text still visible to the scanner.
+#   3. Single-backtick spans: `content` — ordinary inline code.
+#
+# Triple-backtick fenced blocks span multiple lines and are handled line-by-line
+# (each fence line after stripping becomes empty or only punctuation, which never
+# matches a deferral trigger).
+_INLINE_CODE_SPAN = re.compile(
+    r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
+    r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span (may contain single backticks)
+    r"|`[^`\n]+`"                          # single-backtick span (no newlines)
+)
 
 
 # ── ML Classifier (optional — enabled by DEFERRAL_SCANNER_ML=1) ───────────────
@@ -264,6 +302,16 @@ def _line_is_exempt(line: str) -> bool:
     return any(re.search(p, line, re.IGNORECASE) for p in EXEMPTION_PATTERNS)
 
 
+# Pre-compiled pattern: word-boundary-aware negation words immediately before a
+# deferral keyword.  Used by scan() to suppress false positives caused by the
+# fixed-width lookbehind limitation in Python's re module (e.g. "piano future
+# work" would otherwise be incorrectly exempted by a bare "(?<!no )" lookbehind
+# because "piano " ends with "no ").
+_NEGATION_BEFORE_FUTURE = re.compile(
+    r"\b(?:no|prevent|block|prohibit)\s+$", re.IGNORECASE
+)
+
+
 def scan(
     text: str,
     source_label: str = "<input>",
@@ -282,9 +330,25 @@ def scan(
     for line_no, line in enumerate(text.splitlines(), start=1):
         if _line_is_exempt(line):
             continue
+        # Strip single-backtick inline code spans before scanning so that
+        # documentation examples describing deferral phrases (e.g. `future task`)
+        # don't trigger false positives.  Triple-backtick fenced blocks span
+        # multiple lines; each fence line after stripping becomes empty or only
+        # punctuation, which never matches any deferral trigger.
+        scan_line = _INLINE_CODE_SPAN.sub("", line)
         flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:
-            if re.search(pattern, line, re.IGNORECASE):
+            m = re.search(pattern, scan_line, re.IGNORECASE)
+            if m:
+                # Word-boundary-aware negation check for the future-work pattern.
+                # Python lookbehinds are fixed-width, so "(?<!no )future" would
+                # also suppress "piano future work" (because "piano " ends with
+                # "no ").  Instead we check the prefix for a complete negation
+                # word using \b-anchored regex after finding the match.
+                if pattern == _FUTURE_WORK_PATTERN:
+                    prefix = scan_line[: m.start()]
+                    if _NEGATION_BEFORE_FUTURE.search(prefix):
+                        continue
                 violations.append(
                     {
                         "source": source_label,
