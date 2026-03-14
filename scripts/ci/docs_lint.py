@@ -88,19 +88,53 @@ class LintResult:
 # ---------------------------------------------------------------------------
 
 
-def _extract_nav_entries(mkdocs_path: Path) -> list[tuple[str, str]]:
-    """Return list of (title, path) from the mkdocs.yml nav, without loading
-    the YAML with !!python tags (mermaid2 uses them)."""
-    raw = mkdocs_path.read_text(encoding="utf-8")
-    # Find everything that looks like `  - Label: some/path.ext`
-    entries = re.findall(r"-\s+[^:]+:\s+([^\s#\n]+)", raw)
-    result = []
-    for entry in entries:
-        entry = entry.strip()
-        if entry.startswith("http"):
-            continue  # external link
-        result.append(entry)
-    return result
+def _extract_nav_entries(mkdocs_path: Path) -> list[str]:
+    """Return list of file paths from the nav: block of mkdocs.yml using a
+    line-by-line state machine.
+
+    This avoids two pitfalls:
+    - ``yaml.safe_load`` fails when mkdocs.yml contains Python constructor
+      tags (e.g. ``!!python/name:mermaid2.fence_mermaid_custom``).
+    - A greedy regex applied to the whole file matches lines outside the
+      ``nav:`` block (e.g. plugin config entries).
+    """
+    entries: list[str] = []
+    in_nav = False
+    nav_indent: int | None = None
+
+    try:
+        lines = mkdocs_path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return entries
+
+    for line in lines:
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+
+        if not in_nav:
+            if stripped.startswith("nav:"):
+                in_nav = True
+                nav_indent = indent
+            continue
+
+        # A non-empty, non-list line at the same or shallower indent as the
+        # ``nav:`` key signals the start of the next top-level YAML key.
+        if (
+            nav_indent is not None
+            and indent <= nav_indent
+            and stripped
+            and not stripped.startswith("-")
+        ):
+            break
+
+        # Match ``- Title: path/to/file.md`` or ``- path/to/file.md``
+        m = re.match(r"-\s+(?:[^:]+:\s+)?(\S+\.md)\s*$", stripped)
+        if m:
+            value = m.group(1)
+            if not value.startswith("http"):
+                entries.append(value)
+
+    return entries
 
 
 # ---------------------------------------------------------------------------
