@@ -30,7 +30,11 @@
       "success_rate": 0.95,
       "times_applied": 5,
       "last_used": "2026-02-05T06:28:44Z",
-      "related_prs": ["#3155", "#3154", "#3153"]
+      "related_prs": [
+        "#3155",
+        "#3154",
+        "#3153"
+      ]
     },
     "commit_verification": {
       "id": "CV-001",
@@ -54,7 +58,11 @@
       "success_rate": 0.98,
       "times_applied": 15,
       "last_used": "2026-02-05T08:39:14Z",
-      "related_prs": ["#3159", "#3158", "#3157"]
+      "related_prs": [
+        "#3159",
+        "#3158",
+        "#3157"
+      ]
     },
     "session_continuity": {
       "id": "SC-001",
@@ -78,7 +86,10 @@
       "success_rate": 0.85,
       "times_applied": 10,
       "last_used": "2026-02-05T09:10:00Z",
-      "related_prs": ["#3159", "#3158"]
+      "related_prs": [
+        "#3159",
+        "#3158"
+      ]
     },
     "agent_handoff": {
       "id": "AH-001",
@@ -102,7 +113,10 @@
       "success_rate": 0.92,
       "times_applied": 8,
       "last_used": "2026-02-04T15:05:00Z",
-      "related_prs": ["#3149", "#3147"]
+      "related_prs": [
+        "#3149",
+        "#3147"
+      ]
     },
     "coverage_improvement": {
       "id": "CI-001",
@@ -123,10 +137,14 @@
         "Mock external dependencies consistently",
         "Apply quantum test prioritization"
       ],
-      "success_rate": 0.90,
+      "success_rate": 0.9,
       "times_applied": 12,
       "last_used": "2026-02-04T15:12:05Z",
-      "related_prs": ["#3150", "#3148", "#3146"]
+      "related_prs": [
+        "#3150",
+        "#3148",
+        "#3146"
+      ]
     },
     "workflow_failure_resolution": {
       "id": "WFR-001",
@@ -150,7 +168,11 @@
       "success_rate": 0.88,
       "times_applied": 7,
       "last_used": "2026-02-05T06:28:44Z",
-      "related_prs": ["#3157", "#3152", "#3141"]
+      "related_prs": [
+        "#3157",
+        "#3152",
+        "#3141"
+      ]
     },
     "security_remediation": {
       "id": "SR-001",
@@ -174,7 +196,10 @@
       "success_rate": 0.95,
       "times_applied": 6,
       "last_used": "2026-02-03T22:21:54Z",
-      "related_prs": ["#3140", "#3139"]
+      "related_prs": [
+        "#3140",
+        "#3139"
+      ]
     },
     "documentation_update": {
       "id": "DU-001",
@@ -198,7 +223,101 @@
       "success_rate": 0.97,
       "times_applied": 10,
       "last_used": "2026-02-05T08:39:14Z",
-      "related_prs": ["#3159", "#3157"]
+      "related_prs": [
+        "#3159",
+        "#3157"
+      ]
+    },
+    "deferral_scanner_false_positive": {
+      "id": "DSF-001",
+      "category": "ci_compliance",
+      "symptoms": [
+        "PR body contains deferral language \u2014 policy violation",
+        "PR_SCAN: failure",
+        "Future deferral: punting to future work",
+        "deferral-language-gate.yml failure"
+      ],
+      "diagnosis_steps": [
+        "Run check_deferral_language.py --pr-body to find trigger line",
+        "Check if trigger is inside a code span (backtick) or prose",
+        "Identify which backtick nesting tier applies"
+      ],
+      "solutions": [
+        "Tier 1: Use outer-single-bt display wrapper pattern in _INLINE_CODE_SPAN",
+        "Tier 2: Use double-backtick span stripping (strip before single-bt)",
+        "Tier 3: Use single-backtick span stripping",
+        "Add <!-- noqa: deferral --> HTML comment for one-off suppression"
+      ],
+      "success_rate": 1.0,
+      "times_applied": 3,
+      "last_used": "2026-03-14T04:45:00Z",
+      "related_prs": [
+        "#3575"
+      ],
+      "sessions": [
+        "S-22",
+        "S-23",
+        "S-24"
+      ]
+    },
+    "cognitive_preflight_req4_auto_heal": {
+      "id": "CPR4-001",
+      "category": "ci_compliance",
+      "symptoms": [
+        "AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit",
+        "REQ-4 accountability report failure",
+        "::error::REQ-4"
+      ],
+      "diagnosis_steps": [
+        "Check if last commit touched docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "Verify agent-auth-delegation.yml autofix_docs step is enabled",
+        "Confirm CODEX_MASTER_KEY is set in repo secrets"
+      ],
+      "solutions": [
+        "Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability",
+        "Let autofix_docs step in agent-auth-delegation.yml handle it automatically",
+        "Manual: append session summary to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+      ],
+      "success_rate": 1.0,
+      "times_applied": 5,
+      "last_used": "2026-03-14T04:45:00Z",
+      "related_prs": [
+        "#3575"
+      ],
+      "sessions": [
+        "S-22",
+        "S-23",
+        "S-24"
+      ]
+    },
+    "brain_test_env_isolation": {
+      "id": "BTI-001",
+      "category": "testing",
+      "symptoms": [
+        "test_query_by_symptom AssertionError: assert 0 > 0",
+        "test_diagnose_includes_patterns returns empty patterns",
+        "query_patterns returns [] despite loaded patterns",
+        "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE set to 0.75"
+      ],
+      "diagnosis_steps": [
+        "Check COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE environment variable value",
+        "Calculate Jaccard score for test query vs pattern symptoms",
+        "Verify score < min_score filtering logic"
+      ],
+      "solutions": [
+        "Add autouse fixture in test module to reset _MIN_CONFIDENCE to 0.0",
+        "Use monkeypatch.delenv(\"COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE\", raising=False)",
+        "Fixture resets module-level variable: import codex.cognitive.brain_interface as bm; bm._MIN_CONFIDENCE = 0.0"
+      ],
+      "success_rate": 1.0,
+      "times_applied": 1,
+      "last_used": "2026-03-14T04:45:00Z",
+      "related_prs": [
+        "#3575"
+      ],
+      "sessions": [
+        "S-24"
+      ]
     }
   },
   "learning_log": [
@@ -206,32 +325,65 @@
       "timestamp": "2026-02-05T09:20:00Z",
       "session": "copilot/analyze-copilot-logs",
       "pr": 3160,
-      "patterns_applied": ["commit_verification", "session_continuity"],
-      "patterns_learned": ["session_state_tracking"],
+      "patterns_applied": [
+        "commit_verification",
+        "session_continuity"
+      ],
+      "patterns_learned": [
+        "session_state_tracking"
+      ],
       "outcome": "in_progress"
     },
     {
       "timestamp": "2026-02-05T08:39:14Z",
       "session": "copilot/consolidate-custom-agents",
       "pr": 3159,
-      "patterns_applied": ["documentation_update", "commit_verification"],
-      "patterns_learned": ["agent_orchestration"],
+      "patterns_applied": [
+        "documentation_update",
+        "commit_verification"
+      ],
+      "patterns_learned": [
+        "agent_orchestration"
+      ],
       "outcome": "success"
     },
     {
       "timestamp": "2026-02-05T08:00:41Z",
       "session": "copilot/implement-session-log-retrieval",
       "pr": 3158,
-      "patterns_applied": ["commit_verification", "test_failure_resolution"],
-      "patterns_learned": ["session_log_retrieval"],
+      "patterns_applied": [
+        "commit_verification",
+        "test_failure_resolution"
+      ],
+      "patterns_learned": [
+        "session_log_retrieval"
+      ],
       "outcome": "success"
+    },
+    {
+      "timestamp": "2026-03-14T04:45:00Z",
+      "session": "copilot/ci-failure-triage-report",
+      "pr": 3575,
+      "patterns_applied": [
+        "deferral_scanner_false_positive",
+        "cognitive_preflight_req4_auto_heal",
+        "brain_test_env_isolation"
+      ],
+      "new_patterns_added": [
+        "DSF-001",
+        "CPR4-001",
+        "BTI-001"
+      ],
+      "outcome": "success",
+      "notes": "Sessions 22-24: three-tier deferral scanner fix, REQ-4 auto-heal, test environment isolation"
     }
   ],
   "statistics": {
-    "total_patterns": 8,
-    "total_applications": 73,
+    "total_patterns": 11,
+    "total_applications": 82,
     "average_success_rate": 0.925,
     "most_used_pattern": "commit_verification",
-    "most_successful_pattern": "documentation_update"
+    "most_successful_pattern": "documentation_update",
+    "last_updated": "2026-03-14T04:45:00Z"
   }
 }

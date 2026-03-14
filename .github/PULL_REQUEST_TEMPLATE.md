@@ -31,6 +31,33 @@
 
 ---
 
+## 💰 Cost Governance — Stakeholder Approval
+
+> **Subscription:** GitHub Team (3,000 Actions min/mo · 2 GB artifacts) + Copilot Pro Plus (1,500 premium requests/mo)
+>
+> The **Cost Gate** CI job classifies each workflow run into a tier and blocks `RED`-tier jobs
+> until a stakeholder ticks the checkbox below.
+>
+> | Tier | Threshold | Behaviour |
+> |------|-----------|-----------|
+> | ✅ GREEN | < 30 effective min, no GHCR push | Auto-approved — no action needed |
+> | ⚠️ YELLOW | 30–90 effective min | Warning posted — proceeds after 60 s |
+> | 🔴 RED | > 90 effective min **or** GHCR push | **Blocked** — requires checkbox below |
+>
+> **Effective minutes** = `timeout × runner-multiplier × matrix-jobs`
+> (ubuntu-latest-m = 2×, macos = 10×, windows = 2×)
+
+### 💰 Stakeholder Sign-off
+
+_Tick this box to unblock a RED-tier cost gate. Leave unticked for GREEN/YELLOW workflows._
+
+- [ ] 💰 **Cost Proposal Approved** — I (@mbaetiong) have reviewed the cost estimate posted by the Cost Gate CI job and approve the Actions-minutes spend for this PR.
+
+> ℹ️ If no Cost Gate comment has been posted yet (GREEN/YELLOW tier), leave this unchecked.
+> The CI gate polls this checkbox every 60 s for up to 10 minutes after posting its estimate.
+
+---
+
 ## 📝 Commit Message Checklist
 
 **Each commit message MUST include:**
@@ -169,6 +196,7 @@ yamllint -c .yamllint.yml .github/workflows/
 
 | | Workflow | Typical Failure | Copilot Fix Prompt |
 |---|---------|-----------------|-------------------|
+| - [ ] `cost-gate` | 💰 Cost Gate | RED-tier job timed out waiting for stakeholder checkbox | `Tick the checkbox: - [x] 💰 Cost Proposal Approved in the PR description, or trigger the workflow via workflow_dispatch to bypass.` |
 | - [ ] `actionlint-gate` | Workflow Compliance Audit (actionlint) | SC2086/SC1073 shellcheck errors or duplicate step IDs | `@copilot Fix actionlint-audit failure: check .github/workflows/ for SC2086 unquoted vars, SC1073 parse errors, or duplicate step IDs. Run: actionlint .github/workflows/*.yml` |
 | - [ ] `art-validation-fast` | Art_Validation Pipeline / Fast Validation | pre-commit trailing whitespace / EOF / detect-secrets | `@copilot Fix Art_Validation fast failure: run pre-commit hooks on changed files. Check trailing whitespace, end-of-file newlines, detect-secrets baseline, and check-yaml on .github/workflows/. Run: pre-commit run --files <changed_files>` |
 | - [ ] `agent-token-delegation` | Agent Token Delegation (REQ-4/REQ-5) | Missing `AGENT_ACCOUNTABILITY_REPORT.md` or `CHANGELOG.md` touch in last commit | `@copilot Fix Agent Token Delegation failure (REQ-4/REQ-5): touch docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md with appropriate W-NNN entries in the last commit. Both files must appear in git diff HEAD~1 HEAD.` |

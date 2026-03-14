@@ -37,11 +37,28 @@ permissions:
   packages: write
 
 jobs:
+  # ── 💰 Cost Gate ─────────────────────────────────────────────────────────────
+  # RED tier: ubuntu-latest-m (2× rate) × 30 min × 2 matrix jobs + GHCR push
+  # = 120 effective minutes. Requires stakeholder checkbox in PR description.
+  cost-gate:
+    name: "💰 Cost Gate"
+    uses: ./.github/workflows/cost-gate.yml
+    with:
+      workflow_name:   "Build & Push Preview Image"
+      runner:          "ubuntu-latest-m"
+      timeout_minutes: 30
+      matrix_count:    2
+      pushes_to_ghcr:  true
+    permissions:
+      contents:      read
+      pull-requests: write
+
   # ── Lint Dockerfile ──────────────────────────────────────────────────────────
   lint-dockerfile:
     name: Lint Dockerfile.preview
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: cost-gate
     steps:
       - uses: actions/checkout@v4
 

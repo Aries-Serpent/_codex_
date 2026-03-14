@@ -1,8 +1,89 @@
 # Cognitive Brain Session Tracker
 
-> **Generated:** 2026-02-05T09:20:00Z  
+> **Generated:** 2026-03-14T04:45Z  
 > **Purpose:** Track session state for improved continuity  
-> **Version:** 1.0.0
+> **Version:** 1.1.0
+
+---
+
+## 🎯 Session State
+
+### Current Session
+```yaml
+session_id: "copilot/ci-failure-triage-report"
+pr_number: 3575
+phase: "session-24-docs-qa-configs-mermaid"
+started: "2026-03-14T04:27:00Z"
+status: "active"
+```
+
+### Session Objectives
+- [x] Fix Deferral Language Gate Run #74 (outer-single-bt display wrapper)
+- [x] Fix 3 failing cognitive brain tests (`_MIN_CONFIDENCE` environment isolation)
+- [x] Update ci_failure_patterns.yaml Pattern #25 (three-tier code span stripping)
+- [x] Update COGNITIVE_BRAIN_STATUS_PR3575.md (Phases 8–11, Mermaid diagrams)
+- [x] Update cognitive brain state files (session_tracker, objectives, pattern store)
+- [x] Update cognitive app documentation to current state
+- [x] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- [x] Update CHANGELOG.md (REQ-5)
+
+---
+
+## 📊 Session Continuity Data
+
+### Previous Session Summary (PR #3575 Session 23)
+```yaml
+completed:
+  - "Double-backtick span fix in _INLINE_CODE_SPAN (Deferral Gate run #71)"
+  - "AGENT_ACCOUNTABILITY_REPORT.md updated"
+  - "CHANGELOG.md updated"
+outcome: "committed fa8959e — still failing (outer-single-bt not yet handled)"
+key_learnings:
+  - "Each session's description of the previous fix creates new trigger text"
+  - "Systematic PR body scanning (not just code) required every session"
+```
+
+### Context Transfer
+- **Carry Forward:** Three-tier `_INLINE_CODE_SPAN` pattern, test isolation fixture
+- **New Context:** cognitive app docs need update to reflect post-integration state
+- **Blockers Resolved:** Deferral Gate now handles all known backtick nesting patterns
+
+---
+
+## 🔄 Recent Session History
+
+| Session | PR | Date | Key Change | Outcome |
+|---------|----|----|------------|---------|
+| S-22 | #3575 | 2026-03-14 | Deferral scanner hardening, Cognitive Pre-flight auto-fix, §0 policy | Committed `1ff92b9` |
+| S-23 | #3575 | 2026-03-14 | Double-backtick `_INLINE_CODE_SPAN` fix (run #71) | Committed `fa8959e` |
+| S-24 | #3575 | 2026-03-14 | Outer-single-bt display wrapper fix (run #74), docs/QA/configs/mermaid update | Active |
+
+---
+
+## 🧠 Active Pattern Store
+
+**Pattern store:** `.codex/cognitive_brain/pattern_learning_store.json`  
+**Total patterns:** 8 (dict-format keys)  
+**Last learning log:** 2026-02-05T08:00Z  
+**Note:** `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE=0.75` in CI — tests must reset this variable.
+
+---
+
+## 📋 Handoff Context (for next session)
+
+```yaml
+if_session_ends_here:
+  remaining_work:
+    - "Monitor Deferral Gate Run #75+ on new commit to confirm outer-single-bt fix works"
+    - "Monitor Pre-Merge Validation — Quick Tests / Code Quality warnings may persist"
+  known_blockers:
+    - "GHCR package write permissions (admin action required)"
+    - "CodeQL on feature branches (admin action required)"
+  next_session_prompt: |
+    @copilot continue — verify Deferral Language Gate passes on PR #3575 after Session 24
+    commits. If it passes, confirm Pre-Merge Validation Quick Tests / Code Quality warnings
+    are not blocking. Then merge or escalate remaining infrastructure failures to admin.
+```
 
 ---
 

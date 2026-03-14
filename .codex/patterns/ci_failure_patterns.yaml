@@ -1296,7 +1296,11 @@ description: |
   The Deferral Language Gate scans PR body text for deferral phrases.
   PR descriptions that document or explain deferral scanner behavior
   will contain the exact phrases the scanner is designed to catch,
-  triggering false positives.
+  triggering false positives.  Three escalating scenarios have been
+  observed across Sessions 22–24 of PR #3575:
+    1. Plain backtick span:  `future task`  (Session 22 fix)
+    2. Double-backtick span: `` `future task` ``  (Session 23 fix)
+    3. Outer-single-bt display wrapper: ` `` `future task` `` `  (Session 24 fix)
 
 detection:
   error_signatures:
@@ -1312,6 +1316,7 @@ root_cause:
     - "PR description contains example phrases like 'future task' in plain text"
     - "Changelog entries quoting deferral language"
     - "Policy documentation embedded in PR body"
+    - "Session notes describing previous scanner fix using nested backtick syntax"
 
 fix_steps:
   - "Wrap example phrases in backtick code spans: `future task` instead of 'future task'"
@@ -1320,11 +1325,19 @@ fix_steps:
 
 auto_fix:
   script: "n/a — requires PR description edit"
-  scanner_version: "check_deferral_language.py (supports inline code span stripping)"
+  scanner_version: "check_deferral_language.py (three-tier inline code span stripping)"
   suppression_methods:
     - "# noqa: deferral  (code files)"
     - "<!-- noqa: deferral -->  (PR bodies, markdown docs)"
-    - "Backtick inline code spans: `phrase` stripped before scanning"
+    - "Backtick inline code spans — three-tier priority (must be in order):"
+    - "  1. Outer-single-bt display wrapper: `\\s+``[^`]*(?:`(?!`)[^`]*)*``\\s+`"
+    - "  2. Double-backtick span: ``[^`]*(?:`(?!`)[^`]*)*``"
+    - "  3. Single-backtick span: `[^`\\n]+`"
+
+sessions_resolved:
+  - "PR #3575 Session 22: HTML noqa + single-backtick stripping"
+  - "PR #3575 Session 23: Double-backtick span stripping (run #71)"
+  - "PR #3575 Session 24: Outer-single-bt display wrapper (run #74)"
 ---
 ```
 
