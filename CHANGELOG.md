@@ -7,7 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session S39 — 2026-03-14 — Agency policy review, cognitive brain status, self-heal, agent spec update
+### Session S40 — 2026-03-14 — Post-merge readiness sweep + accountability update
+
+#### Verified — Quality gates all GREEN
+- `pre_flight_check.py` → 6/6 ✅
+- `docs_lint.py --strict` → 0 errors ✅
+- `ruff check src/` → 0 issues ✅
+- `pytest tests/capabilities/ci_test/` → 75 passed ✅
+
+#### Updated — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Session 40 entry: §0 pre-session review complete, merge readiness confirmed
+
+#### Updated — `agent_context.json`
+- `SESSION_NUMBER`: 192 → 193
+- `LAST_ACTION`: Session 40 post-merge readiness sweep
+
+#### Merge Readiness
+- All Priority 1 items complete (Sessions 30–39)
+- All 6 reviewer threads resolved (Session 39 commit `5f201ff`)
+- AAIS 95/100 (Grade A+)
+- Post-merge: `docs-health.yml` auto-runs on push to `main`; next Sunday 03:00 UTC applies D_CAPABLE promotions
+
+
 
 #### Fixed — `okr_tracker.py` stale OBJ-001 task statuses
 - `_build_obj001()`: T-003 (branch protection) and T-007 (production sign-off) updated from
