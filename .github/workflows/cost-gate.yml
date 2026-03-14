@@ -130,47 +130,130 @@ jobs:
           echo "${PROPOSAL}" >> "$GITHUB_OUTPUT"
           echo "${EOF_MARKER}" >> "$GITHUB_OUTPUT"
 
-      - name: Post cost proposal to PR
+      - name: Post cost proposal to PR (grouped)
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         env:
           PROPOSAL_MD: ${{ steps.proposal.outputs.proposal_md }}
           WORKFLOW_NAME: ${{ inputs.workflow_name }}
+          EFFECTIVE_MIN: ${{ steps.estimate.outputs.effective_minutes }}
         with:
           script: |
-            const tier = '${{ steps.estimate.outputs.tier }}';
-            const proposal = process.env.PROPOSAL_MD || '';
-            const workflowName = process.env.WORKFLOW_NAME || '';
-            const marker = '<!-- cost-gate-proposal -->';
+            const tier         = '${{ steps.estimate.outputs.tier }}';
+            const proposal     = (process.env.PROPOSAL_MD   || '').trim();
+            const workflowName = (process.env.WORKFLOW_NAME || '').trim();
+            const effMin       = parseFloat(process.env.EFFECTIVE_MIN || '0').toFixed(0);
+            const tierEmoji    = tier === 'GREEN' ? '✅' : tier === 'YELLOW' ? '⚠️' : '🔴';
 
-            // Find existing cost-gate comment and update, or create new
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo:  context.repo.repo,
-              issue_number: context.issue.number,
-            });
+            // Single master marker — ONE comment per PR, all workflows grouped here.
+            const MASTER = '<!-- cost-gate-proposals-v2 -->';
 
-            const existing = comments.data.find(c =>
-              c.body.includes(marker) &&
-              c.body.includes(workflowName)
-            );
+            // Per-workflow sub-markers derived from a stable slug.
+            const slug  = workflowName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/, '');
+            const START = `<!-- cp-start:${slug} -->`;
+            const END   = `<!-- cp-end:${slug} -->`;
 
-            const body = `${marker}\n${proposal}`;
+            // Helper: escape regex special chars.
+            function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner:      context.repo.owner,
-                repo:       context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner:        context.repo.owner,
-                repo:         context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
+            // Build the <details> block for this workflow.
+            const summaryLine = `${tierEmoji} <strong>${workflowName}</strong> &mdash; ${tier} &nbsp;·&nbsp; ${effMin} eff-min`;
+            const section = [
+              START,
+              `<details>`,
+              `<summary>${summaryLine}</summary>`,
+              ``,
+              proposal,
+              ``,
+              `</details>`,
+              END,
+            ].join('\n');
+
+            // Rebuild the summary list by scanning all cp-start sections in a body string.
+            function buildSummary(body) {
+              const re = /<!-- cp-start:[^\s>]+ -->\s*<details>\s*<summary>([\s\S]*?)<\/summary>/g;
+              const rows = [];
+              let m;
+              while ((m = re.exec(body)) !== null) {
+                rows.push(`| ${m[1].replace(/<[^>]*>/g, '')} |`);
+              }
+              if (!rows.length) return '';
+              return [
+                '| Workflow — Tier · Eff-min |',
+                '|---------------------------|',
+                ...rows,
+              ].join('\n');
+            }
+
+            // Retry loop: handles transient conflicts when multiple workflows
+            // call cost-gate simultaneously and race to update the same comment.
+            for (let attempt = 0; attempt <= 3; attempt++) {
+              try {
+                const { data: allComments } = await github.rest.issues.listComments({
+                  owner:        context.repo.owner,
+                  repo:         context.repo.repo,
+                  issue_number: context.issue.number,
+                  per_page:     100,
+                });
+
+                const master = allComments.find(c => c.body && c.body.includes(MASTER));
+                let body;
+
+                if (master) {
+                  body = master.body;
+                  if (body.includes(START)) {
+                    // Replace the existing section for this workflow.
+                    body = body.replace(
+                      new RegExp(esc(START) + '[\\s\\S]*?' + esc(END)),
+                      section
+                    );
+                  } else {
+                    // Append a new section for this workflow.
+                    body = body.trimEnd() + '\n\n' + section + '\n';
+                  }
+                } else {
+                  // First proposal — create master comment.
+                  body = [
+                    MASTER,
+                    '## 💰 Cost Proposals',
+                    '',
+                    '_One entry per workflow. Expand a row to see the full cost estimate._',
+                    '',
+                    section,
+                    '',
+                  ].join('\n');
+                }
+
+                // Inject/refresh summary table right after the header line.
+                const summaryTable = buildSummary(body);
+                if (summaryTable) {
+                  body = body.replace(
+                    /(_One entry per workflow[^\n]*_\n)([\s\S]*?)(\n<!-- cp-start:)/,
+                    `$1\n${summaryTable}\n$3`
+                  );
+                }
+
+                if (master) {
+                  await github.rest.issues.updateComment({
+                    owner:      context.repo.owner,
+                    repo:       context.repo.repo,
+                    comment_id: master.id,
+                    body,
+                  });
+                } else {
+                  await github.rest.issues.createComment({
+                    owner:        context.repo.owner,
+                    repo:         context.repo.repo,
+                    issue_number: context.issue.number,
+                    body,
+                  });
+                }
+                break; // success — exit retry loop
+              } catch (e) {
+                if (attempt === 3) throw e;
+                // Back off before retrying (2 s, 4 s, 6 s).
+                await new Promise(r => setTimeout(r, (attempt + 1) * 2000));
+              }
             }
 
   # ── Step 2: Gate ─────────────────────────────────────────────────────────
