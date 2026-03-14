@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session 37 — 2026-03-14 — @copilot continue (PR #3572, comment #4058706570)
+### Session 38 — 2026-03-14 — @copilot continue (PR #3572, comment #4058818880)
+
+#### Verified (all open copilot-pull-request-reviewer threads confirmed fixed in current code)
+
+| Thread (file:line) | Status |
+|--------------------|--------|
+| `tests/auth/test_migration_001.py:8` | ✅ `test_main_missing_snapshot_returns_exit_code_2` present at line 145; 8/8 migration tests pass |
+| `CHANGELOG.md:58-59` | ✅ Lines 58-59 both say 217; all three docs (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEBASE_AGENCY_POLICY) consistent at 217 |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2017` | ✅ 217 |
+| `src/codex/auth/sqlite_user_repository.py:129-132` | ✅ `sanitize_log_message(user.username)` at line 131 |
+| `scripts/ci/check_deferral_language.py:22-26` | ✅ All LinearSVC references replaced with LogisticRegression in S-37 |
+
+#### CI Status
+All workflow runs on HEAD `b37e1dc` are `action_required` — awaiting environment protection approval. No failures.
+
 
 #### Fix
 - **`scripts/ci/check_deferral_language.py:107,119`**: Completed the fix for `copilot-pull-request-reviewer` thread on `check_deferral_language.py:22-26`. The module docstring was corrected to "LogisticRegression" in S-34, but the section comment (line 107) and class docstring (line 119) still said "LinearSVC". Both now say "TF-IDF + LogisticRegression" — consistent with the actual implementation at lines 163/182.
