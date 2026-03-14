@@ -6,6 +6,11 @@ name: "🚨 Deferral Language Gate"
 #
 # Policy: .codex/CODEBASE_AGENCY_POLICY.md
 # Script: scripts/ci/check_deferral_language.py
+#
+# ML enhancement (opt-in):
+#   Set repository/environment variable DEFERRAL_SCANNER_ML=1 to enable the
+#   TF-IDF + LogisticRegression classifier as a second-pass detector.
+#   Regex patterns always run regardless of this flag.
 
 on:
   pull_request:
@@ -33,6 +38,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: "📦 Install ML dependencies (if DEFERRAL_SCANNER_ML=1)"
+        if: ${{ vars.DEFERRAL_SCANNER_ML == '1' || env.DEFERRAL_SCANNER_ML == '1' }}
+        run: |
+          pip install --quiet scikit-learn
+
       - name: "📝 Write PR body to file"
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
@@ -42,12 +52,16 @@ jobs:
 
       - name: "🔍 Scan PR body for deferral language"
         id: scan_pr_body
+        env:
+          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
         run: |
           python scripts/ci/check_deferral_language.py --pr-body /tmp/pr_body.txt
         continue-on-error: true
 
       - name: "🔍 Scan last 10 commit messages for deferral language"
         id: scan_commits
+        env:
+          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
         run: |
           python scripts/ci/check_deferral_language.py --git-log
         continue-on-error: true

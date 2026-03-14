@@ -1,173 +1,89 @@
 """
 User model and storage for Codex platform.
 
-Provides a User dataclass, PBKDF2-SHA256 password hasher, and an in-memory
-UserStore that can be swapped out for a persistent backend.
+Provides a User dataclass, PBKDF2-SHA256 password hasher, and a UserStore
+facade that delegates persistence to a pluggable :class:`UserRepository`
+backend.
+
+Backends:
+    - :class:`~codex.auth.in_memory_user_repository.InMemoryUserRepository`
+      — default; data lost on process restart (preserves legacy behaviour)
+    - :class:`~codex.auth.sqlite_user_repository.SQLiteUserRepository`
+      — durable SQLite; set ``CODEX_USERSTORE_BACKEND=sqlite``
 
 Security notes:
     - Passwords are stored as PBKDF2-HMAC-SHA256 hashes (600 000 iterations).
     - Each password has a unique 32-byte random salt.
     - Timing-safe comparison is used for password verification.
-    - For production use replace the in-memory UserStore with a database-backed
-      implementation.
+    - For production use set CODEX_USERSTORE_BACKEND=sqlite and configure
+      CODEX_USERSTORE_DB_PATH to a persistent file path.
 """
 
-import hashlib
 import logging
 import os
 import secrets
 import threading
 import time
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from ..security_utils import sanitize_log_message
 from .exceptions import (
     InvalidCredentialsError,
 )
+from .user_model import (  # User + PasswordHasher live here to break cyclic imports
+    _HASH_BYTES,
+    _SALT_BYTES,
+    PasswordHasher,
+    User,
+)
+
+if TYPE_CHECKING:
+    from .user_repository import UserRepository
 
 logger = logging.getLogger(__name__)
-
-# PBKDF2 parameters — increasing ITERATIONS raises cost for attackers.
-_PBKDF2_HASH = "sha256"
-_PBKDF2_ITERATIONS = 600_000
-_SALT_BYTES = 32
-_HASH_BYTES = 32
-
-
-@dataclass
-class User:
-    """Mutable user identity record (password, active flag, and updated_at are updated in-place)."""
-
-    user_id: str
-    username: str
-    email: str
-    password_hash: str  # "<salt_hex>:<hash_hex>"
-    created_at: float = field(default_factory=time.time)
-    updated_at: float = field(default_factory=time.time)
-    is_active: bool = True
-    roles: List[str] = field(default_factory=lambda: ["user"])
-    display_name: Optional[str] = None
-
-    # ------------------------------------------------------------------ #
-    # Convenience                                                          #
-    # ------------------------------------------------------------------ #
-
-    def has_role(self, role: str) -> bool:
-        """Return True if the user has *role*."""
-        return role in self.roles
-
-    def to_dict(self) -> Dict:
-        """Serialise to a dict, omitting the password hash."""
-        return {
-            "user_id": self.user_id,
-            "username": self.username,
-            "email": self.email,
-            "display_name": self.display_name,
-            "is_active": self.is_active,
-            "roles": list(self.roles),
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-        }
-
-
-class PasswordHasher:
-    """
-    Secure PBKDF2-SHA256 password hasher.
-
-    Uses only the Python standard library so no additional packages are
-    required.
-    """
-
-    def __init__(
-        self,
-        iterations: int = _PBKDF2_ITERATIONS,
-        salt_bytes: int = _SALT_BYTES,
-        hash_bytes: int = _HASH_BYTES,
-    ) -> None:
-        self._iterations = iterations
-        self._salt_bytes = salt_bytes
-        self._hash_bytes = hash_bytes
-
-    # ------------------------------------------------------------------ #
-    # Public API                                                           #
-    # ------------------------------------------------------------------ #
-
-    def hash(self, password: str) -> str:
-        """
-        Hash *password* and return ``"<salt_hex>:<hash_hex>"``.
-
-        Args:
-            password: Plain-text password.
-
-        Returns:
-            Salted hash string suitable for storage.
-
-        Raises:
-            ValueError: If *password* is empty.
-        """
-        if not password:
-            raise ValueError("Password must not be empty")
-
-        salt = os.urandom(self._salt_bytes)
-        digest = hashlib.pbkdf2_hmac(
-            _PBKDF2_HASH,
-            password.encode("utf-8"),
-            salt,
-            self._iterations,
-            dklen=self._hash_bytes,
-        )
-        return f"{salt.hex()}:{digest.hex()}"
-
-    def verify(self, password: str, stored_hash: str) -> bool:
-        """
-        Verify *password* against *stored_hash*.
-
-        Uses :func:`hmac.compare_digest` to avoid timing side-channels.
-
-        Args:
-            password: Plain-text password to check.
-            stored_hash: Value previously returned by :meth:`hash`.
-
-        Returns:
-            ``True`` if the password matches, ``False`` otherwise.
-        """
-        try:
-            salt_hex, hash_hex = stored_hash.split(":", 1)
-            salt = bytes.fromhex(salt_hex)
-            expected = bytes.fromhex(hash_hex)
-        except (ValueError, AttributeError):
-            # Malformed hash — treat as verification failure
-            return False
-
-        digest = hashlib.pbkdf2_hmac(
-            _PBKDF2_HASH,
-            password.encode("utf-8"),
-            salt,
-            self._iterations,
-            dklen=self._hash_bytes,
-        )
-        # Constant-time comparison
-        import hmac as _hmac  # noqa: PLC0415 (local import intentional)
-        return _hmac.compare_digest(digest, expected)
 
 
 class UserStore:
     """
-    In-memory user repository.
+    Facade over a pluggable :class:`~codex.auth.user_repository.UserRepository`.
 
-    All lookups are O(n) except by user_id which is O(1).
-    For production, replace with a persistent, indexed store.
+    The backend is selected at construction time via the *repository*
+    parameter.  When no repository is supplied the backend is chosen from the
+    ``CODEX_USERSTORE_BACKEND`` environment variable:
 
-    Thread-safety: all mutating and read operations are protected by an
-    internal ``threading.RLock``.  Re-entrant locking allows the same
-    thread to call write helpers that themselves acquire the lock (e.g.
-    ``_require_user`` called from within ``update_password``).
+    ``CODEX_USERSTORE_BACKEND=memory`` (default)
+        In-memory dict — data is lost on restart.  Identical to the legacy
+        behaviour.
+
+    ``CODEX_USERSTORE_BACKEND=sqlite``
+        Durable SQLite file.  Path is read from ``CODEX_USERSTORE_DB_PATH``
+        (defaults to ``codex_users.db`` in the current working directory).
+
+    Thread-safety: all public methods delegate to the underlying repository
+    which is responsible for its own synchronisation.  The legacy ``_lock``
+    attribute is preserved for backward-compatibility with any code that
+    accesses it directly (it is no longer used internally).
     """
 
-    def __init__(self, hasher: Optional[PasswordHasher] = None) -> None:
+    def __init__(
+        self,
+        hasher: Optional[PasswordHasher] = None,
+        repository: "Optional[UserRepository]" = None,
+    ) -> None:
         self._hasher = hasher or PasswordHasher()
-        self._users: Dict[str, User] = {}  # user_id -> User
+        if repository is not None:
+            self._repository: "UserRepository" = repository
+        else:
+            backend = os.environ.get("CODEX_USERSTORE_BACKEND", "memory").lower()
+            if backend == "sqlite":
+                from .sqlite_user_repository import SQLiteUserRepository  # noqa: PLC0415
+                db_path = os.environ.get("CODEX_USERSTORE_DB_PATH", "codex_users.db")
+                self._repository = SQLiteUserRepository(db_path)
+            else:
+                from .in_memory_user_repository import InMemoryUserRepository  # noqa: PLC0415
+                self._repository = InMemoryUserRepository()
+        # Backward-compatibility shim: expose _lock even though it is no longer
+        # used internally (the repository manages its own locking).
         self._lock: threading.RLock = threading.RLock()
 
     # ------------------------------------------------------------------ #
@@ -212,21 +128,15 @@ class UserStore:
 
         self._validate_password_strength(password)
 
-        with self._lock:
-            if self.find_by_username(username) is not None:
-                raise ValueError(f"Username '{sanitize_log_message(username)}' is already taken")
-            if self.find_by_email(email) is not None:
-                raise ValueError(f"Email '{sanitize_log_message(email)}' is already registered")
-
-            user = User(
-                user_id=secrets.token_hex(16),
-                username=username,
-                email=email,
-                password_hash=self._hasher.hash(password),
-                roles=list(roles) if roles else ["user"],
-                display_name=display_name,
-            )
-            self._users[user.user_id] = user
+        user = User(
+            user_id=secrets.token_hex(16),
+            username=username,
+            email=email,
+            password_hash=self._hasher.hash(password),
+            roles=list(roles) if roles else ["user"],
+            display_name=display_name,
+        )
+        self._repository.create(user)
         logger.info("User created: %s", sanitize_log_message(username))
         return user
 
@@ -244,9 +154,12 @@ class UserStore:
         """
         self._validate_password_strength(new_password)
         with self._lock:
-            user = self._require_user(user_id)
+            user = self._repository.get_by_id(user_id)
+            if user is None:
+                raise KeyError(f"User '{user_id}' not found")
             user.password_hash = self._hasher.hash(new_password)
             user.updated_at = time.time()
+            self._repository.update(user)
 
     def deactivate_user(self, user_id: str) -> None:
         """
@@ -259,9 +172,12 @@ class UserStore:
             KeyError: If *user_id* does not exist.
         """
         with self._lock:
-            user = self._require_user(user_id)
+            user = self._repository.get_by_id(user_id)
+            if user is None:
+                raise KeyError(f"User '{user_id}' not found")
             user.is_active = False
             user.updated_at = time.time()
+            self._repository.update(user)
         logger.info("User deactivated: %s", sanitize_log_message(user.username))
 
     def delete_user(self, user_id: str) -> None:
@@ -274,9 +190,7 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
-        with self._lock:
-            self._require_user(user_id)
-            del self._users[user_id]
+        self._repository.delete(user_id)
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
@@ -284,26 +198,15 @@ class UserStore:
 
     def get_user(self, user_id: str) -> Optional[User]:
         """Return the :class:`User` for *user_id*, or ``None``."""
-        with self._lock:
-            return self._users.get(user_id)
+        return self._repository.get_by_id(user_id)
 
     def find_by_username(self, username: str) -> Optional[User]:
         """Return the :class:`User` with *username*, or ``None``."""
-        username = username.strip()
-        with self._lock:
-            for user in self._users.values():
-                if user.username == username:
-                    return user
-        return None
+        return self._repository.get_by_username(username)
 
     def find_by_email(self, email: str) -> Optional[User]:
         """Return the :class:`User` with *email*, or ``None``."""
-        email = email.strip().lower()
-        with self._lock:
-            for user in self._users.values():
-                if user.email == email:
-                    return user
-        return None
+        return self._repository.get_by_email(email)
 
     def list_users(self, include_inactive: bool = False) -> List[User]:
         """
@@ -313,10 +216,10 @@ class UserStore:
             include_inactive: If ``False`` (default) only active users are
                 returned.
         """
-        with self._lock:
-            if include_inactive:
-                return list(self._users.values())
-            return [u for u in self._users.values() if u.is_active]
+        users = self._repository.list_all()
+        if include_inactive:
+            return users
+        return [u for u in users if u.is_active]
 
     # ------------------------------------------------------------------ #
     # Authentication helper                                                #
@@ -341,8 +244,6 @@ class UserStore:
         """
         identifier = username_or_email.strip()
 
-        # find_by_* already acquires the lock, so we snapshot the user
-        # reference outside the write-critical section
         user = self.find_by_username(identifier)
         if user is None:
             user = self.find_by_email(identifier)
@@ -362,8 +263,13 @@ class UserStore:
     # ------------------------------------------------------------------ #
 
     def _require_user(self, user_id: str) -> User:
-        """Return user by id; **caller must hold** ``self._lock``."""
-        user = self._users.get(user_id)
+        """Return user by id; raises ``KeyError`` if not found.
+
+        .. deprecated::
+            The internal lock is no longer used here; callers should use
+            :meth:`get_user` directly.
+        """
+        user = self._repository.get_by_id(user_id)
         if user is None:
             raise KeyError(f"User '{user_id}' not found")
         return user
