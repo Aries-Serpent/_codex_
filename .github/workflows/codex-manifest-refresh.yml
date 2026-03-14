@@ -20,10 +20,10 @@ jobs:
     name: "🔄 Refresh CODEX_MANIFEST.json"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Skip on bot-generated commits (e.g., the very commit this job produces)
-    if: |
-      !contains(github.event.head_commit.message, '[skip ci]') &&
-      !contains(github.event.head_commit.message, 'chore(auth): write provenance')
+    # Skip when the actor is the bot itself (prevents recursion on the bot commit).
+    # github.event.head_commit.message is not present in PR payloads, so use
+    # github.actor instead, which is always safe on pull_request events.
+    if: github.actor != 'github-actions[bot]'
 
     steps:
       - name: Checkout PR branch
@@ -45,7 +45,7 @@ jobs:
         id: refresh
         run: |
           python scripts/ci/generate_manifest.py
-          echo "generated_at=$(python -c "import json; print(json.load(open('CODEX_MANIFEST.json'))['generated_at'])")" >> "$GITHUB_OUTPUT"
+          python3 -c 'import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])' >> "$GITHUB_OUTPUT"
 
       - name: Commit refreshed manifest
         run: |

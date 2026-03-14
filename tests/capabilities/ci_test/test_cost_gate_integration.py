@@ -114,6 +114,30 @@ class TestCostGateLifecycle:
         assert e.tier == "RED"
         assert e.exit_code == 2, "RED must exit 2 (blocked)"
 
+    def test_green_yellow_boundary(self):
+        """Effective minutes just below TIER_GREEN_MAX is GREEN; at/above is YELLOW."""
+        # TIER_GREEN_MAX uses strict less-than: effective_minutes < TIER_GREEN_MAX
+        e_below = make_estimate("boundary-green-below", timeout=TIER_GREEN_MAX - 1, matrix=1)
+        assert e_below.tier == "GREEN", (
+            f"effective_minutes < TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be GREEN"
+        )
+        e_at = make_estimate("boundary-green-at", timeout=TIER_GREEN_MAX, matrix=1)
+        assert e_at.tier == "YELLOW", (
+            f"effective_minutes == TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be YELLOW (exclusive upper bound)"
+        )
+
+    def test_yellow_red_boundary(self):
+        """Effective minutes at TIER_YELLOW_MAX is YELLOW; above is RED."""
+        # TIER_YELLOW_MAX uses less-than-or-equal: effective_minutes <= TIER_YELLOW_MAX
+        e_at = make_estimate("boundary-yellow-at", timeout=TIER_YELLOW_MAX, matrix=1)
+        assert e_at.tier == "YELLOW", (
+            f"effective_minutes == TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be YELLOW (inclusive)"
+        )
+        e_above = make_estimate("boundary-yellow-above", timeout=TIER_YELLOW_MAX + 1, matrix=1)
+        assert e_above.tier == "RED", (
+            f"effective_minutes > TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be RED"
+        )
+
     # -- Checkbox detection with bold markers --------------------------------
 
     def test_approval_detected_with_bold_markers(self):

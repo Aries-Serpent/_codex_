@@ -194,16 +194,19 @@ class TaskRouter:
         try:
             data = json.loads(path.read_text())
             log = data.get("learning_log", [])
-            # Build success-rate from outcomes in the log
+            # Build success-rate keyed by agent_name recorded in each log entry.
+            # (patterns_applied entries are pattern IDs, not agent identifiers.)
             counts: dict[str, list[int]] = {}
             for entry in log:
+                agent = entry.get("agent_name", "")
+                if not agent:
+                    continue
                 outcome = entry.get("outcome", "")
-                for agent in entry.get("patterns_applied", []):
-                    if agent not in counts:
-                        counts[agent] = [0, 0]
-                    counts[agent][1] += 1
-                    if "success" in outcome.lower():
-                        counts[agent][0] += 1
+                if agent not in counts:
+                    counts[agent] = [0, 0]
+                counts[agent][1] += 1
+                if "success" in outcome.lower():
+                    counts[agent][0] += 1
             return {
                 name: wins / total if total else 0.0
                 for name, (wins, total) in counts.items()

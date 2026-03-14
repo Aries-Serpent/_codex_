@@ -1,8 +1,12 @@
 """OKR Tracker — programmatic tracking of OKR objectives and key results.
 
 This module was identified as missing during the AAIS honest recalibration
-(Session 24). It reads `.codex/okr/objectives.md` and the cognitive brain
-state to give agents a live view of OKR progress.
+(Session 24). Objectives are hard-coded in ``_build_obj001()``,
+``_build_obj002()``, and ``_build_obj003()``, which serve as the canonical
+source of truth for OBJ-001/002/003 structure. The tracker loads live
+progress from the cognitive-brain JSON state files (``agent_context.json``
+and ``cognitive_brain/pattern_learning_store.json``) and persists snapshots
+to ``okr_progress.json``.
 
 Usage
 -----
