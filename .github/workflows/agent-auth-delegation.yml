@@ -765,8 +765,18 @@ jobs:
 
       - name: "Commit session token to branch"
         env:
-          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref || '' }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number || '' }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
+          # Resolve TARGET_BRANCH — fall back to API lookup when event context lacks head.ref
+          if [ -z "${TARGET_BRANCH}" ] && [ -n "${PR_NUMBER}" ]; then
+            TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
+          fi
+          if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -q '/merge$'; then
+            echo "::warning::Could not resolve target branch (got '${TARGET_BRANCH}'). Skipping commit."
+            exit 0
+          fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/agent_auth_session.json

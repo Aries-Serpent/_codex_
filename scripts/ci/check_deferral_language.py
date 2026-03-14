@@ -70,7 +70,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Future-based deferrals
     (r"(?:will|can|could|should|may)(?: be)? (?:address|fix|resolve|handle)(?:ed|d)? in (?:a )?future",
      "Future deferral: punting to future work without documented justification"),
-    (r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)",
+    (r"(?<!no )(?<!prevent )(?<!block )(?<!prohibit )future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)",
      "Future deferral: punting to future work"),
     (r"address(?:ed)? (?:incrementally|later|separately|in a follow[-\s]?up)",
      "Incremental deferral: incrementalism as avoidance"),
@@ -100,6 +100,9 @@ EXEMPTION_PATTERNS: list[str] = [
     r"Prohibited Statements",       # policy itself listing what's prohibited
     r"#\s*noqa:\s*deferral",        # explicit per-line suppression
     r"noqa.*deferral",
+    r"Deferral Enforcement",        # policy description headings
+    r"Follow-Up Prompt",            # copilot prompt file references
+    r"copilot-prompts/",            # copilot prompt paths
 ]
 
 

@@ -104,7 +104,7 @@ jobs:
         run: |
           DETAILS="${{ inputs.details }}"
           DURATION_INPUT="${{ inputs.duration-seconds }}"
-          if [ "${DURATION_INPUT:-0}" -gt 0 ] 2>/dev/null; then
+          if (( ${DURATION_INPUT:-0} > 0 )) 2>/dev/null; then
             DURATION_MIN=$(( DURATION_INPUT / 60 ))
             DURATION_SEC=$(( DURATION_INPUT % 60 ))
             DETAILS="${DETAILS}\n\n_⏱ Duration: ${DURATION_MIN}m ${DURATION_SEC}s_"
