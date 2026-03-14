@@ -56,12 +56,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "CODEX_MANIFEST.json already up-to-date — no commit needed"
           else
-            git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]
-
-Generated at ${{ steps.refresh.outputs.generated_at }}
-Triggered by PR #${{ github.event.pull_request.number }} push (sha ${{ github.sha }})
-
-This keeps the E→D Transition Gate C2 condition satisfied on every PR push."
+            git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
             git push origin HEAD:${{ github.head_ref }}
             echo "✅ CODEX_MANIFEST.json refreshed and pushed"
           fi
