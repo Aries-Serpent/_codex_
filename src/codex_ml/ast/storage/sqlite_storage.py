@@ -57,11 +57,13 @@ class ASTStorage:
                 conn.commit()
             except Exception as e:
                 conn.rollback()
-                raise StorageError(f"Database operation failed: {e}", operation="transaction")
+                raise StorageError(
+                    f"Database operation failed: {e}", operation="transaction"
+                ) from e
             finally:
                 conn.close()
         except sqlite3.Error as e:
-            raise StorageError(f"Failed to connect to database: {e}", operation="connect")
+            raise StorageError(f"Failed to connect to database: {e}", operation="connect") from e
 
     def _initialize_schema(self) -> None:
         """Create database schema if not exists."""

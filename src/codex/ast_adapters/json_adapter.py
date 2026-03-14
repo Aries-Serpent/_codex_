@@ -78,7 +78,7 @@ class JSONASTAdapter(BaseASTAdapter):
             return root
 
         except json.JSONDecodeError as e:
-            raise ValueError(f"Failed to parse JSON: {e}")
+            raise ValueError(f"Failed to parse JSON: {e}") from e
 
     def _convert_to_node(
         self,

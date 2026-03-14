@@ -43,7 +43,7 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
         candidate_resolved = candidate.resolve(strict=False)
     except RuntimeError:
         # Fallback in pathological resolution cases
-        raise HTTPException(status_code=400, detail="Invalid path")
+        raise HTTPException(status_code=400, detail="Invalid path") from err
 
     # Require that the candidate is the base or a descendant of it.
     if candidate_resolved == base_resolved or base_resolved in candidate_resolved.parents:
@@ -256,9 +256,9 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
         )
 
     except ImportError as e:
-        raise HTTPException(status_code=500, detail=f"Missing dependencies: {e}")
+        raise HTTPException(status_code=500, detail=f"Missing dependencies: {e}") from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to build index: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to build index: {e}") from e
 
 
 @app.post("/rag/query", response_model=QueryResponse, tags=["RAG"])
@@ -306,9 +306,10 @@ async def query_index(request: Request, query_request: QueryRequest):
         )
 
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Index '{query_request.index_name}' not found")
+        msg = f"Index '{query_request.index_name}' not found"
+        raise HTTPException(status_code=404, detail=msg) from err
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Query failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Query failed: {e}") from e
 
 
 @app.get("/rag/indices", response_model=ListIndicesResponse, tags=["RAG"])
@@ -374,7 +375,7 @@ async def list_indices(
         return ListIndicesResponse(indices=indices, count=len(indices))
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to list indices: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to list indices: {e}") from e
 
 
 @app.delete("/rag/indices/{index_name}", response_model=DeleteIndexResponse, tags=["RAG"])
@@ -408,7 +409,7 @@ async def delete_index(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to delete index: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete index: {e}") from e
 
 
 @app.post("/rag/merge", response_model=MergeIndicesResponse, tags=["RAG"])
@@ -438,7 +439,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Merge failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Merge failed: {e}") from e
 
 
 @app.get("/rag/stats/{index_name}", response_model=StatsResponse, tags=["RAG"])
@@ -478,7 +479,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to get stats: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get stats: {e}") from e
 
 
 @app.get("/rag/metrics", response_model=MetricsResponse, tags=["RAG"])
@@ -496,7 +497,7 @@ async def get_metrics(request: Request):
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to get metrics: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get metrics: {e}") from e
 
 
 # === Error Handlers ===

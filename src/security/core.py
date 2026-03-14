@@ -211,7 +211,7 @@ def sanitize_path(path: Path, base_dir: Path) -> Path:
 
         return abs_path
     except ValueError:
-        raise ValueError(f"Path {path} is outside base directory {base_dir}")
+        raise ValueError(f"Path {path} is outside base directory {base_dir}") from err
 
 
 def check_permissions(path: Path, mode: str) -> bool:

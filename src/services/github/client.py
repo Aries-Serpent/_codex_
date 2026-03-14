@@ -200,7 +200,7 @@ class GitHubClient:
                     wait_time = self.RETRY_BACKOFF_BASE**retry_count
                     await asyncio.sleep(wait_time)
                     return await self._request(method, path, json, params, retry_count + 1)
-                raise GitHubAPIError(f"Request failed: {e}")
+                raise GitHubAPIError(f"Request failed: {e}") from e
 
     async def _get(
         self,
@@ -314,7 +314,7 @@ class GitHubClient:
                 workflow=str(workflow_id),
                 reason=e.message,
                 status_code=e.status_code,
-            )
+            ) from e
 
     # =========================================================================
     # Workflow Run Operations
@@ -695,7 +695,7 @@ class GitHubClient:
             raise NotFoundError(
                 "check run logs",
                 f"{check_run_id} (note: logs may only be available via associated workflow job)",
-            )
+            ) from err
 
     # =========================================================================
     # Rate Limit

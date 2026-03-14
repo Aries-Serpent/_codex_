@@ -106,7 +106,7 @@ def get_health_router():
         logger.warning(f"ImportError: {e}", exc_info=True)
         raise ImportError(
             "FastAPI is required for health endpoints. Install with: pip install fastapi"
-        )
+        ) from e
 
     router = APIRouter(tags=["health"])
 

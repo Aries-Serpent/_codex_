@@ -63,7 +63,7 @@ def analyze(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         typer.echo(f"Analyze error: {e}", err=True)
-        raise typer.Exit(code=3)
+        raise typer.Exit(code=3) from e
 
 
 @app.command("audit")
@@ -81,7 +81,7 @@ def audit(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         typer.echo(f"Audit error: {e}", err=True)
-        raise typer.Exit(code=3)
+        raise typer.Exit(code=3) from e
 
 
 @app.command("diff")
@@ -108,7 +108,7 @@ def diff(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         typer.echo(f"Diff error: {e}", err=True)
-        raise typer.Exit(code=3)
+        raise typer.Exit(code=3) from e
 
 
 if __name__ == "__main__":  # pragma: no cover

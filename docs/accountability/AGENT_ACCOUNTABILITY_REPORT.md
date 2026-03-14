@@ -2730,3 +2730,65 @@ and the CI gate requirement.
 - `pre_flight_check.py`: 6/6 passed ✅
 - `auto_fix_common_issues.py --check-only`: 0 issues ✅
 - `ruff F401/F841/I001`: 0 issues ✅
+
+---
+
+## Session 31 — 2026-03-14T10:45Z — Iterative Gap Analysis + Production-Readiness Remediation
+
+**Branch:** `copilot/fix-comments-from-review-thread`
+**Policy:** §0 pre-session review completed — CODEBASE_AGENCY_POLICY.md + AGENT_ACCOUNTABILITY_REPORT.md loaded via GitHub tools
+
+### §0 Mandatory Pre-Session Review
+- Loaded CODEBASE_AGENCY_POLICY.md ✅
+- Loaded AGENT_ACCOUNTABILITY_REPORT.md ✅
+- Loaded session memories (15 stored facts verified) ✅
+- Reviewed PR #3579 bot comments (cognitive pre-flight, cost check) ✅
+
+### ITER-1 — Critical Gap Fixes
+
+**G-01 — 4 docs stub pages (<80 words, fail `docs_lint --strict`)**
+- `docs/CHANGELOG/changelog_session_logging.md`: expanded with full schema table (41→200+ words)
+- `docs/deployment/deploy_pipeline.md`: added overview, reproducibility, troubleshooting (47→180+ words)
+- `docs/guides/checkpointing.md`: full CLI flags table + rotation policy (71→200+ words)
+- `docs/guides/lfs_policy.md`: full compliance guide + alternatives table (48→200+ words)
+- Result: `docs_lint --strict` → ✅ 0 errors
+
+**G-02 — 31 ruff B009/B010/B033 auto-fixes**
+- B009 (getattr with constant): removed `getattr(x, "attr")` → `x.attr` pattern
+- B010 (setattr with constant): removed `setattr(x, "attr", v)` → `x.attr = v` pattern
+- B033 (duplicate set values): removed duplicate entries in set literals
+- Files affected: `strategies.py`, `cli/__init__.py`, `hf_pinning.py`, `seeding.py`, and 20 others
+
+**G-03/G-04 — Cognitive brain state**
+- `agent_context.json`: added `AAIS_SCORE=74/100`, updated `LAST_GREEN_SHA=814c3e3`, `SESSION_NUMBER=184`
+- `pattern_learning_store.json`: 11→15 patterns (added: cascade_prevention, python_version_mismatch, ci_poll_timeout, premerge_scope_validation)
+
+**G-05 — E501 in model_registry.py**
+- `ModelRequest(...)` constructor wrapped across lines (145→two lines of ≤100 chars)
+- `auto_fix_common_issues.py --check-only`: ✅ 0 issues
+
+### ITER-2 — High-Priority Gap Fixes
+
+**G-06 — AGENT_REGISTRY missing `description` and `capability_tags` (153 agents)**
+- 146 agents missing `description`: derived from `purpose`/`role`/`primary_skill`/name
+- 152 agents missing `capability_tags`: derived from `capabilities`/skills/category (≤8 tags per agent)
+- Result: 0 agents missing required fields (was: 135+ gaps)
+
+**G-07 — B904 raise-without-from in src/ (121 issues → 0)**
+- Phase 1 (script): 110 single-line raises patched (`raise X() from exc_var`)
+- Phase 2 (script): 11 multi-line raises patched (paren-depth tracking to find closing `)`)
+- Two E501 regressions fixed: `rag_api.py:309`, `sqlite_storage.py:60`
+- Result: `ruff check src/ --select B904` → ✅ 0 errors
+
+### All Checks Verified
+- `pre_flight_check.py`: 6/6 passed ✅
+- `auto_fix_common_issues.py --check-only`: 0 issues ✅
+- `ruff check src/ --select F401,F841,I001,E501,B904,B009,B010,B033`: 0 errors ✅
+- `docs_lint --strict`: 0 errors ✅
+- `pytest tests/capabilities/ci_test/`: 50 passed, 1 skipped ✅
+
+### Residual Risks
+1. **B905 (zip without strict)**: 172 occurrences in src/scripts/ — informational, not blocking CI
+2. **B007 (unused loop vars)**: 155 occurrences — informational, not blocking CI
+3. **AAIS 74/100**: remaining gaps require admin actions (T-002 smoke test, T-003 branch protection, T-007 sign-off)
+4. **AGENT_REGISTRY capability_tags quality**: tags derived from text may not be semantically optimal; manual review recommended for critical agents

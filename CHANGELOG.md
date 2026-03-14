@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session Iterative-Gap-Analysis-S31 — 2026-03-14 — PR #3579 production-readiness remediation
+
+#### Fixed — ITER-1: Docs stub expansion (docs_lint --strict was failing)
+- `docs/CHANGELOG/changelog_session_logging.md`: expanded 41→200+ words with usage, schema table
+- `docs/deployment/deploy_pipeline.md`: added overview, reproducibility, troubleshooting table (47→180+ words)
+- `docs/guides/checkpointing.md`: full CLI flags table + rotation policy description (71→200+ words)
+- `docs/guides/lfs_policy.md`: full compliance guide, alternatives table, guardrails (48→200+ words)
+- Result: `docs_lint --strict` → ✅ 0 errors, 0 warnings
+
+#### Fixed — ITER-1: Ruff B009/B010/B033 auto-fixes (31 issues in src/)
+- B009 `getattr(x, "attr")` → `x.attr` (B009 getattr-with-constant)
+- B010 `setattr(x, "attr", v)` → `x.attr = v` (B010 setattr-with-constant)
+- B033 duplicate set literal values removed (B033 duplicate-value)
+- Files: `strategies.py`, `cli/__init__.py`, `hf_pinning.py`, `seeding.py`, `registries.py`, `smells.py`, and 20+ others
+
+#### Fixed — ITER-1: E501 line-too-long in model_registry.py
+- `ModelRequest(...)` constructor wrapped to two lines; `auto_fix_common_issues.py` Pattern 12 now clean
+
+#### Fixed — ITER-1: Cognitive brain state update
+- `agent_context.json`: added `AAIS_SCORE=74/100`, updated `LAST_GREEN_SHA=814c3e3`, `SESSION_NUMBER=184`
+- `pattern_learning_store.json`: 11→15 patterns (cascade_prevention, python_version_mismatch, ci_poll_timeout, premerge_scope_validation)
+
+#### Fixed — ITER-2: AGENT_REGISTRY normalization (153 agents)
+- Added `description` to all 153 agents (derived from `purpose`/`role`/`primary_skill`/name)
+- Added `capability_tags` to all 153 agents (derived from `capabilities`/skills/category, ≤8 tags)
+- Enables reliable cognitive brain routing by capability_tags
+
+#### Fixed — ITER-2: B904 raise-without-from (121 issues → 0 in src/)
+- Phase 1: 110 single-line raises patched with `from exc_var` via regex script
+- Phase 2: 11 multi-line raises patched with paren-depth tracking
+- Two E501 regressions fixed: `rag_api.py:309`, `sqlite_storage.py:60`
+- Proper Python exception chaining now enforced across entire src/ tree
+
 ### Session CI-Triage-S30 — 2026-03-14 — PR #3576 review + issue #3577 CI failure patterns
 
 #### Fixed — Cost Gate (cost-gate.yml)

@@ -78,7 +78,7 @@ class ParquetLoader:
             self.metadata = self.parquet_file.metadata
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            raise ValueError(f"Invalid Parquet file: {e}")
+            raise ValueError(f"Invalid Parquet file: {e}") from e
 
     def load(self) -> list[dict[str, Any]]:
         """

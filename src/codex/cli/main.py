@@ -74,7 +74,7 @@ if TYPER_AVAILABLE:
         except Exception as e:
             logger.debug(f"Exception: {e}")
             typer.echo(f"❌ Error: {e}", err=True)
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
     @app.command()
     def analyze(

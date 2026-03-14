@@ -416,7 +416,7 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
-        raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml")
+        raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from e
 
     with open(config_path) as f:
         config = yaml.safe_load(f)

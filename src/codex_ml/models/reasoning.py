@@ -167,7 +167,7 @@ class ReasoningHarness:
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
-                raise TypeError("hidden_states must be convertible to a tensor")
+                raise TypeError("hidden_states must be convertible to a tensor") from err
         tensor = tensor.to(device=device, dtype=torch.float32)
         if tensor.ndim >= 2:
             dims = tuple(range(tensor.ndim - 1))

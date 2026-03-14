@@ -78,7 +78,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
-                raise torch_error
+                raise torch_error from err
     else:  # pragma: no cover - exercised when torch is unavailable
         # Use safe pickle loading to prevent code execution vulnerabilities
         from utils.safe_pickle import safe_pickle_load

@@ -504,4 +504,4 @@ def resolve_strategy(name: str | None) -> BackendStrategy:
         return STRATEGY_REGISTRY[normalised]
     except KeyError:
         choices = list(STRATEGY_REGISTRY)
-        raise ValueError(f"Unknown backend strategy: {name!r}. Choices={choices}")
+        raise ValueError(f"Unknown backend strategy: {name!r}. Choices={choices}") from err

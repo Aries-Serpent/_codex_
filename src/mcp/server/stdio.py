@@ -140,9 +140,9 @@ class StdioTransport:
             return json.loads(text)
         except UnicodeDecodeError as e:
             logger.debug(f"UnicodeDecodeError: {e}")
-            raise InvalidMessageError(f"Invalid encoding: {e}", str(line[:100]))
+            raise InvalidMessageError(f"Invalid encoding: {e}", str(line[:100])) from e
         except json.JSONDecodeError as e:
-            raise InvalidMessageError(f"Invalid JSON: {e}", text[:100] if text else None)
+            raise InvalidMessageError(f"Invalid JSON: {e}", text[:100] if text else None) from e
 
     async def write_message(self, message: dict[str, Any]) -> None:
         """Write a JSON-RPC message to stdout.

@@ -222,7 +222,7 @@ class TokenManager:
 
         except Exception as e:
             error_msg = sanitize_log_message(f"Token decode failed: {str(e)}")
-            raise ValueError(error_msg)
+            raise ValueError(error_msg) from e
 
     def generate_access_token(self, user_id: str, scope: Optional[str] = None) -> str:
         """

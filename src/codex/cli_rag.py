@@ -200,11 +200,11 @@ def build(
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         console.print("[yellow]Install with: pip install sentence-transformers faiss-cpu[/yellow]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console.print(f"[red]❌ Failed to build index: {e}[/red]")
         logger.exception("Error building index")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("query")
@@ -325,14 +325,14 @@ def query(
     except FileNotFoundError:
         console.print(f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]")
         console.print("[yellow]Build an index first with: codex rag build[/yellow]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from err
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console.print(f"[red]❌ Query failed: {e}[/red]")
         logger.exception("Error querying index")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("list")
@@ -415,7 +415,7 @@ def list_indices(
     except Exception as e:
         console.print(f"[red]❌ Failed to list indices: {e}[/red]")
         logger.exception("Error listing indices")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("delete")
@@ -481,7 +481,7 @@ def delete(
     except Exception as e:
         console.print(f"[red]❌ Failed to delete index: {e}[/red]")
         logger.exception("Error deleting index")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("merge")
@@ -555,11 +555,11 @@ def merge(
 
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console.print(f"[red]❌ Merge failed: {e}[/red]")
         logger.exception("Error merging indices")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("stats")
@@ -640,7 +640,7 @@ def stats(
     except Exception as e:
         console.print(f"[red]❌ Failed to get stats: {e}[/red]")
         logger.exception("Error getting stats")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command("metrics")
@@ -696,11 +696,11 @@ def metrics(
 
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console.print(f"[red]❌ Failed to export metrics: {e}[/red]")
         logger.exception("Error exporting metrics")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -826,11 +826,11 @@ def benchmark(
 
     except ImportError as e:
         console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
     except Exception as e:
         console.print(f"[red]❌ Benchmark failed: {e}[/red]")
         logger.exception("Benchmark error")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 if __name__ == "__main__":

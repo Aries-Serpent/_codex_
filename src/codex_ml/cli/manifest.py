@@ -72,13 +72,13 @@ if TYPER_AVAILABLE:
 
         except json.JSONDecodeError as e:
             typer.echo(f"Error: invalid JSON: {e}")
-            raise typer.Exit(2)
+            raise typer.Exit(2) from e
         except typer.Exit:
             # Re-raise typer.Exit to preserve exit code
             raise
         except Exception as e:
             typer.echo(f"Error: {e}")
-            raise typer.Exit(2)
+            raise typer.Exit(2) from e
 
     @app.command()
     def init(

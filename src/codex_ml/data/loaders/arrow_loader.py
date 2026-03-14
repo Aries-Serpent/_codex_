@@ -76,7 +76,7 @@ class ArrowLoader:
                     self.num_batches = reader.num_record_batches
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            raise ValueError(f"Invalid Arrow IPC file: {e}")
+            raise ValueError(f"Invalid Arrow IPC file: {e}") from e
 
     def load(self) -> list[dict[str, Any]]:
         """

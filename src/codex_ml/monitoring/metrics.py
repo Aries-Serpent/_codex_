@@ -173,7 +173,7 @@ def get_metrics_router():
         raise ImportError(
             "FastAPI and prometheus_client are required for metrics endpoint. "
             "Install with: pip install fastapi prometheus-client"
-        )
+        ) from e
 
     router = APIRouter(tags=["metrics"])
 

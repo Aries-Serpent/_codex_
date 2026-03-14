@@ -196,7 +196,7 @@ class SentencePieceAdapter:
             proc = cls()
             loader = getattr(proc, "Load", None) or getattr(proc, "load", None)
             if loader is None:  # pragma: no cover - defensive
-                raise AttributeError("SentencePieceProcessor missing Load/load")
+                raise AttributeError("SentencePieceProcessor missing Load/load") from e
             loader(str(self.model_path))
         self.sp = proc
         return self

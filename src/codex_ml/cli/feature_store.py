@@ -72,7 +72,7 @@ def register(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error registering feature group: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -135,7 +135,7 @@ def list(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing features: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -206,7 +206,7 @@ def health(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error generating health report: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -249,7 +249,7 @@ def materialize(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error materializing features: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -289,7 +289,7 @@ def versions(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing versions: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -361,7 +361,7 @@ def info(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error getting feature info: {e}")
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
 
 
 def main():

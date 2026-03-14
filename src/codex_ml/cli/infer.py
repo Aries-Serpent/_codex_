@@ -169,7 +169,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     matches=list(exc.decision.matches),
                     reasons=list(exc.decision.reasons),
                 )
-                raise SystemExit(f"Prompt blocked by moderation: {exc}")
+                raise SystemExit(f"Prompt blocked by moderation: {exc}") from exc
             if prompt_decision and prompt_decision.sanitized_text is not None:
                 prompt_text = prompt_decision.sanitized_text
 
@@ -195,7 +195,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     matches=list(exc.decision.matches),
                     reasons=list(exc.decision.reasons),
                 )
-                raise SystemExit(f"Output blocked by moderation: {exc}")
+                raise SystemExit(f"Output blocked by moderation: {exc}") from exc
             if output_decision and output_decision.sanitized_text is not None:
                 text = output_decision.sanitized_text
         print(text)

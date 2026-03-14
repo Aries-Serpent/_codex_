@@ -106,7 +106,7 @@ class ProviderFactory:
         try:
             provider_type = ProviderType(provider_type_str)
         except ValueError:
-            raise ProviderConfigError(f"Invalid provider type: {provider_type_str}")
+            raise ProviderConfigError(f"Invalid provider type: {provider_type_str}") from err
 
         # Create config and provider
         config = ProviderConfig(provider_type=provider_type, **config_dict)

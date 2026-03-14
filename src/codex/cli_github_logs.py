@@ -24,7 +24,7 @@ def _get_github_client():
     except ImportError as e:
         raise click.ClickException(
             f"GitHub client not available: {e}. Ensure httpx and pydantic are installed."
-        )
+        ) from e
 
 
 @click.group(name="github-logs")
@@ -122,7 +122,7 @@ def fetch_check_run_logs(
 
     except Exception as e:
         logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
-        raise click.ClickException(str(e))
+        raise click.ClickException(str(e)) from e
 
 
 @cli.command(name="job")
@@ -190,7 +190,7 @@ def fetch_job_logs(
 
     except Exception as e:
         logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
-        raise click.ClickException(str(e))
+        raise click.ClickException(str(e)) from e
 
 
 @cli.command(name="list-check-runs")
@@ -253,7 +253,7 @@ def list_check_runs(
 
     except Exception as e:
         logger.error(f"Failed to list check runs: {e}", exc_info=True)
-        raise click.ClickException(str(e))
+        raise click.ClickException(str(e)) from e
 
 
 if __name__ == "__main__":
