@@ -46,6 +46,12 @@ logger = logging.getLogger(__name__)
 # ── Canonical deferral trigger phrases ────────────────────────────────────────
 # These are the exact patterns that constitute policy violations.
 # Edit only via PR with AGENT_ACCOUNTABILITY_REPORT update.
+
+# Extracted as a module constant so scan() can apply a word-boundary-aware
+# negation check (e.g. "no future work") without variable-width lookbehinds,
+# which Python's re module does not support.
+_FUTURE_WORK_PATTERN = r"future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)"
+
 DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Attribution-based deferrals
     (r"this was from (?:a )?different (?:branch|agent|pr|pull request|task|session)",
@@ -70,7 +76,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     # Future-based deferrals
     (r"(?:will|can|could|should|may)(?: be)? (?:address|fix|resolve|handle)(?:ed|d)? in (?:a )?future",
      "Future deferral: punting to future work without documented justification"),
-    (r"(?<!no )(?<!prevent )(?<!block )(?<!prohibit )future (?:pr\b|task\b|session\b|iteration\b|sprint\b|phase\b|work\b|fix\b|improvement\b)",
+    (_FUTURE_WORK_PATTERN,
      "Future deferral: punting to future work"),
     (r"address(?:ed)? (?:incrementally|later|separately|in a follow[-\s]?up)",
      "Incremental deferral: incrementalism as avoidance"),
@@ -100,9 +106,10 @@ EXEMPTION_PATTERNS: list[str] = [
     r"Prohibited Statements",       # policy itself listing what's prohibited
     r"#\s*noqa:\s*deferral",        # explicit per-line suppression
     r"noqa.*deferral",
-    r"Deferral Enforcement",        # policy description headings
-    r"Follow-Up Prompt",            # copilot prompt file references
-    r"copilot-prompts/",            # copilot prompt paths
+    r"\bDeferral Enforcement\b",    # anchored policy heading (e.g., "**Deferral Enforcement:**")
+    # Exact heading-line format: "Follow-Up Prompt" + a path/URL/view placeholder only
+    r"^\**\s*(?:📋\s*)?Follow-Up Prompt\**\s*[:\*]\s*(?:View\b|https?://|\.github/)",
+    r"\.github/copilot-prompts/",   # full path reference (prevents bare keyword bypass)
 ]
 
 
@@ -267,6 +274,16 @@ def _line_is_exempt(line: str) -> bool:
     return any(re.search(p, line, re.IGNORECASE) for p in EXEMPTION_PATTERNS)
 
 
+# Pre-compiled pattern: word-boundary-aware negation words immediately before a
+# deferral keyword.  Used by scan() to suppress false positives caused by the
+# fixed-width lookbehind limitation in Python's re module (e.g. "piano future
+# work" would otherwise be incorrectly exempted by a bare "(?<!no )" lookbehind
+# because "piano " ends with "no ").
+_NEGATION_BEFORE_FUTURE = re.compile(
+    r"\b(?:no|prevent|block|prohibit)\s+$", re.IGNORECASE
+)
+
+
 def scan(
     text: str,
     source_label: str = "<input>",
@@ -287,7 +304,17 @@ def scan(
             continue
         flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:
-            if re.search(pattern, line, re.IGNORECASE):
+            m = re.search(pattern, line, re.IGNORECASE)
+            if m:
+                # Word-boundary-aware negation check for the future-work pattern.
+                # Python lookbehinds are fixed-width, so "(?<!no )future" would
+                # also suppress "piano future work" (because "piano " ends with
+                # "no ").  Instead we check the prefix for a complete negation
+                # word using \b-anchored regex after finding the match.
+                if pattern is _FUTURE_WORK_PATTERN:
+                    prefix = line[: m.start()]
+                    if _NEGATION_BEFORE_FUTURE.search(prefix):
+                        continue
                 violations.append(
                     {
                         "source": source_label,

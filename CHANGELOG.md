@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session CI-Triage-3574 — 2026-03-14 — CI Failure Triage (PR #3575)
+
+#### Fixed
+
+- **Workflows — Python 3.11 → 3.12**: Updated `self_healing_ci.yml`, `embedding-index-rebuild.yml`, `agent-handoff-gate.yml`, and `cleanup-stale-branches.yml` to use `python-version: '3.12'` (matches `requires-python = ">=3.12"` in `pyproject.toml`).
+- **Deferral scanner — lookbehind word boundary**: Replaced fixed-width negative lookbehinds (`(?<!no )(?<!prevent )...`) with a module-level `_FUTURE_WORK_PATTERN` constant and a post-match `_NEGATION_BEFORE_FUTURE` regex check using `\b` word boundaries. Prevents false positives from words ending in negation syllables (e.g. "piano future work").
+- **Deferral scanner — exemption bypass**: Tightened `EXEMPTION_PATTERNS` so `Follow-Up Prompt` only matches the specific heading-line format, `copilot-prompts/` requires the full `.github/copilot-prompts/` path, and `Deferral Enforcement` uses a word-boundary anchor — preventing bypass by embedding these phrases inline with real violations.
+- **`agent-auth-delegation.yml` — merge-ref guard**: Changed `/merge$` guard to `^[0-9]+/merge$` (ERE) so the check only rejects numeric PR merge refs and does not block legitimate branch names ending with `/merge`.
+- **`consolidated-pr-status.yml` — actionlint SC2170**: Replaced `[ "$VAR" -gt 0 ]` with `(( ${VAR:-0} > 0 ))` to satisfy shellcheck arithmetic comparison requirement.
+- **`docs/ROADMAP.md`**: Updated stale date via `doc_metrics_sync.py --fix`.
+- **`CODEX_MANIFEST.json`**: Regenerated with current timestamp to satisfy E→D gate C2 `<24h` freshness check.
+
 ### Session 39 — 2026-03-14 — @copilot continue (PR #3572, comment #4058912523)
 
 #### Verified (all open copilot-pull-request-reviewer threads confirmed fixed in current code)

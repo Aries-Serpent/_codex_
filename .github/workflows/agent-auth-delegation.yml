@@ -773,7 +773,7 @@ jobs:
           if [ -z "${TARGET_BRANCH}" ] && [ -n "${PR_NUMBER}" ]; then
             TARGET_BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName -q .headRefName 2>/dev/null || true)
           fi
-          if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -q '/merge$'; then
+          if [ -z "${TARGET_BRANCH}" ] || echo "${TARGET_BRANCH}" | grep -qE '^[0-9]+/merge$'; then
             echo "::warning::Could not resolve target branch (got '${TARGET_BRANCH}'). Skipping commit."
             exit 0
           fi
