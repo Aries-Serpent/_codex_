@@ -49,8 +49,10 @@ jobs:
       - name: Run quick tests
         id: tests
         run: |
-          # Run a subset of tests for quick validation
-          pytest tests/ -v --tb=short -x --maxfail=3 --timeout=300 || true
+          # Run CI capability tests only — these are fast (~30s) and exercise
+          # the key infrastructure without running the full 1500-test suite.
+          # The full suite runs in Resilient Validation Suite / Art_Validation Pipeline.
+          pytest tests/capabilities/ci_test/ -q --tb=short --timeout=60 || true
         continue-on-error: true
 
       - name: Check code quality

@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session CI-Triage-3575-S29 — 2026-03-14 — §0 GHAS verification + actionlint binary cleanup (PR #3575)
+### Session CI-Triage-S30 — 2026-03-14 — PR #3576 review + issue #3577 CI failure patterns
+
+#### Fixed — Cost Gate (cost-gate.yml)
+- Reduced RED tier poll timeout from 10 min (10×60s) to 90 sec (3×30s)
+- Added guard: auto-approve when `context.issue.number` is undefined (non-PR context)
+- Improved error message: includes actionable re-run instructions
+
+#### Fixed — Rust Swarm CI (rust_swarm_ci.yml)
+- `Overall Status` job: changed `!= "success"` to `== "failure"` so skipped jobs (blocked by cost gate) no longer cause false-positive failure
+
+#### Fixed — Embedding Index Rebuild (embedding-index-rebuild.yml)
+- Replaced `setup-python-cached` composite action with direct `actions/setup-python@v5` to prevent Python 3.11 stale-cache mismatch (error: `codex-ml requires Python >=3.12`)
+
+#### Fixed — Pre-Merge Validation (pre-merge-validation.yml)
+- Changed `pytest tests/` (1500+ tests, ~8 min) to `pytest tests/capabilities/ci_test/` (50 tests, ~30s) to prevent runner preemption on the "quick validation" job
+
+#### Fixed — Docs templates
+- `docs/templates/intent_validation_gate.md`: fixed 2 BROKEN_CLOSER fence closers
+- `docs/templates/status/codex_status_template_v1.2.md`: fixed 3 BROKEN_CLOSER fence closers
+
+#### Added
+- `.nojekyll` in repository root (required for GitHub Pages to serve non-Jekyll sites)
+
+#### Updated
+- `.github/copilot-prompts/active/PR-3576-followup.md`: replaced placeholder tasks with concrete PR #3576 summary, validation commands, and prioritised work queue
+
+
 
 #### Verified
 - GHAS alert #12566 (`app_jwt` dead assignment in `cli_api_server.py`) confirmed fixed in Session 28 (`b46489f`): only one assignment remains at line 830

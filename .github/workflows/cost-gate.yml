@@ -226,14 +226,28 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const maxAttempts = 10;   // 10 × 60s = 10 minutes
-            const pollInterval = 60;  // seconds
+            // Guard: ensure we have a valid PR number before polling.
+            // context.issue.number is undefined on push events; cost-gate already
+            // short-circuits those via feature_push/main_push steps, but guard
+            // here too in case of unexpected workflow_call re-use.
+            const prNumber = context.issue.number;
+            if (!prNumber) {
+              console.log('ℹ️  No PR number available — auto-approving (non-PR context).');
+              core.setOutput('approved', 'true');
+              return;
+            }
+
+            // Reduced from 10×60s (10 min) → 3×30s (90 sec) to keep CI fast.
+            // If approval is not in place within 90 s, fail immediately with
+            // actionable instructions rather than blocking the runner for 10 min.
+            const maxAttempts = 3;   // 3 × 30s = 90 seconds
+            const pollInterval = 30; // seconds
 
             for (let attempt = 1; attempt <= maxAttempts; attempt++) {
               const pr = await github.rest.pulls.get({
                 owner:       context.repo.owner,
                 repo:        context.repo.repo,
-                pull_number: context.issue.number,
+                pull_number: prNumber,
               });
 
               const body = pr.data.body || '';
@@ -260,10 +274,11 @@ jobs:
 
             // Timeout — fail the gate
             core.setFailed(
-              '🔴 Cost gate timed out after 10 minutes.\n' +
+              '🔴 Cost gate: stakeholder approval not detected within 90 seconds.\n' +
               'Tick the checkbox in the PR description to approve:\n' +
               '  - [x] 💰 Cost Proposal Approved — stakeholder sign-off\n' +
-              'Or trigger via workflow_dispatch to bypass.'
+              'Or trigger via workflow_dispatch to bypass.\n' +
+              'Re-run this job after ticking the checkbox.'
             );
 
       - name: Resolve final approval

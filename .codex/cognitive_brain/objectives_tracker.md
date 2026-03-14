@@ -49,7 +49,7 @@
 
 ## 📈 Objective Progress Tracking
 
-### PR-Level Progress (PR #3575 — Sessions 22–24)
+### PR-Level Progress (PR #3575 — Sessions 22–28 + PR #3576, #3579 — Sessions 29–30)
 
 | Session | Coverage | Security | Deferral Gate | Pre-flight | Python |
 |---------|----------|----------|---------------|-----------|--------|
@@ -57,17 +57,29 @@
 | After S-22 | 72% | 0 | ✅ Fixed | ✅ Auto-heal | 3.12 |
 | After S-23 | 72% | 0 | ✅ (double-bt) | ✅ | 3.12 |
 | After S-24 | 72% | 0 | ✅ (all tiers) | ✅ | 3.12 |
+| After S-30 | 72% | 0 | ✅ | ✅ | 3.12 |
+
+### CI Failure Pattern Fixes (issue #3577 — Session 30)
+
+| Pattern | Root Cause | Fix | Files Changed |
+|---------|-----------|-----|---------------|
+| Cost Gate RED timeout | 10 min polling blocks CI runners | Reduced to 3×30s (90 sec) + undefined guard | `cost-gate.yml` |
+| Rust Swarm Overall Status | `!= "success"` fails on skipped jobs | Changed to `== "failure"` | `rust_swarm_ci.yml` |
+| Embedding Rebuild Python | Stale 3.11 venv restored over 3.12 setup | Use `setup-python@v5` directly | `embedding-index-rebuild.yml` |
+| Pre-Merge Validation timeout | Full test suite (1500+ tests) preempted | Scope to `ci_test/` (50 tests) | `pre-merge-validation.yml` |
 
 ### CI Gate Self-Healing Progress
 
-| Gate | S-22 | S-23 | S-24 |
-|------|------|------|------|
-| Deferral — single-bt | ✅ | ✅ | ✅ |
-| Deferral — double-bt | ❌ | ✅ | ✅ |
-| Deferral — outer-single-bt | ❌ | ❌ | ✅ |
-| Pre-flight REQ-4 auto-heal | ✅ | ✅ | ✅ |
-| Pre-flight REQ-5 auto-heal | ✅ | ✅ | ✅ |
-| Brain tests `_MIN_CONFIDENCE` | ❌ | ❌ | ✅ |
+| Gate | S-22 | S-23 | S-24 | S-30 |
+|------|------|------|------|------|
+| Deferral — single-bt | ✅ | ✅ | ✅ | ✅ |
+| Deferral — double-bt | ❌ | ✅ | ✅ | ✅ |
+| Deferral — outer-single-bt | ❌ | ❌ | ✅ | ✅ |
+| Pre-flight REQ-4 auto-heal | ✅ | ✅ | ✅ | ✅ |
+| Pre-flight REQ-5 auto-heal | ✅ | ✅ | ✅ | ✅ |
+| Brain tests `_MIN_CONFIDENCE` | ❌ | ❌ | ✅ | ✅ |
+| Cost Gate RED fast-fail | N/A | N/A | N/A | ✅ |
+| Embedding Rebuild Python pin | N/A | N/A | N/A | ✅ |
 
 ---
 
