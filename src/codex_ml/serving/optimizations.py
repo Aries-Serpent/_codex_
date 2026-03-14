@@ -99,14 +99,14 @@ class RequestBatcher:
             batch_items.sort(reverse=True, key=lambda x: x[0])
 
             # Process batch
-            _, ids, data_items, futures, process_fn = zip(*batch_items)
+            _, ids, data_items, futures, process_fn = zip(*batch_items, strict=False)
             try:
                 results = await asyncio.get_event_loop().run_in_executor(
                     None, process_fn, list(data_items)
                 )
 
                 # Distribute results
-                for future, result in zip(futures, results):
+                for future, result in zip(futures, results, strict=False):
                     future.set_result(result)
             except Exception as e:
                 logger.debug(f"Exception: {e}")

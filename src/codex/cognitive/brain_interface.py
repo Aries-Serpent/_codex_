@@ -547,7 +547,7 @@ class AgentBrainInterface:
         Returns:
             PatternMatch if found, None otherwise
         """
-        for pattern_name, pattern_data in self._patterns.items():
+        for _, pattern_data in self._patterns.items():
             if pattern_data.get("id") == pattern_id:
                 return PatternMatch(
                     pattern_id=pattern_id,

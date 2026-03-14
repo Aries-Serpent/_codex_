@@ -58,7 +58,7 @@ def _summarise_log(path: str) -> None:
         epoch = int(rec.get("epoch", 0))
         # Pick first numeric metric value in record
         val = None
-        for key, value in rec.items():
+        for _, value in rec.items():
             try:
                 val = float(value)
                 break

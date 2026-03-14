@@ -25,7 +25,7 @@ from .interface import BackendAdapter, BackendResponse, VectorItem
 
 def cosine_similarity(a: list[float], b: list[float]) -> float:
     # deterministic and simple
-    dot = sum(x * y for x, y in zip(a, b))
+    dot = sum(x * y for x, y in zip(a, b, strict=False))
     lena = math.sqrt(sum(x * x for x in a)) or 1.0
     lenb = math.sqrt(sum(y * y for y in b)) or 1.0
     return dot / (lena * lenb)

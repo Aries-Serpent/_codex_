@@ -158,7 +158,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
 def _cosine_similarity(vec1: list[float], vec2: list[float]) -> float:
     if len(vec1) != len(vec2):
         return 0.0
-    dot = sum(a * b for a, b in zip(vec1, vec2))
+    dot = sum(a * b for a, b in zip(vec1, vec2, strict=False))
     n1 = sum(a * a for a in vec1) ** 0.5
     n2 = sum(b * b for b in vec2) ** 0.5
     if n1 == 0 or n2 == 0:
@@ -279,7 +279,8 @@ class RetrievalPipeline:
         embeddings = self.embedding_pipeline.embed_texts(documents)
 
         added = 0
-        for doc, doc_id, metadata, emb_result in zip(documents, ids, metadatas, embeddings):
+        for doc, doc_id, metadata, emb_result in zip(documents, ids, metadatas, embeddings,
+            strict=False):
             self._store.add(doc_id, doc, emb_result.embedding, metadata)
             added += 1
 

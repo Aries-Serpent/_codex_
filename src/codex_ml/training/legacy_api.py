@@ -1305,7 +1305,7 @@ def run_functional_training(
             for record in encodings:
                 ids = list(record.get("input_ids", []))
                 mask = list(record.get("attention_mask", [1] * len(ids)))
-                labels = [token if attn else -100 for token, attn in zip(ids, mask)]
+                labels = [token if attn else -100 for token, attn in zip(ids, mask, strict=False)]
                 payload = {k: list(v) for k, v in record.items()}
                 payload["input_ids"] = ids
                 payload["attention_mask"] = mask
@@ -1320,7 +1320,7 @@ def run_functional_training(
             mask = list(record.get("attention_mask", [1] * len(ids)))
             ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
             mask = _pad_sequence(mask, 0, int(pad_to))
-            labels.append([token if attn else -100 for token, attn in zip(ids, mask)])
+            labels.append([token if attn else -100 for token, attn in zip(ids, mask, strict=False)])
             features.setdefault("input_ids", []).append(ids)
             features.setdefault("attention_mask", []).append(mask)
             for key, value in record.items():

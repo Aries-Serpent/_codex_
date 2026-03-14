@@ -152,12 +152,12 @@ def lite_sequence_evaluation(
         }
 
     n_samples = min(len(predictions), len(references))
-    exact_matches = sum(p == r for p, r in zip(predictions, references))
+    exact_matches = sum(p == r for p, r in zip(predictions, references, strict=False))
 
     # Token-level accuracy (simple word-based)
     total_tokens = 0
     correct_tokens = 0
-    for pred, ref in zip(predictions, references):
+    for pred, ref in zip(predictions, references, strict=False):
         pred_tokens = pred.split()
         ref_tokens = ref.split()
         total_tokens += len(ref_tokens)
@@ -171,7 +171,8 @@ def lite_sequence_evaluation(
 
     # Perplexity proxy: lower is better, based on length mismatch
     avg_length_diff = (
-        sum(abs(len(p.split()) - len(r.split())) for p, r in zip(predictions, references))
+        sum(abs(len(p.split()) - len(r.split())) for p, r in zip(predictions, references,
+            strict=False))
         / n_samples
     )
     perplexity_proxy = 1.0 + avg_length_diff  # Simple proxy
@@ -188,7 +189,7 @@ def evaluate_constant(predictions: Sequence[Any], targets: Sequence[Any]) -> flo
     """Return a dummy accuracy-style score for smoke tests."""
     if not predictions:
         return 0.0
-    correct = sum(1 for p, t in zip(predictions, targets) if p == t)
+    correct = sum(1 for p, t in zip(predictions, targets, strict=False) if p == t)
     return correct / max(len(predictions), 1)
 
 

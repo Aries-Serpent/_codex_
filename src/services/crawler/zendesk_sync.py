@@ -502,9 +502,9 @@ class ZendeskKnowledgeSyncService:
             with self.manifest_path.open("r", encoding="utf-8") as f:
                 manifest_data = json.load(f)
                 # Try to extract base URL from first article URL
-                for section, buckets in manifest_data.items():
+                for _, buckets in manifest_data.items():
                     if isinstance(buckets, dict):
-                        for bucket, urls in buckets.items():
+                        for _, urls in buckets.items():
                             if urls and len(urls) > 0:
                                 # Extract base URL (e.g., https://subdomain.zendesk.com)
                                 import urllib.parse
@@ -654,7 +654,7 @@ class ZendeskKnowledgeSyncService:
 
                 # Find cached metadata if available
                 cached_meta = None
-                for url, meta in self._cache.items():
+                for _, meta in self._cache.items():
                     if meta.section == section and meta.bucket == bucket:
                         cached_meta = meta
                         break

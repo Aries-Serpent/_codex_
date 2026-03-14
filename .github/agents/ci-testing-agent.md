@@ -24,8 +24,43 @@ runner_compatibility:
 ## Architecture (v4.0)
 
 ```
-Phase 1: Log Retrieval  →  Phase 2: Triage  →  Phase 3: Fix  →  Phase 4: Validate  →  Phase 5: Report
+Phase 1: Log Retrieval  ->  Phase 2: Triage  ->  Phase 3: Fix  ->  Phase 4: Validate  ->  Phase 5: Report
    (GitHub MCP)              (categorize)       (17 patterns)    (ruff + import smoke)   (tracking log)
+```
+
+### Full Integration Diagram
+
+```mermaid
+flowchart TD
+    A[PR Push / CI Failure Alert] --> B{TaskRouter\nroutes by capability_tags}
+    B -->|ci_failure, test_debugging| C[CI Testing Agent v4.0]
+    C --> D[Phase 1: Log Retrieval\nget_job_logs via GitHub MCP]
+    D --> E[Phase 2: Triage\nCategorize by 29 patterns]
+    E --> F{Pattern\nMatched?}
+    F -->|Yes| G[Phase 3: Fix\nApply targeted pattern fix]
+    F -->|No| H[Phase 3b: Root Cause\nAnalysis + new pattern]
+    G --> I[Phase 4: Validate\nruff + import smoke + pytest ci_test/]
+    H --> I
+    I -->|Pass| J[Phase 5: Report\nUpdate ci_failure_patterns.yaml]
+    I -->|Fail| K{Iteration\n< 5?}
+    K -->|Yes| G
+    K -->|No| L[Escalate to @mbaetiong\nwith full context]
+    J --> M[OKRTracker.mark_task_complete\nUpdate pattern store]
+    M --> N[Commit + report_progress]
+
+    subgraph CognitiveBrain [Cognitive Brain Integration]
+        B
+        M
+        O[AgentBrainAPI.get_session_context]
+        P[pattern_learning_store.json]
+    end
+
+    subgraph QualityGates [Quality Gates]
+        I
+        Q[pre_flight_check.py: 6/6]
+        R[ruff: F401/B904/B007/B905=0]
+        S[docs_lint --strict: 0 errors]
+    end
 ```
 
 ### Phase 1 — Log Retrieval (from ci-failure-resolution-agent)
@@ -86,19 +121,58 @@ python -m pytest <targeted_regression_tests> -v --timeout=60 --tb=short
 
 **Level 1: Cognitive Access**
 - ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
+- ✅ Awareness of AAIS score (74/100 — honest recalibration)
 - ✅ Codebase topology maps for navigation
-- ✅ Pattern library for historical fixes
-
+- ✅ Pattern library: 29 known CI failure patterns
 
 **Level 2: Decision Integration**
+- ✅ `TaskRouter` routing by `capability_tags` (implemented S32)
+- ✅ `OKRTracker` tracks task completion programmatically (implemented S32)
 - ✅ Quantum decision engine (k₁=0.332)
-- ✅ Uncertainty optimization for choices
-- ✅ Multi-agent entanglement
-- ✅ Memory compression for efficiency
+- ✅ Multi-agent entanglement via orchestration.py
 
+### Capability Tags (for TaskRouter)
 
-### Cognitive Tools Available
+```yaml
+capability_tags:
+  - ci_failure
+  - test_debugging
+  - import_resolution
+  - log_retrieval
+  - pattern_matching
+  - self_healing
+  - ruff_lint
+  - github_actions
+```
+
+### Routing Example
+
+```python
+from codex.cognitive.task_router import TaskRouter, RoutingRequest
+
+router = TaskRouter()
+result = router.route(RoutingRequest(
+    task_description="Fix failing CI embedding rebuild",
+    tags=["ci_failure", "github_actions"],
+    urgency="high",
+))
+# result.selected_agent == "CI Testing Agent"
+# result.confidence >= 0.5 (2/2 tags matched)
+```
+
+### OKR Integration
+
+```python
+from codex.cognitive.okr_tracker import OKRTracker
+
+tracker = OKRTracker()
+summary = tracker.get_summary()
+print(f"OKR: {summary.tasks_complete}/{summary.tasks_total} complete ({summary.pct_complete:.0f}%)")
+# After fixing a CI pattern:
+tracker.mark_task_complete("OBJ-003", "T-005", notes="Pattern 30 added")
+tracker.save()
+```
+
 
 ```python
 # Topology Manager - Semantic navigation

@@ -149,8 +149,8 @@ class Retriever:
         timestamp = datetime.now(UTC).isoformat()
 
         effective_top_k = min(top_k, len(indices[0]))
-        for i, (idx, distance) in enumerate(
-            zip(indices[0][:effective_top_k], distances[0][:effective_top_k])
+        for _, (idx, distance) in enumerate(
+            zip(indices[0][:effective_top_k], distances[0][:effective_top_k], strict=False)
         ):
             # Skip invalid indices
             if idx < 0 or idx >= len(self.chunks_metadata):

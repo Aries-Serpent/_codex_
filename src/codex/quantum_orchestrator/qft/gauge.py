@@ -92,7 +92,7 @@ class U1GaugeTransform:
         phase_factor = np.exp(1j * theta)
         transformed_state = copy.deepcopy(state)
 
-        for task_id, task in transformed_state.tasks.items():
+        for _, task in transformed_state.tasks.items():
             # Transform spinor components
             task.spinor.components = task.spinor.components * phase_factor
 
@@ -208,7 +208,7 @@ class TranslationSymmetry:
         """
         transformed_state = copy.deepcopy(state)
 
-        for task_id, task in transformed_state.tasks.items():
+        for _, task in transformed_state.tasks.items():
             # Translate position
             task.position = TaskVector.from_array(task.position.to_array() + displacement)
 

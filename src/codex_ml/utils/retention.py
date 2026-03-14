@@ -162,7 +162,7 @@ def prune_checkpoints(
         if EPOCH_DIR_RE.match(p.name)
     }
 
-    for e, p in epoch_to_path.items():
+    for e, _ in epoch_to_path.items():
         if e in keep:
             kept.append(e)
         else:

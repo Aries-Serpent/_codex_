@@ -63,7 +63,7 @@ def _exact_match(preds: list[str], refs: list[str]) -> float:
     total = min(len(preds), len(refs))
     if total == 0:
         return 0.0
-    matches = sum(1 for p, r in zip(preds, refs) if p == r)
+    matches = sum(1 for p, r in zip(preds, refs, strict=False) if p == r)
     return matches / total
 
 
@@ -71,7 +71,7 @@ def _bleu1(preds: list[str], refs: list[str]) -> float:
     if not preds or not refs:
         return 0.0
     scores: list[float] = []
-    for pred, ref in zip(preds, refs):
+    for pred, ref in zip(preds, refs, strict=False):
         pred_tokens = pred.split()
         ref_tokens = ref.split()
         overlap, pred_total, ref_total = _unigram_overlap(pred_tokens, ref_tokens)
@@ -90,7 +90,7 @@ def _rouge1_f1(preds: list[str], refs: list[str]) -> float:
     if not preds or not refs:
         return 0.0
     scores: list[float] = []
-    for pred, ref in zip(preds, refs):
+    for pred, ref in zip(preds, refs, strict=False):
         pred_tokens = pred.split()
         ref_tokens = ref.split()
         overlap, pred_total, ref_total = _unigram_overlap(pred_tokens, ref_tokens)

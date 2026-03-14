@@ -285,7 +285,7 @@ class MomentumOperator:
             return np.zeros(5)
 
         gradient = np.zeros(5, dtype=complex)  # Use complex dtype
-        for neighbor_id, neighbor in neighbors.items():
+        for _, neighbor in neighbors.items():
             delta_x = neighbor.position.to_array() - task_position
             delta_psi = neighbor.spinor.psi_1 - task.spinor.psi_1
             distance = np.linalg.norm(delta_x)

@@ -322,7 +322,7 @@ class TaskSpawner:
         template = self.state.tasks[template_id]
         new_ids = []
 
-        for i in range(count):
+        for _ in range(count):
             # Check Pauli exclusion for fermions
             mode = template_id
             n = self.fock_state.get_occupation(mode)

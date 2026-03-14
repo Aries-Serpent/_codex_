@@ -87,7 +87,7 @@ class _ClassificationStats:
         self.support: Counter[int] = Counter()
 
     def update(self, preds: Iterable[int], targets: Iterable[int]) -> None:
-        for pred, target in zip(preds, targets):
+        for pred, target in zip(preds, targets, strict=False):
             pred_i = int(pred)
             target_i = int(target)
             if pred_i == target_i:
@@ -128,7 +128,7 @@ def _average(values: list[float], weights: list[int] | None) -> float:
     if not values:
         return 0.0
     if weights and sum(weights) > 0:
-        weighted_sum = sum(v * w for v, w in zip(values, weights))
+        weighted_sum = sum(v * w for v, w in zip(values, weights, strict=False))
         return weighted_sum / sum(weights)
     return sum(values) / len(values)
 
@@ -156,7 +156,7 @@ class F1Score(MetricBase):
         recalls = [self._stats.recall(label) for label in labels]
         f1_scores = []
         supports = [self._stats.support[label] for label in labels]
-        for precision, recall in zip(precisions, recalls):
+        for precision, recall in zip(precisions, recalls, strict=False):
             denom = precision + recall
             f1_scores.append(0.0 if denom == 0 else 2 * precision * recall / denom)
 
@@ -291,7 +291,7 @@ class BLEUScore(MetricBase):
     def update(self, predictions: Any, targets: Any) -> None:
         pred_sequences = _to_sequences(predictions)
         target_sequences = _to_sequences(targets)
-        for pred, target in zip(pred_sequences, target_sequences):
+        for pred, target in zip(pred_sequences, target_sequences, strict=False):
             pred_tokens = list(pred)
             target_tokens = list(target)
             self._pred_length += len(pred_tokens)
@@ -308,7 +308,7 @@ class BLEUScore(MetricBase):
 
     def compute(self) -> dict[str, float]:
         precisions = []
-        for matches, total in zip(self._matches, self._totals):
+        for matches, total in zip(self._matches, self._totals, strict=False):
             if total == 0:
                 precisions.append(0.0)
             else:

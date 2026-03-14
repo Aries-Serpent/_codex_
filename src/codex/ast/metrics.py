@@ -101,7 +101,8 @@ class MetricsAggregator:
         mean_cov = statistics.mean(coverage_metrics)
 
         numerator = sum(
-            (c - mean_cc) * (v - mean_cov) for c, v in zip(complexity_metrics, coverage_metrics)
+            (c - mean_cc) * (v - mean_cov) for c, v in zip(complexity_metrics, coverage_metrics,
+                strict=False)
         )
 
         denom_cc = (sum((c - mean_cc) ** 2 for c in complexity_metrics)) ** 0.5

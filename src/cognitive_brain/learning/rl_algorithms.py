@@ -254,7 +254,8 @@ class QLearning(RLAlgorithm):
             q_values = [self._get_q_value(state, a) for a in available_actions]
             max_q = max(q_values)
             # Handle ties randomly
-            best_actions = [a for a, q in zip(available_actions, q_values) if q == max_q]
+            best_actions = [a for a, q in zip(available_actions, q_values,
+                strict=False) if q == max_q]
             return np.random.choice(best_actions)
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
@@ -727,7 +728,7 @@ class PPO(RLAlgorithm):
 
         # Compute advantages
         advantages = self._compute_advantages()
-        returns = [t["value"] + adv for t, adv in zip(self.trajectory, advantages)]
+        returns = [t["value"] + adv for t, adv in zip(self.trajectory, advantages, strict=False)]
 
         # Normalize advantages
         adv_mean = np.mean(advantages)
@@ -739,7 +740,9 @@ class PPO(RLAlgorithm):
             policy_loss = 0.0
             value_loss = 0.0
 
-            for transition, advantage, ret in zip(self.trajectory, advantages, returns):
+            for transition, advantage, ret in zip(
+                self.trajectory, advantages, returns, strict=False
+            ):
                 # Update critic (value network)
                 current_value = self._get_value(transition["state"])
                 value_loss += (ret - current_value) ** 2

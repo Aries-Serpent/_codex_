@@ -116,7 +116,7 @@ def ray_train_loop(config: dict[str, Any]) -> None:
 
     # Training loop
     for epoch in range(config.get("num_epochs", 10)):
-        for batch in dataloader:
+        for _ in dataloader:
             # ... training step ...
             pass
 

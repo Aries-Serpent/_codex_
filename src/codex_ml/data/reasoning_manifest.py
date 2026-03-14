@@ -130,7 +130,7 @@ class ReasoningCorpus:
         expected_paths = [artifact.resolve_path(base) for artifact in self.artifacts]
         present: list[tuple[Path, CorpusArtifact]] = []
         missing: list[Path] = []
-        for artifact, path in zip(self.artifacts, expected_paths):
+        for artifact, path in zip(self.artifacts, expected_paths, strict=False):
             if path.exists():
                 present.append((path, artifact))
             else:

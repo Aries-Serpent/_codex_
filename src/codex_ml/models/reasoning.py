@@ -41,7 +41,7 @@ class ReasoningHead(nn.Module):
         values, indices = torch.topk(probs, k, dim=-1)
         top_tokens = [
             {"token": int(idx), "probability": float(val)}
-            for idx, val in zip(indices[0], values[0])
+            for idx, val in zip(indices[0], values[0], strict=False)
         ]
         top_probability = float(values[0, 0]) if values.numel() else None
         return {"top_tokens": top_tokens, "top_probability": top_probability}

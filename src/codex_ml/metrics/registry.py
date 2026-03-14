@@ -461,7 +461,7 @@ def token_accuracy(
     """Token-level accuracy with optional ignore_index."""
     correct = 0
     total = 0
-    for p, t in zip(preds, targets):
+    for p, t in zip(preds, targets, strict=False):
         ti = int(t)
         if ti == ignore_index:
             continue
@@ -509,7 +509,7 @@ def exact_match(
 ) -> float:
     """Deterministic, whitespace-insensitive exact match."""
     matches = 0
-    for p, t in zip(preds, targets):
+    for p, t in zip(preds, targets, strict=False):
         if _norm_str(p, remove_punct=remove_punct) == _norm_str(t, remove_punct=remove_punct):
             matches += 1
     return float(matches / max(1, len(preds)))
@@ -519,7 +519,7 @@ def exact_match(
 def f1(preds: Sequence[str], targets: Sequence[str]) -> float:
     """Average per-example F1 over whitespace tokens (bag-of-words)."""
     scores = []
-    for p, t in zip(preds, targets):
+    for p, t in zip(preds, targets, strict=False):
         p_tok = _norm_str(p).split()
         t_tok = _norm_str(t).split()
         if not p_tok and not t_tok:
@@ -585,7 +585,7 @@ def rouge_l(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         scorer.score(_norm_str(t, remove_punct=False), _norm_str(p, remove_punct=False))[
             "rougeL"
         ].fmeasure
-        for p, t in zip(preds, targets)
+        for p, t in zip(preds, targets, strict=False)
     ]
     return float(sum(scores) / len(scores)) if scores else None
 
@@ -612,7 +612,7 @@ def weighted_accuracy(
 
     total = 0.0
     correct = 0.0
-    for pred, target in zip(preds, targets):
+    for pred, target in zip(preds, targets, strict=False):
         label = str(target)
         weight = float(weights.get(label, 1.0))
         total += weight

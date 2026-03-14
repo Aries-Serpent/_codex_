@@ -73,7 +73,7 @@ _REGISTRY: MetricRegistry | None = None
 def _accuracy(labels: Sequence[Number], predictions: Sequence[Number]) -> float:
     matched = 0
     total = min(len(labels), len(predictions))
-    for truth, pred in zip(labels, predictions):
+    for truth, pred in zip(labels, predictions, strict=False):
         if truth == pred:
             matched += 1
     return matched / total if total else 0.0
@@ -84,7 +84,7 @@ def _mse(labels: Sequence[Number], predictions: Sequence[Number]) -> float:
     if total == 0:
         return 0.0
     squared_error = 0.0
-    for truth, pred in zip(labels, predictions):
+    for truth, pred in zip(labels, predictions, strict=False):
         diff = float(truth) - float(pred)
         squared_error += diff * diff
     return squared_error / total

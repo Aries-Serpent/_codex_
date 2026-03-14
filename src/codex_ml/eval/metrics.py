@@ -107,7 +107,7 @@ def perplexity(
         nll_values = []
         losses = _materialise(logits_or_nll)
         _ensure_equal_length(losses, tgt, "perplexity")
-        for value, target in zip(losses, tgt):
+        for value, target in zip(losses, tgt, strict=False):
             if int(target) == ignore_index:
                 continue
             try:
@@ -129,7 +129,7 @@ def accuracy(predictions: Iterable[int], targets: Iterable[int]) -> float:
     if not preds:
         raise MetricError("accuracy", "no predictions provided")
     _ensure_equal_length(preds, targs, "accuracy")
-    correct = sum(int(p == t) for p, t in zip(preds, targs))
+    correct = sum(int(p == t) for p, t in zip(preds, targs, strict=False))
     return float(correct / len(preds))
 
 
@@ -146,7 +146,7 @@ def token_stats(
     _ensure_equal_length(preds, targs, "token_stats")
     total = 0
     correct = 0
-    for p, t in zip(preds, targs):
+    for p, t in zip(preds, targs, strict=False):
         if t == ignore_index:
             continue
         total += 1
@@ -174,7 +174,7 @@ def forward_transfer(baseline: Sequence[float], adapted: Sequence[float]) -> flo
     base = [float(x) for x in _materialise(baseline)]
     new = [float(x) for x in _materialise(adapted)]
     _ensure_equal_length(base, new, "forward_transfer")
-    improvements = [n - b for b, n in zip(base, new)]
+    improvements = [n - b for b, n in zip(base, new, strict=False)]
     return float(sum(improvements) / len(improvements)) if improvements else 0.0
 
 
@@ -182,7 +182,7 @@ def backward_transfer(previous: Sequence[float], current: Sequence[float]) -> fl
     prev = [float(x) for x in _materialise(previous)]
     curr = [float(x) for x in _materialise(current)]
     _ensure_equal_length(prev, curr, "backward_transfer")
-    deltas = [curr_i - prev_i for curr_i, prev_i in zip(curr, prev)]
+    deltas = [curr_i - prev_i for curr_i, prev_i in zip(curr, prev, strict=False)]
     return float(sum(deltas) / len(deltas)) if deltas else 0.0
 
 
@@ -249,7 +249,7 @@ def classification_f1(
     if not label_set:
         raise MetricError("f1", "no labels present")
     counts: dict[int, dict[str, int]] = {label: {"tp": 0, "fp": 0, "fn": 0} for label in label_set}
-    for p, t in zip(preds, targs):
+    for p, t in zip(preds, targs, strict=False):
         if p == t:
             if p in counts:
                 counts[p]["tp"] += 1
@@ -276,7 +276,7 @@ def classification_f1(
         total = sum(weights)
         if total == 0:
             return 0.0
-        return sum(s * w for s, w in zip(scores, weights)) / total
+        return sum(s * w for s, w in zip(scores, weights, strict=False)) / total
     raise MetricError("f1", f"unknown averaging method: {average}")
 
 
@@ -360,7 +360,7 @@ def rouge_l(
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores: list[float] = []
-    for cand, ref in zip(candidates, references):
+    for cand, ref in zip(candidates, references, strict=False):
         c = cand.lower() if lowercase else cand
         r = ref.lower() if lowercase else ref
         result = scorer.score(r, c)["rougeL"].fmeasure

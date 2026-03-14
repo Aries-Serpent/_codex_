@@ -222,7 +222,7 @@ class PGVectorStore:
 
         # Gather: Combine results from all shards
         all_results = []
-        for shard_id, results in zip(shards_to_query, shard_results):
+        for _, results in zip(shards_to_query, shard_results, strict=False):
             all_results.extend(results)
 
         # Global re-ranking by score
@@ -299,7 +299,7 @@ class PGVectorStore:
         # Group documents by shard
         shard_groups: Dict[int, List[tuple]] = {i: [] for i in range(self.num_shards)}
 
-        for doc, emb in zip(documents, embeddings):
+        for doc, emb in zip(documents, embeddings, strict=False):
             if shard_mapper:
                 shard_id = shard_mapper(doc["id"])
             elif self._kmeans is not None:

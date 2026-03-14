@@ -286,7 +286,7 @@ class TrendAnalyzer:
         n = len(x_values)
         sum_x = sum(x_values)
         sum_y = sum(y_values)
-        sum_xy = sum(x * y for x, y in zip(x_values, y_values))
+        sum_xy = sum(x * y for x, y in zip(x_values, y_values, strict=False))
         sum_x2 = sum(x * x for x in x_values)
 
         # Slope and intercept
@@ -300,7 +300,8 @@ class TrendAnalyzer:
         mean_y = sum_y / n
         ss_tot = sum((y - mean_y) ** 2 for y in y_values)
         ss_res = sum(
-            (y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2 for x, y in zip(x_values, y_values)
+            (y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2 for x, y in zip(x_values, y_values,
+                strict=False)
         )
         r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 
@@ -408,7 +409,9 @@ class CorrelationAnalyzer:
         mean_a = sum(aligned_a) / n
         mean_b = sum(aligned_b) / n
 
-        numerator = sum((a - mean_a) * (b - mean_b) for a, b in zip(aligned_a, aligned_b))
+        numerator = sum(
+            (a - mean_a) * (b - mean_b) for a, b in zip(aligned_a, aligned_b, strict=False)
+        )
         sum_sq_a = sum((a - mean_a) ** 2 for a in aligned_a)
         sum_sq_b = sum((b - mean_b) ** 2 for b in aligned_b)
 

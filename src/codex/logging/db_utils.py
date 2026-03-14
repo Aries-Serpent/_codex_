@@ -146,7 +146,7 @@ def infer_probable_table(
             logger.warning(f"ValueError: {e}", exc_info=True)
             continue
         score = 0
-        for k, cand in LIKELY_MAP.items():
+        for _, cand in LIKELY_MAP.items():
             score += 1 if _first_match(cols, cand) else 0
         if score > best_score:
             best, best_score = t, score
