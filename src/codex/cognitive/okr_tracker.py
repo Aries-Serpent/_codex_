@@ -210,6 +210,7 @@ class OKRTracker:
             self._build_obj001(),
             self._build_obj002(),
             self._build_obj003(),
+            self._build_obj004(),
         ]
         # Apply persisted progress overrides
         for obj in objs:
@@ -298,6 +299,51 @@ class OKRTracker:
                     TaskStatus.COMPLETE, owner="Copilot"),
             OKRTask("T-006", "B904 exception chaining in src/ (121->0)",
                     TaskStatus.COMPLETE, owner="Copilot"),
+        ]
+        return obj
+
+    @staticmethod
+    def _build_obj004() -> Objective:
+        """OBJ-004: AAIS 95→100 roadmap — defined Session 41 (PR #3580)."""
+        obj = Objective(
+            obj_id="OBJ-004",
+            title="AAIS 95→100 — Final Quality Tier",
+            description=(
+                "Close the remaining 5 AAIS points to reach 100/100 (Grade S). "
+                "Three tracks: mypy anti-regression CI (+2), D_CAPABLE promotions "
+                "applied to registry (+2), and this OBJ-004 first-task completion (+1)."
+            ),
+            deadline="2026-03-31",
+        )
+        obj.tasks = [
+            OKRTask(
+                "T-001",
+                "Add mypy baseline CI workflow (.github/workflows/mypy-baseline.yml)",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Done Session 41 PR #3580 — 1152-error baseline, ratchet gate active",
+            ),
+            OKRTask(
+                "T-002",
+                "Fix actionlint SC2129 in agent-auth-delegation.yml (0 errors gate)",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Done Session 41 PR #3580 — shellcheck disable comment added",
+            ),
+            OKRTask(
+                "T-003",
+                "D_CAPABLE auto-apply: confirm next-Sunday promotion ran + update registry",
+                TaskStatus.PENDING,
+                owner="mbaetiong",
+                notes="Scheduled Sunday 03:00 UTC via d-capable-promotion-gate.yml",
+            ),
+            OKRTask(
+                "T-004",
+                "Lower .mypy_baseline from 1152 toward 0 (incremental type fixes)",
+                TaskStatus.PENDING,
+                owner="Copilot",
+                notes="Ratchet in place; each session should reduce count",
+            ),
         ]
         return obj
 
