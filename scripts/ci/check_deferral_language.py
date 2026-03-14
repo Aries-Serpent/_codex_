@@ -104,7 +104,7 @@ EXEMPTION_PATTERNS: list[str] = [
 
 
 # ── ML Classifier (optional — enabled by DEFERRAL_SCANNER_ML=1) ───────────────
-# Uses scikit-learn TF-IDF + LinearSVC for intent detection.
+# Uses scikit-learn TF-IDF + LogisticRegression for intent detection.
 # Falls back gracefully when scikit-learn is unavailable or training data is
 # missing.  Runs OFFLINE (no network calls at any point).
 
@@ -116,7 +116,7 @@ _MIN_RECALL = 0.90
 
 
 class DeferralMLClassifier:
-    """Lightweight TF-IDF + LinearSVC classifier for intent detection.
+    """Lightweight TF-IDF + LogisticRegression classifier for intent detection.
 
     Falls back to regex patterns if scikit-learn is unavailable or training
     data is missing.  Trained on labeled examples in

@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session 36 — 2026-03-13 — Fix cyclic imports (github-advanced-security, PR #3572, review #3947224679)
+### Session 37 — 2026-03-14 — @copilot continue (PR #3572, comment #4058706570)
+
+#### Fix
+- **`scripts/ci/check_deferral_language.py:107,119`**: Completed the fix for `copilot-pull-request-reviewer` thread on `check_deferral_language.py:22-26`. The module docstring was corrected to "LogisticRegression" in S-34, but the section comment (line 107) and class docstring (line 119) still said "LinearSVC". Both now say "TF-IDF + LogisticRegression" — consistent with the actual implementation at lines 163/182.
+
+#### Verified (all open copilot-pull-request-reviewer threads confirmed fixed in current code)
+- `tests/auth/test_migration_001.py:8` — `test_main_missing_snapshot_returns_exit_code_2` present (lines 145–149); 8/8 migration tests pass ✅
+- `CHANGELOG.md:47-48` — 217 consistent across CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, and CODEBASE_AGENCY_POLICY ✅
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2017` — 217 ✅
+- `src/codex/auth/sqlite_user_repository.py:129-132` — `sanitize_log_message(user.username)` at line 131 ✅
+- `scripts/ci/check_deferral-language.py:22-26` — all "LinearSVC" references replaced with "LogisticRegression" ✅
+
 
 #### Fix
 - **`src/codex/auth/user_model.py`** *(new file)*: Extracted `User` dataclass, `PasswordHasher`, and PBKDF2 constants (`_PBKDF2_HASH`, `_PBKDF2_ITERATIONS`, `_SALT_BYTES`, `_HASH_BYTES`) out of `user_store.py`. This breaks the 8 circular-import cycles flagged by github-advanced-security (CodeQL alerts #12553–#12560).

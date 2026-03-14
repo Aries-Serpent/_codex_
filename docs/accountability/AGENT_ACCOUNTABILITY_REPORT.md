@@ -2190,3 +2190,30 @@ New requirement: "address all and apply changes based on the comments in [this t
 - `python -c "from src.codex.auth import User, PasswordHasher, UserStore"` — ✅ imports work
 - `python -m pytest tests/auth/ -q` — 315/315 tests pass ✅
 - `python -m ruff check src/codex/auth/` — ✅ All checks passed
+
+## Session 37: 2026-03-14 — @copilot continue (PR #3572, comment #4058706570)
+
+### Trigger
+`@copilot continue` posted by @mbaetiong after activating Agent Token Delegation (run 23073469356).
+
+### Actions
+
+#### A. Remaining open `copilot-pull-request-reviewer` thread fixed (code)
+
+| Thread (file:line) | Status | Detail |
+|--------------------|--------|--------|
+| `scripts/ci/check_deferral_language.py:22-26` | ✅ Fixed (S-37) | Module docstring was fixed in S-34, but section comment (line 107) and class docstring (line 119) still said "TF-IDF + LinearSVC". Both corrected to "TF-IDF + LogisticRegression". |
+
+#### B. All other open threads verified in current code
+
+| Thread | File | Status |
+|--------|------|--------|
+| `tests/auth/test_migration_001.py:8` | Missing exit-code-2 test | ✅ Present: `test_main_missing_snapshot_returns_exit_code_2` at line 145; 8/8 tests pass |
+| `CHANGELOG.md:47-48` | Training count 217 vs 202 | ✅ All three docs (CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, CODEBASE_AGENCY_POLICY) say 217 |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2017` | Count mismatch | ✅ 217 |
+| `src/codex/auth/sqlite_user_repository.py:129-132` | Unsanitized username | ✅ `sanitize_log_message(user.username)` at line 131 |
+
+### Verification
+- `python -m ruff check scripts/ci/check_deferral_language.py src/codex/auth/` — ✅ All checks passed
+- `python scripts/ci/check_deferral_language.py --git-log` — ✅ exit 0
+- `python -m pytest tests/auth/ -q` — 315/315 tests pass ✅
