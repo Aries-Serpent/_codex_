@@ -3,7 +3,59 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/ci-failure-triage-report
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-14T04:40Z (session 24: Outer-single-bt display wrapper fix + full docs/QA/configs/mermaid review — PR #3575)
+**Last updated:** 2026-03-14T05:33Z (session 26: §0 pre-session review + CI verification — PR #3575)
+
+---
+
+## SESSION SUMMARY — 2026-03-14 SESSION 26 (@copilot continue — Agent Token Delegation activated ×3 — PR #3575)
+
+### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
+- [x] **0a.** Reviewed ALL bot-posted comments on PR #3575 ✅
+  - `@mbaetiong` comments `#4059575454`, `#4059576472`, `#4059584218` — three `@copilot continue` with Agent Token Delegation activation
+  - All `copilot-pull-request-reviewer[bot]` threads: fully resolved in Sessions 22–25
+  - `github-code-quality` bot threads (pullrequestreview-3948153330): resolved in Session 25 (commit `7e2d2ed`)
+- [x] **0b.** Fixed ALL code-fixable failing CI checks ✅
+  - No new failing checks on HEAD (`7e2d2ed`)
+  - Deferral Language Gate: ✅ success
+  - Workflow Compliance Audit: ✅ success
+  - Agent Token Delegation: ✅ success
+
+### Work Completed (Session 26)
+- Verified all 50 tests pass (39 cost_estimator + 11 usage_logger)
+- Ruff: 0 issues on all modified scripts
+- CI clean: no new auto-fixable patterns found
+- AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
+
+### OBJ-001 Status (as of Session 26)
+| Task | Status | Notes |
+|------|--------|-------|
+| T-002 Smoke test | ⏳ Pending | Needs @mbaetiong to trigger first real PR through cost gate |
+| T-003 Branch protection | ⏳ Admin required | @mbaetiong must add `cost-gate` as required check |
+| T-004 Usage NDJSON logger | ✅ Complete | `scripts/ci/usage_logger.py` (commit `7e2d2ed`) |
+| T-005 Budget alert at 2,500 min | ✅ Complete | Added to `self_healing_ci.yml` (commit `7e2d2ed`) |
+| T-006 Docker-build-push gated | ✅ Complete | RED tier in `cost-gate.yml` (commit `7e2d2ed`) |
+| T-007 Production sign-off | ⏳ Pending | @mbaetiong approval (2026-04-01) |
+
+---
+
+## SESSION SUMMARY — 2026-03-14 SESSION 25 (@copilot continue — github-code-quality bot issues fixed — PR #3575)
+
+### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
+- [x] **0a.** Reviewed ALL bot-posted comments on PR #3575 ✅
+  - `@mbaetiong` comment `#4059471111` — `@copilot continue` with Agent Token Delegation activation
+  - `github-code-quality` bot thread `pullrequestreview-3948153330` — 3 open issues (Pattern 1 + 9)
+- [x] **0b.** Fixed ALL code-fixable failing CI checks ✅
+  - Pattern 1 (F401 unused imports): removed `from typing import Optional` from `cost_estimator.py`
+  - Pattern 9 (unused test imports): removed `import os` + `import runpy` from `test_cost_estimator.py`
+
+### Work Completed (Session 25)
+- **github-code-quality bot** (3 open threads — all resolved, commit `7e2d2ed`):
+  - `scripts/ci/cost_estimator.py:29` — `from typing import Optional` removed (ruff F401 + I001)
+  - `tests/capabilities/ci_test/test_cost_estimator.py:11-12` — `import os` + `import runpy` removed
+- **OBJ-001 T-004**: `scripts/ci/usage_logger.py` — NDJSON event logger (11/11 tests)
+- **OBJ-001 T-005**: `self_healing_ci.yml` — budget-alert step at ≥ 2,500 min/month
+- **OBJ-001 T-006**: `docker-build-push.yml` gated via `cost-gate.yml` (🔴 RED tier)
+- All 50 CI-capability tests pass; CodeQL: 0 alerts
 
 ---
 

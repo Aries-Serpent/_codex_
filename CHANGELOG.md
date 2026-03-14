@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session CI-Triage-3575-S26 — 2026-03-14 — §0 pre-session verification (PR #3575)
+
+#### Verified
+- All 50 CI-capability tests pass (39 cost_estimator + 11 usage_logger)
+- Ruff: 0 issues on all modified scripts; no new CI failures
+- AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG updated for Sessions 25 + 26
+
+### Session CI-Triage-3575-S25 — 2026-03-14 — github-code-quality Pattern 1/9 + OBJ-001 T-004/T-005/T-006 (PR #3575)
+
+#### Fixed
+- **Pattern 1 (F401 unused import)**: Removed `from typing import Optional` from `scripts/ci/cost_estimator.py`; imports re-sorted (ruff I001). Resolves all `github-code-quality` bot threads from `pullrequestreview-3948153330`.
+- **Pattern 9 (unused test imports)**: Removed `import os` + `import runpy` from `tests/capabilities/ci_test/test_cost_estimator.py`.
+- **OBJ-001 T-004 — Usage NDJSON Logger**: `scripts/ci/usage_logger.py` — appends structured events to `.codex/usage_log.ndjson` after each cost-gate run. Fields: `timestamp`, `pr_number`, `workflow`, `tier`, `effective_minutes`, `budget_pct`. 11/11 tests pass.
+- **OBJ-001 T-005 — Budget Alert**: Added `budget-alert` step to `self_healing_ci.yml`; fires when cumulative usage ≥ 2,500 min/month (83% of 3,000 min GitHub Team budget); opens repo issue tagged `budget-alert`.
+- **OBJ-001 T-006 — `docker-build-push.yml` gated**: Now calls `cost-gate.yml` as prerequisite; classified 🔴 RED tier (GHCR push + matrix = high minute consumption); blocked until `💰 Cost Proposal Approved` checkbox is checked.
+
 ### Session CI-Triage-3575-S23 — 2026-03-14 — Double-backtick code span fix (PR #3575)
 
 #### Fixed
