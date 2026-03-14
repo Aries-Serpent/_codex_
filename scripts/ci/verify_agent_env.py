@@ -24,9 +24,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import importlib
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path

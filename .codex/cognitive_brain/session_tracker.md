@@ -8,24 +8,48 @@
 
 ## 🎯 Session State
 
-### Current Session
+### Current Session (Session 28 — PR #3575)
 ```yaml
 session_id: "copilot/ci-failure-triage-report"
 pr_number: 3575
-phase: "session-24-docs-qa-configs-mermaid"
-started: "2026-03-14T04:27:00Z"
-status: "active"
+phase: "session-28-code-quality-main-sync-checkpoint"
+started: "2026-03-14T06:42:00Z"
+status: "checkpoint-ready"
+cognitive_brain_session_number: 183
 ```
 
 ### Session Objectives
-- [x] Fix Deferral Language Gate Run #74 (outer-single-bt display wrapper)
-- [x] Fix 3 failing cognitive brain tests (`_MIN_CONFIDENCE` environment isolation)
-- [x] Update ci_failure_patterns.yaml Pattern #25 (three-tier code span stripping)
-- [x] Update COGNITIVE_BRAIN_STATUS_PR3575.md (Phases 8–11, Mermaid diagrams)
-- [x] Update cognitive brain state files (session_tracker, objectives, pattern store)
-- [x] Update cognitive app documentation to current state
-- [x] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
-- [x] Update CHANGELOG.md (REQ-5)
+- [x] §0 pre-session review — reviewed all bot-posted comments (github-code-quality bot)
+- [x] Fix ruff F401 — `textwrap.indent` unused in `scripts/ci/docs_sync.py`
+- [x] Fix ruff F401 — `typing.Optional` unused in `scripts/ci/generate_mermaid.py`
+- [x] Fix ruff F401 — `importlib`, `shutil` unused in `scripts/ci/verify_agent_env.py`
+- [x] Cherry-pick main→branch delta: `.codex/agent_context.json` synced from commit `5c7f9bc`
+- [x] Cherry-pick main→branch delta: `docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md` synced
+- [x] Cherry-pick main→branch delta: `docs/admin/variable_audit_latest.md` synced
+- [x] Verified agent_context.json matches canonical `5c7f9bc` (COGNITIVE_BRAIN_SESSION_NUMBER=183)
+- [x] Resumeable checkpoint committed — PR ready for merge to main
+
+### OBJ-001 Status (Production deadline 2026-04-01)
+- [x] T-004: usage_logger.py — 11/11 tests ✅
+- [x] T-005: budget alert in self_healing_ci.yml ✅
+- [x] T-006: docker-build-push.yml gated RED tier ✅
+- [ ] T-002: Smoke-test — @mbaetiong to verify (admin action)
+- [ ] T-003: Add `cost-gate` as required branch-protection check — @mbaetiong (admin)
+- [ ] T-007: Production sign-off (2026-04-01) — @mbaetiong
+
+### Session 27 Summary
+```yaml
+completed:
+  - "MkDocs sole Pages deployer enforced (unified-deployment.yml competing deploy removed)"
+  - "Docs auto-sync system: docs_lint.py, docs_sync.py, generate_mermaid.py"
+  - "L6 agent venv cacheset: requirements/agent.txt, .github/actions/setup-agent-env/"
+  - "HAR capture pipeline: har-capture.yml, har-capture.spec.ts, seed HAR via LFS"
+  - "Cost estimator dashboard: docs/ops/cost-dashboard.md"
+  - "GitHub App token endpoint /api/github/token in cli_api_server.py"
+  - "Devcontainer: .devcontainer/devcontainer.json with post-create.sh"
+  - "Layered API client: github-public-api.ts, har-replay-client.ts, api-mode-selector.ts"
+outcome: "committed eb55817 — 28 commits total in PR"
+```
 
 ---
 
