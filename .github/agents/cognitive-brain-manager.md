@@ -1,23 +1,23 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3492.
-version: 3.0.0
-updated: 2026-03-03
-cognitive_integration_level: 3
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3579 (Session 39).
+version: 4.0.0
+updated: 2026-03-14
+cognitive_integration_level: 4
 aais_contribution: +2.5 points
-batch: pr-3492
-sprint: Sprint 6 (Post-GROUNDED — Repo Variable Wiring)
+batch: pr-3579
+sprint: Sprint 9 (Post D_CAPABLE — AAIS 95/100)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
-# Cognitive Brain Manager v3.0
+# Cognitive Brain Manager v4.0
 
-**Version**: 3.0.0 (Updated PR #3492)
-**Status**: ✅ Production Ready — GROUNDED
-**Updated**: 2026-03-03
-**Phase**: Post-GROUNDED — Repo Variable Wiring + Agent Token Delegation Active
+**Version**: 4.0.0 (Updated PR #3579 Session 39)
+**Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 95/100)
+**Updated**: 2026-03-14
+**Phase**: D_CAPABLE Operations — Per-agent promotion active, RAG freshness automated
 
 ## Current System State
 
@@ -464,3 +464,35 @@ Agent Actions:
 
 ### v1.0.0 (Previous)
 - See git history for earlier changes
+
+---
+
+## Session 39 — D_CAPABLE System State (2026-03-14)
+
+### AAIS Trajectory
+```
+74 → 78 → 80 → 82 → 85 → 90 → 95/100 ✅ (Grade A+)
+```
+
+### Pipeline Status
+| Pipeline | Status | Schedule |
+|----------|--------|----------|
+| RAG Freshness Scheduler | 🟢 ACTIVE | every 6h |
+| Nightly FAISS Rebuild | 🟢 ACTIVE | 02:00 UTC |
+| D_CAPABLE Promotion Gate | 🟢 ACTIVE (auto-apply) | Sunday 03:00 UTC |
+| CODEX_MANIFEST Refresh | 🟢 ACTIVE | every PR push |
+| Docs Health Check | 🟢 ACTIVE | push to main |
+
+### D_CAPABLE Gate (5/5 ✅)
+```
+C1: AAIS ≥ 85        → 95/100 ✅
+C2: Manifest < 24h   → auto-refreshed ✅
+C3: SOFT_ERRORS ≤ 2  → 0 ✅
+C4: Handoff gate     → deployed ✅
+C5: GROUNDED ≥ 8     → 21 ✅
+```
+
+### Next-Phase Targets (AAIS 95→100)
+1. mypy full type coverage in src/ (+2 pts)
+2. D_CAPABLE promotions applied to 2 eligible agents (+2 pts)
+3. OBJ-004 first task complete (+1 pt)

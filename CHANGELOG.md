@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S39 — 2026-03-14 — Agency policy review, cognitive brain status, self-heal, agent spec update
+
+#### Fixed — `okr_tracker.py` stale OBJ-001 task statuses
+- `_build_obj001()`: T-003 (branch protection) and T-007 (production sign-off) updated from
+  `TaskStatus.PENDING` to `TaskStatus.COMPLETE` with notes confirming @mbaetiong's 2026-03-14 sign-off
+- Removes misleading "pending admin action" signals from live OKR summaries
+
+#### Added — `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_S39_PR3579.md`
+- Full system status document: architecture diagram, module inventory, pipeline status
+- D_CAPABLE gate state (5/5), AAIS trajectory table, OKR 100% closure confirmed
+- Next-phase plan: AAIS 95→100 targets (mypy coverage, D_CAPABLE promotions, OBJ-004)
+- Codebase Agency Policy §0 compliance checklist
+
+#### Updated — `.github/agents/cognitive-brain-manager.md` (v3.0.0 → v4.0.0)
+- Version bump to v4.0.0 reflecting D_CAPABLE AAIS 95/100 milestone
+- Session 39 system state section added: pipeline status table, D_CAPABLE gate summary,
+  AAIS trajectory, next-phase targets
+- `batch` updated to `pr-3579`, `sprint` updated to Sprint 9
+
+#### Self-Review — Thread comment verification (all 6 unresolved threads confirmed fixed)
+| Thread | File | Status |
+|--------|------|--------|
+| `|| true` on pytest step | `pre-merge-validation.yml:56` | ✅ Fixed — no `|| true` on pytest step |
+| F841 unused constants | `test_cost_gate_integration.py:38` | ✅ Fixed — `TIER_GREEN_MAX`/`TIER_YELLOW_MAX` used in boundary tests |
+| `_load_pattern_success` key | `task_router.py:213` | ✅ Fixed — keys by `entry.get("agent_name")` |
+| Module docstring mismatch | `okr_tracker.py:10` | ✅ Fixed — docstring says "hard-coded in `_build_obj001()`" |
+| `head_commit.message` guard | `codex-manifest-refresh.yml` | ✅ Fixed — uses `github.actor != 'github-actions[bot]'` |
+| Nested double-quotes | `codex-manifest-refresh.yml` | ✅ Fixed — single-quoted Python body |
+
+#### Verification
+- `pre_flight_check.py` → 6/6 ✅
+- `docs_lint.py --strict` → 0 errors ✅
+- `ruff check src/` → 0 errors ✅
+- `pytest tests/capabilities/ci_test/` → 75 passed, 1 skipped ✅
+
 ### Session S38 — 2026-03-14 — AAIS 90→95: RAG freshness scheduler, D_CAPABLE auto-apply, merge readiness
 
 #### Added — `rag-freshness-scheduler.yml` (RAG Freshness Rebuild Scheduling)

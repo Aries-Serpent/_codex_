@@ -239,7 +239,8 @@ class OKRTracker:
                     notes="Implemented in S32 as programmatic test"),
             OKRTask("T-003",
                     "Add cost-gate / classify-and-gate to branch protection required checks",
-                    TaskStatus.PENDING, owner="@mbaetiong"),
+                    TaskStatus.COMPLETE, owner="@mbaetiong",
+                    notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)"),
             OKRTask("T-004", "usage_logger.py — 11/11 tests",
                     TaskStatus.COMPLETE, owner="Copilot"),
             OKRTask("T-005", "Budget alert in self_healing_ci.yml",
@@ -247,7 +248,8 @@ class OKRTracker:
             OKRTask("T-006", "docker-build-push.yml gated RED tier",
                     TaskStatus.COMPLETE, owner="Copilot"),
             OKRTask("T-007", "Production sign-off (AAIS >= 74, all code-fixable items clean)",
-                    TaskStatus.PENDING, owner="@mbaetiong"),
+                    TaskStatus.COMPLETE, owner="@mbaetiong",
+                    notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)"),
         ]
         return obj
 
