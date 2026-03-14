@@ -774,6 +774,99 @@ async def webhooks_recent(limit: int = 50):
         return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
 
 
+# ── GitHub App installation-token endpoint ───────────────────────────────────
+#
+# Returns a short-lived GitHub installation access token derived from the
+# GitHub App credentials stored as environment variables.
+#
+# Variable resolution order (handles both Codespace underscore-prefix and
+# plain names used in local dev / CI):
+#
+#   Codespace secret       → CI / local env
+#   _GITHUB_APP_ID         → GITHUB_APP_ID
+#   _GITHUB_APP_PRIVATE_KEY → GITHUB_APP_PRIVATE_KEY_PEM
+#   _GITHUB_APP_INSTALLATION_ID → GITHUB_APP_INSTALLATION_ID
+#
+# Protected by the same CODEX_MASTER_KEY bearer guard used on memory routes.
+
+
+class _GithubTokenResponse(BaseModel):
+    token: str
+    expires_at: Optional[str] = None
+    source: str  # "app_installation" | "pat" | "github_token"
+    rate_limit: int  # expected req/hr
+
+
+@app.get("/api/github/token", response_model=_GithubTokenResponse)
+async def github_token(_auth: None = Depends(_require_memory_auth)):
+    """Return a short-lived GitHub API token for the frontend.
+
+    Priority:
+      1. GitHub App installation token (5 000 req/hr) — when App creds available
+      2. CODEX_MASTER_KEY / CODEX_BACKUP_KEY PAT (5 000 req/hr)
+      3. GITHUB_TOKEN (1 000 req/hr on Actions, 60 unauthenticated otherwise)
+    """
+    env = dict(os.environ)
+
+    # ── Map Codespace underscore-prefix secrets to plain names ────────────────
+    for cs_name, plain_name in (
+        ("_GITHUB_APP_ID",              "GITHUB_APP_ID"),
+        ("_GITHUB_APP_PRIVATE_KEY",     "GITHUB_APP_PRIVATE_KEY_PEM"),
+        ("_GITHUB_APP_INSTALLATION_ID", "GITHUB_APP_INSTALLATION_ID"),
+    ):
+        if cs_name in env and plain_name not in env:
+            env[plain_name] = env[cs_name]
+
+    # ── Try GitHub App installation token ─────────────────────────────────────
+    if env.get("GITHUB_APP_ID") and env.get("GITHUB_APP_INSTALLATION_ID"):
+        try:
+            from integrations.github_app_auth import (
+                mint_app_jwt,
+                exchange_installation_token,
+            )
+            app_jwt = mint_app_jwt(
+                env["GITHUB_APP_ID"],
+                # write env vars so _read_private_key() resolves
+            )
+            # Temporarily set so _read_private_key() inside mint_app_jwt works
+            if "GITHUB_APP_PRIVATE_KEY_PEM" in env:
+                os.environ.setdefault("GITHUB_APP_PRIVATE_KEY_PEM", env["GITHUB_APP_PRIVATE_KEY_PEM"])
+            app_jwt = mint_app_jwt(env["GITHUB_APP_ID"])
+            inst_token, expires_at = exchange_installation_token(
+                app_jwt, env["GITHUB_APP_INSTALLATION_ID"]
+            )
+            log.info("github_token: issued App installation token")
+            return _GithubTokenResponse(
+                token=inst_token,
+                expires_at=expires_at,
+                source="app_installation",
+                rate_limit=5000,
+            )
+        except Exception as exc:
+            log.warning("github_token: App installation token failed (%s), falling back", exc)
+
+    # ── Fall back to PAT ──────────────────────────────────────────────────────
+    for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
+        pat = env.get(var, "").strip()
+        if pat:
+            log.info("github_token: using %s as PAT", var)
+            return _GithubTokenResponse(
+                token=pat,
+                expires_at=None,
+                source="pat",
+                rate_limit=5000 if var != "GITHUB_TOKEN" else 1000,
+            )
+
+    raise HTTPException(
+        status_code=503,
+        detail=(
+            "No GitHub credentials available. "
+            "Set _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY + _GITHUB_APP_INSTALLATION_ID "
+            "(Codespace secrets) or CODEX_MASTER_KEY (PAT)."
+        ),
+    )
+
+
 # ── HTTP API proxy endpoint ───────────────────────────────────────────────────
 
 @app.post("/api/request", response_model=ApiProxyResponse)
