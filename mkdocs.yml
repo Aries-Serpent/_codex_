@@ -27,6 +27,8 @@ plugins:
 
 exclude_docs: |
   README.md
+  _config.yml
+  _layouts/
 
 nav:
 - Home: index.md
@@ -96,8 +98,19 @@ nav:
   - Datasette Option: database/datasette_option.md
 - Templates:
   - Overview: templates/README.md
+  - Iteration Plan: templates/ITERATION_PLAN_TEMPLATE.md
+  - Migration — Python Relocation: templates/Migration_PythonFileRelocation.md
+  - Migration — CLI Hardening: templates/Migration_CLIHardening.md
+  - Planning — Intent Validation: templates/Planning_IntentValidation.md
+  - Intent Validation Gate: templates/intent_validation_gate.md
+  - Copilot Execution Directive: templates/COPILOT_EXECUTION_DIRECTIVE.md
+  - Status Report Guide: templates/status/README.md
+  - Status Template v1.2: templates/status/codex_status_template_v1.2.md
+  - Authoring Guide v1.2: templates/status/authoring_guide_v1.2.md
+  - Schema Enhancements: templates/status/SCHEMA_ENHANCEMENTS_v1.2.md
+  - Authoring Quickstart: templates/status/authoring_quickstart_v1.2.md
 - Examples:
-  - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.py
+  - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.md
 - Ops:
   - 💰 Cost Dashboard: ops/cost-dashboard.md
   - Cost Governance: ops/COST_GOVERNANCE.md

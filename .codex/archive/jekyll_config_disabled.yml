@@ -1,0 +1,10 @@
+# ARCHIVED Jekyll configuration — disabled 2026-03-14
+# Reason: MkDocs Material is the sole GitHub Pages deployer.
+# Original location: docs/_config.yml
+#
+# Site settings
+title: "_codex_ Documentation"
+description: "Comprehensive documentation for the _codex_ machine learning framework"
+baseurl: "/_codex_"
+url: "https://aries-serpent.github.io"
+theme: jekyll-theme-cayman

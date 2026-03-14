@@ -5,7 +5,7 @@ With the file available at a public URL, load it directly in the browser using [
 
 ``` text
 https://lite.datasette.io/?url=https://files.catbox.moe/zw7qio.db
-```text
+```
 The page runs SQLite in WebAssembly and exposes the database through Datasette's interface for ad-hoc queries.
 No server-side Python is required; everything runs in the browser.
 
@@ -15,3 +15,5 @@ No server-side Python is required; everything runs in the browser.
 1. Host the database on a static server that sets `Access-Control-Allow-Origin: *`.
 1. Open `https://lite.datasette.io/?url=PUBLIC_DB_URL` in your browser.
 1. Confirm the list of tables appears as expected.
+```
+```

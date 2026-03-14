@@ -86,7 +86,7 @@ Add under verify job after Install dependencies:
 ``` text
 - name: Type check
   run: mypy src
-```text
+```
 ## Risk Considerations
 
 | Area | Risk | Mitigation |
@@ -112,7 +112,7 @@ Insert at top of cli.py after docstring:
 
 ``` text
 import sys
-```text
+```
 ## Next Interaction Options
 
 | Option | Outcome |

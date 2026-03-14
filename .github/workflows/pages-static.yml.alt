@@ -1,3 +1,18 @@
+# ⛔ PERMANENTLY DISABLED — DO NOT RENAME OR ACTIVATE
+#
+# This file is kept for historical reference ONLY. The .alt extension
+# ensures GitHub Actions never processes it.
+#
+# The ONLY authorised GitHub Pages deployer for this repository is:
+#   .github/workflows/pages-mkdocs.yml  (MkDocs Material → GitHub Pages)
+#
+# Renaming this file to pages-static.yml would create a COMPETING Pages
+# deployment that overwrites the MkDocs site. Do not do this.
+#
+# If the MkDocs build fails, fix pages-mkdocs.yml — do NOT activate this file.
+#
+# Original purpose (archived): deploy static HTML directly from docs/
+# ─────────────────────────────────────────────────────────────────────────────
 # GitHub Pages Deployment Workflow (Static HTML)
 #
 # Alternative deployment method - deploys static HTML directly from docs/

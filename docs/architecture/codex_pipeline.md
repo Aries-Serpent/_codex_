@@ -12,10 +12,10 @@ You are building the base Codex model.
 2. Tokenize and batch the data.
 3. Train a transformer model with next-token prediction.
 Provide Python functions for data loading and training loops.
-```text
+```
 **Pseudocode**
 
-```python
+```
 # Initialize base model M0
 model = TransformerModel(config)
 
@@ -24,7 +24,7 @@ for batch in pretraining_corpus:
     tokens = tokenize(batch)
     loss = model.loss(tokens)
     model.update(loss)
-```text
+```
 ## Stage 2: Supervised Fine-Tuning (SFT)
 
 **Iterative Prompt**
@@ -35,7 +35,7 @@ You are fine-tuning the pretrained model on curated examples.
 2. Optimize the model with teacher-forcing.
 3. Save the fine-tuned weights as M1.
 Implement the fine-tuning loop and evaluation hooks.
-```text
+```
 **Pseudocode**
 
 ```python
@@ -48,7 +48,7 @@ for prompt, solution in sft_dataset:
     model.update(loss)
 
 save_weights(model, M1_path)
-```text
+```
 ## Stage 3: Reinforcement Learning from Human Feedback (RLHF)
 
 **Iterative Prompt**
@@ -59,10 +59,10 @@ You are aligning model behavior with human preferences.
 2. Train a reward model R from the preferences.
 3. Optimize the policy model M1 using PPO to maximize R.
 Return the improved model M2.
-```text
+```
 **Pseudocode**
 
-```python
+```
 # Train reward model
 reward_model = RewardModel(train_preferences)
 
@@ -75,7 +75,7 @@ for step in range(rl_steps):
     policy = ppo_update(policy, prompts, responses, rewards)
 
 save_weights(policy, M2_path)
-```text
+```
 ## Utility Equation
 
 The combined utility of a model (M) during training can be expressed as:
@@ -87,3 +87,5 @@ where (\\mathcal{L}_{\\text{SFT}}) is the supervised loss, (\\mathcal{L}_{\\text
 ## Summary
 
 Following this scaffold enables a developer or Codex-driven workflow to implement the full training pipeline: pretraining (M0), supervised fine-tuning (M1), and RLHF optimization (M2).
+```
+```
