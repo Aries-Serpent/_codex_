@@ -160,6 +160,13 @@ runs:
         echo "AGENT_VENV_PATH=${GITHUB_WORKSPACE}/.venv_agent" >> "$GITHUB_ENV"
         echo "VIRTUAL_ENV=${GITHUB_WORKSPACE}/.venv_agent"     >> "$GITHUB_ENV"
         echo "PYTHONPATH=${GITHUB_WORKSPACE}/src:${PYTHONPATH:-}" >> "$GITHUB_ENV"
+        # Suppress BrokenPipeError from pip/python stdout writes to truncated
+        # pipes (e.g. the Copilot agent runner's internal `pip list` snapshot).
+        echo "PYTHONUNBUFFERED=1"     >> "$GITHUB_ENV"
+        echo "PYTHONIOENCODING=utf-8" >> "$GITHUB_ENV"
+        # Ignore SIGPIPE at the shell level so subprocesses don't die on
+        # a closed consumer pipe.
+        trap '' PIPE
 
     # ── 6. Expose venv-python output ─────────────────────────────────────────
     - name: Expose venv-python path
@@ -189,5 +196,5 @@ runs:
       run: |
         python scripts/ci/verify_agent_env.py \
           --venv .venv_agent \
-          --requirements requirements/agent.txt \
+          --requirements requirements/agent.txt 2>&1 | cat \
           || echo "::warning::Agent env verification found issues — check output above"

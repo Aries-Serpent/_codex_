@@ -12,6 +12,7 @@ __pycache__/
 .venv/
 venv/
 .venv_ci/
+.venv_agent/
 # Distribution / packaging
 build/
 dist/
