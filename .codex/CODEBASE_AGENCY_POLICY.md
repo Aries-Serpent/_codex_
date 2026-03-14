@@ -38,6 +38,40 @@ This policy establishes mandatory guidelines for ALL AI agents (GitHub Copilot, 
 
 ## Core Principles
 
+### 0. "Mandatory Pre-Session Review" (HARD RULE — enforced by CI)
+
+**EVERY Copilot coding agent session MUST begin by completing ALL of the following
+before making any file changes:**
+
+1. **Review ALL bot-posted comments** on the active PR:
+   - `copilot-pull-request-reviewer[bot]` — code review threads
+   - `github-advanced-security[bot]` — security alerts
+   - `github-code-quality[bot]` — quality findings
+   - `github-actions[bot]` — CI gate comments (cognitive-preflight, deferral gate)
+   - Any other bot or automated commenter
+   - **ALL open/unresolved threads MUST be addressed before new work begins.**
+
+2. **Review ALL failing CI checks** on the active PR:
+   - Fetch the latest workflow run status
+   - Identify every failing or warning check
+   - Fix every failing check that is code-fixable (not infrastructure-only)
+   - Document any infrastructure-only failures with root cause
+   - **NO new commits may be pushed until all code-fixable failures are resolved.**
+
+3. **Load all required documents:**
+   - `.codex/CODEBASE_AGENCY_POLICY.md` (this file)
+   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - All stored session memories
+
+**Enforcement:** The `cognitive-preflight` job (REQ-1) posts this checklist to every
+PR when Agent Token Delegation is enabled.  The `@copilot continue` protocol mandates
+this review in every session.  Violations are tracked in the accountability report.
+
+**CI Gate:** The Cognitive Pre-flight Check blocks `activate-delegation` until this
+step is confirmed complete (via session execution plan posted as PR comment).
+
+---
+
 ### 1. "Leave Codebase Better Than Found"
 
 Every agent session MUST improve the codebase, not just complete assigned tasks. This includes:

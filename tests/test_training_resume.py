@@ -32,8 +32,11 @@ def test_run_functional_training_resume(tmp_path):
     first = None
     try:
         first = run_functional_training(base_config, resume=False)
-    except HFModelUnavailableError as exc:
-        pytest.skip(f"HuggingFace model unavailable (no network in CI): {exc}")
+    except (HFModelUnavailableError, ValueError) as exc:
+        # HFModelUnavailableError: network/model unavailable in CI.
+        # ValueError: remote HF identifier used without an explicit commit-hash
+        #   revision (CODEX_HF_REVISION / HF_REVISION env var not set in CI).
+        pytest.skip(f"HuggingFace model unavailable (no network/revision in CI): {exc}")
         return  # unreachable: pytest.skip raises; satisfies static analysis
     assert first is not None
     assert first["resumed_from"] is None

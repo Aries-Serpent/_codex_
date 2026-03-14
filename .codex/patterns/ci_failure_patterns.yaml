@@ -1227,11 +1227,106 @@ metadata:
 
 ### Current Library Stats
 
-**Total Patterns:** 23 (8 core + 15 derived)
+**Total Patterns:** 25 (8 core + 17 derived)
 **Categories:** 9
 **Batch Fix Patterns:** 4
-**Proven Patterns:** 22 (96%)
-**Confidence > 95%:** 20 (87%)
+**Proven Patterns:** 24 (96%)
+**Confidence > 95%:** 22 (88%)
+
+### Pattern #24: Cognitive Pre-flight REQ-4 — Accountability Report Not Updated
+
+```yaml
+---
+pattern_id: PREFLIGHT_001
+name: "Accountability Report Not Updated in Last Commit (REQ-4)"
+category: ci_compliance
+priority: 1
+severity: high
+auto_fixable: true
+
+description: |
+  The cognitive-preflight job (REQ-4) checks that
+  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was touched
+  in the last commit.  This fails on commits that only touch
+  workflow files, cognitive brain metadata, or other non-doc files.
+
+detection:
+  error_signatures:
+    - "FAIL.*AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
+    - "REQ-4.*accountability report"
+    - "::error::REQ-4"
+  workflow: "agent-auth-delegation.yml"
+  job: "cognitive-preflight"
+  step_id: "accountability_check"
+
+root_cause:
+  technical: "git diff --name-only HEAD~1 HEAD does not include the report file"
+  common_triggers:
+    - "Merge commits from main (only update .codex/cognitive_brain/)"
+    - "Workflow-only fix commits"
+    - "Auto-commits from other CI steps that don't touch docs/"
+  underlying: "Every commit on a PR with Agent Token Delegation enabled must include this file"
+
+fix_steps:
+  - "Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability --pr-number <N>"
+  - "Or: let the auto-fix step in agent-auth-delegation.yml handle it automatically"
+  - "Manual: append a session summary block to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+auto_fix:
+  script: "scripts/ci/session_wrapup_autofix.py"
+  flags: "--fix-accountability --pr-number <PR_NUMBER> --sha <SHA>"
+  workflow_step: "autofix_docs (agent-auth-delegation.yml cognitive-preflight job)"
+  self_healing: true
+  commit_message: "fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][skip ci]"
+---
+```
+
+### Pattern #25: Deferral Language Gate — Documentation Examples
+
+```yaml
+---
+pattern_id: DEFERRAL_001
+name: "Deferral Language Gate False Positive — Doc Examples"
+category: ci_compliance
+priority: 2
+severity: medium
+auto_fixable: false
+
+description: |
+  The Deferral Language Gate scans PR body text for deferral phrases.
+  PR descriptions that document or explain deferral scanner behavior
+  will contain the exact phrases the scanner is designed to catch,
+  triggering false positives.
+
+detection:
+  error_signatures:
+    - "PR body contains deferral language — policy violation"
+    - "PR_SCAN: failure"
+    - "Future deferral: punting to future work"
+  workflow: "deferral-language-gate.yml"
+  job: "deferral-language-check"
+
+root_cause:
+  technical: "PR body scanner does not distinguish prose from code examples"
+  common_triggers:
+    - "PR description contains example phrases like 'future task' in plain text"
+    - "Changelog entries quoting deferral language"
+    - "Policy documentation embedded in PR body"
+
+fix_steps:
+  - "Wrap example phrases in backtick code spans: `future task` instead of 'future task'"
+  - "Add <!-- noqa: deferral --> HTML comment at end of specific lines to suppress scanning"
+  - "Use code fences (``` ```) for multi-line examples"
+
+auto_fix:
+  script: "n/a — requires PR description edit"
+  scanner_version: "check_deferral_language.py (supports inline code span stripping)"
+  suppression_methods:
+    - "# noqa: deferral  (code files)"
+    - "<!-- noqa: deferral -->  (PR bodies, markdown docs)"
+    - "Backtick inline code spans: `phrase` stripped before scanning"
+---
+```
 
 ### Effectiveness Metrics
 

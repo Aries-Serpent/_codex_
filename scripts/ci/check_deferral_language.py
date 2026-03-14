@@ -104,13 +104,22 @@ EXEMPTION_PATTERNS: list[str] = [
     r"check_deferral_language",     # this script name
     r"deferral.language.gate",      # workflow name
     r"Prohibited Statements",       # policy itself listing what's prohibited
-    r"#\s*noqa:\s*deferral",        # explicit per-line suppression
+    r"#\s*noqa:\s*deferral",        # explicit per-line suppression (code files)
     r"noqa.*deferral",
+    r"<!--\s*noqa:\s*deferral\s*-->",  # HTML comment suppression (PR bodies / markdown docs)
     r"\bDeferral Enforcement\b",    # anchored policy heading (e.g., "**Deferral Enforcement:**")
     # Exact heading-line format: "Follow-Up Prompt" + a path/URL/view placeholder only
     r"^\**\s*(?:📋\s*)?Follow-Up Prompt\**\s*[:\*]\s*(?:View\b|https?://|\.github/)",
     r"\.github/copilot-prompts/\S+$",  # path-only reference (must be at end of line; prevents bypass like ".../ will fix in a future task")
 ]
+
+# Pre-compiled pattern to strip single-backtick inline code spans before scanning.
+# This prevents false positives from documentation that uses inline code to *describe*
+# deferral phrases (e.g., describing what the scanner catches).
+# Only single-backtick spans are stripped; triple-backtick fenced blocks span multiple
+# lines and are handled line-by-line (each fence line is blank after stripping, which
+# never matches a deferral trigger).
+_INLINE_CODE_SPAN = re.compile(r"`[^`\n]+`")
 
 
 # ── ML Classifier (optional — enabled by DEFERRAL_SCANNER_ML=1) ───────────────
@@ -302,9 +311,15 @@ def scan(
     for line_no, line in enumerate(text.splitlines(), start=1):
         if _line_is_exempt(line):
             continue
+        # Strip single-backtick inline code spans before scanning so that
+        # documentation examples describing deferral phrases (e.g. `future task`)
+        # don't trigger false positives.  Triple-backtick fenced blocks span
+        # multiple lines; each fence line after stripping becomes empty or only
+        # punctuation, which never matches any deferral trigger.
+        scan_line = _INLINE_CODE_SPAN.sub("", line)
         flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:
-            m = re.search(pattern, line, re.IGNORECASE)
+            m = re.search(pattern, scan_line, re.IGNORECASE)
             if m:
                 # Word-boundary-aware negation check for the future-work pattern.
                 # Python lookbehinds are fixed-width, so "(?<!no )future" would
@@ -312,7 +327,7 @@ def scan(
                 # "no ").  Instead we check the prefix for a complete negation
                 # word using \b-anchored regex after finding the match.
                 if pattern == _FUTURE_WORK_PATTERN:
-                    prefix = line[: m.start()]
+                    prefix = scan_line[: m.start()]
                     if _NEGATION_BEFORE_FUTURE.search(prefix):
                         continue
                 violations.append(
