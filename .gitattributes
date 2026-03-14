@@ -133,11 +133,8 @@ dist/** linguist-generated=true
 htmlcov/** linguist-generated=true
 .coverage linguist-generated=true
 
-# Git LFS — large binary assets
-# HAR cache files (network archive recordings) stored in LFS
-# so they don't bloat the git object store.
+# HAR cache files — stored as regular files (no LFS required for small demo HARs)
 # Recorded by: .github/workflows/har-capture.yml (Playwright walkthrough)
-*.har filter=lfs diff=lfs merge=lfs -text
 
 # Export-ignore (files excluded from export archives)
 .gitattributes export-ignore
