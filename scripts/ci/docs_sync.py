@@ -299,7 +299,7 @@ def process_file(
                 fixable=True,
             ))
             if fix:
-                replacement = [l + "\n" for l in expected_block.splitlines()]
+                replacement = [line + "\n" for line in expected_block.splitlines()]
                 new_lines[open_line:close_line + 1] = replacement
                 fixes += 1
 

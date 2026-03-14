@@ -363,7 +363,7 @@ def process_file(
         if current.strip() != expected.strip():
             reports.append((dtype, "Diagram is out of date with source", open_line + 1, True))
             if fix:
-                replacement = [l + "\n" for l in expected.splitlines()]
+                replacement = [line + "\n" for line in expected.splitlines()]
                 new_lines[open_line:close_line + 1] = replacement
                 fixes += 1
         else:

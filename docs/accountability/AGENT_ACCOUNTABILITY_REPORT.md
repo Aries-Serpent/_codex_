@@ -3,7 +3,37 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/ci-failure-triage-report
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-14T05:33Z (session 26: §0 pre-session review + CI verification — PR #3575)
+**Last updated:** 2026-03-14T07:25Z (session 29: §0 pre-session review + GHAS alert verification — PR #3575)
+
+---
+
+## SESSION SUMMARY — 2026-03-14 SESSION 29 (@copilot continue — Agent Token Delegation activated — PR #3575)
+
+### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
+- [x] **0a.** Reviewed ALL bot-posted comments on PR #3575 ✅
+  - `@mbaetiong` comment `#4059775457` — Agent Token Delegation activation + `@copilot continue`
+  - `github-advanced-security[bot]` thread `r2934845724` — `app_jwt` dead assignment (alert #12566), created 06:59 — OPEN/OUTDATED
+  - `github-code-quality[bot]` threads (pullrequestreview-3948260014) — all RESOLVED/OUTDATED (fixed in Session 28 commit `b46489f`)
+- [x] **0b.** Fixed ALL code-fixable failing CI checks ✅
+  - All failing CI checks (actionlint, Pattern 9/11, PR Cost Check JS injection) were fixed in Session 28 (`b46489f`)
+  - CI failures in failing check list are stale runs from BEFORE `b46489f` was pushed
+  - Locally: actionlint → 0 errors; ruff Pattern 9/11 → 0 issues; all 73 CI tests pass
+
+### Work Completed (Session 29)
+- Verified GHAS alert #12566 (`app_jwt` dead assignment) already resolved in `b46489f`: only one `app_jwt =` assignment at line 830, used at line 832
+- GHAS thread `r2934845724` is `is_outdated: true` — fix is in current HEAD
+- Removed accidentally committed `actionlint` binary; added `actionlint` to `.gitignore`
+- Updated `AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` for Session 29
+
+### OBJ-001 Status (as of Session 29)
+| Task | Status | Notes |
+|------|--------|-------|
+| T-004 usage_logger.py | ✅ Complete | `scripts/ci/usage_logger.py`, 11/11 tests |
+| T-005 budget alert | ✅ Complete | `self_healing_ci.yml` budget-alert step |
+| T-006 docker-build-push gated | ✅ Complete | 🔴 RED tier via cost-gate.yml |
+| T-002 smoke test | 🔧 Admin | @mbaetiong to verify first real PR through cost gate |
+| T-003 branch protection | 🔧 Admin | @mbaetiong to add `cost-gate` as required check |
+| T-007 production sign-off | 🔧 Admin | Target 2026-04-01 |
 
 ---
 

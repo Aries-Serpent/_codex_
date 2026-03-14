@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session CI-Triage-3575-S29 — 2026-03-14 — §0 GHAS verification + actionlint binary cleanup (PR #3575)
+
+#### Verified
+- GHAS alert #12566 (`app_jwt` dead assignment in `cli_api_server.py`) confirmed fixed in Session 28 (`b46489f`): only one assignment remains at line 830
+- actionlint: 0 errors locally (all `${{{{` / `${{ env.CACHE_VERSION }}` patterns clean)
+- ruff Pattern 9/11: 0 issues across all modified files
+- All 73 CI-capability tests pass
+
+#### Fixed
+- Removed accidentally committed `actionlint` binary from repo root
+- Added `actionlint` to `.gitignore` to prevent future accidental commits
+
 ### Session CI-Triage-3575-S26 — 2026-03-14 — §0 pre-session verification (PR #3575)
 
 #### Verified
