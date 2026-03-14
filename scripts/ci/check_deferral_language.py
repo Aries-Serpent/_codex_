@@ -109,7 +109,7 @@ EXEMPTION_PATTERNS: list[str] = [
     r"\bDeferral Enforcement\b",    # anchored policy heading (e.g., "**Deferral Enforcement:**")
     # Exact heading-line format: "Follow-Up Prompt" + a path/URL/view placeholder only
     r"^\**\s*(?:📋\s*)?Follow-Up Prompt\**\s*[:\*]\s*(?:View\b|https?://|\.github/)",
-    r"\.github/copilot-prompts/",   # full path reference (prevents bare keyword bypass)
+    r"\.github/copilot-prompts/\S+$",  # path-only reference (must be at end of line; prevents bypass like ".../ will fix in a future task")
 ]
 
 
@@ -311,7 +311,7 @@ def scan(
                 # also suppress "piano future work" (because "piano " ends with
                 # "no ").  Instead we check the prefix for a complete negation
                 # word using \b-anchored regex after finding the match.
-                if pattern is _FUTURE_WORK_PATTERN:
+                if pattern == _FUTURE_WORK_PATTERN:
                     prefix = line[: m.start()]
                     if _NEGATION_BEFORE_FUTURE.search(prefix):
                         continue

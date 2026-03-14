@@ -13,9 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Workflows — Python 3.11 → 3.12**: Updated `self_healing_ci.yml`, `embedding-index-rebuild.yml`, `agent-handoff-gate.yml`, and `cleanup-stale-branches.yml` to use `python-version: '3.12'` (matches `requires-python = ">=3.12"` in `pyproject.toml`).
 - **Deferral scanner — lookbehind word boundary**: Replaced fixed-width negative lookbehinds (`(?<!no )(?<!prevent )...`) with a module-level `_FUTURE_WORK_PATTERN` constant and a post-match `_NEGATION_BEFORE_FUTURE` regex check using `\b` word boundaries. Prevents false positives from words ending in negation syllables (e.g. "piano future work").
-- **Deferral scanner — exemption bypass**: Tightened `EXEMPTION_PATTERNS` so `Follow-Up Prompt` only matches the specific heading-line format, `copilot-prompts/` requires the full `.github/copilot-prompts/` path, and `Deferral Enforcement` uses a word-boundary anchor — preventing bypass by embedding these phrases inline with real violations.
+- **Deferral scanner — exemption bypass**: Tightened `EXEMPTION_PATTERNS` so `Follow-Up Prompt` only matches the specific heading-line format, `copilot-prompts/` requires a non-empty file path ending at end-of-line (`\.github/copilot-prompts/\S+$`), and `Deferral Enforcement` uses a word-boundary anchor — preventing bypass by embedding these phrases inline with real violations.
 - **`agent-auth-delegation.yml` — merge-ref guard**: Changed `/merge$` guard to `^[0-9]+/merge$` (ERE) so the check only rejects numeric PR merge refs and does not block legitimate branch names ending with `/merge`.
 - **`consolidated-pr-status.yml` — actionlint SC2170**: Replaced `[ "$VAR" -gt 0 ]` with `(( ${VAR:-0} > 0 ))` to satisfy shellcheck arithmetic comparison requirement.
+- **Deferral scanner — identity vs equality comparison**: Changed `pattern is _FUTURE_WORK_PATTERN` to `pattern == _FUTURE_WORK_PATTERN` in `scan()` to use value equality (safe if `DEFERRAL_TRIGGERS` is ever rebuilt/copied) instead of brittle object identity.
 - **`docs/ROADMAP.md`**: Updated stale date via `doc_metrics_sync.py --fix`.
 - **`CODEX_MANIFEST.json`**: Regenerated with current timestamp to satisfy E→D gate C2 `<24h` freshness check.
 
