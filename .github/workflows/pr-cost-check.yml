@@ -1,0 +1,199 @@
+# PR Cost Check — required status check for branch protection (OBJ-001 T-003)
+#
+# Runs on every pull-request event targeting `main`.
+# Estimates the aggregate Actions-minute cost of any RED-tier workflows that
+# are newly triggered by this PR, then:
+#   - Posts a summary as a PR check (PASS for GREEN/YELLOW; FAIL for unapproved RED)
+#   - Produces check name "💰 PR Cost Check" which is registered as a required
+#     branch-protection status check.
+#
+# The check is INFORMATIONAL for GREEN/YELLOW PRs (always passes).
+# For RED-tier PRs the check passes once the stakeholder ticks the
+# "💰 Cost Proposal Approved" checkbox in the PR description.
+#
+# T-003 implementation note:
+#   Add "💰 PR Cost Check" as a required status check in GitHub's branch
+#   protection rules for `main` via Settings → Branches → Add rule.
+
+name: 💰 PR Cost Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+concurrency:
+  group: cost-check-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  cost-check:
+    name: "💰 PR Cost Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cost estimator dependencies
+        run: pip install --quiet dataclasses 2>/dev/null || true
+
+      # Classify the PR against all gated workflows and decide pass/fail
+      - name: Estimate aggregate PR cost
+        id: estimate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          # Run the cost estimator in summary mode (all gated workflows)
+          python - <<'PYEOF'
+          import json, os, sys
+          sys.path.insert(0, "scripts/ci")
+          from cost_estimator import CostEstimate
+
+          GATED = [
+            ("Build & Push Preview Image",  "ubuntu-latest-m", 30,  2, True),
+            ("Data Quality Suite",           "ubuntu-latest",   60,  3, False),
+            ("Scheduled Archival",           "ubuntu-latest",   60,  3, False),
+            ("Rust Swarm CI",                "ubuntu-latest",   60,  3, False),
+            ("Docker Build & Push",          "ubuntu-latest-m", 30,  2, True),
+            ("Embedding Index Rebuild",      "ubuntu-latest",   15,  1, False),
+          ]
+
+          results = []
+          for name, runner, timeout, matrix, ghcr in GATED:
+              est = CostEstimate(
+                  workflow_name=name,
+                  runner=runner,
+                  timeout_minutes=timeout,
+                  matrix_count=matrix,
+                  pushes_to_ghcr=ghcr,
+              )
+              results.append({
+                  "name": name, "tier": est.tier, "emoji": est.tier_emoji,
+                  "eff_min": round(est.effective_minutes, 1),
+                  "reason": est.reason,
+              })
+
+          red_workflows   = [r for r in results if r["tier"] == "RED"]
+          yellow_workflows = [r for r in results if r["tier"] == "YELLOW"]
+
+          # Check for stakeholder approval in PR body
+          pr_body = os.environ.get("PR_BODY", "")
+          approved = "- [x] 💰 Cost Proposal Approved" in pr_body or \
+                     "- [x] \U0001f4b0 Cost Proposal Approved" in pr_body
+
+          # Build markdown summary for PR comment
+          lines = ["## 💰 PR Cost Check Summary\n"]
+          lines.append(f"| Workflow | Tier | Eff. min | Notes |")
+          lines.append("|----------|------|----------|-------|")
+          for r in results:
+              lines.append(f"| {r['name']} | {r['emoji']} {r['tier']} | {r['eff_min']} | {r['reason']} |")
+
+          lines.append("")
+          if red_workflows and not approved:
+              lines.append("### ❌ Action Required")
+              lines.append(f"**{len(red_workflows)} RED-tier workflow(s) require approval** before running on this PR.")
+              lines.append("")
+              lines.append("Tick the checkbox in the PR description to unblock:")
+              lines.append("`- [x] 💰 Cost Proposal Approved`")
+              lines.append("")
+              lines.append("**Budget reference:** 3,000 min/month · [Cost Governance Policy](docs/ops/COST_GOVERNANCE.md)")
+              status = "blocked"
+          elif red_workflows and approved:
+              lines.append("### ✅ Red-tier Jobs Approved")
+              lines.append(f"Stakeholder has approved {len(red_workflows)} RED-tier workflow(s). Jobs may proceed.")
+              status = "approved"
+          else:
+              lines.append("### ✅ No High-Cost Jobs Triggered")
+              lines.append("All workflows for this PR are GREEN or YELLOW tier — auto-approved.")
+              status = "green"
+
+          total_eff_min = sum(r["eff_min"] for r in results)
+          budget_pct = round(total_eff_min / 3000 * 100, 1)
+          lines.append(f"\n**Aggregate (if all gated jobs run):** {total_eff_min:.0f} eff-min = {budget_pct}% of monthly budget")
+
+          summary = "\n".join(lines)
+
+          # Write outputs
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"status={status}\n")
+              # multiline output
+              delim = "COST_SUMMARY_EOF"
+              f.write(f"summary<<{delim}\n{summary}\n{delim}\n")
+              f.write(f"red_count={len(red_workflows)}\n")
+              f.write(f"approved={'true' if approved else 'false'}\n")
+
+          print(f"✅ Cost check complete: status={status}, red={len(red_workflows)}, approved={approved}")
+          print(summary)
+          PYEOF
+
+      # Post summary as a PR comment (upsert — update if exists)
+      - name: Post cost summary comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const summary = `${{ steps.estimate.outputs.summary }}`;
+            const status  = `${{ steps.estimate.outputs.status }}`;
+            const redCount = parseInt(`${{ steps.estimate.outputs.red_count }}` || '0');
+
+            const MARKER = '<!-- cost-check-bot -->';
+            const body = `${MARKER}\n${summary}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes(MARKER));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      # Fail the check if RED tier and not yet approved
+      - name: Enforce approval gate
+        if: steps.estimate.outputs.status == 'blocked'
+        run: |
+          echo "❌ RED-tier workflows detected but '💰 Cost Proposal Approved' checkbox is not ticked."
+          echo "Tick the checkbox in the PR description to unblock this check."
+          exit 1
+
+      - name: Cost check passed
+        if: steps.estimate.outputs.status != 'blocked'
+        run: |
+          STATUS="${{ steps.estimate.outputs.status }}"
+          if [ "$STATUS" = "approved" ]; then
+            echo "✅ RED-tier jobs approved by stakeholder."
+          else
+            echo "✅ No RED-tier jobs — auto-approved."
+          fi

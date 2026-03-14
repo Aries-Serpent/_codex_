@@ -99,6 +99,8 @@ nav:
 - Examples:
   - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.py
 - Ops:
+  - 💰 Cost Dashboard: ops/cost-dashboard.md
+  - Cost Governance: ops/COST_GOVERNANCE.md
   - Monitoring: ops/monitoring.md
   - Deployment (Legacy): ops/deployment.md
   - Runbook: ops/RUNBOOK.md

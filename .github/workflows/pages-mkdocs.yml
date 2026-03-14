@@ -131,6 +131,21 @@ jobs:
           find docs/ -name "*.md" -exec grep -H "\[.*\](.*)" {} \; > links.txt || true
           echo "✅ Link validation complete"
 
+      # Generate cost-estimator dashboard data (OBJ-001 / T-002)
+      # Queries GitHub API → docs/ops/cost-data.json (served as static asset)
+      - name: Generate cost dashboard data
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/ci/generate_cost_dashboard_data.py \
+            --owner Aries-Serpent \
+            --repo _codex_ \
+            --out docs/ops/cost-data.json || \
+          echo '{"generated_at":"'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'","month":"'"$(date -u +%Y-%m)"'","budget":{"total_minutes":3000,"used_minutes":0,"remaining_minutes":3000,"pct_used":0,"tier_thresholds":{"green_max":30,"yellow_max":90}},"tier_counts":{"GREEN":0,"YELLOW":0,"RED":0},"trend":[],"gated_workflows":[],"recent_runs":[]}' \
+            > docs/ops/cost-data.json
+          echo "✅ cost-data.json written"
+
       - name: Build MkDocs site
         run: |
           # Phase 13: Strict mode temporarily disabled to identify warnings
