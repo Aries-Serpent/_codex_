@@ -2573,3 +2573,33 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## [auto-generated] Session 27 — 2026-03-14
+
+**Agent:** copilot-swe-agent[bot]  
+**PR:** #3575 — fix: CI failures, cost gate, deferral hardening  
+**Branch:** copilot/ci-failure-triage-report
+
+### Completed
+- `/api/github/token` endpoint in `cli_api_server.py` — maps `_GITHUB_APP_*` Codespace secrets → App installation token (5,000 req/hr); PAT fallback chain
+- `cognitive_app/src/lib/github-public-api.ts` — GitHub public REST API client
+- `cognitive_app/src/lib/har-replay-client.ts` — HAR replay with latency simulation
+- `cognitive_app/src/lib/api-mode-selector.ts` — live → GitHub API → HAR → mock priority chain
+- `cognitive_app/public/har-cache/api-demo.har` — seed HAR (LFS-tracked)
+- `requirements/agent.txt` — lean Copilot agent virtualenv deps (no ML/torch)
+- `.github/actions/setup-agent-env/action.yml` — L6 composite action (4-layer + L6b agent venv + L6c brain DB)
+- `.github/workflows/build-agent-env-cache.yml` — pre-warm agent cache weekly + on dep changes
+- `.github/workflows/har-capture.yml` — Playwright HAR capture + Python bootstrap + LFS commit-back
+- `cognitive_app/e2e/har-capture.spec.ts` — 10-step full app walkthrough spec
+- `scripts/ci/verify_agent_env.py` — agent env health validator
+- `src/codex/ci/cache_manager.py` — added `AGENT_VENV` + `BRAIN_DB` to `CacheType`
+- `.devcontainer/devcontainer.json` — port 5173, `codex-agent-venv` + `codex-npm-cache` volumes
+- `.devcontainer/scripts/post-create.sh` — agent venv bootstrap + `npm install` for cognitive_app
+- `.gitattributes` — LFS tracking for `*.har`
+- `copilot-setup-steps.yml` — L6 agent env wired in as Phase 5b
+- Issue #3574 addressed — CI triage checkpoint documented
+
+### Cognitive Brain Status
+- AAIS: 74/100 (honest, B−)
+- OBJ-001: T-004 ✅ T-005 ✅ T-006 ✅ | T-002/T-003/T-007 require admin
+- Resume point: `cognitive_brain/session_tracker.md` Session 27 entry

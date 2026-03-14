@@ -514,6 +514,33 @@ jobs:
           echo "RUST_BACKTRACE=1" >> "$GITHUB_ENV"
 
       # ============================================================================
+      # Phase 5b: L6 — Copilot Agent Lean Venv (.venv_agent)
+      # ============================================================================
+      # A purpose-built, cacheable virtualenv containing only what the Copilot
+      # coding agent needs: lint, test, docs, auth, CI scripts.
+      # No PyTorch / heavy ML — cold build ~75 s; cache hit ~4 s.
+      # Pre-warmed weekly by build-agent-env-cache.yml so hits are the norm.
+
+      - name: "🤖 L6 — Setup Copilot agent env (.venv_agent)"
+        id: agent-env
+        uses: ./.github/actions/setup-agent-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+          enable-brain-cache: 'true'
+          install-editable: 'true'
+          verify: 'true'
+
+      - name: "ℹ️ Agent env cache status"
+        run: |
+          echo "Agent venv mode  : ${{ steps.agent-env.outputs.mode }}"
+          echo "Agent venv python: ${{ steps.agent-env.outputs.venv-python }}"
+          echo "Cache hit        : ${{ steps.agent-env.outputs.cache-hit }}"
+          # Surface both venvs on PATH — agent scripts prefer .venv_agent
+          # while existing test steps continue to use .venv_ci
+          echo "AGENT_VENV_PATH=${GITHUB_WORKSPACE}/.venv_agent" >> "$GITHUB_ENV"
+
+      # ============================================================================
       # Phase 6: Environment Variables & Configuration
       # ============================================================================
 
