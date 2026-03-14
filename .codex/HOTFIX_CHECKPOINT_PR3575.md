@@ -1,15 +1,15 @@
 # Hotfix Checkpoint — PR #3575 → main merge
 
 **Created:** 2026-03-14T07:00Z  
-**Updated:** 2026-03-14T07:25Z (Session 29)  
+**Updated:** 2026-03-14T10:20Z (Session 30 — post PR #3576 merge)  
 **Branch:** `copilot/ci-failure-triage-report` → `main`  
-**Latest SHA:** `778999b` (Session 29)  
-**Sessions covered:** 22–29  
+**Latest SHA:** `778999b` (Session 29) / PR #3576: `faecbfb`  
+**Sessions covered:** 22–30  
 **Rule #1:** DO NOT re-explore. Read this file and execute the work queue immediately.
 
 ---
 
-## ✅ State at Merge (Sessions 22–29 Complete)
+## ✅ State at Merge (Sessions 22–30 Complete)
 
 | Session | Commit | Deliverable |
 |---------|--------|-------------|
@@ -21,6 +21,7 @@
 | S27 | `eb55817` | MkDocs-only Pages, docs auto-sync (docs_lint/sync/mermaid), L6 agent venv cacheset, HAR pipeline, GitHub App token endpoint, devcontainer, layered API client |
 | S28 | `b46489f` | cost-gate JS injection fix (env: block), actionlint `${{{{` fix, timeout-minutes, pre-flight --fix handler, CodeQL app_jwt dead-assignment fix, Pattern 9+11 ruff |
 | S29 | `778999b` | Verified GHAS #12566 resolved; removed accidental `actionlint` binary; `actionlint` added to `.gitignore`; Session 29 accountability + CHANGELOG |
+| S30 (PR #3576) | `faecbfb` | BrokenPipeError fix (setup-agent-env), PyJWT 2.12.1 (CVE-2026-32597), .venv_agent gitignore, docs_lint nav scoping (state machine) |
 
 ---
 

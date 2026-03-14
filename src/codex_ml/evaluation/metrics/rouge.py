@@ -88,7 +88,7 @@ class RougeMetric(MetricAdapter):
         try:
             aggregated_scores = {rouge_type: [] for rouge_type in self.rouge_types}
 
-            for pred, ref in zip(self._predictions, self._references):
+            for pred, ref in zip(self._predictions, self._references, strict=False):
                 scores = self.scorer.score(ref, pred)
 
                 for rouge_type in self.rouge_types:
@@ -113,7 +113,7 @@ class RougeMetric(MetricAdapter):
         # For production, install rouge-score
         total_score = 0.0
 
-        for pred, ref in zip(self._predictions, self._references):
+        for pred, ref in zip(self._predictions, self._references, strict=False):
             pred_tokens = set(pred.split())
             ref_tokens = set(ref.split())
 

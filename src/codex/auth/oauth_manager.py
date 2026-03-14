@@ -274,7 +274,7 @@ class OAuthManager:
         except httpx.HTTPError as e:
             # Sanitize error message before logging
             error_msg = sanitize_log_message(f"Token exchange failed: {str(e)}")
-            raise ValueError(error_msg)
+            raise ValueError(error_msg) from e
 
         # Parse token response
         access_token = token_response.get("access_token")
@@ -340,7 +340,7 @@ class OAuthManager:
                 token_response = response.json()
         except httpx.HTTPError as e:
             error_msg = sanitize_log_message(f"Token refresh failed: {str(e)}")
-            raise ValueError(error_msg)
+            raise ValueError(error_msg) from e
 
         # Parse refreshed token
         access_token = token_response.get("access_token")
@@ -389,7 +389,7 @@ class OAuthManager:
                 return response.json()
         except httpx.HTTPError as e:
             error_msg = sanitize_log_message(f"GitHub API request failed: {str(e)}")
-            raise ValueError(error_msg)
+            raise ValueError(error_msg) from e
 
     def revoke_token(self, access_token: str, config: Optional[OAuthConfig] = None) -> bool:
         """

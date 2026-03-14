@@ -300,8 +300,8 @@ def train_reward_model(
         for _, a, b, label in prefs:
             fa = featurise(a)
             fb = featurise(b)
-            diff = [x - y for x, y in zip(fa, fb)]
-            logit = sum(w * d for w, d in zip(weights, diff))
+            diff = [x - y for x, y in zip(fa, fb, strict=False)]
+            logit = sum(w * d for w, d in zip(weights, diff, strict=False))
             pred = 1 / (1 + math.exp(-logit))
             grad = [(pred - label) * d for d in diff]
             for i, g in enumerate(grad):
@@ -312,8 +312,8 @@ def train_reward_model(
     for _, a, b, label in prefs:
         fa = featurise(a)
         fb = featurise(b)
-        diff = [x - y for x, y in zip(fa, fb)]
-        logit = sum(w * d for w, d in zip(weights, diff))
+        diff = [x - y for x, y in zip(fa, fb, strict=False)]
+        logit = sum(w * d for w, d in zip(weights, diff, strict=False))
         pred = 1 if logit > 0 else 0
         correct += int(pred == label)
     acc = correct / len(prefs)
@@ -360,7 +360,7 @@ def rlhf_ppo(model: ModelHandle, rm: RewardModelHandle, cfg: RLHFCfg) -> ModelHa
     avg_reward = 0.0
     for _ in range(cfg.epochs):
         rewards: list[float] = []
-        for prompt, _, _, _ in prefs:
+        for _, _, _, _ in prefs:
             completion = sample_completion()
             if not completion:
                 continue

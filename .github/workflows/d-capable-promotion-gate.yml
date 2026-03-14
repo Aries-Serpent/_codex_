@@ -1,0 +1,111 @@
+name: D_CAPABLE Agent Promotion Gate
+
+# Evaluates every E-model agent in AGENT_REGISTRY.yaml against D_CAPABLE
+# promotion criteria and emits a promotion report.
+#
+# Runs:
+#   - Weekly on Sunday at 03:00 UTC (scheduled audit)
+#   - On any PR that touches AGENT_REGISTRY.yaml (pre-merge preview)
+#   - workflow_dispatch (on-demand)
+#
+# The workflow is advisory — it never blocks a PR merge.
+# Use --promote on workflow_dispatch to apply promotions.
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'   # weekly Sunday 03:00 UTC
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/agents/AGENT_REGISTRY.yaml'
+  workflow_dispatch:
+    inputs:
+      apply_promotions:
+        description: 'Apply D_CAPABLE promotions to AGENT_REGISTRY.yaml'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: d-capable-promotion-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  promotion-gate:
+    name: "🚀 D_CAPABLE Promotion Gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml --quiet
+
+      - name: Run promotion evaluation
+        id: promotion
+        run: |
+          # Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).
+          # Dry-run on PR triggers (advisory preview only).
+          # Manual workflow_dispatch respects the apply_promotions input.
+          APPLY_FLAG=""
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            APPLY_FLAG="--promote"
+          elif [ "${{ github.event.inputs.apply_promotions }}" = "true" ]; then
+            APPLY_FLAG="--promote"
+          fi
+          python scripts/cognitive/d_capable_promotion.py ${APPLY_FLAG}
+
+      - name: Commit promotion changes (apply only)
+        if: >
+          steps.promotion.outputs.applied == 'true' &&
+          (github.event_name == 'schedule' || github.event.inputs.apply_promotions == 'true')
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/agents/AGENT_REGISTRY.yaml
+          git diff --cached --quiet || \
+            git commit -m "feat(agents): promote ${{ steps.promotion.outputs.eligible_count }} agent(s) to D_CAPABLE [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post promotion summary
+        if: always()
+        run: |
+          {
+            echo "## 🚀 D_CAPABLE Promotion Gate"
+            echo ""
+            echo "| Metric | Count |"
+            echo "|--------|-------|"
+            echo "| Already D_CAPABLE | ${{ steps.promotion.outputs.already_d_count }} |"
+            echo "| Newly eligible | ${{ steps.promotion.outputs.eligible_count }} |"
+            echo "| Promotions applied | ${{ steps.promotion.outputs.applied == 'true' && '✅ Yes' || '— (dry-run)' }} |"
+            echo ""
+            if [ -f ".codex/promotion_report.json" ]; then
+              echo '```json'
+              cat .codex/promotion_report.json
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload promotion report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: d-capable-promotion-report
+          path: .codex/promotion_report.json
+          retention-days: 30
+          if-no-files-found: ignore

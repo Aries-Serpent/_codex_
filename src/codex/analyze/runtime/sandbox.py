@@ -315,7 +315,7 @@ class SandboxManager:
 
         except (ValueError, OSError) as e:
             logger.debug(f"Exception: {e}")
-            raise ValueError(f"Path validation failed: {e}")
+            raise ValueError(f"Path validation failed: {e}") from e
 
         # Create tracing wrapper script
         with tempfile.NamedTemporaryFile(

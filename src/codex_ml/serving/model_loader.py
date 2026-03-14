@@ -274,7 +274,7 @@ class ModelLoader:
             raise ImportError(
                 "transformers is required for HuggingFace models. "
                 "Install with: pip install transformers"
-            )
+            ) from e
 
         logger.info(f"Loading from HuggingFace: {config.model_name_or_path}")
 

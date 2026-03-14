@@ -103,7 +103,7 @@ class BleuMetric(MetricAdapter):
         # For production, install sacrebleu
         total_score = 0.0
 
-        for pred, ref in zip(self._predictions, self._references):
+        for pred, ref in zip(self._predictions, self._references, strict=False):
             pred_tokens = pred.split()
             ref_tokens = ref.split()
 

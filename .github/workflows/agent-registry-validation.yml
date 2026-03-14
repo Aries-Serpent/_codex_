@@ -129,6 +129,62 @@ jobs:
                   f.write("error_count=0\n")
           PYEOF
 
+      - name: Validate capability_tags quality
+        id: tags_quality
+        run: |
+          python3 - << 'PYEOF'
+          # Enforce capability_tags quality rules on every PR that touches AGENT_REGISTRY.yaml.
+          # Rules (Tier-1 GROUNDED — hard gate):
+          #   1. Every agent must have at least one capability_tag.
+          #   2. Tags must be snake_case (a-z, 0-9, underscore only; no hyphens, spaces, commas).
+          #   3. Tags must be >= 4 characters (prevents 'ml', 'ci' abbreviations).
+          #   4. Tags must not end with common truncation suffixes (_storag, _detectio, etc.).
+          import os, re, sys, yaml
+
+          REGISTRY = ".github/agents/AGENT_REGISTRY.yaml"
+          if not os.path.exists(REGISTRY):
+              print("::warning::AGENT_REGISTRY.yaml not found — skipping capability_tags check")
+              sys.exit(0)
+
+          data = yaml.safe_load(open(REGISTRY))
+          agents = data.get("agents", [])
+
+          SNAKE_RE = re.compile(r'^[a-z][a-z0-9_]*$')
+          TRUNCATION_SUFFIXES = ("_storag", "_detectio", "_managemen", "_implementa", "_coordinati")
+
+          violations = []
+          for a in agents:
+              name = a.get("name", a.get("id", "?"))
+              tags = a.get("capability_tags", [])
+              if not tags:
+                  violations.append(f"{name}: missing capability_tags")
+                  continue
+              if isinstance(tags, str):
+                  tags = [t.strip() for t in tags.split(",")]
+              for t in tags:
+                  if not SNAKE_RE.match(t):
+                      violations.append(f"{name}: malformed tag '{t}' (must be snake_case a-z/0-9/_)")
+                  elif len(t) < 4:
+                      violations.append(f"{name}: tag '{t}' too short (min 4 chars)")
+                  elif any(t.endswith(sfx) for sfx in TRUNCATION_SUFFIXES):
+                      violations.append(f"{name}: tag '{t}' appears truncated")
+
+          gf = os.environ.get("GITHUB_OUTPUT", "/dev/null")
+          if violations:
+              for v in violations:
+                  print(f"::error::{v}")
+              with open(gf, "a") as f:
+                  f.write("tags_valid=false\n")
+                  f.write(f"tag_violations={len(violations)}\n")
+              print(f"\n❌ capability_tags quality: {len(violations)} violation(s)")
+              sys.exit(1)
+          else:
+              print(f"✅ capability_tags quality: all {len(agents)} agents have valid tags")
+              with open(gf, "a") as f:
+                  f.write("tags_valid=true\n")
+                  f.write("tag_violations=0\n")
+          PYEOF
+
       - name: Validate CODEX_MANIFEST.json integrity
         id: manifest_validation
         run: |

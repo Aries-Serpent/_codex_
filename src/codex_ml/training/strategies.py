@@ -103,8 +103,8 @@ class FunctionalStrategy:
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
         ft_module = import_module("codex_ml.training.functional_training")
-        TrainConfig = getattr(ft_module, "TrainConfig")
-        train_fn = getattr(ft_module, "train")
+        TrainConfig = ft_module.TrainConfig
+        train_fn = ft_module.train
 
         extra_payload: dict[str, Any] = {}
 
@@ -502,6 +502,7 @@ def resolve_strategy(name: str | None) -> BackendStrategy:
     normalised = str(name).lower().strip()
     try:
         return STRATEGY_REGISTRY[normalised]
-    except KeyError:
-        choices = list(STRATEGY_REGISTRY)
-        raise ValueError(f"Unknown backend strategy: {name!r}. Choices={choices}")
+    except KeyError as err:
+        raise ValueError(
+            f"Unknown backend strategy: {name!r}. Choices={list(STRATEGY_REGISTRY)}"
+        ) from err

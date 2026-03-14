@@ -312,7 +312,7 @@ class CoVeEngine:
                 sources_used.append("context")
 
         # Search registered sources
-        for source in self.sources:
+        for _ in self.sources:
             # Placeholder: In production, query the source
             pass
 

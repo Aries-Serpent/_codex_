@@ -63,7 +63,7 @@ def measure_multi_agent_correlation(agent_counts: List[int], trials: int = 50) -
     for num_agents in agent_counts:
         correlations = []
 
-        for trial in range(trials):
+        for _ in range(trials):
             agent_ids = [f"agent_{i}" for i in range(num_agents)]
             state = manager.create_ghz_state(agent_ids)
 
@@ -235,7 +235,7 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
 
         latencies = []
 
-        for trial in range(trials):
+        for _ in range(trials):
             decisions = [
                 AgentDecision(
                     f"agent_{i}",

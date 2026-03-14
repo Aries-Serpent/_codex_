@@ -123,10 +123,10 @@ class AuthManager:
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
-            raise AuthenticationError("python-jose not installed for JWT support")
+            raise AuthenticationError("python-jose not installed for JWT support") from e
         except JWTError as e:
             logger.debug(f"JWTError: {e}")
-            raise AuthenticationError(f"Invalid JWT token: {e}")
+            raise AuthenticationError(f"Invalid JWT token: {e}") from e
 
     @staticmethod
     def generate_api_key() -> str:
@@ -407,7 +407,7 @@ if FASTAPI_AVAILABLE:
                             auth_manager.verify_jwt(token)
                             return  # JWT valid
                         except AuthenticationError as exc:
-                            raise HTTPException(status_code=401, detail=str(exc))
+                            raise HTTPException(status_code=401, detail=str(exc)) from exc
                 # API key path
                 if auth_manager.api_keys is not None:
                     if not auth_manager.verify_api_key(api_key):
@@ -482,11 +482,11 @@ if FASTAPI_AVAILABLE:
             try:
                 preds = server.predict_with_circuit_breaker(request.inputs)
             except RuntimeError as e:
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code=500, detail=str(e)) from e
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 if "Circuit breaker" in str(e):
-                    raise HTTPException(status_code=503, detail=str(e))
+                    raise HTTPException(status_code=503, detail=str(e)) from e
                 raise
 
             return PredictionResponse(
@@ -523,7 +523,7 @@ if FASTAPI_AVAILABLE:
                 vecs = server.embed(request.texts)
                 embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
             except Exception as e:
-                raise HTTPException(status_code=500, detail=str(e))
+                raise HTTPException(status_code=500, detail=str(e)) from e
             return EmbedResponse(
                 embeddings=embeddings,
                 num_texts=len(request.texts),

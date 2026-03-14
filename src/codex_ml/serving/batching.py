@@ -109,7 +109,7 @@ class BatchingMiddleware:
         finally:
             logger.debug("Processed batch of %s in %.3fs", batch_size, time.time() - start)
 
-        for req, output in zip(batch, outputs):
+        for req, output in zip(batch, outputs, strict=False):
             latency = time.time() - req.timestamp
             self.metrics.record_request(latency)
             if not req.future.done():

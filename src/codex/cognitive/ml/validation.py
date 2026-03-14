@@ -191,7 +191,7 @@ class ModelValidator:
                 predictions = predict_fn(X_val)
 
                 # Calculate fold accuracy
-                correct = sum(1 for p, t in zip(predictions, y_val) if p == t)
+                correct = sum(1 for p, t in zip(predictions, y_val, strict=False) if p == t)
                 fold_accuracy = correct / len(y_val) if y_val else 0
                 fold_scores.append(fold_accuracy)
 
@@ -226,11 +226,11 @@ class ModelValidator:
         labels = sorted(set(y_true) | set(y_pred))
         confusion = {label: {line_item: 0 for line_item in labels} for label in labels}
 
-        for true, pred in zip(y_true, y_pred):
+        for true, pred in zip(y_true, y_pred, strict=False):
             confusion[true][pred] += 1
 
         # Accuracy
-        correct = sum(1 for t, p in zip(y_true, y_pred) if t == p)
+        correct = sum(1 for t, p in zip(y_true, y_pred, strict=False) if t == p)
         accuracy = correct / len(y_true)
 
         # Per-class precision and recall

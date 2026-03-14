@@ -140,7 +140,7 @@ def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any])
         except TypeError as e:
             logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
-            raise exc
+            raise exc from e
 
 
 def _apply_quantization_options(options: MutableMapping[str, Any], quantization: Any) -> None:

@@ -66,7 +66,7 @@ class PluginLoader:
 
             # Only search in known plugin paths, not all of sys.path
             plugin_prefix = "codex_ast_plugin_"
-            for finder, name, ispkg in pkgutil.iter_modules():
+            for _, name, _ in pkgutil.iter_modules():
                 if name.startswith(plugin_prefix):
                     try:
                         module = importlib.import_module(name)

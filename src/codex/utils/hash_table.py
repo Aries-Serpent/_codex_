@@ -363,7 +363,7 @@ class CuckooHashTable(Generic[K, V]):
 
         # Both slots occupied - eviction chain
         current_key, current_value = key, value
-        for i in range(self.max_evictions):
+        for _ in range(self.max_evictions):
             # Evict from table 1
             idx1 = self._hash1(current_key)
             evicted = self.table1[idx1]

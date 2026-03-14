@@ -210,8 +210,9 @@ def sanitize_path(path: Path, base_dir: Path) -> Path:
         abs_path.relative_to(abs_base)
 
         return abs_path
-    except ValueError:
-        raise ValueError(f"Path {path} is outside base directory {base_dir}")
+    except ValueError as err:
+        msg = f"Path {path} is outside base directory {base_dir}"
+        raise ValueError(msg) from err
 
 
 def check_permissions(path: Path, mode: str) -> bool:
@@ -271,7 +272,7 @@ def rate_limiter(
                 timestamps.append(now)
                 return await func(*args, **kwargs)
 
-            setattr(async_wrapper, "__signature__", inspect.signature(func))
+            async_wrapper.__signature__ = inspect.signature(func)
             return async_wrapper
 
         @functools.wraps(func)
@@ -289,7 +290,7 @@ def rate_limiter(
             timestamps.append(now)
             return func(*args, **kwargs)
 
-        setattr(wrapper, "__signature__", inspect.signature(func))
+        wrapper.__signature__ = inspect.signature(func)
         return wrapper
 
     return decorator

@@ -78,6 +78,21 @@ jobs:
 
           cat table_report.txt
 
+      - name: Nav smoke test (docs_lint)
+        id: nav_smoke
+        # Verifies that every entry in mkdocs.yml nav section resolves to an existing .md file.
+        # Catches 404s on GitHub Pages before they reach production.
+        # Uses docs_lint.py --strict (state-machine nav extractor; safe with Python YAML tags).
+        run: |
+          python scripts/ci/docs_lint.py --strict 2>&1 | tee nav_smoke_report.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            echo "::error::docs_lint --strict found broken nav links — check nav_smoke_report.txt for details"
+          else
+            echo "✅ All MkDocs nav entries resolve to existing files"
+          fi
+
       - name: Test MkDocs build
         id: mkdocs_build
         continue-on-error: true

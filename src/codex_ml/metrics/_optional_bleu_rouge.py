@@ -61,7 +61,7 @@ def bleu(predictions: list[str], targets: list[str]) -> Optional[float]:
     scores = []
     chencherry = SmoothingFunction()
 
-    for pred, targ in zip(predictions, targets):
+    for pred, targ in zip(predictions, targets, strict=False):
         score = sentence_bleu([targ.split()], pred.split(), smoothing_function=chencherry.method1)
         scores.append(score)
 
@@ -90,7 +90,7 @@ def rouge_l(predictions: list[str], targets: list[str]) -> Optional[float]:
     scorer = rouge_scorer_class(["rougeL"], use_stemmer=True)
     scores = []
 
-    for pred, targ in zip(predictions, targets):
+    for pred, targ in zip(predictions, targets, strict=False):
         result = scorer.score(targ, pred)
         scores.append(result["rougeL"].fmeasure)
 

@@ -60,7 +60,7 @@ class AccuracyMetric(MetricAdapter):
         ref_flat = self._flatten(references)
 
         # Compute correct
-        for pred, ref in zip(pred_flat, ref_flat):
+        for pred, ref in zip(pred_flat, ref_flat, strict=False):
             if ref != self.ignore_index:
                 self._total += 1
                 if pred == ref:

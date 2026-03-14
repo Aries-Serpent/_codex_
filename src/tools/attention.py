@@ -77,7 +77,7 @@ class AttentionScorer:
             # Compute dot products
             scores = []
             for key in keys_list:
-                dot_product = sum(q * k for q, k in zip(query_list, key))
+                dot_product = sum(q * k for q, k in zip(query_list, key, strict=False))
                 scores.append(dot_product / math.sqrt(d_k))
 
             # Apply temperature

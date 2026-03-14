@@ -97,7 +97,7 @@ def safe_load_sentence_transformer(  # nosec B107
             raise RuntimeError(
                 f"Meta tensors still present after to_empty(): {meta_params[:5]}... "
                 "Model may not be fully materialized."
-            )
+            ) from exc
 
         logger.info("Model %s materialized via to_empty() and verified", model_name)
         return model

@@ -78,7 +78,7 @@ class HDF5Loader:
                     raise KeyError(f"Dataset path not found: {dataset_path}")
         except Exception as e:
             logger.debug(f"Exception: {e}")
-            raise ValueError(f"Invalid HDF5 file: {e}")
+            raise ValueError(f"Invalid HDF5 file: {e}") from e
 
     def load(self):
         """

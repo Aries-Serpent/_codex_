@@ -1,41 +1,71 @@
 # 🎯 PR Follow-Up Tasks - #3576
 
-**PR**: #3576 - PR #3576  
-**Branch**: `copilot/hotfix-checkpoint-sessions-22-28`  
+**PR**: #3576 — fix: BrokenPipeError in setup-agent-env + PyJWT 2.12.1 (CVE-2026-32597) + gitignore/.venv_agent + docs_lint nav scoping  
+**Branch**: `copilot/hotfix-checkpoint-sessions-22-28` → merged into `main`  
 **Author**: @Copilot  
-**Date**: 2026-03-14  
-**Commit**: `3f39aa32e2e9e1f176fdae577e52b887a62a4a4a`  
-**Status**: 🔄 ACTIVE
+**Merged**: 2026-03-14T10:00Z (SHA: `faecbfb`)  
+**Status**: ✅ MERGED — post-merge work queue active
 
 ---
 
-## 📋 PREVIOUS SESSION SUMMARY
+## 📋 PR #3576 CHANGES SUMMARY
 
-### Completed Work
-- [`3f39aa32`] Initial plan (copilot-swe-agent[bot], 2026-03-14)
-- [`6ddee4d2`] fix: CI failures — deferral scanner hardening, Cognitive Pre-flight auto-fix, §0 policy, Python 3.12, OBJ-001 cost gate + usage logger + budget alert, MkDocs-only Pages, docs auto-sync, L6 agent venv cacheset, HAR capture pipeline, cost-gate bold ap... (#3575) (Copilot, 2026-03-14)
-- [`5c7f9bc9`] chore(vars): sync .codex/agent_context.json from repo variables [skip ci] (github-actions[bot], 2026-03-14)
+PR #3576 fixed four cascading agent-runner blockers that prevented self-healing:
+
+| Commit | Deliverable |
+|--------|-------------|
+| `e53e0d4` | `.venv_agent/` added to `.gitignore`; `_extract_nav_entries` nav scoping fix (line-by-line state machine replaces `yaml.safe_load` + global regex) |
+| `faecbfb` | `setup-agent-env`: `PYTHONUNBUFFERED=1`, `PYTHONIOENCODING=utf-8`, `trap '' PIPE` to suppress BrokenPipeError (exit 120); PyJWT bumped to 2.12.1 (CVE-2026-32597 CVSS 7.5 High) |
 
 ### Files Modified
-No files modified
+- `.gitignore` — `.venv_agent/` pattern added (line 15)
+- `scripts/ci/docs_lint.py` — `_extract_nav_entries` rewritten as line-by-line state machine
+- `.github/actions/setup-agent-env/action.yml` — BrokenPipeError suppression
+- `requirements/lock.txt` — `pyjwt==2.12.1`
+- `requirements/agent.txt` — `pyjwt[crypto]>=2.12.1`
+- `pyproject.toml` — PyJWT pins updated (×3 locations)
 
 ---
 
-## 🎯 NEXT PHASE OBJECTIVES
+## 🎯 POST-MERGE WORK QUEUE
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+
+- [x] Verify merge landed cleanly on `main` (SHA: `faecbfb`)
+- [x] Run CI capability tests: `python -m pytest tests/capabilities/ci_test/ -q` — 50/50 ✅
+- [x] Run ruff: `ruff check scripts/ tests/ src/ --select F401,F841,I001` — 0 issues ✅
+- [x] Run `docs_lint --fix` — fixed 5 BROKEN_CLOSER errors in templates/ ✅
+- [x] Create missing `.nojekyll` in repository root (GitHub Pages fix) ✅
+- [ ] Verify Dependabot alert #3578 (PyJWT CVE-2026-32597) auto-dismissed after pin lands
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+# Verify nav extraction — ~70 clean .md paths, no crash
+python3 -c "
+from pathlib import Path; import sys; sys.path.insert(0, 'scripts/ci')
+from docs_lint import _extract_nav_entries
+entries = _extract_nav_entries(Path('mkdocs.yml'))
+print(len(entries), 'entries | bad:', [e for e in entries if not e.endswith('.md')])"
+
+# Confirm docs_lint passes
+python3 scripts/ci/docs_lint.py --no-links --json | python3 -c \
+  "import sys,json; d=json.load(sys.stdin); print('pass:', d['pass'])"
+
+# Confirm PyJWT version
+python3 -c "import jwt; print(jwt.__version__)"
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
 
-### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] `T-002`: Open a test PR, confirm cost-gate posts GREEN/YELLOW/RED tier comment — **@mbaetiong**
+- [ ] `T-003`: Branch protection: add `cost-gate / classify-and-gate` as required check — **@mbaetiong**
+- [ ] MkDocs docs sync: confirm `docs-health.yml` auto-ran on merge to main
+- [ ] GitHub Pages: check `https://aries-serpent.github.io/_codex_/` deploys correctly
+
+### Priority 3: Infra (Admin only) 🟢 MEDIUM
+
+- [ ] Fix GHCR registry auth/permissions (Build & Push Preview Image workflow fails)
+- [ ] `T-007`: Production sign-off on cost gate (deadline: 2026-04-01) — **@mbaetiong**
 
 ---
 

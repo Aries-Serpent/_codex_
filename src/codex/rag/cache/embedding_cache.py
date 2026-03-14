@@ -318,7 +318,7 @@ class EmbeddingCache:
             embeddings: List of embedding vectors
             ttl: Optional TTL for all entries
         """
-        for text, embedding in zip(texts, embeddings):
+        for text, embedding in zip(texts, embeddings, strict=False):
             self.put(text, embedding, ttl)
 
     def contains(self, text: str) -> bool:

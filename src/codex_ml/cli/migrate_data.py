@@ -101,7 +101,7 @@ def migrate(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         typer.echo(f"Error during migration: {e}", err=True)
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
     # Determine output path
     output = output_path or input_path.with_suffix(".migrated.json")

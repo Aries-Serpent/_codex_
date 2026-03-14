@@ -54,7 +54,7 @@ def _forward_to_cli(argv: Sequence[str]) -> int:
     try:
         from codex_ml import cli as cli_module
     except Exception as exc:  # pragma: no cover - optional dependency path
-        raise SystemExit(f"codex_ml.cli is unavailable: {exc}")
+        raise SystemExit(f"codex_ml.cli is unavailable: {exc}") from exc
 
     cli_entry = getattr(cli_module, "cli", None)
     if cli_entry is None:

@@ -411,7 +411,7 @@ class TestBehaviorSnapshots:
 '''
 
     # Add test cases for each input/output pair
-    for i, (input_path, output_path) in enumerate(zip(sample_inputs, golden_outputs)):
+    for i, (input_path, output_path) in enumerate(zip(sample_inputs, golden_outputs, strict=False)):
         # Use string concatenation to avoid format issues with nested braces
         test_method = f'''
     def test_snapshot_{i + 1}(self, source_dir, golden_dir):

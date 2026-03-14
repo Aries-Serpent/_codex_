@@ -31,7 +31,7 @@ def compute_brevity_penalty(
 
     # P1 fix: zip hypotheses with their reference sets so each hypothesis uses
     # its own length instead of relying on norm_refs.index(refs).
-    for hyp, refs in zip(hypotheses, norm_refs):
+    for hyp, refs in zip(hypotheses, norm_refs, strict=False):
         cand_len = len(list(tokenize(hyp)))
         if not refs:
             best = 0
@@ -63,7 +63,7 @@ def compute_corpus_bleu(
 
     total_matches = 0
     total_tokens = 0
-    for hyp, refs in zip(hypotheses, norm_refs):
+    for hyp, refs in zip(hypotheses, norm_refs, strict=False):
         hyp_tokens = list(tokenize(hyp))
         total_tokens += len(hyp_tokens)
         ref_token_set: set[str] = set()
@@ -114,7 +114,7 @@ def bleu(
     for n in range(1, max_n + 1):
         num = 0
         den = 0
-        for hyp, refs in zip(hypotheses, norm_refs):
+        for hyp, refs in zip(hypotheses, norm_refs, strict=False):
             htoks = _tokenize(hyp)
             hcounts = _ngram_counts(htoks, n)
             if not hcounts:
@@ -155,7 +155,7 @@ def rouge_l(hypotheses: Sequence[str], references: Sequence[str]) -> float:
         return dp[m][n]
 
     scores = []
-    for h, r in zip(hypotheses, references):
+    for h, r in zip(hypotheses, references, strict=False):
         ht, rt = _tokenize(h), _tokenize(r)
         if not ht or not rt:
             scores.append(0.0)

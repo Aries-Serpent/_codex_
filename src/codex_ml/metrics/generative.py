@@ -35,7 +35,7 @@ def _prepare_pairs(
     targets: Sequence[object],
 ) -> list[tuple[list[str], list[str]]]:
     prepared: list[tuple[list[str], list[str]]] = []
-    for pred, tgt in zip(preds, targets):
+    for pred, tgt in zip(preds, targets, strict=False):
         prepared.append((_tokenise(pred), _tokenise(tgt)))
     return prepared
 

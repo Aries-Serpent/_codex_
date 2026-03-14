@@ -75,7 +75,7 @@ def calculate_win_rate(
     wins = 0
     total = 0
 
-    for pred, ref in zip(predictions, references):
+    for pred, ref in zip(predictions, references, strict=False):
         # Simple heuristic: longer, more detailed responses often better
         # In production, use a trained judge model
         pred_score = _score_response_quality(pred)

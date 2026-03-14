@@ -41,7 +41,7 @@ class ReasoningHead(nn.Module):
         values, indices = torch.topk(probs, k, dim=-1)
         top_tokens = [
             {"token": int(idx), "probability": float(val)}
-            for idx, val in zip(indices[0], values[0])
+            for idx, val in zip(indices[0], values[0], strict=False)
         ]
         top_probability = float(values[0, 0]) if values.numel() else None
         return {"top_tokens": top_tokens, "top_probability": top_probability}
@@ -136,10 +136,10 @@ class ReasoningHarness:
             except StopIteration:
                 device = torch.device("cpu")
             self.head.to(device=device)
-            setattr(model, "reasoning_head", self.head)
+            model.reasoning_head = self.head
             if self.tool_adapter is not None:
                 self.tool_adapter.to(device=device)
-                setattr(model, "tool_use_adapter", self.tool_adapter)
+                model.tool_use_adapter = self.tool_adapter
         else:
             self.model = None
         return model
@@ -164,10 +164,9 @@ class ReasoningHarness:
         if not torch.is_tensor(tensor):
             try:
                 tensor = torch.as_tensor(tensor)
-            except Exception:
+            except Exception as err:
                 logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
-                raise TypeError("hidden_states must be convertible to a tensor")
+                raise TypeError("hidden_states must be convertible to a tensor") from err
         tensor = tensor.to(device=device, dtype=torch.float32)
         if tensor.ndim >= 2:
             dims = tuple(range(tensor.ndim - 1))

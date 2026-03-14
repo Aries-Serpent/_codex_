@@ -136,7 +136,7 @@ class BanditRLAgent(RLAgent):
             return {"updates": 0, "mean_reward": 0.0}
 
         total_reward = 0.0
-        for action, reward in zip(actions, rewards):
+        for action, reward in zip(actions, rewards, strict=False):
             action_str = str(action)
             try:
                 reward_value = float(reward)

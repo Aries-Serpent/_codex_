@@ -1,0 +1,64 @@
+name: CODEX Manifest Auto-Refresh
+
+# Automatically regenerate CODEX_MANIFEST.json on every PR push so that the
+# E→D Transition Gate C2 condition (manifest < 24h old) is always satisfied.
+# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: codex-manifest-refresh-${{ github.head_ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-manifest:
+    name: "🔄 Refresh CODEX_MANIFEST.json"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Skip when the actor is the bot itself (prevents recursion on the bot commit).
+    # github.event.head_commit.message is not present in PR payloads, so use
+    # github.actor instead, which is always safe on pull_request events.
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install minimal deps
+        run: pip install pyyaml --quiet
+
+      - name: Regenerate CODEX_MANIFEST.json
+        id: refresh
+        run: |
+          python scripts/ci/generate_manifest.py
+          python3 -c 'import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])' >> "$GITHUB_OUTPUT"
+
+      - name: Commit refreshed manifest
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CODEX_MANIFEST.json
+          # Only commit if there are actual changes
+          if git diff --cached --quiet; then
+            echo "CODEX_MANIFEST.json already up-to-date — no commit needed"
+          else
+            git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
+            git push origin HEAD:"${HEAD_REF}"
+            echo "✅ CODEX_MANIFEST.json refreshed and pushed"
+          fi

@@ -140,7 +140,7 @@ def run_worker(
                 pass
             embeddings = embedder.embed(texts)
         upsert_items = []
-        for it, emb in zip(batch, embeddings):
+        for it, emb in zip(batch, embeddings, strict=False):
             upsert_items.append(
                 {"id": it["id"], "embedding": emb, "metadata": it.get("metadata", {})}
             )

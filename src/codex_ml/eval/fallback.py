@@ -92,7 +92,7 @@ def synthetic_alignment(predictions: Iterable[str], references: Iterable[str]) -
     flat_pred: list[int] = []
     flat_ref: list[int] = []
     total_tokens = 0
-    for pred_seq, ref_seq in zip(pred_ids, ref_ids):
+    for pred_seq, ref_seq in zip(pred_ids, ref_ids, strict=False):
         length = max(len(pred_seq), len(ref_seq))
         total_tokens += length
         padded_pred = pred_seq + [IGNORE_INDEX] * (length - len(pred_seq))
@@ -102,7 +102,8 @@ def synthetic_alignment(predictions: Iterable[str], references: Iterable[str]) -
     stats = token_stats(flat_pred, flat_ref, ignore_index=IGNORE_INDEX)
     exact = 0.0
     if preds:
-        matches = sum(1 for pred, ref in zip(preds, refs) if exact_match_strict(pred, ref))
+        matches = sum(1 for pred, ref in zip(preds, refs,
+            strict=False) if exact_match_strict(pred, ref))
         exact = matches / len(preds)
     perplexity = _perplexity_proxy(flat_pred, flat_ref)
     avg_length = total_tokens / len(preds) if preds else 0.0

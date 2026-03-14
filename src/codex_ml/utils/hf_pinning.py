@@ -134,7 +134,7 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
     """
 
     revision, extra = ensure_pinned_kwargs(identifier, kwargs)
-    method = getattr(factory, "from_pretrained")
+    method = factory.from_pretrained
 
     call_kwargs: dict[str, Any] = dict(extra)
     if revision is not None:

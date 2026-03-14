@@ -79,7 +79,7 @@ class YAMLASTAdapter(BaseASTAdapter):
             return root
 
         except yaml.YAMLError as e:
-            raise ValueError(f"Failed to parse YAML: {e}")
+            raise ValueError(f"Failed to parse YAML: {e}") from e
 
     def _convert_to_node(
         self,

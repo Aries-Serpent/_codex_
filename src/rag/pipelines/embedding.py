@@ -210,7 +210,7 @@ class EmbeddingPipeline:
                     show_progress_bar=False,
                 )
 
-                for text, embedding in zip(texts, embeddings):
+                for text, embedding in zip(texts, embeddings, strict=False):
                     results.append(
                         EmbeddingResult(
                             text=text[:100],

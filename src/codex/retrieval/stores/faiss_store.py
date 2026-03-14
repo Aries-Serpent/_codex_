@@ -174,7 +174,7 @@ class FAISSStore(VectorStore):
 
         # Generate IDs if not provided in documents
         self.vector_ids = []
-        for i, doc in enumerate(self.documents):
+        for _, doc in enumerate(self.documents):
             if isinstance(doc, dict) and "id" in doc:
                 self.vector_ids.append(doc["id"])
             else:
@@ -219,7 +219,7 @@ class FAISSStore(VectorStore):
 
         docs_path = save_dir / f"{self.index_name}.docs.jsonl"
         with open(docs_path, "w", encoding="utf-8") as f:
-            for doc, vid in zip(self.documents, self.vector_ids):
+            for doc, vid in zip(self.documents, self.vector_ids, strict=False):
                 entry = {"id": vid, **doc}
                 f.write(json.dumps(entry) + "\n")
         logger.info(f"Saved {len(self.documents)} documents to {docs_path}")
@@ -393,7 +393,7 @@ class FAISSStore(VectorStore):
 
         # Build results
         results = []
-        for i, (dist, idx) in enumerate(zip(distances[0], indices[0])):
+        for _, (dist, idx) in enumerate(zip(distances[0], indices[0], strict=False)):
             if idx < 0:  # FAISS returns -1 for not found
                 continue
 
@@ -516,7 +516,7 @@ class FAISSStore(VectorStore):
         self.index.add(vectors_normalized)
 
         # Store metadata and IDs
-        for i, (vid, meta) in enumerate(zip(ids, metadata)):
+        for i, (vid, meta) in enumerate(zip(ids, metadata, strict=False)):
             idx = start_idx + i
             self.vector_ids.append(vid)
             self.id_to_index[vid] = idx

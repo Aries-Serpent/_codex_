@@ -303,7 +303,7 @@ def _call_tokenizer(
                     **{k: v for k, v in kwargs.items() if k != "return_attention_mask"},
                 )
                 if not isinstance(ids, Sequence):
-                    raise TypeError("tokenizer.encode must return a sequence of token ids")
+                    raise TypeError("tokenizer.encode must return a sequence of token ids") from e
                 normalized_ids = _normalize_sequence(ids)
                 attention_mask = [1] * len(normalized_ids)
                 return {"input_ids": normalized_ids, "attention_mask": attention_mask}

@@ -200,7 +200,7 @@ class GitHubClient:
                     wait_time = self.RETRY_BACKOFF_BASE**retry_count
                     await asyncio.sleep(wait_time)
                     return await self._request(method, path, json, params, retry_count + 1)
-                raise GitHubAPIError(f"Request failed: {e}")
+                raise GitHubAPIError(f"Request failed: {e}") from e
 
     async def _get(
         self,
@@ -314,7 +314,7 @@ class GitHubClient:
                 workflow=str(workflow_id),
                 reason=e.message,
                 status_code=e.status_code,
-            )
+            ) from e
 
     # =========================================================================
     # Workflow Run Operations
@@ -689,13 +689,13 @@ class GitHubClient:
         # The check_run_id is often the same as the job_id for Actions
         try:
             return await self.get_job_logs(owner, repo, check_run_id)
-        except NotFoundError:
+        except NotFoundError as err:
             # If direct job lookup fails, we need to find the job via workflow runs
             # This is a limitation of the GitHub API - check runs don't directly expose logs
             raise NotFoundError(
                 "check run logs",
                 f"{check_run_id} (note: logs may only be available via associated workflow job)",
-            )
+            ) from err
 
     # =========================================================================
     # Rate Limit

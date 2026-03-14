@@ -239,7 +239,7 @@ class EntanglementManager:
                     pair.observed_states.append((state, other_state))
 
         # Convert states to numeric for correlation
-        states1, states2 = zip(*pair.observed_states)
+        states1, states2 = zip(*pair.observed_states, strict=False)
         numeric1 = self._states_to_numeric(states1)
         numeric2 = self._states_to_numeric(states2)
 
@@ -500,7 +500,7 @@ class EntanglementManager:
         if len(pair.observed_states) < 2:
             raise ValueError("Insufficient observations for mutual information")
 
-        states1, states2 = zip(*pair.observed_states)
+        states1, states2 = zip(*pair.observed_states, strict=False)
 
         return self._mutual_information(states1, states2)
 
@@ -555,7 +555,7 @@ class EntanglementManager:
         n = len(states_a)
 
         # Compute joint and marginal probabilities
-        joint_counts = Counter(zip(states_a, states_b))
+        joint_counts = Counter(zip(states_a, states_b, strict=False))
         counts_a = Counter(states_a)
         counts_b = Counter(states_b)
 

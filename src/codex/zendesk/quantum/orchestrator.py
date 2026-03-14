@@ -219,7 +219,7 @@ class ZendeskQuantumOrchestrator:
             self.orchestrator.register_task(task)
 
         priorities = []
-        for ticket, task in zip(ticket_list, tasks):
+        for ticket, task in zip(ticket_list, tasks, strict=False):
             free_energy = task.calculate_free_energy()
             priority_score = 1.0 / (1.0 + free_energy)
             priorities.append((ticket.ticket_id, priority_score))

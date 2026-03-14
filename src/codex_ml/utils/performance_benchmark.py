@@ -285,7 +285,7 @@ def benchmark_data_loading(
     start_time = time.perf_counter()
 
     count = 0
-    for batch in dataloader:
+    for _ in dataloader:
         count += 1
         if count >= num_batches:
             break

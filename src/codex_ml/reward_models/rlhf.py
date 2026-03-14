@@ -144,13 +144,13 @@ class RewardModel(RewardModelBase):
         if denom <= 1e-12:
             scale = 0.0
         else:
-            scale = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys)) / denom
+            scale = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys, strict=False)) / denom
         bias = mean_y - scale * mean_x
 
         self.scale = float(scale)
         self.bias = float(bias)
 
-        mse = sum((self.scale * x + self.bias - y) ** 2 for x, y in zip(xs, ys)) / n
+        mse = sum((self.scale * x + self.bias - y) ** 2 for x, y in zip(xs, ys, strict=False)) / n
 
         metrics = {
             "examples": float(n),

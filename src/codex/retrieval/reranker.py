@@ -308,7 +308,7 @@ class CrossEncoderReranker(BaseReranker):
 
         # Build ranked results
         ranked_results = []
-        for i, (result, score) in enumerate(zip(results, scores)):
+        for i, (result, score) in enumerate(zip(results, scores, strict=False)):
             ranked_result = RankedResult(
                 document_id=result.get("id", result.get("document_id", "")),
                 content=documents[i],

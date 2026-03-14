@@ -200,7 +200,7 @@ def _create_pytorch_scheduler(
         logger.debug(f"ImportError: {e}")
         raise ImportError(
             "PyTorch is required for scheduler creation. Install with: pip install torch"
-        )
+        ) from e
 
     def _make_lambda_lr(lr_lambda):
         try:

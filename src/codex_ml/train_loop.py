@@ -1043,7 +1043,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int)
             def step(self):
                 self.last_epoch += 1
                 new_lrs = self.get_lr()
-                for g, lr in zip(self.opt.param_groups, new_lrs):
+                for g, lr in zip(self.opt.param_groups, new_lrs, strict=False):
                     g["lr"] = lr
 
             def state_dict(self):

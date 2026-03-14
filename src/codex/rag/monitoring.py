@@ -370,7 +370,7 @@ class RAGMetrics:
             lines.append("# HELP rag_index_size_mb Index size in megabytes")
             lines.append("# TYPE rag_index_size_mb gauge")
 
-            for key, data_point in self.index_sizes.items():
+            for _, data_point in self.index_sizes.items():
                 labels = ",".join(f'{k}="{v}"' for k, v in data_point.labels.items())
                 lines.append(f"rag_index_size_mb{{{labels}}} {data_point.value:.2f}")
 
@@ -443,7 +443,7 @@ class RAGMetrics:
             )
 
         # Index sizes
-        for key, data_point in self.index_sizes.items():
+        for _, data_point in self.index_sizes.items():
             metric_data.append(
                 {
                     "MetricName": "IndexSize",

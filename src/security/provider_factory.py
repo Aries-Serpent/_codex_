@@ -105,8 +105,9 @@ class ProviderFactory:
         provider_type_str = config_dict.pop("provider_type")
         try:
             provider_type = ProviderType(provider_type_str)
-        except ValueError:
-            raise ProviderConfigError(f"Invalid provider type: {provider_type_str}")
+        except ValueError as err:
+            msg = f"Invalid provider type: {provider_type_str}"
+            raise ProviderConfigError(msg) from err
 
         # Create config and provider
         config = ProviderConfig(provider_type=provider_type, **config_dict)

@@ -168,7 +168,7 @@ def _close_all():
     """Best-effort cleanup of pooled connections on interpreter shutdown."""
 
     with _POOL_LOCK:
-        for k, conn in list(_CONN_POOL.items()):
+        for _, conn in list(_CONN_POOL.items()):
             try:
                 conn.close()
             except Exception as e:

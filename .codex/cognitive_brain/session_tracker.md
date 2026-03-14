@@ -8,17 +8,36 @@
 
 ## 🎯 Session State
 
-### Current Session (Session 28 — PR #3575)
+### Current Session (Session 30 — PR #3576 post-merge)
+```yaml
+session_id: "copilot/fix-comments-from-review-thread"
+pr_number: 3576
+phase: "session-30-post-merge-verification"
+started: "2026-03-14T10:12:00Z"
+status: "in-progress"
+cognitive_brain_session_number: 184
+```
+
+### Session Objectives
+- [x] §0 pre-session review — reviewed PR #3576 review thread (1 comment: PR-3576-followup.md too generic)
+- [x] Load `.codex/HOTFIX_CHECKPOINT_PR3575.md` — executed post-merge work queue
+- [x] Run CI capability tests: `python -m pytest tests/capabilities/ci_test/ -q` — 50/50 ✅
+- [x] Run ruff: `ruff check scripts/ tests/ src/ --select F401,F841,I001` — 0 issues ✅
+- [x] Fix PR #3576 review comment: updated `PR-3576-followup.md` with concrete PR summary and tasks
+- [x] Run `docs_lint --fix` — fixed 5 BROKEN_CLOSER errors (2 in `templates/intent_validation_gate.md`, 3 in `templates/status/codex_status_template_v1.2.md`)
+- [x] Created missing `.nojekyll` in repo root (required for GitHub Pages, was present in `docs/` but not root)
+
+### Previous Session (Session 28/29 — PR #3575, merged)
 ```yaml
 session_id: "copilot/ci-failure-triage-report"
 pr_number: 3575
 phase: "session-28-code-quality-main-sync-checkpoint"
 started: "2026-03-14T06:42:00Z"
-status: "checkpoint-ready"
+status: "merged"
 cognitive_brain_session_number: 183
 ```
 
-### Session Objectives
+### Session 28 Objectives
 - [x] §0 pre-session review — reviewed all bot-posted comments (github-code-quality bot)
 - [x] Fix ruff F401 — `textwrap.indent` unused in `scripts/ci/docs_sync.py`
 - [x] Fix ruff F401 — `typing.Optional` unused in `scripts/ci/generate_mermaid.py`
@@ -277,3 +296,142 @@ key_learnings:
 
 **Last Updated:** 2026-02-05T09:20:00Z  
 **Auto-Update:** On session checkpoint
+
+---
+
+## Session 32 — 2026-03-14T11:30Z
+
+**Branch:** `copilot/fix-comments-from-review-thread`
+**SHA at start:** `8bf553f`
+**Triggered by:** @mbaetiong — stop deferring implementable tasks
+
+### Deliverables
+
+| Task | Deliverable | Status |
+|------|------------|--------|
+| S32-T1 | T-002 cost gate integration test (23 tests) | ✅ |
+| S32-T2 | `.codex/okr/objectives.md` created | ✅ |
+| S32-T3 | `src/codex/cognitive/task_router.py` (224 lines) | ✅ |
+| S32-T4 | `src/codex/cognitive/okr_tracker.py` (308 lines) | ✅ |
+| S32-T5 | B007 unused loop vars fixed (35 in src/) | ✅ |
+| S32-T6 | B905 zip-without-strict fixed (96 in src/) | ✅ |
+| S32-T7 | ci-testing-agent.md: Mermaid diagram + routing examples | ✅ |
+| S32-T8 | Accountability report + CHANGELOG (Session 32) | ✅ |
+
+### OKR Status at Session Close
+- OBJ-001: 5/7 tasks (71%) — 2 admin-only remain
+- OBJ-002: 4/4 tasks (100%) ✅
+- OBJ-003: 6/6 tasks (100%) ✅
+- **Overall: 15/17 tasks (88%)**
+
+### Quality Gates
+- pre_flight_check.py: 6/6 ✅
+- ruff src/ (E501/F401/B904/B007/B905/B009/B010/B033): 0 ✅
+- docs_lint --strict: 0 ✅
+- auto_fix_common_issues --check-only: 0 ✅
+- pytest ci_test/: 73 passed (was 50) ✅
+
+---
+
+## Session 33 — 2026-03-14 — PR #3579
+
+**Focus:** Review bug fixes (B904 NameErrors), code-quality alerts, CI failure pattern analysis
+**SHA Range:** `480fdba` → current HEAD
+**AAIS:** 78 → 80/100
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S33-T1 | B904 NameErrors (13 files) — `except X as err:` binding | ✅ DONE |
+| S33-T2 | f-string `chr()` artifacts replaced with real `{var}` | ✅ DONE |
+| S33-T3 | AGENT_REGISTRY 3 truncated tags fixed | ✅ DONE |
+| S33-T4 | `agent_context.json` full 40-char SHA | ✅ DONE |
+| S33-T5 | `okr_tracker.py` dead globals removed | ✅ DONE |
+| S33-T6 | CODEX_MANIFEST.json refreshed | ✅ DONE |
+| S33-T7 | Issue #3577 — 21 CI failures root-cause-analyzed | ✅ DONE |
+
+### Next-Phase Plan (Session 34+)
+
+**Admin-gated (cannot be automated):**
+- T-003: branch protection — add `cost-gate / classify-and-gate` to required checks
+- T-007: Production sign-off by 2026-04-01
+
+**On-merge auto-resolved:**
+- Self-healing CI Python 3.11 → 3.12 (our fix merges)
+- Deferral language gate (PR body now clean)
+- Pre-merge validation timeout (scoped to ci_test/)
+
+**AAIS Path to 82+:**
+- Complete capability_tags quality review (all 153 AGENT_REGISTRY agents audited)
+- Add structured handoff protocol to D_CAPABLE agents
+- Automate CODEX_MANIFEST.json refresh on every PR push
+
+
+---
+
+## Session 34 — 2026-03-14 — PR #3579
+
+**Focus:** OBJ-001 T-003 + T-007 production sign-off received; all OKRs 100% complete
+**AAIS:** 80 → 82/100
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S34-T1 | OBJ-001 T-003 branch protection confirmed | ✅ DONE |
+| S34-T2 | OBJ-001 T-007 production sign-off received from @mbaetiong | ✅ DONE |
+| S34-T3 | `.codex/okr/objectives.md` created with full sign-off record | ✅ DONE |
+| S34-T4 | AAIS 80 → 82/100; OKR 17/17 (100%); `agent_context.json` updated | ✅ DONE |
+| S34-T5 | CODEX_MANIFEST.json refreshed | ✅ DONE |
+
+### OBJ-001 Sign-off Record
+
+> "T-007: Production sign-off by 2026-04-01. I, mbaetiong, approve this. accept this as my signoff"
+> — @mbaetiong, 2026-03-14, PR #3579
+
+### Next-Phase Plan (Session 35+)
+
+**All OKRs complete.** Future improvement paths (optional):
+- AAIS 82 → 85+: D_CAPABLE structured handoff protocol; automated CODEX_MANIFEST refresh
+- capability_tags quality review for all 153 AGENT_REGISTRY agents
+- MkDocs/GitHub Pages nav validation post-merge
+
+
+---
+
+## Session 35 — 2026-03-14 — PR #3579
+
+**Focus:** Next-phase tasks — capability_tags quality, CODEX_MANIFEST auto-refresh, E→D gate verification
+**AAIS:** 82 → 85/100 (Grade A-)
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S35-T1 | capability_tags: 12 agents expanded (`ml`→`machine_learning`, `ci`→`continuous_integration`) | ✅ DONE |
+| S35-T2 | `codex-manifest-refresh.yml` — auto-refresh CODEX_MANIFEST on every PR push | ✅ DONE |
+| S35-T3 | E→D Gate 5/5 verified — D_CAPABLE unlocked | ✅ DONE |
+| S35-T4 | docs-health 0 errors — GitHub Pages nav verified | ✅ DONE |
+| S35-T5 | AAIS 82→85; SESSION_NUMBER=189; tracking files updated | ✅ DONE |
+
+### Triggered by comment 4060428583 (@mbaetiong `@copilot continue`)
+
+
+---
+
+## Session 36 — 2026-03-14 — PR #3579
+
+**Focus:** Priority 3 enhancements — capability_tags CI enforcement + GitHub Pages nav smoke test
+**AAIS:** 85/100 (unchanged — infrastructure work)
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S36-T1 | `agent-registry-validation.yml`: capability_tags quality gate (hard gate, GROUNDED Tier-1) | ✅ DONE |
+| S36-T2 | `pages-pre-merge-validation.yml`: nav smoke test via `docs_lint.py --strict` | ✅ DONE |
+
+### Triggered by comment 4060456111 (@mbaetiong `@copilot continue`)
+### Auth: run_id 23087743271 already written to `.codex/agent_auth_session.json`
+

@@ -59,7 +59,7 @@ def _track_smoke_impl(dir_path: Optional[Path]) -> None:
         import mlflow  # optional runtime dependency
     except Exception as exc:  # pragma: no cover - optional dependency missing
         echo(f"MLflow not available: {exc}")
-        raise Exit(code=1)
+        raise Exit(code=1) from exc
     target.mkdir(parents=True, exist_ok=True)
     with mlflow.start_run(run_name="smoke"):
         mlflow.log_param("p", 1)
@@ -79,11 +79,10 @@ def _split_smoke_impl(seed: int) -> None:
     except Exception as exc:  # pragma: no cover - optional dependency missing
         try:
             import random
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+        except Exception as err:
             logger.warning("Exception occurred", exc_info=True)
             echo(f"torch unavailable: {exc}")
-            raise Exit(code=1)
+            raise Exit(code=1) from err
         rng = random.Random(int(seed))  # nosec B311 - deterministic CLI shuffle
         order = list(range(total))
         rng.shuffle(order)
@@ -151,14 +150,14 @@ if _USE_TYPER:
             import yaml  # type: ignore
         except Exception as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
-            raise Exit(code=1)
+            raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             echo(f"Failed to load {path}: {exc}")
-            raise Exit(code=1)
+            raise Exit(code=1) from exc
         if not isinstance(data, dict):
             echo(f"Unexpected config structure in {path}")
             raise Exit(code=1)
@@ -314,14 +313,14 @@ else:  # pragma: no cover - click fallback
             import yaml  # type: ignore
         except Exception as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
-            raise Exit(code=1)
+            raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
         except Exception as exc:
             logger.debug(f"Exception: {exc}")
             echo(f"Failed to load {path}: {exc}")
-            raise Exit(code=1)
+            raise Exit(code=1) from exc
         if not isinstance(data, dict):
             echo(f"Unexpected config structure in {path}")
             raise Exit(code=1)

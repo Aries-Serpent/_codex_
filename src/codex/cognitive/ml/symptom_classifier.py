@@ -479,7 +479,7 @@ class SymptomClassifier:
         probas = self._classifier.predict_proba(X)
 
         results = []
-        for pred, proba in zip(predictions, probas):
+        for pred, proba in zip(predictions, probas, strict=False):
             results.append(
                 ClassificationResult(
                     predicted_category=pred,

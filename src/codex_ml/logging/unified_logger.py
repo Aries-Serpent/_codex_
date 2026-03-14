@@ -46,7 +46,7 @@ class MLflowBackend(LoggerBackend):
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
-            raise ImportError("MLflow not installed. Install: pip install mlflow")
+            raise ImportError("MLflow not installed. Install: pip install mlflow") from e
 
     def start_run(self, run_name=None):
         self.mlflow.start_run(run_name=run_name)
@@ -73,7 +73,7 @@ class TensorBoardBackend(LoggerBackend):
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
-            raise ImportError("TensorBoard not installed. Install: pip install tensorboard")
+            raise ImportError("TensorBoard not installed. Install: pip install tensorboard") from e
 
     def start_run(self, run_name=None):
         pass
@@ -103,7 +103,7 @@ class WandBBackend(LoggerBackend):
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
-            raise ImportError("Weights & Biases not installed. Install: pip install wandb")
+            raise ImportError("Weights & Biases not installed. Install: pip install wandb") from e
 
     def start_run(self, run_name=None):
         self.wandb.init(project=self.project, entity=self.entity, name=run_name)

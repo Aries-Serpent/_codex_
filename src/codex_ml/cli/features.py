@@ -54,7 +54,7 @@ def list_features(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -114,7 +114,7 @@ def check_health(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -139,7 +139,7 @@ def export_metadata(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -154,7 +154,7 @@ def clear_cache(
     except Exception as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 if __name__ == "__main__":

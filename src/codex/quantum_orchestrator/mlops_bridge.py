@@ -428,7 +428,7 @@ class ObservableOrchestrator:
 
         # Run orchestrator using observable evolve (so hooks are called)
         iteration = 0
-        for iteration in range(max_iterations):
+        for _ in range(max_iterations):
             # Use observable evolve (triggers hooks)
             self.evolve()
 

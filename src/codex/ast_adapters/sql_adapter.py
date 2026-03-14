@@ -78,7 +78,7 @@ class SQLASTAdapter(BaseASTAdapter):
         try:
             parsed = sqlparse.parse(source)
         except Exception as e:
-            raise ValueError(f"Failed to parse SQL: {e}")
+            raise ValueError(f"Failed to parse SQL: {e}") from e
 
         if not parsed:
             raise ValueError("No SQL statements found")

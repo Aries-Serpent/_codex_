@@ -329,7 +329,7 @@ def _run_dataset_evaluation(
     # Write predictions.ndjson
     pred_file = out_path / "predictions.ndjson"
     with pred_file.open("w", encoding="utf-8") as fh:
-        for i, (pred, tgt) in enumerate(zip(predictions, targets)):
+        for i, (pred, tgt) in enumerate(zip(predictions, targets, strict=False)):
             fh.write(_json.dumps({"index": i, "prediction": pred, "target": tgt}) + "\n")
 
     # Compute metrics

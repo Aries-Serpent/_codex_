@@ -244,7 +244,7 @@ class PriorityPruner:
         results = list(texts)
         tokens_saved = 0
 
-        for idx, text, priority in scored:
+        for idx, text, _ in scored:
             if current_tokens - tokens_saved <= target_tokens:
                 break
 

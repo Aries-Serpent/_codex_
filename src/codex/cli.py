@@ -583,7 +583,7 @@ def resume_cmd(run_dir: Path) -> None:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except Exception as exc:  # pragma: no cover - robust CLI behavior
         click.echo(f"ERROR: failed to read resume_manifest.json: {exc}", err=True)
-        raise SystemExit(2)
+        raise SystemExit(2) from exc
 
     if manifest.get("config") is not None:
         click.echo("INFO: Using config snapshot embedded in resume_manifest.json")

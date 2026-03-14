@@ -235,7 +235,7 @@ class PatternCompressor:
 
         return {
             feature: importance
-            for feature, importance in zip(self.feature_keys, self.feature_importance)
+            for feature, importance in zip(self.feature_keys, self.feature_importance, strict=False)
         }
 
     def compress(
@@ -302,7 +302,7 @@ class PatternCompressor:
 
         # Apply variable quantization per component with correct signed integer range
         quantized = np.zeros_like(compressed_vec)
-        for i, (val, bits) in enumerate(zip(compressed_vec, variable_bits)):
+        for i, (val, bits) in enumerate(zip(compressed_vec, variable_bits, strict=False)):
             # Correct signed integer range: -(2^(bits-1)) to (2^(bits-1) - 1)
             max_val = 2 ** (bits - 1) - 1
             min_val = -(2 ** (bits - 1))
@@ -381,7 +381,8 @@ class PatternCompressor:
         reconstructed = reconstructed_norm * self.feature_std + self.feature_mean
 
         # Convert back to dict
-        reconstructed_dict = {k: float(v) for k, v in zip(compressed.feature_keys, reconstructed)}
+        reconstructed_dict = {k: float(v) for k, v in zip(compressed.feature_keys, reconstructed,
+            strict=False)}
 
         self.total_decompressed += 1
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T01:47:12Z",
+  "generated_at": "2026-03-14T18:39:04Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1013,6 +1013,11 @@
       "has_concurrency": true
     },
     {
+      "name": "build-agent-env-cache",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "build-preview-image",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1044,6 +1049,11 @@
     },
     {
       "name": "codeql-analysis",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "codex-manifest-refresh",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1098,12 +1108,27 @@
       "has_concurrency": true
     },
     {
+      "name": "cost-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "coverage-with-timeout",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
+      "name": "d-capable-promotion-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "data-quality-suite",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "deferral-language-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -1125,6 +1150,11 @@
     {
       "name": "docker-build-push",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "docs-health",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1150,6 +1180,11 @@
     {
       "name": "github-guru",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "har-capture",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1218,6 +1253,11 @@
       "has_concurrency": true
     },
     {
+      "name": "pr-cost-check",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "pr-followup-generator",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1265,6 +1305,11 @@
     {
       "name": "qa-walkthrough",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "rag-freshness-scheduler",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1690,5 +1735,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "fd9edd9d75364f45e1724066be6df2a5b3c0ba52b5c63edbf6179b9a56a56719"
+  "integrity_sha256": "74819367a5a3e98bea10643ad179864648156e0b2942e0b99ea5a3eb0f7abee1"
 }

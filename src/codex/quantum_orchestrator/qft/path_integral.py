@@ -81,7 +81,7 @@ class ActionFunctional:
         T = 0.0
         V = 0.0
 
-        for task_id, task in state.tasks.items():
+        for _, task in state.tasks.items():
             # Kinetic energy
             v_squared = np.sum(task.velocity**2)
             T += 0.5 * task.rest_mass * v_squared * self.kinetic_weight
@@ -172,7 +172,7 @@ class PathSampler:
 
         rng = np.random.default_rng(seed)
 
-        for step in range(n_steps):
+        for _ in range(n_steps):
             for task in temp_orch.state.tasks.values():
                 perturbation = rng.normal(0, perturbation_scale, size=5)
                 task.velocity = task.velocity + perturbation
