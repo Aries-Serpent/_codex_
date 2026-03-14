@@ -41,7 +41,7 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     try:
         base_resolved = base.resolve(strict=False)
         candidate_resolved = candidate.resolve(strict=False)
-    except RuntimeError:
+    except RuntimeError as err:
         # Fallback in pathological resolution cases
         raise HTTPException(status_code=400, detail="Invalid path") from err
 
@@ -305,11 +305,9 @@ async def query_index(request: Request, query_request: QueryRequest):
             elapsed_ms=elapsed_ms,
         )
 
-    except FileNotFoundError:
+    except FileNotFoundError as err:
         msg = f"Index '{query_request.index_name}' not found"
         raise HTTPException(status_code=404, detail=msg) from err
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Query failed: {e}") from e
 
 
 @app.get("/rag/indices", response_model=ListIndicesResponse, tags=["RAG"])

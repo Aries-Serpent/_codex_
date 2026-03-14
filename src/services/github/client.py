@@ -689,7 +689,7 @@ class GitHubClient:
         # The check_run_id is often the same as the job_id for Actions
         try:
             return await self.get_job_logs(owner, repo, check_run_id)
-        except NotFoundError:
+        except NotFoundError as err:
             # If direct job lookup fails, we need to find the job via workflow runs
             # This is a limitation of the GitHub API - check runs don't directly expose logs
             raise NotFoundError(

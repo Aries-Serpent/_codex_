@@ -954,7 +954,7 @@ agents:
   - device_placement_validation
   - regression_prevention
   - canonical_fix_application
-  - cognitive_brain_pattern_storag
+  - cognitive_brain_pattern_storage
 - id: ci-triage-pipeline-agent
   batch_scan_enabled: true
   name: CI Triage Pipeline Agent
@@ -1184,8 +1184,8 @@ agents:
   - local_test_validation
   - drq_filing
   - cognitive_brain_update
-  - autonomous_ci_failure_detectio
-  - pattern_library_management,_dr
+  - autonomous_ci_failure_detection
+  - pattern_library_management
 - id: agent-iq-scoring-gate
   name: Agent IQ Scoring Gate
   file: agent-iq-scoring-gate.md

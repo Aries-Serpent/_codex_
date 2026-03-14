@@ -75,8 +75,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
 
             try:
                 data = safe_pickle_load(str(target), use_restricted_unpickler=True)
-            except Exception:
-                logger.warning("Exception occurred", exc_info=True)
+            except Exception as err:
                 logger.warning("Exception occurred", exc_info=True)
                 raise torch_error from err
     else:  # pragma: no cover - exercised when torch is unavailable

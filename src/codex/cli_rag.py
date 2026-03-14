@@ -322,8 +322,10 @@ def query(
 
             console.print(table)
 
-    except FileNotFoundError:
-        console.print(f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]")
+    except FileNotFoundError as err:
+        console.print(
+            f"[red]❌ Index '{index_name}' not found for tenant '{tenant_id}'[/red]"
+        )
         console.print("[yellow]Build an index first with: codex rag build[/yellow]")
         raise typer.Exit(1) from err
     except ImportError as e:

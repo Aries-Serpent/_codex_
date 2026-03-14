@@ -33,9 +33,7 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_OKR_PATH = Path(".codex/okr/objectives.md")
 _CONTEXT_PATH = Path(".codex/agent_context.json")
-_SESSION_TRACKER = Path(".codex/cognitive_brain/session_tracker.md")
 _PROGRESS_PATH = Path(".codex/okr/progress.json")
 
 

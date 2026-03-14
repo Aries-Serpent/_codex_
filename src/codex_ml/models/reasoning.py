@@ -164,8 +164,7 @@ class ReasoningHarness:
         if not torch.is_tensor(tensor):
             try:
                 tensor = torch.as_tensor(tensor)
-            except Exception:
-                logger.warning("Exception occurred", exc_info=True)
+            except Exception as err:
                 logger.warning("Exception occurred", exc_info=True)
                 raise TypeError("hidden_states must be convertible to a tensor") from err
         tensor = tensor.to(device=device, dtype=torch.float32)

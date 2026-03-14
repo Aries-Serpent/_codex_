@@ -79,8 +79,7 @@ def _split_smoke_impl(seed: int) -> None:
     except Exception as exc:  # pragma: no cover - optional dependency missing
         try:
             import random
-        except Exception:
-            logger.warning("Exception occurred", exc_info=True)
+        except Exception as err:
             logger.warning("Exception occurred", exc_info=True)
             echo(f"torch unavailable: {exc}")
             raise Exit(code=1) from err
