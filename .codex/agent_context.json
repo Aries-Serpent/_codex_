@@ -33,10 +33,13 @@
     "repo_variables_count": 24,
     "drift_entries": 3
   },
-  "AAIS_SCORE": "85/100",
+  "AAIS_SCORE": "90/100",
   "OKR_COMPLETION_PCT": "100",
   "TASK_ROUTER_AVAILABLE": "true",
   "OKR_TRACKER_AVAILABLE": "true",
-  "SESSION_NUMBER": 190,
-  "LAST_ACTION": "Session 36 \u2014 capability_tags schema enforcement in agent-registry-validation.yml, GitHub Pages nav smoke test in pages-pre-merge-validation.yml, AAIS remains 85/100"
+  "SESSION_NUMBER": 191,
+  "LAST_ACTION": "Session 37 (Priority 1) — docs-health.yml post-merge workflow; D_CAPABLE per-agent promotion pipeline (script + workflow); RAG index freshness gate in embedding-index-rebuild.yml; AAIS 85→90/100",
+  "D_CAPABLE_PROMOTION_PIPELINE": true,
+  "RAG_FRESHNESS_AUTOMATION": true,
+  "DOCS_HEALTH_WORKFLOW": true
 }

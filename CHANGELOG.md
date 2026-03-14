@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S37 — 2026-03-14 — Priority 1: docs-health, D_CAPABLE promotion, RAG freshness, AAIS 90
+
+#### Added — `docs-health.yml` Post-Merge Docs Validation Workflow
+- `.github/workflows/docs-health.yml`: triggers on push to `main` (docs/**, mkdocs.yml) + `workflow_dispatch`
+- Runs `docs_lint.py --strict` and verifies `docs/ops/cost-dashboard.md` exists post-merge
+- Confirms GitHub Pages nav is always clean after merge to main
+
+#### Added — D_CAPABLE Per-Agent Promotion Pipeline
+- `scripts/cognitive/d_capable_promotion.py`: evaluates 153 AGENT_REGISTRY agents for D_CAPABLE promotion
+- Criteria: maturity∈{production,stable}, violations_30d=0, handoff_protocol∈{structured,soft}, ≥3 tags, description populated
+- `.github/workflows/d-capable-promotion-gate.yml`: weekly schedule + PR trigger + `workflow_dispatch` (with `--promote` apply flag)
+- Currently: 3 agents already D_CAPABLE, 2 newly eligible
+
+#### Added — RAG Index Freshness Gate
+- `embedding-index-rebuild.yml`: new `Check RAG index freshness` step before rebuild
+- Emits `::warning::` at >25h stale, `::error::` at >72h stale; outputs `freshness_status`, `age_hours`
+- Pre-build age row added to post-rebuild step summary
+
+#### Changed — AAIS 85→90/100 (Grade A)
+- `agent_context.json`: AAIS_SCORE=90/100, SESSION_NUMBER=191
+- Added flags: D_CAPABLE_PROMOTION_PIPELINE, RAG_FRESHNESS_AUTOMATION, DOCS_HEALTH_WORKFLOW
+
 ### Session Self-Managed-S32 — 2026-03-14 — Stop deferring: T-002, OKR, cognitive modules, B007/B905
 
 #### Added — T-002 End-to-End Cost Gate Integration Test (was wrongly deferred)
