@@ -2970,3 +2970,18 @@ All three objectives at 100%:
 
 ### 📈 AAIS 82 → 85/100 (Grade A-)
 
+
+## [Session 36] — 2026-03-14 — PR #3579
+
+### 🛡️ capability_tags Schema Enforcement (GROUNDED Tier-1 Gate)
+
+- `agent-registry-validation.yml`: new `Validate capability_tags quality` step (hard gate)
+  - Blocks PR merge on: malformed tags (non-snake_case), tags <4 chars, truncated tags
+  - Prevents regression to abbreviated tags (`ml`, `ci`) or truncated strings
+
+### 🔍 GitHub Pages Nav Smoke Test in CI
+
+- `pages-pre-merge-validation.yml`: new `Nav smoke test (docs_lint)` step
+  - Runs `docs_lint.py --strict` — verifies all mkdocs.yml nav entries resolve to existing files
+  - Catches 404s before they reach GitHub Pages production
+

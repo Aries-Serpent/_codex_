@@ -417,3 +417,21 @@ key_learnings:
 
 ### Triggered by comment 4060428583 (@mbaetiong `@copilot continue`)
 
+
+---
+
+## Session 36 — 2026-03-14 — PR #3579
+
+**Focus:** Priority 3 enhancements — capability_tags CI enforcement + GitHub Pages nav smoke test
+**AAIS:** 85/100 (unchanged — infrastructure work)
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S36-T1 | `agent-registry-validation.yml`: capability_tags quality gate (hard gate, GROUNDED Tier-1) | ✅ DONE |
+| S36-T2 | `pages-pre-merge-validation.yml`: nav smoke test via `docs_lint.py --strict` | ✅ DONE |
+
+### Triggered by comment 4060456111 (@mbaetiong `@copilot continue`)
+### Auth: run_id 23087743271 already written to `.codex/agent_auth_session.json`
+

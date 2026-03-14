@@ -3069,3 +3069,42 @@ Verified all 5 conditions locally:
 - E→D Gate: 5/5 (D_CAPABLE unlocked) ✅
 - AAIS: 85/100 ✅
 
+
+---
+
+## SESSION SUMMARY — 2026-03-14 SESSION 36 (Next-Phase Tasks — PR #3579)
+
+### §0 Mandatory Pre-Session Review
+
+**Bot comments reviewed:** All resolved ✅
+**New comment:** comment `4060456111` — `@copilot continue` from @mbaetiong (run 23087743271)
+**Auth token:** Already written to `.codex/agent_auth_session.json` by the delegation workflow
+
+---
+
+### S36-T1: capability_tags Schema Enforcement in CI (GROUNDED Tier-1)
+
+Added a new `Validate capability_tags quality` step to `.github/workflows/agent-registry-validation.yml` between the existing schema validation and manifest integrity steps:
+
+**Rules enforced (hard gate — exits 1 on violation):**
+- `snake_case` pattern: `^[a-z][a-z0-9_]*$` (no hyphens, commas, spaces)
+- Minimum length: ≥ 4 chars (blocks `ml`, `ci` abbreviations)
+- Truncation suffix detection: `_storag`, `_detectio`, `_managemen`, `_implementa`, `_coordinati`
+- Every agent must have ≥ 1 tag
+
+**Local validation result:** 153/153 agents pass — 0 violations ✅
+
+### S36-T2: GitHub Pages Nav Smoke Test in CI
+
+Added a new `Nav smoke test (docs_lint)` step to `.github/workflows/pages-pre-merge-validation.yml` that runs `scripts/ci/docs_lint.py --strict` on every PR touching docs or mkdocs.yml:
+
+- Uses the existing state-machine nav extractor (safe with Python YAML tags)
+- Non-`continue-on-error` — will block PR merge if any nav link resolves to a missing file
+- `docs_lint.py --strict` → 0 errors ✅
+
+### Verification
+- `capability_tags` local validator: 153/153 agents pass ✅
+- `docs_lint.py --strict` → 0 errors ✅
+- `pre_flight_check.py` → 6/6 ✅
+- AAIS: 85/100 (unchanged — Session 36 is infrastructure work, no AAIS delta)
+
