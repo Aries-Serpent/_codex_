@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T11:53:08Z",
+  "generated_at": "2026-03-14T12:08:19Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1013,6 +1013,11 @@
       "has_concurrency": true
     },
     {
+      "name": "build-agent-env-cache",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "build-preview-image",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1044,6 +1049,11 @@
     },
     {
       "name": "codeql-analysis",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "codex-manifest-refresh",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1098,12 +1108,22 @@
       "has_concurrency": true
     },
     {
+      "name": "cost-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
+    },
+    {
       "name": "coverage-with-timeout",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
       "name": "data-quality-suite",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "deferral-language-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -1150,6 +1170,11 @@
     {
       "name": "github-guru",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "har-capture",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1215,6 +1240,11 @@
     {
       "name": "pr-checks",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "pr-cost-check",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1690,6 +1720,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "3ca3057fc55251464bef73fc0f2d91aee29046b755715474baad150510d3aec5",
-  "commit_sha": "94191e17db8cac9d3e874442babf93b8010f6244"
+  "integrity_sha256": "a9a31acb56aa19872789a8c86b467bd9b187cbca6461aa2b1cbb9424015a5169"
 }

@@ -397,3 +397,23 @@ key_learnings:
 - capability_tags quality review for all 153 AGENT_REGISTRY agents
 - MkDocs/GitHub Pages nav validation post-merge
 
+
+---
+
+## Session 35 — 2026-03-14 — PR #3579
+
+**Focus:** Next-phase tasks — capability_tags quality, CODEX_MANIFEST auto-refresh, E→D gate verification
+**AAIS:** 82 → 85/100 (Grade A-)
+
+### Deliverables
+
+| ID | Item | Status |
+|----|------|--------|
+| S35-T1 | capability_tags: 12 agents expanded (`ml`→`machine_learning`, `ci`→`continuous_integration`) | ✅ DONE |
+| S35-T2 | `codex-manifest-refresh.yml` — auto-refresh CODEX_MANIFEST on every PR push | ✅ DONE |
+| S35-T3 | E→D Gate 5/5 verified — D_CAPABLE unlocked | ✅ DONE |
+| S35-T4 | docs-health 0 errors — GitHub Pages nav verified | ✅ DONE |
+| S35-T5 | AAIS 82→85; SESSION_NUMBER=189; tracking files updated | ✅ DONE |
+
+### Triggered by comment 4060428583 (@mbaetiong `@copilot continue`)
+

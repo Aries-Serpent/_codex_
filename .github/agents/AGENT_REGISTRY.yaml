@@ -1964,7 +1964,7 @@ agents:
   description: Validates PyTorch model initialization patterns to prevent meta tensor
     issues.
   capability_tags:
-  - ml
+  - machine_learning
 - id: ml-validation-suite-agent
   batch_scan_enabled: true
   name: ML Validation Suite Agent
@@ -1984,7 +1984,7 @@ agents:
   description: Comprehensive ML model validation including determinism and reproducibility
     checks.
   capability_tags:
-  - ml
+  - machine_learning
 - id: msv-dashboard-monitor
   name: MSV Dashboard Monitor
   file: msv-dashboard-monitor.md
@@ -2224,7 +2224,7 @@ agents:
   description: Maintains RAG index freshness through continuous update and validation
     loops.
   capability_tags:
-  - ml
+  - machine_learning
 - id: rag-index-manager
   name: RAG Index Manager
   file: rag-index-manager.agent.md
@@ -2244,7 +2244,7 @@ agents:
   role: specialist
   description: Manages RAG index operations including building, updating, and querying.
   capability_tags:
-  - ml
+  - machine_learning
 - id: rag-meta-tensor-guardian
   name: RAG Meta Tensor Guardian
   file: rag-meta-tensor-guardian.md
@@ -2261,7 +2261,7 @@ agents:
   role: utility
   description: Guards RAG tensor operations against meta tensor initialization errors.
   capability_tags:
-  - ml
+  - machine_learning
 - id: rag-module-management-agent
   name: RAG Module Management Agent
   file: rag-module-management-agent.md
@@ -2278,7 +2278,7 @@ agents:
   role: specialist
   description: Manages RAG module lifecycle including initialization and hot-swapping.
   capability_tags:
-  - ml
+  - machine_learning
 - id: reference-updater-agent
   name: Reference Updater Agent
   file: reference-updater-agent.md
@@ -2437,7 +2437,7 @@ agents:
   role: specialist
   description: Semantic search over codebase and documentation using vector embeddings.
   capability_tags:
-  - ml
+  - machine_learning
 - id: session-analysis-agent
   name: Session Analysis Agent
   file: session-analysis-agent.md
@@ -2853,7 +2853,7 @@ agents:
   consolidation_priority: false
   role: utility
   capability_tags:
-  - ci
+  - continuous_integration
 - id: ci-health-alert-agent
   name: CI Health Alert Agent
   version: 1.0.0
@@ -2883,7 +2883,7 @@ agents:
   consolidation_priority: false
   role: specialist
   capability_tags:
-  - ci
+  - continuous_integration
 - id: repo-var-sync-agent
   name: Repo Var Sync Agent
   version: 1.0.0
@@ -3008,7 +3008,7 @@ agents:
   consolidation_priority: false
   role: specialist
   capability_tags:
-  - ci
+  - continuous_integration
 - id: admin-automation-agent
   name: Admin Automation Agent
   directory: .github/agents/admin-automation-agent
@@ -3056,7 +3056,7 @@ agents:
   updated: '2026-03-02T00:00:00Z'
   description: specialist
   capability_tags:
-  - ci
+  - continuous_integration
 - id: ci-diagnostic-agent
   name: CI Diagnostic Agent
   directory: .github/agents/ci-diagnostic-agent
@@ -3079,7 +3079,7 @@ agents:
   updated: '2026-03-02T00:00:00Z'
   description: specialist
   capability_tags:
-  - ci
+  - continuous_integration
 - id: codebase-qa-walkthrough-agent
   name: Codebase QA Walkthrough Agent
   directory: .github/agents/codebase-qa-walkthrough-agent

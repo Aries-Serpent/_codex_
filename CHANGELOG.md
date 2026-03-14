@@ -2949,3 +2949,24 @@ All three objectives at 100%:
 
 - 80 → **82/100** (Grade B+) — T-003 branch protection + T-007 sign-off close final admin gap
 
+
+## [Session 35] — 2026-03-14 — PR #3579
+
+### 🏷️ capability_tags Quality Sweep
+
+- 12 AGENT_REGISTRY agents upgraded from 2-char abbreviations to descriptive snake_case:
+  - `ml` → `machine_learning` (Meta Tensor Validator, ML Validation Suite Agent, RAG agents ×5)
+  - `ci` → `continuous_integration` (Workflow Compliance Guardian, CI Health Alert Agent, Telemetry Classifier Agent, Batch Triage Agent, CI Diagnostic Agent)
+
+### 🔄 CODEX_MANIFEST Auto-Refresh Workflow
+
+- New: `.github/workflows/codex-manifest-refresh.yml` — auto-regenerates `CODEX_MANIFEST.json` on every PR push
+- Permanently satisfies E→D Gate C2 condition (manifest <24h)
+
+### 🟢 E→D Gate — D_CAPABLE Unlocked
+
+- All 5 conditions verified: C1 ✅ C2 ✅ C3 ✅ C4 ✅ C5 ✅
+- D_CAPABLE operating model is now unlocked
+
+### 📈 AAIS 82 → 85/100 (Grade A-)
+
