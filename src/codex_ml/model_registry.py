@@ -142,7 +142,7 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
     try:
-        setattr(model, "lora_adapter_path", adapter_path)
+        model.lora_adapter_path = adapter_path
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
@@ -344,17 +344,9 @@ def get_model(
                 target_modules=lora_request.target_modules,
             )
     try:
-        setattr(
-            model,
-            "request_metadata",
-            ModelRequest(
-                name=name,
-                device=device,
-                dtype=dtype,
-                lora_adapter=lora_adapter,
-                lora=lora_request,
-                config=config,
-            ),
+        model.request_metadata = ModelRequest(
+            name=name, device=device, dtype=dtype,
+            lora_adapter=lora_adapter, lora=lora_request, config=config,
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)

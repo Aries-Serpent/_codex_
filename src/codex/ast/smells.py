@@ -580,7 +580,7 @@ class CodeSmellDetector:
         """Detect unexplained numeric literals (magic numbers)."""
         smells = []
         # Common acceptable values
-        allowed = {0, 1, 2, -1, 100, 1000, 0.0, 1.0, 0.5}
+        allowed = {0, 1, 2, -1, 100, 1000, 0.5}
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):

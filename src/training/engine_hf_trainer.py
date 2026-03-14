@@ -88,12 +88,12 @@ def _install_accelerate_compat() -> None:
                 if dlc is not None:
                     if hasattr(dlc, "dispatch_batches"):
                         kwargs.setdefault(
-                            "dispatch_batches", bool(getattr(dlc, "dispatch_batches"))
+                            "dispatch_batches", bool(dlc.dispatch_batches)
                         )
                     if hasattr(dlc, "split_batches"):
-                        kwargs.setdefault("split_batches", bool(getattr(dlc, "split_batches")))
+                        kwargs.setdefault("split_batches", bool(dlc.split_batches))
                     if hasattr(dlc, "even_batches"):
-                        kwargs.setdefault("even_batches", bool(getattr(dlc, "even_batches")))
+                        kwargs.setdefault("even_batches", bool(dlc.even_batches))
                     print(
                         "[codex][accelerate] v<0.30: translated dataloader_config -> legacy kwargs"
                     )
@@ -104,7 +104,7 @@ def _install_accelerate_compat() -> None:
 
     # Monkey-patch the module attribute so any downstream `from accelerate import Accelerator`
     # after this point will see the compat subclass.
-    setattr(accelerate, "Accelerator", _CompatAccelerator)  # type: ignore[attr-defined]
+    accelerate.Accelerator = _CompatAccelerator  # type: ignore[attr-defined]
     print("[codex][accelerate] installed compat Accelerator shim")
 
 
@@ -439,12 +439,12 @@ def build_trainer(
     """Construct a HF Trainer with optional early stopping and named LR scheduler."""
     if early_stop_patience:
         # Early stop needs a coherent best-model metric setup
-        setattr(args, "load_best_model_at_end", True)
+        args.load_best_model_at_end = True
         if not getattr(args, "metric_for_best_model", None):
-            setattr(args, "metric_for_best_model", "eval_loss")
+            args.metric_for_best_model = "eval_loss"
         if getattr(args, "greater_is_better", None) is None:
             # default for loss-like metrics
-            setattr(args, "greater_is_better", False)
+            args.greater_is_better = False
     trainer = Trainer(
         model=model,
         args=args,

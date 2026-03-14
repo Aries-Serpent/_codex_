@@ -112,7 +112,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     # If peft is not available, annotate and return original model
     if get_peft_model is None or LoraConfig is None:  # pragma: no cover
         try:
-            setattr(model, "peft_config", dict(merged))
+            model.peft_config = dict(merged)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
@@ -141,7 +141,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         config = LoraConfig(task_type=task_type, **config_kwargs)
         adapted = get_peft_model(model, config)
         try:
-            setattr(adapted, "peft_config", dict(merged))
+            adapted.peft_config = dict(merged)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
@@ -151,7 +151,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     except Exception:  # pragma: no cover - defensive fallback
         # If adaptation fails for any reason, return original model with config attached
         try:
-            setattr(model, "peft_config", dict(merged))
+            model.peft_config = dict(merged)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)

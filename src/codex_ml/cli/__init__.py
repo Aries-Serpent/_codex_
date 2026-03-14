@@ -210,7 +210,7 @@ def _cmd_tracking_bootstrap(args: argparse.Namespace) -> int:
 def package_main(argv: Optional[list[str]] = None) -> int:
     parser = _build_parser()
     args, extras = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
-    setattr(args, "_extras", extras)
+    args._extras = extras
     if extras and getattr(args, "func", None) is not _cmd_config:
         parser.error(f"unrecognized arguments: {' '.join(extras)}")
     return int(args.func(args) or 0)

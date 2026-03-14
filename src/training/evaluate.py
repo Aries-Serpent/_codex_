@@ -38,7 +38,7 @@ def _require_torch():
 
 def _infer_device(model: Any) -> str | None:
     if hasattr(model, "device"):
-        device = getattr(model, "device")
+        device = model.device
         return str(device)
     parameters = getattr(model, "parameters", None)
     if callable(parameters):

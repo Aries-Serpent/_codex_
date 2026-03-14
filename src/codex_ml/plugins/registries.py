@@ -651,7 +651,7 @@ def _trainer_functional(**kwargs: Any):
         merged.update(call_kwargs)
         return trainer(*args, **merged)
 
-    setattr(_bound_trainer, "__codex_defaults__", dict(bound_kwargs))
+    _bound_trainer.__codex_defaults__ = dict(bound_kwargs)
 
     return _bound_trainer
 

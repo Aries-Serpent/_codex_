@@ -72,8 +72,8 @@ class ChatModel:
         self.cfg = cfg
         torch_module = import_module("torch")
         transformers_module = import_module("transformers")
-        auto_model = getattr(transformers_module, "AutoModelForCausalLM")
-        auto_tokenizer = getattr(transformers_module, "AutoTokenizer")
+        auto_model = transformers_module.AutoModelForCausalLM
+        auto_tokenizer = transformers_module.AutoTokenizer
 
         dtype_lookup = _dtype_map(torch_module)
         dtype = dtype_lookup.get(cfg.dtype)
@@ -96,8 +96,8 @@ class ChatModel:
         if spec is None:
             raise ImportError("LoRA requested but the 'peft' package is not installed")
         peft_module = import_module("peft")
-        lora_config_cls = getattr(peft_module, "LoraConfig")
-        get_peft_model = getattr(peft_module, "get_peft_model")
+        lora_config_cls = peft_module.LoraConfig
+        get_peft_model = peft_module.get_peft_model
         task_type = None
         if hasattr(peft_module, "TaskType"):
             task_type = getattr(peft_module.TaskType, "CAUSAL_LM", None)

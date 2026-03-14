@@ -57,7 +57,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
                 torch.use_deterministic_algorithms(True)
                 matmul_backend = getattr(torch.backends, "cuda", None)
                 if matmul_backend is not None:
-                    setattr(matmul_backend.matmul, "allow_tf32", False)
+                    matmul_backend.matmul.allow_tf32 = False
             else:
                 with contextlib.suppress(Exception):
                     torch.use_deterministic_algorithms(False)

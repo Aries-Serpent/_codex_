@@ -395,7 +395,7 @@ def encode(
     if isinstance(encoded, dict):
         ids_candidate = encoded.get("input_ids")
     elif hasattr(encoded, "input_ids"):
-        ids_candidate = getattr(encoded, "input_ids")
+        ids_candidate = encoded.input_ids
 
     if ids_candidate is None:
         _fail(

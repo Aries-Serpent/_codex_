@@ -318,6 +318,54 @@
       "sessions": [
         "S-24"
       ]
+    },
+    "ci_failure_cascade_prevention": {
+      "id": "ci_failure_cascade_prevention",
+      "learned_session": "30",
+      "pr": "3579",
+      "learned_at": "2026-03-14T10:35:42.355397+00:00",
+      "description": "Cascading CI failure prevention: use == failure not != success in status check jobs",
+      "trigger": "status_check_job failing when upstream job is skipped",
+      "fix": "Replace != success with == failure in conditional checks; skipped is neutral not failed",
+      "confidence": 0.95,
+      "effectiveness": 1.0,
+      "occurrences": 1
+    },
+    "python_version_venv_mismatch": {
+      "id": "python_version_venv_mismatch",
+      "learned_session": "30",
+      "pr": "3579",
+      "learned_at": "2026-03-14T10:35:42.355397+00:00",
+      "description": "Python version mismatch when cached venv from older Python version is restored",
+      "trigger": "Package requires Python >=3.12 but 3.11 venv restored from cache restore-key",
+      "fix": "Use setup-python@v5 directly instead of composite venv-cache action for jobs with own deps",
+      "confidence": 0.98,
+      "effectiveness": 1.0,
+      "occurrences": 1
+    },
+    "ci_poll_timeout_pattern": {
+      "id": "ci_poll_timeout_pattern",
+      "learned_session": "30",
+      "pr": "3579",
+      "learned_at": "2026-03-14T10:35:42.355397+00:00",
+      "description": "Long-running CI poll loops waste runner minutes; keep approval polls under 2 minutes",
+      "trigger": "Stakeholder approval poll running 10x60s=10min blocking runners",
+      "fix": "Reduce maxAttempts*pollInterval to 3*30s=90s; fail fast with re-run instructions",
+      "confidence": 0.97,
+      "effectiveness": 1.0,
+      "occurrences": 1
+    },
+    "premerge_scope_validation": {
+      "id": "premerge_scope_validation",
+      "learned_session": "30",
+      "pr": "3579",
+      "learned_at": "2026-03-14T10:35:42.355397+00:00",
+      "description": "Quick pre-merge validation must NOT run full test suite - use targeted ci_test/ subset",
+      "trigger": "Pre-merge validation running pytest tests/ (1500+ tests) and getting runner shutdown",
+      "fix": "Scope to tests/capabilities/ci_test/ (~50 tests, ~30s); full suite in main validation pipeline",
+      "confidence": 0.99,
+      "effectiveness": 1.0,
+      "occurrences": 1
     }
   },
   "learning_log": [
@@ -376,14 +424,44 @@
       ],
       "outcome": "success",
       "notes": "Sessions 22-24: three-tier deferral scanner fix, REQ-4 auto-heal, test environment isolation"
+    },
+    {
+      "timestamp": "2026-03-14T10:35:42.355397+00:00",
+      "session": "30",
+      "pr": "3579",
+      "patterns_applied": [
+        "test_failure_resolution",
+        "commit_verification",
+        "session_continuity",
+        "agent_handoff",
+        "coverage_improvement",
+        "workflow_failure_resolution",
+        "security_remediation",
+        "documentation_update",
+        "deferral_scanner_false_positive",
+        "cognitive_preflight_req4_auto_heal",
+        "brain_test_env_isolation",
+        "ci_failure_cascade_prevention",
+        "python_version_venv_mismatch",
+        "ci_poll_timeout_pattern",
+        "premerge_scope_validation"
+      ],
+      "patterns_learned": [
+        "ci_failure_cascade_prevention",
+        "python_version_venv_mismatch",
+        "ci_poll_timeout_pattern",
+        "premerge_scope_validation"
+      ],
+      "outcome": "success - 4 CI failure patterns fixed, docs stubs expanded, ruff B009/B010/B033 fixed"
     }
   ],
   "statistics": {
-    "total_patterns": 11,
+    "total_patterns": 15,
     "total_applications": 82,
     "average_success_rate": 0.925,
     "most_used_pattern": "commit_verification",
     "most_successful_pattern": "documentation_update",
-    "last_updated": "2026-03-14T04:45:00Z"
+    "last_updated": "2026-03-14T10:35:42.355397+00:00",
+    "total_sessions": 1
   }
 }

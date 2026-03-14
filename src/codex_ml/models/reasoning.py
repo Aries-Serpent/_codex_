@@ -136,10 +136,10 @@ class ReasoningHarness:
             except StopIteration:
                 device = torch.device("cpu")
             self.head.to(device=device)
-            setattr(model, "reasoning_head", self.head)
+            model.reasoning_head = self.head
             if self.tool_adapter is not None:
                 self.tool_adapter.to(device=device)
-                setattr(model, "tool_use_adapter", self.tool_adapter)
+                model.tool_use_adapter = self.tool_adapter
         else:
             self.model = None
         return model

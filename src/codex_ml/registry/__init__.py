@@ -131,7 +131,7 @@ def reload_entry_points() -> None:
         for attr in attr_names:
             registry = getattr(module, attr)
             if hasattr(registry, "_entry_points_loaded"):
-                setattr(registry, "_entry_points_loaded", False)
+                registry._entry_points_loaded = False
             failed = getattr(registry, "_failed_entry_points", None)
             if isinstance(failed, dict):
                 failed.clear()
