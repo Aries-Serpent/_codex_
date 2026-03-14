@@ -94,9 +94,18 @@ jobs:
           yellow_workflows = [r for r in results if r["tier"] == "YELLOW"]
 
           # Check for stakeholder approval in PR body
+          # Normalize: strip bold/italic markdown markers before matching so that
+          # "- [x] **💰 Cost Proposal Approved**" and "- [x] 💰 Cost Proposal Approved"
+          # both match reliably.
           pr_body = os.environ.get("PR_BODY", "")
-          approved = "- [x] 💰 Cost Proposal Approved" in pr_body or \
-                     "- [x] \U0001f4b0 Cost Proposal Approved" in pr_body
+          pr_body_normalized = pr_body.replace("**", "").replace("__", "")
+          approved = (
+              "- [x] 💰 Cost Proposal Approved" in pr_body_normalized or
+              "- [X] 💰 Cost Proposal Approved" in pr_body_normalized or
+              "- [x] \U0001f4b0 Cost Proposal Approved" in pr_body_normalized or
+              "[x] Cost Proposal Approved" in pr_body_normalized or
+              "[X] Cost Proposal Approved" in pr_body_normalized
+          )
 
           # Build markdown summary for PR comment
           lines = ["## 💰 PR Cost Check Summary\n"]

@@ -204,6 +204,13 @@ jobs:
           echo "✅ push to main — post-merge auto-approved"
           echo "approved=true" >> "$GITHUB_OUTPUT"
 
+      - name: Auto-approve on feature branch push (non-main)
+        id: feature_push
+        if: github.event_name == 'push' && github.ref != 'refs/heads/main'
+        run: |
+          echo "✅ feature branch push — auto-approved (cost enforcement is at PR merge time via pr-cost-check)"
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
       - name: YELLOW — warn and proceed after window
         id: yellow
         if: needs.estimate.outputs.tier == 'YELLOW' && github.event_name == 'pull_request'
@@ -230,12 +237,15 @@ jobs:
               });
 
               const body = pr.data.body || '';
+              // Normalize: strip bold/italic markdown so "**💰 Cost Proposal Approved**"
+              // matches the same as the plain "💰 Cost Proposal Approved" variant.
+              const normalizedBody = body.replace(/\*\*/g, '').replace(/__/g, '');
               // Accept ticked checkbox in any of these formats
               if (
-                body.includes('- [x] 💰 Cost Proposal Approved') ||
-                body.includes('- [X] 💰 Cost Proposal Approved') ||
-                body.includes('[x] Cost Proposal Approved') ||
-                body.includes('[X] Cost Proposal Approved')
+                normalizedBody.includes('- [x] 💰 Cost Proposal Approved') ||
+                normalizedBody.includes('- [X] 💰 Cost Proposal Approved') ||
+                normalizedBody.includes('[x] Cost Proposal Approved') ||
+                normalizedBody.includes('[X] Cost Proposal Approved')
               ) {
                 console.log(`✅ Stakeholder approval detected on attempt ${attempt}`);
                 core.setOutput('approved', 'true');
@@ -259,7 +269,7 @@ jobs:
       - name: Resolve final approval
         id: decision
         run: |
-          APPROVED="${{ steps.green.outputs.approved || steps.dispatch.outputs.approved || steps.main_push.outputs.approved || steps.yellow.outputs.approved || steps.red_poll.outputs.approved }}"
+          APPROVED="${{ steps.green.outputs.approved || steps.dispatch.outputs.approved || steps.main_push.outputs.approved || steps.feature_push.outputs.approved || steps.yellow.outputs.approved || steps.red_poll.outputs.approved }}"
           echo "approved=${APPROVED:-false}" >> "$GITHUB_OUTPUT"
           if [ "${APPROVED:-false}" != "true" ]; then
             echo "::error::Cost gate not approved"
