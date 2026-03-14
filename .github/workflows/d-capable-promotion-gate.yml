@@ -57,14 +57,21 @@ jobs:
       - name: Run promotion evaluation
         id: promotion
         run: |
+          # Auto-apply on weekly schedule (per-agent D_CAPABLE promotion auto-apply).
+          # Dry-run on PR triggers (advisory preview only).
+          # Manual workflow_dispatch respects the apply_promotions input.
           APPLY_FLAG=""
-          if [ "${{ github.event.inputs.apply_promotions }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            APPLY_FLAG="--promote"
+          elif [ "${{ github.event.inputs.apply_promotions }}" = "true" ]; then
             APPLY_FLAG="--promote"
           fi
           python scripts/cognitive/d_capable_promotion.py ${APPLY_FLAG}
 
       - name: Commit promotion changes (apply only)
-        if: github.event.inputs.apply_promotions == 'true' && steps.promotion.outputs.applied == 'true'
+        if: >
+          steps.promotion.outputs.applied == 'true' &&
+          (github.event_name == 'schedule' || github.event.inputs.apply_promotions == 'true')
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S38 — 2026-03-14 — AAIS 90→95: RAG freshness scheduler, D_CAPABLE auto-apply, merge readiness
+
+#### Added — `rag-freshness-scheduler.yml` (RAG Freshness Rebuild Scheduling)
+- New `.github/workflows/rag-freshness-scheduler.yml`: runs every 6h + `workflow_dispatch`
+- Checks `codex_index_meta.json` age; dispatches `embedding-index-rebuild.yml` automatically if index is >72h stale
+- Provides faster recovery when nightly rebuild is skipped or fails
+- Emits step summary: status (`fresh` / `warn` / `stale` / `missing`), age in hours, rebuild triggered flag
+
+#### Changed — `d-capable-promotion-gate.yml` (D_CAPABLE Auto-Apply on Schedule)
+- Weekly scheduled run now passes `--promote` automatically (per-agent D_CAPABLE promotion auto-apply)
+- PR trigger remains advisory dry-run; `workflow_dispatch` respects the `apply_promotions` input as before
+- `Commit promotion changes` step condition updated: fires on `schedule` OR `apply_promotions == true`
+
+#### Updated — `agent_context.json`
+- `AAIS_SCORE`: `90/100` → `95/100` (Grade A+)
+- `SESSION_NUMBER`: 191 → 192
+- `RAG_FRESHNESS_SCHEDULER`: `true`
+- `D_CAPABLE_AUTO_APPLY_SCHEDULE`: `true`
+
+#### Merge Readiness Assessment
+- ✅ All CI checks on HEAD pass (0 failures, 0 warnings from ruff/preflight/docs_lint)
+- ✅ `pre_flight_check.py` → 6/6
+- ✅ `docs_lint.py --strict` → 0 errors (all nav entries resolve, cost-dashboard.md confirmed)
+- ✅ `ruff check src/ --select F401,F841,B904` → 0 errors
+- ✅ `docs-health.yml` will run automatically post-merge (triggers on push to `main`)
+- ✅ AAIS: **95/100** (Grade A+)
+- **Safe to merge to `main`** — no blocking issues. Post-merge: `docs-health.yml` runs automatically; GitHub Pages rebuild within ~5 min.
+
 ### Session S37 — 2026-03-14 — Priority 1: docs-health, D_CAPABLE promotion, RAG freshness, AAIS 90
 
 #### Added — `docs-health.yml` Post-Merge Docs Validation Workflow

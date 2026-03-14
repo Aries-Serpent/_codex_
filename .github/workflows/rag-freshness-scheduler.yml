@@ -1,0 +1,132 @@
+name: RAG Freshness Scheduler
+
+# Runs every 6 hours and checks whether the FAISS embedding index has grown
+# stale between nightly rebuild runs.  If the index is older than 72 hours the
+# job auto-dispatches `embedding-index-rebuild.yml` so the corpus stays fresh.
+#
+# Priority: AAIS 90→95 deliverable — "RAG freshness rebuild scheduling".
+# This supplements (not replaces) the nightly rebuild at 2 AM UTC; it provides
+# faster recovery when a nightly run is skipped or failed.
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:         # manual on-demand check
+
+permissions:
+  contents: read
+  actions: write             # needed to dispatch embedding-index-rebuild.yml
+
+concurrency:
+  group: rag-freshness-scheduler
+  cancel-in-progress: true
+
+jobs:
+  check-freshness:
+    name: "🔍 RAG Index Freshness Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Evaluate index age
+        id: age
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          META = Path(".codex/embeddings/codex_index_meta.json")
+          STALE_WARN_HOURS    = 25
+          STALE_TRIGGER_HOURS = 72   # dispatch rebuild when older than this
+
+          output = os.environ["GITHUB_OUTPUT"]
+
+          if not META.exists():
+              print("::warning::codex_index_meta.json not found — scheduling rebuild")
+              with open(output, "a") as f:
+                  f.write("needs_rebuild=true\n")
+                  f.write("age_hours=unknown\n")
+                  f.write("status=missing\n")
+              sys.exit(0)
+
+          meta = json.loads(META.read_text())
+          raw = meta.get("generated_at", "")
+          try:
+              raw_clean = raw.replace("Z", "+00:00")
+              ts = datetime.fromisoformat(raw_clean)
+          except ValueError:
+              print(f"::warning::Cannot parse generated_at='{raw}' — scheduling rebuild")
+              with open(output, "a") as f:
+                  f.write("needs_rebuild=true\n")
+                  f.write("age_hours=unknown\n")
+                  f.write("status=parse_error\n")
+              sys.exit(0)
+
+          age_hours = (datetime.now(timezone.utc) - ts).total_seconds() / 3600
+
+          if age_hours > STALE_TRIGGER_HOURS:
+              status = "stale"
+              needs_rebuild = "true"
+              print(f"::error::RAG index is {age_hours:.1f}h old (>{STALE_TRIGGER_HOURS}h threshold) — triggering rebuild")
+          elif age_hours > STALE_WARN_HOURS:
+              status = "warn"
+              needs_rebuild = "false"
+              print(f"::warning::RAG index is {age_hours:.1f}h old (>{STALE_WARN_HOURS}h) — nightly rebuild will refresh it")
+          else:
+              status = "fresh"
+              needs_rebuild = "false"
+              print(f"RAG index is {age_hours:.1f}h old — fresh (threshold {STALE_WARN_HOURS}h)")
+
+          with open(output, "a") as f:
+              f.write(f"needs_rebuild={needs_rebuild}\n")
+              f.write(f"age_hours={age_hours:.1f}\n")
+              f.write(f"status={status}\n")
+              f.write(f"generated_at={raw}\n")
+          PYEOF
+
+      - name: Dispatch embedding-index-rebuild (if stale)
+        if: steps.age.outputs.needs_rebuild == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'embedding-index-rebuild.yml',
+              ref: context.ref,
+            });
+            core.notice('Dispatched embedding-index-rebuild.yml — index was stale');
+
+      - name: Post freshness summary
+        if: always()
+        run: |
+          {
+            echo "## 🔍 RAG Index Freshness Scheduler"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Status | ${{ steps.age.outputs.status }} |"
+            echo "| Age (hours) | ${{ steps.age.outputs.age_hours }} |"
+            echo "| Last built | ${{ steps.age.outputs.generated_at }} |"
+            echo "| Rebuild triggered | ${{ steps.age.outputs.needs_rebuild }} |"
+            echo ""
+            if [ "${{ steps.age.outputs.needs_rebuild }}" = "true" ]; then
+              echo "🚨 **Rebuild dispatched** — index exceeded 72h staleness threshold."
+            elif [ "${{ steps.age.outputs.status }}" = "warn" ]; then
+              echo "⚠️ Index approaching stale threshold — nightly run will refresh it."
+            else
+              echo "✅ Index is fresh — no action needed."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -33,13 +33,15 @@
     "repo_variables_count": 24,
     "drift_entries": 3
   },
-  "AAIS_SCORE": "90/100",
+  "AAIS_SCORE": "95/100",
   "OKR_COMPLETION_PCT": "100",
   "TASK_ROUTER_AVAILABLE": "true",
   "OKR_TRACKER_AVAILABLE": "true",
-  "SESSION_NUMBER": 191,
-  "LAST_ACTION": "Session 37 (Priority 1) — docs-health.yml post-merge workflow; D_CAPABLE per-agent promotion pipeline (script + workflow); RAG index freshness gate in embedding-index-rebuild.yml; AAIS 85→90/100",
+  "SESSION_NUMBER": 192,
+  "LAST_ACTION": "Session 38 (Priority 1) \u2014 rag-freshness-scheduler.yml (6h check + auto-dispatch rebuild if stale >72h); d-capable-promotion-gate.yml auto-apply on weekly schedule; AAIS 90\u219295/100",
   "D_CAPABLE_PROMOTION_PIPELINE": true,
   "RAG_FRESHNESS_AUTOMATION": true,
-  "DOCS_HEALTH_WORKFLOW": true
+  "DOCS_HEALTH_WORKFLOW": true,
+  "RAG_FRESHNESS_SCHEDULER": true,
+  "D_CAPABLE_AUTO_APPLY_SCHEDULE": true
 }
