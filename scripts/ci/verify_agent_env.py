@@ -239,7 +239,7 @@ def run_checks(venv: Path, requirements: Path) -> dict:
 
 def print_report(report: dict) -> None:
     print(f"\n{'═' * 60}")
-    print(f"  Copilot Agent Environment Health Report")
+    print("  Copilot Agent Environment Health Report")
     print(f"  Venv: {report['venv']}")
     print(f"{'═' * 60}")
 

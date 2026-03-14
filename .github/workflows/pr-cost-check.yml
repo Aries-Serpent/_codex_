@@ -147,12 +147,16 @@ jobs:
       - name: Post cost summary comment
         if: always()
         uses: actions/github-script@v7
+        env:
+          COST_SUMMARY: ${{ steps.estimate.outputs.summary }}
+          COST_STATUS: ${{ steps.estimate.outputs.status }}
+          COST_RED_COUNT: ${{ steps.estimate.outputs.red_count }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const summary = `${{ steps.estimate.outputs.summary }}`;
-            const status  = `${{ steps.estimate.outputs.status }}`;
-            const redCount = parseInt(`${{ steps.estimate.outputs.red_count }}` || '0');
+            const summary  = process.env.COST_SUMMARY  || '';
+            const status   = process.env.COST_STATUS   || 'green';
+            const redCount = parseInt(process.env.COST_RED_COUNT || '0');
 
             const MARKER = '<!-- cost-check-bot -->';
             const body = `${MARKER}\n${summary}`;

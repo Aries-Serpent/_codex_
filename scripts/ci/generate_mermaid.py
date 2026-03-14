@@ -218,8 +218,8 @@ def gen_ci_overview(repo_root: Path) -> str:
     lines += [
         "",
         "  subgraph Pages",
-        f'  pages_mkdocs["📄 MkDocs Deploy"]',
-        f'  docs_health["🏥 Doc Health Auto-Fix"]',
+        '  pages_mkdocs["📄 MkDocs Deploy"]',
+        '  docs_health["🏥 Doc Health Auto-Fix"]',
         "  end",
     ]
 

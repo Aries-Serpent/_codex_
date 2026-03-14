@@ -52,6 +52,7 @@ jobs:
   build-agent-env:
     name: '🔨 Build + cache agent venv'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     permissions:
       contents: read
@@ -127,7 +128,7 @@ jobs:
               f"| **Cache mode** | {mode} |",
               f"| **Python** | {py_info} |",
               f"| **Result** | {msg} |",
-              f"| **Cache key** | `Linux-agent-venv-${{{{ env.CACHE_VERSION }}}}-py${{{{ env.PYTHON_VERSION }}}}-<hash>` |",
+              f"| **Cache key** | `Linux-agent-venv-{os.environ.get('CACHE_VERSION', 'v2')}-py{os.environ.get('PYTHON_VERSION', '3.12')}-<hash>` |",
               "",
               "### What this cache provides",
               "- ⚡ ~4 s agent env activation (vs ~75 s cold build)",

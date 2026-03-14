@@ -821,12 +821,8 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
     if env.get("GITHUB_APP_ID") and env.get("GITHUB_APP_INSTALLATION_ID"):
         try:
             from integrations.github_app_auth import (
-                mint_app_jwt,
                 exchange_installation_token,
-            )
-            app_jwt = mint_app_jwt(
-                env["GITHUB_APP_ID"],
-                # write env vars so _read_private_key() resolves
+                mint_app_jwt,
             )
             # Temporarily set so _read_private_key() inside mint_app_jwt works
             if "GITHUB_APP_PRIVATE_KEY_PEM" in env:

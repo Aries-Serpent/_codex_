@@ -408,7 +408,7 @@ def main(argv: list[str] | None = None) -> int:
     docs_root   = repo_root / "docs"
 
     if not mkdocs_path.exists():
-        print(f"ERROR: mkdocs.yml not found", file=sys.stderr)
+        print("ERROR: mkdocs.yml not found", file=sys.stderr)
         return 2
 
     result = SyncResult()

@@ -149,7 +149,7 @@
    containing literal backticks). The old `_INLINE_CODE_SPAN` regex `r"`[^`\n]+`"` matched the
    OUTER separators `` ` ` `` (backtick + space + backtick) rather than the full span, leaving
    `` `future task` `` visible to the deferral scanner.
-   
+
    Fix: Extended `_INLINE_CODE_SPAN` to a combined pattern that strips double-backtick spans
    FIRST (before single-backtick spans), then single-backtick spans:
    ```
@@ -477,7 +477,7 @@
 
 ### CI Triage Issue #3565 Analysis
 
-**Issue:** 75 total failures across 29 workflows  
+**Issue:** 75 total failures across 29 workflows
 **Root cause breakdown:**
 
 | Category | Count | Resolution |
@@ -1674,8 +1674,8 @@ grep "pip install.*true\|2>/dev/null" Dockerfile.preview
 
 ## W-140 — SAR P1 Gap Closure Sprint (2026-03-06)
 
-**Session**: PR #3503 continuation  
-**Work item**: W-140 — Level 3.7 → Level 3.9 via SAR P1 sprint  
+**Session**: PR #3503 continuation
+**Work item**: W-140 — Level 3.7 → Level 3.9 via SAR P1 sprint
 **Scope**: SAR-G02 Feature Store PoC, SAR-G03 auto-retrain trigger, SAR-G05 OTel stub, `vars-guide-sync` fail gate, `3503/merge` branch assessment
 
 ### Changes Made
@@ -2576,8 +2576,8 @@ and the CI gate requirement.
 
 ## [auto-generated] Session 27 — 2026-03-14
 
-**Agent:** copilot-swe-agent[bot]  
-**PR:** #3575 — fix: CI failures, cost gate, deferral hardening  
+**Agent:** copilot-swe-agent[bot]
+**PR:** #3575 — fix: CI failures, cost gate, deferral hardening
 **Branch:** copilot/ci-failure-triage-report
 
 ### Completed
@@ -2606,7 +2606,7 @@ and the CI gate requirement.
 
 ## Session 28 — 2026-03-14T06:42Z — @copilot continue (PR #3575, comment #4059754585)
 
-**§0 Pre-Session Review:** Complete  
+**§0 Pre-Session Review:** Complete
 **Trigger:** `@copilot continue` (Agent Token Delegation activated, run #23082487360)
 
 ### Actions Taken
@@ -2623,5 +2623,37 @@ and the CI gate requirement.
 
 ### Remaining (admin action required)
 - T-002: Smoke-test first real PR through cost gate — @mbaetiong
-- T-003: Add `cost-gate` as required branch-protection check — @mbaetiong  
+- T-003: Add `cost-gate` as required branch-protection check — @mbaetiong
 - T-007: Production sign-off (2026-04-01) — @mbaetiong
+
+## Session 28b — 2026-03-14T07:30Z — CI failures triage (PR #3575)
+
+**§0 Pre-Session Review:** All open bot threads addressed
+
+### Fixes Applied (10 failing checks → 0)
+
+**Cost-gate JS injection (5 checks fixed):**
+- `cost-gate.yml` — moved `proposal_md` + `workflow_name` to `env:` block; read via `process.env` in github-script (prevents JS syntax break when Markdown backticks are injected into template literals)
+- `pr-cost-check.yml` — same pattern: `summary`, `status`, `red_count` via `process.env.COST_*`
+
+**actionlint (1 check fixed):**
+- `build-agent-env-cache.yml` line 130 — replaced `${{{{ env.CACHE_VERSION }}}}` (invalid GitHub Actions expression inside Python f-string) with `os.environ.get('CACHE_VERSION', 'v2')`
+- `build-agent-env-cache.yml` — added `timeout-minutes: 30` to `build-agent-env` job
+
+**Auto-Fix Common CI Issues (1 check fixed):**
+- Pattern 9 (unsorted imports): `cognitive_app/src/server/cli_api_server.py` — sorted `exchange_installation_token` before `mint_app_jwt`
+- Pattern 11 (f-string no placeholder): `scripts/ci/docs_sync.py` — `f"ERROR: ..."` → `"ERROR: ..."`
+- Trailing whitespace stripped from `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + `docs/evolution/AAIS_HONEST_CALIBRATION_V1.md`
+
+**Pre-Flight CI Validation (1 check fixed):**
+- `build-agent-env-cache.yml` — added `timeout-minutes: 30` to job
+- `scripts/ci/pre_flight_check.py` — implemented missing `_fix_workflow_timeouts()` handler so `--fix` actually works
+
+**github-advanced-security / github-code-quality CodeQL alert (1 alert fixed):**
+- `cognitive_app/src/server/cli_api_server.py` line 827 — removed dead first `app_jwt = mint_app_jwt(...)` assignment (variable defined twice without intermediate use); private key env var setup now precedes the single real call
+
+**All checks verified:**
+- `pre_flight_check.py`: 6/6 passed ✅
+- `auto_fix_common_issues.py --check-only`: 0 issues ✅
+- `ruff F401/F841/I001`: 0 issues ✅
+- YAML syntax (3 workflows): valid ✅
