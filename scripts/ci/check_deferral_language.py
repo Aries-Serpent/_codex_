@@ -113,13 +113,25 @@ EXEMPTION_PATTERNS: list[str] = [
     r"\.github/copilot-prompts/\S+$",  # path-only reference (must be at end of line; prevents bypass like ".../ will fix in a future task")
 ]
 
-# Pre-compiled pattern to strip single-backtick inline code spans before scanning.
+# Pre-compiled pattern to strip inline code spans before scanning.
 # This prevents false positives from documentation that uses inline code to *describe*
 # deferral phrases (e.g., describing what the scanner catches).
-# Only single-backtick spans are stripped; triple-backtick fenced blocks span multiple
-# lines and are handled line-by-line (each fence line is blank after stripping, which
-# never matches a deferral trigger).
-_INLINE_CODE_SPAN = re.compile(r"`[^`\n]+`")
+#
+# Two variants are handled:
+#   1. Double-backtick spans: `` `content` `` — GitHub Markdown syntax for code spans
+#      that themselves contain literal backtick characters (e.g. `` `future task` ``).
+#      These MUST be stripped before single-backtick spans, otherwise the single-backtick
+#      pattern greedily strips the outer `` ` `` separators first and leaves the inner
+#      text still visible to the scanner.
+#   2. Single-backtick spans: `content` — ordinary inline code.
+#
+# Triple-backtick fenced blocks span multiple lines and are handled line-by-line
+# (each fence line after stripping becomes empty or only punctuation, which never
+# matches a deferral trigger).
+_INLINE_CODE_SPAN = re.compile(
+    r"``[^`]*(?:`(?!`)[^`]*)*``"  # double-backtick span (may contain single backticks)
+    r"|`[^`\n]+`"                  # single-backtick span (no newlines)
+)
 
 
 # ── ML Classifier (optional — enabled by DEFERRAL_SCANNER_ML=1) ───────────────

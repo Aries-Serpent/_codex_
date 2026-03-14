@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session CI-Triage-3575-S23 — 2026-03-14 — Double-backtick code span fix (PR #3575)
+
+#### Fixed
+
+- **Deferral scanner — double-backtick code span stripping (BUG FIX)**: The `_INLINE_CODE_SPAN`
+  regex was stripping the outer `` ` ` `` separators of double-backtick spans (`` `` `content` `` ``)
+  instead of the full span, leaving the inner content visible to the deferral scanner. This caused
+  CI Deferral Language Gate run #71 to fail with `PR_SCAN=failure` because the PR description
+  contains ` `` `future task` `` ` as documentation text. Fixed by extending `_INLINE_CODE_SPAN`
+  to match double-backtick spans first (before single-backtick spans), using the pattern
+  `r"``[^`]*(?:`(?!`)[^`]*)*``|`[^`\n]+`"`.
+
 ### Session CI-Triage-3575 — 2026-03-14 — Deferral Scanner Hardening + Auto-Fix Mechanism (PR #3575)
 
 #### Fixed

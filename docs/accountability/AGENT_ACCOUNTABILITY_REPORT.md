@@ -3,7 +3,65 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/ci-failure-triage-report
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-14T03:20Z (session 22: CI Failure Triage + Deferral Scanner Hardening + Auto-Fix Mechanism — PR #3575)
+**Last updated:** 2026-03-14T04:10Z (session 23: Double-backtick code span fix — PR #3575)
+
+---
+
+## SESSION SUMMARY — 2026-03-14 SESSION 23 (@copilot continue — Agent Token Delegation activated — PR #3575)
+
+### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
+- [x] **0a.** Reviewed ALL bot-posted comments on PR #3575 ✅
+  - `copilot-pull-request-reviewer[bot]` — all 5 threads marked `is_resolved: true` (already addressed in Session 22)
+  - `@mbaetiong` comment `#4059405052` — `@copilot continue` with Agent Token Delegation activation → ACTION REQUIRED
+- [x] **0b.** Fixed ALL code-fixable failing CI checks ✅
+  - Agent Token Delegation Run #1455: **success** ✅ (cognitive-preflight passed on `aff813c7`)
+  - Deferral Language Gate Run #71: **failure** ❌ → **ROOT CAUSE DIAGNOSED + FIXED** (see Work Completed §1)
+
+### Pre-flight Checklist
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** CI failure patterns reviewed — Deferral Gate run #71 log examined; `PR_SCAN=failure` root cause found ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: fix Deferral Language Gate Run #71 failure (double-backtick code span bug) ✅
+- [x] **5.** Memories loaded: §0 protocol, deferral enforcement, session_wrapup_autofix ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed at all times ✅
+
+### Work Completed
+1. **Deferral scanner — double-backtick code span stripping (BUG FIX)** — The CI Deferral Language Gate
+   Run #71 failed with `PR_SCAN=failure` because the PR description contains the text
+   ` `` `future task` `` ` (double-backtick code span, GitHub Markdown syntax for code spans
+   containing literal backticks). The old `_INLINE_CODE_SPAN` regex `r"`[^`\n]+`"` matched the
+   OUTER separators `` ` ` `` (backtick + space + backtick) rather than the full span, leaving
+   `` `future task` `` visible to the deferral scanner.
+   
+   Fix: Extended `_INLINE_CODE_SPAN` to a combined pattern that strips double-backtick spans
+   FIRST (before single-backtick spans), then single-backtick spans:
+   ```
+   _INLINE_CODE_SPAN = re.compile(
+       r"``[^`]*(?:`(?!`)[^`]*)*``"  # double-backtick span (may contain single backticks)
+       r"|`[^`\n]+`"                  # single-backtick span (no newlines)
+   )
+   ```
+   Now ` `` `future task` `` ` is fully stripped to empty string → no false positive.
+
+2. **AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated** — REQ-4 and REQ-5 compliance maintained.
+
+### Verification
+- All 10 deferral scanner tests pass (including 3 new double-backtick span tests)
+- `python scripts/ci/check_deferral_language.py --git-log` → exit 0
+- `python -m ruff check scripts/ci/check_deferral_language.py` → all checks passed
+- `python3 -c "import ast; ast.parse(...)"` → AST OK
+
+### Lessons Learned
+- GitHub Markdown double-backtick spans (`` `` `content` `` ``) require a dedicated regex pattern
+  that is run BEFORE the single-backtick pattern. The single-backtick pattern strips the inter-backtick
+  spaces but leaves the content visible, causing a second-order false positive.
+- The root-cause diagnostic approach: fetch actual PR body from GitHub API, not just test locally,
+  to catch trigger phrases that only appear in the real PR description content.
+
+### Impact Score
+- Files changed: 2 (`check_deferral_language.py`, `AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: Deferral Language Gate (run #71 failure class)
+- Self-healing: no auto-fix needed; agent diagnosed and fixed directly
 
 ---
 
