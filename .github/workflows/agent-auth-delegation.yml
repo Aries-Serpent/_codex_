@@ -298,6 +298,7 @@ jobs:
       # ── REQ-2: Read ci_failure_patterns.yaml → output to job summary ──────
       - name: Parse CI Failure Patterns → Job Summary
         run: |
+          # shellcheck disable=SC2129
           PATTERN_FILE=".codex/patterns/ci_failure_patterns.yaml"
 
           echo "## 🧠 Active CI Failure Patterns" >> "$GITHUB_STEP_SUMMARY"
