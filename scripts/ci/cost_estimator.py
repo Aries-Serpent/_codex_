@@ -26,8 +26,6 @@ import json
 import os
 import sys
 from dataclasses import dataclass, field
-from typing import Optional
-
 
 # ── GitHub Team + Copilot Pro Plus budget constants ──────────────────────────
 MONTHLY_MINUTES_BUDGET = 3_000          # Linux equivalent minutes/month

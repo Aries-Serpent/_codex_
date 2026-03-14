@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Session CI-Triage-3575-S23 — 2026-03-14 — Double-backtick code span fix (PR #3575)
 
 #### Fixed
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #unknown (SHA `532b3f1d`) at 2026-03-14T05:23Z [auto-generated]
 
 - **Deferral scanner — double-backtick code span stripping (BUG FIX)**: The `_INLINE_CODE_SPAN`
   regex was stripping the outer `` ` ` `` separators of double-backtick spans (`` `` `content` `` ``)

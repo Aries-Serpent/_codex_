@@ -43,7 +43,25 @@ env:
   BUILDX_CACHE_DIR: /var/tmp/codex-buildx-cache
 
 jobs:
+  # ── 💰 Cost Gate (OBJ-001 T-006) ─────────────────────────────────────────
+  # Uses self-hosted runner (0 billed min) but pushes to GHCR → RED tier.
+  # Stakeholder must tick "💰 Cost Proposal Approved" in PR description.
+  # Bypassed automatically on workflow_dispatch (owner already approved).
+  cost-gate:
+    name: "💰 Cost Gate"
+    uses: ./.github/workflows/cost-gate.yml
+    with:
+      workflow_name:   "Build & Push Docker (GHCR)"
+      runner:          "self-hosted"
+      timeout_minutes: 45
+      matrix_count:    1
+      pushes_to_ghcr:  true
+    permissions:
+      contents:      read
+      pull-requests: write
+
   approval-check:
+    needs: cost-gate
     name: Owner approval — check-only gate
     runs-on: [self-hosted, linux]
     timeout-minutes: 10
@@ -77,6 +95,7 @@ jobs:
 
   build-and-smoke:
     if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only == 'true' || github.event.inputs.check_only == true)) }}
+    needs: [cost-gate, approval-check]
     name: Build image and run smoke test
     runs-on: [self-hosted, linux]
     timeout-minutes: 45

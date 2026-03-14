@@ -91,6 +91,25 @@ jobs:
             2>/dev/null || true
           # cost_estimator exits 0/1/2 — we capture via GITHUB_OUTPUT, not exit code
 
+      # T-004: Log this estimate to NDJSON for monthly budget tracking
+      - name: Log usage (T-004)
+        id: usage_log
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python scripts/ci/usage_logger.py \
+            --workflow     "${{ inputs.workflow_name }}" \
+            --runner       "${{ inputs.runner }}" \
+            --effective-minutes "${{ steps.estimate.outputs.effective_minutes || '0' }}" \
+            --tier         "${{ steps.estimate.outputs.tier || 'GREEN' }}" \
+            --pr-number    "${PR_NUMBER}" \
+            --branch       "${GITHUB_REF_NAME}" \
+            --sha          "${GITHUB_SHA}" \
+            2>/dev/null || true
+
       - name: Build proposal markdown
         id: proposal
         run: |
