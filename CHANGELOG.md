@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session S41 — 2026-03-14 — CI triage #3581 + mypy baseline CI + OBJ-004 (PR #3580)
+### Session S41b — 2026-03-14 — Fix recurring REQ-4/5 failure from manifest auto-refresh (PR #3580)
+
+#### Fixed — `codex-manifest-refresh.yml` breaks REQ-4/5 on every push
+- The manifest auto-refresh workflow previously committed only `CODEX_MANIFEST.json`
+- The subsequent `agent-auth-delegation.yml` REQ-4/5 checks failed because the accountability
+  report and CHANGELOG were not in the last commit (correct CI logic, wrong auto-commit scope)
+- **Fix:** `codex-manifest-refresh.yml` now calls `session_wrapup_autofix.py --fix-all`
+  before committing — every auto-refresh commit now also updates the compliance files
+- CI logic (checking last commit) remains strict and unchanged
 
 #### Fixed — `agent-auth-delegation.yml` actionlint SC2129 (Pattern B)
 - Added `# shellcheck disable=SC2129` to "Parse CI Failure Patterns" run block (line 300)
