@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T13:24:22Z",
+  "generated_at": "2026-03-14T13:36:29Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1118,6 +1118,11 @@
       "has_concurrency": true
     },
     {
+      "name": "d-capable-promotion-gate",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "data-quality-suite",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1145,6 +1150,11 @@
     {
       "name": "docker-build-push",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "docs-health",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1720,5 +1730,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "60b69958b377e1bdaaab7027cac057de7983f57479ecdf13dfa85c455adbe69a"
+  "integrity_sha256": "bf915e70d0e93c32eb9a75cf82a797e9d810f07d94955b578c0c758d2597f4fb"
 }
