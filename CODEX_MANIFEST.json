@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T13:36:29Z",
+  "generated_at": "2026-03-14T16:35:17Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1308,6 +1308,11 @@
       "has_concurrency": true
     },
     {
+      "name": "rag-freshness-scheduler",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "ratelimit_history_prune",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1730,5 +1735,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "bf915e70d0e93c32eb9a75cf82a797e9d810f07d94955b578c0c758d2597f4fb"
+  "integrity_sha256": "6e52bf6ec7126b6d536e039b4dd26dcba29348f18b26651a889b51a0e91386ef"
 }
