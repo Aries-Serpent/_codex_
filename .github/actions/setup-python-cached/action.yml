@@ -193,11 +193,14 @@ runs:
       shell: bash
       run: |
         echo "::group::Refresh venv after exact cache hit"
-        # Self-healing: if the Python binary in the restored venv is broken
-        # (e.g. venv cached on Python 3.12.12, runner now has 3.12.13),
-        # rebuild the whole venv before attempting the incremental refresh.
-        if ! .venv_ci/bin/python --version &>/dev/null; then
-          echo "::warning::Stale venv — Python binary broken (Python patch version mismatch). Rebuilding."
+        # Self-healing: rebuild the venv if either:
+        #   (a) the Python binary is broken (cross-patch cache artifact), OR
+        #   (b) the Python major.minor version does not match the requested version
+        #       (e.g. venv was cached on Python 3.11, runner now provides 3.12).
+        REQUESTED_MINOR=$(echo "${{ inputs.python-version }}" | cut -d. -f1,2)
+        ACTUAL_MINOR=$(.venv_ci/bin/python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+        if ! .venv_ci/bin/python --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ]; then
+          echo "::warning::Stale venv — Python version mismatch (venv=${ACTUAL_MINOR}, requested=${REQUESTED_MINOR}). Rebuilding."
           chmod -R u+w .venv_ci 2>/dev/null || true
           rm -rf .venv_ci
           python -m venv .venv_ci

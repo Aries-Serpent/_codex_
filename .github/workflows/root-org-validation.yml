@@ -158,12 +158,14 @@ jobs:
 
       - name: Scan for broken references (PR trigger)
         if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
           echo "Scanning for broken references in changed files..."
 
           # Get changed files
-          git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(md|py|yml|yaml)$' || echo "")
+          git fetch origin "${BASE_REF}"
+          CHANGED_FILES=$(git diff --name-only "origin/${BASE_REF}...HEAD" | grep -E '\.(md|py|yml|yaml)$' || echo "")
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "No relevant files changed"

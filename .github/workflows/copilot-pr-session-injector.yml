@@ -43,24 +43,28 @@ jobs:
       # Without this, non-default base branches (e.g. 0D_base_) cause exit 128.
       # See: https://github.com/actions/checkout/issues/1262
       - name: "🔀 Fetch base branch ref for diff"
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          git fetch origin "${{ github.base_ref }}" --depth=1 2>/dev/null \
-            && echo "✅ Base branch '${{ github.base_ref }}' fetched" \
+          git fetch origin "${BASE_REF}" --depth=1 2>/dev/null \
+            && echo "✅ Base branch '${BASE_REF}' fetched" \
             || echo "⚠️ Base branch fetch failed — diffs will use fallback"
 
       - name: Collect changed files and PR metadata
         id: meta
+        env:
+          BASE_REF: ${{ github.base_ref }}
         run: |
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | head -50 | tr '\n' ',' | sed 's/,$//')
+          CHANGED=$(git diff --name-only "origin/${BASE_REF}...HEAD" 2>/dev/null | head -50 | tr '\n' ',' | sed 's/,$//')
           echo "changed_files=${CHANGED}" >> $GITHUB_OUTPUT
 
           # Detect cognitive brain touch
-          BRAIN_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "cognitive\|mcp_session\|structural_policy\|session_hook" || true)
+          BRAIN_TOUCHED=$(git diff --name-only "origin/${BASE_REF}...HEAD" 2>/dev/null | grep -c "cognitive\|mcp_session\|structural_policy\|session_hook" || true)
           : ${BRAIN_TOUCHED:=0}
           echo "brain_touched=${BRAIN_TOUCHED}" >> $GITHUB_OUTPUT
 
           # Detect CI touch
-          CI_TOUCHED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null | grep -c "\.github/workflows" || true)
+          CI_TOUCHED=$(git diff --name-only "origin/${BASE_REF}...HEAD" 2>/dev/null | grep -c "\.github/workflows" || true)
           : ${CI_TOUCHED:=0}
           echo "ci_touched=${CI_TOUCHED}" >> $GITHUB_OUTPUT
 

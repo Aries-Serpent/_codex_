@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S42c — 2026-03-15 — Python 3.12 standardization + CI triage + D_CAPABLE (PR #3582)
+
+#### Fixed — Python 3.12 as canonical base version (all config files)
+- `mypy.ini`: `python_version = 3.11` → `3.12`
+- `pyproject.toml` `[tool.mypy]`: `python_version = "3.11"` → `"3.12"`
+- `noxfile.py`: `PY_VERSIONS = ["3.12", "3.11"]` → `["3.12"]`; removed 3.11 fallback comment
+- `Dockerfile`: base and test stages `python:3.14.3-slim` → `python:3.12-slim`
+- `.github/actions/doc-test-scribe-action/action.yml`: `python-version: '3.11'` → `'3.12'`
+- `.mypy_baseline` updated 1152 → 1151 (net -1 from 3.12 reclassification)
+
+#### Fixed — `setup-python-cached` venv Python version mismatch (Self-Healing CI failure)
+- Root cause: exact-cache-hit refresh only checked if the binary worked, not if the
+  Python major.minor version matched the requested version. A 3.11 venv cached under a
+  restore-key would be used when 3.12 was requested, causing `pip install -e .` to fail
+  with `Package 'codex-ml' requires a different Python: 3.11.x not in '>=3.12'`.
+- Fix: added `REQUESTED_MINOR` vs `ACTUAL_MINOR` comparison before refresh; mismatch
+  triggers full venv rebuild with correct interpreter.
+
+#### Fixed — actionlint `github.base_ref` in `run:` blocks
+- `copilot-pr-session-injector.yml`: `${{ github.base_ref }}` in two `run:` steps
+  now routed through `env: BASE_REF:` and referenced as `${BASE_REF}` shell variable.
+- `root-org-validation.yml`: same pattern fixed.
+
+#### Fixed — `.gitignore` explicit exception for `agent_auth_session.json`
+- Added `!.codex/agent_auth_session.json` to `.gitignore` exceptions (was only implicit
+  via file already being tracked; now explicit for robustness after any future cache purge).
+
+#### Added — D_CAPABLE promotions (OBJ-004 T-003)
+- `test-assertion-updater`: E→D_CAPABLE (production maturity, 0 violations)
+- `test-pattern-guardian`: E→D_CAPABLE (production maturity, 0 violations)
+- Total D_CAPABLE agents: 5; AAIS: 98→**100/100** 🎉
+
 ### Session S42 — 2026-03-15 — Rust Swarm CI Cost Proposal + Workflow Fixes (PR #3582)
 
 #### Fixed — `rust_swarm_ci.yml` non-existent action versions

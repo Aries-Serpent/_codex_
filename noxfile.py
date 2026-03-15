@@ -37,7 +37,7 @@ Sessions Overview:
   rollback_smoke  -> Simulates rollback readiness (ensures segmentation files removable without breakage).
 
 Python Version Strategy:
-  * Prefer 3.12, then fall back to 3.11.
+  * Use Python 3.12 (the project's minimum and canonical version).
   * Use session.python property when available; else rely on interpreter discovery.
 
 Reversibility:
@@ -57,8 +57,8 @@ from typing import List
 import nox
 import tomllib
 
-# Preferred Python versions (adjust as needed)
-PY_VERSIONS: List[str] = ["3.12", "3.11"]
+# Canonical Python version for all nox sessions (matches .python-version and pyproject.toml)
+PY_VERSIONS: List[str] = ["3.12"]
 
 # Segmented requirement files
 REQ_DEV = Path("requirements-dev.txt")
