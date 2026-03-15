@@ -23,6 +23,33 @@ runner_compatibility:
 
 ## Architecture
 
+### 📐 Scope Diagram
+
+```mermaid
+graph TD
+    subgraph UnifiedSecurityScanner["Unified Security Scanner — Scope"]
+        VulnScan["🔍 Dependency Vuln Scan\npip-audit · gh-advisory"]
+        SecretDetect["🔑 Secret Detection\nE-09 patterns · gitleaks"]
+        AlertVerify["🚨 Alert Verification\nGitHub GHAS · CodeQL"]
+        RiskPrio["⚖️ Risk Prioritizer\nCVSS + entropy + GHAS"]
+        Remediate["🛠️ Remediation Plan\nPR · issue · alert"]
+    end
+
+    subgraph Outputs["Outputs"]
+        PR["Pull Request\nwith fix"]
+        Issue["GitHub Issue\nwith CVE details"]
+        Dismiss["Alert Dismissed\n(false positive)"]
+    end
+
+    VulnScan --> RiskPrio
+    SecretDetect --> RiskPrio
+    AlertVerify --> RiskPrio
+    RiskPrio -->|"Critical/High"| Remediate
+    Remediate --> PR
+    Remediate --> Issue
+    Remediate --> Dismiss
+```
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                  Unified Security Scanner                    │

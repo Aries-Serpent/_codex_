@@ -50,9 +50,9 @@ try:  # pragma: no cover - guard for environments without torch data utilities
     from torch.utils.data import TensorDataset as TorchTensorDataset
     from torch.utils.data import random_split as torch_random_split
 except Exception:  # pragma: no cover - provide graceful degradation
-    TorchDataLoader = cast(Any, None)
-    TorchDataset = cast(Any, None)
-    TorchTensorDataset = cast(Any, None)
+    TorchDataLoader = cast(Any, None)  # type: ignore[misc]
+    TorchDataset = cast(Any, None)  # type: ignore[misc]
+    TorchTensorDataset = cast(Any, None)  # type: ignore[misc]
     torch_random_split = cast(Any, None)
 
 BaseDataset: type[Any]

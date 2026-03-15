@@ -60,8 +60,8 @@ try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf
 except Exception as exc:  # pragma: no cover - OmegaConf optional
     logger.debug("OmegaConf unavailable: %s", exc)
-    DictConfig = None  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    DictConfig = None  # type: ignore[assignment,misc]
+    OmegaConf = None  # type: ignore[assignment,misc]
 
 try:  # pragma: no cover - guard should never raise fatally
     from codex_ml.tracking.mlflow_guard import (

@@ -60,8 +60,8 @@
     "status": "BELOW_TARGET",
     "previous_baseline": 1113
   },
-  "last_session": "S46",
-  "mypy_baseline": 879,
+  "last_session": "S49",
+  "mypy_baseline": 802,
   "mypy_target_next": "<820 (S49)",
   "stub_tests_remaining": 12,
   "aais_score": 100,

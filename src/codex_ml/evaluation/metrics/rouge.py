@@ -50,7 +50,7 @@ class RougeMetric(MetricAdapter):
 
     def __init__(
         self,
-        rouge_types: list[str] = None,
+        rouge_types: list[str] | None = None,
         name: str = "rouge",
         use_stemmer: bool = True,
     ):

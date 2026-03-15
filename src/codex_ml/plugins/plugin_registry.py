@@ -45,7 +45,7 @@ class PluginMetadata:
     version: str
     author: str = "Unknown"
     description: str = ""
-    dependencies: list[str] = None
+    dependencies: list[str] | None = None
     min_codex_version: str = "0.1.0"
 
     def __post_init__(self):

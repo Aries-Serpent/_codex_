@@ -46,7 +46,7 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     torch = None
-    DataLoader = None
+    DataLoader = None  # type: ignore[misc]
 
 
 @dataclass

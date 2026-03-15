@@ -157,7 +157,7 @@ class DeterministicContext:
             disable_deterministic_mode()
 
 
-def check_deterministic_operations() -> dict[str, bool]:
+def check_deterministic_operations() -> dict[str, bool | None]:
     """Check which deterministic features are enabled.
 
     Returns:

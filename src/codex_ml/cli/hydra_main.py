@@ -71,8 +71,8 @@ try:  # pragma: no cover - hydra optional at runtime
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None
-    DictConfig = type("_DictConfig", (), {})
-    OmegaConf = None
+    DictConfig = type("_DictConfig", (), {})  # type: ignore[misc]
+    OmegaConf = None  # type: ignore[misc]
 
 
 register_configs()

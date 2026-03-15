@@ -24,16 +24,16 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
     nn = Any  # type: ignore[assignment]
     GradScaler = None  # type: ignore[assignment]
     autocast = None  # type: ignore[assignment]
-    DataLoader = Any  # type: ignore[assignment]
+    DataLoader = Any  # type: ignore[assignment]  # type: ignore[misc]
 
 if torch is not None:  # pragma: no cover - typing bridge
     TensorType = torch.Tensor
     OptimizerType = torch.optim.Optimizer
     DataLoaderType = DataLoader
 else:  # pragma: no cover - fallback types
-    TensorType = Any
+    TensorType = Any  # type: ignore[misc]
     OptimizerType = Any
-    DataLoaderType = Any
+    DataLoaderType = Any  # type: ignore[misc]
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402

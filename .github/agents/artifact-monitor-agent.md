@@ -232,6 +232,35 @@ python scripts/agents/artifact_monitor_cli.py --check --dry-run
 
 ## 🏗️ Architecture
 
+### 📐 Scope Diagram
+
+```mermaid
+graph TD
+    subgraph ArtifactMonitorAgent["Artifact Monitor Agent — Scope"]
+        Trigger["⏰ Scheduled Trigger\n(3–6 h)"]
+        Monitor["🔍 Monitoring Engine\nartifact_monitor.py"]
+        Pattern["📊 Pattern Analyzer\npattern_analyzer.py"]
+        Orchestrate["🤖 Agent Orchestrator\nagent_orchestrator.py"]
+        Issues["📋 Issue Manager\nissue_manager.py"]
+        Brain["🧠 Cognitive Brain\nMemory · OKR · Patterns"]
+    end
+
+    subgraph External["External Systems"]
+        GH["GitHub Actions API"]
+        Agents["Specialized Agents\n(ci-testing / unified-security / etc.)"]
+        Repo["Repository Issues"]
+    end
+
+    Trigger --> Monitor
+    Monitor -->|"Detect failure"| Pattern
+    Pattern -->|"Matched + confidence"| Orchestrate
+    Orchestrate -->|"Route to agent"| Agents
+    Orchestrate --> Issues
+    Issues --> Repo
+    Brain <-->|"Patterns / OKR"| Monitor
+    Monitor <--> GH
+```
+
 ### Agent Components
 
 ```

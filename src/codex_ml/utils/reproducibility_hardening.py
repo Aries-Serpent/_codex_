@@ -53,9 +53,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
     """
     logger.info(f"Enabling deterministic training with seed={seed}, strict={strict}")
 
-    status = {}
-
-    # 1. Python built-in random
+    status: dict[str, Any] = {}
     try:
         random.seed(seed)
         status["python_random"] = True
@@ -213,9 +211,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    snapshot = {}
-
-    # 1. Python information
+    snapshot: dict[str, Any] = {}    # 1. Python information
     snapshot["python_version"] = sys.version
     snapshot["python_executable"] = sys.executable
     snapshot["python_version_info"] = {
@@ -408,9 +404,7 @@ def create_reproducibility_manifest(
 
     logger.info(f"Creating reproducibility manifest in {output_dir}")
 
-    manifest = {}
-
-    # 1. Deterministic seeding status
+    manifest: dict[str, Any] = {}
     seed_status = enable_deterministic_training(seed=seed)
     manifest["seed"] = seed
     manifest["seeding_status"] = seed_status

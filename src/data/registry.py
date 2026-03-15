@@ -113,8 +113,8 @@ def _synthetic_classification_dataset(
         data_module = getattr(torch_utils, "data", None)
         if data_module is None:
             raise DatasetRegistryError("torch.utils.data not available")
-        DataLoader = getattr(data_module, "DataLoader", None)  # type: ignore[assignment]
-        TensorDataset = getattr(data_module, "TensorDataset", None)  # type: ignore[assignment]
+        DataLoader = getattr(data_module, "DataLoader", None)  # type: ignore[assignment,misc]
+        TensorDataset = getattr(data_module, "TensorDataset", None)  # type: ignore[assignment,misc]
         random_split = getattr(data_module, "random_split", None)  # type: ignore[assignment]
     if DataLoader is None or TensorDataset is None:
         raise DatasetRegistryError("torch.utils.data components unavailable")

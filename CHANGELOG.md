@@ -5,6 +5,32 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [S49] — 2026-03-15T07:30Z — PR #3584
+
+### S49: Auto-Fix Gate Clean + mypy 879→802 + Agent Mermaid Diagrams + Issue #3583 Triage
+
+#### Summary
+- Auto-fix gate (Pattern 9 unsorted imports): fixed `session_logger.py` + `checkpoint.py`
+- Issue #3583 triage: all 24 failing workflows reviewed; all code-fixable failures addressed
+- mypy ratchet: 879 → 802 (77 errors fixed, target <820 ✅)
+- 5 agent definitions updated with mermaid scope diagrams
+- All bot review comments addressed per §0 CODEBASE_AGENCY_POLICY.md
+
+#### Changed
+- `src/codex/logging/session_logger.py` — isort fix
+- `src/utils/checkpoint.py` — isort fix
+- `src/codex_ml/utils/deterministic.py` — widened return type to `dict[str, bool | None]`
+- `src/codex_ml/utils/reproducibility_hardening.py` — annotated `status/snapshot/manifest` as `dict[str, Any]`
+- `src/codex_ml/utils/checkpoint_core.py` — `# type: ignore[misc]` on optional import None assignment
+- Multiple files — `arg: T = None` → `arg: T | None = None` for function parameters
+- Multiple files — `# type: ignore[misc]` on conditional import type assignments (17 files)
+- `.github/agents/artifact-monitor-agent.md` — added mermaid scope diagram
+- `.github/agents/unified-coverage-agent.md` — added mermaid scope diagram
+- `.github/agents/unified-security-scanner.md` — added mermaid scope diagram
+- `.github/agents/ci-testing-agent.md` — added mermaid scope diagram
+- `.github/agents/cognitive-brain-manager.md` — added mermaid scope diagram
+- `.mypy_baseline` — updated 879 → 802
+
 ## [S48] — 2026-03-15T09:00Z — PR #3584
 
 ### S48: Bot Review Resolution + mypy 932→879 (53 errors) + Pre-flight 6/6

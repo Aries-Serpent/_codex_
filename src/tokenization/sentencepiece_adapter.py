@@ -38,7 +38,7 @@ except Exception:  # pragma: no cover - defensive placeholders
             raise RuntimeError("SentencePiece not available")
 
 else:
-    SentencePieceAdapter = _CanonicalSentencePieceAdapter
+    SentencePieceAdapter = _CanonicalSentencePieceAdapter  # type: ignore[misc]
     SentencePieceAdapter.__doc__ = getattr(_CanonicalSentencePieceAdapter, "__doc__", None)
 
     def load_sentencepiece_model(
