@@ -11,7 +11,7 @@ AfterMath Tags: Phase 8.2 - Multi-Agent Orchestration
 
 import logging
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -357,7 +357,7 @@ class TopologyManager:
         )
         return modifications
 
-    def get_topology_statistics(self) -> Dict[str, any]:
+    def get_topology_statistics(self) -> Dict[str, Any]:
         """
         Get statistics about the current topology.
 

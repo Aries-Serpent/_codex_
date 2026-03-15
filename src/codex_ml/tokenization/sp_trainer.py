@@ -27,7 +27,7 @@ except Exception:  # pragma: no cover - optional dependency
 __all__ = ["SPTokenizer"]
 
 
-def _require_sentencepiece() -> "spm":
+def _require_sentencepiece() -> "spm":  # type: ignore[valid-type]
     if spm is None:  # pragma: no cover - runtime guard
         raise ImportError(
             "sentencepiece is required for SPTokenizer; install 'sentencepiece' to use the trainer"

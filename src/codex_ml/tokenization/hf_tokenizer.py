@@ -33,13 +33,13 @@ else:  # pragma: no cover - runtime fallback when transformers is not installed
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "AutoTokenizer"):
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[valid-type]
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
+        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase  # type: ignore[valid-type]
     )
 else:  # pragma: no cover - optional dependency unavailable
     AutoTokenizer = None  # type: ignore[assignment]
-    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
+    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)  # type: ignore[valid-type]
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
@@ -207,7 +207,7 @@ class _WhitespaceFallbackTokenizer:
 class HFTokenizerAdapter(TokenizerAdapter):
     """Adapter around a ``transformers`` tokenizer."""
 
-    tokenizer: PreTrainedTokenizerBase
+    tokenizer: PreTrainedTokenizerBase  # type: ignore[valid-type]
 
     @classmethod
     def load(

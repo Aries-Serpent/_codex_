@@ -235,7 +235,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
 
 def load_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedTokenizerBase:
+) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     """Load a tokenizer matching the model configuration."""
 
     if AutoTokenizer is None:  # pragma: no cover - transformers missing at runtime
@@ -429,7 +429,7 @@ def load_model(
 
 def load_model_and_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> tuple[PreTrainedModel, PreTrainedTokenizerBase]:
+) -> tuple[PreTrainedModel, PreTrainedTokenizerBase]:  # type: ignore[valid-type]
     """Convenience wrapper that returns both the model and tokenizer."""
 
     coerced = config if isinstance(config, ModelInitConfig) else _coerce_config(config)

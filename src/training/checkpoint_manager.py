@@ -155,7 +155,7 @@ if "CheckpointManager" not in globals():
             return buffer.getvalue()
 
 
-class CheckpointManager:
+class CheckpointManager:  # type: ignore[no-redef]
     """Lightweight step-based checkpoint manager."""
 
     def __init__(

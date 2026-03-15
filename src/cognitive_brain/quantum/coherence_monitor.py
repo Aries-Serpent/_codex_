@@ -301,7 +301,7 @@ class CoherenceMonitor:
             },
         )
 
-    def get_feature_health(self, feature: str, hours: int = 24) -> Dict[str, any]:
+    def get_feature_health(self, feature: str, hours: int = 24) -> Dict[str, Any]:
         """
         Get health status for a quantum feature.
 
@@ -449,7 +449,7 @@ class CoherenceMonitor:
 
     def log_metric(
         self,
-        feature: any,
+        feature: Any,
         decision_id: str,
         coherence: float,
         accuracy: float = 1.0,

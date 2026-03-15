@@ -1056,6 +1056,7 @@ def run_functional_training(
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
         metrics: list[dict[str, Any]] = []  # type: ignore[no-redef]
+        grad_accum = max(int(cfg.gradient_accumulation), 1)
         eval_every = max(int(cfg.eval_every_epochs), 1)
 
         log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))

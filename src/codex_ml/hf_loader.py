@@ -51,18 +51,18 @@ if (
     )
 ):
     AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)
-    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
+    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)  # type: ignore[valid-type]
+    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[valid-type]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase
+        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase  # type: ignore[valid-type]
     )
 else:  # pragma: no cover - optional dependency missing
     AutoModel = None  # type: ignore[assignment]
     AutoModelForCausalLM = None  # type: ignore[assignment]
     AutoTokenizer = None  # type: ignore[assignment]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
-    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
+    PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)  # type: ignore[valid-type]
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
 
@@ -167,7 +167,7 @@ def load_tokenizer(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
-) -> PreTrainedTokenizerBase:
+) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
@@ -189,7 +189,7 @@ def load_model(
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
     peft_path: Optional[Union[str, os.PathLike[str]]] = None,
-) -> PreTrainedModel:
+) -> PreTrainedModel:  # type: ignore[valid-type]
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
     if not TRANSFORMERS_AVAILABLE or AutoModel is None:
@@ -234,7 +234,7 @@ def load_causal_lm(
     dtype: Optional[str] = None,
     peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[Union[str, os.PathLike[str]]] = None,
-) -> PreTrainedModel:
+) -> PreTrainedModel:  # type: ignore[valid-type]
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
     if isinstance(repo_id, str):
