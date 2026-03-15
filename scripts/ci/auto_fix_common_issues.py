@@ -73,16 +73,18 @@ class CommonIssueFixer:
             "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
             "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
             "mypy Baseline Freshness",  # Pattern 15 - auto-update .mypy_baseline when count drops
+            "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
         }
         self.manual_review_patterns = {
-            "Unused Variables",      # Pattern 2  - context-dependent
-            "YAML Indentation",      # Pattern 3  - manual review
-            "Tokenizer Fallbacks",   # Pattern 5  - code-flow dependent
-            "Test Assertions",       # Pattern 6  - logic-dependent
-            "Redundant Imports",     # Pattern 7  - manual review
+            "Unused Variables",         # Pattern 2  - context-dependent
+            "YAML Indentation",         # Pattern 3  - manual review
+            "Tokenizer Fallbacks",      # Pattern 5  - code-flow dependent
+            "Test Assertions",          # Pattern 6  - logic-dependent
+            "Redundant Imports",        # Pattern 7  - manual review
             # Pattern 8 - informational only: F401 handled by Pattern 1,
             # F841 cannot be auto-fixed.
             "CodeQL Alerts",
+            "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
         }
 
     def run_all_patterns(self) -> bool:
@@ -105,6 +107,8 @@ class CommonIssueFixer:
             (13, "W-Series Warnings",      self.fix_w_series_warnings),
             (14, "Link Checker Config",    self.fix_link_checker_config),
             (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
+            (16, "Stub Duplicate Defs",    self.fix_stub_duplicate_defs),
+            (17, "CI SHA Drift",           self.check_ci_sha_drift),
         ]
 
         any_issues = False
@@ -794,6 +798,122 @@ class CommonIssueFixer:
         report.append("")
         return "\n".join(report)
 
+    # ------------------------------------------------------------------
+    # Pattern 16 — Stub duplicate method definitions (F811 in stubs)
+    # ------------------------------------------------------------------
+    def fix_stub_duplicate_defs(self) -> List[str]:
+        """Pattern 16: Detect F811 duplicate method/attribute definitions in stub packages.
+
+        Stub shim files (torch/__init__.py, transformers/__init__.py, etc.) are
+        written incrementally across many sessions. Each session can accidentally
+        re-define a method that was already present, producing F811 violations
+        that silently shadow the first definition.  This pattern scans stub
+        directories for F811 and reports each duplicate with file + line numbers.
+
+        Auto-fix strategy: the duplicate lines (second occurrence) are removed
+        by ruff --fix after the user confirms (check-only skips the fix step).
+        """
+        issues: List[str] = []
+        stub_dirs = [
+            self.repo_root / "torch",
+            self.repo_root / "transformers",
+            self.repo_root / "sentencepiece",
+            self.repo_root / "omegaconf",
+            self.repo_root / "numpy",
+            self.repo_root / "tests" / "stub_packages",
+        ]
+        targets = [str(d) for d in stub_dirs if d.exists()]
+        if not targets:
+            return issues
+
+        try:
+            result = subprocess.run(
+                ["python", "-m", "ruff", "check", "--select", "F811",
+                 "--output-format=json"] + targets,
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+            )
+            if result.stdout:
+                try:
+                    ruff_output = json.loads(result.stdout)
+                    for item in ruff_output:
+                        fname = item["filename"].replace(str(self.repo_root) + "/", "")
+                        row = item["location"]["row"]
+                        msg = item["message"]
+                        issues.append(f"{fname}:{row} — {msg}")
+                except json.JSONDecodeError:
+                    pass
+
+            if issues and not self.check_only:
+                if not self.dry_run:
+                    subprocess.run(
+                        ["python", "-m", "ruff", "check", "--select", "F811",
+                         "--fix"] + targets,
+                        cwd=self.repo_root,
+                        capture_output=True,
+                    )
+                    self.fixes_applied["Stub Duplicate Defs"] = len(issues)
+                else:
+                    print(f"  [DRY RUN] Would remove {len(issues)} duplicate stub definitions")
+
+        except FileNotFoundError:
+            print("  ⚠️ ruff not installed, skipping stub duplicate-def check")
+
+        return issues
+
+    # ------------------------------------------------------------------
+    # Pattern 17 — CI SHA drift detector (informational)
+    # ------------------------------------------------------------------
+    def check_ci_sha_drift(self) -> List[str]:
+        """Pattern 17: Detect when CI runs on a different commit SHA than expected.
+
+        GitHub Actions creates an internal *merge commit* for pull-request runs
+        (the hypothetical result of merging the PR branch into the base branch).
+        This means ``git log -1`` inside CI returns a SHA that does NOT exist in
+        the PR branch's local history.  When mypy (or any other check) reports
+        unexpected counts, the first thing to verify is whether CI used the same
+        commit as the developer tested locally.
+
+        This pattern:
+          1. Reads the local HEAD SHA.
+          2. Checks if ``GITHUB_SHA`` env var (set inside GitHub Actions) differs.
+          3. Reports a warning when they diverge so the discrepancy is surfaced
+             immediately in the auto-fix report rather than discovered post-hoc.
+
+        Mitigation: the CI mypy-baseline.yml now prints both the trigger SHA
+        (``github.sha``) and the actual checked-out SHA (``git log -1``) to the
+        step summary, making the drift visible on every run.
+        """
+        issues: List[str] = []
+        import os
+
+        github_sha = os.environ.get("GITHUB_SHA", "")
+        if not github_sha:
+            # Not running inside GitHub Actions — nothing to compare.
+            return issues
+
+        try:
+            result = subprocess.run(
+                ["git", "log", "-1", "--format=%H"],
+                capture_output=True, text=True,
+                cwd=self.repo_root,
+            )
+            local_sha = result.stdout.strip()
+        except FileNotFoundError:
+            return issues
+
+        if local_sha and github_sha and local_sha != github_sha:
+            issues.append(
+                f"SHA drift detected: GITHUB_SHA={github_sha[:12]} "
+                f"but git HEAD={local_sha[:12]}. "
+                "CI likely ran on a GitHub merge commit (PR merge preview). "
+                "This can cause mypy/ruff counts to diverge from local runs. "
+                "See .github/workflows/mypy-baseline.yml SHA-drift diagnostic step."
+            )
+
+        return issues
+
     def has_auto_fixable_issues(self) -> bool:
         """Check if there are any unfixed auto-fixable issues."""
         for pattern_name, issues in self.issues_found.items():
@@ -913,7 +1033,7 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 14),
+        choices=range(1, 18),
         help="Only run specific pattern (1-13)"
     )
     parser.add_argument(

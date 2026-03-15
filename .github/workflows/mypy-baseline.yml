@@ -43,6 +43,35 @@ jobs:
         with:
           fetch-depth: 1
 
+      # ── SHA-drift diagnostic ────────────────────────────────────────────
+      # GitHub Actions creates an internal *merge commit* for pull-request
+      # runs (the hypothetical result of merging the PR branch into the base
+      # branch).  git log -1 therefore returns a SHA that does NOT exist in
+      # the PR branch history.  This step surfaces the discrepancy so that
+      # any unexpected mypy count change can be traced back to the merge
+      # commit rather than confusing it with a real regression.
+      - name: 🔍 SHA drift diagnostic
+        run: |
+          echo "### SHA Drift Diagnostic" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Source | SHA |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-----|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| \`github.sha\` (trigger) | \`${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| \`git log -1\` (checked out) | \`$(git log -1 --format=%H)\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          TRIGGER="${{ github.sha }}"
+          CHECKEDOUT="$(git log -1 --format=%H)"
+          if [ "$TRIGGER" != "$CHECKEDOUT" ]; then
+            echo "⚠️  **SHA drift detected** — CI is running on a GitHub merge-preview" >> "$GITHUB_STEP_SUMMARY"
+            echo "commit (\`${CHECKEDOUT:0:12}\`), not the PR branch HEAD (\`${TRIGGER:0:12}\`)." >> "$GITHUB_STEP_SUMMARY"
+            echo "mypy error counts may differ from local runs on the PR branch." >> "$GITHUB_STEP_SUMMARY"
+            echo ""
+            echo "⚠️  SHA drift: trigger=$TRIGGER checkedout=$CHECKEDOUT"
+            echo "   (CI is on merge-preview commit — mypy count may differ from local run)"
+          else
+            echo "✅  No SHA drift: trigger and checked-out SHA match."
+          fi
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
