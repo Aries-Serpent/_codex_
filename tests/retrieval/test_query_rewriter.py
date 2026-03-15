@@ -4,6 +4,8 @@ Tests for Query Rewriter Module.
 
 import pytest
 
+pytest.importorskip('numpy')
+
 from codex.retrieval.query_rewriter import (
     DecomposeRewriter,
     ExpansionRewriter,

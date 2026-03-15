@@ -12,10 +12,10 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 
 class TestTFIDFProvider:

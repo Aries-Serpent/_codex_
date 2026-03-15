@@ -15,7 +15,7 @@ This is a continuation prompt for GitHub Copilot Agent to complete Phase 2 of th
 Add caching to the following high-priority workflows that are missing it:
 
 1. **security-suite.yml** - Security scanning workflow
-   - Add `actions/cache@v5` with paths: `~/.cache/pip`, `~/.cache/nox`
+   - Add `actions/cache@v4` with paths: `~/.cache/pip`, `~/.cache/nox`
    - Key: `${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}`
    - Priority: HIGH (runs on PRs and security scans)
 
@@ -35,7 +35,7 @@ Add caching to the following high-priority workflows that are missing it:
 
 For each workflow updated:
 1. Validate YAML syntax: `python -c "import yaml; yaml.safe_load(open('file.yml'))"`
-2. Verify caching uses `actions/cache@v5` (repository standard)
+2. Verify caching uses `actions/cache@v4` (repository standard)
 3. Ensure cache keys match repository pattern
 4. Check that all Python setup steps have corresponding cache steps
 5. Test that no breaking changes are introduced
@@ -86,7 +86,7 @@ After Phase 2 completion:
 
 - **Caching Standard**: See `.github/workflows/CACHE_ANALYSIS_REPORT.md`
 - **Example Implementation**: See `.github/workflows/pre-release-deployment.yml` lines 39-45
-- **Repository Pattern**: `actions/cache@v5` with pip and nox paths
+- **Repository Pattern**: `actions/cache@v4` with pip and nox paths
 
 ## Follow-Up Actions
 

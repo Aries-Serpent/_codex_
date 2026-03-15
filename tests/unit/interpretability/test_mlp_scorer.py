@@ -8,6 +8,8 @@ import sys
 
 import pytest
 
+pytest.importorskip('torch')
+
 # Graceful import handling for optional dependencies
 try:
     import numpy as np

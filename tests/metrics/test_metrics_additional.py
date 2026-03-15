@@ -5,10 +5,10 @@ from __future__ import annotations
 import sys
 from types import SimpleNamespace
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 
 @pytest.fixture(autouse=True)

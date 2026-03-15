@@ -10,6 +10,8 @@ PDA: Active - Test coverage for learning components
 
 import pytest
 
+pytest.importorskip('numpy')
+
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
 from cognitive_brain.models.learning_outcome import (
     DecisionContext,

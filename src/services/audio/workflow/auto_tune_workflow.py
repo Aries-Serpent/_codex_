@@ -3,7 +3,7 @@
 
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +96,7 @@ class AutoTuneWorkflow:
                 return [path]
             raise ValueError(f"Unsupported format: {path.suffix}")
         elif path.is_dir():
-            files = []
+            files: list[Any] = []
             for ext in supported_formats:
                 files.extend(path.rglob(f"*{ext}"))
             return sorted(files)

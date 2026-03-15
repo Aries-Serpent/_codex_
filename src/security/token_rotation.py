@@ -305,7 +305,7 @@ class TokenRotationManager:
         Returns:
             List of rotation events performed
         """
-        events = []
+        events: list[Any] = []
 
         if event_type == "exposure" and not self.policy.auto_rotate_on_exposure:
             logger.warning("Token exposure detected but auto-rotation disabled")

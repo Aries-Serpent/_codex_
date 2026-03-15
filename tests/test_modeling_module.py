@@ -10,6 +10,8 @@ import types
 
 import pytest
 
+pytest.importorskip('torch')
+
 try:
     import torch
 except Exception as exc:  # pragma: no cover - runtime guard

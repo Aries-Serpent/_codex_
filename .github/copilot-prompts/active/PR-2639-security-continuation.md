@@ -140,7 +140,7 @@ jobs:
 
       - name: Create reminder issue
         if: steps.check.outputs.needs_rotation == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           script: |
             await github.rest.issues.create({
@@ -242,7 +242,7 @@ jobs:
 
       - name: Report failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           script: |
             await github.rest.issues.create({

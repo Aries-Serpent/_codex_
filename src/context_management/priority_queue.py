@@ -332,7 +332,7 @@ class ContextPriorityQueue:
                 "average_effective_priority": 0,
             }
 
-        priority_dist = {}
+        priority_dist: dict[str, Any] = {}
         for item in self._items:
             p = item.priority.name
             priority_dist[p] = priority_dist.get(p, 0) + 1

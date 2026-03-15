@@ -93,7 +93,7 @@ runs:
     #    A restore-key without the hash means any prior run can seed it.
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L1: pip downloads (~/.cache/pip)'
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-pip-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -109,7 +109,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L2: PyTorch CPU wheels (~/.cache/torch-whl)'
       if: inputs.install-torch == 'true'
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: ~/.cache/torch-whl
         key: ${{ runner.os }}-torch-cpu-py${{ inputs.python-version }}-slot2x
@@ -129,7 +129,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L3: installed venv (.venv_ci)'
       id: cache-venv
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: .venv_ci
         key: ${{ runner.os }}-${{ inputs.cache-tier || 'live' }}-venv-${{ inputs.cache-version || 'v2' }}-py${{ inputs.python-version }}-extras=${{ inputs.extras }}-torch=${{ inputs.install-torch }}-preflight=${{ inputs.install-preflight-extras }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -193,11 +193,14 @@ runs:
       shell: bash
       run: |
         echo "::group::Refresh venv after exact cache hit"
-        # Self-healing: if the Python binary in the restored venv is broken
-        # (e.g. venv cached on Python 3.12.12, runner now has 3.12.13),
-        # rebuild the whole venv before attempting the incremental refresh.
-        if ! .venv_ci/bin/python --version &>/dev/null; then
-          echo "::warning::Stale venv — Python binary broken (Python patch version mismatch). Rebuilding."
+        # Self-healing: rebuild the venv if either:
+        #   (a) the Python binary is broken (cross-patch cache artifact), OR
+        #   (b) the Python major.minor version does not match the requested version
+        #       (e.g. venv was cached on Python 3.11, runner now provides 3.12).
+        REQUESTED_MINOR=$(echo "${{ inputs.python-version }}" | cut -d. -f1,2)
+        ACTUAL_MINOR=$(.venv_ci/bin/python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "unknown")
+        if ! .venv_ci/bin/python --version &>/dev/null || [ "${ACTUAL_MINOR}" != "${REQUESTED_MINOR}" ]; then
+          echo "::warning::Stale venv — Python version mismatch (venv=${ACTUAL_MINOR}, requested=${REQUESTED_MINOR}). Rebuilding."
           chmod -R u+w .venv_ci 2>/dev/null || true
           rm -rf .venv_ci
           python -m venv .venv_ci
@@ -308,7 +311,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: 'Cache L4: npm tools (~/.npm)'
       if: inputs.install-npm-tools == 'true'
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-mlc-v1
@@ -338,7 +341,7 @@ runs:
     # ─────────────────────────────────────────────────────────────────
     - name: L5 Cognitive Brain cache — restore
       if: inputs.enable-l5-brain-cache == 'true'
-      uses: actions/cache@v5
+      uses: actions/cache@v4
       with:
         path: .codex/cognitive_brain
         key: ${{ runner.os }}-l5-brain-${{ inputs.cache-version || 'v2' }}-${{ hashFiles('.codex/cognitive_brain/**') }}

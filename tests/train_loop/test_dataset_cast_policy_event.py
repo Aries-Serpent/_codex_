@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip('torch')
+
 try:
     import torch as _torch
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch.__version__.startswith("2.")

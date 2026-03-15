@@ -28,7 +28,7 @@
 **Steps**: 8
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Validate inputs
 3. Locate source file
 4. Restore workflow file

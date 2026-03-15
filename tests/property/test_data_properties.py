@@ -13,6 +13,7 @@ from typing import Any
 
 import pytest
 
+pytest.importorskip('hypothesis')
 try:
     from hypothesis import HealthCheck, assume, given, settings
     from hypothesis import strategies as st

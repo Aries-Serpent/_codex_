@@ -313,7 +313,7 @@ ls .github/workflows/cache-management.yml
 
 # Check for distributed caching
 grep -r "actions/cache@v" .github/workflows/*.yml
-# Result: ✅ FOUND - 7+ workflows use actions/cache@v5
+# Result: ✅ FOUND - 7+ workflows use actions/cache@v4
 
 # Workflows using cache:
 # - optimized-ci.yml (3 cache instances)
@@ -365,7 +365,7 @@ Each workflow manages its own cache independently:
 ```yaml
 # Example from optimized-ci.yml
 - name: Cache pip packages
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
@@ -373,13 +373,13 @@ Each workflow manages its own cache independently:
       ${{ runner.os }}-pip-
 
 - name: Cache uv
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: ~/.cache/uv
     key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml') }}
 
 - name: Cache pytest
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: .pytest_cache
     key: ${{ runner.os }}-pytest-${{ hashFiles('**/test_*.py') }}

@@ -15,8 +15,10 @@ import time
 from unittest.mock import patch
 
 import pytest
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
+
+pytest.importorskip("fastapi")
+from fastapi import FastAPI  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
 
 from src.codex.api.auth_routes import create_auth_router
 from src.codex.auth.authenticator import Authenticator

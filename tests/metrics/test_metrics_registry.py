@@ -2,15 +2,12 @@
 Tests for metrics registry and base metrics functionality
 """
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
-pytest.importorskip("torch")
-
+np = pytest.importorskip("numpy")
+import pytest
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
 import torch  # noqa: E402
 from src.codex_ml.metrics.base import BaseMetric  # noqa: E402
 from src.codex_ml.metrics.classification import (  # noqa: E402

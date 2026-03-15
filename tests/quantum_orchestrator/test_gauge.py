@@ -13,10 +13,10 @@ Tests verify:
 
 from unittest.mock import Mock
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

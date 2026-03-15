@@ -22,7 +22,7 @@ import os
 import sys
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from cognitive_brain.experiments.complex_scenarios import (
     generate_complex_scenarios,
@@ -132,7 +132,7 @@ def run_exp1b_revalidation(
 
     # Sprint 3: Diagnostic logging for failure analysis
     mismatches = []
-    pattern_failures = {}  # Track failures by scenario pattern
+    pattern_failures: dict[str, Any] = {}  # Track failures by scenario pattern
 
     # Warm-up pass to stabilize JIT and caches
     for audit, _, _ in scenario_data:

@@ -71,7 +71,7 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ${{ steps.branch.outputs.branch }}
           fetch-depth: 1
@@ -106,7 +106,7 @@ jobs:
           echo "**Total applications found**: $TOTAL_APPS" >> $GITHUB_STEP_SUMMARY
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -343,7 +343,7 @@ jobs:
           echo "- **Size**: $SIZE" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package as artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.package_name }}
           path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format }}
@@ -402,7 +402,7 @@ jobs:
           echo "✅ Generated package manifest" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package manifest
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.package_name }}-manifest
           path: package_manifest.json

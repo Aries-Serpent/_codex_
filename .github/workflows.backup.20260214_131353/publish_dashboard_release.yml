@@ -9,7 +9,7 @@ jobs:
   publish-dashboard:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - name: CacheManager health check
         continue-on-error: true
         run: |

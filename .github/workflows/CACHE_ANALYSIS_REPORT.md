@@ -32,12 +32,12 @@ This document provides a comprehensive analysis of GitHub Actions caching implem
 ## Caching Standards
 
 ### Repository Convention
-The repository uses `actions/cache@v5` as the standard caching action.
+The repository uses `actions/cache@v4` as the standard caching action.
 
 ### Standard Cache Configuration
 ```yaml
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -50,7 +50,7 @@ The repository uses `actions/cache@v5` as the standard caching action.
 ### Alternative: Built-in Python Caching
 Some workflows use the built-in caching from `actions/setup-python`:
 ```yaml
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'
@@ -197,7 +197,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 ### 8. pr-followup-generator.yml
 **Status**: ✅ Built-in Caching Enabled (Phase 3A → Phase 3B Optimization)
 
-**Previous State**: Explicit cache with actions/cache@v5 (Phase 3A)  
+**Previous State**: Explicit cache with actions/cache@v4 (Phase 3A)  
 **Current State**: Built-in pip caching via setup-python (Phase 3B optimization)
 
 **Physics Analysis**:
@@ -225,7 +225,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 ### 9. agent-runtime.yml
 **Status**: ✅ Built-in Caching Enabled (Phase 3A → Phase 3B Optimization)
 
-**Previous State**: Explicit cache with actions/cache@v5 (Phase 3A)  
+**Previous State**: Explicit cache with actions/cache@v4 (Phase 3A)  
 **Current State**: Built-in pip caching via setup-python (Phase 3B optimization)
 
 **Physics Analysis**:
@@ -237,7 +237,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Cache Configuration**:
 ```yaml
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'
@@ -253,7 +253,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 ### 10. detect-duplicates.yml
 **Status**: ✅ Built-in Caching Enabled (Phase 3A → Phase 3B Optimization)
 
-**Previous State**: Explicit cache with actions/cache@v5 (Phase 3A)  
+**Previous State**: Explicit cache with actions/cache@v4 (Phase 3A)  
 **Current State**: Built-in pip caching via setup-python (Phase 3B optimization)
 
 **Physics Analysis**:
@@ -265,7 +265,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Cache Configuration**:
 ```yaml
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'
@@ -295,7 +295,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Cache Configuration**:
 ```yaml
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'
@@ -323,7 +323,7 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml'
 
 **Cache Configuration**:
 ```yaml
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'
@@ -469,7 +469,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
 1. **Consistent Key Strategy**: All caches use `${{ runner.os }}-pip-${{ hashFiles(...) }}`
 2. **Restore Keys**: Fallback keys ensure partial cache hits
 3. **Path Optimization**: Only cache necessary directories
-4. **Version Alignment**: All use `actions/cache@v5`
+4. **Version Alignment**: All use `actions/cache@v4`
 5. **Security**: PR workflows use read-only cache (cache/restore)
 
 ## Recommendations
@@ -548,7 +548,7 @@ Systematically add built-in caching to remaining 23 workflows with Python depend
    - Example: scheduled-dependency-audit.yml (per commit cycle) - consider removing if space needed
 
 5. **Leverage Built-in Caching**:
-   - Use `actions/setup-python@v6` with `cache: 'pip'` instead of explicit cache action
+   - Use `actions/setup-python@v5` with `cache: 'pip'` instead of explicit cache action
    - Smaller footprint, automatic management
 
 ### Key Metrics to Track

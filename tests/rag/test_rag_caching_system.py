@@ -11,7 +11,9 @@ Comprehensive testing for RAG caching layer:
 import tempfile
 import time
 
-import numpy as np
+import pytest
+
+np = pytest.importorskip("numpy")
 import pytest
 
 

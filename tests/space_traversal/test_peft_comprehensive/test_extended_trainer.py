@@ -7,6 +7,8 @@ Test module for extended trainer.
 # isort: skip_file
 
 from __future__ import annotations
+import pytest
+pytest.importorskip('torch')
 
 import math
 import sys

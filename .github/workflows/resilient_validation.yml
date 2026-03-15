@@ -75,7 +75,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-baseline
           path: |
@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -154,7 +154,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@v5
+        uses: actions/cache@v4
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -195,7 +195,7 @@ jobs:
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |

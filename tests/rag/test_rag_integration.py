@@ -5,11 +5,10 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
-pytest.importorskip("sentence_transformers")
+np = pytest.importorskip("numpy")
+import pytest
 
 from codex.rag.indexer import chunk_text, embed_chunks, persist_index
 from codex.rag.postprocess import postprocess_output

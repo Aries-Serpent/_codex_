@@ -186,7 +186,7 @@ class BaseASTAdapter(ABC):
             Dictionary with node counts by type
         """
         all_nodes = self.traverse()
-        stats = {}
+        stats: dict[str, Any] = {}
         for node in all_nodes:
             stats[node.node_type] = stats.get(node.node_type, 0) + 1
         return stats

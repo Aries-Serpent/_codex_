@@ -7,10 +7,10 @@ import tempfile
 import time
 from pathlib import Path
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 from codex.rag.cache.embedding_cache import (
     EmbeddingCache,

@@ -6,10 +6,10 @@ to ensure robust behavior across the full input space.
 """
 
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.quantum.adaptive_scoring import (

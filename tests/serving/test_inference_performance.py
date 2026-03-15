@@ -8,7 +8,9 @@ import statistics
 import time
 
 import pytest
-from fastapi.testclient import TestClient
+
+pytest.importorskip("fastapi")
+from fastapi.testclient import TestClient  # noqa: E402
 
 
 @pytest.fixture

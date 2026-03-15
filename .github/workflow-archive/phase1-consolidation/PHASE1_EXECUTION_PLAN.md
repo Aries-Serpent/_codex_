@@ -39,7 +39,7 @@ Per PARITY_CHECKLIST.md (2025-12-28), distributed caching is superior:
 - Each workflow manages its own cache independently
 - GitHub auto-expiry (30 iterations)
 - No single point of failure
-- 7+ workflows already using distributed `actions/cache@v5`
+- 7+ workflows already using distributed `actions/cache@v4`
 
 ### Actions
 - [x] Verify workflows exist

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-14T19:24:23Z",
+  "generated_at": "2026-03-15T03:32:44Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -150,7 +150,7 @@
       "name": "test-assertion-updater",
       "role": "specialist",
       "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "utf8-safety-linter",
@@ -162,7 +162,7 @@
       "name": "test-pattern-guardian",
       "role": "utility",
       "enforcement_tier": "GROUNDED",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "config-validator-enhanced",
@@ -1736,9 +1736,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 3,
+    "d_capable_agents": 5,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "eb45a1fc3c932cd221bae5bedc84b02b4e2e13e3770df8dc820440d1165173a4"
+  "integrity_sha256": "31bc7c5326c999039ac9b8d54b827336ae614f3549d706b663005a1dfe970555"
 }

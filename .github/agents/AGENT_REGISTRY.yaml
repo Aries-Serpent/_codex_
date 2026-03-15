@@ -1,5 +1,5 @@
 version: 2.0.0
-last_updated: '2026-03-05T08:59:00Z'
+last_updated: '2026-03-15T01:05:08Z'
 total_agents: 153
 agents:
 - id: github-app-manager
@@ -655,7 +655,7 @@ agents:
   - cognitive_brain
   priority: high
   enforcement_tier: PARTIAL
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from:
   - orchestrator
@@ -721,7 +721,7 @@ agents:
   tools:
   - scripts/analyze_test_patterns.py
   enforcement_tier: GROUNDED
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from:
   - orchestrator

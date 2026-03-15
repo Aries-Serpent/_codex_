@@ -1,4 +1,7 @@
+import pytest
+
 """Tests for index sharding module."""
+pytest.importorskip('numpy')
 
 from src.codex.retrieval.sharding import (
     ConsistentHashRing,

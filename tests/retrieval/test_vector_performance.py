@@ -5,15 +5,12 @@ Tests vector store performance under various load conditions
 
 import time
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
-
+np = pytest.importorskip("numpy")
+import pytest
 
 # Skip if FAISS not available
-pytest.importorskip("faiss")
-
 from src.codex.retrieval.stores.faiss_store import FAISSStore  # noqa: E402
 
 

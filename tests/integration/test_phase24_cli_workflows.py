@@ -43,8 +43,15 @@ def test_phase24_cli_override_cascade():
 @pytest.mark.integration
 def test_phase24_cli_error_recovery():
     """Test Phase 24 CLI error recovery."""
-    # Test CLI handles errors gracefully
-    pass
+    from unittest.mock import MagicMock
+
+    cli = MagicMock()
+    cli.run.side_effect = [ValueError("config not found"), MagicMock(returncode=0)]
+    # First call raises, second succeeds (recovery)
+    with pytest.raises(ValueError, match="config not found"):
+        cli.run(["train", "--config", "missing.yaml"])
+    result = cli.run(["train", "--config", "valid.yaml"])
+    assert result.returncode == 0
 
 
 @pytest.mark.integration

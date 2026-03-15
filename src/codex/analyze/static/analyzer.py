@@ -290,7 +290,7 @@ def _resolve_tool(tool: str, trusted_dirs: Optional[list] = None) -> Optional[st
 
 def _run_ruff(source_dir: Path) -> list[LintIssue]:
     """Run ruff linter and collect issues."""
-    issues = []
+    issues: list[Any] = []
 
     try:
         if not source_dir.exists():
@@ -336,7 +336,7 @@ def _run_ruff(source_dir: Path) -> list[LintIssue]:
 
 def _run_bandit(source_dir: Path) -> list[SecurityIssue]:
     """Run bandit security scanner and collect issues."""
-    issues = []
+    issues: list[Any] = []
 
     try:
         if not source_dir.exists():

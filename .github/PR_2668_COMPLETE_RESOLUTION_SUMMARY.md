@@ -301,7 +301,7 @@ grep -h "key:.*github.workflow" .github/workflows/*.yml | sort | uniq -c
 grep -r "key:.*secrets" .github/workflows/*.yml || echo "✅ No secrets in keys"
 
 # Count cached workflows
-grep -l "actions/cache@v5\|cache: 'pip'" .github/workflows/*.yml | wc -l
+grep -l "actions/cache@v4\|cache: 'pip'" .github/workflows/*.yml | wc -l
 ```
 
 ---

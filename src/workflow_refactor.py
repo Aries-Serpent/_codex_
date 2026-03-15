@@ -53,7 +53,7 @@ class WorkflowRefactorer:
         Returns:
             List of workflow file paths
         """
-        workflows = []
+        workflows: list[Any] = []
         for ext in ["*.yml", "*.yaml"]:
             workflows.extend(self.workflows_dir.glob(ext))
             workflows.extend(self.workflows_dir.glob(f"**/{ext}"))

@@ -10,8 +10,14 @@ import pytest
 
 pytest.importorskip("tokenizers")
 
-from tokenizers import Tokenizer  # noqa: E402
+pytest.importorskip("tokenizers")
+try:
+    from tokenizers import Tokenizer  # noqa: E402
+except ImportError:
+    pytest.skip("tokenizers not available")
 
+
+pytest.importorskip("sentencepiece")
 from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402
 
 

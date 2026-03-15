@@ -314,7 +314,7 @@ class IngestionPipeline:
         Returns:
             Transformed record or None if should be skipped
         """
-        result = {}
+        result: dict[str, Any] = {}
 
         for key, value in record.items():
             if value is None:

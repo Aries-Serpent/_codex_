@@ -12,10 +12,10 @@ import tempfile
 import threading
 import time
 
-import numpy as np
 import pytest
 
-pytest.importorskip("numpy")
+np = pytest.importorskip("numpy")
+import pytest
 
 
 class TestComplexWorkflows:

@@ -212,7 +212,7 @@ class ExpansionRewriter(BaseQueryRewriter):
 
         # Find expansions with global limit
         words = normalized.rewritten_query.lower().split()
-        expansions = set()
+        expansions: set[Any] = set()
         max_per_word = max(1, self.config.max_expansions // max(1, len(words)))
 
         for word in words:

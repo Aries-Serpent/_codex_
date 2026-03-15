@@ -38,7 +38,7 @@ jobs:
       archive_candidates: ${{ steps.analyze.outputs.archive_candidates }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

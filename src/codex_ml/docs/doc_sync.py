@@ -34,7 +34,7 @@ class DocumentationValidator:
 
     def validate_file(self, file_path: Path) -> list[DocSyncIssue]:
         """Validate documentation in a file."""
-        issues = []
+        issues: list[Any] = []
         try:
             content = file_path.read_text()
             tree = ast.parse(content)

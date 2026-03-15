@@ -42,10 +42,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -84,7 +84,7 @@ jobs:
 
       - name: Create issue for critical vulnerabilities
         if: steps.safety.outcome == 'failure' || steps.pip-audit.outcome == 'failure'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           script: |
             const title = '🔒 Critical Security Vulnerabilities Detected';
@@ -135,7 +135,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -186,7 +186,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -200,7 +200,7 @@ jobs:
           category: "/language:python"
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -259,7 +259,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Check for required security files
         run: |
@@ -349,7 +349,7 @@ jobs:
 
       - name: Comment on PR with security results
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           script: |
             const depStatus = '${{ needs.dependency-scan.result }}' === 'success' ? '✅' : '❌';

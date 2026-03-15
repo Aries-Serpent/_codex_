@@ -27,7 +27,7 @@
 **Steps**: 8
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Setup Python
 3. Install deps
 4. Run tests with coverage

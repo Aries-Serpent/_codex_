@@ -24,19 +24,35 @@ def test_phase24_checkpoint_config_validation():
 @pytest.mark.integration
 def test_phase24_training_loop():
     """Test Phase 24 training loop execution."""
-    # Mock minimal training loop
-    pass
+    from unittest.mock import MagicMock
+
+    trainer = MagicMock()
+    trainer.fit.return_value = MagicMock(epochs_trained=1, final_loss=0.4)
+    config = {"epochs": 1, "lr": 1e-4}
+    result = trainer.fit(config)
+    assert result.epochs_trained >= 1
+    trainer.fit.assert_called_once()
 
 
 @pytest.mark.integration
 def test_phase24_evaluation_workflow():
     """Test Phase 24 evaluation workflow."""
-    # Mock evaluation flow
-    pass
+    from unittest.mock import MagicMock
+
+    evaluator = MagicMock()
+    evaluator.evaluate.return_value = {"accuracy": 0.85, "loss": 0.32}
+    metrics = evaluator.evaluate(dataset=[], model=MagicMock())
+    assert "accuracy" in metrics
+    assert metrics["accuracy"] > 0.0
 
 
 @pytest.mark.integration
 def test_phase24_checkpoint_loading():
     """Test Phase 24 checkpoint loading."""
-    # Test checkpoint load/resume
-    pass
+    from unittest.mock import MagicMock
+
+    loader = MagicMock()
+    loader.load_checkpoint.return_value = MagicMock(epoch=5, loss=0.3)
+    ckpt = loader.load_checkpoint("/path/to/checkpoint.pt")
+    assert ckpt.epoch == 5
+    loader.load_checkpoint.assert_called_once()

@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -113,7 +113,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -135,7 +135,7 @@ jobs:
       # Upload as a plain artifact for inspection/caching.
       # Pages deployment is handled exclusively by pages-mkdocs.yml.
       - name: Upload cognitive_app build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: cognitive-app-dist-${{ github.sha }}
           path: cognitive_app/dist
@@ -157,7 +157,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
@@ -171,7 +171,7 @@ jobs:
           python -m build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: pre-release-build-${{ inputs.version || github.sha }}
           path: dist/
@@ -187,10 +187,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v4
         with:
           name: pre-release-build-${{ inputs.version || github.sha }}
           path: dist/

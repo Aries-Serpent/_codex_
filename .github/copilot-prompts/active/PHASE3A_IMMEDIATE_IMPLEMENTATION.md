@@ -28,7 +28,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 **Cache Configuration**:
 ```yaml
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -54,7 +54,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 **Cache Configuration**:
 ```yaml
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -80,7 +80,7 @@ Physics-based prioritization system has identified the top workflows for Phase 3
 **Cache Configuration**:
 ```yaml
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -134,7 +134,7 @@ For each workflow, insert cache step AFTER `actions/checkout` and BEFORE `action
 - uses: actions/checkout@v4
 
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -142,7 +142,7 @@ For each workflow, insert cache step AFTER `actions/checkout` and BEFORE `action
     restore-keys: |
       ${{ runner.os }}-${{ github.workflow }}-pip-
 
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
 ```

@@ -284,5 +284,4 @@ class TestCIWorkflowValidation:
                 except OSError:
                     continue
 
-        # Coverage upload is optional
-        pass
+        # Coverage upload is optional — no assertion needed; test documents this

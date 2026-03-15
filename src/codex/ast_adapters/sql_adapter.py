@@ -259,7 +259,7 @@ class SQLASTAdapter(BaseASTAdapter):
             node: AST node to populate
         """
         table_name = None
-        columns = []
+        columns: list[Any] = []
 
         # Find table name - look for identifier or function (table with columns)
         for token in stmt.tokens:

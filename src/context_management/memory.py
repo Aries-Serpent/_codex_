@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Callable, Iterator, Optional
+from typing import Any, Callable, Iterator, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -352,7 +352,7 @@ class ContextMemory:
         # Split by paragraphs first
         paragraphs = content.split("\n\n")
         chunks = []
-        current_chunk = []
+        current_chunk: list[Any] = []
         current_tokens = 0
 
         for para in paragraphs:
@@ -381,7 +381,7 @@ class ContextMemory:
         """Split content into pieces of max_tokens."""
         pieces = []
         words = content.split()
-        current = []
+        current: list[Any] = []
         current_tokens = 0
 
         for word in words:
