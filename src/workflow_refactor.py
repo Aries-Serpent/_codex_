@@ -71,7 +71,7 @@ class WorkflowRefactorer:
             True if modified, False if already present
         """
         try:
-            import yaml
+            import yaml  # type: ignore[import-untyped]
         except ImportError:
             logger.error("PyYAML not installed")
             return False

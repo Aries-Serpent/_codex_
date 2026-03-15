@@ -12,8 +12,8 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 try:
-    import requests
-    from requests.adapters import HTTPAdapter
+    import requests  # type: ignore[import-untyped]
+    from requests.adapters import HTTPAdapter  # type: ignore[import-untyped]
     from urllib3.util.retry import Retry
 
     REQUESTS_AVAILABLE = True

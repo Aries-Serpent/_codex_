@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Mapping, MutableMapping
 from urllib.parse import urlparse
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 

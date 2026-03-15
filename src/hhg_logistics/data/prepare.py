@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 from typing import Iterable
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 
 def _ensure_dir(p: Path) -> None:

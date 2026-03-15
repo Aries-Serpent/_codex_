@@ -101,7 +101,7 @@ class IntentSpec:
     def save(self, path: Path) -> None:
         """Save intent spec to YAML file."""
         try:
-            import yaml
+            import yaml  # type: ignore[import-untyped]
 
             with path.open("w", encoding="utf-8") as f:
                 yaml.dump(self.to_dict(), f, default_flow_style=False)

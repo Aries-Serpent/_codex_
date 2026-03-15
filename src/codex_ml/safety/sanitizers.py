@@ -29,7 +29,7 @@ from dataclasses import dataclass, field  # noqa: E402
 from typing import Iterable, Pattern  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    import yaml
+    import yaml  # type: ignore[import-untyped]
 except Exception:  # pragma: no cover - optional dependency
     yaml = None
 

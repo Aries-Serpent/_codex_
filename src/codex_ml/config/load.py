@@ -19,7 +19,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Optional
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 
 def _deep_merge(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
