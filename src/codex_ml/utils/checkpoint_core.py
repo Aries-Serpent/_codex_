@@ -64,7 +64,7 @@ try:
 except Exception:  # pragma: no cover - optional dependency issues tolerated
     attach_integrity = None  # type: ignore[assignment]
 
-    def snapshot_config(_config: object) -> dict[str, Any]:
+    def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore[misc]
         return {}
 
 
@@ -72,10 +72,10 @@ try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
 except Exception:  # pragma: no cover - optional dependency
 
-    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:
+    def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore[misc]
         return {}
 
-    def write_run_manifest(*_args: object, **_kwargs: object) -> None:
+    def write_run_manifest(*_args: object, **_kwargs: object) -> None:  # type: ignore[misc]
         return None
 
 

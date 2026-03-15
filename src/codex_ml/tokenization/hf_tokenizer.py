@@ -35,7 +35,8 @@ transformers, _HAS_TRANSFORMERS = optional_import("transformers")
 if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "AutoTokenizer"):
     AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[valid-type]
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase  # type: ignore[valid-type]
+        "type[HF_PreTrainedTokenizerBase]",
+        transformers.PreTrainedTokenizerBase,  # type: ignore[valid-type]
     )
 else:  # pragma: no cover - optional dependency unavailable
     AutoTokenizer = None  # type: ignore[assignment]
@@ -325,7 +326,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         if pad_opt and getattr(self.tokenizer, "pad_token", None) is None:
             # GPT‑2 tokenizers lack pad token by default; reuse eos token
             self.tokenizer.pad_token = self.tokenizer.eos_token
-        enc = self.tokenizer(
+        enc = self.tokenizer(  # type: ignore[misc]
             list(texts),
             padding=pad_opt,
             truncation=truncation,

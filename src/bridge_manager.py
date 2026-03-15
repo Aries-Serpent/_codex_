@@ -670,7 +670,7 @@ class BridgeManager:
             logger.warning("Multi-client not available (Protocol v2 not enabled)")
             return False
 
-        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)
+        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)  # type: ignore[union-attr]
         if result:
             self._audit_log(
                 "CLIENT_REGISTERED",

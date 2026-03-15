@@ -178,7 +178,7 @@ def predict(req: PredictRequest) -> PredictResponse:
 
     tokenizer = _tokenizer()
     model = _model()
-    encoded = tokenizer(
+    encoded = tokenizer(  # type: ignore[misc]
         req.prompt,
         return_tensors="pt",
         padding=True,

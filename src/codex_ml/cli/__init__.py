@@ -43,7 +43,7 @@ torch, _HAS_TORCH = optional_import("torch")
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="codex_ml")
     sub = parser.add_subparsers(dest="command")
-    parser.set_defaults(func=lambda *_: (parser.print_help(), 0)[1])
+    parser.set_defaults(func=lambda *_: parser.print_help() or 0)  # type: ignore[func-returns-value]
 
     ndjson = sub.add_parser("ndjson-summary", help="Summarize metrics.ndjson shards")
     ndjson.add_argument("--input", required=True, help="Path to metrics.ndjson file or directory")

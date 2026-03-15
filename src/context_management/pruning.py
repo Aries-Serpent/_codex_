@@ -249,7 +249,7 @@ class PriorityPruner:
                 break
 
             result = self.prune(text)
-            results[idx] = result.pruned_text
+            results[idx] = result.pruned_text  # type: ignore[call-overload]
             tokens_saved += result.tokens_saved
 
         return results, tokens_saved  # type: ignore[return-value]

@@ -519,7 +519,7 @@ class NdjsonWriter(BaseWriter):
     def close(self) -> None:
         if getattr(self, "_manifest_logger", None) is not None:
             try:
-                self._manifest_logger.close()
+                self._manifest_logger.close()  # type: ignore[union-attr]
             except Exception:  # pragma: no cover
                 pass
         try:

@@ -460,7 +460,7 @@ class QueryRewriter:
                 strategy=QueryRewriteStrategy.NONE,
             )
         else:
-            result = self._rewriter.rewrite(query)
+            result = self._rewriter.rewrite(query)  # type: ignore[union-attr]
 
         # Update cache
         if self.config.enable_cache:

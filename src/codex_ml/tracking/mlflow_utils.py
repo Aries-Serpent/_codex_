@@ -228,12 +228,12 @@ def start_run(
         # Configure tracking URI and experiment if provided
         target_uri = mlflow_guard.bootstrap_offline_tracking(requested_uri=cfg.tracking_uri)
         if target_uri:
-            _mlf.set_tracking_uri(target_uri)
+            _mlf.set_tracking_uri(target_uri)  # type: ignore[union-attr]
         if cfg.experiment:
-            _mlf.set_experiment(cfg.experiment)
+            _mlf.set_experiment(cfg.experiment)  # type: ignore[union-attr]
 
         # Start the run with optional tags. mlflow.start_run returns a context manager.
-        return _mlf.start_run(tags=cfg.run_tags or {})
+        return _mlf.start_run(tags=cfg.run_tags or {})  # type: ignore[union-attr]
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Failed to initialize MLflow run") from exc
 
@@ -439,12 +439,12 @@ def init_run(
     if _mlf is None:  # pragma: no cover - defensive guard
         raise_optional_dependency_error("mlflow", "experiment tracking")
 
-    run = _mlf.start_run(run_name=run_name, **kwargs)
+    run = _mlf.start_run(run_name=run_name, **kwargs)  # type: ignore[union-attr]
 
     try:
         commit = current_commit_hash()
         if commit:
-            _mlf.set_tag("git_commit", commit[:7])
+            _mlf.set_tag("git_commit", commit[:7])  # type: ignore[union-attr]
     except Exception as e:
         logger.debug("git_commit tag unavailable: %s", e)
 
@@ -456,7 +456,7 @@ def init_run(
                 logger.debug("config serialization failed: %s; falling back to str()", e)
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-            _mlf.set_tag("config_hash", digest)
+            _mlf.set_tag("config_hash", digest)  # type: ignore[union-attr]
         except Exception as e:
             logger.debug("config_hash tag unavailable: %s", e)
 

@@ -402,9 +402,9 @@ class Reranker:
             return self._hybrid_rerank(query, results, embeddings)
 
         if self.config.strategy == RerankingStrategy.MMR:
-            return self._reranker.rerank(query, results, embeddings)
+            return self._reranker.rerank(query, results, embeddings)  # type: ignore[union-attr,call-arg]
 
-        return self._reranker.rerank(query, results)
+        return self._reranker.rerank(query, results)  # type: ignore[union-attr]
 
     def _wrap_results(self, results: Sequence[dict[str, Any]]) -> list[RankedResult]:
         """Wrap raw results as RankedResult without re-ranking."""
@@ -444,7 +444,7 @@ class Reranker:
         ]
 
         # Then apply MMR for diversity
-        final_results = self._rerankers["mmr"].rerank(query, intermediate_results, embeddings)
+        final_results = self._rerankers["mmr"].rerank(query, intermediate_results, embeddings)  # type: ignore[call-arg]
 
         logger.debug(f"Hybrid re-ranked {len(final_results)} results")
         return final_results

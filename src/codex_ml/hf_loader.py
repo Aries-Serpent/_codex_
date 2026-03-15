@@ -55,7 +55,8 @@ if (
     AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)  # type: ignore[valid-type]
     PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]", transformers.PreTrainedTokenizerBase  # type: ignore[valid-type]
+        "type[HF_PreTrainedTokenizerBase]",
+        transformers.PreTrainedTokenizerBase,  # type: ignore[valid-type]
     )
 else:  # pragma: no cover - optional dependency missing
     AutoModel = None  # type: ignore[assignment]

@@ -199,7 +199,7 @@ except Exception:  # noqa: BLE001
 
 if _HAS_TORCH:
 
-    class ToyDataset(Dataset):  # type: ignore[valid-type]
+    class ToyDataset(Dataset):  # type: ignore[valid-type,misc]
         def __init__(
             self,
             *,
@@ -1183,7 +1183,7 @@ def run_training(
     default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
     art_dir_path: Path | None = default_art_dir
     try:
-        art_dir_path.mkdir(parents=True, exist_ok=True)
+        art_dir_path.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
         if _telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0:
             telemetry_file = art_dir_path / "telemetry.ndjson"
             telemetry_file.touch(exist_ok=True)

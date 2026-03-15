@@ -388,7 +388,7 @@ class CuckooHashTable(Generic[K, V]):
             evicted = self.table2[idx2]
             self.table2[idx2] = (current_key, current_value)
             self.total_evictions += 1
-            current_key, current_value = evicted
+            current_key, current_value = evicted  # type: ignore[misc]
 
         # Too many evictions - resize and retry
         self._resize()

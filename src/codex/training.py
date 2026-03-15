@@ -86,7 +86,7 @@ except ImportError as e:
         resume_from: str = ""
         use_lora: bool = False
 
-    def run_custom_trainer(  # type: ignore[no-redef]
+    def run_custom_trainer(  # type: ignore[no-redef,misc]
         model: Any,
         tok: Any,
         train_ds: Any,
@@ -675,7 +675,7 @@ def _run_minilm_training(
         )
 
         # Compute accuracy and perplexity with robust fallbacks across metric APIs
-        preds = logits.argmax(dim=-1).reshape(-1).tolist()
+        preds = logits.argmax(dim=-1).reshape(-1).tolist()  # type: ignore[union-attr]
         tgt = targets.reshape(-1).tolist()
 
         # token_accuracy: prefer (preds, tgt), fall back to (logits, targets)
@@ -693,7 +693,7 @@ def _run_minilm_training(
         try:
             ppl = float(
                 perplexity(
-                    logits.reshape(-1, cfg.vocab_size).detach().cpu().tolist(),
+                    logits.reshape(-1, cfg.vocab_size).detach().cpu().tolist(),  # type: ignore[union-attr]
                     tgt,
                     from_logits=True,  # type: ignore[call-arg]
                 )
@@ -1108,6 +1108,7 @@ if __name__ == "__main__":
 
 def _codex_config_hash(cfg: dict) -> str:  # type: ignore[no-redef]
     return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
+
 
 def _codex_autodevice(cli_device: str | None = None) -> str:
     try:

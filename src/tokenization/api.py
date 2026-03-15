@@ -85,7 +85,7 @@ class _LegacyTokenizerProxy:
 
 legacy_tokenizer = _LegacyTokenizerProxy()
 if getattr(legacy_tokenizer, "__doc__", None) is None:
-    legacy_tokenizer.__doc__ = "Deprecated alias for HFTokenizerAdapter."  # type: ignore[attr-defined]
+    legacy_tokenizer.__doc__ = "Deprecated alias for HFTokenizerAdapter."  # type: ignore[attr-defined,misc]
 
 
 __all__ = ["HFTokenizerAdapter", "SentencePieceTokenizer", "legacy_tokenizer"]

@@ -668,7 +668,7 @@ class Trainer:
             if self._metrics_path is not None:
                 try:
                     record = {"epoch": epoch, "global_step": self.state.global_step}
-                    record.update({k: float(v) for k, v in epoch_metrics.items()})
+                    record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
                     append_ndjson(record, self._metrics_path)
                 except Exception as exc:  # pragma: no cover - diagnostics only
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)

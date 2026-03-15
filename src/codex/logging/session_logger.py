@@ -61,7 +61,9 @@ except Exception:
     _shared_DB_LOCK = None
     _shared_init_db = None
     try:  # Fallback: rely on monkeypatch adapters
-        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]
+        from codex.monkeypatch.log_adapters import (
+            log_event as _shared_log_event,  # type: ignore[no-redef]
+        )
     except Exception:  # pragma: no cover - nothing available
         _shared_log_event = None
 # Local, minimal fallbacks (if needed)
@@ -253,7 +255,7 @@ def log_event(
                 adapter_meta["meta"] = meta
             adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
-                _shared_log_event(
+                _shared_log_event(  # type: ignore[call-arg]
                     level=role,
                     message=message,
                     meta=adapter_meta_json,

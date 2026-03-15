@@ -108,17 +108,17 @@ def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
     if not isinstance(data, dict):
         raise ValueError("Configuration must be a mapping of keys to values")
     training = data.get("training") if isinstance(data.get("training"), dict) else data
-    lr = training.get("learning_rate") or training.get("lr")
+    lr = training.get("learning_rate") or training.get("lr")  # type: ignore[union-attr]
     if lr is None:
         raise ValueError("learning_rate is required")
     if float(lr) <= 0:
         raise ValueError("learning_rate must be positive")
-    epochs = training.get("epochs")
+    epochs = training.get("epochs")  # type: ignore[union-attr]
     if epochs is None:
         raise ValueError("epochs is required")
     if int(epochs) <= 0:
         raise ValueError("epochs must be positive")
-    model_name = training.get("model") or training.get("model_name") or data.get("model_name")
+    model_name = training.get("model") or training.get("model_name") or data.get("model_name")  # type: ignore[union-attr]
     model_name = str(model_name or "unknown")
     return model_name, int(epochs)
 

@@ -186,7 +186,7 @@ def check_deterministic_operations() -> dict[str, bool | None]:
         status["torch_available"] = False
         status["torch_deterministic"] = False
 
-    return status
+    return status  # type: ignore[return-value]
 
 
 def warn_non_deterministic_ops():

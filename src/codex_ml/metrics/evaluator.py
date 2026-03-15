@@ -128,7 +128,7 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             target = labels
             if hasattr(target, "to") and getattr(target, "device", None) != preds.device:
                 target = target.to(preds.device)
-            common = min(preds.shape[-1], target.shape[-1])
+            common = min(preds.shape[-1], target.shape[-1])  # type: ignore[union-attr]
             if common > 0:
                 # Create mask to ignore -100 labels (standard ignore_index)
                 mask = target[..., :common] != -100

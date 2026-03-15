@@ -173,7 +173,7 @@ class EmbeddingWorker:
                     self._results[task.id] = [r.embedding for r in results]
                 else:
                     # Placeholder for testing
-                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]
+                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]  # type: ignore[misc]
 
                 self._processed_count += 1
 

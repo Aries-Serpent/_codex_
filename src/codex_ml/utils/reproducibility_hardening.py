@@ -211,7 +211,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    snapshot: dict[str, Any] = {}    # 1. Python information
+    snapshot: dict[str, Any] = {}  # 1. Python information
     snapshot["python_version"] = sys.version
     snapshot["python_executable"] = sys.executable
     snapshot["python_version_info"] = {

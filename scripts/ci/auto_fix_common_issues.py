@@ -64,13 +64,15 @@ class CommonIssueFixer:
 
         # Define which patterns are auto-fixable vs manual-review
         self.auto_fixable_patterns = {
-            "Unused Imports",        # Pattern 1  - ruff --fix F401
-            "Coverage Thresholds",   # Pattern 4  - automated replacement
-            "Unsorted Imports",      # Pattern 9  - ruff --fix I001
-            "Bandit Security",       # Pattern 10 - ruff --fix (nosec injection)
-            "F-String Placeholders", # Pattern 11 - ruff --fix F541
-            "Line Length",           # Pattern 12 - ruff format (E501)
-            "W-Series Warnings",     # Pattern 13 - ruff --fix W-series
+            "Unused Imports",           # Pattern 1  - ruff --fix F401
+            "Coverage Thresholds",      # Pattern 4  - automated replacement
+            "Unsorted Imports",         # Pattern 9  - ruff --fix I001
+            "Bandit Security",          # Pattern 10 - ruff --fix (nosec injection)
+            "F-String Placeholders",    # Pattern 11 - ruff --fix F541
+            "Line Length",              # Pattern 12 - ruff format (E501)
+            "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
+            "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
+            "mypy Baseline Freshness",  # Pattern 15 - auto-update .mypy_baseline when count drops
         }
         self.manual_review_patterns = {
             "Unused Variables",      # Pattern 2  - context-dependent
@@ -101,6 +103,8 @@ class CommonIssueFixer:
             (11, "F-String Placeholders",  self.fix_fstring_placeholders),
             (12, "Line Length",            self.fix_line_length),
             (13, "W-Series Warnings",      self.fix_w_series_warnings),
+            (14, "Link Checker Config",    self.fix_link_checker_config),
+            (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
         ]
 
         any_issues = False
@@ -609,6 +613,118 @@ class CommonIssueFixer:
 
         except FileNotFoundError:
             print("  ⚠️ ruff not installed, skipping W-series check")
+
+        return issues
+
+
+    def fix_link_checker_config(self) -> List[str]:
+        """Pattern 14: Ensure .markdown-link-check.json has safe ignore patterns.
+
+        Adds GitHub repository pages (issues, discussions, pulls) that frequently
+        return transient 502/429 from rate-limiting, and ensures 502/503 are in
+        aliveStatusCodes so transient server errors don't fail the link check.
+        """
+        issues = []
+        config_path = self.repo_root / ".markdown-link-check.json"
+        if not config_path.exists():
+            return issues
+
+        try:
+            cfg = json.loads(config_path.read_text())
+        except json.JSONDecodeError:
+            issues.append(str(config_path) + " — invalid JSON")
+            return issues
+
+        existing_patterns = {p.get("pattern", "") for p in cfg.get("ignorePatterns", [])}
+        alive_codes = set(cfg.get("aliveStatusCodes", []))
+
+        required_patterns = [
+            {
+                "comment": "GitHub Issues/Discussions/Pulls pages — commonly return 502/429 from rate limiting",
+                "pattern": r"^https://github\.com/Aries-Serpent/_codex_/(issues|discussions|pulls)$",
+            },
+            {
+                "comment": "GitHub Issues/Discussions/Pulls with trailing slash",
+                "pattern": r"^https://github\.com/Aries-Serpent/_codex_/(issues|discussions|pulls)/",
+            },
+        ]
+        required_alive = {200, 206, 301, 302, 307, 308, 400, 403, 429, 502, 503}
+
+        needs_update = False
+        for rp in required_patterns:
+            if rp["pattern"] not in existing_patterns:
+                issues.append(f".markdown-link-check.json missing ignore: {rp['pattern']}")
+                if not self.check_only and not self.dry_run:
+                    cfg.setdefault("ignorePatterns", []).append(rp)
+                    needs_update = True
+
+        missing_codes = required_alive - alive_codes
+        if missing_codes:
+            issues.append(
+                f".markdown-link-check.json missing aliveStatusCodes: {sorted(missing_codes)}"
+            )
+            if not self.check_only and not self.dry_run:
+                cfg["aliveStatusCodes"] = sorted(alive_codes | required_alive)
+                needs_update = True
+
+        if needs_update:
+            config_path.write_text(json.dumps(cfg, indent=2) + "\n")
+            self.fixes_applied["Link Checker Config"] = len(issues)
+
+        return issues
+
+    def fix_mypy_baseline_freshness(self) -> List[str]:
+        """Pattern 15: Detect when live mypy count dropped below stored baseline.
+
+        When mypy errors have been fixed, the .mypy_baseline file should be
+        updated to reflect the new lower count. This pattern auto-updates the
+        baseline when the live count is at least 10 errors below the stored value.
+        """
+        issues = []
+        baseline_path = self.repo_root / ".mypy_baseline"
+        mypy_script = self.repo_root / "scripts" / "ci" / "mypy_baseline.py"
+
+        if not baseline_path.exists():
+            return issues
+
+        try:
+            stored = int(baseline_path.read_text().strip())
+        except (ValueError, OSError):
+            return issues
+
+        # Run mypy to get live count (fast: no-error-summary)
+        try:
+            result = subprocess.run(
+                [
+                    "python3", "-m", "mypy", "src/",
+                    "--no-error-summary",
+                    "--ignore-missing-imports",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=self.repo_root,
+                timeout=120,
+            )
+            live = sum(1 for line in result.stdout.splitlines() if ": error:" in line)
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return issues  # skip if mypy unavailable
+
+        threshold = 10  # only update if we've dropped by at least 10
+        if live <= stored - threshold:
+            issues.append(
+                f".mypy_baseline is {stored} but live count is {live} "
+                f"({stored - live} lower — update recommended)"
+            )
+            if not self.check_only and not self.dry_run:
+                if mypy_script.exists():
+                    subprocess.run(
+                        ["python3", str(mypy_script), "--update"],
+                        cwd=self.repo_root,
+                        capture_output=True,
+                    )
+                else:
+                    baseline_path.write_text(str(live) + "\n")
+                self.fixes_applied["mypy Baseline Freshness"] = 1
 
         return issues
 

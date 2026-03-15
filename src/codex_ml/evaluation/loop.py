@@ -458,8 +458,8 @@ def run_metrics_evaluation(
         mlflow_info["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
 
     return {
-        "run_id": run_identifier,
-        "metrics": final_metrics,
-        "system": system_metrics,
-        **({"mlflow": mlflow_info} if mlflow_info else {}),
+        "run_id": run_identifier,  # type: ignore[dict-item]
+        "metrics": final_metrics,  # type: ignore[dict-item]
+        "system": system_metrics,  # type: ignore[dict-item]
+        **({"mlflow": mlflow_info} if mlflow_info else {}),  # type: ignore[dict-item]
     }

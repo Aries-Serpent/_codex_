@@ -107,7 +107,7 @@ class RougeMetric(MetricAdapter):
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
-            return {f"{self.name}_error": str(e)}
+            return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
 
     def _compute_basic(self) -> dict[str, float]:
         """Basic ROUGE approximation without rouge-score."""

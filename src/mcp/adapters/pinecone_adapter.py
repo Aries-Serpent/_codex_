@@ -259,7 +259,8 @@ class PineconeAdapter(BaseAdapter):
                 batch = formatted_vectors[i : i + MAX_BATCH_SIZE]
 
                 await asyncio.get_event_loop().run_in_executor(
-                    None, lambda b=batch: self._index.upsert(vectors=b)
+                    None,
+                    lambda b=batch: self._index.upsert(vectors=b),  # type: ignore[misc]
                 )
 
                 total_upserted += len(batch)

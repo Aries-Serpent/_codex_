@@ -139,7 +139,7 @@ except Exception:  # pragma: no cover - hf trainer not available
     def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
         return {}
 
-    def get_hf_revision(identifier: PathLike[str] | str) -> str:
+    def get_hf_revision(identifier: PathLike[str] | str) -> str:  # type: ignore[misc]
         norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")

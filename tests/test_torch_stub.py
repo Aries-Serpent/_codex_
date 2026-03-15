@@ -282,7 +282,7 @@ class TestMypyResolution:
     def test_nn_module_subclasses_are_importable(self) -> None:
         """Every nn.* class in __all__ must be importable with no error."""
         import torch.nn as nn
-        from torch.nn import __all__ as nn_all  # type: ignore[attr-defined]
+        nn_all = getattr(nn, "__all__", [])  # avoid mixed import-from
         for name in nn_all:
             obj = getattr(nn, name, None)
             assert obj is not None, f"torch.nn.{name} not found even though it's in __all__"

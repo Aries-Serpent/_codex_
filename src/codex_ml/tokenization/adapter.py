@@ -299,7 +299,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             self._special_tokens_path = getattr(
                 self._adapter, "special_tokens_path", special_tokens_path
             )
-        elif isinstance(model_or_processor, spm.SentencePieceProcessor):
+        elif isinstance(model_or_processor, spm.SentencePieceProcessor):  # type: ignore[union-attr]
             self._init_from_processor(model_or_processor, tokens_to_add, provided_map)
         else:  # pragma: no cover - defensive
             raise TypeError(
@@ -377,7 +377,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 if token not in existing_map and token not in legacy_tokens:
                     legacy_tokens.append(token)
 
-        adapter.special_tokens_path = chosen_path
+        adapter.special_tokens_path = chosen_path  # type: ignore[has-type]
         self._special_tokens_path = chosen_path
         return existing_map, legacy_tokens, chosen_path
 

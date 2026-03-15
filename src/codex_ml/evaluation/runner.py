@@ -161,7 +161,7 @@ class EvaluationRunner:
                 except Exception as e:
                     logger.debug(f"Exception: {e}")
                     logger.debug("Exception caught, returning", exc_info=True)
-                    return {f"{self.name}_error": str(e)}
+                    return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
 
         name = getattr(metric, "__name__", "custom_metric")
         return CallableMetricAdapter(metric, name)
@@ -336,18 +336,18 @@ class EvaluationRunner:
             # Log metrics
             for name, value in self.results["metrics"].items():
                 if isinstance(value, (int, float)):
-                    self.tracking_writer.log_metric(name, value)
+                    self.tracking_writer.log_metric(name, value)  # type: ignore[union-attr]
 
             # Log performance metrics
-            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])
-            self.tracking_writer.log_metric(
+            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])  # type: ignore[union-attr]
+            self.tracking_writer.log_metric(  # type: ignore[union-attr]
                 "throughput", self.results["throughput_samples_per_sec"]
             )
 
             # Log artifact
             summary_path = str(self.output_path / "evaluation_summary.json")
             if hasattr(self.tracking_writer, "log_artifact"):
-                self.tracking_writer.log_artifact(summary_path)
+                self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
 
             print("Logged results to tracking writer")
         except Exception as e:

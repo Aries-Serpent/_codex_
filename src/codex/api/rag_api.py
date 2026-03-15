@@ -52,7 +52,7 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
 
-# mypy: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response
+# mypy: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response  # type: ignore[misc]  # noqa: E501
 # but add_exception_handler expects (Request, Exception) -> Response.
 # The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
 def _rate_limit_handler(request: Request, exc: Exception) -> Response:

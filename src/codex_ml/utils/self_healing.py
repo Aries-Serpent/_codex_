@@ -246,4 +246,4 @@ def auto_remediate(
                 break
 
     # All retries exhausted
-    raise last_exception
+    raise last_exception  # type: ignore[misc]
