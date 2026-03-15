@@ -14,7 +14,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from fastapi import HTTPException
+pytest.importorskip("fastapi")
+from fastapi import HTTPException  # noqa: E402
 from pydantic import ValidationError
 
 from src.codex.api.rag_api import MergeIndicesRequest, _ensure_subpath
