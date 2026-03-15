@@ -272,7 +272,7 @@ def rate_limiter(
                 timestamps.append(now)
                 return await func(*args, **kwargs)
 
-            async_wrapper.__signature__ = inspect.signature(func)
+            async_wrapper.__signature__ = inspect.signature(func)  # type: ignore[attr-defined]
             return async_wrapper
 
         @functools.wraps(func)
@@ -290,7 +290,7 @@ def rate_limiter(
             timestamps.append(now)
             return func(*args, **kwargs)
 
-        wrapper.__signature__ = inspect.signature(func)
+        wrapper.__signature__ = inspect.signature(func)  # type: ignore[attr-defined]
         return wrapper
 
     return decorator

@@ -155,7 +155,7 @@ class ScoreFusionReranker(BaseReranker):
 
         # Set final ranks
         for i, result in enumerate(ranked_results):  # type: ignore[assignment]
-            result.rank = i + 1
+            result.rank = i + 1  # type: ignore[attr-defined]
 
         logger.debug(f"Score fusion re-ranked {len(ranked_results)} results")
         return ranked_results
@@ -329,7 +329,7 @@ class CrossEncoderReranker(BaseReranker):
 
         # Set final ranks
         for i, result in enumerate(ranked_results):  # type: ignore[assignment]
-            result.rank = i + 1
+            result.rank = i + 1  # type: ignore[attr-defined]
 
         logger.debug(f"Cross-encoder re-ranked {len(ranked_results)} results")
         return ranked_results

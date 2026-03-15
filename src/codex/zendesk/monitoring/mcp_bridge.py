@@ -27,12 +27,12 @@ def export_zendesk_metrics(collector: MetricCollector) -> list[dict[str, Any]]:
         name = snapshot["name"]
 
         if isinstance(metric, Counter):
-            collector.set_gauge(name, float(snapshot.get("value", 0)))
+            collector.set_gauge(name, float(snapshot.get("value", 0)))  # type: ignore[arg-type]
         elif isinstance(metric, Histogram):
-            collector.set_gauge(f"{name}_count", float(snapshot.get("count", 0)))
-            collector.set_gauge(f"{name}_sum", float(snapshot.get("sum", 0.0)))
+            collector.set_gauge(f"{name}_count", float(snapshot.get("count", 0)))  # type: ignore[arg-type]
+            collector.set_gauge(f"{name}_sum", float(snapshot.get("sum", 0.0)))  # type: ignore[arg-type]
             if "avg" in snapshot:
-                collector.set_gauge(f"{name}_avg", float(snapshot["avg"]))
+                collector.set_gauge(f"{name}_avg", float(snapshot["avg"]))  # type: ignore[arg-type]
 
     return snapshots
 

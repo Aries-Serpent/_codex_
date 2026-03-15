@@ -278,7 +278,7 @@ class JsonRpcHandler:
                     ).to_dict()
                 )
             elif result is not None:
-                responses.append(result)
+                responses.append(result)  # type: ignore[arg-type]
 
         return responses
 

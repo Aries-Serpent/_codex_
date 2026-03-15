@@ -152,7 +152,7 @@ class EntryPointPluginRegistry:
                 if hasattr(entry_points, "select"):
                     eps = entry_points.select(group=group)
                 else:
-                    eps = entry_points.get(group, [])
+                    eps = entry_points.get(group, [])  # type: ignore[attr-defined]
 
                 for ep in eps:
                     plugin_info = self._create_plugin_info(ep, group)

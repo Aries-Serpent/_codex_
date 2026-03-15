@@ -192,13 +192,21 @@ else:  # pragma: no cover - exercised in minimal test envs
             pass
         def var(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
+        def std(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
         def max(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
             pass
         def min(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
             pass
+        def amax(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def amin(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
         def abs(self) -> "Tensor":  # type: ignore[misc]
             pass
         def argmax(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def argmin(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
         def clamp(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
@@ -207,6 +215,108 @@ else:  # pragma: no cover - exercised in minimal test envs
         def sigmoid(self) -> "Tensor":  # type: ignore[misc]
             pass
         def tanh(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def relu(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def exp(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def log(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def sqrt(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def pow(self, exponent: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def norm(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def cumsum(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def cumprod(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def prod(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def any(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def all(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def bool(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def int(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def long(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def half(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def double(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def type(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
+            pass
+        def masked_fill(self, mask: "_Any", value: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def masked_select(self, mask: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def scatter_(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def gather(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def index_select(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def repeat(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def expand(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def expand_as(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def t(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def transpose(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def permute(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def contiguous(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def is_contiguous(self) -> bool:  # type: ignore[misc]
+            pass
+        def __neg__(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def __add__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __radd__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __sub__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __mul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __rmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __truediv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __floordiv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __matmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __lt__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __le__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __gt__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __ge__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __eq__(self, other: "_Any") -> "Tensor":  # type: ignore[misc, override]
+            pass
+        def __ne__(self, other: "_Any") -> "Tensor":  # type: ignore[misc, override]
+            pass
+        def __and__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __or__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __len__(self) -> int:  # type: ignore[misc]
+            pass
+        def __iter__(self) -> "_Any":  # type: ignore[misc]
+            pass
+        def __getitem__(self, idx: "_Any") -> "_Any":  # type: ignore[misc]
+            pass
+        def __setitem__(self, idx: "_Any", value: "_Any") -> None:  # type: ignore[misc]
             pass
 
         def fill_(self, value: "_Any") -> "Tensor":  # type: ignore[misc]

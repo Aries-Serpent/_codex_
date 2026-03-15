@@ -144,7 +144,7 @@ def _capture_rng_state_raw() -> dict[str, Any]:
     state: dict[str, Any] = {"python": _random.getstate()}
     if _np is not None:
         with suppress(Exception):  # pragma: no cover - numpy edge cases
-            state["numpy"] = _np.random.get_state()
+            state["numpy"] = _np.random.get_state()  # type: ignore[assignment]
     if torch is not None:
         with suppress(Exception):  # pragma: no cover - guard against torch quirks
             state["torch_cpu"] = _torch_rng_get_state()
@@ -439,7 +439,7 @@ def save_checkpoint(
     if path is not None and out_dir is None:
         out_dir = path
 
-    out_dir = Path(out_dir)
+    out_dir = Path(out_dir)  # type: ignore[arg-type]
     out_dir.mkdir(parents=True, exist_ok=True)
 
     state_dict = getattr(model, "state_dict", lambda: model)()
@@ -557,7 +557,7 @@ def load_checkpoint(
     if path_or_ckpt_dir is not None and ckpt_dir is None:
         ckpt_dir = path_or_ckpt_dir
 
-    ckpt_dir = Path(ckpt_dir)
+    ckpt_dir = Path(ckpt_dir)  # type: ignore[arg-type]
     try:
         _verify_checksums(ckpt_dir, strict=strict)
     except ValueError as e:

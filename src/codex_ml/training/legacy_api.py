@@ -46,7 +46,7 @@ from codex_ml.safety import (
 )
 from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.training.eval import evaluate
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint
+from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint  # type: ignore[attr-defined]
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -645,17 +645,17 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             lora_enable = _coerce_bool_value(lora_section.get("enable"), lora_enable)
         if lora_section.get("r") is not None:
             try:
-                lora_r_value = int(lora_section.get("r"))
+                lora_r_value = int(lora_section.get("r"))  # type: ignore[arg-type]
             except (TypeError, ValueError):
                 lora_r_value = base.lora_r
         if lora_section.get("alpha") is not None:
             try:
-                lora_alpha_value = int(lora_section.get("alpha"))
+                lora_alpha_value = int(lora_section.get("alpha"))  # type: ignore[arg-type]
             except (TypeError, ValueError):
                 lora_alpha_value = base.lora_alpha
         if lora_section.get("dropout") is not None:
             try:
-                lora_dropout_value = float(lora_section.get("dropout"))
+                lora_dropout_value = float(lora_section.get("dropout"))  # type: ignore[arg-type]
             except (TypeError, ValueError):
                 lora_dropout_value = base.lora_dropout
 
@@ -1320,7 +1320,7 @@ def run_functional_training(
             mask = list(record.get("attention_mask", [1] * len(ids)))
             ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
             mask = _pad_sequence(mask, 0, int(pad_to))
-            labels.append([token if attn else -100 for token, attn in zip(ids, mask, strict=False)])
+            labels.append([token if attn else -100 for token, attn in zip(ids, mask, strict=False)])  # type: ignore[arg-type]
             features.setdefault("input_ids", []).append(ids)
             features.setdefault("attention_mask", []).append(mask)
             for key, value in record.items():

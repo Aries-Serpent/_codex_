@@ -286,7 +286,7 @@ class ASTStorage:
 
             # Use parameterized query for limit to prevent SQL injection
             query += " LIMIT ?"
-            params.append(min(max(1, limit), 10000))  # Sanitize limit value  # type: ignore[arg-type]
+            params.append(min(max(1, limit), 10000))  # type: ignore[arg-type]  # Sanitize limit value
 
             cursor.execute(query, params)
             rows = cursor.fetchall()

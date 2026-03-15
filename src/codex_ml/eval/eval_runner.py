@@ -42,7 +42,7 @@ from codex_ml.logging.run_logger import (  # noqa: E402
     METRICS_SCHEMA_URI,
 )
 from codex_ml.metrics.registry import get_metric  # noqa: E402
-from codex_ml.tracking.writers import NdjsonWriter  # noqa: E402  # type: ignore[attr-defined]
+from codex_ml.tracking.writers import NdjsonWriter  # type: ignore  # noqa: E402
 
 CSV_FIELDNAMES: Sequence[str] = (
     "run_id",

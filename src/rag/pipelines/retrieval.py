@@ -133,7 +133,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
             )
             self._fallback = InMemoryVectorStore()
         else:
-            self._fallback = None
+            self._fallback = None  # type: ignore[assignment]
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
         if self._fallback is not None:

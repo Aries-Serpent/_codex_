@@ -562,7 +562,7 @@ class FlowAnalyzer:
                     }
                 )
 
-        bottlenecks.sort(key=lambda x: x["severity"], reverse=True)  # type: ignore[arg-type]
+        bottlenecks.sort(key=lambda x: x["severity"], reverse=True)  # type: ignore[arg-type, return-value]
         return bottlenecks
 
 

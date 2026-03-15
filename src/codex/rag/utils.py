@@ -249,7 +249,7 @@ def safe_model_to_device(
                 if dtype is not None:
                     to_kwargs["dtype"] = dtype
 
-                result = model.to(**to_kwargs)  # safe-device-placement: internal implementation
+                result = model.to(**to_kwargs)  # type: ignore[attr-defined]  # safe-device-placement: internal implementation
 
                 # Log standard transfer timing
                 duration = time.time() - start_time

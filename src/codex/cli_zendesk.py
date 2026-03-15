@@ -140,7 +140,7 @@ def env_check(env: str = ENVIRONMENT_OPTION) -> None:
         raise SystemExit(2)
 
     try:
-        zenpy_spec = importlib.util.find_spec("zenpy")
+        zenpy_spec = importlib.util.find_spec("zenpy")  # type: ignore[attr-defined]
     except Exception:  # pragma: no cover - defensive guard
         zenpy_spec = None
     if zenpy_spec is None:
@@ -156,7 +156,7 @@ def deps_check() -> None:
 
     modules = []
     for name in ("zenpy", "torch"):
-        available = importlib.util.find_spec(name) is not None
+        available = importlib.util.find_spec(name) is not None  # type: ignore[attr-defined]
         modules.append({"module": name, "available": available})
     typer.echo(json.dumps(modules, indent=2))
 
@@ -527,7 +527,7 @@ def _read_structured_file(path: Path) -> object:
 
 
 def _get_zendesk_client(env: str):
-    module_spec = importlib.util.find_spec("zenpy")
+    module_spec = importlib.util.find_spec("zenpy")  # type: ignore[attr-defined]
     if module_spec is None:
         raise RuntimeError("Zenpy is required to connect to Zendesk.")
     zenpy_module = importlib.import_module("zenpy")

@@ -37,7 +37,7 @@ def _load_texts(path: str) -> list[str]:
     if p.suffix == ".csv":
         with p.open(newline="", encoding="utf-8") as fh:
             reader = csv.DictReader(fh)
-            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]
+            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]  # type: ignore[operator, index]
             return [row[column] for row in reader]
     raise ValueError(f"Unsupported data format: {p.suffix}")
 
@@ -79,7 +79,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     ap.add_argument("--data", required=True, help="Path to dataset (txt, ndjson, csv)")
     ap.add_argument("--metrics-log", dest="metrics_log", help="Optional metrics log to summarise")
     ap.add_argument("--safety", action="store_true", help="Enable prompt sanitisation")
-    args = ap.parse_args(argv)
+    args = ap.parse_args(argv)  # type: ignore[arg-type]
 
     texts = _load_texts(args.data)
     if args.safety:

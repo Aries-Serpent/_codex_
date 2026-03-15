@@ -273,7 +273,7 @@ def train(
         else:
             fingerprint = None
         if fingerprint:
-            extras["hardware_fingerprint"] = str(fingerprint)
+            extras["hardware_fingerprint"] = str(fingerprint)  # type: ignore[assignment]
 
         metadata_record = build_run_metadata(
             seed=config.seed,

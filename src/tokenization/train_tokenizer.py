@@ -58,7 +58,7 @@ except Exception as exc:  # pragma: no cover
     spm = None  # type: ignore[assignment]
     _SPM_ERROR = exc
 else:  # pragma: no cover - import succeeded
-    _SPM_ERROR = None
+    _SPM_ERROR = None  # type: ignore[assignment]
 
 from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,

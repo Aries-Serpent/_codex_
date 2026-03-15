@@ -55,7 +55,7 @@ from codex_ml.symbolic_pipeline import (  # noqa: E402
     run_codex_symbolic_pipeline,
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer  # noqa: E402
-from codex_ml.utils.checkpointing import CheckpointManager, set_seed  # noqa: E402  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import CheckpointManager, set_seed  # type: ignore[attr-defined]  # noqa: E402
 from codex_ml.utils.error_log import log_error  # noqa: E402
 from codex_ml.utils.provenance import export_environment  # noqa: E402
 from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402

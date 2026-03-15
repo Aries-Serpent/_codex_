@@ -384,7 +384,7 @@ class ArchiveDAL:
                         }
                     )
                     if reference_count > 1:
-                        context_payload["shared_references"] = max(reference_count - 1, 0)
+                        context_payload["shared_references"] = max(reference_count - 1, 0)  # type: ignore[assignment]
                 payload = {
                     "id": str(uuid.uuid4()),
                     "item_id": item["id"],

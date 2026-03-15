@@ -107,7 +107,7 @@ class ZendeskAPIClient:
             >>> client.list_tickets(per_page=50, sort_by="priority")
         """
         params = {"per_page": per_page, "sort_by": sort_by, "sort_order": sort_order}
-        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)
+        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json()
 
@@ -289,7 +289,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if role:
-            params["role"] = role
+            params["role"] = role  # type: ignore[assignment]
 
         response = self.session.get(f"{self.config.base_url}/users.json", params=params)
         response.raise_for_status()
@@ -433,7 +433,7 @@ class ZendeskAPIClient:
         if search_type:
             params["type"] = search_type
 
-        response = self.session.get(f"{self.config.base_url}/search.json", params=params)
+        response = self.session.get(f"{self.config.base_url}/search.json", params=params)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json()
 
@@ -539,7 +539,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if filter_type:
-            params["filter[action]"] = filter_type
+            params["filter[action]"] = filter_type  # type: ignore[assignment]
 
         response = self.session.get(f"{self.config.base_url}/audit_logs.json", params=params)
         response.raise_for_status()

@@ -349,6 +349,6 @@ def load_config(*, config_path: str) -> DictConfig:
     training_block = cfg.get("training")
     if isinstance(training_block, Mapping) and "lr" not in training_block:
         if "learning_rate" in training_block:
-            training_block["lr"] = training_block["learning_rate"]
+            training_block["lr"] = training_block["learning_rate"]  # type: ignore[index]
 
     return cfg

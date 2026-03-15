@@ -155,7 +155,7 @@ class MetricStorage:
 
         if self.enable_sqlite:
             metric_id = self._save_sqlite(ratio, commit_sha, timestamp)
-            result["sqlite_id"] = metric_id
+            result["sqlite_id"] = metric_id  # type: ignore[assignment]
 
         return result
 

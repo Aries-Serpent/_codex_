@@ -60,7 +60,7 @@ if _real_module is not None:
 else:
     from yaml import safe_dump, safe_load  # type: ignore
 
-    __all__ = ["DictConfig", "OmegaConf", "MISSING"]
+    __all__ = ["DictConfig", "ListConfig", "OmegaConf", "MISSING"]
 
     class _MissingSentinel:
         def __repr__(self) -> str:  # pragma: no cover - simple repr
@@ -130,6 +130,12 @@ else:
             else:
                 result[key] = _to_dictconfig(value)
         return result
+
+    class ListConfig(list):
+        """Simple list-backed stand-in for OmegaConf's ListConfig."""
+
+        def __init__(self, initial: Any = None) -> None:
+            super().__init__(initial or [])
 
     class OmegaConf:
         @staticmethod

@@ -47,7 +47,7 @@ from typing import (
 try:  # pragma: no cover - optional dependency
     import yaml  # type: ignore[import-untyped]
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 from codex_ml.utils.error_log import log_error
 
@@ -283,7 +283,7 @@ def _parse_yaml_list(
                     nested, index = _parse_yaml_block(tokens, index, tokens[index][0])
                 else:
                     nested = {}
-                item_dict[sub_key] = nested
+                item_dict[sub_key] = nested  # type: ignore[index]
         items.append(item_dict)
     return items, index
 

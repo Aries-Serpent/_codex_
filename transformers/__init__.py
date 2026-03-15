@@ -136,6 +136,21 @@ else:  # pragma: no cover - exercised in minimal test envs
         def from_config(cls, *args, **kwargs):
             raise ImportError(_ERR)
 
+    class AutoConfig:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def for_model(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def to_dict(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def save_pretrained(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
     class AutoModelForCausalLM(AutoModel):  # type: ignore[no-redef]
         def generate(self, *args, **kwargs):
             raise ImportError(_ERR)
@@ -247,6 +262,7 @@ else:  # pragma: no cover - exercised in minimal test envs
 
     __version__ = "0.0.0-stub"
     __all__ = [
+        "AutoConfig",
         "AutoModel",
         "AutoModelForCausalLM",
         "AutoModelForMaskedLM",

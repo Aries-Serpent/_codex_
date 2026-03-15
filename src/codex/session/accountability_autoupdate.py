@@ -283,7 +283,7 @@ def tokenize_narrative(
         weighted = {k: v / total for k, v in weighted.items()}
 
     result = [{"token": k, "weight": round(v, 4)} for k, v in weighted.items()]
-    result.sort(key=lambda x: x["weight"], reverse=True)  # type: ignore[return-value]
+    result.sort(key=lambda x: x["weight"], reverse=True)  # type: ignore[arg-type, return-value]
     return result  # type: ignore[return-value]
 
 

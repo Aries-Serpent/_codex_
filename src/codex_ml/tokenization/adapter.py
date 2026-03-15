@@ -145,9 +145,9 @@ class HFTokenizerAdapter(TokenizerAdapter):
         )
         special = self.special_tokens or {}
         if special:
-            self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # nosec B105
+            self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})  # type: ignore[arg-type]
+        if self.tokenizer.pad_token_id is None:  # type: ignore[attr-defined]
+            self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # type: ignore[arg-type]  # nosec B105
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
         return self.tokenizer.encode(text, **kwargs)
@@ -156,7 +156,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return self.tokenizer.decode(tokens, **kwargs)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
-        return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]
+        return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]  # type: ignore[attr-defined]
 
     def save_pretrained(self, output_dir: str) -> None:
         self.tokenizer.save_pretrained(output_dir)
@@ -164,7 +164,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def add_special_tokens(
         self, tokens: Sequence[str]
     ) -> dict[str, int]:  # pragma: no cover - thin wrapper
-        added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
+        added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})  # type: ignore[arg-type]
         mapping: dict[str, int] = {}
         if hasattr(self.tokenizer, "get_vocab"):
             vocab = self.tokenizer.get_vocab()

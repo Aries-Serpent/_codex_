@@ -534,5 +534,5 @@ if FASTAPI_AVAILABLE:
 
 else:
 
-    def create_app() -> None:  # pragma: no cover  # type: ignore[misc]
+    def create_app() -> None:  # type: ignore[misc]  # pragma: no cover
         raise RuntimeError("FastAPI not installed. Install with: pip install fastapi uvicorn")

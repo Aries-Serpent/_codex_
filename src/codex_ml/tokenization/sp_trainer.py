@@ -41,7 +41,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
     def __init__(self, model_file: str):
         module = _require_sentencepiece()
         self._model_path = Path(model_file)
-        self._sp = module.SentencePieceProcessor(model_file=str(self._model_path))
+        self._sp = module.SentencePieceProcessor(model_file=str(self._model_path))  # type: ignore[attr-defined]
 
     # ------------------------------------------------------------------
     # Encoding helpers
@@ -75,7 +75,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         return ids
 
     def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:
-        return [self.encode(text, **kwargs) for text in texts]
+        return [self.encode(text, **kwargs) for text in texts]  # type: ignore[arg-type]
 
     def decode(
         self,
@@ -100,7 +100,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         batch_ids: Iterable[Iterable[int]],
         **kwargs: object,
     ) -> list[str]:
-        return [self.decode(ids, **kwargs) for ids in batch_ids]
+        return [self.decode(ids, **kwargs) for ids in batch_ids]  # type: ignore[arg-type]
 
     # ------------------------------------------------------------------
     # Persistence helpers
@@ -176,7 +176,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
             "user_defined_symbols": list(dict.fromkeys(extra_symbols)),
         }
 
-        module.SentencePieceTrainer.train(**trainer_args)
+        module.SentencePieceTrainer.train(**trainer_args)  # type: ignore[attr-defined]
         model_file = f"{model_prefix}.model"
         pointer_path = out_dir / "tokenizer.pointer"
         pointer_path.write_text(model_file)

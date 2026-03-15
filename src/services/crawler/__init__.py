@@ -27,9 +27,9 @@ try:
         MultiLocaleSyncManager,
     )
 except ImportError:
-    from services.crawler.multi_locale_sync import LocaleConfig, MultiLocaleSyncManager
+    from services.crawler.multi_locale_sync import LocaleConfig, MultiLocaleSyncManager  # type: ignore[assignment]
 
 try:
     from src.services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider
 except ImportError:
-    from services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider
+    from services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider  # type: ignore[assignment]

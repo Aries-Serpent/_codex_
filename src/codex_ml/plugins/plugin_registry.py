@@ -302,7 +302,7 @@ class CustomMetricsPlugin(Plugin):
 
     def initialize(self) -> None:
         """Initialize metrics."""
-        self.metrics = {}
+        self.metrics: dict[str, float] = {}
         logger.info("CustomMetricsPlugin initialized")
 
     def execute(self, predictions: Any, labels: Any) -> dict[str, float]:

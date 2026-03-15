@@ -319,7 +319,7 @@ class SLAPolicy(BaseModel):
         except Exception:
             from datetime import timezone
 
-            tz = timezone.utc
+            tz = timezone.utc  # type: ignore[assignment]
 
         # Ensure start_time is tz-aware in the target timezone
         if start_time.tzinfo is None:

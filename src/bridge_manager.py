@@ -190,8 +190,8 @@ class BridgeLock:
         while time.monotonic() < deadline:
             try:
                 self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
-                _msvcrt.locking(
-                    self.lock_fd, _msvcrt.LK_NBLCK, 1
+                _msvcrt.locking(  # type: ignore[attr-defined]
+                    self.lock_fd, _msvcrt.LK_NBLCK, 1  # type: ignore[attr-defined]
                 )  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
                 logger.debug(f"Lock acquired (msvcrt): {self.lock_path}")
                 return True
@@ -210,7 +210,7 @@ class BridgeLock:
         if self.lock_fd is not None:
             try:
                 if _HAS_MSVCRT and not _HAS_FCNTL:
-                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)
+                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
                     os.close(self.lock_fd)
                     logger.debug(f"Lock released (msvcrt): {self.lock_path}")
                 else:
@@ -441,7 +441,7 @@ class BridgeManager:
             ("server_key", self.tls_server_key),
             ("ca_cert", self.tls_ca_cert),
         ]:
-            if not Path(path_value).exists():
+            if not Path(path_value).exists():  # type: ignore[arg-type]
                 raise FileNotFoundError(f"TLS {path_name} not found: {path_value}")
 
         logger.info("TLS configuration validated")

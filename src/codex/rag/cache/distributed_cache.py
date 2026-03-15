@@ -322,7 +322,7 @@ class DistributedCache:
         if self.config.backend in (CacheBackend.REDIS, CacheBackend.HYBRID):
             self._redis_backend = RedisCacheBackend(self.config)
         else:
-            self._redis_backend = None
+            self._redis_backend = None  # type: ignore[assignment]
 
         logger.info(f"DistributedCache initialized with backend: {self.config.backend.value}")
 

@@ -15,7 +15,7 @@ class Tool:
     def to_dict(self) -> dict[str, Any]:
         payload = {"name": self.name, "description": self.description}
         if self.schema is not None:
-            payload["schema"] = self.schema
+            payload["schema"] = self.schema  # type: ignore[assignment]
         return payload
 
 

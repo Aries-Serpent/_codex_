@@ -24,10 +24,10 @@ try:  # pragma: no cover - optional dependency guard
         PreTrainedTokenizerBase,
     )
 except Exception:  # pragma: no cover - transformers unavailable; defer failure until use
-    AutoModelForCausalLM = None  # type: ignore[assignment]
-    AutoTokenizer = None  # type: ignore[assignment]
-    PreTrainedModel = Any  # type: ignore[assignment]
-    PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+    AutoModelForCausalLM = None  # type: ignore[assignment, misc]
+    AutoTokenizer = None  # type: ignore[assignment, misc]
+    PreTrainedModel = Any  # type: ignore[assignment, misc]
+    PreTrainedTokenizerBase = Any  # type: ignore[assignment, misc]
 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model

@@ -24,6 +24,9 @@ from collections.abc import Sequence
 logger = logging.getLogger(__name__)
 
 
+
+__all__ = ['load_plugins']
+
 def load_plugins(modules: Sequence[str]) -> None:
     """Import plugin modules for side-effect registrations."""
 

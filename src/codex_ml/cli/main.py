@@ -19,7 +19,7 @@ from typing import Annotated, Any, Optional
 try:  # Optional dependency used for loading curriculum presets
     import yaml  # type: ignore
 except Exception:  # pragma: no cover - PyYAML is optional
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 
 def _load_typer():
@@ -41,14 +41,14 @@ if typer is not None:
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
-            from codex_ml.cli import tokenizer as tokenizer_cli
+            from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except Exception as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
-    from codex_ml.cli import _load_training_config
+    from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
 
     def _value_from_config(
         cli_value: Any,
@@ -348,7 +348,7 @@ if typer is not None:
         ),
     ) -> None:
         """Run evaluation using available evaluation modules."""
-        from codex_ml.cli import entrypoints as entry
+        from codex_ml.cli import entrypoints as entry  # type: ignore[attr-defined]
 
         eval_args: list[str] = []
         if dry_run:
@@ -487,7 +487,7 @@ else:
         log_event,
         run_cmd,
     )
-    from codex_ml.pipeline import run_codex_pipeline_from_config
+    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
     from codex_ml.utils.optional import optional_import
 
     _ = (ArgparseJSONParser, run_cmd)
