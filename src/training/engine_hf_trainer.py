@@ -191,9 +191,9 @@ except Exception:  # pragma: no cover - transformers missing
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility
             raise ImportError("transformers dependency not available in offline mode")
 
-    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment]
-    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment]
-    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment]
+    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment, misc]
+    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment, misc]
+    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment, misc]
 
     class EarlyStoppingCallback:  # type: ignore[no-redef]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
