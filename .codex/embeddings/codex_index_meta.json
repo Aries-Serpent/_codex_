@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-03-15T00:27:19Z",
+  "generated_at": "2026-03-15T03:02:04Z",
   "model": "all-MiniLM-L6-v2",
   "dim": 384,
   "chunk_count": 2834,
-  "build_time_seconds": 74.3,
+  "build_time_seconds": 109.6,
   "chunks": [
     {
       "source_path": ".codex/docs/ACCOUNTABILITY_REPORT_S77.md",
