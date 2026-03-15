@@ -5,7 +5,7 @@ Defines the interface for all AST analyzers in the framework.
 """
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Any, List
 
 from codex_ml.ast.core.node import Finding, StandardizedASTNode
 
@@ -179,7 +179,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
 
         This method is thread-safe as it uses local variables only.
         """
-        findings = []
+        findings: list[Any] = []
 
         # Only process at module level for complete picture
         if node.type != "module":

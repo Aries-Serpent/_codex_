@@ -6,7 +6,7 @@ clear-text logging and storage of sensitive data.
 
 import os
 import re
-from typing import Optional
+from typing import Any, Optional
 
 
 def redact_sensitive_value(value: Optional[str], show_preview: bool = False) -> str:
@@ -172,7 +172,7 @@ def sanitize_log_message(
         whitelist.update(whitelist_patterns)
 
     # Temporarily mark whitelisted content to preserve it
-    whitelist_placeholders = {}
+    whitelist_placeholders: dict[str, Any] = {}
     temp_message = message
     for i, pattern in enumerate(whitelist):
         matches = re.finditer(pattern, temp_message, re.IGNORECASE)

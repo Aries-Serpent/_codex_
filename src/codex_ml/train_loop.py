@@ -645,7 +645,7 @@ def _assert_bf16_capability(
 
 
 def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
-    resume_meta = {}
+    resume_meta: dict[str, Any] = {}
     if not checkpoint_dir:
         return 1, resume_meta
     ckpt_dir = Path(checkpoint_dir)

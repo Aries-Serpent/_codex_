@@ -8,7 +8,7 @@ sliding window strategy with summarization triggers.
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import Enum
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 
 class WindowStrategy(Enum):
@@ -152,7 +152,7 @@ class SlidingWindowManager:
         if max_tokens is None:
             return [e.content for e in self._entries]
 
-        result = []
+        result: list[Any] = []
         tokens = 0
         for entry in reversed(self._entries):  # Newest first
             if tokens + entry.token_count <= max_tokens:

@@ -435,7 +435,7 @@ class DeterritorializationEngine:
 
     def get_stats(self) -> Dict[str, Any]:
         """Get statistics about detected rigidities and lines of flight."""
-        rigidity_counts = {}
+        rigidity_counts: dict[str, Any] = {}
         for rigidity in self.rigidities:
             rtype = rigidity.rigidity_type.value
             rigidity_counts[rtype] = rigidity_counts.get(rtype, 0) + 1

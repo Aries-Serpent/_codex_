@@ -488,7 +488,7 @@ class MetaCognitiveReflectionLayer:
 
     def get_stats(self) -> Dict[str, Any]:
         """Get statistics about meta-cognitive reflections."""
-        quality_counts = {}
+        quality_counts: dict[str, Any] = {}
         for reflection in self.reflections:
             quality = reflection.quality.value
             quality_counts[quality] = quality_counts.get(quality, 0) + 1

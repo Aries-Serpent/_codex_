@@ -142,7 +142,7 @@ class ABTestManager:
             return {}
 
         # Get all metric names
-        metric_names = set()
+        metric_names: set[Any] = set()
         for result in variant.results:
             metric_names.update(result.keys())
 

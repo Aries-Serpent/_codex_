@@ -698,7 +698,7 @@ class PPO(RLAlgorithm):
         Returns:
             List of advantage values
         """
-        advantages = []
+        advantages: list[Any] = []
         gae = 0.0
 
         # Compute advantages backward from end of trajectory

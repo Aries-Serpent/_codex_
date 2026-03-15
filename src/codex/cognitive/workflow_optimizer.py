@@ -282,7 +282,7 @@ class WorkflowAnalyzer:
 
     def scan_workflows(self) -> list[WorkflowInfo]:
         """Scan all workflow files."""
-        workflows = []
+        workflows: list[Any] = []
 
         if not self.workflows_dir.exists():
             return workflows

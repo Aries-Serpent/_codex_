@@ -242,7 +242,7 @@ class LoopGuardrail:
 
     def _count_violation_types(self) -> dict[str, int]:
         """Count violations by type."""
-        counts = {}
+        counts: dict[str, Any] = {}
         for v in self._violations:
             counts[v.violation_type] = counts.get(v.violation_type, 0) + 1
         return counts

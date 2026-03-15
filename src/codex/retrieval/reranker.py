@@ -196,7 +196,7 @@ class MMRReranker(BaseReranker):
             similarity_matrix = np.eye(n_results)
 
         # MMR selection
-        selected_indices = []
+        selected_indices: list[Any] = []
         remaining_indices = list(range(n_results))
 
         lambda_param = self.config.mmr_lambda

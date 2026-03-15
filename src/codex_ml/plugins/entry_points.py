@@ -141,7 +141,7 @@ class EntryPointPluginRegistry:
         if groups is None:
             groups = list(self.DEFAULT_GROUPS.keys())
 
-        discovered = {}
+        discovered: dict[str, Any] = {}
 
         for group in groups:
             discovered[group] = []

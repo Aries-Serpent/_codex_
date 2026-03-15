@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
 from .objective_analyzer import (
     AlertSeverity,
@@ -552,8 +552,8 @@ class ObjectiveAdjuster:
         """Get a summary of recent adjustments."""
         adjustments = self.store.get_adjustments(limit=50)
 
-        by_status = {}
-        by_type = {}
+        by_status: dict[str, Any] = {}
+        by_type: dict[str, Any] = {}
 
         for adj in adjustments:
             by_status[adj.status] = by_status.get(adj.status, 0) + 1

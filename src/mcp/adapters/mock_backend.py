@@ -102,7 +102,7 @@ class MockBackend(BaseAdapter):
             )
 
         # Return random subset of stored vectors
-        results = []
+        results: list[Any] = []
         for vec_id, vec_data in list(self._vectors.items())[:top_k]:
             results.append(
                 {

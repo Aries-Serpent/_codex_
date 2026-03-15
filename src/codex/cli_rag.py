@@ -13,7 +13,7 @@ Integrates with the core RAG pipeline in src/codex/rag/
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import typer
 from rich.console import Console
@@ -78,7 +78,7 @@ def _validate_files(files: List[str]) -> List[Path]:
     """
     from glob import glob
 
-    resolved = []
+    resolved: list[Any] = []
     for pattern in files:
         matches = glob(pattern, recursive=True)
         if not matches:
