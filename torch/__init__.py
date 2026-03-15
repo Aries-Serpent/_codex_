@@ -177,11 +177,11 @@ else:  # pragma: no cover - exercised in minimal test envs
             pass
         def unsqueeze(self, dim: int) -> "Tensor":  # type: ignore[misc]
             pass
-        def expand(self, *sizes: "_Any") -> "Tensor":  # type: ignore[misc]
+        def expand(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
-        def permute(self, *dims: "_Any") -> "Tensor":  # type: ignore[misc]
+        def permute(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
-        def transpose(self, dim0: int, dim1: int) -> "Tensor":  # type: ignore[misc]
+        def transpose(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
         def flatten(self, *args: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
@@ -238,16 +238,7 @@ else:  # pragma: no cover - exercised in minimal test envs
             pass
         def all(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
-        def bool(self) -> "Tensor":  # type: ignore[misc]
-            pass
-        def int(self) -> "Tensor":  # type: ignore[misc]
-            pass
-        def long(self) -> "Tensor":  # type: ignore[misc]
-            pass
-        def half(self) -> "Tensor":  # type: ignore[misc]
-            pass
-        def double(self) -> "Tensor":  # type: ignore[misc]
-            pass
+        # Extended type-conversion and shape ops (S55 additions — non-duplicate)
         def type(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
             pass
         def masked_fill(self, mask: "_Any", value: "_Any") -> "Tensor":  # type: ignore[misc]
@@ -262,37 +253,16 @@ else:  # pragma: no cover - exercised in minimal test envs
             pass
         def repeat(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
-        def expand(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
         def expand_as(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
         def t(self) -> "Tensor":  # type: ignore[misc]
             pass
-        def transpose(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def permute(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def contiguous(self) -> "Tensor":  # type: ignore[misc]
-            pass
         def is_contiguous(self) -> bool:  # type: ignore[misc]
             pass
-        def __neg__(self) -> "Tensor":  # type: ignore[misc]
-            pass
-        def __add__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def __radd__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def __sub__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def __mul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
+        # Additional arithmetic / comparison operators (S55 additions — non-duplicate)
         def __rmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
-        def __truediv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
         def __floordiv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def __matmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
         def __lt__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
@@ -309,14 +279,6 @@ else:  # pragma: no cover - exercised in minimal test envs
         def __and__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
             pass
         def __or__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
-            pass
-        def __len__(self) -> int:  # type: ignore[misc]
-            pass
-        def __iter__(self) -> "_Any":  # type: ignore[misc]
-            pass
-        def __getitem__(self, idx: "_Any") -> "_Any":  # type: ignore[misc]
-            pass
-        def __setitem__(self, idx: "_Any", value: "_Any") -> None:  # type: ignore[misc]
             pass
 
         def fill_(self, value: "_Any") -> "Tensor":  # type: ignore[misc]
