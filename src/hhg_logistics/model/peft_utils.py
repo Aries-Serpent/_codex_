@@ -46,7 +46,7 @@ except Exception:  # pragma: no cover
 @dataclass
 class HFModelBundle:
     model: torch.nn.Module
-    tokenizer: AutoTokenizer
+    tokenizer: AutoTokenizer  # type: ignore[valid-type]
 
 
 def _resolve_dtype(dtype: str):

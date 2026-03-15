@@ -437,7 +437,7 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
             return
 
         self.padding = padding

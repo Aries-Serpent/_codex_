@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
-from typing import Any, TypeVar
+from typing import Any, TypeVar, Union
 
 from pydantic import BaseModel
 
@@ -23,7 +23,7 @@ from codex.zendesk.model import (
 )
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
-ModelInput = ModelT | Mapping[str, Any]
+ModelInput = Union[BaseModel, Mapping[str, Any]]
 
 
 def diff_triggers(

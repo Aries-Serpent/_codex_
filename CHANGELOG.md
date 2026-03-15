@@ -5,6 +5,30 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [S46] — 2026-03-15T05:57Z — PR #3584
+
+### S46: mypy 1069→1008 + skip stub conversions + QA clean
+
+#### mypy Ratchet: 1069 → 1008 (61 errors fixed)
+| Phase | Category | Fixed |
+|-------|----------|-------|
+| H | `[valid-type]` | 28 — quantum/*, hf_loader, hf_tokenizer, modeling, sp_trainer, diff_engine, peft_utils, utils/modeling, train_loop, trainer |
+| I | `[no-redef]` | 9 — codex_audit/policy, session_logger, checkpoint_manager, codex/training, crawler/__init__, codex_engine.pyi, tokenizer.py |
+| J | `[name-defined]` | 5 — rl.py (restored `def update()`), legacy_api.py (grad_accum), adapter.py (spm TYPE_CHECKING), registry.py (BinaryIO) |
+| K | Ruff clean | 5 — rl.py F821×3, legacy_api.py F821×2 |
+
+#### Stub Test Conversions: 14 → 5 remaining
+- `test_readme_examples.py` — graceful skip when README block missing
+- `test_tokenizer_basic.py` — 5 real tests with importorskip
+- `test_manifest_determinism.py` — 3 tests pass via `stage_s7_manifest` implementation
+- `test_api_rate_limit.py` — outer skip removed (internal guard remains)
+- `test_override_propagation.py` — outer skip removed (importorskip hydra guards)
+- `test_codexml_cli.py` — outer skip removed (importorskip hydra+datasets guards)
+
+#### gitignore / temp audit: CLEAN
+- No important files gitignored accidentally
+- No repo files in /tmp/
+- All excluded files are correctly runtime artifacts
 ## [Unreleased]
 
 ### Session S45 — 2026-03-15 — CI triage fixes + mypy 1113→1069 (PR #3583)

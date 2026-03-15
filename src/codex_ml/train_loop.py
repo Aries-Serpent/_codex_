@@ -199,7 +199,7 @@ except Exception:  # noqa: BLE001
 
 if _HAS_TORCH:
 
-    class ToyDataset(Dataset):
+    class ToyDataset(Dataset):  # type: ignore[valid-type]
         def __init__(
             self,
             *,

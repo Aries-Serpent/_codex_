@@ -61,9 +61,11 @@ except Exception:
     _shared_DB_LOCK = None
     _shared_init_db = None
     try:  # Fallback: rely on monkeypatch adapters
-        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]
-
-# ------------------------------------
+        from codex.monkeypatch.log_adapters import (
+            log_event as _shared_log_event,  # type: ignore[no-redef]
+        )
+    except Exception:  # pragma: no cover - nothing available
+        _shared_log_event = None
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()

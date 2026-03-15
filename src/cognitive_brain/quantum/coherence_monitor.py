@@ -8,7 +8,7 @@ automatic rollbacks when coherence falls below acceptable thresholds.
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,

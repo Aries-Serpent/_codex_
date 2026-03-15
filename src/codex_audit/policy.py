@@ -106,6 +106,7 @@ def build_policy_mapping(
     track_policies: list[TrackPolicy] = []
     for track, focus in track_map.items():
         ra_links: list[str] = ["RA-1", "RA-3"]  # type: ignore[no-redef]
+        if track in {"A", "B"}:
             ra_links.append("RA-2")
         if track in {"D", "E"}:
             ra_links.append("RA-5")
