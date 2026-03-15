@@ -3446,4 +3446,3 @@ All three objectives at 100%:
 - `pages-pre-merge-validation.yml`: new `Nav smoke test (docs_lint)` step
   - Runs `docs_lint.py --strict` — verifies all mkdocs.yml nav entries resolve to existing files
   - Catches 404s before they reach GitHub Pages production
-
