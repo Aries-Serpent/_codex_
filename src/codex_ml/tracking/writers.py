@@ -336,9 +336,9 @@ def _emit_summary(
     )
     extras = dict(extra or {})
     if extras:
-        payload["extra"] = _normalise_summary_extra(extras)
+        payload["extra"] = _normalise_summary_extra(extras)  # type: ignore[assignment]
     else:
-        payload["extra"] = OrderedDict()
+        payload["extra"] = OrderedDict()  # type: ignore[assignment]
     _write_deterministic_json(summary_path, payload)
 
 

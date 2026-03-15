@@ -262,7 +262,7 @@ class WorkflowRefactorer:
         """
         workflows = self.list_workflows()
 
-        results = {
+        results: dict[str, Any] = {
             "total_workflows": len(workflows),
             "dispatch_added": 0,
             "runner_updated": 0,

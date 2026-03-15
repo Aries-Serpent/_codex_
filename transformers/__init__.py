@@ -57,14 +57,73 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    AutoModelForCausalLM = _Stub("transformers.AutoModelForCausalLM")
-    AutoModelForMaskedLM = _Stub("transformers.AutoModelForMaskedLM")
-    AutoTokenizer = _Stub("transformers.AutoTokenizer")
-    PreTrainedTokenizerBase = _Stub("transformers.PreTrainedTokenizerBase")
+    # Use proper stub classes (not _Stub instances) so type annotations remain valid.
+
+    class PreTrainedModel:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class PreTrainedTokenizerBase:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class PreTrainedTokenizerFast(PreTrainedTokenizerBase):  # type: ignore[no-redef]
+        pass
+
+    class AutoModel:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class AutoModelForCausalLM(AutoModel):  # type: ignore[no-redef]
+        pass
+
+    class AutoModelForMaskedLM(AutoModel):  # type: ignore[no-redef]
+        pass
+
+    class AutoTokenizer:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class BitsAndBytesConfig:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class DataCollatorForLanguageModeling:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class EarlyStoppingCallback:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class TrainerCallback:  # type: ignore[no-redef]
+        pass
+
+    class TrainingArguments:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    class Trainer:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError("transformers is not installed")
+
+    __version__ = "0.0.0-stub"
     __all__ = [
+        "AutoModel",
         "AutoModelForCausalLM",
         "AutoModelForMaskedLM",
         "AutoTokenizer",
+        "BitsAndBytesConfig",
+        "DataCollatorForLanguageModeling",
+        "EarlyStoppingCallback",
+        "PreTrainedModel",
         "PreTrainedTokenizerBase",
+        "PreTrainedTokenizerFast",
+        "Trainer",
+        "TrainerCallback",
+        "TrainingArguments",
+        "__version__",
     ]
     __path__ = []

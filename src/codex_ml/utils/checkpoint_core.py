@@ -49,7 +49,7 @@ except Exception:  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except Exception:  # pragma: no cover - treated as unavailable
-    Version = None  # type: ignore[assignment]  # type: ignore[misc]
+    Version = None  # type: ignore[assignment, misc]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
@@ -208,7 +208,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 # Support both new dict format and legacy tuple format
                 if isinstance(numpy_state, dict):
                     # New format: convert back to tuple
-                    state_tuple = (
+                    state_tuple = (  # type: ignore[assignment]
                         numpy_state["name"],
                         np.array(numpy_state["keys"], dtype=np.uint32),
                         numpy_state["pos"],
@@ -221,7 +221,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     # If it's a tuple/list from JSON, ensure array element is converted
                     if isinstance(numpy_state, (tuple, list)) and len(numpy_state) >= 5:
                         # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)  # noqa: E501
-                        state_tuple = (
+                        state_tuple = (  # type: ignore[assignment]
                             numpy_state[0],
                             np.array(numpy_state[1], dtype=np.uint32)
                             if isinstance(numpy_state[1], list)

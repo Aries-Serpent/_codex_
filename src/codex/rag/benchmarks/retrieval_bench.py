@@ -5,13 +5,13 @@ Measures query latency and accuracy for semantic search.
 """
 
 import tempfile
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_retrieval(
-    index_sizes: List[int] = None, top_k_values: List[int] = None, runs: int = 10
+    index_sizes: Optional[List[int]] = None, top_k_values: Optional[List[int]] = None, runs: int = 10
 ) -> Dict[str, Any]:
     """
     Benchmark retrieval performance with various index sizes.
@@ -60,8 +60,8 @@ def benchmark_retrieval(
                     )
 
                     if result.success:
-                        result.metadata["index_size"] = index_size
-                        result.metadata["top_k"] = top_k
+                        result.metadata["index_size"] = index_size  # type: ignore[index]
+                        result.metadata["top_k"] = top_k  # type: ignore[index]
 
     # Calculate percentiles
     _calculate_percentiles(runner.results)

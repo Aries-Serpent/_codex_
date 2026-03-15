@@ -97,7 +97,7 @@ def _evaluate_ra_policy(policy: Any) -> HarnessSignal:
         if "results" in policy:
             statuses.extend([_normalize_status(p.get("status")) for p in policy.get("results", [])])  # type: ignore[misc]
         if "status" in policy:
-            statuses.append(_normalize_status(policy.get("status")))
+            statuses.append(_normalize_status(policy.get("status")))  # type: ignore[arg-type]
         if not statuses:
             statuses.extend(
                 [_normalize_status(v) for v in policy.values() if not isinstance(v, (dict, list))]  # type: ignore[misc]

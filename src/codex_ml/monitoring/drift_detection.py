@@ -386,7 +386,7 @@ class ComprehensiveDriftMonitor:
         """
         alerts = self.get_all_alerts()
 
-        summary = {
+        summary: dict[str, Any] = {
             "total_alerts": len(alerts),
             "by_type": {},
             "by_severity": {},

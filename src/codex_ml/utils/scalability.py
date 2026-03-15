@@ -205,7 +205,7 @@ class CircuitBreaker:
         """Get current circuit state."""
         with self._lock:
             if self._state == "open":
-                if time.time() - self._last_failure_time > self.recovery_timeout:
+                if time.time() - self._last_failure_time > self.recovery_timeout:  # type: ignore[operator]
                     self._state = "half-open"
                     self._successes = 0
             return self._state

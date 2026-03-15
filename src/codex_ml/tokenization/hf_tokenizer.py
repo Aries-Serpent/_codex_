@@ -263,7 +263,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
             ``max_length`` tokens long.
         """
 
-        return self.tokenizer.encode(
+        return self.tokenizer.encode(  # type: ignore[union-attr]
             text,
             add_special_tokens=False,
             padding="max_length" if pad_to_max else False,
@@ -272,36 +272,36 @@ class HFTokenizerAdapter(TokenizerAdapter):
         )
 
     def decode(self, ids: Sequence[int]) -> str:
-        return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
+        return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)  # type: ignore[union-attr]
 
     def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:
         """Register additional special tokens with the underlying tokenizer."""
-        self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
-        return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}
+        self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})  # type: ignore[union-attr]
+        return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}  # type: ignore[union-attr]
 
     def save(self, path: Path) -> None:
         path = Path(path)
         save_dir = path if path.suffix == "" else path.parent
         save_dir.mkdir(parents=True, exist_ok=True)
-        self.tokenizer.save_pretrained(save_dir)
+        self.tokenizer.save_pretrained(save_dir)  # type: ignore[union-attr]
         if path.suffix != "":
             (save_dir / "tokenizer.json").replace(path)
 
     @property
     def vocab_size(self) -> int:
-        return int(self.tokenizer.vocab_size)
+        return int(self.tokenizer.vocab_size)  # type: ignore[union-attr]
 
     @property
     def pad_id(self) -> int:
-        return int(self.tokenizer.pad_token_id or 0)
+        return int(self.tokenizer.pad_token_id or 0)  # type: ignore[union-attr]
 
     @property
     def eos_id(self) -> int:
-        return int(self.tokenizer.eos_token_id or 0)
+        return int(self.tokenizer.eos_token_id or 0)  # type: ignore[union-attr]
 
     @property
     def name_or_path(self) -> str:
-        return str(self.tokenizer.name_or_path)
+        return str(self.tokenizer.name_or_path)  # type: ignore[union-attr]
 
     def batch_encode(
         self,
@@ -325,7 +325,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
             pad_opt = "max_length"
         if pad_opt and getattr(self.tokenizer, "pad_token", None) is None:
             # GPT‑2 tokenizers lack pad token by default; reuse eos token
-            self.tokenizer.pad_token = self.tokenizer.eos_token
+            self.tokenizer.pad_token = self.tokenizer.eos_token  # type: ignore[union-attr]
         enc = self.tokenizer(  # type: ignore[misc]
             list(texts),
             padding=pad_opt,

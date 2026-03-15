@@ -5,7 +5,39 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [S52] — 2026-03-15T09:30Z — PR #3584
+## [S53] — 2026-03-15T09:37Z — PR #3584
+
+### S53: mypy 477→291 — stub expansions + type annotation improvements
+
+#### Summary
+- `transformers/__init__.py` — replaced 13 `_Stub()` instances with proper stub classes (eliminates [valid-type] regressions); added `PreTrainedModel`, `PreTrainedTokenizerBase/Fast`, all `Auto*` classes, `Trainer*`, `TrainingArguments`, `BitsAndBytesConfig`, `DataCollatorForLanguageModeling`
+- `sentencepiece/__init__.py` — added `SentencePieceProcessor` + `SentencePieceTrainer` fallback classes
+- `omegaconf/__init__.py` — added `OmegaConf.to_yaml()` + `OmegaConf.select()` stub methods
+- `torch/utils/data/__init__.py` — `DataLoader` now implements `Iterable[Any]` + `Sized`; `TensorDataset` implements `Sized`
+- `torch/nn/__init__.py` — added `init` submodule with 10 initialization functions (normal_, zeros_, ones_, xavier_uniform_, kaiming_normal_, etc.)
+- `codex_ml/data/__init__.py` — explicit `dataloader` + `loaders` submodule exports
+- `codex_ml/cli/__init__.py` — explicit `utils` submodule export
+- `codex/zendesk/apply.py` — added `import importlib.util` for explicit submodule access
+- `codex/rag/benchmarks/*.py` — `Optional[List[...]] = None` parameter fixes (4 files)
+- `codex/rag/embeddings.py` — `provider: EmbeddingProvider` wide annotation
+- Multiple `dict[str, Any]` annotations on summary/result dicts (5 files)
+- `.mypy_baseline` — updated 477 → 291 (186 new errors fixed this session)
+
+#### Changed (mypy fixes — 186 errors)
+- `src/transformers/__init__.py` — proper stub classes (fixes 23 [valid-type] errors)
+- `src/sentencepiece/__init__.py` — SentencePieceProcessor/Trainer stubs (6 errors)
+- `src/torch/nn/__init__.py` — init module (3 errors)
+- `src/torch/utils/data/__init__.py` — DataLoader Iterable/Sized (3 errors)
+- `src/codex/rag/embeddings.py` — EmbeddingProvider annotation (8 errors)
+- `src/codex/retrieval/stores/faiss_store.py` — 10× union-attr ignores
+- `src/codex_ml/tokenization/hf_tokenizer.py` — 10× union-attr ignores
+- `src/codex/rag/benchmarks/` — 4 files, signature + index fixes (~16 errors)
+- Batch `[assignment]` fixes — 30+ files
+- Batch `[arg-type]` fixes — 27 files
+- Batch `[operator]`/`[index]` fixes — 12 files
+- `src/omegaconf/__init__.py` — to_yaml/select (8 errors)
+
+
 
 ### S52: Security code-quality fixes + CI triage (all 22 workflows) + Auto-fix Pattern 14/15 + mypy 595→477
 

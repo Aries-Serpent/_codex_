@@ -930,7 +930,7 @@ def run_functional_training(
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        from datasets import Dataset
+        from datasets import Dataset  # type: ignore[attr-defined]
         from transformers import AutoTokenizer
     except Exception:  # pragma: no cover - optional dependencies
         # Track failed optional dependencies

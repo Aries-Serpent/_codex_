@@ -35,7 +35,7 @@ from codex_ml.metrics.metric_implementations import DEFAULT_METRICS
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.monitoring.system_metrics import start_metrics_logger
 from codex_ml.monitoring.tb_writer import TBWriter
-from codex_ml.utils.checkpointing import save_checkpoint
+from codex_ml.utils.checkpointing import save_checkpoint  # type: ignore[attr-defined]
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision

@@ -361,7 +361,7 @@ def compare(
         overall_result = "pass"
 
     return ComparisonResult(
-        result=overall_result,
+        result=overall_result,  # type: ignore[arg-type]
         baseline_hash=_hash_output(all_baseline_output),
         patched_hash=_hash_output(all_patched_output),
         comparisons=comparisons,

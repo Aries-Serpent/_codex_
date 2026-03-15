@@ -223,7 +223,7 @@ class ExpansionRewriter(BaseQueryRewriter):
                         break
                     expansions.add(synonym)
 
-        expansions = list(expansions)[: self.config.max_expansions]
+        expansions = list(expansions)[: self.config.max_expansions]  # type: ignore[assignment]
 
         # Build expanded query
         if expansions:
@@ -235,7 +235,7 @@ class ExpansionRewriter(BaseQueryRewriter):
             original_query=query,
             rewritten_query=expanded_query,
             strategy=QueryRewriteStrategy.EXPAND,
-            expansions=expansions,
+            expansions=expansions,  # type: ignore[arg-type]
             metadata={"expansion_count": len(expansions)},
         )
 

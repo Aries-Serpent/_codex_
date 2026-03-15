@@ -24,7 +24,7 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
     nn = Any  # type: ignore[assignment]
     GradScaler = None  # type: ignore[assignment]
     autocast = None  # type: ignore[assignment]
-    DataLoader = Any  # type: ignore[assignment]  # type: ignore[misc]
+    DataLoader = Any  # type: ignore[assignment, misc]
 
 if torch is not None:  # pragma: no cover - typing bridge
     TensorType = torch.Tensor

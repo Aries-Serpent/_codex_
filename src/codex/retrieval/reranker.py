@@ -154,7 +154,7 @@ class ScoreFusionReranker(BaseReranker):
         ][: self.config.top_k]
 
         # Set final ranks
-        for i, result in enumerate(ranked_results):
+        for i, result in enumerate(ranked_results):  # type: ignore[assignment]
             result.rank = i + 1
 
         logger.debug(f"Score fusion re-ranked {len(ranked_results)} results")
@@ -328,7 +328,7 @@ class CrossEncoderReranker(BaseReranker):
         ][: self.config.top_k]
 
         # Set final ranks
-        for i, result in enumerate(ranked_results):
+        for i, result in enumerate(ranked_results):  # type: ignore[assignment]
             result.rank = i + 1
 
         logger.debug(f"Cross-encoder re-ranked {len(ranked_results)} results")

@@ -82,11 +82,11 @@ except Exception:  # pragma: no cover - degrade gracefully when metrics extras m
             msg = f"Metrics module unavailable; {self._name} requires optional extras"
             raise AttributeError(msg)
 
-    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[assignment]  # type: ignore[misc]
-    F1Score = _MissingMetric("F1Score")  # type: ignore[assignment]  # type: ignore[misc]
-    RecallScore = _MissingMetric("RecallScore")  # type: ignore[assignment]  # type: ignore[misc]
-    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[assignment]  # type: ignore[misc]
-    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[assignment]  # type: ignore[misc]
+    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[assignment, misc]
+    F1Score = _MissingMetric("F1Score")  # type: ignore[assignment, misc]
+    RecallScore = _MissingMetric("RecallScore")  # type: ignore[assignment, misc]
+    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[assignment, misc]
+    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[assignment, misc]
     get_metric = _MissingMetric("get_metric")
     register_metric = _MissingMetric("register_metric")
     list_metrics = _MissingMetric("list_metrics")

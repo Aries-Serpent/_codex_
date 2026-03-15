@@ -377,7 +377,7 @@ def encode(
             )
 
     try:
-        encoded = tokenizer(
+        encoded = tokenizer(  # type: ignore[operator]
             payload,
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,

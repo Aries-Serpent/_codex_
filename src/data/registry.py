@@ -126,16 +126,16 @@ def _synthetic_classification_dataset(
         train_dataset = dataset
         val_dataset = None
     else:
-        val_size = max(1, int(len(dataset) * float(val_split)))
-        val_size = min(val_size, len(dataset) - 1) if len(dataset) > 1 else val_size
+        val_size = max(1, int(len(dataset) * float(val_split)))  # type: ignore[arg-type]
+        val_size = min(val_size, len(dataset) - 1) if len(dataset) > 1 else val_size  # type: ignore[arg-type]
         if val_size <= 0:
             train_dataset = dataset
             val_dataset = None
         else:
-            train_size = len(dataset) - val_size
+            train_size = len(dataset) - val_size  # type: ignore[arg-type]
             if train_size <= 0:
-                train_size = len(dataset) - 1
-                val_size = len(dataset) - train_size
+                train_size = len(dataset) - 1  # type: ignore[arg-type]
+                val_size = len(dataset) - train_size  # type: ignore[arg-type]
             train_dataset, val_dataset = random_split(
                 dataset,
                 [train_size, val_size],

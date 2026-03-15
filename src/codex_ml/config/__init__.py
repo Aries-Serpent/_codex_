@@ -810,8 +810,8 @@ try:  # pragma: no cover - optional dependency
         get_settings,
     )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
-    AppSettings = None  # type: ignore[assignment]  # type: ignore[misc]
-    EvalRow = None  # type: ignore[assignment]  # type: ignore[misc]
+    AppSettings = None  # type: ignore[assignment, misc]
+    EvalRow = None  # type: ignore[assignment, misc]
 
     def eval_row_schema() -> dict:
         raise ModuleNotFoundError(

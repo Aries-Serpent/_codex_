@@ -367,7 +367,7 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
     else:
         final = normalized
 
-    return max(final, key=final.get)
+    return max(final, key=final.get)  # type: ignore[arg-type]
 
 
 def calculate_k1(

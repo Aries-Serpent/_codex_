@@ -23,7 +23,7 @@ from codex_ml.metrics.registry import append_error_entry, list_metrics  # noqa: 
 from codex_ml.metrics.registry import get as get_registered_metric  # noqa: E402
 from codex_ml.metrics.sinks import create_sink  # noqa: E402
 from codex_ml.registry.base import RegistryNotFoundError  # noqa: E402
-from codex_ml.tracking.writers import NdjsonWriter  # noqa: E402
+from codex_ml.tracking.writers import NdjsonWriter  # noqa: E402  # type: ignore[attr-defined]
 from codex_ml.utils.provenance import export_environment  # noqa: E402
 from codex_ml.utils.seeding import set_reproducible  # noqa: E402
 

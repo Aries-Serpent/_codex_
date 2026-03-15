@@ -21,7 +21,7 @@ _warnings.warn(
     stacklevel=2,
 )
 try:
-    from codex_ml.utils.checkpointing import (
+    from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
         CheckpointManager,  # type: ignore
         build_payload_bytes,  # type: ignore
         dump_rng_state,  # type: ignore

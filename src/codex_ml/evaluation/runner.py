@@ -45,7 +45,7 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    torch = None
+    torch = None  # type: ignore[assignment]
     DataLoader = None  # type: ignore[misc]
 
 
@@ -260,7 +260,7 @@ class EvaluationRunner:
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 print(f"Warning: Metric {metric.name} failed: {e}")
-                metric_results[f"{metric.name}_error"] = str(e)
+                metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
 
         # Build results
         self.results = {

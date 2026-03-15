@@ -485,7 +485,7 @@ class PluginManager:
         """
         health_data = self.sandbox.get_all_health()
 
-        report = {
+        report: dict[str, Any] = {
             "total_plugins": len(self.plugins),
             "enabled": 0,
             "disabled": 0,

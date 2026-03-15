@@ -73,7 +73,7 @@ class FSDPConfig:
     def __init__(
         self,
         sharding_strategy: str = "FULL_SHARD",
-        min_num_params: int = 1e8,  # 100M parameters
+        min_num_params: int = 1e8,  # 100M parameters  # type: ignore[assignment]
         use_cpu_offload: bool = False,
         offload_params: bool = True,
         offload_optimizer: bool = True,

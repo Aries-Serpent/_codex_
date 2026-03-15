@@ -269,3 +269,54 @@ class Parameter:  # pragma: no cover
 
 # Import functional submodule for torch.nn.functional access
 from torch.nn import functional  # noqa: E402, F401
+
+
+class _InitModule:  # pragma: no cover - nn.init stub
+    """Stub for torch.nn.init module."""
+
+    @staticmethod
+    def normal_(tensor: Any, mean: float = 0.0, std: float = 1.0) -> Any:
+        return tensor
+
+    @staticmethod
+    def zeros_(tensor: Any) -> Any:
+        return tensor
+
+    @staticmethod
+    def ones_(tensor: Any) -> Any:
+        return tensor
+
+    @staticmethod
+    def constant_(tensor: Any, val: float) -> Any:
+        return tensor
+
+    @staticmethod
+    def xavier_uniform_(tensor: Any, gain: float = 1.0) -> Any:
+        return tensor
+
+    @staticmethod
+    def xavier_normal_(tensor: Any, gain: float = 1.0) -> Any:
+        return tensor
+
+    @staticmethod
+    def kaiming_uniform_(tensor: Any, a: float = 0, mode: str = "fan_in", nonlinearity: str = "leaky_relu") -> Any:
+        return tensor
+
+    @staticmethod
+    def kaiming_normal_(tensor: Any, a: float = 0, mode: str = "fan_in", nonlinearity: str = "leaky_relu") -> Any:
+        return tensor
+
+    @staticmethod
+    def uniform_(tensor: Any, a: float = 0.0, b: float = 1.0) -> Any:
+        return tensor
+
+    @staticmethod
+    def eye_(tensor: Any) -> Any:
+        return tensor
+
+    @staticmethod
+    def orthogonal_(tensor: Any, gain: float = 1.0) -> Any:
+        return tensor
+
+
+init = _InitModule()

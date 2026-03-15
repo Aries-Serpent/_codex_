@@ -378,7 +378,7 @@ _DEFAULT_SEED = 1234
 
 def _normalise_snapshot(value: Any) -> Any:
     if is_dataclass(value):
-        return _normalise_snapshot(asdict(value))
+        return _normalise_snapshot(asdict(value))  # type: ignore[arg-type]
     if isinstance(value, Mapping):
         return {str(key): _normalise_snapshot(item) for key, item in value.items()}
     if isinstance(value, (list, tuple, set)):

@@ -36,7 +36,25 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    __all__ = []
+    class SentencePieceProcessor:
+        def __init__(self, *args, **kwargs):
+            raise ImportError("sentencepiece is not installed")
+
+        def encode(self, *args, **kwargs):
+            raise ImportError("sentencepiece is not installed")
+
+        def decode(self, *args, **kwargs):
+            raise ImportError("sentencepiece is not installed")
+
+        def get_piece_size(self) -> int:
+            return 0
+
+    class SentencePieceTrainer:
+        @staticmethod
+        def train(*args, **kwargs):
+            raise ImportError("sentencepiece is not installed")
+
+    __all__ = ["SentencePieceProcessor", "SentencePieceTrainer"]
     __path__ = []
     IS_CODEX_STUB = True
     _MISSING_MSG = "sentencepiece is not installed in this environment. Install sentencepiece to enable these features."

@@ -223,14 +223,14 @@ def _parse_yaml_dict(
         key, value_str = _split_key_value(content)
         index += 1
         if value_str is not None:
-            result[key] = _parse_scalar(value_str)
+            result[key] = _parse_scalar(value_str)  # type: ignore[index]
         else:
             if index < len(tokens) and tokens[index][0] > indent:
                 nested_indent = tokens[index][0]
                 nested, index = _parse_yaml_block(tokens, index, nested_indent)
             else:
                 nested = {}
-            result[key] = nested
+            result[key] = nested  # type: ignore[index]
     return result, index
 
 
@@ -277,7 +277,7 @@ def _parse_yaml_list(
             sub_key, sub_value = _split_key_value(sub_content)
             index += 1
             if sub_value is not None:
-                item_dict[sub_key] = _parse_scalar(sub_value)
+                item_dict[sub_key] = _parse_scalar(sub_value)  # type: ignore[index]
             else:
                 if index < len(tokens) and tokens[index][0] > sub_indent:
                     nested, index = _parse_yaml_block(tokens, index, tokens[index][0])

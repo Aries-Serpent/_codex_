@@ -358,7 +358,7 @@ class ContinualReplayStrategy:
             if isinstance(phase, dict):
                 resolved.append(dict(phase))
             elif is_dataclass(phase):
-                resolved.append(asdict(phase))
+                resolved.append(asdict(phase))  # type: ignore[arg-type]
             else:
                 try:
                     resolved.append(dict(phase))

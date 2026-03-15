@@ -216,6 +216,28 @@ else:
                 else:
                     raise TypeError("OmegaConf.update without key requires mapping value")
 
+        @staticmethod
+        def to_yaml(cfg: Any, *, resolve: bool = False) -> str:
+            from yaml import safe_dump
+            container = OmegaConf.to_container(cfg, resolve=resolve)
+            return safe_dump(container, default_flow_style=False)
+
+        @staticmethod
+        def select(cfg: Any, key: str, default: Any = None) -> Any:
+            parts = key.split(".")
+            current = cfg
+            for part in parts:
+                if current is None:
+                    return default
+                try:
+                    if isinstance(current, Mapping):
+                        current = current.get(part, default)
+                    else:
+                        current = getattr(current, part, default)
+                except Exception:
+                    return default
+            return current
+
 
 del _real_module
 del _load_real_module

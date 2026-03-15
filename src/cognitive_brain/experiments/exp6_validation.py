@@ -389,8 +389,8 @@ def run_validation(
 
     logger.info("\n1. Multi-Agent Correlation:")
     for key, val in correlation_results.items():
-        status = "✅" if val["target_met"] else "❌"
-        logger.info(f"   {key}: {val['mean']:.4f} {status}")
+        status = "✅" if val["target_met"] else "❌"  # type: ignore[index]
+        logger.info(f"   {key}: {val['mean']:.4f} {status}")  # type: ignore[index]
 
     logger.info("\n2. Decision Quality:")
     status = "✅" if quality_results["target_met"] else "❌"
@@ -402,8 +402,8 @@ def run_validation(
 
     logger.info("\n4. Consensus Latency:")
     for key, val in latency_results.items():
-        status = "✅" if val["target_met"] else "❌"
-        logger.info(f"   {key}: {val['mean_ms']:.2f}ms {status}")
+        status = "✅" if val["target_met"] else "❌"  # type: ignore[index]
+        logger.info(f"   {key}: {val['mean_ms']:.2f}ms {status}")  # type: ignore[index]
 
     logger.info("\n5. k₁ Impact:")
     status = "✅" if k1_results["target_met"] else "❌"
@@ -414,10 +414,10 @@ def run_validation(
 
     # Overall validation status
     all_met = (
-        all(v["target_met"] for v in correlation_results.values())
+        all(v["target_met"] for v in correlation_results.values())  # type: ignore[index]
         and quality_results["target_met"]
         and redundancy_results["target_met"]
-        and all(v["target_met"] for v in latency_results.values())
+        and all(v["target_met"] for v in latency_results.values())  # type: ignore[index]
         and k1_results["target_met"]
     )
 

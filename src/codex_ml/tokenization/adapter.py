@@ -172,7 +172,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
                 if tok in vocab:
                     mapping[str(tok)] = int(vocab[tok])
         if not mapping and added:
-            start = int(self.tokenizer.vocab_size) - added
+            start = int(self.tokenizer.vocab_size) - added  # type: ignore[operator]
             mapping = {str(tok): start + idx for idx, tok in enumerate(tokens)}
         return mapping
 

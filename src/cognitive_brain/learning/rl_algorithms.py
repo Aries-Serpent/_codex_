@@ -452,7 +452,7 @@ class DQN(RLAlgorithm):
         else:
             # Exploit
             q_values = self._get_q_values(state)
-            return max(q_values, key=q_values.get)
+            return max(q_values, key=q_values.get)  # type: ignore[arg-type]
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """

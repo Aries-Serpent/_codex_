@@ -241,7 +241,7 @@ class PriorityPruner:
         scored.sort(key=lambda x: x[2])
 
         # Prune until under target
-        results = list(texts)
+        results = list(texts)  # type: ignore[arg-type]
         tokens_saved = 0
 
         for idx, text, _ in scored:

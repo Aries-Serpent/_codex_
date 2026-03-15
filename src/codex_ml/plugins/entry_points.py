@@ -207,7 +207,7 @@ class EntryPointPluginRegistry:
                 entry_point_name=entry_point.name,
                 module_name=entry_point.value,
                 plugin_class=plugin_class,
-                **metadata,
+                **metadata,  # type: ignore[arg-type]
             )
         except Exception as e:
             logger.debug(f"Exception: {e}")

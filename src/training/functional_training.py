@@ -34,7 +34,7 @@ import torch.nn.functional as F
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
-from codex_ml.utils.checkpointing import (
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
     dump_rng_state,
     load_rng_state,
     load_training_checkpoint,

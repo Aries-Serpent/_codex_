@@ -5,13 +5,13 @@ Measures complete workflow performance from indexing to retrieval.
 """
 
 import tempfile
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_e2e_pipeline(
-    corpus_sizes: List[int] = None, query_counts: List[int] = None, runs: int = 3
+    corpus_sizes: Optional[List[int]] = None, query_counts: Optional[List[int]] = None, runs: int = 3
 ) -> Dict[str, Any]:
     """
     Benchmark complete RAG pipeline end-to-end.
@@ -43,9 +43,9 @@ def benchmark_e2e_pipeline(
             )
 
             if result.success:
-                result.metadata["corpus_size"] = corpus_size
-                result.metadata["query_count"] = query_count
-                result.metadata["total_operations"] = corpus_size + query_count
+                result.metadata["corpus_size"] = corpus_size  # type: ignore[index]
+                result.metadata["query_count"] = query_count  # type: ignore[index]
+                result.metadata["total_operations"] = corpus_size + query_count  # type: ignore[index]
 
     return {
         "results": [r.to_dict() for r in runner.results],
@@ -160,8 +160,8 @@ def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> Dict[s
             )
 
             if result.success:
-                result.metadata["query_type"] = query_type
-                result.metadata["query_length"] = len(query.split())
+                result.metadata["query_type"] = query_type  # type: ignore[index]
+                result.metadata["query_length"] = len(query.split())  # type: ignore[index]
 
     return {
         "results": [r.to_dict() for r in runner.results],

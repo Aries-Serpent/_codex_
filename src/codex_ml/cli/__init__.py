@@ -374,3 +374,4 @@ except Exception:  # pragma: no cover - optional CLI wiring
 main = package_main
 
 __all__ = ["cli", "main_cli", "main"]
+from . import utils  # noqa: F401

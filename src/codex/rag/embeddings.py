@@ -397,7 +397,7 @@ def create_embedding_provider(
         try:
             logger.info("Attempting sentence-transformers provider")
             model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
-            provider = LocalSentenceTransformerProvider(model_name=model_name_st, **kwargs)
+            provider: EmbeddingProvider = LocalSentenceTransformerProvider(model_name=model_name_st, **kwargs)
             logger.info("✓ Using sentence-transformers provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)

@@ -131,10 +131,10 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             common = min(preds.shape[-1], target.shape[-1])  # type: ignore[union-attr]
             if common > 0:
                 # Create mask to ignore -100 labels (standard ignore_index)
-                mask = target[..., :common] != -100
+                mask = target[..., :common] != -100  # type: ignore[index]
                 if mask.any():
                     masked_preds = preds[..., :common][mask]
-                    masked_target = target[..., :common][mask]
+                    masked_target = target[..., :common][mask]  # type: ignore[index]
                     accuracy_tensor = (masked_preds == masked_target).float()
                     record["token_accuracy"] = float(accuracy_tensor.mean().item())
                 else:

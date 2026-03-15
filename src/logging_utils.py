@@ -290,7 +290,7 @@ def setup_logging(
                 data = asdict(config)  # type: ignore[arg-type,call-overload]
             else:
                 data = dict(config)
-        resolved = LoggingConfig(**data)
+        resolved = LoggingConfig(**data)  # type: ignore[arg-type]
 
     writer = (
         _create_tensorboard_writer(resolved.tensorboard_log_dir)
