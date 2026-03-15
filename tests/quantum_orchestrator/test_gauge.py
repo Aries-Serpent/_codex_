@@ -14,9 +14,9 @@ Tests verify:
 from unittest.mock import Mock
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

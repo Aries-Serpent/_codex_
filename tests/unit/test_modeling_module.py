@@ -9,6 +9,7 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 import pytest
+
 pytest.importorskip('torch')
 
 from src import modeling

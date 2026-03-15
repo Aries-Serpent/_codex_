@@ -9,9 +9,9 @@ AfterMath: Phase 8.3 Pre-commit 3-4 - Strategy Optimizer Testing
 
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
 from cognitive_brain.learning.rl_algorithms import (

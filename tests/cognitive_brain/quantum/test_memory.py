@@ -16,9 +16,9 @@ import time
 from datetime import UTC, datetime, timedelta
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from cognitive_brain.integrations.compliance_integration import AuditResult
 from cognitive_brain.integrations.memory_integration import (

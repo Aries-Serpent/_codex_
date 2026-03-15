@@ -1,4 +1,5 @@
 import pytest
+
 """Tests for index sharding module."""
 pytest.importorskip('numpy')
 

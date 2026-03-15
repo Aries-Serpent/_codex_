@@ -2,9 +2,9 @@
 
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 try:
     import faiss  # noqa: F401  # Check faiss is importable before testing the store

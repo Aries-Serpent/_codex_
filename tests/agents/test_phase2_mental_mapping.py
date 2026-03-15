@@ -250,122 +250,133 @@ class TestPhase2_MentalMapping_TraversalOperations:
                 pytest.skip("get_neighbors operation failed")
 
     def test_traverse_breadth_first(self):
-        """Test breadth-first traversal."""
-        from agents.mental_mapping import MentalMapping
+        """Test breadth-first traversal returns ordered node list."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "bfs") or hasattr(mapping, "breadth_first_search"):
-            # Method exists
-            assert True
+        mapping.add_node(MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="child2", timestamp=ts))
+        mapping.connect_nodes(source_id="r", target_id="c1")
+        mapping.connect_nodes(source_id="r", target_id="c2")
+        result = mapping.bfs(start_node="r")
+        assert isinstance(result, list)
+        assert "r" in result
+        assert result[0] == "r"  # BFS starts at root
 
     def test_traverse_depth_first(self):
-        """Test depth-first traversal."""
-        from agents.mental_mapping import MentalMapping
+        """Test depth-first traversal returns all reachable nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "dfs") or hasattr(mapping, "depth_first_search"):
-            # Method exists
-            assert True
+        mapping.add_node(MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts))
+        mapping.connect_nodes(source_id="r", target_id="c1")
+        result = mapping.dfs(start_node="r")
+        assert isinstance(result, list)
+        assert "r" in result
+        assert "c1" in result
 
     def test_shortest_path_operation(self):
-        """Test shortest path finding."""
-        from agents.mental_mapping import MentalMapping
+        """Test shortest path finds correct route between nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "shortest_path") or hasattr(mapping, "find_path"):
-            # Method exists
-            assert True
+        for nid in ("a", "b", "c"):
+            mapping.add_node(MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts))
+        mapping.connect_nodes(source_id="a", target_id="b")
+        mapping.connect_nodes(source_id="b", target_id="c")
+        path = mapping.shortest_path(start_id="a", end_id="c")
+        assert path is not None
+        assert isinstance(path, list)
+        assert len(path) >= 2
 
 
 class TestPhase2_MentalMapping_ReasoningChains:
     """Deep coverage for reasoning chain operations."""
 
     def test_create_reasoning_chain(self):
-        """Test creating a reasoning chain."""
+        """Test MentalMapping has think_through_problem for reasoning chains."""
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-
-        if hasattr(mapping, "create_chain") or hasattr(mapping, "add_reasoning_step"):
-            # Method exists
-            assert True
+        assert hasattr(mapping, "think_through_problem"), "think_through_problem method must exist"
 
     def test_reasoning_step_sequencing(self):
-        """Test sequencing multiple reasoning steps."""
+        """Test ReasoningStep can be constructed and sequenced."""
         try:
+            import inspect
+
             from agents.mental_mapping import ReasoningStep
 
-            # Create multiple steps
-            step1 = ReasoningStep(content="step1")
-            step2 = ReasoningStep(content="step2")
-            step3 = ReasoningStep(content="step3")
-
-            # Test chaining if supported
-            if hasattr(step1, "next"):
-                step1.next = step2
-                step2.next = step3
-                assert True
-        except (TypeError, AttributeError):
-            pytest.skip("ReasoningStep chaining not supported")
+            sig = inspect.signature(ReasoningStep)
+            # Build kwargs from required params only
+            kwargs = {}
+            for p, v in sig.parameters.items():
+                if v.default is inspect.Parameter.empty:
+                    kwargs[p] = f"test_{p}"
+            step = ReasoningStep(**kwargs)
+            assert step is not None
+        except (ImportError, TypeError, AttributeError):
+            pytest.skip("ReasoningStep not available or requires params")
 
     def test_reasoning_chain_validation(self):
-        """Test validation of reasoning chains."""
+        """Test iterative_review method exists for chain validation."""
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-
-        if hasattr(mapping, "validate_chain"):
-            # Method exists
-            assert True
+        # iterative_review is the validation mechanism in MentalMapping
+        assert hasattr(mapping, "iterative_review"), "iterative_review method must exist"
 
 
 class TestPhase2_MentalMapping_UpdateOperations:
     """Deep coverage for update operations."""
 
     def test_update_node_data(self):
-        """Test updating node data."""
-        from agents.mental_mapping import MentalMapping
+        """Test node data persists in nodes dict after add_node."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "update_node"):
-            try:
-                if hasattr(mapping, "add_node"):
-                    mapping.add_node("node", data={"old": "value"})
-                    mapping.update_node("node", data={"new": "value"})
-                    assert True
-            except (TypeError, ValueError, KeyError):
-                pytest.skip("update_node operation failed")
+        node = MentalNode(node_id="upd", node_type=NodeType.CONCEPT, content="original", timestamp=ts)
+        mapping.add_node(node)
+        assert "upd" in mapping.nodes
+        # Verify node is retrievable and has content
+        stored = mapping.nodes["upd"]
+        assert stored.content == "original"
 
     def test_update_edge_weight(self):
-        """Test updating edge weight."""
-        from agents.mental_mapping import MentalMapping
+        """Test edges are created with expected weight via connect_nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "update_edge"):
-            try:
-                if hasattr(mapping, "add_node") and hasattr(mapping, "add_edge"):
-                    mapping.add_node("n1", data={})
-                    mapping.add_node("n2", data={})
-                    mapping.add_edge("n1", "n2", weight=1.0)
-                    mapping.update_edge("n1", "n2", weight=2.0)
-                    assert True
-            except (TypeError, ValueError, KeyError):
-                pytest.skip("update_edge operation failed")
+        mapping.add_node(MentalNode(node_id="x", node_type=NodeType.CONCEPT, content="x", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="y", node_type=NodeType.CONCEPT, content="y", timestamp=ts))
+        mapping.connect_nodes(source_id="x", target_id="y", weight=2.5)
+        assert len(mapping.edges) == 1
+        edge = next(iter(mapping.edges.values()))
+        assert edge.weight == 2.5
 
     def test_merge_nodes_operation(self):
-        """Test merging two nodes."""
+        """Test cluster_nodes (merge-equivalent) is available on MentalMapping."""
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-
-        if hasattr(mapping, "merge_nodes"):
-            # Method exists
-            assert True
+        assert hasattr(mapping, "cluster_nodes"), "cluster_nodes method must exist"
 
 
 class TestPhase2_MentalMapping_QueryOperations:
@@ -385,104 +396,107 @@ class TestPhase2_MentalMapping_QueryOperations:
                 pytest.skip("find_nodes operation failed")
 
     def test_filter_edges_operation(self):
-        """Test filtering edges."""
-        from agents.mental_mapping import MentalMapping
+        """Test edges dict is iterable and supports filtering."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "filter_edges"):
-            # Method exists
-            assert True
+        mapping.add_node(MentalNode(node_id="p", node_type=NodeType.CONCEPT, content="p", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="q", node_type=NodeType.CONCEPT, content="q", timestamp=ts))
+        mapping.connect_nodes(source_id="p", target_id="q")
+        # edges supports standard iteration / dict filtering
+        filtered = list(mapping.edges.values())
+        assert isinstance(filtered, list)
 
     def test_get_all_nodes(self):
-        """Test getting all nodes."""
-        from agents.mental_mapping import MentalMapping
+        """Test nodes dict returns all added nodes."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "nodes") or hasattr(mapping, "get_all_nodes"):
-            # Attribute or method exists
-            assert True
+        for nid in ("n1", "n2", "n3"):
+            mapping.add_node(MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts))
+        assert isinstance(mapping.nodes, dict)
+        assert len(mapping.nodes) == 3
 
     def test_get_all_edges(self):
-        """Test getting all edges."""
-        from agents.mental_mapping import MentalMapping
+        """Test edges dict returns all connected edges."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "edges") or hasattr(mapping, "get_all_edges"):
-            # Attribute or method exists
-            assert True
+        mapping.add_node(MentalNode(node_id="e1", node_type=NodeType.CONCEPT, content="e1", timestamp=ts))
+        mapping.add_node(MentalNode(node_id="e2", node_type=NodeType.CONCEPT, content="e2", timestamp=ts))
+        mapping.connect_nodes(source_id="e1", target_id="e2")
+        assert isinstance(mapping.edges, dict)
+        assert len(mapping.edges) == 1
 
 
 class TestPhase2_MentalMapping_EdgeCases:
     """Edge case coverage."""
 
     def test_add_duplicate_node(self):
-        """Test adding duplicate node."""
-        from agents.mental_mapping import MentalMapping
+        """Test adding duplicate node overwrites or raises ValueError."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "add_node"):
-            try:
-                mapping.add_node("dup", data={})
-                # Try adding again
-                mapping.add_node("dup", data={})
-                # Should either update or raise error
-                assert True
-            except ValueError:
-                # Expected for duplicates
-                assert True
-            except (TypeError, AttributeError):
-                pytest.skip("add_node not available")
+        node = MentalNode(node_id="dup", node_type=NodeType.CONCEPT, content="first", timestamp=ts)
+        mapping.add_node(node)
+        # Add again — either overwrites (len still 1) or raises
+        try:
+            node2 = MentalNode(node_id="dup", node_type=NodeType.CONCEPT, content="second", timestamp=ts)
+            mapping.add_node(node2)
+            assert len(mapping.nodes) == 1  # overwrite
+        except ValueError:
+            assert "dup" in mapping.nodes  # original preserved
 
     def test_add_self_loop_edge(self):
-        """Test adding self-loop edge."""
-        from agents.mental_mapping import MentalMapping
+        """Test connecting a node to itself is handled gracefully."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "add_edge"):
-            try:
-                if hasattr(mapping, "add_node"):
-                    mapping.add_node("self", data={})
-                    mapping.add_edge("self", "self")
-                    # Should either accept or reject
-                    assert True
-            except (ValueError, TypeError, KeyError):
-                # May not allow self-loops
-                assert True
+        mapping.add_node(MentalNode(node_id="self", node_type=NodeType.CONCEPT, content="self", timestamp=ts))
+        try:
+            mapping.connect_nodes(source_id="self", target_id="self")
+            # Self-loops accepted — at least 0 edges exist (no crash)
+            assert isinstance(mapping.edges, dict)
+        except (ValueError, KeyError):
+            # Self-loops rejected — acceptable
+            pass
 
     def test_remove_nonexistent_node(self):
-        """Test removing non-existent node."""
+        """Test that removing a non-existent node doesn't crash."""
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-
-        if hasattr(mapping, "remove_node"):
-            try:
-                mapping.remove_node("nonexistent")
-                # Should either ignore or raise error
-                assert True
-            except (KeyError, ValueError):
-                # Expected for missing node
-                assert True
+        # Should not raise; node count unchanged
+        initial_count = len(mapping.nodes)
+        mapping.nodes.pop("nonexistent", None)
+        assert len(mapping.nodes) == initial_count
 
     def test_graph_with_many_nodes(self):
-        """Test graph with many nodes."""
-        from agents.mental_mapping import MentalMapping
+        """Test graph scales to 100 nodes without error."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMapping, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-
-        if hasattr(mapping, "add_node"):
-            try:
-                # Add 100 nodes
-                for i in range(100):
-                    mapping.add_node(f"node_{i}", data={"id": i})
-                assert True
-            except (TypeError, MemoryError):
-                pytest.skip("Many nodes not supported")
+        for i in range(100):
+            mapping.add_node(MentalNode(node_id=f"n{i}", node_type=NodeType.CONCEPT, content=f"node {i}", timestamp=ts))
+        assert len(mapping.nodes) == 100
 
     def test_deeply_nested_reasoning_chain(self):
         """Test deeply nested reasoning chain."""

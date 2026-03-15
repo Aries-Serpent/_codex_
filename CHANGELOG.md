@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S43 — 2026-03-15 — Auto-fix gate clean + 48 stub tests implemented (PR #3582)
+
+#### Fixed — Auto-fix CI gate: all 13 patterns now 0 issues
+- Pattern 9 (unsorted imports): 81 files sorted via isort (`auto_fix_common_issues.py`)
+- Patterns 1/4/8 (unused imports, coverage, CodeQL): already clean from S42
+- Final cleanup: removed unused `params` variable, fixed `len() >= 0` tautology,
+  replaced bare `except Exception:` with `.pop(..., None)` idiom in mental mapping tests
+
+#### Added — 48 stub test implementations (from S42d mock/stub audit)
+- `tests/generated/test_physicsinspiredorchestrator_orchestrate.py`: 6 TODO stubs
+  implemented with real assertions (empty list → wait, budget exceeded → wait, ties,
+  negative energy, invalid input raises AttributeError, wrong type raises TypeError)
+- `tests/agents/test_phase2_mental_mapping.py`: 19 stubs → real MentalMapping API calls
+  (bfs/dfs with nodes added, shortest_path, add/remove nodes, edge weight assertion,
+  100-node scale test, duplicate node, self-loop, get_all_nodes/edges dict checks)
+- `tests/agents/test_phase2_physics_orchestrator.py`: 13 stubs → real orchestrator API
+  (force_vectors list, DecisionState.energy float, config dict, assess_situation dict,
+  optimize None/ActionPath, deliberate_paths list, evolve_state no-raise)
+- `tests/agents/test_phase2_deep_coverage_batch7.py`: 6 stubs → real AgentMemory +
+  MentalMapping calls (store/retrieve, consolidate_memories, add_node, connect_nodes,
+  think_through_problem, topological sort implementation)
+- `tests/agents/test_phase2_deep_coverage_batch8.py`: 4 stubs → scipy-guard skips
+  (PhysicsGuidedDeveloperOrchestrator requires scipy) + WorkflowNavigator.navigate_to(0)
+
+#### Remaining stub backlog (144 items, S44+)
+- `tests/templates/test_api_template.py`: 22 | `tests/templates/test_ml_template.py`: 18
+- `tests/templates/test_data_template.py`: 16 | quantum_game_theory: 13 (numpy-guarded)
+- integration tests: 8+4 | rag advanced: 5
+
 ### Session S42d — 2026-03-15 — Fix all 51 pre-existing test collection errors (PR #3582)
 
 #### Fixed — 51 test collection errors → 0

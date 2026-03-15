@@ -7,9 +7,9 @@ import types
 from unittest.mock import Mock
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from src.codex.retrieval.stores.factory import (
     VectorStoreFactory,

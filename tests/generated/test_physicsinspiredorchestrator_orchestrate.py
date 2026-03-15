@@ -60,33 +60,91 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
     # ========== EDGE CASE TESTS ==========
 
     def test_orchestrate_empty_action_list(self):
-        """Test orchestrate with empty_action_list scenario."""
-        # TODO: Implement empty_action_list test
-        pass
+        """Test orchestrate with empty_action_list scenario — should return wait decision."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        result = orchestrator.orchestrate(state=state, possible_actions=[])
+        assert result is not None
+        assert isinstance(result, dict)
+        assert "action_taken" in result
+        assert result["action_taken"] == "wait"
 
     def test_orchestrate_all_actions_exceed_budget(self):
-        """Test orchestrate with all_actions_exceed_budget scenario."""
-        # TODO: Implement all_actions_exceed_budget test
-        pass
+        """Test orchestrate when all actions exceed available resources — expects wait."""
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        # energy >> available_resources (1.0 default) so no path meets constraints
+        a1 = ActionPath(action_type=ActionType.ANALYZE, description="expensive", energy=999.0, confidence=0.9, impact=0.9)
+        a2 = ActionPath(action_type=ActionType.TEST, description="also expensive", energy=888.0, confidence=0.8, impact=0.8)
+        result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
+        assert result is not None
+        assert isinstance(result, dict)
+        assert "action_taken" in result
+        # No path should meet energy constraints
+        assert result["action_taken"] == "wait"
 
     def test_orchestrate_ties_in_optimization_score(self):
-        """Test orchestrate with ties_in_optimization_score scenario."""
-        # TODO: Implement ties_in_optimization_score test
-        pass
+        """Test orchestrate with tied optimization scores — must still return a deterministic decision."""
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        # Two paths with identical scores
+        a1 = ActionPath(action_type=ActionType.ANALYZE, description="tie1", confidence=0.9, impact=0.9, energy=0.1)
+        a2 = ActionPath(action_type=ActionType.TEST, description="tie2", confidence=0.9, impact=0.9, energy=0.1)
+        result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
+        assert result is not None
+        assert "action_taken" in result
+        # Should pick one deterministically (first ranked)
+        assert result["action_taken"] in [a.value for a in ActionType]
 
     def test_orchestrate_negative_energy_values(self):
-        """Test orchestrate with negative_energy_values scenario."""
-        # TODO: Implement negative_energy_values test
-        pass
+        """Test orchestrate with negative energy values — negative energy still processed."""
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        a = ActionPath(action_type=ActionType.DEBUG, description="negative energy", energy=-5.0, confidence=0.5, impact=0.5)
+        result = orchestrator.orchestrate(state=state, possible_actions=[a])
+        assert result is not None
+        assert isinstance(result, dict)
+        assert "action_taken" in result
+        assert "timestamp" in result
 
     # ========== FAILURE SCENARIO TESTS ==========
 
     def test_orchestrate_invalid_input(self):
-        """Test proper error handling for invalid input."""
-        # TODO: Implement failure test
-        pass
+        """Test proper error handling for invalid input (None state)."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        with pytest.raises((AttributeError, TypeError)):
+            orchestrator.orchestrate(state=None, possible_actions=[])
 
     def test_orchestrate_exception_handling(self):
-        """Test exception handling in orchestrate."""
-        # TODO: Implement exception test
-        pass
+        """Test exception handling — wrong type for possible_actions raises cleanly."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
+
+        orchestrator = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        with pytest.raises((AttributeError, TypeError)):
+            orchestrator.orchestrate(state=state, possible_actions="not_a_list")

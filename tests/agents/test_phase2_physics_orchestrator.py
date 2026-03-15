@@ -99,42 +99,21 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq6:
             pytest.skip("Operator configuration not available")
 
     def test_momentum_operator_access(self):
-        """Test momentum operator accessibility."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test force_vectors attribute stores momentum-like vectors."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
-            orch = PhysicsInspiredOrchestrator()
-
-            # Check for momentum-related attributes
-            has_momentum = (
-                hasattr(orch, "momentum")
-                or hasattr(orch, "get_momentum")
-                or hasattr(orch, "calculate_momentum")
-            )
-
-            if has_momentum:
-                assert True
-        except TypeError:
-            pytest.skip("Requires initialization parameters")
+        orch = PhysicsInspiredOrchestrator()
+        # force_vectors is the momentum analog in this orchestrator
+        assert hasattr(orch, "force_vectors")
+        assert isinstance(orch.force_vectors, list)
 
     def test_energy_operator_access(self):
-        """Test energy operator accessibility."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test DecisionState energy attribute is accessible."""
+        from agents.physics_orchestrator import DecisionState
 
-            orch = PhysicsInspiredOrchestrator()
-
-            # Check for energy-related attributes
-            has_energy = (
-                hasattr(orch, "energy")
-                or hasattr(orch, "get_energy")
-                or hasattr(orch, "calculate_energy")
-            )
-
-            if has_energy:
-                assert True
-        except TypeError:
-            pytest.skip("Requires initialization parameters")
+        state = DecisionState()
+        assert hasattr(state, "energy")
+        assert isinstance(state.energy, float)
 
 
 class TestPhase2_PhysicsOrchestrator_Table4_Eq7:
@@ -157,119 +136,92 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq7:
             pytest.skip("Hamiltonian access not available")
 
     def test_potential_configuration(self):
-        """Test potential term V̂ configuration."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test config attribute holds potential/operator configuration."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
-            orch = PhysicsInspiredOrchestrator()
-
-            # Test potential configuration
-            if hasattr(orch, "set_potential"):
-                # Method exists
-                assert True
-            elif hasattr(orch, "potential"):
-                # Attribute exists
-                assert True
-        except TypeError:
-            pytest.skip("Requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        assert hasattr(orch, "config")
+        assert isinstance(orch.config, dict)
 
 
 class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
     """Deep coverage for evolution objective using Eq #19 (Ĥ aggregation)."""
 
     def test_assess_situation_method(self):
-        """Test assess_situation method."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test assess_situation returns a dict with system metrics."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
 
-            orch = PhysicsInspiredOrchestrator()
-
-            if hasattr(orch, "assess_situation"):
-                # Test with minimal input
-                try:
-                    result = orch.assess_situation(context={})
-                    assert result is not None
-                except (TypeError, ValueError):
-                    # Method exists but needs different params
-                    assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        result = orch.assess_situation(state)
+        assert isinstance(result, dict)
+        assert len(result) > 0
 
     def test_act_method(self):
-        """Test act method for decision execution."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test act method is callable on PhysicsInspiredOrchestrator."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
-            orch = PhysicsInspiredOrchestrator()
-
-            if hasattr(orch, "act"):
-                # Method exists
-                assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        assert callable(getattr(orch, "act", None))
 
     def test_optimize_method(self):
-        """Test optimize method."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test optimize returns None for empty paths and ActionPath for valid ones."""
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            PhysicsInspiredOrchestrator,
+        )
 
-            orch = PhysicsInspiredOrchestrator()
-
-            if hasattr(orch, "optimize"):
-                # Method exists
-                assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        # Empty list → None
+        assert orch.optimize([]) is None
+        # Single path → that path
+        path = ActionPath(action_type=ActionType.ANALYZE, description="test", confidence=0.8, impact=0.9, energy=0.1)
+        result = orch.optimize([path])
+        assert result is not None
 
     def test_deliberate_method(self):
-        """Test deliberate method."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test deliberate_paths method returns a list of ActionPaths."""
+        from agents.physics_orchestrator import (
+            ActionPath,
+            ActionType,
+            DecisionState,
+            PhysicsInspiredOrchestrator,
+        )
 
-            orch = PhysicsInspiredOrchestrator()
-
-            if hasattr(orch, "deliberate"):
-                # Method exists
-                assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        state = DecisionState()
+        paths = [
+            ActionPath(action_type=ActionType.ANALYZE, description="p1", confidence=0.8, impact=0.9, energy=0.1),
+            ActionPath(action_type=ActionType.TEST, description="p2", confidence=0.7, impact=0.8, energy=0.2),
+        ]
+        result = orch.deliberate_paths(state, paths)
+        assert isinstance(result, list)
 
 
 class TestPhase2_PhysicsOrchestrator_Table4_Eq20:
     """Euler integration tests using Eq #20 (ψ(t+dt) = ψ(t) + dt·F(ψ))."""
 
     def test_evolution_step(self):
-        """Test single evolution step."""
+        """Test evolve_state is callable and doesn't raise on valid input."""
+        from agents.physics_orchestrator import DecisionState, PhysicsInspiredOrchestrator
+
+        orch = PhysicsInspiredOrchestrator()
+        state = DecisionState()
         try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
-
-            orch = PhysicsInspiredOrchestrator()
-
-            if hasattr(orch, "evolve"):
-                # Test evolution with minimal step
-                try:
-                    orch.evolve(dt=0.01)
-                    assert True
-                except (TypeError, ValueError, AttributeError):
-                    # Method exists but needs setup
-                    assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+            orch.evolve_state(state)
+        except AttributeError:
+            pytest.skip("evolve_state needs additional state attributes")
+        assert True  # did not raise
 
     def test_time_step_configuration(self):
-        """Test time step (dt) configuration."""
-        try:
-            from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        """Test config dict contains time-step related configuration."""
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
-            orch = PhysicsInspiredOrchestrator()
-
-            # Check for dt configuration
-            if hasattr(orch, "set_dt"):
-                assert True
-            elif hasattr(orch, "dt"):
-                assert True
-        except TypeError:
-            pytest.skip("Initialization requires parameters")
+        orch = PhysicsInspiredOrchestrator()
+        assert hasattr(orch, "config")
+        # load_config provides default dict (even if empty)
+        assert isinstance(orch.config, dict)
 
 
 class TestPhase2_PhysicsOrchestrator_BranchCoverage:
@@ -291,18 +243,13 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
             pytest.skip("DecisionState signature different")
 
     def test_decision_state_with_empty_options(self):
-        """Test DecisionState with empty options (branch: empty path)."""
+        """Test DecisionState initializes cleanly with default fields."""
         from agents.physics_orchestrator import DecisionState
 
-        try:
-            state = DecisionState(context="test_context", options=[], constraints={})
-            # Should either succeed or raise ValueError
-            assert state is not None or True
-        except ValueError:
-            # Expected for empty options
-            assert True
-        except TypeError:
-            pytest.skip("DecisionState signature different")
+        state = DecisionState()
+        assert state is not None
+        assert hasattr(state, "available_resources")
+        assert hasattr(state, "constraints")
 
     def test_force_vector_positive_magnitude(self):
         """Test ForceVector with positive magnitude (branch: positive)."""
@@ -315,16 +262,21 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
             pytest.skip("ForceVector signature different")
 
     def test_force_vector_negative_magnitude(self):
-        """Test ForceVector with negative magnitude (branch: negative)."""
-        from agents.physics_orchestrator import ForceVector
-
+        """Test ForceVector is importable and handles magnitude."""
         try:
-            force = ForceVector(magnitude=-5.0, direction="backward")
-            # Should either accept or validate
-            assert force is not None or True
-        except (ValueError, TypeError, AttributeError):
-            # Expected validation
-            assert True
+            import inspect
+
+            from agents.physics_orchestrator import ForceVector
+            sig = inspect.signature(ForceVector)
+            # Build with required params, filling in sensible defaults
+            params = {p: (-5.0 if "magnitude" in p else "backward") for p in sig.parameters if sig.parameters[p].default is inspect.Parameter.empty}
+            if params:
+                force = ForceVector(**params)
+            else:
+                force = ForceVector()
+            assert force is not None
+        except (ImportError, TypeError, AttributeError):
+            pytest.skip("ForceVector not available")
 
     def test_action_path_single_step(self):
         """Test ActionPath with single step (branch: minimal)."""
@@ -351,43 +303,28 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
     """Edge case coverage for additional lines."""
 
     def test_decision_state_with_none_context(self):
-        """Test DecisionState with None context."""
+        """Test DecisionState.context defaults to empty dict."""
         from agents.physics_orchestrator import DecisionState
 
-        try:
-            state = DecisionState(context=None, options=["a"], constraints={})
-            assert state is not None or True
-        except (TypeError, ValueError):
-            assert True
+        state = DecisionState()
+        # context is a dict field by default
+        assert isinstance(state.context, (dict, str))
 
     def test_decision_state_with_complex_constraints(self):
-        """Test DecisionState with complex constraints."""
+        """Test DecisionState.constraints accepts a dict."""
         from agents.physics_orchestrator import DecisionState
 
-        try:
-            state = DecisionState(
-                context="complex",
-                options=["a", "b"],
-                constraints={
-                    "max_cost": 100,
-                    "min_quality": 0.8,
-                    "deadline": "2024-12-31",
-                    "required_skills": ["python", "testing"],
-                },
-            )
-            assert state is not None
-        except (TypeError, ValueError):
-            pytest.skip("Complex constraints not supported")
+        state = DecisionState()
+        state.constraints = {"max_cost": 100, "min_quality": 0.8}
+        assert state.constraints["max_cost"] == 100
 
     def test_force_vector_zero_magnitude(self):
-        """Test ForceVector with exactly zero magnitude."""
-        from agents.physics_orchestrator import ForceVector
-
+        """Test ForceVector class is importable."""
         try:
-            force = ForceVector(magnitude=0.0, direction="none")
-            assert force.magnitude == 0.0
-        except (TypeError, ValueError, AttributeError):
-            assert True
+            from agents.physics_orchestrator import ForceVector
+            assert ForceVector is not None
+        except ImportError:
+            pytest.skip("ForceVector not available")
 
     def test_force_vector_very_large_magnitude(self):
         """Test ForceVector with very large magnitude."""

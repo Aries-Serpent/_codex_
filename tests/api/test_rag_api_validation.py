@@ -14,6 +14,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
 pytest.importorskip("fastapi")
 from fastapi import HTTPException  # noqa: E402
 from pydantic import ValidationError

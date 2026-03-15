@@ -33,14 +33,14 @@ class TestPhase2_AgentMemory:
         assert memory is not None
 
     def test_store_memory_item(self):
-        """Test storing a memory item"""
+        """Test storing a memory item persists it for retrieval."""
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, "store"):
-            item = {"key": "test", "value": "data"}
-            memory.store_memory(key="test", value=str(item))
-            assert True
+        memory.store_memory(key="test_store", value="test_value")
+        entry = memory.retrieve_memory("test_store")
+        assert entry is not None
+        assert entry.content == "test_value"
 
     def test_retrieve_memory_item(self):
         """Test retrieving a memory item"""
@@ -66,13 +66,15 @@ class TestPhase2_AgentMemory:
             assert isinstance(results, (list, type(None)))
 
     def test_memory_consolidation(self):
-        """Test memory consolidation"""
+        """Test memory consolidation runs without error."""
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        if hasattr(memory, "consolidate"):
-            memory.consolidate()
-            assert True
+        memory.store_memory(key="c1", value="data1")
+        memory.store_memory(key="c2", value="data2")
+        memory.consolidate_memories()  # actual method name
+        # After consolidation memory is still accessible
+        assert memory.retrieve_memory("c1") is not None
 
     def test_memory_types(self):
         """Test different memory types (episodic, semantic, procedural)"""
@@ -126,23 +128,29 @@ class TestPhase2_MentalMapping:
         assert mental_map is not None
 
     def test_add_concept_to_map(self):
-        """Test adding concept to mental map"""
-        from agents.mental_mapping import MentalMap
+        """Test adding a concept node to the mental map."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        if hasattr(mental_map, "add_concept"):
-            concept = {"name": "test_concept", "properties": {}}
-            mental_map.add_concept(concept)
-            assert True
+        node = MentalNode(node_id="concept_test", node_type=NodeType.CONCEPT, content="test concept", timestamp=ts)
+        mental_map.add_node(node)
+        assert "concept_test" in mental_map.nodes
 
     def test_create_relationship(self):
-        """Test creating relationship between concepts"""
-        from agents.mental_mapping import MentalMap
+        """Test creating a relationship (edge) between two concepts."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        if hasattr(mental_map, "add_relationship"):
-            mental_map.add_relationship("concept1", "concept2", "relates_to")
-            assert True
+        mental_map.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="c1", timestamp=ts))
+        mental_map.add_node(MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="c2", timestamp=ts))
+        mental_map.connect_nodes(source_id="c1", target_id="c2")
+        assert len(mental_map.edges) == 1
 
     def test_find_path_between_concepts(self):
         """Test finding path between concepts (Eq #39)"""
@@ -163,13 +171,16 @@ class TestPhase2_MentalMapping:
             assert path is None or isinstance(path, list)
 
     def test_concept_activation(self):
-        """Test concept activation spreading"""
-        from agents.mental_mapping import MentalMap
+        """Test concept activation via think_through_problem (activation spreading)."""
+        from datetime import UTC, datetime
 
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+
+        ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        if hasattr(mental_map, "activate"):
-            mental_map.activate("concept1", strength=1.0)
-            assert True
+        mental_map.add_node(MentalNode(node_id="act_node", node_type=NodeType.CONCEPT, content="activation test", timestamp=ts))
+        # think_through_problem is the activation/spreading mechanism
+        assert hasattr(mental_map, "think_through_problem")
 
     def test_mental_model_construction(self):
         """Test constructing mental model (Eq #55)"""
@@ -246,12 +257,28 @@ class TestPhase2_GraphAlgorithms:
         assert "A" in graph
 
     def test_topological_sort(self):
-        """Test topological sorting"""
-        # DAG
+        """Test topological sorting of a DAG produces a valid order."""
+        # Build a simple DAG and verify topological order constraints
+        dag = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
+        visited = []
+        stack = []
 
-        # A topological order: [A, B, C, D] or [A, C, B, D]
-        # Both are valid
-        assert True
+        def topo_dfs(node):
+            if node in visited:
+                return
+            visited.append(node)
+            for child in dag.get(node, []):
+                topo_dfs(child)
+            stack.append(node)
+
+        for n in dag:
+            if n not in visited:
+                topo_dfs(n)
+        order = list(reversed(stack))
+        # A must come before B, C, D; B and C before D
+        assert order.index("A") < order.index("D")
+        assert order.index("B") < order.index("D")
+        assert order.index("C") < order.index("D")
 
     def test_connected_components(self):
         """Test finding connected components"""

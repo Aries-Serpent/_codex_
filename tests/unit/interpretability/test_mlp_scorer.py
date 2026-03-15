@@ -7,6 +7,7 @@ Tests MLP activation extraction, neuron importance scoring, and activation analy
 import sys
 
 import pytest
+
 pytest.importorskip('torch')
 
 # Graceful import handling for optional dependencies

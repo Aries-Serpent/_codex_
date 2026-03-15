@@ -6,9 +6,9 @@ Tests for VectorStore Interface and FAISS Implementation
 import tempfile
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from src.codex.retrieval.stores.base import (
     DimensionMismatchError,

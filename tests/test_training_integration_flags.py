@@ -11,10 +11,9 @@ from types import SimpleNamespace
 from typing import Dict, Iterator, List
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
-
 
 try:
     torch = pytest.importorskip("torch")

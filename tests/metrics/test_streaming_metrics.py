@@ -3,10 +3,9 @@ Tests for streaming metrics functionality
 """
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
-
 
 # Skip entire module if torch is not available or unloadable
 import torch  # noqa: E402

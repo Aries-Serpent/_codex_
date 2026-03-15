@@ -6,9 +6,9 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from codex.rag.embeddings import (
     CachedEmbeddingProvider,

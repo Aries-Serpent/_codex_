@@ -11,6 +11,7 @@ import importlib
 import json
 
 import pytest
+
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient  # noqa: E402
 

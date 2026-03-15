@@ -8,9 +8,9 @@ Tests error conditions, edge cases, and robustness of memory management componen
 from datetime import datetime, timezone
 
 import pytest
+
 np = pytest.importorskip("numpy")
 import pytest
-
 
 from cognitive_brain.integrations.memory_integration import (
     MemoryAugmentedComplianceAssessor,
