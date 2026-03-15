@@ -434,4 +434,3 @@ key_learnings:
 
 ### Triggered by comment 4060456111 (@mbaetiong `@copilot continue`)
 ### Auth: run_id 23087743271 already written to `.codex/agent_auth_session.json`
-

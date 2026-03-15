@@ -47,16 +47,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
+          # NOTE: no cache: pip here — intentional.  The mypy gate must run in a
+          # clean, reproducible environment so the error count is stable across
+          # runners.  Any cached site-packages from other jobs (torch, pydantic,
+          # etc.) cause phantom type errors that inflate the count by ~160,
+          # making the baseline gate unreliable.  We use an explicit venv below.
 
-      - name: Install mypy and stubs
+      - name: Install mypy and stubs in isolated venv
         run: |
-          pip install --quiet mypy>=1.8.0 types-PyYAML types-requests
+          python -m venv /tmp/mypy-venv --clear
+          /tmp/mypy-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
 
       - name: Run mypy baseline gate
         id: mypy_gate
         run: |
-          python scripts/ci/mypy_baseline.py --require-baseline 2>&1 | tee /tmp/mypy_output.txt
+          /tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline 2>&1 | tee /tmp/mypy_output.txt
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Post mypy summary
