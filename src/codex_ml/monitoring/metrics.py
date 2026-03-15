@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ class MetricsCollector:
         """Check if Prometheus metrics are available."""
         return self._prometheus_available
 
-    def record_request(self, method: str = "GET", endpoint: str = "/", status: int = 200):
+    def record_request(self, method: str = "GET", endpoint: str = "/", status: int = 200) -> None:
         """Record a request.
 
         Args:
@@ -91,7 +91,7 @@ class MetricsCollector:
             logger.debug(f"Exception: {e}")
             logger.debug("Failed to record request metric: %s", e)
 
-    def record_latency(self, duration: float, method: str = "GET", endpoint: str = "/"):
+    def record_latency(self, duration: float, method: str = "GET", endpoint: str = "/") -> None:
         """Record request latency.
 
         Args:
@@ -143,19 +143,19 @@ def get_metrics_collector() -> MetricsCollector:
     return _metrics_collector
 
 
-def record_request(method: str = "GET", endpoint: str = "/", status: int = 200):
+def record_request(method: str = "GET", endpoint: str = "/", status: int = 200) -> None:
     """Record a request (convenience function)."""
     collector = get_metrics_collector()
     collector.record_request(method, endpoint, status)
 
 
-def record_latency(duration: float, method: str = "GET", endpoint: str = "/"):
+def record_latency(duration: float, method: str = "GET", endpoint: str = "/") -> None:
     """Record request latency (convenience function)."""
     collector = get_metrics_collector()
     collector.record_latency(duration, method, endpoint)
 
 
-def get_metrics_router():
+def get_metrics_router() -> Any:
     """Get FastAPI router with metrics endpoint.
 
     Returns:

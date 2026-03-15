@@ -97,7 +97,7 @@ class MLflowTracker:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Failed to end MLflow run: {e}")
 
-    def log_params(self, params: dict[str, Any]):
+    def log_params(self, params: dict[str, Any]) -> None:
         """Log parameters to current run.
 
         Args:
@@ -112,7 +112,7 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to log params: {e}")
 
-    def log_param(self, key: str, value: Any):
+    def log_param(self, key: str, value: Any) -> None:
         """Log single parameter.
 
         Args:
@@ -128,7 +128,7 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to log param {key}: {e}")
 
-    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None) -> None:
         """Log metrics to current run.
 
         Args:
@@ -144,7 +144,7 @@ class MLflowTracker:
             logger.debug(f"Exception: {e}")
             logger.debug(f"Failed to log metrics: {e}")
 
-    def log_metric(self, key: str, value: float, step: Optional[int] = None):
+    def log_metric(self, key: str, value: float, step: Optional[int] = None) -> None:
         """Log single metric.
 
         Args:
