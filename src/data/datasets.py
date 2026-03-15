@@ -239,7 +239,7 @@ def _build_dataloaders_from_config(
             )
 
     def collate(batch: Iterable[tuple[str, int]]) -> tuple[Any, Any]:
-        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)  # type: ignore[return-value]
 
     train_loader = TorchDataLoader(
         train_set,

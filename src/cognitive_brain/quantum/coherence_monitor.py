@@ -495,7 +495,7 @@ class CoherenceMonitor:
             return "critical"
         return "degraded"
 
-    def get_recent_alerts(self, feature: any = None, hours: int = 24) -> List[Alert]:
+    def get_recent_alerts(self, feature: Any = None, hours: int = 24) -> List[Alert]:
         """Get recent alerts optionally filtered by feature.
 
         Args:

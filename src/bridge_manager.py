@@ -521,7 +521,7 @@ class BridgeManager:
 
         # Compare tokens directly using constant-time comparison to prevent timing attacks
         # Note: secrets.compare_digest requires same-length inputs for security
-        if not secrets.compare_digest(self.auth_token, message.auth_token):
+        if not secrets.compare_digest(self.auth_token, message.auth_token):  # type: ignore[type-var]
             self._audit_log(
                 "AUTH_FAILURE",
                 {

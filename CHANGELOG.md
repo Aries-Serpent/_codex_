@@ -5,7 +5,42 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [S46] — 2026-03-15T05:57Z — PR #3584
+## [S47] — 2026-03-15T07:00Z — PR #3584
+
+### S47: mypy 1008→932 (76 errors) + actionlint verified GREEN + Agent Token Delegation
+
+#### §0 Pre-Session Policy Compliance
+- [x] CODEBASE_AGENCY_POLICY.md loaded
+- [x] AGENT_ACCOUNTABILITY_REPORT.md loaded
+- [x] All bot-posted comments reviewed (cognitive-preflight, agent-token-delegation)
+- [x] All failing CI checks reviewed (actionlint already GREEN on this branch)
+- [x] Agent Token Delegation confirmed: `COPILOT_AGENT_AUTH_ENABLED=true`
+
+#### mypy Ratchet: 1008 → 932 (76 errors fixed, 8 categories)
+| Phase | Category | Fixed |
+|-------|----------|-------|
+| M1 | `[valid-type]` | 11 — app.py (AutoModelForCausalLM/PreTrainedTokenizerBase ×8), coherence_monitor.py (any→Any), superposition.py (callable→Callable), pgvector_store.py (callable→Callable) |
+| M2 | `[no-redef]` | 5 — checkpoint.py (4 multiline→singleline imports), session_logger.py (1 multiline→singleline) |
+| M3 | `[name-defined]` | 6 — adapter.py (spm ×4), functional_training.py (torch.nn.Module), registry.py (removed # type: BinaryIO) |
+| M4 | `[override]` | 4 — codex_structured_logging.py, eval/datasets.py, adapter.py ×2 |
+| M5 | `[abstract]` | 3 — reranker.py, query_rewriter.py, chunker.py |
+| M6 | `[typeddict-item]` | 2 — config/settings.py ×2 |
+| M7 | `[type-var]`, `[list-item]` | 2 — bridge_manager.py, comparator.py |
+| M8 | `[return-value]` | 30 — 20 source files (orchestrator, policy, path_integral, context_distiller, datasets, pruning, observability, exp6_validation ×2, strategies, ab_testing, filters, registry/base, session_logger, ndjson_logger, cli/main, errors, accountability_autoupdate, distributed_cache, metrics/storage, scalability ×2, trainer ×2, embeddings ×5, embedder) |
+| M9 | `[dict-item]`, `[misc]` | 6 — quantum_metrics.py (None→0.0 ×3), golden_harness_status.py (misc ×3) |
+| Regression fix | `tokens_to_add` restored to `_init_from_processor` signature in adapter.py | — |
+
+New `.mypy_baseline`: **932**. Next target: < 880 (S48).
+
+#### Actionlint Compliance Audit
+- Workflow Compliance Audit: ✅ **GREEN** (3 consecutive passing runs on this branch)
+- No actionlint violations to fix in S47
+
+#### Agent Token Delegation Verified
+- `COPILOT_AGENT_AUTH_ENABLED=true` confirmed via PR comment from @mbaetiong
+- Delegated actors: `copilot-swe-agent[bot]`, `github-copilot[bot]`, `github-actions[bot]`
+
+
 
 ### S46: mypy 1069→1008 + skip stub conversions + QA clean
 

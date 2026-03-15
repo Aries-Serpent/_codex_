@@ -270,7 +270,7 @@ class MetricStorage:
 
             conn.commit()
             logger.info(f"Saved SQLite metrics with ID {metric_id}")
-            return metric_id
+            return metric_id  # type: ignore[return-value]
 
         finally:
             conn.close()

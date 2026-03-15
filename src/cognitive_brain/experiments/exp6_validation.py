@@ -94,7 +94,7 @@ def measure_multi_agent_correlation(agent_counts: List[int], trials: int = 50) -
             f"N={num_agents}: ρ_multi = {avg_corr:.4f} ± {std_corr:.4f} (min: {min_corr:.4f})"
         )
 
-    return results
+    return results  # type: ignore[return-value]
 
 
 def measure_decision_quality_improvement(
@@ -267,7 +267,7 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
             f"N={num_agents}: latency = {avg_latency:.2f}ms (max: {max_latency:.2f}ms, p95: {p95_latency:.2f}ms)"  # noqa: E501
         )
 
-    return results
+    return results  # type: ignore[return-value]
 
 
 def calculate_k1_impact(

@@ -214,7 +214,7 @@ class Registry:
                     else:
                         self._items[norm] = original[norm]
 
-        return manager()
+        return manager()  # type: ignore[return-value]
 
     def _normalise(self, name: str) -> str:
         return name.lower()

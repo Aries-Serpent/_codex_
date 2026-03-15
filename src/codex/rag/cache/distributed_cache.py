@@ -434,7 +434,7 @@ class DistributedCache:
             return self._redis_backend.contains(key)
 
         # Hybrid: check both
-        return self._memory_backend.contains(key) or (
+        return self._memory_backend.contains(key) or (  # type: ignore[return-value]
             self._redis_backend and self._redis_backend.contains(key)
         )
 

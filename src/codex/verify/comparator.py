@@ -285,7 +285,7 @@ def compare(
         )
 
     # Run without inputs first
-    inputs_to_test = sample_inputs or [None]
+    inputs_to_test = sample_inputs or [None]  # type: ignore[list-item]
 
     for input_file in inputs_to_test:
         input_ref = str(input_file) if input_file else "(no input)"

@@ -13,7 +13,7 @@ Part of PS-06 Enhancement: Index Sharding - Priority 4
 import asyncio
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 
@@ -281,7 +281,7 @@ class PGVectorStore:
         self,
         documents: List[Dict[str, Any]],
         embeddings: np.ndarray,
-        shard_mapper: Optional[callable] = None,
+        shard_mapper: Optional[Callable[..., Any]] = None,
     ) -> None:
         """Batch insert documents with pipeline optimization.
 

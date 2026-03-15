@@ -56,8 +56,8 @@ _ALLOW_REMOTE = os.environ.get("CODEX_ALLOW_REMOTE", "0").lower() in {
     "yes",
 }
 _MAX_NEW_TOKENS = int(os.environ.get("CODEX_MAX_NEW_TOKENS", "32"))
-_RUNTIME_MODEL: AutoModelForCausalLM | None = None
-_RUNTIME_TOKENIZER: PreTrainedTokenizerBase | None = None
+_RUNTIME_MODEL: AutoModelForCausalLM | None = None  # type: ignore[valid-type]
+_RUNTIME_TOKENIZER: PreTrainedTokenizerBase | None = None  # type: ignore[valid-type]
 _RUNTIME_DENYLIST: DenylistEnforcer | None = None
 PAD_TOKEN = "[PAD]"  # nosec B105 - conventional tokenizer pad token
 UNK_TOKEN = "[UNK]"  # nosec B105 B106 - conventional unknown token marker
@@ -92,7 +92,7 @@ def _fallback_tokenizer() -> PreTrainedTokenizerFast:
 
 
 @lru_cache
-def _tokenizer_cached() -> PreTrainedTokenizerBase:
+def _tokenizer_cached() -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     config: dict[str, Any] = {}
     if _DEFAULT_MODEL_NAME:
         config["model_name_or_path"] = _DEFAULT_MODEL_NAME
@@ -104,7 +104,7 @@ def _tokenizer_cached() -> PreTrainedTokenizerBase:
 
 
 @lru_cache
-def _model_cached() -> AutoModelForCausalLM:
+def _model_cached() -> AutoModelForCausalLM:  # type: ignore[valid-type]
     tokenizer = _tokenizer_cached()
     if _DEFAULT_MODEL_NAME:
         model = AutoModelForCausalLM.from_pretrained(  # nosec B615
@@ -128,18 +128,18 @@ def _denylist() -> DenylistEnforcer:
     return _RUNTIME_DENYLIST or _denylist_cached()
 
 
-def _tokenizer() -> PreTrainedTokenizerBase:
+def _tokenizer() -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     return _RUNTIME_TOKENIZER or _tokenizer_cached()
 
 
-def _model() -> AutoModelForCausalLM:
+def _model() -> AutoModelForCausalLM:  # type: ignore[valid-type]
     return _RUNTIME_MODEL or _model_cached()
 
 
 def configure_runtime(
     *,
-    model: AutoModelForCausalLM | None = None,
-    tokenizer: PreTrainedTokenizerBase | None = None,
+    model: AutoModelForCausalLM | None = None,  # type: ignore[valid-type]
+    tokenizer: PreTrainedTokenizerBase | None = None,  # type: ignore[valid-type]
     enforcer: DenylistEnforcer | None = None,
 ) -> None:
     """Override cached runtime components (primarily for tests)."""

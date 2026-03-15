@@ -348,9 +348,9 @@ class QuantumMetricRepository:
         if row:
             return dict(row)
         return {
-            "avg_coherence": None,
-            "min_coherence": None,
-            "max_coherence": None,
+            "avg_coherence": 0.0,
+            "min_coherence": 0.0,
+            "max_coherence": 0.0,
             "sample_count": 0,
         }
 

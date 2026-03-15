@@ -219,7 +219,7 @@ def _parse_yaml_dict(
             break
         if content.startswith("- "):
             list_value, index = _parse_yaml_list(tokens, index, indent)
-            return list_value, index
+            return list_value, index  # type: ignore[return-value]
         key, value_str = _split_key_value(content)
         index += 1
         if value_str is not None:

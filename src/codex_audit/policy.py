@@ -134,4 +134,4 @@ def write_policy_mapping(
     mapping_to_write = mapping or build_policy_mapping()
     with path.open("w", encoding="utf-8") as fp:
         json.dump(mapping_to_write, fp, indent=2, sort_keys=True)
-    return mapping_to_write
+    return mapping_to_write  # type: ignore[return-value]

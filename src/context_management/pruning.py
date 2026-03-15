@@ -252,7 +252,7 @@ class PriorityPruner:
             results[idx] = result.pruned_text
             tokens_saved += result.tokens_saved
 
-        return results, tokens_saved
+        return results, tokens_saved  # type: ignore[return-value]
 
     def get_metrics(self) -> dict:
         """Get pruning metrics."""

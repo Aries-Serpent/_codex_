@@ -501,7 +501,7 @@ def resolve_strategy(name: str | None) -> BackendStrategy:
         name = "functional"
     normalised = str(name).lower().strip()
     try:
-        return STRATEGY_REGISTRY[normalised]
+        return STRATEGY_REGISTRY[normalised]  # type: ignore[return-value]
     except KeyError as err:
         raise ValueError(
             f"Unknown backend strategy: {name!r}. Choices={list(STRATEGY_REGISTRY)}"

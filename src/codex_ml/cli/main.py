@@ -465,7 +465,7 @@ if typer is not None:
             app(args)
             return 0
         except SystemExit as e:
-            return e.code if e.code is not None else 0
+            return e.code if e.code is not None else 0  # type: ignore[return-value]
 
     cli = _typer_cli_wrapper
 

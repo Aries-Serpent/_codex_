@@ -398,7 +398,7 @@ def _sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
     """Stream a file and return its SHA256 digest."""
 
     digest = hashlib.sha256()
-    with path.open("rb") as stream:  # type: BinaryIO
+    with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(chunk_size), b""):
             if not chunk:
                 break

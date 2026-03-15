@@ -61,7 +61,10 @@
     "previous_baseline": 1113
   },
   "last_session": "S46",
-  "mypy_baseline": 1008,
-  "mypy_target_next": 940,
-  "stub_tests_remaining": 12
+  "mypy_baseline": 932,
+  "mypy_target_next": "<880 (S48)",
+  "stub_tests_remaining": 12,
+  "aais_score": 100,
+  "current_session": "S47",
+  "last_session_pr": "PR #3584"
 }

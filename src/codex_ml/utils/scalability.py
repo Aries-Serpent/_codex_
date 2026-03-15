@@ -361,12 +361,12 @@ class ResourcePool:
                 if self._pool:
                     resource = self._pool.pop()
                     self._in_use += 1
-                    return resource
+                    return resource  # type: ignore[return-value]
 
                 if self._in_use < self.max_size:
                     resource = self.factory()
                     self._in_use += 1
-                    return resource
+                    return resource  # type: ignore[return-value]
 
                 if timeout:
                     remaining = timeout - (time.time() - start)

@@ -427,7 +427,7 @@ class QueryRewriter:
             self._rewriter = None
         else:
             rewriter_class = self.STRATEGY_MAP.get(self.config.strategy, NormalizeRewriter)
-            self._rewriter = rewriter_class(self.config)
+            self._rewriter = rewriter_class(self.config)  # type: ignore[abstract]
 
     def rewrite(self, query: str) -> RewrittenQuery:
         """

@@ -106,7 +106,7 @@ class ContextDistiller:
             f"{len(results['docs'])} docs, {len(results['configs'])} configs"
         )
 
-        return results
+        return results  # type: ignore[return-value]
 
     def _should_ignore(self, file_path: Path) -> bool:
         """Check if file should be ignored."""

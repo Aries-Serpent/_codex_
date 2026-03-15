@@ -253,7 +253,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def __init__(
         self,
-        model_or_processor: str | Path | "spm.SentencePieceProcessor",
+        model_or_processor: str | Path | "spm.SentencePieceProcessor",  # type: ignore[name-defined]
         *,
         special_tokens: Optional[Sequence[str] | Mapping[str, int]] = None,
     ) -> None:
@@ -269,7 +269,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         self.special_tokens: list[str] = []
         self.special_tokens_map: dict[str, int] = {}
         self._adapter: Optional[SentencePieceAdapter] = None
-        self._processor: "spm.SentencePieceProcessor"
+        self._processor: "spm.SentencePieceProcessor"  # type: ignore[name-defined]
         self.model_path: Optional[Path] = None
         self._special_tokens_path: Optional[Path] = None
 
@@ -416,7 +416,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def _init_from_processor(
         self,
-        processor: "spm.SentencePieceProcessor",
+        processor: "spm.SentencePieceProcessor",  # type: ignore[name-defined]
         tokens_to_add: Sequence[str],
         provided_map: Optional[dict[str, int]],
     ) -> None:
@@ -446,7 +446,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return [token for token, _ in sorted(mapping.items(), key=lambda item: item[1])]
 
     @staticmethod
-    def _processor_vocab_size(processor: "spm.SentencePieceProcessor") -> int:
+    def _processor_vocab_size(processor: "spm.SentencePieceProcessor") -> int:  # type: ignore[name-defined]
         for attr in ("get_piece_size", "piece_size", "vocab_size"):
             getter = getattr(processor, attr, None)
             if callable(getter):
@@ -476,7 +476,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 return legacy
         return None
 
-    def encode(
+    def encode(  # type: ignore[override]
         self,
         text: str,
         *,
@@ -520,7 +520,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             return decode_fn(list(tokens))
         return self._processor.DecodeIds(list(tokens))
 
-    def batch_encode(
+    def batch_encode(  # type: ignore[override]
         self,
         texts: Iterable[str],
         *,

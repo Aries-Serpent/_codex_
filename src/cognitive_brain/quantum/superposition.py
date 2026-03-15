@@ -345,7 +345,7 @@ class SuperpositionEngine:
 
     def evaluate_superposition(
         self,
-        decisions: List[tuple[str, callable]],
+        decisions: List[tuple[str, Callable[..., Any]]],
         context: Dict[str, Any] = None,
     ) -> Dict[str, Any]:
         """

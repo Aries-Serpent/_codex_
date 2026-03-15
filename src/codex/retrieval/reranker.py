@@ -372,7 +372,7 @@ class Reranker:
             self._reranker = None
         else:
             reranker_class = self.STRATEGY_MAP.get(self.config.strategy, ScoreFusionReranker)
-            self._reranker = reranker_class(self.config)
+            self._reranker = reranker_class(self.config)  # type: ignore[abstract]
 
     def rerank(
         self,

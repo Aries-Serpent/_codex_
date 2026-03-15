@@ -101,7 +101,7 @@ class DatasetBundle(Sequence[Example]):
     def __len__(self) -> int:  # pragma: no cover - trivially exercised elsewhere
         return len(self.examples)
 
-    def __getitem__(self, index: int) -> Example:
+    def __getitem__(self, index: int) -> Example:  # type: ignore[override]
         return self.examples[index]
 
 

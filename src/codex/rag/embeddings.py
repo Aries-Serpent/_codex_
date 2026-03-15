@@ -401,7 +401,7 @@ def create_embedding_provider(
             logger.info("✓ Using sentence-transformers provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
-            return provider
+            return provider  # type: ignore[return-value]
         except Exception as e:
             logger.debug(f"sentence-transformers unavailable: {e}")
 
@@ -416,7 +416,7 @@ def create_embedding_provider(
                 logger.info("✓ Using Ollama provider")
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
-                return provider
+                return provider  # type: ignore[return-value]
             else:
                 logger.debug("Ollama server not running")
         except Exception as e:
@@ -432,7 +432,7 @@ def create_embedding_provider(
                 logger.info("✓ Using llama.cpp provider")
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
-                return provider
+                return provider  # type: ignore[return-value]
             except Exception as e:
                 logger.debug(f"llama.cpp unavailable: {e}")
 
@@ -446,7 +446,7 @@ def create_embedding_provider(
             logger.info("✓ Using GPT4All provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
-            return provider
+            return provider  # type: ignore[return-value]
         except Exception as e:
             logger.debug(f"GPT4All unavailable: {e}")
 
@@ -516,7 +516,7 @@ def create_embedding_provider(
         provider = CachedEmbeddingProvider(provider, cache_dir=cache_dir)
 
     logger.info(f"Created embedding provider: {provider.__class__.__name__}")
-    return provider
+    return provider  # type: ignore[return-value]
 
 
 class TfidfEmbeddingProvider:

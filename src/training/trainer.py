@@ -611,7 +611,7 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history[-1] if self.history else {}
+            return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
@@ -674,7 +674,7 @@ class Trainer:
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
-        return self.history[-1] if self.history else {}
+        return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)
