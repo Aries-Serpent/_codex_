@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Session S42 — 2026-03-15 — Rust Swarm CI Cost Proposal + Workflow Fixes (PR #3582)
+
+#### Fixed — `rust_swarm_ci.yml` non-existent action versions
+- All action references updated to current stable releases:
+  - `actions/checkout@v6` → `@v4`
+  - `actions/upload-artifact@v7` → `@v4`
+  - `actions/download-artifact@v8` → `@v4`
+  - `actions/setup-python@v6` → `@v5`
+  - `actions/cache@v5` → `@v4`
+  - `actions/github-script@v8` → `@v7`
+- Prevents workflow failures due to referencing non-existent GitHub Action tags
+
+#### Fixed — `rust_swarm_ci.yml` shell syntax errors
+- `runner. os` → `runner.os` (space in expression caused key mismatch)
+- `${GITHUB_SHA: 0:8}` → `${GITHUB_SHA:0:8}` (space in bash substring expansion)
+- `[ !  -d "htmlcov" ]` → `[ ! -d "htmlcov" ]` (extra space in test expression)
+- `find . -name "*. txt"` → `"*.txt"` (space in glob pattern)
+- `context. issue.number` → `context.issue.number` (space in JS expression)
+- `target/release/deps/*. log` → `*.log` (space in artifact path)
+- `target/wheels/*. whl` → `*.whl` (space in artifact path)
+
+#### Recorded — Agent Token Delegation Activation (PR #3582)
+- Owner @mbaetiong approved Agent Token Delegation for PR #3582
+- `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` confirmed active
+- `.codex/agent_auth_session.json` updated (issued_at: 2026-03-15T00:10Z, PR #3582)
+
+#### Recorded — Cost Proposal Approval
+- 💰 Cost Proposal for Rust Swarm CI approved (RED tier, 180 eff-min)
+- Enables RED-tier gated jobs: `build-preview-image`, `data-quality-suite`,
+  `scheduled-archival`, `rust_swarm_ci`, `docker-build-push`
+
 ### Session S41b — 2026-03-14 — Fix recurring REQ-4/5 failure from manifest auto-refresh (PR #3580)
 
 #### Fixed — `codex-manifest-refresh.yml` breaks REQ-4/5 on every push

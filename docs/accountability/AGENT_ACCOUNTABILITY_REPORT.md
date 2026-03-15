@@ -1,9 +1,35 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/ci-failure-triage-report
+**Branch:** copilot/cost-proposal-rust-swarm-ci
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-14T13:45Z (session 40: §0 pre-session review + post-merge readiness sweep — PR #3579)
+**Last updated:** 2026-03-15T00:10Z (session 42: Rust Swarm CI cost proposal + workflow fixes — PR #3582)
+
+---
+
+## SESSION SUMMARY — 2026-03-15 SESSION 42 (@copilot continue — Agent Token Delegation + Cost Proposal approved — PR #3582)
+
+### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
+- [x] **0a.** Reviewed ALL bot-posted comments on PR #3582 ✅
+  - `@mbaetiong` — approved Agent Token Delegation + 💰 Cost Proposal in PR description
+  - Both checkboxes ticked: `COPILOT_AGENT_AUTH_ENABLED` + `💰 Cost Proposal Approved`
+- [x] **0b.** Reviewed CI checks on PR #3582 ✅
+  - CodeQL analysis: javascript-typescript ✅, go ✅, python in_progress
+  - submit-pypi ✅
+  - Pre-flight check: 6/6 ✅
+
+### Work Completed (Session 42)
+- Fixed 6 non-existent action versions in `rust_swarm_ci.yml`:
+  `checkout@v6→@v4`, `upload-artifact@v7→@v4`, `download-artifact@v8→@v4`,
+  `setup-python@v6→@v5`, `cache@v5→@v4`, `github-script@v8→@v7`
+- Fixed 7 shell syntax errors in `rust_swarm_ci.yml`:
+  `runner. os`, `${GITHUB_SHA: 0:8}`, `[ !  -d ]`, `*. txt`, `context. issue`, `*. log`, `*. whl`
+- Updated `.codex/agent_auth_session.json` for PR #3582 delegation
+- Created `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3582_RUST_SWARM_CI_COST_PROPOSAL.md`
+- Updated `CHANGELOG.md` (Session S42 entry)
+
+### AAIS at Session 42
+- **Current:** 98/100 (Grade A+) — unchanged from Session 41
 
 ---
 
