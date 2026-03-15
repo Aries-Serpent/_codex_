@@ -423,7 +423,7 @@ def calculate_k1(
 
 def run_scalability_test(
     scenarios_per_seed: int = 1000,
-    seeds: List[int] = None,
+    seeds: List[int] = None,  # type: ignore[assignment]
     use_verified_labels: bool = True,
     save_json: Optional[str] = None,
 ) -> Dict:

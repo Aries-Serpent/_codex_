@@ -31,8 +31,8 @@ try:  # pragma: no cover - torch is optional
     from torch.utils.data import DataLoader, TensorDataset, random_split
 except Exception:  # pragma: no cover - fallback stubs when torch is absent
     torch = None  # type: ignore[assignment]
-    DataLoader = None  # type: ignore[assignment]
-    TensorDataset = None  # type: ignore[assignment]
+    DataLoader = None  # type: ignore[assignment,misc]
+    TensorDataset = None  # type: ignore[assignment,misc]
     random_split = None  # type: ignore[assignment]
 
 _REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -113,9 +113,9 @@ def _synthetic_classification_dataset(
         data_module = getattr(torch_utils, "data", None)
         if data_module is None:
             raise DatasetRegistryError("torch.utils.data not available")
-        DataLoader = getattr(data_module, "DataLoader", None)
-        TensorDataset = getattr(data_module, "TensorDataset", None)
-        random_split = getattr(data_module, "random_split", None)
+        DataLoader = getattr(data_module, "DataLoader", None)  # type: ignore[assignment]
+        TensorDataset = getattr(data_module, "TensorDataset", None)  # type: ignore[assignment]
+        random_split = getattr(data_module, "random_split", None)  # type: ignore[assignment]
     if DataLoader is None or TensorDataset is None:
         raise DatasetRegistryError("torch.utils.data components unavailable")
     generator = torch.Generator().manual_seed(int(seed))

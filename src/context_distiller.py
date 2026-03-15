@@ -77,7 +77,7 @@ class ContextDistiller:
         Returns:
             Dictionary mapping categories to file lists
         """
-        results: dict[str, list[str]] = {"code": [], "docs": [], "configs": []}
+        results: dict[str, list[Path]] = {"code": [], "docs": [], "configs": []}
 
         for src_dir in self.src_dirs:
             if not src_dir.exists():
@@ -106,7 +106,7 @@ class ContextDistiller:
             f"{len(results['docs'])} docs, {len(results['configs'])} configs"
         )
 
-        return results  # type: ignore[return-value]
+        return results
 
     def _should_ignore(self, file_path: Path) -> bool:
         """Check if file should be ignored."""

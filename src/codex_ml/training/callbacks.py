@@ -20,7 +20,7 @@ class EarlyStopping:
     def __init__(self, patience: int = 3, min_delta: float = 0.0, mode: str = "min"):
         self.patience, self.min_delta = patience, min_delta
         self.mode = mode
-        self.best = None
+        self.best: float | None = None
         self.bad = 0
 
     def step(self, metric: float) -> bool:

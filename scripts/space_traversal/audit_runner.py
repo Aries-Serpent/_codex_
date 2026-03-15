@@ -539,10 +539,6 @@ def stage_s7_manifest(cfg: dict) -> dict:
         Manifest dict with ``artifacts``, ``artifact_count``, and optionally
         ``coverage_stats`` keys.  Written to ``<ROOT>/audit_run_manifest.json``.
     """
-    import json
-    import os
-    from pathlib import Path
-
     artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
     artifacts = sorted(artifacts_dir.glob("*.json"), key=lambda p: p.name)
     artifact_entries = [{"name": p.name, "path": str(p)} for p in artifacts]

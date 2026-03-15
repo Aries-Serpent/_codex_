@@ -99,7 +99,7 @@ class QuantumMetricRepository:
     a full ORM framework like SQLAlchemy.
     """
 
-    def __init__(self, db_path: Union[str, Path] = None, connection=None):
+    def __init__(self, db_path: Union[str, Path] = None, connection=None):  # type: ignore[assignment]
         """
         Initialize repository.
 

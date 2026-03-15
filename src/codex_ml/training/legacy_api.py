@@ -1316,6 +1316,7 @@ def run_functional_training(
         features: dict[str, list[list[int]]] = {}
         labels: list[list[int]] = []  # type: ignore[no-redef]
         for record in encodings:
+            ids = list(record.get("input_ids", []))
             mask = list(record.get("attention_mask", [1] * len(ids)))
             ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
             mask = _pad_sequence(mask, 0, int(pad_to))

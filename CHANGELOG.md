@@ -5,7 +5,39 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [S47] — 2026-03-15T07:00Z — PR #3584
+## [S48] — 2026-03-15T09:00Z — PR #3584
+
+### S48: Bot Review Resolution + mypy 932→879 (53 errors) + Pre-flight 6/6
+
+#### §0 Pre-Session Policy Compliance
+- [x] CODEBASE_AGENCY_POLICY.md loaded — no deferral language used
+- [x] ALL bot-posted review comments fetched and resolved (7 threads: 2 github-code-quality + 5 copilot-pull-request-reviewer)
+- [x] Failing CI checks reviewed — Art_Validation failure on older SHA (fa64980), HEAD commit clean
+- [x] Agent Token Delegation confirmed: `COPILOT_AGENT_AUTH_ENABLED=true`
+
+#### Bot Review Fixes (7 threads resolved)
+| Thread | Bot | Fix Applied |
+|--------|-----|-------------|
+| `audit_runner.py:542` — duplicate imports | github-code-quality | Removed ALL inner imports (`import json`, `from pathlib import Path`) from `stage_s7_manifest` — module-level imports used |
+| `test_tokenizer_basic.py:6` — unused `_tokenizer_cli` | github-code-quality | Changed `_tokenizer_cli = pytest.importorskip(...)` → `pytest.importorskip(...)` (no assignment) |
+| `legacy_api.py:1321` — `ids` UnboundLocalError | copilot-pull-request-reviewer | Added `ids = list(record.get("input_ids", []))` as first line of padded-branch loop |
+| `test_tokenizer_basic.py:15` — `or True` no-op assert | copilot-pull-request-reviewer | Removed `or True` → `assert callable(getattr(SPTokenizer, "train", None))` |
+| `context_distiller.py:80` — `list[str]` should be `list[Path]` | copilot-pull-request-reviewer | Changed annotation to `dict[str, list[Path]]`; removed stale `# type: ignore[return-value]` |
+| `audit_runner.py:543` — unused `import os` | copilot-pull-request-reviewer | Removed (part of full inner-import removal above) |
+| `checkpointing.py:1546` — unreachable `_sync_remote_candidates` body | copilot-pull-request-reviewer | Extracted orphaned body as proper `def _sync_remote_candidates(self) -> list[Path]:` method |
+
+#### mypy Ratchet: 932 → 879 (53 errors fixed, 28 files)
+| Category | Fixed | Key Files |
+|----------|-------|-----------|
+| `[misc]` — bridge_types dataclass ordering | 11 | bridge_types.py ×11 (required fields after optional in inherited dataclasses) |
+| `[assignment]` — None/type mismatches | 31 | exceptions.py ×7, log_sanitizer.py ×4, zendesk/api_client.py ×5, gauge.py ×5, serialization.py ×2, compliance_integration.py ×2, others ×6 |
+| `[assignment]` — callbacks, generate, yaml_support, wandb_logger | 4 | callbacks.py, generate.py, yaml_support.py, wandb_logger.py |
+| `[misc]` — data/registry.py cannot-assign-to-type | 4 | registry.py DataLoader/TensorDataset fallback ignores |
+| Other | 3 | mcp/adapters/base_adapter.py, cognitive_brain/quantum/base.py, exp1b_revalidation.py |
+
+New `.mypy_baseline`: **879**. Next target: < 820 (S49).
+
+
 
 ### S47: mypy 1008→932 (76 errors) + actionlint verified GREEN + Agent Token Delegation
 

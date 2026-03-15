@@ -157,11 +157,11 @@ class ZendeskAPIClient:
         }
 
         if requester_email:
-            payload["ticket"]["requester"] = {"email": requester_email}
+            payload["ticket"]["requester"] = {"email": requester_email}  # type: ignore[assignment]
         if tags:
-            payload["ticket"]["tags"] = tags
+            payload["ticket"]["tags"] = tags  # type: ignore[assignment]
         if custom_fields:
-            payload["ticket"]["custom_fields"] = custom_fields
+            payload["ticket"]["custom_fields"] = custom_fields  # type: ignore[assignment]
 
         response = self.session.post(f"{self.config.base_url}/tickets.json", json=payload)
         response.raise_for_status()

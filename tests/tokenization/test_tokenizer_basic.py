@@ -3,7 +3,7 @@
 import pytest
 
 # Skip if tokenizer CLI module not available
-_tokenizer_cli = pytest.importorskip(
+pytest.importorskip(
     "codex_ml.tokenization.sp_trainer",
     reason="Tokenizer CLI (sp_trainer) not available",
 )
@@ -12,7 +12,7 @@ _tokenizer_cli = pytest.importorskip(
 def test_tokenizer_train_invokes_pipeline() -> None:
     """SPTrainer can be imported and has a train-capable interface."""
     from codex_ml.tokenization.sp_trainer import SPTokenizer  # noqa: PLC0415
-    assert hasattr(SPTokenizer, "train") or callable(getattr(SPTokenizer, "train", None)) or True
+    assert callable(getattr(SPTokenizer, "train", None))
 
 
 def test_tokenizer_validate_checksums() -> None:
