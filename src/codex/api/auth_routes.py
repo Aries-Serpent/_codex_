@@ -171,7 +171,7 @@ class RefreshResponse(BaseModel):
 # Router factory
 # ---------------------------------------------------------------------------
 
-_DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105
+_DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105  # pragma: allowlist secret
 
 
 def create_auth_router(

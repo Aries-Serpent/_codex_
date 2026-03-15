@@ -5,6 +5,24 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [S50] — 2026-03-15T07:40Z — PR #3584
+
+### S50: Fix Art_Validation Pipeline (pre-commit: end-of-file + detect-secrets false positives)
+
+#### Summary
+- Root cause of Art_Validation Pipeline Fast Validation failure identified and fixed
+- Pre-commit `fix end of files` gate: added trailing newlines to `.codex/agent_context.json` + `CODEX_MANIFEST.json`
+- Pre-commit `detect-secrets` gate: 3 Python false positives marked with `# pragma: allowlist secret`; 2 JSON hash false positives added to `.secrets.baseline`
+- Issue #3583 Art_Validation Pipeline item: RESOLVED ✅
+
+#### Changed
+- `src/codex/api/auth_routes.py` — added `# pragma: allowlist secret` to placeholder default secret line
+- `src/codex_ml/serving/inference_server.py` — added `# pragma: allowlist secret` to API_KEY_NAME (false positive)
+- `src/codex_ml/monitoring/codex_logging.py` — added `# pragma: allowlist secret` to `_AWS_SECRET_PATTERN` variable (regex pattern, not a secret)
+- `.codex/agent_context.json` — added trailing newline; SHA hash added to `.secrets.baseline`
+- `CODEX_MANIFEST.json` — added trailing newline; integrity_sha256 added to `.secrets.baseline`
+- `.secrets.baseline` — 2 new JSON false positives added
+
 ## [S49] — 2026-03-15T07:30Z — PR #3584
 
 ### S49: Auto-Fix Gate Clean + mypy 879→802 + Agent Mermaid Diagrams + Issue #3583 Triage

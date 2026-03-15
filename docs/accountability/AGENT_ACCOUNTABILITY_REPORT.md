@@ -3926,3 +3926,31 @@ Per new requirement: confirmed all threads reviewed, all code changes applied, n
 - Auto-fix gate issues fixed: 2 (isort)
 - Agent mermaid scope diagrams added: 5/5
 - Issue #3583 items addressed: all code-fixable issues resolved
+
+---
+
+## Session S50 — 2026-03-15
+
+### Objective
+Fix Art_Validation Pipeline fast validation failure (pre-commit: end-of-file-fixer + detect-secrets false positives).
+
+### Actions Taken
+1. **`fix end of files`** — added trailing newlines to `.codex/agent_context.json` and `CODEX_MANIFEST.json`
+2. **`detect-secrets` false positives** — added `# pragma: allowlist secret` to 3 Python lines:
+   - `src/codex/api/auth_routes.py:174` — placeholder default secret (already had `# nosec B105`)
+   - `src/codex_ml/serving/inference_server.py:42` — API key header name
+   - `src/codex_ml/monitoring/codex_logging.py:199` — AWS secret *pattern* variable name (not an actual secret)
+3. **`.secrets.baseline` updated** — added 2 JSON false positives:
+   - `.codex/agent_context.json:14` — `CODEX_CI_LAST_GREEN_SHA` git hash (flagged as "Hex High Entropy String")
+   - `CODEX_MANIFEST.json:1747` — `integrity_sha256` hash (flagged as "Hex High Entropy String")
+
+### Policy Compliance
+- §0: ALL bot comments reviewed before first file change ✅
+- Issue #3583: Art_Validation Pipeline root cause fixed ✅
+- Deferral language: 0 violations ✅
+- Codebase left better than found ✅ (pre-commit gate restored to passing state)
+
+### Impact Score
+- Files fixed: 3 Python source files + 2 JSON files + `.secrets.baseline`
+- pre-commit gates unblocked: 2 (`fix end of files`, `detect-secrets`)
+- Issue #3583 Art_Validation Pipeline: FIXED ✅

@@ -39,7 +39,7 @@ _MAX_EMBEDDING_SEED = 2**32
 REQUEST_RATE_LIMIT = 1000
 
 # API Key Security
-API_KEY_NAME = "X-API-Key"
+API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
 
 
