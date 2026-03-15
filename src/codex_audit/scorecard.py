@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Iterable, Mapping
+from typing import Any, Iterable, Mapping
 
 from .gates import GateResult
 
@@ -57,7 +57,7 @@ def render_scorecard(
 
     policy_section = ""
     if policy_map:
-        ra_rules = policy_map.get("ra_rules", {})
+        ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})
         policy_lines = ["## RA Policy Reference"]
         for ra_id, desc in sorted(ra_rules.items()):
             policy_lines.append(f"- **{ra_id}**: {desc}")
