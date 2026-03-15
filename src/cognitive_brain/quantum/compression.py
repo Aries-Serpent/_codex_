@@ -381,8 +381,9 @@ class PatternCompressor:
         reconstructed = reconstructed_norm * self.feature_std + self.feature_mean
 
         # Convert back to dict
-        reconstructed_dict = {k: float(v) for k, v in zip(compressed.feature_keys, reconstructed,
-            strict=False)}
+        reconstructed_dict = {
+            k: float(v) for k, v in zip(compressed.feature_keys, reconstructed, strict=False)
+        }
 
         self.total_decompressed += 1
 

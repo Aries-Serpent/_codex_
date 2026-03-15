@@ -414,12 +414,11 @@ class _TorchInferenceContext:
             self._autocast.__enter__()
         return None
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> None:
         if self._autocast is not None:
             self._autocast.__exit__(exc_type, exc, tb)
         if self._inference is not None:
             self._inference.__exit__(exc_type, exc, tb)
-        return False
 
 
 def _start_serve(cfg: DictConfig) -> None:

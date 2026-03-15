@@ -316,7 +316,7 @@ class DistributedCoordinator:
     def _partition_round_robin(self, task_ids: list[str]) -> dict[str, list[str]]:
         """Round-robin task distribution."""
         all_nodes = [self.node_id] + self.peer_nodes
-        partitions = {node: [] for node in all_nodes}
+        partitions: dict[str, list[str]] = {node: [] for node in all_nodes}
 
         for i, task_id in enumerate(task_ids):
             node = all_nodes[i % len(all_nodes)]
@@ -327,7 +327,7 @@ class DistributedCoordinator:
     def _partition_hash(self, task_ids: list[str]) -> dict[str, list[str]]:
         """Hash-based task distribution."""
         all_nodes = [self.node_id] + self.peer_nodes
-        partitions = {node: [] for node in all_nodes}
+        partitions: dict[str, list[str]] = {node: [] for node in all_nodes}
 
         for task_id in task_ids:
             node_idx = hash(task_id) % len(all_nodes)

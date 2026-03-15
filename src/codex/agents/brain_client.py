@@ -208,9 +208,7 @@ class BrainClient:
                 return json.loads(resp.read().decode())  # type: ignore[return-value]
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
-            raise BrainClientError(
-                f"POST {path} failed: HTTP {exc.code} — {body_text}"
-            ) from exc
+            raise BrainClientError(f"POST {path} failed: HTTP {exc.code} — {body_text}") from exc
         except OSError as exc:
             raise BrainClientError(f"POST {path} unreachable: {exc}") from exc
 

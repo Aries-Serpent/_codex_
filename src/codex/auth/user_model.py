@@ -9,6 +9,7 @@ All external code should continue to import :class:`User` and
 :class:`PasswordHasher` from :mod:`codex.auth.user_store` (backward-compat
 re-exports are maintained there).
 """
+
 from __future__ import annotations
 
 import hashlib

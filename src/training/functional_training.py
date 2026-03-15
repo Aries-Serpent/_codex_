@@ -710,7 +710,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             for epoch in range(start_epoch, cfg.epochs):
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
-                for step, batch in enumerate(train_loader):
+                for step, batch in enumerate(train_loader):  # type: ignore[var-annotated]
                     if epoch == start_epoch and step < start_step:
                         continue
                     if cfg.limit_train_batches and step >= cfg.limit_train_batches:

@@ -7,7 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session S44 — 2026-03-15 — 85 stub tests implemented; all action versions fixed; mypy 1151→1113 (PR #3582)
+### Session S45 — 2026-03-15 — CI triage fixes + mypy 1113→1069 (PR #3583)
+
+#### Fixed — Art_Security Scanning Suite SBOM generation
+- `cyclonedx-py` CLI interface changed; updated from `--format json --output` to
+  subcommand `cyclonedx-py environment --format JSON --outfile` in `security-scanning-suite.yml`
+
+#### Fixed — Cleanup Stale Self-Heal Branches
+- Sparse checkout in `cleanup-stale-branches.yml` now also fetches
+  `.github/actions/setup-python-cached` which is needed by the local `uses:` step
+
+#### Fixed — Codespaces Prebuilds (Debian trixie / docker-in-docker)
+- `devcontainer.json` changed `docker-in-docker:2` feature option `"moby": true` →
+  `"moby": false` to fix Docker-in-Docker incompatibility with Debian trixie
+
+#### Fixed — mypy ratchet 1113 → 1069 (OBJ-004 T-004+, 44 errors eliminated)
+- 25 `[var-annotated]` — added missing type annotations (18 src/ files)
+- 5 `[exit-return]` — `__exit__` return type corrected from `bool` to `None`
+- 5 `[truthy-function]` — `if func:` → `if func is not None:`
+- 4 `[return]` — added missing return statements (rl.py, compliance_gates, hdf5_loader, checkpointing)
+- 3 `[syntax]` — invalid `# type: ignore F401` fixed to `# type: ignore[import-untyped]`
+- ~15 `[no-redef]` — added `# type: ignore[no-redef]` to conditional import fallback classes
+- 1 `[func-returns-value]` — `print_help()` return value usage fixed
+
+
 
 #### Fixed — Non-existent GitHub Actions versions (65+ workflow/action files)
 - `actions/checkout@v6` → `@v4` across all `.github/workflows/`, `.github/actions/`, `.github/misc/`, and `.github/workflow-archive/` files

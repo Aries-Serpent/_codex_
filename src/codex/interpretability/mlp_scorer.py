@@ -240,7 +240,7 @@ class MLPScorer:
         Returns:
             Dictionary with statistics (mean, std, min, max, sparsity)
         """
-        stats = {
+        stats: dict[str, list[float]] = {
             "mean": [],
             "std": [],
             "min": [],

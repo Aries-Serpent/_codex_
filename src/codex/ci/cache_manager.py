@@ -57,7 +57,7 @@ class CacheType(Enum):
     YARN = "yarn"
     CARGO = "cargo"
     AGENT_VENV = "agent-venv"  # L6b — lean Copilot agent virtualenv (.venv_agent)
-    BRAIN_DB = "brain-db"      # L6c — Cognitive Brain SQLite DB
+    BRAIN_DB = "brain-db"  # L6c — Cognitive Brain SQLite DB
     CUSTOM = "custom"
 
 

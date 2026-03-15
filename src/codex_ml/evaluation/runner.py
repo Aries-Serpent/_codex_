@@ -77,8 +77,8 @@ class MetricAdapter:
 
     def __init__(self, name: str):
         self.name = name
-        self._predictions = []
-        self._references = []
+        self._predictions: list[Any] = []
+        self._references: list[Any] = []
 
     def add_batch(self, predictions: Any, references: Any) -> None:
         """Accumulate batch results."""
@@ -292,11 +292,11 @@ class EvaluationRunner:
 
     def _get_dataloader(self) -> Any:
         """Get or create DataLoader from dataset."""
-        if DataLoader and isinstance(self.dataset, DataLoader):
+        if DataLoader is not None and isinstance(self.dataset, DataLoader):
             return self.dataset
 
         # If torch available, create DataLoader
-        if torch and DataLoader:
+        if torch is not None and DataLoader is not None:
             return DataLoader(
                 self.dataset,
                 batch_size=self.config.batch_size,

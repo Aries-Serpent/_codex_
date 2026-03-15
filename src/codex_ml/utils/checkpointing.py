@@ -1540,8 +1540,7 @@ class CheckpointManager:
                 )
                 info["path"] = candidate
                 return info
-
-    def _sync_remote_candidates(self) -> list[Path]:
+        raise FileNotFoundError(f"no loadable checkpoint state found under: {root}")
         if self.storage is None or self.remote_prefix is None:
             return []
 

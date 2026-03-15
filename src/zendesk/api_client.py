@@ -350,9 +350,7 @@ class ZendeskAPIClient:
             >>> client.update_user(1001, role="admin", phone="+15551234567")
         """
         payload = {"user": updates}
-        response = self.session.put(
-            f"{self.config.base_url}/users/{user_id}.json", json=payload
-        )
+        response = self.session.put(f"{self.config.base_url}/users/{user_id}.json", json=payload)
         response.raise_for_status()
         return response.json()
 

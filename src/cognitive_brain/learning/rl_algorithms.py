@@ -49,7 +49,7 @@ class ReplayBuffer:
         Args:
             capacity: Maximum number of experiences to store
         """
-        self.buffer = deque(maxlen=capacity)
+        self.buffer: deque[Any] = deque(maxlen=capacity)
         self.capacity = capacity
 
     def add(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
@@ -254,8 +254,9 @@ class QLearning(RLAlgorithm):
             q_values = [self._get_q_value(state, a) for a in available_actions]
             max_q = max(q_values)
             # Handle ties randomly
-            best_actions = [a for a, q in zip(available_actions, q_values,
-                strict=False) if q == max_q]
+            best_actions = [
+                a for a, q in zip(available_actions, q_values, strict=False) if q == max_q
+            ]
             return np.random.choice(best_actions)
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):

@@ -60,7 +60,7 @@ if not _HYDRA_AVAILABLE:
         from config_legacy.errors import MissingConfigException
     except ImportError:
         # Define our own if neither is available
-        class MissingConfigException(FileNotFoundError):
+        class MissingConfigException(FileNotFoundError):  # type: ignore[no-redef]
             """Exception raised when a configuration file cannot be located."""
 
             def __init__(
@@ -291,7 +291,7 @@ class ConfigLoader:
                 if overrides:
                     data = self._apply_overrides(data, overrides)
 
-                if _OMEGACONF_AVAILABLE and OmegaConf:
+                if _OMEGACONF_AVAILABLE and OmegaConf is not None:
                     return OmegaConf.create(data)
                 return data
             except ImportError:
@@ -311,7 +311,7 @@ class ConfigLoader:
 
         # Return empty config as fallback
         logger.warning(f"Config not found, returning empty fallback: {config_file}")
-        if _OMEGACONF_AVAILABLE and OmegaConf:
+        if _OMEGACONF_AVAILABLE and OmegaConf is not None:
             return OmegaConf.create({})
         return {}
 

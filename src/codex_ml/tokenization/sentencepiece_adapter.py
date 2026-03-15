@@ -265,9 +265,7 @@ class SentencePieceAdapter:
         # Accept any iterable of int ids (lists, tuples, generators, etc.)
         ids_list = list(ids)
         if any(not isinstance(i, int) for i in ids_list):
-            raise ValueError(
-                "SentencePieceAdapter.decode requires int ids"
-            )
+            raise ValueError("SentencePieceAdapter.decode requires int ids")
         return self.sp.decode(ids_list)
 
     def batch_encode(

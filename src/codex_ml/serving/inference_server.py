@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
     APIKeyHeader = None
     Security = None
 
-    def Field(*a, **k):
+    def Field(*a, **k):  # type: ignore[no-redef]
         return None
 
     Request = object

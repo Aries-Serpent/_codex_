@@ -110,7 +110,7 @@ def cached(cache: LRUCache, key_func: Callable[..., str] = None):
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         @wraps(func)
         def wrapper(*args, **kwargs) -> T:
-            if key_func:
+            if key_func is not None:
                 cache_key = key_func(*args, **kwargs)
             else:
                 cache_key = hashlib.sha256(f"{func.__name__}:{args}:{kwargs}".encode()).hexdigest()

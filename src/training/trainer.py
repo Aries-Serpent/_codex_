@@ -619,7 +619,7 @@ class Trainer:
             num_batches = 0
             self._zero_grad()
 
-            for step, batch in enumerate(self.train_loader, start=1):
+            for step, batch in enumerate(self.train_loader, start=1):  # type: ignore[var-annotated]
                 inputs, labels = self._prepare_batch(batch)
                 with autocast(enabled=cfg.mixed_precision):
                     outputs = self._forward(inputs)

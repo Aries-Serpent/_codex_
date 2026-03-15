@@ -215,7 +215,7 @@ class ABTestManager:
         Returns:
             Dictionary with comparison results
         """
-        report = {
+        report: dict[str, Any] = {
             "experiment_name": self.config.experiment_name,
             "start_time": self.start_time,
             "variants": {},

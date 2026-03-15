@@ -1055,8 +1055,7 @@ def run_functional_training(
         model = _TinyLanguageModel(len(vocab)).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=float(cfg.learning_rate))
 
-        metrics: list[dict[str, Any]] = []
-        grad_accum = max(int(cfg.gradient_accumulation), 1)
+        metrics: list[dict[str, Any]] = []  # type: ignore[no-redef]
         eval_every = max(int(cfg.eval_every_epochs), 1)
 
         log_formats = tuple(getattr(cfg, "log_formats", ("ndjson",)))
@@ -1098,7 +1097,7 @@ def run_functional_training(
                 total_loss = 0.0
                 seen_batches = 0
                 t0 = perf_counter()
-                for step, batch in enumerate(train_loader):
+                for step, batch in enumerate(train_loader):  # type: ignore[var-annotated]
                     prepared = {k: v.to(device) for k, v in batch.items()}
                     outputs = model(**prepared)
                     raw_loss = getattr(outputs, "loss", None)
@@ -1314,9 +1313,8 @@ def run_functional_training(
             return Dataset.from_list(records)
 
         features: dict[str, list[list[int]]] = {}
-        labels: list[list[int]] = []
+        labels: list[list[int]] = []  # type: ignore[no-redef]
         for record in encodings:
-            ids = list(record.get("input_ids", []))
             mask = list(record.get("attention_mask", [1] * len(ids)))
             ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
             mask = _pad_sequence(mask, 0, int(pad_to))

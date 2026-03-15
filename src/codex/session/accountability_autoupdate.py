@@ -153,9 +153,7 @@ def collect_metadata(
 
     # Tests ----------------------------------------------------------------
     tests_touched = [f for f in files_changed if "test" in f.lower()]
-    docs_changed = any(
-        f.endswith(".md") or f.startswith("docs/") for f in files_changed
-    )
+    docs_changed = any(f.endswith(".md") or f.startswith("docs/") for f in files_changed)
     security_findings = any("security" in f.lower() or "cve" in f.lower() for f in files_changed)
 
     # CI references --------------------------------------------------------
@@ -351,9 +349,7 @@ def generate_markdown_entry(
 
     if metadata.get("run_id"):
         repo = metadata.get("repo", "Aries-Serpent/_codex_")
-        lines.append(
-            f"- CI run: https://github.com/{repo}/actions/runs/{metadata['run_id']}"
-        )
+        lines.append(f"- CI run: https://github.com/{repo}/actions/runs/{metadata['run_id']}")
 
     lines.extend(["", "---", ""])
     return "\n".join(lines)
@@ -391,9 +387,7 @@ def append_to_report(
     updated = existing.rstrip("\n") + "\n\n" + entry
 
     # Atomic write via temp file
-    fd, tmp_path = tempfile.mkstemp(
-        dir=str(report_path.parent), suffix=".md.tmp"
-    )
+    fd, tmp_path = tempfile.mkstemp(dir=str(report_path.parent), suffix=".md.tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
@@ -484,9 +478,7 @@ def update_changelog(
     updated = content[:newline_pos] + "\n" + entry + content[newline_pos:]
 
     # Atomic write
-    fd, tmp_path = tempfile.mkstemp(
-        dir=str(changelog_path.parent), suffix=".md.tmp"
-    )
+    fd, tmp_path = tempfile.mkstemp(dir=str(changelog_path.parent), suffix=".md.tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
@@ -568,9 +560,7 @@ def run(
     # Per-output idempotency checks
     report_exists = session_exists_in_report(sid, report_path)
     changelog_exists = (
-        session_exists_in_changelog(sid, changelog_path)
-        if changelog_path is not None
-        else True
+        session_exists_in_changelog(sid, changelog_path) if changelog_path is not None else True
     )
     artifact_exists = (sessions_dir / f"{sid}.json").exists()
 

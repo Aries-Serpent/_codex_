@@ -86,7 +86,9 @@ class RougeMetric(MetricAdapter):
     def _compute_rouge_score(self) -> dict[str, float]:
         """Compute ROUGE using rouge-score library."""
         try:
-            aggregated_scores = {rouge_type: [] for rouge_type in self.rouge_types}
+            aggregated_scores: dict[str, list[float]] = {
+                rouge_type: [] for rouge_type in self.rouge_types
+            }
 
             for pred, ref in zip(self._predictions, self._references, strict=False):
                 scores = self.scorer.score(ref, pred)

@@ -587,7 +587,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         return _emit_degradation_banner(loggers)
 
     # Fallback to argparse flags
-    component_statuses: list[TelemetryComponentStatus] = []
+    component_statuses: list[TelemetryComponentStatus] = []  # type: ignore[no-redef]
 
     logdir = getattr(args, "tb_logdir", "") or "./runs"
     tb_handle = None

@@ -507,8 +507,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Accept table names that contain characters outside the strict safe-identifier "
-             "set (kept for backward compatibility; the strict validation bypass has been "
-             "removed — this flag is accepted but no longer changes behaviour).",
+        "set (kept for backward compatibility; the strict validation bypass has been "
+        "removed — this flag is accepted but no longer changes behaviour).",
     )
     ingest.add_argument(
         "--mode",

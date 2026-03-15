@@ -304,8 +304,8 @@ class OutcomeAnalyzer:
             return PatternSet(patterns=[], domain="general")
 
         # Track pattern occurrences
-        pattern_counts = defaultdict(int)
-        pattern_examples = defaultdict(list)
+        pattern_counts: defaultdict[str, int] = defaultdict(int)
+        pattern_examples: defaultdict[str, list[Any]] = defaultdict(list)
 
         for outcome in recent_outcomes:
             for pattern_id in outcome.patterns_identified:

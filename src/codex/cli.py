@@ -1673,12 +1673,12 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
 # Auth commands                                                              #
 # ---------------------------------------------------------------------------
 
+
 @cli.group(
     "auth",
     invoke_without_command=True,
     help=(
-        "Authentication utilities.\n\n"
-        "Register, login, and manage sessions from the command line."
+        "Authentication utilities.\n\nRegister, login, and manage sessions from the command line."
     ),
 )
 @click.pass_context
@@ -1724,8 +1724,14 @@ def _get_auth():
 @auth_group.command("register")
 @click.option("--username", "-u", required=True, help="Username for the new account")
 @click.option("--email", "-e", required=True, help="E-mail address")
-@click.option("--password", "-p", prompt=True, hide_input=True, confirmation_prompt=True,
-              help="Password (prompted if not supplied)")
+@click.option(
+    "--password",
+    "-p",
+    prompt=True,
+    hide_input=True,
+    confirmation_prompt=True,
+    help="Password (prompted if not supplied)",
+)
 @click.option("--role", "-r", multiple=True, default=None, help="Roles to assign (repeatable)")
 def auth_register(username: str, email: str, password: str, role: tuple[str, ...]) -> None:
     """Register a new user account.
@@ -1749,8 +1755,9 @@ def auth_register(username: str, email: str, password: str, role: tuple[str, ...
 
 @auth_group.command("login")
 @click.option("--username", "-u", required=True, help="Username or e-mail")
-@click.option("--password", "-p", prompt=True, hide_input=True,
-              help="Password (prompted if not supplied)")
+@click.option(
+    "--password", "-p", prompt=True, hide_input=True, help="Password (prompted if not supplied)"
+)
 @click.option("--totp", default=None, help="TOTP code (if MFA enabled)")
 @click.option("--save/--no-save", default=False, help="Cache credentials via keyring")
 def auth_login(username: str, password: str, totp: str | None, save: bool) -> None:
@@ -1812,11 +1819,13 @@ _CACHE_FILE = _CACHE_DIR / "credentials.json"
 
 def _cache_credentials(username: str, access_token: str, refresh_token: str) -> None:
     """Store credentials via *keyring*; fall back to a local JSON file."""
-    data = json.dumps({
-        "username": username,
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-    })
+    data = json.dumps(
+        {
+            "username": username,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }
+    )
     try:
         import keyring  # type: ignore[import-untyped]
 

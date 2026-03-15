@@ -57,7 +57,7 @@ except Exception:  # pragma: no cover - import guard
         compose = None
         initialize_config_dir = None
 
-        class MissingConfigException(RuntimeError):
+        class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
             """Fallback error used when Hydra is unavailable."""
 
             def __init__(self, *, missing_cfg_file: str, message: str) -> None:

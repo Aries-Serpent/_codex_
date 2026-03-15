@@ -5,6 +5,7 @@ Preserves the original ``UserStore`` behaviour: all users are held in a plain
 Python ``dict`` keyed by ``user_id``.  Thread-safe via an internal
 ``threading.RLock``.
 """
+
 from __future__ import annotations
 
 import threading

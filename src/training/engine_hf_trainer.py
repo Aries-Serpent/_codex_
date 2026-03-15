@@ -87,9 +87,7 @@ def _install_accelerate_compat() -> None:
                 dlc = kwargs.pop("dataloader_config", None)
                 if dlc is not None:
                     if hasattr(dlc, "dispatch_batches"):
-                        kwargs.setdefault(
-                            "dispatch_batches", bool(dlc.dispatch_batches)
-                        )
+                        kwargs.setdefault("dispatch_batches", bool(dlc.dispatch_batches))
                     if hasattr(dlc, "split_batches"):
                         kwargs.setdefault("split_batches", bool(dlc.split_batches))
                     if hasattr(dlc, "even_batches"):

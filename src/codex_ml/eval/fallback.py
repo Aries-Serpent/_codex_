@@ -102,8 +102,9 @@ def synthetic_alignment(predictions: Iterable[str], references: Iterable[str]) -
     stats = token_stats(flat_pred, flat_ref, ignore_index=IGNORE_INDEX)
     exact = 0.0
     if preds:
-        matches = sum(1 for pred, ref in zip(preds, refs,
-            strict=False) if exact_match_strict(pred, ref))
+        matches = sum(
+            1 for pred, ref in zip(preds, refs, strict=False) if exact_match_strict(pred, ref)
+        )
         exact = matches / len(preds)
     perplexity = _perplexity_proxy(flat_pred, flat_ref)
     avg_length = total_tokens / len(preds) if preds else 0.0

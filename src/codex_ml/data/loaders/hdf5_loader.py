@@ -155,6 +155,7 @@ class HDF5Loader:
                     "keys": list(obj.keys()),
                     "attributes": dict(obj.attrs),
                 }
+            return {}
 
     def list_datasets(self) -> list[str]:
         """

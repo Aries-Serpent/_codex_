@@ -33,7 +33,7 @@ try:  # pragma: no cover
 except Exception:  # pragma: no cover - defensive placeholders
     _CanonicalLegacyTokenizer = None  # type: ignore[assignment]
 
-    class HFTokenizerAdapter:  # type: ignore[empty-body]
+    class HFTokenizerAdapter:  # type: ignore[no-redef,empty-body]
         """Placeholder that raises when the canonical adapter is unavailable."""
 
         def __init__(self, *_args, **_kwargs):
@@ -41,7 +41,7 @@ except Exception:  # pragma: no cover - defensive placeholders
                 "HFTokenizerAdapter is unavailable; install codex-ml tokenization extras"
             )
 
-    class SentencePieceTokenizer:  # type: ignore[empty-body]
+    class SentencePieceTokenizer:  # type: ignore[no-redef,empty-body]
         def __init__(self, *_args, **_kwargs):
             raise ImportError(
                 "SentencePieceTokenizer is unavailable; install codex-ml tokenization extras"

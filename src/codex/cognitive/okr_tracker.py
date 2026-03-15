@@ -165,9 +165,7 @@ class OKRTracker:
             next_admin_actions=admin_actions,
         )
 
-    def mark_task_complete(
-        self, obj_id: str, task_id: str, notes: str = ""
-    ) -> bool:
+    def mark_task_complete(self, obj_id: str, task_id: str, notes: str = "") -> bool:
         """Mark a task as complete. Returns True if found and updated."""
         for obj in self._objectives:
             if obj.obj_id.upper() == obj_id.upper():
@@ -190,9 +188,7 @@ class OKRTracker:
     def save(self) -> None:
         """Persist progress to `.codex/okr/progress.json`."""
         self._progress_path.parent.mkdir(parents=True, exist_ok=True)
-        self._progress_path.write_text(
-            json.dumps(self._progress, indent=2) + "\n"
-        )
+        self._progress_path.write_text(json.dumps(self._progress, indent=2) + "\n")
 
     def get_objective(self, obj_id: str) -> Objective | None:
         for obj in self._objectives:
@@ -233,24 +229,43 @@ class OKRTracker:
             deadline="2026-04-01",
         )
         obj.tasks = [
-            OKRTask("T-001", "cost_estimator.py + cost-gate.yml (KR-1)",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-002", "E2E integration test — 23 tests (KR-2)",
-                    TaskStatus.COMPLETE, owner="Copilot",
-                    notes="Implemented in S32 as programmatic test"),
-            OKRTask("T-003",
-                    "Add cost-gate / classify-and-gate to branch protection required checks",
-                    TaskStatus.COMPLETE, owner="@mbaetiong",
-                    notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)"),
-            OKRTask("T-004", "usage_logger.py — 11/11 tests",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-005", "Budget alert in self_healing_ci.yml",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-006", "docker-build-push.yml gated RED tier",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-007", "Production sign-off (AAIS >= 74, all code-fixable items clean)",
-                    TaskStatus.COMPLETE, owner="@mbaetiong",
-                    notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)"),
+            OKRTask(
+                "T-001",
+                "cost_estimator.py + cost-gate.yml (KR-1)",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
+            OKRTask(
+                "T-002",
+                "E2E integration test — 23 tests (KR-2)",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Implemented in S32 as programmatic test",
+            ),
+            OKRTask(
+                "T-003",
+                "Add cost-gate / classify-and-gate to branch protection required checks",
+                TaskStatus.COMPLETE,
+                owner="@mbaetiong",
+                notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)",
+            ),
+            OKRTask("T-004", "usage_logger.py — 11/11 tests", TaskStatus.COMPLETE, owner="Copilot"),
+            OKRTask(
+                "T-005", "Budget alert in self_healing_ci.yml", TaskStatus.COMPLETE, owner="Copilot"
+            ),
+            OKRTask(
+                "T-006",
+                "docker-build-push.yml gated RED tier",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
+            OKRTask(
+                "T-007",
+                "Production sign-off (AAIS >= 74, all code-fixable items clean)",
+                TaskStatus.COMPLETE,
+                owner="@mbaetiong",
+                notes="Confirmed complete by @mbaetiong 2026-03-14 (PR #3579)",
+            ),
         ]
         return obj
 
@@ -263,18 +278,34 @@ class OKRTracker:
             deadline="2026-04-01",
         )
         obj.tasks = [
-            OKRTask("T-001", "Implement task_router.py",
-                    TaskStatus.COMPLETE, owner="Copilot",
-                    notes="Implemented S32"),
-            OKRTask("T-002", "Implement okr_tracker.py",
-                    TaskStatus.COMPLETE, owner="Copilot",
-                    notes="Implemented S32"),
-            OKRTask("T-003", "Create .codex/okr/objectives.md",
-                    TaskStatus.COMPLETE, owner="Copilot",
-                    notes="Created S32"),
-            OKRTask("T-004", "AGENT_REGISTRY: normalize description + capability_tags",
-                    TaskStatus.COMPLETE, owner="Copilot",
-                    notes="153/153 agents normalized S31"),
+            OKRTask(
+                "T-001",
+                "Implement task_router.py",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Implemented S32",
+            ),
+            OKRTask(
+                "T-002",
+                "Implement okr_tracker.py",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Implemented S32",
+            ),
+            OKRTask(
+                "T-003",
+                "Create .codex/okr/objectives.md",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="Created S32",
+            ),
+            OKRTask(
+                "T-004",
+                "AGENT_REGISTRY: normalize description + capability_tags",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+                notes="153/153 agents normalized S31",
+            ),
         ]
         return obj
 
@@ -287,18 +318,36 @@ class OKRTracker:
             deadline="2026-03-22",
         )
         obj.tasks = [
-            OKRTask("T-001", "cost-gate poll timeout 10min->90sec",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-002", "rust_swarm_ci skipped != failed",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-003", "embedding rebuild Python version fix",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-004", "pre-merge validation scoped to ci_test/",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-005", "ci_failure_patterns.yaml 25->29 patterns",
-                    TaskStatus.COMPLETE, owner="Copilot"),
-            OKRTask("T-006", "B904 exception chaining in src/ (121->0)",
-                    TaskStatus.COMPLETE, owner="Copilot"),
+            OKRTask(
+                "T-001", "cost-gate poll timeout 10min->90sec", TaskStatus.COMPLETE, owner="Copilot"
+            ),
+            OKRTask(
+                "T-002", "rust_swarm_ci skipped != failed", TaskStatus.COMPLETE, owner="Copilot"
+            ),
+            OKRTask(
+                "T-003",
+                "embedding rebuild Python version fix",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
+            OKRTask(
+                "T-004",
+                "pre-merge validation scoped to ci_test/",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
+            OKRTask(
+                "T-005",
+                "ci_failure_patterns.yaml 25->29 patterns",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
+            OKRTask(
+                "T-006",
+                "B904 exception chaining in src/ (121->0)",
+                TaskStatus.COMPLETE,
+                owner="Copilot",
+            ),
         ]
         return obj
 

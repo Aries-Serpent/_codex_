@@ -35,7 +35,7 @@ class EvidenceSchemaValidator:
             project_root = Path(__file__).parent.parent.parent.parent
             schema_dir = str(project_root / "schemas")
         self.schema_dir = Path(schema_dir)
-        self.schemas = {}
+        self.schemas: dict[str, Any] = {}
         self._load_schemas()
 
     def _load_schemas(self) -> None:

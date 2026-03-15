@@ -11,6 +11,7 @@ Normalizes text for consistent processing:
 import logging
 import re
 import unicodedata
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +134,7 @@ class ContextNormalizer:
         - test_names: Test names found
         - correlation_ids: Request/trace IDs found
         """
-        signals = {
+        signals: dict[str, list[Any]] = {
             "errors": [],
             "file_paths": [],
             "test_names": [],

@@ -106,7 +106,7 @@ class ConfigDrift:
         Returns:
             dict with keys 'added', 'removed', 'modified' listing changed keys
         """
-        result = {"added": [], "removed": [], "modified": []}
+        result: dict[str, list[str]] = {"added": [], "removed": [], "modified": []}
 
         this_keys = set(self.config.keys())
         other_keys = set(other.config.keys())

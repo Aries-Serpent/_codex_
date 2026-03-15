@@ -226,10 +226,7 @@ if _HAS_TORCH:
 
 else:
 
-    class ToyDataset:
-        def __init__(self, *_, **__):
-            raise RuntimeError("Torch is required to construct ToyDataset")
-
+    class ToyDataset:  # type: ignore[no-redef]
         def __len__(self) -> int:  # pragma: no cover - defensive
             return 0
 
