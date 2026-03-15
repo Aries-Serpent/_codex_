@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-15T06:05:42Z",
+  "generated_at": "2026-03-15T06:07:26Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1575,6 +1575,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COPILOT_MCP_TOOL_REFERENCE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/CUDA_TESTING_IMPLEMENTATION_PR3178.md",
       "type": "enforcement"
     },
@@ -1740,5 +1744,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "a4a1ace0e2dba59655eab8544e6d7256c644c1c2b1fd4353b3855593f5174395"
+  "integrity_sha256": "cf97001fbd882cb8f7c28d4aa6363981eb9168c7ed8e10768a516a237ffdbd14"
 }
