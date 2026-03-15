@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Session S41b — 2026-03-14 — Fix recurring REQ-4/5 failure from manifest auto-refresh (PR #3580)
 
 #### Fixed — `codex-manifest-refresh.yml` breaks REQ-4/5 on every push
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3582 (SHA `24651bc8`) at 2026-03-15T00:08Z [auto-generated]
 - The manifest auto-refresh workflow previously committed only `CODEX_MANIFEST.json`
 - The subsequent `agent-auth-delegation.yml` REQ-4/5 checks failed because the accountability
   report and CHANGELOG were not in the last commit (correct CI logic, wrong auto-commit scope)
