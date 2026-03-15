@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -313,7 +313,7 @@ jobs:
 
       - name: Upload validation artifacts
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: scheduled-validation-${{ steps.config.outputs.timestamp }}
           path: |

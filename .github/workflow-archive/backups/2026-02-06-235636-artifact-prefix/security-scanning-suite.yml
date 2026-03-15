@@ -54,7 +54,7 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
@@ -76,7 +76,7 @@ jobs:
       (github.event_name == 'schedule') ||
       (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -112,7 +112,7 @@ jobs:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-python-cached
@@ -146,7 +146,7 @@ jobs:
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}

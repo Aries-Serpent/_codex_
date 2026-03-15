@@ -67,7 +67,7 @@ Integrates and optimizes CacheManager (`src/codex/ci/cache_manager.py`) across G
 ### Before (Manual Cache Keys)
 ```yaml
 - name: Cache dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: pip-${{ runner.os }}-${{ hashFiles('requirements*.txt') }}
@@ -94,7 +94,7 @@ Integrates and optimizes CacheManager (`src/codex/ci/cache_manager.py`) across G
     " >> $GITHUB_OUTPUT
 
 - name: Cache dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: ${{ steps.cache-config.outputs.path }}
     key: ${{ steps.cache-config.outputs.key }}

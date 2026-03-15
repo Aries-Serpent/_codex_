@@ -27,7 +27,7 @@
 **Steps**: 2
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Setup Python
 
 

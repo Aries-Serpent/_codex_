@@ -75,7 +75,7 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup

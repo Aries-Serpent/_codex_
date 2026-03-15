@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for age analysis
 
@@ -112,11 +112,11 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Create Archival Issue
         if: ${{ github.event.inputs.dry_run != 'true' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@v7
         with:
           script: |
             const candidates = `${{ needs.identify-candidates.outputs.candidates }}`;
@@ -179,7 +179,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Find and Compress Large Files
         run: |

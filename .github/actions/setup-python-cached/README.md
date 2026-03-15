@@ -113,7 +113,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       # Step 1: Setup Python
       - name: Setup Python
@@ -211,7 +211,7 @@ Each workflow run logs cache statistics:
 ```diff
 + # Step 1: Setup Python
   - name: Set up Python
-    uses: actions/setup-python@v6
+    uses: actions/setup-python@v5
     with:
       python-version: '3.11'
 -     cache: 'pip'
@@ -233,7 +233,7 @@ Each workflow run logs cache statistics:
 
 ### From manual actions/cache:
 ```diff
-  - uses: actions/setup-python@v6
+  - uses: actions/setup-python@v5
     with:
       python-version: '3.11'
 

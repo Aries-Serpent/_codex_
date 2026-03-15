@@ -66,7 +66,7 @@
    - Cascading restore keys working
 
 4. **Iteration 4**: Best Practices
-   - All use actions/cache@v5
+   - All use actions/cache@v4
    - No TODO/FIXME remaining
    - Consistent patterns
 

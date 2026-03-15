@@ -495,7 +495,7 @@ This is the largest category, indicating many workflows lack clear categorizatio
 - cache-warmup.yml
 - cleanup-ci-caches.yml
 
-**Rationale**: Per previous consolidation, distributed caching is preferred. These 5 can be deprecated in favor of per-workflow `actions/cache@v5` usage + GitHub auto-cleanup.
+**Rationale**: Per previous consolidation, distributed caching is preferred. These 5 can be deprecated in favor of per-workflow `actions/cache@v4` usage + GitHub auto-cleanup.
 
 #### Group 4: CI Health Monitoring (Similarity: 80%)
 **Consolidate**: 3 workflows → 1 comprehensive health monitor

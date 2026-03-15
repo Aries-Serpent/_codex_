@@ -1,6 +1,6 @@
 disabled_at: 2026-02-07T01:29:47Z
 reason: "Phase 1 Group 3 - Replaced by distributed caching pattern"
-consolidated_into: "Distributed across workflows using actions/cache@v5"
+consolidated_into: "Distributed across workflows using actions/cache@v4"
 phase: "Phase 1 Consolidation"
 group: "Group 3 - Cache Management"
 backup_location: ".github/workflow-archive/backups/2025-12-28/"

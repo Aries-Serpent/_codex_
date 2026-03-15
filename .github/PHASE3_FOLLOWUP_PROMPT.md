@@ -83,7 +83,7 @@ flowchart TD
 - [ ] Calculate projected cache growth
 
 ### For Each Workflow Added
-- [ ] Add `actions/cache@v5` with workflow-specific key
+- [ ] Add `actions/cache@v4` with workflow-specific key
 - [ ] Include `${{ github.workflow }}` in cache key
 - [ ] Use consistent path patterns (`~/.cache/pip`, etc)
 - [ ] Add cascading restore-keys
@@ -95,7 +95,7 @@ flowchart TD
 ### Standard Cache Pattern
 ```yaml
 - name: Cache Dependencies
-  uses: actions/cache@v5
+  uses: actions/cache@v4
   with:
     path: |
       ~/.cache/pip
@@ -163,7 +163,7 @@ gh run list --workflow="<workflow-name>" --limit 5 | grep -i "cache"
 ### Option 2: Switch to Built-in Caching
 ```yaml
 # Instead of explicit cache action
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'  # More efficient
@@ -308,7 +308,7 @@ grep -h "key:.*github.workflow" .github/workflows/*.yml | sort | uniq -c | awk '
 grep -r "key:.*secrets" .github/workflows/*.yml && echo "❌ Secrets in keys!" || echo "✅ No secrets in keys"
 
 # Calculate total cache count
-grep -l "actions/cache@v5\|cache: 'pip'" .github/workflows/*.yml | wc -l
+grep -l "actions/cache@v4\|cache: 'pip'" .github/workflows/*.yml | wc -l
 ```
 
 ---

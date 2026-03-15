@@ -294,7 +294,7 @@ jobs:
   compatibility:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Run Doc Refactor Test Agent
         uses: ./.github/actions/doc-refactor-test-agent
@@ -457,7 +457,7 @@ jobs:
   test-compatibility:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Doc Refactor Test Agent
         run: |

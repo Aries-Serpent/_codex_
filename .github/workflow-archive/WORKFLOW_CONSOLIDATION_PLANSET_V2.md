@@ -151,7 +151,7 @@ jobs:
 - Automatic invalidation via hash-based keys
 
 **Migration Plan**:
-1. Verify all workflows use `actions/cache@v5`
+1. Verify all workflows use `actions/cache@v4`
 2. Confirm cache keys use dependency file hashes
 3. Disable all 5 cache workflows
 4. Document distributed caching pattern

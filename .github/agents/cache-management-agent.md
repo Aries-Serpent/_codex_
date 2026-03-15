@@ -362,7 +362,7 @@ DEPENDENCY_FILES = {
 
 ```yaml
 # ✅ Secure cache configuration
-- uses: actions/cache@v5
+- uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-${{ github.workflow }}-pip-${{ hashFiles('**/pyproject.toml') }}

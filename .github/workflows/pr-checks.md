@@ -28,7 +28,7 @@
 **Steps**: 7
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Setup Python
 3. Restore cache from main (read-only)
 4. Install UV

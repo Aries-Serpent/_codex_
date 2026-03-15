@@ -28,7 +28,7 @@
 **Steps**: 7
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Set up Docker Buildx
 3. Build wheelhouse (builder stage) for ${{ matrix.platform }}
 4. Set up Python
@@ -42,7 +42,7 @@
 **Steps**: 10
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Set up Docker Buildx
 3. Determine Dockerfile
 4. Build image for SBOM
@@ -56,7 +56,7 @@
 **Steps**: 4
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Set up Docker Buildx
 3. Test build with Python ${{ matrix.python_version }}
 4. Report compatibility
@@ -68,7 +68,7 @@
 **Steps**: 5
 
 **Key Steps**:
-1. actions/checkout@v6
+1. actions/checkout@v4
 2. Download current baseline (amd64)
 3. Download previous baseline (if exists)
 4. Compare manifests

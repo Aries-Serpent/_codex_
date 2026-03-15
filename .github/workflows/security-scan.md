@@ -29,7 +29,7 @@
 
 **Key Steps**:
 1. Free disk space for CI
-2. actions/checkout@v6
+2. actions/checkout@v4
 3. Setup Python
 4. Install dependencies
 5. Run Bandit security scan

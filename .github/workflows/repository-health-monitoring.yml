@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for accurate age calculation
 
@@ -58,7 +58,7 @@ jobs:
           echo "✅ Health dashboard up to date"
 
       - name: Upload health report artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: repository-health-report
           path: |

@@ -42,7 +42,7 @@ GitHub Actions automatically handles compression:
 
 **Current Implementation**:
 ```yaml
-- uses: actions/cache@v5
+- uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
@@ -114,13 +114,13 @@ This automatically includes compression/decompression.
 Edit workflows to use built-in caching:
 ```yaml
 # Instead of:
-- uses: actions/cache@v5
+- uses: actions/cache@v4
   with:
     path: ~/.cache/pip
     key: ...
 
 # Use:
-- uses: actions/setup-python@v6
+- uses: actions/setup-python@v5
   with:
     python-version: '3.11'
     cache: 'pip'  # Built-in, more efficient
