@@ -3,30 +3,39 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/cost-proposal-rust-swarm-ci
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-15T00:10Z (session 42: Rust Swarm CI cost proposal + workflow fixes — PR #3582)
+**Last updated:** 2026-03-15T00:52Z (session 42b: 2nd Agent Token Delegation activation — PR #3582, run 23099572716)
 
 ---
 
-## SESSION SUMMARY — 2026-03-15 SESSION 42 (@copilot continue — Agent Token Delegation + Cost Proposal approved — PR #3582)
+## SESSION SUMMARY — 2026-03-15 SESSION 42b (@copilot continue — 2nd Agent Token Delegation activation — PR #3582)
 
 ### §0 Mandatory Pre-Session Review (CODEBASE_AGENCY_POLICY.md §0)
 - [x] **0a.** Reviewed ALL bot-posted comments on PR #3582 ✅
-  - `@mbaetiong` — approved Agent Token Delegation + 💰 Cost Proposal in PR description
-  - Both checkboxes ticked: `COPILOT_AGENT_AUTH_ENABLED` + `💰 Cost Proposal Approved`
+  - `@mbaetiong` comment `#4061848610` — 2nd Agent Token Delegation activated (run `23099572716`); `@copilot continue`
 - [x] **0b.** Reviewed CI checks on PR #3582 ✅
-  - CodeQL analysis: javascript-typescript ✅, go ✅, python in_progress
+  - CodeQL analysis: python ✅, javascript-typescript ✅, go ✅ (all complete)
   - submit-pypi ✅
-  - Pre-flight check: 6/6 ✅
+  - copilot job: in_progress
 
-### Work Completed (Session 42)
-- Fixed 6 non-existent action versions in `rust_swarm_ci.yml`:
-  `checkout@v6→@v4`, `upload-artifact@v7→@v4`, `download-artifact@v8→@v4`,
-  `setup-python@v6→@v5`, `cache@v5→@v4`, `github-script@v8→@v7`
-- Fixed 7 shell syntax errors in `rust_swarm_ci.yml`:
-  `runner. os`, `${GITHUB_SHA: 0:8}`, `[ !  -d ]`, `*. txt`, `context. issue`, `*. log`, `*. whl`
-- Updated `.codex/agent_auth_session.json` for PR #3582 delegation
-- Created `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3582_RUST_SWARM_CI_COST_PROPOSAL.md`
-- Updated `CHANGELOG.md` (Session S42 entry)
+### Work Completed (Session 42b)
+- Updated `CHANGELOG.md` — recorded 2nd delegation activation (run `23099572716`)
+- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (this entry)
+- `agent_auth_session.json` already auto-updated by `agent-auth-delegation` workflow (commit `9211a06`)
+
+### Agent Token Delegation — 2nd Activation (PR #3582)
+| Variable | Value |
+|----------|-------|
+| `COPILOT_AGENT_AUTH_ENABLED` | `true` |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]` |
+| Run | [23099572716](https://github.com/Aries-Serpent/_codex_/actions/runs/23099572716) |
+| Session token `issued_at` | 2026-03-15T00:51:40Z |
+| Session token `expires_at` | 1773550300 |
+
+### AAIS at Session 42b
+- **Current:** 98/100 (Grade A+) — unchanged
+
+---
+
 
 ### AAIS at Session 42
 - **Current:** 98/100 (Grade A+) — unchanged from Session 41

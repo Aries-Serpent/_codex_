@@ -31,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Recorded — Agent Token Delegation Activation (PR #3582)
 - Owner @mbaetiong approved Agent Token Delegation for PR #3582
 - `COPILOT_AGENT_AUTH_ENABLED=true`, `COGNITIVE_BRAIN_ALLOWED_ACTORS` confirmed active
-- `.codex/agent_auth_session.json` updated (issued_at: 2026-03-15T00:10Z, PR #3582)
+- `.codex/agent_auth_session.json` updated (issued_at: 2026-03-15T00:10Z, PR #3582, run `23099346905`)
+- 2nd activation (run `23099572716`): `agent-auth-delegation` workflow re-fired and wrote new session token at 2026-03-15T00:51:40Z; token auto-written by `github-actions[bot]`
 
 #### Recorded — Cost Proposal Approval
 - 💰 Cost Proposal for Rust Swarm CI approved (RED tier, 180 eff-min)
