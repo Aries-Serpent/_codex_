@@ -12,10 +12,10 @@ Test coverage:
 """
 
 
-import numpy as np
+import pytest
+np = pytest.importorskip("numpy")
 import pytest
 
-pytest.importorskip("numpy")
 
 from codex.quantum_orchestrator.orchestrator import (
     DiracSpinor,

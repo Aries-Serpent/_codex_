@@ -8,7 +8,9 @@ import json
 
 import pytest
 
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+pytest.importorskip('sentencepiece')
+pytest.importorskip('sentencepiece')
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train  # noqa: E402  # noqa: E402
 
 
 def test_train_tokenizer_smoke(tmp_path):

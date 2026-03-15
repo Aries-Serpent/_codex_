@@ -15,9 +15,9 @@ if str(SRC) not in sys.path:
 
 import pytest  # noqa: E402
 
+torch = pytest.importorskip("torch")  # noqa: E402
 import modeling  # noqa: E402
 
-torch = pytest.importorskip("torch")
 TORCH_STUB = getattr(torch, "__version__", "").endswith("stub")
 
 if TORCH_STUB:

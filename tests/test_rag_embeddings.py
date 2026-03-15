@@ -9,10 +9,10 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import numpy as np
+import pytest
+np = pytest.importorskip("numpy")
 import pytest
 
-pytest.importorskip("numpy")
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:

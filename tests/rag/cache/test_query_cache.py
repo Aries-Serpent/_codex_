@@ -7,6 +7,7 @@ import time
 
 import pytest
 
+pytest.importorskip("numpy")
 from codex.rag.cache.query_cache import (
     CacheEntry,
     CacheStats,

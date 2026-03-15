@@ -1,4 +1,6 @@
+import pytest
 """Tests for metadata filtering"""
+pytest.importorskip('numpy')
 
 from src.codex.retrieval.filtering import (
     apply_filters,

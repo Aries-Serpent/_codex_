@@ -6,6 +6,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+pytest.importorskip('torch')
 
 from codex.rag.postprocess import OutputProcessor, postprocess_output
 from codex.rag.utils import ProvenanceMetadata, safe_model_load

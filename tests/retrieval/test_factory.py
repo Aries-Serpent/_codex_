@@ -6,10 +6,10 @@ Tests for Vector Store Factory and Registry
 import types
 from unittest.mock import Mock
 
-import numpy as np
+import pytest
+np = pytest.importorskip("numpy")
 import pytest
 
-pytest.importorskip("numpy")
 
 from src.codex.retrieval.stores.factory import (
     VectorStoreFactory,

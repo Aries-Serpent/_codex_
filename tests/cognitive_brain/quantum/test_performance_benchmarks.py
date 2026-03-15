@@ -1,9 +1,11 @@
+import pytest
 """
 Phase 8.1 Performance Benchmark Tests.
 
 Tests performance targets: compression speed, retrieval speed, cache hit rate,
 memory efficiency, and consolidation throughput.
 """
+pytest.importorskip('psutil')
 
 import os
 import time

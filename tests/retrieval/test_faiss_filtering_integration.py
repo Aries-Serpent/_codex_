@@ -1,10 +1,10 @@
 """Integration tests for metadata filtering with FAISS store"""
 
 
-import numpy as np
+import pytest
+np = pytest.importorskip("numpy")
 import pytest
 
-pytest.importorskip("numpy")
 
 try:
     import faiss  # noqa: F401  # Check faiss is importable before testing the store

@@ -10,6 +10,9 @@ import sys
 import tempfile
 from pathlib import Path
 
+import pytest
+pytest.importorskip("jsonschema")
+
 SCHEMA_CONTENT = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",

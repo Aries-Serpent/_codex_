@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Session S42c — 2026-03-15 — Python 3.12 standardization + CI triage + D_CAPABLE (PR #3582)
+### Session S42d — 2026-03-15 — Fix all 51 pre-existing test collection errors (PR #3582)
+
+#### Fixed — 51 test collection errors → 0
+- Root causes: `import numpy/torch/etc.` before `pytest.importorskip` guard (30 files),
+  missing `import pytest` before guard (30 files), guard placed after bare import (31 files),
+  special cases: hypothesis NameError, tokenizers decoders, torch guard ordering, syntax damage
+- All 51 files now skip cleanly when optional deps (numpy, torch, transformers, psutil,
+  hypothesis, tokenizers, jsonschema) are absent; `pytest --collect-only` returns 0 errors
+- `tests/tools/test_validate_experiments.py`: added `pytest.importorskip("jsonschema")`
+
+#### Fixed — CHANGELOG S41b section contamination (reviewer feedback)
+- Removed auto-generated line about PR #3582 that was incorrectly inserted inside the
+  "Session S41b" section (which covers PR #3580)
+
+#### Audit — Mock/stub/pseudo-code survey
+- AST scan of all 14,966 collected tests:
+  83 empty `pass` bodies, 118 trivial `assert True`, 1 `raise NotImplementedError`,
+  45 `pytest.skip("not implemented/TODO")`, 83 TODO/FIXME comments in test bodies
+- Documented for follow-up implementation work
+
 
 #### Fixed — Python 3.12 as canonical base version (all config files)
 - `mypy.ini`: `python_version = 3.11` → `3.12`

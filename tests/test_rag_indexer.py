@@ -7,10 +7,10 @@ import json
 import tempfile
 from pathlib import Path
 
-import numpy as np
+import pytest
+np = pytest.importorskip("numpy")
 import pytest
 
-pytest.importorskip("numpy")
 
 
 # Conditional imports for RAG dependencies - safely handled at test runtime

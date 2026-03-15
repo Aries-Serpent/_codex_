@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from unittest.mock import MagicMock
 
 import pytest
+pytest.importorskip('numpy')
 
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.integrations.memory_integration import (
