@@ -61,7 +61,7 @@ except Exception:
     _shared_DB_LOCK = None  # type: ignore[assignment]
     _shared_init_db = None  # type: ignore[assignment]
     try:  # Fallback: rely on monkeypatch adapters
-        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]
+        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]  # noqa: I001
     except Exception:  # pragma: no cover - nothing available
         _shared_log_event = None  # type: ignore[assignment]
 # Local, minimal fallbacks (if needed)

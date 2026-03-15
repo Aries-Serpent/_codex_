@@ -46,7 +46,10 @@ from codex_ml.safety import (
 )
 from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.training.eval import evaluate
-from codex_ml.utils.checkpointing import load_training_checkpoint, save_checkpoint  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
+    load_training_checkpoint,
+    save_checkpoint,
+)
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision

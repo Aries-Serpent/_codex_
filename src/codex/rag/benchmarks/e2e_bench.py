@@ -11,7 +11,9 @@ from .runner import BenchmarkRunner
 
 
 def benchmark_e2e_pipeline(
-    corpus_sizes: Optional[List[int]] = None, query_counts: Optional[List[int]] = None, runs: int = 3
+    corpus_sizes: Optional[List[int]] = None,
+    query_counts: Optional[List[int]] = None,
+    runs: int = 3,
 ) -> Dict[str, Any]:
     """
     Benchmark complete RAG pipeline end-to-end.

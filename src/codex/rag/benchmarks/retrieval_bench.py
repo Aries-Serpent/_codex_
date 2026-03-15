@@ -11,7 +11,9 @@ from .runner import BenchmarkRunner
 
 
 def benchmark_retrieval(
-    index_sizes: Optional[List[int]] = None, top_k_values: Optional[List[int]] = None, runs: int = 10
+    index_sizes: Optional[List[int]] = None,
+    top_k_values: Optional[List[int]] = None,
+    runs: int = 10,
 ) -> Dict[str, Any]:
     """
     Benchmark retrieval performance with various index sizes.
