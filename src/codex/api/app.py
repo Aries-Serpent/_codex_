@@ -49,7 +49,9 @@ app = FastAPI(title="codex", version="0.2.0")
 try:
     from codex.api.auth_routes import create_auth_router  # noqa: E402
 
-    app.include_router(create_auth_router(), prefix="/api/auth", tags=["auth"])
+    # Pass prefix="" to override the router's own default "/auth" prefix —
+    # the include_router prefix="/api/auth" supplies the full mount point.
+    app.include_router(create_auth_router(prefix=""), prefix="/api/auth", tags=["auth"])
 except ImportError:  # pragma: no cover – auth module not installed
     pass
 except Exception as _auth_exc:  # pragma: no cover – unexpected init error

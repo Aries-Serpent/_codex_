@@ -37,17 +37,26 @@ Closes the context-injection loop for the Cognitive Brain system. This agent:
 
 ```mermaid
 flowchart TD
-    subgraph SESSION_START["⚡ Session Start Hook"]
-        A[MCP Server receives session_start] --> B{validate_actor\nStructuralPolicyManager}
+    subgraph SESSION_START["⚡ Session Start Hook (S128 — CB-003/CB-004 wired)"]
+        A[MCP Server receives session_start] --> B{validate_actor\nStructuralPolicyManager\nCOGNITIVE_BRAIN_ALLOWED_ACTORS}
         B -->|ALLOW| C[AgentBrainAPI.get_session_context]
         B -->|DENY| Z[Return unmodified context\nfail-open]
         C -->|success| D[apply_allowlist + recency_rank]
         C -->|failure| E{Cache\navailable?}
         E -->|yes| F[Cache restore]
-        E -->|no| G[Quantum reconstruction\nwave_collapse + entropy_min]
-        D --> H[Inject into system_prompt]
+        E -->|no| G[Quantum reconstruction\nwave_collapse + entropy_min\n_captured list — no double-invoke]
+        G --> G2{BrainClient\navailable?\nCB-004}
+        G2 -->|yes| G3[BrainClient.memory_search\naugment reconstructed payload]
+        G2 -->|no| G4[proceed without augmentation]
+        G3 --> G5[merge memory results into payload]
+        G4 --> G5
+        D --> PC{patterns ≥ 10?\nCB-003}
+        PC -->|yes| PC2[PatternCompressor\nPCA + quantization]
+        PC -->|no| PC3[use patterns as-is]
+        PC2 --> H[Inject into system_prompt]
+        PC3 --> H
         F --> H
-        G --> H
+        G5 --> H
         H --> I[Session runs with cognitive context]
     end
 
@@ -63,6 +72,13 @@ flowchart TD
         O --> P{Keyword match\nworkflow name}
         P -->|match| Q[brain.report_completion\npattern_id + conclusion]
         P -->|novel failure| R[store_memory\npattern candidate]
+    end
+
+    subgraph COST_GATE["💰 Cost Approval Gate (S126/S127)"]
+        CG1[PR body scan\n- x  Cost Proposal Approved] -->|not found| CG2[PR comment scan\nfallback loop]
+        CG1 -->|found| CG3[✅ Gate passes]
+        CG2 -->|found in comment| CG3
+        CG2 -->|not found| CG4[❌ Gate blocks merge]
     end
 ```
 

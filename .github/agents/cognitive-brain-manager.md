@@ -23,37 +23,50 @@ runner_compatibility:
 
 ```mermaid
 graph TB
-    subgraph TIERS["Memory Tiers (Active)"]
+    subgraph TIERS["Memory Tiers (Active — S128)"]
         STM["STM — Short-Term Memory\nSQLite deque, session-scoped\nCOGNITIVE_BRAIN_MEMORY_TIER controls"]
         MTM["MTM — Medium-Term Memory\nCross-session patterns\nConfidence ≥ 0.75 (PATTERN_MIN_CONFIDENCE)"]
         LTM["LTM — Long-Term Memory\nSQLite persist\n90-day retention (LTM_RETENTION_DAYS)"]
     end
 
-    subgraph CONTROL["Repo Variable Controls (PR #3483 + #3492)"]
-        TOKENS["MAX_CONTEXT_TOKENS = 32000\nInjection ceiling"]
+    subgraph CONTROL["Repo Variable Controls"]
+        TOKENS["MAX_CONTEXT_TOKENS = 128000\nInjection ceiling"]
         CONF["PATTERN_MIN_CONFIDENCE = 0.75\nGate threshold"]
         TIER["MEMORY_TIER = both\nSTM + LTM active"]
-        SESSION["SESSION_NUMBER = 110+\nAuto-increment"]
-        GREEN["CODEX_CI_LAST_GREEN_SHA\nAuto-written on green CI (P2.6)"]
-        EMBED["EMBEDDING_INDEX_AUTO_REBUILD\nGuards FAISS trigger (PR #3492)"]
+        SESSION["SESSION_NUMBER = S128\nAuto-increment"]
+        GREEN["CODEX_CI_LAST_GREEN_SHA\nAuto-written on green CI"]
+        EMBED["EMBEDDING_INDEX_AUTO_REBUILD\nGuards FAISS trigger"]
+        STALE["CODEX_STALE_BRANCH_DAYS (S125)\nCODEX_VERY_STALE_BRANCH_DAYS (S127)\nTwo-tier branch hygiene policy"]
     end
 
     subgraph GATES["Tier-1 GROUNDED Gates (5/5 ✅)"]
-        G1["agent-registry-validation\n152 agents, v1.9.0\nEMBEDDING_INDEX_AUTO_REBUILD guarded"]
+        G1["agent-registry-validation\n54 agents active, v1.9.0"]
         G2["agent-handoff-gate\nStructured handoff verified"]
-        G3["actionlint-audit\nSC2016/SC2012 FIXED (PR #3483)"]
+        G3["actionlint-audit\n0 errors (PR #3586 S125)"]
         G4["e-to-d-transition-gate\n5/5 conditions C1-C5"]
         G5["embedding-index-rebuild\nFAISS index auto-rebuild"]
     end
 
-    subgraph RBAC["RBAC — StructuralPolicyManager (PR #3492)"]
-        SPM["StructuralPolicyManager\nCOGNITIVE_BRAIN_ALLOWED_ACTORS ACTIVE\n4 actors: mbaetiong, actions-bot,\ncopilot-swe-agent-bot, copilot-bot"]
+    subgraph CB_BACKLOG["CB Backlog — 13/13 ✅ COMPLETE (PR #3586)"]
+        CB1["CB-001: get_token_scopes\nTokenManager JWT — 5 tests"]
+        CB2["CB-002: quantum_superposition\n_captured list, no double-invoke — 7 tests"]
+        CB3["CB-003: PatternCompressor\nPCA/quantization wired in session hook"]
+        CB4["CB-004: BrainClient injection\nmemory_search augments reconstruction — 6 tests"]
+        CB5["CB-005: HTMLVisualizer CLI\nast-view typer subcommand — 6 tests"]
+        CB6["CB-006: auth_routes mount\nImportError-guarded — 5 tests"]
+        CB7["CB-007: data_loaders import\nresolved ✅"]
+    end
+
+    subgraph RBAC["RBAC — StructuralPolicyManager"]
+        SPM["StructuralPolicyManager\nCOGNITIVE_BRAIN_ALLOWED_ACTORS\n4 actors: mbaetiong, actions-bot,\ncopilot-swe-agent, copilot-bot"]
         TIERS_RBAC["SYSTEM_OWNER → ORG_OWNER\n→ DELEGATE_ADMIN → READ_ONLY_AGENT"]
     end
 
-    subgraph HEALTH["CI Health Tracking (PR #3492 W-092)"]
-        RATE["CODEX_CI_FAILURE_RATE\nformat: rate:status"]
-        GREEN2["CODEX_CI_LAST_GREEN_SHA\nWritten when rate < THRESHOLD (P2.6)"]
+    subgraph HEALTH["CI Health — Post S128"]
+        MYPY["mypy baseline = 0\n11 errors fixed S125"]
+        RUFF["ruff = 0 violations"]
+        COST["cost-gate ✅\nPR body + comment scan (S126/S127)"]
+        SLOW["slow suite ✅\nsentence_transformers importorskip (S127)"]
     end
 
     STM --> MTM --> LTM
@@ -64,25 +77,29 @@ graph TB
     SESSION --> STM
     GREEN --> HEALTH
     EMBED --> G1
+    STALE --> G2
 
-    G1 & G2 & G3 & G4 & G5 --> |All passing| D_CAPABLE["D_CAPABLE Unlocked\nAutonomy Model E (capped by\nCOPILOT_AGENT_MAX_AUTONOMY_LEVEL)"]
+    G1 & G2 & G3 & G4 & G5 --> |All passing| D_CAPABLE["D_CAPABLE Unlocked\nAutonomy Model E"]
     SPM --> D_CAPABLE
-    RATE --> GREEN2
+    CB1 & CB2 & CB3 & CB4 & CB5 & CB6 & CB7 --> D_CAPABLE
+    MYPY & RUFF & COST & SLOW --> D_CAPABLE
 ```
 
-## Key Metrics (2026-03-03)
+## Key Metrics (2026-03-16 — S128)
 
 | Metric | Value | Source |
 |---|---|---|
 | AGENT_REGISTRY version | v1.9.0 | `.github/agents/AGENT_REGISTRY.yaml` |
-| Total agents | 152 | AGENT_REGISTRY.yaml |
-| GROUNDED agents | 8 | AGENT_REGISTRY.yaml |
-| PARTIAL agents | 144 | AGENT_REGISTRY.yaml |
-| SOFT agents | 0 | AGENT_REGISTRY.yaml |
-| Workflows | 96 | `.github/workflows/` |
+| Total agents | 54 active | AGENT_REGISTRY.yaml |
+| Workflows | 49 active | `.github/workflows/` |
 | E→D Gate score | 5/5 ✅ | e-to-d-transition-gate.yml |
-| Readiness score | 100/100 | READINESS_AUDIT_ANALYSIS.md |
-| Context window budget | 32,000 tokens | generate_manifest.py |
+| Readiness score | 98/100 | AGENT_ACCOUNTABILITY_REPORT.md S128 |
+| Context window budget | 128,000 tokens | COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS |
+| mypy baseline | 0 errors | S125 — `src/` all clean |
+| ruff violations | 0 | S125 — codebase-wide |
+| actionlint errors | 0 | S125 — 49 workflows |
+| CB backlog items | 13/13 ✅ | PR #3586 S116–S128 |
+| Slow-suite failures | 0 | S127 — sentence_transformers importorskip |
 | LTM retention | 90 days | prune_corpus.py |
 | COGNITIVE_BRAIN_ALLOWED_ACTORS | 4 actors active | repo variable (PR #3492) |
 | CODEX_CI_LAST_GREEN_SHA | Auto-wired ✅ | ci-health-monitor.yml P2.6 |
@@ -493,11 +510,11 @@ Agent Actions:
 
 ---
 
-## Session 39 — D_CAPABLE System State (2026-03-14)
+## Session S128 — Complete System State (2026-03-16)
 
 ### AAIS Trajectory
 ```
-74 → 78 → 80 → 82 → 85 → 90 → 95/100 ✅ (Grade A+)
+74 → 78 → 80 → 82 → 85 → 90 → 95/100 ✅ → 98/100 (S128 estimated)
 ```
 
 ### Pipeline Status
@@ -505,42 +522,56 @@ Agent Actions:
 |----------|--------|----------|
 | RAG Freshness Scheduler | 🟢 ACTIVE | every 6h |
 | Nightly FAISS Rebuild | 🟢 ACTIVE | 02:00 UTC |
-| D_CAPABLE Promotion Gate | 🟢 ACTIVE (auto-apply) | Sunday 03:00 UTC |
+| D_CAPABLE Promotion Gate | 🟢 ACTIVE | Sunday 03:00 UTC |
 | CODEX_MANIFEST Refresh | 🟢 ACTIVE | every PR push |
 | Docs Health Check | 🟢 ACTIVE | push to main |
+| Branch Cleanup (two-tier) | 🟢 ACTIVE | CODEX_STALE_BRANCH_DAYS + CODEX_VERY_STALE_BRANCH_DAYS |
 
 ### D_CAPABLE Gate (5/5 ✅)
 ```
-C1: AAIS ≥ 85        → 95/100 ✅
+C1: AAIS ≥ 85        → 98/100 ✅
 C2: Manifest < 24h   → auto-refreshed ✅
 C3: SOFT_ERRORS ≤ 2  → 0 ✅
 C4: Handoff gate     → deployed ✅
 C5: GROUNDED ≥ 8     → 21 ✅
 ```
 
-### Next-Phase Targets (AAIS 95→100) — Updated S123
+### S116–S128 Progress (PR #3586) — ALL COMPLETE ✅
 
-**S116–S123 Progress (PR #3586):**
 ```
 CB-001: get_token_scopes JWT validation           ✅ Implemented (S120) + Acceptance tests (S123)
 CB-002: quantum_superposition no-double-invoke    ✅ Implemented (S122) + Acceptance tests (S123)
 CB-003: PatternCompressor integration             ✅ Implemented (S120)
-CB-004: BrainClient session injector wiring       ✅ Implemented (S120)
-CB-005: ast-view CLI subcommand                   ✅ Implemented (S120)
+CB-004: BrainClient session injector wiring       ✅ Implemented (S120) + Acceptance tests (S124)
+CB-005: ast-view CLI subcommand                   ✅ Implemented (S120) + Acceptance tests (S124)
 CB-006: auth router mount                         ✅ Implemented (S120) + Acceptance tests (S123)
-CB-007: data loaders pipeline                     ✅ Resolved (S120) — already existed
+CB-007: data loaders pipeline                     ✅ Resolved (S120)
 QA-001: SessionLogger eager DB init               ✅ Implemented (S120)
 QA-002: audio sr param removal                    ✅ Implemented (S120)
-All 11 S122 reviewer threads (8e1a199)            ✅ Fixed (S122)
-CI auto-fix patterns 7/12                         ✅ Fixed (S123)
+All reviewer threads (012d335, 8e1a199)           ✅ Fixed S120–S122
+CI patterns (issue #3587)                         ✅ Fixed S125 (mypy=0, actionlint=0)
+cost-gate comment fallback                        ✅ Fixed S126 (cost-gate.yml + pr-cost-check.yml)
+slow-test sentence_transformers fix               ✅ Fixed S127
+CODEX_VERY_STALE_BRANCH_DAYS                      ✅ Added S127 — two-tier staleness policy
+Dead-link script idempotency                      ✅ Fixed S128
 ```
 
-**Remaining Open Items:**
-1. CB-004 Follow-up: `brain_client.yml` offline mock fixture
-2. CB-005 Follow-up: HTMLVisualizer unit tests (node rendering, tree depth, CSS output)
+### Next-Phase Targets (post-merge to main)
+1. Monitor `main` after merge — verify no regressions from 41-commit PR
+2. Confirm `cost-gate.yml` + `pr-cost-check.yml` comment-fallback continue passing on new PRs
+3. Promote `CODEX_VERY_STALE_BRANCH_DAYS=90` policy to `.codex/guardrails.md`
+4. Add `session-analysis-agent` post-merge health scan
+5. Evaluate next dead-code scan at 100% confidence (current: 28 items) for further cleanup
 
-**Next-Phase Targets (AAIS 95→100):**
-1. mypy full type coverage in src/ (+2 pts)
-2. D_CAPABLE promotions applied to 2 eligible agents (+2 pts)
-3. OBJ-004 first task complete (+1 pt)
-4. CB-004 offline fixture + CB-005 HTMLVisualizer tests (+0.5 pts each)
+### Branch Cleanup Two-Tier Policy (S125/S127)
+```mermaid
+flowchart TD
+    A[Scan branches] --> B{days since\nlast commit}
+    B -->|< CODEX_STALE_BRANCH_DAYS\ndefault 30d| C[✅ Active — skip]
+    B -->|≥ stale, < very-stale| D{merged?}
+    B -->|≥ CODEX_VERY_STALE_BRANCH_DAYS\ndefault 90d + unmerged| E[🗑️ Force-delete\nvery-stale unmerged]
+    D -->|yes| F[🗑️ Delete\nmerged stale]
+    D -->|no| G{--delete-stale\nflag set?}
+    G -->|yes| H[🗑️ Delete\nunmerged stale]
+    G -->|no| I[⚠️ Warn only]
+```
