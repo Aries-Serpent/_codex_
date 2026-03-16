@@ -349,6 +349,7 @@ def main() -> int:
     parser.add_argument("--pr", type=int, metavar="PR_NUMBER", help="PR number (CI mode — uses GitHub API)")
     parser.add_argument("--post-comment", action="store_true", help="Post/update rebase-required comment on the PR")
     parser.add_argument("--github-output", action="store_true", help="Write status to GITHUB_OUTPUT")
+    parser.add_argument("--github-summary", action="store_true", help="Write status to GITHUB_STEP_SUMMARY (always-on; flag is accepted for CI compat)")
     parser.add_argument("--hard-fail", action="store_true", help="Exit 1/2 when rebase needed (gate mode)")
     args = parser.parse_args()
 
