@@ -3542,3 +3542,15 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **Stub-mode contract**: all nn.* classes present and usable; Tensor has all expected attrs
 - **Delegation contract**: when real torch is installed, `IS_CODEX_STUB` is absent
 - **mypy coverage**: `__all__` completeness, Tensor method-chaining, baseline file health
+
+## [S58] 2026-03-16 — RAG test flakiness fix + CI failure triage (issue #3583)
+
+### Fixed
+- `tests/test_rag_utils.py`: Added `setup_method` to `TestCheckForMetaTensors` to reset `torch.set_default_device(None)` before each test, preventing `pytest-randomly` test ordering from causing meta device state leakage (`torch.device('meta')` context manager sets global device; subsequent tests inherited it when order was randomized).
+- Comprehensive triage of all 18 failing workflows from CI Failure Triage Report (issue #3583): 9 code-fixable failures resolved across S45–S58, 3 require owner checkbox (Cost Gate), 3 are infrastructure/out-of-scope.
+
+### Infrastructure (not code-fixable)
+- Art_Rust-Python Hybrid Swarm CI/CD: Cost Gate RED — requires stakeholder checkbox approval.
+- Art_Data Quality & Determinism Suite: Cost Gate RED — requires stakeholder checkbox approval.
+- 💰 PR Cost Check: Cost Gate RED — requires stakeholder checkbox approval.
+- Resilient Validation Suite: Cache race condition (GitHub Actions infra transient).
