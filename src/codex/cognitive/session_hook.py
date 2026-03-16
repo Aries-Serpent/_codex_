@@ -203,9 +203,27 @@ class SessionContextInjector:
         self,
         brain_api: Any,
         cache_path: Path = Path(".codex/.session_context_cache.json"),
+        *,
+        brain_client: Any | None = None,
     ) -> None:
+        """Initialise the injector.
+
+        Args:
+            brain_api: ``AgentBrainAPI``-compatible object that exposes
+                ``get_session_context()`` and ``store_memory()``.
+            cache_path: Path to the JSON cache file.
+            brain_client: Optional :class:`~codex.agents.brain_client.BrainClient`
+                instance (CB-004).  When provided, ``is_available()`` is checked as a
+                pre-flight guard and ``memory_search()`` is used to augment quantum
+                reconstruction with live memory retrieval.
+        """
         self._api = brain_api
         self._cache_path = cache_path
+        self._brain_client = brain_client  # CB-004: optional BrainClient
+
+        # CB-003: lazy PatternCompressor; initialised on first payload build
+        # when pattern data is large enough to benefit from compression.
+        self._compressor: Any | None = None
 
     # ------------------------------------------------------------------
     # PDA: DO phase
@@ -219,8 +237,24 @@ class SessionContextInjector:
         1. Live API call → ``get_session_context()``
         2. Cache restore → restore context + store_memory + trigger
         3. Quantum reconstruction → wave_collapse(pattern_library)
+
+        CB-004: If a :class:`~codex.agents.brain_client.BrainClient` was
+        supplied, ``is_available()`` is checked before each attempt that
+        requires network access, providing an early failure signal.
         """
         live_error: Exception | None = None
+
+        # CB-004: optional BrainClient pre-flight availability check
+        if self._brain_client is not None:
+            try:
+                if not self._brain_client.is_available():
+                    logger.info(
+                        "BrainClient reports server unavailable; "
+                        "skipping live context fetch."
+                    )
+                    live_error = RuntimeError("BrainClient: server not available")
+            except Exception as exc:  # noqa: BLE001
+                logger.debug("BrainClient.is_available() raised: %s", exc)
 
         # PDA: PLAN — attempt live fetch
         try:
@@ -262,6 +296,13 @@ class SessionContextInjector:
         sanitized = _apply_allowlist(raw)
         patterns_raw: list[dict[str, Any]] = sanitized.get("pattern_ids", [])
         session_num: int = meta.get("session_number", 0)
+
+        # CB-003: compress pattern numerical features when the set is large.
+        # PatternCompressor works on Dict[str, float]; we extract recency-weighted
+        # scores from pattern metadata for compression, then restore.
+        if len(patterns_raw) >= 10:
+            patterns_raw = self._compress_patterns(patterns_raw)
+
         top_patterns = _apply_recency_ranking(patterns_raw, session_num)
 
         payload = SessionContextPayload(
@@ -286,6 +327,65 @@ class SessionContextInjector:
 
         return payload
 
+    def _compress_patterns(
+        self, patterns: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """CB-003: Optional PatternCompressor pass on large pattern sets.
+
+        Extracts float-valued features from each pattern dict, fits the
+        compressor (if not yet fitted), compresses, then decompresses.  The
+        round-trip preserves only numeric features; string metadata (e.g.
+        pattern ``id``) is passed through unchanged.
+
+        Returns the (potentially compressed+decompressed) list, which has the
+        same structure as the input so ``_apply_recency_ranking`` works as
+        normal.  When compression is unavailable the input is returned as-is.
+        """
+        try:
+            from cognitive_brain.quantum.compression import (
+                PatternCompressor,  # type: ignore[import]
+            )
+        except ImportError:
+            return patterns
+
+        # Extract numeric feature dicts (id is non-numeric; skip it)
+        float_features: list[dict[str, float]] = []
+        for p in patterns:
+            feats = {
+                k: float(v)
+                for k, v in p.items()
+                if k != "id" and isinstance(v, (int, float))
+            }
+            float_features.append(feats)
+
+        # Need at least 2 patterns with features to fit
+        populated = [f for f in float_features if f]
+        if len(populated) < 2:
+            return patterns
+
+        try:
+            if self._compressor is None:
+                self._compressor = PatternCompressor()
+                self._compressor.fit(populated)
+            compressed = [self._compressor.compress(f) for f in float_features if f]
+            decompressed = [self._compressor.decompress(c) for c in compressed]
+            # Re-merge decompressed numeric features back into original dicts
+            result: list[dict[str, Any]] = []
+            decomp_iter = iter(decompressed)
+            for p in patterns:
+                feats = {k: v for k, v in p.items() if k != "id" and isinstance(v, (int, float))}
+                merged = dict(p)
+                if feats:
+                    merged.update(next(decomp_iter, {}))
+                result.append(merged)
+            logger.debug(
+                "CB-003: compressed %d patterns via PatternCompressor.", len(result)
+            )
+            return result
+        except Exception as exc:  # noqa: BLE001
+            logger.debug("PatternCompressor pass skipped: %s", exc)
+            return patterns
+
     def _quantum_reconstruct(
         self,
         meta: dict[str, Any],
@@ -297,6 +397,10 @@ class SessionContextInjector:
           relevant patterns given session metadata keywords.
         * **entropy_minimise**: reconstruct store_memory facts from
           ``COGNITIVE_BRAIN_STATUS_S*.md`` files.
+
+        CB-004: When a ``BrainClient`` is available, ``memory_search()`` is
+        called with the keyword signal to augment wave-collapse results with
+        live memory entries, providing richer reconstruction context.
 
         AfterMath: emits store_memory lesson + new pattern candidate.
         ⚛️ Physics Patterns👁️: recognises reconstruction as a recurring
@@ -317,6 +421,29 @@ class SessionContextInjector:
                 overlap = sum(1 for w in keyword_signal.split() if w in content)
                 if overlap >= 2:
                     reconstructed_patterns.append(pf.stem)
+
+        # CB-004: augment wave-collapse with BrainClient memory_search
+        if self._brain_client is not None and keyword_signal.strip():
+            try:
+                if self._brain_client.is_available():
+                    mem_result = self._brain_client.memory_search(
+                        keyword_signal[:200], limit=10
+                    )
+                    for entry in mem_result.get("results", []):
+                        pattern_ref = entry.get("pattern_id") or entry.get("id")
+                        if pattern_ref and pattern_ref not in reconstructed_patterns:
+                            reconstructed_patterns.append(str(pattern_ref))
+                        fact = entry.get("fact") or entry.get("content")
+                        if fact and fact not in reconstructed_facts:
+                            reconstructed_facts.append(str(fact))
+                    logger.info(
+                        "CB-004: BrainClient memory_search augmented reconstruction "
+                        "with %d extra patterns and %d facts.",
+                        len(reconstructed_patterns),
+                        len(reconstructed_facts),
+                    )
+            except Exception as exc:  # noqa: BLE001
+                logger.debug("BrainClient.memory_search() skipped during reconstruction: %s", exc)
 
         # Entropy minimisation: read latest status file
         status_files = sorted(Path(".codex").glob("COGNITIVE_BRAIN_STATUS_S*.md"), reverse=True)

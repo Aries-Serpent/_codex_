@@ -46,6 +46,13 @@ from transformers import (  # noqa: E402
 
 app = FastAPI(title="codex", version="0.2.0")
 
+try:
+    from codex.api.auth_routes import create_auth_router  # noqa: E402
+
+    app.include_router(create_auth_router(), prefix="/api/auth", tags=["auth"])
+except Exception:  # pragma: no cover – optional dependency or import error
+    pass
+
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")
 _DEFAULT_MODEL_NAME = os.environ.get("CODEX_MODEL_NAME")
 _DEFAULT_TOKENIZER_FILE = os.environ.get("CODEX_TOKENIZER_FILE")

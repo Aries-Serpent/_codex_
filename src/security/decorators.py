@@ -304,17 +304,49 @@ try:
         Raises:
             NotImplementedError: Always raised to prevent production use
         """
-        # This placeholder must not be used in production as it would
-        # grant unintended access. Raise an error instead of returning
-        # hardcoded scopes to ensure a fail-closed behavior.
-        logger.error(
-            "Token scope extraction is not implemented. "
-            "Replace get_token_scopes with a real implementation before production."
-        )
-        raise NotImplementedError(
-            "Token scope extraction is not implemented. "
-            "Implement get_token_scopes to validate tokens and extract scopes."
-        )
+        # Use the project's TokenManager to validate the Bearer token and
+        # extract the scope claim.  CODEX_AUTH_SECRET must be set in the
+        # environment (configured via the app's settings or a secrets manager).
+        import os
+
+        try:
+            from codex.auth.token_manager import TokenManager
+        except ImportError:
+            logger.error("codex.auth.token_manager unavailable; cannot validate token")
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Authentication service unavailable.",
+            )
+
+        secret = os.environ.get("CODEX_AUTH_SECRET", "")
+        if not secret:
+            logger.error("CODEX_AUTH_SECRET not set; refusing to validate token")
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Authentication service misconfigured.",
+            )
+
+        token_mgr = TokenManager(secret_key=secret)
+        bearer_token = credentials.credentials
+        try:
+            claims = token_mgr.validate_token(bearer_token)
+        except ValueError as exc:
+            msg = str(exc).lower()
+            if "expired" in msg:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token has expired.",
+                    headers={"WWW-Authenticate": "Bearer"},
+                ) from exc
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token.",
+                headers={"WWW-Authenticate": "Bearer"},
+            ) from exc
+
+        # scope is stored as a space-delimited string in the JWT claim.
+        scope_str: str = claims.scope or ""
+        return [s for s in scope_str.split() if s]
 
     async def scope_validator_dependency(
         scopes: List[str] = Depends(get_token_scopes),

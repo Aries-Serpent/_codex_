@@ -161,12 +161,18 @@ def smell_main(
     for category in warn_on:
         count = CATEGORY_MAP.get(category, 0)
         if count > 0:
-            click.echo(f"WARNING: {count} '{category}' smell(s) found (--warn-on {category})", err=True)
+            click.echo(
+                f"WARNING: {count} '{category}' smell(s) found (--warn-on {category})",
+                err=True,
+            )
             warned = True
     for category in fail_on:
         count = CATEGORY_MAP.get(category, 0)
         if count > 0:
-            click.echo(f"ERROR: {count} '{category}' smell(s) found (--fail-on {category})", err=True)
+            click.echo(
+                f"ERROR: {count} '{category}' smell(s) found (--fail-on {category})",
+                err=True,
+            )
             failed = True
     _ = warned  # consumed for side-effects above; suppress unused-var lint
     if failed:

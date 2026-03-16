@@ -631,12 +631,66 @@ def quantum_superposition(
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # Check if quantum feature is enabled
-            # This is a placeholder - real implementation would check config
-            # from context or instance
+            # ── Step 1: Check if quantum feature is enabled on the instance ──
+            instance = args[0] if args else None
+            quantum_enabled = bool(
+                getattr(instance, enabled_config_attr, False)
+                if instance is not None
+                else False
+            )
 
-            # For now, just execute the original function
-            return func(*args, **kwargs)
+            if not quantum_enabled:
+                # Quantum not enabled for this instance → classical path
+                return func(*args, **kwargs)
+
+            # ── Step 2: Attempt quantum-enhanced evaluation ───────────────────
+            try:
+                engine = SuperpositionEngine()
+
+                # Wrap the decorated function as a scored decision so the engine
+                # can measure coherence.  We capture a *copy* of the bound args so
+                # the closure is safe to call multiple times.
+                _bound_args = args
+                _bound_kwargs = kwargs
+
+                def _classical_decision() -> float:
+                    # We call the original function here; the return value is
+                    # interpreted as a quality score when it is numeric, otherwise
+                    # treated as 1.0 (presence of a result = good).
+                    result = func(*_bound_args, **_bound_kwargs)
+                    try:
+                        return float(result)  # type: ignore[arg-type]
+                    except (TypeError, ValueError):
+                        return 1.0  # non-numeric result → treated as full-quality
+
+                result_dict = engine.evaluate_superposition(
+                    decisions=[("classical", _classical_decision)],
+                    context={"func": func.__name__},
+                )
+                coherence: float = result_dict.get("coherence", 1.0)
+
+                # ── Step 3: Coherence-gated fallback ─────────────────────────
+                if fallback_on_low_coherence and coherence < coherence_threshold:
+                    import logging as _logging
+                    _logging.getLogger(__name__).warning(
+                        "quantum_superposition: coherence %.3f below threshold %.3f "
+                        "for %s — falling back to classical execution.",
+                        coherence,
+                        coherence_threshold,
+                        func.__qualname__,
+                    )
+                    return func(*args, **kwargs)
+
+                # ── Step 4: Return result from the quantum-evaluated run ──────
+                # The engine already called _classical_decision() above.  If the
+                # return value was numeric we can use it; otherwise re-run the
+                # function to get the original return type.
+                raw_result = func(*args, **kwargs)
+                return raw_result
+
+            except Exception:  # noqa: BLE001
+                # Quantum infrastructure unavailable or raised → classical fallback
+                return func(*args, **kwargs)
 
         return wrapper
 

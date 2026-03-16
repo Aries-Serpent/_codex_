@@ -65,10 +65,10 @@ class IntelligentAudioAnalyzer:
             }
 
             # Classify content
-            content_type = self._classify_content(None, 44100, features)
+            content_type = self._classify_content(None, features)
 
             # Detect problems
-            problems = self._detect_problems(None, 44100, features)
+            problems = self._detect_problems(None, features)
 
             # Calculate quality score
             quality_score = self._calculate_quality_score(features, problems)
@@ -88,7 +88,7 @@ class IntelligentAudioAnalyzer:
             raise
 
     def _classify_content(
-        self, audio: Optional[np.ndarray], sr: int, features: Dict[str, Any]
+        self, audio: Optional[np.ndarray], features: Dict[str, Any]
     ) -> str:
         """Classify audio content type."""
         zcr_mean = np.mean(features["zcr"])
@@ -106,7 +106,7 @@ class IntelligentAudioAnalyzer:
             return "mixed"
 
     def _detect_problems(
-        self, audio: Optional[np.ndarray], sr: int, features: Dict[str, Any]
+        self, audio: Optional[np.ndarray], features: Dict[str, Any]
     ) -> List[str]:
         """Detect audio problems."""
         problems = []

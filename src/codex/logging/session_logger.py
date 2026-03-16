@@ -360,6 +360,10 @@ class SessionLogger:
     session_id: str
     db_path: Optional[Path] = None
 
+    def __post_init__(self) -> None:
+        if _shared_init_db is not None and self.db_path is not None:
+            _shared_init_db(self.db_path)
+
     def __enter__(self) -> "SessionLogger":
         log_event(self.session_id, "system", "session_start", db_path=self.db_path)
         return self

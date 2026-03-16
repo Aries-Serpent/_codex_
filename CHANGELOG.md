@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **CB-001**: `get_token_scopes` JWT validation implemented via `TokenManager.validate_token()`; reads `CODEX_AUTH_SECRET`; fail-closed on missing secret (S120)
+- **CB-002**: `quantum_superposition` decorator wired — checks `enabled_config_attr` on `self`, invokes `SuperpositionEngine`, gates fallback on `coherence_threshold` (S120)
+- **CB-003**: `PatternCompressor` integrated into `CognitiveBrainSessionInjector._build_payload()` for pattern sets ≥10 (S120)
+- **CB-004**: `BrainClient` injected into `CognitiveBrainSessionInjector` — `is_available()` pre-flight guard + `memory_search()` augments quantum reconstruction (S120)
+- **CB-005**: `ast-view` CLI subcommand registered in `codex` typer app (`--output`, `--open` flags) (S120)
+- **CB-006**: `create_auth_router()` mounted at `/api/auth` in `src/codex/api/app.py` (S120)
+- **QA-001**: `SessionLogger.__post_init__` calls `_shared_init_db(db_path)` eagerly for early DB failure detection (S120)
+
+### Fixed
+- `scripts/ci/branch_rebase_check.py`: added `--github-summary` flag (was crashing Branch Rebase Gate CI) (S120)
+- `scripts/ci/mypy_baseline.py`: added `--follow-imports=silent` preventing cascade errors from local stubs in isolated CI venv (S120)
+- `.mypy_baseline`: reset to `0` matching isolated-venv count (S120)
+- **QA-002**: Removed unused `sr` param from `_classify_content`/`_detect_problems` in `intelligent_analyzer.py` (S120)
+
 - Branch cleanup system: `scripts/ci/branch_cleanup.py` (multi-strategy), `branch-cleanup.yml` workflow (scheduled + dispatch)
 - Branch rebase gate: `scripts/ci/branch_rebase_check.py` + `branch-rebase-gate.yml` (REQ-10 hard block)
 - Dead code scanner: `scripts/ci/dead_code_scan.py` (vulture wrapper, CI/pre-commit/JSON modes)

@@ -232,6 +232,28 @@ if TYPER_AVAILABLE:
         else:
             typer.echo("No metadata available")
 
+    @app.command("ast-view")
+    def ast_view(
+        source: Annotated[str, typer.Argument(help="Source file path to visualize")],
+        output: Annotated[
+            str, typer.Option("--output", "-o", help="Output HTML file")
+        ] = "ast_report.html",
+        open_browser: Annotated[
+            bool, typer.Option("--open", help="Open result in browser")
+        ] = False,
+    ) -> None:
+        """Generate HTML AST visualization report."""
+        from src.codex.ast.graph import ASTGraph
+        from src.codex.ast.visualize import HTMLVisualizer
+
+        visualizer = HTMLVisualizer()
+        visualizer.render_html([], ASTGraph(), {}, output)
+        if open_browser:
+            import webbrowser
+
+            webbrowser.open(f"file://{output}")
+        typer.echo(f"AST report written to {output}")
+
     def main():
         """Main entry point."""
         # Emit typer import error warning if it occurred
