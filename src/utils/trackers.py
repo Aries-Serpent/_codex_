@@ -29,9 +29,14 @@ def init_wandb_offline(project: str = "codex"):
     """Initialize W&B in offline mode when WANDB_MODE=offline or no WANDB_API_KEY."""
     try:
         import wandb  # type: ignore
+    except ImportError:
+        logger.warning("wandb not installed; skipping W&B init (pip install wandb)")
+        return None
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Unexpected error importing wandb", exc_info=True)
+        return None
+    if not callable(getattr(wandb, "init", None)):
+        logger.warning("wandb stub detected or wandb.init unavailable; skipping W&B init")
         return None
     mode = os.environ.get("WANDB_MODE", "offline")
     if mode == "offline" or not os.environ.get("WANDB_API_KEY"):
@@ -43,9 +48,11 @@ def init_mlflow_local():
     """Ensure MLflow logs locally (default mlruns/) unless a tracking URI is set."""
     try:
         import mlflow  # type: ignore  # noqa: F401
+    except ImportError:
+        logger.warning("mlflow not installed; skipping MLflow init (pip install mlflow)")
+        return None
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Unexpected error importing mlflow", exc_info=True)
         return None
     from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
 

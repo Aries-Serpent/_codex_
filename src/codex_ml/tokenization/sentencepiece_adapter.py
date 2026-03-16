@@ -35,8 +35,14 @@ def _get_sentencepiece():
     global spm
     # Check sys.modules first — allows tests to inject a stub via
     # monkeypatch.setitem(sys.modules, "sentencepiece", stub)
+    # Skip the repo's own sentencepiece shim (IS_CODEX_STUB=True) so that
+    # monkeypatch can override the module-level `spm` variable in tests.
     patched = _sys.modules.get("sentencepiece")
-    if patched is not None and hasattr(patched, "SentencePieceProcessor"):
+    if (
+        patched is not None
+        and hasattr(patched, "SentencePieceProcessor")
+        and not getattr(patched, "IS_CODEX_STUB", False)
+    ):
         return patched
     if spm is not None:
         return spm

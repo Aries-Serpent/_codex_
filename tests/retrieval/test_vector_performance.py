@@ -8,9 +8,9 @@ import time
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
 
 # Skip if FAISS not available
+pytest.importorskip("faiss", reason="faiss-cpu not installed")
 from src.codex.retrieval.stores.faiss_store import FAISSStore  # noqa: E402
 
 
@@ -26,11 +26,11 @@ class TestVectorStorePerformance:
 
         # Generate test vectors
         vectors = np.random.randn(num_vectors, dimension).astype("float32")
+        metadata = [{"id": i} for i in range(num_vectors)]
 
-        # Measure insert time
+        # Measure insert time (single batch call)
         start_time = time.time()
-        for i, vector in enumerate(vectors):
-            store.add_vector(vector, metadata={"id": i})
+        store.add(vectors, metadata=metadata)
         elapsed = time.time() - start_time
 
         # Performance assertions
@@ -52,8 +52,8 @@ class TestVectorStorePerformance:
         start_time = time.time()
         for batch_idx in range(0, num_vectors, batch_size):
             batch_vectors = np.random.randn(batch_size, dimension).astype("float32")
-            for i, vector in enumerate(batch_vectors):
-                store.add_vector(vector, metadata={"id": batch_idx + i})
+            batch_meta = [{"id": batch_idx + i} for i in range(batch_size)]
+            store.add(batch_vectors, metadata=batch_meta)
         elapsed = time.time() - start_time
 
         # Batch should be faster than individual
@@ -75,14 +75,14 @@ class TestVectorStorePerformance:
 
         # Populate index
         vectors = np.random.randn(num_vectors, dimension).astype("float32")
-        for i, vector in enumerate(vectors):
-            store.add_vector(vector, metadata={"id": i})
+        metadata = [{"id": i} for i in range(num_vectors)]
+        store.add(vectors, metadata=metadata)
 
         # Measure search time
         query_vectors = np.random.randn(num_queries, dimension).astype("float32")
         start_time = time.time()
         for query in query_vectors:
-            results = store.search(query, k=k)
+            results = store.search(query, top_k=k)
             assert len(results) <= k
         elapsed = time.time() - start_time
 
@@ -104,8 +104,8 @@ class TestVectorStorePerformance:
 
         # Populate index
         vectors = np.random.randn(num_vectors, dimension).astype("float32")
-        for i, vector in enumerate(vectors):
-            store.add_vector(vector, metadata={"id": i})
+        metadata = [{"id": i} for i in range(num_vectors)]
+        store.add(vectors, metadata=metadata)
 
         # Measure save time
         start_time = time.time()
@@ -133,8 +133,8 @@ class TestVectorStorePerformance:
 
         # Add vectors and check size
         vectors = np.random.randn(num_vectors, dimension).astype("float32")
-        for i, vector in enumerate(vectors):
-            store.add_vector(vector, metadata={"id": i})
+        metadata = [{"id": i} for i in range(num_vectors)]
+        store.add(vectors, metadata=metadata)
 
         # Approximate memory check (FAISS uses float32)
         expected_bytes = num_vectors * dimension * 4  # 4 bytes per float32
@@ -156,8 +156,8 @@ class TestVectorStorePerformance:
         start_time = time.time()
         for batch_idx in range(0, num_vectors, batch_size):
             batch_vectors = np.random.randn(batch_size, dimension).astype("float32")
-            for i, vector in enumerate(batch_vectors):
-                store.add_vector(vector, metadata={"id": batch_idx + i})
+            batch_meta = [{"id": batch_idx + i} for i in range(batch_size)]
+            store.add(batch_vectors, metadata=batch_meta)
         elapsed = time.time() - start_time
 
         # Should handle 100k vectors reasonably
@@ -166,7 +166,7 @@ class TestVectorStorePerformance:
         # Test search on large index
         query = np.random.randn(dimension).astype("float32")
         start_time = time.time()
-        results = store.search(query, k=10)
+        results = store.search(query, top_k=10)
         search_time = time.time() - start_time
 
         assert search_time < 0.5, f"Search on large index too slow: {search_time:.4f}s"
@@ -187,15 +187,15 @@ class TestVectorStoreLoadConditions:
 
         # Populate
         vectors = np.random.randn(num_vectors, dimension).astype("float32")
-        for i, vector in enumerate(vectors):
-            store.add_vector(vector, metadata={"id": i})
+        metadata = [{"id": i} for i in range(num_vectors)]
+        store.add(vectors, metadata=metadata)
 
         # Simulate concurrent reads
         num_concurrent = 10
         start_time = time.time()
         for _ in range(num_concurrent):
             query = np.random.randn(dimension).astype("float32")
-            results = store.search(query, k=5)
+            results = store.search(query, top_k=5)
             assert len(results) <= 5
         elapsed = time.time() - start_time
 
@@ -211,20 +211,20 @@ class TestVectorStoreLoadConditions:
             index_name="mixed_ops_test", dimension=dimension, index_dir=str(tmp_path)
         )
 
-        # Mix of operations
+        # Mix of operations — add in small batches, search periodically
         for i in range(100):
-            # Add
-            vector = np.random.randn(dimension).astype("float32")
-            store.add_vector(vector, metadata={"id": i})
+            # Add one vector at a time using batch add
+            vector = np.random.randn(1, dimension).astype("float32")
+            store.add(vector, metadata=[{"id": i}])
 
             # Search every 10 adds
             if i % 10 == 0 and i > 0:
                 query = np.random.randn(dimension).astype("float32")
-                results = store.search(query, k=5)
+                results = store.search(query, top_k=5)
                 assert len(results) <= min(5, i + 1)
 
         # Final verification
-        assert store.size() == 100
+        assert store.count() == 100
 
 
 if __name__ == "__main__":

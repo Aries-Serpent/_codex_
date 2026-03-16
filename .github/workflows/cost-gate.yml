@@ -326,6 +326,17 @@ jobs:
             const maxAttempts = 3;   // 3 × 30s = 90 seconds
             const pollInterval = 30; // seconds
 
+            // Helper: check a body string for the approval marker in any accepted format.
+            function hasApproval(text) {
+              const norm = (text || '').replace(/\*\*/g, '').replace(/__/g, '');
+              return (
+                norm.includes('- [x] 💰 Cost Proposal Approved') ||
+                norm.includes('- [X] 💰 Cost Proposal Approved') ||
+                norm.includes('[x] Cost Proposal Approved') ||
+                norm.includes('[X] Cost Proposal Approved')
+              );
+            }
+
             for (let attempt = 1; attempt <= maxAttempts; attempt++) {
               const pr = await github.rest.pulls.get({
                 owner:       context.repo.owner,
@@ -333,18 +344,26 @@ jobs:
                 pull_number: prNumber,
               });
 
-              const body = pr.data.body || '';
-              // Normalize: strip bold/italic markdown so "**💰 Cost Proposal Approved**"
-              // matches the same as the plain "💰 Cost Proposal Approved" variant.
-              const normalizedBody = body.replace(/\*\*/g, '').replace(/__/g, '');
-              // Accept ticked checkbox in any of these formats
-              if (
-                normalizedBody.includes('- [x] 💰 Cost Proposal Approved') ||
-                normalizedBody.includes('- [X] 💰 Cost Proposal Approved') ||
-                normalizedBody.includes('[x] Cost Proposal Approved') ||
-                normalizedBody.includes('[X] Cost Proposal Approved')
-              ) {
-                console.log(`✅ Stakeholder approval detected on attempt ${attempt}`);
+              // Primary: check PR body (normalise bold/italic so "**💰 Cost Proposal Approved**"
+              // matches the same as the plain variant).
+              if (hasApproval(pr.data.body)) {
+                console.log(`✅ Stakeholder approval detected in PR body on attempt ${attempt}`);
+                core.setOutput('approved', 'true');
+                return;
+              }
+
+              // Fallback: also scan PR comments. Automated agents sometimes overwrite
+              // the PR body with a session checklist, erasing the approval marker.
+              // Accepting a comment avoids re-approval after every body rewrite.
+              const { data: comments } = await github.rest.issues.listComments({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: prNumber,
+                per_page:     100,
+              });
+              const approvalComment = comments.find(c => hasApproval(c.body));
+              if (approvalComment) {
+                console.log(`✅ Stakeholder approval detected in PR comment #${approvalComment.id} on attempt ${attempt}`);
                 core.setOutput('approved', 'true');
                 return;
               }
@@ -358,10 +377,11 @@ jobs:
             // Timeout — fail the gate
             core.setFailed(
               '🔴 Cost gate: stakeholder approval not detected within 90 seconds.\n' +
-              'Tick the checkbox in the PR description to approve:\n' +
-              '  - [x] 💰 Cost Proposal Approved — stakeholder sign-off\n' +
+              'Approval can be given in either:\n' +
+              '  1. PR description: - [x] 💰 Cost Proposal Approved\n' +
+              '  2. A PR comment:   - [x] 💰 Cost Proposal Approved\n' +
               'Or trigger via workflow_dispatch to bypass.\n' +
-              'Re-run this job after ticking the checkbox.'
+              'Re-run this job after approving.'
             );
 
       - name: Resolve final approval

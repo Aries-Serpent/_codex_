@@ -156,6 +156,7 @@ class TestSecurityMiddleware:
 
     def test_form_size_validation(self, mock_request):
         """Test that middleware validates form size."""
+        pytest.importorskip("starlette", reason="starlette not installed")
         from services.api.middleware.form_validator import SecureMultipartMiddleware
 
         middleware = SecureMultipartMiddleware(None)

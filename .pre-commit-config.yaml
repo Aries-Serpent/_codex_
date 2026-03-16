@@ -301,11 +301,7 @@ repos:
       #   git push --no-verify   # bypasses all pre-push hooks
       - id: mypy-isolated-venv-gate
         name: "🔎 mypy isolated-venv anti-regression gate (pre-push)"
-        entry: bash -c '
-          python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null
-          /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
-          /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
-        '
+        entry: bash -c 'python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null && /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests && /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline'
         language: system
         stages: [pre-push]
         pass_filenames: false
@@ -325,3 +321,29 @@ repos:
         pass_filenames: false
         always_run: true
         # If this fails: run `python -m ruff check . --fix` then commit the fixes
+
+      # ── dead-code scan pre-push gate (100% confidence only) ──────────────
+      # Runs vulture at 100% confidence — only provably unreachable code
+      # (code after raise/return/break, assigned-but-never-read variables).
+      # At 100%, false-positive rate is effectively 0.
+      # Lower confidence items are reported by scripts/ci/dead_code_scan.py
+      # but do NOT block commits (too many false positives from public APIs).
+      - id: dead-code-scan
+        name: "🔍 dead code scan — 100% confidence (pre-push)"
+        entry: >
+          bash -c '
+            if python -m vulture --version >/dev/null 2>&1; then
+              python scripts/ci/dead_code_scan.py src/ tests/
+                --min-confidence 100
+                --fail-on-found
+                --format github
+              && echo "✅ no 100%% confidence dead code"
+            else
+              echo "⚠️  vulture not installed — skipping dead code scan (pip install vulture)"
+            fi'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: run scripts/ci/dead_code_scan.py src/ tests/ --min-confidence 100
+        # to see the findings, then remove the unreachable code blocks.

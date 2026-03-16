@@ -38,8 +38,8 @@ Phase 7.1 (Infrastructure Setup) is **100% COMPLETE** with all 4 sub-phases deli
 
 | Prompt | Component | Status | Target |
 |--------|-----------|--------|--------|
-| 2.1 | SuperpositionEngine Core | ⏳ Pending | Parallel evaluation, wave collapse |
-| 2.2 | Compliance Integration | ⏳ Pending | @quantum_superposition decorator |
+| 2.1 | SuperpositionEngine Core | ✅ Complete (PR #3586 S120) | Parallel evaluation, wave collapse |
+| 2.2 | Compliance Integration | ✅ Complete (PR #3586 S120/S122/S123) | @quantum_superposition decorator — `_captured` list, no double-invoke, 7 acceptance tests |
 | 2.3 | EXP-1 A/B Experiment | ⏳ Pending | 100 audits, 15%+ accuracy improvement |
 
 ### 📋 Pre-commit 9-24: Remaining Features
@@ -139,7 +139,7 @@ cognitive_brain/
 │   ├── base.py             # ✅ Base classes
 │   ├── coherence_monitor.py # ✅ Monitoring
 │   ├── ab_testing.py       # 🔄 NEXT
-│   ├── superposition.py    # ⏳ Phase 7.2
+│   ├── superposition.py    # ✅ Complete (CB-002 — PR #3586 S120/S122)
 │   ├── entanglement.py     # ⏳ Phase 7.3
 │   ├── uncertainty.py      # ⏳ Phase 7.4
 │   └── wave_collapse.py    # ⏳ Phase 7.5

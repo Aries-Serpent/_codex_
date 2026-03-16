@@ -83,6 +83,8 @@ def get_optimal_batch_size(
         Optimal batch size
     """
     # Estimate memory per embedding (float32)
+    if embedding_dim <= 0:
+        raise ValueError(f"embedding_dim must be positive, got {embedding_dim}")
     bytes_per_embedding = embedding_dim * 4
 
     # Get available memory
@@ -91,8 +93,12 @@ def get_optimal_batch_size(
         # Default for CPU
         return 32
 
+    # Cap free memory by the caller-supplied max_memory_gb budget
+    max_memory_bytes = max_memory_gb * 1024 * 1024 * 1024
+    capped_memory = min(float(free_memory), max_memory_bytes)
+
     # Calculate batch size
-    available_memory = free_memory * safety_factor
+    available_memory = capped_memory * safety_factor
     max_batch_size = int(available_memory / bytes_per_embedding)
 
     # Clamp to reasonable range

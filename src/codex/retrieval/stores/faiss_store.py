@@ -45,6 +45,7 @@ class FAISSStore(VectorStore):
         index_name: str = "default",
         max_vectors: int = MAX_VECTORS,
         validate_checksums: bool = True,
+        dimension: Optional[int] = None,
     ):
         """Initialize FAISS store with safety checks
 
@@ -53,6 +54,7 @@ class FAISSStore(VectorStore):
             index_name: Name of the index
             max_vectors: Maximum number of vectors allowed (safety limit)
             validate_checksums: Whether to validate checksums on load
+            dimension: Optional initial embedding dimension (set automatically on first insert)
         """
         self.index_dir = Path(index_dir) if index_dir else Path(".codex/faiss")
         self.index_name = self._validate_index_name(index_name)
@@ -76,6 +78,16 @@ class FAISSStore(VectorStore):
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
 
+        # Validate and eagerly initialize index if dimension is provided
+        if dimension is not None:
+            if not isinstance(dimension, int) or dimension <= 0 or dimension > MAX_DIMENSION:
+                raise ValueError(
+                    f"dimension must be a positive integer ≤ {MAX_DIMENSION}, got {dimension!r}"
+                )
+            self.dimension = dimension
+            self.index = self.faiss.IndexFlatL2(self.dimension)
+            logger.info(f"Pre-initialized FAISS index with dimension: {self.dimension}")
+
     @staticmethod
     def _validate_index_name(name: str) -> str:
         """Validate and sanitize index name"""
@@ -96,7 +108,7 @@ class FAISSStore(VectorStore):
         Returns:
             Dictionary with health status and metrics
         """
-        status = {
+        status: dict[str, Any] = {
             "healthy": False,
             "index_loaded": self.index is not None,
             "num_vectors": self.index.ntotal if self.index else 0,

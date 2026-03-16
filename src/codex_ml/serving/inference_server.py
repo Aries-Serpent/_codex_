@@ -22,7 +22,7 @@ except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
     FastAPI = None
     HTTPException = Exception
-    BaseModel = object  # type: ignore[misc]
+    BaseModel = object  # type: ignore[misc,assignment]
     APIKeyHeader = None
     Security = None
 

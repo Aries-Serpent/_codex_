@@ -132,7 +132,8 @@ class PineconeAdapter(BaseAdapter):
         try:
             # Describe index to verify connectivity
             stats = await asyncio.get_event_loop().run_in_executor(
-                None, self._index.describe_index_stats  # type: ignore[attr-defined]
+                None,
+                self._index.describe_index_stats,  # type: ignore[attr-defined]
             )
             return stats is not None
         except Exception as e:
@@ -296,7 +297,8 @@ class PineconeAdapter(BaseAdapter):
 
         try:
             await asyncio.get_event_loop().run_in_executor(
-                None, lambda: self._index.delete(ids=ids)  # type: ignore[attr-defined]
+                None,
+                lambda: self._index.delete(ids=ids),  # type: ignore[attr-defined]
             )
 
             return QueryResult(

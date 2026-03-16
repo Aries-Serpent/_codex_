@@ -232,6 +232,50 @@ if TYPER_AVAILABLE:
         else:
             typer.echo("No metadata available")
 
+    @app.command("ast-view")
+    def ast_view(
+        source: Annotated[str, typer.Argument(help="Source file path to visualize")],
+        output: Annotated[
+            str, typer.Option("--output", "-o", help="Output HTML file")
+        ] = "ast_report.html",
+        open_browser: Annotated[
+            bool, typer.Option("--open", help="Open result in browser")
+        ] = False,
+    ) -> None:
+        """Generate HTML AST visualization report."""
+        import pathlib
+
+        from src.codex.ast.graph import ASTGraph
+        from src.codex.ast.parser import UniversalParser
+        from src.codex.ast.visualize import HTMLVisualizer
+
+        source_path = pathlib.Path(source)
+        if not source_path.exists():
+            typer.echo(f"Error: source file not found: {source}", err=True)
+            raise typer.Exit(code=1)
+
+        parser = UniversalParser()
+        root = parser.parse_file(source_path)
+        if root is None:
+            typer.echo(f"Error: failed to parse {source}", err=True)
+            raise typer.Exit(code=1)
+
+        # Flatten node tree into a list for the visualizer.
+        def _flatten(node, acc):  # type: ignore[no-untyped-def]
+            acc.append(node)
+            for child in node.children or []:
+                _flatten(child, acc)
+            return acc
+
+        nodes = _flatten(root, [])
+        visualizer = HTMLVisualizer()
+        visualizer.render_html(nodes, ASTGraph(), {}, output)
+        if open_browser:
+            import webbrowser
+
+            webbrowser.open(f"file://{output}")
+        typer.echo(f"AST report written to {output} ({len(nodes)} nodes from {source})")
+
     def main():
         """Main entry point."""
         # Emit typer import error warning if it occurred

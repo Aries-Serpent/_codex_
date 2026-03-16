@@ -6,7 +6,7 @@ absl-py==2.3.1
     # via
     #   rouge-score
     #   tensorboard
-accelerate==1.12.0
+accelerate==1.13.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -176,7 +176,7 @@ dataproperty==1.1.0
     # via
     #   pytablewriter
     #   tabledata
-datasets==4.6.1
+datasets==4.7.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -217,7 +217,7 @@ docker==7.1.0
     # via mlflow
 dpath==2.2.0
     # via dvc
-duckdb==1.4.4
+duckdb==1.5.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -262,7 +262,7 @@ fastapi-cli==0.0.8
     # via fastapi
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.20.3
+filelock==3.25.2
     # via
     #   datasets
     #   huggingface-hub
@@ -285,7 +285,7 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2026.1.0
+fsspec==2026.2.0
     # via
     #   datasets
     #   dvc-http
@@ -685,7 +685,7 @@ opentelemetry-sdk==1.39.1
     #   ray
 opentelemetry-semantic-conventions==0.60b1
     # via opentelemetry-sdk
-orjson==3.11.6
+orjson==3.11.7
     # via
     #   fastapi
     #   sqltrie
@@ -832,7 +832,7 @@ pyasn1-modules==0.4.2
     # via google-auth
 pybind11==3.0.2
     # via lm-eval
-pycparser==2.23
+pycparser==3.0
     # via cffi
 pydantic==2.12.3
     # via
@@ -912,7 +912,7 @@ python-json-logger==4.0.0
     # via jupyter-events
 python-multipart==0.0.22
     # via fastapi
-pytokens==0.3.0
+pytokens==0.4.1
     # via black
 pytz==2025.2
     # via
@@ -992,7 +992,7 @@ rich==14.3.3
     #   typer
 rich-click==1.9.7
     # via litestar
-rich-toolkit==0.17.1
+rich-toolkit==0.19.7
     # via fastapi-cli
 rouge-score==0.1.2
     # via lm-eval
@@ -1167,7 +1167,7 @@ traitlets==5.14.3
     #   nbclient
     #   nbconvert
     #   nbformat
-transformers==5.2.0
+transformers==5.3.0
     # via
     #   -r requirements/base.txt
     #   codex-ml (pyproject.toml)
@@ -1268,7 +1268,7 @@ voluptuous==0.15.2
     # via
     #   dvc
     #   dvc-studio-client
-wandb==0.23.1
+wandb==0.25.1
     # via codex-ml (pyproject.toml)
 watchdog==6.0.0
     # via evidently
@@ -1312,5 +1312,5 @@ zc-lockfile==4.0
     # via dvc
 zipp==3.23.0
     # via importlib-metadata
-zstandard==0.24.0
+zstandard==0.25.0
     # via lm-eval

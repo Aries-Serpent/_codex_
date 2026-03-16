@@ -1,0 +1,96 @@
+name: "🔀 Branch Rebase Gate"
+
+# REQ-10 enforcement workflow.
+#
+# Purpose
+# -------
+# When a PR branch is BEHIND or DIVERGED from its base branch, the Copilot
+# Coding Agent MUST rebase before starting any other work.  This workflow:
+#
+#   1. Detects diverged/behind state using the GitHub compare API.
+#   2. Posts a "BRANCH_REBASE_REQUIRED" marker comment to the PR so the
+#      agent sees it as present-tense instruction (not background memory).
+#   3. Writes REQ-10 status to the job summary.
+#   4. When the branch is subsequently updated and is no longer behind,
+#      posts a "BRANCH_REBASE_RESOLVED" comment to clear the gate.
+#
+# Integration
+# -----------
+# The cognitive-preflight job in agent-auth-delegation.yml reads the
+# BRANCH_REBASE_REQUIRED marker (REQ-10 step) and blocks agent activation
+# if the marker is present and unresolved.
+#
+# Script: scripts/ci/branch_rebase_check.py
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md §0
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: rebase-gate-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  rebase-check:
+    name: "🔀 REQ-10: Branch Rebase Check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Skip dependabot PRs — they are always based on fresh commits
+    if: github.actor != 'dependabot[bot]'
+
+    outputs:
+      rebase_required: ${{ steps.check.outputs.rebase_required }}
+      rebase_status:   ${{ steps.check.outputs.rebase_status }}
+      behind_by:       ${{ steps.check.outputs.behind_by }}
+      base_branch:     ${{ steps.check.outputs.base_branch }}
+      head_branch:     ${{ steps.check.outputs.head_branch }}
+
+    steps:
+      - name: "📥 Checkout (sparse — script only)"
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/ci/branch_rebase_check.py
+          sparse-checkout-cone-mode: false
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "🔍 Check rebase status"
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/ci/branch_rebase_check.py \
+            --repo "${{ github.repository }}" \
+            --pr  "${{ github.event.pull_request.number }}" \
+            --post-comment \
+            --github-output \
+            --github-summary
+          # Script exits 0 always in non-hard-fail mode — status is in outputs
+          echo "✅ Rebase check complete"
+
+      - name: "🔴 Annotate when rebase required"
+        if: steps.check.outputs.rebase_required == 'true'
+        run: |
+          BEHIND="${{ steps.check.outputs.behind_by }}"
+          BASE="${{ steps.check.outputs.base_branch }}"
+          HEAD="${{ steps.check.outputs.head_branch }}"
+          echo "::error title=REQ-10 Rebase Required::Branch '${HEAD}' is ${BEHIND} commit(s) behind '${BASE}'. Rebase before starting agent work."
+
+      - name: "✅ Confirm branch is up-to-date"
+        if: steps.check.outputs.rebase_required == 'false'
+        run: |
+          STATUS="${{ steps.check.outputs.rebase_status }}"
+          BASE="${{ steps.check.outputs.base_branch }}"
+          HEAD="${{ steps.check.outputs.head_branch }}"
+          echo "✅ REQ-10 PASS: Branch '${HEAD}' is ${STATUS} relative to '${BASE}' — no rebase needed."

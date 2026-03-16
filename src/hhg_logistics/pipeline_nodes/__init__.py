@@ -29,12 +29,12 @@ from .features import build_features, write_features_csv
 from .ingest import ingest_rows
 
 __all__ = [
-    'clean_rows',
-    'write_clean_csv',
-    'build_features',
-    'write_features_csv',
-    'ingest_rows',
-    'run_modular_pipeline',
+    "clean_rows",
+    "write_clean_csv",
+    "build_features",
+    "write_features_csv",
+    "ingest_rows",
+    "run_modular_pipeline",
 ]
 
 hydra_utils, _HAS_HYDRA_UTILS = optional_import("hydra.utils")

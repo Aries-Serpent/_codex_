@@ -1377,17 +1377,6 @@ def rag_test_config():
         "cache_enabled": True,
     }
 
-    # ============================================================================
-    # PyTorch Profiler and JSON Serialization Fixtures (Added 2026-01-22)
-    # ============================================================================
-
-    # Removed duplicate disable_torch_profiler fixture (F811)
-    # The correct version is defined below at line ~1275 with autouse=False
-
-    # Cleanup environment variables
-    os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
-    os.environ.pop("KINETO_LOG_LEVEL", None)
-
 
 @pytest.fixture
 def mock_json_serializable():
@@ -2095,6 +2084,41 @@ def disable_torch_profiler(monkeypatch):
                 )
         except (ImportError, AttributeError):
             pass  # torch.profiler not available in this environment — skip patch
+
+
+@pytest.fixture(autouse=True)
+def _end_active_mlflow_runs():
+    """End any active MLflow runs before and after each test to prevent state leakage.
+
+    MLflow maintains global run state that can leak across tests when a test
+    starts a run but fails before ending it. This autouse fixture ensures a
+    clean state for every test.
+    """
+    try:
+        import mlflow
+
+        if mlflow.active_run() is not None:
+            mlflow.end_run()
+    except ImportError:
+        pass  # MLflow not installed — nothing to clean up
+    except Exception as exc:  # noqa: BLE001
+        logging.getLogger(__name__).debug(
+            "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
+        )
+
+    yield
+
+    try:
+        import mlflow
+
+        if mlflow.active_run() is not None:
+            mlflow.end_run()
+    except ImportError:
+        pass  # MLflow not installed — nothing to clean up
+    except Exception as exc:  # noqa: BLE001
+        logging.getLogger(__name__).debug(
+            "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
+        )
 
 
 # List of test files that commonly need the profiler disabled

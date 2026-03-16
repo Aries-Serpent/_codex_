@@ -34,11 +34,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 BASELINE_FILE = REPO_ROOT / ".mypy_baseline"
 SRC_DIR = REPO_ROOT / "src"
 
-# Mypy flags that match the project's existing mypy.ini / pyproject.toml config
+# Mypy flags that match the project's existing mypy.ini / pyproject.toml config.
+# --follow-imports=silent: only report errors in files explicitly passed (i.e., src/).
+# This prevents cascade errors from local fallback stubs (torch/, agents/, etc.)
+# that are picked up via sys.path in CI isolated-venv environments where the real
+# packages are not installed.
 MYPY_FLAGS = [
     "--ignore-missing-imports",
     "--no-error-summary",
     "--no-pretty",
+    "--follow-imports=silent",
 ]
 
 

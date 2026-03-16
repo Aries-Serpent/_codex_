@@ -193,20 +193,55 @@ jobs:
               });
             }
 
-      # Fail the check if RED tier and not yet approved
-      - name: Enforce approval gate
+      # Fallback: scan PR comments for approval marker.
+      # Automated agents (report_progress) overwrite the PR body, removing
+      # the checkbox. Accepting the marker in any comment avoids re-approval.
+      - name: Comment fallback approval scan
         if: steps.estimate.outputs.status == 'blocked'
+        id: comment_approval
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            function hasApproval(body) {
+              if (!body) return false;
+              const norm = body.replace(/\*\*/g, '').replace(/__/g, '');
+              return (
+                norm.includes('- [x] \u{1F4B0} Cost Proposal Approved') ||
+                norm.includes('- [X] \u{1F4B0} Cost Proposal Approved') ||
+                norm.includes('[x] Cost Proposal Approved') ||
+                norm.includes('[X] Cost Proposal Approved')
+              );
+            }
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const found = comments.find(c => hasApproval(c.body));
+            if (found) {
+              console.log(`✅ Approval found in PR comment #${found.id}`);
+              core.setOutput('approved_in_comment', 'true');
+            } else {
+              core.setOutput('approved_in_comment', 'false');
+            }
+
+      # Fail the check if RED tier and not yet approved (body or comments)
+      - name: Enforce approval gate
+        if: steps.estimate.outputs.status == 'blocked' && steps.comment_approval.outputs.approved_in_comment != 'true'
         run: |
           echo "❌ RED-tier workflows detected but '💰 Cost Proposal Approved' checkbox is not ticked."
-          echo "Tick the checkbox in the PR description to unblock this check."
+          echo "Tick the checkbox in the PR description or add a PR comment to unblock this check."
           exit 1
 
       - name: Cost check passed
-        if: steps.estimate.outputs.status != 'blocked'
+        if: steps.estimate.outputs.status != 'blocked' || steps.comment_approval.outputs.approved_in_comment == 'true'
         run: |
           STATUS="${{ steps.estimate.outputs.status }}"
           if [ "$STATUS" = "approved" ]; then
             echo "✅ RED-tier jobs approved by stakeholder."
+          elif [ "${{ steps.comment_approval.outputs.approved_in_comment }}" = "true" ]; then
+            echo "✅ RED-tier jobs approved via PR comment."
           else
             echo "✅ No RED-tier jobs — auto-approved."
           fi

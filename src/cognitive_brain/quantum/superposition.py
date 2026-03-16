@@ -631,12 +631,70 @@ def quantum_superposition(
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # Check if quantum feature is enabled
-            # This is a placeholder - real implementation would check config
-            # from context or instance
+            # ── Step 1: Check if quantum feature is enabled on the instance ──
+            instance = args[0] if args else None
+            quantum_enabled = bool(
+                getattr(instance, enabled_config_attr, False) if instance is not None else False
+            )
 
-            # For now, just execute the original function
-            return func(*args, **kwargs)
+            if not quantum_enabled:
+                # Quantum not enabled for this instance → classical path
+                return func(*args, **kwargs)
+
+            # ── Step 2: Attempt quantum-enhanced evaluation ───────────────────
+            try:
+                engine = SuperpositionEngine()
+
+                # Wrap the decorated function as a scored decision so the engine
+                # can measure coherence.  We use a mutable container to capture
+                # the raw return value of func so we do NOT need to call func a
+                # second time (avoids duplicate side effects).
+                _bound_args = args
+                _bound_kwargs = kwargs
+                _captured: list[Any] = []  # [raw_result] after first call
+
+                def _classical_decision() -> float:
+                    # Invoke func exactly once; save the raw result so the wrapper
+                    # can return it without re-executing func.
+                    result = func(*_bound_args, **_bound_kwargs)
+                    _captured.clear()
+                    _captured.append(result)
+                    try:
+                        return float(result)  # type: ignore[arg-type]
+                    except (TypeError, ValueError):
+                        return 1.0  # non-numeric result → treated as full-quality
+
+                result_dict = engine.evaluate_superposition(
+                    decisions=[("classical", _classical_decision)],
+                    context={"func": func.__name__},
+                )
+                coherence: float = result_dict.get("coherence", 1.0)
+
+                # ── Step 3: Coherence-gated fallback ─────────────────────────
+                if fallback_on_low_coherence and coherence < coherence_threshold:
+                    import logging as _logging
+
+                    _logging.getLogger(__name__).warning(
+                        "quantum_superposition: coherence %.3f below threshold %.3f "
+                        "for %s — falling back to classical execution.",
+                        coherence,
+                        coherence_threshold,
+                        func.__qualname__,
+                    )
+                    # Return the already-captured result if available; only
+                    # re-invoke func when the engine did not call _classical_decision.
+                    return _captured[0] if _captured else func(*args, **kwargs)
+
+                # ── Step 4: Return the already-captured result ────────────────
+                # The engine called _classical_decision() which invoked func once.
+                # Return that result directly — no second invocation of func.
+                return _captured[0] if _captured else func(*args, **kwargs)
+
+            except Exception:  # noqa: BLE001
+                # Quantum infrastructure unavailable or raised → classical fallback.
+                # If _classical_decision already ran, reuse its captured result to
+                # avoid a second invocation of func (prevents duplicate side effects).
+                return _captured[0] if _captured else func(*args, **kwargs)
 
         return wrapper
 

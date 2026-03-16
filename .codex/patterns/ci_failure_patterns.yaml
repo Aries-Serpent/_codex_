@@ -1528,3 +1528,115 @@ cognitive_note: |
   "Quick validation" jobs must ONLY run fast tests (~30s).
   Full test suite belongs in Resilient Validation Suite / Art_Validation Pipeline.
   Use `tests/capabilities/ci_test/` for pre-merge smoke checks.
+
+---
+# ── Pattern: BRANCH_BEHIND_BASE ─────────────────────────────────────────────
+pattern_id: BRANCH_BEHIND_BASE
+name: "Branch Behind Base — Rebase Required"
+category: branch_hygiene
+priority: 0
+severity: blocker
+first_seen: "2026-03-16"
+last_seen: "2026-03-16"
+pr_source: "3586"
+session: "S117"
+
+detection:
+  log_signature: "BRANCH_REBASE_REQUIRED"
+  workflow: "branch-rebase-gate.yml"
+  job_pattern: "REQ-10: Branch Rebase Check"
+  error_pattern: "is N commit(s) BEHIND|has DIVERGED from"
+  comment_marker: "BRANCH_REBASE_REQUIRED"
+
+root_cause: |
+  The PR branch was not rebased after the base branch received new commits.
+  The Copilot Coding Agent started work on a stale branch.  This causes:
+    - Re-introduction of already-fixed code
+    - Merge conflicts at merge time
+    - CI failures from stale state
+
+fix:
+  type: git_operation
+  priority: IMMEDIATE_FIRST
+  steps:
+    - "git fetch origin <base_branch>"
+    - "git rebase origin/<base_branch>"
+    - "git push --force-with-lease"
+  verified: true
+
+cognitive_note: |
+  REQ-10 (Tier-1 hard block): The agent MUST NOT start any other work
+  until the branch is rebased.  This is the FIRST action in every session
+  when a BRANCH_REBASE_REQUIRED comment is present on the PR.
+
+---
+# ── Pattern: STALE_BRANCH_NOT_MERGED ────────────────────────────────────────
+pattern_id: STALE_BRANCH_NOT_MERGED
+name: "Stale Unmerged Branch — Manual Review"
+category: branch_hygiene
+priority: 3
+severity: warning
+first_seen: "2026-03-16"
+last_seen: "2026-03-16"
+pr_source: "3586"
+session: "S117"
+
+detection:
+  log_signature: "stale (.*d) but NOT merged"
+  workflow: "branch-cleanup.yml"
+  job_pattern: "Branch Cleanup"
+
+root_cause: |
+  A branch has had no commit activity for more than STALE_DAYS days
+  but has NOT been merged into the default branch.  It may contain
+  uncommitted work-in-progress or be an abandoned feature branch.
+
+fix:
+  type: manual_review
+  steps:
+    - "Review the branch contents: git log origin/<branch> --oneline"
+    - "If work is valuable: open a PR or rebase onto main"
+    - "If abandoned: delete the branch manually or via branch-cleanup.yml --force-prefix"
+  verified: false
+
+cognitive_note: |
+  Stale unmerged branches are NOT automatically deleted by the cleanup
+  workflow because code may be lost.  They require human review.
+
+---
+# ── Pattern: DEAD_CODE_100_CONFIDENCE ───────────────────────────────────────
+pattern_id: DEAD_CODE_100_CONFIDENCE
+name: "Dead Code — 100% Confidence (vulture)"
+category: code_quality
+priority: 2
+severity: error
+first_seen: "2026-03-16"
+last_seen: "2026-03-16"
+pr_source: "3586"
+session: "S117"
+
+detection:
+  log_signature: "unreachable code after|unused variable.*100%"
+  workflow: "pre-commit (dead-code-scan hook)"
+  tool: "vulture"
+  confidence: 100
+
+root_cause: |
+  Code that is provably never executed:
+    - Statements after unconditional raise/return/break
+    - Variables assigned but never read (100% confidence)
+  These are NOT false positives at 100% confidence.
+
+fix:
+  type: code_change
+  command: "python scripts/ci/dead_code_scan.py src/ tests/ --min-confidence 100 --format github"
+  steps:
+    - "Run: python scripts/ci/dead_code_scan.py src/ tests/ --min-confidence 100"
+    - "Remove each unreachable block or unused variable"
+    - "Re-run scan to confirm 0 findings"
+  verified: true
+
+cognitive_note: |
+  Only 100%-confidence items are auto-fixed.  60–79% items require human
+  review because vulture cannot resolve dynamic dispatch, __all__ exports,
+  or TYPE_CHECKING guards.  Use scripts/ci/dead_code_scan.py for triage.

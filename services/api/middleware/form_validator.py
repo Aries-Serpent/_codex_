@@ -7,9 +7,17 @@ via multipart/form-data) by enforcing size limits and field count restrictions.
 import logging
 from typing import Callable
 
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request
-from starlette.responses import JSONResponse, Response
+try:
+    from starlette.middleware.base import BaseHTTPMiddleware
+    from starlette.requests import Request
+    from starlette.responses import JSONResponse, Response
+except ImportError:  # pragma: no cover
+    class BaseHTTPMiddleware:  # type: ignore[no-redef]
+        """Fallback stub when starlette is not installed."""
+
+    Request = None  # type: ignore[assignment,misc]
+    Response = None  # type: ignore[assignment,misc]
+    JSONResponse = None  # type: ignore[assignment,misc]
 
 logger = logging.getLogger(__name__)
 

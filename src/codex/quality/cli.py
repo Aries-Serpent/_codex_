@@ -78,8 +78,16 @@ def _scan_smells(
 @click.option("--format", type=click.Choice(["json", "yaml", "html"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file")
 @click.option("--config", type=click.Path(), default="configs/code_quality.yaml")
-@click.option("--fail-on", multiple=True, help="Severity levels to fail on (error, critical)")
-@click.option("--warn-on", multiple=True, help="Severity levels to warn on (warning)")
+@click.option(
+    "--fail-on",
+    multiple=True,
+    help="Smell category to fail on (long_functions, large_files, many_args_functions)",
+)
+@click.option(
+    "--warn-on",
+    multiple=True,
+    help="Smell category to warn on (long_functions, large_files, many_args_functions)",
+)
 @click.option("--fail-on-smells", is_flag=True, default=False, help="Exit 1 if any smells found")
 def smell_main(
     format: str,
@@ -93,7 +101,7 @@ def smell_main(
 
     Examples:
         codex-smell --format json --output smells.json
-        codex-smell --fail-on error --warn-on warning
+        codex-smell --fail-on long_functions --warn-on large_files
     """
     long_fn_threshold = 50
     max_args = 5
@@ -146,6 +154,45 @@ def smell_main(
     )
 
     if fail_on_smells and total > 0:
+        sys.exit(1)
+
+    # Honour explicit --fail-on / --warn-on smell-category severity flags.
+    # Accepted category names: long_functions, large_files, many_args_functions
+    # (match the keys returned by _scan_smells).
+    VALID_CATEGORIES = {"long_functions", "large_files", "many_args_functions"}
+    CATEGORY_MAP = {
+        "long_functions": len(smells_data["long_functions"]),
+        "large_files": len(smells_data["large_files"]),
+        "many_args_functions": len(smells_data["many_args_functions"]),
+    }
+    for category in (*warn_on, *fail_on):
+        if category not in VALID_CATEGORIES:
+            click.echo(
+                f"ERROR: unknown category {category!r}. "
+                f"Valid values: {', '.join(sorted(VALID_CATEGORIES))}",
+                err=True,
+            )
+            sys.exit(2)
+    warned = False
+    failed = False
+    for category in warn_on:
+        count = CATEGORY_MAP.get(category, 0)
+        if count > 0:
+            click.echo(
+                f"WARNING: {count} '{category}' smell(s) found (--warn-on {category})",
+                err=True,
+            )
+            warned = True
+    for category in fail_on:
+        count = CATEGORY_MAP.get(category, 0)
+        if count > 0:
+            click.echo(
+                f"ERROR: {count} '{category}' smell(s) found (--fail-on {category})",
+                err=True,
+            )
+            failed = True
+    _ = warned  # consumed for side-effects above; suppress unused-var lint
+    if failed:
         sys.exit(1)
 
 
