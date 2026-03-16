@@ -1,6 +1,6 @@
 # Repository Health Dashboard
 
-**Last Updated**: 2026-01-26T07:05:00Z  
+**Last Updated**: 2026-03-16T00:55:36Z  
 **Status**: ✅ Operational  
 **Monitoring**: Automated via `monitor_offload_candidates.py`
 
@@ -12,7 +12,7 @@
 |--------|-------|--------|
 | **Repository Size** | 133MB | 🟢 Healthy |
 | **Offload Directory** | 6.1MB | 🟢 Active |
-| **Current Candidates** | 2 files (13.4MB) | 🟡 Review Needed |
+| **Current Candidates** | 2 files (22.77MB) | 🟡 Review Needed |
 | **Phase** | 22.1 (Automated Organization) | 🔄 In Progress |
 | **Last Offload** | 2026-01-26 (Phase 21.2) | ✅ Complete |
 
@@ -64,19 +64,19 @@ Reduction:  ~5% size reduction achieved
 ## 🔍 Current Offload Candidates
 
 **Source**: `.codex/repository_health/offload_candidates.json`  
-**Last Scan**: 2026-01-26T07:04:43Z
+**Last Scan**: 2026-03-16T00:55:36Z
 
 ### Summary
 
 - **Total Candidates**: 2 files
-- **Total Size**: 13.4MB
+- **Total Size**: 22.77MB
 - **Largest File**: `tools/github-secrets-cli/github-secrets-cli` (12.35MB)
 
 ### Candidate Details
 
 | File | Category | Size | Age | Recommendation |
 |------|----------|------|-----|----------------|
-| `.codex/validation/20250910T135035Z/pre-commit.log` | logs | 1.04MB | 0d | Review manually |
+| `.codex/embeddings/codex_index_meta.json` | unknown | 10.41MB | 0d | Compress or offload |
 | `tools/github-secrets-cli/github-secrets-cli` | unknown | 12.35MB | 0d | Compress or offload |
 
 ### Recommendations
@@ -86,10 +86,10 @@ Reduction:  ~5% size reduction achieved
    - **Impact**: Could reduce repo size by 12.35MB (9%)
    - **Priority**: P1 (High - significant size impact)
 
-2. **📝 Validation Log**: `.codex/validation/20250910T135035Z/pre-commit.log`
-   - **Action**: Review if historical validation logs should be offloaded
-   - **Impact**: Could reduce repo size by 1.04MB
-   - **Priority**: P2 (Medium - consider adding to .gitignore)
+2. **📦 Large Index File**: `.codex/embeddings/codex_index_meta.json`
+   - **Action**: Compress or move to external storage; regenerate from source on demand
+   - **Impact**: Could reduce repo size by 10.41MB (7%)
+   - **Priority**: P1 (High - significant size impact)
 
 ---
 
@@ -241,7 +241,7 @@ python scripts/repository_organization/restore_offloaded_files.py --file histori
 
 ## ✅ Health Check
 
-**Last Check**: 2026-01-26T07:05:00Z
+**Last Check**: 2026-03-16T00:55:36Z
 
 | Check | Status | Details |
 |-------|--------|---------|
@@ -260,4 +260,4 @@ python scripts/repository_organization/restore_offloaded_files.py --file histori
 **Maintained by**: Repository Organization System  
 **Agent**: `repository-organization-monitor`  
 **Version**: 1.0.0  
-**Last Updated**: 2026-01-26T07:05:00Z
+**Last Updated**: 2026-03-16T00:55:36Z

@@ -26,7 +26,7 @@
       "age_days": 0,
       "size_mb": 10.41,
       "reasons": [
-        "large_file_10.4mb"
+        "large_file_10.41mb"
       ],
       "recommendation": "compress_or_offload"
     },
@@ -36,7 +36,7 @@
       "age_days": 0,
       "size_mb": 12.35,
       "reasons": [
-        "large_file_12.4mb"
+        "large_file_12.35mb"
       ],
       "recommendation": "compress_or_offload"
     }
