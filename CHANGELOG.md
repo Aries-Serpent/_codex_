@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Branch cleanup system: `scripts/ci/branch_cleanup.py` (multi-strategy), `branch-cleanup.yml` workflow (scheduled + dispatch)
+- Branch rebase gate: `scripts/ci/branch_rebase_check.py` + `branch-rebase-gate.yml` (REQ-10 hard block)
+- Dead code scanner: `scripts/ci/dead_code_scan.py` (vulture wrapper, CI/pre-commit/JSON modes)
+- REQ-10 in cognitive-preflight: agent MUST rebase before any work when branch is behind/diverged
+- Pre-commit `dead-code-scan` hook (100% confidence, pre-push gate)
+- CI failure patterns: `BRANCH_BEHIND_BASE`, `STALE_BRANCH_NOT_MERGED`, `DEAD_CODE_100_CONFIDENCE`
+
+
 ### Fixed (Auto-fix 2026-03-16)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3588 (SHA `1b1f4b72`) at 2026-03-16T11:19Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3586 (SHA `54fd30d1`) at 2026-03-16T11:20Z [auto-generated]

@@ -4360,3 +4360,32 @@ All 12 PRs were already incorporated in commit `012d335`:
 - Reviewer threads addressed: 6/6
 - CI gates unblocked: Art_Validation Pipeline (pre-commit ruff F811, dead code)
 - Dependabot PRs audited: 12/12 — all already merged into branch
+
+---
+
+## Session — S118 — 2026-03-16 — PR #3586 (continuation)
+
+### Work Completed
+
+#### Branch Cleanup System (new)
+1. **`scripts/ci/branch_cleanup.py`** — Comprehensive branch cleanup script replacing the narrow `cleanup_stale_branches.py` (prefix-only). Supports: merged-branch deletion, stale-branch detection (age-based), prefix-based cleanup, protected-branch list, JSON/GitHub-summary output, dry-run mode.
+2. **`scripts/ci/branch_rebase_check.py`** — Rebase detection script (local + GitHub API modes). Posts `BRANCH_REBASE_REQUIRED` / `BRANCH_REBASE_RESOLVED` marker comments to PRs. Used by REQ-10 gate and `branch-rebase-gate.yml`.
+3. **`scripts/ci/dead_code_scan.py`** — Formalises the ad-hoc vulture analysis previously run in /tmp/. Supports multiple confidence thresholds, text/github/json output formats, CI and pre-commit modes.
+
+#### New Workflows
+4. **`.github/workflows/branch-cleanup.yml`** — Comprehensive branch hygiene workflow: scheduled (weekly) + manual dispatch. Strategies: merged, stale, prefix-based. Never deletes protected branches (main, master, develop, 0D_base_, release/*, hotfix/*).
+5. **`.github/workflows/branch-rebase-gate.yml`** — REQ-10 enforcement: detects behind/diverged branches on every PR push. Posts marker comment; posts resolved comment when branch is up-to-date.
+
+#### REQ-10: Rebase-First Gate
+6. **`.github/workflows/agent-auth-delegation.yml`** — Added REQ-10 step in cognitive-preflight. Reads `BRANCH_REBASE_REQUIRED` marker comments; hard-blocks `activate-delegation` if unresolved. Added 0c checklist item to the pre-flight comment posted to every PR.
+
+#### CI Failure Patterns
+7. **`.codex/patterns/ci_failure_patterns.yaml`** — Added 3 new patterns: `BRANCH_BEHIND_BASE`, `STALE_BRANCH_NOT_MERGED`, `DEAD_CODE_100_CONFIDENCE`.
+
+#### Pre-commit Hook
+8. **`.pre-commit-config.yaml`** — Added `dead-code-scan` pre-push hook: runs vulture at 100% confidence and fails if any unreachable code is found.
+
+#### /tmp Tooling Extraction
+All useful ad-hoc scripts written to /tmp during agent sessions have been formalised:
+- Vulture analysis logic → `scripts/ci/dead_code_scan.py`
+- Branch introspection logic → `scripts/ci/branch_cleanup.py` + `branch_rebase_check.py`

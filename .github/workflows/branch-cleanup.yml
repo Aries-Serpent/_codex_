@@ -1,0 +1,160 @@
+name: "🌿 Branch Cleanup"
+
+# Comprehensive branch hygiene:
+#   1. Delete fully-merged branches (safe — no code lost)
+#   2. Warn on stale-but-unmerged branches (human review needed)
+#   3. Target-prefix cleanup for agent/CI branches (copilot/, self-heal/run-, dependabot/, etc.)
+#
+# Supersedes the narrower cleanup-stale-branches.yml which only handled self-heal/run- prefix.
+# The old workflow is kept for backward compatibility but delegates here.
+#
+# Strategies are independently toggleable via workflow_dispatch inputs.
+#
+# Protected branches — NEVER deleted:
+#   main  master  develop  0D_base_  release/*  hotfix/*  v[0-9]*
+#
+# Script: scripts/ci/branch_cleanup.py
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md
+
+on:
+  schedule:
+    # Every Sunday at 02:00 UTC (offset from old workflow to avoid conflicts)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — show what would be deleted without deleting'
+        required: false
+        type: boolean
+        default: true
+      delete_merged:
+        description: 'Delete fully-merged branches'
+        required: false
+        type: boolean
+        default: true
+      delete_stale:
+        description: 'Delete stale merged branches (inactive > stale_days)'
+        required: false
+        type: boolean
+        default: false
+      stale_days:
+        description: 'Stale threshold in days (for delete_stale)'
+        required: false
+        type: number
+        default: 30
+      delete_by_prefix:
+        description: 'Delete merged branches matching target prefixes'
+        required: false
+        type: boolean
+        default: true
+      prefixes:
+        description: 'Comma-separated branch prefixes to target'
+        required: false
+        type: string
+        default: 'copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/'
+      post_issue:
+        description: 'Open a GitHub issue with the cleanup report'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: branch-cleanup
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: "🌿 Branch Cleanup"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Skip for dependabot and renovate — they manage their own branches
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
+
+    steps:
+      - name: "📥 Checkout (sparse — script only)"
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/ci/branch_cleanup.py
+          sparse-checkout-cone-mode: false
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: "🌿 Run branch cleanup"
+        id: cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          # Build argument list
+          ARGS=""
+
+          # Strategy flags
+          # On schedule: always delete merged + by-prefix (safe defaults)
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            ARGS="${ARGS} --delete-merged --delete-by-prefix"
+            ARGS="${ARGS} --prefixes copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/"
+            ARGS="${ARGS} --execute"
+          else
+            # Manual dispatch — respect inputs
+            [ "${{ inputs.delete_merged }}" = "true" ]     && ARGS="${ARGS} --delete-merged"
+            [ "${{ inputs.delete_stale }}"  = "true" ]     && ARGS="${ARGS} --delete-stale --stale-days ${{ inputs.stale_days || 30 }}"
+            [ "${{ inputs.delete_by_prefix }}" = "true" ]  && ARGS="${ARGS} --delete-by-prefix --prefixes '${{ inputs.prefixes }}'"
+            [ "${{ inputs.dry_run }}" != "true" ]          && ARGS="${ARGS} --execute"
+          fi
+
+          ARGS="${ARGS} --json-output /tmp/branch_cleanup_report.json --github-summary"
+
+          echo "Running: python scripts/ci/branch_cleanup.py ${ARGS}"
+          # shellcheck disable=SC2086
+          python scripts/ci/branch_cleanup.py ${ARGS}
+
+      - name: "📋 Post issue report (optional)"
+        if: >
+          inputs.post_issue == 'true' &&
+          always()
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+        run: |
+          if [ ! -f /tmp/branch_cleanup_report.json ]; then
+            echo "No report file found — skipping issue creation"
+            exit 0
+          fi
+
+          # Build issue body from JSON report
+          TIMESTAMP=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['timestamp'][:19]+'Z')" 2>/dev/null || echo "unknown")
+          TO_DEL=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['to_delete'])" 2>/dev/null || echo "?")
+          DELETED=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['deleted'])" 2>/dev/null || echo "?")
+          STALE=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d['summary']['stale_warn'])" 2>/dev/null || echo "?")
+          DRY_RUN=$(python3 -c "import json; d=json.load(open('/tmp/branch_cleanup_report.json')); print(d.get('dry_run', True))" 2>/dev/null || echo "True")
+
+          MODE="Dry-run"
+          [ "${DRY_RUN}" = "False" ] && MODE="Execute"
+
+          # Build body using printf to avoid multiline YAML indentation issues
+          BODY=$(printf '## Branch Cleanup Report — %s\n\nMode: %s\nEligible for deletion: %s\nActually deleted: %s\nStale (needs review): %s\n\nSee workflow run for full log.\n\n_Auto-generated by branch-cleanup.yml_' \
+            "${TIMESTAMP}" "${MODE}" "${TO_DEL}" "${DELETED}" "${STALE}")
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🌿 Branch Cleanup Report — ${TIMESTAMP} (${MODE})" \
+            --body "${BODY}" \
+            --label "maintenance" \
+            || echo "⚠️  Could not create issue (label may not exist) — continuing"
+
+      - name: "📦 Upload JSON report as artifact"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: branch-cleanup-report-${{ github.run_number }}
+          path: /tmp/branch_cleanup_report.json
+          retention-days: 30
+          if-no-files-found: ignore

@@ -96,7 +96,11 @@ jobs:
   # REQ-4: Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md touched in last commit
   # REQ-5: Verify CHANGELOG.md touched in last commit
   # REQ-6: Verify SESSION_TIMEBOX_EXPIRED acknowledged (Session Summary posted) before reactivation
-  # REQ-7: Warn when PR has only 1 commit (NEVER stop after one commit — Tier-2 enforcement)
+  # REQ-7:  Warn when PR has only 1 commit (NEVER stop after one commit — Tier-2 enforcement)
+  # REQ-8:  Memory system health check (soft gate — server not running in CI is expected)
+  # REQ-9:  Iterative self-healing validation (5-pass self-review)
+  # REQ-10: Branch rebase status — HARD BLOCK if branch is behind/diverged from base
+  #         Agent MUST rebase before starting any work when this fires.
   #
   # Policy: .codex/CODEBASE_AGENCY_POLICY.md | WF-001-cognitive-preflight-FINAL.md
   cognitive-preflight:
@@ -164,6 +168,7 @@ jobs:
               '',
               '- [ ] **0a. 🤖 Review ALL bot-posted comments** — fetch and address every open thread from `copilot-pull-request-reviewer[bot]`, `github-advanced-security[bot]`, `github-code-quality[bot]`, `github-actions[bot]` on this PR _(per §0 of CODEBASE_AGENCY_POLICY.md)_',
               '- [ ] **0b. ❌ Fix ALL failing CI checks** — review every failing/warning check in the latest workflow runs; fix all code-fixable failures before pushing new commits _(per §0 of CODEBASE_AGENCY_POLICY.md)_',
+              '- [ ] **0c. 🔀 REQ-10: Check branch rebase status** — if a `BRANCH_REBASE_REQUIRED` comment is present on this PR, rebase BEFORE any other work: `git fetch origin && git rebase origin/<base> && git push --force-with-lease` _(CI hard block if unresolved)_',
               '- [ ] **1.** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in your commit _(CI will fail if not touched)_',
               '- [ ] **2.** Review CI failure patterns in the Actions job summary (Actions tab → this run → Job Summary)',
               '- [ ] **3.** Confirm `.gitignore` allows `.codex/agent_auth_session.json` _(CI will fail if blocked)_',
@@ -718,6 +723,120 @@ jobs:
             echo "**$PASS_FAILURES/5 passes FAILED — fix before merge**" >> "$GITHUB_STEP_SUMMARY"
             echo "::error::REQ-9: $PASS_FAILURES self-review passes failed"
           fi
+
+      # ── REQ-10: Branch rebase status — HARD BLOCK ────────────────────────
+      # Tier-1 hard stop — blocks agent activation when the PR branch is
+      # BEHIND or DIVERGED from its base branch.
+      #
+      # Working on a stale branch causes:
+      #   • Merge conflicts at PR merge time
+      #   • Re-introduction of already-fixed code
+      #   • CI failures from stale dependency state
+      #
+      # The branch-rebase-gate.yml workflow (WF-010) posts a
+      # BRANCH_REBASE_REQUIRED comment on the PR.  This step reads that
+      # marker and hard-fails if the comment is present AND unresolved
+      # (no BRANCH_REBASE_RESOLVED comment posted AFTER it).
+      #
+      # The agent MUST:
+      #   1. `git fetch origin <base> && git rebase origin/<base>`
+      #   2. `git push --force-with-lease`
+      #   3. Wait for the next CI run — this step will then pass automatically.
+      - name: "REQ-10: Branch rebase check (hard block if behind/diverged)"
+        id: req10
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';
+            const RESOLVED_MARKER = 'BRANCH_REBASE_RESOLVED';
+            const prNumber = context.issue.number;
+
+            core.info(`REQ-10: Checking rebase status for PR #${prNumber}`);
+
+            // Fetch all PR comments
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            // Find the latest REQUIRED and RESOLVED markers
+            const required = comments.filter(c => (c.body || '').includes(REQUIRED_MARKER));
+            const resolved = comments.filter(c => (c.body || '').includes(RESOLVED_MARKER));
+
+            if (required.length === 0) {
+              // No rebase-required marker → check live compare API as fallback
+              const pr = context.payload.pull_request;
+              if (pr) {
+                const base = pr.base.ref;
+                const head = pr.head.ref;
+                try {
+                  const { data: cmp } = await github.rest.repos.compareCommitsWithBasehead({
+                    owner: context.repo.owner,
+                    repo:  context.repo.repo,
+                    basehead: `${base}...${head}`,
+                  });
+                  const status = cmp.status;
+                  const behindBy = cmp.behind_by || 0;
+                  core.info(`Compare ${base}...${head}: status=${status}, behind_by=${behindBy}`);
+
+                  await core.summary
+                    .addHeading('REQ-10: Branch Rebase Check', 3)
+                    .addRaw(`\n\`${head}\` vs \`${base}\`: **${status}** (behind=${behindBy})\n`)
+                    .write();
+
+                  if (status === 'behind' || status === 'diverged') {
+                    core.setFailed(
+                      `REQ-10 FAIL: Branch '${head}' is ${behindBy} commit(s) BEHIND '${base}'. ` +
+                      `Rebase before starting agent work:\n  git fetch origin ${base}\n  git rebase origin/${base}\n  git push --force-with-lease`
+                    );
+                  } else {
+                    core.info(`REQ-10 PASS: branch is ${status} (no rebase needed)`);
+                  }
+                } catch (err) {
+                  core.warning(`REQ-10: Could not compare branches: ${err.message} — soft warning`);
+                }
+              }
+              return;
+            }
+
+            // There is a REQUIRED marker — check if a RESOLVED marker follows it
+            const latestRequired = required.sort(
+              (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+            )[0];
+            const latestResolved = resolved.length > 0
+              ? resolved.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0]
+              : null;
+
+            const requiredTs = new Date(latestRequired.updated_at);
+            const resolvedTs = latestResolved ? new Date(latestResolved.updated_at) : null;
+
+            const isResolved = resolvedTs && resolvedTs > requiredTs;
+
+            await core.summary
+              .addHeading('REQ-10: Branch Rebase Check', 3)
+              .addRaw(isResolved
+                ? `\n✅ PASS — Rebase marker found but resolved at ${resolvedTs.toISOString()}\n`
+                : `\n🔴 FAIL — \`BRANCH_REBASE_REQUIRED\` marker present (${requiredTs.toISOString()}) and unresolved.\n`
+              )
+              .write();
+
+            if (!isResolved) {
+              core.setFailed(
+                'REQ-10 FAIL: A BRANCH_REBASE_REQUIRED marker is present and unresolved. ' +
+                'The Copilot Agent MUST rebase the branch before starting work. ' +
+                'See the BRANCH_REBASE_REQUIRED comment on this PR for instructions.'
+              );
+            } else {
+              core.info('REQ-10 PASS: Rebase was resolved — branch is up-to-date.');
+            }
 
       # ── Final gate summary ────────────────────────────────────────────────
       - name: Cognitive Pre-flight Final Status
