@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`: 7 backlog items (CB-001–CB-007) for incomplete feature completions
 
 ### Fixed
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3586 (SHA `b2a697bf`) at 2026-03-16T14:09Z [auto-generated]
 - `branch-cleanup.yml`: shell array replaces ARGS string (actionlint SC2089/SC2090)
 - `pr-followup-generator.yml`: `github.head_ref` moved to `env` block (script injection prevention)
 - `agent-auth-delegation.yml` REQ-10: live branch-compare fallback clears stale `BRANCH_REBASE_REQUIRED` markers
