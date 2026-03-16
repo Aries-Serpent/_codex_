@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Verified (S126 — 2026-03-16)
+- **All 7 unresolved conversations confirmed fixed** in current branch:
+  - `session_hook.py`: unnecessary `live_error = RuntimeError(...)` removed from `is_available()` block
+  - `security/decorators.py`: `get_token_scopes` docstring accurately describes TokenManager JWT validation
+  - `quality/cli.py`: `--fail-on`/`--warn-on` help strings list actual category names
+  - `gpu_utils.py`: `ValueError` raised for `embedding_dim <= 0`
+  - `branch-rebase-gate.yml`: `issues: write` permission present
+  - `superposition.py`: `_captured` list prevents double-invocation of `func`
+  - `test_vector_performance.py`: uses `add()`/`search(top_k=...)` API
+- **CI verification**: mypy=0, actionlint=0, branch rebase gate passing on `06d25391`
+- **Test verification**: 7 CB-002 quantum tests + vector performance + security tests all pass
+
 ### Fixed (S125 — 2026-03-16)
 - **mypy regression**: Added `# type: ignore[attr-defined/assignment/arg-type]` suppressors to `bridge_manager.py`, `query_logs.py`, `inference_server.py`, `validate.py`, `workflow/parser.py`, `storage.py`, `github_app.py` — mypy baseline restored to 0
 - **actionlint**: `branch-cleanup.yml` SC2089/SC2090 resolved (ARGS array); `pr-followup-generator.yml` `github.head_ref` moved to `env:` block — 0 actionlint errors
