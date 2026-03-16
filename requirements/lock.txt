@@ -685,7 +685,7 @@ opentelemetry-sdk==1.39.1
     #   ray
 opentelemetry-semantic-conventions==0.60b1
     # via opentelemetry-sdk
-orjson==3.11.6
+orjson==3.11.7
     # via
     #   fastapi
     #   sqltrie
