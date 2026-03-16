@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-16T11:24:27Z",
+  "generated_at": "2026-03-16T13:14:27Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1013,6 +1013,16 @@
       "has_concurrency": true
     },
     {
+      "name": "branch-cleanup",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "branch-rebase-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "build-agent-env-cache",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1744,5 +1754,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "3687961fec91e02e8d0c517692ee7df664b1e98e0264d6b8cf84be7596a0114d"
+  "integrity_sha256": "ce1bc189c8f313a9939810696dae83d747819f16defb2f6a940f3950e577b1c5"
 }
