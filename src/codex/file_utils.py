@@ -98,7 +98,7 @@ def read_text_safe(
 
 def read_text_safe_fallback(
     path: Path,
-    encodings: list[str] = None,
+    encodings: list[str] | None = None,
     max_bytes: Optional[int] = None,
 ) -> tuple[str, str]:
     """Try multiple encodings in order until one succeeds.

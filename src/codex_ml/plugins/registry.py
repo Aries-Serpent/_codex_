@@ -40,13 +40,13 @@ def _iter_entry_points(group: str):
     except TypeError:  # pragma: no cover - older importlib
         eps = metadata.entry_points()
         items = (
-            eps.select(group=group)
+            eps.select(group=group)  # type: ignore[assignment]
             if hasattr(eps, "select")
             else [ep for ep in eps if ep.group == group]
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)
-        items = []
+        items = []  # type: ignore[assignment]
     collected.extend(items)
     try:  # pragma: no cover - best effort fallback
         for dist in metadata.distributions():

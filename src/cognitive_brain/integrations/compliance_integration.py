@@ -51,11 +51,11 @@ class AuditResult:
     audit_id: str
     risk_level: str  # "low", "medium", "high"
     remediation_cost: float  # Estimated cost to fix issues
-    score: float = None  # 0.0 to 1.0
+    score: float = None  # type: ignore[assignment]  # 0.0 to 1.0
     business_impact: float = 0.0  # Business value if approved (0-1)
     violations: List[str] = field(default_factory=list)  # List of violation descriptions
     repo_name: str = ""  # Optional repository name
-    compliance_score: float = None  # Alias for score
+    compliance_score: float = None  # type: ignore[assignment]  # Alias for score
     # Phase 1: Advanced accuracy features (Pattern E & F requirements)
     violation_count: int = 0  # Number of violations (Pattern F severity formula)
     pii_indicators: int = 0  # Number of PII indicators (Pattern E logic)

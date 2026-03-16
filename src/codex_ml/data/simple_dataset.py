@@ -13,7 +13,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from codex_ml.data import dataloader
+from codex_ml.data import dataloader  # type: ignore[attr-defined]
 from codex_ml.tokenization import base as token_base
 
 

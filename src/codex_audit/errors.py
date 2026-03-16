@@ -73,7 +73,7 @@ def append_error_record(path: Path, record: ErrorRecord) -> None:
 
 def load_error_records(path: Path) -> Iterable[ErrorRecord]:
     if not path.exists():
-        return []
+        return []  # type: ignore[return-value]
     entries = json.loads(path.read_text(encoding="utf-8"))
     for entry in entries:
         yield ErrorRecord(

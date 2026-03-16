@@ -104,13 +104,13 @@ class LRUCache:
             }
 
 
-def cached(cache: LRUCache, key_func: Callable[..., str] = None):
+def cached(cache: LRUCache, key_func: Callable[..., str] | None = None):
     """Decorator for caching function results."""
 
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         @wraps(func)
         def wrapper(*args, **kwargs) -> T:
-            if key_func:
+            if key_func is not None:
                 cache_key = key_func(*args, **kwargs)
             else:
                 cache_key = hashlib.sha256(f"{func.__name__}:{args}:{kwargs}".encode()).hexdigest()
@@ -147,7 +147,7 @@ class RateLimiter:
         with self._lock:
             now = time.time()
             elapsed = now - self._last_update
-            self._tokens = min(self.burst, self._tokens + elapsed * self.rate)
+            self._tokens = min(self.burst, self._tokens + elapsed * self.rate)  # type: ignore[assignment]
             self._last_update = now
 
             if self._tokens >= tokens:
@@ -155,7 +155,7 @@ class RateLimiter:
                 return True
             return False
 
-    def wait_for_token(self, timeout: float = None) -> bool:
+    def wait_for_token(self, timeout: float | None = None) -> bool:
         """Wait for a token to become available."""
         start = time.time()
         while True:
@@ -205,7 +205,7 @@ class CircuitBreaker:
         """Get current circuit state."""
         with self._lock:
             if self._state == "open":
-                if time.time() - self._last_failure_time > self.recovery_timeout:
+                if time.time() - self._last_failure_time > self.recovery_timeout:  # type: ignore[operator]
                     self._state = "half-open"
                     self._successes = 0
             return self._state
@@ -316,7 +316,7 @@ class LoadBalancer:
 
         cumulative = 0
         for endpoint in endpoints:
-            cumulative += endpoint.weight
+            cumulative += endpoint.weight  # type: ignore[assignment]
             if r <= cumulative:
                 return endpoint
         return endpoints[-1]
@@ -352,7 +352,7 @@ class ResourcePool:
         for _ in range(min_size):
             self._pool.append(factory())
 
-    def acquire(self, timeout: float = None) -> Optional[T]:
+    def acquire(self, timeout: float | None = None) -> Optional[T]:
         """Acquire a resource from the pool."""
         with self._condition:
             start = time.time()
@@ -361,12 +361,12 @@ class ResourcePool:
                 if self._pool:
                     resource = self._pool.pop()
                     self._in_use += 1
-                    return resource
+                    return resource  # type: ignore[return-value]
 
                 if self._in_use < self.max_size:
                     resource = self.factory()
                     self._in_use += 1
-                    return resource
+                    return resource  # type: ignore[return-value]
 
                 if timeout:
                     remaining = timeout - (time.time() - start)
@@ -379,7 +379,7 @@ class ResourcePool:
     def release(self, resource: T) -> None:
         """Return a resource to the pool."""
         with self._condition:
-            self._pool.append(resource)
+            self._pool.append(resource)  # type: ignore[arg-type]
             self._in_use -= 1
             self._condition.notify()
 
@@ -411,7 +411,7 @@ class PerformanceMonitor:
         self._metrics: dict[str, list[MetricPoint]] = defaultdict(list)
         self._lock = threading.Lock()
 
-    def record(self, name: str, value: float, tags: dict[str, str] = None) -> None:
+    def record(self, name: str, value: float, tags: dict[str, str] | None = None) -> None:
         """Record a metric value."""
         with self._lock:
             point = MetricPoint(name=name, value=value, tags=tags or {})

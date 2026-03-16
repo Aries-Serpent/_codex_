@@ -17,19 +17,19 @@ class LoggerBackend(ABC):
     """Base class for logger backends"""
 
     @abstractmethod
-    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None):
+    def log_metrics(self, metrics: dict[str, Any], step: Optional[int] = None) -> None:
         pass
 
     @abstractmethod
-    def log_params(self, params: dict[str, Any]):
+    def log_params(self, params: dict[str, Any]) -> None:
         pass
 
     @abstractmethod
-    def start_run(self, run_name: Optional[str] = None):
+    def start_run(self, run_name: Optional[str] = None) -> None:
         pass
 
     @abstractmethod
-    def end_run(self):
+    def end_run(self) -> None:
         pass
 
 
@@ -48,17 +48,17 @@ class MLflowBackend(LoggerBackend):
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("MLflow not installed. Install: pip install mlflow") from e
 
-    def start_run(self, run_name=None):
+    def start_run(self, run_name=None) -> None:
         self.mlflow.start_run(run_name=run_name)
 
-    def end_run(self):
+    def end_run(self) -> None:
         self.mlflow.end_run()
 
-    def log_metrics(self, metrics, step=None):
+    def log_metrics(self, metrics, step=None) -> None:
         for k, v in metrics.items():
             self.mlflow.log_metric(k, v, step=step)
 
-    def log_params(self, params):
+    def log_params(self, params) -> None:
         self.mlflow.log_params(params)
 
 
@@ -75,17 +75,17 @@ class TensorBoardBackend(LoggerBackend):
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("TensorBoard not installed. Install: pip install tensorboard") from e
 
-    def start_run(self, run_name=None):
+    def start_run(self, run_name=None) -> None:
         pass
 
-    def end_run(self):
+    def end_run(self) -> None:
         self.writer.close()
 
-    def log_metrics(self, metrics, step=None):
+    def log_metrics(self, metrics, step=None) -> None:
         for k, v in metrics.items():
             self.writer.add_scalar(k, v, step)
 
-    def log_params(self, params):
+    def log_params(self, params) -> None:
         text = "\n".join(f"{k}: {v}" for k, v in params.items())
         self.writer.add_text("params", text)
 
@@ -105,16 +105,16 @@ class WandBBackend(LoggerBackend):
             logger.warning(f"ImportError: {e}", exc_info=True)
             raise ImportError("Weights & Biases not installed. Install: pip install wandb") from e
 
-    def start_run(self, run_name=None):
+    def start_run(self, run_name=None) -> None:
         self.wandb.init(project=self.project, entity=self.entity, name=run_name)
 
-    def end_run(self):
+    def end_run(self) -> None:
         self.wandb.finish()
 
-    def log_metrics(self, metrics, step=None):
+    def log_metrics(self, metrics, step=None) -> None:
         self.wandb.log(metrics, step=step)
 
-    def log_params(self, params):
+    def log_params(self, params) -> None:
         self.wandb.config.update(params)
 
 
@@ -124,11 +124,11 @@ class LoggerRegistry:
     def __init__(self):
         self.backends: dict[str, LoggerBackend] = {}
 
-    def register(self, name: str, backend: LoggerBackend):
+    def register(self, name: str, backend: LoggerBackend) -> None:
         self.backends[name] = backend
         logger.info(f"Registered: {name}")
 
-    def start_run(self, run_name: Optional[str] = None):
+    def start_run(self, run_name: Optional[str] = None) -> None:
         for name, backend in self.backends.items():
             try:
                 backend.start_run(run_name)
@@ -136,7 +136,7 @@ class LoggerRegistry:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed start on {name}: {e}")
 
-    def end_run(self):
+    def end_run(self) -> None:
         for backend in self.backends.values():
             try:
                 backend.end_run()
@@ -144,7 +144,7 @@ class LoggerRegistry:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed end: {e}")
 
-    def log_metrics(self, metrics: dict, step: Optional[int] = None):
+    def log_metrics(self, metrics: dict, step: Optional[int] = None) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
@@ -152,7 +152,7 @@ class LoggerRegistry:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed log: {e}")
 
-    def log_params(self, params: dict):
+    def log_params(self, params: dict) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_params(params)

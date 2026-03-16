@@ -255,6 +255,32 @@ health_score = {
 
 ## Scope
 
+### 📐 Scope Diagram
+
+```mermaid
+graph TD
+    subgraph CognitiveBrainManager["Cognitive Brain Manager — Scope"]
+        State["📊 System State\n.codex/cognitive_brain/"]
+        QA["📋 QA Metrics\n.codex/qa_walkthrough/"]
+        Plans["📝 Phase Plans\nstatus + completion"]
+        Registry["🤖 Agent Registry\ncapability tracking"]
+        Health["💚 Health Score\nAAIS + OKR + coverage"]
+    end
+
+    subgraph Operations["Operations"]
+        Read["view · glob\nRead documents"]
+        Write["create · edit\nGenerate from templates"]
+        Git["bash\ngit log · grep · status"]
+    end
+
+    State <--> Read
+    QA <--> Read
+    Plans --> Write
+    Registry <--> Read
+    Health --> Write
+    Read --> Git
+```
+
 - `.codex/cognitive_brain/` - All phase documents
 - `.codex/qa_walkthrough/` - QA metrics and updates
 - Phase planning, status, and completion documents

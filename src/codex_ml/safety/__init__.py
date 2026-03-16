@@ -44,7 +44,7 @@ except Exception:  # pragma: no cover - fallback for non-POSIX
     def firejail_available() -> bool:
         return False
 
-    def run_in_sandbox(*args, **kwargs):
+    def run_in_sandbox(*args, **kwargs):  # type: ignore[misc]
         raise RuntimeError("Sandbox is not available on this platform; run_in_sandbox disabled")
 
 

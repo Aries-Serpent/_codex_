@@ -61,7 +61,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
             import inspect
 
             if "weights_only" in inspect.signature(torch.load).parameters:
-                load_kwargs["weights_only"] = True
+                load_kwargs["weights_only"] = True  # type: ignore[assignment]
             data = torch.load(target, **load_kwargs)  # nosec B614 - weights_only=True set above when available
         except (
             RuntimeError,

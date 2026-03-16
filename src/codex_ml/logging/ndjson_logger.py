@@ -195,9 +195,8 @@ class NDJSONLogger:
     def __enter__(self) -> "NDJSONLogger":  # pragma: no cover - convenience
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - convenience
+    def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - convenience
         self.close()
-        return False
 
     def _prepare_record(self, record: Mapping[str, Any]) -> MutableMapping[str, Any]:
         payload: MutableMapping[str, Any]
@@ -259,7 +258,7 @@ def timestamped_record(**data: Any) -> dict[str, Any]:
     ts = NDJSONLogger._now()
     payload.setdefault("timestamp", ts)
     payload.setdefault("ts", ts)
-    return payload
+    return payload  # type: ignore[return-value]
 
 
 __all__ = ["NDJSONLogger", "timestamped_record", "is_legacy_mode"]

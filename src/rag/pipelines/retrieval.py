@@ -133,7 +133,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
             )
             self._fallback = InMemoryVectorStore()
         else:
-            self._fallback = None
+            self._fallback = None  # type: ignore[assignment]
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
         if self._fallback is not None:
@@ -279,8 +279,9 @@ class RetrievalPipeline:
         embeddings = self.embedding_pipeline.embed_texts(documents)
 
         added = 0
-        for doc, doc_id, metadata, emb_result in zip(documents, ids, metadatas, embeddings,
-            strict=False):
+        for doc, doc_id, metadata, emb_result in zip(
+            documents, ids, metadatas, embeddings, strict=False
+        ):
             self._store.add(doc_id, doc, emb_result.embedding, metadata)
             added += 1
 

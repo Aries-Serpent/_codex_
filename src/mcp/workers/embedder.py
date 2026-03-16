@@ -173,7 +173,7 @@ class EmbeddingWorker:
                     self._results[task.id] = [r.embedding for r in results]
                 else:
                     # Placeholder for testing
-                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]
+                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]  # type: ignore[misc]
 
                 self._processed_count += 1
 
@@ -204,7 +204,7 @@ class EmbeddingWorker:
 
     def get_result(self, task_id: str) -> list[list[float]] | None:
         """Get results for a completed task."""
-        return self._results.get(task_id)
+        return self._results.get(task_id)  # type: ignore[return-value]
 
     def get_stats(self) -> dict[str, Any]:
         """Get worker statistics."""

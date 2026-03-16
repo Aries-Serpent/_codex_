@@ -99,6 +99,40 @@ coverage:
 lint:
 	nox -s lint
 
+# ── Codebase-wide error discovery ─────────────────────────────────────────
+# `make check`  — run ALL static checks, report every error found.
+# `make fix`    — auto-fix everything possible, then recheck.
+# `make ci`     — full local CI simulation (mirrors GitHub Actions exactly).
+# `make check-fast` — skip slow mypy pass (ruff + isort + auto-fix only).
+
+.PHONY: check fix ci check-fast
+
+check:
+	@echo "$(BOLD)🔍 Running codebase-wide scanner…$(RESET)"
+	python scripts/ci/scan_all.py
+
+check-fast:
+	@echo "$(BOLD)🔍 Fast scan (ruff + isort + auto-fix, no mypy)…$(RESET)"
+	python -m ruff check . --statistics
+	python -m isort . --check-only --quiet
+	python scripts/ci/auto_fix_common_issues.py --check-only
+
+fix:
+	@echo "$(BOLD)🔧 Auto-fixing all fixable issues…$(RESET)"
+	python -m ruff check . --fix
+	python -m isort .
+	python scripts/ci/auto_fix_common_issues.py
+	@echo "$(BOLD)🔍 Rechecking after fixes…$(RESET)"
+	python scripts/ci/scan_all.py
+
+ci:
+	@echo "$(BOLD)🏗  Running full local CI simulation…$(RESET)"
+	bash scripts/ci/simulate_ci_locally.sh
+
+ci-fix:
+	@echo "$(BOLD)🏗  Running full local CI simulation with auto-fix…$(RESET)"
+	bash scripts/ci/simulate_ci_locally.sh --fix
+
 env:
 	nox -s env-snapshot
 

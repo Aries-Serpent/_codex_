@@ -43,20 +43,54 @@ jobs:
         with:
           fetch-depth: 1
 
+      # ── SHA-drift diagnostic ────────────────────────────────────────────
+      # GitHub Actions creates an internal *merge commit* for pull-request
+      # runs (the hypothetical result of merging the PR branch into the base
+      # branch).  git log -1 therefore returns a SHA that does NOT exist in
+      # the PR branch history.  This step surfaces the discrepancy so that
+      # any unexpected mypy count change can be traced back to the merge
+      # commit rather than confusing it with a real regression.
+      - name: 🔍 SHA drift diagnostic
+        run: |
+          echo "### SHA Drift Diagnostic" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Source | SHA |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|--------|-----|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| \`github.sha\` (trigger) | \`${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| \`git log -1\` (checked out) | \`$(git log -1 --format=%H)\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          TRIGGER="${{ github.sha }}"
+          CHECKEDOUT="$(git log -1 --format=%H)"
+          if [ "$TRIGGER" != "$CHECKEDOUT" ]; then
+            echo "⚠️  **SHA drift detected** — CI is running on a GitHub merge-preview" >> "$GITHUB_STEP_SUMMARY"
+            echo "commit (\`${CHECKEDOUT:0:12}\`), not the PR branch HEAD (\`${TRIGGER:0:12}\`)." >> "$GITHUB_STEP_SUMMARY"
+            echo "mypy error counts may differ from local runs on the PR branch." >> "$GITHUB_STEP_SUMMARY"
+            echo ""
+            echo "⚠️  SHA drift: trigger=$TRIGGER checkedout=$CHECKEDOUT"
+            echo "   (CI is on merge-preview commit — mypy count may differ from local run)"
+          else
+            echo "✅  No SHA drift: trigger and checked-out SHA match."
+          fi
+
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
+          # NOTE: no cache: pip here — intentional.  The mypy gate must run in a
+          # clean, reproducible environment so the error count is stable across
+          # runners.  Any cached site-packages from other jobs (torch, pydantic,
+          # etc.) cause phantom type errors that inflate the count by ~160,
+          # making the baseline gate unreliable.  We use an explicit venv below.
 
-      - name: Install mypy and stubs
+      - name: Install mypy and stubs in isolated venv
         run: |
-          pip install --quiet mypy>=1.8.0 types-PyYAML types-requests
+          python -m venv /tmp/mypy-venv --clear
+          /tmp/mypy-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
 
       - name: Run mypy baseline gate
         id: mypy_gate
         run: |
-          python scripts/ci/mypy_baseline.py --require-baseline 2>&1 | tee /tmp/mypy_output.txt
+          /tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline 2>&1 | tee /tmp/mypy_output.txt
           echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Post mypy summary

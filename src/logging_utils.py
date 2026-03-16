@@ -287,10 +287,10 @@ def setup_logging(
             # Use asdict() for dataclasses to handle slots=True compatibility
             # Fall back to dict() for regular mappings
             if hasattr(config, "__dataclass_fields__"):
-                data = asdict(config)  # type: ignore[arg-type]
+                data = asdict(config)  # type: ignore[arg-type,call-overload]
             else:
                 data = dict(config)
-        resolved = LoggingConfig(**data)
+        resolved = LoggingConfig(**data)  # type: ignore[arg-type]
 
     writer = (
         _create_tensorboard_writer(resolved.tensorboard_log_dir)

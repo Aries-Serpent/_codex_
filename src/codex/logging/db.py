@@ -67,8 +67,7 @@ def init_db(db_path: Optional[Path] = None) -> Path:
         if "meta" not in cols:
             conn.execute("ALTER TABLE session_events ADD COLUMN meta TEXT")
         conn.execute(
-            "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx "
-            "ON session_events(session_id, ts)"
+            "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx ON session_events(session_id, ts)"
         )
         conn.commit()
     finally:

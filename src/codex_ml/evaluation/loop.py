@@ -320,7 +320,7 @@ def _resolve_metric_functions(
     if isinstance(metric_specs, dict):
         items = metric_specs.items()
     else:
-        items = ((getattr(fn, "__name__", str(fn)), fn) for fn in metric_specs)
+        items = ((getattr(fn, "__name__", str(fn)), fn) for fn in metric_specs)  # type: ignore[assignment]
     for name, fn in items:
         if isinstance(fn, str):
             resolved[name] = get_metric(fn)
@@ -458,8 +458,8 @@ def run_metrics_evaluation(
         mlflow_info["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
 
     return {
-        "run_id": run_identifier,
-        "metrics": final_metrics,
-        "system": system_metrics,
-        **({"mlflow": mlflow_info} if mlflow_info else {}),
+        "run_id": run_identifier,  # type: ignore[dict-item]
+        "metrics": final_metrics,  # type: ignore[dict-item]
+        "system": system_metrics,  # type: ignore[dict-item]
+        **({"mlflow": mlflow_info} if mlflow_info else {}),  # type: ignore[dict-item]
     }

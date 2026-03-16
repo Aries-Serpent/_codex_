@@ -6,13 +6,13 @@ Measures indexing throughput and build times for different corpus sizes.
 
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .runner import BenchmarkRunner
 
 
 def benchmark_indexing(
-    corpus_sizes: List[int] = None, chunk_sizes: List[int] = None, runs: int = 3
+    corpus_sizes: Optional[List[int]] = None, chunk_sizes: Optional[List[int]] = None, runs: int = 3
 ) -> Dict[str, Any]:
     """
     Benchmark indexing performance with various corpus sizes.
@@ -59,9 +59,9 @@ def benchmark_indexing(
                     avg_doc_size = 500  # Average document size in chars
                     estimated_chunks = (corpus_size * avg_doc_size) / chunk_size
                     throughput = estimated_chunks / (result.duration_ms / 1000)
-                    result.metadata["chunks_per_sec"] = throughput
-                    result.metadata["corpus_size"] = corpus_size
-                    result.metadata["chunk_size"] = chunk_size
+                    result.metadata["chunks_per_sec"] = throughput  # type: ignore[index]
+                    result.metadata["corpus_size"] = corpus_size  # type: ignore[index]
+                    result.metadata["chunk_size"] = chunk_size  # type: ignore[index]
 
     return {
         "results": [r.to_dict() for r in runner.results],

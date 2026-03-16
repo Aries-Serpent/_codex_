@@ -6,7 +6,7 @@
 from typing import List, Optional, Tuple
 
 __version__: str
-__doc__: str
+__doc__: str  # type: ignore[no-redef]
 
 class SwarmState:
     """

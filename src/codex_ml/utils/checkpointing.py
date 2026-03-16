@@ -144,7 +144,7 @@ if TORCH_AVAILABLE:
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
         _torch_manual_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
-        torch.manual_seed = _torch_manual_seed_with_snapshot
+        torch.manual_seed = _torch_manual_seed_with_snapshot  # type: ignore[assignment]
 
 
 @runtime_checkable
@@ -1540,8 +1540,10 @@ class CheckpointManager:
                 )
                 info["path"] = candidate
                 return info
+        raise FileNotFoundError(f"no loadable checkpoint state found under: {root}")
 
     def _sync_remote_candidates(self) -> list[Path]:
+        """Download remote checkpoints to local root and return discovered paths."""
         if self.storage is None or self.remote_prefix is None:
             return []
 

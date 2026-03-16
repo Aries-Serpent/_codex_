@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 
@@ -272,8 +272,8 @@ class YAMLASTAdapter(BaseASTAdapter):
             metadata["length"] = node.metadata.get("length", 0)
             metadata["item_types"] = node.metadata.get("item_types", [])
         elif node.node_type == "scalar":
-            metadata["value"] = node.metadata.get("value")
-            metadata["value_type"] = node.metadata.get("value_type")
+            metadata["value"] = node.metadata.get("value")  # type: ignore[assignment]
+            metadata["value_type"] = node.metadata.get("value_type")  # type: ignore[assignment]
             metadata["is_null"] = node.metadata.get("is_null", False)
 
         return metadata

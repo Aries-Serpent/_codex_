@@ -208,7 +208,7 @@ class StandardizedASTNode:
     ) -> "StandardizedASTNode":
         """Create from dictionary."""
         location = SourceLocation.from_dict(data["location"]) if data.get("location") else None
-        node = cls(
+        node = cls(  # type: ignore[call-arg]
             node_id=data["node_id"],
             type=data["type"],
             name=data["name"],

@@ -50,9 +50,9 @@ try:  # pragma: no cover - guard for environments without torch data utilities
     from torch.utils.data import TensorDataset as TorchTensorDataset
     from torch.utils.data import random_split as torch_random_split
 except Exception:  # pragma: no cover - provide graceful degradation
-    TorchDataLoader = cast(Any, None)
-    TorchDataset = cast(Any, None)
-    TorchTensorDataset = cast(Any, None)
+    TorchDataLoader = cast(Any, None)  # type: ignore[misc]
+    TorchDataset = cast(Any, None)  # type: ignore[misc]
+    TorchTensorDataset = cast(Any, None)  # type: ignore[misc]
     torch_random_split = cast(Any, None)
 
 BaseDataset: type[Any]
@@ -239,7 +239,7 @@ def _build_dataloaders_from_config(
             )
 
     def collate(batch: Iterable[tuple[str, int]]) -> tuple[Any, Any]:
-        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)  # type: ignore[return-value]
 
     train_loader = TorchDataLoader(
         train_set,
@@ -411,7 +411,7 @@ def deterministic_split(
 
     if torch is None or torch_random_split is None:
         raise RuntimeError("torch is required for deterministic_split")
-    lengths = _compute_lengths(len(dataset), lengths_or_fracs)
+    lengths = _compute_lengths(len(dataset), lengths_or_fracs)  # type: ignore[arg-type]
     generator = torch.Generator().manual_seed(int(seed))
     parts = torch_random_split(dataset, lengths, generator=generator)
     return tuple(parts)

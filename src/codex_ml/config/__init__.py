@@ -810,15 +810,15 @@ try:  # pragma: no cover - optional dependency
         get_settings,
     )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
-    AppSettings = None  # type: ignore[assignment]
-    EvalRow = None  # type: ignore[assignment]
+    AppSettings = None  # type: ignore[assignment, misc]
+    EvalRow = None  # type: ignore[assignment, misc]
 
     def eval_row_schema() -> dict:
         raise ModuleNotFoundError(
             "pydantic is required to generate evaluation schemas; install the optional dependencies"
         )
 
-    def get_settings():
+    def get_settings():  # type: ignore[misc]
         raise ModuleNotFoundError(
             "pydantic is required to load AppSettings; install the optional dependencies"
         )

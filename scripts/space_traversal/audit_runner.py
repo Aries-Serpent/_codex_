@@ -527,6 +527,49 @@ def stage_s5_gaps(cfg, scored_caps):
     logger.info(f"Gap analysis complete: {len(low_maturity)} low maturity, {len(component_gaps)} with component gaps")
 
 
+
+
+def stage_s7_manifest(cfg: dict) -> dict:
+    """Stage S7: Build sorted artifact manifest + coverage stats.
+
+    Args:
+        cfg: Configuration dict with ``output.artifacts_dir`` key.
+
+    Returns:
+        Manifest dict with ``artifacts``, ``artifact_count``, and optionally
+        ``coverage_stats`` keys.  Written to ``<ROOT>/audit_run_manifest.json``.
+    """
+    artifacts_dir = Path(cfg.get("output", {}).get("artifacts_dir", "audit_artifacts"))
+    artifacts = sorted(artifacts_dir.glob("*.json"), key=lambda p: p.name)
+    artifact_entries = [{"name": p.name, "path": str(p)} for p in artifacts]
+
+    coverage_map_path = artifacts_dir / "coverage_map.json"
+    manifest: dict = {
+        "artifacts": artifact_entries,
+        "artifact_count": len(artifact_entries),
+    }
+
+    if coverage_map_path.exists():
+        with open(coverage_map_path, encoding="utf-8") as fh:
+            raw: dict = json.load(fh)
+        percents = [
+            float(v.get("percent", 0.0))
+            for v in raw.values()
+            if isinstance(v, dict)
+        ]
+        manifest["coverage_stats"] = {
+            "total_files": len(raw),
+            "min_percent": min(percents, default=0.0),
+            "max_percent": max(percents, default=0.0),
+            "avg_percent": sum(percents) / len(percents) if percents else 0.0,
+        }
+
+    # Persist to disk (ROOT may be monkeypatched in tests)
+    _root = globals().get("ROOT", Path("."))
+    out_path = Path(_root) / "audit_run_manifest.json"
+    out_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return manifest
+
 def stage_s6_render(
     cfg: dict,
     scored_caps: Optional[list] = None,

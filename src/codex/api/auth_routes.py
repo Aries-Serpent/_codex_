@@ -73,6 +73,7 @@ class _EndpointRateLimiter:
     def window(self) -> int:
         return self._window
 
+
 # ---------------------------------------------------------------------------
 # Request / response schemas
 # ---------------------------------------------------------------------------
@@ -170,7 +171,7 @@ class RefreshResponse(BaseModel):
 # Router factory
 # ---------------------------------------------------------------------------
 
-_DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105
+_DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105  # pragma: allowlist secret
 
 
 def create_auth_router(
@@ -211,15 +212,9 @@ def create_auth_router(
     * **429** — Rate limit exceeded.
     """
     if authenticator is None:
-        resolved_secret = (
-            secret_key
-            or os.environ.get("CODEX_AUTH_SECRET")
-            or _DEFAULT_SECRET
-        )
+        resolved_secret = secret_key or os.environ.get("CODEX_AUTH_SECRET") or _DEFAULT_SECRET
         if resolved_secret == _DEFAULT_SECRET:
-            logger.warning(
-                "Using default JWT secret — set CODEX_AUTH_SECRET for production"
-            )
+            logger.warning("Using default JWT secret — set CODEX_AUTH_SECRET for production")
         store = UserStore()
         tokens = TokenManager(secret_key=resolved_secret)
         authenticator = Authenticator(user_store=store, token_manager=tokens)
@@ -294,19 +289,13 @@ def create_auth_router(
             code = getattr(exc, "code", "")
             if code == "mfa_required":
                 logger.info("MFA required for login attempt from %s", ip_address)
-                raise HTTPException(
-                    status_code=403, detail="MFA verification required"
-                ) from exc
+                raise HTTPException(status_code=403, detail="MFA verification required") from exc
             if code == "mfa_failed":
                 logger.warning("MFA verification failed from %s", ip_address)
-                raise HTTPException(
-                    status_code=403, detail="MFA verification failed"
-                ) from exc
+                raise HTTPException(status_code=403, detail="MFA verification failed") from exc
             if hasattr(exc, "code"):
                 logger.warning("Login failed from %s: %s", ip_address, type(exc).__name__)
-                raise HTTPException(
-                    status_code=401, detail="Invalid credentials"
-                ) from exc
+                raise HTTPException(status_code=401, detail="Invalid credentials") from exc
             # Not an auth-domain exception — log and re-raise as 500
             exc_type = type(exc).__name__
             logger.error("Unexpected error during login from %s: %s", ip_address, exc_type)

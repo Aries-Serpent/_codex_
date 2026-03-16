@@ -24,4 +24,14 @@ ignore = ["E501"]  # Line too long - E501 suppressed; line-length=100 matches py
 "src/codex/retrieval/stores/*.py" = ["E402"]
 "services/ita/app/*.py" = ["E402"]
 
+# PR #3584 S57: pytest.importorskip() forces subsequent imports below the skip
+# call — E402 is the correct/expected pattern in all test files.  F811 is
+# intentional in conftest fixtures and importorskip guard patterns.
+"tests/**/*.py" = ["E402", "F811"]
+"tests/*.py"    = ["E402", "F811"]
+
+# Stub shim packages deliberately re-export/redefine symbols for compat — F811 expected.
+"torch/**/*.py"               = ["F811"]
+"tests/stub_packages/**/*.py" = ["E402", "F811"]
+
 # Note: F821 has ZERO tolerance - no exceptions for undefined names

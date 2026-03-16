@@ -34,6 +34,26 @@ except ImportError as e:
     class NumpyStub:  # type: ignore
         ndarray = Any
 
+        @staticmethod
+        def array(obj: Any, *args: Any, **kwargs: Any) -> Any:
+            return obj
+
+        @staticmethod
+        def zeros(shape: Any, *args: Any, **kwargs: Any) -> Any:
+            return []
+
+        @staticmethod
+        def ones(shape: Any, *args: Any, **kwargs: Any) -> Any:
+            return []
+
+        @staticmethod
+        def zeros_like(a: Any, *args: Any, **kwargs: Any) -> Any:
+            return a
+
+        @staticmethod
+        def ones_like(a: Any, *args: Any, **kwargs: Any) -> Any:
+            return a
+
     np = NumpyStub
 
 # Optional scipy dependency for optimized algorithms

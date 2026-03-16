@@ -406,8 +406,8 @@ class HFTokenizer(TokenizerAdapter):
                 tj = Path(artifacts_dir) / "tokenizer.json"
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
-                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))
-                self._tk.add_special_tokens(
+                self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore[assignment]
+                self._tk.add_special_tokens(  # type: ignore[attr-defined]
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105
@@ -437,15 +437,14 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
             return
 
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
 
-    # ---- Encoding / decoding helpers ------------------------------------
     def _encode_call_kwargs(self, add_special_tokens: bool) -> dict[str, Any]:
         """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
         return {

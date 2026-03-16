@@ -311,7 +311,7 @@ class SQLiteMemoryBackend(MemoryProtocol):
             params.append(f"%{query.text}%")
 
         sql += " ORDER BY timestamp DESC LIMIT ?"
-        params.append(query.limit)
+        params.append(query.limit)  # type: ignore[arg-type]
 
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row

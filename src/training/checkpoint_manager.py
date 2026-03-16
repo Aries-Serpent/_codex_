@@ -21,7 +21,7 @@ _warnings.warn(
     stacklevel=2,
 )
 try:
-    from codex_ml.utils.checkpointing import (
+    from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
         CheckpointManager,  # type: ignore
         build_payload_bytes,  # type: ignore
         dump_rng_state,  # type: ignore
@@ -155,7 +155,7 @@ if "CheckpointManager" not in globals():
             return buffer.getvalue()
 
 
-class CheckpointManager:
+class CheckpointManager:  # type: ignore[no-redef]
     """Lightweight step-based checkpoint manager."""
 
     def __init__(

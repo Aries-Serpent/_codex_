@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 # Module-level requests availability flag — avoids repeated ImportError handling
 try:
-    import requests as _requests
+    import requests as _requests  # type: ignore[import-untyped]
 
     HAS_REQUESTS = True
 except ImportError:

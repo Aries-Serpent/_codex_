@@ -23,8 +23,8 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    torch = None
-    F = None
+    torch = None  # type: ignore[assignment]
+    F = None  # type: ignore[assignment]
 
 
 class PerplexityMetric(MetricAdapter):

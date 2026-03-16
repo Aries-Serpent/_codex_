@@ -157,7 +157,7 @@ class QuantumTestSuite:
         """
         from src.common.error_handling import safe_call
 
-        results = {
+        results: dict[str, Any] = {
             "total": len(self.tests),
             "passed": 0,
             "failed": 0,

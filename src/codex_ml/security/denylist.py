@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Pattern
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 
 class DenylistViolation(RuntimeError):

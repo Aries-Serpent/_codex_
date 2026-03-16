@@ -71,7 +71,7 @@ class WorkflowRefactorer:
             True if modified, False if already present
         """
         try:
-            import yaml
+            import yaml  # type: ignore[import-untyped]
         except ImportError:
             logger.error("PyYAML not installed")
             return False
@@ -262,7 +262,7 @@ class WorkflowRefactorer:
         """
         workflows = self.list_workflows()
 
-        results = {
+        results: dict[str, Any] = {
             "total_workflows": len(workflows),
             "dispatch_added": 0,
             "runner_updated": 0,

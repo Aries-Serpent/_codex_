@@ -9,6 +9,7 @@ implement.  Concrete implementations include:
 - :class:`~codex.auth.sqlite_user_repository.SQLiteUserRepository`
   — durable single-node SQLite store (``CODEX_USERSTORE_BACKEND=sqlite``)
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

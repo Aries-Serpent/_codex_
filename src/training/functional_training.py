@@ -34,7 +34,7 @@ import torch.nn.functional as F
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
-from codex_ml.utils.checkpointing import (
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
     dump_rng_state,
     load_rng_state,
     load_training_checkpoint,
@@ -139,7 +139,7 @@ except Exception:  # pragma: no cover - hf trainer not available
     def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
         return {}
 
-    def get_hf_revision(identifier: PathLike[str] | str) -> str:
+    def get_hf_revision(identifier: PathLike[str] | str) -> str:  # type: ignore[misc]
         norm = os.fspath(identifier) if isinstance(identifier, PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")
@@ -710,7 +710,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             for epoch in range(start_epoch, cfg.epochs):
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
-                for step, batch in enumerate(train_loader):
+                for step, batch in enumerate(train_loader):  # type: ignore[var-annotated]
                     if epoch == start_epoch and step < start_step:
                         continue
                     if cfg.limit_train_batches and step >= cfg.limit_train_batches:

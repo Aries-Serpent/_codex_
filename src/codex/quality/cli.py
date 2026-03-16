@@ -101,7 +101,7 @@ def smell_main(
 
     # Try loading config if it exists
     try:
-        import yaml
+        import yaml  # type: ignore[import-untyped]
 
         cfg_path = Path(config)
         if cfg_path.exists():

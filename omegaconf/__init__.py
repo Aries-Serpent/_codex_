@@ -60,7 +60,7 @@ if _real_module is not None:
 else:
     from yaml import safe_dump, safe_load  # type: ignore
 
-    __all__ = ["DictConfig", "OmegaConf", "MISSING"]
+    __all__ = ["DictConfig", "ListConfig", "OmegaConf", "MISSING"]
 
     class _MissingSentinel:
         def __repr__(self) -> str:  # pragma: no cover - simple repr
@@ -130,6 +130,12 @@ else:
             else:
                 result[key] = _to_dictconfig(value)
         return result
+
+    class ListConfig(list):
+        """Simple list-backed stand-in for OmegaConf's ListConfig."""
+
+        def __init__(self, initial: Any = None) -> None:
+            super().__init__(initial or [])
 
     class OmegaConf:
         @staticmethod
@@ -215,6 +221,28 @@ else:
                         target[k] = _to_dictconfig(v)
                 else:
                     raise TypeError("OmegaConf.update without key requires mapping value")
+
+        @staticmethod
+        def to_yaml(cfg: Any, *, resolve: bool = False) -> str:
+            from yaml import safe_dump
+            container = OmegaConf.to_container(cfg, resolve=resolve)
+            return safe_dump(container, default_flow_style=False)
+
+        @staticmethod
+        def select(cfg: Any, key: str, default: Any = None) -> Any:
+            parts = key.split(".")
+            current = cfg
+            for part in parts:
+                if current is None:
+                    return default
+                try:
+                    if isinstance(current, Mapping):
+                        current = current.get(part, default)
+                    else:
+                        current = getattr(current, part, default)
+                except Exception:
+                    return default
+            return current
 
 
 del _real_module

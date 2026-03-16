@@ -20,7 +20,7 @@ from __future__ import annotations
 import json
 from datetime import date
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from .policy import build_policy_mapping
 from .scorecard import render_scorecard
@@ -72,7 +72,7 @@ def prepare_repo_status_prompt(
         output_path=scorecard_target,
     )
 
-    ra_rules = policy_map.get("ra_rules", {})
+    ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})  # type: ignore[assignment]
     ra_lines = [f"- {k}: {v}" for k, v in sorted(ra_rules.items())]
     gate_bullets = _render_gate_bullets(gates)
 

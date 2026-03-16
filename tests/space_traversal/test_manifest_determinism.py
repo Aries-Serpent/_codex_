@@ -3,12 +3,9 @@
 import json
 from pathlib import Path
 
-import pytest
-
 import scripts.space_traversal.audit_runner as audit_runner
 
 
-@pytest.mark.skip(reason="stage_s7_manifest not yet implemented in audit_runner")
 def test_stage_s7_manifest_sorts_artifacts_and_reports_coverage(monkeypatch, tmp_path):
     """Test that manifest artifacts are sorted and coverage_stats is properly computed."""
     artifacts_dir = tmp_path / "audit_artifacts"
@@ -68,7 +65,6 @@ def test_stage_s7_manifest_sorts_artifacts_and_reports_coverage(monkeypatch, tmp
     assert persisted["coverage_stats"] == expected_stats
 
 
-@pytest.mark.skip(reason="stage_s7_manifest not yet implemented in audit_runner")
 def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
     """Test that manifest handles empty coverage_map correctly."""
     artifacts_dir = tmp_path / "audit_artifacts"
@@ -111,7 +107,6 @@ def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
     assert manifest["coverage_stats"] == expected_stats
 
 
-@pytest.mark.skip(reason="stage_s7_manifest not yet implemented in audit_runner")
 def test_stage_s7_manifest_no_coverage_file(monkeypatch, tmp_path):
     """Test that manifest works without coverage_map.json."""
     artifacts_dir = tmp_path / "audit_artifacts"

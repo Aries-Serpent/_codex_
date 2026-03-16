@@ -171,8 +171,9 @@ def run_exp5_validation(scenarios: int = 200, seed: int = 42) -> EXP5Results:
     # Note: This measures consistency between memory and baseline decisions,
     # not absolute accuracy against ground truth. Both could be wrong together.
     # For true accuracy, compare against ground_truth from scenarios.
-    agreements = sum(1 for m, b in zip(memory_decisions, baseline_decisions,
-        strict=False) if m == b)
+    agreements = sum(
+        1 for m, b in zip(memory_decisions, baseline_decisions, strict=False) if m == b
+    )
     accuracy = agreements / len(memory_decisions)
 
     # For k₁ calculation, we need error rate against ground truth

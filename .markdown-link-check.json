@@ -65,12 +65,22 @@
     {
       "comment": "GitHub Copilot extensions docs (new feature, docs may be incomplete)",
       "pattern": "^https://docs\\.github\\.com/en/copilot/building-copilot-extensions/building-a-copilot-agent"
+    },
+    {
+      "comment": "GitHub Issues/Discussions/Pulls pages \u2014 commonly return 502/429 from rate limiting",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/(issues|discussions|pulls)$"
+    },
+    {
+      "comment": "GitHub Issues/Discussions/Pulls with trailing slash",
+      "pattern": "^https://github\\.com/Aries-Serpent/_codex_/(issues|discussions|pulls)/"
     }
   ],
   "replacementPatterns": [],
   "httpHeaders": [
     {
-      "urls": ["https://github.com"],
+      "urls": [
+        "https://github.com"
+      ],
       "headers": {
         "Accept": "text/html",
         "User-Agent": "Mozilla/5.0"
@@ -81,5 +91,17 @@
   "retryOn429": true,
   "retryCount": 3,
   "fallbackRetryDelay": "10s",
-  "aliveStatusCodes": [200, 206, 301, 302, 307, 308, 400, 403, 429]
+  "aliveStatusCodes": [
+    200,
+    206,
+    301,
+    302,
+    307,
+    308,
+    400,
+    403,
+    429,
+    502,
+    503
+  ]
 }

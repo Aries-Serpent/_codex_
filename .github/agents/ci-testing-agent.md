@@ -114,6 +114,37 @@ python -m pytest <targeted_regression_tests> -v --timeout=60 --tb=short
 
 ## Overview
 
+### 📐 Scope Diagram
+
+```mermaid
+graph LR
+    subgraph CITestingAgent["CI Testing Agent v4.0 — Scope"]
+        P1["Phase 1\nLog Retrieval\nGitHub MCP"]
+        P2["Phase 2\nTriage\n29 patterns"]
+        P3["Phase 3\nFix\n17 patterns"]
+        P4["Phase 4\nValidate\nruff + pytest"]
+        P5["Phase 5\nReport\ntracking log"]
+    end
+
+    subgraph Absorbed["Absorbed Agents"]
+        EMS["ci-emergency-response-agent ✓"]
+        LOG["ci-log-retrieval-agent ✓"]
+        FIX["ci-failure-resolution-agent ✓"]
+    end
+
+    subgraph Brain["Cognitive Brain"]
+        PAT["pattern_learning_store.json"]
+        OKR["OKRTracker.mark_task_complete"]
+    end
+
+    EMS -.->|"merged"| CITestingAgent
+    LOG -.->|"merged"| CITestingAgent
+    FIX -.->|"merged"| CITestingAgent
+    P1 --> P2 --> P3 --> P4 --> P5
+    P5 --> OKR
+    P3 <--> PAT
+```
+
 
 ## 🧠 Cognitive Brain Integration
 

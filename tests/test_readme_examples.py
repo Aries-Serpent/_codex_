@@ -11,14 +11,16 @@ import sqlite3
 import pytest
 
 
-@pytest.mark.skip(reason="SessionLogger example removed from README")
 def test_readme_session_logger_example(tmp_path, monkeypatch):
     root = pathlib.Path(__file__).resolve().parents[1]
     readme = (root / "README.md").read_text()
     blocks = re.findall(r"```python\n(.*?)```", readme, re.DOTALL)
     snippet = next(
-        b for b in blocks if "SessionLogger" in b and 'sl.log("assistant", "hello")' in b
+        (b for b in blocks if "SessionLogger" in b and 'sl.log("assistant", "hello")' in b),
+        None,
     )
+    if snippet is None:
+        pytest.skip("SessionLogger example not found in README")
 
     # Validate snippet before execution - must only contain expected imports and SessionLogger usage
     if not all(safe in snippet for safe in ["SessionLogger", "log"]):

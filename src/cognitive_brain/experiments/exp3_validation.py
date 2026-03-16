@@ -81,7 +81,7 @@ def generate_test_suite(num_tests: int = 100, seed: int = 42) -> List[TestCase]:
                 execution_time=exec_time,
                 will_fail=will_fail,
                 failure_rate=historical_failure_rate,
-                last_failure_time=last_failure,
+                last_failure_time=last_failure,  # type: ignore[arg-type]
                 coverage_contribution=coverage,
                 complexity_score=complexity,
             )

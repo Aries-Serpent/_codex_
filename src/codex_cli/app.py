@@ -46,7 +46,7 @@ else:  # pragma: no cover - click fallback
 
     echo = _click.echo
 
-    class Exit(SystemExit):
+    class Exit(SystemExit):  # type: ignore[no-redef]
         def __init__(self, code: int = 0) -> None:
             super().__init__(code)
 

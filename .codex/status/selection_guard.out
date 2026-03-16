@@ -1,0 +1,11 @@
+== Selection Guard Report ==
+idx | req_hits/total | opt_hits | status
+----+---------------+----------+--------
+  1 |   0/7         |        0 | MISSING
+     missing: docs/rubrics/codex_eval_rubric_v3.md, docs/ops/local_gates.md, docs/checklists/approval_gate_checklist.md, docs/samples/intent_validation_example.md, samples/broken_fence.sample.md, tests/evaluators/test_validate_fences_sample.py, tests/samples/test_samples_exist.py
+  2 |   0/7         |        0 | MISSING
+     missing: docs/rubrics/codex_eval_rubric_v3.md, docs/ops/local_gates.md, docs/checklists/approval_gate_checklist.md, docs/samples/intent_validation_example.md, samples/broken_fence.sample.md, tests/evaluators/test_validate_fences_sample.py, tests/samples/test_samples_exist.py
+  3 |   0/7         |        0 | MISSING
+     missing: docs/rubrics/codex_eval_rubric_v3.md, docs/ops/local_gates.md, docs/checklists/approval_gate_checklist.md, docs/samples/intent_validation_example.md, samples/broken_fence.sample.md, tests/evaluators/test_validate_fences_sample.py, tests/samples/test_samples_exist.py
+  4 |   0/7         |        0 | MISSING
+     missing: docs/rubrics/codex_eval_rubric_v3.md, docs/ops/local_gates.md, docs/checklists/approval_gate_checklist.md, docs/samples/intent_validation_example.md, samples/broken_fence.sample.md, tests/evaluators/test_validate_fences_sample.py, tests/samples/test_samples_exist.py

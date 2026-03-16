@@ -77,7 +77,7 @@ try:
     from codex_ml.utils.repro import record_dataset_checksums
 except Exception:  # noqa: BLE001
 
-    def record_dataset_checksums(*_, **__):
+    def record_dataset_checksums(*_, **__) -> dict[str, Any]:
         return {}
 
 
@@ -85,7 +85,7 @@ try:
     from codex_ml.utils.seeding import set_reproducible
 except Exception:  # noqa: BLE001
 
-    def set_reproducible(*_, **__):
+    def set_reproducible(*_, **__) -> None:
         return None
 
 
@@ -93,7 +93,7 @@ try:
     from codex_ml.telemetry import start_metrics_server
 except Exception:  # noqa: BLE001
 
-    def start_metrics_server(*_, **__):
+    def start_metrics_server(*_, **__) -> None:
         return None
 
 
@@ -139,7 +139,7 @@ except Exception:  # noqa: BLE001
     apply_lora = None
 
 try:
-    from codex_ml.data import loaders as data_loaders
+    from codex_ml.data import loaders as data_loaders  # type: ignore[attr-defined]
 except Exception:  # noqa: BLE001
     data_loaders = None
 
@@ -185,7 +185,7 @@ try:
     from codex_ml.utils.determinism import set_cudnn_deterministic
 except Exception:  # noqa: BLE001
 
-    def set_cudnn_deterministic(enable: bool, benchmark: bool = False):
+    def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         return
 
 
@@ -199,7 +199,7 @@ except Exception:  # noqa: BLE001
 
 if _HAS_TORCH:
 
-    class ToyDataset(Dataset):
+    class ToyDataset(Dataset):  # type: ignore[valid-type,misc]
         def __init__(
             self,
             *,
@@ -226,10 +226,7 @@ if _HAS_TORCH:
 
 else:
 
-    class ToyDataset:
-        def __init__(self, *_, **__):
-            raise RuntimeError("Torch is required to construct ToyDataset")
-
+    class ToyDataset:  # type: ignore[no-redef]
         def __len__(self) -> int:  # pragma: no cover - defensive
             return 0
 
@@ -381,7 +378,7 @@ _DEFAULT_SEED = 1234
 
 def _normalise_snapshot(value: Any) -> Any:
     if is_dataclass(value):
-        return _normalise_snapshot(asdict(value))
+        return _normalise_snapshot(asdict(value))  # type: ignore[arg-type]
     if isinstance(value, Mapping):
         return {str(key): _normalise_snapshot(item) for key, item in value.items()}
     if isinstance(value, (list, tuple, set)):
@@ -435,7 +432,7 @@ def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any])
 def _set_seed(seed: Optional[int]) -> int:
     if seed in (None, 0):
         seed = _DEFAULT_SEED
-    resolved_seed = int(seed)
+    resolved_seed = int(seed)  # type: ignore[arg-type]
     random.seed(resolved_seed)
     try:
         import numpy as np  # noqa
@@ -1113,7 +1110,7 @@ class TrainingMetrics:
     optimizer_steps: int = 0
     total_steps: int = 0
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -1186,13 +1183,13 @@ def run_training(
     default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
     art_dir_path: Path | None = default_art_dir
     try:
-        art_dir_path.mkdir(parents=True, exist_ok=True)
+        art_dir_path.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
         if _telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0:
-            telemetry_file = art_dir_path / "telemetry.ndjson"
+            telemetry_file = art_dir_path / "telemetry.ndjson"  # type: ignore[operator]
             telemetry_file.touch(exist_ok=True)
-        metrics_ndjson = art_dir_path / "metrics.ndjson"
+        metrics_ndjson = art_dir_path / "metrics.ndjson"  # type: ignore[operator]
         metrics_ndjson.touch(exist_ok=True)
-        metrics_json = art_dir_path / "metrics.json"
+        metrics_json = art_dir_path / "metrics.json"  # type: ignore[operator]
         if not metrics_json.exists():
             metrics_json.write_text("[]\n", encoding="utf-8")
     except Exception as exc:  # noqa: BLE001
@@ -1882,7 +1879,7 @@ def run_training(
                     try:
                         _batch = next(loader_iter)
                     except StopIteration:
-                        loader_iter = iter(train_loader)
+                        loader_iter = iter(train_loader)  # type: ignore[arg-type]
                         _batch = next(loader_iter)
                     finally:
                         load_duration = time.perf_counter() - load_start

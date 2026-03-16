@@ -196,7 +196,7 @@ _SENSITIVE_LOG_KEYS = (
     "output_text",
 )
 
-_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"  # pragma: allowlist secret
 
 _SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),
@@ -587,7 +587,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         return _emit_degradation_banner(loggers)
 
     # Fallback to argparse flags
-    component_statuses: list[TelemetryComponentStatus] = []
+    component_statuses: list[TelemetryComponentStatus] = []  # type: ignore[no-redef]
 
     logdir = getattr(args, "tb_logdir", "") or "./runs"
     tb_handle = None

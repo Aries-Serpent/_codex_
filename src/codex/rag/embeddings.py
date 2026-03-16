@@ -397,11 +397,13 @@ def create_embedding_provider(
         try:
             logger.info("Attempting sentence-transformers provider")
             model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
-            provider = LocalSentenceTransformerProvider(model_name=model_name_st, **kwargs)
+            provider: EmbeddingProvider = LocalSentenceTransformerProvider(  # type: ignore[assignment]
+                model_name=model_name_st, **kwargs
+            )
             logger.info("✓ Using sentence-transformers provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
-            return provider
+            return provider  # type: ignore[return-value]
         except Exception as e:
             logger.debug(f"sentence-transformers unavailable: {e}")
 
@@ -411,12 +413,12 @@ def create_embedding_provider(
 
             logger.info("Attempting Ollama provider")
             model_name_ollama = model_name or "nomic-embed-text"
-            provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)
-            if provider._check_health():
+            provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)  # type: ignore[assignment]
+            if provider._check_health():  # type: ignore[attr-defined]
                 logger.info("✓ Using Ollama provider")
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
-                return provider
+                return provider  # type: ignore[return-value]
             else:
                 logger.debug("Ollama server not running")
         except Exception as e:
@@ -428,11 +430,11 @@ def create_embedding_provider(
                 from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
 
                 logger.info("Attempting llama.cpp provider")
-                provider = LlamaCppEmbeddingProvider(**kwargs)
+                provider = LlamaCppEmbeddingProvider(**kwargs)  # type: ignore[assignment]
                 logger.info("✓ Using llama.cpp provider")
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
-                return provider
+                return provider  # type: ignore[return-value]
             except Exception as e:
                 logger.debug(f"llama.cpp unavailable: {e}")
 
@@ -442,11 +444,11 @@ def create_embedding_provider(
 
             logger.info("Attempting GPT4All provider")
             model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
-            provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)
+            provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)  # type: ignore[assignment]
             logger.info("✓ Using GPT4All provider")
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
-            return provider
+            return provider  # type: ignore[return-value]
         except Exception as e:
             logger.debug(f"GPT4All unavailable: {e}")
 
@@ -459,26 +461,26 @@ def create_embedding_provider(
     # Explicit provider selection
     elif provider_type == "local":
         model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
-        provider = LocalSentenceTransformerProvider(model_name=model_name, **kwargs)
+        provider = LocalSentenceTransformerProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
 
     elif provider_type == "ollama":
         from .providers.ollama_provider import OllamaEmbeddingProvider
 
         model_name = model_name or "nomic-embed-text"
-        provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)
+        provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
 
     elif provider_type == "llamacpp":
         from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
 
         if "model_path" not in kwargs:
             raise ValueError("llama.cpp provider requires 'model_path' parameter")
-        provider = LlamaCppEmbeddingProvider(**kwargs)
+        provider = LlamaCppEmbeddingProvider(**kwargs)  # type: ignore[assignment]
 
     elif provider_type == "gpt4all":
         from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
 
         model_name = model_name or "nomic-embed-text-v1.5"
-        provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)
+        provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
 
     elif provider_type == "tfidf":
         max_features = kwargs.get("max_features", 384)
@@ -516,7 +518,7 @@ def create_embedding_provider(
         provider = CachedEmbeddingProvider(provider, cache_dir=cache_dir)
 
     logger.info(f"Created embedding provider: {provider.__class__.__name__}")
-    return provider
+    return provider  # type: ignore[return-value]
 
 
 class TfidfEmbeddingProvider:

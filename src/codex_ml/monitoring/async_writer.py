@@ -113,9 +113,8 @@ class AsyncLogFile:
     def __enter__(self) -> "AsyncLogFile":
         return self
 
-    def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - trivial
+    def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial
         self.close()
-        return False
 
     # ------------------------------------------------------------------
     def _run(self) -> None:

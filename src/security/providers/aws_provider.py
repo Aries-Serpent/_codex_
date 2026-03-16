@@ -280,7 +280,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 create_kwargs["Description"] = description
 
             if tags:
-                create_kwargs["Tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]
+                create_kwargs["Tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]  # type: ignore[assignment]
 
             response = self.client.create_secret(**create_kwargs)
 

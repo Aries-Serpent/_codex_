@@ -22,7 +22,7 @@ __all__ = [
 class SimpleCache:
     def __init__(self, ttl_s: int = 3600, max_items: int = 1000):
         self.ttl, self.max = ttl_s, max_items
-        self._d = {}
+        self._d: dict[str, Any] = {}
 
     def get(self, k):
         v = self._d.get(k)

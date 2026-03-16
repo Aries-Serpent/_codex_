@@ -36,11 +36,11 @@ REG = Registry(parsers={}, extractors={})
 
 
 def register_parser(name: str, fn: Callable) -> None:
-    REG.parsers[name] = fn
+    REG.parsers[name] = fn  # type: ignore[index]
 
 
 def register_extractor(name: str, fn: Callable) -> None:
-    REG.extractors[name] = fn
+    REG.extractors[name] = fn  # type: ignore[index]
 
 
 # Default registrations bind to core implementations

@@ -77,10 +77,12 @@ class UserStore:
             backend = os.environ.get("CODEX_USERSTORE_BACKEND", "memory").lower()
             if backend == "sqlite":
                 from .sqlite_user_repository import SQLiteUserRepository  # noqa: PLC0415
+
                 db_path = os.environ.get("CODEX_USERSTORE_DB_PATH", "codex_users.db")
                 self._repository = SQLiteUserRepository(db_path)
             else:
                 from .in_memory_user_repository import InMemoryUserRepository  # noqa: PLC0415
+
                 self._repository = InMemoryUserRepository()
         # Backward-compatibility shim: expose _lock even though it is no longer
         # used internally (the repository manages its own locking).

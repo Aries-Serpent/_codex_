@@ -183,6 +183,33 @@ if not result.ok:
 
 ## 📋 Session Workflow
 
+### 📐 Scope Diagram
+
+```mermaid
+graph LR
+    subgraph UnifiedCoverageAgent["Unified Coverage Agent — Scope"]
+        Assess["1. Assess\ncoverage check\n+ threshold config"]
+        Identify["2. Identify\ncoverage_analysis.json\npriority-rank gaps"]
+        Generate["3. Generate\ntargeted tests\nfor top-N gaps"]
+        Validate["4. Validate\npytest --changed-only\nbatch scan"]
+        Report["5. Report\nupdate roadmap\ncommit + push"]
+        Threshold["6. Threshold\nraise fail_under\nopen PR"]
+    end
+
+    subgraph Artefacts["Key Artefacts"]
+        toml["pyproject.toml\nfail_under threshold"]
+        analysis["coverage_analysis.json\nper-module data"]
+        matrix["test_priority_matrix.json\npriority scores"]
+        roadmap["COVERAGE_THRESHOLD_ROADMAP.md"]
+    end
+
+    Assess --> Identify --> Generate --> Validate --> Report --> Threshold
+    Assess <--> toml
+    Identify <--> analysis
+    Identify <--> matrix
+    Report --> roadmap
+```
+
 ```
 1. Assess     → run coverage check, read threshold config
 2. Identify   → load coverage_analysis.json, priority-rank gaps

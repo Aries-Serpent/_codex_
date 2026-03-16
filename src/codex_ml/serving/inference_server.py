@@ -22,11 +22,11 @@ except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
     FastAPI = None
     HTTPException = Exception
-    BaseModel = object
+    BaseModel = object  # type: ignore[misc]
     APIKeyHeader = None
     Security = None
 
-    def Field(*a, **k):
+    def Field(*a, **k):  # type: ignore[no-redef]
         return None
 
     Request = object
@@ -39,7 +39,7 @@ _MAX_EMBEDDING_SEED = 2**32
 REQUEST_RATE_LIMIT = 1000
 
 # API Key Security
-API_KEY_NAME = "X-API-Key"
+API_KEY_NAME = "X-API-Key"  # pragma: allowlist secret
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=False) if FASTAPI_AVAILABLE else None
 
 
@@ -534,5 +534,5 @@ if FASTAPI_AVAILABLE:
 
 else:
 
-    def create_app() -> None:  # pragma: no cover
+    def create_app() -> None:  # type: ignore[misc]  # pragma: no cover
         raise RuntimeError("FastAPI not installed. Install with: pip install fastapi uvicorn")

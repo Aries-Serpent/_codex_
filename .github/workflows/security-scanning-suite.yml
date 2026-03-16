@@ -163,8 +163,8 @@ jobs:
         run: pip install cyclonedx-bom
       - name: Generate SBOM
         run: |
-          cyclonedx-py --format json --output sbom.json
-          cyclonedx-py --format xml --output sbom.xml
+          cyclonedx-py environment --format JSON --outfile sbom.json
+          cyclonedx-py environment --format XML --outfile sbom.xml
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:

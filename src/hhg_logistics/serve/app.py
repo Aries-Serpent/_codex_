@@ -414,12 +414,11 @@ class _TorchInferenceContext:
             self._autocast.__enter__()
         return None
 
-    def __exit__(self, exc_type, exc, tb) -> bool:
+    def __exit__(self, exc_type, exc, tb) -> None:
         if self._autocast is not None:
             self._autocast.__exit__(exc_type, exc, tb)
         if self._inference is not None:
             self._inference.__exit__(exc_type, exc, tb)
-        return False
 
 
 def _start_serve(cfg: DictConfig) -> None:
@@ -439,7 +438,7 @@ def _start_serve(cfg: DictConfig) -> None:
     ray.init(ignore_reinit_error=True, include_dashboard=False)
     serve.start(http_options={"host": host, "port": port, "location": "HeadOnly"})
 
-    deployment = LLMService.options(num_replicas=num_replicas, route_prefix=route_prefix)
+    deployment = LLMService.options(num_replicas=num_replicas, route_prefix=route_prefix)  # type: ignore[attr-defined]
     deployment.deploy(cfg)
     logger.info("Serve deployment active at http://%s:%s%s", host, port, route_prefix)
 

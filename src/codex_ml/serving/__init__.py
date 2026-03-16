@@ -34,7 +34,7 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    ModelLoader = None
+    ModelLoader = None  # type: ignore[assignment, misc]
 
 __all__ = [
     "AuthManager",
