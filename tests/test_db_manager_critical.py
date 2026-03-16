@@ -20,10 +20,10 @@ class TestDBManagerPoolCleanup:
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             # Force reload to pick up env var
             import importlib
+            import sys
 
-            import codex.logging.db_manager
-
-            importlib.reload(codex.logging.db_manager)
+            importlib.import_module("codex.logging.db_manager")
+            importlib.reload(sys.modules["codex.logging.db_manager"])
             from codex.logging.db_manager import DBManager  # noqa: F811
 
             # Clear any existing pools from previous tests
@@ -63,10 +63,10 @@ class TestDBManagerPoolCleanup:
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+            import sys
 
-            import codex.logging.db_manager
-
-            importlib.reload(codex.logging.db_manager)
+            importlib.import_module("codex.logging.db_manager")
+            importlib.reload(sys.modules["codex.logging.db_manager"])
             from codex.logging.db_manager import DBManager  # noqa: F811
 
             db_path = tmp_path / "test_errors.db"
@@ -117,10 +117,10 @@ class TestDBManagerPoolCleanup:
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+            import sys
 
-            import codex.logging.db_manager
-
-            importlib.reload(codex.logging.db_manager)
+            importlib.import_module("codex.logging.db_manager")
+            importlib.reload(sys.modules["codex.logging.db_manager"])
             from codex.logging.db_manager import DBManager  # noqa: F811
 
             # Create two databases
@@ -184,10 +184,10 @@ class TestDBManagerPoolCleanup:
 
         with patch.dict(os.environ, {"CODEX_SQLITE_POOL": "1"}):
             import importlib
+            import sys
 
-            import codex.logging.db_manager
-
-            importlib.reload(codex.logging.db_manager)
+            importlib.import_module("codex.logging.db_manager")
+            importlib.reload(sys.modules["codex.logging.db_manager"])
             from codex.logging.db_manager import DBManager  # noqa: F811
 
             db = DBManager(db_path=tmp_path / "test_logging.db")

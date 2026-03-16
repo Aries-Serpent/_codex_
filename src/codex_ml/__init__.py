@@ -5,9 +5,9 @@ Keeps surface minimal; version is exposed for packaging/diagnostics.
 
 from __future__ import annotations
 
-import logging
+import logging as _logging
 
-logger = logging.getLogger(__name__)
+logger = _logging.getLogger(__name__)
 
 from importlib import import_module
 

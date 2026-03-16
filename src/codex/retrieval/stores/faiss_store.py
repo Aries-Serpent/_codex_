@@ -45,6 +45,7 @@ class FAISSStore(VectorStore):
         index_name: str = "default",
         max_vectors: int = MAX_VECTORS,
         validate_checksums: bool = True,
+        dimension: Optional[int] = None,
     ):
         """Initialize FAISS store with safety checks
 
@@ -53,6 +54,7 @@ class FAISSStore(VectorStore):
             index_name: Name of the index
             max_vectors: Maximum number of vectors allowed (safety limit)
             validate_checksums: Whether to validate checksums on load
+            dimension: Optional initial embedding dimension (set automatically on first insert)
         """
         self.index_dir = Path(index_dir) if index_dir else Path(".codex/faiss")
         self.index_name = self._validate_index_name(index_name)
@@ -60,7 +62,7 @@ class FAISSStore(VectorStore):
         self.documents: list[dict[str, Any]] = []
         self.vector_ids: list[str] = []  # Track vector IDs
         self.id_to_index: dict[str, int] = {}  # Map ID to index position
-        self.dimension: Optional[int] = None
+        self.dimension: Optional[int] = dimension
         self.max_vectors = min(max_vectors, MAX_VECTORS)
         self.validate_checksums = validate_checksums
         self._checksum: Optional[str] = None

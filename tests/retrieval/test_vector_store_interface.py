@@ -10,6 +10,7 @@ import pytest
 np = pytest.importorskip("numpy")
 import pytest
 
+pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
 from src.codex.retrieval.stores.base import (
     DimensionMismatchError,
     VectorNotFoundError,
