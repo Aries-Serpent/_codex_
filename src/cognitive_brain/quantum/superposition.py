@@ -691,8 +691,10 @@ def quantum_superposition(
                 return _captured[0] if _captured else func(*args, **kwargs)
 
             except Exception:  # noqa: BLE001
-                # Quantum infrastructure unavailable or raised → classical fallback
-                return func(*args, **kwargs)
+                # Quantum infrastructure unavailable or raised → classical fallback.
+                # If _classical_decision already ran, reuse its captured result to
+                # avoid a second invocation of func (prevents duplicate side effects).
+                return _captured[0] if _captured else func(*args, **kwargs)
 
         return wrapper
 

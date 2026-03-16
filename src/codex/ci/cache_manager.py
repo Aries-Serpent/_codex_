@@ -111,6 +111,8 @@ class CacheManager:
         CacheType.DOCKER_BUILDX: ["~/.docker/buildx-cache"],
         CacheType.YARN: ["~/.yarn/cache", "~/.npm"],
         CacheType.CARGO: ["~/.cargo/registry", "~/.cargo/git", "target"],
+        CacheType.AGENT_VENV: [".venv_agent"],
+        CacheType.BRAIN_DB: [".codex/brain.db", ".codex/brain/"],
     }
 
     DEPENDENCY_FILES = {

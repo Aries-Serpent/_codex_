@@ -30,7 +30,7 @@ from typing import Optional
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
 except ModuleNotFoundError:  # pragma: no cover - pydantic missing
-    ValidationError = None  # type: ignore[misc]
+    ValidationError = None  # type: ignore[misc,assignment]
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file

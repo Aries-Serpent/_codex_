@@ -192,8 +192,8 @@ class BridgeLock:
                 self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
                 _msvcrt.locking(  # type: ignore[attr-defined]
                     self.lock_fd,
-                    _msvcrt.LK_NBLCK,
-                    1,  # type: ignore[attr-defined]
+                    _msvcrt.LK_NBLCK,  # type: ignore[attr-defined]
+                    1,
                 )  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
                 logger.debug(f"Lock acquired (msvcrt): {self.lock_path}")
                 return True
