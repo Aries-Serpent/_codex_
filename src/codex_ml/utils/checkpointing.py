@@ -467,9 +467,21 @@ def load_checkpoint(
     try:
         return _load_payload(p, map_location=map_location, fmt=fmt)
     except CheckpointLoadError as e:
+        capture_error(
+            step_no="load_checkpoint",
+            step_desc="checkpoint load",
+            msg=str(e),
+            ctx=str(p),
+        )
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
     except Exception as exc:  # pragma: no cover - fallback path
+        capture_error(
+            step_no="load_checkpoint",
+            step_desc="checkpoint load unexpected",
+            msg=str(exc),
+            ctx=str(p),
+        )
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
 
 
@@ -714,6 +726,12 @@ def save_checkpoint(
     try:
         _save_payload(p, state, fmt=save_format)
     except Exception as exc:  # pragma: no cover - save failures are rare
+        capture_error(
+            step_no="save_checkpoint",
+            step_desc="checkpoint save",
+            msg=str(exc),
+            ctx=str(p),
+        )
         raise CheckpointLoadError(f"failed to save checkpoint to {p}: {exc}") from exc
 
     _write_checksum_manifest(p)

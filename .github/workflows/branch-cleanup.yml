@@ -93,29 +93,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          INPUT_PREFIXES: ${{ inputs.prefixes }}
+          INPUT_STALE_DAYS: ${{ inputs.stale_days || 30 }}
         run: |
-          # Build argument list
-          ARGS=""
+          # Build argument list using an array to avoid SC2089/SC2090
+          ARGS=()
 
           # Strategy flags
           # On schedule: always delete merged + by-prefix (safe defaults)
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            ARGS="${ARGS} --delete-merged --delete-by-prefix"
-            ARGS="${ARGS} --prefixes copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/"
-            ARGS="${ARGS} --execute"
+            ARGS+=(--delete-merged --delete-by-prefix)
+            ARGS+=(--prefixes "copilot/,self-heal/run-,dependabot/,fix/,chore/,ci/")
+            ARGS+=(--execute)
           else
             # Manual dispatch — respect inputs
-            [ "${{ inputs.delete_merged }}" = "true" ]     && ARGS="${ARGS} --delete-merged"
-            [ "${{ inputs.delete_stale }}"  = "true" ]     && ARGS="${ARGS} --delete-stale --stale-days ${{ inputs.stale_days || 30 }}"
-            [ "${{ inputs.delete_by_prefix }}" = "true" ]  && ARGS="${ARGS} --delete-by-prefix --prefixes '${{ inputs.prefixes }}'"
-            [ "${{ inputs.dry_run }}" != "true" ]          && ARGS="${ARGS} --execute"
+            [ "${{ inputs.delete_merged }}" = "true" ]     && ARGS+=(--delete-merged)
+            [ "${{ inputs.delete_stale }}"  = "true" ]     && ARGS+=(--delete-stale --stale-days "$INPUT_STALE_DAYS")
+            [ "${{ inputs.delete_by_prefix }}" = "true" ]  && ARGS+=(--delete-by-prefix --prefixes "$INPUT_PREFIXES")
+            [ "${{ inputs.dry_run }}" != "true" ]          && ARGS+=(--execute)
           fi
 
-          ARGS="${ARGS} --json-output /tmp/branch_cleanup_report.json --github-summary"
+          ARGS+=(--json-output /tmp/branch_cleanup_report.json --github-summary)
 
-          echo "Running: python scripts/ci/branch_cleanup.py ${ARGS}"
-          # shellcheck disable=SC2086
-          python scripts/ci/branch_cleanup.py ${ARGS}
+          echo "Running: python scripts/ci/branch_cleanup.py ${ARGS[*]}"
+          python scripts/ci/branch_cleanup.py "${ARGS[@]}"
 
       - name: "📋 Post issue report (optional)"
         if: >

@@ -108,7 +108,7 @@ class FAISSStore(VectorStore):
         Returns:
             Dictionary with health status and metrics
         """
-        status = {
+        status: dict[str, Any] = {
             "healthy": False,
             "index_loaded": self.index is not None,
             "num_vectors": self.index.ntotal if self.index else 0,

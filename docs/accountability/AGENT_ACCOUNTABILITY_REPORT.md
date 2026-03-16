@@ -4438,3 +4438,31 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S119 — 2026-03-16
+
+**PR:** #3586  
+**Session Type:** CI Failure Pattern Resolution + Dead Code Improvement Assessment  
+**Commits:** CI fixes (actionlint/REQ-10/mypy/faiss_store) + dead code component assessment
+
+### Tasks Completed
+
+1. **CI Failure Pattern Analysis** — Fetched and parsed issue #3587 (49 failures, 15 workflows). Identified 4 root-cause patterns all caused by this PR's new code.
+2. **actionlint fixes** — `branch-cleanup.yml`: replaced string-concatenation ARGS with bash array (SC2089/SC2090 fixed); `pr-followup-generator.yml`: moved `github.head_ref` to `env` block (script-injection fix).
+3. **REQ-10 live-compare fallback** — `agent-auth-delegation.yml`: REQ-10 now performs live `compareCommitsWithBasehead` when a `BRANCH_REBASE_REQUIRED` marker exists but no `BRANCH_REBASE_RESOLVED` follows. A branch that is now ahead/identical passes even without an explicit resolved marker.
+4. **mypy type fix** — `src/codex/retrieval/stores/faiss_store.py`: added `dict[str, Any]` annotation to `status` local variable; eliminated 2 operator-type errors. Baseline updated: 12 → 10.
+5. **Dead code component assessment** — Reviewed all 18 flagged items from vulture scan. Categorised into: implemented (4), cognitive brain backlog (7), quality backlog (2), false positives (6). Created `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`.
+6. **Implemented 4 incomplete features:**
+   - `gpu_utils.py`: `max_memory_gb` now caps GPU memory before batch-size calculation
+   - `checkpoint_core.py`: `capture_environment_summary()` delegates to provenance module when available
+   - `quality/cli.py`: `--fail-on`/`--warn-on` category flags now produce exit code 1
+   - `checkpointing.py`: `capture_error()` wired into `save_checkpoint` and `load_checkpoint` exception handlers
+
+### Impact Score
+- CI failures addressed: 3 (actionlint, REQ-10, mypy baseline)
+- Incomplete features implemented: 4
+- Dead code items assessed: 18 (0 removed without justification)
+- New documentation: `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`
+- Cognitive brain backlog items created: 7 (CB-001 through CB-007)
+
+---

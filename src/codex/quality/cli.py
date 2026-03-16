@@ -148,6 +148,30 @@ def smell_main(
     if fail_on_smells and total > 0:
         sys.exit(1)
 
+    # Honour explicit --fail-on / --warn-on smell-category severity flags.
+    # Accepted category names: long_functions, large_files, many_args_functions
+    # (match the keys returned by _scan_smells).
+    CATEGORY_MAP = {
+        "long_functions": len(smells_data["long_functions"]),
+        "large_files": len(smells_data["large_files"]),
+        "many_args_functions": len(smells_data["many_args_functions"]),
+    }
+    warned = False
+    failed = False
+    for category in warn_on:
+        count = CATEGORY_MAP.get(category, 0)
+        if count > 0:
+            click.echo(f"WARNING: {count} '{category}' smell(s) found (--warn-on {category})", err=True)
+            warned = True
+    for category in fail_on:
+        count = CATEGORY_MAP.get(category, 0)
+        if count > 0:
+            click.echo(f"ERROR: {count} '{category}' smell(s) found (--fail-on {category})", err=True)
+            failed = True
+    _ = warned  # consumed for side-effects above; suppress unused-var lint
+    if failed:
+        sys.exit(1)
+
 
 if __name__ == "__main__":
     smell_main()

@@ -818,24 +818,50 @@ jobs:
             const requiredTs = new Date(latestRequired.updated_at);
             const resolvedTs = latestResolved ? new Date(latestResolved.updated_at) : null;
 
-            const isResolved = resolvedTs && resolvedTs > requiredTs;
+            const markerResolved = resolvedTs && resolvedTs > requiredTs;
+
+            // Even if no RESOLVED marker, check the live branch comparison API.
+            // The branch may have been rebased since the REQUIRED marker was posted,
+            // in which case the live check should confirm it is up-to-date.
+            let liveResolved = false;
+            const pr = context.payload.pull_request;
+            if (!markerResolved && pr) {
+              try {
+                const { data: cmp } = await github.rest.repos.compareCommitsWithBasehead({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  basehead: `${pr.base.ref}...${pr.head.ref}`,
+                });
+                const liveStatus = cmp.status;
+                const behindBy = cmp.behind_by || 0;
+                core.info(`Live compare ${pr.base.ref}...${pr.head.ref}: status=${liveStatus}, behind_by=${behindBy}`);
+                liveResolved = (liveStatus === 'ahead' || liveStatus === 'identical');
+                if (liveResolved) {
+                  core.info('REQ-10: Live compare shows branch is up-to-date — treating REQUIRED marker as stale.');
+                }
+              } catch (err) {
+                core.warning(`REQ-10: Could not perform live compare: ${err.message}`);
+              }
+            }
+
+            const isResolved = markerResolved || liveResolved;
 
             await core.summary
               .addHeading('REQ-10: Branch Rebase Check', 3)
               .addRaw(isResolved
-                ? `\n✅ PASS — Rebase marker found but resolved at ${resolvedTs.toISOString()}\n`
-                : `\n🔴 FAIL — \`BRANCH_REBASE_REQUIRED\` marker present (${requiredTs.toISOString()}) and unresolved.\n`
+                ? `\n✅ PASS — Branch is up-to-date (marker resolved or live compare confirms no rebase needed)\n`
+                : `\n🔴 FAIL — \`BRANCH_REBASE_REQUIRED\` marker present (${requiredTs.toISOString()}) and branch still behind/diverged.\n`
               )
               .write();
 
             if (!isResolved) {
               core.setFailed(
-                'REQ-10 FAIL: A BRANCH_REBASE_REQUIRED marker is present and unresolved. ' +
+                'REQ-10 FAIL: A BRANCH_REBASE_REQUIRED marker is present and branch is still behind/diverged. ' +
                 'The Copilot Agent MUST rebase the branch before starting work. ' +
                 'See the BRANCH_REBASE_REQUIRED comment on this PR for instructions.'
               );
             } else {
-              core.info('REQ-10 PASS: Rebase was resolved — branch is up-to-date.');
+              core.info('REQ-10 PASS: Branch is up-to-date — rebase gate cleared.');
             }
 
       # ── Final gate summary ────────────────────────────────────────────────

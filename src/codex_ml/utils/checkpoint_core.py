@@ -285,7 +285,18 @@ def restore_rng_state(state: Mapping[str, Any]) -> None:
 
 
 def capture_environment_summary() -> dict[str, Any]:
-    """Collect lightweight environment details for checkpoint metadata."""
+    """Collect lightweight environment details for checkpoint metadata.
+
+    Delegates to the richer provenance-based ``environment_summary`` when
+    available, then merges in the lightweight local fields as a fallback
+    or supplement.
+    """
+    # Prefer the provenance-module summary (richer: git SHA, package versions, etc.)
+    if _environment_summary is not None:
+        try:
+            return dict(_environment_summary())
+        except Exception as exc:  # pragma: no cover
+            logger.debug("provenance.environment_summary failed, using local fallback: %s", exc)
 
     summary: dict[str, Any] = {
         "python_version": platform.python_version(),

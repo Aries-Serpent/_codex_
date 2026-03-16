@@ -14,12 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - REQ-10 in cognitive-preflight: agent MUST rebase before any work when branch is behind/diverged
 - Pre-commit `dead-code-scan` hook (100% confidence, pre-push gate)
 - CI failure patterns: `BRANCH_BEHIND_BASE`, `STALE_BRANCH_NOT_MERGED`, `DEAD_CODE_100_CONFIDENCE`
+- `docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`: 7 backlog items (CB-001–CB-007) for incomplete feature completions
 
-
-### Fixed (Auto-fix 2026-03-16)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3588 (SHA `1b1f4b72`) at 2026-03-16T11:19Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3586 (SHA `54fd30d1`) at 2026-03-16T11:20Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3585 (SHA `2947f993`) at 2026-03-16T00:56Z [auto-generated]
+### Fixed
+- `branch-cleanup.yml`: shell array replaces ARGS string (actionlint SC2089/SC2090)
+- `pr-followup-generator.yml`: `github.head_ref` moved to `env` block (script injection prevention)
+- `agent-auth-delegation.yml` REQ-10: live branch-compare fallback clears stale `BRANCH_REBASE_REQUIRED` markers
+- `src/codex/retrieval/stores/faiss_store.py`: `status` dict typed as `dict[str, Any]` (mypy operator errors)
+- `src/codex/rag/gpu_utils.py`: `max_memory_gb` parameter now caps GPU memory before batch-size calculation
+- `src/codex_ml/utils/checkpoint_core.py`: `capture_environment_summary()` delegates to provenance module first
+- `src/codex/quality/cli.py`: `--fail-on`/`--warn-on` flags now apply per-category exit logic
+- `src/codex_ml/utils/checkpointing.py`: `capture_error()` wired into save/load exception handlers
 
 ---
 
