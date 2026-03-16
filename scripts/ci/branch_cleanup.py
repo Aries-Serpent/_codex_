@@ -454,7 +454,13 @@ def main() -> int:
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO))
     parser.add_argument("--delete-merged", action="store_true", help="Delete fully-merged branches")
     parser.add_argument("--delete-stale", action="store_true", help="Delete stale merged branches")
-    parser.add_argument("--stale-days", type=int, default=DEFAULT_STALE_DAYS)
+    parser.add_argument(
+        "--stale-days",
+        type=int,
+        default=int(os.environ.get("CODEX_STALE_BRANCH_DAYS", DEFAULT_STALE_DAYS)),
+        help="Days of inactivity before a branch is considered stale "
+        "(default: %(default)s; override with CODEX_STALE_BRANCH_DAYS env var)",
+    )
     parser.add_argument("--delete-by-prefix", action="store_true", help="Delete merged branches matching prefixes")
     parser.add_argument("--force-prefix", action="store_true", help="Delete prefix branches even if not merged (DANGER)")
     parser.add_argument(

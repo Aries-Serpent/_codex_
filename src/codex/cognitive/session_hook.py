@@ -251,7 +251,6 @@ class SessionContextInjector:
                     logger.info(
                         "BrainClient reports server unavailable; skipping live context fetch."
                     )
-                    live_error = RuntimeError("BrainClient: server not available")
             except Exception as exc:  # noqa: BLE001
                 logger.debug("BrainClient.is_available() raised: %s", exc)
 

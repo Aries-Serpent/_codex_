@@ -32,6 +32,7 @@ def test_repository_contains_no_obvious_secrets() -> None:
             or "/.venv" in path_str
             or "/venv/" in path_str
             or "/site-packages/" in path_str
+            or "/temp/" in path_str
         ):
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")

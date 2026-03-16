@@ -101,7 +101,7 @@ def smell_main(
 
     Examples:
         codex-smell --format json --output smells.json
-        codex-smell --fail-on error --warn-on warning
+        codex-smell --fail-on long_functions --warn-on large_files
     """
     long_fn_threshold = 50
     max_args = 5
