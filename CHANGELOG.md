@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (S127 — 2026-03-16)
 - **`tests/rag/test_rag_integration.py`**: Added `pytest.importorskip("sentence_transformers")` at module level — 5 tests that previously failed with `ModuleNotFoundError` in `slow` CI suite now skip cleanly when `sentence_transformers` is not installed; also removed duplicate `import pytest` statement
 - **`scripts/ci/branch_cleanup.py`**: Added `CODEX_VERY_STALE_BRANCH_DAYS` env var support and `--very-stale-days` CLI arg (default: 90 days); very-stale unmerged branches are now force-deleted when `--delete-stale` is passed; new `DEFAULT_VERY_STALE_DAYS = 90` constant
+- **`.github/workflows/pr-cost-check.yml`**: Added PR-comment fallback approval scan step — mirrors S126 fix applied to `cost-gate.yml`; the `💰 Cost Proposal Approved` marker is now also accepted in any PR comment, preventing false RED failures when `report_progress` overwrites the PR body
 
 ### Fixed (S126 — 2026-03-16)
 - **`services/api/middleware/form_validator.py`**: Removed unused `_STARLETTE_AVAILABLE` global variable — flag was never read in any conditional, making it dead state; removed from both `try` and `except ImportError` branches (github-code-quality alert)
