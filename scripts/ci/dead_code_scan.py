@@ -270,7 +270,12 @@ def main() -> int:
     parser.add_argument("--fail-on-found", action="store_true", help="Exit 1 if any findings")
     parser.add_argument("--format", choices=["text", "github", "json"], default="text")
     parser.add_argument("--output", metavar="PATH", help="Write report to file (default: stdout)")
-    parser.add_argument("--sort-by-size", action="store_true", default=True)
+    parser.add_argument(
+        "--sort-by-size",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Sort findings by size (largest first). Use --no-sort-by-size to disable.",
+    )
     parser.add_argument(
         "--exclude",
         default="",

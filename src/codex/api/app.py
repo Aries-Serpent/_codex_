@@ -50,8 +50,14 @@ try:
     from codex.api.auth_routes import create_auth_router  # noqa: E402
 
     app.include_router(create_auth_router(), prefix="/api/auth", tags=["auth"])
-except Exception:  # pragma: no cover – optional dependency or import error
+except ImportError:  # pragma: no cover – auth module not installed
     pass
+except Exception as _auth_exc:  # pragma: no cover – unexpected init error
+    import logging as _logging
+
+    _logging.getLogger(__name__).warning(
+        "Auth router not mounted — unexpected error during import: %s", _auth_exc
+    )
 
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")
 _DEFAULT_MODEL_NAME = os.environ.get("CODEX_MODEL_NAME")

@@ -218,91 +218,30 @@ try:
     async def get_token_scopes(
         credentials: HTTPAuthorizationCredentials = Depends(security),
     ) -> List[str]:
-        """FastAPI dependency to extract scopes from token.
+        """FastAPI dependency that extracts OAuth2/JWT scopes from a Bearer token.
 
-        **CRITICAL SECURITY WARNING**: This placeholder implementation MUST be
-        replaced with actual token validation before production deployment.
+        Uses ``TokenManager.validate_token()`` to verify the Bearer credential
+        and returns the ``scopes`` claim from the validated payload.
 
-        The current implementation raises NotImplementedError to ensure fail-closed
-        behavior and prevent unintended access grants.
+        Behavior:
+        - Returns an empty list (fail-closed) when ``CODEX_AUTH_SECRET`` is not
+          set in the environment — the service will appear to have no scopes.
+        - Raises HTTP 503 if the auth module is unavailable or the secret is
+          missing.
+        - Raises HTTP 401 with ``WWW-Authenticate: Bearer`` on expired tokens.
+        - Raises HTTP 403 on any other validation failure.
 
-        Production implementations should:
-        1. Validate the token signature and expiration
-        2. Extract scopes/permissions from token payload
-        3. Return the actual scopes for authorization checks
-
-        Implementation Examples:
-
-        **Option 1: JWT Token Validation (Recommended for stateless auth)**
-
-        ```python
-        import jwt
-        from fastapi import Depends, HTTPException, status
-        from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-        async def get_token_scopes(
-            credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-        ) -> List[str]:
-            try:
-                token = credentials.credentials
-                payload = jwt.decode(
-                    token,
-                    settings.JWT_SECRET_KEY,
-                    algorithms=[settings.JWT_ALGORITHM],
-                    audience=settings.JWT_AUDIENCE,
-                )
-                return payload.get("scopes", [])
-            except jwt.ExpiredSignatureError:
-                raise HTTPException(401, "Token expired")
-            except jwt.InvalidTokenError:
-                raise HTTPException(401, "Invalid token")
-        ```
-
-        Configuration: JWT_SECRET_KEY, JWT_ALGORITHM (e.g., "HS256"), JWT_AUDIENCE
-
-        **Option 2: OAuth Token Introspection (RFC 7662)**
-
-        ```python
-        import httpx
-        from fastapi import Depends, HTTPException
-
-        async def get_token_scopes(
-            credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-        ) -> List[str]:
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    settings.OAUTH_INTROSPECTION_ENDPOINT,
-                    data={"token": credentials.credentials},
-                    auth=(settings.OAUTH_CLIENT_ID, settings.OAUTH_CLIENT_SECRET),
-                )
-                data = response.json()
-                if not data.get("active"):
-                    raise HTTPException(401, "Token not active")
-                return data.get("scope", "").split()
-        ```
-
-        Configuration: OAUTH_INTROSPECTION_ENDPOINT, OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
-
-        **Testing with Mocks:**
-
-        ```python
-        from unittest.mock import AsyncMock
-
-        @pytest.mark.asyncio
-        async def test_endpoint(mocker):
-            mocker.patch("module.get_token_scopes",
-                        new=AsyncMock(return_value=["read:data"]))
-            # Test protected endpoint...
-        ```
+        Environment:
+            CODEX_AUTH_SECRET: Shared secret used to verify the JWT signature.
+                Must be set via the application's settings or a secrets manager.
 
         Args:
-            credentials: Bearer token from request
+            credentials: Bearer token extracted from the Authorization header
+                by FastAPI's ``HTTPBearer`` dependency.
 
         Returns:
-            List of scope strings (never reached - raises error)
-
-        Raises:
-            NotImplementedError: Always raised to prevent production use
+            List of scope strings parsed from the token's ``scopes`` claim,
+            or an empty list when the claim is absent.
         """
         # Use the project's TokenManager to validate the Bearer token and
         # extract the scope claim.  CODEX_AUTH_SECRET must be set in the

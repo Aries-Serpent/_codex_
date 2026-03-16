@@ -83,7 +83,9 @@ def get_optimal_batch_size(
         Optimal batch size
     """
     # Estimate memory per embedding (float32)
-    bytes_per_embedding = max(1, embedding_dim) * 4
+    if embedding_dim <= 0:
+        raise ValueError(f"embedding_dim must be positive, got {embedding_dim}")
+    bytes_per_embedding = embedding_dim * 4
 
     # Get available memory
     free_memory, _ = get_gpu_memory()

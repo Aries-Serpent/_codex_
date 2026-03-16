@@ -648,16 +648,19 @@ def quantum_superposition(
                 engine = SuperpositionEngine()
 
                 # Wrap the decorated function as a scored decision so the engine
-                # can measure coherence.  We capture a *copy* of the bound args so
-                # the closure is safe to call multiple times.
+                # can measure coherence.  We use a mutable container to capture
+                # the raw return value of func so we do NOT need to call func a
+                # second time (avoids duplicate side effects).
                 _bound_args = args
                 _bound_kwargs = kwargs
+                _captured: list[Any] = []  # [raw_result] after first call
 
                 def _classical_decision() -> float:
-                    # We call the original function here; the return value is
-                    # interpreted as a quality score when it is numeric, otherwise
-                    # treated as 1.0 (presence of a result = good).
+                    # Invoke func exactly once; save the raw result so the wrapper
+                    # can return it without re-executing func.
                     result = func(*_bound_args, **_bound_kwargs)
+                    _captured.clear()
+                    _captured.append(result)
                     try:
                         return float(result)  # type: ignore[arg-type]
                     except (TypeError, ValueError):
@@ -679,14 +682,14 @@ def quantum_superposition(
                         coherence_threshold,
                         func.__qualname__,
                     )
-                    return func(*args, **kwargs)
+                    # Return the already-captured result if available; only
+                    # re-invoke func when the engine did not call _classical_decision.
+                    return _captured[0] if _captured else func(*args, **kwargs)
 
-                # ── Step 4: Return result from the quantum-evaluated run ──────
-                # The engine already called _classical_decision() above.  If the
-                # return value was numeric we can use it; otherwise re-run the
-                # function to get the original return type.
-                raw_result = func(*args, **kwargs)
-                return raw_result
+                # ── Step 4: Return the already-captured result ────────────────
+                # The engine called _classical_decision() which invoked func once.
+                # Return that result directly — no second invocation of func.
+                return _captured[0] if _captured else func(*args, **kwargs)
 
             except Exception:  # noqa: BLE001
                 # Quantum infrastructure unavailable or raised → classical fallback

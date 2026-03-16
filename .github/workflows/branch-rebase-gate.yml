@@ -30,6 +30,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 concurrency:
   group: rebase-gate-${{ github.head_ref }}

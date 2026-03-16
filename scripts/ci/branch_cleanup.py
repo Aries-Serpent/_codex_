@@ -212,9 +212,28 @@ def close_pr(repo: str, token: str, pr_number: int) -> bool:
 
 
 def delete_branch(repo: str, token: str, branch: str) -> bool:
-    """Delete a branch. Returns True on success (204 is treated as success)."""
-    gh_api("DELETE", f"/repos/{repo}/git/refs/heads/{urllib.parse.quote(branch, safe='')}", token)
-    return True
+    """Delete a branch. Returns True on success (HTTP 204 No Content)."""
+    encoded = urllib.parse.quote(branch, safe='')
+    url = f"https://api.github.com/repos/{repo}/git/refs/heads/{encoded}"
+    req = urllib.request.Request(
+        url,
+        method="DELETE",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "codex-branch-cleanup/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req):
+            return True  # any 2xx response (including 204 No Content) is success
+    except urllib.error.HTTPError as exc:
+        print(
+            f"  ⚠️  Failed to delete branch {branch!r}: HTTP {exc.code}",
+            file=sys.stderr,
+        )
+        return False
 
 
 # ---------------------------------------------------------------------------

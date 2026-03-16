@@ -78,8 +78,8 @@ def _scan_smells(
 @click.option("--format", type=click.Choice(["json", "yaml", "html"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file")
 @click.option("--config", type=click.Path(), default="configs/code_quality.yaml")
-@click.option("--fail-on", multiple=True, help="Severity levels to fail on (error, critical)")
-@click.option("--warn-on", multiple=True, help="Severity levels to warn on (warning)")
+@click.option("--fail-on", multiple=True, help="Smell category to fail on (long_functions, large_files, many_args_functions)")
+@click.option("--warn-on", multiple=True, help="Smell category to warn on (long_functions, large_files, many_args_functions)")
 @click.option("--fail-on-smells", is_flag=True, default=False, help="Exit 1 if any smells found")
 def smell_main(
     format: str,
@@ -151,11 +151,20 @@ def smell_main(
     # Honour explicit --fail-on / --warn-on smell-category severity flags.
     # Accepted category names: long_functions, large_files, many_args_functions
     # (match the keys returned by _scan_smells).
+    VALID_CATEGORIES = {"long_functions", "large_files", "many_args_functions"}
     CATEGORY_MAP = {
         "long_functions": len(smells_data["long_functions"]),
         "large_files": len(smells_data["large_files"]),
         "many_args_functions": len(smells_data["many_args_functions"]),
     }
+    for category in (*warn_on, *fail_on):
+        if category not in VALID_CATEGORIES:
+            click.echo(
+                f"ERROR: unknown category {category!r}. "
+                f"Valid values: {', '.join(sorted(VALID_CATEGORIES))}",
+                err=True,
+            )
+            sys.exit(2)
     warned = False
     failed = False
     for category in warn_on:

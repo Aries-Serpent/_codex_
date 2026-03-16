@@ -2099,8 +2099,14 @@ def _end_active_mlflow_runs():
 
         if mlflow.active_run() is not None:
             mlflow.end_run()
-    except Exception:  # noqa: BLE001
-        pass
+    except ImportError:
+        pass  # MLflow not installed — nothing to clean up
+    except Exception as exc:  # noqa: BLE001
+        import logging as _logging
+
+        _logging.getLogger(__name__).debug(
+            "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
+        )
 
     yield
 
@@ -2109,8 +2115,14 @@ def _end_active_mlflow_runs():
 
         if mlflow.active_run() is not None:
             mlflow.end_run()
-    except Exception:  # noqa: BLE001
-        pass
+    except ImportError:
+        pass  # MLflow not installed — nothing to clean up
+    except Exception as exc:  # noqa: BLE001
+        import logging as _logging
+
+        _logging.getLogger(__name__).debug(
+            "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
+        )
 
 
 # List of test files that commonly need the profiler disabled
