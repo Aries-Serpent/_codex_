@@ -52,8 +52,8 @@ done
 echo -e "${YELLOW}[3/5] Updating expired Actions links...${NC}"
 find . -type f -name "*.md" -not -path "./.git/*" | while read -r file; do
     if grep -qE "actions/runs/[0-9]+" "$file" 2>/dev/null; then
-        # Add note about log expiration
-        sed -i.bak 's|\(https://github\.com/Aries-Serpent/_codex_/actions/runs/[0-9]\+\)|\1 <!-- Note: Logs expire after 90 days -->|g' "$file"
+        # Add note about log expiration (idempotent — only add if not already annotated)
+        sed -i.bak 's|\(https://github\.com/Aries-Serpent/_codex_/actions/runs/[0-9]\+\)\( <!-- Note: Logs expire after 90 days -->\)\?|\1 <!-- Note: Logs expire after 90 days -->|g' "$file"
         if [ -f "$file.bak" ]; then
             if ! cmp -s "$file" "$file.bak"; then
                 echo "  - Annotated: $file"
