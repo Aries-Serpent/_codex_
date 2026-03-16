@@ -1312,5 +1312,5 @@ zc-lockfile==4.0
     # via dvc
 zipp==3.23.0
     # via importlib-metadata
-zstandard==0.24.0
+zstandard==0.25.0
     # via lm-eval
