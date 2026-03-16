@@ -301,11 +301,7 @@ repos:
       #   git push --no-verify   # bypasses all pre-push hooks
       - id: mypy-isolated-venv-gate
         name: "🔎 mypy isolated-venv anti-regression gate (pre-push)"
-        entry: bash -c '
-          python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null
-          /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
-          /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
-        '
+        entry: bash -c 'python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null && /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests && /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline'
         language: system
         stages: [pre-push]
         pass_filenames: false

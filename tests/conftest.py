@@ -2097,6 +2097,33 @@ def disable_torch_profiler(monkeypatch):
             pass  # torch.profiler not available in this environment — skip patch
 
 
+@pytest.fixture(autouse=True)
+def _end_active_mlflow_runs():
+    """End any active MLflow runs before and after each test to prevent state leakage.
+
+    MLflow maintains global run state that can leak across tests when a test
+    starts a run but fails before ending it. This autouse fixture ensures a
+    clean state for every test.
+    """
+    try:
+        import mlflow
+
+        if mlflow.active_run() is not None:
+            mlflow.end_run()
+    except Exception:  # noqa: BLE001
+        pass
+
+    yield
+
+    try:
+        import mlflow
+
+        if mlflow.active_run() is not None:
+            mlflow.end_run()
+    except Exception:  # noqa: BLE001
+        pass
+
+
 # List of test files that commonly need the profiler disabled
 # (Can be removed once PyTorch version is upgraded/pinned)
 TORCH_PROFILER_PROBLEMATIC_TESTS = [

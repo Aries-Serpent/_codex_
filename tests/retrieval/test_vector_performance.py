@@ -11,6 +11,7 @@ np = pytest.importorskip("numpy")
 import pytest
 
 # Skip if FAISS not available
+pytest.importorskip("faiss", reason="faiss-cpu not installed")
 from src.codex.retrieval.stores.faiss_store import FAISSStore  # noqa: E402
 
 

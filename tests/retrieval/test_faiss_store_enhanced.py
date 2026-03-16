@@ -9,17 +9,8 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-try:
-    from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore
-    FAISS_AVAILABLE = True
-except ImportError:
-    FAISS_AVAILABLE = False
-    MAX_VECTORS = 1000000  # Default fallback
-
-pytestmark = pytest.mark.skipif(
-    not FAISS_AVAILABLE,
-    reason="FAISS not installed (pip install faiss-cpu)"
-)
+pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
+from src.codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore  # noqa: E402
 
 
 @pytest.fixture

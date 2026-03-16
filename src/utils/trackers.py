@@ -33,6 +33,9 @@ def init_wandb_offline(project: str = "codex"):
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         return None
+    if not callable(getattr(wandb, "init", None)):
+        logger.warning("wandb stub detected or wandb.init unavailable; skipping W&B init")
+        return None
     mode = os.environ.get("WANDB_MODE", "offline")
     if mode == "offline" or not os.environ.get("WANDB_API_KEY"):
         os.environ.setdefault("WANDB_MODE", "offline")
