@@ -87,9 +87,7 @@ class IntelligentAudioAnalyzer:
             self.logger.error(f"Analysis failed: {e}")
             raise
 
-    def _classify_content(
-        self, audio: Optional[np.ndarray], features: Dict[str, Any]
-    ) -> str:
+    def _classify_content(self, audio: Optional[np.ndarray], features: Dict[str, Any]) -> str:
         """Classify audio content type."""
         zcr_mean = np.mean(features["zcr"])
         spectral_centroid_mean = np.mean(features["spectral_centroid"])
@@ -105,9 +103,7 @@ class IntelligentAudioAnalyzer:
         else:
             return "mixed"
 
-    def _detect_problems(
-        self, audio: Optional[np.ndarray], features: Dict[str, Any]
-    ) -> List[str]:
+    def _detect_problems(self, audio: Optional[np.ndarray], features: Dict[str, Any]) -> List[str]:
         """Detect audio problems."""
         problems = []
 

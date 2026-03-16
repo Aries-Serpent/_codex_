@@ -2102,9 +2102,7 @@ def _end_active_mlflow_runs():
     except ImportError:
         pass  # MLflow not installed — nothing to clean up
     except Exception as exc:  # noqa: BLE001
-        import logging as _logging
-
-        _logging.getLogger(__name__).debug(
+        logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
         )
 
@@ -2118,9 +2116,7 @@ def _end_active_mlflow_runs():
     except ImportError:
         pass  # MLflow not installed — nothing to clean up
     except Exception as exc:  # noqa: BLE001
-        import logging as _logging
-
-        _logging.getLogger(__name__).debug(
+        logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
         )
 

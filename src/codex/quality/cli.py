@@ -78,8 +78,16 @@ def _scan_smells(
 @click.option("--format", type=click.Choice(["json", "yaml", "html"]), default="json")
 @click.option("--output", type=click.Path(), help="Output file")
 @click.option("--config", type=click.Path(), default="configs/code_quality.yaml")
-@click.option("--fail-on", multiple=True, help="Smell category to fail on (long_functions, large_files, many_args_functions)")
-@click.option("--warn-on", multiple=True, help="Smell category to warn on (long_functions, large_files, many_args_functions)")
+@click.option(
+    "--fail-on",
+    multiple=True,
+    help="Smell category to fail on (long_functions, large_files, many_args_functions)",
+)
+@click.option(
+    "--warn-on",
+    multiple=True,
+    help="Smell category to warn on (long_functions, large_files, many_args_functions)",
+)
 @click.option("--fail-on-smells", is_flag=True, default=False, help="Exit 1 if any smells found")
 def smell_main(
     format: str,

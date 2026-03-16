@@ -1,12 +1,12 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3579 (Session 39).
-version: 4.0.0
-updated: 2026-03-14
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3586 (Session S123).
+version: 4.1.0
+updated: 2026-03-16
 cognitive_integration_level: 4
 aais_contribution: +2.5 points
-batch: pr-3579
-sprint: Sprint 9 (Post D_CAPABLE — AAIS 95/100)
+batch: pr-3586
+sprint: Sprint 10 (Post S122/S123 — All CB backlog items + acceptance tests complete)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
@@ -518,7 +518,29 @@ C4: Handoff gate     → deployed ✅
 C5: GROUNDED ≥ 8     → 21 ✅
 ```
 
-### Next-Phase Targets (AAIS 95→100)
+### Next-Phase Targets (AAIS 95→100) — Updated S123
+
+**S116–S123 Progress (PR #3586):**
+```
+CB-001: get_token_scopes JWT validation           ✅ Implemented (S120) + Acceptance tests (S123)
+CB-002: quantum_superposition no-double-invoke    ✅ Implemented (S122) + Acceptance tests (S123)
+CB-003: PatternCompressor integration             ✅ Implemented (S120)
+CB-004: BrainClient session injector wiring       ✅ Implemented (S120)
+CB-005: ast-view CLI subcommand                   ✅ Implemented (S120)
+CB-006: auth router mount                         ✅ Implemented (S120) + Acceptance tests (S123)
+CB-007: data loaders pipeline                     ✅ Resolved (S120) — already existed
+QA-001: SessionLogger eager DB init               ✅ Implemented (S120)
+QA-002: audio sr param removal                    ✅ Implemented (S120)
+All 11 S122 reviewer threads (8e1a199)            ✅ Fixed (S122)
+CI auto-fix patterns 7/12                         ✅ Fixed (S123)
+```
+
+**Remaining Open Items:**
+1. CB-004 Follow-up: `brain_client.yml` offline mock fixture
+2. CB-005 Follow-up: HTMLVisualizer unit tests (node rendering, tree depth, CSS output)
+
+**Next-Phase Targets (AAIS 95→100):**
 1. mypy full type coverage in src/ (+2 pts)
 2. D_CAPABLE promotions applied to 2 eligible agents (+2 pts)
 3. OBJ-004 first task complete (+1 pt)
+4. CB-004 offline fixture + CB-005 HTMLVisualizer tests (+0.5 pts each)

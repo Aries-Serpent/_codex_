@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Added (S123 — 2026-03-16)
+- **CB-001 acceptance tests**: `tests/security/test_get_token_scopes.py` — 5 tests: valid token→scopes, no-scope→empty list, invalid token→401, missing secret→503, expired token→401+WWW-Authenticate
+- **CB-002 acceptance tests**: `tests/cognitive_brain/quantum/test_quantum_superposition_no_double_invoke.py` — 7 tests confirming `@quantum_superposition` invokes func exactly once (no double-invoke), side effects, multi-call count
+- **CB-006 acceptance tests**: `tests/api/test_app_auth_router_mount.py` — 5 tests: `/api/auth` in OpenAPI spec, register/login reachable, auth tag present
+
+### Fixed (S123 — 2026-03-16)
+- `tests/conftest.py`: removed redundant `import logging as _logging` in `_end_active_mlflow_runs`; uses module-level `logging` import
+
 - **CB-001**: `get_token_scopes` JWT validation implemented via `TokenManager.validate_token()`; reads `CODEX_AUTH_SECRET`; fail-closed on missing secret (S120)
 - **CB-002**: `quantum_superposition` decorator wired — checks `enabled_config_attr` on `self`, invokes `SuperpositionEngine`, gates fallback on `coherence_threshold` (S120)
 - **CB-003**: `PatternCompressor` integrated into `CognitiveBrainSessionInjector._build_payload()` for pattern sets ≥10 (S120)

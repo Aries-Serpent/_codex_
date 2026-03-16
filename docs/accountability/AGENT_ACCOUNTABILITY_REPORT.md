@@ -4505,3 +4505,59 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+---
+
+## Session S123 — 2026-03-16 — PR #3586
+
+**PR:** #3586
+**Session Type:** Acceptance Test Coverage (CB-001, CB-002, CB-006) + CI Auto-Fix
+**Commits:** Acceptance tests (CB-001/CB-002/CB-006) + conftest.py redundant import fix
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Reviewed ALL bot-posted comments (reviewer threads, auto-fix check, cognitive-preflight) ✅
+- [x] **0b.** Failing CI checks reviewed — PR Auto-Fix Check had 4 issues (patterns 7/12); pattern 12 auto-fixed; pattern 7 (redundant logging imports) manually fixed ✅
+- [x] **0c.** Loaded `.codex/CODEBASE_AGENCY_POLICY.md`, accountability report, all stored memories ✅
+- [x] **1.** This file updated ✅
+- [x] **5.** CHANGELOG.md updated with S123 additions/fixes ✅
+- [x] **6.** Codebase Agency Policy followed — left codebase better than found ✅
+
+### Tasks Completed
+
+1. **CB-001 Acceptance Tests** — `tests/security/test_get_token_scopes.py` — 5 tests covering:
+   - Valid JWT with scopes → returns scope list
+   - Valid JWT no scope claim → returns empty list (fail-closed)
+   - Tampered/invalid JWT → HTTP 401
+   - `CODEX_AUTH_SECRET` not set → HTTP 503
+   - Expired token → HTTP 401 + `WWW-Authenticate: Bearer` header
+   - All guarded with `pytest.importorskip("fastapi")`; skip cleanly when FastAPI unavailable
+
+2. **CB-002 Acceptance Tests** — `tests/cognitive_brain/quantum/test_quantum_superposition_no_double_invoke.py` — 7 tests:
+   - Verifies `func` called exactly once per decorator call (not twice)
+   - Side-effect functions only emit one event per call
+   - Return value preserved correctly
+   - Non-numeric return values do not raise
+   - High-coherence-threshold fallback still runs exactly once
+   - `__name__` metadata preserved
+   - 5 sequential calls → exactly 5 total invocations
+   - **All 7 pass in sandbox**
+
+3. **CB-006 Acceptance Tests** — `tests/api/test_app_auth_router_mount.py` — 5 tests:
+   - `/api/auth` path present in OpenAPI spec
+   - `POST /api/auth/register` reachable (not 404/405)
+   - `POST /api/auth/login` reachable (not 404/405)
+   - `/health` endpoint unaffected (no 500)
+   - `auth` tag present in OpenAPI spec
+   - Guarded with `pytest.importorskip("fastapi")`
+
+4. **CI Auto-Fix (Pattern 7)** — `tests/conftest.py` lines 2105/2121: removed `import logging as _logging` inside except blocks; uses module-level `import logging` already present at line 13. Verified `ruff check` passes.
+
+5. **CI Auto-Fix (Pattern 12)** — Line-length issues auto-resolved by `auto_fix_common_issues.py --fix` pass.
+
+6. **CHANGELOG** and **AGENT_ACCOUNTABILITY_REPORT** updated per §0 REQ-4/REQ-5.
+
+### Impact Score
+- New acceptance tests: 17 (CB-001: 5, CB-002: 7, CB-006: 5)
+- CI patterns resolved: 2 (pattern 7 redundant imports, pattern 12 line length)
+- Files changed: 5 (3 new test files, conftest.py, CHANGELOG.md, this file)
+- Deferral Language Gate: 0 violations

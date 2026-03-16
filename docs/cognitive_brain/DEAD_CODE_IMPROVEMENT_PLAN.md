@@ -43,18 +43,20 @@ response token.
 
 ---
 
-## 🔴 Remaining Backlog (Pending Design Decisions)
+## ✅ S123 Completed Items
 
-> All CB-001 through CB-007 and QA-001/QA-002 items have been implemented or resolved
-> in S119–S120. The items below reflect secondary acceptance-criteria gaps (tests,
-> further integration) that require deeper design work before they can be closed.
-
-### CB-001 Follow-up: JWT Integration Tests
-**Status:** Core implementation ✅ done (`TokenManager.validate_token()` wired in S120)  
-**Remaining:** Add unit test with mock JWT and integration test against `/api/auth/login`.  
-**Acceptance criteria:** Test validates expired-token → 401, invalid-token → 401, valid-token → scope list.
+| # | Item | Status | Session |
+|---|------|--------|---------|
+| CB-001 Follow-up | JWT acceptance tests | ✅ Resolved — `tests/security/test_get_token_scopes.py` (5 tests) | S123 |
+| CB-002 Follow-up | No-double-invoke acceptance tests | ✅ Resolved — `tests/cognitive_brain/quantum/test_quantum_superposition_no_double_invoke.py` (7 tests) | S123 |
+| CB-006 Follow-up | Auth router mount acceptance tests | ✅ Resolved — `tests/api/test_app_auth_router_mount.py` (5 tests) | S123 |
 
 ---
+
+## 🟡 Remaining Backlog (Pending Design Decisions)
+
+> CB-001, CB-002, CB-006 acceptance test gaps closed in S123.
+> The items below represent the final open follow-ups.
 
 ### CB-004 Follow-up: `brain_client.yml` Test Fixture
 **Status:** BrainClient wired into `CognitiveBrainSessionInjector` in S120.  

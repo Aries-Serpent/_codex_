@@ -634,9 +634,7 @@ def quantum_superposition(
             # ── Step 1: Check if quantum feature is enabled on the instance ──
             instance = args[0] if args else None
             quantum_enabled = bool(
-                getattr(instance, enabled_config_attr, False)
-                if instance is not None
-                else False
+                getattr(instance, enabled_config_attr, False) if instance is not None else False
             )
 
             if not quantum_enabled:
@@ -675,6 +673,7 @@ def quantum_superposition(
                 # ── Step 3: Coherence-gated fallback ─────────────────────────
                 if fallback_on_low_coherence and coherence < coherence_threshold:
                     import logging as _logging
+
                     _logging.getLogger(__name__).warning(
                         "quantum_superposition: coherence %.3f below threshold %.3f "
                         "for %s — falling back to classical execution.",

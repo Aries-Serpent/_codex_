@@ -249,8 +249,7 @@ class SessionContextInjector:
             try:
                 if not self._brain_client.is_available():
                     logger.info(
-                        "BrainClient reports server unavailable; "
-                        "skipping live context fetch."
+                        "BrainClient reports server unavailable; skipping live context fetch."
                     )
                     live_error = RuntimeError("BrainClient: server not available")
             except Exception as exc:  # noqa: BLE001
@@ -327,9 +326,7 @@ class SessionContextInjector:
 
         return payload
 
-    def _compress_patterns(
-        self, patterns: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+    def _compress_patterns(self, patterns: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """CB-003: Optional PatternCompressor pass on large pattern sets.
 
         Extracts float-valued features from each pattern dict, fits the
@@ -351,11 +348,7 @@ class SessionContextInjector:
         # Extract numeric feature dicts (id is non-numeric; skip it)
         float_features: list[dict[str, float]] = []
         for p in patterns:
-            feats = {
-                k: float(v)
-                for k, v in p.items()
-                if k != "id" and isinstance(v, (int, float))
-            }
+            feats = {k: float(v) for k, v in p.items() if k != "id" and isinstance(v, (int, float))}
             float_features.append(feats)
 
         # Need at least 2 patterns with features to fit
@@ -378,9 +371,7 @@ class SessionContextInjector:
                 if feats:
                     merged.update(next(decomp_iter, {}))
                 result.append(merged)
-            logger.debug(
-                "CB-003: compressed %d patterns via PatternCompressor.", len(result)
-            )
+            logger.debug("CB-003: compressed %d patterns via PatternCompressor.", len(result))
             return result
         except Exception as exc:  # noqa: BLE001
             logger.debug("PatternCompressor pass skipped: %s", exc)
@@ -426,9 +417,7 @@ class SessionContextInjector:
         if self._brain_client is not None and keyword_signal.strip():
             try:
                 if self._brain_client.is_available():
-                    mem_result = self._brain_client.memory_search(
-                        keyword_signal[:200], limit=10
-                    )
+                    mem_result = self._brain_client.memory_search(keyword_signal[:200], limit=10)
                     for entry in mem_result.get("results", []):
                         pattern_ref = entry.get("pattern_id") or entry.get("id")
                         if pattern_ref and pattern_ref not in reconstructed_patterns:

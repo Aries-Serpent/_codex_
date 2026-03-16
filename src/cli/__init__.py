@@ -6,7 +6,8 @@ from __future__ import annotations
 import argparse
 from typing import Optional, Sequence
 
-__all__ = ['main']
+__all__ = ["main"]
+
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """CLI entry point: validate required arguments for Codex training.
