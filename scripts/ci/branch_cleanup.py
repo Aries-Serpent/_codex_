@@ -81,6 +81,7 @@ PROTECTED_PREFIX_PATTERNS = [
     "v",
 ]
 DEFAULT_STALE_DAYS = 30
+DEFAULT_VERY_STALE_DAYS = 90
 
 
 # ---------------------------------------------------------------------------
@@ -262,6 +263,7 @@ def classify_branches(
     default_branch: str,
     branches: list[dict],
     stale_days: int,
+    very_stale_days: int,
     target_prefixes: list[str],
     delete_merged: bool,
     delete_stale: bool,
@@ -312,6 +314,10 @@ def classify_branches(
         elif delete_stale and days_since is not None and days_since >= stale_days and merged:
             should_delete = True
             reason = f"stale ({days_since}d since last commit) and merged"
+        elif delete_stale and days_since is not None and days_since >= very_stale_days and not merged:
+            # Very stale unmerged branches are force-deleted regardless of merge status
+            should_delete = True
+            reason = f"very stale ({days_since}d >= {very_stale_days}d threshold) — force-deleting unmerged branch"
         elif delete_by_prefix and has_prefix and (merged or force_prefix):
             should_delete = True
             reason = f"matches target prefix; {'merged' if merged else 'force-prefix set'}"
@@ -461,6 +467,13 @@ def main() -> int:
         help="Days of inactivity before a branch is considered stale "
         "(default: %(default)s; override with CODEX_STALE_BRANCH_DAYS env var)",
     )
+    parser.add_argument(
+        "--very-stale-days",
+        type=int,
+        default=int(os.environ.get("CODEX_VERY_STALE_BRANCH_DAYS", DEFAULT_VERY_STALE_DAYS)),
+        help="Days of inactivity before an unmerged branch is force-deleted "
+        "(default: %(default)s; override with CODEX_VERY_STALE_BRANCH_DAYS env var)",
+    )
     parser.add_argument("--delete-by-prefix", action="store_true", help="Delete merged branches matching prefixes")
     parser.add_argument("--force-prefix", action="store_true", help="Delete prefix branches even if not merged (DANGER)")
     parser.add_argument(
@@ -493,6 +506,7 @@ def main() -> int:
         default_branch=default_branch,
         branches=branches,
         stale_days=args.stale_days,
+        very_stale_days=args.very_stale_days,
         target_prefixes=target_prefixes,
         delete_merged=args.delete_merged,
         delete_stale=args.delete_stale,
