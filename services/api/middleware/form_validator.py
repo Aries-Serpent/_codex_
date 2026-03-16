@@ -11,11 +11,7 @@ try:
     from starlette.middleware.base import BaseHTTPMiddleware
     from starlette.requests import Request
     from starlette.responses import JSONResponse, Response
-
-    _STARLETTE_AVAILABLE = True
 except ImportError:  # pragma: no cover
-    _STARLETTE_AVAILABLE = False
-
     class BaseHTTPMiddleware:  # type: ignore[no-redef]
         """Fallback stub when starlette is not installed."""
 

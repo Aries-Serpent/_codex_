@@ -4641,3 +4641,37 @@ S125: Complete all remaining validation tasks, fix all unresolved reviewer conve
 - mypy errors eliminated: 11
 - actionlint errors: 0 (verified with actionlint v1.7.11)
 - Deferral Language Gate: 0 violations
+
+---
+
+## Session S126 — 2026-03-16
+
+**PR:** #3586 | **Branch:** `copilot/sub-pr-3585` | **Session ID:** S126
+
+### Objective
+Address all 8 unresolved conversations: fix new `_STARLETTE_AVAILABLE` unused global (github-code-quality), verify 7 previously-fixed threads still in place, and post reply comments on each thread.
+
+### Completed Tasks
+
+1. **NEW FIX — `services/api/middleware/form_validator.py`**: Removed `_STARLETTE_AVAILABLE = True/False` — unused global flag was never read in any conditional, constituting dead state. Two github-code-quality alerts resolved.
+
+2. **Verified (all still fixed)**:
+   - `security/decorators.py`: `get_token_scopes` docstring describes actual TokenManager JWT behavior ✅
+   - `quality/cli.py`: `--fail-on`/`--warn-on` help strings list category names, not severity levels ✅
+   - `gpu_utils.py`: `ValueError` raised for `embedding_dim <= 0` ✅
+   - `branch-rebase-gate.yml`: `issues: write` permission present ✅
+   - `superposition.py`: `_captured` list prevents double-invocation of `func` ✅
+   - `test_vector_performance.py`: uses `add()`/`search(top_k=...)` API ✅
+   - `session_hook.py` (S125): unnecessary `live_error = RuntimeError(...)` removed ✅
+
+3. **Tests**: 13 security tests pass, 7 quantum tests pass, vector performance tests pass; ruff clean.
+
+4. **CHANGELOG**: S126 Fixed + Verified sections added to `[Unreleased]` (REQ-5 satisfied).
+
+5. **This accountability report**: S126 entry added (REQ-4 satisfied).
+
+### Impact Score
+- Files changed: 1 (`services/api/middleware/form_validator.py`)
+- github-code-quality alerts resolved: 2 (both `_STARLETTE_AVAILABLE` alerts)
+- Tests: 0 regressions (13 security + 7 quantum + vector perf all pass)
+- Deferral Language Gate: 0 violations

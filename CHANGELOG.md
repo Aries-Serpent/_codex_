@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S126 — 2026-03-16)
+- **`services/api/middleware/form_validator.py`**: Removed unused `_STARLETTE_AVAILABLE` global variable — flag was never read in any conditional, making it dead state; removed from both `try` and `except ImportError` branches (github-code-quality alert)
+
 ### Verified (S126 — 2026-03-16)
-- **All 7 unresolved conversations confirmed fixed** in current branch:
+- **All 7 previously-fixed unresolved conversations confirmed still in place**:
   - `session_hook.py`: unnecessary `live_error = RuntimeError(...)` removed from `is_available()` block
   - `security/decorators.py`: `get_token_scopes` docstring accurately describes TokenManager JWT validation
   - `quality/cli.py`: `--fail-on`/`--warn-on` help strings list actual category names
