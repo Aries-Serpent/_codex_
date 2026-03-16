@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-03-09T00:50:07.715356+00:00",
+    "scan_time": "2026-03-16T00:55:36.990033+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -17,16 +17,16 @@
     "by_category": {
       "unknown": 2
     },
-    "total_size_mb": 22.63
+    "total_size_mb": 22.77
   },
   "candidates": [
     {
       "path": ".codex/embeddings/codex_index_meta.json",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 10.28,
+      "size_mb": 10.41,
       "reasons": [
-        "large_file_10.3mb"
+        "large_file_10.4mb"
       ],
       "recommendation": "compress_or_offload"
     },
