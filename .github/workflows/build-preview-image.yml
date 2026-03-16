@@ -88,7 +88,7 @@ jobs:
       # QEMU is required for cross-platform emulation (linux/arm64 on amd64 runners).
       # Only needed when building multi-platform images (main / workflow_dispatch push).
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
         with:
           platforms: arm64
 
