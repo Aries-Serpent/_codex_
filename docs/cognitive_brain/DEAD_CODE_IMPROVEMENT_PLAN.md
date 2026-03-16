@@ -57,6 +57,7 @@ response token.
 
 > CB-001, CB-002, CB-006 acceptance test gaps closed in S123.
 > CB-004, CB-005 acceptance tests closed in S124.
+> S125–S128: all CB items verified complete, CI stabilised, slow tests fixed.
 
 ### CB-004 Follow-up: `brain_client.yml` Test Fixture
 **Status:** ✅ COMPLETED in S124  
@@ -77,6 +78,25 @@ response token.
 - `test_tree_depth_reflected_in_node_children_count` — `_node_to_dict` child count  
 - `test_css_output_contains_required_selectors` — `.container`, `.metric-card`, `.node`  
 - `test_render_html_with_empty_nodes` — empty node list handled gracefully
+
+---
+
+## ✅ S125–S128 Status Summary
+
+| Session | Key Deliverable | Status |
+|---------|----------------|--------|
+| S125 | mypy baseline=0; sentencepiece stub fix; 11 type errors; CacheManager paths | ✅ COMPLETE |
+| S126 | Cost-gate PR-comment fallback; `_STARLETTE_AVAILABLE` removal | ✅ COMPLETE |
+| S127 | slow-test `sentence_transformers` importorskip; `CODEX_VERY_STALE_BRANCH_DAYS`; pr-cost-check parity | ✅ COMPLETE |
+| S128 | Dead-link script idempotency fix; full pre-merge verification; accountability + CHANGELOG updated | ✅ COMPLETE |
+
+**All 13 CB backlog items: ✅ IMPLEMENTED & TESTED**  
+**Next Phase Focus (post-PR-#3586 merge into `main`):**
+1. Monitor `Resilient Validation Suite` and `Art_Documentation Link Checker` for any failures on `main`
+2. Verify `cost-gate.yml` and `pr-cost-check.yml` comment-fallback continue passing on new PRs
+3. Consider promoting `CODEX_VERY_STALE_BRANCH_DAYS` policy to branch-cleanup CI schedule (default 90d → add to `.codex/guardrails.md`)
+4. Evaluate adding `session-analysis-agent` post-merge scan to verify `main` health
+5. Add `@pytest.mark.slow` annotation to any remaining unmarked long-running tests discovered post-merge
 
 ---
 

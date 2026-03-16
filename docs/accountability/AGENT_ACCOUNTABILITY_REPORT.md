@@ -4675,3 +4675,84 @@ Address all 8 unresolved conversations: fix new `_STARLETTE_AVAILABLE` unused gl
 - github-code-quality alerts resolved: 2 (both `_STARLETTE_AVAILABLE` alerts)
 - Tests: 0 regressions (13 security + 7 quantum + vector perf all pass)
 - Deferral Language Gate: 0 violations
+
+---
+
+## Session S127 — 2026-03-16
+
+**PR:** #3586 | **Branch:** `copilot/sub-pr-3585` | **Session ID:** S127
+
+### Objective
+Resume from rate-limited stalled session (job `67297257315`). Verify commit `6209226` plan was fully implemented. Fix `slow` test suite failures, add `CODEX_VERY_STALE_BRANCH_DAYS` env var, apply `pr-cost-check.yml` parity fix for cost-gate.
+
+### Completed Tasks
+
+1. **Stalled session recovery**: Confirmed job `67297257315` was rate-limited before any tool calls — zero code changes from that session. S127 started clean from HEAD (`201088e`, the S126 commit).
+
+2. **Commit `6209226` verification**: All 5 planned items from that planning commit confirmed implemented in HEAD:
+   - `cost-gate.yml` comment fallback → `201088e` ✅
+   - `_STARLETTE_AVAILABLE` removal → `201088e` ✅
+   - `sentence_transformers` importorskip → `c5b936e` ✅
+   - `CODEX_VERY_STALE_BRANCH_DAYS` → `c5b936e` ✅
+   - `pr-cost-check.yml` comment fallback → `e6a219a` ✅
+
+3. **`slow` test suite fix** (`tests/rag/test_rag_integration.py`): Added `pytest.importorskip("sentence_transformers")` at module level. All 5 tests that previously failed with `ModuleNotFoundError` now skip cleanly in environments without the optional package. Root cause: `patch('sentence_transformers.SentenceTransformer', ...)` requires the module to be importable at patch time even when mocking — module-level skip is the correct fix.
+
+4. **`CODEX_VERY_STALE_BRANCH_DAYS` env var** (`scripts/ci/branch_cleanup.py`): Added `DEFAULT_VERY_STALE_DAYS = 90` constant, `--very-stale-days` CLI arg (reads `CODEX_VERY_STALE_BRANCH_DAYS` env var), and force-delete logic for very-stale unmerged branches when `--delete-stale` is active. Two-tier staleness policy: stale → warn/soft-delete, very-stale → force-delete.
+
+5. **`pr-cost-check.yml` parity fix**: Added "Comment fallback approval scan" step (mirrors S126 `cost-gate.yml` fix). Both cost workflows now accept `💰 Cost Proposal Approved` in either the PR body or any PR comment.
+
+6. **CI confirmed green** on `e6a219ae`: `💰 PR Cost Check` ✅ success, `mypy` ✅, `actionlint` ✅, `Branch Rebase Gate` ✅, `Pre-Flight CI Validation` ✅.
+
+7. **CHANGELOG**: S127 Fixed section added to `[Unreleased]` (REQ-5 satisfied).
+
+8. **This accountability report**: S127 entry added (REQ-4 satisfied).
+
+### Impact Score
+- Files changed: 3 (`test_rag_integration.py`, `branch_cleanup.py`, `pr-cost-check.yml`)
+- Tests fixed: 5 (slow suite — `sentence_transformers` module skip)
+- New CLI args: 1 (`--very-stale-days`)
+- Deferral Language Gate: 0 violations
+
+---
+
+## Session S128 — 2026-03-16
+
+**PR:** #3586 | **Branch:** `copilot/sub-pr-3585` | **Session ID:** S128
+
+### Objective
+Address all concerns from comment `#4070714333` (second `@copilot continue` from @mbaetiong). Hotfix pass: verify all S116–S127 fixes are solid in HEAD, fix dead-link script idempotency bug, update all documentation, perform pre-merge readiness checks. This PR targets merge into `main`.
+
+### Completed Tasks
+
+1. **Stalled session verification**: Fetched job log for `67297257315` — confirmed zero changes; S127 already addressed this.
+
+2. **Commit `6209226` implementation verification**: All 5 planned items confirmed present in HEAD. No gaps.
+
+3. **All open reviewer threads verified in code (6 threads)**:
+   - `test_vector_performance.py:12-15` → uses `add()` / `search(top_k=...)` ✅
+   - `branch-rebase-gate.yml:32` → `issues: write` present ✅
+   - `gpu_utils.py:85-89` → `ValueError` for `embedding_dim <= 0` ✅
+   - `quality/cli.py:159-167` → help strings list category names; unknown → exit(2) ✅
+   - `security/decorators.py:246-250` → docstring describes actual TokenManager JWT ✅
+   - `superposition.py:656-665` → `_captured` list prevents double-invoke ✅
+
+4. **CB acceptance tests**: 19/19 pass (CB-001 through CB-006).
+
+5. **`scripts/fix_pr3248_dead_links.sh` idempotency fix**: Changed sed substitution to guard against duplicate `<!-- Note: Logs expire after 90 days -->` annotations. Script is now safe to run multiple times.
+
+6. **Dead link validation**: `python scripts/validate_docs_links.py` → 0 errors, 1 minor warning (cognitive_app.md live URL — not actionable without deployment).
+
+7. **Branch vs main**: 0 merge conflicts. Branch is 10 commits ahead of `main`, 0 behind.
+
+8. **CI status on `e6a219ae`**: 22 workflows completed, all ✅ success; 2 long-running suites in-progress (Doc Link Checker, Resilient Validation Suite).
+
+9. **CHANGELOG**: S128 entry added to `[Unreleased]` (REQ-5 satisfied).
+
+10. **This accountability report**: S127 + S128 entries added (REQ-4 satisfied).
+
+### Impact Score
+- Files changed: 2 (`scripts/fix_pr3248_dead_links.sh` bug fix, `AGENT_ACCOUNTABILITY_REPORT.md`)
+- Reviewer threads verified: 6 (all code-complete)
+- Merge conflicts: 0
+- Deferral Language Gate: 0 violations

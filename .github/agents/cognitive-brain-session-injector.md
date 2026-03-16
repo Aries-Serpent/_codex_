@@ -7,11 +7,11 @@ description: >
   the system prompt, and closes the AfterMath/PDA loop by calling
   report_completion() after each task. Implements quantum reconstruction
   fallback, RBAC via StructuralPolicyManager, and token-budget enforcement.
-version: 1.1.0
-author: GitHub Copilot (S108)
+version: 1.2.0
+author: GitHub Copilot (S108, updated S128)
 status: active
 created: 2026-02-28
-updated: 2026-03-03
+updated: 2026-03-16
 autonomous_actions_enabled: true
 runner_compatibility:
   default: ubuntu-latest        # 2-core — session context injection, AfterMath PDA loop closure

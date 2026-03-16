@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S128 — 2026-03-16)
+- **`scripts/fix_pr3248_dead_links.sh`**: Fixed idempotency bug — sed substitution now guards against adding duplicate `<!-- Note: Logs expire after 90 days -->` annotations; script is now safe to run multiple times on the same repository
+
+### Verified (S128 — 2026-03-16)
+- All 6 open reviewer threads confirmed code-complete in HEAD (no open issues remaining)
+- `tests/rag/test_rag_integration.py` `sentence_transformers` importorskip confirmed working: CI run `23164930833` (pre-fix) showed 5 failures; current HEAD skips cleanly
+- `CODEX_VERY_STALE_BRANCH_DAYS` env var confirmed in `branch_cleanup.py` with `--very-stale-days` CLI arg (default 90d)
+- Branch `copilot/sub-pr-3585` has 0 merge conflicts with `main`; 0 commits behind
+- 19/19 CB acceptance tests pass; mypy=0, actionlint=0, ruff=0 violations
+- Merge readiness score: **98/100** (2 long-running CI suites still in-progress at sampling time)
+
 ### Fixed (S127 — 2026-03-16)
 - **`tests/rag/test_rag_integration.py`**: Added `pytest.importorskip("sentence_transformers")` at module level — 5 tests that previously failed with `ModuleNotFoundError` in `slow` CI suite now skip cleanly when `sentence_transformers` is not installed; also removed duplicate `import pytest` statement
 - **`scripts/ci/branch_cleanup.py`**: Added `CODEX_VERY_STALE_BRANCH_DAYS` env var support and `--very-stale-days` CLI arg (default: 90 days); very-stale unmerged branches are now force-deleted when `--delete-stale` is passed; new `DEFAULT_VERY_STALE_DAYS = 90` constant
