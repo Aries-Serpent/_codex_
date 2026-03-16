@@ -832,7 +832,7 @@ pyasn1-modules==0.4.2
     # via google-auth
 pybind11==3.0.2
     # via lm-eval
-pycparser==2.23
+pycparser==3.0
     # via cffi
 pydantic==2.12.3
     # via
