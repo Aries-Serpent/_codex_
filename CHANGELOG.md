@@ -5,6 +5,13 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — PR #3585
+
+### Auto-fix (2026-03-16)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3585 (SHA `2947f993`) at 2026-03-16T00:56Z [auto-generated]
+
+---
+
 ## [S53] — 2026-03-15T09:37Z — PR #3584
 
 ### S53: mypy 477→291 — stub expansions + type annotation improvements
@@ -235,7 +242,6 @@ New `.mypy_baseline`: **932**. Next target: < 880 (S48).
 
 
 #### Fixed — Non-existent GitHub Actions versions (65+ workflow/action files)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3585 (SHA `2947f993`) at 2026-03-16T00:56Z [auto-generated]
 - `actions/checkout@v6` → `@v4` across all `.github/workflows/`, `.github/actions/`, `.github/misc/`, and `.github/workflow-archive/` files
 - `actions/upload-artifact@v7` → `@v4` (was causing `auto-fix-pr-check.yml` CI failures)
 - `actions/download-artifact@v8` → `@v4`
