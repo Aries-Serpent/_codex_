@@ -14,6 +14,14 @@ set -euo pipefail
 WORKSPACE="${CODESPACE_VSCODE_FOLDER:-/workspaces/_codex_}"
 cd "$WORKSPACE"
 
+# Resolve sudo — in GitHub Codespaces prebuilds the container user may already
+# be root (no sudo binary).  Define a safe wrapper once.
+if command -v sudo &>/dev/null; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+
 echo "══════════════════════════════════════════════════════════"
 echo "  Codex Codespace — on-create (Phase 1+2)"
 echo "  Workspace : $WORKSPACE"
@@ -23,8 +31,8 @@ echo "════════════════════════�
 
 # ── System packages (mirrors Phase 2: System Dependencies) ───────────────────
 echo "📦 Installing system packages…"
-sudo apt-get update -qq
-sudo apt-get install -y --no-install-recommends \
+$SUDO apt-get update -qq
+$SUDO apt-get install -y --no-install-recommends \
     build-essential \
     libffi-dev \
     libssl-dev \
@@ -37,7 +45,7 @@ sudo apt-get install -y --no-install-recommends \
     unzip \
     sqlite3 \
     2>/dev/null || true
-sudo rm -rf /var/lib/apt/lists/*
+$SUDO rm -rf /var/lib/apt/lists/*
 
 # ── Git LFS (mirrors GIT_LFS_SKIP_SMUDGE baseline — pull only text files) ────
 git lfs install --skip-smudge 2>/dev/null || true

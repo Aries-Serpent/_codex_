@@ -185,9 +185,8 @@ def test_database_transaction_rollback(tmp_path):
     # Start transaction
     try:
         conn.execute("UPDATE accounts SET balance = balance - 500 WHERE id = 1")
-        # Simulate error
+        # Simulate error — commit is intentionally never reached
         raise ValueError("Payment processing failed")
-        conn.commit()
     except ValueError:
         conn.rollback()
 

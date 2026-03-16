@@ -5,13 +5,11 @@ All notable changes to the Cognitive Brain Core project will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] 
-### Fixed
+## [Unreleased]
+
+### Fixed (Auto-fix 2026-03-16)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3588 (SHA `1b1f4b72`) at 2026-03-16T11:19Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3586 (SHA `54fd30d1`) at 2026-03-16T11:20Z [auto-generated]
-— PR #3585
-
-### Auto-fix (2026-03-16)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3585 (SHA `2947f993`) at 2026-03-16T00:56Z [auto-generated]
 
 ---
@@ -217,9 +215,7 @@ New `.mypy_baseline`: **932**. Next target: < 880 (S48).
 - No important files gitignored accidentally
 - No repo files in /tmp/
 - All excluded files are correctly runtime artifacts
-## [Unreleased]
-
-### Session S45 — 2026-03-15 — CI triage fixes + mypy 1113→1069 (PR #3583)
+## [Session — S45 — 2026-03-15 — PR #3583]
 
 #### Fixed — Art_Security Scanning Suite SBOM generation
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3584 (SHA `7d544dd4`) at 2026-03-15T05:31Z [auto-generated]

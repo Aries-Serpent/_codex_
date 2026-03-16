@@ -1377,17 +1377,6 @@ def rag_test_config():
         "cache_enabled": True,
     }
 
-    # ============================================================================
-    # PyTorch Profiler and JSON Serialization Fixtures (Added 2026-01-22)
-    # ============================================================================
-
-    # Removed duplicate disable_torch_profiler fixture (F811)
-    # The correct version is defined below at line ~1275 with autouse=False
-
-    # Cleanup environment variables
-    os.environ.pop("PYTORCH_PROFILER_DISABLE", None)
-    os.environ.pop("KINETO_LOG_LEVEL", None)
-
 
 @pytest.fixture
 def mock_json_serializable():

@@ -8,8 +8,6 @@ import tempfile
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
-
 pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
 from src.codex.retrieval.stores.base import (
     DimensionMismatchError,
@@ -169,7 +167,7 @@ class TestFAISSStoreSearch:
 
         # Search
         query = vectors[0]  # Use first vector as query
-        results = store.search(query, k=5)
+        results = store.search(query, top_k=5)
 
         assert len(results) <= 5
         assert all("score" in r for r in results)
@@ -185,7 +183,7 @@ class TestFAISSStoreSearch:
         store.add(vectors, metadata=metadata)
 
         query = vectors[0]
-        results = store.search(query, k=3)
+        results = store.search(query, top_k=3)
 
         assert len(results) > 0
         assert "metadata" in results[0]["document"]

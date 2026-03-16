@@ -62,7 +62,7 @@ class FAISSStore(VectorStore):
         self.documents: list[dict[str, Any]] = []
         self.vector_ids: list[str] = []  # Track vector IDs
         self.id_to_index: dict[str, int] = {}  # Map ID to index position
-        self.dimension: Optional[int] = dimension
+        self.dimension: Optional[int] = None
         self.max_vectors = min(max_vectors, MAX_VECTORS)
         self.validate_checksums = validate_checksums
         self._checksum: Optional[str] = None
@@ -77,6 +77,16 @@ class FAISSStore(VectorStore):
             logger.debug(f"ImportError: {e}")
             logger.error("faiss-cpu not installed. Install with: pip install faiss-cpu")
             raise
+
+        # Validate and eagerly initialize index if dimension is provided
+        if dimension is not None:
+            if not isinstance(dimension, int) or dimension <= 0 or dimension > MAX_DIMENSION:
+                raise ValueError(
+                    f"dimension must be a positive integer ≤ {MAX_DIMENSION}, got {dimension!r}"
+                )
+            self.dimension = dimension
+            self.index = self.faiss.IndexFlatL2(self.dimension)
+            logger.info(f"Pre-initialized FAISS index with dimension: {self.dimension}")
 
     @staticmethod
     def _validate_index_name(name: str) -> str:

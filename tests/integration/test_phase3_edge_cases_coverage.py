@@ -673,10 +673,8 @@ class TestPartialFailuresAndRollback:
             transaction_log.append("INSERT record 1")
             transaction_log.append("INSERT record 2")
 
-            # Error occurs
+            # Error occurs — COMMIT is intentionally never reached
             raise ValueError("Constraint violation")
-
-            transaction_log.append("COMMIT")
         except Exception:  # noqa: BLE001
             transaction_log.append("ROLLBACK")
 
