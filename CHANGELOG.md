@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S124 — 2026-03-16)
+- **CB-004 offline mock fixture**: `tests/cognitive_brain/test_inject_with_brain_client.py` — 6 tests verifying `BrainClient` integration with `SessionContextInjector` runs fully offline; covers `memory_search()` invocation, `is_available()` guard, backward compat without client, exception resilience
+- **CB-005 HTMLVisualizer unit tests**: `tests/ast/test_visualize.py` extended with 4 tests — node rendering metric counts, tree depth child count via `_node_to_dict`, CSS selector presence, empty-node-list resilience
+
 ### Added (S123 — 2026-03-16)
 - **CB-001 acceptance tests**: `tests/security/test_get_token_scopes.py` — 5 tests: valid token→scopes, no-scope→empty list, invalid token→401, missing secret→503, expired token→401+WWW-Authenticate
 - **CB-002 acceptance tests**: `tests/cognitive_brain/quantum/test_quantum_superposition_no_double_invoke.py` — 7 tests confirming `@quantum_superposition` invokes func exactly once (no double-invoke), side effects, multi-call count

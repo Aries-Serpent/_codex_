@@ -56,19 +56,27 @@ response token.
 ## 🟡 Remaining Backlog (Pending Design Decisions)
 
 > CB-001, CB-002, CB-006 acceptance test gaps closed in S123.
-> The items below represent the final open follow-ups.
+> CB-004, CB-005 acceptance tests closed in S124.
 
 ### CB-004 Follow-up: `brain_client.yml` Test Fixture
-**Status:** BrainClient wired into `CognitiveBrainSessionInjector` in S120.  
-**Remaining:** Add `brain_client.yml` offline mock fixture so session injector tests don't require a live brain server.  
-**Acceptance criteria:** `test_inject_with_brain_client.py` runs offline and verifies `memory_search()` is called with agent name.
+**Status:** ✅ COMPLETED in S124  
+**Implemented:** `tests/cognitive_brain/test_inject_with_brain_client.py` — 6 offline mock tests:
+- `memory_search()` called during quantum reconstruction  
+- `memory_search()` skipped when `is_available()` returns `False`  
+- Injector works without BrainClient (backward compat)  
+- Memory search results augment payload  
+- `BrainClient` exception does not break inject  
+- `brain_client` stored on injector
 
 ---
 
 ### CB-005 Follow-up: HTMLVisualizer Tests
-**Status:** `ast-view` CLI subcommand registered in S120.  
-**Remaining:** Add 3 unit tests: node rendering, tree depth, CSS output.  
-**Acceptance criteria:** `pytest tests/ast/test_visualizer.py -v` passes.
+**Status:** ✅ COMPLETED in S124  
+**Implemented:** `tests/ast/test_visualize.py` — 4 new tests added (total 6):
+- `test_node_rendering_includes_function_and_class_counts` — metric cards in HTML  
+- `test_tree_depth_reflected_in_node_children_count` — `_node_to_dict` child count  
+- `test_css_output_contains_required_selectors` — `.container`, `.metric-card`, `.node`  
+- `test_render_html_with_empty_nodes` — empty node list handled gracefully
 
 ---
 
