@@ -8,7 +8,7 @@ automatic rollbacks when coherence falls below acceptable thresholds.
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 from cognitive_brain.models.quantum_metrics import (
     QuantumMetric,
@@ -301,7 +301,7 @@ class CoherenceMonitor:
             },
         )
 
-    def get_feature_health(self, feature: str, hours: int = 24) -> Dict[str, any]:
+    def get_feature_health(self, feature: str, hours: int = 24) -> Dict[str, Any]:
         """
         Get health status for a quantum feature.
 
@@ -449,7 +449,7 @@ class CoherenceMonitor:
 
     def log_metric(
         self,
-        feature: any,
+        feature: Any,
         decision_id: str,
         coherence: float,
         accuracy: float = 1.0,
@@ -495,7 +495,7 @@ class CoherenceMonitor:
             return "critical"
         return "degraded"
 
-    def get_recent_alerts(self, feature: any = None, hours: int = 24) -> List[Alert]:
+    def get_recent_alerts(self, feature: Any = None, hours: int = 24) -> List[Alert]:
         """Get recent alerts optionally filtered by feature.
 
         Args:

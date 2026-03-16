@@ -15,7 +15,7 @@ import threading
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -209,7 +209,7 @@ class ContextCache:
     def get_or_set(
         self,
         key: str,
-        content_fn: callable,
+        content_fn: Callable[..., Any],
         ttl: Optional[int] = None,
         tags: Optional[list[str]] = None,
     ) -> str:

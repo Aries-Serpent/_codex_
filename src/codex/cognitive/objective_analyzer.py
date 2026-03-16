@@ -300,8 +300,8 @@ class TrendAnalyzer:
         mean_y = sum_y / n
         ss_tot = sum((y - mean_y) ** 2 for y in y_values)
         ss_res = sum(
-            (y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2 for x, y in zip(x_values, y_values,
-                strict=False)
+            (y - (slope * x + (sum_y - slope * sum_x) / n)) ** 2
+            for x, y in zip(x_values, y_values, strict=False)
         )
         r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0.0
 

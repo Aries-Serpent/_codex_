@@ -57,14 +57,235 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    AutoModelForCausalLM = _Stub("transformers.AutoModelForCausalLM")
-    AutoModelForMaskedLM = _Stub("transformers.AutoModelForMaskedLM")
-    AutoTokenizer = _Stub("transformers.AutoTokenizer")
-    PreTrainedTokenizerBase = _Stub("transformers.PreTrainedTokenizerBase")
+    # Use proper stub classes (not _Stub instances) so type annotations remain valid.
+
+    _ERR = "transformers is not installed"
+
+    class PreTrainedModel:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def forward(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def generate(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def from_config(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class PreTrainedTokenizerBase:  # type: ignore[no-redef]
+        pad_token: str = ""
+        eos_token: str = ""
+        unk_token: str = ""
+        bos_token: str = ""
+        pad_token_id: int = 0
+        eos_token_id: int = 0
+        bos_token_id: int = 0
+        pad_token_type_id: int = 0
+        model_max_length: int = 512
+        vocab_size: int = 0
+        name_or_path: str = ""
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def __call__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def encode(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def decode(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def batch_decode(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def add_special_tokens(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def convert_tokens_to_ids(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def save_pretrained(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class PreTrainedTokenizerFast(PreTrainedTokenizerBase):  # type: ignore[no-redef]
+        pass
+
+    class GPT2Config:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class AutoModel:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def from_config(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class AutoConfig:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        @classmethod
+        def for_model(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def to_dict(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def save_pretrained(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class AutoModelForCausalLM(AutoModel):  # type: ignore[no-redef]
+        def generate(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class AutoModelForMaskedLM(AutoModel):  # type: ignore[no-redef]
+        pass
+
+    class AutoModelForSequenceClassification(AutoModel):  # type: ignore[no-redef]
+        pass
+
+    class AutoModelForSeq2SeqLM(AutoModel):  # type: ignore[no-redef]
+        pass
+
+    class BertModel(PreTrainedModel):  # type: ignore[no-redef]
+        pass
+
+    class GPT2LMHeadModel(PreTrainedModel):  # type: ignore[no-redef]
+        pass
+
+    class T5ForConditionalGeneration(PreTrainedModel):  # type: ignore[no-redef]
+        pass
+
+    class RobertaModel(PreTrainedModel):  # type: ignore[no-redef]
+        pass
+
+    class DistilBertModel(PreTrainedModel):  # type: ignore[no-redef]
+        pass
+
+    class AutoTokenizer:  # type: ignore[no-redef]
+        @classmethod
+        def from_pretrained(cls, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class BitsAndBytesConfig:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class DataCollatorForLanguageModeling:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class EarlyStoppingCallback:  # type: ignore[no-redef]
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class TrainerCallback:  # type: ignore[no-redef]
+        pass
+
+    class TrainingArguments:  # type: ignore[no-redef]
+        gradient_accumulation_steps: int = 1
+        max_steps: int = -1
+        num_train_epochs: float = 3.0
+        learning_rate: float = 5e-5
+        per_device_train_batch_size: int = 8
+        output_dir: str = ""
+        logging_steps: int = 10
+        save_steps: int = 500
+        evaluation_strategy: str = "no"
+        load_best_model_at_end: bool = False
+        fp16: bool = False
+        dataloader_num_workers: int = 0
+        local_rank: int = -1
+        world_size: int = 1
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class TrainerState:  # type: ignore[no-redef]
+        epoch: float = 0.0
+        global_step: int = 0
+        best_metric: float | None = None
+        log_history: list = []
+
+    class Trainer:  # type: ignore[no-redef]
+        model: PreTrainedModel
+        optimizer: object
+        lr_scheduler: object
+        state: TrainerState
+
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def train(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def evaluate(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def save_model(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def add_callback(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def get_train_dataloader(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def create_optimizer_and_scheduler(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def prediction_loop(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def compute_loss(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    def get_scheduler(*args, **kwargs):  # type: ignore[no-redef]
+        raise ImportError(_ERR)
+
+    __version__ = "0.0.0-stub"
     __all__ = [
+        "AutoConfig",
+        "AutoModel",
         "AutoModelForCausalLM",
         "AutoModelForMaskedLM",
+        "AutoModelForSequenceClassification",
+        "AutoModelForSeq2SeqLM",
         "AutoTokenizer",
+        "BertModel",
+        "BitsAndBytesConfig",
+        "DataCollatorForLanguageModeling",
+        "DistilBertModel",
+        "EarlyStoppingCallback",
+        "GPT2Config",
+        "GPT2LMHeadModel",
+        "PreTrainedModel",
         "PreTrainedTokenizerBase",
+        "PreTrainedTokenizerFast",
+        "RobertaModel",
+        "T5ForConditionalGeneration",
+        "Trainer",
+        "TrainerCallback",
+        "TrainerState",
+        "TrainingArguments",
+        "get_scheduler",
+        "__version__",
     ]
     __path__ = []

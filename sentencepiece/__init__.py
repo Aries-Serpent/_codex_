@@ -36,7 +36,58 @@ if _real is not None:
     globals().update({k: getattr(_real, k) for k in dir(_real) if not k.startswith("__")})
     __all__ = [k for k in dir(_real) if not k.startswith("__")]
 else:  # pragma: no cover - exercised in minimal test envs
-    __all__ = []
+    _ERR = "sentencepiece is not installed"
+
+    class SentencePieceProcessor:
+        def __init__(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def Load(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def load(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def encode(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def decode(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def encode_as_ids(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def encode_as_pieces(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def decode_ids(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def decode_pieces(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def get_piece_size(self) -> int:
+            return 0
+
+        def get_vocab_size(self) -> int:
+            return 0
+
+        def piece_to_id(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+        def id_to_piece(self, *args, **kwargs):
+            raise ImportError(_ERR)
+
+    class SentencePieceTrainer:
+        @staticmethod
+        def train(*args, **kwargs):
+            raise ImportError(_ERR)
+
+        @staticmethod
+        def Train(*args, **kwargs):
+            raise ImportError(_ERR)
+
+    __all__ = ["SentencePieceProcessor", "SentencePieceTrainer"]
     __path__ = []
     IS_CODEX_STUB = True
     _MISSING_MSG = "sentencepiece is not installed in this environment. Install sentencepiece to enable these features."

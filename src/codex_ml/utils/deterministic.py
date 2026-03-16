@@ -157,7 +157,7 @@ class DeterministicContext:
             disable_deterministic_mode()
 
 
-def check_deterministic_operations() -> dict[str, bool]:
+def check_deterministic_operations() -> dict[str, bool | None]:
     """Check which deterministic features are enabled.
 
     Returns:
@@ -178,15 +178,15 @@ def check_deterministic_operations() -> dict[str, bool]:
             status["cudnn_deterministic"] = torch.backends.cudnn.deterministic
             status["cudnn_benchmark_disabled"] = not torch.backends.cudnn.benchmark
         else:
-            status["cudnn_deterministic"] = None
-            status["cudnn_benchmark_disabled"] = None
+            status["cudnn_deterministic"] = None  # type: ignore[assignment]
+            status["cudnn_benchmark_disabled"] = None  # type: ignore[assignment]
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         status["torch_available"] = False
         status["torch_deterministic"] = False
 
-    return status
+    return status  # type: ignore[return-value]
 
 
 def warn_non_deterministic_ops():

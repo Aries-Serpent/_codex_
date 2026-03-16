@@ -69,8 +69,8 @@ def sanitize_html(content: str, allow_tags: bool = False) -> str:
 def sanitize_integer(
     value: Union[str, int, float],
     default: int = 0,
-    min_value: int = None,
-    max_value: int = None,
+    min_value: int | None = None,
+    max_value: int | None = None,
 ) -> int:
     """
     Safely convert input to integer.

@@ -122,6 +122,7 @@ class BanditRLAgent(RLAgent):
             if selected is None:
                 raise RuntimeError("action selection failed to identify a candidate")
             return selected
+        raise RLAgentError("no candidate actions could be evaluated")
 
     def update(self, trajectory: Mapping[str, Any]) -> dict[str, float]:
         if not isinstance(trajectory, Mapping):

@@ -27,7 +27,7 @@ import argparse
 import sys
 from typing import Any, Optional, Sequence
 
-from codex_ml import __version__
+from codex_ml import __version__  # type: ignore[attr-defined]
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,

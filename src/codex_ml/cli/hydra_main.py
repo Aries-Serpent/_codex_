@@ -15,7 +15,7 @@ from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.codex_data import DataConfig, load_dataset
@@ -71,8 +71,8 @@ try:  # pragma: no cover - hydra optional at runtime
     from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None
-    DictConfig = type("_DictConfig", (), {})
-    OmegaConf = None
+    DictConfig = type("_DictConfig", (), {})  # type: ignore[misc, assignment]
+    OmegaConf = None  # type: ignore[assignment, misc]
 
 
 register_configs()
@@ -103,7 +103,7 @@ def _to_mapping(cfg: Any) -> Mapping[str, Any]:
         return {"config": container}
 
     if is_dataclass(cfg):
-        return asdict(cfg)
+        return asdict(cfg)  # type: ignore[arg-type]
 
     if isinstance(cfg, Mapping):
         return dict(cfg)

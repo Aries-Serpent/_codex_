@@ -30,9 +30,9 @@ from typing import Any, Callable, Iterable, Optional  # noqa: E402
 from urllib.parse import urlparse  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    import requests
+    import requests  # type: ignore[import-untyped]
 except Exception:  # pragma: no cover - requests missing or broken
-    requests = None
+    requests = None  # type: ignore[assignment]
 
 
 class SearchProvider(ABC):

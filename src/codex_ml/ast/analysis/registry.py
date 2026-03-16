@@ -4,7 +4,7 @@ Registry for AST analyzers.
 Provides registration and execution of multiple analyzers on AST trees.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
@@ -198,7 +198,7 @@ class AnalyzerRegistry:
         Returns:
             Dictionary with statistics
         """
-        stats = {
+        stats: dict[str, Any] = {
             "total": len(findings),
             "by_severity": {"info": 0, "warning": 0, "error": 0, "critical": 0},
             "by_analyzer": {},

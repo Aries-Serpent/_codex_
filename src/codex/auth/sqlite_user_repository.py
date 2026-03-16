@@ -10,6 +10,7 @@ threads sharing the same DB file) can safely call any method concurrently.
 
 Write-ahead logging (WAL) is enabled for better concurrent read performance.
 """
+
 from __future__ import annotations
 
 import json
@@ -191,27 +192,21 @@ class SQLiteUserRepository(UserRepository):
     def get_by_id(self, user_id: str) -> Optional[User]:
         with self._lock:
             with self._get_conn() as conn:
-                row = conn.execute(
-                    "SELECT * FROM users WHERE id = ?", (user_id,)
-                ).fetchone()
+                row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
         return _row_to_user(row) if row else None
 
     def get_by_username(self, username: str) -> Optional[User]:
         username = username.strip()
         with self._lock:
             with self._get_conn() as conn:
-                row = conn.execute(
-                    "SELECT * FROM users WHERE username = ?", (username,)
-                ).fetchone()
+                row = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
         return _row_to_user(row) if row else None
 
     def get_by_email(self, email: str) -> Optional[User]:
         email = email.strip().lower()
         with self._lock:
             with self._get_conn() as conn:
-                row = conn.execute(
-                    "SELECT * FROM users WHERE email = ?", (email,)
-                ).fetchone()
+                row = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
         return _row_to_user(row) if row else None
 
     def list_all(self) -> list[User]:

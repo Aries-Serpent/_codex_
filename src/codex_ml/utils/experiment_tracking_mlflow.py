@@ -113,8 +113,8 @@ def maybe_mlflow(
         def __enter__(self) -> "_NoOpLogger":  # pragma: no cover - trivial
             return self
 
-        def __exit__(self, exc_type, exc, tb) -> bool:  # pragma: no cover - trivial
-            return False
+        def __exit__(self, exc_type, exc, tb) -> None:  # pragma: no cover - trivial
+            return None
 
         def get_tracking_uri(self) -> str:  # pragma: no cover - trivial
             uri = os.environ.get("MLFLOW_TRACKING_URI", "")

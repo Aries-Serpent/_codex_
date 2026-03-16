@@ -91,7 +91,7 @@ def get_session_logger() -> SessionLogger:
     try:
         logger = SessionLogger(session_id, _session_log_dir())
     except OSError as exc:
-        logger.debug(f"OSError: {exc}")
+        logger.debug(f"OSError: {exc}")  # type: ignore[union-attr]
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
         raise RuntimeError("Session logging unavailable") from exc
     _session_logger_ctx.set(logger)
@@ -303,7 +303,7 @@ class ArgparseJSONParser(argparse.ArgumentParser):
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 
-    def error(self, message: str) -> None:
+    def error(self, message: str) -> None:  # type: ignore[override]
         usage = self.format_usage().strip()
         log_event(
             self._logger,
@@ -415,13 +415,13 @@ def capture_exceptions(
                 return 1
 
             if result is None:
-                logger.debug("Exception caught, returning", exc_info=True)
+                logger.debug("Exception caught, returning", exc_info=True)  # type: ignore[union-attr]
                 return 0
             try:
                 return int(result)
             except Exception:
-                logger.warning("Exception occurred", exc_info=True)
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # type: ignore[union-attr]
+                logger.warning("Exception occurred", exc_info=True)  # type: ignore[union-attr]
                 return 0
 
         return _wrapped

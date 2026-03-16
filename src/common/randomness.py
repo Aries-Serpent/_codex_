@@ -27,12 +27,12 @@ logger = logging.getLogger(__name__)
 try:
     import numpy as np
 except Exception:  # pragma: no cover
-    np = None
+    np = None  # type: ignore[assignment]
 
 try:
     import torch
 except Exception:  # pragma: no cover
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 
 def set_seed(seed: int | None) -> int:

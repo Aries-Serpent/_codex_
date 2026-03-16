@@ -53,8 +53,8 @@ class Retriever:
         self.cache_dir = cache_dir
 
         self.faiss_index = None
-        self.chunks_metadata = []
-        self.index_metadata = {}
+        self.chunks_metadata: list[dict[str, Any]] = []
+        self.index_metadata: dict[str, Any] = {}
         self.model = None
 
         self._load_index()
@@ -283,7 +283,7 @@ class MultiIndexRetriever:
             index_dir: Base directory for indices
             model_name: Embedding model name
         """
-        self.retrievers = []
+        self.retrievers: list[Any] = []
 
         for idx_config in indices:
             try:
@@ -371,7 +371,7 @@ class LRUCache:
             maxsize: Maximum cache size (default: 1000)
         """
         self.maxsize = maxsize
-        self.cache = OrderedDict()
+        self.cache: OrderedDict[str, Any] = OrderedDict()
         self.hits = 0
         self.misses = 0
 
@@ -487,7 +487,7 @@ class CachedRetriever(Retriever):
         self.cache_ttl = cache_ttl
         self.normalize_queries = normalize_queries
         self.query_cache = LRUCache(maxsize=cache_maxsize)
-        self.cache_timestamps = {}  # Track when entries were cached
+        self.cache_timestamps: dict[str, float] = {}  # Track when entries were cached
 
         logger.info(f"Initialized CachedRetriever with TTL={cache_ttl}s, maxsize={cache_maxsize}")
 

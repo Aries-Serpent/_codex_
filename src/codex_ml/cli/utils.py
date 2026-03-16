@@ -7,9 +7,9 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
-from codex_ml.utils import reproducibility as _repro
+from codex_ml.utils import reproducibility as _repro  # type: ignore[attr-defined]
 
 
 @dataclass

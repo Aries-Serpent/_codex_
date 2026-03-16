@@ -60,8 +60,8 @@ except Exception:  # pragma: no cover - degrade gracefully without structured lo
         def __enter__(self) -> None:  # pragma: no cover - trivial branch
             return None
 
-        def __exit__(self, *_exc: object) -> bool:  # pragma: no cover - trivial branch
-            return False
+        def __exit__(self, *_exc: object) -> None:  # pragma: no cover - trivial branch
+            return None
 
     def capture_exceptions(logger=None, **_kwargs):
         if callable(logger) and not isinstance(logger, type):

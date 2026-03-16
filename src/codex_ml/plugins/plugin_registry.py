@@ -45,7 +45,7 @@ class PluginMetadata:
     version: str
     author: str = "Unknown"
     description: str = ""
-    dependencies: list[str] = None
+    dependencies: list[str] | None = None
     min_codex_version: str = "0.1.0"
 
     def __post_init__(self):
@@ -75,7 +75,7 @@ class Plugin:
         ...         )
     """
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize plugin. Override in subclass."""
         pass
 
@@ -83,7 +83,7 @@ class Plugin:
         """Execute plugin logic. Override in subclass."""
         raise NotImplementedError
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Cleanup plugin resources. Override in subclass."""
         pass
 
@@ -124,7 +124,7 @@ class PluginRegistry:
         self._instances: dict[str, Plugin] = {}
         self._initialized = True
 
-    def register(self, plugin_class: Type[Plugin], override: bool = False):
+    def register(self, plugin_class: Type[Plugin], override: bool = False) -> None:
         """Register a plugin class.
 
         Args:
@@ -241,7 +241,7 @@ class PluginRegistry:
 plugin_registry = PluginRegistry()
 
 
-def register_plugin(plugin_class: Type[Plugin]):
+def register_plugin(plugin_class: Type[Plugin]) -> Type[Plugin]:
     """Decorator to register a plugin.
 
     Example:
@@ -253,7 +253,7 @@ def register_plugin(plugin_class: Type[Plugin]):
     return plugin_class
 
 
-def load_plugins(directory: str = "plugins"):
+def load_plugins(directory: str = "plugins") -> None:
     """Load all plugins from directory.
 
     Args:
@@ -269,7 +269,7 @@ def load_plugins(directory: str = "plugins"):
 class DataAugmentationPlugin(Plugin):
     """Example: Data augmentation plugin."""
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize augmentation pipeline."""
         logger.info("DataAugmentationPlugin initialized")
 
@@ -300,9 +300,9 @@ class DataAugmentationPlugin(Plugin):
 class CustomMetricsPlugin(Plugin):
     """Example: Custom metrics computation plugin."""
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize metrics."""
-        self.metrics = {}
+        self.metrics: dict[str, float] = {}
         logger.info("CustomMetricsPlugin initialized")
 
     def execute(self, predictions: Any, labels: Any) -> dict[str, float]:
@@ -332,7 +332,7 @@ class CustomMetricsPlugin(Plugin):
 class ModelPostProcessingPlugin(Plugin):
     """Example: Model output post-processing plugin."""
 
-    def initialize(self):
+    def initialize(self) -> None:
         """Initialize post-processor."""
         logger.info("ModelPostProcessingPlugin initialized")
 

@@ -240,7 +240,7 @@ class MLPScorer:
         Returns:
             Dictionary with statistics (mean, std, min, max, sparsity)
         """
-        stats = {
+        stats: dict[str, list[float]] = {
             "mean": [],
             "std": [],
             "min": [],
@@ -261,7 +261,7 @@ class MLPScorer:
             stats["max"].append(flat.max(dim=0)[0].numpy())
 
             # Sparsity: fraction of activations below threshold
-            sparsity = (flat.abs() < 0.01).float().mean(dim=0).numpy()
+            sparsity = (flat.abs() < 0.01).float().mean(dim=0).numpy()  # type: ignore[operator]
             stats["sparsity"].append(sparsity)
 
         # Stack across layers

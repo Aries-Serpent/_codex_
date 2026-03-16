@@ -24,16 +24,16 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
     nn = Any  # type: ignore[assignment]
     GradScaler = None  # type: ignore[assignment]
     autocast = None  # type: ignore[assignment]
-    DataLoader = Any  # type: ignore[assignment]
+    DataLoader = Any  # type: ignore[assignment, misc]
 
 if torch is not None:  # pragma: no cover - typing bridge
     TensorType = torch.Tensor
     OptimizerType = torch.optim.Optimizer
     DataLoaderType = DataLoader
 else:  # pragma: no cover - fallback types
-    TensorType = Any
+    TensorType = Any  # type: ignore[misc]
     OptimizerType = Any
-    DataLoaderType = Any
+    DataLoaderType = Any  # type: ignore[misc]
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402
@@ -174,7 +174,7 @@ class Trainer:
     def __init__(
         self,
         model: nn.Module,
-        optimizer: OptimizerType,
+        optimizer: OptimizerType,  # type: ignore[valid-type]
         train_loader: DataLoaderType,
         *,
         val_loader: DataLoaderType | None = None,
@@ -611,7 +611,7 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history[-1] if self.history else {}
+            return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
@@ -619,7 +619,7 @@ class Trainer:
             num_batches = 0
             self._zero_grad()
 
-            for step, batch in enumerate(self.train_loader, start=1):
+            for step, batch in enumerate(self.train_loader, start=1):  # type: ignore[var-annotated]
                 inputs, labels = self._prepare_batch(batch)
                 with autocast(enabled=cfg.mixed_precision):
                     outputs = self._forward(inputs)
@@ -668,13 +668,13 @@ class Trainer:
             if self._metrics_path is not None:
                 try:
                     record = {"epoch": epoch, "global_step": self.state.global_step}
-                    record.update({k: float(v) for k, v in epoch_metrics.items()})
+                    record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
                     append_ndjson(record, self._metrics_path)
                 except Exception as exc:  # pragma: no cover - diagnostics only
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
-        return self.history[-1] if self.history else {}
+        return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)

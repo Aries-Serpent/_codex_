@@ -92,7 +92,7 @@ def _get_sentencepiece():
             def encode(self, text: str, out_type=int):
                 token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
                 ids = [token_to_id.get(tok, 0) for tok in text.split()]
-                return ids if out_type is int else [str(i) for i in ids]
+                return ids if out_type is int else [str(i) for i in ids]  # type: ignore[misc]
 
             def decode(self, ids):
                 id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}
@@ -241,7 +241,7 @@ class SentencePieceAdapter:
                 f"SentencePieceAdapter.encode requires a str input, got {type(text).__name__}"
             )
 
-        encoded = list(self.sp.encode(text, out_type=int))
+        encoded = list(self.sp.encode(text, out_type=int))  # type: ignore[attr-defined]
 
         # Apply padding if requested
         if padding and max_length is not None:
@@ -265,10 +265,8 @@ class SentencePieceAdapter:
         # Accept any iterable of int ids (lists, tuples, generators, etc.)
         ids_list = list(ids)
         if any(not isinstance(i, int) for i in ids_list):
-            raise ValueError(
-                "SentencePieceAdapter.decode requires int ids"
-            )
-        return self.sp.decode(ids_list)
+            raise ValueError("SentencePieceAdapter.decode requires int ids")
+        return self.sp.decode(ids_list)  # type: ignore[attr-defined]
 
     def batch_encode(
         self,

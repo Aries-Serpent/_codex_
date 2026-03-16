@@ -345,8 +345,12 @@ def get_model(
             )
     try:
         model.request_metadata = ModelRequest(
-            name=name, device=device, dtype=dtype,
-            lora_adapter=lora_adapter, lora=lora_request, config=config,
+            name=name,
+            device=device,
+            dtype=dtype,
+            lora_adapter=lora_adapter,
+            lora=lora_request,
+            config=config,
         )
     except Exception:
         logger.warning("Exception occurred", exc_info=True)

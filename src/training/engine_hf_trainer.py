@@ -87,9 +87,7 @@ def _install_accelerate_compat() -> None:
                 dlc = kwargs.pop("dataloader_config", None)
                 if dlc is not None:
                     if hasattr(dlc, "dispatch_batches"):
-                        kwargs.setdefault(
-                            "dispatch_batches", bool(dlc.dispatch_batches)
-                        )
+                        kwargs.setdefault("dispatch_batches", bool(dlc.dispatch_batches))
                     if hasattr(dlc, "split_batches"):
                         kwargs.setdefault("split_batches", bool(dlc.split_batches))
                     if hasattr(dlc, "even_batches"):
@@ -135,7 +133,7 @@ except Exception:  # pragma: no cover - numpy missing
     np = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional datasets dependency
-    from datasets import Dataset
+    from datasets import Dataset  # type: ignore[attr-defined]
 except Exception:  # pragma: no cover - datasets missing
 
     class Dataset:  # type: ignore[no-redef]
@@ -193,9 +191,9 @@ except Exception:  # pragma: no cover - transformers missing
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: D401 - compatibility
             raise ImportError("transformers dependency not available in offline mode")
 
-    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment]
-    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment]
-    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment]
+    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment, misc]
+    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment, misc]
+    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment, misc]
 
     class EarlyStoppingCallback:  # type: ignore[no-redef]
         def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -267,7 +265,7 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed
+from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed  # type: ignore[attr-defined]
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.provenance import snapshot_hydra_config
@@ -1310,7 +1308,7 @@ def run_hf_trainer(
         if writer_choice == "csv":
             writer_obj = CSVMetricsWriter(str(path))
         else:
-            writer_obj = NDJSONMetricsWriter(str(path))
+            writer_obj = NDJSONMetricsWriter(str(path))  # type: ignore[assignment]
         writer_obj.write(record)
         if hasattr(writer_obj, "close"):
             writer_obj.close()

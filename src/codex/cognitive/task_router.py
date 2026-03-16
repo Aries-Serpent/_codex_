@@ -42,7 +42,7 @@ class RoutingRequest:
 
     task_description: str
     tags: list[str] = field(default_factory=list)
-    urgency: str = "normal"           # "low" | "normal" | "high" | "critical"
+    urgency: str = "normal"  # "low" | "normal" | "high" | "critical"
     preferred_agent: str | None = None
     exclude_agents: list[str] = field(default_factory=list)
 
@@ -52,7 +52,7 @@ class RoutingResult:
     """Output of the task router."""
 
     selected_agent: str
-    confidence: float                 # 0.0 – 1.0
+    confidence: float  # 0.0 – 1.0
     reasoning: str
     alternative_agents: list[str] = field(default_factory=list)
     matched_tags: list[str] = field(default_factory=list)
@@ -78,9 +78,7 @@ class TaskRouter:
         pattern_store_path: Path = _PATTERN_STORE,
     ) -> None:
         self._registry: list[dict[str, Any]] = self._load_registry(registry_path)
-        self._pattern_success: dict[str, float] = self._load_pattern_success(
-            pattern_store_path
-        )
+        self._pattern_success: dict[str, float] = self._load_pattern_success(pattern_store_path)
 
     # ------------------------------------------------------------------
     # Public API
@@ -99,7 +97,8 @@ class TaskRouter:
                 )
 
         candidates = [
-            a for a in self._registry
+            a
+            for a in self._registry
             if self._is_active(a) and a.get("name", "") not in request.exclude_agents
         ]
 
@@ -180,6 +179,7 @@ class TaskRouter:
             return []
         try:
             import yaml  # type: ignore[import-untyped]
+
             data = yaml.safe_load(path.read_text())
             return data.get("agents", []) if isinstance(data, dict) else []
         except Exception:
@@ -207,10 +207,7 @@ class TaskRouter:
                 counts[agent][1] += 1
                 if "success" in outcome.lower():
                     counts[agent][0] += 1
-            return {
-                name: wins / total if total else 0.0
-                for name, (wins, total) in counts.items()
-            }
+            return {name: wins / total if total else 0.0 for name, (wins, total) in counts.items()}
         except Exception:
             logger.exception("Failed to load pattern success rates.")
             return {}

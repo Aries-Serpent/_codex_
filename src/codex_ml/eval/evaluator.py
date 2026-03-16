@@ -82,7 +82,7 @@ def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str
     missing = _missing_dependencies(require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
-    ds = Dataset.from_dict({"text": list(texts)})
+    ds = Dataset.from_dict({"text": list(texts)})  # type: ignore[union-attr]
     column = list(ds["text"])
     toks = tokenizer(column, return_tensors="pt", padding=True)
     input_ids = toks["input_ids"]
@@ -171,8 +171,10 @@ def lite_sequence_evaluation(
 
     # Perplexity proxy: lower is better, based on length mismatch
     avg_length_diff = (
-        sum(abs(len(p.split()) - len(r.split())) for p, r in zip(predictions, references,
-            strict=False))
+        sum(
+            abs(len(p.split()) - len(r.split()))
+            for p, r in zip(predictions, references, strict=False)
+        )
         / n_samples
     )
     perplexity_proxy = 1.0 + avg_length_diff  # Simple proxy

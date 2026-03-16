@@ -64,7 +64,7 @@ class RequestBatcher:
             Processing result for this request
         """
         request_id = f"{time.time()}_{id(data)}"
-        future = asyncio.Future()
+        future: asyncio.Future[Any] = asyncio.Future()
 
         with self.lock:
             self.queue.append((priority, request_id, data, future, process_fn))
@@ -139,7 +139,7 @@ class MemoryPool:
         self.buffer_size = buffer_size
         self.pool_size = pool_size
         self.available: deque = deque()
-        self.in_use = set()
+        self.in_use: set[Any] = set()
         self.lock = threading.Lock()
 
         # Pre-allocate buffers

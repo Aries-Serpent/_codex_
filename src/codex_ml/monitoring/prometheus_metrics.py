@@ -56,7 +56,7 @@ class _NoopMetric:
     def labels(self, **_: str) -> "_NoopMetric":  # pragma: no cover - trivial
         return self
 
-    @contextmanager
+    @contextmanager  # type: ignore[arg-type]
     def time(self) -> Iterable[None]:  # pragma: no cover - trivial
         yield
 
@@ -149,7 +149,7 @@ class CodexMetricsRegistry:
 
         self.data_loading_duration_seconds.observe(max(0.0, float(seconds)))
 
-    @contextmanager
+    @contextmanager  # type: ignore[arg-type]
     def track_duration(self) -> Iterable[None]:
         """Context manager that records execution duration in ``training_duration``."""
 

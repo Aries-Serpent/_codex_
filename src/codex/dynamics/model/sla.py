@@ -116,7 +116,7 @@ class D365CalendarClient:
         if not self._available:
             return None
         try:
-            import requests as _requests
+            import requests as _requests  # type: ignore[import-untyped]
 
             # Validate businesshoursid to prevent OData injection
             if businesshoursid is not None and not re.fullmatch(r"[\w\-]{1,128}", businesshoursid):
@@ -319,7 +319,7 @@ class SLAPolicy(BaseModel):
         except Exception:
             from datetime import timezone
 
-            tz = timezone.utc
+            tz = timezone.utc  # type: ignore[assignment]
 
         # Ensure start_time is tz-aware in the target timezone
         if start_time.tzinfo is None:
@@ -520,7 +520,7 @@ class SLAPolicyRegistry(BaseModel):
         import csv
         from pathlib import Path
 
-        registry = cls(
+        registry = cls(  # type: ignore[call-arg]
             policies=[],
             last_updated=datetime.now(UTC).isoformat(),
         )
@@ -547,7 +547,7 @@ class SLAPolicyRegistry(BaseModel):
                                 )
                             )
 
-                policy = SLAPolicy(
+                policy = SLAPolicy(  # type: ignore[call-arg]
                     name=row.get("name", ""),
                     metric=SLAMetric(row.get("metric", "first_response")),
                     target_minutes=int(row.get("target_minutes", "60")),

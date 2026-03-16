@@ -145,7 +145,7 @@ class ThermodynamicOrchestrator:
         Returns:
             Dictionary with execution results
         """
-        results = {
+        results: dict[str, Any] = {
             "executed": [],
             "skipped": [],
             "failed": [],

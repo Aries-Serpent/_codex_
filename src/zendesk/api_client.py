@@ -16,7 +16,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 
@@ -107,7 +107,7 @@ class ZendeskAPIClient:
             >>> client.list_tickets(per_page=50, sort_by="priority")
         """
         params = {"per_page": per_page, "sort_by": sort_by, "sort_order": sort_order}
-        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)
+        response = self.session.get(f"{self.config.base_url}/tickets.json", params=params)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json()
 
@@ -157,11 +157,11 @@ class ZendeskAPIClient:
         }
 
         if requester_email:
-            payload["ticket"]["requester"] = {"email": requester_email}
+            payload["ticket"]["requester"] = {"email": requester_email}  # type: ignore[assignment]
         if tags:
-            payload["ticket"]["tags"] = tags
+            payload["ticket"]["tags"] = tags  # type: ignore[assignment]
         if custom_fields:
-            payload["ticket"]["custom_fields"] = custom_fields
+            payload["ticket"]["custom_fields"] = custom_fields  # type: ignore[assignment]
 
         response = self.session.post(f"{self.config.base_url}/tickets.json", json=payload)
         response.raise_for_status()
@@ -289,7 +289,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if role:
-            params["role"] = role
+            params["role"] = role  # type: ignore[assignment]
 
         response = self.session.get(f"{self.config.base_url}/users.json", params=params)
         response.raise_for_status()
@@ -350,9 +350,7 @@ class ZendeskAPIClient:
             >>> client.update_user(1001, role="admin", phone="+15551234567")
         """
         payload = {"user": updates}
-        response = self.session.put(
-            f"{self.config.base_url}/users/{user_id}.json", json=payload
-        )
+        response = self.session.put(f"{self.config.base_url}/users/{user_id}.json", json=payload)
         response.raise_for_status()
         return response.json()
 
@@ -435,7 +433,7 @@ class ZendeskAPIClient:
         if search_type:
             params["type"] = search_type
 
-        response = self.session.get(f"{self.config.base_url}/search.json", params=params)
+        response = self.session.get(f"{self.config.base_url}/search.json", params=params)  # type: ignore[arg-type]
         response.raise_for_status()
         return response.json()
 
@@ -541,7 +539,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if filter_type:
-            params["filter[action]"] = filter_type
+            params["filter[action]"] = filter_type  # type: ignore[assignment]
 
         response = self.session.get(f"{self.config.base_url}/audit_logs.json", params=params)
         response.raise_for_status()

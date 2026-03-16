@@ -367,7 +367,7 @@ def _classical_assessment(audit: AuditResult) -> ComplianceDecision:
     else:
         final = normalized
 
-    return max(final, key=final.get)
+    return max(final, key=final.get)  # type: ignore[arg-type]
 
 
 def calculate_k1(
@@ -423,7 +423,7 @@ def calculate_k1(
 
 def run_scalability_test(
     scenarios_per_seed: int = 1000,
-    seeds: List[int] = None,
+    seeds: List[int] = None,  # type: ignore[assignment]
     use_verified_labels: bool = True,
     save_json: Optional[str] = None,
 ) -> Dict:

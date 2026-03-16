@@ -86,7 +86,7 @@ class SignstoreClient:
             return "local-dev-token-placeholder"
 
         try:
-            import requests as _requests
+            import requests as _requests  # type: ignore[import-untyped]
 
             resp = _requests.get(
                 token_url,

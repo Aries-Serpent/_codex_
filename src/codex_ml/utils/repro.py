@@ -245,7 +245,7 @@ class DatasetManifest:
 
         current_hashes = compute_directory_hash(self.dataset_path)
 
-        results = {
+        results: dict[str, list[str]] = {
             "missing": [],
             "modified": [],
             "added": [],

@@ -50,6 +50,22 @@ pytestmark = pytest.mark.skipif(
 class TestCheckForMetaTensors:
     """Tests for check_for_meta_tensors function"""
 
+    def setup_method(self, method: object) -> None:
+        """Reset torch default device before each test to prevent cross-test pollution.
+
+        ``with torch.device('meta')`` sets the global default device via
+        ``torch.set_default_device``.  When tests run in random order
+        (pytest-randomly) a meta-device test could leak state into a
+        subsequent test that expects CPU parameters.  This hook resets the
+        default device to None (= CPU) before every test in the class.
+        """
+        try:
+            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            if hasattr(_torch, "set_default_device"):
+                _torch.set_default_device(None)
+        except Exception:  # noqa: BLE001
+            pass
+
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
         # Create a simple model without meta tensors on explicit CPU device

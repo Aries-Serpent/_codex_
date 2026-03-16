@@ -258,8 +258,8 @@ class FeastCompatibleStore:
 
             # Stub materialization — writes placeholder data
             stub_data = {f: None for f in view.features}
-            stub_data["__materialized_at"] = end_date.isoformat()
-            stub_data["__source"] = view.source or "stub"
+            stub_data["__materialized_at"] = end_date.isoformat()  # type: ignore[assignment]
+            stub_data["__source"] = view.source or "stub"  # type: ignore[assignment]
 
             try:
                 path = self._native.materialize_feature_group(
@@ -653,15 +653,10 @@ class DuckDBBackend:
     def list_views(self) -> list[str]:
         with self._lock:
             rows = self._conn.execute(
-                "SELECT table_name FROM information_schema.tables "
-                "WHERE table_type = 'BASE TABLE'"
+                "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE'"
             ).fetchall()
         prefix = self._prefix
-        return [
-            row[0][len(prefix) :]
-            for row in rows
-            if row[0].startswith(prefix)
-        ]
+        return [row[0][len(prefix) :] for row in rows if row[0].startswith(prefix)]
 
     def close(self) -> None:
         self._conn.close()
@@ -733,9 +728,13 @@ class DuckDBBackend:
         with self._lock:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
-            arrow_table: pa.Table = self._conn.execute(
-                f"SELECT * FROM {tbl}"  # nosec B608 — tbl validated by _table()
-            ).arrow().read_all()
+            arrow_table: pa.Table = (
+                self._conn.execute(
+                    f"SELECT * FROM {tbl}"  # nosec B608 — tbl validated by _table()
+                )
+                .arrow()
+                .read_all()
+            )
         with pa_ipc.new_file(str(output_path), arrow_table.schema) as writer:
             writer.write_table(arrow_table)
         logger.info("Materialized view '%s' → %s (Arrow IPC)", view_name, output_path)
@@ -802,6 +801,5 @@ def create_backend(backend_type: str = "memory", **kwargs: Any) -> FeastBackend:
             table_prefix=kwargs.get("table_prefix", "_feast_"),
         )
     raise ValueError(
-        f"Unknown backend_type '{backend_type}'. "
-        "Supported: 'memory', 'sqlite', 'redis', 'duckdb'."
+        f"Unknown backend_type '{backend_type}'. Supported: 'memory', 'sqlite', 'redis', 'duckdb'."
     )

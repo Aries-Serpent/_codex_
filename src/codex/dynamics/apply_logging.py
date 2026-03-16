@@ -47,7 +47,7 @@ def apply_slas_stub(plan: Any, dry_run: bool = True) -> dict[str, Any]:
     """Best-effort SLA apply that records evidence locally."""
 
     operations = _normalize_operations(plan)
-    summary = {
+    summary: dict[str, Any] = {
         "resource": "sla",
         "processed": 0,
         "created": 0,
@@ -86,7 +86,7 @@ def apply_routing_stub(plan: Any, dry_run: bool = True) -> dict[str, Any]:
     """Best-effort routing apply that records evidence locally."""
 
     operations = _normalize_operations(plan)
-    summary = {
+    summary: dict[str, Any] = {
         "resource": "routingrule",
         "processed": 0,
         "created": 0,

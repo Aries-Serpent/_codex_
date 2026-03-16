@@ -52,7 +52,7 @@ def _ensure_subpath(base: Path, candidate: Path) -> Path:
     raise HTTPException(status_code=400, detail="Path escapes allowed root directory")
 
 
-# mypy: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response
+# NOTE: _rate_limit_exceeded_handler is typed as (Request, RateLimitExceeded) -> Response  # noqa: E501
 # but add_exception_handler expects (Request, Exception) -> Response.
 # The wrapper below widens the signature to satisfy mypy without losing runtime behaviour.
 def _rate_limit_handler(request: Request, exc: Exception) -> Response:
@@ -205,7 +205,7 @@ class HealthResponse(BaseModel):
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 @limiter.limit("100/minute")
-async def health_check(request: Request):
+async def health_check(request: Request) -> HealthResponse:
     """Health check endpoint."""
     return HealthResponse(
         status="healthy",
@@ -221,7 +221,7 @@ async def health_check(request: Request):
 
 @app.post("/rag/build", response_model=BuildIndexResponse, tags=["RAG"])
 @limiter.limit("10/minute")
-async def build_index(request: Request, build_request: BuildIndexRequest):
+async def build_index(request: Request, build_request: BuildIndexRequest) -> BuildIndexResponse:
     """Build a new RAG index."""
     try:
         from codex.rag import build_index_from_files
@@ -263,7 +263,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest):
 
 @app.post("/rag/query", response_model=QueryResponse, tags=["RAG"])
 @limiter.limit("60/minute")
-async def query_index(request: Request, query_request: QueryRequest):
+async def query_index(request: Request, query_request: QueryRequest) -> QueryResponse:
     """Query a RAG index."""
     import time
 
@@ -314,7 +314,7 @@ async def query_index(request: Request, query_request: QueryRequest):
 @limiter.limit("30/minute")
 async def list_indices(
     request: Request, tenant_id: str = "default", index_dir: Optional[str] = None
-):
+) -> ListIndicesResponse:
     """List all indices for a tenant."""
     try:
         import json
@@ -380,7 +380,7 @@ async def list_indices(
 @limiter.limit("10/minute")
 async def delete_index(
     request: Request, index_name: str, tenant_id: str = "default", force: bool = False
-):
+) -> DeleteIndexResponse:
     """Delete an index."""
     try:
         import shutil

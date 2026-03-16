@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 import torch
-from codex_ml.utils.checkpointing import load_checkpoint
+from codex_ml.utils.checkpointing import load_checkpoint  # type: ignore[attr-defined]
 from torch import nn
 
 

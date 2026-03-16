@@ -389,7 +389,7 @@ class CurriculumScheduler:
             "completed_phases": completed,
             "failed_phases": failed,
             "current_phase_index": self.state.current_phase_index,
-            "current_phase": (self.get_current_phase().id if self.get_current_phase() else None),
+            "current_phase": (self.get_current_phase().id if self.get_current_phase() else None),  # type: ignore[union-attr]
             "global_step": self.state.global_step,
             "is_complete": self.state.is_complete,
             "phase_results": [r.to_dict() for r in self.state.phase_results],
@@ -412,7 +412,7 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
         list of TrainingPhases
     """
     try:
-        import yaml
+        import yaml  # type: ignore[import-untyped]
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)

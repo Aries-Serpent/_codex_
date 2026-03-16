@@ -87,10 +87,206 @@ else:  # pragma: no cover - exercised in minimal test envs
     __all__: list[str] = ["nn", "utils", "Tensor"]
     IS_CODEX_STUB = True
 
-    # Stub Tensor class for compatibility with scipy and other libraries
+    # Stub Tensor class with all common attributes mypy needs to resolve.
+    # Covers every attribute referenced in src/ so mypy can type-check without
+    # the real torch wheel installed.
     class Tensor:  # pragma: no cover
-        """Stub Tensor class to prevent errors in scipy array API compat checks."""
-        pass
+        """Stub Tensor class — all common attributes present for mypy resolution."""
+
+        from typing import Any as _Any
+
+        shape: tuple[int, ...] = ()
+        dtype: "_Any" = None
+        device: "_Any" = None
+        ndim: int = 0
+        requires_grad: bool = False
+        grad: "_Any" = None
+        data: "_Any" = None
+
+        def __init__(self, *args: "_Any", **kwargs: "_Any") -> None:  # type: ignore[misc]
+            pass
+
+        def __iter__(self) -> "_Any":  # type: ignore[misc]
+            pass
+        def __len__(self) -> int:  # type: ignore[misc]
+            pass
+        def __getitem__(self, idx: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __setitem__(self, idx: "_Any", val: "_Any") -> None:  # type: ignore[misc]
+            pass
+        def __add__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __radd__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __sub__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __mul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __truediv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __neg__(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def __matmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+
+        def to(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def cuda(self, device: "_Any" = None) -> "Tensor":  # type: ignore[misc]
+            pass
+        def cpu(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def float(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def half(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def double(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def int(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def long(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def bool(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def detach(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def clone(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def contiguous(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def numpy(self) -> "_Any":  # type: ignore[misc]
+            pass
+        def item(self) -> "_Any":  # type: ignore[misc]
+            pass
+        def tolist(self) -> "_Any":  # type: ignore[misc]
+            pass
+        def backward(self, *args: "_Any", **kwargs: "_Any") -> None:  # type: ignore[misc]
+            pass
+
+        def size(self, dim: "int | None" = None) -> "_Any":  # type: ignore[misc]
+            pass
+        def dim(self) -> int:  # type: ignore[misc]
+            pass
+        def numel(self) -> int:  # type: ignore[misc]
+            pass
+
+        def view(self, *shape: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def reshape(self, *shape: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def squeeze(self, dim: "int | None" = None) -> "Tensor":  # type: ignore[misc]
+            pass
+        def unsqueeze(self, dim: int) -> "Tensor":  # type: ignore[misc]
+            pass
+        def expand(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def permute(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def transpose(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def flatten(self, *args: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+
+        def sum(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def mean(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def var(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def std(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def max(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
+            pass
+        def min(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
+            pass
+        def amax(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def amin(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def abs(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def argmax(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def argmin(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def clamp(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def softmax(self, dim: int) -> "Tensor":  # type: ignore[misc]
+            pass
+        def sigmoid(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def tanh(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def relu(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def exp(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def log(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def sqrt(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def pow(self, exponent: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def norm(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def cumsum(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def cumprod(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def prod(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def any(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def all(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        # Extended type-conversion and shape ops (S55 additions — non-duplicate)
+        def type(self, *args: "_Any", **kwargs: "_Any") -> "_Any":  # type: ignore[misc]
+            pass
+        def masked_fill(self, mask: "_Any", value: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def masked_select(self, mask: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def scatter_(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def gather(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def index_select(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def repeat(self, *args: "_Any", **kwargs: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def expand_as(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def t(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def is_contiguous(self) -> bool:  # type: ignore[misc]
+            pass
+        # Additional arithmetic / comparison operators (S55 additions — non-duplicate)
+        def __rmul__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __floordiv__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __lt__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __le__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __gt__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __ge__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __eq__(self, other: "_Any") -> "Tensor":  # type: ignore[misc, override]
+            pass
+        def __ne__(self, other: "_Any") -> "Tensor":  # type: ignore[misc, override]
+            pass
+        def __and__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def __or__(self, other: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+
+        def fill_(self, value: "_Any") -> "Tensor":  # type: ignore[misc]
+            pass
+        def zero_(self) -> "Tensor":  # type: ignore[misc]
+            pass
+        def requires_grad_(self, requires_grad: bool = True) -> "Tensor":  # type: ignore[misc]
+            pass
 
     def _raise_missing(*args, **kwargs):  # pragma: no cover
         raise AttributeError(_MISSING_MSG)

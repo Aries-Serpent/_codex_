@@ -1,0 +1,2 @@
+[evaluator] Optional dependencies missing (soft-fail mode): typer (Module 'typer' not found)
+Install via: pip install typer

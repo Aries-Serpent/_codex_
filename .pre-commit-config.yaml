@@ -5,6 +5,7 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
+        exclude: "^CODEX_MANIFEST\\.json$|^\\.codex/agent_context\\.json$"
       - id: check-yaml
         exclude: "^mkdocs\\.yml$|^.codex/reports/.*\\.yml$|^.codex/patterns/.*\\.yaml$|^.github/agents/.*\\.yml$|^.github/agents/.*\\.yaml$|^.github/actions/doc-test-scribe-action/action\\.yml$|^.github/docs/PR_2207_CI_CD_VALIDATION_ARTIFACTS\\.yaml$|^tests/fixtures/malformed_config\\.yaml$|^k8s/monitoring/agent_dashboard\\.yaml$"
       - id: check-added-large-files
@@ -284,3 +285,43 @@ repos:
         stages: [commit-msg]
         pass_filenames: true
         # If this fails: load .codex/CODEBASE_AGENCY_POLICY.md and fix immediately
+
+      # ── mypy isolated-venv pre-push gate ─────────────────────────────────
+      # Runs the EXACT same mypy check that CI runs (isolated venv, same flags)
+      # BEFORE the push reaches GitHub.  This means any regression that would
+      # cause the CI "mypy Anti-Regression Gate" to fail is caught locally,
+      # surfaced with a clear error message, and can be fixed before the
+      # remote CI run even starts — eliminating the "SHA drift confusion" class
+      # of debugging where CI shows a different error count than local runs.
+      #
+      # The hook creates a fresh /tmp/mypy-venv on first run (~15 s) and reuses
+      # it on subsequent runs (< 3 s) unless cleared with `pre-commit clean`.
+      #
+      # To skip in exceptional circumstances:
+      #   git push --no-verify   # bypasses all pre-push hooks
+      - id: mypy-isolated-venv-gate
+        name: "🔎 mypy isolated-venv anti-regression gate (pre-push)"
+        entry: bash -c '
+          python -m venv /tmp/mypy-prepush-venv --clear 2>/dev/null
+          /tmp/mypy-prepush-venv/bin/pip install --quiet "mypy>=1.8.0" types-PyYAML types-requests
+          /tmp/mypy-prepush-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
+        '
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: type errors were introduced. Fix them or run:
+        #   python scripts/ci/mypy_baseline.py --update   (only after intentional baseline raise)
+
+      # ── ruff full scan pre-push gate ─────────────────────────────────────
+      # Runs ruff across all selected rules (E, F, I) before push so lint
+      # violations never reach CI. Complements the commit-time ruff check
+      # (which only scans staged files) with a final full-repo scan.
+      - id: ruff-full-scan-prepush
+        name: "🧹 ruff full-repo scan (pre-push)"
+        entry: bash -c 'python -m ruff check . && echo "✅ ruff clean"'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: run `python -m ruff check . --fix` then commit the fixes

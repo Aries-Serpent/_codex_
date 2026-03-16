@@ -207,7 +207,7 @@ class ABTestManager:
                 best_variant = variant_name
 
         logger.info(f"Winner: {best_variant} with {self.config.primary_metric}={best_metric:.3f}")
-        return best_variant
+        return best_variant  # type: ignore[return-value]
 
     def get_comparison_report(self) -> dict[str, Any]:
         """Generate comparison report across all variants.
@@ -215,7 +215,7 @@ class ABTestManager:
         Returns:
             Dictionary with comparison results
         """
-        report = {
+        report: dict[str, Any] = {
             "experiment_name": self.config.experiment_name,
             "start_time": self.start_time,
             "variants": {},

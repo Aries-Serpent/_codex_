@@ -100,17 +100,13 @@ class GitHubAppConfig:
         #   - "https://<hostname>/api/v3"             (GHES)
         _url = self.api_base_url.rstrip("/")
         if not _url.startswith("https://"):
-            raise ValueError(
-                "api_base_url must use HTTPS (got: %r)" % self.api_base_url
-            )
+            raise ValueError("api_base_url must use HTTPS (got: %r)" % self.api_base_url)
         # Reject obviously local / private addresses.
         from urllib.parse import urlparse as _urlparse
 
         _host = _urlparse(_url).hostname or ""
         if _host in ("", "localhost", "127.0.0.1", "::1"):
-            raise ValueError(
-                "api_base_url must point to a remote GitHub endpoint, not %r" % _host
-            )
+            raise ValueError("api_base_url must point to a remote GitHub endpoint, not %r" % _host)
 
 
 # ---------------------------------------------------------------------------
@@ -204,15 +200,13 @@ class GitHubApp:
             payload_b64 = _b64url(json.dumps(payload, separators=(",", ":")))
             signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
 
-            signature = private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())
+            signature = private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())  # type: ignore[union-attr,call-arg,call-arg,call-arg,call-arg]
             sig_b64 = _b64url_bytes(signature)
 
             return f"{header_b64}.{payload_b64}.{sig_b64}"
 
         except (ImportError, Exception) as exc:
-            raise AuthenticationError(
-                f"Failed to generate GitHub App JWT: {exc}"
-            ) from exc
+            raise AuthenticationError(f"Failed to generate GitHub App JWT: {exc}") from exc
 
     # ------------------------------------------------------------------ #
     # Installation access tokens                                           #
@@ -244,9 +238,7 @@ class GitHubApp:
         if not force_refresh and cached is not None and not cached.is_expired():
             return cached
 
-        token = self._fetch_installation_token(
-            installation_id, permissions, repositories
-        )
+        token = self._fetch_installation_token(installation_id, permissions, repositories)
         self._token_cache[installation_id] = token
         return token
 
@@ -258,10 +250,7 @@ class GitHubApp:
     ) -> InstallationToken:
         """Call the GitHub API to create an installation access token."""
         jwt = self.generate_jwt()
-        url = (
-            f"{self._config.api_base_url}/app/installations"
-            f"/{installation_id}/access_tokens"
-        )
+        url = f"{self._config.api_base_url}/app/installations/{installation_id}/access_tokens"
 
         body: Dict[str, Any] = {}
         if permissions:
@@ -294,9 +283,7 @@ class GitHubApp:
                 f"{installation_id}: HTTP {exc.code} — {error_body}"
             ) from exc
         except Exception as exc:
-            raise AuthenticationError(
-                f"Network error fetching installation token: {exc}"
-            ) from exc
+            raise AuthenticationError(f"Network error fetching installation token: {exc}") from exc
 
         # Parse ISO-8601 expiry → Unix timestamp
         expires_at = _parse_iso8601(response_body.get("expires_at", ""))
@@ -413,7 +400,9 @@ class GitHubApp:
                     # Auth failure — try next token
                     logger.debug(
                         "pat_api_get: %s returned HTTP %d with %s — trying next token",
-                        url, exc.code, token_name,
+                        url,
+                        exc.code,
+                        token_name,
                     )
                     last_exc = exc
                     continue
@@ -422,9 +411,7 @@ class GitHubApp:
                     f"PAT API GET {url} failed: HTTP {exc.code} — {body}"
                 ) from exc
             except Exception as exc:
-                raise AuthenticationError(
-                    f"Network error on PAT GET {url}: {exc}"
-                ) from exc
+                raise AuthenticationError(f"Network error on PAT GET {url}: {exc}") from exc
 
         raise AuthenticationError(
             f"All PAT tokens exhausted for GET {url}. "

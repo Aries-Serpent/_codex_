@@ -11,6 +11,7 @@ Usage (programmatic):
     report = reflect("src/codex/cli.py", depth=2)
     print(report.summary)
 """
+
 from __future__ import annotations
 
 import ast
@@ -33,9 +34,7 @@ MAX_DEPTH = 4  # hard cap to prevent infinite recursion
 
 # ContextVar ensures each thread/async-task has its own depth counter, preventing
 # concurrent reflect() calls from interfering with each other's recursion limits.
-_REFLECT_DEPTH: contextvars.ContextVar[int] = contextvars.ContextVar(
-    "_reflect_depth", default=0
-)
+_REFLECT_DEPTH: contextvars.ContextVar[int] = contextvars.ContextVar("_reflect_depth", default=0)
 
 
 class RecursionGuard:
@@ -75,6 +74,7 @@ class RecursionGuard:
 
 # ── Reflection report ─────────────────────────────────────────────────────────
 
+
 @dataclass
 class ReflectionReport:
     target: str
@@ -99,6 +99,7 @@ class ReflectionReport:
 
 
 # ── AST-based code analysis ───────────────────────────────────────────────────
+
 
 def _analyze_python_file(path: Path) -> dict[str, Any]:
     """Parse a Python file with AST and extract structural metrics."""
@@ -164,7 +165,7 @@ def reflect(target: str, depth: int = 1) -> ReflectionReport:
             if candidate.exists():
                 break
         else:
-            candidate = None
+            candidate = None  # type: ignore[assignment]
 
     if candidate is None or not candidate.exists():
         return ReflectionReport(

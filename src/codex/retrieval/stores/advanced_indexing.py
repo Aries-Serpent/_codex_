@@ -135,7 +135,7 @@ class HNSWIndex:
         self.config = config or HNSWConfig()
         self.config.validate()
 
-        self._index = None
+        self._index: Any = None
         self._size = 0
 
         logger.info(
@@ -326,7 +326,7 @@ class IVFPQIndex:
         self.config = config or IVFPQConfig()
         self.config.validate()
 
-        self._index = None
+        self._index: Any = None
         self._trained = False
         self._size = 0
 

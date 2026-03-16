@@ -106,7 +106,7 @@ class CircuitBreaker:
         # Enhanced features
         self.current_backoff = self.config.initial_backoff
         self.consecutive_failures = 0
-        self.metrics = {
+        self.metrics: dict[str, Any] = {
             "total_calls": 0,
             "successful_calls": 0,
             "failed_calls": 0,
@@ -321,7 +321,7 @@ class CircuitBreaker:
     def _record_state_change(self) -> None:
         """Record state transition"""
         self.metrics["state_transitions"] += 1
-        self.metrics["last_state_change"] = time.time()
+        self.metrics["last_state_change"] = time.time()  # type: ignore[assignment]
         logger.info(f"Circuit breaker state changed to {self.state.value}")
 
     def _calculate_uptime_ratio(self) -> float:

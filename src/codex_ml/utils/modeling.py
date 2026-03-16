@@ -250,7 +250,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
 
 def load_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedTokenizerBase:
+) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
     if AutoTokenizer is None:  # pragma: no cover - optional dependency missing
         raise RuntimeError("transformers is required to load tokenizers")
 
@@ -271,7 +271,7 @@ def load_tokenizer(
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
-def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
+def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:  # type: ignore[valid-type]
     if not cfg.enabled:
         return model
     if LoraConfig is None or get_peft_model is None:  # pragma: no cover - optional dep guard
@@ -313,7 +313,7 @@ def _coerce_torch_dtype(dtype: Any) -> Any:
 
 def load_model(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedModel:
+) -> PreTrainedModel:  # type: ignore[valid-type]
     if AutoModelForCausalLM is None:  # pragma: no cover - transformers missing
         raise RuntimeError("transformers is required to load models")
 

@@ -45,8 +45,8 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    torch = None
-    DataLoader = None
+    torch = None  # type: ignore[assignment]
+    DataLoader = None  # type: ignore[assignment, misc]
 
 
 @dataclass
@@ -77,8 +77,8 @@ class MetricAdapter:
 
     def __init__(self, name: str):
         self.name = name
-        self._predictions = []
-        self._references = []
+        self._predictions: list[Any] = []
+        self._references: list[Any] = []
 
     def add_batch(self, predictions: Any, references: Any) -> None:
         """Accumulate batch results."""
@@ -161,7 +161,7 @@ class EvaluationRunner:
                 except Exception as e:
                     logger.debug(f"Exception: {e}")
                     logger.debug("Exception caught, returning", exc_info=True)
-                    return {f"{self.name}_error": str(e)}
+                    return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
 
         name = getattr(metric, "__name__", "custom_metric")
         return CallableMetricAdapter(metric, name)
@@ -260,7 +260,7 @@ class EvaluationRunner:
             except Exception as e:
                 logger.debug(f"Exception: {e}")
                 print(f"Warning: Metric {metric.name} failed: {e}")
-                metric_results[f"{metric.name}_error"] = str(e)
+                metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
 
         # Build results
         self.results = {
@@ -292,11 +292,11 @@ class EvaluationRunner:
 
     def _get_dataloader(self) -> Any:
         """Get or create DataLoader from dataset."""
-        if DataLoader and isinstance(self.dataset, DataLoader):
+        if DataLoader is not None and isinstance(self.dataset, DataLoader):
             return self.dataset
 
         # If torch available, create DataLoader
-        if torch and DataLoader:
+        if torch is not None and DataLoader is not None:
             return DataLoader(
                 self.dataset,
                 batch_size=self.config.batch_size,
@@ -336,18 +336,18 @@ class EvaluationRunner:
             # Log metrics
             for name, value in self.results["metrics"].items():
                 if isinstance(value, (int, float)):
-                    self.tracking_writer.log_metric(name, value)
+                    self.tracking_writer.log_metric(name, value)  # type: ignore[union-attr]
 
             # Log performance metrics
-            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])
-            self.tracking_writer.log_metric(
+            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])  # type: ignore[union-attr]
+            self.tracking_writer.log_metric(  # type: ignore[union-attr]
                 "throughput", self.results["throughput_samples_per_sec"]
             )
 
             # Log artifact
             summary_path = str(self.output_path / "evaluation_summary.json")
             if hasattr(self.tracking_writer, "log_artifact"):
-                self.tracking_writer.log_artifact(summary_path)
+                self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
 
             print("Logged results to tracking writer")
         except Exception as e:

@@ -77,7 +77,7 @@ class ContextDistiller:
         Returns:
             Dictionary mapping categories to file lists
         """
-        results = {"code": [], "docs": [], "configs": []}
+        results: dict[str, list[Path]] = {"code": [], "docs": [], "configs": []}
 
         for src_dir in self.src_dirs:
             if not src_dir.exists():

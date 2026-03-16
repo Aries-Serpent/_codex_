@@ -165,4 +165,3 @@ Examples:
 - [`collect_telemetry.py`](../../scripts/ci/collect_telemetry.py) — Pattern classifier implementation
 - [`COGNITIVE_BRAIN_STATUS_PR3552.md`](../../.codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md) — Sprint 2 CI health plan
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-
