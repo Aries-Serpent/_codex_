@@ -4,14 +4,18 @@ This module implements the SecretProvider interface for GitHub Personal
 Access Tokens (PATs) and GitHub Apps, supporting token rotation, validation,
 and scope management.
 
-**IMPORTANT**: Several methods in this module are stubs that must be implemented
-before production use:
-- `create_token()`: Raises NotImplementedError - must be wired to GitHub API
-- `revoke_secret()`: Calls the GitHub API to revoke installation tokens (ghs_);
+**Implementation status**:
+- ``create_token()``: Creates GitHub App installation access tokens via
+  ``POST /app/installations/{id}/access_tokens``.  Requires ``installation_id``
+  in config or ``GITHUB_APP_INSTALLATION_ID`` env var.  Fine-grained / classic
+  PATs cannot be created via the REST API (must be done via the GitHub UI).
+- ``update_token_scopes()``: Calls ``PATCH /user/installations/{id}/permissions``
+  when the ``requests`` library is available; returns False otherwise.
+- ``revoke_secret()``: Calls the GitHub API to revoke installation tokens (ghs_);
   returns False for classic PATs that require OAuth App credentials not configured.
-- `list_secrets()`: Calls GET /user to return metadata for the current token.
+- ``list_secrets()``: Calls GET /user to return metadata for the current token.
 
-`validate_secret()` now calls `GET /api.github.com/user` to verify the token
+``validate_secret()`` now calls ``GET /api.github.com/user`` to verify the token
 is live and accepted by GitHub. Requires network access; gracefully degrades to
 format-only validation when the network is unreachable.
 
@@ -289,53 +293,168 @@ class GitHubTokenProvider(TokenProvider):
     def create_token(
         self, name: str, scopes: List[str], expires_in_days: Optional[int] = None
     ) -> RotationResult:
-        """Create new GitHub token.
+        """Create a new GitHub token via the REST API.
+
+        For **GitHub App installation tokens** the method calls
+        ``POST /app/installations/{installation_id}/access_tokens`` using the
+        configured JWT bearer token.  For **fine-grained PATs** or **classic
+        PATs** programmatic creation is not supported by the public REST API —
+        those must be created through the GitHub settings UI.
+
+        The ``installation_id`` is read from the provider config key
+        ``installation_id`` or from the ``GITHUB_APP_INSTALLATION_ID``
+        environment variable.
 
         Args:
-            name: Token description/note
-            scopes: List of permissions
-            expires_in_days: Days until expiration
+            name: Token description (used in metadata only; the API does not
+                accept a ``note`` for installation tokens).
+            scopes: List of permission names.  Mapped to the ``permissions``
+                dict expected by the API (each scope → ``"write"``).
+            expires_in_days: Ignored for installation tokens (they are always
+                short-lived, typically 1 h).
 
         Returns:
-            RotationResult with new token details
-
-        Raises:
-            NotImplementedError: This is a stub that must be implemented
+            RotationResult with ``success=True`` and the new token value on
+            success, or ``success=False`` with an ``error_message``.
         """
-        raise NotImplementedError(
-            "GitHub token creation is not implemented. This method is a stub and "
-            "must be wired to the GitHub API (for example, POST /user/tokens for "
-            "fine-grained PATs) before it can be used."
+        installation_id = self.config.get(
+            "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID")
         )
+
+        if not installation_id:
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message=(
+                    "Cannot create token: no installation_id configured. "
+                    "Fine-grained PATs and classic PATs must be created "
+                    "through the GitHub settings UI. Provide "
+                    "'installation_id' in the provider config or set "
+                    "GITHUB_APP_INSTALLATION_ID to create an installation "
+                    "access token."
+                ),
+            )
+
+        if not self.token:
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message="Cannot create token: no bearer token configured.",
+            )
+
+        if not HAS_REQUESTS:
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message="Cannot create token: requests library is not installed.",
+            )
+
+        # Build permissions dict from scopes list
+        permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
+
+        url = f"{self.api_url}/app/installations/{installation_id}/access_tokens"
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        body: Dict[str, Any] = {}
+        if permissions:
+            body["permissions"] = permissions
+
+        try:
+            resp = _requests.post(url, json=body, headers=headers, timeout=15)
+            if resp.status_code == 201:
+                data = resp.json()
+                new_token = data.get("token", "")
+                token_id = str(data.get("id", name))
+                logger.info("GitHub installation access token created successfully.")
+                return RotationResult(
+                    success=True,
+                    old_secret_id="",
+                    new_secret_id=token_id,
+                    new_secret_value=new_token,
+                    metadata={
+                        "name": name,
+                        "permissions": permissions,
+                        "expires_at": data.get("expires_at"),
+                    },
+                )
+            logger.error(
+                "GitHub API returned %d when creating installation token: %s",
+                resp.status_code,
+                resp.text[:200],
+            )
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message=f"GitHub API returned {resp.status_code}: {resp.text[:200]}",
+            )
+        except Exception as e:
+            logger.error("Failed to create GitHub installation token: %s", e)
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message=f"Token creation request failed: {e}",
+            )
 
     def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
         """Update GitHub token scopes.
 
-        For fine-grained PATs, updates permission set.
-        For classic PATs, requires recreation.
+        For fine-grained PATs, updates the permission set via
+        ``PATCH /user/installations/{installation_id}/permissions`` (requires
+        the ``requests`` library and a valid bearer token).  For classic PATs,
+        scope changes are not supported by the API — a new token must be
+        created manually.
 
         Args:
-            secret_id: Token ID
+            secret_id: Token or installation ID
             scopes: New list of scopes
 
         Returns:
-            True if updated successfully
+            True if updated successfully (or gracefully degraded)
         """
         try:
-            # This is a stub - actual implementation would use GitHub API
-            # PATCH /user/tokens/{token_id}
+            logger.info("Updating GitHub token scopes for %s", secret_id)
+            logger.debug("New scopes: %s", scopes)
 
-            logger.info("Updating GitHub token scopes")
-            logger.debug(f"New scopes: {scopes}")
+            if not HAS_REQUESTS:
+                logger.warning(
+                    "update_token_scopes(): requests library unavailable; "
+                    "scopes have NOT been updated via GitHub API."
+                )
+                return False
 
-            # NOTE: Stub — does NOT call the GitHub API (PATCH /user/tokens/{token_id}).
-            logger.warning(
-                "update_token_scopes() is a stub: scopes have NOT been updated via GitHub API."
+            if not self.token:
+                logger.warning(
+                    "update_token_scopes(): no bearer token configured; "
+                    "scopes have NOT been updated."
+                )
+                return False
+
+            permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
+            url = f"{self.api_url}/user/installations/{secret_id}/permissions"
+            headers = {
+                "Authorization": f"Bearer {self.token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+            }
+            resp = _requests.patch(
+                url, json={"permissions": permissions}, headers=headers, timeout=10
             )
-            return True
+            if resp.status_code in (200, 204):
+                logger.info("GitHub token scopes updated successfully.")
+                return True
+            logger.warning(
+                "update_token_scopes(): GitHub API returned %d; "
+                "scopes may not be updated. Response: %s",
+                resp.status_code,
+                resp.text[:200],
+            )
+            return False
 
         except Exception as e:
-            logger.error(f"Failed to update token scopes: {e}")
+            logger.error("Failed to update token scopes: %s", e)
             return False
 
     def revoke_secret(self, secret_id: str) -> bool:

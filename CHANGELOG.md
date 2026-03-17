@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S130 — 2026-03-17 — PR #3604)
+- **`src/security/providers/github_provider.py`**: Implemented `create_token()` — creates GitHub App installation access tokens via `POST /app/installations/{id}/access_tokens`; returns `RotationResult` with graceful fallback when `installation_id` not configured
+- **`src/security/providers/github_provider.py`**: Implemented `update_token_scopes()` — calls `PATCH /user/installations/{id}/permissions` when `requests` library is available; returns False with logged warning otherwise
+- **`tests/security/test_providers.py`**: Added 5 new tests: `test_create_token_no_installation_id`, `test_create_token_with_installation_id`, `test_create_token_api_failure`, `test_update_token_scopes` (API mock), `test_update_token_scopes_no_requests`
+- **`docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`**: Added Cognitive Brain Phase 4 next-phase plan with component status matrix
+
+### Fixed (S129 — 2026-03-17 — PR #3604)
+- **`agents/advanced_physics_calculators.py`**: Added 19 missing NumpyStub methods (`mean`, `abs`, `sum`, `std`, `var`, `sqrt`, `sin`, `clip`, `min`, `linspace`, `meshgrid`, `gradient`, `convolve`, `roll`, `delete`, `argsort`, `argwhere`) + `pi` constant + `linalg.norm`
+- **`agents/developer_orchestrator.py`**: Added `_NpStubDev` fallback class so tests patching `NUMPY_AVAILABLE=True` don't crash with `NameError`
+- **`tests/agents/test_brain_client.py`**: Fixed auth env var leak — `_auth_header()` checks 4 env vars (`CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`, `GITHUB_TOKEN`); tests now exclude all 4 via `_AUTH_ENV_VARS` constant
+
 ### Fixed (S128 — 2026-03-16)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3604 (SHA `3e7012b8`) at 2026-03-17T00:00Z [auto-generated]
 - **`scripts/fix_pr3248_dead_links.sh`**: Fixed idempotency bug — sed substitution now guards against adding duplicate `<!-- Note: Logs expire after 90 days -->` annotations; script is now safe to run multiple times on the same repository

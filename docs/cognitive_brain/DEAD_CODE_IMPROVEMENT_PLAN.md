@@ -1,7 +1,7 @@
 # Dead Code & Incomplete Feature Improvement Plan
 
 **Generated:** 2026-03-16  
-**Updated:** 2026-03-16 (S120 — all CB items addressed)  
+**Updated:** 2026-03-17 (S130 — github_provider stubs completed, next-phase plan)  
 **Source:** Codebase-wide vulture scan (PR #3586 Session S118–S119)  
 **Policy:** Per AI Agency Policy — no placeholder removed without full assessment.  
 All items are either **implemented in this session** or **added to the ongoing
@@ -116,10 +116,54 @@ response token.
 ## 🔗 Related Issues
 
 - PR #3586 — original dead code scan and fixes  
+- PR #3604 — gap analysis and stub completion (S129–S130)  
 - Issue #3587 — CI failure triage report  
 - `.codex/patterns/ci_failure_patterns.yaml` — `DEAD_CODE_100_CONFIDENCE` pattern added  
 - `scripts/ci/dead_code_scan.py` — CI tool for ongoing enforcement  
 - `.pre-commit-config.yaml` — `dead-code-scan` pre-push hook (100% confidence gate)
+
+---
+
+## ✅ S130 Completed Items (PR #3604)
+
+| # | Item | Status | Session |
+|---|------|--------|---------|
+| GH-001 | `github_provider.create_token()` stub → API implementation | ✅ Uses `POST /app/installations/{id}/access_tokens` | S130 |
+| GH-002 | `github_provider.update_token_scopes()` stub → API implementation | ✅ Uses `PATCH /user/installations/{id}/permissions` | S130 |
+| GH-003 | Provider test suite updated (3 new tests) | ✅ 68/68 pass | S130 |
+
+---
+
+## 🧠 Cognitive Brain Next-Phase Plan
+
+### Phase 4: Production Hardening (Target: S131+)
+
+| Priority | Area | Action | Owner |
+|----------|------|--------|-------|
+| P0 | Security | Token rotation end-to-end test with real GitHub App | Human admin |
+| P1 | Cognitive Brain | Wire `PatternCompressor` metrics to monitoring dashboard | Agent |
+| P1 | Cognitive Brain | Add `BrainClient` health check to `/api/health` endpoint | Agent |
+| P2 | RAG | Add distributed cache backend (Redis) for multi-node deployments | Agent |
+| P2 | Feature Store | Add Redis backend to `feast_compat.py` (SQLite + InMemory done) | Agent |
+| P3 | Retrieval | Implement cross-encoder reranker with sentence-transformers | Agent |
+| P3 | Quantum | Add coherence telemetry export to OpenTelemetry | Agent |
+
+### Cognitive Brain Component Status
+
+| Component | Status | Coverage | Notes |
+|-----------|--------|----------|-------|
+| `session_hook.py` (Injector) | ✅ Production | 90%+ | PatternCompressor + BrainClient wired |
+| `quantum/superposition.py` | ✅ Production | 90%+ | Coherence threshold + fallback gating |
+| `brain_client.py` | ✅ Production | 90%+ | 4-token auth chain, health + memory search |
+| `context_compressor.py` | ✅ Implemented | 80%+ | PCA + quantization engine |
+| `ml/recommender.py` | ✅ Implemented | 70%+ | Pattern recommendation engine |
+| `retrieval_optimizer.py` | ✅ Implemented | 70%+ | Query optimization pipeline |
+| `workflow_optimizer.py` | ✅ Implemented | 70%+ | Workflow step optimization |
+| `planset_orchestrator.py` | ✅ Implemented | 70%+ | Multi-plan execution orchestrator |
+| `structural_policy_manager.py` | ✅ Implemented | 70%+ | RBAC policy enforcement |
+| `security/decorators.py` | ✅ Production | 90%+ | JWT scope validation |
+| `api/app.py` auth router | ✅ Production | 90%+ | `/api/auth` mounted |
+| `cli/main.py` ast-view | ✅ Production | 80%+ | HTMLVisualizer CLI entrypoint |
 
 ---
 
