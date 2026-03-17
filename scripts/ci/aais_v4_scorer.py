@@ -22,6 +22,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
+# ── OTel coherence wiring (S144) ─────────────────────────────────────────────
+# Emit one workflow_coherence_score observation per AAIS scorer run so that
+# the in-memory histogram tracks CI policy alignment over time.
+# Import is guarded so the scorer remains runnable when src/ is not on the path.
+try:
+    sys.path.insert(0, str(ROOT / "src"))
+    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score  # noqa: E402
+    _OTEL_AVAILABLE = True
+except Exception:  # pragma: no cover
+    _OTEL_AVAILABLE = False
+
 
 MIN_PASSING_SCORE = 80.0
 
@@ -463,6 +474,21 @@ def main() -> None:
                     f.write(f"- **{p.name}** ({p.weight:.0%}): {p.score:.1f}/100\n")
                     for sd in p.sub_dimensions:
                         f.write(f"  - {sd.name}: {sd.score:.1f} — {sd.details}\n")
+
+    # ── OTel coherence observation (S144) ─────────────────────────────────
+    # Map AAIS sub-dimension outcomes to policy-expected "pass" outcomes and
+    # compute a coherence score for this CI run.  Sub-dimensions scoring ≥ 80
+    # are treated as "pass"; the policy expectation is "pass" for all of them.
+    if _OTEL_AVAILABLE:
+        actual_outcomes: dict[str, str] = {}
+        expected_outcomes: dict[str, str] = {}
+        for pillar in result.pillars:
+            for sd in pillar.sub_dimensions:
+                key = sd.name
+                actual_outcomes[key] = "pass" if sd.score >= 80.0 else "fail"
+                expected_outcomes[key] = "pass"
+        coherence = compute_coherence(actual_outcomes, expected_outcomes)
+        workflow_coherence_score.observe(coherence)
 
     sys.exit(0 if result.composite >= MIN_PASSING_SCORE else 1)
 

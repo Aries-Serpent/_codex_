@@ -5467,3 +5467,41 @@ This single pattern accounts for 5+ workflow failures across 4 different workflo
 - No new vulnerabilities introduced (advisory DB check: 0 alerts for pyasn1 0.6.3)
 
 ---
+
+## SESSION SUMMARY — 2026-03-17T20:20Z SESSION copilot/sub-pr-3606 (PR #3610 S144)
+
+### Pre-flight Checklist
+- [x] Comments 4077665913 and 4077667928 from @mbaetiong fully read and understood ✅
+- [x] All stored memories loaded and verified ✅
+- [x] Codebase Agency Policy confirmed — all issues addressed ✅
+- [x] CHANGELOG.md and this report updated in this commit ✅
+
+### Work Completed in S144
+
+| Item | Status |
+|------|--------|
+| `pr3178-pytest-execution.yml` trigger hardened — only `0D_base_`→`main` auto-runs | ✅ |
+| Manual `workflow_dispatch` preserved for user-triggered runs | ✅ |
+| OTel live CI wiring in `aais_v4_scorer.py` — `workflow_coherence_score.observe()` | ✅ |
+| OTel live CI wiring in `pr_comment_consolidator.py` — coherence on every update | ✅ |
+| Merge Readiness Score (hardened 0–100, 6-component weighted) in dashboard | ✅ |
+| Readiness score always at top of every dashboard update (not soft/optional) | ✅ |
+| Follow-up gap prompt + `ACTION: create checklist` parsing hook | ✅ |
+| `coherence-snapshot.yml` — weekly AAIS + coherence snapshot workflow (new) | ✅ |
+| Weekly AAIS ≥ 99.7 enforcement (exits non-zero on regression) | ✅ |
+| `consolidated-pr-status.yml` sparse-checkout includes `src/codex/monitoring/` | ✅ |
+| 22 OTel tests still passing after changes | ✅ |
+
+### Security Impact
+- No new vulnerabilities introduced
+- Advisory DB check: not applicable (no new dependencies)
+
+### Trigger Policy (Pytest Full Suite — hardened)
+```
+BEFORE: pull_request → branches: ["0D_base_"]   # any branch targeting 0D_base_
+AFTER:  pull_request → branches: ["main"]         # only PRs targeting main
+        job if: head_ref == '0D_base_' || workflow_dispatch
+```
+Result: auto-runs ONLY on `0D_base_`→`main`; `workflow_dispatch` always works.
+
+---

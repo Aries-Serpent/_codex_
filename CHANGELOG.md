@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S144 — 2026-03-17 — PR #3610)
+- **`scripts/ci/aais_v4_scorer.py`**: OTel live CI wiring — imports `compute_coherence` and `workflow_coherence_score` from `codex.monitoring.otel_metrics` and emits one coherence observation per AAIS run, mapping sub-dimension pass/fail outcomes against policy-expected "pass" for all dimensions. Import is guarded so the scorer stays runnable without `src/` on the path.
+- **`scripts/ci/pr_comment_consolidator.py`**: OTel coherence observation emitted on every dashboard update (fraction of workflows reporting `success`). Hardened **Merge Readiness Score** (0–100, weighted by CI 35% / Reviews 20% / Conflicts 15% / Comments 15% / Quality 10% / Freshness 5%) now computed and rendered **at the top of every dashboard update** — replaces soft/optional approach with a grounded, always-on implementation. Includes follow-up gap prompt and collapsible score breakdown table.
+- **`.github/workflows/coherence-snapshot.yml`** *(new)*: Weekly (Monday 08:00 UTC) OTel coherence snapshot workflow — runs AAIS scorer, emits `workflow_coherence_score.observe()`, posts results to the latest open PR's dashboard comment, and enforces the AAIS ≥ 99.7 threshold (exits non-zero on regression). Also triggerable manually via `workflow_dispatch`.
+- **`.github/workflows/pr3178-pytest-execution.yml`**: Hardened trigger policy — auto-run now **only triggers when `0D_base_` branch opens/updates a PR targeting `main`**. Any branch→main PR where `head_ref != '0D_base_'` is skipped at job level. Any branch→`0D_base_` combination cannot reach this workflow (trigger now `branches: ["main"]`). Manual `workflow_dispatch` continues to work unrestricted.
+
 ### Fixed (S143 — 2026-03-17 — PR #3610)
 - **`requirements/lock.txt`**: pyasn1 bumped 0.6.2 → 0.6.3 (cherry-pick of dependabot PR #3611). Fixes CVE-2026-30922 — nesting depth limit added to ASN.1 decoder to prevent stack overflow from deeply nested structures. Also fixes OverflowError from oversized BER length field and `asDateTime` fractional seconds parsing.
 - **`artifacts/env/pip-freeze.txt`**: pyasn1 updated to 0.6.3 to match lock.txt.
