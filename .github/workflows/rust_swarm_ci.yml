@@ -3,8 +3,20 @@ name: Art_Rust-Python Hybrid Swarm CI/CD
 on:
   push:
     branches: [ main, develop, 'copilot/**' ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.codex/notes/**'
+      - '.codex/sessions/**'
+      - '.github/copilot-prompts/**'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.codex/notes/**'
+      - '.codex/sessions/**'
+      - '.github/copilot-prompts/**'
 
 env:
   CARGO_TERM_COLOR: always
