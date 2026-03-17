@@ -7,11 +7,11 @@ description: >
   the system prompt, and closes the AfterMath/PDA loop by calling
   report_completion() after each task. Implements quantum reconstruction
   fallback, RBAC via StructuralPolicyManager, and token-budget enforcement.
-version: 1.2.0
-author: GitHub Copilot (S108, updated S128)
+version: 1.3.0
+author: GitHub Copilot (S108, updated S128, S145)
 status: active
 created: 2026-02-28
-updated: 2026-03-16
+updated: 2026-03-17
 autonomous_actions_enabled: true
 runner_compatibility:
   default: ubuntu-latest        # 2-core — session context injection, AfterMath PDA loop closure
@@ -37,7 +37,16 @@ Closes the context-injection loop for the Cognitive Brain system. This agent:
 
 ```mermaid
 flowchart TD
-    subgraph SESSION_START["⚡ Session Start Hook (S128 — CB-003/CB-004 wired)"]
+    subgraph D00["🔍 D-00 Session Bootstrap (S145 — NEW)"]
+        SB0[session_bootstrap.py\nextracts GitHub URLs\nfrom session context] --> SB1[Fetch via GitHub API\nissue / PR / run / review]
+        SB1 --> SB2[Run ci_triage_repro.sh\n7 checks]
+        SB2 --> SB3[Write .codex/session_context_latest.md]
+        SB3 --> SB4{Blocking\nissues?}
+        SB4 -->|yes| SB5[Fix first\n❌ HALT]
+        SB4 -->|no| A
+    end
+
+    subgraph SESSION_START["⚡ Session Start Hook (S128 — CB-003/CB-004 wired, updated S145)"]
         A[MCP Server receives session_start] --> B{validate_actor\nStructuralPolicyManager\nCOGNITIVE_BRAIN_ALLOWED_ACTORS}
         B -->|ALLOW| C[AgentBrainAPI.get_session_context]
         B -->|DENY| Z[Return unmodified context\nfail-open]
@@ -53,7 +62,7 @@ flowchart TD
         D --> PC{patterns ≥ 10?\nCB-003}
         PC -->|yes| PC2[PatternCompressor\nPCA + quantization]
         PC -->|no| PC3[use patterns as-is]
-        PC2 --> H[Inject into system_prompt]
+        PC2 --> H[Inject into system_prompt\n+ D-00 digest from\nsession_context_latest.md]
         PC3 --> H
         F --> H
         G5 --> H
@@ -104,6 +113,10 @@ graph TD
 
 | File | Role |
 |------|------|
+| `scripts/ci/session_bootstrap.py` | **D-00 pre-process** — URL extraction, GitHub fetch, triage, digest (S145 NEW) |
+| `scripts/ci/ci_triage_repro.sh` | **D-07 triage** — 7 reproducible CI checks (S145 NEW) |
+| `docs/ci/CI_TRIAGE_REPRO_S145.md` | Root-cause + repro + fix reference for all 7 checks (S145 NEW) |
+| `.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md` | D-00…D-08 mandatory session start protocol (S145 NEW) |
 | `src/codex/cognitive/session_hook.py` | `SessionContextInjector` — core injection logic |
 | `src/codex/cognitive/mcp_session_bridge.py` | MCP lifecycle hook — wires to Copilot |
 | `src/codex/cognitive/structural_policy_manager.py` | RBAC engine — `evaluate_permission()` |
@@ -111,7 +124,7 @@ graph TD
 | `.github/workflows/cognitive_brain_ci_feedback.yml` | CI feedback loop — `report_completion()` |
 | `tests/cognitive/` | 65+ tests covering all components |
 | `.codex/permanent_facts.md` | Session memory seed — prevents re-discovering known issues |
-| `.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md` | Click-by-click admin setup guide |
+| `.codex/COGNITIVE_BRAIN_STATUS_S145.md` | Current phase status + next-phase plan (S145) |
 
 ## Activation
 
