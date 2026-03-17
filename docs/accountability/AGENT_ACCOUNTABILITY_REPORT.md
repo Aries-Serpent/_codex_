@@ -5695,3 +5695,50 @@ bash scripts/ci/ci_triage_repro.sh             → 7/7 checks passed ✅
 python scripts/ci/session_bootstrap.py --offline --skip-triage → exit 0 ✅
 CodeQL                                         → 0 alerts ✅
 ```
+
+
+---
+
+## SESSION SUMMARY — 2026-03-17T23:21Z SESSION copilot/sub-pr-3606-again S146 (Cherry-pick + D-00 CI Wiring — PR #3615)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **D-00** session_bootstrap.py context loaded ✅
+- [x] **D-01** Stored memories loaded (S145 context) ✅
+- [x] **D-02** CODEBASE_AGENCY_POLICY.md reviewed ✅
+- [x] **D-03** Accountability report (this file) loaded ✅
+- [x] **D-04** CHANGELOG [Unreleased] reviewed ✅
+- [x] **D-05** PR comments reviewed — Agent Token Delegation activated + `@copilot continue` ✅
+- [x] **D-06** CI status: 0 failures on copilot/sub-pr-3606-again ✅
+- [x] **D-07** ci_triage_repro.sh — all 7/7 checks passed ✅
+- [x] **D-08** Baseline documented ✅
+
+### Work Completed (S146)
+
+| Area | Artefact | Status |
+|------|---------|--------|
+| Cherry-pick from PR #3613 | All 9 commits from `copilot/sub-pr-3606` applied (4 substantive + trailing-newline parity) | ✅ |
+| D-00 CI wiring | `agent-auth-delegation.yml` — step 3c-bis added (`session_bootstrap.py --offline --skip-triage`) | ✅ NEW |
+| Cognitive Brain Status | `.codex/COGNITIVE_BRAIN_STATUS_S146.md` — Phase 4 status + S147 plan | ✅ NEW |
+| Unit tests | `tests/ci/test_session_bootstrap.py` — 11 tests covering URL extraction, dataclasses, offline mode, write_digest | ✅ NEW |
+| CHANGELOG.md | S146 entries (REQ-5) | ✅ |
+| AGENT_ACCOUNTABILITY_REPORT.md | This S146 session entry (REQ-4) | ✅ |
+
+### Cherry-pick Summary (PR #3613 → PR #3615)
+
+| Commit | Message | Status |
+|--------|---------|--------|
+| `9fdebac` | triage: fix CI failures — import ordering, mypy baseline, SC2072, ci_score | ✅ already present via b6b59c4 |
+| `e7e2ebe` | fix(ci): SC2072 decimal comparison, ci_score dead assign, CHANGELOG | ✅ already present via b6b59c4 |
+| `4afb1404` | feat(session): ci_triage_repro.sh + CI_TRIAGE_REPRO_S145.md + SESSION-DIAGNOSTIC-PROTOCOL.md | ✅ already present via b6b59c4 |
+| `7e9c4e04` | fix: gitignore dup, repro pipefail+perf, CHANGELOG cross-PR, bootstrap offline display | ✅ already present via b6b59c4 |
+| `6354611` | chore(auth): write provenance session token [skip ci] | ✅ trailing-newline parity applied |
+
+### Verification
+- All 9 commits from `copilot/sub-pr-3606` accounted for ✅
+- `git diff --stat HEAD origin/copilot/sub-pr-3606` → 0 substantive differences (only trailing-newline parity) ✅
+- `bash scripts/ci/ci_triage_repro.sh` → 7/7 checks passed ✅
+- Pre-commit gates → all hooks passed ✅
+- CodeQL → 0 alerts ✅
+
+### Security Impact
+No security regressions. CodeQL: 0 new alerts.

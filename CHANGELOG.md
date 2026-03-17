@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S146 — 2026-03-17 — PR #3615)
+- **`.codex/session_context_latest.md` + `.codex/sessions/`**: Applied trailing-newline normalisation from PR #3613 final state (cherry-pick parity).
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Applied trailing-newline fix from PR #3613 final state.
+
+### Added (S146 — 2026-03-17 — PR #3615)
+- **`.github/workflows/agent-auth-delegation.yml`**: Wired D-00 `session_bootstrap.py` as step `3c-bis` in `activate-delegation` job. Runs `--offline --skip-triage` before `@copilot continue` fires; commits `.codex/session_context_latest.md` digest to the branch so the agent finds fresh context on checkout. Step is `continue-on-error: true` so a bootstrap failure never blocks delegation.
+- **`.codex/COGNITIVE_BRAIN_STATUS_S146.md`** *(new)*: Phase 4 status, S146 completions, architecture diagram showing D-00 wired into `agent-auth-delegation`, and S147 next-phase objectives.
+- **`tests/ci/test_session_bootstrap.py`** *(new)*: 11 unit tests covering URL extraction (PR/issue/run/review kinds, deduplication, empty input), dataclass construction (`FetchedItem`, `TriageResult`, `BootstrapReport`), `GitHubClient` offline mode (no HTTP calls made), and `write_digest` round-trip.
+
 ### Fixed (S145 — 2026-03-17 — PR #3606)
 - **`.github/workflows/coherence-snapshot.yml`**: Fixed SC2072 actionlint/shellcheck error — replaced illegal decimal string comparison with `awk` arithmetic; aligned dashboard `--status` threshold from `> 99.6` to `>= 99.7` to match the enforcement step (a score of 99.65 would have shown "success" on the dashboard while failing enforcement).
 - **`.github/workflows/ci-health-monitor.yml`**: Fixed telemetry extraction bug — `chr(34)+"key"+chr(34)` lookups embedded literal `"` characters into dict key strings (e.g., looked up `'"failed_runs"'` instead of `'failed_runs'`), causing `FAILED_RUNS` and `TOTAL_RUNS` to always be 0 in the CI Health Alert issue body while `FAILURE_RATE` was computed correctly. Replaced with plain string keys via re-encoded base64 script.

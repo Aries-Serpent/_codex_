@@ -1050,6 +1050,57 @@ jobs:
               core.warning(`GitHub Guru dispatch skipped: ${e.message}`);
             }
 
+      # ── 3c-bis: D-00 Session Bootstrap — write context digest before @copilot fires
+      # Runs session_bootstrap.py in offline+skip-triage mode to write a fresh
+      # .codex/session_context_latest.md from the PR body text.  The digest is
+      # committed to the branch so the agent finds it on checkout.  Step is
+      # continue-on-error so a bootstrap failure never blocks delegation.
+      - name: "D-00 Session Bootstrap (write context digest)"
+        id: session_bootstrap
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          PR_BODY: ${{ github.event.pull_request.body || '' }}
+          PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          echo "## 🔍 D-00 Session Bootstrap" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ ! -f "scripts/ci/session_bootstrap.py" ]; then
+            echo "⚠️ session_bootstrap.py not found — skipping D-00 step" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Build a minimal context string: PR URL + body
+          REPO="${{ github.repository }}"
+          PR_URL="https://github.com/${REPO}/pull/${PR_NUMBER}"
+          CONTEXT_TEXT="${PR_URL}"$'\n'"${PR_BODY}"
+
+          # Run bootstrap in offline mode (no external URL fetching in CI),
+          # skip triage (already runs in cognitive-preflight job).
+          echo "${CONTEXT_TEXT}" | \
+            python scripts/ci/session_bootstrap.py \
+              --offline \
+              --skip-triage \
+              --json-out .codex/session_context_latest.json \
+              2>&1 | tail -20 | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+          # Commit the context digest if it was written/modified
+          if git diff --quiet .codex/session_context_latest.md .codex/session_context_latest.json 2>/dev/null; then
+            echo "ℹ️ Context digest unchanged — no commit needed." | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            git add .codex/session_context_latest.md .codex/session_context_latest.json 2>/dev/null || true
+            git commit -m "chore(d00): update session context digest [skip ci]" \
+              --allow-empty-message 2>/dev/null || true
+            git push origin HEAD 2>/dev/null || true
+            echo "✅ Context digest committed and pushed." | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
       # ── 3d: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
         uses: actions/github-script@v7
