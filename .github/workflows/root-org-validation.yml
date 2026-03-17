@@ -322,19 +322,22 @@ jobs:
               '.codex/reports/root_org_validation_${{ github.run_number }}.md', 'utf8'
             );
 
-            const body = `${MARKER}
-            ## 🔍 Root Organization Validation
-
-            **Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ needs.post-validation.result == 'success' && '✅ passed' || '❌ failed' }}
-
-            <details>
-            <summary>📋 Full validation report (click to expand)</summary>
-
-            ${reportRaw}
-
-            </details>
-
-            _Auto-posted by \`root-org-validation.yml\` · [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`;
+            const bodyLines = [
+              MARKER,
+              '## 🔍 Root Organization Validation',
+              '',
+              `**Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ needs.post-validation.result == 'success' && '✅ passed' || '❌ failed' }}`,
+              '',
+              '<details>',
+              '<summary>📋 Full validation report (click to expand)</summary>',
+              '',
+              reportRaw,
+              '',
+              '</details>',
+              '',
+              `_Auto-posted by \`root-org-validation.yml\` · [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,
+            ];
+            const body = bodyLines.join('\n');
 
             // Upsert: update existing marker comment rather than creating a new one
             const { data: comments } = await github.rest.issues.listComments({
