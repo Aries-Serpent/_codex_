@@ -326,7 +326,7 @@ jobs:
               MARKER,
               '## 🔍 Root Organization Validation',
               '',
-              `**Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ needs.post-validation.result == 'success' && '✅ passed' || '❌ failed' }}`,
+              `**Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ (needs.pre-validation.result == 'success' && needs.reference-check.result == 'success') && '✅ passed' || '❌ failed' }}`,
               '',
               '<details>',
               '<summary>📋 Full validation report (click to expand)</summary>',

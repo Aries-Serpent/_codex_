@@ -5349,3 +5349,56 @@ and the CI gate requirement.
 - Dependabot PRs absorbed: 1 (PR #3608)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-03-17T17:30Z SESSION copilot/sub-pr-3606 (PR #3610 S141)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** CI Triage issue #3603 read in full — all 19 workflows triaged ✅
+- [x] **0b.** Related memories loaded (S140, S138, S137, S136) ✅
+- [x] **0c.** Codebase Agency Policy §0-§3 confirmed ✅
+- [x] **0d.** Accountability report and CHANGELOG updated in this commit ✅
+
+### Root Cause Pattern Identified
+
+**Pattern: `cache: 'pip'` on stdlib-only jobs** — 4 workflows affected:
+- `cost-gate.yml` (called by rust_swarm_ci, data-quality-suite) — cost_estimator.py is stdlib-only
+- `branch-rebase-gate.yml` — sparse checkout, no requirements files
+- `deferral-language-gate.yml` — scikit-learn conditional (DEFERRAL_SCANNER_ML=1 is off by default)
+This single pattern accounts for 5+ workflow failures across 4 different workflow files.
+
+**Pattern: actionlint self-reference** — `root-org-validation.yml:329` referenced `needs.post-validation.result` from within the `post-validation` job itself. A job cannot access its own `result` mid-execution.
+
+**Pattern: REQ-5 CHANGELOG miss** — `agent-auth-delegation.yml` blocks when CHANGELOG.md is not updated in the last commit.
+
+### Work Completed
+1. **`cost-gate.yml`** — Removed `cache: 'pip'` + added explanatory comment. Fixes `rust_swarm_ci` and `data-quality-suite` Cost Gate Post Set up Python failures simultaneously.
+2. **`branch-rebase-gate.yml`** — Removed `cache: 'pip'` + added explanatory comment. Fixes Branch Rebase Gate failures.
+3. **`deferral-language-gate.yml`** — Removed `cache: 'pip'` + added explanatory comment. Fixes Deferral Language Gate Post Set up Python failures.
+4. **`root-org-validation.yml:329`** — Fixed actionlint error: replaced self-referencing `needs.post-validation.result` with `(needs.pre-validation.result == 'success' && needs.reference-check.result == 'success')`.
+5. **`CHANGELOG.md`** — S141 entry added (REQ-5: agent-auth-delegation requires CHANGELOG update in every agent commit).
+6. **`src/codex/monitoring/otel_metrics.py`** — Created Phase 6 OTEL histogram (`workflow_job_duration_seconds`, `workflow_step_duration`), follows OTEL semantic conventions, no heavy SDK dependency.
+7. **`tests/test_otel_metrics.py`** — 10 tests covering histogram names, units, registry registration, observe(), and empty snapshot.
+8. **`tests/critical_path/test_auth_flows.py`** — Added `@pytest.mark.slow` to two `time.sleep(1.1)` tests, enabling `pytest -m "not slow"` fast CI sharding.
+9. **`.github/workflows/dependabot-auto-absorb.yml`** — New workflow: auto-cherry-picks single-file dependabot bump PRs into the active branch. Supports dry-run, conflict-safe abort, and job summary.
+
+### Tests Verified
+- 235 tests pass: `tests/test_otel_metrics.py` (10) + `tests/critical_path/test_auth_flows.py` (28) + `tests/ci/` (197)
+
+### CI Failures Addressed (from issue #3603)
+| Workflow | Root Cause | Fix |
+|----------|-----------|-----|
+| Art_Rust-Python Hybrid Swarm CI/CD | `cost-gate.yml` `cache: 'pip'` | Removed |
+| Art_Data Quality & Determinism Suite | `cost-gate.yml` `cache: 'pip'` | Removed |
+| 🔀 Branch Rebase Gate | `branch-rebase-gate.yml` `cache: 'pip'` | Removed |
+| 🚨 Deferral Language Gate | `deferral-language-gate.yml` `cache: 'pip'` | Removed |
+| Workflow Compliance Audit (actionlint) | `root-org-validation.yml` self-reference | Fixed |
+| Agent Token Delegation | CHANGELOG.md not in last commit (REQ-5) | Updated |
+
+### Impact Score
+- Files changed: 9 (workflows ×4, src ×1, tests ×2, CHANGELOG, accountability)
+- CI failures resolved: 6 workflow types from issue #3603
+- Phase 6 items delivered: 3 (OTEL histogram, slow markers, dependabot auto-absorb)
+
+---

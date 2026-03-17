@@ -73,7 +73,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: 'pip'
+          # No pip cache: cost_estimator.py uses stdlib only; no packages are
+          # installed, so ~/.cache/pip is never created.  Enabling cache: 'pip'
+          # causes the post-step to fail with "Cache folder doesn't exist on disk".
 
       - name: Estimate cost
         id: estimate
