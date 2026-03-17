@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S136 — 2026-03-17 — PR #3605)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3607 (SHA `e442d416`) at 2026-03-17T09:29Z [auto-generated]
 - **`scripts/ci/check_deferral_language.py`**: Fixed two classes of false-positive in the deferral scanner: (1) triple-backtick fenced code blocks are now fully skipped — confirmed root cause of 3 violations in PR #3605 body from code examples in Verification Commands section; (2) italic-quoted example text `*"phrase"*` is now stripped before scanning, preventing prose that describes what the scanner catches from self-triggering.
 - **`.codex/inventory.ndjson`**: Removed dangling LFS pointer (`86940a7b` — object 404 on server). File is covered by existing `.gitignore` `.codex/*` rule; untracked via `git rm --cached`. Regenerate with `python .codex/run_repo_scout.py`.
 - **`scripts/ci/pr_comment_consolidator.py`**: Fixed race condition that produced the confirmed duplicate `<!-- PR_STATUS_DASHBOARD_v1 -->` comment on PR #3605. Added optimistic-concurrency retry loop (4 attempts, exponential back-off 2/4/8/16s). Added post-create dedup guard: scans for older duplicates and DELETEs them after any successful create. Fixed `_api_request` to handle `204 No Content` (DELETE) without crashing.
