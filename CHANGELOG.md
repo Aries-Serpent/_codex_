@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S141 — 2026-03-17 — PR #3611)
+- **`requirements/lock.txt`**: Bumped `pyasn1` from 0.6.2 to 0.6.3 (Dependabot security/maintenance update)
+- **CI note**: Run 23207408589 ("Automatic Dependency Submission") failed with a transient GitHub API error (`HttpError: An error occurred while processing your request. Please try again later.`); no code fix is possible — retrying the workflow will resolve it.
+
 ### Added (S133 — 2026-03-17 — PR #3604)
 - **`tests/detectors/test_capability_detectors.py`**: Added 25 new tests covering all 18 capability detector functions (parametrized), 4 helper function tests (`_check_path_exists`, `_count_python_files`, `_count_test_files`, `_check_file_content`), and 2 detail-structure tests for configuration/security detectors
 - **`src/codex/retrieval/stores/pgvector_store.py`**: Resolved PS-06 semantic sharding TODO — KMeans clustering is already implemented (`fit_semantic_sharding()` + `semantic_shard_mapper()`) and wired into `insert_batch()` auto-routing; updated comment to reflect implemented status
