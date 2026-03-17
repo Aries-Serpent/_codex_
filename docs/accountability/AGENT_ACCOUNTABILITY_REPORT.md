@@ -5505,3 +5505,37 @@ AFTER:  pull_request → branches: ["main"]         # only PRs targeting main
 Result: auto-runs ONLY on `0D_base_`→`main`; `workflow_dispatch` always works.
 
 ---
+
+## SESSION SUMMARY — 2026-03-17T21:00Z SESSION copilot/sub-pr-3606 (PR #3610 S144-continued)
+
+### Pre-flight Checklist
+- [x] New requirements from @mbaetiong fully read: single-branch rule, Mermaid diagrams, documentation ✅
+- [x] All stored memories loaded ✅
+- [x] Codebase Agency Policy confirmed ✅
+- [x] CHANGELOG.md and this report updated ✅
+
+### Work Completed
+
+| Item | Status |
+|------|--------|
+| `ci-failure-issue-creator.yml` global serialisation lock (`cancel-in-progress: false`) | ✅ |
+| Single-branch rule race-free (check+create while holding lock) | ✅ |
+| Critical failures → fix branch + PR + @copilot command | ✅ |
+| Queued state: issue opened, no second branch, dashboard shows queue | ✅ |
+| Auto-close on workflow success | ✅ |
+| Dashboard integration via `pr_comment_consolidator.py` | ✅ |
+| `docs/ci/CI_FAILURE_AUTO_RESPONSE.md` — 10-section process doc | ✅ |
+| Mermaid flowchart (end-to-end process map) | ✅ |
+| Mermaid state diagram (single-branch rule states) | ✅ |
+| Mermaid sequence diagram (actor interactions) | ✅ |
+| Mermaid Gantt (queue timeline visualisation) | ✅ |
+| Mermaid job dependency graph | ✅ |
+| Severity classification flowchart | ✅ |
+| CHANGELOG + accountability updated (REQ-4/REQ-5) | ✅ |
+
+### Key Design Decisions
+- **Global lock**: concurrency group `ci-failure-issue-creator-global-lock` with `cancel-in-progress: false` serialises ALL instances regardless of workflow name — prevents race-created duplicate branches
+- **Queue not cancel**: `cancel-in-progress: false` ensures queued failures are still processed in order, not silently dropped
+- **Docs-first**: Full Mermaid process map in `docs/ci/CI_FAILURE_AUTO_RESPONSE.md` is the canonical reference for the process
+
+---
