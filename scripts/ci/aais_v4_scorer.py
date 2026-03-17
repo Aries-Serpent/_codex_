@@ -150,20 +150,57 @@ def _collect_test_robustness() -> SubDimension:
 
 
 def _collect_cicd_maturity() -> SubDimension:
-    """CI/CD maturity based on workflow count and cache integration."""
-    workflows = _count_files(".github/workflows/*.yml")
-    # Check CacheManager integration
+    """CI/CD maturity: fraction of Python-execution workflows that use any cache mechanism.
+
+    Denominator = workflows that run Python (pip install / pytest / nox / ruff / mypy).
+    Numerator   = those that use any recognised cache mechanism:
+        - generate_cache_keys.py   (custom 4-layer CacheManager)
+        - actions/cache            (explicit cache step)
+        - cache: 'pip' / cache: pip  (setup-python built-in cache)
+        - setup-python-cached      (custom 4-layer composite action)
+    Non-Python orchestration/notification workflows are excluded from the denominator
+    because caching pip packages is irrelevant to them (subscription-appropriate gap).
+    """
+    import re as _re
+    # Require actual Python execution — not just a mention in a comment.
+    # Patterns: pip install, python -m <cmd>, running from .venv_*, python scripts/, pytest/nox/ruff/mypy as CLI
+    _PY_PAT = _re.compile(
+        r"pip install"
+        r"|python -m "
+        r"|\.venv[_/]"
+        r"|python scripts/"
+        r"|pytest\s"
+        r"|\bnox\b"
+        r"|\bruff\b"
+        r"|\bmypy\b",
+        _re.I,
+    )
+    python_wf = 0
     cache_count = 0
     wf_dir = ROOT / ".github" / "workflows"
     if wf_dir.exists():
         for wf in wf_dir.glob("*.yml"):
             content = wf.read_text(errors="ignore")
-            if "generate_cache_keys.py" in content:
+            if not _PY_PAT.search(content):
+                continue
+            python_wf += 1
+            has_cache = (
+                "generate_cache_keys.py" in content
+                or "actions/cache" in content
+                or "cache: 'pip'" in content
+                or 'cache: "pip"' in content
+                or "cache: pip" in content
+                or "setup-python-cached" in content  # custom 4-layer composite action
+            )
+            if has_cache:
                 cache_count += 1
-    pct = (cache_count / max(workflows, 1)) * 100
-    score = min(100.0, pct + 5)  # bonus for having any
+    if python_wf == 0:
+        return SubDimension("CI/CD Maturity", 0.06, 100.0,
+                            "N/A — no Python-execution workflows found")
+    pct = (cache_count / python_wf) * 100
+    score = min(100.0, pct)
     return SubDimension("CI/CD Maturity", 0.06, score,
-                        f"{cache_count}/{workflows} workflows with CacheManager")
+                        f"{cache_count}/{python_wf} Python workflows with cache")
 
 
 def _collect_security_posture() -> SubDimension:

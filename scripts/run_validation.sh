@@ -197,6 +197,23 @@ if [[ ${#PRECOMMIT_FILES[@]} -eq 0 ]]; then
 else
   echo "pre-commit targets: ${#PRECOMMIT_FILES[@]} file(s)" | tee -a "$LOG"
   set +e
+  # Auto-update doc metrics date (e.g. docs/ROADMAP.md) before pre-commit
+  # checks run, so the doc-metrics-check hook does not fail on stale dates.
+  # Log a warning on failure (missing script / env issue) but do not block
+  # the pre-commit run — this is a convenience pre-hook, not a hard gate.
+  python scripts/tools/doc_metrics_sync.py --fix >> "$LOG" 2>&1 || \
+    echo "⚠️  doc_metrics_sync --fix returned non-zero — check ${LOG} for details (non-blocking)" | tee -a "$LOG"
+  # Augment PRECOMMIT_FILES with any files doc_metrics_sync just modified
+  # (e.g. docs/ROADMAP.md stale date), so pre-commit hooks also run on the
+  # updated content.  Uses `git diff --name-only` to detect working-tree
+  # changes introduced by the sync step that aren't yet in PRECOMMIT_FILES.
+  while IFS= read -r synced_file; do
+    [[ -z "${synced_file:-}" || ! -e "$synced_file" ]] && continue
+    if [[ -z "${SEEN_FILES[$synced_file]:-}" ]]; then
+      PRECOMMIT_FILES+=("$synced_file")
+      SEEN_FILES[$synced_file]=1
+    fi
+  done < <(git diff --name-only)
   pre-commit run --show-diff-on-failure --files "${PRECOMMIT_FILES[@]}" 2>&1 | tee -a "$LOG"
   PRECOMMIT_STATUS=${PIPESTATUS[0]}
   set -e

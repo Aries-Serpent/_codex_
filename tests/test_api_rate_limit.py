@@ -16,6 +16,8 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 def test_rate_limit(monkeypatch):
     monkeypatch.setenv("API_RATE_LIMIT", "1")
+    # Remove API_KEY so auth middleware doesn't block unauthenticated requests
+    monkeypatch.delenv("API_KEY", raising=False)
     module = importlib.reload(importlib.import_module("services.api.main"))
     client = TestClient(module.app)
     first = client.get("/status")
