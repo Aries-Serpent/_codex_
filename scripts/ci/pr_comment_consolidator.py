@@ -33,6 +33,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -88,10 +89,10 @@ def _api_request(
     )
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310
-            return json.loads(resp.read())
-    except urllib.error.HTTPError as exc:
-        detail = exc.read().decode(errors="replace")
-        raise RuntimeError(f"GitHub API {method} {url} → {exc.code}: {detail}") from exc
+            raw = resp.read()
+            return json.loads(raw) if raw else None  # 204 No Content → None
+    except urllib.error.HTTPError:
+        raise  # callers catch urllib.error.HTTPError directly
 
 
 def _list_comments(pr_number: int, token: str) -> list[dict]:
@@ -277,39 +278,93 @@ def consolidate(
     details: str,
     run_url: str = "",
     token: str = "",
+    max_retries: int = 4,
 ) -> None:
-    """Update (or create) the consolidated PR Status Dashboard comment."""
+    """Update (or create) the consolidated PR Status Dashboard comment.
+
+    Race-condition safe: when two workflows post simultaneously and both see
+    no existing comment, the second create call will produce a 422 (if unique
+    enforcement were possible) or a duplicate.  We defend against this with an
+    optimistic-concurrency retry loop:
+
+      1. Fetch the list of existing comments (find dashboard comment).
+      2. Build the new body with this workflow's section merged in.
+      3. If an existing comment was found  → PATCH it.
+         If no comment was found           → POST a new one.
+      4. On any HTTP error (conflict/rate-limit) back off and retry.
+      5. After POST succeeds, immediately check for a duplicate (another
+         concurrent create) and delete the older one so at most one survives.
+    """
     if not token:
         token = _token()
 
-    # Fetch existing dashboard comment if any
-    existing = _find_dashboard_comment(pr_number, token)
-    if existing:
-        sections = _decode_sections(existing["body"])
-    else:
-        sections = {}
+    backoff_s = (2, 4, 8, 16)  # back-off schedule between retry attempts
 
-    # Update this workflow's section
-    sections[workflow_name] = {
-        "status": status,
-        "summary": summary,
-        "details": details,
-    }
+    for attempt in range(max_retries + 1):
+        try:
+            # ── fetch ──────────────────────────────────────────────────────
+            existing = _find_dashboard_comment(pr_number, token)
+            if existing:
+                sections = _decode_sections(existing["body"])
+            else:
+                sections = {}
 
-    # Build the new body: human-readable table + hidden section payloads
-    visible = _build_body(sections, run_url=run_url)
-    hidden_blobs = "\n".join(
-        _encode_section(name, info["status"], info["summary"], info["details"])
-        for name, info in sections.items()
-    )
-    full_body = visible + "\n\n<!-- SECTIONS_DATA -->\n" + hidden_blobs
+            # ── merge ──────────────────────────────────────────────────────
+            sections[workflow_name] = {
+                "status": status,
+                "summary": summary,
+                "details": details,
+            }
 
-    if existing:
-        _update_comment(existing["id"], full_body, token)
-        print(f"✅ Updated PR #{pr_number} dashboard comment (id {existing['id']})")
-    else:
-        result = _create_comment(pr_number, full_body, token)
-        print(f"✅ Created PR #{pr_number} dashboard comment (id {result['id']})")
+            visible = _build_body(sections, run_url=run_url)
+            hidden_blobs = "\n".join(
+                _encode_section(name, info["status"], info["summary"], info["details"])
+                for name, info in sections.items()
+            )
+            full_body = visible + "\n\n<!-- SECTIONS_DATA -->\n" + hidden_blobs
+
+            # ── write ──────────────────────────────────────────────────────
+            if existing:
+                _update_comment(existing["id"], full_body, token)
+                print(f"✅ Updated PR #{pr_number} dashboard comment (id {existing['id']})")
+            else:
+                result = _create_comment(pr_number, full_body, token)
+                created_id = result["id"]
+                print(f"✅ Created PR #{pr_number} dashboard comment (id {created_id})")
+
+                # ── dedup guard: delete any older duplicate created by a
+                # concurrent workflow that also saw no existing comment ──
+                all_comments = _list_comments(pr_number, token)
+                dupes = [
+                    c for c in all_comments
+                    if _MARKER in c.get("body", "") and c["id"] != created_id
+                ]
+                for dup in dupes:
+                    try:
+                        _api_request(
+                            "DELETE",
+                            f"/repos/{_repo()}/issues/comments/{dup['id']}",
+                            token=token,
+                        )
+                        print(
+                            f"🗑  Removed duplicate dashboard comment {dup['id']} "
+                            f"(kept {created_id})"
+                        )
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"⚠️  Could not delete duplicate {dup['id']}: {exc}")
+
+            return  # success — exit retry loop
+
+        except urllib.error.HTTPError as exc:
+            if attempt == max_retries:
+                raise
+            delay = backoff_s[min(attempt, len(backoff_s) - 1)]
+            print(
+                f"⚠️  Attempt {attempt + 1}/{max_retries} failed "
+                f"(HTTP {exc.code}); retrying in {delay}s…",
+                file=sys.stderr,
+            )
+            time.sleep(delay)
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────

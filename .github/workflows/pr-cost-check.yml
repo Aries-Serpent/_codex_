@@ -170,27 +170,38 @@ jobs:
             const MARKER = '<!-- cost-check-bot -->';
             const body = `${MARKER}\n${summary}`;
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const existing = comments.find(c => c.body.includes(MARKER));
+            // Retry loop — handles transient races when two cost-check jobs
+            // run in parallel and both attempt to create the comment.
+            for (let attempt = 0; attempt <= 3; attempt++) {
+              try {
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  per_page: 100,
+                });
+                const existing = comments.find(c => c.body && c.body.includes(MARKER));
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
+                if (existing) {
+                  await github.rest.issues.updateComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    comment_id: existing.id,
+                    body,
+                  });
+                } else {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: context.issue.number,
+                    body,
+                  });
+                }
+                break; // success
+              } catch (e) {
+                if (attempt === 3) throw e;
+                await new Promise(r => setTimeout(r, (attempt + 1) * 2000));
+              }
             }
 
       # Fallback: scan PR comments for approval marker.

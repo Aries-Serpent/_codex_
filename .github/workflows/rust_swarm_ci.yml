@@ -379,21 +379,33 @@ jobs:
             const results = fs.readFileSync('coverage/benchmark_validation_report.txt', 'utf8');
             const MARKER = '<!-- benchmark-results-v1 -->';
             const body = `${MARKER}\n## 📊 Benchmark Results\n\n\`\`\`\n${results}\n\`\`\``;
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner, repo: context.repo.repo,
-              issue_number: context.issue.number, per_page: 100,
-            });
-            const existing = comments.find(c => c.body && c.body.includes(MARKER));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner, repo: context.repo.repo,
-                comment_id: existing.id, body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner, repo: context.repo.repo, body,
-              });
+
+            // Retry loop — benchmark results update on every matrix shard
+            // and every re-run, making concurrent races likely over a long
+            // PR lifecycle. Retries with exponential back-off (2s/4s/6s).
+            for (let attempt = 0; attempt <= 3; attempt++) {
+              try {
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: context.issue.number, per_page: 100,
+                });
+                const existing = comments.find(c => c.body && c.body.includes(MARKER));
+                if (existing) {
+                  await github.rest.issues.updateComment({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    comment_id: existing.id, body,
+                  });
+                } else {
+                  await github.rest.issues.createComment({
+                    issue_number: context.issue.number,
+                    owner: context.repo.owner, repo: context.repo.repo, body,
+                  });
+                }
+                break; // success
+              } catch (e) {
+                if (attempt === 3) throw e;
+                await new Promise(r => setTimeout(r, (attempt + 1) * 2000));
+              }
             }
 
   security_audit:
