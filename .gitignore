@@ -332,6 +332,10 @@ junit.xml
 test_pattern_report.txt
 bandit-report.json
 bandit-report.txt
+# test_token_similarity.py writes these to CWD during test runs
+a1.txt
+a2.txt
+b1.txt
 # Generated inventory files
 workbench/codebase_inventory.json
 *_inventory.json

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-17T17:24:31Z",
+  "generated_at": "2026-03-17T13:44:45Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1274,7 +1274,7 @@
     },
     {
       "name": "pr-followup-generator",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1754,5 +1754,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "3fce1077013fddce20a921291e5ea83903b182e891690466333ceb696c748256"
+  "integrity_sha256": "75bdf370f9842a3d2bf63b61897640a17b97fff58430704b2b7cb0d797d8c5ea"
 }

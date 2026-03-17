@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 np = pytest.importorskip("numpy")
-import pytest
+pytest.importorskip("sentence_transformers")
 
 from codex.rag.embeddings import (
     CachedEmbeddingProvider,

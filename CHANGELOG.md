@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S138 — 2026-03-17 — PR #3607)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3606 (SHA `961dc65e`) at 2026-03-17T10:50Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3607 (SHA `e442d416`) at 2026-03-17T09:29Z [auto-generated]
+
+### Fixed (S136 — 2026-03-17 — PR #3605)
+- **`scripts/ci/check_deferral_language.py`**: Fixed two classes of false-positive in the deferral scanner: (1) triple-backtick fenced code blocks are now fully skipped — confirmed root cause of 3 violations in PR #3605 body from code examples in Verification Commands section; (2) italic-quoted example text `*"phrase"*` is now stripped before scanning, preventing prose that describes what the scanner catches from self-triggering.
+- **`.codex/inventory.ndjson`**: Removed dangling LFS pointer (`86940a7b` — object 404 on server). File is covered by existing `.gitignore` `.codex/*` rule; untracked via `git rm --cached`. Regenerate with `python .codex/run_repo_scout.py`.
+- **`scripts/ci/pr_comment_consolidator.py`**: Fixed race condition that produced the confirmed duplicate `<!-- PR_STATUS_DASHBOARD_v1 -->` comment on PR #3605. Added optimistic-concurrency retry loop (4 attempts, exponential back-off 2/4/8/16s). Added post-create dedup guard: scans for older duplicates and DELETEs them after any successful create. Fixed `_api_request` to handle `204 No Content` (DELETE) without crashing.
+- **`.github/workflows/audit-qa-suite.yml`**: Replaced broken custom inline dashboard comment logic (`String.replace() || fallback` JS bug where fallback was unreachable) with a call to `pr_comment_consolidator.py`, inheriting the race-safe upsert + dedup.
+- **`.github/workflows/rust_swarm_ci.yml`**: Added 3-retry loop (2s/4s/6s back-off) to `<!-- benchmark-results-v1 -->` upsert — this comment is updated on every matrix shard and every re-run, making concurrent races expected.
+- **`.github/workflows/pr-cost-check.yml`**: Added 3-retry loop to `<!-- cost-check-bot -->` upsert; also added `c.body &&` null-guard to `comments.find()`.
+- **`.github/workflows/pr-followup-generator.yml`**: Added 3-retry loop to `<!-- pr-followup-prompt-generated -->` upsert.
+
 ### Added (S133 — 2026-03-17 — PR #3604)
 - **`tests/detectors/test_capability_detectors.py`**: Added 25 new tests covering all 18 capability detector functions (parametrized), 4 helper function tests (`_check_path_exists`, `_count_python_files`, `_count_test_files`, `_check_file_content`), and 2 detail-structure tests for configuration/security detectors
 - **`src/codex/retrieval/stores/pgvector_store.py`**: Resolved PS-06 semantic sharding TODO — KMeans clustering is already implemented (`fit_semantic_sharding()` + `semantic_shard_mapper()`) and wired into `insert_batch()` auto-routing; updated comment to reflect implemented status
@@ -23,7 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
 
 ### Fixed (S131 — 2026-03-17 — PR #3604)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3611 (SHA `b185d858`) at 2026-03-17T17:24Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3614 (SHA `974ddf5`) at 2026-03-17T05:20Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3605 (SHA `d043103d`) at 2026-03-17T04:46Z [auto-generated]
 - **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
 - **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
 - **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`

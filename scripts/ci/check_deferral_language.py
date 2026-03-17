@@ -85,7 +85,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     (r"(?:can|will) be (?:addressed|fixed|resolved) (?:separately|later|next)",
      "Deferred fix: explicit future-assignment"),
     # "Residual" deferral without documented mitigation
-    (r"residual (?:risk|issue|concern|problem)(?! — | - |\. Mitigation)",
+    (r"residual (?:risk|issue|concern|problem)s?\b(?![:\*\s]*$)(?! — | - |\. Mitigation)",
      "Residual risk: documented without mitigation"),
     # Deprecation without tombstone
     (r"not actionable in this (?:pr|task|session|iteration)",
@@ -131,13 +131,14 @@ EXEMPTION_PATTERNS: list[str] = [
 #      text still visible to the scanner.
 #   3. Single-backtick spans: `content` — ordinary inline code.
 #
-# Triple-backtick fenced blocks span multiple lines and are handled line-by-line
-# (each fence line after stripping becomes empty or only punctuation, which never
-# matches a deferral trigger).
+# Inline code spans are stripped before scanning so that documentation
+# examples describing deferral phrases don't trigger false positives.
 _INLINE_CODE_SPAN = re.compile(
     r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
     r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span (may contain single backticks)
     r"|`[^`\n]+`"                          # single-backtick span (no newlines)
+    r'|\*"[^"\n]*"\*'                      # italic double-quoted example: *"phrase"*
+    r'|\*\'[^\'\n]*\'\*'                   # italic single-quoted example: *'phrase'*
 )
 
 
@@ -327,14 +328,79 @@ def scan(
     Returns a list of violation dicts with keys: line_no, line, pattern, reason.
     """
     violations: list[dict] = []
+
+    # ── Bypass-safe fenced-code-block tracking ────────────────────────────────
+    # Rules:
+    #   1. An opener is N ≥ 3 consecutive identical fence characters (` or ~)
+    #      optionally followed by an info string (e.g. ````markdown`).
+    #   2. Only a closing line that starts with the *same* fence character and
+    #      has length ≥ the opener length closes the fence.  This correctly
+    #      handles extended fences (````markdown … ```) that embed inner
+    #      ```python … ``` blocks — the inner ``` lines do NOT close the outer
+    #      ```` fence.
+    #   3. Buffering + EOF-scan: lines inside an unclosed fence are buffered;
+    #      if EOF is reached without a matching close, they are scanned as
+    #      ordinary prose (bypass prevention).
+    fence_char: str = ""          # "`" or "~" while inside a fence
+    fence_len: int = 0            # length of the opening delimiter
+    fence_buffer: list[tuple[int, str]] = []
+    lines_to_scan: list[tuple[int, str]] = []
+
     for line_no, line in enumerate(text.splitlines(), start=1):
+        stripped_for_fence = line.strip()
+        if not fence_char:
+            # Not in a fence — check if this line opens one.
+            for ch in ("`", "~"):
+                if stripped_for_fence.startswith(ch * 3):
+                    # Count consecutive leading fence characters
+                    # (ignore the optional info string that follows).
+                    opener_len = 0
+                    for c in stripped_for_fence:
+                        if c == ch:
+                            opener_len += 1
+                        else:
+                            break
+                    fence_char = ch
+                    fence_len = opener_len
+                    # Buffer the opener line so that if the fence is never closed
+                    # (EOF), the bypass-prevention path scans it for deferral
+                    # triggers too (e.g. "``` future PR" on an unclosed opener).
+                    # If the fence is properly closed, fence_buffer.clear() will
+                    # drop this entry harmlessly along with the rest.
+                    fence_buffer.append((line_no, line))
+                    break  # delimiter found — do not add to lines_to_scan
+            else:
+                lines_to_scan.append((line_no, line))
+        else:
+            # Inside a fence — check for a matching closing delimiter.
+            # The closing line must start with ≥ fence_len of fence_char,
+            # followed only by optional whitespace (no info string allowed).
+            close_count = 0
+            for c in stripped_for_fence:
+                if c == fence_char:
+                    close_count += 1
+                else:
+                    break
+            if close_count >= fence_len and stripped_for_fence == fence_char * close_count:
+                # Properly closed: discard buffered lines (real code fence).
+                fence_char = ""
+                fence_len = 0
+                fence_buffer.clear()
+                # closing delimiter is never a violation
+            else:
+                fence_buffer.append((line_no, line))
+
+    # EOF with unclosed fence → scan buffered lines (bypass prevention).
+    if fence_buffer:
+        lines_to_scan.extend(fence_buffer)
+        lines_to_scan.sort(key=lambda t: t[0])  # restore document order
+
+    for line_no, line in lines_to_scan:
         if _line_is_exempt(line):
             continue
         # Strip single-backtick inline code spans before scanning so that
         # documentation examples describing deferral phrases (e.g. `future task`)
-        # don't trigger false positives.  Triple-backtick fenced blocks span
-        # multiple lines; each fence line after stripping becomes empty or only
-        # punctuation, which never matches any deferral trigger.
+        # don't trigger false positives.
         scan_line = _INLINE_CODE_SPAN.sub("", line)
         flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:

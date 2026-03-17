@@ -18,7 +18,10 @@ def test_codexml_cli_help():
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
-    from hydra._internal.hydra import GlobalHydra
+    try:
+        from hydra.core.global_hydra import GlobalHydra  # hydra-core 1.2+
+    except ImportError:
+        from hydra._internal.hydra import GlobalHydra  # type: ignore[no-redef]  # older
 
     called = {"eval": False}
 

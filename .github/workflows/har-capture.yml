@@ -50,6 +50,7 @@ jobs:
   capture-har:
     name: '🎬 Record HAR — Cognitive App walkthrough'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     permissions:
       contents: write    # to commit HAR back
@@ -59,7 +60,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true        # pull existing HAR from LFS
+          lfs: false       # LFS disabled — object may not exist on server
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       # ── Python + agent venv ──────────────────────────────────────────────
