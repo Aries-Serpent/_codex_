@@ -22,6 +22,7 @@ Failure to run this protocol is a **§0 violation** per `CODEBASE_AGENCY_POLICY.
 Run in this exact order.  Do not skip items.
 
 ```
+[ ] D-00  Run session_bootstrap.py — extract URLs, fetch context, run triage  ← NEW
 [ ] D-01  Load stored memories (store_memory recall)
 [ ] D-02  Load CODEBASE_AGENCY_POLICY.md
 [ ] D-03  Load AGENT_ACCOUNTABILITY_REPORT.md (last 3 sessions)
@@ -34,7 +35,51 @@ Run in this exact order.  Do not skip items.
 
 ---
 
-## D-01 — Load Stored Memories
+## D-00 — Session Bootstrap (URL Pre-Process) ← Run FIRST
+
+**Why:** Any links in the request body contain critical context (issue bodies,
+PR review threads, CI failure logs) that the agent needs before touching code.
+Pre-fetching them eliminates the round-trips that would otherwise be needed
+mid-session, and surfaces blocking CI failures before any edits are made.
+
+```bash
+# If URLs are in a file:
+python scripts/ci/session_bootstrap.py --context-file /tmp/session_prompt.txt
+
+# If piping from stdin (CI / agent invocation):
+echo "<full session text with github.com URLs>" \
+  | python scripts/ci/session_bootstrap.py
+
+# Offline (no token) — still runs triage, skips URL fetching:
+python scripts/ci/session_bootstrap.py --offline
+
+# Full JSON output for downstream tools:
+python scripts/ci/session_bootstrap.py \
+  --context-file /tmp/session.txt \
+  --json-out .codex/session_context.json
+
+# Skip triage (fast context-only, useful when triage was just run):
+python scripts/ci/session_bootstrap.py --context-file /tmp/session.txt --skip-triage
+```
+
+**Output written to:**
+- `.codex/session_context_latest.md` — always overwritten; read this at session start
+- `.codex/sessions/session_<ISO>.md` — archive copy per session
+
+**The digest contains:**
+1. Structured data for every GitHub URL found (issue/PR/workflow/review)
+2. Unresolved review threads with file:line + author + comment body
+3. Failed CI job names + first error lines from logs
+4. All 7 triage check results
+5. Pre-filled §0 checklist snippet for the accountability report
+
+**What to look for in the digest:**
+- `🚨 BLOCKING ISSUES` section — fix these before any other work
+- `❌ Failed checks` in PR entries — these are the CI gates to clear
+- `💬 Unresolved review thread(s)` — these must all be addressed
+- Triage rows with `❌` — see `docs/ci/CI_TRIAGE_REPRO_S145.md` for each fix
+
+
 
 **Why:** Recent memories encode known bugs, patterns, and CI policy that are
 not visible from code alone.  Missing a stored memory is the most common cause

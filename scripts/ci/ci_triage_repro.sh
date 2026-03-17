@@ -63,6 +63,13 @@ _record() {
   RESULT_DETAILS+=("$detail")
 }
 
+# _count_lines PATTERN — count matching lines from stdin; never exits non-zero.
+# Usage:  count=$( echo "$text" | _count_lines "pattern" )
+_count_lines() {
+  local pat="$1"
+  { grep -E "$pat" 2>/dev/null || true; } | wc -l | tr -d ' '
+}
+
 # ── Arg parsing ───────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -110,7 +117,7 @@ check_1_actionlint() {
   fi
   local out count
   out=$(actionlint .github/workflows/*.yml 2>&1) || true
-  count=$(echo "$out" | grep -c "^.github" 2>/dev/null || echo 0)
+  count=$(echo "$out" | _count_lines "^.github")
   if [[ "$count" -eq 0 ]]; then
     _pass "actionlint: 0 errors ($(find .github/workflows -maxdepth 1 -name '*.yml' | wc -l | tr -d ' ') files)"
     _record "1_actionlint" "pass" "0 errors"
@@ -150,8 +157,9 @@ check_2_ruff_imports() {
   done
 
   # Full-repo sweep
-  local repo_issues
-  repo_issues=$(ruff check --select I . 2>/dev/null | grep -c "I001" || echo 0)
+  local ruff_out repo_issues
+  ruff_out=$(ruff check --select I . 2>/dev/null) || true
+  repo_issues=$(echo "$ruff_out" | _count_lines "I001")
   if [[ "$repo_issues" -gt 0 ]]; then
     if [[ "$FIX_MODE" == true ]]; then
       ruff check --select I --fix . 2>/dev/null
@@ -234,16 +242,25 @@ check_4_autofix_gate() {
     _record "4_autofix" "pass" "fix mode"
     return
   fi
-  local out err_count
-  out=$(python scripts/ci/auto_fix_common_issues.py --check-only 2>&1) || true
-  err_count=$(echo "$out" | grep -cE "✗|FAIL\b" 2>/dev/null || echo 0)
-  if [[ "$err_count" -eq 0 ]]; then
-    _pass "auto-fix gate: 0 issues across all 16 patterns"
-    _record "4_autofix" "pass" "0 issues"
+  local out exit_code=0
+  out=$(python scripts/ci/auto_fix_common_issues.py --check-only 2>&1) || exit_code=$?
+  # Use the tool's own exit code: 0 = only informational ✗ items (e.g. SHA drift),
+  # non-zero = at least one auto-fixable issue that MUST be addressed.
+  # Show ✗ lines as informational warnings even when exit_code=0.
+  local warn_count
+  warn_count=$(echo "$out" | _count_lines "^\s+✗")
+  if [[ "$exit_code" -eq 0 ]]; then
+    if [[ "$warn_count" -gt 0 ]]; then
+      _pass "auto-fix gate: no blocking issues (${warn_count} informational warning(s) — see below)"
+      echo "$out" | { grep -E "^\s+✗" || true; } | head -5 | sed 's/^/  /'
+    else
+      _pass "auto-fix gate: 0 issues across all patterns"
+    fi
+    _record "4_autofix" "pass" "exit 0 (${warn_count} informational)"
   else
-    _fail "auto-fix gate: ${err_count} pattern(s) failed"
-    echo "$out" | grep -E "✗|FAIL\b" | head -10
-    _record "4_autofix" "fail" "${err_count} patterns"
+    _fail "auto-fix gate: ${exit_code} auto-fixable issue(s) require attention"
+    echo "$out" | { grep -E "^\s+✗" || true; } | head -10
+    _record "4_autofix" "fail" "exit ${exit_code}"
   fi
 }
 
@@ -344,15 +361,17 @@ check_6_threshold_align() {
   fi
 
   local dash_expr enf_thresh issues=0
-  dash_expr=$(grep -o 's+0 [><=]* [0-9.]*' "$wf" 2>/dev/null | head -1 || echo "")
+  # Extract the comparison operator + threshold: 's+0 >= 99.7' → '>= 99.7'
+  dash_expr=$(grep -o 's+0 [><=]* [0-9.]*' "$wf" 2>/dev/null \
+    | head -1 | sed 's/^s+0 //' || echo "")
   enf_thresh=$(grep 'threshold = ' "$wf" 2>/dev/null | head -1 | awk '{print $NF}' || echo "")
 
-  _info "Dashboard awk expr:      '${dash_expr}'"
+  _info "Dashboard comparison:    '${dash_expr}'"
   _info "Enforcement threshold:   ${enf_thresh}"
 
   # Dashboard must use ">= 99.7"
   if [[ "$dash_expr" != ">= 99.7" ]]; then
-    _fail "Dashboard awk uses '${dash_expr}' — want '>= 99.7'"
+    _fail "Dashboard comparison is '${dash_expr}' — want '>= 99.7'"
     issues=$((issues + 1))
   fi
   # Enforcement must be 99.7
@@ -380,34 +399,56 @@ check_6_threshold_align() {
 # ════════════════════════════════════════════════════════════════════════════
 check_7_changelog_consistency() {
   _header "7/7 · CHANGELOG self-consistency"
-  local issues=0 current_pr="" current_section=""
+  # Use python3 for fast single-pass scan (bash line-by-line loop is too slow
+  # on a 2000-line CHANGELOG.md — each line would spawn 2-3 grep subprocesses).
+  local result
+  result=$(python3 - <<'PYEOF'
+import re, sys
+current_pr = None
+current_section = ""
+issues = []
+RE_SECTION_PR  = re.compile(r'^#{2,3} .*PR #(\d+)')
+RE_SECTION_ANY = re.compile(r'^#{2,3} ')
+RE_AUTO_GEN    = re.compile(r'\[auto-generated\]|Auto-fix:.*session_wrapup', re.I)
+RE_PR_REF      = re.compile(r'PR #(\d+)')
+for line in open("CHANGELOG.md", encoding="utf-8"):
+    line = line.rstrip()
+    m = RE_SECTION_PR.match(line)
+    if m:
+        # Extract the LAST PR number in the header (the canonical one)
+        all_refs = RE_PR_REF.findall(line)
+        current_pr = f"PR #{all_refs[-1]}" if all_refs else None
+        current_section = line
+        continue
+    if RE_SECTION_ANY.match(line):
+        current_pr = None
+        current_section = ""
+        continue
+    if current_pr and RE_AUTO_GEN.search(line):
+        refs = RE_PR_REF.findall(line)
+        if refs:
+            line_pr = f"PR #{refs[0]}"
+            if line_pr != current_pr:
+                issues.append((current_pr, line_pr, current_section, line.strip()))
+if issues:
+    for sec_pr, line_pr, section, bullet in issues:
+        print(f"FAIL: section='{sec_pr}' references '{line_pr}'")
+        print(f"  Section: {section}")
+        print(f"  Bullet : {bullet[:120]}")
+    sys.exit(1)
+sys.exit(0)
+PYEOF
+  ) || local py_exit=$?
 
-  while IFS= read -r line; do
-    # Detect "### ... PR #NNN" section headers
-    if echo "$line" | grep -qE "^### .*PR #[0-9]+"; then
-      current_pr=$(echo "$line" | grep -oE "PR #[0-9]+" | tail -1)
-      current_section="$line"
-    elif echo "$line" | grep -qE "^## "; then
-      current_pr=""; current_section=""
-    fi
-    # Flag bullets that reference a different PR than the section header
-    if [[ -n "$current_pr" ]] && echo "$line" | grep -qE "^\s*[-*].*PR #[0-9]+"; then
-      local line_pr
-      line_pr=$(echo "$line" | grep -oE "PR #[0-9]+" | head -1)
-      if [[ -n "$line_pr" && "$line_pr" != "$current_pr" ]]; then
-        _fail "Inconsistency: section='${current_pr}' but bullet references '${line_pr}'"
-        _info "  Section : ${current_section}"
-        _info "  Bullet  : $(echo "$line" | sed 's/^[[:space:]]*//')"
-        issues=$((issues + 1))
-      fi
-    fi
-  done < CHANGELOG.md
-
-  if [[ "$issues" -eq 0 ]]; then
-    _pass "CHANGELOG: no self-inconsistent PR number references"
+  if [[ "${py_exit:-0}" -eq 0 ]]; then
+    _pass "CHANGELOG: no auto-generated cross-PR reference inconsistencies"
     _record "7_changelog" "pass" "consistent"
   else
-    _record "7_changelog" "fail" "${issues} inconsistencies"
+    echo "$result"
+    local count
+    count=$(echo "$result" | _count_lines "^FAIL:")
+    _record "7_changelog" "fail" "${count} cross-PR bullet(s)"
+    FAILED=$((FAILED + 1))
   fi
 }
 

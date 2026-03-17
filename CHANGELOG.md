@@ -14,6 +14,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`scripts/ci/aais_v4_scorer.py`**: Fixed import block sort order (ruff I001) — OTel try-block import moved to canonical position.
 - **`scripts/ci/pr_comment_consolidator.py`**: Fixed import block sort order (ruff I001) — OTel try-block import moved to canonical position.
 - **`.mypy_baseline`**: Updated from 0 → 282 to reflect current type-error count; prevents mypy anti-regression gate false failures.
+- **`CHANGELOG.md`**: Removed auto-generated cross-PR bullet that referenced PR #3613 from the S145 section header (PR #3606); inconsistency flagged by PR #3613 review thread r2949785123.
+
+### Added (S145 — 2026-03-17 — PR #3606)
+- **`scripts/ci/session_bootstrap.py`** *(new)*: Agent Session Pre-Process Bootstrapper (D-00 gate). Extracts all GitHub URLs from session context text; fetches structured data for issues, PRs, workflow runs, and review threads via GitHub API; runs all 7 CI triage checks; writes `.codex/session_context_latest.md` digest; exits 1 on blocking issues. Supports `--offline`, `--skip-triage`, `--json-out`, `--verbose` modes.
+- **`scripts/ci/ci_triage_repro.sh`** *(new)*: Reproducible CI Triage Toolkit — 7 checks covering actionlint SC2072, ruff I001, mypy baseline, auto-fix gate (16 patterns), telemetry extraction correctness, threshold alignment, and CHANGELOG self-consistency. Supports `--fix`, `--json`, `--check N` modes.
+- **`docs/ci/CI_TRIAGE_REPRO_S145.md`** *(new)*: Standardised per-check reference — root cause, repro command, fix command, and verification command for all 7 triage checks.
+- **`.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md`** *(new)*: Agent Session Diagnostic Protocol (ASDP) — mandatory D-00…D-08 pre-session checklist; D-00 wires `session_bootstrap.py` as the first step before any code changes.
+- **`.codex/COGNITIVE_BRAIN_STATUS_S145.md`** *(new)*: Cognitive Brain Phase 4 status, metrics delta, 7 knowledge facts stored, and S146 next-phase objectives.
+- **`.github/agents/cognitive-brain-session-injector.md`**: Updated to v1.3.0 — wired D-00 `session_bootstrap.py` step into the session start architecture diagram; updated Key Files table with all S145 artefacts.
 
 ### Added (S144 — 2026-03-17 — PR #3610)
 - **`scripts/ci/aais_v4_scorer.py`**: OTel live CI wiring — imports `compute_coherence` and `workflow_coherence_score` from `codex.monitoring.otel_metrics` and emits one coherence observation per AAIS run, mapping sub-dimension pass/fail outcomes against policy-expected "pass" for all dimensions. Import is guarded so the scorer stays runnable without `src/` on the path.
@@ -66,8 +75,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/workflows/dependabot-auto-absorb.yml`**: New workflow — automatically cherry-picks single-file Dependabot bump PRs (e.g. Dockerfile base-image upgrades) into the active branch, eliminating manual absorption sessions. Supports dry-run mode and conflict-safe abort.
 
 ### Fixed (S138 — 2026-03-17 — PR #3607)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3610 (SHA `9c177180`) at 2026-03-17T15:56Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3606 (SHA `961dc65e`) at 2026-03-17T10:50Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3607 (SHA `e442d416`) at 2026-03-17T09:29Z [auto-generated]
 
 ### Fixed (S136 — 2026-03-17 — PR #3605)
@@ -95,8 +102,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
 
 ### Fixed (S131 — 2026-03-17 — PR #3604)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3614 (SHA `974ddf5`) at 2026-03-17T05:20Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3605 (SHA `d043103d`) at 2026-03-17T04:46Z [auto-generated]
 - **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
 - **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
 - **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`
@@ -410,7 +415,6 @@ New `.mypy_baseline`: **932**. Next target: < 880 (S48).
 ## [Session — S45 — 2026-03-15 — PR #3583]
 
 #### Fixed — Art_Security Scanning Suite SBOM generation
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3584 (SHA `7d544dd4`) at 2026-03-15T05:31Z [auto-generated]
 - `cyclonedx-py` CLI interface changed; updated from `--format json --output` to
   subcommand `cyclonedx-py environment --format JSON --outfile` in `security-scanning-suite.yml`
 

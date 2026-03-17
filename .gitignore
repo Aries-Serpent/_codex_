@@ -169,6 +169,12 @@ manifests/k8s/*/secret.yaml
 # Exclude runtime session logs (should not be committed)
 .codex/sessions/*.ndjson
 .codex/sessions/*.meta
+# Session bootstrap artefacts — always track (S145)
+!.codex/session_context_latest.md
+!scripts/ci/session_bootstrap.py
+!scripts/ci/ci_triage_repro.sh
+!docs/ci/CI_TRIAGE_REPRO_S145.md
+!.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md
 !.codex/smoke/
 !.codex/smoke/**
 !.codex/status/
@@ -398,7 +404,11 @@ QUICK_FIX_GUIDE_*.md
 FIXES_SUMMARY.md
 RESOLUTION_SUMMARY.md
 ACCOUNTABILITY_REPORT_DRAFT.md
-audit_artifacts/
+# NOTE: audit_artifacts/ is intentionally NOT listed here — the directory-level
+# ignore was removed (S145 bug-fix) because it overrode the !audit_artifacts/baselines/**
+# and related exceptions defined above (lines 52-62). git does not descend into
+# a dir/ -ignored directory, making those exceptions unreachable. The existing
+# audit_artifacts/** + explicit exceptions handle exclusions correctly.
 
 # Session-local runtime telemetry and analysis artifacts (never commit to repo root)
 system_metrics.ndjson
