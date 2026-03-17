@@ -145,6 +145,57 @@ class CoherenceMonitor:
         self._active_alerts: List[Alert] = []
         self._rollback_triggered = False
 
+        # Lazy OpenTelemetry gauge — initialised on first use when the
+        # ``opentelemetry`` package is installed *and* an OTLP endpoint is
+        # configured.  ``None`` means "not yet attempted"; ``False`` means
+        # "unavailable".
+        self._otel_gauge: Any = None
+
+    # ------------------------------------------------------------------
+    # OpenTelemetry integration
+    # ------------------------------------------------------------------
+
+    def _otel_record(self, feature: str, metric_name: str, value: float) -> None:
+        """Export a coherence metric to OpenTelemetry when available.
+
+        The gauge instrument is lazily created on first call.  When the
+        ``opentelemetry`` SDK is not installed, or ``OTEL_EXPORTER_OTLP_ENDPOINT``
+        is not set, the method silently no-ops so it never breaks the
+        critical metric-recording path.
+        """
+        import importlib.util
+        import os
+
+        if self._otel_gauge is False:
+            return  # already determined unavailable
+
+        if self._otel_gauge is None:
+            # First call — probe availability
+            endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT")
+            if not endpoint or importlib.util.find_spec("opentelemetry") is None:
+                self._otel_gauge = False
+                return
+            try:
+                metrics_mod = importlib.import_module("opentelemetry.metrics")
+                meter = metrics_mod.get_meter("cognitive_brain.coherence")
+                self._otel_gauge = meter.create_gauge(
+                    name="cognitive_brain.coherence",
+                    description="Quantum coherence and accuracy metrics",
+                    unit="1",
+                )
+            except Exception:  # noqa: BLE001
+                self._otel_gauge = False
+                return
+
+        try:
+            self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
+        except Exception:  # noqa: BLE001
+            pass  # never break the recording path
+
+    # ------------------------------------------------------------------
+    # Metric recording
+    # ------------------------------------------------------------------
+
     def record_metric(
         self,
         feature: str,
@@ -187,6 +238,9 @@ class CoherenceMonitor:
 
         # Check thresholds
         self._check_thresholds(feature, metric_name, metric_value)
+
+        # OpenTelemetry: export coherence metrics when OTEL is configured
+        self._otel_record(feature, metric_name, metric_value)
 
         return metric
 

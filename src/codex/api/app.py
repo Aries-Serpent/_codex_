@@ -170,9 +170,38 @@ def configure_runtime(
 
 @app.get("/health")
 def health() -> dict:
-    """Simple health endpoint returning a 200 response."""
+    """Health endpoint with sub-system status.
 
-    return {"status": "ok"}
+    Returns a 200 response with the overall status plus optional
+    ``cognitive_brain`` and ``pattern_compressor`` diagnostics when
+    the cognitive subsystem packages are importable.
+    """
+    result: dict[str, Any] = {"status": "ok"}
+
+    # -- BrainClient health (CB-004) ----------------------------------------
+    try:
+        from codex.agents.brain_client import BrainClient
+
+        client = BrainClient()
+        result["cognitive_brain"] = {
+            "available": client.is_available(),
+        }
+    except Exception:  # noqa: BLE001
+        result["cognitive_brain"] = {"available": False, "note": "import failed"}
+
+    # -- PatternCompressor metrics (CB-003) ---------------------------------
+    try:
+        from cognitive_brain.quantum.compression import PatternCompressor
+
+        pc = PatternCompressor()
+        result["pattern_compressor"] = {
+            "available": True,
+            "n_components": getattr(pc, "n_components", None),
+        }
+    except Exception:  # noqa: BLE001
+        result["pattern_compressor"] = {"available": False}
+
+    return result
 
 
 @app.get("/")

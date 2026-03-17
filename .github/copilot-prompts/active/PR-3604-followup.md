@@ -1,41 +1,45 @@
 # 🎯 PR Follow-Up Tasks - #3604
 
-**PR**: #3604 - PR #3604  
+**PR**: #3604 - Phase 4 Production Hardening  
 **Branch**: `copilot/analyze-gaps-and-risks`  
 **Author**: @Copilot  
 **Date**: 2026-03-17  
-**Commit**: `96bab027e2ae3428f8fc41ecdbc9e5cd423e1cc2`  
+**Commit**: `257ef6d`  
 **Status**: 🔄 ACTIVE
 
 ---
 
 ## 📋 PREVIOUS SESSION SUMMARY
 
-### Completed Work
-- [`96bab027`] Initial plan (copilot-swe-agent[bot], 2026-03-16)
-- [`cf92a9ee`] chore(phase-3): update embedding index metadata [skip ci] (github-actions[bot], 2026-03-16)
-- [`0b92d8b1`] Merge pull request #3586 from Aries-Serpent/copilot/sub-pr-3585 (Statix, 2026-03-16)
-
-### Files Modified
-No files modified
+### Completed Work (S129–S131)
+- S129: NumpyStub 19 missing methods, `_NpStubDev` fallback, auth env leak fix
+- S130: `github_provider.create_token()` + `update_token_scopes()`, Phase 4 plan, 5 tests
+- S131: Health endpoint enhanced (BrainClient + PatternCompressor), ZendeskSyncer wired,
+  coherence OTel export, reviewer feedback addressed (8 threads)
 
 ---
 
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Wire PatternCompressor compression ratio to `/api/health` response (live metrics)
+- [ ] Add BrainClient `memory_search()` latency to health diagnostics
+- [ ] End-to-end token rotation test with real GitHub App (requires human admin)
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+python3 -m pytest tests/api/ tests/security/test_providers.py -q --timeout=30
+python3 -m ruff check src/codex/api/app.py src/security/providers/github_provider.py
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Full broad test sweep (>10 min — run with `make ci` or `nox -s tests`)
+- [ ] Build HTML→context adapter for `codex_digest` pipeline integration
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Implement Redis backend for distributed RAG cache (`src/codex/rag/cache/`)
+- [ ] Add `@pytest.mark.slow` to any remaining unmarked long-running tests
+- [ ] Promote `CODEX_VERY_STALE_BRANCH_DAYS` policy to `.codex/guardrails.md`
 
 ---
 

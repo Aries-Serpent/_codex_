@@ -15,7 +15,7 @@ and scope management.
   returns False for classic PATs that require OAuth App credentials not configured.
 - ``list_secrets()``: Calls GET /user to return metadata for the current token.
 
-``validate_secret()`` now calls ``GET /api.github.com/user`` to verify the token
+``validate_secret()`` now calls ``GET https://api.github.com/user`` to verify the token
 is live and accepted by GitHub. Requires network access; gracefully degrades to
 format-only validation when the network is unreachable.
 
@@ -53,6 +53,20 @@ except ImportError:
 
 # Pre-compiled GitHub token format regex — avoids recompiling on every call
 _GITHUB_TOKEN_RE = re.compile(r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$")
+
+# Valid GitHub App installation permission names (subset — see GitHub REST API docs).
+# PAT-style scopes like "repo" or "workflow" are NOT valid here.
+_KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset({
+    "actions", "administration", "checks", "codespaces", "contents",
+    "deployments", "environments", "issues", "members", "metadata",
+    "organization_administration", "organization_hooks",
+    "organization_packages", "organization_plan", "organization_projects",
+    "organization_secrets", "organization_self_hosted_runners",
+    "packages", "pages", "pull_requests", "repository_hooks",
+    "repository_projects", "secret_scanning_alerts", "secrets",
+    "security_events", "single_file", "statuses", "vulnerability_alerts",
+    "workflows",
+})
 
 
 class GitHubTokenProvider(TokenProvider):
@@ -349,7 +363,20 @@ class GitHubTokenProvider(TokenProvider):
                 error_message="Cannot create token: requests library is not installed.",
             )
 
-        # Build permissions dict from scopes list
+        # Build permissions dict from scopes list — only accept installation
+        # permission names (not PAT-style scopes like "repo" / "workflow").
+        invalid = [s for s in scopes if s not in _KNOWN_INSTALLATION_PERMISSIONS] if scopes else []
+        if invalid:
+            return RotationResult(
+                success=False,
+                old_secret_id="",
+                error_message=(
+                    f"Invalid installation permission names: {invalid}. "
+                    "Use GitHub App installation permission names "
+                    "(e.g. 'contents', 'pull_requests', 'issues'), not "
+                    "PAT-style scopes (e.g. 'repo', 'workflow')."
+                ),
+            )
         permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
 
         url = f"{self.api_url}/app/installations/{installation_id}/access_tokens"
@@ -367,6 +394,15 @@ class GitHubTokenProvider(TokenProvider):
             if resp.status_code == 201:
                 data = resp.json()
                 new_token = data.get("token", "")
+                if not new_token:
+                    logger.error(
+                        "GitHub API returned 201 but response contains no token value."
+                    )
+                    return RotationResult(
+                        success=False,
+                        old_secret_id="",
+                        error_message="GitHub API returned 201 but no token in response body.",
+                    )
                 token_id = str(data.get("id", name))
                 logger.info("GitHub installation access token created successfully.")
                 return RotationResult(
@@ -407,12 +443,19 @@ class GitHubTokenProvider(TokenProvider):
         scope changes are not supported by the API — a new token must be
         created manually.
 
+        The ``installation_id`` is resolved in order:
+
+        1. ``secret_id`` parameter (when it looks like a numeric installation ID)
+        2. Provider config ``installation_id``
+        3. ``GITHUB_APP_INSTALLATION_ID`` environment variable
+
         Args:
-            secret_id: Token or installation ID
-            scopes: New list of scopes
+            secret_id: Token or installation ID (used as fallback identifier)
+            scopes: New list of scopes (GitHub App installation permission names)
 
         Returns:
-            True if updated successfully (or gracefully degraded)
+            True if the API returned 200/204.  False when the request failed,
+            prerequisites are missing, or the ``requests`` library is unavailable.
         """
         try:
             logger.info("Updating GitHub token scopes for %s", secret_id)
@@ -432,8 +475,12 @@ class GitHubTokenProvider(TokenProvider):
                 )
                 return False
 
+            # Resolve installation_id: prefer config/env, fall back to secret_id
+            installation_id = self.config.get(
+                "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)
+            )
             permissions: Dict[str, str] = {s: "write" for s in scopes} if scopes else {}
-            url = f"{self.api_url}/user/installations/{secret_id}/permissions"
+            url = f"{self.api_url}/user/installations/{installation_id}/permissions"
             headers = {
                 "Authorization": f"Bearer {self.token}",
                 "Accept": "application/vnd.github+json",

@@ -137,20 +137,27 @@ class ZendeskKnowledgeSyncService:
         # Load or initialize tracking cache
         self._cache: dict[str, ArticleMetadata] = self._load_cache()
 
-    def sync_articles(self) -> None:
+    def sync_articles(self) -> SyncResult:
         """Sync articles from Zendesk knowledge base.
 
-        This method requires valid API credentials and connection.
-        Use check_and_pull() or check_and_pull_incremental() instead.
+        Delegates to :meth:`check_and_pull` which implements the full
+        "Check and Pull" synchronization cycle.  Requires valid API
+        credentials (``api_token`` and ``subdomain``) and a manifest file.
+
+        Returns:
+            SyncResult with statistics about the sync operation.
 
         Raises:
-            NotImplementedError: This is a placeholder for test compatibility.
-                Use check_and_pull() or check_and_pull_incremental() for actual sync.
+            ValueError: If API credentials are not configured.
+            FileNotFoundError: If the manifest file is missing (from check_and_pull).
         """
-        raise NotImplementedError(
-            "sync_articles requires valid API credentials and connection. "
-            "Use check_and_pull() or check_and_pull_incremental() instead."
-        )
+        if not self.api_token or not self.subdomain:
+            raise ValueError(
+                "sync_articles requires api_token and subdomain to be configured. "
+                "Pass them to ZendeskKnowledgeSyncService() or set ZENDESK_API_TOKEN "
+                "and ZENDESK_SUBDOMAIN environment variables."
+            )
+        return self.check_and_pull()
 
     def _load_cache(self) -> dict[str, ArticleMetadata]:
         """Load the cached article metadata from disk."""
@@ -722,13 +729,15 @@ class ZendeskKnowledgeSyncService:
         # Count files to process
         html_files = list(source_dir.rglob("*.html"))
 
-        # TODO: Integrate with codex_digest pipeline
-        # For now, return metadata about what would be processed
-        result = {
+        # NOTE: codex_digest.pipeline.CodexPipeline handles intent-based
+        # processing (semparser → mapper → workflow).  A future connector
+        # module should convert HTML articles into context/description pairs
+        # suitable for CodexPipeline.run().
+        result: dict[str, Any] = {
             "source_dir": str(source_dir),
             "files_found": len(html_files),
             "status": "ready_for_tokenization",
-            "next_step": "Integrate with codex_digest.pipeline.process()",
+            "next_step": "Build HTML→context adapter for codex_digest.pipeline.CodexPipeline.run()",
         }
 
         logger.info(f"Pipeline preparation complete: {len(html_files)} files ready")

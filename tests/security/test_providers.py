@@ -589,7 +589,7 @@ class TestGitHubTokenProvider:
         scopes = provider.get_scopes("token-id")
 
         assert isinstance(scopes, list)
-        assert isinstance(scopes, (list, tuple, set, dict))  # was: len() >= 0 (always true)
+        assert all(isinstance(s, str) for s in scopes)
 
     def test_create_token_no_installation_id(self, github_config):
         """Test create_token fails gracefully without installation_id."""
@@ -597,7 +597,7 @@ class TestGitHubTokenProvider:
 
         result = provider.create_token(
             name="test-token",
-            scopes=["repo", "workflow"],
+            scopes=["contents", "workflows"],
             expires_in_days=90,
         )
 
@@ -628,12 +628,52 @@ class TestGitHubTokenProvider:
             mock_req.post.return_value = mock_resp
             result = provider.create_token(
                 name="test-token",
-                scopes=["repo", "workflow"],
+                scopes=["contents", "workflows"],
             )
 
         assert result.success is True
         assert result.new_secret_value == "ghs_test_installation_token_value"  # pragma: allowlist secret  # noqa: E501
         assert result.new_secret_id == "99"
+
+    def test_create_token_invalid_pat_scopes(self, github_config):
+        """Test create_token rejects PAT-style scopes."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        result = provider.create_token(
+            name="test-token",
+            scopes=["repo", "workflow"],  # PAT-style — should be rejected
+        )
+
+        assert result.success is False
+        assert "Invalid installation permission" in (result.error_message or "")
+
+    def test_create_token_empty_token_response(self, github_config):
+        """Test create_token fails closed when API returns 201 but no token."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 201
+        mock_resp.json.return_value = {"id": 99, "expires_at": "2026-03-18T00:00:00Z"}
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.return_value = mock_resp
+            result = provider.create_token(name="t", scopes=["contents"])
+
+        assert result.success is False
+        assert "no token" in (result.error_message or "").lower()
 
     def test_create_token_api_failure(self, github_config):
         """Test create_token handles API errors gracefully."""
@@ -652,7 +692,7 @@ class TestGitHubTokenProvider:
         with patch("security.providers.github_provider._requests") as mock_req, \
              patch("security.providers.github_provider.HAS_REQUESTS", True):
             mock_req.post.return_value = mock_resp
-            result = provider.create_token(name="t", scopes=["repo"])
+            result = provider.create_token(name="t", scopes=["contents"])
 
         assert result.success is False
         assert "403" in (result.error_message or "")
@@ -668,8 +708,8 @@ class TestGitHubTokenProvider:
              patch("security.providers.github_provider.HAS_REQUESTS", True):
             mock_req.patch.return_value = mock_resp
             success = provider.update_token_scopes(
-                "token-id",
-                ["repo", "workflow", "admin:org"],
+                "12345",
+                ["contents", "workflows", "issues"],
             )
 
         assert success is True
@@ -679,7 +719,7 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
 
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
-            success = provider.update_token_scopes("token-id", ["repo"])
+            success = provider.update_token_scopes("12345", ["contents"])
 
         assert success is False
 
