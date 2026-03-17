@@ -153,13 +153,27 @@ def _collect_cicd_maturity() -> SubDimension:
     """CI/CD maturity: fraction of Python-execution workflows that use any cache mechanism.
 
     Denominator = workflows that run Python (pip install / pytest / nox / ruff / mypy).
-    Numerator   = those that use generate_cache_keys.py OR actions/cache OR cache:'pip'.
+    Numerator   = those that use any recognised cache mechanism:
+        - generate_cache_keys.py   (custom 4-layer CacheManager)
+        - actions/cache            (explicit cache step)
+        - cache: 'pip' / cache: pip  (setup-python built-in cache)
+        - setup-python-cached      (custom 4-layer composite action)
     Non-Python orchestration/notification workflows are excluded from the denominator
     because caching pip packages is irrelevant to them (subscription-appropriate gap).
     """
     import re as _re
+    # Require actual Python execution — not just a mention in a comment.
+    # Patterns: pip install, python -m <cmd>, running from .venv_*, python scripts/, pytest/nox/ruff/mypy as CLI
     _PY_PAT = _re.compile(
-        r"pip install|python -m|pytest|nox|ruff|mypy|python scripts|\.venv", _re.I
+        r"pip install"
+        r"|python -m "
+        r"|\.venv[_/]"
+        r"|python scripts/"
+        r"|pytest\s"
+        r"|\bnox\b"
+        r"|\bruff\b"
+        r"|\bmypy\b",
+        _re.I,
     )
     python_wf = 0
     cache_count = 0
@@ -176,6 +190,7 @@ def _collect_cicd_maturity() -> SubDimension:
                 or "cache: 'pip'" in content
                 or 'cache: "pip"' in content
                 or "cache: pip" in content
+                or "setup-python-cached" in content  # custom 4-layer composite action
             )
             if has_cache:
                 cache_count += 1

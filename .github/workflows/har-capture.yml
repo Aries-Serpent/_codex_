@@ -50,6 +50,7 @@ jobs:
   capture-har:
     name: '🎬 Record HAR — Cognitive App walkthrough'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     permissions:
       contents: write    # to commit HAR back
