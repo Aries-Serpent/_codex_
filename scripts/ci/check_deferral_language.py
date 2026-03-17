@@ -330,38 +330,57 @@ def scan(
     violations: list[dict] = []
 
     # ── Bypass-safe fenced-code-block tracking ────────────────────────────────
-    # A simple boolean toggle (in_fence = not in_fence) can be exploited: a
-    # single unmatched opening fence causes the scanner to skip the rest of the
-    # text.  Instead we:
-    #   1. Buffer lines seen inside a fence.
-    #   2. When a matching closing delimiter is found → discard the buffer (it
-    #      was a real code fence — skip content as intended).
-    #   3. If EOF is reached with fence_opener still set → the fence was never
-    #      closed.  We scan the buffered lines as ordinary prose (bypass
-    #      prevention).
-    fence_opener: str = ""                       # "" | "```" | "~~~"
-    fence_buffer: list[tuple[int, str]] = []    # (line_no, raw_line) inside unclosed fence
+    # Rules:
+    #   1. An opener is N ≥ 3 consecutive identical fence characters (` or ~)
+    #      optionally followed by an info string (e.g. ````markdown`).
+    #   2. Only a closing line that starts with the *same* fence character and
+    #      has length ≥ the opener length closes the fence.  This correctly
+    #      handles extended fences (````markdown … ```) that embed inner
+    #      ```python … ``` blocks — the inner ``` lines do NOT close the outer
+    #      ```` fence.
+    #   3. Buffering + EOF-scan: lines inside an unclosed fence are buffered;
+    #      if EOF is reached without a matching close, they are scanned as
+    #      ordinary prose (bypass prevention).
+    fence_char: str = ""          # "`" or "~" while inside a fence
+    fence_len: int = 0            # length of the opening delimiter
+    fence_buffer: list[tuple[int, str]] = []
     lines_to_scan: list[tuple[int, str]] = []
 
     for line_no, line in enumerate(text.splitlines(), start=1):
         stripped_for_fence = line.strip()
-        if not fence_opener:
-            # Not currently in a fence — check if this line opens one.
-            if stripped_for_fence.startswith("```"):
-                fence_opener = "```"
-                continue  # opening delimiter is never a violation
-            elif stripped_for_fence.startswith("~~~"):
-                fence_opener = "~~~"
-                continue  # opening delimiter is never a violation
+        if not fence_char:
+            # Not in a fence — check if this line opens one.
+            for ch in ("`", "~"):
+                if stripped_for_fence.startswith(ch * 3):
+                    # Count consecutive leading fence characters
+                    # (ignore the optional info string that follows).
+                    opener_len = 0
+                    for c in stripped_for_fence:
+                        if c == ch:
+                            opener_len += 1
+                        else:
+                            break
+                    fence_char = ch
+                    fence_len = opener_len
+                    break  # delimiter found — do not add to lines_to_scan
             else:
                 lines_to_scan.append((line_no, line))
         else:
             # Inside a fence — check for a matching closing delimiter.
-            if stripped_for_fence.startswith(fence_opener):
+            # The closing line must start with ≥ fence_len of fence_char,
+            # followed only by optional whitespace (no info string allowed).
+            close_count = 0
+            for c in stripped_for_fence:
+                if c == fence_char:
+                    close_count += 1
+                else:
+                    break
+            if close_count >= fence_len and stripped_for_fence == fence_char * close_count:
                 # Properly closed: discard buffered lines (real code fence).
-                fence_opener = ""
+                fence_char = ""
+                fence_len = 0
                 fence_buffer.clear()
-                continue  # closing delimiter is never a violation
+                # closing delimiter is never a violation
             else:
                 fence_buffer.append((line_no, line))
 

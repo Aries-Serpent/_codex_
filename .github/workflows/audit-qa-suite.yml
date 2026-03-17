@@ -236,10 +236,12 @@ jobs:
               echo "issues_found=$issues" >> $GITHUB_OUTPUT
               echo "critical_issues=$critical" >> $GITHUB_OUTPUT
             fi
+            echo "walkthrough_ran=true" >> $GITHUB_OUTPUT
           else
             echo "QA walkthrough script not found"
             echo "issues_found=0" >> $GITHUB_OUTPUT
             echo "critical_issues=0" >> $GITHUB_OUTPUT
+            echo "walkthrough_ran=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Post to PR Status Dashboard
@@ -251,30 +253,40 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           CRITICAL_ISSUES: ${{ steps.qa.outputs.critical_issues || '0' }}
           ISSUES_FOUND: ${{ steps.qa.outputs.issues_found || '0' }}
+          WALKTHROUGH_RAN: ${{ steps.qa.outputs.walkthrough_ran || 'true' }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           CRITICAL="${CRITICAL_ISSUES:-0}"
           FOUND="${ISSUES_FOUND:-0}"
-          if   [ "$CRITICAL" -gt 0 ]; then STATUS="failure"; SUMMARY="${CRITICAL} critical issue(s) detected"
-          elif [ "$FOUND"    -gt 0 ]; then STATUS="warning";  SUMMARY="${FOUND} issue(s) found — no critical blockers"
-          else                              STATUS="success";  SUMMARY="All checks clean (0 issues)"
+          WALKTHROUGH_RAN="${WALKTHROUGH_RAN:-true}"
+
+          if [ "$WALKTHROUGH_RAN" = "false" ]; then
+            STATUS="skipped"
+            SUMMARY="QA walkthrough script not found — checks did not run"
+            DETAIL_BODY="QA walkthrough script (scripts/qa/codebase_walkthrough.py) was not present in this checkout. No lint, security, or AST checks were executed."
+          else
+            # Write details to a temp file (printf avoids YAML/bash quoting
+            # conflicts with markdown table characters and heredoc indentation).
+            printf '%s\n' \
+              'AST Analysis: 0 issues | Ruff Lint: 0 issues | Bandit Security: 0 issues' \
+              '' \
+              '> 📎 Detailed reports available in workflow artifacts' \
+              '> Run `@copilot run qa-walkthrough --heal` to auto-fix lint/style issues' \
+              > /tmp/qa_details.txt
+            if   [ "$CRITICAL" -gt 0 ]; then STATUS="failure"; SUMMARY="${CRITICAL} critical issue(s) detected"
+            elif [ "$FOUND"    -gt 0 ]; then STATUS="warning";  SUMMARY="${FOUND} issue(s) found — no critical blockers"
+            else                              STATUS="success";  SUMMARY="All checks clean (0 issues)"
+            fi
+            DETAIL_BODY="$(cat /tmp/qa_details.txt)"
           fi
-          # Write details to a temp file (printf avoids YAML/bash quoting
-          # conflicts with markdown table characters and heredoc indentation).
-          printf '%s\n' \
-            'AST Analysis: 0 issues | Ruff Lint: 0 issues | Bandit Security: 0 issues' \
-            '' \
-            '> 📎 Detailed reports available in workflow artifacts' \
-            '> Run `@copilot run qa-walkthrough --heal` to auto-fix lint/style issues' \
-            > /tmp/qa_details.txt
           # Delegate to the consolidator: race-safe upsert + dedup on conflict.
           python scripts/ci/pr_comment_consolidator.py \
             --pr-number  "${PR_NUMBER}" \
             --workflow   "QA Walkthrough" \
             --status     "${STATUS}" \
             --summary    "${SUMMARY}" \
-            --details    "$(cat /tmp/qa_details.txt)" \
+            --details    "${DETAIL_BODY}" \
             --run-url    "${RUN_URL}"
 
       - name: Upload QA results

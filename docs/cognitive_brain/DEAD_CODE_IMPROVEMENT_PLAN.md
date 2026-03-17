@@ -99,10 +99,10 @@ response token.
 3. Consider promoting `CODEX_VERY_STALE_BRANCH_DAYS` policy to branch-cleanup CI schedule (default 90d → add to `.codex/guardrails.md`)
 4. Confirm deferral gate passes cleanly on next PR with `**Residual Risks:**` section headers
 5. Confirm no duplicate `<!-- PR_STATUS_DASHBOARD_v1 -->` comments on subsequent PRs with concurrent workflow triggers
-4. Evaluate adding `session-analysis-agent` post-merge scan to verify `main` health
-5. Add `@pytest.mark.slow` annotation to any remaining unmarked long-running tests discovered post-merge
-6. Monitor CI for any remaining deferral language false positives after regex update
-7. Verify agent-auth-delegation `contents: write` resolves accountability report push failures
+6. Evaluate adding `session-analysis-agent` post-merge scan to verify `main` health
+7. Add `@pytest.mark.slow` annotation to any remaining unmarked long-running tests discovered post-merge
+8. Monitor CI for any remaining deferral language false positives after regex update
+9. Verify agent-auth-delegation `contents: write` resolves accountability report push failures
 
 ---
 

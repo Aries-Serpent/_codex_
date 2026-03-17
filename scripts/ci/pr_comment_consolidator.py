@@ -325,20 +325,29 @@ def consolidate(
 
             # ── write ──────────────────────────────────────────────────────
             if existing:
-                _update_comment(existing["id"], full_body, token)
-                print(f"✅ Updated PR #{pr_number} dashboard comment (id {existing['id']})")
-            else:
-                result = _create_comment(pr_number, full_body, token)
-                created_id = result["id"]
-                print(f"✅ Created PR #{pr_number} dashboard comment (id {created_id})")
-
-                # ── dedup guard: delete any older duplicate created by a
-                # concurrent workflow that also saw no existing comment ──
+                # Run dedup even on the update path: another concurrent
+                # workflow may have created an extra copy in the time between
+                # our fetch and this update.  Merge any extra sections first.
                 all_comments = _list_comments(pr_number, token)
                 dupes = [
                     c for c in all_comments
-                    if _MARKER in c.get("body", "") and c["id"] != created_id
+                    if _MARKER in c.get("body", "") and c["id"] != existing["id"]
                 ]
+                for dup in dupes:
+                    extra_sections = _decode_sections(dup["body"])
+                    for k, v in extra_sections.items():
+                        if k not in sections:
+                            sections[k] = v
+                if dupes:
+                    # Rebuild body with merged sections before updating.
+                    visible = _build_body(sections, run_url=run_url)
+                    hidden_blobs = "\n".join(
+                        _encode_section(name, info["status"], info["summary"], info["details"])
+                        for name, info in sections.items()
+                    )
+                    full_body = visible + "\n\n<!-- SECTIONS_DATA -->\n" + hidden_blobs
+                _update_comment(existing["id"], full_body, token)
+                print(f"✅ Updated PR #{pr_number} dashboard comment (id {existing['id']})")
                 for dup in dupes:
                     try:
                         _api_request(
@@ -348,10 +357,49 @@ def consolidate(
                         )
                         print(
                             f"🗑  Removed duplicate dashboard comment {dup['id']} "
-                            f"(kept {created_id})"
+                            f"(kept {existing['id']})"
                         )
                     except Exception as exc:  # noqa: BLE001
                         print(f"⚠️  Could not delete duplicate {dup['id']}: {exc}")
+            else:
+                result = _create_comment(pr_number, full_body, token)
+                created_id = result["id"]
+                print(f"✅ Created PR #{pr_number} dashboard comment (id {created_id})")
+
+                # ── dedup guard: merge sections from any concurrent duplicate
+                # then delete the extras so no status rows are lost ──────────
+                all_comments = _list_comments(pr_number, token)
+                dupes = [
+                    c for c in all_comments
+                    if _MARKER in c.get("body", "") and c["id"] != created_id
+                ]
+                if dupes:
+                    for dup in dupes:
+                        extra_sections = _decode_sections(dup["body"])
+                        for k, v in extra_sections.items():
+                            if k not in sections:
+                                sections[k] = v
+                    # Rebuild and update the canonical comment with merged data.
+                    visible = _build_body(sections, run_url=run_url)
+                    hidden_blobs = "\n".join(
+                        _encode_section(name, info["status"], info["summary"], info["details"])
+                        for name, info in sections.items()
+                    )
+                    merged_body = visible + "\n\n<!-- SECTIONS_DATA -->\n" + hidden_blobs
+                    _update_comment(created_id, merged_body, token)
+                    for dup in dupes:
+                        try:
+                            _api_request(
+                                "DELETE",
+                                f"/repos/{_repo()}/issues/comments/{dup['id']}",
+                                token=token,
+                            )
+                            print(
+                                f"🗑  Removed duplicate dashboard comment {dup['id']} "
+                                f"(kept {created_id})"
+                            )
+                        except Exception as exc:  # noqa: BLE001
+                            print(f"⚠️  Could not delete duplicate {dup['id']}: {exc}")
 
             return  # success — exit retry loop
 
