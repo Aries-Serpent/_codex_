@@ -41,7 +41,7 @@ def _load_click_cli() -> Any:
         return None
     module = importlib.util.module_from_spec(spec)
     sys.modules["codex._cli_click"] = module
-    spec.loader.exec_module(module)  # type: ignore[union-attr]
+    spec.loader.exec_module(module)
     return getattr(module, "cli", None)
 
 

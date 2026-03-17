@@ -19,6 +19,19 @@ import pytest
 from src.codex.logging.db_manager import DBManager
 
 
+def _raw_conn(conn):
+    """Unwrap a PooledConnectionProxy to the underlying sqlite3.Connection.
+
+    When codex.db.sqlite_patch is active it replaces sqlite3.connect() with a
+    pool that returns PooledConnectionProxy objects.  sqlite3.Connection.backup()
+    is a C-extension API that checks the type of its arguments at the C level,
+    so it rejects PooledConnectionProxy even though the proxy transparently
+    delegates all attribute access to the underlying connection.  This helper
+    extracts the real connection for calls that require a raw sqlite3.Connection.
+    """
+    return getattr(conn, "_conn", conn)
+
+
 class TestCRUDOperations:
     """Tests for basic CRUD operations."""
 
@@ -600,7 +613,7 @@ class TestBackupRestoreWorkflows:
         # Backup using SQLite backup API
         with manager.connection() as source:
             with sqlite3.connect(backup_path) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backup
         assert backup_path.exists()
@@ -632,12 +645,12 @@ class TestBackupRestoreWorkflows:
         # Create backup
         with sqlite3.connect(original_db) as source:
             with sqlite3.connect(backup_db) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # Restore to new location
         with sqlite3.connect(backup_db) as source:
             with sqlite3.connect(restored_db) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # Verify restore
         with sqlite3.connect(restored_db) as conn:
@@ -668,7 +681,7 @@ class TestBackupRestoreWorkflows:
         backup1 = backup_dir / "backup1.db"
         with sqlite3.connect(db_path) as source:
             with sqlite3.connect(backup1) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # More changes
         with manager.connection() as conn:
@@ -680,7 +693,7 @@ class TestBackupRestoreWorkflows:
         backup2 = backup_dir / "backup2.db"
         with sqlite3.connect(db_path) as source:
             with sqlite3.connect(backup2) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backups have different content
         with sqlite3.connect(backup1) as conn:
@@ -717,7 +730,7 @@ class TestBackupRestoreWorkflows:
         # Backup
         with sqlite3.connect(db_path) as source:
             with sqlite3.connect(backup_path) as target:
-                source.backup(target)
+                _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backup
         with sqlite3.connect(backup_path) as conn:
@@ -751,7 +764,7 @@ class TestBackupRestoreWorkflows:
                 snapshot_path = tmp_path / f"snapshot_{i}.db"
                 with sqlite3.connect(db_path) as source:
                     with sqlite3.connect(snapshot_path) as target:
-                        source.backup(target)
+                        _raw_conn(source).backup(_raw_conn(target))
                 snapshots.append((timestamp, snapshot_path))
 
         # Verify we can recover to any snapshot

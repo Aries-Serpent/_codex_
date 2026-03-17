@@ -1,4 +1,7 @@
 # 🔧 Phase 0: Gap Resolution Implementation Guide
+
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
 > Generated: 2025-11-09 23:13:57 UTC | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 # lock so the backend still functions (single-process writes are safe;
 # multi-process concurrent writes on Windows simply skip advisory locking).
 if _sys.platform != "win32":
-    import fcntl as _fcntl  # type: ignore[import]
+    import fcntl as _fcntl
 
     _HAS_FCNTL = True
 else:

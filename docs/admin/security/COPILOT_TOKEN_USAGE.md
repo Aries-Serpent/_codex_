@@ -1,6 +1,6 @@
 # 🤖 Copilot Agent Token Usage Guide
 
-> **Generated**: 2025-12-29
+> **Generated**: 2026-03-17
 > **Repository**: Aries-Serpent/_codex_
 > **Audience**: Copilot Agent, Automation Engineers
 > **Security Level**: 🔐🔐🔐🔐🔐 (5/5)

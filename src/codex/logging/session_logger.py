@@ -83,7 +83,7 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.warning("journal_mode=WAL failed: %s", e)
+        logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
     except Exception as e:
@@ -137,7 +137,7 @@ def init_db(db_path: Optional[Path] = None):
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except Exception as e:
-            logger.warning("journal_mode=WAL failed: %s", e)
+            logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
         try:
             conn.execute(
                 """CREATE TABLE IF NOT EXISTS session_events(
@@ -391,7 +391,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.warning("journal_mode=WAL failed: %s", e)
+        logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

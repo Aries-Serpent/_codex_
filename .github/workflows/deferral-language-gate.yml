@@ -37,7 +37,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: 'pip'
+          # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1
+          # (which is off by default).  In the common case nothing is installed,
+          # ~/.cache/pip is never created, and the post-step fails with
+          # "Cache folder doesn't exist on disk".  Cache is not worth the
+          # fragility given the conditional install.
 
       - name: "📦 Install ML dependencies (if DEFERRAL_SCANNER_ML=1)"
         if: ${{ vars.DEFERRAL_SCANNER_ML == '1' || env.DEFERRAL_SCANNER_ML == '1' }}

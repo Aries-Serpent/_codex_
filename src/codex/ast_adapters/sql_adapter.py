@@ -11,18 +11,18 @@ import uuid
 from typing import Any, Dict, List, Optional
 
 try:
-    import sqlparse  # type: ignore[import-untyped]
-    from sqlparse.sql import (  # type: ignore[import-untyped]
+    import sqlparse
+    from sqlparse.sql import (
         Identifier,
         IdentifierList,
         Statement,
     )
-    from sqlparse.tokens import Keyword  # type: ignore[import-untyped]
+    from sqlparse.tokens import Keyword
 
     _SQLPARSE_AVAILABLE = True
 except ImportError:  # pragma: no cover
-    sqlparse = None  # type: ignore[assignment]
-    Identifier = IdentifierList = Statement = Keyword = None  # type: ignore[assignment,misc]
+    sqlparse = None
+    Identifier = IdentifierList = Statement = Keyword = None
     _SQLPARSE_AVAILABLE = False
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode

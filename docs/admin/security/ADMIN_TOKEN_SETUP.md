@@ -1,6 +1,6 @@
 # 🔐 Admin Token Setup Guide for _codex_
 
-> **Generated**: 2025-12-29
+> **Generated**: 2026-03-17
 > **Repository**: Aries-Serpent/_codex_
 > **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
 > **Roles**: [Org Admin], [Security Officer]

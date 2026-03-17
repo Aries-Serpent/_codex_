@@ -1,5 +1,7 @@
 # [Report]: Expanded Transformed PR Overview — Deterministic Docs, Agent-Run, Optional Metrics & Stubs
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 > Generated: 2025-11-06 13:11:49 | Author: mbaetiong  
 Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 

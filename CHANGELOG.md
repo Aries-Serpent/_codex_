@@ -7,7 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S144 — 2026-03-17 — PR #3610)
+- **`scripts/ci/aais_v4_scorer.py`**: OTel live CI wiring — imports `compute_coherence` and `workflow_coherence_score` from `codex.monitoring.otel_metrics` and emits one coherence observation per AAIS run, mapping sub-dimension pass/fail outcomes against policy-expected "pass" for all dimensions. Import is guarded so the scorer stays runnable without `src/` on the path.
+- **`scripts/ci/pr_comment_consolidator.py`**: OTel coherence observation emitted on every dashboard update (fraction of workflows reporting `success`). Hardened **Merge Readiness Score** (0–100, weighted by CI 35% / Reviews 20% / Conflicts 15% / Comments 15% / Quality 10% / Freshness 5%) now computed and rendered **at the top of every dashboard update** — replaces soft/optional approach with a grounded, always-on implementation. Includes follow-up gap prompt and collapsible score breakdown table.
+- **`.github/workflows/coherence-snapshot.yml`** *(new)*: Weekly (Monday 08:00 UTC) OTel coherence snapshot workflow — runs AAIS scorer, emits `workflow_coherence_score.observe()`, posts results to the latest open PR's dashboard comment, and enforces the AAIS ≥ 99.7 threshold (exits non-zero on regression). Also triggerable manually via `workflow_dispatch`.
+- **`.github/workflows/pr3178-pytest-execution.yml`**: Hardened trigger policy — auto-run now **only triggers when `0D_base_` branch opens/updates a PR targeting `main`**. Any branch→main PR where `head_ref != '0D_base_'` is skipped at job level. Any branch→`0D_base_` combination cannot reach this workflow (trigger now `branches: ["main"]`). Manual `workflow_dispatch` continues to work unrestricted for user-triggered runs.
+- **`.github/workflows/ci-failure-issue-creator.yml`** *(new)*: Automated CI failure triage system. On any `workflow_run` failure on `main`:  
+  - Opens a labelled GitHub Issue for every untracked failure.  
+  - For **critical** failures (security/codeql/build/docker/test): creates a `fix/ci-*` branch and opens a PR with `@copilot` instructions to begin the fix immediately.  
+  - **Single-branch rule** (R3): uses a global serialisation concurrency lock (`ci-failure-issue-creator-global-lock`, `cancel-in-progress: false`) so at most ONE `fix/ci-*` branch exists at any time — additional failures are queued (issue opened, no second branch created).  
+  - Posts every outcome (new issue, critical PR, queued, skipped) to the **PR Status Dashboard** via `pr_comment_consolidator.py`.  
+  - Auto-closes tracking issues when the failing workflow passes on `main` again.
+- **`docs/ci/CI_FAILURE_AUTO_RESPONSE.md`** *(new)*: Complete process documentation — 10-section guide with Mermaid flowchart (end-to-end process map), state diagram (single-branch rule states), severity classification flowchart, actor sequence diagram, Gantt queue visualisation, and job dependency graph.
+
+### Fixed (S143 — 2026-03-17 — PR #3610)
+- **`requirements/lock.txt`**: pyasn1 bumped 0.6.2 → 0.6.3 (cherry-pick of dependabot PR #3611). Fixes CVE-2026-30922 — nesting depth limit added to ASN.1 decoder to prevent stack overflow from deeply nested structures. Also fixes OverflowError from oversized BER length field and `asDateTime` fractional seconds parsing.
+- **`artifacts/env/pip-freeze.txt`**: pyasn1 updated to 0.6.3 to match lock.txt.
+- **`configs/development/artifacts/sbom/packages.txt`**: pyasn1 updated to 0.6.3 in SBOM.
+
+### Added (S143 — 2026-03-17 — PR #3610)
+- **`src/codex/monitoring/otel_metrics.py`**: Added `workflow_coherence_score` histogram (`workflow.coherence.score`, unit `"1"`, range 0.0–1.0) and `compute_coherence(actual, expected)` helper. Coherence measures the fraction of CI steps whose outcome matches the policy-expected outcome. Pre-registered in `_MetricRegistry`.
+- **`tests/test_otel_metrics.py`**: Added 8 `TestComputeCoherence` tests (full match, no match, partial, empty expected, extra steps ignored, missing steps, skipped outcomes, end-to-end observable). Total: 22 tests passing.
+- **`docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3610.md`**: CB Dashboard v3 — real-time CI metrics widget with OTel coherence histogram architecture diagram (Mermaid sequence diagram), cumulative S141–S143 metrics table, and Phase 7 roadmap.
+- **P3 archive bulk-notice**: Confirmed complete from S142 (dry-run: 9 stale, 0 would update — all archive docs already have `<!-- archive:` header).
+
+### Fixed (S142 — 2026-03-17 — PR #3610)
+- **`mypy.ini`**: Removed invalid TOML `[[tool.mypy.overrides]]` block (lines 11-26) that was incorrectly placed in an INI-format file. The parse error at line 25 (`']\n'`) was suppressing `warn_unused_ignores` reporting. The global `ignore_missing_imports = True` already covers all module overrides.
+- **`src/codex/training.py:89`**: Restored precise `# type: ignore[misc]` on stub `run_custom_trainer` (conditional import fallback pattern needs suppression; removing the bare comment exposed this error).
+- **78 files across `src/codex/`**: Removed 78 redundant bare `# type: ignore` comments that were made unnecessary by the global `ignore_missing_imports = True` setting. **mypy now reports 0 non-import errors.**
+- **`docs/admin/` (12 files), `docs/agent/` (1), `docs/how-to/` (9)**: Updated stale date headers (2025 → 2026-03-17) in P0/P1 priority docs.
+- **`docs/ops/` (24), `docs/mcp/`, `docs/ci/`**: Updated 24 stale date headers via `update_doc_freshness.py`.
+- **`docs/plans/` (28), `docs/archive/` (9)**: Added archive-notice / archive-header-only banners to historical docs.
+
+### Added (S142 — 2026-03-17 — PR #3610)
+- **`docs/admin/TOKEN_ROTATION_GUIDE.md`** *(new)*: Full human-admin guide for rotating `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` — step-by-step with Mermaid flowchart, permission table, emergency rotation procedure, troubleshooting, and rotation calendar.
+- **`docs/DOC_FRESHNESS_AUDIT_2026-03-17.md`** *(new)*: Comprehensive doc staleness audit — 533/1381 docs identified, categorized P0–P3, with action plan and phase assignment.
+- **`scripts/ci/update_doc_freshness.py`** *(new)*: Reusable script for bulk date-header refresh, archive-notice injection, and CI check-only mode.
+- **`.github/workflows/doc-freshness-check.yml`** *(new)*: Non-blocking weekly CI workflow that warns when admin/agent docs exceed 90 days without update.
+- **AAIS score**: 99.7/100 (S+) confirmed after S141 workflow changes.
+
+### Fixed (S141 — 2026-03-17 — PR #3610)
+- **`cost-gate.yml`**: Removed `cache: 'pip'` — `cost_estimator.py` uses stdlib only; `~/.cache/pip` is never created, causing `Post Set up Python` to fail with "Cache folder doesn't exist on disk" across ALL callers (`rust_swarm_ci.yml`, `data-quality-suite.yml`). Root cause of recurring "Post Set up Python" failures in CI triage issue #3603.
+- **`branch-rebase-gate.yml`**: Removed `cache: 'pip'` — sparse checkout only fetches `scripts/ci/branch_rebase_check.py` (stdlib-only); no requirements files are present so `setup-python@v5` immediately fails with "No file matched to [**/requirement...]".
+- **`deferral-language-gate.yml`**: Removed `cache: 'pip'` — `scikit-learn` is only installed when `DEFERRAL_SCANNER_ML=1` (off by default); in the standard case no packages are installed and the pip cache post-step fails.
+- **`root-org-validation.yml:329`**: Fixed actionlint error: `needs.post-validation.result` was referenced inside the `post-validation` job itself (a job cannot access its own `result`; its `needs` only lists `[pre-validation, reference-check]`). Replaced with `(needs.pre-validation.result == 'success' && needs.reference-check.result == 'success')`.
+
+### Added (S141 — 2026-03-17 — PR #3610)
+- **`src/codex/monitoring/otel_metrics.py`**: New OTEL-convention workflow timing instruments — `workflow_job_duration_seconds` and `workflow_step_duration` histograms pre-registered in the in-memory `_MetricRegistry`. Follows OTEL semantic-conventions naming without requiring the heavy OTEL SDK dependency.
+- **`tests/critical_path/test_auth_flows.py`**: Added `@pytest.mark.slow` to `test_rate_limiter_window_reset` and `test_rate_limiter_cleanup` (both sleep 1.1 s). Enables `pytest -m "not slow"` fast-path in CI shards.
+- **`.github/workflows/dependabot-auto-absorb.yml`**: New workflow — automatically cherry-picks single-file Dependabot bump PRs (e.g. Dockerfile base-image upgrades) into the active branch, eliminating manual absorption sessions. Supports dry-run mode and conflict-safe abort.
+
 ### Fixed (S138 — 2026-03-17 — PR #3607)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3610 (SHA `9c177180`) at 2026-03-17T15:56Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3606 (SHA `961dc65e`) at 2026-03-17T10:50Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3607 (SHA `e442d416`) at 2026-03-17T09:29Z [auto-generated]
 
