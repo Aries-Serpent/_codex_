@@ -48,7 +48,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const body = `## ⚠️ Pre-Flight CI Validation Failed
+            const MARKER = '<!-- pre-flight-validation-result -->';
+            const body = `${MARKER}\n## ⚠️ Pre-Flight CI Validation Failed
 
             Common issues were detected that are likely to cause CI failures.
 
@@ -81,12 +82,22 @@ jobs:
             - 📋 [Detailed logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             `;
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.issue.number, per_page: 100,
             });
+            const existing = comments.find(c => c.body && c.body.includes(MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: existing.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner, repo: context.repo.repo, body,
+              });
+            }
 
       - name: Fail if checks didn't pass
         if: steps.pre_flight.outcome == 'failure'
