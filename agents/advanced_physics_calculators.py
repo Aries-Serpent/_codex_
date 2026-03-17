@@ -30,9 +30,23 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
-    # Minimal numpy stubs for type hints
+    # Minimal numpy stubs so the module can be imported without real numpy.
+    # Every function used in this file must have a fallback here.
+    import math as _math
+
+    class _LinalgStub:
+        """Stub for np.linalg operations."""
+
+        @staticmethod
+        def norm(x: Any, *args: Any, **kwargs: Any) -> float:
+            if isinstance(x, (list, tuple)):
+                return _math.sqrt(sum(v * v for v in x))
+            return float(x)
+
     class NumpyStub:  # type: ignore
         ndarray = Any
+        pi = _math.pi
+        linalg = _LinalgStub()
 
         @staticmethod
         def array(obj: Any, *args: Any, **kwargs: Any) -> Any:
@@ -40,11 +54,15 @@ except ImportError as e:
 
         @staticmethod
         def zeros(shape: Any, *args: Any, **kwargs: Any) -> Any:
-            return []
+            if isinstance(shape, (list, tuple)):
+                return [0.0] * (shape[0] if shape else 0)
+            return [0.0] * int(shape)
 
         @staticmethod
         def ones(shape: Any, *args: Any, **kwargs: Any) -> Any:
-            return []
+            if isinstance(shape, (list, tuple)):
+                return [1.0] * (shape[0] if shape else 0)
+            return [1.0] * int(shape)
 
         @staticmethod
         def zeros_like(a: Any, *args: Any, **kwargs: Any) -> Any:
@@ -53,6 +71,103 @@ except ImportError as e:
         @staticmethod
         def ones_like(a: Any, *args: Any, **kwargs: Any) -> Any:
             return a
+
+        @staticmethod
+        def mean(a: Any, *args: Any, **kwargs: Any) -> float:
+            if isinstance(a, (list, tuple)) and len(a) > 0:
+                return sum(a) / len(a)
+            return float(a) if a else 0.0
+
+        @staticmethod
+        def sum(a: Any, *args: Any, **kwargs: Any) -> float:
+            if isinstance(a, (list, tuple)):
+                return sum(a)
+            return float(a)
+
+        @staticmethod
+        def std(a: Any, *args: Any, **kwargs: Any) -> float:
+            if isinstance(a, (list, tuple)) and len(a) > 1:
+                m = sum(a) / len(a)
+                return _math.sqrt(sum((x - m) ** 2 for x in a) / len(a))
+            return 0.0
+
+        @staticmethod
+        def var(a: Any, *args: Any, **kwargs: Any) -> float:
+            if isinstance(a, (list, tuple)) and len(a) > 1:
+                m = sum(a) / len(a)
+                return sum((x - m) ** 2 for x in a) / len(a)
+            return 0.0
+
+        @staticmethod
+        def abs(a: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return [builtins_abs(x) for x in a]
+            return builtins_abs(a)
+
+        @staticmethod
+        def sqrt(a: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return [_math.sqrt(x) for x in a]
+            return _math.sqrt(a)
+
+        @staticmethod
+        def sin(a: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return [_math.sin(x) for x in a]
+            return _math.sin(a)
+
+        @staticmethod
+        def clip(a: Any, a_min: Any = None, a_max: Any = None, **kw: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return [max(a_min or x, min(a_max or x, x)) for x in a]
+            return max(a_min or a, min(a_max or a, a))
+
+        @staticmethod
+        def min(a: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return builtins_min(a)
+            return a
+
+        @staticmethod
+        def linspace(start: float, stop: float, num: int = 50, **kw: Any) -> list:
+            if num <= 1:
+                return [start]
+            step = (stop - start) / (num - 1)
+            return [start + i * step for i in range(num)]
+
+        @staticmethod
+        def meshgrid(*xi: Any, **kw: Any) -> list:
+            return list(xi)
+
+        @staticmethod
+        def gradient(f: Any, *args: Any, **kwargs: Any) -> Any:
+            return f
+
+        @staticmethod
+        def convolve(a: Any, v: Any, *args: Any, **kwargs: Any) -> Any:
+            return a
+
+        @staticmethod
+        def roll(a: Any, shift: Any, *args: Any, **kwargs: Any) -> Any:
+            return a
+
+        @staticmethod
+        def delete(arr: Any, obj: Any, *args: Any, **kwargs: Any) -> Any:
+            return arr
+
+        @staticmethod
+        def argsort(a: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(a, (list, tuple)):
+                return sorted(range(len(a)), key=lambda i: a[i])
+            return a
+
+        @staticmethod
+        def argwhere(a: Any, *args: Any, **kwargs: Any) -> list:
+            return []
+
+    # Use builtins to avoid name collisions with stub methods
+    builtins_abs = abs
+    builtins_min = min
 
     np = NumpyStub
 

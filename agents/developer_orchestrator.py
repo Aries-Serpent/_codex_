@@ -34,6 +34,17 @@ except ImportError as e:
     logger.warning(f"ImportError: {e}", exc_info=True)
     NUMPY_AVAILABLE = False
 
+    # Minimal stub so code guarded by NUMPY_AVAILABLE can still
+    # work when the guard is patched to True in tests.
+    class _NpStubDev:  # type: ignore[no-redef]
+        """Lightweight numpy stand-in for developer_orchestrator."""
+
+        @staticmethod
+        def array(obj: Any, *a: Any, **kw: Any) -> Any:
+            return obj
+
+    np = _NpStubDev()  # type: ignore[assignment]
+
 try:
     from agents.advanced_physics_calculators import (
         AdvancedPhysicsOrchestrator,

@@ -24,6 +24,13 @@ import pytest
 
 from codex.agents.brain_client import _DEFAULT_URL, BrainClient, BrainClientError
 
+# All env vars consulted by BrainClient._auth_header() — must be excluded
+# in tests that assert "no auth header".
+_AUTH_ENV_VARS = frozenset({
+    "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY",
+    "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN",
+})
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -111,14 +118,17 @@ class TestAuthHeader:
 
     def test_empty_when_no_keys(self) -> None:
         env_copy = {k: v for k, v in os.environ.items()
-                    if k not in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY")}
+                    if k not in _AUTH_ENV_VARS}
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
         assert hdr == {}
 
     def test_whitespace_only_key_ignored(self) -> None:
-        with patch.dict(os.environ, {"CODEX_MASTER_KEY": "   ", "CODEX_BACKUP_KEY": ""}, clear=False):
+        env_copy = {k: v for k, v in os.environ.items()
+                    if k not in _AUTH_ENV_VARS}
+        env_copy.update({"CODEX_MASTER_KEY": "   ", "CODEX_BACKUP_KEY": ""})
+        with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
         assert hdr == {}
@@ -477,7 +487,7 @@ class TestAuthHeaderSentOnRequests:
 
     def test_no_auth_header_when_no_key(self) -> None:
         captured, fake = self._capture_headers({"status": "ok"})
-        env_copy = {k: v for k, v in os.environ.items() if k not in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY")}
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
