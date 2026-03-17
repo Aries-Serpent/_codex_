@@ -56,13 +56,14 @@ class TestCheckForMetaTensors:
         ``with torch.device('meta')`` sets the global default device via
         ``torch.set_default_device``.  When tests run in random order
         (pytest-randomly) a meta-device test could leak state into a
-        subsequent test that expects CPU parameters.  This hook resets the
-        default device to None (= CPU) before every test in the class.
+        subsequent test that expects CPU parameters.  This hook explicitly
+        resets to CPU (rather than ``None``) so the reset is valid on every
+        supported PyTorch version.
         """
         try:
             import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
             if hasattr(_torch, "set_default_device"):
-                _torch.set_default_device(None)
+                _torch.set_default_device("cpu")
         except Exception:  # noqa: BLE001
             pass
 
@@ -76,17 +77,16 @@ class TestCheckForMetaTensors:
         try:
             import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
             if hasattr(_torch, "set_default_device"):
-                _torch.set_default_device(None)
+                _torch.set_default_device("cpu")
         except Exception:  # noqa: BLE001
             pass
 
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
-        # Use explicit CPU context manager to guard against any residual global
-        # device state that set_default_device(None) may not reset in all
-        # PyTorch versions.
-        with torch.device('cpu'):
-            model = torch.nn.Linear(10, 5)
+        # Create directly on CPU without `with torch.device(...)` to avoid
+        # mutating the global default device (the very state this class guards).
+        model = torch.nn.Linear(10, 5)
+        model = model.to("cpu")
         has_meta = check_for_meta_tensors(model)
         param_devices = [(n, p.device) for n, p in model.named_parameters()]
         assert has_meta is False, (

@@ -9,7 +9,6 @@ import pytest
 
 np = pytest.importorskip("numpy")
 pytest.importorskip("sentence_transformers")
-import pytest
 
 from codex.rag.embeddings import (
     CachedEmbeddingProvider,

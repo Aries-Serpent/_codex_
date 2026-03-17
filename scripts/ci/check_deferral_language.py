@@ -131,15 +131,14 @@ EXEMPTION_PATTERNS: list[str] = [
 #      text still visible to the scanner.
 #   3. Single-backtick spans: `content` — ordinary inline code.
 #
-# Triple-backtick fenced blocks span multiple lines and are handled line-by-line
-# (each fence line after stripping becomes empty or only punctuation, which never
-# matches a deferral trigger).
+# Inline code spans are stripped before scanning so that documentation
+# examples describing deferral phrases don't trigger false positives.
 _INLINE_CODE_SPAN = re.compile(
     r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
     r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span (may contain single backticks)
     r"|`[^`\n]+`"                          # single-backtick span (no newlines)
     r'|\*"[^"\n]*"\*'                      # italic double-quoted example: *"phrase"*
-    r"|'\*[^'\n]*\*'"                      # italic single-quoted example (alt form)
+    r'|\*\'[^\'\n]*\'\*'                   # italic single-quoted example: *'phrase'*
 )
 
 
@@ -329,19 +328,49 @@ def scan(
     Returns a list of violation dicts with keys: line_no, line, pattern, reason.
     """
     violations: list[dict] = []
-    in_code_fence = False  # True while inside a triple-backtick fenced block
+
+    # ── Bypass-safe fenced-code-block tracking ────────────────────────────────
+    # A simple boolean toggle (in_fence = not in_fence) can be exploited: a
+    # single unmatched opening fence causes the scanner to skip the rest of the
+    # text.  Instead we:
+    #   1. Buffer lines seen inside a fence.
+    #   2. When a matching closing delimiter is found → discard the buffer (it
+    #      was a real code fence — skip content as intended).
+    #   3. If EOF is reached with fence_opener still set → the fence was never
+    #      closed.  We scan the buffered lines as ordinary prose (bypass
+    #      prevention).
+    fence_opener: str = ""                       # "" | "```" | "~~~"
+    fence_buffer: list[tuple[int, str]] = []    # (line_no, raw_line) inside unclosed fence
+    lines_to_scan: list[tuple[int, str]] = []
+
     for line_no, line in enumerate(text.splitlines(), start=1):
-        # Track triple-backtick fenced code blocks.  Content inside a code
-        # fence is programming source or shell output — never policy-relevant
-        # prose — so it must be skipped entirely to prevent false positives
-        # (e.g. test assertions or documentation examples that name the very
-        # patterns the scanner is designed to catch).
         stripped_for_fence = line.strip()
-        if stripped_for_fence.startswith("```") or stripped_for_fence.startswith("~~~"):
-            in_code_fence = not in_code_fence
-            continue  # fence delimiter line itself is never a violation
-        if in_code_fence:
-            continue  # skip all content inside the fence
+        if not fence_opener:
+            # Not currently in a fence — check if this line opens one.
+            if stripped_for_fence.startswith("```"):
+                fence_opener = "```"
+                continue  # opening delimiter is never a violation
+            elif stripped_for_fence.startswith("~~~"):
+                fence_opener = "~~~"
+                continue  # opening delimiter is never a violation
+            else:
+                lines_to_scan.append((line_no, line))
+        else:
+            # Inside a fence — check for a matching closing delimiter.
+            if stripped_for_fence.startswith(fence_opener):
+                # Properly closed: discard buffered lines (real code fence).
+                fence_opener = ""
+                fence_buffer.clear()
+                continue  # closing delimiter is never a violation
+            else:
+                fence_buffer.append((line_no, line))
+
+    # EOF with unclosed fence → scan buffered lines (bypass prevention).
+    if fence_buffer:
+        lines_to_scan.extend(fence_buffer)
+        lines_to_scan.sort(key=lambda t: t[0])  # restore document order
+
+    for line_no, line in lines_to_scan:
         if _line_is_exempt(line):
             continue
         # Strip single-backtick inline code spans before scanning so that

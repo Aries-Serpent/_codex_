@@ -3880,8 +3880,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## Session S45 — PR #3583 CI Triage + mypy Ratchet
 
 **Date:** 2026-03-15
@@ -3988,8 +3986,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -4464,8 +4460,6 @@ The Art_Validation Pipeline failure (run 23141592804) was a pre-commit/ruff fail
 
 ---
 
----
-
 ## Session — S117 — 2026-03-16 — PR #3586
 
 ### Agent Pre-flight
@@ -4649,8 +4643,6 @@ and the CI gate requirement.
 - CB backlog items completed: 9/9 (CB-001 through CB-007 + QA-001 + QA-002)
 - Files changed: 12
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
@@ -4952,8 +4944,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-17T04:46Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3605)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -5001,8 +4991,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-17T05:20Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3614)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -5047,8 +5035,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
