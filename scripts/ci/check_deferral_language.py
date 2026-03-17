@@ -138,6 +138,8 @@ _INLINE_CODE_SPAN = re.compile(
     r"`\s+``[^`]*(?:`(?!`)[^`]*)*``\s+`"  # outer ` `` content `` ` display wrapper
     r"|``[^`]*(?:`(?!`)[^`]*)*``"          # double-backtick span (may contain single backticks)
     r"|`[^`\n]+`"                          # single-backtick span (no newlines)
+    r'|\*"[^"\n]*"\*'                      # italic double-quoted example: *"phrase"*
+    r"|'\*[^'\n]*\*'"                      # italic single-quoted example (alt form)
 )
 
 
@@ -327,14 +329,24 @@ def scan(
     Returns a list of violation dicts with keys: line_no, line, pattern, reason.
     """
     violations: list[dict] = []
+    in_code_fence = False  # True while inside a triple-backtick fenced block
     for line_no, line in enumerate(text.splitlines(), start=1):
+        # Track triple-backtick fenced code blocks.  Content inside a code
+        # fence is programming source or shell output — never policy-relevant
+        # prose — so it must be skipped entirely to prevent false positives
+        # (e.g. test assertions or documentation examples that name the very
+        # patterns the scanner is designed to catch).
+        stripped_for_fence = line.strip()
+        if stripped_for_fence.startswith("```") or stripped_for_fence.startswith("~~~"):
+            in_code_fence = not in_code_fence
+            continue  # fence delimiter line itself is never a violation
+        if in_code_fence:
+            continue  # skip all content inside the fence
         if _line_is_exempt(line):
             continue
         # Strip single-backtick inline code spans before scanning so that
         # documentation examples describing deferral phrases (e.g. `future task`)
-        # don't trigger false positives.  Triple-backtick fenced blocks span
-        # multiple lines; each fence line after stripping becomes empty or only
-        # punctuation, which never matches any deferral trigger.
+        # don't trigger false positives.
         scan_line = _INLINE_CODE_SPAN.sub("", line)
         flagged = False
         for pattern, reason in DEFERRAL_TRIGGERS:
