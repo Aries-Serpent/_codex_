@@ -2,6 +2,9 @@ The below are details provide context for resolving gaps (which checklist) and c
 
 ````markdown name=reports/checklists/_codex__Remaining_Gaps_Implementation_Checklist.md
 # [Checklist]: Remaining Gaps → Implementation Map to 99–100 + Promotion
+
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
 > Generated: 2025-11-11 19:18:05 UTC | Author: mbaetiong  
 🧠 Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ [Map → Implement → Verify → Promote] Fields🔄 [Tests, Lint/Style, Types, Security, Determinism, Docs, CLI, Docker] Patterns👁️ [No‑reinventing, Offline-first] Redundancy🔀 [Unit+Integration+Artifacts] Balance⚖️ [Score gain vs change risk]

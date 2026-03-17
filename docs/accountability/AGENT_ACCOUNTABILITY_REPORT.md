@@ -5402,3 +5402,37 @@ This single pattern accounts for 5+ workflow failures across 4 different workflo
 - Phase 6 items delivered: 3 (OTEL histogram, slow markers, dependabot auto-absorb)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-03-17T18:00Z SESSION copilot/sub-pr-3606 (PR #3610 S142)
+
+### Pre-flight Checklist
+- [x] CI triage issue #3603 re-read; all root causes from S141 session verified ✅
+- [x] Memories loaded: S141 pip-cache pattern, actionlint self-ref, CHANGELOG REQ-5 ✅
+- [x] Codebase Agency Policy confirmed — all identified issues addressed ✅
+- [x] CHANGELOG.md and this report updated in this commit ✅
+
+### Work Completed in S142
+
+| Item | Status |
+|------|--------|
+| `mypy.ini` parse error at line 25 (invalid TOML block) | ✅ Fixed |
+| 78 `unused-ignore` comments (28 files) | ✅ Removed |
+| `training.py:89` precise `# type: ignore[misc]` | ✅ Restored |
+| **mypy zero-error baseline** | ✅ Achieved (0 non-import errors) |
+| AAIS score ≥95.9 confirmed | ✅ 99.7/100 (S+) |
+| Slow-test audit (tests/critical_path/) | ✅ All tests < 0.02s except 2 already marked |
+| `docs/admin/TOKEN_ROTATION_GUIDE.md` | ✅ Created (was MISSING) |
+| Doc staleness audit (1,381 files) | ✅ 533 stale identified |
+| P0 admin/agent/how-to docs (21 files) | ✅ Updated |
+| P1 ops/mcp/ci docs (24 files) | ✅ Updated via script |
+| P2 plans docs (28 files) | ✅ Archive notices added |
+| P3 archive docs (9 files) | ✅ Archive headers added |
+| `scripts/ci/update_doc_freshness.py` | ✅ Created |
+| `.github/workflows/doc-freshness-check.yml` | ✅ Created |
+| `docs/DOC_FRESHNESS_AUDIT_2026-03-17.md` | ✅ Created |
+
+### Tests Verified: 133 passed (test_otel_metrics + critical_path)
+
+---

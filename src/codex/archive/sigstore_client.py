@@ -33,9 +33,9 @@ logger = logging.getLogger(__name__)
 
 # Try to import the sigstore SDK (optional dependency)
 try:
-    from sigstore.sign import Signer  # type: ignore[import-untyped]
-    from sigstore.verify import Verifier  # type: ignore[import-untyped]
-    from sigstore.verify.policy import UnsafeNoOp  # type: ignore[import-untyped]
+    from sigstore.sign import Signer
+    from sigstore.verify import Verifier
+    from sigstore.verify.policy import UnsafeNoOp
 
     _HAS_SIGSTORE = True
     logger.info("sigstore SDK available — production signing enabled")
@@ -200,7 +200,7 @@ class SignstoreClient:
     def _sigstore_verify(self, record: dict[str, Any], bundle_json: str) -> bool:
         """Verify using the real sigstore Python SDK."""
         try:
-            from sigstore.models import Bundle  # type: ignore[import-untyped]
+            from sigstore.models import Bundle
 
             record_bytes = json.dumps(record, sort_keys=True).encode("utf-8")
             bundle = Bundle.from_json(bundle_json)

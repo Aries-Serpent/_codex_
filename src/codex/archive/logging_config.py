@@ -83,7 +83,7 @@ class StructuredFormatter(logging.Formatter):
         self.format_mode = fmt
         self.component = component
 
-    def format(self, record: logging.LogRecord) -> str:  # type: ignore[override]
+    def format(self, record: logging.LogRecord) -> str:
         message = record.getMessage()
         timestamp = datetime.utcfromtimestamp(record.created).strftime(ISO_FORMAT)
         extra_fields = {k: getattr(record, k) for k in record.__dict__ if k not in _STANDARD_FIELDS}

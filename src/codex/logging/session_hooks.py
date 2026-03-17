@@ -44,7 +44,7 @@ except Exception:  # pragma: no cover - best effort fallback
         message: str,
         db_path: pathlib.Path | None = None,
         meta: dict[str, Any] | None = None,
-    ) -> Any:  # type: ignore[no-redef]
+    ) -> Any:
         return None
 
 

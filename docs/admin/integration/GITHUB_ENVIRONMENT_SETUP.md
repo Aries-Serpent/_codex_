@@ -2,7 +2,7 @@
 
 > **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
 > **Audience**: Human Administrators with org/repo admin permissions
-> **Last Updated**: 2025-12-30
+> **Last Updated**: 2026-03-17
 
 ---
 

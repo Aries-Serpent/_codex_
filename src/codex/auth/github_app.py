@@ -324,7 +324,7 @@ class GitHubApp:
             AuthenticationError: On network or API errors.
         """
         jwt = self.generate_jwt()
-        return self._api_get("/app/installations", bearer=jwt)  # type: ignore[return-value]
+        return self._api_get("/app/installations", bearer=jwt)
 
     # ------------------------------------------------------------------ #
     # Internal HTTP helpers                                                #

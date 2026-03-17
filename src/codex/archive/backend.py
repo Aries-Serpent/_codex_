@@ -34,7 +34,7 @@ from pathlib import Path  # noqa: E402
 from typing import TYPE_CHECKING, Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    import sqlalchemy as sa  # type: ignore
+    import sqlalchemy as sa
 except Exception:  # pragma: no cover
     sa = None
 

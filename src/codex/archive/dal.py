@@ -676,7 +676,7 @@ class PostgresDAL(BaseDAL):
         self.ensure_schema()
 
     def _sql_ident(self, name: str):
-        from psycopg import sql  # type: ignore
+        from psycopg import sql
 
         self.validate_identifier(name, self._ALLOWED_TABLES)
         return sql.Identifier(name)

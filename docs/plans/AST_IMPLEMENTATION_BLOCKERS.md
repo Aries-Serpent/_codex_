@@ -1,5 +1,8 @@
 # AST Standardization Implementation - Blockers & Issues Report
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 **Generated**: 2025-11-09  
 **Context**: Analysis of AST standardization requirements vs current _codex_ repository state  
 **Purpose**: Document explicit blockers, issues, and implementation challenges  

@@ -3,6 +3,9 @@ Let me create the comprehensive deep research document directly in the workbench
 ```markdown name=AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md
 # DEEP RESEARCH: AST Standardization Blockers - Comprehensive Resolution Framework
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 > Generated: 2025-11-10 01:20:51 UTC | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Research Lead], [Secondary: Architecture Lead] | ⚡ Energy: 5/5

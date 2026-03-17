@@ -1,4 +1,7 @@
 # 🧠 AST Standardization: Codebase Analysis Architecture
+
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
 > Generated: 2025-11-09 22:30:25 UTC | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5

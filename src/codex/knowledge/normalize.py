@@ -52,7 +52,7 @@ def strip_tags(s: str) -> str:
 
 def pdf_to_text_bytes(p: Path) -> bytes:
     try:
-        from pdfminer.high_level import extract_text  # type: ignore
+        from pdfminer.high_level import extract_text
 
         txt = extract_text(p.as_posix()) or ""
         return txt.encode("utf-8")

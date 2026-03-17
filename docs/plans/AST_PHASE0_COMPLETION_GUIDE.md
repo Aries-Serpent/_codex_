@@ -1,5 +1,8 @@
 # Phase 0: AST Implementation - Complete Guidance & Readiness Assessment
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 > Generated: 2025-11-10 12:51:49 UTC | Author: mbaetiong
 
 **🧠 Roles:** [Primary: Implementation Architect], [Secondary: Research Lead] | ⚡ Energy: 5/5
