@@ -7,18 +7,17 @@ Provides start_session, log_message, and end_session helpers that forward to
 
 from __future__ import annotations
 
+import argparse
 import logging
+import os
+import sqlite3
+from pathlib import Path
+from typing import Any, Callable, Optional
+
+from . import session_logger
+from .session_logger import _default_db_path
 
 logger = logging.getLogger(__name__)
-
-import argparse  # noqa: E402
-import os  # noqa: E402
-import sqlite3  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Optional  # noqa: E402
-
-from . import session_logger  # noqa: E402
-from .session_logger import _default_db_path  # noqa: E402
 
 
 def _connect(path: str) -> sqlite3.Connection:
@@ -28,8 +27,7 @@ def _connect(path: str) -> sqlite3.Connection:
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("journal_mode=WAL failed: %s", e)
     return cx
 
 

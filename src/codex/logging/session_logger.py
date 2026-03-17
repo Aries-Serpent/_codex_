@@ -391,8 +391,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("journal_mode=WAL failed: %s", e)
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

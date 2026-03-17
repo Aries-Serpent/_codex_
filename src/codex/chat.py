@@ -1,31 +1,14 @@
-"""Simple chat session helper that logs messages via ``log_event``.
-
-This module provides a ``ChatSession`` context manager that initializes
-``SessionLogger`` on entry, records user and assistant messages, and ensures
-the session is closed on exit. The current session ID is propagated via the
-``CODEX_SESSION_ID`` environment variable so that other components can access it
-consistently.
-
-Example
--------
->>> from src.codex.chat import ChatSession
->>> with ChatSession("demo") as chat:
-...     chat.log_user("hi")
-...     chat.log_assistant("hello")
-"""
-
 from __future__ import annotations
 
 import logging
+import os
+import uuid
+from pathlib import Path
+from typing import Optional
+
+from codex.logging.session_logger import log_event
 
 logger = logging.getLogger(__name__)
-
-import os  # noqa: E402
-import uuid  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Optional  # noqa: E402
-
-from src.codex.logging.session_logger import log_event  # noqa: E402
 
 
 class ChatSession:
@@ -46,27 +29,24 @@ class ChatSession:
         self.db_path = db_path
         self._previous_session_id: Optional[str] = None
 
+    @property
+    def _path(self) -> Optional[Path]:
+        """Return the db_path as a ``Path``, or ``None`` if unset."""
+        return Path(self.db_path) if self.db_path else None
+
     def __enter__(self) -> ChatSession:
         self._previous_session_id = os.environ.get("CODEX_SESSION_ID")
         os.environ["CODEX_SESSION_ID"] = self.session_id
-        db = self.db_path
-        path = Path(db) if db else None
-        log_event(self.session_id, "system", "session_start", db_path=path)
+        log_event(self.session_id, "system", "session_start", db_path=self._path)
         return self
 
     def log_user(self, message: str) -> None:
         """Record an inbound user message."""
-        role = "user"
-        db = self.db_path
-        path = Path(db) if db else None
-        log_event(self.session_id, role, message, db_path=path)
+        log_event(self.session_id, "user", message, db_path=self._path)
 
     def log_assistant(self, message: str) -> None:
         """Record an outbound assistant message."""
-        role = "assistant"
-        db = self.db_path
-        path = Path(db) if db else None
-        log_event(self.session_id, role, message, db_path=path)
+        log_event(self.session_id, "assistant", message, db_path=self._path)
 
     def __exit__(self, exc_type, exc, tb) -> None:
         """Context manager exit protocol.
@@ -79,9 +59,8 @@ class ChatSession:
         Returns:
             None. (The method does not suppress exceptions.)
         """
-        path = Path(self.db_path) if self.db_path else None
         try:
-            log_event(self.session_id, "system", "session_end", db_path=path)
+            log_event(self.session_id, "system", "session_end", db_path=self._path)
         finally:
             # Always restore the previous session identifier even if logging fails
             if self._previous_session_id is None:
