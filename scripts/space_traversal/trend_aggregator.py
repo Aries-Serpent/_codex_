@@ -164,7 +164,7 @@ def aggregate_trends(
         paths_to_check.extend(manifest_paths)
 
     # Load all files
-    for path in sorted(set(paths_to_check)):
+    for path in sorted(set(paths_to_check), key=lambda p: str(p)):
         run_data = _load_manifest_or_scored(path)
         if run_data and run_data["capabilities"]:
             runs.append(run_data)

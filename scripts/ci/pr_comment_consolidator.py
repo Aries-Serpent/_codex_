@@ -115,10 +115,23 @@ def _list_comments(pr_number: int, token: str) -> list[dict]:
 
 
 def _find_dashboard_comment(pr_number: int, token: str) -> Optional[dict]:
-    for comment in _list_comments(pr_number, token):
-        if _MARKER in comment.get("body", ""):
-            return comment
-    return None
+    """Return the most recently updated dashboard comment, or None.
+
+    Returning the most-recently-updated comment (rather than the first/oldest)
+    ensures that when duplicates exist the canonical comment is the freshest
+    one.  The older duplicates are then deleted by the caller.
+    """
+    candidates = [
+        c for c in _list_comments(pr_number, token)
+        if _MARKER in c.get("body", "")
+    ]
+    if not candidates:
+        return None
+    # Prefer the most recently updated; fall back to created_at if equal.
+    return max(
+        candidates,
+        key=lambda c: (c.get("updated_at") or c.get("created_at") or ""),
+    )
 
 
 def _create_comment(pr_number: int, body: str, token: str) -> dict:
@@ -327,16 +340,21 @@ def consolidate(
             if existing:
                 # Run dedup even on the update path: another concurrent
                 # workflow may have created an extra copy in the time between
-                # our fetch and this update.  Merge any extra sections first.
+                # our fetch and this update.  Merge any extra sections first,
+                # preferring the section from the most-recently-updated comment
+                # so we never discard newer workflow status.
                 all_comments = _list_comments(pr_number, token)
                 dupes = [
                     c for c in all_comments
                     if _MARKER in c.get("body", "") and c["id"] != existing["id"]
                 ]
-                for dup in dupes:
+                for dup in sorted(dupes, key=lambda c: c.get("updated_at") or c.get("created_at") or ""):
+                    dup_ts = dup.get("updated_at") or dup.get("created_at") or ""
+                    canonical_ts = existing.get("updated_at") or existing.get("created_at") or ""
                     extra_sections = _decode_sections(dup["body"])
                     for k, v in extra_sections.items():
-                        if k not in sections:
+                        # Prefer whichever comment is newer for this workflow key.
+                        if k not in sections or dup_ts > canonical_ts:
                             sections[k] = v
                 if dupes:
                     # Rebuild body with merged sections before updating.
@@ -374,10 +392,14 @@ def consolidate(
                     if _MARKER in c.get("body", "") and c["id"] != created_id
                 ]
                 if dupes:
-                    for dup in dupes:
+                    # Prefer sections from more-recently-updated duplicates so
+                    # that newer workflow statuses are never discarded.
+                    canonical_ts = ""  # newly created — all dupes are at least as recent
+                    for dup in sorted(dupes, key=lambda c: c.get("updated_at") or c.get("created_at") or ""):
+                        dup_ts = dup.get("updated_at") or dup.get("created_at") or ""
                         extra_sections = _decode_sections(dup["body"])
                         for k, v in extra_sections.items():
-                            if k not in sections:
+                            if k not in sections or dup_ts > canonical_ts:
                                 sections[k] = v
                     # Rebuild and update the canonical comment with merged data.
                     visible = _build_body(sections, run_url=run_url)

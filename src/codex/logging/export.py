@@ -37,7 +37,7 @@ try:
 
     _codex_sqlite_auto()
 except Exception as e:
-    logger.debug("sqlite auto setup skipped: %s", e)
+    logger.warning("sqlite auto setup skipped: %s", e, exc_info=True)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 from .db_utils import (  # noqa: E402

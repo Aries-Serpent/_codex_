@@ -120,11 +120,19 @@ jobs:
             // trigger events (e.g. push + workflow_run firing simultaneously).
             for (let attempt = 0; attempt <= 3; attempt++) {
               try {
-                const { data: comments } = await github.rest.issues.listComments({
-                  owner: context.repo.owner, repo: context.repo.repo,
-                  issue_number: prNumber, per_page: 100,
-                });
-                const existing = comments.find(c => c.body && c.body.includes(MARKER));
+                // Paginate through all comments to find the marker, regardless of
+                // comment count (PRs with >100 comments would miss older marker comments).
+                let existing = null;
+                let page = 1;
+                while (!existing) {
+                  const { data: batch } = await github.rest.issues.listComments({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: prNumber, per_page: 100, page,
+                  });
+                  existing = batch.find(c => c.body && c.body.includes(MARKER)) || null;
+                  if (batch.length < 100) break;
+                  page++;
+                }
                 if (existing) {
                   await github.rest.issues.updateComment({
                     owner: context.repo.owner, repo: context.repo.repo,

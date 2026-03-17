@@ -332,7 +332,7 @@ junit.xml
 test_pattern_report.txt
 bandit-report.json
 bandit-report.txt
-# test_token_similarity.py writes these to CWD during test runs
+# test_token_similarity.py test artifacts (now written to audit_artifacts/ dir)
 a1.txt
 a2.txt
 b1.txt
