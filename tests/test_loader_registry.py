@@ -55,6 +55,9 @@ def test_modeling_prefers_registry():
     from codex_ml.models.loader_registry import register_model, unregister_model
     from codex_ml.utils import modeling
 
+    if modeling is None:
+        pytest.skip("modeling module unavailable (torch/transformers not installed)")
+
     @register_model("registry-demo")
     def _factory(**kwargs):
         return {"model": "m", "tokenizer": "t"}

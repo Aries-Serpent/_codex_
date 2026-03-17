@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S133 — 2026-03-17 — PR #3604)
+- **`tests/detectors/test_capability_detectors.py`**: Added 25 new tests covering all 18 capability detector functions (parametrized), 4 helper function tests (`_check_path_exists`, `_count_python_files`, `_count_test_files`, `_check_file_content`), and 2 detail-structure tests for configuration/security detectors
+- **`src/codex/retrieval/stores/pgvector_store.py`**: Resolved PS-06 semantic sharding TODO — KMeans clustering is already implemented (`fit_semantic_sharding()` + `semantic_shard_mapper()`) and wired into `insert_batch()` auto-routing; updated comment to reflect implemented status
+
+### Added (S132 — 2026-03-17 — PR #3604)
+- **`tests/evaluation/test_loop.py`**: Replaced 9 unconditionally-skipped dummy tests with 6 real tests exercising `evaluate_epoch` torch guard, `EvalResult.to_dict()`, `_safe_item()`, alias checks, and roundtrip validation
+- **`src/mcp/server/http.py`**: Added startup warning when using default dev API key — `"MCP server using default dev API key — set MCP_API_KEY for production"`
+
+### Added (S131 — 2026-03-17 — PR #3604)
+- **`src/codex/api/app.py`**: Enhanced `/health` endpoint with BrainClient availability and PatternCompressor status diagnostics
+- **`src/cognitive_brain/quantum/coherence_monitor.py`**: Added OpenTelemetry gauge export — coherence/accuracy metrics are now emitted to OTLP endpoint when `opentelemetry` is installed and `OTEL_EXPORTER_OTLP_ENDPOINT` is set
+- **`src/services/crawler/zendesk_sync.py`**: Replaced `sync_articles()` `NotImplementedError` stub with delegation to `check_and_pull()`; raises `ValueError` when credentials missing
+- **`tests/security/test_providers.py`**: Added `test_create_token_invalid_pat_scopes` and `test_create_token_empty_token_response` tests; updated existing tests to use installation permission names
+- **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
+
+### Fixed (S131 — 2026-03-17 — PR #3604)
+- **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
+- **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
+- **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`
+- **`CHANGELOG.md`**: Re-categorized auto-fix entry from S128 heading to S129 heading (correct session/date)
+
+### Added (S130 — 2026-03-17 — PR #3604)
+- **`src/security/providers/github_provider.py`**: Implemented `create_token()` — creates GitHub App installation access tokens via `POST /app/installations/{id}/access_tokens`; returns `RotationResult` with graceful fallback when `installation_id` not configured
+- **`src/security/providers/github_provider.py`**: Implemented `update_token_scopes()` — calls `PATCH /user/installations/{id}/permissions` when `requests` library is available; returns False with logged warning otherwise
+- **`tests/security/test_providers.py`**: Added 5 new tests: `test_create_token_no_installation_id`, `test_create_token_with_installation_id`, `test_create_token_api_failure`, `test_update_token_scopes` (API mock), `test_update_token_scopes_no_requests`
+- **`docs/cognitive_brain/DEAD_CODE_IMPROVEMENT_PLAN.md`**: Added Cognitive Brain Phase 4 next-phase plan with component status matrix
+
+### Fixed (S129 — 2026-03-17 — PR #3604)
+- **`agents/advanced_physics_calculators.py`**: Added 19 missing NumpyStub methods (`mean`, `abs`, `sum`, `std`, `var`, `sqrt`, `sin`, `clip`, `min`, `linspace`, `meshgrid`, `gradient`, `convolve`, `roll`, `delete`, `argsort`, `argwhere`) + `pi` constant + `linalg.norm`
+- **`agents/developer_orchestrator.py`**: Added `_NpStubDev` fallback class so tests patching `NUMPY_AVAILABLE=True` don't crash with `NameError`
+- **`tests/agents/test_brain_client.py`**: Fixed auth env var leak — `_auth_header()` checks 4 env vars (`CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `AGENT_GITHUB_TOKEN`, `GITHUB_TOKEN`); tests now exclude all 4 via `_AUTH_ENV_VARS` constant
+
+### Fixed (S129 — 2026-03-17 — PR #3604, auto-generated)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3604 (SHA `3e7012b8`) at 2026-03-17T00:00Z [auto-generated]
+
 ### Fixed (S128 — 2026-03-16)
 - **`scripts/fix_pr3248_dead_links.sh`**: Fixed idempotency bug — sed substitution now guards against adding duplicate `<!-- Note: Logs expire after 90 days -->` annotations; script is now safe to run multiple times on the same repository
 

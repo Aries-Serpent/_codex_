@@ -91,15 +91,26 @@ jobs:
         with:
           script: |
             const prNumber = ${{ steps.pr_number.outputs.pr_number }};
-            const body = `✅ Follow-up prompt has been generated for this PR.
+            const MARKER = '<!-- pr-followup-prompt-generated -->';
+            const body = `${MARKER}\n✅ Follow-up prompt has been generated for this PR.
 
             📄 View the prompt at: \`.github/copilot-prompts/active/PR-${prNumber}-followup.md\`
 
             You can use this prompt to continue work on this PR or track follow-up tasks.`;
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: body
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: prNumber, per_page: 100,
             });
+            const existing = comments.find(c => c.body && c.body.includes(MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: existing.id, body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: prNumber, body,
+              });
+            }

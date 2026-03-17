@@ -126,20 +126,13 @@ jobs:
             const sha = (context.sha || 'unknown').slice(0, 7);
             const MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';
 
-            // Dedup: skip if already posted for this SHA
+            // Upsert: find existing comment by stable anchor marker
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
+              per_page: 100,
             });
-
-            const alreadyPosted = comments.some(c =>
-              c.body.includes(MARKER) && c.body.includes(sha)
-            );
-            if (alreadyPosted) {
-              console.log(`Checklist already posted for SHA ${sha} — skipping duplicate.`);
-              return;
-            }
 
             // Scan for existing priority directive to surface inline
             const directive = comments.find(c =>
@@ -154,7 +147,9 @@ jobs:
                 })()
               : '\n> ℹ️ No session priority directive found. Post a comment with `Priority for this session: X` to set one.\n';
 
+            const UPSERT_MARKER = '<!-- cognitive-preflight-checklist -->';
             const body = [
+              UPSERT_MARKER,
               `## 🧠 ${MARKER} — SHA: ${sha}`,
               '',
               '> **Auto-posted by `cognitive-preflight` job BEFORE session activation.**',
@@ -199,13 +194,25 @@ jobs:
               `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
             ].join('\n');
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body,
-            });
-            console.log(`✅ Checklist posted for SHA ${sha}`);
+            // Upsert: update existing or create new
+            const existing = comments.find(c => c.body && c.body.includes(UPSERT_MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+              console.log(`✅ Checklist updated in-place for SHA ${sha}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+              console.log(`✅ Checklist posted for SHA ${sha}`);
+            }
 
       # ── REQ-1b: Surface session-type directives (exploration/timebox/no-auto-proceed) ──
       # Reads SESSION_TIMEBOX_START / SESSION_TYPE_EXPLORATION markers posted by session-watchdog.yml
@@ -226,13 +233,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
+              per_page: 100,
             });
-
-            // Dedup: only post once per SHA
-            if (comments.some(c => c.body.includes(MARKER) && c.body.includes(sha))) {
-              console.log(`Session-type directive already posted for ${sha} — skipping.`);
-              return;
-            }
 
             // Detect session signals from session-watchdog.yml markers
             const hasExploration   = comments.some(c => c.body.includes('SESSION_TYPE_EXPLORATION'));
@@ -258,7 +260,9 @@ jobs:
               return;
             }
 
+            const UPSERT_MARKER_WF002 = '<!-- cognitive-preflight-session-directives -->';
             const lines = [
+              UPSERT_MARKER_WF002,
               `## 🎯 ${MARKER} — SHA: ${sha}`,
               '',
               '> **Auto-posted by `cognitive-preflight` — session-type specific enforcement rules.**',
@@ -292,12 +296,24 @@ jobs:
 
             lines.push('_auto-posted by cognitive-preflight | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_');
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: lines.join('\n'),
-            });
+            // Upsert: update existing or create new
+            const directiveBody = lines.join('\n');
+            const existingDirective = comments.find(c => c.body && c.body.includes(UPSERT_MARKER_WF002));
+            if (existingDirective) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingDirective.id,
+                body: directiveBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: directiveBody,
+              });
+            }
             console.log('Session-type directives surfaced in preflight comment.');
 
       # ── REQ-2: Read ci_failure_patterns.yaml → output to job summary ──────
@@ -1048,7 +1064,9 @@ jobs:
             const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
             const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
 
+            const UPSERT_MARKER_DELEGATION = '<!-- agent-token-delegation-result -->';
             const body = [
+              UPSERT_MARKER_DELEGATION,
               '## 🔐 Agent Token Delegation Activated',
               '',
               `Owner approval received ([workflow run](${runUrl})). Repo variables updated:`,
@@ -1068,12 +1086,29 @@ jobs:
               '@copilot continue',
             ].join('\n');
 
-            await github.rest.issues.createComment({
-              owner:        context.repo.owner,
-              repo:         context.repo.repo,
+            // Upsert: update existing or create new
+            const { data: delegationComments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: prNumber,
-              body,
+              per_page: 100,
             });
+            const existingDelegation = delegationComments.find(c => c.body && c.body.includes(UPSERT_MARKER_DELEGATION));
+            if (existingDelegation) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingDelegation.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
             core.info(`✅ Posted @copilot continue on PR #${prNumber}`);
 
       # ── 3e: Auto-increment COGNITIVE_BRAIN_SESSION_NUMBER ────────────────────

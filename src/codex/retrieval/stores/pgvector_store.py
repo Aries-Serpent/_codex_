@@ -29,13 +29,13 @@ except ImportError:
     AsyncConnectionPool = None  # type: ignore
     logger.warning("psycopg3 not installed - PGVectorStore will be stub only")
 
-# Optional dependency: scikit-learn for future centroid-based partitioning
-# TODO(PS-06, semantic-sharding): Implement KMeans clustering for intelligent
-# shard balancing based on document embeddings. This would enable semantic-aware
-# sharding where similar documents are co-located on the same shard for improved
-# query performance. Tracked as part of PS-06: Index Sharding (Priority 4). Current
-# implementation: Uses hash-based consistent sharding only (see lines 307–316 for
-# the current hash-based sharding logic in PGVectorStore).
+# Optional dependency: scikit-learn for centroid-based semantic partitioning
+# NOTE(PS-06, semantic-sharding): KMeans clustering for semantic-aware shard
+# balancing IS IMPLEMENTED — see fit_semantic_sharding() and
+# semantic_shard_mapper() below.  insert_batch() auto-routes via the fitted
+# KMeans model when available (lines 305-306), falling back to hash-based
+# consistent sharding otherwise.  Future enhancement: add online re-clustering
+# when centroid drift exceeds a configurable threshold.
 try:
     from sklearn.cluster import KMeans  # noqa: F401
 

@@ -6,6 +6,8 @@ Covers basic functionality and edge cases per Coverage_96-99 spec.
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 
@@ -63,55 +65,81 @@ class TestEvaluationLoopBasics:
 
 
 class TestEvaluationLoopEdgeCases:
-    """Edge case tests for evaluation loop (require torch)."""
+    """Edge case tests for evaluation loop."""
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_empty_dataloader(self):
-        """Test evaluation with empty dataloader."""
-        pass
+    def test_evaluate_epoch_raises_without_torch(self):
+        """evaluate_epoch raises RuntimeError when torch is None."""
+        from codex_ml.evaluation import evaluate_epoch
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_single_batch(self):
-        """Test evaluation with single batch."""
-        pass
+        with patch("codex_ml.evaluation.loop.torch", None):
+            with pytest.raises(RuntimeError, match="Torch not available"):
+                evaluate_epoch(
+                    model=MagicMock(),
+                    dataloader=[],
+                    criterion=MagicMock(),
+                )
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_max_batches_limit(self):
-        """Test max_batches parameter limits processing."""
-        pass
+    def test_eval_result_to_dict(self):
+        """EvalResult.to_dict() returns expected structure."""
+        from codex_ml.evaluation.loop import EvalResult
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_metric_exception_handling(self):
-        """Test graceful handling of metric computation failures."""
-        pass
+        result = EvalResult(
+            loss=0.5,
+            count=100,
+            metrics={"accuracy": 0.9},
+            batches=10,
+            duration_sec=1.23456789,
+        )
+        d = result.to_dict()
+        assert d["loss"] == 0.5
+        assert d["count"] == 100
+        assert d["metrics"] == {"accuracy": 0.9}
+        assert d["batches"] == 10
+        assert d["duration_sec"] == 1.234568  # rounded to 6 decimal places
+
+    def test_safe_item_with_float(self):
+        """_safe_item returns float for a plain float."""
+        from codex_ml.evaluation.loop import _safe_item
+
+        assert _safe_item(3.14) == 3.14
+
+    def test_safe_item_with_item_method(self):
+        """_safe_item calls .item() on tensor-like objects."""
+        from codex_ml.evaluation.loop import _safe_item
+
+        tensor_like = MagicMock()
+        tensor_like.item.return_value = 2.718
+        assert _safe_item(tensor_like) == 2.718
 
 
 class TestEvaluationDeterminism:
-    """Determinism tests for evaluation loop (require torch)."""
+    """Determinism tests for evaluation loop."""
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_seeded_evaluation_reproducible(self):
-        """Test that seeded evaluation produces identical results."""
-        pass
+    def test_eval_result_roundtrip(self):
+        """EvalResult fields survive to_dict and back."""
+        from codex_ml.evaluation.loop import EvalResult
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_hash_equality_on_repeated_runs(self):
-        """Test byte-identical JSON outputs on repeated runs."""
-        pass
+        original = EvalResult(loss=0.1, count=50, metrics={}, batches=5, duration_sec=0.5)
+        d = original.to_dict()
+        assert d["loss"] == original.loss
+        assert d["count"] == original.count
+        assert d["batches"] == original.batches
+
+    def test_evaluation_result_alias(self):
+        """EvaluationResult is an alias for EvalResult."""
+        from codex_ml.evaluation import EvalResult, EvaluationResult
+
+        assert EvaluationResult is EvalResult
 
 
 class TestEvaluationLogging:
-    """Tests for logging integration (require torch)."""
+    """Tests for logging integration."""
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_logger_failure_graceful(self):
-        """Test graceful handling of logger failures."""
-        pass
+    def test_run_evaluation_is_evaluate_epoch(self):
+        """run_evaluation is an alias for evaluate_epoch."""
+        from codex_ml.evaluation import evaluate_epoch, run_evaluation
 
-    @pytest.mark.skipif(True, reason="Requires torch - deferred to integration phase")
-    def test_multiple_loggers(self):
-        """Test evaluation with multiple loggers."""
-        pass
+        assert run_evaluation is evaluate_epoch
 
 
 class TestCheckpointRetention:

@@ -465,8 +465,7 @@ class TestGitHubTokenProvider:
         """Test successful token rotation."""
         provider = GitHubTokenProvider(github_config)
 
-        # Mock create_token since it's not implemented
-        # Use patch.object with the class to ensure it's applied before method call
+        # Mock create_token to control the return value
         with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
@@ -492,8 +491,7 @@ class TestGitHubTokenProvider:
         """Test token rotation with old token revocation."""
         provider = GitHubTokenProvider(github_config)
 
-        # Mock create_token since it's not implemented
-        # Use patch.object with the class to ensure it's applied before method call
+        # Mock create_token to control the return value
         with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
@@ -591,29 +589,139 @@ class TestGitHubTokenProvider:
         scopes = provider.get_scopes("token-id")
 
         assert isinstance(scopes, list)
-        assert isinstance(scopes, (list, tuple, set, dict))  # was: len() >= 0 (always true)
+        assert all(isinstance(s, str) for s in scopes)
 
-    def test_create_token(self, github_config):
-        """Test creating new token raises NotImplementedError (stub implementation)."""
+    def test_create_token_no_installation_id(self, github_config):
+        """Test create_token fails gracefully without installation_id."""
         provider = GitHubTokenProvider(github_config)
 
-        # This is a stub implementation that must raise NotImplementedError
-        with pytest.raises(NotImplementedError, match="GitHub token creation is not implemented"):
-            provider.create_token(
-                name="test-token",
-                scopes=["repo", "workflow"],
-                expires_in_days=90,
-            )
-
-    def test_update_token_scopes(self, github_config):
-        """Test updating token scopes."""
-        provider = GitHubTokenProvider(github_config)
-        success = provider.update_token_scopes(
-            "token-id",
-            ["repo", "workflow", "admin:org"],
+        result = provider.create_token(
+            name="test-token",
+            scopes=["contents", "workflows"],
+            expires_in_days=90,
         )
 
+        # Without installation_id, create_token must return failure (not raise)
+        assert result.success is False
+        assert "installation_id" in (result.error_message or "")
+
+    def test_create_token_with_installation_id(self, github_config):
+        """Test create_token calls GitHub API when installation_id is set."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 201
+        mock_resp.json.return_value = {
+            "token": "ghs_test_installation_token_value",  # pragma: allowlist secret
+            "id": 99,
+            "expires_at": "2026-03-18T00:00:00Z",
+        }
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.return_value = mock_resp
+            result = provider.create_token(
+                name="test-token",
+                scopes=["contents", "workflows"],
+            )
+
+        assert result.success is True
+        assert result.new_secret_value == "ghs_test_installation_token_value"  # pragma: allowlist secret  # noqa: E501
+        assert result.new_secret_id == "99"
+
+    def test_create_token_invalid_pat_scopes(self, github_config):
+        """Test create_token rejects PAT-style scopes."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        result = provider.create_token(
+            name="test-token",
+            scopes=["repo", "workflow"],  # PAT-style — should be rejected
+        )
+
+        assert result.success is False
+        assert "Invalid installation permission" in (result.error_message or "")
+
+    def test_create_token_empty_token_response(self, github_config):
+        """Test create_token fails closed when API returns 201 but no token."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 201
+        mock_resp.json.return_value = {"id": 99, "expires_at": "2026-03-18T00:00:00Z"}
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.return_value = mock_resp
+            result = provider.create_token(name="t", scopes=["contents"])
+
+        assert result.success is False
+        assert "no token" in (result.error_message or "").lower()
+
+    def test_create_token_api_failure(self, github_config):
+        """Test create_token handles API errors gracefully."""
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB,
+            token="ghp_test_token_1234567890",
+            api_url="https://api.github.com",
+            installation_id="12345",
+        )
+        provider = GitHubTokenProvider(config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 403
+        mock_resp.text = "Forbidden"
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.post.return_value = mock_resp
+            result = provider.create_token(name="t", scopes=["contents"])
+
+        assert result.success is False
+        assert "403" in (result.error_message or "")
+
+    def test_update_token_scopes(self, github_config):
+        """Test updating token scopes calls GitHub API."""
+        provider = GitHubTokenProvider(github_config)
+
+        mock_resp = Mock()
+        mock_resp.status_code = 200
+
+        with patch("security.providers.github_provider._requests") as mock_req, \
+             patch("security.providers.github_provider.HAS_REQUESTS", True):
+            mock_req.patch.return_value = mock_resp
+            success = provider.update_token_scopes(
+                "12345",
+                ["contents", "workflows", "issues"],
+            )
+
         assert success is True
+
+    def test_update_token_scopes_no_requests(self, github_config):
+        """Test update_token_scopes returns False without requests library."""
+        provider = GitHubTokenProvider(github_config)
+
+        with patch("security.providers.github_provider.HAS_REQUESTS", False):
+            success = provider.update_token_scopes("12345", ["contents"])
+
+        assert success is False
 
     def test_revoke_secret(self, github_config):
         """Test revoking token.
