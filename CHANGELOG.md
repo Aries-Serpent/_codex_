@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S133 — 2026-03-17 — PR #3604)
+- **`tests/detectors/test_capability_detectors.py`**: Added 25 new tests covering all 18 capability detector functions (parametrized), 4 helper function tests (`_check_path_exists`, `_count_python_files`, `_count_test_files`, `_check_file_content`), and 2 detail-structure tests for configuration/security detectors
+- **`src/codex/retrieval/stores/pgvector_store.py`**: Resolved PS-06 semantic sharding TODO — KMeans clustering is already implemented (`fit_semantic_sharding()` + `semantic_shard_mapper()`) and wired into `insert_batch()` auto-routing; updated comment to reflect implemented status
+
 ### Added (S132 — 2026-03-17 — PR #3604)
 - **`tests/evaluation/test_loop.py`**: Replaced 9 unconditionally-skipped dummy tests with 6 real tests exercising `evaluate_epoch` torch guard, `EvalResult.to_dict()`, `_safe_item()`, alias checks, and roundtrip validation
 - **`src/mcp/server/http.py`**: Added startup warning when using default dev API key — `"MCP server using default dev API key — set MCP_API_KEY for production"`

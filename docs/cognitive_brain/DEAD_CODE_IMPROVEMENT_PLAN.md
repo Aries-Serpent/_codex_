@@ -149,6 +149,8 @@ response token.
 | P3 | Quantum | Add coherence telemetry export to OpenTelemetry | Agent | ✅ S131 — OTel gauge |
 | P3 | QA | Replace dummy tests in `test_loop.py` | Agent | ✅ S132 — 9 dummy → 6 real |
 | P3 | Security | Harden dev-key defaults with startup warnings | Agent | ✅ S132 — MCP + auth_routes |
+| P3 | Retrieval | Resolve PS-06 semantic sharding TODO | Agent | ✅ S133 — KMeans already implemented, TODO updated |
+| P3 | Testing | Add capability_detectors test coverage | Agent | ✅ S133 — 25 tests for 18 detectors |
 
 ### Cognitive Brain Component Status
 
