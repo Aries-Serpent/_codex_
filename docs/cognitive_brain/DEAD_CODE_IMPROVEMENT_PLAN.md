@@ -138,15 +138,17 @@ response token.
 
 ### Phase 4: Production Hardening (Target: S131+)
 
-| Priority | Area | Action | Owner |
-|----------|------|--------|-------|
-| P0 | Security | Token rotation end-to-end test with real GitHub App | Human admin |
-| P1 | Cognitive Brain | Wire `PatternCompressor` metrics to monitoring dashboard | Agent |
-| P1 | Cognitive Brain | Add `BrainClient` health check to `/api/health` endpoint | Agent |
-| P2 | RAG | Add distributed cache backend (Redis) for multi-node deployments | Agent |
-| P2 | Feature Store | Add Redis backend to `feast_compat.py` (SQLite + InMemory done) | Agent |
-| P3 | Retrieval | Implement cross-encoder reranker with sentence-transformers | Agent |
-| P3 | Quantum | Add coherence telemetry export to OpenTelemetry | Agent |
+| Priority | Area | Action | Owner | Status |
+|----------|------|--------|-------|--------|
+| P0 | Security | Token rotation end-to-end test with real GitHub App | Human admin | ⏳ Awaiting admin |
+| P1 | Cognitive Brain | Wire `PatternCompressor` metrics to monitoring dashboard | Agent | ✅ S131 — `/health` endpoint |
+| P1 | Cognitive Brain | Add `BrainClient` health check to `/api/health` endpoint | Agent | ✅ S131 — health diagnostics |
+| P2 | RAG | Add distributed cache backend (Redis) for multi-node deployments | Agent | ✅ S116 — RedisBackend |
+| P2 | Feature Store | Add Redis backend to `feast_compat.py` (SQLite + InMemory done) | Agent | ✅ S116 — RedisBackend with TTL |
+| P3 | Retrieval | Implement cross-encoder reranker with sentence-transformers | Agent | ✅ Implemented — `CrossEncoderReranker` |
+| P3 | Quantum | Add coherence telemetry export to OpenTelemetry | Agent | ✅ S131 — OTel gauge |
+| P3 | QA | Replace dummy tests in `test_loop.py` | Agent | ✅ S132 — 9 dummy → 6 real |
+| P3 | Security | Harden dev-key defaults with startup warnings | Agent | ✅ S132 — MCP + auth_routes |
 
 ### Cognitive Brain Component Status
 

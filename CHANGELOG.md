@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S132 — 2026-03-17 — PR #3604)
+- **`tests/evaluation/test_loop.py`**: Replaced 9 unconditionally-skipped dummy tests with 6 real tests exercising `evaluate_epoch` torch guard, `EvalResult.to_dict()`, `_safe_item()`, alias checks, and roundtrip validation
+- **`src/mcp/server/http.py`**: Added startup warning when using default dev API key — `"MCP server using default dev API key — set MCP_API_KEY for production"`
+
 ### Added (S131 — 2026-03-17 — PR #3604)
 - **`src/codex/api/app.py`**: Enhanced `/health` endpoint with BrainClient availability and PatternCompressor status diagnostics
 - **`src/cognitive_brain/quantum/coherence_monitor.py`**: Added OpenTelemetry gauge export — coherence/accuracy metrics are now emitted to OTLP endpoint when `opentelemetry` is installed and `OTEL_EXPORTER_OTLP_ENDPOINT` is set

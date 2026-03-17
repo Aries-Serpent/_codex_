@@ -132,7 +132,12 @@ def _get_expected_api_key() -> Optional[str]:
     offline = os.environ.get("MCP_OFFLINE", "false").lower() == "true"
     if offline:
         return None
-    return os.environ.get("MCP_API_KEY", DEFAULT_API_KEY)
+    key = os.environ.get("MCP_API_KEY", DEFAULT_API_KEY)
+    if key == DEFAULT_API_KEY:
+        logger.warning(
+            "MCP server using default dev API key — set MCP_API_KEY for production"
+        )
+    return key
 
 
 def _extract_auth_key(x_api_key: Optional[str], authorization: Optional[str]) -> Optional[str]:

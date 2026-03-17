@@ -3,7 +3,40 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/analyze-gaps-and-risks
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-17T02:00Z (S131 — reviewer threads, health endpoint, OTel, CI fixes — PR #3604)
+**Last updated:** 2026-03-17T02:45Z (S132 — QA walkthrough, dummy test replacement, dev-key hardening — PR #3604)
+
+---
+
+## SESSION SUMMARY — 2026-03-17 S132 PR #3604 (QA walkthrough + production hardening iteration)
+
+### Pre-Session Checklist (§0)
+- [x] 0a. Reviewed ALL bot-posted comments (owner @copilot continue + delegation activation)
+- [x] 0b. All CI checks reviewed — green from S131
+- [x] 0c. No BRANCH_REBASE_REQUIRED comment
+- [x] Loaded CODEBASE_AGENCY_POLICY.md
+- [x] Loaded Accountability Report
+- [x] Loaded all session memories
+
+### Work Completed (S132)
+| Area | Change | Count |
+|------|--------|-------|
+| `tests/evaluation/test_loop.py` | Replaced 9 unconditionally-skipped dummy tests with 6 real tests (EvalResult, _safe_item, torch guard, aliases) | 9 dummy→6 real |
+| `src/mcp/server/http.py` | Added startup warning when using default dev API key (`MCP_API_KEY` not set) | 1 guard |
+| `CHANGELOG.md` | Added S132 entries | 1 section |
+| Gap analysis | Verified 6 items already complete: Redis feast backend, CrossEncoderReranker, PatternCompressor metrics, OTel coherence, ZendeskSyncer, capability detector tests | 6 confirmed |
+| TODO/FIXME audit | 16 total → 4 actionable (all are tracked feature requests, not bugs); 8 are documentation in stub_cleanup.py | 0 bugs |
+
+### Verified Already Complete (S132 gap analysis)
+- ✅ Redis backend for feast_compat.py — `RedisBackend` class fully implemented (S116/W-142) with TTL, SCAN, graceful fallback
+- ✅ Cross-encoder reranker — `CrossEncoderReranker` in `src/codex/retrieval/reranker.py` with lazy loading + sentence-transformers
+- ✅ PatternCompressor metrics — wired to `/health` endpoint (S131)
+- ✅ OTel coherence export — gauge implemented in `coherence_monitor.py` (S131)
+- ✅ ZendeskSyncer — `sync_articles()` wired to `check_and_pull()` (S131)
+- ✅ Capability detector tests — 20+ test files in `tests/space_traversal/`
+
+### Residual Items (documented, not actionable bugs)
+- 🟡 4 TODO items in src/ are tracked feature requests (PS-06 semantic sharding, audio workflow timing, mlflow migration alias × 2)
+- 🟡 Hardcoded dev-key defaults in `src/mcp/server/http.py` and `src/codex/api/auth_routes.py` — both emit warnings when used; acceptable for dev, require env override in production
 
 ---
 
