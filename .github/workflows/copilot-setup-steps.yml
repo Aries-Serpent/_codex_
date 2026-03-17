@@ -366,7 +366,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
-          cache: 'pip'
           # No automatic pip cache — managed explicitly below so keys match
           # the 4-layer hierarchy in .github/actions/setup-python-cached and
           # all CI workflows share the same cache entries.

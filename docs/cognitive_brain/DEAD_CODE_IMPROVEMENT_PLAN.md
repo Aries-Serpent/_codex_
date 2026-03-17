@@ -216,7 +216,7 @@ flowchart TD
 
 | Component | Status | Coverage | Notes |
 |-----------|--------|----------|-------|
-| `session_hook.py` (Injector) | ✅ Production | 90%+ | PatternCompressor + BrainClient wired; import order fixed S138 |
+| `session_hooks.py` (Injector) | ✅ Production | 90%+ | PatternCompressor + BrainClient wired; import order fixed S138 |
 | `quantum/superposition.py` | ✅ Production | 90%+ | Coherence threshold + fallback gating |
 | `brain_client.py` | ✅ Production | 90%+ | 4-token auth chain, health + memory search |
 | `check_deferral_language.py` | ✅ Production | 90%+ | Fence opener bypass prevention added S138 |

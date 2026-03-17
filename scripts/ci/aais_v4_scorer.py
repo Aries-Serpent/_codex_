@@ -179,7 +179,10 @@ def _collect_cicd_maturity() -> SubDimension:
             )
             if has_cache:
                 cache_count += 1
-    pct = (cache_count / max(python_wf, 1)) * 100
+    if python_wf == 0:
+        return SubDimension("CI/CD Maturity", 0.06, 100.0,
+                            "N/A — no Python-execution workflows found")
+    pct = (cache_count / python_wf) * 100
     score = min(100.0, pct)
     return SubDimension("CI/CD Maturity", 0.06, score,
                         f"{cache_count}/{python_wf} Python workflows with cache")
