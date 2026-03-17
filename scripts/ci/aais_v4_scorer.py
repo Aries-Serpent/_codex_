@@ -150,20 +150,39 @@ def _collect_test_robustness() -> SubDimension:
 
 
 def _collect_cicd_maturity() -> SubDimension:
-    """CI/CD maturity based on workflow count and cache integration."""
-    workflows = _count_files(".github/workflows/*.yml")
-    # Check CacheManager integration
+    """CI/CD maturity: fraction of Python-execution workflows that use any cache mechanism.
+
+    Denominator = workflows that run Python (pip install / pytest / nox / ruff / mypy).
+    Numerator   = those that use generate_cache_keys.py OR actions/cache OR cache:'pip'.
+    Non-Python orchestration/notification workflows are excluded from the denominator
+    because caching pip packages is irrelevant to them (subscription-appropriate gap).
+    """
+    import re as _re
+    _PY_PAT = _re.compile(
+        r"pip install|python -m|pytest|nox|ruff|mypy|python scripts|\.venv", _re.I
+    )
+    python_wf = 0
     cache_count = 0
     wf_dir = ROOT / ".github" / "workflows"
     if wf_dir.exists():
         for wf in wf_dir.glob("*.yml"):
             content = wf.read_text(errors="ignore")
-            if "generate_cache_keys.py" in content:
+            if not _PY_PAT.search(content):
+                continue
+            python_wf += 1
+            has_cache = (
+                "generate_cache_keys.py" in content
+                or "actions/cache" in content
+                or "cache: 'pip'" in content
+                or 'cache: "pip"' in content
+                or "cache: pip" in content
+            )
+            if has_cache:
                 cache_count += 1
-    pct = (cache_count / max(workflows, 1)) * 100
-    score = min(100.0, pct + 5)  # bonus for having any
+    pct = (cache_count / max(python_wf, 1)) * 100
+    score = min(100.0, pct)
     return SubDimension("CI/CD Maturity", 0.06, score,
-                        f"{cache_count}/{workflows} workflows with CacheManager")
+                        f"{cache_count}/{python_wf} Python workflows with cache")
 
 
 def _collect_security_posture() -> SubDimension:
