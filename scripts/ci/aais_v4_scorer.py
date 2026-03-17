@@ -28,7 +28,10 @@ ROOT = Path(__file__).resolve().parents[2]
 # Import is guarded so the scorer remains runnable when src/ is not on the path.
 try:
     sys.path.insert(0, str(ROOT / "src"))
-    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score  # noqa: E402
+    from codex.monitoring.otel_metrics import (  # noqa: E402
+        compute_coherence,
+        workflow_coherence_score,
+    )
     _OTEL_AVAILABLE = True
 except Exception:  # pragma: no cover
     _OTEL_AVAILABLE = False

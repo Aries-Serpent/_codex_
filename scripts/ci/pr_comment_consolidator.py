@@ -55,7 +55,10 @@ try:
     _SRC_DIR = str(_pathlib.Path(_CONSOLIDATOR_ROOT).resolve().parents[2] / "src")
     if _SRC_DIR not in sys.path:
         sys.path.insert(0, _SRC_DIR)
-    from codex.monitoring.otel_metrics import compute_coherence, workflow_coherence_score  # noqa: E402
+    from codex.monitoring.otel_metrics import (  # noqa: E402
+        compute_coherence,
+        workflow_coherence_score,
+    )
     _OTEL_AVAILABLE = True
 except Exception:
     _OTEL_AVAILABLE = False
