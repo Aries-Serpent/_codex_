@@ -7,10 +7,10 @@
 [fence-check] /home/runner/work/_codex_/_codex_/README.md:755: ERROR — nested code fence detected (outer=3, inner=3)
 [fence-check] /home/runner/work/_codex_/_codex_/README.md:854: ERROR — nested code fence detected (outer=3, inner=3)
 [fence-check] /home/runner/work/_codex_/_codex_/README.md:932: ERROR — nested code fence detected (outer=3, inner=3)
-[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:278: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:2221: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:3397: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:3415: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:403: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:2346: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:3522: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/CHANGELOG.md:3540: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/patches/imds-diagnostic-changes.patch:59: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/patches/imds-diagnostic-changes.patch:1158: ERROR — Closing fence shorter than opener (open=4, close=3)
 [fence-check] /home/runner/work/_codex_/_codex_/patches/imds-diagnostic-changes.patch:1179: ERROR — Closing fence shorter than opener (open=4, close=3)
@@ -838,12 +838,12 @@
 [fence-check] /home/runner/work/_codex_/_codex_/docs/dev/Import_Contracts.md:16: ERROR — EOF while inside a fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/docs/dev/unified_training.md:15: ERROR — EOF while inside a fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/docs/dev/plugins.md:9: ERROR — EOF while inside a fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:499: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:1592: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:1629: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2284: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2488: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2735: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:645: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:1738: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:1775: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2430: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2634: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:2881: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/docs/packaging/Packaging_and_Release.md:23: ERROR — EOF while inside a fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/docs/system/CODEBASE_COGNITIVE_MAP.md:27: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/docs/system/CODEBASE_COGNITIVE_MAP.md:100: ERROR — Missing language tag for fenced block
@@ -2745,13 +2745,14 @@
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/artifact-monitor-agent.md:637: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/artifact-monitor-agent.md:689: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/artifact-monitor-agent.md:934: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:217: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:303: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:322: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:234: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:320: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:339: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:353: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:499: ERROR — Missing language tag for fenced block
-[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:513: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:356: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:370: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:516: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:531: ERROR — Missing language tag for fenced block
+[fence-check] /home/runner/work/_codex_/_codex_/.github/agents/cognitive-brain-manager.md:541: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/IMPLEMENTATION_COMPLETE.md:236: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/IMPLEMENTATION_COMPLETE.md:395: ERROR — Missing language tag for fenced block
 [fence-check] /home/runner/work/_codex_/_codex_/.github/agents/IMPLEMENTATION_COMPLETE.md:447: ERROR — Missing language tag for fenced block
