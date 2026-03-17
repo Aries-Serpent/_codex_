@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-17T16:07:35Z",
+  "generated_at": "2026-03-17T18:48:42Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1143,6 +1143,11 @@
       "has_concurrency": true
     },
     {
+      "name": "dependabot-auto-absorb",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "dependabot-sheriff",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1154,6 +1159,11 @@
     },
     {
       "name": "detect-duplicates",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "doc-freshness-check",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1754,5 +1764,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "d2640346547466aa136c19076cf7c3a99eba01fd8ef86d4bfd0307606ed4f93c"
+  "integrity_sha256": "187f721f8eff3c0c6a44d1d1250596e260cd3257c289604dbcba5824045ff732"
 }
