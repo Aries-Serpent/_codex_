@@ -81,6 +81,8 @@ jobs:
             echo "All files already up-to-date — no commit needed"
           else
             git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
+            # Pull rebase to handle concurrent pushes, then push
+            git pull --rebase origin "${HEAD_REF}" 2>/dev/null || true
             git push origin HEAD:"${HEAD_REF}"
             echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed"
           fi

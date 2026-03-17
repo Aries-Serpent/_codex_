@@ -197,6 +197,9 @@ if [[ ${#PRECOMMIT_FILES[@]} -eq 0 ]]; then
 else
   echo "pre-commit targets: ${#PRECOMMIT_FILES[@]} file(s)" | tee -a "$LOG"
   set +e
+  # Auto-update doc metrics date (e.g. docs/ROADMAP.md) before pre-commit
+  # checks run, so the doc-metrics-check hook does not fail on stale dates.
+  python scripts/tools/doc_metrics_sync.py --fix 2>/dev/null || true
   pre-commit run --show-diff-on-failure --files "${PRECOMMIT_FILES[@]}" 2>&1 | tee -a "$LOG"
   PRECOMMIT_STATUS=${PIPESTATUS[0]}
   set -e

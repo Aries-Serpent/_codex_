@@ -66,10 +66,27 @@ class TestCheckForMetaTensors:
         except Exception:  # noqa: BLE001
             pass
 
+    def teardown_method(self, method: object) -> None:
+        """Reset torch default device after each test to prevent cross-test pollution.
+
+        Mirrors ``setup_method`` to ensure any test that sets a global device
+        (e.g. via ``with torch.device('meta')``) always cleans up, regardless
+        of whether the test passes, fails, or errors.
+        """
+        try:
+            import torch as _torch  # type: ignore[import-untyped]  # noqa: PLC0415
+            if hasattr(_torch, "set_default_device"):
+                _torch.set_default_device(None)
+        except Exception:  # noqa: BLE001
+            pass
+
     def test_model_without_meta_tensors(self):
         """Test detection on model without meta tensors"""
-        # Create a simple model without meta tensors on explicit CPU device
-        model = torch.nn.Linear(10, 5, device="cpu")
+        # Use explicit CPU context manager to guard against any residual global
+        # device state that set_default_device(None) may not reset in all
+        # PyTorch versions.
+        with torch.device('cpu'):
+            model = torch.nn.Linear(10, 5)
         has_meta = check_for_meta_tensors(model)
         param_devices = [(n, p.device) for n, p in model.named_parameters()]
         assert has_meta is False, (

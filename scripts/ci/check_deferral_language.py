@@ -85,7 +85,7 @@ DEFERRAL_TRIGGERS: list[tuple[str, str]] = [
     (r"(?:can|will) be (?:addressed|fixed|resolved) (?:separately|later|next)",
      "Deferred fix: explicit future-assignment"),
     # "Residual" deferral without documented mitigation
-    (r"residual (?:risk|issue|concern|problem)(?! — | - |\. Mitigation)",
+    (r"residual (?:risk|issue|concern|problem)s?\b(?![:\*\s]*$)(?! — | - |\. Mitigation)",
      "Residual risk: documented without mitigation"),
     # Deprecation without tombstone
     (r"not actionable in this (?:pr|task|session|iteration)",

@@ -89,6 +89,7 @@ response token.
 | S126 | Cost-gate PR-comment fallback; `_STARLETTE_AVAILABLE` removal | ✅ COMPLETE |
 | S127 | slow-test `sentence_transformers` importorskip; `CODEX_VERY_STALE_BRANCH_DAYS`; pr-cost-check parity | ✅ COMPLETE |
 | S128 | Dead-link script idempotency fix; full pre-merge verification; accountability + CHANGELOG updated | ✅ COMPLETE |
+| S135 | CI triage: meta-tensor teardown, validation date auto-fix, deferral scanner regex, agent-auth write perms, LFS fix, manifest push-rebase, embeddings skip guard, API rate limit auth, perf benchmark threshold | ✅ COMPLETE |
 
 **All 13 CB backlog items: ✅ IMPLEMENTED & TESTED**  
 **Next Phase Focus (post-PR-#3586 merge into `main`):**
@@ -97,6 +98,8 @@ response token.
 3. Consider promoting `CODEX_VERY_STALE_BRANCH_DAYS` policy to branch-cleanup CI schedule (default 90d → add to `.codex/guardrails.md`)
 4. Evaluate adding `session-analysis-agent` post-merge scan to verify `main` health
 5. Add `@pytest.mark.slow` annotation to any remaining unmarked long-running tests discovered post-merge
+6. Monitor CI for any remaining deferral language false positives after regex update
+7. Verify agent-auth-delegation `contents: write` resolves accountability report push failures
 
 ---
 

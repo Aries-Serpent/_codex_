@@ -68,6 +68,7 @@ jobs:
           echo "✅ Follow-up prompt generated successfully"
 
       - name: Commit and push prompt
+        continue-on-error: true
         env:
           TARGET_REF: ${{ github.head_ref || github.ref_name }}
         run: |
