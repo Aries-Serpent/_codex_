@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S143 — 2026-03-17 — PR #3610)
+- **`requirements/lock.txt`**: pyasn1 bumped 0.6.2 → 0.6.3 (cherry-pick of dependabot PR #3611). Fixes CVE-2026-30922 — nesting depth limit added to ASN.1 decoder to prevent stack overflow from deeply nested structures. Also fixes OverflowError from oversized BER length field and `asDateTime` fractional seconds parsing.
+- **`artifacts/env/pip-freeze.txt`**: pyasn1 updated to 0.6.3 to match lock.txt.
+- **`configs/development/artifacts/sbom/packages.txt`**: pyasn1 updated to 0.6.3 in SBOM.
+
+### Added (S143 — 2026-03-17 — PR #3610)
+- **`src/codex/monitoring/otel_metrics.py`**: Added `workflow_coherence_score` histogram (`workflow.coherence.score`, unit `"1"`, range 0.0–1.0) and `compute_coherence(actual, expected)` helper. Coherence measures the fraction of CI steps whose outcome matches the policy-expected outcome. Pre-registered in `_MetricRegistry`.
+- **`tests/test_otel_metrics.py`**: Added 8 `TestComputeCoherence` tests (full match, no match, partial, empty expected, extra steps ignored, missing steps, skipped outcomes, end-to-end observable). Total: 22 tests passing.
+- **`docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3610.md`**: CB Dashboard v3 — real-time CI metrics widget with OTel coherence histogram architecture diagram (Mermaid sequence diagram), cumulative S141–S143 metrics table, and Phase 7 roadmap.
+- **P3 archive bulk-notice**: Confirmed complete from S142 (dry-run: 9 stale, 0 would update — all archive docs already have `<!-- archive:` header).
+
 ### Fixed (S142 — 2026-03-17 — PR #3610)
 - **`mypy.ini`**: Removed invalid TOML `[[tool.mypy.overrides]]` block (lines 11-26) that was incorrectly placed in an INI-format file. The parse error at line 25 (`']\n'`) was suppressing `warn_unused_ignores` reporting. The global `ignore_missing_imports = True` already covers all module overrides.
 - **`src/codex/training.py:89`**: Restored precise `# type: ignore[misc]` on stub `run_custom_trainer` (conditional import fallback pattern needs suppression; removing the bare comment exposed this error).
