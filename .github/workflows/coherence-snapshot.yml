@@ -196,7 +196,7 @@ jobs:
           python scripts/ci/pr_comment_consolidator.py \
             --pr-number  "${PR_NUMBER}" \
             --workflow   "OTel Coherence Snapshot" \
-            --status     "$([ '${{ steps.aais.outputs.score }}' \> '99.6' ] && echo 'success' || echo 'warning')" \
+            --status     "$(awk -v s='${{ steps.aais.outputs.score }}' 'BEGIN{print (s+0 > 99.6) ? "success" : "warning"}')" \
             --summary    "AAIS ${{ steps.aais.outputs.score }}/100 (${{ steps.aais.outputs.grade }}) · Coherence ${{ steps.coherence.outputs.coherence }}" \
             --details    "${DETAILS}" \
             --run-url    "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

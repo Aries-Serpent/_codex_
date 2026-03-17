@@ -245,7 +245,6 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
     pr = _fetch_pr_data(pr_number, token)
 
     # ── component 1: CI checks (35%) ─────────────────────────────────────────
-    ci_score = 0.0
     ci_detail = "unknown"
     if pr:
         checks = _fetch_check_runs(pr.get("head", {}).get("sha", ""), token)
