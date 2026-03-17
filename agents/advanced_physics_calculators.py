@@ -34,6 +34,54 @@ except ImportError as e:
     # Every function used in this file must have a fallback here.
     import math as _math
 
+    class _StubArray(list):
+        """Minimal list subclass supporting element-wise arithmetic.
+
+        Enables ``np.array([1,2,3]) * 0.5`` and ``+=`` operations
+        when real NumPy is unavailable.
+        """
+
+        def __mul__(self, other: Any) -> "_StubArray":
+            if isinstance(other, (int, float)):
+                return _StubArray(x * other for x in self)
+            if isinstance(other, (list, tuple)):
+                return _StubArray(a * b for a, b in zip(self, other))
+            return NotImplemented
+
+        __rmul__ = __mul__
+
+        def __add__(self, other: Any) -> "_StubArray":
+            if isinstance(other, (list, tuple)):
+                return _StubArray(a + b for a, b in zip(self, other))
+            if isinstance(other, (int, float)):
+                return _StubArray(x + other for x in self)
+            return NotImplemented
+
+        def __radd__(self, other: Any) -> "_StubArray":
+            return self.__add__(other)
+
+        def __iadd__(self, other: Any) -> "_StubArray":
+            result = self.__add__(other)
+            if result is NotImplemented:
+                return NotImplemented
+            self[:] = result
+            return self
+
+        def __sub__(self, other: Any) -> "_StubArray":
+            if isinstance(other, (list, tuple)):
+                return _StubArray(a - b for a, b in zip(self, other))
+            if isinstance(other, (int, float)):
+                return _StubArray(x - other for x in self)
+            return NotImplemented
+
+        def __pow__(self, other: Any) -> "_StubArray":
+            if isinstance(other, (int, float)):
+                return _StubArray(x ** other for x in self)
+            return NotImplemented
+
+        def copy(self) -> "_StubArray":
+            return _StubArray(self)
+
     class _LinalgStub:
         """Stub for np.linalg operations."""
 
@@ -50,6 +98,8 @@ except ImportError as e:
 
         @staticmethod
         def array(obj: Any, *args: Any, **kwargs: Any) -> Any:
+            if isinstance(obj, (list, tuple)):
+                return _StubArray(obj)
             return obj
 
         @staticmethod
