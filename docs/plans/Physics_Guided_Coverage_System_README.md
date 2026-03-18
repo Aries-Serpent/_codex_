@@ -1,5 +1,8 @@
 # Physics-Guided Coverage System - Complete Reference
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 **Version**: 1.0.0  
 **Last Updated**: 2025-12-13  
 **Status**: ✅ ALL 4 TABLES VALIDATED

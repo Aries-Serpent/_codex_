@@ -1,5 +1,8 @@
 # Coverage Physics Toolkit - User Guide
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 **Version**: 1.0.0
 **Last Updated**: 2025-12-13
 **Purpose**: Comprehensive guide to using the Physics-Guided Coverage Toolkit for achieving 95% test coverage

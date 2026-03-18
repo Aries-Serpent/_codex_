@@ -14,6 +14,13 @@ import unittest.mock as mock
 
 import pytest
 
+# Ensure codex.github is registered as an attribute of the codex package before
+# pytest's monkeypatch.setattr() tries to resolve dotted paths like
+# "codex.github.mcp_poster.urllib.request.urlopen".  A plain "from X import Y"
+# sets X as an attribute on its parent only after the submodule is imported;
+# the explicit import below guarantees the attribute is present even if test
+# collection order changes.
+import codex.github  # noqa: F401
 from codex.github.mcp_poster import GitHubMCPPoster, main
 
 # ---------------------------------------------------------------------------

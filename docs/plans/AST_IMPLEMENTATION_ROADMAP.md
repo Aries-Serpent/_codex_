@@ -1,5 +1,8 @@
 # AST Implementation Roadmap - Based on Deep Research Analysis
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 > **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)  
 > **Generated**: 2025-11-10  
 > **Purpose**: Executable implementation roadmap for AST standardization based on comprehensive blocker research

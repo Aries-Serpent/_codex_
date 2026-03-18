@@ -1,0 +1,164 @@
+name: "📦 Dependabot Auto-Absorb"
+
+# Automatically cherry-picks single-file Dependabot bump PRs into the
+# currently active Copilot coding-agent branch, eliminating the need for
+# a separate session just to absorb trivial version bumps (e.g. Dockerfile
+# base-image upgrades, single-action pin updates).
+#
+# Trigger:  pull_request event from dependabot[bot] with exactly 1 changed file
+# Safety:   Dry-run mode can be activated via the workflow_dispatch input.
+#
+# Policy: .codex/CODEBASE_AGENCY_POLICY.md §2 (absorb ALL codebase issues)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  # Allow manual triggering for testing / replaying missed events.
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Dependabot PR number to absorb"
+        required: true
+        type: string
+      target_branch:
+        description: "Branch to cherry-pick into (default: current default branch)"
+        required: false
+        default: ""
+        type: string
+      dry_run:
+        description: "Dry run (no commit)"
+        required: false
+        default: "false"
+        type: choice
+        options: ["false", "true"]
+
+concurrency:
+  group: dependabot-auto-absorb-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  absorb:
+    name: "📦 Cherry-pick single-file Dependabot bump"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Only run for Dependabot PRs (pull_request trigger) or manual dispatch.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.actor == 'dependabot[bot]'
+
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history so we can cherry-pick cleanly.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # For workflow_dispatch: honour the explicit target_branch input.
+          # For pull_request events: check out the PR's base branch (the branch
+          # that the dependabot bump targets) so the cherry-pick lands there.
+          ref: ${{ inputs.target_branch || github.base_ref }}
+
+      - name: "🔍 Verify single-file change"
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let prNumber;
+            if (context.eventName === 'workflow_dispatch') {
+              prNumber = parseInt(core.getInput('pr_number') || '${{ inputs.pr_number }}');
+            } else {
+              prNumber = context.payload.pull_request.number;
+            }
+
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              per_page: 10,
+            });
+
+            core.setOutput('pr_number', prNumber);
+            core.setOutput('file_count', files.length);
+            core.setOutput('is_single_file', files.length === 1 ? 'true' : 'false');
+            core.setOutput('changed_file', files.length === 1 ? files[0].filename : '');
+
+            if (files.length === 1) {
+              console.log(`✅ Single-file bump detected: ${files[0].filename}`);
+            } else {
+              console.log(`ℹ️  ${files.length} files changed — skipping auto-absorb (not a single-file bump)`);
+            }
+
+            // Fetch head SHA for the PR
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            core.setOutput('head_sha', pr.head.sha);
+            core.setOutput('pr_title', pr.title);
+
+      - name: "🍒 Cherry-pick into active branch"
+        if: steps.check.outputs.is_single_file == 'true'
+        env:
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          HEAD_SHA: ${{ steps.check.outputs.head_sha }}
+          CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
+          PR_NUMBER: ${{ steps.check.outputs.pr_number }}
+          PR_TITLE: ${{ steps.check.outputs.pr_title }}
+          # Explicit push target: workflow_dispatch input takes priority;
+          # pull_request events use the PR's base branch.
+          TARGET_BRANCH: ${{ inputs.target_branch || github.base_ref }}
+        run: |
+          set -euo pipefail
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "Cherry-picking ${HEAD_SHA} (${CHANGED_FILE}) from PR #${PR_NUMBER} into ${TARGET_BRANCH}…"
+
+          if [ "${DRY_RUN}" = "true" ]; then
+            echo "🔍 DRY RUN — would cherry-pick ${HEAD_SHA}"
+            git cherry-pick --no-commit "${HEAD_SHA}" || true
+            echo "Diff preview:"
+            git diff --cached --stat || true
+            git cherry-pick --abort 2>/dev/null || true
+            echo "✅ Dry run complete — no commit made."
+            exit 0
+          fi
+
+          # Attempt cherry-pick; abort cleanly on conflict.
+          if git cherry-pick "${HEAD_SHA}"; then
+            echo "✅ Cherry-pick succeeded: ${CHANGED_FILE}"
+            # Push the cherry-picked commit back to the target branch.
+            git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
+          else
+            echo "⚠️  Cherry-pick conflict — aborting auto-absorb for PR #${PR_NUMBER}"
+            git cherry-pick --abort
+            exit 0  # Non-fatal: let the human merge manually.
+          fi
+
+      - name: "📝 Annotate job summary"
+        if: always()
+        env:
+          IS_SINGLE: ${{ steps.check.outputs.is_single_file }}
+          CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
+          PR_NUMBER: ${{ steps.check.outputs.pr_number }}
+          PR_TITLE: ${{ steps.check.outputs.pr_title }}
+        run: |
+          {
+            echo "## 📦 Dependabot Auto-Absorb"
+            echo ""
+            if [ "${IS_SINGLE}" = "true" ]; then
+              echo "✅ **Absorbed:** \`${CHANGED_FILE}\` from [PR #${PR_NUMBER}](https://github.com/${{ github.repository }}/pull/${PR_NUMBER})"
+              echo ""
+              echo "> ${PR_TITLE}"
+            else
+              echo "ℹ️  **Skipped:** PR #${PR_NUMBER} has ${{ steps.check.outputs.file_count }} changed files (not a single-file bump)."
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"

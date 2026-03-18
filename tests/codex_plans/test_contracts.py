@@ -73,11 +73,18 @@ class TestContractCompliance:
     def test_returns_path_objects_only(self):
         """Test that list contains only Path objects."""
         try:
-            from src.codex_plans import list_plan_documents
+            try:
+                from codex_plans import list_plan_documents as _lpd
+            except ImportError:
+                from src.codex_plans import list_plan_documents as _lpd  # type: ignore[no-redef]
 
-            result = list_plan_documents()
+            result = _lpd()
             for item in result:
-                assert isinstance(item, Path), f"Item {item} should be Path, got {type(item)}"
+                # list_plan_documents() is annotated to return list[Path]; assert
+                # isinstance so PosixPath/WindowsPath (stdlib subclasses) also pass.
+                assert isinstance(item, Path), (
+                    f"Item {item} should be Path, got {type(item)}"
+                )
         except ImportError:
             pytest.skip("Module not available")
 

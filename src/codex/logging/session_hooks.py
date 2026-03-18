@@ -24,15 +24,15 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+import os
+import pathlib
+import sys
+import time
+import uuid
+from datetime import UTC, datetime
+from typing import Any, Iterable, Literal, Optional
 
 logger = logging.getLogger(__name__)
-import os  # noqa: E402
-import pathlib  # noqa: E402
-import sys  # noqa: E402
-import time  # noqa: E402
-import uuid  # noqa: E402
-from datetime import UTC, datetime  # noqa: E402
-from typing import Any, Iterable, Literal, Optional  # noqa: E402
 
 try:  # Prefer DB-backed logging when available
     from .session_logger import log_event
@@ -44,7 +44,7 @@ except Exception:  # pragma: no cover - best effort fallback
         message: str,
         db_path: pathlib.Path | None = None,
         meta: dict[str, Any] | None = None,
-    ) -> Any:  # type: ignore[no-redef]
+    ) -> Any:
         return None
 
 
@@ -69,19 +69,10 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 def _log_path(name: str) -> pathlib.Path:
     """Return path under ``LOG_DIR`` (recreating directory if it vanished)."""
     if not LOG_DIR.exists():
-        # Directory may have been deleted mid-execution; recreate.
         try:
             LOG_DIR.mkdir(parents=True, exist_ok=True)
         except OSError as e:
-            logger.debug(f"OSError: {e}")
-            logger.warning(f"OSError: {e}", exc_info=True)
-            # Last resort: attempt a second time with a short fallback; if this
-            # fails we still continue (logging is best-effort).
-            try:
-                LOG_DIR.mkdir(parents=True, exist_ok=True)
-            except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+            logger.warning("Could not recreate LOG_DIR %s: %s", LOG_DIR, e)
     return (LOG_DIR / name).resolve()
 
 
@@ -101,41 +92,33 @@ def _session_id() -> str:
 
 def _safe_write_text(path: pathlib.Path, text: str, mode: str = "w") -> None:
     """Write text to a file, recreating directory if needed (best-effort)."""
-    try:
-        if not path.parent.exists():
-            path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open(mode, encoding="utf-8", buffering=1) as f:
-            f.write(text)
-    except (OSError, IOError):
+    for attempt in range(2):
         try:
-            if not path.parent.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
+            path.parent.mkdir(parents=True, exist_ok=True)
             with path.open(mode, encoding="utf-8", buffering=1) as f:
                 f.write(text)
-        except (OSError, IOError) as err2:
-            logger.debug(f"Exception: {err2}")
-            logging.exception("Failed to write text to %s", path)
-            logging.warning("write failed after retries for %s: %s", path, err2)
+            return
+        except (OSError, IOError) as err:
+            if attempt == 0:
+                logger.debug("write attempt 1 failed for %s: %s — retrying", path, err)
+            else:
+                logger.warning("write failed after retries for %s: %s", path, err)
 
 
 def _safe_append_json_line(path: pathlib.Path, obj: dict[str, Any]) -> None:
     """Append a JSON object as a single NDJSON line (best-effort)."""
     line = json.dumps(obj, separators=(",", ":")) + "\n"
-    try:
-        if not path.parent.exists():
-            path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8", buffering=1) as f:
-            f.write(line)
-    except (OSError, IOError, json.JSONDecodeError):
+    for attempt in range(2):
         try:
-            if not path.parent.exists():
-                path.parent.mkdir(parents=True, exist_ok=True)
+            path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8", buffering=1) as f:
                 f.write(line)
-        except (OSError, IOError, json.JSONDecodeError) as err2:
-            logger.debug(f"Exception: {err2}")
-            logging.exception("Failed to append JSON line to %s", path)
-            logging.warning("write failed after retries for %s: %s", path, err2)
+            return
+        except (OSError, IOError, json.JSONDecodeError) as err:
+            if attempt == 0:
+                logger.debug("append attempt 1 failed for %s: %s — retrying", path, err)
+            else:
+                logger.warning("append failed after retries for %s: %s", path, err)
 
 
 def _log(obj: dict[str, Any]) -> None:

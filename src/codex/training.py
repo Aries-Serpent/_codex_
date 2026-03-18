@@ -26,7 +26,7 @@ try:
 except Exception:  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]
-    clip_grad_norm_ = None  # type: ignore[assignment]
+    clip_grad_norm_ = None
 
 from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
 from codex_ml.monitoring.codex_logging import (  # noqa: E402
@@ -86,7 +86,7 @@ except ImportError as e:
         resume_from: str = ""
         use_lora: bool = False
 
-    def run_custom_trainer(  # type: ignore[no-redef,misc]
+    def run_custom_trainer(  # type: ignore[misc]
         model: Any,
         tok: Any,
         train_ds: Any,
@@ -179,7 +179,7 @@ def save_checkpoint(
 
 
 try:  # Optional TensorBoard integration
-    from tools.monitoring_integrate import SummaryWriter  # type: ignore
+    from tools.monitoring_integrate import SummaryWriter
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
@@ -680,11 +680,11 @@ def _run_minilm_training(
 
         # token_accuracy: prefer (preds, tgt), fall back to (logits, targets)
         try:
-            acc = float(token_accuracy(preds, tgt))  # type: ignore[call-arg]
+            acc = float(token_accuracy(preds, tgt))
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             try:
-                acc = float(token_accuracy(logits, targets))  # type: ignore[call-arg]
+                acc = float(token_accuracy(logits, targets))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 acc = float("nan")
@@ -695,13 +695,13 @@ def _run_minilm_training(
                 perplexity(
                     logits.reshape(-1, cfg.vocab_size).detach().cpu().tolist(),  # type: ignore[union-attr]
                     tgt,
-                    from_logits=True,  # type: ignore[call-arg]
+                    from_logits=True,
                 )
             )
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             try:
-                ppl = float(perplexity(loss_val))  # type: ignore[call-arg]
+                ppl = float(perplexity(loss_val))
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 ppl = float("nan")
@@ -1209,7 +1209,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
 
 
 def _functional_patch_argparse(ap: argparse.ArgumentParser) -> None:
-    added = [a.dest for g in ap._action_groups for a in g._group_actions]  # type: ignore
+    added = [a.dest for g in ap._action_groups for a in g._group_actions]
     if "use_deeplearning" not in added:
         ap.add_argument(
             "--use-deeplearning",

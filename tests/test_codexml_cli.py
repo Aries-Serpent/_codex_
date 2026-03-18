@@ -4,6 +4,8 @@ Test Codexml Cli
 Test module for codexml cli.
 """
 
+import sys
+
 import pytest
 
 pytest.importorskip("hydra")
@@ -18,7 +20,20 @@ def test_codexml_cli_help():
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
-    from hydra._internal.hydra import GlobalHydra
+    _cli_main = sys.modules.get("codex_ml.cli.main")
+    if _cli_main is None:
+        pytest.skip("codex_ml.cli.main not loaded")
+
+    # This test exercises the Hydra-backed CLI path.  When typer is installed,
+    # `cli` is a Typer wrapper that does not accept bare Hydra overrides as
+    # arguments, so the test cannot run in that environment.
+    if hasattr(_cli_main, "_typer_cli_wrapper"):
+        pytest.skip("test requires Hydra CLI path; typer CLI is active")
+
+    try:
+        from hydra.core.global_hydra import GlobalHydra  # hydra-core 1.2+
+    except ImportError:
+        from hydra._internal.hydra import GlobalHydra  # type: ignore[no-redef]  # older
 
     called = {"eval": False}
 

@@ -326,6 +326,7 @@ class TestRateLimitingBruteForce:
         assert limiter.is_allowed("user2") is True
         assert limiter.is_allowed("user2") is True
 
+    @pytest.mark.slow
     def test_rate_limiter_window_reset(self):
         """Test rate limiter resets after window expires."""
         limiter = RateLimiter(requests_per_window=2, window_seconds=1)
@@ -353,6 +354,7 @@ class TestRateLimitingBruteForce:
         limiter.is_allowed("user123")
         assert limiter.get_remaining("user123") == 3
 
+    @pytest.mark.slow
     def test_rate_limiter_cleanup(self):
         """Test rate limiter cleanup removes old entries."""
         limiter = RateLimiter(requests_per_window=5, window_seconds=1)

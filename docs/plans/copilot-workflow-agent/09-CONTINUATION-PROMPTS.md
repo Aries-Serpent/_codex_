@@ -1,5 +1,8 @@
 # Continuation Prompts for Copilot Workflow Agent
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 > Generated: 2025-12-16  
 > Purpose: Ready-to-use prompts for resuming implementation
 

@@ -140,7 +140,7 @@ class BrainClient:
     # ── Internal helpers ──────────────────────────────────────────────────────
 
     @staticmethod
-    def _safe_urlopen(req: urllib.request.Request, timeout: int):  # type: ignore[return]
+    def _safe_urlopen(req: urllib.request.Request, timeout: int):
         """Validate the request URL scheme is http/https then call urlopen.
 
         Bandit B310: urllib.request.urlopen is flagged when the URL scheme is
@@ -187,7 +187,7 @@ class BrainClient:
         req = urllib.request.Request(url, headers=headers)
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
-                return json.loads(resp.read().decode())  # type: ignore[return-value]
+                return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"GET {path} failed: HTTP {exc.code}") from exc
         except OSError as exc:
@@ -205,7 +205,7 @@ class BrainClient:
         req = urllib.request.Request(url, data=data, headers=headers, method="POST")
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
-                return json.loads(resp.read().decode())  # type: ignore[return-value]
+                return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace")
             raise BrainClientError(f"POST {path} failed: HTTP {exc.code} — {body_text}") from exc
@@ -219,7 +219,7 @@ class BrainClient:
         req = urllib.request.Request(url, headers=headers, method="DELETE")
         try:
             with self._safe_urlopen(req, timeout=self.timeout) as resp:
-                return json.loads(resp.read().decode())  # type: ignore[return-value]
+                return json.loads(resp.read().decode())
         except urllib.error.HTTPError as exc:
             raise BrainClientError(f"DELETE {path} failed: HTTP {exc.code}") from exc
         except OSError as exc:
@@ -445,7 +445,7 @@ class BrainClient:
         The GitHub API repository object (dict).
         """
         resp = self.proxy_request("GET", f"https://api.github.com/repos/{owner}/{repo}")
-        return resp.get("body", {})  # type: ignore[return-value]
+        return resp.get("body", {})
 
     def github_workflow_runs(
         self,

@@ -339,7 +339,7 @@ class SessionContextInjector:
         """
         try:
             from cognitive_brain.quantum.compression import (
-                PatternCompressor,  # type: ignore[import]
+                PatternCompressor,
             )
         except ImportError:
             return patterns

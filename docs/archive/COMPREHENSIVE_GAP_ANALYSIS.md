@@ -1,5 +1,7 @@
 # Comprehensive Gap Analysis and Improvement Plan
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 **Generated**: 2025-12-11
 **Status**: In Progress
 **PR**: #2459 (and sub-PRs #2460, #2461, #2462)

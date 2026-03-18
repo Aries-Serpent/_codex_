@@ -63,6 +63,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          # No pip cache: sparse checkout contains only the rebase-check script
+          # which uses stdlib only.  Enabling cache: 'pip' fails because no
+          # requirements files exist in the checkout and ~/.cache/pip is never
+          # created, causing the post-step to fail with "Cache folder doesn't
+          # exist on disk".
 
       - name: "🔍 Check rebase status"
         id: check

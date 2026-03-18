@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-18T13:27:37Z",
+  "generated_at": "2026-03-18T11:18:51Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1043,6 +1043,11 @@
       "has_concurrency": true
     },
     {
+      "name": "ci-failure-issue-creator",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "ci-health-monitor",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1084,6 +1089,11 @@
     },
     {
       "name": "cognitive_brain_ci_feedback",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "coherence-snapshot",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1143,6 +1153,11 @@
       "has_concurrency": true
     },
     {
+      "name": "dependabot-auto-absorb",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "dependabot-sheriff",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1154,6 +1169,11 @@
     },
     {
       "name": "detect-duplicates",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "doc-freshness-check",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1274,7 +1294,7 @@
     },
     {
       "name": "pr-followup-generator",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1754,5 +1774,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "55211cebaea0aeb03d30b8829053a391e85a87973c8858bc777d596be4f7b97c"
+  "integrity_sha256": "625defac87c285adb2d29b2841b00d68da33a7fa532136a1c8294a5e96a542e8"
 }

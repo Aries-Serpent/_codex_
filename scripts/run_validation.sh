@@ -136,6 +136,12 @@ run_hook_dir() {
 
 run_hook_dir "pre"
 
+# Auto-update doc metrics date (e.g. docs/ROADMAP.md) before computing
+# PRECOMMIT_FILES, so any files updated by the sync are naturally included
+# in the subsequent `pre-commit run --files ...` invocation.
+python scripts/tools/doc_metrics_sync.py --fix >> "$LOG" 2>&1 || \
+  echo "⚠️  doc_metrics_sync --fix returned non-zero — check ${LOG} for details (non-blocking)" | tee -a "$LOG"
+
 # Run pre-commit hooks against modified files only.
 echo "Running pre-commit hooks" | tee -a "$LOG"
 declare -a PRECOMMIT_FILES=()

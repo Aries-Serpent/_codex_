@@ -236,7 +236,7 @@ ptyprocess==0.7.0  # requirements/lock.txt, uv.lock
 pure-eval==19.0.1  # requirements/lock.txt, uv.lock
 py-spy==0.4.1  # requirements/lock.txt
 pyarrow==21.0.0  # requirements/lock.txt
-pyasn1==0.6.1  # requirements/lock.txt
+pyasn1==0.6.3  # requirements/lock.txt
 pyasn1-modules==0.4.2  # requirements/lock.txt
 pybind11==3.0.1  # requirements/lock.txt
 pycparser==2.23  # requirements/lock.txt

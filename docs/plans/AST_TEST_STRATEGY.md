@@ -1,5 +1,8 @@
 # AST Standardization - Test Strategy
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 **Generated**: 2025-11-09  
 **Purpose**: Comprehensive testing strategy for AST standardization  
 **Status**: PLANNING - Tests not yet implemented

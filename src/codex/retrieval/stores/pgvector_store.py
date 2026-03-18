@@ -26,7 +26,7 @@ try:
     HAS_PSYCOPG3 = True
 except ImportError:
     HAS_PSYCOPG3 = False
-    AsyncConnectionPool = None  # type: ignore
+    AsyncConnectionPool = None
     logger.warning("psycopg3 not installed - PGVectorStore will be stub only")
 
 # Optional dependency: scikit-learn for centroid-based semantic partitioning
@@ -42,7 +42,7 @@ try:
     HAS_SKLEARN = True
 except ImportError:
     HAS_SKLEARN = False
-    KMeans = None  # type: ignore
+    KMeans = None
     logger.info("scikit-learn not installed - Centroid-based partitioning unavailable")
 
 

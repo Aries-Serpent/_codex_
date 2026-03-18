@@ -317,14 +317,60 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const report = fs.readFileSync('.codex/reports/root_org_validation_${{ github.run_number }}.md', 'utf8');
+            const MARKER = '<!-- root-org-validation-v1 -->';
+            const reportRaw = fs.readFileSync(
+              '.codex/reports/root_org_validation_${{ github.run_number }}.md', 'utf8'
+            );
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '## 🔍 Root Organization Validation\n\n' + report
-            });
+            const bodyLines = [
+              MARKER,
+              '## 🔍 Root Organization Validation',
+              '',
+              `**Run:** ${{ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:** ${{ (needs.pre-validation.result == 'success' && needs.reference-check.result == 'success') && '✅ passed' || '❌ failed' }}`,
+              '',
+              '<details>',
+              '<summary>📋 Full validation report (click to expand)</summary>',
+              '',
+              reportRaw,
+              '',
+              '</details>',
+              '',
+              `_Auto-posted by \`root-org-validation.yml\` · [View run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,
+            ];
+            const body = bodyLines.join('\n');
+
+            // Upsert: update existing marker comment rather than creating a new one.
+            // Paginate through all comments to find the marker regardless of comment count.
+            let existing = null;
+            let page = 1;
+            while (!existing) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+                page,
+              });
+              existing = batch.find(c => c.body && c.body.includes(MARKER)) || null;
+              if (batch.length < 100) break;
+              page++;
+            }
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+              console.log(`Updated root-org-validation comment #${existing.id}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
       - name: Set job status
         run: |

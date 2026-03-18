@@ -21,25 +21,23 @@ Behavior:
 
 from __future__ import annotations
 
+import argparse
+import json
 import logging
+import os
+import re
+import sqlite3
+import sys
+from typing import Any, Iterable, Optional
 
 logger = logging.getLogger(__name__)
-
-import argparse  # noqa: E402
-import json  # noqa: E402
-import os  # noqa: E402
-import re  # noqa: E402
-import sqlite3  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except Exception as e:
-    logger.debug(f"Exception: {e}")
-    logger.warning(f"Exception: {e}", exc_info=True)
-import sys  # noqa: E402
-from typing import Any, Iterable, Optional  # noqa: E402
+    logger.warning("sqlite auto setup skipped: %s", e, exc_info=True)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 from .db_utils import (  # noqa: E402

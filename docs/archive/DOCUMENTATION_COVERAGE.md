@@ -1,5 +1,7 @@
 # Documentation Coverage - 99% Achievement Path
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 **Generated**: 2025-12-07  
 **Current Coverage**: 92%  
 **Target**: 100%

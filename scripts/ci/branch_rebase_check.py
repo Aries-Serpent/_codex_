@@ -290,17 +290,22 @@ def post_rebase_resolved_comment(
     base_branch: str,
     head_branch: str,
 ) -> None:
-    """Post a BRANCH_REBASE_RESOLVED comment when the branch is up-to-date."""
+    """Upsert a BRANCH_REBASE_RESOLVED comment when the branch is up-to-date.
+
+    If a RESOLVED comment already exists (from a previous synchronize event)
+    we PATCH it in-place rather than creating a new one, preventing the
+    4× duplicate accumulation seen in PR #3605.
+    """
     comments = get_pr_comments(repo, token, pr_number)
 
-    # Only post if a REQUIRED marker exists and no RESOLVED marker follows it
+    # Only act if a REQUIRED marker exists (nothing to resolve otherwise)
     required = _find_bot_comment(comments, REBASE_REQUIRED_MARKER)
     if not required:
-        return  # No prior warning to resolve
+        return
 
     resolved = _find_bot_comment(comments, REBASE_RESOLVED_MARKER)
     if resolved and resolved.get("updated_at", "") >= required.get("updated_at", ""):
-        return  # Already resolved
+        return  # Already resolved and newer than the last REQUIRED post
 
     now_iso = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
     body = (
@@ -310,13 +315,23 @@ def post_rebase_resolved_comment(
         f"The REQ-10 gate has been cleared.\n\n"
         f"_Auto-posted by `branch-rebase-gate.yml` at {now_iso}_"
     )
-    gh_api(
-        "POST",
-        f"/repos/{repo}/issues/{pr_number}/comments",
-        token,
-        json.dumps({"body": body}).encode(),
-    )
-    print(f"  ✅ Posted rebase-resolved comment on PR #{pr_number}")
+    if resolved:
+        # PATCH the existing comment — never create a new one
+        gh_api(
+            "PATCH",
+            f"/repos/{repo}/issues/comments/{resolved['id']}",
+            token,
+            json.dumps({"body": body}).encode(),
+        )
+        print(f"  🔄 Updated rebase-resolved comment (#{resolved['id']}) on PR #{pr_number}")
+    else:
+        gh_api(
+            "POST",
+            f"/repos/{repo}/issues/{pr_number}/comments",
+            token,
+            json.dumps({"body": body}).encode(),
+        )
+        print(f"  ✅ Posted rebase-resolved comment on PR #{pr_number}")
 
 
 # ---------------------------------------------------------------------------
