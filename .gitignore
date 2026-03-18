@@ -155,6 +155,8 @@ manifests/k8s/*/secret.yaml
 !.codex/hydra_last/
 !.codex/hydra_last/**
 !.codex/monitoring/
+# monitor_run.py daemon state files (machine-generated, not committed)
+.codex/monitor/
 !.codex/monitoring/**
 !.codex/notes/
 !.codex/notes/**
