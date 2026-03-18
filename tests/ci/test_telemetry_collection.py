@@ -354,6 +354,8 @@ class TestClassifyRunCLI:
         """main() with --classify-run prints the pattern and exits cleanly."""
         import sys as _sys
 
+        import collect_telemetry as ct_mod
+
         mock_run_resp = Mock()
         mock_run_resp.json.return_value = {
             "name": "Resilient Validation Suite",
@@ -366,12 +368,6 @@ class TestClassifyRunCLI:
             "jobs": [{"name": "pytest resilient validation"}]
         }
         mock_jobs_resp.raise_for_status = Mock()
-
-        collect_mod_path = str(Path(__file__).parent.parent.parent / "scripts" / "ci")
-        if collect_mod_path not in _sys.path:
-            _sys.path.insert(0, collect_mod_path)
-
-        import collect_telemetry as ct_mod
 
         with (
             patch("requests.get", side_effect=[mock_run_resp, mock_jobs_resp]),
@@ -391,10 +387,6 @@ class TestClassifyRunCLI:
     def test_classify_run_api_error_prints_unknown(self, capsys):
         """main() with --classify-run prints 'unknown' when API call fails."""
         import sys as _sys
-
-        collect_mod_path = str(Path(__file__).parent.parent.parent / "scripts" / "ci")
-        if collect_mod_path not in _sys.path:
-            _sys.path.insert(0, collect_mod_path)
 
         import collect_telemetry as ct_mod
 

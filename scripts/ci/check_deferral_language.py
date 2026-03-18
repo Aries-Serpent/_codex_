@@ -368,12 +368,15 @@ def scan(
                     # unclosed at EOF the bypass-prevention path would extend
                     # lines_to_scan with fence_buffer, producing a duplicate
                     # violation for the same line_no.
-                    # If there is no info string, buffer for EOF bypass only.
+                    # If there is no info string, still scan the opener line
+                    # (it might otherwise be silently discarded when the fence
+                    # closes) but do NOT buffer it to avoid the same duplicate
+                    # at EOF.  Subsequent lines inside the fence are buffered.
                     info_string = stripped_for_fence[opener_len:]
                     if info_string.strip():
                         lines_to_scan.append((line_no, line))
                     else:
-                        fence_buffer.append((line_no, line))
+                        lines_to_scan.append((line_no, line))
                     break  # delimiter found — handled above
             else:
                 lines_to_scan.append((line_no, line))

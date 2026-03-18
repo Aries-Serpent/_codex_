@@ -381,7 +381,9 @@ def main():
         metavar="RUN_ID",
         help=(
             "Classify a single workflow run by ID and print the pattern name to stdout. "
-            "Exits 0 on success. Used by iterative-self-healing-ci.yml to label failures."
+            "Always exits 0; prints 'unknown' to stdout on API failure to preserve the "
+            "workflow's || echo 'unknown' contract. "
+            "Used by iterative-self-healing-ci.yml to label failures."
         ),
     )
 
@@ -414,7 +416,7 @@ def main():
             pattern = collector.classify_failure(run, jobs)
             print(pattern)
         except Exception as e:
-            print(f"unknown  # classify-run error: {e}", file=sys.stderr)
+            print(f"classify-run error: {e}", file=sys.stderr)
             print("unknown")
         return
 

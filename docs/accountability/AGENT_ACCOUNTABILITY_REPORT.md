@@ -6086,8 +6086,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-18T14:36Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3626)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
