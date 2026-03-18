@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S147 — 2026-03-18 — PR #3615, code-review r3964392067)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3617 (SHA `9df9e2b1`) at 2026-03-18T03:35Z [auto-generated]
 - **`scripts/ci/session_bootstrap.py`**: Fixed broken anchor links in blocking-issues digest — `check_id` values like `1_actionlint` are now mapped to `#check-N` anchors matching `CI_TRIAGE_REPRO_S145.md` headings (PR review: `session_bootstrap.py:675-679`).
 - **`scripts/ci/session_bootstrap.py`**: Fixed misleading `triage ✅ clean` in session checklist when triage was skipped via `--skip-triage`. Changed `baseline_ok` default from `True` to `None`; checklist now renders `⏭️ skipped` when triage never ran, `✅ clean` when it ran and passed, `❌ FAILURES FOUND` when it ran and failed (PR review: `session_bootstrap.py:504-505`).
 - **`scripts/ci/session_bootstrap.py`**: Removed undocumented exit code `2` from module docstring — `main()` never returned 2; behavior now accurately documented as 0 (success / offline / skip-triage) or 1 (blocking failures) (PR review: `session_bootstrap.py:57`).
