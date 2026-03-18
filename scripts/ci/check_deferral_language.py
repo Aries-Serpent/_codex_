@@ -362,13 +362,19 @@ def scan(
                             break
                     fence_char = ch
                     fence_len = opener_len
-                    # Buffer the opener line so that if the fence is never closed
-                    # (EOF), the bypass-prevention path scans it for deferral
-                    # triggers too (e.g. "``` future PR" on an unclosed opener).
-                    # If the fence is properly closed, fence_buffer.clear() will
-                    # drop this entry harmlessly along with the rest.
-                    fence_buffer.append((line_no, line))
-                    break  # delimiter found — do not add to lines_to_scan
+                    # If the opener has a non-whitespace info string (e.g.
+                    # "``` future PR"), scan it immediately as ordinary prose.
+                    # In this case do NOT also buffer it: if the fence is
+                    # unclosed at EOF the bypass-prevention path would extend
+                    # lines_to_scan with fence_buffer, producing a duplicate
+                    # violation for the same line_no.
+                    # If there is no info string, buffer for EOF bypass only.
+                    info_string = stripped_for_fence[opener_len:]
+                    if info_string.strip():
+                        lines_to_scan.append((line_no, line))
+                    else:
+                        fence_buffer.append((line_no, line))
+                    break  # delimiter found — handled above
             else:
                 lines_to_scan.append((line_no, line))
         else:

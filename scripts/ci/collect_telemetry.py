@@ -98,12 +98,32 @@ class TelemetryCollector:
         # ── Lint / formatting ─────────────────────────────────────────────────
         "lint": [
             "lint", "ruff", "black", "isort", "pre-commit", "format",
-            "auto-update-configs",
+            "auto-update-configs", "actionlint", "compliance-audit",
+            "workflow compliance",
         ],
         # ── Filesystem / directory ────────────────────────────────────────────
         "filesystem-deadlock": [
             "root-org", "file-validation", "directory", "filesystem",
             "flatten-repo", "root_organizer",
+        ],
+        # ── Type-checking / mypy anti-regression ─────────────────────────────
+        "type-check": [
+            "mypy", "type-check", "type check", "anti-regression",
+            "mypy-baseline", "mypy baseline", "type-error",
+        ],
+        # ── Policy / compliance gates ─────────────────────────────────────────
+        "policy-gate": [
+            "deferral", "language-gate", "deferral-language", "policy-check",
+            "deferral language", "deferral gate",
+        ],
+        # ── Branch / rebase gates ─────────────────────────────────────────────
+        "rebase-gate": [
+            "rebase", "branch-rebase", "rebase-gate", "behind base",
+            "branch rebase", "req-10",
+        ],
+        # ── Copilot coding-agent runs ─────────────────────────────────────────
+        "copilot-agent": [
+            "copilot coding", "swe-agent", "copilot-swe", "coding agent",
         ],
         # ── P4.5: New classifiers — drive unknown bucket from ~60% → <30% ────
         # DATETIME_001: offset-aware vs offset-naive mixing (common after Python 3.11+)
