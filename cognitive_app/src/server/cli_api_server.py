@@ -129,13 +129,22 @@ log = logging.getLogger("cli_api_server")
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
 def _build_cors_origins() -> list[str]:
-    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to dev defaults."""
+    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to dev+Pages defaults."""
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:
         origins = [o.strip() for o in env_val.split(",") if o.strip()]
         log.info("CORS origins from CODEX_ALLOWED_ORIGINS: %s", origins)
         return origins
-    return ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Default: allow local dev AND GitHub Pages (aries-serpent.github.io) so that
+    # the cognitive_app CLI console at https://aries-serpent.github.io/_codex_/cognitive_app/
+    # can reach the server without requiring CODEX_ALLOWED_ORIGINS to be set explicitly.
+    # When deploying behind a reverse proxy or in Codespaces, set CODEX_ALLOWED_ORIGINS
+    # explicitly to restrict to the actual origin (e.g. the Codespace preview URL).
+    return [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://aries-serpent.github.io",
+    ]
 
 
 # ── App ───────────────────────────────────────────────────────────────────────

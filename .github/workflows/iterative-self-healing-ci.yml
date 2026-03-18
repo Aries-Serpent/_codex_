@@ -142,18 +142,18 @@ jobs:
         iteration: [1, 2, 3]
 
     steps:
-      - name: Checkout (default branch only — never checkout untrusted PR code)
-        # SECURITY: workflow_run-triggered workflows must NEVER checkout using
-        # the triggering PR's ref/sha directly — that executes untrusted code with
-        # elevated permissions. We checkout the default branch (main) to apply
-        # our own verified auto-fix scripts.
+      - name: Checkout scripts from default branch (trusted source)
+        # SECURITY: workflow_run-triggered workflows must NEVER execute untrusted
+        # PR code with elevated permissions. We check out the default branch (main)
+        # to source our own verified fix scripts only.
+        # The actual fix is applied to the TRIGGERING head_branch via git push to
+        # that branch's ref (see "Commit and push fix" step below).
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
           ref: main
           # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
-          # autonomous push (git push origin HEAD) succeeds without manual approval.
-          # Without delegation the push fails with HTTP 403.
+          # autonomous push succeeds without manual approval.
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python (cached)
@@ -275,6 +275,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PATTERN:  ${{ needs.triage.outputs.pattern }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           # Verify delegation is active before attempting autonomous push.
           # If COPILOT_AGENT_AUTH_ENABLED != 'true', the push will be attempted
           # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
@@ -292,7 +293,11 @@ jobs:
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
-          git push origin HEAD
+          # Push to the TRIGGERING branch (not main) so the fix lands on the correct ref.
+          # HEAD_BRANCH comes from triage.outputs.head_branch (the failing workflow's branch).
+          # Falls back to 'main' only when the triggering run was on the default branch.
+          TARGET_BRANCH="${HEAD_BRANCH:-main}"
+          git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
 
       - name: Report iteration
         if: always()

@@ -3,12 +3,33 @@
 Session: S154 | Date: 2026-03-18 | PR: #3628 | Branch: copilot/update-ci-failure-triage-report
 
 ```aftermath
-session_id: S154
-date: "2026-03-18"
-pr_number: 3628
-branch: copilot/update-ci-failure-triage-report
-status: completed
-merge_readiness: 99
+meta:
+  session_id: S154
+  started_at: "2026-03-18T20:30:00Z"
+  finished_at: "2026-03-18T21:20:00Z"
+  context: "PR #3628 — Phase 5 self-healing loop implementation + sync+new-work rebase conflict resolution. Branch: copilot/update-ci-failure-triage-report → 0D_base_."
+
+metrics:
+  commits: 5
+  files_changed: 17
+  new_workflows: 1
+  new_grounded_patterns: 3
+  aftermath_lessons: 5
+  merge_readiness: 99
+
+quality:
+  ci_checks_passing: "7/7"
+  ruff_issues: 0
+  mypy_errors: 282
+  mypy_baseline: 328
+
+decisions:
+  - what: "Push to 0D_base_ staging branch (not main) for all CI/workflow changes"
+    why: "0D_base_ is the staging branch for changes that affect CI and workflows before promotion to main. Prevents destabilizing the default branch."
+  - what: "Use merge.keepcommit driver for rebase conflict recovery"
+    why: "When a commit mixes sync+new-work content, report_progress rebase fails. The keepcommit driver (cp %B %A) takes the commit being applied as truth, auto-resolving the 4 conflict files."
+  - what: "Phase 5 self-healing loop pushes to head_branch, not main"
+    why: "Reviewed feedback identified that git push origin HEAD on main checkout would push fixes to main rather than the failing branch. Fix: push to needs.triage.outputs.head_branch."
 
 lessons:
   - title: "Shallow clone causes add/add rebase conflicts"
@@ -72,6 +93,13 @@ lessons:
       to the fixable case statement in iterative-self-healing-ci.yml.
     tags: [ci, self-healing, patterns, fixable]
 
+next_steps:
+  - "CB-INV-001: Configure Playwright MCP allowedOrigins + --disable-web-security for github.com access"
+  - "CB-INV-002: Evaluate adding create_or_update_file to MCP server config using CODEX_MASTER_KEY"
+  - "CB-INV-003: Wire prevent_sync_commit_conflict.py into session_bootstrap.py + pre-commit hooks"
+  - "Investigate check_4 autofix informational warning"
+  - "Promote 0D_base_ to main once all CI checks are GREEN"
+
 blockers: []
 
 improvements:
@@ -80,4 +108,5 @@ improvements:
   - "COPILOT_AGENT_AUTH_ENABLED verified at push time with warning if not active"
   - "codex-manifest-refresh.yml now runs on 6h schedule (E→D C2 never stale)"
   - "dependency-submission.yml with retry + continue-on-error handles GitHub API intermittency"
+  - "heal job now pushes to head_branch (not main) — reviewed and corrected in S155"
 ```

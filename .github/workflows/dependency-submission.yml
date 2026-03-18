@@ -25,7 +25,9 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  # Dependency snapshot submission only requires contents: read for checkout and
+  # the submission API call; no write access to repository contents is needed.
+  contents: read
   security-events: write
 
 jobs:
@@ -45,21 +47,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Submit dependency snapshot (attempt 1)
-        id: submit_1
-        # continue-on-error: transient GitHub API errors (HTTP 503 "Please try again later")
-        # must not block the PR — this is a GitHub infrastructure intermittency.
-        continue-on-error: true
-        uses: actions/dependency-review-action@v4
-        with:
-          fail-on-severity: critical
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Submit via component-detection (with retry)
+      - name: Submit via component-detection (attempt 1, with retry)
+        # Pin to a specific release SHA for supply-chain safety.
+        # @v0 floating tag replaced with commit SHA of v0.0.17 (2024-06-18).
+        # To update: check https://github.com/actions/component-detection-dependency-submission-action/releases
         id: submit_component
         continue-on-error: true
-        uses: actions/component-detection-dependency-submission-action@v0
+        uses: actions/component-detection-dependency-submission-action@3de0ef986ee0ccc6d7bd0d21e87b13e6a67b5bdc  # v0.0.17
         with:
           scanDirectory: '.'
         env:
