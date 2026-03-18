@@ -73,11 +73,6 @@ class TestContractCompliance:
     def test_returns_path_objects_only(self):
         """Test that list contains only Path objects."""
         try:
-            # Import as installed package (not via `src.` namespace) to avoid
-            # module-isolation issues where the `src.codex_plans` namespace
-            # produces a different `pathlib.Path` identity than the test file's,
-            # causing isinstance() to return False even though the types are
-            # nominally identical.
             try:
                 from codex_plans import list_plan_documents as _lpd
             except ImportError:
