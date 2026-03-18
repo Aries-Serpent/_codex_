@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S150 — 2026-03-18 — PR #3606)
+- **`scripts/ci/collect_telemetry.py`**: Added `--classify-run <RUN_ID>` CLI flag — every CI failure was classified as "unknown" because `iterative-self-healing-ci.yml` called this flag which did not exist; `argparse` exited 2, triggering the `|| echo "unknown"` fallback on every run. Flag now fetches run+jobs via GitHub API, calls `classify_failure()`, and prints the pattern name to stdout. See RCA: `.codex/docs/RCA_UNKNOWN_PATTERN_S150.md`.
+- **`tests/ci/test_telemetry_collection.py`**: Added `TestClassifyRunCLI` — 5 tests covering rebase-gate classification, auth-delegation, unknown fallback, main() entrypoint output, and API error handling.
+- **`.codex/docs/RCA_UNKNOWN_PATTERN_S150.md`**: Created structured Root Cause Analysis covering all 3 root causes, timeline, fix, prevention measures, and lessons learned.
+- **`.codex/lessons_learned/`**: AfterMath artifacts generated via `scripts/aftermath/parse_session.py` — S150 session YAML + cumulative lessons + checkpoint for session resume.
+
 ### Fixed (S149 — 2026-03-18 — PR #3619)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3624 (SHA `139fbadc`) at 2026-03-18T13:46Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3621 (SHA `c3f77912`) at 2026-03-18T10:13Z [auto-generated]

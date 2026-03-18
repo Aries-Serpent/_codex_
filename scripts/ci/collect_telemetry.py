@@ -373,6 +373,14 @@ def main():
     parser.add_argument(
         "--token", help="GitHub token (or use GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
     )
+    parser.add_argument(
+        "--classify-run",
+        metavar="RUN_ID",
+        help=(
+            "Classify a single workflow run by ID and print the pattern name to stdout. "
+            "Exits 0 on success. Used by iterative-self-healing-ci.yml to label failures."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -387,6 +395,25 @@ def main():
             "Error: GitHub token required (--token or GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
         )
         sys.exit(1)
+
+    # Single-run classification mode — used by iterative-self-healing-ci.yml.
+    # Fetch run + jobs, classify, and print just the pattern name so the
+    # workflow can capture it via $(…) without needing a full report.
+    if args.classify_run:
+        try:
+            collector = TelemetryCollector(args.owner, args.repo, token)
+            run_id = int(args.classify_run)
+            run_url = f"{collector.base_url}/repos/{collector.owner}/{collector.repo}/actions/runs/{run_id}"
+            run_resp = requests.get(run_url, headers=collector.headers, timeout=30)
+            run_resp.raise_for_status()
+            run = run_resp.json()
+            jobs = collector.collect_job_details(run_id)
+            pattern = collector.classify_failure(run, jobs)
+            print(pattern)
+        except Exception as e:
+            print(f"unknown  # classify-run error: {e}", file=sys.stderr)
+            print("unknown")
+        return
 
     try:
         collector = TelemetryCollector(args.owner, args.repo, token)
