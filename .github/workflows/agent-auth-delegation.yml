@@ -18,7 +18,11 @@ name: Agent Token Delegation
 
 on:
   pull_request:
-    types: [opened, edited, reopened, synchronize, ready_for_review]
+    # synchronize REMOVED (S155): The checkbox can only be added/changed when a
+    # PR is first created or edited. Firing on every push (synchronize) caused
+    # concurrent auto-commits that created rebase conflicts on the next report_progress.
+    # ready_for_review triggers draft→ready transitions (important for approval).
+    types: [opened, edited, reopened, ready_for_review]
   pull_request_review:
     types: [submitted]
   workflow_dispatch:

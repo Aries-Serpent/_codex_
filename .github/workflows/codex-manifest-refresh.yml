@@ -1,21 +1,26 @@
 name: CODEX Manifest Auto-Refresh
 
-# Automatically regenerate CODEX_MANIFEST.json on every PR push so that the
-# E→D Transition Gate C2 condition (manifest < 24h old) is always satisfied.
-# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
+# Automatically regenerate CODEX_MANIFEST.json to satisfy the E→D Transition Gate
+# C2 condition (manifest < 24h old).
 #
-# REQ-4/5 compliance: also touches AGENT_ACCOUNTABILITY_REPORT.md and
-# CHANGELOG.md so the auto-commit satisfies the Cognitive Pre-flight checks
-# (agent-auth-delegation.yml REQ-4 + REQ-5) which require those files to be
-# present in the last commit.
+# Trigger policy (S155 — reduced cascade):
+# • PR opened/reopened: generate manifest for new/retargeted PRs
+# • schedule 6h: keeps manifest fresh on long-running branches without firing on
+#   every push — eliminates the "approve runs all" auto-commit storm
+# • synchronize REMOVED: the 6h schedule is sufficient; firing on every push caused
+#   concurrent auto-commits alongside agent-auth-delegation, leading to rebase conflicts
+#
+# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
+# REQ-4/5 compliance: also touches AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md.
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
   # Scheduled refresh every 6h to prevent E→D C2 stale-manifest failures on
   # long-running branches (the manifest generated_at must be < 24h old).
   schedule:
     - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: codex-manifest-refresh-${{ github.head_ref || github.ref_name }}
