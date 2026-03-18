@@ -245,7 +245,6 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
     pr = _fetch_pr_data(pr_number, token)
 
     # ── component 1: CI checks (35%) ─────────────────────────────────────────
-    ci_detail = "unknown"
     if pr:
         checks = _fetch_check_runs(pr.get("head", {}).get("sha", ""), token)
         if checks:
@@ -347,7 +346,7 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
                 else:
                     freshness_score  = 0.0
                     freshness_detail = f"last update {age_hours:.1f}h ago (>72h, stale)"
-            except ValueError:
+            except ValueError:  # ignore malformed timestamp; keep default freshness values
                 pass
 
     # ── weighted composite ────────────────────────────────────────────────────
