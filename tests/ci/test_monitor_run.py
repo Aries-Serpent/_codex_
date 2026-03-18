@@ -19,6 +19,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 try:
     import monitor_run as mr
     from monitor_run import (
+        MonitorThread,
         PollSnapshot,
         _compute_elapsed,
         _exit_code,
@@ -251,7 +252,7 @@ class TestStartBackgroundMonitor:
         monkeypatch.setattr(mr, "_resolve_repo", lambda: "a/b")
 
         handle = start_background_monitor(run_id=1, repo="a/b")
-        assert handle.is_alive() or True   # may finish instantly
+        assert isinstance(handle, MonitorThread)  # start_background_monitor must return a MonitorThread
         handle.join(timeout=5)
         assert handle.result is not None
         assert handle.result.conclusion == "success"
@@ -263,11 +264,21 @@ class TestStartBackgroundMonitor:
 
 class TestSessionTiming:
     def test_resolve_prefers_env_var(self, monkeypatch):
-        """GITHUB_RUN_STARTED_AT env var takes priority over everything."""
+        """GITHUB_RUN_STARTED_AT env var takes priority over api_run_started_at."""
         monkeypatch.setenv("GITHUB_RUN_STARTED_AT", "2026-03-17T23:15:08Z")
         iso, ns = _resolve_session_start()
         assert iso == "2026-03-17T23:15:08Z"
         # ns must be a valid positive integer representing that timestamp
+        assert ns > 0
+
+    def test_resolve_cli_override_beats_env_var(self, monkeypatch):
+        """cli_override takes highest priority — must override GITHUB_RUN_STARTED_AT."""
+        monkeypatch.setenv("GITHUB_RUN_STARTED_AT", "2026-03-17T23:15:08Z")
+        override_ts = "2026-01-01T00:00:00Z"
+        iso, ns = _resolve_session_start(cli_override=override_ts)
+        assert iso == override_ts, (
+            f"cli_override should beat GITHUB_RUN_STARTED_AT; got {iso!r}"
+        )
         assert ns > 0
 
     def test_resolve_uses_api_fallback(self, monkeypatch):

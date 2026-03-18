@@ -93,5 +93,5 @@ flowchart TD
 |--------|------|------|---|
 | D-00 integration | local-only | CI + local | ✅ wired |
 | agent-auth-delegation steps | 5 | 6 (+ D-00) | +1 |
-| Unit test coverage (session_bootstrap) | 0 | 8 tests | +8 |
+| Unit test coverage (session_bootstrap) | 0 | 21 tests | +21 |
 | Knowledge facts stored | 7 (S145) | 4 (S146) | cumulative 11 |

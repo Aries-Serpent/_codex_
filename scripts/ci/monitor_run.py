@@ -396,21 +396,26 @@ def _now() -> str:
     return datetime.now(tz=timezone.utc).isoformat()
 
 
-def _resolve_session_start(api_run_started_at: str = "") -> tuple[str, int]:
+def _resolve_session_start(
+    api_run_started_at: str = "",
+    *,
+    cli_override: str = "",
+) -> tuple[str, int]:
     """
     Return (iso_str, ns_since_epoch) of when the Copilot Coding Agent session began.
 
     Resolution priority:
-    1. ``GITHUB_RUN_STARTED_AT`` env var  — set by GitHub Actions; represents
+    1. ``cli_override``                  — explicit ``--session-start`` flag; highest
+       priority so users can always force a specific start time regardless of env.
+    2. ``GITHUB_RUN_STARTED_AT`` env var — set by GitHub Actions; represents
        the moment the runner picked up the current workflow job (agent session
        start in CI).
-    2. ``api_run_started_at``             — ``run_started_at`` from the GitHub
+    3. ``api_run_started_at``            — ``run_started_at`` from the GitHub
        Actions API for the monitored run (populated after first poll).
-    3. ``time.time_ns()`` / ``datetime.now()`` — daemon/thread spawn time
+    4. ``time.time_ns()`` / ``datetime.now()`` — daemon/thread spawn time
        (fallback when running outside CI or before the first API poll).
     """
-    env_val = os.environ.get("GITHUB_RUN_STARTED_AT", "").strip()
-    src = env_val or api_run_started_at
+    src = cli_override or os.environ.get("GITHUB_RUN_STARTED_AT", "").strip() or api_run_started_at
     if src:
         try:
             dt = datetime.fromisoformat(src.replace("Z", "+00:00"))
@@ -704,7 +709,9 @@ class MonitorThread(threading.Thread):
             self._ss_at = session_started_at
             self._ss_ns = session_started_ns
         else:
-            self._ss_at, self._ss_ns = _resolve_session_start(session_started_at)
+            self._ss_at, self._ss_ns = _resolve_session_start(
+                cli_override=session_started_at,
+            )
 
     def run(self) -> None:
         self.result = _poll_loop(
@@ -1063,7 +1070,7 @@ def main() -> int:
     if ss_ns_cli:
         ss_at, ss_ns = ss_at_cli, ss_ns_cli
     else:
-        ss_at, ss_ns = _resolve_session_start(ss_at_cli)
+        ss_at, ss_ns = _resolve_session_start(cli_override=ss_at_cli)
     _, _, ss_elapsed = _compute_elapsed(ss_ns)
 
     # Daemon mode -- non-blocking

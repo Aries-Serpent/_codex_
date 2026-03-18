@@ -146,7 +146,7 @@ class TestDataclasses:
         )
         assert report.blocking == []
         assert report.fetched == []
-        assert report.baseline_ok is True
+        assert report.baseline_ok is None  # None = triage not yet run
 
     def test_bootstrap_report_not_blocking(self):
         report = BootstrapReport(

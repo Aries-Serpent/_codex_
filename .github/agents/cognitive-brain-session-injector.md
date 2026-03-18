@@ -133,7 +133,7 @@ graph TD
 | `docs/ci/CONCURRENT_MONITOR_CHERRY_PICK_REPRO.md` | 9-step reproducible process + decision tree + Mermaid flow (S146 NEW) |
 | `.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md` | D-00…D-08 mandatory session start protocol (S145 NEW, updated S146) |
 | `tests/ci/test_session_bootstrap.py` | 21 unit tests for session_bootstrap.py (S146 NEW) |
-| `tests/ci/test_monitor_run.py` | 17 unit tests for monitor_run.py — snapshot, state-file, exit-code, cherry-pick filtering (S146 NEW) |
+| `tests/ci/test_monitor_run.py` | 26 unit tests for monitor_run.py — snapshot, state-file, exit-code, cherry-pick filtering, session timing, cli_override priority (S146 NEW) |
 | `src/codex/cognitive/session_hook.py` | `SessionContextInjector` — core injection logic |
 | `src/codex/cognitive/mcp_session_bridge.py` | MCP lifecycle hook — wires to Copilot |
 | `src/codex/cognitive/structural_policy_manager.py` | RBAC engine — `evaluate_permission()` |

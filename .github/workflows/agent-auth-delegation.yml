@@ -1095,10 +1095,21 @@ jobs:
             echo "ℹ️ Context digest unchanged — no commit needed." | tee -a "$GITHUB_STEP_SUMMARY"
           else
             git add .codex/session_context_latest.md .codex/session_context_latest.json 2>/dev/null || true
-            git commit -m "chore(d00): update session context digest [skip ci]" \
-              --allow-empty-message 2>/dev/null || true
-            git push origin HEAD 2>/dev/null || true
-            echo "✅ Context digest committed and pushed." | tee -a "$GITHUB_STEP_SUMMARY"
+            _commit_ok=false
+            _push_ok=false
+            if git commit -m "chore(d00): update session context digest [skip ci]" 2>/dev/null; then
+              _commit_ok=true
+              if git push origin HEAD 2>/dev/null; then
+                _push_ok=true
+              fi
+            fi
+            if [ "$_commit_ok" = "true" ] && [ "$_push_ok" = "true" ]; then
+              echo "✅ Context digest committed and pushed." | tee -a "$GITHUB_STEP_SUMMARY"
+            elif [ "$_commit_ok" = "true" ]; then
+              echo "⚠️ Context digest committed but push failed — will retry on next run." | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "⚠️ Context digest staged but commit failed (possibly nothing to commit)." | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
           fi
 
       # ── 3d: Post @copilot continue on the PR ─────────────────────────────────

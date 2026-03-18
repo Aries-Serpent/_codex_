@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S147 — 2026-03-18 — PR #3615, code-review r3964392067)
+- **`scripts/ci/session_bootstrap.py`**: Fixed broken anchor links in blocking-issues digest — `check_id` values like `1_actionlint` are now mapped to `#check-N` anchors matching `CI_TRIAGE_REPRO_S145.md` headings (PR review: `session_bootstrap.py:675-679`).
+- **`scripts/ci/session_bootstrap.py`**: Fixed misleading `triage ✅ clean` in session checklist when triage was skipped via `--skip-triage`. Changed `baseline_ok` default from `True` to `None`; checklist now renders `⏭️ skipped` when triage never ran, `✅ clean` when it ran and passed, `❌ FAILURES FOUND` when it ran and failed (PR review: `session_bootstrap.py:504-505`).
+- **`scripts/ci/session_bootstrap.py`**: Removed undocumented exit code `2` from module docstring — `main()` never returned 2; behavior now accurately documented as 0 (success / offline / skip-triage) or 1 (blocking failures) (PR review: `session_bootstrap.py:57`).
+- **`scripts/ci/monitor_run.py`**: Fixed `--session-start` CLI flag being silently overridden by `GITHUB_RUN_STARTED_AT` env var — added `cli_override` keyword parameter to `_resolve_session_start()`; explicit `--session-start` now takes highest priority over env and API values. Updated `main()` and `MonitorThread.__init__` to pass CLI value as `cli_override` (PR review: `monitor_run.py:1064-1066` and `monitor_run.py:399-418`).
+- **`.github/workflows/agent-auth-delegation.yml`**: Fixed false `✅ Context digest committed and pushed.` message when `git commit` or `git push` failed silently (guarded with `|| true`). Now tracks `_commit_ok`/`_push_ok` flags and emits `⚠️` warning if either step fails (PR review: `agent-auth-delegation.yml:1097-1101`).
+- **`tests/ci/test_monitor_run.py`**: Replaced no-op `assert handle.is_alive() or True` assertion (always passes) with `assert isinstance(handle, MonitorThread)` — deterministic type check that validates the return contract of `start_background_monitor()` (PR review: `test_monitor_run.py:254`).
+- **`.codex/COGNITIVE_BRAIN_STATUS_S146.md`**: Corrected Metrics Delta — session_bootstrap test count was `8 tests`, actual is `21 tests` (PR review: `COGNITIVE_BRAIN_STATUS_S146.md:96`).
+- **`.github/agents/cognitive-brain-session-injector.md`**: Corrected Key Files table — `test_monitor_run.py` test count was `17`, actual is `26` (PR review: `cognitive-brain-session-injector.md:135-136`).
+
+### Added (S147 — 2026-03-18 — PR #3615)
+- **`tests/ci/test_monitor_run.py`**: Added `test_resolve_cli_override_beats_env_var` — verifies `cli_override` keyword arg takes precedence over `GITHUB_RUN_STARTED_AT` env var in `_resolve_session_start()`. Suite grows to 27 tests.
+- **`tests/ci/test_session_bootstrap.py`**: Updated `test_bootstrap_report_defaults` — asserts `baseline_ok is None` on fresh `BootstrapReport` (was `True`; corrected to reflect new `Optional[bool]` semantic).
+
 ### Fixed (S146 — 2026-03-17 — PR #3615)
 - **`.codex/session_context_latest.md` + `.codex/sessions/`**: Applied trailing-newline normalisation from PR #3613 final state (cherry-pick parity).
 - **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Applied trailing-newline fix from PR #3613 final state.

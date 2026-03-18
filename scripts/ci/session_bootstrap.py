@@ -52,9 +52,8 @@ Environment variables
 
 Exit codes
 ──────────
-  0  Bootstrap complete; baseline healthy (or --offline)
+  0  Bootstrap complete; baseline healthy (or --offline / --skip-triage)
   1  One or more blocking CI failures detected
-  2  Fatal configuration error (missing token when required)
 """
 
 from __future__ import annotations
@@ -116,7 +115,7 @@ class BootstrapReport:
     triage:       List[TriageResult] = field(default_factory=list)
     blocking:     List[str]          = field(default_factory=list)
     warnings:     List[str]          = field(default_factory=list)
-    baseline_ok:  bool               = True
+    baseline_ok:  Optional[bool]      = None   # None=not run, True=passed, False=failed
 
 
 # ── GitHub API client ─────────────────────────────────────────────────────────
@@ -502,7 +501,7 @@ def write_digest(report: BootstrapReport, verbose: bool = False) -> Path:
         "",
         "```markdown",
         f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) fetched, "
-        f"triage {'✅ clean' if report.baseline_ok else '❌ FAILURES FOUND'}",
+        f"triage {'✅ clean' if report.baseline_ok is True else '❌ FAILURES FOUND' if report.baseline_ok is False else '⏭️ skipped'}",
         "- [ ] D-01 Memories loaded",
         "- [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed",
         "- [ ] D-03 Accountability report loaded (last 3 sessions)",
@@ -673,9 +672,12 @@ def main() -> int:
         report.triage = run_triage(verbose=args.verbose)
         failed = [r for r in report.triage if r.status == "fail"]
         for r in failed:
+            # Map check_id (e.g. "1_actionlint", "2_ruff_i001") → doc anchor "#check-N"
+            _m = re.match(r"(\d+)_", r.check_id)
+            _anchor = f"#check-{_m.group(1)}" if _m else f"#{r.check_id}"
             report.blocking.append(
                 f"Triage check '{r.check_id}' failed: {r.detail}. "
-                f"See docs/ci/CI_TRIAGE_REPRO_S145.md#{r.check_id}"
+                f"See docs/ci/CI_TRIAGE_REPRO_S145.md{_anchor}"
             )
         report.baseline_ok = len(failed) == 0
     else:
