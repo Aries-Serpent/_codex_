@@ -5,9 +5,11 @@ on:
   schedule:
     - cron: '0 */4 * * *'
 
-  # Cascade review on PRs
+  # Cascade review on PRs — opened/reopened only (not every push)
+  # synchronize REMOVED (S155): fires on every commit push, triggering auto-commits
+  # that conflict with agent report_progress pushes. The 4h schedule covers freshness.
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
 
   # Manual triggers for specific tasks
   issue_comment:
