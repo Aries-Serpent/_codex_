@@ -40,7 +40,7 @@ _None — baseline is healthy._
 Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:
 
 ```markdown
-- [x] D-00 session_bootstrap.py — 2 URL(s) fetched, triage ⏭️ skipped
+- [x] D-00 session_bootstrap.py — 2 URL(s) found (offline), triage ⏭️ skipped
 - [ ] D-01 Memories loaded
 - [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed
 - [ ] D-03 Accountability report loaded (last 3 sessions)
