@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
 
 ### Fixed (S131 — 2026-03-17 — PR #3604)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3625 (SHA `a9f0b01e`) at 2026-03-18T13:27Z [auto-generated]
 - **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
 - **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
 - **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`
