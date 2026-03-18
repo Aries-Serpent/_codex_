@@ -115,7 +115,8 @@ def check_changelog_diff(diff_text: str) -> list[ConflictRisk]:
     if not diff_text:
         return risks
 
-    added_lines = [l[1:] for l in diff_text.splitlines() if l.startswith("+") and not l.startswith("+++")]
+    added_lines = [line[1:] for line in diff_text.splitlines()
+                   if line.startswith("+") and not line.startswith("+++")]
     added_text = "\n".join(added_lines)
 
     has_auto_gen = any(marker in added_text for marker in AUTO_GENERATED_MARKERS)
@@ -142,15 +143,16 @@ def check_changelog_diff(diff_text: str) -> list[ConflictRisk]:
             )
         ))
 
-    # Check: is the new content being inserted near the [Unreleased] header?
-    # The auto-update workflow inserts IMMEDIATELY after ## [Unreleased]
-    # If our diff also inserts there, they conflict.
-    unreleased_insertion = re.search(
-        r'\+### (Fixed|Added|Changed).*\n.*\n.*\[Unreleased\]',
+    # Check: is new content being inserted immediately after ## [Unreleased]?
+    # In real diffs ## [Unreleased] appears BEFORE the inserted ### blocks.
+    # We look for a hunk that adds a ### section within 5 lines of the
+    # ## [Unreleased] header line in the diff context (lines starting with ' ' or '+').
+    unreleased_hunk_start = re.search(
+        r'^[ +]## \[Unreleased\].*?\n(?:[ +][^\n]*\n){0,5}\+### (Fixed|Added|Changed)',
         diff_text,
-        re.MULTILINE
+        re.MULTILINE,
     )
-    if unreleased_insertion and has_dev_work and not has_auto_gen:
+    if unreleased_hunk_start and has_dev_work and not has_auto_gen:
         risks.append(ConflictRisk(
             file="CHANGELOG.md",
             reason=(
@@ -204,14 +206,15 @@ def check_codex_manifest(diff_text: str) -> list[ConflictRisk]:
     risks: list[ConflictRisk] = []
     if not diff_text:
         return risks
-    if '"generated_at"' in diff_text and '"total_agents"' in diff_text:
+    if '"generated_at"' in diff_text or '"integrity_sha256"' in diff_text:
         risks.append(ConflictRisk(
             file="CODEX_MANIFEST.json",
             reason=(
-                "CODEX_MANIFEST.json staged with both 'generated_at' and 'total_agents' changes. "
-                "The codex-manifest-refresh workflow regenerates this file on every push. "
-                "If the remote already ran a refresh (which updates 'generated_at'), "
-                "your different timestamp will cause a rebase conflict."
+                "CODEX_MANIFEST.json staged with changes to 'generated_at' and/or "
+                "'integrity_sha256'. The codex-manifest-refresh workflow regenerates "
+                "this file on every push. If the remote already ran a refresh (which "
+                "updates 'generated_at' and 'integrity_sha256'), your different values "
+                "will cause a rebase conflict."
             ),
             severity="warning",
             remediation=(
@@ -283,7 +286,7 @@ def main() -> int:
     print("\n━━━ Summary ━━━")
     print(f"  Errors:   {len(errors)}")
     print(f"  Warnings: {len(warnings)}")
-    print(f"\n  See .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md for full guidance.")
+    print("\n  See .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md for full guidance.")
 
     if errors:
         print("\n  ❌ Anti-pattern detected — resolve before calling report_progress")

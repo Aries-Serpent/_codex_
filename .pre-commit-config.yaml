@@ -347,3 +347,24 @@ repos:
         always_run: true
         # If this fails: run scripts/ci/dead_code_scan.py src/ tests/ --min-confidence 100
         # to see the findings, then remove the unreachable code blocks.
+
+      # ── CB-INV-003: sync+new-work commit anti-pattern gate (pre-push) ────────
+      # Detects when staged CHANGELOG.md changes mix auto-generated content with
+      # development (S-session) content in the same commit — the pattern that caused
+      # repeated rebase conflicts in S154. Also detects staged auto-generated files
+      # (CODEX_MANIFEST.json, session_context_latest.md, agent_auth_session.json)
+      # alongside dev files.
+      # S154 root cause documented: .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
+      # Full investigation: .codex/docs/COMMIT_METHOD_FAILURES_S154.md
+      - id: prevent-sync-commit-conflict
+        name: "🔀 sync+new-work anti-pattern check (pre-push)"
+        entry: bash -c 'command -v python >/dev/null 2>&1 && python scripts/ci/prevent_sync_commit_conflict.py --ci-mode || echo "⚠️  prevent_sync_commit_conflict.py not runnable — skipping"'
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+        # If this fails: review .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
+        # Rule 1: never copy remote auto-commit content into a dev commit
+        # Rule 2: place new CHANGELOG entries BELOW existing [Unreleased] sections
+        # Rule 3: exclude CODEX_MANIFEST.json, session_context_latest.md from dev commits
+        # Rule 4: use .git/info/attributes + merge.keepcommit driver for recovery

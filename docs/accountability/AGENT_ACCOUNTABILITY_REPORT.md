@@ -6388,12 +6388,11 @@ because both sides added content at the same CHANGELOG location.
 - No firewall changes required. Playwright browser has a built-in content blocker
   that intercepts `github.com` before the request hits the network.
 
-**Merge readiness — final assessment:**
-- PR #3628 targets `main` (protected)
-- PR is DRAFT — must be marked ready before merge
-- `0D_base_` staging branch does NOT currently exist in the repo
-- **Recommendation:** @mbaetiong to either (a) force-push locally if desired, or
-  (b) let the merge driver handle it on the next report_progress push attempt
+**Merge readiness — final assessment (updated S155):**
+- PR #3628 now correctly targets `0D_base_` (staging) — retargeted from `main` by @mbaetiong 2026-03-18
+- `0D_base_` branch exists and is the correct staging branch for CI/workflow changes
+- PR is DRAFT — @mbaetiong to mark ready once all CI checks are GREEN
+- S155 code-review fixes applied: heal job push target, dependency-review-action removed, manifest schedule handling, aftermath YAML schema, prevent_sync_commit_conflict.py detection fixes
 
 ### Files Added (S154b)
 1. `scripts/ci/prevent_sync_commit_conflict.py` — new prevention script
