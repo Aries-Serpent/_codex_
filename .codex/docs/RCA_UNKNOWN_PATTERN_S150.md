@@ -129,8 +129,9 @@ if args.classify_run:
 On error, prints `"unknown"` and exits 0 (to preserve the `|| echo "unknown"` contract).
 
 **Tests added:** `tests/ci/test_telemetry_collection.py` — class `TestClassifyRunCLI`
-(5 new tests: rebase-gate match, auth-delegation match, unknown fallback,
-main() entrypoint prints pattern, main() prints unknown on API error).
+(6 new tests: rebase-gate match, auth-delegation match, unknown fallback,
+dependency-submission → `security-scan`, main() entrypoint prints pattern,
+main() prints unknown on API error).
 
 ---
 
@@ -162,7 +163,7 @@ Add a unit test that invokes `main()` with the same flags the workflow uses.
 
 ---
 
-## 8. Update — S150 Run 2 (2026-03-18T14:46Z)
+## 7. Update — S150 Run 2 (2026-03-18T14:46Z)
 
 A second escalation (run [23250109072](https://github.com/Aries-Serpent/_codex_/actions/runs/23250109072))
 still showed "unknown" after the `--classify-run` fix was merged.
@@ -190,7 +191,7 @@ The fix ensures the escalation comment now shows `security-scan` instead of `unk
 
 ---
 
-## 7. Related Documents
+## 8. Related Documents
 
 - `scripts/ci/collect_telemetry.py` — fixed file
 - `.github/workflows/iterative-self-healing-ci.yml` — caller workflow
