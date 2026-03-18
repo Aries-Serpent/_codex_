@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3628)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3628 (SHA `e77b94e9`) at 2026-03-18T20:55Z [auto-generated]
+
 ### Fixed (S153 — 2026-03-18 — PR #3626)
 - **`CHANGELOG.md`**: Removed 6 cross-PR auto-generated bullets violating `ci_triage_repro.sh` check_7 — bullets for PRs #3628, #3626, #3624, #3621, #3620, #3625 were in wrong PR sections. All 7 checks now pass.
 - **`scripts/ci/session_wrapup_autofix.py`**: Fixed `fix_changelog()` scoping bug — now creates dedicated `### Fixed (auto-update — PR #N)` subsection in `[Unreleased]` instead of inserting into the first `### Fixed` (which belonged to a different PR). Duplicate-entry check now scoped to `[Unreleased]` block only, preventing false-positive skips from older versioned sections. Prevents all future check_7 violations.
