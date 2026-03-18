@@ -339,6 +339,17 @@ class TestClassifyRunCLI:
         jobs = [{"name": "some-job-with-no-matching-keywords"}]
         assert collector.classify_failure(run, jobs) == "unknown"
 
+    def test_classify_run_dependency_submission(self, collector):
+        """'Automatic Dependency Submission' runs classify as security-scan (S150 fix).
+
+        Run 23250109072 was a GitHub Advanced Security dependency-graph submission
+        that failed with a transient GitHub API error.  Before S150 it was always
+        classified as 'unknown' because no keyword matched its name.
+        """
+        run = {"name": "Automatic Dependency Submission (Python)", "id": 23250109072}
+        jobs = [{"name": "submit-pypi"}]
+        assert collector.classify_failure(run, jobs) == "security-scan"
+
     def test_classify_run_main_entrypoint_prints_pattern(self, capsys):
         """main() with --classify-run prints the pattern and exits cleanly."""
         import sys as _sys

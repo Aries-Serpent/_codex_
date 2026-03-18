@@ -162,6 +162,34 @@ Add a unit test that invokes `main()` with the same flags the workflow uses.
 
 ---
 
+## 8. Update — S150 Run 2 (2026-03-18T14:46Z)
+
+A second escalation (run [23250109072](https://github.com/Aries-Serpent/_codex_/actions/runs/23250109072))
+still showed "unknown" after the `--classify-run` fix was merged.
+
+**Root Cause 4 — Missing keywords for GitHub dependency-graph service**
+
+Run name: `"Automatic Dependency Submission (Python)"`  
+Actor: `github-advanced-security[bot]` (event: `dynamic`)  
+Failure: transient GitHub API error — `"An error occurred while processing your request. Please try again later."`
+
+Even with `--classify-run` working, the run name contained none of the existing
+`PATTERN_KEYWORDS` entries, so `classify_failure()` returned `"unknown"`.
+
+**Fix:** Added to the `security-scan` pattern:
+```python
+"dependency submission", "dependency-submission",
+"automatic dependency", "component-detection",
+```
+
+**Note:** This is a GitHub-managed service failure (GitHub API transient error),
+not a code defect. It is correctly non-fixable; the self-healing CI escalates.
+The fix ensures the escalation comment now shows `security-scan` instead of `unknown`.
+
+**Prevention:** Added `test_classify_run_dependency_submission` to `TestClassifyRunCLI`.
+
+---
+
 ## 7. Related Documents
 
 - `scripts/ci/collect_telemetry.py` — fixed file

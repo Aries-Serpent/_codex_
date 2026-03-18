@@ -60,6 +60,9 @@ class TelemetryCollector:
             "codeql", "security", "dependabot", "vulnerability",
             "secret-scan", "secret scan", "scan-trivy", "sbom",
             "code-scanning",
+            # GitHub Advanced Security: dependency graph submission
+            "dependency submission", "dependency-submission",
+            "automatic dependency", "component-detection",
         ],
         # ── Build / container patterns ────────────────────────────────────────
         "docker-build": [
