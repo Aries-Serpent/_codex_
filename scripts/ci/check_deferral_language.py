@@ -368,7 +368,14 @@ def scan(
                     # If the fence is properly closed, fence_buffer.clear() will
                     # drop this entry harmlessly along with the rest.
                     fence_buffer.append((line_no, line))
-                    break  # delimiter found — do not add to lines_to_scan
+                    # Also immediately scan the opener line if it has non-whitespace
+                    # content after the fence delimiter (e.g. "``` future PR").
+                    # A properly-closed fence would otherwise drop the opener from
+                    # fence_buffer without scanning it at all.
+                    info_string = stripped_for_fence[opener_len:]
+                    if info_string.strip():
+                        lines_to_scan.append((line_no, line))
+                    break  # delimiter found — handled above
             else:
                 lines_to_scan.append((line_no, line))
         else:
