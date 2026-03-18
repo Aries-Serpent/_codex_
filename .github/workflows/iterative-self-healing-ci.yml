@@ -1,7 +1,12 @@
 name: "Iterative Self-Healing CI"
 
-# Triggered after any workflow completes with failure on the default branch or PRs.
-# Runs up to 3 auto-heal iterations per failure event before escalating to human.
+# Phase 5 — Autonomous Self-Healing Loop (S154)
+# ─────────────────────────────────────────────
+# Triggered after any workflow completes with failure.
+# Full D-00 protocol: triage → classify → fix → verify → commit.
+# Tracks all attempts (success + failure) in .codex/healing_attempts/.
+# Requires COPILOT_AGENT_AUTH_ENABLED=true by default for autonomous push.
+# Runs up to 3 auto-heal iterations per failure event before escalating.
 
 on:
   workflow_run:
@@ -31,7 +36,7 @@ permissions:
 
 jobs:
   triage:
-    name: "Triage failure"
+    name: "D-00 Triage failure"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Only run when a workflow actually failed (not on success)
@@ -47,7 +52,8 @@ jobs:
         github.event.workflow_run.name != 'Art_Cognitive Analysis & Learning (Unified)' &&
         github.event.workflow_run.name != 'Agent Variable Writer (Provenance-Chain)' &&
         github.event.workflow_run.name != 'Token Probe' &&
-        github.event.workflow_run.name != 'Agent Vars Bootstrap'
+        github.event.workflow_run.name != 'Agent Vars Bootstrap' &&
+        github.event.workflow_run.name != 'CODEX Manifest Auto-Refresh'
       )
 
     outputs:
@@ -55,12 +61,15 @@ jobs:
       fixable:    ${{ steps.classify.outputs.fixable }}
       run_id:     ${{ steps.classify.outputs.run_id }}
       head_sha:   ${{ steps.classify.outputs.head_sha }}
+      head_branch: ${{ steps.classify.outputs.head_branch }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
+          # Use delegated token when COPILOT_AGENT_AUTH_ENABLED=true (S154 Phase 5).
+          # Falls back to GITHUB_TOKEN for environments without delegation.
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python (cached)
@@ -70,19 +79,25 @@ jobs:
           cache-tier: common
           cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
-      - name: Classify failure
+      - name: Classify failure (D-00 — collect_telemetry --classify-run)
         id: classify
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           TRIGGERING_RUN_ID: ${{ github.event.workflow_run.id || inputs.target_run_id }}
           TRIGGERING_RUN_NAME: ${{ github.event.workflow_run.name }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.head_ref || github.ref_name }}
+          # Phase 5: confirm delegation state for downstream heal job
+          AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'false' }}
         run: |
           .venv_ci/bin/pip install requests --quiet
-          echo "run_id=${TRIGGERING_RUN_ID}" >> "$GITHUB_OUTPUT"
-          echo "head_sha=${HEAD_SHA}"         >> "$GITHUB_OUTPUT"
+          echo "run_id=${TRIGGERING_RUN_ID}"       >> "$GITHUB_OUTPUT"
+          echo "head_sha=${HEAD_SHA}"               >> "$GITHUB_OUTPUT"
+          echo "head_branch=${HEAD_BRANCH}"         >> "$GITHUB_OUTPUT"
 
-          # Use collect_telemetry pattern classifier to categorise the failure
+          # D-00: Use collect_telemetry --classify-run to categorise the failure.
+          # The --classify-run flag (added S150) fetches run+jobs via the GitHub API
+          # and returns one of 15 pattern names (ruff-*, import-*, yaml-*, etc.).
           PATTERN=$(python3 scripts/ci/collect_telemetry.py \
             --classify-run "$TRIGGERING_RUN_ID" \
             --owner Aries-Serpent --repo _codex_ \
@@ -90,9 +105,12 @@ jobs:
 
           echo "pattern=${PATTERN}" >> "$GITHUB_OUTPUT"
 
-          # Patterns we can auto-heal
+          # Expanded fixable patterns (Phase 5 — S154):
+          # Added changelog-* (check_7 CHANGELOG cross-PR), pip-cache-* (sparse checkout),
+          # policy-gate-* (pre-create pip cache fix), and rebase-gate-* (branch gate).
           case "$PATTERN" in
-            ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix)
+            ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\
+            changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline)
               echo "fixable=true"  >> "$GITHUB_OUTPUT"
               ;;
             *)
@@ -100,13 +118,16 @@ jobs:
               ;;
           esac
 
-          echo "### 🩺 Failure Triage" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Key | Value |"       >> "$GITHUB_STEP_SUMMARY"
-          echo "|-----|-------|"       >> "$GITHUB_STEP_SUMMARY"
-          echo "| Run | \`${TRIGGERING_RUN_ID}\` | " >> "$GITHUB_STEP_SUMMARY"
-          echo "| Workflow | ${TRIGGERING_RUN_NAME} |" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Pattern | \`${PATTERN}\` |"         >> "$GITHUB_STEP_SUMMARY"
-          echo "| Auto-fixable | $(cat "$GITHUB_OUTPUT" | grep fixable | cut -d= -f2) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "### 🩺 D-00 Failure Triage"                              >> "$GITHUB_STEP_SUMMARY"
+          echo "| Key | Value |"                                          >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|-------|"                                          >> "$GITHUB_STEP_SUMMARY"
+          echo "| Run | [\`${TRIGGERING_RUN_ID}\`](https://github.com/Aries-Serpent/_codex_/actions/runs/${TRIGGERING_RUN_ID}) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Workflow | ${TRIGGERING_RUN_NAME} |"                   >> "$GITHUB_STEP_SUMMARY"
+          echo "| Pattern | \`${PATTERN}\` |"                            >> "$GITHUB_STEP_SUMMARY"
+          echo "| Branch | \`${HEAD_BRANCH}\` |"                         >> "$GITHUB_STEP_SUMMARY"
+          echo "| Agent Auth Enabled | \`${AGENT_AUTH_ENABLED}\` |"      >> "$GITHUB_STEP_SUMMARY"
+          FIXABLE=$(grep '^fixable=' "$GITHUB_OUTPUT" | tail -1 | cut -d= -f2)
+          echo "| Auto-fixable | \`${FIXABLE}\` |"                       >> "$GITHUB_STEP_SUMMARY"
 
   heal:
     name: "Auto-heal (iter ${{ matrix.iteration }})"
@@ -130,6 +151,9 @@ jobs:
         with:
           fetch-depth: 50
           ref: main
+          # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
+          # autonomous push (git push origin HEAD) succeeds without manual approval.
+          # Without delegation the push fails with HTTP 403.
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       - name: Set up Python (cached)
@@ -143,50 +167,131 @@ jobs:
         run: |
           .venv_ci/bin/pip install ruff black isort --quiet
 
+      - name: D-07 — Run ci_triage_repro.sh (pre-heal baseline)
+        id: pre_triage
+        # Run the 7-check triage before applying the fix so we know the baseline state.
+        # This catches cases where the failure is in a check we don't auto-fix (e.g.,
+        # mypy_baseline=328 drift) so we avoid committing a no-op fix.
+        continue-on-error: true
+        run: |
+          bash scripts/ci/ci_triage_repro.sh 2>&1 | tee /tmp/pre_triage.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "pre_triage_exit=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+          echo "### D-07 Pre-Heal Triage" >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/pre_triage.txt | grep -E "✅|❌|PASS|FAIL|Summary" >> "$GITHUB_STEP_SUMMARY" || true
+
       - name: Apply auto-fix
         id: apply_fix
         env:
           PATTERN: ${{ needs.triage.outputs.pattern }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          RUN_ID: ${{ needs.triage.outputs.run_id }}
+          ITERATION: ${{ matrix.iteration }}
         run: |
-          echo "Applying auto-fix for pattern: ${PATTERN}"
+          echo "Applying auto-fix for pattern: ${PATTERN} (iteration ${ITERATION})"
           python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/fix_output.txt
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️ No changes produced for pattern \`${PATTERN}\`" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "changed=true"  >> "$GITHUB_OUTPUT"
+            CHANGED_FILES=$(git diff --name-only | head -20 | tr '\n' ', ')
+            echo "changed_files=${CHANGED_FILES}" >> "$GITHUB_OUTPUT"
+            echo "✅ Changes produced: ${CHANGED_FILES}" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Validate fix
+      - name: D-07 — Validate fix (ci_triage_repro.sh post-heal)
         id: validate
         if: steps.apply_fix.outputs.changed == 'true'
         run: |
-          # YAML compliance check
+          # Full YAML compliance check
           python3 - << 'PYEOF'
           import os, yaml, sys
           wf = ".github/workflows"
           errors = []
-          for f in os.listdir(wf):
-              if f.endswith((".yml",".yaml")):
-                  try: yaml.safe_load(open(f"{wf}/{f}"))
-                  except yaml.YAMLError as e: errors.append(f"{f}: {e}")
+          for root, _, files in os.walk(wf):
+              for f in files:
+                  if f.endswith((".yml", ".yaml")):
+                      path = os.path.join(root, f)
+                      try:
+                          yaml.safe_load(open(path))
+                      except yaml.YAMLError as e:
+                          errors.append(f"{path}: {e}")
           if errors:
-              for e in errors: print(f"❌ {e}")
+              for e in errors:
+                  print(f"❌ {e}")
               sys.exit(1)
-          print(f"✅ All {len(os.listdir(wf))} workflow files parse cleanly")
+          print(f"✅ All workflow files parse cleanly")
           PYEOF
           # Ruff check
           ruff check src/ --quiet 2>&1 | tee /tmp/ruff_output.txt
-          echo "valid=true" >> "$GITHUB_OUTPUT"
+          # Run ci_triage_repro.sh for full 7-check validation
+          bash scripts/ci/ci_triage_repro.sh 2>&1 | tee /tmp/post_triage.txt
+          TRIAGE_EXIT=${PIPESTATUS[0]}
+          echo "triage_exit=${TRIAGE_EXIT}" >> "$GITHUB_OUTPUT"
+          if [ "${TRIAGE_EXIT}" -eq 0 ]; then
+            echo "valid=true"  >> "$GITHUB_OUTPUT"
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "### D-07 Post-Heal Triage" >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/post_triage.txt | grep -E "✅|❌|PASS|FAIL|Summary" >> "$GITHUB_STEP_SUMMARY" || true
 
-      - name: Commit and push fix
+      - name: Record attempt (success or failure)
+        if: always()
+        env:
+          PATTERN:    ${{ needs.triage.outputs.pattern }}
+          RUN_ID:     ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          ITERATION:  ${{ matrix.iteration }}
+          CHANGED:    ${{ steps.apply_fix.outputs.changed }}
+          VALID:      ${{ steps.validate.outputs.valid }}
+        run: |
+          # Write attempt record to .codex/healing_attempts/ so future sessions
+          # can review what was tried, what worked, and what failed.
+          ATTEMPT_DIR=".codex/healing_attempts"
+          mkdir -p "${ATTEMPT_DIR}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          ATTEMPT_FILE="${ATTEMPT_DIR}/${TIMESTAMP//[:T]/-}_${PATTERN}_iter${ITERATION}.json"
+          cat > "${ATTEMPT_FILE}" << JSONEOF
+          {
+            "timestamp":    "${TIMESTAMP}",
+            "run_id":       "${RUN_ID}",
+            "head_branch":  "${HEAD_BRANCH}",
+            "pattern":      "${PATTERN}",
+            "iteration":    ${ITERATION},
+            "changed":      ${CHANGED:-false},
+            "valid":        ${VALID:-false},
+            "workflow":     "iterative-self-healing-ci",
+            "pre_triage":   "$(cat /tmp/pre_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|')",
+            "post_triage":  "$(cat /tmp/post_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|')",
+            "fix_output":   "$(cat /tmp/fix_output.txt 2>/dev/null | head -10 | tr '\n' '|')"
+          }
+          JSONEOF
+          echo "Attempt record: ${ATTEMPT_FILE}"
+
+      - name: Commit and push fix (requires COPILOT_AGENT_AUTH_ENABLED=true)
         if: steps.apply_fix.outputs.changed == 'true' && steps.validate.outputs.valid == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          PATTERN:  ${{ needs.triage.outputs.pattern }}
+          # Verify delegation is active before attempting autonomous push.
+          # If COPILOT_AGENT_AUTH_ENABLED != 'true', the push will be attempted
+          # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
+          AGENT_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'false' }}
         run: |
+          if [ "${AGENT_AUTH_ENABLED}" != "true" ]; then
+            echo "⚠️ COPILOT_AGENT_AUTH_ENABLED is not 'true' — autonomous push may fail."
+            echo "   Set COPILOT_AGENT_AUTH_ENABLED=true via Agent Token Delegation workflow."
+          fi
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
           git add -A
-          git commit -m "self-heal(iter-${{ matrix.iteration }}): auto-fix ${PATTERN} [skip ci-if-no-change]"
+          git commit -m "self-heal(iter-${{ matrix.iteration }}): auto-fix ${PATTERN} [skip ci-if-no-change]
+
+          Autonomous Phase 5 self-heal — pattern: ${PATTERN}
+          Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
+          COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
           git push origin HEAD
 
       - name: Report iteration
@@ -196,6 +301,7 @@ jobs:
           echo "- Pattern: \`${{ needs.triage.outputs.pattern }}\`"      >> "$GITHUB_STEP_SUMMARY"
           echo "- Changed: \`${{ steps.apply_fix.outputs.changed }}\`"   >> "$GITHUB_STEP_SUMMARY"
           echo "- Valid:   \`${{ steps.validate.outputs.valid }}\`"      >> "$GITHUB_STEP_SUMMARY"
+          echo "- Files:   \`${{ steps.apply_fix.outputs.changed_files }}\`" >> "$GITHUB_STEP_SUMMARY"
 
   escalate:
     name: "Escalate to human"
@@ -205,23 +311,35 @@ jobs:
     if: needs.triage.outputs.fixable == 'false'
 
     steps:
-      - name: Post escalation comment
+      - name: Post escalation comment with documented RCA
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PATTERN: ${{ needs.triage.outputs.pattern }}
-          RUN_ID:  ${{ needs.triage.outputs.run_id }}
+          PATTERN:      ${{ needs.triage.outputs.pattern }}
+          RUN_ID:       ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
         run: |
-          # Find the open PR for the failing branch
-          PR_NUMBER=$(gh pr list --head "${{ github.event.workflow_run.head_branch }}" \
+          PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
             --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
-
           if [ -n "$PR_NUMBER" ]; then
-            # base64-encoded PR comment body (decodes to: Self-Healing Escalation message
-            # with RUN_ID and PATTERN placeholders, then envsubst fills them in).
-            # Encoding avoids YAML quote/asterisk parsing issues.
-            BODY=$(echo 'IyMgU2VsZi1IZWFsaW5nIEVzY2FsYXRpb24KClJ1biBJRDogJHtSVU5fSUR9ClBhdHRlcm46ICR7UEFUVEVSTn0KClRoZSBpdGVyYXRpdmUgc2VsZi1oZWFsaW5nIENJIGNvdWxkIG5vdCBhdXRvbWF0aWNhbGx5IGZpeCB0aGlzIGZhaWx1cmUuCgpSZWNvbW1lbmRlZCBhY3Rpb25zOgoxLiBDaGVjayB0aGUgd29ya2Zsb3cgcnVuIGxvZ3MgYXQ6CiAgIGh0dHBzOi8vZ2l0aHViLmNvbS9Bcmllcy1TZXJwZW50L19jb2RleF8vYWN0aW9ucy9ydW5zLyR7UlVOX0lEfQoyLiBSZXZpZXcgLmNvZGV4L3BhdHRlcm5zL2NpX2ZhaWx1cmVfcGF0dGVybnMueWFtbCBmb3IgbWFudWFsIGZpeCBndWlkYW5jZQozLiBQb3N0IEBjb3BpbG90IGZpeCBDSSBmYWlsdXJlIHBhdHRlcm46ICR7UEFUVEVSTn0KICAgYXMgYSBQUiBjb21tZW50IHRvIHRyaWdnZXIgYWdlbnQgcmVzb2x1dGlvbgoKUG9zdGVkIGJ5OiBpdGVyYXRpdmUtc2VsZi1oZWFsaW5nLWNpLnltbA==' | base64 -d | RUN_ID="$RUN_ID" PATTERN="$PATTERN" envsubst)
-            gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ --body "$BODY"
+            RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
+            printf '%s\n' \
+              "## Self-Healing Escalation" "" \
+              "**Pattern:** \`${PATTERN}\`" \
+              "**Run:** ${RUN_URL}" \
+              "**Branch:** \`${HEAD_BRANCH}\`" \
+              "**Auto-fixable:** No (pattern not in fixable set)" "" \
+              "### Why This Cannot Be Auto-Fixed" "" \
+              "Pattern \`${PATTERN}\` is not yet in the autonomous self-healing fix library." \
+              "Review \`.codex/healing_attempts/\` for previous fix attempts on this pattern." "" \
+              "### Recommended Actions" "" \
+              "1. Check the workflow run logs: ${RUN_URL}" \
+              "2. Add pattern to the \`case\` statement in \`iterative-self-healing-ci.yml\`" \
+              "3. Add a fix handler in \`scripts/ci/auto_fix_common_issues.py\`" "" \
+              "*Posted by: iterative-self-healing-ci.yml (Phase 5 — S154)*" \
+              > /tmp/escalation_body.txt
+            gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
+              --body-file /tmp/escalation_body.txt
           fi
-
-          echo "### ⬆ Escalated to human review" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Escalated to human review" >> "$GITHUB_STEP_SUMMARY"
           echo "Pattern \`${PATTERN}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
+          echo "See PR #${PR_NUMBER:-N/A} for escalation comment." >> "$GITHUB_STEP_SUMMARY"

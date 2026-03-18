@@ -116,6 +116,13 @@ Extract:
 | P-028 | `AssertionError: compressed >= original` on tiny fixture | Guard: `if size_original < 1024: pytest.skip(...)` |
 | P-029 | pre-commit EOF failures on JSON/MD/YAML | JSON/MD: add `\n`; YAML: remove trailing blank lines |
 
+### S153 Patterns (P-030 to P-031)
+
+| ID | Signature | Fix |
+|----|-----------|-----|
+| P-030 | `setup-python@v5` post-step: `Cache folder '~/.cache/pip' doesn't exist on disk` | Add `mkdir -p ~/.cache/pip` step **before** `setup-python@v5`. Affects sparse-checkout / stdlib-only workflows where no packages are installed. Fixed in `deferral-language-gate.yml` and `branch-rebase-gate.yml` (S153 — PR #3626). |
+| P-031 | CHANGELOG check_7: auto-generated bullet in wrong PR section — `FAIL: section='PR #X' references 'PR #Y'` | `session_wrapup_autofix.py`: insert bullets into `### Fixed (auto-update — PR #N)` subsection scoped to current PR. See P-030 entry in `ci-failure-resolution-agent.md` for full RCA. Fixed structurally in S153 (PR #3626). |
+
 ## Phase 4 — Fix Application
 
 ### Fix Strategy (priority order)

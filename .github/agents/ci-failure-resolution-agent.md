@@ -109,6 +109,7 @@ Or:
 | **Mock Issues** | `MagicMock`, `spec=` problems | P2 (Medium) |
 | **Test Infrastructure** | Fixture, conftest, collection errors | P0 (Critical) |
 | **Pre-Merge Autofix** | `auto-fixable issues detected` in pre-merge-validation | P1 (High) |
+| **CHANGELOG cross-PR (check_7)** | Auto-generated bullet in wrong PR section — detected by `ci_triage_repro.sh check_7` | P1 (High) |
 
 **Pattern Analysis:**
 ```python
@@ -1081,8 +1082,52 @@ Before activating this agent, ensure:
 ---
 
 **Agent Status:** ✅ READY FOR DEPLOYMENT
-**Last Updated:** 2026-02-18T04:00:00Z
+**Last Updated:** 2026-03-18T20:30:00Z (S153/S154 — P-030 CHANGELOG check_7 pattern added)
 **Maintainer:** GitHub Copilot + Human Oversight (@mbaetiong)
+
+---
+
+## Pattern P-030: CHANGELOG cross-PR auto-generated bullet (check_7)
+
+**ID:** changelog_check7_001
+**Priority:** P1
+**Detection:** `ci_triage_repro.sh` check_7 reports `FAIL: section='PR #X' references 'PR #Y'`
+**Session introduced:** S152/S153 | **Fix in:** `session_wrapup_autofix.py`
+
+### Description
+
+`session_wrapup_autofix.py` was inserting auto-generated CHANGELOG bullets into the
+first `### Fixed` section found in `[Unreleased]`, regardless of which PR owns that
+section. When multiple PRs have entries in `[Unreleased]`, bullets from PR #Y ended up
+inside a `### Fixed (... PR #X)` heading, violating `ci_triage_repro.sh` check_7.
+
+### Detection
+
+```bash
+bash scripts/ci/ci_triage_repro.sh --check 7
+# Output: FAIL: section='PR #X' references 'PR #Y'
+```
+
+### Fix Strategy
+
+1. Identify bullets under wrong section header:
+   ```bash
+   grep -n "auto-generated.*PR #\|Auto-fix.*PR #" CHANGELOG.md
+   ```
+2. Move each misplaced bullet to its own `### Fixed (auto-update — PR #N)` section, OR remove it and let the next `session_wrapup_autofix.py` run re-insert correctly.
+3. Structural fix (prevents recurrence): `session_wrapup_autofix.py` `fix_changelog()` now creates `### Fixed (auto-update — PR #N)` subsection per PR instead of inserting into first `### Fixed`.
+
+### Automated Fix
+
+The structural fix in `session_wrapup_autofix.py` (PR #3626 S153) prevents future occurrences:
+```python
+# Creates: ### Fixed (auto-update — PR #3626)
+# Instead of inserting into the first ### Fixed (which may belong to another PR)
+pr_section_heading = f"### Fixed (auto-update — PR #{pr_number})\n"
+```
+
+### Historical Fixes
+- PR #3626 (S153, 2026-03-18): 6 cross-PR bullets removed; structural fix deployed — c20e833
 
 ---
 
