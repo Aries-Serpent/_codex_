@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-18T13:51:33Z",
+  "generated_at": "2026-03-18T17:12:30Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1729,6 +1729,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/RCA_UNKNOWN_PATTERN_S150.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/README.md",
       "type": "enforcement"
     },
@@ -1774,5 +1778,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e5a17664baae2c1f8a0b6b0524925c2748d663ec512cfe033ba81f6693e9edda"
+  "integrity_sha256": "48a4b10854d7699e81d86dd401893fb2ba193df2d10de99cf58616b976e94518"
 }
