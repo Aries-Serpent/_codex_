@@ -249,26 +249,34 @@ jobs:
         run: |
           # Write attempt record to .codex/healing_attempts/ so future sessions
           # can review what was tried, what worked, and what failed.
+          # Use Python json.dumps() to guarantee valid JSON regardless of special
+          # characters (quotes, backslashes, etc.) in captured log text.
           ATTEMPT_DIR=".codex/healing_attempts"
           mkdir -p "${ATTEMPT_DIR}"
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          ATTEMPT_FILE="${ATTEMPT_DIR}/${TIMESTAMP//[:T]/-}_${PATTERN}_iter${ITERATION}.json"
-          cat > "${ATTEMPT_FILE}" << JSONEOF
-          {
-            "timestamp":    "${TIMESTAMP}",
-            "run_id":       "${RUN_ID}",
-            "head_branch":  "${HEAD_BRANCH}",
-            "pattern":      "${PATTERN}",
-            "iteration":    ${ITERATION},
-            "changed":      ${CHANGED:-false},
-            "valid":        ${VALID:-false},
-            "workflow":     "iterative-self-healing-ci",
-            "pre_triage":   "$(cat /tmp/pre_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|')",
-            "post_triage":  "$(cat /tmp/post_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|')",
-            "fix_output":   "$(cat /tmp/fix_output.txt 2>/dev/null | head -10 | tr '\n' '|')"
+          export TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          export ATTEMPT_FILE="${ATTEMPT_DIR}/${TIMESTAMP//[:T]/-}_${PATTERN}_iter${ITERATION}.json"
+          export PRE_TRIAGE=$(cat /tmp/pre_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|' || true)
+          export POST_TRIAGE=$(cat /tmp/post_triage.txt 2>/dev/null | grep -E 'Summary|✅|❌' | head -5 | tr '\n' '|' || true)
+          export FIX_OUTPUT=$(cat /tmp/fix_output.txt 2>/dev/null | head -10 | tr '\n' '|' || true)
+          python3 - << 'PYEOF'
+          import json, os, sys
+          data = {
+              "timestamp":   os.environ["TIMESTAMP"],
+              "run_id":      os.environ["RUN_ID"],
+              "head_branch": os.environ["HEAD_BRANCH"],
+              "pattern":     os.environ["PATTERN"],
+              "iteration":   int(os.environ.get("ITERATION", 0) or 0),
+              "changed":     os.environ.get("CHANGED", "false").lower() == "true",
+              "valid":       os.environ.get("VALID", "false").lower() == "true",
+              "workflow":    "iterative-self-healing-ci",
+              "pre_triage":  os.environ.get("PRE_TRIAGE", ""),
+              "post_triage": os.environ.get("POST_TRIAGE", ""),
+              "fix_output":  os.environ.get("FIX_OUTPUT", ""),
           }
-          JSONEOF
-          echo "Attempt record: ${ATTEMPT_FILE}"
+          with open(os.environ["ATTEMPT_FILE"], "w") as fh:
+              json.dump(data, fh, indent=2)
+          print(f"Attempt record: {os.environ['ATTEMPT_FILE']}")
+          PYEOF
 
       - name: Commit and push fix (requires COPILOT_AGENT_AUTH_ENABLED=true)
         if: steps.apply_fix.outputs.changed == 'true' && steps.validate.outputs.valid == 'true'
@@ -276,6 +284,7 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PATTERN:  ${{ needs.triage.outputs.pattern }}
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
+          CHANGED_FILES: ${{ steps.apply_fix.outputs.changed_files }}
           # Verify delegation is active before attempting autonomous push.
           # If COPILOT_AGENT_AUTH_ENABLED != 'true', the push will be attempted
           # anyway (CODEX_MASTER_KEY covers it), but a warning is emitted.
@@ -285,18 +294,35 @@ jobs:
             echo "⚠️ COPILOT_AGENT_AUTH_ENABLED is not 'true' — autonomous push may fail."
             echo "   Set COPILOT_AGENT_AUTH_ENABLED=true via Agent Token Delegation workflow."
           fi
+          TARGET_BRANCH="${HEAD_BRANCH:-main}"
+          # Fetch the target branch so the fix commit has it as its parent.
+          # This makes the subsequent push a fast-forward (not a non-fast-forward
+          # from main's HEAD which would be rejected by branch protection).
+          git fetch origin "${TARGET_BRANCH}" 2>/dev/null || true
+          # Move the current HEAD pointer to the target branch tip without
+          # touching the working tree. Files changed by the fix scripts will
+          # then show as unstaged changes relative to the target branch HEAD,
+          # so git add only picks up the fix-script deltas.
+          git reset --mixed "FETCH_HEAD" 2>/dev/null || git reset --mixed "origin/${TARGET_BRANCH}" || true
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
-          git add -A
+          # Stage only the files explicitly changed by the fix scripts
+          # (plus the healing-attempts record). Avoid git add -A which would
+          # stage every difference between main and the target branch.
+          IFS=',' read -ra FILES <<< "${CHANGED_FILES}"
+          for f in "${FILES[@]}"; do
+            f="${f// /}"
+            [ -n "$f" ] && git add -- "$f" 2>/dev/null || true
+          done
+          git add ".codex/healing_attempts/" 2>/dev/null || true
           git commit -m "self-heal(iter-${{ matrix.iteration }}): auto-fix ${PATTERN} [skip ci-if-no-change]
 
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
-          # Push to the TRIGGERING branch (not main) so the fix lands on the correct ref.
-          # HEAD_BRANCH comes from triage.outputs.head_branch (the failing workflow's branch).
-          # Falls back to 'main' only when the triggering run was on the default branch.
-          TARGET_BRANCH="${HEAD_BRANCH:-main}"
+          # Fast-forward push to the TRIGGERING branch.
+          # Because we reset to origin/${TARGET_BRANCH} above, HEAD is one commit
+          # ahead of origin/${TARGET_BRANCH} — the push will be accepted.
           git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
 
       - name: Report iteration
