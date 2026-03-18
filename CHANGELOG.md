@@ -19,9 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (S154 — 2026-03-18 — PR #3628)
 - **`.github/workflows/dependency-submission.yml`** *(new)*: Resilient dependency submission workflow wrapping `actions/component-detection-dependency-submission-action` with `continue-on-error: true` and retry logic. Handles transient GitHub dependency graph API failures gracefully.
 - **`.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md`**: S153/S154 GROUNDED pattern additions — G-NEW-1 (PR-scoped CHANGELOG subsection), G-NEW-2 (pip cache pre-creation for sparse checkouts), G-NEW-3 (Phase 5 autonomous self-healing loop D-00 protocol). Agent registry updated to v2.0.0: `iterative-self-healing-ci` promoted to GROUNDED (9 GROUNDED total).
-- **`.codex/sessions/S154_aftermath.md`** *(new)*: AfterMath session block — 5 lessons learned, improvements, and blockers. Parsed by `scripts/aftermath/parse_session.py` into `.codex/lessons_learned/`.
+- **`.codex/sessions/S154_aftermath.md`** *(new)*: AfterMath session block — 5 lessons captured, improvements, and blockers. Parsed by `scripts/aftermath/parse_session.py` into `.codex/lessons_learned/`.
 - **`.github/agents/ci-failure-resolution-agent.md`**: Added Pattern P-030 (CHANGELOG cross-PR check_7) — full RCA, detection command, fix strategy, automated fix description, and historical fix record.
 - **`.github/agents/ci-auto-healer-agent.md`**: Added S153 patterns P-030 (pip cache sparse-checkout) and P-031 (CHANGELOG check_7 cross-PR) to the pattern library.
+- **`scripts/ci/prevent_sync_commit_conflict.py`** *(new)*: Detection script for the "sync+new-work commit" anti-pattern that causes rebase conflicts when report_progress rebases onto a remote branch that already has the auto-generated sync content. Detects staged CHANGELOG mixed auto+dev content, staged auto-generated files alongside dev files, and CODEX_MANIFEST timestamp conflicts. Exit 1 in `--ci-mode`.
+- **`.codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md`** *(new)*: Full documentation of the sync+new-work rebase conflict pattern discovered in S154 — root cause analysis, 4 prevention rules, detection via script, emergency recovery via `.git/info/attributes` + custom merge driver, and CI integration guide.
 
 ### Fixed (S153 — 2026-03-18 — PR #3626)
 - **`CHANGELOG.md`**: Removed 6 cross-PR auto-generated bullets violating `ci_triage_repro.sh` check_7 — bullets for PRs #3628, #3626, #3624, #3621, #3620, #3625 were in wrong PR sections. All 7 checks now pass.
