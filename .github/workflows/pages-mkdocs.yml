@@ -163,7 +163,11 @@ jobs:
           # See: .codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md
           VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
           VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
-          VITE_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SECURITY NOTE: Do NOT add VITE_GITHUB_TOKEN here.
+          # Any VITE_* variable is compiled into the static client bundle and
+          # would be publicly readable from GitHub Pages.  GitHub data the app
+          # needs must come through unauthenticated public API calls or a
+          # server-side proxy configured via COGNITIVE_APP_API_URL.
         run: |
           if [ -f cognitive_app/package.json ]; then
             cd cognitive_app
