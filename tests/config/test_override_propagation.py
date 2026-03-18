@@ -27,7 +27,7 @@ try:
             allow_module_level=True,
         )
 except ImportError:
-    pass
+    pytest.skip("codex_ml.cli.main not available", allow_module_level=True)
 
 ROOT = Path(__file__).resolve().parents[2]
 

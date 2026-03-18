@@ -79,7 +79,7 @@ def test_no_token_warns(monkeypatch, caplog):
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     import logging
-    with caplog.at_level(logging.WARNING):
+    with caplog.at_level(logging.WARNING, logger="codex.github.mcp_poster"):
         GitHubMCPPoster()
     assert "No GitHub token" in caplog.text
 
