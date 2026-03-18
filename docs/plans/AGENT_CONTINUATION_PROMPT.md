@@ -1,5 +1,8 @@
 # Agent Continuation Prompt: S-14, S-15, S-02 Implementation
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 > **Context**: This prompt enables an Agent to continue implementation from where the current PR left off.  
 > **Generated**: 2025-11-06 11:31:00 | PR: Add S-17 deterministic docs pipeline with Agent-run infrastructure
 

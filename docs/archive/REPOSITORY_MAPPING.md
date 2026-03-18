@@ -1,5 +1,7 @@
 # Codex Repository File Mapping (v1.4.0)
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 **Generated**: 2025-12-09  
 **Purpose**: Quick reference for navigating the _codex_ repository structure  
 **Audience**: AI agents, contributors, maintainers

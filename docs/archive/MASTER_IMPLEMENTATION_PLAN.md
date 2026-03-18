@@ -1,5 +1,7 @@
 # Master Implementation Plan - Comprehensive Gap Resolution
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 **Generated**: 2025-12-11  
 **Status**: Active - Iterating to Completeness  
 **Objective**: Implement ALL pending plans until production-readiness completeness  

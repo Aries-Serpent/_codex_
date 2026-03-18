@@ -28,9 +28,9 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     LIBCST_AVAILABLE = False
-    cst = None  # type: ignore
-    MetadataWrapper = None  # type: ignore
-    PositionProvider = None  # type: ignore
+    cst = None
+    MetadataWrapper = None
+    PositionProvider = None
 
 
 class ParseError(Exception):

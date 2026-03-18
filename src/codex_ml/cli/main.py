@@ -32,6 +32,14 @@ def _load_typer():
 
 typer = _load_typer()
 
+# Hoist evaluate_datasets to module scope so it can be patched by tests via
+# monkeypatch.setattr("codex_ml.cli.main.evaluate_datasets", ...).
+try:  # pragma: no cover - evaluation is optional
+    from codex_ml.eval.eval_runner import evaluate_datasets
+except Exception:  # pragma: no cover
+    def evaluate_datasets(*args, **kwargs):  # type: ignore[misc]
+        return None
+
 if typer is not None:
     app = typer.Typer(
         help="Codex ML CLI\n\nPowered by Hydra (install hydra-core for advanced configuration).",
@@ -569,13 +577,6 @@ else:
             argv.extend(["--cfg-override", *overrides])
 
         main_fn(argv)
-
-    try:  # pragma: no cover - evaluation is optional
-        from codex_ml.eval.eval_runner import evaluate_datasets
-    except Exception:  # pragma: no cover
-
-        def evaluate_datasets(*args, **kwargs):
-            return None
 
     if _HAS_HYDRA and hydra is not None:
 

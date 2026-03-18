@@ -824,7 +824,7 @@ pyarrow==23.0.0
     #   datasets
     #   mlflow
     #   pandas
-pyasn1==0.6.2
+pyasn1==0.6.3
     # via
     #   pyasn1-modules
     #   rsa
@@ -1230,7 +1230,7 @@ tzdata==2025.3
     #   pandas
 tzlocal==5.3.1
     # via great-expectations
-ujson==5.11.0
+ujson==5.12.0
     # via
     #   evidently
     #   fastapi

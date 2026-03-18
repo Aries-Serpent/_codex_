@@ -1,5 +1,7 @@
 # 0D_base_ Branch: MERGE READINESS CONFIRMATION
 
+<!-- archive: this file is a historical record; content is intentionally preserved -->
+
 **Generated**: 2025-11-17T19:00:00Z  
 **Branch**: copilot/verify-current-branch-readiness  
 **Target**: main branch  

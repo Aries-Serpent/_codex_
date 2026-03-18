@@ -304,3 +304,103 @@ class TestTelemetryCollector:
         assert "total_runs" in report["summary"]
         assert "failed_runs" in report["summary"]
         assert "failure_rate" in report["summary"]
+
+
+class TestClassifyRunCLI:
+    """Tests for --classify-run CLI flag added in S150."""
+
+    @pytest.fixture
+    def collector(self):
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+
+    def test_classify_run_rebase_gate(self, collector):
+        """--classify-run returns rebase-gate for branch-rebase-gate workflow failures."""
+        # The branch-rebase-gate.yml workflow has run name "🔀 Branch Rebase Gate"
+        # which contains "rebase" — a rebase-gate keyword.
+        run = {"name": "🔀 Branch Rebase Gate", "id": 99}
+        jobs = [{"name": "REQ-10: Branch Rebase Check"}]
+        assert collector.classify_failure(run, jobs) == "rebase-gate"
+
+    def test_classify_run_auth_delegation(self, collector):
+        """--classify-run returns auth-delegation for agent-auth-delegation failures.
+
+        Note: "Agent Token Delegation" contains "agent token" (auth-delegation keyword)
+        and is therefore classified as auth-delegation, not rebase-gate, even when
+        it fails due to the REQ-10 step.  Both patterns are non-fixable; the
+        self-healing CI correctly escalates in either case.
+        """
+        run = {"name": "Agent Token Delegation", "id": 99}
+        jobs = [{"name": "🧠 Cognitive Pre-flight Check"}]
+        assert collector.classify_failure(run, jobs) == "auth-delegation"
+
+    def test_classify_run_unknown_fallback(self, collector):
+        """--classify-run returns 'unknown' when no keywords match."""
+        run = {"name": "Completely Unrecognised Workflow XYZ", "id": 99}
+        jobs = [{"name": "some-job-with-no-matching-keywords"}]
+        assert collector.classify_failure(run, jobs) == "unknown"
+
+    def test_classify_run_dependency_submission(self, collector):
+        """'Automatic Dependency Submission' runs classify as security-scan (S150 fix).
+
+        Run 23250109072 was a GitHub Advanced Security dependency-graph submission
+        that failed with a transient GitHub API error.  Before S150 it was always
+        classified as 'unknown' because no keyword matched its name.
+        """
+        run = {"name": "Automatic Dependency Submission (Python)", "id": 23250109072}
+        jobs = [{"name": "submit-pypi"}]
+        assert collector.classify_failure(run, jobs) == "security-scan"
+
+    def test_classify_run_main_entrypoint_prints_pattern(self, capsys):
+        """main() with --classify-run prints the pattern and exits cleanly."""
+        import sys as _sys
+
+        import collect_telemetry as ct_mod
+
+        mock_run_resp = Mock()
+        mock_run_resp.json.return_value = {
+            "name": "Resilient Validation Suite",
+            "id": 12345,
+        }
+        mock_run_resp.raise_for_status = Mock()
+
+        mock_jobs_resp = Mock()
+        mock_jobs_resp.json.return_value = {
+            "jobs": [{"name": "pytest resilient validation"}]
+        }
+        mock_jobs_resp.raise_for_status = Mock()
+
+        with (
+            patch("requests.get", side_effect=[mock_run_resp, mock_jobs_resp]),
+            patch.object(_sys, "argv", [
+                "collect_telemetry.py",
+                "--owner", "test-owner",
+                "--repo", "test-repo",
+                "--token", "test-tok",
+                "--classify-run", "12345",
+            ]),
+        ):
+            ct_mod.main()
+
+        captured = capsys.readouterr()
+        assert captured.out.strip() == "test-infrastructure"
+
+    def test_classify_run_api_error_prints_unknown(self, capsys):
+        """main() with --classify-run prints 'unknown' when API call fails."""
+        import sys as _sys
+
+        import collect_telemetry as ct_mod
+
+        with (
+            patch("requests.get", side_effect=Exception("network error")),
+            patch.object(_sys, "argv", [
+                "collect_telemetry.py",
+                "--owner", "test-owner",
+                "--repo", "test-repo",
+                "--token", "test-tok",
+                "--classify-run", "99999",
+            ]),
+        ):
+            ct_mod.main()
+
+        captured = capsys.readouterr()
+        assert "unknown" in captured.out

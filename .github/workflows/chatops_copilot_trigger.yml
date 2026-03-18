@@ -45,6 +45,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache pip downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-chatops-
+
       - name: Parse command and actor
         id: parse
         env:

@@ -20,16 +20,18 @@ def setup_raw():
     if ART.exists():
         shutil.rmtree(ART)
     ART.mkdir()
+    # Write evidence files inside audit_artifacts/ so they are covered by the
+    # existing .gitignore rule and never accidentally committed to repo root.
+    (ART / "a1.txt").write_text("foo bar baz")
+    (ART / "a2.txt").write_text("foo bar qux")
+    (ART / "b1.txt").write_text("solo content")
     raw = {
         "capabilities": [
-            {"id": "alpha", "evidence_files": ["a1.txt", "a2.txt"]},
-            {"id": "beta", "evidence_files": ["b1.txt"]},
+            {"id": "alpha", "evidence_files": ["audit_artifacts/a1.txt", "audit_artifacts/a2.txt"]},
+            {"id": "beta", "evidence_files": ["audit_artifacts/b1.txt"]},
         ]
     }
     (ART / "capabilities_raw.json").write_text(json.dumps(raw), encoding="utf-8")
-    Path("a1.txt").write_text("foo bar baz")
-    Path("a2.txt").write_text("foo bar qux")
-    Path("b1.txt").write_text("solo content")
 
 
 def test_similarity_enabled():

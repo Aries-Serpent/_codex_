@@ -1,5 +1,8 @@
 # Phase 0 Readiness Report - AST Standardization
 
+> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+
+
 **Generated**: 2025-11-09  
 **Purpose**: Comprehensive readiness assessment for AST standardization project  
 **Status**: ASSESSMENT COMPLETE - NO-GO for implementation, GO for planning

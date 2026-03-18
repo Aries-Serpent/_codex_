@@ -60,6 +60,9 @@ class TelemetryCollector:
             "codeql", "security", "dependabot", "vulnerability",
             "secret-scan", "secret scan", "scan-trivy", "sbom",
             "code-scanning",
+            # GitHub Advanced Security: dependency graph submission
+            "dependency submission", "dependency-submission",
+            "automatic dependency", "component-detection",
         ],
         # ── Build / container patterns ────────────────────────────────────────
         "docker-build": [
@@ -98,12 +101,32 @@ class TelemetryCollector:
         # ── Lint / formatting ─────────────────────────────────────────────────
         "lint": [
             "lint", "ruff", "black", "isort", "pre-commit", "format",
-            "auto-update-configs",
+            "auto-update-configs", "actionlint", "compliance-audit",
+            "workflow compliance",
         ],
         # ── Filesystem / directory ────────────────────────────────────────────
         "filesystem-deadlock": [
             "root-org", "file-validation", "directory", "filesystem",
             "flatten-repo", "root_organizer",
+        ],
+        # ── Type-checking / mypy anti-regression ─────────────────────────────
+        "type-check": [
+            "mypy", "type-check", "type check", "anti-regression",
+            "mypy-baseline", "mypy baseline", "type-error",
+        ],
+        # ── Policy / compliance gates ─────────────────────────────────────────
+        "policy-gate": [
+            "deferral", "language-gate", "deferral-language", "policy-check",
+            "deferral language", "deferral gate",
+        ],
+        # ── Branch / rebase gates ─────────────────────────────────────────────
+        "rebase-gate": [
+            "rebase", "branch-rebase", "rebase-gate", "behind base",
+            "branch rebase", "req-10",
+        ],
+        # ── Copilot coding-agent runs ─────────────────────────────────────────
+        "copilot-agent": [
+            "copilot coding", "swe-agent", "copilot-swe", "coding agent",
         ],
         # ── P4.5: New classifiers — drive unknown bucket from ~60% → <30% ────
         # DATETIME_001: offset-aware vs offset-naive mixing (common after Python 3.11+)
@@ -353,6 +376,16 @@ def main():
     parser.add_argument(
         "--token", help="GitHub token (or use GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
     )
+    parser.add_argument(
+        "--classify-run",
+        metavar="RUN_ID",
+        help=(
+            "Classify a single workflow run by ID and print the pattern name to stdout. "
+            "Always exits 0; prints 'unknown' to stdout on API failure to preserve the "
+            "workflow's || echo 'unknown' contract. "
+            "Used by iterative-self-healing-ci.yml to label failures."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -367,6 +400,25 @@ def main():
             "Error: GitHub token required (--token or GITHUB_TOKEN/CODEX_MASTER_KEY env var)"
         )
         sys.exit(1)
+
+    # Single-run classification mode — used by iterative-self-healing-ci.yml.
+    # Fetch run + jobs, classify, and print just the pattern name so the
+    # workflow can capture it via $(…) without needing a full report.
+    if args.classify_run:
+        try:
+            collector = TelemetryCollector(args.owner, args.repo, token)
+            run_id = int(args.classify_run)
+            run_url = f"{collector.base_url}/repos/{collector.owner}/{collector.repo}/actions/runs/{run_id}"
+            run_resp = requests.get(run_url, headers=collector.headers, timeout=30)
+            run_resp.raise_for_status()
+            run = run_resp.json()
+            jobs = collector.collect_job_details(run_id)
+            pattern = collector.classify_failure(run, jobs)
+            print(pattern)
+        except Exception as e:
+            print(f"classify-run error: {e}", file=sys.stderr)
+            print("unknown")
+        return
 
     try:
         collector = TelemetryCollector(args.owner, args.repo, token)

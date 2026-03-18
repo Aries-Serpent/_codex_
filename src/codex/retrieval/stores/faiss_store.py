@@ -182,7 +182,7 @@ class FAISSStore(VectorStore):
         self.index = self.faiss.IndexFlatL2(self.dimension)
 
         # Add vectors
-        self.index.add(embeddings_normalized)  # type: ignore[union-attr, attr-defined]
+        self.index.add(embeddings_normalized)
 
         # Generate IDs if not provided in documents
         self.vector_ids = []
@@ -199,7 +199,7 @@ class FAISSStore(VectorStore):
         # Build ID to index mapping
         self.id_to_index = {vid: idx for idx, vid in enumerate(self.vector_ids)}
 
-        logger.info(f"Successfully added {self.index.ntotal} vectors to index")  # type: ignore[union-attr, attr-defined]
+        logger.info(f"Successfully added {self.index.ntotal} vectors to index")
 
         # Compute checksum
         self._checksum = self._compute_checksum(embeddings_normalized)
@@ -287,9 +287,9 @@ class FAISSStore(VectorStore):
 
         # Load FAISS index
         self.index = self.faiss.read_index(str(index_path))
-        self.dimension = self.index.d  # type: ignore[union-attr, attr-defined]
+        self.dimension = self.index.d
         logger.info(
-            f"Loaded FAISS index from {index_path} (dim={self.dimension}, n={self.index.ntotal})"  # type: ignore[union-attr, attr-defined]
+            f"Loaded FAISS index from {index_path} (dim={self.dimension}, n={self.index.ntotal})"
         )
 
         # Validate dimension
@@ -327,10 +327,10 @@ class FAISSStore(VectorStore):
             logger.info(f"Loaded {len(self.documents)} documents from {docs_path}")
 
             # Validate document count
-            if len(self.documents) != self.index.ntotal:  # type: ignore[union-attr, attr-defined]
+            if len(self.documents) != self.index.ntotal:
                 logger.warning(
                     f"Document count ({len(self.documents)}) != "
-                    f"index vector count ({self.index.ntotal})"  # type: ignore[union-attr, attr-defined]
+                    f"index vector count ({self.index.ntotal})"
                 )
         else:
             logger.warning(f"Documents file not found: {docs_path}")
@@ -484,7 +484,7 @@ class FAISSStore(VectorStore):
                 )
 
         # Check safety limits
-        if self.index.ntotal + n_vectors > self.max_vectors:  # type: ignore[union-attr, attr-defined]
+        if self.index.ntotal + n_vectors > self.max_vectors:
             raise RuntimeError(
                 f"Adding {n_vectors} vectors would exceed maximum ({self.max_vectors})"
             )
@@ -524,8 +524,8 @@ class FAISSStore(VectorStore):
         vectors_normalized = vectors_normalized / norms
 
         # Add to index
-        start_idx = self.index.ntotal  # type: ignore[union-attr, attr-defined]
-        self.index.add(vectors_normalized)  # type: ignore[union-attr, attr-defined]
+        start_idx = self.index.ntotal
+        self.index.add(vectors_normalized)
 
         # Store metadata and IDs
         for i, (vid, meta) in enumerate(zip(ids, metadata, strict=False)):
@@ -534,7 +534,7 @@ class FAISSStore(VectorStore):
             self.id_to_index[vid] = idx
             self.documents.append({"id": vid, "metadata": meta})
 
-        logger.info(f"Added {n_vectors} vectors to index (total: {self.index.ntotal})")  # type: ignore[union-attr, attr-defined]
+        logger.info(f"Added {n_vectors} vectors to index (total: {self.index.ntotal})")
         return ids
 
     def delete(self, ids: Union[str, list[str]]) -> int:

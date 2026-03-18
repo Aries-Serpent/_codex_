@@ -68,7 +68,7 @@ def retry_with_backoff(config: RetryConfig | None = None) -> Callable[[Func], Fu
             for attempt in range(1, retry_config.max_attempts + 1):
                 try:
                     return func(*args, **kwargs)
-                except retry_config.transient_exceptions as exc:  # type: ignore[misc]
+                except retry_config.transient_exceptions as exc:
                     last_error = exc
                     if attempt >= retry_config.max_attempts:
                         raise
@@ -82,6 +82,6 @@ def retry_with_backoff(config: RetryConfig | None = None) -> Callable[[Func], Fu
                 raise last_error
             return func(*args, **kwargs)
 
-        return wrapper  # type: ignore[return-value]
+        return wrapper
 
     return decorator

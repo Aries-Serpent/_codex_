@@ -49,9 +49,9 @@ try:
     _HYDRA_AVAILABLE = True
 except ImportError:
     logger.debug("Hydra not available, using fallback")
-    compose = None  # type: ignore
-    initialize_config_dir = None  # type: ignore
-    HydraMissingConfigException = FileNotFoundError  # type: ignore
+    compose = None
+    initialize_config_dir = None
+    HydraMissingConfigException = FileNotFoundError
     _HYDRA_AVAILABLE = False
 
 # Try to import from config_legacy as fallback
@@ -75,7 +75,7 @@ if not _HYDRA_AVAILABLE:
                 super().__init__(resolved)
                 self.message = resolved
 else:
-    MissingConfigException = HydraMissingConfigException  # type: ignore
+    MissingConfigException = HydraMissingConfigException
 
 
 @dataclass

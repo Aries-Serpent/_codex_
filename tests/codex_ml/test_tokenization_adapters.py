@@ -19,11 +19,15 @@ try:
 except ImportError:
     HAS_TOKENIZERS = False
 
-# Try to import sentencepiece - skip tests if not available
+# Try to import sentencepiece - skip tests if not available.
+# Also verify the module has real functionality (not a stub/type-hint-only package).
+# IS_CODEX_STUB=True means the in-repo shim is active rather than the real C extension.
 try:
-    import sentencepiece  # noqa: F401
+    import sentencepiece as _spm  # noqa: F401
 
-    HAS_SENTENCEPIECE = True
+    HAS_SENTENCEPIECE = hasattr(_spm, "SentencePieceTrainer") and not getattr(
+        _spm, "IS_CODEX_STUB", False
+    )
 except ImportError:
     HAS_SENTENCEPIECE = False
 

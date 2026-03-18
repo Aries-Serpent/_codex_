@@ -1,8 +1,13 @@
 name: Pytest Full Suite Execution
 
-# Purpose: Execute comprehensive pytest suite for failure analysis on any PR
+# Purpose: Execute comprehensive pytest suite for failure analysis.
 # Context: P0 validation phase - environment setup complete, now running full test discovery
 # Output: Test execution log with failure categorization for P1 fixes
+#
+# Trigger policy (hardened — S144):
+#   AUTO  : ONLY when the `0D_base_` branch opens / updates a PR targeting `main`.
+#           Any other branch→main PRs and any branch→0D_base_ PRs are EXCLUDED.
+#   MANUAL: workflow_dispatch remains available for ad-hoc runs.
 
 on:
   workflow_dispatch:
@@ -39,8 +44,11 @@ on:
         default: false
         type: boolean
 
+  # Only trigger for PRs from the 0D_base_ branch targeting main.
+  # github.head_ref is the source branch; the job-level `if` enforces the
+  # 0D_base_ guard so other branches merging into main are not affected.
   pull_request:
-    branches: ["0D_base_"]
+    branches: ["main"]
     paths:
       - 'tests/**'
       - 'src/**'
@@ -69,6 +77,13 @@ concurrency:
 jobs:
   pytest-execution:
     name: Pytest Execution (Python ${{ matrix.python-version }}, Group ${{ matrix.test-group }})
+    # Hardened trigger guard (S144):
+    # For pull_request events: only run when the source branch is `0D_base_`.
+    # This prevents the suite from running on any other branch→main PR,
+    # and on any branch→0D_base_ combination (which cannot reach this workflow
+    # since the pull_request trigger above requires branches: ["main"]).
+    # workflow_dispatch always runs regardless of branch.
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == '0D_base_'
     runs-on: ubuntu-latest
     timeout-minutes: ${{ fromJSON(github.event.inputs.timeout_minutes || '180') }}
 

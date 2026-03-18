@@ -17,7 +17,7 @@ from typing import Any  # noqa: E402
 from urllib.parse import urlsplit  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    import zstandard as _zstd  # type: ignore
+    import zstandard as _zstd
 except Exception:  # pragma: no cover - best-effort fallback
     _zstd = None
 

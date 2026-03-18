@@ -22,17 +22,17 @@ from __future__ import annotations
 import atexit
 import json
 import logging
+import os
+import sqlite3
+import threading
+import time
+import uuid
+from dataclasses import dataclass
+from importlib import import_module
+from pathlib import Path
+from typing import Any, Literal, Optional
 
 logger = logging.getLogger(__name__)
-import os  # noqa: E402
-import sqlite3  # noqa: E402
-import threading  # noqa: E402
-import time  # noqa: E402
-import uuid  # noqa: E402
-from dataclasses import dataclass  # noqa: E402
-from importlib import import_module  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Any, Literal, Optional  # noqa: E402
 
 try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
@@ -83,18 +83,15 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("synchronous=NORMAL failed: %s", e)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("foreign_keys=ON failed: %s", e)
 
 
 def _close_pool() -> None:
@@ -140,8 +137,7 @@ def init_db(db_path: Optional[Path] = None):
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
         try:
             conn.execute(
                 """CREATE TABLE IF NOT EXISTS session_events(
@@ -171,8 +167,7 @@ def init_db(db_path: Optional[Path] = None):
         finally:
             conn.close()
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("init_db failed", exc_info=True)
         with _DB_LOCK:
             _INITIALIZING_PATHS.pop(key, None)
         leader_event.set()
@@ -261,8 +256,7 @@ def log_event(
                 )
                 return
             except TypeError as e:
-                logger.debug(f"TypeError: {e}")
-                logger.warning(f"TypeError: {e}", exc_info=True)
+                logger.warning("monkeypatch adapter call failed (trying legacy): %s", e)
                 # Legacy adapters expect positional ``session_id``/``role`` arguments.
                 try:
                     if meta is not None:
@@ -271,23 +265,20 @@ def log_event(
                         _shared_log_event(session_id, role, message, db_path)
                     return
                 except TypeError as e:
-                    logger.debug(f"TypeError: {e}")
-                    logger.warning(f"TypeError: {e}", exc_info=True)
+                    logger.warning("legacy positional call failed (trying minimal): %s", e)
                     try:
                         _shared_log_event(session_id, role, message)
                     except TypeError as e:
-                        logger.debug(f"TypeError: {e}")
-                        logger.warning(f"TypeError: {e}", exc_info=True)
-                        logging.getLogger(__name__).debug(
-                            "shared log_event compatibility fallback failed",
+                        logger.debug(
+                            "shared log_event compatibility fallback failed: %s",
+                            e,
                             exc_info=True,
                         )
             return
         try:
             _shared_log_event(session_id, role, message, db_path=db_path, meta=meta)
         except TypeError as e:
-            logger.debug(f"TypeError: {e}")
-            logger.warning(f"TypeError: {e}", exc_info=True)
+            logger.warning("shared log_event keyword call failed (retrying without meta): %s", e)
             _shared_log_event(session_id, role, message, db_path=db_path)
         return
     return _fallback_log_event(session_id, role, message, db_path=db_path, meta=meta)
@@ -385,11 +376,7 @@ class SessionLogger:
                     db_path=self.db_path,
                 )
         except Exception:
-            logger.warning("Exception occurred", exc_info=True)
-            logger.warning("Exception occurred", exc_info=True)
-            import logging
-
-            logging.exception("session_end DB log failed")
+            logger.warning("session_end DB log failed", exc_info=True)
         return False
 
     def log(self, role: str, message):
@@ -404,8 +391,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("BEGIN")
         # Backfill seq for rows lacking it

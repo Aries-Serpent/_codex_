@@ -17,7 +17,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 try:
-    import faiss  # type: ignore
+    import faiss
 except ImportError:  # pragma: no cover - exercised when optional dependency missing
     faiss = None
 

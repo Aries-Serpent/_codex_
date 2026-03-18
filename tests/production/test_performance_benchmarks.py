@@ -476,8 +476,8 @@ def test_vectorization_performance():
         result_loop[i] = a[i] * b[i] + np.sin(a[i]) + np.cos(b[i])
     loop_elapsed = time.perf_counter() - start
 
-    # Vectorized should be significantly faster
-    assert vec_elapsed < loop_elapsed / 5, "Vectorization should provide 5x+ speedup"
+    # Vectorized should be significantly faster (3x+ to account for CI variance)
+    assert vec_elapsed < loop_elapsed / 3, "Vectorization should provide 3x+ speedup"
     np.testing.assert_allclose(result_vec, result_loop, rtol=1e-6)
 
 

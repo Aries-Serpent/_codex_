@@ -134,6 +134,12 @@ jobs:
       needs.auth-check.outputs.operation == 'apply-vars'
     steps:
       - uses: actions/checkout@v4
+      - name: Cache pip downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-infra-${{ hashFiles('pyproject.toml') }}
+          restore-keys: ${{ runner.os }}-pip-infra-
       - name: Run variable writer
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
