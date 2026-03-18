@@ -12,6 +12,10 @@ name: CODEX Manifest Auto-Refresh
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  # Scheduled refresh every 6h to prevent E→D C2 stale-manifest failures on
+  # long-running branches (the manifest generated_at must be < 24h old).
+  schedule:
+    - cron: '0 */6 * * *'
 
 concurrency:
   group: codex-manifest-refresh-${{ github.head_ref }}
@@ -26,15 +30,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Skip when the actor is the bot itself (prevents recursion on the bot commit).
-    # github.event.head_commit.message is not present in PR payloads, so use
-    # github.actor instead, which is always safe on pull_request events.
-    if: github.actor != 'github-actions[bot]'
+    # On schedule runs, github.actor is 'github-actions[bot]' — we explicitly allow
+    # scheduled runs to proceed by checking github.event_name.
+    if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR branch (or main on schedule)
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          # On schedule runs, HEAD ref is not available — fall back to main.
+          ref: ${{ github.head_ref || 'main' }}
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 

@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #3628)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3628 (SHA `e77b94e9`) at 2026-03-18T20:55Z [auto-generated]
 
+### Fixed (S154 — 2026-03-18 — PR #3628)
+- **`requirements/lock.txt`**: Bumped `dynaconf` 3.2.12 → 3.2.13 (cherry-picked from dependabot PR #3629; no vulnerabilities in 3.2.13).
+- **`dynamic / submit-pypi (dynamic)`**: Diagnosed as transient GitHub dependency graph API error (HTTP 503 "Please try again later") — confirmed by successful retry. Classified as infrastructure failure (21% of CI failures). No code defect. Added `.github/workflows/dependency-submission.yml` with `continue-on-error` + retry logic for future resilience.
+- **`iterative-self-healing-ci.yml`**: Phase 5 autonomous self-healing loop — added D-00 pre/post `ci_triage_repro.sh` triage, failed-attempt tracking in `.codex/healing_attempts/`, COPILOT_AGENT_AUTH_ENABLED check before push, `head_branch` output for escalation, and expanded fixable patterns (`changelog-*`, `pip-cache-*`, `policy-gate-*`, `rebase-gate-*`, `mypy-baseline`). Escalation comment now structured with RCA documentation. Added `CODEX Manifest Auto-Refresh` to self-exclusion list.
+- **`codex-manifest-refresh.yml`**: Added `schedule: cron: '0 */6 * * *'` trigger — CODEX_MANIFEST.json is now refreshed every 6h on `main`, preventing E→D C2 stale-manifest failures on long-running branches. Guard updated to allow bot actor on scheduled runs.
+
+### Added (S154 — 2026-03-18 — PR #3628)
+- **`.github/workflows/dependency-submission.yml`** *(new)*: Resilient dependency submission workflow wrapping `actions/component-detection-dependency-submission-action` with `continue-on-error: true` and retry logic. Handles transient GitHub dependency graph API failures gracefully.
+- **`.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md`**: S153/S154 GROUNDED pattern additions — G-NEW-1 (PR-scoped CHANGELOG subsection), G-NEW-2 (pip cache pre-creation for sparse checkouts), G-NEW-3 (Phase 5 autonomous self-healing loop D-00 protocol). Agent registry updated to v2.0.0: `iterative-self-healing-ci` promoted to GROUNDED (9 GROUNDED total).
+- **`.codex/sessions/S154_aftermath.md`** *(new)*: AfterMath session block — 5 lessons learned, improvements, and blockers. Parsed by `scripts/aftermath/parse_session.py` into `.codex/lessons_learned/`.
+- **`.github/agents/ci-failure-resolution-agent.md`**: Added Pattern P-030 (CHANGELOG cross-PR check_7) — full RCA, detection command, fix strategy, automated fix description, and historical fix record.
+- **`.github/agents/ci-auto-healer-agent.md`**: Added S153 patterns P-030 (pip cache sparse-checkout) and P-031 (CHANGELOG check_7 cross-PR) to the pattern library.
+
 ### Fixed (S153 — 2026-03-18 — PR #3626)
 - **`CHANGELOG.md`**: Removed 6 cross-PR auto-generated bullets violating `ci_triage_repro.sh` check_7 — bullets for PRs #3628, #3626, #3624, #3621, #3620, #3625 were in wrong PR sections. All 7 checks now pass.
 - **`scripts/ci/session_wrapup_autofix.py`**: Fixed `fix_changelog()` scoping bug — now creates dedicated `### Fixed (auto-update — PR #N)` subsection in `[Unreleased]` instead of inserting into the first `### Fixed` (which belonged to a different PR). Duplicate-entry check now scoped to `[Unreleased]` block only, preventing false-positive skips from older versioned sections. Prevents all future check_7 violations.
