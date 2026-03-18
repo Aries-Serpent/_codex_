@@ -72,7 +72,6 @@ class CommonIssueFixer:
             "Line Length",              # Pattern 12 - ruff format (E501)
             "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
             "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
-            "mypy Baseline Freshness",  # Pattern 15 - auto-update .mypy_baseline when count drops
             "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
         }
         self.manual_review_patterns = {
@@ -84,6 +83,14 @@ class CommonIssueFixer:
             # Pattern 8 - informational only: F401 handled by Pattern 1,
             # F841 cannot be auto-fixed.
             "CodeQL Alerts",
+            # Pattern 15: mypy Baseline Freshness is informational only.
+            # The .mypy_baseline is set for the isolated-venv used by
+            # mypy-baseline.yml (328 errors).  Running mypy in the full
+            # environment gives a lower count (~282), producing a persistent
+            # false positive if treated as auto-fixable.  Always update the
+            # baseline manually via: python scripts/ci/mypy_baseline.py --update
+            # (inside the same isolated-venv as mypy-baseline.yml uses).
+            "mypy Baseline Freshness",
             "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
         }
 
@@ -680,13 +687,21 @@ class CommonIssueFixer:
     def fix_mypy_baseline_freshness(self) -> List[str]:
         """Pattern 15: Detect when live mypy count dropped below stored baseline.
 
-        When mypy errors have been fixed, the .mypy_baseline file should be
-        updated to reflect the new lower count. This pattern auto-updates the
-        baseline when the live count is at least 10 errors below the stored value.
+        This is a DETECTION-ONLY pattern (manual_review, not auto_fixable).
+
+        The .mypy_baseline is calibrated for the isolated-venv used by
+        mypy-baseline.yml (only mypy + types-PyYAML + types-requests installed),
+        which currently gives ~328 errors.  Running mypy in a full project
+        environment typically gives a lower count (~282) because additional
+        stub packages suppress errors.  Auto-writing the baseline from a
+        full-env count would cause mypy-baseline.yml to fail.
+
+        To legitimately lower the baseline, run:
+            python scripts/ci/mypy_baseline.py --update
+        inside the same isolated-venv as mypy-baseline.yml uses.
         """
         issues = []
         baseline_path = self.repo_root / ".mypy_baseline"
-        mypy_script = self.repo_root / "scripts" / "ci" / "mypy_baseline.py"
 
         if not baseline_path.exists():
             return issues
@@ -713,22 +728,19 @@ class CommonIssueFixer:
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return issues  # skip if mypy unavailable
 
-        threshold = 10  # only update if we've dropped by at least 10
+        # Report when live count is more than 50 below baseline.  The 50-error
+        # threshold filters out the known full-env vs isolated-venv discrepancy
+        # (~46 errors) so this only fires for genuine large-scale improvements
+        # that definitely warrant a manual baseline update.
+        threshold = 50
         if live <= stored - threshold:
             issues.append(
                 f".mypy_baseline is {stored} but live count is {live} "
-                f"({stored - live} lower — update recommended)"
+                f"({stored - live} lower — update recommended via "
+                f"'python scripts/ci/mypy_baseline.py --update' in isolated-venv)"
             )
-            if not self.check_only and not self.dry_run:
-                if mypy_script.exists():
-                    subprocess.run(
-                        ["python3", str(mypy_script), "--update"],
-                        cwd=self.repo_root,
-                        capture_output=True,
-                    )
-                else:
-                    baseline_path.write_text(str(live) + "\n")
-                self.fixes_applied["mypy Baseline Freshness"] = 1
+        # NOTE: no auto-fix write — updating the baseline from a full-env run
+        # would break mypy-baseline.yml which uses an isolated-venv.
 
         return issues
 
