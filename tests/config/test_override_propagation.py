@@ -15,6 +15,20 @@ import pytest
 # Skip these tests if hydra is not available in the environment
 pytest.importorskip("hydra")
 
+# Skip when the Typer CLI is active: --override-file is only supported in the
+# Hydra-backed CLI path.  When typer is installed, codex_ml.cli.main uses the
+# Typer app which does not accept this flag.
+try:
+    import codex_ml.cli.main as _cli_main  # noqa: F401
+
+    if hasattr(_cli_main, "_typer_cli_wrapper"):
+        pytest.skip(
+            "--override-file requires the Hydra CLI path; typer CLI is active",
+            allow_module_level=True,
+        )
+except ImportError:
+    pass
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
