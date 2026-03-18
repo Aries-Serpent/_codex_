@@ -6359,3 +6359,47 @@ and the CI gate requirement.
 - 0 deferral language violations in this session
 
 ---
+
+---
+
+## SESSION ADDENDUM — S154b | 2026-03-18T21:50Z | PR #3628 | Playwright/Firewall + Anti-Pattern Documentation
+
+### Issue Addressed (§0 CODEBASE_AGENCY_POLICY.md — Fix ALL issues found)
+
+**Root cause of push failure documented and prevented:**
+
+The commit `cc02675` contained BOTH sync changes (copying remote auto-commit content:
+`### Fixed (auto-update — PR #3628)`, `CODEX_MANIFEST.json` timestamp, session files)
+AND S154 development changes. When `report_progress` rebased onto `49b1278` (which
+already had those sync changes from `8f1932a`), git produced a 3-way merge conflict
+because both sides added content at the same CHANGELOG location.
+
+**Resolution applied:**
+1. `.git/info/attributes` + `merge.keepcommit` driver — auto-resolves the 4 conflicting
+   files by taking cc02675's content (the desired final state)
+2. `scripts/ci/prevent_sync_commit_conflict.py` (new) — detects this pattern before it
+   is committed in future sessions
+3. `.codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md` (new) — full documentation with
+   4 prevention rules and emergency recovery procedure
+
+**Playwright diagnosis:**
+- `ERR_BLOCKED_BY_CLIENT` = browser-side content blocker (not a firewall issue)
+- `curl github.com` → HTTP 200 confirmed: network/firewall is NOT blocking GitHub
+- No firewall changes required. Playwright browser has a built-in content blocker
+  that intercepts `github.com` before the request hits the network.
+
+**Merge readiness — final assessment:**
+- PR #3628 targets `main` (protected)
+- PR is DRAFT — must be marked ready before merge
+- `0D_base_` staging branch does NOT currently exist in the repo
+- **Recommendation:** @mbaetiong to either (a) force-push locally if desired, or
+  (b) let the merge driver handle it on the next report_progress push attempt
+
+### Files Added (S154b)
+1. `scripts/ci/prevent_sync_commit_conflict.py` — new prevention script
+2. `.codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md` — new documentation
+
+### Deferral Language Gate
+- 0 violations
+
+---
