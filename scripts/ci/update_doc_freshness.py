@@ -47,12 +47,12 @@ from pathlib import Path
 _DATE_PATTERNS: list[re.Pattern[str]] = [
     # **Generated:** 2025-12-26T...Z
     re.compile(r'(\*\*(?:Generated|Last Updated|Updated|Last Audited)\*\*:?\s*)'
-               r'(202[0-5]-\d{2}-\d{2}(?:T[0-9:Z.]+)?)', re.IGNORECASE),
+               r'(20\d{2}-\d{2}-\d{2}(?:T[0-9:Z.]+)?)', re.IGNORECASE),
     # > Generated: 2025-10-09 20:20:37 UTC
     re.compile(r'((?:Generated|Last Updated|Updated|Last Audited):?\s*)'
-               r'(202[0-5]-\d{2}-\d{2}(?:\s+[0-9:]+\s*UTC)?)', re.IGNORECASE),
+               r'(20\d{2}-\d{2}-\d{2}(?:\s+[0-9:]+\s*UTC)?)', re.IGNORECASE),
     # **Version:** 1.0.0 — 2025-...
-    re.compile(r'(\*\*Version\*\*:.*?)(202[0-5]-\d{2}-\d{2})', re.IGNORECASE),
+    re.compile(r'(\*\*Version\*\*:.*?)(20\d{2}-\d{2}-\d{2})', re.IGNORECASE),
 ]
 
 _ARCHIVE_NOTICE = (

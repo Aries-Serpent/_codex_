@@ -85,10 +85,10 @@ class TestContractCompliance:
 
             result = _lpd()
             for item in result:
-                # Accept both pathlib.Path and its concrete subclasses (PosixPath /
-                # WindowsPath) regardless of which namespace loaded the module.
-                assert isinstance(item, Path) or hasattr(item, "is_file"), (
-                    f"Item {item} should be Path-like, got {type(item)}"
+                # list_plan_documents() is annotated to return list[Path]; assert
+                # isinstance so PosixPath/WindowsPath (stdlib subclasses) also pass.
+                assert isinstance(item, Path), (
+                    f"Item {item} should be Path, got {type(item)}"
                 )
         except ImportError:
             pytest.skip("Module not available")
