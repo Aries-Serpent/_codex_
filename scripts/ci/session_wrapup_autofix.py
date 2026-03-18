@@ -247,32 +247,30 @@ def fix_changelog(
         lines.insert(insert_idx, unreleased_block)
         new_content = "".join(lines)
     else:
-        # [Unreleased] exists — add our entry under ### Fixed (or create it)
-        if _AUTO_ENTRY_SENTINEL in content and f"PR #{pr_number}" in content:
+        # [Unreleased] exists — add our entry under a PR-specific ### Fixed heading.
+        # check_7 in ci_triage_repro.sh requires that every auto-generated bullet live
+        # in a ### Fixed section whose PR number matches the bullet's PR reference.
+        # To guarantee this we always create a dedicated subsection for the current PR.
+        # Scope the duplicate-check to lines within the [Unreleased] block only, so a
+        # matching PR # in an older versioned section doesn't suppress a new insertion.
+        idx = content.index(_UNRELEASED_MARKER)
+        after_unreleased = content[idx + len(_UNRELEASED_MARKER):]
+        next_version_section = after_unreleased.find("\n## ")
+        unreleased_block = (
+            after_unreleased if next_version_section == -1 else after_unreleased[:next_version_section]
+        )
+        if _AUTO_ENTRY_SENTINEL in unreleased_block and f"PR #{pr_number}" in unreleased_block:
             print(f"ℹ  CHANGELOG already has an auto-entry for PR #{pr_number}. Skipping.")
             return False
 
-        idx = content.index(_UNRELEASED_MARKER)
-        # Find the next section heading after [Unreleased]
-        after_unreleased = content[idx + len(_UNRELEASED_MARKER):]
-        next_section = after_unreleased.find("\n## ")
-        section_content = (
-            after_unreleased if next_section == -1 else after_unreleased[:next_section]
+        # Position the new subsection right after the [Unreleased] heading line.
+        insert_pos = idx + len(_UNRELEASED_MARKER) + 1
+        pr_section_heading = f"### Fixed (auto-update — PR #{pr_number})\n"
+        new_content = (
+            content[:insert_pos]
+            + f"\n{pr_section_heading}{new_entry}\n"
+            + content[insert_pos:]
         )
-
-        if "### Fixed" in section_content:
-            fixed_idx = content.index("### Fixed", idx)
-            # Insert after "### Fixed\n"
-            insert_pos = content.index("\n", fixed_idx) + 1
-            new_content = content[:insert_pos] + new_entry + "\n" + content[insert_pos:]
-        else:
-            # Add a ### Fixed subsection right after [Unreleased] heading
-            insert_pos = idx + len(_UNRELEASED_MARKER) + 1
-            new_content = (
-                content[:insert_pos]
-                + f"\n### Fixed\n{new_entry}\n"
-                + content[insert_pos:]
-            )
 
     if dry_run:
         print(f"[dry-run] Would update {CHANGELOG}")

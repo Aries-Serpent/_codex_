@@ -59,6 +59,12 @@ jobs:
             scripts/ci/branch_rebase_check.py
           sparse-checkout-cone-mode: false
 
+      - name: "🗂️ Pre-create pip cache dir"
+        run: mkdir -p ~/.cache/pip
+        # setup-python@v5 post-step fails with "Cache folder doesn't exist on disk"
+        # when no packages are installed (stdlib-only sparse checkout).
+        # Pre-creating the directory prevents that transient post-step failure.
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v5
         with:

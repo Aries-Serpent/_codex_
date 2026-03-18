@@ -33,6 +33,12 @@ jobs:
       - name: "📥 Checkout"
         uses: actions/checkout@v4
 
+      - name: "🗂️ Pre-create pip cache dir"
+        run: mkdir -p ~/.cache/pip
+        # setup-python@v5 post-step fails with "Cache folder doesn't exist on disk"
+        # when no packages were installed (the default when DEFERRAL_SCANNER_ML=0).
+        # Pre-creating the directory prevents that transient post-step failure.
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v5
         with:

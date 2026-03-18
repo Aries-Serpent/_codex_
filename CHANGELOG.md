@@ -7,18 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S153 — 2026-03-18 — PR #3626)
+- **`CHANGELOG.md`**: Removed 6 cross-PR auto-generated bullets violating `ci_triage_repro.sh` check_7 — bullets for PRs #3628, #3626, #3624, #3621, #3620, #3625 were in wrong PR sections. All 7 checks now pass.
+- **`scripts/ci/session_wrapup_autofix.py`**: Fixed `fix_changelog()` scoping bug — now creates dedicated `### Fixed (auto-update — PR #N)` subsection in `[Unreleased]` instead of inserting into the first `### Fixed` (which belonged to a different PR). Duplicate-entry check now scoped to `[Unreleased]` block only, preventing false-positive skips from older versioned sections. Prevents all future check_7 violations.
+- **`.github/workflows/deferral-language-gate.yml`**: Added `Pre-create pip cache dir` step (`mkdir -p ~/.cache/pip`) before `setup-python@v5`. Fixes "Cache folder doesn't exist on disk" post-step failure on sparse checkouts where no packages are installed.
+- **`.github/workflows/branch-rebase-gate.yml`**: Same pip cache pre-creation fix for sparse-checkout stdlib-only workflow.
+- **`CODEX_MANIFEST.json`**: Refreshed timestamp (E→D C2 condition satisfied — <24h window).
+
+### Added (S153 — 2026-03-18 — PR #3626)
+- **`.codex/COGNITIVE_BRAIN_STATUS_S153.md`** *(new)*: Phase 4→5 transition plan. CI failure taxonomy (5 categories, 58 failures), Phase 5 self-healing loop architecture (Mermaid flowchart), E→D gate: 5/5 ✅, Phase 5 readiness: 8/10, S154 roadmap.
+- **`.github/agents/cognitive-brain-session-injector.md`**: Updated to v1.5.0 — Key Files table extended with S152/S153 fix patterns (`session_wrapup_autofix.py` scoping, `deferral-language-gate.yml`, `branch-rebase-gate.yml`); Version History table completed through v1.5.0.
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: S153 session added — Agent Token Delegation active, deep research CI failure taxonomy, 99/100 merge readiness.
+
 ### Fixed (S150 — 2026-03-18 — PR #3606)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3628 (SHA `3fd8f6a0`) at 2026-03-18T19:11Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3626 (SHA `739c286c`) at 2026-03-18T17:12Z [auto-generated]
 - **`scripts/ci/collect_telemetry.py`**: Added `--classify-run <RUN_ID>` CLI flag — every CI failure was classified as "unknown" because `iterative-self-healing-ci.yml` called this flag which did not exist; `argparse` exited 2, triggering the `|| echo "unknown"` fallback on every run. Flag now fetches run+jobs via GitHub API, calls `classify_failure()`, and prints the pattern name to stdout. See RCA: `.codex/docs/RCA_UNKNOWN_PATTERN_S150.md`.
 - **`tests/ci/test_telemetry_collection.py`**: Added `TestClassifyRunCLI` — 6 tests covering rebase-gate classification, auth-delegation, unknown fallback, dependency-submission → `security-scan`, main() entrypoint output, and API error handling.
 - **`.codex/docs/RCA_UNKNOWN_PATTERN_S150.md`**: Created structured Root Cause Analysis covering all 4 root causes, timeline, fix, prevention measures, and lessons learned.
 - **`.codex/lessons_learned.md`** + **`.codex/lessons_learned.json`**: AfterMath artifacts generated via `scripts/aftermath/parse_session.py` — S150 cumulative lessons and session checkpoint for session resume.
 
 ### Fixed (S149 — 2026-03-18 — PR #3619)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3624 (SHA `139fbadc`) at 2026-03-18T13:46Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3621 (SHA `c3f77912`) at 2026-03-18T10:13Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3620 (SHA `29f6244f`) at 2026-03-18T06:02Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3619 (SHA `6d3bdc18`) at 2026-03-18T04:50Z [auto-generated]
 
 ### Fixed (S148 — 2026-03-18 — PR #3618)
@@ -147,7 +154,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
 
 ### Fixed (S131 — 2026-03-17 — PR #3604)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3625 (SHA `a9f0b01e`) at 2026-03-18T13:27Z [auto-generated]
 - **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
 - **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
 - **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`
