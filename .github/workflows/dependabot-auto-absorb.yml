@@ -59,6 +59,9 @@ jobs:
           # Fetch full history so we can cherry-pick cleanly.
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          # When triggered via workflow_dispatch with a target_branch, check out
+          # that branch so the cherry-pick lands in the right place.
+          ref: ${{ inputs.target_branch || '' }}
 
       - name: "🔍 Verify single-file change"
         id: check
@@ -128,6 +131,8 @@ jobs:
           # Attempt cherry-pick; abort cleanly on conflict.
           if git cherry-pick "${HEAD_SHA}"; then
             echo "✅ Cherry-pick succeeded: ${CHANGED_FILE}"
+            # Push the cherry-picked commit back to the repository.
+            git push origin HEAD
           else
             echo "⚠️  Cherry-pick conflict — aborting auto-absorb for PR #${PR_NUMBER}"
             git cherry-pick --abort
