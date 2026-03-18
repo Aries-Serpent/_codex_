@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S147 — 2026-03-18 — PR #3615, code-review r3964392067)
+- **`scripts/ci/session_bootstrap.py`**: Fixed broken anchor links in blocking-issues digest — `check_id` values like `1_actionlint` are now mapped to `#check-N` anchors matching `CI_TRIAGE_REPRO_S145.md` headings (PR review: `session_bootstrap.py:675-679`).
+- **`scripts/ci/session_bootstrap.py`**: Fixed misleading `triage ✅ clean` in session checklist when triage was skipped via `--skip-triage`. Changed `baseline_ok` default from `True` to `None`; checklist now renders `⏭️ skipped` when triage never ran, `✅ clean` when it ran and passed, `❌ FAILURES FOUND` when it ran and failed (PR review: `session_bootstrap.py:504-505`).
+- **`scripts/ci/session_bootstrap.py`**: Removed undocumented exit code `2` from module docstring — `main()` never returned 2; behavior now accurately documented as 0 (success / offline / skip-triage) or 1 (blocking failures) (PR review: `session_bootstrap.py:57`).
+- **`scripts/ci/monitor_run.py`**: Fixed `--session-start` CLI flag being silently overridden by `GITHUB_RUN_STARTED_AT` env var — added `cli_override` keyword parameter to `_resolve_session_start()`; explicit `--session-start` now takes highest priority over env and API values. Updated `main()` and `MonitorThread.__init__` to pass CLI value as `cli_override` (PR review: `monitor_run.py:1064-1066` and `monitor_run.py:399-418`).
+- **`.github/workflows/agent-auth-delegation.yml`**: Fixed false `✅ Context digest committed and pushed.` message when `git commit` or `git push` failed silently (guarded with `|| true`). Now tracks `_commit_ok`/`_push_ok` flags and emits `⚠️` warning if either step fails (PR review: `agent-auth-delegation.yml:1097-1101`).
+- **`tests/ci/test_monitor_run.py`**: Replaced no-op `assert handle.is_alive() or True` assertion (always passes) with `assert isinstance(handle, MonitorThread)` — deterministic type check that validates the return contract of `start_background_monitor()` (PR review: `test_monitor_run.py:254`).
+- **`.codex/COGNITIVE_BRAIN_STATUS_S146.md`**: Corrected Metrics Delta — session_bootstrap test count was `8 tests`, actual is `21 tests` (PR review: `COGNITIVE_BRAIN_STATUS_S146.md:96`).
+- **`.github/agents/cognitive-brain-session-injector.md`**: Corrected Key Files table — `test_monitor_run.py` test count was `17`, actual is `26` (PR review: `cognitive-brain-session-injector.md:135-136`).
+
+### Added (S147 — 2026-03-18 — PR #3615)
+- **`tests/ci/test_monitor_run.py`**: Added `test_resolve_cli_override_beats_env_var` — verifies `cli_override` keyword arg takes precedence over `GITHUB_RUN_STARTED_AT` env var in `_resolve_session_start()`. Suite grows to 27 tests.
+- **`tests/ci/test_session_bootstrap.py`**: Updated `test_bootstrap_report_defaults` — asserts `baseline_ok is None` on fresh `BootstrapReport` (was `True`; corrected to reflect new `Optional[bool]` semantic).
+
+### Fixed (S146 — 2026-03-17 — PR #3615)
+- **`.codex/session_context_latest.md` + `.codex/sessions/`**: Applied trailing-newline normalisation from PR #3613 final state (cherry-pick parity).
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Applied trailing-newline fix from PR #3613 final state.
+
+### Added (S146 — 2026-03-17 — PR #3615)
+- **`.github/workflows/agent-auth-delegation.yml`**: Wired D-00 `session_bootstrap.py` as step `3c-bis` in `activate-delegation` job. Runs `--offline --skip-triage` before `@copilot continue` fires; commits `.codex/session_context_latest.md` digest to the branch so the agent finds fresh context on checkout. Step is `continue-on-error: true` so a bootstrap failure never blocks delegation.
+- **`.codex/COGNITIVE_BRAIN_STATUS_S146.md`** *(new)*: Phase 4 status, S146 completions, architecture diagram showing D-00 wired into `agent-auth-delegation`, and S147 next-phase objectives.
+- **`tests/ci/test_session_bootstrap.py`** *(new)*: 21 unit tests covering URL extraction (PR/issue/run/review kinds, deduplication, empty input), dataclass construction, `GitHubClient` offline mode, and `write_digest` round-trip.
+- **`scripts/ci/monitor_run.py`** *(new)*: Concurrent workflow run monitor CLI. Tracks session elapsed time from Copilot Coding Agent session start (resolved via `GITHUB_RUN_STARTED_AT` env → API `run_started_at` → spawn-time fallback) with nanosecond precision (`Xh Ym Zs NNNNNNNNNns` format). Supports `--daemon` (non-blocking background process), `--status` (read state file without blocking), `--wait` (re-attach + tail log), `--stop` (SIGTERM daemon), `--list` (all monitors with live elapsed), `--cherry-pick`, `--triage`, `--run-id`, `--check-id`, `--commit`, `--session-start`, `--json-out`. Writes `.codex/monitor/<run_id>/state.json` after every poll. Excludes `.codex/agent_auth*` / `CODEX_MANIFEST*` from cherry-pick. Python embedding API: `start_background_monitor()` + `poll_status()`.
+- **`tests/ci/test_monitor_run.py`** *(new)*: 26 unit tests covering `PollSnapshot` serialisation, state-file round-trip, exit-code mapping, `cherry_pick_delta` skip-pattern filtering, `_resolve_session_start` priority (env → API → fallback), `_compute_elapsed` at sub-second/minutes/hours precision with 9-digit zero-padded nanosecond remainder, snapshot timing-field serialisation, `_poll_loop` timing stamps, `cmd_list` empty-dir, and `start_background_monitor` thread API.
+- **`docs/ci/CONCURRENT_MONITOR_CHERRY_PICK_REPRO.md`** *(new)*: Reproducible 9-step reference for the concurrent monitor + cherry-pick pattern. Includes full Mermaid architecture diagram (Trigger → Daemon → Parallel Work → Poll Loop → Integration → Failure Handling subgraphs), CLI quick-reference, decision tree, and timing verification section showing how session elapsed is tracked from `GITHUB_RUN_STARTED_AT`.
+- **`.github/agents/cognitive-brain-session-injector.md`**: Updated to v1.4.0 — added concurrent-monitor subgraph to D-00 architecture diagram, wired `monitor_run.py --daemon` as D-00b step, added `monitor_run.py` and `test_monitor_run.py` to Key Files table.
+- **`.gitignore`**: Added `.codex/monitor/` exclusion — daemon state files (PID, state.json, daemon.log) are machine-generated and must not be committed.
+
+### Fixed (S145 — 2026-03-17 — PR #3606)
+- **`.github/workflows/coherence-snapshot.yml`**: Fixed SC2072 actionlint/shellcheck error — replaced illegal decimal string comparison with `awk` arithmetic; aligned dashboard `--status` threshold from `> 99.6` to `>= 99.7` to match the enforcement step (a score of 99.65 would have shown "success" on the dashboard while failing enforcement).
+- **`.github/workflows/ci-health-monitor.yml`**: Fixed telemetry extraction bug — `chr(34)+"key"+chr(34)` lookups embedded literal `"` characters into dict key strings (e.g., looked up `'"failed_runs"'` instead of `'failed_runs'`), causing `FAILED_RUNS` and `TOTAL_RUNS` to always be 0 in the CI Health Alert issue body while `FAILURE_RATE` was computed correctly. Replaced with plain string keys via re-encoded base64 script.
+- **`scripts/ci/pr_comment_consolidator.py`**: Removed redundant `ci_score = 0.0` dead assignment (github-code-quality alert — variable always reassigned in every branch before use).
+- **`scripts/ci/aais_v4_scorer.py`**: Fixed import block sort order (ruff I001) — OTel try-block import moved to canonical position.
+- **`scripts/ci/pr_comment_consolidator.py`**: Fixed import block sort order (ruff I001) — OTel try-block import moved to canonical position.
+- **`.mypy_baseline`**: Updated from 0 → 282 to reflect current type-error count; prevents mypy anti-regression gate false failures.
+- **`CHANGELOG.md`**: Removed auto-generated cross-PR bullet that referenced PR #3613 from the S145 section header (PR #3606); inconsistency flagged by PR #3613 review thread r2949785123.
+
+### Added (S145 — 2026-03-17 — PR #3606)
+- **`scripts/ci/session_bootstrap.py`** *(new)*: Agent Session Pre-Process Bootstrapper (D-00 gate). Extracts all GitHub URLs from session context text; fetches structured data for issues, PRs, workflow runs, and review threads via GitHub API; runs all 7 CI triage checks; writes `.codex/session_context_latest.md` digest; exits 1 on blocking issues. Supports `--offline`, `--skip-triage`, `--json-out`, `--verbose` modes.
+- **`scripts/ci/ci_triage_repro.sh`** *(new)*: Reproducible CI Triage Toolkit — 7 checks covering actionlint SC2072, ruff I001, mypy baseline, auto-fix gate (16 patterns), telemetry extraction correctness, threshold alignment, and CHANGELOG self-consistency. Supports `--fix`, `--json`, `--check N` modes.
+- **`docs/ci/CI_TRIAGE_REPRO_S145.md`** *(new)*: Standardised per-check reference — root cause, repro command, fix command, and verification command for all 7 triage checks.
+- **`.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md`** *(new)*: Agent Session Diagnostic Protocol (ASDP) — mandatory D-00…D-08 pre-session checklist; D-00 wires `session_bootstrap.py` as the first step before any code changes.
+- **`.codex/COGNITIVE_BRAIN_STATUS_S145.md`** *(new)*: Cognitive Brain Phase 4 status, metrics delta, 7 knowledge facts stored, and S146 next-phase objectives.
+- **`.github/agents/cognitive-brain-session-injector.md`**: Updated to v1.3.0 — wired D-00 `session_bootstrap.py` step into the session start architecture diagram; updated Key Files table with all S145 artefacts.
+
 ### Added (S144 — 2026-03-17 — PR #3610)
 - **`scripts/ci/aais_v4_scorer.py`**: OTel live CI wiring — imports `compute_coherence` and `workflow_coherence_score` from `codex.monitoring.otel_metrics` and emits one coherence observation per AAIS run, mapping sub-dimension pass/fail outcomes against policy-expected "pass" for all dimensions. Import is guarded so the scorer stays runnable without `src/` on the path.
 - **`scripts/ci/pr_comment_consolidator.py`**: OTel coherence observation emitted on every dashboard update (fraction of workflows reporting `success`). Hardened **Merge Readiness Score** (0–100, weighted by CI 35% / Reviews 20% / Conflicts 15% / Comments 15% / Quality 10% / Freshness 5%) now computed and rendered **at the top of every dashboard update** — replaces soft/optional approach with a grounded, always-on implementation. Includes follow-up gap prompt and collapsible score breakdown table.
@@ -58,8 +103,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/workflows/dependabot-auto-absorb.yml`**: New workflow — automatically cherry-picks single-file Dependabot bump PRs (e.g. Dockerfile base-image upgrades) into the active branch, eliminating manual absorption sessions. Supports dry-run mode and conflict-safe abort.
 
 ### Fixed (S138 — 2026-03-17 — PR #3607)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3610 (SHA `9c177180`) at 2026-03-17T15:56Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3606 (SHA `961dc65e`) at 2026-03-17T10:50Z [auto-generated]
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3607 (SHA `e442d416`) at 2026-03-17T09:29Z [auto-generated]
 
 ### Fixed (S136 — 2026-03-17 — PR #3605)
@@ -87,8 +130,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.github/copilot-prompts/active/PR-3604-followup.md`**: Populated follow-up prompt with concrete Phase 4 tasks and validation commands
 
 ### Fixed (S131 — 2026-03-17 — PR #3604)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3614 (SHA `974ddf5`) at 2026-03-17T05:20Z [auto-generated]
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3605 (SHA `d043103d`) at 2026-03-17T04:46Z [auto-generated]
 - **`src/security/providers/github_provider.py`**: Fixed 6 reviewer thread issues — corrected docstring URL (`GET https://api.github.com/user`), added PAT-scope validation (`_KNOWN_INSTALLATION_PERMISSIONS`), fail-closed on empty token in 201 response, fixed `update_token_scopes()` docstring return semantics, resolved `installation_id` from config/env instead of raw `secret_id`
 - **`.secrets.baseline`**: Added `.codex/evidence/archive_ops.jsonl` (SHA256 hashes — false positives) and `tests/security/test_providers.py` entries
 - **`docs/ROADMAP.md`**: Fixed stale `today` metric (2026-03-16 → 2026-03-17) via `doc_metrics_sync.py --fix`
@@ -402,7 +443,6 @@ New `.mypy_baseline`: **932**. Next target: < 880 (S48).
 ## [Session — S45 — 2026-03-15 — PR #3583]
 
 #### Fixed — Art_Security Scanning Suite SBOM generation
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3584 (SHA `7d544dd4`) at 2026-03-15T05:31Z [auto-generated]
 - `cyclonedx-py` CLI interface changed; updated from `--format json --output` to
   subcommand `cyclonedx-py environment --format JSON --outfile` in `security-scanning-suite.yml`
 

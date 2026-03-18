@@ -965,6 +965,10 @@ class CommonIssueFixer:
             "F-String Placeholders": 11,
             "Line Length": 12,
             "W-Series Warnings": 13,
+            "Link Checker Config": 14,
+            "mypy Baseline Freshness": 15,
+            "Stub Duplicate Defs": 16,
+            "CI SHA Drift": 17,
         }
 
         for pattern_name, issues in self.issues_found.items():
