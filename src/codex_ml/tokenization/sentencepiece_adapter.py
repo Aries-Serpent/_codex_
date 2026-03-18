@@ -49,6 +49,8 @@ def _get_sentencepiece():
     try:  # pragma: no cover - optional dependency
         import sentencepiece as sentencepiece_module
 
+        if getattr(sentencepiece_module, "IS_CODEX_STUB", False):
+            raise ImportError("sentencepiece is not installed (repo stub active)")
         if not hasattr(sentencepiece_module, "SentencePieceTrainer"):
             raise ImportError(
                 "sentencepiece module is missing SentencePieceTrainer. "
@@ -57,7 +59,6 @@ def _get_sentencepiece():
         spm = sentencepiece_module
         return sentencepiece_module
     except Exception:
-        logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.

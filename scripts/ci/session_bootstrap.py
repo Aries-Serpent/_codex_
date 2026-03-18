@@ -409,8 +409,11 @@ def run_triage(verbose: bool = False) -> List[TriageResult]:
                         status   = info.get("status", "?"),
                         detail   = info.get("detail", ""),
                     ))
-            except json.JSONDecodeError:
-                pass
+            except json.JSONDecodeError as exc:
+                results.append(TriageResult(
+                    "triage_json", "skip",
+                    f"Failed to parse JSON triage output: {exc}",
+                ))
         if not results:
             # Fall back: parse human-readable output
             for line in out.splitlines():
