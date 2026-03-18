@@ -668,6 +668,9 @@ def consolidate(
                     extra_sections = _decode_sections(dup["body"])
                     for k, v in extra_sections.items():
                         # Prefer whichever comment is newer for this workflow key.
+                        # Dupes are sorted ascending so the last one wins among
+                        # multiple dupes; comparing against canonical_ts ensures
+                        # we never replace a newer canonical entry with an older dup.
                         if k not in sections or dup_ts > canonical_ts:
                             sections[k] = v
                 if dupes:
