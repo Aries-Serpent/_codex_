@@ -63,11 +63,13 @@ jobs:
           python scripts/ci/generate_manifest.py
           python3 -c 'import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])' >> "$GITHUB_OUTPUT"
 
-      - name: Update compliance files (REQ-4/5)
-        # Ensures AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are always
-        # touched in the same commit as the manifest so the Cognitive Pre-flight
-        # REQ-4 and REQ-5 checks never fail on an auto-refresh commit.
-        # Skip PR-scoped steps on scheduled runs (no PR payload available).
+      - name: Update compliance files (REQ-4/5 — PR runs only)
+        # On pull_request runs: runs session_wrapup_autofix.py so that
+        # AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in the
+        # same commit as the manifest, satisfying REQ-4 and REQ-5.
+        # On schedule runs: this step is skipped (no PR payload is available).
+        # The manifest-only commit is still valid for schedule runs; compliance
+        # files are updated by the next PR-triggered run instead.
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
           RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

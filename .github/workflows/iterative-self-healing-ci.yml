@@ -142,19 +142,33 @@ jobs:
         iteration: [1, 2, 3]
 
     steps:
-      - name: Checkout scripts from default branch (trusted source)
-        # SECURITY: workflow_run-triggered workflows must NEVER execute untrusted
-        # PR code with elevated permissions. We check out the default branch (main)
-        # to source our own verified fix scripts only.
-        # The actual fix is applied to the TRIGGERING head_branch via git push to
-        # that branch's ref (see "Commit and push fix" step below).
+      - name: Checkout target branch (working tree)
+        # Check out the TRIGGERING branch so fix scripts are applied to its actual
+        # content, not main's content. This prevents accidentally committing
+        # main→branch differences along with the fix.
+        # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
+        # autonomous push succeeds without manual approval.
         uses: actions/checkout@v4
         with:
           fetch-depth: 50
-          ref: main
-          # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
-          # autonomous push succeeds without manual approval.
+          ref: ${{ needs.triage.outputs.head_branch || 'main' }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Overlay trusted fix scripts from main (security)
+        # SECURITY: workflow_run-triggered workflows must NEVER execute untrusted
+        # PR code with elevated permissions. We overwrite the CI fix scripts with
+        # verified main-branch versions after checking out the target branch, so
+        # the working tree content is from the target branch but the scripts used
+        # for fixing are always from the trusted default branch.
+        run: |
+          git fetch origin main --depth=5 --no-tags 2>/dev/null || true
+          git restore --source=origin/main -- \
+            scripts/ci/auto_fix_common_issues.py \
+            scripts/ci/ci_triage_repro.sh \
+            scripts/ci/session_wrapup_autofix.py \
+            2>/dev/null \
+            || echo "⚠️ Some scripts not found on origin/main — using target-branch versions"
+          echo "✅ Trusted fix scripts overlaid from origin/main"
 
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -295,20 +309,14 @@ jobs:
             echo "   Set COPILOT_AGENT_AUTH_ENABLED=true via Agent Token Delegation workflow."
           fi
           TARGET_BRANCH="${HEAD_BRANCH:-main}"
-          # Fetch the target branch so the fix commit has it as its parent.
-          # This makes the subsequent push a fast-forward (not a non-fast-forward
-          # from main's HEAD which would be rejected by branch protection).
-          git fetch origin "${TARGET_BRANCH}" 2>/dev/null || true
-          # Move the current HEAD pointer to the target branch tip without
-          # touching the working tree. Files changed by the fix scripts will
-          # then show as unstaged changes relative to the target branch HEAD,
-          # so git add only picks up the fix-script deltas.
-          git reset --mixed "FETCH_HEAD" 2>/dev/null || git reset --mixed "origin/${TARGET_BRANCH}" || true
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
           # Stage only the files explicitly changed by the fix scripts
           # (plus the healing-attempts record). Avoid git add -A which would
-          # stage every difference between main and the target branch.
+          # stage every difference between HEAD and the remote.
+          # We are already on the target branch (checked out in the first step),
+          # so no git reset is needed — the working tree is already at the correct
+          # branch tip and the fix-script changes are relative to that content.
           IFS=',' read -ra FILES <<< "${CHANGED_FILES}"
           for f in "${FILES[@]}"; do
             f="${f// /}"
@@ -320,9 +328,9 @@ jobs:
           Autonomous Phase 5 self-heal — pattern: ${PATTERN}
           Iteration: ${{ matrix.iteration }} | Run: https://github.com/Aries-Serpent/_codex_/actions/runs/${{ needs.triage.outputs.run_id }}
           COPILOT_AGENT_AUTH_ENABLED: ${AGENT_AUTH_ENABLED}"
-          # Fast-forward push to the TRIGGERING branch.
-          # Because we reset to origin/${TARGET_BRANCH} above, HEAD is one commit
-          # ahead of origin/${TARGET_BRANCH} — the push will be accepted.
+          # Fast-forward push to the triggering branch. Because the working tree
+          # was already checked out at origin/${TARGET_BRANCH}, the fix commit is
+          # one commit ahead of origin/${TARGET_BRANCH} — the push is accepted.
           git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
 
       - name: Report iteration

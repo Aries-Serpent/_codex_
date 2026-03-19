@@ -17,7 +17,9 @@ on:
   push:
     branches: [main, 'copilot/**', 'dependabot/**']
   pull_request:
-    branches: [main]
+    # Include 0D_base_ so this workflow also runs on staging PRs (where
+    # CI/workflow changes land before promotion to main).
+    branches: [main, '0D_base_']
   workflow_dispatch:
 
 concurrency:
@@ -59,7 +61,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Retry submission on transient API failure
+      - name: Handle submission failure (infrastructure failure — allow workflow to pass)
+        # This step does NOT retry; it logs a structured explanation and exits 0.
+        # Retrying here would not help: the GitHub dependency graph API returns HTTP 503
+        # intermittently due to backend capacity issues unrelated to this repository.
+        # The component-detection action's own internal retry logic already handles
+        # transient network-level failures. If it exits non-zero, the error is an
+        # infrastructure issue — we surface it in the step summary and continue.
         if: steps.submit_component.outcome == 'failure'
         run: |
           echo "⚠️ Dependency submission failed (likely transient GitHub API error)."
@@ -68,7 +76,7 @@ jobs:
           echo ""
           echo "Root cause: GitHub dependency graph API returns HTTP 503 intermittently."
           echo "Classified: security-scan / dependency-submission pattern"
-          echo "Resolution: Retry; or wait for GitHub API recovery."
+          echo "Resolution: The next scheduled run or push will re-attempt submission."
           echo ""
           echo "### ⚠️ Dependency Submission" >> "$GITHUB_STEP_SUMMARY"
           echo "Submission attempt failed — likely transient GitHub API error." >> "$GITHUB_STEP_SUMMARY"
