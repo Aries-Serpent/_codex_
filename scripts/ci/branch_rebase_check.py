@@ -5,7 +5,8 @@ This script is the authoritative "rebase-first" gate.  It is called by:
 
   1. `branch-rebase-gate.yml`     — on every PR push/synchronize; posts a
                                     BRANCH_REBASE_REQUIRED marker comment when
-                                    the branch is behind its base.
+                                    the branch is behind its base, or
+                                    auto-merges when the gap is all-bot [skip ci].
   2. `agent-auth-delegation.yml`  — REQ-10 in cognitive-preflight; HARD BLOCKS
                                     agent activation when a rebase is required.
   3. Locally by agents/developers — `python scripts/ci/branch_rebase_check.py`
@@ -14,6 +15,7 @@ This script is the authoritative "rebase-first" gate.  It is called by:
 Exit codes
 ----------
     0   Branch is up-to-date (at parity with or ahead of base)
+    0   Branch was auto-merged successfully (--auto-merge-skip-ci resolved it)
     1   Branch is BEHIND base — rebase required
     2   Branch is DIVERGED — rebase required
     3   Could not determine status (treated as warning, not hard block)
@@ -28,11 +30,32 @@ Usage
         --repo Aries-Serpent/_codex_ --pr 3586 \\
         --github-output --post-comment
 
+    # Auto-merge when gap is 100% bot [skip ci] commits, else require manual rebase
+    python scripts/ci/branch_rebase_check.py \\
+        --repo Aries-Serpent/_codex_ --pr 3586 \\
+        --auto-merge-skip-ci --post-comment --github-output --github-summary
+
 Environment (CI mode)
 ---------------------
-    GITHUB_TOKEN / GH_TOKEN      PAT with pull-requests:write + contents:read
+    GITHUB_TOKEN / GH_TOKEN      PAT with pull-requests:write + contents:write
     GITHUB_REPOSITORY            owner/repo
     GITHUB_STEP_SUMMARY          Path for job summary markdown
+
+Auto-merge behaviour (--auto-merge-skip-ci)
+-------------------------------------------
+    Scheduled workflows (embedding-index-rebuild, cognitive-analysis-feed,
+    codex-manifest-refresh, repo-var-sync-schedule, vars-guide-sync) commit
+    directly to main on a 2-24 h cadence.  Any open PR becomes "diverged"
+    within hours — triggering the REQ-10 hard block for a purely structural
+    reason (no human code changed).
+
+    With --auto-merge-skip-ci the gate will:
+      1. Fetch the commits that base has but head does not (the "gap").
+      2. If ALL gap commits are from github-actions[bot] AND have [skip ci]
+         in their message → call the GitHub Merges API to merge base into head.
+      3. Post a BRANCH_REBASE_RESOLVED comment and clear the REQ-10 gate.
+      4. If ANY gap commit is human-authored or functional → fall through to
+         the normal BRANCH_REBASE_REQUIRED hard block.
 """
 from __future__ import annotations
 
@@ -144,7 +167,140 @@ def compare_branches(repo: str, token: str, base: str, head: str) -> dict | None
     return gh_api("GET", f"/repos/{repo}/compare/{b}...{h}", token)
 
 
-def check_via_api(repo: str, token: str, pr_number: int) -> tuple[str, int, int, str, str]:
+# ---------------------------------------------------------------------------
+# Auto-merge helpers (--auto-merge-skip-ci)
+# ---------------------------------------------------------------------------
+
+# Bot logins that are known to produce automated [skip ci] metadata commits.
+_BOT_LOGINS = frozenset(
+    {"github-actions[bot]", "41898282+github-actions[bot]"}
+)
+
+
+def get_commits_in_gap(
+    repo: str, token: str, base_branch: str, head_branch: str
+) -> list[dict]:
+    """Return the commits that are in *base_branch* but NOT in *head_branch*.
+
+    These are the commits the PR branch is "behind" — the gap that needs
+    to be merged in.  We call compare/{head}...{base} so that the returned
+    ``commits`` list contains commits present in base but absent in head.
+    """
+    cmp = compare_branches(repo, token, head_branch, base_branch)
+    if not cmp:
+        return []
+    return cmp.get("commits", [])
+
+
+def all_skip_ci_bot_commits(commits: list[dict]) -> bool:
+    """Return True when every commit in *commits* is a [skip ci] bot commit.
+
+    A commit qualifies when:
+      • Its GitHub author OR committer login is a known bot (github-actions[bot])
+      • Its commit message contains ``[skip ci]`` (case-insensitive)
+
+    An empty list returns False — we never auto-merge when we can't confirm
+    the gap contents.
+    """
+    if not commits:
+        return False
+    for entry in commits:
+        author_login = ((entry.get("author") or {}).get("login") or "").lower()
+        committer_login = ((entry.get("committer") or {}).get("login") or "").lower()
+        message = (entry.get("commit") or {}).get("message", "")
+
+        is_bot = any(
+            bot.lower() in author_login or bot.lower() in committer_login
+            for bot in _BOT_LOGINS
+        )
+        has_skip_ci = "[skip ci]" in message.lower()
+
+        if not (is_bot and has_skip_ci):
+            return False
+    return True
+
+
+def auto_merge_base_into_branch(
+    repo: str,
+    token: str,
+    head_branch: str,
+    base_branch: str,
+    num_commits: int,
+) -> tuple[bool, str]:
+    """Merge *base_branch* into *head_branch* via the GitHub Merges API.
+
+    Uses the server-side merge endpoint so no git checkout is required.
+    Returns ``(success, detail_message)``.  A 204 (no-op / already merged)
+    is treated as success.
+    """
+    now_iso = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    payload = {
+        "base": head_branch,
+        "head": base_branch,
+        "commit_message": (
+            f"chore: auto-merge {num_commits} automated commit(s) "
+            f"from {base_branch} [skip ci]\n\n"
+            f"Automatically merged by branch-rebase-gate.yml at {now_iso}.\n"
+            f"All gap commits were [skip ci] github-actions[bot] commits "
+            f"(no functional code changes)."
+        ),
+    }
+    result = gh_api(
+        "POST",
+        f"/repos/{repo}/merges",
+        token,
+        json.dumps(payload).encode(),
+    )
+    # gh_api returns None on 204 (no content = already merged → success)
+    if result is None:
+        return True, "no-op (already up-to-date)"
+    if isinstance(result, dict) and result.get("sha"):
+        return True, result["sha"]
+    return False, f"unexpected API response: {result!r}"
+
+
+def post_auto_merge_comment(
+    repo: str,
+    token: str,
+    pr_number: int,
+    base_branch: str,
+    head_branch: str,
+    num_commits: int,
+) -> None:
+    """Post (or update) a BRANCH_REBASE_RESOLVED comment noting the auto-merge."""
+    now_iso = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    body = (
+        f"<!-- {REBASE_RESOLVED_MARKER} -->\n"
+        f"## ✅ Branch Auto-Updated — REQ-10 Cleared\n\n"
+        f"Branch `{head_branch}` was behind `{base_branch}` by "
+        f"**{num_commits} automated commit(s)** — all `[skip ci]` "
+        f"`github-actions[bot]` commits (no functional code changes).\n\n"
+        f"`branch-rebase-gate.yml` has automatically merged these commits "
+        f"into `{head_branch}`. No manual rebase is required.\n\n"
+        f"**Commits merged:** metadata updates only "
+        f"(embedding index, cognitive brain patterns, variable sync, manifest).\n\n"
+        f"_Auto-merged by `branch-rebase-gate.yml` at {now_iso}_"
+    )
+    comments = get_pr_comments(repo, token, pr_number)
+    existing = _find_bot_comment(comments, REBASE_RESOLVED_MARKER)
+    if existing:
+        gh_api(
+            "PATCH",
+            f"/repos/{repo}/issues/comments/{existing['id']}",
+            token,
+            json.dumps({"body": body}).encode(),
+        )
+        print(f"  🔄 Updated auto-merge comment (#{existing['id']}) on PR #{pr_number}")
+    else:
+        gh_api(
+            "POST",
+            f"/repos/{repo}/issues/{pr_number}/comments",
+            token,
+            json.dumps({"body": body}).encode(),
+        )
+        print(f"  ✅ Posted auto-merge comment on PR #{pr_number}")
+
+
     """Return (status, behind_by, ahead_by, base_branch, head_branch).
 
     status: 'up-to-date' | 'behind' | 'ahead' | 'diverged' | 'unknown'
