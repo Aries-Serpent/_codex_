@@ -5,7 +5,7 @@ name: "Resilient Dependency Submission"
 # request. Please try again later." (HTTP 503) when the dependency graph API is
 # temporarily unavailable (classified: infrastructure failure, 21% of CI failures).
 #
-# This workflow wraps actions/component-detection-dependency-submission-action
+# This workflow wraps advanced-security/component-detection-dependency-submission-action
 # with retry logic and continue-on-error so transient API errors don't block PRs.
 #
 # Root cause: GitHub dependency graph API intermittency — not a code defect.
@@ -51,11 +51,10 @@ jobs:
 
       - name: Submit via component-detection (attempt 1, with retry)
         # Pin to a specific release SHA for supply-chain safety.
-        # @v0 floating tag replaced with commit SHA of v0.0.17 (2024-06-18).
-        # To update: check https://github.com/actions/component-detection-dependency-submission-action/releases
+        # To update: check https://github.com/advanced-security/component-detection-dependency-submission-action/releases
         id: submit_component
         continue-on-error: true
-        uses: actions/component-detection-dependency-submission-action@3de0ef986ee0ccc6d7bd0d21e87b13e6a67b5bdc  # v0.0.17
+        uses: advanced-security/component-detection-dependency-submission-action@b876b8cc341a53970394b33ea0ca4e86c25542de  # v0.1.3
         with:
           scanDirectory: '.'
         env:
