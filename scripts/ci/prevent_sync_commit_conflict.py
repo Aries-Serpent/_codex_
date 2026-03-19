@@ -185,7 +185,14 @@ def check_auto_generated_files(staged_files: list[str]) -> list[ConflictRisk]:
     staged_auto = [f for f in staged_files if any(f.endswith(ag) or ag in f for ag in AUTO_GENERATED_FILES)]
     staged_dev = [f for f in staged_files if f not in staged_auto and f != "CHANGELOG.md"]
 
-    if staged_auto and staged_dev:
+    # If there's already an error-level CHANGELOG risk, avoid emitting additional
+    # auto-generated file warnings to reduce duplicate/conflicting messages.
+    has_changelog_error = any(
+        risk.file == "CHANGELOG.md" and risk.severity == "error"
+        for risk in changelog_risks
+    )
+
+    if staged_auto and staged_dev and not has_changelog_error:
         for auto_file in staged_auto:
             risks.append(ConflictRisk(
                 file=auto_file,
