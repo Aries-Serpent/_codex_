@@ -60,6 +60,7 @@ jobs:
           # (max 60 min budget) and skip integration/slow groups entirely.
           if [ "$IS_PROMOTION_PR" = "false" ] && [ "${{ matrix.test-group }}" = "quick" ]; then
             # Collect files changed in this PR to narrow test scope
+            git fetch origin ${{ github.base_ref }} --depth=1 2>/dev/null || true
             CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'tests/' 'src/' 'scripts/' 2>/dev/null | head -100 || true)
             if [ -n "$CHANGED_FILES" ]; then
               echo "Running scoped quick tests on changed paths..."
