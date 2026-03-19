@@ -280,11 +280,15 @@ cd cognitive_app && npm ci && npm run build
 | `VITE_API_MODE` | Pages build env | `github` (S155 default) | Force API mode (`live`/`github`/`har`/`mock`) |
 | `VITE_CLI_API_URL` | Pages build env / `.env.local` | `http://localhost:8765` | CLI server URL |
 | `VITE_CODEX_KEY` | `.env.local` only | `demo-key` | Bearer token for `/api/memory/*` calls |
-| `VITE_GITHUB_TOKEN` | Pages build env | GITHUB_TOKEN | GitHub API rate limit (60→5000 req/hr) |
 | `COGNITIVE_APP_API_URL` | Repo variable | not set | Overrides `VITE_CLI_API_URL` at Pages build |
 | `COGNITIVE_APP_API_MODE` | Repo variable | `github` | Overrides `VITE_API_MODE` at Pages build |
 | `CODEX_ALLOWED_ORIGINS` | Server env | `localhost:5173,aries-serpent.github.io` | CORS allowlist |
 | `CODEX_MASTER_KEY` | Server env | not set | Auto-injected on `api.github.com` calls |
+
+> **Note:** `VITE_GITHUB_TOKEN` has been removed. Any `VITE_*` variable is inlined into the
+> static client bundle at build time, making it publicly readable. The Pages build uses the
+> unauthenticated GitHub API (60 req/hr) instead. For higher rate limits, configure a
+> server-side proxy via `COGNITIVE_APP_API_URL`.
 
 ---
 

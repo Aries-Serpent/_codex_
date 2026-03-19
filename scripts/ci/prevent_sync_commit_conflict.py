@@ -66,10 +66,15 @@ class ConflictRisk(NamedTuple):
 
 
 def get_staged_diff() -> str:
-    """Return the full staged diff (git diff --cached)."""
+    """Return the full staged diff (git diff --cached).
+
+    Uses --unified=3 (3 context lines) so that detection logic depending on
+    nearby context — e.g. spotting '## [Unreleased]' above an inserted '###'
+    heading — has the surrounding lines available in the hunk.
+    """
     try:
         result = subprocess.run(
-            ["git", "diff", "--cached", "--unified=0"],
+            ["git", "diff", "--cached", "--unified=3"],
             capture_output=True, text=True, check=False
         )
         return result.stdout
