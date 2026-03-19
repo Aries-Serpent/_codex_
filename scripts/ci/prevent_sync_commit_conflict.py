@@ -14,12 +14,12 @@ Documentation: .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
 
 Usage:
     python scripts/ci/prevent_sync_commit_conflict.py          # check staged changes
-    python scripts/ci/prevent_sync_commit_conflict.py --ci-mode # exit 1 on detect
+    python scripts/ci/prevent_sync_commit_conflict.py --ci-mode # exit 1 on error-severity findings
     python scripts/ci/prevent_sync_commit_conflict.py --diff <file>  # check specific diff
 
 Exit codes:
-    0 = clean (no anti-pattern detected, or only warnings issued)
-    1 = anti-pattern detected in --ci-mode
+    0 = clean (no anti-pattern detected), or only warnings present
+    1 = error-severity anti-pattern detected in --ci-mode (warnings alone do not trigger exit 1)
 """
 
 import argparse
@@ -177,7 +177,7 @@ def check_changelog_diff(diff_text: str) -> list[ConflictRisk]:
     return risks
 
 
-def check_auto_generated_files(staged_files: list[str], changelog_risks: list[ConflictRisk]) -> list[ConflictRisk]:
+def check_auto_generated_files(staged_files: list[str]) -> list[ConflictRisk]:
     """
     Detect when auto-generated files are staged alongside development changes.
     """
@@ -271,7 +271,7 @@ def main() -> int:
     all_risks.extend(check_changelog_diff(changelog_diff))
 
     # Check auto-generated files staged alongside dev files
-    all_risks.extend(check_auto_generated_files(staged_files, all_risks))
+    all_risks.extend(check_auto_generated_files(staged_files))
 
     # Check CODEX_MANIFEST.json
     manifest_diff = extract_file_diff(full_diff, "CODEX_MANIFEST.json")

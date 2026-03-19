@@ -169,6 +169,10 @@ jobs:
             2>/dev/null \
             || echo "⚠️ Some scripts not found on origin/main — using target-branch versions"
           echo "✅ Trusted fix scripts overlaid from origin/main"
+          # Record which scripts were overlaid so we can restore them before staging.
+          # This prevents accidentally committing the trusted-main versions back into
+          # the target branch when only fix outputs should be staged.
+          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_scripts.txt
 
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -204,12 +208,18 @@ jobs:
         run: |
           echo "Applying auto-fix for pattern: ${PATTERN} (iteration ${ITERATION})"
           python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/fix_output.txt
+          # Restore the overlaid trusted scripts so they don't appear in the diff.
+          # Only actual fix outputs (not trusted-main script versions) should be staged.
+          if [ -f /tmp/overlaid_scripts.txt ]; then
+            # shellcheck disable=SC2046
+            git restore -- $(cat /tmp/overlaid_scripts.txt) 2>/dev/null || true
+          fi
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "⚠️ No changes produced for pattern \`${PATTERN}\`" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "changed=true"  >> "$GITHUB_OUTPUT"
-            CHANGED_FILES=$(git diff --name-only | head -20 | tr '\n' ', ')
+            CHANGED_FILES=$(git diff --name-only | tr '\n' ',')
             echo "changed_files=${CHANGED_FILES}" >> "$GITHUB_OUTPUT"
             echo "✅ Changes produced: ${CHANGED_FILES}" >> "$GITHUB_STEP_SUMMARY"
           fi

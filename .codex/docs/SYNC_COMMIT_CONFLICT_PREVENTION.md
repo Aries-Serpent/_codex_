@@ -146,8 +146,8 @@ in staged changes before they are committed:
 python scripts/ci/prevent_sync_commit_conflict.py
 
 # Exit codes:
-# 0 = clean (no sync+new-work anti-pattern detected)
-# 1 = anti-pattern detected (warning, with remediation steps)
+# 0 = clean (no sync+new-work anti-pattern detected, or only warnings present)
+# 1 = error-severity anti-pattern detected in --ci-mode (warnings alone exit 0)
 ```
 
 The script checks:

@@ -16,6 +16,7 @@ metrics:
   new_grounded_patterns: 3
   aftermath_lessons: 5
   merge_readiness: 99
+  session_duration_minutes: 50
 
 quality:
   ci_checks_passing: "7/7"
