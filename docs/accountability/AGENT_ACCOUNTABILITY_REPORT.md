@@ -3,7 +3,29 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-ci-failure-triage-report
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-18T20:30Z (S153 — COPILOT_AGENT_AUTH_ENABLED activated + full S152 re-apply + cognitive brain Phase 4→5 — PR #3626)
+**Last updated:** 2026-03-19T10:00Z (S159 — CI check resolution for PR #3628 merge blockers)
+
+---
+
+## SESSION SUMMARY — 2026-03-19 S159 PR #3628
+
+### Work Completed (S159)
+| Area | Change | Detail |
+|------|--------|--------|
+| `dependency-submission.yml` | Fixed action org name | `actions/` → `advanced-security/`; SHA pin v0.1.3 |
+| `iterative-self-healing-ci.yml` | Fixed SC2015 shellcheck | `if/then/fi` replaces `A && B \|\| C` |
+| `agent-auth-delegation.yml` | Skip when already active | `if: vars != 'true'` guard on detect-checkbox |
+| `.codex/COGNITIVE_BRAIN_STATUS_S159.md` | Phase 5 status | 10/10 readiness, E→D 5/5 |
+| `.codex/sessions/S159_aftermath.md` | AfterMath session | 4 lessons, metrics, decisions |
+| `CHANGELOG.md` | S158/S159 entries | CI check fixes documented |
+| `docs/system/CODEBASE_DASHBOARD.md` | Dashboard updated | AfterMath pipeline run |
+
+### CI Check Status
+- 7/7 ci_triage_repro.sh checks: ✅ ALL PASS
+- actionlint: 0 errors across all workflow files
+- Unit tests: 18/18 pass
+- Dependency submission: fixed (correct org + SHA)
+- Agent Token Delegation: fixed (skip when already active)
 
 ---
 

@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #3628)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3628 (SHA `e77b94e9`) at 2026-03-18T20:55Z [auto-generated]
 
+### Fixed (S159 — 2026-03-19 — PR #3628)
+- **`dependency-submission.yml`**: Fixed action reference — `actions/component-detection-dependency-submission-action` (non-existent repo) → `advanced-security/component-detection-dependency-submission-action@v0.1.3` (SHA `b876b8cc`). Resolves both push and PR trigger failures.
+- **`iterative-self-healing-ci.yml`**: Fixed actionlint SC2015 shellcheck error — replaced `[ -n "$f" ] && git add -- "$f" 2>/dev/null || true` with proper `if/then/fi` block. Eliminates the only actionlint compliance failure across all workflow files.
+- **`agent-auth-delegation.yml`**: Added `if: vars.COPILOT_AGENT_AUTH_ENABLED != 'true'` guard on `detect-checkbox` job — prevents cascading concurrency cancellations when `report_progress` updates PR body (which fires the `edited` event type). `workflow_dispatch` override preserved for manual re-activation.
+
+### Fixed (S158 — 2026-03-19 — PR #3628)
+- **`copilot-setup-steps.yml`**: Fixed SIGPIPE in "✅ Validate Environment Setup" step — `pip list | head -20` triggers exit 141 under bash `set -o pipefail`. Added `trap '' PIPE` + `set +o pipefail` + `|| true` guards.
+
 ### Fixed (S154 — 2026-03-18 — PR #3628)
 - **`requirements/lock.txt`**: Bumped `dynaconf` 3.2.12 → 3.2.13 (cherry-picked from dependabot PR #3629; no vulnerabilities in 3.2.13).
 - **`dynamic / submit-pypi (dynamic)`**: Diagnosed as transient GitHub dependency graph API error (HTTP 503 "Please try again later") — confirmed by successful retry. Classified as infrastructure failure (21% of CI failures). No code defect. Added `.github/workflows/dependency-submission.yml` with `continue-on-error` + retry logic for future resilience.

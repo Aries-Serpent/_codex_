@@ -14,7 +14,14 @@ name: "🚨 Deferral Language Gate"
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
+    # 'edited' intentionally omitted: report_progress updates the PR body on
+    # every push, which fires 'edited' alongside 'synchronize'. With
+    # cancel-in-progress the two runs race and one gets cancelled — the CI
+    # dashboard then reports the latest run as "cancelled" (looks like a failure).
+    # Removing 'edited' eliminates the double-trigger. The deferral check still
+    # scans the full PR body on every 'synchronize' event (push), so coverage
+    # is identical.
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: deferral-gate-${{ github.head_ref }}

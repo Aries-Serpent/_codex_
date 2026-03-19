@@ -205,13 +205,36 @@ def _fetch_pr_data(pr_number: int, token: str) -> Optional[dict]:
 
 
 def _fetch_check_runs(ref: str, token: str) -> list[dict]:
-    """Fetch check runs for a commit ref."""
+    """Fetch check runs for a commit ref, deduplicated by check name.
+
+    GitHub returns ALL check runs for a SHA — including older runs that were
+    superseded by newer runs for the same check (e.g., when concurrency
+    ``cancel-in-progress`` cancels an older run).  The PR checks tab only
+    shows the **latest** result per check name.  We match that behaviour by
+    deduplicating: for each check name, keep only the run with the most
+    recent ``completed_at`` timestamp.
+    """
     repo = _repo()
     try:
         result = _api_request("GET", f"/repos/{repo}/commits/{ref}/check-runs?per_page=100", token=token)
-        return (result or {}).get("check_runs", [])
+        all_runs = (result or {}).get("check_runs", [])
     except Exception:  # noqa: BLE001
         return []
+
+    # Deduplicate: keep the latest completed run per check name.
+    latest_by_name: dict[str, dict] = {}
+    for run in all_runs:
+        name = run.get("name", "")
+        existing = latest_by_name.get(name)
+        if existing is None:
+            latest_by_name[name] = run
+        else:
+            # Prefer the run with the later completed_at (or started_at as fallback)
+            run_ts = run.get("completed_at") or run.get("started_at") or ""
+            existing_ts = existing.get("completed_at") or existing.get("started_at") or ""
+            if run_ts > existing_ts:
+                latest_by_name[name] = run
+    return list(latest_by_name.values())
 
 
 def _fetch_reviews(pr_number: int, token: str) -> list[dict]:
@@ -223,13 +246,59 @@ def _fetch_reviews(pr_number: int, token: str) -> list[dict]:
         return []
 
 
-def _fetch_review_comments(pr_number: int, token: str) -> list[dict]:
-    """Fetch review (inline) comments to estimate unresolved count."""
+def _fetch_review_threads(pr_number: int, token: str) -> dict:
+    """Fetch review thread resolved/unresolved counts via GraphQL.
+
+    The REST API (``/pulls/{pr}/comments``) does NOT expose whether a review
+    thread is resolved — it only returns flat comment objects.  The GraphQL
+    API exposes ``reviewThreads.nodes[].isResolved``, giving us an accurate
+    count.
+
+    Returns ``{"total": N, "resolved": N, "unresolved": N}`` or
+    ``None`` on failure (caller falls back to neutral score).
+    """
     repo = _repo()
+    owner, name = repo.split("/", 1)
+    query = json.dumps({
+        "query": """
+            query($owner: String!, $repo: String!, $pr: Int!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequest(number: $pr) {
+                  reviewThreads(first: 100) {
+                    totalCount
+                    nodes { isResolved }
+                  }
+                }
+              }
+            }
+        """,
+        "variables": {"owner": owner, "repo": name, "pr": pr_number},
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.github.com/graphql",
+        data=query,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    )
     try:
-        return _api_request("GET", f"/repos/{repo}/pulls/{pr_number}/comments?per_page=100", token=token) or []
+        with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310
+            data = json.loads(resp.read())
+        threads = (
+            data.get("data", {})
+            .get("repository", {})
+            .get("pullRequest", {})
+            .get("reviewThreads", {})
+        )
+        nodes = threads.get("nodes", [])
+        total = threads.get("totalCount", len(nodes))
+        resolved = sum(1 for n in nodes if n.get("isResolved"))
+        return {"total": total, "resolved": resolved, "unresolved": total - resolved}
     except Exception:  # noqa: BLE001
-        return []
+        return None
 
 
 def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
@@ -308,12 +377,24 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
     comment_score = 1.0
     comment_detail = "no unresolved comments"
     if pr:
-        review_comments = _fetch_review_comments(pr_number, token)
-        # GitHub review comments don't expose "resolved" state in REST API;
-        # use count as a proxy: 0 → 1.0, each comment reduces by 0.1 (floor 0).
-        unresolved_estimate = len(review_comments)
-        comment_score  = max(0.0, 1.0 - unresolved_estimate * 0.1)
-        comment_detail = f"~{unresolved_estimate} review comment(s)"
+        thread_counts = _fetch_review_threads(pr_number, token)
+        if thread_counts is not None:
+            unresolved = thread_counts["unresolved"]
+            total = thread_counts["total"]
+            resolved = thread_counts["resolved"]
+            if total == 0:
+                comment_score = 1.0
+                comment_detail = "no review threads"
+            elif unresolved == 0:
+                comment_score = 1.0
+                comment_detail = f"all {resolved} review thread(s) resolved"
+            else:
+                comment_score = max(0.0, 1.0 - unresolved * 0.1)
+                comment_detail = f"{unresolved} unresolved / {total} total review thread(s)"
+        else:
+            # GraphQL unavailable — neutral score
+            comment_score = 0.5
+            comment_detail = "could not fetch review thread status"
     else:
         comment_score  = 0.5
         comment_detail = "could not fetch review comments"
