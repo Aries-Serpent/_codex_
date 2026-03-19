@@ -15,6 +15,7 @@ metrics:
   new_workflows: 1
   new_grounded_patterns: 3
   aftermath_lessons: 5
+  session_duration_minutes: 50
   merge_readiness: 99
   session_duration_minutes: 50
 
