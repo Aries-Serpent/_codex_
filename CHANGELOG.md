@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed (auto-update — PR #3628)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3628 (SHA `e77b94e9`) at 2026-03-18T20:55Z [auto-generated]
 
+### Fixed (S160 — 2026-03-19 — PR #3628)
+- **`iterative-self-healing-ci.yml`**: Added `Automatic Dependency Submission (Python)` and `event != 'dynamic'` to the self-healing exclusion list. GitHub's built-in dependency submission workflow (event: `dynamic`, triggered by `github-advanced-security[bot]`) fails intermittently with transient API 503 errors — these are infrastructure-managed and have no code fix.
+- **`copilot-setup-steps.yml`**: Made session timeout configurable via `COPILOT_SESSION_TIMEOUT_MINUTES` repo variable, default raised from 59 to 120 minutes. Enables extended 2-hour Copilot Coding Agent sessions without code changes.
+
+### Added (S160 — 2026-03-19 — PR #3628)
+- **`.github/workflows/copilot-session-chain.yml`** *(new)*: Session chaining workflow — creates a continuation branch + PR to spin up an adjacent Copilot Coding Agent session on a separate runner. Enables parallel sessions when multiple runners are available. Triggered via `workflow_dispatch` with source branch, base branch, and continuation prompt inputs.
+
 ### Fixed (S159 — 2026-03-19 — PR #3628)
 - **`dependency-submission.yml`**: Fixed action reference — `actions/component-detection-dependency-submission-action` (non-existent repo) → `advanced-security/component-detection-dependency-submission-action@v0.1.3` (SHA `b876b8cc`). Resolves both push and PR trigger failures.
 - **`iterative-self-healing-ci.yml`**: Fixed actionlint SC2015 shellcheck error — replaced `[ -n "$f" ] && git add -- "$f" 2>/dev/null || true` with proper `if/then/fi` block. Eliminates the only actionlint compliance failure across all workflow files.

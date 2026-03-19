@@ -53,7 +53,9 @@ jobs:
         github.event.workflow_run.name != 'Agent Variable Writer (Provenance-Chain)' &&
         github.event.workflow_run.name != 'Token Probe' &&
         github.event.workflow_run.name != 'Agent Vars Bootstrap' &&
-        github.event.workflow_run.name != 'CODEX Manifest Auto-Refresh'
+        github.event.workflow_run.name != 'CODEX Manifest Auto-Refresh' &&
+        github.event.workflow_run.name != 'Automatic Dependency Submission (Python)' &&
+        github.event.workflow_run.event != 'dynamic'
       )
 
     outputs:
