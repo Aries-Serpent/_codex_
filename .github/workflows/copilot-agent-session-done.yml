@@ -24,7 +24,9 @@ on:
     types: [completed]
 
 concurrency:
-  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0].number }}
+  # Use PR number if available, fall back to workflow_run ID to avoid
+  # unrelated runs sharing the same concurrency key (null PR number issue).
+  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id }}
   cancel-in-progress: true
 
 permissions:
@@ -81,24 +83,33 @@ jobs:
             }
 
             // Guard: do not post if the most recent comment is already "@copilot review"
-            // (prevents a review→review loop when the agent didn't push any changes)
+            // (prevents a review→review loop when the agent didn't push any changes).
+            // Uses GraphQL comments(last: 5) to reliably fetch the newest comments —
+            // REST listComments returns pages in ascending order, so per_page:5 gives
+            // the OLDEST 5 comments, not the newest.
             try {
-              const { data: comments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: pr, per_page: 1,
-                // sort by created desc to get the newest comment
-              });
-              // Note: listComments sorts ascending by default; check last page later
-              // Simple check: if ANY of the last 5 comments is exactly "@copilot review", skip
-              const { data: recentComments } = await github.rest.issues.listComments({
-                owner, repo, issue_number: pr, per_page: 5,
-              });
-              const lastComments = recentComments.slice(-5);
-              const alreadyPosted = lastComments.some(c =>
-                c.body?.trim() === '@copilot review' &&
-                c.user?.login === 'github-actions[bot]'
+              const result = await github.graphql(
+                `query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      comments(last: 5) {
+                        nodes {
+                          body
+                          author { login }
+                        }
+                      }
+                    }
+                  }
+                }`,
+                { owner, repo, pr }
+              );
+              const nodes = result?.repository?.pullRequest?.comments?.nodes || [];
+              const alreadyPosted = nodes.some(c =>
+                (c.body || '').trim() === '@copilot review' &&
+                c.author?.login === 'github-actions[bot]'
               );
               if (alreadyPosted) {
-                console.log(`Most recent comment is already "@copilot review" — skipping to avoid loop.`);
+                console.log('Most recent comment is already "@copilot review" — skipping to avoid loop.');
                 return;
               }
             } catch (e) {

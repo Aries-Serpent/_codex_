@@ -2,9 +2,14 @@
 """
 Prevent Sync+New-Work Rebase Conflict Anti-Pattern
 
-Detects when a commit (or staged changes) mixes:
+Detects when **staged changes** (index) mix:
   1. Sync changes — content copied from remote auto-generated commits
   2. Development changes — new S-session work
+
+NOTE: By default this script inspects the Git index (staged changes via
+``git diff --cached``).  It does **not** inspect already-committed changes.
+To check committed changes before a push, use ``--push-range upstream..HEAD``
+(or any valid ``git diff`` range), which is suitable for use in a pre-push hook.
 
 This anti-pattern causes rebase conflicts because report_progress rebases
 the local commit onto the remote, and both sides try to modify the same lines.
@@ -13,9 +18,17 @@ Root Cause Session: S154 — PR #3628 — 2026-03-18
 Documentation: .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
 
 Usage:
-    python scripts/ci/prevent_sync_commit_conflict.py          # check staged changes
-    python scripts/ci/prevent_sync_commit_conflict.py --ci-mode # exit 1 on error-severity findings
-    python scripts/ci/prevent_sync_commit_conflict.py --diff <file>  # check specific diff
+    # Check staged changes (use at commit time / pre-commit hook):
+    python scripts/ci/prevent_sync_commit_conflict.py
+
+    # Exit 1 on error-severity findings (for CI integration):
+    python scripts/ci/prevent_sync_commit_conflict.py --ci-mode
+
+    # Check a specific diff file:
+    python scripts/ci/prevent_sync_commit_conflict.py --diff <file>
+
+    # Check a commit range (use at push time / pre-push hook):
+    python scripts/ci/prevent_sync_commit_conflict.py --push-range upstream..HEAD
 
 Exit codes:
     0 = clean (no anti-pattern detected), or only warnings present
@@ -88,6 +101,35 @@ def get_staged_files() -> list[str]:
     try:
         result = subprocess.run(
             ["git", "diff", "--cached", "--name-only"],
+            capture_output=True, text=True, check=False
+        )
+        return [f.strip() for f in result.stdout.strip().splitlines() if f.strip()]
+    except Exception:
+        return []
+
+
+def get_range_diff(commit_range: str) -> str:
+    """Return the full diff for a commit range (for pre-push use).
+
+    Args:
+        commit_range: A git range such as ``upstream..HEAD`` or
+            ``origin/main..HEAD``.  Passed directly to ``git diff``.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "diff", commit_range, "--unified=3"],
+            capture_output=True, text=True, check=False
+        )
+        return result.stdout
+    except Exception:
+        return ""
+
+
+def get_range_files(commit_range: str) -> list[str]:
+    """Return list of files changed in a commit range (for pre-push use)."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", commit_range, "--name-only"],
             capture_output=True, text=True, check=False
         )
         return [f.strip() for f in result.stdout.strip().splitlines() if f.strip()]
@@ -255,6 +297,12 @@ def main() -> int:
                         help="Exit 1 on error-severity findings (for CI integration)")
     parser.add_argument("--diff", metavar="FILE",
                         help="Check a specific diff file instead of staged changes")
+    parser.add_argument("--push-range", metavar="RANGE",
+                        help=(
+                            "Check committed changes in a git range (e.g. upstream..HEAD). "
+                            "Use in pre-push hooks to inspect commits being pushed rather "
+                            "than the (empty) staging area."
+                        ))
     args = parser.parse_args()
 
     print("🔍 Checking for sync+new-work commit anti-pattern...")
@@ -263,12 +311,20 @@ def main() -> int:
     if args.diff:
         full_diff = Path(args.diff).read_text()
         staged_files = []
+    elif args.push_range:
+        full_diff = get_range_diff(args.push_range)
+        staged_files = get_range_files(args.push_range)
     else:
         full_diff = get_staged_diff()
         staged_files = get_staged_files()
 
     if not full_diff and not staged_files:
-        print("✅ No staged changes found — nothing to check.")
+        msg = (
+            f"✅ No changes found in range '{args.push_range}' — nothing to check."
+            if args.push_range else
+            "✅ No staged changes found — nothing to check."
+        )
+        print(msg)
         return 0
 
     all_risks: list[ConflictRisk] = []

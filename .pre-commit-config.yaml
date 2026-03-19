@@ -357,12 +357,16 @@ repos:
       # S154 root cause documented: .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
       # Full investigation: .codex/docs/COMMIT_METHOD_FAILURES_S154.md
       - id: prevent-sync-commit-conflict
-        name: "🔀 sync+new-work anti-pattern check (pre-push)"
+        name: "🔀 sync+new-work anti-pattern check (pre-commit)"
         entry: bash -c 'if ! command -v python >/dev/null 2>&1; then echo "⚠️  prevent_sync_commit_conflict.py not runnable — skipping (python not found)"; exit 0; fi; python scripts/ci/prevent_sync_commit_conflict.py --ci-mode'
         language: system
-        stages: [pre-push]
+        stages: [pre-commit]
         pass_filenames: false
-        always_run: true
+        always_run: false
+        # Run at commit time so staged changes are available for inspection.
+        # (At pre-push time the index is clean — no staged changes — making the
+        # check a no-op. Use --push-range upstream..HEAD manually if you want to
+        # inspect committed changes before a push.)
         # If this fails: review .codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md
         # Rule 1: never copy remote auto-commit content into a dev commit
         # Rule 2: place new CHANGELOG entries BELOW existing [Unreleased] sections
