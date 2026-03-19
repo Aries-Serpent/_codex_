@@ -225,7 +225,7 @@ jobs:
               : `https://github.com/${owner}/${repo}/pull/${pr}`;
 
             const body = [
-              `@copilot apply changes based on the comments in [this thread](${reviewUrl})`,
+              `@copilot+claude-sonnet-4.6 apply changes based on the comments in [this thread](${reviewUrl})`,
               ``,
               `> 🤖 **Auto-triggered** by \`${reviewer}\` review (${countStr} comment(s) generated).`,
               `> All bot review comments have been acknowledged with 👍.`,

@@ -20,6 +20,11 @@ on:
   # long-running branches (the manifest generated_at must be < 24h old).
   schedule:
     - cron: '0 */6 * * *'
+  # NOTE: The E→D Transition Readiness Gate now includes a self-healing job
+  # (heal-stale-manifest) that directly regenerates CODEX_MANIFEST.json when
+  # C2 fails on a PR. A workflow_run trigger here is NOT needed and was removed
+  # to prevent the "untrusted-checkout" CodeQL security pattern (a privileged
+  # workflow_run with contents:write that executes code is a security risk).
   workflow_dispatch:
 
 concurrency:

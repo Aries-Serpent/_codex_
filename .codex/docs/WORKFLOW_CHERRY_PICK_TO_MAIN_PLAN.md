@@ -1,10 +1,13 @@
 # Workflow Cherry-Pick to `main` — Plan
 
 > **Status:** Ready to execute
-> **Generated:** 2026-03-19 (S162 — PR #3633)
-> **Reason:** `workflow_run` events only fire from the repository default branch (`main`).
->   `copilot-agent-session-done.yml` uses this trigger and will never fire
->   until the file exists in `main`.
+> **Updated:** 2026-03-19 (S163 — PR #3633)
+> **Reason:** `workflow_run` and `issue_comment` triggers only fire from the repository
+>   default branch (`main`). Both `copilot-agent-session-done.yml` and
+>   `copilot-review-responder.yml` must exist in `main` to activate.
+>
+> **Current state:** These files only exist in `copilot/cherry-pick-changes-to-branch`
+>   (PR #3633). They do NOT yet exist in `0D_base_` or `main`.
 
 ---
 
@@ -85,32 +88,71 @@ Closes #3631 (dynaconf SBOM already updated in PR #3633)." \
   --head hotfix/workflow-cherry-pick-autonomous-loop
 ```
 
-### Option B — Structured path: promote `0D_base_` → `main`
+### Option B — Structured path (RECOMMENDED): PR #3633 → `0D_base_` → `main`
 
-If `0D_base_` → `main` promotion is already planned (as stated in the PR
-description), simply ensuring `0D_base_` contains the workflow files and
-completing the promotion will activate the loop.
+This is the safest path because it keeps the stacked PR chain intact.
+
+**Step 1 — Merge PR #3633 into `0D_base_`**
+- PR #3633 (`copilot/cherry-pick-changes-to-branch` → `0D_base_`) already contains both workflow files
+- Once this PR is approved and merged, `0D_base_` will have both files
+
+**Step 2 — Merge PR #3630 (`0D_base_` → `main`)**
+- PR #3630 is the existing promotion PR for `0D_base_` → `main`
+- Once merged, both files land in `main` and the autonomous loop activates
+
+**Step 3 — Verify**
+```bash
+# Verify files are in main after merges
+git fetch origin main
+git show origin/main:.github/workflows/copilot-review-responder.yml | head -3
+git show origin/main:.github/workflows/copilot-agent-session-done.yml | head -3
+```
+
+**Option B-alt — Urgent cherry-pick to `0D_base_` without waiting for PR merge**
+
+If you need to activate the loop on `0D_base_` immediately without waiting for PR #3633:
 
 ```bash
-# Check if 0D_base_ already has the files
-git show origin/0D_base_:.github/workflows/copilot-review-responder.yml 2>/dev/null \
-  && echo "Present" || echo "Missing"
+# 1. Fetch latest
+git fetch origin
 
-# If missing, cherry-pick from this branch onto 0D_base_
+# 2. Create sync branch from 0D_base_
 git checkout -b chore/sync-workflows-to-0D-base origin/0D_base_
+
+# 3. Cherry-pick ONLY the two workflow files from PR #3633 branch
 git checkout origin/copilot/cherry-pick-changes-to-branch -- \
   .github/workflows/copilot-review-responder.yml \
   .github/workflows/copilot-agent-session-done.yml
-git commit -m "feat(workflows): autonomous copilot review loop (from PR #3633)"
-gh pr create --base 0D_base_ --head chore/sync-workflows-to-0D-base \
-  --title "sync: autonomous review loop workflows to 0D_base_"
 
-# Then follow the normal 0D_base_ → main promotion flow
+# 4. Verify YAML syntax
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-review-responder.yml'))"
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-agent-session-done.yml'))"
+
+# 5. Commit and push
+git commit -m "feat(workflows): sync autonomous review loop to 0D_base_ (from PR #3633)
+
+Adds copilot-review-responder.yml and copilot-agent-session-done.yml so
+that once 0D_base_ → main (PR #3630), the autonomous copilot review
+loop activates. workflow_run and issue_comment triggers only fire from main."
+
+git push origin chore/sync-workflows-to-0D-base
+
+# 6. Open PR targeting 0D_base_
+gh pr create \
+  --title "sync(workflows): autonomous copilot review loop to 0D_base_ (from PR #3633)" \
+  --body "Cherry-picks copilot-review-responder.yml and copilot-agent-session-done.yml
+to 0D_base_ so they are included when PR #3630 (0D_base_ -> main) merges.
+
+These workflow files use workflow_run and issue_comment triggers which
+only resolve from the default branch (main). They must land in main to
+activate the autonomous review loop.
+
+Source: copilot/cherry-pick-changes-to-branch (PR #3633)" \
+  --base 0D_base_ \
+  --head chore/sync-workflows-to-0D-base
 ```
 
----
-
-## @copilot Prompt for Executing This Plan
+### Option A — Fast path: direct cherry-pick to `main`
 
 Paste the following as a GitHub comment on the target PR (or use `gh workflow run`):
 

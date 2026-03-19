@@ -104,12 +104,14 @@ jobs:
                 { owner, repo, pr }
               );
               const nodes = result?.repository?.pullRequest?.comments?.nodes || [];
-              const alreadyPosted = nodes.some(c =>
-                (c.body || '').trim() === '@copilot review' &&
-                c.author?.login === 'github-actions[bot]'
-              );
+              // Guard against both old "@copilot review" and new "@copilot+claude-sonnet-4.6 review" formats
+              const alreadyPosted = nodes.some(c => {
+                const body = (c.body || '').trim();
+                return (body === '@copilot review' || body === '@copilot+claude-sonnet-4.6 review') &&
+                  c.author?.login === 'github-actions[bot]';
+              });
               if (alreadyPosted) {
-                console.log('Most recent comment is already "@copilot review" — skipping to avoid loop.');
+                console.log('Most recent comment is already a "@copilot review" — skipping to avoid loop.');
                 return;
               }
             } catch (e) {
@@ -119,6 +121,6 @@ jobs:
             // Post "@copilot review"
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr,
-              body: '@copilot review',
+              body: '@copilot+claude-sonnet-4.6 review',
             });
             console.log(`@copilot review posted to PR #${pr}.`);

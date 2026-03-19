@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-18T21:20:02Z",
+  "generated_at": "2026-03-19T22:11:18Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1103,6 +1103,11 @@
       "has_concurrency": false
     },
     {
+      "name": "copilot-agent-session-done",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-vars-bootstrap",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1120,6 +1125,11 @@
     {
       "name": "copilot-pr-session-injector",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-review-responder",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1586,6 +1596,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COGNITIVE_ARCHITECTURE.md",
       "type": "enforcement"
     },
@@ -1599,6 +1613,10 @@
     },
     {
       "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
     {
@@ -1754,6 +1772,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/TEST_DEVELOPMENT_PATTERNS.md",
       "type": "enforcement"
     },
@@ -1762,7 +1784,15 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/WORKFLOW_APPROVAL_GUIDE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/WORKFLOW_BEST_PRACTICES.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/WORKFLOW_CHERRY_PICK_TO_MAIN_PLAN.md",
       "type": "enforcement"
     }
   ],
@@ -1783,5 +1813,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "b641d40087b7e15b532d9f1c70701db7698b6a23ff8a28f41031af0d8e9cff41"
+  "integrity_sha256": "0b6880a43d06d58da2ded71a6eb8a2a793ce79249a392f73c87c2d69e06f9969"
 }

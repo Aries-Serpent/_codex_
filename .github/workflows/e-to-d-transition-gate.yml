@@ -17,8 +17,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: e-to-d-transition-gate-${{ github.head_ref || github.ref }}
@@ -167,3 +168,97 @@ jobs:
             Tier-1 GROUNDED gate — run `e-to-d-transition-gate.yml` for full condition breakdown.
 
             _Phase 4 FSM | [e-to-d-transition-gate.yml]_
+
+  # Self-heal C2: when CODEX_MANIFEST.json is stale (> 24h), automatically regenerate
+  # and push a fresh manifest so the next E→D gate run passes C2.
+  # This runs ONLY when the transition-readiness job fails and the score was 4/5
+  # (i.e., exactly one condition failed, most likely C2 — manifest staleness).
+  heal-stale-manifest:
+    name: "🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [transition-readiness]
+    # Fire when: gate failed AND score was 4 (one condition short — likely C2)
+    if: >-
+      failure() &&
+      needs.transition-readiness.outputs.readiness_score == '4' &&
+      github.event_name == 'pull_request'
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install minimal deps
+        run: pip install pyyaml --quiet
+
+      - name: Check if C2 (manifest staleness) is the failing condition
+        id: c2-check
+        run: |
+          python3 - <<'PY'
+          import json, time, os, sys
+          if not os.path.exists('CODEX_MANIFEST.json'):
+              print('MANIFEST_MISSING=true')
+              sys.exit(0)
+          m = json.load(open('CODEX_MANIFEST.json'))
+          generated_at = m.get('generated_at', '')
+          try:
+              from datetime import datetime, timezone
+              ts = datetime.fromisoformat(generated_at.replace('Z', '+00:00'))
+              age_h = (datetime.now(timezone.utc) - ts).total_seconds() / 3600
+              stale = age_h > 23.5
+          except Exception:
+              stale = True
+          print(f'Manifest age: {age_h:.1f}h — {"STALE" if stale else "FRESH"}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'stale={"true" if stale else "false"}\n')
+          PY
+
+      - name: Regenerate CODEX_MANIFEST.json
+        if: steps.c2-check.outputs.stale == 'true'
+        run: python scripts/ci/generate_manifest.py
+
+      - name: Commit and push refreshed manifest
+        if: steps.c2-check.outputs.stale == 'true'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CODEX_MANIFEST.json
+          if git diff --cached --quiet; then
+            echo "Manifest already up-to-date"
+          else
+            git commit -m "chore(manifest): auto-heal C2 — refresh CODEX_MANIFEST.json [skip ci]"
+            git pull --rebase origin "${HEAD_REF}" 2>/dev/null || true
+            git push origin "HEAD:${HEAD_REF}"
+            echo "✅ CODEX_MANIFEST.json refreshed — C2 will pass on re-run"
+          fi
+
+      - name: Post healing notice to PR
+        if: steps.c2-check.outputs.stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr,
+              body: [
+                '🔧 **C2 Self-Heal Triggered**: `CODEX_MANIFEST.json` was stale (>24h) causing the E→D gate to fail.',
+                '',
+                'The manifest has been automatically regenerated and pushed. The E→D gate will re-run and should pass C2 on the next push or manual re-run.',
+                '',
+                '> **Next step:** Re-run the `E→D Transition Readiness Gate` check from the Actions tab, or push a new commit to trigger it automatically.',
+              ].join('\n'),
+            });
