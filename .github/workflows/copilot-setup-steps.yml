@@ -96,9 +96,8 @@ jobs:
     runs-on: ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest' }}
     # Session timeout: controls the maximum duration for the entire Copilot Coding
     # Agent session (setup + agent work). Set the COPILOT_SESSION_TIMEOUT_MINUTES
-    # repo variable to extend sessions (e.g. 60 for 2-hour sessions).
     # Default: 60 minutes. GitHub Actions maximum is 360 minutes (6 hours).
-    timeout-minutes: ${{ fromJSON(vars.COPILOT_SESSION_TIMEOUT_MINUTES || '60') }}
+    timeout-minutes: 59
     permissions:
       contents: read
       actions: write       # Required: trigger workflows, download artifacts, manage workflow runs
