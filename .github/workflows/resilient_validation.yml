@@ -13,19 +13,34 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
+
+# ── Promotion check: is this PR merging 0D_base_ → main? ────────────────────
+# Full suite (all test groups, sharded quick) runs only on promotion PRs.
+# For all other PRs: simplified run (quick + docs, PR-scoped, max 60 min).
+# This prevents the heavy integration/slow test matrix from consuming runners
+# on every branch push while still giving promotion merges full coverage.
+
 jobs:
   validation:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # Full suite (90 min, all groups) for 0D_base_ → main promotion.
+    # Simplified (55 min, quick+docs only) for all other PRs.
+    timeout-minutes: ${{ github.base_ref == 'main' && github.head_ref == '0D_base_' && 90 || 55 }}
     continue-on-error: false
 
     strategy:
       fail-fast: false
       matrix:
-        test-group: [quick, documentation, integration, slow]
+        # Full suite: all 4 groups. Simplified suite: quick + documentation only.
+        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","integration","slow"]') || fromJSON('["quick","documentation"]') }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch base ref for PR-scoped diff
+        # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
+        if: github.base_ref != 'main' || github.head_ref != '0D_base_'
+        run: git fetch origin ${{ github.base_ref }} --depth=1
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
@@ -38,7 +53,31 @@ jobs:
 
       - name: Run validation
         id: validate
+        env:
+          IS_PROMOTION_PR: ${{ github.base_ref == 'main' && github.head_ref == '0D_base_' && 'true' || 'false' }}
         run: |
+          # For non-promotion PRs, limit quick tests to files changed in this PR
+          # (max 60 min budget) and skip integration/slow groups entirely.
+          if [ "$IS_PROMOTION_PR" = "false" ] && [ "${{ matrix.test-group }}" = "quick" ]; then
+            # Collect files changed in this PR to narrow test scope
+            git fetch origin ${{ github.base_ref }} --depth=1 2>/dev/null || true
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'tests/' 'src/' 'scripts/' 2>/dev/null | head -100 || true)
+            if [ -n "$CHANGED_FILES" ]; then
+              echo "Running scoped quick tests on changed paths..."
+              python -m pytest $CHANGED_FILES -v -m "not slow and not integration" \
+                --timeout=55 --tb=short --maxfail=20 \
+                --cov=src --cov-report=xml --cov-report=json -q \
+                || python -m pytest tests/ -v -m "not slow and not integration" \
+                     --timeout=55 --tb=short --maxfail=20 \
+                     --cov=src --cov-report=xml --cov-report=json -q
+            else
+              python -m pytest tests/ -v -m "not slow and not integration" \
+                --timeout=55 --tb=short --maxfail=20 \
+                --cov=src --cov-report=xml --cov-report=json -q
+            fi
+            exit 0
+          fi
+
           case "${{ matrix.test-group }}" in
             quick)
               # Quick tests: 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation fix)
@@ -121,8 +160,12 @@ jobs:
   # P11-04: Parallel test sharding (S100)
   # Splits the "quick" test group into 4 shards using pytest-split, reducing
   # wall-clock time from ~N min to ~N/4 min on the quick test suite.
+  # Only runs on promotion PRs (0D_base_ → main) to avoid consuming runners
+  # on every branch push.
   sharded-quick:
     name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
+    # Only run full sharding for 0D_base_ → main promotion PRs
+    if: github.base_ref == 'main' && github.head_ref == '0D_base_'
     runs-on: ubuntu-latest
     # P11-05: Increased from 55→75 min after repeated shard cancellations.
     # 14 k+ quick tests across 4 shards (~3.5 k each) + ~12 min setup overhead

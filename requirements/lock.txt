@@ -239,7 +239,7 @@ dvc-studio-client==0.22.0
     # via dvc
 dvc-task==0.40.2
     # via dvc
-dynaconf==3.2.12
+dynaconf==3.2.13
     # via evidently
 email-validator==2.3.0
     # via fastapi

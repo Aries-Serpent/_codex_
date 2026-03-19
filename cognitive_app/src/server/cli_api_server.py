@@ -129,13 +129,31 @@ log = logging.getLogger("cli_api_server")
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
 def _build_cors_origins() -> list[str]:
-    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to dev defaults."""
+    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to localhost dev defaults.
+
+    Security note: ``/api/cli/run`` executes arbitrary shell commands and is
+    **currently unauthenticated** (only ``/api/memory/*`` requires a Bearer
+    token).  The default allowlist is intentionally restricted to localhost
+    origins so that no remote web origin can drive command execution without
+    an explicit opt-in.  To enable access from GitHub Pages or a Codespace
+    preview URL, set ``CODEX_ALLOWED_ORIGINS`` to the exact origin(s)
+    required (e.g. ``https://aries-serpent.github.io``) **and** ensure that
+    ``CODEX_MASTER_KEY`` / ``CODEX_BACKUP_KEY`` authentication is enforced
+    on ``/api/cli/run`` before exposing to non-local origins.
+    """
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:
         origins = [o.strip() for o in env_val.split(",") if o.strip()]
         log.info("CORS origins from CODEX_ALLOWED_ORIGINS: %s", origins)
         return origins
-    return ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # Default: localhost dev only.
+    # Non-local origins (e.g. https://aries-serpent.github.io) MUST be added
+    # via CODEX_ALLOWED_ORIGINS to prevent a remote web page from invoking
+    # shell-command execution endpoints without explicit operator consent.
+    return [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
 
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -148,7 +166,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     # Sprint 2: CORS allowlist from CODEX_ALLOWED_ORIGINS env var (comma-separated).
-    # Falls back to localhost dev origins when the env var is absent.
+    # Defaults to localhost only — set CODEX_ALLOWED_ORIGINS to add non-local origins
+    # (e.g. https://aries-serpent.github.io for GitHub Pages integration).
     allow_origins=_build_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],

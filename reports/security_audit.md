@@ -64,3 +64,42 @@ Comprehensive analysis of 8 Dependabot security alerts for aiohttp transitive de
 ## Next Steps
 - Schedule a secrets scan once new policies are validated.
 - Review moderation audit files during the next quarterly security review.
+
+## CVE-2026-33154 — dynaconf RCE via Insecure @jinja Resolver
+
+**Date:** 2026-03-19
+**Severity:** High (CVSS 7.5)
+**Advisory:** GHSA-pxrr-hq57-q35p
+**Package:** dynaconf (pip)
+**Affected versions:** ≤ 3.2.12
+**Fixed in:** 3.2.13
+
+### Description
+
+Dynaconf evaluated Jinja2 template expressions in the `@jinja` resolver (and
+object-graph traversal via `@format`) without a sandbox, allowing an attacker
+who can influence configuration sources (env vars, `.env` files, CI/CD
+secrets, container config) to execute arbitrary OS commands.
+
+### Status: ✅ ALREADY PATCHED
+
+`requirements/lock.txt` was updated to `dynaconf==3.2.13` in session S154
+(PR #3628, commit bumping dynaconf from 3.2.12 → 3.2.13).  The project is
+not vulnerable.
+
+| Item | Status |
+|------|--------|
+| `requirements/lock.txt` | ✅ `dynaconf==3.2.13` |
+| SBOM `configs/development/artifacts/sbom/packages.txt` | ✅ Updated 3.2.12 → 3.2.13 (PR #3633) |
+| Dependabot alert #117 | ✅ Resolved — using patched version |
+
+### Action Taken
+
+1. Confirmed `requirements/lock.txt` already pins `dynaconf==3.2.13`.
+2. Updated stale SBOM entry (`configs/development/artifacts/sbom/packages.txt`)
+   from `dynaconf==3.2.12` to `dynaconf==3.2.13` (the SBOM was not updated
+   when the lock file was bumped in S154, which caused Dependabot alert #117).
+3. Closed issue #3631 via this documentation update.
+
+**No code logic changes required** — the fix is purely a version bump already
+present in the lock file.

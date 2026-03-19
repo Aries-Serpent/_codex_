@@ -18,7 +18,11 @@ name: Agent Token Delegation
 
 on:
   pull_request:
-    types: [opened, edited, reopened, synchronize, ready_for_review]
+    # synchronize REMOVED (S155): The checkbox can only be added/changed when a
+    # PR is first created or edited. Firing on every push (synchronize) caused
+    # concurrent auto-commits that created rebase conflicts on the next report_progress.
+    # ready_for_review triggers draft→ready transitions (important for approval).
+    types: [opened, edited, reopened, ready_for_review]
   pull_request_review:
     types: [submitted]
   workflow_dispatch:
@@ -41,6 +45,11 @@ jobs:
   # ── Job 1: detect whether the checkbox is checked ───────────────────────────
   detect-checkbox:
     name: "Detect COPILOT_AGENT_AUTH_ENABLED checkbox"
+    # Skip entirely when delegation is already active. Without this guard,
+    # every PR body edit (e.g., report_progress updating the description)
+    # re-triggers this workflow via the 'edited' event type, and the
+    # approval gate causes cascading concurrency cancellations.
+    if: vars.COPILOT_AGENT_AUTH_ENABLED != 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:

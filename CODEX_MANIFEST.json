@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-18T20:55:54Z",
+  "generated_at": "2026-03-19T22:11:18Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1103,6 +1103,11 @@
       "has_concurrency": false
     },
     {
+      "name": "copilot-agent-session-done",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-vars-bootstrap",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1120,6 +1125,11 @@
     {
       "name": "copilot-pr-session-injector",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-review-responder",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1164,6 +1174,11 @@
     },
     {
       "name": "dependency-scan",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "dependency-submission",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1581,6 +1596,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COGNITIVE_ARCHITECTURE.md",
       "type": "enforcement"
     },
@@ -1594,6 +1613,10 @@
     },
     {
       "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
     {
@@ -1749,6 +1772,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/TEST_DEVELOPMENT_PATTERNS.md",
       "type": "enforcement"
     },
@@ -1757,7 +1784,15 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/WORKFLOW_APPROVAL_GUIDE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/WORKFLOW_BEST_PRACTICES.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/WORKFLOW_CHERRY_PICK_TO_MAIN_PLAN.md",
       "type": "enforcement"
     }
   ],
@@ -1766,7 +1801,7 @@
     "embedding_meta": ".codex/embeddings/codex_index_meta.json"
   },
   "enforcement_kpis": {
-    "tier1_count": 21,
+    "tier1_count": 22,
     "tier2_count": 5,
     "tier3_count": 2,
     "ungatable": 2
@@ -1778,5 +1813,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "34bb04e35d1c62b519c6c490bf7a588e7cd98770dedfe7c6599831d1bdbcc9c2"
+  "integrity_sha256": "0b6880a43d06d58da2ded71a6eb8a2a793ce79249a392f73c87c2d69e06f9969"
 }

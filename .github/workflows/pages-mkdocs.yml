@@ -154,6 +154,20 @@ jobs:
       # Build cognitive_app dashboard and merge into site
       - name: Build cognitive_app dashboard
         continue-on-error: true
+        env:
+          # GitHub Pages deployment: the CLI server is not running at Pages time.
+          # VITE_API_MODE=github tells the app to skip the localhost probe and use
+          # GitHub Public API for live repo data (workflow runs, stats, branches).
+          # The CLI terminal (WebSocket /ws/cli) will show an offline message until
+          # a live server URL is configured via COGNITIVE_APP_API_URL repo variable.
+          # See: .codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md
+          VITE_API_MODE: ${{ vars.COGNITIVE_APP_API_MODE || 'github' }}
+          VITE_CLI_API_URL: ${{ vars.COGNITIVE_APP_API_URL || '' }}
+          # SECURITY NOTE: Do NOT add VITE_GITHUB_TOKEN here.
+          # Any VITE_* variable is compiled into the static client bundle and
+          # would be publicly readable from GitHub Pages.  GitHub data the app
+          # needs must come through unauthenticated public API calls or a
+          # server-side proxy configured via COGNITIVE_APP_API_URL.
         run: |
           if [ -f cognitive_app/package.json ]; then
             cd cognitive_app
@@ -163,6 +177,7 @@ jobs:
               mkdir -p ../site/cognitive_app
               cp -r dist/* ../site/cognitive_app/
               echo "✅ cognitive_app built and merged into site/cognitive_app/"
+              echo "   API mode: ${VITE_API_MODE} | CLI URL: ${VITE_CLI_API_URL:-<not set>}"
             else
               echo "⚠️ cognitive_app build did not produce dist/ directory"
             fi
