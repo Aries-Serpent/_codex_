@@ -246,7 +246,7 @@ def _fetch_reviews(pr_number: int, token: str) -> list[dict]:
         return []
 
 
-def _fetch_review_threads(pr_number: int, token: str) -> dict:
+def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]]:
     """Fetch review thread resolved/unresolved counts via GraphQL.
 
     The REST API (``/pulls/{pr}/comments``) does NOT expose whether a review
@@ -254,51 +254,66 @@ def _fetch_review_threads(pr_number: int, token: str) -> dict:
     API exposes ``reviewThreads.nodes[].isResolved``, giving us an accurate
     count.
 
+    Paginates through all threads (100 per page) to ensure complete counts
+    even when a PR has more than 100 review threads.
+
     Returns ``{"total": N, "resolved": N, "unresolved": N}`` or
     ``None`` on failure (caller falls back to neutral score).
     """
     repo = _repo()
     owner, name = repo.split("/", 1)
-    query = json.dumps({
-        "query": """
-            query($owner: String!, $repo: String!, $pr: Int!) {
-              repository(owner: $owner, name: $repo) {
-                pullRequest(number: $pr) {
-                  reviewThreads(first: 100) {
-                    totalCount
-                    nodes { isResolved }
-                  }
-                }
-              }
-            }
-        """,
-        "variables": {"owner": owner, "repo": name, "pr": pr_number},
-    }).encode()
-    req = urllib.request.Request(
-        "https://api.github.com/graphql",
-        data=query,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-    )
+
+    total = 0
+    resolved = 0
+    after_cursor: Optional[str] = None
+
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310
-            data = json.loads(resp.read())
-        threads = (
-            data.get("data", {})
-            .get("repository", {})
-            .get("pullRequest", {})
-            .get("reviewThreads", {})
-        )
-        nodes = threads.get("nodes", [])
-        total = threads.get("totalCount", len(nodes))
-        resolved = sum(1 for n in nodes if n.get("isResolved"))
-        return {"total": total, "resolved": resolved, "unresolved": total - resolved}
+        while True:
+            after_arg = f', after: "{after_cursor}"' if after_cursor else ""
+            query = json.dumps({
+                "query": f"""
+                    query($owner: String!, $repo: String!, $pr: Int!) {{
+                      repository(owner: $owner, name: $repo) {{
+                        pullRequest(number: $pr) {{
+                          reviewThreads(first: 100{after_arg}) {{
+                            pageInfo {{ hasNextPage endCursor }}
+                            nodes {{ isResolved }}
+                          }}
+                        }}
+                      }}
+                    }}
+                """,
+                "variables": {"owner": owner, "repo": name, "pr": pr_number},
+            }).encode()
+            req = urllib.request.Request(
+                "https://api.github.com/graphql",
+                data=query,
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310
+                data = json.loads(resp.read())
+            threads = (
+                data.get("data", {})
+                .get("repository", {})
+                .get("pullRequest", {})
+                .get("reviewThreads", {})
+            )
+            nodes = threads.get("nodes", [])
+            total += len(nodes)
+            resolved += sum(1 for n in nodes if n.get("isResolved"))
+            page_info = threads.get("pageInfo", {})
+            if not page_info.get("hasNextPage"):
+                break
+            after_cursor = page_info.get("endCursor")
     except Exception:  # noqa: BLE001
         return None
+
+    return {"total": total, "resolved": resolved, "unresolved": total - resolved}
 
 
 def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:

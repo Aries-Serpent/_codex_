@@ -29,7 +29,7 @@ Priority 4: Mock client      (built-in, zero network, deterministic)
 | `VITE_API_MODE` at Pages build | not set → probe localhost → fail → `github` mode | `github` mode set explicitly (fast, no failed probe) |
 | CLI terminal (WebSocket) | offline message | offline message (needs live server) |
 | Workflow run data | ✅ (GitHub API) | ✅ (GitHub API) |
-| CORS for aries-serpent.github.io | ❌ blocked (only localhost) | ✅ allowed by default |
+| CORS for aries-serpent.github.io | ❌ blocked (only localhost) | ✅ requires `CODEX_ALLOWED_ORIGINS` |
 
 ---
 
@@ -244,15 +244,18 @@ python scripts/ci/prevent_sync_commit_conflict.py --ci-mode || true
 **Cause:** The server is running but `Access-Control-Allow-Origin` does not include
 `https://aries-serpent.github.io`.
 
-**Fix (S155 applied this automatically):** The default CORS origins now include
-`https://aries-serpent.github.io`. If you see CORS errors, verify:
+**Fix:** The server default CORS list is restricted to localhost for security
+(``/api/cli/run`` executes shell commands; a remote web origin must be explicitly
+enabled).  Set ``CODEX_ALLOWED_ORIGINS`` to include `https://aries-serpent.github.io`:
 ```bash
 # Check what CORS origins the server is using
 curl http://localhost:8765/api/health -v 2>&1 | grep -i "allow-origin"
-# Should include: https://aries-serpent.github.io
 ```
-If not, set `CODEX_ALLOWED_ORIGINS=http://localhost:5173,https://aries-serpent.github.io`
-in the server environment.
+Start the server with:
+```bash
+CODEX_ALLOWED_ORIGINS="http://localhost:5173,https://aries-serpent.github.io" \
+  python cognitive_app/src/server/cli_api_server.py
+```
 
 ### App shows mock data instead of live data
 

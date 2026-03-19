@@ -129,21 +129,29 @@ log = logging.getLogger("cli_api_server")
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
 def _build_cors_origins() -> list[str]:
-    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to dev+Pages defaults."""
+    """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to localhost dev defaults.
+
+    Security note: ``/api/cli/run`` executes arbitrary shell commands.  The
+    default allowlist is intentionally restricted to localhost origins so that
+    no remote web origin can drive command execution without an explicit
+    opt-in.  To enable access from GitHub Pages or a Codespace preview URL,
+    set ``CODEX_ALLOWED_ORIGINS`` to the exact origin(s) required (e.g.
+    ``https://aries-serpent.github.io``) after ensuring appropriate Bearer
+    auth (``CODEX_MASTER_KEY`` / ``CODEX_BACKUP``) is enforced on the
+    command-execution endpoint.
+    """
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:
         origins = [o.strip() for o in env_val.split(",") if o.strip()]
         log.info("CORS origins from CODEX_ALLOWED_ORIGINS: %s", origins)
         return origins
-    # Default: allow local dev AND GitHub Pages (aries-serpent.github.io) so that
-    # the cognitive_app CLI console at https://aries-serpent.github.io/_codex_/cognitive_app/
-    # can reach the server without requiring CODEX_ALLOWED_ORIGINS to be set explicitly.
-    # When deploying behind a reverse proxy or in Codespaces, set CODEX_ALLOWED_ORIGINS
-    # explicitly to restrict to the actual origin (e.g. the Codespace preview URL).
+    # Default: localhost dev only.
+    # Non-local origins (e.g. https://aries-serpent.github.io) MUST be added
+    # via CODEX_ALLOWED_ORIGINS to prevent a remote web page from invoking
+    # shell-command execution endpoints without explicit operator consent.
     return [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://aries-serpent.github.io",
     ]
 
 
@@ -157,7 +165,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     # Sprint 2: CORS allowlist from CODEX_ALLOWED_ORIGINS env var (comma-separated).
-    # Falls back to localhost dev origins when the env var is absent.
+    # Defaults to localhost only — set CODEX_ALLOWED_ORIGINS to add non-local origins
+    # (e.g. https://aries-serpent.github.io for GitHub Pages integration).
     allow_origins=_build_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
