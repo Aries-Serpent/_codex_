@@ -285,7 +285,7 @@ cd cognitive_app && npm ci && npm run build
 | `VITE_CODEX_KEY` | `.env.local` only | `demo-key` | Bearer token for `/api/memory/*` calls |
 | `COGNITIVE_APP_API_URL` | Repo variable | not set | Overrides `VITE_CLI_API_URL` at Pages build |
 | `COGNITIVE_APP_API_MODE` | Repo variable | `github` | Overrides `VITE_API_MODE` at Pages build |
-| `CODEX_ALLOWED_ORIGINS` | Server env | `localhost:5173,aries-serpent.github.io` | CORS allowlist |
+| `CODEX_ALLOWED_ORIGINS` | Server env | `localhost:5173` (localhost-only) | CORS allowlist — add non-local origins here (e.g. `https://aries-serpent.github.io`) |
 | `CODEX_MASTER_KEY` | Server env | not set | Auto-injected on `api.github.com` calls |
 
 > **Note:** `VITE_GITHUB_TOKEN` has been removed. Any `VITE_*` variable is inlined into the

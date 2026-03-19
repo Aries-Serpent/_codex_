@@ -131,14 +131,15 @@ log = logging.getLogger("cli_api_server")
 def _build_cors_origins() -> list[str]:
     """Read CODEX_ALLOWED_ORIGINS (comma-separated) from env; fall back to localhost dev defaults.
 
-    Security note: ``/api/cli/run`` executes arbitrary shell commands.  The
-    default allowlist is intentionally restricted to localhost origins so that
-    no remote web origin can drive command execution without an explicit
-    opt-in.  To enable access from GitHub Pages or a Codespace preview URL,
-    set ``CODEX_ALLOWED_ORIGINS`` to the exact origin(s) required (e.g.
-    ``https://aries-serpent.github.io``) after ensuring appropriate Bearer
-    auth (``CODEX_MASTER_KEY`` / ``CODEX_BACKUP``) is enforced on the
-    command-execution endpoint.
+    Security note: ``/api/cli/run`` executes arbitrary shell commands and is
+    **currently unauthenticated** (only ``/api/memory/*`` requires a Bearer
+    token).  The default allowlist is intentionally restricted to localhost
+    origins so that no remote web origin can drive command execution without
+    an explicit opt-in.  To enable access from GitHub Pages or a Codespace
+    preview URL, set ``CODEX_ALLOWED_ORIGINS`` to the exact origin(s)
+    required (e.g. ``https://aries-serpent.github.io``) **and** ensure that
+    ``CODEX_MASTER_KEY`` / ``CODEX_BACKUP_KEY`` authentication is enforced
+    on ``/api/cli/run`` before exposing to non-local origins.
     """
     env_val = os.environ.get("CODEX_ALLOWED_ORIGINS", "").strip()
     if env_val:

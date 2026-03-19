@@ -297,12 +297,19 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
             )
             with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310
                 data = json.loads(resp.read())
-            threads = (
+            # Bail out on GraphQL-level errors (HTTP 200 but errors field present)
+            if data.get("errors"):
+                return None
+            pr_data = (
                 data.get("data", {})
                 .get("repository", {})
-                .get("pullRequest", {})
-                .get("reviewThreads", {})
+                .get("pullRequest")
             )
+            if pr_data is None:
+                return None
+            threads = pr_data.get("reviewThreads")
+            if threads is None:
+                return None
             nodes = threads.get("nodes", [])
             total += len(nodes)
             resolved += sum(1 for n in nodes if n.get("isResolved"))

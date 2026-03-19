@@ -23,6 +23,7 @@ Exit codes:
 """
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -182,7 +183,13 @@ def check_auto_generated_files(staged_files: list[str]) -> list[ConflictRisk]:
     Detect when auto-generated files are staged alongside development changes.
     """
     risks: list[ConflictRisk] = []
-    staged_auto = [f for f in staged_files if any(f.endswith(ag) or ag in f for ag in AUTO_GENERATED_FILES)]
+    staged_auto = [
+        f for f in staged_files
+        if any(
+            f == ag or f.endswith("/" + ag) or f.endswith(os.sep + ag)
+            for ag in AUTO_GENERATED_FILES
+        )
+    ]
     staged_dev = [f for f in staged_files if f not in staged_auto and f != "CHANGELOG.md"]
 
     if staged_auto and staged_dev:

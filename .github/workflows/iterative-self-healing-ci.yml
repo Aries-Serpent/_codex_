@@ -206,7 +206,11 @@ jobs:
           RUN_ID: ${{ needs.triage.outputs.run_id }}
           ITERATION: ${{ matrix.iteration }}
         run: |
-          echo "Applying auto-fix for pattern: ${PATTERN} (iteration ${ITERATION})"
+          echo "Applying auto-fix (all patterns) for classified pattern: ${PATTERN} (iteration ${ITERATION})"
+          # Note: auto_fix_common_issues.py applies all its fix patterns. The
+          # PATTERN variable identifies the triage classification but is not
+          # passed as a selector — unrelated patterns produce no output for
+          # unrelated files, so this is safe. Future work: add --pattern flag.
           python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/fix_output.txt
           # Restore the overlaid trusted scripts so they don't appear in the diff.
           # Only actual fix outputs (not trusted-main script versions) should be staged.

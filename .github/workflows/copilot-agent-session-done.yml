@@ -1,0 +1,113 @@
+name: "🔄 Auto-Post @copilot review After Agent Session"
+
+# Fires when a GitHub Coding Agent (copilot-swe-agent[bot]) workflow run
+# completes on a PR branch.  If the PR is open and Agent Token Delegation
+# is enabled (COPILOT_AGENT_AUTH_ENABLED repo variable = 'true'), this
+# workflow posts "@copilot review" to the PR so that Copilot Review starts
+# immediately after the agent commits changes.
+#
+# Loop:
+#   Coding agent commits → workflow_run completed → post "@copilot review"
+#     → Copilot review generates N comments
+#       → copilot-review-responder.yml fires
+#         → post "@copilot apply changes based on the comments in [this thread](URL)"
+#           → coding agent session starts → loop repeats
+#
+# Guard: does NOT post if the most-recent issue comment on the PR is already
+# "@copilot review" (prevents infinite review-review loops if no new commits
+# were pushed between two reviews).
+
+on:
+  workflow_run:
+    # Trigger after Copilot setup steps complete (proxy for agent session end)
+    workflows: ["Copilot Setup Steps"]
+    types: [completed]
+
+concurrency:
+  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0].number }}
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  post-review-trigger:
+    name: "Post @copilot review after agent session"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only fire when:
+    #   1. The workflow_run was associated with a PR (not a plain branch push)
+    #   2. COPILOT_AGENT_AUTH_ENABLED is enabled
+    if: |
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null
+
+    steps:
+      - name: "Check COPILOT_AGENT_AUTH_ENABLED and post @copilot review"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Check repo variable COPILOT_AGENT_AUTH_ENABLED
+            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
+            if (authEnabled !== 'true' && authEnabled !== '1') {
+              console.log('COPILOT_AGENT_AUTH_ENABLED not set — skipping @copilot review post.');
+              return;
+            }
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const prs = context.payload.workflow_run.pull_requests;
+            if (!prs || prs.length === 0) {
+              console.log('No associated PRs — skipping.');
+              return;
+            }
+
+            const pr = prs[0].number;
+
+            // Verify the PR is still open
+            let prData;
+            try {
+              const { data } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
+              prData = data;
+            } catch (e) {
+              console.log(`Could not fetch PR ${pr}: ${e.message}`);
+              return;
+            }
+            if (prData.state !== 'open') {
+              console.log(`PR #${pr} is ${prData.state} — skipping.`);
+              return;
+            }
+
+            // Guard: do not post if the most recent comment is already "@copilot review"
+            // (prevents a review→review loop when the agent didn't push any changes)
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
+                owner, repo, issue_number: pr, per_page: 1,
+                // sort by created desc to get the newest comment
+              });
+              // Note: listComments sorts ascending by default; check last page later
+              // Simple check: if ANY of the last 5 comments is exactly "@copilot review", skip
+              const { data: recentComments } = await github.rest.issues.listComments({
+                owner, repo, issue_number: pr, per_page: 5,
+              });
+              const lastComments = recentComments.slice(-5);
+              const alreadyPosted = lastComments.some(c =>
+                c.body?.trim() === '@copilot review' &&
+                c.user?.login === 'github-actions[bot]'
+              );
+              if (alreadyPosted) {
+                console.log(`Most recent comment is already "@copilot review" — skipping to avoid loop.`);
+                return;
+              }
+            } catch (e) {
+              console.log(`Could not check recent comments (non-blocking): ${e.message}`);
+            }
+
+            // Post "@copilot review"
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: pr,
+              body: '@copilot review',
+            });
+            console.log(`@copilot review posted to PR #${pr}.`);
