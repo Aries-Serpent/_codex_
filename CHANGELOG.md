@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3640)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3640 (SHA `31cf517d`) at 2026-03-20T04:56Z [auto-generated]
+
 ### Fixed (S163 — 2026-03-20 — PR #3634)
 - **`scripts/ci/branch_rebase_check.py`**: Replaced generic 5-line rebase-required comment with a rich autonomous PR helper bot: gap commit table (SHA links, author, date, message), 🟢/🔴 conflict-risk badge using actual gap file overlap (fixes false-always-green risk badge), click-by-click GitHub UI instructions ("Update with merge commit"), CLI snippet, and a copy-pasteable `@copilot` Coding Agent prompt. Posted as a standard PATCH to the existing comment so the thread stays clean.
 - **`scripts/ci/branch_rebase_check.py`**: Added `--auto-merge-skip-ci` flag — when ALL gap commits are `[skip ci]` `github-actions[bot]` commits, the script calls the GitHub Merges API to auto-merge the base into the branch without any `git checkout`. Prevents REQ-10 hard-blocks caused by the 5 scheduled bot workflows that commit to `main` every 2–24 h.
