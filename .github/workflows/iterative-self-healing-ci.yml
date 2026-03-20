@@ -105,13 +105,31 @@ jobs:
 
           echo "pattern=${PATTERN}" >> "$GITHUB_OUTPUT"
 
-          # Expanded fixable patterns (Phase 5 — S154):
+          # Expanded fixable patterns (Phase 5 — S154 + S163):
           # Added changelog-* (check_7 CHANGELOG cross-PR), pip-cache-* (sparse checkout),
-          # policy-gate-* (pre-create pip cache fix), and rebase-gate-* (branch gate).
+          # policy-gate-* (pre-create pip cache fix), rebase-gate-* (branch gate),
+          # auth-delegation (REQ-10 branch-diverged caused by scheduled bot commits).
+          # integration-branch-direct-session: NOT fixable — structural redirect only.
           case "$PATTERN" in
             ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\
-            changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline)
+            changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline|\
+            auth-delegation|branch-diverged)
               echo "fixable=true"  >> "$GITHUB_OUTPUT"
+              ;;
+            integration-branch-direct-session)
+              # REQ-11: session on integration branch — non-fixable; needs sub-PR creation.
+              # Post an informative escalation comment and skip auto-fix.
+              echo "fixable=false" >> "$GITHUB_OUTPUT"
+              echo "### 🚫 REQ-11: Integration-Branch Direct-Session Detected" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Pattern \`integration-branch-direct-session\` is **not auto-fixable**." >> "$GITHUB_STEP_SUMMARY"
+              echo "The PR head is the staging integration branch (\`0D_base_\`)." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Fix:** Create a sub-PR targeting \`0D_base_\` instead:" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`\`\`bash" >> "$GITHUB_STEP_SUMMARY"
+              echo "gh workflow run copilot-session-chain.yml -f source_branch=0D_base_ -f session_title=\"<task>\"" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "See: [INTEGRATION_BRANCH_MODEL.md](.codex/docs/INTEGRATION_BRANCH_MODEL.md)" >> "$GITHUB_STEP_SUMMARY"
               ;;
             *)
               echo "fixable=false" >> "$GITHUB_OUTPUT"
@@ -164,6 +182,7 @@ jobs:
           git fetch origin main --depth=5 --no-tags 2>/dev/null || true
           git restore --source=origin/main -- \
             scripts/ci/auto_fix_common_issues.py \
+            scripts/ci/branch_rebase_check.py \
             scripts/ci/ci_triage_repro.sh \
             scripts/ci/session_wrapup_autofix.py \
             2>/dev/null \
@@ -172,7 +191,7 @@ jobs:
           # Record which scripts were overlaid so we can restore them before staging.
           # This prevents accidentally committing the trusted-main versions back into
           # the target branch when only fix outputs should be staged.
-          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_scripts.txt
+          echo "scripts/ci/auto_fix_common_issues.py scripts/ci/branch_rebase_check.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > /tmp/overlaid_scripts.txt
 
       - name: Set up Python (cached)
         uses: ./.github/actions/setup-python-cached
@@ -205,22 +224,60 @@ jobs:
           HEAD_BRANCH: ${{ needs.triage.outputs.head_branch }}
           RUN_ID: ${{ needs.triage.outputs.run_id }}
           ITERATION: ${{ matrix.iteration }}
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         run: |
-          echo "Applying auto-fix (all patterns) for classified pattern: ${PATTERN} (iteration ${ITERATION})"
-          # Note: auto_fix_common_issues.py applies all its fix patterns. The
-          # PATTERN variable identifies the triage classification but is not
-          # passed as a selector — unrelated patterns produce no output for
-          # unrelated files, so this is safe. Future work: add --pattern flag.
-          python scripts/ci/auto_fix_common_issues.py 2>&1 | tee /tmp/fix_output.txt
-          # Restore the overlaid trusted scripts so they don't appear in the diff.
-          # Only actual fix outputs (not trusted-main script versions) should be staged.
+          echo "Applying auto-fix for pattern: ${PATTERN} (iteration ${ITERATION})"
+
+          # ── Branch-diverged / auth-delegation: call branch_rebase_check.py ──
+          # These patterns fire when a PR branch is behind/diverged from its base
+          # because scheduled bot workflows commit directly to main every 2-24 h.
+          # branch_rebase_check.py --auto-merge-skip-ci resolves this via the
+          # GitHub Merges API without any git checkout, then posts the rich helper
+          # comment with conflict analysis + Copilot agent prompt to the PR and
+          # updates the PR Status Dashboard section.
+          if [[ "$PATTERN" == "auth-delegation" || "$PATTERN" == "branch-diverged" || "$PATTERN" == "rebase-gate"* ]]; then
+            PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
+              --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
+            if [ -n "$PR_NUMBER" ]; then
+              echo "  Running branch_rebase_check.py --auto-merge-skip-ci for PR #${PR_NUMBER}…"
+              python scripts/ci/branch_rebase_check.py \
+                --repo Aries-Serpent/_codex_ \
+                --pr "${PR_NUMBER}" \
+                --auto-merge-skip-ci \
+                --post-comment \
+                --upsert-dashboard \
+                --github-output \
+                --github-summary \
+                2>&1 | tee /tmp/fix_output.txt
+              # The script merges via API — no local file changes to stage
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              echo "✅ Branch rebase check/auto-merge complete" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "  ⚠️ Could not determine PR number for branch ${HEAD_BRANCH}"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # ── All other patterns: run auto_fix_common_issues.py with --pattern ──
+            # The --pattern-name flag correctly runs only the matching pattern,
+            # making each iteration faster and the diff more targeted.
+            python scripts/ci/auto_fix_common_issues.py --pattern-name "${PATTERN}" \
+              2>&1 | tee /tmp/fix_output.txt
+            if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+              # --pattern-name found no match; fall back to running all patterns
+              python scripts/ci/auto_fix_common_issues.py \
+                2>&1 | tee /tmp/fix_output.txt
+            fi
+          fi
+
+          # Restore overlaid trusted scripts — only actual fix outputs should be staged
           if [ -f /tmp/overlaid_scripts.txt ]; then
             # shellcheck disable=SC2046
             git restore -- $(cat /tmp/overlaid_scripts.txt) 2>/dev/null || true
           fi
           if git diff --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "⚠️ No changes produced for pattern \`${PATTERN}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "⚠️ No file changes produced for pattern \`${PATTERN}\`" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "changed=true"  >> "$GITHUB_OUTPUT"
             CHANGED_FILES=$(git diff --name-only | tr '\n' ',')

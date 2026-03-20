@@ -17,5 +17,11 @@ test in the shard runs), matching the behaviour of a local full test run.
 """
 from __future__ import annotations
 
-import codex.archive  # noqa: F401 — register subpackage as attr on codex for monkeypatch
-import codex.archive.retry  # noqa: F401 — ensure retry module is importable via dotted path
+import importlib
+
+# Pre-import for test shard isolation: register subpackages as attributes on the
+# codex namespace before pytest-randomly reorders tests or sharding splits the
+# suite into separate processes.  importlib.import_module avoids unused-import
+# warnings while producing the identical side-effect as a bare import statement.
+importlib.import_module("codex.archive")
+importlib.import_module("codex.archive.retry")

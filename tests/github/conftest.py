@@ -14,5 +14,11 @@ file for a full explanation of the shard isolation problem.
 """
 from __future__ import annotations
 
-import codex.github  # noqa: F401 — register subpackage as attr on codex for monkeypatch
-import codex.github.mcp_poster  # noqa: F401 — ensure mcp_poster module is importable via dotted path
+import importlib
+
+# Pre-import for test shard isolation: register subpackages as attributes on the
+# codex namespace before pytest-randomly reorders tests or sharding splits the
+# suite into separate processes.  importlib.import_module avoids unused-import
+# warnings while producing the identical side-effect as a bare import statement.
+importlib.import_module("codex.github")
+importlib.import_module("codex.github.mcp_poster")

@@ -1640,3 +1640,179 @@ cognitive_note: |
   Only 100%-confidence items are auto-fixed.  60–79% items require human
   review because vulture cannot resolve dynamic dispatch, __all__ exports,
   or TYPE_CHECKING guards.  Use scripts/ci/dead_code_scan.py for triage.
+
+---
+pattern_id: BRANCH_DIVERGED_001
+name: "Branch Diverged from Base (Scheduled Bot Commits)"
+classifier: branch-diverged
+severity: medium
+auto_healable: true
+log_signature: "BRANCH_REBASE_REQUIRED"
+workflow: "branch-rebase-gate.yml"
+triggers:
+  - "branch is behind"
+  - "branch has diverged"
+  - "REQ-10 FAIL"
+  - "BRANCH_REBASE_REQUIRED"
+
+root_cause: |
+  Five scheduled GitHub Actions workflows commit directly to main every 2-24 hours:
+    - codex-manifest-refresh.yml  (every 6h)
+    - embedding-index-rebuild.yml (daily 02:00 UTC)
+    - cognitive-analysis-feed.yml (daily 02:00 UTC)
+    - repo-var-sync-schedule.yml  (daily 06:00 UTC)
+    - vars-guide-sync.yml         (daily 06:00 UTC)
+  Any open PR branch will diverge from main within ~6 hours of being created.
+  This triggers the REQ-10 hard block in agent-auth-delegation.yml even though
+  no functional code changes were made to main.
+
+fix:
+  type: api_call
+  command: >
+    python scripts/ci/branch_rebase_check.py
+      --repo Aries-Serpent/_codex_ --pr <PR_NUMBER>
+      --auto-merge-skip-ci --post-comment --upsert-dashboard
+      --github-output --github-summary
+  description: >
+    When ALL gap commits are [skip ci] github-actions[bot] commits,
+    branch_rebase_check.py calls the GitHub Merges API to auto-merge them
+    into the PR branch — no git checkout required.  Posts a rich helper
+    comment with: gap commit table, conflict risk analysis, click-by-click
+    resolution instructions, and a copy-pasteable Copilot agent prompt.
+    Also updates the PR Status Dashboard section.
+  auto_fix_available: true
+  verified: true
+
+prevention: |
+  branch-rebase-gate.yml now runs --auto-merge-skip-ci on every PR push.
+  If the gap is 100% bot [skip ci] commits, it auto-merges without creating
+  a REQ-10 block.  Only human-authored functional commits in the gap require
+  a manual rebase.
+
+cognitive_note: |
+  This pattern recurs every 6-24 hours for any long-running PR.  The
+  auto-merge path is safe because [skip ci] bot commits only touch metadata
+  files (.codex/, docs/admin/, CODEX_MANIFEST.json) with no overlap with
+  typical PR changes.
+
+---
+pattern_id: AUTH_DELEGATION_REBASE_001
+name: "Agent Auth Delegation Blocked by REQ-10 Branch Divergence"
+classifier: auth-delegation
+severity: high
+auto_healable: true
+comment_marker: "BRANCH_REBASE_REQUIRED"
+log_signature: "REQ-10 FAIL: A BRANCH_REBASE_REQUIRED marker is present"
+workflow: "agent-auth-delegation.yml"
+
+root_cause: |
+  agent-auth-delegation.yml cognitive-preflight REQ-10 reads the PR comments
+  for a BRANCH_REBASE_REQUIRED marker.  If the branch is still behind/diverged
+  from its base when the agent session starts, REQ-10 hard-blocks activation.
+  The escalation comment posted by iterative-self-healing-ci.yml (pattern:
+  auth-delegation) indicates the self-healing loop could not automatically fix
+  this — typically because the fix requires the GitHub Merges API (contents:write)
+  which was not available in the previous heal job.
+
+fix:
+  type: api_call
+  command: >
+    python scripts/ci/branch_rebase_check.py
+      --repo Aries-Serpent/_codex_ --pr <PR_NUMBER>
+      --auto-merge-skip-ci --post-comment --upsert-dashboard
+      --github-output --github-summary
+  description: >
+    Calls branch_rebase_check.py with --auto-merge-skip-ci.  When all gap
+    commits are [skip ci] bot commits, merges them via the GitHub Merges API
+    and posts the REQ-10 RESOLVED comment.  The next agent session start will
+    see BRANCH_REBASE_RESOLVED > BRANCH_REBASE_REQUIRED and pass REQ-10.
+  auto_fix_available: true
+  verified: true
+
+cognitive_note: |
+  iterative-self-healing-ci.yml now includes auth-delegation in the fixable
+  patterns set and dispatches to branch_rebase_check.py in the Apply auto-fix
+  step.  The GH_TOKEN / CODEX_MASTER_KEY must have contents:write scope.
+
+---
+pattern_id: INT_BRANCH_DIRECT_SESSION_001
+name: "Integration-Branch Direct Session (REQ-11)"
+category: branch_governance
+priority: 1
+severity: critical
+telemetry_classifier: "integration-branch-direct-session"
+
+description: |
+  A Copilot Coding Agent session was attempted directly on the staging integration
+  branch (0D_base_).  This violates the sub-PR model: all agent work must happen
+  on a copilot/session-* or copilot/sub-pr-* branch that targets 0D_base_, never
+  on 0D_base_ itself.
+
+  Architecture:
+    copilot/session-*  ──►  0D_base_  ──►  main
+    (agent sessions)        (staging)       (production)
+
+detection:
+  error_signatures:
+    - "REQ-11 FAIL"
+    - "Direct Session on Integration Branch Blocked"
+    - "req11-integration-branch-guard"
+    - "is the staging integration branch"
+    - "integration-branch-direct-session"
+  workflow_name_patterns:
+    - "Agent Token Delegation"
+    - "cognitive-preflight"
+  job_name_patterns:
+    - "Cognitive Pre-flight Check"
+    - "REQ-11"
+
+root_cause: |
+  agent-auth-delegation.yml cognitive-preflight REQ-11 guard detects that the PR
+  head branch is 0D_base_ (an integration/staging branch) and hard-blocks the
+  session.  Direct agent sessions on 0D_base_ bypass the sub-PR review cycle and
+  risk polluting the staging branch with unreviewed changes.
+
+fix:
+  type: structural
+  command: >
+    gh workflow run copilot-session-chain.yml
+      -f source_branch=0D_base_
+      -f session_title="<task description>"
+      -f auto_start=true
+  description: >
+    Use copilot-session-chain.yml to create a new copilot/session-* branch
+    targeting 0D_base_ and open a sub-PR.  The session-chain workflow posts
+    the @copilot trigger comment automatically.  Never run sessions directly
+    on 0D_base_.
+  auto_fix_available: false
+  manual_steps:
+    1: "git fetch origin 0D_base_"
+    2: "git checkout -b copilot/session-$(date +%Y%m%d-%H%M%S) origin/0D_base_"
+    3: "git push origin HEAD"
+    4: "gh pr create --base 0D_base_ --head copilot/session-*"
+    5: "Post @copilot+claude-sonnet-4.6 continue on the new PR"
+
+prevention:
+  strategy: >
+    REQ-11 guard in agent-auth-delegation.yml cognitive-preflight is the primary
+    prevention.  It is a CI hard-stop (core.setFailed) that blocks activate-delegation
+    via the needs: dependency chain.  The copilot-session-chain.yml workflow
+    automates the correct alternative flow.
+  grounded_enforcement:
+    - "REQ-11 CI hard-block (core.setFailed) in cognitive-preflight"
+    - "needs: dependency chain blocks activate-delegation"
+    - "copilot-session-chain.yml auto-creates sub-PR on merge"
+    - "CODEBASE_AGENCY_POLICY.md §0b Integration Branch Model"
+
+cognitive_note: |
+  This pattern is NOT auto-fixable by iterative-self-healing-ci.yml because the
+  fix is structural (create a sub-PR), not code-based.  When classified as
+  integration-branch-direct-session, the self-healing loop should escalate with
+  the redirect instructions from the REQ-11 guard comment rather than attempting
+  an auto-fix.  The copilot-session-chain.yml workflow is the canonical fix path.
+
+references:
+  - ".codex/docs/INTEGRATION_BRANCH_MODEL.md"
+  - ".codex/CODEBASE_AGENCY_POLICY.md §0b"
+  - ".github/workflows/agent-auth-delegation.yml (REQ-11)"
+  - ".github/workflows/copilot-session-chain.yml"
