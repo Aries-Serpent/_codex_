@@ -105,7 +105,7 @@ class CommonIssueFixer:
 
         Returns True if any issues were found.
         """
-        patterns = [
+        all_patterns = [
             (1,  "Unused Imports",         self.fix_unused_imports),
             (2,  "Unused Variables",        self.fix_unused_variables),
             (3,  "YAML Indentation",        self.fix_yaml_indentation),
@@ -124,6 +124,7 @@ class CommonIssueFixer:
             (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
             (17, "CI SHA Drift",            self.check_ci_sha_drift),
         ]
+        patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
@@ -157,25 +158,7 @@ class CommonIssueFixer:
             ]
             if not patterns:
                 print(f"ℹ️  No patterns matched '{pattern_name}' — running all patterns\n")
-                patterns = [
-                    (1,  "Unused Imports",         self.fix_unused_imports),
-                    (2,  "Unused Variables",        self.fix_unused_variables),
-                    (3,  "YAML Indentation",        self.fix_yaml_indentation),
-                    (4,  "Coverage Thresholds",     self.fix_coverage_thresholds),
-                    (5,  "Tokenizer Fallbacks",     self.fix_tokenizer_fallbacks),
-                    (6,  "Test Assertions",         self.fix_test_assertions),
-                    (7,  "Redundant Imports",       self.fix_redundant_imports),
-                    (8,  "CodeQL Alerts",           self.fix_codeql_alerts),
-                    (9,  "Unsorted Imports",        self.fix_unsorted_imports),
-                    (10, "Bandit Security",         self.fix_bandit_security),
-                    (11, "F-String Placeholders",   self.fix_fstring_placeholders),
-                    (12, "Line Length",             self.fix_line_length),
-                    (13, "W-Series Warnings",       self.fix_w_series_warnings),
-                    (14, "Link Checker Config",     self.fix_link_checker_config),
-                    (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
-                    (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
-                    (17, "CI SHA Drift",            self.check_ci_sha_drift),
-                ]
+                patterns = all_patterns
                 print("🔍 Scanning for common CI issues…\n")
             else:
                 names_str = ", ".join(nm for _, nm, _ in patterns)

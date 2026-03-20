@@ -50,11 +50,11 @@ jobs:
     #   B. issue_comment created by a recognized bot on a PR containing "generated N comments"
     if: >-
       (github.event_name == 'pull_request_review' &&
-       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]"]'), github.event.review.user.login))
+       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]","amazon-q[bot]"]'), github.event.review.user.login))
       ||
       (github.event_name == 'issue_comment' &&
        github.event.issue.pull_request.url != '' &&
-       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]"]'), github.event.comment.user.login) &&
+       contains(fromJSON('["copilot-pull-request-reviewer[bot]","copilot[bot]","github-copilot[bot]","gemini-code-assist[bot]","copilot-swe-agent[bot]","amazon-q[bot]"]'), github.event.comment.user.login) &&
        contains(github.event.comment.body, 'generated') &&
        contains(github.event.comment.body, 'comments'))
 
