@@ -44,6 +44,16 @@ class TelemetryCollector:
             "workflow-analytics", "workflow analytics", "cognitive-brain",
             "cognitive brain", "cascade", "art_workflow",
         ],
+        # ── Integration-branch direct-session guard (REQ-11) ──────────────────
+        # MUST be checked BEFORE auth-delegation: agent-auth-delegation.yml run
+        # name contains "delegation" which otherwise matches auth-delegation first.
+        # Fires when a Copilot session is attempted directly on 0D_base_.
+        # Non-fixable by auto-heal; escalates with redirect instructions.
+        "integration-branch-direct-session": [
+            "req-11", "req11", "integration branch", "integration-branch",
+            "staging gate", "direct session on integration",
+            "direct-session", "0d_base", "0D_base_",
+        ],
         # ── Auth / delegation patterns ────────────────────────────────────────
         "auth-delegation": [
             "agent-auth", "delegation", "token-probe", "token probe",
@@ -261,10 +271,20 @@ class TelemetryCollector:
         """
         run_name = run["name"].lower()
         job_names = " ".join([j["name"].lower() for j in jobs])
+        # Also include step names from all jobs — catches REQ-11 step names like
+        # "REQ-11: Integration-branch direct-session guard" which contain the
+        # keywords that distinguish integration-branch-direct-session from
+        # auth-delegation when the workflow is agent-auth-delegation.yml.
+        step_names = " ".join(
+            s["name"].lower()
+            for j in jobs
+            for s in j.get("steps", [])
+        )
+        search_text = f"{run_name} {job_names} {step_names}"
 
         for pattern, keywords in self.PATTERN_KEYWORDS.items():
             for keyword in keywords:
-                if keyword in run_name or keyword in job_names:
+                if keyword in search_text:
                     return pattern
 
         return "unknown"

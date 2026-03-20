@@ -865,7 +865,9 @@ class TestScrape:
              patch.object(scraper, "_iter_pages", return_value=iter([])):
             scraper.scrape()
 
-        mock_pw.chromium.launch.assert_called_once_with(headless=False)
+        mock_pw.chromium.launch.assert_called_once_with(
+            headless=False, args=["--disable-extensions"]
+        )
 
 
 class TestMainWithPlaywright:

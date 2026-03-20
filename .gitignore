@@ -173,6 +173,11 @@ manifests/k8s/*/secret.yaml
 .codex/sessions/*.meta
 # Session bootstrap artefacts — always track (S145)
 !.codex/session_context_latest.md
+# AfterMath lessons_learned and session checkpoints (S163+)
+!.codex/lessons_learned/
+!.codex/lessons_learned/**
+!.codex/checkpoints/
+!.codex/checkpoints/**
 !scripts/ci/session_bootstrap.py
 !scripts/ci/ci_triage_repro.sh
 !docs/ci/CI_TRIAGE_REPRO_S145.md

@@ -210,6 +210,7 @@ jobs:
               sys.exit(0)
           m = json.load(open('CODEX_MANIFEST.json'))
           generated_at = m.get('generated_at', '')
+          age_h = None
           try:
               from datetime import datetime, timezone
               ts = datetime.fromisoformat(generated_at.replace('Z', '+00:00'))
@@ -217,7 +218,8 @@ jobs:
               stale = age_h > 23.5
           except Exception:
               stale = True
-          print(f'Manifest age: {age_h:.1f}h — {"STALE" if stale else "FRESH"}')
+          age_str = f'{age_h:.1f}h' if age_h is not None else 'unknown'
+          print(f'Manifest age: {age_str} — {"STALE" if stale else "FRESH"}')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write(f'stale={"true" if stale else "false"}\n')
           PY
