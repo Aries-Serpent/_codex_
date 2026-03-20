@@ -6563,7 +6563,7 @@ and the CI gate requirement.
 1. **Ruff F841 fixes in `scripts/ci/branch_rebase_check.py`**:
    - Removed dead `gap_desc` variable (assigned but never read in `all_bot_skip_ci` branch)
    - Removed dead `func_msgs` variable (list comprehension result never used)
-   - Renamed `risk` → `conflict_risk` and incorporated it into `dash_summary` in `post_divergence_comment()` so the PR Status Dashboard now shows conflict risk in the summary line
+   - Renamed `risk` → `conflict_risk` and incorporated it into `dash_summary` in `post_rebase_required_comment()` so the PR Status Dashboard now shows conflict risk in the summary line
 2. All 193 CI tests pass (`tests/ci/`); `ruff check` reports 0 errors.
 
 ### Impact Score
