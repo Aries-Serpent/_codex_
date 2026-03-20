@@ -1,13 +1,33 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/update-ci-failure-triage-report
+**Branch:** copilot/sub-pr-3635-again
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-19T10:00Z (S159 — CI check resolution for PR #3628 merge blockers)
+**Last updated:** 2026-03-20T05:00Z (S164 — Cherry-pick consolidation PRs #3636–#3639)
 
 ---
 
-## SESSION SUMMARY — 2026-03-19 S159 PR #3628
+## SESSION SUMMARY — 2026-03-20 S164 PR #3640
+
+### Work Completed (S164)
+| Area | Change | Detail |
+|------|--------|--------|
+| `scripts/ci/collect_telemetry.py` | REQ-11 misclassification fix | `integration-branch-direct-session` before `auth-delegation`; step names in classify_failure() |
+| `scripts/security/playwright_scraper.py` | CB-INV-001 fix | `args=["--disable-extensions"]` in `chromium.launch()` |
+| `tests/security/test_playwright_scraper.py` | Test assertion update | Assert `--disable-extensions` arg present in launch call |
+| `scripts/ci/auto_fix_common_issues.py` | Alias expansion + dedup | 25+ classifier aliases; external classifiers return early; single `all_patterns` definition |
+| `.github/workflows/e-to-d-transition-gate.yml` | UnboundLocalError fix | `age_h = None` before try block |
+| `.github/workflows/copilot-review-responder.yml` | amazon-q[bot] allowlist | Added to both `contains(fromJSON(...))` `if:` gate conditions |
+| `cognitive_app/package-lock.json` | flatted 3.3.3 → 3.4.2 | CWE-1321 prototype pollution fix |
+| `.gitignore` | AfterMath exceptions | Added `!.codex/lessons_learned/` + `!.codex/checkpoints/` |
+| `docs/system/CODEBASE_DASHBOARD.md` | S164 metrics | Latest session updated to S164 with complete outcomes |
+| `CHANGELOG.md` | S164 entry | All 6 changes documented |
+
+### CI Check Status
+- 1 REQ-5 (CHANGELOG.md) failure → self-healed by cognitive-preflight bot
+- All `action_required` runs = owner-approval cost-gated workflows (not code issues)
+
+---
 
 ### Work Completed (S159)
 | Area | Change | Detail |
