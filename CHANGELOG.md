@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3634)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3634 (SHA `baa39a83`) at 2026-03-20T01:21Z [auto-generated]
+
 ### Fixed (S162 — 2026-03-19 — PR #3633)
 - **`copilot-review-responder.yml`**: Added `issue_comment: created` trigger — `copilot-pull-request-reviewer[bot]` posts "generated N comments" as a PR issue comment (not as review body), so the old `pull_request_review`-only trigger always had an empty `review.body`, causing the job `if` to evaluate false and the job to be skipped. Script now fetches most recent bot PR review to build the exact review URL when triggered via `issue_comment`.
 - **`copilot-agent-session-done.yml`**: Fixed null concurrency group — `pull_requests[0].number` can be null when workflow run has no associated PR; added `|| github.event.workflow_run.id` fallback. Replaced REST `listComments` (returns oldest page) with GraphQL `comments(last: 5)` for reliable infinite-loop prevention.
