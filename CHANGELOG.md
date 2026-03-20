@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S164 — 2026-03-20 — PR #3640)
+- **`scripts/ci/collect_telemetry.py`**: Fixed REQ-11 misclassification — moved `integration-branch-direct-session` before `auth-delegation` in `PATTERN_KEYWORDS`. Extended `classify_failure()` to include job step names in classification search text so "REQ-11: Integration-branch direct-session guard" step names are matchable, preventing `iterative-self-healing-ci` from wasting heal iterations on non-fixable REQ-11 failures.
+- **`scripts/security/playwright_scraper.py`**: CB-INV-001 — `chromium.launch()` now passes `args=["--disable-extensions"]` to prevent content-blocker extensions from intercepting `github.com` requests during security alert scraping.
+- **`scripts/ci/auto_fix_common_issues.py`**: Expanded `--pattern-name` aliases from 9 to 25+ entries covering all `collect_telemetry.py` classifiers. Externally-handled classifiers (`rebase-gate`, `auth-delegation`, `integration-branch-direct-session`, etc.) now return early with an informative message instead of silently running all 17 patterns. Refactored `patterns = [...]` to a single `all_patterns` definition to eliminate duplicated 17-entry list.
+- **`.github/workflows/e-to-d-transition-gate.yml`**: Fixed `UnboundLocalError` — initialized `age_h = None` before `try` block so the `except` path doesn't crash when `generated_at` is missing or malformed.
+- **`.github/workflows/copilot-review-responder.yml`**: Added `amazon-q[bot]` to both `contains(fromJSON(...))` `if:` gate conditions — it was in `BOT_ACTORS` but absent from the gate, so its reviews and comments never triggered the workflow.
+- **`cognitive_app/package-lock.json`**: Bumped flatted 3.3.3 → 3.4.2 to fix CWE-1321 prototype pollution vulnerability.
+
 ### Fixed (S163 — 2026-03-20 — PR #3634)
 - **`scripts/ci/branch_rebase_check.py`**: Replaced generic 5-line rebase-required comment with a rich autonomous PR helper bot: gap commit table (SHA links, author, date, message), 🟢/🔴 conflict-risk badge using actual gap file overlap (fixes false-always-green risk badge), click-by-click GitHub UI instructions ("Update with merge commit"), CLI snippet, and a copy-pasteable `@copilot` Coding Agent prompt. Posted as a standard PATCH to the existing comment so the thread stays clean.
 - **`scripts/ci/branch_rebase_check.py`**: Added `--auto-merge-skip-ci` flag — when ALL gap commits are `[skip ci]` `github-actions[bot]` commits, the script calls the GitHub Merges API to auto-merge the base into the branch without any `git checkout`. Prevents REQ-10 hard-blocks caused by the 5 scheduled bot workflows that commit to `main` every 2–24 h.

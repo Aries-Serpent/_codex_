@@ -661,33 +661,37 @@ nox -s lint type format
 
 
 ## 🧠 AfterMath Insights (Last 5 Sessions)
-**Last Updated**: 2026-03-19 10:30 UTC
+**Last Updated**: 2026-03-20 04:56 UTC
 
 ### Session Metrics
-- **Total Sessions**: 2
-- **Commits**: 6
-- **Files Changed**: 20
+- **Total Sessions**: 3
+- **Commits**: 10
+- **Files Changed**: 22
 - **Documentation Added**: 0 KB
 - **Tokens Used**: 0 / 1,000,000
 - **Total Duration**: 134 minutes
-- **Lessons Learned**: 9
-- **Decisions Made**: 5
+- **Lessons Learned**: 14
+- **Decisions Made**: 8
 
 ### Latest Session
+- **ID**: S164
+- **Status**: ✅ Complete
+- **Context**: Cherry-pick PRs #3636–#3639 — telemetry REQ-11 fix, CB-INV-001 Playwright, workflow crash guards, flatted bump
+- **Date**: 2026-03-20
+- **Key Outcomes**:
+  - Fixed REQ-11 misclassification: `collect_telemetry.py` orders `integration-branch-direct-session` before `auth-delegation`
+  - CB-INV-001: `playwright_scraper.py` passes `--disable-extensions` to `chromium.launch()`
+  - Fixed `UnboundLocalError` in `e-to-d-transition-gate.yml` (`age_h = None` before try block)
+  - Added `amazon-q[bot]` to both `contains(fromJSON(...))` allowlists in `copilot-review-responder.yml`
+  - Expanded `auto_fix_common_issues.py` to 25+ telemetry classifier aliases with external-classifier early-exit
+  - Bumped flatted 3.3.3 → 3.4.2 (CWE-1321 prototype pollution)
+
+### Previous Session
+- **ID**: S163
+- **Status**: ✅ Complete
+- **Context**: Autonomous branch-divergence resolution, integration branch model hardening — PR #3634
+
+### Older Session
 - **ID**: S162
 - **Status**: ✅ Complete
 - **Context**: PR #3633 — autonomous review loop fix, 4 review comments, CVE-2026-33154, CI triage #3627
-- **Date**: 2026-03-19
-- **Key Outcomes**:
-  - Fixed `copilot-review-responder.yml` (was always skipped — review body empty, added `issue_comment` trigger)
-  - Fixed `copilot-agent-session-done.yml` (concurrency null + GraphQL loop guard)
-  - Resolved CVE-2026-33154 dynaconf SBOM stale entry
-  - Fixed flaky `test_decompression_accuracy` PCA threshold (0.20 → 0.25)
-  - Added `tests/archive/conftest.py` + `tests/github/conftest.py` for shard isolation
-  - Added `--push-range` to `prevent_sync_commit_conflict.py`
-  - Cherry-pick plan for `main` in `.codex/docs/WORKFLOW_CHERRY_PICK_TO_MAIN_PLAN.md`
-
-### Previous Session
-- **ID**: S159
-- **Status**: N/A
-- **Context**: CI check resolution for PR #3628 merge blockers

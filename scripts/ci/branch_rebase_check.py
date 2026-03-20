@@ -645,7 +645,7 @@ def upsert_dashboard_alert(
         return
 
     existing_body = dashboard["body"]
-    updated_body = section_pattern.sub(replacement, existing_body)
+    updated_body = section_pattern.sub(lambda _: replacement, existing_body)
     if updated_body == existing_body:
         # Section not present yet — append the hidden payload block without
         # touching the visible dashboard layout.
