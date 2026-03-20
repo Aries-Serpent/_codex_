@@ -134,14 +134,6 @@ class TelemetryCollector:
             "rebase", "branch-rebase", "rebase-gate", "behind base",
             "branch rebase", "req-10",
         ],
-        # ── Integration-branch direct-session guard (REQ-11) ──────────────────
-        # Fires when a Copilot session is attempted directly on 0D_base_.
-        # Non-fixable by auto-heal; escalates with redirect instructions.
-        "integration-branch-direct-session": [
-            "req-11", "req11", "integration branch", "integration-branch",
-            "staging gate", "direct session on integration",
-            "direct-session", "0d_base", "0D_base_",
-        ],
         # ── Copilot coding-agent runs ─────────────────────────────────────────
         "copilot-agent": [
             "copilot coding", "swe-agent", "copilot-swe", "coding agent",

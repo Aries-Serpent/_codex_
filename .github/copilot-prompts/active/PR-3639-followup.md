@@ -17,7 +17,7 @@
 - [`5e92acb0`] chore(vars): sync .codex/agent_context.json from repo variables [skip ci] (github-actions[bot], 2026-03-19)
 
 ### Files Modified
-No files modified
+Not documented in this prompt; refer to the PR diff for the exact list of changed files.
 
 ---
 
