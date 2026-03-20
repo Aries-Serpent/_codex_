@@ -72,7 +72,49 @@ step is confirmed complete (via session execution plan posted as PR comment).
 
 ---
 
-### 1. "Leave Codebase Better Than Found"
+### 0b. Integration Branch Model (HARD RULE — enforced by CI REQ-11)
+
+**`0D_base_` is the staging integration branch.  Copilot sessions MUST NEVER run
+directly on it.**
+
+#### Architecture
+
+```
+copilot/session-*  ──►  0D_base_  ──►  main
+  (agent sessions)       (staging)     (production)
+  Each sub-PR                           PR #3630
+  independently                         promotion
+  reviewed
+```
+
+#### Rules — all enforced by `cognitive-preflight` REQ-11
+
+| Rule | Enforcement |
+|------|-------------|
+| Agent sessions run ONLY on `copilot/session-*` or `copilot/sub-pr-*` sub-branches | REQ-11 CI hard-block if head == `0D_base_` |
+| Sub-PRs always target `0D_base_`, never `main` directly | PR creation convention + session-chain workflow |
+| `0D_base_` is updated only by merging reviewed sub-PRs | No direct-push rule — REQ-11 guards the session gate |
+| Promotion (`0D_base_` → `main`) via PR #3630 only when staging is ready | Human approval required |
+| `0D_base_` may be behind `main` by bot `[skip ci]` commits — this is expected | REQ-10 auto-passes bot-only divergence |
+
+#### To start a new agent session
+
+```bash
+# Automated (creates branch + PR + @copilot trigger automatically):
+gh workflow run copilot-session-chain.yml \
+  -f source_branch=0D_base_ \
+  -f session_title="<task description>"
+```
+
+**Enforcement:** `agent-auth-delegation.yml` `cognitive-preflight` REQ-11 guard — fires
+as the FIRST step; calls `core.setFailed()` if `pr.head.ref` is an integration branch;
+posts a rich redirect comment with step-by-step instructions.
+
+**Reference:** `.codex/docs/INTEGRATION_BRANCH_MODEL.md`
+
+---
+
+
 
 Every agent session MUST improve the codebase, not just complete assigned tasks. This includes:
 

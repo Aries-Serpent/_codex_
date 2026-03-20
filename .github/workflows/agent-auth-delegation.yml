@@ -123,6 +123,136 @@ jobs:
         with:
           fetch-depth: 50  # Enough for commit-count check (REQ-7); avoids full-clone cost
 
+      # ── REQ-11: Integration-branch direct-session guard ───────────────────
+      # 0D_base_ is the STAGING GATE — a Copilot session must NEVER run
+      # directly on it.  All agent work happens through sub-PRs that target
+      # 0D_base_.  If this guard fires, post clear redirect instructions and
+      # hard-block the session.
+      #
+      # Architecture:
+      #   copilot/session-* (sub-PR)  ──►  0D_base_  ──►  main
+      #   Agent works here                 staging gate    promotion PR
+      #
+      # See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
+      - name: "REQ-11: Integration-branch direct-session guard"
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Branches that are staging gates — never the HEAD of an agent session.
+            const INTEGRATION_BRANCHES = ['0D_base_'];
+            const pr = context.payload.pull_request;
+            if (!pr) return;
+
+            const head = pr.head.ref;
+            const base = pr.base.ref;
+
+            if (!INTEGRATION_BRANCHES.includes(head)) {
+              core.info(`REQ-11 PASS: head='${head}' is not an integration branch.`);
+              return;
+            }
+
+            // HEAD is an integration branch — build redirect comment.
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const ts = new Date().toISOString();
+            const MARKER = '<!-- req11-integration-branch-guard -->';
+            const body = [
+              MARKER,
+              `## 🚫 REQ-11: Direct Session on Integration Branch Blocked`,
+              ``,
+              `**Branch \`${head}\` is a staging integration branch** — Copilot Coding Agent sessions`,
+              `must never run directly on it.`,
+              ``,
+              `### Why`,
+              `\`${head}\` is the **staging gate** that accumulates reviewed sub-PR work before`,
+              `promotion to \`main\`.  Running a session directly on \`${head}\` bypasses the`,
+              `sub-PR review cycle and risks polluting the staging branch with unreviewed changes.`,
+              ``,
+              `### Architecture`,
+              `\`\`\``,
+              `copilot/session-*  ──►  ${head}  ──►  main`,
+              `(your work here)        (staging gate)   (promotion PR)`,
+              `\`\`\``,
+              ``,
+              `### ✅ How to Start a New Agent Session`,
+              ``,
+              `**Option A — Automated (recommended):** Trigger the session-chain workflow:`,
+              `\`\`\`bash`,
+              `gh workflow run copilot-session-chain.yml \\`,
+              `  -f source_branch=${head} \\`,
+              `  -f session_title="Describe your task here" \\`,
+              `  -f auto_start=true`,
+              `\`\`\``,
+              `This automatically creates a new \`copilot/session-*\` branch, opens a sub-PR`,
+              `targeting \`${head}\`, and posts the \`@copilot\` trigger comment.`,
+              ``,
+              `**Option B — Manual:**`,
+              `1. Create a new branch from \`${head}\`:`,
+              `   \`\`\`bash`,
+              `   git fetch origin ${head}`,
+              `   git checkout -b copilot/session-$(date +%Y%m%d-%H%M%S) origin/${head}`,
+              `   git push origin HEAD`,
+              `   \`\`\``,
+              `2. Open a PR targeting \`${head}\` (NOT \`main\`).`,
+              `3. Post \`@copilot+claude-sonnet-4.6 continue\` on the new PR.`,
+              ``,
+              `**Copy-paste Copilot prompt for a new session:**`,
+              `\`\`\``,
+              `@copilot+claude-sonnet-4.6 continue`,
+              ``,
+              `Open a new sub-PR targeting \`${head}\` for this agent session.`,
+              `Architecture: sub-PR → ${head} → main.`,
+              `Do NOT commit directly to \`${head}\`.`,
+              `\`\`\``,
+              ``,
+              `---`,
+              `_Auto-posted by \`cognitive-preflight\` REQ-11 gate at ${ts}_`,
+              `_[View run](${runUrl}) · [INTEGRATION_BRANCH_MODEL.md](.codex/docs/INTEGRATION_BRANCH_MODEL.md)_`,
+            ].join('\n');
+
+            // Upsert: replace any previous REQ-11 guard comment.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => (c.body || '').includes(MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner:      context.repo.owner,
+                repo:       context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner:        context.repo.owner,
+                repo:         context.repo.repo,
+                issue_number: pr.number,
+                body,
+              });
+            }
+
+            await core.summary
+              .addHeading('REQ-11: Integration-Branch Guard', 3)
+              .addRaw(
+                `\n🚫 FAIL — \`${head}\` is an integration/staging branch.\n` +
+                `Copilot sessions must use a sub-PR.  See comment on PR #${pr.number} for instructions.\n`
+              )
+              .write();
+
+            core.setFailed(
+              `REQ-11 FAIL: Branch '${head}' is the staging integration branch. ` +
+              `Copilot sessions must NOT run directly on '${head}'. ` +
+              `Create a sub-PR branch targeting '${head}' instead. ` +
+              `See the REQ-11 comment on this PR for step-by-step instructions, ` +
+              `or run: gh workflow run copilot-session-chain.yml -f source_branch=${head}`
+            );
+
       # ── REQ-1: Post mandatory checklist as PR comment ─────────────────────
       - name: Post Mandatory Agent Checklist to PR
         uses: actions/github-script@v7

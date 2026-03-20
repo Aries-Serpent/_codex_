@@ -1,0 +1,296 @@
+name: "🔗 Copilot Session Chain"
+
+# Opens a new Copilot Coding Agent sub-PR targeting the integration branch
+# (0D_base_) so that agent sessions are NEVER run directly on 0D_base_.
+#
+# Architecture:
+#   sub-PR (copilot/session-*) ──► 0D_base_ ──► main
+#   Each agent session gets its own branch + PR for review and iteration.
+#   0D_base_ is a staging gate — it accumulates reviewed sub-PR work, then
+#   promotes to main via the single promotion PR (#3630).
+#
+# Triggers:
+#   1. workflow_dispatch  — manually chain a new session from any branch
+#   2. pull_request closed+merged into integration branch
+#      — automatically opens the NEXT session when a sub-PR lands
+#
+# See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: "Integration branch to target (default: 0D_base_)"
+        required: false
+        default: "0D_base_"
+        type: string
+      session_title:
+        description: "Short title for the new session PR"
+        required: false
+        default: "Continue agent session"
+        type: string
+      continuation_prompt:
+        description: >
+          Comment to post on the new PR to start the Copilot session.
+          Defaults to a standard @copilot continue prompt.
+        required: false
+        default: ""
+        type: string
+      auto_start:
+        description: "Post @copilot trigger comment automatically (true/false)"
+        required: false
+        default: "true"
+        type: string
+
+  pull_request:
+    types: [closed]
+    branches:
+      - "0D_base_"
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: session-chain-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Guard: only proceed on merged sub-PRs (not direct pushes or unmerged closes)
+  # ─────────────────────────────────────────────────────────────────────────
+  check-trigger:
+    name: "🔍 Validate chain trigger"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      should_chain: ${{ steps.check.outputs.should_chain }}
+      integration_branch: ${{ steps.check.outputs.integration_branch }}
+    steps:
+      - name: Determine if chaining should proceed
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const INTEGRATION_BRANCHES = ['0D_base_'];
+            const event = context.eventName;
+
+            if (event === 'workflow_dispatch') {
+              const src = '${{ inputs.source_branch }}' || '0D_base_';
+              core.setOutput('should_chain', 'true');
+              core.setOutput('integration_branch', src);
+              core.info(`Manual dispatch — targeting integration branch: ${src}`);
+              return;
+            }
+
+            // pull_request closed event
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setOutput('should_chain', 'false');
+              core.info('No PR payload — skipping');
+              return;
+            }
+
+            const merged = pr.merged === true;
+            const base   = pr.base.ref;
+            const head   = pr.head.ref;
+
+            // Skip promotion PR (0D_base_ → main) and non-integration targets
+            const isIntegration = INTEGRATION_BRANCHES.includes(base);
+            const isPromotion   = INTEGRATION_BRANCHES.includes(head);
+
+            if (!merged || !isIntegration || isPromotion) {
+              core.setOutput('should_chain', 'false');
+              core.info(
+                `Skipping chain: merged=${merged}, base=${base}, ` +
+                `isIntegration=${isIntegration}, isPromotion=${isPromotion}`
+              );
+              return;
+            }
+
+            core.setOutput('should_chain', 'true');
+            core.setOutput('integration_branch', base);
+            core.info(
+              `Sub-PR #${pr.number} merged into ${base} — ` +
+              `opening next session chain.`
+            );
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Main: create branch + PR + trigger comment
+  # ─────────────────────────────────────────────────────────────────────────
+  open-session-pr:
+    name: "🚀 Open next agent session PR"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: check-trigger
+    if: needs.check-trigger.outputs.should_chain == 'true'
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.check-trigger.outputs.integration_branch }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          fetch-depth: 1
+
+      - name: Create session branch and open PR
+        id: create_pr
+        env:
+          SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
+          CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
+          AUTO_START: ${{ inputs.auto_start || 'true' }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          TIMESTAMP=$(date -u +"%Y%m%d-%H%M%S")
+          NEW_BRANCH="copilot/session-${TIMESTAMP}-${RUN_ID}"
+          INTEGRATION="${INTEGRATION_BRANCH}"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Create the new branch from the integration branch tip
+          git checkout -b "${NEW_BRANCH}"
+
+          # Write a session-chain marker file so the branch is non-empty
+          # relative to the integration branch and the PR can be opened.
+          MARKER_FILE=".codex/sessions/chain-${TIMESTAMP}.md"
+          mkdir -p .codex/sessions
+          cat > "${MARKER_FILE}" << EOF
+          # 🔗 Session Chain Marker — ${TIMESTAMP}
+
+          **Branch:** \`${NEW_BRANCH}\`
+          **Integration branch:** \`${INTEGRATION}\`
+          **Opened by:** copilot-session-chain.yml (run #${RUN_ID})
+          **Timestamp:** ${TIMESTAMP}
+
+          > This file was created automatically to initialise the session branch.
+          > The Copilot Coding Agent will replace this with real work.
+          EOF
+
+          git add "${MARKER_FILE}"
+          git commit -m "chore(session): initialise agent session branch ${TIMESTAMP} [skip ci]"
+          git push origin "${NEW_BRANCH}"
+
+          echo "new_branch=${NEW_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "marker_file=${MARKER_FILE}" >> "$GITHUB_OUTPUT"
+          echo "timestamp=${TIMESTAMP}" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR targeting integration branch
+        id: open_pr
+        env:
+          SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
+          NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
+          TIMESTAMP: ${{ steps.create_pr.outputs.timestamp }}
+        run: |
+          set -euo pipefail
+
+          PR_TITLE="🤖 [Agent Session] ${SESSION_TITLE} (${TIMESTAMP})"
+          PR_BODY="## 🔗 Auto-chained Copilot Agent Session
+
+          **Integration branch:** \`${INTEGRATION_BRANCH}\`
+          **Session branch:** \`${NEW_BRANCH}\`
+          **Opened by:** \`copilot-session-chain.yml\` (run [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))
+
+          > This PR was automatically created by the Session Chain workflow.
+          > It targets \`${INTEGRATION_BRANCH}\` (the staging integration branch).
+          > **Do NOT work directly on \`${INTEGRATION_BRANCH}\`** — all agent
+          > work is done through sub-PRs like this one.
+
+          ---
+
+          ### 🔐 Agent Token Delegation
+          - [ ] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
+
+          ### Architecture
+          \`\`\`
+          ${NEW_BRANCH}   ──► ${INTEGRATION_BRANCH} ──► main
+          (this PR)              (staging gate)     (promotion PR)
+          \`\`\`
+
+          See: [\`INTEGRATION_BRANCH_MODEL.md\`](.codex/docs/INTEGRATION_BRANCH_MODEL.md)"
+
+          PR_URL=$(gh pr create \
+            --title "${PR_TITLE}" \
+            --body "${PR_BODY}" \
+            --base "${INTEGRATION_BRANCH}" \
+            --head "${NEW_BRANCH}" \
+            --draft)
+
+          PR_NUMBER=$(echo "${PR_URL}" | grep -oP '\d+$')
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "pr_url=${PR_URL}"       >> "$GITHUB_OUTPUT"
+          echo "✅ Opened PR #${PR_NUMBER}: ${PR_URL}"
+
+      - name: Post Copilot trigger comment
+        if: inputs.auto_start != 'false'
+        env:
+          PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
+          CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
+          MERGED_PR: ${{ github.event.pull_request.number || '' }}
+          INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
+          NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
+        run: |
+          set -euo pipefail
+
+          # Build the trigger comment
+          if [ -n "${CONTINUATION_PROMPT}" ]; then
+            TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
+          elif [ -n "${MERGED_PR}" ]; then
+            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+
+          Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
+          You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
+          staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          **Architecture reminder:**
+          \`\`\`
+          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
+          (this PR)           (staging gate)          (promotion PR)
+          \`\`\`
+
+          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
+          Continue from where PR #${MERGED_PR} left off, addressing any remaining items
+          from the priority list. Review all CI checks and address any failures."
+          else
+            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+
+          You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
+          staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          **Architecture reminder:**
+          \`\`\`
+          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
+          (this PR)           (staging gate)          (promotion PR)
+          \`\`\`
+
+          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
+          Begin by reviewing the current CI status of this PR and addressing any failures."
+          fi
+
+          gh pr comment "${PR_NUMBER}" --body "${TRIGGER_COMMENT}"
+          echo "✅ Posted trigger comment on PR #${PR_NUMBER}"
+
+      - name: Post summary
+        if: always()
+        env:
+          PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
+          PR_URL: ${{ steps.open_pr.outputs.pr_url }}
+          NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
+        run: |
+          {
+            echo "## 🔗 Session Chain Result"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| New branch | \`${NEW_BRANCH}\` |"
+            echo "| Integration branch | \`${INTEGRATION_BRANCH}\` |"
+            echo "| PR | [#${PR_NUMBER}](${PR_URL}) |"
+            echo "| Auto-start | ${{ inputs.auto_start || 'true' }} |"
+            echo ""
+            echo "✅ New agent session sub-PR opened and Copilot trigger comment posted."
+          } >> "$GITHUB_STEP_SUMMARY"

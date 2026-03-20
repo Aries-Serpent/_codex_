@@ -1733,3 +1733,86 @@ cognitive_note: |
   iterative-self-healing-ci.yml now includes auth-delegation in the fixable
   patterns set and dispatches to branch_rebase_check.py in the Apply auto-fix
   step.  The GH_TOKEN / CODEX_MASTER_KEY must have contents:write scope.
+
+---
+pattern_id: INT_BRANCH_DIRECT_SESSION_001
+name: "Integration-Branch Direct Session (REQ-11)"
+category: branch_governance
+priority: 1
+severity: critical
+telemetry_classifier: "integration-branch-direct-session"
+
+description: |
+  A Copilot Coding Agent session was attempted directly on the staging integration
+  branch (0D_base_).  This violates the sub-PR model: all agent work must happen
+  on a copilot/session-* or copilot/sub-pr-* branch that targets 0D_base_, never
+  on 0D_base_ itself.
+
+  Architecture:
+    copilot/session-*  ──►  0D_base_  ──►  main
+    (agent sessions)        (staging)       (production)
+
+detection:
+  error_signatures:
+    - "REQ-11 FAIL"
+    - "Direct Session on Integration Branch Blocked"
+    - "req11-integration-branch-guard"
+    - "is the staging integration branch"
+    - "integration-branch-direct-session"
+  workflow_name_patterns:
+    - "Agent Token Delegation"
+    - "cognitive-preflight"
+  job_name_patterns:
+    - "Cognitive Pre-flight Check"
+    - "REQ-11"
+
+root_cause: |
+  agent-auth-delegation.yml cognitive-preflight REQ-11 guard detects that the PR
+  head branch is 0D_base_ (an integration/staging branch) and hard-blocks the
+  session.  Direct agent sessions on 0D_base_ bypass the sub-PR review cycle and
+  risk polluting the staging branch with unreviewed changes.
+
+fix:
+  type: structural
+  command: >
+    gh workflow run copilot-session-chain.yml
+      -f source_branch=0D_base_
+      -f session_title="<task description>"
+      -f auto_start=true
+  description: >
+    Use copilot-session-chain.yml to create a new copilot/session-* branch
+    targeting 0D_base_ and open a sub-PR.  The session-chain workflow posts
+    the @copilot trigger comment automatically.  Never run sessions directly
+    on 0D_base_.
+  auto_fix_available: false
+  manual_steps:
+    1: "git fetch origin 0D_base_"
+    2: "git checkout -b copilot/session-$(date +%Y%m%d-%H%M%S) origin/0D_base_"
+    3: "git push origin HEAD"
+    4: "gh pr create --base 0D_base_ --head copilot/session-*"
+    5: "Post @copilot+claude-sonnet-4.6 continue on the new PR"
+
+prevention:
+  strategy: >
+    REQ-11 guard in agent-auth-delegation.yml cognitive-preflight is the primary
+    prevention.  It is a CI hard-stop (core.setFailed) that blocks activate-delegation
+    via the needs: dependency chain.  The copilot-session-chain.yml workflow
+    automates the correct alternative flow.
+  grounded_enforcement:
+    - "REQ-11 CI hard-block (core.setFailed) in cognitive-preflight"
+    - "needs: dependency chain blocks activate-delegation"
+    - "copilot-session-chain.yml auto-creates sub-PR on merge"
+    - "CODEBASE_AGENCY_POLICY.md §0b Integration Branch Model"
+
+cognitive_note: |
+  This pattern is NOT auto-fixable by iterative-self-healing-ci.yml because the
+  fix is structural (create a sub-PR), not code-based.  When classified as
+  integration-branch-direct-session, the self-healing loop should escalate with
+  the redirect instructions from the REQ-11 guard comment rather than attempting
+  an auto-fix.  The copilot-session-chain.yml workflow is the canonical fix path.
+
+references:
+  - ".codex/docs/INTEGRATION_BRANCH_MODEL.md"
+  - ".codex/CODEBASE_AGENCY_POLICY.md §0b"
+  - ".github/workflows/agent-auth-delegation.yml (REQ-11)"
+  - ".github/workflows/copilot-session-chain.yml"

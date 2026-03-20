@@ -431,4 +431,89 @@ pr_section_heading = f"### Fixed (auto-update — PR #{pr_number})\n"
 
 ---
 
-*Updated: 2026-03-18 | S153/S154 — Phase 5 GROUNDED promotion | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+### G-NEW-4: Integration-branch direct-session guard (REQ-11)
+
+**Policy:** Copilot Coding Agent sessions MUST NEVER run directly on `0D_base_` (the
+staging integration branch).  All agent work must happen through sub-PRs
+(`copilot/session-*` or `copilot/sub-pr-*`) that target `0D_base_`.
+
+```
+copilot/session-*  ──►  0D_base_  ──►  main
+  (agent sessions)       (staging)     (production)
+```
+
+**Before (SOFT):** Nothing prevented a session from running on `0D_base_` directly.
+A `@copilot continue` comment on PR #3630 (head=`0D_base_`) would let the agent
+commit unreviewed work straight to the staging branch, bypassing the sub-PR cycle.
+
+**After (GROUNDED — S163):** `agent-auth-delegation.yml` `cognitive-preflight` REQ-11
+guard is the **first step** in the job:
+
+1. Reads `pr.head.ref` and checks against `INTEGRATION_BRANCHES = ['0D_base_']`
+2. If head IS an integration branch → posts a rich redirect comment (upserted,
+   one per PR) with architecture diagram, `gh workflow run copilot-session-chain.yml`
+   command, manual steps, and a copy-paste `@copilot` prompt
+3. Calls `core.setFailed("REQ-11 FAIL")` — structurally blocks `activate-delegation`
+   via the `needs: [cognitive-preflight]` dependency chain
+
+`copilot-session-chain.yml` (new — S163) automates the correct alternative:
+- Triggers on `workflow_dispatch` or automatically when a sub-PR merges into `0D_base_`
+- Creates `copilot/session-YYYYMMDD-HHMMSS` branch, opens draft PR targeting `0D_base_`,
+  and posts `@copilot+claude-sonnet-4.6 continue` trigger comment
+
+```yaml
+# GROUNDED: REQ-11 fires FIRST in cognitive-preflight — blocks activate-delegation
+- name: "REQ-11: Integration-branch direct-session guard"
+  uses: actions/github-script@v7
+  # core.setFailed() if pr.head.ref in INTEGRATION_BRANCHES
+  # → needs: [cognitive-preflight] chain blocks activate-delegation
+```
+
+**Bypass cost:** Must edit `INTEGRATION_BRANCHES` in the workflow YAML AND consciously
+skip the `cognitive-preflight` job — two intentional, auditable overrides required.
+
+**CI Pattern:** `collect_telemetry.py` classifies these failures as
+`integration-branch-direct-session`; `ci_failure_patterns.yaml` pattern
+`INT_BRANCH_DIRECT_SESSION_001` documents the escalation path.
+
+---
+
+### G-NEW-5: Bot-skip-ci divergence auto-pass (REQ-10 extension)
+
+**Policy:** When a PR branch (including the `0D_base_` promotion PR) is behind its
+base only because of automated `[skip ci]` `github-actions[bot]` metadata commits,
+REQ-10 MUST auto-pass rather than hard-blocking the agent session.
+
+**Before (SOFT):** REQ-10 in `agent-auth-delegation.yml` only passed when
+`liveStatus === 'ahead' || liveStatus === 'identical'`.  Any `behind` or `diverged`
+status failed the gate — including when 100% of the gap commits were automated
+`[skip ci]` bot commits from the 5 scheduled workflows that run every 2–24 h.
+This caused spurious REQ-10 blocks on `0D_base_` PR #3630 every time `main`
+received a scheduled metadata refresh.
+
+**After (GROUNDED — S163):** REQ-10 step in `agent-auth-delegation.yml` now:
+
+1. On `behind`/`diverged`: calls `fetchGapCommits(head...base)` — a reverse compare
+   to get exactly the commits `base` has that `head` is missing
+2. Passes each commit through `gapIsAllBotSkipCi()` — checks `author.login` ∈
+   `BOT_LOGINS` AND `commit.message` includes `[skip ci]`
+3. If ALL gap commits pass → `liveResolved = true` → REQ-10 PASS (no hard-block)
+4. Both the "no marker" and "marker present" live-check paths apply this logic
+
+`branch-rebase-gate.yml` provides the complementary auto-merge path:
+`branch_rebase_check.py --auto-merge-skip-ci` calls the GitHub Merges API when the
+gap is 100% bot `[skip ci]`, so the branch is updated without any `git` operations.
+
+```javascript
+// GROUNDED: structural in REQ-10 github-script step
+const gap       = await fetchGapCommits(pr.base.ref, pr.head.ref);
+const allBotGap = gapIsAllBotSkipCi(gap);
+if (allBotGap) { liveResolved = true; }   // auto-pass — no hard-block
+```
+
+**Bypass cost:** Must edit the `fetchGapCommits`/`gapIsAllBotSkipCi` logic in the
+workflow YAML — one intentional, auditable override required.
+
+---
+
+*Updated: 2026-03-20 | S163 — Integration branch model GROUNDED | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

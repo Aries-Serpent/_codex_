@@ -109,11 +109,27 @@ jobs:
           # Added changelog-* (check_7 CHANGELOG cross-PR), pip-cache-* (sparse checkout),
           # policy-gate-* (pre-create pip cache fix), rebase-gate-* (branch gate),
           # auth-delegation (REQ-10 branch-diverged caused by scheduled bot commits).
+          # integration-branch-direct-session: NOT fixable — structural redirect only.
           case "$PATTERN" in
             ruff-*|import-*|yaml-*|timeout-config|unused-import|auto-fix|\
             changelog-*|pip-cache-*|policy-gate-*|rebase-gate-*|mypy-baseline|\
             auth-delegation|branch-diverged)
               echo "fixable=true"  >> "$GITHUB_OUTPUT"
+              ;;
+            integration-branch-direct-session)
+              # REQ-11: session on integration branch — non-fixable; needs sub-PR creation.
+              # Post an informative escalation comment and skip auto-fix.
+              echo "fixable=false" >> "$GITHUB_OUTPUT"
+              echo "### 🚫 REQ-11: Integration-Branch Direct-Session Detected" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Pattern \`integration-branch-direct-session\` is **not auto-fixable**." >> "$GITHUB_STEP_SUMMARY"
+              echo "The PR head is the staging integration branch (\`0D_base_\`)." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Fix:** Create a sub-PR targeting \`0D_base_\` instead:" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`\`\`bash" >> "$GITHUB_STEP_SUMMARY"
+              echo "gh workflow run copilot-session-chain.yml -f source_branch=0D_base_ -f session_title=\"<task>\"" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "See: [INTEGRATION_BRANCH_MODEL.md](.codex/docs/INTEGRATION_BRANCH_MODEL.md)" >> "$GITHUB_STEP_SUMMARY"
               ;;
             *)
               echo "fixable=false" >> "$GITHUB_OUTPUT"
