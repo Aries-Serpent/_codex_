@@ -136,26 +136,81 @@ class CommonIssueFixer:
             # Match against both the human name and common telemetry classifiers
             # (e.g. "ruff-unused" → "Unused Imports", "import-*" → "Unused Imports")
             _aliases: dict[str, list[str]] = {
+                # ── Lint / formatting classifiers ─────────────────────────────
                 "ruff":        ["Unused Imports", "Redundant Imports", "Unsorted Imports", "CodeQL Alerts"],
                 "import":      ["Unused Imports", "Redundant Imports", "Unsorted Imports"],
                 "unused":      ["Unused Imports", "Unused Variables"],
                 "yaml":        ["YAML Indentation"],
-                "coverage":    ["Coverage Thresholds"],
+                "lint":        ["Unused Imports", "Redundant Imports", "Unsorted Imports",
+                                "YAML Indentation", "Line Length", "W-Series Warnings",
+                                "F-String Placeholders"],
+                # ── Coverage classifiers ──────────────────────────────────────
+                "coverage":          ["Coverage Thresholds"],
+                "coverage-timeout":  ["Coverage Thresholds"],
+                # ── Type-checking / mypy classifiers ──────────────────────────
                 "mypy":        ["mypy Baseline Freshness"],
+                "type-check":  ["mypy Baseline Freshness"],
+                # ── Security classifiers ──────────────────────────────────────
                 "bandit":      ["Bandit Security"],
-                "changelog":   [],  # handled externally
-                "pip-cache":   [],
-                "policy-gate": [],
+                "security-scan": ["Bandit Security", "CodeQL Alerts"],
+                "codeql":        ["CodeQL Alerts"],
+                # ── Stub / type-annotation classifiers ────────────────────────
+                "stub":        ["Stub Duplicate Defs"],
+                # ── CI infrastructure / SHA drift ─────────────────────────────
+                "sha-drift":   ["CI SHA Drift"],
+                "ci-sha":      ["CI SHA Drift"],
+                # ── Classifiers handled by branch_rebase_check.py (not here) ─
+                "rebase-gate":    [],  # handled by branch_rebase_check.py
+                "branch-diverged": [],
+                "auth-delegation": [],
+                # ── Classifiers handled externally ────────────────────────────
+                "changelog":          [],
+                "pip-cache":          [],
+                "policy-gate":        [],
+                "session-injector":   [],
+                "copilot-agent":      [],
+                "self-healing":       [],
+                "workflow-cascade":   [],
+                "pre-merge-cascade":  [],
+                # ── Other telemetry classifiers (informational / no auto-fix) ─
+                "datetime-error":               [],
+                "build-config":                 [],
+                "packaging":                    [],
+                "docker-build":                 [],
+                "docker-smoke-test":            [],
+                "codespaces":                   [],
+                "embedding-rebuild":            [],
+                "documentation":                [],
+                "cache":                        [],
+                "cognitive-brain":              [],
+                "ci-health":                    [],
+                "deployment":                   [],
+                "filesystem-deadlock":          [],
+                "test-infrastructure":          [],
+                "integration-branch-direct-session": [],
             }
             matched_names: set[str] = set()
+            # Track whether this is a known-but-externally-handled classifier
+            _external_only = False
             for alias, names in _aliases.items():
                 if alias in needle:
-                    matched_names.update(names)
+                    if names:
+                        matched_names.update(names)
+                    else:
+                        # alias maps to [] → handled externally (or no-op)
+                        _external_only = True
             patterns = [
                 (n, nm, f) for n, nm, f in patterns
                 if nm in matched_names or needle in nm.lower()
             ]
             if not patterns:
+                if _external_only and not matched_names:
+                    # Recognised classifier, but handled by a separate tool (e.g. branch_rebase_check.py)
+                    print(
+                        f"ℹ️  Classifier '{pattern_name}' is handled externally "
+                        f"(not by auto_fix_common_issues.py) — skipping.\n"
+                    )
+                    return False
                 print(f"ℹ️  No patterns matched '{pattern_name}' — running all patterns\n")
                 patterns = [
                     (1,  "Unused Imports",         self.fix_unused_imports),
@@ -1124,8 +1179,12 @@ def main():
         metavar="NAME",
         help=(
             "Run only patterns whose name matches NAME (case-insensitive substring). "
-            "Accepts telemetry classifier names such as 'ruff', 'import', 'yaml', "
-            "'coverage', 'mypy', 'bandit'. Falls back to all patterns when no match."
+            "Accepts telemetry classifier names: 'ruff', 'import', 'lint', 'yaml', "
+            "'coverage', 'coverage-timeout', 'mypy', 'type-check', 'bandit', "
+            "'security-scan', 'codeql', 'stub', 'sha-drift'. "
+            "Classifiers handled externally (e.g. 'rebase-gate', 'auth-delegation', "
+            "'changelog', 'policy-gate') are recognised but produce no patterns. "
+            "Falls back to all patterns when no match."
         )
     )
     parser.add_argument(

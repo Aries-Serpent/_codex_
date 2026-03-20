@@ -171,6 +171,11 @@ manifests/k8s/*/secret.yaml
 # Exclude runtime session logs (should not be committed)
 .codex/sessions/*.ndjson
 .codex/sessions/*.meta
+# AfterMath lessons_learned and session checkpoints (S163+)
+!.codex/lessons_learned/
+!.codex/lessons_learned/**
+!.codex/checkpoints/
+!.codex/checkpoints/**
 # Session bootstrap artefacts — always track (S145)
 !.codex/session_context_latest.md
 !scripts/ci/session_bootstrap.py
