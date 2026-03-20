@@ -784,6 +784,38 @@ jobs:
 
             core.info(`REQ-10: Checking rebase status for PR #${prNumber}`);
 
+            // Helper: check whether all commits in an array are automated
+            // [skip ci] github-actions[bot] commits.  When true the gap
+            // contains only metadata updates and is safe to auto-pass.
+            const BOT_LOGINS = new Set([
+              'github-actions[bot]',
+              '41898282+github-actions[bot]',
+            ]);
+            function gapIsAllBotSkipCi(commits) {
+              if (!commits || commits.length === 0) return false;
+              return commits.every(c => {
+                const login = (c.author  && c.author.login)          || '';
+                const msg   = (c.commit  && c.commit.message)        || '';
+                return BOT_LOGINS.has(login) && msg.toLowerCase().includes('[skip ci]');
+              });
+            }
+
+            // Helper: fetch commits that `base` has but `head` is missing
+            // (the "gap" — what the PR branch needs to absorb).
+            async function fetchGapCommits(base, head) {
+              try {
+                const { data: rev } = await github.rest.repos.compareCommitsWithBasehead({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  basehead: `${head}...${base}`,   // reversed: commits in base ∖ head
+                });
+                return rev.commits || [];
+              } catch (e) {
+                core.warning(`REQ-10: could not fetch gap commits: ${e.message}`);
+                return [];
+              }
+            }
+
             // Fetch all PR comments
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -808,7 +840,7 @@ jobs:
                     repo:  context.repo.repo,
                     basehead: `${base}...${head}`,
                   });
-                  const status = cmp.status;
+                  const status   = cmp.status;
                   const behindBy = cmp.behind_by || 0;
                   core.info(`Compare ${base}...${head}: status=${status}, behind_by=${behindBy}`);
 
@@ -818,10 +850,20 @@ jobs:
                     .write();
 
                   if (status === 'behind' || status === 'diverged') {
-                    core.setFailed(
-                      `REQ-10 FAIL: Branch '${head}' is ${behindBy} commit(s) BEHIND '${base}'. ` +
-                      `Rebase before starting agent work:\n  git fetch origin ${base}\n  git rebase origin/${base}\n  git push --force-with-lease`
-                    );
+                    // Auto-pass when the entire gap is [skip ci] bot commits.
+                    const gap       = await fetchGapCommits(base, head);
+                    const allBotGap = gapIsAllBotSkipCi(gap);
+                    if (allBotGap) {
+                      core.info(
+                        `REQ-10 PASS: branch is ${status} but all ${gap.length} gap ` +
+                        `commit(s) are [skip ci] bot metadata commits — no rebase needed.`
+                      );
+                    } else {
+                      core.setFailed(
+                        `REQ-10 FAIL: Branch '${head}' is ${behindBy} commit(s) BEHIND '${base}'. ` +
+                        `Rebase before starting agent work:\n  git fetch origin ${base}\n  git rebase origin/${base}\n  git push --force-with-lease`
+                      );
+                    }
                   } else {
                     core.info(`REQ-10 PASS: branch is ${status} (no rebase needed)`);
                   }
@@ -858,11 +900,22 @@ jobs:
                   basehead: `${pr.base.ref}...${pr.head.ref}`,
                 });
                 const liveStatus = cmp.status;
-                const behindBy = cmp.behind_by || 0;
+                const behindBy   = cmp.behind_by || 0;
                 core.info(`Live compare ${pr.base.ref}...${pr.head.ref}: status=${liveStatus}, behind_by=${behindBy}`);
                 liveResolved = (liveStatus === 'ahead' || liveStatus === 'identical');
                 if (liveResolved) {
                   core.info('REQ-10: Live compare shows branch is up-to-date — treating REQUIRED marker as stale.');
+                } else if (liveStatus === 'behind' || liveStatus === 'diverged') {
+                  // Auto-pass when the entire gap is [skip ci] bot commits.
+                  const gap       = await fetchGapCommits(pr.base.ref, pr.head.ref);
+                  const allBotGap = gapIsAllBotSkipCi(gap);
+                  if (allBotGap) {
+                    core.info(
+                      `REQ-10: All ${gap.length} gap commit(s) are [skip ci] bot metadata ` +
+                      `commits — treating REQUIRED marker as auto-resolved.`
+                    );
+                    liveResolved = true;
+                  }
                 }
               } catch (err) {
                 core.warning(`REQ-10: Could not perform live compare: ${err.message}`);

@@ -243,12 +243,15 @@ jobs:
             fi
           else
             # ── All other patterns: run auto_fix_common_issues.py with --pattern ──
-            # The --pattern flag now correctly runs only the matching pattern,
+            # The --pattern-name flag correctly runs only the matching pattern,
             # making each iteration faster and the diff more targeted.
             python scripts/ci/auto_fix_common_issues.py --pattern-name "${PATTERN}" \
-              2>&1 | tee /tmp/fix_output.txt || \
-            python scripts/ci/auto_fix_common_issues.py \
               2>&1 | tee /tmp/fix_output.txt
+            if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+              # --pattern-name found no match; fall back to running all patterns
+              python scripts/ci/auto_fix_common_issues.py \
+                2>&1 | tee /tmp/fix_output.txt
+            fi
           fi
 
           # Restore overlaid trusted scripts — only actual fix outputs should be staged

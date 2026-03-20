@@ -310,8 +310,7 @@ def post_auto_merge_comment(
 # Gap analysis & rich comment helpers (autonomous self-healing)
 # ---------------------------------------------------------------------------
 
-# Bot login patterns that produce automated [skip ci] metadata commits
-_BOT_LOGINS = frozenset({"github-actions[bot]", "41898282+github-actions[bot]"})
+# _BOT_LOGINS is defined once in the auto-merge helpers section above (line ~180).
 
 
 def classify_gap_commits(commits: list[dict]) -> dict:
@@ -600,110 +599,65 @@ def upsert_dashboard_alert(
 ) -> None:
     """Write/update the Branch Rebase Gate section in the PR Status Dashboard.
 
-    Compatible with pr_comment_consolidator.py — uses the same
-    <!-- PR_STATUS_DASHBOARD_v1 --> marker and SECTION/PAYLOAD wire format so
-    the gate's status appears alongside all other CI sections.
+    This function updates ONLY the hidden SECTION/PAYLOAD blob for this gate
+    in the existing dashboard comment body, leaving the visible layout (Merge
+    Readiness score, other sections) fully owned by pr_comment_consolidator.py.
+
+    If no canonical dashboard comment exists yet, creation is deferred to
+    pr_comment_consolidator.py — this avoids writing a stripped-down duplicate
+    that would later be overwritten with incorrect formatting.
     """
-    _icons = {"success": "✅", "failure": "❌", "warning": "⚠️", "info": "ℹ️"}
+    payload = {
+        "status": status,
+        "summary": summary,
+        "details": details,
+    }
+    new_payload_json = json.dumps(payload, separators=(",", ":"))
+    replacement = (
+        f"<!-- SECTION:{_DASHBOARD_SECTION} -->\n"
+        f"<!-- PAYLOAD:{new_payload_json} -->\n"
+        f"<!-- /SECTION:{_DASHBOARD_SECTION} -->"
+    )
+    section_pattern = re.compile(
+        rf"<!-- SECTION:{re.escape(_DASHBOARD_SECTION)} -->"
+        r"\s*<!-- PAYLOAD:(\{{.*?\}}) -->"
+        rf"\s*<!-- /SECTION:{re.escape(_DASHBOARD_SECTION)} -->",
+        re.DOTALL,
+    )
+
     comments = get_pr_comments(repo, token, pr_number)
 
-    # Find existing dashboard comment (most recently updated)
-    dashboard = None
+    # Find existing canonical dashboard comment (most recently updated)
+    dashboard: Optional[dict] = None
     for c in reversed(comments):
         if _DASHBOARD_MARKER in (c.get("body") or ""):
             dashboard = c
             break
 
-    existing_body = dashboard["body"] if dashboard else ""
+    if not dashboard:
+        # No canonical dashboard comment yet — defer creation to
+        # pr_comment_consolidator.py so the full layout (Merge Readiness etc.)
+        # is rendered correctly.
+        print(
+            f"  ℹ️  No dashboard comment found on PR #{pr_number} — "
+            "deferring to pr_comment_consolidator.py"
+        )
+        return
 
-    # Decode existing sections from hidden PAYLOAD blobs
-    sections: dict[str, dict] = {}
-    for m in re.finditer(
-        r"<!-- SECTION:([^>]+) -->\s*<!-- PAYLOAD:(\{.*?\}) -->\s*<!-- /SECTION:\1 -->",
-        existing_body,
-        re.DOTALL,
-    ):
-        try:
-            sections[m.group(1)] = json.loads(m.group(2))
-        except json.JSONDecodeError:
-            pass
+    existing_body = dashboard["body"]
+    updated_body = section_pattern.sub(replacement, existing_body)
+    if updated_body == existing_body:
+        # Section not present yet — append the hidden payload block without
+        # touching the visible dashboard layout.
+        updated_body = f"{existing_body.rstrip()}\n\n{replacement}\n"
 
-    # Merge our section in
-    sections[_DASHBOARD_SECTION] = {
-        "status": status,
-        "summary": summary,
-        "details": details,
-    }
-
-    # Build visible body (matches pr_comment_consolidator.py layout)
-    now_str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    run_link = f" · [View run]({run_url})" if run_url else ""
-    lines: list[str] = [
-        _DASHBOARD_MARKER,
-        "## 📊 PR Status Dashboard",
-        "",
-        f"_Last updated: {now_str}{run_link}_",
-        "",
-    ]
-
-    actionable = {k: v for k, v in sections.items() if v.get("status") == "failure"}
-    informational = {k: v for k, v in sections.items() if v.get("status") != "failure"}
-
-    if actionable:
-        lines += ["### 🔴 Issues Requiring Attention", ""]
-        for name, info in actionable.items():
-            icon = _icons.get(info.get("status", ""), "❓")
-            lines += [
-                "<details open>",
-                f"<summary>{icon} <strong>{name}</strong>"
-                f" — {info.get('summary', '')}</summary>",
-                "",
-                info.get("details", "_No additional details._"),
-                "",
-                "</details>",
-                "",
-            ]
-
-    if informational:
-        passed = sum(1 for v in informational.values() if v.get("status") == "success")
-        lines += [
-            "<details>",
-            f"<summary>✅ Other results ({passed}/{len(informational)} passed)</summary>",
-            "",
-            "| Workflow | Status | Summary |",
-            "|----------|--------|---------|",
-        ]
-        for name, info in informational.items():
-            icon = _icons.get(info.get("status", ""), "❓")
-            cell = info.get("summary", "").replace("|", "\\|")
-            lines.append(f"| {name} | {icon} {info.get('status', '?')} | {cell} |")
-        lines += ["", "</details>", ""]
-
-    if not sections:
-        lines += ["_No workflow results yet._", ""]
-
-    hidden = "\n".join(
-        _encode_dashboard_section(n, s["status"], s.get("summary", ""), s.get("details", ""))
-        for n, s in sections.items()
+    gh_api(
+        "PATCH",
+        f"/repos/{repo}/issues/comments/{dashboard['id']}",
+        token,
+        json.dumps({"body": updated_body}).encode(),
     )
-    full_body = "\n".join(lines) + "\n\n<!-- SECTIONS_DATA -->\n" + hidden
-
-    if dashboard:
-        gh_api(
-            "PATCH",
-            f"/repos/{repo}/issues/comments/{dashboard['id']}",
-            token,
-            json.dumps({"body": full_body}).encode(),
-        )
-        print(f"  📊 Updated dashboard (comment #{dashboard['id']}) on PR #{pr_number}")
-    else:
-        gh_api(
-            "POST",
-            f"/repos/{repo}/issues/{pr_number}/comments",
-            token,
-            json.dumps({"body": full_body}).encode(),
-        )
-        print(f"  📊 Posted new dashboard comment on PR #{pr_number}")
+    print(f"  📊 Updated dashboard section in comment #{dashboard['id']} on PR #{pr_number}")
 
 
 # ---------------------------------------------------------------------------
@@ -845,8 +799,15 @@ def post_rebase_required_comment(
     # Mirror into PR Status Dashboard
     if upsert_dashboard and token:
         classified = classify_gap_commits(gap_commits or [])
+        # Compute gap_files for accurate conflict detection (best-effort)
+        _gap_files_for_risk: set[str] = set()
+        if gap_commits:
+            try:
+                _gap_files_for_risk = set(get_gap_files(repo, token, gap_commits))
+            except Exception:
+                pass
         risk = (
-            "🔴 HIGH" if detect_conflict_risk(pr_files or [], set())
+            "🔴 HIGH" if detect_conflict_risk(pr_files or [], _gap_files_for_risk)
             else ("🟢 LOW" if gap_commits else "⚠️ Unknown")
         )
         all_bot = classified.get("all_bot_skip_ci", False)
@@ -1029,6 +990,10 @@ def main() -> int:
 
         rebase_needed = status in ("behind", "diverged")
 
+        # Initialise early so it is always defined regardless of which branch
+        # is taken in the auto-merge block below.
+        gap_commits_for_comment: list[dict] = []
+
         # ── Auto-merge when gap is 100% bot [skip ci] commits ────────────
         if rebase_needed and args.auto_merge_skip_ci and token:
             print("  🔍 Checking whether gap commits are all [skip ci] bot commits…")
@@ -1072,13 +1037,15 @@ def main() -> int:
                     )
                     return 0
                 else:
+                    # Auto-merge failed — fall through to rich helper comment.
+                    # gap_commits_for_comment was initialised to [] above; set it
+                    # here so the comment includes the full gap table.
                     print(f"  ⚠️  Auto-merge failed ({detail}) — falling back to helper comment")
+                    gap_commits_for_comment = gap_commits
             else:
                 n_func = len(classified.get("functional", []))
                 print(f"  ℹ️  Gap contains {n_func} functional commit(s) — manual rebase required")
                 gap_commits_for_comment = gap_commits
-        else:
-            gap_commits_for_comment: list[dict] = []
 
         # ── Step summary ─────────────────────────────────────────────────
         if status == "up-to-date":
