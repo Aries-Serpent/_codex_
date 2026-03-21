@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3649)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3649 (SHA `b3a8e0c7`) at 2026-03-21T02:54Z [auto-generated]
+
 ### Fixed (S168 — 2026-03-21 — PR #3647)
 - **`.github/workflows/codex-manifest-refresh.yml`**: Added `0D_base_` branch-detection to the scheduled commit step. On schedule runs, if `0D_base_` is active, `CODEX_MANIFEST.json`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` are now routed to `0D_base_` instead of `main`, preventing drift of these compliance files while the integration branch is open. PR runs continue to target the PR branch as before.
 
