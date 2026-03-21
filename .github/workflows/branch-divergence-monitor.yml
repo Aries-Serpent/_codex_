@@ -338,6 +338,39 @@ jobs:
           sparse-checkout: .github
           sparse-checkout-cone-mode: false
 
+      - name: Ensure required labels exist
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const required = [
+              { name: 'branch-divergence', color: 'e4e669', description: 'Branch divergence tracking between 0D_base_ and main' },
+              { name: 'automated',         color: '0075ca', description: 'Automated by GitHub Actions'                           },
+              { name: 'ci-triage',         color: 'd93f0b', description: 'CI / pipeline triage required'                        },
+            ];
+            for (const label of required) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  name:  label.name,
+                });
+              } catch (err) {
+                if (err.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner:       context.repo.owner,
+                    repo:        context.repo.repo,
+                    name:        label.name,
+                    color:       label.color,
+                    description: label.description,
+                  });
+                  console.log(`Created label: ${label.name}`);
+                } else {
+                  throw err;
+                }
+              }
+            }
+
       - name: Build and upsert divergence tracking issue
         uses: actions/github-script@v7
         env:
