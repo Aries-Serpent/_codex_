@@ -205,12 +205,25 @@ jobs:
       - name: Commit updated agent_context.json
         if: steps.sync.outputs.written == 'true' && inputs.dry_run != 'true'
         run: |
+          # Commit to 0D_base_ if the integration branch exists, else fall back to main.
+          # This prevents daily auto-gen commits from accumulating merge conflicts
+          # in any open 0D_base_ → main PR.
+          _TARGET="main"
+          if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
+            _TARGET="0D_base_"
+            echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
+            cp .codex/agent_context.json /tmp/_agent_context_sync_
+            git fetch origin 0D_base_ --depth=1
+            git checkout -B _autogen_sync_ origin/0D_base_
+            cp /tmp/_agent_context_sync_ .codex/agent_context.json
+          fi
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/agent_context.json
           git diff --cached --quiet || \
             git commit -m "chore(vars): sync .codex/agent_context.json from repo variables [skip ci]"
-          git push origin HEAD || true
+          git push origin HEAD:"$_TARGET" || true
+          echo "📤 Pushed to $_TARGET"
 
       # ── Write job summary ────────────────────────────────────────────────
       - name: Write job summary

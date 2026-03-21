@@ -445,3 +445,4 @@ memory/philosophy/*.md
 
 # actionlint binary (download artifact - not for repo)
 actionlint
+docs/admin/variable_audit_latest.md

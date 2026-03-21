@@ -791,8 +791,11 @@ def post_rebase_required_comment(
         if gap_commits:
             try:
                 _gap_files_for_risk = set(get_gap_files(repo, token, gap_commits))
-            except Exception:
-                pass
+            except Exception as exc:  # best-effort: don't abort if gap-file detection fails
+                print(
+                    f"[warn] gap-file detection failed (conflict risk degraded): {exc!r}",
+                    file=sys.stderr,
+                )
         conflict_risk = (
             "🔴 HIGH" if detect_conflict_risk(pr_files or [], _gap_files_for_risk)
             else ("🟢 LOW" if gap_commits else "⚠️ Unknown")
