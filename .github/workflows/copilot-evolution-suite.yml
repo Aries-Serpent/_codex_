@@ -217,7 +217,13 @@ jobs:
             - Triggered by: ${{ github.event_name }}
             - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
-            git push
+            # On schedule runs push defaults to main — route to 0D_base_ if active.
+            TARGET_REF="${{ github.ref_name || 'main' }}"
+            if [ "${{ github.event_name }}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
+              TARGET_REF="0D_base_"
+              echo "🔀 0D_base_ integration branch detected — routing evolution update to 0D_base_"
+            fi
+            git push origin HEAD:${TARGET_REF}
             echo "✅ Evolution updates committed"
           else
             echo "ℹ️  No evolution updates to commit"

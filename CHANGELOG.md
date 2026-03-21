@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S169 — 2026-03-21 — PR #3649)
+- **`.github/workflows/har-capture.yml`**: Added `0D_base_` branch-detection to the scheduled `git push` step. On schedule runs, if `0D_base_` is active, HAR commits are routed to `0D_base_` instead of `main`, completing the 7-workflow audit started in S167/S168.
+- **`.github/workflows/copilot-evolution-suite.yml`**: Added `0D_base_` branch-detection to the scheduled self-evolution `git push` step. On schedule runs, if `0D_base_` is active, evolution commits are routed to `0D_base_` instead of `main`.
+
 ### Fixed (S168 — 2026-03-21 — PR #3647)
 - **`.github/workflows/codex-manifest-refresh.yml`**: Added `0D_base_` branch-detection to the scheduled commit step. On schedule runs, if `0D_base_` is active, `CODEX_MANIFEST.json`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` are now routed to `0D_base_` instead of `main`, preventing drift of these compliance files while the integration branch is open. PR runs continue to target the PR branch as before.
 

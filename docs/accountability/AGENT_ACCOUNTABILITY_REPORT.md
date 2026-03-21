@@ -1,9 +1,35 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/session-20260321-014335-23369347957
+**Branch:** copilot/session-20260321-023233-23370164058
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-21T02:00Z (S168 — codex-manifest-refresh 0D_base_ routing)
+**Last updated:** 2026-03-21T02:38Z (S169 — har-capture + copilot-evolution-suite 0D_base_ routing)
+
+---
+
+## SESSION SUMMARY — 2026-03-21 S169 PR #3649
+
+### Work Completed (S169)
+| Area | Change | Detail |
+|------|--------|--------|
+| `.github/workflows/har-capture.yml` | `0D_base_` branch routing | On schedule runs, routes HAR commits to `0D_base_` when active; falls back to `github.ref_name || 'main'` otherwise |
+| `.github/workflows/copilot-evolution-suite.yml` | `0D_base_` branch routing | On schedule runs, routes self-evolution commits to `0D_base_` when active; falls back to `github.ref_name || 'main'` otherwise |
+| `CHANGELOG.md` | S169 entry | Documents remaining scheduled workflow routing fixes |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary | S169 outcomes recorded |
+
+### CI Check Status
+- REQ-4/REQ-5 failures on initial session-init commit — resolved by this commit
+- Agent Token Delegation REQ-11 check: PR head.ref is sub-branch (not 0D_base_), so REQ-11 passes correctly
+
+### Verification
+```bash
+# Verify YAML is valid after edits
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/har-capture.yml')); print('har-capture YAML valid')"
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-evolution-suite.yml')); print('copilot-evolution-suite YAML valid')"
+# Verify 0D_base_ checks present
+grep -A4 "0D_base_ integration branch detected" .github/workflows/har-capture.yml
+grep -A4 "0D_base_ integration branch detected" .github/workflows/copilot-evolution-suite.yml
+```
 
 ---
 
