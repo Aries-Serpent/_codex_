@@ -98,6 +98,14 @@ def query(query_text: str, top_k: int = 5) -> list[dict[str, Any]]:
     else:
         chunks = meta.get("chunks", [])
 
+    # If no chunks are available, FAISS search cannot proceed; fall back to SQLite.
+    if not chunks:
+        print(
+            "⚠️  FAISS index chunks not found or empty — falling back to SQLite keyword search.\n"
+            "   Run: python scripts/ci/build_embeddings.py  to generate codex_index_chunks.json."
+        )
+        return _sqlite_keyword_search(query_text, top_k)
+
     model = SentenceTransformer(MODEL_NAME)
     q_vec = model.encode([query_text], convert_to_numpy=True).astype(np.float32)
     distances, indices = index.search(q_vec, min(top_k, len(chunks)))

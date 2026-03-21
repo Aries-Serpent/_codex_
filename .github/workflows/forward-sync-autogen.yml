@@ -35,7 +35,21 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Check if 0D_base_ integration branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads \
+              "https://x-access-token:${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" \
+              0D_base_ > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ 0D_base_ exists — proceeding with forward-sync"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  0D_base_ does not exist — nothing to forward, skipping"
+          fi
+
       - name: Checkout 0D_base_
+        if: steps.check-branch.outputs.exists == 'true'
         uses: actions/checkout@v4
         with:
           ref: 0D_base_
@@ -43,6 +57,7 @@ jobs:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
       - name: Fetch auto-generated file versions from main
+        if: steps.check-branch.outputs.exists == 'true'
         run: |
           git fetch origin main --depth=1
 
@@ -68,7 +83,7 @@ jobs:
         id: sync
 
       - name: Commit forwarded files to 0D_base_
-        if: steps.sync.outputs.changed == '1'
+        if: steps.check-branch.outputs.exists == 'true' && steps.sync.outputs.changed == '1'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -80,5 +95,5 @@ jobs:
           echo "✅ Auto-generated files forwarded to 0D_base_"
 
       - name: No-op summary
-        if: steps.sync.outputs.changed != '1'
+        if: steps.check-branch.outputs.exists != 'true' || steps.sync.outputs.changed != '1'
         run: echo "ℹ️  No auto-generated file changes to forward"

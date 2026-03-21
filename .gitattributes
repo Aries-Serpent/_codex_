@@ -147,9 +147,10 @@ examples/ export-ignore
 .editorconfig export-ignore
 .pre-commit-config.yaml export-ignore
 
-# Auto-generated metadata files — always take the incoming (theirs) version on merge
-# These files are written exclusively by scheduled CI workflows targeting main.
-# Marking them union/theirs prevents recurring conflicts when 0D_base_ merges into main.
+# Auto-generated metadata files — keep the current branch's version on merge (merge=ours)
+# These files are written exclusively by scheduled CI workflows.
+# During a 0D_base_ → main merge, main's version is always newer (daily commits land there);
+# merge=ours keeps main's copy and discards any stale version from 0D_base_, preventing conflicts.
 .codex/agent_context.json                        merge=ours linguist-generated=true
 .codex/cognitive_brain/metadata.json             merge=ours linguist-generated=true
 .codex/cognitive_brain/workflow_patterns.jsonl   merge=ours linguist-generated=true
