@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3653)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3653 (SHA `36cdfb4e`) at 2026-03-21T05:15Z [auto-generated]
+
 ### Added (S171 — 2026-03-21 — PR #3652)
 - **`docs/admin/variable_audit_latest.md`**: Restored auto-generated variable audit report from `main` (generated `2026-03-20T06:16:37`). File was absent on `0D_base_` due to a `.gitignore` entry added in PR #3646 that was correct for `0D_base_`'s auto-gen prevention but created a modify/delete conflict in PR #3630. Resolved by removing the gitignore entry and tracking the file consistently with `main`.
 - **`.github/workflows/branch-divergence-monitor.yml`**: **NEW** autonomous divergence detection + self-healing workflow. Runs every 6 hours. Detects all `main`-ahead commits, classifies them (auto-gen vs. code-leak), auto-forwards auto-gen files to `0D_base_` with rebase guard, upserts a `branch-divergence` tracking issue, and posts `@copilot` escalation for code-leaks. Closes the gap that allowed 10 auto-gen commits to accumulate on `main` undetected.
