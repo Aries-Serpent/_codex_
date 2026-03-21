@@ -5,7 +5,11 @@
 > **Parent agent**: `.github/agents/energy-conversion-agent.md`  
 > **Research basis**: Deep research synthesis of Claude Code autonomous agent
 > architecture, MCP tool registry patterns, ReAct loop implementations, and
-> multi-agent orchestration — correlated to the energy conversion system domain.
+> multi-agent orchestration — correlated to the EC system domain.
+>
+> **Abbrevs**: G2E = gas-to-electric · EC = energy conversion · PD = power distribution
+> · CR = compute-regulated · HITL = human-in-the-loop · RPi = Raspberry Pi · SBC = single-board computer
+> · EM = energy management · EMS = energy management system · OTA = over-the-air
 
 ---
 
@@ -14,8 +18,8 @@
 "Claudeclaw" refers to the Claude Code autonomous agent pattern family —
 specifically the architectural conventions pioneered by Anthropic's Claude Code
 and related open-source implementations. These patterns are adapted here for
-autonomous management of the gas-to-electric energy conversion system running
-on Raspberry Pi / SBC hardware.
+autonomous management of the G2E conversion system running
+on RPi/SBC hardware.
 
 The core insight: the same **Think → Decide → Act → Observe** (ReAct) loop that
 powers Claude Code for software development applies directly to energy control
@@ -30,7 +34,7 @@ sensor queries.
 
 *Research basis: Anthropic (2025) — "How the agent loop works"; Dextral Labs (2026)*
 
-The standard Claudeclaw ReAct loop is adapted as follows for energy management:
+The standard Claudeclaw ReAct loop is adapted as follows for EM:
 
 | ReAct Phase | Software Agent (Claude Code) | Energy Agent (this system) |
 |-------------|------------------------------|---------------------------|
@@ -64,7 +68,7 @@ class AgentState:
 
 class EnergyReActLoop:
     """
-    Claudeclaw-style ReAct loop for autonomous energy conversion management.
+    Claudeclaw-style ReAct loop for autonomous EC mgmt.
 
     References:
         Anthropic. (2025). How the agent loop works. Claude API Docs.
@@ -134,7 +138,7 @@ class ToolSchema:
     description: str
     input_schema: Dict[str, Any]   # JSON-Schema compatible
     output_schema: Dict[str, Any]
-    requires_approval: bool = False  # human-in-loop for risky ops
+    req_approval: bool = False  # HITL for risky ops
 
 class ToolRegistry:
     """
@@ -201,7 +205,7 @@ def read_power_meter(port: str = "/dev/ttyUSB0") -> Dict[str, float]:
                   "properties": {"position_pct": {"type": "number", "minimum": 0, "maximum": 100}},
                   "required": ["position_pct"]},
     output_schema={"type": "object", "properties": {"accepted": {"type": "boolean"}}},
-    requires_approval=False,   # within safe operating envelope
+    req_approval=False,   # within safe operating envelope
 ))
 def set_throttle(position_pct: float) -> Dict[str, bool]:
     from codex.energy.control.pid_controller import ThrottleActuator
@@ -214,7 +218,7 @@ def set_throttle(position_pct: float) -> Dict[str, bool]:
     input_schema={"type": "object",
                   "properties": {"reason": {"type": "string"}}, "required": ["reason"]},
     output_schema={"type": "object", "properties": {"cutoff_activated": {"type": "boolean"}}},
-    requires_approval=True,   # human-in-loop required
+    req_approval=True,   # HITL required
 ))
 def trigger_fuel_cutoff(reason: str) -> Dict[str, bool]:
     import RPi.GPIO as GPIO
@@ -290,7 +294,7 @@ class OptimizerAgent(BaseSubagent):
 class SafetyMonitorAgent(BaseSubagent):
     """Continuously checks fault conditions; escalates or trips on violation."""
     name = "safety-monitor"
-    GAS_LIMIT_PPM = 5_000
+    GAS_LIMIT_PPM = 5_000   # early-warning: ~20% of LPG LEL (0.5% vol)
     FREQ_DEVIATION_HZ = 0.5
 
     async def run_cycle(self) -> dict:
@@ -348,13 +352,13 @@ every agent session. The energy system equivalent is:
 # Energy Conversion Agent — Session Context
 
 ## System Configuration
-- Hardware: Raspberry Pi 4 (4 GB) + MCP3008 ADC + PZEM-004T
+- Hardware: RPi 4 (4 GB) + MCP3008 ADC + PZEM-004T
 - Gas: natural gas, LHV = 47,100 kJ/kg
 - Generator rated output: 500 W at 60 Hz / 120 V
 - Nominal throttle: 75% at full load
 
 ## Operating Envelopes
-- Gas concentration fault threshold: 5,000 ppm (LPG LEL ~1% vol)
+- Gas concentration fault threshold: 5,000 ppm (early-warning, ~20% of LPG LEL; LEL ≈ 21,000 ppm / 2.1% vol)
 - Frequency: 60.0 Hz ± 0.5 Hz
 - Voltage: 120 V ± 10%
 - Conversion efficiency baseline: 35–42% (measured 2026-03)
@@ -377,9 +381,9 @@ every agent session. The energy system equivalent is:
 ### Pattern: Checkpoint + Handoff
 
 *Research basis: Anthropic Engineering. (2025). Effective harnesses for  
-long-running agents. https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents*
+long-run agents. https://www.anthropic.com/engineering/effective-harnesses-for-long-run-agents*
 
-For long-running energy management sessions, the agent maintains checkpoint
+For long-run EM sessions, the agent maintains checkpoint
 files so context is preserved across restarts (power cycling of the RPi, OTA
 updates, etc.):
 
@@ -418,7 +422,7 @@ def load_latest_checkpoint() -> dict | None:
 Implementation Guide.
 https://collabnix.com/claude-and-autonomous-agents-practical-implementation-guide/*
 
-Tools marked `requires_approval=True` in the registry are intercepted before
+Tools marked `req_approval=True` in the registry are intercepted before
 execution and routed through an approval gate:
 
 ```python
@@ -430,7 +434,7 @@ logger = logging.getLogger(__name__)
 
 class ApprovalGate:
     """
-    Human-in-loop gate for risky tool executions.
+    HITL gate for risky tool executions.
     In production: sends push notification; waits for TOTP-signed approval.
     In simulation: logs warning and proceeds (simulation mode only).
     """
@@ -440,7 +444,7 @@ class ApprovalGate:
 
     def execute(self, tool_name: str, params: dict):
         schema = self._registry.list_tools().get(tool_name)
-        if schema and schema.requires_approval and not self._simulation:
+        if schema and schema.req_approval and not self._simulation:
             logger.warning("APPROVAL REQUIRED for '%s' — awaiting operator", tool_name)
             self._send_approval_request(tool_name, params)
             approved = self._await_operator_response(timeout_s=30)
@@ -466,8 +470,8 @@ class ApprovalGate:
 Anthropic. (2025). *How the agent loop works*. Claude Platform API Docs.
 https://platform.claude.com/docs/en/agent-sdk/agent-loop
 
-Anthropic Engineering. (2025). *Effective harnesses for long-running agents*.
-https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+Anthropic Engineering. (2025). *Effective harnesses for long-run agents*.
+https://www.anthropic.com/engineering/effective-harnesses-for-long-run-agents
 
 Chiang, E. (2025). *My study notes on Anthropic Claude Code*.
 https://www.ernestchiang.com/en/notes/ai/claude-code/
@@ -505,6 +509,6 @@ GitHub. https://github.com/zilliztech/claude-context
 | `CLAUDE.md` context | `src/codex/energy/AGENT_CONTEXT.md` — system config + baselines |
 | Subagent teams | `MetaController` + 3 specialized subagents (async) |
 | Checkpoint harness | `save_checkpoint()` / `load_latest_checkpoint()` — RPi OTA safe |
-| Human-in-loop gate | `ApprovalGate` — `requires_approval=True` for fuel cutoff |
+| HITL gate | `ApprovalGate` — `req_approval=True` for fuel cutoff |
 | Context compaction | EMA filtering on sensor data; rolling 24h history window |
 | Semantic search | `TopologyManager.find_by_concept("energy conversion")` |
