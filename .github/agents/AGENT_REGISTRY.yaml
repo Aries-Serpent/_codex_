@@ -3609,7 +3609,7 @@ agents:
     - integration_branch_enforcement
     - sub_pr_creation
     - copilot_trigger
-    - 0d_base_staging
+    - base_staging_integration
   integration_points:
     - .github/workflows/copilot-session-chain.yml
     - .github/workflows/agent-auth-delegation.yml

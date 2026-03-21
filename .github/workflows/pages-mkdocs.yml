@@ -26,6 +26,11 @@ on:
       - 'src/codex/api/**'
       - 'src/codex/**/*.py'
   workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual trigger (e.g. post-manifest-refresh-pages-heal)'
+        required: false
+        default: 'manual'
 
 permissions:
   contents: read
@@ -211,11 +216,40 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+      - name: Verify deployed site (health check)
+        id: health_check
+        continue-on-error: true
+        run: |
+          PAGE_URL="${{ steps.deployment.outputs.page_url }}"
+          if [ -z "${PAGE_URL}" ]; then
+            echo "⚠️  No page_url output — skipping health check"
+            exit 0
+          fi
+          echo "🔍 Checking deployed site: ${PAGE_URL}"
+          # Wait up to 60s for CDN propagation
+          for i in 1 2 3 4 5 6; do
+            HTTP_CODE=$(curl -sS -o /dev/null -w "%{http_code}" --max-time 15 "${PAGE_URL}" 2>/dev/null || echo "000")
+            echo "  Attempt ${i}: HTTP ${HTTP_CODE}"
+            if [ "${HTTP_CODE}" = "200" ]; then
+              echo "✅ Site is healthy (HTTP 200)" >> "$GITHUB_STEP_SUMMARY"
+              echo "health_status=ok" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "❌ Site returned HTTP ${HTTP_CODE} after 60s — possible 404 deployment"
+          echo "health_status=degraded:${HTTP_CODE}" >> "$GITHUB_OUTPUT"
+          echo "## ⚠️ Pages Health Check FAILED" >> "$GITHUB_STEP_SUMMARY"
+          echo "Site at \`${PAGE_URL}\` returned HTTP **${HTTP_CODE}**." >> "$GITHUB_STEP_SUMMARY"
+          echo "The pages-health-guard.yml workflow will attempt automatic recovery." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Summary
         run: |
           echo "## Documentation Deployed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
           echo "- Build time: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- Trigger: ${{ github.event_name }}${{ github.event.inputs.reason && format(' ({0})', github.event.inputs.reason) || '' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Caching: Enabled for plugins and built site" >> $GITHUB_STEP_SUMMARY
           echo "- API docs: Auto-generated from docstrings" >> $GITHUB_STEP_SUMMARY
+          echo "- Health check: ${{ steps.health_check.outputs.health_status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY

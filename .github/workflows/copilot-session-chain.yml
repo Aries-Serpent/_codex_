@@ -203,6 +203,10 @@ jobs:
 
           ---
 
+          ### 💰 Cost Governance
+
+          - [ ] **💰 Cost Proposal Approved**
+
           ### 🔐 Agent Token Delegation
           - [ ] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
 
