@@ -163,8 +163,11 @@ jobs:
         run: |
           echo "Scanning for broken references in changed files..."
 
-          # Get changed files
-          git fetch origin "${BASE_REF}"
+          # Get changed files (base ref may have been deleted for stale/merged branches)
+          git fetch origin "${BASE_REF}" || {
+            echo "⚠️ Base ref '${BASE_REF}' not found on remote (branch may have been deleted). Skipping reference scan."
+            exit 0
+          }
           CHANGED_FILES=$(git diff --name-only "origin/${BASE_REF}...HEAD" | grep -E '\.(md|py|yml|yaml)$' || echo "")
 
           if [ -z "$CHANGED_FILES" ]; then

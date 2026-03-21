@@ -348,9 +348,9 @@ concurrency:
 
 ---
 
-## Agent Registry Tier Distribution (Phase 1–6, v1.9.0+)
+## Agent Registry Tier Distribution (Phase 1–6, v2.0.0+)
 
-> **Updated**: 2026-03-02 | GROUNDED promotion phase — registry tiers reflect enforcement state after Phase 5 tier reduction.
+> **Updated**: 2026-03-18 | S153/S154 — Phase 5 autonomous loop promoted to GROUNDED; new patterns documented below.
 
 | Agent ID | Enforcement Tier | Rationale |
 |----------|:----------------:|-----------|
@@ -362,13 +362,158 @@ concurrency:
 | `mutation-testing-agent` | ✅ **GROUNDED** | Mutation score threshold enforces test quality |
 | `test-enhancement-agent` | ✅ **GROUNDED** | Test quality enforcement with coverage gates |
 | `workflow-health-monitor` | ✅ **GROUNDED** | Health alerting with issue creation on threshold breach |
+| `iterative-self-healing-ci` | ✅ **GROUNDED** | Phase 5 autonomous loop: `workflow_run.completed` → D-00 triage → fix → `ci_triage_repro.sh` 7-check validate → commit (S154) |
 | `codex_reviewer` | ⚠️ **SOFT** | Internal reviewer; no structural gate available |
 | `zendesk-architect-agent` | ⚠️ **SOFT** | Niche/specialized agent; ungatable in current architecture |
 
-**Registry summary** (v1.9.0): GROUNDED: 8 | PARTIAL: 142 | SOFT: 2 | Total: 152
+**Registry summary** (v2.0.0): GROUNDED: 9 | PARTIAL: 142 | SOFT: 2 | Total: 153
 
 > _E→D gate C3 (SOFT ≤ 2) ✅ | C5 (GROUNDED ≥ 8) ✅_
 
 ---
 
-*Updated: 2026-02-28 | S116i resume (cascade fix + repo-wide audit) | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*
+## S153 GROUNDED Pattern Additions (2026-03-18)
+
+Three new patterns were promoted from SOFT to GROUNDED in S153/S154:
+
+### G-NEW-1: PR-scoped CHANGELOG subsection (structural code enforcement)
+
+**Policy:** Auto-generated CHANGELOG bullets must live under a section header whose PR number matches the bullet's PR reference.
+
+**Before (SOFT):** `session_wrapup_autofix.py` inserted bullets into the first `### Fixed` in `[Unreleased]` — purely a text-insertion convention with no structural gate. Any future session could break it by inserting differently.
+
+**After (GROUNDED — S153):** `fix_changelog()` now creates `### Fixed (auto-update — PR #N)` subsection and inserts ONLY into it. The code structure itself enforces the policy — it is impossible for the script to contaminate a different PR's section. `ci_triage_repro.sh` check_7 provides the CI hard-stop (exit 1) if a misplaced bullet is detected.
+
+```python
+# GROUNDED: structural enforcement in session_wrapup_autofix.py
+pr_section_heading = f"### Fixed (auto-update — PR #{pr_number})\n"
+# Insert ONLY into the scoped subsection — other PR sections untouched
+```
+
+**Bypass cost:** Must edit `session_wrapup_autofix.py` AND pass check_7 — two intentional overrides required.
+
+---
+
+### G-NEW-2: pip cache pre-creation for sparse-checkout workflows
+
+**Policy:** Any workflow using `setup-python@v5` on a sparse checkout must pre-create `~/.cache/pip` to prevent the post-step "Cache folder doesn't exist on disk" failure.
+
+**Before (SOFT):** The `mkdir -p ~/.cache/pip` step was undocumented. Engineers adding new sparse-checkout workflows would not know to add it.
+
+**After (GROUNDED — S153):** Added `Pre-create pip cache dir` step as a documented mandatory step in `deferral-language-gate.yml` and `branch-rebase-gate.yml`. The P-030 pattern in `ci-auto-healer-agent.md` ensures any future sparse-checkout workflow failure matching this signature gets auto-detected and auto-fixed by the Phase 5 self-healing loop.
+
+```yaml
+# GROUNDED pattern: mandatory before setup-python@v5 on sparse checkouts
+- name: Pre-create pip cache dir
+  run: mkdir -p ~/.cache/pip
+- name: Set up Python
+  uses: actions/setup-python@v5
+```
+
+**Bypass cost:** Must delete the pre-create step AND survive the CI post-step failure — visible failure, not silent bypass.
+
+---
+
+### G-NEW-3: Phase 5 autonomous self-healing loop (D-00 protocol gate)
+
+**Policy:** Every CI failure on a PR branch must be triaged by `collect_telemetry.py --classify-run`, and if fixable, auto-healed via `auto_fix_common_issues.py` + validated via `ci_triage_repro.sh` 7-check before the fix is committed.
+
+**Before (SOFT):** The healing loop existed but lacked D-00 pre/post triage checks and failed-attempt tracking. Fixes could be committed without 7-check validation.
+
+**After (GROUNDED — S154):** `iterative-self-healing-ci.yml` now:
+1. Runs `ci_triage_repro.sh` before applying fix (D-07 pre-heal baseline)
+2. Runs `ci_triage_repro.sh` after fix (D-07 post-heal validation) — exits 1 if any check fails
+3. Records every attempt (success + failure) to `.codex/healing_attempts/`
+4. Checks `COPILOT_AGENT_AUTH_ENABLED` before committing autonomous push
+5. Expanded fixable patterns: `changelog-*`, `pip-cache-*`, `policy-gate-*`, `rebase-gate-*`, `mypy-baseline`
+
+**Bypass cost:** Must edit the `heal` job YAML and pass 7 `ci_triage_repro.sh` checks — two intentional overrides required.
+
+---
+
+### G-NEW-4: Integration-branch direct-session guard (REQ-11)
+
+**Policy:** Copilot Coding Agent sessions MUST NEVER run directly on `0D_base_` (the
+staging integration branch).  All agent work must happen through sub-PRs
+(`copilot/session-*` or `copilot/sub-pr-*`) that target `0D_base_`.
+
+```
+copilot/session-*  ──►  0D_base_  ──►  main
+  (agent sessions)       (staging)     (production)
+```
+
+**Before (SOFT):** Nothing prevented a session from running on `0D_base_` directly.
+A `@copilot continue` comment on PR #3630 (head=`0D_base_`) would let the agent
+commit unreviewed work straight to the staging branch, bypassing the sub-PR cycle.
+
+**After (GROUNDED — S163):** `agent-auth-delegation.yml` `cognitive-preflight` REQ-11
+guard is the **first step** in the job:
+
+1. Reads `pr.head.ref` and checks against `INTEGRATION_BRANCHES = ['0D_base_']`
+2. If head IS an integration branch → posts a rich redirect comment (upserted,
+   one per PR) with architecture diagram, `gh workflow run copilot-session-chain.yml`
+   command, manual steps, and a copy-paste `@copilot` prompt
+3. Calls `core.setFailed("REQ-11 FAIL")` — structurally blocks `activate-delegation`
+   via the `needs: [cognitive-preflight]` dependency chain
+
+`copilot-session-chain.yml` (new — S163) automates the correct alternative:
+- Triggers on `workflow_dispatch` or automatically when a sub-PR merges into `0D_base_`
+- Creates `copilot/session-YYYYMMDD-HHMMSS` branch, opens draft PR targeting `0D_base_`,
+  and posts `@copilot+claude-sonnet-4.6 continue` trigger comment
+
+```yaml
+# GROUNDED: REQ-11 fires FIRST in cognitive-preflight — blocks activate-delegation
+- name: "REQ-11: Integration-branch direct-session guard"
+  uses: actions/github-script@v7
+  # core.setFailed() if pr.head.ref in INTEGRATION_BRANCHES
+  # → needs: [cognitive-preflight] chain blocks activate-delegation
+```
+
+**Bypass cost:** Must edit `INTEGRATION_BRANCHES` in the workflow YAML AND consciously
+skip the `cognitive-preflight` job — two intentional, auditable overrides required.
+
+**CI Pattern:** `collect_telemetry.py` classifies these failures as
+`integration-branch-direct-session`; `ci_failure_patterns.yaml` pattern
+`INT_BRANCH_DIRECT_SESSION_001` documents the escalation path.
+
+---
+
+### G-NEW-5: Bot-skip-ci divergence auto-pass (REQ-10 extension)
+
+**Policy:** When a PR branch (including the `0D_base_` promotion PR) is behind its
+base only because of automated `[skip ci]` `github-actions[bot]` metadata commits,
+REQ-10 MUST auto-pass rather than hard-blocking the agent session.
+
+**Before (SOFT):** REQ-10 in `agent-auth-delegation.yml` only passed when
+`liveStatus === 'ahead' || liveStatus === 'identical'`.  Any `behind` or `diverged`
+status failed the gate — including when 100% of the gap commits were automated
+`[skip ci]` bot commits from the 5 scheduled workflows that run every 2–24 h.
+This caused spurious REQ-10 blocks on `0D_base_` PR #3630 every time `main`
+received a scheduled metadata refresh.
+
+**After (GROUNDED — S163):** REQ-10 step in `agent-auth-delegation.yml` now:
+
+1. On `behind`/`diverged`: calls `fetchGapCommits(head...base)` — a reverse compare
+   to get exactly the commits `base` has that `head` is missing
+2. Passes each commit through `gapIsAllBotSkipCi()` — checks `author.login` ∈
+   `BOT_LOGINS` AND `commit.message` includes `[skip ci]`
+3. If ALL gap commits pass → `liveResolved = true` → REQ-10 PASS (no hard-block)
+4. Both the "no marker" and "marker present" live-check paths apply this logic
+
+`branch-rebase-gate.yml` provides the complementary auto-merge path:
+`branch_rebase_check.py --auto-merge-skip-ci` calls the GitHub Merges API when the
+gap is 100% bot `[skip ci]`, so the branch is updated without any `git` operations.
+
+```javascript
+// GROUNDED: structural in REQ-10 github-script step
+const gap       = await fetchGapCommits(pr.base.ref, pr.head.ref);
+const allBotGap = gapIsAllBotSkipCi(gap);
+if (allBotGap) { liveResolved = true; }   // auto-pass — no hard-block
+```
+
+**Bypass cost:** Must edit the `fetchGapCommits`/`gapIsAllBotSkipCi` logic in the
+workflow YAML — one intentional, auditable override required.
+
+---
+
+*Updated: 2026-03-20 | S163 — Integration branch model GROUNDED | .codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md*

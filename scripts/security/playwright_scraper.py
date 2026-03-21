@@ -193,7 +193,12 @@ class PlaywrightScraper:
         alerts: List[Dict[str, Any]] = []
 
         with sync_playwright() as pw:
-            browser: Browser = pw.chromium.launch(headless=self.headless)
+            # CB-INV-001: pass --disable-extensions so any content-blocker
+            # extension in the browser profile cannot intercept github.com requests.
+            browser: Browser = pw.chromium.launch(
+                headless=self.headless,
+                args=["--disable-extensions"],
+            )
             context = browser.new_context(
                 user_agent=(
                     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "

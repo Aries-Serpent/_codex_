@@ -5,9 +5,11 @@ on:
   schedule:
     - cron: '0 */4 * * *'
 
-  # Cascade review on PRs
+  # Cascade review on PRs — opened/reopened only (not every push)
+  # synchronize REMOVED (S155): fires on every commit push, triggering auto-commits
+  # that conflict with agent report_progress pushes. The 4h schedule covers freshness.
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
 
   # Manual triggers for specific tasks
   issue_comment:
@@ -215,7 +217,19 @@ jobs:
             - Triggered by: ${{ github.event_name }}
             - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
-            git push
+            # On schedule runs push defaults to main — route to 0D_base_ if active.
+            TARGET_REF="${{ github.ref_name || 'main' }}"
+            if [ "${{ github.event_name }}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
+              TARGET_REF="0D_base_"
+              echo "🔀 0D_base_ integration branch detected — routing evolution update to 0D_base_"
+            fi
+            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
+            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
+            git push origin HEAD:${TARGET_REF}
             echo "✅ Evolution updates committed"
           else
             echo "ℹ️  No evolution updates to commit"

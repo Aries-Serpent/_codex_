@@ -1,20 +1,34 @@
 name: CODEX Manifest Auto-Refresh
 
-# Automatically regenerate CODEX_MANIFEST.json on every PR push so that the
-# E→D Transition Gate C2 condition (manifest < 24h old) is always satisfied.
-# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
+# Automatically regenerate CODEX_MANIFEST.json to satisfy the E→D Transition Gate
+# C2 condition (manifest < 24h old).
 #
-# REQ-4/5 compliance: also touches AGENT_ACCOUNTABILITY_REPORT.md and
-# CHANGELOG.md so the auto-commit satisfies the Cognitive Pre-flight checks
-# (agent-auth-delegation.yml REQ-4 + REQ-5) which require those files to be
-# present in the last commit.
+# Trigger policy (S155 — reduced cascade):
+# • PR opened/reopened: generate manifest for new/retargeted PRs
+# • schedule 6h: keeps manifest fresh on long-running branches without firing on
+#   every push — eliminates the "approve runs all" auto-commit storm
+# • synchronize REMOVED: the 6h schedule is sufficient; firing on every push caused
+#   concurrent auto-commits alongside agent-auth-delegation, leading to rebase conflicts
+#
+# Uses [skip ci] on the bot commit to avoid recursive workflow triggers.
+# REQ-4/5 compliance: also touches AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md.
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened]
+  # Scheduled refresh every 6h to prevent E→D C2 stale-manifest failures on
+  # long-running branches (the manifest generated_at must be < 24h old).
+  schedule:
+    - cron: '0 */6 * * *'
+  # NOTE: The E→D Transition Readiness Gate now includes a self-healing job
+  # (heal-stale-manifest) that directly regenerates CODEX_MANIFEST.json when
+  # C2 fails on a PR. A workflow_run trigger here is NOT needed and was removed
+  # to prevent the "untrusted-checkout" CodeQL security pattern (a privileged
+  # workflow_run with contents:write that executes code is a security risk).
+  workflow_dispatch:
 
 concurrency:
-  group: codex-manifest-refresh-${{ github.head_ref }}
+  group: codex-manifest-refresh-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
@@ -26,15 +40,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Skip when the actor is the bot itself (prevents recursion on the bot commit).
-    # github.event.head_commit.message is not present in PR payloads, so use
-    # github.actor instead, which is always safe on pull_request events.
-    if: github.actor != 'github-actions[bot]'
+    # On schedule runs, github.actor is 'github-actions[bot]' — we explicitly allow
+    # scheduled runs to proceed by checking github.event_name.
+    if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
 
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR branch (or main on schedule)
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          # On schedule runs, HEAD ref is not available — fall back to main.
+          ref: ${{ github.head_ref || 'main' }}
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -53,24 +68,33 @@ jobs:
           python scripts/ci/generate_manifest.py
           python3 -c 'import json; d=json.load(open("CODEX_MANIFEST.json")); print("generated_at="+d["generated_at"])' >> "$GITHUB_OUTPUT"
 
-      - name: Update compliance files (REQ-4/5)
-        # Ensures AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are always
-        # touched in the same commit as the manifest so the Cognitive Pre-flight
-        # REQ-4 and REQ-5 checks never fail on an auto-refresh commit.
+      - name: Update compliance files (REQ-4/5 — PR runs only)
+        # On pull_request runs: runs session_wrapup_autofix.py so that
+        # AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in the
+        # same commit as the manifest, satisfying REQ-4 and REQ-5.
+        # On schedule runs: this step is skipped (no PR payload is available).
+        # The manifest-only commit is still valid for schedule runs; compliance
+        # files are updated by the next PR-triggered run instead.
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
           RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           GIT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          python scripts/ci/session_wrapup_autofix.py \
-            --pr-number "${PR_NUMBER}" \
-            --sha "${GIT_SHA:0:8}" \
-            --run-url "${RUN_URL}" \
-            --fix-all
+          if [ "${EVENT_NAME}" = "schedule" ]; then
+            echo "Scheduled run — skipping PR-scoped compliance update (no PR payload)"
+          else
+            python scripts/ci/session_wrapup_autofix.py \
+              --pr-number "${PR_NUMBER}" \
+              --sha "${GIT_SHA:0:8}" \
+              --run-url "${RUN_URL}" \
+              --fix-all
+          fi
 
       - name: Commit refreshed manifest + compliance files
         env:
-          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REF: ${{ github.head_ref || 'main' }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -82,8 +106,14 @@ jobs:
             echo "All files already up-to-date — no commit needed"
           else
             git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
-            # Pull rebase to handle concurrent pushes, then push
-            git pull --rebase origin "${HEAD_REF}" 2>/dev/null || true
-            git push origin HEAD:"${HEAD_REF}"
-            echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed"
+            # On schedule runs HEAD_REF is empty — push to main, unless 0D_base_ is active.
+            # On PR runs HEAD_REF is the PR branch (always use it directly).
+            TARGET_REF="${HEAD_REF:-main}"
+            if [ "${EVENT_NAME}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
+              TARGET_REF="0D_base_"
+              echo "🔀 0D_base_ integration branch detected — routing manifest refresh to 0D_base_"
+            fi
+            git pull --rebase origin "${TARGET_REF}" 2>/dev/null || true
+            git push origin "HEAD:${TARGET_REF}"
+            echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
           fi

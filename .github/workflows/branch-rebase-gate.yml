@@ -28,7 +28,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
-  contents: read
+  contents: write     # Required for auto-merge via GitHub Merges API
   pull-requests: write
   issues: write
 
@@ -59,6 +59,12 @@ jobs:
             scripts/ci/branch_rebase_check.py
           sparse-checkout-cone-mode: false
 
+      - name: "🗂️ Pre-create pip cache dir"
+        run: mkdir -p ~/.cache/pip
+        # setup-python@v5 post-step fails with "Cache folder doesn't exist on disk"
+        # when no packages are installed (stdlib-only sparse checkout).
+        # Pre-creating the directory prevents that transient post-step failure.
+
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v5
         with:
@@ -79,6 +85,8 @@ jobs:
             --repo "${{ github.repository }}" \
             --pr  "${{ github.event.pull_request.number }}" \
             --post-comment \
+            --auto-merge-skip-ci \
+            --upsert-dashboard \
             --github-output \
             --github-summary
           # Script exits 0 always in non-hard-fail mode — status is in outputs

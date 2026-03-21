@@ -7,11 +7,11 @@ description: >
   the system prompt, and closes the AfterMath/PDA loop by calling
   report_completion() after each task. Implements quantum reconstruction
   fallback, RBAC via StructuralPolicyManager, and token-budget enforcement.
-version: 1.4.0
-author: GitHub Copilot (S108, updated S128, S145, S146)
+version: 1.5.0
+author: GitHub Copilot (S108, updated S128, S145, S146, S152/S153)
 status: active
 created: 2026-02-28
-updated: 2026-03-17
+updated: 2026-03-18
 autonomous_actions_enabled: true
 runner_compatibility:
   default: ubuntu-latest        # 2-core — session context injection, AfterMath PDA loop closure
@@ -129,9 +129,12 @@ graph TD
 | `scripts/ci/session_bootstrap.py` | **D-00 pre-process** — URL extraction, GitHub fetch, triage, digest (S145 NEW) |
 | `scripts/ci/monitor_run.py` | **D-00b concurrent monitor** — daemon/thread/status/wait/stop; non-blocking poll while agent works (S146 NEW) |
 | `scripts/ci/ci_triage_repro.sh` | **D-07 triage** — 7 reproducible CI checks (S145 NEW) |
+| `scripts/ci/session_wrapup_autofix.py` | **REQ-4/5 autofix** — accountability report + CHANGELOG self-healing; `fix_changelog()` now creates PR-scoped subsection (S152 FIX) |
 | `docs/ci/CI_TRIAGE_REPRO_S145.md` | Root-cause + repro + fix reference for all 7 checks (S145 NEW) |
 | `docs/ci/CONCURRENT_MONITOR_CHERRY_PICK_REPRO.md` | 9-step reproducible process + decision tree + Mermaid flow (S146 NEW) |
 | `.github/copilot-prompts/active/SESSION-DIAGNOSTIC-PROTOCOL.md` | D-00…D-08 mandatory session start protocol (S145 NEW, updated S146) |
+| `.github/workflows/deferral-language-gate.yml` | Deferral language policy gate — now has `Pre-create pip cache dir` step (S152 FIX) |
+| `.github/workflows/branch-rebase-gate.yml` | Branch rebase REQ-10 gate — now has `Pre-create pip cache dir` step (S152 FIX) |
 | `tests/ci/test_session_bootstrap.py` | 21 unit tests for session_bootstrap.py (S146 NEW) |
 | `tests/ci/test_monitor_run.py` | 26 unit tests for monitor_run.py — snapshot, state-file, exit-code, cherry-pick filtering, session timing, cli_override priority (S146 NEW) |
 | `src/codex/cognitive/session_hook.py` | `SessionContextInjector` — core injection logic |
@@ -141,7 +144,7 @@ graph TD
 | `.github/workflows/cognitive_brain_ci_feedback.yml` | CI feedback loop — `report_completion()` |
 | `tests/cognitive/` | 65+ tests covering all components |
 | `.codex/permanent_facts.md` | Session memory seed — prevents re-discovering known issues |
-| `.codex/COGNITIVE_BRAIN_STATUS_S145.md` | Current phase status + next-phase plan (S145) |
+| `.codex/COGNITIVE_BRAIN_STATUS_S152.md` | Phase 4→5 transition: CI failure taxonomy, self-healing loop design, E→D 5/5 (S152) |
 
 ## Activation
 
@@ -219,4 +222,7 @@ pytest tests/cognitive/ -v
 |---------|---------|---------|
 | 1.0.0 | S108 | Initial implementation — all components |
 | 1.1.0 | S109 (planned) | Org rollout + latency telemetry + Discussions |
-| 2.0.0 | S110 (planned) | Full StructuralPolicyManager + global rollout |
+| 1.2.0 | S128 | OTel coherence, AAIS wiring |
+| 1.3.0 | S145 | D-00 session_bootstrap.py wired; ci_triage_repro.sh; SESSION-DIAGNOSTIC-PROTOCOL |
+| 1.4.0 | S146 | D-00b concurrent monitor (monitor_run.py); agent-auth-delegation step 3c-bis |
+| 1.5.0 | S152/S153 | CHANGELOG check_7 fix (session_wrapup_autofix.py scoping); pip cache pre-create for sparse checkouts; CI failure taxonomy (58 failures/19 workflows); Phase 4→5 transition plan; E→D 5/5 ✅ |

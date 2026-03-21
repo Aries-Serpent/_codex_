@@ -4,8 +4,9 @@ Phase 3 — Unified Agent Memory Corpus: embedding index builder.
 
 Sources: .codex/docs/, .github/agents/, src/codex/cognitive/, AGENT_REGISTRY.yaml
 Model:   all-MiniLM-L6-v2 (offline, Apache 2.0, ~80 MB)
-Output:  .codex/embeddings/codex_index.faiss   (git-ignored)
-         .codex/embeddings/codex_index_meta.json (git-tracked metadata only)
+Output:  .codex/embeddings/codex_index.faiss        (git-ignored)
+         .codex/embeddings/codex_index_meta.json    (git-tracked, slim header only — no chunks)
+         .codex/embeddings/codex_index_chunks.json  (git-ignored, full chunk text for query_corpus)
 
 Usage:
   pip install sentence-transformers faiss-cpu numpy
@@ -29,6 +30,7 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 EMBED_DIR = REPO_ROOT / ".codex" / "embeddings"
 INDEX_PATH = EMBED_DIR / "codex_index.faiss"
 META_PATH = EMBED_DIR / "codex_index_meta.json"
+CHUNKS_PATH = EMBED_DIR / "codex_index_chunks.json"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
 SOURCES = [
@@ -119,19 +121,25 @@ def build_index(chunks: list[Chunk]) -> None:
     index.add(embeddings.astype(np.float32))
     faiss.write_index(index, str(INDEX_PATH))
 
-    meta = {
+    chunk_list = [asdict(c) for c in chunks]
+
+    # Slim header committed to git — no chunk text (prevents 11 MB daily commits)
+    slim_meta = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "model": MODEL_NAME,
         "dim": dim,
         "chunk_count": len(chunks),
         "build_time_seconds": round(elapsed, 1),
-        # Only metadata (not vectors) is committed to git
-        "chunks": [asdict(c) for c in chunks],
     }
-    META_PATH.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    META_PATH.write_text(json.dumps(slim_meta, indent=2), encoding="utf-8")
+
+    # Full chunk text written locally for query_corpus — NOT committed to git
+    CHUNKS_PATH.write_text(json.dumps({"chunks": chunk_list}, indent=2), encoding="utf-8")
+
     print(
         f"Index written: {INDEX_PATH} ({len(chunks)} chunks, dim={dim})\n"
-        f"Metadata written: {META_PATH}"
+        f"Slim metadata (git): {META_PATH}\n"
+        f"Full chunks (local): {CHUNKS_PATH}"
     )
 
 

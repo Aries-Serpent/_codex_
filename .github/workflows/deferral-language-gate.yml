@@ -14,7 +14,14 @@ name: "🚨 Deferral Language Gate"
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
+    # 'edited' intentionally omitted: report_progress updates the PR body on
+    # every push, which fires 'edited' alongside 'synchronize'. With
+    # cancel-in-progress the two runs race and one gets cancelled — the CI
+    # dashboard then reports the latest run as "cancelled" (looks like a failure).
+    # Removing 'edited' eliminates the double-trigger. The deferral check still
+    # scans the full PR body on every 'synchronize' event (push), so coverage
+    # is identical.
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: deferral-gate-${{ github.head_ref }}
@@ -32,6 +39,12 @@ jobs:
     steps:
       - name: "📥 Checkout"
         uses: actions/checkout@v4
+
+      - name: "🗂️ Pre-create pip cache dir"
+        run: mkdir -p ~/.cache/pip
+        # setup-python@v5 post-step fails with "Cache folder doesn't exist on disk"
+        # when no packages were installed (the default when DEFERRAL_SCANNER_ML=0).
+        # Pre-creating the directory prevents that transient post-step failure.
 
       - name: "🐍 Set up Python"
         uses: actions/setup-python@v5

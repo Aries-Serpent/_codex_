@@ -1,0 +1,131 @@
+name: "Forward-Sync Auto-Generated Files → 0D_base_ (Safety Net)"
+
+# SAFETY NET — all 4 primary auto-gen workflows now check for 0D_base_ themselves
+# and commit there directly when it exists. This workflow handles edge cases:
+#   - A new auto-gen workflow is added without the 0D_base_ check
+#   - A manual workflow_dispatch run on main bypasses the branch check
+#   - Race conditions where a push lands on main despite 0D_base_ being active
+#
+# Files forwarded (all written by scheduled workflows):
+#   .codex/agent_context.json                      (repo-var-sync-schedule.yml)
+#   .codex/cognitive_brain/metadata.json            (cognitive-analysis-feed.yml)
+#   .codex/cognitive_brain/workflow_patterns.jsonl  (cognitive-analysis-feed.yml)
+#   .codex/embeddings/codex_index_meta.json         (embedding-index-rebuild.yml)
+#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md     (vars-guide-sync.yml)
+#   docs/admin/variable_audit_latest.md             (vars-guide-sync.yml)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".codex/agent_context.json"
+      - ".codex/cognitive_brain/metadata.json"
+      - ".codex/cognitive_brain/workflow_patterns.jsonl"
+      - ".codex/embeddings/codex_index_meta.json"
+      - "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+      - "docs/admin/variable_audit_latest.md"
+
+concurrency:
+  group: forward-sync-autogen
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  forward-sync:
+    name: "📤 Forward auto-gen files main → 0D_base_"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check if 0D_base_ integration branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads \
+              "https://x-access-token:${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" \
+              0D_base_ > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ 0D_base_ exists — proceeding with forward-sync"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  0D_base_ does not exist — nothing to forward, skipping"
+          fi
+
+      - name: Checkout 0D_base_
+        if: steps.check-branch.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: 0D_base_
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Fetch auto-generated file versions from main
+        if: steps.check-branch.outputs.exists == 'true'
+        run: |
+          git fetch origin main --depth=1
+
+          CHANGED=0
+          FILES=(
+            ".codex/agent_context.json"
+            ".codex/cognitive_brain/metadata.json"
+            ".codex/cognitive_brain/workflow_patterns.jsonl"
+            ".codex/embeddings/codex_index_meta.json"
+            "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+            "docs/admin/variable_audit_latest.md"
+          )
+          for f in "${FILES[@]}"; do
+            if git show origin/main:"$f" > /tmp/autogen_forward 2>/dev/null; then
+              if ! cmp -s /tmp/autogen_forward "$f" 2>/dev/null; then
+                mkdir -p "$(dirname "$f")"
+                cp /tmp/autogen_forward "$f"
+                git add "$f"
+                echo "Updated: $f"
+                CHANGED=1
+              fi
+            fi
+          done
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+        id: sync
+
+      - name: Commit and push forwarded files to 0D_base_
+        if: steps.check-branch.outputs.exists == 'true' && steps.sync.outputs.changed == '1'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(autosync): forward auto-generated files from main [skip ci]
+
+          Triggered by push ${{ github.sha }} on main.
+          Files: agent_context.json, metadata.json, workflow_patterns.jsonl,
+                 codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md,
+                 variable_audit_latest.md"
+
+          # Rebase guard: pull any commits that landed on 0D_base_ since checkout
+          # to prevent non-fast-forward rejection on push.
+          git pull --rebase origin 0D_base_ || {
+            echo "⚠️  Rebase failed — re-applying auto-gen files on top of latest 0D_base_"
+            git rebase --abort 2>/dev/null || true
+            git fetch origin 0D_base_ --depth=5
+            git reset --hard origin/0D_base_
+            # Re-copy and re-stage each file that was changed
+            for f in "${FILES[@]}"; do
+              if git show origin/main:"$f" > /tmp/autogen_reapply 2>/dev/null; then
+                if ! cmp -s /tmp/autogen_reapply "$f" 2>/dev/null; then
+                  mkdir -p "$(dirname "$f")"
+                  cp /tmp/autogen_reapply "$f"
+                  git add "$f"
+                fi
+              fi
+            done
+            git diff --cached --quiet && { echo "ℹ️  No changes remain after rebase — skipping push"; exit 0; }
+            git commit -m "chore(autosync): forward auto-generated files from main [skip ci]
+
+          Triggered by push ${{ github.sha }} on main (post-rebase retry)."
+          }
+
+          git push origin HEAD:0D_base_
+          echo "✅ Auto-generated files forwarded to 0D_base_"
+
+      - name: No-op summary
+        if: steps.check-branch.outputs.exists != 'true' || steps.sync.outputs.changed != '1'
+        run: echo "ℹ️  No auto-generated file changes to forward"

@@ -1,6 +1,6 @@
 version: 2.0.0
-last_updated: '2026-03-15T01:05:08Z'
-total_agents: 153
+last_updated: '2026-03-20T01:36:00Z'
+total_agents: 154
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -3572,6 +3572,48 @@ agents:
   description: orchestrator
   capability_tags:
   - operations
+- id: copilot-session-chain
+  name: "Copilot Session Chain"
+  version: 1.0.0
+  file: copilot-session-chain.yml
+  directory: .github/workflows
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: session_management
+  autonomy_model: E
+  enforcement_tier: GROUNDED
+  violations_30d: 0
+  priority: critical
+  created: '2026-03-20T01:36:00Z'
+  updated: '2026-03-20T01:36:00Z'
+  maintainer: mbaetiong
+  handoff_protocol: auto
+  accepts_handoff_from:
+    - agent-auth-delegation
+  role: orchestrator
+  description: >
+    Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_
+    (the staging integration branch).  Enforces the sub-PR model: sessions always
+    run on copilot/session-* branches, never on 0D_base_ directly.
+    Triggers on workflow_dispatch or automatically when a sub-PR merges into 0D_base_.
+  capability_tags:
+    - session_chaining
+    - integration_branch_enforcement
+    - sub_pr_creation
+    - copilot_trigger
+    - 0d_base_staging
+  integration_points:
+    - .github/workflows/copilot-session-chain.yml
+    - .github/workflows/agent-auth-delegation.yml
+    - .codex/docs/INTEGRATION_BRANCH_MODEL.md
+  cognitive_brain_layer: orchestration
+  safe_mode: false
+  network_access: false
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

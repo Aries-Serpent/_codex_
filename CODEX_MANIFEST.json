@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-18T17:12:30Z",
+  "generated_at": "2026-03-21T00:34:51Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -919,6 +919,12 @@
       "role": "orchestrator",
       "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
+    },
+    {
+      "name": "copilot-session-chain",
+      "role": "orchestrator",
+      "enforcement_tier": "GROUNDED",
+      "autonomy_model": "E"
     }
   ],
   "workflows": [
@@ -1103,6 +1109,11 @@
       "has_concurrency": false
     },
     {
+      "name": "copilot-agent-session-done",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-vars-bootstrap",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1120,6 +1131,16 @@
     {
       "name": "copilot-pr-session-injector",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-review-responder",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-session-chain",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1164,6 +1185,11 @@
     },
     {
       "name": "dependency-scan",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "dependency-submission",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1581,6 +1607,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COGNITIVE_ARCHITECTURE.md",
       "type": "enforcement"
     },
@@ -1594,6 +1624,10 @@
     },
     {
       "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
     {
@@ -1662,6 +1696,10 @@
     },
     {
       "path": ".codex/docs/IMPROVED_HASHTABLE_DESIGN.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/INTEGRATION_BRANCH_MODEL.md",
       "type": "enforcement"
     },
     {
@@ -1749,6 +1787,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/SYNC_COMMIT_CONFLICT_PREVENTION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/TEST_DEVELOPMENT_PATTERNS.md",
       "type": "enforcement"
     },
@@ -1757,7 +1799,15 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/WORKFLOW_APPROVAL_GUIDE.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/WORKFLOW_BEST_PRACTICES.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/WORKFLOW_CHERRY_PICK_TO_MAIN_PLAN.md",
       "type": "enforcement"
     }
   ],
@@ -1766,7 +1816,7 @@
     "embedding_meta": ".codex/embeddings/codex_index_meta.json"
   },
   "enforcement_kpis": {
-    "tier1_count": 21,
+    "tier1_count": 22,
     "tier2_count": 5,
     "tier3_count": 2,
     "ungatable": 2
@@ -1778,5 +1828,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "48a4b10854d7699e81d86dd401893fb2ba193df2d10de99cf58616b976e94518"
+  "integrity_sha256": "6fc790604c1a65282eb371fb265a62dea542f8cb482f58c8c1cc0d6760b9b357"
 }

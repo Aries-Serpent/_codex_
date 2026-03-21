@@ -94,29 +94,132 @@ class CommonIssueFixer:
             "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
         }
 
-    def run_all_patterns(self) -> bool:
-        """Run all fix patterns. Returns True if any issues found."""
-        print("🔍 Scanning for common CI issues...\n")
+    def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
+        """Run all fix patterns, or only the one matching pattern_num / pattern_name.
 
-        patterns = [
-            (1,  "Unused Imports",        self.fix_unused_imports),
-            (2,  "Unused Variables",       self.fix_unused_variables),
-            (3,  "YAML Indentation",       self.fix_yaml_indentation),
-            (4,  "Coverage Thresholds",    self.fix_coverage_thresholds),
-            (5,  "Tokenizer Fallbacks",    self.fix_tokenizer_fallbacks),
-            (6,  "Test Assertions",        self.fix_test_assertions),
-            (7,  "Redundant Imports",      self.fix_redundant_imports),
-            (8,  "CodeQL Alerts",          self.fix_codeql_alerts),
-            (9,  "Unsorted Imports",       self.fix_unsorted_imports),
-            (10, "Bandit Security",        self.fix_bandit_security),
-            (11, "F-String Placeholders",  self.fix_fstring_placeholders),
-            (12, "Line Length",            self.fix_line_length),
-            (13, "W-Series Warnings",      self.fix_w_series_warnings),
-            (14, "Link Checker Config",    self.fix_link_checker_config),
+        Args:
+            pattern_num:  Run only the pattern with this 1-based index (0 = run all).
+            pattern_name: Run only patterns whose name contains this substring,
+                          case-insensitive (e.g. "ruff", "import", "unused").
+                          Ignored when pattern_num is non-zero.
+
+        Returns True if any issues were found.
+        """
+        all_patterns = [
+            (1,  "Unused Imports",         self.fix_unused_imports),
+            (2,  "Unused Variables",        self.fix_unused_variables),
+            (3,  "YAML Indentation",        self.fix_yaml_indentation),
+            (4,  "Coverage Thresholds",     self.fix_coverage_thresholds),
+            (5,  "Tokenizer Fallbacks",     self.fix_tokenizer_fallbacks),
+            (6,  "Test Assertions",         self.fix_test_assertions),
+            (7,  "Redundant Imports",       self.fix_redundant_imports),
+            (8,  "CodeQL Alerts",           self.fix_codeql_alerts),
+            (9,  "Unsorted Imports",        self.fix_unsorted_imports),
+            (10, "Bandit Security",         self.fix_bandit_security),
+            (11, "F-String Placeholders",   self.fix_fstring_placeholders),
+            (12, "Line Length",             self.fix_line_length),
+            (13, "W-Series Warnings",       self.fix_w_series_warnings),
+            (14, "Link Checker Config",     self.fix_link_checker_config),
             (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
-            (16, "Stub Duplicate Defs",    self.fix_stub_duplicate_defs),
-            (17, "CI SHA Drift",           self.check_ci_sha_drift),
+            (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
+            (17, "CI SHA Drift",            self.check_ci_sha_drift),
         ]
+        patterns = all_patterns
+
+        if pattern_num:
+            patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
+            if not patterns:
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1–17)")
+                return False
+            print(f"🔍 Running pattern {pattern_num} only…\n")
+        elif pattern_name:
+            needle = pattern_name.lower()
+            # Match against both the human name and common telemetry classifiers
+            # (e.g. "ruff-unused" → "Unused Imports", "import-*" → "Unused Imports")
+            _aliases: dict[str, list[str]] = {
+                # ── Lint / formatting classifiers ─────────────────────────────
+                "ruff":        ["Unused Imports", "Redundant Imports", "Unsorted Imports", "CodeQL Alerts"],
+                "import":      ["Unused Imports", "Redundant Imports", "Unsorted Imports"],
+                "unused":      ["Unused Imports", "Unused Variables"],
+                "yaml":        ["YAML Indentation"],
+                "lint":        ["Unused Imports", "Redundant Imports", "Unsorted Imports",
+                                "YAML Indentation", "Line Length", "W-Series Warnings",
+                                "F-String Placeholders"],
+                # ── Coverage classifiers ──────────────────────────────────────
+                "coverage":          ["Coverage Thresholds"],
+                "coverage-timeout":  ["Coverage Thresholds"],
+                # ── Type-checking / mypy classifiers ──────────────────────────
+                "mypy":        ["mypy Baseline Freshness"],
+                "type-check":  ["mypy Baseline Freshness"],
+                # ── Security classifiers ──────────────────────────────────────
+                "bandit":      ["Bandit Security"],
+                "security-scan": ["Bandit Security", "CodeQL Alerts"],
+                "codeql":        ["CodeQL Alerts"],
+                # ── Stub / type-annotation classifiers ────────────────────────
+                "stub":        ["Stub Duplicate Defs"],
+                # ── CI infrastructure / SHA drift ─────────────────────────────
+                "sha-drift":   ["CI SHA Drift"],
+                "ci-sha":      ["CI SHA Drift"],
+                # ── Classifiers handled by branch_rebase_check.py (not here) ─
+                "rebase-gate":    [],  # handled by branch_rebase_check.py
+                "branch-diverged": [],
+                "auth-delegation": [],
+                # ── Classifiers handled externally ────────────────────────────
+                "changelog":          [],
+                "pip-cache":          [],
+                "policy-gate":        [],
+                "session-injector":   [],
+                "copilot-agent":      [],
+                "self-healing":       [],
+                "workflow-cascade":   [],
+                "pre-merge-cascade":  [],
+                # ── Other telemetry classifiers (informational / no auto-fix) ─
+                "datetime-error":               [],
+                "build-config":                 [],
+                "packaging":                    [],
+                "docker-build":                 [],
+                "docker-smoke-test":            [],
+                "codespaces":                   [],
+                "embedding-rebuild":            [],
+                "documentation":                [],
+                "cache":                        [],
+                "cognitive-brain":              [],
+                "ci-health":                    [],
+                "deployment":                   [],
+                "filesystem-deadlock":          [],
+                "test-infrastructure":          [],
+                "integration-branch-direct-session": [],
+            }
+            matched_names: set[str] = set()
+            # Track whether this is a known-but-externally-handled classifier
+            _external_only = False
+            for alias, names in _aliases.items():
+                if alias in needle:
+                    if names:
+                        matched_names.update(names)
+                    else:
+                        # alias maps to [] → handled externally (or no-op)
+                        _external_only = True
+            patterns = [
+                (n, nm, f) for n, nm, f in patterns
+                if nm in matched_names or needle in nm.lower()
+            ]
+            if not patterns:
+                if _external_only and not matched_names:
+                    # Recognised classifier, but handled by a separate tool (e.g. branch_rebase_check.py)
+                    print(
+                        f"ℹ️  Classifier '{pattern_name}' is handled externally "
+                        f"(not by auto_fix_common_issues.py) — skipping.\n"
+                    )
+                    return False
+                print(f"ℹ️  No patterns matched '{pattern_name}' — running all patterns\n")
+                patterns = all_patterns
+                print("🔍 Scanning for common CI issues…\n")
+            else:
+                names_str = ", ".join(nm for _, nm, _ in patterns)
+                print(f"🔍 Running patterns matching '{pattern_name}': {names_str}\n")
+        else:
+            print("🔍 Scanning for common CI issues…\n")
 
         any_issues = False
         for num, name, func in patterns:
@@ -1050,7 +1153,18 @@ def main():
         "--pattern",
         type=int,
         choices=range(1, 18),
-        help="Only run specific pattern (1-13)"
+        metavar="N",
+        help="Run only pattern N (1–17); see pattern list above"
+    )
+    parser.add_argument(
+        "--pattern-name",
+        type=str,
+        metavar="NAME",
+        help=(
+            "Run only patterns whose name matches NAME (case-insensitive substring). "
+            "Accepts telemetry classifier names such as 'ruff', 'import', 'yaml', "
+            "'coverage', 'mypy', 'bandit'. Falls back to all patterns when no match."
+        )
     )
     parser.add_argument(
         "--json-output",
@@ -1066,9 +1180,9 @@ def main():
     fixer = CommonIssueFixer(repo_root, args.check_only, args.dry_run)
 
     if args.pattern:
-        print(f"Running pattern {args.pattern} only...")
-        # Run specific pattern (simplified for this example)
-        fixer.run_all_patterns()
+        fixer.run_all_patterns(pattern_num=args.pattern)
+    elif getattr(args, "pattern_name", None):
+        fixer.run_all_patterns(pattern_name=args.pattern_name)
     else:
         fixer.run_all_patterns()
 

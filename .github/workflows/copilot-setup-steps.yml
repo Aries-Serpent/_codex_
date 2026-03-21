@@ -614,21 +614,34 @@ jobs:
 
       - name: "✅ Validate Environment Setup"
         run: |
+          # ── Root-cause fix for Copilot Coding Agent "Validate Environment
+          # Setup" failures (every session).
+          # GitHub Actions bash defaults to `set -eo pipefail`.  When `pip list`
+          # outputs 100+ packages and `head -20` closes the pipe after 20 lines,
+          # pip receives SIGPIPE → exit 141 → pipefail treats the whole pipeline
+          # as failed → the step exits non-zero → the Copilot agent reports
+          # "custom setup step failed".
+          #
+          # Fix: suppress SIGPIPE (this is a diagnostic step, not a build step)
+          # and guard every pipe command so partial reads never fail the step.
+          trap '' PIPE          # ignore SIGPIPE for this step
+          set +o pipefail       # don't fail on SIGPIPE in pipelines
+
           echo "==================== Environment Validation ===================="
-          echo "Python Version: $(python --version)"
-          echo "Pip Version: $(pip --version)"
+          echo "Python Version: $(python --version 2>&1)"
+          echo "Pip Version: $(pip --version 2>&1)"
           echo "Node Version: $(node --version 2>/dev/null || echo 'Not installed')"
           echo "Rust Version: $(rustc --version 2>/dev/null || echo 'Not installed')"
           echo ""
           echo "==================== Installed Packages ===================="
-          pip list | head -20
+          pip list 2>/dev/null | head -20 || true
           echo "..."
           echo ""
           echo "==================== Environment Variables ===================="
-          env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB)" | sort
+          env | grep -E "^(CODEX|PYTHON|RAG|CI|GITHUB)" | sort || true
           echo ""
           echo "==================== Disk Space ===================="
-          df -h | grep -E "^/dev"
+          df -h | grep -E "^/dev" || true
           echo ""
           echo "==================== AAIS Runner Summary ===================="
           echo "Runner profile   : ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}"

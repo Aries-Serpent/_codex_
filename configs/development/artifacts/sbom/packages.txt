@@ -71,7 +71,7 @@ dvc-objects==0.25.0  # requirements/lock.txt
 dvc-render==0.7.0  # requirements/lock.txt
 dvc-studio-client==0.22.0  # requirements/lock.txt
 dvc-task==0.40.2  # requirements/lock.txt
-dynaconf==3.2.12  # requirements/lock.txt
+dynaconf==3.2.13  # requirements/lock.txt (CVE-2026-33154 fix: <=3.2.12 vulnerable)
 email-validator==2.3.0  # requirements/lock.txt
 entrypoints==0.4  # requirements/lock.txt, uv.lock
 evaluate==0.4.6  # requirements/lock.txt
