@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S166 — 2026-03-20 — PR #3641 sub-PR)
+- **`CHANGELOG.md` / `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Corrected function-name references from `post_divergence_comment()` (non-existent) to `post_rebase_required_comment()` in the S165 session-summary and changelog entry as requested by `copilot-pull-request-reviewer` code-review threads.
+- **`.github/workflows/security-scanning-suite.yml`**: Added `continue-on-error: ${{ matrix.language == 'javascript' }}` to the `codeql-scan` job, mirroring the identical guard already present in `codeql-analysis.yml`. The `cognitive_app` Vite/TypeScript project causes the CodeQL `autobuild.sh` to exit 1 on every run; the Python analysis must not be blocked by a known JavaScript autobuild limitation.
+
+### Fixed (S165 — 2026-03-20 — PR #3641)
+- **`scripts/ci/branch_rebase_check.py`**: Removed dead `gap_desc` local variable (assigned but never used in the `all_bot_skip_ci` branch of `build_rich_divergence_comment()`). Removed dead `func_msgs` local variable (assembled commit messages but was never referenced). Renamed `risk` → `conflict_risk` in `post_rebase_required_comment()` and incorporated it into `dash_summary` so conflict risk level is now visible in the PR Status Dashboard summary line.
+
 ### Fixed (S164 — 2026-03-20 — PR #3640)
 - **`scripts/ci/collect_telemetry.py`**: Fixed REQ-11 misclassification — moved `integration-branch-direct-session` before `auth-delegation` in `PATTERN_KEYWORDS`. Extended `classify_failure()` to include job step names in classification search text so "REQ-11: Integration-branch direct-session guard" step names are matchable, preventing `iterative-self-healing-ci` from wasting heal iterations on non-fixable REQ-11 failures.
 - **`scripts/security/playwright_scraper.py`**: CB-INV-001 — `chromium.launch()` now passes `args=["--disable-extensions"]` to prevent content-blocker extensions from intercepting `github.com` requests during security alert scraping.

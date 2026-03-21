@@ -493,25 +493,12 @@ git push
 
     # ── Copilot Coding Agent prompt ───────────────────────────────────────
     if classified["all_bot_skip_ci"]:
-        gap_desc = (
-            f"{len(gap_commits)} automated `[skip ci]` metadata commits "
-            f"(embedding index, cognitive brain patterns, variable sync)"
-        )
         conflict_note = "No conflicts expected — all gap commits are metadata-only bot commits."
         resolution_cmd = (
             f"git fetch origin {base_branch} && "
             f"git merge origin/{base_branch} && git push"
         )
     else:
-        func_msgs = [
-            (c.get("commit") or {}).get("message", "").split("\n")[0][:60]
-            for c in classified["functional"]
-        ]
-        gap_desc = (
-            f"{behind_by} commits including {len(classified['functional'])} "
-            f"functional commit(s):\n"
-            + "\n".join(f"  - {m}" for m in func_msgs[:5])
-        )
         resolution_cmd = (
             f"git fetch origin {base_branch} && "
             f"git merge origin/{base_branch} && git push"
@@ -806,7 +793,7 @@ def post_rebase_required_comment(
                 _gap_files_for_risk = set(get_gap_files(repo, token, gap_commits))
             except Exception:
                 pass
-        risk = (
+        conflict_risk = (
             "🔴 HIGH" if detect_conflict_risk(pr_files or [], _gap_files_for_risk)
             else ("🟢 LOW" if gap_commits else "⚠️ Unknown")
         )
@@ -814,7 +801,7 @@ def post_rebase_required_comment(
         n_gap = len(gap_commits) if gap_commits else behind_by
         dash_summary = (
             f"Branch `{head_branch}` is {status} from `{base_branch}` "
-            f"(behind={behind_by}) — "
+            f"(behind={behind_by}, conflict risk={conflict_risk}) — "
             + (f"all {n_gap} gap commits are `[skip ci]` bot commits" if all_bot
                else f"{len(classified.get('functional', []))} functional commit(s) in gap")
         )

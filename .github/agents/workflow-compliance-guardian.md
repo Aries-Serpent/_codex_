@@ -5,8 +5,8 @@ description: >
   branch-scoped concurrency + timeout rules across all GitHub Actions workflows
   in this repository. Runs a compliance audit on every PR push and self-heals
   any non-compliant workflow files within the same session.
-version: 1.0.0
-updated: 2026-03-01
+version: 1.1.0
+updated: 2026-03-20
 cognitive_integration_level: 4
 scope:
   - .github/workflows/**/*.yml
@@ -71,6 +71,7 @@ the two non-negotiable rules from `WORKFLOW_BEST_PRACTICES.md`:
 | Timeout heavy | `timeout-minutes: 60` | GROUNDED — auto-healed for docker/rust/ml |
 | YAML valid | `python3 -c "import yaml; yaml.safe_load(...)"` | GROUNDED — blocks commit if invalid |
 | No bare heredoc | `<<` inside `run: \|` | Advisory — flag in PR comment |
+| CodeQL JS guard | `continue-on-error: ${{ matrix.language == 'javascript' }}` on jobs with `language: ['python','javascript']` matrix | Advisory — flag missing guard; auto-heal if autobuild-only |
 
 ## Timeout Categories (auto-applied)
 
