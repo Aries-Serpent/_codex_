@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S171 — 2026-03-21 — PR #3652)
+- **`docs/admin/variable_audit_latest.md`**: Restored auto-generated variable audit report from `main` (generated `2026-03-20T06:16:37`). File was absent on `0D_base_`; restoring it resolves one of the four PR #3630 merge conflicts.
+
+### Fixed (S171 — 2026-03-21 — PR #3652)
+- **`.codex/cognitive_brain/metadata.json`**: Resolved PR #3630 merge conflict — applied `main` values (`total_patterns: 246`, `last_update: 2026-03-21T02:55:57`). `main` is the most recent run of `cognitive-analysis-feed.yml`; supersedes `0D_base_` (237 patterns from 2026-03-20).
+- **`.codex/cognitive_brain/workflow_patterns.jsonl`**: Resolved PR #3630 merge conflict — applied `main` version (246 lines). All 237 patterns from `0D_base_` are preserved; `main` adds 9 unique patterns and updated statistics (49 patterns have newer `last_seen`/`occurrences`).
+- **`.codex/embeddings/codex_index_meta.json`**: Resolved PR #3630 merge conflict — kept **slim format** (codebase convention: `build_embeddings.py` documents this as "git-tracked, slim header only — no chunks"). Applied `main`'s newest metadata values (`generated_at: 2026-03-21T02:53:15Z`, `chunk_count: 2847`, `build_time_seconds: 107.7`). The 10.4 MB full-chunks version on `main` was non-conforming.
+- **`.github/workflows/root-org-validation.yml`**: Fixed `fatal: couldn't find remote ref` exit 128 crash (issue #3627 — Art_Root Organization Validation run #1608). Added graceful fallback when `git fetch origin "${BASE_REF}"` fails for deleted session branches. Prevents false CI failures when PR base branches are cleaned up post-merge.
+
 ### Added (S170 — 2026-03-21 — PR #3649)
 - **`docs/research/SIMILAR_GITHUB_PROJECTS.md`**: Deep-research document (APA citations) — Top 5 GitHub public projects aligning with `_codex_`'s ML training/evaluation/agentic architecture: MLflow (24.9K★), Ray (41.8K★), Metaflow (10K★), ZenML (5.3K★), PromptFlow (11K★). Includes alignment matrix, comparative analysis, and full reference list.
 - **`.codex/docs/COGNITIVE_BRAIN_STATUS_S170.md`**: Cognitive Brain Phase 3 checkpoint — E→D gate 5/5 ✅, 22 GROUNDED Tier-1 gates, HAR/evolution rebase guards, next-phase plan for OODA completion and D_CAPABLE activation.

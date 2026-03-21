@@ -7,19 +7,23 @@ name: "Forward-Sync Auto-Generated Files → 0D_base_ (Safety Net)"
 #   - Race conditions where a push lands on main despite 0D_base_ being active
 #
 # Files forwarded (all written by scheduled workflows):
-#   .codex/agent_context.json                     (repo-var-sync-schedule.yml)
-#   .codex/cognitive_brain/workflow_patterns.jsonl (cognitive-analysis-feed.yml)
-#   .codex/embeddings/codex_index_meta.json        (embedding-index-rebuild.yml)
-#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md    (vars-guide-sync.yml)
+#   .codex/agent_context.json                      (repo-var-sync-schedule.yml)
+#   .codex/cognitive_brain/metadata.json            (cognitive-analysis-feed.yml)
+#   .codex/cognitive_brain/workflow_patterns.jsonl  (cognitive-analysis-feed.yml)
+#   .codex/embeddings/codex_index_meta.json         (embedding-index-rebuild.yml)
+#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md     (vars-guide-sync.yml)
+#   docs/admin/variable_audit_latest.md             (vars-guide-sync.yml)
 
 on:
   push:
     branches: [main]
     paths:
       - ".codex/agent_context.json"
+      - ".codex/cognitive_brain/metadata.json"
       - ".codex/cognitive_brain/workflow_patterns.jsonl"
       - ".codex/embeddings/codex_index_meta.json"
       - "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+      - "docs/admin/variable_audit_latest.md"
 
 concurrency:
   group: forward-sync-autogen
