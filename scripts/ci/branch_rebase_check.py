@@ -1077,8 +1077,14 @@ def main() -> int:
                 if token:
                     try:
                         pr_files = get_pr_changed_files(args.repo, token, args.pr)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        # Best-effort enrichment only: ignore failures so that
+                        # the rebase gate remains non-blocking on PR file fetch errors.
+                        print(
+                            f"[branch_rebase_check] Warning: failed to fetch PR files "
+                            f"for #{args.pr}: {exc}",
+                            file=sys.stderr,
+                        )
                 # Use gap_commits already fetched if auto-merge-skip-ci was set,
                 # otherwise fetch them now for the comment
                 if not gap_commits_for_comment:
