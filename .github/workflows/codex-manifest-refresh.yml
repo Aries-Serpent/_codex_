@@ -116,4 +116,19 @@ jobs:
             git pull --rebase origin "${TARGET_REF}" 2>/dev/null || true
             git push origin "HEAD:${TARGET_REF}"
             echo "✅ CODEX_MANIFEST.json + compliance files refreshed and pushed to ${TARGET_REF}"
+
+            # Re-trigger MkDocs Pages build explicitly after the [skip ci] commit.
+            # [skip ci] prevents GitHub Actions workflows (including pages-mkdocs.yml) from
+            # running on the auto-refresh push, but the branch-mode pages-build-deployment
+            # (internal GitHub Pages service) is NOT skipped and would serve raw files → 404.
+            # This explicit workflow_dispatch call bypasses [skip ci] and ensures the MkDocs
+            # site is always rebuilt after a manifest refresh to main.
+            if [ "${TARGET_REF}" = "main" ]; then
+              echo "🔄 Triggering pages-mkdocs.yml rebuild to prevent branch-mode 404…"
+              gh workflow run pages-mkdocs.yml \
+                --ref main \
+                --field reason="post-manifest-refresh-pages-heal" 2>/dev/null \
+                && echo "✅ pages-mkdocs.yml rebuild triggered" \
+                || echo "⚠️  Could not trigger pages-mkdocs.yml (non-fatal; pages-health-guard.yml will self-heal)"
+            fi
           fi

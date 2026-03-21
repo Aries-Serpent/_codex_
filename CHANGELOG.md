@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
+- **`cognitive_app/src/server/cli_api_server.py`**: Fixed Full SSRF (CodeQL #12493, Critical) — added `_assert_safe_proxy_url()` guard to `/api/request` proxy endpoint enforcing HTTPS-only, private IP blocklist (RFC-1918, loopback, link-local), and hostname validation.
+- **`cognitive_app/src/server/cli_api_server.py`**: Fixed Uncontrolled command line / Command injection (CodeQL #12490, Critical) — replaced `asyncio.create_subprocess_shell(req.command)` with `asyncio.create_subprocess_exec(*shlex.split(req.command))`, preventing shell metacharacter injection in `/api/cli/run`.
+- **`tools/actions_server.py`**: Fixed Partial SSRF (CodeQL #10640, #10639, Critical) — added `_validate_repo_component()` and `_validate_file_path()` to `get_file_text()`, `list_branches()`, and `code_search()`. URL-encoded `path` argument in `get_file_text()`.
+- **`requirements/lock.txt`**, **`requirements/lock-eval.txt`**, **`requirements-eval.txt`**: Upgraded `nltk` 3.9.3 → 3.9.4 (Dependabot #118–#126) — resolves CVE-2026-33231 (High: unauthenticated remote shutdown), XSS (Moderate), and JSONTaggedDecoder DoS (Moderate).
+
+### Fixed (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
+- **`.github/workflows/iterative-self-healing-ci.yml`**: Fixed self-healing cascade root cause (SELF_HEALING_001) — both `triage` and `heal` jobs now recreate the `.venv_ci` virtualenv on cache miss (`python3 -m venv .venv_ci` followed by `.venv_ci/bin/pip install ...`) instead of failing when the cached environment is absent. Expected to reduce CI failure rate from 13.3% → <1%.
+- **`.github/workflows/iterative-self-healing-ci.yml`**: Added `self-healing` cascade case to triage job's pattern dispatcher — emits a clear `SELF_HEALING_001` summary in GitHub Step Summary with diagnostic guidance and marks the run as `fixable=false` (escalation path).
+- **`.codex/patterns/ci_failure_patterns.yaml`**: Updated `SELF_HEALING_001` — documents cascade root cause (`.venv_ci/bin/pip` cache miss), S172 fix details, S172 pattern distribution (self-healing: 126/133), and threshold context (CODEX_CI_FAILURE_THRESHOLD lowered to 10%).
+- **`scripts/ci/collect_telemetry.py`**: Added `analyze_multi_job_cascade()` method — detects self-healing cascade (>50% of failures are `self-healing` pattern) and returns root cause + recommended action. Added `iterative-self-healing-ci` to `self-healing` PATTERN_KEYWORDS.
+- **`scripts/ci/aais_v4_scorer.py`**: Applied honest three-gate calibration — `_collect_security_posture()` now reads `CODEX_OPEN_CRITICAL_ALERTS` / `CODEX_OPEN_HIGH_ALERTS` / `CODEX_OPEN_MODERATE_ALERTS` env vars and deducts penalty points. `_collect_reliability()` now reads `CODEX_CI_FAILURE_RATE` and deducts 1pt per 1% failure rate (capped at 25pts). Prevents self-assessment inflation (inflated score was 99.5; honest calibration now yields 76.2/100).
+
+### Added (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
+- **`.github/agents/ci-health-alert-agent.md`**: v1.1.0 — Added cascade detection (SELF_HEALING_001), updated priority table with P0 cascade row, added `analyze_multi_job_cascade()` integration pattern, added AAIS honest calibration variable update section, updated Mermaid architecture diagrams.
+- **`.github/agents/ci-testing-agent.md`**: v4.1.0 — Applied S172 lessons learned (cascade root cause, pip fallback pattern, threshold change, security alert counts).
+- **`.github/agents/packaging-validation-agent.md`**: NEW agent — validates Python packaging, detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621 compliance, and updates AAIS security posture repo variables.
+- **`.codex/docs/COGNITIVE_BRAIN_STATUS_S172.md`**: NEW — Phase 3 status snapshot, E→D transition (5/5 ✅), AAIS honest calibration S172 checkpoint (76.2/100, +2.2 from S24), security posture table, CI health cascade fix, next-phase plan.
+- **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: S172 session summary added.
+
 ### Fixed (auto-update — PR #3653)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3653 (SHA `36cdfb4e`) at 2026-03-21T05:15Z [auto-generated]
 

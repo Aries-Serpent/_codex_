@@ -1,0 +1,183 @@
+name: "🔗 Reference Integrity + Agent Size Gate"
+
+# WHY THIS WORKFLOW EXISTS
+# ────────────────────────
+# Codebase Agency Policy §2: "Leave the codebase better than you found it."
+#
+# Violation pattern this workflow permanently prevents:
+#   Moving or deleting a file WITHOUT updating all references to it.
+#   This severs live cross-references for agents, CI, and humans.
+#   A real violation occurred in PR #3661 (S173): 20 files were moved to
+#   archive, breaking 75+ live cross-references. This workflow would have
+#   blocked that commit before it entered the repo.
+#
+# TWO GATES run in parallel on every PR push:
+#   Gate 1 — cross-reference-integrity:
+#     Scans all .md/.yml/.yaml/.py files for internal path references.
+#     Fails if ANY reference points to a file that does not exist.
+#     No exceptions. No overrides without human approval.
+#
+#   Gate 2 — agent-file-size:
+#     Scans all .github/agents/*.md files for the 30,000-char limit.
+#     GitHub Copilot custom agents silently fail above this limit.
+#     Fails if ANY top-level agent file exceeds the limit.
+#
+# ENFORCEMENT CHAIN (defense in depth):
+#   1. pre-commit hook (.pre-commit-config.yaml) — blocks at git commit
+#   2. This workflow — blocks at PR merge
+#   Both must pass. If pre-commit is bypassed, CI catches it.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".github/agents/**"
+      - ".github/workflows/**"
+      - "docs/**"
+      - "scripts/**"
+      - "src/**"
+      - ".codex/**"
+      - "tools/**"
+      - "cognitive_app/**"
+  push:
+    branches: [main, "0D_base_"]
+  workflow_dispatch:
+    inputs:
+      scan_dirs:
+        description: "Space-separated list of directories to scan (default: all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: reference-integrity-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Gate 1: Cross-Reference Integrity ─────────────────────────────────────
+  cross-reference-integrity:
+    name: "🔗 No broken internal links"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Run cross-reference check
+        id: xref
+        run: |
+          python scripts/ci/check_cross_references.py 2>&1 | tee /tmp/xref_report.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Post failure annotation
+        if: failure()
+        run: |
+          echo "::error title=Broken Internal References::One or more internal file references are broken. See job output for details. Fix by updating all references BEFORE moving or deleting any file. Policy: Codebase Agency Policy §2."
+          echo ""
+          echo "VIOLATION SUMMARY:"
+          grep "FILE DOES NOT EXIST\|📄\|line " /tmp/xref_report.txt | head -30
+
+      - name: Post PR comment on failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            let report = '';
+            try {
+              report = fs.readFileSync('/tmp/xref_report.txt', 'utf8');
+            } catch(e) { report = '(report not available)'; }
+
+            const lines = report.split('\n').filter(l =>
+              l.includes('FILE DOES NOT EXIST') ||
+              l.includes('📄') ||
+              l.includes('line ') ||
+              l.includes('FIX OPTIONS') ||
+              l.includes('NEVER move')
+            ).slice(0, 40).join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ❌ Reference Integrity Gate — FAILED\n\n` +
+                    `**Policy:** Codebase Agency Policy §2 — Leave the codebase better than you found it.\n\n` +
+                    `One or more internal file references point to files that do not exist. ` +
+                    `This means a file was moved or deleted without updating all references to it.\n\n` +
+                    `\`\`\`\n${lines}\n\`\`\`\n\n` +
+                    `**Fix:** Update every reference to point to the new location, ` +
+                    `or restore the file to its original path.\n\n` +
+                    `**Rule:** Always run \`python scripts/ci/check_cross_references.py\` ` +
+                    `BEFORE moving or deleting any file.\n`
+            });
+
+  # ── Gate 2: Agent File Size ────────────────────────────────────────────────
+  agent-file-size:
+    name: "📏 Agent files ≤ 30,000 chars"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Run agent file size check
+        id: size
+        run: |
+          python scripts/ci/check_agent_file_sizes.py 2>&1 | tee /tmp/size_report.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Post failure annotation
+        if: failure()
+        run: |
+          echo "::error title=Agent File Size Limit Exceeded::One or more .github/agents/*.md files exceed 30,000 characters. GitHub Copilot custom agents silently STOP WORKING above this limit. Trim the file or move non-agent docs out of .github/agents/."
+          cat /tmp/size_report.txt
+
+      - name: Post PR comment on failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            let report = '';
+            try {
+              report = fs.readFileSync('/tmp/size_report.txt', 'utf8');
+            } catch(e) { report = '(report not available)'; }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ❌ Agent File Size Gate — FAILED\n\n` +
+                    `**Rule:** GitHub Copilot custom agent \`.md\` files in \`.github/agents/\` ` +
+                    `must NOT exceed **30,000 characters**. Files over this limit cause the ` +
+                    `custom agent to **silently stop working**.\n\n` +
+                    `\`\`\`\n${report}\n\`\`\`\n\n` +
+                    `**Fix options:**\n` +
+                    `1. Trim the file content to under 30,000 characters, OR\n` +
+                    `2. If the file is NOT a registered custom agent (i.e. it is a doc/planning ` +
+                    `file), move it to \`docs/\` or \`.codex/docs/\` — but ONLY AFTER running ` +
+                    `\`python scripts/ci/check_cross_references.py\` to verify no references break.\n`
+            });

@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
@@ -29,6 +30,42 @@ TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
 BASE = "https://api.github.com"
 CACHE_DIR = os.getenv("CODEX_CACHE_DIR", ".codex/cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+# ── SSRF prevention ────────────────────────────────────────────────────────────
+# Validate owner/repo/path parameters to prevent partial SSRF via URL path injection.
+# Allowed characters: alphanumeric, hyphen, underscore, dot (GitHub conventions).
+_SAFE_REPO_COMPONENT_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._\-]{0,99}$')
+
+
+def _validate_repo_component(value: str, name: str) -> None:
+    """Reject owner/repo values that do not match GitHub's safe naming rules.
+
+    Prevents partial SSRF where a crafted owner/repo value contains path-separating
+    characters (e.g. ``../../evil``) that could redirect the HTTP request to an
+    unintended GitHub API path.
+    """
+    if not _SAFE_REPO_COMPONENT_RE.match(value):
+        raise ValueError(
+            f"Invalid {name!r} value {value!r}: must contain only alphanumeric, "
+            "hyphen, underscore, or dot characters (no path separators)"
+        )
+
+
+def _validate_file_path(path: str) -> None:
+    """Reject paths that contain traversal sequences or absolute references.
+
+    Normalises URL percent-encoding (e.g. ``%2e%2e`` or ``.%2e``) before
+    checking so that encoded traversal sequences are caught.
+    """
+    # Decode percent-encoded characters before checking
+    from urllib.parse import unquote as _unquote
+    decoded = _unquote(path)
+    parts = decoded.replace("\\", "/").split("/")
+    if ".." in parts or decoded.startswith("/"):
+        raise ValueError(
+            f"Invalid path {path!r}: path traversal sequences ('..') and "
+            "absolute paths are not permitted"
+        )
 
 
 def _auth_headers() -> Dict[str, str]:
@@ -61,6 +98,8 @@ def gh_get(url: str):
 
 
 def list_branches(owner: str, repo: str):
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
     key = f"branches:{owner}/{repo}"
     c = _cache_get(key)
     if c and time.time() - c["ts"] < 60:
@@ -71,8 +110,14 @@ def list_branches(owner: str, repo: str):
 
 
 def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
+    # Validate inputs to prevent partial SSRF (CodeQL alerts #10639, #10640):
+    # unvalidated owner/repo/path values can inject path separators that escape
+    # the intended GitHub URL structure.
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
+    _validate_file_path(path)
     # Use raw endpoint; fallback to contents API
-    raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{path}"
+    raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{quote(path)}"
     r = requests.get(raw, timeout=30)
     if r.status_code == 200 and r.text:
         return r.text
@@ -85,6 +130,8 @@ def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
 
 
 def code_search(owner: str, repo: str, q: str, ref: str = "main"):
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
     # GitHub code search requires qualifiers
     # NOTE: basic search endpoint respects rate limits; TOKEN recommended.
     query = quote(f"{q} repo:{owner}/{repo} ref:{ref}")

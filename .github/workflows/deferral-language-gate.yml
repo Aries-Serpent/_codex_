@@ -84,37 +84,82 @@ jobs:
           python scripts/ci/check_deferral_language.py --git-log
         continue-on-error: true
 
+      # GAP FIXED (S173 PR #3661): The gate previously only scanned PR body +
+      # commit messages. Agent deferral language appeared in PR *comments* -- e.g.
+      # "Confirm the 3576 are pre-existing, not introduced by this PR" -- which
+      # was not caught. This step fetches the last 50 agent-posted PR comments
+      # (copilot-swe-agent[bot], github-copilot[bot], copilot[bot]) via the
+      # GitHub API and scans them for deferral language.
+      - name: "🔍 Fetch agent-posted PR comments for deferral scan"
+        id: fetch_pr_comments
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Fetching last 50 PR comments for PR #${PR_NUMBER}..."
+          gh api \
+            "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments?per_page=50" \
+            --jq '.[] | select(
+              .user.login == "copilot-swe-agent[bot]" or
+              .user.login == "github-copilot[bot]" or
+              .user.login == "copilot[bot]" or
+              .user.login == "Copilot"
+            ) | {body: .body, user: {login: .user.login}}' \
+            > /tmp/pr_comments.jsonl || echo '{}' > /tmp/pr_comments.jsonl
+          LINE_COUNT=$(wc -l < /tmp/pr_comments.jsonl)
+          echo "Fetched ${LINE_COUNT} agent comment(s) for deferral scan"
+
+      - name: "🔍 Scan agent PR comments for deferral language"
+        id: scan_pr_comments
+        env:
+          DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
+        run: |
+          if [ -s /tmp/pr_comments.jsonl ]; then
+            python scripts/ci/check_deferral_language.py --pr-comments /tmp/pr_comments.jsonl
+          else
+            echo "No agent comments to scan."
+          fi
+        continue-on-error: true
+
       - name: "📊 Evaluate results and enforce policy"
         env:
           PR_SCAN: ${{ steps.scan_pr_body.outcome }}
           COMMIT_SCAN: ${{ steps.scan_commits.outcome }}
+          COMMENT_SCAN: ${{ steps.scan_pr_comments.outcome }}
         run: |
           set -euo pipefail
           FAIL=0
 
           if [ "$PR_SCAN" = "failure" ]; then
-            echo "::error::PR body contains deferral language — policy violation"
+            echo "::error::PR body contains deferral language -- policy violation"
             echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
             FAIL=1
           fi
 
           if [ "$COMMIT_SCAN" = "failure" ]; then
-            echo "::error::Commit message(s) contain deferral language — policy violation"
+            echo "::error::Commit message(s) contain deferral language -- policy violation"
+            echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+            FAIL=1
+          fi
+
+          if [ "$COMMENT_SCAN" = "failure" ]; then
+            echo "::error::Agent PR comment(s) contain deferral language -- policy violation"
+            echo "::error::Root cause: Agent said 'pre-existing' or similar in a PR comment."
             echo "::error::MANDATORY: Load .codex/CODEBASE_AGENCY_POLICY.md and docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
             FAIL=1
           fi
 
           if [ "$FAIL" -eq 1 ]; then
             echo ""
-            echo "════════════════════════════════════════════════════════"
+            echo "================================================================"
             echo "  CODEBASE AGENCY POLICY VIOLATION"
             echo "  Deferral language detected. Required actions:"
             echo "  1. Load .codex/CODEBASE_AGENCY_POLICY.md"
             echo "  2. Load docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
             echo "  3. Load all stored session memories"
-            echo "  4. Fix the deferred issue immediately"
-            echo "════════════════════════════════════════════════════════"
+            echo "  4. Fix the deferred issue immediately -- no exceptions"
+            echo "================================================================"
             exit 1
           fi
 
-          echo "✅ No deferral language detected — policy compliant"
+          echo "OK No deferral language detected -- policy compliant"

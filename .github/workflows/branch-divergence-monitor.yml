@@ -434,6 +434,11 @@ jobs:
             \`main\` has ${codeleak} non-auto-gen commit(s) that are not in \`0D_base_\`.
             Merge base: \`${mergeBase}\`. Run \`branch-divergence-monitor.yml\` with
             \`dry_run=true\` to see the full list, then propose a resolution plan.
+
+            > **⚠️ GitHub Copilot no-auto-PR policy:** Sessions no longer create pull requests
+            > by default. After implementing the fix, **explicitly open a pull request targeting
+            > \`0D_base_\`** with your changes (use \`gh pr create --base 0D_base_ --title "...\"\`).
+            > Do NOT leave changes on a branch without a PR.
             `;
             }
 

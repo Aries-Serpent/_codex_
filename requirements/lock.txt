@@ -582,7 +582,7 @@ networkx==3.6.1
     # via
     #   dvc
     #   torch
-nltk==3.9.3
+nltk==3.9.4
     # via
     #   evidently
     #   rouge-score
