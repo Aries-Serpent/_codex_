@@ -211,6 +211,9 @@ jobs:
             echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
             git fetch origin "${TARGET_REF}"
             git rebase "origin/${TARGET_REF}"
+            echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
             git push origin HEAD:${TARGET_REF}
             echo "✅ HAR committed and pushed (LFS)"
           fi
