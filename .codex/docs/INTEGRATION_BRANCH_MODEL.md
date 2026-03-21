@@ -2,6 +2,8 @@
 
 > **Status:** ✅ Active  
 > **Introduced:** S163 (2026-03-20)  
+> **Last re-created:** S174 (2026-03-21) — branch recreated from main + S174 consolidation merged in  
+> **Promotion PR:** Open `0D_base_` → `main` (see PARITY_CHECKLIST.md S174 section)  
 > **Enforced by:** `agent-auth-delegation.yml` REQ-11 · `copilot-session-chain.yml`
 
 ---
@@ -13,13 +15,13 @@ a working branch — no Copilot Coding Agent session may commit directly to it.
 
 Every agent session creates its own **sub-PR branch** targeting `0D_base_`. Once
 reviewed and merged, `0D_base_` accumulates all that work and is promoted to
-`main` through the single promotion PR (#3630).
+`main` through the promotion PR.
 
 ```
 copilot/session-*  ──► 0D_base_  ──► main
   (agent sessions)      (staging)    (production)
-  Each sub-PR                         PR #3630
-  independently                       promotion
+  Each sub-PR                         promotion PR
+  independently                       (open)
   reviewed
 ```
 
