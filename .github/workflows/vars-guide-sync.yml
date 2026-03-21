@@ -121,6 +121,18 @@ jobs:
       - name: Commit sync artifacts
         if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
         run: |
+          # Commit to 0D_base_ if the integration branch exists, else fall back to main.
+          _TARGET="main"
+          if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
+            _TARGET="0D_base_"
+            echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
+            cp docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md /tmp/_vars_guide_sync_
+            cp .codex/variable_audit_latest.json /tmp/_var_audit_json_sync_ 2>/dev/null || true
+            git fetch origin 0D_base_ --depth=1
+            git checkout -B _autogen_sync_ origin/0D_base_
+            cp /tmp/_vars_guide_sync_ docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md
+            cp /tmp/_var_audit_json_sync_ .codex/variable_audit_latest.json 2>/dev/null || true
+          fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Only commit the human reference guide — variable_audit_latest.md is a
@@ -133,7 +145,8 @@ jobs:
           Absent required variables: ${{ steps.audit.outputs.absent_required }}
           Triggered by: ${{ github.event_name }}
           " || echo "Nothing to commit"
-          git push
+          git push origin HEAD:"$_TARGET"
+          echo "📤 Pushed to $_TARGET"
 
       # ── Upload variable_audit_latest.md as artifact (not committed to git) ──
       - name: Upload audit report artifact

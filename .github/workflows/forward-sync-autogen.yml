@@ -1,18 +1,16 @@
-name: "Forward-Sync Auto-Generated Files → 0D_base_"
+name: "Forward-Sync Auto-Generated Files → 0D_base_ (Safety Net)"
 
-# Triggered whenever a scheduled workflow commits auto-generated metadata to main.
-# Forwards ONLY the specific auto-generated files to the 0D_base_ integration branch
-# so that the 0D_base_ → main PR never accumulates conflicts on these files.
+# SAFETY NET — all 4 primary auto-gen workflows now check for 0D_base_ themselves
+# and commit there directly when it exists. This workflow handles edge cases:
+#   - A new auto-gen workflow is added without the 0D_base_ check
+#   - A manual workflow_dispatch run on main bypasses the branch check
+#   - Race conditions where a push lands on main despite 0D_base_ being active
 #
-# Files forwarded (all written by scheduled workflows, never by agent sessions):
-#   .codex/agent_context.json                     (repo-var-sync-schedule.yml, daily 06:00)
-#   .codex/cognitive_brain/workflow_patterns.jsonl (cognitive-analysis-feed.yml, daily 02:00)
-#   .codex/embeddings/codex_index_meta.json        (embedding-index-rebuild.yml, daily 02:00)
-#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md    (vars-guide-sync.yml, daily 06:00)
-#
-# NOT forwarded (removed from git tracking by this PR):
-#   .codex/cognitive_brain/metadata.json  → zero consumers, removed from commit
-#   docs/admin/variable_audit_latest.md   → converted to workflow artifact
+# Files forwarded (all written by scheduled workflows):
+#   .codex/agent_context.json                     (repo-var-sync-schedule.yml)
+#   .codex/cognitive_brain/workflow_patterns.jsonl (cognitive-analysis-feed.yml)
+#   .codex/embeddings/codex_index_meta.json        (embedding-index-rebuild.yml)
+#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md    (vars-guide-sync.yml)
 
 on:
   push:
