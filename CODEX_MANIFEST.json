@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-21T00:34:51Z",
+  "generated_at": "2026-03-21T12:08:12Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1024,6 +1024,11 @@
       "has_concurrency": true
     },
     {
+      "name": "branch-divergence-monitor",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "branch-rebase-gate",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1230,6 +1235,11 @@
     },
     {
       "name": "flush-queued-runs",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "forward-sync-autogen",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1591,6 +1601,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/BRANCH_DIVERGENCE_PREVENTION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/CACHE_AWARENESS_AND_AAIS_OPTIMIZATION.md",
       "type": "enforcement"
     },
@@ -1624,6 +1638,10 @@
     },
     {
       "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_PR3552.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S170.md",
       "type": "enforcement"
     },
     {
@@ -1828,5 +1846,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "6fc790604c1a65282eb371fb265a62dea542f8cb482f58c8c1cc0d6760b9b357"
+  "integrity_sha256": "841f8450bc677db72d91f8b89ffc0b8e2b44f638d4dd39799e99223f50316b58"
 }
