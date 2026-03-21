@@ -2856,7 +2856,7 @@ agents:
   - continuous_integration
 - id: ci-health-alert-agent
   name: CI Health Alert Agent
-  version: 1.0.0
+  version: 1.1.0
   file: .github/agents/ci-health-alert-agent.md
   status: active
   maturity: production
@@ -2867,8 +2867,9 @@ agents:
   category: ci
   subcategory: health
   description: 'Auto-responds to GitHub issues tagged ci-health-alert. Classifies
-    failure patterns via ci_failure_patterns.yaml, proposes batch fixes, and updates
-    CODEX_CI_FAILURE_RATE repo variable after remediation.
+    failure patterns (including SELF_HEALING_001 cascade) via ci_failure_patterns.yaml,
+    proposes batch fixes, and updates CODEX_CI_FAILURE_RATE + CODEX_OPEN_*_ALERTS
+    repo variables after remediation.
 
     '
   added_in_pr: 3421
@@ -2878,12 +2879,14 @@ agents:
     secondary: correction
   enforcement_tier: PARTIAL
   autonomy_model: E
-  handoff_protocol: none
+  handoff_protocol: structured
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
   capability_tags:
   - continuous_integration
+  - packaging_validation
+  - self_healing_cascade_detection
 - id: repo-var-sync-agent
   name: Repo Var Sync Agent
   version: 1.0.0
@@ -3614,6 +3617,41 @@ agents:
   cognitive_brain_layer: orchestration
   safe_mode: false
   network_access: false
+- id: packaging-validation-agent
+  name: Packaging Validation Agent
+  version: 1.0.0
+  file: .github/agents/packaging-validation-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: security
+  subcategory: dependency_management
+  description: 'Validates Python packaging configuration (pyproject.toml, lock files),
+    detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621
+    compliance, and updates AAIS security posture repo variables after remediation.
+
+    '
+  added_in_pr: 3661
+  sprint: Sprint 4
+  physics_model:
+    primary: correction
+    secondary: validation
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - ci-health-alert-agent
+  consolidation_priority: false
+  role: specialist
+  capability_tags:
+  - packaging_validation
+  - dependency_management
+  - security_scanning
+  - pep621_compliance
+  - dependabot_remediation
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

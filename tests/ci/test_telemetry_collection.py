@@ -404,3 +404,132 @@ class TestClassifyRunCLI:
 
         captured = capsys.readouterr()
         assert "unknown" in captured.out
+
+
+class TestAnalyzeMultiJobCascade:
+    """Unit tests for TelemetryCollector.analyze_multi_job_cascade()."""
+
+    @pytest.fixture
+    def collector(self):
+        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")
+
+    def _make_report(self, distribution: dict) -> dict:
+        """Build a minimal telemetry_data dict with the given pattern_distribution."""
+        return {"pattern_distribution": distribution}
+
+    # ── empty / no-failures cases ────────────────────────────────────────────
+
+    def test_no_failures_returns_no_cascade(self, collector):
+        report = self._make_report({})
+        result = collector.analyze_multi_job_cascade(report)
+        assert result["cascade_detected"] is False
+        assert result["cascade_rate"] == 0.0
+        assert result["self_healing_count"] == 0
+        assert result["total_failures"] == 0
+
+    def test_missing_pattern_distribution_key(self, collector):
+        """Missing key is treated as empty → no cascade."""
+        result = collector.analyze_multi_job_cascade({})
+        assert result["cascade_detected"] is False
+        assert result["cascade_rate"] == 0.0
+
+    # ── cascade NOT detected (≤50%) ─────────────────────────────────────────
+
+    def test_no_cascade_when_self_healing_below_threshold(self, collector):
+        dist = {"self-healing": 5, "unknown": 10, "import-error": 5}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is False
+        assert result["cascade_rate"] == pytest.approx(5 / 20)
+        assert result["self_healing_count"] == 5
+        assert result["total_failures"] == 20
+
+    def test_no_cascade_exactly_at_50_percent(self, collector):
+        """Exactly 50% is NOT considered a cascade (threshold is > 50%)."""
+        dist = {"self-healing": 5, "unknown": 5}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is False
+        assert result["cascade_rate"] == pytest.approx(0.5)
+
+    def test_no_cascade_recommended_action_contains_top_pattern(self, collector):
+        dist = {"unknown": 10, "self-healing": 3, "ruff-violation": 2}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is False
+        assert "unknown" in result["recommended_action"]
+        assert "10" in result["recommended_action"]
+        assert "collect_telemetry.py" in result["recommended_action"]
+
+    # ── cascade DETECTED (>50%) ──────────────────────────────────────────────
+
+    def test_cascade_detected_when_self_healing_dominant(self, collector):
+        """S172 reference distribution: 126 self-healing / 133 total."""
+        dist = {
+            "self-healing": 126,
+            "unknown": 2,
+            "embedding-rebuild": 1,
+            "auto-fix": 1,
+            "integration-branch-direct-session": 1,
+            "coverage-timeout": 1,
+            "security-scan": 1,
+        }
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is True
+        # cascade_rate is rounded to 4 decimal places in the implementation
+        assert result["cascade_rate"] == pytest.approx(126 / 133, abs=5e-5)
+        assert result["self_healing_count"] == 126
+        assert result["total_failures"] == 133
+
+    def test_cascade_detected_just_above_threshold(self, collector):
+        """51% self-healing should trigger cascade."""
+        dist = {"self-healing": 51, "other": 49}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is True
+        assert result["cascade_rate"] == pytest.approx(0.51)
+
+    def test_cascade_root_cause_mentions_venv_recreation(self, collector):
+        """Root cause string must reference venv recreation (not 'pip fallback')."""
+        dist = {"self-healing": 100, "unknown": 1}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is True
+        rc = result["root_cause"].lower()
+        assert "venv" in rc
+        assert "python3 -m venv" in result["root_cause"] or "venv_ci" in rc
+
+    def test_cascade_recommended_action_mentions_venv_recreation(self, collector):
+        dist = {"self-healing": 100, "unknown": 1}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is True
+        ra = result["recommended_action"]
+        assert "python3 -m venv" in ra
+        assert ".venv_ci/bin/pip" in ra
+        # Must NOT instruct operator to look for a system-pip fallback
+        assert "system pip" not in ra.lower()
+        assert "|| pip" not in ra
+
+    def test_cascade_100_percent_self_healing(self, collector):
+        """All failures are self-healing — should still detect cascade."""
+        dist = {"self-healing": 50}
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert result["cascade_detected"] is True
+        assert result["cascade_rate"] == pytest.approx(1.0)
+        assert result["self_healing_count"] == 50
+        assert result["total_failures"] == 50
+
+    # ── result dict shape ────────────────────────────────────────────────────
+
+    def test_result_always_contains_required_keys(self, collector):
+        required = {
+            "cascade_detected", "cascade_rate", "self_healing_count",
+            "total_failures", "root_cause", "recommended_action", "pattern_distribution",
+        }
+        for dist in [{}, {"self-healing": 1}, {"unknown": 5, "self-healing": 6}]:
+            result = collector.analyze_multi_job_cascade(self._make_report(dist))
+            assert required.issubset(result.keys()), (
+                f"Missing keys for dist={dist}: {required - result.keys()}"
+            )
+
+    def test_cascade_rate_rounded_to_4_decimal_places(self, collector):
+        dist = {"self-healing": 2, "unknown": 3}  # 0.4 exactly
+        result = collector.analyze_multi_job_cascade(self._make_report(dist))
+        assert isinstance(result["cascade_rate"], float)
+        # round() to 4 places means no more than 4 decimal digits
+        assert result["cascade_rate"] == round(result["cascade_rate"], 4)

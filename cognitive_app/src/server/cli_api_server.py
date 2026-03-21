@@ -209,17 +209,29 @@ def _assert_safe_proxy_url(url: str) -> None:
     if any(host.startswith(p) for p in _SSRF_BLOCKED_PREFIXES):
         raise HTTPException(status_code=400, detail="Requests to link-local addresses are not permitted")
 
-    # 4. Block IP literals that fall in private/loopback ranges
-    try:
-        addr = ipaddress.ip_address(host)
-        for net in _PRIVATE_NETWORKS:
-            if addr in net:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Requests to private/reserved IP ranges are not permitted",
-                )
-    except ValueError:
-        pass  # Not an IP literal — hostname; DNS-based resolution not done here
+    # 4. Block IP literals that fall in private/loopback ranges.
+    # Strip IPv6 zone/scope ID (e.g. "fe80::1%eth0") before parsing so that
+    # a percent-encoded scope ID ("%25eth0") cannot bypass the fe80::/10 check.
+    # urlparse().hostname already lower-cases the host; strip from '%' onward.
+    ip_host = host.split("%")[0] if "%" in host else host
+    if ip_host:
+        try:
+            addr = ipaddress.ip_address(ip_host)
+            for net in _PRIVATE_NETWORKS:
+                if addr in net:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Requests to private/reserved IP ranges are not permitted",
+                    )
+        except ValueError:
+            pass  # Not an IP literal — hostname; DNS-based resolution not done here
+    # Reject any remaining host that still contains a literal '%' (malformed or
+    # scope-ID that wasn't stripped cleanly — treat as suspicious).
+    if "%" in host:
+        raise HTTPException(
+            status_code=400,
+            detail="URL host contains a percent sign; scope-ID or malformed address rejected",
+        )
 
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────

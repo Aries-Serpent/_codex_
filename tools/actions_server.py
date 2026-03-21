@@ -34,7 +34,7 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 # ── SSRF prevention ────────────────────────────────────────────────────────────
 # Validate owner/repo/path parameters to prevent partial SSRF via URL path injection.
 # Allowed characters: alphanumeric, hyphen, underscore, dot (GitHub conventions).
-_SAFE_REPO_COMPONENT_RE = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._\-]{0,99}$')
+_SAFE_REPO_COMPONENT_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._\-]{0,99}$')
 
 
 def _validate_repo_component(value: str, name: str) -> None:

@@ -141,7 +141,7 @@ jobs:
               echo "This is a cascade failure: the healer itself is failing." >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
               echo "**Probable cause:** \`.venv_ci/bin/pip\` absent on venv cache miss." >> "$GITHUB_STEP_SUMMARY"
-              echo "**Fix applied in S172:** pip fallback added to triage + heal jobs." >> "$GITHUB_STEP_SUMMARY"
+              echo "**Fix applied in S172:** on cache miss the venv is recreated with \`python3 -m venv .venv_ci\` (both triage and heal jobs)." >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
               echo "**If this persists:** Check \`.github/actions/setup-python-cached/action.yml\`" >> "$GITHUB_STEP_SUMMARY"
               echo "and verify \`.venv_ci/\` is created even on full cache miss." >> "$GITHUB_STEP_SUMMARY"

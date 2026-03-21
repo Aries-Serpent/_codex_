@@ -243,9 +243,9 @@ def _collect_security_posture() -> SubDimension:
     # Each open HIGH Dependabot alert  → -2.0 pts
     # Each open MODERATE alert         → -1.0 pts
     try:
-        open_critical  = int(os.environ.get("CODEX_OPEN_CRITICAL_ALERTS",  "0"))
-        open_high      = int(os.environ.get("CODEX_OPEN_HIGH_ALERTS",       "0"))
-        open_moderate  = int(os.environ.get("CODEX_OPEN_MODERATE_ALERTS",   "0"))
+        open_critical  = max(0, int(os.environ.get("CODEX_OPEN_CRITICAL_ALERTS",  "0")))
+        open_high      = max(0, int(os.environ.get("CODEX_OPEN_HIGH_ALERTS",       "0")))
+        open_moderate  = max(0, int(os.environ.get("CODEX_OPEN_MODERATE_ALERTS",   "0")))
     except ValueError:
         import logging as _logging
         _logging.getLogger(__name__).warning(
@@ -354,7 +354,7 @@ def _collect_reliability() -> SubDimension:
     rate_str = os.environ.get("CODEX_CI_FAILURE_RATE", "").strip()
     if rate_str:
         try:
-            ci_rate = float(rate_str.split(":")[0])
+            ci_rate = max(0.0, float(rate_str.split(":")[0]))
         except ValueError:
             import logging as _logging
             _logging.getLogger(__name__).warning(

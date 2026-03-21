@@ -1392,3 +1392,35 @@ jobs:
           else
             echo "⚠️ Failed to increment COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} → ${NEXT}). Check CODEX_MASTER_KEY has variables:write scope."
           fi
+
+      # ── 3f: Report completion via AgentBrainAPI.report_completion() ───────
+      # Wires the ACE L6 closed-loop learning gate (AAIS honest-calibration §7).
+      # Calls report_completion() from src/codex/cognitive/agent_brain_api.py
+      # to mark this delegation session as complete in the cognitive brain and
+      # feed the outcome into the pattern store.  Falls back gracefully when
+      # the src/ module is unavailable (e.g. shallow clone without extras).
+      - name: "Report completion to AgentBrainAPI (ACE L6)"
+        if: success()
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number || '' }}
+          SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys
+          sys.path.insert(0, os.path.join(os.getcwd(), 'src'))
+          pr = os.environ.get('PR_NUMBER', 'unknown')
+          session = os.environ.get('SESSION_NUMBER', 'unknown')
+          try:
+              from codex.cognitive.agent_brain_api import AgentBrainAPI, ImprovementArea
+              api = AgentBrainAPI(agent_id=f"agent-auth-delegation-s{session}")
+              report = api.report_completion(
+                  area=ImprovementArea.CI_CD,
+                  step_id=f"AUTH-DELEGATION-PR{pr}",
+                  outcome="success",
+                  notes=f"Token delegation activated for PR #{pr} (session S{session})",
+              )
+              print(f"✅ report_completion() → pattern_id={report.pattern_id}")
+          except Exception as exc:
+              print(f"⚠️  AgentBrainAPI.report_completion() unavailable: {exc}")
+              print("    (non-fatal — cognitive brain module not installed in CI env)")
+          PYEOF

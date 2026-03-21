@@ -1231,14 +1231,23 @@ fix:
       change: |
         # Triage job — Classify failure step:
         # BEFORE: .venv_ci/bin/pip install requests --quiet
-        # AFTER:  (.venv_ci/bin/pip install requests --quiet 2>/dev/null) \
-        #           || pip install requests --quiet
+        # AFTER:
+        #   if ! .venv_ci/bin/pip install requests --quiet 2>/dev/null; then
+        #     python3 -m venv .venv_ci
+        #     .venv_ci/bin/pip install requests --quiet
+        #   fi
         #
         # Heal job — Install tools step:
         # BEFORE: .venv_ci/bin/pip install ruff black isort --quiet
-        # AFTER:  (.venv_ci/bin/pip install ruff black isort --quiet 2>/dev/null) \
-        #           || pip install ruff black isort --quiet
+        # AFTER:
+        #   if ! .venv_ci/bin/pip install ruff black isort --quiet 2>/dev/null; then
+        #     python3 -m venv .venv_ci
+        #     .venv_ci/bin/pip install ruff black isort --quiet
+        #   fi
         #
+        # Recreating the venv (not falling back to system pip) keeps all installs
+        # inside an isolated virtualenv and avoids polluting the runner's global
+        # site-packages.
         # Also added 'self-healing' case to the triage case statement with cascade
         # detection message — prevents escalate job from being skipped on this pattern.
   manual_steps:
@@ -1251,7 +1260,8 @@ fix:
     - "Every commit must touch CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md"
     - "Run doc_metrics_sync --fix after any fail_under or metric change in pyproject.toml"
     - "Add new patterns immediately when a new 'unknown' failure is resolved"
-    - "Use pip fallback pattern for any .venv_ci/bin/ binary calls in workflow steps"
+    - "Use venv recreation pattern for any .venv_ci/bin/ binary calls in workflow steps:"
+    - "  if ! .venv_ci/bin/<cmd> ... 2>/dev/null; then python3 -m venv .venv_ci && .venv_ci/bin/<cmd> ...; fi"
 
 examples:
   - issue_number: 3534

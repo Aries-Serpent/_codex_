@@ -400,8 +400,15 @@ class TelemetryCollector:
         distribution = telemetry_data.get("pattern_distribution", {})
         total_failures = sum(distribution.values())
         if total_failures == 0:
-            return {"cascade_detected": False, "cascade_rate": 0.0,
-                    "root_cause": "No failures to analyze", "recommended_action": "none"}
+            return {
+                "cascade_detected": False,
+                "cascade_rate": 0.0,
+                "self_healing_count": 0,
+                "total_failures": 0,
+                "root_cause": "No failures to analyze",
+                "recommended_action": "none",
+                "pattern_distribution": distribution,
+            }
 
         self_healing_count = distribution.get("self-healing", 0)
         cascade_rate = self_healing_count / total_failures
@@ -411,11 +418,15 @@ class TelemetryCollector:
             root_cause = (
                 f"Self-healing cascade: {self_healing_count}/{total_failures} failures "
                 f"({cascade_rate*100:.1f}%) are from Iterative Self-Healing CI runs. "
-                "Most likely root cause: .venv_ci/bin/pip absent on venv cache miss "
-                "(SELF_HEALING_001 sub-scenario A). Fixed in S172 with pip fallback."
+                "Most likely root cause: stale or missing .venv_ci virtualenv on cache "
+                "miss, leaving .venv_ci/bin/pip absent or invalid "
+                "(SELF_HEALING_001 sub-scenario A). Fixed in S172 by recreating the "
+                "venv with 'python3 -m venv .venv_ci' and installing via '.venv_ci/bin/pip'."
             )
             recommended_action = (
-                "1. Verify iterative-self-healing-ci.yml has the S172 pip fallback fix. "
+                "1. Verify iterative-self-healing-ci.yml recreates the venv with "
+                "'python3 -m venv .venv_ci' and installs via '.venv_ci/bin/pip' "
+                "(NOT a system-pip fallback). "
                 "2. Check CODEX_CACHE_VERSION — a version bump busts the L3 venv cache. "
                 "3. Monitor for 7 days post-fix; failure rate should drop to <1%."
             )
