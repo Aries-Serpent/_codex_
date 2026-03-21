@@ -223,6 +223,9 @@ jobs:
               TARGET_REF="0D_base_"
               echo "🔀 0D_base_ integration branch detected — routing evolution update to 0D_base_"
             fi
+            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
             git push origin HEAD:${TARGET_REF}
             echo "✅ Evolution updates committed"
           else

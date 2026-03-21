@@ -202,12 +202,15 @@ jobs:
           Run: ${{ github.run_id }}
           Trigger: ${{ github.event_name }}"
 
-            # On schedule runs github.ref_name is empty — push to main, unless 0D_base_ is active.
+            # On schedule runs github.ref_name typically points to the default branch; fall back to main unless 0D_base_ is active.
             TARGET_REF="${{ github.ref_name || 'main' }}"
             if [ "${{ github.event_name }}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
               TARGET_REF="0D_base_"
               echo "🔀 0D_base_ integration branch detected — routing HAR refresh to 0D_base_"
             fi
+            echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
             git push origin HEAD:${TARGET_REF}
             echo "✅ HAR committed and pushed (LFS)"
           fi
