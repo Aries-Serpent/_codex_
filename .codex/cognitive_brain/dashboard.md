@@ -1,7 +1,7 @@
 # 🧠 Cognitive Brain Dashboard
 
-> **Generated:** 2026-02-12 22:55:00 UTC  
-> **Period:** PR #3244 Sessions 1-33 (CI Resolution + MCP + MSV + CacheManager + PS-15–20)  
+> **Generated:** 2026-03-20 22:52:00 UTC  
+> **Period:** S164–S166 (Integration-Branch Model + CodeQL Stabilisation + Doc Corrections)  
 > **Health:** ✅ Excellent (99%)
 
 ---
@@ -136,5 +136,25 @@ python scripts/cognitive/dashboard_generator.py --hours 48
 
 ---
 
-**Dashboard Version:** 3.8.0  
-**Last Updated:** 2026-02-12T11:07:00+00:00
+**Dashboard Version:** 3.9.0  
+**Last Updated:** 2026-03-20T22:52:00+00:00
+
+---
+
+## 🆕 S164–S166 Next-Phase Plan
+
+### Phase Status (as of S166)
+
+| Session | Branch | Status | Key Outcome |
+|---------|--------|--------|-------------|
+| S164 | copilot/sub-pr-3640 | ✅ Merged to 0D_base_ | REQ-11 telemetry fix, CB-INV-001, flatted bump |
+| S165 | copilot/sub-pr-3641 (PR #3641) | ✅ In Review | Ruff F841 fixes in branch_rebase_check.py |
+| S166 | copilot/sub-pr-3641 (continuation) | 🔄 In Progress | Doc corrections + security-scanning-suite fix |
+
+### Next-Phase Objectives (S167+)
+
+1. **Promote `0D_base_` → `main`** (PR #3630) once S165/S166 land — requires human approval
+2. **Upgrade Node.js action versions** to Node 24 — `actions/checkout@v4` deprecation warning fires on every run (deadline: 2026-06-02)
+3. **Resolve `cognitive_app` JS build** — CodeQL autobuild.sh fails because `npm install` is not run before analysis; add a `build-commands` to codeql config or add npm install step
+4. **E→D Transition Gate** — unblock with passing CODEX_MANIFEST.json and all 5 readiness conditions
+

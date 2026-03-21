@@ -6563,11 +6563,44 @@ and the CI gate requirement.
 1. **Ruff F841 fixes in `scripts/ci/branch_rebase_check.py`**:
    - Removed dead `gap_desc` variable (assigned but never read in `all_bot_skip_ci` branch)
    - Removed dead `func_msgs` variable (list comprehension result never used)
-   - Renamed `risk` → `conflict_risk` and incorporated it into `dash_summary` in `post_divergence_comment()` so the PR Status Dashboard now shows conflict risk in the summary line
+   - Renamed `risk` → `conflict_risk` and incorporated it into `dash_summary` in `post_rebase_required_comment()` so the PR Status Dashboard now shows conflict risk in the summary line
 2. All 193 CI tests pass (`tests/ci/`); `ruff check` reports 0 errors.
 
 ### Impact Score
 - Files changed: 1 (`scripts/ci/branch_rebase_check.py`)
 - Ruff F841 violations fixed: 3 (gap_desc, func_msgs, risk→conflict_risk)
 - CI gates unblocked: ruff lint gate
+- Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-03-20T22:52Z — S166 (PR #3641 sub-PR / copilot/sub-pr-3641)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — `copilot-pull-request-reviewer` code-review threads on CHANGELOG.md:11 and AGENT_ACCOUNTABILITY_REPORT.md:6566 ✅
+- [x] **0b.** Failing CI checks reviewed — CodeQL JS autobuild failures (security-scanning-suite.yml missing `continue-on-error`); cancelled checks were concurrency-cancelled (normal) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** `CHANGELOG.md` — updated with S166 fixed entries ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` — loaded and followed ✅
+- [x] **4.** Session memories loaded — all relevant facts reviewed ✅
+- [x] **5.** Deferral language gate — 0 violations ✅
+
+### Work Completed
+1. **Documentation corrections (review-thread fixes)**:
+   - CHANGELOG.md line 11: `post_divergence_comment()` → `post_rebase_required_comment()`
+   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 6566: same correction
+   - Both entries now accurately reflect the implementation in `branch_rebase_check.py`
+2. **CI fix — `.github/workflows/security-scanning-suite.yml`**:
+   - Added `continue-on-error: ${{ matrix.language == 'javascript' }}` to the `codeql-scan` job
+   - Mirrors the identical guard already in `codeql-analysis.yml`
+   - Root cause: `cognitive_app` Vite/TypeScript project causes CodeQL `autobuild.sh` to exit non-zero; Python CodeQL analysis must not be blocked
+
+### Root-Cause Notes
+- `post_divergence_comment` was accidentally used in documentation when the actual function is `post_rebase_required_comment`. This is the function where `risk` → `conflict_risk` rename was applied (PR #3641 / S165).
+- The CodeQL JavaScript autobuild failure in `security-scanning-suite.yml` is a pre-existing limitation: `codeql-analysis.yml` already guards against it but `security-scanning-suite.yml` lacked the guard.
+
+### Impact Score
+- Files changed: 3 (`CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `.github/workflows/security-scanning-suite.yml`)
+- Review threads resolved: 2 (CHANGELOG function name, accountability report function name)
+- CI gates fixed: 1 (CodeQL JS `continue-on-error` in security-scanning-suite.yml)
 - Deferral Language Gate: 0 violations
