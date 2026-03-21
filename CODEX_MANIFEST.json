@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-19T22:11:18Z",
+  "generated_at": "2026-03-21T00:34:51Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -919,6 +919,12 @@
       "role": "orchestrator",
       "enforcement_tier": "PARTIAL",
       "autonomy_model": "E"
+    },
+    {
+      "name": "copilot-session-chain",
+      "role": "orchestrator",
+      "enforcement_tier": "GROUNDED",
+      "autonomy_model": "E"
     }
   ],
   "workflows": [
@@ -1130,6 +1136,11 @@
     {
       "name": "copilot-review-responder",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-session-chain",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1688,6 +1699,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/INTEGRATION_BRANCH_MODEL.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/LESSONS_LEARNED_PR3248_SESSION.md",
       "type": "enforcement"
     },
@@ -1813,5 +1828,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "0b6880a43d06d58da2ded71a6eb8a2a793ce79249a392f73c87c2d69e06f9969"
+  "integrity_sha256": "6fc790604c1a65282eb371fb265a62dea542f8cb482f58c8c1cc0d6760b9b357"
 }
