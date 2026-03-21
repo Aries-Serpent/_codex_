@@ -1,4 +1,4 @@
-name: Art_Workflow Documentation Link Validation
+name: Workflow Documentation Link Validation
 
 # Link validation workflow with flexible strict mode:
 # - PRs: Non-blocking (warn but allow merge) - helps catch issues early without blocking

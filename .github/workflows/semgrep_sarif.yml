@@ -1,4 +1,4 @@
-name: Art_Semgrep SAST (SARIF Upload)
+name: Semgrep SAST (SARIF Upload)
 
 on:
   push:

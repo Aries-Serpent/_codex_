@@ -1,4 +1,4 @@
-name: Art_Generate SBOM
+name: Generate SBOM
 
 on:
   workflow_dispatch:

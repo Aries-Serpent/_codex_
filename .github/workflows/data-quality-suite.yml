@@ -1,4 +1,4 @@
-name: Art_Data Quality & Determinism Suite
+name: Data Quality & Determinism Suite
 
 on:
   pull_request:
@@ -50,7 +50,7 @@ jobs:
     name: "💰 Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
-      workflow_name:   "Art_Data Quality & Determinism Suite"
+      workflow_name:   "Data Quality & Determinism Suite"
       runner:          "ubuntu-latest"
       timeout_minutes: 60
       matrix_count:    3

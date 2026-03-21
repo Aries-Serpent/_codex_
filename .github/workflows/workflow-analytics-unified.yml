@@ -1,4 +1,4 @@
-name: Art_Workflow Analytics & Health (Unified)
+name: Workflow Analytics & Health (Unified)
 
 on:
   # Scheduled analytics — hourly health check + weekly deep analysis.

@@ -9,11 +9,12 @@ It provides essential orientation, operational guidelines, and navigation to all
 DO NOT MOVE this file - it is intentionally placed here as the first point of contact.
 -->
 
-> **Status:** ✅ UP-TO-DATE (2026-02-06 - Root Organization Phase 2)
+> **Status:** ✅ UP-TO-DATE (2026-03-21 - S174 Consolidation)
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
-> **Root Organization:** Phase 2 In Progress (Documentation cleanup)
-> **Workflows:** 49 active (100% parity, 19 consolidated)
+> **Root Organization:** Phase 2 Complete
+> **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
+> **Agents:** 153 active (S174: 5 coverage agents deprecated → unified-coverage-agent; 31 stale docs archived)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
 >
@@ -110,7 +111,7 @@ are available for testing and development purposes.
 - [.github/workflow-archive/PARITY_CHECKLIST.md](.github/workflow-archive/PARITY_CHECKLIST.md) - Workflow consolidation (100% parity) 🆕
 - [.github/workflow-archive/ARTIFACT_CATALOG.md](.github/workflow-archive/ARTIFACT_CATALOG.md) - GitHub Actions artifacts guide 🆕
 - [.codex/plans/cognitive_brain_phase_implementation.md](.codex/plans/cognitive_brain_phase_implementation.md) - Cognitive Brain Phase Plan 🆕
-- [.codex/PR_3095_RESOLUTION_PATTERNS.md](.codex/PR_3095_RESOLUTION_PATTERNS.md) - CI Fix Pattern Library 🆕
+- [.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md](.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md) - CI Fix Pattern Library 🆕
 - [scripts/ci/auto_fix_common_issues.py](scripts/ci/auto_fix_common_issues.py) - Auto-fix script 🆕
 - [scripts/cognitive/](scripts/cognitive/) - Cognitive Brain Scripts (22 files) 🆕
 

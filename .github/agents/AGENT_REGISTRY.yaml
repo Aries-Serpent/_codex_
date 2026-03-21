@@ -1,6 +1,6 @@
 version: 2.0.0
-last_updated: '2026-03-20T01:36:00Z'
-total_agents: 155
+last_updated: '2026-03-21T21:00:00Z'
+total_agents: 156
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -1592,7 +1592,8 @@ agents:
   batch_scan_enabled: true
   name: Coverage Gapfill Agent
   file: coverage-gapfill-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: high
@@ -1603,15 +1604,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Targets low-coverage modules and generates tests to close coverage
-    gaps.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests to close coverage gaps."
   capability_tags:
   - testing
 - id: coverage-maintenance-agent
   batch_scan_enabled: true
   name: Coverage Maintenance Agent
   file: coverage-maintenance-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: medium
@@ -1622,14 +1623,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Maintains test coverage over time; alerts on regressions.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains test coverage over time; alerts on regressions."
   capability_tags:
   - testing
 - id: coverage-roadmap-agent
   batch_scan_enabled: true
   name: Coverage Roadmap Agent
   file: coverage-roadmap-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: production
   category: testing
   priority: high
@@ -1640,8 +1642,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Drives coverage threshold roadmap, tracks phase completion, validates
-    thresholds.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion, validates thresholds."
   capability_tags:
   - testing
 - id: cpu-only-ci-config-agent
@@ -2536,7 +2537,8 @@ agents:
   batch_scan_enabled: true
   name: Test Coverage Agent
   file: test-coverage-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: medium
@@ -2547,14 +2549,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Drives test coverage improvements; identifies uncovered code paths.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered code paths."
   capability_tags:
   - testing
 - id: test-coverage-monitor
   batch_scan_enabled: true
   name: Test Coverage Monitor
   file: test-coverage-monitor.agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: production
   category: testing
   priority: high
@@ -2569,10 +2572,31 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 5
   role: utility
-  description: Monitors test coverage, enforces thresholds, validates documentation
-    quality.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates documentation quality."
   capability_tags:
   - testing
+- id: unified-coverage-agent
+  name: Unified Coverage Agent
+  file: unified-coverage-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Single entry-point for all test-coverage work — monitor, analyse, gap-fill, and drive roadmap. Consolidates 5 legacy coverage agents.
+  enforcement_tier: FULL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: false
+  role: specialist
+  description: Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent, and test-coverage-monitor into one cohesive agent.
+  capability_tags:
+  - testing
+  - coverage
+  - ci
 - id: test-enhancement-agent
   batch_scan_enabled: true
   name: Test Enhancement Agent

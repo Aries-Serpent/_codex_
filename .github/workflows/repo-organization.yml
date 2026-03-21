@@ -1,4 +1,4 @@
-name: Art_Repository Organization & Cleanup
+name: Repository Organization & Cleanup
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Art_Artifact Monitoring
+name: Artifact Monitoring
 
 on:
   # Scheduled execution every 3-6 hours
