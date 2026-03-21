@@ -218,18 +218,46 @@ def _collect_cicd_maturity() -> SubDimension:
 
 
 def _collect_security_posture() -> SubDimension:
-    """Security posture assessment."""
-    # Check for security scanning workflow
+    """Security posture assessment — Gate 1 (files) + Gate 2/3 (live alert counts).
+
+    Three-gate rule (AAIS_HONEST_CALIBRATION_V1.md §2):
+      Gate 1 — security workflow, ethics config, SBOM workflow exist
+      Gate 2 — no critical/high security alerts outstanding
+      Gate 3 — CI security scan runs on every PR push
+
+    Alert counts are read from environment variables written by ci-health-monitor.yml:
+      CODEX_OPEN_CRITICAL_ALERTS  — open CodeQL critical findings
+      CODEX_OPEN_HIGH_ALERTS      — open Dependabot high findings
+    If unset, assumes 0 (clean) so the scorer is still useful in local dev.
+    """
+    # Gate 1 — file existence
     sec_wf = ROOT / ".github" / "workflows" / "security-scanning-suite.yml"
     has_security = sec_wf.exists()
-    # Check for .codex/ethics/imperatives.yaml
     has_ethics = (ROOT / ".codex" / "ethics" / "imperatives.yaml").exists()
-    # Check for SBOM
     has_sbom = (ROOT / ".github" / "workflows" / "sbom.yml").exists()
     checks = sum([has_security, has_ethics, has_sbom])
-    score = 75.0 + checks * 8.3
-    return SubDimension("Security Posture", 0.06, min(score, 100.0),
-                        f"security={has_security}, ethics={has_ethics}, sbom={has_sbom}")
+    base_score = 75.0 + checks * 8.3
+
+    # Gate 2+3 — live alert penalty (honest calibration §6 rule_2)
+    # Each open CRITICAL CodeQL alert  → -5.0 pts
+    # Each open HIGH Dependabot alert  → -2.0 pts
+    # Each open MODERATE alert         → -1.0 pts
+    try:
+        open_critical  = int(os.environ.get("CODEX_OPEN_CRITICAL_ALERTS",  "0"))
+        open_high      = int(os.environ.get("CODEX_OPEN_HIGH_ALERTS",       "0"))
+        open_moderate  = int(os.environ.get("CODEX_OPEN_MODERATE_ALERTS",   "0"))
+    except ValueError:
+        open_critical = open_high = open_moderate = 0
+    alert_penalty = open_critical * 5.0 + open_high * 2.0 + open_moderate * 1.0
+    score = max(0.0, min(base_score, base_score - alert_penalty))
+
+    detail = f"security={has_security}, ethics={has_ethics}, sbom={has_sbom}"
+    if open_critical or open_high or open_moderate:
+        detail += (
+            f"; open_alerts: critical={open_critical} high={open_high} moderate={open_moderate}"
+            f" → -{alert_penalty:.0f}pt penalty"
+        )
+    return SubDimension("Security Posture", 0.06, score, detail)
 
 
 def _collect_self_awareness() -> SubDimension:
@@ -300,13 +328,38 @@ def _collect_automation_coverage() -> SubDimension:
 
 
 def _collect_reliability() -> SubDimension:
-    """Reliability via healing loop and self-healing workflow."""
+    """Reliability assessment — Gate 1 (files) + Gate 3 (actual CI failure rate).
+
+    Three-gate rule (AAIS_HONEST_CALIBRATION_V1.md §2):
+      Gate 1 — healing_loop.py and self-healing workflow exist
+      Gate 3 — actual CI failure rate from CODEX_CI_FAILURE_RATE repo variable
+
+    CI failure rate is read from CODEX_CI_FAILURE_RATE env var
+    (format: "<float>:<status>", e.g. "13.3:degraded").
+    Each 1% of failure rate deducts 1 point from the base score (cap: 25 pts).
+    At 0% failure rate: full base score.  At ≥25%: -25 pts.
+    """
     has_healing = (ROOT / "scripts" / "cognitive" / "healing_loop.py").exists()
     has_self_healing_wf = (ROOT / ".github" / "workflows" / "self-healing.yml").exists()
     checks = sum([has_healing, has_self_healing_wf])
-    score = 75.0 + checks * 12.5
-    return SubDimension("Reliability", 0.06, min(score, 100.0),
-                        f"healing_loop={has_healing}, self_healing_wf={has_self_healing_wf}")
+    base_score = 75.0 + checks * 12.5
+
+    # Gate 3 — actual CI failure rate penalty
+    ci_rate = 0.0
+    rate_str = os.environ.get("CODEX_CI_FAILURE_RATE", "").strip()
+    if rate_str:
+        try:
+            ci_rate = float(rate_str.split(":")[0])
+        except ValueError:
+            ci_rate = 0.0
+    # Each 1% failure rate = -1.0 pt reliability deduction, capped at -25 pts
+    reliability_penalty = min(ci_rate * 1.0, 25.0)
+    score = max(0.0, min(base_score, base_score - reliability_penalty))
+
+    detail = f"healing_loop={has_healing}, self_healing_wf={has_self_healing_wf}"
+    if ci_rate > 0:
+        detail += f"; ci_failure_rate={ci_rate:.1f}% → -{reliability_penalty:.1f}pt penalty"
+    return SubDimension("Reliability", 0.06, score, detail)
 
 
 def _collect_observability() -> SubDimension:

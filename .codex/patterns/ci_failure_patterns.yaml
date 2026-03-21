@@ -1141,48 +1141,106 @@ metadata:
 
 ---
 pattern_id: SELF_HEALING_001
-name: "Self-Healing CI: 'unknown' Pattern Classification — Preflight + Doc-Metrics Root Causes"
+name: "Self-Healing CI: Cascade Failure — .venv_ci/bin/pip Missing on Cache Miss"
 category: ci_infrastructure
-priority: 2
-severity: warning
+priority: 1
+severity: high
 
 description: |
-  The iterative-self-healing-ci workflow classifies CI failures into known patterns.
-  When a failure does not match any pattern signature in ci_failure_patterns.yaml, it
-  is reported as 'Pattern: unknown'. Issue #3534 shows 52 unknown-pattern failures over
-  7 days, indicating systemic gaps in the pattern library.
+  The iterative-self-healing-ci workflow itself fails when triggered by other workflow
+  failures.  There are two sub-scenarios:
 
-  Root causes of 'unknown' classification (in descending frequency):
-  1. DOC_METRICS_001: doc_metrics_sync stale metrics (pre-commit hook output, not pytest)
-  2. PREFLIGHT_001/002: CHANGELOG.md or AGENT_ACCOUNTABILITY_REPORT.md not in commit diff
-  3. Transient runner shutdowns (exit code 1 with no matching test failure)
-  4. CODEX_MANIFEST.json freshness > 24h (E→D Transition Gate C2)
+  **Sub-scenario A — .venv_ci/bin/pip cache miss (PRIMARY, S172)**:
+    The triage job's "Classify failure" step calls `.venv_ci/bin/pip install requests`
+    directly.  When the Layer-3 venv cache misses (fresh runner, cache expiry, or
+    cache-bust via CODEX_CACHE_VERSION bump), `.venv_ci/bin/pip` does not exist and
+    the step exits 1.  This fails the triage job, causing the entire workflow run to
+    be marked as "failure" — before any classify-run or heal logic executes.
+    The same issue exists in the heal job's "Install tools" step which calls
+    `.venv_ci/bin/pip install ruff black isort`.
+
+    Observed distribution (2026-03-21, issue ci-health-alert):
+      self_healing: 126  ← these are the cascade failures from Sub-scenario A
+      unknown:        2
+      embedding-rebuild: 1
+      auto-fix:       1
+      integration-branch-direct-session: 1
+      coverage-timeout: 1
+      security-scan:  1
+    Failure rate: 13.3% (CODEX_CI_FAILURE_THRESHOLD = 10.0 → degraded status)
+
+  **Sub-scenario B — 'unknown' pattern gaps (HISTORICAL, issue #3534)**:
+    When a failure does not match any pattern in PATTERN_KEYWORDS, it is classified
+    as 'unknown'.  The heal job runs but produces no fix, and the workflow completes
+    with fixable=false.  The overall run may still succeed (escalate job runs instead).
+
+  **Key insight on threshold change:**
+    The CODEX_CI_FAILURE_THRESHOLD was previously hardcoded at 20% in
+    ci-health-monitor.yml.  After P2.3 wiring to the repo variable (default 10%),
+    the existing ~120-126/week self-healing cascade rate now exceeds the threshold,
+    triggering ci-health-alert issues even though the underlying workflows are healthy.
 
 detection:
   workflow_path: ".github/workflows/iterative-self-healing-ci.yml"
   job_name: "Self-Healing CI"
   error_signatures:
+    - ".venv_ci/bin/pip: No such file or directory"
+    - ".venv_ci/bin/pip install requests"
+    - "Self-Healing Cascade Detected (SELF_HEALING_001)"
     - "Pattern: unknown"
     - "iterative self-healing CI could not automatically fix this failure"
     - "The iterative self-healing CI could not automatically fix"
   issue_indicators:
-    - "self-healing: N (large count in ci-health-alert)"
+    - "self-healing: N (dominant count in ci-health-alert, >50% of failures)"
     - "unknown: N (any non-zero count warrants pattern addition)"
 
 root_cause:
-  technical: |
-    The self-healing CI matches log lines against `error_signatures` in ci_failure_patterns.yaml.
-    Pre-commit hook output (doc-metrics-check, accountability report gate) uses different
-    phrasing than pytest failure output, so it falls through to 'unknown'. Fix: add patterns
-    with the exact error_signatures from the pre-commit and preflight log output.
+  primary_s172: |
+    .venv_ci/bin/pip does not exist on a fresh runner when the Layer-3 venv cache
+    misses.  The setup-python-cached action creates .venv_ci/ only when the venv
+    cache hits OR when pip install -e . completes successfully.  If the install is
+    skipped or fails, .venv_ci/bin/pip is absent.  Any subsequent direct call to
+    .venv_ci/bin/pip exits 1, failing the workflow step and the whole workflow run.
+  historical_s3534: |
+    Pattern library gaps cause failures to be classified as 'unknown'.
+    The self-healing CI cannot auto-fix 'unknown' patterns, so it escalates.
+    If the escalate job also fails (e.g., no open PR), the workflow run fails.
+  threshold_change: |
+    CODEX_CI_FAILURE_THRESHOLD lowered from implicit 20% to explicit 10.0 (P2.3 wiring).
+    The self-healing cascade rate (~120/week) was always present but only recently
+    crossed the new lower threshold, triggering alerts.
   distribution_issue_3534:
-    self_healing: 120  # correctly classified; these are transient retry loops
-    unknown: 52        # DOC_METRICS_001 + PREFLIGHT_001/002 cover ~80% of these
+    self_healing: 120  # S3534 baseline (sub-scenario B)
+    unknown: 52
     workflow_cascade: 2
+    security_scan: 1
+  distribution_s172:
+    self_healing: 126  # S172 cascade (sub-scenario A + sub-scenario B)
+    unknown: 2         # major improvement from 52 — pattern library coverage working
+    embedding_rebuild: 1
+    auto_fix: 1
+    integration_branch_direct_session: 1
+    coverage_timeout: 1
     security_scan: 1
 
 fix:
-  automated: false
+  automated: true
+  applied_in: "S172 — PR copilot/investigate-ci-failure-rate"
+  code_changes:
+    - file: ".github/workflows/iterative-self-healing-ci.yml"
+      change: |
+        # Triage job — Classify failure step:
+        # BEFORE: .venv_ci/bin/pip install requests --quiet
+        # AFTER:  (.venv_ci/bin/pip install requests --quiet 2>/dev/null) \
+        #           || pip install requests --quiet
+        #
+        # Heal job — Install tools step:
+        # BEFORE: .venv_ci/bin/pip install ruff black isort --quiet
+        # AFTER:  (.venv_ci/bin/pip install ruff black isort --quiet 2>/dev/null) \
+        #           || pip install ruff black isort --quiet
+        #
+        # Also added 'self-healing' case to the triage case statement with cascade
+        # detection message — prevents escalate job from being skipped on this pattern.
   manual_steps:
     - "For each 'unknown' run, retrieve logs and match against DOC_METRICS_001/PREFLIGHT_001/002"
     - "If it is a doc-metrics failure: run python scripts/tools/doc_metrics_sync.py --fix"
@@ -1193,6 +1251,7 @@ fix:
     - "Every commit must touch CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md"
     - "Run doc_metrics_sync --fix after any fail_under or metric change in pyproject.toml"
     - "Add new patterns immediately when a new 'unknown' failure is resolved"
+    - "Use pip fallback pattern for any .venv_ci/bin/ binary calls in workflow steps"
 
 examples:
   - issue_number: 3534
@@ -1203,22 +1262,36 @@ examples:
       workflow_cascade: 2
       security_scan: 1
     resolution: "Added DOC_METRICS_001, PREFLIGHT_002, SELF_HEALING_001 to pattern library"
+  - issue_type: "ci-health-alert"
+    date: "2026-03-21"
+    failure_rate: "13.3%"
+    pattern_distribution:
+      self_healing: 126
+      unknown: 2
+      embedding_rebuild: 1
+      auto_fix: 1
+      integration_branch_direct_session: 1
+      coverage_timeout: 1
+      security_scan: 1
+    resolution: "Added pip fallback to triage + heal jobs; added self-healing case to triage (S172)"
 
 cognitive_notes: |
-  The 'unknown' count in CI health alerts directly measures the pattern library coverage gap.
-  Target: reduce 'unknown' from 52 to < 5 per 7-day window by:
-  1. DOC_METRICS_001 covers ~30 of the 52 (every fail_under bump triggers this)
-  2. PREFLIGHT_001/002 covers ~15 of the 52 (commits missing mandatory file touches)
-  3. Remaining ~7 are likely transient runner shutdowns (no pattern needed — retries resolve)
-  The 'self-healing: 120' count is healthy — those are correctly classified retries.
+  The 'self-healing' count in CI health alerts measures the cascade rate.
+  With the S172 pip-fallback fix, this should drop from ~126/week toward ~0.
+  After S172 fix lands: expect failure rate to drop from 13.3% → ~0.5% (7 non-cascade failures / 1000).
+  The 'unknown' count dropped from 52 (S3534) to 2 (S172) — pattern library coverage is working.
+  Key threshold insight: CODEX_CI_FAILURE_THRESHOLD=10.0 means the 'healthy' cascade rate of
+  ~120/week will still trigger alerts if the underlying run count is low. Monitor after S172 fix.
 
 metadata:
-  reuse_count: 1
-  effectiveness: "Estimated 80% reduction in 'unknown' classification"
-  confidence: 0.85
-  auto_fixable: false
+  reuse_count: 2
+  effectiveness: "S172 fix expected to eliminate ~94% of self-healing cascade failures"
+  confidence: 0.95
+  auto_fixable: true
+  last_updated: "2026-03-21"
   issue_refs:
     - "#3534"
+    - "ci-health-alert (2026-03-21)"
 
 ---
 ```

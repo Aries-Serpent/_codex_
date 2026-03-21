@@ -21,6 +21,7 @@ import asyncio
 import fcntl
 import hashlib
 import hmac
+import ipaddress
 import json
 import logging
 import os
@@ -28,9 +29,11 @@ import pty
 import re
 import secrets
 import select
+import shlex
 import sqlite3
 import struct
 import subprocess  # nosec B404 — used only for PTY shell (ws_cli); Popen call has nosec B603
+from urllib.parse import urlparse as _urlparse
 
 # Safe JSON parser for external/untrusted inputs (sanitises C0 control chars).
 try:
@@ -125,6 +128,84 @@ except ImportError:
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("cli_api_server")
+
+
+# ── SSRF prevention (CodeQL alert #12493) ────────────────────────────────────
+# The /api/request proxy endpoint accepts a caller-supplied URL and makes an
+# outbound HTTP request on their behalf.  Without restriction this is a Full
+# SSRF: an attacker could target internal services (metadata APIs, databases,
+# localhost endpoints) that are not exposed to the internet.
+#
+# Defence-in-depth strategy:
+#   1. Only HTTPS scheme is allowed (blocks file://, http://, ftp://, etc.).
+#   2. Hostnames that resolve to loopback / link-local / RFC-1918 private
+#      ranges are blocked by IP-literal detection.
+#   3. Well-known metadata service IPs are explicitly blocked.
+#
+# Note: DNS-rebinding is still theoretically possible if only hostname checks
+# are performed.  The server should be deployed with an egress firewall that
+# prevents connections to private ranges for full protection.
+
+_SSRF_BLOCKED_HOSTS = frozenset({
+    "localhost", "ip6-localhost", "ip6-loopback",
+})
+_SSRF_BLOCKED_PREFIXES = ("169.254.",)   # link-local / AWS metadata service
+_PRIVATE_NETWORKS = [
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("169.254.0.0/16"),   # link-local / APIPA
+    ipaddress.ip_network("100.64.0.0/10"),    # shared address space (RFC 6598)
+    ipaddress.ip_network("::1/128"),           # IPv6 loopback
+    ipaddress.ip_network("fc00::/7"),          # IPv6 unique-local
+    ipaddress.ip_network("fe80::/10"),         # IPv6 link-local
+]
+
+
+def _assert_safe_proxy_url(url: str) -> None:
+    """Raise ``HTTPException(400)`` when *url* targets a private/internal resource.
+
+    Called by the ``/api/request`` proxy endpoint before making an outbound
+    request so that Full SSRF (CodeQL alert #12493) cannot be exploited.
+    """
+    from fastapi import HTTPException  # local import avoids circular at module level
+
+    try:
+        parsed = _urlparse(url)
+    except Exception as exc:  # pragma: no cover
+        raise HTTPException(status_code=400, detail=f"Malformed URL: {exc}")
+
+    # 1. Require HTTPS
+    if parsed.scheme != "https":
+        raise HTTPException(
+            status_code=400,
+            detail=f"URL scheme {parsed.scheme!r} is not permitted; only 'https' is allowed",
+        )
+
+    host = (parsed.hostname or "").lower()
+    if not host:
+        raise HTTPException(status_code=400, detail="URL must specify a hostname")
+
+    # 2. Block known loopback hostnames
+    if host in _SSRF_BLOCKED_HOSTS:
+        raise HTTPException(status_code=400, detail="Requests to loopback hosts are not permitted")
+
+    # 3. Block link-local prefixes (covers 169.254.x.x AWS/GCP metadata)
+    if any(host.startswith(p) for p in _SSRF_BLOCKED_PREFIXES):
+        raise HTTPException(status_code=400, detail="Requests to link-local addresses are not permitted")
+
+    # 4. Block IP literals that fall in private/loopback ranges
+    try:
+        addr = ipaddress.ip_address(host)
+        for net in _PRIVATE_NETWORKS:
+            if addr in net:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Requests to private/reserved IP ranges are not permitted",
+                )
+    except ValueError:
+        pass  # Not an IP literal — hostname; DNS-based resolution not done here
 
 
 # ── Sprint 2: CORS allowlist helper ──────────────────────────────────────────
@@ -636,17 +717,34 @@ _BLOCKED = re.compile(
 
 @app.post("/api/cli/run", response_model=CliRunResponse)
 async def cli_run(req: CliRunRequest):
-    """Execute a shell command and return stdout/stderr/returncode."""
+    """Execute a shell command and return stdout/stderr/returncode.
+
+    Security note (CodeQL #12490 — Uncontrolled command line):
+    The command is split with ``shlex.split`` and executed via
+    ``create_subprocess_exec`` (not ``create_subprocess_shell``) so that shell
+    metacharacters (``; | && || $() `` backticks etc.) in user input cannot
+    invoke additional commands.  Operators like pipes and redirections that
+    require a shell must be expressed explicitly (e.g. ``bash -c "cmd | other"``),
+    which is visible in the audit log and triggers the ``_BLOCKED`` safety filter.
+    """
     if _BLOCKED.search(req.command):
         raise HTTPException(status_code=400, detail="Command blocked by safety filter")
+
+    # Split into argv list — prevents shell-injection (CodeQL #12490).
+    try:
+        args = shlex.split(req.command)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid command syntax: {exc}")
+    if not args:
+        raise HTTPException(status_code=400, detail="Empty command")
 
     cwd = req.cwd or REPO_ROOT
     env = {**os.environ, **(req.env or {})}
 
     t0 = time.monotonic()
     try:
-        proc = await asyncio.create_subprocess_shell(
-            req.command,
+        proc = await asyncio.create_subprocess_exec(
+            *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=cwd,
@@ -909,6 +1007,10 @@ async def api_proxy(req: ApiProxyRequest):
     url = req.url
     if req.base_url and not url.startswith(("http://", "https://")):
         url = req.base_url.rstrip("/") + "/" + url.lstrip("/")
+
+    # SSRF prevention (CodeQL #12493): reject URLs targeting private/internal resources.
+    # Must be called after URL resolution so that relative-URL payloads are caught too.
+    _assert_safe_proxy_url(url)
 
     headers = dict(req.headers or {})
     # P4.3: Auto-inject GitHub auth header when target is api.github.com
