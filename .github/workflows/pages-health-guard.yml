@@ -168,11 +168,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "🔄 Triggering pages-mkdocs.yml to restore the site…"
-          gh workflow run pages-mkdocs.yml \
+          if gh workflow run pages-mkdocs.yml \
             --ref main \
-            --field reason="pages-health-guard-self-heal:${{ github.event_name }}:http${{ steps.http_check.outputs.final_http_code }}" \
-            && echo "rebuild_triggered=true" >> "$GITHUB_OUTPUT" \
-            || { echo "rebuild_triggered=false" >> "$GITHUB_OUTPUT"; echo "⚠️  Failed to trigger pages-mkdocs.yml"; }
+            --field reason="pages-health-guard-self-heal:${{ github.event_name }}:http${{ steps.http_check.outputs.final_http_code }}"; then
+            echo "rebuild_triggered=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "rebuild_triggered=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  Failed to trigger pages-mkdocs.yml"
+          fi
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "**Self-heal triggered:** \`pages-mkdocs.yml\` rebuild dispatched at $(date -u +%Y-%m-%dT%H:%M:%SZ)." >> "$GITHUB_STEP_SUMMARY"
@@ -209,11 +212,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh workflow run pages-mkdocs.yml \
+          if gh workflow run pages-mkdocs.yml \
             --ref main \
-            --field reason="pages-health-guard-scheduled-heal:http${{ steps.scheduled_check.outputs.scheduled_http_code }}" \
-            && echo "✅ MkDocs rebuild dispatched" \
-            || echo "⚠️  Failed to trigger pages-mkdocs.yml"
+            --field reason="pages-health-guard-scheduled-heal:http${{ steps.scheduled_check.outputs.scheduled_http_code }}"; then
+            echo "✅ MkDocs rebuild dispatched"
+          else
+            echo "⚠️  Failed to trigger pages-mkdocs.yml"
+          fi
 
       # ─── Final summary ─────────────────────────────────────────────────────
       - name: Write telemetry

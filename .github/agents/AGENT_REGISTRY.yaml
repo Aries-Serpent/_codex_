@@ -1,6 +1,6 @@
 version: 2.0.0
 last_updated: '2026-03-20T01:36:00Z'
-total_agents: 154
+total_agents: 155
 agents:
 - id: github-app-manager
   name: GitHub App Manager
