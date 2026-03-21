@@ -1283,11 +1283,11 @@ examples:
       integration_branch_direct_session: 1
       coverage_timeout: 1
       security_scan: 1
-    resolution: "Added pip fallback to triage + heal jobs; added self-healing case to triage (S172)"
+    resolution: "Recreated .venv_ci virtualenv on cache miss (`python3 -m venv .venv_ci` then `.venv_ci/bin/pip`); added self-healing case to triage (S172)"
 
 cognitive_notes: |
   The 'self-healing' count in CI health alerts measures the cascade rate.
-  With the S172 pip-fallback fix, this should drop from ~126/week toward ~0.
+  With the S172 venv-recreation fix, this should drop from ~126/week toward ~0.
   After S172 fix lands: expect failure rate to drop from 13.3% → ~0.5% (7 non-cascade failures / 1000).
   The 'unknown' count dropped from 52 (S3534) to 2 (S172) — pattern library coverage is working.
   Key threshold insight: CODEX_CI_FAILURE_THRESHOLD=10.0 means the 'healthy' cascade rate of
