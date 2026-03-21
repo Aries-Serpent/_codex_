@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3646)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3646 (SHA `2563fdfb`) at 2026-03-21T01:22Z [auto-generated]
+
 ### Fixed (S166 — 2026-03-20 — PR #3641 sub-PR)
 - **`CHANGELOG.md` / `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**: Corrected function-name references from `post_divergence_comment()` (non-existent) to `post_rebase_required_comment()` in the S165 session-summary and changelog entry as requested by `copilot-pull-request-reviewer` code-review threads.
 - **`.github/workflows/security-scanning-suite.yml`**: Added `continue-on-error: ${{ matrix.language == 'javascript' }}` to the `codeql-scan` job, mirroring the identical guard already present in `codeql-analysis.yml`. The `cognitive_app` Vite/TypeScript project causes the CodeQL `autobuild.sh` to exit 1 on every run; the Python analysis must not be blocked by a known JavaScript autobuild limitation.
