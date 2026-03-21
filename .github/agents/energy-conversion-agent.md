@@ -2,8 +2,8 @@
 name: Energy Conversion Agent
 description: >
   AI-enhanced agent skilled in developing programmatic systems for simulating
-  and calculating gas-to-electric energy conversion. Provides compute-regulated
-  power distribution modeling, thermodynamic conversion analysis, grid stability
+  and calculating G2E (gas-to-electric) conversion. Provides CR (compute-regulated)
+  PD (power distribution) modeling, thermodynamic analysis, grid stability
   simulation, and AI-driven optimization for integrated energy systems.
 version: 1.2.0
 updated: 2026-03-21
@@ -11,7 +11,7 @@ cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-energy
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — energy conversion simulation, power distribution modeling
+  default: ubuntu-latest        # 2-core — EC simulation, PD modeling
   large:   ubuntu-latest-large  # 4-core — high-performance multiphysics simulation and ML training
 ---
 
@@ -20,11 +20,11 @@ runner_compatibility:
 ## Purpose
 
 Develop and operate programmatic systems that simulate, calculate, and regulate
-the conversion of gas-powered energy sources to electrical output. The agent
-integrates AI-enhanced optimization with thermodynamic modeling, real-time
-sensor fusion, and compute-regulated power distribution control.
+G2E conversion. The agent integrates AI-enhanced optimization with thermodynamic
+modeling, real-time sensor fusion, and CR PD control.
 
-**Domain**: Gas-to-Electric Energy Conversion & AI-Enhanced Power Distribution
+**Domain**: G2E (Gas-to-Electric) EC & AI-Enhanced PD (Power Distribution)
+**Abbrevs**: G2E = gas-to-electric · EC = energy conversion · PD = power distribution · CR = compute-regulated · HITL = human-in-the-loop
 **Cognitive Brain Integration**: Level 2 (Integration)
 **Autonomy Model**: Advisory (E_ONLY) with structured handoffs
 
@@ -43,7 +43,7 @@ standards for AI-integrated energy simulation and embedded prototyping systems:
 | FPGA-accelerated multiphysics | ScienceDirect 2025 (doi:10.1016/j.egyai.2025.001065) |
 | DER management & microgrid | US DOE AI for Energy Opportunities 2024 |
 | Regulatory compliance | Oxford Energy Forum OEF-145 2025 |
-| Raspberry Pi IoT energy monitoring | Mishra et al. (2024) IJSR 13(6) — PZEM-004T + RPi4 |
+| RPi IoT energy monitoring | Mishra et al. (2024) IJSR 13(6) — PZEM-004T + RPi4 |
 | Adaptive PID on embedded platforms | Gund & Malwatkar (2025) IJIES — RPi4 + ESP32 Fuzzy PID |
 | Embedded intelligent EMS / fuel cell | Gaber et al. (2023) Springer Advances in Systems Engineering |
 | RPi PID acquisition system | IEEE Xplore 10315870 (2023) — Ziegler-Nichols on RPi4/RP2040 |
@@ -53,7 +53,7 @@ standards for AI-integrated energy simulation and embedded prototyping systems:
 ## 🎯 Core Responsibilities
 
 ### 1. Energy Conversion Simulation
-- Model thermodynamic processes for gas-to-electric conversion (turbines, internal
+- Model thermodynamic processes for G2E conversion (turbines, internal
   combustion generators, fuel cells, gas-driven generators).
 - Calculate conversion efficiency using enthalpy, entropy, and calorific value
   inputs at configurable operating points.
@@ -350,24 +350,24 @@ VR_pct = ((V_no_load - V_full_load) / V_full_load) * 100
 
 ---
 
-## 🍓 Embedded Hardware Integration (Raspberry Pi / SBC Prototyping)
+## 🍓 Embedded Hardware Integration (RPi/SBC Prototyping)
 
 ### Supported Hardware Platforms
 
-The agent natively targets single-board computers (SBCs) for field-deployable
-energy conversion prototypes. The following platforms are supported and have
+The agent natively targets SBCs for field-deployable
+EC prototypes. The following platforms are supported and have
 been validated against correlated research:
 
 | Platform | CPU / AI | RAM | Best For |
 |----------|----------|-----|----------|
-| **Raspberry Pi 4 Model B** | ARM Cortex-A72 | 2–8 GB | Primary prototyping target; full Linux, Python 3, GPIO |
-| **Raspberry Pi 5** | ARM Cortex-A76 | 4–8 GB | Higher-throughput edge AI inference; PCIe slot for AI HAT |
-| **Raspberry Pi Zero 2 W** | ARM Cortex-A53 | 512 MB | Ultra-compact installation in retrofit products |
+| **RPi 4B** | ARM Cortex-A72 | 2–8 GB | Primary prototyping target; full Linux, Python 3, GPIO |
+| **RPi 5** | ARM Cortex-A76 | 4–8 GB | Higher-throughput edge AI inference; PCIe slot for AI HAT |
+| **RPi Zero 2W** | ARM Cortex-A53 | 512 MB | Ultra-compact installation in retrofit products |
 | **NVIDIA Jetson Orin Nano** | 6-core ARM + 1024-core GPU | 8 GB | On-device neural network inference for LSTM/autoencoder |
 | **BeagleBone AI-64** | TDA4VM dual Cortex-A72 | 4 GB | Real-time PRU co-processors for Modbus / DNP3 sampling |
 | **ESP32 (co-processor)** | Xtensa LX6 dual-core | 520 KB SRAM | Sensor node, PWM actuator, watchdog; MicroPython firmware |
 
-> **Recommended starter kit**: Raspberry Pi 4 (4 GB) + MCP3008 ADC HAT + PZEM-004T meter + MQ-6/MQ-135 sensors.
+> **Recommended starter kit**: RPi 4 (4 GB) + MCP3008 ADC HAT + PZEM-004T meter + MQ-6/MQ-135 sensors.
 > *Citation: Gund & Malwatkar (2025); Mishra et al. (2024)*
 
 ---
@@ -376,7 +376,7 @@ been validated against correlated research:
 
 #### Gas Sensor Array (MQ-Series via MCP3008 ADC)
 
-The Raspberry Pi has no native analog inputs. An SPI-connected 10-bit ADC
+The RPi has no native analog inputs. An SPI-connected 10-bit ADC
 (MCP3008) bridges analog gas sensor outputs to the RPi GPIO header.
 
 ```
@@ -433,6 +433,8 @@ class MQ6SensorSPI:
     VCC = 5.0             # sensor supply voltage
     RL_KOHM = 10.0        # load resistance
     RO_CLEAN_AIR_FACTOR = 9.83
+    MQ6_LPG_A = 10_000.0  # LPG calibration coeff a (datasheet curve)
+    MQ6_LPG_B = -2.44     # LPG calibration coeff b (power exponent)
 
     def __init__(self, spi_bus: int = 0, spi_device: int = 0, channel: int = 0):
         self._spi = spidev.SpiDev()
@@ -458,12 +460,12 @@ class MQ6SensorSPI:
         )
 
     def _voltage_to_ppm(self, v: float) -> float:
-        """RS = (VCC-v)/v * RL; PPM = a*(RS/RO)^b (MQ-6 LPG curve)."""
+        """RS = (VCC-v)/v * RL; PPM = A*(RS/RO)^B (MQ-6 LPG datasheet)."""
         if v < 0.001:
             return 0.0
         rs_kohm = (self.VCC - v) / v * self.RL_KOHM
         rs_ro = rs_kohm / self.RO_CLEAN_AIR_FACTOR
-        return 10_000.0 * (rs_ro ** -2.44)  # MQ-6 LPG coefficients
+        return self.MQ6_LPG_A * (rs_ro ** self.MQ6_LPG_B)
 ```
 
 #### Pattern 2 — PZEM-004T Energy Metering
@@ -565,7 +567,7 @@ class EnergyTelemetryPublisher:
 
     def publish(self, power: "PowerReading", gas_ppm: float, efficiency_pct: float) -> None:
         payload = {
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": datetime.now(timezone.utc).isoformat(),  # JSON field, not filename
             "device": self.device_id,
             "voltage_v": power.voltage_v, "current_a": power.current_a,
             "power_w": power.power_w, "energy_kwh": power.energy_kwh,
@@ -589,7 +591,7 @@ from codex.energy.telemetry.mqtt_publisher import EnergyTelemetryPublisher
 from codex.energy.conversion_calculator import ConversionCalculator
 
 logger = logging.getLogger(__name__)
-GAS_FAULT_PPM = 5_000   # LPG LEL threshold (~1% vol)
+GAS_FAULT_PPM = 5_000   # early-warning: ~20% of LPG LEL (0.5% vol; LEL ≈ 21,000 ppm)
 POWER_SETPOINT_W = 500  # target generator output
 
 def run_acquisition_loop(broker: str, device_id: str = "prototype-01"):
@@ -624,11 +626,11 @@ The following peer-reviewed and authoritative sources directly correlate with
 the codebase patterns, calculation specifications, and hardware integration
 requirements in this agent:
 
-### Embedded Systems & Raspberry Pi Research
+### Embedded Systems & RPi Research
 
 Gaber, M., Khamis, A., & Zydek, D. (2023). Evaluating the performance of
-intelligent energy management systems for hybrid electric vehicles based on
-embedded Raspberry Pi module. In *Advances in Systems Engineering* (pp. 284–292).
+intelligent EMS for hybrid electric vehicles based on
+embedded RPi module. In *Advances in Systems Engineering* (pp. 284–292).
 Springer. https://doi.org/10.1007/978-3-031-40579-2_28
 *(Validates: Pattern 5 acquisition loop; fuel cell EMS on embedded hardware.)*
 
@@ -640,11 +642,11 @@ https://ijies.net/final-docs/final-pdf/10102.pdf
 
 Mishra, A., Srivastav, J., & Srivastav, M. (2024). Real-time IoT-based energy
 and power monitoring and management system for small-scale applications using a
-Raspberry Pi web interface. *International Journal of Science and Research*,
+RPi web UI. *International Journal of Science and Research*,
 13(6), 284–294. https://dx.doi.org/10.21275/SR24603083200
 *(Validates: Pattern 2 PZEM-004T metering; Pattern 5 main acquisition loop.)*
 
-Utilisation of Raspberry Pi 4 and RP2040 microcontroller for PID acquisition
+Utilisation of RPi 4 & RP2040 microcontroller for PID acquisition
 and control system design. (2023). *IEEE Xplore*, Article 10315870.
 https://ieeexplore.ieee.org/document/10315870
 *(Validates: Pattern 3 Ziegler-Nichols PID tuning; RPi real-time control.)*
@@ -671,7 +673,7 @@ https://ieeexplore.ieee.org/document/9874912
 
 ### IoT & Edge AI Architecture
 
-Johal, P. (2024). Raspberry Pi IoT projects: Python GPIO control for sensor
+Johal, P. (2024). RPi IoT projects: Python GPIO control for sensor
 data acquisition. *johal.in*.
 https://johal.in/raspberry-pi-iot-projects-python-gpio-control-for-sensor-data-acquisition/
 *(Validates: Pattern 1 sensor abstraction; GPIO + SPI wiring patterns.)*
