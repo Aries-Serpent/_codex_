@@ -150,6 +150,7 @@ jobs:
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           SHA: ${{ steps.resolve_sha.outputs.sha }}
+          PR_TITLE: ${{ inputs.pr_title }}
         run: |
           PR_BODY="## 🚀 S174 Promotion: \`0D_base_\` → \`main\`
 
@@ -182,7 +183,7 @@ jobs:
 
           python -m codex.github.mcp_poster create-pr \
             --repo "${{ github.repository }}" \
-            --title "${{ inputs.pr_title }}" \
+            --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
             --head "0D_base_" \
             --base "main"
