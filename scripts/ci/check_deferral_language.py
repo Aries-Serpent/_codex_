@@ -498,6 +498,16 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Scan last 10 commit messages via git log",
     )
+    group.add_argument(
+        "--pr-comments",
+        metavar="FILE",
+        help=(
+            "Path to file containing PR/issue comments (one JSON object per line "
+            "with 'body' and optional 'user.login' fields, or plain text). "
+            "Scans agent-posted comments -- the gap where 'pre-existing' deferral "
+            "typically appears in session reasoning posted to PR threads."
+        ),
+    )
     parser.add_argument(
         "--strict",
         action="store_true",
@@ -566,6 +576,37 @@ def main(argv: list[str] | None = None) -> int:
         except subprocess.CalledProcessError as exc:
             print(f"ERROR: git log failed: {exc}", file=sys.stderr)
             return 2
+
+    elif args.pr_comments:
+        # Scan agent-posted PR/issue comments -- the gap where deferral language
+        # appears in session reasoning posted to PR threads rather than in the
+        # PR body or commit messages.
+        # Violation pattern that triggered this fix (S173 PR #3661):
+        #   Agent said "Confirm the 3576 are pre-existing, not introduced by this PR"
+        #   in a PR comment -- not caught because the gate only scanned PR body + commits.
+        import json  # noqa: PLC0415
+        path = Path(args.pr_comments)
+        if not path.exists():
+            print(f"ERROR: File not found: {path}", file=sys.stderr)
+            return 2
+        raw = path.read_text(encoding="utf-8")
+        # Try JSONL format first (one JSON object per line with 'body' field)
+        bodies: list[tuple[str, str]] = []
+        try:
+            for i, line in enumerate(raw.splitlines(), start=1):
+                line = line.strip()
+                if not line:
+                    continue
+                obj = json.loads(line)
+                body = obj.get("body", "")
+                user = obj.get("user", {}).get("login", f"comment-{i}")
+                if body:
+                    bodies.append((body, f"PR comment by {user} (line {i})"))
+        except json.JSONDecodeError:
+            # Fall back to plain text scan
+            bodies = [(raw, f"PR comments ({path.name})")]
+        for body, label in bodies:
+            all_violations += scan(body, label, ml_classifier)
 
     if all_violations:
         _print_policy_reminder()

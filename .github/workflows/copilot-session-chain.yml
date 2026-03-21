@@ -259,7 +259,11 @@ jobs:
 
           Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
           Continue from where PR #${MERGED_PR} left off, addressing any remaining items
-          from the priority list. Review all CI checks and address any failures."
+          from the priority list. Review all CI checks and address any failures.
+
+          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
+          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
+          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
           else
             TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
 
@@ -273,7 +277,11 @@ jobs:
           \`\`\`
 
           Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
-          Begin by reviewing the current CI status of this PR and addressing any failures."
+          Begin by reviewing the current CI status of this PR and addressing any failures.
+
+          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
+          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
+          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
           fi
 
           gh pr comment "${PR_NUMBER}" --body "${TRIGGER_COMMENT}"

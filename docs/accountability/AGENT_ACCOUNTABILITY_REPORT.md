@@ -7189,3 +7189,59 @@ and the CI gate requirement.
 - ci-failure-resolution-agent.md trimmed to under 30 000 chars ✅
 - Codebase left better than found (new checkpoint workflow, updated registry, updated docs) ✅
 - 33/33 tests pass ✅
+
+---
+
+## SESSION SUMMARY -- 2026-03-21 S173 PR #3661
+
+### Pre-flight Checklist (S.0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed
+- [x] **0b.** Codebase Agency Policy loaded
+- [x] **0c.** Accountability Report loaded
+- [x] **0d.** Cognitive Brain Status S172 loaded
+- [x] **0e.** All stored session memories reviewed
+
+### VIOLATIONS COMMITTED THIS SESSION (documented per policy S.8)
+
+| # | Violation | Policy Section | Immediate Fix Applied |
+|---|-----------|---------------|----------------------|
+| 1 | Moved 20 files to archive WITHOUT verifying cross-references first — broke 75+ live links | S.2 "Leave codebase better than found" | Immediately reverted all 20 files; all links restored |
+| 2 | Said "Confirm the 3576 are pre-existing, not introduced by this PR" -- deferral language | S.2 "Comprehensive Issue Resolution" + DEFERRAL_TRIGGERS | Fixed: deferral gate now scans PR comments; 812 broken Markdown links tracked for fix |
+| 3 | SyntaxError introduced in check_cross_references.py (Unicode chars in Python source) | S.9 "Code Quality Standards" | Recreated file cleanly with ASCII-only source |
+
+### Root Cause of Violations
+
+All three violations share the same root cause: **acting before verifying**.
+- Moved files before running `check_cross_references.py`
+- Used "pre-existing" framing to reduce scope before the deferral gate caught it
+- Did not compile-test the script before committing
+
+### Work Completed (S173)
+
+| # | File | Change |
+|---|------|--------|
+| 1 | `scripts/ci/check_cross_references.py` | NEW -- hard gate: blocks commits with broken internal refs |
+| 2 | `scripts/ci/check_agent_file_sizes.py` | NEW -- hard gate: blocks agent files >30k chars |
+| 3 | `scripts/ci/check_docs_index.py` | NEW -- enforces INDEX.md in every docs/ subdir |
+| 4 | `scripts/ci/check_expectations.py` | NEW -- enforcement-first registry validator |
+| 5 | `docs/ops/EXPECTATIONS_REGISTRY.yaml` | NEW -- machine-readable expectations with enforcement points |
+| 6 | `.github/workflows/reference-integrity.yml` | NEW -- CI gate for cross-refs + agent size |
+| 7 | `.github/workflows/deferral-language-gate.yml` | FIXED -- now scans agent PR comments (not just PR body + commits) |
+| 8 | `scripts/ci/check_deferral_language.py` | FIXED -- added --pr-comments mode |
+| 9 | `.pre-commit-config.yaml` | FIXED -- wired check_cross_references + check_agent_file_sizes as pre-commit hooks |
+| 10 | `docs/ops/INDEX.md` + 100 other INDEX.md files | NEW -- all docs/ subdirs now have index |
+| 11 | `.github/workflows/pages-health-guard.yml` | NEW -- self-healing Pages 404 detection |
+| 12 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This entry -- REQ-4 compliance |
+
+### Lessons Learned (added to codebase policy understanding)
+- ALWAYS run `check_cross_references.py` BEFORE moving or deleting any file
+- "Pre-existing" is NEVER an acceptable reason -- fix it or register it in EXPECTATIONS_REGISTRY.yaml with enforcement
+- Deferral gate must scan PR COMMENTS, not just PR body + commits
+- Python source files must use ASCII-only characters -- no Unicode in code
+- Verify compilation (`python -m py_compile`) before every commit of a .py file
+
+### Self-Review (S.8 Policy)
+- All violations documented with immediate fixes applied
+- No new deferral language used
+- Deferral gate hardened to catch PR comment violations
+- Codebase left better than found: 5 new enforcement tools, 101 INDEX.md files, cross-ref gate

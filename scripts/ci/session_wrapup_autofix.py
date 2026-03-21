@@ -61,6 +61,22 @@ _AUTO_ENTRY_SENTINEL = "[auto-generated]"
 # Marker searched in CHANGELOG to locate the [Unreleased] section.
 _UNRELEASED_MARKER = "## [Unreleased]"
 
+# Required PR body sections that report_progress may strip when it overwrites the PR description.
+# These are checked and restored by the pr-body-checkpoint-guardian job in agent-auth-delegation.yml
+# AND by fix_pr_body_checkboxes() when running locally or in CI.
+_REQUIRED_PR_CHECKBOXES = """\
+
+---
+
+### 💰 Cost Governance
+
+- [ ] **💰 Cost Proposal Approved**
+
+### 🔐 Agent Token Delegation
+
+- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
+"""
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -281,6 +297,66 @@ def fix_changelog(
     return True
 
 
+def fix_pr_body_checkboxes(
+    pr_number: str,
+    dry_run: bool = False,
+) -> bool:
+    """Ensure the PR description contains Cost Governance and Agent Token Delegation checkboxes.
+
+    These sections are required by:
+    - cost-gate.yml (reads '💰 Cost Proposal Approved' checkbox)
+    - agent-auth-delegation.yml (reads 'COPILOT_AGENT_AUTH_ENABLED' checkbox)
+
+    The report_progress tool used by Copilot coding agent OVERWRITES the PR description with
+    only the task checklist, stripping these mandatory sections.  This function restores them
+    by appending _REQUIRED_PR_CHECKBOXES if they are absent.
+
+    Requires the `gh` CLI to be authenticated.  Non-fatal if gh is unavailable.
+
+    Returns True if an update was made (or would be made in dry_run), False otherwise.
+    """
+    try:
+        result = subprocess.run(
+            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            capture_output=True, text=True, check=True,
+        )
+        pr_body = result.stdout.strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print(f"⚠  Could not fetch PR #{pr_number} body via gh CLI — skipping checkbox restore")
+        return False
+
+    needs_cost = "💰 Cost Proposal Approved" not in pr_body
+    needs_delegation = "COPILOT_AGENT_AUTH_ENABLED" not in pr_body
+
+    if not needs_cost and not needs_delegation:
+        print(f"✅ PR #{pr_number} already has all required checkboxes — no repair needed")
+        return False
+
+    missing = []
+    if needs_cost:
+        missing.append("Cost Governance")
+    if needs_delegation:
+        missing.append("Agent Token Delegation")
+    print(f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring...")
+
+    new_body = pr_body + _REQUIRED_PR_CHECKBOXES
+
+    if dry_run:
+        print(f"[dry-run] Would append required checkboxes to PR #{pr_number}")
+        return True
+
+    try:
+        subprocess.run(
+            ["gh", "pr", "edit", pr_number, "--body", new_body],
+            check=True, capture_output=True, text=True,
+        )
+        print(f"✅ Restored required checkboxes to PR #{pr_number}")
+        return True
+    except subprocess.CalledProcessError as exc:
+        print(f"⚠  Could not update PR #{pr_number} body: {exc.stderr or exc}", file=sys.stderr)
+        return False
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -390,6 +466,14 @@ def main(argv: list[str] | None = None) -> int:
         )
         if not ok and not _changelog_has_unreleased():
             errors += 1
+
+    # Always restore required PR body checkboxes when running in CI
+    # (report_progress overwrites them; this is the safety-net restore).
+    if args.pr_number != "unknown":
+        fix_pr_body_checkboxes(
+            pr_number=args.pr_number,
+            dry_run=args.dry_run,
+        )
 
     return 1 if errors else 0
 
