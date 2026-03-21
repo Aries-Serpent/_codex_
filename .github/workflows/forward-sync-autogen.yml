@@ -7,19 +7,23 @@ name: "Forward-Sync Auto-Generated Files → 0D_base_ (Safety Net)"
 #   - Race conditions where a push lands on main despite 0D_base_ being active
 #
 # Files forwarded (all written by scheduled workflows):
-#   .codex/agent_context.json                     (repo-var-sync-schedule.yml)
-#   .codex/cognitive_brain/workflow_patterns.jsonl (cognitive-analysis-feed.yml)
-#   .codex/embeddings/codex_index_meta.json        (embedding-index-rebuild.yml)
-#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md    (vars-guide-sync.yml)
+#   .codex/agent_context.json                      (repo-var-sync-schedule.yml)
+#   .codex/cognitive_brain/metadata.json            (cognitive-analysis-feed.yml)
+#   .codex/cognitive_brain/workflow_patterns.jsonl  (cognitive-analysis-feed.yml)
+#   .codex/embeddings/codex_index_meta.json         (embedding-index-rebuild.yml)
+#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md     (vars-guide-sync.yml)
+#   docs/admin/variable_audit_latest.md             (vars-guide-sync.yml)
 
 on:
   push:
     branches: [main]
     paths:
       - ".codex/agent_context.json"
+      - ".codex/cognitive_brain/metadata.json"
       - ".codex/cognitive_brain/workflow_patterns.jsonl"
       - ".codex/embeddings/codex_index_meta.json"
       - "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+      - "docs/admin/variable_audit_latest.md"
 
 concurrency:
   group: forward-sync-autogen
@@ -64,9 +68,11 @@ jobs:
           CHANGED=0
           FILES=(
             ".codex/agent_context.json"
+            ".codex/cognitive_brain/metadata.json"
             ".codex/cognitive_brain/workflow_patterns.jsonl"
             ".codex/embeddings/codex_index_meta.json"
             "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+            "docs/admin/variable_audit_latest.md"
           )
           for f in "${FILES[@]}"; do
             if git show origin/main:"$f" > /tmp/autogen_forward 2>/dev/null; then
@@ -82,7 +88,7 @@ jobs:
           echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
         id: sync
 
-      - name: Commit forwarded files to 0D_base_
+      - name: Commit and push forwarded files to 0D_base_
         if: steps.check-branch.outputs.exists == 'true' && steps.sync.outputs.changed == '1'
         run: |
           git config user.name  "github-actions[bot]"
@@ -90,8 +96,34 @@ jobs:
           git commit -m "chore(autosync): forward auto-generated files from main [skip ci]
 
           Triggered by push ${{ github.sha }} on main.
-          Files: agent_context.json, workflow_patterns.jsonl, codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md"
-          git push origin 0D_base_
+          Files: agent_context.json, metadata.json, workflow_patterns.jsonl,
+                 codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md,
+                 variable_audit_latest.md"
+
+          # Rebase guard: pull any commits that landed on 0D_base_ since checkout
+          # to prevent non-fast-forward rejection on push.
+          git pull --rebase origin 0D_base_ || {
+            echo "⚠️  Rebase failed — re-applying auto-gen files on top of latest 0D_base_"
+            git rebase --abort 2>/dev/null || true
+            git fetch origin 0D_base_ --depth=5
+            git reset --hard origin/0D_base_
+            # Re-copy and re-stage each file that was changed
+            for f in "${FILES[@]}"; do
+              if git show origin/main:"$f" > /tmp/autogen_reapply 2>/dev/null; then
+                if ! cmp -s /tmp/autogen_reapply "$f" 2>/dev/null; then
+                  mkdir -p "$(dirname "$f")"
+                  cp /tmp/autogen_reapply "$f"
+                  git add "$f"
+                fi
+              fi
+            done
+            git diff --cached --quiet && { echo "ℹ️  No changes remain after rebase — skipping push"; exit 0; }
+            git commit -m "chore(autosync): forward auto-generated files from main [skip ci]
+
+          Triggered by push ${{ github.sha }} on main (post-rebase retry)."
+          }
+
+          git push origin HEAD:0D_base_
           echo "✅ Auto-generated files forwarded to 0D_base_"
 
       - name: No-op summary
