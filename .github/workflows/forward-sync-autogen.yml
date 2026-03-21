@@ -1,0 +1,86 @@
+name: "Forward-Sync Auto-Generated Files → 0D_base_"
+
+# Triggered whenever a scheduled workflow commits auto-generated metadata to main.
+# Forwards ONLY the specific auto-generated files to the 0D_base_ integration branch
+# so that the 0D_base_ → main PR never accumulates conflicts on these files.
+#
+# Files forwarded (all written by scheduled workflows, never by agent sessions):
+#   .codex/agent_context.json                     (repo-var-sync-schedule.yml, daily 06:00)
+#   .codex/cognitive_brain/workflow_patterns.jsonl (cognitive-analysis-feed.yml, daily 02:00)
+#   .codex/embeddings/codex_index_meta.json        (embedding-index-rebuild.yml, daily 02:00)
+#   docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md    (vars-guide-sync.yml, daily 06:00)
+#
+# NOT forwarded (removed from git tracking by this PR):
+#   .codex/cognitive_brain/metadata.json  → zero consumers, removed from commit
+#   docs/admin/variable_audit_latest.md   → converted to workflow artifact
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".codex/agent_context.json"
+      - ".codex/cognitive_brain/workflow_patterns.jsonl"
+      - ".codex/embeddings/codex_index_meta.json"
+      - "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+
+concurrency:
+  group: forward-sync-autogen
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  forward-sync:
+    name: "📤 Forward auto-gen files main → 0D_base_"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout 0D_base_
+        uses: actions/checkout@v4
+        with:
+          ref: 0D_base_
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+
+      - name: Fetch auto-generated file versions from main
+        run: |
+          git fetch origin main --depth=1
+
+          CHANGED=0
+          FILES=(
+            ".codex/agent_context.json"
+            ".codex/cognitive_brain/workflow_patterns.jsonl"
+            ".codex/embeddings/codex_index_meta.json"
+            "docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md"
+          )
+          for f in "${FILES[@]}"; do
+            if git show origin/main:"$f" > /tmp/autogen_forward 2>/dev/null; then
+              if ! cmp -s /tmp/autogen_forward "$f" 2>/dev/null; then
+                mkdir -p "$(dirname "$f")"
+                cp /tmp/autogen_forward "$f"
+                git add "$f"
+                echo "Updated: $f"
+                CHANGED=1
+              fi
+            fi
+          done
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+        id: sync
+
+      - name: Commit forwarded files to 0D_base_
+        if: steps.sync.outputs.changed == '1'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(autosync): forward auto-generated files from main [skip ci]
+
+          Triggered by push ${{ github.sha }} on main.
+          Files: agent_context.json, workflow_patterns.jsonl, codex_index_meta.json, GITHUB_VARIABLES_MASTER_GUIDE.md"
+          git push origin 0D_base_
+          echo "✅ Auto-generated files forwarded to 0D_base_"
+
+      - name: No-op summary
+        if: steps.sync.outputs.changed != '1'
+        run: echo "ℹ️  No auto-generated file changes to forward"

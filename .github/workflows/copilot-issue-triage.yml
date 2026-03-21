@@ -1,6 +1,6 @@
 name: Copilot Issue Triage
 
-# Uses mvkaran/gh-copilot@v1.0.0 to automatically triage every new issue.
+# Uses mvkaran/gh-copilot@v1 to automatically triage every new issue.
 # Classifies type/severity, suggests labels, posts a structured summary,
 # and applies labels via GitHub Actions.
 #
@@ -35,7 +35,7 @@ jobs:
 
       - name: Analyze issue with GitHub Copilot
         id: triage
-        uses: mvkaran/gh-copilot@v1.0.0
+        uses: mvkaran/gh-copilot@v1
         with:
           copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
           github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
@@ -144,7 +144,7 @@ jobs:
             if (patternNote) bodyLines.push(patternNote);
             if (needsInfo)   bodyLines.push(needsInfo);
             bodyLines.push('');
-            bodyLines.push('<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1.0.0) — S108 cognitive brain integration</sub>');
+            bodyLines.push('<sub>🤖 Auto-triaged by [GitHub Copilot Action](https://github.com/marketplace/actions/github-copilot-action) (mvkaran/gh-copilot@v1) — S108 cognitive brain integration</sub>');
             const body = bodyLines.join('\n');
 
             await github.rest.issues.createComment({

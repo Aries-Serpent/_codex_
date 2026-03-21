@@ -28,6 +28,7 @@ from typing import Any
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 INDEX_PATH = REPO_ROOT / ".codex" / "embeddings" / "codex_index.faiss"
 META_PATH = REPO_ROOT / ".codex" / "embeddings" / "codex_index_meta.json"
+CHUNKS_PATH = REPO_ROOT / ".codex" / "embeddings" / "codex_index_chunks.json"
 DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
@@ -90,15 +91,22 @@ def query(query_text: str, top_k: int = 5) -> list[dict[str, Any]]:
     meta = json.loads(META_PATH.read_text(encoding="utf-8"))
     index = faiss.read_index(str(INDEX_PATH))
 
+    # Load chunks from dedicated file (preferred) or fall back to legacy embedded chunks
+    if CHUNKS_PATH.exists():
+        chunks_data = json.loads(CHUNKS_PATH.read_text(encoding="utf-8"))
+        chunks = chunks_data.get("chunks", [])
+    else:
+        chunks = meta.get("chunks", [])
+
     model = SentenceTransformer(MODEL_NAME)
     q_vec = model.encode([query_text], convert_to_numpy=True).astype(np.float32)
-    distances, indices = index.search(q_vec, min(top_k, len(meta["chunks"])))
+    distances, indices = index.search(q_vec, min(top_k, len(chunks)))
 
     results = []
     for rank, (dist, idx) in enumerate(zip(distances[0], indices[0])):
-        if idx < 0 or idx >= len(meta["chunks"]):
+        if idx < 0 or idx >= len(chunks):
             continue
-        chunk = meta["chunks"][idx]
+        chunk = chunks[idx]
         results.append(
             {
                 "rank": rank + 1,

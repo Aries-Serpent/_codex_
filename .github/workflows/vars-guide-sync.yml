@@ -123,8 +123,10 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/admin/variable_audit_latest.md \
-                  docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md \
+          # Only commit the human reference guide — variable_audit_latest.md is a
+          # derivative snapshot with no downstream git consumers; it is uploaded
+          # as a workflow artifact below instead to avoid daily merge conflicts.
+          git add docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md \
                   .codex/variable_audit_latest.json 2>/dev/null || true
           git commit -m "chore(vars): auto-sync variable audit report [skip ci]
 
@@ -132,6 +134,15 @@ jobs:
           Triggered by: ${{ github.event_name }}
           " || echo "Nothing to commit"
           git push
+
+      # ── Upload variable_audit_latest.md as artifact (not committed to git) ──
+      - name: Upload audit report artifact
+        if: steps.detect.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: variable-audit-report-${{ github.run_number }}
+          path: docs/admin/variable_audit_latest.md
+          retention-days: 30
 
       # ── Post summary ──────────────────────────────────────────────────────
       - name: Job summary
