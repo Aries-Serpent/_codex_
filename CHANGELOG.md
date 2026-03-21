@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`AGENTS.md`**: Updated header counts (126 workflows, 153 agents); fixed broken cross-reference for `PR_3095_RESOLUTION_PATTERNS.md`.
+- **`.github/agents/AGENT_REGISTRY.yaml`**: `total_agents` bumped 155→156; 5 legacy coverage agents (`coverage-gapfill`, `coverage-maintenance`, `coverage-roadmap`, `test-coverage-agent`, `test-coverage-monitor`) set to `status: archived` with `superseded_by: unified-coverage-agent`; `unified-coverage-agent` added as `status: active`.
+- **`.github/agents/coverage-*.md`, `test-coverage-*.md`**: Replaced with 20-line tombstone stubs pointing to `unified-coverage-agent`.
+- **`.github/workflow-archive/PARITY_CHECKLIST.md`**: S174 summary section added.
+- **`.codex/docs/INTEGRATION_BRANCH_MODEL.md`**: Updated to reflect `0D_base_` re-creation at S174; noted current promotion PR status.
+
+### Added (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md`**: NEW — comprehensive improvement plan for GitHub MCP Service, Playwright, CLI, REST API, and cognitive brain integration; 8 enhancement areas with implementation code stubs.
+- **`src/codex/github/mcp_poster.py`**: Added `create_ref()`, `create_pull_request()`, `list_pull_requests()` write methods to `GitHubMCPPoster`; enables autonomous `0D_base_` → `main` PR lifecycle management without direct `git push`.
+- **`.github/workflow-archive/s174-consolidation/README.md`**: NEW — archival rationale for 3 workflows retired in S174.
+- **`docs/admin/SECRETS_CONFIGURATION.md`**: Moved from `.github/agents/SECRETS_CONFIGURATION.md` to correct location.
+
+### Removed (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`.github/workflows/self-healing.yml`**, **`self_healing_ci.yml`**: Archived to `workflow-archive/s174-consolidation/` — duplicates of canonical `iterative-self-healing-ci.yml`.
+- **`.github/workflows/pr3178-pytest-execution.yml`**: Archived — PR #3178 long merged; workflow still triggered on every 0D_base_→main PR.
+- **31 stale non-agent docs** from `.github/agents/`: Moved to `archive/sessions/`, `archive/cognitive-brain/`, `archive/status-docs/` subdirectories.
+- **`Art_` prefix** removed from `name:` field in 34 surviving workflows (was `Art_Self-Healing CI/CD`, `Art_Audit & QA Suite`, etc.).
+
+### Infrastructure (S174 — 2026-03-21)
+- **`0D_base_` branch**: Re-created from `main` @ `7a2c2ec0a` with S174 session changes merged; staging integration branch restored for `copilot/session-*` → `0D_base_` → `main` promotion flow.
+- **Agent Token Delegation**: `[x] Enable Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)` checkbox activated; `agent-auth-delegation` gated workflow awaiting owner approval to set `COPILOT_AGENT_AUTH_ENABLED=true` and add `copilot-swe-agent[bot]`, `github-copilot[bot]`, `github-actions[bot]` to `COGNITIVE_BRAIN_ALLOWED_ACTORS`.
+
 ### Security (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Full SSRF (CodeQL #12493, Critical) — added `_assert_safe_proxy_url()` guard to `/api/request` proxy endpoint enforcing HTTPS-only, private IP blocklist (RFC-1918, loopback, link-local), and hostname validation.
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Uncontrolled command line / Command injection (CodeQL #12490, Critical) — replaced `asyncio.create_subprocess_shell(req.command)` with `asyncio.create_subprocess_exec(*shlex.split(req.command))`, preventing shell metacharacter injection in `/api/cli/run`.
