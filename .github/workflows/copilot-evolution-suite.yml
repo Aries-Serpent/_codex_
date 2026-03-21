@@ -226,6 +226,9 @@ jobs:
             echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
             git fetch origin "${TARGET_REF}"
             git rebase "origin/${TARGET_REF}"
+            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
+            git fetch origin "${TARGET_REF}"
+            git rebase "origin/${TARGET_REF}"
             git push origin HEAD:${TARGET_REF}
             echo "✅ Evolution updates committed"
           else
