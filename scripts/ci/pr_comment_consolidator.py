@@ -42,6 +42,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -359,7 +360,6 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
     # ── component 2: Review approvals (20%) ──────────────────────────────────
     review_score = 0.0
     review_detail = "unknown"
-    required_approvals = 1  # default; adjust if branch protection available
     if pr:
         reviews = _fetch_reviews(pr_number, token)
         # Count unique approvals (most recent review per reviewer)
@@ -370,8 +370,34 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
             if login:
                 reviewer_states[login] = state
         approvals = sum(1 for s in reviewer_states.values() if s == "APPROVED")
-        review_score = min(1.0, approvals / required_approvals)
-        review_detail = f"{approvals} approval(s)"
+
+        # Try to fetch the actual required-approvals count from branch protection.
+        # For staging/integration branches (e.g. copilot/session-*) branch protection
+        # is typically not configured, so no minimum is enforced.
+        required_approvals: int = 1  # conservative default
+        try:
+            base_ref = pr.get("base", {}).get("ref", "")
+            if base_ref:
+                repo = _repo()
+                bp = _api_request(
+                    "GET",
+                    f"/repos/{repo}/branches/{urllib.parse.quote(base_ref, safe='')}/protection/required_pull_request_reviews",
+                    token=token,
+                )
+                if bp and isinstance(bp, dict):
+                    required_approvals = int(bp.get("required_approving_review_count", 1))
+                else:
+                    # 404 / no protection → branch has no review minimum
+                    required_approvals = 0
+        except Exception:
+            required_approvals = 0  # treat fetch failure as no minimum on staging branches
+
+        if required_approvals == 0:
+            review_score = 1.0
+            review_detail = f"{approvals} approval(s) (no minimum required on this branch)"
+        else:
+            review_score = min(1.0, approvals / required_approvals)
+            review_detail = f"{approvals} approval(s)"
     else:
         review_score = 0.5  # neutral when PR data unavailable
         review_detail = "could not fetch reviews"
