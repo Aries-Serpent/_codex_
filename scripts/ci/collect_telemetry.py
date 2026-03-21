@@ -64,6 +64,9 @@ class TelemetryCollector:
         "self-healing": [
             "self-heal", "self_healing", "self healing", "session-watchdog",
             "watchdog",
+            # S172 cascade root-cause signature: .venv_ci/bin/pip absent on cache miss
+            "iterative-self-healing-ci",
+            "self-heal(iter-",
         ],
         # ── Security / scanning patterns ─────────────────────────────────────
         "security-scan": [
@@ -379,6 +382,66 @@ class TelemetryCollector:
             print(f"  {pattern}: {count} ({percentage:.1f}%)")
 
         return telemetry_data
+
+    def analyze_multi_job_cascade(self, telemetry_data: Dict) -> Dict:
+        """Identify self-healing cascade patterns across multiple jobs in a workflow run.
+
+        A cascade occurs when the dominant failure pattern is 'self-healing', meaning
+        the Iterative Self-Healing CI workflow itself is failing (rather than it
+        successfully healing other workflows).  This helper computes:
+
+        - cascade_detected: bool — True when 'self-healing' > 50% of all failures
+        - cascade_rate:     float — fraction of failures that are self-healing
+        - root_cause:       str   — human-readable root cause explanation
+        - recommended_action: str — what to do to remediate
+
+        Used by ci-health-alert-agent.md Phase 2 pattern classification.
+        """
+        distribution = telemetry_data.get("pattern_distribution", {})
+        total_failures = sum(distribution.values())
+        if total_failures == 0:
+            return {"cascade_detected": False, "cascade_rate": 0.0,
+                    "root_cause": "No failures to analyze", "recommended_action": "none"}
+
+        self_healing_count = distribution.get("self-healing", 0)
+        cascade_rate = self_healing_count / total_failures
+
+        cascade_detected = cascade_rate > 0.50
+        if cascade_detected:
+            root_cause = (
+                f"Self-healing cascade: {self_healing_count}/{total_failures} failures "
+                f"({cascade_rate*100:.1f}%) are from Iterative Self-Healing CI runs. "
+                "Most likely root cause: .venv_ci/bin/pip absent on venv cache miss "
+                "(SELF_HEALING_001 sub-scenario A). Fixed in S172 with pip fallback."
+            )
+            recommended_action = (
+                "1. Verify iterative-self-healing-ci.yml has the S172 pip fallback fix. "
+                "2. Check CODEX_CACHE_VERSION — a version bump busts the L3 venv cache. "
+                "3. Monitor for 7 days post-fix; failure rate should drop to <1%."
+            )
+        else:
+            root_cause = (
+                f"No cascade detected: self-healing failures at {cascade_rate*100:.1f}% "
+                f"of total ({self_healing_count}/{total_failures})."
+            )
+            top_pattern = max(distribution, key=distribution.get) if distribution else "unknown"
+            top_count = distribution.get(top_pattern, 0)
+            recommended_action = (
+                f"Investigate top failure pattern: '{top_pattern}' ({top_count} occurrences). "
+                f"See '.codex/patterns/ci_failure_patterns.yaml' for pattern fix guidance. "
+                f"Run: python scripts/ci/collect_telemetry.py --classify-run <RUN_ID> "
+                f"--owner Aries-Serpent --repo _codex_"
+            )
+
+        return {
+            "cascade_detected": cascade_detected,
+            "cascade_rate": round(cascade_rate, 4),
+            "self_healing_count": self_healing_count,
+            "total_failures": total_failures,
+            "root_cause": root_cause,
+            "recommended_action": recommended_action,
+            "pattern_distribution": distribution,
+        }
 
 
 def main():

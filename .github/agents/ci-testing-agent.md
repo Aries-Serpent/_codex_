@@ -1,10 +1,10 @@
 ---
 name: CI Testing Agent
-description: Debug CI/CD pipeline failures, fix test collection errors, and resolve import and build issues
-version: 4.0.0-unified
-updated: 2026-02-20
+description: Debug CI/CD pipeline failures, fix test collection errors, resolve import and build issues, and detect self-healing cascades with build-awareness
+version: 4.1.0-unified
+updated: 2026-03-21
 cognitive_integration_level: 3
-aais_contribution: +4.0 points
+aais_contribution: +4.5 points
 batch: pr-6
 merged_agents:
   - ci-failure-resolution-agent (deprecated)
@@ -13,6 +13,11 @@ planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-1
 runner_compatibility:
   default: ubuntu-latest        # 2-core — all 17 fix patterns, sequential self-healing loop
   large:   ubuntu-latest-large  # 4-core — parallel log retrieval and faster fix validation
+lessons_learned_s172:
+  - "self-healing cascade is #1 failure pattern; always call analyze_multi_job_cascade() first"
+  - ".venv_ci/bin/pip direct calls fail on cache miss; always use resilient fallback pattern"
+  - "CODEX_CI_FAILURE_THRESHOLD=10% means ~120 self-healing retries/week now trigger alerts"
+  - "Security alerts (CodeQL/Dependabot) must be counted and fed to AAIS V4 scorer env vars"
 ---
 
 # CI Testing Agent v4.0 (Unified CI Failure Resolver)

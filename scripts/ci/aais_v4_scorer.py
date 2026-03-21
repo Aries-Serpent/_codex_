@@ -247,6 +247,11 @@ def _collect_security_posture() -> SubDimension:
         open_high      = int(os.environ.get("CODEX_OPEN_HIGH_ALERTS",       "0"))
         open_moderate  = int(os.environ.get("CODEX_OPEN_MODERATE_ALERTS",   "0"))
     except ValueError:
+        import logging as _logging
+        _logging.getLogger(__name__).warning(
+            "AAIS scorer: invalid value in CODEX_OPEN_*_ALERTS env var; defaulting to 0. "
+            "Check that the variable contains a plain integer."
+        )
         open_critical = open_high = open_moderate = 0
     alert_penalty = open_critical * 5.0 + open_high * 2.0 + open_moderate * 1.0
     score = max(0.0, min(base_score, base_score - alert_penalty))
@@ -351,6 +356,12 @@ def _collect_reliability() -> SubDimension:
         try:
             ci_rate = float(rate_str.split(":")[0])
         except ValueError:
+            import logging as _logging
+            _logging.getLogger(__name__).warning(
+                "AAIS scorer: invalid CODEX_CI_FAILURE_RATE value %r; defaulting to 0.0. "
+                "Expected format: '<float>:<status>' e.g. '13.3:degraded'.",
+                rate_str,
+            )
             ci_rate = 0.0
     # Each 1% failure rate = -1.0 pt reliability deduction, capped at -25 pts
     reliability_penalty = min(ci_rate * 1.0, 25.0)

@@ -168,6 +168,20 @@ def _assert_safe_proxy_url(url: str) -> None:
 
     Called by the ``/api/request`` proxy endpoint before making an outbound
     request so that Full SSRF (CodeQL alert #12493) cannot be exploited.
+
+    **Limitations (documented, not silent):**
+    - *DNS rebinding*: if a hostname initially resolves to a public IP but is
+      later remap­ped to a private IP (DNS rebinding attack), this guard will
+      not catch it because DNS resolution is performed by the HTTP client after
+      this check.  **Mitigation**: deploy this server behind a network-level
+      egress firewall that blocks outbound connections to RFC-1918 / loopback
+      ranges regardless of how the hostname resolves.
+    - *IPv6 scope IDs*: ``fe80::1%eth0`` addresses are not fully normalised by
+      ``ipaddress.ip_address()``; the ``fe80::/10`` network block covers the
+      typical link-local range.
+
+    For maximum protection combine this guard with an egress proxy or firewall
+    rule that enforces the same IP range restrictions at the network level.
     """
     from fastapi import HTTPException  # local import avoids circular at module level
 
@@ -709,7 +723,11 @@ async def ooda_metrics():
 
 # ── CLI one-shot endpoint ─────────────────────────────────────────────────────
 
-# Commands that are never allowed (safety boundary)
+# Commands that are never allowed (safety boundary — applied before shlex.split).
+# Note: shlex.split + create_subprocess_exec prevents shell *injection* but cannot
+# prevent execution of arbitrary binaries in PATH.  The _BLOCKED denylist is a
+# best-effort guardrail; production deployments should additionally restrict this
+# endpoint to authenticated sessions and/or an allowlist of permitted commands.
 _BLOCKED = re.compile(
     r'\b(rm\s+-rf\s+/|mkfs|dd\s+if=|shutdown|reboot|:(){ :|:& };:)\b'
 )

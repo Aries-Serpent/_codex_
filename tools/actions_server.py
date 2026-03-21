@@ -52,9 +52,16 @@ def _validate_repo_component(value: str, name: str) -> None:
 
 
 def _validate_file_path(path: str) -> None:
-    """Reject paths that contain traversal sequences or absolute references."""
-    parts = path.replace("\\", "/").split("/")
-    if ".." in parts or path.startswith("/"):
+    """Reject paths that contain traversal sequences or absolute references.
+
+    Normalises URL percent-encoding (e.g. ``%2e%2e`` or ``.%2e``) before
+    checking so that encoded traversal sequences are caught.
+    """
+    # Decode percent-encoded characters before checking
+    from urllib.parse import unquote as _unquote
+    decoded = _unquote(path)
+    parts = decoded.replace("\\", "/").split("/")
+    if ".." in parts or decoded.startswith("/"):
         raise ValueError(
             f"Invalid path {path!r}: path traversal sequences ('..') and "
             "absolute paths are not permitted"
