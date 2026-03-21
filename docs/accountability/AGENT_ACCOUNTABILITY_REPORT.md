@@ -1,9 +1,34 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/sub-pr-3635-again
+**Branch:** copilot/session-20260321-014335-23369347957
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-20T05:00Z (S164 — Cherry-pick consolidation PRs #3636–#3639)
+**Last updated:** 2026-03-21T02:00Z (S168 — codex-manifest-refresh 0D_base_ routing)
+
+---
+
+## SESSION SUMMARY — 2026-03-21 S168 PR #3647
+
+### Work Completed (S168)
+| Area | Change | Detail |
+|------|--------|--------|
+| `.github/workflows/codex-manifest-refresh.yml` | `0D_base_` branch routing | On schedule runs, routes `CODEX_MANIFEST.json` + compliance files to `0D_base_` when active; falls back to `main` when not present |
+| `CHANGELOG.md` | S168 entry | Documents manifest-refresh routing fix |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary | S168 outcomes recorded |
+
+### CI Check Status
+- REQ-4/REQ-5 failures on initial session-init commit — expected (no substantive changes on that commit); resolved by this commit
+- Agent Token Delegation REQ-11 check: PR head.ref is sub-branch (not 0D_base_), so REQ-11 passes correctly
+
+### Verification
+```bash
+# Verify YAML is valid after edit
+python3 -c "import yaml; yaml.safe_load(open('.github/workflows/codex-manifest-refresh.yml')); print('YAML valid')"
+# Verify CHANGELOG has [Unreleased] entry
+grep -c "^## \[Unreleased\]$" CHANGELOG.md  # → 1
+# Verify 0D_base_ check in the workflow
+grep -A4 "0D_base_ integration branch detected" .github/workflows/codex-manifest-refresh.yml
+```
 
 ---
 
