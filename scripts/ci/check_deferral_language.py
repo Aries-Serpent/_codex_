@@ -584,7 +584,6 @@ def main(argv: list[str] | None = None) -> int:
         # Violation pattern that triggered this fix (S173 PR #3661):
         #   Agent said "Confirm the 3576 are pre-existing, not introduced by this PR"
         #   in a PR comment -- not caught because the gate only scanned PR body + commits.
-        import json  # noqa: PLC0415
         path = Path(args.pr_comments)
         if not path.exists():
             print(f"ERROR: File not found: {path}", file=sys.stderr)

@@ -49,6 +49,7 @@ Exit codes
 from __future__ import annotations
 
 import argparse
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -129,8 +130,7 @@ def run_check_command(exp: dict) -> tuple[bool, str]:
         return True, "(no check command)"
     try:
         result = subprocess.run(
-            check_cmd,
-            shell=True,  # noqa: S602  # intentional: check commands are from trusted YAML
+            shlex.split(check_cmd),
             capture_output=True,
             text=True,
             cwd=REPO_ROOT,
@@ -249,6 +249,7 @@ def main(argv: list[str] | None = None) -> int:
             try:
                 target = str(Path(target).relative_to(REPO_ROOT))
             except ValueError:
+                # Path is outside the repo root; keep the original target string for registry lookup.
                 pass
             info = docs.get(target)
             if info is None:
