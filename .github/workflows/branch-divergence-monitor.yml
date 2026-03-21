@@ -498,7 +498,6 @@ jobs:
                 title,
                 body,
                 labels: ['branch-divergence', 'automated', 'ci-triage'],
-                assignees: ['Copilot'],
               });
               console.log(`Created divergence issue #${created.data.number}`);
             }
