@@ -3779,6 +3779,42 @@ agents:
   - session_branch_management
   - zero_d_base_routing
   - integration_branch_management
+
+- id: post-accountability-to-discussion
+  name: Post Accountability to Discussion Workflow
+  version: 1.0.0
+  file: .github/workflows/post-accountability-to-discussion.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: governance
+  description: >
+    Automated workflow that posts session accountability entries to GitHub
+    Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report).
+    Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL
+    to add a dedup-safe comment on the discussion thread. Priority 0 hardened
+    process replacing direct file logging.
+  added_in_pr: S175
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: governance
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
+  capability_tags:
+  - accountability_reporting
+  - discussion_posting
+  - governance_automation
+  - session_documentation
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

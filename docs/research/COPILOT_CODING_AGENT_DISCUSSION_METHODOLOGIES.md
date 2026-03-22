@@ -139,7 +139,7 @@ curl -s -X POST https://api.github.com/graphql \
   run: |
     gh pr comment ${{ github.event.pull_request.number }} \
       --body "## 🤖 Copilot Agent Report\n\n$(cat .codex/report.md)"
-    
+
     # Or create a new issue discussion
     gh issue comment $ISSUE_NUMBER --body "Analysis complete. See PR #${PR}."
 ```

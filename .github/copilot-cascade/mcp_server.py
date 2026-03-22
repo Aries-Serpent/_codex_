@@ -9,12 +9,36 @@ import asyncio
 import json
 import logging
 import os
+import sys
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# ---------------------------------------------------------------------------
+# Standalone SSE transport helper (single source of truth: scripts/ci/).
+# We attempt to import it at module load time so that tests against the
+# stand-alone script and tests against mcp_server both exercise identical
+# logic.  When running inside the .github/copilot-cascade/ tree (without
+# a full repo checkout) the import may fail; in that case we fall back to
+# the local implementation defined below.
+# ---------------------------------------------------------------------------
+_SSE_TRANSPORT_PATH = str(
+    Path(__file__).parent.parent.parent / "scripts" / "ci"
+)
+_sse_transport_imported = False
+try:
+    if _SSE_TRANSPORT_PATH not in sys.path:
+        sys.path.insert(0, _SSE_TRANSPORT_PATH)
+    from mcp_sse_transport import (  # noqa: E402
+        http_post_json_streaming as _http_post_json_streaming_fn,
+    )
+    _sse_transport_imported = True
+except ImportError:
+    _sse_transport_imported = False
 
 logger = logging.getLogger(__name__)
 
@@ -527,41 +551,28 @@ class MCPIntegration:
         auth_token: Optional[str] = None,
         timeout: int = 30,
     ) -> Dict[str, Any]:
-        """POST JSON and read the response as Server-Sent Events (SSE) or plain JSON.
+        """POST JSON and read the response as SSE or plain JSON.
 
-        If the server responds with ``Content-Type: text/event-stream``, each
-        ``data: <json>`` line is parsed and accumulated.  The *last* data frame
-        that contains a ``result`` or ``error`` key is returned as the final
-        body, with an additional ``_streaming_chunks`` counter.
+        Delegates to :func:`scripts.ci.mcp_sse_transport.http_post_json_streaming`
+        when available (single source of truth).  Falls back to the inline
+        implementation when the scripts tree is not on the path.
 
-        If the response is plain JSON (non-SSE), the body is decoded normally —
-        providing transparent fallback for non-streaming MCP servers.
-
-        Parameters
-        ----------
-        url:
-            HTTP/HTTPS endpoint — must start with ``http://`` or ``https://``.
-        payload:
-            JSON-serialisable request body (JSON-RPC 2.0 object).
-        auth_token:
-            Optional bearer token for the ``Authorization`` header.
-        timeout:
-            Request timeout in seconds.
-
-        Returns
-        -------
-        dict
-            Final decoded JSON result, plus ``_streaming_chunks`` count when
-            SSE streaming was used.
-
-        Raises
-        ------
-        ValueError
-            If *url* does not start with ``http://`` or ``https://``.
+        See :mod:`mcp_sse_transport` for the full parameter/return documentation.
         """
+        if _sse_transport_imported:
+            return _http_post_json_streaming_fn(
+                url, payload, auth_token=auth_token, timeout=timeout
+            )
+
+        # ------------------------------------------------------------------ #
+        # Fallback implementation (identical logic, kept for environments     #
+        # where the repo root is not available, e.g. a bare checkout of the  #
+        # .github/copilot-cascade/ sub-tree only).                            #
+        # ------------------------------------------------------------------ #
         if not url.startswith(("http://", "https://")):
             raise ValueError(
-                f"_http_post_json_streaming: URL must start with http:// or https://, got: {url!r}"
+                f"_http_post_json_streaming: URL must start with "
+                f"http:// or https://, got: {url!r}"
             )
         data = json.dumps(payload).encode("utf-8")
         headers: Dict[str, str] = {
@@ -577,15 +588,13 @@ class MCPIntegration:
             raw = resp.read()
 
         if "text/event-stream" not in content_type:
-            # Non-streaming server — decode as plain JSON (fallback path).
             return json.loads(raw)
 
-        # Parse SSE stream: collect all `data:` frames, return the final one.
         chunks: List[Dict[str, Any]] = []
         for line in raw.decode("utf-8").splitlines():
             line = line.strip()
             if line.startswith("data:"):
-                fragment = line[len("data:"):].strip()
+                fragment = line.removeprefix("data:").strip()
                 if fragment in ("", "[DONE]"):
                     continue
                 try:
@@ -593,12 +602,17 @@ class MCPIntegration:
                     if isinstance(frame, dict):
                         chunks.append(frame)
                 except json.JSONDecodeError:
-                    logger.debug("MCP SSE: skipping non-JSON fragment: %r", fragment)
+                    logger.debug(
+                        "MCP SSE: skipping non-JSON fragment: %r", fragment
+                    )
 
         if not chunks:
-            return {"error": {"message": "SSE stream contained no parseable data frames"}}
+            return {
+                "error": {
+                    "message": "SSE stream contained no parseable data frames"
+                }
+            }
 
-        # The last frame with result/error wins; merge chunk count for observability.
         final = chunks[-1]
         final["_streaming_chunks"] = len(chunks)
         return final

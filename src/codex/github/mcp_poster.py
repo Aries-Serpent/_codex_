@@ -338,7 +338,13 @@ class GitHubMCPPoster:
         self._record_cb_pattern(
             "CB-pr-open",
             f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
-            {"repo": repo, "head": head, "base": base, "pr_number": result.get("number"), "draft": draft},
+            {
+                "repo": repo,
+                "head": head,
+                "base": base,
+                "pr_number": result.get("number"),
+                "draft": draft,
+            },
         )
         return result
 
@@ -449,7 +455,12 @@ class GitHubMCPPoster:
         self._record_cb_pattern(
             "CB-merge",
             f"merge_branch: {head!r} → {base!r} outcome={outcome}",
-            {"repo": repo, "base": base, "head": head, "sha": result.get("sha", "") if result else ""},
+            {
+                "repo": repo,
+                "base": base,
+                "head": head,
+                "sha": result.get("sha", "") if result else "",
+            },
             outcome=outcome,
         )
         return result
@@ -567,7 +578,11 @@ class GitHubMCPPoster:
                 pid = getattr(p, "pattern_id", "unknown")
                 dec = getattr(p, "decision", "")[:60]
                 sr = getattr(p, "success_rate", None)
-                outcome = "✅ success" if sr == 1.0 else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
+                outcome = (
+                    "✅ success"
+                    if sr == 1.0
+                    else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
+                )
                 lines.append(f"| `{pid}` | {dec} | {outcome} |")
 
             return "\n".join(lines) + "\n"
