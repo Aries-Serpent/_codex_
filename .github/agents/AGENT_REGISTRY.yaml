@@ -2596,8 +2596,7 @@ agents:
   capability_tags:
   - testing
   - coverage
-  - ci
-- id: test-enhancement-agent
+  - cicd
   batch_scan_enabled: true
   name: Test Enhancement Agent
   file: test-enhancement-agent.md
@@ -3778,7 +3777,7 @@ agents:
   capability_tags:
   - sub_pr_creation
   - session_branch_management
-  - 0D_base_routing
+  - zero_d_base_routing
   - integration_branch_management
 standardization_status:
   fully_compliant: 12

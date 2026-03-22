@@ -37,7 +37,7 @@ on:
       force_recreate:
         description: "Delete and recreate 0D_base_ if it already exists"
         required: false
-        default: "false"
+        default: false
         type: boolean
 
 permissions:
@@ -92,7 +92,7 @@ jobs:
           fi
 
       - name: Delete existing 0D_base_ (force recreate)
-        if: inputs.force_recreate == 'true'
+        if: inputs.force_recreate
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |

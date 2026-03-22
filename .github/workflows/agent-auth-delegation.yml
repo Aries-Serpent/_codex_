@@ -1391,6 +1391,8 @@ jobs:
       # ── 3d: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
         uses: actions/github-script@v7
+        env:
+          CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -1401,7 +1403,10 @@ jobs:
             }
             const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
             const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const cbPatterns = `${{ steps.cb_patterns.outputs.cb_markdown || '' }}`.trim();
+            // Read via process.env to prevent code injection via backticks or ${...}
+            // in markdown content from breaking the JS template literal.
+            // (See review comment: cbPatterns interpolation, PR #3671.)
+            const cbPatterns = (process.env.CB_PATTERNS || '').trim();
 
             const UPSERT_MARKER_DELEGATION = '<!-- agent-token-delegation-result -->';
             const cbSection = cbPatterns
