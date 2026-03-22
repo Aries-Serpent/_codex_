@@ -49,7 +49,7 @@ gh-advisory-database check torch <version>  # if not already pinned
 
 class DeferralMLClassifier:
     """Lightweight TF-IDF + LinearSVC classifier for intent detection.
-    
+
     Falls back to regex patterns if model not available.
     Trained on 200 labeled examples in .codex/training_data/deferral_examples.jsonl
     """
@@ -123,12 +123,12 @@ class UserRepository(ABC):
 # src/codex/auth/sqlite_user_repository.py
 class SQLiteUserRepository(UserRepository):
     """Thread-safe SQLite backend for single-node deployments."""
-    
+
     def __init__(self, db_path: str | Path = ":memory:") -> None:
         self._db_path = str(db_path)
         self._lock = threading.RLock()
         self._init_schema()
-    
+
     def _init_schema(self) -> None:
         with self._get_conn() as conn:
             conn.execute("""
