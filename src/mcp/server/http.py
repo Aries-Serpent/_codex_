@@ -134,9 +134,7 @@ def _get_expected_api_key() -> Optional[str]:
         return None
     key = os.environ.get("MCP_API_KEY", DEFAULT_API_KEY)
     if key == DEFAULT_API_KEY:
-        logger.warning(
-            "MCP server using default dev API key — set MCP_API_KEY for production"
-        )
+        logger.warning("MCP server using default dev API key — set MCP_API_KEY for production")
     return key
 
 

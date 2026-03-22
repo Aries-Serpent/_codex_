@@ -37,8 +37,10 @@ typer = _load_typer()
 try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
 except Exception:  # pragma: no cover
+
     def evaluate_datasets(*args, **kwargs):  # type: ignore[misc]
         return None
+
 
 if typer is not None:
     app = typer.Typer(
