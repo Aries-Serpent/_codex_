@@ -459,7 +459,7 @@ class TestPlaywrightScraperInit:
 
 
 class TestAuthenticate:
-    """_authenticate branch coverage (lines 80-103)."""
+    """_authenticate branch coverage — IMP-008 CDP route interception."""
 
     def _make_scraper(self, monkeypatch, token=""):
         import playwright_scraper as ps
@@ -472,54 +472,61 @@ class TestAuthenticate:
         page = MagicMock()
         assert scraper._authenticate(page) is False
 
-    def test_token_status_200_returns_true(self, monkeypatch):
+    def test_token_registers_routes_returns_true(self, monkeypatch):
+        """With a token, two page.route() calls are registered and True is returned."""
         scraper = self._make_scraper(monkeypatch, token="valid_token")
         page = MagicMock()
 
-        mock_resp = MagicMock()
-        mock_resp.status_code = 200
-        mock_resp.json.return_value = {"login": "testuser"}
-
-        mock_requests = MagicMock()
-        mock_requests.get.return_value = mock_resp
-
-        with patch.dict("sys.modules", {"requests": mock_requests}):
-            result = scraper._authenticate(page)
+        result = scraper._authenticate(page)
 
         assert result is True
-        mock_requests.get.assert_called_once()
-        call_kwargs = mock_requests.get.call_args
-        assert call_kwargs[0][0] == "https://api.github.com/user"
+        # Verify that route interception was registered for both github.com origins.
+        assert page.route.call_count == 2
+        call_urls = [call[0][0] for call in page.route.call_args_list]
+        assert "https://github.com/**" in call_urls
+        assert "https://api.github.com/**" in call_urls
 
-    def test_token_status_401_still_returns_true(self, monkeypatch):
-        scraper = self._make_scraper(monkeypatch, token="bad_token")
+    def test_token_route_handler_injects_auth_header(self, monkeypatch):
+        """The registered route handler merges the Authorization header."""
+        scraper = self._make_scraper(monkeypatch, token="mytoken")
         page = MagicMock()
 
-        mock_resp = MagicMock()
-        mock_resp.status_code = 401
+        scraper._authenticate(page)
 
-        mock_requests = MagicMock()
-        mock_requests.get.return_value = mock_resp
+        # Capture the route handler registered for github.com
+        handler = page.route.call_args_list[0][0][1]
 
-        with patch.dict("sys.modules", {"requests": mock_requests}):
-            result = scraper._authenticate(page)
+        # Simulate a route call with an existing header
+        mock_route = MagicMock()
+        mock_route.request.headers = {"Accept": "text/html"}
+        handler(mock_route)
 
+        # The handler should have merged in the Authorization header
+        merged = mock_route.continue_.call_args[1]["headers"]
+        assert merged["Authorization"] == "token mytoken"
+        assert merged["Accept"] == "text/html"
+
+    def test_token_status_401_still_returns_true(self, monkeypatch):
+        """No longer calls requests.get — route interception returns True regardless."""
+        scraper = self._make_scraper(monkeypatch, token="bad_token")
+        page = MagicMock()
+        result = scraper._authenticate(page)
         assert result is True
 
     def test_token_status_403_still_returns_true(self, monkeypatch):
+        """No longer calls requests.get — route interception returns True regardless."""
         scraper = self._make_scraper(monkeypatch, token="limited_token")
         page = MagicMock()
-
-        mock_resp = MagicMock()
-        mock_resp.status_code = 403
-
-        mock_requests = MagicMock()
-        mock_requests.get.return_value = mock_resp
-
-        with patch.dict("sys.modules", {"requests": mock_requests}):
-            result = scraper._authenticate(page)
-
+        result = scraper._authenticate(page)
         assert result is True
+
+    def test_route_registration_failure_returns_false(self, monkeypatch):
+        """When page.route() raises, _authenticate returns False gracefully."""
+        scraper = self._make_scraper(monkeypatch, token="tok")
+        page = MagicMock()
+        page.route.side_effect = RuntimeError("CDP unavailable")
+        result = scraper._authenticate(page)
+        assert result is False
 
 
 class TestExtractRowData:
@@ -673,8 +680,9 @@ class TestIterPages:
         lnk.inner_text.return_value = " Link Alert "
         lnk.get_attribute.return_value = "/owner/repo/security/code-scanning/55"
 
-        # First call (rows) → empty; second call (links) → [lnk]
-        page.query_selector_all.side_effect = [[], [lnk]]
+        # _find_alert_rows tries each of the 4 _ALERT_SELECTORS in order;
+        # all return empty → falls through to the link-based fallback query.
+        page.query_selector_all.side_effect = [[], [], [], [], [lnk]]
         page.query_selector.return_value = None  # no next button
 
         with patch("time.sleep"):
@@ -756,7 +764,8 @@ class TestIterPages:
         lnk.inner_text.return_value = "Alert"
         lnk.get_attribute.return_value = "/owner/repo/security/code-scanning/abc"
 
-        page.query_selector_all.side_effect = [[], [lnk]]
+        # _find_alert_rows tries each of the 4 _ALERT_SELECTORS; all return empty.
+        page.query_selector_all.side_effect = [[], [], [], [], [lnk]]
         page.query_selector.return_value = None
 
         with patch("time.sleep"):

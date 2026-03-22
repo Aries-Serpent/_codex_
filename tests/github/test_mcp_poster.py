@@ -912,3 +912,138 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
     monkeypatch.setattr(argparse.ArgumentParser, "parse_args", patched_parse)
     rc = main([])
     assert rc == 0
+
+
+# ---------------------------------------------------------------------------
+# IMP-002 — Git Data API commit_files tests
+# ---------------------------------------------------------------------------
+
+def test_get_method_returns_json(poster, monkeypatch):
+    """_get() parses JSON from a successful GET response."""
+    import json
+    import urllib.request
+    from io import BytesIO
+    from unittest.mock import MagicMock
+
+    fake_resp = MagicMock()
+    fake_resp.__enter__ = lambda s: s
+    fake_resp.__exit__ = MagicMock(return_value=False)
+    fake_resp.read.return_value = json.dumps({"object": {"sha": "abc123"}}).encode()
+
+    monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: fake_resp)
+    result = poster._get("https://api.github.com/repos/owner/repo/git/refs/heads/main")
+    assert result == {"object": {"sha": "abc123"}}
+
+
+def test_get_method_rejects_non_https(poster):
+    """_get() raises ValueError for non-HTTPS URLs."""
+    with pytest.raises(ValueError, match="URL scheme must be https"):
+        poster._get("http://api.github.com/repos/owner/repo/git/refs/heads/main")
+
+
+def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
+    """commit_files() calls the full Git Data API pipeline in order."""
+    import json
+    import urllib.request
+    from io import BytesIO
+    from unittest.mock import MagicMock, call, patch
+
+    call_log: list[tuple[str, str]] = []
+
+    def fake_post(url, payload, **kwargs):
+        call_log.append(("POST", url))
+        if "/git/blobs" in url:
+            return {"sha": "blob_sha_abc"}
+        if "/git/trees" in url:
+            return {"sha": "tree_sha_xyz"}
+        if "/git/commits" in url:
+            return {"sha": "commit_sha_123"}
+        return {}
+
+    def fake_patch(url, payload, **kwargs):
+        call_log.append(("PATCH", url))
+        return {"ref": "refs/heads/test-branch", "object": {"sha": "commit_sha_123"}}
+
+    def fake_get(url, **kwargs):
+        call_log.append(("GET", url))
+        if "/git/refs/" in url:
+            return {"object": {"sha": "head_sha_def"}}
+        if "/git/commits/" in url:
+            return {"tree": {"sha": "base_tree_ghi"}}
+        return {}
+
+    monkeypatch.setattr(poster, "_post", fake_post)
+    monkeypatch.setattr(poster, "_get", fake_get)
+
+    original_request = poster._request
+
+    def fake_request(method, url, payload, **kwargs):
+        if method == "PATCH":
+            return fake_patch(url, payload)
+        return original_request(method, url, payload, **kwargs)
+
+    monkeypatch.setattr(poster, "_request", fake_request)
+
+    result = poster.commit_files(
+        "owner/repo",
+        "test-branch",
+        {"docs/README.md": "# Hello\n"},
+        "docs: update README",
+    )
+
+    assert result == "commit_sha_123"
+
+    # Verify the pipeline order: GET ref → GET commit → POST blob → POST tree → POST commit → PATCH ref
+    methods = [(m, u.split("/")[-2] if "/" in u else u) for m, u in call_log]
+    assert any(m == "GET" and "refs" in u for m, u in call_log), "GET ref not called"
+    assert any(m == "GET" and "commits" in u for m, u in call_log), "GET commit-tree not called"
+    assert any(m == "POST" and "blobs" in u for m, u in call_log), "POST blob not called"
+    assert any(m == "POST" and "trees" in u for m, u in call_log), "POST tree not called"
+    assert any(m == "POST" and "commits" in u for m, u in call_log), "POST commit not called"
+    assert any(m == "PATCH" for m, u in call_log), "PATCH ref not called"
+
+
+def test_cli_commit_files(monkeypatch, tmp_path):
+    """CLI commit-files command calls commit_files and prints the SHA."""
+    import codex.github.mcp_poster as pm
+    from codex.github.mcp_poster import main
+
+    src = tmp_path / "file.txt"
+    src.write_text("hello", encoding="utf-8")
+
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+
+    def fake_commit_files(self, repo, branch, files, message, force=False):
+        assert repo == "owner/repo"
+        assert branch == "main"
+        assert "README.md" in files
+        assert files["README.md"] == "hello"
+        assert message == "docs: update"
+        return "deadbeef12345678"
+
+    monkeypatch.setattr(pm.GitHubMCPPoster, "commit_files", fake_commit_files)
+
+    rc = main([
+        "commit-files",
+        "--repo", "owner/repo",
+        "--branch", "main",
+        "--message", "docs: update",
+        "--file", f"README.md:{src}",
+    ])
+    assert rc == 0
+
+
+def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
+    """CLI commit-files returns 1 when a --file mapping is malformed."""
+    import codex.github.mcp_poster as pm
+    from codex.github.mcp_poster import main
+
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    rc = main([
+        "commit-files",
+        "--repo", "owner/repo",
+        "--branch", "main",
+        "--message", "x",
+        "--file", "no_colon_here",
+    ])
+    assert rc == 1
