@@ -429,10 +429,6 @@ class TestIntegrationPRFlow:
         assert results['budget_status']['used'] >= 0
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
-
-
 # ============================================================================
 # Enhanced Module Tests
 # ============================================================================
@@ -751,6 +747,241 @@ class TestIntegration:
             assert len(superposition) > 0
 
 
+class TestMCPRealTransport:
+    """Tests for the JSON-RPC 2.0 real-mode transport (IMP-004)."""
+
+    @pytest.mark.asyncio
+    async def test_real_mode_http_scheme_not_supported(self):
+        """Non-HTTP/HTTPS endpoint returns an error response without making network calls."""
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
+        # Override server URL with non-HTTP scheme (mcp:// as in default servers)
+        server = MCPServer(
+            name="test",
+            url="mcp://localhost:9999/tools",
+            capabilities=["file_operations"],
+        )
+        mcp.servers["test"] = server
+
+        request = MCPRequest(
+            server_name="test",
+            capability="file_operations",
+            payload={"action": "list"},
+        )
+        # Bypass connect() by patching active_connections
+        mcp.active_connections["test"] = True
+
+        response = await mcp._execute_real(request, server)
+        assert response.status == "error"
+        assert "Unsupported endpoint scheme" in (response.error or "")
+
+    @pytest.mark.asyncio
+    async def test_real_mode_jsonrpc_error_response(self, monkeypatch):
+        """A JSON-RPC error in the response body is surfaced as status=error."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+        )
+
+        error_body = json.dumps({
+            "jsonrpc": "2.0",
+            "id": "req-1",
+            "error": {"code": -32601, "message": "Method not found"},
+        }).encode()
+
+        mock_resp = mock.MagicMock()
+        mock_resp.read = mock.Mock(return_value=error_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_real(request, server)
+        assert response.status == "error"
+        assert "Method not found" in (response.error or "")
+
+    @pytest.mark.asyncio
+    async def test_real_mode_jsonrpc_success(self, monkeypatch):
+        """A valid JSON-RPC 2.0 success response is returned as status=success."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+            auth_token="test-token",
+        )
+
+        success_body = json.dumps({
+            "jsonrpc": "2.0",
+            "id": "req-2",
+            "result": {"branches": ["main", "develop"], "access_granted": True},
+        }).encode()
+
+        mock_resp = mock.MagicMock()
+        mock_resp.read = mock.Mock(return_value=success_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_real(request, server)
+        assert response.status == "success"
+        assert response.data is not None
+        assert "branches" in response.data
+
+    @pytest.mark.asyncio
+    async def test_real_mode_codex_mcp_endpoint_env_var(self, monkeypatch):
+        """CODEX_MCP_ENDPOINT env var overrides server.url."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        monkeypatch.setenv("CODEX_MCP_ENDPOINT", "https://staging.copilot.example.com/mcp/")
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",  # This should be overridden
+            capabilities=["repository_access"],
+        )
+
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["url"] = req.full_url
+            mock_resp = mock.MagicMock()
+            mock_resp.read = mock.Mock(return_value=json.dumps({
+                "jsonrpc": "2.0", "id": "req-3",
+                "result": {"ok": True},
+            }).encode())
+            mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+            mock_resp.__exit__ = mock.Mock(return_value=False)
+            return mock_resp
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_real(request, server)
+        assert response.status == "success"
+        assert captured.get("url") == "https://staging.copilot.example.com/mcp/"
+
+    @pytest.mark.asyncio
+    async def test_real_mode_http_error(self, monkeypatch):
+        """urllib.error.HTTPError from the transport is handled as status=error."""
+        import urllib.error
+        import urllib.request
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+        )
+
+        import unittest.mock as mock
+        from io import BytesIO
+
+        def fake_urlopen(req, timeout):
+            hdrs = mock.MagicMock()
+            raise urllib.error.HTTPError(
+                url="https://api.githubcopilot.com/mcp/",
+                code=401,
+                msg="Unauthorized",
+                hdrs=hdrs,
+                fp=BytesIO(b'{"message": "Unauthorized"}'),
+            )
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_real(request, server)
+        assert response.status == "error"
+        assert "401" in (response.error or "")
+
+    def test_http_post_json_static_method(self, monkeypatch):
+        """_http_post_json sends correct Content-Type and Authorization headers."""
+        import json
+        import unittest.mock as mock
+        import urllib.request
+
+        from mcp_server import MCPIntegration
+
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["headers"] = dict(req.headers)
+            captured["data"] = json.loads(req.data)
+            mock_resp = mock.MagicMock()
+            mock_resp.read = mock.Mock(return_value=json.dumps({"ok": True}).encode())
+            mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+            mock_resp.__exit__ = mock.Mock(return_value=False)
+            return mock_resp
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        result = MCPIntegration._http_post_json(
+            "https://example.com/mcp/",
+            {"jsonrpc": "2.0", "method": "tools/test"},
+            auth_token="my-token",
+        )
+        assert result == {"ok": True}
+        headers_lower = {k.lower(): v for k, v in captured["headers"].items()}
+        assert "authorization" in headers_lower
+        assert headers_lower["authorization"] == "Bearer my-token"
+        assert captured["data"]["jsonrpc"] == "2.0"
+
+    def test_http_post_json_rejects_non_http_scheme(self):
+        """_http_post_json raises ValueError for non-HTTP/HTTPS URLs."""
+        from mcp_server import MCPIntegration
+
+        with pytest.raises(ValueError, match="http"):
+            MCPIntegration._http_post_json(
+                "mcp://localhost:9090/tools",
+                {"jsonrpc": "2.0", "method": "tools/test"},
+            )
+
+
 # Run all tests
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "--tb=short"])
