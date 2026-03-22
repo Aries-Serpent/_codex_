@@ -86,6 +86,10 @@ jobs:
           # failure rate is inflated by automated remediation runs — NOT real regressions.
           # In that case we double the effective threshold to avoid false-positive alerts.
           THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}"
+          # Read cascade_detected from telemetry JSON.
+          # One-liner kept intentionally compact: reads a single nested boolean key and
+          # prints 'true'/'false'. Failure-safe: falls back to 'false' on any error so
+          # the threshold check always runs. Logic: d['cascade_analysis']['cascade_detected'].
           CASCADE_DETECTED=$(python3 -c "import json,sys;d=json.load(open('/tmp/telemetry_report.json'));print('true' if d.get('cascade_analysis',{}).get('cascade_detected',False) else 'false')" 2>/dev/null || echo 'false')
           echo "cascade_detected=${CASCADE_DETECTED}" >> "$GITHUB_OUTPUT"
           if [ "${CASCADE_DETECTED}" = "true" ]; then

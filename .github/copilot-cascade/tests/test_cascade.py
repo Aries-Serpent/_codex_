@@ -983,7 +983,19 @@ class TestMCPRealTransport:
 
 
 class TestMCPStreamingTransport:
-    """Tests for the JSON-RPC 2.0 streaming transport via SSE (IMP-005)."""
+    """Unit tests for JSON-RPC 2.0 streaming transport via Server-Sent Events (IMP-005).
+
+    These tests cover ``MCPConnectionMode.STREAMING`` and ``_execute_streaming()``,
+    requested in the PR review (copilot-pull-request-reviewer, mcp_server.py:240-244).
+
+    Coverage areas:
+    - SSE frame parsing (single frame, multi-frame, ``_streaming_chunks`` counter)
+    - Transparent fallback when server returns plain JSON instead of SSE
+    - Error handling: JSON-RPC error frame, HTTP error, empty stream, bad scheme
+    - Env-var override: ``CODEX_MCP_ENDPOINT`` routes request to staging endpoint
+    - Mode selection: ``MCP_STREAMING_MODE=true`` auto-selects STREAMING mode
+    - Static-method contract: ``_http_post_json_streaming`` header, scheme rejection
+    """
 
     # ------------------------------------------------------------------ #
     # _execute_streaming — unit-level tests                                #

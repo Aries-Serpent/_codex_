@@ -1403,8 +1403,9 @@ jobs:
             }
             const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
             const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            // Read via process.env to prevent backticks/template expressions in
-            // markdown from breaking the JS template literal (see review comment).
+            // Read via process.env to prevent code injection via backticks or ${...}
+            // in markdown content from breaking the JS template literal.
+            // (See review comment: cbPatterns interpolation, PR #3671.)
             const cbPatterns = (process.env.CB_PATTERNS || '').trim();
 
             const UPSERT_MARKER_DELEGATION = '<!-- agent-token-delegation-result -->';
