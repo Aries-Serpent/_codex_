@@ -152,7 +152,7 @@ jobs:
           path: |
             cognitive_app/playwright-report/
             cognitive_app/playwright-results.json
-          retention-days: 14
+          retention-days: 30
 
       # ── Validate HAR ──────────────────────────────────────────────────────
       - name: Validate HAR file

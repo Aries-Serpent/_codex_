@@ -10,6 +10,7 @@ import json
 import os
 import re
 import time
+import urllib.request as _urllib_request
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 from urllib.parse import quote
@@ -35,6 +36,9 @@ os.makedirs(CACHE_DIR, exist_ok=True)
 # Validate owner/repo/path parameters to prevent partial SSRF via URL path injection.
 # Allowed characters: alphanumeric, hyphen, underscore, dot (GitHub conventions).
 _SAFE_REPO_COMPONENT_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._\-]{0,99}$')
+# Branch names: allow alphanumeric, hyphen, underscore, dot, slash (for nested branches)
+# but no leading slash, double dots, or path-traversal sequences.
+_SAFE_BRANCH_RE = re.compile(r'^[A-Za-z0-9_][A-Za-z0-9._/\-]{0,199}$')
 
 
 def _validate_repo_component(value: str, name: str) -> None:
@@ -150,6 +154,78 @@ def code_search(owner: str, repo: str, q: str, ref: str = "main"):
     return {"count": len(hits), "items": hits}
 
 
+def gh_post(url: str, payload: Dict[str, Any]) -> Any:
+    """POST *payload* to the GitHub API and return the parsed JSON response.
+
+    The *url* must start with the expected :data:`BASE` constant to prevent
+    SSRF-class attacks where a crafted caller could redirect the POST to an
+    arbitrary host.
+    """
+    if not url.startswith(BASE):
+        raise ValueError(f"gh_post: URL must start with {BASE!r}, got {url!r}")
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    req = _urllib_request.Request(
+        url,
+        data=data,
+        headers={**_auth_headers(), "Content-Type": "application/json"},
+        method="POST",
+    )
+    with _urllib_request.urlopen(req, timeout=30) as resp:  # nosec B310
+        return json.loads(resp.read())
+
+
+def create_branch(owner: str, repo: str, branch: str, sha: str) -> Dict[str, Any]:
+    """Create *branch* pointing at *sha* via the GitHub Refs API (IMP-011)."""
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
+    # Validate branch name before embedding it in the URL path.
+    if branch.startswith("refs/"):
+        branch_part = branch[len("refs/heads/"):] if branch.startswith("refs/heads/") else branch
+    else:
+        branch_part = branch
+    if not _SAFE_BRANCH_RE.match(branch_part) or ".." in branch_part:
+        raise ValueError(
+            f"Invalid branch name {branch!r}: must contain only alphanumeric, "
+            "hyphen, underscore, dot, or slash characters (no traversal sequences)"
+        )
+    ref = f"refs/heads/{branch}" if not branch.startswith("refs/") else branch
+    return gh_post(f"{BASE}/repos/{owner}/{repo}/git/refs", {"ref": ref, "sha": sha})
+
+
+def open_pull_request(
+    owner: str,
+    repo: str,
+    title: str,
+    head: str,
+    base: str,
+    body: str = "",
+    draft: bool = False,
+) -> Dict[str, Any]:
+    """Open a pull request (IMP-011)."""
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
+    return gh_post(
+        f"{BASE}/repos/{owner}/{repo}/pulls",
+        {"title": title, "head": head, "base": base, "body": body, "draft": draft},
+    )
+
+
+def merge_branches(
+    owner: str,
+    repo: str,
+    base: str,
+    head: str,
+    commit_message: str = "",
+) -> Dict[str, Any]:
+    """Server-side merge of *head* into *base* (IMP-011)."""
+    _validate_repo_component(owner, "owner")
+    _validate_repo_component(repo, "repo")
+    payload: Dict[str, Any] = {"base": base, "head": head}
+    if commit_message:
+        payload["commit_message"] = commit_message
+    return gh_post(f"{BASE}/repos/{owner}/{repo}/merges", payload)
+
+
 class App(BaseHTTPRequestHandler):
     def _ok(self, body: Any, code=200):
         b = body if isinstance(body, (str, bytes)) else json.dumps(body, ensure_ascii=False)
@@ -194,6 +270,74 @@ class App(BaseHTTPRequestHandler):
                 # Fallback: return default branch only
                 name = "main"
             return self._ok({"owner": owner, "repo": repo, "branch": name})
+        return self._ok({"error": "not found"}, 404)
+
+    def do_POST(self):
+        """Write endpoints for branch/PR/merge lifecycle operations (IMP-011).
+
+        The ``owner`` and ``repo`` are always taken from the server-configured
+        :data:`OWNER` / :data:`REPO` environment variables — they are **never**
+        read from the request body.  This prevents any user-controlled data from
+        flowing into the GitHub API URL path (CodeQL partial-SSRF guard).
+        """
+        from urllib.parse import urlparse
+
+        content_length = int(self.headers.get("Content-Length", 0))
+        if content_length > 1_048_576:  # 1 MB guard against DoS
+            return self._ok({"error": "request body too large (max 1 MB)"}, 413)
+        raw_body = self.rfile.read(content_length) if content_length > 0 else b"{}"
+        try:
+            body: Dict[str, Any] = json.loads(raw_body) if raw_body.strip() else {}
+        except json.JSONDecodeError as exc:
+            return self._ok({"error": f"invalid JSON body: {exc}"}, 400)
+
+        # owner and repo come exclusively from the server environment —
+        # they are NEVER read from the request body to prevent SSRF.
+        owner: str = OWNER
+        repo: str = REPO
+
+        u = urlparse(self.path)
+        try:
+            if u.path == "/repo/branches":
+                # body: {branch, sha}
+                branch = body.get("branch", "")
+                sha = body.get("sha", "")
+                if not branch or not sha:
+                    return self._ok({"error": "branch and sha are required"}, 400)
+                return self._ok(create_branch(owner, repo, branch, sha), 201)
+
+            if u.path == "/repo/pulls":
+                # body: {title, head, base?, body?, draft?}
+                title = body.get("title", "")
+                head = body.get("head", "")
+                base = body.get("base", "main")
+                if not title or not head:
+                    return self._ok({"error": "title and head are required"}, 400)
+                return self._ok(
+                    open_pull_request(
+                        owner, repo, title, head, base,
+                        body=body.get("body", ""),
+                        draft=bool(body.get("draft", False)),
+                    ),
+                    201,
+                )
+
+            if u.path == "/repo/merges":
+                # body: {base, head, commit_message?}
+                base = body.get("base", "")
+                head = body.get("head", "")
+                if not base or not head:
+                    return self._ok({"error": "base and head are required"}, 400)
+                return self._ok(
+                    merge_branches(owner, repo, base, head, body.get("commit_message", "")),
+                    201,
+                )
+
+        except ValueError as exc:
+            return self._ok({"error": str(exc)}, 400)
+        except Exception as exc:  # pragma: no cover
+            return self._ok({"error": f"internal error: {exc}"}, 500)
+
         return self._ok({"error": "not found"}, 404)
 
 

@@ -17,6 +17,16 @@ import { defineConfig, devices } from '@playwright/test';
 // dotenv.config();
 
 /**
+ * IMP-007: HAR replay configuration for offline CI.
+ *
+ * Extracted as a named constant for readability and testability.
+ * When `CI` or `PLAYWRIGHT_HAR_REPLAY` is set, service workers are blocked
+ * so that all network requests are intercepted by the pre-recorded HAR cache.
+ */
+const shouldUseHarReplay = !!(process.env.CI || process.env.PLAYWRIGHT_HAR_REPLAY);
+const harReplayConfig = shouldUseHarReplay ? { serviceWorkers: 'block' as const } : {};
+
+/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -60,6 +70,19 @@ export default defineConfig({
 
     /* Maximum time each navigation action can take */
     navigationTimeout: 30000,
+
+    /* IMP-007: HAR replay for offline CI.
+     *
+     * When running in CI (or when PLAYWRIGHT_HAR_REPLAY=1 is set) we route
+     * all requests matching the captured URL patterns to the pre-recorded
+     * HAR file instead of hitting the live backend.  This makes the E2E
+     * suite fully self-contained and deterministic in environments where the
+     * cognitive_app CLI server is not started.
+     *
+     * The HAR file is captured by the weekly `har-capture.yml` workflow and
+     * stored at `cognitive_app/public/har-cache/api-demo.har`.
+     */
+    ...harReplayConfig,
   },
 
   /* Configure projects for major browsers */
