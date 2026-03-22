@@ -40,6 +40,28 @@ try:
 except ImportError:
     _sse_transport_imported = False
 
+# ---------------------------------------------------------------------------
+# Standalone SSE transport helper (single source of truth: scripts/ci/).
+# We attempt to import it at module load time so that tests against the
+# stand-alone script and tests against mcp_server both exercise identical
+# logic.  When running inside the .github/copilot-cascade/ tree (without
+# a full repo checkout) the import may fail; in that case we fall back to
+# the local implementation defined below.
+# ---------------------------------------------------------------------------
+_SSE_TRANSPORT_PATH = str(
+    Path(__file__).parent.parent.parent / "scripts" / "ci"
+)
+_sse_transport_imported = False
+try:
+    if _SSE_TRANSPORT_PATH not in sys.path:
+        sys.path.insert(0, _SSE_TRANSPORT_PATH)
+    from mcp_sse_transport import (  # noqa: E402
+        http_post_json_streaming as _http_post_json_streaming_fn,
+    )
+    _sse_transport_imported = True
+except ImportError:
+    _sse_transport_imported = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -639,6 +661,87 @@ class MCPIntegration:
                 status="error",
                 error=str(exc),
             )
+        except Exception as exc:  # noqa: BLE001
+            logger.error("MCP streaming execution error for %s: %s", endpoint, exc)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=str(exc),
+            )
+
+    @staticmethod
+    def _http_post_json_streaming(
+        url: str,
+        payload: Dict[str, Any],
+        auth_token: Optional[str] = None,
+        timeout: int = 30,
+    ) -> Dict[str, Any]:
+        """POST JSON and read the response as SSE or plain JSON.
+
+        Delegates to :func:`scripts.ci.mcp_sse_transport.http_post_json_streaming`
+        when available (single source of truth).  Falls back to the inline
+        implementation when the scripts tree is not on the path.
+
+        See :mod:`mcp_sse_transport` for the full parameter/return documentation.
+        """
+        if _sse_transport_imported:
+            return _http_post_json_streaming_fn(
+                url, payload, auth_token=auth_token, timeout=timeout
+            )
+
+        # ------------------------------------------------------------------ #
+        # Fallback implementation (identical logic, kept for environments     #
+        # where the repo root is not available, e.g. a bare checkout of the  #
+        # .github/copilot-cascade/ sub-tree only).                            #
+        # ------------------------------------------------------------------ #
+        if not url.startswith(("http://", "https://")):
+            raise ValueError(
+                f"_http_post_json_streaming: URL must start with "
+                f"http:// or https://, got: {url!r}"
+            )
+        data = json.dumps(payload).encode("utf-8")
+        headers: Dict[str, str] = {
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream, application/json",
+        }
+        if auth_token:
+            headers["Authorization"] = f"Bearer {auth_token}"
+
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+            content_type = resp.headers.get("Content-Type", "")
+            raw = resp.read()
+
+        if "text/event-stream" not in content_type:
+            return json.loads(raw)
+
+        chunks: List[Dict[str, Any]] = []
+        for line in raw.decode("utf-8").splitlines():
+            line = line.strip()
+            if line.startswith("data:"):
+                fragment = line.removeprefix("data:").strip()
+                if fragment in ("", "[DONE]"):
+                    continue
+                try:
+                    frame = json.loads(fragment)
+                    if isinstance(frame, dict):
+                        chunks.append(frame)
+                except json.JSONDecodeError:
+                    logger.debug(
+                        "MCP SSE: skipping non-JSON fragment: %r", fragment
+                    )
+
+        if not chunks:
+            return {
+                "error": {
+                    "message": "SSE stream contained no parseable data frames"
+                }
+            }
+
+        final = chunks[-1]
+        final["_streaming_chunks"] = len(chunks)
+        return final
 
     @staticmethod
     def _http_post_json_streaming(

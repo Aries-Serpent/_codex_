@@ -830,8 +830,7 @@ class GitHubMCPPoster:
                 "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
             )
 
-    def _post(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
-        return self._request("POST", url, payload)
+        Requires the token to have ``contents: write`` scope.
 
     def _get(self, url: str) -> dict[str, Any]:
         """Execute a single GET request to the GitHub REST API (no retry).
