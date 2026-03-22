@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-22T12:08:31Z",
+  "generated_at": "2026-03-22T22:19:50Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -669,7 +669,7 @@
       "autonomy_model": "E"
     },
     {
-      "name": "test-enhancement-agent",
+      "name": "unified-coverage-agent",
       "role": "specialist",
       "enforcement_tier": "GROUNDED",
       "autonomy_model": "E"
@@ -931,6 +931,30 @@
       "role": "specialist",
       "enforcement_tier": "PARTIAL",
       "autonomy_model": "D_CAPABLE"
+    },
+    {
+      "name": "energy-conversion-agent",
+      "role": "specialist",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
+    {
+      "name": "promote-integration-branch",
+      "role": "utility",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
+    {
+      "name": "create-sub-pr-to-0D_base_",
+      "role": "utility",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
+    {
+      "name": "post-accountability-to-discussion",
+      "role": "utility",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
     }
   ],
   "workflows": [
@@ -1175,6 +1199,11 @@
       "has_concurrency": true
     },
     {
+      "name": "create-sub-pr-to-0D_base_",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "d-capable-promotion-gate",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1280,6 +1309,11 @@
       "has_concurrency": true
     },
     {
+      "name": "mcp-health",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "model-drift-retrain",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1330,6 +1364,11 @@
       "has_concurrency": true
     },
     {
+      "name": "post-accountability-to-discussion",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "post-merge-validation-optimized",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1355,11 +1394,6 @@
       "has_concurrency": true
     },
     {
-      "name": "pr3178-pytest-execution",
-      "enforcement_tier": "PARTIAL",
-      "has_concurrency": true
-    },
-    {
       "name": "pre-flight-validation",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -1376,6 +1410,11 @@
     },
     {
       "name": "progressive-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "promote-integration-branch",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -1481,16 +1520,6 @@
     },
     {
       "name": "security-tools-bootstrap",
-      "enforcement_tier": "SOFT",
-      "has_concurrency": true
-    },
-    {
-      "name": "self-healing",
-      "enforcement_tier": "GROUNDED",
-      "has_concurrency": true
-    },
-    {
-      "name": "self_healing_ci",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1670,6 +1699,22 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S174.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S175.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S177.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S178.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
@@ -1703,6 +1748,10 @@
     },
     {
       "path": ".codex/docs/DOCKER_BUILD_TEST_FIX_PR3178.md",
+      "type": "enforcement"
+    },
+    {
+      "path": ".codex/docs/ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md",
       "type": "enforcement"
     },
     {
@@ -1871,5 +1920,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "0883d46d2abba742beef447187791087e23f0715ae426aef9eecedd76703d2bc"
+  "integrity_sha256": "d446fc17adeacd8c15b7a2661c803a452f2d58dad8f0fb74bfffaa6b330786d9"
 }
