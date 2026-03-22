@@ -1,0 +1,231 @@
+name: "📋 Post Accountability Report to Discussion"
+
+# Triggered automatically after the cognitive-preflight self-healing commit,
+# or manually. Posts the latest session entry from the accountability report
+# to the [Ongoing] Copilot Coding Agent Accountability Report discussion #3673.
+#
+# Architecture:
+#   1. Extract the most recent session entry from AGENT_ACCOUNTABILITY_REPORT.md
+#   2. Post as a new comment on discussion #3673 (or update existing if same PR)
+#   3. The markdown file remains as an audit trail but is no longer the primary
+#      accountability surface — the Discussion thread is.
+#
+# Policy: PRIORITY 0 — hardened systematic process (see PR #3676 comment)
+# Discussion: https://github.com/Aries-Serpent/_codex_/discussions/3673
+
+on:
+  push:
+    branches:
+      - "copilot/**"
+      - "0D_base_"
+    paths:
+      - "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to include in the report (optional)"
+        required: false
+        default: ""
+      force_post:
+        description: "Force post even if a comment for this session was already posted"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: post-accountability-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  discussions: write
+  pull-requests: read
+
+jobs:
+  post-to-discussion:
+    name: "📋 Post to Discussion #3673"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+
+      - name: Extract latest session entry
+        id: extract
+        shell: python3 {0}
+        run: |
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          report_path = Path("docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md")
+          if not report_path.exists():
+              print("::warning::AGENT_ACCOUNTABILITY_REPORT.md not found — skipping")
+              sys.exit(0)
+
+          content = report_path.read_text(encoding="utf-8")
+
+          # Split on H2 session summary headings (## SESSION SUMMARY — ...)
+          parts = re.split(r'\n(?=## SESSION SUMMARY — )', content)
+
+          # Find the most recent real session (not just the header)
+          latest = None
+          for part in reversed(parts):
+              if part.strip().startswith("## SESSION SUMMARY"):
+                  latest = part.strip()
+                  break
+
+          if not latest:
+              print("::warning::No SESSION SUMMARY entries found in report — skipping")
+              # Fall back to last 50 lines of the file
+              lines = content.strip().splitlines()
+              latest = "\n".join(lines[-50:]) if len(lines) > 50 else content
+
+          # Extract session ID from heading for deduplication
+          heading_match = re.match(r'^## SESSION SUMMARY — (.+?)$', latest, re.MULTILINE)
+          session_id = heading_match.group(1).strip() if heading_match else "unknown"
+
+          # Write outputs
+          output_file = os.environ.get("GITHUB_OUTPUT", "/dev/null")
+          with open(output_file, "a") as f:
+              f.write(f"session_id={session_id[:100]}\n")
+
+          # Write entry to a workspace-safe temp file (avoids multiline output issues)
+          entry_file = os.environ.get("RUNNER_TEMP", "/tmp") + "/accountability_entry.md"
+          with open(entry_file, "w", encoding="utf-8") as f:
+              f.write(latest)
+
+          print(f"✅ Extracted session entry: {session_id[:80]}")
+
+      - name: Post to GitHub Discussion #3673
+        uses: actions/github-script@v7
+        env:
+          SESSION_ID: ${{ steps.extract.outputs.session_id }}
+          PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}
+          FORCE_POST: ${{ inputs.force_post || 'false' }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          SHA: ${{ github.sha }}
+          REF: ${{ github.ref_name }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read the extracted entry from RUNNER_TEMP
+            const runnerTemp = process.env.RUNNER_TEMP || '/tmp';
+            const entryPath = path.join(runnerTemp, 'accountability_entry.md');
+            let entryContent = '';
+            try {
+              entryContent = fs.readFileSync(entryPath, 'utf8');
+            } catch (e) {
+              core.warning('No entry file found — skipping discussion post');
+              return;
+            }
+
+            if (!entryContent.trim()) {
+              core.warning('Empty entry content — skipping discussion post');
+              return;
+            }
+
+            const sessionId = process.env.SESSION_ID || 'unknown';
+            const prNumber  = process.env.PR_NUMBER || '';
+            const sha       = (process.env.SHA || '').slice(0, 7);
+            const ref       = process.env.REF || '';
+            const forcePost = process.env.FORCE_POST === 'true';
+
+            // Deduplication marker — unique per session
+            const DEDUP_MARKER = `<!-- accountability-session: ${sessionId.slice(0, 80)} -->`;
+
+            // Build the discussion comment body
+            const prRef   = prNumber ? ` (PR #${prNumber})` : '';
+            const header  = [
+              DEDUP_MARKER,
+              `## 📋 Session Accountability Entry${prRef}`,
+              ``,
+              `> **Branch:** \`${ref}\` · **SHA:** \`${sha}\` · **Posted:** ${new Date().toISOString()}`,
+              `> **Policy:** [CODEBASE_AGENCY_POLICY.md](.codex/CODEBASE_AGENCY_POLICY.md)`,
+              ``,
+            ].join('\n');
+
+            const body = header + entryContent;
+
+            // Discussion node ID for #3673 — fetch via GraphQL
+            const DISCUSSION_NUMBER = 3673;
+            let discussionId;
+            try {
+              const result = await github.graphql(`
+                query($owner: String!, $name: String!, $number: Int!) {
+                  repository(owner: $owner, name: $name) {
+                    discussion(number: $number) {
+                      id
+                    }
+                  }
+                }
+              `, {
+                owner: context.repo.owner,
+                name:  context.repo.repo,
+                number: DISCUSSION_NUMBER,
+              });
+              discussionId = result.repository.discussion.id;
+            } catch (e) {
+              core.warning(`Could not fetch discussion #${DISCUSSION_NUMBER}: ${e.message}`);
+              core.warning('Ensure GITHUB_TOKEN has discussions:write permission');
+              return;
+            }
+
+            if (!discussionId) {
+              core.warning(`Discussion #${DISCUSSION_NUMBER} not found`);
+              return;
+            }
+
+            // Check for existing comment with same dedup marker
+            if (!forcePost) {
+              try {
+                const existing = await github.graphql(`
+                  query($id: ID!, $cursor: String) {
+                    node(id: $id) {
+                      ... on Discussion {
+                        comments(first: 50, after: $cursor) {
+                          nodes { id body }
+                          pageInfo { hasNextPage endCursor }
+                        }
+                      }
+                    }
+                  }
+                `, { id: discussionId });
+
+                const comments = existing.node.comments.nodes || [];
+                const found = comments.find(c => (c.body || '').includes(DEDUP_MARKER));
+                if (found) {
+                  core.info(`Discussion comment already posted for session: ${sessionId.slice(0, 60)}`);
+                  core.info('Use force_post=true to repost');
+                  return;
+                }
+              } catch (e) {
+                core.warning(`Could not check existing comments: ${e.message}`);
+              }
+            }
+
+            // Post the new comment
+            try {
+              await github.graphql(`
+                mutation($discussionId: ID!, $body: String!) {
+                  addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
+                    comment { id url }
+                  }
+                }
+              `, {
+                discussionId,
+                body,
+              });
+              core.info(`✅ Posted accountability entry to discussion #${DISCUSSION_NUMBER}`);
+            } catch (e) {
+              core.warning(`Failed to post discussion comment: ${e.message}`);
+              core.info('Body preview (first 200 chars): ' + body.slice(0, 200));
+            }

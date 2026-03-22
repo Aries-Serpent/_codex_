@@ -33,7 +33,7 @@ gitGraph LR:
 
 ```mermaid
 flowchart TD
-    A["🟢 BASELINE: ee604960\nPR #3402 merged — S112–S115\n.gitignore: .codex/* blocks agent_auth_session.json\ncheckout: NO token  /  git add (no -f)\ngit push: SKIPPED (file gitignored, nothing staged)"] 
+    A["🟢 BASELINE: ee604960\nPR #3402 merged — S112–S115\n.gitignore: .codex/* blocks agent_auth_session.json\ncheckout: NO token  /  git add (no -f)\ngit push: SKIPPED (file gitignored, nothing staged)"]
     -->|"@copilot continue\ncomment ✅ POSTED"| A2
 
     A2["✅ WORKING STATE\nSession token NOT actually committed to branch\nbut workflow COMPLETES and comment is posted\nowner_approval_guard.sh reads file from runner FS only"]

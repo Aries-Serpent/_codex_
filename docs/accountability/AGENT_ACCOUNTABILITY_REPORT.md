@@ -7679,3 +7679,43 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-03-22 S175 PR copilot/sub-pr-3670 (PR #3676)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed: PR review comments from copilot-pull-request-reviewer addressed ✅
+- [x] **0b.** All failing CI checks reviewed: Agent Registry (159/158), Cross-reference integrity, Auto-fix checks, Validation Pipeline, Pre-Merge Validation ✅
+- [x] **0c.** REQ-10 branch rebase status: rebased from origin/copilot/sub-pr-3670 ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed from Actions job logs ✅
+- [x] **3.** `.gitignore` allows all new files ✅
+- [x] **4.** Priority directive: Fix CI failures + Priority 0 accountability automation ✅
+- [x] **5.** Phase execution plan posted as PR description before file changes ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed throughout ✅
+
+### Work Completed (S175 PR #3676)
+
+| # | File | Change | Addresses |
+|---|------|--------|-----------|
+| 1 | `.github/agents/AGENT_REGISTRY.yaml` | Fixed `total_agents`: 159→158 (then +1 for new entry = 159) | Agent Registry Validation CI failure |
+| 2 | `.github/workflows/copilot-review-responder.yml` | Fixed broken cross-reference: markdown link with placeholder URL → plain comment text | Cross-reference integrity CI failure |
+| 3 | `.github/copilot-cascade/tests/test_cascade.py` | Fixed unsorted imports at line 1155 | Auto-Fix CI failure (Pattern 9) |
+| 4 | `src/codex/github/mcp_poster.py` | Fixed 3 lines >100 chars (341, 452, 570) | Pre-Merge Validation CI failure |
+| 5 | `.github/workflows/post-accountability-to-discussion.yml` | NEW: Priority 0 — Posts accountability entries to Discussion #3673 | Priority 0 hardened process |
+| 6 | `.github/agents/AGENT_REGISTRY.yaml` | Added `post-accountability-to-discussion` agent entry | Registry completeness |
+| 7 | Doc metrics | Updated `agent_count`, `workflow_count` in docs | Metrics accuracy |
+
+### Priority 0: Accountability → Discussions
+
+The new `post-accountability-to-discussion.yml` workflow implements the hardened process:
+- Triggers on push to `copilot/**` or `0D_base_` when `AGENT_ACCOUNTABILITY_REPORT.md` is changed
+- Extracts the most recent `## SESSION SUMMARY` entry from the file
+- Posts it as a dedup-safe comment to Discussion #3673 via GitHub GraphQL API
+- Deduplication prevents duplicate comments using a `<!-- accountability-session: ... -->` marker
+- Replaces the manual accountability logging in the markdown file with a live Discussion thread
+
+### Streaming Tests (IMP-005)
+Streaming tests already exist in `.github/copilot-cascade/tests/test_cascade.py` (lines 985-1256), covering SSE parsing, fallback to JSON, error handling, env var override, and mode selection. No new tests needed.
+

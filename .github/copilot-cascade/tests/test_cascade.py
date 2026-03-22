@@ -1152,9 +1152,9 @@ class TestMCPStreamingTransport:
     @pytest.mark.asyncio
     async def test_streaming_http_error(self, monkeypatch):
         """urllib.error.HTTPError from transport is handled as status=error."""
+        import unittest.mock as mock
         import urllib.error
         import urllib.request
-        import unittest.mock as mock
         from io import BytesIO
 
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
