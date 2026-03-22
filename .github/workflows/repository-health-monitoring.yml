@@ -1,4 +1,4 @@
-name: Art_Repository Health Monitoring
+name: Repository Health Monitoring
 
 on:
   schedule:

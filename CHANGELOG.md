@@ -7,6 +7,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S177 — 2026-03-22 — PR #3678)
+- **`tools/actions_server.py`**: Fixed CodeQL critical "Partial SSRF" (CWE-918) — `do_POST` no longer reads `owner`/`repo` from user-supplied request body; handler always uses server-configured `OWNER`/`REPO` env vars, eliminating taint flow from HTTP body to URL path.
+
+### Added (S177 — 2026-03-22 — PR #3678)
+- **`cognitive_app/playwright.config.ts`** (IMP-007): HAR replay support for offline CI — adds `serviceWorkers: 'block'` when `CI=true` or `PLAYWRIGHT_HAR_REPLAY=1` so E2E tests run against pre-recorded HAR instead of live backend.
+- **`.copilot-space/mcp.example.json`** (IMP-014): Expanded to multi-target config with `github-primary` (live) + `github-fallback` (offline) servers, `routing.strategy: primary-with-fallback`, and `health_check_url` on each server.
+- **`.github/workflows/mcp-health.yml`** (IMP-015): NEW — MCP metrics threshold gate; validates latency ≤500ms avg and error rate ≤5% on every MCP-related PR and nightly; also validates multi-target config completeness.
+- **`.github/workflows/har-capture.yml`** (IMP-016): Updated Playwright report artifact retention from 14 days to 30 days per IMP-016 spec.
+
+
+- Unblocked CI: updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S176 session entry (REQ-4 gate).
+- Verified `AGENT_REGISTRY.yaml` `total_agents=159` matches actual agent count after PR #3674 merge.
+
+### Added (S176 — 2026-03-22 — PR #3677)
+- **`scripts/security/playwright_scraper.py`** (IMP-009): Replaced single CSS selector string with `_ALERT_SELECTORS` list and `_find_alert_rows()` resilient multi-selector strategy — scraper now tries each selector in priority order so it survives GitHub UI changes.
+- **`tools/actions_server.py`** (IMP-011): Added `gh_post()` helper + `create_branch()`, `open_pull_request()`, `merge_branches()` functions and `do_POST` handler exposing `POST /repo/branches`, `POST /repo/pulls`, `POST /repo/merges` — enabling CustomGPT Actions to drive full branch lifecycle operations.
+- **`tests/github/test_mcp_poster_delegation.py`** (IMP-017): End-to-end delegation test fixture verifying `create_ref` → `create_pull_request` roundtrip and correct GitHub API endpoint targets (2 tests, 0 real network calls).
+
+### Fixed (auto-update — PR #3676)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3676 (SHA `0bc55bc`) at 2026-03-22T09:31Z [auto-generated]
+
+### Added (S175 — 2026-03-22 — PR copilot/session-20260322-042713-23395632625)
+- **`.github/copilot-cascade/mcp_server.py`**: Implemented `_execute_real()` with real JSON-RPC 2.0 HTTP transport (IMP-004) using stdlib `urllib`; added `_http_post_json()` static helper; added `CODEX_MCP_ENDPOINT` env var override for staging/dev environments.
+- **`src/codex/github/mcp_poster.py`**: Added `_record_cb_pattern()` cognitive brain lifecycle hook (IMP-012); wired into `create_ref()` (CB-branch-create), `create_pull_request()` (CB-pr-open), and `merge_branch()` (CB-merge) for autonomy observability.
+
+### Fixed (S175 — 2026-03-22)
+- **`tests/github/test_mcp_poster.py`**: Fixed pre-existing flaky `test_no_token_warns` — `init_logger("codex")` in `tools/github/gh_api.py` sets `propagate=False` on the `codex` logger; test now temporarily re-enables propagation so `caplog` captures the warning deterministically regardless of test execution order.
+
+### Tests (S175 — 2026-03-22)
+- **`tests/github/test_mcp_poster.py`**: Added 42 new tests covering `create_ref` (ref normalisation variants), `create_pull_request`, `list_pull_requests` (filters, pagination cap, error handling), `merge_branch`, `create_discussion`, `_request` retry logic (429, 403 rate-limit, 403 permission), CLI new subcommands, and CB lifecycle hooks. Coverage: 50.56% → 95.83% (+45 pp).
+- **`.github/copilot-cascade/tests/test_cascade.py`**: Added 7 tests for new `_execute_real()` JSON-RPC transport (success, JSON-RPC error body, CODEX_MCP_ENDPOINT override, HTTP error, non-HTTP scheme guard, `_http_post_json` header verification, `_http_post_json` URL scheme rejection).
+
+### Added (S174-continuation — 2026-03-22 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.
+- **`.codex/docs/COGNITIVE_BRAIN_STATUS_S174.md`**: NEW — full S174 cognitive brain status with AAIS scores, architecture diagram, memory tiers, next-phase plan.
+- **`.github/copilot-prompts/active/S174-followup.md`**: NEW — comprehensive follow-up prompt with owner actions, next @copilot session tasks, production-ready agent designs.
+- **`AGENT_REGISTRY.yaml`**: Added `promote-integration-branch` + `create-sub-pr-to-0D_base_` agents; `total_agents` 157→159.
+
+### Fixed (S174-continuation — 2026-03-22)
+- **`.github/agents/QA_AGENT_ARCHITECTURE_DIAGRAMS.md`**: Archived (36,201 chars > 30,000-char gate) → stub + archive copy.
+- **`.github/agents/INFRA_LINTER_AGENT_PROMPT.md`**: Archived (30,166 chars > 30,000-char gate) → stub + archive copy.
+
+### Changed (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`AGENTS.md`**: Updated header counts (126 workflows, 153 agents); fixed broken cross-reference for `PR_3095_RESOLUTION_PATTERNS.md`.
+- **`.github/agents/AGENT_REGISTRY.yaml`**: `total_agents` bumped 155→156; 5 legacy coverage agents (`coverage-gapfill`, `coverage-maintenance`, `coverage-roadmap`, `test-coverage-agent`, `test-coverage-monitor`) set to `status: archived` with `superseded_by: unified-coverage-agent`; `unified-coverage-agent` added as `status: active`.
+- **`.github/agents/coverage-*.md`, `test-coverage-*.md`**: Replaced with 20-line tombstone stubs pointing to `unified-coverage-agent`.
+- **`.github/workflow-archive/PARITY_CHECKLIST.md`**: S174 summary section added.
+- **`.codex/docs/INTEGRATION_BRANCH_MODEL.md`**: Updated to reflect `0D_base_` re-creation at S174; noted current promotion PR status.
+
+### Added (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md`**: NEW — comprehensive improvement plan for GitHub MCP Service, Playwright, CLI, REST API, and cognitive brain integration; 8 enhancement areas with implementation code stubs.
+- **`src/codex/github/mcp_poster.py`**: Added `create_ref()`, `create_pull_request()`, `list_pull_requests()` write methods to `GitHubMCPPoster`; enables autonomous `0D_base_` → `main` PR lifecycle management without direct `git push`.
+- **`.github/agents/energy-conversion-agent.md`**: NEW (v1.2.0) — AI-enhanced agent for gas-to-electric energy conversion simulation; RPi/SBC patterns, Claudeclaw autonomous management, APA citations.
+- **`.codex/docs/ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md`**: NEW — Claudeclaw autonomous management patterns doc for energy conversion; migrated from `copilot/research-energy-conversion-requirements`.
+- **`.github/workflow-archive/s174-consolidation/README.md`**: NEW — archival rationale for 3 workflows retired in S174.
+- **`docs/admin/SECRETS_CONFIGURATION.md`**: Moved from `.github/agents/SECRETS_CONFIGURATION.md` to correct location.
+
+### Removed (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`.github/workflows/self-healing.yml`**, **`self_healing_ci.yml`**: Archived to `workflow-archive/s174-consolidation/` — duplicates of canonical `iterative-self-healing-ci.yml`.
+- **`.github/workflows/pr3178-pytest-execution.yml`**: Archived — PR #3178 long merged; workflow still triggered on every 0D_base_→main PR.
+- **31 stale non-agent docs** from `.github/agents/`: Moved to `archive/sessions/`, `archive/cognitive-brain/`, `archive/status-docs/` subdirectories.
+- **`Art_` prefix** removed from `name:` field in 34 surviving workflows (was `Art_Self-Healing CI/CD`, `Art_Audit & QA Suite`, etc.).
+
+### Infrastructure (S174 — 2026-03-21)
+- **`0D_base_` branch**: Re-created from `main` @ `7a2c2ec0a` with S174 session changes merged; staging integration branch restored for `copilot/session-*` → `0D_base_` → `main` promotion flow.
+- **Agent Token Delegation**: `[x] Enable Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)` checkbox activated; `agent-auth-delegation` gated workflow awaiting owner approval to set `COPILOT_AGENT_AUTH_ENABLED=true` and add `copilot-swe-agent[bot]`, `github-copilot[bot]`, `github-actions[bot]` to `COGNITIVE_BRAIN_ALLOWED_ACTORS`.
+
+### Fixed (auto-update — PR #3664)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3664 (SHA `f78e61a6`) at 2026-03-22T02:53Z [auto-generated]
+
 ### Security (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Full SSRF (CodeQL #12493, Critical) — added `_assert_safe_proxy_url()` guard to `/api/request` proxy endpoint enforcing HTTPS-only, private IP blocklist (RFC-1918, loopback, link-local), and hostname validation.
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Uncontrolled command line / Command injection (CodeQL #12490, Critical) — replaced `asyncio.create_subprocess_shell(req.command)` with `asyncio.create_subprocess_exec(*shlex.split(req.command))`, preventing shell metacharacter injection in `/api/cli/run`.
@@ -3953,3 +4023,27 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Art_Data Quality & Determinism Suite: Cost Gate RED — requires stakeholder checkbox approval.
 - 💰 PR Cost Check: Cost Gate RED — requires stakeholder checkbox approval.
 - Resilient Validation Suite: Cache race condition (GitHub Actions infra transient).
+
+## [S175 / PR #3671] — 2026-03-22 — Review Comments + CI Triage #3672
+
+### Code Fixes
+- `fix(mcp_server)`: Repair syntax merge artifact — `_generate_mock_data` docstring was on the same line as `def` (review comment, commit in this session)
+- `test(mcp_server)`: Add `TestMCPStreamingTransport` — 12 unit tests covering SSE parsing, JSON fallback, error handling, env var override, mode selection, chunk counting, empty stream
+- `fix(workflows)`: `force_recreate` and `draft` boolean inputs: default `"false"` → `false` to match `type: boolean`
+- `fix(workflows)`: `if: inputs.force_recreate == 'true'` → `if: inputs.force_recreate` (boolean compare)
+- `fix(workflows)`: `cbPatterns` moved from JS template literal to `process.env.CB_PATTERNS` to prevent markdown injection
+- `fix(ci-health-monitor)`: Cascade suppression for issue #3669 — self-healing cascade doubles effective threshold; `cascade_detected` output added
+- `fix(collect_telemetry)`: `analyze_multi_job_cascade()` now called and embedded in telemetry JSON report
+- `fix(agent-registry)`: `ci` tag (too short) → `cicd`; `0D_base_routing` (malformed) → `zero_d_base_routing`
+- `fix(actionlint)`: Replace `A && B || C` shell anti-pattern with proper `if/fi` in `create-sub-pr-to-0D_base_.yml`
+- `fix(cross-refs)`: `README.md` — non-existent `codex_task_sequence.yaml`, `codex_gap_registry.yaml`, `docs/api/README.md` refs updated
+- `fix(cross-refs)`: `docs/ROADMAP.md:52` — wrong path `ops/SAR_METHODOLOGY.md` corrected to `docs/ops/SAR_METHODOLOGY.md`
+
+### CI Failures Resolved (from Triage Report #3672)
+- Agent Registry Validation: 2 capability_tags violations fixed ✅
+- Workflow Compliance Audit (actionlint): SC2015 `&&...||` anti-pattern fixed ✅
+- Validation Pipeline (cross-ref gate): 4 broken references fixed ✅
+- CI Health Alert #3669: Cascade suppression logic added to ci-health-monitor ✅
+
+### Security
+- No new vulnerabilities introduced; all changes are CI/workflow configuration and test code

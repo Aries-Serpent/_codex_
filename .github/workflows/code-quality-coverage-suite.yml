@@ -1,4 +1,4 @@
-name: Art_Code Quality & Coverage Suite
+name: Code Quality & Coverage Suite
 
 on:
   pull_request:

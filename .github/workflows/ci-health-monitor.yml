@@ -81,10 +81,27 @@ jobs:
 
           # Threshold: alert if failure rate exceeds CODEX_CI_FAILURE_THRESHOLD.
           # Wired to repo variable (P2.3); falls back to 10% (degraded level) if unset.
+          # Cascade suppression (issue #3669): when >50% of failures are classified as
+          # 'self-healing' (a cascade from iterative-self-healing-ci.yml), the raw
+          # failure rate is inflated by automated remediation runs — NOT real regressions.
+          # In that case we double the effective threshold to avoid false-positive alerts.
           THRESHOLD="${{ vars.CODEX_CI_FAILURE_THRESHOLD || '10' }}"
-          if python3 -c "import sys; sys.exit(0 if float('${FAILURE_RATE}') > float('${THRESHOLD}') else 1)"; then
+          # Read cascade_detected from telemetry JSON.
+          # One-liner kept intentionally compact: reads a single nested boolean key and
+          # prints 'true'/'false'. Failure-safe: falls back to 'false' on any error so
+          # the threshold check always runs. Logic: d['cascade_analysis']['cascade_detected'].
+          CASCADE_DETECTED=$(python3 -c "import json,sys;d=json.load(open('/tmp/telemetry_report.json'));print('true' if d.get('cascade_analysis',{}).get('cascade_detected',False) else 'false')" 2>/dev/null || echo 'false')
+          echo "cascade_detected=${CASCADE_DETECTED}" >> "$GITHUB_OUTPUT"
+          if [ "${CASCADE_DETECTED}" = "true" ]; then
+            # Use 2× threshold for cascade runs — they are expected self-healing overhead
+            EFFECTIVE_THRESHOLD=$(python3 -c "print(float('${THRESHOLD}') * 2)" 2>/dev/null || echo "${THRESHOLD}")
+            echo "::notice::Self-healing cascade detected — using effective threshold ${EFFECTIVE_THRESHOLD}% (2× base ${THRESHOLD}%)"
+          else
+            EFFECTIVE_THRESHOLD="${THRESHOLD}"
+          fi
+          if python3 -c "import sys; sys.exit(0 if float('${FAILURE_RATE}') > float('${EFFECTIVE_THRESHOLD}') else 1)"; then
             echo "alert_required=true" >> "$GITHUB_OUTPUT"
-            echo "::warning::CI failure rate ${FAILURE_RATE}% exceeds ${THRESHOLD}% threshold"
+            echo "::warning::CI failure rate ${FAILURE_RATE}% exceeds effective threshold ${EFFECTIVE_THRESHOLD}% (cascade=${CASCADE_DETECTED})"
           else
             echo "alert_required=false" >> "$GITHUB_OUTPUT"
           fi
@@ -148,13 +165,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const failureRate = '${{ steps.telemetry.outputs.failure_rate }}';
-            const failedRuns  = '${{ steps.telemetry.outputs.failed_runs }}';
-            const totalRuns   = '${{ steps.telemetry.outputs.total_runs }}';
+            const failureRate    = '${{ steps.telemetry.outputs.failure_rate }}';
+            const failedRuns     = '${{ steps.telemetry.outputs.failed_runs }}';
+            const totalRuns      = '${{ steps.telemetry.outputs.total_runs }}';
+            const cascadeDetected = '${{ steps.telemetry.outputs.cascade_detected }}' === 'true';
 
-            // Load pattern distribution from telemetry report
+            // Load pattern distribution and cascade analysis from telemetry report
             const fs = require('fs');
             let patternTable = '';
+            let cascadeSection = '';
             try {
               const report = JSON.parse(fs.readFileSync('/tmp/telemetry_report.json', 'utf8'));
               const dist   = report.pattern_distribution || {};
@@ -165,6 +184,27 @@ jobs:
               patternTable = rows
                 ? `| Pattern | Count |\n|---------|-------|\n${rows}`
                 : '_No patterns detected._';
+
+              // Include cascade analysis when detected (issue #3669 fix)
+              const ca = report.cascade_analysis || {};
+              if (ca.cascade_detected) {
+                cascadeSection = [
+                  '',
+                  '### ⚠️ Self-Healing Cascade Detected',
+                  '',
+                  `Self-healing failures account for **${(ca.cascade_rate * 100).toFixed(1)}%** ` +
+                  `of all failures (${ca.self_healing_count}/${ca.total_failures}).`,
+                  '',
+                  '**Root Cause:**',
+                  ca.root_cause || '_Unknown_',
+                  '',
+                  '**Recommended Action:**',
+                  ca.recommended_action || '_See .codex/patterns/ci_failure_patterns.yaml_',
+                  '',
+                  '> Note: The effective alert threshold was doubled to 2× base because',
+                  '> a cascade was active. The rate still exceeded this elevated threshold.',
+                ].join('\n');
+              }
             } catch(e) {
               patternTable = '_Pattern data unavailable._';
             }
@@ -197,6 +237,7 @@ jobs:
               '### Pattern Distribution',
               '',
               patternTable,
+              cascadeSection,
               '',
               '### Recommended Actions',
               '',

@@ -1,7 +1,7 @@
 # CodeQL Analysis Workflow
 # This is the organization-recommended default configuration
 
-name: Art_"CodeQL"
+name: "CodeQL"
 
 on:
   push:

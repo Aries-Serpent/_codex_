@@ -1,4 +1,4 @@
-name: Art_Cognitive Analysis & Learning (Unified)
+name: Cognitive Analysis & Learning (Unified)
 
 on:
   # Daily pattern feeding at 2 AM UTC
@@ -237,7 +237,42 @@ jobs:
     if: always()
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12'
+          cache-tier: 'common'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      # ── IMP-013: Inject CB patterns into step summary ──────────────────
+      # retrieve-patterns surfaces the top-N pattern entries from the
+      # cognitive brain so that any Copilot session that reads this
+      # workflow's summary immediately has fresh context injected.
+      - name: Retrieve CB patterns for summary (IMP-013)
+        id: cb_patterns
+        continue-on-error: true  # fail-open — never blocks summary
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit 8 \
+            2>/dev/null)
+          {
+            echo 'cb_markdown<<CB_EOF'
+            echo "$CB_BLOCK"
+            echo 'CB_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Generate summary
+        env:
+          CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
         run: |
           echo "## 🧠 Cognitive Analysis & Learning Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -249,3 +284,10 @@ jobs:
           echo "- Evaluation Mode: ${{ inputs.evaluation_mode || 'full' }}" >> $GITHUB_STEP_SUMMARY
           echo "- Analysis Period: ${{ inputs.days_back || '30' }} days" >> $GITHUB_STEP_SUMMARY
           echo "- Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
+          # Append CB patterns block when available (IMP-013)
+          if [ -n "$CB_PATTERNS" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "---" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "$CB_PATTERNS" >> $GITHUB_STEP_SUMMARY
+          fi

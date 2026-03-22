@@ -1,4 +1,4 @@
-name: Art_Nightly CodeQL Alert Triage
+name: Nightly CodeQL Alert Triage
 
 on:
   schedule:

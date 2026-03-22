@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-22T00:22:35Z",
+  "generated_at": "2026-03-22T12:08:31Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -750,7 +750,7 @@
       "name": "ci-health-alert-agent",
       "role": "specialist",
       "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "repo-var-sync-agent",
@@ -924,13 +924,13 @@
       "name": "copilot-session-chain",
       "role": "orchestrator",
       "enforcement_tier": "GROUNDED",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "packaging-validation-agent",
       "role": "specialist",
       "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     }
   ],
   "workflows": [
@@ -1867,9 +1867,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 5,
+    "d_capable_agents": 8,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "cc605663f00a37694f77ee5dac665bce8c6a9dc7dc3e17beb15d90ecd0a8baee"
+  "integrity_sha256": "0883d46d2abba742beef447187791087e23f0715ae426aef9eecedd76703d2bc"
 }

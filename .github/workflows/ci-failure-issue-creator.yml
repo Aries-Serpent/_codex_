@@ -23,7 +23,6 @@ on:
   workflow_run:
     workflows:
       - "CI"
-      - "Pytest Full Suite Execution"
       - "Code Quality & Coverage Suite"
       - "CodeQL Analysis"
       - "Docker Build & Push"
@@ -40,7 +39,6 @@ on:
       - "Cost Gate"
       - "Branch Rebase Gate"
       - "Root Org Validation"
-      - "Art_Self-Healing CI/CD"
     types: [completed]
     branches: [main]
 
@@ -378,13 +376,13 @@ jobs:
           cat > ".codex/ci-fixes/${SHORT_SLUG}.md" << STUB
           # CI Fix Tracking: ${{ github.event.workflow_run.name }}
 
-          **Status**: 🔄 In Progress  
-          **Opened**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")  
-          **Workflow**: ${{ github.event.workflow_run.name }}  
-          **Run**: ${{ github.event.workflow_run.html_url }}  
-          **Issue**: #${{ needs.create-issue.outputs.issue_number }}  
+          **Status**: 🔄 In Progress
+          **Opened**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          **Workflow**: ${{ github.event.workflow_run.name }}
+          **Run**: ${{ github.event.workflow_run.html_url }}
+          **Issue**: #${{ needs.create-issue.outputs.issue_number }}
 
-          This stub was created by the CI Failure Issue Creator.  
+          This stub was created by the CI Failure Issue Creator.
           @copilot will implement the fix in this branch.
           STUB
 

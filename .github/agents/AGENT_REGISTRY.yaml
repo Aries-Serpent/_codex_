@@ -1,6 +1,6 @@
 version: 2.0.0
-last_updated: '2026-03-22T03:49:44Z'
-total_agents: 155
+last_updated: '2026-03-21T21:00:00Z'
+total_agents: 159
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -1592,7 +1592,8 @@ agents:
   batch_scan_enabled: true
   name: Coverage Gapfill Agent
   file: coverage-gapfill-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: high
@@ -1603,15 +1604,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Targets low-coverage modules and generates tests to close coverage
-    gaps.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests to close coverage gaps."
   capability_tags:
   - testing
 - id: coverage-maintenance-agent
   batch_scan_enabled: true
   name: Coverage Maintenance Agent
   file: coverage-maintenance-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: medium
@@ -1622,14 +1623,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Maintains test coverage over time; alerts on regressions.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains test coverage over time; alerts on regressions."
   capability_tags:
   - testing
 - id: coverage-roadmap-agent
   batch_scan_enabled: true
   name: Coverage Roadmap Agent
   file: coverage-roadmap-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: production
   category: testing
   priority: high
@@ -1640,8 +1642,7 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Drives coverage threshold roadmap, tracks phase completion, validates
-    thresholds.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion, validates thresholds."
   capability_tags:
   - testing
 - id: cpu-only-ci-config-agent
@@ -2536,7 +2537,8 @@ agents:
   batch_scan_enabled: true
   name: Test Coverage Agent
   file: test-coverage-agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: beta
   category: testing
   priority: medium
@@ -2547,14 +2549,15 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: Drives test coverage improvements; identifies uncovered code paths.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered code paths."
   capability_tags:
   - testing
 - id: test-coverage-monitor
   batch_scan_enabled: true
   name: Test Coverage Monitor
   file: test-coverage-monitor.agent.md
-  status: active
+  status: archived
+  superseded_by: unified-coverage-agent
   maturity: production
   category: testing
   priority: high
@@ -2569,11 +2572,31 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 5
   role: utility
-  description: Monitors test coverage, enforces thresholds, validates documentation
-    quality.
+  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates documentation quality."
   capability_tags:
   - testing
-- id: test-enhancement-agent
+- id: unified-coverage-agent
+  name: Unified Coverage Agent
+  file: unified-coverage-agent.md
+  status: active
+  maturity: production
+  category: testing
+  priority: high
+  purpose: Single entry-point for all test-coverage work — monitor, analyse, gap-fill, and drive roadmap. Consolidates 5 legacy coverage agents.
+  enforcement_tier: GROUNDED
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - orchestrator
+  - ci-testing-agent
+  - agent-orchestrator
+  consolidation_priority: false
+  role: specialist
+  description: Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent, and test-coverage-monitor into one cohesive agent.
+  capability_tags:
+  - testing
+  - coverage
+  - cicd
   batch_scan_enabled: true
   name: Test Enhancement Agent
   file: test-enhancement-agent.md
@@ -3653,6 +3676,145 @@ agents:
   - security_scanning
   - pep621_compliance
   - dependabot_remediation
+- id: energy-conversion-agent
+  name: Energy Conversion Agent
+  version: 1.0.0
+  file: .github/agents/energy-conversion-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: simulation
+  subcategory: energy_systems
+  description: >
+    AI-enhanced agent skilled in developing programmatic systems for simulating
+    and calculating gas-to-electric energy conversion. Provides compute-regulated
+    power distribution modeling, thermodynamic conversion analysis, grid stability
+    simulation, and AI-driven optimization for integrated energy systems.
+  added_in_pr: energy-conversion
+  sprint: Sprint 5
+  physics_model:
+    primary: simulation
+    secondary: optimization
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: structured
+  accepts_handoff_from:
+  - agent-orchestrator
+  consolidation_priority: false
+  role: specialist
+  capability_tags:
+  - energy_conversion_simulation
+  - gas_to_electric
+  - power_distribution
+  - thermodynamic_modeling
+  - ai_optimization
+  - grid_stability
+  - demand_forecasting
+  - anomaly_detection
+- id: promote-integration-branch
+  name: Promote Integration Branch Workflow
+  version: 1.0.0
+  file: .github/workflows/promote-integration-branch.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: branch_management
+  description: >
+    Autonomously creates the 0D_base_ staging integration branch from a given
+    SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ → main
+    promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
+  added_in_pr: S174
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: integration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
+  capability_tags:
+  - branch_creation
+  - pr_lifecycle
+  - integration_branch_management
+  - promotion_workflow
+  - codex_master_key_ops
+- id: create-sub-pr-to-0D_base_
+  name: Create Sub-PR to 0D_base_ Workflow
+  version: 1.0.0
+  file: .github/workflows/create-sub-pr-to-0D_base_.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: pr_management
+  description: >
+    Creates a pull request from any session branch into 0D_base_ (staging
+    integration branch). Verifies 0D_base_ exists, idempotent (skips if PR
+    already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
+  added_in_pr: S174
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: integration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
+  capability_tags:
+  - sub_pr_creation
+  - session_branch_management
+  - zero_d_base_routing
+  - integration_branch_management
+
+- id: post-accountability-to-discussion
+  name: Post Accountability to Discussion Workflow
+  version: 1.0.0
+  file: .github/workflows/post-accountability-to-discussion.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: governance
+  description: >
+    Automated workflow that posts session accountability entries to GitHub
+    Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report).
+    Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL
+    to add a dedup-safe comment on the discussion thread. Priority 0 hardened
+    process replacing direct file logging.
+  added_in_pr: S175
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: governance
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: utility
+  capability_tags:
+  - accountability_reporting
+  - discussion_posting
+  - governance_automation
+  - session_documentation
+
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20

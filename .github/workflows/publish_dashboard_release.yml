@@ -1,4 +1,4 @@
-name: Art_Publish Status Dashboard Release
+name: Publish Status Dashboard Release
 
 on:
   workflow_dispatch:

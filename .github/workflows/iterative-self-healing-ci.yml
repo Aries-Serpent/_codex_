@@ -45,11 +45,9 @@ jobs:
       (
         github.event.workflow_run.conclusion == 'failure' &&
         github.event.workflow_run.name != 'Iterative Self-Healing CI' &&
-        github.event.workflow_run.name != 'Self-Healing CI' &&
-        github.event.workflow_run.name != 'Art_Self-Healing CI/CD' &&
         github.event.workflow_run.name != 'Cognitive Brain CI Feedback' &&
-        github.event.workflow_run.name != 'Art_Cognitive Action & Decision (Unified)' &&
-        github.event.workflow_run.name != 'Art_Cognitive Analysis & Learning (Unified)' &&
+        github.event.workflow_run.name != 'Cognitive Action & Decision (Unified)' &&
+        github.event.workflow_run.name != 'Cognitive Analysis & Learning (Unified)' &&
         github.event.workflow_run.name != 'Agent Variable Writer (Provenance-Chain)' &&
         github.event.workflow_run.name != 'Token Probe' &&
         github.event.workflow_run.name != 'Agent Vars Bootstrap' &&

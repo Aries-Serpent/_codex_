@@ -370,6 +370,12 @@ class TelemetryCollector:
                 continue
 
         # Write report
+        # Run cascade analysis and embed results so ci-health-monitor can
+        # suppress false-positive threshold alerts when a self-healing cascade
+        # accounts for the majority of failures (issue #3669).
+        cascade_analysis = self.analyze_multi_job_cascade(telemetry_data)
+        telemetry_data["cascade_analysis"] = cascade_analysis
+
         with open(output, "w") as f:
             json.dump(telemetry_data, f, indent=2)
 

@@ -6,12 +6,39 @@ while supporting mock/simulation mode for environments without real servers.
 """
 
 import asyncio
+import json
 import logging
 import os
+import sys
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# ---------------------------------------------------------------------------
+# Standalone SSE transport helper (single source of truth: scripts/ci/).
+# We attempt to import it at module load time so that tests against the
+# stand-alone script and tests against mcp_server both exercise identical
+# logic.  When running inside the .github/copilot-cascade/ tree (without
+# a full repo checkout) the import may fail; in that case we fall back to
+# the local implementation defined below.
+# ---------------------------------------------------------------------------
+_SSE_TRANSPORT_PATH = str(
+    Path(__file__).parent.parent.parent / "scripts" / "ci"
+)
+_sse_transport_imported = False
+try:
+    if _SSE_TRANSPORT_PATH not in sys.path:
+        sys.path.insert(0, _SSE_TRANSPORT_PATH)
+    from mcp_sse_transport import (  # noqa: E402
+        http_post_json_streaming as _http_post_json_streaming_fn,
+    )
+    _sse_transport_imported = True
+except ImportError:
+    _sse_transport_imported = False
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +46,9 @@ logger = logging.getLogger(__name__)
 class MCPConnectionMode(Enum):
     """MCP connection operating modes."""
 
-    MOCK = "mock"  # Simulated responses for testing
-    REAL = "real"  # Real MCP server connections
+    MOCK = "mock"            # Simulated responses for testing
+    REAL = "real"            # Real MCP server connections (JSON-RPC 2.0)
+    STREAMING = "streaming"  # Streaming JSON-RPC 2.0 via Server-Sent Events (IMP-005)
 
 
 @dataclass
@@ -103,7 +131,13 @@ class MCPIntegration:
         # Determine mode from environment or parameter
         if mode is None:
             env_mode = os.getenv("MCP_REAL_MODE", "false").lower()
-            self.mode = MCPConnectionMode.REAL if env_mode == "true" else MCPConnectionMode.MOCK
+            env_streaming = os.getenv("MCP_STREAMING_MODE", "false").lower()
+            if env_streaming == "true":
+                self.mode = MCPConnectionMode.STREAMING
+            elif env_mode == "true":
+                self.mode = MCPConnectionMode.REAL
+            else:
+                self.mode = MCPConnectionMode.MOCK
         else:
             self.mode = mode
 
@@ -229,6 +263,8 @@ class MCPIntegration:
         # Execute based on mode
         if self.mode == MCPConnectionMode.MOCK:
             response = await self._execute_mock(request, server)
+        elif self.mode == MCPConnectionMode.STREAMING:
+            response = await self._execute_streaming(request, server)
         else:
             response = await self._execute_real(request, server)
 
@@ -253,34 +289,333 @@ class MCPIntegration:
         )
 
     async def _execute_real(self, request: MCPRequest, server: MCPServer) -> MCPResponse:
-        """Execute request in real mode."""
-        try:
-            # Real execution logic would go here
-            # This is a placeholder that simulates real execution
-            await asyncio.sleep(0.1)
+        """Execute request via JSON-RPC 2.0 over HTTP/HTTPS (IMP-004).
 
-            # In production, this would make actual MCP protocol calls
-            logger.info(f"Executing real MCP request to {server.url}")
+        Sends a JSON-RPC 2.0 POST request to the server endpoint.  The
+        endpoint is resolved in priority order:
 
-            # For now, return mock data but mark as real execution
-            mock_data = self._generate_mock_data(request.capability, request.payload)
-            mock_data["_execution_mode"] = "real"
+        1. ``CODEX_MCP_ENDPOINT`` environment variable (staging/dev override)
+        2. ``server.url``
 
-            return MCPResponse(
-                request_id=request.request_id,
-                server_name=request.server_name,
-                status="success",
-                data=mock_data,
+        The request body follows the JSON-RPC 2.0 specification::
+
+            {
+                "jsonrpc": "2.0",
+                "id": "<request_id>",
+                "method": "tools/<capability>",
+                "params": { ... }
+            }
+
+        The response is expected to have either a ``result`` key (success)
+        or an ``error`` key (failure) as defined by JSON-RPC 2.0.
+
+        Falls back gracefully: if the endpoint is not an HTTP/HTTPS URL
+        (e.g. ``mcp://...`` scheme used in tests), the request is logged
+        and a synthetic error response (``status="error"``) is returned,
+        indicating an unsupported endpoint scheme, so unit tests that rely
+        on mock mode continue to work when ``MCPConnectionMode.REAL`` is
+        forced.
+        """
+        endpoint = os.environ.get("CODEX_MCP_ENDPOINT") or server.url
+        logger.info("MCP JSON-RPC 2.0 request → %s (capability=%s)", endpoint, request.capability)
+
+        # Only attempt HTTP/HTTPS transport; other schemes are not supported.
+        if not endpoint.startswith(("http://", "https://")):
+            logger.warning(
+                "MCP endpoint %r uses an unsupported scheme (not http/https); returning error response",
+                endpoint,
             )
-
-        except Exception as e:
-            logger.error(f"MCP execution error: {e}")
             return MCPResponse(
                 request_id=request.request_id,
                 server_name=request.server_name,
                 status="error",
-                error=str(e),
+                error=f"Unsupported endpoint scheme: {endpoint!r}",
             )
+
+        rpc_payload: Dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": request.request_id,
+            "method": f"tools/{request.capability}",
+            "params": request.payload,
+        }
+
+        try:
+            # Run the blocking urllib call in a thread-pool executor so the
+            # async event loop is not blocked (aiohttp is not a hard dependency).
+            loop = asyncio.get_running_loop()
+            body = await loop.run_in_executor(
+                None,
+                lambda: self._http_post_json(
+                    endpoint,
+                    rpc_payload,
+                    auth_token=server.auth_token,
+                    timeout=server.timeout,
+                ),
+            )
+
+            if "error" in body:
+                rpc_error = body["error"]
+                message = (
+                    rpc_error.get("message", str(rpc_error))
+                    if isinstance(rpc_error, dict)
+                    else str(rpc_error)
+                )
+                logger.error("MCP JSON-RPC error from %s: %s", endpoint, message)
+                return MCPResponse(
+                    request_id=request.request_id,
+                    server_name=request.server_name,
+                    status="error",
+                    error=message,
+                )
+
+            result = body.get("result")
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="success",
+                data=result if isinstance(result, dict) else {"result": result},
+            )
+
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode(errors="replace")
+            logger.error("MCP HTTP error %d from %s: %s", exc.code, endpoint, error_body)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=f"HTTP {exc.code}: {exc.reason}",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.error("MCP execution error for %s: %s", endpoint, exc)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=str(exc),
+            )
+
+    @staticmethod
+    def _http_post_json(
+        url: str,
+        payload: Dict[str, Any],
+        auth_token: Optional[str] = None,
+        timeout: int = 30,
+    ) -> Dict[str, Any]:
+        """Send a synchronous HTTP POST with a JSON body and return the decoded response.
+
+        Parameters
+        ----------
+        url:
+            HTTP/HTTPS endpoint to POST to.  Must start with ``https://`` or
+            ``http://`` — plain ``http://`` is accepted but callers should
+            prefer HTTPS for any production endpoint.
+        payload:
+            JSON-serialisable request body.
+        auth_token:
+            Optional bearer token for the ``Authorization`` header.
+        timeout:
+            Request timeout in seconds.
+
+        Returns
+        -------
+        dict
+            Decoded JSON response body.
+
+        Raises
+        ------
+        ValueError
+            If *url* does not start with ``http://`` or ``https://``.
+        """
+        if not url.startswith(("http://", "https://")):
+            raise ValueError(f"_http_post_json: URL must start with http:// or https://, got: {url!r}")
+        data = json.dumps(payload).encode("utf-8")
+        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        if auth_token:
+            headers["Authorization"] = f"Bearer {auth_token}"
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+            return json.loads(resp.read())
+
+    async def _execute_streaming(self, request: MCPRequest, server: MCPServer) -> MCPResponse:
+        """Execute request via streaming JSON-RPC 2.0 using Server-Sent Events (IMP-005).
+
+        Sends the same JSON-RPC 2.0 POST as ``_execute_real`` but adds
+        ``Accept: text/event-stream`` to request SSE streaming.  The server
+        should respond with ``Content-Type: text/event-stream`` and emit
+        ``data: <json>`` lines.  Each line is accumulated; the *last* data
+        line is treated as the final result.
+
+        Falls back transparently to the standard (non-streaming) transport
+        when the server responds with a non-SSE ``Content-Type``, ensuring
+        backward compatibility with MCP servers that do not support streaming.
+
+        Endpoint resolution follows the same priority as ``_execute_real``:
+
+        1. ``CODEX_MCP_ENDPOINT`` environment variable
+        2. ``server.url``
+        """
+        endpoint = os.environ.get("CODEX_MCP_ENDPOINT") or server.url
+        logger.info(
+            "MCP JSON-RPC 2.0 streaming request → %s (capability=%s)",
+            endpoint,
+            request.capability,
+        )
+
+        if not endpoint.startswith(("http://", "https://")):
+            logger.warning(
+                "MCP streaming endpoint %r uses an unsupported scheme; returning error response",
+                endpoint,
+            )
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=f"Unsupported endpoint scheme for streaming: {endpoint!r}",
+            )
+
+        rpc_payload: Dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": request.request_id,
+            "method": f"tools/{request.capability}",
+            "params": request.payload,
+        }
+
+        try:
+            loop = asyncio.get_running_loop()
+            body = await loop.run_in_executor(
+                None,
+                lambda: self._http_post_json_streaming(
+                    endpoint,
+                    rpc_payload,
+                    auth_token=server.auth_token,
+                    timeout=server.timeout,
+                ),
+            )
+
+            if "error" in body:
+                rpc_error = body["error"]
+                message = (
+                    rpc_error.get("message", str(rpc_error))
+                    if isinstance(rpc_error, dict)
+                    else str(rpc_error)
+                )
+                logger.error("MCP streaming JSON-RPC error from %s: %s", endpoint, message)
+                return MCPResponse(
+                    request_id=request.request_id,
+                    server_name=request.server_name,
+                    status="error",
+                    error=message,
+                )
+
+            result = body.get("result")
+            streaming_chunks = body.get("_streaming_chunks", 0)
+            logger.info(
+                "MCP streaming complete from %s — %d SSE chunk(s) received",
+                endpoint,
+                streaming_chunks,
+            )
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="success",
+                data=(
+                    result if isinstance(result, dict)
+                    else {"result": result, "_streaming_chunks": streaming_chunks}
+                ),
+            )
+
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode(errors="replace")
+            logger.error(
+                "MCP streaming HTTP error %d from %s: %s", exc.code, endpoint, error_body
+            )
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=f"HTTP {exc.code}: {exc.reason}",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.error("MCP streaming execution error for %s: %s", endpoint, exc)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=str(exc),
+            )
+
+    @staticmethod
+    def _http_post_json_streaming(
+        url: str,
+        payload: Dict[str, Any],
+        auth_token: Optional[str] = None,
+        timeout: int = 30,
+    ) -> Dict[str, Any]:
+        """POST JSON and read the response as SSE or plain JSON.
+
+        Delegates to :func:`scripts.ci.mcp_sse_transport.http_post_json_streaming`
+        when available (single source of truth).  Falls back to the inline
+        implementation when the scripts tree is not on the path.
+
+        See :mod:`mcp_sse_transport` for the full parameter/return documentation.
+        """
+        if _sse_transport_imported:
+            return _http_post_json_streaming_fn(
+                url, payload, auth_token=auth_token, timeout=timeout
+            )
+
+        # ------------------------------------------------------------------ #
+        # Fallback implementation (identical logic, kept for environments     #
+        # where the repo root is not available, e.g. a bare checkout of the  #
+        # .github/copilot-cascade/ sub-tree only).                            #
+        # ------------------------------------------------------------------ #
+        if not url.startswith(("http://", "https://")):
+            raise ValueError(
+                f"_http_post_json_streaming: URL must start with "
+                f"http:// or https://, got: {url!r}"
+            )
+        data = json.dumps(payload).encode("utf-8")
+        headers: Dict[str, str] = {
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream, application/json",
+        }
+        if auth_token:
+            headers["Authorization"] = f"Bearer {auth_token}"
+
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+            content_type = resp.headers.get("Content-Type", "")
+            raw = resp.read()
+
+        if "text/event-stream" not in content_type:
+            return json.loads(raw)
+
+        chunks: List[Dict[str, Any]] = []
+        for line in raw.decode("utf-8").splitlines():
+            line = line.strip()
+            if line.startswith("data:"):
+                fragment = line.removeprefix("data:").strip()
+                if fragment in ("", "[DONE]"):
+                    continue
+                try:
+                    frame = json.loads(fragment)
+                    if isinstance(frame, dict):
+                        chunks.append(frame)
+                except json.JSONDecodeError:
+                    logger.debug(
+                        "MCP SSE: skipping non-JSON fragment: %r", fragment
+                    )
+
+        if not chunks:
+            return {
+                "error": {
+                    "message": "SSE stream contained no parseable data frames"
+                }
+            }
+
+        final = chunks[-1]
+        final["_streaming_chunks"] = len(chunks)
+        return final
 
     def _generate_mock_data(self, capability: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Generate mock response data based on capability."""

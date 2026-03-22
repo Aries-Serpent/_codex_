@@ -1,4 +1,4 @@
-name: Art_Validation Pipeline
+name: Validation Pipeline
 # Runs two jobs:
 #   fast   — every pull request (lightweight: pre-commit + smoke tests)
 #   full   — daily schedule or manual dispatch (full suite + coverage)
