@@ -56,17 +56,39 @@ _GITHUB_TOKEN_RE = re.compile(r"^(gh[pousr]_[A-Za-z0-9_]{36,}|[0-9a-f]{40})$")
 
 # Valid GitHub App installation permission names (subset — see GitHub REST API docs).
 # PAT-style scopes like "repo" or "workflow" are NOT valid here.
-_KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset({
-    "actions", "administration", "checks", "codespaces", "contents",
-    "deployments", "environments", "issues", "members", "metadata",
-    "organization_administration", "organization_hooks",
-    "organization_packages", "organization_plan", "organization_projects",
-    "organization_secrets", "organization_self_hosted_runners",
-    "packages", "pages", "pull_requests", "repository_hooks",
-    "repository_projects", "secret_scanning_alerts", "secrets",
-    "security_events", "single_file", "statuses", "vulnerability_alerts",
-    "workflows",
-})
+_KNOWN_INSTALLATION_PERMISSIONS: frozenset[str] = frozenset(
+    {
+        "actions",
+        "administration",
+        "checks",
+        "codespaces",
+        "contents",
+        "deployments",
+        "environments",
+        "issues",
+        "members",
+        "metadata",
+        "organization_administration",
+        "organization_hooks",
+        "organization_packages",
+        "organization_plan",
+        "organization_projects",
+        "organization_secrets",
+        "organization_self_hosted_runners",
+        "packages",
+        "pages",
+        "pull_requests",
+        "repository_hooks",
+        "repository_projects",
+        "secret_scanning_alerts",
+        "secrets",
+        "security_events",
+        "single_file",
+        "statuses",
+        "vulnerability_alerts",
+        "workflows",
+    }
+)
 
 
 class GitHubTokenProvider(TokenProvider):
@@ -395,9 +417,7 @@ class GitHubTokenProvider(TokenProvider):
                 data = resp.json()
                 new_token = data.get("token", "")
                 if not new_token:
-                    logger.error(
-                        "GitHub API returned 201 but response contains no token value."
-                    )
+                    logger.error("GitHub API returned 201 but response contains no token value.")
                     return RotationResult(
                         success=False,
                         old_secret_id="",

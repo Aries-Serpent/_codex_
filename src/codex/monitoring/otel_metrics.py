@@ -32,6 +32,7 @@ Usage (coherence)::
     score = compute_run_coherence(actual_steps, expected_steps)
     workflow_coherence_score.observe(score)
 """
+
 from __future__ import annotations
 
 from codex.monitoring import Histogram, metrics
@@ -116,10 +117,7 @@ def compute_coherence(
     """
     if not expected:
         return 1.0
-    matches = sum(
-        1 for step, exp_outcome in expected.items()
-        if actual.get(step) == exp_outcome
-    )
+    matches = sum(1 for step, exp_outcome in expected.items() if actual.get(step) == exp_outcome)
     return matches / len(expected)
 
 

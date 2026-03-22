@@ -1133,10 +1133,10 @@ def main(argv: list[str] | None = None) -> int:
             for mapping in args.files:
                 dest, _, src = mapping.partition(":")
                 if not dest or not src:
-                    print(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC", file=sys.stderr)
+                    print(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC", file=sys.stderr)  # noqa: E501
                     return 1
                 files[dest] = Path(src).read_text(encoding="utf-8")
-            commit_sha = poster.commit_files(args.repo, args.branch, files, args.message, args.force)
+            commit_sha = poster.commit_files(args.repo, args.branch, files, args.message, args.force)  # noqa: E501
             print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
 
     except RuntimeError as exc:

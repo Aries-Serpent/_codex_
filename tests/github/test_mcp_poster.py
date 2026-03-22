@@ -921,8 +921,6 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 def test_get_method_returns_json(poster, monkeypatch):
     """_get() parses JSON from a successful GET response."""
     import json
-    import urllib.request
-    from io import BytesIO
     from unittest.mock import MagicMock
 
     fake_resp = MagicMock()
@@ -943,10 +941,6 @@ def test_get_method_rejects_non_https(poster):
 
 def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
     """commit_files() calls the full Git Data API pipeline in order."""
-    import json
-    import urllib.request
-    from io import BytesIO
-    from unittest.mock import MagicMock, call, patch
 
     call_log: list[tuple[str, str]] = []
 
@@ -1035,7 +1029,6 @@ def test_cli_commit_files(monkeypatch, tmp_path):
 
 def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
     """CLI commit-files returns 1 when a --file mapping is malformed."""
-    import codex.github.mcp_poster as pm
     from codex.github.mcp_poster import main
 
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
