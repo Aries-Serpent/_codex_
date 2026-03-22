@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-21T18:07:21Z",
+  "generated_at": "2026-03-22T00:22:35Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -925,6 +925,12 @@
       "role": "orchestrator",
       "enforcement_tier": "GROUNDED",
       "autonomy_model": "E"
+    },
+    {
+      "name": "packaging-validation-agent",
+      "role": "specialist",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
     }
   ],
   "workflows": [
@@ -1051,6 +1057,11 @@
     {
       "name": "chatops_copilot_trigger",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "ci-checkpoint-validation",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1260,7 +1271,7 @@
     },
     {
       "name": "iterative-self-healing-ci",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1295,6 +1306,11 @@
     },
     {
       "name": "optimized-ci",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "pages-health-guard",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
@@ -1386,6 +1402,11 @@
     {
       "name": "ratelimit_history_prune",
       "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
+      "name": "reference-integrity",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1645,6 +1666,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S172.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
@@ -1846,5 +1871,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "764392bac05106ca175d3371e27bc4014dbc11526e468c0380e6a69f3ccbdeb7"
+  "integrity_sha256": "cc605663f00a37694f77ee5dac665bce8c6a9dc7dc3e17beb15d90ecd0a8baee"
 }
