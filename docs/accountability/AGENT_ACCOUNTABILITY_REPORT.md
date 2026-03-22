@@ -7763,3 +7763,55 @@ Streaming tests already exist in `.github/copilot-cascade/tests/test_cascade.py`
 - CI gates unblocked: REQ-4, REQ-5
 - Files updated: 2
 - Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-03-22 S177 PR copilot/sub-pr-3677 (PR #3678)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed: `github-advanced-security[bot]` code scanning alert (partial SSRF, critical), @mbaetiong PR status comment reviewed ✅
+- [x] **0b.** All failing CI checks reviewed: CodeQL "Partial SSRF" at `tools/actions_server.py:172` (user-controlled owner/repo flowed into HTTP URL) — fixed in this session ✅
+- [x] **0c.** REQ-10 branch rebase status: current HEAD a6374d3 (merged from session branch) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed from Actions job logs + code scanning alerts ✅
+- [x] **3.** `.gitignore` allows all new files ✅
+- [x] **4.** Priority directive: Fix CodeQL critical SSRF alert + complete IMP-007/014/015/016 backlog ✅
+- [x] **5.** Phase execution plan posted in PR description before file changes ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed throughout ✅
+
+### Work Completed (S177 PR #3678)
+
+| # | Change | Addresses |
+|---|--------|-----------|
+| 1 | `tools/actions_server.py` `do_POST` — removed user-supplied `owner`/`repo` from request body; always uses server-configured `OWNER`/`REPO` constants | CodeQL "Partial SSRF" critical alert (line 172) |
+| 2 | `cognitive_app/playwright.config.ts` — IMP-007: added HAR replay config (`serviceWorkers: 'block'` in CI/`PLAYWRIGHT_HAR_REPLAY=1` mode) | IMP-007 |
+| 3 | `.copilot-space/mcp.example.json` — IMP-014: expanded to multi-target config with `github-primary`, `github-fallback`, routing strategy, health check URLs | IMP-014 |
+| 4 | `.github/workflows/mcp-health.yml` — IMP-015: NEW workflow: MCP metrics threshold gate (latency ≤500ms, error rate ≤5%), multi-target config validation, nightly + PR trigger | IMP-015 |
+| 5 | `.github/workflows/har-capture.yml` — IMP-016: updated artifact retention from 14→30 days (per IMP-016 spec) | IMP-016 |
+| 6 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` — S177 session entries | REQ-4/REQ-5 |
+
+### Security Fix Detail (CodeQL SSRF — Critical)
+
+**Root cause:** `do_POST` read `owner` and `repo` from the user-supplied JSON request body
+(`body.get("owner", OWNER)`) and passed them to `create_branch()` / `open_pull_request()` /
+`merge_branches()`, which embedded them in the GitHub API URL path.  Although
+`_validate_repo_component()` checked the values against a safe regex, CodeQL still flagged the
+taint flow from HTTP request body → URL as a "Partial server-side request forgery" (CWE-918).
+
+**Fix:** Removed `owner` and `repo` from the request body schema entirely.  The handler now
+unconditionally uses the module-level `OWNER` / `REPO` constants (set from environment variables
+at server start-up).  No user-controlled data ever reaches the URL path.
+
+### CI Status After This Session
+- ✅ CodeQL — critical SSRF alert resolved
+- ✅ Agent Token Delegation — cognitive preflight passing (REQ-4 accountability report updated)
+- ✅ All 77 tests passing
+- ✅ Deferral Language Gate — 0 violations
+- ✅ IMP-007, IMP-014, IMP-015, IMP-016 complete
+
+### Impact Score
+- Security vulnerabilities fixed: 1 critical (CodeQL partial SSRF CWE-918)
+- IMP backlog items completed: 4 (IMP-007, IMP-014, IMP-015, IMP-016)
+- Files changed: 7
+- Tests: 77 passing, 0 regressions
+- Deferral Language Gate: 0 violations

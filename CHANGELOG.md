@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S176 — 2026-03-22 — PR #3677)
+### Security (S177 — 2026-03-22 — PR #3678)
+- **`tools/actions_server.py`**: Fixed CodeQL critical "Partial SSRF" (CWE-918) — `do_POST` no longer reads `owner`/`repo` from user-supplied request body; handler always uses server-configured `OWNER`/`REPO` env vars, eliminating taint flow from HTTP body to URL path.
+
+### Added (S177 — 2026-03-22 — PR #3678)
+- **`cognitive_app/playwright.config.ts`** (IMP-007): HAR replay support for offline CI — adds `serviceWorkers: 'block'` when `CI=true` or `PLAYWRIGHT_HAR_REPLAY=1` so E2E tests run against pre-recorded HAR instead of live backend.
+- **`.copilot-space/mcp.example.json`** (IMP-014): Expanded to multi-target config with `github-primary` (live) + `github-fallback` (offline) servers, `routing.strategy: primary-with-fallback`, and `health_check_url` on each server.
+- **`.github/workflows/mcp-health.yml`** (IMP-015): NEW — MCP metrics threshold gate; validates latency ≤500ms avg and error rate ≤5% on every MCP-related PR and nightly; also validates multi-target config completeness.
+- **`.github/workflows/har-capture.yml`** (IMP-016): Updated Playwright report artifact retention from 14 days to 30 days per IMP-016 spec.
+
+
 - Unblocked CI: updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S176 session entry (REQ-4 gate).
 - Verified `AGENT_REGISTRY.yaml` `total_agents=159` matches actual agent count after PR #3674 merge.
 

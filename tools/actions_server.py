@@ -273,7 +273,13 @@ class App(BaseHTTPRequestHandler):
         return self._ok({"error": "not found"}, 404)
 
     def do_POST(self):
-        """Write endpoints for branch/PR/merge lifecycle operations (IMP-011)."""
+        """Write endpoints for branch/PR/merge lifecycle operations (IMP-011).
+
+        The ``owner`` and ``repo`` are always taken from the server-configured
+        :data:`OWNER` / :data:`REPO` environment variables — they are **never**
+        read from the request body.  This prevents any user-controlled data from
+        flowing into the GitHub API URL path (CodeQL partial-SSRF guard).
+        """
         from urllib.parse import urlparse
 
         content_length = int(self.headers.get("Content-Length", 0))
@@ -285,12 +291,15 @@ class App(BaseHTTPRequestHandler):
         except json.JSONDecodeError as exc:
             return self._ok({"error": f"invalid JSON body: {exc}"}, 400)
 
+        # owner and repo come exclusively from the server environment —
+        # they are NEVER read from the request body to prevent SSRF.
+        owner: str = OWNER
+        repo: str = REPO
+
         u = urlparse(self.path)
         try:
             if u.path == "/repo/branches":
-                # body: {owner?, repo?, branch, sha}
-                owner = body.get("owner", OWNER)
-                repo = body.get("repo", REPO)
+                # body: {branch, sha}
                 branch = body.get("branch", "")
                 sha = body.get("sha", "")
                 if not branch or not sha:
@@ -298,9 +307,7 @@ class App(BaseHTTPRequestHandler):
                 return self._ok(create_branch(owner, repo, branch, sha), 201)
 
             if u.path == "/repo/pulls":
-                # body: {owner?, repo?, title, head, base, body?, draft?}
-                owner = body.get("owner", OWNER)
-                repo = body.get("repo", REPO)
+                # body: {title, head, base?, body?, draft?}
                 title = body.get("title", "")
                 head = body.get("head", "")
                 base = body.get("base", "main")
@@ -316,9 +323,7 @@ class App(BaseHTTPRequestHandler):
                 )
 
             if u.path == "/repo/merges":
-                # body: {owner?, repo?, base, head, commit_message?}
-                owner = body.get("owner", OWNER)
-                repo = body.get("repo", REPO)
+                # body: {base, head, commit_message?}
                 base = body.get("base", "")
                 head = body.get("head", "")
                 if not base or not head:
