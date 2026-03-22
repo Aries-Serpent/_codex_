@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3676)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3676 (SHA `0bc55bc`) at 2026-03-22T09:31Z [auto-generated]
+
 ### Added (S175 — 2026-03-22 — PR copilot/session-20260322-042713-23395632625)
 - **`.github/copilot-cascade/mcp_server.py`**: Implemented `_execute_real()` with real JSON-RPC 2.0 HTTP transport (IMP-004) using stdlib `urllib`; added `_http_post_json()` static helper; added `CODEX_MCP_ENDPOINT` env var override for staging/dev environments.
 - **`src/codex/github/mcp_poster.py`**: Added `_record_cb_pattern()` cognitive brain lifecycle hook (IMP-012); wired into `create_ref()` (CB-branch-create), `create_pull_request()` (CB-pr-open), and `merge_branch()` (CB-merge) for autonomy observability.

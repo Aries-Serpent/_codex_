@@ -31,7 +31,7 @@ The Codex ML system provides a comprehensive framework for ML model training, ev
 graph TB
     User[Data Scientist / ML Engineer<br/>v0.1.0 User]
     Copilot[GitHub Copilot / ChatGPT<br/>AI Assistant]
-    Agents[153 Autonomous Agents<br/>🤖 MCP-enabled]
+    Agents[159 Autonomous Agents<br/>🤖 MCP-enabled]
 
     Codex[codex-ml v0.1.0<br/>Production-Ready ML Platform<br/>20000+ Tests | 80% Coverage]
 
@@ -72,7 +72,7 @@ graph TB
 
 - **Data Scientists / ML Engineers**: Primary users who configure, train, and evaluate models
 - **GitHub Copilot / ChatGPT**: AI assistants that help navigate the codebase and generate code
-- **153 Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
+- **159 Autonomous Agents**: Specialized domain agents for testing, documentation, security, and operations
 - **CI/CD Systems**: Automated workflows for testing, deployment, and self-healing
 
 ### External Systems
@@ -121,7 +121,7 @@ graph TB
             Verify[Verify Module<br/>Behavior Compare<br/>✅ Test Gen]
         end
 
-        subgraph "Agent System (153 Agents)"
+        subgraph "Agent System (159 Agents)"
             AgentCore[Agent Core<br/>RAG + RAGIndexer<br/>🤖 Autonomous]
             ToolRegistry[Tool Registry<br/>Centralized Discovery<br/>🔧 Dynamic]
             AgentMemory[Agent Memory<br/>SQLite Persistent<br/>💾 Pattern Library]

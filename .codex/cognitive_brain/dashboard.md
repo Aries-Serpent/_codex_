@@ -157,4 +157,3 @@ python scripts/cognitive/dashboard_generator.py --hours 48
 2. **Upgrade Node.js action versions** to Node 24 — `actions/checkout@v4` deprecation warning fires on every run (deadline: 2026-06-02)
 3. **Resolve `cognitive_app` JS build** — CodeQL autobuild.sh fails because `npm install` is not run before analysis; add a `build-commands` to codeql config or add npm install step
 4. **E→D Transition Gate** — unblock with passing CODEX_MANIFEST.json and all 5 readiness conditions
-

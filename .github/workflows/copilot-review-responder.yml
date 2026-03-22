@@ -13,7 +13,7 @@ name: "🤖 Copilot Review Responder"
 #   issue_comment (created) from a bot containing "generated N comments":
 #     → reacts 👍 to the comment
 #     → finds the most recent bot PR review (to build the review URL)
-#     → posts "@copilot apply changes based on the comments in [this thread](URL)"
+#     → posts "@copilot apply changes based on the comments in this thread (<review URL>)"
 #
 # Bot actors targeted: copilot-pull-request-reviewer[bot], copilot[bot],
 #   github-copilot[bot], gemini-code-assist[bot], amazon-q[bot],
@@ -236,4 +236,3 @@ jobs:
               owner, repo, issue_number: pr, body,
             });
             console.log(`@copilot apply posted for review ${reviewId ?? 'unknown'} (${countStr} comments).`);
-

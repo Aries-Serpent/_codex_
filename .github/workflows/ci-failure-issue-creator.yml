@@ -376,13 +376,13 @@ jobs:
           cat > ".codex/ci-fixes/${SHORT_SLUG}.md" << STUB
           # CI Fix Tracking: ${{ github.event.workflow_run.name }}
 
-          **Status**: 🔄 In Progress  
-          **Opened**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")  
-          **Workflow**: ${{ github.event.workflow_run.name }}  
-          **Run**: ${{ github.event.workflow_run.html_url }}  
-          **Issue**: #${{ needs.create-issue.outputs.issue_number }}  
+          **Status**: 🔄 In Progress
+          **Opened**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          **Workflow**: ${{ github.event.workflow_run.name }}
+          **Run**: ${{ github.event.workflow_run.html_url }}
+          **Issue**: #${{ needs.create-issue.outputs.issue_number }}
 
-          This stub was created by the CI Failure Issue Creator.  
+          This stub was created by the CI Failure Issue Creator.
           @copilot will implement the fix in this branch.
           STUB
 
