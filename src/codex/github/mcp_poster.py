@@ -12,6 +12,7 @@ Write operations (IMP-001 / S174 — docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md):
 - ``create_pull_request()``  — open a PR without a local git clone
 - ``list_pull_requests()``   — query PRs by state / head / base filters
 - ``merge_branch()``         — server-side branch merge via GitHub merge API
+- ``commit_files()``         — push file changes via Git Data API (IMP-002 / S178)
 
 Usage
 -----
@@ -32,6 +33,12 @@ CLI (from CI workflow)::
         --title "S174 promotion: 0D_base_ → main" \\
         --head 0D_base_ --base main
 
+    python -m codex.github.mcp_poster commit-files \\
+        --repo Aries-Serpent/_codex_ \\
+        --branch 0D_base_ \\
+        --message "chore: autonomous commit via Git Data API" \\
+        --file README.md:README.md
+
 Python API::
 
     from codex.github.mcp_poster import GitHubMCPPoster
@@ -39,6 +46,10 @@ Python API::
     poster.post_pr_comment(repo="Aries-Serpent/_codex_", pr_number=3401, body="@copilot ...")
     poster.create_ref("Aries-Serpent/_codex_", "refs/heads/0D_base_", sha="abc123")
     poster.create_pull_request("Aries-Serpent/_codex_", "title", "body", "0D_base_", "main")
+    poster.commit_files(
+        "Aries-Serpent/_codex_", "0D_base_",
+        {"README.md": "# Hello\\n"}, "docs: update README"
+    )
 
 PDA Loop: DO phase — executes the follow-up prompt posting as part of the
 AfterMath session-completion cycle.
@@ -466,6 +477,225 @@ class GitHubMCPPoster:
         return result
 
     # ------------------------------------------------------------------
+    # Git Data API — autonomous commits (IMP-002 — S178)
+    # ------------------------------------------------------------------
+
+    def _create_blob(self, repo: str, content: str, encoding: str = "utf-8") -> str:
+        """Create a git blob object and return its SHA.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        content:
+            File content as a string (UTF-8 or base64 encoded).
+        encoding:
+            ``"utf-8"`` (default) or ``"base64"``.
+        """
+        url = f"{_GITHUB_API}/repos/{repo}/git/blobs"
+        result = self._post(url, {"content": content, "encoding": encoding})
+        return result["sha"]
+
+    def _create_tree(
+        self,
+        repo: str,
+        tree_items: list[dict[str, Any]],
+        base_tree_sha: str = "",
+    ) -> str:
+        """Create a git tree object and return its SHA.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        tree_items:
+            List of tree entries, each with ``path``, ``mode``, ``type``,
+            and either ``sha`` (blob SHA) or ``content`` (inline content).
+        base_tree_sha:
+            SHA of the tree to build on top of.  Pass an empty string to
+            create a standalone root tree (rarely needed — usually the
+            current commit tree SHA should be passed here).
+        """
+        url = f"{_GITHUB_API}/repos/{repo}/git/trees"
+        payload: dict[str, Any] = {"tree": tree_items}
+        if base_tree_sha:
+            payload["base_tree"] = base_tree_sha
+        result = self._post(url, payload)
+        return result["sha"]
+
+    def _create_commit(
+        self,
+        repo: str,
+        message: str,
+        tree_sha: str,
+        parent_shas: list[str],
+    ) -> str:
+        """Create a git commit object and return its SHA.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        message:
+            Commit message string.
+        tree_sha:
+            SHA of the root tree for this commit (from :meth:`_create_tree`).
+        parent_shas:
+            List of parent commit SHAs (typically one — the current HEAD).
+        """
+        url = f"{_GITHUB_API}/repos/{repo}/git/commits"
+        result = self._post(url, {
+            "message": message,
+            "tree": tree_sha,
+            "parents": parent_shas,
+        })
+        return result["sha"]
+
+    def _update_ref(self, repo: str, ref: str, sha: str, force: bool = False) -> dict[str, Any]:
+        """Update (fast-forward) a git reference to a new commit SHA.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        ref:
+            Full ref name, e.g. ``"refs/heads/0D_base_"``.  A bare branch
+            name is accepted and will be normalised to ``refs/heads/<name>``.
+        sha:
+            New target commit SHA.
+        force:
+            When ``True``, perform a force-update (non-fast-forward).
+        """
+        if not ref.startswith("refs/"):
+            ref = f"refs/heads/{ref}"
+        url = f"{_GITHUB_API}/repos/{repo}/git/refs/{ref.removeprefix('refs/')}"
+        return self._request("PATCH", url, {"sha": sha, "force": force})
+
+    def _get_ref_sha(self, repo: str, ref: str) -> str:
+        """Resolve a branch ref to the current tip commit SHA.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        ref:
+            Branch name or full ref (e.g. ``"main"`` or
+            ``"refs/heads/main"``).
+        """
+        branch = ref.removeprefix("refs/heads/")
+        url = f"{_GITHUB_API}/repos/{repo}/git/refs/heads/{branch}"
+        result_get = self._get(url)
+        return result_get["object"]["sha"]
+
+    def _get_commit_tree_sha(self, repo: str, commit_sha: str) -> str:
+        """Return the tree SHA for a given commit SHA."""
+        url = f"{_GITHUB_API}/repos/{repo}/git/commits/{commit_sha}"
+        result = self._get(url)
+        return result["tree"]["sha"]
+
+    def commit_files(
+        self,
+        repo: str,
+        branch: str,
+        files: dict[str, str],
+        message: str,
+        force: bool = False,
+    ) -> str:
+        """Push one or more file changes as a single commit via the Git Data API.
+
+        IMP-002: Closes the "agent can only push via ``report_progress``"
+        constraint.  Uses the low-level Git Data API
+        (blobs → trees → commits → PATCH refs) to create a commit
+        entirely through HTTPS REST calls, without requiring a local
+        ``git clone`` or ``git push``.
+
+        Requires the token to have ``contents: write`` scope.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format, e.g. ``"Aries-Serpent/_codex_"``.
+        branch:
+            Target branch name (e.g. ``"0D_base_"``).  The branch must
+            already exist.
+        files:
+            Mapping of file paths (repo-relative, e.g.
+            ``"src/codex/foo.py"``) to their new UTF-8 string content.
+        message:
+            Commit message.
+        force:
+            When ``True``, force-update the branch ref even for
+            non-fast-forward situations.  Use with caution.
+
+        Returns
+        -------
+        str
+            The SHA of the new commit.
+
+        Raises
+        ------
+        RuntimeError
+            If no token is available.
+        urllib.error.HTTPError
+            On GitHub API errors (e.g. 422 branch not found, 409 conflict).
+
+        Examples
+        --------
+        >>> poster = GitHubMCPPoster()
+        >>> sha = poster.commit_files(
+        ...     repo="Aries-Serpent/_codex_",
+        ...     branch="0D_base_",
+        ...     files={"README.md": "# Updated\\n"},
+        ...     message="docs: update README",
+        ... )
+        """
+        self._require_token()
+
+        # 1. Resolve the current tip of the target branch.
+        head_sha = self._get_ref_sha(repo, branch)
+        base_tree_sha = self._get_commit_tree_sha(repo, head_sha)
+
+        # 2. Create a blob for each changed file.
+        tree_items: list[dict[str, Any]] = []
+        for path, content in files.items():
+            blob_sha = self._create_blob(repo, content, encoding="utf-8")
+            tree_items.append({
+                "path": path,
+                "mode": "100644",  # regular file
+                "type": "blob",
+                "sha": blob_sha,
+            })
+
+        # 3. Create a new tree that layers the changed files on top of the
+        #    existing tree.
+        new_tree_sha = self._create_tree(repo, tree_items, base_tree_sha=base_tree_sha)
+
+        # 4. Create the commit object.
+        commit_sha = self._create_commit(repo, message, new_tree_sha, [head_sha])
+
+        # 5. Fast-forward the branch ref to the new commit.
+        self._update_ref(repo, branch, commit_sha, force=force)
+
+        self._record_cb_pattern(
+            "CB-commit-files",
+            f"commit_files: {len(files)} file(s) to {branch!r} as {commit_sha[:8]}",
+            {
+                "repo": repo,
+                "branch": branch,
+                "file_count": len(files),
+                "sha": commit_sha,
+            },
+        )
+        logger.info(
+            "commit_files: pushed %d file(s) to %s/%s as %s",
+            len(files),
+            repo,
+            branch,
+            commit_sha[:8],
+        )
+        return commit_sha
+
+    # ------------------------------------------------------------------
     # Cognitive brain lifecycle hooks (IMP-012 — S175)
     # ------------------------------------------------------------------
 
@@ -600,8 +830,33 @@ class GitHubMCPPoster:
                 "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
             )
 
-    def _post(self, url: str, payload: dict[str, Any]) -> dict[str, Any]:
-        return self._request("POST", url, payload)
+        Requires the token to have ``contents: write`` scope.
+
+    def _get(self, url: str) -> dict[str, Any]:
+        """Execute a single GET request to the GitHub REST API (no retry).
+
+        Use :meth:`_request` with ``method="GET"`` when retry-on-rate-limit is
+        needed.  This lightweight helper is used by the Git Data API helpers
+        (:meth:`_get_ref_sha`, :meth:`_get_commit_tree_sha`) where a single
+        attempt is sufficient.
+        """
+        if not url.startswith("https://"):
+            raise ValueError(f"URL scheme must be https: {url}")
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {self._token}",
+                "Accept": _ACCEPT,
+                "X-GitHub-Api-Version": _API_VERSION,
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:  # nosec B310
+                return json.loads(resp.read())
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode(errors="replace")
+            logger.error("GitHub API GET %s → %d: %s", url, exc.code, error_body)
+            raise
 
     def _request(
         self,
@@ -799,6 +1054,28 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Filter patterns by pattern_id prefix (default: CB-)",
     )
 
+    # commit-files  (IMP-002 — S178)
+    cf = sub.add_parser(
+        "commit-files",
+        help="Push file changes as a single commit via Git Data API (IMP-002)",
+    )
+    cf.add_argument("--repo", required=True, help="owner/repo")
+    cf.add_argument("--branch", required=True, help="Target branch name")
+    cf.add_argument("--message", required=True, help="Commit message")
+    cf.add_argument(
+        "--file",
+        dest="files",
+        action="append",
+        metavar="DEST:SRC",
+        required=True,
+        help=(
+            "File mapping in DEST:SRC format where DEST is the repo-relative "
+            "path and SRC is the local file path to read content from. "
+            "Repeat for multiple files."
+        ),
+    )
+    cf.add_argument("--force", action="store_true", default=False, help="Force-update ref")
+
     return p
 
 
@@ -850,6 +1127,17 @@ def main(argv: list[str] | None = None) -> int:
                 print(md)
             else:
                 print("ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty).")
+
+        elif args.command == "commit-files":
+            files: dict[str, str] = {}
+            for mapping in args.files:
+                dest, _, src = mapping.partition(":")
+                if not dest or not src:
+                    print(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC", file=sys.stderr)
+                    return 1
+                files[dest] = Path(src).read_text(encoding="utf-8")
+            commit_sha = poster.commit_files(args.repo, args.branch, files, args.message, args.force)
+            print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
 
     except RuntimeError as exc:
         print(f"❌ {exc}", file=sys.stderr)
