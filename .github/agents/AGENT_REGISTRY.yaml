@@ -1,5 +1,5 @@
 version: 2.0.0
-last_updated: '2026-03-20T01:36:00Z'
+last_updated: '2026-03-22T03:49:44Z'
 total_agents: 155
 agents:
 - id: github-app-manager
@@ -2878,7 +2878,7 @@ agents:
     primary: feedback
     secondary: correction
   enforcement_tier: PARTIAL
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from: []
   consolidation_priority: false
@@ -3576,7 +3576,7 @@ agents:
   capability_tags:
   - operations
 - id: copilot-session-chain
-  name: "Copilot Session Chain"
+  name: Copilot Session Chain
   version: 1.0.0
   file: copilot-session-chain.yml
   directory: .github/workflows
@@ -3588,7 +3588,7 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: session_management
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   enforcement_tier: GROUNDED
   violations_30d: 0
   priority: critical
@@ -3597,23 +3597,24 @@ agents:
   maintainer: mbaetiong
   handoff_protocol: structured
   accepts_handoff_from:
-    - agent-auth-delegation
+  - agent-auth-delegation
   role: orchestrator
-  description: >
-    Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_
+  description: 'Automates opening the next Copilot Coding Agent sub-PR targeting 0D_base_
     (the staging integration branch).  Enforces the sub-PR model: sessions always
-    run on copilot/session-* branches, never on 0D_base_ directly.
-    Triggers on workflow_dispatch or automatically when a sub-PR merges into 0D_base_.
+    run on copilot/session-* branches, never on 0D_base_ directly. Triggers on workflow_dispatch
+    or automatically when a sub-PR merges into 0D_base_.
+
+    '
   capability_tags:
-    - session_chaining
-    - integration_branch_enforcement
-    - sub_pr_creation
-    - copilot_trigger
-    - base_staging_integration
+  - session_chaining
+  - integration_branch_enforcement
+  - sub_pr_creation
+  - copilot_trigger
+  - base_staging_integration
   integration_points:
-    - .github/workflows/copilot-session-chain.yml
-    - .github/workflows/agent-auth-delegation.yml
-    - .codex/docs/INTEGRATION_BRANCH_MODEL.md
+  - .github/workflows/copilot-session-chain.yml
+  - .github/workflows/agent-auth-delegation.yml
+  - .codex/docs/INTEGRATION_BRANCH_MODEL.md
   cognitive_brain_layer: orchestration
   safe_mode: false
   network_access: false
@@ -3630,8 +3631,8 @@ agents:
   category: security
   subcategory: dependency_management
   description: 'Validates Python packaging configuration (pyproject.toml, lock files),
-    detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621
-    compliance, and updates AAIS security posture repo variables after remediation.
+    detects Dependabot vulnerabilities, applies safe upgrades, enforces PEP 621 compliance,
+    and updates AAIS security posture repo variables after remediation.
 
     '
   added_in_pr: 3661
@@ -3640,7 +3641,7 @@ agents:
     primary: correction
     secondary: validation
   enforcement_tier: PARTIAL
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from:
   - ci-health-alert-agent
