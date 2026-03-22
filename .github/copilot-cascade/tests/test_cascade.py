@@ -982,6 +982,366 @@ class TestMCPRealTransport:
             )
 
 
+class TestMCPStreamingTransport:
+    """Tests for the JSON-RPC 2.0 streaming transport via SSE (IMP-005)."""
+
+    # ------------------------------------------------------------------ #
+    # _execute_streaming — unit-level tests                                #
+    # ------------------------------------------------------------------ #
+
+    @pytest.mark.asyncio
+    async def test_streaming_unsupported_scheme_returns_error(self):
+        """Non-HTTP/HTTPS endpoint returns an error without making network calls."""
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="test",
+            url="mcp://localhost:9999/tools",
+            capabilities=["file_operations"],
+        )
+        mcp.servers["test"] = server
+
+        request = MCPRequest(
+            server_name="test",
+            capability="file_operations",
+            payload={"action": "list"},
+        )
+        mcp.active_connections["test"] = True
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "error"
+        assert "Unsupported endpoint scheme" in (response.error or "")
+
+    @pytest.mark.asyncio
+    async def test_streaming_sse_success(self, monkeypatch):
+        """SSE stream with multiple data frames returns last frame as success."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+            auth_token="test-token",
+        )
+
+        # Simulate an SSE response with two data frames
+        sse_body = (
+            b"data: {\"jsonrpc\": \"2.0\", \"id\": \"r1\", \"result\": {\"partial\": true}}\n"
+            b"\n"
+            b"data: {\"jsonrpc\": \"2.0\", \"id\": \"r1\", \"result\": {\"branches\": [\"main\"], \"access_granted\": true}}\n"
+            b"\n"
+        )
+
+        mock_resp = mock.MagicMock()
+        mock_resp.headers.get = mock.Mock(return_value="text/event-stream")
+        mock_resp.read = mock.Mock(return_value=sse_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "success"
+        assert response.data is not None
+        assert response.data.get("branches") == ["main"]
+
+    @pytest.mark.asyncio
+    async def test_streaming_sse_jsonrpc_error_frame(self, monkeypatch):
+        """SSE stream that ends with an error frame is surfaced as status=error."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+        )
+
+        sse_body = (
+            b"data: {\"jsonrpc\": \"2.0\", \"id\": \"r1\", \"error\": {\"code\": -32601, \"message\": \"Method not found\"}}\n"
+        )
+
+        mock_resp = mock.MagicMock()
+        mock_resp.headers.get = mock.Mock(return_value="text/event-stream")
+        mock_resp.read = mock.Mock(return_value=sse_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "error"
+        assert "Method not found" in (response.error or "")
+
+    @pytest.mark.asyncio
+    async def test_streaming_fallback_plain_json(self, monkeypatch):
+        """Server returning plain JSON (non-SSE) is handled transparently."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+        )
+
+        # Server responds with plain JSON — no SSE
+        plain_body = json.dumps({
+            "jsonrpc": "2.0",
+            "id": "r1",
+            "result": {"ok": True, "plain": True},
+        }).encode()
+
+        mock_resp = mock.MagicMock()
+        mock_resp.headers.get = mock.Mock(return_value="application/json")
+        mock_resp.read = mock.Mock(return_value=plain_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "success"
+        assert response.data is not None
+        assert response.data.get("ok") is True
+
+    @pytest.mark.asyncio
+    async def test_streaming_http_error(self, monkeypatch):
+        """urllib.error.HTTPError from transport is handled as status=error."""
+        import urllib.error
+        import urllib.request
+        import unittest.mock as mock
+        from io import BytesIO
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",
+            capabilities=["repository_access"],
+        )
+
+        def fake_urlopen(req, timeout):
+            hdrs = mock.MagicMock()
+            raise urllib.error.HTTPError(
+                url="https://api.githubcopilot.com/mcp/",
+                code=503,
+                msg="Service Unavailable",
+                hdrs=hdrs,
+                fp=BytesIO(b"Service Unavailable"),
+            )
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "error"
+        assert "503" in (response.error or "")
+
+    @pytest.mark.asyncio
+    async def test_streaming_codex_mcp_endpoint_env_override(self, monkeypatch):
+        """CODEX_MCP_ENDPOINT env var overrides server.url in streaming mode."""
+        import json
+        import unittest.mock as mock
+
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        monkeypatch.setenv("CODEX_MCP_ENDPOINT", "https://staging.mcp.example.com/stream/")
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",  # should be overridden
+            capabilities=["repository_access"],
+        )
+
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["url"] = req.full_url
+            mock_resp = mock.MagicMock()
+            mock_resp.headers.get = mock.Mock(return_value="application/json")
+            mock_resp.read = mock.Mock(return_value=json.dumps({
+                "jsonrpc": "2.0",
+                "id": "r-env",
+                "result": {"env_override": True},
+            }).encode())
+            mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+            mock_resp.__exit__ = mock.Mock(return_value=False)
+            return mock_resp
+
+        import urllib.request
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        response = await mcp._execute_streaming(request, server)
+        assert response.status == "success"
+        assert captured.get("url") == "https://staging.mcp.example.com/stream/"
+
+    # ------------------------------------------------------------------ #
+    # MCPIntegration mode selection                                         #
+    # ------------------------------------------------------------------ #
+
+    def test_streaming_mode_set_via_env(self, monkeypatch):
+        """MCP_STREAMING_MODE=true selects STREAMING mode automatically."""
+        from mcp_server import MCPConnectionMode, MCPIntegration
+
+        monkeypatch.setenv("MCP_STREAMING_MODE", "true")
+        monkeypatch.delenv("MCP_REAL_MODE", raising=False)
+
+        mcp = MCPIntegration()
+        assert mcp.mode == MCPConnectionMode.STREAMING
+
+    def test_real_mode_not_overridden_by_streaming_env_false(self, monkeypatch):
+        """MCP_STREAMING_MODE=false with MCP_REAL_MODE=true selects REAL mode."""
+        from mcp_server import MCPConnectionMode, MCPIntegration
+
+        monkeypatch.setenv("MCP_STREAMING_MODE", "false")
+        monkeypatch.setenv("MCP_REAL_MODE", "true")
+
+        mcp = MCPIntegration()
+        assert mcp.mode == MCPConnectionMode.REAL
+
+    # ------------------------------------------------------------------ #
+    # _http_post_json_streaming — static-method unit tests                 #
+    # ------------------------------------------------------------------ #
+
+    def test_http_post_json_streaming_rejects_non_http(self):
+        """_http_post_json_streaming raises ValueError for non-HTTP/HTTPS URLs."""
+        from mcp_server import MCPIntegration
+
+        with pytest.raises(ValueError, match="http"):
+            MCPIntegration._http_post_json_streaming(
+                "mcp://localhost:9090/tools",
+                {"jsonrpc": "2.0", "method": "tools/test"},
+            )
+
+    def test_http_post_json_streaming_sends_accept_sse_header(self, monkeypatch):
+        """_http_post_json_streaming sends Accept: text/event-stream header."""
+        import json
+        import unittest.mock as mock
+        import urllib.request
+
+        from mcp_server import MCPIntegration
+
+        captured = {}
+
+        def fake_urlopen(req, timeout):
+            captured["headers"] = dict(req.headers)
+            mock_resp = mock.MagicMock()
+            mock_resp.headers.get = mock.Mock(return_value="application/json")
+            mock_resp.read = mock.Mock(return_value=json.dumps({"result": {"ok": True}}).encode())
+            mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+            mock_resp.__exit__ = mock.Mock(return_value=False)
+            return mock_resp
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+        MCPIntegration._http_post_json_streaming(
+            "https://example.com/mcp/",
+            {"jsonrpc": "2.0", "method": "tools/test"},
+        )
+        headers_lower = {k.lower(): v for k, v in captured["headers"].items()}
+        assert "accept" in headers_lower
+        assert "text/event-stream" in headers_lower["accept"]
+
+    def test_http_post_json_streaming_empty_sse_stream_returns_error(self, monkeypatch):
+        """SSE response with no parseable data frames returns error dict."""
+        import unittest.mock as mock
+        import urllib.request
+
+        from mcp_server import MCPIntegration
+
+        mock_resp = mock.MagicMock()
+        mock_resp.headers.get = mock.Mock(return_value="text/event-stream")
+        # Only comment lines and DONE — no valid data
+        mock_resp.read = mock.Mock(return_value=b": ping\ndata: [DONE]\n")
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        result = MCPIntegration._http_post_json_streaming(
+            "https://example.com/mcp/",
+            {"jsonrpc": "2.0", "method": "tools/test"},
+        )
+        assert "error" in result
+        assert "no parseable data" in result["error"]["message"].lower()
+
+    def test_http_post_json_streaming_chunk_count_in_result(self, monkeypatch):
+        """_streaming_chunks counter reflects the number of SSE frames received."""
+        import json
+        import unittest.mock as mock
+        import urllib.request
+
+        from mcp_server import MCPIntegration
+
+        frames = [
+            json.dumps({"jsonrpc": "2.0", "id": "r", "result": {"n": i}}).encode()
+            for i in range(3)
+        ]
+        sse_body = b"\n".join(b"data: " + f for f in frames) + b"\n"
+
+        mock_resp = mock.MagicMock()
+        mock_resp.headers.get = mock.Mock(return_value="text/event-stream")
+        mock_resp.read = mock.Mock(return_value=sse_body)
+        mock_resp.__enter__ = mock.Mock(return_value=mock_resp)
+        mock_resp.__exit__ = mock.Mock(return_value=False)
+
+        monkeypatch.setattr(urllib.request, "urlopen", lambda req, timeout: mock_resp)
+
+        result = MCPIntegration._http_post_json_streaming(
+            "https://example.com/mcp/",
+            {"jsonrpc": "2.0", "method": "tools/test"},
+        )
+        assert result["_streaming_chunks"] == 3
+        # Last frame wins
+        assert result["result"]["n"] == 2
+
+
 # Run all tests
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

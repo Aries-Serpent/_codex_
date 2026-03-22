@@ -603,7 +603,8 @@ class MCPIntegration:
         final["_streaming_chunks"] = len(chunks)
         return final
 
-    def _generate_mock_data(self, capability: str, payload: Dict[str, Any]) -> Dict[str, Any]:        """Generate mock response data based on capability."""
+    def _generate_mock_data(self, capability: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate mock response data based on capability."""
 
         if capability == "repository_access":
             return {

@@ -32,7 +32,7 @@ on:
       draft:
         description: "Open as draft PR"
         required: false
-        default: "false"
+        default: false
         type: boolean
 
 permissions:
@@ -169,7 +169,7 @@ jobs:
             --body "${PR_BODY}" \
             --head "${SESSION_BRANCH}" \
             --base "0D_base_" \
-            $([ "${{ inputs.draft }}" = "true" ] && echo "--draft" || true)
+            $(if [ "${{ inputs.draft }}" = "true" ]; then echo "--draft"; fi)
 
       - name: Summary
         if: always()

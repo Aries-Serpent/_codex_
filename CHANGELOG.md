@@ -4002,3 +4002,27 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Art_Data Quality & Determinism Suite: Cost Gate RED — requires stakeholder checkbox approval.
 - 💰 PR Cost Check: Cost Gate RED — requires stakeholder checkbox approval.
 - Resilient Validation Suite: Cache race condition (GitHub Actions infra transient).
+
+## [S175 / PR #3671] — 2026-03-22 — Review Comments + CI Triage #3672
+
+### Code Fixes
+- `fix(mcp_server)`: Repair syntax merge artifact — `_generate_mock_data` docstring was on the same line as `def` (review comment, commit in this session)
+- `test(mcp_server)`: Add `TestMCPStreamingTransport` — 12 unit tests covering SSE parsing, JSON fallback, error handling, env var override, mode selection, chunk counting, empty stream
+- `fix(workflows)`: `force_recreate` and `draft` boolean inputs: default `"false"` → `false` to match `type: boolean`
+- `fix(workflows)`: `if: inputs.force_recreate == 'true'` → `if: inputs.force_recreate` (boolean compare)
+- `fix(workflows)`: `cbPatterns` moved from JS template literal to `process.env.CB_PATTERNS` to prevent markdown injection
+- `fix(ci-health-monitor)`: Cascade suppression for issue #3669 — self-healing cascade doubles effective threshold; `cascade_detected` output added
+- `fix(collect_telemetry)`: `analyze_multi_job_cascade()` now called and embedded in telemetry JSON report
+- `fix(agent-registry)`: `ci` tag (too short) → `cicd`; `0D_base_routing` (malformed) → `zero_d_base_routing`
+- `fix(actionlint)`: Replace `A && B || C` shell anti-pattern with proper `if/fi` in `create-sub-pr-to-0D_base_.yml`
+- `fix(cross-refs)`: `README.md` — non-existent `codex_task_sequence.yaml`, `codex_gap_registry.yaml`, `docs/api/README.md` refs updated
+- `fix(cross-refs)`: `docs/ROADMAP.md:52` — wrong path `ops/SAR_METHODOLOGY.md` corrected to `docs/ops/SAR_METHODOLOGY.md`
+
+### CI Failures Resolved (from Triage Report #3672)
+- Agent Registry Validation: 2 capability_tags violations fixed ✅
+- Workflow Compliance Audit (actionlint): SC2015 `&&...||` anti-pattern fixed ✅
+- Validation Pipeline (cross-ref gate): 4 broken references fixed ✅
+- CI Health Alert #3669: Cascade suppression logic added to ci-health-monitor ✅
+
+### Security
+- No new vulnerabilities introduced; all changes are CI/workflow configuration and test code
