@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-22T22:19:50Z",
+  "generated_at": "2026-03-22T22:23:39Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -936,7 +936,7 @@
       "name": "energy-conversion-agent",
       "role": "specialist",
       "enforcement_tier": "PARTIAL",
-      "autonomy_model": "E"
+      "autonomy_model": "D_CAPABLE"
     },
     {
       "name": "promote-integration-branch",
@@ -1715,6 +1715,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S179.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
@@ -1916,9 +1920,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 8,
+    "d_capable_agents": 9,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "d446fc17adeacd8c15b7a2661c803a452f2d58dad8f0fb74bfffaa6b330786d9"
+  "integrity_sha256": "2e4d64d8ab8222237b6cf190cf4138f6d2f51776d197ca523def7ba3e97e5fd9"
 }

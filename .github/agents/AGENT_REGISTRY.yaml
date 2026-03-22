@@ -1,5 +1,5 @@
 version: 2.0.0
-last_updated: '2026-03-21T21:00:00Z'
+last_updated: '2026-03-22T22:20:39Z'
 total_agents: 159
 agents:
 - id: github-app-manager
@@ -1604,7 +1604,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates tests to close coverage gaps."
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage
+    modules and generates tests to close coverage gaps.'
   capability_tags:
   - testing
 - id: coverage-maintenance-agent
@@ -1623,7 +1624,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains test coverage over time; alerts on regressions."
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Maintains
+    test coverage over time; alerts on regressions.'
   capability_tags:
   - testing
 - id: coverage-roadmap-agent
@@ -1642,7 +1644,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage threshold roadmap, tracks phase completion, validates thresholds."
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives coverage
+    threshold roadmap, tracks phase completion, validates thresholds.'
   capability_tags:
   - testing
 - id: cpu-only-ci-config-agent
@@ -2549,7 +2552,8 @@ agents:
   accepts_handoff_from: []
   consolidation_priority: false
   role: specialist
-  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test coverage improvements; identifies uncovered code paths."
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Drives test
+    coverage improvements; identifies uncovered code paths.'
   capability_tags:
   - testing
 - id: test-coverage-monitor
@@ -2572,32 +2576,11 @@ agents:
   consolidation_priority: true
   activation_frequency_rank: 5
   role: utility
-  description: "DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors test coverage, enforces thresholds, validates documentation quality."
+  description: 'DEPRECATED (S174): Superseded by unified-coverage-agent. Monitors
+    test coverage, enforces thresholds, validates documentation quality.'
   capability_tags:
   - testing
 - id: unified-coverage-agent
-  name: Unified Coverage Agent
-  file: unified-coverage-agent.md
-  status: active
-  maturity: production
-  category: testing
-  priority: high
-  purpose: Single entry-point for all test-coverage work — monitor, analyse, gap-fill, and drive roadmap. Consolidates 5 legacy coverage agents.
-  enforcement_tier: GROUNDED
-  autonomy_model: E
-  handoff_protocol: structured
-  accepts_handoff_from:
-  - orchestrator
-  - ci-testing-agent
-  - agent-orchestrator
-  consolidation_priority: false
-  role: specialist
-  description: Consolidates coverage-gapfill-agent, coverage-maintenance-agent, coverage-roadmap-agent, test-coverage-agent, and test-coverage-monitor into one cohesive agent.
-  capability_tags:
-  - testing
-  - coverage
-  - cicd
-  batch_scan_enabled: true
   name: Test Enhancement Agent
   file: test-enhancement-agent.md
   status: active
@@ -2618,6 +2601,7 @@ agents:
     hardening.
   capability_tags:
   - testing
+  batch_scan_enabled: true
 - id: test-failure-analyzer-agent
   batch_scan_enabled: true
   name: Test Failure Analyzer Agent
@@ -3688,18 +3672,17 @@ agents:
   has_src: false
   category: simulation
   subcategory: energy_systems
-  description: >
-    AI-enhanced agent skilled in developing programmatic systems for simulating
+  description: 'AI-enhanced agent skilled in developing programmatic systems for simulating
     and calculating gas-to-electric energy conversion. Provides compute-regulated
     power distribution modeling, thermodynamic conversion analysis, grid stability
-    simulation, and AI-driven optimization for integrated energy systems.
+    simulation, and AI-driven optimization for integrated energy systems.'
   added_in_pr: energy-conversion
   sprint: Sprint 5
   physics_model:
     primary: simulation
     secondary: optimization
   enforcement_tier: PARTIAL
-  autonomy_model: E
+  autonomy_model: D_CAPABLE
   handoff_protocol: structured
   accepts_handoff_from:
   - agent-orchestrator
@@ -3726,10 +3709,11 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: branch_management
-  description: >
-    Autonomously creates the 0D_base_ staging integration branch from a given
-    SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ → main
-    promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
+  description: 'Autonomously creates the 0D_base_ staging integration branch from
+    a given SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ → main promotion
+    PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
+
+    '
   added_in_pr: S174
   sprint: Sprint 5
   physics_model:
@@ -3759,10 +3743,11 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: pr_management
-  description: >
-    Creates a pull request from any session branch into 0D_base_ (staging
-    integration branch). Verifies 0D_base_ exists, idempotent (skips if PR
-    already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
+  description: 'Creates a pull request from any session branch into 0D_base_ (staging
+    integration branch). Verifies 0D_base_ exists, idempotent (skips if PR already
+    open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
+
+    '
   added_in_pr: S174
   sprint: Sprint 5
   physics_model:
@@ -3779,7 +3764,6 @@ agents:
   - session_branch_management
   - zero_d_base_routing
   - integration_branch_management
-
 - id: post-accountability-to-discussion
   name: Post Accountability to Discussion Workflow
   version: 1.0.0
@@ -3792,12 +3776,13 @@ agents:
   has_src: false
   category: ci_cd
   subcategory: governance
-  description: >
-    Automated workflow that posts session accountability entries to GitHub
-    Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report).
-    Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL
-    to add a dedup-safe comment on the discussion thread. Priority 0 hardened
-    process replacing direct file logging.
+  description: 'Automated workflow that posts session accountability entries to GitHub
+    Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report). Triggered
+    when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe
+    comment on the discussion thread. Priority 0 hardened process replacing direct
+    file logging.
+
+    '
   added_in_pr: S175
   sprint: Sprint 5
   physics_model:
@@ -3814,7 +3799,6 @@ agents:
   - discussion_posting
   - governance_automation
   - session_documentation
-
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
