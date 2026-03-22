@@ -7742,8 +7742,10 @@ Streaming tests already exist in `.github/copilot-cascade/tests/test_cascade.py`
 |---|--------|-----------|
 | 1 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — session entry added | REQ-4 CI gate unblocked |
 | 2 | `CHANGELOG.md` — [Unreleased] entry added | REQ-5 CI gate |
-| 3 | Verified `scripts/ci/mcp_sse_transport.py` (IMP-005) in place from PR #3676 | IMP-005 continuity |
-| 4 | Verified `total_agents=159` in AGENT_REGISTRY.yaml matches actual count | Registry integrity |
+| 3 | `scripts/security/playwright_scraper.py` — IMP-009: replaced single CSS selector string with `_ALERT_SELECTORS` list + `_find_alert_rows()` resilient strategy | IMP-009 |
+| 4 | `tools/actions_server.py` — IMP-011: added `gh_post()`, `create_branch()`, `open_pull_request()`, `merge_branches()` helpers + `do_POST` handler for `/repo/branches`, `/repo/pulls`, `/repo/merges` | IMP-011 |
+| 5 | `tests/github/test_mcp_poster_delegation.py` — IMP-017: end-to-end delegation test fixture (create_ref + create_pull_request roundtrip, 2 tests) | IMP-017 |
+| 6 | Verified `total_agents=159` in AGENT_REGISTRY.yaml matches actual count | Registry integrity |
 
 ### CI Status After PR #3674 Merge
 - ✅ Agent Registry Validation — fixed (total_agents 159, actual 159)

@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unblocked CI: updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S176 session entry (REQ-4 gate).
 - Verified `AGENT_REGISTRY.yaml` `total_agents=159` matches actual agent count after PR #3674 merge.
 
+### Added (S176 — 2026-03-22 — PR #3677)
+- **`scripts/security/playwright_scraper.py`** (IMP-009): Replaced single CSS selector string with `_ALERT_SELECTORS` list and `_find_alert_rows()` resilient multi-selector strategy — scraper now tries each selector in priority order so it survives GitHub UI changes.
+- **`tools/actions_server.py`** (IMP-011): Added `gh_post()` helper + `create_branch()`, `open_pull_request()`, `merge_branches()` functions and `do_POST` handler exposing `POST /repo/branches`, `POST /repo/pulls`, `POST /repo/merges` — enabling CustomGPT Actions to drive full branch lifecycle operations.
+- **`tests/github/test_mcp_poster_delegation.py`** (IMP-017): End-to-end delegation test fixture verifying `create_ref` → `create_pull_request` roundtrip and correct GitHub API endpoint targets (2 tests, 0 real network calls).
+
 ### Fixed (auto-update — PR #3676)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3676 (SHA `0bc55bc`) at 2026-03-22T09:31Z [auto-generated]
 
