@@ -278,9 +278,10 @@ class MCPIntegration:
 
         Falls back gracefully: if the endpoint is not an HTTP/HTTPS URL
         (e.g. ``mcp://...`` scheme used in tests), the request is logged
-        and a synthetic success response is returned so unit tests that
-        rely on mock mode continue to work when ``MCPConnectionMode.REAL``
-        is forced.
+        and a synthetic error response (``status="error"``) is returned,
+        indicating an unsupported endpoint scheme, so unit tests that rely
+        on mock mode continue to work when ``MCPConnectionMode.REAL`` is
+        forced.
         """
         endpoint = os.environ.get("CODEX_MCP_ENDPOINT") or server.url
         logger.info("MCP JSON-RPC 2.0 request → %s (capability=%s)", endpoint, request.capability)
@@ -288,7 +289,7 @@ class MCPIntegration:
         # Only attempt HTTP/HTTPS transport; other schemes are not supported.
         if not endpoint.startswith(("http://", "https://")):
             logger.warning(
-                "MCP endpoint %r is not an HTTP/HTTPS URL; returning synthetic response",
+                "MCP endpoint %r uses an unsupported scheme (not http/https); returning error response",
                 endpoint,
             )
             return MCPResponse(
@@ -308,7 +309,7 @@ class MCPIntegration:
         try:
             # Run the blocking urllib call in a thread-pool executor so the
             # async event loop is not blocked (aiohttp is not a hard dependency).
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             body = await loop.run_in_executor(
                 None,
                 lambda: self._http_post_json(
@@ -326,7 +327,7 @@ class MCPIntegration:
                     if isinstance(rpc_error, dict)
                     else str(rpc_error)
                 )
-                logger.error("MCP JSON-RPC error from %s: %s", server.url, message)
+                logger.error("MCP JSON-RPC error from %s: %s", endpoint, message)
                 return MCPResponse(
                     request_id=request.request_id,
                     server_name=request.server_name,

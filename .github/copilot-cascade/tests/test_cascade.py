@@ -429,10 +429,6 @@ class TestIntegrationPRFlow:
         assert results['budget_status']['used'] >= 0
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
-
-
 # ============================================================================
 # Enhanced Module Tests
 # ============================================================================
@@ -751,11 +747,6 @@ class TestIntegration:
             assert len(superposition) > 0
 
 
-# Run all tests
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
-
-
 class TestMCPRealTransport:
     """Tests for the JSON-RPC 2.0 real-mode transport (IMP-004)."""
 
@@ -790,6 +781,7 @@ class TestMCPRealTransport:
         """A JSON-RPC error in the response body is surfaced as status=error."""
         import json
         import unittest.mock as mock
+
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
 
         mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
@@ -828,6 +820,7 @@ class TestMCPRealTransport:
         """A valid JSON-RPC 2.0 success response is returned as status=success."""
         import json
         import unittest.mock as mock
+
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
 
         mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
@@ -868,6 +861,7 @@ class TestMCPRealTransport:
         """CODEX_MCP_ENDPOINT env var overrides server.url."""
         import json
         import unittest.mock as mock
+
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
 
         monkeypatch.setenv("CODEX_MCP_ENDPOINT", "https://staging.copilot.example.com/mcp/")
@@ -910,6 +904,7 @@ class TestMCPRealTransport:
         """urllib.error.HTTPError from the transport is handled as status=error."""
         import urllib.error
         import urllib.request
+
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
 
         mcp = MCPIntegration(mode=MCPConnectionMode.REAL)
@@ -919,8 +914,8 @@ class TestMCPRealTransport:
             capabilities=["repository_access"],
         )
 
-        from io import BytesIO
         import unittest.mock as mock
+        from io import BytesIO
 
         def fake_urlopen(req, timeout):
             hdrs = mock.MagicMock()
@@ -949,6 +944,7 @@ class TestMCPRealTransport:
         import json
         import unittest.mock as mock
         import urllib.request
+
         from mcp_server import MCPIntegration
 
         captured = {}
@@ -984,3 +980,8 @@ class TestMCPRealTransport:
                 "mcp://localhost:9090/tools",
                 {"jsonrpc": "2.0", "method": "tools/test"},
             )
+
+
+# Run all tests
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "--tb=short"])

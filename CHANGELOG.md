@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests (S175 — 2026-03-22)
 - **`tests/github/test_mcp_poster.py`**: Added 42 new tests covering `create_ref` (ref normalisation variants), `create_pull_request`, `list_pull_requests` (filters, pagination cap, error handling), `merge_branch`, `create_discussion`, `_request` retry logic (429, 403 rate-limit, 403 permission), CLI new subcommands, and CB lifecycle hooks. Coverage: 50.56% → 95.83% (+45 pp).
-- **`.github/copilot-cascade/tests/test_cascade.py`**: Added 6 tests for new `_execute_real()` JSON-RPC transport (success, JSON-RPC error body, CODEX_MCP_ENDPOINT override, HTTP error, non-HTTP scheme guard, `_http_post_json` header verification).
+- **`.github/copilot-cascade/tests/test_cascade.py`**: Added 7 tests for new `_execute_real()` JSON-RPC transport (success, JSON-RPC error body, CODEX_MCP_ENDPOINT override, HTTP error, non-HTTP scheme guard, `_http_post_json` header verification, `_http_post_json` URL scheme rejection).
 
 ### Added (S174-continuation — 2026-03-22 — PR copilot/update-ci-failure-rate-and-confirm-transition)
 - **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.

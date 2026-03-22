@@ -467,7 +467,8 @@ def test_create_discussion_success(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     result = poster.create_discussion("owner/repo", "Test", "Body text", "session-summaries")
-    assert result.get("number") == 5 or "url" in result
+    assert result.get("number") == 5
+    assert result.get("url") == "https://github.com/discuss/5"
 
 
 def test_post_session_summary_discussion(poster, monkeypatch):
@@ -509,7 +510,7 @@ def test_create_discussion_category_fallback(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     # "nonexistent-slug" won't match "general", should fall back to first category
-    result = poster.create_discussion("owner/repo", "t", "b", "nonexistent-slug")
+    poster.create_discussion("owner/repo", "t", "b", "nonexistent-slug")
     assert call_count["n"] == 2
 
 
@@ -599,7 +600,7 @@ def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatc
 
 
 def test_request_rejects_non_https_url(poster):
-    with pytest.raises(ValueError, match="https"):
+    with pytest.raises(ValueError, match=r"URL scheme must be https"):
         poster._request("POST", "http://insecure.example.com/api", {})
 
 
@@ -813,3 +814,101 @@ def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
     args, kwargs = recorded[0]
     assert args[0] == "CB-merge"
     assert kwargs.get("outcome") == "already_exists"
+
+
+# ---------------------------------------------------------------------------
+# P1.4 — coverage for remaining uncovered lines
+# ---------------------------------------------------------------------------
+
+
+def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
+    """set_repo_variable re-raises HTTPError whose code is not 404 (line 240)."""
+    import urllib.error
+    from io import BytesIO
+
+    hdrs = mock.MagicMock()
+    hdrs.get = lambda key, default="": default  # No Retry-After, no rate-limit headers
+
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=hdrs, fp=BytesIO(b"{}"))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        poster.set_repo_variable("owner/repo", "MY_VAR", "value")
+    assert exc_info.value.code == 403
+
+
+def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
+    """_record_cb_pattern executes the import block when cognitive_brain is mockable (lines 495-510)."""
+    stored = []
+
+    class FakeMemoryPattern:
+        def __init__(self, **kw):
+            self.kw = kw
+
+    class FakeSQLiteMemory:
+        def store_pattern(self, p):
+            stored.append(p)
+
+    fake_module = mock.MagicMock()
+    fake_module.MemoryPattern = FakeMemoryPattern
+    fake_module.SQLiteMemory = FakeSQLiteMemory
+
+    import sys
+    # Inject the fake module so the import inside _record_cb_pattern succeeds.
+    # Clean up after to avoid contaminating other tests.
+    sys.modules["cognitive_brain"] = mock.MagicMock()
+    sys.modules["cognitive_brain.quantum"] = mock.MagicMock()
+    sys.modules["cognitive_brain.quantum.memory"] = fake_module
+    try:
+        poster._record_cb_pattern(
+            "CB-test",
+            "test decision",
+            {"repo": "owner/repo", "sha": "abc123"},
+            outcome="success",
+        )
+    finally:
+        sys.modules.pop("cognitive_brain", None)
+        sys.modules.pop("cognitive_brain.quantum", None)
+        sys.modules.pop("cognitive_brain.quantum.memory", None)
+
+    assert len(stored) == 1
+
+
+def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
+    """_request raises last_exc when all retries are consumed on rate-limit (line 607)."""
+    import urllib.error
+    from io import BytesIO
+
+    hdrs = mock.MagicMock()
+    hdrs.get = lambda key, default="": "1" if key == "Retry-After" else default
+
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(url="", code=429, msg="Too Many Requests", hdrs=hdrs, fp=BytesIO(b"{}"))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda s: None)  # speed up test
+
+    max_retries = 2
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        poster._request("POST", "https://api.github.com/test", {}, max_retries=max_retries)
+    assert exc_info.value.code == 429
+    # All retries are exhausted: loop ran max_retries times then raise last_exc
+
+
+def test_cli_no_subcommand_returns_zero(monkeypatch):
+    """main() with no recognised subcommand reaches return 0 (branch 751->766)."""
+    import argparse
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+
+    # Patch parse_args so args.command is None (no subcommand given)
+    original_parse = argparse.ArgumentParser.parse_args
+
+    def patched_parse(self, args=None, namespace=None):
+        ns = original_parse(self, ["post-comment", "--repo", "r/r", "--pr", "1", "--body", "x"], namespace)
+        ns.command = None  # Override to simulate unrecognised command
+        return ns
+
+    monkeypatch.setattr(argparse.ArgumentParser, "parse_args", patched_parse)
+    rc = main([])
+    assert rc == 0

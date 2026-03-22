@@ -490,7 +490,7 @@ class GitHubMCPPoster:
             pattern_id, decision, outcome, context,
         )
         try:
-            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # type: ignore[import]
+            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # noqa: PGH003
 
             features: dict[str, float] = {
                 "success": success_rate,
