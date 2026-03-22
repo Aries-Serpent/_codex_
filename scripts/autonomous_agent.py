@@ -402,7 +402,9 @@ class AutonomousAgent:
             "monitoring_interval_minutes": 30,
             "max_autonomous_actions_per_cycle": 3,
             "learning_enabled": True,
-            "rollback_enabled": True
+            "rollback_enabled": True,
+            "cognitive_brain_phase": 4,
+            "operating_model": "D_CAPABLE",
         }
 
     def assess_health(self) -> CodebaseHealth:
