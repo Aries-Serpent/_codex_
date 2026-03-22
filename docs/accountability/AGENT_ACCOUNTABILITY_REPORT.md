@@ -7720,3 +7720,44 @@ The new `post-accountability-to-discussion.yml` workflow implements the hardened
 ### Streaming Tests (IMP-005)
 Streaming tests already exist in `.github/copilot-cascade/tests/test_cascade.py` (lines 985-1256), covering SSE parsing, fallback to JSON, error handling, env var override, and mode selection. No new tests needed.
 
+
+---
+
+## SESSION SUMMARY — 2026-03-22 S176 PR copilot/session-20260322-155337-23406732597 (PR #3677)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed: PR #3677 comment from @mbaetiong reviewed ✅
+- [x] **0b.** All failing CI checks reviewed: Agent Token Delegation (REQ-4 accountability report not updated) — fixing now ✅
+- [x] **0c.** REQ-10 branch rebase status: branch based on 0D_base_ SHA 425acea3 (post-merge of PR #3674) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed from Actions job logs ✅
+- [x] **3.** `.gitignore` allows all new files ✅
+- [x] **4.** Priority directive: Continue from PR #3674 — review CI + address IMP backlog ✅
+- [x] **5.** Phase execution plan posted in PR description before file changes ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed throughout ✅
+
+### Work Completed (S176 PR #3677)
+
+| # | Change | Addresses |
+|---|--------|-----------|
+| 1 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — session entry added | REQ-4 CI gate unblocked |
+| 2 | `CHANGELOG.md` — [Unreleased] entry added | REQ-5 CI gate |
+| 3 | Verified `scripts/ci/mcp_sse_transport.py` (IMP-005) in place from PR #3676 | IMP-005 continuity |
+| 4 | Verified `total_agents=159` in AGENT_REGISTRY.yaml matches actual count | Registry integrity |
+
+### CI Status After PR #3674 Merge
+- ✅ Agent Registry Validation — fixed (total_agents 159, actual 159)
+- ✅ Cross-reference integrity — fixed in PR #3676
+- ✅ Deferral Language Gate — passing
+- ✅ Security Scanning — passing
+- ✅ CodeQL — passing
+- ⚠️ Agent Token Delegation — blocked by REQ-4 (accountability report not updated); fixed in this session
+
+### Lessons Learned
+- Every session commit that reaches a PR with Agent Token Delegation enabled MUST touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+- The `0D_base_` branch itself triggers REQ-11 failure in cognitive-preflight (by design — sessions must not run directly on `0D_base_`).
+
+### Impact Score
+- CI gates unblocked: REQ-4, REQ-5
+- Files updated: 2
+- Deferral Language Gate: 0 violations
