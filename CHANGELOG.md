@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
 - **`docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md`**: NEW — comprehensive improvement plan for GitHub MCP Service, Playwright, CLI, REST API, and cognitive brain integration; 8 enhancement areas with implementation code stubs.
 - **`src/codex/github/mcp_poster.py`**: Added `create_ref()`, `create_pull_request()`, `list_pull_requests()` write methods to `GitHubMCPPoster`; enables autonomous `0D_base_` → `main` PR lifecycle management without direct `git push`.
+- **`.github/agents/energy-conversion-agent.md`**: NEW (v1.2.0) — AI-enhanced agent for gas-to-electric energy conversion simulation; RPi/SBC patterns, Claudeclaw autonomous management, APA citations.
+- **`.codex/docs/ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md`**: NEW — Claudeclaw autonomous management patterns doc for energy conversion; migrated from `copilot/research-energy-conversion-requirements`.
 - **`.github/workflow-archive/s174-consolidation/README.md`**: NEW — archival rationale for 3 workflows retired in S174.
 - **`docs/admin/SECRETS_CONFIGURATION.md`**: Moved from `.github/agents/SECRETS_CONFIGURATION.md` to correct location.
 
