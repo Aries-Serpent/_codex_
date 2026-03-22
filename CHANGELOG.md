@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S174-continuation — 2026-03-22 — PR copilot/update-ci-failure-rate-and-confirm-transition)
+- **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.
+- **`.codex/docs/COGNITIVE_BRAIN_STATUS_S174.md`**: NEW — full S174 cognitive brain status with AAIS scores, architecture diagram, memory tiers, next-phase plan.
+- **`.github/copilot-prompts/active/S174-followup.md`**: NEW — comprehensive follow-up prompt with owner actions, next @copilot session tasks, production-ready agent designs.
+- **`AGENT_REGISTRY.yaml`**: Added `promote-integration-branch` + `create-sub-pr-to-0D_base_` agents; `total_agents` 157→159.
+
+### Fixed (S174-continuation — 2026-03-22)
+- **`.github/agents/QA_AGENT_ARCHITECTURE_DIAGRAMS.md`**: Archived (36,201 chars > 30,000-char gate) → stub + archive copy.
+- **`.github/agents/INFRA_LINTER_AGENT_PROMPT.md`**: Archived (30,166 chars > 30,000-char gate) → stub + archive copy.
+
 ### Changed (S174 — 2026-03-21 — PR copilot/update-ci-failure-rate-and-confirm-transition)
 - **`AGENTS.md`**: Updated header counts (126 workflows, 153 agents); fixed broken cross-reference for `PR_3095_RESOLUTION_PATTERNS.md`.
 - **`.github/agents/AGENT_REGISTRY.yaml`**: `total_agents` bumped 155→156; 5 legacy coverage agents (`coverage-gapfill`, `coverage-maintenance`, `coverage-roadmap`, `test-coverage-agent`, `test-coverage-monitor`) set to `status: archived` with `superseded_by: unified-coverage-agent`; `unified-coverage-agent` added as `status: active`.

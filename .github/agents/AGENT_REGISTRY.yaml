@@ -1,6 +1,6 @@
 version: 2.0.0
 last_updated: '2026-03-21T21:00:00Z'
-total_agents: 157
+total_agents: 159
 agents:
 - id: github-app-manager
   name: GitHub App Manager
@@ -3714,6 +3714,71 @@ agents:
   - grid_stability
   - demand_forecasting
   - anomaly_detection
+- id: promote-integration-branch
+  name: Promote Integration Branch Workflow
+  version: 1.0.0
+  file: .github/workflows/promote-integration-branch.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: branch_management
+  description: >
+    Autonomously creates the 0D_base_ staging integration branch from a given
+    SHA using GitHubMCPPoster.create_ref() and opens the 0D_base_ → main
+    promotion PR. Uses CODEX_MASTER_KEY. workflow_dispatch only (must be on main).
+  added_in_pr: S174
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: integration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: infrastructure
+  capability_tags:
+  - branch_creation
+  - pr_lifecycle
+  - integration_branch_management
+  - promotion_workflow
+  - codex_master_key_ops
+- id: create-sub-pr-to-0D_base_
+  name: Create Sub-PR to 0D_base_ Workflow
+  version: 1.0.0
+  file: .github/workflows/create-sub-pr-to-0D_base_.yml
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: pr_management
+  description: >
+    Creates a pull request from any session branch into 0D_base_ (staging
+    integration branch). Verifies 0D_base_ exists, idempotent (skips if PR
+    already open), and uses mcp_poster create-pr CLI. Requires CODEX_MASTER_KEY.
+  added_in_pr: S174
+  sprint: Sprint 5
+  physics_model:
+    primary: automation
+    secondary: integration
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: infrastructure
+  capability_tags:
+  - sub_pr_creation
+  - session_branch_management
+  - 0D_base_routing
+  - integration_branch_management
 standardization_status:
   fully_compliant: 12
   partially_compliant: 20
