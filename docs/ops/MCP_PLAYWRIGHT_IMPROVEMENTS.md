@@ -557,12 +557,12 @@ def test_create_ref_and_pr_roundtrip(respx_mock):
 | IMP-015 | MCP metrics CI gate | S | ✅ DONE S177 |
 | IMP-016 | Upload Playwright results as CI artifacts | S | ✅ DONE S177 |
 | IMP-017 | End-to-end delegation test fixture | M | ✅ DONE S176 |
-| IMP-008 | Playwright CDP cookie injection | M | ⚪ P3 |
-| IMP-005 | Capability schema validation | L | ⚪ P3 |
-| IMP-002 | Git Data API autonomous commits | L | ⚪ P3 |
+| IMP-008 | Playwright CDP cookie injection | M | ✅ DONE S178 |
+| IMP-005 | Capability schema validation | L | ✅ DONE S178 |
+| IMP-002 | Git Data API autonomous commits | L | ✅ DONE S178 |
 
 **Effort key:** S = < 1 hour | M = 1–4 hours | L = 4–8 hours
-**All P0/P1/P2 items complete as of S177.  Remaining items are P3 (Phase 4).**
+**All IMP items complete as of S178.  IMP backlog is fully closed.**
 
 ---
 

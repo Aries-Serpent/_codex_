@@ -78,32 +78,43 @@ class PlaywrightScraper:
         self._security_url = f"{self.repo_url}/security/code-scanning"
 
     def _authenticate(self, page: "Page") -> bool:
-        """
-        Attempt token-based authentication via GitHub's API cookie injection.
-        Returns True if authenticated, False otherwise.
+        """Inject GitHub auth token into all requests via Playwright route interception.
+
+        IMP-008: Uses CDP ``page.route()`` to add an ``Authorization`` header to
+        every request to ``github.com`` and ``api.github.com``, enabling the
+        browser session to access private repository security pages without a
+        full OAuth login flow.
+
+        Returns
+        -------
+        bool
+            ``True`` when a token is available and route interception has been
+            registered; ``False`` when no token was provided (alerts may still
+            be scraped for public repos, just without the private-alert filter).
         """
         if not self.github_token:
             logger.warning("No GITHUB_TOKEN provided; page may not show private alerts")
             return False
 
-        # Use the token to fetch a session cookie via the API
-        try:
-            import requests  # type: ignore
+        token = self.github_token  # local reference for closure
 
-            resp = requests.get(
-                "https://api.github.com/user",
-                headers={
-                    "Authorization": f"token {self.github_token}",
-                    "Accept": "application/vnd.github.v3+json",
-                },
-                timeout=10,
-            )
-            if resp.status_code == 200:
-                logger.info("Token validated for user: %s", resp.json().get("login"))
-            else:
-                logger.warning("Token validation returned %d", resp.status_code)
+        def _inject_auth(route: Any) -> None:
+            """Route handler: merge Authorization header into every request."""
+            try:
+                merged = {**route.request.headers, "Authorization": f"token {token}"}
+                route.continue_(headers=merged)
+            except Exception as _exc:
+                logger.debug("Route auth injection failed: %s", _exc)
+                route.continue_()
+
+        # Intercept all GitHub-origin requests (API + web UI).
+        try:
+            page.route("https://github.com/**", _inject_auth)
+            page.route("https://api.github.com/**", _inject_auth)
+            logger.debug("CDP route auth injection registered for github.com")
         except Exception as exc:  # pragma: no cover
-            logger.debug("Token pre-validation skipped: %s", exc)
+            logger.warning("Failed to register auth route: %s", exc)
+            return False
 
         return True
 

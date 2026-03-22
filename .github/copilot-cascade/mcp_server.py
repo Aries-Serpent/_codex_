@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 # ---------------------------------------------------------------------------
 # Standalone SSE transport helper (single source of truth: scripts/ci/).
@@ -52,15 +52,99 @@ class MCPConnectionMode(Enum):
 
 
 @dataclass
+class CapabilitySpec:
+    """Typed capability descriptor with JSON Schema validation (IMP-005 — S178).
+
+    Extends the plain ``str`` capability name with optional JSON Schema definitions
+    for the request payload and the expected response data.  When ``input_schema``
+    is provided, :class:`MCPIntegration` will validate the request payload against
+    it *before* making a network round-trip, surfacing schema violations early.
+
+    Examples
+    --------
+    >>> spec = CapabilitySpec(
+    ...     name="issue_management",
+    ...     description="Create, update, and close GitHub issues",
+    ...     input_schema={
+    ...         "type": "object",
+    ...         "properties": {
+    ...             "action": {"type": "string", "enum": ["create", "update", "close"]},
+    ...             "title": {"type": "string"},
+    ...         },
+    ...         "required": ["action"],
+    ...     },
+    ...     output_schema={"type": "object", "properties": {"issue_number": {"type": "integer"}}},
+    ... )
+    """
+
+    name: str
+    description: str = ""
+    input_schema: Dict[str, Any] = field(default_factory=dict)
+    output_schema: Dict[str, Any] = field(default_factory=dict)
+
+    def __eq__(self, other: object) -> bool:  # noqa: D105
+        if isinstance(other, str):
+            return self.name == other
+        if isinstance(other, CapabilitySpec):
+            return self.name == other.name
+        return NotImplemented
+
+    def __hash__(self) -> int:  # noqa: D105
+        return hash(self.name)
+
+    def validate_input(self, payload: Dict[str, Any]) -> Optional[str]:
+        """Validate *payload* against :attr:`input_schema`.
+
+        Returns ``None`` when the payload is valid (or no schema is defined),
+        or an error message string when validation fails.
+
+        Uses ``jsonschema`` when installed; gracefully falls back to a
+        no-op (returns ``None``) when the package is absent.
+        """
+        if not self.input_schema:
+            return None
+        try:
+            import jsonschema  # type: ignore
+        except ImportError:
+            logger.debug("jsonschema not installed — skipping IMP-005 input validation")
+            return None
+        try:
+            jsonschema.validate(payload, self.input_schema)
+            return None
+        except jsonschema.ValidationError as exc:
+            return str(exc.message)
+        except jsonschema.SchemaError as exc:
+            logger.warning("IMP-005: invalid capability input_schema: %s", exc.message)
+            return None
+
+
+@dataclass
 class MCPServer:
     """Model Context Protocol server configuration."""
 
     name: str
     url: str
-    capabilities: List[str]
+    capabilities: List[Union[str, CapabilitySpec]]
     auth_token: Optional[str] = None
     timeout: int = 30
     enabled: bool = True
+
+    def get_capability(self, name: str) -> Optional[CapabilitySpec]:
+        """Return the :class:`CapabilitySpec` for *name*, or ``None`` if not found.
+
+        Accepts both plain-string capabilities (returns a spec with no schemas)
+        and full :class:`CapabilitySpec` entries.
+        """
+        for cap in self.capabilities:
+            if isinstance(cap, CapabilitySpec) and cap.name == name:
+                return cap
+            if isinstance(cap, str) and cap == name:
+                return CapabilitySpec(name=name)
+        return None
+
+    def has_capability(self, name: str) -> bool:
+        """Return ``True`` when this server supports the named capability."""
+        return self.get_capability(name) is not None
 
 
 @dataclass
@@ -240,14 +324,26 @@ class MCPIntegration:
                 error=f"Server {request.server_name} is disabled",
             )
 
-        # Check if capability is supported
-        if request.capability not in server.capabilities:
+        # Check if capability is supported (IMP-005: use has_capability for typed lookup)
+        if not server.has_capability(request.capability):
             return MCPResponse(
                 request_id=request.request_id,
                 server_name=request.server_name,
                 status="error",
                 error=f"Capability {request.capability} not supported by {request.server_name}",
             )
+
+        # IMP-005: Validate request payload against capability input schema when available.
+        cap_spec = server.get_capability(request.capability)
+        if cap_spec is not None:
+            validation_error = cap_spec.validate_input(request.payload)
+            if validation_error:
+                return MCPResponse(
+                    request_id=request.request_id,
+                    server_name=request.server_name,
+                    status="error",
+                    error=f"Payload schema validation failed for {request.capability!r}: {validation_error}",
+                )
 
         # Ensure connection exists
         if request.server_name not in self.active_connections:
@@ -686,11 +782,15 @@ class MCPIntegration:
             await self.disconnect(server_name)
 
     def get_available_capabilities(self) -> Dict[str, List[str]]:
-        """Get all available capabilities from registered servers."""
+        """Get all available capability names from registered servers."""
         capabilities = {}
         for name, server in self.servers.items():
             if server.enabled:
-                capabilities[name] = server.capabilities
+                # IMP-005: normalise List[Union[str, CapabilitySpec]] → List[str]
+                capabilities[name] = [
+                    cap.name if isinstance(cap, CapabilitySpec) else cap
+                    for cap in server.capabilities
+                ]
         return capabilities
 
     def get_statistics(self) -> Dict[str, Any]:
