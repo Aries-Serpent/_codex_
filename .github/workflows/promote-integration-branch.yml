@@ -1,7 +1,11 @@
 name: "🚀 Promote Integration Branch (0D_base_ → main)"
 
 # Creates or recreates the 0D_base_ staging integration branch from a given
-# source SHA, then opens (or updates) a promotion PR targeting main.
+# source SHA, then opens a new promotion PR (or updates the title/body of an
+# existing open PR) targeting main.
+#
+# Update behaviour: when an existing open PR is found, its title and body are
+# patched via `gh pr edit` so the description stays current after each push.
 #
 # Uses GitHubMCPPoster.create_ref() + create_pull_request() from
 # src/codex/github/mcp_poster.py (IMP-001 / IMP-010, S174).
@@ -114,13 +118,16 @@ jobs:
             echo "create-branch returned $EXIT — branch may already exist"
             # Fall back to force-update via gh api PATCH
             if [ "$EXIT" -ne 0 ]; then
-              gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
+              if gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
                 --method PATCH \
                 -H "Accept: application/vnd.github+json" \
                 -f sha="${SHA}" \
-                -f force=true \
-                && echo "✅ Force-updated 0D_base_ → ${SHA}" \
-                || { echo "❌ Failed to create or update 0D_base_" >&2; exit 1; }
+                -f force=true; then
+                echo "✅ Force-updated 0D_base_ → ${SHA}"
+              else
+                echo "❌ Failed to create or update 0D_base_" >&2
+                exit 1
+              fi
             fi
           }
           echo "branch_sha=${SHA}" >> "$GITHUB_OUTPUT"
@@ -187,6 +194,31 @@ jobs:
             --body "${PR_BODY}" \
             --head "0D_base_" \
             --base "main"
+
+      - name: Update existing promotion PR (title + body)
+        if: steps.check_pr.outputs.existing_pr != ''
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          SHA: ${{ steps.resolve_sha.outputs.sha }}
+          PR_TITLE: ${{ inputs.pr_title }}
+        run: |
+          PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
+          PR_BODY="## 🚀 S174 Promotion (updated): \`0D_base_\` → \`main\`
+
+          This PR promotes the **S174 integration branch** (\`0D_base_\`) into \`main\`.
+          PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`.
+
+          ### 🔐 Agent Token Delegation
+          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
+
+          ### 💰 Cost Governance
+          - [x] **💰 Cost Proposal Approved**"
+
+          gh pr edit "${PR_NUM}" \
+            --repo "${{ github.repository }}" \
+            --title "${PR_TITLE}" \
+            --body "${PR_BODY}"
+          echo "✅ Updated existing PR #${PR_NUM} title and body"
 
       - name: Summary
         if: always()

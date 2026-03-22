@@ -1,6 +1,7 @@
 ---
 name: Coverage-roadmap Agent
 status: DEPRECATED
+deprecated: true
 superseded_by: unified-coverage-agent
 deprecated_in: S174 (2026-03-21)
 ---

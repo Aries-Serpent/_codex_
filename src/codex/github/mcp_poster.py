@@ -273,8 +273,14 @@ class GitHubMCPPoster:
             403 insufficient token scope).
         """
         self._require_token()
+        # Normalise the ref: only add refs/heads/ when the caller passes a bare
+        # branch name (no slash at all).  Explicit refs/heads/…, refs/tags/…, or
+        # heads/… / tags/… prefixes are left intact to avoid double-prefixing.
         if not ref.startswith("refs/"):
-            ref = f"refs/heads/{ref}"
+            if ref.startswith("heads/") or ref.startswith("tags/"):
+                ref = f"refs/{ref}"
+            else:
+                ref = f"refs/heads/{ref}"
         url = f"{_GITHUB_API}/repos/{repo}/git/refs"
         return self._post(url, {"ref": ref, "sha": sha})
 
@@ -341,7 +347,9 @@ class GitHubMCPPoster:
         state:
             One of ``"open"``, ``"closed"``, or ``"all"``.
         head:
-            Filter by head branch name (without ``owner:`` prefix).
+            Filter by head branch name.  The GitHub REST API requires the
+            ``owner:branch`` format; pass a bare branch name and the owner
+            will be derived from *repo* automatically.
         base:
             Filter by base branch name.
         per_page:
@@ -355,6 +363,11 @@ class GitHubMCPPoster:
         self._require_token()
         params = [f"state={state}", f"per_page={min(per_page, 100)}"]
         if head:
+            # GitHub requires "owner:branch" format for the head filter.
+            # Derive the owner from repo when the caller passes a bare branch name.
+            if ":" not in head:
+                owner = repo.split("/")[0]
+                head = f"{owner}:{head}"
             params.append(f"head={head}")
         if base:
             params.append(f"base={base}")
@@ -483,7 +496,19 @@ class GitHubMCPPoster:
                     return json.loads(body) if body else {}
             except urllib.error.HTTPError as exc:
                 last_exc = exc
-                if exc.code in (403, 429) and attempt < max_retries:
+                # Only retry on rate-limiting, not on real permission/auth errors.
+                # 429 (primary rate limit) — always retryable.
+                # 403 (secondary rate limit) — retryable only when GitHub signals
+                #   throttling via a Retry-After header or x-ratelimit-remaining=0.
+                is_rate_limited = False
+                if exc.code == 429:
+                    is_rate_limited = True
+                elif exc.code == 403:
+                    retry_after_hdr = exc.headers.get("Retry-After", "")
+                    remaining = exc.headers.get("x-ratelimit-remaining", "")
+                    is_rate_limited = bool(retry_after_hdr) or remaining == "0"
+
+                if is_rate_limited and attempt < max_retries:
                     retry_after_hdr = exc.headers.get("Retry-After", "")
                     try:
                         wait = float(retry_after_hdr)
@@ -595,7 +620,7 @@ def _build_parser() -> argparse.ArgumentParser:
     cpr.add_argument("--body", default="", help="PR description markdown (or use --body-file)")
     cpr.add_argument("--body-file", default="", help="Path to markdown file for PR body")
     cpr.add_argument("--head", required=True, help="Head (source) branch name")
-    cpr.add_argument("--base", required=True, default="main", help="Base (target) branch name")
+    cpr.add_argument("--base", default="main", help="Base (target) branch name (default: main)")
     cpr.add_argument("--draft", action="store_true", help="Open as draft PR")
 
     # merge-branch  (IMP-001 / IMP-010 — S174)

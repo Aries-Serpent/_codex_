@@ -2583,7 +2583,7 @@ agents:
   category: testing
   priority: high
   purpose: Single entry-point for all test-coverage work — monitor, analyse, gap-fill, and drive roadmap. Consolidates 5 legacy coverage agents.
-  enforcement_tier: FULL
+  enforcement_tier: GROUNDED
   autonomy_model: E
   handoff_protocol: structured
   accepts_handoff_from:
@@ -3740,7 +3740,7 @@ agents:
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
-  role: infrastructure
+  role: utility
   capability_tags:
   - branch_creation
   - pr_lifecycle
@@ -3773,7 +3773,7 @@ agents:
   handoff_protocol: none
   accepts_handoff_from: []
   consolidation_priority: false
-  role: infrastructure
+  role: utility
   capability_tags:
   - sub_pr_creation
   - session_branch_management
