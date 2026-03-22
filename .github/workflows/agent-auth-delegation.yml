@@ -1373,6 +1373,21 @@ jobs:
             fi
           fi
 
+      # ── 3c-bis: Inject cognitive-brain context into @copilot continue (IMP-013) ──
+      - name: "Retrieve CB patterns for session context"
+        id: cb_patterns
+        continue-on-error: true  # fail-open — pattern retrieval never blocks delegation
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit 8 2>/dev/null || true)
+          # Escape for multiline GitHub output
+          {
+            echo 'cb_markdown<<CB_EOF'
+            echo "$CB_BLOCK"
+            echo 'CB_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       # ── 3d: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
         uses: actions/github-script@v7
@@ -1386,8 +1401,12 @@ jobs:
             }
             const actors    = '${{ steps.set_vars.outputs.updated_actors }}';
             const runUrl    = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const cbPatterns = `${{ steps.cb_patterns.outputs.cb_markdown || '' }}`.trim();
 
             const UPSERT_MARKER_DELEGATION = '<!-- agent-token-delegation-result -->';
+            const cbSection = cbPatterns
+              ? ['', '---', '', cbPatterns, '']
+              : [];
             const body = [
               UPSERT_MARKER_DELEGATION,
               '## 🔐 Agent Token Delegation Activated',
@@ -1405,6 +1424,7 @@ jobs:
               '- ✅ `github-actions[bot]` — CI/AI workflow agents',
               '',
               '> GitHub Guru (maintainer) has been dispatched to verify variable state.',
+              ...cbSection,
               '',
               '@copilot continue',
             ].join('\n');
