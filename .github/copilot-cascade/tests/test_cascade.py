@@ -1354,6 +1354,217 @@ class TestMCPStreamingTransport:
         assert result["result"]["n"] == 2
 
 
+# ===========================================================================
+# Integration tests — real local HTTP server (no mocking of urlopen)
+# ===========================================================================
+
+class TestMCPStreamingIntegration:
+    """Integration tests for the full MCP streaming round-trip.
+
+    These tests spin up a real ``http.server.HTTPServer`` in a background
+    thread so that ``_http_post_json_streaming`` (and the identical logic in
+    ``scripts/ci/mcp_sse_transport.py``) exercises a genuine network socket —
+    no urlopen monkey-patching involved.
+
+    The local server is ephemeral (port 0 → OS-assigned) and is shut down
+    after each test.
+    """
+
+    # ------------------------------------------------------------------ #
+    # Helpers                                                              #
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _make_sse_server(response_frames, content_type="text/event-stream"):
+        """Start a local HTTP server that returns *response_frames* as SSE.
+
+        Parameters
+        ----------
+        response_frames:
+            List of dicts; each is serialised to a ``data: <json>\\n\\n`` line.
+        content_type:
+            ``Content-Type`` header value (default ``text/event-stream``).
+
+        Returns
+        -------
+        (httpd, url)
+            The HTTPServer instance and the base URL string.
+        """
+        import http.server
+        import json as _json
+        import threading
+
+        frames_bytes = b"".join(
+            b"data: " + _json.dumps(f).encode() + b"\n\n"
+            for f in response_frames
+        )
+
+        class _Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):  # noqa: N802
+                # Drain request body so the client doesn't get EPIPE.
+                length = int(self.headers.get("Content-Length", 0))
+                if length:
+                    self.rfile.read(length)
+                self.send_response(200)
+                self.send_header("Content-Type", content_type)
+                self.send_header("Content-Length", str(len(frames_bytes)))
+                self.end_headers()
+                self.wfile.write(frames_bytes)
+
+            def log_message(self, fmt, *args):  # silence noisy output
+                pass
+
+        httpd = http.server.HTTPServer(("127.0.0.1", 0), _Handler)
+        port = httpd.server_address[1]
+        thread = threading.Thread(target=httpd.handle_request, daemon=True)
+        thread.start()
+        return httpd, f"http://127.0.0.1:{port}/"
+
+    # ------------------------------------------------------------------ #
+    # SSE round-trip: standalone module                                    #
+    # ------------------------------------------------------------------ #
+
+    def test_sse_roundtrip_standalone_module(self, monkeypatch):
+        """scripts/ci/mcp_sse_transport.http_post_json_streaming — real SSE server."""
+        import os
+
+        repo_root = str(Path(__file__).parent.parent.parent.parent)
+        scripts_ci = os.path.join(repo_root, "scripts", "ci")
+        monkeypatch.syspath_prepend(scripts_ci)
+
+        from mcp_sse_transport import http_post_json_streaming
+
+        frames = [
+            {"jsonrpc": "2.0", "id": "int-1", "result": {"step": 1}},
+            {"jsonrpc": "2.0", "id": "int-1", "result": {"branches": ["main"], "step": 2}},
+        ]
+        httpd, url = self._make_sse_server(frames)
+        try:
+            result = http_post_json_streaming(
+                url,
+                {"jsonrpc": "2.0", "id": "int-1", "method": "tools/repo", "params": {}},
+            )
+        finally:
+            httpd.server_close()
+
+        assert result.get("_streaming_chunks") == 2
+        assert result.get("result", {}).get("step") == 2
+
+    # ------------------------------------------------------------------ #
+    # SSE round-trip: via MCPIntegration._http_post_json_streaming         #
+    # ------------------------------------------------------------------ #
+
+    def test_sse_roundtrip_via_mcp_integration(self):
+        """MCPIntegration._http_post_json_streaming delegates correctly — real SSE server."""
+        from mcp_server import MCPIntegration
+
+        frames = [
+            {"jsonrpc": "2.0", "id": "int-2", "result": {"partial": True}},
+            {
+                "jsonrpc": "2.0",
+                "id": "int-2",
+                "result": {"access_granted": True, "partial": False},
+            },
+        ]
+        httpd, url = self._make_sse_server(frames)
+        try:
+            result = MCPIntegration._http_post_json_streaming(
+                url,
+                {"jsonrpc": "2.0", "id": "int-2", "method": "tools/repo", "params": {}},
+            )
+        finally:
+            httpd.server_close()
+
+        assert result.get("_streaming_chunks") == 2
+        assert result.get("result", {}).get("access_granted") is True
+
+    # ------------------------------------------------------------------ #
+    # Plain JSON fallback: real local server returns application/json      #
+    # ------------------------------------------------------------------ #
+
+    def test_json_fallback_roundtrip(self):
+        """Real server with Content-Type: application/json triggers plain-JSON path."""
+        import http.server
+        import json as _json
+        import threading
+
+        from mcp_server import MCPIntegration
+
+        payload_body = _json.dumps({
+            "jsonrpc": "2.0",
+            "id": "int-3",
+            "result": {"ok": True},
+        }).encode()
+
+        class _Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):  # noqa: N802
+                length = int(self.headers.get("Content-Length", 0))
+                if length:
+                    self.rfile.read(length)
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(payload_body)))
+                self.end_headers()
+                self.wfile.write(payload_body)
+
+            def log_message(self, fmt, *args):
+                pass
+
+        httpd = http.server.HTTPServer(("127.0.0.1", 0), _Handler)
+        port = httpd.server_address[1]
+        threading.Thread(target=httpd.handle_request, daemon=True).start()
+        url = f"http://127.0.0.1:{port}/"
+
+        try:
+            result = MCPIntegration._http_post_json_streaming(
+                url,
+                {"jsonrpc": "2.0", "id": "int-3", "method": "tools/test", "params": {}},
+            )
+        finally:
+            httpd.server_close()
+
+        assert result.get("result", {}).get("ok") is True
+        assert "_streaming_chunks" not in result
+
+    # ------------------------------------------------------------------ #
+    # CODEX_MCP_ENDPOINT env override — full round-trip via MCPIntegration #
+    # ------------------------------------------------------------------ #
+
+    @pytest.mark.asyncio
+    async def test_env_override_sse_full_roundtrip(self, monkeypatch):
+        """CODEX_MCP_ENDPOINT env var routes streaming request — real local server."""
+        from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
+
+        frames = [
+            {"jsonrpc": "2.0", "id": "int-4", "result": {"env_routed": True}},
+        ]
+        httpd, url = self._make_sse_server(frames)
+        monkeypatch.setenv("CODEX_MCP_ENDPOINT", url)
+
+        mcp = MCPIntegration(mode=MCPConnectionMode.STREAMING)
+        server = MCPServer(
+            name="github",
+            url="https://api.githubcopilot.com/mcp/",  # overridden by env
+            capabilities=["repository_access"],
+        )
+        mcp.servers["github"] = server
+        mcp.active_connections["github"] = True
+
+        request = MCPRequest(
+            server_name="github",
+            capability="repository_access",
+            payload={"repo": "owner/repo"},
+        )
+
+        try:
+            response = await mcp._execute_streaming(request, server)
+        finally:
+            httpd.server_close()
+
+        assert response.status == "success"
+        assert response.data.get("env_routed") is True
+
+
 # Run all tests
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
