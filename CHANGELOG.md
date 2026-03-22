@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`0D_base_` branch**: Re-created from `main` @ `7a2c2ec0a` with S174 session changes merged; staging integration branch restored for `copilot/session-*` → `0D_base_` → `main` promotion flow.
 - **Agent Token Delegation**: `[x] Enable Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)` checkbox activated; `agent-auth-delegation` gated workflow awaiting owner approval to set `COPILOT_AGENT_AUTH_ENABLED=true` and add `copilot-swe-agent[bot]`, `github-copilot[bot]`, `github-actions[bot]` to `COGNITIVE_BRAIN_ALLOWED_ACTORS`.
 
+### Fixed (auto-update — PR #3664)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3664 (SHA `f78e61a6`) at 2026-03-22T02:53Z [auto-generated]
+
 ### Security (S172 — 2026-03-21 — PR copilot/investigate-ci-failure-rate)
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Full SSRF (CodeQL #12493, Critical) — added `_assert_safe_proxy_url()` guard to `/api/request` proxy endpoint enforcing HTTPS-only, private IP blocklist (RFC-1918, loopback, link-local), and hostname validation.
 - **`cognitive_app/src/server/cli_api_server.py`**: Fixed Uncontrolled command line / Command injection (CodeQL #12490, Critical) — replaced `asyncio.create_subprocess_shell(req.command)` with `asyncio.create_subprocess_exec(*shlex.split(req.command))`, preventing shell metacharacter injection in `/api/cli/run`.
