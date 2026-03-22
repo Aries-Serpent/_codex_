@@ -282,7 +282,13 @@ class GitHubMCPPoster:
             else:
                 ref = f"refs/heads/{ref}"
         url = f"{_GITHUB_API}/repos/{repo}/git/refs"
-        return self._post(url, {"ref": ref, "sha": sha})
+        result = self._post(url, {"ref": ref, "sha": sha})
+        self._record_cb_pattern(
+            "CB-branch-create",
+            f"create_ref: {ref} @ {sha[:8] if sha else sha}",
+            {"repo": repo, "ref": ref, "sha": sha},
+        )
+        return result
 
     def create_pull_request(
         self,
@@ -322,13 +328,19 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        return self._post(url, {
+        result = self._post(url, {
             "title": title,
             "body": body,
             "head": head,
             "base": base,
             "draft": draft,
         })
+        self._record_cb_pattern(
+            "CB-pr-open",
+            f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
+            {"repo": repo, "head": head, "base": base, "pr_number": result.get("number"), "draft": draft},
+        )
+        return result
 
     def list_pull_requests(
         self,
@@ -432,11 +444,77 @@ class GitHubMCPPoster:
         payload: dict[str, Any] = {"base": base, "head": head}
         if commit_message:
             payload["commit_message"] = commit_message
-        return self._post(url, payload)
+        result = self._post(url, payload)
+        outcome = "success" if result else "already_exists"
+        self._record_cb_pattern(
+            "CB-merge",
+            f"merge_branch: {head!r} → {base!r} outcome={outcome}",
+            {"repo": repo, "base": base, "head": head, "sha": result.get("sha", "") if result else ""},
+            outcome=outcome,
+        )
+        return result
 
     # ------------------------------------------------------------------
-    # Internal helpers
+    # Cognitive brain lifecycle hooks (IMP-012 — S175)
     # ------------------------------------------------------------------
+
+    def _record_cb_pattern(
+        self,
+        pattern_id: str,
+        decision: str,
+        context: dict[str, Any],
+        outcome: str = "success",
+    ) -> None:
+        """Record a lifecycle event as a cognitive-brain memory pattern.
+
+        Emits a structured log entry (always) and optionally stores the
+        pattern in the SQLite cognitive-brain memory when the
+        ``cognitive_brain`` package is available (fail-open — any import
+        or write error is logged at DEBUG and silently ignored).
+
+        Parameters
+        ----------
+        pattern_id:
+            Short identifier, e.g. ``"CB-branch-create"``.
+        decision:
+            Human-readable description of the action taken.
+        context:
+            Arbitrary key/value pairs describing the operation context.
+        outcome:
+            Outcome string, one of ``"success"``, ``"error"``, or
+            ``"already_exists"`` (used as the ``success_rate`` signal).
+        """
+        success_rate = 1.0 if outcome == "success" else 0.0
+        logger.info(
+            "CB lifecycle: %s | %s | outcome=%s | %s",
+            pattern_id, decision, outcome, context,
+        )
+        try:
+            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # type: ignore[import]
+
+            features: dict[str, float] = {
+                "success": success_rate,
+                "has_repo": float(bool(context.get("repo"))),
+                "has_sha": float(bool(context.get("sha"))),
+                "has_pr_number": float(bool(context.get("pr_number"))),
+            }
+            pattern = MemoryPattern(
+                pattern_id=pattern_id,
+                features=features,
+                decision=decision,
+                confidence=0.9,
+                success_rate=success_rate,
+            )
+            mem = SQLiteMemory()
+            mem.store_pattern(pattern)
+            logger.debug("CB pattern stored: %s", pattern_id)
+        except Exception as _cb_exc:  # noqa: BLE001 — fail-open
+            logger.debug(
+                "CB pattern storage skipped (%s: %s)",
+                type(_cb_exc).__name__,
+                _cb_exc,
+            )
+
 
     def _require_token(self) -> None:
         if not self._token:

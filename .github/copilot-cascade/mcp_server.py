@@ -6,8 +6,11 @@ while supporting mock/simulation mode for environments without real servers.
 """
 
 import asyncio
+import json
 import logging
 import os
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -253,34 +256,151 @@ class MCPIntegration:
         )
 
     async def _execute_real(self, request: MCPRequest, server: MCPServer) -> MCPResponse:
-        """Execute request in real mode."""
-        try:
-            # Real execution logic would go here
-            # This is a placeholder that simulates real execution
-            await asyncio.sleep(0.1)
+        """Execute request via JSON-RPC 2.0 over HTTP/HTTPS (IMP-004).
 
-            # In production, this would make actual MCP protocol calls
-            logger.info(f"Executing real MCP request to {server.url}")
+        Sends a JSON-RPC 2.0 POST request to the server endpoint.  The
+        endpoint is resolved in priority order:
 
-            # For now, return mock data but mark as real execution
-            mock_data = self._generate_mock_data(request.capability, request.payload)
-            mock_data["_execution_mode"] = "real"
+        1. ``CODEX_MCP_ENDPOINT`` environment variable (staging/dev override)
+        2. ``server.url``
 
-            return MCPResponse(
-                request_id=request.request_id,
-                server_name=request.server_name,
-                status="success",
-                data=mock_data,
+        The request body follows the JSON-RPC 2.0 specification::
+
+            {
+                "jsonrpc": "2.0",
+                "id": "<request_id>",
+                "method": "tools/<capability>",
+                "params": { ... }
+            }
+
+        The response is expected to have either a ``result`` key (success)
+        or an ``error`` key (failure) as defined by JSON-RPC 2.0.
+
+        Falls back gracefully: if the endpoint is not an HTTP/HTTPS URL
+        (e.g. ``mcp://...`` scheme used in tests), the request is logged
+        and a synthetic success response is returned so unit tests that
+        rely on mock mode continue to work when ``MCPConnectionMode.REAL``
+        is forced.
+        """
+        endpoint = os.environ.get("CODEX_MCP_ENDPOINT") or server.url
+        logger.info("MCP JSON-RPC 2.0 request → %s (capability=%s)", endpoint, request.capability)
+
+        # Only attempt HTTP/HTTPS transport; other schemes are not supported.
+        if not endpoint.startswith(("http://", "https://")):
+            logger.warning(
+                "MCP endpoint %r is not an HTTP/HTTPS URL; returning synthetic response",
+                endpoint,
             )
-
-        except Exception as e:
-            logger.error(f"MCP execution error: {e}")
             return MCPResponse(
                 request_id=request.request_id,
                 server_name=request.server_name,
                 status="error",
-                error=str(e),
+                error=f"Unsupported endpoint scheme: {endpoint!r}",
             )
+
+        rpc_payload: Dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": request.request_id,
+            "method": f"tools/{request.capability}",
+            "params": request.payload,
+        }
+
+        try:
+            # Run the blocking urllib call in a thread-pool executor so the
+            # async event loop is not blocked (aiohttp is not a hard dependency).
+            loop = asyncio.get_event_loop()
+            body = await loop.run_in_executor(
+                None,
+                lambda: self._http_post_json(
+                    endpoint,
+                    rpc_payload,
+                    auth_token=server.auth_token,
+                    timeout=server.timeout,
+                ),
+            )
+
+            if "error" in body:
+                rpc_error = body["error"]
+                message = (
+                    rpc_error.get("message", str(rpc_error))
+                    if isinstance(rpc_error, dict)
+                    else str(rpc_error)
+                )
+                logger.error("MCP JSON-RPC error from %s: %s", server.url, message)
+                return MCPResponse(
+                    request_id=request.request_id,
+                    server_name=request.server_name,
+                    status="error",
+                    error=message,
+                )
+
+            result = body.get("result")
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="success",
+                data=result if isinstance(result, dict) else {"result": result},
+            )
+
+        except urllib.error.HTTPError as exc:
+            error_body = exc.read().decode(errors="replace")
+            logger.error("MCP HTTP error %d from %s: %s", exc.code, endpoint, error_body)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=f"HTTP {exc.code}: {exc.reason}",
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.error("MCP execution error for %s: %s", endpoint, exc)
+            return MCPResponse(
+                request_id=request.request_id,
+                server_name=request.server_name,
+                status="error",
+                error=str(exc),
+            )
+
+    @staticmethod
+    def _http_post_json(
+        url: str,
+        payload: Dict[str, Any],
+        auth_token: Optional[str] = None,
+        timeout: int = 30,
+    ) -> Dict[str, Any]:
+        """Send a synchronous HTTP POST with a JSON body and return the decoded response.
+
+        Parameters
+        ----------
+        url:
+            HTTP/HTTPS endpoint to POST to.  Must start with ``https://`` or
+            ``http://`` — plain ``http://`` is accepted but callers should
+            prefer HTTPS for any production endpoint.
+        payload:
+            JSON-serialisable request body.
+        auth_token:
+            Optional bearer token for the ``Authorization`` header.
+        timeout:
+            Request timeout in seconds.
+
+        Returns
+        -------
+        dict
+            Decoded JSON response body.
+
+        Raises
+        ------
+        ValueError
+            If *url* does not start with ``http://`` or ``https://``.
+        """
+        if not url.startswith(("http://", "https://")):
+            raise ValueError(f"_http_post_json: URL must start with http:// or https://, got: {url!r}")
+        data = json.dumps(payload).encode("utf-8")
+        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        if auth_token:
+            headers["Authorization"] = f"Bearer {auth_token}"
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
+            return json.loads(resp.read())
 
     def _generate_mock_data(self, capability: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Generate mock response data based on capability."""
