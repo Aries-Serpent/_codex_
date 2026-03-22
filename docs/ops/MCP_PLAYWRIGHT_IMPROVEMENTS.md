@@ -543,25 +543,26 @@ def test_create_ref_and_pr_roundtrip(respx_mock):
 
 | IMP-ID | Description | Effort | Priority |
 |--------|-------------|--------|----------|
-| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S | 🔴 P0 |
-| IMP-004 | MCP real-mode JSON-RPC transport | M | 🔴 P0 |
-| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S | 🔴 P0 |
-| IMP-003 | Retry + rate-limit back-off | S | 🟡 P1 |
-| IMP-006 | Playwright storage-state auth | S | 🟡 P1 |
-| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M | 🟡 P1 |
-| IMP-008 | Playwright CDP cookie injection | M | 🟡 P1 |
-| IMP-013 | Cognitive-brain context in `@copilot continue` | S | 🟡 P1 |
-| IMP-007 | HAR replay for offline CI | M | 🟢 P2 |
-| IMP-009 | Resilient selector strategy in scraper | S | 🟢 P2 |
-| IMP-011 | `actions_server.py` POST endpoints | M | 🟢 P2 |
-| IMP-014 | Multi-target MCP config with health checks | L | 🟢 P2 |
-| IMP-015 | MCP metrics CI gate | S | 🟢 P2 |
-| IMP-016 | Upload Playwright results as CI artifacts | S | 🟢 P2 |
-| IMP-017 | End-to-end delegation test fixture | M | 🟢 P2 |
+| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S | ✅ DONE S175 |
+| IMP-004 | MCP real-mode JSON-RPC transport | M | ✅ DONE S175 |
+| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S | ✅ DONE S175 |
+| IMP-003 | Retry + rate-limit back-off | S | ✅ DONE S175 |
+| IMP-006 | Playwright storage-state auth | S | ✅ DONE S175 |
+| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M | ✅ DONE S175 |
+| IMP-013 | Cognitive-brain context in `@copilot continue` | S | ✅ DONE S175 |
+| IMP-007 | HAR replay for offline CI | M | ✅ DONE S177 |
+| IMP-009 | Resilient selector strategy in scraper | S | ✅ DONE S176 |
+| IMP-011 | `actions_server.py` POST endpoints | M | ✅ DONE S176 |
+| IMP-014 | Multi-target MCP config with health checks | L | ✅ DONE S177 |
+| IMP-015 | MCP metrics CI gate | S | ✅ DONE S177 |
+| IMP-016 | Upload Playwright results as CI artifacts | S | ✅ DONE S177 |
+| IMP-017 | End-to-end delegation test fixture | M | ✅ DONE S176 |
+| IMP-008 | Playwright CDP cookie injection | M | ⚪ P3 |
 | IMP-005 | Capability schema validation | L | ⚪ P3 |
 | IMP-002 | Git Data API autonomous commits | L | ⚪ P3 |
 
 **Effort key:** S = < 1 hour | M = 1–4 hours | L = 4–8 hours
+**All P0/P1/P2 items complete as of S177.  Remaining items are P3 (Phase 4).**
 
 ---
 

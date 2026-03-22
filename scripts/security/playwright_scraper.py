@@ -41,7 +41,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Selectors for GitHub code-scanning page (as of 2026)
-_ALERT_ROW_SELECTOR = "div[data-testid='code-scanning-alert-row'], li[data-testid*='code-scanning'], div.js-code-scanning-alert-row"
+# IMP-009: Resilient multi-selector strategy — tried in order, first match wins.
+_ALERT_SELECTORS = [
+    "div[data-testid='code-scanning-alert-row']",   # primary (2026 UI)
+    "li[data-testid*='code-scanning']",              # fallback (2025 UI)
+    "div.js-code-scanning-alert-row",                # legacy
+    "table.js-navigation-container tr.js-navigation-item",  # table layout
+]
+# Retained for any callers that still reference the constant directly.
+_ALERT_ROW_SELECTOR = ", ".join(_ALERT_SELECTORS)
 _SEVERITY_SELECTOR = "[data-testid='alert-severity'], .severity-badge, .Label--severity"
 _TITLE_SELECTOR = "a[data-hovercard-type='code-scanning-alert'], a.js-navigation-open"
 _NEXT_BTN_SELECTOR = "a[rel='next'], .next_page:not(.disabled)"
@@ -130,6 +138,20 @@ class PlaywrightScraper:
             logger.debug("Failed to extract row: %s", exc)
             return None
 
+    def _find_alert_rows(self, page: "Page") -> list:
+        """Return alert row elements using a resilient multi-selector strategy.
+
+        Iterates through :data:`_ALERT_SELECTORS` in order and returns the
+        first non-empty result, making the scraper robust against GitHub UI
+        changes (IMP-009).
+        """
+        for selector in _ALERT_SELECTORS:
+            rows = page.query_selector_all(selector)
+            if rows:
+                logger.debug("_find_alert_rows: matched %d rows with %r", len(rows), selector)
+                return rows
+        return []
+
     def _iter_pages(self, page: "Page") -> Iterator[List[Dict[str, Any]]]:
         """Navigate the alerts table page by page, yielding lists of alert dicts."""
         page.goto(self._security_url, wait_until="networkidle", timeout=self.timeout_ms)
@@ -142,7 +164,7 @@ class PlaywrightScraper:
             # Wait a short moment for JS to hydrate the table
             time.sleep(0.5)
 
-            rows = page.query_selector_all(_ALERT_ROW_SELECTOR)
+            rows = self._find_alert_rows(page)
             if not rows:
                 logger.debug("No alert rows found on page %d — trying generic list items", page_num)
                 # Fallback: try any anchor containing /security/code-scanning/

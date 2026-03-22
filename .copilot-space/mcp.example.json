@@ -1,5 +1,58 @@
 {
   "mcpServers": {
+    "github-primary": {
+      "command": "python",
+      "args": [
+        "-m",
+        "src.mcp.server.http",
+        "--config",
+        "codex_capability_map.yaml"
+      ],
+      "env": {
+        "PYTHONPATH": ".",
+        "ITA_URL": "http://staging.ita.internal:8080",
+        "ITA_API_KEY": "${env:CODEX_ITA_API_KEY}",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_OFFLINE": "false",
+        "MCP_HEALTH_CHECK_INTERVAL_S": "60",
+        "AUDIT_DEPTH": "4",
+        "ACTIVATION_CHECKLIST": "ACTIVATION_CHECKLIST_STATUS.md"
+      },
+      "cwd": "${workspaceFolder}",
+      "metadata": {
+        "description": "Primary MCP server (live backend — staging/prod)",
+        "branch": "main",
+        "maturity_level": 4,
+        "role": "primary",
+        "deployment_targets": ["cloudflare-workers", "fly.io"],
+        "prototype": "fastapi",
+        "health_check_url": "http://localhost:8765/healthz",
+        "health_check_timeout_ms": 5000
+      }
+    },
+    "github-fallback": {
+      "command": "python",
+      "args": [
+        "-m",
+        "src.mcp.server.http",
+        "--config",
+        "codex_capability_map.yaml",
+        "--offline"
+      ],
+      "env": {
+        "PYTHONPATH": ".",
+        "MCP_API_KEY": "${env:CODEX_MCP_API_KEY:-dev-key}",
+        "MCP_OFFLINE": "true"
+      },
+      "cwd": "${workspaceFolder}",
+      "metadata": {
+        "description": "Offline-fallback MCP server — answers from HAR cache when primary is unreachable",
+        "role": "offline-fallback",
+        "maturity_level": 3,
+        "health_check_url": "http://localhost:8766/healthz",
+        "health_check_timeout_ms": 2000
+      }
+    },
     "codex-main-staging": {
       "command": "python",
       "args": [
@@ -19,12 +72,19 @@
       },
       "cwd": "${workspaceFolder}",
       "metadata": {
-        "description": "Main-branch MCP server (staging)",
+        "description": "Legacy alias for github-primary (backwards compatibility)",
         "branch": "main",
         "maturity_level": 4,
         "deployment_targets": ["cloudflare-workers", "fly.io"],
         "prototype": "fastapi"
       }
     }
+  },
+  "routing": {
+    "strategy": "primary-with-fallback",
+    "primary": "github-primary",
+    "fallback": "github-fallback",
+    "health_check_timeout_ms": 5000,
+    "failover_on_latency_ms": 2000
   }
 }
