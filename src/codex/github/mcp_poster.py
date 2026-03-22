@@ -282,7 +282,13 @@ class GitHubMCPPoster:
             else:
                 ref = f"refs/heads/{ref}"
         url = f"{_GITHUB_API}/repos/{repo}/git/refs"
-        return self._post(url, {"ref": ref, "sha": sha})
+        result = self._post(url, {"ref": ref, "sha": sha})
+        self._record_cb_pattern(
+            "CB-branch-create",
+            f"create_ref: {ref} @ {sha[:8] if sha else sha}",
+            {"repo": repo, "ref": ref, "sha": sha},
+        )
+        return result
 
     def create_pull_request(
         self,
@@ -322,13 +328,19 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        return self._post(url, {
+        result = self._post(url, {
             "title": title,
             "body": body,
             "head": head,
             "base": base,
             "draft": draft,
         })
+        self._record_cb_pattern(
+            "CB-pr-open",
+            f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
+            {"repo": repo, "head": head, "base": base, "pr_number": result.get("number"), "draft": draft},
+        )
+        return result
 
     def list_pull_requests(
         self,
@@ -432,11 +444,139 @@ class GitHubMCPPoster:
         payload: dict[str, Any] = {"base": base, "head": head}
         if commit_message:
             payload["commit_message"] = commit_message
-        return self._post(url, payload)
+        result = self._post(url, payload)
+        outcome = "success" if result else "already_exists"
+        self._record_cb_pattern(
+            "CB-merge",
+            f"merge_branch: {head!r} → {base!r} outcome={outcome}",
+            {"repo": repo, "base": base, "head": head, "sha": result.get("sha", "") if result else ""},
+            outcome=outcome,
+        )
+        return result
 
     # ------------------------------------------------------------------
-    # Internal helpers
+    # Cognitive brain lifecycle hooks (IMP-012 — S175)
     # ------------------------------------------------------------------
+
+    def _record_cb_pattern(
+        self,
+        pattern_id: str,
+        decision: str,
+        context: dict[str, Any],
+        outcome: str = "success",
+    ) -> None:
+        """Record a lifecycle event as a cognitive-brain memory pattern.
+
+        Emits a structured log entry (always) and optionally stores the
+        pattern in the SQLite cognitive-brain memory when the
+        ``cognitive_brain`` package is available (fail-open — any import
+        or write error is logged at DEBUG and silently ignored).
+
+        Parameters
+        ----------
+        pattern_id:
+            Short identifier, e.g. ``"CB-branch-create"``.
+        decision:
+            Human-readable description of the action taken.
+        context:
+            Arbitrary key/value pairs describing the operation context.
+        outcome:
+            Outcome string, one of ``"success"``, ``"error"``, or
+            ``"already_exists"`` (used as the ``success_rate`` signal).
+        """
+        success_rate = 1.0 if outcome == "success" else 0.0
+        logger.info(
+            "CB lifecycle: %s | %s | outcome=%s | %s",
+            pattern_id, decision, outcome, context,
+        )
+        try:
+            from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # noqa: PGH003
+
+            features: dict[str, float] = {
+                "success": success_rate,
+                "has_repo": float(bool(context.get("repo"))),
+                "has_sha": float(bool(context.get("sha"))),
+                "has_pr_number": float(bool(context.get("pr_number"))),
+            }
+            pattern = MemoryPattern(
+                pattern_id=pattern_id,
+                features=features,
+                decision=decision,
+                confidence=0.9,
+                success_rate=success_rate,
+            )
+            mem = SQLiteMemory()
+            mem.store_pattern(pattern)
+            logger.debug("CB pattern stored: %s", pattern_id)
+        except Exception as _cb_exc:  # noqa: BLE001 — fail-open
+            logger.debug(
+                "CB pattern storage skipped (%s: %s)",
+                type(_cb_exc).__name__,
+                _cb_exc,
+            )
+
+    def retrieve_cb_patterns(
+        self,
+        limit: int = 10,
+        pattern_prefix: str = "CB-",
+    ) -> str:
+        """Retrieve recent cognitive-brain patterns for session context injection (IMP-013).
+
+        Queries the SQLite cognitive-brain memory for the most recent patterns
+        whose ``pattern_id`` starts with *pattern_prefix*.  Returns a
+        Markdown-formatted block suitable for injection into a
+        ``@copilot continue`` comment body.
+
+        Fail-open: if ``cognitive_brain`` is not importable (e.g. in CI
+        without the package) or the database is empty, returns an empty
+        string so callers can concatenate without conditional logic.
+
+        Parameters
+        ----------
+        limit:
+            Maximum number of patterns to return (default 10).
+        pattern_prefix:
+            Only return patterns whose ``pattern_id`` starts with this
+            prefix (default ``"CB-"``).
+
+        Returns
+        -------
+        str
+            Markdown block of recent CB patterns, or ``""`` on failure/empty.
+        """
+        try:
+            from cognitive_brain.quantum.memory import SQLiteMemory  # noqa: PGH003
+
+            mem = SQLiteMemory()
+            all_patterns = mem.get_recent_patterns(limit=limit * 4)
+            patterns = [
+                p for p in all_patterns
+                if getattr(p, "pattern_id", "").startswith(pattern_prefix)
+            ][:limit]
+
+            if not patterns:
+                return ""
+
+            lines = [
+                "### 🧠 Recent Cognitive-Brain Patterns",
+                "",
+                "| Pattern | Decision | Outcome |",
+                "|---------|----------|---------|",
+            ]
+            for p in patterns:
+                pid = getattr(p, "pattern_id", "unknown")
+                dec = getattr(p, "decision", "")[:60]
+                sr = getattr(p, "success_rate", None)
+                outcome = "✅ success" if sr == 1.0 else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
+                lines.append(f"| `{pid}` | {dec} | {outcome} |")
+
+            return "\n".join(lines) + "\n"
+
+        except Exception as _exc:  # noqa: BLE001 — fail-open
+            logger.debug(
+                "CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc
+            )
+            return ""
 
     def _require_token(self) -> None:
         if not self._token:
@@ -633,6 +773,17 @@ def _build_parser() -> argparse.ArgumentParser:
     mb.add_argument("--head", required=True, help="Source branch or SHA to merge from")
     mb.add_argument("--message", default="", help="Optional merge commit message")
 
+    # retrieve-patterns  (IMP-013 — S175)
+    rp = sub.add_parser(
+        "retrieve-patterns",
+        help="Print recent cognitive-brain patterns as Markdown (IMP-013)",
+    )
+    rp.add_argument("--limit", type=int, default=10, help="Maximum patterns to return (default 10)")
+    rp.add_argument(
+        "--prefix", default="CB-",
+        help="Filter patterns by pattern_id prefix (default: CB-)",
+    )
+
     return p
 
 
@@ -677,6 +828,13 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"✅ Merged {args.head} → {args.base}: {sha[:8] if sha else 'up-to-date'}")
             else:
                 print(f"✅ {args.head} already up-to-date with {args.base} — no merge needed")
+
+        elif args.command == "retrieve-patterns":
+            md = poster.retrieve_cb_patterns(limit=args.limit, pattern_prefix=args.prefix)
+            if md:
+                print(md)
+            else:
+                print("ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty).")
 
     except RuntimeError as exc:
         print(f"❌ {exc}", file=sys.stderr)

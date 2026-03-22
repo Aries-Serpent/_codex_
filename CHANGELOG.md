@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S175 — 2026-03-22 — PR copilot/session-20260322-042713-23395632625)
+- **`.github/copilot-cascade/mcp_server.py`**: Implemented `_execute_real()` with real JSON-RPC 2.0 HTTP transport (IMP-004) using stdlib `urllib`; added `_http_post_json()` static helper; added `CODEX_MCP_ENDPOINT` env var override for staging/dev environments.
+- **`src/codex/github/mcp_poster.py`**: Added `_record_cb_pattern()` cognitive brain lifecycle hook (IMP-012); wired into `create_ref()` (CB-branch-create), `create_pull_request()` (CB-pr-open), and `merge_branch()` (CB-merge) for autonomy observability.
+
+### Fixed (S175 — 2026-03-22)
+- **`tests/github/test_mcp_poster.py`**: Fixed pre-existing flaky `test_no_token_warns` — `init_logger("codex")` in `tools/github/gh_api.py` sets `propagate=False` on the `codex` logger; test now temporarily re-enables propagation so `caplog` captures the warning deterministically regardless of test execution order.
+
+### Tests (S175 — 2026-03-22)
+- **`tests/github/test_mcp_poster.py`**: Added 42 new tests covering `create_ref` (ref normalisation variants), `create_pull_request`, `list_pull_requests` (filters, pagination cap, error handling), `merge_branch`, `create_discussion`, `_request` retry logic (429, 403 rate-limit, 403 permission), CLI new subcommands, and CB lifecycle hooks. Coverage: 50.56% → 95.83% (+45 pp).
+- **`.github/copilot-cascade/tests/test_cascade.py`**: Added 7 tests for new `_execute_real()` JSON-RPC transport (success, JSON-RPC error body, CODEX_MCP_ENDPOINT override, HTTP error, non-HTTP scheme guard, `_http_post_json` header verification, `_http_post_json` URL scheme rejection).
+
 ### Added (S174-continuation — 2026-03-22 — PR copilot/update-ci-failure-rate-and-confirm-transition)
 - **`.github/workflows/create-sub-pr-to-0D_base_.yml`**: NEW — autonomous sub-PR creation from any session branch into `0D_base_`; idempotent, uses `mcp_poster create-pr` + `CODEX_MASTER_KEY`.
 - **`.codex/docs/COGNITIVE_BRAIN_STATUS_S174.md`**: NEW — full S174 cognitive brain status with AAIS scores, architecture diagram, memory tiers, next-phase plan.

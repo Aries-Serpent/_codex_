@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import unittest.mock as mock
+import urllib.error
 from io import BytesIO
 
 import pytest
@@ -27,6 +28,19 @@ def _mock_response(payload: dict, status: int = 200):
     cm.read = mock.Mock(return_value=body)
     cm.status = status
     return cm
+
+
+def _mock_http_error(code: int, reason: str = "Error", body: bytes = b"{}"):
+    """Return an HTTPError with the given status code."""
+    headers = mock.MagicMock()
+    headers.get = mock.Mock(return_value="")
+    return urllib.error.HTTPError(
+        url="https://api.github.com/test",
+        code=code,
+        msg=reason,
+        hdrs=headers,
+        fp=BytesIO(body),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -79,9 +93,21 @@ def test_no_token_warns(monkeypatch, caplog):
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     import logging
-    with caplog.at_level(logging.WARNING, logger="codex.github.mcp_poster"):
-        GitHubMCPPoster()
-    assert "No GitHub token" in caplog.text
+
+    # `init_logger("codex")` in `src/codex_ml/logging/structured.py` (called by
+    # tools/github/gh_api.py) sets `propagate=False` on the "codex" logger.
+    # This prevents caplog (which installs a handler on the root logger) from
+    # capturing records emitted by child loggers such as codex.github.mcp_poster.
+    # Temporarily re-enable propagation for the duration of this assertion.
+    codex_logger = logging.getLogger("codex")
+    original_propagate = codex_logger.propagate
+    codex_logger.propagate = True
+    try:
+        with caplog.at_level(logging.WARNING, logger="codex.github.mcp_poster"):
+            GitHubMCPPoster()
+        assert "No GitHub token" in caplog.text
+    finally:
+        codex_logger.propagate = original_propagate
 
 
 # ---------------------------------------------------------------------------
@@ -173,3 +199,716 @@ def test_cli_no_token_returns_1(monkeypatch):
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     rc = main(["post-comment", "--repo", "o/r", "--pr", "1", "--body", "hi"])
     assert rc == 1
+
+# ---------------------------------------------------------------------------
+# create_ref
+# ---------------------------------------------------------------------------
+
+
+def test_create_ref_bare_branch_name(poster, monkeypatch):
+    """Bare branch name is normalised to refs/heads/<name>."""
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"ref": "refs/heads/my-branch", "object": {"sha": "abc"}})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    result = poster.create_ref("owner/repo", "my-branch", "abc123")
+    assert result["ref"] == "refs/heads/my-branch"
+    assert b'"ref": "refs/heads/my-branch"' in captured["req"].data
+
+
+def test_create_ref_heads_prefix(poster, monkeypatch):
+    """heads/<name> prefix is expanded to refs/heads/<name>."""
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"ref": "refs/heads/feature", "object": {"sha": "abc"}})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.create_ref("owner/repo", "heads/feature", "abc123")
+    assert b'"ref": "refs/heads/feature"' in captured["req"].data
+
+
+def test_create_ref_tags_prefix(poster, monkeypatch):
+    """tags/<name> prefix is expanded to refs/tags/<name>."""
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"ref": "refs/tags/v1.0", "object": {"sha": "abc"}})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.create_ref("owner/repo", "tags/v1.0", "abc123")
+    assert b'"ref": "refs/tags/v1.0"' in captured["req"].data
+
+
+def test_create_ref_full_refs_prefix_unchanged(poster, monkeypatch):
+    """refs/heads/<name> is left as-is (no double-prefix)."""
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"ref": "refs/heads/existing", "object": {"sha": "abc"}})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.create_ref("owner/repo", "refs/heads/existing", "abc123")
+    data = json.loads(captured["req"].data)
+    assert data["ref"] == "refs/heads/existing"
+    assert "refs/heads/refs/heads" not in data["ref"]
+
+
+def test_create_ref_requires_token(no_token_poster):
+    with pytest.raises(RuntimeError):
+        no_token_poster.create_ref("owner/repo", "main", "abc123")
+
+
+# ---------------------------------------------------------------------------
+# create_pull_request
+# ---------------------------------------------------------------------------
+
+
+def test_create_pull_request_success(poster, monkeypatch):
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"number": 42, "html_url": "https://github.com/pr/42"}),
+    )
+    result = poster.create_pull_request("owner/repo", "My PR", "body", "feature", "main")
+    assert result["number"] == 42
+    assert "html_url" in result
+
+
+def test_create_pull_request_draft(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"number": 7, "html_url": "https://github.com/pr/7", "draft": True})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.create_pull_request("owner/repo", "Draft PR", "body", "feature", "main", draft=True)
+    data = json.loads(captured["req"].data)
+    assert data["draft"] is True
+
+
+def test_create_pull_request_requires_token(no_token_poster):
+    with pytest.raises(RuntimeError):
+        no_token_poster.create_pull_request("owner/repo", "t", "b", "h", "main")
+
+
+# ---------------------------------------------------------------------------
+# list_pull_requests
+# ---------------------------------------------------------------------------
+
+
+def test_list_pull_requests_success(poster, monkeypatch):
+    pr_list = [{"number": 1, "title": "PR 1"}, {"number": 2, "title": "PR 2"}]
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response(pr_list),
+    )
+    result = poster.list_pull_requests("owner/repo")
+    assert len(result) == 2
+    assert result[0]["number"] == 1
+
+
+def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        return _mock_response([])
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.list_pull_requests("myorg/repo", head="my-branch")
+
+    from urllib.parse import parse_qs, urlparse
+    qs = parse_qs(urlparse(captured["url"]).query)
+    assert qs.get("head") == ["myorg:my-branch"]
+
+
+def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        return _mock_response([])
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.list_pull_requests("myorg/repo", head="otherorg:their-branch")
+
+    from urllib.parse import parse_qs, urlparse
+    qs = parse_qs(urlparse(captured["url"]).query)
+    # Should NOT re-prefix: the value already contains an owner
+    assert qs.get("head") == ["otherorg:their-branch"]
+
+
+def test_list_pull_requests_http_error(poster, monkeypatch):
+    def fake_urlopen(req, timeout):
+        raise _mock_http_error(403, "Forbidden")
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    with pytest.raises(urllib.error.HTTPError):
+        poster.list_pull_requests("owner/repo")
+
+
+def test_list_pull_requests_per_page_capped_at_100(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        return _mock_response([])
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.list_pull_requests("owner/repo", per_page=200)
+    assert "per_page=100" in captured["url"]
+
+
+def test_list_pull_requests_requires_token(no_token_poster):
+    with pytest.raises(RuntimeError):
+        no_token_poster.list_pull_requests("owner/repo")
+
+
+# ---------------------------------------------------------------------------
+# merge_branch
+# ---------------------------------------------------------------------------
+
+
+def test_merge_branch_success(poster, monkeypatch):
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"sha": "abc123", "commit": {}, "parents": []}),
+    )
+    result = poster.merge_branch("owner/repo", "main", "feature")
+    assert result["sha"] == "abc123"
+
+
+def test_merge_branch_with_message(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"sha": "def456"})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.merge_branch("owner/repo", "main", "feature", commit_message="Merge feature into main")
+    data = json.loads(captured["req"].data)
+    assert data["commit_message"] == "Merge feature into main"
+
+
+def test_merge_branch_no_message_omits_key(poster, monkeypatch):
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["req"] = req
+        return _mock_response({"sha": "ghi789"})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.merge_branch("owner/repo", "main", "feature")
+    data = json.loads(captured["req"].data)
+    assert "commit_message" not in data
+
+
+def test_merge_branch_returns_empty_on_no_content(poster, monkeypatch):
+    """HTTP 204 (already up-to-date) returns empty dict."""
+    cm = mock.MagicMock()
+    cm.__enter__ = mock.Mock(return_value=cm)
+    cm.__exit__ = mock.Mock(return_value=False)
+    cm.read = mock.Mock(return_value=b"")
+    monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: cm)
+    result = poster.merge_branch("owner/repo", "main", "feature")
+    assert result == {}
+
+
+def test_merge_branch_requires_token(no_token_poster):
+    with pytest.raises(RuntimeError):
+        no_token_poster.merge_branch("owner/repo", "main", "feature")
+
+
+# ---------------------------------------------------------------------------
+# create_discussion + post_session_summary_discussion
+# ---------------------------------------------------------------------------
+
+
+def _graphql_response(data: dict) -> mock.MagicMock:
+    """Mock urlopen returning a GraphQL response."""
+    body = json.dumps({"data": data}).encode()
+    cm = mock.MagicMock()
+    cm.__enter__ = mock.Mock(return_value=cm)
+    cm.__exit__ = mock.Mock(return_value=False)
+    cm.read = mock.Mock(return_value=body)
+    return cm
+
+
+def test_create_discussion_success(poster, monkeypatch):
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            # First call: resolve repo/category IDs
+            return _graphql_response({
+                "repository": {
+                    "id": "R_123",
+                    "discussionCategories": {
+                        "nodes": [{"id": "DC_1", "slug": "session-summaries", "name": "Session Summaries"}],
+                    },
+                }
+            })
+        else:
+            # Second call: create discussion
+            return _graphql_response({
+                "createDiscussion": {
+                    "discussion": {"number": 5, "url": "https://github.com/discuss/5", "title": "Test"},
+                }
+            })
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    result = poster.create_discussion("owner/repo", "Test", "Body text", "session-summaries")
+    assert result.get("number") == 5
+    assert result.get("url") == "https://github.com/discuss/5"
+
+
+def test_post_session_summary_discussion(poster, monkeypatch):
+    """post_session_summary_discussion calls create_discussion with correct title."""
+    called_with = {}
+
+    def fake_create_discussion(repo, title, body, category_slug):
+        called_with["title"] = title
+        called_with["category_slug"] = category_slug
+        return {"number": 10, "url": "https://github.com/discuss/10"}
+
+    monkeypatch.setattr(poster, "create_discussion", fake_create_discussion)
+    poster.post_session_summary_discussion("owner/repo", 175, "## Summary")
+    assert called_with["title"] == "Session S175 — Completion Summary"
+    assert called_with["category_slug"] == "session-summaries"
+
+
+def test_create_discussion_category_fallback(poster, monkeypatch):
+    """When slug not matched, first category is used as fallback."""
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return _graphql_response({
+                "repository": {
+                    "id": "R_456",
+                    "discussionCategories": {
+                        "nodes": [{"id": "DC_FIRST", "slug": "general", "name": "General"}],
+                    },
+                }
+            })
+        else:
+            return _graphql_response({
+                "createDiscussion": {
+                    "discussion": {"number": 6, "url": "https://github.com/discuss/6", "title": "t"},
+                }
+            })
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    # "nonexistent-slug" won't match "general", should fall back to first category
+    poster.create_discussion("owner/repo", "t", "b", "nonexistent-slug")
+    assert call_count["n"] == 2
+
+
+def test_create_discussion_requires_token(no_token_poster):
+    with pytest.raises(RuntimeError):
+        no_token_poster.create_discussion("owner/repo", "t", "b", "slug")
+
+
+# ---------------------------------------------------------------------------
+# _request retry logic
+# ---------------------------------------------------------------------------
+
+
+def test_request_retries_on_429(poster, monkeypatch):
+    """HTTP 429 triggers retry with exponential back-off."""
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] < 3:
+            headers = mock.MagicMock()
+            headers.get = mock.Mock(return_value="")
+            raise urllib.error.HTTPError(url="", code=429, msg="Rate limited", hdrs=headers, fp=BytesIO(b"{}"))
+        return _mock_response({"ok": True})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda _: None)  # Skip actual sleep
+    result = poster.post_pr_comment("owner/repo", 1, "body")
+    assert result.get("ok") is True
+    assert call_count["n"] == 3
+
+
+def test_request_does_not_retry_on_403_without_rate_limit_signals(poster, monkeypatch):
+    """HTTP 403 without rate-limit headers raises immediately (no retry)."""
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        headers = mock.MagicMock()
+        headers.get = mock.Mock(return_value="")
+        raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=headers, fp=BytesIO(b"forbidden"))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        poster.post_pr_comment("owner/repo", 1, "body")
+    assert exc_info.value.code == 403
+    assert call_count["n"] == 1  # No retries
+
+
+def test_request_retries_on_403_with_retry_after_header(poster, monkeypatch):
+    """HTTP 403 + Retry-After header → retried."""
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            headers = mock.MagicMock()
+            headers.get = mock.Mock(side_effect=lambda k, default="": "1" if k == "Retry-After" else default)
+            raise urllib.error.HTTPError(url="", code=403, msg="Secondary rate limited", hdrs=headers, fp=BytesIO(b"{}"))
+        return _mock_response({"id": 99})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda _: None)
+    result = poster.post_pr_comment("owner/repo", 1, "body")
+    assert result["id"] == 99
+    assert call_count["n"] == 2
+
+
+def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatch):
+    """HTTP 403 + x-ratelimit-remaining=0 → retried."""
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            headers = mock.MagicMock()
+            headers.get = mock.Mock(
+                side_effect=lambda k, default="": "0" if k == "x-ratelimit-remaining" else default
+            )
+            raise urllib.error.HTTPError(url="", code=403, msg="Limit", hdrs=headers, fp=BytesIO(b"{}"))
+        return _mock_response({"id": 77})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda _: None)
+    result = poster.post_pr_comment("owner/repo", 1, "body")
+    assert result["id"] == 77
+
+
+def test_request_rejects_non_https_url(poster):
+    with pytest.raises(ValueError, match=r"URL scheme must be https"):
+        poster._request("POST", "http://insecure.example.com/api", {})
+
+
+# ---------------------------------------------------------------------------
+# CLI — new commands (create-branch, create-pr, merge-branch, create-discussion)
+# ---------------------------------------------------------------------------
+
+
+def test_cli_create_branch(monkeypatch):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"ref": "refs/heads/test-branch", "object": {"sha": "abc1234"}}),
+    )
+    rc = main(["create-branch", "--repo", "o/r", "--ref", "test-branch", "--sha", "abc1234" * 5])
+    assert rc == 0
+
+
+def test_cli_create_pr(monkeypatch):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"number": 99, "html_url": "https://github.com/pr/99"}),
+    )
+    rc = main(["create-pr", "--repo", "o/r", "--title", "My PR", "--head", "feature", "--base", "main"])
+    assert rc == 0
+
+
+def test_cli_create_pr_with_body_file(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    body_file = tmp_path / "pr_body.md"
+    body_file.write_text("## PR Description\n\nSome details.")
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"number": 55, "html_url": "https://github.com/pr/55"}),
+    )
+    rc = main([
+        "create-pr", "--repo", "o/r", "--title", "PR via file",
+        "--head", "feature", "--body-file", str(body_file),
+    ])
+    assert rc == 0
+
+
+def test_cli_merge_branch(monkeypatch):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"sha": "abcdef12"}),
+    )
+    rc = main(["merge-branch", "--repo", "o/r", "--base", "main", "--head", "feature"])
+    assert rc == 0
+
+
+def test_cli_merge_branch_up_to_date(monkeypatch):
+    """Empty response (already merged / 204) should print up-to-date message."""
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    cm = mock.MagicMock()
+    cm.__enter__ = mock.Mock(return_value=cm)
+    cm.__exit__ = mock.Mock(return_value=False)
+    cm.read = mock.Mock(return_value=b"")
+    monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: cm)
+    rc = main(["merge-branch", "--repo", "o/r", "--base", "main", "--head", "feature"])
+    assert rc == 0
+
+
+def test_cli_create_discussion(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    body_file = tmp_path / "discussion.md"
+    body_file.write_text("## Session S99 Summary")
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return _graphql_response({
+                "repository": {
+                    "id": "R_999",
+                    "discussionCategories": {
+                        "nodes": [{"id": "DC_99", "slug": "cognitive-brain-patterns", "name": "Patterns"}],
+                    },
+                }
+            })
+        return _graphql_response({
+            "createDiscussion": {
+                "discussion": {"number": 99, "url": "https://github.com/discuss/99", "title": "S99"},
+            }
+        })
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    rc = main(["create-discussion", "--repo", "o/r", "--title", "S99", "--body-file", str(body_file)])
+    assert rc == 0
+
+
+def test_cli_http_error_returns_1(monkeypatch):
+    """Any HTTPError from CLI → exit code 1."""
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+
+    def fake_urlopen(req, timeout):
+        raise _mock_http_error(422, "Unprocessable Entity")
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    rc = main(["create-branch", "--repo", "o/r", "--ref", "my-branch", "--sha", "a" * 40])
+    assert rc == 1
+
+
+def test_list_pull_requests_with_base_filter(poster, monkeypatch):
+    """Passing base= appends it to the query string."""
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["url"] = req.full_url
+        return _mock_response([])
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    poster.list_pull_requests("owner/repo", base="main")
+    assert "base=main" in captured["url"]
+
+
+def test_cli_create_pr_draft_flag(monkeypatch):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    captured = {}
+
+    def fake_urlopen(req, timeout):
+        captured["data"] = json.loads(req.data)
+        return _mock_response({"number": 11, "html_url": "https://github.com/pr/11"})
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    rc = main(["create-pr", "--repo", "o/r", "--title", "Draft", "--head", "feature", "--draft"])
+    assert rc == 0
+    assert captured["data"]["draft"] is True
+
+
+# ---------------------------------------------------------------------------
+# Cognitive brain lifecycle hooks (IMP-012)
+# ---------------------------------------------------------------------------
+
+
+def test_record_cb_pattern_logs_always(poster, caplog):
+    """_record_cb_pattern emits an INFO log regardless of cognitive brain availability."""
+    import logging
+
+    codex_logger = logging.getLogger("codex")
+    original_propagate = codex_logger.propagate
+    codex_logger.propagate = True
+    try:
+        with caplog.at_level(logging.INFO, logger="codex.github.mcp_poster"):
+            poster._record_cb_pattern(
+                "CB-branch-create",
+                "create_ref: refs/heads/test",
+                {"repo": "owner/repo", "sha": "abc123"},
+            )
+        assert "CB-branch-create" in caplog.text
+    finally:
+        codex_logger.propagate = original_propagate
+
+
+def test_create_ref_records_cb_pattern(poster, monkeypatch):
+    """create_ref records a CB-branch-create pattern."""
+    recorded = []
+
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"ref": "refs/heads/test", "object": {"sha": "abc"}}),
+    )
+    monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
+    poster.create_ref("owner/repo", "test", "abc123")
+    assert any("CB-branch-create" in str(r) for r in recorded)
+
+
+def test_create_pull_request_records_cb_pattern(poster, monkeypatch):
+    """create_pull_request records a CB-pr-open pattern."""
+    recorded = []
+
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"number": 5, "html_url": "https://github.com/pr/5"}),
+    )
+    monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
+    poster.create_pull_request("owner/repo", "title", "body", "feature", "main")
+    assert any("CB-pr-open" in str(r) for r in recorded)
+
+
+def test_merge_branch_records_cb_pattern_success(poster, monkeypatch):
+    """merge_branch records a CB-merge pattern with outcome=success."""
+    recorded = []
+
+    monkeypatch.setattr(
+        "urllib.request.urlopen",
+        lambda req, timeout: _mock_response({"sha": "abc123"}),
+    )
+    monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
+    poster.merge_branch("owner/repo", "main", "feature")
+    assert recorded, "Expected _record_cb_pattern to be called"
+    args, kwargs = recorded[0]
+    assert args[0] == "CB-merge"
+    assert kwargs.get("outcome") == "success"
+
+
+def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
+    """merge_branch records a CB-merge pattern with outcome=already_exists when empty response."""
+    recorded = []
+
+    cm = mock.MagicMock()
+    cm.__enter__ = mock.Mock(return_value=cm)
+    cm.__exit__ = mock.Mock(return_value=False)
+    cm.read = mock.Mock(return_value=b"")
+    monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: cm)
+    monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
+    poster.merge_branch("owner/repo", "main", "feature")
+    assert recorded, "Expected _record_cb_pattern to be called"
+    args, kwargs = recorded[0]
+    assert args[0] == "CB-merge"
+    assert kwargs.get("outcome") == "already_exists"
+
+
+# ---------------------------------------------------------------------------
+# P1.4 — coverage for remaining uncovered lines
+# ---------------------------------------------------------------------------
+
+
+def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
+    """set_repo_variable re-raises HTTPError whose code is not 404 (line 240)."""
+    import urllib.error
+    from io import BytesIO
+
+    hdrs = mock.MagicMock()
+    hdrs.get = lambda key, default="": default  # No Retry-After, no rate-limit headers
+
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=hdrs, fp=BytesIO(b"{}"))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        poster.set_repo_variable("owner/repo", "MY_VAR", "value")
+    assert exc_info.value.code == 403
+
+
+def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
+    """_record_cb_pattern executes the import block when cognitive_brain is mockable (lines 495-510)."""
+    stored = []
+
+    class FakeMemoryPattern:
+        def __init__(self, **kw):
+            self.kw = kw
+
+    class FakeSQLiteMemory:
+        def store_pattern(self, p):
+            stored.append(p)
+
+    fake_module = mock.MagicMock()
+    fake_module.MemoryPattern = FakeMemoryPattern
+    fake_module.SQLiteMemory = FakeSQLiteMemory
+
+    import sys
+    # Inject the fake module so the import inside _record_cb_pattern succeeds.
+    # Clean up after to avoid contaminating other tests.
+    sys.modules["cognitive_brain"] = mock.MagicMock()
+    sys.modules["cognitive_brain.quantum"] = mock.MagicMock()
+    sys.modules["cognitive_brain.quantum.memory"] = fake_module
+    try:
+        poster._record_cb_pattern(
+            "CB-test",
+            "test decision",
+            {"repo": "owner/repo", "sha": "abc123"},
+            outcome="success",
+        )
+    finally:
+        sys.modules.pop("cognitive_brain", None)
+        sys.modules.pop("cognitive_brain.quantum", None)
+        sys.modules.pop("cognitive_brain.quantum.memory", None)
+
+    assert len(stored) == 1
+
+
+def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
+    """_request raises last_exc when all retries are consumed on rate-limit (line 607)."""
+    import urllib.error
+    from io import BytesIO
+
+    hdrs = mock.MagicMock()
+    hdrs.get = lambda key, default="": "1" if key == "Retry-After" else default
+
+    def fake_urlopen(req, timeout):
+        raise urllib.error.HTTPError(url="", code=429, msg="Too Many Requests", hdrs=hdrs, fp=BytesIO(b"{}"))
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    monkeypatch.setattr("time.sleep", lambda s: None)  # speed up test
+
+    max_retries = 2
+    with pytest.raises(urllib.error.HTTPError) as exc_info:
+        poster._request("POST", "https://api.github.com/test", {}, max_retries=max_retries)
+    assert exc_info.value.code == 429
+    # All retries are exhausted: loop ran max_retries times then raise last_exc
+
+
+def test_cli_no_subcommand_returns_zero(monkeypatch):
+    """main() with no recognised subcommand reaches return 0 (branch 751->766)."""
+    import argparse
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+
+    # Patch parse_args so args.command is None (no subcommand given)
+    original_parse = argparse.ArgumentParser.parse_args
+
+    def patched_parse(self, args=None, namespace=None):
+        ns = original_parse(self, ["post-comment", "--repo", "r/r", "--pr", "1", "--body", "x"], namespace)
+        ns.command = None  # Override to simulate unrecognised command
+        return ns
+
+    monkeypatch.setattr(argparse.ArgumentParser, "parse_args", patched_parse)
+    rc = main([])
+    assert rc == 0
