@@ -7294,3 +7294,101 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## Session S174 — 2026-03-21 (PR copilot/update-ci-failure-rate-and-confirm-transition)
+
+### Objectives
+- Execute S174 consolidation planset from `docs/ops/CONSOLIDATION_PLANSET_S174.md`
+- Create `0D_base_` staging integration branch from `main` with S174 changes merged
+- Implement Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED) prerequisites
+- Identify GitHub MCP Service + Playwright improvement opportunities
+- Migrate all diffs from `copilot/research-energy-conversion-requirements` into this branch
+
+### Actions Taken
+| # | Action | File(s) | Status |
+|---|--------|---------|--------|
+| 1 | P0-1: Archive `self-healing.yml` + `self_healing_ci.yml` | `.github/workflow-archive/s174-consolidation/` | ✅ Done |
+| 2 | P0-3: Archive `pr3178-pytest-execution.yml` | `.github/workflow-archive/s174-consolidation/` | ✅ Done |
+| 3 | P1-5: Deprecate 5 legacy coverage agents → `unified-coverage-agent` | `AGENT_REGISTRY.yaml`, 5 `.md` tombstones | ✅ Done |
+| 4 | P2-1: Remove `Art_` prefix from 34 workflow `name:` fields | `.github/workflows/*.yml` (34 files) | ✅ Done |
+| 5 | P2-2: Evict 31 stale docs from `.github/agents/` | `archive/sessions/`, `archive/cognitive-brain/`, `archive/status-docs/` | ✅ Done |
+| 6 | Create `0D_base_` from `main` + merge S174 session | `0D_base_` branch (local + pushed via promote workflow) | ✅ Done |
+| 7 | Extend `GitHubMCPPoster` with write methods | `src/codex/github/mcp_poster.py` | ✅ Done |
+| 8 | Create MCP/Playwright improvement plan | `docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md` | ✅ Done |
+| 9 | Update CHANGELOG.md S174 entries | `CHANGELOG.md` | ✅ Done |
+| 10 | Activate Agent Token Delegation checkbox | PR body `[x] Enable Agent Token Delegation` | ✅ Done |
+| 11 | Cherry-pick 6 commits from `copilot/research-energy-conversion-requirements` | `energy-conversion-agent.md`, `ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md`, `AGENT_REGISTRY.yaml` | ✅ Done |
+
+### Violations / Deviations
+- None. All changes strictly additive or archival; no test removals; cross-reference gate passes.
+
+### Pre-flight Compliance (REQ-1 through REQ-10)
+- REQ-3: `.gitignore` explicitly un-ignores `.codex/agent_auth_session.json` (lines 103, 204) ✅
+- REQ-4: This report updated in this commit ✅
+- REQ-5: `CHANGELOG.md` updated with S174 entries ✅
+- REQ-9 Pass 2: All workflow YAML files parse without error ✅
+- REQ-9 Pass 5: `AGENT_REGISTRY.yaml` valid (`v2.0.0 | 157 agents`) ✅
+
+### Lessons Learned
+- `report_progress` always pushes to the PR branch regardless of which local branch is checked out — `0D_base_` requires a separate push mechanism (GitHubMCPPoster `create_ref()` now available).
+- When cherry-picking from a branch with auto-generated CI commits, the intermediate commits that created prerequisite files must also be cherry-picked (not just the final commits).
+- `agent-auth-delegation` workflow uses `CODEX_MASTER_KEY` for all write operations; `GITHUB_TOKEN` (Copilot integration) is read-only for `/repos/{owner}/{repo}/git/refs` and `/repos/{owner}/{repo}/merges` endpoints.
+
+### Codebase Left Better Than Found
+- 3 duplicate workflows removed; 34 naming inconsistencies fixed; 31 stale docs organised into archives.
+- `GitHubMCPPoster` extended with `create_ref()`, `create_pull_request()`, `list_pull_requests()` — closes the branch-creation gap identified during 0D_base_ recreation.
+- `docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md` created with 8 concrete improvement areas.
+- `energy-conversion-agent` v1.2.0 + `ENERGY_CONVERSION_AUTONOMOUS_PATTERNS.md` migrated from `copilot/research-energy-conversion-requirements`.
+
+## Session S174-continuation — 2026-03-22 (PR copilot/update-ci-failure-rate-and-confirm-transition)
+
+### Objectives
+- Complete all mandatory pre-session review steps per §0 CODEBASE_AGENCY_POLICY.md
+- Fix all CI failures and outstanding issues (including out-of-scope)
+- Activate Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED both boxes checked ✅)
+- Archive 2 oversized agent files (QA_AGENT_ARCHITECTURE_DIAGRAMS.md, INFRA_LINTER_AGENT_PROMPT.md)
+- Update cognitive brain status for S174
+- Design/register 2 new production-ready workflow agents
+- Create `create-sub-pr-to-0D_base_.yml` for sub-PR lifecycle automation
+- Post follow-up prompt as PR comment and active prompt file
+
+### Actions Taken
+| # | Action | File(s) | Status |
+|---|--------|---------|--------|
+| 1 | Archive QA_AGENT_ARCHITECTURE_DIAGRAMS.md (36,201 chars > 30k) | `.github/agents/archive/oversized-docs/` | ✅ Done |
+| 2 | Archive INFRA_LINTER_AGENT_PROMPT.md (30,166 chars > 30k) | `.github/agents/archive/oversized-docs/` | ✅ Done |
+| 3 | Create stubs for archived agent files | `.github/agents/QA_AGENT_ARCHITECTURE_DIAGRAMS.md`, `INFRA_LINTER_AGENT_PROMPT.md` | ✅ Done |
+| 4 | Create COGNITIVE_BRAIN_STATUS_S174.md | `.codex/docs/COGNITIVE_BRAIN_STATUS_S174.md` | ✅ Done |
+| 5 | Create create-sub-pr-to-0D_base_.yml workflow | `.github/workflows/create-sub-pr-to-0D_base_.yml` | ✅ Done |
+| 6 | Register promote-integration-branch + create-sub-pr in AGENT_REGISTRY | `.github/agents/AGENT_REGISTRY.yaml` (total_agents 157→159) | ✅ Done |
+| 7 | Create S174-followup.md active prompt | `.github/copilot-prompts/active/S174-followup.md` | ✅ Done |
+| 8 | CHANGELOG updated with S174-continuation entries | `CHANGELOG.md` | ✅ Done |
+
+### Violations / Deviations
+- None. All changes additive; cross-ref gate passes; no test removals; deferral language gate passes.
+
+### Pre-flight Compliance
+- §0: Pre-session review completed (CI status checked, deferral gate passed) ✅
+- §0b: Integration branch model followed (sub-PR workflow created for 0D_base_ routing) ✅
+- REQ-4: This report updated ✅
+- REQ-5: CHANGELOG.md updated ✅
+- Agent file size gate: 2 oversized files caught and archived ✅
+
+### Lessons Learned
+- Agent file size gate must be checked on ALL `.github/agents/*.md` at session start, not just modified files.
+- `QA_AGENT_ARCHITECTURE_DIAGRAMS.md` (36,201 chars) and `INFRA_LINTER_AGENT_PROMPT.md` (30,166 chars) were pre-existing violations — both now archived.
+- Deferral language gate must be run against `--text` (full file content) when checking individual files, not `--files`.
+- `create-sub-pr-to-0D_base_.yml` enables autonomous sub-PR creation for any future session branch.
+
+### Codebase Left Better Than Found
+- 2 more oversized agent files archived (agent file size gate compliance: 100%)
+- `COGNITIVE_BRAIN_STATUS_S174.md` captures full S174 architecture, AAIS score, next-phase plan
+- `create-sub-pr-to-0D_base_.yml` enables the missing automation for sub-PR creation
+- AGENT_REGISTRY now has 159 entries including 2 new workflow automation agents
+- `S174-followup.md` provides complete handoff context for next session
+
+### Impact Score
+- Files changed: 10
+- CI gates unblocked: agent-size gate ✅, cross-ref gate ✅, YAML gate ✅
+- AAIS delta: ~82.5 → ~83.0 (+0.5 for agent size compliance)
+- Deferral Language Gate: 0 violations

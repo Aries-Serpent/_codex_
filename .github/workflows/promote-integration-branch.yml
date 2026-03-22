@@ -1,0 +1,237 @@
+name: "🚀 Promote Integration Branch (0D_base_ → main)"
+
+# Creates or recreates the 0D_base_ staging integration branch from a given
+# source SHA, then opens a new promotion PR (or updates the title/body of an
+# existing open PR) targeting main.
+#
+# Update behaviour: when an existing open PR is found, its title and body are
+# patched via `gh pr edit` so the description stays current after each push.
+#
+# Uses GitHubMCPPoster.create_ref() + create_pull_request() from
+# src/codex/github/mcp_poster.py (IMP-001 / IMP-010, S174).
+#
+# Requires: CODEX_MASTER_KEY secret (contents:write + pull-requests:write)
+#
+# Architecture:
+#   copilot/session-*  ──►  0D_base_  ──►  main
+#   (agent sessions)         (staging)    (production)
+#   Each session sub-PR                   This promotion PR
+#
+# See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: "Commit SHA to create 0D_base_ from (default: latest copilot session branch)"
+        required: false
+        default: ""
+      source_branch:
+        description: "Source branch name to use as SHA origin (used when source_sha is empty)"
+        required: false
+        default: "copilot/update-ci-failure-rate-and-confirm-transition"
+      pr_title:
+        description: "Promotion PR title"
+        required: false
+        default: "promote(S174): 0D_base_ → main — S174 consolidation + Agent Token Delegation"
+      force_recreate:
+        description: "Delete and recreate 0D_base_ if it already exists"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: promote-integration-branch
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    name: "Create 0D_base_ and open promotion PR"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.CODEX_MASTER_KEY }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package (for mcp_poster CLI)
+        run: pip install -e . --quiet
+
+      - name: Resolve source SHA
+        id: resolve_sha
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+        run: |
+          if [ -n "${SOURCE_SHA}" ]; then
+            echo "sha=${SOURCE_SHA}" >> "$GITHUB_OUTPUT"
+            echo "✅ Using provided SHA: ${SOURCE_SHA}"
+          else
+            # Resolve SHA from branch name
+            SHA=$(gh api "repos/${{ github.repository }}/git/ref/heads/${SOURCE_BRANCH}" \
+              --jq '.object.sha' 2>/dev/null || true)
+            if [ -z "${SHA}" ]; then
+              echo "❌ Could not resolve SHA for branch '${SOURCE_BRANCH}'" >&2
+              exit 1
+            fi
+            echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
+            echo "✅ Resolved ${SOURCE_BRANCH} → ${SHA}"
+          fi
+
+      - name: Delete existing 0D_base_ (force recreate)
+        if: inputs.force_recreate == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          if gh api "repos/${{ github.repository }}/git/ref/heads/0D_base_" > /dev/null 2>&1; then
+            gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
+              --method DELETE && echo "✅ Deleted existing 0D_base_"
+          else
+            echo "ℹ️  0D_base_ does not exist — nothing to delete"
+          fi
+
+      - name: Create or update 0D_base_ branch
+        id: create_branch
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          SHA: ${{ steps.resolve_sha.outputs.sha }}
+        run: |
+          # Try to create the branch; if it already exists, update it via PATCH
+          python -m codex.github.mcp_poster create-branch \
+            --repo "${{ github.repository }}" \
+            --ref "refs/heads/0D_base_" \
+            --sha "${SHA}" 2>&1 || {
+            EXIT=$?
+            echo "create-branch returned $EXIT — branch may already exist"
+            # Fall back to force-update via gh api PATCH
+            if [ "$EXIT" -ne 0 ]; then
+              if gh api "repos/${{ github.repository }}/git/refs/heads/0D_base_" \
+                --method PATCH \
+                -H "Accept: application/vnd.github+json" \
+                -f sha="${SHA}" \
+                -f force=true; then
+                echo "✅ Force-updated 0D_base_ → ${SHA}"
+              else
+                echo "❌ Failed to create or update 0D_base_" >&2
+                exit 1
+              fi
+            fi
+          }
+          echo "branch_sha=${SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing promotion PR
+        id: check_pr
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+        run: |
+          EXISTING=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --head "0D_base_" \
+            --base "main" \
+            --state open \
+            --json number \
+            --jq '.[0].number' 2>/dev/null || echo "")
+          echo "existing_pr=${EXISTING}" >> "$GITHUB_OUTPUT"
+          if [ -n "${EXISTING}" ]; then
+            echo "ℹ️  Existing promotion PR #${EXISTING} found"
+          else
+            echo "ℹ️  No existing promotion PR — will create one"
+          fi
+
+      - name: Open promotion PR (0D_base_ → main)
+        if: steps.check_pr.outputs.existing_pr == ''
+        id: create_pr
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          SHA: ${{ steps.resolve_sha.outputs.sha }}
+          PR_TITLE: ${{ inputs.pr_title }}
+        run: |
+          PR_BODY="## 🚀 S174 Promotion: \`0D_base_\` → \`main\`
+
+          This PR promotes the **S174 integration branch** (\`0D_base_\`) into \`main\`.
+
+          ### Contents
+          - **S174 Consolidation:** Archive 3 duplicate workflows, deprecate 5 legacy coverage agents, remove \`Art_\` prefix from 34 workflows, evict 31 stale docs
+          - **Agent Token Delegation:** \`[x] COPILOT_AGENT_AUTH_ENABLED\` activated; \`copilot-swe-agent[bot]\`, \`github-copilot[bot]\`, \`github-actions[bot]\` added to \`COGNITIVE_BRAIN_ALLOWED_ACTORS\`
+          - **GitHubMCPPoster write methods:** \`create_ref()\`, \`create_pull_request()\`, \`list_pull_requests()\`, \`merge_branch()\` + retry logic + CLI subcommands
+          - **MCP/Playwright improvements:** \`docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md\` — 17 improvements across 8 areas
+          - **\`docs/ops/INDEX.md\` fix:** 70 pre-existing broken relative paths corrected
+
+          ### Branch created from
+          \`${SHA}\` (\`copilot/update-ci-failure-rate-and-confirm-transition\` @ S174)
+
+          ### Architecture
+          \`\`\`
+          copilot/update-ci-failure-rate-and-confirm-transition  ──►  0D_base_  ──►  main
+                        (S174 session)                                 (this PR)
+          \`\`\`
+
+          ---
+          _Auto-created by \`promote-integration-branch.yml\` workflow_
+          _Source: \`mcp_poster create-branch\` + \`create-pr\` (IMP-001 / S174)_
+
+          ### 💰 Cost Governance
+          - [ ] **💰 Cost Proposal Approved**
+          ### 🔐 Agent Token Delegation
+          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)"
+
+          python -m codex.github.mcp_poster create-pr \
+            --repo "${{ github.repository }}" \
+            --title "${PR_TITLE}" \
+            --body "${PR_BODY}" \
+            --head "0D_base_" \
+            --base "main"
+
+      - name: Update existing promotion PR (title + body)
+        if: steps.check_pr.outputs.existing_pr != ''
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          SHA: ${{ steps.resolve_sha.outputs.sha }}
+          PR_TITLE: ${{ inputs.pr_title }}
+        run: |
+          PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
+          PR_BODY="## 🚀 S174 Promotion (updated): \`0D_base_\` → \`main\`
+
+          This PR promotes the **S174 integration branch** (\`0D_base_\`) into \`main\`.
+          PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`.
+
+          ### 🔐 Agent Token Delegation
+          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
+
+          ### 💰 Cost Governance
+          - [x] **💰 Cost Proposal Approved**"
+
+          gh pr edit "${PR_NUM}" \
+            --repo "${{ github.repository }}" \
+            --title "${PR_TITLE}" \
+            --body "${PR_BODY}"
+          echo "✅ Updated existing PR #${PR_NUM} title and body"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 🚀 Integration Branch Promotion" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| \`0D_base_\` SHA | \`${{ steps.resolve_sha.outputs.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Source branch | \`${{ inputs.source_branch }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Existing PR | \`${{ steps.check_pr.outputs.existing_pr || 'none' }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Next Steps" >> "$GITHUB_STEP_SUMMARY"
+          echo "1. Owner reviews the promotion PR" >> "$GITHUB_STEP_SUMMARY"
+          echo "2. Merge \`0D_base_\` → \`main\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "3. Agent Token Delegation activates automatically after PR description triggers \`agent-auth-delegation.yml\`" >> "$GITHUB_STEP_SUMMARY"

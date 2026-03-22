@@ -373,25 +373,24 @@ repos:
         # Rule 3: exclude CODEX_MANIFEST.json, session_context_latest.md from dev commits
         # Rule 4: use .git/info/attributes + merge.keepcommit driver for recovery
 
-  # ── Reference Integrity Gate ─────────────────────────────────────────────
+  # ── Reference Integrity + Agent File Size Gates ───────────────────────────
   # Codebase Agency Policy §2: "Leave the codebase better than you found it."
-  # BLOCKS any commit that moves/deletes a file without updating all references.
-  # This is the pre-commit enforcement of the cross-reference integrity rule.
-  - id: check-cross-references
-    name: "🔗 Cross-reference integrity (no broken internal links)"
-    entry: python scripts/ci/check_cross_references.py
-    language: system
-    stages: [pre-commit]
-    pass_filenames: false
-    always_run: true
+  - repo: local
+    hooks:
+      # BLOCKS any commit that moves/deletes a file without updating all references.
+      - id: check-cross-references
+        name: "🔗 Cross-reference integrity (no broken internal links)"
+        entry: python scripts/ci/check_cross_references.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true
 
-  # ── Agent File Size Gate ─────────────────────────────────────────────────
-  # GitHub Copilot custom agents silently STOP WORKING above 30,000 characters.
-  # This gate prevents that violation from entering the repo.
-  - id: check-agent-file-sizes
-    name: "📏 Agent file size limit (30,000 char max)"
-    entry: python scripts/ci/check_agent_file_sizes.py
-    language: system
-    stages: [pre-commit]
-    pass_filenames: false
-    always_run: true
+      # GitHub Copilot custom agents silently STOP WORKING above 30,000 characters.
+      - id: check-agent-file-sizes
+        name: "📏 Agent file size limit (30,000 char max)"
+        entry: python scripts/ci/check_agent_file_sizes.py
+        language: system
+        stages: [pre-commit]
+        pass_filenames: false
+        always_run: true

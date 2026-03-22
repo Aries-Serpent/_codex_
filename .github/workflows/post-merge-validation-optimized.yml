@@ -1,4 +1,4 @@
-name: Art_Post-Merge Validation (Optimized)
+name: Post-Merge Validation (Optimized)
 
 on:
   push:

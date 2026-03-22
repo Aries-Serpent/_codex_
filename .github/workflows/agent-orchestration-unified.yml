@@ -1,4 +1,4 @@
-name: Art_Agent Orchestration (Unified)
+name: Agent Orchestration (Unified)
 
 on:
   # Triggered by workflow-health-monitor

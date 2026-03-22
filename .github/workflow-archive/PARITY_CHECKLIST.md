@@ -786,3 +786,49 @@ view /home/runner/work/_codex_/_codex_/.github/workflow-archive/README.md
 **Parity Confirmation**: ✅ **100% (8 of 8 categories)**  
 **Artifacts**: ✅ **Fully cataloged and retrievable**  
 **Ready for**: ✅ **Merge and deployment**
+
+---
+
+## S174 Consolidation — 2026-03-21
+
+### Archived Workflows (P0 — Low Risk)
+
+| File | Reason | Archived |
+|------|--------|---------|
+| `self-healing.yml` | Duplicate of iterative-self-healing-ci.yml (legacy `Art_Self-Healing CI/CD`) | `s174-consolidation/` |
+| `self_healing_ci.yml` | Duplicate of iterative-self-healing-ci.yml (`Self-Healing CI`) | `s174-consolidation/` |
+| `pr3178-pytest-execution.yml` | Stale PR#3178-specific workflow, long merged | `s174-consolidation/` |
+
+### Art_ Prefix Removal (P2-1)
+
+Removed `Art_` prefix from `name:` field in **34 surviving workflows**. References in
+`iterative-self-healing-ci.yml`, `cognitive_brain_ci_feedback.yml`, and `data-quality-suite.yml`
+updated to match new names.
+
+### Coverage Agent Deprecations (P1-5)
+
+5 legacy coverage agents deprecated in `AGENT_REGISTRY.yaml` + tombstone stubs created:
+- `coverage-gapfill-agent` → superseded by `unified-coverage-agent`
+- `coverage-maintenance-agent` → superseded by `unified-coverage-agent`
+- `coverage-roadmap-agent` → superseded by `unified-coverage-agent`
+- `test-coverage-agent` → superseded by `unified-coverage-agent`
+- `test-coverage-monitor` → superseded by `unified-coverage-agent`
+
+`unified-coverage-agent` added to `AGENT_REGISTRY.yaml` as `status: active`.
+
+### Stale Docs Archived (P2-2)
+
+31 non-agent documents moved out of `.github/agents/`:
+- 16 session/continuation prompts → `.github/agents/archive/sessions/`
+- 12 COGNITIVE_BRAIN status docs → `.github/agents/archive/cognitive-brain/`
+- 3 status/protocol docs → `.github/agents/archive/status-docs/`
+- `SECRETS_CONFIGURATION.md` → `docs/admin/`
+
+### Post-Consolidation Counts
+
+| Metric | Before S174 | After S174 | Change |
+|--------|-------------|------------|--------|
+| Workflow count | 129 | 126 | −3 |
+| Agent files (main dir) | 185 | 153 | −32 |
+| `Art_` prefix count | 34 | 0 | −34 |
+| Active coverage agents | 5 (duplicate) | 1 (unified) | −4 |

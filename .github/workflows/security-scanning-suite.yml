@@ -1,4 +1,4 @@
-name: Art_Security Scanning Suite
+name: Security Scanning Suite
 
 "on":
   push:

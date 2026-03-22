@@ -23,7 +23,6 @@ on:
   workflow_run:
     workflows:
       - "CI"
-      - "Pytest Full Suite Execution"
       - "Code Quality & Coverage Suite"
       - "CodeQL Analysis"
       - "Docker Build & Push"
@@ -40,7 +39,6 @@ on:
       - "Cost Gate"
       - "Branch Rebase Gate"
       - "Root Org Validation"
-      - "Art_Self-Healing CI/CD"
     types: [completed]
     branches: [main]
 
