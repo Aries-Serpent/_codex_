@@ -1030,7 +1030,7 @@ scipy==1.17.0
     #   statsmodels
 scmrepo==1.4.1
     # via dvc
-send2trash==1.8.3
+send2trash==2.1.0
     # via jupyter-server
 sentencepiece==0.2.1
     # via
