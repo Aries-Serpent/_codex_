@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (S182 — PR #3712)
+- chore: S182 session continuation — verified torch stub fix from PR #3709, confirmed no other torch stub classes have uninitialized annotated attributes, CI preflight checks pass
+
 ### Fixed (S181 — PR #3709)
 - fix: initialize `weight` and `bias` attributes in `torch.nn` stub classes (`Linear`, `LayerNorm`, `Embedding`) — resolves `AttributeError: weight` in `test_logging_mismatch_and_dataset_gate_smoke`
 

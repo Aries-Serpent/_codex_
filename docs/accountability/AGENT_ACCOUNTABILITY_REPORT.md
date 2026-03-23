@@ -8357,3 +8357,51 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-03-23T14:35Z S182 (PR #3712)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed: PR #3712 comment from @mbaetiong to "continue" from PR #3709 ✅
+- [x] **0b.** All failing CI checks reviewed: Cognitive Pre-flight REQ-4 failure (accountability report not updated) ✅
+- [x] **0c.** REQ-10 branch rebase status: pulled auto-fix commit from CI into local branch ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed from Actions job summary ✅
+- [x] **3.** `.gitignore` allows `.codex/agent_auth_session.json` ✅
+- [x] **4.** Priority directive: continue from PR #3709 (torch stub fix verification) ✅
+- [x] **5.** Phase execution plan posted as PR comment ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed throughout ✅
+
+### Work Completed (S182 — PR #3712)
+
+| # | File | Change | Addresses |
+|---|------|--------|-----------|
+| 1 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added proper S182 session entry | CI REQ-4 compliance |
+| 2 | `CHANGELOG.md` | Added S182 entry under `[Unreleased]` | CI REQ-5/WF-001 compliance |
+
+### Verification Completed
+
+| Check | Result |
+|-------|--------|
+| `pytest tests/train_loop/ tests/test_torch_stub.py` | 30 passed, 5 skipped, 1 xfailed ✅ |
+| Torch stub annotated attrs without `__init__` initialization | None found ✅ |
+| YAML workflow parse errors | 0 ✅ |
+| AGENT_REGISTRY parseable | v2.0.0 \| 159 agents ✅ |
+| CHANGELOG has `[Unreleased]` entry | ✅ |
+
+### Continuation from PR #3709
+
+PR #3709 fixed the `AttributeError: weight` in `test_logging_mismatch_and_dataset_gate_smoke` by initializing `weight`/`bias` attributes in `torch.nn.Embedding`, `Linear`, and `LayerNorm` stubs.
+
+This session (S182) continued with:
+- **P1**: Verified CI passes — tests confirm 30 passed, 5 skipped, 1 xfailed ✅
+- **P2**: Confirmed no other torch stub classes have uninitialized declared annotations ✅
+- **P3**: Audited all Python files for annotation-without-init pattern; all non-torch cases are `@dataclass` or Pydantic models (intentional) ✅
+
+### Root-Cause Note
+The CI failure on this PR was due to the initial "Initial plan" commit not including an update to this file. The CI auto-fix mechanism (via `session_wrapup_autofix.py`) added a generic entry, which was pulled into the local branch before this proper session entry was written.
+
+### Lessons Learned
+- Every commit on a PR with Agent Token Delegation enabled MUST touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+- The auto-fix mechanism provides a safety net, but the preferred approach is for the agent session to update this file explicitly in every commit.
