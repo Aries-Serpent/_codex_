@@ -1028,7 +1028,6 @@ class TestMCPStreamingTransport:
     @pytest.mark.asyncio
     async def test_streaming_sse_success(self, monkeypatch):
         """SSE stream with multiple data frames returns last frame as success."""
-        import json
         import unittest.mock as mock
 
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
@@ -1072,7 +1071,6 @@ class TestMCPStreamingTransport:
     @pytest.mark.asyncio
     async def test_streaming_sse_jsonrpc_error_frame(self, monkeypatch):
         """SSE stream that ends with an error frame is surfaced as status=error."""
-        import json
         import unittest.mock as mock
 
         from mcp_server import MCPConnectionMode, MCPIntegration, MCPRequest, MCPServer
