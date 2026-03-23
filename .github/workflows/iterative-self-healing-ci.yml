@@ -576,7 +576,7 @@ jobs:
           RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
 
           # Build structured @copilot prompt per proposal §6
-          cat > /tmp/copilot_escalation.txt <<COPILOT_EOF
+          cat > "${RUNNER_TEMP}/copilot_escalation.txt" <<COPILOT_EOF
           <!-- copilot-escalation-trigger -->
           ## 🤖 Copilot Self-Healing Escalation
 
@@ -603,10 +603,10 @@ jobs:
           COPILOT_EOF
 
           # Strip leading whitespace from heredoc (indented for readability)
-          sed -i 's/^          //' /tmp/copilot_escalation.txt
+          sed -i 's/^          //' "${RUNNER_TEMP}/copilot_escalation.txt"
 
           gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
-            --body-file /tmp/copilot_escalation.txt
+            --body-file "${RUNNER_TEMP}/copilot_escalation.txt"
 
           echo "### 🤖 Copilot Escalation Posted" >> "$GITHUB_STEP_SUMMARY"
           echo "Posted \`@copilot\` fix prompt on PR #${PR_NUMBER}." >> "$GITHUB_STEP_SUMMARY"

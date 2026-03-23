@@ -1414,6 +1414,12 @@ jobs:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
             const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
+            if (isNaN(prNumber) || prNumber <= 0) {
+              core.warning('Invalid PR number for session gate — skipping lock');
+              core.setOutput('acquired', 'true');
+              core.setOutput('queued', 'false');
+              return;
+            }
             const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
             const TTL_SECONDS = 14400; // 4 hours
             const now = Math.floor(Date.now() / 1000);
@@ -1455,18 +1461,26 @@ jobs:
               const parts = activeSession.split('|');
               activePR = parts[0] || '';
               const lockEpoch = parseInt(parts[1] || '0', 10);
-              const age = now - lockEpoch;
 
-              if (age < TTL_SECONDS && activePR !== String(prNumber)) {
-                sessionBusy = true;
-                core.info(`Active session on PR #${activePR} (age: ${age}s, TTL: ${TTL_SECONDS}s)`);
-              } else if (age >= TTL_SECONDS) {
-                core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
+              if (isNaN(lockEpoch)) {
+                core.warning(`Corrupted session lock format: '${activeSession}' — clearing`);
                 await upsertVar('COPILOT_ACTIVE_SESSION', '');
                 sessionBusy = false;
               } else {
-                // Same PR — re-acquire is fine
-                sessionBusy = false;
+                const age = now - lockEpoch;
+
+                if (age < TTL_SECONDS && activePR !== String(prNumber)) {
+                  sessionBusy = true;
+                  core.info(`Active session on PR #${activePR} (age: ${age}s, TTL: ${TTL_SECONDS}s)`);
+                } else if (age >= TTL_SECONDS) {
+                  core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
+                  await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                  sessionBusy = false;
+                } else {
+                  // Same PR — re-acquire is fine
+                  sessionBusy = false;
+                }
+              }
               }
             }
 
@@ -1726,24 +1740,38 @@ jobs:
 
             const queueList = queue.split(',').filter(Boolean);
             const nextPR = queueList.shift();
-            await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
 
             if (nextPR) {
-              // Post @copilot continue on the dequeued PR to trigger its session
               const nextPRNumber = parseInt(nextPR, 10);
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: nextPRNumber,
-                body: [
-                  '<!-- session-gate-dequeued -->',
-                  '## 🔓 Session Available',
-                  '',
-                  `Previous session (PR #${closedPR}) has completed.`,
-                  'This PR has been dequeued and the session is now starting.',
-                  '',
-                  '@copilot continue',
-                ].join('\n'),
-              });
-              core.info(`✅ Dequeued PR #${nextPR} — posted @copilot continue`);
+              if (isNaN(nextPRNumber) || nextPRNumber <= 0) {
+                core.warning(`Invalid PR number in queue: '${nextPR}' — skipping`);
+                await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
+                return;
+              }
+
+              // Post @copilot continue on the dequeued PR to trigger its session
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: nextPRNumber,
+                  body: [
+                    '<!-- session-gate-dequeued -->',
+                    '## 🔓 Session Available',
+                    '',
+                    `Previous session (PR #${closedPR}) has completed.`,
+                    'This PR has been dequeued and the session is now starting.',
+                    '',
+                    '@copilot continue',
+                  ].join('\n'),
+                });
+                // Only remove from queue after successful comment posting
+                await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
+                core.info(`✅ Dequeued PR #${nextPR} — posted @copilot continue`);
+              } catch (err) {
+                core.warning(`Failed to post @copilot continue on PR #${nextPR}: ${err.message}`);
+                // Don't remove from queue — will retry on next release
+              }
+            } else {
+              await upsertVar('COPILOT_SESSION_QUEUE', '');
             }
