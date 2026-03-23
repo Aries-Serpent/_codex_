@@ -74,6 +74,8 @@ def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
         return None
     if raw.startswith(("http", "mailto:", "#", "ftp", "data:")):
         return None
+    # Strip anchor fragment (#section) before resolving the file path
+    raw = raw.split("#")[0].strip()
     raw = raw.split("?")[0].strip()
     if not raw:
         return None

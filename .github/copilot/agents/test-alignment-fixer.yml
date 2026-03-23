@@ -1,0 +1,24 @@
+name: test-alignment-fixer
+description: Fix test alignment issues that arise after API changes, refactors, or function signature updates
+
+capabilities:
+  - Detect removed or renamed attributes in tests
+  - Align test assertions with new implementation
+  - Fix mock and patch paths after module reorganization
+  - Maintain test coverage during refactoring
+  - Auto-update test fixtures after API changes
+
+triggers:
+  pr:
+    events: [pull_request]
+    paths: ["tests/**/*.py", "src/**/*.py"]
+  manual:
+    command: "/fix-test-alignment"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+metadata:
+  version: "1.0.0"
+  created: "2026-01-09"
