@@ -824,6 +824,131 @@ for f in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md; do
 done
 ```
 
+#### Enhancement 5: Session Boundary Conflict Guard (§0.4 Policy)
+
+Every Copilot Coding Agent session MUST inspect the PR for merge conflicts at both
+**session start** and **session end**. This is now codified as §0.4 in the
+Codebase Agency Policy and enforced via `copilot-setup-steps.yml`.
+
+```mermaid
+flowchart TD
+    subgraph "Session START"
+        A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
+        A2 --> A3{Check PR mergeable<br/>via GitHub API}
+        A3 -->|CONFLICTING| A4["::warning:: annotation<br/>COPILOT_MERGE_CONFLICT=true"]
+        A3 -->|MERGEABLE| A5["✅ No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
+        A3 -->|UNKNOWN| A6["ℹ️ Status pending"]
+
+        A2 --> A7{Check branch<br/>behind count}
+        A7 -->|behind > 0| A8["::warning:: annotation<br/>COPILOT_BRANCH_BEHIND=N"]
+        A7 -->|behind = 0| A9["✅ Up-to-date"]
+
+        A2 --> A10{git merge-tree<br/>dry-run}
+        A10 -->|conflicts| A11["::warning:: N file(s)<br/>with potential conflicts"]
+        A10 -->|clean| A12["✅ No file-level conflicts"]
+
+        A4 --> A13[Agent resolves conflicts<br/>BEFORE any other work]
+        A8 --> A13
+    end
+
+    subgraph "Session END"
+        B1[Agent about to conclude] --> B2[Fetch latest base branch]
+        B2 --> B3{Re-check mergeable<br/>status}
+        B3 -->|CONFLICTING| B4[Resolve before final commit]
+        B3 -->|MERGEABLE| B5["✅ Session ends clean"]
+
+        B1 --> B6{Check for new commits<br/>on base since session start}
+        B6 -->|new commits| B7[Rebase/merge base into head]
+        B6 -->|no new commits| B8["✅ No drift"]
+    end
+
+    style A4 fill:#ff6b6b
+    style A8 fill:#ffd43b
+    style A5 fill:#51cf66
+    style A9 fill:#51cf66
+    style A12 fill:#51cf66
+    style B4 fill:#ff6b6b
+    style B5 fill:#51cf66
+    style B8 fill:#51cf66
+```
+
+**Implementation (already deployed in `copilot-setup-steps.yml`):**
+
+The setup workflow now runs three checks at session start:
+1. **GitHub API check** — `gh pr view --json mergeable` → sets `COPILOT_MERGE_CONFLICT` env var
+2. **Branch divergence check** — `git rev-list --count HEAD..origin/BASE` → sets `COPILOT_BRANCH_BEHIND`
+3. **merge-tree dry-run** — `git merge-tree <merge-base> HEAD origin/BASE` → detects file-level conflicts
+
+All three emit `::warning::` annotations that appear in the GitHub Actions UI and are
+visible to the Copilot agent when it reads CI check results per §0.2.
+
+**Agent responsibility at session end:**
+
+Before the final `report_progress` call, the agent must:
+```bash
+# Fetch latest base
+git fetch origin "${BASE_BRANCH}" --depth=50
+
+# Check for new commits since session start
+NEW_COMMITS=$(git rev-list --count HEAD..origin/${BASE_BRANCH})
+if [ "$NEW_COMMITS" -gt 0 ]; then
+  git pull --rebase origin "${BASE_BRANCH}"
+fi
+
+# Verify no conflicts
+gh pr view ${PR_NUMBER} --json mergeable -q .mergeable
+# Must output "MERGEABLE" — if "CONFLICTING", resolve before committing
+```
+
+#### Enhancement 6: CI Failure Issue Inspection (§0.2 Policy)
+
+Every Copilot session must check for open CI failure report issues that contain
+relevant failure patterns. Two issue labels are monitored:
+
+| Label | Created By | Frequency |
+|-------|-----------|-----------|
+| `ci-failure` | `ci-failure-issue-creator.yml` | Per-workflow failure on `main` |
+| `ci-health-alert` | `ci-health-monitor.yml` / `telemetry-collection.yml` | High failure rate threshold exceeded |
+
+```mermaid
+flowchart TD
+    subgraph "Session Start — CI Issue Check"
+        S1[copilot-setup-steps.yml] --> S2["gh issue list --label ci-failure"]
+        S1 --> S3["gh issue list --label ci-health-alert"]
+        S2 --> S4{Open issues?}
+        S3 --> S4
+        S4 -->|yes| S5["::warning:: annotation<br/>Lists issue titles<br/>Sets COPILOT_CI_FAILURE_ISSUES=N"]
+        S4 -->|no| S6["✅ No open CI failure issues"]
+    end
+
+    subgraph "Agent Action"
+        S5 --> A1[Agent reads CI failure issues]
+        A1 --> A2{Pattern affects<br/>this PR?}
+        A2 -->|yes| A3[Fix as part of session work]
+        A2 -->|no| A4[Document in accountability report]
+    end
+
+    subgraph "CI Issue Lifecycle"
+        FAIL[Workflow fails on main] --> CREATE[ci-failure-issue-creator.yml<br/>creates issue + fix branch]
+        CREATE --> ISSUE["Issue #N with<br/>label 'ci-failure'"]
+        ISSUE --> AGENT[Agent reads + fixes]
+        AGENT --> PASS[Workflow passes on main]
+        PASS --> CLOSE[ci-failure-issue-creator.yml<br/>auto-closes issue]
+    end
+
+    style S5 fill:#ffd43b
+    style S6 fill:#51cf66
+    style A3 fill:#51cf66
+    style CLOSE fill:#51cf66
+```
+
+**Implementation (already deployed in `copilot-setup-steps.yml`):**
+
+The setup workflow queries GitHub Issues API for both labels, counts open issues,
+and emits a `::warning::` annotation with issue titles if any are found. The
+`COPILOT_CI_FAILURE_ISSUES` environment variable is set so agents can programmatically
+check whether CI failure issues exist.
+
 ### Conflict Handling Summary Matrix
 
 | Conflict Source | Detection | Resolution | Automation Level |

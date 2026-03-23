@@ -100,6 +100,16 @@ The `cascade_review` job had it but `self_evolution` was missing it.
    auto-resolution (Merges API for bot gaps + sentinel file accept-both),
    and escalation (`@copilot` prompt with conflict context for code files).
 
+6. **Session Boundary Conflict Guard (§0.4)** — Every session inspects PR for
+   merge conflicts at START (3 checks: API, divergence, merge-tree) and END
+   (re-verify clean state). Codified as §0.4 in Codebase Agency Policy.
+   Deployed in `copilot-setup-steps.yml`.
+
+7. **CI Failure Issue Inspection (§0.2)** — Every session checks for open issues
+   with labels `ci-failure` and `ci-health-alert` at start. Issues are auto-created
+   by `ci-failure-issue-creator.yml` and `ci-health-monitor.yml`. Deployed in
+   `copilot-setup-steps.yml`.
+
 ### Architecture
 
 ```
@@ -114,10 +124,13 @@ Layer 4: Human         → Issue creation + @mbaetiong tag
 | Component | Status |
 |-----------|--------|
 | Session Concurrency Gate design | ✅ Designed |
-| PR Template checkbox design | ✅ Designed |
+| PR Template checkbox design | ✅ Designed + Deployed |
 | Copilot Escalation trigger design | ✅ Designed |
 | Session queue mechanism design | ✅ Designed |
-| Implementation | ⏳ Awaiting owner review/approval |
+| Session Boundary Conflict Guard (§0.4) | ✅ Designed + Deployed |
+| CI Failure Issue Inspection (§0.2) | ✅ Designed + Deployed |
+| Codebase Agency Policy §0 update | ✅ Deployed |
+| Implementation (remaining) | ⏳ Awaiting owner review/approval |
 
 ---
 

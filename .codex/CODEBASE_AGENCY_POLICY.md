@@ -56,12 +56,28 @@ before making any file changes:**
    - Identify every failing or warning check
    - Fix every failing check that is code-fixable (not infrastructure-only)
    - Document any infrastructure-only failures with root cause
+   - **Check for open CI failure report issues** — search for issues with labels
+     `ci-failure` and `ci-health-alert` using `gh issue list --label ci-failure --state open`
+     and `gh issue list --label ci-health-alert --state open`. These issues are
+     auto-created by `ci-failure-issue-creator.yml` and `ci-health-monitor.yml`
+     when workflows fail on `main`. If any open issues exist, review their content
+     for patterns that may affect this PR and address any that are relevant.
    - **NO new commits may be pushed until all code-fixable failures are resolved.**
 
 3. **Load all required documents:**
    - `.codex/CODEBASE_AGENCY_POLICY.md` (this file)
    - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
    - All stored session memories
+
+4. **Inspect PR for merge conflicts (HARD RULE):**
+   - **At session START:** Check the PR mergeable status via `gh pr view --json mergeable`
+     and run `git merge-tree` against the base branch to detect potential conflicts.
+   - If conflicts exist: resolve them BEFORE any other work begins.
+   - If the branch is behind its base: rebase or merge base into head first.
+   - **At session END (before final commit):** Re-check for merge conflicts introduced
+     during the session. Fetch the latest base branch and verify no conflicts exist.
+   - **NO session may end with unresolved merge conflicts on the PR.**
+   - See: `docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md` §7b for full strategy.
 
 **Enforcement:** The `cognitive-preflight` job (REQ-1) posts this checklist to every
 PR when Agent Token Delegation is enabled.  The `@copilot continue` protocol mandates
