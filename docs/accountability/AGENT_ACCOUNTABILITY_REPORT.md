@@ -3,7 +3,49 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/investigate-ci-failure-rate
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-21T09:45Z (S172 — CI Health Alert + Security Remediation)
+**Last updated:** 2026-03-23T14:00Z (S181 — PR #3709)
+
+---
+
+## SESSION SUMMARY — 2026-03-23T14:00Z S181 (PR #3709)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed: PR #3708 comment from @mbaetiong to "continue" ✅
+- [x] **0b.** All failing CI checks reviewed: Agent Token Delegation (cognitive pre-flight) failure reviewed ✅
+- [x] **0c.** REQ-10 branch rebase status: merged origin/0D_base_ into current branch ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns reviewed from Actions job summary ✅
+- [x] **3.** `.gitignore` allows `.codex/agent_auth_session.json` ✅
+- [x] **4.** Priority directive: fix test failures, continue from PR #3705 ✅
+- [x] **5.** Phase execution plan posted as PR comment ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed throughout ✅
+
+### Work Completed (S181 — PR #3709)
+
+| # | File | Change | Addresses |
+|---|------|--------|-----------|
+| 1 | `torch/nn/__init__.py` | Initialize `self.weight = None` in `Embedding.__init__` | Fixes `AttributeError: weight` in `test_logging_mismatch_and_dataset_gate_smoke` |
+| 2 | `torch/nn/__init__.py` | Initialize `self.weight = None`, `self.bias = None` in `Linear.__init__` | Consistent stub attribute initialization |
+| 3 | `torch/nn/__init__.py` | Initialize `self.weight = None`, `self.bias = None` in `LayerNorm.__init__` | Consistent stub attribute initialization |
+
+### Root-Cause Analysis
+The `test_logging_mismatch_and_dataset_gate_smoke` test was failing because
+`src/codex_ml/models/minilm.py` performs weight tying (`self.head.weight = self.tok_emb.weight`)
+which reads `tok_emb.weight`. The `torch.nn.Embedding` stub class declared `weight: Any` as a
+type annotation but never initialized the attribute in `__init__`. When `__getattr__` is defined
+to raise `AttributeError`, this caused the test to fail. The fix initializes `weight = None` in
+the stub's `__init__`, matching the expected interface without requiring a real tensor.
+
+### Lessons Learned
+- Torch stub classes with declared attributes (`weight: Any`) need those attributes initialized
+  in `__init__`; type annotations alone don't create instance attributes.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: begin by reviewing ALL bot-posted comments and ALL
+  failing CI checks before making file changes.
+
+### Impact Score
+- Files changed: 1 (`torch/nn/__init__.py`)
+- Tests fixed: 1 (`test_logging_mismatch_and_dataset_gate_smoke`)
+- Ruff violations: 0
 
 ---
 
