@@ -53,6 +53,10 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -135,17 +139,17 @@ jobs:
           fi
 
       - name: Commit updated index metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUSH_TARGET:  ${{ steps.resolve-target.outputs.branch }}
         run: |
-          # Commit to 0D_base_ if the integration branch exists, else fall back to main.
-          _TARGET="main"
-          if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-            _TARGET="0D_base_"
-            echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
-            cp .codex/embeddings/codex_index_meta.json /tmp/_index_meta_sync_
-            git fetch origin 0D_base_ --depth=1
-            git checkout -B _autogen_sync_ origin/0D_base_
-            cp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json
-          fi
+          # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+          _TARGET="${PUSH_TARGET}"
+          echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+          cp .codex/embeddings/codex_index_meta.json /tmp/_index_meta_sync_
+          git fetch origin "$_TARGET" --depth=1
+          git checkout -B _autogen_sync_ origin/"$_TARGET"
+          cp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -f .codex/embeddings/codex_index_meta.json
@@ -153,8 +157,6 @@ jobs:
             git commit -m "chore(phase-3): update embedding index metadata [skip ci]"
           git push origin HEAD:"$_TARGET"
           echo "📤 Pushed to $_TARGET"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Post rebuild summary
         if: always()
