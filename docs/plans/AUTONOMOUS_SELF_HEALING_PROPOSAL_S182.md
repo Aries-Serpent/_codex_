@@ -265,7 +265,7 @@ flowchart TD
 
 | Variable | Type | Default | Purpose |
 |----------|------|---------|---------|
-| `COPILOT_ACTIVE_SESSION` | string | `""` | Current active session (format: `PR#\|epoch_timestamp\|run_id`, e.g. `3724\|1711219200\|12345678`) |
+| `COPILOT_ACTIVE_SESSION` | string | `""` | Current active session (format: `PR#\|epoch_timestamp\|run_id`, e.g. `3724\|1774576800\|12345678`) |
 | `COPILOT_MULTI_SESSION` | string | `"false"` | Allow multiple concurrent sessions |
 | `COPILOT_SESSION_QUEUE` | string | `""` | Comma-separated PR numbers awaiting session (e.g. `3725,3726`) |
 
@@ -283,7 +283,7 @@ sequenceDiagram
     PR1->>Gate: @copilot continue
     Gate->>Var: Check COPILOT_ACTIVE_SESSION
     Var-->>Gate: empty
-    Gate->>Var: Set = "3724|2026-03-23T20:00:00Z|12345"
+    Gate->>Var: Set = "3724|1774576800|12345"
     Gate->>PR1: ✅ Session started
 
     PR2->>Gate: @copilot continue
@@ -886,17 +886,17 @@ visible to the Copilot agent when it reads CI check results per §0.2.
 
 Before the final `report_progress` call, the agent must:
 ```bash
-# Fetch latest base
-git fetch origin "${BASE_BRANCH}" --depth=50
+# Fetch latest base (full history for accurate comparison)
+git fetch origin "${BASE_BRANCH}"
 
 # Check for new commits since session start
-NEW_COMMITS=$(git rev-list --count HEAD..origin/${BASE_BRANCH})
+NEW_COMMITS=$(git rev-list --count "HEAD..origin/${BASE_BRANCH}")
 if [ "$NEW_COMMITS" -gt 0 ]; then
   git pull --rebase origin "${BASE_BRANCH}"
 fi
 
 # Verify no conflicts
-gh pr view ${PR_NUMBER} --json mergeable -q .mergeable
+gh pr view "${PR_NUMBER}" --json mergeable -q .mergeable
 # Must output "MERGEABLE" — if "CONFLICTING", resolve before committing
 ```
 

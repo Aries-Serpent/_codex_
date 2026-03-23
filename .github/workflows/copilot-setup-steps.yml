@@ -220,7 +220,7 @@ jobs:
           if [ -n "$BASE" ] && git rev-parse "origin/${BASE}" >/dev/null 2>&1; then
             MERGE_BASE=$(git merge-base HEAD "origin/${BASE}" 2>/dev/null || echo "")
             if [ -n "$MERGE_BASE" ]; then
-              CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep "^+<<<<<<< " | wc -l || echo "0")
+              CONFLICT_FILES=$(git merge-tree "$MERGE_BASE" HEAD "origin/${BASE}" 2>/dev/null | grep -c '<<<<<<< ' || echo "0")
               if [ "$CONFLICT_FILES" -gt 0 ]; then
                 echo "::warning::§0.4 POTENTIAL CONFLICTS — merge-tree detected ${CONFLICT_FILES} file(s) with conflicts against '${BASE}'"
               else

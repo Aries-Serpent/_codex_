@@ -71,7 +71,8 @@ before making any file changes:**
 
 4. **Inspect PR for merge conflicts (HARD RULE):**
    - **At session START:** Check the PR mergeable status via `gh pr view --json mergeable`
-     and run `git merge-tree` against the base branch to detect potential conflicts.
+     and run `git merge-tree $(git merge-base HEAD origin/BASE) HEAD origin/BASE`
+     against the base branch to detect potential file-level conflicts.
    - If conflicts exist: resolve them BEFORE any other work begins.
    - If the branch is behind its base: rebase or merge base into head first.
    - **At session END (before final commit):** Re-check for merge conflicts introduced
