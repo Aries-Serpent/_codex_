@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S180 — PR #3705)
+- fix: remove unused `import json` (×2) in test_cascade.py (ruff F401)
+- fix: remove unused `from pathlib import Path` in mcp_sse_transport.py (ruff F401)
+- fix: add `SiLU` stub to `torch/nn/__init__.py` — resolves `test_activation_registry_smoke` failure
+
 ### Fixed (auto-update — PR #3707)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3707 (SHA `fc77fc71`) at 2026-03-23T13:09Z [auto-generated]
 

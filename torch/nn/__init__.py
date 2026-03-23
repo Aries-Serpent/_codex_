@@ -19,6 +19,7 @@ __all__ = [
     "Embedding",
     "GELU",
     "ReLU",
+    "SiLU",
     "Tanh",
     "ModuleList",
     "MultiheadAttention",
@@ -162,6 +163,11 @@ class GELU(Module):  # pragma: no cover
 
 
 class ReLU(Module):  # pragma: no cover
+    def __init__(self, inplace: bool = False) -> None:
+        super().__init__()
+
+
+class SiLU(Module):  # pragma: no cover
     def __init__(self, inplace: bool = False) -> None:
         super().__init__()
 
