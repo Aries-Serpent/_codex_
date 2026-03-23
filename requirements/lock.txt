@@ -227,7 +227,7 @@ dulwich==1.0.0
     #   scmrepo
 dvc==3.66.1
     # via codex-ml (pyproject.toml)
-dvc-data==3.18.2
+dvc-data==3.18.3
     # via dvc
 dvc-http==2.32.0
     # via dvc
