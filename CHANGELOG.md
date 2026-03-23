@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3719)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3719 (SHA `e5d0be2c`) at 2026-03-23T16:01Z [auto-generated]
+
+### Changed (S182 — PR #3712)
+- chore: S182 session continuation — verified torch stub fix from PR #3709, confirmed no other torch stub classes have uninitialized annotated attributes, CI preflight checks pass
+
+### Fixed (S181 — PR #3709)
+- fix: initialize `weight` and `bias` attributes in `torch.nn` stub classes (`Linear`, `LayerNorm`, `Embedding`) — resolves `AttributeError: weight` in `test_logging_mismatch_and_dataset_gate_smoke`
+
+### Fixed (S180 — PR #3705)
+- fix: remove unused `import json` (×2) in test_cascade.py (ruff F401)
+- fix: remove unused `from pathlib import Path` in mcp_sse_transport.py (ruff F401)
+- fix: add `SiLU` stub to `torch/nn/__init__.py` — resolves `test_activation_registry_smoke` failure
+
+### Fixed (auto-update — PR #3707)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3707 (SHA `fc77fc71`) at 2026-03-23T13:09Z [auto-generated]
+
 ### Fixed (auto-update — PR #3703)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3703 (SHA `e17d46d0`) at 2026-03-23T12:59Z [auto-generated]
 

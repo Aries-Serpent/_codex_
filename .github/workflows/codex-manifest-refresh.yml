@@ -53,6 +53,10 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -106,12 +110,12 @@ jobs:
             echo "All files already up-to-date — no commit needed"
           else
             git commit -m "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]"
-            # On schedule runs HEAD_REF is empty — push to main, unless 0D_base_ is active.
-            # On PR runs HEAD_REF is the PR branch (always use it directly).
-            TARGET_REF="${HEAD_REF:-main}"
-            if [ "${EVENT_NAME}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-              TARGET_REF="0D_base_"
-              echo "🔀 0D_base_ integration branch detected — routing manifest refresh to 0D_base_"
+            # For schedule/dispatch runs walk the staging chain; for PR runs use the PR branch.
+            if [ "${EVENT_NAME}" = "schedule" ] || [ -z "${HEAD_REF}" ]; then
+              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
+              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
+            else
+              TARGET_REF="${HEAD_REF}"
             fi
             git pull --rebase origin "${TARGET_REF}" 2>/dev/null || true
             git push origin "HEAD:${TARGET_REF}"
