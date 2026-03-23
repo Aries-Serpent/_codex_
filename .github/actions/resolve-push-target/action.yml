@@ -1,0 +1,83 @@
+name: "🔀 Resolve Push Target Branch"
+description: |
+  Determines the deepest available staging branch in the integration pipeline:
+
+      latest open sub-PR  →  0D_base_  →  main
+
+  Any workflow that commits auto-generated content or absorbs dependency bumps
+  MUST call this action before pushing.  The output branch is the correct push
+  target, ensuring no commit ever lands on a branch that is "further from the
+  tip" than necessary.
+
+  Resolution algorithm
+  ────────────────────
+  1. Query the GitHub API for open PRs whose BASE is 0D_base_.
+     Pick the one with the most recent update timestamp (the "hottest" branch
+     in the pipeline).  If one exists, that is the push target.
+  2. If no such sub-PR is open, check whether the 0D_base_ integration branch
+     itself exists.  If so, use 0D_base_.
+  3. Fall back to main (no staging layer is active).
+
+  Outputs
+  ───────
+  branch  — name of the resolved target branch
+  reason  — one of: sub_pr | integration_branch | default
+
+outputs:
+  branch:
+    description: "Resolved target branch to push to"
+    value: ${{ steps.resolve.outputs.branch }}
+  reason:
+    description: "Resolution reason: sub_pr | integration_branch | default"
+    value: ${{ steps.resolve.outputs.reason }}
+
+runs:
+  using: composite
+  steps:
+    - name: "🔍 Walk the staging chain and pick the deepest open branch"
+      id: resolve
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        REPO:     ${{ github.repository }}
+      run: |
+        set -euo pipefail
+
+        # ── Step 1: find the most-recently-updated open PR targeting 0D_base_ ──
+        # This is the "hottest" tip in the chain: sub-PR → 0D_base_ → main.
+        # We first confirm 0D_base_ exists (one API call), then list sub-PRs.
+        # Result is cached in _0D_EXISTS to avoid a second API round-trip at Step 2.
+        _0D_EXISTS=false
+        if gh api "repos/${REPO}/branches/0D_base_" --silent 2>/dev/null; then
+          _0D_EXISTS=true
+          SUB_PR=$(gh pr list \
+            --repo   "$REPO" \
+            --base   "0D_base_" \
+            --state  open \
+            --json   headRefName,updatedAt \
+            --jq     'sort_by(.updatedAt) | reverse | .[0].headRefName // empty' \
+            2>/dev/null || true)
+          # Some versions of `gh` emit the literal string "null" instead of an
+          # empty string when the jq expression returns JSON null (no open PRs).
+          [ "$SUB_PR" = "null" ] && SUB_PR=""
+        fi
+
+        if [ -n "$SUB_PR" ]; then
+          echo "🔀 Sub-PR detected  →  routing: ${SUB_PR} → 0D_base_ → main"
+          printf 'branch=%s\n' "$SUB_PR" >> "$GITHUB_OUTPUT"
+          echo  'reason=sub_pr'          >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # ── Step 2: use 0D_base_ directly if it exists (no sub-PR open) ─────
+        if [ "$_0D_EXISTS" = "true" ]; then
+          echo "🔀 0D_base_ detected  →  routing: 0D_base_ → main"
+          echo 'branch=0D_base_'          >> "$GITHUB_OUTPUT"
+          echo 'reason=integration_branch' >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        # ── Step 3: no staging layer active — fall back to main ───────────────
+        echo "ℹ️  No staging branch active  →  routing to main"
+        echo 'branch=main'    >> "$GITHUB_OUTPUT"
+        echo 'reason=default' >> "$GITHUB_OUTPUT"

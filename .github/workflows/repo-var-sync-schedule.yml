@@ -76,6 +76,10 @@ jobs:
           # Use CODEX_MASTER_KEY so the commit step can push to the repo.
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       # ── Fetch all tracked repo variables via GitHub API ───────────────────
       - name: Fetch repo variables and detect drift
         id: sync
@@ -204,19 +208,16 @@ jobs:
       # ── Commit updated file if changed ────────────────────────────────────
       - name: Commit updated agent_context.json
         if: steps.sync.outputs.written == 'true' && inputs.dry_run != 'true'
+        env:
+          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |
-          # Commit to 0D_base_ if the integration branch exists, else fall back to main.
-          # This prevents daily auto-gen commits from accumulating merge conflicts
-          # in any open 0D_base_ → main PR.
-          _TARGET="main"
-          if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-            _TARGET="0D_base_"
-            echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
-            cp .codex/agent_context.json /tmp/_agent_context_sync_
-            git fetch origin 0D_base_ --depth=1
-            git checkout -B _autogen_sync_ origin/0D_base_
-            cp /tmp/_agent_context_sync_ .codex/agent_context.json
-          fi
+          # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+          _TARGET="${PUSH_TARGET}"
+          echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+          cp .codex/agent_context.json /tmp/_agent_context_sync_
+          git fetch origin "$_TARGET" --depth=1
+          git checkout -B _autogen_sync_ origin/"$_TARGET"
+          cp /tmp/_agent_context_sync_ .codex/agent_context.json
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .codex/agent_context.json

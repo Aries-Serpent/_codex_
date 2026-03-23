@@ -59,10 +59,17 @@ jobs:
           # Fetch full history so we can cherry-pick cleanly.
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          # For workflow_dispatch: honour the explicit target_branch input.
-          # For pull_request events: check out the PR's base branch (the branch
-          # that the dependabot bump targets) so the cherry-pick lands there.
+          # Always check out the PR base (main) initially; the chain-routing
+          # step below will switch to the correct staging branch before the
+          # cherry-pick so commits never land directly on main when a deeper
+          # staging layer is active.
           ref: ${{ inputs.target_branch || github.base_ref }}
+
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        # Only resolve when no explicit target was given; explicit inputs are honoured as-is.
+        if: ${{ inputs.target_branch == '' }}
+        uses: ./.github/actions/resolve-push-target
 
       - name: "🔍 Verify single-file change"
         id: check
@@ -111,14 +118,22 @@ jobs:
           CHANGED_FILE: ${{ steps.check.outputs.changed_file }}
           PR_NUMBER: ${{ steps.check.outputs.pr_number }}
           PR_TITLE: ${{ steps.check.outputs.pr_title }}
-          # Explicit push target: workflow_dispatch input takes priority;
-          # pull_request events use the PR's base branch.
-          TARGET_BRANCH: ${{ inputs.target_branch || github.base_ref }}
+          # Chain routing: explicit input → resolved chain tip → PR base branch.
+          # The composite action walks: latest sub-PR → 0D_base_ → main.
+          TARGET_BRANCH: ${{ inputs.target_branch || steps.resolve-target.outputs.branch || github.base_ref }}
         run: |
           set -euo pipefail
 
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Switch the working tree to the chain-resolved target BEFORE cherry-picking
+          # so the commit lands on the correct staging branch, not on main.
+          # The initial checkout used fetch-depth=0 so HEAD_SHA is already present.
+          git fetch origin "${TARGET_BRANCH}" --depth=1
+          git checkout -B _dep_absorb_ origin/"${TARGET_BRANCH}"
+          # Ensure the source commit is reachable after the branch switch.
+          git fetch origin "${HEAD_SHA}" 2>/dev/null || true
 
           echo "Cherry-picking ${HEAD_SHA} (${CHANGED_FILE}) from PR #${PR_NUMBER} into ${TARGET_BRANCH}…"
 

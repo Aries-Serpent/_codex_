@@ -152,6 +152,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: Setup Python (cached)
         uses: ./.github/actions/setup-python-cached
         with:
@@ -211,13 +215,27 @@ jobs:
           PYEOF
 
       - name: Commit updated model registry
+        env:
+          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add models/ || true
           if ! git diff --cached --quiet; then
             git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci]"
-            git push
+            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+            _TARGET="${PUSH_TARGET:-main}"
+            echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+            git fetch origin "$_TARGET" --depth=1
+            git rebase "origin/$_TARGET" || {
+              echo "⚠️  Rebase conflict — re-applying model registry on top of latest $_TARGET"
+              git rebase --abort 2>/dev/null || true
+              git reset --hard "origin/$_TARGET"
+              git add models/ || true
+              git diff --cached --quiet && { echo "ℹ️  No registry changes remain — skipping push"; exit 0; }
+              git commit -m "chore(ml): auto-retrain triggered by drift score ${{ needs.detect-drift.outputs.drift_score }} [skip ci] (post-rebase retry)"
+            }
+            git push origin "HEAD:$_TARGET"
           else
             echo "No registry changes to commit"
           fi

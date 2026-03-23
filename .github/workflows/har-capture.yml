@@ -63,6 +63,10 @@ jobs:
           lfs: false       # LFS disabled — object may not exist on server
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       # ── Python + agent venv ──────────────────────────────────────────────
       - name: Setup agent environment (L6)
         uses: ./.github/actions/setup-agent-env
@@ -202,15 +206,13 @@ jobs:
           Run: ${{ github.run_id }}
           Trigger: ${{ github.event_name }}"
 
-            # On schedule runs github.ref_name typically points to the default branch; fall back to main unless 0D_base_ is active.
-            TARGET_REF="${{ github.ref_name || 'main' }}"
-            if [ "${{ github.event_name }}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-              TARGET_REF="0D_base_"
-              echo "🔀 0D_base_ integration branch detected — routing HAR refresh to 0D_base_"
+            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+            if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.ref_name }}" = "main" ]; then
+              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
+              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
+            else
+              TARGET_REF="${{ github.ref_name }}"
             fi
-            echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
-            git fetch origin "${TARGET_REF}"
-            git rebase "origin/${TARGET_REF}"
             echo "🔄 Re-basing HAR commit onto tip of ${TARGET_REF} before push"
             git fetch origin "${TARGET_REF}"
             git rebase "origin/${TARGET_REF}"

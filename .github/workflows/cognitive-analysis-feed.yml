@@ -72,6 +72,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -107,16 +111,13 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           if [[ -n $(git status --porcelain cognitive/) ]]; then
-            # Commit to 0D_base_ if the integration branch exists, else fall back to main.
-            _TARGET="main"
-            if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-              _TARGET="0D_base_"
-              echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
-              cp -r cognitive/ /tmp/_cognitive_sync_
-              git fetch origin 0D_base_ --depth=1
-              git checkout -B _autogen_sync_ origin/0D_base_
-              cp -r /tmp/_cognitive_sync_/. cognitive/
-            fi
+            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+            _TARGET="${{ steps.resolve-target.outputs.branch }}"
+            echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+            cp -r cognitive/ /tmp/_cognitive_sync_
+            git fetch origin "$_TARGET" --depth=1
+            git checkout -B _autogen_sync_ origin/"$_TARGET"
+            cp -r /tmp/_cognitive_sync_/. cognitive/
             git add cognitive/
             git commit -m "🧠 Update cognitive learning from aftermath evaluation [automated]
 
@@ -190,20 +191,17 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           if [[ -n $(git status --porcelain .codex/cognitive_brain/workflow_patterns.jsonl .codex/cognitive_brain/metadata.json) ]]; then
-            # Commit to 0D_base_ if the integration branch exists, else fall back to main.
+            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
             # Route both workflow_patterns.jsonl and metadata.json so that
             # forward-sync-autogen.yml acts only as a safety-net (not primary path).
-            _TARGET="main"
-            if git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-              _TARGET="0D_base_"
-              echo "🔀 0D_base_ integration branch detected — committing to 0D_base_"
-              cp .codex/cognitive_brain/workflow_patterns.jsonl /tmp/_patterns_sync_
-              cp .codex/cognitive_brain/metadata.json          /tmp/_metadata_sync_
-              git fetch origin 0D_base_ --depth=1
-              git checkout -B _autogen_sync_ origin/0D_base_
-              cp /tmp/_patterns_sync_ .codex/cognitive_brain/workflow_patterns.jsonl
-              cp /tmp/_metadata_sync_ .codex/cognitive_brain/metadata.json
-            fi
+            _TARGET="${{ steps.resolve-target.outputs.branch }}"
+            echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
+            cp .codex/cognitive_brain/workflow_patterns.jsonl /tmp/_patterns_sync_
+            cp .codex/cognitive_brain/metadata.json          /tmp/_metadata_sync_
+            git fetch origin "$_TARGET" --depth=1
+            git checkout -B _autogen_sync_ origin/"$_TARGET"
+            cp /tmp/_patterns_sync_ .codex/cognitive_brain/workflow_patterns.jsonl
+            cp /tmp/_metadata_sync_ .codex/cognitive_brain/metadata.json
             git add .codex/cognitive_brain/workflow_patterns.jsonl \
                     .codex/cognitive_brain/metadata.json
             git commit -m "🧠 Update cognitive brain patterns [automated]
