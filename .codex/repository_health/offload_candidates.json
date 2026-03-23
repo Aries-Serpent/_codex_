@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-03-16T00:55:36.990033+00:00",
+    "scan_time": "2026-03-23T00:52:49.976763+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,26 +10,16 @@
     }
   },
   "summary": {
-    "total_candidates": 2,
+    "total_candidates": 1,
     "by_reason": {
-      "large": 2
+      "large": 1
     },
     "by_category": {
-      "unknown": 2
+      "unknown": 1
     },
-    "total_size_mb": 22.77
+    "total_size_mb": 12.35
   },
   "candidates": [
-    {
-      "path": ".codex/embeddings/codex_index_meta.json",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 10.41,
-      "reasons": [
-        "large_file_10.41mb"
-      ],
-      "recommendation": "compress_or_offload"
-    },
     {
       "path": "tools/github-secrets-cli/github-secrets-cli",
       "category": "unknown",
