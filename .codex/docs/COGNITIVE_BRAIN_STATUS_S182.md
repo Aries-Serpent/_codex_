@@ -28,6 +28,10 @@ Phase 5: 📋 PROPOSED — Autonomous self-healing with Copilot escalation (this
 | 4 | Design session concurrency control mechanism | ✅ Complete |
 | 5 | Document merge chain & workflow architecture | ✅ Complete |
 | 6 | Update cognitive brain status | ✅ Complete |
+| 7 | Implement Session Concurrency Gate in `agent-auth-delegation.yml` | ✅ Complete |
+| 8 | Add session release job on PR close | ✅ Complete |
+| 9 | Add Copilot escalation job in `iterative-self-healing-ci.yml` | ✅ Complete |
+| 10 | Add multi-session checkbox detection | ✅ Complete |
 
 ### CI Fixes Applied
 
@@ -123,14 +127,17 @@ Layer 4: Human         → Issue creation + @mbaetiong tag
 
 | Component | Status |
 |-----------|--------|
-| Session Concurrency Gate design | ✅ Designed |
+| Session Concurrency Gate design | ✅ Designed + Deployed |
+| Session Concurrency Gate implementation | ✅ Deployed in `agent-auth-delegation.yml` (step 3d) |
+| Session Release job | ✅ Deployed in `agent-auth-delegation.yml` (job 5) |
 | PR Template checkbox design | ✅ Designed + Deployed |
-| Copilot Escalation trigger design | ✅ Designed |
-| Session queue mechanism design | ✅ Designed |
+| Multi-session checkbox detection | ✅ Deployed in `detect-checkbox` job |
+| Copilot Escalation trigger design | ✅ Designed + Deployed |
+| Copilot Escalation job | ✅ Deployed in `iterative-self-healing-ci.yml` |
+| Session queue mechanism | ✅ Deployed (COPILOT_SESSION_QUEUE variable) |
 | Session Boundary Conflict Guard (§0.4) | ✅ Designed + Deployed |
 | CI Failure Issue Inspection (§0.2) | ✅ Designed + Deployed |
 | Codebase Agency Policy §0 update | ✅ Deployed |
-| Implementation (remaining) | ⏳ Awaiting owner review/approval |
 
 ---
 

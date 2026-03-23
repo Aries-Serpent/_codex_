@@ -1081,7 +1081,9 @@ flowchart TD
 
 ## 9. Implementation Roadmap
 
-### Phase 1: Session Concurrency Gate (S183)
+### Phase 1: Session Concurrency Gate ~~(S183)~~ ✅ COMPLETE (S182)
+
+> **Updated:** All Phase 1–3 items implemented in S182. Phase 4 (verification) pending.
 
 ```mermaid
 gantt
