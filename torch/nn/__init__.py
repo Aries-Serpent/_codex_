@@ -127,6 +127,8 @@ class Linear(Module):  # pragma: no cover
 
     def __init__(self, in_features: int, out_features: int, bias: bool = True, **kwargs: Any) -> None:
         super().__init__()
+        self.weight = None
+        self.bias = None
 
 
 class Sequential(Module):  # pragma: no cover
@@ -148,6 +150,8 @@ class LayerNorm(Module):  # pragma: no cover
 
     def __init__(self, normalized_shape: Any, eps: float = 1e-5, **kwargs: Any) -> None:
         super().__init__()
+        self.weight = None
+        self.bias = None
 
 
 class Embedding(Module):  # pragma: no cover
@@ -155,6 +159,7 @@ class Embedding(Module):  # pragma: no cover
 
     def __init__(self, num_embeddings: int, embedding_dim: int, **kwargs: Any) -> None:
         super().__init__()
+        self.weight = None
 
 
 class GELU(Module):  # pragma: no cover

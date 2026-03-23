@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S181 — PR #3709)
+- fix: initialize `weight` and `bias` attributes in `torch.nn` stub classes (`Linear`, `LayerNorm`, `Embedding`) — resolves `AttributeError: weight` in `test_logging_mismatch_and_dataset_gate_smoke`
+
 ### Fixed (S180 — PR #3705)
 - fix: remove unused `import json` (×2) in test_cascade.py (ruff F401)
 - fix: remove unused `from pathlib import Path` in mcp_sse_transport.py (ruff F401)
