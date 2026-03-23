@@ -966,15 +966,14 @@ def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
             return {"tree": {"sha": "base_tree_ghi"}}
         return {}
 
-    monkeypatch.setattr(poster, "_post", fake_post)
     monkeypatch.setattr(poster, "_get", fake_get)
 
-    original_request = poster._request
-
     def fake_request(method, url, payload, **kwargs):
+        if method == "POST":
+            return fake_post(url, payload)
         if method == "PATCH":
             return fake_patch(url, payload)
-        return original_request(method, url, payload, **kwargs)
+        raise AssertionError(f"Unexpected HTTP method: {method} {url}")
 
     monkeypatch.setattr(poster, "_request", fake_request)
 

@@ -145,7 +145,7 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/issues/{pr_number}/comments"
-        return self._post(url, {"body": body})
+        return self._request("POST", url, {"body": body})
 
     def post_pr_comment_from_file(
         self,
@@ -247,7 +247,7 @@ class GitHubMCPPoster:
         except urllib.error.HTTPError as exc:
             if exc.code == 404:
                 url_create = f"{_GITHUB_API}/repos/{repo}/actions/variables"
-                return self._post(url_create, {"name": name, "value": value})
+                return self._request("POST", url_create, {"name": name, "value": value})
             raise
 
     # ------------------------------------------------------------------
@@ -293,7 +293,7 @@ class GitHubMCPPoster:
             else:
                 ref = f"refs/heads/{ref}"
         url = f"{_GITHUB_API}/repos/{repo}/git/refs"
-        result = self._post(url, {"ref": ref, "sha": sha})
+        result = self._request("POST", url, {"ref": ref, "sha": sha})
         self._record_cb_pattern(
             "CB-branch-create",
             f"create_ref: {ref} @ {sha[:8] if sha else sha}",
@@ -339,7 +339,7 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        result = self._post(url, {
+        result = self._request("POST", url, {
             "title": title,
             "body": body,
             "head": head,
@@ -461,7 +461,7 @@ class GitHubMCPPoster:
         payload: dict[str, Any] = {"base": base, "head": head}
         if commit_message:
             payload["commit_message"] = commit_message
-        result = self._post(url, payload)
+        result = self._request("POST", url, payload)
         outcome = "success" if result else "already_exists"
         self._record_cb_pattern(
             "CB-merge",
@@ -493,7 +493,7 @@ class GitHubMCPPoster:
             ``"utf-8"`` (default) or ``"base64"``.
         """
         url = f"{_GITHUB_API}/repos/{repo}/git/blobs"
-        result = self._post(url, {"content": content, "encoding": encoding})
+        result = self._request("POST", url, {"content": content, "encoding": encoding})
         return result["sha"]
 
     def _create_tree(
@@ -520,7 +520,7 @@ class GitHubMCPPoster:
         payload: dict[str, Any] = {"tree": tree_items}
         if base_tree_sha:
             payload["base_tree"] = base_tree_sha
-        result = self._post(url, payload)
+        result = self._request("POST", url, payload)
         return result["sha"]
 
     def _create_commit(
@@ -544,7 +544,7 @@ class GitHubMCPPoster:
             List of parent commit SHAs (typically one — the current HEAD).
         """
         url = f"{_GITHUB_API}/repos/{repo}/git/commits"
-        result = self._post(url, {
+        result = self._request("POST", url, {
             "message": message,
             "tree": tree_sha,
             "parents": parent_shas,
@@ -942,7 +942,7 @@ class GitHubMCPPoster:
 
     def _graphql(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
         url = f"{_GITHUB_API}/graphql"
-        return self._post(url, {"query": query, "variables": variables})
+        return self._request("POST", url, {"query": query, "variables": variables})
 
     def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
         """Return (repository_node_id, category_node_id) for GraphQL mutations."""
