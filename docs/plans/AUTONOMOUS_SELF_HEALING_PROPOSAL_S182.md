@@ -265,9 +265,9 @@ flowchart TD
 
 | Variable | Type | Default | Purpose |
 |----------|------|---------|---------|
-| `COPILOT_ACTIVE_SESSION` | string | `""` | Current active session: `PR#\|timestamp\|run_id` |
+| `COPILOT_ACTIVE_SESSION` | string | `""` | Current active session (format: `PR#\|epoch_timestamp\|run_id`, e.g. `3724\|1711219200\|12345678`) |
 | `COPILOT_MULTI_SESSION` | string | `"false"` | Allow multiple concurrent sessions |
-| `COPILOT_SESSION_QUEUE` | string | `""` | Comma-separated PR numbers awaiting session |
+| `COPILOT_SESSION_QUEUE` | string | `""` | Comma-separated PR numbers awaiting session (e.g. `3725,3726`) |
 
 ### Lifecycle
 
