@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #3686)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3686 (SHA `4d2997ea`) at 2026-03-23T00:53Z [auto-generated]
-
 ### Security (S177 — 2026-03-22 — PR #3678)
 - **`tools/actions_server.py`**: Fixed CodeQL critical "Partial SSRF" (CWE-918) — `do_POST` no longer reads `owner`/`repo` from user-supplied request body; handler always uses server-configured `OWNER`/`REPO` env vars, eliminating taint flow from HTTP body to URL path.
 
