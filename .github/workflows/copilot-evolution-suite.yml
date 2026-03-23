@@ -67,6 +67,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: Setup Node.js 22
         uses: actions/setup-node@v6
         with:
@@ -217,15 +221,13 @@ jobs:
             - Triggered by: ${{ github.event_name }}
             - Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
-            # On schedule runs push defaults to main — route to 0D_base_ if active.
-            TARGET_REF="${{ github.ref_name || 'main' }}"
-            if [ "${{ github.event_name }}" = "schedule" ] && git ls-remote --exit-code --heads origin 0D_base_ > /dev/null 2>&1; then
-              TARGET_REF="0D_base_"
-              echo "🔀 0D_base_ integration branch detected — routing evolution update to 0D_base_"
+            # Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)
+            if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.ref_name }}" = "main" ]; then
+              TARGET_REF="${{ steps.resolve-target.outputs.branch }}"
+              echo "🔀 Push target: ${TARGET_REF} (reason: ${{ steps.resolve-target.outputs.reason }})"
+            else
+              TARGET_REF="${{ github.ref_name }}"
             fi
-            echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
-            git fetch origin "${TARGET_REF}"
-            git rebase "origin/${TARGET_REF}"
             echo "🔄 Syncing local evolution commit onto origin/${TARGET_REF} before push"
             git fetch origin "${TARGET_REF}"
             git rebase "origin/${TARGET_REF}"

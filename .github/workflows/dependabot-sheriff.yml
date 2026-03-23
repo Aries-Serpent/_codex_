@@ -53,6 +53,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
+      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+        id: resolve-target
+        uses: ./.github/actions/resolve-push-target
+
       - name: CacheManager health check
         continue-on-error: true
         run: |
@@ -73,7 +77,7 @@ jobs:
       - name: Run DependaBot Sheriff
         id: consolidate
         env:
-          BASE_BRANCH: ${{ inputs.base_branch || 'main' }}
+          BASE_BRANCH: ${{ inputs.base_branch != 'main' && inputs.base_branch || steps.resolve-target.outputs.branch }}
           DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: |
