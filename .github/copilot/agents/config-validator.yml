@@ -1,0 +1,28 @@
+name: config-validator
+description: Validate Hydra and project configuration files for correctness, schema compliance, and best practices
+
+capabilities:
+  - YAML syntax validation
+  - Hydra composition pattern checking
+  - Schema compliance verification
+  - Missing required field detection
+  - Configuration diff and impact analysis
+
+triggers:
+  pr:
+    events: [pull_request]
+    paths: ["configs/**", "conf/**", "*.yaml", "*.yml"]
+  push:
+    branches: [main, 0D_base_]
+    paths: ["configs/**", "conf/**"]
+  manual:
+    command: "/validate-config"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+metadata:
+  version: "1.0.0"
+  created: "2026-01-09"
+  planset: PS-01

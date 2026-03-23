@@ -988,7 +988,6 @@ def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
     assert result == "commit_sha_123"
 
     # Verify the pipeline order: GET ref → GET commit → POST blob → POST tree → POST commit → PATCH ref
-    methods = [(m, u.split("/")[-2] if "/" in u else u) for m, u in call_log]
     assert any(m == "GET" and "refs" in u for m, u in call_log), "GET ref not called"
     assert any(m == "GET" and "commits" in u for m, u in call_log), "GET commit-tree not called"
     assert any(m == "POST" and "blobs" in u for m, u in call_log), "POST blob not called"

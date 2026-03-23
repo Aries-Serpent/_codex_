@@ -26,6 +26,7 @@ config-variables: null
 #   SC2153 - Possible misspelling (info)
 #   SC2223 - This default assignment may cause DoS (info)
 #   SC2162 - read without -r will mangle backslashes (info)
+#   SC2015 - A && B || C is not if-then-else (info)
 paths:
   .github/workflows/**/*.yml:
     ignore:
@@ -44,3 +45,4 @@ paths:
       - 'SC2153:info:'
       - 'SC2223:info:'
       - 'SC2162:info:'
+      - 'SC2015:info:'

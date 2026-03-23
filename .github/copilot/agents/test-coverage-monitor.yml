@@ -1,0 +1,25 @@
+name: test-coverage-monitor
+description: Monitor test coverage across the codebase, alert on coverage drops, and suggest areas for improvement
+
+capabilities:
+  - Coverage trend analysis
+  - Per-file coverage tracking
+  - Coverage drop detection and alerting
+  - Low-coverage module identification
+  - Coverage improvement recommendations
+
+triggers:
+  pr:
+    events: [pull_request, pull_request_synchronize]
+  schedule:
+    cron: "0 2 * * *"  # Daily at 2:00 AM UTC
+  manual:
+    command: "/coverage-check"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+metadata:
+  version: "1.0.0"
+  created: "2026-01-09"

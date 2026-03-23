@@ -1,0 +1,25 @@
+name: config-migration-assistant
+description: Migrate legacy configurations to Hydra format with backward compatibility and validation
+
+capabilities:
+  - Configuration analysis
+  - Duplicate detection
+  - Hydra compatibility validation
+  - Automatic migration
+  - Configuration diff generation
+
+triggers:
+  pr:
+    events: [pull_request]
+    paths: ["configs/**", "conf/**", "*.yaml", "*.yml"]
+  manual:
+    command: "/migrate-config"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+metadata:
+  version: "1.0.0"
+  created: "2026-01-09"
+  planset: PS-01

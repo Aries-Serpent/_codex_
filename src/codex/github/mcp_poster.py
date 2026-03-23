@@ -824,13 +824,15 @@ class GitHubMCPPoster:
             return ""
 
     def _require_token(self) -> None:
+        """Raise RuntimeError if no token is available.
+
+        Requires the token to have ``contents: write`` scope.
+        """
         if not self._token:
             raise RuntimeError(
                 "No GitHub token available. Set CODEX_MASTER_KEY. "
                 "See .codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md § 3."
             )
-
-        Requires the token to have ``contents: write`` scope.
 
     def _get(self, url: str) -> dict[str, Any]:
         """Execute a single GET request to the GitHub REST API (no retry).
