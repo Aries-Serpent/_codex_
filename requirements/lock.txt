@@ -327,7 +327,7 @@ graphql-core==3.2.6
     #   graphql-relay
 graphql-relay==3.2.0
     # via graphene
-great-expectations==0.18.7
+great-expectations==1.15.1
     # via codex-ml (pyproject.toml)
 greenlet==3.2.4
     # via sqlalchemy
