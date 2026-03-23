@@ -1,13 +1,14 @@
 # Monitoring
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/monitoring/`
 
 ## Contents
 
-- [experiment_tracking](monitoring/experiment_tracking.md)
-- [prometheus_setup](monitoring/prometheus_setup.md)
-- [session_tracking](monitoring/session_tracking.md)
+- [INDEX](INDEX.md)
+- [experiment_tracking](experiment_tracking.md)
+- [prometheus_setup](prometheus_setup.md)
+- [session_tracking](session_tracking.md)
 
 ---
 

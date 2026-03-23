@@ -1,11 +1,12 @@
 # Rag
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/rag/`
 
 ## Contents
 
-- [DEVICE_PLACEMENT_BEST_PRACTICES](rag/DEVICE_PLACEMENT_BEST_PRACTICES.md)
+- [DEVICE_PLACEMENT_BEST_PRACTICES](DEVICE_PLACEMENT_BEST_PRACTICES.md)
+- [INDEX](INDEX.md)
 
 ---
 

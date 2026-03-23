@@ -1,12 +1,13 @@
 # Compliance
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/compliance/`
 
 ## Contents
 
-- [archive_standards_mapping](compliance/archive_standards_mapping.md)
-- [compliance_guide](compliance/compliance_guide.md)
+- [INDEX](INDEX.md)
+- [archive_standards_mapping](archive_standards_mapping.md)
+- [compliance_guide](compliance_guide.md)
 
 ---
 

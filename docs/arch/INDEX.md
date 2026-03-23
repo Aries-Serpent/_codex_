@@ -1,30 +1,31 @@
 # Arch
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/arch/`
 
 ## Contents
 
-- [ADR-2025-11-12-dependency-segmentation](arch/ADR-2025-11-12-dependency-segmentation.md)
-- [ADR-20260302-agent-registry-schema-v1.9](arch/ADR-20260302-agent-registry-schema-v1.9.md)
-- [ADR-20260302-agentic-governance](arch/ADR-20260302-agentic-governance.md)
-- [ADR-20260302-e-to-d-transition-gate](arch/ADR-20260302-e-to-d-transition-gate.md)
-- [ADR-20260302-faiss-memory-corpus](arch/ADR-20260302-faiss-memory-corpus.md)
-- [ADR-20260302-tier1-gate-promotion](arch/ADR-20260302-tier1-gate-promotion.md)
-- [ADR-20260303-first-d-capable-promotion](arch/ADR-20260303-first-d-capable-promotion.md)
-- [ADR-20260304-copilot-agent-cli-api-gaps](arch/ADR-20260304-copilot-agent-cli-api-gaps.md)
-- [ADR-20260304-rust-error-validator-d-capable-promotion](arch/ADR-20260304-rust-error-validator-d-capable-promotion.md)
-- [ADR-20260304-second-d-capable-promotion](arch/ADR-20260304-second-d-capable-promotion.md)
-- [ADR-20260304-third-d-capable-evaluation](arch/ADR-20260304-third-d-capable-evaluation.md)
-- [ADR-20260305-fourth-d-capable-evaluation](arch/ADR-20260305-fourth-d-capable-evaluation.md)
-- [ADR-20260313-userstore-persistence](arch/ADR-20260313-userstore-persistence.md)
-- [ADR-style-linelength](arch/ADR-style-linelength.md)
-- [GITHUB_APP_PATTERN_GAPS](arch/GITHUB_APP_PATTERN_GAPS.md)
-- [adr-2025-10-17-root-docs-cleanup](arch/adr-2025-10-17-root-docs-cleanup.md)
-- [adr-2025-11-02-archive-sigstore-integration](arch/adr-2025-11-02-archive-sigstore-integration.md)
-- [adr-2025-11-03-evidence-schema-versioning](arch/adr-2025-11-03-evidence-schema-versioning.md)
-- [adr-template](arch/adr-template.md)
-- [tombstone_template](arch/tombstone_template.md)
+- [ADR-2025-11-12-dependency-segmentation](ADR-2025-11-12-dependency-segmentation.md)
+- [ADR-20260302-agent-registry-schema-v1.9](ADR-20260302-agent-registry-schema-v1.9.md)
+- [ADR-20260302-agentic-governance](ADR-20260302-agentic-governance.md)
+- [ADR-20260302-e-to-d-transition-gate](ADR-20260302-e-to-d-transition-gate.md)
+- [ADR-20260302-faiss-memory-corpus](ADR-20260302-faiss-memory-corpus.md)
+- [ADR-20260302-tier1-gate-promotion](ADR-20260302-tier1-gate-promotion.md)
+- [ADR-20260303-first-d-capable-promotion](ADR-20260303-first-d-capable-promotion.md)
+- [ADR-20260304-copilot-agent-cli-api-gaps](ADR-20260304-copilot-agent-cli-api-gaps.md)
+- [ADR-20260304-rust-error-validator-d-capable-promotion](ADR-20260304-rust-error-validator-d-capable-promotion.md)
+- [ADR-20260304-second-d-capable-promotion](ADR-20260304-second-d-capable-promotion.md)
+- [ADR-20260304-third-d-capable-evaluation](ADR-20260304-third-d-capable-evaluation.md)
+- [ADR-20260305-fourth-d-capable-evaluation](ADR-20260305-fourth-d-capable-evaluation.md)
+- [ADR-20260313-userstore-persistence](ADR-20260313-userstore-persistence.md)
+- [ADR-style-linelength](ADR-style-linelength.md)
+- [GITHUB_APP_PATTERN_GAPS](GITHUB_APP_PATTERN_GAPS.md)
+- [INDEX](INDEX.md)
+- [adr-2025-10-17-root-docs-cleanup](adr-2025-10-17-root-docs-cleanup.md)
+- [adr-2025-11-02-archive-sigstore-integration](adr-2025-11-02-archive-sigstore-integration.md)
+- [adr-2025-11-03-evidence-schema-versioning](adr-2025-11-03-evidence-schema-versioning.md)
+- [adr-template](adr-template.md)
+- [tombstone_template](tombstone_template.md)
 
 ## Subdirectories
 

@@ -450,7 +450,8 @@ jobs:
           else
             TARGET_BRANCH="${{ steps.resolve-target.outputs.branch || 'main' }}"
             echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${{ steps.resolve-target.outputs.reason }})"
-          fi          git config user.email "github-actions[bot]@users.noreply.github.com"
+          fi
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
           # Stage only the files explicitly changed by the fix scripts
           # (plus the healing-attempts record). Avoid git add -A which would

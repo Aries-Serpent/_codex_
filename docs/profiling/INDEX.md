@@ -1,11 +1,12 @@
 # Profiling
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/profiling/`
 
 ## Contents
 
-- [benchmarking](profiling/benchmarking.md)
+- [INDEX](INDEX.md)
+- [benchmarking](benchmarking.md)
 
 ---
 

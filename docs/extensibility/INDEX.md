@@ -1,11 +1,12 @@
 # Extensibility
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/extensibility/`
 
 ## Contents
 
-- [registries_and_plugins](extensibility/registries_and_plugins.md)
+- [INDEX](INDEX.md)
+- [registries_and_plugins](registries_and_plugins.md)
 
 ---
 

@@ -1,11 +1,12 @@
 # Rubrics
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/rubrics/`
 
 ## Contents
 
-- [codex_eval_rubric_v3](rubrics/codex_eval_rubric_v3.md)
+- [INDEX](INDEX.md)
+- [codex_eval_rubric_v3](codex_eval_rubric_v3.md)
 
 ---
 

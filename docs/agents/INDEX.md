@@ -1,13 +1,14 @@
 # Agents
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/agents/`
 
 ## Contents
 
-- [CODE_TEMPLATES](agents/CODE_TEMPLATES.md)
-- [MCP_IMPLEMENTATION_GUIDE](agents/MCP_IMPLEMENTATION_GUIDE.md)
-- [PROMPT_TEMPLATES](agents/PROMPT_TEMPLATES.md)
+- [CODE_TEMPLATES](CODE_TEMPLATES.md)
+- [INDEX](INDEX.md)
+- [MCP_IMPLEMENTATION_GUIDE](MCP_IMPLEMENTATION_GUIDE.md)
+- [PROMPT_TEMPLATES](PROMPT_TEMPLATES.md)
 
 ---
 

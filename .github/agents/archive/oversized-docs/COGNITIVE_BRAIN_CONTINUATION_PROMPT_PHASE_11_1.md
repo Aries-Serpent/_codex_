@@ -1,9 +1,9 @@
 # Cognitive Brain Continuation Prompt - Phase 11.1: Data Integrity & Repository Structure Analysis
 
 > **Status:** ✅ READY FOR EXECUTION
-> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
+> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../../../.codex/CODEBASE_AGENCY_POLICY.md)
 > **Prompt Type:** Continuation with Complete Implementation Plan
-> **Related Documents:** [AGENTS.md](../AGENTS.md) | [STATUS_V11](./COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
+> **Related Documents:** [AGENTS.md](../../docs/AGENTS.md) | [STATUS_V11](../cognitive-brain/COGNITIVE_BRAIN_STATUS_V11_2025_TIMESTAMP_CORRECTIONS.md)
 
 **Generated**: 2026-01-08T05:30:00Z
 **For**: GitHub Copilot Agent
@@ -48,7 +48,7 @@ This continuation prompt adheres to the **AI Codebase Agency Policy**:
    - **MUST USE**: "pre-commit cycles", "Pre-commit 1-2", "Phase X"
    - **NEVER USE**: "weeks", "days", "Week 1-2", calendar dates for future work
    - All future plans created must follow this convention
-   - See [Timeline Terminology](../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)
+   - See [Timeline Terminology](../../../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)
 
 ---
 

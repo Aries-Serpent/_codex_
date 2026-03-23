@@ -1,11 +1,12 @@
 # Packaging
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/packaging/`
 
 ## Contents
 
-- [Packaging_and_Release](packaging/Packaging_and_Release.md)
+- [INDEX](INDEX.md)
+- [Packaging_and_Release](Packaging_and_Release.md)
 
 ---
 

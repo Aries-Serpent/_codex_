@@ -1,13 +1,14 @@
 # Developer
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/developer/`
 
 ## Contents
 
-- [Coverage_Policy](developer/Coverage_Policy.md)
-- [Patch_Debris_Guard](developer/Patch_Debris_Guard.md)
-- [Plugin_Registry_CLI](developer/Plugin_Registry_CLI.md)
+- [Coverage_Policy](Coverage_Policy.md)
+- [INDEX](INDEX.md)
+- [Patch_Debris_Guard](Patch_Debris_Guard.md)
+- [Plugin_Registry_CLI](Plugin_Registry_CLI.md)
 
 ---
 

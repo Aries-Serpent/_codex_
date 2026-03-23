@@ -106,7 +106,7 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
     ]
 
     for f in md_files:
-        rel = f.relative_to(DOCS_ROOT)
+        rel = f.relative_to(directory)
         lines.append(f"- [{f.stem}]({rel})")
 
     # Add subdirectory links

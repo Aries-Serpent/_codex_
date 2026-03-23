@@ -1,22 +1,23 @@
 # Ai Facing
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/ai-facing/`
 
 ## Contents
 
-- [4_PHASE_IMPLEMENTATION](ai-facing/4_PHASE_IMPLEMENTATION.md)
-- [Design_Specification_Quantum_Compression_Neural_Pathway_Integration](ai-facing/Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md)
-- [QUANTUM_COMPRESSION_NEURAL_FOLLOWUP](ai-facing/QUANTUM_COMPRESSION_NEURAL_FOLLOWUP.md)
-- [QUANTUM_RAG_FOLLOWUP](ai-facing/QUANTUM_RAG_FOLLOWUP.md)
-- [QUANTUM_RAG_INTEGRATION](ai-facing/QUANTUM_RAG_INTEGRATION.md)
-- [QUANTUM_RETRIEVAL_PHYSICS](ai-facing/QUANTUM_RETRIEVAL_PHYSICS.md)
-- [QUANTUM_TIME_CONSTRAINTS_TESSERACT_AES](ai-facing/QUANTUM_TIME_CONSTRAINTS_TESSERACT_AES.md)
-- [business_rules](ai-facing/business_rules.md)
-- [coding_standards](ai-facing/coding_standards.md)
-- [glossary](ai-facing/glossary.md)
-- [infra_basics](ai-facing/infra_basics.md)
-- [tools_reference](ai-facing/tools_reference.md)
+- [4_PHASE_IMPLEMENTATION](4_PHASE_IMPLEMENTATION.md)
+- [Design_Specification_Quantum_Compression_Neural_Pathway_Integration](Design_Specification_Quantum_Compression_Neural_Pathway_Integration.md)
+- [INDEX](INDEX.md)
+- [QUANTUM_COMPRESSION_NEURAL_FOLLOWUP](QUANTUM_COMPRESSION_NEURAL_FOLLOWUP.md)
+- [QUANTUM_RAG_FOLLOWUP](QUANTUM_RAG_FOLLOWUP.md)
+- [QUANTUM_RAG_INTEGRATION](QUANTUM_RAG_INTEGRATION.md)
+- [QUANTUM_RETRIEVAL_PHYSICS](QUANTUM_RETRIEVAL_PHYSICS.md)
+- [QUANTUM_TIME_CONSTRAINTS_TESSERACT_AES](QUANTUM_TIME_CONSTRAINTS_TESSERACT_AES.md)
+- [business_rules](business_rules.md)
+- [coding_standards](coding_standards.md)
+- [glossary](glossary.md)
+- [infra_basics](infra_basics.md)
+- [tools_reference](tools_reference.md)
 
 ---
 

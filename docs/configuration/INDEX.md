@@ -1,17 +1,18 @@
 # Configuration
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/configuration/`
 
 ## Contents
 
-- [CONFIG_USAGE](configuration/CONFIG_USAGE.md)
-- [ENVIRONMENT_VARIABLES](configuration/ENVIRONMENT_VARIABLES.md)
-- [HYDRA_GUIDE](configuration/HYDRA_GUIDE.md)
-- [HYDRA_MIGRATION_GUIDE](configuration/HYDRA_MIGRATION_GUIDE.md)
-- [MIGRATION_MAPPING](configuration/MIGRATION_MAPPING.md)
-- [TROUBLESHOOTING](configuration/TROUBLESHOOTING.md)
-- [hydra_quickstart](configuration/hydra_quickstart.md)
+- [CONFIG_USAGE](CONFIG_USAGE.md)
+- [ENVIRONMENT_VARIABLES](ENVIRONMENT_VARIABLES.md)
+- [HYDRA_GUIDE](HYDRA_GUIDE.md)
+- [HYDRA_MIGRATION_GUIDE](HYDRA_MIGRATION_GUIDE.md)
+- [INDEX](INDEX.md)
+- [MIGRATION_MAPPING](MIGRATION_MAPPING.md)
+- [TROUBLESHOOTING](TROUBLESHOOTING.md)
+- [hydra_quickstart](hydra_quickstart.md)
 
 ---
 

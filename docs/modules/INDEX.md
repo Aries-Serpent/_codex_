@@ -1,28 +1,29 @@
 # Modules
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/modules/`
 
 ## Contents
 
-- [checkpoint_manager](modules/checkpoint_manager.md)
-- [cli](modules/cli.md)
-- [configuration](modules/configuration.md)
-- [connectors](modules/connectors.md)
-- [data_handling](modules/data_handling.md)
-- [data_registry](modules/data_registry.md)
-- [evaluation_runner](modules/evaluation_runner.md)
-- [metric_registry](modules/metric_registry.md)
-- [metrics](modules/metrics.md)
-- [model_registry](modules/model_registry.md)
-- [modeling](modules/modeling.md)
-- [observability](modules/observability.md)
-- [plugins](modules/plugins.md)
-- [privacy](modules/privacy.md)
-- [safety](modules/safety.md)
-- [tokenisation](modules/tokenisation.md)
-- [tokenizer_trainer](modules/tokenizer_trainer.md)
-- [training_engine](modules/training_engine.md)
+- [INDEX](INDEX.md)
+- [checkpoint_manager](checkpoint_manager.md)
+- [cli](cli.md)
+- [configuration](configuration.md)
+- [connectors](connectors.md)
+- [data_handling](data_handling.md)
+- [data_registry](data_registry.md)
+- [evaluation_runner](evaluation_runner.md)
+- [metric_registry](metric_registry.md)
+- [metrics](metrics.md)
+- [model_registry](model_registry.md)
+- [modeling](modeling.md)
+- [observability](observability.md)
+- [plugins](plugins.md)
+- [privacy](privacy.md)
+- [safety](safety.md)
+- [tokenisation](tokenisation.md)
+- [tokenizer_trainer](tokenizer_trainer.md)
+- [training_engine](training_engine.md)
 
 ---
 

@@ -1,13 +1,14 @@
 # Adr
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/adr/`
 
 ## Contents
 
-- [000-mcp-architecture](adr/000-mcp-architecture.md)
-- [ADR-001_HYDRA_CONFIGURATION](adr/ADR-001_HYDRA_CONFIGURATION.md)
-- [ADR-002_NAMED_PIPES_VS_TCP](adr/ADR-002_NAMED_PIPES_VS_TCP.md)
+- [000-mcp-architecture](000-mcp-architecture.md)
+- [ADR-001_HYDRA_CONFIGURATION](ADR-001_HYDRA_CONFIGURATION.md)
+- [ADR-002_NAMED_PIPES_VS_TCP](ADR-002_NAMED_PIPES_VS_TCP.md)
+- [INDEX](INDEX.md)
 
 ---
 

@@ -1,11 +1,12 @@
 # Deferred
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/deferred/`
 
 ## Contents
 
-- [GOOGLE_DRIVE_FUTURE_SCOPE](deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md)
+- [GOOGLE_DRIVE_FUTURE_SCOPE](GOOGLE_DRIVE_FUTURE_SCOPE.md)
+- [INDEX](INDEX.md)
 
 ---
 

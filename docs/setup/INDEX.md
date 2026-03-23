@@ -1,12 +1,13 @@
 # Setup
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/setup/`
 
 ## Contents
 
-- [NOTEBOOKLM_SETUP](setup/NOTEBOOKLM_SETUP.md)
-- [environment](setup/environment.md)
+- [INDEX](INDEX.md)
+- [NOTEBOOKLM_SETUP](NOTEBOOKLM_SETUP.md)
+- [environment](environment.md)
 
 ---
 

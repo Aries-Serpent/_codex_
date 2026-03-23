@@ -1,12 +1,13 @@
 # Checklists
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/checklists/`
 
 ## Contents
 
-- [approval_gate_checklist](checklists/approval_gate_checklist.md)
-- [zendesk_first_cycle_verification](checklists/zendesk_first_cycle_verification.md)
+- [INDEX](INDEX.md)
+- [approval_gate_checklist](approval_gate_checklist.md)
+- [zendesk_first_cycle_verification](zendesk_first_cycle_verification.md)
 
 ---
 

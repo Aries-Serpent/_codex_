@@ -1,18 +1,19 @@
 # Dev
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/dev/`
 
 ## Contents
 
-- [CI_LOCAL_TESTING](dev/CI_LOCAL_TESTING.md)
-- [CODE_STYLE_GUIDE](dev/CODE_STYLE_GUIDE.md)
-- [CONTRIBUTING](dev/CONTRIBUTING.md)
-- [Import_Contracts](dev/Import_Contracts.md)
-- [plugins](dev/plugins.md)
-- [testing](dev/testing.md)
-- [training](dev/training.md)
-- [unified_training](dev/unified_training.md)
+- [CI_LOCAL_TESTING](CI_LOCAL_TESTING.md)
+- [CODE_STYLE_GUIDE](CODE_STYLE_GUIDE.md)
+- [CONTRIBUTING](CONTRIBUTING.md)
+- [INDEX](INDEX.md)
+- [Import_Contracts](Import_Contracts.md)
+- [plugins](plugins.md)
+- [testing](testing.md)
+- [training](training.md)
+- [unified_training](unified_training.md)
 
 ---
 

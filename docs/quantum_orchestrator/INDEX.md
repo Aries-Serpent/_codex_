@@ -1,11 +1,12 @@
 # Quantum Orchestrator
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/quantum_orchestrator/`
 
 ## Contents
 
-- [architecture](quantum_orchestrator/architecture.md)
+- [INDEX](INDEX.md)
+- [architecture](architecture.md)
 
 ---
 

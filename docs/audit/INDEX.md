@@ -1,18 +1,19 @@
 # Audit
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/audit/`
 
 ## Contents
 
-- [API_Reference_v1.4.0](audit/API_Reference_v1.4.0.md)
-- [Audit_Pipeline_Reference_v1.4.0](audit/Audit_Pipeline_Reference_v1.4.0.md)
-- [Configuration_v1.4.0](audit/Configuration_v1.4.0.md)
-- [Integration_Examples](audit/Integration_Examples.md)
-- [Migration_v1.3_to_v1.4](audit/Migration_v1.3_to_v1.4.md)
-- [Performance_Tuning](audit/Performance_Tuning.md)
-- [Troubleshooting_v1.4.0](audit/Troubleshooting_v1.4.0.md)
-- [v1.5.x_CHANGELOG](audit/v1.5.x_CHANGELOG.md)
+- [API_Reference_v1.4.0](API_Reference_v1.4.0.md)
+- [Audit_Pipeline_Reference_v1.4.0](Audit_Pipeline_Reference_v1.4.0.md)
+- [Configuration_v1.4.0](Configuration_v1.4.0.md)
+- [INDEX](INDEX.md)
+- [Integration_Examples](Integration_Examples.md)
+- [Migration_v1.3_to_v1.4](Migration_v1.3_to_v1.4.md)
+- [Performance_Tuning](Performance_Tuning.md)
+- [Troubleshooting_v1.4.0](Troubleshooting_v1.4.0.md)
+- [v1.5.x_CHANGELOG](v1.5.x_CHANGELOG.md)
 
 ---
 

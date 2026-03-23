@@ -1,12 +1,13 @@
 # Howto
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/howto/`
 
 ## Contents
 
-- [add_capabilities](howto/add_capabilities.md)
-- [run_audits](howto/run_audits.md)
+- [INDEX](INDEX.md)
+- [add_capabilities](add_capabilities.md)
+- [run_audits](run_audits.md)
 
 ---
 

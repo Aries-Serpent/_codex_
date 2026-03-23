@@ -1,11 +1,12 @@
 # Dataops
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/dataops/`
 
 ## Contents
 
-- [DVC_CONFIGURATION](dataops/DVC_CONFIGURATION.md)
+- [DVC_CONFIGURATION](DVC_CONFIGURATION.md)
+- [INDEX](INDEX.md)
 
 ---
 

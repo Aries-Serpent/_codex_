@@ -1,11 +1,12 @@
 # Samples
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/samples/`
 
 ## Contents
 
-- [intent_validation_example](samples/intent_validation_example.md)
+- [INDEX](INDEX.md)
+- [intent_validation_example](intent_validation_example.md)
 
 ---
 

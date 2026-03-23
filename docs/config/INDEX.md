@@ -1,11 +1,12 @@
 # Config
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/config/`
 
 ## Contents
 
-- [config_patterns_and_conventions](config/config_patterns_and_conventions.md)
+- [INDEX](INDEX.md)
+- [config_patterns_and_conventions](config_patterns_and_conventions.md)
 
 ---
 

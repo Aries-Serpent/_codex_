@@ -1,12 +1,13 @@
 # Policies
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/policies/`
 
 ## Contents
 
-- [archive-policy](policies/archive-policy.md)
-- [branch-protection-checklist](policies/branch-protection-checklist.md)
+- [INDEX](INDEX.md)
+- [archive-policy](archive-policy.md)
+- [branch-protection-checklist](branch-protection-checklist.md)
 
 ---
 

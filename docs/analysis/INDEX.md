@@ -1,18 +1,19 @@
 # Analysis
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/analysis/`
 
 ## Contents
 
-- [ITERATIVE_GAP_ANALYSIS_CYCLE1](analysis/ITERATIVE_GAP_ANALYSIS_CYCLE1.md)
-- [LINK_VALIDATION_FIX_SUMMARY](analysis/LINK_VALIDATION_FIX_SUMMARY.md)
-- [PR_3133_ANALYSIS](analysis/PR_3133_ANALYSIS.md)
-- [WEEK1_COVERAGE_STATUS](analysis/WEEK1_COVERAGE_STATUS.md)
-- [WORKFLOW_LINK_VALIDATION_FINAL_REPORT](analysis/WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md)
-- [dependency_space_triage](analysis/dependency_space_triage.md)
-- [implementation_plan_archival_memory_saving](analysis/implementation_plan_archival_memory_saving.md)
-- [intuitive_aptitude_usage](analysis/intuitive_aptitude_usage.md)
+- [INDEX](INDEX.md)
+- [ITERATIVE_GAP_ANALYSIS_CYCLE1](ITERATIVE_GAP_ANALYSIS_CYCLE1.md)
+- [LINK_VALIDATION_FIX_SUMMARY](LINK_VALIDATION_FIX_SUMMARY.md)
+- [PR_3133_ANALYSIS](PR_3133_ANALYSIS.md)
+- [WEEK1_COVERAGE_STATUS](WEEK1_COVERAGE_STATUS.md)
+- [WORKFLOW_LINK_VALIDATION_FINAL_REPORT](WORKFLOW_LINK_VALIDATION_FINAL_REPORT.md)
+- [dependency_space_triage](dependency_space_triage.md)
+- [implementation_plan_archival_memory_saving](implementation_plan_archival_memory_saving.md)
+- [intuitive_aptitude_usage](intuitive_aptitude_usage.md)
 
 ---
 

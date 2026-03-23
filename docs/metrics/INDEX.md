@@ -1,11 +1,12 @@
 # Metrics
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/metrics/`
 
 ## Contents
 
-- [codex_metrics_and_eval](metrics/codex_metrics_and_eval.md)
+- [INDEX](INDEX.md)
+- [codex_metrics_and_eval](codex_metrics_and_eval.md)
 
 ---
 

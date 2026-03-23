@@ -1,11 +1,12 @@
 # Patterns
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/patterns/`
 
 ## Contents
 
-- [CODE_REVIEW_PATTERNS_PR2750](patterns/CODE_REVIEW_PATTERNS_PR2750.md)
+- [CODE_REVIEW_PATTERNS_PR2750](CODE_REVIEW_PATTERNS_PR2750.md)
+- [INDEX](INDEX.md)
 
 ---
 
