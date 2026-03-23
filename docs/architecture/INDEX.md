@@ -1,23 +1,24 @@
 # Architecture
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/architecture/`
 
 ## Contents
 
-- [E_TO_D_TRANSITION_MAP](architecture/E_TO_D_TRANSITION_MAP.md)
-- [MLOPS_FINAL_SUMMARY](architecture/MLOPS_FINAL_SUMMARY.md)
-- [PHASES_3_4_5_IMPLEMENTATION](architecture/PHASES_3_4_5_IMPLEMENTATION.md)
-- [TOP_5_QUICK_WINS_PLAN](architecture/TOP_5_QUICK_WINS_PLAN.md)
-- [codex_pipeline](architecture/codex_pipeline.md)
-- [codex_system_overview](architecture/codex_system_overview.md)
-- [inference_serving](architecture/inference_serving.md)
-- [interfaces](architecture/interfaces.md)
-- [phase_1_foundation](architecture/phase_1_foundation.md)
-- [phase_2_reproducibility](architecture/phase_2_reproducibility.md)
-- [phase_3_autonomy](architecture/phase_3_autonomy.md)
-- [phase_4_excellence](architecture/phase_4_excellence.md)
-- [system_overview](architecture/system_overview.md)
+- [E_TO_D_TRANSITION_MAP](E_TO_D_TRANSITION_MAP.md)
+- [INDEX](INDEX.md)
+- [MLOPS_FINAL_SUMMARY](MLOPS_FINAL_SUMMARY.md)
+- [PHASES_3_4_5_IMPLEMENTATION](PHASES_3_4_5_IMPLEMENTATION.md)
+- [TOP_5_QUICK_WINS_PLAN](TOP_5_QUICK_WINS_PLAN.md)
+- [codex_pipeline](codex_pipeline.md)
+- [codex_system_overview](codex_system_overview.md)
+- [inference_serving](inference_serving.md)
+- [interfaces](interfaces.md)
+- [phase_1_foundation](phase_1_foundation.md)
+- [phase_2_reproducibility](phase_2_reproducibility.md)
+- [phase_3_autonomy](phase_3_autonomy.md)
+- [phase_4_excellence](phase_4_excellence.md)
+- [system_overview](system_overview.md)
 
 ---
 

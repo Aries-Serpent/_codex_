@@ -1,12 +1,13 @@
 # Accountability
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/accountability/`
 
 ## Contents
 
-- [AGENT_ACCESS_EXPERIENCE_REPORT](accountability/AGENT_ACCESS_EXPERIENCE_REPORT.md)
-- [AGENT_ACCOUNTABILITY_REPORT](accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [AGENT_ACCESS_EXPERIENCE_REPORT](AGENT_ACCESS_EXPERIENCE_REPORT.md)
+- [AGENT_ACCOUNTABILITY_REPORT](AGENT_ACCOUNTABILITY_REPORT.md)
+- [INDEX](INDEX.md)
 
 ---
 

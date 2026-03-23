@@ -1,11 +1,12 @@
 # Crm
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/crm/`
 
 ## Contents
 
-- [CRM_INTEGRATION_FOR_REPO_MANAGEMENT](crm/CRM_INTEGRATION_FOR_REPO_MANAGEMENT.md)
+- [CRM_INTEGRATION_FOR_REPO_MANAGEMENT](CRM_INTEGRATION_FOR_REPO_MANAGEMENT.md)
+- [INDEX](INDEX.md)
 
 ## Subdirectories
 

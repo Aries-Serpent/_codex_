@@ -1,11 +1,12 @@
 # Services
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/services/`
 
 ## Contents
 
-- [KNOWLEDGE_CRAWLER](services/KNOWLEDGE_CRAWLER.md)
+- [INDEX](INDEX.md)
+- [KNOWLEDGE_CRAWLER](KNOWLEDGE_CRAWLER.md)
 
 ---
 

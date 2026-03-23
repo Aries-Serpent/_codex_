@@ -1,11 +1,12 @@
 # Deepresearch
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/deepresearch/`
 
 ## Contents
 
-- [manifest_validation](deepresearch/manifest_validation.md)
+- [INDEX](INDEX.md)
+- [manifest_validation](manifest_validation.md)
 
 ---
 

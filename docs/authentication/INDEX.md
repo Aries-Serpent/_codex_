@@ -1,11 +1,12 @@
 # Authentication
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/authentication/`
 
 ## Contents
 
-- [USER_GUIDE](authentication/USER_GUIDE.md)
+- [INDEX](INDEX.md)
+- [USER_GUIDE](USER_GUIDE.md)
 
 ---
 

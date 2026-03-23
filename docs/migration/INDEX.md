@@ -1,11 +1,12 @@
 # Migration
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/migration/`
 
 ## Contents
 
-- [LEGACY_CODE_MIGRATION_GUIDE](migration/LEGACY_CODE_MIGRATION_GUIDE.md)
+- [INDEX](INDEX.md)
+- [LEGACY_CODE_MIGRATION_GUIDE](LEGACY_CODE_MIGRATION_GUIDE.md)
 
 ---
 

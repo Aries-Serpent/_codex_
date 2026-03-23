@@ -1,14 +1,15 @@
 # Maintenance
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/maintenance/`
 
 ## Contents
 
-- [DIAGRAM_UPDATE_SYSTEM](maintenance/DIAGRAM_UPDATE_SYSTEM.md)
-- [LINK_VALIDATION_REPORT](maintenance/LINK_VALIDATION_REPORT.md)
-- [LINK_VALIDATION_TODO](maintenance/LINK_VALIDATION_TODO.md)
-- [Torch_CPU_Policy](maintenance/Torch_CPU_Policy.md)
+- [DIAGRAM_UPDATE_SYSTEM](DIAGRAM_UPDATE_SYSTEM.md)
+- [INDEX](INDEX.md)
+- [LINK_VALIDATION_REPORT](LINK_VALIDATION_REPORT.md)
+- [LINK_VALIDATION_TODO](LINK_VALIDATION_TODO.md)
+- [Torch_CPU_Policy](Torch_CPU_Policy.md)
 
 ---
 

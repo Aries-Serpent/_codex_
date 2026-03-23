@@ -1,11 +1,12 @@
 # Tests
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/tests/`
 
 ## Contents
 
-- [ml_test_score_mapping](tests/ml_test_score_mapping.md)
+- [INDEX](INDEX.md)
+- [ml_test_score_mapping](ml_test_score_mapping.md)
 
 ---
 

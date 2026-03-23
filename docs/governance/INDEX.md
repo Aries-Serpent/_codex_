@@ -1,11 +1,12 @@
 # Governance
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/governance/`
 
 ## Contents
 
-- [CONTRIBUTING](governance/CONTRIBUTING.md)
+- [CONTRIBUTING](CONTRIBUTING.md)
+- [INDEX](INDEX.md)
 
 ---
 

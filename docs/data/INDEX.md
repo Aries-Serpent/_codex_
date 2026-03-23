@@ -1,13 +1,14 @@
 # Data
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/data/`
 
 ## Contents
 
-- [Caching](data/Caching.md)
-- [Local_Files](data/Local_Files.md)
-- [dataset_index](data/dataset_index.md)
+- [Caching](Caching.md)
+- [INDEX](INDEX.md)
+- [Local_Files](Local_Files.md)
+- [dataset_index](dataset_index.md)
 
 ---
 

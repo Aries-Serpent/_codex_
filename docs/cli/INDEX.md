@@ -1,13 +1,14 @@
 # Cli
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/cli/`
 
 ## Contents
 
-- [dataset_cli](cli/dataset_cli.md)
-- [minimal_train_eval_workflow](cli/minimal_train_eval_workflow.md)
-- [status_audit](cli/status_audit.md)
+- [INDEX](INDEX.md)
+- [dataset_cli](dataset_cli.md)
+- [minimal_train_eval_workflow](minimal_train_eval_workflow.md)
+- [status_audit](status_audit.md)
 
 ---
 

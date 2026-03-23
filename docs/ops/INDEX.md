@@ -1,6 +1,6 @@
 # Ops
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/ops/`
 
 ## Contents
@@ -15,6 +15,7 @@
 - [Deterministic_Installs](Deterministic_Installs.md)
 - [GitHub_App_Integration](GitHub_App_Integration.md)
 - [HMAC_rotation](HMAC_rotation.md)
+- [INDEX](INDEX.md)
 - [Local_Tooling_Prereqs](Local_Tooling_Prereqs.md)
 - [MCP_PLAYWRIGHT_IMPROVEMENTS](MCP_PLAYWRIGHT_IMPROVEMENTS.md)
 - [NO_AUTO_PR_GUIDE](NO_AUTO_PR_GUIDE.md)

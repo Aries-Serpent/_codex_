@@ -1,13 +1,14 @@
 # Status
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/status/`
 
 ## Contents
 
-- [GITHUB_PAGES_STATUS](status/GITHUB_PAGES_STATUS.md)
-- [Removed_Strikeouts_2025-11-05](status/Removed_Strikeouts_2025-11-05.md)
-- [codex_status_update_2025_CLEAN](status/codex_status_update_2025_CLEAN.md)
+- [GITHUB_PAGES_STATUS](GITHUB_PAGES_STATUS.md)
+- [INDEX](INDEX.md)
+- [Removed_Strikeouts_2025-11-05](Removed_Strikeouts_2025-11-05.md)
+- [codex_status_update_2025_CLEAN](codex_status_update_2025_CLEAN.md)
 
 ---
 

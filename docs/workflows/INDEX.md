@@ -1,15 +1,16 @@
 # Workflows
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/workflows/`
 
 ## Contents
 
-- [AGENT_CONTINUATION_PROTOCOL](workflows/AGENT_CONTINUATION_PROTOCOL.md)
-- [CONSOLIDATION_PLAN](workflows/CONSOLIDATION_PLAN.md)
-- [COPILOT_CONTINUATION_GUIDE](workflows/COPILOT_CONTINUATION_GUIDE.md)
-- [MONITORING_LOG](workflows/MONITORING_LOG.md)
-- [PHASE1_TRACKING](workflows/PHASE1_TRACKING.md)
+- [AGENT_CONTINUATION_PROTOCOL](AGENT_CONTINUATION_PROTOCOL.md)
+- [CONSOLIDATION_PLAN](CONSOLIDATION_PLAN.md)
+- [COPILOT_CONTINUATION_GUIDE](COPILOT_CONTINUATION_GUIDE.md)
+- [INDEX](INDEX.md)
+- [MONITORING_LOG](MONITORING_LOG.md)
+- [PHASE1_TRACKING](PHASE1_TRACKING.md)
 
 ---
 

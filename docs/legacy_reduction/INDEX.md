@@ -1,11 +1,12 @@
 # Legacy Reduction
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/legacy_reduction/`
 
 ## Contents
 
-- [LEGACY_REDUCTION_SUMMARY](legacy_reduction/LEGACY_REDUCTION_SUMMARY.md)
+- [INDEX](INDEX.md)
+- [LEGACY_REDUCTION_SUMMARY](LEGACY_REDUCTION_SUMMARY.md)
 
 ---
 

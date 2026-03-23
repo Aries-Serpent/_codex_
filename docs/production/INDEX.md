@@ -1,11 +1,12 @@
 # Production
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/production/`
 
 ## Contents
 
-- [PRODUCTION_READINESS_CHECKLIST](production/PRODUCTION_READINESS_CHECKLIST.md)
+- [INDEX](INDEX.md)
+- [PRODUCTION_READINESS_CHECKLIST](PRODUCTION_READINESS_CHECKLIST.md)
 
 ---
 

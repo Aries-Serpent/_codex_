@@ -1,11 +1,12 @@
 # Standards
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/standards/`
 
 ## Contents
 
-- [TABLE_FORMATTING_STANDARD](standards/TABLE_FORMATTING_STANDARD.md)
+- [INDEX](INDEX.md)
+- [TABLE_FORMATTING_STANDARD](TABLE_FORMATTING_STANDARD.md)
 
 ---
 

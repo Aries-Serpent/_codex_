@@ -1,24 +1,25 @@
 # How To
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/how-to/`
 
 ## Contents
 
-- [admin_bootstrap](how-to/admin_bootstrap.md)
-- [bootstrap_runner](how-to/bootstrap_runner.md)
-- [checkpoint_metadata](how-to/checkpoint_metadata.md)
-- [codeowners_validation](how-to/codeowners_validation.md)
-- [dataset_manifest](how-to/dataset_manifest.md)
-- [hydra_sweeps](how-to/hydra_sweeps.md)
-- [metrics_db](how-to/metrics_db.md)
-- [metrics_ingestion](how-to/metrics_ingestion.md)
-- [metrics_validate_tail_badge](how-to/metrics_validate_tail_badge.md)
-- [offline_tracking](how-to/offline_tracking.md)
-- [repo_admin_bootstrap](how-to/repo_admin_bootstrap.md)
-- [repodeterminism_smoke](how-to/repodeterminism_smoke.md)
-- [run_audit_0D_base_](how-to/run_audit_0D_base_.md)
-- [tokenizer_migration](how-to/tokenizer_migration.md)
+- [INDEX](INDEX.md)
+- [admin_bootstrap](admin_bootstrap.md)
+- [bootstrap_runner](bootstrap_runner.md)
+- [checkpoint_metadata](checkpoint_metadata.md)
+- [codeowners_validation](codeowners_validation.md)
+- [dataset_manifest](dataset_manifest.md)
+- [hydra_sweeps](hydra_sweeps.md)
+- [metrics_db](metrics_db.md)
+- [metrics_ingestion](metrics_ingestion.md)
+- [metrics_validate_tail_badge](metrics_validate_tail_badge.md)
+- [offline_tracking](offline_tracking.md)
+- [repo_admin_bootstrap](repo_admin_bootstrap.md)
+- [repodeterminism_smoke](repodeterminism_smoke.md)
+- [run_audit_0D_base_](run_audit_0D_base_.md)
+- [tokenizer_migration](tokenizer_migration.md)
 
 ---
 

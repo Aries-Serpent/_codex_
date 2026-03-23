@@ -1,14 +1,15 @@
 # Explanations
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/explanations/`
 
 ## Contents
 
-- [architecture](explanations/architecture.md)
-- [docs_architecture_diataxis](explanations/docs_architecture_diataxis.md)
-- [golden_harness](explanations/golden_harness.md)
-- [reproducibility](explanations/reproducibility.md)
+- [INDEX](INDEX.md)
+- [architecture](architecture.md)
+- [docs_architecture_diataxis](docs_architecture_diataxis.md)
+- [golden_harness](golden_harness.md)
+- [reproducibility](reproducibility.md)
 
 ---
 

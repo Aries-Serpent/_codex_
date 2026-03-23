@@ -1,11 +1,12 @@
 # Review
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/review/`
 
 ## Contents
 
-- [diff_intake_confirmation](review/diff_intake_confirmation.md)
+- [INDEX](INDEX.md)
+- [diff_intake_confirmation](diff_intake_confirmation.md)
 
 ---
 

@@ -1,12 +1,13 @@
 # Incident Reports
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/incident_reports/`
 
 ## Contents
 
-- [FALSE_CLAIMS_INCIDENT_LOG](incident_reports/FALSE_CLAIMS_INCIDENT_LOG.md)
-- [ROOT_CAUSE_ANALYSIS](incident_reports/ROOT_CAUSE_ANALYSIS.md)
+- [FALSE_CLAIMS_INCIDENT_LOG](FALSE_CLAIMS_INCIDENT_LOG.md)
+- [INDEX](INDEX.md)
+- [ROOT_CAUSE_ANALYSIS](ROOT_CAUSE_ANALYSIS.md)
 
 ---
 

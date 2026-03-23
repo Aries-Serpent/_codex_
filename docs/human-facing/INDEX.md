@@ -1,14 +1,15 @@
 # Human Facing
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/human-facing/`
 
 ## Contents
 
-- [architecture](human-facing/architecture.md)
-- [deployment](human-facing/deployment.md)
-- [evals_and_metrics](human-facing/evals_and_metrics.md)
-- [security_and_risks](human-facing/security_and_risks.md)
+- [INDEX](INDEX.md)
+- [architecture](architecture.md)
+- [deployment](deployment.md)
+- [evals_and_metrics](evals_and_metrics.md)
+- [security_and_risks](security_and_risks.md)
 
 ---
 

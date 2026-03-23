@@ -1,12 +1,13 @@
 # Contributing
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/contributing/`
 
 ## Contents
 
-- [CODE_QUALITY_IMPORT_GUIDELINES](contributing/CODE_QUALITY_IMPORT_GUIDELINES.md)
-- [contributor_notes](contributing/contributor_notes.md)
+- [CODE_QUALITY_IMPORT_GUIDELINES](CODE_QUALITY_IMPORT_GUIDELINES.md)
+- [INDEX](INDEX.md)
+- [contributor_notes](contributor_notes.md)
 
 ---
 

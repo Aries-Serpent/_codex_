@@ -353,8 +353,8 @@ graph TB
 
 For Phase 8.7 implementation, refer to the comprehensive variable catalog:
 
-- **[QUANTUM_VARIABLE_INTELLIGENCE.md](./QUANTUM_VARIABLE_INTELLIGENCE.md)** - Full variable catalog
-- **[quantum_variables.jsonl](./quantum_variables.jsonl)** - JSONL format for programmatic access
+- **[QUANTUM_VARIABLE_INTELLIGENCE.md](../../QUANTUM_VARIABLE_INTELLIGENCE.md)** - Full variable catalog
+- **[quantum_variables.jsonl](../../quantum_variables.jsonl)** - JSONL format for programmatic access
 
 Key variable categories for Universal Intelligence:
 1. **Quantum State Variables** - wavefunction, amplitudes, entanglement_strength

@@ -1,27 +1,28 @@
 # Deployment
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/deployment/`
 
 ## Contents
 
-- [DEPLOYMENT_RUNBOOK](deployment/DEPLOYMENT_RUNBOOK.md)
-- [PS01_CONFIGURATION_DEPLOYMENT](deployment/PS01_CONFIGURATION_DEPLOYMENT.md)
-- [PS02_IPC_BRIDGE_DEPLOYMENT](deployment/PS02_IPC_BRIDGE_DEPLOYMENT.md)
-- [ROLLBACK_PROCEDURES](deployment/ROLLBACK_PROCEDURES.md)
-- [aws_sagemaker](deployment/aws_sagemaker.md)
-- [azure_ml](deployment/azure_ml.md)
-- [deploy_pipeline](deployment/deploy_pipeline.md)
-- [deployment_checklist](deployment/deployment_checklist.md)
-- [docker_deployment_guide](deployment/docker_deployment_guide.md)
-- [docker_gpu](deployment/docker_gpu.md)
-- [gcp_vertex](deployment/gcp_vertex.md)
-- [health_probes](deployment/health_probes.md)
-- [kubernetes](deployment/kubernetes.md)
-- [local_codex_env_readiness](deployment/local_codex_env_readiness.md)
-- [packaging](deployment/packaging.md)
-- [reasoning_pod](deployment/reasoning_pod.md)
-- [tls_mtls](deployment/tls_mtls.md)
+- [DEPLOYMENT_RUNBOOK](DEPLOYMENT_RUNBOOK.md)
+- [INDEX](INDEX.md)
+- [PS01_CONFIGURATION_DEPLOYMENT](PS01_CONFIGURATION_DEPLOYMENT.md)
+- [PS02_IPC_BRIDGE_DEPLOYMENT](PS02_IPC_BRIDGE_DEPLOYMENT.md)
+- [ROLLBACK_PROCEDURES](ROLLBACK_PROCEDURES.md)
+- [aws_sagemaker](aws_sagemaker.md)
+- [azure_ml](azure_ml.md)
+- [deploy_pipeline](deploy_pipeline.md)
+- [deployment_checklist](deployment_checklist.md)
+- [docker_deployment_guide](docker_deployment_guide.md)
+- [docker_gpu](docker_gpu.md)
+- [gcp_vertex](gcp_vertex.md)
+- [health_probes](health_probes.md)
+- [kubernetes](kubernetes.md)
+- [local_codex_env_readiness](local_codex_env_readiness.md)
+- [packaging](packaging.md)
+- [reasoning_pod](reasoning_pod.md)
+- [tls_mtls](tls_mtls.md)
 
 ---
 

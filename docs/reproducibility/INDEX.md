@@ -1,13 +1,14 @@
 # Reproducibility
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/reproducibility/`
 
 ## Contents
 
-- [env_and_dependency_snapshot](reproducibility/env_and_dependency_snapshot.md)
-- [repro_manifest_and_status_digest](reproducibility/repro_manifest_and_status_digest.md)
-- [reproducibility_checklist](reproducibility/reproducibility_checklist.md)
+- [INDEX](INDEX.md)
+- [env_and_dependency_snapshot](env_and_dependency_snapshot.md)
+- [repro_manifest_and_status_digest](repro_manifest_and_status_digest.md)
+- [reproducibility_checklist](reproducibility_checklist.md)
 
 ---
 

@@ -467,7 +467,7 @@ next_phase:
 
 - [Security Guidelines](/docs/security/SECURITY_GUIDELINES.md)
 - [Dependency Management Strategy](/.codex/docs/DEPENDABOT_MANAGEMENT_STRATEGY.md)
-- [Cognitive Brain Architecture](/.github/agents/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md)
+- [Cognitive Brain Architecture](/.github/agents/archive/oversized-docs/COGNITIVE_BRAIN_ARCHITECTURE_DIAGRAMS.md)
 - [Agent Development Guide](/.github/agents/AGENT_DEVELOPMENT_GUIDE.md)
 
 ---

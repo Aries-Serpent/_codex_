@@ -450,7 +450,8 @@ jobs:
           else
             TARGET_BRANCH="${{ steps.resolve-target.outputs.branch || 'main' }}"
             echo "🔀 Push target resolved: ${TARGET_BRANCH} (reason: ${{ steps.resolve-target.outputs.reason }})"
-          fi          git config user.email "github-actions[bot]@users.noreply.github.com"
+          fi
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name  "github-actions[bot]"
           # Stage only the files explicitly changed by the fix scripts
           # (plus the healing-attempts record). Avoid git add -A which would
@@ -525,3 +526,92 @@ jobs:
           echo "### Escalated to human review" >> "$GITHUB_STEP_SUMMARY"
           echo "Pattern \`${PATTERN}\` is not auto-fixable." >> "$GITHUB_STEP_SUMMARY"
           echo "See PR #${PR_NUMBER:-N/A} for escalation comment." >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Job: Copilot Escalation — @copilot trigger for complex fixes (S182) ───
+  # When auto-fix patterns cannot resolve the failure (fixable=false), this job
+  # posts a structured @copilot prompt on the failing PR to trigger a Copilot
+  # Coding Agent session for autonomous complex fix resolution.
+  #
+  # This is Layer 3 of the self-healing pipeline (see proposal §6):
+  #   Layer 1: Detection (D-00 triage)
+  #   Layer 2: Auto-fix (17 patterns, 3 iterations)
+  #   Layer 3: Copilot escalation (this job)  ← NEW
+  #   Layer 4: Human escalation (existing escalate job)
+  #
+  # The escalation respects the Session Concurrency Gate: if a session is
+  # already active, the @copilot trigger will be handled by agent-auth-delegation's
+  # session gate (queued if single-session mode).
+  #
+  # Blocked patterns: 'self-healing' and 'unknown' patterns where the root cause
+  # is not diagnosable are excluded — these still go to human escalation only.
+  copilot-escalation:
+    name: "🤖 Copilot escalation"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: triage
+    if: >
+      needs.triage.outputs.fixable == 'false' &&
+      needs.triage.outputs.pattern != 'self-healing' &&
+      needs.triage.outputs.pattern != ''
+    steps:
+      - name: "Post @copilot fix prompt on failing PR"
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          PATTERN:      ${{ needs.triage.outputs.pattern }}
+          RUN_ID:       ${{ needs.triage.outputs.run_id }}
+          HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
+          HEAD_SHA:     ${{ needs.triage.outputs.head_sha }}
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
+        run: |
+          PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
+            --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "::warning::No open PR found for branch '${HEAD_BRANCH}' — Copilot escalation skipped"
+            echo "### ⚠️ Copilot Escalation Skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "No open PR found for branch \`${HEAD_BRANCH}\`." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
+
+          # Build structured @copilot prompt per proposal §6
+          cat > "${RUNNER_TEMP}/copilot_escalation.txt" <<COPILOT_EOF
+          <!-- copilot-escalation-trigger -->
+          ## 🤖 Copilot Self-Healing Escalation
+
+          Auto-fix patterns exhausted for this failure. Requesting Copilot Coding Agent assistance.
+
+          @copilot Fix the failing CI workflow "${WORKFLOW_NAME}" (run #${RUN_ID}).
+
+          **Context:**
+          - Workflow: \`${WORKFLOW_NAME}\`
+          - Failed run: [${RUN_ID}](${RUN_URL})
+          - Pattern: \`${PATTERN}\` (auto-fix not available or exhausted)
+          - Branch: \`${HEAD_BRANCH}\`
+          - Commit: \`${HEAD_SHA}\`
+
+          **Instructions:**
+          1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` and follow §0
+          2. Check for open CI failure issues: \`gh issue list --label ci-failure --state open\` and \`gh issue list --label ci-health-alert --state open\`
+          3. Analyze the failure logs at ${RUN_URL}
+          4. Apply the minimal fix required
+          5. Run self-review (5-pass) before committing
+          6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+
+          _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S182 Phase 5)_
+          COPILOT_EOF
+
+          # Strip leading whitespace from heredoc (indented for readability)
+          sed -i 's/^          //' "${RUNNER_TEMP}/copilot_escalation.txt"
+
+          gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
+            --body-file "${RUNNER_TEMP}/copilot_escalation.txt"
+
+          echo "### 🤖 Copilot Escalation Posted" >> "$GITHUB_STEP_SUMMARY"
+          echo "Posted \`@copilot\` fix prompt on PR #${PR_NUMBER}." >> "$GITHUB_STEP_SUMMARY"
+          echo "| Key | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|-------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Pattern | \`${PATTERN}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| PR | #${PR_NUMBER} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Run | [${RUN_ID}](${RUN_URL}) |" >> "$GITHUB_STEP_SUMMARY"

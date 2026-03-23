@@ -1,34 +1,35 @@
 # Reference
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/reference/`
 
 ## Contents
 
-- [Archival_Compliance_Gates](reference/Archival_Compliance_Gates.md)
-- [Detector_Meta_Registry](reference/Detector_Meta_Registry.md)
-- [Duplicate_Heuristic_Extended](reference/Duplicate_Heuristic_Extended.md)
-- [GITHUB_MCP_CAPABILITIES_DOCUMENTATION](reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md)
-- [Knobs_And_Toggles](reference/Knobs_And_Toggles.md)
-- [P5_Scoring_Integration](reference/P5_Scoring_Integration.md)
-- [P6_AST_Synonyms_Context](reference/P6_AST_Synonyms_Context.md)
-- [Security_Entropy](reference/Security_Entropy.md)
-- [Trend_Aggregation](reference/Trend_Aggregation.md)
-- [artifacts](reference/artifacts.md)
-- [audit_prompt](reference/audit_prompt.md)
-- [cli](reference/cli.md)
-- [codex_questions](reference/codex_questions.md)
-- [configs](reference/configs.md)
-- [eval_runner](reference/eval_runner.md)
-- [feature_engineering](reference/feature_engineering.md)
-- [feature_flags](reference/feature_flags.md)
-- [feature_store](reference/feature_store.md)
-- [metrics_cli](reference/metrics_cli.md)
-- [open_questions_by_capability](reference/open_questions_by_capability.md)
-- [plugins](reference/plugins.md)
-- [policy](reference/policy.md)
-- [reasoning_trace](reference/reasoning_trace.md)
-- [tools](reference/tools.md)
+- [Archival_Compliance_Gates](Archival_Compliance_Gates.md)
+- [Detector_Meta_Registry](Detector_Meta_Registry.md)
+- [Duplicate_Heuristic_Extended](Duplicate_Heuristic_Extended.md)
+- [GITHUB_MCP_CAPABILITIES_DOCUMENTATION](GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md)
+- [INDEX](INDEX.md)
+- [Knobs_And_Toggles](Knobs_And_Toggles.md)
+- [P5_Scoring_Integration](P5_Scoring_Integration.md)
+- [P6_AST_Synonyms_Context](P6_AST_Synonyms_Context.md)
+- [Security_Entropy](Security_Entropy.md)
+- [Trend_Aggregation](Trend_Aggregation.md)
+- [artifacts](artifacts.md)
+- [audit_prompt](audit_prompt.md)
+- [cli](cli.md)
+- [codex_questions](codex_questions.md)
+- [configs](configs.md)
+- [eval_runner](eval_runner.md)
+- [feature_engineering](feature_engineering.md)
+- [feature_flags](feature_flags.md)
+- [feature_store](feature_store.md)
+- [metrics_cli](metrics_cli.md)
+- [open_questions_by_capability](open_questions_by_capability.md)
+- [plugins](plugins.md)
+- [policy](policy.md)
+- [reasoning_trace](reasoning_trace.md)
+- [tools](tools.md)
 
 ---
 

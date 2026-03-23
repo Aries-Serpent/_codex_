@@ -1,14 +1,15 @@
 # Integrations
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/integrations/`
 
 ## Contents
 
-- [bridge_pattern_integration](integrations/bridge_pattern_integration.md)
-- [customgpt_actions](integrations/customgpt_actions.md)
-- [github_copilot_cli](integrations/github_copilot_cli.md)
-- [github_copilot_cli2](integrations/github_copilot_cli2.md)
+- [INDEX](INDEX.md)
+- [bridge_pattern_integration](bridge_pattern_integration.md)
+- [customgpt_actions](customgpt_actions.md)
+- [github_copilot_cli](github_copilot_cli.md)
+- [github_copilot_cli2](github_copilot_cli2.md)
 
 ---
 

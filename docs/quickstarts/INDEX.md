@@ -1,11 +1,12 @@
 # Quickstarts
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/quickstarts/`
 
 ## Contents
 
-- [offline_microperf](quickstarts/offline_microperf.md)
+- [INDEX](INDEX.md)
+- [offline_microperf](offline_microperf.md)
 
 ---
 

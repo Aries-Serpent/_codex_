@@ -1,17 +1,18 @@
 # Examples
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/examples/`
 
 ## Contents
 
-- [codex_symbolic_pipeline](examples/codex_symbolic_pipeline.md)
-- [eval_metrics](examples/eval_metrics.md)
-- [lora_quickstart](examples/lora_quickstart.md)
-- [minimal_run](examples/minimal_run.md)
-- [mint_tokens_per_run](examples/mint_tokens_per_run.md)
-- [model_card_template](examples/model_card_template.md)
-- [training-configs](examples/training-configs.md)
+- [INDEX](INDEX.md)
+- [codex_symbolic_pipeline](codex_symbolic_pipeline.md)
+- [eval_metrics](eval_metrics.md)
+- [lora_quickstart](lora_quickstart.md)
+- [minimal_run](minimal_run.md)
+- [mint_tokens_per_run](mint_tokens_per_run.md)
+- [model_card_template](model_card_template.md)
+- [training-configs](training-configs.md)
 
 ## Subdirectories
 

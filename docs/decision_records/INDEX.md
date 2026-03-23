@@ -1,16 +1,17 @@
 # Decision Records
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/decision_records/`
 
 ## Contents
 
-- [0001-record-architecture-decisions](decision_records/0001-record-architecture-decisions.md)
-- [ADR-codex-evaluator-v3](decision_records/ADR-codex-evaluator-v3.md)
-- [ADR-intent-approval-gate](decision_records/ADR-intent-approval-gate.md)
-- [ADR-open-entropy-resolutions](decision_records/ADR-open-entropy-resolutions.md)
-- [ADR-self-management-nox](decision_records/ADR-self-management-nox.md)
-- [ADR-status-reporter](decision_records/ADR-status-reporter.md)
+- [0001-record-architecture-decisions](0001-record-architecture-decisions.md)
+- [ADR-codex-evaluator-v3](ADR-codex-evaluator-v3.md)
+- [ADR-intent-approval-gate](ADR-intent-approval-gate.md)
+- [ADR-open-entropy-resolutions](ADR-open-entropy-resolutions.md)
+- [ADR-self-management-nox](ADR-self-management-nox.md)
+- [ADR-status-reporter](ADR-status-reporter.md)
+- [INDEX](INDEX.md)
 
 ---
 
