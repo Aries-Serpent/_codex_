@@ -234,6 +234,27 @@ For Copilot/AI-assisted PRs:
 
 ---
 
+### 🔐 Agent Token Delegation
+
+- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
+  - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]` to use delegated tokens
+  - Triggers the [`agent-auth-delegation`](.github/workflows/agent-auth-delegation.yml) gated workflow
+  - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
+  - Once approved, `@copilot continue` is posted automatically
+
+- [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)
+  - ⚠️ **Default: disabled** — Only ONE Copilot session active at a time
+  - When enabled: allows parallel Copilot sessions on different PRs
+  - When disabled: sessions are queued and executed sequentially
+  - **Caution:** Multiple sessions may cause merge conflicts on shared files
+  - See: [`docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md`](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md)
+
+### 💰 Cost Governance
+
+- [ ] **💰 Cost Proposal Approved**
+
+---
+
 ## Screenshots (if applicable)
 
 _Add screenshots for UI changes_
