@@ -562,6 +562,7 @@ jobs:
       needs.triage.outputs.fixable == 'false' &&
       needs.triage.outputs.pattern != 'self-healing' &&
       needs.triage.outputs.pattern != 'unknown' &&
+      needs.triage.outputs.pattern != 'unknown' &&
       needs.triage.outputs.pattern != ''
     steps:
       - name: "Post @copilot fix prompt on failing PR"
