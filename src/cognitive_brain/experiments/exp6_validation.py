@@ -24,6 +24,7 @@ from cognitive_brain.quantum.ghz_states import GHZStateManager
 from cognitive_brain.quantum.multi_agent_coordinator import (
     AgentDecision,
     MultiAgentCoordinator,
+    VotingStrategy,
 )
 from cognitive_brain.quantum.topology_manager import NetworkTopology, TopologyManager
 
@@ -111,7 +112,7 @@ def measure_decision_quality_improvement(
     """
     logger.info(f"Measuring decision quality improvement with {num_agents} agents")
 
-    coordinator = MultiAgentCoordinator()
+    coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.WEIGHTED)
 
     # Register agents with different roles and weights
     roles = ["analyzer", "validator", "executor", "reviewer"]
@@ -227,10 +228,7 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
     results = {}
 
     for num_agents in agent_counts:
-        coordinator = MultiAgentCoordinator()
-
-        for i in range(num_agents):
-            coordinator.register_agent(f"agent_{i}", role="analyzer", weight=1.0)
+        coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.MAJORITY)
 
         latencies = []
 

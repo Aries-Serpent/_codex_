@@ -113,8 +113,16 @@ def _cache_get(key: str) -> Any | None:
     if os.path.exists(p):
         with open(p, "r", encoding="utf-8") as f:
             obj = json.load(f)
+        if not isinstance(obj, dict):
+            _log.warning("Malformed cache entry at %s (expected dict, got %s); treating as cache miss", p, type(obj).__name__)
+            return None
         # Backwards compatibility: older cache files may not have a per-entry TTL
-        ttl = obj.get("ttl", 60)
+        raw_ttl = obj.get("ttl", 60)
+        try:
+            ttl = float(raw_ttl)
+        except (TypeError, ValueError):
+            _log.warning("Malformed cache entry at %s (non-numeric 'ttl': %r); treating as cache miss", p, raw_ttl)
+            return None
         ts = obj.get("ts")
         if ts is None or not isinstance(ts, (int, float)):
             _log.warning("Malformed cache entry at %s (missing or invalid 'ts'); treating as cache miss", p)

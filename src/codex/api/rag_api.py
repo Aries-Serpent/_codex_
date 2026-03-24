@@ -70,14 +70,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 class BuildIndexRequest(BaseModel):
     """Request to build an index."""
 
-    files: List[str] = Field(..., description="File patterns to index (glob)")
+    files: List[str] = Field(..., description="Concrete file paths to index")
     index_name: str = Field(..., description="Name for the index")
     tenant_id: str = Field(default="default", description="Tenant ID")
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
-    provider: str = Field(
-        default="auto", description="Embedding provider (auto, tfidf, local, openai)"
-    )
 
 
 class BuildIndexResponse(BaseModel):
@@ -226,9 +223,9 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
     try:
         from codex.rag import build_index_from_files
 
-        # Build index
+        # Convert str paths to Path objects expected by build_index_from_files
         index_path = build_index_from_files(
-            files=build_request.files,
+            files=[Path(f) for f in build_request.files],
             index_name=build_request.index_name,
             tenant_id=build_request.tenant_id,
             chunk_size=build_request.chunk_size,
