@@ -4,26 +4,43 @@
 > **Introduced:** S163 (2026-03-20)  
 > **Last re-created:** S174 (2026-03-21) — branch recreated from main + S174 consolidation merged in  
 > **Promotion PR:** Open `0D_base_` → `main` (see PARITY_CHECKLIST.md S174 section)  
-> **Enforced by:** `agent-auth-delegation.yml` REQ-11 · `copilot-session-chain.yml`
+> **Enforced by:** `agent-auth-delegation.yml` REQ-11 · `copilot-session-chain.yml`  
+> **Updated:** S188 (2026-03-24) — documented promotion-PR direct-session exception
 
 ---
 
 ## Overview
 
-`0D_base_` is the **staging integration branch** for this repository. It is NOT
-a working branch — no Copilot Coding Agent session may commit directly to it.
+`0D_base_` is the **staging integration branch** for this repository.  It has
+**two valid usage modes**:
 
-Every agent session creates its own **sub-PR branch** targeting `0D_base_`. Once
-reviewed and merged, `0D_base_` accumulates all that work and is promoted to
-`main` through the promotion PR.
+1. **Sub-PR mode (default)** — Agent sessions run on a `copilot/session-*` branch
+   that targets `0D_base_`.  Once reviewed and merged, `0D_base_` accumulates the
+   work and is promoted to `main` through the promotion PR.
+
+2. **Promotion-PR mode (direct session — ideal for consolidation)** — When the
+   open PR is the **promotion PR itself** (`0D_base_` → `main`), the Copilot
+   Coding Agent works **directly on `0D_base_`**.  This is the preferred formation
+   when minimizing sub-PR churn: it collapses the sub-PR + promotion-PR steps into
+   one PR and one review cycle.
 
 ```
-copilot/session-*  ──► 0D_base_  ──► main
-  (agent sessions)      (staging)    (production)
-  Each sub-PR                         promotion PR
-  independently                       (open)
-  reviewed
+Sub-PR mode (default):
+  copilot/session-*  ──► 0D_base_  ──► main
+    (agent sessions)      (staging)    (production)
+    Each independently                  promotion PR
+    reviewed sub-PR
+
+Promotion-PR mode (direct session — ideal):
+  0D_base_  ──► main
+  (agent works here directly)
+  Single PR, single review cycle
 ```
+
+REQ-11 in `agent-auth-delegation.yml` enforces this distinction automatically:
+it **PASSES** when `head=0D_base_` and `base=main` (promotion PR), and **FAILS**
+when `head=0D_base_` and `base` is anything other than `main` (direct session
+on a non-promotion target).
 
 ---
 
@@ -31,18 +48,21 @@ copilot/session-*  ──► 0D_base_  ──► main
 
 | Rule | Applies to | Description |
 |------|-----------|-------------|
-| **REQ-11** | All Copilot sessions | Session must run on a `copilot/session-*` or `copilot/sub-pr-*` sub-branch targeting `0D_base_`, never on `0D_base_` directly. Enforced by `cognitive-preflight` gate. |
+| **REQ-11** | Sub-PR sessions | Session on a `copilot/session-*` or `copilot/sub-pr-*` branch must target `0D_base_`, not `main`. If `head=0D_base_` and `base≠main`, REQ-11 hard-blocks. |
+| **REQ-11 exception** | Promotion-PR sessions | When `head=0D_base_` and `base=main` (promotion PR), REQ-11 **passes** — the agent works directly on `0D_base_`. This is the **ideal formation** for consolidation sessions. |
 | **REQ-10** | All PRs | Branch must be current with its base. For sub-PRs this means current with `0D_base_`. Auto-passes when gap is all `[skip ci]` bot commits. |
-| **No direct push** | `0D_base_` | Never push work commits directly to `0D_base_`. Only merges from sub-PRs. |
-| **Promotion PR** | `0D_base_` → `main` | PR #3630 is the permanent promotion vehicle. It is updated with merge commits only; never used as an agent session target. |
+| **No direct push** | `0D_base_` | Never force-push or push work commits directly to `0D_base_` outside of an open PR. All work is committed under an open PR (either sub-PR or promotion PR). |
+| **Promotion PR** | `0D_base_` → `main` | The open promotion PR (`0D_base_` → `main`) is the preferred agent session target when consolidating work. Copilot commits directly to `0D_base_` on this PR. |
 
 ---
 
-## Flow Diagram
+## Flow Diagrams
+
+### Mode A — Sub-PR (default, for isolated sessions)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AGENT WORK CYCLE                             │
+│              AGENT WORK CYCLE — SUB-PR MODE                     │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  1. New task arrives                                            │
@@ -61,34 +81,64 @@ copilot/session-*  ──► 0D_base_  ──► main
 │     • copilot-session-chain.yml auto-opens next session PR      │
 │     ↓                                                           │
 │  5. When 0D_base_ accumulates enough reviewed work:             │
-│     • PR #3630 (0D_base_ → main) is promoted                   │
+│     • Promotion PR (0D_base_ → main) is merged                 │
 │     • main receives all reviewed agent work at once             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Mode B — Promotion-PR Direct Session (ideal for consolidation)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│         AGENT WORK CYCLE — PROMOTION-PR DIRECT MODE             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  1. Open promotion PR already exists (0D_base_ → main)          │
+│     ↓                                                           │
+│  2. Copilot Coding Agent works DIRECTLY on 0D_base_             │
+│     • @copilot triggered on the promotion PR                    │
+│     • Commits pushed straight to 0D_base_                       │
+│     • CI runs on 0D_base_ directly                              │
+│     • REQ-11 PASSES (head=0D_base_, base=main)                  │
+│     ↓                                                           │
+│  3. Promotion PR approved + merged → main                       │
+│     • No intermediate sub-PR required                           │
+│     • Minimizes training sub-PRs and branch churn               │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**When to use Mode B:** Consolidation sessions, cherry-picks from closed sub-PRs,
+review-thread fixes where all work belongs in the same promotion PR.  This is the
+**ideal formation** — it reduces sub-PR overhead while keeping all work in a single
+reviewable PR targeting `main`.
+
 ---
 
 ## Why This Model
 
-| Concern | Without model | With model |
-|---------|--------------|------------|
-| **Review** | Large, hard-to-review PRs | Small, focused sub-PRs per session |
-| **Stability** | Direct commits to main risk regressions | `0D_base_` is a buffer; `main` only gets vetted work |
-| **Traceability** | Interleaved agent + human commits | Each session has its own PR + review thread |
-| **CI isolation** | All CI shares one branch state | Each sub-PR has independent CI |
-| **Rollback** | Difficult to revert one session's work | Revert one sub-PR merge |
-| **Automation** | Agent must know about main | Agent only targets `0D_base_` |
+| Concern | Sub-PR mode | Promotion-PR direct mode |
+|---------|-------------|--------------------------|
+| **Review** | Small, focused per-session PRs | Single PR covers all consolidated work |
+| **Stability** | `0D_base_` buffer; `main` gets vetted work | Same — direct commits to `0D_base_` still gated by PR review |
+| **Traceability** | Each session has its own PR + review thread | All work in one PR; simpler history |
+| **Sub-PR count** | One PR per session (may be many) | **Zero sub-PRs — ideal for consolidation** |
+| **Rollback** | Revert one sub-PR merge | Revert the promotion PR |
+| **REQ-11** | PASS (head=copilot/session-*, base=0D_base_) | PASS (head=0D_base_, base=main) |
 
 ---
 
 ## Integration Branches
 
-The following branches are staging gates — never agent session targets:
+The following branches are staging gates:
 
 | Branch | Role | Promotion target |
 |--------|------|-----------------|
-| `0D_base_` | Primary staging gate | `main` via PR #3630 |
+| `0D_base_` | Primary staging gate | `main` via the open promotion PR |
+
+`0D_base_` serves **dual roles**: (1) the base for all sub-PRs in sub-PR mode,
+and (2) the HEAD of the promotion PR in promotion-PR direct-session mode.
 
 To add a new integration branch, update:
 1. `INTEGRATION_BRANCHES` in `agent-auth-delegation.yml` (REQ-11 guard)
@@ -135,21 +185,41 @@ gh pr create \
 gh pr comment --body "@copilot+claude-sonnet-4.6 continue"
 ```
 
-### Copy-paste Copilot prompt
+### Copy-paste Copilot prompt for a sub-PR session
 
 Post this on your new sub-PR to start the session:
 
 ```
 @copilot+claude-sonnet-4.6 continue
 
-You are working on branch `copilot/session-*` — a new sub-PR targeting the
+You are working on branch `copilot/session-*` — a sub-PR targeting the
 staging integration branch `0D_base_`.
 
 Architecture:
   copilot/session-*  ──►  0D_base_  ──►  main
   (this PR)               (staging gate)   (promotion PR)
 
-Do NOT commit directly to `0D_base_`. All work goes through this sub-PR.
+Commit all work to this sub-PR branch. Do NOT bypass it by pushing
+directly to `0D_base_` — that is reserved for promotion-PR sessions.
+Begin by reviewing the current CI status and addressing any failures.
+```
+
+### Copy-paste Copilot prompt for a promotion-PR direct session
+
+Post this on the open `0D_base_` → `main` promotion PR:
+
+```
+@copilot+claude-sonnet-4.6 continue
+
+You are working DIRECTLY on branch `0D_base_` — the promotion PR targeting `main`.
+
+Architecture:
+  0D_base_  ──►  main
+  (this PR — work here directly)
+
+REQ-11 passes because this is the promotion PR (head=0D_base_, base=main).
+This is the ideal formation for consolidation sessions: no sub-PR required.
+Commit all work directly to `0D_base_` and push to this PR.
 Begin by reviewing the current CI status and addressing any failures.
 ```
 

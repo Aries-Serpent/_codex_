@@ -91,41 +91,57 @@ step is confirmed complete (via session execution plan posted as PR comment).
 
 ### 0b. Integration Branch Model (HARD RULE — enforced by CI REQ-11)
 
-**`0D_base_` is the staging integration branch.  Copilot sessions MUST NEVER run
-directly on it.**
+**`0D_base_` is the staging integration branch.**  There are **two valid session
+modes**; which applies depends on the PR's base branch:
+
+| Session mode | head | base | REQ-11 result |
+|---|---|---|---|
+| **Sub-PR** (default) | `copilot/session-*` | `0D_base_` | ✅ PASS |
+| **Promotion-PR direct** (**ideal for consolidation**) | `0D_base_` | `main` | ✅ PASS |
+| ❌ Wrong target | `0D_base_` | anything other than `main` | 🚫 FAIL — hard-blocked |
+
+Running directly on `0D_base_` is **explicitly acceptable and preferred** when the
+open PR is the promotion PR (`0D_base_` → `main`).  This collapses the sub-PR +
+promotion-PR steps into a single reviewable PR and minimises sub-PR churn.
 
 #### Architecture
 
 ```
-copilot/session-*  ──►  0D_base_  ──►  main
-  (agent sessions)       (staging)     (production)
-  Each sub-PR                           PR #3630
-  independently                         promotion
-  reviewed
+Sub-PR mode (default):
+  copilot/session-*  ──►  0D_base_  ──►  main
+    (agent sessions)       (staging)     (production)
+    Each independently                    promotion PR
+    reviewed sub-PR
+
+Promotion-PR direct mode (ideal):
+  0D_base_  ──►  main
+  (agent works here directly — single PR, single review cycle)
 ```
 
 #### Rules — all enforced by `cognitive-preflight` REQ-11
 
 | Rule | Enforcement |
 |------|-------------|
-| Agent sessions run ONLY on `copilot/session-*` or `copilot/sub-pr-*` sub-branches | REQ-11 CI hard-block if head == `0D_base_` |
-| Sub-PRs always target `0D_base_`, never `main` directly | PR creation convention + session-chain workflow |
-| `0D_base_` is updated only by merging reviewed sub-PRs | No direct-push rule — REQ-11 guards the session gate |
-| Promotion (`0D_base_` → `main`) via PR #3630 only when staging is ready | Human approval required |
+| Agent sessions on `copilot/session-*` must target `0D_base_`, not `main` | PR creation convention + session-chain workflow |
+| Agent sessions on `0D_base_` are only allowed when `base=main` (promotion PR) | REQ-11 CI hard-block if `head=0D_base_` AND `base≠main` |
 | `0D_base_` may be behind `main` by bot `[skip ci]` commits — this is expected | REQ-10 auto-passes bot-only divergence |
+| Promotion (`0D_base_` → `main`) requires PR review + CI green | Human approval required |
 
 #### To start a new agent session
 
 ```bash
-# Automated (creates branch + PR + @copilot trigger automatically):
+# Option A — Sub-PR (automated, creates branch + PR + @copilot trigger):
 gh workflow run copilot-session-chain.yml \
   -f source_branch=0D_base_ \
   -f session_title="<task description>"
+
+# Option B — Promotion-PR direct (post @copilot on the open 0D_base_ → main PR):
+gh pr comment <promotion_pr_number> --body "@copilot+claude-sonnet-4.6 continue"
 ```
 
 **Enforcement:** `agent-auth-delegation.yml` `cognitive-preflight` REQ-11 guard — fires
-as the FIRST step; calls `core.setFailed()` if `pr.head.ref` is an integration branch;
-posts a rich redirect comment with step-by-step instructions.
+as the FIRST step; hard-blocks only when `head=0D_base_` AND `base≠main`; passes for
+all sub-PR sessions and for promotion-PR direct sessions.
 
 **Reference:** `.codex/docs/INTEGRATION_BRANCH_MODEL.md`
 
