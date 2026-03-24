@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3732)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3732 (SHA `1de6a51a`) at 2026-03-24T03:31Z [auto-generated]
+
 ### Fixed (S184 — PR #3729)
 - **Session chain dedup fix**: `copilot-session-chain.yml` `retrigger_existing` step posts `@copilot continue` with explicit no-new-branch warning to prevent sub-sub branch creation
 - Updated `AGENT_ACCOUNTABILITY_REPORT.md` with proper S184 session summary (commit directly to session branch per policy)
