@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import re
 import time
@@ -31,6 +32,8 @@ TOKEN = os.getenv("CODEX_GITHUB_TOKEN", "")
 BASE = "https://api.github.com"
 CACHE_DIR = os.getenv("CODEX_CACHE_DIR", ".codex/cache")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+_log = logging.getLogger(__name__)
 
 # ── SSRF prevention ────────────────────────────────────────────────────────────
 # Validate owner/repo/path parameters to prevent partial SSRF via URL path injection.
@@ -72,6 +75,25 @@ def _validate_file_path(path: str) -> None:
         )
 
 
+def _validate_ref(ref: str) -> None:
+    """Reject ref values that do not match the safe branch name pattern.
+
+    Prevents partial SSRF where a crafted ref value contains path-traversal
+    or other unsafe sequences that could redirect the HTTP request to an
+    unintended GitHub API path.
+
+    Note: the explicit ``".." in ref`` check is required because
+    ``_SAFE_BRANCH_RE`` allows individual dot characters (e.g. ``v1.0``)
+    and slashes (for nested branches), so a sequence like ``foo..bar``
+    would pass the regex but is still a path-traversal pattern.
+    """
+    if not _SAFE_BRANCH_RE.match(ref) or ".." in ref:
+        raise ValueError(
+            f"Invalid ref value {ref!r}: must contain only alphanumeric, "
+            "hyphen, underscore, dot, or slash characters (no path traversal)"
+        )
+
+
 def _auth_headers() -> Dict[str, str]:
     h = {"Accept": "application/vnd.github+json"}
     if TOKEN:
@@ -79,18 +101,35 @@ def _auth_headers() -> Dict[str, str]:
     return h
 
 
+def _cache_path(key: str) -> str:
+    return os.path.join(
+        CACHE_DIR,
+        hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json",  # nosec B324 - Not for security, cache key only
+    )
+
+
 def _cache_get(key: str) -> Any | None:
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json")  # nosec B324 - Not for security, cache key only
+    p = _cache_path(key)
     if os.path.exists(p):
         with open(p, "r", encoding="utf-8") as f:
-            return json.load(f)
+            obj = json.load(f)
+        # Backwards compatibility: older cache files may not have a per-entry TTL
+        ttl = obj.get("ttl", 60)
+        ts = obj.get("ts")
+        if ts is None or not isinstance(ts, (int, float)):
+            _log.warning("Malformed cache entry at %s (missing or invalid 'ts'); treating as cache miss", p)
+            return None
+        if time.time() - ts >= ttl:
+            # Treat expired entries as cache misses
+            return None
+        return obj.get("data")
     return None
 
 
 def _cache_set(key: str, data: Any, ttl: int = 60) -> None:
     # naive cache with timestamp; actions are human-in-the-loop so short TTL is fine
-    obj = {"ts": time.time(), "data": data}
-    p = os.path.join(CACHE_DIR, hashlib.sha1(key.encode(), usedforsecurity=False).hexdigest() + ".json")  # nosec B324 - Not for security, cache key only
+    obj = {"ts": time.time(), "ttl": ttl, "data": data}
+    p = _cache_path(key)
     with open(p, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
@@ -106,8 +145,8 @@ def list_branches(owner: str, repo: str):
     _validate_repo_component(repo, "repo")
     key = f"branches:{owner}/{repo}"
     c = _cache_get(key)
-    if c and time.time() - c["ts"] < 60:
-        return c["data"]
+    if c is not None:
+        return c
     data = gh_get(f"{BASE}/repos/{owner}/{repo}/branches?per_page=100")
     _cache_set(key, data)
     return data
@@ -119,6 +158,7 @@ def get_file_text(owner: str, repo: str, ref: str, path: str) -> str:
     # the intended GitHub URL structure.
     _validate_repo_component(owner, "owner")
     _validate_repo_component(repo, "repo")
+    _validate_ref(ref)
     _validate_file_path(path)
     # Use raw endpoint; fallback to contents API
     raw = f"https://raw.githubusercontent.com/{owner}/{repo}/{quote(ref)}/{quote(path)}"
@@ -284,7 +324,15 @@ class App(BaseHTTPRequestHandler):
 
         content_length = int(self.headers.get("Content-Length", 0))
         if content_length > 1_048_576:  # 1 MB guard against DoS
-            return self._ok({"error": "request body too large (max 1 MB)"}, 413)
+            return self._ok(
+                {
+                    "error": (
+                        "Request body exceeds 1 MB limit. "
+                        "Please reduce payload size or contact administrator for a limit increase."
+                    )
+                },
+                413,
+            )
         raw_body = self.rfile.read(content_length) if content_length > 0 else b"{}"
         try:
             body: Dict[str, Any] = json.loads(raw_body) if raw_body.strip() else {}

@@ -94,11 +94,11 @@ def test_no_token_warns(monkeypatch, caplog):
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     import logging
 
-    # `init_logger("codex")` in `src/codex_ml/logging/structured.py` (called by
-    # tools/github/gh_api.py) sets `propagate=False` on the "codex" logger.
-    # This prevents caplog (which installs a handler on the root logger) from
-    # capturing records emitted by child loggers such as codex.github.mcp_poster.
-    # Temporarily re-enable propagation for the duration of this assertion.
+    # The "codex" logger may have `propagate=False` configured elsewhere in the
+    # codebase. This prevents caplog (which installs a handler on the root
+    # logger) from capturing records emitted by child loggers such as
+    # codex.github.mcp_poster. Temporarily re-enable propagation for the
+    # duration of this assertion so the warning can be observed by caplog.
     codex_logger = logging.getLogger("codex")
     original_propagate = codex_logger.propagate
     codex_logger.propagate = True
@@ -738,23 +738,31 @@ def test_cli_create_pr_draft_flag(monkeypatch):
 # ---------------------------------------------------------------------------
 
 
-def test_record_cb_pattern_logs_always(poster, caplog):
+@pytest.fixture
+def codex_logger_propagating():
+    """Ensure the 'codex' logger has propagate=True during a test and restore afterwards."""
+    import logging
+
+    logger = logging.getLogger("codex")
+    original_propagate = logger.propagate
+    logger.propagate = True
+    try:
+        yield logger
+    finally:
+        logger.propagate = original_propagate
+
+
+def test_record_cb_pattern_logs_always(poster, caplog, codex_logger_propagating):
     """_record_cb_pattern emits an INFO log regardless of cognitive brain availability."""
     import logging
 
-    codex_logger = logging.getLogger("codex")
-    original_propagate = codex_logger.propagate
-    codex_logger.propagate = True
-    try:
-        with caplog.at_level(logging.INFO, logger="codex.github.mcp_poster"):
-            poster._record_cb_pattern(
-                "CB-branch-create",
-                "create_ref: refs/heads/test",
-                {"repo": "owner/repo", "sha": "abc123"},
-            )
-        assert "CB-branch-create" in caplog.text
-    finally:
-        codex_logger.propagate = original_propagate
+    with caplog.at_level(logging.INFO, logger="codex.github.mcp_poster"):
+        poster._record_cb_pattern(
+            "CB-branch-create",
+            "create_ref: refs/heads/test",
+            {"repo": "owner/repo", "sha": "abc123"},
+        )
+    assert "CB-branch-create" in caplog.text
 
 
 def test_create_ref_records_cb_pattern(poster, monkeypatch):
@@ -902,12 +910,12 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
 
     # Patch parse_args so args.command is None (no subcommand given)
-    original_parse = argparse.ArgumentParser.parse_args
 
-    def patched_parse(self, args=None, namespace=None):
-        ns = original_parse(self, ["post-comment", "--repo", "r/r", "--pr", "1", "--body", "x"], namespace)
-        ns.command = None  # Override to simulate unrecognised command
-        return ns
+    def patched_parse(self, _args=None, _namespace=None):  # noqa: ARG001
+        # Simulate a parse result where no recognised subcommand was provided.
+        # _args and _namespace are part of the ArgumentParser.parse_args signature
+        # but are intentionally ignored here — we always return a fixed Namespace.
+        return argparse.Namespace(command=None)
 
     monkeypatch.setattr(argparse.ArgumentParser, "parse_args", patched_parse)
     rc = main([])

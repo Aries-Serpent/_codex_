@@ -17,11 +17,14 @@ import { defineConfig, devices } from '@playwright/test';
 // dotenv.config();
 
 /**
- * IMP-007: HAR replay configuration for offline CI.
+ * IMP-007: HAR replay configuration flag for offline CI.
  *
  * Extracted as a named constant for readability and testability.
  * When `CI` or `PLAYWRIGHT_HAR_REPLAY` is set, service workers are blocked
- * so that all network requests are intercepted by the pre-recorded HAR cache.
+ * so that network traffic can be intercepted by a pre-recorded HAR cache
+ * by other parts of the test harness (for example, via Playwright routing
+ * or global setup code). This file only toggles the HAR mode flag; it does
+ * not itself define which HAR file is used or how routes are matched.
  */
 const shouldUseHarReplay = !!(process.env.CI || process.env.PLAYWRIGHT_HAR_REPLAY);
 const harReplayConfig = shouldUseHarReplay ? { serviceWorkers: 'block' as const } : {};
@@ -73,14 +76,17 @@ export default defineConfig({
 
     /* IMP-007: HAR replay for offline CI.
      *
-     * When running in CI (or when PLAYWRIGHT_HAR_REPLAY=1 is set) we route
-     * all requests matching the captured URL patterns to the pre-recorded
-     * HAR file instead of hitting the live backend.  This makes the E2E
-     * suite fully self-contained and deterministic in environments where the
-     * cognitive_app CLI server is not started.
+     * When running in CI (or when PLAYWRIGHT_HAR_REPLAY=1 is set) this
+     * configuration blocks service workers via `harReplayConfig` so that
+     * Playwright's HAR-based routing logic (implemented elsewhere in the
+     * test harness) can reliably intercept network requests instead of
+     * hitting the live backend. This makes the E2E suite deterministic in
+     * environments where the cognitive_app CLI server is not started.
      *
-     * The HAR file is captured by the weekly `har-capture.yml` workflow and
-     * stored at `cognitive_app/public/har-cache/api-demo.har`.
+     * The concrete HAR file (for example, a file captured by a scheduled
+     * workflow and stored at `cognitive_app/public/har-cache/api-demo.har`)
+     * and the actual route-matching rules are configured outside this file.
+     * This config layer only enables or disables HAR mode.
      */
     ...harReplayConfig,
   },

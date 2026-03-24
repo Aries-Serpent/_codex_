@@ -20,6 +20,11 @@ import pytest
 # ---------------------------------------------------------------------------
 # Path bootstrap so we can import scripts directly
 # ---------------------------------------------------------------------------
+# NOTE: The playwright scraper lives under scripts/security and is not part of the
+# installed Python package. For these tests, we temporarily prepend that directory
+# to sys.path so `import playwright_scraper` works without requiring packaging or
+# pytest pythonpath configuration changes. This keeps test behavior aligned with
+# how the scripts are used in this repository layout.
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "security"))
 
 # ---------------------------------------------------------------------------
@@ -946,13 +951,10 @@ class TestMainWithPlaywright:
         out = tmp_path / "out.json"
         captured = {}
 
-        original_init = ps.PlaywrightScraper.__init__
-
-        def fake_init(self, repo_url, github_token=None, headless=True, timeout_ms=30_000):
-            captured["token"] = github_token
-            captured["timeout"] = timeout_ms
-            original_init(self, repo_url, github_token=github_token,
-                          headless=headless, timeout_ms=timeout_ms)
+        def fake_init(self, *args, **kwargs):
+            # Capture arguments without invoking the real initializer to avoid side effects.
+            captured["token"] = kwargs.get("github_token")
+            captured["timeout"] = kwargs.get("timeout_ms", 30_000)
 
         with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b",
                                  "--output", str(out),
