@@ -122,7 +122,8 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
         lines += ["", "## Subdirectories", ""]
         for d in subdirs:
             subcount = len(list(d.rglob("*.md")))
-            lines.append(f"- **[{d.name}/]({d.name}/)** — {subcount} files")
+            noun = "file" if subcount == 1 else "files"
+            lines.append(f"- **[{d.name}/]({d.name}/)** — {subcount} {noun}")
 
     lines += [
         "",

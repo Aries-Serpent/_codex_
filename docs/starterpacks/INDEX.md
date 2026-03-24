@@ -6,7 +6,7 @@
 
 ## Subdirectories
 
-- **[zendesk_desired_state/](zendesk_desired_state/)** — 1 files
+- **[zendesk_desired_state/](zendesk_desired_state/)** — 1 file
 
 ---
 
