@@ -180,10 +180,11 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
           echo "── §0.4: Inspecting PR for merge conflicts ──"
           BASE="${{ github.base_ref }}"
-          HEAD="${{ github.head_ref }}"
+          HEAD="${HEAD_REF}"
           PR_NUMBER="${{ github.event.pull_request.number || '' }}"
 
           # 1. Check PR mergeable status via GitHub API

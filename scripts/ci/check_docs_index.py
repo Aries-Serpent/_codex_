@@ -106,6 +106,8 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
     ]
 
     for f in md_files:
+        if f.name in INDEX_NAMES:
+            continue  # skip self-referencing index/readme entries
         rel = f.relative_to(directory)
         lines.append(f"- [{f.stem}]({rel})")
 
