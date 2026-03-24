@@ -1,5 +1,6 @@
 {
   "schema_version": "1.0",
+  "generated_at": "2026-03-24T06:41:11Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1179,7 +1180,7 @@
     },
     {
       "name": "copilot-session-chain",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1927,5 +1928,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "292ee3339bbb23e99d4541ee9435ce388c49e7c4afdf2fd11b406036ca1c6193"
+  "integrity_sha256": "05345558034661d2e5e2a1497832ac9e1b3cd3e0e2aa7c8921554d730748c5b3"
 }
