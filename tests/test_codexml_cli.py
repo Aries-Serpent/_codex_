@@ -65,7 +65,6 @@ def test_codexml_cli_skips_eval(monkeypatch):
 
 
 def test_run_training_invokes_functional_entry(monkeypatch):
-    import sys
     cli_main = sys.modules.get("codex_ml.cli.main")
     if cli_main is None:
         pytest.skip("codex_ml.cli.main not loaded")

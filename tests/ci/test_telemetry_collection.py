@@ -352,8 +352,6 @@ class TestClassifyRunCLI:
 
     def test_classify_run_main_entrypoint_prints_pattern(self, capsys):
         """main() with --classify-run prints the pattern and exits cleanly."""
-        import sys as _sys
-
         import collect_telemetry as ct_mod
 
         mock_run_resp = Mock()
@@ -371,7 +369,7 @@ class TestClassifyRunCLI:
 
         with (
             patch("requests.get", side_effect=[mock_run_resp, mock_jobs_resp]),
-            patch.object(_sys, "argv", [
+            patch.object(sys, "argv", [
                 "collect_telemetry.py",
                 "--owner", "test-owner",
                 "--repo", "test-repo",
@@ -386,13 +384,11 @@ class TestClassifyRunCLI:
 
     def test_classify_run_api_error_prints_unknown(self, capsys):
         """main() with --classify-run prints 'unknown' when API call fails."""
-        import sys as _sys
-
         import collect_telemetry as ct_mod
 
         with (
             patch("requests.get", side_effect=Exception("network error")),
-            patch.object(_sys, "argv", [
+            patch.object(sys, "argv", [
                 "collect_telemetry.py",
                 "--owner", "test-owner",
                 "--repo", "test-repo",
