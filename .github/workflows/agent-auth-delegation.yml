@@ -131,15 +131,27 @@ jobs:
       - name: "Parse PR body for delegation checkbox"
         id: check
         env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
           echo "pr_number=${PR_NUM}" >> "$GITHUB_OUTPUT"
 
+          # On workflow_dispatch, github.event.pull_request.body is empty.
+          # Fetch the PR body via gh CLI so checkbox detection works for
+          # manually triggered delegation runs.
+          RESOLVED_BODY="${PR_BODY}"
+          if [ -z "${RESOLVED_BODY}" ] && [ -n "${PR_NUM}" ]; then
+            RESOLVED_BODY=$(gh pr view "${PR_NUM}" \
+              --repo Aries-Serpent/_codex_ \
+              --json body --jq '.body' 2>/dev/null || true)
+            echo "ℹ️  PR body fetched via gh pr view (workflow_dispatch path)"
+          fi
+
           # Match a checked markdown checkbox that contains the variable name.
           # Pattern: "- [x]" followed by anything then "COPILOT_AGENT_AUTH_ENABLED"
           # Use POSIX extended regex (-E) for broad grep compatibility across runners.
-          if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
+          if printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
             echo "auth_requested=true"  >> "$GITHUB_OUTPUT"
             echo "✅ COPILOT_AGENT_AUTH_ENABLED checkbox is checked — requesting approval"
           else
@@ -149,7 +161,7 @@ jobs:
 
           # Detect "Multiple Copilot Coding Agent Sessions" checkbox (S182)
           # Default: disabled (single-session mode). When checked, allows parallel sessions.
-          if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_MULTI_SESSION'; then
+          if printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_MULTI_SESSION'; then
             echo "multi_session=true"  >> "$GITHUB_OUTPUT"
             echo "✅ COPILOT_MULTI_SESSION checkbox is checked — parallel sessions allowed"
           else
