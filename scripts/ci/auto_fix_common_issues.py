@@ -1055,7 +1055,6 @@ class CommonIssueFixer:
             kw:     The ``ast.keyword`` node for the *duplicate* (second) kwarg.
                     Must have ``end_lineno == value.lineno`` (single-line value).
         """
-        import ast as _ast
 
         val_col: int = kw.value.col_offset          # 0-based column of value start
         val_end_col: int = kw.value.end_col_offset  # type: ignore[union-attr]
