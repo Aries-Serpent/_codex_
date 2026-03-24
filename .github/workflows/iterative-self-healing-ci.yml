@@ -491,7 +491,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: triage
-    if: needs.triage.outputs.fixable == 'false'
+    # Only escalate to human for patterns excluded from copilot-escalation
+    # (self-healing cascades, unknown root-cause, or empty pattern).
+    # All other fixable==false cases are handled by copilot-escalation first.
+    if: >
+      needs.triage.outputs.fixable == 'false' &&
+      (needs.triage.outputs.pattern == 'self-healing' ||
+       needs.triage.outputs.pattern == 'unknown' ||
+       needs.triage.outputs.pattern == '')
 
     steps:
       - name: Post escalation comment with documented RCA
@@ -552,6 +559,7 @@ jobs:
     if: >
       needs.triage.outputs.fixable == 'false' &&
       needs.triage.outputs.pattern != 'self-healing' &&
+      needs.triage.outputs.pattern != 'unknown' &&
       needs.triage.outputs.pattern != ''
     steps:
       - name: "Post @copilot fix prompt on failing PR"

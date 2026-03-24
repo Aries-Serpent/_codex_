@@ -56,7 +56,7 @@ jobs:
     name: "🛡️ Restore required PR checkboxes"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
       pull-requests: write
       contents: read
@@ -114,6 +114,7 @@ jobs:
     needs: [pr-body-checkpoint-guardian]
     if: |
       always() &&
+      github.event.action != 'closed' &&
       (vars.COPILOT_AGENT_AUTH_ENABLED != 'true' || github.event_name == 'workflow_dispatch')
     # Skip entirely when delegation is already active. Without this guard,
     # every PR body edit (e.g., report_progress updating the description)
@@ -196,6 +197,7 @@ jobs:
     name: "🧠 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: github.event.action != 'closed'
 
     steps:
       - name: Checkout repository
@@ -224,6 +226,7 @@ jobs:
           script: |
             // Branches that are staging gates — never the HEAD of an agent session.
             const INTEGRATION_BRANCHES = ['0D_base_'];
+            const PROMOTION_TARGETS = ['main', 'master'];
             const pr = context.payload.pull_request;
             if (!pr) return;
 
@@ -235,7 +238,16 @@ jobs:
               return;
             }
 
-            // HEAD is an integration branch — build redirect comment.
+            // Exception: this is a promotion PR (integration_branch → main/master).
+            // Promotion merges are the intended flow; REQ-11 only blocks direct
+            // coding sessions, not the staging-gate → main promotion PR.
+            if (PROMOTION_TARGETS.includes(base)) {
+              core.info(`REQ-11 PASS: '${head}' → '${base}' is a promotion PR. Promotion merges are allowed.`);
+              return;
+            }
+
+            // HEAD is an integration branch opened against a non-promotion target
+            // — build redirect comment.
             const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
             const ts = new Date().toISOString();
             const MARKER = '<!-- req11-integration-branch-guard -->';
@@ -1175,6 +1187,7 @@ jobs:
     needs: [detect-checkbox, await-approval, cognitive-preflight]
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: github.event.action != 'closed'
 
     steps:
       - uses: actions/checkout@v4
@@ -1480,7 +1493,6 @@ jobs:
                   // Same PR — re-acquire is fine
                   sessionBusy = false;
                 }
-              }
               }
             }
 

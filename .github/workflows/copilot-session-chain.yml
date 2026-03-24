@@ -136,8 +136,36 @@ jobs:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 
+      # ── Deduplication guard: skip if an open session PR already exists ──
+      # Prevents duplicate PRs when the workflow is triggered multiple times
+      # (e.g., concurrent merged sub-PRs or repeated manual dispatches).
+      - name: "Deduplication check — skip if open session PR exists"
+        id: dedup_check
+        run: |
+          set -euo pipefail
+          OPEN_SESSION_PR=$(gh pr list \
+            --repo Aries-Serpent/_codex_ \
+            --base "${INTEGRATION_BRANCH}" \
+            --head "copilot/session-*" \
+            --state open \
+            --json number,headRefName \
+            --jq '.[0] | "\(.number):\(.headRefName)"' 2>/dev/null || true)
+
+          if [ -n "${OPEN_SESSION_PR}" ]; then
+            PR_NUM="${OPEN_SESSION_PR%%:*}"
+            BRANCH_NAME="${OPEN_SESSION_PR##*:}"
+            echo "⏭️ Skipping — open session PR #${PR_NUM} already exists for branch '${BRANCH_NAME}' targeting '${INTEGRATION_BRANCH}'"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "existing_pr=${PR_NUM}" >> "$GITHUB_OUTPUT"
+          else
+            echo "✅ No open session PR found — proceeding to create new session"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "existing_pr=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create session branch and open PR
         id: create_pr
+        if: steps.dedup_check.outputs.skip != 'true'
         env:
           SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
           CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
@@ -182,6 +210,7 @@ jobs:
 
       - name: Open PR targeting integration branch
         id: open_pr
+        if: steps.dedup_check.outputs.skip != 'true'
         env:
           SESSION_TITLE: ${{ inputs.session_title || 'Continue agent session' }}
           NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
@@ -231,7 +260,7 @@ jobs:
           echo "✅ Opened PR #${PR_NUMBER}: ${PR_URL}"
 
       - name: Post Copilot trigger comment
-        if: inputs.auto_start != 'false'
+        if: steps.dedup_check.outputs.skip != 'true' && inputs.auto_start != 'false'
         env:
           PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
           CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
@@ -293,16 +322,24 @@ jobs:
           PR_NUMBER: ${{ steps.open_pr.outputs.pr_number }}
           PR_URL: ${{ steps.open_pr.outputs.pr_url }}
           NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
+          SKIP: ${{ steps.dedup_check.outputs.skip }}
+          EXISTING_PR: ${{ steps.dedup_check.outputs.existing_pr }}
         run: |
           {
             echo "## 🔗 Session Chain Result"
             echo ""
-            echo "| Field | Value |"
-            echo "|-------|-------|"
-            echo "| New branch | \`${NEW_BRANCH}\` |"
-            echo "| Integration branch | \`${INTEGRATION_BRANCH}\` |"
-            echo "| PR | [#${PR_NUMBER}](${PR_URL}) |"
-            echo "| Auto-start | ${{ inputs.auto_start || 'true' }} |"
-            echo ""
-            echo "✅ New agent session sub-PR opened and Copilot trigger comment posted."
+            if [ "${SKIP}" = "true" ]; then
+              echo "⏭️ **Skipped** — open session PR #${EXISTING_PR} already exists targeting \`${INTEGRATION_BRANCH}\`."
+              echo ""
+              echo "No new PR was created. Use the existing session PR to continue agent work."
+            else
+              echo "| Field | Value |"
+              echo "|-------|-------|"
+              echo "| New branch | \`${NEW_BRANCH}\` |"
+              echo "| Integration branch | \`${INTEGRATION_BRANCH}\` |"
+              echo "| PR | [#${PR_NUMBER}](${PR_URL}) |"
+              echo "| Auto-start | ${{ inputs.auto_start || 'true' }} |"
+              echo ""
+              echo "✅ New agent session sub-PR opened and Copilot trigger comment posted."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
