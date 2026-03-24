@@ -143,13 +143,15 @@ jobs:
         id: dedup_check
         run: |
           set -euo pipefail
+          # gh pr list --head does not support wildcards; query all open PRs
+          # targeting the integration branch and filter by branch prefix in jq.
           OPEN_SESSION_PR=$(gh pr list \
             --repo Aries-Serpent/_codex_ \
             --base "${INTEGRATION_BRANCH}" \
-            --head "copilot/session-*" \
             --state open \
             --json number,headRefName \
-            --jq '.[0] | "\(.number):\(.headRefName)"' 2>/dev/null || true)
+            --jq '.[] | select(.headRefName | startswith("copilot/session-")) | "\(.number):\(.headRefName)"' \
+            2>/dev/null | head -1 || true)
 
           if [ -n "${OPEN_SESSION_PR}" ]; then
             PR_NUM="${OPEN_SESSION_PR%%:*}"

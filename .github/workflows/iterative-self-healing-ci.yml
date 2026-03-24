@@ -494,6 +494,8 @@ jobs:
     # Only escalate to human for patterns excluded from copilot-escalation
     # (self-healing cascades, unknown root-cause, or empty pattern).
     # All other fixable==false cases are handled by copilot-escalation first.
+    # NOTE: keep this exclusion list in sync with copilot-escalation's
+    # `pattern != 'self-healing'` / `pattern != 'unknown'` conditions below.
     if: >
       needs.triage.outputs.fixable == 'false' &&
       (needs.triage.outputs.pattern == 'self-healing' ||
