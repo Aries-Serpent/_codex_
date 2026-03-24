@@ -5,7 +5,7 @@ from __future__ import annotations
 from ._protocols import TokenizerAdapter
 from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .adapter import WhitespaceTokenizer
-from .api import get_tokenizer, pad_sequences
+from .api import get_tokenizer, load_tokenizer, pad_sequences
 
 try:
     from codex_ml.interfaces.tokenizer import HFTokenizer
@@ -23,6 +23,7 @@ except Exception:  # pragma: no cover - optional dependency guard
     SPTokenizer = None  # type: ignore[assignment]
 
 __all__ = [
+    "load_tokenizer",
     "get_tokenizer",
     "WhitespaceTokenizer",
     "HFTokenizer",
