@@ -8,7 +8,7 @@ from ._protocols import TokenizerAdapter
 from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .adapter import WhitespaceTokenizer
 from .api import _load_export as _lazy_load_export  # noqa: PLC2701
-from .api import get_tokenizer, load_tokenizer, pad_sequences
+from .api import load_tokenizer, pad_sequences
 
 try:
     from codex_ml.interfaces.tokenizer import HFTokenizer
@@ -24,7 +24,19 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def __getattr__(name: str) -> Any:  # noqa: ANN401
-    """Lazy-load optional attributes (HFTokenizerAdapter, SPTokenizer)."""
+    """Lazy-load optional attributes with deprecation shim for `get_tokenizer`."""
+    if name == "get_tokenizer":
+        import warnings as _warnings
+
+        from .api import get_tokenizer as _get_tokenizer
+
+        _warnings.warn(
+            "Accessing 'codex_ml.tokenization.get_tokenizer' is deprecated; "
+            "import from 'codex_ml.tokenization.api' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return _get_tokenizer
     return _lazy_load_export(name)
 
 
