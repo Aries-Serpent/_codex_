@@ -1,5 +1,6 @@
 ---
 name: Coverage-roadmap Agent
+description: "DEPRECATED — use unified-coverage-agent instead. Drives the incremental coverage threshold roadmap and tracks progress."
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent
