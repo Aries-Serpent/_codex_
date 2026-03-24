@@ -920,7 +920,6 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
 def test_get_method_returns_json(poster, monkeypatch):
     """_get() parses JSON from a successful GET response."""
-    import json
     from unittest.mock import MagicMock
 
     fake_resp = MagicMock()
