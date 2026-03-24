@@ -85,7 +85,7 @@ class BuildIndexRequest(BaseModel):
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
     provider: Optional[str] = Field(
         default=None,
-        description="(Deprecated) Index provider; accepted for backward compatibility and ignored.",
+        description="(Deprecated — accepted for backward compatibility, ignored. Multi-provider routing not yet implemented. Will be removed in a future major release.)",
     )
 
 

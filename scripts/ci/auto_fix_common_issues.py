@@ -1114,8 +1114,6 @@ class CommonIssueFixer:
 
         This pattern is **auto-fixable** (``auto_fix_available=True``).
         """
-        import ast
-
         issues: List[str] = []
         src_dirs = [self.repo_root / "src", self.repo_root / "tests"]
         py_files: List[Path] = []
