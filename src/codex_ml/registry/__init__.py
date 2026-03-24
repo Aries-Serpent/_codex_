@@ -89,17 +89,11 @@ _LAZY_ATTRS = {
 # import time (satisfies static analysis).  __getattr__ below remains as a
 # fallback for any attribute that wasn't resolved during the eager phase.
 try:
-    from .tokenizers import (  # noqa: E402
-        get_tokenizer,
-        list_tokenizers,
-        register_tokenizer,
-        tokenizer_registry,
-    )
-    from .models import (  # noqa: E402
-        get_model,
-        list_models,
-        model_registry,
-        register_model,
+    from .data_loaders import (  # noqa: E402
+        data_loader_registry,
+        get_data_loader,
+        list_data_loaders,
+        register_data_loader,
     )
     from .metrics import (  # noqa: E402
         get_metric,
@@ -107,11 +101,17 @@ try:
         metric_registry,
         register_metric,
     )
-    from .data_loaders import (  # noqa: E402
-        data_loader_registry,
-        get_data_loader,
-        list_data_loaders,
-        register_data_loader,
+    from .models import (  # noqa: E402
+        get_model,
+        list_models,
+        model_registry,
+        register_model,
+    )
+    from .tokenizers import (  # noqa: E402
+        get_tokenizer,
+        list_tokenizers,
+        register_tokenizer,
+        tokenizer_registry,
     )
     from .trainers import (  # noqa: E402
         get_trainer,

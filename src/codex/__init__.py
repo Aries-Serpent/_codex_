@@ -9,8 +9,8 @@ This package also includes the Python Ingestion Pipeline components:
 - cli: Command-line interface
 """
 
-from ._version import __version__
 from . import analyze, cli, ingest, intent, transform, verify
+from ._version import __version__
 
 __all__ = [
     "__version__",

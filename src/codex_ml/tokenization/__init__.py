@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 from ._protocols import TokenizerAdapter
+from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .adapter import WhitespaceTokenizer
 from .api import get_tokenizer, pad_sequences
 
