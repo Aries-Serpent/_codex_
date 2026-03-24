@@ -8,6 +8,7 @@ Provides RESTful API endpoints for RAG operations:
 - Get statistics and metrics
 """
 
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -30,6 +31,13 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+# Base directory that all client-supplied file paths must reside under.
+# Set RAG_FILES_BASE_DIR to restrict to a specific directory; defaults to CWD.
+_RAG_FILES_BASE: Path = Path(
+    os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))
+).resolve()
 
 
 def _ensure_subpath(base: Path, candidate: Path) -> Path:
@@ -75,6 +83,10 @@ class BuildIndexRequest(BaseModel):
     tenant_id: str = Field(default="default", description="Tenant ID")
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
+    provider: Optional[str] = Field(
+        default=None,
+        description="(Deprecated) Index provider; accepted for backward compatibility and ignored.",
+    )
 
 
 class BuildIndexResponse(BaseModel):
@@ -223,12 +235,15 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
     try:
         from codex.rag import build_index_from_files
 
-        # files contains concrete path strings from the caller; convert to Path objects
-        # so build_index_from_files can call file_path.exists() / file_path.read_text().
-        # (The `provider` field was removed from BuildIndexRequest: a single built-in
-        # embedding strategy is used; multi-provider routing is not yet implemented.)
+        # Validate every supplied path stays within _RAG_FILES_BASE to prevent
+        # path-traversal attacks (e.g. a client passing "/etc/passwd").
+        safe_files = [
+            _ensure_subpath(_RAG_FILES_BASE, Path(f))
+            for f in build_request.files
+        ]
+
         index_path = build_index_from_files(
-            files=[Path(f) for f in build_request.files],
+            files=safe_files,
             index_name=build_request.index_name,
             tenant_id=build_request.tenant_id,
             chunk_size=build_request.chunk_size,

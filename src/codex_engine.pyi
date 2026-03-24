@@ -18,6 +18,7 @@ class SwarmState:
 
     def __init__(self) -> None:
         """Create a new SwarmState instance."""
+        ...
 
     def register_agent(self, agent_id: str) -> None:
         """
@@ -26,9 +27,11 @@ class SwarmState:
         Args:
             agent_id: Unique identifier for the agent
         """
+        ...
 
     def get_agent_count(self) -> int:
         """Get the current count of registered agents."""
+        ...
 
     def set_agent_status(self, agent_id: str, status: str, message: Optional[str] = None) -> None:
         """
@@ -39,6 +42,7 @@ class SwarmState:
             status: New status ("idle", "working", "complete", "failed")
             message: Optional message (required for "working" and "failed")
         """
+        ...
 
     def get_agent_status(self, agent_id: str) -> Tuple[str, str]:
         """
@@ -50,12 +54,15 @@ class SwarmState:
         Returns:
             Tuple of (status_str, message)
         """
+        ...
 
     def unregister_agent(self, agent_id: str) -> None:
         """Remove an agent from the swarm."""
+        ...
 
     def list_agents(self) -> List[str]:
         """Get all agent IDs currently registered."""
+        ...
 
 class Orchestrator:
     """
@@ -72,6 +79,7 @@ class Orchestrator:
         Args:
             state: SwarmState instance to manage
         """
+        ...
 
     def start(self) -> None:
         """
@@ -79,12 +87,15 @@ class Orchestrator:
 
         Spawns an async task that runs the orchestrator event loop at 10 Hz.
         """
+        ...
 
     def stop(self) -> None:
         """Stop the orchestration loop."""
+        ...
 
     def is_running(self) -> bool:
         """Check if the orchestrator is currently running."""
+        ...
 
 class Task:
     """
@@ -107,6 +118,7 @@ class Task:
             task_type: Type of task to execute
             data: JSON-encoded task parameters
         """
+        ...
 
 class TaskQueue:
     """
@@ -118,6 +130,7 @@ class TaskQueue:
 
     def __init__(self) -> None:
         """Create a new TaskQueue."""
+        ...
 
     def submit(self, task: Task) -> None:
         """
@@ -126,6 +139,7 @@ class TaskQueue:
         Args:
             task: Task to submit
         """
+        ...
 
     def receive(self) -> Optional[Task]:
         """
@@ -134,6 +148,7 @@ class TaskQueue:
         Returns:
             Task if available, None if queue is empty
         """
+        ...
 
     def size(self) -> int:
         """
@@ -141,3 +156,4 @@ class TaskQueue:
 
         Note: This is an estimate due to concurrent access.
         """
+        ...
