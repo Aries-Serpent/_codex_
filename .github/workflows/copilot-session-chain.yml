@@ -165,6 +165,75 @@ jobs:
             echo "existing_pr=" >> "$GITHUB_OUTPUT"
           fi
 
+      # ── When dedup skips: re-trigger agent on the EXISTING session PR ──
+      # If an open session PR already exists we skip creating a new one but we
+      # still need to activate the agent there.  Without this step the agent
+      # would have no trigger on the existing PR and might create a sub-sub
+      # branch when manually asked to "@copilot continue".
+      - name: "Re-trigger agent on existing session PR (dedup path)"
+        id: retrigger_existing
+        if: steps.dedup_check.outputs.skip == 'true' && inputs.auto_start != 'false'
+        env:
+          EXISTING_PR: ${{ steps.dedup_check.outputs.existing_pr }}
+          MERGED_PR: ${{ github.event.pull_request.number || '' }}
+          INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
+          CONTINUATION_PROMPT: ${{ inputs.continuation_prompt || '' }}
+        run: |
+          set -euo pipefail
+
+          EXISTING_BRANCH=$(gh pr view "${EXISTING_PR}" \
+            --repo Aries-Serpent/_codex_ \
+            --json headRefName --jq '.headRefName' 2>/dev/null || true)
+
+          if [ -z "${EXISTING_BRANCH}" ]; then
+            echo "::error::Could not resolve head branch for PR #${EXISTING_PR} — skipping re-trigger"
+            exit 1
+          fi
+
+          if [ -n "${CONTINUATION_PROMPT}" ]; then
+            TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
+          elif [ -n "${MERGED_PR}" ]; then
+            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+
+          Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
+          You are now working on branch \`${EXISTING_BRANCH}\` — an open sub-PR already targeting
+          the staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          **Architecture reminder:**
+          \`\`\`
+          ${EXISTING_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
+          (this PR)           (staging gate)          (promotion PR)
+          \`\`\`
+
+          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
+          Continue from where PR #${MERGED_PR} left off, addressing any remaining items
+          from the priority list. Review all CI checks and address any failures.
+
+          > **⚠️ IMPORTANT — no new branch or PR needed:** This PR (#${EXISTING_PR}) is already
+          > open on branch \`${EXISTING_BRANCH}\`. Commit all changes **directly to this branch**
+          > and push to this PR. Do **NOT** create a new branch or open a new PR — a sub-sub
+          > branch is never required when a session PR is already open."
+          else
+            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+
+          You are working on branch \`${EXISTING_BRANCH}\` — an open sub-PR targeting
+          the staging integration branch \`${INTEGRATION_BRANCH}\`.
+
+          Begin by reviewing the current CI status of this PR and addressing any failures.
+
+          > **⚠️ IMPORTANT — no new branch or PR needed:** This PR (#${EXISTING_PR}) is already
+          > open on branch \`${EXISTING_BRANCH}\`. Commit all changes **directly to this branch**
+          > and push to this PR. Do **NOT** create a new branch or open a new PR."
+          fi
+
+          if gh pr comment "${EXISTING_PR}" --body "${TRIGGER_COMMENT}"; then
+            echo "retrigger_posted=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Posted re-trigger comment on existing PR #${EXISTING_PR} (branch: ${EXISTING_BRANCH})"
+          else
+            echo "retrigger_posted=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Failed to post re-trigger comment on PR #${EXISTING_PR} — agent must be started manually"
+          fi
+
       - name: Create session branch and open PR
         id: create_pr
         if: steps.dedup_check.outputs.skip != 'true'
@@ -326,6 +395,7 @@ jobs:
           NEW_BRANCH: ${{ steps.create_pr.outputs.new_branch }}
           SKIP: ${{ steps.dedup_check.outputs.skip }}
           EXISTING_PR: ${{ steps.dedup_check.outputs.existing_pr }}
+          RETRIGGER_POSTED: ${{ steps.retrigger_existing.outputs.retrigger_posted || '' }}
         run: |
           {
             echo "## 🔗 Session Chain Result"
@@ -333,7 +403,11 @@ jobs:
             if [ "${SKIP}" = "true" ]; then
               echo "⏭️ **Skipped** — open session PR #${EXISTING_PR} already exists targeting \`${INTEGRATION_BRANCH}\`."
               echo ""
-              echo "No new PR was created. Use the existing session PR to continue agent work."
+              if [ "${RETRIGGER_POSTED}" = "true" ]; then
+                echo "✅ A \`@copilot continue\` trigger was posted on the existing session PR #${EXISTING_PR}."
+              else
+                echo "⚠️ Could not post a re-trigger comment on PR #${EXISTING_PR} — start the agent manually."
+              fi
             else
               echo "| Field | Value |"
               echo "|-------|-------|"
