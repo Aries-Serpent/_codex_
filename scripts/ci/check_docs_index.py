@@ -89,12 +89,13 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
     """Auto-generate a stub INDEX.md for a directory."""
     # Direct .md files (non-recursive) — used for the Contents section.
     md_files = [f for f in sorted(directory.glob("*.md")) if f.name not in INDEX_NAMES]
-    # Subdirectories with at least one .md file anywhere inside them.
-    subdirs = [
-        d for d in sorted(directory.iterdir())
-        if d.is_dir() and not d.name.startswith(".")
-        and len(list(d.rglob("*.md"))) > 0
-    ]
+    # Subdirectories with .md content: compute count once to avoid duplicate rglob traversals.
+    subdirs: list[tuple[Path, int]] = []
+    for d in sorted(directory.iterdir()):
+        if d.is_dir() and not d.name.startswith("."):
+            subcount = sum(1 for _ in d.rglob("*.md"))
+            if subcount > 0:
+                subdirs.append((d, subcount))
     # Nothing to index at all — skip generation.
     if not md_files and not subdirs:
         return False
@@ -117,11 +118,13 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
             rel = f.relative_to(directory)
             lines.append(f"- [{f.stem}]({rel})")
 
-    # Add subdirectory links
+    # Add subdirectory links; only insert a leading blank line when a previous
+    # section was emitted to avoid two consecutive blank lines in subdir-only indexes.
     if subdirs:
-        lines += ["", "## Subdirectories", ""]
-        for d in subdirs:
-            subcount = len(list(d.rglob("*.md")))
+        if lines and lines[-1] != "":
+            lines.append("")
+        lines += ["## Subdirectories", ""]
+        for d, subcount in subdirs:
             noun = "file" if subcount == 1 else "files"
             lines.append(f"- **[{d.name}/]({d.name}/)** — {subcount} {noun}")
 

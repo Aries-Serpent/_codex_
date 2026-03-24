@@ -3,7 +3,6 @@
 > **Auto-generated index** — 2026-03-24 | Edit this file to add descriptions.
 > Directory: `docs/tech_debt/`
 
-
 ## Subdirectories
 
 - **[research_queue/](research_queue/)** — 2 files

@@ -3,7 +3,6 @@
 > **Auto-generated index** — 2026-03-24 | Edit this file to add descriptions.
 > Directory: `docs/starterpacks/`
 
-
 ## Subdirectories
 
 - **[zendesk_desired_state/](zendesk_desired_state/)** — 1 file
