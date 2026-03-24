@@ -1,11 +1,12 @@
 # Specs
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/specs/`
 
 ## Contents
 
-- [FORMAL_ARTIFACTS](specs/FORMAL_ARTIFACTS.md)
+- [FORMAL_ARTIFACTS](FORMAL_ARTIFACTS.md)
+- [INDEX](INDEX.md)
 
 ---
 

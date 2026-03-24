@@ -1,11 +1,12 @@
 # Reporting
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/reporting/`
 
 ## Contents
 
-- [REPORTING](reporting/REPORTING.md)
+- [INDEX](INDEX.md)
+- [REPORTING](REPORTING.md)
 
 ---
 

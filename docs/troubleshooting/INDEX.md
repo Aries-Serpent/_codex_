@@ -1,16 +1,17 @@
 # Troubleshooting
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/troubleshooting/`
 
 ## Contents
 
-- [API_Docs_Troubleshooting](troubleshooting/API_Docs_Troubleshooting.md)
-- [CI_FAILURE_RESOLUTION](troubleshooting/CI_FAILURE_RESOLUTION.md)
-- [COMMON_ISSUES](troubleshooting/COMMON_ISSUES.md)
-- [error_log](troubleshooting/error_log.md)
-- [inference_serving](troubleshooting/inference_serving.md)
-- [open_questions](troubleshooting/open_questions.md)
+- [API_Docs_Troubleshooting](API_Docs_Troubleshooting.md)
+- [CI_FAILURE_RESOLUTION](CI_FAILURE_RESOLUTION.md)
+- [COMMON_ISSUES](COMMON_ISSUES.md)
+- [INDEX](INDEX.md)
+- [error_log](error_log.md)
+- [inference_serving](inference_serving.md)
+- [open_questions](open_questions.md)
 
 ---
 

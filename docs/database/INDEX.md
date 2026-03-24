@@ -1,13 +1,14 @@
 # Database
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/database/`
 
 ## Contents
 
-- [datasette_option](database/datasette_option.md)
-- [duckdb_option](database/duckdb_option.md)
-- [sqlite_option](database/sqlite_option.md)
+- [INDEX](INDEX.md)
+- [datasette_option](datasette_option.md)
+- [duckdb_option](duckdb_option.md)
+- [sqlite_option](sqlite_option.md)
 
 ---
 

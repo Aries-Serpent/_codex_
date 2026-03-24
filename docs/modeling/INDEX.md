@@ -1,12 +1,13 @@
 # Modeling
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/modeling/`
 
 ## Contents
 
-- [LoRA](modeling/LoRA.md)
-- [registry](modeling/registry.md)
+- [INDEX](INDEX.md)
+- [LoRA](LoRA.md)
+- [registry](registry.md)
 
 ---
 

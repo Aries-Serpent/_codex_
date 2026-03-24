@@ -1,11 +1,12 @@
 # Release
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/release/`
 
 ## Contents
 
-- [post_merge_review](release/post_merge_review.md)
+- [INDEX](INDEX.md)
+- [post_merge_review](post_merge_review.md)
 
 ---
 

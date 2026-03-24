@@ -1,17 +1,18 @@
 # Runbooks
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/runbooks/`
 
 ## Contents
 
-- [feature_store_operations](runbooks/feature_store_operations.md)
-- [mlflow_tracking_guide](runbooks/mlflow_tracking_guide.md)
-- [offline_wheelhouse](runbooks/offline_wheelhouse.md)
-- [troubleshooting_faq](runbooks/troubleshooting_faq.md)
-- [zendesk_admin_workflow](runbooks/zendesk_admin_workflow.md)
-- [zendesk_docs_pipeline](runbooks/zendesk_docs_pipeline.md)
-- [zendesk_e2e_support_workflows_plan](runbooks/zendesk_e2e_support_workflows_plan.md)
+- [INDEX](INDEX.md)
+- [feature_store_operations](feature_store_operations.md)
+- [mlflow_tracking_guide](mlflow_tracking_guide.md)
+- [offline_wheelhouse](offline_wheelhouse.md)
+- [troubleshooting_faq](troubleshooting_faq.md)
+- [zendesk_admin_workflow](zendesk_admin_workflow.md)
+- [zendesk_docs_pipeline](zendesk_docs_pipeline.md)
+- [zendesk_e2e_support_workflows_plan](zendesk_e2e_support_workflows_plan.md)
 
 ---
 

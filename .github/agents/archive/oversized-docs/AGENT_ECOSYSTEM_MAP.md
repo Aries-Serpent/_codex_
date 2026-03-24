@@ -587,10 +587,10 @@ Each agent must maintain:
 
 ## References
 
-- [CI Testing Agent Implementation](./ci-testing-agent/README.md)
-- [Cognitive Brain Documentation](../../docs/system/CODEBASE_COGNITIVE_MAP.md)
-- [AfterMath Protocol](../../docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
-- [PDA Loop Guide](../../docs/system/PDA_LOOP_GUIDE.md) *(to be created)*
+- [CI Testing Agent Implementation](../../ci-testing-agent/README.md)
+- [Cognitive Brain Documentation](../../../../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [AfterMath Protocol](../../../../docs/workflows/AGENT_CONTINUATION_PROTOCOL.md)
+- [PDA Loop Guide](../../../../docs/system/PDA_LOOP_GUIDE.md) *(to be created)*
 
 ---
 

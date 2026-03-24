@@ -1,13 +1,14 @@
 # Changelog
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/CHANGELOG/`
 
 ## Contents
 
-- [change_log](CHANGELOG/change_log.md)
-- [changelog_codex](CHANGELOG/changelog_codex.md)
-- [changelog_session_logging](CHANGELOG/changelog_session_logging.md)
+- [INDEX](INDEX.md)
+- [change_log](change_log.md)
+- [changelog_codex](changelog_codex.md)
+- [changelog_session_logging](changelog_session_logging.md)
 
 ---
 

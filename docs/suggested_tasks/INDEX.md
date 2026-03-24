@@ -1,15 +1,16 @@
 # Suggested Tasks
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/suggested_tasks/`
 
 ## Contents
 
-- [offline_logging_security_updates](suggested_tasks/offline_logging_security_updates.md)
-- [remediation_phase1_task_queue_2025-09-17](suggested_tasks/remediation_phase1_task_queue_2025-09-17.md)
-- [remediation_plan_status_update_2025-09-17](suggested_tasks/remediation_plan_status_update_2025-09-17.md)
-- [status_update_2025-09-16](suggested_tasks/status_update_2025-09-16.md)
-- [status_update_2025-09-17](suggested_tasks/status_update_2025-09-17.md)
+- [INDEX](INDEX.md)
+- [offline_logging_security_updates](offline_logging_security_updates.md)
+- [remediation_phase1_task_queue_2025-09-17](remediation_phase1_task_queue_2025-09-17.md)
+- [remediation_plan_status_update_2025-09-17](remediation_plan_status_update_2025-09-17.md)
+- [status_update_2025-09-16](status_update_2025-09-16.md)
+- [status_update_2025-09-17](status_update_2025-09-17.md)
 
 ---
 

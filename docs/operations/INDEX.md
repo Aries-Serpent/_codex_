@@ -1,14 +1,15 @@
 # Operations
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/operations/`
 
 ## Contents
 
-- [INCIDENT_RESPONSE](operations/INCIDENT_RESPONSE.md)
-- [escalation_matrix](operations/escalation_matrix.md)
-- [monitoring_guide](operations/monitoring_guide.md)
-- [pypi-trusted-publishing-setup](operations/pypi-trusted-publishing-setup.md)
+- [INCIDENT_RESPONSE](INCIDENT_RESPONSE.md)
+- [INDEX](INDEX.md)
+- [escalation_matrix](escalation_matrix.md)
+- [monitoring_guide](monitoring_guide.md)
+- [pypi-trusted-publishing-setup](pypi-trusted-publishing-setup.md)
 
 ## Subdirectories
 

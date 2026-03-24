@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-23T16:01:15Z",
+  "generated_at": "2026-03-24T06:41:11Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1180,7 +1180,7 @@
     },
     {
       "name": "copilot-session-chain",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "PARTIAL",
       "has_concurrency": true
     },
     {
@@ -1719,6 +1719,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/COGNITIVE_BRAIN_STATUS_S182.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/COMMIT_METHOD_FAILURES_S154.md",
       "type": "enforcement"
     },
@@ -1924,5 +1928,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "7c6e82713f170b591b0b5ce20cf0fb79e9ee4d4690286f662671847e687163cf"
+  "integrity_sha256": "05345558034661d2e5e2a1497832ac9e1b3cd3e0e2aa7c8921554d730748c5b3"
 }

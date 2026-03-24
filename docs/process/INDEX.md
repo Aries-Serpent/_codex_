@@ -1,11 +1,12 @@
 # Process
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/process/`
 
 ## Contents
 
-- [Agent_Session_Closing_Notes](process/Agent_Session_Closing_Notes.md)
+- [Agent_Session_Closing_Notes](Agent_Session_Closing_Notes.md)
+- [INDEX](INDEX.md)
 
 ---
 

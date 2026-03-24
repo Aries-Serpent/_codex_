@@ -1,34 +1,35 @@
 # Mcp
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/mcp/`
 
 ## Contents
 
-- [ADVANCED_FEATURES_PLANSET](mcp/ADVANCED_FEATURES_PLANSET.md)
-- [ChatGPT_Project_SYSTEM_PROMPT](mcp/ChatGPT_Project_SYSTEM_PROMPT.md)
-- [GENERIC_NAVIGATION_SYSTEM](mcp/GENERIC_NAVIGATION_SYSTEM.md)
-- [MCP_100_PERCENT_ROADMAP](mcp/MCP_100_PERCENT_ROADMAP.md)
-- [MCP_CAPABILITIES_REFERENCE](mcp/MCP_CAPABILITIES_REFERENCE.md)
-- [MCP_DEVELOPER_GUIDE](mcp/MCP_DEVELOPER_GUIDE.md)
-- [MCP_FAQ](mcp/MCP_FAQ.md)
-- [MCP_IMPLEMENTATION_SUMMARY](mcp/MCP_IMPLEMENTATION_SUMMARY.md)
-- [MCP_SECURITY_GUIDE](mcp/MCP_SECURITY_GUIDE.md)
-- [PACKAGEABLE_CAPABILITIES](mcp/PACKAGEABLE_CAPABILITIES.md)
-- [PACKAGING_GUIDE](mcp/PACKAGING_GUIDE.md)
-- [QUICK_START](mcp/QUICK_START.md)
-- [TEMPLATE_APPLICATION_REPORT](mcp/TEMPLATE_APPLICATION_REPORT.md)
-- [Traversal_Workflow](mcp/Traversal_Workflow.md)
-- [Usage_Guide](mcp/Usage_Guide.md)
-- [api_schema](mcp/api_schema.md)
-- [authentication](mcp/authentication.md)
-- [error_handling](mcp/error_handling.md)
-- [lifecycle_management](mcp/lifecycle_management.md)
-- [observability](mcp/observability.md)
-- [rate_limiting](mcp/rate_limiting.md)
-- [server_deployment](mcp/server_deployment.md)
-- [tool_registration](mcp/tool_registration.md)
-- [version_negotiation](mcp/version_negotiation.md)
+- [ADVANCED_FEATURES_PLANSET](ADVANCED_FEATURES_PLANSET.md)
+- [ChatGPT_Project_SYSTEM_PROMPT](ChatGPT_Project_SYSTEM_PROMPT.md)
+- [GENERIC_NAVIGATION_SYSTEM](GENERIC_NAVIGATION_SYSTEM.md)
+- [INDEX](INDEX.md)
+- [MCP_100_PERCENT_ROADMAP](MCP_100_PERCENT_ROADMAP.md)
+- [MCP_CAPABILITIES_REFERENCE](MCP_CAPABILITIES_REFERENCE.md)
+- [MCP_DEVELOPER_GUIDE](MCP_DEVELOPER_GUIDE.md)
+- [MCP_FAQ](MCP_FAQ.md)
+- [MCP_IMPLEMENTATION_SUMMARY](MCP_IMPLEMENTATION_SUMMARY.md)
+- [MCP_SECURITY_GUIDE](MCP_SECURITY_GUIDE.md)
+- [PACKAGEABLE_CAPABILITIES](PACKAGEABLE_CAPABILITIES.md)
+- [PACKAGING_GUIDE](PACKAGING_GUIDE.md)
+- [QUICK_START](QUICK_START.md)
+- [TEMPLATE_APPLICATION_REPORT](TEMPLATE_APPLICATION_REPORT.md)
+- [Traversal_Workflow](Traversal_Workflow.md)
+- [Usage_Guide](Usage_Guide.md)
+- [api_schema](api_schema.md)
+- [authentication](authentication.md)
+- [error_handling](error_handling.md)
+- [lifecycle_management](lifecycle_management.md)
+- [observability](observability.md)
+- [rate_limiting](rate_limiting.md)
+- [server_deployment](server_deployment.md)
+- [tool_registration](tool_registration.md)
+- [version_negotiation](version_negotiation.md)
 
 ---
 

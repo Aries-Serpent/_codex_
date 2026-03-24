@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3735)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3735 (SHA `0f3055fd`) at 2026-03-24T04:45Z [auto-generated]
+
+### Fixed (auto-update — PR #3734)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3734 (SHA `3d6d8511`) at 2026-03-24T04:39Z [auto-generated]
+
+### Fixed (auto-update — PR #3732)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3732 (SHA `1de6a51a`) at 2026-03-24T03:31Z [auto-generated]
+
+### Fixed (S184 — PR #3729)
+- **Session chain dedup fix**: `copilot-session-chain.yml` `retrigger_existing` step posts `@copilot continue` with explicit no-new-branch warning to prevent sub-sub branch creation
+- Updated `AGENT_ACCOUNTABILITY_REPORT.md` with proper S184 session summary (commit directly to session branch per policy)
+
+### Fixed (auto-update — PR #3730)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3730 (SHA `be8af280`) at 2026-03-24T02:35Z [auto-generated]
+
+### Fixed (auto-update — PR #3728)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3728 (SHA `6b4848bf`) at 2026-03-24T00:55Z [auto-generated]
+
+### Fixed (auto-update — PR #3727)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3727 (SHA `21e1f089`) at 2026-03-23T23:35Z [auto-generated]
+
+### Fixed (auto-update — PR #3726)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3726 (SHA `c52a9a4d`) at 2026-03-23T23:23Z [auto-generated]
+
+### Fixed (auto-update — PR #3724)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3724 (SHA `b6db9740`) at 2026-03-23T19:50Z [auto-generated]
+
 ### Fixed (auto-update — PR #3719)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3719 (SHA `e5d0be2c`) at 2026-03-23T16:01Z [auto-generated]
 

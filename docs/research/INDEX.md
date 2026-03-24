@@ -1,12 +1,13 @@
 # Research
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/research/`
 
 ## Contents
 
-- [COPILOT_CODING_AGENT_DISCUSSION_METHODOLOGIES](research/COPILOT_CODING_AGENT_DISCUSSION_METHODOLOGIES.md)
-- [SIMILAR_GITHUB_PROJECTS](research/SIMILAR_GITHUB_PROJECTS.md)
+- [COPILOT_CODING_AGENT_DISCUSSION_METHODOLOGIES](COPILOT_CODING_AGENT_DISCUSSION_METHODOLOGIES.md)
+- [INDEX](INDEX.md)
+- [SIMILAR_GITHUB_PROJECTS](SIMILAR_GITHUB_PROJECTS.md)
 
 ---
 

@@ -1,12 +1,13 @@
 # Plugins
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/plugins/`
 
 ## Contents
 
-- [Plugin_API_Broader](plugins/Plugin_API_Broader.md)
-- [Plugin_Registry](plugins/Plugin_Registry.md)
+- [INDEX](INDEX.md)
+- [Plugin_API_Broader](Plugin_API_Broader.md)
+- [Plugin_Registry](Plugin_Registry.md)
 
 ---
 

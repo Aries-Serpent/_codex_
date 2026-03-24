@@ -22,7 +22,8 @@ on:
     # PR is first created or edited. Firing on every push (synchronize) caused
     # concurrent auto-commits that created rebase conflicts on the next report_progress.
     # ready_for_review triggers draft→ready transitions (important for approval).
-    types: [opened, edited, reopened, ready_for_review]
+    # closed added (S182) for session-release job — clears COPILOT_ACTIVE_SESSION lock.
+    types: [opened, edited, reopened, ready_for_review, closed]
   pull_request_review:
     types: [submitted]
   workflow_dispatch:
@@ -55,7 +56,7 @@ jobs:
     name: "🛡️ Restore required PR checkboxes"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
       pull-requests: write
       contents: read
@@ -113,6 +114,7 @@ jobs:
     needs: [pr-body-checkpoint-guardian]
     if: |
       always() &&
+      github.event.action != 'closed' &&
       (vars.COPILOT_AGENT_AUTH_ENABLED != 'true' || github.event_name == 'workflow_dispatch')
     # Skip entirely when delegation is already active. Without this guard,
     # every PR body edit (e.g., report_progress updating the description)
@@ -122,26 +124,49 @@ jobs:
     timeout-minutes: 30
     outputs:
       auth_requested: ${{ steps.check.outputs.auth_requested }}
+      multi_session: ${{ steps.check.outputs.multi_session }}
       pr_number: ${{ steps.check.outputs.pr_number }}
 
     steps:
       - name: "Parse PR body for delegation checkbox"
         id: check
         env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
           echo "pr_number=${PR_NUM}" >> "$GITHUB_OUTPUT"
 
+          # On workflow_dispatch, github.event.pull_request.body is empty.
+          # Fetch the PR body via gh CLI so checkbox detection works for
+          # manually triggered delegation runs.
+          RESOLVED_BODY="${PR_BODY}"
+          if [ -z "${RESOLVED_BODY}" ] && [ -n "${PR_NUM}" ]; then
+            RESOLVED_BODY=$(gh pr view "${PR_NUM}" \
+              --repo Aries-Serpent/_codex_ \
+              --json body --jq '.body' 2>/dev/null || true)
+            echo "ℹ️  PR body fetched via gh pr view (workflow_dispatch path)"
+          fi
+
           # Match a checked markdown checkbox that contains the variable name.
           # Pattern: "- [x]" followed by anything then "COPILOT_AGENT_AUTH_ENABLED"
           # Use POSIX extended regex (-E) for broad grep compatibility across runners.
-          if printf '%s' "${PR_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
+          if printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_AGENT_AUTH_ENABLED'; then
             echo "auth_requested=true"  >> "$GITHUB_OUTPUT"
             echo "✅ COPILOT_AGENT_AUTH_ENABLED checkbox is checked — requesting approval"
           else
             echo "auth_requested=false" >> "$GITHUB_OUTPUT"
             echo "ℹ️  COPILOT_AGENT_AUTH_ENABLED checkbox not checked — nothing to do"
+          fi
+
+          # Detect "Multiple Copilot Coding Agent Sessions" checkbox (S182)
+          # Default: disabled (single-session mode). When checked, allows parallel sessions.
+          if printf '%s' "${RESOLVED_BODY}" | grep -qiE '\-[[:space:]]*\[x\].*COPILOT_MULTI_SESSION'; then
+            echo "multi_session=true"  >> "$GITHUB_OUTPUT"
+            echo "✅ COPILOT_MULTI_SESSION checkbox is checked — parallel sessions allowed"
+          else
+            echo "multi_session=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  COPILOT_MULTI_SESSION not checked — single-session mode (default)"
           fi
 
   # ── Job 2: owner approval gate ───────────────────────────────────────────────
@@ -184,6 +209,7 @@ jobs:
     name: "🧠 Cognitive Pre-flight Check"
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: github.event.action != 'closed'
 
     steps:
       - name: Checkout repository
@@ -212,6 +238,7 @@ jobs:
           script: |
             // Branches that are staging gates — never the HEAD of an agent session.
             const INTEGRATION_BRANCHES = ['0D_base_'];
+            const PROMOTION_TARGETS = ['main', 'master'];
             const pr = context.payload.pull_request;
             if (!pr) return;
 
@@ -223,7 +250,16 @@ jobs:
               return;
             }
 
-            // HEAD is an integration branch — build redirect comment.
+            // Exception: this is a promotion PR (integration_branch → main/master).
+            // Promotion merges are the intended flow; REQ-11 only blocks direct
+            // coding sessions, not the staging-gate → main promotion PR.
+            if (PROMOTION_TARGETS.includes(base)) {
+              core.info(`REQ-11 PASS: '${head}' → '${base}' is a promotion PR. Promotion merges are allowed.`);
+              return;
+            }
+
+            // HEAD is an integration branch opened against a non-promotion target
+            // — build redirect comment.
             const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
             const ts = new Date().toISOString();
             const MARKER = '<!-- req11-integration-branch-guard -->';
@@ -1163,6 +1199,7 @@ jobs:
     needs: [detect-checkbox, await-approval, cognitive-preflight]
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: github.event.action != 'closed'
 
     steps:
       - uses: actions/checkout@v4
@@ -1388,8 +1425,138 @@ jobs:
             echo 'CB_EOF'
           } >> "$GITHUB_OUTPUT"
 
-      # ── 3d: Post @copilot continue on the PR ─────────────────────────────────
+      # ── 3d: Session Concurrency Gate (S182) ──────────────────────────────────
+      # Check COPILOT_ACTIVE_SESSION repo variable. If another session is active
+      # and COPILOT_MULTI_SESSION is not enabled, queue this PR instead of posting
+      # @copilot continue. When the active session completes, the session-release
+      # job will trigger the next queued PR.
+      # Variable format: "PR#|epoch_timestamp|run_id" (e.g. "3724|1774576800|12345")
+      # TTL: 4 hours (14400 seconds) — stale locks are auto-cleared.
+      - name: "Session Concurrency Gate"
+        id: session_gate
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          script: |
+            const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number }}', 10);
+            if (isNaN(prNumber) || prNumber <= 0) {
+              core.warning('Invalid PR number for session gate — skipping lock');
+              core.setOutput('acquired', 'true');
+              core.setOutput('queued', 'false');
+              return;
+            }
+            const multiSession = '${{ needs.detect-checkbox.outputs.multi_session }}' === 'true';
+            const TTL_SECONDS = 14400; // 4 hours
+            const now = Math.floor(Date.now() / 1000);
+
+            // Helper: get repo variable (returns null if not found)
+            async function getVar(name) {
+              try {
+                const { data } = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+                return data.value || '';
+              } catch (e) {
+                if (e.status === 404) return '';
+                throw e;
+              }
+            }
+
+            // Helper: upsert repo variable
+            async function upsertVar(name, value) {
+              try {
+                await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name, value,
+                });
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.request('POST /repos/{owner}/{repo}/actions/variables', {
+                    owner: context.repo.owner, repo: context.repo.repo, name, value,
+                  });
+                } else { throw e; }
+              }
+            }
+
+            const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
+
+            // Check if there's an active, non-expired session
+            let sessionBusy = false;
+            let activePR = '';
+            if (activeSession) {
+              const parts = activeSession.split('|');
+              activePR = parts[0] || '';
+              const lockEpoch = parseInt(parts[1] || '0', 10);
+
+              if (isNaN(lockEpoch)) {
+                core.warning(`Corrupted session lock format: '${activeSession}' — clearing`);
+                await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                sessionBusy = false;
+              } else {
+                const age = now - lockEpoch;
+
+                if (age < TTL_SECONDS && activePR !== String(prNumber)) {
+                  sessionBusy = true;
+                  core.info(`Active session on PR #${activePR} (age: ${age}s, TTL: ${TTL_SECONDS}s)`);
+                } else if (age >= TTL_SECONDS) {
+                  core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
+                  await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                  sessionBusy = false;
+                } else {
+                  // Same PR — re-acquire is fine
+                  sessionBusy = false;
+                }
+              }
+            }
+
+            if (sessionBusy && !multiSession) {
+              // Queue this PR — don't post @copilot continue
+              core.setOutput('acquired', 'false');
+              core.setOutput('queued', 'true');
+
+              // Append to queue variable
+              const queue = await getVar('COPILOT_SESSION_QUEUE');
+              const queueList = queue ? queue.split(',').filter(Boolean) : [];
+              if (!queueList.includes(String(prNumber))) {
+                queueList.push(String(prNumber));
+                await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
+              }
+
+              // Post a queued notification on the PR
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: [
+                  '<!-- session-gate-queued -->',
+                  '## ⏳ Session Queued',
+                  '',
+                  `Another Copilot session is active on PR #${activePR}.`,
+                  'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
+                  '',
+                  '| Detail | Value |',
+                  '|--------|-------|',
+                  `| Active Session | PR #${activePR} |`,
+                  `| Queue Position | ${queueList.length} |`,
+                  `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
+                  '',
+                  '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                  '',
+                  `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+                ].join('\n'),
+              });
+              core.info(`⏳ PR #${prNumber} queued — active session on PR #${activePR}`);
+            } else {
+              // Acquire the session lock
+              const lockValue = `${prNumber}|${now}|${context.runId}`;
+              await upsertVar('COPILOT_ACTIVE_SESSION', lockValue);
+              core.setOutput('acquired', 'true');
+              core.setOutput('queued', 'false');
+              core.info(`🔒 Session lock acquired: ${lockValue}`);
+            }
+
+      # ── 3e: Post @copilot continue on the PR ─────────────────────────────────
       - name: "Post @copilot continue"
+        if: steps.session_gate.outputs.acquired == 'true'
         uses: actions/github-script@v7
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
@@ -1459,13 +1626,15 @@ jobs:
             }
             core.info(`✅ Posted @copilot continue on PR #${prNumber}`);
 
-      # ── 3e: Auto-increment COGNITIVE_BRAIN_SESSION_NUMBER ────────────────────
+      # ── 3f: Auto-increment COGNITIVE_BRAIN_SESSION_NUMBER ────────────────────
       # Fires on every successful token delegation approval — the natural per-session
       # gate. Eliminates the need for manual variable updates in GitHub Settings.
       # The chatops_copilot_trigger.yml increment only fires for /copilot (slash)
       # commands; @copilot continue (at-sign) never triggers it, so the counter
       # historically required a manual bump after every PR. This step closes that gap.
+      # Only runs when session gate was acquired (not queued).
       - name: "Increment COGNITIVE_BRAIN_SESSION_NUMBER"
+        if: steps.session_gate.outputs.acquired == 'true'
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
         run: |
@@ -1487,14 +1656,14 @@ jobs:
             echo "⚠️ Failed to increment COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} → ${NEXT}). Check CODEX_MASTER_KEY has variables:write scope."
           fi
 
-      # ── 3f: Report completion via AgentBrainAPI.report_completion() ───────
+      # ── 3g: Report completion via AgentBrainAPI.report_completion() ───────
       # Wires the ACE L6 closed-loop learning gate (AAIS honest-calibration §7).
       # Calls report_completion() from src/codex/cognitive/agent_brain_api.py
       # to mark this delegation session as complete in the cognitive brain and
       # feed the outcome into the pattern store.  Falls back gracefully when
       # the src/ module is unavailable (e.g. shallow clone without extras).
       - name: "Report completion to AgentBrainAPI (ACE L6)"
-        if: success()
+        if: success() && steps.session_gate.outputs.acquired == 'true'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number || '' }}
           SESSION_NUMBER: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER }}
@@ -1518,3 +1687,115 @@ jobs:
               print(f"⚠️  AgentBrainAPI.report_completion() unavailable: {exc}")
               print("    (non-fatal — cognitive brain module not installed in CI env)")
           PYEOF
+
+  # ── Job 5: Session Release — clear lock on PR close/merge (S182) ──────────
+  # When a PR is closed (merged or abandoned), release the session lock so the
+  # next queued PR can proceed. Dequeues the next PR and posts @copilot continue
+  # on it to auto-trigger the next session.
+  session-release:
+    name: "🔓 Release session lock"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event.action == 'closed'
+
+    steps:
+      - name: "Release COPILOT_ACTIVE_SESSION and trigger next queued PR"
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const closedPR = context.payload.pull_request?.number;
+            if (!closedPR) {
+              core.info('No PR context — skipping session release');
+              return;
+            }
+
+            // Helper: get repo variable
+            async function getVar(name) {
+              try {
+                const { data } = await github.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+                return data.value || '';
+              } catch (e) {
+                if (e.status === 404) return '';
+                throw e;
+              }
+            }
+
+            // Helper: upsert repo variable
+            async function upsertVar(name, value) {
+              try {
+                await github.request('PATCH /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name, value,
+                });
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.request('POST /repos/{owner}/{repo}/actions/variables', {
+                    owner: context.repo.owner, repo: context.repo.repo, name, value,
+                  });
+                } else { throw e; }
+              }
+            }
+
+            // Check if the closing PR holds the active session lock
+            const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
+            if (!activeSession) {
+              core.info('No active session lock to release');
+              return;
+            }
+
+            const activePR = activeSession.split('|')[0];
+            if (activePR !== String(closedPR)) {
+              core.info(`Lock held by PR #${activePR}, not closing PR #${closedPR} — skipping`);
+              return;
+            }
+
+            // Release the lock
+            await upsertVar('COPILOT_ACTIVE_SESSION', '');
+            core.info(`🔓 Released session lock (was: ${activeSession})`);
+
+            // Dequeue next PR
+            const queue = await getVar('COPILOT_SESSION_QUEUE');
+            if (!queue) {
+              core.info('Session queue is empty — no PR to trigger');
+              return;
+            }
+
+            const queueList = queue.split(',').filter(Boolean);
+            const nextPR = queueList.shift();
+
+            if (nextPR) {
+              const nextPRNumber = parseInt(nextPR, 10);
+              if (isNaN(nextPRNumber) || nextPRNumber <= 0) {
+                core.warning(`Invalid PR number in queue: '${nextPR}' — skipping`);
+                await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
+                return;
+              }
+
+              // Post @copilot continue on the dequeued PR to trigger its session
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: nextPRNumber,
+                  body: [
+                    '<!-- session-gate-dequeued -->',
+                    '## 🔓 Session Available',
+                    '',
+                    `Previous session (PR #${closedPR}) has completed.`,
+                    'This PR has been dequeued and the session is now starting.',
+                    '',
+                    '@copilot continue',
+                  ].join('\n'),
+                });
+                // Only remove from queue after successful comment posting
+                await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
+                core.info(`✅ Dequeued PR #${nextPR} — posted @copilot continue`);
+              } catch (err) {
+                core.warning(`Failed to post @copilot continue on PR #${nextPR}: ${err.message}`);
+                // Don't remove from queue — will retry on next release
+              }
+            } else {
+              await upsertVar('COPILOT_SESSION_QUEUE', '');
+            }

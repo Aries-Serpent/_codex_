@@ -1,12 +1,13 @@
 # Deploy
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/deploy/`
 
 ## Contents
 
-- [cpu_local](deploy/cpu_local.md)
-- [packaging_and_docker](deploy/packaging_and_docker.md)
+- [INDEX](INDEX.md)
+- [cpu_local](cpu_local.md)
+- [packaging_and_docker](packaging_and_docker.md)
 
 ---
 

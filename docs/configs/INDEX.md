@@ -1,11 +1,12 @@
 # Configs
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/configs/`
 
 ## Contents
 
-- [OmegaConf_Schema](configs/OmegaConf_Schema.md)
+- [INDEX](INDEX.md)
+- [OmegaConf_Schema](OmegaConf_Schema.md)
 
 ---
 

@@ -1,11 +1,12 @@
 # Tokenization
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/tokenization/`
 
 ## Contents
 
-- [Adapter_Consolidation](tokenization/Adapter_Consolidation.md)
+- [Adapter_Consolidation](Adapter_Consolidation.md)
+- [INDEX](INDEX.md)
 
 ---
 

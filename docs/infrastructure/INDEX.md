@@ -1,11 +1,12 @@
 # Infrastructure
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/infrastructure/`
 
 ## Contents
 
-- [deployment](infrastructure/deployment.md)
+- [INDEX](INDEX.md)
+- [deployment](deployment.md)
 
 ---
 

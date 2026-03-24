@@ -87,8 +87,17 @@ def _file_summary_line(path: Path, root: Path) -> str:
 
 def generate_index(directory: Path, dry_run: bool = False) -> bool:
     """Auto-generate a stub INDEX.md for a directory."""
-    md_files = sorted(directory.glob("*.md"))
-    if not md_files:
+    # Direct .md files (non-recursive) — used for the Contents section.
+    md_files = [f for f in sorted(directory.glob("*.md")) if f.name not in INDEX_NAMES]
+    # Subdirectories with .md content: compute count once to avoid duplicate rglob traversals.
+    subdirs: list[tuple[Path, int]] = []
+    for d in sorted(directory.iterdir()):
+        if d.is_dir() and not d.name.startswith("."):
+            subcount = sum(1 for _ in d.rglob("*.md"))
+            if subcount > 0:
+                subdirs.append((d, subcount))
+    # Nothing to index at all — skip generation.
+    if not md_files and not subdirs:
         return False
 
     rel_to_docs = directory.relative_to(DOCS_ROOT)
@@ -101,21 +110,23 @@ def generate_index(directory: Path, dry_run: bool = False) -> bool:
         f"> **Auto-generated index** — {now} | Edit this file to add descriptions.",
         f"> Directory: `docs/{rel_to_docs}/`",
         "",
-        "## Contents",
-        "",
     ]
 
-    for f in md_files:
-        rel = f.relative_to(DOCS_ROOT)
-        lines.append(f"- [{f.stem}]({rel})")
+    if md_files:
+        lines += ["## Contents", ""]
+        for f in md_files:
+            rel = f.relative_to(directory)
+            lines.append(f"- [{f.stem}]({rel})")
 
-    # Add subdirectory links
-    subdirs = [d for d in sorted(directory.iterdir()) if d.is_dir() and not d.name.startswith(".")]
+    # Add subdirectory links; only insert a leading blank line when a previous
+    # section was emitted to avoid two consecutive blank lines in subdir-only indexes.
     if subdirs:
-        lines += ["", "## Subdirectories", ""]
-        for d in subdirs:
-            subcount = len(list(d.rglob("*.md")))
-            lines.append(f"- **[{d.name}/]({d.name}/)** — {subcount} files")
+        if lines and lines[-1] != "":
+            lines.append("")
+        lines += ["## Subdirectories", ""]
+        for d, subcount in subdirs:
+            noun = "file" if subcount == 1 else "files"
+            lines.append(f"- **[{d.name}/]({d.name}/)** — {subcount} {noun}")
 
     lines += [
         "",

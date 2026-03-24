@@ -1,13 +1,14 @@
 # System
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/system/`
 
 ## Contents
 
-- [CODEBASE_COGNITIVE_MAP](system/CODEBASE_COGNITIVE_MAP.md)
-- [CODEBASE_DASHBOARD](system/CODEBASE_DASHBOARD.md)
-- [PDA_LOOP_GUIDE](system/PDA_LOOP_GUIDE.md)
+- [CODEBASE_COGNITIVE_MAP](CODEBASE_COGNITIVE_MAP.md)
+- [CODEBASE_DASHBOARD](CODEBASE_DASHBOARD.md)
+- [INDEX](INDEX.md)
+- [PDA_LOOP_GUIDE](PDA_LOOP_GUIDE.md)
 
 ---
 

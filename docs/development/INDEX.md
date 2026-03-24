@@ -1,15 +1,16 @@
 # Development
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/development/`
 
 ## Contents
 
-- [CARGO_FEATURES](development/CARGO_FEATURES.md)
-- [ci_optimization_guide](development/ci_optimization_guide.md)
-- [modernization_guide](development/modernization_guide.md)
-- [modernization_scanner_policy](development/modernization_scanner_policy.md)
-- [offline_ci](development/offline_ci.md)
+- [CARGO_FEATURES](CARGO_FEATURES.md)
+- [INDEX](INDEX.md)
+- [ci_optimization_guide](ci_optimization_guide.md)
+- [modernization_guide](modernization_guide.md)
+- [modernization_scanner_policy](modernization_scanner_policy.md)
+- [offline_ci](offline_ci.md)
 
 ---
 

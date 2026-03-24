@@ -1,11 +1,12 @@
 # Onboarding
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/onboarding/`
 
 ## Contents
 
-- [QUICK_START](onboarding/QUICK_START.md)
+- [INDEX](INDEX.md)
+- [QUICK_START](QUICK_START.md)
 
 ---
 

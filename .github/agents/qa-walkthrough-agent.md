@@ -1102,4 +1102,4 @@ sequenceDiagram
 
 > **Mandatory.** All codebase scans MUST use `scripts/ci/rvs_preflight.py`. Running `pytest tests/` directly is **prohibited**.
 
-**Full protocol**: [BATCH_SCAN_PROTOCOL.md](BATCH_SCAN_PROTOCOL.md)
+**Full protocol**: [BATCH_SCAN_PROTOCOL.md](archive/status-docs/BATCH_SCAN_PROTOCOL.md)

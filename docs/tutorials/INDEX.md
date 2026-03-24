@@ -1,14 +1,15 @@
 # Tutorials
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/tutorials/`
 
 ## Contents
 
-- [end_to_end_cpu](tutorials/end_to_end_cpu.md)
-- [getting_started](tutorials/getting_started.md)
-- [quickstart](tutorials/quickstart.md)
-- [train_model](tutorials/train_model.md)
+- [INDEX](INDEX.md)
+- [end_to_end_cpu](end_to_end_cpu.md)
+- [getting_started](getting_started.md)
+- [quickstart](quickstart.md)
+- [train_model](train_model.md)
 
 ---
 

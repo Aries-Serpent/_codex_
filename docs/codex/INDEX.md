@@ -1,12 +1,13 @@
 # Codex
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/codex/`
 
 ## Contents
 
-- [IMPLEMENTATION_GUIDE](codex/IMPLEMENTATION_GUIDE.md)
-- [PRE_FLIGHT_CHECKLIST](codex/PRE_FLIGHT_CHECKLIST.md)
+- [IMPLEMENTATION_GUIDE](IMPLEMENTATION_GUIDE.md)
+- [INDEX](INDEX.md)
+- [PRE_FLIGHT_CHECKLIST](PRE_FLIGHT_CHECKLIST.md)
 
 ---
 

@@ -1,14 +1,15 @@
 # Safety
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/safety/`
 
 ## Contents
 
-- [differential_privacy](safety/differential_privacy.md)
-- [moderation_adapter](safety/moderation_adapter.md)
-- [policy_guidance](safety/policy_guidance.md)
-- [safety_guide](safety/safety_guide.md)
+- [INDEX](INDEX.md)
+- [differential_privacy](differential_privacy.md)
+- [moderation_adapter](moderation_adapter.md)
+- [policy_guidance](policy_guidance.md)
+- [safety_guide](safety_guide.md)
 
 ---
 

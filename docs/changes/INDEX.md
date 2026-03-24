@@ -1,12 +1,13 @@
 # Changes
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/changes/`
 
 ## Contents
 
-- [MSP_Capability_Audit_Changeplan_Tree](changes/MSP_Capability_Audit_Changeplan_Tree.md)
-- [MSP_Capability_Audit_File_Map](changes/MSP_Capability_Audit_File_Map.md)
+- [INDEX](INDEX.md)
+- [MSP_Capability_Audit_Changeplan_Tree](MSP_Capability_Audit_Changeplan_Tree.md)
+- [MSP_Capability_Audit_File_Map](MSP_Capability_Audit_File_Map.md)
 
 ---
 

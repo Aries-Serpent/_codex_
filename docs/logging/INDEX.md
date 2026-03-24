@@ -1,15 +1,16 @@
 # Logging
 
-> **Auto-generated index** — 2026-03-21 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/logging/`
 
 ## Contents
 
-- [end_to_end_logging](logging/end_to_end_logging.md)
-- [log_redaction_policy](logging/log_redaction_policy.md)
-- [log_rotation](logging/log_rotation.md)
-- [logging_guide](logging/logging_guide.md)
-- [metrics_and_experiment_tracking](logging/metrics_and_experiment_tracking.md)
+- [INDEX](INDEX.md)
+- [end_to_end_logging](end_to_end_logging.md)
+- [log_redaction_policy](log_redaction_policy.md)
+- [log_rotation](log_rotation.md)
+- [logging_guide](logging_guide.md)
+- [metrics_and_experiment_tracking](metrics_and_experiment_tracking.md)
 
 ---
 
