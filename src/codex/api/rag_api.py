@@ -81,10 +81,6 @@ class BuildIndexRequest(BaseModel):
     files: List[str] = Field(..., description="Concrete file paths to index")
     index_name: str = Field(..., description="Name for the index")
     tenant_id: str = Field(default="default", description="Tenant ID")
-    provider: Optional[str] = Field(
-        default=None,
-        description="(Deprecated) Index provider; accepted for backward compatibility and ignored.",
-    )
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
     provider: Optional[str] = Field(
