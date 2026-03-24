@@ -85,6 +85,43 @@ _LAZY_ATTRS = {
     "list_trainers": (".trainers", "list_trainers"),
 }
 
+# Eagerly populate the module namespace so that __all__ exports are defined at
+# import time (satisfies static analysis).  __getattr__ below remains as a
+# fallback for any attribute that wasn't resolved during the eager phase.
+try:
+    from .tokenizers import (  # noqa: E402
+        get_tokenizer,
+        list_tokenizers,
+        register_tokenizer,
+        tokenizer_registry,
+    )
+    from .models import (  # noqa: E402
+        get_model,
+        list_models,
+        model_registry,
+        register_model,
+    )
+    from .metrics import (  # noqa: E402
+        get_metric,
+        list_metrics,
+        metric_registry,
+        register_metric,
+    )
+    from .data_loaders import (  # noqa: E402
+        data_loader_registry,
+        get_data_loader,
+        list_data_loaders,
+        register_data_loader,
+    )
+    from .trainers import (  # noqa: E402
+        get_trainer,
+        list_trainers,
+        register_trainer,
+        trainer_registry,
+    )
+except Exception:  # pragma: no cover - guard against circular imports in some envs
+    logger.debug("Deferred registry imports will be resolved via __getattr__", exc_info=True)
+
 
 def __getattr__(name: str) -> Any:
     """Lazily import facade attributes when accessed.

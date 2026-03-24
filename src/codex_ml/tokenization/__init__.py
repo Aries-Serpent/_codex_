@@ -2,6 +2,26 @@
 
 from __future__ import annotations
 
+from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
+from ._protocols import TokenizerAdapter
+from .adapter import WhitespaceTokenizer
+from .api import get_tokenizer, pad_sequences
+
+try:
+    from codex_ml.interfaces.tokenizer import HFTokenizer
+except Exception:  # pragma: no cover - optional dependency guard
+    HFTokenizer = None  # type: ignore[assignment]
+
+try:
+    from .hf_tokenizer import HFTokenizerAdapter
+except Exception:  # pragma: no cover - optional dependency guard
+    HFTokenizerAdapter = None  # type: ignore[assignment]
+
+try:
+    from .sp_trainer import SPTokenizer
+except Exception:  # pragma: no cover - optional dependency guard
+    SPTokenizer = None  # type: ignore[assignment]
+
 __all__ = [
     "get_tokenizer",
     "WhitespaceTokenizer",
@@ -15,12 +35,3 @@ __all__ = [
     "UNK_TOKEN",
     "pad_sequences",
 ]
-
-
-def __getattr__(name: str):
-    from .api import deprecated_legacy_access
-
-    value = deprecated_legacy_access(name)
-    if value is None:
-        raise AttributeError(name)
-    return value

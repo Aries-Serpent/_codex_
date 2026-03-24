@@ -10,6 +10,7 @@ This package also includes the Python Ingestion Pipeline components:
 """
 
 from ._version import __version__
+from . import analyze, cli, ingest, intent, transform, verify
 
 __all__ = [
     "__version__",

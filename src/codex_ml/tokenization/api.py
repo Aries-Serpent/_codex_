@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 import warnings  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
-    TYPE_CHECKING,
     Iterable,
     Optional,
     Sequence,
@@ -28,8 +27,15 @@ from ._types import (  # noqa: E402 — re-exported
 )
 from .adapter import WhitespaceTokenizer  # noqa: E402
 
-if TYPE_CHECKING:  # pragma: no cover - import only used for typing
-    from .sp_trainer import SPTokenizer as _SPTokenizer  # noqa: F401
+try:
+    from .hf_tokenizer import HFTokenizerAdapter  # noqa: E402
+except Exception:  # pragma: no cover - optional dependency guard
+    HFTokenizerAdapter = None  # type: ignore[assignment]
+
+try:
+    from .sp_trainer import SPTokenizer  # noqa: E402
+except Exception:  # pragma: no cover - optional dependency guard
+    SPTokenizer = None  # type: ignore[assignment]
 
 
 def _load_hf_adapter():
@@ -213,8 +219,8 @@ __all__ = [
     "TokenizerAdapter",
     "WhitespaceTokenizer",
     "HFTokenizer",
-    "HFTokenizerAdapter",  # noqa: F822 - provided via __getattr__
-    "SPTokenizer",  # noqa: F822 - provided via __getattr__
+    "HFTokenizerAdapter",
+    "SPTokenizer",
     "load_tokenizer",
     "get_tokenizer",
     "deprecated_legacy_access",

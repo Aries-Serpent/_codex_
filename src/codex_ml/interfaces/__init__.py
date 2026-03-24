@@ -16,6 +16,40 @@ Author: Codex Team
 """
 
 # BEGIN: CODEX_IFACE_INIT
+try:
+    from .tokenizer import (
+        HFTokenizer,
+        HFTokenizerAdapter,
+        TokenizerAdapter,
+        WhitespaceTokenizer,
+    )
+except Exception:  # pragma: no cover - optional dependency guard
+    HFTokenizer = None  # type: ignore[assignment]
+    HFTokenizerAdapter = None  # type: ignore[assignment]
+    TokenizerAdapter = None  # type: ignore[assignment]
+    WhitespaceTokenizer = None  # type: ignore[assignment]
+
+try:
+    from .reward_model import HeuristicRewardModel, RewardModel
+except Exception:  # pragma: no cover - optional dependency guard
+    RewardModel = None  # type: ignore[assignment]
+    HeuristicRewardModel = None  # type: ignore[assignment]
+
+try:
+    from .rl import BanditRLAgent, RLAgent
+except Exception:  # pragma: no cover - optional dependency guard
+    RLAgent = None  # type: ignore[assignment]
+    BanditRLAgent = None  # type: ignore[assignment]
+
+from .registry import apply_config, get, get_component, load_component, register
+
+try:
+    from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
+except Exception:  # pragma: no cover - optional dependency guard
+    build_peft_config = None  # type: ignore[assignment]
+    enable_peft = None  # type: ignore[assignment]
+    load_adapter_for_inference = None  # type: ignore[assignment]
+
 __all__ = [
     "TokenizerAdapter",
     "HFTokenizer",
@@ -34,66 +68,6 @@ __all__ = [
     "enable_peft",
     "load_adapter_for_inference",
 ]
-
-
-def __getattr__(name: str):  # pragma: no cover - shim for optional deps
-    if name in {
-        "TokenizerAdapter",
-        "HFTokenizer",
-        "HFTokenizerAdapter",
-        "WhitespaceTokenizer",
-    }:
-        from .tokenizer import (
-            HFTokenizer,
-            HFTokenizerAdapter,
-            TokenizerAdapter,
-            WhitespaceTokenizer,
-        )
-
-        return {
-            "TokenizerAdapter": TokenizerAdapter,
-            "HFTokenizer": HFTokenizer,
-            "HFTokenizerAdapter": HFTokenizerAdapter,
-            "WhitespaceTokenizer": WhitespaceTokenizer,
-        }[name]
-    if name in {"RewardModel", "HeuristicRewardModel"}:
-        from .reward_model import HeuristicRewardModel, RewardModel
-
-        return {
-            "RewardModel": RewardModel,
-            "HeuristicRewardModel": HeuristicRewardModel,
-        }[name]
-    if name in {"RLAgent", "BanditRLAgent"}:
-        from .rl import BanditRLAgent, RLAgent
-
-        return {"RLAgent": RLAgent, "BanditRLAgent": BanditRLAgent}[name]
-    if name in {"register", "get", "load_component", "get_component", "apply_config"}:
-        from . import registry
-
-        mapping = {
-            "register": registry.register,
-            "get": registry.get,
-            "load_component": registry.load_component,
-            "get_component": registry.get_component,
-            "apply_config": registry.apply_config,
-        }
-
-        return mapping[name]
-    if name in {"build_peft_config", "enable_peft", "load_adapter_for_inference"}:
-        from .peft_hooks import (
-            build_peft_config,
-            enable_peft,
-            load_adapter_for_inference,
-        )
-
-        mapping = {
-            "build_peft_config": build_peft_config,
-            "enable_peft": enable_peft,
-            "load_adapter_for_inference": load_adapter_for_inference,
-        }
-
-        return mapping[name]
-    raise AttributeError(name)
 
 
 def __dir__() -> list[str]:  # pragma: no cover - introspection helper
