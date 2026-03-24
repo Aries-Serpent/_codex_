@@ -244,7 +244,9 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
             ]
 
             start_time = datetime.now(timezone.utc)
-            coordinator.reach_consensus(decisions)  # MAJORITY strategy configured in coordinator constructor above
+            coordinator.reach_consensus(
+                decisions
+            )  # MAJORITY strategy configured in coordinator constructor above
             latency_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
 
             latencies.append(latency_ms)

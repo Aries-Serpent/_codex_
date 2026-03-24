@@ -30,7 +30,6 @@ class TransportError(Exception):
     """Base exception for transport errors."""
 
 
-
 class MessageTooLargeError(TransportError):
     """Raised when a message exceeds the maximum size."""
 

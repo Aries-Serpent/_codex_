@@ -157,17 +157,13 @@ class VectorStoreError(Exception):
     """Base exception for vector store errors"""
 
 
-
 class DimensionMismatchError(VectorStoreError):
     """Raised when vector dimensions don't match"""
-
 
 
 class VectorNotFoundError(VectorStoreError):
     """Raised when requested vector ID is not found"""
 
 
-
 class IndexNotLoadedError(VectorStoreError):
     """Raised when operation requires loaded index but it's not loaded"""
-

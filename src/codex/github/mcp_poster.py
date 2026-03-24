@@ -339,13 +339,17 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        result = self._request("POST", url, {
-            "title": title,
-            "body": body,
-            "head": head,
-            "base": base,
-            "draft": draft,
-        })
+        result = self._request(
+            "POST",
+            url,
+            {
+                "title": title,
+                "body": body,
+                "head": head,
+                "base": base,
+                "draft": draft,
+            },
+        )
         self._record_cb_pattern(
             "CB-pr-open",
             f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
@@ -544,11 +548,15 @@ class GitHubMCPPoster:
             List of parent commit SHAs (typically one — the current HEAD).
         """
         url = f"{_GITHUB_API}/repos/{repo}/git/commits"
-        result = self._request("POST", url, {
-            "message": message,
-            "tree": tree_sha,
-            "parents": parent_shas,
-        })
+        result = self._request(
+            "POST",
+            url,
+            {
+                "message": message,
+                "tree": tree_sha,
+                "parents": parent_shas,
+            },
+        )
         return result["sha"]
 
     def _update_ref(self, repo: str, ref: str, sha: str, force: bool = False) -> dict[str, Any]:
@@ -659,12 +667,14 @@ class GitHubMCPPoster:
         tree_items: list[dict[str, Any]] = []
         for path, content in files.items():
             blob_sha = self._create_blob(repo, content, encoding="utf-8")
-            tree_items.append({
-                "path": path,
-                "mode": "100644",  # regular file
-                "type": "blob",
-                "sha": blob_sha,
-            })
+            tree_items.append(
+                {
+                    "path": path,
+                    "mode": "100644",  # regular file
+                    "type": "blob",
+                    "sha": blob_sha,
+                }
+            )
 
         # 3. Create a new tree that layers the changed files on top of the
         #    existing tree.
@@ -728,7 +738,10 @@ class GitHubMCPPoster:
         success_rate = 1.0 if outcome == "success" else 0.0
         logger.info(
             "CB lifecycle: %s | %s | outcome=%s | %s",
-            pattern_id, decision, outcome, context,
+            pattern_id,
+            decision,
+            outcome,
+            context,
         )
         try:
             from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # noqa: PGH003
@@ -791,8 +804,7 @@ class GitHubMCPPoster:
             mem = SQLiteMemory()
             all_patterns = mem.get_recent_patterns(limit=limit * 4)
             patterns = [
-                p for p in all_patterns
-                if getattr(p, "pattern_id", "").startswith(pattern_prefix)
+                p for p in all_patterns if getattr(p, "pattern_id", "").startswith(pattern_prefix)
             ][:limit]
 
             if not patterns:
@@ -809,18 +821,14 @@ class GitHubMCPPoster:
                 dec = getattr(p, "decision", "")[:60]
                 sr = getattr(p, "success_rate", None)
                 outcome = (
-                    "✅ success"
-                    if sr == 1.0
-                    else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
+                    "✅ success" if sr == 1.0 else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
                 )
                 lines.append(f"| `{pid}` | {dec} | {outcome} |")
 
             return "\n".join(lines) + "\n"
 
         except Exception as _exc:  # noqa: BLE001 — fail-open
-            logger.debug(
-                "CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc
-            )
+            logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
             return ""
 
     def _require_token(self) -> None:
@@ -925,17 +933,18 @@ class GitHubMCPPoster:
                     try:
                         wait = float(retry_after_hdr)
                     except (TypeError, ValueError):
-                        wait = (2 ** attempt) * 1.0  # 1s, 2s, 4s …
+                        wait = (2**attempt) * 1.0  # 1s, 2s, 4s …
                     logger.warning(
                         "GitHub API rate-limited (%d). Retrying in %.0fs (attempt %d/%d)…",
-                        exc.code, wait, attempt + 1, max_retries,
+                        exc.code,
+                        wait,
+                        attempt + 1,
+                        max_retries,
                     )
                     time.sleep(wait)
                 else:
                     error_body = exc.read().decode(errors="replace")
-                    logger.error(
-                        "GitHub API %s %s → %d: %s", method, url, exc.code, error_body
-                    )
+                    logger.error("GitHub API %s %s → %d: %s", method, url, exc.code, error_body)
                     raise
         # Should be unreachable, but satisfy type checker
         raise last_exc  # type: ignore[misc]
@@ -1017,7 +1026,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     cb.add_argument("--repo", required=True, help="owner/repo")
     cb.add_argument(
-        "--ref", required=True,
+        "--ref",
+        required=True,
         help="Full ref name, e.g. refs/heads/0D_base_ (heads/ prefix added if omitted)",
     )
     cb.add_argument("--sha", required=True, help="40-char commit SHA to point the new ref to")
@@ -1052,7 +1062,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     rp.add_argument("--limit", type=int, default=10, help="Maximum patterns to return (default 10)")
     rp.add_argument(
-        "--prefix", default="CB-",
+        "--prefix",
+        default="CB-",
         help="Filter patterns by pattern_id prefix (default: CB-)",
     )
 
@@ -1135,10 +1146,15 @@ def main(argv: list[str] | None = None) -> int:
             for mapping in args.files:
                 dest, _, src = mapping.partition(":")
                 if not dest or not src:
-                    print(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC", file=sys.stderr)  # noqa: E501
+                    print(
+                        f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC",
+                        file=sys.stderr,
+                    )  # noqa: E501
                     return 1
                 files[dest] = Path(src).read_text(encoding="utf-8")
-            commit_sha = poster.commit_files(args.repo, args.branch, files, args.message, args.force)  # noqa: E501
+            commit_sha = poster.commit_files(
+                args.repo, args.branch, files, args.message, args.force
+            )  # noqa: E501
             print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
 
     except RuntimeError as exc:

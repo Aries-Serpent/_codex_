@@ -70,20 +70,16 @@ class SecretProviderError(Exception):
     """Base exception for secret provider errors."""
 
 
-
 class ProviderConfigError(SecretProviderError):
     """Raised when provider configuration is invalid."""
-
 
 
 class RotationError(SecretProviderError):
     """Raised when secret rotation fails."""
 
 
-
 class ValidationError(SecretProviderError):
     """Raised when secret validation fails."""
-
 
 
 class SecretProvider(ABC):

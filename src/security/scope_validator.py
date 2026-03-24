@@ -20,15 +20,12 @@ class ScopeError(Exception):
     """Base exception for scope validation errors."""
 
 
-
 class InsufficientScopeError(ScopeError):
     """Raised when token lacks required scope."""
 
 
-
 class InvalidScopeError(ScopeError):
     """Raised when scope format is invalid."""
-
 
 
 class TokenScope(Flag):

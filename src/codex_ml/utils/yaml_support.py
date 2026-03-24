@@ -54,7 +54,6 @@ else:  # pragma: no cover - avoids attribute errors when PyYAML missing
         """Placeholder exception used when PyYAML is unavailable."""
 
 
-
 # Alias for backward compatibility
 YAMLError = YAMLErrorType
 

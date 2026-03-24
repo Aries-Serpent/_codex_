@@ -12,7 +12,6 @@ class PipelineValidationError(Exception):
     """Raised when pipeline configuration validation fails."""
 
 
-
 def validate_pipeline_config(config: Dict[str, Any]) -> None:
     """
     Validate pipeline configuration.

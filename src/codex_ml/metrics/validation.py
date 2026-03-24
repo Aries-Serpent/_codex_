@@ -11,7 +11,6 @@ class MetricValidationError(Exception):
     """Exception raised when metric validation fails."""
 
 
-
 def validate_metric_registry() -> list[str]:
     """Validate all registered metrics have implementations.
 

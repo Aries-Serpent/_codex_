@@ -21,7 +21,6 @@ class TLSConfigError(Exception):
     """Raised when TLS configuration is invalid."""
 
 
-
 def create_server_context(
     cert_path: str | Path,
     key_path: str | Path,
