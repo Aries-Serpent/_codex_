@@ -49,7 +49,7 @@ class BaseMessage:
         return asdict(self)
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ContextUpdate(BaseMessage):
     """
     Context update message from cognitive brain to Copilot.
@@ -64,7 +64,7 @@ class ContextUpdate(BaseMessage):
     metadata: Optional[Dict[str, Any]] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class QueryMessage(BaseMessage):
     """
     Query message requesting information or action.
@@ -76,7 +76,7 @@ class QueryMessage(BaseMessage):
     requires_response: bool = True
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ResponseMessage(BaseMessage):
     """
     Response message to a query.
@@ -88,7 +88,7 @@ class ResponseMessage(BaseMessage):
     error: Optional[str] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class StatusMessage(BaseMessage):
     """
     Status update message.
@@ -99,7 +99,7 @@ class StatusMessage(BaseMessage):
     metrics: Optional[Dict[str, Any]] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ErrorMessage(BaseMessage):
     """
     Error notification message.
@@ -111,7 +111,7 @@ class ErrorMessage(BaseMessage):
     recovery_action: Optional[str] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class HeartbeatMessage(BaseMessage):
     """
     Heartbeat message for connection monitoring.

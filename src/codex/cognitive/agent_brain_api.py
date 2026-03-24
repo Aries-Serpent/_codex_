@@ -509,7 +509,7 @@ class AgentBrainAPI:
 
     def _safe_query_patterns(self, query: str) -> List[Dict[str, Any]]:
         try:
-            matches = self._brain.query_patterns(query, max_results=5)
+            matches = self._brain.query_patterns(query, limit=5)
             return [
                 {
                     "pattern_id": m.pattern_id,

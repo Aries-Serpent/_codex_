@@ -611,9 +611,15 @@ class GitHubTokenProvider(TokenProvider):
                 data = resp.json()
                 meta = SecretMetadata(
                     secret_id="current_token",  # nosec B106
-                    name=f"GitHub PAT for {data.get('login', 'unknown')}",
+                    secret_type=SecretType.TOKEN,
+                    provider=ProviderType.GITHUB,
                     created_at=datetime.now(UTC),
-                    tags={"github_login": data.get("login", ""), "token_type": "pat"},  # nosec B105
+                    updated_at=datetime.now(UTC),
+                    tags={
+                        "github_login": data.get("login", ""),
+                        "token_type": "pat",
+                        "name": f"GitHub PAT for {data.get('login', 'unknown')}",
+                    },  # nosec B105
                     scopes=None,  # scope info not available from /user
                 )
                 return [meta]

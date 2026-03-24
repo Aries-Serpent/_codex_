@@ -228,12 +228,11 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
 
         # Build index
         index_path = build_index_from_files(
-            file_patterns=build_request.files,
+            files=build_request.files,
             index_name=build_request.index_name,
             tenant_id=build_request.tenant_id,
             chunk_size=build_request.chunk_size,
             overlap=build_request.overlap,
-            provider_type=build_request.provider,
         )
 
         # Get metadata
@@ -280,7 +279,7 @@ async def query_index(request: Request, query_request: QueryRequest) -> QueryRes
 
         # Query
         results = retriever.query(
-            query=query_request.query,
+            q=query_request.query,
             top_k=query_request.top_k,
             min_score=query_request.min_score,
         )

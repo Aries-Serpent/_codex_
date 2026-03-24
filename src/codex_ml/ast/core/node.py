@@ -208,14 +208,15 @@ class StandardizedASTNode:
     ) -> "StandardizedASTNode":
         """Create from dictionary."""
         location = SourceLocation.from_dict(data["location"]) if data.get("location") else None
-        node = cls(  # type: ignore[call-arg]
+        node = cls(
             node_id=data["node_id"],
             type=data["type"],
             name=data["name"],
-            parent=parent,
             location=location,
             metadata=data.get("metadata", {}),
         )
+        if parent is not None:
+            node.parent = parent
         for child_data in data.get("children", []):
             child = cls.from_dict(child_data, parent=node)
             node.children.append(child)

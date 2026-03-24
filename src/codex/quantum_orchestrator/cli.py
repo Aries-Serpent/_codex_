@@ -582,16 +582,14 @@ def optimize(paths: int, temperature: float, task_count: int):
 
     # Create optimizer
     optimizer = PathIntegralOptimizer(
-        temperature=temperature,
-        num_samples=paths,
+        orchestrator.orchestrator,
+        n_paths=paths,
     )
 
     # Find optimal path
     click.echo("\n🔍 Searching for optimal path...")
     optimal = optimizer.find_optimal_path(
         initial_state,
-        target_state=initial_state,  # Simplified for demo
-        max_time=10.0,
     )
 
     click.echo("\n✅ Optimization complete!")
