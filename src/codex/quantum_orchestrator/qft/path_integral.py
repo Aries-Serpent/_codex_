@@ -187,6 +187,11 @@ class PathSampler:
         return path
 
 
+# Base perturbation scale applied to path sampling.  Multiplied by temperature so
+# higher T explores state space more broadly; at T=1.0 behaviour is unchanged.
+_BASE_PERTURBATION_SCALE: float = 0.1
+
+
 class PathIntegralOptimizer:
     """Find optimal execution path using path integral formulation."""
 
@@ -229,7 +234,7 @@ class PathIntegralOptimizer:
         t = temperature if temperature is not None else self.temperature
         # Temperature controls the perturbation scale of path sampling.
         # Scale defaults to 0.1; multiply by temperature so higher T = more exploration.
-        perturbation_scale = 0.1 * t
+        perturbation_scale = _BASE_PERTURBATION_SCALE * t
         paths = self.sampler.sample_paths(
             initial_state, n_steps, perturbation_scale=perturbation_scale
         )

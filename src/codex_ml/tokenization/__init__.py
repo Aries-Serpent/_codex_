@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ._protocols import TokenizerAdapter
 from ._types import BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN
@@ -23,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .sp_trainer import SPTokenizer
 
 
-def __getattr__(name: str):  # noqa: ANN001, ANN202
+def __getattr__(name: str) -> Any:  # noqa: ANN401
     """Lazy-load optional attributes (HFTokenizerAdapter, SPTokenizer)."""
     return _lazy_load_export(name)
 
