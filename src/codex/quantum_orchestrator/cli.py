@@ -583,13 +583,15 @@ def optimize(paths: int, temperature: float, task_count: int):
     optimizer = PathIntegralOptimizer(
         orchestrator.orchestrator,
         n_paths=paths,
+        n_paths=paths,
         temperature=temperature,
     )
 
-    # Find optimal path — pass temperature again so a one-off call can override T
+    # Find optimal path
     click.echo("\n🔍 Searching for optimal path...")
     optimal = optimizer.find_optimal_path(
         initial_state,
+        temperature=temperature,
         temperature=temperature,
     )
 
