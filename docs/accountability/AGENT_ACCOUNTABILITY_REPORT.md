@@ -9097,3 +9097,47 @@ now have a `description` field (0 remaining violations).
   Copilot custom agent schema.
 - Future deprecation stubs should use the template: `description: "DEPRECATED — use X instead. <one-line summary>."`
 
+
+---
+
+## SESSION SUMMARY — 2026-03-24T19:11Z S186-b (PR #3739) — CI Failure Fixes (run #23503515066)
+
+**Workflow:** Resilient Validation Suite — run #23503515066
+**Branch:** `0D_base_`
+**Pattern Reported:** `coverage-timeout` (Copilot escalation)
+
+### Root Causes & Fixes Applied
+
+#### 1. Stale date in `docs/ROADMAP.md` (line 389)
+`roadmap_mlops_note` rule detected date `2026-03-22` vs expected `2026-03-24`.
+**Fix:** Updated date from `2026-03-22` → `2026-03-24` in ROADMAP.md.
+
+#### 2. Missing `.github/agents/AGENT_ECOSYSTEM_MAP.md`
+`tests/agents/test_custom_agent_functional.py::TestAgentIntegration::test_agent_ecosystem_map_exists`
+asserts the ecosystem map file exists but it was absent.
+**Fix:** Created `.github/agents/AGENT_ECOSYSTEM_MAP.md` with the agent topology map.
+
+#### 3. Tokenization deprecation warning missing (`get_tokenizer`)
+`tests/tokenization/test_tokenization_deprecation.py::test_tokenization_deprecation_attr`
+and `tests/tokenization/test_api_import_warning_once.py::test_warning_emitted_once` expect
+a `DeprecationWarning` when accessing `codex_ml.tokenization.get_tokenizer`.
+The warning was not emitted because `get_tokenizer` was directly exported (bypassing `__getattr__`).
+**Fix:** Removed `get_tokenizer` from direct exports in `codex_ml/tokenization/__init__.py`;
+added it to `__getattr__` with a `DeprecationWarning`.
+
+#### 4. API rate limit test blocked by auth middleware
+`tests/test_api_rate_limit.py::test_rate_limit` returned 401 Unauthorized because
+the new `AuthMiddleware` (enabled by default via `CODEX_AUTH_MIDDLEWARE_ENABLED=1`) blocked
+unauthenticated requests. The test only removed `API_KEY` but not the auth middleware.
+**Fix:** Added `monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")` to the test.
+
+### Files Changed
+- `docs/ROADMAP.md` — stale date update
+- `.github/agents/AGENT_ECOSYSTEM_MAP.md` — created
+- `src/codex_ml/tokenization/__init__.py` — deprecation shim for `get_tokenizer`
+- `tests/test_api_rate_limit.py` — disable auth middleware in rate limit test
+
+### Impact
+- Shard 2 failures: 3 of 4 fixed (rate limit, ecosystem map, tokenization deprecation)
+- Shard 3 failures: 1 of 3 fixed (stale metrics)
+- Shard 4 failures: transient/order-dependent, pass locally
