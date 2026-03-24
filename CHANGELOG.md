@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed/Added (S186 — PR #3740)
+- **fix(ci):** Move `"Duplicate Kwargs"` from `manual_review_patterns` → `auto_fixable_patterns` in `CommonIssueFixer` — Pattern 18 had a complete auto-fix implementation but was mis-classified in PR #3739
+- **fix(ci):** Add Pattern 18 to `generate_json_report` `pattern_map` — previously emitted `"pattern": 0` for Duplicate Kwargs issues in JSON reports
+- **refactor(ci):** Extract `_find_kwarg_removal_span` static helper from `fix_duplicate_kwargs` inner loop — improves readability and testability (per Gemini review PR #3741 r2983613366)
+- **feat(ci):** Add `--record-patterns` / `--record-db` flags to `auto_fix_common_issues.py` — auto-records all detected occurrences to cognitive brain DB after every run
+- **feat(cognitive):** Add `patterns` table + indexes to `_init_history_db()` in `cognitive_app/src/server/cli_api_server.py` — Phase 6 schema foundation
+- **feat(cognitive):** Add REST endpoints `GET /api/patterns/recent`, `GET /api/patterns/summary`, `POST /api/patterns/record` to `cli_api_server.py`
+- **feat(ci):** Add `scripts/ci/pattern_recorder.py` — full knowledge-graph CLI (record/insert/query/summary/high-recurrence/export); `high_recurrence()` and `export_json()` APIs
+- **feat(ci):** Add `scripts/ci/ci_pattern_pipeline.py` — detect→fix→record→report orchestrator with `--artefact`, `--strict`, `--no-record` flags
+- **feat(hooks):** Add `scripts/hooks/pre_commit_pattern_check.py` — S187 pre-commit pattern-recurrence warning hook; advisory by default, blocking with `CODEX_PATTERN_HOOK_STRICT=1`
+- **test:** Add `tests/ci/test_pattern_recorder.py` — 41 tests covering all Phase 6 components; all passing
+
+
 ### Fixed (auto-update — PR #3740)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3740 (SHA `135f5375`) at 2026-03-24T18:43Z [auto-generated]
 
