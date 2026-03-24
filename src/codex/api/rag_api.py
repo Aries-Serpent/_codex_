@@ -223,7 +223,10 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
     try:
         from codex.rag import build_index_from_files
 
-        # Convert str paths to Path objects expected by build_index_from_files
+        # files contains concrete path strings from the caller; convert to Path objects
+        # so build_index_from_files can call file_path.exists() / file_path.read_text().
+        # (The `provider` field was removed from BuildIndexRequest: a single built-in
+        # embedding strategy is used; multi-provider routing is not yet implemented.)
         index_path = build_index_from_files(
             files=[Path(f) for f in build_request.files],
             index_name=build_request.index_name,
