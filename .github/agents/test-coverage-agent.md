@@ -1,5 +1,6 @@
 ---
 name: Test-coverage Agent
+description: "DEPRECATED — use unified-coverage-agent instead. Monitors and improves test coverage across the codebase."
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent

@@ -92,6 +92,7 @@ class CommonIssueFixer:
             # (inside the same isolated-venv as mypy-baseline.yml uses).
             "mypy Baseline Freshness",
             "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
+            "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -123,13 +124,14 @@ class CommonIssueFixer:
             (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
             (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
             (17, "CI SHA Drift",            self.check_ci_sha_drift),
+            (18, "Duplicate Kwargs",         self.fix_duplicate_kwargs),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1–17)")
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1–18)")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -1029,6 +1031,156 @@ class CommonIssueFixer:
 
         return issues
 
+    # ------------------------------------------------------------------
+    # Pattern 18 — Duplicate keyword arguments (auto-fixable)
+    # ------------------------------------------------------------------
+    def fix_duplicate_kwargs(self) -> List[str]:
+        """Pattern 18: Detect and remove duplicate keyword arguments in Python function calls.
+
+        Duplicate kwargs such as ``f(a=1, a=2)`` are rejected by Python's
+        compiler (``SyntaxError: keyword argument repeated``) and flagged by
+        ruff as ``invalid-syntax``.  They also cause a cascade of false-positive
+        failures across ruff patterns 1, 8, 9, 11, 12 and 13, as well as the
+        mypy anti-regression gate (+5 errors per duplicated argument pair seen
+        on ``0D_base_`` run #149).
+
+        Fix strategy
+        ────────────
+        Parse every ``*.py`` file under ``src/`` and ``tests/`` with ``ast`` to
+        find ``ast.Call`` nodes that contain duplicate keyword names.  For each
+        duplicate, remove the **second** occurrence (keeping the first, which is
+        the caller's intent).
+
+        Removal uses the AST node's ``end_lineno`` / ``end_col_offset`` attributes
+        (available since Python 3.8) to precisely locate the value expression,
+        then backs up to include the ``kwarg_name=`` prefix and any trailing comma.
+        This handles arbitrarily nested expressions (e.g. ``f(a=g(1,2), a=3)``)
+        without regex mis-matching.
+
+        This pattern is **auto-fixable** (``auto_fix_available=True``).
+        """
+        import ast
+
+        issues: List[str] = []
+        src_dirs = [self.repo_root / "src", self.repo_root / "tests"]
+        py_files: List[Path] = []
+        for src_dir in src_dirs:
+            if src_dir.exists():
+                py_files.extend(sorted(src_dir.rglob("*.py")))
+
+        for py_file in py_files:
+            try:
+                source = py_file.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+
+            try:
+                tree = ast.parse(source, filename=str(py_file))
+            except SyntaxError:
+                # File may already be broken for other reasons; skip
+                continue
+
+            # Collect duplicate keyword nodes (second occurrence only, to remove).
+            # dup_kws is a list of ast.keyword nodes whose .arg is a duplicate.
+            dup_kws: List[ast.keyword] = []
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                seen: Dict[str, int] = {}
+                for kw in node.keywords:
+                    if kw.arg is None:
+                        continue  # **kwargs expansion
+                    if kw.arg in seen:
+                        dup_kws.append(kw)
+                    else:
+                        seen[kw.arg] = kw.value.lineno
+
+            if not dup_kws:
+                continue
+
+            # Sort in REVERSE source order so that removing one kwarg does not
+            # shift the character offsets of later kwarg positions.
+            dup_kws.sort(key=lambda k: (k.value.lineno, k.value.col_offset), reverse=True)
+
+            lines = source.splitlines(keepends=True)
+            changed = False
+
+            for kw in dup_kws:
+                if kw.arg is None:
+                    continue  # already excluded above; guard for type narrowing
+                # --- locate the full span of "kwarg_name = <value> , " ---
+                # kw.value gives us the value node; the keyword name sits immediately
+                # before it on the same line (Python grammar guarantees this for
+                # non-star keywords).  We use col_offset to find the '=' sign and
+                # scan left for the keyword name.
+                #
+                # end_lineno / end_col_offset are always present on Python 3.8+;
+                # this project requires Python 3.12+ (pyproject.toml: requires-python
+                # = ">=3.12") so we access them directly without getattr fallbacks.
+                val_lineno: int = kw.value.lineno
+                val_col: int = kw.value.col_offset       # 0-based column of value start
+                val_end_lineno: int = kw.value.end_lineno   # type: ignore[union-attr]
+                val_end_col: int = kw.value.end_col_offset  # type: ignore[union-attr]
+
+                # Multi-line value expressions are rare in kwargs; skip them to be
+                # safe (the duplicate will remain but won't be mistakenly mangled).
+                if val_end_lineno != val_lineno:
+                    continue
+
+                line_idx = val_lineno - 1  # 0-based
+                if line_idx < 0 or line_idx >= len(lines):
+                    continue
+                line = lines[line_idx]
+
+                # Find the start of "kwarg_name=" by scanning left from val_col.
+                # The text before val_col should be "...  kwarg_name = " (with
+                # optional whitespace around '=').
+                prefix = line[:val_col]  # up to start of value, e.g. "        n_paths="
+                eq_pos = prefix.rfind("=")
+                if eq_pos == -1:
+                    continue
+                name_end = eq_pos
+                # skip whitespace between name and '='
+                while name_end > 0 and prefix[name_end - 1] == " ":
+                    name_end -= 1
+                name_start = name_end - len(kw.arg)
+                if name_start < 0 or prefix[name_start:name_end] != kw.arg:
+                    continue  # safety: name not where expected
+
+                # Scan left to include leading whitespace / preceding comma
+                remove_start = name_start
+                while remove_start > 0 and line[remove_start - 1] in (" ", "\t"):
+                    remove_start -= 1
+
+                # Scan right past value end to consume trailing comma + whitespace
+                remove_end = val_end_col
+                while remove_end < len(line) and line[remove_end] in (" ", "\t"):
+                    remove_end += 1
+                if remove_end < len(line) and line[remove_end] == ",":
+                    remove_end += 1  # consume the comma
+                while remove_end < len(line) and line[remove_end] in (" ", "\t"):
+                    remove_end += 1  # trailing whitespace after comma
+
+                new_line = line[:remove_start] + line[remove_end:]
+                # If the resulting line is blank (only whitespace / newline), drop it
+                if new_line.strip() in ("", "\n", "\r\n"):
+                    new_line = ""
+
+                issues.append(
+                    f"{py_file.relative_to(self.repo_root)}:{val_lineno}: "
+                    f"Duplicate keyword argument '{kw.arg}' removed"
+                )
+                lines[line_idx] = new_line
+                changed = True
+
+            if changed:
+                py_file.write_text("".join(lines), encoding="utf-8")
+                self.fixes_applied["Duplicate Kwargs"] = (
+                    self.fixes_applied.get("Duplicate Kwargs", 0) + len(dup_kws)
+                )
+
+        return issues
+
     def has_auto_fixable_issues(self) -> bool:
         """Check if there are any unfixed auto-fixable issues."""
         for pattern_name, issues in self.issues_found.items():
@@ -1152,9 +1304,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 18),
+        choices=range(1, 19),
         metavar="N",
-        help="Run only pattern N (1–17); see pattern list above"
+        help="Run only pattern N (1–18); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

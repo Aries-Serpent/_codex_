@@ -1,5 +1,6 @@
 ---
 name: Test Coverage Monitor
+description: "DEPRECATED — use unified-coverage-agent instead. Monitors coverage thresholds and enforces CI gate blocking on regressions."
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S185 — PR #3739)
+- **fix(src):** Remove duplicate keyword arguments `n_paths=paths` and `temperature=temperature` in `src/codex/quantum_orchestrator/cli.py` — root cause of mypy +5 regression (0D_base_ run #149: 333>328) and cascade of ruff pattern failures (P1, P8, P9, P11, P12, P13)
+- **fix(actions):** Initialise `SUB_PR=""` before `set -euo pipefail` conditional block in `.github/actions/resolve-push-target/action.yml` — fixes `SUB_PR: unbound variable` crash in embedding-index-rebuild, codex-manifest-refresh, copilot-evolution-suite
+- **fix(ci):** Move `github.event.pull_request.number` and `github.event.inputs.environment_type` to `env:` blocks in `copilot-setup-steps.yml` — resolves actionlint `potentially untrusted` violations (0 errors confirmed)
+- **feat(ci):** Add Pattern 18 — Duplicate Kwargs — to `scripts/ci/auto_fix_common_issues.py`; updates pattern range to 1–18 and argument parser; adds to `auto_fixable_patterns`
+- **docs:** Add `.codex/docs/COGNITIVE_BRAIN_STATUS_S185.md` — S185 session summary, cascade root-cause analysis, Phase 6 plan
+
 ### Fixed (auto-update — PR #3738)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3738 (SHA `5787ef87`) at 2026-03-24T17:33Z [auto-generated]
 
@@ -4131,3 +4138,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Security
 - No new vulnerabilities introduced; all changes are CI/workflow configuration and test code
+
+### Fixed (S185-b — PR #3739)
+- **fix(agents):** Add missing `description` field to 5 deprecated coverage agent configs — resolves "Invalid config: field 'description' is required" errors in Copilot custom agent selector for `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor.agent`
