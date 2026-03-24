@@ -207,6 +207,12 @@ def record_from_report(
     fixes_applied: Dict[str, int] = data.get("fixes_applied", {})
     timestamp = data.get("timestamp")
 
+    # Track remaining fix credits per pattern name so that only the first N
+    # occurrences of each pattern are marked as fixed (where N is
+    # fixes_applied[name]).  This prevents inflating fix_rate when only some
+    # occurrences were auto-fixed.
+    fix_credits: Dict[str, int] = dict(fixes_applied)
+
     inserted = 0
     for issue in issues:
         name = issue.get("pattern_name", "Unknown")
@@ -215,7 +221,12 @@ def record_from_report(
         auto_fix = bool(
             meta.get("auto_fixable", issue.get("auto_fix_available", False))
         )
-        fixed = fixes_applied.get(name, 0) > 0
+        # Consume one fix credit for this occurrence if any remain.
+        if fix_credits.get(name, 0) > 0:
+            fixed = True
+            fix_credits[name] -= 1
+        else:
+            fixed = False
 
         _insert_pattern(
             conn,

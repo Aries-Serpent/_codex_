@@ -58,7 +58,6 @@ from typing import Any, Dict, List, Optional, Set
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 _RECORDER_PATH = _REPO_ROOT / "scripts" / "ci" / "pattern_recorder.py"
-_AUTO_FIX_PATH = _REPO_ROOT / "scripts" / "ci" / "auto_fix_common_issues.py"
 
 _DB_PATH = os.environ.get(
     "CODEX_DB_PATH",
@@ -109,8 +108,9 @@ def _get_staged_blob(path: str) -> Optional[str]:
         )
         if result.returncode == 0:
             return result.stdout
-    except OSError:
-        pass
+    except OSError as exc:
+        # Best-effort: if git or the index is unavailable, skip this file.
+        print(f"[pattern-hook] warning: could not read staged blob for {path!r}: {exc}", file=sys.stderr)
     return None
 
 
@@ -138,9 +138,13 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
                         break
                     seen[kw.arg] = 1
     except SyntaxError:
+        # Ignore files that are not syntactically valid Python — they cannot
+        # be parsed for duplicate-kwargs detection and are likely intentional
+        # test fixtures or work-in-progress code.
         pass
 
     # Pattern 1: Unused imports — lightweight heuristic via ruff if available
+    tmp_path: Optional[str] = None
     try:
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".py", delete=False
@@ -153,13 +157,20 @@ def _detect_patterns_in_source(source: str, filename: str) -> Set[str]:
             text=True,
             timeout=10,
         )
-        os.unlink(tmp_path)
         if result.returncode != 0 and result.stdout.strip():
             items = json.loads(result.stdout)
             if items:
                 detected.add("Unused Imports")
     except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
+        # The ruff F401 check is optional; if ruff is unavailable or times out,
+        # skip this detection step rather than failing the whole hook.
         pass
+    finally:
+        if tmp_path is not None:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass  # Temp file already removed or unlink failed — not fatal.
 
     return detected
 

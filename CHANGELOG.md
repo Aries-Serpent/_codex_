@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed/Added (S186 — PR #3740)
+### Fixed/Added (S187 — PR #3742)
+- **fix(ci):** Remove 10 unused imports (F401) from `tests/ci/test_pattern_recorder.py` — `ast`, `sqlite3`, `tempfile`, `typing.Any/Dict`, `unittest.mock.MagicMock/patch`, and two inline `import ast as _ast` — fixes Pre-Merge Validation auto-fix gate
+- **fix(ci):** Add top-level `import ast` to `auto_fix_common_issues.py` (required for `"ast.keyword"` type annotation in `_find_kwarg_removal_span`); split multi-import line (E401); fix unsorted imports I001
+- **fix(ci):** Fix unsorted import block (I001) in `scripts/ci/pattern_recorder.py`
+- **fix(stubs):** Restore `...` bodies on all 16 stub methods in `src/codex_engine.pyi` — docstring-only stubs are non-standard and break pyright/mypy stubtest validation (Copilot r2983920413)
+- **fix(hooks):** Wrap ruff temp-file cleanup in `try/finally` in `pre_commit_pattern_check.py` — prevents temp file accumulation on ruff timeout/error (Copilot r2983920446)
+- **fix(hooks):** Remove unused `_AUTO_FIX_PATH` global variable from `pre_commit_pattern_check.py` (code-quality r2983924127)
+- **fix(hooks):** Replace empty `except OSError: pass` in `_get_staged_blob` with diagnostic stderr log (code-quality r2983924136)
+- **fix(hooks):** Add explanatory comments to empty `except SyntaxError` and `except (OSError, ...)` blocks in `_detect_patterns_in_source` (code-quality r2983924145/156)
+- **fix(ci):** Fix `record_from_report()` fixed-count inflation — use per-pattern credit counter so only the first N occurrences are marked `fixed=True`, where N = `fixes_applied[name]` (Copilot r2983920466)
+- **security:** Add path-traversal guard to `/rag/build` endpoint — validate all client-supplied file paths via `_ensure_subpath(_RAG_FILES_BASE, Path(f))`; configurable via `RAG_FILES_BASE_DIR` env var (Copilot r2983920487)
+- **fix(api):** Restore backward-compatible `provider: Optional[str] = None` field to `BuildIndexRequest` — prevents 422 errors for existing clients (Copilot r2983920495)
+- **refactor(codex):** Revert eager submodule imports in `src/codex/__init__.py` to lazy `__getattr__` pattern — prevents circular-import failures and heavy startup cost (Copilot r2983920513)
+
 - **fix(ci):** Move `"Duplicate Kwargs"` from `manual_review_patterns` → `auto_fixable_patterns` in `CommonIssueFixer` — Pattern 18 had a complete auto-fix implementation but was mis-classified in PR #3739
 - **fix(ci):** Add Pattern 18 to `generate_json_report` `pattern_map` — previously emitted `"pattern": 0` for Duplicate Kwargs issues in JSON reports
 - **refactor(ci):** Extract `_find_kwarg_removal_span` static helper from `fix_duplicate_kwargs` inner loop — improves readability and testability (per Gemini review PR #3741 r2983613366)
