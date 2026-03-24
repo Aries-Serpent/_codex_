@@ -181,9 +181,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
         run: |
           echo "── §0.4: Inspecting PR for merge conflicts ──"
-          BASE="${{ github.base_ref }}"
+          BASE="${BASE_REF}"
           HEAD="${HEAD_REF}"
           PR_NUMBER="${{ github.event.pull_request.number || '' }}"
 
