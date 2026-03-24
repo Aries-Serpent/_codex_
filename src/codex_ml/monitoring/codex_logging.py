@@ -97,7 +97,6 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
-        pass
 
 
 def _resolve_mlflow_tracking_uri(candidate: str | None) -> str:

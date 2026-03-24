@@ -539,7 +539,6 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
-        pass
 
 
 def _apply_safety(sample: Sample, *, path: Path, filters: SafetyFilters | None) -> Sample:

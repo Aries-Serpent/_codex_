@@ -69,25 +69,21 @@ class RotationResult:
 class SecretProviderError(Exception):
     """Base exception for secret provider errors."""
 
-    pass
 
 
 class ProviderConfigError(SecretProviderError):
     """Raised when provider configuration is invalid."""
 
-    pass
 
 
 class RotationError(SecretProviderError):
     """Raised when secret rotation fails."""
 
-    pass
 
 
 class ValidationError(SecretProviderError):
     """Raised when secret validation fails."""
 
-    pass
 
 
 class SecretProvider(ABC):
@@ -117,7 +113,6 @@ class SecretProvider(ABC):
         Raises:
             RotationError: If rotation fails
         """
-        pass
 
     @abstractmethod
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
@@ -133,7 +128,6 @@ class SecretProvider(ABC):
         Raises:
             ValidationError: If validation fails
         """
-        pass
 
     @abstractmethod
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
@@ -148,7 +142,6 @@ class SecretProvider(ABC):
         Raises:
             SecretProviderError: If secret not found
         """
-        pass
 
     @abstractmethod
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
@@ -163,7 +156,6 @@ class SecretProvider(ABC):
         Raises:
             SecretProviderError: If secret not found
         """
-        pass
 
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get scopes/permissions associated with a secret.
@@ -221,7 +213,6 @@ class SecretProvider(ABC):
         Returns:
             ProviderType enum value
         """
-        pass
 
     @property
     def provider_name(self) -> str:
@@ -272,7 +263,6 @@ class TokenProvider(SecretProvider):
         Raises:
             SecretProviderError: If creation fails
         """
-        pass
 
     @abstractmethod
     def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
@@ -288,7 +278,6 @@ class TokenProvider(SecretProvider):
         Raises:
             SecretProviderError: If update fails
         """
-        pass
 
 
 class ProviderConfig:

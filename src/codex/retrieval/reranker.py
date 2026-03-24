@@ -89,7 +89,6 @@ class BaseReranker(ABC):
         results: Sequence[dict[str, Any]],
     ) -> list[RankedResult]:
         """Re-rank results based on query."""
-        pass
 
 
 class ScoreFusionReranker(BaseReranker):

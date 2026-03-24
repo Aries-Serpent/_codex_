@@ -83,7 +83,6 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
             logger.debug(f"OSError: {e}")
             logger.warning(f"OSError: {e}", exc_info=True)
             # Best-effort: some filesystems or platforms may not support directory fsync.
-            pass
     finally:
         if tmp_path.exists():
             try:

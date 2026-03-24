@@ -1271,7 +1271,6 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
 @cli.group("duplication")
 def duplication_group():
     """Duplication detection and metrics commands."""
-    pass
 
 
 @duplication_group.command("check")

@@ -57,7 +57,6 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # defensive: fall through to other strategies
-        pass
 
     safe_encodings = {
         "utf-8",

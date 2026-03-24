@@ -65,27 +65,22 @@ class BaseCacheBackend(ABC):
     @abstractmethod
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache."""
-        pass
 
     @abstractmethod
     def put(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
         """Put value in cache."""
-        pass
 
     @abstractmethod
     def delete(self, key: str) -> bool:
         """Delete value from cache."""
-        pass
 
     @abstractmethod
     def clear(self) -> None:
         """Clear all entries."""
-        pass
 
     @abstractmethod
     def contains(self, key: str) -> bool:
         """Check if key exists."""
-        pass
 
 
 class MemoryCacheBackend(BaseCacheBackend):

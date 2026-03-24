@@ -175,7 +175,6 @@ def cli():
     A physics-inspired task orchestration framework with quantum mechanics,
     relativity, and QFT extensions.
     """
-    pass
 
 
 # ============================================================================

@@ -83,7 +83,6 @@ class ValidationRule(ABC):
         Returns:
             ValidationResult with pass/fail status
         """
-        pass
 
 
 class RequiredColumnsRule(ValidationRule):

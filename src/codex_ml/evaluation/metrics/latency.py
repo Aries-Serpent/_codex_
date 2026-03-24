@@ -48,7 +48,6 @@ class LatencyMetric(MetricAdapter):
         """
         # No-op for standard interface
         # Users should call add_batch_with_time()
-        pass
 
     def add_batch_with_time(
         self,

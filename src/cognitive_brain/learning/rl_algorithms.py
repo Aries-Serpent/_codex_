@@ -116,7 +116,6 @@ class RLAlgorithm(ABC):
         Returns:
             Selected action
         """
-        pass
 
     @abstractmethod
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
@@ -130,7 +129,6 @@ class RLAlgorithm(ABC):
             next_state: Next state
             done: Episode termination flag
         """
-        pass
 
     @abstractmethod
     def get_policy(self) -> Dict[Any, Any]:
@@ -140,7 +138,6 @@ class RLAlgorithm(ABC):
         Returns:
             Current policy representation
         """
-        pass
 
     def track_episode(self, reward: float):
         """

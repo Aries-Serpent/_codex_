@@ -77,7 +77,6 @@ class Plugin:
 
     def initialize(self) -> None:
         """Initialize plugin. Override in subclass."""
-        pass
 
     def execute(self, *args, **kwargs) -> Any:
         """Execute plugin logic. Override in subclass."""
@@ -85,7 +84,6 @@ class Plugin:
 
     def cleanup(self) -> None:
         """Cleanup plugin resources. Override in subclass."""
-        pass
 
     @classmethod
     def get_metadata(cls) -> PluginMetadata:

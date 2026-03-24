@@ -125,17 +125,14 @@ class BaseDAL(abc.ABC):
     @abc.abstractmethod
     def txn(self) -> contextlib.AbstractContextManager[None]:
         """Create a transaction context. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def ensure_schema(self) -> None:
         """Ensure database schema exists. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def insert_referent(self, *, item_id: str, ref_type: str, ref_value: str) -> None:
         """Insert referent record. Subclasses must implement."""
-        pass
 
     @staticmethod
     def validate_identifier(name: str, allowed: Iterable[str]) -> str:
@@ -147,12 +144,10 @@ class BaseDAL(abc.ABC):
     @abc.abstractmethod
     def recent_items(self, limit: int) -> list[dict[str, Any]]:
         """Get recent items. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def summary(self) -> dict[str, int]:
         """Get summary statistics. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def ensure_artifact(
@@ -167,7 +162,6 @@ class BaseDAL(abc.ABC):
         object_url: str | None = None,
     ) -> dict[str, Any]:
         """Ensure artifact exists. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def insert_item(
@@ -185,7 +179,6 @@ class BaseDAL(abc.ABC):
         archived_by: str = "codex",
     ) -> dict[str, Any]:
         """Insert item record. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def insert_event(
@@ -197,12 +190,10 @@ class BaseDAL(abc.ABC):
         context: dict[str, Any] | None = None,
     ) -> None:
         """Insert event record. Subclasses must implement."""
-        pass
 
     @abc.abstractmethod
     def fetch_by_tombstone(self, tombstone_id: str) -> tuple[ItemRow, ArtifactRow]:
         """Fetch item and artifact by tombstone ID. Subclasses must implement."""
-        pass
 
     # -------- Release persistence (optional) --------
     @abc.abstractmethod
@@ -216,7 +207,6 @@ class BaseDAL(abc.ABC):
         metadata: dict[str, Any],
     ) -> dict[str, Any]:
         """Insert a row into release_meta and return the persisted row."""
-        pass
 
     @abc.abstractmethod
     def add_release_component(
@@ -230,12 +220,10 @@ class BaseDAL(abc.ABC):
         template_vars: dict[str, Any],
     ) -> dict[str, Any]:
         """Insert a row into release_component for this release."""
-        pass
 
     @abc.abstractmethod
     def get_release_meta_by_release_id(self, *, release_id: str) -> dict[str, Any] | None:
         """Lookup release_meta by its human release_id."""
-        pass
 
 
 class SqliteDAL(BaseDAL):

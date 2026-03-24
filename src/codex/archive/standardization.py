@@ -81,7 +81,6 @@ class StandardizationManager:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
-            pass
 
         # Create standardization metadata
         standardization_meta = StandardizationMetadata(
@@ -114,7 +113,6 @@ class StandardizationManager:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
-            pass
 
         return enhanced_record
 

@@ -19,19 +19,16 @@ logger = logging.getLogger(__name__)
 class ScopeError(Exception):
     """Base exception for scope validation errors."""
 
-    pass
 
 
 class InsufficientScopeError(ScopeError):
     """Raised when token lacks required scope."""
 
-    pass
 
 
 class InvalidScopeError(ScopeError):
     """Raised when scope format is invalid."""
 
-    pass
 
 
 class TokenScope(Flag):

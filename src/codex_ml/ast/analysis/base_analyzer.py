@@ -49,7 +49,6 @@ class ASTAnalyzer(ABC):
         Returns:
             List of findings from this analysis
         """
-        pass
 
     @abstractmethod
     def get_analyzer_type(self) -> str:
@@ -58,7 +57,6 @@ class ASTAnalyzer(ABC):
         Returns:
             Unique string identifying this analyzer type
         """
-        pass
 
     def supports_node_type(self, node_type: str) -> bool:
         """Check if this analyzer processes the given node type.
@@ -172,7 +170,7 @@ class UnusedCodeAnalyzer(ASTAnalyzer):
 
     def __init__(self):
         """Initialize unused code analyzer."""
-        pass  # Stateless - no instance variables needed
+        # Stateless - no instance variables needed
 
     def analyze(self, node: StandardizedASTNode) -> List[Finding]:
         """Analyze for unused code.

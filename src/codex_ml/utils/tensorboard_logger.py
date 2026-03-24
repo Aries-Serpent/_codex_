@@ -96,7 +96,6 @@ def get_tb_writer(
                 # Silently ignore close errors to ensure cleanup doesn't fail
                 # the entire context. Common errors include already-closed writers
                 # or filesystem issues during flush.
-                pass
 
 
 def is_tensorboard_available() -> bool:

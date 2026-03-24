@@ -94,7 +94,6 @@ class QuantumState:
 class QuantumException(Exception):
     """Base exception for quantum feature errors."""
 
-    pass
 
 
 class CoherenceDegradationError(QuantumException):
@@ -112,4 +111,3 @@ class CoherenceDegradationError(QuantumException):
 class InvalidQuantumConfigurationError(QuantumException):
     """Raised when quantum configuration is invalid."""
 
-    pass

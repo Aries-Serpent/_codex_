@@ -113,7 +113,6 @@ class BaseASTAdapter(ABC):
             Subclasses may add optional parameters (e.g., file_path) to their
             parse() signature. The base signature requires only source_code.
         """
-        pass
 
     @abstractmethod
     def extract_metadata(self, node: StandardizedASTNode) -> Dict[str, Any]:
@@ -126,7 +125,6 @@ class BaseASTAdapter(ABC):
         Returns:
             Dictionary of metadata (decorators, type hints, etc.)
         """
-        pass
 
     def parse_file(self, file_path: Path) -> StandardizedASTNode:
         """

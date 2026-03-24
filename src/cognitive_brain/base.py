@@ -75,7 +75,6 @@ class Planner(ABC):
         Returns:
             Structured observation data
         """
-        pass
 
     @abstractmethod
     def orient(self, observation: ObservationData) -> OrientationResult:
@@ -88,7 +87,6 @@ class Planner(ABC):
         Returns:
             Orientation result with context and analysis
         """
-        pass
 
     @abstractmethod
     def decide(self, orientation: OrientationResult) -> Decision:
@@ -101,7 +99,6 @@ class Planner(ABC):
         Returns:
             Decision with action and reasoning
         """
-        pass
 
     @abstractmethod
     def act(self, decision: Decision) -> ActionResult:
@@ -114,7 +111,6 @@ class Planner(ABC):
         Returns:
             Action result with success status and metrics
         """
-        pass
 
     def ooda_loop(self, input_data: Dict[str, Any]) -> ActionResult:
         """
@@ -156,7 +152,6 @@ class MemoryInterface(ABC):
         Returns:
             True if storage was successful, False otherwise
         """
-        pass
 
     @abstractmethod
     def retrieve(self, key: str) -> Optional[Any]:
@@ -169,7 +164,6 @@ class MemoryInterface(ABC):
         Returns:
             Stored value if found, None otherwise
         """
-        pass
 
     @abstractmethod
     def search(self, query: Dict[str, Any], limit: int = 10) -> List[tuple[str, Any]]:
@@ -183,7 +177,6 @@ class MemoryInterface(ABC):
         Returns:
             List of (key, value) tuples matching the query
         """
-        pass
 
     @abstractmethod
     def delete(self, key: str) -> bool:
@@ -196,7 +189,6 @@ class MemoryInterface(ABC):
         Returns:
             True if deletion was successful, False otherwise
         """
-        pass
 
     @abstractmethod
     def clear(self) -> bool:
@@ -206,7 +198,6 @@ class MemoryInterface(ABC):
         Returns:
             True if clear was successful, False otherwise
         """
-        pass
 
     @abstractmethod
     def get_history(self, key: str, limit: int = 10) -> List[tuple[datetime, Any]]:
@@ -220,7 +211,6 @@ class MemoryInterface(ABC):
         Returns:
             List of (timestamp, value) tuples in reverse chronological order
         """
-        pass
 
 
 class PhysicsOfThought:

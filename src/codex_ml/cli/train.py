@@ -398,7 +398,6 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Error recording failed, continue silently
-            pass
 
     run_training(
         epochs=int(epochs),

@@ -11,7 +11,6 @@ from typing import Any, Dict, Optional
 class PipelineValidationError(Exception):
     """Raised when pipeline configuration validation fails."""
 
-    pass
 
 
 def validate_pipeline_config(config: Dict[str, Any]) -> None:

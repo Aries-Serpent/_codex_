@@ -145,7 +145,6 @@ class Plugin(ABC):
         Returns:
             True if initialization successful
         """
-        pass
 
     @abstractmethod
     def execute(self, *args, **kwargs) -> Any:
@@ -158,12 +157,10 @@ class Plugin(ABC):
         Returns:
             Plugin execution result
         """
-        pass
 
     @abstractmethod
     def cleanup(self):
         """Clean up plugin resources."""
-        pass
 
     def get_contract(self) -> PluginContract:
         """Get plugin contract specification.

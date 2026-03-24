@@ -53,7 +53,6 @@ else:  # pragma: no cover - avoids attribute errors when PyYAML missing
     class YAMLErrorType(RuntimeError):  # type: ignore[no-redef]
         """Placeholder exception used when PyYAML is unavailable."""
 
-        pass
 
 
 # Alias for backward compatibility

@@ -93,7 +93,6 @@ class MemoryProtocol(ABC):
         Args:
             entry: The memory entry to store
         """
-        pass
 
     @abstractmethod
     def retrieve(self, query: MemoryQuery) -> list[MemoryEntry]:
@@ -105,7 +104,6 @@ class MemoryProtocol(ABC):
         Returns:
             list of matching memory entries, sorted by relevance
         """
-        pass
 
     @abstractmethod
     def delete(self, entry_id: UUID) -> bool:
@@ -117,7 +115,6 @@ class MemoryProtocol(ABC):
         Returns:
             True if deleted, False if not found
         """
-        pass
 
     @abstractmethod
     def clear_session(self, session_id: str) -> int:
@@ -129,7 +126,6 @@ class MemoryProtocol(ABC):
         Returns:
             Number of entries deleted
         """
-        pass
 
     @abstractmethod
     def get_stats(self) -> dict[str, Any]:
@@ -138,4 +134,3 @@ class MemoryProtocol(ABC):
         Returns:
             Dictionary with stats (entry_count, size_bytes, etc.)
         """
-        pass

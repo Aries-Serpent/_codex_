@@ -29,7 +29,6 @@ class TransportConfig:
 class TransportError(Exception):
     """Base exception for transport errors."""
 
-    pass
 
 
 class MessageTooLargeError(TransportError):
