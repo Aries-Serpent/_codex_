@@ -211,7 +211,7 @@ def record_from_report(
     # occurrences of each pattern are marked as fixed (where N is
     # fixes_applied[name]).  This prevents inflating fix_rate when only some
     # occurrences were auto-fixed.
-    fix_credits: Dict[str, int] = dict(fixes_applied)
+    fix_credits: Dict[str, int] = fixes_applied.copy()
 
     inserted = 0
     for issue in issues:
