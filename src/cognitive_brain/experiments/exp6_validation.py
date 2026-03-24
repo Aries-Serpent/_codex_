@@ -24,7 +24,6 @@ from cognitive_brain.quantum.ghz_states import GHZStateManager
 from cognitive_brain.quantum.multi_agent_coordinator import (
     AgentDecision,
     MultiAgentCoordinator,
-    VotingStrategy,
 )
 from cognitive_brain.quantum.topology_manager import NetworkTopology, TopologyManager
 
