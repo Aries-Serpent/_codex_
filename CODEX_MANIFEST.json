@@ -1,6 +1,5 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-23T23:35:31Z",
   "agents": [
     {
       "name": "github-app-manager",
