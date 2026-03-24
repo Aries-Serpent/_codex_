@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3740)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3740 (SHA `135f5375`) at 2026-03-24T18:43Z [auto-generated]
+
 ### Fixed (S185 — PR #3739)
 - **fix(src):** Remove duplicate keyword arguments `n_paths=paths` and `temperature=temperature` in `src/codex/quantum_orchestrator/cli.py` — root cause of mypy +5 regression (0D_base_ run #149: 333>328) and cascade of ruff pattern failures (P1, P8, P9, P11, P12, P13)
 - **fix(actions):** Initialise `SUB_PR=""` before `set -euo pipefail` conditional block in `.github/actions/resolve-push-target/action.yml` — fixes `SUB_PR: unbound variable` crash in embedding-index-rebuild, codex-manifest-refresh, copilot-evolution-suite
