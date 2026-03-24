@@ -144,6 +144,45 @@ def format_duration(minutes: float) -> str:
     return f"{hours:.0f}h {mins:.0f}m"
 
 
+def _generate_ci_pattern_trend_section(days: int = 7) -> str:
+    """Generate a 7-day rolling CI pattern trend bar chart for the dashboard.
+
+    Queries the cognitive brain SQLite DB via ``pattern_recorder.pattern_trend()``.
+    Returns a markdown-formatted ASCII bar chart.  Fails gracefully (returns a
+    placeholder message) when the DB is absent or the import fails.
+    """
+    try:
+        import os
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent / "ci"))
+        import pattern_recorder as pr  # noqa: PLC0415
+
+        db_path = os.environ.get(
+            "CODEX_DB_PATH",
+            os.path.expanduser("~/.codex/cli_history.db"),
+        )
+        conn = pr._open_db(db_path)
+        rows = pr.pattern_trend(conn, days=days)
+    except Exception:
+        return "_CI pattern DB unavailable — run `pattern_recorder.py trend` to populate._"
+
+    if not any(r["count"] for r in rows):
+        return "_No CI pattern occurrences recorded in the last 7 days._"
+
+    max_count = max(r["count"] for r in rows) or 1
+    bar_width = 20
+    chars = "▁▂▃▄▅▆▇█"
+    lines = ["```"]
+    for r in rows:
+        ratio = r["count"] / max_count
+        bar = "█" * int(ratio * bar_width)
+        spark_idx = int(ratio * (len(chars) - 1))
+        spark = chars[spark_idx] if r["count"] > 0 else " "
+        lines.append(f"{r['date']}  {spark} {bar:<{bar_width}}  {r['count']:>3}")
+    lines.append("```")
+    return "\n".join(lines)
+
+
 def generate_dashboard(
     metrics: Dict[str, Any],
     include_charts: bool = True
@@ -251,6 +290,12 @@ def generate_dashboard(
 |--------|-------|
 | Total Commits | {total_commits} |
 | By Copilot | {commits.get("by_copilot", 0)} |
+
+---
+
+## 🔁 CI Pattern Trend (7-Day Rolling Window)
+
+{_generate_ci_pattern_trend_section()}
 
 ---
 

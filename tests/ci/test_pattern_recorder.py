@@ -283,6 +283,31 @@ class TestPatternRecorderCli:
         pr.main(["--db", tmp_db, "record", "--report", str(report)])
         assert "Recorded 1" in capsys.readouterr().out
 
+    def test_trend_empty(self, tmp_db, capsys):
+        """trend subcommand prints a table with zero counts when DB is empty."""
+        pr.main(["--db", tmp_db, "trend", "--days", "3"])
+        out = capsys.readouterr().out
+        assert "Count" in out
+        assert "0" in out
+
+    def test_trend_json_empty(self, tmp_db, capsys):
+        """trend --json emits a valid JSON array of length <days> with count=0."""
+        pr.main(["--db", tmp_db, "trend", "--days", "3", "--json"])
+        rows = json.loads(capsys.readouterr().out)
+        assert len(rows) == 3
+        assert all(r["count"] == 0 for r in rows)
+
+    def test_trend_counts_today(self, tmp_db, capsys):
+        """trend counts today's insertion in the last day slot."""
+        conn = pr._open_db(tmp_db)
+        pr._insert_pattern(conn, pattern_id=1, pattern_name="Unused Imports",
+                           file_path="a.py", line_number=1, description="u",
+                           auto_fixable=True, fixed=True, session=None, git_sha=None)
+        conn.close()
+        pr.main(["--db", tmp_db, "trend", "--days", "3", "--json"])
+        rows = json.loads(capsys.readouterr().out)
+        assert rows[-1]["count"] == 1   # today's slot
+
 
 # ===========================================================================
 # auto_fix_common_issues.py — Pattern 18 classification + helper

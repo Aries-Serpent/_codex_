@@ -342,6 +342,41 @@ def high_recurrence(
     return result
 
 
+def pattern_trend(
+    conn: sqlite3.Connection,
+    days: int = 7,
+) -> List[Dict[str, Any]]:
+    """Return a 7-day rolling window of daily pattern occurrence counts.
+
+    Each entry in the returned list represents one calendar day (UTC) within
+    the last *days* days, with the count of pattern occurrences recorded that
+    day.  Days with no occurrences are included with ``count=0`` so the result
+    always has exactly *days* entries ordered oldest → newest.
+
+    Used by the ``msv-dashboard`` to render a trend spark-line / bar chart.
+    """
+    from datetime import date, timedelta
+
+    today = date.today()
+    # Build a date range: [today - (days-1), ..., today]
+    date_range = [
+        (today - timedelta(days=(days - 1 - i))).isoformat() for i in range(days)
+    ]
+
+    rows = conn.execute(
+        """
+        SELECT DATE(timestamp) AS day, COUNT(*) AS cnt
+        FROM patterns
+        WHERE DATE(timestamp) >= DATE('now', ?)
+        GROUP BY day
+        ORDER BY day ASC
+        """,
+        (f"-{days - 1} days",),
+    ).fetchall()
+    counts: Dict[str, int] = {r["day"]: r["cnt"] for r in rows}
+    return [{"date": d, "count": counts.get(d, 0)} for d in date_range]
+
+
 def export_json(conn: sqlite3.Connection, output_path: Optional[Path] = None) -> Dict[str, Any]:
     """Serialise the full patterns table (and summary) as a JSON dict.
 
@@ -462,6 +497,18 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Output as JSON array instead of table",
     )
 
+    # --- trend ---
+    tp = sub.add_parser(
+        "trend",
+        help="Show daily pattern occurrence counts for the last N days (7-day rolling window)",
+    )
+    tp.add_argument("--days", type=int, default=7, help="Number of days to look back (default: 7)")
+    tp.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON array instead of table",
+    )
+
     # --- export ---
     ep = sub.add_parser("export", help="Export full knowledge graph as JSON")
     ep.add_argument("--output", help="Output file path (default: stdout)")
@@ -554,6 +601,19 @@ def main(argv: Optional[List[str]] = None) -> int:
                         f"{r['pattern_name']:<25}  {r['total']:>7}  "
                         f"{r['fixed']:>7}  {r['fix_rate']*100:>5.0f}%"
                     )
+        return 0
+
+    if args.cmd == "trend":
+        rows = pattern_trend(conn, days=args.days)
+        if getattr(args, "json", False):
+            print(json.dumps(rows, indent=2))
+        else:
+            print(f"{'Date':<12}  {'Count':>7}  Chart")
+            print("-" * 40)
+            max_count = max((r["count"] for r in rows), default=1) or 1
+            for r in rows:
+                bar = "█" * int(r["count"] / max_count * 20) if r["count"] else ""
+                print(f"{r['date']:<12}  {r['count']:>7}  {bar}")
         return 0
 
     if args.cmd == "export":
