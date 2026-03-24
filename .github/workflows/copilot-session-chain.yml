@@ -186,14 +186,19 @@ jobs:
             --json headRefName --jq '.headRefName' 2>/dev/null || true)
 
           if [ -z "${EXISTING_BRANCH}" ]; then
-            echo "::error::Could not resolve head branch for PR #${EXISTING_PR} — skipping re-trigger"
-            exit 1
+            echo "retrigger_posted=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Could not resolve head branch for PR #${EXISTING_PR} — skipping re-trigger; agent must be started manually"
+            echo "⚠️ Re-trigger skipped: could not resolve head branch for PR #${EXISTING_PR}" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
+
+          TRIGGER_FILE="${RUNNER_TEMP}/retrigger_body_${EXISTING_PR}.txt"
 
           if [ -n "${CONTINUATION_PROMPT}" ]; then
             TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
           elif [ -n "${MERGED_PR}" ]; then
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+            cat > "${TRIGGER_FILE}" <<RETRIGGER_EOF
+          @copilot+claude-sonnet-4.6 continue
 
           Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
           You are now working on branch \`${EXISTING_BRANCH}\` — an open sub-PR already targeting
@@ -212,9 +217,14 @@ jobs:
           > **⚠️ IMPORTANT — no new branch or PR needed:** This PR (#${EXISTING_PR}) is already
           > open on branch \`${EXISTING_BRANCH}\`. Commit all changes **directly to this branch**
           > and push to this PR. Do **NOT** create a new branch or open a new PR — a sub-sub
-          > branch is never required when a session PR is already open."
+          > branch is never required when a session PR is already open.
+          RETRIGGER_EOF
+            # Strip 10 leading spaces added for YAML block scalar validity
+            sed -i 's/^[[:space:]]*//' "${TRIGGER_FILE}"
+            TRIGGER_COMMENT=$(cat "${TRIGGER_FILE}")
           else
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
+            cat > "${TRIGGER_FILE}" <<RETRIGGER_EOF
+          @copilot+claude-sonnet-4.6 continue
 
           You are working on branch \`${EXISTING_BRANCH}\` — an open sub-PR targeting
           the staging integration branch \`${INTEGRATION_BRANCH}\`.
@@ -223,10 +233,20 @@ jobs:
 
           > **⚠️ IMPORTANT — no new branch or PR needed:** This PR (#${EXISTING_PR}) is already
           > open on branch \`${EXISTING_BRANCH}\`. Commit all changes **directly to this branch**
-          > and push to this PR. Do **NOT** create a new branch or open a new PR."
+          > and push to this PR. Do **NOT** create a new branch or open a new PR.
+          RETRIGGER_EOF
+            # Strip 10 leading spaces added for YAML block scalar validity
+            sed -i 's/^[[:space:]]*//' "${TRIGGER_FILE}"
+            TRIGGER_COMMENT=$(cat "${TRIGGER_FILE}")
           fi
 
-          if gh pr comment "${EXISTING_PR}" --body "${TRIGGER_COMMENT}"; then
+          # For CONTINUATION_PROMPT branch, TRIGGER_FILE hasn't been created yet —
+          # write the comment body to file so --body-file works for all branches.
+          if [ -n "${CONTINUATION_PROMPT}" ]; then
+            printf '%s' "${TRIGGER_COMMENT}" > "${TRIGGER_FILE}"
+          fi
+
+          if gh pr comment "${EXISTING_PR}" --body-file "${TRIGGER_FILE}"; then
             echo "retrigger_posted=true" >> "$GITHUB_OUTPUT"
             echo "✅ Posted re-trigger comment on existing PR #${EXISTING_PR} (branch: ${EXISTING_BRANCH})"
           else
