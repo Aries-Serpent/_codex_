@@ -74,7 +74,7 @@ def _split_smoke_impl(seed: int) -> None:
 
         generator = getattr(torch, "Generator", None)
         if generator is None:
-            raise AttributeError
+            raise AttributeError()
         order = torch.randperm(total, generator=torch.Generator().manual_seed(int(seed)))
     except Exception as exc:  # pragma: no cover - optional dependency missing
         try:

@@ -81,7 +81,7 @@ class Plugin:
 
     def execute(self, *args, **kwargs) -> Any:
         """Execute plugin logic. Override in subclass."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def cleanup(self) -> None:
         """Cleanup plugin resources. Override in subclass."""

@@ -35,8 +35,8 @@ class EmbedderInterface(ABC):
 
     @abstractmethod
     def embed(self, texts: list[str]) -> list[list[float]]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def health_check(self) -> dict[str, Any]:
-        raise NotImplementedError
+        raise NotImplementedError()
