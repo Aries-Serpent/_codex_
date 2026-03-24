@@ -1398,7 +1398,8 @@ def main():
             _sha = _os.environ.get("CODEX_GIT_SHA") or _os.environ.get("GITHUB_SHA")
             _session = _os.environ.get("GITHUB_RUN_ID") or _os.environ.get("COPILOT_SESSION_ID")
             # Write report to a temp path so record_from_report can ingest it
-            import tempfile as _tf, json as _json
+            import json as _json
+            import tempfile as _tf
             _tmp_path = None
             try:
                 with _tf.NamedTemporaryFile(

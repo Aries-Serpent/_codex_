@@ -7,16 +7,11 @@ Covers:
   - scripts/ci/auto_fix_common_issues.py     (helper + classification fixes)
 """
 
-import ast
 import importlib.util
 import json
-import sqlite3
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
-from typing import Any, Dict
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -354,7 +349,6 @@ class TestFindKwargRemovalSpan:
 
     def test_returns_none_for_missing_eq(self):
         fixer = self._make_fixer()
-        import ast as _ast
 
         class FakeValue:
             col_offset = 10
@@ -372,7 +366,6 @@ class TestFindKwargRemovalSpan:
 
     def test_returns_none_when_name_not_at_expected_position(self):
         fixer = self._make_fixer()
-        import ast as _ast
 
         class FakeValue:
             col_offset = 4
