@@ -219,8 +219,8 @@ jobs:
           > and push to this PR. Do **NOT** create a new branch or open a new PR — a sub-sub
           > branch is never required when a session PR is already open.
           RETRIGGER_EOF
-            # Strip 10 leading spaces added for YAML block scalar validity
-            sed -i 's/^[[:space:]]*//' "${TRIGGER_FILE}"
+            # Strip exactly 10 leading spaces added for YAML block scalar validity
+            sed -i 's/^          //' "${TRIGGER_FILE}"
             TRIGGER_COMMENT=$(cat "${TRIGGER_FILE}")
           else
             cat > "${TRIGGER_FILE}" <<RETRIGGER_EOF
@@ -235,8 +235,8 @@ jobs:
           > open on branch \`${EXISTING_BRANCH}\`. Commit all changes **directly to this branch**
           > and push to this PR. Do **NOT** create a new branch or open a new PR.
           RETRIGGER_EOF
-            # Strip 10 leading spaces added for YAML block scalar validity
-            sed -i 's/^[[:space:]]*//' "${TRIGGER_FILE}"
+            # Strip exactly 10 leading spaces added for YAML block scalar validity
+            sed -i 's/^          //' "${TRIGGER_FILE}"
             TRIGGER_COMMENT=$(cat "${TRIGGER_FILE}")
           fi
 
