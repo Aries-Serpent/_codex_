@@ -1,0 +1,139 @@
+name: CI Rescue — Auto-Fix & @copilot RCA
+
+# Fires after any monitored workflow completes with a failure.
+#
+# What it does:
+#   1. Retrieves failed-job logs via the GitHub API (no code checkout)
+#   2. Matches log text against a pattern library of known fixes
+#   3. Posts a structured @copilot RCA comment on the PR with:
+#      - Which fix pattern matched
+#      - The exact fix command to run locally or via the auto-fix workflow
+#      - Raw log snippets for unrecognised failures
+#
+# Security model: This workflow NEVER checks out PR/fork code.
+# It operates entirely via authenticated GitHub API calls, eliminating
+# the untrusted-checkout risk (CodeQL: actions/untrusted-checkout).
+# Code execution (auto-fixes) is delegated back to the @copilot agent or
+# the existing "Auto-Fix Common CI Issues" workflow which is triggered
+# by direct pushes (not workflow_run) and thus runs in a trusted context.
+
+on:
+  workflow_run:
+    workflows:
+      # Core CI gates that block PR merges
+      - "Auto-Fix Common CI Issues"
+      - "PR Auto-Fix Check"
+      - "Validation Pipeline"
+      - "mypy Baseline (Type-Check Anti-Regression)"
+      - "Workflow Compliance Audit (actionlint)"
+      - "Pre-Merge Validation"
+      - "Iterative Self-Healing CI"
+      - "Test — RAG Pipeline"
+      - "Security Scan"
+    types: [completed]
+  # Manual trigger (for testing or ad-hoc rescue of a specific run)
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Workflow run ID to rescue"
+        required: true
+        type: string
+      pr_number:
+        description: "PR number (optional — auto-detected if omitted)"
+        required: false
+        type: string
+      dry_run:
+        description: "Dry run (print actions, do not post comments)"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: ci-rescue-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false
+
+# Read-only by default; the rescue job only needs to post comments.
+permissions:
+  contents: read
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # SINGLE JOB: Triage → RCA comment (no code checkout)
+  # ──────────────────────────────────────────────────────────────────────────
+  rescue:
+    name: Rescue — analyse and post RCA
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only process failures; skip runs triggered from forks (security).
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'failure' &&
+        github.event.workflow_run.head_repository.full_name == github.repository
+      )
+    permissions:
+      pull-requests: write   # post RCA comment on PR
+      issues: write          # post RCA on issue when no PR exists
+      actions: read          # read workflow run logs
+
+    steps:
+      # ── Set up Python (uses the runner's built-in Python; no checkout) ───
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ── Download rescue script directly from this repo's default branch ──
+      # We use the GitHub API to fetch the script — this avoids checking out
+      # any PR code (trusted default-branch content only).
+      - name: Fetch rescue engine from default branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          # Download ci_rescue.py from the default branch of this repo
+          curl -sS -L \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.raw+json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/scripts/ci/ci_rescue.py?ref=HEAD" \
+            -o /tmp/ci_rescue.py
+          if [ ! -s /tmp/ci_rescue.py ]; then
+            echo "::error::Failed to download ci_rescue.py"
+            exit 1
+          fi
+          echo "✅ Downloaded ci_rescue.py ($(wc -c < /tmp/ci_rescue.py) bytes)"
+
+      # ── Run rescue engine (API-only, no file modifications) ──────────────
+      - name: Run CI rescue engine
+        id: rescue
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
+          PR_NUMBER="${{ inputs.pr_number }}"
+          DRY_FLAG=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            DRY_FLAG="--dry-run"
+          fi
+          PR_FLAG=""
+          if [ "${PR_NUMBER}" != "" ]; then
+            PR_FLAG="--pr ${PR_NUMBER}"
+          fi
+
+          python3 /tmp/ci_rescue.py \
+            --run-id "${RUN_ID}" \
+            --repo   "${{ github.repository }}" \
+            ${PR_FLAG} \
+            ${DRY_FLAG} \
+            2>&1 | tee /tmp/rescue_output.txt
+          RESCUE_EXIT="${PIPESTATUS[0]}"
+
+          echo "rescue_exit=${RESCUE_EXIT}" >> "$GITHUB_OUTPUT"
+
+      # ── Print summary ────────────────────────────────────────────────────
+      - name: Print rescue summary
+        if: always()
+        run: |
+          echo "=== CI Rescue Summary ==="
+          cat /tmp/rescue_output.txt 2>/dev/null || echo "(no output captured)"
+          echo "Rescue exit: ${{ steps.rescue.outputs.rescue_exit }}"
+
