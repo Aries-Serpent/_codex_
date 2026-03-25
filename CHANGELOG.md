@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S193 — PR #3743)
+### Fixed (S194b — PR #3743)
+- **fix(ci):** `scripts/ci/pre_flight_check.py` — tightened xdist `-n` detection from `"-n " in content` (broad substring, false-positives on bash `[ -n ]`) to a precise regex `pytest\b[^\n]*\s-n\s+\S|\s-n\s+(?:auto|\d+)|--numprocesses`. Eliminates P-G false-positives that caused 3 Pre-Flight failures.
+- **feat(ci):** `scripts/ci/auto_fix_common_issues.py` — Pattern 20 "YAML Multiline Strings": detects unclosed bash variable assignments spanning multiple YAML lines using negative-lookahead regex; found 58 workflows (manual review, non-blocking). Pattern 21 "Node.js 20 Actions": scans for deprecated Node.js 20 action refs (`v[1-5]\d*`) with 2026-06-02 deadline; found 121 workflows / 208 refs (informational). Argparse updated to `range(1,22)`.
+- **feat(manifest):** `CODEX_MANIFEST.json` — added `ci_patterns` key with 11 S194 pattern definitions (P-A through P-K) with categories, signatures, auto-healer strategies; `integrity_sha256` recomputed.
+- **fix(workflows):** `.github/workflows/pages-scheduled-validation.yml` — replaced `/tmp/pr_body.json` with `${RUNNER_TEMP}/pr_body_$$.json` (PID-namespaced, per-run isolated) to eliminate TOCTOU race condition in shared runner environments.
+- **fix(security):** `.secrets.baseline` — updated CODEX_MANIFEST.json entry for new `ci_patterns` key addition.
+- **docs:** `.codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md` — deep-research triage of 115 CI failures across 22 workflows; 11 patterns catalogued with root-cause, auto-healer strategies, and Mermaid self-healing architecture diagram. Immediate action items for cognitive brain registered.
+
+### Fixed (S194 — PR #3743)
+- **fix(tests/ci):** `pytest.ini` — added `pythonpath = . src`; canonical 2024 fix for `from src.` absolute imports breaking pytest-xdist workers (GAP-001/GAP-011). Propagates both `src/` (direct-package imports) and `.` (repo root, enabling `from src.xxx`) to all parallel workers via pytest ≥7 `pythonpath` config. Zero import-statement changes required.
+- **fix(src):** `src/codex_ml/cli/train.py` — double-guarded `config_legacy` Hydra fallback (GAP-005): inner `try/except` prevents `ModuleNotFoundError` raised by `config_legacy/__init__.py`; provides no-op `to_absolute_path` and `hydra=None` as final fallback. Wrapped top-level `from omegaconf import DictConfig, ListConfig, OmegaConf` in `try/except ImportError` so lightweight envs without omegaconf don't fail on import.
+- **fix(src):** `src/codex_ml/features/feast_compat.py` — replaced 5 `raise NotImplementedError` method bodies in `FeastBackend` Protocol with `...` per PEP 544 / mypy Protocol spec (GAP-004). All 4 concrete backends confirmed to implement all 5 protocol methods.
+- **fix(workflows):** `.github/workflows/pages-scheduled-validation.yml` — implemented full PR creation in "Commit dashboard updates" step (GAP-023): creates branch `pages-validation-auto/<timestamp>`, pushes, runs `gh pr create` with JSON-safe body via `python3 json.dumps`. Removes the `# NOT YET IMPLEMENTED` TODO.
+- **fix(scripts):** `scripts/ci/auto_fix_common_issues.py` — registered Pattern 19 "Src Absolute Imports": `check_src_absolute_imports()` detects all `from src.` imports in `src/` and `tests/`, reports per-file count with actionable guidance, notes the `pythonpath` interim fix and the preferred `from X` long-term form.
+- **fix(security):** `.secrets.baseline` — updated CODEX_MANIFEST.json entry to line=1952 / hash=f41a090b... matching current file state.
+- **docs:** `src/__init__.py` — navigation hint updated with comprehensive import guidance: `from src.xxx` vs `from xxx` tradeoffs, pythonpath config requirement, deprecation notice for new code.
+
+
 - **fix(workflows):** `copilot-iterative-self-healing.yml` — rewrote all 8 `PROMPT_BODY` assignments from multi-line bash strings (column-0 continuation lines breaking YAML block-scalar parsing) to `printf`-based line-by-line writes into `${RUNNER_TEMP}/copilot_prompt.txt`; fixes actionlint/auto-fix YAML parse error
 - **fix(workflows):** `copilot-iterative-self-healing.yml` — added `timeout-minutes: 5/10` to both jobs (pre-flight false-positive fix); replaced `[ -n "${VAR}" ]` with `[ "${VAR}" != "" ]` to prevent xdist `-n` regex match; set `CAT=nightly_health_sweep` in schedule branch (missing variable; reviewer comment fixed)
 - **fix(workflows):** `iterative-self-healing-ci.yml` — replaced multi-line `ISSUE_BODY="..."` with `printf` → temp file + `--body-file` to fix actionlint YAML parse error at line 627

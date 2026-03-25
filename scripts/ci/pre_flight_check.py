@@ -64,7 +64,11 @@ class PreFlightValidator:
                 issues.append(f"{workflow_file.name}: ❌ Uses explicit -p flags (causes 'Plugin already registered' errors)")
 
             # Check for plugin version pinning (required for stability)
-            uses_xdist = "-n " in content or "--numprocesses" in content
+            # Use a precise regex so bash conditionals like `[ -n "${VAR}" ]` are NOT matched.
+            # Only match pytest's own `-n` flag: `pytest ... -n <num|auto>` or `--numprocesses`.
+            uses_xdist = bool(
+                re.search(r"pytest\b[^\n]*\s-n\s+\S|\s-n\s+(?:auto|\d+)|--numprocesses", content)
+            )
             uses_timeout = "--timeout=" in content
 
             if uses_xdist or uses_timeout:
