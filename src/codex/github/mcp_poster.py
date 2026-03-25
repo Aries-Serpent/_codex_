@@ -610,7 +610,8 @@ class GitHubMCPPoster:
         repo: str,
         category_slug: str | None = None,
         first: int = 20,
-    ) -> list[dict[str, Any]]:
+        after: str | None = None,
+    ) -> dict[str, Any]:
         """List Discussions in a repository, optionally filtered by category.
 
         Parameters
@@ -619,12 +620,17 @@ class GitHubMCPPoster:
             Filter to this category; ``None`` returns all categories.
         first:
             Number of discussions to return (max 100 per GitHub's GraphQL limits).
+        after:
+            Cursor for pagination.  Pass ``pageInfo.endCursor`` from a previous
+            response to retrieve the next page.
 
         Returns
         -------
-        list[dict]
-            Each entry has ``number``, ``title``, ``url``, ``category`` (name),
-            ``createdAt``, ``isAnswered``, ``comments`` (count).
+        dict
+            ``nodes`` — list of discussion dicts with ``number``, ``title``,
+            ``url``, ``category`` (name), ``createdAt``, ``isAnswered``,
+            ``comments`` (count).
+            ``pageInfo`` — ``{"endCursor": str | None, "hasNextPage": bool}``.
         """
         self._require_token()
         owner, repo_name = repo.split("/", 1)
@@ -634,12 +640,13 @@ class GitHubMCPPoster:
             _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
 
         query = """
-        query ListDiscussions($owner: String!, $repo: String!, $first: Int!, $categoryId: ID) {
+        query ListDiscussions($owner: String!, $repo: String!, $first: Int!, $categoryId: ID, $after: String) {
           repository(owner: $owner, name: $repo) {
             discussions(
-              first: $first, categoryId: $categoryId,
+              first: $first, categoryId: $categoryId, after: $after,
               orderBy: {field: UPDATED_AT, direction: DESC}
             ) {
+              pageInfo { endCursor hasNextPage }
               nodes {
                 number
                 title
@@ -660,33 +667,57 @@ class GitHubMCPPoster:
             "repo": repo_name,
             "first": min(first, 100),
             "categoryId": category_id,
+            "after": after,
         }
         result = self._graphql(query, variables)
-        nodes = result.get("data", {}).get("repository", {}).get("discussions", {}).get("nodes", [])
-        return nodes
+        disc_data = result.get("data", {}).get("repository", {}).get("discussions", {})
+        return {
+            "nodes": disc_data.get("nodes", []),
+            "pageInfo": disc_data.get("pageInfo", {"endCursor": None, "hasNextPage": False}),
+        }
 
-    def get_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+    def get_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        comments_first: int = 50,
+        comments_after: str | None = None,
+    ) -> dict[str, Any]:
         """Fetch a single Discussion by number including its comments.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+        comments_first:
+            Number of comments to return per page (max 100).
+        comments_after:
+            Cursor for comment pagination.  Pass ``comments.pageInfo.endCursor``
+            from a previous response to retrieve the next comment page.
 
         Returns
         -------
         dict
             Discussion fields: ``id`` (node ID), ``number``, ``title``,
-            ``body``, ``url``, ``category``, ``isAnswered``, ``comments.nodes``
-            (up to 50).  The ``id`` field is the GraphQL node ID required by
-            mutations such as :meth:`pin_discussion`.
+            ``body``, ``url``, ``category``, ``isAnswered``, ``comments`` with
+            ``totalCount``, ``pageInfo``, and ``nodes`` (up to *comments_first*).
+            The ``id`` field is the GraphQL node ID required by mutations such
+            as :meth:`pin_discussion`.
         """
         self._require_token()
         owner, repo_name = repo.split("/", 1)
         query = """
-        query GetDiscussion($owner: String!, $repo: String!, $number: Int!) {
+        query GetDiscussion($owner: String!, $repo: String!, $number: Int!, $commentsFirst: Int!, $commentsAfter: String) {
           repository(owner: $owner, name: $repo) {
             discussion(number: $number) {
               id number title url body createdAt updatedAt isAnswered isLocked
               category { name slug }
               author { login }
-              comments(first: 50) {
+              comments(first: $commentsFirst, after: $commentsAfter) {
                 totalCount
+                pageInfo { endCursor hasNextPage }
                 nodes { id body createdAt author { login } isAnswer }
               }
             }
@@ -694,7 +725,14 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(
-            query, {"owner": owner, "repo": repo_name, "number": discussion_number}
+            query,
+            {
+                "owner": owner,
+                "repo": repo_name,
+                "number": discussion_number,
+                "commentsFirst": min(comments_first, 100),
+                "commentsAfter": comments_after,
+            },
         )
         disc = result.get("data", {}).get("repository", {}).get("discussion")
         if disc is None:
@@ -1687,12 +1725,19 @@ def _build_parser() -> argparse.ArgumentParser:
     lsd.add_argument("--repo", required=True, help="owner/repo")
     lsd.add_argument("--category", default=None, help="Filter by category slug (optional)")
     lsd.add_argument("--first", type=int, default=20, help="Max number to return (default 20)")
+    lsd.add_argument("--after", default=None, help="Pagination cursor (endCursor from previous page)")
     lsd.add_argument("--json", action="store_true", help="Output as JSON")
 
     # get-discussion
     gd = sub.add_parser("get-discussion", help="Get a single Discussion with its comments")
     gd.add_argument("--repo", required=True, help="owner/repo")
     gd.add_argument("--number", required=True, type=int, help="Discussion number")
+    gd.add_argument(
+        "--comments-first", type=int, default=50, help="Comments per page (default 50)"
+    )
+    gd.add_argument(
+        "--comments-after", default=None, help="Pagination cursor for comments"
+    )
     gd.add_argument("--json", action="store_true", help="Output as JSON")
 
     # list-discussion-categories
@@ -1845,20 +1890,30 @@ def main(argv: list[str] | None = None) -> int:
             print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")
 
         elif args.command == "list-discussions":
-            discussions = poster.list_discussions(args.repo, args.category, args.first)
+            page = poster.list_discussions(args.repo, args.category, args.first, getattr(args, "after", None))
+            discussions = page["nodes"]
+            page_info = page["pageInfo"]
             if getattr(args, "json", False):
                 import json as _json
 
-                print(_json.dumps(discussions, indent=2))
+                print(_json.dumps(page, indent=2))
             else:
                 for d in discussions:
                     cat = d.get("category", {}).get("slug", "?")
                     answered = "✅" if d.get("isAnswered") else "  "
                     print(f"#{d['number']:5}  {answered}  [{cat}]  {d['title'][:70]}")
                 print(f"\n{len(discussions)} discussion(s) found")
+                if page_info.get("hasNextPage"):
+                    print(f"Next page cursor: {page_info['endCursor']}")
+                    print("  (use --after <cursor> to fetch next page)")
 
         elif args.command == "get-discussion":
-            disc = poster.get_discussion(args.repo, args.number)
+            disc = poster.get_discussion(
+                args.repo,
+                args.number,
+                comments_first=getattr(args, "comments_first", 50),
+                comments_after=getattr(args, "comments_after", None),
+            )
             if getattr(args, "json", False):
                 import json as _json
 
@@ -1872,6 +1927,10 @@ def main(argv: list[str] | None = None) -> int:
                     f"  |  Locked: {disc.get('isLocked', False)}"
                 )
                 print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
+                comments_page_info = disc.get("comments", {}).get("pageInfo", {})
+                if comments_page_info.get("hasNextPage"):
+                    print(f"   Next comments cursor: {comments_page_info['endCursor']}")
+                    print("   (use --comments-after <cursor> to fetch next page)")
 
         elif args.command == "list-discussion-categories":
             cats = poster.list_discussion_categories(args.repo)
