@@ -127,8 +127,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             "bash",
             "-c",
             # Strip trailing whitespace from all modified tracked files
-            "git diff --name-only HEAD -- '*.md' '*.rst' '*.txt' docs/ .codex/"
-            + " | xargs -r sed -i 's/[[:space:]]*$//'",
+            "git diff --name-only HEAD -- '*.md' '*.rst' '*.txt' docs/ .codex/ | xargs -r sed -i 's/[[:space:]]*$//'",
         ],
         fix_description=(
             "Strip trailing whitespace from modified docs/config files via "
@@ -148,9 +147,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             "bash",
             "-c",
             # Use find + xargs -0 for safe handling of any filenames
-            "find .codex -name '*.json' -print0"
-            + " | xargs -0 -I{} sh -c"
-            + ' \'tail -c1 "$1" | grep -q . && echo >> "$1"\' _ {}',
+            "find .codex -name '*.json' -print0 | xargs -0 -I{} sh -c 'tail -c1 \"$1\" | grep -q . && echo >> \"$1\"' _ {}",
         ],
         fix_description="Add missing EOF newline to .codex JSON files",
         references=["S196 commit 24b868e"],
@@ -236,8 +233,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         fix_command=[
             "bash",
             "-c",
-            "pre-commit run trailing-whitespace end-of-file-fixer"
-            + " --files $(git diff --name-only HEAD) 2>/dev/null || true",
+            "pre-commit run trailing-whitespace end-of-file-fixer --files $(git diff --name-only HEAD) 2>/dev/null || true",
         ],
         fix_description=(
             "Run pre-commit `trailing-whitespace` and `end-of-file-fixer` "
