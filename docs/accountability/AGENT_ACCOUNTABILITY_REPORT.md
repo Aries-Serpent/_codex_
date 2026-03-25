@@ -9802,3 +9802,53 @@ Interim: informational warning only; no CI gate failure.
   between environments (CI "Downloading" vs local "Using cached").
 - Per CODEBASE_AGENCY_POLICY.md §0: Agent Token Delegation and Cost Governance
   checkboxes MUST appear in every `report_progress` PR description update.
+
+## SESSION SUMMARY — 2026-03-25 S201 (PR #3743)
+
+**Agent**: copilot-swe-agent[bot]
+**Session ID**: S201
+**PR**: #3743 — Codebase-wide QA Walkthrough (Phase 8 P2–P6)
+
+### Objectives Completed
+1. **Validation Pipeline fix**: Added `detect-secrets==1.4.0` to fast-mode CI venv install in
+   `run_validation.sh`. Root cause: `sync_tracked_files.py --fix` calls `sys.executable -m
+   detect_secrets` but only `pre-commit==4.0.1` was installed in the fast venv; detect-secrets
+   was only available in pre-commit's managed virtualenv, not the system Python.
+2. **RAG threshold raised 50% → 60%** in `.github/workflows/test-rag.yml` (S201 increment).
+3. **Phase 8 P2 — Pattern DB snapshot → workflow artifact**: `copilot-escalation` job now
+   exports the full patterns DB as JSON and uploads as `pattern-db-snapshot-{run_id}` artifact
+   (90-day retention) for cross-run persistence.
+4. **Phase 8 P3 — cross_pr_correlation() → escalation**: `copilot-escalation` job now queries
+   `cross_pr_correlation(min_prs=2)` and includes a Cross-PR Correlation table in the `@copilot`
+   fix prompt alongside the existing High-Recurrence table.
+5. **Phase 8 P4 — `pattern_id` filter on `GET /api/patterns/recent`**: Added optional
+   `pattern_id: int` query parameter with dynamic WHERE clause construction.
+6. **Phase 8 P5 — `google-home-script-agent.md`**: Created production-ready Copilot custom agent
+   with smart-home template guardian, script generation, routine builder, and CI integration docs.
+7. **Phase 8 P6 — GitHub Discussions hardened posting pipeline**: Added `_graphql_with_retry()`
+   to `GitHubMCPPoster` with exponential back-off, GraphQL error type detection
+   (`RATE_LIMITED`, `FORBIDDEN`, etc.), and hardened `_resolve_discussion_ids` to raise on
+   unknown category slug instead of silently falling back.
+
+### Failure Patterns Fixed in This Session
+| Pattern | File | Root Cause | Fix |
+|---------|------|-----------|-----|
+| sync-tracked-files CI failure | `run_validation.sh` | `detect-secrets` not installed in fast-mode venv | Added `detect-secrets==1.4.0` to fast-mode pip install |
+
+### Self-Review (5-Pass)
+| Pass | Check | Status |
+|------|-------|--------|
+| 1 | `ruff check src/ scripts/ cognitive_app/src/` — 0 violations | ✅ |
+| 2 | Python YAML parse of `iterative-self-healing-ci.yml` | ✅ |
+| 3 | `python3 scripts/ci/sync_tracked_files.py --fix --quiet` exits 0 | ✅ |
+| 4 | `_graphql_with_retry` method handles RATE_LIMITED / network errors | ✅ |
+| 5 | `google-home-script-agent.md` file size < 30,000 chars (agent limit) | ✅ |
+
+### Lessons Learned
+- `language: system` pre-commit hooks run with the system Python (`.venv_ci`), NOT with
+  pre-commit's managed virtualenv. Always install all system-hook dependencies in the same
+  venv that `run_validation.sh` creates.
+- Phase 8 P6 hardening: Never silently fall back to the first Discussion category when the
+  requested slug doesn't exist; raise a clear `ValueError` so CI logs show the actual problem.
+- MANDATORY: every `report_progress` PR description update MUST include Agent Token Delegation
+  (`COPILOT_AGENT_AUTH_ENABLED`) and Cost Governance (`Cost Proposal Approved`) blocks.

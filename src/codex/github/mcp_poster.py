@@ -212,7 +212,7 @@ class GitHubMCPPoster:
             "title": title,
             "body": body,
         }
-        result = self._graphql(mutation, variables)
+        result = self._graphql_with_retry(mutation, variables, operation_name="CreateDiscussion")
         return result.get("data", {}).get("createDiscussion", {}).get("discussion", result)
 
     def post_session_summary_discussion(
@@ -1567,6 +1567,89 @@ class GitHubMCPPoster:
         url = f"{_GITHUB_API}/graphql"
         return self._request("POST", url, {"query": query, "variables": variables})
 
+    def _graphql_with_retry(
+        self,
+        query: str,
+        variables: dict[str, Any],
+        *,
+        max_retries: int = 3,
+        operation_name: str = "GraphQL",
+    ) -> dict[str, Any]:
+        """Execute a GraphQL mutation/query with exponential back-off retry.
+
+        Hardened posting pipeline (Phase 8 P6):
+        - Detects GraphQL ``errors`` array in the response body and raises.
+        - Recognises ``RATE_LIMITED`` errors from GitHub and waits/retries.
+        - Retries on transient network errors (``urllib.error.URLError``,
+          ``http.client.RemoteDisconnected``, ``TimeoutError``).
+        - Non-retryable errors (``FORBIDDEN``, ``NOT_FOUND``, auth failures)
+          are raised immediately.
+        - Returns ``result["data"]`` on success (unwraps the envelope).
+
+        Returns:
+            The full parsed JSON response dict (including ``data`` key) so
+            callers can continue to use the same access pattern.
+        """
+        _NON_RETRYABLE_TYPES = frozenset(
+            {"FORBIDDEN", "NOT_FOUND", "UNPROCESSABLE", "BAD_REQUEST"}
+        )
+        _RETRYABLE_TYPES = frozenset(
+            {"RATE_LIMITED", "SERVICE_UNAVAILABLE", "INTERNAL"}
+        )
+
+        last_exc: Exception | None = None
+        for attempt in range(max_retries + 1):
+            try:
+                url = f"{_GITHUB_API}/graphql"
+                result = self._request("POST", url, {"query": query, "variables": variables})
+
+                # Check for GraphQL-level errors (HTTP 200 but errors in body)
+                gql_errors = result.get("errors")
+                if gql_errors:
+                    first = gql_errors[0]
+                    err_type = first.get("type", "UNKNOWN")
+                    err_msg = first.get("message", str(gql_errors))
+
+                    if err_type in _NON_RETRYABLE_TYPES:
+                        raise ValueError(
+                            f"{operation_name} GraphQL {err_type}: {err_msg}"
+                        )
+
+                    if err_type in _RETRYABLE_TYPES and attempt < max_retries:
+                        wait = 2 ** (attempt + 1)
+                        print(
+                            f"[mcp_poster] {operation_name} GraphQL {err_type} "
+                            f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s",
+                            file=sys.stderr,
+                        )
+                        time.sleep(wait)
+                        continue
+
+                    # Unknown error type or retries exhausted
+                    raise RuntimeError(
+                        f"{operation_name} GraphQL error ({err_type}): {err_msg}"
+                    )
+
+                return result
+
+            except (urllib.error.URLError, TimeoutError, ConnectionResetError) as exc:
+                last_exc = exc
+                if attempt < max_retries:
+                    wait = 2 ** (attempt + 1)
+                    print(
+                        f"[mcp_poster] {operation_name} network error "
+                        f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s: {exc}",
+                        file=sys.stderr,
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
+
+        # Should never reach here but satisfy type checker
+        if last_exc is not None:
+            raise last_exc
+        raise RuntimeError(f"{operation_name}: max retries ({max_retries}) exceeded")
+
     def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
         """Return (repository_node_id, category_node_id) for GraphQL mutations."""
         query = """
@@ -1579,7 +1662,9 @@ class GitHubMCPPoster:
           }
         }
         """
-        result = self._graphql(query, {"owner": owner, "repo": repo})
+        result = self._graphql_with_retry(
+            query, {"owner": owner, "repo": repo}, operation_name="ResolveDiscussionIds"
+        )
         repo_data = result.get("data", {}).get("repository", {})
         repo_id: str = repo_data.get("id", "")
         categories = repo_data.get("discussionCategories", {}).get("nodes", [])
@@ -1592,8 +1677,14 @@ class GitHubMCPPoster:
                 category_id = cat["id"]
                 break
         if not category_id and categories:
-            # Fallback to first category
-            category_id = categories[0]["id"]
+            available = [c.get("slug") or c.get("name", "?") for c in categories]
+            # Hardened: raise instead of silently falling back to first category
+            # (P6 hardened posting pipeline — S201)
+            raise ValueError(
+                f"Discussion category slug {category_slug!r} not found in {repo!r}. "
+                f"Available: {available}. "
+                "Create the category in GitHub UI before posting."
+            )
         return repo_id, category_id
 
 

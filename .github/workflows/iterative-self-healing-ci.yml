@@ -571,38 +571,91 @@ jobs:
           ref: ${{ needs.triage.outputs.head_branch }}
           fetch-depth: 1
 
-      - name: "Query high-recurrence patterns"
+      - name: "Query high-recurrence + cross-PR patterns"
         id: high_rec
         env:
           CODEX_DB_PATH: ${{ env.CODEX_DB_PATH || '' }}
         run: |
-          # Emit a compact Markdown table of top recurring patterns (max 5 rows).
-          # Falls back to empty string gracefully if DB is absent or python fails.
-          HR_TABLE=$(python3 - <<'PYEOF' 2>/dev/null || echo "")
-          import os, sys
+          # Emit compact Markdown tables for (a) high-recurrence and
+          # (b) cross-PR correlation (Phase 8 P3).
+          # Falls back to empty string gracefully if DB absent or python fails.
+          python3 - <<'PYEOF' > /tmp/_hr_output.txt 2>/dev/null || true
+          import os, sys, json
           sys.path.insert(0, "scripts/ci")
           try:
               import pattern_recorder as pr
               db = os.environ.get("CODEX_DB_PATH", os.path.expanduser("~/.codex/cli_history.db"))
               conn = pr._open_db(db)
+
+              # --- High-recurrence table ---
               rows = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.0)
-              if not rows:
-                  print("")
-              else:
+              if rows:
                   lines = ["| Pattern | Total | Fix% |",
                            "|---------|-------|------|"]
                   for r in rows[:5]:
                       lines.append(f"| `{r['pattern_name']}` | {r['total']} | {r['fix_rate']*100:.0f}% |")
-                  print("\n".join(lines))
-          except Exception:
-              print("")
+                  hr_table = "\n".join(lines)
+              else:
+                  hr_table = ""
+
+              # --- Cross-PR correlation table (Phase 8 P3) ---
+              cross = pr.cross_pr_correlation(conn, min_prs=2)
+              if cross:
+                  clines = ["| Pattern | PRs | Total |",
+                            "|---------|-----|-------|"]
+                  for r in cross[:5]:
+                      clines.append(f"| `{r['pattern_name']}` | {r['pr_count']} | {r['total']} |")
+                  cross_table = "\n".join(clines)
+              else:
+                  cross_table = ""
+
+              print(f"HR_TABLE={hr_table}")
+              print(f"CROSS_TABLE={cross_table}")
+          except Exception as e:
+              print(f"HR_TABLE=")
+              print(f"CROSS_TABLE=")
           PYEOF
-          # Store multi-line output safely using EOF delimiter
+
+          # Parse outputs safely
+          HR_TABLE=$(grep '^HR_TABLE=' /tmp/_hr_output.txt | cut -d'=' -f2- || echo "")
+          CROSS_TABLE=$(grep '^CROSS_TABLE=' /tmp/_hr_output.txt | cut -d'=' -f2- || echo "")
           {
             echo "table<<HREOF"
             echo "$HR_TABLE"
             echo "HREOF"
+            echo "cross_table<<CROSSEOF"
+            echo "$CROSS_TABLE"
+            echo "CROSSEOF"
           } >> "$GITHUB_OUTPUT"
+
+      - name: "Snapshot pattern DB → workflow artifact (Phase 8 P2)"
+        env:
+          CODEX_DB_PATH: ${{ env.CODEX_DB_PATH || '' }}
+        run: |
+          # Export the pattern knowledge graph as JSON and upload as artifact.
+          # This gives cross-run persistence without requiring git commits.
+          python3 - <<'PYEOF' > /tmp/pattern_snapshot.json 2>/dev/null || echo '{}' > /tmp/pattern_snapshot.json
+          import os, sys, json
+          sys.path.insert(0, "scripts/ci")
+          try:
+              import pattern_recorder as pr
+              db = os.environ.get("CODEX_DB_PATH", os.path.expanduser("~/.codex/cli_history.db"))
+              conn = pr._open_db(db)
+              snapshot = pr.export_json(conn)
+              print(json.dumps(snapshot, indent=2))
+          except Exception as e:
+              print(json.dumps({"error": str(e), "patterns": [], "summary": {}}))
+          PYEOF
+          echo "Pattern DB snapshot written to /tmp/pattern_snapshot.json"
+          wc -l /tmp/pattern_snapshot.json || true
+
+      - name: "Upload pattern DB snapshot artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: pattern-db-snapshot-${{ github.run_id }}
+          path: /tmp/pattern_snapshot.json
+          retention-days: 90
+          if-no-files-found: warn
 
       - name: "Post @copilot fix prompt on failing PR"
         env:
@@ -613,6 +666,7 @@ jobs:
           HEAD_SHA:     ${{ needs.triage.outputs.head_sha }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
           HIGH_REC_TABLE: ${{ steps.high_rec.outputs.table }}
+          CROSS_PR_TABLE: ${{ steps.high_rec.outputs.cross_table }}
         run: |
           PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
             --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
@@ -648,7 +702,7 @@ jobs:
 
           RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
 
-          # Build structured @copilot prompt per proposal §6
+          # Build structured @copilot prompt per proposal §6 (Phase 8 P3: includes cross-PR correlation)
           cat > "${RUNNER_TEMP}/copilot_escalation.txt" <<COPILOT_EOF
           <!-- copilot-escalation-trigger -->
           ## 🤖 Copilot Self-Healing Escalation
@@ -667,6 +721,9 @@ jobs:
           **High-Recurrence Patterns (top recurring — from pattern DB):**
           ${HIGH_REC_TABLE:-_No high-recurrence patterns recorded yet._}
 
+          **Cross-PR Correlation (patterns recurring across multiple PRs — Phase 8 P3):**
+          ${CROSS_PR_TABLE:-_No cross-PR patterns detected yet._}
+
           **Instructions:**
           1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` and follow §0
           2. Check for open CI failure issues: \`gh issue list --label ci-failure --state open\` and \`gh issue list --label ci-health-alert --state open\`
@@ -675,7 +732,7 @@ jobs:
           5. Run self-review (5-pass) before committing
           6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
 
-          _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S188 Phase 7)_
+          _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S201 Phase 8 P3)_
           COPILOT_EOF
 
           # Strip leading whitespace from heredoc (indented for readability)
