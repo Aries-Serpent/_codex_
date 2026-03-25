@@ -342,6 +342,54 @@ def high_recurrence(
     return result
 
 
+def cross_pr_correlation(
+    conn: sqlite3.Connection,
+    min_prs: int = 3,
+) -> List[Dict[str, Any]]:
+    """Return patterns that have recurred across at least *min_prs* distinct PRs.
+
+    A "PR" is identified by a distinct ``git_sha`` value recorded in the
+    ``patterns`` table.  Each unique ``git_sha`` represents one CI run
+    (commit / PR head), so counting distinct SHAs per pattern gives the number
+    of PRs in which that pattern appeared.
+
+    Patterns appearing in fewer than *min_prs* distinct SHAs are excluded.
+    Results are ordered by descending ``pr_count``.
+
+    Returns a list of dicts, each with keys:
+    - ``pattern_name``   — name of the pattern
+    - ``pr_count``       — number of distinct git SHAs (PRs) this pattern appeared in
+    - ``total``          — total occurrence count across all PRs
+    - ``first_seen_sha`` — the earliest recorded git SHA for this pattern
+    - ``last_seen_sha``  — the most recent recorded git SHA for this pattern
+    """
+    rows = conn.execute(
+        """
+        SELECT pattern_name,
+               COUNT(DISTINCT git_sha)                      AS pr_count,
+               COUNT(*)                                     AS total,
+               MIN(CASE WHEN git_sha IS NOT NULL THEN git_sha END) AS first_seen_sha,
+               MAX(CASE WHEN git_sha IS NOT NULL THEN git_sha END) AS last_seen_sha
+        FROM patterns
+        WHERE git_sha IS NOT NULL AND git_sha != ''
+        GROUP BY pattern_name
+        HAVING pr_count >= ?
+        ORDER BY pr_count DESC, total DESC
+        """,
+        (min_prs,),
+    ).fetchall()
+    return [
+        {
+            "pattern_name": r["pattern_name"],
+            "pr_count": r["pr_count"],
+            "total": r["total"],
+            "first_seen_sha": r["first_seen_sha"],
+            "last_seen_sha": r["last_seen_sha"],
+        }
+        for r in rows
+    ]
+
+
 def pattern_trend(
     conn: sqlite3.Connection,
     days: int = 7,
@@ -497,6 +545,23 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Output as JSON array instead of table",
     )
 
+    # --- cross-pr correlation ---
+    crp = sub.add_parser(
+        "cross-pr",
+        help="Show patterns that recurred across >= N distinct PRs (git SHAs)",
+    )
+    crp.add_argument(
+        "--min-prs",
+        type=int,
+        default=3,
+        help="Minimum number of distinct PRs (git SHAs) for a pattern to be reported (default: 3)",
+    )
+    crp.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON array instead of table",
+    )
+
     # --- trend ---
     tp = sub.add_parser(
         "trend",
@@ -600,6 +665,30 @@ def main(argv: Optional[List[str]] = None) -> int:
                     print(
                         f"{r['pattern_name']:<25}  {r['total']:>7}  "
                         f"{r['fixed']:>7}  {r['fix_rate']*100:>5.0f}%"
+                    )
+        return 0
+
+    if args.cmd == "cross-pr":
+        results = cross_pr_correlation(conn, min_prs=args.min_prs)
+        if getattr(args, "json", False):
+            print(json.dumps(results, indent=2))
+        else:
+            if not results:
+                print(
+                    f"No patterns found in >= {args.min_prs} distinct PRs."
+                )
+            else:
+                print(
+                    f"{'Pattern':<25}  {'PRs':>5}  {'Total':>7}  "
+                    f"{'First SHA':<10}  {'Last SHA':<10}"
+                )
+                print("-" * 70)
+                for r in results:
+                    first = (r["first_seen_sha"] or "")[:8]
+                    last = (r["last_seen_sha"] or "")[:8]
+                    print(
+                        f"{r['pattern_name']:<25}  {r['pr_count']:>5}  "
+                        f"{r['total']:>7}  {first:<10}  {last:<10}"
                     )
         return 0
 

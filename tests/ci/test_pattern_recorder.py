@@ -530,3 +530,108 @@ class TestPreCommitHook:
         # DB exists but empty — no high-recurrence patterns
         pr._open_db(tmp_db).close()
         assert mod.run_check() == 0
+
+
+# ===========================================================================
+# cross_pr_correlation — Phase 8 P1
+# ===========================================================================
+
+
+class TestCrossPrCorrelation:
+    """Tests for pattern_recorder.cross_pr_correlation() (Phase 8 P1)."""
+
+    def _insert(self, conn, name: str, sha: str, pid: int = 1) -> None:
+        pr._insert_pattern(
+            conn,
+            pattern_id=pid,
+            pattern_name=name,
+            file_path="f.py",
+            line_number=1,
+            description="d",
+            auto_fixable=True,
+            fixed=False,
+            session="s",
+            git_sha=sha,
+        )
+
+    def test_empty_db_returns_empty(self, conn):
+        assert pr.cross_pr_correlation(conn, min_prs=2) == []
+
+    def test_pattern_in_one_sha_excluded(self, conn):
+        self._insert(conn, "Unused Imports", "abc123")
+        self._insert(conn, "Unused Imports", "abc123")
+        result = pr.cross_pr_correlation(conn, min_prs=2)
+        assert result == [], "Should exclude patterns with only 1 distinct SHA"
+
+    def test_pattern_in_exact_min_prs_included(self, conn):
+        """Pattern appearing in exactly min_prs distinct SHAs is included."""
+        for sha in ("sha1", "sha2", "sha3"):
+            self._insert(conn, "Line Length", sha)
+        result = pr.cross_pr_correlation(conn, min_prs=3)
+        assert len(result) == 1
+        assert result[0]["pattern_name"] == "Line Length"
+        assert result[0]["pr_count"] == 3
+        assert result[0]["total"] == 3
+
+    def test_multiple_occurrences_same_sha_counted_once(self, conn):
+        """10 insertions with the same SHA still count as 1 PR."""
+        for _ in range(10):
+            self._insert(conn, "Unsorted Imports", "deadbeef")
+        result = pr.cross_pr_correlation(conn, min_prs=2)
+        assert result == [], "Same SHA repeated does not count as multiple PRs"
+
+    def test_multiple_patterns_sorted_by_pr_count(self, conn):
+        """Results sorted by descending pr_count."""
+        # 'Unused Imports' in 4 SHAs; 'Line Length' in 2 SHAs
+        for i, sha in enumerate(("s1", "s2", "s3", "s4")):
+            self._insert(conn, "Unused Imports", sha, pid=1)
+        for sha in ("s5", "s6"):
+            self._insert(conn, "Line Length", sha, pid=12)
+        result = pr.cross_pr_correlation(conn, min_prs=2)
+        assert result[0]["pattern_name"] == "Unused Imports"
+        assert result[0]["pr_count"] == 4
+        assert result[1]["pattern_name"] == "Line Length"
+        assert result[1]["pr_count"] == 2
+
+    def test_null_sha_rows_excluded_from_count(self, conn):
+        """Rows with NULL git_sha do not count toward pr_count."""
+        self._insert(conn, "Duplicate Kwargs", "realsha")
+        # Insert a row with None sha via direct SQL (simulate untagged)
+        conn.execute(
+            "INSERT INTO patterns (pattern_id, pattern_name, file_path, "
+            "line_number, description, auto_fixable, fixed, session, git_sha, timestamp) "
+            "VALUES (18, 'Duplicate Kwargs', 'f.py', 1, 'd', 1, 0, 's', NULL, '2026-01-01')"
+        )
+        conn.commit()
+        result = pr.cross_pr_correlation(conn, min_prs=2)
+        assert result == [], "NULL sha row should not boost pr_count to 2"
+
+    def test_cli_cross_pr_empty(self, tmp_db, capsys):
+        """CLI cross-pr subcommand prints 'No patterns' when DB empty."""
+        rc = pr.main(["--db", tmp_db, "cross-pr", "--min-prs", "2"])
+        out = capsys.readouterr().out
+        assert rc == 0
+        assert "No patterns" in out
+
+    def test_cli_cross_pr_json(self, tmp_db, capsys):
+        """CLI cross-pr --json returns valid JSON."""
+        conn = pr._open_db(tmp_db)
+        for sha in ("aaa", "bbb", "ccc"):
+            pr._insert_pattern(
+                conn,
+                pattern_id=1,
+                pattern_name="Unused Imports",
+                file_path="f.py",
+                line_number=1,
+                description="d",
+                auto_fixable=True,
+                fixed=False,
+                session="s",
+                git_sha=sha,
+            )
+        conn.close()
+        pr.main(["--db", tmp_db, "cross-pr", "--min-prs", "3", "--json"])
+        data = json.loads(capsys.readouterr().out)
+        assert len(data) == 1
+        assert data[0]["pattern_name"] == "Unused Imports"
+        assert data[0]["pr_count"] == 3
