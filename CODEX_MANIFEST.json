@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-24T17:33:50Z",
+  "generated_at": "2026-03-25T00:31:20Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1928,5 +1928,155 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "65556d8296d403eb330794a3d8cf4daef760a0a175df80f8ea578d07ceb329d1"
+  "integrity_sha256": "af12519ab51649503dc032e136d450530928b8895432ad88ca3f0847c786309a",
+  "ci_patterns": {
+    "schema_version": "1.0",
+    "description": "CI pattern knowledge graph \u2014 tracks recurring failure patterns, auto-fix coverage, and trend analytics across sessions",
+    "tooling": {
+      "recorder": "scripts/ci/pattern_recorder.py",
+      "pipeline": "scripts/ci/ci_pattern_pipeline.py",
+      "detector": "scripts/ci/auto_fix_common_issues.py",
+      "pre_commit_hook": "scripts/hooks/pre_commit_pattern_check.py",
+      "dashboard_section": "scripts/cognitive/dashboard_generator._generate_ci_pattern_trend_section",
+      "rest_api": "/api/patterns (cognitive_app/src/server/cli_api_server.py)"
+    },
+    "db_schema": {
+      "table": "patterns",
+      "columns": [
+        "id",
+        "pattern_id",
+        "pattern_name",
+        "file_path",
+        "line_number",
+        "auto_fixable",
+        "fixed",
+        "session",
+        "git_sha",
+        "timestamp"
+      ]
+    },
+    "patterns": [
+      {
+        "id": 1,
+        "name": "Unused Imports",
+        "auto_fixable": true,
+        "tool": "ruff F401"
+      },
+      {
+        "id": 2,
+        "name": "Unused Variables",
+        "auto_fixable": false,
+        "tool": "ruff F841"
+      },
+      {
+        "id": 3,
+        "name": "YAML Indentation",
+        "auto_fixable": false,
+        "tool": "manual"
+      },
+      {
+        "id": 4,
+        "name": "Coverage Thresholds",
+        "auto_fixable": true,
+        "tool": "regex replacement"
+      },
+      {
+        "id": 5,
+        "name": "Tokenizer Fallbacks",
+        "auto_fixable": false,
+        "tool": "manual"
+      },
+      {
+        "id": 6,
+        "name": "Test Assertions",
+        "auto_fixable": false,
+        "tool": "manual"
+      },
+      {
+        "id": 7,
+        "name": "Redundant Imports",
+        "auto_fixable": false,
+        "tool": "manual"
+      },
+      {
+        "id": 8,
+        "name": "CodeQL Alerts",
+        "auto_fixable": false,
+        "tool": "ruff F401/F841"
+      },
+      {
+        "id": 9,
+        "name": "Unsorted Imports",
+        "auto_fixable": true,
+        "tool": "ruff I001"
+      },
+      {
+        "id": 10,
+        "name": "Bandit Security",
+        "auto_fixable": true,
+        "tool": "ruff nosec"
+      },
+      {
+        "id": 11,
+        "name": "F-String Placeholders",
+        "auto_fixable": true,
+        "tool": "ruff F541"
+      },
+      {
+        "id": 12,
+        "name": "Line Length",
+        "auto_fixable": true,
+        "tool": "ruff format E501"
+      },
+      {
+        "id": 13,
+        "name": "W-Series Warnings",
+        "auto_fixable": true,
+        "tool": "ruff W-series"
+      },
+      {
+        "id": 14,
+        "name": "Link Checker Config",
+        "auto_fixable": true,
+        "tool": "markdown-link-check"
+      },
+      {
+        "id": 15,
+        "name": "mypy Baseline Freshness",
+        "auto_fixable": false,
+        "tool": "mypy_baseline.py"
+      },
+      {
+        "id": 16,
+        "name": "Stub Duplicate Defs",
+        "auto_fixable": true,
+        "tool": "ruff F811"
+      },
+      {
+        "id": 17,
+        "name": "CI SHA Drift",
+        "auto_fixable": false,
+        "tool": "informational"
+      },
+      {
+        "id": 18,
+        "name": "Duplicate Kwargs",
+        "auto_fixable": true,
+        "tool": "AST col-offset removal"
+      }
+    ],
+    "auto_fixable_count": 10,
+    "manual_review_count": 8,
+    "phase": "Phase 6-7 (S186\u2013S189)",
+    "trend_analytics": {
+      "function": "pattern_trend(conn, days=7)",
+      "dashboard": "_generate_ci_pattern_trend_section(days=7)",
+      "escalation": "high_recurrence(conn, min_count=3, days=30)"
+    },
+    "strict_gate": {
+      "workflow": ".github/workflows/pre-merge-validation.yml",
+      "step": "CI pattern pipeline (strict gate)",
+      "command": "python scripts/ci/ci_pattern_pipeline.py --check-only --strict"
+    }
+  }
 }
