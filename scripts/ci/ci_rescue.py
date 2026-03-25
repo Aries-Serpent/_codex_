@@ -53,12 +53,13 @@ MAX_COMMENT_CHARS = 60_000
 # pattern was detected but the fix could not be applied automatically.
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RescuePattern:
     pattern_id: str
     description: str
-    log_regexes: list[str]                # any match → pattern fires
-    fix_command: Optional[list[str]]      # None = manual only
+    log_regexes: list[str]  # any match → pattern fires
+    fix_command: Optional[list[str]]  # None = manual only
     fix_description: str = ""
     references: list[str] = field(default_factory=list)
 
@@ -72,9 +73,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"Pattern 12.*[Ll]ine [Ll]ength.*Found",
             r"auto-fixable.*[Ll]ine [Ll]ength",
         ],
-        fix_command=[
-            "python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "12"
-        ],
+        fix_command=["python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "12"],
         fix_description="Run `auto_fix_common_issues.py --pattern 12` to auto-wrap long lines",
         references=["auto_fix_common_issues.py:fix_line_length"],
     ),
@@ -85,9 +84,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"F401.*imported but unused",
             r"Pattern 1.*[Uu]nused [Ii]mports.*Found",
         ],
-        fix_command=[
-            "python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "1"
-        ],
+        fix_command=["python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "1"],
         fix_description="Run `auto_fix_common_issues.py --pattern 1` to remove unused imports",
         references=["auto_fix_common_issues.py:fix_unused_imports"],
     ),
@@ -98,9 +95,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"Pattern 4.*[Cc]overage.*Found",
             r"coverage.*threshold.*inconsisten",
         ],
-        fix_command=[
-            "python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "4"
-        ],
+        fix_command=["python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "4"],
         fix_description=(
             "Run `auto_fix_common_issues.py --pattern 4` to standardise coverage thresholds"
         ),
@@ -113,9 +108,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"Pattern 22.*[Tt]racked.*Found",
             r"CODEX_MANIFEST.*CHANGELOG.*accountability drift",
         ],
-        fix_command=[
-            "python3", "scripts/ci/sync_tracked_files.py", "--fix"
-        ],
+        fix_command=["python3", "scripts/ci/sync_tracked_files.py", "--fix"],
         fix_description=(
             "Run `sync_tracked_files.py --fix` to resync CODEX_MANIFEST / "
             "CHANGELOG / accountability report"
@@ -131,10 +124,11 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"trailing-whitespace.*Failed",
         ],
         fix_command=[
-            "bash", "-c",
+            "bash",
+            "-c",
             # Strip trailing whitespace from all modified tracked files
             "git diff --name-only HEAD -- '*.md' '*.rst' '*.txt' docs/ .codex/"
-            " | xargs -r sed -i 's/[[:space:]]*$//'"
+            + " | xargs -r sed -i 's/[[:space:]]*$//'",
         ],
         fix_description=(
             "Strip trailing whitespace from modified docs/config files via "
@@ -151,11 +145,12 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"no newline at end.*\.json",
         ],
         fix_command=[
-            "bash", "-c",
+            "bash",
+            "-c",
             # Use find + xargs -0 for safe handling of any filenames
             "find .codex -name '*.json' -print0"
-            " | xargs -0 -I{} sh -c"
-            " 'tail -c1 \"$1\" | grep -q . && echo >> \"$1\"' _ {}"
+            + " | xargs -0 -I{} sh -c"
+            + ' \'tail -c1 "$1" | grep -q . && echo >> "$1"\' _ {}',
         ],
         fix_description="Add missing EOF newline to .codex JSON files",
         references=["S196 commit 24b868e"],
@@ -170,11 +165,10 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"agent_context\.json.*hash",
         ],
         fix_command=[
-            # Use pre-commit to regenerate the baseline for the affected files
-            "bash", "-c",
-            "python3 -m detect_secrets scan --no-verify"
-            " --baseline .secrets.baseline"
-            " .codex/agent_context.json 2>/dev/null || true"
+            "bash",
+            "-c",
+            # Single-string command for detect-secrets baseline refresh
+            "python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline .codex/agent_context.json 2>/dev/null || true",
         ],
         fix_description=(
             "Refresh the detect-secrets baseline for agent_context.json via "
@@ -225,8 +219,8 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         ],
         fix_command=None,
         fix_description=(
-            "Check pre_flight_check.py output. Use `[ \"${VAR}\" != \"\" ]` "
-            "instead of `[ -n \"${VAR}\" ]` in workflow bash steps to avoid "
+            'Check pre_flight_check.py output. Use `[ "${VAR}" != "" ]` '
+            'instead of `[ -n "${VAR}" ]` in workflow bash steps to avoid '
             "false xdist warnings. Ensure timeout-minutes is set on jobs "
             "that contain pytest."
         ),
@@ -240,9 +234,10 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"Fast Validation.*[Ff]ail",
         ],
         fix_command=[
-            "bash", "-c",
+            "bash",
+            "-c",
             "pre-commit run trailing-whitespace end-of-file-fixer"
-            " --files $(git diff --name-only HEAD) 2>/dev/null || true"
+            + " --files $(git diff --name-only HEAD) 2>/dev/null || true",
         ],
         fix_description=(
             "Run pre-commit `trailing-whitespace` and `end-of-file-fixer` "
@@ -257,9 +252,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             r"I001.*[Ii]mport block is un-sorted",
             r"Pattern 9.*[Uu]nsorted [Ii]mports.*Found",
         ],
-        fix_command=[
-            "python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "9"
-        ],
+        fix_command=["python3", "scripts/ci/auto_fix_common_issues.py", "--pattern", "9"],
         fix_description="Run `auto_fix_common_issues.py --pattern 9` to sort imports",
         references=["auto_fix_common_issues.py:fix_unsorted_imports"],
     ),
@@ -270,6 +263,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
 # GitHub API helpers (thin, no external deps beyond stdlib)
 # ---------------------------------------------------------------------------
 
+
 def _gh_api(
     path: str,
     token: str,
@@ -278,10 +272,14 @@ def _gh_api(
 ) -> tuple[int, dict | list | None]:
     """Call the GitHub REST API using curl (avoids PyGitHub dependency)."""
     cmd = [
-        "curl", "-sS",
-        "-H", f"Authorization: Bearer {token}",
-        "-H", "Accept: application/vnd.github+json",
-        "-H", "X-GitHub-Api-Version: 2022-11-28",
+        "curl",
+        "-sS",
+        "-H",
+        f"Authorization: Bearer {token}",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        "X-GitHub-Api-Version: 2022-11-28",
     ]
     if method == "POST":
         cmd += ["-X", "POST", "-H", "Content-Type: application/json"]
@@ -297,7 +295,9 @@ def _gh_api(
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     if result.returncode != 0:
         stderr_snippet = result.stderr[:300] if result.stderr else "(no stderr)"
-        print(f"  ⚠️  GitHub API error (exit {result.returncode}): {stderr_snippet}", file=sys.stderr)
+        print(
+            f"  ⚠️  GitHub API error (exit {result.returncode}): {stderr_snippet}", file=sys.stderr
+        )
         return -1, None
     try:
         return 200, json.loads(result.stdout)
@@ -321,9 +321,13 @@ def get_job_log(job_id: int, repo: str, token: str, tail: int = LOG_TAIL_LINES) 
         return "\n".join(raw.splitlines()[-tail:])
     # Logs often redirect; try via curl following redirects
     cmd = [
-        "curl", "-sS", "-L",
-        "-H", f"Authorization: Bearer {token}",
-        "-H", "Accept: application/vnd.github+json",
+        "curl",
+        "-sS",
+        "-L",
+        "-H",
+        f"Authorization: Bearer {token}",
+        "-H",
+        "Accept: application/vnd.github+json",
         f"https://api.github.com/repos/{repo}/actions/jobs/{job_id}/logs",
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
@@ -342,9 +346,7 @@ def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
     # Fallback: search open PRs for head SHA
     head_sha = data.get("head_sha", "")
     if head_sha:
-        _, pr_data = _gh_api(
-            f"/repos/{repo}/pulls?state=open&per_page=50", token
-        )
+        _, pr_data = _gh_api(f"/repos/{repo}/pulls?state=open&per_page=50", token)
         if isinstance(pr_data, list):
             for pr in pr_data:
                 if pr.get("head", {}).get("sha") == head_sha:
@@ -368,9 +370,7 @@ def post_pr_comment(
         return True
 
     # Check for existing rescue comment to update (idempotent)
-    _, comments = _gh_api(
-        f"/repos/{repo}/issues/{pr_number}/comments?per_page=100", token
-    )
+    _, comments = _gh_api(f"/repos/{repo}/issues/{pr_number}/comments?per_page=100", token)
     existing_id = None
     if isinstance(comments, list):
         for c in comments:
@@ -399,6 +399,7 @@ def post_pr_comment(
 # ---------------------------------------------------------------------------
 # Core rescue logic
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class RescueResult:
@@ -440,8 +441,7 @@ def attempt_fix(pattern: RescuePattern, dry_run: bool) -> bool:
         success = result.returncode == 0
         if not success:
             print(
-                f"  ⚠️  Fix command failed (exit {result.returncode}):\n"
-                f"     {result.stderr[:400]}"
+                f"  ⚠️  Fix command failed (exit {result.returncode}):\n     {result.stderr[:400]}"
             )
         return success
     except subprocess.TimeoutExpired:
@@ -477,11 +477,13 @@ def run_rescue(
         log_text = get_job_log(job_id, repo, token)
         snippet = "\n".join(log_text.splitlines()[-30:]) if log_text else ""
 
-        result.job_summaries.append({
-            "name": job_name,
-            "job_id": job_id,
-            "log_snippet": snippet,
-        })
+        result.job_summaries.append(
+            {
+                "name": job_name,
+                "job_id": job_id,
+                "log_snippet": snippet,
+            }
+        )
 
         matched = match_patterns(log_text)
         if matched:
@@ -511,6 +513,7 @@ def run_rescue(
 # ---------------------------------------------------------------------------
 # RCA comment builder
 # ---------------------------------------------------------------------------
+
 
 def _format_rca_comment(
     run_id: int,
@@ -593,19 +596,23 @@ def _format_rca_comment(
             "6. Confirm CI is green before closing this rescue loop",
             "",
             "**Rules:** Follow `.codex/CODEBASE_AGENCY_POLICY.md` — fix ALL issues, "
-            "never defer. Never add `type: ignore` to fallback imports under "
-            "`--ignore-missing-imports`.",
+            + "never defer. Never add `type: ignore` to fallback imports under "
+            + "`--ignore-missing-imports`.",
         ]
 
     body = "\n".join(lines)
     if len(body) > MAX_COMMENT_CHARS:
-        body = body[:MAX_COMMENT_CHARS] + "\n\n_(comment truncated — see Actions logs for full output)_"
+        body = (
+            body[:MAX_COMMENT_CHARS]
+            + "\n\n_(comment truncated — see Actions logs for full output)_"
+        )
     return body
 
 
 # ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
