@@ -22,7 +22,7 @@ class ProviderType(Enum):
     """Supported secret provider types."""
 
     GITHUB = "github"
-    AWS_SECRETS_MANAGER = "aws_secrets_manager"
+    AWS_SECRETS_MANAGER = "aws_secrets_manager"  # pragma: allowlist secret
     AZURE_KEY_VAULT = "azure_key_vault"
     HASHICORP_VAULT = "hashicorp_vault"
     ENVIRONMENT = "environment"  # For testing/development
@@ -31,9 +31,9 @@ class ProviderType(Enum):
 class SecretType(Enum):
     """Types of secrets managed by providers."""
 
-    TOKEN = "token"  # nosec B105
-    API_KEY = "api_key"
-    PASSWORD = "password"  # nosec B105
+    TOKEN = "token"  # nosec B105  # pragma: allowlist secret
+    API_KEY = "api_key"  # pragma: allowlist secret
+    PASSWORD = "password"  # nosec B105  # pragma: allowlist secret
     CERTIFICATE = "certificate"
     SSH_KEY = "ssh_key"
     GENERIC = "generic"
@@ -220,7 +220,7 @@ class SecretProvider(ABC):
         raw_value = self.provider_type.value
         # Explicit mappings preserve correct capitalization for acronyms/brands.
         provider_name_overrides = {
-            "aws_secrets_manager": "AWS Secrets Manager",
+            "aws_secrets_manager": "AWS Secrets Manager",  # pragma: allowlist secret
             "github": "GitHub",
             "azure_key_vault": "Azure Key Vault",
             "hashicorp_vault": "HashiCorp Vault",

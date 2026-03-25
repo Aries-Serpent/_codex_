@@ -146,4 +146,3 @@ S188         → Predictive CI failure model trained on pattern→failure correl
 | Link validation errors | 0 (verified locally) |
 | mypy regression | Resolved (+5 → 0 relative to baseline 328) |
 | Auto-fix coverage | 10/18 patterns auto-fixable |
-

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed/Added (S191 — PR #3741)
+- **fix(ci):** Remove extra trailing blank line from `.codex/docs/COGNITIVE_BRAIN_STATUS_S185.md` — unblocks `end-of-file-fixer` pre-commit check
+- **fix(ci):** Add `# pragma: allowlist secret` to 6 false-positive lines (`base.py` ×4, `dal.py`, `test_mcp_poster.py`); update `.secrets.baseline` CODEX_MANIFEST.json entry (stale line 1747 → active line 1931) — unblocks `detect-secrets` pre-commit check
+- **fix(ci):** Add `--ignore-vuln GHSA-5239-wwwm-4pmq` to pip-audit args in `.pre-commit-config.yaml` — pygments 2.19.2 ReDoS, no fix version published — unblocks `pip-audit` pre-commit check
+- **fix(review):** `pattern_recorder.py` `pattern_trend()` — replace `date.today()` with `datetime.now(timezone.utc).date()` so Python date_range aligns with SQL `DATE('now', ...)` UTC bucketing and eliminates local/UTC day-boundary off-by-one (Copilot review #4003080479)
+- **fix(review):** `auto_fix_common_issues.py` `fix_duplicate_kwargs()` — gate file writes behind `not self.check_only and not self.dry_run`, matching all other fixer methods; prevents unexpected working-tree mutation during `--check-only`/`--dry-run` runs (Copilot review #4003080479)
+- **fix(review):** `auto_fix_common_issues.py` `fix_duplicate_kwargs()` — count actual removed kwargs per file (`len(issues) - issues_before`) instead of all-detected (`len(dup_kws)`); prevents `fixes_applied` over-reporting and inflated `fix_rate` in pattern DB (Copilot review #4003080479)
+- **fix(review):** `dashboard_generator.py` `_generate_ci_pattern_trend_section()` — close SQLite connection in `try/finally`; prevents file-handle leak on repeated dashboard generation (Copilot review #4003080479)
+
 ### Fixed/Added (S189 — PR #3741)
 - **fix(ci):** Wrap `provider` field description in `BuildIndexRequest` across 4 lines — fixes E501 line-too-long (170 > 100) that blocked Pre-Merge Validation
 - **fix(ci):** Update `.mypy_baseline` from 328 → 333 — accounts for 5 new type errors introduced by new files in this PR; anti-regression gate now passes

@@ -355,10 +355,10 @@ def pattern_trend(
 
     Used by the ``msv-dashboard`` to render a trend spark-line / bar chart.
     """
-    from datetime import date, timedelta
+    from datetime import timedelta, timezone
 
-    today = date.today()
-    # Build a date range: [today - (days-1), ..., today]
+    today = datetime.now(timezone.utc).date()
+    # Build a date range: [today - (days-1), ..., today] — uses UTC to match SQL DATE('now')
     date_range = [
         (today - timedelta(days=(days - 1 - i))).isoformat() for i in range(days)
     ]

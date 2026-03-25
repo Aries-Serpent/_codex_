@@ -1157,6 +1157,7 @@ class CommonIssueFixer:
 
             lines = source.splitlines(keepends=True)
             changed = False
+            issues_before = len(issues)
 
             for kw in dup_kws:
                 if kw.arg is None:
@@ -1192,10 +1193,12 @@ class CommonIssueFixer:
                 changed = True
 
             if changed:
-                py_file.write_text("".join(lines), encoding="utf-8")
-                self.fixes_applied["Duplicate Kwargs"] = (
-                    self.fixes_applied.get("Duplicate Kwargs", 0) + len(dup_kws)
-                )
+                fixes_for_file = len(issues) - issues_before
+                if not self.check_only and not self.dry_run:
+                    py_file.write_text("".join(lines), encoding="utf-8")
+                    self.fixes_applied["Duplicate Kwargs"] = (
+                        self.fixes_applied.get("Duplicate Kwargs", 0) + fixes_for_file
+                    )
 
         return issues
 

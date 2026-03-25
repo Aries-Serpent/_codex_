@@ -162,7 +162,10 @@ def _generate_ci_pattern_trend_section(days: int = 7) -> str:
             os.path.expanduser("~/.codex/cli_history.db"),
         )
         conn = pr._open_db(db_path)
-        rows = pr.pattern_trend(conn, days=days)
+        try:
+            rows = pr.pattern_trend(conn, days=days)
+        finally:
+            conn.close()
     except Exception:
         return "_CI pattern DB unavailable — run `pattern_recorder.py trend` to populate._"
 

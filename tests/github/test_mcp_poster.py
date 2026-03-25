@@ -1018,7 +1018,7 @@ def test_cli_commit_files(monkeypatch, tmp_path):
         assert "README.md" in files
         assert files["README.md"] == "hello"
         assert message == "docs: update"
-        return "deadbeef12345678"
+        return "deadbeef12345678"  # pragma: allowlist secret
 
     monkeypatch.setattr(pm.GitHubMCPPoster, "commit_files", fake_commit_files)
 
