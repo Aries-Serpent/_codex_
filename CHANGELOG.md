@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3743)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3743 (SHA `d0b71850`) at 2026-03-25T06:48Z [auto-generated]
+
 ### Fixed/Added (S192 — PR #3741)
 - **feat(phase8/p1):** `pattern_recorder.py` — add `cross_pr_correlation(conn, min_prs=3)` function; detects patterns recurring across ≥N distinct git SHAs (PRs); add `cross-pr` CLI subcommand with `--min-prs` and `--json` flags; 8 new tests in `TestCrossPrCorrelation` (52/52 total)
 - **feat(discussions/hardening):** `mcp_poster.py` — add `add_discussion_comment()`, `upsert_discussion_comment()`, `post_ci_pattern_summary()`, `post_continuation_chain()`; add `_resolve_discussion_node_id()`, `_find_discussion_comment()`, `_update_discussion_comment()` GraphQL internals; add 4 CLI subcommands: `add-discussion-comment`, `upsert-discussion-comment`, `post-ci-pattern-summary`, `post-continuation`; null-guard `_resolve_discussion_node_id` against `discussion: None` GraphQL response; 22 new tests (78/78 total)
