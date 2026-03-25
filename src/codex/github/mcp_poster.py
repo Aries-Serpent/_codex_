@@ -267,11 +267,7 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"discussionId": discussion_id, "body": body})
-        return (
-            result.get("data", {})
-            .get("addDiscussionComment", {})
-            .get("comment", result)
-        )
+        return result.get("data", {}).get("addDiscussionComment", {}).get("comment", result)
 
     def upsert_discussion_comment(
         self,
@@ -338,7 +334,11 @@ class GitHubMCPPoster:
         session_id:
             Optional session ID embedded in the marker for deduplication.
         """
-        marker = f"<!-- ci-pattern-summary:{session_id} -->" if session_id else "<!-- ci-pattern-summary -->"
+        marker = (
+            f"<!-- ci-pattern-summary:{session_id} -->"
+            if session_id
+            else "<!-- ci-pattern-summary -->"
+        )
         full_body = f"{marker}\n{summary_md}"
         return self.upsert_discussion_comment(repo, discussion_number, full_body, marker)
 
@@ -369,9 +369,7 @@ class GitHubMCPPoster:
     # Discussion internals
     # ------------------------------------------------------------------
 
-    def _resolve_discussion_node_id(
-        self, owner: str, repo: str, discussion_number: int
-    ) -> str:
+    def _resolve_discussion_node_id(self, owner: str, repo: str, discussion_number: int) -> str:
         """Return the GraphQL node ID for a Discussion identified by its number."""
         query = """
         query GetDiscussionId($owner: String!, $repo: String!, $number: Int!) {
@@ -381,11 +379,7 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
-        discussion = (
-            result.get("data", {})
-            .get("repository", {})
-            .get("discussion") or {}
-        )
+        discussion = result.get("data", {}).get("repository", {}).get("discussion") or {}
         node_id: str = discussion.get("id", "")
         if not node_id:
             raise RuntimeError(
@@ -432,11 +426,7 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"commentId": comment_id, "body": body})
-        return (
-            result.get("data", {})
-            .get("updateDiscussionComment", {})
-            .get("comment", result)
-        )
+        return result.get("data", {}).get("updateDiscussionComment", {}).get("comment", result)
 
     # ------------------------------------------------------------------
     # Repository variables
@@ -1429,15 +1419,17 @@ def main(argv: list[str] | None = None) -> int:
 
         elif args.command == "post-ci-pattern-summary":
             body = Path(args.body_file).read_text(encoding="utf-8")
-            result = poster.post_ci_pattern_summary(
-                args.repo, args.number, body, args.session_id
+            result = poster.post_ci_pattern_summary(args.repo, args.number, body, args.session_id)
+            print(
+                f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501
             )
-            print(f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}")
 
         elif args.command == "post-continuation":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.post_continuation_chain(args.repo, args.number, body)
-            print(f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}")
+            print(
+                f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}"  # noqa: E501
+            )
 
     except RuntimeError as exc:
         print(f"❌ {exc}", file=sys.stderr)

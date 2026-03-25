@@ -890,7 +890,9 @@ class MariaDbDAL(BaseDAL):
     def _parse_dsn(self, url: str) -> dict[str, Any]:
         parsed = urlparse(url)
         if not parsed.scheme:
-            raise ValueError("MariaDB DSN must include a scheme, e.g. mariadb://user:pass@host/db")  # pragma: allowlist secret
+            raise ValueError(
+                "MariaDB DSN must include a scheme, e.g. mariadb://user:pass@host/db"
+            )  # pragma: allowlist secret
 
         config: dict[str, Any] = {}
 
