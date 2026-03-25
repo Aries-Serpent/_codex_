@@ -9720,4 +9720,3 @@ and the CI gate requirement.
   mypy  under  + .
   Only  on typed class stubs (e.g. )
   IS needed because stubs give the name a concrete type.
-
