@@ -290,7 +290,7 @@ def _send_single(
                         if isinstance(frame, dict):
                             chunks.append(frame)
                     except json.JSONDecodeError:
-                        pass
+                        logger.debug("Skipping invalid JSON SSE data fragment: %r", fragment)
             if not chunks:
                 return {"error": {"message": "SSE stream contained no parseable data frames"}}
             final = chunks[-1]
