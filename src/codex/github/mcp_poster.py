@@ -428,7 +428,6 @@ class GitHubMCPPoster:
         result = self._graphql(mutation, {"commentId": comment_id, "body": body})
         return result.get("data", {}).get("updateDiscussionComment", {}).get("comment", result)
 
-
     def update_discussion(
         self,
         repo: str,
@@ -583,7 +582,11 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"commentId": comment_id})
-        return result.get("data", {}).get("markDiscussionCommentAsAnswer", {}).get("discussion", result)
+        return (
+            result.get("data", {})
+            .get("markDiscussionCommentAsAnswer", {})
+            .get("discussion", result)
+        )
 
     def unmark_answer(self, comment_id: str) -> dict[str, Any]:
         """Unmark a previously accepted answer on a Discussion."""
@@ -596,7 +599,11 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"commentId": comment_id})
-        return result.get("data", {}).get("unmarkDiscussionCommentAsAnswer", {}).get("discussion", result)
+        return (
+            result.get("data", {})
+            .get("unmarkDiscussionCommentAsAnswer", {})
+            .get("discussion", result)
+        )
 
     def list_discussions(
         self,
@@ -629,7 +636,10 @@ class GitHubMCPPoster:
         query = """
         query ListDiscussions($owner: String!, $repo: String!, $first: Int!, $categoryId: ID) {
           repository(owner: $owner, name: $repo) {
-            discussions(first: $first, categoryId: $categoryId, orderBy: {field: UPDATED_AT, direction: DESC}) {
+            discussions(
+              first: $first, categoryId: $categoryId,
+              orderBy: {field: UPDATED_AT, direction: DESC}
+            ) {
               nodes {
                 number
                 title
@@ -652,17 +662,10 @@ class GitHubMCPPoster:
             "categoryId": category_id,
         }
         result = self._graphql(query, variables)
-        nodes = (
-            result.get("data", {})
-            .get("repository", {})
-            .get("discussions", {})
-            .get("nodes", [])
-        )
+        nodes = result.get("data", {}).get("repository", {}).get("discussions", {}).get("nodes", [])
         return nodes
 
-    def get_discussion(
-        self, repo: str, discussion_number: int
-    ) -> dict[str, Any]:
+    def get_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
         """Fetch a single Discussion by number including its comments.
 
         Returns
@@ -688,16 +691,12 @@ class GitHubMCPPoster:
           }
         }
         """
-        result = self._graphql(query, {"owner": owner, "repo": repo_name, "number": discussion_number})
-        disc = (
-            result.get("data", {})
-            .get("repository", {})
-            .get("discussion")
+        result = self._graphql(
+            query, {"owner": owner, "repo": repo_name, "number": discussion_number}
         )
+        disc = result.get("data", {}).get("repository", {}).get("discussion")
         if disc is None:
-            raise RuntimeError(
-                f"Discussion #{discussion_number} not found in {owner}/{repo_name}"
-            )
+            raise RuntimeError(f"Discussion #{discussion_number} not found in {owner}/{repo_name}")
         return disc
 
     def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
@@ -1758,16 +1757,19 @@ def main(argv: list[str] | None = None) -> int:
 
         elif args.command == "mark-answer":
             result = poster.mark_answer(args.comment_id)
-            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{result.get('number', '?')}")
+            num = result.get("number", "?")
+            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{num}")
 
         elif args.command == "unmark-answer":
             result = poster.unmark_answer(args.comment_id)
-            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{result.get('number', '?')}")
+            num = result.get("number", "?")
+            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")
 
         elif args.command == "list-discussions":
             discussions = poster.list_discussions(args.repo, args.category, args.first)
             if getattr(args, "json", False):
                 import json as _json
+
                 print(_json.dumps(discussions, indent=2))
             else:
                 for d in discussions:
@@ -1780,24 +1782,32 @@ def main(argv: list[str] | None = None) -> int:
             disc = poster.get_discussion(args.repo, args.number)
             if getattr(args, "json", False):
                 import json as _json
+
                 print(_json.dumps(disc, indent=2))
             else:
                 print(f"## Discussion #{disc['number']}: {disc['title']}")
                 print(f"   URL: {disc['url']}")
                 print(f"   Category: {disc.get('category', {}).get('name', '?')}")
-                print(f"   Answered: {disc.get('isAnswered', False)}  |  Locked: {disc.get('isLocked', False)}")
+                print(
+                    f"   Answered: {disc.get('isAnswered', False)}"
+                    f"  |  Locked: {disc.get('isLocked', False)}"
+                )
                 print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
 
         elif args.command == "list-discussion-categories":
             cats = poster.list_discussion_categories(args.repo)
             if getattr(args, "json", False):
                 import json as _json
+
                 print(_json.dumps(cats, indent=2))
             else:
                 print(f"{'Slug':35}  {'Name':30}  Answerable")
                 print("-" * 75)
                 for c in cats:
-                    print(f"{c.get('slug',''):35}  {c.get('name',''):30}  {c.get('isAnswerable', False)}")
+                    slug = c.get("slug", "")
+                    name = c.get("name", "")
+                    answerable = c.get("isAnswerable", False)
+                    print(f"{slug:35}  {name:30}  {answerable}")
                 print(f"\n{len(cats)} category/categories")
 
             result = poster.create_ref(args.repo, args.ref, args.sha)
