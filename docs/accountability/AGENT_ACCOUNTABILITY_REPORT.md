@@ -9852,3 +9852,44 @@ Interim: informational warning only; no CI gate failure.
   requested slug doesn't exist; raise a clear `ValueError` so CI logs show the actual problem.
 - MANDATORY: every `report_progress` PR description update MUST include Agent Token Delegation
   (`COPILOT_AGENT_AUTH_ENABLED`) and Cost Governance (`Cost Proposal Approved`) blocks.
+
+## SESSION SUMMARY — 2026-03-25 S202 (PR #3743)
+
+**Agent**: copilot-swe-agent[bot]
+**Session ID**: S202
+**PR**: #3743 — Rescue comment posting + SHA-scoped append for all failing checks
+
+### Objectives Completed
+1. **Root cause diagnosed**: `ci-rescue.yml` uses `workflow_run` trigger which requires the
+   workflow to exist on the DEFAULT branch (main). Since this PR hasn't been merged,
+   `ci-rescue.yml` never fires. Additionally, the `COPILOT_AGENT_AUTH_ENABLED == 'true'` hard
+   gate was blocking rescue even if it had run.
+2. **`validate.yml` — `rescue-comment` job added**: New job with `needs: fast-validation`
+   and `if: failure() && github.event_name == 'pull_request'`. Uses `pull-requests: write`
+   permission and inline Python to post/append the @copilot rescue prompt directly from the
+   PR-branch version of `validate.yml` — works immediately without main-branch dependency.
+3. **SHA-scoped dedup + append**: Same `<!-- ci-rescue-rca:{sha[:12]} -->` marker as
+   `ci_rescue.py`. First failure → new rescue comment; subsequent failures → append
+   `### 🔄 Failure Update` section to the existing thread. One rescue thread per commit.
+4. **`ci-rescue.yml` hardened**:
+   - Removed `vars.COPILOT_AGENT_AUTH_ENABLED == 'true'` hard gate — rescue now fires
+     unconditionally on failure (delegation status still logged for visibility).
+   - Script fetch now tries `head_sha` (PR branch) first, then `HEAD` (default branch),
+     with AST validation so invalid downloads are rejected.
+   - Added inline Python fallback rescue if `ci_rescue.py` can't be fetched from either ref.
+
+### Self-Review (5-Pass)
+| Pass | Check | Status |
+|------|-------|--------|
+| 1 | YAML parse of `validate.yml` + `ci-rescue.yml` | ✅ |
+| 2 | `rescue-comment` job `needs: fast-validation` + `if: failure()` correct | ✅ |
+| 3 | SHA marker format matches `ci_rescue.py` (`<!-- ci-rescue-rca:{sha[:12]} -->`) | ✅ |
+| 4 | `ruff check src/ scripts/` — 0 violations | ✅ |
+| 5 | `sync_tracked_files.py` — all consistent | ✅ |
+
+### Lessons Learned
+- `workflow_run` triggered workflows ONLY run from the default branch (main). If a new
+  workflow file exists only in a PR branch, it will NEVER fire until merged. Always use
+  `pull_request`-triggered jobs for rescue/notification that must work during PR development.
+- SHA-scoped dedup: use `<!-- ci-rescue-rca:{sha[:12]} -->` HTML comment as a stable
+  marker for finding and appending to rescue comment threads.
