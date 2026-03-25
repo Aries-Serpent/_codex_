@@ -591,8 +591,8 @@ def _write_json_atomic(path: Path, data: dict[str, Any]) -> None:
     except Exception:
         try:
             os.unlink(tmp_path_str)
-        except OSError:
-            pass
+        except OSError as exc:
+            print(f"⚠️  Failed to remove temporary file {tmp_path_str!r}: {exc}", file=sys.stderr)
         raise
 
 
