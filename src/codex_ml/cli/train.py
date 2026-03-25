@@ -16,7 +16,7 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        from config_legacy.utils import to_absolute_path  # noqa: F401
+        from config_legacy.utils import to_absolute_path  # fallback: legacy compat layer
     except (ImportError, ModuleNotFoundError):
         def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
@@ -27,7 +27,7 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        import config_legacy as hydra  # noqa: F401
+        import config_legacy as hydra  # fallback: config_legacy mirrors hydra API
     except (ImportError, ModuleNotFoundError):
         hydra = None
 from codex_ml.codex_structured_logging import (

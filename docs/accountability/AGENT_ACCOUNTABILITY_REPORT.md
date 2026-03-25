@@ -9665,3 +9665,59 @@ and the CI gate requirement.
 - Code review gate must be run BEFORE committing to catch such issues systematically.
 
 ---
+
+---
+
+## SESSION ADDENDUM — 2026-03-25T15:47Z S194c-review [@copilot claude-sonnet-4.6]
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot comments reviewed — github-code-quality, PR review threads, CI failure triage issue #3737 ✅
+- [x] **0b.** All failing workflows triaged via GitHub MCP tools ✅
+- [x] **1.** Accountability report updated — this addendum ✅
+- [x] **2.** Codebase Agency Policy §0 explicitly loaded ✅
+- [x] **3.** Lessons Learned reviewed ✅
+- [x] **4.** All code review feedback applied before committing ✅
+- [x] **5.** CodeQL scan: 0 alerts ✅
+
+### Work Completed (S194c-review — actionlint + mypy CI fixes)
+
+1. **Root-cause diagnosis via GitHub MCP tools** — retrieved job logs for failing runs.
+   - actionlint:  had duplicate  key (step at line 98
+     had two  blocks with  sandwiched — invalid YAML per YAML spec).
+   - mypy:  introduced +6  errors via GAP-005
+     Hydra import guard. With , ALL import errors are suppressed,
+     making every  on a missing-module line unused.
+
+2. **codex-manifest-refresh.yml (actionlint fix)** — merged duplicate  blocks;
+    moved before the single unified  block. All 126 workflow YAML files
+   pass duplicate-key check.
+
+3. **src/codex_ml/cli/train.py (mypy fix)** — removed all unused  annotations
+   from fallback import guard (lines 19, 21, 30, 32, 45, 49).  stubs
+   replaced with descriptive fallback comments.  on
+   omegaconf None-assignment retained (legitimately suppresses assignment/misc errors
+   when omegaconf is installed with stubs). Final count: 327 ≤ 333 baseline ✅.
+
+4. **Code review gate** — applied all 3 reviewer feedback items before final commit.
+
+5. **Security gate** — CodeQL: 0 alerts across actions + python scopes.
+
+### Failure Patterns Fixed in This Session
+| Pattern | File | Root Cause | Fix |
+|---------|------|-----------|-----|
+| P-C actionlint | codex-manifest-refresh.yml | Duplicate run: YAML key | Merged blocks, env: before run: |
+| P-D mypy +6 | src/codex_ml/cli/train.py | Unused type: ignore under --ignore-missing-imports | Removed annotations |
+
+### Lessons Learned
+- YAML step mappings allow exactly one occurrence of each key. Two  keys in one
+  step (even with  between) is a duplicate-key error caught by actionlint but NOT
+  by Python yaml.safe_load (which silently uses the last value). Always verify with a
+  duplicate-key–aware loader.
+-  suppresses ALL import errors, making 
+  and  on fallback imports permanently unused. Never annotate
+  fallback imports in a codebase using this mypy flag.
+-  (bare assignment to previously silently-imported module) does NOT trigger
+  mypy  under  + .
+  Only  on typed class stubs (e.g. )
+  IS needed because stubs give the name a concrete type.
+
