@@ -264,13 +264,24 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
 
     Returns ``{"total": N, "resolved": N, "outdated": N, "unresolved": N}``
     or ``None`` on failure (caller falls back to neutral score).
+
+    Counting logic:
+    - ``resolved``: threads where ``isResolved`` is true (explicitly closed).
+    - ``outdated_unresolved``: threads that are outdated (the diff context changed)
+      but NOT yet resolved — they cannot be actioned because the code they
+      reference no longer exists in that form.  These are excluded from
+      ``unresolved`` so they don't unfairly deflate the merge-readiness score.
+      Threads that are both outdated AND resolved are already counted in
+      ``resolved`` and need no special handling.
+    - ``unresolved`` (active): ``total - resolved - outdated_unresolved``
+      — i.e., threads that still require action.
     """
     repo = _repo()
     owner, name = repo.split("/", 1)
 
     total = 0
     resolved = 0
-    outdated = 0
+    outdated_unresolved = 0  # outdated AND not yet resolved
     after_cursor: Optional[str] = None
 
     try:
@@ -319,7 +330,11 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
             nodes = threads.get("nodes", [])
             total += len(nodes)
             resolved += sum(1 for n in nodes if n.get("isResolved"))
-            outdated += sum(
+            # Count threads that are outdated but NOT resolved: these are excluded
+            # from "active unresolved" because the code they reference has changed.
+            # Outdated+resolved threads are correctly handled via the `resolved`
+            # subtraction and do not need to be counted here.
+            outdated_unresolved += sum(
                 1 for n in nodes
                 if n.get("isOutdated") and not n.get("isResolved")
             )
@@ -330,14 +345,22 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
     except Exception:  # noqa: BLE001
         return None
 
-    # Unresolved = not resolved AND not outdated (outdated threads cannot be
-    # actioned since the code they reference has already changed)
-    active_unresolved = total - resolved - outdated
+    # active_unresolved = threads that require action: not resolved, not outdated
+    active_unresolved = total - resolved - outdated_unresolved
+    if active_unresolved < 0:
+        # Should never happen; log defensively so unexpected states are visible
+        print(
+            f"[pr_comment_consolidator] WARNING: negative active_unresolved"
+            f" ({active_unresolved}); total={total}, resolved={resolved},"
+            f" outdated_unresolved={outdated_unresolved}. Clamping to 0.",
+            file=sys.stderr,
+        )
+        active_unresolved = 0
     return {
         "total": total,
         "resolved": resolved,
-        "outdated": outdated,
-        "unresolved": max(0, active_unresolved),
+        "outdated": outdated_unresolved,
+        "unresolved": active_unresolved,
     }
 
 
