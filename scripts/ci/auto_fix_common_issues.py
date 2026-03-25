@@ -20,7 +20,7 @@ Usage:
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-21)
+    --pattern N     Only apply pattern N (1-22)
     --dry-run       Show what would be changed without making changes
 """
 
@@ -104,10 +104,10 @@ class CommonIssueFixer:
             # actionlint to fail with "could not parse as YAML: could not find expected ':'"
             # (known recurring pattern from S193).  Fix: use printf → temp file pattern.
             "YAML Multiline Strings",   # Pattern 20 - manual: use printf pipeline
-            # Pattern 21: Node.js 20 GitHub Actions are deprecated (deadline: 2026-06-02).
-            # All workflows using actions/checkout@v4, actions/setup-python@v5 etc. will
-            # fail after that date.  Fix: bump to Node.js 24-compatible versions.
-            "Node.js 20 Actions",       # Pattern 21 - informational until 2026-06-02
+            # Pattern 22: Tracked file sync — CODEX_MANIFEST.json integrity_sha256,
+            # .secrets.baseline, CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md
+            # consistency checks. Run sync_tracked_files.py --fix to repair.
+            "Tracked File Sync",        # Pattern 22 - auto-fixable via sync_tracked_files.py
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -143,13 +143,14 @@ class CommonIssueFixer:
             (19, "Src Absolute Imports",     self.check_src_absolute_imports),
             (20, "YAML Multiline Strings",   self.check_yaml_multiline_strings),
             (21, "Node.js 20 Actions",       self.check_nodejs20_actions),
+            (22, "Tracked File Sync",        self.check_tracked_file_sync),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1-21)")
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1-22)")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -1505,6 +1506,77 @@ class CommonIssueFixer:
             print("✅ Pattern 21 (Node.js 20 Actions): no Node.js 20 action refs found")
         return issues
 
+    def check_tracked_file_sync(self) -> List[str]:
+        """Pattern 22: Verify all frequently-drifting repo files are consistent.
+
+        Delegates to ``scripts/ci/sync_tracked_files.py --check`` for the authoritative
+        check.  This integrates ``sync_tracked_files.py`` into the CI pattern gate so
+        that manifest drift, stale secrets baseline, empty CHANGELOG, and stale
+        accountability report are all caught in the same pre-merge sweep that catches
+        line-length, import-order, and mypy regressions.
+
+        Files checked:
+
+        - ``CODEX_MANIFEST.json`` — ``integrity_sha256`` must match computed hash
+        - ``.secrets.baseline`` — CODEX_MANIFEST entry must match current hash/line
+        - ``CHANGELOG.md`` — must have non-empty ``## [Unreleased]`` section
+        - ``AGENT_ACCOUNTABILITY_REPORT.md`` — must have a session entry ≤7 days old
+
+        Auto-fix: ✅ — run ``python scripts/ci/sync_tracked_files.py --fix``
+        """
+        issues: List[str] = []
+        sync_script = self.repo_root / "scripts" / "ci" / "sync_tracked_files.py"
+        if not sync_script.exists():
+            print("⚠  Pattern 22 (Tracked File Sync): sync_tracked_files.py not found — skip")
+            return issues
+
+        import subprocess as _sp
+        result = _sp.run(
+            [sys.executable, str(sync_script), "--check", "--quiet"],
+            cwd=self.repo_root,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            print("✅ Pattern 22 (Tracked File Sync): all tracked files consistent")
+        else:
+            # Parse the output to extract individual failures
+            failing_checks = [
+                line.strip().lstrip("❌").strip()
+                for line in (result.stdout + result.stderr).splitlines()
+                if "❌" in line and "check(s) failed" not in line
+            ]
+            if not failing_checks:
+                failing_checks = ["CODEX_MANIFEST / CHANGELOG / accountability drift detected"]
+            for check in failing_checks:
+                issues.append(check)
+                self.issues_found.setdefault("Tracked File Sync", []).append(check)
+
+            print(f"⚠  Pattern 22 (Tracked File Sync): {len(issues)} tracked file issue(s)")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            print(
+                "   ℹ️  Fix: python scripts/ci/sync_tracked_files.py --fix\n"
+                "   ℹ️  Or: python scripts/ci/auto_fix_common_issues.py --pattern 22"
+            )
+            if not self.check_only:
+                # Apply the fix automatically
+                fix_result = _sp.run(
+                    [sys.executable, str(sync_script), "--fix", "--quiet"],
+                    cwd=self.repo_root,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                if fix_result.returncode == 0:
+                    print("   ✅ Auto-fixed via sync_tracked_files.py --fix")
+                    self.fixes_applied["Tracked File Sync"] = len(issues)
+                    issues.clear()
+                else:
+                    print(f"   ❌ Auto-fix failed: {fix_result.stderr[:200]}")
+        return issues
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1525,9 +1597,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 22),
+        choices=range(1, 23),
         metavar="N",
-        help="Run only pattern N (1–21); see pattern list above"
+        help="Run only pattern N (1–22); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

@@ -95,7 +95,23 @@ jobs:
               --fix-all
           fi
 
-      - name: Commit refreshed manifest + compliance files
+      - name: Sync all tracked files (manifest integrity + .secrets.baseline + changelog)
+        run: |
+          # sync_tracked_files.py atomically:
+          #   1. Recomputes CODEX_MANIFEST.json integrity_sha256 after generate_manifest.py
+          #   2. Re-scans .secrets.baseline for the updated manifest hash
+          #   3. Validates CHANGELOG.md has a non-empty [Unreleased] section
+          #   4. Adds an auto-sync stub to AGENT_ACCOUNTABILITY_REPORT.md if needed
+          # This eliminates the manual "update .secrets.baseline" step that agents
+          # frequently forget, which was a recurring P-B / P-E cascade failure pattern.
+          if python -m detect_secrets --version >/dev/null 2>&1; then
+            python scripts/ci/sync_tracked_files.py --fix --manifest-only --quiet
+            echo "✅ sync_tracked_files.py applied manifest + baseline sync"
+          else
+            echo "ℹ️  detect-secrets not installed — skipping .secrets.baseline sync"
+            echo "   Install: pip install detect-secrets"
+          fi
+
         env:
           HEAD_REF: ${{ github.head_ref || 'main' }}
           EVENT_NAME: ${{ github.event_name }}
@@ -103,6 +119,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CODEX_MANIFEST.json \
+                  .secrets.baseline \
                   docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
                   CHANGELOG.md
           # Only commit if there are actual changes

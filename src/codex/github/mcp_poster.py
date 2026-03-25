@@ -428,6 +428,309 @@ class GitHubMCPPoster:
         result = self._graphql(mutation, {"commentId": comment_id, "body": body})
         return result.get("data", {}).get("updateDiscussionComment", {}).get("comment", result)
 
+
+    def update_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        *,
+        title: str | None = None,
+        body: str | None = None,
+        category_slug: str | None = None,
+    ) -> dict[str, Any]:
+        """Update an existing Discussion's title, body, and/or category.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            The integer discussion number (visible in the URL).
+        title, body:
+            New values; ``None`` means leave unchanged.
+        category_slug:
+            Slug of a new category to move the discussion into; ``None`` leaves it.
+
+        Returns
+        -------
+        dict
+            GraphQL ``updateDiscussion.discussion`` payload.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+
+        variables: dict[str, Any] = {"discussionId": discussion_id}
+        if title is not None:
+            variables["title"] = title
+        if body is not None:
+            variables["body"] = body
+        if category_slug is not None:
+            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
+            variables["categoryId"] = category_id
+
+        mutation = """
+        mutation UpdateDiscussion(
+          $discussionId: ID!
+          $title: String
+          $body: String
+          $categoryId: ID
+        ) {
+          updateDiscussion(input: {
+            discussionId: $discussionId
+            title: $title
+            body: $body
+            categoryId: $categoryId
+          }) {
+            discussion { number url title }
+          }
+        }
+        """
+        result = self._graphql(mutation, variables)
+        return result.get("data", {}).get("updateDiscussion", {}).get("discussion", result)
+
+    def lock_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        reason: str = "RESOLVED",
+    ) -> dict[str, Any]:
+        """Lock a Discussion to prevent further comments.
+
+        Parameters
+        ----------
+        reason:
+            One of ``"OFF_TOPIC"``, ``"RESOLVED"``, ``"SPAM"``, ``"TOO_HEATED"``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation LockDiscussion($id: ID!, $reason: LockReason) {
+          lockLockable(input: { lockableId: $id, lockReason: $reason }) {
+            lockedRecord { ... on Discussion { number url } }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id, "reason": reason})
+        return result.get("data", {}).get("lockLockable", result)
+
+    def unlock_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unlock a previously locked Discussion."""
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation UnlockDiscussion($id: ID!) {
+          unlockLockable(input: { lockableId: $id }) {
+            unlockedRecord { ... on Discussion { number url } }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id})
+        return result.get("data", {}).get("unlockLockable", result)
+
+    def delete_discussion(self, repo: str, discussion_number: int) -> bool:
+        """Permanently delete a Discussion.
+
+        Returns ``True`` if deletion succeeded, ``False`` otherwise.
+        Requires admin-level token with ``discussions:write`` scope.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation DeleteDiscussion($id: ID!) {
+          deleteDiscussion(input: { id: $id }) {
+            clientMutationId
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id})
+        return "errors" not in result
+
+    def delete_discussion_comment(self, comment_id: str) -> bool:
+        """Delete a Discussion comment by its GraphQL node ID.
+
+        Returns ``True`` if deletion succeeded, ``False`` otherwise.
+        """
+        self._require_token()
+        mutation = """
+        mutation DeleteDiscussionComment($id: ID!) {
+          deleteDiscussionComment(input: { id: $id }) {
+            clientMutationId
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": comment_id})
+        return "errors" not in result
+
+    def mark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Mark a Discussion comment as the accepted answer.
+
+        Parameters
+        ----------
+        comment_id:
+            GraphQL node ID of the comment (obtain from ``add_discussion_comment``
+            or ``_find_discussion_comment``).
+        """
+        self._require_token()
+        mutation = """
+        mutation MarkAnswer($commentId: ID!) {
+          markDiscussionCommentAsAnswer(input: { id: $commentId }) {
+            discussion { number url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id})
+        return result.get("data", {}).get("markDiscussionCommentAsAnswer", {}).get("discussion", result)
+
+    def unmark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Unmark a previously accepted answer on a Discussion."""
+        self._require_token()
+        mutation = """
+        mutation UnmarkAnswer($commentId: ID!) {
+          unmarkDiscussionCommentAsAnswer(input: { id: $commentId }) {
+            discussion { number url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id})
+        return result.get("data", {}).get("unmarkDiscussionCommentAsAnswer", {}).get("discussion", result)
+
+    def list_discussions(
+        self,
+        repo: str,
+        category_slug: str | None = None,
+        first: int = 20,
+    ) -> list[dict[str, Any]]:
+        """List Discussions in a repository, optionally filtered by category.
+
+        Parameters
+        ----------
+        category_slug:
+            Filter to this category; ``None`` returns all categories.
+        first:
+            Number of discussions to return (max 100 per GitHub's GraphQL limits).
+
+        Returns
+        -------
+        list[dict]
+            Each entry has ``number``, ``title``, ``url``, ``category`` (name),
+            ``createdAt``, ``isAnswered``, ``comments`` (count).
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        category_id: str | None = None
+        if category_slug:
+            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
+
+        query = """
+        query ListDiscussions($owner: String!, $repo: String!, $first: Int!, $categoryId: ID) {
+          repository(owner: $owner, name: $repo) {
+            discussions(first: $first, categoryId: $categoryId, orderBy: {field: UPDATED_AT, direction: DESC}) {
+              nodes {
+                number
+                title
+                url
+                createdAt
+                updatedAt
+                isAnswered
+                category { name slug }
+                comments { totalCount }
+                author { login }
+              }
+            }
+          }
+        }
+        """
+        variables: dict[str, Any] = {
+            "owner": owner,
+            "repo": repo_name,
+            "first": min(first, 100),
+            "categoryId": category_id,
+        }
+        result = self._graphql(query, variables)
+        nodes = (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussions", {})
+            .get("nodes", [])
+        )
+        return nodes
+
+    def get_discussion(
+        self, repo: str, discussion_number: int
+    ) -> dict[str, Any]:
+        """Fetch a single Discussion by number including its comments.
+
+        Returns
+        -------
+        dict
+            Discussion fields: ``number``, ``title``, ``body``, ``url``,
+            ``category``, ``isAnswered``, ``comments.nodes`` (up to 50).
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        query = """
+        query GetDiscussion($owner: String!, $repo: String!, $number: Int!) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) {
+              number title url body createdAt updatedAt isAnswered isLocked
+              category { name slug }
+              author { login }
+              comments(first: 50) {
+                totalCount
+                nodes { id body createdAt author { login } isAnswer }
+              }
+            }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo_name, "number": discussion_number})
+        disc = (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussion")
+        )
+        if disc is None:
+            raise RuntimeError(
+                f"Discussion #{discussion_number} not found in {owner}/{repo_name}"
+            )
+        return disc
+
+    def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
+        """List all Discussion categories in a repository.
+
+        **Note:** Categories can only be *created* or *deleted* via the GitHub web UI
+        (Settings → Discussions).  This method is read-only.
+
+        Returns
+        -------
+        list[dict]
+            Each entry has ``id``, ``name``, ``slug``, ``description``,
+            ``emojiHTML``, ``isAnswerable``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        query = """
+        query ListCategories($owner: String!, $repo: String!) {
+          repository(owner: $owner, name: $repo) {
+            discussionCategories(first: 25) {
+              nodes { id name slug description emojiHTML isAnswerable }
+            }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo_name})
+        return (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussionCategories", {})
+            .get("nodes", [])
+        )
+
     # ------------------------------------------------------------------
     # Repository variables
     # ------------------------------------------------------------------
@@ -1269,6 +1572,65 @@ def _build_parser() -> argparse.ArgumentParser:
     cd.add_argument("--body-file", required=True)
     cd.add_argument("--category", default="cognitive-brain-patterns")
 
+    # update-discussion
+    ud = sub.add_parser("update-discussion", help="Update title/body/category of a Discussion")
+    ud.add_argument("--repo", required=True, help="owner/repo")
+    ud.add_argument("--number", required=True, type=int, help="Discussion number")
+    ud.add_argument("--title", default=None, help="New title (optional)")
+    ud.add_argument("--body-file", default=None, help="Path to file containing new body (optional)")
+    ud.add_argument("--category", default=None, help="New category slug (optional)")
+
+    # lock-discussion
+    ld = sub.add_parser("lock-discussion", help="Lock a Discussion")
+    ld.add_argument("--repo", required=True, help="owner/repo")
+    ld.add_argument("--number", required=True, type=int, help="Discussion number")
+    ld.add_argument(
+        "--reason",
+        default="RESOLVED",
+        choices=["OFF_TOPIC", "RESOLVED", "SPAM", "TOO_HEATED"],
+        help="Lock reason",
+    )
+
+    # unlock-discussion
+    uld = sub.add_parser("unlock-discussion", help="Unlock a Discussion")
+    uld.add_argument("--repo", required=True, help="owner/repo")
+    uld.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    # delete-discussion
+    dld = sub.add_parser("delete-discussion", help="Permanently delete a Discussion")
+    dld.add_argument("--repo", required=True, help="owner/repo")
+    dld.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    # delete-discussion-comment
+    ddc = sub.add_parser("delete-discussion-comment", help="Delete a Discussion comment by node ID")
+    ddc.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # mark-answer
+    ma = sub.add_parser("mark-answer", help="Mark a Discussion comment as the accepted answer")
+    ma.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # unmark-answer
+    uma = sub.add_parser("unmark-answer", help="Unmark a Discussion comment as the accepted answer")
+    uma.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # list-discussions
+    lsd = sub.add_parser("list-discussions", help="List Discussions in a repository")
+    lsd.add_argument("--repo", required=True, help="owner/repo")
+    lsd.add_argument("--category", default=None, help="Filter by category slug (optional)")
+    lsd.add_argument("--first", type=int, default=20, help="Max number to return (default 20)")
+    lsd.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # get-discussion
+    gd = sub.add_parser("get-discussion", help="Get a single Discussion with its comments")
+    gd.add_argument("--repo", required=True, help="owner/repo")
+    gd.add_argument("--number", required=True, type=int, help="Discussion number")
+    gd.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # list-discussion-categories
+    ldc = sub.add_parser("list-discussion-categories", help="List all Discussion categories")
+    ldc.add_argument("--repo", required=True, help="owner/repo")
+    ldc.add_argument("--json", action="store_true", help="Output as JSON")
+
     # create-branch  (IMP-001 / IMP-010 — S174)
     cb = sub.add_parser(
         "create-branch",
@@ -1363,7 +1725,81 @@ def main(argv: list[str] | None = None) -> int:
             result = poster.create_discussion(args.repo, args.title, body, args.category)
             print(f"✅ Discussion created: {result.get('url', result)}")
 
-        elif args.command == "create-branch":
+        elif args.command == "update-discussion":
+            body = Path(args.body_file).read_text() if args.body_file else None
+            result = poster.update_discussion(
+                args.repo, args.number, title=args.title, body=body, category_slug=args.category
+            )
+            print(f"✅ Discussion #{args.number} updated: {result.get('url', result)}")
+
+        elif args.command == "lock-discussion":
+            result = poster.lock_discussion(args.repo, args.number, args.reason)
+            print(f"✅ Discussion #{args.number} locked ({args.reason})")
+
+        elif args.command == "unlock-discussion":
+            poster.unlock_discussion(args.repo, args.number)
+            print(f"✅ Discussion #{args.number} unlocked")
+
+        elif args.command == "delete-discussion":
+            ok = poster.delete_discussion(args.repo, args.number)
+            if ok:
+                print(f"✅ Discussion #{args.number} deleted")
+            else:
+                print(f"❌ Failed to delete Discussion #{args.number}", file=sys.stderr)
+                return 1
+
+        elif args.command == "delete-discussion-comment":
+            ok = poster.delete_discussion_comment(args.comment_id)
+            if ok:
+                print(f"✅ Comment {args.comment_id} deleted")
+            else:
+                print(f"❌ Failed to delete comment {args.comment_id}", file=sys.stderr)
+                return 1
+
+        elif args.command == "mark-answer":
+            result = poster.mark_answer(args.comment_id)
+            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{result.get('number', '?')}")
+
+        elif args.command == "unmark-answer":
+            result = poster.unmark_answer(args.comment_id)
+            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{result.get('number', '?')}")
+
+        elif args.command == "list-discussions":
+            discussions = poster.list_discussions(args.repo, args.category, args.first)
+            if getattr(args, "json", False):
+                import json as _json
+                print(_json.dumps(discussions, indent=2))
+            else:
+                for d in discussions:
+                    cat = d.get("category", {}).get("slug", "?")
+                    answered = "✅" if d.get("isAnswered") else "  "
+                    print(f"#{d['number']:5}  {answered}  [{cat}]  {d['title'][:70]}")
+                print(f"\n{len(discussions)} discussion(s) found")
+
+        elif args.command == "get-discussion":
+            disc = poster.get_discussion(args.repo, args.number)
+            if getattr(args, "json", False):
+                import json as _json
+                print(_json.dumps(disc, indent=2))
+            else:
+                print(f"## Discussion #{disc['number']}: {disc['title']}")
+                print(f"   URL: {disc['url']}")
+                print(f"   Category: {disc.get('category', {}).get('name', '?')}")
+                print(f"   Answered: {disc.get('isAnswered', False)}  |  Locked: {disc.get('isLocked', False)}")
+                print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
+
+        elif args.command == "list-discussion-categories":
+            cats = poster.list_discussion_categories(args.repo)
+            if getattr(args, "json", False):
+                import json as _json
+                print(_json.dumps(cats, indent=2))
+            else:
+                print(f"{'Slug':35}  {'Name':30}  Answerable")
+                print("-" * 75)
+                for c in cats:
+                    print(f"{c.get('slug',''):35}  {c.get('name',''):30}  {c.get('isAnswerable', False)}")
+                print(f"\n{len(cats)} category/categories")
+
             result = poster.create_ref(args.repo, args.ref, args.sha)
             print(f"✅ Branch created: {result.get('ref', args.ref)} @ {args.sha[:8]}")
 
