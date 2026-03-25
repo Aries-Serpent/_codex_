@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed (auto-update — PR #3749)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3749 (SHA `40122939`) at 2026-03-25T23:15Z [auto-generated]
+### Fixed (auto-update — PR #3748)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3748 (SHA `1074f245`) at 2026-03-25T22:57Z [auto-generated]
 
 ### Fixed (S194b — PR #3743)
 - **fix(ci):** `scripts/ci/pre_flight_check.py` — tightened xdist `-n` detection from `"-n " in content` (broad substring, false-positives on bash `[ -n ]`) to a precise regex `pytest\b[^\n]*\s-n\s+\S|\s-n\s+(?:auto|\d+)|--numprocesses`. Eliminates P-G false-positives that caused 3 Pre-Flight failures.
