@@ -953,7 +953,7 @@ regex==2026.1.15
     #   nltk
     #   sacrebleu
     #   transformers
-requests==2.32.5
+requests==2.33.0
     # via
     #   codex-ml (pyproject.toml)
     #   databricks-sdk
