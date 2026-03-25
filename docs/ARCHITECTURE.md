@@ -34,7 +34,7 @@ graph TB
     Copilot[GitHub Copilot<br/>AI Coding Agent]
     Agents[218+ Autonomous Agents<br/>🤖 MCP-enabled]
 
-    Codex[codex-ml<br/>Production-Ready ML Platform<br/>15 640+ Tests | ~17% Coverage]
+    Codex[codex-ml<br/>Production-Ready ML Platform<br/>15,640+ Tests | ~17% Coverage]
 
     Brain[Cognitive Brain<br/>k₁=0.35 | 2.86x Advantage<br/>289 patterns learned]
     MCP[MCP System<br/>Model Context Protocol<br/>133 active workflows]
@@ -96,7 +96,7 @@ graph TB
         subgraph "Core ML Platform"
             CLI[CLI Interface<br/>Typer/Click<br/>🔧 Main Entry Point]
             Training[Training Engine<br/>PyTorch + Transformers<br/>📈 Distributed Training]
-            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 15 640+ Tests]
+            Eval[Evaluation Engine<br/>lm-eval + custom metrics<br/>📊 15,640+ Tests]
             Serve[Model Serving<br/>Ray Serve + FastAPI<br/>🚀 Production API]
             Config[Configuration<br/>Hydra + OmegaConf<br/>⚙️ Hierarchical]
             Logging[Session Logging<br/>SQLite + Telemetry<br/>📝 Complete Audit]

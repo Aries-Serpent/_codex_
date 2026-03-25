@@ -427,7 +427,8 @@ def _print_markdown_table(alerts: List[Dict[str, Any]]) -> None:
     for a in alerts:
         num = a.get("alert_number", "—")
         sev = a.get("severity", "—")
-        title = a.get("title", "—")[:60]
+        raw_title = a.get("title") or "—"
+        title = (raw_title[:57] + "...") if len(raw_title) > 60 else raw_title
         st = a.get("state", "—")
         url = a.get("url", "—")
         print(f"| {num} | {sev} | {title} | {st} | {url} |")

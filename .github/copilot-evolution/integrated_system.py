@@ -611,8 +611,10 @@ class IntegratedEvolutionSystem:
 
         # Classify error and provide targeted recovery actions
         if isinstance(error, (ImportError, ModuleNotFoundError)):
+            # Extract the specific missing module name when available
+            missing_pkg = getattr(error, "name", None) or "<package>"
             recovery = (
-                "- Install the missing dependency: `pip install <package>`\n"
+                f"- Install the missing dependency: `pip install {missing_pkg}`\n"
                 "- Verify the import path and package name\n"
                 "- Check that optional dependencies are installed for this feature"
             )

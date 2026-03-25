@@ -37,7 +37,7 @@ graph TB
             services["services/\n(Audio, MCP lifecycle)"]
         end
 
-        subgraph "Test Suite (tests/) — 15 640+ functions"
+        subgraph "Test Suite (tests/) — 15,640+ functions"
             t_api["tests/api/ — 5 UNCOLLECTABLE ❌"]
             t_mcp["tests/mcp/ — 294 bad imports ⚠️"]
             t_ci["tests/ci/ — 41 pattern tests ✅"]

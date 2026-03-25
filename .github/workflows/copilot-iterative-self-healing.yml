@@ -295,7 +295,8 @@ Check \`scripts/ci/check_deferral_language.py\` passes (no deferral-language gat
               ;;
           esac
 
-          # Write prompt to runner temp (NOT /tmp/ per TEMPORARY_FILES_POLICY)
+          # Write prompt to runner temp
+          # (TEMPORARY_FILES_POLICY §2: never use /tmp/ for files that must persist across steps)
           printf '%s' "${PROMPT_BODY}" > "${RUNNER_TEMP}/copilot_prompt.txt"
           echo "prompt_file=${RUNNER_TEMP}/copilot_prompt.txt" >> "$GITHUB_OUTPUT"
           echo "category=${CATEGORY}" >> "$GITHUB_OUTPUT"
@@ -321,7 +322,7 @@ Check \`scripts/ci/check_deferral_language.py\` passes (no deferral-language gat
           RECENT=$(gh pr view "${PR_NUMBER}" \
             --repo "${{ github.repository }}" \
             --json comments \
-            --jq '.comments[-5:][].body' 2>/dev/null || echo "")
+            --jq '.comments[-10:][].body' 2>/dev/null || echo "")
           if echo "${RECENT}" | grep -q "self-healing.*${CATEGORY}\|${CATEGORY}.*self-healing\|Session S.*${CATEGORY}"; then
             echo "is_duplicate=true" >> "$GITHUB_OUTPUT"
             echo "ℹ️  Duplicate detected for category '${CATEGORY}' — skipping (idempotent)"

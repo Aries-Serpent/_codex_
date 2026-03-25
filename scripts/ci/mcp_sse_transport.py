@@ -348,7 +348,8 @@ def main(argv: Optional[list] = None) -> int:
     # Batch-file mode
     if args.batch_file:
         try:
-            batch = json.loads(open(args.batch_file).read())
+            with open(args.batch_file) as f:
+                batch = json.loads(f.read())
         except (OSError, json.JSONDecodeError) as exc:
             print(f"ERROR: --batch-file: {exc}", file=sys.stderr)
             return 1
