@@ -640,7 +640,10 @@ class GitHubMCPPoster:
             _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
 
         query = """
-        query ListDiscussions($owner: String!, $repo: String!, $first: Int!, $categoryId: ID, $after: String) {
+        query ListDiscussions(
+          $owner: String!, $repo: String!, $first: Int!,
+          $categoryId: ID, $after: String
+        ) {
           repository(owner: $owner, name: $repo) {
             discussions(
               first: $first, categoryId: $categoryId, after: $after,
@@ -709,7 +712,10 @@ class GitHubMCPPoster:
         self._require_token()
         owner, repo_name = repo.split("/", 1)
         query = """
-        query GetDiscussion($owner: String!, $repo: String!, $number: Int!, $commentsFirst: Int!, $commentsAfter: String) {
+        query GetDiscussion(
+          $owner: String!, $repo: String!, $number: Int!,
+          $commentsFirst: Int!, $commentsAfter: String
+        ) {
           repository(owner: $owner, name: $repo) {
             discussion(number: $number) {
               id number title url body createdAt updatedAt isAnswered isLocked
@@ -1725,7 +1731,10 @@ def _build_parser() -> argparse.ArgumentParser:
     lsd.add_argument("--repo", required=True, help="owner/repo")
     lsd.add_argument("--category", default=None, help="Filter by category slug (optional)")
     lsd.add_argument("--first", type=int, default=20, help="Max number to return (default 20)")
-    lsd.add_argument("--after", default=None, help="Pagination cursor (endCursor from previous page)")
+    lsd.add_argument(
+        "--after", default=None,
+        help="Pagination cursor (endCursor from previous page)",
+    )
     lsd.add_argument("--json", action="store_true", help="Output as JSON")
 
     # get-discussion
