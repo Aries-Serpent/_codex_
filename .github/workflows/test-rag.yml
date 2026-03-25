@@ -153,12 +153,11 @@ jobs:
           print(float(root.attrib['line-rate']) * 100)
           ")
           echo "Coverage: ${COVERAGE}%"
-          # Temporarily lowered to 0% during Phase 14 foundation work (baseline is ~27.5%)
-          # Minimum coverage threshold — restored from the Phase 14 temporary 0% stub.
-          # Baseline is ~27.5%; set floor at 27 to give a small tolerance while
-          # still enforcing a meaningful gate. Raise quarterly as coverage grows.
-          if (( $(echo "$COVERAGE < 27" | bc -l) )); then
-            echo "❌ Coverage ${COVERAGE}% is below 27% threshold"
+          # Minimum coverage threshold — raised incrementally each S-session.
+          # Baseline is ~27.5%; raised from 27% → 30% in S195 (2026-03-25).
+          # Raise quarterly as coverage grows toward the 90% target.
+          if (( $(echo "$COVERAGE < 30" | bc -l) )); then
+            echo "❌ Coverage ${COVERAGE}% is below 30% threshold"
             exit 1
           fi
           echo "✅ Coverage ${COVERAGE}% meets threshold"

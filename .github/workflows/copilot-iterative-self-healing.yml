@@ -220,7 +220,7 @@ jobs:
               printf '1. Check coverage.xml or workflow logs to identify modules that dropped\n' >> "${OUT}"
               printf '2. Write targeted tests for the uncovered lines/branches\n' >> "${OUT}"
               printf '3. Run `python3 -m pytest --cov=src --cov-report=term-missing` to verify\n' >> "${OUT}"
-              printf '4. Ensure coverage meets threshold in `.github/workflows/test-rag.yml` (>=27%%)\n' >> "${OUT}"
+              printf '4. Ensure coverage meets threshold in `.github/workflows/test-rag.yml` (>=30%%)\n' >> "${OUT}"
               printf '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
               printf '6. Push fix' >> "${OUT}"
               ;;

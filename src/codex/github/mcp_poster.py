@@ -671,8 +671,10 @@ class GitHubMCPPoster:
         Returns
         -------
         dict
-            Discussion fields: ``number``, ``title``, ``body``, ``url``,
-            ``category``, ``isAnswered``, ``comments.nodes`` (up to 50).
+            Discussion fields: ``id`` (node ID), ``number``, ``title``,
+            ``body``, ``url``, ``category``, ``isAnswered``, ``comments.nodes``
+            (up to 50).  The ``id`` field is the GraphQL node ID required by
+            mutations such as :meth:`pin_discussion`.
         """
         self._require_token()
         owner, repo_name = repo.split("/", 1)
@@ -680,7 +682,7 @@ class GitHubMCPPoster:
         query GetDiscussion($owner: String!, $repo: String!, $number: Int!) {
           repository(owner: $owner, name: $repo) {
             discussion(number: $number) {
-              number title url body createdAt updatedAt isAnswered isLocked
+              id number title url body createdAt updatedAt isAnswered isLocked
               category { name slug }
               author { login }
               comments(first: 50) {
@@ -698,6 +700,74 @@ class GitHubMCPPoster:
         if disc is None:
             raise RuntimeError(f"Discussion #{discussion_number} not found in {owner}/{repo_name}")
         return disc
+
+    def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Pin a Discussion to the repository.
+
+        Requires the token to have ``discussions: write`` scope.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+
+        Returns
+        -------
+        dict
+            The pinned discussion fields returned by the GraphQL mutation.
+        """
+        self._require_token()
+        disc = self.get_discussion(repo, discussion_number)
+        discussion_id: str = disc["id"]
+        mutation = """
+        mutation PinDiscussion($discussionId: ID!) {
+          pinDiscussion(input: { discussionId: $discussionId }) {
+            discussion { id number title url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"discussionId": discussion_id})
+        return (
+            result.get("data", {})
+            .get("pinDiscussion", {})
+            .get("discussion", result)
+        )
+
+    def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unpin a previously pinned Discussion from the repository.
+
+        Requires the token to have ``discussions: write`` scope.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+
+        Returns
+        -------
+        dict
+            The discussion fields returned by the GraphQL mutation.
+        """
+        self._require_token()
+        disc = self.get_discussion(repo, discussion_number)
+        discussion_id: str = disc["id"]
+        mutation = """
+        mutation UnpinDiscussion($discussionId: ID!) {
+          unpinDiscussion(input: { discussionId: $discussionId }) {
+            discussion { id number title url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"discussionId": discussion_id})
+        return (
+            result.get("data", {})
+            .get("unpinDiscussion", {})
+            .get("discussion", result)
+        )
 
     def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
         """List all Discussion categories in a repository.
@@ -1630,6 +1700,15 @@ def _build_parser() -> argparse.ArgumentParser:
     ldc.add_argument("--repo", required=True, help="owner/repo")
     ldc.add_argument("--json", action="store_true", help="Output as JSON")
 
+    # pin-discussion / unpin-discussion
+    pd = sub.add_parser("pin-discussion", help="Pin a Discussion to the repository")
+    pd.add_argument("--repo", required=True, help="owner/repo")
+    pd.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    upd = sub.add_parser("unpin-discussion", help="Unpin a Discussion from the repository")
+    upd.add_argument("--repo", required=True, help="owner/repo")
+    upd.add_argument("--number", required=True, type=int, help="Discussion number")
+
     # create-branch  (IMP-001 / IMP-010 — S174)
     cb = sub.add_parser(
         "create-branch",
@@ -1810,8 +1889,19 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"{slug:35}  {name:30}  {answerable}")
                 print(f"\n{len(cats)} category/categories")
 
+        elif args.command == "create-branch":
             result = poster.create_ref(args.repo, args.ref, args.sha)
             print(f"✅ Branch created: {result.get('ref', args.ref)} @ {args.sha[:8]}")
+
+        elif args.command == "pin-discussion":
+            result = poster.pin_discussion(args.repo, args.number)
+            num = result.get("number", args.number)
+            print(f"✅ Discussion #{num} pinned in {args.repo}")
+
+        elif args.command == "unpin-discussion":
+            result = poster.unpin_discussion(args.repo, args.number)
+            num = result.get("number", args.number)
+            print(f"✅ Discussion #{num} unpinned in {args.repo}")
 
         elif args.command == "create-pr":
             body = args.body
