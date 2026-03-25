@@ -1890,7 +1890,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")
 
         elif args.command == "list-discussions":
-            page = poster.list_discussions(args.repo, args.category, args.first, getattr(args, "after", None))
+            page = poster.list_discussions(args.repo, args.category, args.first, args.after)
             discussions = page["nodes"]
             page_info = page["pageInfo"]
             if getattr(args, "json", False):
@@ -1911,8 +1911,8 @@ def main(argv: list[str] | None = None) -> int:
             disc = poster.get_discussion(
                 args.repo,
                 args.number,
-                comments_first=getattr(args, "comments_first", 50),
-                comments_after=getattr(args, "comments_after", None),
+                comments_first=args.comments_first,
+                comments_after=args.comments_after,
             )
             if getattr(args, "json", False):
                 import json as _json
