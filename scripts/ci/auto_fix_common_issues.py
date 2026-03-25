@@ -20,7 +20,7 @@ Usage:
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-11)
+    --pattern N     Only apply pattern N (1-22)
     --dry-run       Show what would be changed without making changes
 """
 
@@ -94,6 +94,20 @@ class CommonIssueFixer:
             # (inside the same isolated-venv as mypy-baseline.yml uses).
             "mypy Baseline Freshness",
             "CI SHA Drift",             # Pattern 17 - informational: CI ran on wrong commit SHA
+            # Pattern 19: `from src.` absolute imports are valid in the editable-install / dev
+            # environment (src/__init__.py makes src a package + pytest.ini pythonpath config)
+            # but break in installed (non-editable) mode and with pytest-xdist workers that
+            # don't inherit runtime sys.path changes.  Requires manual refactoring to
+            # `from codex.xxx` / `from mcp.xxx` etc. (remove `src.` prefix).
+            "Src Absolute Imports",     # Pattern 19 - manual: change `from src.X` → `from X`
+            # Pattern 20: Multi-line bash string assignments in YAML run: blocks cause
+            # actionlint to fail with "could not parse as YAML: could not find expected ':'"
+            # (known recurring pattern from S193).  Fix: use printf → temp file pattern.
+            "YAML Multiline Strings",   # Pattern 20 - manual: use printf pipeline
+            # Pattern 22: Tracked file sync — CODEX_MANIFEST.json integrity_sha256,
+            # .secrets.baseline, CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md
+            # consistency checks. Run sync_tracked_files.py --fix to repair.
+            "Tracked File Sync",        # Pattern 22 - auto-fixable via sync_tracked_files.py
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -126,13 +140,17 @@ class CommonIssueFixer:
             (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
             (17, "CI SHA Drift",            self.check_ci_sha_drift),
             (18, "Duplicate Kwargs",         self.fix_duplicate_kwargs),
+            (19, "Src Absolute Imports",     self.check_src_absolute_imports),
+            (20, "YAML Multiline Strings",   self.check_yaml_multiline_strings),
+            (21, "Node.js 20 Actions",       self.check_nodejs20_actions),
+            (22, "Tracked File Sync",        self.check_tracked_file_sync),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1–18)")
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1-22)")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -1306,6 +1324,259 @@ class CommonIssueFixer:
 
         return report
 
+    def check_src_absolute_imports(self) -> List[str]:
+        """Pattern 19: Detect ``from src.`` absolute imports in Python source files.
+
+        These imports rely on ``src/`` being a package (``src/__init__.py`` exists)
+        AND the repo root being in ``sys.path`` / ``pythonpath``.  They work in the
+        editable-install dev environment but **break** when:
+        - The package is installed in non-editable mode (``src`` is not installed).
+        - ``pytest-xdist`` workers start without the runtime ``sys.path`` additions
+          made by ``conftest.py`` (each worker is a fresh subprocess).
+
+        **Fix strategy** (manual): change ``from src.X import Y`` to ``from X import Y``
+        for every sub-package that lives directly under ``src/`` (e.g.
+        ``from src.codex.auth import ...`` → ``from codex.auth import ...``).
+        ``pytest.ini``'s ``pythonpath = . src`` config (added in GAP-001 fix) ensures
+        both ``from src.X`` and ``from X`` resolve in all test environments in the
+        interim.  New code SHOULD use the ``from X`` form.
+
+        Auto-fix: ❌ (manual) — requires verifying each import target exists without
+        the ``src.`` prefix in the installed package.
+        """
+        issues: List[str] = []
+        search_dirs = [self.repo_root / "src", self.repo_root / "tests"]
+        pattern_re = re.compile(r"^\s*from src\.", re.MULTILINE)
+        for search_dir in search_dirs:
+            if not search_dir.exists():
+                continue
+            for py_file in sorted(search_dir.rglob("*.py")):
+                try:
+                    content = py_file.read_text(encoding="utf-8", errors="replace")
+                except OSError:
+                    continue
+                matches = pattern_re.findall(content)
+                if matches:
+                    rel = str(py_file.relative_to(self.repo_root))
+                    issues.append(
+                        f"{rel}: {len(matches)} `from src.` absolute import(s) — "
+                        "change to `from <pkg>` (remove `src.` prefix) for installed-mode compat"
+                    )
+        if issues:
+            self.issues_found["Src Absolute Imports"] = issues
+            print(f"⚠  Pattern 19 (Src Absolute Imports): {len(issues)} file(s) affected")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            if len(issues) > 5:
+                print(f"   … and {len(issues) - 5} more (manual review required)")
+            print(
+                "   ℹ️  Fix: change `from src.X import Y` → `from X import Y`.\n"
+                "   ℹ️  The `pythonpath = . src` in pytest.ini makes both forms work in\n"
+                "      all pytest environments including xdist as an interim measure.\n"
+                "   ℹ️  New code SHOULD use the direct-package form (`from codex.xxx`)."
+            )
+        else:
+            print("✅ Pattern 19 (Src Absolute Imports): no `from src.` imports found")
+        return issues
+
+
+    def check_yaml_multiline_strings(self) -> List[str]:
+        """Pattern 20: Detect multi-line bash string assignments in YAML ``run:`` blocks.
+
+        Multi-line bash assignments of the form::
+
+            BODY="line1
+            line2"
+
+        or column-0 continuation lines inside a ``run: |`` block break actionlint and
+        YAML safe_load with ``could not parse as YAML: could not find expected ':'``.
+        This is a recurring pattern first seen in S192/S193 PR #3743.
+
+        Fix strategy (manual): replace the multi-line assignment with a ``printf``
+        pipeline to a temp file::
+
+            printf '%s\\n' \\
+              "line1" \\
+              "line2" > /tmp/body.txt
+
+        Auto-fix: ❌ (manual) — requires understanding the YAML block structure and
+        choosing the correct printf / heredoc transformation.
+        """
+        issues: List[str] = []
+        # Detect bash variable assignments whose opening quote is NOT closed on the same line
+        # (i.e., the value spans multiple lines).  We look for lines of the form:
+        #   VARNAME="text that does NOT contain a closing quote
+        # The regex matches: UPPER_VAR=<quote><content-without-closing-quote><EOL>
+        multiline_re = re.compile(
+            r"""^[^\S\n]*[A-Z_][A-Z0-9_]*=(["'])(?:(?!\1).)*$""",
+            re.MULTILINE,
+        )
+        workflow_dir = self.repo_root / ".github" / "workflows"
+        if not workflow_dir.exists():
+            print("✅ Pattern 20 (YAML Multiline Strings): no .github/workflows directory")
+            return issues
+        for wf in sorted(workflow_dir.glob("*.yml")):
+            try:
+                content = wf.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            # Look for lines inside run: blocks that look like multi-line bash assignments
+            # Simple heuristic: UPPERCASE_VAR=" followed by a newline inside the file
+            matches = multiline_re.findall(content)
+            if matches:
+                rel = str(wf.relative_to(self.repo_root))
+                issues.append(
+                    f"{rel}: {len(matches)} potential multi-line bash string assignment(s) — "
+                    "use printf pipeline to avoid actionlint YAML parse errors"
+                )
+        if issues:
+            self.issues_found["YAML Multiline Strings"] = issues
+            print(f"⚠  Pattern 20 (YAML Multiline Strings): {len(issues)} workflow(s) affected")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            if len(issues) > 5:
+                print(f"   … and {len(issues) - 5} more")
+            print(
+                "   ℹ️  Fix: replace BODY=\"...\" with printf '%s\\n' ... > /tmp/body.txt\n"
+                "   ℹ️  See: .codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md §P-C"
+            )
+        else:
+            print("✅ Pattern 20 (YAML Multiline Strings): no multi-line bash string issues found")
+        return issues
+
+    def check_nodejs20_actions(self) -> List[str]:
+        """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (deadline: 2026-06-02).
+
+        GitHub will force all actions to Node.js 24 starting 2026-06-02.  Workflows
+        using ``actions/checkout@v4``, ``actions/setup-python@v5``, etc. will start
+        producing hard failures instead of deprecation warnings.
+
+        Fix strategy (informational): bump to Node.js 24-compatible versions when they
+        become available.  Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20
+
+        Auto-fix: ❌ (informational only until 2026-06-02) — Node.js 24-compatible
+        versions of all actions may not yet be available.
+        """
+        issues: List[str] = []
+        # Match known GitHub Actions pinned to Node.js 20 (v1-v5 series, plus v10, v11…).
+        # Uses `v[1-5]\d*` to capture both single-digit (v1…v5) and two-digit versions
+        # (v10, v11…v59) that could arise for older action families.
+        nodejs20_actions_re = re.compile(
+            r"uses:\s*(actions/(?:checkout|setup-python|upload-artifact|download-artifact|"
+            r"cache|github-script|setup-node|configure-pages|deploy-pages))@(v[1-5]\d*)\b",
+            re.IGNORECASE,
+        )
+        workflow_dir = self.repo_root / ".github" / "workflows"
+        if not workflow_dir.exists():
+            print("✅ Pattern 21 (Node.js 20 Actions): no .github/workflows directory")
+            return issues
+        affected: dict[str, List[str]] = {}
+        for wf in sorted(workflow_dir.glob("*.yml")):
+            try:
+                content = wf.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            matches = nodejs20_actions_re.findall(content)
+            if matches:
+                rel = str(wf.relative_to(self.repo_root))
+                unique = list({f"{a}@{v}" for a, v in matches})
+                affected[rel] = unique
+        if affected:
+            total_refs = sum(len(v) for v in affected.values())
+            for rel, refs in list(affected.items())[:3]:
+                issues.append(
+                    f"{rel}: {len(refs)} Node.js 20 action ref(s): {', '.join(refs[:3])}"
+                    + (f" …+{len(refs)-3}" if len(refs) > 3 else "")
+                )
+            if len(affected) > 3:
+                issues.append(f"…and {len(affected) - 3} more workflow(s) ({total_refs} total refs)")
+            self.issues_found["Node.js 20 Actions"] = issues
+            print(
+                f"⚠  Pattern 21 (Node.js 20 Actions): {len(affected)} workflow(s) / "
+                f"{total_refs} action refs — deadline 2026-06-02"
+            )
+            for issue in issues[:3]:
+                print(f"   {issue}")
+            print(
+                "   ℹ️  These are informational until 2026-06-02 — no CI gate failure yet.\n"
+                "   ℹ️  Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20\n"
+                "   ℹ️  See: .codex/ci_failure_patterns/CI_FAILURE_PATTERN_ANALYSIS_2026-03-25.md §P-K"
+            )
+        else:
+            print("✅ Pattern 21 (Node.js 20 Actions): no Node.js 20 action refs found")
+        return issues
+
+    def check_tracked_file_sync(self) -> List[str]:
+        """Pattern 22: Verify all frequently-drifting repo files are consistent.
+
+        Delegates to ``scripts/ci/sync_tracked_files.py --check`` for the authoritative
+        check.  This integrates ``sync_tracked_files.py`` into the CI pattern gate so
+        that manifest drift, stale secrets baseline, empty CHANGELOG, and stale
+        accountability report are all caught in the same pre-merge sweep that catches
+        line-length, import-order, and mypy regressions.
+
+        Files checked:
+
+        - ``CODEX_MANIFEST.json`` — ``integrity_sha256`` must match computed hash
+        - ``.secrets.baseline`` — CODEX_MANIFEST entry must match current hash/line
+        - ``CHANGELOG.md`` — must have non-empty ``## [Unreleased]`` section
+        - ``AGENT_ACCOUNTABILITY_REPORT.md`` — must have a session entry ≤7 days old
+
+        Auto-fix: ✅ — run ``python scripts/ci/sync_tracked_files.py --fix``
+        """
+        issues: List[str] = []
+        sync_script = self.repo_root / "scripts" / "ci" / "sync_tracked_files.py"
+        if not sync_script.exists():
+            print("⚠  Pattern 22 (Tracked File Sync): sync_tracked_files.py not found — skip")
+            return issues
+
+        import subprocess as _sp
+        result = _sp.run(
+            [sys.executable, str(sync_script), "--check", "--quiet"],
+            cwd=self.repo_root,
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        if result.returncode == 0:
+            print("✅ Pattern 22 (Tracked File Sync): all tracked files consistent")
+        else:
+            # Parse the output to extract individual failures
+            failing_checks = [
+                line.strip().lstrip("❌").strip()
+                for line in (result.stdout + result.stderr).splitlines()
+                if "❌" in line and "check(s) failed" not in line
+            ]
+            if not failing_checks:
+                failing_checks = ["CODEX_MANIFEST / CHANGELOG / accountability drift detected"]
+            for check in failing_checks:
+                issues.append(check)
+                self.issues_found.setdefault("Tracked File Sync", []).append(check)
+
+            print(f"⚠  Pattern 22 (Tracked File Sync): {len(issues)} tracked file issue(s)")
+            for issue in issues[:5]:
+                print(f"   {issue}")
+            print(
+                "   ℹ️  Fix: python scripts/ci/sync_tracked_files.py --fix\n"
+                "   ℹ️  Or: python scripts/ci/auto_fix_common_issues.py --pattern 22"
+            )
+            if not self.check_only:
+                # Apply the fix automatically
+                fix_result = _sp.run(
+                    [sys.executable, str(sync_script), "--fix", "--quiet"],
+                    cwd=self.repo_root,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                if fix_result.returncode == 0:
+                    print("   ✅ Auto-fixed via sync_tracked_files.py --fix")
+                    self.fixes_applied["Tracked File Sync"] = len(issues)
+                    issues.clear()
+                else:
+                    print(f"   ❌ Auto-fix failed: {fix_result.stderr[:200]}")
+        return issues
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1326,9 +1597,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 19),
+        choices=range(1, 23),
         metavar="N",
-        help="Run only pattern N (1–18); see pattern list above"
+        help="Run only pattern N (1–22); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

@@ -212,7 +212,7 @@ class GitHubMCPPoster:
             "title": title,
             "body": body,
         }
-        result = self._graphql(mutation, variables)
+        result = self._graphql_with_retry(mutation, variables, operation_name="CreateDiscussion")
         return result.get("data", {}).get("createDiscussion", {}).get("discussion", result)
 
     def post_session_summary_discussion(
@@ -427,6 +427,422 @@ class GitHubMCPPoster:
         """
         result = self._graphql(mutation, {"commentId": comment_id, "body": body})
         return result.get("data", {}).get("updateDiscussionComment", {}).get("comment", result)
+
+    def update_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        *,
+        title: str | None = None,
+        body: str | None = None,
+        category_slug: str | None = None,
+    ) -> dict[str, Any]:
+        """Update an existing Discussion's title, body, and/or category.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            The integer discussion number (visible in the URL).
+        title, body:
+            New values; ``None`` means leave unchanged.
+        category_slug:
+            Slug of a new category to move the discussion into; ``None`` leaves it.
+
+        Returns
+        -------
+        dict
+            GraphQL ``updateDiscussion.discussion`` payload.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+
+        variables: dict[str, Any] = {"discussionId": discussion_id}
+        if title is not None:
+            variables["title"] = title
+        if body is not None:
+            variables["body"] = body
+        if category_slug is not None:
+            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
+            variables["categoryId"] = category_id
+
+        mutation = """
+        mutation UpdateDiscussion(
+          $discussionId: ID!
+          $title: String
+          $body: String
+          $categoryId: ID
+        ) {
+          updateDiscussion(input: {
+            discussionId: $discussionId
+            title: $title
+            body: $body
+            categoryId: $categoryId
+          }) {
+            discussion { number url title }
+          }
+        }
+        """
+        result = self._graphql(mutation, variables)
+        return result.get("data", {}).get("updateDiscussion", {}).get("discussion", result)
+
+    def lock_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        reason: str = "RESOLVED",
+    ) -> dict[str, Any]:
+        """Lock a Discussion to prevent further comments.
+
+        Parameters
+        ----------
+        reason:
+            One of ``"OFF_TOPIC"``, ``"RESOLVED"``, ``"SPAM"``, ``"TOO_HEATED"``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation LockDiscussion($id: ID!, $reason: LockReason) {
+          lockLockable(input: { lockableId: $id, lockReason: $reason }) {
+            lockedRecord { ... on Discussion { number url } }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id, "reason": reason})
+        return result.get("data", {}).get("lockLockable", result)
+
+    def unlock_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unlock a previously locked Discussion."""
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation UnlockDiscussion($id: ID!) {
+          unlockLockable(input: { lockableId: $id }) {
+            unlockedRecord { ... on Discussion { number url } }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id})
+        return result.get("data", {}).get("unlockLockable", result)
+
+    def delete_discussion(self, repo: str, discussion_number: int) -> bool:
+        """Permanently delete a Discussion.
+
+        Returns ``True`` if deletion succeeded, ``False`` otherwise.
+        Requires admin-level token with ``discussions:write`` scope.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+        mutation = """
+        mutation DeleteDiscussion($id: ID!) {
+          deleteDiscussion(input: { id: $id }) {
+            clientMutationId
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": discussion_id})
+        return "errors" not in result
+
+    def delete_discussion_comment(self, comment_id: str) -> bool:
+        """Delete a Discussion comment by its GraphQL node ID.
+
+        Returns ``True`` if deletion succeeded, ``False`` otherwise.
+        """
+        self._require_token()
+        mutation = """
+        mutation DeleteDiscussionComment($id: ID!) {
+          deleteDiscussionComment(input: { id: $id }) {
+            clientMutationId
+          }
+        }
+        """
+        result = self._graphql(mutation, {"id": comment_id})
+        return "errors" not in result
+
+    def mark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Mark a Discussion comment as the accepted answer.
+
+        Parameters
+        ----------
+        comment_id:
+            GraphQL node ID of the comment (obtain from ``add_discussion_comment``
+            or ``_find_discussion_comment``).
+        """
+        self._require_token()
+        mutation = """
+        mutation MarkAnswer($commentId: ID!) {
+          markDiscussionCommentAsAnswer(input: { id: $commentId }) {
+            discussion { number url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id})
+        return (
+            result.get("data", {})
+            .get("markDiscussionCommentAsAnswer", {})
+            .get("discussion", result)
+        )
+
+    def unmark_answer(self, comment_id: str) -> dict[str, Any]:
+        """Unmark a previously accepted answer on a Discussion."""
+        self._require_token()
+        mutation = """
+        mutation UnmarkAnswer($commentId: ID!) {
+          unmarkDiscussionCommentAsAnswer(input: { id: $commentId }) {
+            discussion { number url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id})
+        return (
+            result.get("data", {})
+            .get("unmarkDiscussionCommentAsAnswer", {})
+            .get("discussion", result)
+        )
+
+    def list_discussions(
+        self,
+        repo: str,
+        category_slug: str | None = None,
+        first: int = 20,
+        after: str | None = None,
+    ) -> dict[str, Any]:
+        """List Discussions in a repository, optionally filtered by category.
+
+        Parameters
+        ----------
+        category_slug:
+            Filter to this category; ``None`` returns all categories.
+        first:
+            Number of discussions to return (max 100 per GitHub's GraphQL limits).
+        after:
+            Cursor for pagination.  Pass ``pageInfo.endCursor`` from a previous
+            response to retrieve the next page.
+
+        Returns
+        -------
+        dict
+            ``nodes`` — list of discussion dicts with ``number``, ``title``,
+            ``url``, ``category`` (name), ``createdAt``, ``isAnswered``,
+            ``comments`` (count).
+            ``pageInfo`` — ``{"endCursor": str | None, "hasNextPage": bool}``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        category_id: str | None = None
+        if category_slug:
+            _, category_id = self._resolve_discussion_ids(owner, repo_name, category_slug)
+
+        query = """
+        query ListDiscussions(
+          $owner: String!, $repo: String!, $first: Int!,
+          $categoryId: ID, $after: String
+        ) {
+          repository(owner: $owner, name: $repo) {
+            discussions(
+              first: $first, categoryId: $categoryId, after: $after,
+              orderBy: {field: UPDATED_AT, direction: DESC}
+            ) {
+              pageInfo { endCursor hasNextPage }
+              nodes {
+                number
+                title
+                url
+                createdAt
+                updatedAt
+                isAnswered
+                category { name slug }
+                comments { totalCount }
+                author { login }
+              }
+            }
+          }
+        }
+        """
+        variables: dict[str, Any] = {
+            "owner": owner,
+            "repo": repo_name,
+            "first": min(first, 100),
+            "categoryId": category_id,
+            "after": after,
+        }
+        result = self._graphql(query, variables)
+        disc_data = result.get("data", {}).get("repository", {}).get("discussions", {})
+        return {
+            "nodes": disc_data.get("nodes", []),
+            "pageInfo": disc_data.get("pageInfo", {"endCursor": None, "hasNextPage": False}),
+        }
+
+    def get_discussion(
+        self,
+        repo: str,
+        discussion_number: int,
+        comments_first: int = 50,
+        comments_after: str | None = None,
+    ) -> dict[str, Any]:
+        """Fetch a single Discussion by number including its comments.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+        comments_first:
+            Number of comments to return per page (max 100).
+        comments_after:
+            Cursor for comment pagination.  Pass ``comments.pageInfo.endCursor``
+            from a previous response to retrieve the next comment page.
+
+        Returns
+        -------
+        dict
+            Discussion fields: ``id`` (node ID), ``number``, ``title``,
+            ``body``, ``url``, ``category``, ``isAnswered``, ``comments`` with
+            ``totalCount``, ``pageInfo``, and ``nodes`` (up to *comments_first*).
+            The ``id`` field is the GraphQL node ID required by mutations such
+            as :meth:`pin_discussion`.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        query = """
+        query GetDiscussion(
+          $owner: String!, $repo: String!, $number: Int!,
+          $commentsFirst: Int!, $commentsAfter: String
+        ) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) {
+              id number title url body createdAt updatedAt isAnswered isLocked
+              category { name slug }
+              author { login }
+              comments(first: $commentsFirst, after: $commentsAfter) {
+                totalCount
+                pageInfo { endCursor hasNextPage }
+                nodes { id body createdAt author { login } isAnswer }
+              }
+            }
+          }
+        }
+        """
+        result = self._graphql(
+            query,
+            {
+                "owner": owner,
+                "repo": repo_name,
+                "number": discussion_number,
+                "commentsFirst": min(comments_first, 100),
+                "commentsAfter": comments_after,
+            },
+        )
+        disc = result.get("data", {}).get("repository", {}).get("discussion")
+        if disc is None:
+            raise RuntimeError(f"Discussion #{discussion_number} not found in {owner}/{repo_name}")
+        return disc
+
+    def pin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Pin a Discussion to the repository.
+
+        Requires the token to have ``discussions: write`` scope.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+
+        Returns
+        -------
+        dict
+            The pinned discussion fields returned by the GraphQL mutation.
+        """
+        self._require_token()
+        disc = self.get_discussion(repo, discussion_number)
+        discussion_id: str = disc["id"]
+        mutation = """
+        mutation PinDiscussion($discussionId: ID!) {
+          pinDiscussion(input: { discussionId: $discussionId }) {
+            discussion { id number title url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"discussionId": discussion_id})
+        return (
+            result.get("data", {})
+            .get("pinDiscussion", {})
+            .get("discussion", result)
+        )
+
+    def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
+        """Unpin a previously pinned Discussion from the repository.
+
+        Requires the token to have ``discussions: write`` scope.
+
+        Parameters
+        ----------
+        repo:
+            Full repository name (``owner/repo``).
+        discussion_number:
+            The discussion number (visible in the URL).
+
+        Returns
+        -------
+        dict
+            The discussion fields returned by the GraphQL mutation.
+        """
+        self._require_token()
+        disc = self.get_discussion(repo, discussion_number)
+        discussion_id: str = disc["id"]
+        mutation = """
+        mutation UnpinDiscussion($discussionId: ID!) {
+          unpinDiscussion(input: { discussionId: $discussionId }) {
+            discussion { id number title url }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"discussionId": discussion_id})
+        return (
+            result.get("data", {})
+            .get("unpinDiscussion", {})
+            .get("discussion", result)
+        )
+
+    def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
+        """List all Discussion categories in a repository.
+
+        **Note:** Categories can only be *created* or *deleted* via the GitHub web UI
+        (Settings → Discussions).  This method is read-only.
+
+        Returns
+        -------
+        list[dict]
+            Each entry has ``id``, ``name``, ``slug``, ``description``,
+            ``emojiHTML``, ``isAnswerable``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+        query = """
+        query ListCategories($owner: String!, $repo: String!) {
+          repository(owner: $owner, name: $repo) {
+            discussionCategories(first: 25) {
+              nodes { id name slug description emojiHTML isAnswerable }
+            }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo_name})
+        return (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussionCategories", {})
+            .get("nodes", [])
+        )
 
     # ------------------------------------------------------------------
     # Repository variables
@@ -1151,6 +1567,89 @@ class GitHubMCPPoster:
         url = f"{_GITHUB_API}/graphql"
         return self._request("POST", url, {"query": query, "variables": variables})
 
+    def _graphql_with_retry(
+        self,
+        query: str,
+        variables: dict[str, Any],
+        *,
+        max_retries: int = 3,
+        operation_name: str = "GraphQL",
+    ) -> dict[str, Any]:
+        """Execute a GraphQL mutation/query with exponential back-off retry.
+
+        Hardened posting pipeline (Phase 8 P6):
+        - Detects GraphQL ``errors`` array in the response body and raises.
+        - Recognises ``RATE_LIMITED`` errors from GitHub and waits/retries.
+        - Retries on transient network errors (``urllib.error.URLError``,
+          ``http.client.RemoteDisconnected``, ``TimeoutError``).
+        - Non-retryable errors (``FORBIDDEN``, ``NOT_FOUND``, auth failures)
+          are raised immediately.
+        - Returns ``result["data"]`` on success (unwraps the envelope).
+
+        Returns:
+            The full parsed JSON response dict (including ``data`` key) so
+            callers can continue to use the same access pattern.
+        """
+        _NON_RETRYABLE_TYPES = frozenset(
+            {"FORBIDDEN", "NOT_FOUND", "UNPROCESSABLE", "BAD_REQUEST"}
+        )
+        _RETRYABLE_TYPES = frozenset(
+            {"RATE_LIMITED", "SERVICE_UNAVAILABLE", "INTERNAL"}
+        )
+
+        last_exc: Exception | None = None
+        for attempt in range(max_retries + 1):
+            try:
+                url = f"{_GITHUB_API}/graphql"
+                result = self._request("POST", url, {"query": query, "variables": variables})
+
+                # Check for GraphQL-level errors (HTTP 200 but errors in body)
+                gql_errors = result.get("errors")
+                if gql_errors:
+                    first = gql_errors[0]
+                    err_type = first.get("type", "UNKNOWN")
+                    err_msg = first.get("message", str(gql_errors))
+
+                    if err_type in _NON_RETRYABLE_TYPES:
+                        raise ValueError(
+                            f"{operation_name} GraphQL {err_type}: {err_msg}"
+                        )
+
+                    if err_type in _RETRYABLE_TYPES and attempt < max_retries:
+                        wait = 2 ** (attempt + 1)
+                        print(
+                            f"[mcp_poster] {operation_name} GraphQL {err_type} "
+                            f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s",
+                            file=sys.stderr,
+                        )
+                        time.sleep(wait)
+                        continue
+
+                    # Unknown error type or retries exhausted
+                    raise RuntimeError(
+                        f"{operation_name} GraphQL error ({err_type}): {err_msg}"
+                    )
+
+                return result
+
+            except (urllib.error.URLError, TimeoutError, ConnectionResetError) as exc:
+                last_exc = exc
+                if attempt < max_retries:
+                    wait = 2 ** (attempt + 1)
+                    print(
+                        f"[mcp_poster] {operation_name} network error "
+                        f"(attempt {attempt + 1}/{max_retries + 1}) — retry in {wait}s: {exc}",
+                        file=sys.stderr,
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
+
+        # Should never reach here but satisfy type checker
+        if last_exc is not None:
+            raise last_exc
+        raise RuntimeError(f"{operation_name}: max retries ({max_retries}) exceeded")
+
     def _resolve_discussion_ids(self, owner: str, repo: str, category_slug: str) -> tuple[str, str]:
         """Return (repository_node_id, category_node_id) for GraphQL mutations."""
         query = """
@@ -1163,7 +1662,9 @@ class GitHubMCPPoster:
           }
         }
         """
-        result = self._graphql(query, {"owner": owner, "repo": repo})
+        result = self._graphql_with_retry(
+            query, {"owner": owner, "repo": repo}, operation_name="ResolveDiscussionIds"
+        )
         repo_data = result.get("data", {}).get("repository", {})
         repo_id: str = repo_data.get("id", "")
         categories = repo_data.get("discussionCategories", {}).get("nodes", [])
@@ -1176,8 +1677,14 @@ class GitHubMCPPoster:
                 category_id = cat["id"]
                 break
         if not category_id and categories:
-            # Fallback to first category
-            category_id = categories[0]["id"]
+            available = [c.get("slug") or c.get("name", "?") for c in categories]
+            # Hardened: raise instead of silently falling back to first category
+            # (P6 hardened posting pipeline — S201)
+            raise ValueError(
+                f"Discussion category slug {category_slug!r} not found in {repo!r}. "
+                f"Available: {available}. "
+                "Create the category in GitHub UI before posting."
+            )
         return repo_id, category_id
 
 
@@ -1268,6 +1775,84 @@ def _build_parser() -> argparse.ArgumentParser:
     cd.add_argument("--title", required=True)
     cd.add_argument("--body-file", required=True)
     cd.add_argument("--category", default="cognitive-brain-patterns")
+
+    # update-discussion
+    ud = sub.add_parser("update-discussion", help="Update title/body/category of a Discussion")
+    ud.add_argument("--repo", required=True, help="owner/repo")
+    ud.add_argument("--number", required=True, type=int, help="Discussion number")
+    ud.add_argument("--title", default=None, help="New title (optional)")
+    ud.add_argument("--body-file", default=None, help="Path to file containing new body (optional)")
+    ud.add_argument("--category", default=None, help="New category slug (optional)")
+
+    # lock-discussion
+    ld = sub.add_parser("lock-discussion", help="Lock a Discussion")
+    ld.add_argument("--repo", required=True, help="owner/repo")
+    ld.add_argument("--number", required=True, type=int, help="Discussion number")
+    ld.add_argument(
+        "--reason",
+        default="RESOLVED",
+        choices=["OFF_TOPIC", "RESOLVED", "SPAM", "TOO_HEATED"],
+        help="Lock reason",
+    )
+
+    # unlock-discussion
+    uld = sub.add_parser("unlock-discussion", help="Unlock a Discussion")
+    uld.add_argument("--repo", required=True, help="owner/repo")
+    uld.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    # delete-discussion
+    dld = sub.add_parser("delete-discussion", help="Permanently delete a Discussion")
+    dld.add_argument("--repo", required=True, help="owner/repo")
+    dld.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    # delete-discussion-comment
+    ddc = sub.add_parser("delete-discussion-comment", help="Delete a Discussion comment by node ID")
+    ddc.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # mark-answer
+    ma = sub.add_parser("mark-answer", help="Mark a Discussion comment as the accepted answer")
+    ma.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # unmark-answer
+    uma = sub.add_parser("unmark-answer", help="Unmark a Discussion comment as the accepted answer")
+    uma.add_argument("--comment-id", required=True, help="GraphQL node ID of the comment")
+
+    # list-discussions
+    lsd = sub.add_parser("list-discussions", help="List Discussions in a repository")
+    lsd.add_argument("--repo", required=True, help="owner/repo")
+    lsd.add_argument("--category", default=None, help="Filter by category slug (optional)")
+    lsd.add_argument("--first", type=int, default=20, help="Max number to return (default 20)")
+    lsd.add_argument(
+        "--after", default=None,
+        help="Pagination cursor (endCursor from previous page)",
+    )
+    lsd.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # get-discussion
+    gd = sub.add_parser("get-discussion", help="Get a single Discussion with its comments")
+    gd.add_argument("--repo", required=True, help="owner/repo")
+    gd.add_argument("--number", required=True, type=int, help="Discussion number")
+    gd.add_argument(
+        "--comments-first", type=int, default=50, help="Comments per page (default 50)"
+    )
+    gd.add_argument(
+        "--comments-after", default=None, help="Pagination cursor for comments"
+    )
+    gd.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # list-discussion-categories
+    ldc = sub.add_parser("list-discussion-categories", help="List all Discussion categories")
+    ldc.add_argument("--repo", required=True, help="owner/repo")
+    ldc.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # pin-discussion / unpin-discussion
+    pd = sub.add_parser("pin-discussion", help="Pin a Discussion to the repository")
+    pd.add_argument("--repo", required=True, help="owner/repo")
+    pd.add_argument("--number", required=True, type=int, help="Discussion number")
+
+    upd = sub.add_parser("unpin-discussion", help="Unpin a Discussion from the repository")
+    upd.add_argument("--repo", required=True, help="owner/repo")
+    upd.add_argument("--number", required=True, type=int, help="Discussion number")
 
     # create-branch  (IMP-001 / IMP-010 — S174)
     cb = sub.add_parser(
@@ -1363,9 +1948,119 @@ def main(argv: list[str] | None = None) -> int:
             result = poster.create_discussion(args.repo, args.title, body, args.category)
             print(f"✅ Discussion created: {result.get('url', result)}")
 
+        elif args.command == "update-discussion":
+            body = Path(args.body_file).read_text() if args.body_file else None
+            result = poster.update_discussion(
+                args.repo, args.number, title=args.title, body=body, category_slug=args.category
+            )
+            print(f"✅ Discussion #{args.number} updated: {result.get('url', result)}")
+
+        elif args.command == "lock-discussion":
+            poster.lock_discussion(args.repo, args.number, args.reason)
+            print(f"✅ Discussion #{args.number} locked ({args.reason})")
+
+        elif args.command == "unlock-discussion":
+            poster.unlock_discussion(args.repo, args.number)
+            print(f"✅ Discussion #{args.number} unlocked")
+
+        elif args.command == "delete-discussion":
+            ok = poster.delete_discussion(args.repo, args.number)
+            if ok:
+                print(f"✅ Discussion #{args.number} deleted")
+            else:
+                print(f"❌ Failed to delete Discussion #{args.number}", file=sys.stderr)
+                return 1
+
+        elif args.command == "delete-discussion-comment":
+            ok = poster.delete_discussion_comment(args.comment_id)
+            if ok:
+                print(f"✅ Comment {args.comment_id} deleted")
+            else:
+                print(f"❌ Failed to delete comment {args.comment_id}", file=sys.stderr)
+                return 1
+
+        elif args.command == "mark-answer":
+            result = poster.mark_answer(args.comment_id)
+            num = result.get("number", "?")
+            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{num}")
+
+        elif args.command == "unmark-answer":
+            result = poster.unmark_answer(args.comment_id)
+            num = result.get("number", "?")
+            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")
+
+        elif args.command == "list-discussions":
+            page = poster.list_discussions(args.repo, args.category, args.first, args.after)
+            discussions = page["nodes"]
+            page_info = page["pageInfo"]
+            if getattr(args, "json", False):
+                import json as _json
+
+                print(_json.dumps(page, indent=2))
+            else:
+                for d in discussions:
+                    cat = d.get("category", {}).get("slug", "?")
+                    answered = "✅" if d.get("isAnswered") else "  "
+                    print(f"#{d['number']:5}  {answered}  [{cat}]  {d['title'][:70]}")
+                print(f"\n{len(discussions)} discussion(s) found")
+                if page_info.get("hasNextPage"):
+                    print(f"Next page cursor: {page_info['endCursor']}")
+                    print("  (use --after <cursor> to fetch next page)")
+
+        elif args.command == "get-discussion":
+            disc = poster.get_discussion(
+                args.repo,
+                args.number,
+                comments_first=args.comments_first,
+                comments_after=args.comments_after,
+            )
+            if getattr(args, "json", False):
+                import json as _json
+
+                print(_json.dumps(disc, indent=2))
+            else:
+                print(f"## Discussion #{disc['number']}: {disc['title']}")
+                print(f"   URL: {disc['url']}")
+                print(f"   Category: {disc.get('category', {}).get('name', '?')}")
+                print(
+                    f"   Answered: {disc.get('isAnswered', False)}"
+                    f"  |  Locked: {disc.get('isLocked', False)}"
+                )
+                print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
+                comments_page_info = disc.get("comments", {}).get("pageInfo", {})
+                if comments_page_info.get("hasNextPage"):
+                    print(f"   Next comments cursor: {comments_page_info['endCursor']}")
+                    print("   (use --comments-after <cursor> to fetch next page)")
+
+        elif args.command == "list-discussion-categories":
+            cats = poster.list_discussion_categories(args.repo)
+            if getattr(args, "json", False):
+                import json as _json
+
+                print(_json.dumps(cats, indent=2))
+            else:
+                print(f"{'Slug':35}  {'Name':30}  Answerable")
+                print("-" * 75)
+                for c in cats:
+                    slug = c.get("slug", "")
+                    name = c.get("name", "")
+                    answerable = c.get("isAnswerable", False)
+                    print(f"{slug:35}  {name:30}  {answerable}")
+                print(f"\n{len(cats)} category/categories")
+
         elif args.command == "create-branch":
             result = poster.create_ref(args.repo, args.ref, args.sha)
             print(f"✅ Branch created: {result.get('ref', args.ref)} @ {args.sha[:8]}")
+
+        elif args.command == "pin-discussion":
+            result = poster.pin_discussion(args.repo, args.number)
+            num = result.get("number", args.number)
+            print(f"✅ Discussion #{num} pinned in {args.repo}")
+
+        elif args.command == "unpin-discussion":
+            result = poster.unpin_discussion(args.repo, args.number)
+            num = result.get("number", args.number)
+            print(f"✅ Discussion #{num} unpinned in {args.repo}")
 
         elif args.command == "create-pr":
             body = args.body

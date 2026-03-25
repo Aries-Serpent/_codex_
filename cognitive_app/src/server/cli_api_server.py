@@ -967,30 +967,43 @@ class _PatternInsertRequest(BaseModel):
 
 
 @app.get("/api/patterns/recent")
-async def patterns_recent(limit: int = 50, session: Optional[str] = None):
+async def patterns_recent(
+    limit: int = 50,
+    session: Optional[str] = None,
+    pattern_id: Optional[int] = None,
+):
     """Return the most recent CI pattern occurrences.
 
     Query params:
-        limit   — max rows to return (capped at 500, default 50)
-        session — if provided, filter by session identifier (PR number / run id)
+        limit      — max rows to return (capped at 500, default 50)
+        session    — if provided, filter by session identifier (PR number / run id)
+        pattern_id — if provided, filter by numeric pattern ID (e.g. 12 for E501)
     """
     limit = min(limit, 500)
     try:
         with _db_lock:
+            # Build WHERE clauses dynamically so any combination of filters works.
+            conditions: list[str] = []
+            params: list[Any] = []
             if session:
-                rows = _db.execute(
-                    "SELECT id, pattern_id, pattern_name, file_path, line_number, "
-                    "       auto_fixable, fixed, session, git_sha, timestamp "
-                    "FROM patterns WHERE session = ? ORDER BY id DESC LIMIT ?",
-                    (session, limit),
-                ).fetchall()
-            else:
-                rows = _db.execute(
-                    "SELECT id, pattern_id, pattern_name, file_path, line_number, "
-                    "       auto_fixable, fixed, session, git_sha, timestamp "
-                    "FROM patterns ORDER BY id DESC LIMIT ?",
-                    (limit,),
-                ).fetchall()
+                conditions.append("session = ?")
+                params.append(session)
+            if pattern_id is not None:
+                conditions.append("pattern_id = ?")
+                params.append(pattern_id)
+            where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+            params.append(limit)
+            # Safety: `where` is composed exclusively from hard-coded condition strings
+            # ("session = ?", "pattern_id = ?") — never from user input. All user
+            # values are bound via the parameterized `params` list, not interpolated
+            # into the SQL string. The f-string interpolation of `where` is therefore
+            # safe against SQL injection.
+            rows = _db.execute(
+                "SELECT id, pattern_id, pattern_name, file_path, line_number, "
+                "       auto_fixable, fixed, session, git_sha, timestamp "
+                f"FROM patterns {where} ORDER BY id DESC LIMIT ?",
+                params,
+            ).fetchall()
         return {
             "patterns": [dict(r) for r in rows],
             "total": len(rows),

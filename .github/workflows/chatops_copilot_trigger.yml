@@ -6,6 +6,10 @@ name: Chat-Ops — @copilot Webhook Trigger
 # Supported slash commands (comment body starts with one of these):
 #   /copilot continue <prompt-file>   — post "@copilot continue `<prompt-file>`"
 #   /copilot run <prompt-file>        — alias for /copilot continue
+#   /copilot fix <issue-number>       — ask @copilot to fix a specific GitHub issue
+#   /copilot review                   — request an in-depth code review on the current PR
+#   /copilot coverage <module>        — request targeted test coverage improvement
+#   /copilot security                 — trigger security scan and post summary
 #   /copilot status                   — post current session + AAIS status summary
 #   /copilot verify                   — trigger admin_setup_verification workflow
 #   /copilot tier-check               — run enforcement tier scan (dry-run) and post results
@@ -356,8 +360,100 @@ jobs:
             -H "Authorization: Bearer ${TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot tier-check` | Run enforcement tier scan (dry-run) and post results |\n| `/copilot tier-promote` | Generate tier promotion stubs (dry-run only, Domain 8) |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
+            -d '{"body":"## 🤖 Chat-Ops Commands\n\n| Command | Description |\n|---------|-------------|\n| `/copilot continue [prompt-file]` | Post `@copilot continue` with the given or latest prompt file |\n| `/copilot run [prompt-file]` | Alias for `continue` |\n| `/copilot fix <issue>` | Request @copilot to fix a specific GitHub issue number |\n| `/copilot review` | Trigger a code review on the current PR |\n| `/copilot coverage <module>` | Improve test coverage for a specific module |\n| `/copilot security` | Trigger security scan and post results |\n| `/copilot status` | Show current session + cognitive brain status |\n| `/copilot verify` | Trigger admin setup verification workflow |\n| `/copilot tier-check` | Run enforcement tier scan (dry-run) and post results |\n| `/copilot tier-promote` | Generate tier promotion stubs (dry-run only, Domain 8) |\n| `/copilot help` | Show this message |\n\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may use these commands.\n\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_"}' \
             > /dev/null
+
+      # ── /copilot fix <issue-number> ─────────────────────────────────────────
+      # GAP-042: new command — ask @copilot to fix a specific issue
+      - name: Execute /copilot fix
+        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'fix'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+          ARGS: ${{ steps.parse.outputs.ARGS }}
+          ACTOR: ${{ steps.parse.outputs.ACTOR }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          ISSUE_REF="${ARGS:-<issue-number>}"
+          printf '@copilot Fix issue #%s -- analyse the issue description, identify the root cause in the codebase, and open a PR with a targeted fix. Follow CODEBASE_AGENCY_POLICY.md.\n\n> Dispatched via chat-ops `/copilot fix` by @%s' \
+            "${ISSUE_REF}" "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
+          echo "✅ Posted /copilot fix for issue #${ISSUE_REF} on PR #${PR_NUMBER}"
+
+      # ── /copilot review ──────────────────────────────────────────────────────
+      # GAP-042: new command — request an in-depth code review on the current PR
+      - name: Execute /copilot review
+        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'review'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+          ACTOR: ${{ steps.parse.outputs.ACTOR }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          printf '@copilot Review this pull request thoroughly:\n1. Check for correctness, security issues, and test coverage gaps\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\n3. Identify any Mermaid diagrams or documentation that need updating\n4. Post a structured review comment with LGTM / REQUEST_CHANGES rating\n\n> Dispatched via chat-ops `/copilot review` by @%s' \
+            "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
+          echo "✅ Posted /copilot review on PR #${PR_NUMBER}"
+
+      # ── /copilot coverage <module> ───────────────────────────────────────────
+      # GAP-042: new command — request targeted test coverage improvement
+      - name: Execute /copilot coverage
+        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'coverage'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+          ARGS: ${{ steps.parse.outputs.ARGS }}
+          ACTOR: ${{ steps.parse.outputs.ACTOR }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          MODULE="${ARGS:-src/codex}"
+          printf '@copilot Improve test coverage for `%s`:\n1. Identify untested functions and branches\n2. Write targeted tests in `tests/`\n3. Ensure new tests pass\n4. Coverage increase should be measurable in the coverage report\n\n> Dispatched via chat-ops `/copilot coverage` by @%s' \
+            "${MODULE}" "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
+          echo "✅ Posted /copilot coverage for ${MODULE} on PR #${PR_NUMBER}"
+
+      # ── /copilot security ────────────────────────────────────────────────────
+      # GAP-042: new command — trigger security scan and post summary
+      - name: Execute /copilot security
+        if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD == 'security'
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
+          ACTOR: ${{ steps.parse.outputs.ACTOR }}
+        run: |
+          TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
+          printf '@copilot Run a security audit on this PR:\n1. Check all changed files for injection, path traversal, credential exposure, and supply-chain risks\n2. Review any new dependencies against the GitHub Advisory Database\n3. Verify CodeQL alerts introduced by this PR are addressed\n4. Post a Security Summary with findings and PASS/FAIL verdict\n\n> Dispatched via chat-ops `/copilot security` by @%s' \
+            "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
+          echo "✅ Posted /copilot security on PR #${PR_NUMBER}"
 
       # ── Group D: COGNITIVE_BRAIN_SESSION_NUMBER auto-increment ───────────────
       # Runs after every successfully authorized /copilot command.

@@ -52,7 +52,7 @@ for CDP-level request interception.  Every outbound request to `github.com` and
 `api.github.com` now has an `Authorization: token <GITHUB_TOKEN>` header merged
 in, enabling private-repository security page access without a full OAuth flow.
 
-Previous implementation: validated token via `requests.get("https://api.github.com/user")` 
+Previous implementation: validated token via `requests.get("https://api.github.com/user")`
 but never actually injected anything into the browser session.
 
 **Tests added:** `test_token_registers_routes_returns_true`,

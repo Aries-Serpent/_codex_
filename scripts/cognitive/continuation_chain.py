@@ -234,7 +234,8 @@ def _build_next_steps_token(manifest_path: Path) -> str:
                 lines.append(f"{status} **P{item.get('priority','?')}**: {item.get('title','?')}")
             return _token("NEXT_STEPS", "\n".join(lines))
     except Exception:  # noqa: BLE001
-        pass
+        import warnings
+        warnings.warn("continuation_chain: failed to read phase roadmap from manifest", stacklevel=2)
 
     # Fallback: hard-coded known Phase 8 tasks
     return _token(

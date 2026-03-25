@@ -1,11 +1,88 @@
 # Codex Index Manifest
 # Machine-friendly repository navigation guide for agents
-# Version: 1.0.0
-# Last Updated: 2025-11-09
+# Version: 2.0.0
+# Last Updated: 2026-03-25
+# Regenerate topology: python scripts/ci/generate_mermaid.py --emit-nav .codex/AGENT_NAVIGATION.md
 
-version: "1.0.0"
+version: "2.0.0"
 repository: "Aries-Serpent/_codex_"
 description: "Offline-first ML repository with reproducible training and schema-validated configs"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIERED NAVIGATION CONTRACT (for AI agents)
+# ─────────────────────────────────────────────────────────────────────────────
+# Tier 0 → Read entry points first (README, AGENTS.md, this file, CODEX_MANIFEST.json)
+# Tier 1 → Use domain Mermaid maps for architecture orientation
+# Tier 2 → Use package/module maps only after Tier 1 context established
+# Tier 3 → Read specific files only when Tier 2 confirms relevance
+# Rule: Never jump from Tier 0 to Tier 3. Use generated maps — prefer over hand-drawn.
+# ─────────────────────────────────────────────────────────────────────────────
+
+navigation:
+  tier_0_entry_points:
+    - path: "README.md"
+      role: "Quick index and AI agent orientation"
+      read_depth: "header-only"
+    - path: "AGENTS.md"
+      role: "Navigation rules, conventions, prohibited actions"
+      read_depth: "full"
+    - path: ".codex/codex_index.yaml"
+      role: "This file — machine-readable canonical index"
+      read_depth: "full"
+    - path: "CODEX_MANIFEST.json"
+      role: "Integrity-signed repo state, CI patterns, agent metadata"
+      read_depth: "header-only"
+
+  tier_1_domain_maps:
+    - path: "docs/ARCHITECTURE.md"
+      role: "System architecture, component relationships"
+      mermaid_blocks: ["System Context", "Container Architecture"]
+    - path: "docs/system/CODEBASE_COGNITIVE_MAP.md"
+      role: "AI navigation guidance, domain orientation"
+    - path: ".codex/AGENT_NAVIGATION.md"
+      role: "Auto-generated tiered Mermaid navigation guide"
+      regenerate_cmd: "python scripts/ci/generate_mermaid.py --emit-nav .codex/AGENT_NAVIGATION.md"
+    - path: ".codex/reports/repo_map.md"
+      role: "Repository inventory map"
+    - path: "docs/mcp/Traversal_Workflow.md"
+      role: "MCP traversal workflow diagram"
+
+  tier_2_generated_maps:
+    - diagram: "repo_topology"
+      cmd: "python scripts/ci/generate_mermaid.py --print repo_topology"
+      role: "Full filesystem + package topology (live)"
+    - diagram: "module_map"
+      cmd: "python scripts/ci/generate_mermaid.py --print module_map"
+      role: "src/ package structure"
+    - diagram: "cognitive_brain"
+      cmd: "python scripts/ci/generate_mermaid.py --print cognitive_brain"
+      role: "Cognitive brain component graph"
+    - diagram: "ci_overview"
+      cmd: "python scripts/ci/generate_mermaid.py --print ci_overview"
+      role: "GitHub Actions workflow trigger map"
+    - diagram: "auth_flow"
+      cmd: "python scripts/ci/generate_mermaid.py --print auth_flow"
+      role: "Auth module class dependencies"
+    - diagram: "agent_nav_tiers"
+      cmd: "python scripts/ci/generate_mermaid.py --print agent_nav_tiers"
+      role: "4-tier agent navigation flowchart"
+
+  topology_signals:
+    - signal: "filesystem tree"
+      generator: "repo_topology"
+      contribution: "Directory structure and breadth"
+    - signal: "import graph"
+      generator: "module_map, cognitive_brain, auth_flow"
+      contribution: "Code dependencies"
+    - signal: "docs nav / mkdocs.yml"
+      generator: "docs_nav"
+      contribution: "Documentation routing"
+    - signal: "workflow files"
+      generator: "ci_overview"
+      contribution: "CI/CD and automation relationships"
+    - signal: "Mermaid diagrams"
+      generator: "agent_nav_tiers"
+      contribution: "Curated human/system architecture hints"
 
 # Primary files - high priority, read first
 primary:

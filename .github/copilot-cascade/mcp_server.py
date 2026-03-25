@@ -670,80 +670,6 @@ class MCPIntegration:
                 error=str(exc),
             )
 
-    @staticmethod
-    def _http_post_json_streaming(
-        url: str,
-        payload: Dict[str, Any],
-        auth_token: Optional[str] = None,
-        timeout: int = 30,
-    ) -> Dict[str, Any]:
-        """POST JSON and read the response as SSE or plain JSON.
-
-        Delegates to :func:`scripts.ci.mcp_sse_transport.http_post_json_streaming`
-        when available (single source of truth).  Falls back to the inline
-        implementation when the scripts tree is not on the path.
-
-        See :mod:`mcp_sse_transport` for the full parameter/return documentation.
-        """
-        if _sse_transport_imported:
-            return _http_post_json_streaming_fn(
-                url, payload, auth_token=auth_token, timeout=timeout
-            )
-
-        # ------------------------------------------------------------------ #
-        # Fallback implementation (identical logic, kept for environments     #
-        # where the repo root is not available, e.g. a bare checkout of the  #
-        # .github/copilot-cascade/ sub-tree only).                            #
-        # ------------------------------------------------------------------ #
-        if not url.startswith(("http://", "https://")):
-            raise ValueError(
-                f"_http_post_json_streaming: URL must start with "
-                f"http:// or https://, got: {url!r}"
-            )
-        data = json.dumps(payload).encode("utf-8")
-        headers: Dict[str, str] = {
-            "Content-Type": "application/json",
-            "Accept": "text/event-stream, application/json",
-        }
-        if auth_token:
-            headers["Authorization"] = f"Bearer {auth_token}"
-
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
-            content_type = resp.headers.get("Content-Type", "")
-            raw = resp.read()
-
-        if "text/event-stream" not in content_type:
-            return json.loads(raw)
-
-        chunks: List[Dict[str, Any]] = []
-        for line in raw.decode("utf-8").splitlines():
-            line = line.strip()
-            if line.startswith("data:"):
-                fragment = line.removeprefix("data:").strip()
-                if fragment in ("", "[DONE]"):
-                    continue
-                try:
-                    frame = json.loads(fragment)
-                    if isinstance(frame, dict):
-                        chunks.append(frame)
-                except json.JSONDecodeError:
-                    logger.debug(
-                        "MCP SSE: skipping non-JSON fragment: %r", fragment
-                    )
-
-        if not chunks:
-            return {
-                "error": {
-                    "message": "SSE stream contained no parseable data frames"
-                }
-            }
-
-        final = chunks[-1]
-        final["_streaming_chunks"] = len(chunks)
-        return final
-
-    @staticmethod
     def _http_post_json_streaming(
         url: str,
         payload: Dict[str, Any],
@@ -943,3 +869,162 @@ async def mcp_execute(server_name: str, capability: str, payload: Dict[str, Any]
     mcp = get_mcp_integration()
     request = MCPRequest(server_name=server_name, capability=capability, payload=payload)
     return await mcp.execute(request)
+
+
+# ---------------------------------------------------------------------------
+# CLI entry-point (GAP-032 fix: add CLI for local debug / connectivity testing)
+# ---------------------------------------------------------------------------
+def _build_cli_parser():
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="GitHub MCP Server CLI — test, list and execute MCP capabilities.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Examples:\n"
+            "  python mcp_server.py list-servers\n"
+            "  python mcp_server.py test-connection --server github --mode mock\n"
+            "  python mcp_server.py execute --server github --capability code_search \\\n"
+            "      --params '{\"query\": \"my_function\"}' --mode mock\n"
+            "  python mcp_server.py health\n"
+        ),
+    )
+    subparsers = parser.add_subparsers(dest="command", metavar="COMMAND")
+
+    # list-servers
+    subparsers.add_parser("list-servers", help="List all registered MCP servers and their capabilities")
+
+    # test-connection
+    tc = subparsers.add_parser("test-connection", help="Test connectivity to an MCP server")
+    tc.add_argument("--server", required=True, help="Server name (e.g. 'github', 'playwright')")
+    tc.add_argument(
+        "--mode",
+        choices=["mock", "real", "streaming"],
+        default="mock",
+        help="Connection mode (default: mock)",
+    )
+    tc.add_argument("--token", default=None, help="Bearer auth token")
+    tc.add_argument("--timeout", type=int, default=30, help="Timeout in seconds (default: 30)")
+
+    # execute
+    ex = subparsers.add_parser("execute", help="Execute an MCP capability and print the response")
+    ex.add_argument("--server", required=True, help="Server name")
+    ex.add_argument("--capability", required=True, help="Capability name (e.g. 'code_search')")
+    ex.add_argument("--params", default="{}", help="JSON-encoded params dict (default: '{}')")
+    ex.add_argument(
+        "--mode",
+        choices=["mock", "real", "streaming"],
+        default="mock",
+        help="Connection mode (default: mock)",
+    )
+    ex.add_argument("--token", default=None, help="Bearer auth token")
+    ex.add_argument("--timeout", type=int, default=30, help="Timeout in seconds (default: 30)")
+    ex.add_argument("--output-format", choices=["json", "plain"], default="json", help="Output format")
+
+    # health
+    subparsers.add_parser("health", help="Print current MCP integration health and config")
+
+    return parser
+
+
+def _cli_main(argv=None):
+    """CLI entry point for mcp_server.py."""
+    import json as _json
+    import sys as _sys
+
+    parser = _build_cli_parser()
+    args = parser.parse_args(argv)
+
+    if not args.command:
+        parser.print_help()
+        return 1
+
+    integration = get_mcp_integration()
+
+    if args.command == "list-servers":
+        print("Registered MCP servers:")
+        for name, spec in integration.server_registry.items():
+            caps = ", ".join(spec.capabilities) if hasattr(spec, "capabilities") else "n/a"
+            mode = getattr(spec, "connection_mode", "mock")
+            print(f"  • {name:<20} mode={mode:<12} capabilities=[{caps}]")
+        return 0
+
+    if args.command == "health":
+        print("MCP Integration Health")
+        print(f"  Registered servers : {len(integration.server_registry)}")
+        print(f"  Default mode       : {integration.connection_mode.value}")
+        print(f"  SSE transport      : {'available' if _sse_transport_imported else 'fallback (inline)'}")
+        return 0
+
+    if args.command == "test-connection":
+        mode = MCPConnectionMode(args.mode)
+        original_mode = integration.connection_mode
+        integration.connection_mode = mode
+        request = MCPRequest(
+            server_name=args.server,
+            capability="ping",
+            payload={},
+            auth_token=args.token,
+            timeout=args.timeout,
+        )
+        try:
+            result = asyncio.run(integration.execute(request))
+            status = "✅ OK" if result.status == "success" else f"❌ {result.status}"
+            print(f"Connection test: {status}")
+            if result.error:
+                print(f"  Error: {result.error}")
+            return 0 if result.status == "success" else 1
+        except Exception as exc:  # noqa: BLE001
+            print(f"❌ Connection test failed: {exc}", file=_sys.stderr)
+            return 1
+        finally:
+            integration.connection_mode = original_mode
+
+    if args.command == "execute":
+        try:
+            params = _json.loads(args.params)
+        except _json.JSONDecodeError as exc:
+            print(f"ERROR: --params is not valid JSON: {exc}", file=_sys.stderr)
+            return 1
+        mode = MCPConnectionMode(args.mode)
+        original_mode = integration.connection_mode
+        integration.connection_mode = mode
+        request = MCPRequest(
+            server_name=args.server,
+            capability=args.capability,
+            payload=params,
+            auth_token=args.token,
+            timeout=args.timeout,
+        )
+        try:
+            result = asyncio.run(integration.execute(request))
+            if args.output_format == "json":
+                output = {
+                    "status": result.status,
+                    "server": result.server_name,
+                    "request_id": result.request_id,
+                    "data": result.data,
+                }
+                if result.error:
+                    output["error"] = result.error
+                print(_json.dumps(output, indent=2))
+            else:
+                print(f"Status : {result.status}")
+                if result.data:
+                    print(f"Data   : {result.data}")
+                if result.error:
+                    print(f"Error  : {result.error}")
+            return 0 if result.status == "success" else 1
+        except Exception as exc:  # noqa: BLE001
+            print(f"ERROR: {exc}", file=_sys.stderr)
+            return 1
+        finally:
+            integration.connection_mode = original_mode
+
+    parser.print_help()
+    return 1
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(_cli_main())

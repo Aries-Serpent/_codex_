@@ -119,7 +119,7 @@ def assert_rate_limit_allows(
 
 
 # Test Fixtures
-class TestRequest:
+class MockRequest:
     """Mock request object for testing authentication."""
 
     def __init__(self, headers: Optional[Dict[str, str]] = None):
@@ -129,7 +129,7 @@ class TestRequest:
         return self.headers.get(name)
 
 
-class TestToolHandler:
+class ToolHandlerHelper:
     """Test tool handler with call tracking."""
 
     def __init__(self, return_value: Any = None):

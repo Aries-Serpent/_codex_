@@ -266,7 +266,8 @@ def main():
 
     print("\nAfterMath processing complete:")
     print(f"  - Lessons learned: {output_path}/lessons_learned_cumulative.md")
-    print(f"  - Checkpoint: {output_path}/../checkpoints/checkpoint_{data['meta']['session_id']}.yaml")
+    ckpt = f"checkpoint_{data['meta']['session_id']}.yaml"
+    print(f"  - Checkpoint: {output_path}/../checkpoints/{ckpt}")
 
     return 0
 

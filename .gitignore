@@ -445,3 +445,6 @@ memory/philosophy/*.md
 
 # actionlint binary (download artifact - not for repo)
 actionlint
+
+# Accidental pip-install output files (=X.Y pattern from mistyped pip commands)
+=*

@@ -58,6 +58,12 @@ jobs:
           # preventing new agents from being added without the protocol.
         continue-on-error: true
 
+      - name: Mermaid diagram drift check
+        id: mermaid_check
+        run: |
+          python scripts/ci/generate_mermaid.py --check
+        continue-on-error: true
+
       - name: Run quick tests
         id: tests
         run: |
@@ -81,6 +87,7 @@ jobs:
             const checks = {
               autofix: '${{ steps.autofix.outcome }}',
               pattern_pipeline: '${{ steps.pattern_pipeline.outcome }}',
+              mermaid_check: '${{ steps.mermaid_check.outcome }}',
               tests: '${{ steps.tests.outcome }}',
               quality: '${{ steps.quality.outcome }}'
             };
@@ -95,6 +102,7 @@ jobs:
             |-------|--------|
             | Auto-Fix Issues | ${checks.autofix === 'success' ? '✅ Pass' : '❌ Fail'} |
             | CI Pattern Pipeline (strict) | ${checks.pattern_pipeline === 'success' ? '✅ Pass' : '❌ Fail'} |
+            | Mermaid Diagram Drift | ${checks.mermaid_check === 'success' ? '✅ Pass' : '⚠️ Drift detected'} |
             | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
 

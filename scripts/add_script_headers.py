@@ -166,7 +166,9 @@ def add_header_to_script(script_path: Path) -> bool:
             insert_idx = 1
 
         # Skip encoding declarations
-        if insert_idx < len(lines) and ('coding' in lines[insert_idx] or 'encoding' in lines[insert_idx]):
+        if insert_idx < len(lines) and (
+            'coding' in lines[insert_idx] or 'encoding' in lines[insert_idx]
+        ):
             insert_idx += 1
 
         # Insert header
@@ -191,7 +193,10 @@ def main():
     if sys.argv[1] == '--all':
         scripts = list(scripts_dir.rglob('*.py'))
         # Filter out this script itself and __init__ files
-        scripts = [s for s in scripts if s.name != 'add_script_headers.py' and s.name != '__init__.py']
+        scripts = [
+            s for s in scripts
+            if s.name != 'add_script_headers.py' and s.name != '__init__.py'
+        ]
     else:
         scripts = [Path(sys.argv[1])]
 

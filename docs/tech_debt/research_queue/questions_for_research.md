@@ -1251,3 +1251,40 @@ Cache-based approach with `actions/cache@v4` is sufficient. After 2-3 CI runs, t
 1. `shard-results-*` artifacts always include a non-empty `.test_durations`
 2. Subsequent runs restore cached durations and show visibly faster collection
 3. Shard sizes are approximately balanced (within 10% of each other by duration)
+
+---
+
+## DRQ-026: `from src.` Absolute Import Elimination (Pattern 19)
+
+**ID:** DRQ-026
+**Category:** API Drift / Import Architecture
+**Priority:** Medium
+**Impact:** 331 source files; breaks installed-mode imports (`pip install -e .` vs raw `python src/`)
+**Session:** S200 (2026-03-25)
+**Interim fix tag:** `# DRQ-026: informational — absolute src. imports, pending refactor`
+
+### Context
+`auto_fix_common_issues.py` Pattern 19 detects `from src.` import prefixes in
+331 files. These work when running directly from the repo root but fail when the
+package is installed (`pip install -e .`) because the top-level `src` directory
+is not a package in the installed distribution.
+
+### The Question
+What is the safest automated refactor path to replace all 331 `from src.<pkg>` imports
+with `from <pkg>` without breaking any import cycles, namespace packages, or
+conditional imports across the codebase?
+
+### Why Needs Research
+- 331 files is too large for manual change; automated tooling (rope, libcst, sed) each
+  carry different collision risks
+- Some `from src.` imports may be intentional (e.g. `conftest.py`, `setup.py`)
+- Requires inventory of which packages are installed vs which are path-only
+
+### Current Hypothesis
+A two-pass approach: (1) libcst codemod to rewrite `from src.X` → `from X`, (2) run
+the test suite to catch any newly-broken imports. Likely 2–3 CI iterations to stabilise.
+
+### Acceptance Criteria
+1. Pattern 19 reports 0 files affected
+2. All existing tests pass after the rewrite
+3. `pip install -e .` followed by `python -c "import codex"` succeeds
