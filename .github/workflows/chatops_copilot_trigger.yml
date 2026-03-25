@@ -377,13 +377,14 @@ jobs:
         run: |
           TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
           ISSUE_REF="${ARGS:-<issue-number>}"
-          BODY="@copilot Fix issue #${ISSUE_REF} — analyse the issue description, identify the root cause in the codebase, and open a PR with a targeted fix. Follow CODEBASE_AGENCY_POLICY.md.\n\n> Dispatched via chat-ops \`/copilot fix\` by @${ACTOR}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"${BODY}\"}" \
-            > /dev/null
+          printf '@copilot Fix issue #%s -- analyse the issue description, identify the root cause in the codebase, and open a PR with a targeted fix. Follow CODEBASE_AGENCY_POLICY.md.\n\n> Dispatched via chat-ops `/copilot fix` by @%s' \
+            "${ISSUE_REF}" "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
           echo "✅ Posted /copilot fix for issue #${ISSUE_REF} on PR #${PR_NUMBER}"
 
       # ── /copilot review ──────────────────────────────────────────────────────
@@ -398,13 +399,14 @@ jobs:
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
         run: |
           TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          BODY="@copilot Review this pull request thoroughly:\n1. Check for correctness, security issues, and test coverage gaps\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\n3. Identify any Mermaid diagrams or documentation that need updating\n4. Post a structured review comment with LGTM / REQUEST_CHANGES rating\n\n> Dispatched via chat-ops \`/copilot review\` by @${ACTOR}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"${BODY}\"}" \
-            > /dev/null
+          printf '@copilot Review this pull request thoroughly:\n1. Check for correctness, security issues, and test coverage gaps\n2. Verify compliance with CODEBASE_AGENCY_POLICY.md\n3. Identify any Mermaid diagrams or documentation that need updating\n4. Post a structured review comment with LGTM / REQUEST_CHANGES rating\n\n> Dispatched via chat-ops `/copilot review` by @%s' \
+            "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
           echo "✅ Posted /copilot review on PR #${PR_NUMBER}"
 
       # ── /copilot coverage <module> ───────────────────────────────────────────
@@ -421,13 +423,14 @@ jobs:
         run: |
           TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
           MODULE="${ARGS:-src/codex}"
-          BODY="@copilot Improve test coverage for \`${MODULE}\`:\n1. Identify untested functions and branches\n2. Write targeted pytest tests in \`tests/\`\n3. Ensure new tests pass with \`pytest ${MODULE}\`\n4. Coverage increase should be measurable in the coverage report\n\n> Dispatched via chat-ops \`/copilot coverage\` by @${ACTOR}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"${BODY}\"}" \
-            > /dev/null
+          printf '@copilot Improve test coverage for `%s`:\n1. Identify untested functions and branches\n2. Write targeted tests in `tests/`\n3. Ensure new tests pass\n4. Coverage increase should be measurable in the coverage report\n\n> Dispatched via chat-ops `/copilot coverage` by @%s' \
+            "${MODULE}" "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
           echo "✅ Posted /copilot coverage for ${MODULE} on PR #${PR_NUMBER}"
 
       # ── /copilot security ────────────────────────────────────────────────────
@@ -442,13 +445,14 @@ jobs:
           ACTOR: ${{ steps.parse.outputs.ACTOR }}
         run: |
           TOKEN="${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}"
-          BODY="@copilot Run a security audit on this PR:\n1. Check all changed files for injection, path traversal, credential exposure, and supply-chain risks\n2. Review any new dependencies against the GitHub Advisory Database\n3. Verify CodeQL alerts introduced by this PR are addressed\n4. Post a **Security Summary** with findings and PASS/FAIL verdict\n\n> Dispatched via chat-ops \`/copilot security\` by @${ACTOR}"
-          curl -s -X POST \
-            -H "Authorization: Bearer ${TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-            -d "{\"body\":\"${BODY}\"}" \
-            > /dev/null
+          printf '@copilot Run a security audit on this PR:\n1. Check all changed files for injection, path traversal, credential exposure, and supply-chain risks\n2. Review any new dependencies against the GitHub Advisory Database\n3. Verify CodeQL alerts introduced by this PR are addressed\n4. Post a Security Summary with findings and PASS/FAIL verdict\n\n> Dispatched via chat-ops `/copilot security` by @%s' \
+            "${ACTOR}" \
+            | python3 -c 'import json,sys; print(json.dumps({"body": sys.stdin.read()}))' \
+            | curl -s -X POST \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              -d @- > /dev/null
           echo "✅ Posted /copilot security on PR #${PR_NUMBER}"
 
       # ── Group D: COGNITIVE_BRAIN_SESSION_NUMBER auto-increment ───────────────

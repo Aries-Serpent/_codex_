@@ -538,9 +538,9 @@ def main() -> int:
         print(f"\n✅  Scraped {len(alerts)} alerts (after filters)")
         if args.output_format == "json":
             print(f"   JSON → {args.output}")
+            print("\nNext step: python scripts/security/analyze_alerts.py --input", args.output)
         if args.csv:
             print(f"   CSV  → {args.csv}")
-        print("\nNext step: python scripts/security/analyze_alerts.py --input", args.output)
     return 0
 
 

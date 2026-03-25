@@ -67,6 +67,7 @@ jobs:
   should-escalate:
     name: Triage — should we escalate?
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
       pull-requests: read
@@ -94,8 +95,9 @@ jobs:
           # ── 1. Decide whether to escalate ─────────────────────────────────
           if [ "${{ github.event_name }}" = "schedule" ]; then
             # Nightly sweep — always run
+            CAT="nightly_health_sweep"
             echo "escalate=true" >> "$GITHUB_OUTPUT"
-            echo "category=nightly_health_sweep" >> "$GITHUB_OUTPUT"
+            echo "category=${CAT}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "escalate=true" >> "$GITHUB_OUTPUT"
             CAT="${INPUT_CATEGORY:-general}"
@@ -127,7 +129,7 @@ jobs:
           fi
 
           # ── 2. Resolve PR number ───────────────────────────────────────────
-          if [ -n "${INPUT_PR}" ]; then
+          if [ "${INPUT_PR}" != "" ]; then
             PR_NUMBER="${INPUT_PR}"
           else
             PR_NUMBER=$(gh pr list \
@@ -150,6 +152,7 @@ jobs:
   post-copilot-prompt:
     name: Post @copilot self-healing prompt
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       pull-requests: write
@@ -180,145 +183,113 @@ jobs:
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RUN_LINK="${RUN_URL:-https://github.com/${{ github.repository }}/actions}"
+          OUT="${RUNNER_TEMP}/copilot_prompt.txt"
+          HDR="Session S${SESSION} | Branch: \`${HEAD_BRANCH}\` | Run: [${RUN_ID:-manual}](${RUN_LINK})"
 
-          # ── Build category-specific prompt ─────────────────────────────────
+          # Build category-specific prompt using printf to avoid YAML multi-line string issues.
+          # All prompt content is written line-by-line to ${OUT}; no multi-line bash strings used.
           case "${CATEGORY}" in
             test_failure)
-              PROMPT_BODY="@copilot Fix the failing tests in workflow **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Retrieve the job logs via GitHub MCP tools to identify the exact failing tests
-2. Diagnose root cause (import errors, fixture issues, logic regressions, missing deps)
-3. Apply the minimal targeted fix — do NOT remove or skip tests
-4. Run \`python3 -m ruff check\` and verify \`python3 -m pytest <failing_module> -x\` passes
-5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` with a session entry
-6. Push the fix and verify CI goes green
-
-Follow \`.codex/CODEBASE_AGENCY_POLICY.md\` — leave the codebase better than found."
+              printf '@copilot Fix the failing tests in workflow **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Retrieve job logs via GitHub MCP tools to identify the exact failing tests\n' >> "${OUT}"
+              printf '2. Diagnose root cause (import errors, fixture issues, regressions, missing deps)\n' >> "${OUT}"
+              printf '3. Apply the minimal targeted fix -- do NOT remove or skip tests\n' >> "${OUT}"
+              printf '4. Run `python3 -m ruff check` and verify `python3 -m pytest <module> -x` passes\n' >> "${OUT}"
+              printf '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session entry\n' >> "${OUT}"
+              printf '6. Push fix and verify CI goes green\n\n' >> "${OUT}"
+              printf 'Follow `.codex/CODEBASE_AGENCY_POLICY.md` -- leave codebase better than found.' >> "${OUT}"
               ;;
-
             lint_failure)
-              PROMPT_BODY="@copilot Fix the linting/style failures in workflow **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Run \`python3 -m ruff check --statistics\` to list all violations
-2. Run \`python3 -m ruff check --fix\` to auto-fix all fixable issues
-3. For remaining violations, apply manual fixes
-4. Verify: \`python3 -m ruff check\` exits 0
-5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-6. Push — do NOT disable rules or add \`noqa\` suppression without justification
-
-Check \`scripts/ci/check_deferral_language.py\` passes (no deferral-language gate violations)."
+              printf '@copilot Fix the linting/style failures in workflow **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Run `python3 -m ruff check --statistics` to list all violations\n' >> "${OUT}"
+              printf '2. Run `python3 -m ruff check --fix` to auto-fix fixable issues\n' >> "${OUT}"
+              printf '3. Apply manual fixes for remaining violations\n' >> "${OUT}"
+              printf '4. Verify `python3 -m ruff check` exits 0\n' >> "${OUT}"
+              printf '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '6. Push -- do NOT disable rules or add noqa without justification\n\n' >> "${OUT}"
+              printf 'Verify `scripts/ci/check_deferral_language.py` passes.' >> "${OUT}"
               ;;
-
             coverage_regression)
-              PROMPT_BODY="@copilot Fix the coverage regression detected by **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Check \`coverage.xml\` or the workflow logs to identify which modules dropped
-2. Write targeted tests for the uncovered lines/branches
-3. Run \`python3 -m pytest --cov=src --cov-report=term-missing\` to verify improvement
-4. Ensure coverage meets the threshold defined in \`.github/workflows/test-rag.yml\` (≥27%)
-5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-6. Push fix"
+              printf '@copilot Fix the coverage regression detected by **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Check coverage.xml or workflow logs to identify modules that dropped\n' >> "${OUT}"
+              printf '2. Write targeted tests for the uncovered lines/branches\n' >> "${OUT}"
+              printf '3. Run `python3 -m pytest --cov=src --cov-report=term-missing` to verify\n' >> "${OUT}"
+              printf '4. Ensure coverage meets threshold in `.github/workflows/test-rag.yml` (>=27%%)\n' >> "${OUT}"
+              printf '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '6. Push fix' >> "${OUT}"
               ;;
-
             security_alert)
-              PROMPT_BODY="@copilot Remediate the security alerts detected by **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Use GitHub MCP tools to list all open CodeQL / secret-scanning / Dependabot alerts
-2. Triage by severity — fix CRITICAL and HIGH alerts first
-3. For each alert: identify the vulnerable code, apply the minimal safe fix, verify no regressions
-4. For dependency vulnerabilities: bump to the patched version in \`pyproject.toml\`
-5. Add a **Security Summary** to \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-6. Push fix — CodeQL will re-scan on the new commit"
+              printf '@copilot Remediate the security alerts detected by **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Use GitHub MCP tools to list all open CodeQL/secret-scanning/Dependabot alerts\n' >> "${OUT}"
+              printf '2. Triage by severity -- fix CRITICAL and HIGH alerts first\n' >> "${OUT}"
+              printf '3. Apply minimal safe fix per alert; verify no regressions\n' >> "${OUT}"
+              printf '4. For dependency vulnerabilities: bump to patched version in pyproject.toml\n' >> "${OUT}"
+              printf '5. Add a Security Summary to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '6. Push fix -- CodeQL will re-scan on the new commit' >> "${OUT}"
               ;;
-
             type_error)
-              PROMPT_BODY="@copilot Fix the mypy / type-checking failures in **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Retrieve logs to identify the exact mypy errors (file:line, error code)
-2. Fix each type error — use \`Optional\`, \`cast\`, or proper type annotations
-3. Do NOT add new \`# type: ignore\` annotations unless absolutely unavoidable
-4. Run \`python3 -m mypy src/ --no-error-summary\` to verify clean output
-5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-6. Push fix"
+              printf '@copilot Fix the mypy/type-checking failures in **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Retrieve logs to identify exact mypy errors (file:line, error code)\n' >> "${OUT}"
+              printf '2. Fix each error -- use Optional, cast, or proper annotations\n' >> "${OUT}"
+              printf '3. Do NOT add new `# type: ignore` unless absolutely unavoidable\n' >> "${OUT}"
+              printf '4. Run `python3 -m mypy src/ --no-error-summary` to verify clean output\n' >> "${OUT}"
+              printf '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '6. Push fix' >> "${OUT}"
               ;;
-
             ci_pattern)
-              PROMPT_BODY="@copilot The CI Pattern Pipeline strict gate failed in **${WORKFLOW_NAME}**.
-
-**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
-**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Run \`python3 scripts/ci/ci_pattern_pipeline.py --check-only --strict\` locally
-2. Review the high-recurrence patterns flagged (see pattern DB)
-3. Apply \`python3 scripts/ci/auto_fix_common_issues.py\` for auto-fixable patterns
-4. For manual patterns: trace root cause and apply targeted fix
-5. Run pipeline again to confirm it passes
-6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-7. Push fix"
+              printf '@copilot The CI Pattern Pipeline strict gate failed in **%s**.\n\n' "${WORKFLOW_NAME}" > "${OUT}"
+              printf '%s\n\n' "${HDR}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Run `python3 scripts/ci/ci_pattern_pipeline.py --check-only --strict` locally\n' >> "${OUT}"
+              printf '2. Review high-recurrence patterns flagged (see pattern DB)\n' >> "${OUT}"
+              printf '3. Apply `python3 scripts/ci/auto_fix_common_issues.py` for auto-fixable patterns\n' >> "${OUT}"
+              printf '4. For manual patterns: trace root cause and apply targeted fix\n' >> "${OUT}"
+              printf '5. Run pipeline again to confirm it passes\n' >> "${OUT}"
+              printf '6. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '7. Push fix' >> "${OUT}"
               ;;
-
             nightly_health_sweep)
-              PROMPT_BODY="@copilot Perform the nightly codebase health sweep (S${SESSION}).
-
-**Timestamp:** ${TIMESTAMP} | **Branch:** \`${HEAD_BRANCH}\`
-
-**Health-sweep checklist:**
-1. Run \`python3 -m ruff check\` — fix any new violations
-2. Run \`python3 scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json\` — fix auto-fixable issues
-3. Check GitHub for new open CodeQL alerts — remediate any CRITICAL/HIGH
-4. Verify \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` was updated in the last 48h
-5. Review the last 5 CI runs on \`${HEAD_BRANCH}\` for any recurring failures
-6. Update cognitive brain metadata if new patterns were observed
-7. Push any fixes with descriptive commit messages"
+              printf '@copilot Perform the nightly codebase health sweep (S%s).\n\n' "${SESSION}" > "${OUT}"
+              printf 'Timestamp: %s | Branch: `%s`\n\n' "${TIMESTAMP}" "${HEAD_BRANCH}" >> "${OUT}"
+              printf 'Health-sweep checklist:\n' >> "${OUT}"
+              printf '1. Run `python3 -m ruff check` -- fix any new violations\n' >> "${OUT}"
+              printf '2. Run `python3 scripts/ci/auto_fix_common_issues.py --check-only` -- fix auto-fixable\n' >> "${OUT}"
+              printf '3. Check GitHub for new open CodeQL alerts -- remediate CRITICAL/HIGH\n' >> "${OUT}"
+              printf '4. Verify `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in last 48h\n' >> "${OUT}"
+              printf '5. Review last 5 CI runs on `%s` for recurring failures\n' "${HEAD_BRANCH}" >> "${OUT}"
+              printf '6. Update cognitive brain metadata if new patterns observed\n' >> "${OUT}"
+              printf '7. Push any fixes with descriptive commit messages' >> "${OUT}"
               ;;
-
             *)
-              PROMPT_BODY="@copilot Continue iterative self-healing for branch \`${HEAD_BRANCH}\`.
-
-**Session S${SESSION} | Workflow:** ${WORKFLOW_NAME}
-**Run:** [${RUN_ID:-manual}](${RUN_LINK})
-
-**Steps required:**
-1. Review the failing workflow logs via GitHub MCP tools
-2. Identify and fix the root cause following \`.codex/CODEBASE_AGENCY_POLICY.md\`
-3. Run \`python3 -m ruff check\` and \`python3 -m pytest -x\` to verify
-4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-5. Push fix — leave the codebase better than found"
+              printf '@copilot Continue iterative self-healing for branch `%s`.\n\n' "${HEAD_BRANCH}" > "${OUT}"
+              printf 'Workflow: %s | Run: [%s](%s)\n\n' "${WORKFLOW_NAME}" "${RUN_ID:-manual}" "${RUN_LINK}" >> "${OUT}"
+              printf 'Steps required:\n' >> "${OUT}"
+              printf '1. Review the failing workflow logs via GitHub MCP tools\n' >> "${OUT}"
+              printf '2. Identify and fix root cause per `.codex/CODEBASE_AGENCY_POLICY.md`\n' >> "${OUT}"
+              printf '3. Run `python3 -m ruff check` and `python3 -m pytest -x` to verify\n' >> "${OUT}"
+              printf '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n' >> "${OUT}"
+              printf '5. Push fix -- leave the codebase better than found' >> "${OUT}"
               ;;
           esac
 
-          # Write prompt to runner temp
-          # (TEMPORARY_FILES_POLICY §2: never use /tmp/ for files that must persist across steps)
-          printf '%s' "${PROMPT_BODY}" > "${RUNNER_TEMP}/copilot_prompt.txt"
-          echo "prompt_file=${RUNNER_TEMP}/copilot_prompt.txt" >> "$GITHUB_OUTPUT"
+          echo "prompt_file=${OUT}" >> "$GITHUB_OUTPUT"
           echo "category=${CATEGORY}" >> "$GITHUB_OUTPUT"
 
-          echo "### 📝 Built @copilot prompt (category: ${CATEGORY})" >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
-          head -5 "${RUNNER_TEMP}/copilot_prompt.txt" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Built @copilot prompt (category: ${CATEGORY})" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          head -5 "${OUT}" >> "$GITHUB_STEP_SUMMARY"
           echo "..." >> "$GITHUB_STEP_SUMMARY"
-          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Check for duplicate comment (idempotency guard)
         id: dedup
@@ -375,7 +346,7 @@ Check \`scripts/ci/check_deferral_language.py\` passes (no deferral-language gat
             --body "${BODY}" \
             --label "ci-failure" \
             2>/dev/null || echo "")
-          if [ -n "${ISSUE_URL}" ]; then
+          if [ "${ISSUE_URL}" != "" ]; then
             echo "✅ Created escalation issue: ${ISSUE_URL}"
             echo "### ✅ Escalation Issue created: ${ISSUE_URL}" >> "$GITHUB_STEP_SUMMARY"
           else

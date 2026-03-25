@@ -49,21 +49,27 @@ def format_copilot_comment(prompt_content: str) -> str:
 
 
 def check_for_duplicate_comment(pr_number: int, comment_body: str) -> bool:
-    """Return True if an identical (or near-identical) comment was recently posted."""
+    """Return True if an identical (or near-identical) comment was recently posted.
+
+    Fetches last 10 PR comment bodies as a JSON array and compares each whole
+    body against the first 500 chars of *comment_body* to avoid line-fragment
+    false-positives from splitlines().
+    """
     try:
         result = subprocess.run(
             ['gh', 'pr', 'view', str(pr_number), '--json', 'comments',
-             '--jq', '.comments[-10:][].body'],
+             '--jq', '[.comments[-10:][].body]'],
             capture_output=True, text=True, timeout=30
         )
-        if result.returncode == 0:
-            recent_bodies = result.stdout.splitlines()
-            # Check first 200 chars of each recent comment for match
-            snippet = comment_body.strip()[:200]
+        if result.returncode == 0 and result.stdout.strip():
+            import json
+            recent_bodies = json.loads(result.stdout)
+            snippet = comment_body.strip()[:500]
             for body in recent_bodies:
-                if snippet and snippet in body:
+                if isinstance(body, str) and snippet and snippet in body:
                     return True
-    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+    except (subprocess.CalledProcessError, FileNotFoundError,
+            subprocess.TimeoutExpired, ValueError):
         pass  # Cannot check — allow posting
     return False
 

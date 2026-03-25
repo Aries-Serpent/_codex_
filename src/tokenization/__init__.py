@@ -36,7 +36,7 @@ try:
 except (ModuleNotFoundError, ImportError, AttributeError):
     # AttributeError: torch stub (torch/__init__.py) raises this when PyTorch not installed
     # ImportError/ModuleNotFoundError: tokenizers/transformers missing
-    TokenizerAdapter = None  # type: ignore[assignment]
+    TokenizerAdapter = None
 else:  # pragma: no cover - import succeeded
     __all__.append("TokenizerAdapter")
 

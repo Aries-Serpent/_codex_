@@ -621,25 +621,22 @@ jobs:
             echo "::warning::No open PR found for branch '${HEAD_BRANCH}' — creating GitHub Issue for Copilot escalation"
             echo "### ⚠️ Copilot Escalation via Issue (no PR found)" >> "$GITHUB_STEP_SUMMARY"
             # GAP-043: Fall back to creating a GitHub Issue so the failure is never silently dropped
+            # Write body to a temp file to avoid multi-line string YAML parse issues (actionlint).
             RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
-            ISSUE_BODY="@copilot Fix the failing CI workflow **${WORKFLOW_NAME}** (run [#${RUN_ID}](${RUN_URL})) on branch \`${HEAD_BRANCH}\`.
-
-Auto-fix patterns were exhausted. This issue was auto-created because no open PR was found for the branch.
-
-**Failure context:**
-- Workflow: \`${WORKFLOW_NAME}\`
-- Branch: \`${HEAD_BRANCH}\`
-- Run: [${RUN_ID}](${RUN_URL})
-- SHA: \`${HEAD_SHA}\`
-
-**Steps:**
-1. Review the failing run linked above
-2. Apply a targeted fix to the branch
-3. Push the fix and this issue will auto-close when CI passes"
+            printf '@copilot Fix the failing CI workflow **%s** (run [#%s](%s)) on branch `%s`.\n\n' \
+              "${WORKFLOW_NAME}" "${RUN_ID}" "${RUN_URL}" "${HEAD_BRANCH}" \
+              > "${RUNNER_TEMP}/issue_body.md"
+            printf 'Auto-fix patterns exhausted. Auto-created because no open PR was found.\n\n' \
+              >> "${RUNNER_TEMP}/issue_body.md"
+            printf 'Workflow: %s\nBranch: %s\nRun: %s\nSHA: %s\n\n' \
+              "${WORKFLOW_NAME}" "${HEAD_BRANCH}" "${RUN_URL}" "${HEAD_SHA}" \
+              >> "${RUNNER_TEMP}/issue_body.md"
+            printf 'Steps:\n1. Review the failing run linked above\n2. Apply a targeted fix\n3. Push — CI will auto-close this issue on green\n' \
+              >> "${RUNNER_TEMP}/issue_body.md"
             ISSUE_URL=$(gh issue create \
               --repo Aries-Serpent/_codex_ \
               --title "CI Failure: ${WORKFLOW_NAME} (run #${RUN_ID})" \
-              --body "${ISSUE_BODY}" \
+              --body-file "${RUNNER_TEMP}/issue_body.md" \
               --label "ci-failure" 2>/dev/null || echo "")
             if [ -n "$ISSUE_URL" ]; then
               echo "✅ Created escalation issue: ${ISSUE_URL}" >> "$GITHUB_STEP_SUMMARY"

@@ -336,13 +336,20 @@ def main(argv: Optional[list] = None) -> int:
             issues.append(f"URL must start with http:// or https://, got: {args.url!r}")
         if not auth_token:
             issues.append("No auth token provided (--token or MCP_AUTH_TOKEN env var)")
-        if args.method:
-            pass  # method presence validated
+        # In non-batch mode, a method is required for a valid request
+        if not args.batch_file and not args.method:
+            issues.append("No --method provided (required for single requests; use --batch-file for batch mode)")
+        # Validate --params is valid JSON if provided
+        if args.params:
+            try:
+                json.loads(args.params)
+            except json.JSONDecodeError as exc:
+                issues.append(f"--params is not valid JSON: {exc}")
         if issues:
             for issue in issues:
                 print(f"⚠  {issue}")
             return 1
-        print("✅ Validation passed — URL, token and params look correct")
+        print("✅ Validation passed — URL, token, method and params look correct")
         return 0
 
     # Batch-file mode
@@ -371,7 +378,7 @@ def main(argv: Optional[list] = None) -> int:
             results.append(result)
             if "error" in result:
                 exit_code = 1
-        print(_format_output(results, args.output_format))  # type: ignore[arg-type]
+        print(_format_output({"results": results}, args.output_format))
         return exit_code
 
     # Single-request mode
