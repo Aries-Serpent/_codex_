@@ -1811,7 +1811,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"✅ Discussion #{args.number} updated: {result.get('url', result)}")
 
         elif args.command == "lock-discussion":
-            result = poster.lock_discussion(args.repo, args.number, args.reason)
+            poster.lock_discussion(args.repo, args.number, args.reason)
             print(f"✅ Discussion #{args.number} locked ({args.reason})")
 
         elif args.command == "unlock-discussion":
