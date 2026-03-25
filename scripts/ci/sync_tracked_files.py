@@ -462,7 +462,12 @@ def check_accountability_freshness(result: SyncResult, *, fix: bool) -> None:
                 )
                 return
         except ValueError:
-            pass
+            # Malformed date in accountability report; fall back to git-based freshness check.
+            print(
+                f"[sync_tracked_files] Warning: could not parse session date '{most_recent}' "
+                f"in {ACCOUNTABILITY_PATH.name}; falling back to git history.",
+                file=sys.stderr,
+            )
 
     # Strategy 2: check git log (is it in the last 5 commits?)
     try:
