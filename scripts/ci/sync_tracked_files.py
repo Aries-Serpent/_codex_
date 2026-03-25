@@ -481,8 +481,12 @@ def check_accountability_freshness(result: SyncResult, *, fix: bool) -> None:
                 message="file modified in last 5 git commits",
             )
             return
-    except Exception:
-        pass
+    except Exception as exc:
+        print(
+            "[sync_tracked_files] WARNING: git log check for AGENT_ACCOUNTABILITY_REPORT "
+            f"failed: {exc}",
+            file=sys.stderr,
+        )
 
     if not fix:
         result.record(
