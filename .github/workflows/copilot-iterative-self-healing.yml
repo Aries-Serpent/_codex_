@@ -56,6 +56,10 @@ concurrency:
   group: copilot-self-healing-${{ github.event.workflow_run.head_branch || github.ref_name }}
   cancel-in-progress: false   # never cancel — each post is a unique escalation
 
+# Default to read-only; individual jobs grant only what they need
+permissions:
+  contents: read
+
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   # JOB 1: Determine whether we should escalate
@@ -63,6 +67,10 @@ jobs:
   should-escalate:
     name: Triage — should we escalate?
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
     outputs:
       escalate: ${{ steps.triage.outputs.escalate }}
       category: ${{ steps.triage.outputs.category }}
@@ -142,6 +150,11 @@ jobs:
   post-copilot-prompt:
     name: Post @copilot self-healing prompt
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      actions: read
     needs: should-escalate
     if: needs.should-escalate.outputs.escalate == 'true'
     steps:
