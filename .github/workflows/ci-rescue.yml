@@ -65,11 +65,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Only process failures; skip runs triggered from forks (security).
+    # Requires COPILOT_AGENT_AUTH_ENABLED=true repository variable so that
+    # rescue prompts are only posted when Agent Token Delegation is active.
     if: |
       github.event_name == 'workflow_dispatch' ||
       (
         github.event.workflow_run.conclusion == 'failure' &&
-        github.event.workflow_run.head_repository.full_name == github.repository
+        github.event.workflow_run.head_repository.full_name == github.repository &&
+        vars.COPILOT_AGENT_AUTH_ENABLED == 'true'
       )
     permissions:
       pull-requests: write   # post RCA comment on PR
@@ -77,6 +80,19 @@ jobs:
       actions: read          # read workflow run logs
 
     steps:
+      # ── Visibility: log why the job ran (or why it would have been skipped) ─
+      # When COPILOT_AGENT_AUTH_ENABLED is not 'true', the job-level `if:`
+      # prevents execution entirely. This step runs first so the Actions UI
+      # shows a clear message explaining the gating decision.
+      - name: Log rescue trigger context
+        run: |
+          echo "=== CI Rescue Trigger ==="
+          echo "Event:          ${{ github.event_name }}"
+          echo "Workflow run:   ${{ github.event.workflow_run.name }} (${{ github.event.workflow_run.conclusion }})"
+          echo "Head SHA:       ${{ github.event.workflow_run.head_sha || github.sha }}"
+          echo "Token delegation gate (COPILOT_AGENT_AUTH_ENABLED): ${{ vars.COPILOT_AGENT_AUTH_ENABLED }}"
+          echo "Branch:         ${{ github.event.workflow_run.head_branch || github.ref_name }}"
+
       # ── Set up Python (uses the runner's built-in Python; no checkout) ───
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -109,6 +125,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         run: |
           RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
+          COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
           PR_NUMBER="${{ inputs.pr_number }}"
           DRY_FLAG=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then
@@ -118,11 +135,16 @@ jobs:
           if [ "${PR_NUMBER}" != "" ]; then
             PR_FLAG="--pr ${PR_NUMBER}"
           fi
+          SHA_FLAG=""
+          if [ "${COMMIT_SHA}" != "" ]; then
+            SHA_FLAG="--commit-sha ${COMMIT_SHA}"
+          fi
 
           python3 /tmp/ci_rescue.py \
             --run-id "${RUN_ID}" \
             --repo   "${{ github.repository }}" \
             ${PR_FLAG} \
+            ${SHA_FLAG} \
             ${DRY_FLAG} \
             2>&1 | tee /tmp/rescue_output.txt
           RESCUE_EXIT="${PIPESTATUS[0]}"

@@ -350,36 +350,87 @@ def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
     return None
 
 
+def _make_rca_marker(commit_sha: Optional[str]) -> str:
+    """Return the HTML comment marker used to identify rescue comments.
+
+    The marker embeds the first 12 characters of the commit SHA so that
+    subsequent failures on the *same* commit are appended to the existing
+    rescue comment rather than creating duplicate top-level comments.
+    Falls back to the legacy marker when no SHA is available.
+
+    Note: Python slicing is safe for strings shorter than 12 chars — it
+    simply returns the full string, so no length check is required.
+    """
+    if commit_sha and commit_sha.strip():
+        return f"<!-- ci-rescue-rca:{commit_sha.strip()[:12]} -->"
+    return "<!-- ci-rescue-rca -->"
+
+
 def post_pr_comment(
     pr_number: int,
     repo: str,
     token: str,
     body: str,
     dry_run: bool = False,
+    commit_sha: Optional[str] = None,
 ) -> bool:
-    """Post (or update) a @copilot RCA comment on the PR."""
-    marker = "<!-- ci-rescue-rca -->"
+    """Post or append-update a @copilot RCA comment on the PR.
+
+    Deduplication strategy:
+    - Each rescue comment is tagged with ``<!-- ci-rescue-rca:{sha[:12]} -->``.
+    - If a comment with the same SHA marker already exists on the PR,
+      subsequent failures for that commit are *appended* as a new
+      ``### 🔄 Failure Update`` section inside the existing comment.
+    - If no matching comment exists, a fresh comment is created.
+    - Also checks for the legacy marker (no SHA) to avoid orphaned old comments.
+
+    This keeps the PR thread clean: one rescue thread per commit, with a full
+    chronological record of every failure event.
+    """
+    marker = _make_rca_marker(commit_sha)
     full_body = f"{marker}\n{body}"
 
     if dry_run:
-        print(f"\n[DRY RUN] Would post to PR #{pr_number}:\n{full_body[:500]}…")
+        print(f"\n[DRY RUN] Would post/update RCA on PR #{pr_number}:\n{full_body[:500]}…")
         return True
 
-    # Check for existing rescue comment to update (idempotent)
+    # Fetch up to 100 existing PR comments to look for a matching rescue comment.
     _, comments = _gh_api(f"/repos/{repo}/issues/{pr_number}/comments?per_page=100", token)
-    existing_id = None
+    existing_id: Optional[int] = None
+    existing_body: str = ""
+
     if isinstance(comments, list):
+        # Primary: look for SHA-scoped marker
         for c in comments:
-            if marker in (c.get("body") or ""):
+            c_body = c.get("body") or ""
+            if marker in c_body:
                 existing_id = c["id"]
+                existing_body = c_body
                 break
+        # Fallback: legacy marker (no SHA) so we never leave orphaned old comments
+        if existing_id is None:
+            for c in comments:
+                c_body = c.get("body") or ""
+                if "<!-- ci-rescue-rca -->" in c_body:
+                    existing_id = c["id"]
+                    existing_body = c_body
+                    break
 
     if existing_id:
+        # Append the new failure section to the existing rescue comment.
+        appended = (
+            existing_body.rstrip()
+            + "\n\n---\n\n"
+            + "### 🔄 Failure Update\n\n"
+            + body
+        )
+        if len(appended) > MAX_COMMENT_CHARS:
+            appended = appended[:MAX_COMMENT_CHARS] + "\n\n_(comment truncated)_"
         status, _ = _gh_api(
             f"/repos/{repo}/issues/comments/{existing_id}",
             token,
             method="PATCH",
-            body={"body": full_body},
+            body={"body": appended},
         )
     else:
         status, _ = _gh_api(
@@ -516,6 +567,7 @@ def _format_rca_comment(
     repo: str,
     result: RescueResult,
     timestamp: str,
+    commit_sha: Optional[str] = None,
 ) -> str:
     """Build the @copilot RCA comment body."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -525,6 +577,10 @@ def _format_rca_comment(
         "",
         f"> **Run:** [{run_id}]({run_url})  ",
         f"> **Time:** {timestamp}  ",
+    ]
+    if commit_sha:
+        lines.append(f"> **Commit:** `{commit_sha[:12]}`  ")
+    lines += [
         "> **Engine:** `scripts/ci/ci_rescue.py`",
         "",
     ]
@@ -617,6 +673,16 @@ def main() -> int:
     parser.add_argument("--repo", required=True, help="owner/repo")
     parser.add_argument("--token", default=os.environ.get("GITHUB_TOKEN"), help="GitHub token")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without executing")
+    parser.add_argument(
+        "--commit-sha",
+        default=None,
+        help=(
+            "Head commit SHA of the triggering workflow run. "
+            "Used to deduplicate rescue comments: subsequent failures "
+            "on the same commit are appended to the existing rescue "
+            "comment rather than creating a new one."
+        ),
+    )
     args = parser.parse_args()
 
     if not args.token:
@@ -650,9 +716,18 @@ def main() -> int:
 
     # Post RCA comment if there are unresolved issues
     if has_unresolved and pr_number:
-        comment_body = _format_rca_comment(args.run_id, args.repo, result, timestamp)
+        comment_body = _format_rca_comment(
+            args.run_id, args.repo, result, timestamp, args.commit_sha
+        )
         print(f"\n📝 Posting RCA comment to PR #{pr_number}…")
-        ok = post_pr_comment(pr_number, args.repo, args.token, comment_body, args.dry_run)
+        ok = post_pr_comment(
+            pr_number,
+            args.repo,
+            args.token,
+            comment_body,
+            args.dry_run,
+            args.commit_sha,
+        )
         if ok:
             print("  ✅ RCA comment posted")
         else:
