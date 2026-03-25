@@ -929,7 +929,6 @@ def _build_cli_parser():
 
 def _cli_main(argv=None):
     """CLI entry point for mcp_server.py."""
-    import asyncio
     import json as _json
     import sys as _sys
 
