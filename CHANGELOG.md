@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed/Added (S192 — PR #3741)
+- **feat(phase8/p1):** `pattern_recorder.py` — add `cross_pr_correlation(conn, min_prs=3)` function; detects patterns recurring across ≥N distinct git SHAs (PRs); add `cross-pr` CLI subcommand with `--min-prs` and `--json` flags; 8 new tests in `TestCrossPrCorrelation` (52/52 total)
+- **feat(discussions/hardening):** `mcp_poster.py` — add `add_discussion_comment()`, `upsert_discussion_comment()`, `post_ci_pattern_summary()`, `post_continuation_chain()`; add `_resolve_discussion_node_id()`, `_find_discussion_comment()`, `_update_discussion_comment()` GraphQL internals; add 4 CLI subcommands: `add-discussion-comment`, `upsert-discussion-comment`, `post-ci-pattern-summary`, `post-continuation`; null-guard `_resolve_discussion_node_id` against `discussion: None` GraphQL response; 22 new tests (78/78 total)
+- **feat(cognitive):** `scripts/cognitive/continuation_chain.py` — new script; builds tokenized `TOKEN:META/PHASE/MANIFEST/PATTERNS/NEXT_STEPS` markdown document from live cognitive-brain state; `--post-to-discussion` flag posts directly to GitHub Discussions via `mcp_poster.py`; reads CODEX_MANIFEST.json, pattern DB, `COGNITIVE_BRAIN_STATUS_*.md`; supports `--upsert` for idempotent CI runs
+- **feat(workflow):** `.github/workflows/post-ci-status-to-discussion.yml` — new workflow; triggers on push to `0D_base_`/`copilot/**` when pattern/cognitive files change; posts continuation chain + CI pattern summary to Discussion #3673; idempotent via session-scoped HTML markers
+- **fix(review):** `dashboard_generator.py` `_generate_ci_pattern_trend_section()` — SQLite connection closed via `try/finally` on all paths including zero-count early return; resolves Copilot review comment `r2984940023` (verified fix already applied in S191 commit 143d54d, review comment now stale/outdated)
+- **docs:** `docs/deepresearch/google_home_script_editor.md` — full research doc: top-5 workflows, top-5 agents, top-5 cognitive integrations, constraints/workarounds for Google Home YAML automation connected to `_codex_` conventions
+- **docs:** `docs/deepresearch/github_discussions_integration.md` — full research + hardening guide: CLI design, tokenized chain architecture, deduplication strategy, security token requirements, Copilot Agent + Assistant integration patterns
+- **docs:** `docs/deepresearch/INDEX.md` — updated with both new research docs (google_home_script_editor + github_discussions_integration)
+- **agent:** `.github/agents/ci-pattern-guardian.md` — updated to v1.1; add cross-PR correlation section with CLI examples and Phase 8 roadmap; add GitHub Discussions integration section with full posting architecture diagram and CLI reference; update capability_tags and tooling map
+
 ### Fixed/Added (S191 — PR #3741)
 - **fix(ci):** Remove extra trailing blank line from `.codex/docs/COGNITIVE_BRAIN_STATUS_S185.md` — unblocks `end-of-file-fixer` pre-commit check
 - **fix(ci):** Add `# pragma: allowlist secret` to 6 false-positive lines (`base.py` ×4, `dal.py`, `test_mcp_poster.py`); update `.secrets.baseline` CODEX_MANIFEST.json entry (stale line 1747 → active line 1931) — unblocks `detect-secrets` pre-commit check

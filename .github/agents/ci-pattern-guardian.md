@@ -1,8 +1,8 @@
 ---
 name: CI Pattern Guardian Agent
-description: Monitor, record, and enforce CI pattern knowledge graph — detects high-recurrence patterns, runs ci_pattern_pipeline strict gate, and escalates to Copilot when thresholds are breached
-version: 1.0.0
-updated: 2026-03-24
+description: Monitor, record, and enforce CI pattern knowledge graph — detects high-recurrence patterns, cross-PR recurring patterns, runs ci_pattern_pipeline strict gate, and posts tokenized continuation chains to GitHub Discussions
+version: 1.1.0
+updated: 2026-03-25
 cognitive_integration_level: 3
 phase: Phase 7-8
 capability_tags:
@@ -10,16 +10,23 @@ capability_tags:
   - pattern-recording
   - strict-gate
   - high-recurrence
+  - cross-pr-correlation
   - pattern-trend
   - pipeline-orchestration
+  - github-discussions
+  - continuation-chain
+  - tokenized-prompts
 tooling:
   recorder: scripts/ci/pattern_recorder.py
   pipeline: scripts/ci/ci_pattern_pipeline.py
   detector: scripts/ci/auto_fix_common_issues.py
   pre_commit: scripts/hooks/pre_commit_pattern_check.py
   dashboard: scripts/cognitive/dashboard_generator._generate_ci_pattern_trend_section
+  continuation_chain: scripts/cognitive/continuation_chain.py
+  poster: src/codex/github/mcp_poster.py
   api: /api/patterns (cognitive_app/src/server/cli_api_server.py)
   workflow_gate: .github/workflows/pre-merge-validation.yml (CI pattern pipeline strict gate)
+  workflow_discussions: .github/workflows/post-ci-status-to-discussion.yml
 ---
 
 # CI Pattern Guardian Agent v1.0
@@ -146,6 +153,92 @@ Served by `cognitive_app/src/server/cli_api_server.py`:
 
 ---
 
+## Cross-PR Pattern Correlation (Phase 8 P1)
+
+`pattern_recorder.cross_pr_correlation(conn, min_prs=3)` detects patterns that
+have recurred across at least **N distinct git SHAs** (PRs/commits).  Each
+unique `git_sha` value in the `patterns` table represents one CI run.
+
+```bash
+# CLI usage
+python scripts/ci/pattern_recorder.py cross-pr --min-prs 3
+python scripts/ci/pattern_recorder.py cross-pr --min-prs 2 --json
+```
+
+**Returns:**
+```
+Pattern                    PRs    Total  First SHA   Last SHA
+────────────────────────────────────────────────────────────
+Unused Imports               4       12  a1b2c3d4    e5f6a7b8
+Line Length                  3        6  deadbeef    cafebabe
+```
+
+**Phase 8 roadmap:**
+- [x] P1: `cross_pr_correlation()` + `cross-pr` CLI + 8 tests
+- [ ] P2: Snapshot pattern DB to workflow artifact (cross-run persistence)
+- [ ] P3: `cross_pr_correlation()` → auto-create GitHub Issue on ≥3 PRs
+- [ ] P4: Add `pattern_id` filter to `GET /api/patterns/recent`
+
+---
+
+## GitHub Discussions Integration (Phase 8 / S192)
+
+The agent pipeline now posts CI pattern summaries and tokenized continuation
+chains to **https://github.com/Aries-Serpent/_codex_/discussions** automatically
+on every push to `0D_base_`/`copilot/**`.
+
+### Posting Architecture
+
+```
+push → post-ci-status-to-discussion.yml
+         ├── continuation_chain.py → build tokenized chain
+         │     reads: CODEX_MANIFEST.json, pattern_recorder DB, COGNITIVE_BRAIN_STATUS_*.md
+         │     outputs: TOKEN:META TOKEN:PHASE TOKEN:PATTERNS TOKEN:NEXT_STEPS
+         │
+         └── mcp_poster.py → post to Discussion #3673
+               add_discussion_comment()       — new comment (chain)
+               upsert_discussion_comment()    — idempotent update (CI summary)
+               post_ci_pattern_summary()      — upsert by session marker
+               post_continuation_chain()      — always-new @copilot prompt
+```
+
+### CLI Commands (S192)
+
+```bash
+# Add new comment to discussion #3673
+python -m codex.github.mcp_poster add-discussion-comment \
+  --repo Aries-Serpent/_codex_ --number 3673 --body-file /tmp/msg.md
+
+# Idempotent update (upsert by marker — prevents duplicate posts)
+python -m codex.github.mcp_poster upsert-discussion-comment \
+  --repo Aries-Serpent/_codex_ --number 3673 \
+  --body-file /tmp/status.md --marker "<!-- ci-status:run-$GITHUB_RUN_ID -->"
+
+# Post CI pattern knowledge-graph summary (upserted, session-scoped marker)
+python -m codex.github.mcp_poster post-ci-pattern-summary \
+  --repo Aries-Serpent/_codex_ --number 3673 \
+  --body-file /tmp/patterns.md --session-id "run-$GITHUB_RUN_ID"
+
+# Post tokenized continuation chain (always new comment)
+python -m codex.github.mcp_poster post-continuation \
+  --repo Aries-Serpent/_codex_ --number 3673 --body-file /tmp/chain.md
+
+# Build + post full continuation chain in one command
+python scripts/cognitive/continuation_chain.py \
+  --post-to-discussion --discussion-number 3673 --upsert
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/codex/github/mcp_poster.py` | `add_discussion_comment`, `upsert_discussion_comment`, `post_ci_pattern_summary`, `post_continuation_chain` |
+| `scripts/cognitive/continuation_chain.py` | Tokenized CB chain builder — reads live state, posts to Discussion |
+| `.github/workflows/post-ci-status-to-discussion.yml` | Push-triggered workflow — posts chain + CI summary |
+| `docs/deepresearch/github_discussions_integration.md` | Full research + CLI design guide |
+
+---
+
 ## Integration with Copilot Escalation
 
 When `iterative-self-healing-ci.yml` escalates to `@copilot`, the escalation comment
@@ -160,8 +253,12 @@ automatically includes a high-recurrence table (Phase 7a). The agent session sho
 
 ```
 ✅ pattern_recorder.py     — pattern_trend() uses UTC (timezone.utc) — S191 fix
-✅ auto_fix_common_issues.py — fix_duplicate_kwargs() respects --check-only/--dry-run — S191 fix  
-✅ dashboard_generator.py  — SQLite conn closed in finally block — S191 fix
+✅ pattern_recorder.py     — cross_pr_correlation() added — S192 Phase 8 P1
+✅ auto_fix_common_issues.py — fix_duplicate_kwargs() respects --check-only/--dry-run — S191 fix
+✅ dashboard_generator.py  — SQLite conn closed in finally block — S191 fix (r2984940023 resolved)
+✅ mcp_poster.py            — add_discussion_comment / upsert / post_ci_pattern_summary / post_continuation_chain — S192
+✅ continuation_chain.py   — tokenized CB chain builder with --post-to-discussion flag — S192
+✅ post-ci-status-to-discussion.yml — push-triggered Discussion posting workflow — S192
 ✅ pre-merge-validation.yml — strict gate step added — S191
 ✅ CODEX_MANIFEST.json     — ci_patterns key added — S191
 ✅ .secrets.baseline       — CODEX_MANIFEST integrity hash updated — S191
@@ -169,4 +266,4 @@ automatically includes a high-recurrence table (Phase 7a). The agent session sho
 
 ---
 
-_Agent v1.0 — Created S191 | PR #3741 | Aligns with Phase 6-7 CI pattern tooling_
+_Agent v1.1 — Updated S192 | PR #3741 | Phase 8 P1: cross-PR correlation + Discussion posting pipeline_

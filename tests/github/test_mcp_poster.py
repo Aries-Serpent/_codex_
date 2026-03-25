@@ -1045,3 +1045,265 @@ def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
         "--file", "no_colon_here",
     ])
     assert rc == 1
+
+
+# ---------------------------------------------------------------------------
+# add_discussion_comment / upsert_discussion_comment / post_ci_pattern_summary
+# post_continuation_chain — S192 Discussion hardening
+# ---------------------------------------------------------------------------
+
+
+def _discussion_node_response(discussion_id: str = "DI_123") -> mock.MagicMock:
+    """GraphQL response returning a discussion node ID."""
+    return _graphql_response({"repository": {"discussion": {"id": discussion_id}}})
+
+
+def _add_comment_response(comment_id: str = "DC_abc", url: str = "https://github.com/d/1#c1") -> mock.MagicMock:
+    return _graphql_response(
+        {"addDiscussionComment": {"comment": {"id": comment_id, "url": url, "body": "body"}}}
+    )
+
+
+def _update_comment_response(comment_id: str = "DC_abc") -> mock.MagicMock:
+    return _graphql_response(
+        {"updateDiscussionComment": {"comment": {"id": comment_id, "url": "https://u", "body": "updated"}}}
+    )
+
+
+class TestAddDiscussionComment:
+    """Tests for GitHubMCPPoster.add_discussion_comment()."""
+
+    def test_success(self, poster, monkeypatch):
+        call_count = {"n": 0}
+
+        def fake_urlopen(req, timeout):
+            call_count["n"] += 1
+            if call_count["n"] == 1:
+                return _discussion_node_response("DI_999")
+            return _add_comment_response("DC_new", "https://github.com/d/42#c5")
+
+        monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+        result = poster.add_discussion_comment("owner/repo", 42, "Hello!")
+        assert result.get("url") == "https://github.com/d/42#c5"
+        assert call_count["n"] == 2
+
+    def test_raises_when_discussion_not_found(self, poster, monkeypatch):
+        monkeypatch.setattr(
+            "urllib.request.urlopen",
+            lambda req, timeout: _graphql_response({"repository": {"discussion": None}}),
+        )
+        with pytest.raises(RuntimeError, match="Discussion #99 not found"):
+            poster.add_discussion_comment("owner/repo", 99, "body")
+
+    def test_requires_token(self, no_token_poster):
+        with pytest.raises(RuntimeError):
+            no_token_poster.add_discussion_comment("owner/repo", 1, "body")
+
+
+class TestUpsertDiscussionComment:
+    """Tests for GitHubMCPPoster.upsert_discussion_comment()."""
+
+    def test_creates_new_when_marker_absent(self, poster, monkeypatch):
+        """No existing comment with marker → add_discussion_comment called."""
+        calls = []
+
+        def fake_urlopen(req, timeout):
+            data = json.loads(req.data)
+            query = data.get("query", "")
+            calls.append(query[:40])
+            if "discussion(number:" in query:
+                if "comments" in query:
+                    # _find_discussion_comment — empty comments
+                    return _graphql_response(
+                        {"repository": {"discussion": {"comments": {"nodes": []}}}}
+                    )
+                else:
+                    return _discussion_node_response("DI_1")
+            return _add_comment_response()
+
+        monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+        result = poster.upsert_discussion_comment("owner/repo", 1, "body", "<!-- marker -->")
+        assert result.get("id") == "DC_abc"
+
+    def test_updates_existing_when_marker_found(self, poster, monkeypatch):
+        """Comment with marker found → updateDiscussionComment called."""
+        calls = {"n": 0}
+
+        def fake_urlopen(req, timeout):
+            calls["n"] += 1
+            data = json.loads(req.data)
+            query = data.get("query", "")
+            if "comments(first:" in query:
+                return _graphql_response({
+                    "repository": {
+                        "discussion": {
+                            "comments": {
+                                "nodes": [{"id": "DC_exist", "body": "<!-- marker --> old body"}]
+                            }
+                        }
+                    }
+                })
+            if "updateDiscussionComment" in query:
+                return _update_comment_response("DC_exist")
+            return _graphql_response({})
+
+        monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+        result = poster.upsert_discussion_comment(
+            "owner/repo", 1, "<!-- marker --> new body", "<!-- marker -->"
+        )
+        assert result.get("id") == "DC_exist"
+
+    def test_no_marker_always_creates(self, poster, monkeypatch):
+        """Empty marker string skips search and always creates new comment."""
+        call_count = {"n": 0}
+
+        def fake_urlopen(req, timeout):
+            call_count["n"] += 1
+            if call_count["n"] == 1:
+                return _discussion_node_response()
+            return _add_comment_response()
+
+        monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+        poster.upsert_discussion_comment("owner/repo", 3, "body", marker="")
+        # Only 2 calls: resolve node ID + addDiscussionComment (no search)
+        assert call_count["n"] == 2
+
+
+class TestPostCiPatternSummary:
+    def test_embeds_session_marker(self, poster, monkeypatch):
+        """post_ci_pattern_summary embeds session-scoped HTML marker."""
+        captured = {}
+
+        def fake_upsert(repo, number, body, marker):
+            captured["body"] = body
+            captured["marker"] = marker
+            return {"id": "DC_1", "url": "https://u"}
+
+        monkeypatch.setattr(poster, "upsert_discussion_comment", fake_upsert)
+        poster.post_ci_pattern_summary("owner/repo", 3673, "## Summary", "run-42")
+        assert "<!-- ci-pattern-summary:run-42 -->" in captured["marker"]
+        assert "## Summary" in captured["body"]
+
+    def test_default_marker_when_no_session(self, poster, monkeypatch):
+        captured = {}
+
+        def fake_upsert(repo, number, body, marker):
+            captured["marker"] = marker
+            return {}
+
+        monkeypatch.setattr(poster, "upsert_discussion_comment", fake_upsert)
+        poster.post_ci_pattern_summary("owner/repo", 3673, "body", session_id="")
+        assert captured["marker"] == "<!-- ci-pattern-summary -->"
+
+
+class TestPostContinuationChain:
+    def test_always_creates_new_comment(self, poster, monkeypatch):
+        """post_continuation_chain always creates a new comment (no upsert)."""
+        called = {}
+
+        def fake_add(repo, number, body):
+            called["repo"] = repo
+            called["number"] = number
+            called["body"] = body
+            return {"id": "DC_chain", "url": "https://u/chain"}
+
+        monkeypatch.setattr(poster, "add_discussion_comment", fake_add)
+        result = poster.post_continuation_chain("owner/repo", 3673, "## Chain\n@copilot continue ...")
+        assert called["number"] == 3673
+        assert "@copilot continue" in called["body"]
+        assert result["id"] == "DC_chain"
+
+
+# ---------------------------------------------------------------------------
+# CLI — add-discussion-comment / upsert-discussion-comment /
+#        post-ci-pattern-summary / post-continuation  (S192)
+# ---------------------------------------------------------------------------
+
+
+def test_cli_add_discussion_comment_body(monkeypatch):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return _discussion_node_response()
+        return _add_comment_response(url="https://github.com/d/3673#c99")
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    rc = main(["add-discussion-comment", "--repo", "owner/repo", "--number", "3673", "--body", "Hello"])
+    assert rc == 0
+
+
+def test_cli_add_discussion_comment_body_file(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    f = tmp_path / "msg.md"
+    f.write_text("## Update")
+    call_count = {"n": 0}
+
+    def fake_urlopen(req, timeout):
+        call_count["n"] += 1
+        if call_count["n"] == 1:
+            return _discussion_node_response()
+        return _add_comment_response()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    rc = main(["add-discussion-comment", "--repo", "o/r", "--number", "1", "--body-file", str(f)])
+    assert rc == 0
+
+
+def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    captured_body = {}
+
+    def fake_upsert(self, repo, number, body, marker):
+        captured_body["body"] = body
+        return {"id": "DC_1", "url": "https://u"}
+
+    from codex.github.mcp_poster import GitHubMCPPoster
+    monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
+    f = tmp_path / "update.md"
+    f.write_text("## Status")
+    rc = main([
+        "upsert-discussion-comment", "--repo", "o/r", "--number", "3673",
+        "--body-file", str(f), "--marker", "<!-- status -->",
+    ])
+    assert rc == 0
+    assert "## Status" in captured_body["body"]
+
+
+def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    captured = {}
+
+    def fake_post(self, repo, number, body, session_id):
+        captured["session_id"] = session_id
+        return {"id": "DC_s", "url": "https://u/s"}
+
+    from codex.github.mcp_poster import GitHubMCPPoster
+    monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
+    f = tmp_path / "summary.md"
+    f.write_text("## CI Patterns")
+    rc = main([
+        "post-ci-pattern-summary", "--repo", "o/r", "--number", "3673",
+        "--body-file", str(f), "--session-id", "run-99",
+    ])
+    assert rc == 0
+    assert captured["session_id"] == "run-99"
+
+
+def test_cli_post_continuation(monkeypatch, tmp_path):
+    monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
+    captured = {}
+
+    def fake_chain(self, repo, number, body):
+        captured["body"] = body
+        return {"id": "DC_c", "url": "https://u/c"}
+
+    from codex.github.mcp_poster import GitHubMCPPoster
+    monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
+    f = tmp_path / "chain.md"
+    f.write_text("@copilot continue ...")
+    rc = main(["post-continuation", "--repo", "o/r", "--number", "3673", "--body-file", str(f)])
+    assert rc == 0
+    assert "@copilot continue" in captured["body"]
