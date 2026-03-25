@@ -380,6 +380,30 @@ def _init_history_db() -> sqlite3.Connection:
         )
         """
     )
+    # P6: CI pattern occurrence log (Phase 6 — Cross-Session Pattern Knowledge Graph)
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS patterns (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            pattern_id   INTEGER NOT NULL,
+            pattern_name TEXT NOT NULL,
+            file_path    TEXT,
+            line_number  INTEGER,
+            description  TEXT NOT NULL,
+            auto_fixable INTEGER NOT NULL DEFAULT 0,
+            fixed        INTEGER NOT NULL DEFAULT 0,
+            session      TEXT,
+            git_sha      TEXT,
+            timestamp    TEXT NOT NULL
+        )
+        """
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_patterns_name ON patterns (pattern_name)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_patterns_session ON patterns (session)"
+    )
     conn.commit()
     return conn
 
@@ -919,6 +943,152 @@ async def webhooks_recent(limit: int = 50):
     except Exception as exc:
         log.warning("webhooks_recent error: %s", exc)
         return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
+
+
+
+# ── Phase 6: CI pattern knowledge graph endpoints ────────────────────────────
+#
+# These endpoints expose the ``patterns`` table that is populated by
+# ``scripts/ci/pattern_recorder.py``.  They allow the cognitive brain and
+# Copilot agent tooling to query historical CI pattern data without spawning
+# a subprocess.
+
+
+class _PatternInsertRequest(BaseModel):
+    pattern_id: int
+    pattern_name: str
+    description: str
+    file_path: Optional[str] = None
+    line_number: Optional[int] = None
+    auto_fixable: bool = False
+    fixed: bool = False
+    session: Optional[str] = None
+    git_sha: Optional[str] = None
+
+
+@app.get("/api/patterns/recent")
+async def patterns_recent(limit: int = 50, session: Optional[str] = None):
+    """Return the most recent CI pattern occurrences.
+
+    Query params:
+        limit   — max rows to return (capped at 500, default 50)
+        session — if provided, filter by session identifier (PR number / run id)
+    """
+    limit = min(limit, 500)
+    try:
+        with _db_lock:
+            if session:
+                rows = _db.execute(
+                    "SELECT id, pattern_id, pattern_name, file_path, line_number, "
+                    "       auto_fixable, fixed, session, git_sha, timestamp "
+                    "FROM patterns WHERE session = ? ORDER BY id DESC LIMIT ?",
+                    (session, limit),
+                ).fetchall()
+            else:
+                rows = _db.execute(
+                    "SELECT id, pattern_id, pattern_name, file_path, line_number, "
+                    "       auto_fixable, fixed, session, git_sha, timestamp "
+                    "FROM patterns ORDER BY id DESC LIMIT ?",
+                    (limit,),
+                ).fetchall()
+        return {
+            "patterns": [dict(r) for r in rows],
+            "total": len(rows),
+        }
+    except Exception as exc:
+        log.warning("patterns_recent error: %s", exc)
+        return {"patterns": [], "total": 0, "error": "Internal error"}
+
+
+@app.get("/api/patterns/summary")
+async def patterns_summary():
+    """Return a frequency summary grouped by pattern name.
+
+    Response shape::
+
+        {
+          "summary": [
+            {
+              "pattern_name": "Duplicate Kwargs",
+              "total": 12,
+              "fixed": 11,
+              "fix_rate": 0.917,
+              "last_seen": "2026-03-24T18:00:00Z"
+            },
+            ...
+          ]
+        }
+    """
+    try:
+        with _db_lock:
+            rows = _db.execute(
+                """
+                SELECT pattern_name,
+                       COUNT(*)      AS total,
+                       SUM(fixed)    AS fixed_count,
+                       MAX(timestamp) AS last_seen
+                FROM patterns
+                GROUP BY pattern_name
+                ORDER BY total DESC
+                """
+            ).fetchall()
+        summary = []
+        for r in rows:
+            total = r["total"] or 0
+            fixed = r["fixed_count"] or 0
+            summary.append(
+                {
+                    "pattern_name": r["pattern_name"],
+                    "total": total,
+                    "fixed": fixed,
+                    "fix_rate": round(fixed / total, 3) if total else 0.0,
+                    "last_seen": r["last_seen"],
+                }
+            )
+        return {"summary": summary}
+    except Exception as exc:
+        log.warning("patterns_summary error: %s", exc)
+        return {"summary": [], "error": "Internal error"}
+
+
+@app.post("/api/patterns/record", status_code=201)
+async def patterns_record(
+    req: _PatternInsertRequest,
+    _auth: None = Depends(_require_memory_auth),
+):
+    """Insert a single pattern occurrence into the knowledge graph.
+
+    Protected by the same ``CODEX_MASTER_KEY`` bearer guard as memory routes.
+    Returns ``{"id": <row_id>}`` on success.
+    """
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    try:
+        with _db_lock:
+            cur = _db.execute(
+                """
+                INSERT INTO patterns
+                    (pattern_id, pattern_name, file_path, line_number, description,
+                     auto_fixable, fixed, session, git_sha, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    req.pattern_id,
+                    req.pattern_name,
+                    req.file_path,
+                    req.line_number,
+                    req.description,
+                    int(req.auto_fixable),
+                    int(req.fixed),
+                    req.session,
+                    req.git_sha,
+                    ts,
+                ),
+            )
+            _db.commit()
+        return {"id": cur.lastrowid, "timestamp": ts}
+    except Exception as exc:
+        log.warning("patterns_record error: %s", exc)
+        raise HTTPException(status_code=500, detail="Failed to record pattern") from exc
 
 
 # ── GitHub App installation-token endpoint ───────────────────────────────────

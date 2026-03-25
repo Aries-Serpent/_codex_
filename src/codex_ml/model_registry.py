@@ -147,7 +147,6 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Silently ignore failures; attaching metadata is best effort.
-        pass
 
 
 def _to_bool(value: Any, default: bool) -> bool:
@@ -356,7 +355,6 @@ def get_model(
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Attaching metadata is best-effort only.
-        pass
 
     # Note: legacy _apply_lora(model, lora_settings) removed; LoRA is applied above.
     return model

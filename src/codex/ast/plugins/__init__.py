@@ -37,7 +37,6 @@ class ASTPlugin(ABC):
     @abstractmethod
     def metadata(self) -> PluginMetadata:
         """Return plugin metadata."""
-        pass
 
     @property
     @abstractmethod
@@ -47,7 +46,6 @@ class ASTPlugin(ABC):
 
         Examples: 'python', 'javascript', 'rust'
         """
-        pass
 
     @property
     @abstractmethod
@@ -57,7 +55,6 @@ class ASTPlugin(ABC):
 
         Examples: ['.py', '.pyw'], ['.js', '.jsx']
         """
-        pass
 
     @abstractmethod
     def can_parse(self, file_path: str) -> bool:
@@ -70,7 +67,6 @@ class ASTPlugin(ABC):
         Returns:
             True if plugin can handle this file
         """
-        pass
 
     @abstractmethod
     def parse(self, code: str, file_path: str) -> StandardizedASTNode:
@@ -87,7 +83,6 @@ class ASTPlugin(ABC):
         Raises:
             SyntaxError: If code cannot be parsed
         """
-        pass
 
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
         """
@@ -125,7 +120,6 @@ class AnalysisPlugin(ABC):
     @abstractmethod
     def name(self) -> str:
         """Return plugin name."""
-        pass
 
     @abstractmethod
     def analyze(self, node: StandardizedASTNode) -> dict[str, Any]:
@@ -138,7 +132,6 @@ class AnalysisPlugin(ABC):
         Returns:
             Analysis results
         """
-        pass
 
 
 __all__ = ["ASTPlugin", "AnalysisPlugin", "PluginMetadata"]

@@ -22,7 +22,7 @@ class ProviderType(Enum):
     """Supported secret provider types."""
 
     GITHUB = "github"
-    AWS_SECRETS_MANAGER = "aws_secrets_manager"
+    AWS_SECRETS_MANAGER = "aws_secrets_manager"  # pragma: allowlist secret
     AZURE_KEY_VAULT = "azure_key_vault"
     HASHICORP_VAULT = "hashicorp_vault"
     ENVIRONMENT = "environment"  # For testing/development
@@ -31,9 +31,9 @@ class ProviderType(Enum):
 class SecretType(Enum):
     """Types of secrets managed by providers."""
 
-    TOKEN = "token"  # nosec B105
-    API_KEY = "api_key"
-    PASSWORD = "password"  # nosec B105
+    TOKEN = "token"  # nosec B105  # pragma: allowlist secret
+    API_KEY = "api_key"  # pragma: allowlist secret
+    PASSWORD = "password"  # nosec B105  # pragma: allowlist secret
     CERTIFICATE = "certificate"
     SSH_KEY = "ssh_key"
     GENERIC = "generic"
@@ -69,25 +69,17 @@ class RotationResult:
 class SecretProviderError(Exception):
     """Base exception for secret provider errors."""
 
-    pass
-
 
 class ProviderConfigError(SecretProviderError):
     """Raised when provider configuration is invalid."""
-
-    pass
 
 
 class RotationError(SecretProviderError):
     """Raised when secret rotation fails."""
 
-    pass
-
 
 class ValidationError(SecretProviderError):
     """Raised when secret validation fails."""
-
-    pass
 
 
 class SecretProvider(ABC):
@@ -117,7 +109,6 @@ class SecretProvider(ABC):
         Raises:
             RotationError: If rotation fails
         """
-        pass
 
     @abstractmethod
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
@@ -133,7 +124,6 @@ class SecretProvider(ABC):
         Raises:
             ValidationError: If validation fails
         """
-        pass
 
     @abstractmethod
     def get_secret_metadata(self, secret_id: str) -> SecretMetadata:
@@ -148,7 +138,6 @@ class SecretProvider(ABC):
         Raises:
             SecretProviderError: If secret not found
         """
-        pass
 
     @abstractmethod
     def get_expiration(self, secret_id: str) -> Optional[datetime]:
@@ -163,7 +152,6 @@ class SecretProvider(ABC):
         Raises:
             SecretProviderError: If secret not found
         """
-        pass
 
     def get_scopes(self, secret_id: str) -> List[str]:
         """Get scopes/permissions associated with a secret.
@@ -221,7 +209,6 @@ class SecretProvider(ABC):
         Returns:
             ProviderType enum value
         """
-        pass
 
     @property
     def provider_name(self) -> str:
@@ -233,7 +220,7 @@ class SecretProvider(ABC):
         raw_value = self.provider_type.value
         # Explicit mappings preserve correct capitalization for acronyms/brands.
         provider_name_overrides = {
-            "aws_secrets_manager": "AWS Secrets Manager",
+            "aws_secrets_manager": "AWS Secrets Manager",  # pragma: allowlist secret
             "github": "GitHub",
             "azure_key_vault": "Azure Key Vault",
             "hashicorp_vault": "HashiCorp Vault",
@@ -272,7 +259,6 @@ class TokenProvider(SecretProvider):
         Raises:
             SecretProviderError: If creation fails
         """
-        pass
 
     @abstractmethod
     def update_token_scopes(self, secret_id: str, scopes: List[str]) -> bool:
@@ -288,7 +274,6 @@ class TokenProvider(SecretProvider):
         Raises:
             SecretProviderError: If update fails
         """
-        pass
 
 
 class ProviderConfig:

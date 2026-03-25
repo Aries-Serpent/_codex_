@@ -10,4 +10,6 @@ Components:
 
 from __future__ import annotations
 
+from . import runtime, static
+
 __all__ = ["static", "runtime"]

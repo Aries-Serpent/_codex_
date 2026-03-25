@@ -565,6 +565,45 @@ jobs:
       needs.triage.outputs.pattern != 'unknown' &&
       needs.triage.outputs.pattern != ''
     steps:
+      - name: "Checkout for pattern_recorder access"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.triage.outputs.head_branch }}
+          fetch-depth: 1
+
+      - name: "Query high-recurrence patterns"
+        id: high_rec
+        env:
+          CODEX_DB_PATH: ${{ env.CODEX_DB_PATH || '' }}
+        run: |
+          # Emit a compact Markdown table of top recurring patterns (max 5 rows).
+          # Falls back to empty string gracefully if DB is absent or python fails.
+          HR_TABLE=$(python3 - <<'PYEOF' 2>/dev/null || echo "")
+          import os, sys
+          sys.path.insert(0, "scripts/ci")
+          try:
+              import pattern_recorder as pr
+              db = os.environ.get("CODEX_DB_PATH", os.path.expanduser("~/.codex/cli_history.db"))
+              conn = pr._open_db(db)
+              rows = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.0)
+              if not rows:
+                  print("")
+              else:
+                  lines = ["| Pattern | Total | Fix% |",
+                           "|---------|-------|------|"]
+                  for r in rows[:5]:
+                      lines.append(f"| `{r['pattern_name']}` | {r['total']} | {r['fix_rate']*100:.0f}% |")
+                  print("\n".join(lines))
+          except Exception:
+              print("")
+          PYEOF
+          # Store multi-line output safely using EOF delimiter
+          {
+            echo "table<<HREOF"
+            echo "$HR_TABLE"
+            echo "HREOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: "Post @copilot fix prompt on failing PR"
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
@@ -573,6 +612,7 @@ jobs:
           HEAD_BRANCH:  ${{ needs.triage.outputs.head_branch }}
           HEAD_SHA:     ${{ needs.triage.outputs.head_sha }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
+          HIGH_REC_TABLE: ${{ steps.high_rec.outputs.table }}
         run: |
           PR_NUMBER=$(gh pr list --head "${HEAD_BRANCH}" \
             --repo Aries-Serpent/_codex_ --json number -q '.[0].number' 2>/dev/null || echo "")
@@ -602,6 +642,9 @@ jobs:
           - Branch: \`${HEAD_BRANCH}\`
           - Commit: \`${HEAD_SHA}\`
 
+          **High-Recurrence Patterns (top recurring — from pattern DB):**
+          ${HIGH_REC_TABLE:-_No high-recurrence patterns recorded yet._}
+
           **Instructions:**
           1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` and follow §0
           2. Check for open CI failure issues: \`gh issue list --label ci-failure --state open\` and \`gh issue list --label ci-health-alert --state open\`
@@ -610,7 +653,7 @@ jobs:
           5. Run self-review (5-pass) before committing
           6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
 
-          _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S182 Phase 5)_
+          _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S188 Phase 7)_
           COPILOT_EOF
 
           # Strip leading whitespace from heredoc (indented for readability)

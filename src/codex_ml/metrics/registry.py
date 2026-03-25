@@ -71,7 +71,6 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
-        pass
 
 
 def _repo_root() -> Path:

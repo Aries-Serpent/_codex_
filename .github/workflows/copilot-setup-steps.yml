@@ -181,11 +181,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
         run: |
           echo "── §0.4: Inspecting PR for merge conflicts ──"
-          BASE="${{ github.base_ref }}"
+          BASE="${BASE_REF}"
           HEAD="${HEAD_REF}"
-          PR_NUMBER="${{ github.event.pull_request.number || '' }}"
 
           # 1. Check PR mergeable status via GitHub API
           if [ -n "$PR_NUMBER" ]; then
@@ -384,8 +385,9 @@ jobs:
         id: detect_env
         env:
           HEAD_REF: ${{ github.head_ref }}
+          INPUT_ENV_TYPE: ${{ github.event.inputs.environment_type || 'standard' }}
         run: |
-          ENV_TYPE="${{ github.event.inputs.environment_type || 'standard' }}"
+          ENV_TYPE="${INPUT_ENV_TYPE}"
           # Auto-detect based on PR labels or branch name if not specified
           if [[ "$ENV_TYPE" == "standard" ]]; then
             if [[ "${HEAD_REF}" == *"ml"* ]] || [[ "${HEAD_REF}" == *"rag"* ]]; then

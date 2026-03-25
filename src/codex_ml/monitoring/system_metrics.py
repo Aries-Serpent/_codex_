@@ -339,7 +339,6 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
-            pass
 
 
 def sample_system_metrics() -> dict[str, Any]:
@@ -505,7 +504,6 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # Avoid killing the loop due to transient psutil errors.
-                pass
             stop_event.wait(max(0.1, float(interval)))
 
     thread = threading.Thread(target=_loop, name="codex-system-metrics", daemon=True)
@@ -590,7 +588,6 @@ class SystemMetricsLogger:
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
-                pass
             self._stop.wait(self._interval)
 
 

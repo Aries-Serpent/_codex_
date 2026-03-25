@@ -38,6 +38,18 @@ jobs:
           python scripts/ci/auto_fix_common_issues.py --check-only --json-output /tmp/autofix_report.json
         continue-on-error: true
 
+      - name: CI pattern pipeline (strict gate)
+        id: pattern_pipeline
+        run: |
+          # Run the full detect→record→report pipeline in strict mode.
+          # Exits 1 if any auto-fixable issues remain or high-recurrence patterns
+          # exceed the threshold — blocks merge until fixed.
+          python scripts/ci/ci_pattern_pipeline.py \
+            --check-only \
+            --strict \
+            --artefact /tmp/pattern_pipeline_report.json
+        continue-on-error: true
+
       - name: Verify agent batch-scan protocol coverage
         id: batch_scan_protocol
         run: |
@@ -68,6 +80,7 @@ jobs:
           script: |
             const checks = {
               autofix: '${{ steps.autofix.outcome }}',
+              pattern_pipeline: '${{ steps.pattern_pipeline.outcome }}',
               tests: '${{ steps.tests.outcome }}',
               quality: '${{ steps.quality.outcome }}'
             };
@@ -81,6 +94,7 @@ jobs:
             | Check | Status |
             |-------|--------|
             | Auto-Fix Issues | ${checks.autofix === 'success' ? '✅ Pass' : '❌ Fail'} |
+            | CI Pattern Pipeline (strict) | ${checks.pattern_pipeline === 'success' ? '✅ Pass' : '❌ Fail'} |
             | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
 
@@ -111,13 +125,23 @@ jobs:
             }
 
       - name: Fail if critical checks failed
-        if: steps.autofix.outcome != 'success'
+        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success'
         run: |
-          echo "::error::Pre-merge validation failed - auto-fixable issues detected"
-          if [ -f /tmp/autofix_report.json ]; then
-            python3 scripts/ci/print_autofix_issues.py
+          echo "::error::Pre-merge validation failed"
+          if [ "${{ steps.autofix.outcome }}" != "success" ]; then
+            echo "::error::Auto-fixable issues detected"
+            if [ -f /tmp/autofix_report.json ]; then
+              python3 scripts/ci/print_autofix_issues.py
+            fi
+            echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
           fi
-          echo "Fix with: python scripts/ci/auto_fix_common_issues.py"
+          if [ "${{ steps.pattern_pipeline.outcome }}" != "success" ]; then
+            echo "::error::CI pattern pipeline (strict) failed — high-recurrence patterns or unfixed auto-fixable issues"
+            if [ -f /tmp/pattern_pipeline_report.json ]; then
+              python3 -c "import json,sys; r=json.load(open('/tmp/pattern_pipeline_report.json')); print(json.dumps(r.get('summary',{}), indent=2))"
+            fi
+            echo "Fix with: python scripts/ci/auto_fix_common_issues.py && python scripts/ci/ci_pattern_pipeline.py --strict"
+          fi
           exit 1
 
       - name: Cache health report

@@ -30,7 +30,6 @@ except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
     # fall back to existing local implementation below (if present)
-    pass
 
 
 if "CheckpointManager" not in globals():

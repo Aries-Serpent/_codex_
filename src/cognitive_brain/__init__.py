@@ -14,6 +14,8 @@ Status: Infrastructure Setup with ABCs
 
 from __future__ import annotations
 
+from . import quantum
+
 # Export base classes for agent inheritance
 try:
     from .base import (

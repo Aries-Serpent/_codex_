@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 logger = logging.getLogger(__name__)
 
 import warnings  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import (  # noqa: E402
-    TYPE_CHECKING,
     Iterable,
     Optional,
     Sequence,
@@ -28,8 +28,14 @@ from ._types import (  # noqa: E402 — re-exported
 )
 from .adapter import WhitespaceTokenizer  # noqa: E402
 
-if TYPE_CHECKING:  # pragma: no cover - import only used for typing
-    from .sp_trainer import SPTokenizer as _SPTokenizer  # noqa: F401
+# HFTokenizerAdapter and SPTokenizer are optional-dependency attributes exposed via
+# __getattr__ below (and __init__.py).  They must NOT be bound at module level to
+# None/fallback values here — doing so would make them *exist* as attributes, which
+# would prevent __getattr__ from ever firing and would return None to callers instead
+# of the intended lazy import or a helpful ModuleNotFoundError.
+if TYPE_CHECKING:  # pragma: no cover
+    from .hf_tokenizer import HFTokenizerAdapter
+    from .sp_trainer import SPTokenizer
 
 
 def _load_hf_adapter():
@@ -213,8 +219,8 @@ __all__ = [
     "TokenizerAdapter",
     "WhitespaceTokenizer",
     "HFTokenizer",
-    "HFTokenizerAdapter",  # noqa: F822 - provided via __getattr__
-    "SPTokenizer",  # noqa: F822 - provided via __getattr__
+    "HFTokenizerAdapter",
+    "SPTokenizer",
     "load_tokenizer",
     "get_tokenizer",
     "deprecated_legacy_access",

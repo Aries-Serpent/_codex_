@@ -47,6 +47,9 @@ runs:
         # This is the "hottest" tip in the chain: sub-PR → 0D_base_ → main.
         # We first confirm 0D_base_ exists (one API call), then list sub-PRs.
         # Result is cached in _0D_EXISTS to avoid a second API round-trip at Step 2.
+        # SUB_PR must be initialised before the if-block so `set -u` does not fail
+        # when _0D_EXISTS is false and the variable was never assigned (run #41 fix).
+        SUB_PR=""
         _0D_EXISTS=false
         if gh api "repos/${REPO}/branches/0D_base_" --silent 2>/dev/null; then
           _0D_EXISTS=true

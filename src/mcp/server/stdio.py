@@ -29,8 +29,6 @@ class TransportConfig:
 class TransportError(Exception):
     """Base exception for transport errors."""
 
-    pass
-
 
 class MessageTooLargeError(TransportError):
     """Raised when a message exceeds the maximum size."""

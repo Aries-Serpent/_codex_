@@ -112,7 +112,6 @@ def update_and_prune(
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # Log or ignore; failure leaves extra file (acceptable fallback)
-                pass
 
     return {
         "index_path": str(index_path),

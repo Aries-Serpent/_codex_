@@ -104,7 +104,6 @@ def detect_encoding(
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # If something odd happens while checking BOMs, continue gracefully.
-        pass
 
     # 1) chardet (preferred if installed)
     if _chardet is not None:

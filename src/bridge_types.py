@@ -49,7 +49,7 @@ class BaseMessage:
         return asdict(self)
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ContextUpdate(BaseMessage):
     """
     Context update message from cognitive brain to Copilot.
@@ -58,67 +58,67 @@ class ContextUpdate(BaseMessage):
     decision-making information.
     """
 
-    context: Dict[str, Any]  # type: ignore[misc]
+    context: Dict[str, Any]
     execution_state: Optional[str] = None  # "observing", "orienting", "deciding", "acting"
     confidence: Optional[float] = None
     metadata: Optional[Dict[str, Any]] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class QueryMessage(BaseMessage):
     """
     Query message requesting information or action.
     """
 
-    query: str  # type: ignore[misc]
-    query_type: str  # type: ignore[misc]  # "info", "action", "validation"
+    query: str
+    query_type: str  # "info", "action", "validation"
     parameters: Optional[Dict[str, Any]] = None
     requires_response: bool = True
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ResponseMessage(BaseMessage):
     """
     Response message to a query.
     """
 
-    response_to: str  # type: ignore[misc]  # message_id of original query
-    status: str  # type: ignore[misc]  # "success", "error", "pending"
+    response_to: str  # message_id of original query
+    status: str  # "success", "error", "pending"
     data: Optional[Any] = None
     error: Optional[str] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class StatusMessage(BaseMessage):
     """
     Status update message.
     """
 
-    component: str  # type: ignore[misc]  # "cognitive_brain", "orchestrator", "agent"
-    status: str  # type: ignore[misc]  # "running", "idle", "error", "stopped"
+    component: str  # "cognitive_brain", "orchestrator", "agent"
+    status: str  # "running", "idle", "error", "stopped"
     metrics: Optional[Dict[str, Any]] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class ErrorMessage(BaseMessage):
     """
     Error notification message.
     """
 
-    error_type: str  # type: ignore[misc]
-    error_message: str  # type: ignore[misc]
+    error_type: str
+    error_message: str
     stack_trace: Optional[str] = None
     recovery_action: Optional[str] = None
 
 
-@dataclass
+@dataclass(kw_only=True)
 class HeartbeatMessage(BaseMessage):
     """
     Heartbeat message for connection monitoring.
     """
 
-    uptime_seconds: float  # type: ignore[misc]
-    last_activity: str  # type: ignore[misc]  # ISO 8601 timestamp
+    uptime_seconds: float
+    last_activity: str  # ISO 8601 timestamp
 
 
 # Type union for all message types

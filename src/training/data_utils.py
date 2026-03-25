@@ -193,7 +193,6 @@ def split_dataset(
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Best-effort cache; ignore failures
-            pass
 
     return train, val
 
@@ -241,7 +240,6 @@ def split_texts(
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
                 # fall through to recompute
-                pass
 
     shuffled = deterministic_shuffle(items, seed)
     split = int(len(shuffled) * float(train_ratio))
@@ -268,7 +266,6 @@ def split_texts(
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Best-effort caching; ignore failures
-            pass
 
     return train, val
 

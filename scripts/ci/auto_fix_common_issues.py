@@ -25,6 +25,7 @@ Options:
 """
 
 import argparse
+import ast
 import json
 import re
 import subprocess
@@ -73,6 +74,7 @@ class CommonIssueFixer:
             "W-Series Warnings",        # Pattern 13 - ruff --fix W-series
             "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
             "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
+            "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
         }
         self.manual_review_patterns = {
             "Unused Variables",         # Pattern 2  - context-dependent
@@ -123,13 +125,14 @@ class CommonIssueFixer:
             (15, "mypy Baseline Freshness", self.fix_mypy_baseline_freshness),
             (16, "Stub Duplicate Defs",     self.fix_stub_duplicate_defs),
             (17, "CI SHA Drift",            self.check_ci_sha_drift),
+            (18, "Duplicate Kwargs",         self.fix_duplicate_kwargs),
         ]
         patterns = all_patterns
 
         if pattern_num:
             patterns = [(n, nm, f) for n, nm, f in patterns if n == pattern_num]
             if not patterns:
-                print(f"❌ Pattern {pattern_num} not found (valid range: 1–17)")
+                print(f"❌ Pattern {pattern_num} not found (valid range: 1–18)")
                 return False
             print(f"🔍 Running pattern {pattern_num} only…\n")
         elif pattern_name:
@@ -1029,6 +1032,176 @@ class CommonIssueFixer:
 
         return issues
 
+    # ------------------------------------------------------------------
+    # Pattern 18 — Duplicate keyword arguments (auto-fixable)
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _find_kwarg_removal_span(
+        line: str, kw: "ast.keyword"
+    ) -> "Optional[tuple[int, int]]":
+        """Return the ``(remove_start, remove_end)`` column indices to slice from
+        *line* in order to delete the duplicate keyword ``kw``, including its name,
+        ``=`` sign, value, trailing comma, and surrounding whitespace.
+
+        Returns ``None`` when the span cannot be safely located (e.g. multi-line
+        values or malformed source).
+
+        Extracted from the inner loop of :meth:`fix_duplicate_kwargs` so that the
+        logic is independently testable (per Gemini Code Assist review
+        ``r2983613366`` on PR #3741).
+
+        Args:
+            line:   The full source line (with newline character preserved).
+            kw:     The ``ast.keyword`` node for the *duplicate* (second) kwarg.
+                    Must have ``end_lineno == value.lineno`` (single-line value).
+        """
+
+        val_col: int = kw.value.col_offset          # 0-based column of value start
+        val_end_col: int = kw.value.end_col_offset  # type: ignore[union-attr]
+
+        # Locate "kwarg_name=" by scanning left from the value column.
+        prefix = line[:val_col]
+        eq_pos = prefix.rfind("=")
+        if eq_pos == -1:
+            return None
+
+        name_end = eq_pos
+        while name_end > 0 and prefix[name_end - 1] == " ":
+            name_end -= 1
+        name_start = name_end - len(kw.arg)  # type: ignore[arg-type]
+        if name_start < 0 or prefix[name_start:name_end] != kw.arg:
+            return None  # safety: name not where expected
+
+        # Extend left to absorb leading whitespace (space / tab before kwarg name)
+        remove_start = name_start
+        while remove_start > 0 and line[remove_start - 1] in (" ", "\t"):
+            remove_start -= 1
+
+        # Extend right to absorb trailing comma + whitespace after value
+        remove_end = val_end_col
+        while remove_end < len(line) and line[remove_end] in (" ", "\t"):
+            remove_end += 1
+        if remove_end < len(line) and line[remove_end] == ",":
+            remove_end += 1
+        while remove_end < len(line) and line[remove_end] in (" ", "\t"):
+            remove_end += 1
+
+        return (remove_start, remove_end)
+
+    def fix_duplicate_kwargs(self) -> List[str]:
+        """Pattern 18: Detect and remove duplicate keyword arguments in Python function calls.
+
+        Duplicate kwargs such as ``f(a=1, a=2)`` are rejected by Python's
+        compiler (``SyntaxError: keyword argument repeated``) and flagged by
+        ruff as ``invalid-syntax``.  They also cause a cascade of false-positive
+        failures across ruff patterns 1, 8, 9, 11, 12 and 13, as well as the
+        mypy anti-regression gate (+5 errors per duplicated argument pair seen
+        on ``0D_base_`` run #149).
+
+        Fix strategy
+        ────────────
+        Parse every ``*.py`` file under ``src/`` and ``tests/`` with ``ast`` to
+        find ``ast.Call`` nodes that contain duplicate keyword names.  For each
+        duplicate, remove the **second** occurrence (keeping the first, which is
+        the caller's intent).
+
+        Removal uses the AST node's ``end_lineno`` / ``end_col_offset`` attributes
+        (available since Python 3.8) to precisely locate the value expression,
+        then backs up to include the ``kwarg_name=`` prefix and any trailing comma.
+        This handles arbitrarily nested expressions (e.g. ``f(a=g(1,2), a=3)``)
+        without regex mis-matching.
+
+        This pattern is **auto-fixable** (``auto_fix_available=True``).
+        """
+        issues: List[str] = []
+        src_dirs = [self.repo_root / "src", self.repo_root / "tests"]
+        py_files: List[Path] = []
+        for src_dir in src_dirs:
+            if src_dir.exists():
+                py_files.extend(sorted(src_dir.rglob("*.py")))
+
+        for py_file in py_files:
+            try:
+                source = py_file.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+
+            try:
+                tree = ast.parse(source, filename=str(py_file))
+            except SyntaxError:
+                # File may already be broken for other reasons; skip
+                continue
+
+            # Collect duplicate keyword nodes (second occurrence only, to remove).
+            # dup_kws is a list of ast.keyword nodes whose .arg is a duplicate.
+            dup_kws: List[ast.keyword] = []
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                seen: Dict[str, int] = {}
+                for kw in node.keywords:
+                    if kw.arg is None:
+                        continue  # **kwargs expansion
+                    if kw.arg in seen:
+                        dup_kws.append(kw)
+                    else:
+                        seen[kw.arg] = kw.value.lineno
+
+            if not dup_kws:
+                continue
+
+            # Sort in REVERSE source order so that removing one kwarg does not
+            # shift the character offsets of later kwarg positions.
+            dup_kws.sort(key=lambda k: (k.value.lineno, k.value.col_offset), reverse=True)
+
+            lines = source.splitlines(keepends=True)
+            changed = False
+            issues_before = len(issues)
+
+            for kw in dup_kws:
+                if kw.arg is None:
+                    continue  # already excluded above; guard for type narrowing
+                # Delegate span detection to the helper for readability/testability
+                # (see _find_kwarg_removal_span; extracted per PR #3741 r2983613366).
+                val_lineno: int = kw.value.lineno
+                val_end_lineno: int = kw.value.end_lineno  # type: ignore[union-attr]
+
+                # Multi-line value expressions are rare; skip to avoid mangling.
+                if val_end_lineno != val_lineno:
+                    continue
+
+                line_idx = val_lineno - 1  # 0-based
+                if line_idx < 0 or line_idx >= len(lines):
+                    continue
+                line = lines[line_idx]
+
+                span = self._find_kwarg_removal_span(line, kw)
+                if span is None:
+                    continue
+                remove_start, remove_end = span
+                new_line = line[:remove_start] + line[remove_end:]
+                # If the resulting line is blank (only whitespace / newline), drop it
+                if new_line.strip() in ("", "\n", "\r\n"):
+                    new_line = ""
+
+                issues.append(
+                    f"{py_file.relative_to(self.repo_root)}:{val_lineno}: "
+                    f"Duplicate keyword argument '{kw.arg}' removed"
+                )
+                lines[line_idx] = new_line
+                changed = True
+
+            if changed:
+                fixes_for_file = len(issues) - issues_before
+                if not self.check_only and not self.dry_run:
+                    py_file.write_text("".join(lines), encoding="utf-8")
+                    self.fixes_applied["Duplicate Kwargs"] = (
+                        self.fixes_applied.get("Duplicate Kwargs", 0) + fixes_for_file
+                    )
+
+        return issues
+
     def has_auto_fixable_issues(self) -> bool:
         """Check if there are any unfixed auto-fixable issues."""
         for pattern_name, issues in self.issues_found.items():
@@ -1084,6 +1257,7 @@ class CommonIssueFixer:
             "mypy Baseline Freshness": 15,
             "Stub Duplicate Defs": 16,
             "CI SHA Drift": 17,
+            "Duplicate Kwargs": 18,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -1152,9 +1326,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 18),
+        choices=range(1, 19),
         metavar="N",
-        help="Run only pattern N (1–17); see pattern list above"
+        help="Run only pattern N (1–18); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",
@@ -1171,6 +1345,25 @@ def main():
         type=str,
         help="Write JSON report to specified path (e.g., .codex/diagnostic-report.json)"
     )
+    parser.add_argument(
+        "--record-patterns",
+        action="store_true",
+        help=(
+            "After running, record all detected pattern occurrences into the "
+            "cognitive brain SQLite DB ($CODEX_DB_PATH). "
+            "Requires scripts/ci/pattern_recorder.py to be present."
+        ),
+    )
+    parser.add_argument(
+        "--record-db",
+        type=str,
+        default=None,
+        metavar="PATH",
+        help=(
+            "SQLite DB path for --record-patterns (overrides $CODEX_DB_PATH). "
+            "Default: $CODEX_DB_PATH or ~/.codex/cli_history.db."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -1186,12 +1379,45 @@ def main():
     else:
         fixer.run_all_patterns()
 
-    # Generate JSON report if requested
-    if args.json_output:
-        fixer.generate_json_report(args.json_output)
+    # Generate JSON report if requested (always generate in-memory; write if path given)
+    report = fixer.generate_json_report(args.json_output if args.json_output else None)
+
+    # Persist pattern occurrences to the cognitive brain DB if requested
+    if getattr(args, "record_patterns", False):
+        try:
+            import importlib.util as _ilu
+            _rec_path = Path(__file__).parent / "pattern_recorder.py"
+            _spec = _ilu.spec_from_file_location("pattern_recorder", _rec_path)
+            _rec = _ilu.module_from_spec(_spec)  # type: ignore[arg-type]
+            _spec.loader.exec_module(_rec)  # type: ignore[union-attr]
+            import os as _os
+            _db = args.record_db or _os.environ.get(
+                "CODEX_DB_PATH",
+                _os.path.join(_os.path.expanduser("~"), ".codex", "cli_history.db"),
+            )
+            _conn = _rec._open_db(_db)
+            _sha = _os.environ.get("CODEX_GIT_SHA") or _os.environ.get("GITHUB_SHA")
+            _session = _os.environ.get("GITHUB_RUN_ID") or _os.environ.get("COPILOT_SESSION_ID")
+            # Write report to a temp path so record_from_report can ingest it
+            import json as _json
+            import tempfile as _tf
+            _tmp_path = None
+            try:
+                with _tf.NamedTemporaryFile(
+                    mode="w", suffix=".json", delete=False
+                ) as _tmp:
+                    _json.dump(report, _tmp)
+                    _tmp_path = _tmp.name
+                _n = _rec.record_from_report(Path(_tmp_path), _conn, _session, _sha)
+            finally:
+                if _tmp_path and _os.path.exists(_tmp_path):
+                    _os.unlink(_tmp_path)
+            _conn.close()
+            print(f"✅ Recorded {_n} pattern occurrence(s) to {_db}")
+        except Exception as _exc:
+            print(f"⚠️  pattern_recorder not available or failed: {_exc}")
 
     # Print report
-    report = fixer.generate_json_report()
     total = report.get("total_issues", 0)
     auto_fix = report.get("auto_fixable", 0)
     if total:

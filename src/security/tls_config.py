@@ -20,8 +20,6 @@ logger = logging.getLogger(__name__)
 class TLSConfigError(Exception):
     """Raised when TLS configuration is invalid."""
 
-    pass
-
 
 def create_server_context(
     cert_path: str | Path,

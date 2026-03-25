@@ -82,7 +82,6 @@ class EventPublisher(ABC):
         Returns:
             True if successful
         """
-        pass
 
     @abstractmethod
     def publish_batch(self, events: list[Event]) -> bool:
@@ -94,7 +93,6 @@ class EventPublisher(ABC):
         Returns:
             True if successful
         """
-        pass
 
 
 class EventSubscriber(ABC):
@@ -108,7 +106,6 @@ class EventSubscriber(ABC):
             event_type: Event type to subscribe to
             callback: Callback function
         """
-        pass
 
     @abstractmethod
     def unsubscribe(self, event_type: EventType):
@@ -117,7 +114,6 @@ class EventSubscriber(ABC):
         Args:
             event_type: Event type to unsubscribe from
         """
-        pass
 
 
 class EventBus(EventPublisher, EventSubscriber):

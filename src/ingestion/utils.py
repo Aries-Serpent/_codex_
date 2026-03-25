@@ -152,7 +152,6 @@ def _detect_encoding(path: Union[str, Path]) -> str:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # fall through to fallback detector
-            pass
     return _fallback_detect_encoding(p)
 
 
@@ -355,7 +354,6 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
                     exc_info=True,
                 )
                 # Fall through to manual reader
-                pass
 
     # Fallback: manual read & decode using our internal logic
     text, _used = _manual_read_text(p, encoding=encoding, errors=errors)

@@ -318,7 +318,6 @@ def _parse_scalar(value: str) -> Any:
         except ValueError as e:
             logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
-            pass
     try:
         return ast.literal_eval(value)
     except Exception:

@@ -110,7 +110,6 @@ def detect_encoding(path: Union[str, Path]) -> str:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Fall through to other detectors
-            pass
     if _io_text__detect_encoding is not None:
         try:
             return _io_text__detect_encoding(p)
@@ -275,7 +274,6 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Fall through to manual reader
-            pass
 
     # Manual fallback
     txt, _used = _manual_read_text(p, encoding=encoding, errors=errors)

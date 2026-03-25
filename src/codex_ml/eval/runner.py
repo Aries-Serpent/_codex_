@@ -671,7 +671,6 @@ def run_evaluation(
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Determinism module not available or failed to initialize
-        pass
 
     # Structured log (append-only)
     try:
@@ -683,7 +682,6 @@ def run_evaluation(
         logger.warning("Exception occurred", exc_info=True)
         logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
-        pass
 
     # Optional perf sampling
     if os.getenv("CODEX_ENABLE_PERF_SAMPLER") == "1":
@@ -695,7 +693,6 @@ def run_evaluation(
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
-            pass
 
     run_id = _derive_run_id(eval_cfg, dataset_path)
     # Convert run_id to integer using hash for arbitrary strings

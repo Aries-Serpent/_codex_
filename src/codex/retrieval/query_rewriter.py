@@ -98,7 +98,6 @@ class BaseQueryRewriter(ABC):
     @abstractmethod
     def rewrite(self, query: str) -> RewrittenQuery:
         """Rewrite the query."""
-        pass
 
 
 class NormalizeRewriter(BaseQueryRewriter):

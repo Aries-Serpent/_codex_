@@ -146,7 +146,6 @@ class OptimizedVectorStore:
         if hasattr(self.store, "load") and self.lazy_load:
             logger.info("Lazy loading index...")
             # Load logic would go here if store supports it
-            pass
 
         self._loaded = True
 

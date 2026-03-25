@@ -1,5 +1,6 @@
 ---
 name: Coverage Gapfill Agent
+description: "DEPRECATED — use unified-coverage-agent instead. Targets low-coverage modules and generates gap-filling tests."
 status: DEPRECATED
 deprecated: true
 superseded_by: unified-coverage-agent

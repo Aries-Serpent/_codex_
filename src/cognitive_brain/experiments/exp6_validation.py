@@ -112,7 +112,7 @@ def measure_decision_quality_improvement(
     """
     logger.info(f"Measuring decision quality improvement with {num_agents} agents")
 
-    coordinator = MultiAgentCoordinator()
+    coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.WEIGHTED)
 
     # Register agents with different roles and weights
     roles = ["analyzer", "validator", "executor", "reviewer"]
@@ -142,8 +142,8 @@ def measure_decision_quality_improvement(
             for i in range(num_agents)
         ]
 
-        # Reach consensus
-        coordinator.reach_consensus(decisions, strategy=VotingStrategy.WEIGHTED)
+        # Reach consensus (WEIGHTED strategy configured in coordinator constructor above)
+        coordinator.reach_consensus(decisions)
 
         # Simulate quality based on consensus and agent diversity
         quality = np.random.uniform(0.75, 0.95)
@@ -228,10 +228,7 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
     results = {}
 
     for num_agents in agent_counts:
-        coordinator = MultiAgentCoordinator()
-
-        for i in range(num_agents):
-            coordinator.register_agent(f"agent_{i}", role="analyzer", weight=1.0)
+        coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.MAJORITY)
 
         latencies = []
 
@@ -247,7 +244,9 @@ def measure_consensus_latency(agent_counts: List[int], trials: int = 100) -> Dic
             ]
 
             start_time = datetime.now(timezone.utc)
-            coordinator.reach_consensus(decisions, strategy=VotingStrategy.MAJORITY)
+            coordinator.reach_consensus(
+                decisions
+            )  # MAJORITY strategy configured in coordinator constructor above
             latency_ms = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
 
             latencies.append(latency_ms)

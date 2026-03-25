@@ -21,4 +21,13 @@ __all__ = [
     "cli",
 ]
 
-# Exported modules or helpers may be added here in the future.
+_SUBMODULES = {"analyze", "cli", "ingest", "intent", "transform", "verify"}
+
+
+def __getattr__(name: str):
+    if name in _SUBMODULES:
+        import importlib
+        mod = importlib.import_module(f".{name}", __name__)
+        globals()[name] = mod
+        return mod
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

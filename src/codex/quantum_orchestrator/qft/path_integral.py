@@ -187,6 +187,11 @@ class PathSampler:
         return path
 
 
+# Base perturbation scale applied to path sampling.  Multiplied by temperature so
+# higher T explores state space more broadly; at T=1.0 behaviour is unchanged.
+_BASE_PERTURBATION_SCALE: float = 0.1
+
+
 class PathIntegralOptimizer:
     """Find optimal execution path using path integral formulation."""
 
@@ -194,10 +199,12 @@ class PathIntegralOptimizer:
         self,
         orchestrator: QuantumRelativisticDiracOrchestrator,
         n_paths: int = 100,
+        temperature: float = 1.0,
     ):
         self.orchestrator = orchestrator
         self.constants = orchestrator.constants
         self.n_paths = n_paths
+        self.temperature = temperature
 
         self.action_functional = ActionFunctional(self.constants)
         self.sampler = PathSampler(orchestrator, n_paths)
@@ -212,9 +219,25 @@ class PathIntegralOptimizer:
         initial_state: OrchestratorState,
         n_steps: int = 50,
         dt: float = 0.1,
+        temperature: Optional[float] = None,
     ) -> ExecutionPath:
-        """Find the path of least action."""
-        paths = self.sampler.sample_paths(initial_state, n_steps)
+        """Find the path of least action.
+
+        Args:
+            initial_state: Starting orchestrator state.
+            n_steps: Number of simulation steps per path.
+            dt: Time step size for action computation.
+            temperature: Annealing temperature controlling path perturbation scale.
+                Higher values explore more; lower values exploit known-good regions.
+                Defaults to the value set at construction time.
+        """
+        t = temperature if temperature is not None else self.temperature
+        # Temperature controls the perturbation scale of path sampling.
+        # Scale defaults to 0.1; multiply by temperature so higher T = more exploration.
+        perturbation_scale = _BASE_PERTURBATION_SCALE * t
+        paths = self.sampler.sample_paths(
+            initial_state, n_steps, perturbation_scale=perturbation_scale
+        )
 
         for path in paths:
             path.action = self.action_functional.compute_action(path, dt)

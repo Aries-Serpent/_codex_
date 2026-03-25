@@ -311,7 +311,6 @@ def log_metrics(
         except Exception:
             logger.debug("log_metric failed for key %s; skipping", k, exc_info=True)
             # be robust; drop bad values quietly
-            pass
 
 
 def log_artifacts(

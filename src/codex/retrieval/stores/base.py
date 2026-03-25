@@ -41,7 +41,6 @@ class VectorStore(ABC):
             ValueError: If inputs are invalid
             RuntimeError: If operation fails
         """
-        pass
 
     @abstractmethod
     def search(
@@ -68,7 +67,6 @@ class VectorStore(ABC):
             RuntimeError: If index not loaded
             ValueError: If query vector is invalid
         """
-        pass
 
     @abstractmethod
     def delete(self, ids: Union[str, list[str]]) -> int:
@@ -83,7 +81,6 @@ class VectorStore(ABC):
         Raises:
             ValueError: If IDs are invalid
         """
-        pass
 
     @abstractmethod
     def get(self, ids: Union[str, list[str]]) -> list[dict[str, Any]]:
@@ -102,7 +99,6 @@ class VectorStore(ABC):
             ValueError: If IDs are invalid
             KeyError: If ID not found
         """
-        pass
 
     @abstractmethod
     def count(self) -> int:
@@ -111,7 +107,6 @@ class VectorStore(ABC):
         Returns:
             Total vector count
         """
-        pass
 
     @abstractmethod
     def clear(self) -> None:
@@ -120,7 +115,6 @@ class VectorStore(ABC):
         Raises:
             RuntimeError: If operation fails
         """
-        pass
 
     @abstractmethod
     def save(self, path: Optional[str] = None) -> None:
@@ -132,7 +126,6 @@ class VectorStore(ABC):
         Raises:
             RuntimeError: If save operation fails
         """
-        pass
 
     @abstractmethod
     def load(self, path: Optional[str] = None) -> None:
@@ -145,7 +138,6 @@ class VectorStore(ABC):
             FileNotFoundError: If path doesn't exist
             RuntimeError: If load operation fails
         """
-        pass
 
     @abstractmethod
     def health_check(self) -> dict[str, Any]:
@@ -159,28 +151,19 @@ class VectorStore(ABC):
                 - dimension: Vector dimension
                 - backend: Store backend type
         """
-        pass
 
 
 class VectorStoreError(Exception):
     """Base exception for vector store errors"""
 
-    pass
-
 
 class DimensionMismatchError(VectorStoreError):
     """Raised when vector dimensions don't match"""
-
-    pass
 
 
 class VectorNotFoundError(VectorStoreError):
     """Raised when requested vector ID is not found"""
 
-    pass
-
 
 class IndexNotLoadedError(VectorStoreError):
     """Raised when operation requires loaded index but it's not loaded"""
-
-    pass

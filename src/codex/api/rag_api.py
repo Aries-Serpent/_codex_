@@ -8,6 +8,7 @@ Provides RESTful API endpoints for RAG operations:
 - Get statistics and metrics
 """
 
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -30,6 +31,13 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+# Base directory that all client-supplied file paths must reside under.
+# Set RAG_FILES_BASE_DIR to restrict to a specific directory; defaults to CWD.
+_RAG_FILES_BASE: Path = Path(
+    os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))
+).resolve()
 
 
 def _ensure_subpath(base: Path, candidate: Path) -> Path:
@@ -70,13 +78,18 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_handler)
 class BuildIndexRequest(BaseModel):
     """Request to build an index."""
 
-    files: List[str] = Field(..., description="File patterns to index (glob)")
+    files: List[str] = Field(..., description="Concrete file paths to index")
     index_name: str = Field(..., description="Name for the index")
     tenant_id: str = Field(default="default", description="Tenant ID")
     chunk_size: int = Field(default=1000, ge=100, le=10000, description="Chunk size")
     overlap: int = Field(default=128, ge=0, description="Chunk overlap")
-    provider: str = Field(
-        default="auto", description="Embedding provider (auto, tfidf, local, openai)"
+    provider: Optional[str] = Field(
+        default=None,
+        description=(
+            "(Deprecated — accepted for backward compatibility, ignored. "
+            "Multi-provider routing not yet implemented. "
+            "Will be removed in a future major release.)"
+        ),
     )
 
 
@@ -226,14 +239,19 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
     try:
         from codex.rag import build_index_from_files
 
-        # Build index
+        # Validate every supplied path stays within _RAG_FILES_BASE to prevent
+        # path-traversal attacks (e.g. a client passing "/etc/passwd").
+        safe_files = [
+            _ensure_subpath(_RAG_FILES_BASE, Path(f))
+            for f in build_request.files
+        ]
+
         index_path = build_index_from_files(
-            file_patterns=build_request.files,
+            files=safe_files,
             index_name=build_request.index_name,
             tenant_id=build_request.tenant_id,
             chunk_size=build_request.chunk_size,
             overlap=build_request.overlap,
-            provider_type=build_request.provider,
         )
 
         # Get metadata
@@ -280,7 +298,7 @@ async def query_index(request: Request, query_request: QueryRequest) -> QueryRes
 
         # Query
         results = retriever.query(
-            query=query_request.query,
+            q=query_request.query,
             top_k=query_request.top_k,
             min_score=query_request.min_score,
         )

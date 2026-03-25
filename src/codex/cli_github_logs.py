@@ -41,7 +41,6 @@ def cli():
         # Save to file
         codex github-logs check-run Aries-Serpent _codex_ 59990656344 -o logs.txt
     """
-    pass
 
 
 @cli.command(name="check-run")

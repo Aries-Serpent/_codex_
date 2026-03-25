@@ -175,7 +175,6 @@ def cli():
     A physics-inspired task orchestration framework with quantum mechanics,
     relativity, and QFT extensions.
     """
-    pass
 
 
 # ============================================================================
@@ -580,18 +579,18 @@ def optimize(paths: int, temperature: float, task_count: int):
         tasks=test_tasks, constants=orchestrator.orchestrator.constants
     )
 
-    # Create optimizer
+    # Create optimizer — temperature scales perturbation_scale = _BASE_PERTURBATION_SCALE * T
     optimizer = PathIntegralOptimizer(
+        orchestrator.orchestrator,
+        n_paths=paths,
         temperature=temperature,
-        num_samples=paths,
     )
 
     # Find optimal path
     click.echo("\n🔍 Searching for optimal path...")
     optimal = optimizer.find_optimal_path(
         initial_state,
-        target_state=initial_state,  # Simplified for demo
-        max_time=10.0,
+        temperature=temperature,
     )
 
     click.echo("\n✅ Optimization complete!")

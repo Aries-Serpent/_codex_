@@ -10,8 +10,6 @@ logger = logging.getLogger(__name__)
 class MetricValidationError(Exception):
     """Exception raised when metric validation fails."""
 
-    pass
-
 
 def validate_metric_registry() -> list[str]:
     """Validate all registered metrics have implementations.

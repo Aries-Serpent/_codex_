@@ -99,7 +99,6 @@ class BaseChunker(ABC):
     @abstractmethod
     def chunk(self, text: str) -> list[Chunk]:
         """Split text into chunks."""
-        pass
 
     def _compute_hash(self, text: str) -> str:
         """Compute hash for chunk content."""

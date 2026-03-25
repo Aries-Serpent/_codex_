@@ -57,4 +57,3 @@ except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
     # Registration is best-effort; failures fall back to manual wiring.
-    pass

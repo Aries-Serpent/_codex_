@@ -1,12 +1,14 @@
 # Deepresearch
 
-> **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
+> **Auto-generated index** — 2026-03-25 | Edit this file to add descriptions.
 > Directory: `docs/deepresearch/`
 
 ## Contents
 
 - [INDEX](INDEX.md)
-- [manifest_validation](manifest_validation.md)
+- [manifest_validation](manifest_validation.md) — Context manifest validation and OpenAPI conventions
+- [google_home_script_editor](google_home_script_editor.md) — Google Home Script Editor: YAML automations, templates, file formats, and `_codex_` integration patterns (S192)
+- [github_discussions_integration](github_discussions_integration.md) — GitHub Discussions hardening: CLI design, tokenized continuation chains, posting architecture, Copilot Agent integration (S192)
 
 ---
 

@@ -230,6 +230,214 @@ class GitHubMCPPoster:
             category_slug="session-summaries",
         )
 
+    def add_discussion_comment(
+        self,
+        repo: str,
+        discussion_number: int,
+        body: str,
+    ) -> dict[str, Any]:
+        """Add a comment to an existing GitHub Discussion via GraphQL.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            The integer number of the target discussion (visible in the URL).
+        body:
+            Comment body in Markdown.
+
+        Returns
+        -------
+        dict
+            GraphQL response payload with ``id``, ``url``, ``body``.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        # Step 1: resolve the discussion node ID
+        discussion_id = self._resolve_discussion_node_id(owner, repo_name, discussion_number)
+
+        # Step 2: add comment
+        mutation = """
+        mutation AddDiscussionComment($discussionId: ID!, $body: String!) {
+          addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
+            comment { id url body }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"discussionId": discussion_id, "body": body})
+        return (
+            result.get("data", {})
+            .get("addDiscussionComment", {})
+            .get("comment", result)
+        )
+
+    def upsert_discussion_comment(
+        self,
+        repo: str,
+        discussion_number: int,
+        body: str,
+        marker: str = "",
+    ) -> dict[str, Any]:
+        """Idempotent add-or-update of a Discussion comment.
+
+        Searches existing comments in *discussion_number* for one whose body
+        contains *marker*.  If found, updates it; otherwise posts a new comment.
+        This prevents duplicate status summaries when a workflow runs multiple
+        times on the same discussion.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            Integer number of the target Discussion.
+        body:
+            Full Markdown comment body (should include *marker* so future calls
+            can identify it).
+        marker:
+            A unique string used to detect whether a previous comment from this
+            caller already exists.  If empty, always creates a new comment.
+
+        Returns
+        -------
+        dict
+            GraphQL response payload.
+        """
+        self._require_token()
+        owner, repo_name = repo.split("/", 1)
+
+        if marker:
+            existing_id = self._find_discussion_comment(owner, repo_name, discussion_number, marker)
+            if existing_id:
+                return self._update_discussion_comment(existing_id, body)
+
+        return self.add_discussion_comment(repo, discussion_number, body)
+
+    def post_ci_pattern_summary(
+        self,
+        repo: str,
+        discussion_number: int,
+        summary_md: str,
+        session_id: str = "",
+    ) -> dict[str, Any]:
+        """Post (or update) a CI pattern knowledge-graph summary as a Discussion comment.
+
+        Uses ``upsert_discussion_comment`` so each session's summary replaces
+        the previous one rather than growing the thread indefinitely.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            Target Discussion number (e.g. 3673 for the accountability thread).
+        summary_md:
+            Markdown content — typically output from ``pattern_recorder summary``.
+        session_id:
+            Optional session ID embedded in the marker for deduplication.
+        """
+        marker = f"<!-- ci-pattern-summary:{session_id} -->" if session_id else "<!-- ci-pattern-summary -->"
+        full_body = f"{marker}\n{summary_md}"
+        return self.upsert_discussion_comment(repo, discussion_number, full_body, marker)
+
+    def post_continuation_chain(
+        self,
+        repo: str,
+        discussion_number: int,
+        chain_md: str,
+    ) -> dict[str, Any]:
+        """Post a tokenized continuation chain prompt as a new Discussion comment.
+
+        Continuation chains are always posted as new comments (not upserted)
+        so the discussion thread preserves the full history of chain prompts.
+
+        Parameters
+        ----------
+        repo:
+            ``"owner/repo"`` format.
+        discussion_number:
+            Target Discussion number.
+        chain_md:
+            Full Markdown content of the continuation chain prompt, including
+            tokenized context sections and ``@copilot continue`` call-to-action.
+        """
+        return self.add_discussion_comment(repo, discussion_number, chain_md)
+
+    # ------------------------------------------------------------------
+    # Discussion internals
+    # ------------------------------------------------------------------
+
+    def _resolve_discussion_node_id(
+        self, owner: str, repo: str, discussion_number: int
+    ) -> str:
+        """Return the GraphQL node ID for a Discussion identified by its number."""
+        query = """
+        query GetDiscussionId($owner: String!, $repo: String!, $number: Int!) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) { id }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
+        discussion = (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussion") or {}
+        )
+        node_id: str = discussion.get("id", "")
+        if not node_id:
+            raise RuntimeError(
+                f"Discussion #{discussion_number} not found in {owner}/{repo}. "
+                "Ensure the discussion exists and the token has 'discussions:write' scope."
+            )
+        return node_id
+
+    def _find_discussion_comment(
+        self, owner: str, repo: str, discussion_number: int, marker: str
+    ) -> str:
+        """Return the node ID of the first comment containing *marker*, or ``""``."""
+        query = """
+        query FindDiscussionComment($owner: String!, $repo: String!, $number: Int!) {
+          repository(owner: $owner, name: $repo) {
+            discussion(number: $number) {
+              comments(first: 50) {
+                nodes { id body }
+              }
+            }
+          }
+        }
+        """
+        result = self._graphql(query, {"owner": owner, "repo": repo, "number": discussion_number})
+        comments = (
+            result.get("data", {})
+            .get("repository", {})
+            .get("discussion", {})
+            .get("comments", {})
+            .get("nodes", [])
+        )
+        for c in comments:
+            if marker in (c.get("body") or ""):
+                return c["id"]
+        return ""
+
+    def _update_discussion_comment(self, comment_id: str, body: str) -> dict[str, Any]:
+        """Update an existing Discussion comment by its GraphQL node ID."""
+        mutation = """
+        mutation UpdateDiscussionComment($commentId: ID!, $body: String!) {
+          updateDiscussionComment(input: { commentId: $commentId, body: $body }) {
+            comment { id url body }
+          }
+        }
+        """
+        result = self._graphql(mutation, {"commentId": comment_id, "body": body})
+        return (
+            result.get("data", {})
+            .get("updateDiscussionComment", {})
+            .get("comment", result)
+        )
+
     # ------------------------------------------------------------------
     # Repository variables
     # ------------------------------------------------------------------
@@ -339,13 +547,17 @@ class GitHubMCPPoster:
         """
         self._require_token()
         url = f"{_GITHUB_API}/repos/{repo}/pulls"
-        result = self._request("POST", url, {
-            "title": title,
-            "body": body,
-            "head": head,
-            "base": base,
-            "draft": draft,
-        })
+        result = self._request(
+            "POST",
+            url,
+            {
+                "title": title,
+                "body": body,
+                "head": head,
+                "base": base,
+                "draft": draft,
+            },
+        )
         self._record_cb_pattern(
             "CB-pr-open",
             f"create_pull_request: {head!r} → {base!r} (#{result.get('number', '?')})",
@@ -544,11 +756,15 @@ class GitHubMCPPoster:
             List of parent commit SHAs (typically one — the current HEAD).
         """
         url = f"{_GITHUB_API}/repos/{repo}/git/commits"
-        result = self._request("POST", url, {
-            "message": message,
-            "tree": tree_sha,
-            "parents": parent_shas,
-        })
+        result = self._request(
+            "POST",
+            url,
+            {
+                "message": message,
+                "tree": tree_sha,
+                "parents": parent_shas,
+            },
+        )
         return result["sha"]
 
     def _update_ref(self, repo: str, ref: str, sha: str, force: bool = False) -> dict[str, Any]:
@@ -659,12 +875,14 @@ class GitHubMCPPoster:
         tree_items: list[dict[str, Any]] = []
         for path, content in files.items():
             blob_sha = self._create_blob(repo, content, encoding="utf-8")
-            tree_items.append({
-                "path": path,
-                "mode": "100644",  # regular file
-                "type": "blob",
-                "sha": blob_sha,
-            })
+            tree_items.append(
+                {
+                    "path": path,
+                    "mode": "100644",  # regular file
+                    "type": "blob",
+                    "sha": blob_sha,
+                }
+            )
 
         # 3. Create a new tree that layers the changed files on top of the
         #    existing tree.
@@ -728,7 +946,10 @@ class GitHubMCPPoster:
         success_rate = 1.0 if outcome == "success" else 0.0
         logger.info(
             "CB lifecycle: %s | %s | outcome=%s | %s",
-            pattern_id, decision, outcome, context,
+            pattern_id,
+            decision,
+            outcome,
+            context,
         )
         try:
             from cognitive_brain.quantum.memory import MemoryPattern, SQLiteMemory  # noqa: PGH003
@@ -791,8 +1012,7 @@ class GitHubMCPPoster:
             mem = SQLiteMemory()
             all_patterns = mem.get_recent_patterns(limit=limit * 4)
             patterns = [
-                p for p in all_patterns
-                if getattr(p, "pattern_id", "").startswith(pattern_prefix)
+                p for p in all_patterns if getattr(p, "pattern_id", "").startswith(pattern_prefix)
             ][:limit]
 
             if not patterns:
@@ -809,18 +1029,14 @@ class GitHubMCPPoster:
                 dec = getattr(p, "decision", "")[:60]
                 sr = getattr(p, "success_rate", None)
                 outcome = (
-                    "✅ success"
-                    if sr == 1.0
-                    else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
+                    "✅ success" if sr == 1.0 else ("⚠️ partial" if sr and sr > 0 else "❌ fail")
                 )
                 lines.append(f"| `{pid}` | {dec} | {outcome} |")
 
             return "\n".join(lines) + "\n"
 
         except Exception as _exc:  # noqa: BLE001 — fail-open
-            logger.debug(
-                "CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc
-            )
+            logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
             return ""
 
     def _require_token(self) -> None:
@@ -925,17 +1141,18 @@ class GitHubMCPPoster:
                     try:
                         wait = float(retry_after_hdr)
                     except (TypeError, ValueError):
-                        wait = (2 ** attempt) * 1.0  # 1s, 2s, 4s …
+                        wait = (2**attempt) * 1.0  # 1s, 2s, 4s …
                     logger.warning(
                         "GitHub API rate-limited (%d). Retrying in %.0fs (attempt %d/%d)…",
-                        exc.code, wait, attempt + 1, max_retries,
+                        exc.code,
+                        wait,
+                        attempt + 1,
+                        max_retries,
                     )
                     time.sleep(wait)
                 else:
                     error_body = exc.read().decode(errors="replace")
-                    logger.error(
-                        "GitHub API %s %s → %d: %s", method, url, exc.code, error_body
-                    )
+                    logger.error("GitHub API %s %s → %d: %s", method, url, exc.code, error_body)
                     raise
         # Should be unreachable, but satisfy type checker
         raise last_exc  # type: ignore[misc]
@@ -1003,6 +1220,58 @@ def _build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--name", required=True)
     sv.add_argument("--value", required=True)
 
+    # add-discussion-comment
+    adc = sub.add_parser(
+        "add-discussion-comment",
+        help="Add a comment to an existing GitHub Discussion",
+    )
+    adc.add_argument("--repo", required=True, help="owner/repo")
+    adc.add_argument("--number", required=True, type=int, help="Discussion number")
+    adc_group = adc.add_mutually_exclusive_group(required=True)
+    adc_group.add_argument("--body", help="Comment body string")
+    adc_group.add_argument("--body-file", help="Path to markdown file")
+
+    # upsert-discussion-comment
+    udc = sub.add_parser(
+        "upsert-discussion-comment",
+        help="Add or update a Discussion comment identified by a unique marker string",
+    )
+    udc.add_argument("--repo", required=True, help="owner/repo")
+    udc.add_argument("--number", required=True, type=int, help="Discussion number")
+    udc_group = udc.add_mutually_exclusive_group(required=True)
+    udc_group.add_argument("--body", help="Comment body string")
+    udc_group.add_argument("--body-file", help="Path to markdown file")
+    udc.add_argument(
+        "--marker",
+        default="",
+        help="Unique HTML comment marker used to detect an existing comment to update",
+    )
+
+    # post-ci-pattern-summary
+    pcps = sub.add_parser(
+        "post-ci-pattern-summary",
+        help="Post (or update) CI pattern knowledge-graph summary to a Discussion",
+    )
+    pcps.add_argument("--repo", required=True, help="owner/repo")
+    pcps.add_argument("--number", required=True, type=int, help="Discussion number")
+    pcps.add_argument("--body-file", required=True, help="Path to markdown summary file")
+    pcps.add_argument(
+        "--session-id",
+        default="",
+        help="Session ID for deduplication marker (optional)",
+    )
+
+    # post-continuation
+    pct = sub.add_parser(
+        "post-continuation",
+        help="Post a tokenized continuation chain prompt as a new Discussion comment",
+    )
+    pct.add_argument("--repo", required=True, help="owner/repo")
+    pct.add_argument("--number", required=True, type=int, help="Discussion number")
+    pct_group = pct.add_mutually_exclusive_group(required=True)
+    pct_group.add_argument("--body", help="Continuation chain body string")
+    pct_group.add_argument("--body-file", help="Path to markdown file")
+
     # create-discussion
     cd = sub.add_parser("create-discussion", help="Create a GitHub Discussion")
     cd.add_argument("--repo", required=True)
@@ -1017,7 +1286,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     cb.add_argument("--repo", required=True, help="owner/repo")
     cb.add_argument(
-        "--ref", required=True,
+        "--ref",
+        required=True,
         help="Full ref name, e.g. refs/heads/0D_base_ (heads/ prefix added if omitted)",
     )
     cb.add_argument("--sha", required=True, help="40-char commit SHA to point the new ref to")
@@ -1052,7 +1322,8 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     rp.add_argument("--limit", type=int, default=10, help="Maximum patterns to return (default 10)")
     rp.add_argument(
-        "--prefix", default="CB-",
+        "--prefix",
+        default="CB-",
         help="Filter patterns by pattern_id prefix (default: CB-)",
     )
 
@@ -1135,11 +1406,38 @@ def main(argv: list[str] | None = None) -> int:
             for mapping in args.files:
                 dest, _, src = mapping.partition(":")
                 if not dest or not src:
-                    print(f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC", file=sys.stderr)  # noqa: E501
+                    print(
+                        f"❌ Invalid --file mapping {mapping!r} — expected DEST:SRC",
+                        file=sys.stderr,
+                    )  # noqa: E501
                     return 1
                 files[dest] = Path(src).read_text(encoding="utf-8")
-            commit_sha = poster.commit_files(args.repo, args.branch, files, args.message, args.force)  # noqa: E501
+            commit_sha = poster.commit_files(
+                args.repo, args.branch, files, args.message, args.force
+            )  # noqa: E501
             print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
+
+        elif args.command == "add-discussion-comment":
+            body = args.body or Path(args.body_file).read_text(encoding="utf-8")
+            result = poster.add_discussion_comment(args.repo, args.number, body)
+            print(f"✅ Discussion comment posted: {result.get('url', result)}")
+
+        elif args.command == "upsert-discussion-comment":
+            body = args.body or Path(args.body_file).read_text(encoding="utf-8")
+            result = poster.upsert_discussion_comment(args.repo, args.number, body, args.marker)
+            print(f"✅ Discussion comment upserted: {result.get('url', result)}")
+
+        elif args.command == "post-ci-pattern-summary":
+            body = Path(args.body_file).read_text(encoding="utf-8")
+            result = poster.post_ci_pattern_summary(
+                args.repo, args.number, body, args.session_id
+            )
+            print(f"✅ CI pattern summary posted to discussion #{args.number}: {result.get('url', result)}")
+
+        elif args.command == "post-continuation":
+            body = args.body or Path(args.body_file).read_text(encoding="utf-8")
+            result = poster.post_continuation_chain(args.repo, args.number, body)
+            print(f"✅ Continuation chain posted to discussion #{args.number}: {result.get('url', result)}")
 
     except RuntimeError as exc:
         print(f"❌ {exc}", file=sys.stderr)

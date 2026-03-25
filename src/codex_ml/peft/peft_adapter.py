@@ -117,7 +117,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Silently ignore attribute setting failures
-            pass
         return model
 
     # Build kwargs for LoraConfig without duplicating task_type or control flags
@@ -146,7 +145,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
-            pass
         return adapted
     except Exception:  # pragma: no cover - defensive fallback
         # If adaptation fails for any reason, return original model with config attached
@@ -156,5 +154,4 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures in fallback case
-            pass
         return model

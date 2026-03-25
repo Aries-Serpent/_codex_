@@ -55,12 +55,12 @@ class BackendAdapter(ABC):
     @abstractmethod
     def connect(self) -> None:
         """Initialize connections/clients. Idempotent."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def upsert_batch(self, namespace: str, items: Iterable[VectorItem]) -> None:
         """Upsert a batch of vector items into namespace/tenant."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def query_top_k(
@@ -71,14 +71,14 @@ class BackendAdapter(ABC):
         filters: Optional[dict[str, Any]] = None,
     ) -> list[BackendResponse]:
         """Return top_k results with scores and metadata."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def delete(self, namespace: str, id: str) -> bool:
         """Delete item by id; return True if deleted."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @abstractmethod
     def health_check(self) -> dict[str, Any]:
         """Return backend health information (status, details)."""
-        raise NotImplementedError
+        raise NotImplementedError()
