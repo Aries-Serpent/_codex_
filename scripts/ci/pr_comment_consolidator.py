@@ -252,20 +252,25 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
 
     The REST API (``/pulls/{pr}/comments``) does NOT expose whether a review
     thread is resolved — it only returns flat comment objects.  The GraphQL
-    API exposes ``reviewThreads.nodes[].isResolved``, giving us an accurate
-    count.
+    API exposes ``reviewThreads.nodes[].isResolved`` and ``isOutdated``,
+    giving us an accurate count.
+
+    Outdated threads (where the referenced code has since changed) are
+    excluded from the "unresolved" count because they reference code that no
+    longer exists in that form and cannot be actioned.
 
     Paginates through all threads (100 per page) to ensure complete counts
     even when a PR has more than 100 review threads.
 
-    Returns ``{"total": N, "resolved": N, "unresolved": N}`` or
-    ``None`` on failure (caller falls back to neutral score).
+    Returns ``{"total": N, "resolved": N, "outdated": N, "unresolved": N}``
+    or ``None`` on failure (caller falls back to neutral score).
     """
     repo = _repo()
     owner, name = repo.split("/", 1)
 
     total = 0
     resolved = 0
+    outdated = 0
     after_cursor: Optional[str] = None
 
     try:
@@ -278,7 +283,7 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
                         pullRequest(number: $pr) {{
                           reviewThreads(first: 100{after_arg}) {{
                             pageInfo {{ hasNextPage endCursor }}
-                            nodes {{ isResolved }}
+                            nodes {{ isResolved isOutdated }}
                           }}
                         }}
                       }}
@@ -314,6 +319,10 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
             nodes = threads.get("nodes", [])
             total += len(nodes)
             resolved += sum(1 for n in nodes if n.get("isResolved"))
+            outdated += sum(
+                1 for n in nodes
+                if n.get("isOutdated") and not n.get("isResolved")
+            )
             page_info = threads.get("pageInfo", {})
             if not page_info.get("hasNextPage"):
                 break
@@ -321,7 +330,15 @@ def _fetch_review_threads(pr_number: int, token: str) -> Optional[dict[str, int]
     except Exception:  # noqa: BLE001
         return None
 
-    return {"total": total, "resolved": resolved, "unresolved": total - resolved}
+    # Unresolved = not resolved AND not outdated (outdated threads cannot be
+    # actioned since the code they reference has already changed)
+    active_unresolved = total - resolved - outdated
+    return {
+        "total": total,
+        "resolved": resolved,
+        "outdated": outdated,
+        "unresolved": max(0, active_unresolved),
+    }
 
 
 def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
@@ -430,15 +447,27 @@ def compute_readiness(pr_number: int, token: str, sections: dict) -> dict:
             unresolved = thread_counts["unresolved"]
             total = thread_counts["total"]
             resolved = thread_counts["resolved"]
+            outdated_count = thread_counts.get("outdated", 0)
             if total == 0:
                 comment_score = 1.0
                 comment_detail = "no review threads"
             elif unresolved == 0:
                 comment_score = 1.0
-                comment_detail = f"all {resolved} review thread(s) resolved"
+                if outdated_count > 0:
+                    comment_detail = (
+                        f"all active threads resolved"
+                        f" ({resolved} resolved, {outdated_count} outdated/skipped"
+                        f" of {total} total)"
+                    )
+                else:
+                    comment_detail = f"all {resolved} review thread(s) resolved"
             else:
                 comment_score = max(0.0, 1.0 - unresolved * 0.1)
-                comment_detail = f"{unresolved} unresolved / {total} total review thread(s)"
+                parts = [f"{unresolved} unresolved"]
+                if outdated_count > 0:
+                    parts.append(f"{outdated_count} outdated")
+                parts.append(f"{total} total review thread(s)")
+                comment_detail = " / ".join(parts)
         else:
             # GraphQL unavailable — neutral score
             comment_score = 0.5
