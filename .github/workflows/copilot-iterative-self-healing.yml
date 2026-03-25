@@ -1,0 +1,391 @@
+name: Copilot Iterative Self-Healing Auto-Poster
+
+# Automatically produces structured @copilot prompts posted as PR/Issue comments
+# to initiate iterative self-healing sessions without human intervention.
+#
+# Triggers:
+#   1. workflow_run:   fires after any CI workflow completes with failure
+#   2. schedule:       nightly health-check at 02:00 UTC
+#   3. workflow_dispatch: manual trigger with configurable parameters
+#
+# What it does:
+#   - Detects failure type (test, lint, build, coverage, security, deployment)
+#   - Builds a context-rich @copilot prompt tailored to the failure category
+#   - Checks for duplicate comments (idempotent — will not double-post)
+#   - Posts the prompt as a PR comment (or creates an Issue when no PR exists)
+#   - Records the escalation in the cognitive brain pattern DB
+#   - Increments COGNITIVE_BRAIN_SESSION_NUMBER for session tracking
+
+on:
+  workflow_run:
+    workflows:
+      - "Pre-Merge Validation"
+      - "Iterative Self-Healing CI"
+      - "mypy Baseline (Type-Check Anti-Regression)"
+      - "Test — RAG Pipeline"
+      - "Security Scan"
+      - "Nightly CodeQL Alert Triage"
+      - "Deferral Language Gate"
+      - "CI Pattern Pipeline"
+    types: [completed]
+  schedule:
+    - cron: "0 2 * * *"   # nightly 02:00 UTC health sweep
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to post the @copilot prompt on (optional)"
+        required: false
+        default: ""
+      failure_category:
+        description: "Failure category override"
+        required: false
+        default: "auto-detect"
+        type: choice
+        options:
+          - auto-detect
+          - test_failure
+          - lint_failure
+          - coverage_regression
+          - security_alert
+          - type_error
+          - build_failure
+          - ci_pattern
+          - general
+
+concurrency:
+  group: copilot-self-healing-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false   # never cancel — each post is a unique escalation
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 1: Determine whether we should escalate
+  # ─────────────────────────────────────────────────────────────────────────────
+  should-escalate:
+    name: Triage — should we escalate?
+    runs-on: ubuntu-latest
+    outputs:
+      escalate: ${{ steps.triage.outputs.escalate }}
+      category: ${{ steps.triage.outputs.category }}
+      pr_number: ${{ steps.triage.outputs.pr_number }}
+      head_branch: ${{ steps.triage.outputs.head_branch }}
+      run_url: ${{ steps.triage.outputs.run_url }}
+      workflow_name: ${{ steps.triage.outputs.workflow_name }}
+    steps:
+      - name: Triage failure
+        id: triage
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          RUN_ID: ${{ github.event.workflow_run.id || '' }}
+          RUN_URL: ${{ github.event.workflow_run.html_url || '' }}
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name || 'manual-dispatch' }}
+          INPUT_PR: ${{ inputs.pr_number || '' }}
+          INPUT_CATEGORY: ${{ inputs.failure_category || 'auto-detect' }}
+        run: |
+          # ── 1. Decide whether to escalate ─────────────────────────────────
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Nightly sweep — always run
+            echo "escalate=true" >> "$GITHUB_OUTPUT"
+            echo "category=nightly_health_sweep" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "escalate=true" >> "$GITHUB_OUTPUT"
+            CAT="${INPUT_CATEGORY:-general}"
+            echo "category=${CAT}" >> "$GITHUB_OUTPUT"
+          elif [ "${CONCLUSION}" != "failure" ] && [ "${CONCLUSION}" != "timed_out" ]; then
+            echo "escalate=false" >> "$GITHUB_OUTPUT"
+            echo "category=no_failure" >> "$GITHUB_OUTPUT"
+            echo "✅ Workflow concluded with '${CONCLUSION}' — no escalation needed"
+            exit 0
+          else
+            echo "escalate=true" >> "$GITHUB_OUTPUT"
+            # Auto-detect category from workflow name
+            if echo "${WORKFLOW_NAME}" | grep -qi "security\|codeql\|cve"; then
+              CAT="security_alert"
+            elif echo "${WORKFLOW_NAME}" | grep -qi "mypy\|type"; then
+              CAT="type_error"
+            elif echo "${WORKFLOW_NAME}" | grep -qi "coverage\|rag"; then
+              CAT="coverage_regression"
+            elif echo "${WORKFLOW_NAME}" | grep -qi "lint\|ruff\|deferral"; then
+              CAT="lint_failure"
+            elif echo "${WORKFLOW_NAME}" | grep -qi "pattern\|ci.pattern"; then
+              CAT="ci_pattern"
+            elif echo "${WORKFLOW_NAME}" | grep -qi "test\|pytest"; then
+              CAT="test_failure"
+            else
+              CAT="general"
+            fi
+            echo "category=${CAT}" >> "$GITHUB_OUTPUT"
+          fi
+
+          # ── 2. Resolve PR number ───────────────────────────────────────────
+          if [ -n "${INPUT_PR}" ]; then
+            PR_NUMBER="${INPUT_PR}"
+          else
+            PR_NUMBER=$(gh pr list \
+              --repo "${{ github.repository }}" \
+              --head "${HEAD_BRANCH}" \
+              --state open \
+              --json number \
+              -q '.[0].number' 2>/dev/null || echo "")
+          fi
+
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "head_branch=${HEAD_BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "run_url=${RUN_URL}" >> "$GITHUB_OUTPUT"
+          echo "workflow_name=${WORKFLOW_NAME}" >> "$GITHUB_OUTPUT"
+          echo "ℹ️  Category: ${CAT} | PR: ${PR_NUMBER:-none} | Branch: ${HEAD_BRANCH}"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 2: Build the @copilot prompt and post it
+  # ─────────────────────────────────────────────────────────────────────────────
+  post-copilot-prompt:
+    name: Post @copilot self-healing prompt
+    runs-on: ubuntu-latest
+    needs: should-escalate
+    if: needs.should-escalate.outputs.escalate == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .codex
+            .github/scripts
+            scripts/ci
+          sparse-checkout-cone-mode: false
+
+      - name: Build @copilot prompt
+        id: build_prompt
+        env:
+          CATEGORY: ${{ needs.should-escalate.outputs.category }}
+          PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
+          HEAD_BRANCH: ${{ needs.should-escalate.outputs.head_branch }}
+          RUN_URL: ${{ needs.should-escalate.outputs.run_url }}
+          WORKFLOW_NAME: ${{ needs.should-escalate.outputs.workflow_name }}
+          RUN_ID: ${{ github.event.workflow_run.id || '' }}
+          SESSION: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || '0' }}
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RUN_LINK="${RUN_URL:-https://github.com/${{ github.repository }}/actions}"
+
+          # ── Build category-specific prompt ─────────────────────────────────
+          case "${CATEGORY}" in
+            test_failure)
+              PROMPT_BODY="@copilot Fix the failing tests in workflow **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Retrieve the job logs via GitHub MCP tools to identify the exact failing tests
+2. Diagnose root cause (import errors, fixture issues, logic regressions, missing deps)
+3. Apply the minimal targeted fix — do NOT remove or skip tests
+4. Run \`python3 -m ruff check\` and verify \`python3 -m pytest <failing_module> -x\` passes
+5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` with a session entry
+6. Push the fix and verify CI goes green
+
+Follow \`.codex/CODEBASE_AGENCY_POLICY.md\` — leave the codebase better than found."
+              ;;
+
+            lint_failure)
+              PROMPT_BODY="@copilot Fix the linting/style failures in workflow **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Run \`python3 -m ruff check --statistics\` to list all violations
+2. Run \`python3 -m ruff check --fix\` to auto-fix all fixable issues
+3. For remaining violations, apply manual fixes
+4. Verify: \`python3 -m ruff check\` exits 0
+5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+6. Push — do NOT disable rules or add \`noqa\` suppression without justification
+
+Check \`scripts/ci/check_deferral_language.py\` passes (no deferral-language gate violations)."
+              ;;
+
+            coverage_regression)
+              PROMPT_BODY="@copilot Fix the coverage regression detected by **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Check \`coverage.xml\` or the workflow logs to identify which modules dropped
+2. Write targeted tests for the uncovered lines/branches
+3. Run \`python3 -m pytest --cov=src --cov-report=term-missing\` to verify improvement
+4. Ensure coverage meets the threshold defined in \`.github/workflows/test-rag.yml\` (≥27%)
+5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+6. Push fix"
+              ;;
+
+            security_alert)
+              PROMPT_BODY="@copilot Remediate the security alerts detected by **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Use GitHub MCP tools to list all open CodeQL / secret-scanning / Dependabot alerts
+2. Triage by severity — fix CRITICAL and HIGH alerts first
+3. For each alert: identify the vulnerable code, apply the minimal safe fix, verify no regressions
+4. For dependency vulnerabilities: bump to the patched version in \`pyproject.toml\`
+5. Add a **Security Summary** to \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+6. Push fix — CodeQL will re-scan on the new commit"
+              ;;
+
+            type_error)
+              PROMPT_BODY="@copilot Fix the mypy / type-checking failures in **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Retrieve logs to identify the exact mypy errors (file:line, error code)
+2. Fix each type error — use \`Optional\`, \`cast\`, or proper type annotations
+3. Do NOT add new \`# type: ignore\` annotations unless absolutely unavoidable
+4. Run \`python3 -m mypy src/ --no-error-summary\` to verify clean output
+5. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+6. Push fix"
+              ;;
+
+            ci_pattern)
+              PROMPT_BODY="@copilot The CI Pattern Pipeline strict gate failed in **${WORKFLOW_NAME}**.
+
+**Session S${SESSION} | Branch:** \`${HEAD_BRANCH}\`
+**Failed run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Run \`python3 scripts/ci/ci_pattern_pipeline.py --check-only --strict\` locally
+2. Review the high-recurrence patterns flagged (see pattern DB)
+3. Apply \`python3 scripts/ci/auto_fix_common_issues.py\` for auto-fixable patterns
+4. For manual patterns: trace root cause and apply targeted fix
+5. Run pipeline again to confirm it passes
+6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+7. Push fix"
+              ;;
+
+            nightly_health_sweep)
+              PROMPT_BODY="@copilot Perform the nightly codebase health sweep (S${SESSION}).
+
+**Timestamp:** ${TIMESTAMP} | **Branch:** \`${HEAD_BRANCH}\`
+
+**Health-sweep checklist:**
+1. Run \`python3 -m ruff check\` — fix any new violations
+2. Run \`python3 scripts/ci/auto_fix_common_issues.py --check-only --json-output .codex/diagnostic-report.json\` — fix auto-fixable issues
+3. Check GitHub for new open CodeQL alerts — remediate any CRITICAL/HIGH
+4. Verify \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` was updated in the last 48h
+5. Review the last 5 CI runs on \`${HEAD_BRANCH}\` for any recurring failures
+6. Update cognitive brain metadata if new patterns were observed
+7. Push any fixes with descriptive commit messages"
+              ;;
+
+            *)
+              PROMPT_BODY="@copilot Continue iterative self-healing for branch \`${HEAD_BRANCH}\`.
+
+**Session S${SESSION} | Workflow:** ${WORKFLOW_NAME}
+**Run:** [${RUN_ID:-manual}](${RUN_LINK})
+
+**Steps required:**
+1. Review the failing workflow logs via GitHub MCP tools
+2. Identify and fix the root cause following \`.codex/CODEBASE_AGENCY_POLICY.md\`
+3. Run \`python3 -m ruff check\` and \`python3 -m pytest -x\` to verify
+4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+5. Push fix — leave the codebase better than found"
+              ;;
+          esac
+
+          # Write prompt to runner temp (NOT /tmp/ per TEMPORARY_FILES_POLICY)
+          printf '%s' "${PROMPT_BODY}" > "${RUNNER_TEMP}/copilot_prompt.txt"
+          echo "prompt_file=${RUNNER_TEMP}/copilot_prompt.txt" >> "$GITHUB_OUTPUT"
+          echo "category=${CATEGORY}" >> "$GITHUB_OUTPUT"
+
+          echo "### 📝 Built @copilot prompt (category: ${CATEGORY})" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+          head -5 "${RUNNER_TEMP}/copilot_prompt.txt" >> "$GITHUB_STEP_SUMMARY"
+          echo "..." >> "$GITHUB_STEP_SUMMARY"
+          echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check for duplicate comment (idempotency guard)
+        id: dedup
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
+          CATEGORY: ${{ steps.build_prompt.outputs.category }}
+        run: |
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "is_duplicate=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Check last 5 PR comments for the same category tag
+          RECENT=$(gh pr view "${PR_NUMBER}" \
+            --repo "${{ github.repository }}" \
+            --json comments \
+            --jq '.comments[-5:][].body' 2>/dev/null || echo "")
+          if echo "${RECENT}" | grep -q "self-healing.*${CATEGORY}\|${CATEGORY}.*self-healing\|Session S.*${CATEGORY}"; then
+            echo "is_duplicate=true" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  Duplicate detected for category '${CATEGORY}' — skipping (idempotent)"
+          else
+            echo "is_duplicate=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post @copilot prompt as PR comment
+        if: steps.dedup.outputs.is_duplicate != 'true' && needs.should-escalate.outputs.pr_number != ''
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
+          PROMPT_FILE: ${{ steps.build_prompt.outputs.prompt_file }}
+        run: |
+          BODY=$(cat "${PROMPT_FILE}")
+          gh pr comment "${PR_NUMBER}" \
+            --repo "${{ github.repository }}" \
+            --body "${BODY}"
+          echo "✅ Posted @copilot self-healing prompt on PR #${PR_NUMBER}"
+          echo "### ✅ @copilot prompt posted on PR #${PR_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create escalation Issue when no PR exists
+        if: steps.dedup.outputs.is_duplicate != 'true' && needs.should-escalate.outputs.pr_number == ''
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
+          HEAD_BRANCH: ${{ needs.should-escalate.outputs.head_branch }}
+          WORKFLOW_NAME: ${{ needs.should-escalate.outputs.workflow_name }}
+          RUN_URL: ${{ needs.should-escalate.outputs.run_url }}
+          CATEGORY: ${{ steps.build_prompt.outputs.category }}
+          PROMPT_FILE: ${{ steps.build_prompt.outputs.prompt_file }}
+          SESSION: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || '0' }}
+        run: |
+          BODY=$(cat "${PROMPT_FILE}")
+          ISSUE_URL=$(gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "🤖 Self-Healing S${SESSION}: ${WORKFLOW_NAME} — ${CATEGORY} on \`${HEAD_BRANCH}\`" \
+            --body "${BODY}" \
+            --label "ci-failure" \
+            2>/dev/null || echo "")
+          if [ -n "${ISSUE_URL}" ]; then
+            echo "✅ Created escalation issue: ${ISSUE_URL}"
+            echo "### ✅ Escalation Issue created: ${ISSUE_URL}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠️ Could not create escalation issue (check token scopes or label existence)"
+            echo "### ⚠️ Could not create escalation issue" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
+        if: steps.dedup.outputs.is_duplicate != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
+          CURRENT: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || '0' }}
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "⚠️  CODEX_MASTER_KEY not set — session number increment skipped"
+            exit 0
+          fi
+          NEXT=$((CURRENT + 1))
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER" \
+            -f name='COGNITIVE_BRAIN_SESSION_NUMBER' \
+            -f value="${NEXT}" \
+            > /dev/null 2>&1 \
+            && echo "✅ Session number: ${CURRENT} → ${NEXT}" \
+            || echo "⚠️  Session number increment failed (variables:write scope required)"

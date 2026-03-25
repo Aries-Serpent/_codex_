@@ -284,7 +284,21 @@ def export_csv(alerts: List[Dict[str, Any]], output_path: Path) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Scrape GitHub code scanning alerts via Playwright"
+        description="Scrape GitHub code scanning alerts via Playwright",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "Examples:\n"
+            "  # Basic scrape:\n"
+            "  python scripts/security/playwright_scraper.py --token $GH_TOKEN\n\n"
+            "  # Filter to high/critical only, Markdown output:\n"
+            "  python scripts/security/playwright_scraper.py --severity high --format markdown\n\n"
+            "  # Only open alerts, limit to 3 pages, CSV output:\n"
+            "  python scripts/security/playwright_scraper.py --state open --max-pages 3 --csv alerts.csv\n\n"
+            "  # Fetch a specific alert:\n"
+            "  python scripts/security/playwright_scraper.py --alert-number 42\n\n"
+            "  # Validate auth without scraping:\n"
+            "  python scripts/security/playwright_scraper.py --dry-run\n"
+        ),
     )
     parser.add_argument(
         "--repo",
@@ -320,7 +334,130 @@ def build_parser() -> argparse.ArgumentParser:
         default=30_000,
         help="Browser timeout in milliseconds (default: 30000)",
     )
+    # GAP-020 / GAP-035 enhanced CLI flags
+    parser.add_argument(
+        "--severity",
+        choices=["critical", "high", "medium", "low", "warning", "note", "error"],
+        default=None,
+        metavar="LEVEL",
+        help="Filter alerts by severity level (critical|high|medium|low|warning|note|error)",
+    )
+    parser.add_argument(
+        "--state",
+        choices=["open", "closed", "dismissed", "fixed"],
+        default=None,
+        metavar="STATE",
+        help="Filter alerts by state (open|closed|dismissed|fixed)",
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Limit pagination to at most N pages (default: unlimited)",
+    )
+    parser.add_argument(
+        "--since",
+        default=None,
+        metavar="YYYY-MM-DD",
+        help="Only include alerts created on or after this date (ISO 8601 date)",
+    )
+    parser.add_argument(
+        "--alert-number",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Fetch a single alert by its number (skips pagination)",
+    )
+    parser.add_argument(
+        "--format",
+        choices=["json", "csv", "markdown", "table"],
+        default="json",
+        dest="output_format",
+        help="Output format (default: json; also controls stdout summary)",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate authentication and configuration without scraping",
+    )
     return parser
+
+
+def _filter_alerts(
+    alerts: List[Dict[str, Any]],
+    severity: Optional[str],
+    state: Optional[str],
+    since: Optional[str],
+    alert_number: Optional[int],
+) -> List[Dict[str, Any]]:
+    """Apply post-scrape filters to the alert list."""
+    from datetime import datetime, timezone
+
+    if alert_number is not None:
+        return [a for a in alerts if a.get("alert_number") == alert_number]
+
+    filtered = alerts
+    if severity:
+        filtered = [a for a in filtered if a.get("severity", "").lower() == severity.lower()]
+    if state:
+        filtered = [a for a in filtered if a.get("state", "open").lower() == state.lower()]
+    if since:
+        try:
+            cutoff = datetime.fromisoformat(since).replace(tzinfo=timezone.utc)
+            filtered = [
+                a for a in filtered
+                if datetime.fromisoformat(
+                    a.get("created_at", "1970-01-01").replace("Z", "+00:00")
+                ) >= cutoff
+            ]
+        except (ValueError, KeyError):
+            logger.warning("Could not apply --since filter (invalid date or missing created_at)")
+
+    return filtered
+
+
+def _print_markdown_table(alerts: List[Dict[str, Any]]) -> None:
+    """Print alerts as a Markdown table to stdout."""
+    if not alerts:
+        print("*(no alerts matching filters)*")
+        return
+    print("| # | Severity | Title | State | URL |")
+    print("|---|----------|-------|-------|-----|")
+    for a in alerts:
+        num = a.get("alert_number", "—")
+        sev = a.get("severity", "—")
+        title = a.get("title", "—")[:60]
+        st = a.get("state", "—")
+        url = a.get("url", "—")
+        print(f"| {num} | {sev} | {title} | {st} | {url} |")
+
+
+def _print_ascii_table(alerts: List[Dict[str, Any]]) -> None:
+    """Print alerts as a plain ASCII table to stdout."""
+    if not alerts:
+        print("(no alerts matching filters)")
+        return
+    col_widths = {"num": 5, "sev": 9, "title": 50, "state": 10}
+    header = (
+        f"{'#':<{col_widths['num']}}  "
+        f"{'Severity':<{col_widths['sev']}}  "
+        f"{'Title':<{col_widths['title']}}  "
+        f"{'State':<{col_widths['state']}}"
+    )
+    print(header)
+    print("-" * len(header))
+    for a in alerts:
+        num = str(a.get("alert_number", "—"))
+        sev = a.get("severity", "—")
+        title = (a.get("title") or "—")[:col_widths["title"]]
+        state = a.get("state", "open")
+        print(
+            f"{num:<{col_widths['num']}}  "
+            f"{sev:<{col_widths['sev']}}  "
+            f"{title:<{col_widths['title']}}  "
+            f"{state:<{col_widths['state']}}"
+        )
 
 
 def main() -> int:
@@ -336,6 +473,19 @@ def main() -> int:
         )
         return 1
 
+    if args.dry_run:
+        token = args.token or os.environ.get("GITHUB_TOKEN")
+        print("🔍 Dry-run mode — validating configuration without scraping")
+        print(f"  Repo    : {args.repo}")
+        print(f"  Token   : {'✅ set' if token else '❌ not set (set GITHUB_TOKEN or --token)'}")
+        print(f"  Headless: {args.headless}")
+        print(f"  Timeout : {args.timeout}ms")
+        if args.severity:
+            print(f"  Severity filter: {args.severity}")
+        if args.state:
+            print(f"  State filter   : {args.state}")
+        return 0 if token else 1
+
     scraper = PlaywrightScraper(
         repo_url=args.repo,
         github_token=args.token,
@@ -350,16 +500,46 @@ def main() -> int:
         logger.info("Tip: use fetch_codeql_alerts.py for API-based collection instead")
         return 1
 
-    export_json(alerts, args.output)
+    # Apply filters
+    alerts = _filter_alerts(
+        alerts,
+        severity=args.severity,
+        state=args.state,
+        since=args.since,
+        alert_number=args.alert_number,
+    )
 
-    if args.csv:
+    # Render output
+    if args.output_format == "markdown":
+        _print_markdown_table(alerts)
+    elif args.output_format == "table":
+        _print_ascii_table(alerts)
+    elif args.output_format == "csv":
+        if args.csv:
+            export_csv(alerts, args.csv)
+        else:
+            import csv
+            import io
+            buf = io.StringIO()
+            if alerts:
+                writer = csv.DictWriter(buf, fieldnames=list(alerts[0].keys()), extrasaction="ignore")
+                writer.writeheader()
+                writer.writerows(alerts)
+            print(buf.getvalue(), end="")
+    else:
+        # json (default)
+        export_json(alerts, args.output)
+
+    if args.csv and args.output_format != "csv":
         export_csv(alerts, args.csv)
 
-    print(f"\n✅  Scraped {len(alerts)} alerts")
-    print(f"   JSON → {args.output}")
-    if args.csv:
-        print(f"   CSV  → {args.csv}")
-    print("\nNext step: python scripts/security/analyze_alerts.py --input", args.output)
+    if args.output_format in ("json", "table", "markdown"):
+        print(f"\n✅  Scraped {len(alerts)} alerts (after filters)")
+        if args.output_format == "json":
+            print(f"   JSON → {args.output}")
+        if args.csv:
+            print(f"   CSV  → {args.csv}")
+        print("\nNext step: python scripts/security/analyze_alerts.py --input", args.output)
     return 0
 
 

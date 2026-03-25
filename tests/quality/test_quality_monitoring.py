@@ -44,7 +44,7 @@ class CoverageSnapshot:
 
 
 @dataclass
-class TestResult:
+class QualityTestResult:
     """Result of a single test execution."""
     name: str
     passed: bool

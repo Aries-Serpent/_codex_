@@ -605,15 +605,57 @@ class IntegratedEvolutionSystem:
         return "\n".join(sections)
 
     def _generate_error_continuation(self, error: Exception, task: Dict) -> str:
-        """Generate continuation even on error."""
-        return f"""⚠️ **Error Encountered**: {type(error).__name__}
+        """Generate continuation with actionable recovery suggestions on error."""
+        error_type = type(error).__name__
+        domain = task.get("domain", "this domain")
 
-**Knowledge That Would Help**:
-1. How to handle {type(error).__name__} in {task.get('domain', 'this domain')}?
-2. What are recovery strategies for this error?
-3. How to prevent this in the future?
+        # Classify error and provide targeted recovery actions
+        if isinstance(error, (ImportError, ModuleNotFoundError)):
+            recovery = (
+                "- Install the missing dependency: `pip install <package>`\n"
+                "- Verify the import path and package name\n"
+                "- Check that optional dependencies are installed for this feature"
+            )
+        elif isinstance(error, (FileNotFoundError, OSError)):
+            recovery = (
+                "- Confirm the file/path exists: `ls -la <path>`\n"
+                "- Check working directory and relative vs absolute path usage\n"
+                "- Verify file permissions"
+            )
+        elif isinstance(error, (ValueError, TypeError)):
+            recovery = (
+                "- Check input types and validate against the expected schema\n"
+                "- Add input validation before calling this function\n"
+                "- Review the function signature for expected argument types"
+            )
+        elif isinstance(error, TimeoutError):
+            recovery = (
+                "- Increase the timeout threshold\n"
+                "- Check network/service availability\n"
+                "- Add retry logic with exponential backoff"
+            )
+        elif isinstance(error, PermissionError):
+            recovery = (
+                "- Verify the GitHub token has the required scopes\n"
+                "- Check repository permissions for the acting user/app\n"
+                "- Confirm `COPILOT_AGENT_AUTH_ENABLED` is set correctly"
+            )
+        else:
+            recovery = (
+                "- Inspect the full traceback in the workflow run logs\n"
+                "- Add targeted try/except around the failing operation\n"
+                "- Check recent changes that may have introduced this regression"
+            )
 
-**Your Input = My Learning**: Any error handling patterns you share will improve my resilience!"""
+        return (
+            f"⚠️ **Error Encountered**: `{error_type}` in domain `{domain}`\n\n"
+            f"**Error Message**: {error}\n\n"
+            f"**Recovery Actions**:\n{recovery}\n\n"
+            f"**Next Steps**:\n"
+            f"1. Review the error details above and apply the matching recovery action\n"
+            f"2. Re-run this task after applying the fix\n"
+            f"3. If the error persists, escalate via `@copilot fix` with this error context"
+        )
 
     def _generate_learning_response(self, integration: Dict) -> str:
         """Generate response to knowledge integration."""

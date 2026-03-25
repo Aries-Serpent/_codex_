@@ -48,7 +48,27 @@ def format_copilot_comment(prompt_content: str) -> str:
     return prompt_content
 
 
-def post_comment_via_github_cli(pr_number: int, comment_body: str) -> bool:
+def check_for_duplicate_comment(pr_number: int, comment_body: str) -> bool:
+    """Return True if an identical (or near-identical) comment was recently posted."""
+    try:
+        result = subprocess.run(
+            ['gh', 'pr', 'view', str(pr_number), '--json', 'comments',
+             '--jq', '.comments[-10:][].body'],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            recent_bodies = result.stdout.splitlines()
+            # Check first 200 chars of each recent comment for match
+            snippet = comment_body.strip()[:200]
+            for body in recent_bodies:
+                if snippet and snippet in body:
+                    return True
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        pass  # Cannot check — allow posting
+    return False
+
+
+def post_comment_via_github_cli(pr_number: int, comment_body: str, dry_run: bool = False) -> bool:
     """
     Post comment using GitHub CLI (gh)
 
@@ -56,6 +76,19 @@ def post_comment_via_github_cli(pr_number: int, comment_body: str) -> bool:
     """
     print(f"📝 Attempting to post comment to PR #{pr_number}")
     print(f"Comment preview (first 200 chars):\n{comment_body[:200]}...")
+
+    if dry_run:
+        print("\n🔍 DRY-RUN MODE — comment would be posted as:")
+        print("-" * 70)
+        print(comment_body)
+        print("-" * 70)
+        print("(No comment posted — dry-run mode)")
+        return True
+
+    # Deduplication check (GAP-045)
+    if check_for_duplicate_comment(pr_number, comment_body):
+        print(f"ℹ️  Duplicate detected — identical comment already posted to PR #{pr_number}. Skipping (idempotent).")
+        return True
 
     try:
         # Try using gh CLI if available
@@ -121,6 +154,11 @@ def main():
     parser.add_argument('--prompt-file', type=str, required=True, help='Path to prompt file (must be in repo)')
     parser.add_argument('--check-tmp', action='store_true', help='Check for /tmp/ violations')
     parser.add_argument('--auto-recover', action='store_true', help='Auto-recover files from /tmp/')
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Show what comment would be posted without actually calling gh pr comment (GAP-044)',
+    )
 
     args = parser.parse_args()
 
@@ -158,7 +196,7 @@ def main():
 
     # Post comment
     try:
-        success = post_comment_via_github_cli(args.pr_number, comment_body)
+        success = post_comment_via_github_cli(args.pr_number, comment_body, dry_run=args.dry_run)
         if success:
             print(f"\n✅ Successfully posted followup prompt to PR #{args.pr_number}")
             print(f"📄 Source file: {prompt_file}")

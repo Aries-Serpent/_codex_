@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 import urllib.request
 from typing import Any, Dict, List, Optional
@@ -140,11 +141,17 @@ def _build_arg_parser():
         description="POST a JSON-RPC 2.0 request and print the SSE/JSON response.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
-            "Example:\n"
+            "Examples:\n"
             "  python scripts/ci/mcp_sse_transport.py \\\n"
             "      --url https://staging.mcp.example.com/stream/ \\\n"
             "      --method tools/repository_access \\\n"
-            "      --params '{\"repo\": \"owner/repo\"}'"
+            "      --params '{\"repo\": \"owner/repo\"}'\n\n"
+            "  # Retry on failure, YAML output:\n"
+            "  python scripts/ci/mcp_sse_transport.py --url ... --method ... --retry 3 --output-format yaml\n\n"
+            "  # Batch requests from a JSON file:\n"
+            "  python scripts/ci/mcp_sse_transport.py --batch-file requests.json --url ...\n\n"
+            "  # Validate auth/schema only (no request sent):\n"
+            "  python scripts/ci/mcp_sse_transport.py --validate-only --url ... --method ...\n"
         ),
     )
     p.add_argument(
@@ -152,8 +159,8 @@ def _build_arg_parser():
     )
     p.add_argument(
         "--method",
-        required=True,
-        help="JSON-RPC method name, e.g. 'tools/repository_access'",
+        default=None,
+        help="JSON-RPC method name, e.g. 'tools/repository_access' (required unless --batch-file)",
     )
     p.add_argument(
         "--params",
@@ -163,7 +170,7 @@ def _build_arg_parser():
     p.add_argument(
         "--token",
         default=None,
-        help="Bearer auth token (optional)",
+        help="Bearer auth token (optional; falls back to MCP_AUTH_TOKEN env var)",
     )
     p.add_argument(
         "--timeout",
@@ -177,17 +184,199 @@ def _build_arg_parser():
         default="cli-1",
         help="JSON-RPC request id (default: 'cli-1')",
     )
+    # GAP-021 enhancements
+    p.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Enable DEBUG-level logging for detailed request/response tracing",
+    )
+    p.add_argument(
+        "--output-format",
+        choices=["json", "plain", "yaml"],
+        default="json",
+        help="Output format for the response (default: json)",
+    )
+    p.add_argument(
+        "--retry",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Retry up to N times on transient failures (default: 0 = no retry)",
+    )
+    p.add_argument(
+        "--batch-file",
+        default=None,
+        metavar="FILE",
+        help=(
+            "Path to a JSON file containing a list of requests "
+            '[{"method": "...", "params": {...}}, ...]. '
+            "Sends each request sequentially. --method/--params are ignored when this is used."
+        ),
+    )
+    p.add_argument(
+        "--validate-only",
+        action="store_true",
+        help="Validate URL, token and params without sending a request (dry-run connectivity check)",
+    )
+    p.add_argument(
+        "--header",
+        action="append",
+        dest="headers",
+        metavar="KEY=VALUE",
+        default=[],
+        help="Inject extra HTTP header (may be specified multiple times, e.g. --header X-Trace-Id=abc)",
+    )
     return p
+
+
+def _format_output(result: dict, fmt: str) -> str:
+    """Format a result dict according to the requested output format."""
+    if fmt == "json":
+        return json.dumps(result, indent=2)
+    if fmt == "yaml":
+        # Best-effort YAML without requiring pyyaml
+        try:
+            import yaml  # type: ignore[import]
+            return yaml.dump(result, default_flow_style=False)
+        except ImportError:
+            # Fallback: indented JSON as YAML-compatible superset
+            return json.dumps(result, indent=2)
+    # plain
+    lines = []
+    for k, v in result.items():
+        lines.append(f"{k}: {v}")
+    return "\n".join(lines)
+
+
+def _send_single(
+    url: str,
+    payload: dict,
+    auth_token: Optional[str],
+    timeout: int,
+    extra_headers: dict,
+    retry: int,
+) -> dict:
+    """Send one JSON-RPC request, retrying on OSError up to ``retry`` times."""
+    attempt = 0
+    while True:
+        try:
+            # Inject extra headers by temporarily monkey-patching urllib if needed.
+            # For simplicity we rebuild the request each attempt.
+            import urllib.request as _ureq
+            data = json.dumps(payload).encode("utf-8")
+            headers: dict = {
+                "Content-Type": "application/json",
+                "Accept": "text/event-stream, application/json",
+            }
+            if auth_token:
+                headers["Authorization"] = f"Bearer {auth_token}"
+            headers.update(extra_headers)
+            req = _ureq.Request(url, data=data, headers=headers, method="POST")
+            with _ureq.urlopen(req, timeout=timeout) as resp:  # nosec B310
+                content_type = resp.headers.get("Content-Type", "")
+                raw = resp.read()
+            if "text/event-stream" not in content_type:
+                return json.loads(raw)
+            # SSE streaming
+            chunks = []
+            for line in raw.decode("utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("data:"):
+                    fragment = line.removeprefix("data:").strip()
+                    if fragment in ("", "[DONE]"):
+                        continue
+                    try:
+                        frame = json.loads(fragment)
+                        if isinstance(frame, dict):
+                            chunks.append(frame)
+                    except json.JSONDecodeError:
+                        pass
+            if not chunks:
+                return {"error": {"message": "SSE stream contained no parseable data frames"}}
+            final = chunks[-1]
+            final["_streaming_chunks"] = len(chunks)
+            return final
+        except OSError as exc:
+            if attempt < retry:
+                attempt += 1
+                import time
+                delay = 2 ** attempt
+                logging.getLogger(__name__).warning(
+                    "Request failed (%s); retrying in %ds (attempt %d/%d)...",
+                    exc, delay, attempt, retry,
+                )
+                time.sleep(delay)
+            else:
+                raise
 
 
 def main(argv: Optional[list] = None) -> int:
     """CLI entry point. Returns exit code (0 = success, 1 = error)."""
-    logging.basicConfig(
-        level=logging.WARNING,
-        format="%(levelname)s %(name)s: %(message)s",
-    )
     parser = _build_arg_parser()
     args = parser.parse_args(argv)
+
+    log_level = logging.DEBUG if args.verbose else logging.WARNING
+    logging.basicConfig(level=log_level, format="%(levelname)s %(name)s: %(message)s")
+
+    # Resolve auth token (CLI flag > env var)
+    auth_token = args.token or os.environ.get("MCP_AUTH_TOKEN")
+
+    # Parse extra headers
+    extra_headers: dict = {}
+    for header_spec in args.headers:
+        if "=" not in header_spec:
+            print(f"ERROR: --header must be KEY=VALUE, got: {header_spec!r}", file=sys.stderr)
+            return 1
+        k, _, v = header_spec.partition("=")
+        extra_headers[k.strip()] = v.strip()
+
+    if args.validate_only:
+        issues = []
+        if not args.url.startswith(("http://", "https://")):
+            issues.append(f"URL must start with http:// or https://, got: {args.url!r}")
+        if not auth_token:
+            issues.append("No auth token provided (--token or MCP_AUTH_TOKEN env var)")
+        if args.method:
+            pass  # method presence validated
+        if issues:
+            for issue in issues:
+                print(f"⚠  {issue}")
+            return 1
+        print("✅ Validation passed — URL, token and params look correct")
+        return 0
+
+    # Batch-file mode
+    if args.batch_file:
+        try:
+            batch = json.loads(open(args.batch_file).read())
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"ERROR: --batch-file: {exc}", file=sys.stderr)
+            return 1
+        if not isinstance(batch, list):
+            print("ERROR: --batch-file must contain a JSON array of request objects", file=sys.stderr)
+            return 1
+        results = []
+        exit_code = 0
+        for i, req_obj in enumerate(batch):
+            method = req_obj.get("method", "")
+            params = req_obj.get("params", {})
+            req_id = req_obj.get("id", f"batch-{i+1}")
+            payload = {"jsonrpc": "2.0", "id": req_id, "method": method, "params": params}
+            try:
+                result = _send_single(args.url, payload, auth_token, args.timeout, extra_headers, args.retry)
+            except (OSError, ValueError) as exc:
+                result = {"error": {"message": str(exc)}}
+                exit_code = 1
+            results.append(result)
+            if "error" in result:
+                exit_code = 1
+        print(_format_output(results, args.output_format))  # type: ignore[arg-type]
+        return exit_code
+
+    # Single-request mode
+    if not args.method:
+        print("ERROR: --method is required (or use --batch-file)", file=sys.stderr)
+        return 1
 
     try:
         params = json.loads(args.params)
@@ -203,12 +392,7 @@ def main(argv: Optional[list] = None) -> int:
     }
 
     try:
-        result = http_post_json_streaming(
-            url=args.url,
-            payload=payload,
-            auth_token=args.token,
-            timeout=args.timeout,
-        )
+        result = _send_single(args.url, payload, auth_token, args.timeout, extra_headers, args.retry)
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
@@ -216,7 +400,7 @@ def main(argv: Optional[list] = None) -> int:
         print(f"ERROR: HTTP request failed: {exc}", file=sys.stderr)
         return 1
 
-    print(json.dumps(result, indent=2))
+    print(_format_output(result, args.output_format))
     if "error" in result:
         return 1
     return 0

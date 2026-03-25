@@ -67,6 +67,17 @@ class CopilotWorkflowOrchestrator:
             repo_owner: Repository owner
             repo_name: Repository name
         """
+        # GAP-041: Respect AGENT_KILL_SWITCH at startup
+        if os.environ.get("AGENT_KILL_SWITCH", "0") == "1":
+            raise RuntimeError(
+                "AGENT_KILL_SWITCH=1 — CopilotWorkflowOrchestrator startup aborted"
+            )
+        # GAP-038: Fail fast when aiohttp is unavailable so callers get a clear error
+        if not HAS_AIOHTTP:
+            raise ImportError(
+                "aiohttp is required for CopilotWorkflowOrchestrator. "
+                "Install with: pip install 'aiohttp>=3.9'"
+            )
         self.github_token = github_token or os.environ.get("GITHUB_TOKEN", "")
         self.repo_owner = repo_owner or os.environ.get("GITHUB_REPOSITORY", "").split("/")[0]
         self.repo_name = repo_name or os.environ.get("GITHUB_REPOSITORY", "").split("/")[1] if "/" in os.environ.get("GITHUB_REPOSITORY", "") else ""
