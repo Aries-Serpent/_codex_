@@ -35,9 +35,7 @@ app = FastAPI(
 
 # Base directory that all client-supplied file paths must reside under.
 # Set RAG_FILES_BASE_DIR to restrict to a specific directory; defaults to CWD.
-_RAG_FILES_BASE: Path = Path(
-    os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))
-).resolve()
+_RAG_FILES_BASE: Path = Path(os.environ.get("RAG_FILES_BASE_DIR", str(Path.cwd()))).resolve()
 
 
 def _ensure_subpath(base: Path, candidate: Path) -> Path:
@@ -241,10 +239,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
 
         # Validate every supplied path stays within _RAG_FILES_BASE to prevent
         # path-traversal attacks (e.g. a client passing "/etc/passwd").
-        safe_files = [
-            _ensure_subpath(_RAG_FILES_BASE, Path(f))
-            for f in build_request.files
-        ]
+        safe_files = [_ensure_subpath(_RAG_FILES_BASE, Path(f)) for f in build_request.files]
 
         index_path = build_index_from_files(
             files=safe_files,
