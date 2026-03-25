@@ -16,9 +16,9 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        from config_legacy.utils import to_absolute_path  # type: ignore[no-redef]
+        from config_legacy.utils import to_absolute_path  # noqa: F401
     except (ImportError, ModuleNotFoundError):
-        def to_absolute_path(path: str) -> str:  # type: ignore[misc]
+        def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
 
 try:
@@ -27,9 +27,9 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     try:
-        import config_legacy as hydra  # type: ignore[no-redef]
+        import config_legacy as hydra  # noqa: F401
     except (ImportError, ModuleNotFoundError):
-        hydra = None  # type: ignore[assignment]
+        hydra = None
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -42,11 +42,11 @@ from codex_ml.train_loop import run_training
 from codex_ml.utils import repro
 
 try:
-    from omegaconf import DictConfig, ListConfig, OmegaConf  # type: ignore[import]
+    from omegaconf import DictConfig, ListConfig, OmegaConf
 except ImportError:  # pragma: no cover — omegaconf optional in lightweight envs
     DictConfig = Any  # type: ignore[assignment,misc]
     ListConfig = Any  # type: ignore[assignment,misc]
-    OmegaConf = None  # type: ignore[assignment]
+    OmegaConf = None  # type: ignore[assignment,misc]
 
 _ = (ArgparseJSONParser, run_cmd)
 

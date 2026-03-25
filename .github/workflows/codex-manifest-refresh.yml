@@ -96,6 +96,9 @@ jobs:
           fi
 
       - name: Sync all tracked files (manifest integrity + .secrets.baseline + changelog)
+        env:
+          HEAD_REF: ${{ github.head_ref || 'main' }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           # sync_tracked_files.py atomically:
           #   1. Recomputes CODEX_MANIFEST.json integrity_sha256 after generate_manifest.py
@@ -111,11 +114,6 @@ jobs:
             echo "ℹ️  detect-secrets not installed — skipping .secrets.baseline sync"
             echo "   Install: pip install detect-secrets"
           fi
-
-        env:
-          HEAD_REF: ${{ github.head_ref || 'main' }}
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add CODEX_MANIFEST.json \
