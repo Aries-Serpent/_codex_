@@ -47,6 +47,203 @@ LOG_TAIL_LINES = 300
 MAX_COMMENT_CHARS = 60_000
 
 # ---------------------------------------------------------------------------
+# Workflow environment profiles
+# Maps workflow-name fragments and job-name fragments to a tailored Copilot
+# test environment so agents get the exact setup they need to reproduce and
+# fix failures from that specific pipeline.
+# ---------------------------------------------------------------------------
+
+@dataclass
+class EnvProfile:
+    """Tailored environment profile for a specific workflow / job pattern."""
+    name: str
+    description: str
+    # Pip packages to install (in addition to base tools)
+    pip_packages: list[str]
+    # requirements files to install (-r <file>)
+    requirements_files: list[str]
+    # Package extras to install editable (e.g. "dev", "rag,dev")
+    editable_extras: str
+    # Commands to run before tests (setup, lint, etc.)
+    pre_test_commands: list[str]
+    # The exact pytest / test command used by CI
+    ci_test_command: str
+    # Commands that verify a fix is correct
+    verify_commands: list[str]
+    # AfterMath categories for this profile
+    aftermath_categories: list[str]
+
+
+WORKFLOW_ENV_PROFILES: dict[str, EnvProfile] = {
+    # ── Resilient Validation Suite — sharded quick tests ─────────────────
+    "sharded quick": EnvProfile(
+        name="Resilient Validation Suite — Sharded Quick Tests",
+        description=(
+            "4-shard split of the full quick test suite. "
+            "Each shard runs ~3.5 k tests with -m 'not slow and not integration' "
+            "at --timeout=60. Uses pytest-split + least_duration algorithm."
+        ),
+        pip_packages=[
+            "pytest>=8.2.0", "pytest-timeout>=2.3", "pytest-xdist>=3.5.0",
+            "pytest-split>=0.9", "pytest-rerunfailures>=14.0",
+            "detect-secrets==1.4.0",
+        ],
+        requirements_files=["requirements/dev.txt"],
+        editable_extras="dev",
+        pre_test_commands=[
+            "python3 scripts/ci/sync_tracked_files.py --check",
+            "python3 -m ruff check src/ tests/ --select E,F,I --quiet || true",
+        ],
+        ci_test_command=(
+            "python -m pytest tests/ "
+            "-m 'not slow and not integration' "
+            "--timeout=60 --tb=short --maxfail=20 "
+            "-p no:rerunfailures "
+            "--splits 4 --group 1 "
+            "--splitting-algorithm=least_duration -q"
+        ),
+        verify_commands=[
+            "python -m pytest {failing_tests} -xvs --timeout=60",
+            "python -m pytest tests/ -m 'not slow and not integration' --timeout=60 -q --maxfail=5",
+        ],
+        aftermath_categories=[
+            "test_fix", "import_error", "caplog_scoping",
+            "environment_mismatch", "timeout", "flaky",
+        ],
+    ),
+
+    # ── Resilient Validation Suite — validation (quick / slow) ───────────
+    r"validation.*quick": EnvProfile(
+        name="Resilient Validation Suite — Validation (Quick)",
+        description=(
+            "Full quick+docs validation group. Runs "
+            "python -m pytest -m 'not slow and not integration' at --timeout=60."
+        ),
+        pip_packages=[
+            "pytest>=8.2.0", "pytest-timeout>=2.3",
+            "detect-secrets==1.4.0", "pre-commit>=3",
+        ],
+        requirements_files=["requirements/dev.txt"],
+        editable_extras="dev",
+        pre_test_commands=[
+            "python3 scripts/ci/sync_tracked_files.py --check",
+            "pre-commit run --all-files --show-diff-on-failure || true",
+        ],
+        ci_test_command=(
+            "python -m pytest tests/ "
+            "-v -m 'not slow and not integration' "
+            "--timeout=60 --tb=short --maxfail=20 "
+            "--cov=src --cov-report=xml -q"
+        ),
+        verify_commands=[
+            "python -m pytest {failing_tests} -xvs",
+            "python3 scripts/run_validation.sh --fast",
+        ],
+        aftermath_categories=[
+            "test_fix", "pre_commit", "lint", "coverage", "environment_mismatch",
+        ],
+    ),
+
+    r"validation.*slow": EnvProfile(
+        name="Resilient Validation Suite — Validation (Slow)",
+        description=(
+            "Full slow test group. Runs python -m pytest -m 'slow' "
+            "at --timeout=600 with sequential execution."
+        ),
+        pip_packages=[
+            "pytest>=8.2.0", "pytest-timeout>=2.3",
+            "detect-secrets==1.4.0",
+        ],
+        requirements_files=["requirements/dev.txt"],
+        editable_extras="dev",
+        pre_test_commands=[
+            "python3 scripts/ci/sync_tracked_files.py --check",
+        ],
+        ci_test_command=(
+            "python -m pytest tests/ "
+            "-v -m 'slow' "
+            "--timeout=600 --maxfail=5 --tb=short"
+        ),
+        verify_commands=[
+            "python -m pytest {failing_tests} -xvs --timeout=600",
+        ],
+        aftermath_categories=["slow_test", "timeout", "infrastructure"],
+    ),
+
+    # ── Validation Pipeline ────────────────────────────────────────────────
+    "validation pipeline": EnvProfile(
+        name="Validation Pipeline — Fast Validation",
+        description=(
+            "Pre-commit hook suite: end-of-file-fixer, detect-secrets, "
+            "sync-tracked-files, ruff. All run in fast mode."
+        ),
+        pip_packages=[
+            "detect-secrets==1.4.0", "pre-commit>=3",
+            "ruff>=0.6.2",
+        ],
+        requirements_files=[],
+        editable_extras="",
+        pre_test_commands=[],
+        ci_test_command="python3 scripts/run_validation.sh --fast",
+        verify_commands=[
+            "python3 scripts/ci/sync_tracked_files.py --check",
+            "python3 scripts/run_validation.sh --fast",
+        ],
+        aftermath_categories=[
+            "eof_newline", "secrets_baseline", "ruff", "sync_tracked_files",
+        ],
+    ),
+
+    # ── Test — RAG Pipeline ───────────────────────────────────────────────
+    "test.*rag": EnvProfile(
+        name="Test — RAG Pipeline",
+        description="RAG coverage gate. Must reach 85% coverage of src/codex/rag/.",
+        pip_packages=[
+            "pytest>=8.2.0", "pytest-cov>=4.1.0", "pytest-timeout>=2.3",
+            "faiss-cpu", "sentence-transformers",
+        ],
+        requirements_files=["requirements/dev.txt"],
+        editable_extras="rag,dev",
+        pre_test_commands=[
+            "python3 -c \"import codex.rag; print('RAG module OK')\"",
+        ],
+        ci_test_command=(
+            "python -m pytest tests/rag/ "
+            "--cov=src/codex/rag --cov-report=term-missing "
+            "--timeout=120 -v"
+        ),
+        verify_commands=[
+            "python -m pytest tests/rag/ --cov=src/codex/rag "
+            "--cov-report=term-missing --timeout=120 -q",
+        ],
+        aftermath_categories=["rag_coverage", "embedding", "retrieval", "index"],
+    ),
+}
+
+
+def _resolve_env_profile(workflow_name: str, job_name: str = "") -> EnvProfile:
+    """Return the best-matching EnvProfile for the given workflow/job names."""
+    combined = f"{workflow_name} {job_name}".lower()
+    for key, profile in WORKFLOW_ENV_PROFILES.items():
+        if re.search(key, combined):
+            return profile
+    # Default fallback — generic dev profile
+    return EnvProfile(
+        name=f"{workflow_name} (generic)",
+        description="Generic test environment for unrecognised workflow.",
+        pip_packages=["pytest>=8.2.0", "pytest-timeout>=2.3", "detect-secrets==1.4.0"],
+        requirements_files=["requirements/dev.txt"],
+        editable_extras="dev",
+        pre_test_commands=["python3 scripts/ci/sync_tracked_files.py --check"],
+        ci_test_command=(
+            "python -m pytest tests/ -m 'not slow and not integration' "
+            "--timeout=60 --tb=short -q"
+        ),
+        verify_commands=["python -m pytest {failing_tests} -xvs"],
+        aftermath_categories=["test_fix", "environment_mismatch"],
+    )
+
+# ---------------------------------------------------------------------------
 # Known-pattern library
 # Each entry maps a regex against the job-log text to an auto-fix command.
 # The auto-fix command is run with cwd=REPO_ROOT; a non-zero exit means the
@@ -252,12 +449,194 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         fix_description="Run `auto_fix_common_issues.py --pattern 9` to sort imports",
         references=["auto_fix_common_issues.py:fix_unsorted_imports"],
     ),
+    # ── Resilient Validation Suite — Sharded quick tests ────────────────────
+    RescuePattern(
+        pattern_id="RP-013",
+        description="pytest-timeout on test_pattern_recorder (CI latency > 60 s)",
+        log_regexes=[
+            r"TestCiPatternPipeline.*Timeout.*>60",
+            r"Failed: Timeout.*test_pattern_recorder",
+            r"test_check_only_returns_zero.*Timeout",
+            r"test_artefact_written.*Timeout",
+            r"test_main_returns_int.*Timeout",
+        ],
+        fix_command=None,
+        fix_description=(
+            "tests/ci/test_pattern_recorder.py subprocess calls use timeout=60 but CI "
+            "takes longer. Fix: add @pytest.mark.timeout(180) to the three slow tests and "
+            "increase subprocess timeout from 60 → 120 (already applied in S209)."
+        ),
+        references=["tests/ci/test_pattern_recorder.py — S209 fix"],
+    ),
+    RescuePattern(
+        pattern_id="RP-014",
+        description="AttributeError: module object at codex.archive/github lacks attribute",
+        log_regexes=[
+            r"AttributeError: 'module' object at codex\.(archive|github).*has no attribute",
+            r"codex\.(archive|github).*no attribute",
+        ],
+        fix_command=None,
+        fix_description=(
+            "Sharded xdist workers may not have submodules fully loaded. "
+            "Ensure the submodule is explicitly imported in its __init__.py "
+            "or add `import codex.archive.archive` / `import codex.github.github` "
+            "to the relevant __init__.py so the attribute is always available."
+        ),
+        references=["tests/archive/test_retry.py", "src/codex/archive/__init__.py"],
+    ),
+    RescuePattern(
+        pattern_id="RP-015",
+        description="MLflow local file backend in CI (URI mismatch / FutureWarning asserts)",
+        log_regexes=[
+            r"test_mlflow.*AssertionError: assert False",
+            r"file:///tmp.*mlruns.*==.*uri",
+            r"test_bootstrap.*allow_remote.*mlruns",
+            r"test_logging.*mlruns.*!=.*uri",
+        ],
+        fix_command=None,
+        fix_description=(
+            "CI uses a local-file MLflow backend; tests assert a remote URI. "
+            "Fix: mock `mlflow.get_tracking_uri()` in the test fixture, or guard "
+            "with `@pytest.mark.skipif(not os.environ.get('MLFLOW_TRACKING_URI'), "
+            "reason='remote MLFLOW_TRACKING_URI not set')`."
+        ),
+        references=[
+            "tests/test_tracking_mlflow_smoke.py",
+            "tests/monitoring/test_logging_bootstrap_initialization.py",
+            "tests/tracking/test_mlflow_guard.py",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="RP-016",
+        description="context_index.json / audit artifact missing 'version' field",
+        log_regexes=[
+            r"context_index\.json.*missing.*version",
+            r"AssertionError.*missing version field",
+            r"capabilities.*json.*missing version",
+        ],
+        fix_command=[
+            "python3",
+            "scripts/audit/build_integrity_chain.py",
+        ],
+        fix_description=(
+            "Run `python3 scripts/audit/build_integrity_chain.py` to regenerate "
+            "audit artifact placeholders with proper `version` fields. "
+            "Root fix in S209: build_integrity_chain.py now writes structured "
+            "placeholders with `{\"version\": \"1.0\", ...}` instead of `{}`."
+        ),
+        references=["scripts/audit/build_integrity_chain.py — S209 fix"],
+    ),
+    RescuePattern(
+        pattern_id="RP-017",
+        description="TensorBoard not installed → test_logging_bootstrap tb=None",
+        log_regexes=[
+            r"test_logging_bootstrap.*assert None is not None",
+            r"CodexLoggers.*tb=None",
+            r"assert None is not None.*tb",
+        ],
+        fix_command=None,
+        fix_description=(
+            "TensorBoard is not installed in CI so `tb=None`. "
+            "Fix (applied S209): added `pytest.importorskip('tensorboard')` to "
+            "`tests/monitoring/test_codex_logging_bootstrap.py::test_logging_bootstrap` "
+            "so the test skips cleanly rather than failing."
+        ),
+        references=["tests/monitoring/test_codex_logging_bootstrap.py — S209 fix"],
+    ),
+    RescuePattern(
+        pattern_id="RP-018",
+        description="test_security_event_logged: 'security_event' not captured by caplog",
+        log_regexes=[
+            r"assert 'security_event' in \[\]",
+            r"test_security_event_logged.*AssertionError",
+        ],
+        fix_command=None,
+        fix_description=(
+            "caplog.set_level(INFO) without a logger name misses the 'codex.security' "
+            "logger when propagate=False. Fix (applied S209): "
+            "use `caplog.set_level(logging.INFO, logger='codex.security')`."
+        ),
+        references=["tests/security/test_audit_logging.py — S209 fix"],
+    ),
+    RescuePattern(
+        pattern_id="RP-019",
+        description="test_safe_init_no_accelerate: 'cpu_only' in CI (CUDA_VISIBLE_DEVICES='')",
+        log_regexes=[
+            r"assert 'cpu_only' == 'no_accelerate'",
+            r"TestAccelerateInitGuard.*cpu_only",
+        ],
+        fix_command=None,
+        fix_description=(
+            "CI sets CUDA_VISIBLE_DEVICES='' which triggers the cpu_only branch even "
+            "when is_accelerate_available is patched False. "
+            "Fix (applied S209): added `patch.dict(os.environ, {'CUDA_VISIBLE_DEVICES': 'none'})` "
+            "to isolate the no_accelerate code path."
+        ),
+        references=["tests/distributed/test_distributed_enhanced.py — S209 fix"],
+    ),
+    RescuePattern(
+        pattern_id="RP-020",
+        description="test_safe_write_text_warns: WARNING not captured by caplog",
+        log_regexes=[
+            r"test_safe_write_text_warns.*assert False",
+            r"any.*levelno.*WARNING.*caplog.*records.*False",
+        ],
+        fix_command=None,
+        fix_description=(
+            "`caplog.at_level(WARNING)` without logger name misses 'codex.logging.session_hooks'. "
+            "Fix (applied S209): "
+            "use `caplog.at_level(logging.WARNING, logger='codex.logging.session_hooks')`."
+        ),
+        references=["tests/test_session_hooks_warnings.py — S209 fix"],
+    ),
 ]
 
 
 # ---------------------------------------------------------------------------
-# GitHub API helpers (thin, no external deps beyond stdlib)
+# Historical analysis helpers (used by --deep mode)
 # ---------------------------------------------------------------------------
+
+
+def get_recent_workflow_runs(
+    workflow_name: str,
+    branch: str,
+    repo: str,
+    token: str,
+    limit: int = 5,
+    exclude_run_id: Optional[int] = None,
+) -> list[dict]:
+    """Return the last N completed runs of *workflow_name* on *branch*.
+
+    Queries the workflow runs endpoint filtered by branch and status=completed,
+    then matches by run name to handle workflows with the same branch prefix.
+    """
+    _, data = _gh_api(
+        f"/repos/{repo}/actions/runs"
+        f"?branch={branch}&status=completed&per_page=30",
+        token,
+    )
+    if not isinstance(data, dict):
+        return []
+    runs = [
+        r
+        for r in data.get("workflow_runs", [])
+        if r.get("name") == workflow_name and r.get("id") != exclude_run_id
+    ]
+    return runs[:limit]
+
+
+def extract_failed_tests(log_text: str) -> list[str]:
+    """Extract ``FAILED tests/...`` entries from a job log (strips timestamps)."""
+    results: list[str] = []
+    for line in log_text.splitlines():
+        # Strip leading GitHub Actions timestamp (2026-03-26T05:19:24.5876598Z )
+        clean = re.sub(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z\s+", "", line)
+        if clean.startswith("FAILED "):
+            # Take only the test id (before the " - " error summary)
+            test_id = clean[7:].split(" - ")[0].strip()
+            if test_id:
+                results.append(test_id)
+    return results
 
 
 def _gh_api(
@@ -568,8 +947,10 @@ def _format_rca_comment(
     result: RescueResult,
     timestamp: str,
     commit_sha: Optional[str] = None,
+    workflow_name: str = "",
+    branch: str = "",
 ) -> str:
-    """Build the @copilot RCA comment body."""
+    """Build the @copilot RCA comment body with tailored env setup."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
 
     lines = [
@@ -653,12 +1034,388 @@ def _format_rca_comment(
         ]
 
     body = "\n".join(lines)
+
+    # Append tailored env setup + AfterMath section for @copilot
+    if workflow_name or branch:
+        profile = _resolve_env_profile(workflow_name, "")
+        failing_tests: list[str] = []
+        for summary in result.job_summaries:
+            failing_tests.extend(extract_failed_tests(summary.get("log_snippet", "")))
+        env_section = _format_env_setup_section(
+            profile, repo, branch or "0D_base_", failing_tests
+        )
+        body = body + "\n\n" + env_section
+
     if len(body) > MAX_COMMENT_CHARS:
         body = (
             body[:MAX_COMMENT_CHARS]
             + "\n\n_(comment truncated — see Actions logs for full output)_"
         )
     return body
+
+
+# ---------------------------------------------------------------------------
+# Tailored Copilot environment setup + AfterMath tracking section
+# ---------------------------------------------------------------------------
+
+
+def _format_env_setup_section(
+    profile: EnvProfile,
+    repo: str,
+    branch: str,
+    failing_tests: list[str],
+) -> str:
+    """
+    Generate a self-contained 'Copilot Test Environment Setup' section.
+
+    Produces copy-paste-ready blocks covering:
+      1. Branch sync + dependency install (exact packages used by CI)
+      2. Pre-test environment validation commands
+      3. Exact CI test command for this workflow/job
+      4. Targeted reproduction commands for each failing test
+      5. AfterMath tracking table (pre-filled; @copilot updates it)
+    """
+    lines: list[str] = [
+        "---",
+        "",
+        "## 🛠️ Copilot Test Environment Setup",
+        f"> **Profile:** `{profile.name}`",
+        f"> **Purpose:** {profile.description}",
+        "",
+        "### Step 1 — Branch sync",
+        "```bash",
+        f"git checkout {branch} && git pull origin {branch}",
+        "```",
+        "",
+        "### Step 2 — Install dependencies (exact CI environment)",
+        "```bash",
+    ]
+
+    # Editable install
+    if profile.editable_extras:
+        lines.append(f'python -m pip install -e ".[{profile.editable_extras}]" --quiet')
+    else:
+        lines.append("python -m pip install -e . --quiet")
+
+    # requirements files
+    for req in profile.requirements_files:
+        lines.append(f"pip install -r {req} --quiet")
+
+    # extra packages
+    if profile.pip_packages:
+        pkg_str = " ".join(f'"{p}"' for p in profile.pip_packages)
+        lines.append(f"pip install {pkg_str} --quiet")
+
+    lines += ["```", ""]
+
+    # Pre-test commands
+    if profile.pre_test_commands:
+        lines += ["### Step 3 — Pre-test validation", "```bash"]
+        lines.extend(profile.pre_test_commands)
+        lines += ["```", ""]
+        step4 = "4"
+    else:
+        step4 = "3"
+
+    # Exact CI command
+    lines += [
+        f"### Step {step4} — Reproduce with exact CI command",
+        "```bash",
+        "# Exact command used by CI for this job:",
+        profile.ci_test_command,
+        "```",
+        "",
+    ]
+
+    # Targeted failing-test commands
+    if failing_tests:
+        step5 = str(int(step4) + 1)
+        lines += [f"### Step {step5} — Reproduce individual failures", "```bash"]
+        for t in failing_tests[:10]:
+            verify = profile.verify_commands[0].format(failing_tests=t) if profile.verify_commands else f"python -m pytest {t} -xvs"
+            lines.append(verify)
+        if len(failing_tests) > 10:
+            lines.append(f"# …and {len(failing_tests) - 10} more (see failures above)")
+        lines += ["```", ""]
+        step6 = str(int(step5) + 1)
+    else:
+        step6 = str(int(step4) + 1)
+
+    # Full verification after fixes
+    if len(profile.verify_commands) > 1:
+        lines += [f"### Step {step6} — Full verification after fixes", "```bash"]
+        for cmd in profile.verify_commands[1:]:
+            lines.append(cmd.format(failing_tests=" ".join(failing_tests[:3])))
+        lines += ["```", ""]
+
+    # AfterMath tracking table
+    categories = profile.aftermath_categories or ["fix_applied", "regression", "infrastructure"]
+    lines += [
+        "---",
+        "",
+        "## 📋 AfterMath Tracking (update after each fix attempt)",
+        "",
+        "| # | Test / Issue | Fix Applied | Outcome | Category | Notes |",
+        "|---|-------------|-------------|---------|----------|-------|",
+    ]
+    for i, test in enumerate(failing_tests[:8], 1):
+        short = test.split("::")[-1] if "::" in test else test
+        lines.append(f"| {i} | `{short}` | _pending_ | ⏳ | _tbd_ | |")
+    if not failing_tests:
+        lines.append("| 1 | _tbd_ | _pending_ | ⏳ | _tbd_ | |")
+    lines += [
+        "",
+        "**Outcome key:** ✅ Fixed · ❌ Not fixed · ⏳ In progress · "
+        "🔁 Flaky (needs reruns) · 🏗️ Infrastructure (not code-fixable)",
+        "",
+        f"**AfterMath categories for this profile:** "
+        f"`{'`, `'.join(categories)}`",
+        "",
+        "> After completing all fixes, update the table above and store "
+        "> key lessons with `store_memory` so future agents benefit.",
+    ]
+
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Deep rescue — COPILOT_AGENT_AUTH_ENABLED historical analysis mode
+# ---------------------------------------------------------------------------
+
+
+def _format_deep_rca_comment(
+    run_id: int,
+    repo: str,
+    timestamp: str,
+    workflow_name: str,
+    branch: str,
+    current_failures: dict[str, list[str]],
+    historical_runs: list[dict],
+    recurring: dict[str, int],
+    sporadic: dict[str, int],
+    new_failures: set[str],
+    matched_patterns: list[RescuePattern],
+    commit_sha: Optional[str],
+) -> str:
+    """Build the comprehensive deep-rescue @copilot escalation comment body."""
+    run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
+    total_hist = len(historical_runs)
+
+    lines = [
+        "## 🔍 Deep CI Analysis — `COPILOT_AGENT_AUTH_ENABLED` Mode",
+        "",
+        f"> **Workflow:** `{workflow_name}`  ",
+        f"> **Branch:** `{branch}`  ",
+        f"> **Run:** [{run_id}]({run_url})  ",
+        f"> **Time:** {timestamp}  ",
+        f"> **Historical runs analyzed:** {total_hist}  ",
+    ]
+    if commit_sha:
+        lines.append(f"> **Commit:** `{commit_sha[:12]}`  ")
+    lines += ["", "---", ""]
+
+    # --- Current failures summary ----------------------------------------
+    total_current = sum(len(v) for v in current_failures.values())
+    job_count = len(current_failures)
+    lines += [
+        f"### 🔴 Current Failures ({total_current} tests across {job_count} jobs)",
+        "",
+    ]
+    for job_name, tests in sorted(current_failures.items()):
+        if tests:
+            lines.append(f"**{job_name}** ({len(tests)} failures):")
+            for t in tests[:12]:
+                short = t.split("::")[-1] if "::" in t else t
+                lines.append(f"- `{short}`")
+            if len(tests) > 12:
+                lines.append(f"- _…and {len(tests) - 12} more_")
+            lines.append("")
+
+    # --- Historical pattern analysis -------------------------------------
+    if total_hist > 0:
+        lines += ["### 📊 Historical Pattern Analysis", ""]
+
+        if recurring:
+            lines += [
+                f"**Recurring** (≥2 of last {total_hist} runs — systematic, need code fixes):",
+                "",
+                "| Test | Seen in | Priority |",
+                "|------|---------|----------|",
+            ]
+            for test, count in sorted(recurring.items(), key=lambda x: -x[1]):
+                pct = int(100 * count / max(total_hist, 1))
+                priority = "🔴 High" if pct >= 60 else "🟡 Medium"
+                short = test.split("::")[-1] if "::" in test else test
+                lines.append(f"| `{short}` | {count}/{total_hist} ({pct}%) | {priority} |")
+            lines.append("")
+
+        if sporadic:
+            lines += ["**Sporadic** (single occurrence — likely flaky/environment):", ""]
+            for test in sorted(sporadic.keys()):
+                short = test.split("::")[-1] if "::" in test else test
+                lines.append(f"- `{short}`")
+            lines.append("")
+
+        if new_failures:
+            lines += ["**New** (not seen in prior runs — check recent commits):", ""]
+            for test in sorted(new_failures):
+                short = test.split("::")[-1] if "::" in test else test
+                lines.append(f"- `{short}`")
+            lines.append("")
+
+    # --- Matched rescue patterns -----------------------------------------
+    if matched_patterns:
+        lines += ["### 🔧 Matched Rescue Patterns", ""]
+        for p in matched_patterns:
+            auto = f"`{'  '.join(p.fix_command)}`" if p.fix_command else "manual only"
+            lines += [
+                f"#### `{p.pattern_id}` — {p.description}",
+                "",
+                f"**Fix:** {p.fix_description}  ",
+                f"**Auto-fix:** {auto}",
+                "",
+            ]
+
+    # --- @copilot escalation prompt --------------------------------------
+    lines += [
+        "---",
+        "",
+        "@copilot+claude-sonnet-4.6 — **deep rescue escalation (COPILOT_AGENT_AUTH_ENABLED)**",
+        "",
+        "The above analysis covers **current and historical** CI failures on "
+        f"`{branch}`. Please:",
+        "",
+        "1. **Fix recurring failures first** (systematic — block every PR):",
+    ]
+    priority_items = [p for p in matched_patterns if p.fix_command]
+    if priority_items:
+        for p in priority_items:
+            lines.append(f"   - [{p.pattern_id}] {p.fix_description}")
+    elif recurring:
+        for test in list(recurring.keys())[:5]:
+            short = test.split("::")[-1] if "::" in test else test
+            lines.append(f"   - `{short}`")
+
+    lines += [
+        "",
+        "2. **Investigate new failures** — verify they are not caused by recent commits",
+        "3. **Mark confirmed-flaky tests** with `@pytest.mark.flaky(reruns=2)` "
+        "+ add to `.codex/permanent_facts.md`",
+        "4. **Update `.secrets.baseline`** if `CODEX_MANIFEST.json` changed: "
+        "`python3 scripts/ci/sync_tracked_files.py --fix`",
+        "5. **Follow** `.codex/CODEBASE_AGENCY_POLICY.md` §0 — fix ALL issues, never defer",
+        "",
+        "_Posted by: ci-rescue.yml → deep-rescue step (`COPILOT_AGENT_AUTH_ENABLED` mode)_",
+    ]
+
+    # Append tailored env setup + AfterMath section
+    profile = _resolve_env_profile(workflow_name, "")
+    all_failing = [t for tests in current_failures.values() for t in tests]
+    env_section = _format_env_setup_section(profile, repo, branch, all_failing)
+    lines_with_env = "\n".join(lines) + "\n\n" + env_section
+
+    body = lines_with_env
+    if len(body) > MAX_COMMENT_CHARS:
+        body = body[:MAX_COMMENT_CHARS] + "\n\n_(truncated — see Actions logs for full output)_"
+    return body
+
+
+def run_deep_rescue(
+    current_run_id: int,
+    repo: str,
+    token: str,
+    pr_number: Optional[int],
+    workflow_name: str,
+    branch: str,
+    dry_run: bool,
+    commit_sha: Optional[str],
+) -> int:
+    """Historical analysis mode: analyse last N runs and build pattern frequency map.
+
+    Posts a comprehensive @copilot escalation that distinguishes recurring
+    (systematic) failures from sporadic (flaky) ones, enabling targeted fixes.
+    """
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    print(
+        f"\n🔍 Deep Rescue — historical analysis for '{workflow_name}' on '{branch}'"
+        f" @ {timestamp}"
+    )
+
+    # 1. Analyse current run -------------------------------------------------
+    current_failed_jobs = get_failed_jobs(current_run_id, repo, token)
+    current_failures: dict[str, list[str]] = {}
+    all_current_log_text = ""
+
+    for job in current_failed_jobs:
+        job_name = job.get("name", "<unknown>")
+        log_text = get_job_log(job["id"], repo, token)
+        all_current_log_text += "\n" + log_text
+        current_failures[job_name] = extract_failed_tests(log_text)
+
+    all_current_tests: set[str] = {t for tests in current_failures.values() for t in tests}
+    print(f"  Current run: {len(current_failed_jobs)} failed job(s), "
+          f"{len(all_current_tests)} failed test(s)")
+
+    # 2. Fetch historical runs -----------------------------------------------
+    historical_runs = get_recent_workflow_runs(
+        workflow_name, branch, repo, token, limit=5, exclude_run_id=current_run_id
+    )
+    print(f"  Historical runs found: {len(historical_runs)}")
+
+    # 3. Build failure-frequency table across historical runs ----------------
+    frequency: dict[str, int] = {}
+    for run in historical_runs:
+        run_failed_jobs = get_failed_jobs(run["id"], repo, token)
+        run_tests: set[str] = set()
+        for job in run_failed_jobs:
+            log_text = get_job_log(job["id"], repo, token, tail=150)
+            run_tests.update(extract_failed_tests(log_text))
+        for test in run_tests:
+            frequency[test] = frequency.get(test, 0) + 1
+
+    # 4. Classify failures ---------------------------------------------------
+    recurring = {t: c for t, c in frequency.items() if t in all_current_tests and c >= 2}
+    sporadic = {t: c for t, c in frequency.items() if t in all_current_tests and c == 1}
+    new_failures = {t for t in all_current_tests if t not in frequency}
+
+    print(f"  Recurring: {len(recurring)}, sporadic: {len(sporadic)}, "
+          f"new: {len(new_failures)}")
+
+    # 5. Match rescue patterns against current log text ----------------------
+    matched_patterns = match_patterns(all_current_log_text)
+    print(f"  Pattern matches: {len(matched_patterns)}")
+
+    # 6. Post deep RCA comment -----------------------------------------------
+    if pr_number:
+        comment = _format_deep_rca_comment(
+            current_run_id, repo, timestamp, workflow_name, branch,
+            current_failures, historical_runs,
+            recurring, sporadic, new_failures,
+            matched_patterns, commit_sha,
+        )
+        # Use a distinct marker so deep-rescue comments are separate from the
+        # standard rescue RCA comment.
+        deep_marker = f"<!-- ci-rescue-deep:{(commit_sha or '')[:12]} -->"
+        full_body = f"{deep_marker}\n{comment}"
+        print(f"\n📝 Posting deep RCA comment to PR #{pr_number}…")
+        if dry_run:
+            print(f"[DRY RUN] Would post deep RCA:\n{full_body[:400]}…")
+        else:
+            status, _ = _gh_api(
+                f"/repos/{repo}/issues/{pr_number}/comments",
+                token,
+                method="POST",
+                body={"body": full_body},
+            )
+            if status in (200, 201):
+                print("  ✅ Deep RCA comment posted")
+            else:
+                print(f"  ⚠️  Failed to post deep RCA comment (HTTP {status})",
+                      file=sys.stderr)
+    else:
+        print("  ⚠️  No PR resolved — deep RCA comment skipped")
+
+    return 0
 
 
 # ---------------------------------------------------------------------------
@@ -683,6 +1440,27 @@ def main() -> int:
             "comment rather than creating a new one."
         ),
     )
+    # ── Deep mode (COPILOT_AGENT_AUTH_ENABLED) ─────────────────────────────
+    parser.add_argument(
+        "--deep",
+        action="store_true",
+        help=(
+            "Enable historical analysis mode. Fetches logs from the last N runs "
+            "of the same workflow on the same branch and posts a comprehensive "
+            "@copilot escalation with recurring vs sporadic pattern breakdown. "
+            "Activated automatically when COPILOT_AGENT_AUTH_ENABLED=true."
+        ),
+    )
+    parser.add_argument(
+        "--workflow-name",
+        default=None,
+        help="Name of the triggering workflow (required for --deep mode).",
+    )
+    parser.add_argument(
+        "--branch",
+        default=None,
+        help="Branch name (required for --deep mode historical lookup).",
+    )
     args = parser.parse_args()
 
     if not args.token:
@@ -701,7 +1479,17 @@ def main() -> int:
         else:
             print("⚠️  Could not resolve a PR for this run — RCA comment will be skipped")
 
-    # Run rescue cycle
+    # ── Deep mode: historical analysis + @copilot escalation ───────────────
+    if args.deep:
+        wf_name = args.workflow_name or "unknown"
+        branch = args.branch or "unknown"
+        return run_deep_rescue(
+            args.run_id, args.repo, args.token,
+            pr_number, wf_name, branch,
+            args.dry_run, args.commit_sha,
+        )
+
+    # ── Standard rescue cycle ───────────────────────────────────────────────
     result = run_rescue(args.run_id, args.repo, args.token, pr_number, args.dry_run)
 
     # Summarise
@@ -717,7 +1505,9 @@ def main() -> int:
     # Post RCA comment if there are unresolved issues
     if has_unresolved and pr_number:
         comment_body = _format_rca_comment(
-            args.run_id, args.repo, result, timestamp, args.commit_sha
+            args.run_id, args.repo, result, timestamp, args.commit_sha,
+            workflow_name=args.workflow_name or "",
+            branch=args.branch or "",
         )
         print(f"\n📝 Posting RCA comment to PR #{pr_number}…")
         ok = post_pr_comment(

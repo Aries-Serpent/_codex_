@@ -30,6 +30,8 @@ on:
       - "Iterative Self-Healing CI"
       - "Test — RAG Pipeline"
       - "Security Scan"
+      # Extended coverage — sharded quick tests + slow validation
+      - "Resilient Validation Suite"
     types: [completed]
   # Manual trigger (for testing or ad-hoc rescue of a specific run)
   workflow_dispatch:
@@ -94,6 +96,38 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # ── Load Copilot test environment ─────────────────────────────────────
+      # Installs the full test-tool suite so the rescue engine can:
+      #  (a) run ruff/detect-secrets analysis against fetched file content
+      #  (b) embed the exact pip install commands in the @copilot escalation
+      #      comment so the agent can reproduce failures with one copy-paste.
+      # No checkout is performed — tools only.
+      - name: Load Copilot test environment
+        id: env_setup
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet \
+            requests \
+            "detect-secrets==1.4.0" \
+            "ruff>=0.6.2" \
+            "pytest>=8.2.0" \
+            "pytest-timeout>=2.3" \
+            "pytest-xdist>=3.5.0" \
+            "pytest-rerunfailures>=14.0" \
+            "pre-commit>=3" \
+            pyyaml
+          echo "PYTHON_VERSION=$(python3 --version)" >> "$GITHUB_ENV"
+          echo "SETUP_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+          echo "✅ Copilot test environment loaded"
+          # Emit environment spec for embedding in escalation comments
+          cat << 'EOF' > /tmp/copilot_env_manifest.txt
+          # Copilot CI Test Environment — copy-paste to reproduce failures locally
+          python -m pip install -e ".[dev]" --quiet
+          pip install -r requirements/dev.txt --quiet
+          pip install "detect-secrets==1.4.0" --quiet
+          EOF
+          echo "env_manifest_ready=true" >> "$GITHUB_OUTPUT"
 
       # ── Download rescue script — try PR head SHA first, then default branch ──
       # The PR branch (head_sha) contains the latest ci_rescue.py even before
@@ -234,14 +268,37 @@ jobs:
           PYEOF
             echo "rescue_exit=$?" >> "$GITHUB_OUTPUT"
           else
+            BRANCH="${{ github.event.workflow_run.head_branch || github.ref_name }}"
             python3 /tmp/ci_rescue.py \
-              --run-id "${RUN_ID}" \
-              --repo   "${{ github.repository }}" \
+              --run-id        "${RUN_ID}" \
+              --repo          "${{ github.repository }}" \
+              --workflow-name "${WORKFLOW_NAME}" \
+              --branch        "${BRANCH}" \
               ${PR_FLAG} \
               ${SHA_FLAG} \
               ${DRY_FLAG} \
               2>&1 | tee /tmp/rescue_output.txt
             echo "rescue_exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+            # ── Deep rescue: historical analysis when COPILOT_AGENT_AUTH_ENABLED ─
+            # When the token-delegation flag is set, run a second pass that fetches
+            # logs from the last 5 runs of the same workflow on the same branch,
+            # builds a recurring-vs-sporadic failure map, and posts a comprehensive
+            # @copilot escalation comment with RP-013..RP-020 pattern matches.
+            if [ "${{ vars.COPILOT_AGENT_AUTH_ENABLED }}" = "true" ]; then
+              echo "🔍 COPILOT_AGENT_AUTH_ENABLED=true — running deep historical analysis for '${WORKFLOW_NAME}' on '${BRANCH}'…"
+              python3 /tmp/ci_rescue.py \
+                --run-id         "${RUN_ID}" \
+                --repo           "${{ github.repository }}" \
+                --workflow-name  "${WORKFLOW_NAME}" \
+                --branch         "${BRANCH}" \
+                ${PR_FLAG} \
+                ${SHA_FLAG} \
+                ${DRY_FLAG} \
+                --deep \
+                2>&1 | tee /tmp/deep_rescue_output.txt || true
+              echo "deep_rescue_exit=$?" >> "$GITHUB_OUTPUT"
+            fi
           fi
 
       # ── Print summary ────────────────────────────────────────────────────
@@ -251,3 +308,9 @@ jobs:
           echo "=== CI Rescue Summary ==="
           cat /tmp/rescue_output.txt 2>/dev/null || echo "(no output captured)"
           echo "Rescue exit: ${{ steps.rescue.outputs.rescue_exit }}"
+          if [ -s /tmp/deep_rescue_output.txt ]; then
+            echo ""
+            echo "=== Deep Rescue Summary (COPILOT_AGENT_AUTH_ENABLED) ==="
+            cat /tmp/deep_rescue_output.txt
+            echo "Deep rescue exit: ${{ steps.rescue.outputs.deep_rescue_exit }}"
+          fi

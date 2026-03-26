@@ -47,7 +47,13 @@ class TestAccelerateInitGuard:
 
     def test_safe_init_no_accelerate(self):
         """Test behavior when accelerate not available"""
-        with patch("src.training.accelerate_init_guard.is_accelerate_available", return_value=False):
+        # Ensure CUDA_VISIBLE_DEVICES is not empty-string so cpu_only_env=False,
+        # isolating the 'no_accelerate' code path from the 'cpu_only' branch.
+        no_accel = patch(
+            "src.training.accelerate_init_guard.is_accelerate_available",
+            return_value=False,
+        )
+        with no_accel, patch.dict(os.environ, {"CUDA_VISIBLE_DEVICES": "none"}):
             result = accelerate_init_guard.safe_accelerate_init()
 
             assert not result.success

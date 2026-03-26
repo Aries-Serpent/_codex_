@@ -14,6 +14,7 @@ from codex_ml.monitoring.codex_logging import _codex_logging_bootstrap
 def test_logging_bootstrap(tmp_path):
     pytest.importorskip("wandb")
     pytest.importorskip("mlflow")
+    pytest.importorskip("tensorboard")
     cfg = {
         "tensorboard": {"enable": True, "logdir": str(tmp_path / "tb")},
         "wandb": {"enable": True, "project": "test"},
