@@ -137,6 +137,8 @@ jobs:
       - name: Post rescue comment on validation failure
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
+        env:
+          BRANCH_REF: ${{ github.head_ref }}
         with:
           script: |
             const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
@@ -145,7 +147,7 @@ jobs:
             const shaShort = sha.substring(0, 12);
             const runId = '${{ github.run_id }}';
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
-            const branch = '${{ github.head_ref }}';
+            const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
             const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
             const workflowName = `Resilient Validation Suite / validation (${group})`;
@@ -298,6 +300,8 @@ jobs:
       - name: Post rescue comment on shard failure
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
+        env:
+          BRANCH_REF: ${{ github.head_ref }}
         with:
           script: |
             const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
@@ -307,7 +311,7 @@ jobs:
             const shaShort = sha.substring(0, 12);
             const runId = '${{ github.run_id }}';
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
-            const branch = '${{ github.head_ref }}';
+            const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
             const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
             const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;

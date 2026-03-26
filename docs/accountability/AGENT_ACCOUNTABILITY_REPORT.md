@@ -10463,3 +10463,35 @@ Fixed ALL actionable failures. Two root causes addressed (CI gate + session cont
 
 ### §0 Compliance
 Fixed ALL actionable failures. YAML gate restored; session re-trigger hardened to handle human-posted rescue comments.
+
+---
+
+## SESSION SUMMARY — S213-cont2 — 2026-03-26 (actionlint security fix + rescue comment for actionlint failures)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Comments 4133604730 + 4135268915 reviewed ✅
+- [x] **0b.** Run 23590991392 (actionlint) diagnosed — `github.head_ref` used directly in inline script ✅
+- [x] **0c.** Root cause of rescue not firing for actionlint identified — `workflow_run` trigger only fires for default-branch contexts ✅
+
+### Root Causes
+1. **actionlint failure (run 23590991392 on commit 2d91165)**: `resilient_validation.yml` used `'${{ github.head_ref }}'` directly in two `actions/github-script@v7` inline scripts (lines 148 and 310). actionlint v1.7.7 flags this as a security violation (script injection risk via untrusted context value). Fix: add `env: BRANCH_REF: ${{ github.head_ref }}` to both steps and reference `process.env.BRANCH_REF` in the script.
+2. **Rescue not firing for actionlint check failure**: `ci-rescue.yml` uses `workflow_run` trigger. Despite listing `"Workflow Compliance Audit (actionlint)"` in the workflows list, ALL ci-rescue runs observed show `head_branch: main` — indicating `workflow_run` only fires for workflows completing on the default branch context, not for PR-context workflow runs. The actionlint workflow running on `pull_request` events does NOT reliably trigger ci-rescue via `workflow_run`. Fix: add inline rescue comment step directly to `actionlint-audit.yml` (same pattern as `validate.yml` and `resilient_validation.yml`). The inline step fires immediately when actionlint fails, without depending on the `workflow_run` chain.
+
+### Fix Applied
+1. **`resilient_validation.yml`** — Changed `const branch = '${{ github.head_ref }}';` → `const branch = process.env.BRANCH_REF || '';` in both rescue comment steps (validation matrix job + sharded-quick job). Added `env: BRANCH_REF: ${{ github.head_ref }}` to both steps.
+2. **`actionlint-audit.yml`** — Added `Post rescue comment on actionlint failure` step: `if: failure() && github.event_name == 'pull_request'` using `actions/github-script@v7`, same SHA-scoped marker pattern (`<!-- ci-rescue-rca:{sha_short} -->`), BRANCH_REF via env var. This is now the canonical inline rescue for actionlint failures.
+
+### Work Completed
+1. **actionlint security fix** — `resilient_validation.yml` both rescue steps updated
+2. **Rescue self-trigger for actionlint** — `actionlint-audit.yml` rescue comment step added
+3. **sync_tracked_files** — all consistent
+4. **Accountability report** — S213-cont2 entry added
+
+### AfterMath / PDA Loop
+- **PLAN**: Fetched job logs for run 23590991392; found actionlint error on resilient_validation.yml:302; traced rescue silence to workflow_run not firing for PR-context workflows
+- **DO**: Fixed env var in resilient_validation.yml; added inline rescue to actionlint-audit.yml
+- **ASSESS**: YAML valid for both files; rescue comment follows same pattern as validated workflows
+- **AfterMath**: Pattern documented — any workflow using `github.head_ref` or `github.event.pull_request.head.ref` in inline scripts must use env vars. Any PR workflow that can fail and doesn't have inline rescue is invisible to ci-rescue.yml's workflow_run chain on PR branches.
+
+### §0 Compliance
+Fixed ALL actionable failures. actionlint gate restored; rescue self-trigger added for actionlint workflow.

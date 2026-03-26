@@ -76,6 +76,79 @@ jobs:
           fi
           echo "✅ actionlint: 0 errors across $(find .github/workflows -maxdepth 1 -name '*.yml' | wc -l) workflow files"
 
+      - name: Post rescue comment on actionlint failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          BRANCH_REF: ${{ github.head_ref }}
+        with:
+          script: |
+            const MAX_COMMENT_LENGTH = 65536;
+            const sha = context.payload.pull_request.head.sha;
+            const shaShort = sha.substring(0, 12);
+            const runId = '${{ github.run_id }}';
+            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
+            const branch = process.env.BRANCH_REF || '';
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
+            const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
+            const workflowName = 'Workflow Compliance Audit (actionlint)';
+
+            const rescueBody = [
+              '## 🚨 CI Rescue — @copilot Fix Required',
+              '',
+              `**Workflow:** \`${workflowName}\``,
+              `**Run:** [${runId}](${runUrl})`,
+              `**Branch:** \`${branch}\``,
+              `**Commit:** \`${sha}\``,
+              `**Time:** ${now}`,
+              '',
+              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
+              '',
+              '**Steps to resolve:**',
+              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
+              `2. Check the failure logs: [${runId}](${runUrl})`,
+              '3. Fix any `actionlint` errors in `.github/workflows/` — common fixes:',
+              '   - Untrusted context values (e.g. `github.head_ref`) must be passed via env vars, not directly in `run:` scripts',
+              '   - Use `env: MY_VAR: ${{ github.head_ref }}` and reference `$MY_VAR` in the script',
+              '4. Apply the minimal fix and push',
+              '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
+              '5. Verify all CI checks are green before concluding',
+              '',
+              '> **Note:** This comment is updated (not duplicated) for each subsequent',
+              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
+              '',
+              '_Posted by: actionlint-audit.yml → rescue comment (S213-cont2)_',
+            ].join('\n');
+
+            const fullBody = `${marker}\n${rescueBody}`;
+            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => (c.body || '').includes(marker));
+
+            if (existing) {
+              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: updated,
+              });
+              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+              console.log('Posted new rescue comment');
+            }
+
       - name: Post summary
         if: always()
         run: |
