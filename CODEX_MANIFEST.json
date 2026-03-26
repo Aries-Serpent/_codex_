@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-25T23:15:54Z",
+  "generated_at": "2026-03-26T23:50:25Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1154,6 +1154,11 @@
       "has_concurrency": false
     },
     {
+      "name": "copilot-agent-checkin",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-session-done",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1959,6 +1964,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "ci_patterns": [],
-  "integrity_sha256": "4af6b627c0992b7c704ffa83256ea78b5f46b0b9bb31306549fc069ca8e10581"
+  "integrity_sha256": "092e0f68d33e9ed6e380d8e9b435607738f29ec1eb8ea25f7389877c76e6593b"
 }
