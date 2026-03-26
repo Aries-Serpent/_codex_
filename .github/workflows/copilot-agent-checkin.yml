@@ -69,6 +69,10 @@ on:
         default: "false"
         type: choice
         options: ["true", "false"]
+      reply_comment_node_id:
+        description: "GraphQL node ID of a discussion comment to reply to (e.g. DC_kwDOPf23ns4A-ThL). Leave blank to skip."
+        required: false
+        default: ""
 
   issue_comment:
     types: [created]
@@ -411,3 +415,130 @@ jobs:
             --pr "${PR_NUMBER}" \
             --sha "${HEAD_SHA}" \
             --no-block
+
+  # ── post-qa-reply — posts a detailed Q&A response to a specific discussion comment ──
+  # Triggered via workflow_dispatch with reply_comment_node_id set.
+  # Uses CODEX_MASTER_KEY (PAT with discussions:write scope) to post the reply.
+  post-qa-reply:
+    name: "Post Q&A Reply to Discussion Comment"
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.reply_comment_node_id != ''
+    permissions:
+      contents: read
+      discussions: write
+    timeout-minutes: 5
+    steps:
+      - name: "Post reply to discussion comment"
+        uses: actions/github-script@v7
+        env:
+          REPLY_COMMENT_NODE_ID: ${{ github.event.inputs.reply_comment_node_id }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          DISCUSSION_ID: "D_kwDOPf23ns4AlOrI"
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const replyToId = process.env.REPLY_COMMENT_NODE_ID;
+            const discussionId = process.env.DISCUSSION_ID;
+            const dryRun = process.env.DRY_RUN === 'true';
+
+            const body = [
+              '<!-- agent-response:S220-qa -->',
+              '## 🤖 Agent Response — Detailed Analysis & Pre-Selected Recommendations',
+              '',
+              '> **Session:** S220 | **Branch:** `0D_base_` | **PR:** #3748  ',
+              '> React 👍 on this reply to accept all three pre-selected options — I will implement each accepted choice immediately.',
+              '',
+              '---',
+              '',
+              '### Q1 — detect-secrets false-positive on `.codex/agent_context.json`',
+              '',
+              '**✅ Pre-selected: Option (a) — Exclude `agent_context.json` permanently in `.pre-commit-config.yaml`**',
+              '',
+              '| Option | Verdict | Rationale |',
+              '|--------|---------|-----------| ',
+              '| **(a) ✅ RECOMMENDED** | Permanent fix | `agent_context.json` holds CI state variables (commit SHAs, run IDs) — never actual secrets. Single-line exclude in `.pre-commit-config.yaml`. Zero recurring overhead going forward. |',
+              '| (b) Omit hex SHA from sync | ❌ Breaks tracking | `CODEX_CI_LAST_GREEN_SHA` is consumed by downstream workflows — removing it breaks CI state. |',
+              '| (c) Update `.secrets.baseline` each time | ❌ Not scalable | Already causing Fast Validation cascade (S217–S219 pattern) every sync commit. Permanent blocker until root-fixed. |',
+              '',
+              '**Implementation (option a):**',
+              '```yaml',
+              '# .pre-commit-config.yaml — detect-secrets hook',
+              'exclude: \'.secrets\\.baseline|agent_context\\.json\'',
+              '```',
+              'Then run `detect-secrets scan --baseline .secrets.baseline` to refresh the baseline.',
+              '',
+              '---',
+              '',
+              '### Q2 — Maintaining RAG 95% as new modules land',
+              '',
+              '**✅ Pre-selected: Option (a) — Pre-merge delta-coverage gate in `test-rag.yml`**',
+              '',
+              '| Option | Verdict | Rationale |',
+              '|--------|---------|-----------| ',
+              '| **(a) ✅ RECOMMENDED** | Proactive | Checks only new/modified `.py` files at PR time. Fails before merge if new files < 80% covered. Fully automated, minimal cost. |',
+              '| (b) unified-coverage-agent on every PR | ⚠️ High cost | Agent-session cost per PR. Reactive — adds tests after the coverage gap already exists. |',
+              '| (c) Keep single threshold + reactive | ❌ Reactive | Coverage can silently drop to 94%→93%→... before detection triggers a fix session. |',
+              '',
+              '**Implementation:** A `coverage-delta` job added to `test-rag.yml` that runs `pytest --cov=<changed_files> --cov-fail-under=80` on only the changed source files.',
+              '',
+              '---',
+              '',
+              '### Q3 — CODEX_MASTER_KEY rotation strategy',
+              '',
+              '**✅ Pre-selected: GAP-033 — Automated token rotation hook in `mcp_poster.py`**',
+              '',
+              '| Option | Verdict | Rationale |',
+              '|--------|---------|-----------| ',
+              '| **GAP-033 ✅ RECOMMENDED** | Fully autonomous | Startup expiry check + 401/403 auto-fallback to `CODEX_BACKUP_KEY` + exponential backoff. No human action needed at rotation time. Aligns with self-healing design. Alerts via GitHub issue only when both PATs are simultaneously expired. |',
+              '| Scheduled rotation | ⚠️ Human-dependent | Requires admin action. Creates outage window if missed. Loop degrades silently when token expires mid-session. |',
+              '',
+              '---',
+              '',
+              '### 🧠 Deep Reflection — Most Likely Systemic Failure (next 30 days)',
+              '',
+              '**Root failure: Silent `CODEX_MASTER_KEY` expiry breaking the self-healing rescue loop**',
+              '',
+              'The self-healing chain: `CI fails → rescue comment posted as @mbaetiong (PAT) → Copilot sees @mention → session triggered → fix pushed`',
+              '',
+              'If `CODEX_MASTER_KEY` expires undetected:',
+              '- Rescue comments fall through to `GITHUB_TOKEN` → posted as `github-actions[bot]`',
+              '- **Copilot ignores @mentions from bots** (S214 confirmed) → no session triggered',
+              '- CI failures accumulate silently — the system *appears* healthy (rescue comments are posted) but is actually broken',
+              '- `CODEX_BACKUP_KEY → GITHUB_TOKEN` fallback is **insufficient** as a Copilot trigger',
+              '',
+              '**Minimal structural fix (3 components):**',
+              '1. **GAP-033** in `mcp_poster.py` — proactive expiry check before each post',
+              '2. **Identity assertion** in `copilot-agent-session-done.yml` — verify posting token resolves to `@mbaetiong` before each trigger comment',
+              '3. **Auto-alert** — when all PATs are exhausted, auto-create a GitHub issue with label `token-expiry` for immediate admin visibility',
+              '',
+              '---',
+              '',
+              '_👍 React on this comment to accept all three pre-selected options (Q1-a, Q2-a, Q3-GAP-033). Implementation will begin in the next session._  ',
+              '_👎 React to reject an option. No changes for that option._  ',
+              '_No reaction within 48h = maintain current approach._',
+            ].join('\n');
+
+            if (dryRun) {
+              core.info('[DRY RUN] Would post the following reply to ' + replyToId + ':');
+              core.info(body.slice(0, 500) + '...');
+              return;
+            }
+
+            const result = await github.graphql(`
+              mutation PostReply($discussionId: ID!, $replyToId: ID!, $body: String!) {
+                addDiscussionComment(input: {
+                  discussionId: $discussionId,
+                  replyToId: $replyToId,
+                  body: $body
+                }) {
+                  comment { id url databaseId }
+                }
+              }
+            `, { discussionId, replyToId, body });
+
+            const comment = result.addDiscussionComment.comment;
+            core.info('Reply posted: ' + comment.url);
+            core.setOutput('comment_url', comment.url);
+            core.setOutput('comment_id', comment.databaseId);

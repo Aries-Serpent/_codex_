@@ -11051,3 +11051,42 @@ README.md likely contains more stale links that will surface on future `doc_metr
 **Pattern documented — session_bootstrap.py EOF**: The root fix is in the generator, not the generated file. Always fix `"\n".join(lines)` → `"\n".join(lines) + "\n"` when a script generates text files that must pass the `end-of-file-fixer` pre-commit hook.
 
 **§0 Compliance:** Root cause fixed. No deferrals.
+
+---
+
+### S220 — 2026-03-26 — Deferral Gate Fix + Inline Rescue Expansion + Discussion Q&A Response
+
+**Trigger:** CI run 23616747675 — Deferral Language Gate failure on commit `a0110d4`. COMMENT_SCAN detected "future PR description updates" in a prior agent PR comment (ID `DC_kwDOPf23ns4A-ThL`), triggering the `_FUTURE_WORK_PATTERN` regex (`future pr\b`).
+
+**Root Cause:** The phrase "these checkmarks MUST remain checked in all future PR description updates per policy" — a policy *enforcement* statement about retaining PR body checkmarks — was indistinguishable by the regex from a deferral statement ("fix in a future PR"). The `EXEMPTION_PATTERNS` list did not cover policy-retention language.
+
+**Fix Applied:**
+- **`scripts/ci/check_deferral_language.py`**: Added `r"future PR description"` to `EXEMPTION_PATTERNS`. This exempts lines containing "future PR description" (policy statements about PR body content) while leaving all real deferral patterns intact ("Will fix in a future PR" still triggers). Verified: exempted phrase → exit 0; "Will fix in a future PR" → exit 1.
+
+**Inline Rescue Expansion (Priority 3 from S219):**
+- **`coverage-with-timeout.yml`**: Added `rescue-comment` job (`needs: coverage-with-timeout`). Workflow-specific resolution steps (shard log review, timeout identification).
+- **`codeql-analysis.yml`**: Added `rescue-comment` job (`needs: analyze`). Steps include CodeQL alert review for new security findings.
+- **`pre-merge-validation.yml`**: Added `rescue-comment` job (`needs: final-validation`). Steps include auto-fix script + CI pattern pipeline commands.
+- All three use the standard SHA-scoped `<!-- ci-rescue-rca:{sha_short} -->` dedup-marker pattern (S217 pattern).
+
+**Discussion Q&A Response (Discussion #3756, comment `DC_kwDOPf23ns4A-ThL`):**
+- **`copilot-agent-checkin.yml`**: Added `reply_comment_node_id` workflow_dispatch input + `post-qa-reply` job. When triggered with `reply_comment_node_id=DC_kwDOPf23ns4A-ThL`, posts a full analysis reply with pre-selected recommendations to the specific comment.
+- Pre-selected recommendations:
+  - **Q1 (detect-secrets)**: Option (a) — exclude `agent_context.json` from detect-secrets permanently
+  - **Q2 (RAG maintenance)**: Option (a) — pre-merge delta-coverage gate (≥80% on new files)
+  - **Q3 (token rotation)**: GAP-033 — automated expiry check + fallback in `mcp_poster.py`
+  - **Deep Reflection**: Identified silent `CODEX_MASTER_KEY` expiry as the #1 systemic failure mode; proposed 3-component structural fix (GAP-033 + identity assertion + auto-alert issue)
+
+**Verification:**
+```bash
+python3 scripts/ci/check_deferral_language.py --text "all future PR description updates per policy"  # exit 0
+python3 scripts/ci/check_deferral_language.py --text "Will fix in a future PR"  # exit 1 (real deferral still caught)
+python3 -c "import yaml; [yaml.safe_load(open(f)) for f in ['coverage-with-timeout.yml','codeql-analysis.yml','pre-merge-validation.yml','copilot-agent-checkin.yml']]"  # all OK
+pytest tests/cognitive/test_agent_checkin.py -q  # 39/39 passed
+```
+
+**Pattern documented — deferral scanner policy-enforcement false positive**: `_FUTURE_WORK_PATTERN` matches "future PR" regardless of context. Policy-enforcement statements ("must remain in all future PR description updates") are now exempt via `r"future PR description"` in `EXEMPTION_PATTERNS`. When adding new exemptions, always verify the real deferral case still triggers.
+
+**Pattern documented — inline rescue expansion complete (S220)**: `coverage-with-timeout.yml`, `codeql-analysis.yml`, and `pre-merge-validation.yml` now have rescue-comment jobs. All high-value PR workflows now covered: validate.yml, resilient_validation.yml, actionlint-audit.yml, deferral-language-gate.yml, nox_gates.yml, mypy-baseline.yml, coverage-with-timeout.yml, codeql-analysis.yml, pre-merge-validation.yml (9 total).
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.
