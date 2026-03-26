@@ -148,14 +148,12 @@ jobs:
 
               if (body.includes(RESCUE_MARKER) && BOT_LOGINS.has(authorLogin)) {
                 // Check if any agent comment AFTER this rescue comment addresses it
-                const rescueTime = new Date(node.createdAt).getTime();
                 const answeredAfter = allNodes.slice(i + 1).some(later => {
                   const laterLogin = later.author?.login || '';
-                  const laterBody  = later.body || '';
+                  const laterBody  = (later.body || '').toLowerCase();
                   return (
                     AGENT_LOGINS.has(laterLogin) &&
-                    (laterBody.includes('Fixed in') || laterBody.includes('Addressed in') ||
-                     laterBody.includes('fixed in') || laterBody.includes('addressed in'))
+                    (laterBody.includes('fixed in') || laterBody.includes('addressed in'))
                   );
                 });
 
@@ -186,8 +184,9 @@ jobs:
 
               // Guard: don't re-post if we already re-triggered this rescue comment
               const alreadyRetriggered = allNodes.some(c => {
-                return (c.body || '').includes('<!-- session-done-retrigger -->') &&
-                  (c.body || '').includes(`issuecomment-${pendingRescueComment.databaseId}`);
+                const body = c.body || '';
+                return body.includes('<!-- session-done-retrigger -->') &&
+                  body.includes(`issuecomment-${pendingRescueComment.databaseId}`);
               });
               if (alreadyRetriggered) {
                 console.log(
