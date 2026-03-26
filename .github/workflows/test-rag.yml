@@ -154,10 +154,10 @@ jobs:
           ")
           echo "Coverage: ${COVERAGE}%"
           # Minimum coverage threshold — raised incrementally each S-session.
-          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26).
+          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26).
           # Raise quarterly as coverage grows toward the 95% long-term target.
-          if (( $(echo "$COVERAGE < 85" | bc -l) )); then
-            echo "❌ Coverage ${COVERAGE}% is below 85% threshold"
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "❌ Coverage ${COVERAGE}% is below 90% threshold"
             exit 1
           fi
           echo "✅ Coverage ${COVERAGE}% meets threshold"

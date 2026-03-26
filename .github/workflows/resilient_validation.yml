@@ -134,28 +134,73 @@ jobs:
             htmlcov/
           retention-days: 7
 
-      - name: Comment on PR (on failure)
+      - name: Post rescue comment on validation failure
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
+            const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
             const group = '${{ matrix.test-group }}';
-            const body = `⚠️ **Validation failed for \`${group}\` tests**
+            const sha = context.payload.pull_request.head.sha;
+            const shaShort = sha.substring(0, 12);
+            const runId = '${{ github.run_id }}';
+            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
+            const branch = '${{ github.head_ref }}';
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
+            const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
+            const workflowName = `Resilient Validation Suite / validation (${group})`;
 
-            ### Common fixes:
-            - **Documentation**: Run \`bash scripts/fix_pr3248_dead_links.sh\`
-            - **Tests**: Add \`@pytest.mark.slow\` for long-running tests
-            - **Dependencies**: Run \`pip install -e .[dev]\` and \`pip check\`
-            - **Timeouts**: Increase test timeout or optimize test logic
+            const rescueBody = `## 🚨 CI Rescue — @copilot Fix Required
 
-            📋 [View detailed logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+**Workflow:** \`${workflowName}\`
+**Run:** [${runId}](${runUrl})
+**Branch:** \`${branch}\`
+**Commit:** \`${sha}\`
+**Time:** ${now}
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.
+
+**Steps to resolve:**
+1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)
+2. Check the failure logs: [${runId}](${runUrl})
+3. Apply the minimal fix and push
+4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+5. Verify all CI checks are green before concluding
+
+> **Note:** This comment is updated (not duplicated) for each subsequent
+> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.
+
+_Posted by: resilient_validation.yml → rescue comment (S211)_`;
+
+            const fullBody = `${marker}\n${rescueBody}`;
+            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
+
+            // Find existing rescue comment for this SHA
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
+              issue_number: context.issue.number,
             });
+            const existing = comments.find(c => (c.body || '').includes(marker));
+
+            if (existing) {
+              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: updated,
+              });
+              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+              console.log('Posted new rescue comment');
+            }
 
   # P11-04: Parallel test sharding (S100)
   # Splits the "quick" test group into 4 shards using pytest-split, reducing
@@ -174,6 +219,7 @@ jobs:
     continue-on-error: true  # Sharding is additive; do not block merges until stable
     permissions:
       contents: read
+      pull-requests: write
 
     strategy:
       fail-fast: false
@@ -246,3 +292,72 @@ jobs:
             test-results/
           retention-days: 3
           if-no-files-found: ignore
+
+      - name: Post rescue comment on shard failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const MAX_COMMENT_LENGTH = 65536; // GitHub comment size limit
+            const shard = '${{ matrix.shard }}';
+            const total = '${{ matrix.total }}';
+            const sha = context.payload.pull_request.head.sha;
+            const shaShort = sha.substring(0, 12);
+            const runId = '${{ github.run_id }}';
+            const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
+            const branch = '${{ github.head_ref }}';
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
+            const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
+            const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;
+
+            const rescueBody = `## 🚨 CI Rescue — @copilot Fix Required
+
+**Workflow:** \`${workflowName}\`
+**Run:** [${runId}](${runUrl})
+**Branch:** \`${branch}\`
+**Commit:** \`${sha}\`
+**Time:** ${now}
+
+@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.
+
+**Steps to resolve:**
+1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)
+2. Check the failure logs: [${runId}](${runUrl})
+3. Apply the minimal fix and push
+4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
+5. Verify all CI checks are green before concluding
+
+> **Note:** This comment is updated (not duplicated) for each subsequent
+> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.
+
+_Posted by: resilient_validation.yml → rescue comment (S211)_`;
+
+            const fullBody = `${marker}\n${rescueBody}`;
+            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
+
+            // Find existing rescue comment for this SHA
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => (c.body || '').includes(marker));
+
+            if (existing) {
+              const updated = (existing.body.trimEnd() + appendSection).substring(0, MAX_COMMENT_LENGTH);
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: updated,
+              });
+              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+              console.log('Posted new rescue comment for shard failure');
+            }

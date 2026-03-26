@@ -10324,3 +10324,34 @@ The `chore(vars): sync .codex/agent_context.json from repo variables [skip ci]` 
 
 ### §0 Compliance
 Fixed ALL code-fixable failures. This was a false-positive secret detection on an auto-committed CI config file.
+
+## SESSION SUMMARY — S211 — 2026-03-26 (Rescue trigger fix, RAG 85%→90%)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — comment 4132670715 acknowledged ✅
+- [x] **0b.** Failing CI checks reviewed — run 23581260224 was fixed in S210; new requests addressed ✅
+- [x] **0c.** Related memories loaded — S210, S209, recurring patterns reviewed ✅
+
+### Root Cause
+1. **Rescue trigger not firing for Resilient Validation Suite failures** — `ci-rescue.yml` uses `workflow_run` trigger which only runs from the default branch (`main`). When sharded-quick tests or validation (slow/quick) fail on a PR branch, no structured `@copilot` rescue comment is posted. The only rescue comment mechanism was in `validate.yml` for Fast Validation failures.
+2. **RAG coverage gate** — threshold was at 85%; requested to raise incrementally to 90%.
+
+### Fix Applied
+1. **`resilient_validation.yml`** — Replaced generic `Comment on PR (on failure)` in `validation` matrix job with a structured `## 🚨 CI Rescue — @copilot Fix Required` rescue comment (SHA-scoped `<!-- ci-rescue-rca:{sha_short} -->` marker, append-on-repeat pattern same as `validate.yml`).
+2. **`resilient_validation.yml`** — Added rescue comment step to `sharded-quick` job; added `pull-requests: write` permission to that job.
+3. **`test-rag.yml`** — Raised coverage threshold 85% → 90% (S211). History: …→85%(S209)→90%(S211). Next: 95%.
+
+### Work Completed
+1. **Rescue trigger fix** — `resilient_validation.yml` validation + sharded-quick jobs now post structured `@copilot` rescue comments on failure
+2. **RAG threshold raised** — 85% → 90% in `test-rag.yml`
+3. **sync_tracked_files** — All tracked files consistent (CODEX_MANIFEST, .secrets.baseline, CHANGELOG, accountability)
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/23581260224 (S210, already fixed)
+
+### AfterMath / PDA Loop
+- **PLAN**: Identified that Resilient Validation Suite failures don't trigger rescue because `ci-rescue.yml` uses `workflow_run` (only runs from main); rescue steps must be inline in the workflow itself
+- **DO**: Added inline rescue comment steps to both `validation` and `sharded-quick` jobs in `resilient_validation.yml`; raised RAG threshold to 90%
+- **ASSESS**: All tracked files consistent; workflow YAML validated
+- **AfterMath**: Going forward, any new workflow that can fail on PRs should include an inline rescue comment step rather than relying on `ci-rescue.yml`'s `workflow_run` trigger
+
+### §0 Compliance
+Fixed ALL actionable issues: rescue trigger gap and RAG threshold increment completed.
