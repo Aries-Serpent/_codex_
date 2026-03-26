@@ -212,14 +212,59 @@ jobs:
             }
 
             // ── PATH B: No pending rescue — post "@copilot review" as usual ────────
-            // Guard: do not post if the most recent comment is already a review trigger
+            // Guard 1: do not post if the most recent comment is already a review trigger
             const reviewTriggers = new Set([
               '@copilot review',
               '@copilot+claude-sonnet-4.6 review',
             ]);
+            const recentTriggerCount = allNodes.slice(-10).filter(c => {
+              const body = (c.body || '').trim();
+              return reviewTriggers.has(body);
+            }).length;
+
+            // Guard 2: review-loop detection — if 3+ of the last 10 comments are
+            // @copilot review triggers with no meaningful work in between, break the
+            // loop by posting a diagnostic comment instead of another review trigger.
+            if (recentTriggerCount >= 3) {
+              const loopBreaker = [
+                `@copilot+claude-sonnet-4.6 continue`,
+                ``,
+                `<!-- session-done-loop-break -->`,
+                `⚠️ **Review-loop detected**: ${recentTriggerCount} consecutive \`@copilot review\` triggers`,
+                `were posted without a resolved rescue or meaningful commit in between.`,
+                ``,
+                `**Possible causes:**`,
+                `1. A CI failure is blocking the session from completing work`,
+                `2. The agent is not receiving the review trigger (token issue)`,
+                `3. The rescue comment chain is exhausted without a fix`,
+                ``,
+                `**Requested action:** Please check the latest CI failure and address it directly.`,
+                `Check \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` for patterns.`,
+                ``,
+                `> _Auto-posted by \`copilot-agent-session-done.yml\` (loop-break guard)_`,
+              ].join('\n');
+
+              // Only post loop-breaker once per review-loop cycle
+              const alreadyBroke = allNodes.slice(-5).some(c => {
+                return (c.body || '').includes('<!-- session-done-loop-break -->');
+              });
+              if (!alreadyBroke) {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: pr, body: loopBreaker,
+                });
+                console.log(`Loop-break comment posted to PR #${pr} (${recentTriggerCount} review triggers detected).`);
+              } else {
+                console.log(`Loop-break already posted — skipping to avoid double-loop.`);
+              }
+              return;
+            }
+
             const alreadyPosted = allNodes.slice(-5).some(c => {
               const body = (c.body || '').trim();
-              return reviewTriggers.has(body) && c.author?.login === 'github-actions[bot]';
+              // Only treat agent-posted review triggers as "already posted".
+              // A human writing exactly "@copilot+claude-sonnet-4.6 review" would
+              // be intentional and should NOT suppress a new trigger.
+              return reviewTriggers.has(body) && AGENT_LOGINS.has(c.author?.login || '');
             });
             if (alreadyPosted) {
               console.log('Most recent comment is already a "@copilot review" — skipping to avoid loop.');
