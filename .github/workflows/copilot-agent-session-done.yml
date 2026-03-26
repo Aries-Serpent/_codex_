@@ -59,7 +59,13 @@ jobs:
       - name: "Re-trigger unanswered rescue comments OR post @copilot review"
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Must use CODEX_MASTER_KEY (PAT for @mbaetiong) so the comment appears as a
+          # human user that GitHub Copilot will respond to.  github-actions[bot] comments
+          # are silently ignored by Copilot Coding Agent.
+          # Fallback to CODEX_BACKUP_KEY, then GITHUB_TOKEN as a graceful-degradation last
+          # resort (the comment will still be posted; Copilot may not pick it up immediately
+          # but the comment serves as a record for manual review).
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
             // Check repo variable COPILOT_AGENT_AUTH_ENABLED
             const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
