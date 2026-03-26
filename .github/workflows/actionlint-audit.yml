@@ -109,7 +109,7 @@ jobs:
               `2. Check the failure logs: [${runId}](${runUrl})`,
               '3. Fix any `actionlint` errors in `.github/workflows/` — common fixes:',
               '   - Untrusted context values (e.g. `github.head_ref`) must be passed via env vars, not directly in `run:` scripts',
-              '   - Use `env: MY_VAR: ${{ github.head_ref }}` and reference `$MY_VAR` in the script',
+              '   - Use `env: MY_VAR: <context-value>` and reference `$MY_VAR` in the script',
               '4. Apply the minimal fix and push',
               '5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
               '5. Verify all CI checks are green before concluding',
