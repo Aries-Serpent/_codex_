@@ -1683,7 +1683,7 @@ class GitHubMCPPoster:
             logger.warning(
                 "Discussion category %r not found in %r; falling back to %r.",
                 category_slug,
-                repo,
+                f"{owner}/{repo}",
                 fallback_slug,
             )
             category_id = fallback["id"]
