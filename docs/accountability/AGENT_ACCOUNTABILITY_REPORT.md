@@ -9896,11 +9896,11 @@ Interim: informational warning only; no CI gate failure.
 
 ---
 
-## SESSION SUMMARY — 2026-03-25T23:15Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3749)
-## SESSION SUMMARY — 2026-03-25T22:56Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3747)
+## SESSION SUMMARY — 2026-03-25 SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3749, PR #3747)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
 - [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
