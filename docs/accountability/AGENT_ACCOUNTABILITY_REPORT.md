@@ -10225,3 +10225,25 @@ Updated `.secrets.baseline`: `CODEX_MANIFEST.json` entry `line_number: 1962 → 
 Fixed ALL issues found per CODEBASE_AGENCY_POLICY.md §0.
 
 ---
+
+## Session S208 — 2026-03-26
+
+### Summary
+Autonomous CI rescue on PR #3743, branch `0D_base_` — Fast Validation failure (run 23576669705) on commit `4209314`.
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — PR comments 4131463789 + 4131521269 analyzed
+- [x] **0b.** Failing CI checks reviewed — `sync-tracked-files` failure (run 23576669705)
+
+### Root Cause
+`sync-tracked-files` pre-commit hook failed (exit code 1: "files were modified by this hook"). The `CODEX_MANIFEST.json` was missing an EOF newline AND the `integrity_sha256` field was stale (the hook computes this as a hash of the manifest content, which changes whenever the manifest is regenerated). When the EOF newline was added, `integrity_sha256` changed from `2e02a1840c...` to `4af6b627c0...`. Consequently, `.secrets.baseline` `hashed_secret` for `CODEX_MANIFEST.json` was stale (`88a0cac82b...` → `45b01eb096c2...`).
+
+**Fix:** Ran `python3 scripts/ci/sync_tracked_files.py --fix` which:
+1. Recomputed `integrity_sha256` → `4af6b627c099...`
+2. Updated `.secrets.baseline` CODEX_MANIFEST entry → `hashed_secret: 45b01eb096c2...`, `line_number: 1963`
+3. Verified all other tracked files consistent
+
+### §0 Compliance
+Fixed ALL issues found per CODEBASE_AGENCY_POLICY.md §0.
+
+---
