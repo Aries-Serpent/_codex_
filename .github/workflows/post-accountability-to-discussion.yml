@@ -69,24 +69,33 @@ jobs:
 
           content = report_path.read_text(encoding="utf-8")
 
-          # Split on H2 session summary headings (## SESSION SUMMARY — ...)
-          parts = re.split(r'\n(?=## SESSION SUMMARY — )', content)
+          # Split on ALL recognised H2 session heading formats:
+          #   - "## SESSION SUMMARY — ..." (legacy/auto-generated format)
+          #   - "## Session S\d+ — ..."    (current per-session format S205+)
+          # Both patterns are anchored to line-start after a newline.
+          SESSION_HEADING = re.compile(
+              r'\n(?=## (?:SESSION SUMMARY|Session S\d+) — )'
+          )
+          parts = SESSION_HEADING.split(content)
 
-          # Find the most recent real session (not just the header)
+          # Find the most recent real session entry
           latest = None
           for part in reversed(parts):
-              if part.strip().startswith("## SESSION SUMMARY"):
-                  latest = part.strip()
+              stripped = part.strip()
+              if re.match(r'^## (?:SESSION SUMMARY|Session S\d+) — ', stripped):
+                  latest = stripped
                   break
 
           if not latest:
-              print("::warning::No SESSION SUMMARY entries found in report — skipping")
+              print("::warning::No session entry found in report — skipping")
               # Fall back to last 50 lines of the file
               lines = content.strip().splitlines()
               latest = "\n".join(lines[-50:]) if len(lines) > 50 else content
 
-          # Extract session ID from heading for deduplication
-          heading_match = re.match(r'^## SESSION SUMMARY — (.+?)$', latest, re.MULTILINE)
+          # Extract session ID from heading for deduplication (handles both formats)
+          heading_match = re.match(
+              r'^## (?:SESSION SUMMARY|Session \S+) — (.+?)$', latest, re.MULTILINE
+          )
           session_id = heading_match.group(1).strip() if heading_match else "unknown"
 
           # Write outputs
