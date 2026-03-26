@@ -11159,3 +11159,34 @@ pytest tests/cognitive/test_agent_checkin.py -q  # should remain 39/39 passing
 **Pattern documented — auto-fix-ci-issues Pattern 4 scope**: Pattern 4 regex `fail-under[=\s]+(\d+)` matches ALL occurrences including documentation strings inside YAML/bash heredocs. Q&A recommendation text containing coverage thresholds will be auto-fixed to 70% even if they're not actual CI configurations. This is intended behavior.
 
 **§0 Compliance:** All issues fixed within this session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S222 — 2026-03-26 (Fast Validation detect-secrets Fix — Missed Pragma Lines)
+
+**Trigger:** Fast Validation failure on commit `04216a6` (S221), run 23620609032.
+
+**Root cause:** `detect-secrets` flagged two locations in `tests/cognitive/test_agent_checkin.py` as `HexHighEntropyString`:
+1. **Line 59**: `assert "deadbeef1234" in body` — S219 added `# pragma: allowlist secret` to line 58 (where the string is first created) but NOT to line 59 (where `assert` also contains the same hex literal). <!-- pragma: allowlist secret -->
+2. **Lines 281/291/301/311**: `"--sha", "abc123def456"` CLI argument lines — S219 only added pragma to `sha_short=` keyword-arg style lines (L85, L151, L186, L197, L215, L227, L246, L256), but missed the 4 `"--sha", "abc123def456"` positional-argument lines in the CLI integration tests. <!-- pragma: allowlist secret -->
+
+**Fix (commit `a5ec2ca`):**
+- Added `# pragma: allowlist secret` to line 59 (`assert "deadbeef1234" in body`)
+- Added `# pragma: allowlist secret` to lines 281, 291, 301, 311 (all `"--sha", "abc123def456"` CLI test argument lines)
+- Used `sed -i` sweep to catch all 4 `--sha` lines at once
+
+**Verification:**
+- `python3 -m detect_secrets scan tests/cognitive/test_agent_checkin.py` → ✅ 0 secrets found
+- `pytest tests/cognitive/test_agent_checkin.py` → ✅ 39/39 passed
+- `ruff check tests/cognitive/test_agent_checkin.py` → ✅ 0 violations
+
+**5-Whys RCA:**
+1. Why did Fast Validation fail? detect-secrets flagged hex strings at L59,L281
+2. Why weren't these covered? S219 pragma sweep covered the creation lines but not the assertion/CLI-arg lines
+3. Why weren't all occurrences swept? The S219 fix targeted `sha_short=` keyword-argument usage only
+4. Why wasn't `--sha` argument style covered? The `--sha` CLI integration tests were added in S221; the earlier pragma sweep predated them
+5. Why did line 59 slip through? The `assert` on line 59 echoes the same string as line 58 — pragma must be on the SAME line as the string, not adjacent lines
+
+**Pattern documented — detect-secrets pragma scope**: `# pragma: allowlist secret` suppresses the secret detection ONLY on the same line it appears. A hex string that appears on multiple lines (creation, assertion, as function arg) requires a pragma on EVERY line where it appears. When sweeping test files for hex false positives, grep for ALL occurrences of the hex string (`grep -n "abc123def456"`), not just the first/canonical usage.
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.
