@@ -154,7 +154,7 @@ RESEARCH_TOPICS = [
         "summary": (
             "Automated `chore(vars): sync .codex/agent_context.json` commits introduce "
             "`CODEX_CI_LAST_GREEN_SHA` (40-char hex) that `detect-secrets` flags as "
-            "`Hex High Entropy String` at line 14. Current fix: pre-register in "
+            "`Hex High Entropy String`. Current fix: pre-register in "
             "`.secrets.baseline`. **Long-term fix needed**: suppress SHA values in "
             "agent_context.json or use a `detect-secrets` allowlist."
         ),
@@ -264,6 +264,8 @@ def _build_open_checkin_comment(
     if ci_patterns:
         for p in ci_patterns[:5]:
             patterns_md += f"- `{p}`\n"
+        if len(ci_patterns) > 5:
+            patterns_md += f"- _(and {len(ci_patterns) - 5} more...)_\n"
     else:
         patterns_md = "_No patterns in manifest_\n"
 
@@ -369,17 +371,24 @@ _Questions carry forward to the next session. See the open check-in comment abov
 # ---------------------------------------------------------------------------
 
 def _get_poster():
-    """Return a GitHubMCPPoster instance or None if unavailable."""
-    token = os.environ.get("CODEX_MASTER_KEY") or os.environ.get("CODEX_BACKUP_KEY")
-    if not token:
-        print("⚠️  No GitHub token (CODEX_MASTER_KEY / CODEX_BACKUP_KEY) — offline mode", file=sys.stderr)
-        return None
-    try:
-        from codex.github.mcp_poster import GitHubMCPPoster
-        return GitHubMCPPoster(token=token)
-    except ImportError:
-        print("⚠️  GitHubMCPPoster not importable — offline mode", file=sys.stderr)
-        return None
+    """Return a GitHubMCPPoster instance or None if unavailable.
+
+    Tries CODEX_MASTER_KEY first, then CODEX_BACKUP_KEY as fallback.
+    """
+    for env_var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"):
+        token = os.environ.get(env_var)
+        if token:
+            try:
+                from codex.github.mcp_poster import GitHubMCPPoster
+                return GitHubMCPPoster(token=token)
+            except ImportError:
+                print("⚠️  GitHubMCPPoster not importable — offline mode", file=sys.stderr)
+                return None
+            except Exception as exc:
+                print(f"⚠️  {env_var} unusable ({exc}), trying next token…", file=sys.stderr)
+                continue
+    print("⚠️  No GitHub token (CODEX_MASTER_KEY / CODEX_BACKUP_KEY) — offline mode", file=sys.stderr)
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -446,20 +455,25 @@ def action_close(
 
     comments = disc.get("comments", {}).get("nodes", []) if disc else []
 
-    # Check if any admin/maintainer replied to the open check-in
+    # Known questions in the open check-in (must match Q-labels in _build_open_checkin_comment)
+    all_questions = {
+        "Q1": "Q1: detect-secrets strategy (suppress SHA or update baseline)",
+        "Q2": "Q2: RAG coverage strategy (auto-generate tests for 95% gap)",
+        "Q3": "Q3: MCP auth GAP-033 (token rotation priority)",
+    }
+    unanswered_qs = list(all_questions.values())
     answered_qs: list[str] = []
-    unanswered_qs = ["Q1: detect-secrets strategy", "Q2: RAG coverage strategy", "Q3: MCP auth GAP-033"]
 
     for c in comments:
         author = (c.get("author") or {}).get("login", "")
         body_text = c.get("body", "")
-        # Consider a comment from a non-bot author as a maintainer response
-        if author and author not in ("copilot-swe-agent[bot]", "github-actions[bot]"):
-            if any(q.split(":")[0] in body_text for q in unanswered_qs):
-                # Mark as answered if the response mentions the question keyword
-                answered_qs.append(f"Addressed by @{author}")
-                unanswered_qs = []  # simplistic: if any response, consider answered
-                break
+        # Only count non-bot authors as maintainer responses
+        if not author or author in ("copilot-swe-agent[bot]", "github-actions[bot]"):
+            continue
+        for qid, qtext in list(all_questions.items()):
+            if qid in body_text and qtext in unanswered_qs:
+                unanswered_qs.remove(qtext)
+                answered_qs.append(f"{qtext} — addressed by @{author}")
 
     body = _build_close_checkin_comment(session_id, sha_short, answered_qs, unanswered_qs, aftermath_plan)
     close_marker = f"<!-- agent-checkin-close:{session_id} -->"
@@ -477,8 +491,15 @@ def action_close(
         print(f"⚠️  Failed to post session-close check-in: {exc}", file=sys.stderr)
 
     if unanswered_qs and not no_block:
-        print(f"⚠️  {len(unanswered_qs)} open question(s) carry forward to next session", file=sys.stderr)
-        return 0  # Non-blocking by default — log but don't fail CI
+        print(
+            f"⚠️  {len(unanswered_qs)} open question(s) carry forward to next session:\n"
+            + "\n".join(f"  - {q}" for q in unanswered_qs),
+            file=sys.stderr,
+        )
+        # Return non-zero so CI can surface the unresponded questions
+        return 1
+    if unanswered_qs:
+        print(f"ℹ️  {len(unanswered_qs)} open question(s) carry forward (--no-block)")
     return 0
 
 
