@@ -143,7 +143,7 @@ This repository includes Genesis Protocol templates for establishing autonomous 
 
 | File | Purpose | Status |
 |------|---------|--------|
-| [`.github/workflows/genesis-bootstrap.yml`](.github/workflows/genesis-bootstrap.yml) | Genesis validation workflow | 🔒 Disabled (if: false) |
+| [`.github/misc/genesis-bootstrap.yml`](.github/misc/genesis-bootstrap.yml) | Genesis validation workflow | 🔒 Disabled (if: false) |
 | [`.codex/autonomous_agent.yaml`](.codex/autonomous_agent.yaml) | Agent configuration | 🔒 Safe defaults |
 | [`.codex/guardrails.md`](.codex/guardrails.md) | Operational policies | 📝 Template |
 | [`scripts/autonomous_agent.py`](scripts/autonomous_agent.py) | Agent orchestrator | 🔒 SAFE_MODE = True |
@@ -204,7 +204,7 @@ python scripts/ci/auto_fix_common_issues.py
 ### Documentation
 
 - **System Overview:** [`.codex/docs/CI_AUTO_FIX_SYSTEM.md`](.codex/docs/CI_AUTO_FIX_SYSTEM.md)
-- **Pattern Library:** [`.codex/PR_3095_RESOLUTION_PATTERNS.md`](.codex/PR_3095_RESOLUTION_PATTERNS.md)
+- **Pattern Library:** [`.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md`](.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md)
 - **Workflow:** [`.github/workflows/auto-fix-common-issues.yml`](.github/workflows/auto-fix-common-issues.yml)
 
 ### Benefits

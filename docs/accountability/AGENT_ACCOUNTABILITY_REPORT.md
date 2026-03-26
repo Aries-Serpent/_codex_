@@ -10972,3 +10972,26 @@ ensure no broken links exist in the touched sections.
 
 ### §0 Compliance
 All issues identified in this session were fixed within this session. No deferrals. Codebase left better than found.
+
+---
+
+## SESSION SUMMARY — S218 — 2026-03-26 (Fast Validation broken links — 3rd cascade instance)
+
+**Trigger:** CI Rescue comment #4137425606 — Fast Validation failure on commit `1327020`, run 23610328242.
+
+**Root Cause (same cascade as S217):**
+`doc_metrics_sync.py --fix` modified README.md (updating test counts), causing `check_cross_references.py` to scan the file and find 2 more broken links:
+1. Line 146: `.github/workflows/genesis-bootstrap.yml` — moved to `.github/misc/genesis-bootstrap.yml`
+2. Line 207: `.codex/PR_3095_RESOLUTION_PATTERNS.md` — moved to `.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md`
+
+**Fix Applied:**
+- Updated both link targets in README.md to their correct current paths
+- `check_cross_references.py README.md` exits 0 after fix
+
+**Root Cause Analysis:**
+This is the 3rd instance of the `doc_metrics_sync → cross-reference cascade` pattern. The previous two instances (S217) fixed different broken links. The root issue is README.md contains many links to files that have been moved to archive directories. Every time `doc_metrics_sync.py --fix` updates README.md test counts, the cross-reference check fires and finds the next stale link.
+
+**Forward-Looking Risk:**
+README.md likely contains more stale links that will surface on future `doc_metrics_sync` runs. A comprehensive audit of all README.md links should be performed to prevent further cascade failures.
+
+**§0 Compliance:** Fixed within session. No deferrals.
