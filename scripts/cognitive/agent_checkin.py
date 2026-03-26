@@ -154,20 +154,21 @@ RESEARCH_TOPICS = [
         "summary": (
             "Automated `chore(vars): sync .codex/agent_context.json` commits introduce "
             "`CODEX_CI_LAST_GREEN_SHA` (40-char hex) that `detect-secrets` flags as "
-            "`Hex High Entropy String`. Current fix: pre-register in "
-            "`.secrets.baseline`. **Long-term fix needed**: suppress SHA values in "
-            "agent_context.json or use a `detect-secrets` allowlist."
+            "`Hex High Entropy String`. Current fix: pre-register in `.secrets.baseline`. "
+            "**Long-term fix needed**: suppress SHA values in agent_context.json or use "
+            "a `detect-secrets` allowlist. The pattern recurs on every env-var sync commit."
         ),
         "link": "https://github.com/Aries-Serpent/_codex_/blob/0D_base_/.secrets.baseline",
         "category": "CI/CD · detect-secrets",
     },
     {
-        "title": "RAG coverage threshold incremental raises — path to 95%",
+        "title": "RAG coverage at 95% (FINAL TARGET ACHIEVED S212) — maintenance strategy",
         "summary": (
-            "Coverage history: 27%→30%(S195)→35%→40%→45%→50%→60%(S201)→70%(S203)→"
-            "80%(S204)→85%(S209)→90%(S211)→95%(S212 target). "
-            "At 90% the remaining 5% gap requires new tests for under-covered modules "
-            "(`src/codex/rag/`, `src/codex/distributed/`, `src/codex/security/`)."
+            "RAG coverage reached 95% in S212 (history: 27%→60%→70%→80%→85%→90%→95%). "
+            "The goal is now **maintaining** 95% as new modules are added. Key risk: "
+            "new files in `src/codex/rag/`, `src/codex/distributed/`, `src/codex/security/` "
+            "added without matching tests will cause the threshold check to fail in CI. "
+            "Recommended: add a pre-merge coverage gate that checks new-file delta coverage."
         ),
         "link": "https://github.com/Aries-Serpent/_codex_/blob/0D_base_/.github/workflows/test-rag.yml#L157",
         "category": "RAG · Test Coverage",
@@ -178,8 +179,9 @@ RESEARCH_TOPICS = [
             "S211 added `Post rescue comment on validation failure` steps to both "
             "`validation` (matrix: quick, docs, integration, slow) and `sharded-quick` jobs. "
             "Uses SHA-scoped `<!-- ci-rescue-rca:{sha_short} -->` markers with "
-            "append-on-repeat. Missing: rescue comments for `slow-validation` job timeout "
-            "SIGKILL (exit 137) — these are infrastructure failures, not code failures."
+            "append-on-repeat. S213-cont2 added the same pattern to `actionlint-audit.yml`. "
+            "Remaining gap: any workflow NOT in validate.yml / resilient_validation.yml / "
+            "actionlint-audit.yml still has no inline rescue step."
         ),
         "link": "https://github.com/Aries-Serpent/_codex_/blob/0D_base_/.github/workflows/resilient_validation.yml#L137",
         "category": "CI/CD · Rescue Workflow",
@@ -203,7 +205,8 @@ RESEARCH_TOPICS = [
             "tokens with no rotation, expiry detection, or retry logic. "
             "GAP-033 requires: token expiry check on startup, automatic fallback to "
             "`CODEX_BACKUP_KEY`, exponential backoff on 401/403, and a `token_rotation_hook` "
-            "callback for CI secrets rotation."
+            "callback for CI secrets rotation. The `agent-auth-delegation.yml` S214 fix "
+            "confirmed that token identity is critical for Copilot to respond to @mentions."
         ),
         "link": "https://github.com/Aries-Serpent/_codex_/blob/0D_base_/src/codex/github/mcp_poster.py",
         "category": "MCP Server · Security",
@@ -295,13 +298,18 @@ recurs every time the automated `chore(vars): sync` commit runs. Should we:
 - **(b)** Change the sync commit to omit hex SHA values from `agent_context.json`, or
 - **(c)** Continue updating `.secrets.baseline` each time (current approach)?
 
-**Q2 (RAG Coverage):** The RAG threshold is now at 90% (S211). The final 5% to reach
-95% requires adding tests for `src/codex/rag/`, `src/codex/distributed/`, and
-`src/codex/security/`. Should the coverage agent be triggered to auto-generate tests
-for these modules, or should a human review the test strategy first?
+**Q2 (RAG Maintenance):** RAG coverage reached 95% (FINAL TARGET, achieved in S212).
+The maintenance question is: new source files added without tests will silently drop
+coverage below 95%. Should we:
+- **(a)** Add a pre-merge delta-coverage gate (fails if new files have < 80% coverage),
+- **(b)** Run the unified-coverage-agent automatically on each PR, or
+- **(c)** Keep the single threshold gate and rely on the agent to add tests reactively?
 
-**Q3 (MCP Auth — GAP-033):** Token rotation for `CODEX_MASTER_KEY`/`CODEX_BACKUP_KEY`
-has not been implemented. Is this blocking any current operations, or is it P3 backlog?
+**Q3 (Agent Token Delegation — S214):** The `agent-auth-delegation.yml` was fixed in
+S214 to no longer skip when `COPILOT_AGENT_AUTH_ENABLED=true`. The fix confirmed that
+retrigger comments must use a PAT (`CODEX_MASTER_KEY`) to appear as `@mbaetiong`.
+Is there a preference for rotating `CODEX_MASTER_KEY` on a schedule, or should
+GAP-033 (token rotation hook in `mcp_poster.py`) be the accepted solution?
 
 ---
 
@@ -314,11 +322,16 @@ has not been implemented. Is this blocking any current operations, or is it P3 b
 
 **Reflective Question:**
 
-*"Given the current trajectory of this autonomous CI self-healing system (S195→S212,
-27%→90% RAG coverage, detect-secrets false-positive loops, rescue comment scaffolding,
-pattern DB, and cognitive brain integration), what is the **single most likely systemic
-failure mode** that will cause this system to degrade over the next 30 days if left
-unaddressed? And what is the minimal structural change that would prevent it?"*
+*"Given the current trajectory of this autonomous CI self-healing system (S195→S214,
+27%→95% RAG coverage, rescue comment scaffolding, agent-auth-delegation repair,
+session re-trigger mechanism, and cognitive brain integration), what is the
+**single most likely systemic failure mode** that will cause this system to degrade
+over the next 30 days if left unaddressed? Specifically: the self-healing loop
+depends on `CODEX_MASTER_KEY` appearing as `@mbaetiong` for Copilot to respond.
+What happens when that token expires, is rotated, or its scope is reduced? Is the
+fallback chain (`CODEX_BACKUP_KEY → GITHUB_TOKEN`) sufficient to keep the loop alive,
+or does the system silently degrade? What is the minimal structural change that would
+make this resilient to credential rotation without human intervention?"*
 
 This question is designed for the Cognitive Brain's cross-session memory and pattern
 recognition to surface insights that a single session cannot see.
@@ -373,9 +386,12 @@ _Questions carry forward to the next session. See the open check-in comment abov
 def _get_poster():
     """Return a GitHubMCPPoster instance or None if unavailable.
 
-    Tries CODEX_MASTER_KEY first, then CODEX_BACKUP_KEY as fallback.
+    Tries CODEX_MASTER_KEY first, then CODEX_BACKUP_KEY, then GITHUB_TOKEN.
+    Note: GITHUB_TOKEN requires the workflow to declare ``discussions: write``
+    permission to post discussion comments.  CODEX_MASTER_KEY / CODEX_BACKUP_KEY
+    (Personal Access Tokens with ``write:discussion`` scope) work in all contexts.
     """
-    for env_var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY"):
+    for env_var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
         token = os.environ.get(env_var)
         if token:
             try:
@@ -387,7 +403,7 @@ def _get_poster():
             except Exception as exc:
                 print(f"⚠️  {env_var} unusable ({exc}), trying next token…", file=sys.stderr)
                 continue
-    print("⚠️  No GitHub token (CODEX_MASTER_KEY / CODEX_BACKUP_KEY) — offline mode", file=sys.stderr)
+    print("⚠️  No GitHub token available — offline mode", file=sys.stderr)
     return None
 
 
@@ -458,8 +474,8 @@ def action_close(
     # Known questions in the open check-in (must match Q-labels in _build_open_checkin_comment)
     all_questions = {
         "Q1": "Q1: detect-secrets strategy (suppress SHA or update baseline)",
-        "Q2": "Q2: RAG coverage strategy (auto-generate tests for 95% gap)",
-        "Q3": "Q3: MCP auth GAP-033 (token rotation priority)",
+        "Q2": "Q2: RAG maintenance strategy (delta-coverage gate vs reactive agent)",
+        "Q3": "Q3: Agent token delegation / PAT rotation (GAP-033 vs manual rotation)",
     }
     unanswered_qs = list(all_questions.values())
     answered_qs: list[str] = []
@@ -471,7 +487,15 @@ def action_close(
         if not author or author in ("copilot-swe-agent[bot]", "github-actions[bot]"):
             continue
         for qid, qtext in list(all_questions.items()):
-            if qid in body_text and qtext in unanswered_qs:
+            # Match on Q-label ("Q1", "Q2", "Q3") OR key topic keywords for robustness
+            topic_keywords = {
+                "Q1": ["detect-secrets", "agent_context.json", "secrets.baseline"],
+                "Q2": ["rag", "coverage", "delta-coverage", "unified-coverage"],
+                "Q3": ["CODEX_MASTER_KEY", "token rotation", "GAP-033", "delegation"],
+            }
+            keywords = topic_keywords.get(qid, [])
+            matched = qid in body_text or any(kw.lower() in body_text.lower() for kw in keywords)
+            if matched and qtext in unanswered_qs:
                 unanswered_qs.remove(qtext)
                 answered_qs.append(f"{qtext} — addressed by @{author}")
 

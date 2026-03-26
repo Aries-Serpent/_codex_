@@ -267,7 +267,24 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"discussionId": discussion_id, "body": body})
-        return result.get("data", {}).get("addDiscussionComment", {}).get("comment", result)
+        # Surface GraphQL-level errors (HTTP 200 but errors in body, e.g. FORBIDDEN)
+        gql_errors = result.get("errors") if result else None
+        if gql_errors:
+            first_err = gql_errors[0]
+            err_type = first_err.get("type", "UNKNOWN")
+            err_msg = first_err.get("message", str(gql_errors))
+            raise PermissionError(
+                f"GitHub Discussion comment FORBIDDEN ({err_type}): {err_msg}. "
+                "Ensure the token has 'write:discussion' scope (PAT) or the workflow "
+                "declares 'discussions: write' permission."
+            )
+        comment_data = (result or {}).get("data", {}).get("addDiscussionComment")
+        if comment_data is None:
+            raise RuntimeError(
+                f"addDiscussionComment returned null for discussion #{discussion_number}. "
+                "Full response: " + str(result)
+            )
+        return comment_data.get("comment", comment_data)
 
     def upsert_discussion_comment(
         self,

@@ -1,0 +1,349 @@
+name: "🤖 Agent Check-In — Q&A Bridge (Discussion #3756)"
+
+# Implements the hardened 2x-per-session check-in protocol for Copilot Coding
+# Agents.  Posts structured Q&A, codebase research topics, and a deep Cognitive
+# Brain reflection question to Discussion #3756 for maintainer review.
+#
+# THREE TRIGGERS:
+#
+#   PUSH (immediate post on branch push — for testing & initial population):
+#     Fires on push to 0D_base_ touching agent_checkin.py or the accountability
+#     report.  Posts research topics + open check-in comment.
+#
+#   OPEN (session start):
+#     Fires on issue_comment created events in PRs that contain "@copilot".
+#     Posts --check-in open + --post-research to Discussion #3756.
+#
+#   CLOSE (session end):
+#     Fires on workflow_run completion of "Copilot Setup Steps".
+#     Polls Discussion #3756 for maintainer responses, then posts AfterMath.
+#
+# TOKEN: Uses GITHUB_TOKEN (workflow-scoped, discussions:write declared below).
+# OFFLINE SAFETY: All jobs use continue-on-error for non-critical steps.
+
+on:
+  push:
+    branches: ["0D_base_"]
+    paths:
+      - "scripts/cognitive/agent_checkin.py"
+      - "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+
+  issue_comment:
+    types: [created]
+
+  workflow_run:
+    workflows: ["Copilot Setup Steps"]
+    types: [completed]
+
+concurrency:
+  group: agent-checkin-${{ github.event.issue.number || github.event.workflow_run.id || github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: read
+  discussions: write
+
+jobs:
+  # ── JOB 1: Post on push (immediate verification + initial population) ───
+  checkin-post-on-push:
+    name: "Post research + Q&A to Discussion #3756"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'push'
+
+    steps:
+      - name: "Post research topics and open check-in to Discussion #3756"
+        uses: actions/github-script@v7
+        env:
+          SHA: ${{ github.sha }}
+          REF: ${{ github.ref_name }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const sha = (process.env.SHA || '').slice(0, 12);
+            const ref  = process.env.REF || 'unknown';
+            const now  = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+            const sessionId = `S215-push-${sha}`;
+            const DISCUSSION_NUMBER = 3756;
+            const REPO_URL = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+
+            // ── Resolve Discussion node ID ──────────────────────────────────
+            let discussionId;
+            try {
+              const res = await github.graphql(`
+                query($owner: String!, $name: String!, $number: Int!) {
+                  repository(owner: $owner, name: $name) {
+                    discussion(number: $number) { id title }
+                  }
+                }`, {
+                owner: context.repo.owner,
+                name:  context.repo.repo,
+                number: DISCUSSION_NUMBER,
+              });
+              discussionId = res.repository.discussion.id;
+              core.info(`Resolved Discussion #${DISCUSSION_NUMBER}: ${res.repository.discussion.title}`);
+            } catch(e) {
+              core.warning(`Could not resolve Discussion #${DISCUSSION_NUMBER}: ${e.message}`);
+              return;
+            }
+
+            // ── Helper: upsert (create-or-update) a discussion comment ─────
+            async function upsertComment(marker, body) {
+              // Check if a comment with this marker already exists
+              let existingId = null;
+              try {
+                const existing = await github.graphql(`
+                  query($id: ID!) {
+                    node(id: $id) {
+                      ... on Discussion {
+                        comments(first: 50) {
+                          nodes { id body }
+                        }
+                      }
+                    }
+                  }`, { id: discussionId });
+                const nodes = existing?.node?.comments?.nodes || [];
+                const found = nodes.find(c => (c.body || '').includes(marker));
+                if (found) existingId = found.id;
+              } catch(e) {
+                core.warning(`Could not check existing comments: ${e.message}`);
+              }
+
+              if (existingId) {
+                // Update existing comment
+                await github.graphql(`
+                  mutation($id: ID!, $body: String!) {
+                    updateDiscussionComment(input: { commentId: $id, body: $body }) {
+                      comment { id url }
+                    }
+                  }`, { id: existingId, body });
+                core.info(`Updated existing comment (marker: ${marker.slice(0, 50)})`);
+              } else {
+                // Create new comment
+                const r = await github.graphql(`
+                  mutation($discussionId: ID!, $body: String!) {
+                    addDiscussionComment(input: { discussionId: $discussionId, body: $body }) {
+                      comment { id url }
+                    }
+                  }`, { discussionId, body });
+                const url = r?.addDiscussionComment?.comment?.url || '(no url)';
+                core.info(`Posted new comment: ${url}`);
+              }
+            }
+
+            // ── Build research topics body ──────────────────────────────────
+            const researchMarker = `<!-- agent-checkin-research:${sessionId} -->`;
+            const researchBody = [
+              researchMarker,
+              `## 🔬 Agent Research Summary — ${sessionId} (${now})`,
+              ``,
+              `> **Posted by:** Copilot Coding Agent (autonomous session \`${sessionId}\`, commit \`${sha}\`)`,
+              `> **Purpose:** Pre-populate this discussion with codebase-wide research findings for`,
+              `> Maintainer/Admin review. Each topic includes a summary snippet and link to the`,
+              `> relevant code section.`,
+              ``,
+              `---`,
+              ``,
+              `### 1. Recurring detect-secrets false positives from automated commits`,
+              `**Category:** \`CI/CD · detect-secrets\``,
+              ``,
+              `Automated \`chore(vars): sync .codex/agent_context.json\` commits introduce`,
+              `\`CODEX_CI_LAST_GREEN_SHA\` (40-char hex) that \`detect-secrets\` flags as`,
+              `\`Hex High Entropy String\`. Current fix: pre-register in \`.secrets.baseline\`.`,
+              `**Long-term fix needed**: suppress SHA values in \`agent_context.json\` or use`,
+              `a \`detect-secrets\` allowlist. The pattern recurs on every env-var sync commit.`,
+              ``,
+              `🔗 [View details](${REPO_URL}/blob/0D_base_/.secrets.baseline)`,
+              ``,
+              `### 2. RAG coverage at 95% — FINAL TARGET ACHIEVED (S212) — maintenance strategy`,
+              `**Category:** \`RAG · Test Coverage\``,
+              ``,
+              `RAG coverage reached 95% in S212 (history: 27%→60%→70%→80%→85%→90%→95%).`,
+              `The goal is now **maintaining** 95% as new modules are added. Key risk:`,
+              `new files in \`src/codex/rag/\`, \`src/codex/distributed/\`, \`src/codex/security/\``,
+              `added without matching tests will cause the threshold check to fail in CI.`,
+              `Recommended: add a pre-merge delta-coverage gate.`,
+              ``,
+              `🔗 [View details](${REPO_URL}/blob/0D_base_/.github/workflows/test-rag.yml#L157)`,
+              ``,
+              `### 3. Resilient Validation Suite matrix rescue comment coverage`,
+              `**Category:** \`CI/CD · Rescue Workflow\``,
+              ``,
+              `S211 added inline rescue steps to validation matrix + sharded-quick jobs.`,
+              `S213-cont2 added the same pattern to \`actionlint-audit.yml\`.`,
+              `Remaining gap: workflows outside validate.yml / resilient_validation.yml /`,
+              `actionlint-audit.yml have no inline rescue step and are invisible to the`,
+              `ci-rescue.yml workflow_run chain on PR branches.`,
+              ``,
+              `🔗 [View details](${REPO_URL}/blob/0D_base_/.github/workflows/resilient_validation.yml#L137)`,
+              ``,
+              `### 4. SQLite concurrency race conditions in test suite`,
+              `**Category:** \`Testing · SQLite\``,
+              ``,
+              `Tests \`test_transaction_isolation\` and \`test_concurrent_creates\` have`,
+              `intermittent failures due to SQLite locking when tests run in parallel.`,
+              `Infrastructure flakes, not logic bugs. Suggested fix: \`@pytest.mark.serial\``,
+              `or in-memory DB with WAL mode.`,
+              ``,
+              `🔗 [View details](${REPO_URL}/blob/0D_base_/tests/)`,
+              ``,
+              `### 5. MCP Server auth management gap (GAP-033)`,
+              `**Category:** \`MCP Server · Security\``,
+              ``,
+              `\`GitHubMCPPoster\` uses static \`CODEX_MASTER_KEY\` / \`CODEX_BACKUP_KEY\` tokens`,
+              `with no rotation, expiry detection, or retry logic. GAP-033 requires: expiry`,
+              `check on startup, fallback to \`CODEX_BACKUP_KEY\`, exponential backoff on 401/403,`,
+              `and a \`token_rotation_hook\`. S214 confirmed token identity is critical for`,
+              `Copilot to respond to @mentions.`,
+              ``,
+              `🔗 [View details](${REPO_URL}/blob/0D_base_/src/codex/github/mcp_poster.py)`,
+              ``,
+              `---`,
+              ``,
+              `_This comment is updated (not duplicated) per session. Previous session research is`,
+              `replaced with the current session's findings._`,
+              ``,
+              `> 💡 **To respond:** Reply to individual topics in this thread or add a ✅ reaction`,
+              `> to indicate a topic has been addressed. The agent polls for responses at session close.`,
+            ].join('\n');
+
+            // ── Build open check-in body ────────────────────────────────────
+            const openMarker = `<!-- agent-checkin-open:${sessionId} -->`;
+            const openBody = [
+              openMarker,
+              `## 🤖 Agent Check-In — Session Open: ${sessionId} (${now})`,
+              ``,
+              `> **Session:** \`${sessionId}\` | **Commit:** \`${sha}\` | **Branch:** \`${ref}\``,
+              `> **Cognitive Brain:** [Dashboard](https://aries-serpent.github.io/_codex_/) · [App](https://aries-serpent.github.io/_codex_/cognitive_app/)`,
+              ``,
+              `---`,
+              ``,
+              `### ❓ Questions for Maintainer/Admin`,
+              ``,
+              `The following questions arise from deep codebase analysis and are for review by`,
+              `maintainers/admins with 🔐 Agent Token Delegation and 💰 Cost Governance approval.`,
+              `Please respond in this thread or react with ✅ to indicate resolution.`,
+              ``,
+              `**Q1 (CI/CD):** The \`detect-secrets\` false-positive on \`.codex/agent_context.json\``,
+              `recurs every automated sync commit. Should we:`,
+              `- **(a)** Add \`.codex/agent_context.json\` to \`detect-secrets\` exclude patterns permanently`,
+              `- **(b)** Change sync commit to omit hex SHA values from \`agent_context.json\``,
+              `- **(c)** Continue updating \`.secrets.baseline\` each time (current approach)?`,
+              ``,
+              `**Q2 (RAG Maintenance):** RAG coverage reached 95% (FINAL TARGET, S212).`,
+              `New source files added without tests will silently drop coverage below 95%. Should we:`,
+              `- **(a)** Add a pre-merge delta-coverage gate (fails if new files have < 80% coverage)`,
+              `- **(b)** Run the unified-coverage-agent automatically on each PR`,
+              `- **(c)** Keep the single threshold gate and rely on the agent to add tests reactively?`,
+              ``,
+              `**Q3 (Agent Token Delegation):** The S214 fix confirmed retrigger comments must use`,
+              `a PAT (\`CODEX_MASTER_KEY\`) to appear as \`@mbaetiong\` for Copilot to respond.`,
+              `Is there a preference for rotating \`CODEX_MASTER_KEY\` on a schedule, or should`,
+              `GAP-033 (token rotation hook in \`mcp_poster.py\`) be the accepted solution?`,
+              ``,
+              `---`,
+              ``,
+              `### 🧠 Deep Reflection Question (Cognitive Brain)`,
+              ``,
+              `> *This question leverages the [Cognitive Brain](https://aries-serpent.github.io/_codex_/)`,
+              `> to generate a reflective, high-insight inquiry. Increased hallucination is intentional —`,
+              `> the goal is speculative, cross-domain thinking for systemic improvement.*`,
+              ``,
+              `**Reflective Question:**`,
+              ``,
+              `*"Given the current trajectory of this autonomous CI self-healing system (S195→S214,`,
+              `27%→95% RAG coverage, rescue comment scaffolding, agent-auth-delegation repair,`,
+              `session re-trigger mechanism, and cognitive brain integration), what is the`,
+              `**single most likely systemic failure mode** that will cause this system to degrade`,
+              `over the next 30 days if left unaddressed? Specifically: the self-healing loop`,
+              `depends on \`CODEX_MASTER_KEY\` appearing as \`@mbaetiong\` for Copilot to respond.`,
+              `What happens when that token expires or its scope is reduced? Is the fallback chain`,
+              `(\`CODEX_BACKUP_KEY → GITHUB_TOKEN\`) sufficient to keep the loop alive, or does the`,
+              `system silently degrade? What is the minimal structural change that would make this`,
+              `resilient to credential rotation without human intervention?"*`,
+              ``,
+              `---`,
+              ``,
+              `_Copilot Coding Agent will poll for responses before concluding this session._`,
+            ].join('\n');
+
+            // ── Post both comments ──────────────────────────────────────────
+            try {
+              await upsertComment(researchMarker, researchBody);
+              core.info('✅ Research topics posted to Discussion #3756');
+            } catch(e) {
+              core.warning(`Failed to post research topics: ${e.message}`);
+            }
+
+            try {
+              await upsertComment(openMarker, openBody);
+              core.info('✅ Open check-in posted to Discussion #3756');
+            } catch(e) {
+              core.warning(`Failed to post open check-in: ${e.message}`);
+            }
+
+  # ── JOB 2: Session-Open Check-In (on @copilot mention) ──────────────────
+  checkin-open:
+    name: "Agent open check-in"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: |
+      github.event_name == 'issue_comment' &&
+      contains(github.event.comment.body, '@copilot') &&
+      github.event.issue.pull_request != null &&
+      vars.COPILOT_AGENT_AUTH_ENABLED == 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: "Open check-in — post Q&A and research topics to Discussion #3756"
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          SESSION_ID="auto-open-pr${PR_NUMBER}-$(date +%Y%m%d)"
+          python3 scripts/cognitive/agent_checkin.py \
+            --check-in open \
+            --post-research \
+            --session-id "${SESSION_ID}" \
+            --pr "${PR_NUMBER}" \
+            --sha "${{ github.sha }}" \
+            --no-block
+
+  # ── JOB 3: Session-Close Check-In (on session end) ──────────────────────
+  checkin-close:
+    name: "Agent close check-in"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: |
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null &&
+      vars.COPILOT_AGENT_AUTH_ENABLED == 'true'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 1
+
+      - name: "Close check-in — poll Discussion for responses and post AfterMath"
+        env:
+          CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
+          CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          SESSION_ID="auto-close-pr${PR_NUMBER}-$(date +%Y%m%d)"
+          python3 scripts/cognitive/agent_checkin.py \
+            --check-in close \
+            --session-id "${SESSION_ID}" \
+            --pr "${PR_NUMBER}" \
+            --sha "${HEAD_SHA}" \
+            --no-block
