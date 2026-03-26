@@ -56,7 +56,7 @@ class TestBuildResearchComment:
 
     def test_sha_short_appears(self):
         body = _mod._build_research_comment("S215-test", "deadbeef1234")  # pragma: allowlist secret
-        assert "deadbeef1234" in body
+        assert "deadbeef1234" in body  # pragma: allowlist secret
 
     def test_no_raw_github_head_ref_expression(self):
         """Research comment body must NOT contain raw ${{ ... }} expressions."""
@@ -278,7 +278,7 @@ class TestMain:
         rc = _mod.main([
             "--check-in", "open",
             "--session-id", "S215-cli",
-            "--sha", "abc123def456",
+            "--sha", "abc123def456",  # pragma: allowlist secret
             "--no-block",
         ])
         assert rc == 0
@@ -288,7 +288,7 @@ class TestMain:
         rc = _mod.main([
             "--check-in", "close",
             "--session-id", "S215-cli",
-            "--sha", "abc123def456",
+            "--sha", "abc123def456",  # pragma: allowlist secret
             "--no-block",
         ])
         assert rc == 0
@@ -298,7 +298,7 @@ class TestMain:
         rc = _mod.main([
             "--post-research",
             "--session-id", "S215-cli",
-            "--sha", "abc123def456",
+            "--sha", "abc123def456",  # pragma: allowlist secret
         ])
         assert rc == 0
 
@@ -308,7 +308,7 @@ class TestMain:
             "--check-in", "open",
             "--post-research",
             "--session-id", "S215-combined",
-            "--sha", "abc123def456",
+            "--sha", "abc123def456",  # pragma: allowlist secret
             "--no-block",
         ])
         assert rc == 0
