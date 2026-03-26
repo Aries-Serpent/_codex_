@@ -10866,3 +10866,40 @@ This structure maximises useful responses from the Cognitive Brain and from huma
 All actionable failures identified and fixed. agent_checkin.py fully tested. copilot-agent-checkin.yml uses proven posting pattern. PDA AfterMath captured for full reproducibility.
 
 ---
+
+---
+
+## SESSION SUMMARY — S215 (addendum) — 2026-03-26 (action_required pattern — new workflow bot-trigger approval)
+
+### Root Cause: `action_required` on first workflow run
+**Workflow:** `copilot-agent-checkin.yml` run `23605921412`
+**Conclusion:** `action_required` — 0 jobs executed
+
+**Cause:** GitHub org-level protection: new workflow files triggered by a bot actor (`copilot-swe-agent[bot]`) require explicit admin approval before any jobs run. This is the **same mechanism** that blocked `agent-auth-delegation.yml` earlier in this PR.
+
+**How to unblock:** @mbaetiong must approve workflow run [23605921412](https://github.com/Aries-Serpent/_codex_/actions/runs/23605921412). Once approved, the `checkin-post-on-push` job runs and posts to Discussion #3756.
+
+---
+
+### ♻️ PDA AFTERMATH ADDENDUM — Pattern 7 (New Workflow Approval Gate)
+
+#### Pattern 7 — New Bot-Triggered Workflow Always Requires Admin Approval (First Run)
+```
+Org protection: "Require approval for first-time bots" or equivalent
+Symptom: conclusion=action_required, total_jobs=0 on first run
+Fix: Admin approves run at https://github.com/{owner}/{repo}/actions/runs/{run_id}
+Post-approval: Workflow runs normally on subsequent pushes
+Affects: Any NEW workflow file first triggered by copilot-swe-agent[bot]
+Does NOT affect: Existing workflows (already approved in prior sessions)
+Reference: agent-auth-delegation.yml had same pattern (resolved in S214)
+```
+
+**Reproduction checklist for future agents:**
+1. New workflow added to branch + pushed by bot → `action_required`
+2. Run URL: `https://github.com/Aries-Serpent/_codex_/actions/runs/{run_id}`
+3. Admin navigates to URL → clicks "Approve and run"
+4. `checkin-post-on-push` job executes → Discussion #3756 receives comments
+5. All subsequent pushes run WITHOUT approval (one-time gate only)
+
+### §0 Compliance
+Root cause identified and documented. No code change required. Admin approval at run 23605921412 is the unblocking action.
