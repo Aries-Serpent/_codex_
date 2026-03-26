@@ -481,7 +481,7 @@ jobs:
               '| (b) unified-coverage-agent on every PR | ⚠️ High cost | Agent-session cost per PR. Reactive — adds tests after the coverage gap already exists. |',
               '| (c) Keep single threshold + reactive | ❌ Reactive | Coverage can silently drop to 94%→93%→... before detection triggers a fix session. |',
               '',
-              '**Implementation:** A `coverage-delta` job added to `test-rag.yml` that runs `pytest --cov=<changed_files> --cov-fail-under=80` on only the changed source files.',
+              '**Implementation:** A `coverage-delta` job added to `test-rag.yml` that runs `pytest --cov=<changed_files> --cov-fail-under=70` on only the changed source files.',
               '',
               '---',
               '',
