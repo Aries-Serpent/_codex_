@@ -10,9 +10,30 @@ name: "🤖 Agent Check-In — Q&A Bridge (Discussion #3756)"
 #     Fires on push to 0D_base_.  Posts research topics + open check-in comment.
 #     Skips [skip ci] commits via the job-level `if` condition.
 #
-#   DISPATCH (manual / admin test trigger):
-#     Allows the admin to manually trigger the posting via the Actions UI.
-#     Use this to bypass the one-time `action_required` org protection gate.
+#   DISPATCH (manual / admin trigger — see note below):
+#     Exposes a "Run workflow" button in the GitHub Actions UI once this workflow
+#     file is present on the repository's default branch (main).  Until this PR
+#     is merged, the button will NOT appear in the UI (GitHub limitation: the
+#     workflow_dispatch button is only rendered for workflows in the default
+#     branch).
+#
+#     ── Pre-merge workaround ──────────────────────────────────────────────────
+#     Trigger manually via the GitHub CLI (works from any branch):
+#
+#       gh workflow run "🤖 Agent Check-In — Q&A Bridge (Discussion #3756)" \
+#           --ref 0D_base_ \
+#           -f dry_run=false
+#
+#     Or via the REST API:
+#       curl -X POST \
+#         -H "Authorization: Bearer $CODEX_MASTER_KEY" \
+#         -H "Accept: application/vnd.github+json" \
+#         https://api.github.com/repos/Aries-Serpent/_codex_/actions/workflows/copilot-agent-checkin.yml/dispatches \
+#         -d '{"ref":"0D_base_","inputs":{"dry_run":"false"}}'
+#     ─────────────────────────────────────────────────────────────────────────
+#
+#     After this PR merges to main, the "Run workflow" button will appear at:
+#       https://github.com/Aries-Serpent/_codex_/actions/workflows/copilot-agent-checkin.yml
 #
 #   OPEN (session start):
 #     Fires on issue_comment created events in PRs that contain "@copilot".
@@ -26,8 +47,11 @@ name: "🤖 Agent Check-In — Q&A Bridge (Discussion #3756)"
 #        → GITHUB_TOKEN (requires discussions:write declared below).
 # OFFLINE SAFETY: All jobs use continue-on-error for non-critical steps.
 # APPROVAL GATE: On first run from a bot, GitHub's org protection gate returns
-#   `action_required`.  Admin must approve once at the run URL.  All subsequent
-#   pushes run automatically.  Use workflow_dispatch to test after approving.
+#   `action_required`.  The checkmarks in the active PR description for
+#   "Agent Token Delegation" (COPILOT_AGENT_AUTH_ENABLED) and
+#   "Cost Proposal Approved" serve as the standing approval signal — if both
+#   are checked, the admin approves the run at the Actions URL.  Subsequent
+#   pushes and workflow_dispatch runs execute automatically without re-approval.
 
 on:
   push:

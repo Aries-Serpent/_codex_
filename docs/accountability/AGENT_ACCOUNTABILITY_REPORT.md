@@ -10995,3 +10995,37 @@ This is the 3rd instance of the `doc_metrics_sync → cross-reference cascade` p
 README.md likely contains more stale links that will surface on future `doc_metrics_sync` runs. A comprehensive audit of all README.md links should be performed to prevent further cascade failures.
 
 **§0 Compliance:** Fixed within session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S219 — 2026-03-26 (Fast Validation — end-of-file + detect-secrets)
+
+**Trigger:** CI Rescue comment #4137585342 — Fast Validation failure on commit `701adf2`, run 23612664935.
+
+**Root Causes (2 failures, identified from CI job log artifact):**
+
+1. **`end-of-file-fixer` — exit code 1**: `.codex/session_context_latest.md` was missing a trailing newline. The hook modified the file in-place during pre-commit, causing a non-zero exit.
+
+2. **`detect-secrets` — exit code 1**: Two hex string constants in `tests/cognitive/test_agent_checkin.py` were flagged as "Hex High Entropy String":
+   - Line 59: `"deadbeef1234"` — test SHA-short fixture value (false positive)
+   - Line 85: `"abc123def456"` — test SHA-short fixture value (false positive)
+
+**Fixes Applied:**
+- Added trailing newline to `.codex/session_context_latest.md`
+- Added `# pragma: allowlist secret` to lines 59 and 85 of `tests/cognitive/test_agent_checkin.py`
+- Updated `copilot-agent-checkin.yml` header comment: documented that the "Run workflow" button requires the workflow file to be on the default branch (`main`); added pre-merge CLI workaround (`gh workflow run … --ref 0D_base_`) and REST API command; clarified approval gate semantics with PR checkmarks for Agent Token Delegation and Cost Proposal Approved.
+
+**Verification:**
+- `pytest tests/cognitive/test_agent_checkin.py`: 39/39 passed
+- `.codex/session_context_latest.md`: ends with newline ✓
+- YAML: `copilot-agent-checkin.yml` valid ✓
+
+**Pattern documented — detect-secrets hex string false positives**: Test SHA constants using hex strings (`deadbeef`, `abc123def456`) trigger the detect-secrets `HexHighEntropyString` plugin. Always add `# pragma: allowlist secret` inline to test fixture lines that use realistic hex test data.
+
+**Pattern documented — end-of-file-fixer in session context files**: `.codex/session_context_latest.md` and similar auto-generated context files must always end with a trailing newline. If the file generation script doesn't append one, the pre-commit hook will fail.
+
+**Pattern documented — workflow_dispatch UI visibility**: GitHub's "Run workflow" button only appears in the Actions UI when the workflow file is present on the repository's **default branch** (`main`). Files on PR branches do not show the button. Pre-merge workaround: `gh workflow run <name> --ref <branch>` (GitHub CLI). Post-merge: button auto-appears at the workflow URL.
+
+**Pattern documented — PR checkmark retention**: The checkmarks for "Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)" and "Cost Proposal Approved" in the PR description MUST be preserved in ALL PR description updates by all agents. They serve as the standing approval signal for org-gated workflow runs.
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.

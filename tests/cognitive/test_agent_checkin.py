@@ -55,7 +55,7 @@ class TestBuildResearchComment:
             assert topic["category"] in body
 
     def test_sha_short_appears(self):
-        body = _mod._build_research_comment("S215-test", "deadbeef1234")
+        body = _mod._build_research_comment("S215-test", "deadbeef1234")  # pragma: allowlist secret
         assert "deadbeef1234" in body
 
     def test_no_raw_github_head_ref_expression(self):
@@ -82,7 +82,7 @@ class TestBuildOpenCheckinComment:
     def _make(self, **kwargs):
         defaults = dict(
             session_id="S215-test",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             pr_number=3748,
             cb_state={},
         )
@@ -148,7 +148,7 @@ class TestBuildCloseCheckinComment:
     def _make(self, answered=None, unanswered=None, aftermath=""):
         return _mod._build_close_checkin_comment(
             session_id="S215-test",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             answered_qs=answered or [],
             unanswered_qs=unanswered or [],
             aftermath_plan=aftermath or "PLAN: done",
@@ -183,7 +183,7 @@ class TestActionOpen:
         _offline(monkeypatch)
         rc = _mod.action_open(
             session_id="S215-test",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             pr_number=3748,
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
@@ -194,7 +194,7 @@ class TestActionOpen:
         _offline(monkeypatch)
         _mod.action_open(
             session_id="S215-offline",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             pr_number=None,
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
@@ -212,7 +212,7 @@ class TestActionClose:
         _offline(monkeypatch)
         rc = _mod.action_close(
             session_id="S215-test",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
             no_block=True,
@@ -224,7 +224,7 @@ class TestActionClose:
         _offline(monkeypatch)
         _mod.action_close(
             session_id="S215-offline",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
             no_block=True,
@@ -243,7 +243,7 @@ class TestActionPostResearch:
         _offline(monkeypatch)
         rc = _mod.action_post_research(
             session_id="S215-test",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
         )
@@ -253,7 +253,7 @@ class TestActionPostResearch:
         _offline(monkeypatch)
         _mod.action_post_research(
             session_id="S215-offline",
-            sha_short="abc123def456",
+            sha_short="abc123def456",  # pragma: allowlist secret
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
         )
