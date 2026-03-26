@@ -121,7 +121,11 @@ jobs:
             }
 
             // ── STEP 2: Find unanswered CI rescue comments ──────────────────────────
-            // A rescue comment is any bot-posted comment containing "## 🚨 CI Rescue"
+            // A rescue comment is any comment containing "## 🚨 CI Rescue", posted by
+            // any author EXCEPT the coding agent itself (to avoid treating agent quotes
+            // of the rescue marker as a new rescue).  This covers:
+            //   - github-actions[bot] (automated CI via GITHUB_TOKEN)
+            //   - Any human admin using a PAT (e.g. the repo owner's token shows their login)
             // An "answer" is any subsequent @copilot bot reply that contains "Fixed in"
             // or "Addressed in" after the rescue comment.
             //
@@ -134,19 +138,17 @@ jobs:
               'github-copilot[bot]',
               'copilot[bot]',
             ]);
-            const BOT_LOGINS = new Set([
-              ...AGENT_LOGINS,
-              'github-actions[bot]',
-            ]);
 
-            // Find the most-recent unanswered rescue comment (from a bot/workflow)
+            // Find the most-recent unanswered rescue comment (from any non-agent author)
             let pendingRescueComment = null;
             for (let i = allNodes.length - 1; i >= 0; i--) {
               const node = allNodes[i];
               const body = node.body || '';
               const authorLogin = node.author?.login || '';
 
-              if (body.includes(RESCUE_MARKER) && BOT_LOGINS.has(authorLogin)) {
+              // Accept rescue comments from ANY author except the coding agent
+              // (to avoid treating agent's quote-reply as a new rescue)
+              if (body.includes(RESCUE_MARKER) && !AGENT_LOGINS.has(authorLogin)) {
                 // Check if any agent comment AFTER this rescue comment addresses it
                 const answeredAfter = allNodes.slice(i + 1).some(later => {
                   const laterLogin = later.author?.login || '';

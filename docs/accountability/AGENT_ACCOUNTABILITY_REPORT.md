@@ -10431,3 +10431,35 @@ Fixed ALL actionable items. The 5 concurrent Resilient Validation Suite failures
 
 ### §0 Compliance
 Fixed ALL actionable failures. Two root causes addressed (CI gate + session continuity).
+
+---
+
+## SESSION SUMMARY — S213 continuation — 2026-03-26 (YAML syntax fix in resilient_validation.yml + session re-trigger for human-posted rescue comments)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Comments 4133049965 + 4133238667 + new requirement reviewed ✅
+- [x] **0b.** CI failure run 23588099004 diagnosed — `check-yaml` hook failing on `resilient_validation.yml` ✅
+- [x] **0c.** Session re-trigger root cause identified — `BOT_LOGINS` check excluded human-admin-posted rescue comments ✅
+
+### Root Causes
+1. **CI failure (runs 23585666856 + 23588099004)**: `resilient_validation.yml` JavaScript template literals (lines 153-173 and 313-333) had content at column 0. In a YAML literal block scalar (`script: |`), lines with less indentation than the first content line terminate the block. YAML then tried to parse `**Workflow:**` as a YAML key, causing a `ScannerError`.
+2. **Session not re-triggered for comment 4133049965**: `copilot-agent-session-done.yml` PATH A only detected rescue comments from `BOT_LOGINS` (bot accounts). Rescue comments posted via a PAT (showing as the repo owner login `@mbaetiong` instead of `github-actions[bot]`) were invisible to the re-trigger check.
+
+### Fix Applied
+1. **`resilient_validation.yml`** — Replaced zero-indented multi-line template literals with `[...].join('\n')` array pattern. All array elements are indented at 14 spaces (YAML-safe). Produces identical GitHub comment output.
+2. **`copilot-agent-session-done.yml`** — Changed rescue comment detection from `BOT_LOGINS.has(authorLogin)` to `!AGENT_LOGINS.has(authorLogin)`. This accepts rescue comments from ANY author (bot or human admin) except the coding agent itself, preventing false matches on agent quote-replies.
+
+### Work Completed
+1. **YAML fix** — `resilient_validation.yml` template literals restructured (both validation + sharded-quick jobs)
+2. **Session re-trigger** — `copilot-agent-session-done.yml` rescue detection broadened
+3. **sync_tracked_files** — all consistent
+4. **Accountability report** — S213-cont entry added
+
+### AfterMath / PDA Loop
+- **PLAN**: Downloaded validation-log artifact; found `check-yaml: exit 1` on resilient_validation.yml:155; traced to column-0 template literal in YAML block scalar
+- **DO**: Replaced multi-line template literals with array-join; fixed session-done BOT_LOGINS → !AGENT_LOGINS
+- **ASSESS**: `python3 -c "import yaml; yaml.safe_load(...)"` passes for both workflows
+- **AfterMath**: Pattern documented — JavaScript multi-line template literals (backtick strings) inside YAML `script: |` blocks MUST keep all content indented to at least the block's indentation level. Use `[...].join('\n')` or single-line concatenation.
+
+### §0 Compliance
+Fixed ALL actionable failures. YAML gate restored; session re-trigger hardened to handle human-posted rescue comments.

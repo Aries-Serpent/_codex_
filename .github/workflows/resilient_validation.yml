@@ -150,27 +150,29 @@ jobs:
             const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
             const workflowName = `Resilient Validation Suite / validation (${group})`;
 
-            const rescueBody = `## 🚨 CI Rescue — @copilot Fix Required
-
-**Workflow:** \`${workflowName}\`
-**Run:** [${runId}](${runUrl})
-**Branch:** \`${branch}\`
-**Commit:** \`${sha}\`
-**Time:** ${now}
-
-@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.
-
-**Steps to resolve:**
-1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)
-2. Check the failure logs: [${runId}](${runUrl})
-3. Apply the minimal fix and push
-4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-5. Verify all CI checks are green before concluding
-
-> **Note:** This comment is updated (not duplicated) for each subsequent
-> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.
-
-_Posted by: resilient_validation.yml → rescue comment (S211)_`;
+            const rescueBody = [
+              '## 🚨 CI Rescue — @copilot Fix Required',
+              '',
+              `**Workflow:** \`${workflowName}\``,
+              `**Run:** [${runId}](${runUrl})`,
+              `**Branch:** \`${branch}\``,
+              `**Commit:** \`${sha}\``,
+              `**Time:** ${now}`,
+              '',
+              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
+              '',
+              '**Steps to resolve:**',
+              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
+              `2. Check the failure logs: [${runId}](${runUrl})`,
+              '3. Apply the minimal fix and push',
+              '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
+              '5. Verify all CI checks are green before concluding',
+              '',
+              '> **Note:** This comment is updated (not duplicated) for each subsequent',
+              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
+              '',
+              '_Posted by: resilient_validation.yml → rescue comment (S211)_',
+            ].join('\n');
 
             const fullBody = `${marker}\n${rescueBody}`;
             const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
@@ -310,27 +312,29 @@ _Posted by: resilient_validation.yml → rescue comment (S211)_`;
             const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
             const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;
 
-            const rescueBody = `## 🚨 CI Rescue — @copilot Fix Required
-
-**Workflow:** \`${workflowName}\`
-**Run:** [${runId}](${runUrl})
-**Branch:** \`${branch}\`
-**Commit:** \`${sha}\`
-**Time:** ${now}
-
-@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.
-
-**Steps to resolve:**
-1. Load \`.codex/CODEBASE_AGENCY_POLICY.md\` (§0 — fix ALL issues found)
-2. Check the failure logs: [${runId}](${runUrl})
-3. Apply the minimal fix and push
-4. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
-5. Verify all CI checks are green before concluding
-
-> **Note:** This comment is updated (not duplicated) for each subsequent
-> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.
-
-_Posted by: resilient_validation.yml → rescue comment (S211)_`;
+            const rescueBody = [
+              '## 🚨 CI Rescue — @copilot Fix Required',
+              '',
+              `**Workflow:** \`${workflowName}\``,
+              `**Run:** [${runId}](${runUrl})`,
+              `**Branch:** \`${branch}\``,
+              `**Commit:** \`${sha}\``,
+              `**Time:** ${now}`,
+              '',
+              `@copilot The **${workflowName}** check is failing on commit \`${shaShort}\`.`,
+              '',
+              '**Steps to resolve:**',
+              '1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)',
+              `2. Check the failure logs: [${runId}](${runUrl})`,
+              '3. Apply the minimal fix and push',
+              '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
+              '5. Verify all CI checks are green before concluding',
+              '',
+              '> **Note:** This comment is updated (not duplicated) for each subsequent',
+              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
+              '',
+              '_Posted by: resilient_validation.yml → rescue comment (S211)_',
+            ].join('\n');
 
             const fullBody = `${marker}\n${rescueBody}`;
             const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
