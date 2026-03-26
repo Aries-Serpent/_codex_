@@ -1677,14 +1677,16 @@ class GitHubMCPPoster:
                 category_id = cat["id"]
                 break
         if not category_id and categories:
-            available = [c.get("slug") or c.get("name", "?") for c in categories]
-            # Hardened: raise instead of silently falling back to first category
-            # (P6 hardened posting pipeline — S201)
-            raise ValueError(
-                f"Discussion category slug {category_slug!r} not found in {repo!r}. "
-                f"Available: {available}. "
-                "Create the category in GitHub UI before posting."
+            # Fall back to first available category when slug not matched.
+            fallback = categories[0]
+            fallback_slug = fallback.get("slug") or fallback.get("name", "?")
+            logger.warning(
+                "Discussion category %r not found in %r; falling back to %r.",
+                category_slug,
+                repo,
+                fallback_slug,
             )
+            category_id = fallback["id"]
         return repo_id, category_id
 
 

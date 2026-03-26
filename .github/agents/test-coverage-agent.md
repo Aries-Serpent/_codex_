@@ -13,11 +13,18 @@ deprecated_in: S174 (2026-03-21)
 >
 > All capabilities of this agent are fully preserved in `unified-coverage-agent`.
 
+## Usage
+
+> **Deprecated.** Invoke the replacement agent instead:
+> ```
+> @copilot Use the unified-coverage-agent to <task>
+> ```
+
 ## Migration
 
-Activate via:
+Example invocation (via unified agent):
 ```
-@copilot Use the unified-coverage-agent to <task>
+@copilot Use the unified-coverage-agent to improve coverage in src/codex/
 ```
 
 ## Changelog
