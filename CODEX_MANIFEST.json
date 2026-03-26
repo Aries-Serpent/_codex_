@@ -1959,5 +1959,6 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
+  "ci_patterns": [],
   "integrity_sha256": "2e02a1840c6b1df040fcaa52c593ff3281376598087fb993838c0c1290ee4bf5"
 }
