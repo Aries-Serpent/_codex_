@@ -60,6 +60,7 @@ repos:
               | grep -v "test_\|_test\.py" \
               | grep -v ".venv_ci" \
               | grep -v ".venv_validation" \
+              | grep -v ".venv_agent" \
               | grep -v "tools/codemods/" \
               | grep -v "tools/validate.py" \
               || true);

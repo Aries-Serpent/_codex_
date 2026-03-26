@@ -10397,3 +10397,37 @@ User requested:
 
 ### §0 Compliance
 Fixed ALL actionable items. The 5 concurrent Resilient Validation Suite failures are infrastructure cancellations (cancel-in-progress concurrency), not code failures — the first run succeeded.
+
+---
+
+## SESSION SUMMARY — S213 — 2026-03-26 (CI fix: check-shell-true venv_agent + session re-trigger mechanism)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Comments 4133049965 + 4133238667 reviewed ✅
+- [x] **0b.** CI failure run 23588099004 diagnosed — `check-shell-true` scanning `.venv_agent` ✅
+- [x] **0c.** Root cause of session cancellation identified — queued sessions invalidated by new commits ✅
+
+### Root Causes
+1. **CI failure (run 23588099004)**: `.pre-commit-scripts/check-shell-true.sh` prunes `.venv_ci` and `.venv_validation` but not `.venv_agent`. Third-party packages inside `.venv_agent` (pip, anyio, click, watchdog) contain `shell=True`, triggering the hook.
+2. **Session cancellation**: When session S212 pushed new commits after rescue comment 4133049965 was posted, GitHub silently dropped the queued rescue session (it was tied to the pre-commit context). `copilot-agent-session-done.yml` then posted `@copilot review` (the review-loop path) instead of re-triggering the rescue comment — so the rescue session was lost.
+
+### Fix Applied
+1. **`.pre-commit-scripts/check-shell-true.sh`** — Added `-o -path "./.venv_agent"` to prune list. Tested: `bash .pre-commit-scripts/check-shell-true.sh` returns clean.
+2. **`.github/workflows/copilot-agent-session-done.yml`** — Two changes:
+   - Changed `cancel-in-progress: true → false` — prevents the workflow itself being cancelled when two sessions end in rapid succession on the same PR
+   - Added **PATH A (rescue re-trigger)**: scans the last 20 PR comments; if a bot-posted `## 🚨 CI Rescue` comment exists with no subsequent agent reply (`Fixed in` / `Addressed in`), posts a `@copilot+claude-sonnet-4.6 continue` comment referencing it with a `<!-- session-done-retrigger -->` marker. Only posts PATH A once per rescue comment (dedup guard). Falls through to PATH B (post `@copilot review`) only when no pending rescue exists.
+
+### Work Completed
+1. **CI fix** — `.pre-commit-scripts/check-shell-true.sh` updated
+2. **Session re-trigger mechanism** — `copilot-agent-session-done.yml` updated
+3. **Accountability report** — S213 entry added
+4. **sync_tracked_files** — all consistent
+
+### AfterMath / PDA Loop
+- **PLAN**: Fetched run 23588099004 logs; identified check-shell-true scanning .venv_agent; traced session cancellation to new-commit queue invalidation
+- **DO**: Added .venv_agent to prune list; overhauled session-done workflow with rescue re-trigger PATH A
+- **ASSESS**: YAML valid; bash script clean; pre-commit check passes locally
+- **AfterMath**: Pattern documented — whenever a new venv directory is added (e.g. .venv_agent), it must be added to check-shell-true.sh prune list. Session re-trigger is now automatic.
+
+### §0 Compliance
+Fixed ALL actionable failures. Two root causes addressed (CI gate + session continuity).

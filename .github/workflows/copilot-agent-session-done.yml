@@ -3,19 +3,27 @@ name: "🔄 Auto-Post @copilot review After Agent Session"
 # Fires when a GitHub Coding Agent (copilot-swe-agent[bot]) workflow run
 # completes on a PR branch.  If the PR is open and Agent Token Delegation
 # is enabled (COPILOT_AGENT_AUTH_ENABLED repo variable = 'true'), this
-# workflow posts "@copilot review" to the PR so that Copilot Review starts
-# immediately after the agent commits changes.
+# workflow either:
 #
-# Loop:
+#   A) Re-triggers any unanswered CI rescue comment (priority path), OR
+#   B) Posts "@copilot review" to start a review cycle
+#
+# WHY the rescue-comment re-trigger is needed:
+#   When an agent session is running and a new @copilot rescue comment arrives,
+#   GitHub queues the rescue session.  If the running session then pushes NEW
+#   commits to the branch, GitHub invalidates the queued session (it was tied to
+#   the earlier commit context).  Without re-triggering, that rescue comment is
+#   silently dropped and no new session starts.
+#
+# Loop (review path):
 #   Coding agent commits → workflow_run completed → post "@copilot review"
 #     → Copilot review generates N comments
 #       → copilot-review-responder.yml fires
-#         → post "@copilot apply changes based on the comments in [this thread](URL)"
+#         → post "@copilot apply changes based on the comments in the review thread"
 #           → coding agent session starts → loop repeats
 #
-# Guard: does NOT post if the most-recent issue comment on the PR is already
-# "@copilot review" (prevents infinite review-review loops if no new commits
-# were pushed between two reviews).
+# Guard: does NOT post if the most-recent comment is already "@copilot review"
+# (prevents infinite review-review loops when the agent didn't push changes).
 
 on:
   workflow_run:
@@ -26,8 +34,10 @@ on:
 concurrency:
   # Use PR number if available, fall back to workflow_run ID to avoid
   # unrelated runs sharing the same concurrency key (null PR number issue).
+  # cancel-in-progress: false ensures a queued re-trigger isn't dropped when
+  # two sessions end in rapid succession.
   group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   pull-requests: write
@@ -46,7 +56,7 @@ jobs:
       github.event.workflow_run.pull_requests[0] != null
 
     steps:
-      - name: "Check COPILOT_AGENT_AUTH_ENABLED and post @copilot review"
+      - name: "Re-trigger unanswered rescue comments OR post @copilot review"
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -54,7 +64,7 @@ jobs:
             // Check repo variable COPILOT_AGENT_AUTH_ENABLED
             const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
             if (authEnabled !== 'true' && authEnabled !== '1') {
-              console.log('COPILOT_AGENT_AUTH_ENABLED not set — skipping @copilot review post.');
+              console.log('COPILOT_AGENT_AUTH_ENABLED not set — skipping.');
               return;
             }
 
@@ -82,19 +92,21 @@ jobs:
               return;
             }
 
-            // Guard: do not post if the most recent comment is already "@copilot review"
-            // (prevents a review→review loop when the agent didn't push any changes).
-            // Uses GraphQL comments(last: 5) to reliably fetch the newest comments —
-            // REST listComments returns pages in ascending order, so per_page:5 gives
-            // the OLDEST 5 comments, not the newest.
+            // ── STEP 1: Fetch the last 20 PR comments to check for unaddressed rescue ──
+            // Uses GraphQL because REST listComments returns pages in ascending order
+            // (per_page:5 gives OLDEST 5, not newest).
+            let allNodes = [];
             try {
               const result = await github.graphql(
                 `query($owner: String!, $repo: String!, $pr: Int!) {
                   repository(owner: $owner, name: $repo) {
                     pullRequest(number: $pr) {
-                      comments(last: 5) {
+                      comments(last: 20) {
                         nodes {
+                          id
+                          databaseId
                           body
+                          createdAt
                           author { login }
                         }
                       }
@@ -103,22 +115,110 @@ jobs:
                 }`,
                 { owner, repo, pr }
               );
-              const nodes = result?.repository?.pullRequest?.comments?.nodes || [];
-              // Guard against both old "@copilot review" and new "@copilot+claude-sonnet-4.6 review" formats
-              const alreadyPosted = nodes.some(c => {
-                const body = (c.body || '').trim();
-                return (body === '@copilot review' || body === '@copilot+claude-sonnet-4.6 review') &&
-                  c.author?.login === 'github-actions[bot]';
-              });
-              if (alreadyPosted) {
-                console.log('Most recent comment is already a "@copilot review" — skipping to avoid loop.');
-                return;
-              }
+              allNodes = result?.repository?.pullRequest?.comments?.nodes || [];
             } catch (e) {
-              console.log(`Could not check recent comments (non-blocking): ${e.message}`);
+              console.log(`Could not fetch PR comments (non-blocking): ${e.message}`);
             }
 
-            // Post "@copilot review"
+            // ── STEP 2: Find unanswered CI rescue comments ──────────────────────────
+            // A rescue comment is any bot-posted comment containing "## 🚨 CI Rescue"
+            // An "answer" is any subsequent @copilot bot reply that contains "Fixed in"
+            // or "Addressed in" after the rescue comment.
+            //
+            // Key insight: when the agent pushes new commits, GitHub may silently drop
+            // the queued session tied to an older rescue comment.  We detect this case
+            // by checking whether a rescue comment has NO bot reply AFTER it.
+            const RESCUE_MARKER = '## 🚨 CI Rescue';
+            const AGENT_LOGINS = new Set([
+              'copilot-swe-agent[bot]',
+              'github-copilot[bot]',
+              'copilot[bot]',
+            ]);
+            const BOT_LOGINS = new Set([
+              ...AGENT_LOGINS,
+              'github-actions[bot]',
+            ]);
+
+            // Find the most-recent unanswered rescue comment (from a bot/workflow)
+            let pendingRescueComment = null;
+            for (let i = allNodes.length - 1; i >= 0; i--) {
+              const node = allNodes[i];
+              const body = node.body || '';
+              const authorLogin = node.author?.login || '';
+
+              if (body.includes(RESCUE_MARKER) && BOT_LOGINS.has(authorLogin)) {
+                // Check if any agent comment AFTER this rescue comment addresses it
+                const rescueTime = new Date(node.createdAt).getTime();
+                const answeredAfter = allNodes.slice(i + 1).some(later => {
+                  const laterLogin = later.author?.login || '';
+                  const laterBody  = later.body || '';
+                  return (
+                    AGENT_LOGINS.has(laterLogin) &&
+                    (laterBody.includes('Fixed in') || laterBody.includes('Addressed in') ||
+                     laterBody.includes('fixed in') || laterBody.includes('addressed in'))
+                  );
+                });
+
+                if (!answeredAfter) {
+                  pendingRescueComment = node;
+                  break;  // use the most-recent unanswered rescue
+                }
+              }
+            }
+
+            if (pendingRescueComment) {
+              // ── PATH A: Re-trigger the unanswered rescue comment ────────────────
+              // Post a targeted @copilot continue comment that references the rescue
+              // comment so the new session picks it up immediately.
+              const rescueUrl = `https://github.com/${owner}/${repo}/pull/${pr}#issuecomment-${pendingRescueComment.databaseId}`;
+              const retriggerBody = [
+                `@copilot+claude-sonnet-4.6 continue`,
+                ``,
+                `<!-- session-done-retrigger -->`,
+                `A previous agent session pushed new commits after the CI rescue comment below`,
+                `was posted, which caused GitHub to silently drop the queued rescue session.`,
+                ``,
+                `**Please address the rescue comment immediately:**`,
+                `${rescueUrl}`,
+                ``,
+                `> _Auto-posted by \`copilot-agent-session-done.yml\` (session-done retrigger path)_`,
+              ].join('\n');
+
+              // Guard: don't re-post if we already re-triggered this rescue comment
+              const alreadyRetriggered = allNodes.some(c => {
+                return (c.body || '').includes('<!-- session-done-retrigger -->') &&
+                  (c.body || '').includes(`issuecomment-${pendingRescueComment.databaseId}`);
+              });
+              if (alreadyRetriggered) {
+                console.log(
+                  `Rescue comment ${pendingRescueComment.databaseId} was already re-triggered — skipping.`
+                );
+              } else {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: pr, body: retriggerBody,
+                });
+                console.log(
+                  `Re-triggered rescue comment ${pendingRescueComment.databaseId} on PR #${pr}.`
+                );
+                return;  // don't also post review
+              }
+            }
+
+            // ── PATH B: No pending rescue — post "@copilot review" as usual ────────
+            // Guard: do not post if the most recent comment is already a review trigger
+            const reviewTriggers = new Set([
+              '@copilot review',
+              '@copilot+claude-sonnet-4.6 review',
+            ]);
+            const alreadyPosted = allNodes.slice(-5).some(c => {
+              const body = (c.body || '').trim();
+              return reviewTriggers.has(body) && c.author?.login === 'github-actions[bot]';
+            });
+            if (alreadyPosted) {
+              console.log('Most recent comment is already a "@copilot review" — skipping to avoid loop.');
+              return;
+            }
+
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr,
               body: '@copilot+claude-sonnet-4.6 review',
