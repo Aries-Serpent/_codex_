@@ -11029,3 +11029,25 @@ README.md likely contains more stale links that will surface on future `doc_metr
 **Pattern documented — PR checkmark retention**: The checkmarks for "Agent Token Delegation (COPILOT_AGENT_AUTH_ENABLED)" and "Cost Proposal Approved" in the PR description MUST be preserved in ALL PR description updates by all agents. They serve as the standing approval signal for org-gated workflow runs.
 
 **§0 Compliance:** All issues fixed within this session. No deferrals.
+
+---
+
+### S219-cont — 2026-03-26 — Root Cause Fix: session_bootstrap.py EOF newline
+
+**Trigger:** S219 applied a one-time fix to `.codex/session_context_latest.md`, but the `chore(d00): update session context digest [skip ci]` commit (e1ee300) regenerated the file without a trailing newline, re-introducing the pre-commit failure.
+
+**Root Cause:** `scripts/ci/session_bootstrap.py` line 522: `content = "\n".join(lines)` produces a string that does **not** end with `\n`. Every run of the script (on every session-start commit) regenerates the file without a trailing newline.
+
+**Fix Applied (commit: fix session_bootstrap.py EOF newline root cause):**
+- Changed `content = "\n".join(lines)` → `content = "\n".join(lines) + "\n"` in `scripts/ci/session_bootstrap.py`
+- This ensures all future auto-generated session context files have the required trailing newline
+- Also fixed the current `.codex/session_context_latest.md` to end with `\n`
+
+**Verification:**
+- `pytest tests/cognitive/test_agent_checkin.py`: 39/39 passed
+- `.codex/session_context_latest.md`: ends with newline ✓
+- `session_bootstrap.py` generates files with trailing newline going forward
+
+**Pattern documented — session_bootstrap.py EOF**: The root fix is in the generator, not the generated file. Always fix `"\n".join(lines)` → `"\n".join(lines) + "\n"` when a script generates text files that must pass the `end-of-file-fixer` pre-commit hook.
+
+**§0 Compliance:** Root cause fixed. No deferrals.
