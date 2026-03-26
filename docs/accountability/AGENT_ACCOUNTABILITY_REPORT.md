@@ -11190,3 +11190,41 @@ pytest tests/cognitive/test_agent_checkin.py -q  # should remain 39/39 passing
 **Pattern documented — detect-secrets pragma scope**: `# pragma: allowlist secret` suppresses the secret detection ONLY on the same line it appears. A hex string that appears on multiple lines (creation, assertion, as function arg) requires a pragma on EVERY line where it appears. When sweeping test files for hex false positives, grep for ALL occurrences of the hex string (`grep -n "abc123def456"`), not just the first/canonical usage.
 
 **§0 Compliance:** All issues fixed within this session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S223 — 2026-03-26 (Fast Validation — .secrets.baseline regression after S222)
+
+**Trigger:** Fast Validation failure on commit `a1994f3` (S222), run 23621701705 + new comments #4138933822 (Missed-Trigger) and #4138951997 (CI Rescue).
+
+**Root cause — 5-Whys:**
+1. **Why did Fast Validation fail?** `detect-secrets` found `.codex/agent_context.json:14` (`CODEX_CI_LAST_GREEN_SHA` hex value) as a new untracked secret → exit code 3.
+2. **Why wasn't it in the baseline?** S222 (`a1994f3`) ran `detect-secrets scan` from scratch (v1.5.0), generating a v1.5.0 baseline with ONLY `AGENT_ACCOUNTABILITY_REPORT.md` + `CODEX_MANIFEST.json` — wiping `.codex/agent_context.json`, `.codex/evidence/archive_ops.jsonl`, and `tests/security/test_providers.py`.
+3. **Why did the S223 fix (`31f0662`) break again?** The initial S223 fix correctly added `agent_context.json` but DROPPED `CODEX_MANIFEST.json`, and the local `detect-secrets scan` command further corrupted the baseline by adding `archive_ops.jsonl` while removing other entries.
+4. **Why do partial baseline updates keep failing?** Running `detect-secrets scan --baseline FILE PATH` rewrites the ENTIRE results section for the scanned path; it does NOT preserve other existing entries. Every direct scan overwrites the baseline's results.
+5. **Why did S222 generate an incomplete baseline?** The v1.5.0 fresh scan ran with different plugin versions than the pre-commit pin (v1.4.0), producing a different set of detected secrets. The pre-commit v1.4.0 engine detects `archive_ops.jsonl` SHA256 digests and `test_providers.py` entries that v1.5.0 may filter differently.
+
+**Fix applied (commit `S223-final`):**
+- Restored `.secrets.baseline` from last-known-good state (pre-S222, commit `a5ec2ca^`)
+- Kept all 4 result entries: `.codex/agent_context.json`, `.codex/evidence/archive_ops.jsonl`, `CODEX_MANIFEST.json`, `tests/security/test_providers.py`
+- Removed stale `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` entry (pragma `<!-- pragma: allowlist secret -->` was added in S221)
+- Updated `agent_context.json` hash to current value (`ce9d09dca09a5888ee1f0f8f95fc74ecb443ebd4`) <!-- pragma: allowlist secret -->
+- Verified `sync_tracked_files.py --fix` exits 0 and `detect-secrets scan` passes all key files
+
+**Verification:**
+- `.venv_agent/bin/detect-secrets scan --baseline .secrets.baseline .codex/agent_context.json docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CODEX_MANIFEST.json` → ✅ Exit 0
+- `sync_tracked_files.py --fix` → ✅ CODEX_MANIFEST entry correct, all consistent
+- `python3 -c "import json; b=json.load(open('.secrets.baseline')); assert set(b['results'].keys()) == {'.codex/agent_context.json', '.codex/evidence/archive_ops.jsonl', 'CODEX_MANIFEST.json', 'tests/security/test_providers.py'}"` → ✅
+
+**Patterns documented:**
+- **`.secrets.baseline` full-restore pattern**: When `detect-secrets scan` wipes entries, restore from last-known-good git ref (`git show <sha>:.secrets.baseline`) rather than incrementally patching. Partial patches drift.
+- **Baseline version mismatch pattern**: Running `detect-secrets` locally with a different version than the pre-commit pin (`.pre-commit-config.yaml` → `rev: v1.4.0`) produces an incompatible baseline. The local v1.5.0 engine detects different secrets than CI's v1.4.0 engine. Always use the same version when regenerating the baseline.
+- **`detect-secrets scan --baseline PATH` corrupts results**: Running a targeted file scan with `--baseline` rewrites the entire results block for that file and can remove existing entries. Never use this to update individual entries — always load+modify+save the JSON directly.
+- **agent_context.json is a recurring false positive**: `CODEX_CI_LAST_GREEN_SHA` at line 14 is a CI tracking SHA (updated on every green run), always detected as `HexHighEntropyString`. This entry MUST be in the baseline permanently and re-checked after every baseline regeneration.
+
+**Queued rescue comments (must trigger after this session ends):**
+- `#4138933822` — Missed-Trigger Recovery (S221 guard): automated re-trigger from the missed-trigger-guard step
+- `#4138951997` — CI Rescue Fast Validation on `a1994f3`: the failure this S223 session resolves
+- Both will be processed by `copilot-agent-session-done.yml` PATH A and the missed-trigger-guard on next push.
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.
