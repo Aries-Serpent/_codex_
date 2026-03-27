@@ -403,30 +403,53 @@ jobs:
               return;
             }
 
-            // Fetch last 30 PR comments
-            let comments;
+            // S226 fix: use GraphQL `last: 100` to get the NEWEST 100 comments.
+            // The prior REST issues.listComments(per_page: 30) returned the OLDEST
+            // 30 comments (ascending order), causing dedup to miss retrigger markers
+            // and Copilot "Fixed in" responses that accumulated in newer comments.
+            // This caused the guard to re-post the same retrigger on every push.
+            let comments = [];
             try {
-              const resp = await github.rest.issues.listComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                per_page: 30,
-              });
-              comments = resp.data;
+              const gql = await github.graphql(
+                `query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      comments(last: 100) {
+                        nodes {
+                          databaseId
+                          body
+                          author { login }
+                        }
+                      }
+                    }
+                  }
+                }`,
+                {
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  pr:    prNumber,
+                }
+              );
+              comments = gql?.repository?.pullRequest?.comments?.nodes || [];
             } catch(e) {
               core.info(`Could not fetch PR comments: ${e.message}`);
               return;
             }
 
             // Find unanswered rescue comments:
-            // A rescue comment has the <!-- ci-rescue-rca: marker.
-            // An "answered" rescue comment has a Copilot response after it, or a
-            // <!-- session-done-retrigger --> dedup marker already posted.
-            const rescueMarkerRe = /<!--\s*ci-rescue-rca:[a-f0-9]+\s*-->/;
+            // A rescue comment has the <!-- ci-rescue-rca:SHA --> marker.
+            // An "answered" rescue comment already has:
+            //   (a) a <!-- session-done-retrigger --> dedup marker for its rescue ID, OR
+            //   (b) a Copilot agent reply containing resolution language after it.
+            const rescueMarkerRe   = /<!--\s*ci-rescue-rca:[a-f0-9]+\s*-->/;
             const retriggerMarkerRe = /<!--\s*session-done-retrigger\s*-->/;
-            const copilotLoginRe = /copilot|Copilot|github-actions/i;
+            // Only match actual Copilot agent logins — NOT github-actions[bot], which
+            // posts the rescue comments themselves (matching it gave false-positive hasResponse).
+            const COPILOT_AGENT_LOGINS = new Set([
+              'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]', 'copilot',
+            ]);
 
-            // Collect all retrigger markers already posted
+            // Collect all retrigger markers already posted (rescue IDs already retriggered)
             const retriggerMarkers = new Set(
               comments
                 .filter(c => retriggerMarkerRe.test(c.body || ''))
@@ -436,14 +459,15 @@ jobs:
                 })
             );
 
-            // Find latest unanswered rescue comment
+            // Find the latest unanswered rescue comment (not yet retriggered)
             let latestRescue = null;
             for (const c of comments) {
-              if (rescueMarkerRe.test(c.body || '')) {
-                const markerMatch = (c.body || '').match(/<!--\s*ci-rescue-rca:([a-f0-9]+)\s*-->/);
-                const rescueId = markerMatch ? markerMatch[1] : c.id.toString();
+              const body = c.body || '';
+              if (rescueMarkerRe.test(body)) {
+                const markerMatch = body.match(/<!--\s*ci-rescue-rca:([a-f0-9]+)\s*-->/);
+                const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
                 if (!retriggerMarkers.has(rescueId)) {
-                  latestRescue = { id: rescueId, commentId: c.id, body: c.body || '' };
+                  latestRescue = { id: rescueId, commentId: c.databaseId, body };
                 }
               }
             }
@@ -453,15 +477,22 @@ jobs:
               return;
             }
 
-            // Check if there's already a Copilot-authored comment AFTER the rescue
-            const rescueComment = comments.find(c => c.id === latestRescue.commentId);
-            const rescueIndex = comments.indexOf(rescueComment);
-            const hasResponse = rescueIndex >= 0 && comments.slice(rescueIndex + 1).some(
-              c => copilotLoginRe.test(c.user?.login || '') || c.user?.type === 'Bot'
-            );
+            // Check if there is a Copilot agent response AFTER the rescue comment that
+            // explicitly resolves it ("fixed in" / "addressed in" / "resolved in").
+            // Using COPILOT_AGENT_LOGINS avoids false-positives from github-actions[bot]
+            // CI update comments that are not resolution responses.
+            const rescueIndex = comments.findIndex(c => c.databaseId === latestRescue.commentId);
+            const hasResponse = rescueIndex >= 0 && comments.slice(rescueIndex + 1).some(c => {
+              const login = c.author?.login || '';
+              const body  = (c.body || '').toLowerCase();
+              return (
+                COPILOT_AGENT_LOGINS.has(login) &&
+                (body.includes('fixed in') || body.includes('addressed in') || body.includes('resolved in'))
+              );
+            });
 
             if (hasResponse) {
-              core.info(`Rescue comment ${latestRescue.id} already has a response — skipping.`);
+              core.info(`Rescue comment ${latestRescue.id} already has a Copilot resolution response — skipping.`);
               return;
             }
 
