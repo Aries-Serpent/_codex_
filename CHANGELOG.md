@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3770)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3770 (SHA `ee886183`) at 2026-03-27T22:24Z [auto-generated]
+
 ### Security (S234 — PRs #3767/#3768/#3769)
 - **security:** Bump `cryptography` from 46.0.5 to 46.0.6 — fixes CVE-2026-34073 (name constraints not applied to peer names with wildcard DNS SAN during certificate verification). Updated in `requirements.txt` and `requirements/lock.txt`. Cherry-picked from Dependabot PRs #3767, #3768, #3769.
 
