@@ -11723,3 +11723,62 @@ Additionally identified:
 **§0 Compliance:** Security fix applied immediately within this session. No deferrals.
 
 ---
+
+## SESSION SUMMARY — S235 — 2026-03-27 (post-review fixes: scan-secrets NameError + resilient_validation duplicate job + deferral scanner tightened)
+
+### Context
+Addressed three post-review issues from `#pullrequestreview-4023527913` (automated Copilot reviewer comment on `scan-secrets-variables.yml:104-108`):
+
+### Checklist
+- [x] **S235-A** — `scan-secrets-variables.yml` runtime NameError fixed: removed dead `page_comments`/`page += 1` references left from pagination draft. `get_all_issue_comments()` returns full list; stale loop variables would have raised `NameError` at runtime.
+- [x] **S235-B** — `resilient_validation.yml` duplicate workflow-level `rescue-comment` job removed. Inner `validation` and `sharded-quick` jobs already post rescue comments; outer job caused marker collision and noise.
+- [x] **S235-C** — `EXEMPTION_PATTERNS` tightened: removed `r"\"deferred to a future"` and `r"'deferred to a future"` (too broad — any quoted phrase could bypass). `r"contained.{0,80}deferred to a future"` covers the intended documented-context case. Net: 11 → 9 additions from S228-S231 (20 total in file).
+- [x] `sync_tracked_files.py --fix` — exits 0, all consistent.
+
+### Work Completed
+1. Removed `page_comments`/`page` NameError bug from `scan-secrets-variables.yml` rescue block.
+2. Removed redundant workflow-level rescue-comment job from `resilient_validation.yml`.
+3. Tightened two over-broad deferral scanner exemptions.
+
+### Impact Score
+- Files changed: 3
+- Bugs fixed: 3 (1 runtime NameError, 1 duplicate job, 2 over-broad patterns)
+- Deferral Language Gate: 0 violations
+
+**§0 Compliance:** All review-identified bugs fixed immediately. No deferrals.
+
+---
+
+## SESSION SUMMARY — S236 — 2026-03-27 (CI rescue: end-of-file-fixer + stale-commit run PDA AfterMath pattern)
+
+### Context
+Fast Validation (run 23667475273) failed on commit `ffb9a74b3437` with `end-of-file-fixer` failing on `.github/workflows/resilient_validation.yml`. The run was on a **superseded commit** (branch HEAD had advanced to `3a94f7a` via automated session-tracking commits pushed after the agent code commit). The underlying defect was still real and required fixing.
+
+### Checklist
+- [x] **S236-A** — Trailing blank line removed from `resilient_validation.yml` (line 372 → 371). S235-B removed the last rescue-comment job but left a trailing blank line.
+- [x] **S236-B** — PDA Loop+ AfterMath pattern `stale_commit_ci_run` documented in `.codex/cognitive_brain/patterns/stale_commit_ci_run_20260327.json`.
+- [x] **S236-C** — `.codex/CI_FAILURE_TRACKING_LOG.md` updated with stale-commit pattern row and PDA Loop+ AfterMath patterns table.
+- [x] **S236-D** — Auto-fix candidate `end_of_file_fixer_yaml_trailing_blank` documented with command, confidence 0.97.
+- [x] `sync_tracked_files.py --fix` — exits 0, all consistent.
+
+### Stale-Commit CI Run Pattern (New)
+**Situation:** `run.head_sha (ffb9a74) != PR head.sha (3a94f7a)` — automated commits advanced HEAD after agent pushed code commit but before CI completed.  
+**Response protocol:**
+1. Acknowledge stale commit in reply.
+2. Still fix the underlying defect — it will re-trigger on current HEAD.
+3. Document in PDA AfterMath store for auto-fix learning.
+
+### Work Completed
+1. Fixed `end-of-file-fixer` failure on `resilient_validation.yml`.
+2. Created `stale_commit_ci_run_20260327.json` PDA pattern with detection heuristic, auto-fix candidate, and response protocol.
+3. Updated CI tracking log with pattern table.
+
+### Impact Score
+- Files changed: 3
+- Bugs fixed: 1 (trailing blank line)
+- New patterns documented: 2 (`stale_commit_ci_run`, `end_of_file_fixer_yaml_trailing_blank`)
+- Deferral Language Gate: 0 violations
+
+**§0 Compliance:** CI failure investigated and fixed immediately. Stale-commit situation captured as durable learning pattern. No deferrals.
+
+---

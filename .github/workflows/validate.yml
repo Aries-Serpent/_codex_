@@ -71,7 +71,13 @@ jobs:
             --mode fast \
             --output validation_summary.json
 
-      - name: Upload validation log
+      - name: Emit pre-commit failure details to step summary
+        if: failure()
+        shell: bash
+        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
+        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
+
+      - name: Upload validation log (fast)
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -268,7 +274,13 @@ jobs:
             --mode full \
             --output validation_summary.json
 
-      - name: Upload validation log
+      - name: Emit pre-commit failure details to step summary
+        if: failure()
+        shell: bash
+        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
+        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
+
+      - name: Upload validation log (full)
         uses: actions/upload-artifact@v4
         if: always()
         with:
