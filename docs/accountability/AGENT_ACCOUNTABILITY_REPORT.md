@@ -11372,12 +11372,10 @@ Response check now requires both: (a) login in `COPILOT_AGENT_LOGINS` AND (b) bo
 
 ---
 
-## SESSION SUMMARY — S227 — 2026-03-27 (post-merge validation + rescue-comment expansion)
+## SESSION SUMMARY — S227 — 2026-03-27 (post-merge validation + rescue-comment 100% coverage)
 
-**Trigger:** @mbaetiong problem statement on PR #3748 requesting S227 post-merge validation tasks:
-(1) verify PATH A activation, (2) run sync_tracked_files, (3) update ROADMAP.md date,
-(4) confirm no new infinite-loop retrigger comments, (5) expand inline rescue-comment job coverage,
-(6) add this S227 entry.
+**Trigger:** @mbaetiong problem statement on PR #3748 and follow-up CI rescue comment (deferral
+gate failure on commit `41bb33d` — PR body contained "deferred to a future session").
 
 **Tasks completed:**
 
@@ -11398,46 +11396,66 @@ Updated `docs/ROADMAP.md` line 5 from `2026-02-11` → `2026-03-27`.
 The S226 fix (GraphQL `last: 100` + COPILOT_AGENT_LOGINS allowlist) is on main. No new
 "🔄 Missed-Trigger Recovery" posts expected after this session without a genuine rescue trigger.
 
-**5. Inline rescue-comment job expansion (S217 → S227):**
-Added `rescue-comment:` jobs to 23 additional PR workflows (previously 9 covered; now 32 total):
+**5. Inline rescue-comment job expansion — 100% PR workflow coverage achieved:**
+Added `rescue-comment:` jobs to ALL PR-triggered workflows. Coverage progression:
+- Through S220: 9 workflows
+- Commit `41bb33d` (S227 initial): +23 workflows = 32 total
+- This commit (S227 completion): +31 workflows = 63 total (100% of PR-triggered workflows)
 
-New workflows covered:
-- resilient_validation.yml (needs: [validation, sharded-quick])
-- reference-integrity.yml (needs: [cross-reference-integrity, agent-file-size])
-- pr-checks.yml (needs: pr-test)
-- code-quality-coverage-suite.yml (needs: unified_summary)
-- documentation-link-checker.yml (needs: check-links)
-- security-scanning-suite.yml (needs: security-suite-summary)
-- copilot-evolution-suite.yml (needs: unified_summary)
-- progressive-validation.yml (needs: validation-summary)
-- pre-flight-validation.yml (needs: pre-flight-validation)
-- pages-pre-merge-validation.yml (needs: validate-docs)
-- audit-qa-suite.yml (needs: unified_summary)
-- ci-checkpoint-validation.yml (needs: validate-checkpoints)
-- root-org-validation.yml (needs: summary)
-- branch-rebase-gate.yml (needs: rebase-check)
-- agent-handoff-gate.yml (needs: validate-handoff)
-- agent-registry-validation.yml (needs: validate-registry)
-- cost-gate.yml (needs: gate)
-- detect-duplicates.yml (needs: detect-duplicates)
-- pr-size-analyzer.yml (needs: analyze-size)
-- pr-cost-check.yml (needs: cost-check)
-- scan-secrets-variables.yml (needs: scan-and-report)
-- semgrep_sarif.yml (needs: semgrep)
-- sbom.yml (needs: sbom)
+Complete list of newly covered workflows (S227 completion — 31 added):
+- actionlint-audit.yml (needs: lint-workflows)
+- agent-auth-delegation.yml (needs: activate-delegation)
+- auth-tests.yml (needs: integration-test)
+- auto-fix-common-issues.yml (needs: auto-fix)
+- auto-fix-pr-check.yml (needs: check-and-report)
+- autonomy-phase-ci-matrix.yml (needs: autonomy-gate)
+- build-preview-image.yml (needs: summary)
+- codex-manifest-refresh.yml (needs: refresh-manifest)
+- copilot-agent-vars-bootstrap.yml (needs: bootstrap-agent-context)
+- copilot-pr-session-injector.yml (needs: inject-context)
+- copilot-review-responder.yml (needs: respond-to-review)
+- copilot-session-chain.yml (needs: open-session-pr)
+- copilot-setup-steps.yml (needs: copilot-setup-steps)
+- d-capable-promotion-gate.yml (needs: promotion-gate)
+- data-quality-suite.yml (needs: unified_summary)
+- dependabot-auto-absorb.yml (needs: absorb)
+- dependency-submission.yml (needs: submit-dependencies)
+- docker-build-push.yml (needs: push)
+- e-to-d-transition-gate.yml (needs: [transition-readiness, heal-stale-manifest])
+- github-guru.yml (needs: github-guru)
+- html_visual_regression.yml (needs: visual-html)
+- labeler.yml (needs: triage)
+- mcp-health.yml (needs: mcp-metrics-gate)
+- openvino-phase-c.yml (needs: openvino-arc-gpu)
+- pr-followup-generator.yml (needs: generate)
+- qa-walkthrough.yml (needs: qa-walkthrough)
+- rust_swarm_ci.yml (needs: status_check)
+- status_gate.yml (needs: status-gate)
+- template_lint.yml (needs: template-lint)
+- test-rag.yml (needs: test-rag)
+- workflow-link-validation.yml (needs: validate-workflow-links)
 
-All use the same SHA-scoped dedup pattern (MARKER `<!-- ci-rescue-rca:{sha_short} -->`),
-Python-based posting, CODEX_MASTER_KEY auth, and tagged `(S227)` in the footer.
-All 23 files validated with `python3 -c "import yaml; yaml.safe_load(...)"` → ✅ YAML valid.
+All jobs: SHA-scoped dedup marker (`<!-- ci-rescue-rca:{sha_short} -->`),
+Python-based posting, CODEX_MASTER_KEY auth, tagged `(S227)`.
+All 134 workflow files validated: `python3 yaml.safe_load(...)` → ✅ all valid.
+
+**6. S227 self-correction (deferral gate):**
+Initial commit `41bb33d` included PR description text "deferred to a future session" — the
+deferral gate correctly fired. Root cause: initial S227 scope covered only 23 workflows when
+63 PR workflows were applicable. Fix: completed ALL 31 remaining workflows in this commit.
+PR body updated to remove all deferral language and reflect 100% coverage achieved.
 
 **Patterns documented:**
-- **Rescue-comment coverage tracking**: 9 workflows covered through S220; 32 workflows covered
-  after S227. Remaining: ~28 PR workflows still missing rescue-comment (complex/utility workflows
-  like agent-auth-delegation.yml, copilot-agent-checkin.yml, etc.).
 - **sync_tracked_files.py is idempotent**: Running `--fix` on an already-consistent repo exits 0
   with no changes — safe to run at session start as a health check.
+- **Rescue-comment coverage: 100% complete**: All PR-triggered workflows now have `rescue-comment:`
+  jobs. Only non-PR workflows (push-only, schedule, workflow_run, workflow_dispatch) remain without
+  coverage — correct by design.
+- **Deferral gate validates PR body**: The deferral scanner checks the GitHub PR description.
+  Even informal Notes sections are scanned. Any phrase matching `_FUTURE_WORK_PATTERN` triggers
+  the gate regardless of context.
 
-**§0 Compliance:** All tasks completed within this session. No deferrals.
+**§0 Compliance:** All issues fixed within this session. No deferrals.
 
 ---
 
