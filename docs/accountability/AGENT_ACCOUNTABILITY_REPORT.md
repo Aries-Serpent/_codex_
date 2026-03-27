@@ -11291,3 +11291,81 @@ PATH A is authorized to fire on session end.
   Setup"` (setup phase, fires at session start).
 
 **§0 Compliance:** Root cause identified and fixed within this session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S225 — 2026-03-27 (secrets baseline CODEX_MANIFEST drift + ROADMAP.md stale date)
+
+**Trigger:** CI rescue on commit `9c2d329695fb` (S224) — Fast Validation + Resilient Validation Suite shards 1–4 all failing.
+
+**Root cause:**
+S224 added content to `CODEX_MANIFEST.json` (the `workflow_run` trigger fix commentary), causing the CODEX_MANIFEST entry in `.secrets.baseline` to drift:
+- Stale hash: `45b01eb…` → correct: `4ae667c…`
+- Stale line number: 1963 → correct: 1967
+
+Additionally, `docs/ROADMAP.md` had a stale "Last Updated" date (`2026-03-26`), failing the `sync-tracked-files` pre-commit hook date check.
+
+**Fix applied (commit `1c695cb`):**
+- Ran `scripts/ci/sync_tracked_files.py --fix` → updated CODEX_MANIFEST entry in `.secrets.baseline` to correct hash + line number
+- Updated `docs/ROADMAP.md` "Last Updated" date to `2026-03-27`
+- All 28 CI workflows on `1c695cb` returned ✅ success
+
+**Patterns documented:**
+- **`.secrets.baseline` CODEX_MANIFEST entry drifts on every CODEX_MANIFEST.json line-count change**: After any session that adds lines to CODEX_MANIFEST.json, run `sync_tracked_files.py --fix` to prevent Fast Validation failure.
+- **`docs/ROADMAP.md` date must match current date**: The `sync-tracked-files` hook validates the "Last Updated" field. Update it when crossing a date boundary.
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S226 — 2026-03-27 (missed-trigger-guard infinite loop: dedup window too small)
+
+**Trigger:** @mbaetiong comment #4142188994 on PR #3748 with 4 explicit tasks; analysis comment #4142161870 identifying the missed-trigger-guard infinite-loop root cause.
+
+**Root cause of infinite retrigger loop:**
+The `missed-trigger-guard` step in `copilot-agent-checkin.yml` used:
+```js
+github.rest.issues.listComments({ per_page: 30 })
+```
+The GitHub REST API returns comments in ascending creation order. With PR #3748 now having 72+ comments (S203–S226 = many sessions), the oldest 30 comments window never included:
+- The `<!-- session-done-retrigger -->` dedup markers posted for rescue IDs `2d91165626d3` and `9c2d329695fb`
+- The `@copilot` "Fixed in `<sha>`" resolution responses
+
+This caused `retriggerMarkers` to stay empty and `hasResponse` to always be `false` → the guard re-posted a retrigger comment on every single push, creating an infinite loop.
+
+Additionally, `hasResponse` matched `github-actions[bot]` login (too broad — also matched CI update comments posted by the rescue-comment jobs themselves, not real Copilot resolution responses).
+
+**Fixes applied:**
+
+**Fix 1 — GraphQL `last: 100` for newest comments:**
+Replaced `github.rest.issues.listComments({ per_page: 30 })` with a GraphQL query:
+```graphql
+query($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      comments(last: 100) {  # NEWEST 100 — not oldest
+        nodes { databaseId body author { login } }
+      }
+    }
+  }
+}
+```
+This ensures the dedup window covers the newest 100 comments, where all recent retrigger markers and resolution responses reside.
+
+**Fix 2 — Narrow `hasResponse` to actual Copilot agent logins:**
+Replaced the broad `github-actions` login match with a strict allowlist:
+```js
+const COPILOT_AGENT_LOGINS = new Set([
+  'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]', 'copilot',
+]);
+```
+Response check now requires both: (a) login in `COPILOT_AGENT_LOGINS` AND (b) body contains `"fixed in"` / `"addressed in"` / `"resolved in"`.
+
+**Sessions affected by the infinite loop:** S221–S226 (6 sessions of repeated retrigger posts).
+
+**Verification:**
+- `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/copilot-agent-checkin.yml'))"` → ✅ YAML valid
+- `scripts/ci/sync_tracked_files.py --fix` → ✅ exits 0, all entries consistent
+- PR description checkboxes: all 4 items ✅
+
+**§0 Compliance:** All issues fixed within this session. No deferrals.
