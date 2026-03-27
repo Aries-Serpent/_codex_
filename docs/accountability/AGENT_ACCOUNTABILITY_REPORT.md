@@ -11640,3 +11640,29 @@ bare `"Will fix in a future session"` → exit 1 ✅ (still caught).
 **§0 Compliance:** Fixed immediately. No deferrals.
 
 ---
+
+## SESSION SUMMARY — S232 — 2026-03-27 (Pagination deduplication: resolve 24 unresolved review threads)
+
+**Trigger:** New requirement — resolve all 24 unresolved PR review conversations on PR #3765 about comment pagination deduplication.
+
+**Investigation:**
+
+All 23 workflows named in the requirement were already fully paginated by S228 commit `672ed27`. Two additional files outside the named list still used single-page fetches:
+
+1. `.github/workflows/ci-rescue.yml` — inline Python fallback at line 247: replaced single-page `?per_page=100` with `while not existing_id: page += 1` loop (same pattern as S228).
+2. `scripts/ci/ci_rescue.py` — external Python script at line 777: replaced single-page fetch with two paginated loops (primary SHA-scoped marker + legacy marker fallback).
+
+**Changes:**
+- `.github/workflows/ci-rescue.yml`: inline Python pagination fix (S232)
+- `scripts/ci/ci_rescue.py`: paginated marker search, both primary and legacy fallback (S232)
+
+**Verification:**
+- All 61 rescue-comment jobs + ci-rescue.yml inline + ci_rescue.py now use paginated dedup ✅
+- `yaml.safe_load` validates `ci-rescue.yml` ✅
+- `ast.parse` validates `ci_rescue.py` ✅
+- `sync_tracked_files.py --fix` → all 4 tracked files consistent ✅
+- All 24 review threads: code fix applied, threads are outdated/addressed ✅
+
+**§0 Compliance:** Fixed immediately. No deferrals.
+
+---
