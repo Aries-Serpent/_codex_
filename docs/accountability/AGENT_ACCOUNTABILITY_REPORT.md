@@ -11698,3 +11698,28 @@ Additionally identified:
 **§0 Compliance:** Fixed immediately. No deferrals.
 
 ---
+
+## SESSION SUMMARY — 2026-03-27 S234 (Security — cryptography CVE-2026-34073)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted PR comments reviewed — Dependabot PRs #3767, #3768, #3769 identified ✅
+- [x] **0b.** CVE-2026-34073 advisory confirmed; cryptography 46.0.6 has no known vulnerabilities ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated with security entry ✅
+- [x] **3.** `requirements.txt` and `requirements/lock.txt` bumped ✅
+- [x] **4.** `sync_tracked_files.py --fix` confirms all tracked files consistent ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Security fix (CVE-2026-34073)** — Bumped `cryptography` from 46.0.5 to 46.0.6 in `requirements.txt` and `requirements/lock.txt`. The vulnerability allowed name constraints to be bypassed when the leaf certificate contains a wildcard DNS SAN (does not affect standard Web PKI topologies).
+2. **Cherry-pick scope** — Changes from all three Dependabot PRs (#3767 pip-group lock, #3768 direct requirements.txt, #3769 uv-group lock) consolidated into a single commit. The `uv.lock` does not contain a versioned `[[package]]` entry for cryptography (it is only referenced as a dependency in great_expectations), so no update required there.
+3. **CHANGELOG** — Security entry added under `[Unreleased]`.
+
+### Impact Score
+- Files changed: 3 (`requirements.txt`, `requirements/lock.txt`, `CHANGELOG.md`)
+- CVEs closed: 1 (CVE-2026-34073)
+- Deferral Language Gate: 0 violations
+
+**§0 Compliance:** Security fix applied immediately within this session. No deferrals.
+
+---
