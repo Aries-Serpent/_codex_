@@ -1488,6 +1488,16 @@ jobs:
                 } else { throw e; }
               }
             }
+            // GitHub API rejects empty-string variable values (422). Use DELETE to clear.
+            async function clearVar(name) {
+              try {
+                await github.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            }
 
             const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
 
@@ -1501,7 +1511,7 @@ jobs:
 
               if (isNaN(lockEpoch)) {
                 core.warning(`Corrupted session lock format: '${activeSession}' — clearing`);
-                await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                await clearVar('COPILOT_ACTIVE_SESSION');
                 sessionBusy = false;
               } else {
                 const age = now - lockEpoch;
@@ -1511,7 +1521,7 @@ jobs:
                   core.info(`Active session on PR #${activePR} (age: ${age}s, TTL: ${TTL_SECONDS}s)`);
                 } else if (age >= TTL_SECONDS) {
                   core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
-                  await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                  await clearVar('COPILOT_ACTIVE_SESSION');
                   sessionBusy = false;
                 } else {
                   // Same PR — re-acquire is fine
@@ -1765,6 +1775,16 @@ jobs:
                 } else { throw e; }
               }
             }
+            // GitHub API rejects empty-string variable values (422). Use DELETE to clear.
+            async function clearVar(name) {
+              try {
+                await github.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            }
 
             // Check if the closing PR holds the active session lock
             const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
@@ -1780,7 +1800,7 @@ jobs:
             }
 
             // Release the lock
-            await upsertVar('COPILOT_ACTIVE_SESSION', '');
+            await clearVar('COPILOT_ACTIVE_SESSION');
             core.info(`🔓 Released session lock (was: ${activeSession})`);
 
             // Dequeue next PR
@@ -1825,7 +1845,7 @@ jobs:
                 // Don't remove from queue — will retry on next release
               }
             } else {
-              await upsertVar('COPILOT_SESSION_QUEUE', '');
+              await clearVar('COPILOT_SESSION_QUEUE');
             }
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
@@ -1835,7 +1855,7 @@ jobs:
     needs: activate-delegation
     if: |
       failure() &&
-      github.event_name == 'pull_request' &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') &&
       github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       pull-requests: write
@@ -1862,7 +1882,7 @@ jobs:
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
           MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
           API="https://api.github.com"
-          HDRS={"Authorization":f"******","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
+          HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
             url=f"{API}{path}"; data=json.dumps(body).encode() if body else None
             req=urllib.request.Request(url,data=data,headers=HDRS,method=method)
