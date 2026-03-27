@@ -11610,3 +11610,33 @@ bare `"Will fix in a future session"` → exit 1 ✅ (still caught).
 **§0 Compliance:** Fixed immediately. No deferrals.
 
 ---
+
+## SESSION SUMMARY — S231 — 2026-03-27 (Deferral scanner: genuine+quoted + Real deferrals exemptions)
+
+**Trigger:** @mbaetiong rescue-comment on commit `bbcfd1a` — Deferral Language Gate failing.
+
+**Root causes (2 — both in PR body):**
+
+1. **Line 190 (`genuine + quoted future session`)**: The PR description bullet
+   `` `r"genuine\s+[\"'][^\"']*future[^\"']*session"` — general "genuine + quoted future session" pattern ``
+   contains `future session` in the human-readable label `"genuine + quoted future session"`. The
+   existing `genuine\s+[\"']` exemption requires a quote immediately after `genuine`, but here
+   the text is `genuine + quoted` (no quote after `genuine`).
+   **Fix:** Added `r"genuine \+ quoted future"` exemption.
+
+2. **Line 269 (`Real deferrals ... continue to trigger exit 1`)**: The PR Notes section
+   `Real deferrals ("Will fix in a future PR", "Will address in a future session") continue to trigger exit 1.`
+   lists what the scanner catches — `"Will address in a future session"` triggers
+   `(?:will|can...)(?: be)? (?:address|fix|...)(?:ed)? in (?:a )?future`.
+   **Fix:** Added `r"Real deferrals.*continue to trigger exit"` exemption.
+
+**Verification:**
+- Both exempted lines → exit 0 ✅
+- `Will address in a future session` → exit 1 ✅ (real deferrals still caught)
+- `sync_tracked_files.py --fix` → all 4 tracked files consistent ✅
+
+**Total EXEMPTION_PATTERNS after S231:** 11.
+
+**§0 Compliance:** Fixed immediately. No deferrals.
+
+---
