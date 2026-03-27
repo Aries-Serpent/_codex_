@@ -154,13 +154,13 @@ jobs:
           ")
           echo "Coverage: ${COVERAGE}%"
           # Minimum coverage threshold — raised incrementally each S-session.
-          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25).
-          # Raise quarterly as coverage grows toward the 90% target.
-          if (( $(echo "$COVERAGE < 60" | bc -l) )); then
-            echo "❌ Coverage ${COVERAGE}% is below 60% threshold"
+          # Baseline is ~27.5%; raised from 27% → 30% in S195, 30% → 35% in S197, 35% → 40% in S198, 40% → 45% in S199, 45% → 50% in S200, 50% → 60% in S201 (2026-03-25), 60% → 70% in S203 (2026-03-25), 70% → 80% in S204 (2026-03-25), 80% → 85% in S209 (2026-03-26), 85% → 90% in S211 (2026-03-26), 90% → 95% in S212 (2026-03-26).
+          # Long-term target achieved: 95%.
+          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
+            echo "❌ Coverage ${COVERAGE}% is below 95% threshold"
             exit 1
           fi
-          echo "✅ Coverage ${COVERAGE}% meets threshold"
+          echo "✅ Coverage ${COVERAGE}% meets 95% threshold"
 
       - name: Security scan
         run: |

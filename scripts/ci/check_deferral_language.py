@@ -111,6 +111,10 @@ EXEMPTION_PATTERNS: list[str] = [
     # Exact heading-line format: "Follow-Up Prompt" + a path/URL/view placeholder only
     r"^\**\s*(?:📋\s*)?Follow-Up Prompt\**\s*[:\*]\s*(?:View\b|https?://|\.github/)",
     r"\.github/copilot-prompts/\S+$",  # path-only reference (must be at end of line; prevents bypass like ".../ will fix in a future task")
+    # Policy-enforcement statements about PR description checkmarks: "future PR description
+    # updates" means "in subsequent PR bodies", NOT "I'll fix this in a future PR."
+    # Example: "these checkmarks MUST remain checked in all future PR description updates"
+    r"future PR description",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.

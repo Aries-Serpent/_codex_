@@ -112,14 +112,12 @@ jobs:
   detect-checkbox:
     name: "Detect COPILOT_AGENT_AUTH_ENABLED checkbox"
     needs: [pr-body-checkpoint-guardian]
-    if: |
-      always() &&
-      github.event.action != 'closed' &&
-      (vars.COPILOT_AGENT_AUTH_ENABLED != 'true' || github.event_name == 'workflow_dispatch')
-    # Skip entirely when delegation is already active. Without this guard,
-    # every PR body edit (e.g., report_progress updating the description)
-    # re-triggers this workflow via the 'edited' event type, and the
-    # approval gate causes cascading concurrency cancellations.
+    if: always() && github.event.action != 'closed'
+    # Always runs when the PR is not closed (not just when delegation is inactive).
+    # The approval gate (await-approval) only fires when delegation is NOT yet active.
+    # activate-delegation runs for both cases: first-time approval AND re-delegation
+    # (when already active, it upserts the existing @copilot continue comment rather
+    # than creating a new one, so no duplicate Copilot sessions are triggered).
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -177,7 +175,7 @@ jobs:
   await-approval:
     name: "⏳ Awaiting owner approval"
     needs: detect-checkbox
-    if: needs.detect-checkbox.outputs.auth_requested == 'true'
+    if: needs.detect-checkbox.outputs.auth_requested == 'true' && vars.COPILOT_AGENT_AUTH_ENABLED != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: agent-auth-delegation   # ← protection rule triggers approval gate
@@ -1199,7 +1197,21 @@ jobs:
     needs: [detect-checkbox, await-approval, cognitive-preflight]
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: github.event.action != 'closed'
+    if: |
+      always() &&
+      github.event.action != 'closed' &&
+      needs.detect-checkbox.result == 'success' &&
+      needs.detect-checkbox.outputs.auth_requested == 'true' &&
+      needs.cognitive-preflight.result == 'success' &&
+      (needs.await-approval.result == 'success' || needs.await-approval.result == 'skipped')
+    # Rationale for 'success' OR 'skipped' on await-approval:
+    #   - 'success': First-time activation — human just approved the environment gate.
+    #   - 'skipped': Re-activation — delegation is already active (COPILOT_AGENT_AUTH_ENABLED == 'true'),
+    #     so await-approval is skipped (no re-approval needed). activate-delegation still runs to
+    #     upsert the existing '<!-- agent-token-delegation-result -->' comment (update, not create),
+    #     which does NOT trigger duplicate Copilot sessions because GitHub only fires Copilot on
+    #     comment CREATION, not on comment UPDATES.
+    # always() is required here because GitHub Actions skips dependents of 'skipped' jobs by default.
 
     steps:
       - uses: actions/checkout@v4
@@ -1521,29 +1533,45 @@ jobs:
                 await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
               }
 
-              // Post a queued notification on the PR
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: [
-                  '<!-- session-gate-queued -->',
-                  '## ⏳ Session Queued',
-                  '',
-                  `Another Copilot session is active on PR #${activePR}.`,
-                  'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
-                  '',
-                  '| Detail | Value |',
-                  '|--------|-------|',
-                  `| Active Session | PR #${activePR} |`,
-                  `| Queue Position | ${queueList.length} |`,
-                  `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
-                  '',
-                  '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
-                  '',
-                  `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
-                ].join('\n'),
+              // Dedup: avoid spamming "session queued" on every PR edit while a session is active.
+              // Fetches the most-recent 100 comments (GitHub max per_page). On very active PRs
+              // (>100 comments) an earlier queued marker may not be found; worst case: one extra
+              // notification per 100-comment boundary, which is acceptable.
+              const { data: prComments } = await github.rest.issues.listComments({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: prNumber, per_page: 100,
               });
+              const alreadyQueued = prComments.some(c =>
+                (c.body || '').includes('<!-- session-gate-queued -->') &&
+                (c.body || '').includes(`PR #${activePR}`)
+              );
+              if (alreadyQueued) {
+                core.info(`⏳ PR #${prNumber} already queued for PR #${activePR} — skipping duplicate notification.`);
+              } else {
+                // Post a queued notification on the PR
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: [
+                    '<!-- session-gate-queued -->',
+                    '## ⏳ Session Queued',
+                    '',
+                    `Another Copilot session is active on PR #${activePR}.`,
+                    'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
+                    '',
+                    '| Detail | Value |',
+                    '|--------|-------|',
+                    `| Active Session | PR #${activePR} |`,
+                    `| Queue Position | ${queueList.length} |`,
+                    `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
+                    '',
+                    '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                    '',
+                    `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+                  ].join('\n'),
+                });
+              }
               core.info(`⏳ PR #${prNumber} queued — active session on PR #${activePR}`);
             } else {
               // Acquire the session lock

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S214 — PR #3748)
+- **fix(ci/workflows):** `agent-auth-delegation.yml` — removed `vars.COPILOT_AGENT_AUTH_ENABLED != 'true'` guard from `detect-checkbox` job (caused it to be skipped when delegation was already active, silently breaking all re-delegation and session starts). Moved guard to `await-approval` only; updated `activate-delegation` to use `always()` with explicit result conditions so it runs for both fresh approvals and re-delegation (upserts existing `@copilot continue` comment, no Copilot loop). Added dedup to session concurrency gate notification.
+- **fix(ci/workflows):** `copilot-agent-session-done.yml` — changed PATH A/B post token from `GITHUB_TOKEN` (posts as `github-actions[bot]`, ignored by Copilot) to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || GITHUB_TOKEN` (posts as @mbaetiong, triggers Copilot sessions correctly).
+
+### Fixed (auto-update — PR #3750)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3750 (SHA `3a5da563`) at 2026-03-25T23:49Z [auto-generated]
+
+### Fixed (auto-update — PR #3749)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3749 (SHA `40122939`) at 2026-03-25T23:15Z [auto-generated]
+### Fixed (auto-update — PR #3748)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3748 (SHA `1074f245`) at 2026-03-25T22:57Z [auto-generated]
+
 ### Fixed (S194b — PR #3743)
 - **fix(ci):** `scripts/ci/pre_flight_check.py` — tightened xdist `-n` detection from `"-n " in content` (broad substring, false-positives on bash `[ -n ]`) to a precise regex `pytest\b[^\n]*\s-n\s+\S|\s-n\s+(?:auto|\d+)|--numprocesses`. Eliminates P-G false-positives that caused 3 Pre-Flight failures.
 - **feat(ci):** `scripts/ci/auto_fix_common_issues.py` — Pattern 20 "YAML Multiline Strings": detects unclosed bash variable assignments spanning multiple YAML lines using negative-lookahead regex; found 58 workflows (manual review, non-blocking). Pattern 21 "Node.js 20 Actions": scans for deprecated Node.js 20 action refs (`v[1-5]\d*`) with 2026-06-02 deadline; found 121 workflows / 208 refs (informational). Argparse updated to `range(1,22)`.

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-25T06:24:05Z",
+  "generated_at": "2026-03-26T23:50:25Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1099,6 +1099,11 @@
       "has_concurrency": true
     },
     {
+      "name": "ci-rescue",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "cleanup-stale-branches",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1149,6 +1154,11 @@
       "has_concurrency": false
     },
     {
+      "name": "copilot-agent-checkin",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
       "name": "copilot-agent-session-done",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
@@ -1166,6 +1176,11 @@
     {
       "name": "copilot-issue-triage",
       "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "copilot-iterative-self-healing",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1949,117 +1964,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "a711416fc3e974026e2767db3debf1fa85749a98256fc6cf17d5063c20404b73",
-  "ci_patterns": {
-    "version": "1.0.0",
-    "added_session": "S194",
-    "description": "Recurring CI failure patterns with auto-healer classifications",
-    "patterns": [
-      {
-        "pattern_id": "P-A",
-        "name": "runner-sigterm",
-        "signature": "shutdown signal|operation was canceled",
-        "category": "transient-infra",
-        "auto_retry": true,
-        "max_retries": 2,
-        "blocking": false,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-B",
-        "name": "line-length-e501",
-        "signature": "Line too long.*> 100",
-        "category": "code-quality",
-        "auto_fix": "ruff format --line-length 100",
-        "pattern_num": 12,
-        "blocking": true,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-C",
-        "name": "yaml-multiline-bash",
-        "signature": "could not parse as YAML: could not find expected ':'",
-        "category": "yaml-multiline",
-        "auto_fix": "printf pipeline pattern",
-        "pattern_num": 20,
-        "blocking": true,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-D",
-        "name": "mypy-regression",
-        "signature": "mypy regression:.*errors.*> baseline",
-        "category": "type-check",
-        "auto_fix": "python scripts/ci/mypy_baseline.py --update",
-        "blocking": true,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-E",
-        "name": "meta-cascade-gate",
-        "signature": "Auto-fixable CI issues detected.*CI pattern pipeline.*strict.*failed",
-        "category": "meta-cascade",
-        "dedup_prompts": true,
-        "blocking": true,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-F",
-        "name": "missing-test-durations",
-        "signature": "No files were found.*\\.test_durations",
-        "category": "missing-artifact",
-        "severity": "warning",
-        "blocking": false,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-G",
-        "name": "preflight-xdist-false-positive",
-        "signature": "Uses -n flag but doesn't pin pytest-xdist",
-        "category": "pre-flight",
-        "fix": "Use precise pytest -n regex in pre_flight_check.py",
-        "blocking": true,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-H",
-        "name": "from-src-absolute-imports",
-        "signature": "from src\\.",
-        "category": "import-convention",
-        "fix": "pytest.ini pythonpath = . src",
-        "pattern_num": 19,
-        "blocking": false,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-I",
-        "name": "optional-dependency-hard-import",
-        "signature": "ModuleNotFoundError|ImportError.*hydra|ImportError.*omegaconf",
-        "category": "import-optional",
-        "fix": "Wrap in try/except ImportError with safe fallback",
-        "blocking": false,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-J",
-        "name": "rag-coverage-threshold",
-        "signature": "Coverage.*below.*threshold|FAIL Required test coverage",
-        "category": "coverage",
-        "fix": "Raise --cov-fail-under incrementally (27\u219230\u219240\u219290)",
-        "blocking": false,
-        "added_session": "S194"
-      },
-      {
-        "pattern_id": "P-K",
-        "name": "nodejs20-deprecation",
-        "signature": "Node.js 20 actions are deprecated",
-        "category": "infra-deprecation",
-        "deadline": "2026-06-02",
-        "auto_fix": "Bump to Node.js 24-compatible action versions",
-        "pattern_num": 21,
-        "blocking": false,
-        "added_session": "S194"
-      }
-    ]
-  }
+  "integrity_sha256": "092e0f68d33e9ed6e380d8e9b435607738f29ec1eb8ea25f7389877c76e6593b"
 }

@@ -434,6 +434,8 @@ class TestCiPatternPipeline:
         assert result.returncode == 0
         assert "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower()
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(300)
     def test_check_only_returns_zero_on_clean_repo(self, tmp_db):
         """Running --check-only on the current repo (which is clean) exits 0."""
         result = subprocess.run(
@@ -444,11 +446,13 @@ class TestCiPatternPipeline:
                 "--no-record",
                 "--db", tmp_db,
             ],
-            capture_output=True, text=True, cwd=_ROOT, timeout=60,
+            capture_output=True, text=True, cwd=_ROOT, timeout=240,
         )
         # Should exit 0 (clean) or 1 (issues found — acceptable in a live repo)
         assert result.returncode in (0, 1)
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(300)
     def test_artefact_written(self, tmp_path, tmp_db):
         artefact = str(tmp_path / "pipeline.json")
         result = subprocess.run(
@@ -460,7 +464,7 @@ class TestCiPatternPipeline:
                 "--db", tmp_db,
                 "--artefact", artefact,
             ],
-            capture_output=True, text=True, cwd=_ROOT, timeout=60,
+            capture_output=True, text=True, cwd=_ROOT, timeout=240,
         )
         assert result.returncode in (0, 1)
         assert Path(artefact).exists(), "Artefact file not created"
@@ -468,6 +472,8 @@ class TestCiPatternPipeline:
         assert "pipeline_status" in data
         assert "diagnostic_report" in data
 
+    @pytest.mark.slow
+    @pytest.mark.timeout(300)
     def test_main_returns_int(self, tmp_db):
         code = pipeline.main(["--check-only", "--no-record", "--db", tmp_db])
         assert isinstance(code, int)

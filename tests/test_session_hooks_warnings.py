@@ -17,7 +17,9 @@ def _fail_open(self, *args, **kwargs):
 def test_safe_write_text_warns(tmp_path, caplog, monkeypatch):
     path = tmp_path / "a.txt"
     monkeypatch.setattr(Path, "open", _fail_open)
-    with caplog.at_level(logging.WARNING):
+    # Target the specific module logger so caplog captures its output regardless
+    # of logger propagation settings that may differ in CI environments.
+    with caplog.at_level(logging.WARNING, logger="codex.logging.session_hooks"):
         session_hooks._safe_write_text(path, "data")
     assert any(rec.levelno == logging.WARNING for rec in caplog.records)
 
