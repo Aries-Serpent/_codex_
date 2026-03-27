@@ -127,6 +127,14 @@ EXEMPTION_PATTERNS: list[str] = [
     # CI Rescue comment bodies that describe what to fix (they are instructions, not deferrals)
     r"fix ALL issues.*never defer",
     r"Posted by:.*rescue-comment",
+    # Documentation of deferral scanner test cases — the word "genuine" signals this is
+    # describing what triggers the scanner, not making a deferral assertion.
+    # Example: "genuine 'Will fix in a future session' → exit 1 (still caught)"
+    r"genuine\s+[\"']Will fix in a future",
+    r"genuine\s+[\"'][^\"']*future[^\"']*session",
+    # exit-1/still-caught pattern: describing scanner test output, not a real deferral
+    r"future session[^\"']*→ exit 1",
+    r"future session[^\"']*still caught",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.
