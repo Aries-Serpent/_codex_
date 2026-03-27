@@ -773,27 +773,46 @@ def post_pr_comment(
         print(f"\n[DRY RUN] Would post/update RCA on PR #{pr_number}:\n{full_body[:500]}…")
         return True
 
-    # Fetch up to 100 existing PR comments to look for a matching rescue comment.
-    _, comments = _gh_api(f"/repos/{repo}/issues/{pr_number}/comments?per_page=100", token)
+    # Paginate through all PR comments to find an existing rescue marker.
+    # A single ?per_page=100 fetch misses markers on page 2+ when PRs have
+    # more than 100 comments, causing duplicate rescue posts (S232 fix).
     existing_id: Optional[int] = None
     existing_body: str = ""
-
-    if isinstance(comments, list):
-        # Primary: look for SHA-scoped marker
-        for c in comments:
+    page = 1
+    while not existing_id:
+        _, page_comments = _gh_api(
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}", token
+        )
+        if not isinstance(page_comments, list) or not page_comments:
+            break
+        for c in page_comments:
             c_body = c.get("body") or ""
             if marker in c_body:
                 existing_id = c["id"]
                 existing_body = c_body
                 break
-        # Fallback: legacy marker (no SHA) so we never leave orphaned old comments
-        if existing_id is None:
-            for c in comments:
+        if existing_id or len(page_comments) < 100:
+            break
+        page += 1
+    # Fallback: if SHA-scoped marker not found, check for legacy marker (no SHA)
+    # so we never leave orphaned old comments.
+    if not existing_id:
+        page = 1
+        while not existing_id:
+            _, page_comments = _gh_api(
+                f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}", token
+            )
+            if not isinstance(page_comments, list) or not page_comments:
+                break
+            for c in page_comments:
                 c_body = c.get("body") or ""
                 if "<!-- ci-rescue-rca -->" in c_body:
                     existing_id = c["id"]
                     existing_body = c_body
                     break
+            if existing_id or len(page_comments) < 100:
+                break
+            page += 1
 
     if existing_id:
         # Append the new failure section to the existing rescue comment.

@@ -71,7 +71,13 @@ jobs:
             --mode fast \
             --output validation_summary.json
 
-      - name: Upload validation log
+      - name: Emit pre-commit failure details to step summary
+        if: failure()
+        shell: bash
+        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
+        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
+
+      - name: Upload validation log (fast)
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -191,15 +197,19 @@ jobs:
           )
 
           # -- Find existing rescue comment for this SHA ---------------------
-          _, comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100")
           existing_id   = None
           existing_body = ""
-          if isinstance(comments, list):
-              for c in comments:
+          page = 1
+          while not existing_id:
+              _, page_comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
+              if not isinstance(page_comments, list) or not page_comments: break
+              for c in page_comments:
                   if MARKER in (c.get("body") or ""):
                       existing_id   = c["id"]
                       existing_body = c.get("body", "")
                       break
+              if existing_id or len(page_comments) < 100: break
+              page += 1
 
           if existing_id:
               # Append a Failure Update section to the existing comment
@@ -264,7 +274,13 @@ jobs:
             --mode full \
             --output validation_summary.json
 
-      - name: Upload validation log
+      - name: Emit pre-commit failure details to step summary
+        if: failure()
+        shell: bash
+        # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
+        run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
+
+      - name: Upload validation log (full)
         uses: actions/upload-artifact@v4
         if: always()
         with:

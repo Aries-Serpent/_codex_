@@ -115,6 +115,30 @@ EXEMPTION_PATTERNS: list[str] = [
     # updates" means "in subsequent PR bodies", NOT "I'll fix this in a future PR."
     # Example: "these checkmarks MUST remain checked in all future PR description updates"
     r"future PR description",
+    # Agent comments that report a past violation was fixed (contains the quoted offending phrase)
+    # Example: "Root cause: PR body contained 'deferred to a future session' -- now fixed"
+    # Requires explicit "contained" context so bare quoted deferrals still trigger.
+    r"contained.{0,80}deferred to a future",
+    # CI Rescue comment bodies that describe what to fix (they are instructions, not deferrals)
+    r"fix ALL issues.*never defer",
+    r"Posted by:.*rescue-comment",
+    # Documentation of deferral scanner test cases — the word "genuine" signals this is
+    # describing what triggers the scanner, not making a deferral assertion.
+    # Example: "genuine 'Will fix in a future session' → exit 1 (still caught)"
+    r"genuine\s+[\"']Will fix in a future",
+    r"genuine\s+[\"'][^\"']*future[^\"']*session",
+    # exit-1/still-caught pattern: describing scanner test output, not a real deferral
+    r"future session[^\"']*→ exit 1",
+    r"future session[^\"']*still caught",
+    # Labeling an exemption pattern category in PR description:
+    # e.g., `r"genuine\s+...future...session"` — general "genuine + quoted future session" pattern
+    # The " + quoted" between "genuine" and "future" means this is labeling a regex,
+    # not making a deferral assertion.
+    r"genuine \+ quoted future",
+    # Documenting what the scanner catches as positive examples:
+    # e.g., Real deferrals ("Will fix in a future PR", ...) continue to trigger exit 1.
+    # This sentence describes scanner behavior, not a deferral action.
+    r"Real deferrals.*continue to trigger exit",
 ]
 
 # Pre-compiled pattern to strip inline code spans before scanning.

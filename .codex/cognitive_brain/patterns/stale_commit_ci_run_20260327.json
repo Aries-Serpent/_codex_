@@ -1,0 +1,116 @@
+{
+  "session_id": "S236-PR3765-2026-03-27",
+  "timestamp": "2026-03-27T21:18:00Z",
+  "pattern_type": "stale_commit_ci_run",
+  "task": "Detect and resolve CI run on superseded commit while branch HEAD has advanced",
+  "agent": "copilot-swe-agent",
+  "status": "pattern_documented",
+  "policy_compliance": "ai_agency_policy_active",
+  "pda_loop": {
+    "phase": "AFTERMATH",
+    "perceive": {
+      "observation": "CI workflow run reported failure on commit ffb9a74b3437 while the PR branch HEAD was already at 3a94f7a043f2 — a later commit pushed by automated session tooling.",
+      "signals": [
+        "run.head_sha != pull_request.head.sha in workflow_run API response",
+        "Rescue comment posted for a commit that is no longer the branch tip",
+        "pre-commit end-of-file-fixer failed on .github/workflows/resilient_validation.yml (trailing blank line)",
+        "Root cause commit (S235-B) removed last job from resilient_validation.yml but left trailing blank line"
+      ],
+      "pattern_triggers": [
+        "automated commits (chore(auth), chore(d00)) pushed AFTER agent code commit",
+        "CI pipeline triggered on the code commit before automation commits advanced HEAD",
+        "two diverged SHA references in same CI event: run.head_sha vs PR head_sha"
+      ]
+    },
+    "decide": {
+      "classification": "benign_stale_run",
+      "rationale": "The failure is on a superseded commit. The fix (trailing newline) must still be applied because the pre-commit hook WILL re-run on the new HEAD if the file remains unchanged.",
+      "auto_fix_eligible": true,
+      "auto_fix_pattern": "end-of-file-fixer — strip trailing blank lines from YAML workflow files",
+      "escalate": false
+    },
+    "act": {
+      "fix_applied": "Removed trailing blank line from .github/workflows/resilient_validation.yml (line 372 → EOF)",
+      "verification": "tail -3 | cat -A shows single trailing $\\n; wc -l reduced from 372 to 371",
+      "commit_message": "fix(S236): remove trailing blank line from resilient_validation.yml (end-of-file-fixer)"
+    },
+    "aftermath": {
+      "lesson": "When a CI run references a stale commit (run.head_sha != PR head_sha), the failure is still actionable: the same file defect will re-trigger on the current HEAD unless fixed.",
+      "detection_heuristic": "Compare run.head_sha with PR head.sha in rescue-comment context; if they differ, annotate the rescue comment with '⚠️ This run was on a superseded commit (HEAD has since advanced)' and still apply the fix.",
+      "auto_fix_candidate": {
+        "pattern_id": "end_of_file_fixer_yaml_trailing_blank",
+        "trigger": "end-of-file-fixer hook fails on a .github/workflows/*.yml file",
+        "root_cause": "Job removal (e.g., S235-B duplicate rescue-comment removal) left a trailing blank line",
+        "fix": "Strip trailing blank lines, ensure exactly one \\n at EOF",
+        "command": "python3 -c \"path=FILE; content=open(path,'rb').read(); open(path,'wb').write(content.rstrip(b'\\\\n')+b'\\\\n')\"",
+        "safe_to_automate": true,
+        "confidence": 0.97
+      },
+      "stale_commit_run_pattern": {
+        "pattern_id": "stale_commit_ci_run",
+        "description": "CI rescue comment or workflow run references a commit SHA that is no longer the PR branch HEAD",
+        "detection": [
+          "workflow_run.head_sha != pull_requests[0].head.sha",
+          "Rescue CI comment SHA is older than git log HEAD"
+        ],
+        "response_protocol": [
+          "1. Acknowledge the run is on a superseded commit in any reply",
+          "2. Still investigate and fix the underlying failure — it will recur on HEAD",
+          "3. Re-run `sync_tracked_files.py --fix` after fix to confirm no drift",
+          "4. Annotate rescue comment reply with commit hash that actually fixes the issue"
+        ],
+        "false_positive_risk": "LOW — stale run failures almost always indicate a real defect in a shared file",
+        "should_skip_fix": false
+      },
+      "recurrence_count": 1,
+      "first_seen": "2026-03-27T21:11:32Z",
+      "fix_commit": "S236",
+      "pr": 3765,
+      "related_sessions": ["S235", "S230"]
+    }
+  },
+  "problems_solved": [
+    {
+      "id": "trailing_blank_line_resilient_validation",
+      "description": "resilient_validation.yml had trailing blank line after S235-B removed duplicate rescue-comment job",
+      "severity": "blocking_ci",
+      "root_cause": "S235-B removed the workflow-level rescue-comment job (lines ~369-371) but the surrounding blank line became the new EOF trailing blank, violating end-of-file-fixer",
+      "solution": {
+        "type": "whitespace_fix",
+        "files_modified": [".github/workflows/resilient_validation.yml"],
+        "key_changes": ["Stripped trailing blank line; file now ends with single \\n"],
+        "pattern": "end_of_file_fixer_yaml"
+      },
+      "validation": {
+        "method": "local_pre_commit_simulation",
+        "expected_outcome": "end-of-file-fixer passes",
+        "evidence": "wc -l reduced from 372 to 371; tail -3 | cat -A shows single trailing $"
+      }
+    },
+    {
+      "id": "stale_commit_ci_run_pattern_capture",
+      "description": "CI run on ffb9a74 (superseded commit) while PR HEAD was at 3a94f7a",
+      "severity": "informational",
+      "root_cause": "Automated session-tracking commits (chore(auth), chore(d00)) advanced branch HEAD after agent pushed the code commit but before CI completed",
+      "solution": {
+        "type": "pattern_documentation",
+        "files_modified": [
+          ".codex/cognitive_brain/patterns/stale_commit_ci_run_20260327.json",
+          ".codex/CI_FAILURE_TRACKING_LOG.md"
+        ],
+        "key_changes": [
+          "New PDA Loop+ AfterMath pattern entry for stale_commit_ci_run",
+          "CI tracking log updated with stale-commit pattern row",
+          "Auto-fix candidate documented: end_of_file_fixer_yaml_trailing_blank"
+        ],
+        "pattern": "stale_commit_ci_run"
+      }
+    }
+  ],
+  "aftermath_emission": {
+    "format": "cognitive_brain_pattern_json",
+    "destination": ".codex/cognitive_brain/patterns/",
+    "ingestion_hook": "scripts/aftermath/update_cognitive_brain.py",
+    "retention": "permanent"
+  }
+}

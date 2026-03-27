@@ -243,13 +243,21 @@ jobs:
               "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_"
           )
 
-          # Check for existing rescue comment
-          _, comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100")
+          # Paginate through all PR comments to find existing rescue marker.
+          # A single ?per_page=100 fetch misses markers on page 2+ (S232 fix).
           existing_id, existing_body = None, ""
-          for c in (comments if isinstance(comments, list) else []):
-              if MARKER in (c.get("body") or ""):
-                  existing_id, existing_body = c["id"], c.get("body", "")
+          page = 1
+          while not existing_id:
+              _, page_comments = gh("GET", f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
+              if not isinstance(page_comments, list) or not page_comments:
                   break
+              for c in page_comments:
+                  if MARKER in (c.get("body") or ""):
+                      existing_id, existing_body = c["id"], c.get("body", "")
+                      break
+              if existing_id or len(page_comments) < 100:
+                  break
+              page += 1
 
           if existing_id:
               append_section = (
