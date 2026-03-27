@@ -77,6 +77,15 @@ jobs:
         # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
         run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-fast-${{ github.run_id }}"
 
+      - name: Upload hook failures JSON (OBJ-001-F)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: hook-failures-fast-${{ github.run_id }}
+          path: hook_failures.json
+          retention-days: 14
+          if-no-files-found: warn
+
       - name: Upload validation log (fast)
         uses: actions/upload-artifact@v4
         if: always()
@@ -279,6 +288,15 @@ jobs:
         shell: bash
         # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
         run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
+
+      - name: Upload hook failures JSON (OBJ-001-F)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: hook-failures-full-${{ github.run_id }}
+          path: hook_failures.json
+          retention-days: 30
+          if-no-files-found: warn
 
       - name: Upload validation log (full)
         uses: actions/upload-artifact@v4

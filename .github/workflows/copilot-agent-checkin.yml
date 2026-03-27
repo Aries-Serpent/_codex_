@@ -159,22 +159,32 @@ jobs:
                 core.info(`[DRY RUN] Body preview (first 200 chars):\n${body.slice(0, 200)}`);
                 return;
               }
-              // Check if a comment with this marker already exists
+              // Check if a comment with this marker already exists — paginate all
+              // comments so dedup works even when the discussion has >50 replies.
               let existingId = null;
               try {
-                const existing = await github.graphql(`
-                  query($id: ID!) {
-                    node(id: $id) {
-                      ... on Discussion {
-                        comments(first: 50) {
-                          nodes { id body }
+                let cursor = null;
+                let hasNextPage = true;
+                paginateLoop: while (hasNextPage) {
+                  const existing = await github.graphql(`
+                    query($id: ID!, $cursor: String) {
+                      node(id: $id) {
+                        ... on Discussion {
+                          comments(first: 50, after: $cursor) {
+                            nodes { id body }
+                            pageInfo { hasNextPage endCursor }
+                          }
                         }
                       }
-                    }
-                  }`, { id: discussionId });
-                const nodes = existing?.node?.comments?.nodes || [];
-                const found = nodes.find(c => (c.body || '').includes(marker));
-                if (found) existingId = found.id;
+                    }`, { id: discussionId, cursor });
+                  const page      = existing?.node?.comments || {};
+                  const nodes     = page.nodes || [];
+                  const pageInfo  = page.pageInfo || {};
+                  const found     = nodes.find(c => (c.body || '').includes(marker));
+                  if (found) { existingId = found.id; break paginateLoop; }
+                  hasNextPage = pageInfo.hasNextPage || false;
+                  cursor      = pageInfo.endCursor   || null;
+                }
               } catch(e) {
                 core.warning(`Could not check existing comments: ${e.message}`);
               }

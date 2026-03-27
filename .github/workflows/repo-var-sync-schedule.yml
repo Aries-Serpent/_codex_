@@ -216,7 +216,7 @@ jobs:
           echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
           cp .codex/agent_context.json /tmp/_agent_context_sync_
           git fetch origin "$_TARGET" --depth=1
-          git checkout -B _autogen_sync_ origin/"$_TARGET"
+          git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
           cp /tmp/_agent_context_sync_ .codex/agent_context.json
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

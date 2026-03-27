@@ -11782,3 +11782,54 @@ Fast Validation (run 23667475273) failed on commit `ffb9a74b3437` with `end-of-f
 **§0 Compliance:** CI failure investigated and fixed immediately. Stale-commit situation captured as durable learning pattern. No deferrals.
 
 ---
+
+## SESSION SUMMARY — S237 — 2026-03-27 (branch divergence root cause fixes + push-workflow rescue coverage + CI triage #3737 resolution)
+
+### Context
+Post-merge validation for PR #3765 (S227–S236) merged into `0D_base_`. Executed all P1–P3 tasks
+from `#issuecomment-4145681524`. Additionally leveraged CI triage report #3737 to investigate
+and fix 5 recurring workflow failures with 2 distinct root causes (RC-1, RC-2).
+
+### Checklist
+- [x] **S237-A** — P1-1: `sync_tracked_files.py --fix` exits 0, all tracked files consistent.
+- [x] **S237-B** — P2-5: Rescue-comment spot-check: actionlint-audit, ci-checkpoint-validation, reference-integrity all show `rescue-comment` job `skipped` (correct — no failure to report).
+- [x] **S237-C** — P2-6: OBJ-001-E confirmed: `emit_precommit_summary.sh` verified working; hook name visible in `get_job_logs` output without artifact download.
+- [x] **S237-D** — P2-7: `copilot-agent-checkin.yml` discussion dedup pagination confirmed at lines 166–186 (paginated loop with `hasNextPage`/`endCursor`).
+- [x] **S237-E** — P2-8: `docs/ROADMAP.md` `**Last Updated**` = 2026-03-27 ✅
+- [x] **S237-F** — P3-9: OBJ-001-F implemented: `emit_precommit_summary.sh` writes `hook_failures.json` with per-hook `{id, exit_code, files_modified, fixed_files}`.
+- [x] **S237-G** — P3-10: Added `rescue-comment-push` job to 4 push-triggered workflows: `post-accountability-to-discussion.yml`, `post-ci-status-to-discussion.yml`, `ci-health-monitor.yml`, `workflow-expiry-enforcer.yml`.
+- [x] **S237-H** — P3-11: `copilot-agent-session-done.yml` confirmed working — 10 recent `completed/action_required` runs from `main` on each Copilot session completion.
+- [x] **S237-I** — RC-1 fix: `grep -c . || echo 0` → `grep -c . || true` in `branch-divergence-monitor.yml` + Python heredoc hardened with `int("$VAR".strip() or "0")` casts.
+- [x] **S237-J** — RC-1 audit: Same fix applied to `doc-freshness-check.yml` (2 occurrences).
+- [x] **S237-K** — RC-2 fix: `git checkout -B _autogen_sync_` → `git checkout -fB _autogen_sync_` in 4 auto-gen commit-step workflows (`cognitive-analysis-feed.yml`, `repo-var-sync-schedule.yml`, `embedding-index-rebuild.yml`, `vars-guide-sync.yml`).
+- [x] **S237-L** — OBJ-002 registered in `cognitive_brain/objectives_tracker.md` Tier 1 table and full sub-task tracking block (OBJ-002-A through OBJ-002-M).
+- [x] **S237-M** — AfterMath patterns stored: `branch_divergence_grep_c_20260327.json` + `git_checkout_without_force_20260327.json`.
+- [x] **S237-N** — Plan set created: `.codex/plans/BRANCH_DIVERGENCE_PLAN_SET.md` with full root cause taxonomy, Phase 1–3 tasks, agent execution protocol.
+- [x] **S237-O** — `CI_FAILURE_TRACKING_LOG.md` updated with branch divergence patterns section.
+- [x] `sync_tracked_files.py --fix` — exits 0, all consistent.
+
+### Root Causes Fixed (from CI triage report #3737)
+
+| RC | Pattern | Workflows Fixed | Fix |
+|----|---------|----------------|-----|
+| RC-1 | `grep -c . \|\| echo 0` double-output → `"0\n0"` in GITHUB_OUTPUT + Python SyntaxError | `branch-divergence-monitor.yml`, `doc-freshness-check.yml` | `\|\| true` + `int("$VAR".strip() or "0")` |
+| RC-2 | `git checkout -B` without `-f` fails with uncommitted local changes | 4 auto-gen workflows | `git checkout -fB` |
+
+### Startup Failures (Infrastructure — Not Code-Fixable)
+3 workflows showed `startup_failure` (`Data Quality`, `Progressive Validation`, `Rust-Python Swarm CI`):
+these are runner-level failures where 0 jobs are created. No job logs available. Pre-existing
+infrastructure issue unrelated to S237 code changes.
+
+### Impact Score
+- Files changed: 12
+- Workflows fixed: 7 (2 RC-1, 4 RC-2, 1 monitor hardening)
+- Workflows enhanced: 4 (push-rescue-comment added)
+- New AfterMath patterns: 2
+- New plan set: 1 (`BRANCH_DIVERGENCE_PLAN_SET.md`)
+- OBJ-001 sub-tasks completed: 2 (E + F) → OBJ-001 now 100% complete
+- OBJ-002 registered and Phase 1 complete (7/13 sub-tasks done)
+- Deferral Language Gate: 0 violations
+
+**§0 Compliance:** All 5 triage report failures investigated with deep research. Root causes found and fixed immediately. No deferrals. OBJ-002 registered in cognitive brain. Codebase left better than found.
+
+---

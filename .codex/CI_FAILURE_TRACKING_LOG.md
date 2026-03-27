@@ -73,6 +73,47 @@ Per codebase agency policy (S236 new requirement): **any "I don't know" situatio
 
 Never proceed with speculative fixes. Always investigate first.
 
+---
+
+## Branch Divergence Failure Patterns (S237 — 2026-03-27)
+
+Recurring failures from triage report #3737. **5 workflows affected by 2 distinct root causes.**
+
+### Pattern: `grep_c_double_output` (RC-1)
+
+| Field | Value |
+|-------|-------|
+| **Workflow** | `branch-divergence-monitor.yml` |
+| **Root cause** | `COUNT=$(echo "$VAR" \| grep -c . \|\| echo 0)` — `grep -c` outputs `0` AND exits 1; `\|\| echo 0` appends a second `0`. Result: `COUNT="0\n0"` |
+| **Downstream** | `GITHUB_OUTPUT` gets `key=0\n0` → `##[error]Invalid format '0'`; Python heredoc sees `"key": 0\n0,` → SyntaxError |
+| **Fix** | Replace `\|\| echo 0` with `\|\| true` + use `int("$VAR".strip() or "0")` in Python |
+| **Status** | ✅ Fixed S237 |
+| **Auto-fix eligible** | YES — `sed -i 's/grep -c \. || echo 0/grep -c . || true/g'` |
+
+### Pattern: `git_checkout_without_force` (RC-2)
+
+| Field | Value |
+|-------|-------|
+| **Workflows** | `cognitive-analysis-feed.yml`, `repo-var-sync-schedule.yml`, `embedding-index-rebuild.yml`, `vars-guide-sync.yml` |
+| **Root cause** | `git checkout -B _autogen_sync_ origin/$TARGET` with uncommitted local changes → git refuses, exits 1 |
+| **Context** | Files already copied to `/tmp` before checkout — force is safe |
+| **Fix** | `git checkout -fB _autogen_sync_ origin/"$_TARGET"` |
+| **Status** | ✅ Fixed S237 |
+
+### Pattern: `auto_gen_routing_on_main` (RC-3)
+
+| Field | Value |
+|-------|-------|
+| **Cause** | Scheduled workflows always run from `main`. Routing fix (push to `0D_base_` when branch exists) lives on `0D_base_` but not yet on `main` until staging-gate PR merges. |
+| **Effect** | Auto-gen commits accumulate on `main` each scheduled run, widening divergence |
+| **Self-healing** | RC-2 fix allows routing to succeed once `git checkout -fB` works correctly |
+| **Long-term** | Resolved automatically when current staging-gate PR (`0D_base_` → `main`) merges |
+| **Status** | 🔄 In progress — RC-2 fix applied, awaiting merge |
+
+### Full Plan Set
+See `.codex/plans/BRANCH_DIVERGENCE_PLAN_SET.md` for the complete investigation, taxonomy, and remediation roadmap.
+
 ## Last Updated
 
+2026-03-27 — S237: Added branch divergence pattern section (RC-1, RC-2, RC-3). Fixed 5 workflows.
 2026-03-27 — S236: Added pre-commit hook diagnostics section (OBJ-001) and stale-commit pattern.

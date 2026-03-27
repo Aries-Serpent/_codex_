@@ -112,10 +112,13 @@ jobs:
 
           # ── Commits main has that 0D_base_ lacks (potential leaks) ─────────
           MAIN_ONLY=$(git log --oneline origin/0D_base_..origin/main)
-          BEHIND_COUNT=$(echo "$MAIN_ONLY" | grep -c . || echo 0)
+          # S237 fix: `grep -c . || echo 0` produces "0\n0" when input is empty
+          # (grep outputs "0" AND exits 1, triggering || echo 0 → double output).
+          # Use `|| true` — grep -c already emits "0" on no-match; we just suppress exit 1.
+          BEHIND_COUNT=$(echo "$MAIN_ONLY" | grep -c . || true)
 
           # ── Commits 0D_base_ has that main lacks (expected staged work) ────
-          AHEAD_COUNT=$(git log --oneline origin/main..origin/0D_base_ | grep -c . || echo 0)
+          AHEAD_COUNT=$(git log --oneline origin/main..origin/0D_base_ | grep -c . || true)
 
           echo "behind_count=$BEHIND_COUNT" >> "$GITHUB_OUTPUT"
           echo "ahead_count=$AHEAD_COUNT"   >> "$GITHUB_OUTPUT"
@@ -168,19 +171,23 @@ jobs:
           echo "needs_correction=$NEEDS_CORRECTION" >> "$GITHUB_OUTPUT"
 
           # ── Compact summary JSON (no newlines — safe for GITHUB_OUTPUT) ────
+          # S237: int("$VAR".strip() or "0") casts guard against RC-1 multi-line
+          # variable expansion reaching the Python heredoc. YAML block indentation
+          # (10 spaces) is stripped by GitHub Actions before bash receives the script,
+          # so PYEOF is seen at column 1 by bash and the Python code is unindented.
           SUMMARY=$(python3 - <<PYEOF
           import json, sys
           d = {
             "merge_base": "$MERGE_BASE",
-            "behind_count": $BEHIND_COUNT,
-            "ahead_count": $AHEAD_COUNT,
-            "autogen_count": $AUTOGEN_COUNT,
-            "codeleak_count": $CODELEAK_COUNT,
+            "behind_count": int("$BEHIND_COUNT".strip() or "0"),
+            "ahead_count": int("$AHEAD_COUNT".strip() or "0"),
+            "autogen_count": int("$AUTOGEN_COUNT".strip() or "0"),
+            "codeleak_count": int("$CODELEAK_COUNT".strip() or "0"),
             "severity": "$SEVERITY",
-            "autogen_shas": "$AUTOGEN_SHAS".split(),
-            "codeleak_shas": "$CODELEAK_SHAS".split(),
+            "autogen_shas": [s for s in "$AUTOGEN_SHAS".split() if s],
+            "codeleak_shas": [s for s in "$CODELEAK_SHAS".split() if s],
           }
-          print(json.dumps(d, separators=(',',':')))
+          print(json.dumps(d, separators=(",", ":")))
           PYEOF
           )
           echo "summary_json=$SUMMARY" >> "$GITHUB_OUTPUT"

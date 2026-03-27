@@ -148,7 +148,7 @@ jobs:
           echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
           cp .codex/embeddings/codex_index_meta.json /tmp/_index_meta_sync_
           git fetch origin "$_TARGET" --depth=1
-          git checkout -B _autogen_sync_ origin/"$_TARGET"
+          git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
           cp /tmp/_index_meta_sync_ .codex/embeddings/codex_index_meta.json
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

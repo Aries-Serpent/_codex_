@@ -57,7 +57,7 @@ jobs:
             --dirs docs/admin docs/agent docs/how-to \
             --cutoff "${{ steps.cutoff.outputs.cutoff }}" \
             --check-only 2>&1 | tee /tmp/p0_stale.txt
-          echo "stale_count=$(grep -c '^STALE:' /tmp/p0_stale.txt || echo 0)" >> "$GITHUB_OUTPUT"
+          echo "stale_count=$(grep -c '^STALE:' /tmp/p0_stale.txt || true)" >> "$GITHUB_OUTPUT"
         continue-on-error: true
 
       - name: "🔍 Check developer docs (P1 — ops, ci, mcp)"
@@ -67,7 +67,7 @@ jobs:
             --dirs docs/ops docs/ci docs/mcp \
             --cutoff "${{ steps.cutoff.outputs.cutoff }}" \
             --check-only 2>&1 | tee /tmp/p1_stale.txt
-          echo "stale_count=$(grep -c '^STALE:' /tmp/p1_stale.txt || echo 0)" >> "$GITHUB_OUTPUT"
+          echo "stale_count=$(grep -c '^STALE:' /tmp/p1_stale.txt || true)" >> "$GITHUB_OUTPUT"
         continue-on-error: true
 
       - name: "📋 Job Summary"
