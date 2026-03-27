@@ -11228,3 +11228,66 @@ pytest tests/cognitive/test_agent_checkin.py -q  # should remain 39/39 passing
 - Both will be processed by `copilot-agent-session-done.yml` PATH A and the missed-trigger-guard on next push.
 
 **§0 Compliance:** All issues fixed within this session. No deferrals.
+
+---
+
+## SESSION SUMMARY — S224 — 2026-03-27 (PATH A rescue-retrigger never fired — workflow_run name mismatch)
+
+**Trigger:** Deep investigation into why queued rescue comments #4138933822 and #4138951997 did not trigger PATH A in `copilot-agent-session-done.yml` when the session ended.
+
+**Root cause:**
+Both `copilot-agent-session-done.yml` and `copilot-agent-checkin.yml` declared:
+```yaml
+workflow_run:
+  workflows: ["Copilot Setup Steps"]
+```
+There is no workflow named `"Copilot Setup Steps"` in this repository.  The actual
+setup-steps workflow (`copilot-setup-steps.yml`) is named **`"Copilot Agent Environment
+Setup"`**, and the actual Copilot coding-agent session workflow
+(`dynamic/copilot-swe-agent/copilot`) is named **`"Copilot coding agent"`**.
+
+Because the trigger name matched nothing, `copilot-agent-session-done.yml` had
+**0 total runs ever** — PATH A has never once fired in the history of this repository.
+
+**Why `"Copilot coding agent"` is the correct trigger (not `"Copilot Agent Environment Setup"`):**
+- `"Copilot coding agent"` (id 185834576, `event: dynamic`) fires when the **actual agent
+  session ends** — exactly when PATH A should re-trigger any queued rescue comment that
+  GitHub silently dropped due to a new push invalidating the queued context.
+- `"Copilot Agent Environment Setup"` fires at the **start** of each session (setup phase),
+  before the agent does any work. Using it would trigger PATH A too early.
+- Both workflows have `pull_requests` populated for PR #3748 (verified via API for runs
+  23622002460 and 23522851841 respectively).
+
+**Fix applied:**
+- `copilot-agent-session-done.yml`: `workflows: ["Copilot Setup Steps"]` →
+  `workflows: ["Copilot coding agent"]` + updated inline comments.
+- `copilot-agent-checkin.yml`: same name fix for the `checkin-close` job trigger +
+  updated header comment.
+
+**Important constraint:** `workflow_run` listeners only execute from the **default branch
+(main)**. The fix on `0D_base_` will take effect once this PR is merged. Both `main` and
+`0D_base_` previously had the broken name, so the fix must land in main to activate PATH A.
+
+**Why the previous sessions appeared to work:**
+Rescue sessions were re-triggered via: (1) direct `@copilot` comments by @mbaetiong,
+(2) the `missed-trigger-guard` push step in `copilot-agent-checkin.yml`, and
+(3) new CI rescue comments that opened fresh sessions. PATH A was never the recovery
+mechanism used — it simply never ran.
+
+**Agent Token Delegation signal:**
+The PR description checkmarks for "Agent Token Delegation" (`COPILOT_AGENT_AUTH_ENABLED`)
+and "Cost Proposal Approved" are the standing approval signals for all automated workflow
+actions in this PR, per @mbaetiong instruction (#4137585342). The `session-done` workflow
+reads the `vars.COPILOT_AGENT_AUTH_ENABLED` repo variable; both signals being ✅ means
+PATH A is authorized to fire on session end.
+
+**Patterns documented:**
+- **`workflow_run` name must match exactly**: The `workflows:` array in a `workflow_run`
+  trigger must match the workflow's `name:` field precisely. Wrong names silently never fire.
+- **`workflow_run` fires from default branch only**: Changes to listener workflows on
+  feature branches have no effect until merged to main.
+- **Correct Copilot session-end trigger**: `"Copilot coding agent"` (the dynamic agent
+  workflow). Not `"Copilot Setup Steps"` (never existed) or `"Copilot Agent Environment
+  Setup"` (setup phase, fires at session start).
+
+**§0 Compliance:** Root cause identified and fixed within this session. No deferrals.

@@ -27,8 +27,11 @@ name: "🔄 Auto-Post @copilot review After Agent Session"
 
 on:
   workflow_run:
-    # Trigger after Copilot setup steps complete (proxy for agent session end)
-    workflows: ["Copilot Setup Steps"]
+    # Trigger when the Copilot coding agent session completes.
+    # The dynamic "Copilot coding agent" workflow (path: dynamic/copilot-swe-agent/copilot)
+    # is the actual agent session; its runs carry pull_requests context for the PR under work.
+    # NOTE: workflow_run listeners only execute from the default branch (main).
+    workflows: ["Copilot coding agent"]
     types: [completed]
 
 concurrency:

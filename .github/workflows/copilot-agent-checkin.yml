@@ -40,7 +40,7 @@ name: "🤖 Agent Check-In — Q&A Bridge (Discussion #3756)"
 #     Posts --check-in open + --post-research to Discussion #3756.
 #
 #   CLOSE (session end):
-#     Fires on workflow_run completion of "Copilot Setup Steps".
+#     Fires on workflow_run completion of "Copilot coding agent".
 #     Polls Discussion #3756 for maintainer responses, then posts AfterMath.
 #
 # TOKEN: Uses CODEX_MASTER_KEY (PAT, works in all contexts) → CODEX_BACKUP_KEY
@@ -78,7 +78,12 @@ on:
     types: [created]
 
   workflow_run:
-    workflows: ["Copilot Setup Steps"]
+    # Fires when the Copilot coding agent session completes.
+    # "Copilot coding agent" is the dynamic agent session workflow
+    # (path: dynamic/copilot-swe-agent/copilot, id: 185834576).
+    # Its runs carry pull_requests context for the PR under work.
+    # NOTE: workflow_run listeners only execute from the default branch (main).
+    workflows: ["Copilot coding agent"]
     types: [completed]
 
 concurrency:
