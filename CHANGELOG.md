@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3769)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3769 (SHA `1b5d7f4e`) at 2026-03-27T20:09Z [auto-generated]
+
 ### Fixed (S214 — PR #3748)
 - **fix(ci/workflows):** `agent-auth-delegation.yml` — removed `vars.COPILOT_AGENT_AUTH_ENABLED != 'true'` guard from `detect-checkbox` job (caused it to be skipped when delegation was already active, silently breaking all re-delegation and session starts). Moved guard to `await-approval` only; updated `activate-delegation` to use `always()` with explicit result conditions so it runs for both fresh approvals and re-delegation (upserts existing `@copilot continue` comment, no Copilot loop). Added dedup to session concurrency gate notification.
 - **fix(ci/workflows):** `copilot-agent-session-done.yml` — changed PATH A/B post token from `GITHUB_TOKEN` (posts as `github-actions[bot]`, ignored by Copilot) to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || GITHUB_TOKEN` (posts as @mbaetiong, triggers Copilot sessions correctly).
