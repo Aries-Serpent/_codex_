@@ -115,14 +115,9 @@ EXEMPTION_PATTERNS: list[str] = [
     # updates" means "in subsequent PR bodies", NOT "I'll fix this in a future PR."
     # Example: "these checkmarks MUST remain checked in all future PR description updates"
     r"future PR description",
-    # Documenting/quoting a prior deferral violation — phrase appears inside double-quotes
-    # or single-quotes, meaning the agent is *reporting* the phrase, not making a deferral.
-    # Example: PR body contained "deferred to a future session" (quoting past violation).
-    # A genuine deferral would never appear in quotes as documentation.
-    r"\"deferred to a future",
-    r"'deferred to a future",
     # Agent comments that report a past violation was fixed (contains the quoted offending phrase)
     # Example: "Root cause: PR body contained 'deferred to a future session' -- now fixed"
+    # Requires explicit "contained" context so bare quoted deferrals still trigger.
     r"contained.{0,80}deferred to a future",
     # CI Rescue comment bodies that describe what to fix (they are instructions, not deferrals)
     r"fix ALL issues.*never defer",
