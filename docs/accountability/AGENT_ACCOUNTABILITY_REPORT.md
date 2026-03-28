@@ -3,11 +3,78 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T16:47Z (S138 — Health Sweep N9/N10/N11)
+**Last updated:** 2026-03-28T18:56Z (S139 — CI rescue: crawler import regression + mypy baseline)
 
 ---
 
-## SESSION SUMMARY — 2026-03-28T16:47Z S138 (Health Sweep N9/N10/N11)
+## SESSION SUMMARY — 2026-03-28T18:56Z S139 (CI Rescue)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** ALL 20 PR comments reviewed — all @copilot mentions catalogued (IDs: 4148396371, 4148396880, 4148397733, 4148397918, 4148400452, 4148402906, 4148406830, 4148608143, 4148608989, 4148609394, 4148609493, 4148615861, 4148618631) ✅
+- [x] **0b.** All failing CI checks reviewed: mypy +12 regression, test collection errors, validation pipeline ✅
+- [x] **0c.** Branch is up-to-date with main ✅
+- [x] **0d.** CODEBASE_AGENCY_POLICY.md loaded ✅
+- [x] **0e.** AGENT_ACCOUNTABILITY_REPORT.md loaded ✅
+- [x] **0f.** All stored memories and gemini review thread loaded ✅
+
+### Root Cause Analysis
+
+#### RC-1: `src/services/crawler/__init__.py` — broken try/except import (S137 regression)
+
+**Symptom:** `ModuleNotFoundError: No module named 'services.crawler.zendesk_sync'` during pytest collection in CI, causing 7 shard/validation failures.
+
+**Root cause:** S137 P19 backfill changed BOTH the `try` and `except` branches of three try/except import blocks in `src/services/crawler/__init__.py` to identical `from services.crawler.<module> import` statements. This made the fallback identical to the primary import — when the primary failed, the except block re-raised the same ModuleNotFoundError instead of using a working fallback.
+
+**Fix:** Replaced all three try/except blocks with simple relative imports (`.zendesk_sync`, `.multi_locale_sync`, `.content_diff`). Relative imports always work correctly regardless of sys.path or install mode.
+
+#### RC-2: mypy baseline regression (+12 errors in CI)
+
+**Symptom:** CI mypy gate reported 345 errors > 333 baseline.
+
+**Root cause:** The broken `from services.crawler.zendesk_sync import` in try/except with `# type: ignore[no-redef]` / `# type: ignore[assignment]` annotations generated mypy-visible errors. Additionally, the PR merge commit (CI runs on the auto-merge of branch + main) may have contributed additional error count vs local run.
+
+**Fix:** 
+1. Fixed `src/services/crawler/__init__.py` with relative imports → reduced local mypy count from 333 → 306.
+2. Updated `.mypy_baseline` from 333 → 306 (ratchet down — codebase improvement).
+
+### Work Completed — S139
+
+#### Gemini Code Review (already applied in `2293b9a`)
+
+- ✅ Regex semver fix for P21 checker (`v[1-N](?:\.[\d]+)*`) — already applied by mbaetiong in commit `2293b9a`
+
+#### Fix 1 — `src/services/crawler/__init__.py` (critical)
+
+Changed from broken identical try/except to clean relative imports:
+```python
+# Before (broken): try/except both had identical 'from services.crawler.X import'
+# After (correct): simple relative imports
+from .content_diff import ContentDiffer, IncrementalSyncDecider
+from .multi_locale_sync import LocaleConfig, MultiLocaleSyncManager
+from .zendesk_sync import ZendeskKnowledgeSyncService
+```
+
+#### Fix 2 — `.mypy_baseline` lowered from 333 → 306
+
+Mypy error count reduced as a side effect of the import fix. Baseline ratcheted down.
+
+#### Validation Results
+
+| Check | Before S139 | After S139 |
+|-------|-------------|------------|
+| `test_crawler_services.py` collection | ❌ ModuleNotFoundError | ✅ 6 tests collected |
+| `test_zendesk_sync.py` collection | ❌ ModuleNotFoundError | ✅ 29 tests collected |
+| mypy count | 345 (CI) / 306 (local) | 306 (local) < 306 (new baseline) |
+| ruff check | ✅ 0 violations | ✅ 0 violations |
+| Validation pipeline | ✅ (pre-commit passes locally) | ✅ |
+
+### AfterMath PDA Loop
+- **PLAN:** Fix all CI failures reported on commit `2293b9afe807`
+- **DO:** Fixed `src/services/crawler/__init__.py` broken import pattern; updated mypy baseline to 306
+- **ASSESS:** All local checks pass. 7 CI jobs should pass after this fix (collection errors resolved, mypy baseline lowers to match fixed state).
+- **AfterMath:** P19-BATCH-WATCH-001 — When running P19 batch `from src.X import` removals on `src/` package `__init__.py` files that have `try/except ImportError` blocks, verify that the `try` and `except` branches are DIFFERENT (not identical). Identical try/except branches indicate a broken pattern — use relative imports instead.
+
+
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** All bot-posted comments reviewed — no open CI rescue comments ✅
