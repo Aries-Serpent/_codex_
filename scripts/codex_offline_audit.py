@@ -82,14 +82,14 @@ if _src_path not in sys.path:
 from experiments import manager as experiment_manager  # noqa: E402
 from scripts import repo_audit  # type: ignore  # noqa: E402
 from src.training.simple_trainer import (
-    SimpleTrainer,  # noqa: E402  # src. needed: root ./training/ shadows src/training/
+    SimpleTrainer,  # noqa: E402  # src. prefix required: root ./training/ shadow
 )
-from src.utils.checkpoint import (  # noqa: E402  # src. needed: root ./utils/ shadows src/utils/
+from src.utils.checkpoint import (  # noqa: E402  # src. prefix required: root ./utils/ shadow
     load_checkpoint,
     save_checkpoint,
 )
 from src.utils.logging_factory import (
-    init_logging,  # noqa: E402  # src. needed: root ./utils/ shadows src/utils/
+    init_logging,  # noqa: E402  # src. prefix required: root ./utils/ shadow
 )
 from tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
 
