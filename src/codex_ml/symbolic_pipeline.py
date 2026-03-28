@@ -30,7 +30,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from src.tokenization import TokenizerAdapter
+from tokenization import TokenizerAdapter
 
 __all__ = [
     "Weights",

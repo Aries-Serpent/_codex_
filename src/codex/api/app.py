@@ -36,7 +36,7 @@ from tokenizers.pre_tokenizers import Whitespace  # noqa: E402
 
 import torch  # noqa: E402
 from codex_ml.security import DenylistEnforcer, DenylistViolation  # noqa: E402
-from src.tokenization.loader import load_tokenizer  # noqa: E402
+from tokenization.loader import load_tokenizer  # noqa: E402
 from transformers import (  # noqa: E402
     AutoModelForCausalLM,
     GPT2Config,

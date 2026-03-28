@@ -276,7 +276,7 @@ from omegaconf import OmegaConf
 
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
-    from src.training.checkpoint_manager import CheckpointManager
+    from training.checkpoint_manager import CheckpointManager
 except Exception as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[assignment]
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")

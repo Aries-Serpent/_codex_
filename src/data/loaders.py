@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Iterator
 from pathlib import Path
 
-from src.security import validate_input
+from security import validate_input
 
 
 def safe_line_loader(path: str | Path) -> Iterator[str]:

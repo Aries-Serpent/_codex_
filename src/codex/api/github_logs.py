@@ -72,7 +72,7 @@ class CheckRunsListResponse(BaseModel):
 def _get_github_client():
     """Get GitHub client instance."""
     try:
-        from src.services.github.client import GitHubClientSync
+        from services.github.client import GitHubClientSync
 
         return GitHubClientSync()
     except ImportError as e:
@@ -225,7 +225,7 @@ async def list_check_runs(
     try:
         client = _get_github_client()
 
-        from src.services.github.types import CheckRunStatus
+        from services.github.types import CheckRunStatus
 
         status_enum = CheckRunStatus(status) if status else None
 

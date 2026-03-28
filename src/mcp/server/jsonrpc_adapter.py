@@ -24,9 +24,9 @@ from typing import Any, Optional, Union
 from fastapi import Body, FastAPI
 from pydantic import ValidationError
 
-from src.mcp.backends.interface import BackendAdapter  # type: ignore
-from src.mcp.observability.metrics import Timer, increment  # type: ignore
-from src.mcp.server.adapter_loader import load_adapter
+from mcp.backends.interface import BackendAdapter  # type: ignore
+from mcp.observability.metrics import Timer, increment  # type: ignore
+from mcp.server.adapter_loader import load_adapter
 
 from .schemas import CallToolParams, ListToolsParams, NegotiateParams  # type: ignore
 

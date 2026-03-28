@@ -46,7 +46,7 @@ Usage:
 import sys
 import time
 
-from src.codex.auth import MFAProvider, OAuthManager, TokenManager
+from codex.auth import MFAProvider, OAuthManager, TokenManager
 
 
 class SecurityValidator:

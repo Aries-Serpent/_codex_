@@ -155,7 +155,7 @@ cached_results = cache.query("{cache_key_example}")
 cache.optimize()  # Get optimization suggestions
 
 # Improved Hash Tables - 40% faster lookups
-from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
+from codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
 
 fast_cache = CuckooHashTable()  # O(1) guaranteed
 

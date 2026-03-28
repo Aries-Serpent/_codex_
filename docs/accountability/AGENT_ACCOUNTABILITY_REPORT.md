@@ -3,9 +3,85 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T15:55Z (S136 — Health Sweep N4+N5)
+**Last updated:** 2026-03-28T16:17Z (S137 — Health Sweep N6/N7/N8)
 
 ---
+
+## SESSION SUMMARY — 2026-03-28T16:17Z S137 (Health Sweep N6/N7/N8)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed — no open CI rescue comments ✅
+- [x] **0b.** Failing CI checks reviewed: 0 failures on `main` ✅
+- [x] **0c.** S136 status file loaded ✅
+- [x] **0d.** CODEBASE_AGENCY_POLICY.md loaded ✅
+- [x] **0e.** AGENT_ACCOUNTABILITY_REPORT.md loaded ✅
+- [x] **0f.** All stored memories loaded ✅
+
+### Work Completed — S137 N6/N7/N8
+
+#### N7 — Pattern 21 Maintenance Watch (P21=0 confirmed)
+
+Ran `python3 scripts/ci/auto_fix_common_issues.py --check-only` at session start:
+- ✅ Pattern 20 (YAML multiline): 0 violations
+- ✅ Pattern 21 (Node.js 20 actions): 0 refs (all 7 action families clean)
+- ✅ Ruff: 0 violations
+- ✅ Pattern 22 (Tracked file sync): consistent
+
+#### N8 — P19 Opportunistic Backfill: 331 → 292 (-39 files)
+
+Fixed `from src.X import Y` → `from X import Y` in 51 Python files (105 import statements).
+Scope: `src/` (39 files, 83 statements) + `scripts/` (12 files, 22 statements).
+
+| Area | Files fixed | Statements fixed |
+|------|-------------|-----------------|
+| `src/` | 39 | 83 |
+| `scripts/` | 12 | 22 |
+| **Total** | **51** | **105** |
+
+**Key files fixed:**
+- `src/codex/cli/main.py` (8 imports)
+- `src/codex/security/__init__.py` (2 imports)
+- `src/codex/api/github_logs.py` (2 imports)
+- `src/codex/cli.py` (2 imports)
+- `src/codex/cli_github_logs.py` (2 imports)
+- `scripts/apply_session_logging_workflow.py` (5 imports)
+- `scripts/codex_offline_audit.py` (5 imports)
+
+**Post-fix ruff:** 2 I001 (import sort) violations auto-fixed with `ruff --fix`.
+**Final state:** ruff=0, all 51 files parse cleanly (AST verified).
+
+#### N6 — P19 Policy Enforcement for New Code
+
+Policy confirmed active: `from <pkg>` enforced in all NEW Python files.
+Documented in `codebase-health-guardian.md` v2.3 D2 section.
+
+#### 5-Pass Mandatory Self-Review (§8 CODEBASE_AGENCY_POLICY.md)
+
+| Pass | Check | Result |
+|------|-------|--------|
+| 1 | No `from src.` real imports in changed files | ✅ 0 remaining |
+| 2 | AST syntax on all 51 changed .py files | ✅ All parse cleanly |
+| 3 | Full `ruff check` repo | ✅ 0 violations |
+| 4 | Advisory scan P19/P20/P21/P22 | ✅ P20=0, P21=0, P22=0; P19=292 (-39) |
+| 5 | YAML integrity + no stale Node.js 20 refs | ✅ All YAML valid, 0 stale refs |
+
+#### Agent Update — codebase-health-guardian.md v2.2 → v2.3
+
+- P19 count updated: 331 → 292
+- S137 sweep row added to history table
+- D2 P19 note updated with current count and N8 fix note
+
+#### Documentation Updates
+
+- `objectives_tracker.md` v1.1.0 → v1.4.0 — S135/S136/S137 sweep rows, P19/ruff/CI rows updated
+- `COGNITIVE_BRAIN_STATUS_S137_2026-03-28.md` created
+
+### AfterMath PDA Loop
+- **PLAN:** S137 N6 (policy), N7 (P21 watch), N8 (P19 opportunistic backfill)
+- **DO:** N7 verified P21=0; N8 fixed 51 src+scripts files, 105 imports; I001 auto-fixed
+- **ASSESS:** P19: 331→292 (-39 files, 11.8% reduction); ruff=0; all patterns green
+- **AfterMath:** P19-BATCH-001 — when fixing `from src.X` imports, ruff I001 may fire on
+  re-sorted import blocks; always run `ruff --fix` immediately after batch P19 substitution.
 
 ## SESSION SUMMARY — 2026-03-28T15:55Z S136 (Health Sweep N4+N5)
 
@@ -3959,7 +4035,7 @@ and the CI gate requirement.
 - Issue #3574 addressed — CI triage checkpoint documented
 
 ### Cognitive Brain Status
-- AAIS: 74/100 (honest, B−)
+- AAIS: 74/100 (honest, B-)
 - OBJ-001: T-004 ✅ T-005 ✅ T-006 ✅ | T-002/T-003/T-007 require admin
 - Resume point: `cognitive_brain/session_tracker.md` Session 27 entry
 

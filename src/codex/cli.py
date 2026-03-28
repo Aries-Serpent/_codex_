@@ -360,7 +360,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
 
     set_reproducible()
     if engine in {"hf_trainer", "hf"}:
-        from src.training.engine_hf_trainer import build_parser, run_hf_trainer
+        from training.engine_hf_trainer import build_parser, run_hf_trainer
 
         parser = build_parser()
         parser.add_argument("--texts", nargs="+", required=True)
@@ -452,7 +452,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             from codex.training import main as run_custom_train
         except Exception as exc:  # pragma: no cover - fallback path
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
-            from src.training.engine_hf_trainer import run_hf_trainer
+            from training.engine_hf_trainer import run_hf_trainer
 
             try:
                 run_hf_trainer(*engine_args)

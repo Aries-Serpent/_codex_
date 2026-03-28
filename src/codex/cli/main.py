@@ -64,7 +64,7 @@ if TYPER_AVAILABLE:
         ] = None,
     ):
         """Ingest a Python file or repository."""
-        from src.codex.ingest import ingest as do_ingest
+        from codex.ingest import ingest as do_ingest
 
         try:
             snapshot = do_ingest(source, manifest_path=manifest, snapshot_id=snapshot_id)
@@ -87,7 +87,7 @@ if TYPER_AVAILABLE:
         ] = False,
     ):
         """Run analysis on a snapshot."""
-        from src.codex.analyze.static import analyze as static_analyze
+        from codex.analyze.static import analyze as static_analyze
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -120,8 +120,8 @@ if TYPER_AVAILABLE:
         dry_run: Annotated[bool, typer.Option("--dry-run", help="Don't modify files")] = True,
     ):
         """Apply transformations to a snapshot."""
-        from src.codex.transform.transformer import Tier
-        from src.codex.transform.transformer import transform as do_transform
+        from codex.transform.transformer import Tier
+        from codex.transform.transformer import transform as do_transform
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -160,7 +160,7 @@ if TYPER_AVAILABLE:
         ] = "strict",
     ):
         """Verify behavior preservation."""
-        from src.codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -245,9 +245,9 @@ if TYPER_AVAILABLE:
         """Generate HTML AST visualization report."""
         import pathlib
 
-        from src.codex.ast.graph import ASTGraph
-        from src.codex.ast.parser import UniversalParser
-        from src.codex.ast.visualize import HTMLVisualizer
+        from codex.ast.graph import ASTGraph
+        from codex.ast.parser import UniversalParser
+        from codex.ast.visualize import HTMLVisualizer
 
         source_path = pathlib.Path(source)
         if not source_path.exists():

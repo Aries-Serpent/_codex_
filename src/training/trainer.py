@@ -43,7 +43,7 @@ from logging_utils import (  # noqa: E402
     setup_logging,
     shutdown_logging,
 )
-from src.metrics import append_ndjson  # noqa: E402
+from metrics import append_ndjson  # noqa: E402
 
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402

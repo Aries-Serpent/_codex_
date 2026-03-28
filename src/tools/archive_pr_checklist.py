@@ -201,7 +201,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("  All archive checklist requirements satisfied.")
 
     if args.check_codeowners:
-        from src.tools.codeowners_validate import validate_repo_codeowners
+        from tools.codeowners_validate import validate_repo_codeowners
 
         report = validate_repo_codeowners(args.repo_root)
         codeowners_ok = report.exists and not report.errors and report.owners_ok

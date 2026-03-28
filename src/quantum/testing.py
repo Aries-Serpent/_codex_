@@ -155,7 +155,7 @@ class QuantumTestSuite:
         Returns:
             Dictionary with test results and statistics
         """
-        from src.common.error_handling import safe_call
+        from common.error_handling import safe_call
 
         results: dict[str, Any] = {
             "total": len(self.tests),

@@ -44,7 +44,7 @@ class ListCheckRunsInput(BaseModel):
 
 def _get_github_client():
     """Get GitHub client instance."""
-    from src.services.github.client import GitHubClientSync
+    from services.github.client import GitHubClientSync
 
     return GitHubClientSync()
 
@@ -200,7 +200,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
         # Get client
         client = _get_github_client()
 
-        from src.services.github.types import CheckRunStatus
+        from services.github.types import CheckRunStatus
 
         status_enum = CheckRunStatus(input_data.status) if input_data.status else None
 

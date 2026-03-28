@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.codex.monitoring import Counter, Histogram, metrics
-from src.codex.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
-from src.mcp.metrics.mcp_metrics import MetricCollector
+from codex.monitoring import Counter, Histogram, metrics
+from codex.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
+from mcp.metrics.mcp_metrics import MetricCollector
 
 
 def export_zendesk_metrics(collector: MetricCollector) -> list[dict[str, Any]]:

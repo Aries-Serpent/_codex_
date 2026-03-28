@@ -58,7 +58,7 @@ def resolved_db_path(path: str | None) -> pathlib.Path:
         return pathlib.Path(path)
     # attempt to import default from src.codex.logging.config
     try:
-        from src.codex.logging import config as logging_config  # type: ignore
+        from codex.logging import config as logging_config  # type: ignore
 
         return pathlib.Path(logging_config.DEFAULT_LOG_DB)
     except Exception:

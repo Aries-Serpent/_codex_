@@ -76,12 +76,12 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
+from experiments import manager as experiment_manager  # noqa: E402
 from scripts import repo_audit  # type: ignore  # noqa: E402
-from src.experiments import manager as experiment_manager  # noqa: E402
-from src.tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
-from src.training.simple_trainer import SimpleTrainer  # noqa: E402
-from src.utils.checkpoint import load_checkpoint, save_checkpoint  # noqa: E402
-from src.utils.logging_factory import init_logging  # noqa: E402
+from tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
+from training.simple_trainer import SimpleTrainer  # noqa: E402
+from utils.checkpoint import load_checkpoint, save_checkpoint  # noqa: E402
+from utils.logging_factory import init_logging  # noqa: E402
 
 
 @dataclass

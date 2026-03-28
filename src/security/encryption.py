@@ -5,7 +5,7 @@ This module provides authenticated encryption helpers. It prefers the 'cryptogra
 package; if unavailable, it raises ImportError and callers/tests should skip.
 
 Usage:
-    from src.security.encryption import encrypt, decrypt, generate_key
+    from security.encryption import encrypt, decrypt, generate_key
 
 Notes:
 - Offline & deterministic (random nonces per message).

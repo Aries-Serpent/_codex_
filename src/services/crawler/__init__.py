@@ -17,12 +17,12 @@ __all__ = [
 ]
 
 try:
-    from src.services.crawler.zendesk_sync import ZendeskKnowledgeSyncService
+    from services.crawler.zendesk_sync import ZendeskKnowledgeSyncService
 except ImportError:
     from services.crawler.zendesk_sync import ZendeskKnowledgeSyncService  # type: ignore[no-redef]
 
 try:
-    from src.services.crawler.multi_locale_sync import (
+    from services.crawler.multi_locale_sync import (
         LocaleConfig,
         MultiLocaleSyncManager,
     )
@@ -33,7 +33,7 @@ except ImportError:
     )
 
 try:
-    from src.services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider
+    from services.crawler.content_diff import ContentDiffer, IncrementalSyncDecider
 except ImportError:
     from services.crawler.content_diff import (  # type: ignore[assignment]
         ContentDiffer,
