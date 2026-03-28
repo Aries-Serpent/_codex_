@@ -1,9 +1,9 @@
 # Cognitive Brain Objectives Tracker
 
 > **Generated:** 2026-03-14T04:45Z  
-> **Last Health Sweep:** 2026-03-28T16:47Z (S138)
+> **Last Health Sweep:** 2026-03-28T20:30Z (S141)
 > **Purpose:** Track and maintain codebase objectives  
-> **Version:** 1.5.0
+> **Version:** 1.6.0
 
 ---
 
@@ -21,11 +21,11 @@
 |-----------|--------|---------|--------|--------------|
 | **Test Coverage** | ≥70% | 72% | ✅ Achieved | 2026-03-14 |
 | **Security Vulnerabilities** | 0 critical/high | 0 | ✅ Achieved | 2026-03-28 |
-| **CI/CD Health** | 100% workflows passing | ✅ 100% — 0 failures in last 100 main runs (S138) | ✅ Achieved | 2026-03-28 |
+| **CI/CD Health** | 100% workflows passing | ✅ 100% — mypy CI gate fixed (S141, baseline 333) | ✅ Achieved | 2026-03-28 |
 | **Branch Divergence** | 0 leaked commits on main | RC-1 + RC-2 fixed (S237); RC-3 resolved on merge | ✅ Resolved | 2026-03-28 |
-| **Documentation Freshness** | <30 days stale | <1 day (AGENT_ACCOUNTABILITY_REPORT updated S138) | ✅ Excellent | 2026-03-28 |
+| **Documentation Freshness** | <30 days stale | <1 day (AGENT_ACCOUNTABILITY_REPORT updated S141) | ✅ Excellent | 2026-03-28 |
 | **Deferral Scanner** | 0 false positives | 0 (three-tier strip) | ✅ Achieved | 2026-03-14 |
-| **Ruff Linting** | 0 violations | 0 (verified S134–S138) | ✅ Clean | 2026-03-28 |
+| **Ruff Linting** | 0 violations | 0 (verified S134–S141) | ✅ Clean | 2026-03-28 |
 
 ### Tier 2: Quality Objectives (Should Maintain)
 
@@ -61,6 +61,9 @@
 | S136 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ 100% | ✅ <1h | P21→0 (setup-python@v6, github-script@v8) |
 | S137 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ 100% | ✅ <1h | N8: P19 331→292 (-39 files); 51 files, 105 imports fixed |
 | S138 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ 100% | ✅ <1h | N9: P19 292→252 (-40 files); 40 test files fixed; P21=0 ✅ (N10) |
+| S139 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ CI rescue | ✅ <1h | RC-1: crawler relative imports; RC-2: mypy baseline 333→306 (local) |
+| S140 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ S221 resolved | ✅ <1h | S221 guard false-positive resolved at a12f5e2 |
+| S141 | 2026-03-28 | ✅ 0 violations | ✅ 0 auto-fixable | ✅ mypy fixed | ✅ <1h | 9 CI mypy errors fixed; baseline 306→333 (CI env); PR review items applied; PR_LIFECYCLE.md created |
 
 ### PR-Level Progress (PR #3575 — Sessions 22–28 + PR #3576, #3579 — Sessions 29–30)
 

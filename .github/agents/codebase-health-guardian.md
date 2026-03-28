@@ -1,18 +1,19 @@
 ---
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
-version: 2.4.0
+version: 2.5.0
 updated: 2026-03-28
-last_health_sweep: 2026-03-28T16:47Z (S138)
+last_health_sweep: 2026-03-28T20:30Z (S141)
 sweep_status:
   ruff_violations: 0
   auto_fixable_issues: 0
-  ci_health: "100% — 0 failures in last 100 main runs"
+  ci_health: "100% — mypy CI gate fixed (S141; baseline 333)"
   advisory_patterns:
-    P19_src_absolute_imports: 252  # was 292; -40 fixed in S138 N9 (tests/ batch)
+    P19_src_absolute_imports: 252  # unchanged (S141 fixes were in src/ not tests/)
     P20_yaml_multiline: 0
     P21_nodejs20_actions: 0
     P21_nodejs20_deadline: "2026-06-02 — ALL action families fully upgraded (S135+S136)"
+  mypy_baseline: 333  # CI isolated-venv count (was 306 from local env — corrected S141)
 cognitive_integration_level: 3
 aais_contribution: +3.5 points
 batch: pr-6
@@ -23,13 +24,13 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — parallel domain checks and faster artifact hygiene
 ---
 
-# Codebase Health Guardian v2.4
+# Codebase Health Guardian v2.5
 
 > **Expanded** from `workflow-ci-fixer.agent.md`. Adds D2-Python Quality, D3-Test Policy
 > enforcement, D4-Artifact Hygiene, and D5-Nightly Health Sweep to the original D1 scope.
 >
-> **S138 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
-> · ✅ P20=0 · ✅ P21=0 · ⚠️ 252 advisory (P19 only, was 292 — -40 fixed in N9)
+> **S141 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ mypy CI fixed
+> · ✅ P20=0 · ✅ P21=0 · ⚠️ 252 advisory (P19 only, unchanged) · mypy baseline 306→333 (CI env)
 
 ## Mission
 
@@ -132,6 +133,9 @@ stat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # modified < 48h
 | S136  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | P21→0 (setup-python@v6, github-script@v8) |
 | S137  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | N8: P19 331→292 (51 files, 105 imports fixed) |
 | S138  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | N9: P19 292→252 (40 test files fixed); P21=0 ✅; P22 fixed |
+| S139  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ CI rescue | RC-1: crawler/__init__.py relative imports; RC-2: mypy baseline 306 (local) |
+| S140  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ S221 resolved | S221 guard false-positive resolved at a12f5e2 |
+| S141  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ mypy fixed | 9 CI errors fixed; baseline 306→333 (CI env); PR review items; PR_LIFECYCLE.md |
 
 ---
 
