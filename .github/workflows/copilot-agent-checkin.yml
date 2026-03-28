@@ -481,7 +481,8 @@ jobs:
             }
 
             // Check if there is a Copilot agent response AFTER the rescue comment that
-            // explicitly resolves it ("fixed in" / "addressed in" / "resolved in").
+            // explicitly resolves it. Accept both "X in SHA" and "X at SHA" forms since
+            // Copilot responses vary between "Fixed in <commit>" and "Fixed at <commit>".
             // Using COPILOT_AGENT_LOGINS avoids false-positives from github-actions[bot]
             // CI update comments that are not resolution responses.
             const rescueIndex = comments.findIndex(c => c.databaseId === latestRescue.commentId);
@@ -490,7 +491,11 @@ jobs:
               const body  = (c.body || '').toLowerCase();
               return (
                 COPILOT_AGENT_LOGINS.has(login) &&
-                (body.includes('fixed in') || body.includes('addressed in') || body.includes('resolved in'))
+                (
+                  body.includes('fixed in')    || body.includes('fixed at')    ||
+                  body.includes('addressed in') || body.includes('addressed at') ||
+                  body.includes('resolved in')  || body.includes('resolved at')
+                )
               );
             });
 
