@@ -3,7 +3,86 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T05:55Z (S134 — Health Sweep)
+**Last updated:** 2026-03-28T06:15Z (S135 — Health Sweep N1+N2)
+
+---
+
+## SESSION SUMMARY — 2026-03-28T06:15Z S135 (Health Sweep N1+N2)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed — no open CI rescue comments on health sweep branch ✅
+- [x] **0b.** All failing CI checks reviewed: 0 failures on `main`, branch current ✅
+- [x] **0c.** S134 status file loaded — N1/N2/N3 phases adopted ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** All loaded: Codebase Agency Policy, Lessons Learned, S134 cognitive brain status ✅
+
+### Work Completed — S135 N1 (Pattern 20) + N2 (Node.js 20 Upgrade)
+
+#### N1 — Pattern 20 YAML Multiline Bash → printf (9 hits, 4 files)
+
+**Root cause:** Bash variable assignments spanning multiple lines inside YAML `run: |` blocks
+are flagged by Pattern 20 checker and risk actionlint YAML parse errors.
+
+**Fix applied:** Converted all 9 multiline string assignments to `printf '%s\n' ...` form:
+
+| File | Hits | Variables Fixed |
+|------|------|-----------------|
+| `agent-auth-delegation.yml` | 3 | `APPENDED`×2, `NEW_BODY` |
+| `copilot-session-chain.yml` | 3 | `PR_BODY`, `TRIGGER_COMMENT`×2 |
+| `create-sub-pr-to-0D_base_.yml` | 1 | `PR_BODY` |
+| `promote-integration-branch.yml` | 2 | `PR_BODY`×2 |
+
+**Verification:** All 4 files pass `yaml.safe_load()`. Pattern 20 count: 4 workflows → **0** ✅
+
+**Fix pattern used:**
+```bash
+# Before (Pattern 20 flagged):
+BODY="## Heading
+variable content: ${VAR}"
+
+# After (actionlint-safe):
+BODY=$(printf '%s\n' \
+  '## Heading' \
+  "variable content: ${VAR}")
+```
+
+#### N2 — Node.js 20 Action Refs: @v4 → @v5 (140 files)
+
+**Root cause:** 187+ workflow files using `actions/checkout@v4`, `upload-artifact@v4`, etc.
+would produce hard failures starting 2026-06-02 when GitHub forces Node.js 24.
+
+**Actions upgraded (v4 → v5, all Node.js 24-compatible):**
+- `actions/checkout`: 125 active `.yml` + 14 `.disabled`/`.template` files
+- `actions/upload-artifact`: 44 active + 12 disabled/template
+- `actions/download-artifact`: 10 active + 1 disabled
+- `actions/cache`: 16 active + 1 disabled
+- `actions/deploy-pages`: 2 active
+
+**Remaining (not upgraded):**
+- `actions/setup-python@v5`: 33 workflows — v5 is still Node.js 20; v6 is needed but not yet widely available → tracked for N4 phase
+- `actions/github-script@v7`: similarly Node.js 20
+
+**Pattern 21 checker fix:** Updated regex from single `v[1-5]\d*` to two-tier:
+- Group A (checkout/artifact/cache etc.): flag only `v1–v4` (v5+ is Node.js 24)
+- Group B (setup-python/github-script): flag `v1–v5` (v6+ will be Node.js 24)
+
+**Result:** Pattern 21: 211 refs → **28 refs** (setup-python@v5 only) ✅
+
+#### N3 — P19 src-Import Policy (Documentation Only)
+- Policy: enforce `from <pkg>` in all NEW code; no mass-refactor of existing 331 files
+- Documented in cognitive brain status
+
+### AfterMath PDA Loop
+- **PLAN:** S135 N1 (Pattern 20 → printf) + N2 (Node.js 20 @v4→@v5)
+- **DO:** Fixed all 9 P20 hits; upgraded 140 files to @v5; fixed Pattern 21 checker two-tier regex
+- **ASSESS:** P20=0, P21 from 211→28 refs, ruff=0, YAML validates, Pattern 21 checker accurate
+- **AfterMath:** Pattern documented — YAML multiline strings must use `printf '%s\n'` form. Node.js 20 upgrade path: Group A (most actions) v4→v5, Group B (setup-python) v5→v6.
+
+### Remaining Advisory Pattern (N4 — Future Session)
+| Pattern | Item | Count | Action |
+|---------|------|-------|--------|
+| P21-B | `setup-python@v5` → needs `@v6` | 28 workflows | When @v6 widely available |
+| P19 | `from src.` imports | 331 files | Enforce `from <pkg>` in new code only |
 
 ---
 
