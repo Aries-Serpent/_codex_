@@ -3,7 +3,52 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T21:22Z (S144 — pre-approval automation hardening + P19 N14 backfill 254→140)
+**Last updated:** 2026-03-28T22:42Z (S145 — P19 shadow-safe backfill + thread fixes)
+
+---
+
+## SESSION SUMMARY — 2026-03-28T22:42Z S145 (P19 Shadow-Safe Backfill + Thread Fixes)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All PR comments reviewed: no new unanswered rescue/retrigger comments ✅
+- [x] **0b.** CI status reviewed: `action_required` on 37ced0f = approval gate (not test failure) — unchanged ✅
+- [x] **0c.** Review threads: 3 unresolved identified and addressed ✅
+- [x] **0d.** `CODEBASE_AGENCY_POLICY.md`, `AGENT_ACCOUNTABILITY_REPORT.md`, stored session memories all loaded ✅
+
+### Work Completed
+1. **N17 — P19 shadow-safe backfill (10 files)**: Removed `src.` prefix from imports in
+   `agents/` (3 files), `examples/authentication/` (4 files), `services/api/main.py`,
+   `tools/actions_cli.py`, `tools/actions_server.py`. All imported packages verified to have
+   no root-level `__init__.py` shadow (`codex`, `codex_bridge`, `security`).
+
+2. **Shadow revert in `scripts/codex_offline_audit.py`**: Fixed regression from prior P19
+   de-src-ification. `from training.simple_trainer` and `from utils.{checkpoint,logging_factory}`
+   reverted to `from src.training.` / `from src.utils.` per P19-SHADOW-EXPANDED-001 (root-level
+   `training/__init__.py` and `utils/__init__.py` shadows exist). Closes review threads at
+   `scripts/codex_offline_audit.py:76,87`.
+
+3. **N18 — detect-secrets + cross-refs**:
+   - `scripts/ci/check_cross_references.py`: 0 broken refs (11/11 files OK)
+   - `detect-secrets scan`: 3 new `# pragma: allowlist secret` annotations for false positives
+     (demo key in `examples/authentication/03_token_management.py`, dev placeholder and pattern
+     variable in `services/api/main.py`). Final scan: 0 findings.
+
+4. **Ruff**: 0 violations on all changed files; 1 I001 import-sort auto-fixed.
+
+5. **Cognitive brain updated**: S145 status file created, objectives_tracker and
+   accountability report updated.
+
+### New Patterns Established
+- **P19-SHADOW-REVERT-001**: When de-src-ified imports silently resolve to wrong root-level
+  shadow, revert to `from src.X` form. Before ANY P19 fix, check: `ls <pkg>/__init__.py`
+  at REPO_ROOT.
+
+### Impact Score
+- Files fixed (P19 shadow-safe): 10 imports updated across 10 files
+- Files reverted (P19 shadow revert): 3 imports in scripts/codex_offline_audit.py
+- detect-secrets pragmas added: 3
+- Review threads addressed: 2 (codex_offline_audit.py:76/87, auto_fix_common_issues.py:1506)
+- Deferral Language Gate: 0 violations
 
 ---
 

@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (auto-update — PR #3777)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3777 (SHA `5d331c06`) at 2026-03-28T16:39Z [auto-generated]
+### Fixed (S145 — PR #3777)
+- **fix(ci):** Remove `GitLabTokenDetector` from `.secrets.baseline` — was causing `detect-secrets` pre-commit hook to fail with `No such GitLabTokenDetector plugin to initialize` in CI environments running an older `detect-secrets` version than the one used to generate the baseline (version mismatch). Fixes recurring `Validation Pipeline / Fast Validation` failures on `a836919`.
+- **fix(imports):** Revert `training` and `utils` imports in `scripts/codex_offline_audit.py` to `from src.training.` / `from src.utils.` form — root-level `training/__init__.py` and `utils/__init__.py` shadows were silently intercepting the de-src-ified imports. Closes review threads at `scripts/codex_offline_audit.py:76,87` (P19-SHADOW-EXPANDED-001).
+- **fix(imports):** Remove `src.` prefix from 10 shadow-safe files: `agents/` (3), `examples/authentication/` (4), `services/api/main.py`, `tools/actions_cli.py`, `tools/actions_server.py`. All import from packages with no root-level shadow (`codex`, `codex_bridge`, `security`).
+- **fix(secrets):** Add `# pragma: allowlist secret` to 3 false-positive lines: demo key in `examples/authentication/03_token_management.py`, dev placeholder and pattern variable in `services/api/main.py`.
+
 
 ### Fixed (auto-update — PR #3770)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3770 (SHA `ee886183`) at 2026-03-27T22:24Z [auto-generated]

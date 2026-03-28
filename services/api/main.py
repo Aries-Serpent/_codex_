@@ -118,7 +118,7 @@ try:
 except ImportError:  # pragma: no cover - optional import
     WhitespaceTokenizer = None
 
-from src.security import (
+from security import (
     SecurityError,
     log_security_event,
     rate_limiter,
@@ -126,7 +126,7 @@ from src.security import (
     verify_csrf_token,
     verify_session_integrity,
 )
-from src.security.content_filters import enforce_content_policies
+from security.content_filters import enforce_content_policies
 
 ARTIFACTS = Path(os.getenv("ARTIFACTS_DIR", "artifacts/api"))
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
@@ -152,7 +152,7 @@ try:
             "CODEX_AUTH_SECRET not set — using insecure default. "
             "Set CODEX_AUTH_SECRET for production deployments."
         )
-        _auth_secret = "codex-auth-change-me-in-production"  # nosec B105 — dev only
+        _auth_secret = "codex-auth-change-me-in-production"  # nosec B105 — dev only  # pragma: allowlist secret
     _auth_tm = _AuthTokenManager(secret_key=_auth_secret)
 
     # Auth routes must be exempt from the middleware since they are public.
@@ -174,7 +174,7 @@ try:
 except Exception:  # pragma: no cover - auth module may be absent in some deploys
     logger.debug("Auth routes/middleware not available; skipping registration")
 
-_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"  # pragma: allowlist secret
 
 SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(?i)(sk-[A-Za-z0-9]{10,})"),

@@ -1,9 +1,9 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.0.0  
-> **Date:** 2026-03-28  
+> **Version:** 1.1.0  
+> **Date:** 2026-03-28 (updated S145)  
 > **Branch:** `0D_base_`  
-> **Sources:** `.github/workflows/` inspection, CI log history (runs 23689574622, 23691951388, 23692231532)
+> **Sources:** `.github/workflows/` inspection, CI log history (runs 23689574622, 23691951388, 23692231532, 23694943811)
 
 This document describes the full expected lifecycle of a pull request on the `0D_base_` branch:
 which workflows run, when Copilot sessions are triggered, what failures are expected vs unexpected,
@@ -378,8 +378,48 @@ Baseline was then reset to **333** using the CI isolated venv to ensure parity.
 |-----------|-------------|-----------|
 | P19-BATCH-001 | After stripping `src.` prefix, run `ruff check --fix` for import sort (I001) | S137 |
 | P19-BATCH-WATCH-001 | Never strip `src.` from `try/except ImportError` blocks without verifying branches remain different; use relative imports instead | S139 |
+| P19-SHADOW-EXPANDED-001 | Root-level `__init__.py` shadows (training, utils, models, services, etc.) must retain `from src.X` imports. Always check `ls <pkg>/__init__.py` at REPO_ROOT before de-src-ifying | S144 |
+| P19-SHADOW-REVERT-001 | When a de-src-ified import silently resolves to the wrong root-level shadow, revert to `from src.X` form. The shadow intercepts before `sys.path` src/ entry is reached | S145 |
 | P21 | GitHub Actions Node.js 20 version deadline: 2026-06-02 | S135-S136 |
 | P22 | Tracked file sync drift: run `sync_tracked_files.py --fix` when `CODEX_MANIFEST.json` changes | S138 |
+| P23 | `detect-secrets` baseline plugin mismatch: `.secrets.baseline` generated with newer detect-secrets version causes `TypeError: No such <plugin>` in CI. Fix: `python scripts/ci/auto_fix_common_issues.py --pattern 23` | S145 |
+| SECRET-PRAGMA-001 | `# pragma: allowlist secret` for detect-secrets false positives (demo keys, dev placeholders, pattern variables). Run `python3 -m detect_secrets scan <file>` to verify suppression | S143 |
+| FP-ACTOR-SKIP-001 | S221 missed-trigger AND incomplete-session guards must skip when `context.actor ∈ {copilot-swe-agent[bot], github-copilot[bot], copilot[bot]}` | S144 |
+| FP-PREAPPROVAL-001 | All bot-posted `@copilot` comments embed pre-authorization notice to prevent duplicate approval gates | S144 |
+| FP-SAFETYCAP-001 | S221 guard safety cap ≥3 retriggers per rescue ID prevents infinite loops | S144 |
 | §ARLOOP | When a rescue is already addressed, reply `"Resolved at <SHA>"` to suppress S221 re-triggers | S242-S243 |
 | `RP-009` | mypy anti-regression gate exceeded baseline (too many errors) | ci-rescue.yml |
 | `GH013` | Branch ruleset violation: Copilot agent token lacks bypass → owner must add agent to bypass list | S244 |
+
+---
+
+## Appendix: Known Recurring CI Failure Patterns (from issue #3737)
+
+These patterns appear repeatedly in CI triage reports. Each has a documented fix path:
+
+| Workflow | Failure Step | Pattern | Fix |
+|----------|-------------|---------|-----|
+| Validation Pipeline / Fast Validation | `detect-secrets` hook `TypeError: No such GitLabTokenDetector` | P23 (plugin mismatch) | `python scripts/ci/auto_fix_common_issues.py --pattern 23` |
+| Validation Pipeline / Fast Validation | `sync-tracked-files: files were modified by hook` | P22 (tracked file drift) | `python scripts/ci/sync_tracked_files.py --fix && git add -A && git commit` |
+| agent-auth-delegation / Cognitive Pre-flight | `Verify CHANGELOG.md updated in last commit` | CHANGELOG gate | Add `### Fixed (SN)` entry to `## [Unreleased]` in `CHANGELOG.md` before committing |
+| mypy Baseline Gate | `Fail if regression detected` | `.mypy_baseline` stale | Update with CI isolated-venv per P19-ENV-001 |
+| Resilient Validation Suite / Sharded tests | `startup_failure` (no error log) | Pre-existing infra | Runner never starts for Data Quality/Progressive Validation/Rust-Python — not a code failure |
+| Agent Token Delegation | `action_required` on all checks | `agent-auth-delegation` environment gate | Owner clicks "Approve" at the Actions URL — needed once per approval cycle |
+| Copilot Issue Triage | `Analyze issue with GitHub Copilot` fails | API/CLI invocation error | Infrastructure issue — not code-fixable; retries usually succeed |
+| Embedding Index Rebuild | `Commit updated index metadata` | Push permissions | `CODEX_MASTER_KEY` needed for push; falls back to `CODEX_BACKUP_KEY` |
+
+```mermaid
+flowchart TD
+    PUSH["git push to 0D_base_"] --> VAL["Validation Pipeline\n(validate.yml)"]
+    VAL --> DS["detect-secrets hook"]
+    VAL --> SYNC["sync-tracked-files hook"]
+    VAL --> RUFF["ruff + cross-refs"]
+    DS -- "plugin mismatch" --> P23["Pattern 23 fix:\nauto_fix --pattern 23"]
+    DS -- "false positive" --> PRAGMA["Add # pragma: allowlist secret"]
+    SYNC -- "files modified by hook" --> SYNCFIX["run sync_tracked_files.py --fix\nthen commit"]
+    RUFF -- "violations" --> P1["Pattern 1/9/12 fix:\nauto_fix --pattern 1"]
+    P23 --> CLEAN["✅ CI passes"]
+    PRAGMA --> CLEAN
+    SYNCFIX --> CLEAN
+    P1 --> CLEAN
+```

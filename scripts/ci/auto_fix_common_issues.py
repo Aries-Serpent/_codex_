@@ -20,7 +20,7 @@ Usage:
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-22)
+    --pattern N     Only apply pattern N (1-23)
     --dry-run       Show what would be changed without making changes
 """
 
@@ -75,6 +75,8 @@ class CommonIssueFixer:
             "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
             "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
             "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
+            "Tracked File Sync",        # Pattern 22 - auto-fixable via sync_tracked_files.py
+            "Secrets Baseline Plugins", # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
         }
         self.manual_review_patterns = {
             "Unused Variables",         # Pattern 2  - context-dependent
@@ -107,7 +109,10 @@ class CommonIssueFixer:
             # Pattern 22: Tracked file sync — CODEX_MANIFEST.json integrity_sha256,
             # .secrets.baseline, CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md
             # consistency checks. Run sync_tracked_files.py --fix to repair.
-            "Tracked File Sync",        # Pattern 22 - auto-fixable via sync_tracked_files.py
+            # Pattern 23: detect-secrets baseline contains plugins not available in the installed
+            # detect-secrets version (e.g. GitLabTokenDetector added in newer versions).
+            # Causes the pre-commit hook to abort with TypeError on every run regardless of
+            # actual secrets in the diff.  Auto-fix: remove unknown plugins from .secrets.baseline.
         }
 
     def run_all_patterns(self, pattern_num: int = 0, pattern_name: str = "") -> bool:
@@ -144,6 +149,7 @@ class CommonIssueFixer:
             (20, "YAML Multiline Strings",   self.check_yaml_multiline_strings),
             (21, "Node.js 20 Actions",       self.check_nodejs20_actions),
             (22, "Tracked File Sync",        self.check_tracked_file_sync),
+            (23, "Secrets Baseline Plugins", self.check_secrets_baseline_plugins),
         ]
         patterns = all_patterns
 
@@ -1276,6 +1282,11 @@ class CommonIssueFixer:
             "Stub Duplicate Defs": 16,
             "CI SHA Drift": 17,
             "Duplicate Kwargs": 18,
+            "Src Absolute Imports": 19,
+            "YAML Multiline Strings": 20,
+            "Node.js 20 Actions": 21,
+            "Tracked File Sync": 22,
+            "Secrets Baseline Plugins": 23,
         }
 
         for pattern_name, issues in self.issues_found.items():
@@ -1600,6 +1611,132 @@ class CommonIssueFixer:
                     print(f"   ❌ Auto-fix failed: {fix_result.stderr[:200]}")
         return issues
 
+    def check_secrets_baseline_plugins(self) -> List[str]:
+        """Pattern 23: Detect incompatible plugins in ``.secrets.baseline``.
+
+        Root-cause (first observed: S145, run 23694943811, commit ``a836919``):
+        ``detect-secrets`` pre-commit hook crashes with::
+
+            [initialize] ERROR Error: No such `GitLabTokenDetector` plugin to initialize.
+            TypeError
+
+        whenever the ``.secrets.baseline`` was generated with a newer ``detect-secrets``
+        version that knows about ``GitLabTokenDetector`` (or other newer plugins) but the
+        pre-commit cache uses an older version that does not.  The hook aborts on every
+        file in every commit, blocking CI completely regardless of whether any secrets
+        were actually changed.
+
+        **Detection:** Import each plugin class name listed in ``plugins_used`` from
+        ``detect_secrets.plugins.*`` and report any that cannot be imported.
+
+        **Auto-fix:** Remove the incompatible entries from ``plugins_used`` in
+        ``.secrets.baseline`` (JSON in-place rewrite).  Any matching ``results`` entries
+        for the removed plugin type are also pruned.
+
+        Auto-fix: ✅  — rewrites ``.secrets.baseline`` to drop unknown plugins.
+        """
+        issues: List[str] = []
+        baseline_path = self.repo_root / ".secrets.baseline"
+        if not baseline_path.exists():
+            print("✅ Pattern 23 (Secrets Baseline Plugins): .secrets.baseline not found — skip")
+            return issues
+
+        try:
+            import json as _json
+            baseline = _json.loads(baseline_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            issues.append(f".secrets.baseline: failed to parse — {exc}")
+            self.issues_found["Secrets Baseline Plugins"] = issues
+            return issues
+
+        plugins_used: List[dict] = baseline.get("plugins_used", [])
+        unknown_plugins: List[str] = []
+
+        for plugin_entry in plugins_used:
+            name = plugin_entry.get("name", "")
+            if not name:
+                continue
+            # Try to import the plugin from detect_secrets — if it fails, the plugin
+            # is not available in the installed version.
+            try:
+                # detect_secrets uses snake_case module names derived from the class name
+                # e.g. GitLabTokenDetector → detect_secrets.plugins.gitlab
+                # Try a direct attribute lookup on the detect_secrets.plugins namespace
+                import detect_secrets.plugins as _dsp
+                found = hasattr(_dsp, name)
+                if not found:
+                    # Also probe sub-modules by scanning the package
+                    import importlib as _im
+                    import pkgutil as _pu
+                    for _mod_info in _pu.iter_modules(_dsp.__path__):
+                        try:
+                            _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
+                            if hasattr(_m, name):
+                                found = True
+                                break
+                        except Exception:
+                            pass
+                if not found:
+                    unknown_plugins.append(name)
+            except Exception:
+                unknown_plugins.append(name)
+
+        if unknown_plugins:
+            for plugin_name in unknown_plugins:
+                issue_msg = (
+                    f".secrets.baseline: plugin `{plugin_name}` not available in installed "
+                    f"detect-secrets — causes TypeError in pre-commit hook (CI pattern: "
+                    f"run 23694943811 / commit a836919)"
+                )
+                issues.append(issue_msg)
+            self.issues_found["Secrets Baseline Plugins"] = issues
+            print(
+                f"⚠  Pattern 23 (Secrets Baseline Plugins): {len(unknown_plugins)} "
+                f"incompatible plugin(s): {', '.join(unknown_plugins)}"
+            )
+            for issue in issues:
+                print(f"   {issue[:120]}")
+            print(
+                "   ℹ️  Fix: remove incompatible plugins from .secrets.baseline plugins_used.\n"
+                "   ℹ️  Or: python scripts/ci/auto_fix_common_issues.py --pattern 23"
+            )
+
+            if not self.check_only:
+                # Auto-fix: remove unknown plugins from baseline
+                baseline["plugins_used"] = [
+                    p for p in plugins_used if p.get("name") not in unknown_plugins
+                ]
+                # Also prune any results entries whose type matches a removed plugin
+                # (detect-secrets uses display names like "GitLab Personal Access Token")
+                # We do a conservative prune: only remove results whose type exactly
+                # matches the plugin name (unlikely, but safe guard).
+                results = baseline.get("results", {})
+                for fname in list(results.keys()):
+                    results[fname] = [
+                        s for s in results[fname]
+                        if s.get("type") not in unknown_plugins
+                    ]
+                    if not results[fname]:
+                        del results[fname]
+
+                if not self.dry_run:
+                    baseline_path.write_text(
+                        _json.dumps(baseline, indent=2) + "\n", encoding="utf-8"
+                    )
+                    print(
+                        f"   ✅ Auto-fixed: removed {len(unknown_plugins)} plugin(s) "
+                        f"({', '.join(unknown_plugins)}) from .secrets.baseline"
+                    )
+                    self.fixes_applied["Secrets Baseline Plugins"] = len(unknown_plugins)
+                    issues.clear()
+                else:
+                    print(
+                        f"   [dry-run] would remove plugin(s): {', '.join(unknown_plugins)}"
+                    )
+        else:
+            print("✅ Pattern 23 (Secrets Baseline Plugins): all baseline plugins available")
+        return issues
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1620,9 +1757,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 23),
+        choices=range(1, 24),
         metavar="N",
-        help="Run only pattern N (1–22); see pattern list above"
+        help="Run only pattern N (1–23); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",
