@@ -15,11 +15,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from tokenization import train_tokenizer as _legacy_train_tokenizer
-
-# ``TrainTokenizerConfig`` is a dataclass defined in the legacy module.  We
-# expose it directly so type-checkers and callers see the expanded field set
-# (e.g., ``corpus_glob``, ``stream_chunk_size``).
-TrainTokenizerConfig = _legacy_train_tokenizer.TrainTokenizerConfig
+from tokenization.train_tokenizer import (
+    TrainTokenizerConfig as TrainTokenizerConfig,  # explicit re-export for type checkers
+)
 
 
 def train(cfg: TrainTokenizerConfig) -> Path:

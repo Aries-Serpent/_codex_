@@ -74,6 +74,9 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+_src_path = str(REPO_ROOT / "src")
+if _src_path not in sys.path:
+    sys.path.insert(0, _src_path)
 
 
 from experiments import manager as experiment_manager  # noqa: E402

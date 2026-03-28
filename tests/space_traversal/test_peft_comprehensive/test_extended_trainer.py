@@ -28,7 +28,7 @@ try:
 except Exception as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
-import src.training.trainer as trainer_mod  # noqa: E402
+import training.trainer as trainer_mod  # noqa: E402
 
 from logging_utils import LoggingConfig  # noqa: E402
 

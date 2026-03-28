@@ -1502,7 +1502,7 @@ class CommonIssueFixer:
             all_matches = matches_a + matches_b + matches_c
             if all_matches:
                 rel = str(wf.relative_to(self.repo_root))
-                unique = list({f"{a}@{v}" for a, v in all_matches})
+                unique = sorted({f"{a}@{v}" for a, v in all_matches})
                 affected[rel] = unique
         if affected:
             total_refs = sum(len(v) for v in affected.values())

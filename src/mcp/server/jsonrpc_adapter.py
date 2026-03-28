@@ -57,7 +57,7 @@ def _get_adapter() -> BackendAdapter:
     if _ADAPTER_CACHE is None:
         _ADAPTER_CACHE = _ADAPTER_LOADER()
     adapter, _ = _ADAPTER_CACHE
-    return adapter  # type: ignore[return-value]
+    return adapter
 
 
 # Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.  # noqa: E501
