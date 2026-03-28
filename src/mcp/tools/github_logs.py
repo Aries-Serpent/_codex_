@@ -44,7 +44,7 @@ class ListCheckRunsInput(BaseModel):
 
 def _get_github_client():
     """Get GitHub client instance."""
-    from src.services.github.client import GitHubClientSync
+    from services.github.client import GitHubClientSync
 
     return GitHubClientSync()
 
@@ -186,7 +186,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
         result = list_check_runs({
             "owner": "Aries-Serpent",
             "repo": "_codex_",
-            "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d",
+            "ref": "b6b52590b9551c4d29b90ea122d885ef83cd0d8d",  # pragma: allowlist secret
             "status": "completed"
         })
         for run in result["check_runs"]:
@@ -200,7 +200,7 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
         # Get client
         client = _get_github_client()
 
-        from src.services.github.types import CheckRunStatus
+        from services.github.types import CheckRunStatus
 
         status_enum = CheckRunStatus(input_data.status) if input_data.status else None
 

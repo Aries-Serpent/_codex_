@@ -11,7 +11,7 @@ class TestChunkingPipeline:
     @pytest.fixture
     def pipeline(self):
         """Create a chunking pipeline for testing."""
-        from src.rag.pipelines.chunking import ChunkingConfig, ChunkingPipeline
+        from rag.pipelines.chunking import ChunkingConfig, ChunkingPipeline
 
         config = ChunkingConfig(
             chunk_size=100,
@@ -75,7 +75,7 @@ class TestChunk:
 
     def test_chunk_length_property(self):
         """Test the length property."""
-        from src.rag.pipelines.chunking import Chunk
+        from rag.pipelines.chunking import Chunk
 
         chunk = Chunk(
             content="Hello world",
@@ -87,7 +87,7 @@ class TestChunk:
 
     def test_chunk_metadata_default(self):
         """Test default metadata is empty dict."""
-        from src.rag.pipelines.chunking import Chunk
+        from rag.pipelines.chunking import Chunk
 
         chunk = Chunk(content="Test", start_index=0, end_index=4)
 

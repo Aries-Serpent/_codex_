@@ -8,7 +8,7 @@ import os
 
 import pytest
 
-from src.codex.chat import ChatSession
+from codex.chat import ChatSession
 
 
 def test_env_var_removed_when_log_event_raises(monkeypatch):

@@ -45,19 +45,19 @@ jobs:
 
     steps:
       - name: Checkout baseline
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.baseline_ref }}
           path: baseline
 
       - name: Checkout patched
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.patched_ref }}
           path: patched
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -149,7 +149,7 @@ jobs:
           EOF
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: behavior-comparison-${{ inputs.snapshot_id }}
           path: artifacts/

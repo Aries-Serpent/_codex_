@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # ── KEY VERIFICATION ─────────────────────────────────────────────────────
       # Tests CODEX_MASTER_KEY and CODEX_BACKUP_KEY independently.
@@ -241,7 +241,7 @@ jobs:
 
       - name: "Update cognitive brain repo variables (S109)"
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY }}
           script: |
@@ -297,7 +297,7 @@ jobs:
         env:
           HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
           HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
-        run: |
+        run: |  # pragma: allowlist secret
           # shellcheck disable=SC2086,SC2129
 
           echo "" >> "$GITHUB_STEP_SUMMARY"

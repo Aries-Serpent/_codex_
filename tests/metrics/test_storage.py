@@ -11,11 +11,11 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.metrics.duplication import (
+from codex.metrics.duplication import (
     DuplicateBlock,
     DuplicationRatio,
 )
-from src.codex.metrics.storage import MetricStorage
+from codex.metrics.storage import MetricStorage
 
 
 class TestMetricStorage:

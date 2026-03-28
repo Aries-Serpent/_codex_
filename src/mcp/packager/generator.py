@@ -22,7 +22,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from src.mcp.packager.config import PackageConfig
+from mcp.packager.config import PackageConfig
 
 logger = logging.getLogger(__name__)
 

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.data import datasets
+from data import datasets
 
 
 class DummyTokenizer:

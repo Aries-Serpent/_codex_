@@ -9,8 +9,8 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 import torch  # noqa: E402
-from src.codex_ml.metrics.classification import StreamingAccuracy  # noqa: E402
-from src.codex_ml.metrics.streaming import StreamingLoss  # noqa: E402
+from codex_ml.metrics.classification import StreamingAccuracy  # noqa: E402
+from codex_ml.metrics.streaming import StreamingLoss  # noqa: E402
 
 
 class TestStreamingLoss:

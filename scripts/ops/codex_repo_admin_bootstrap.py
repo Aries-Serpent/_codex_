@@ -49,7 +49,7 @@ from pathlib import Path
 from typing import Any, Mapping, MutableMapping, Optional, Sequence
 from urllib.parse import quote as _url_quote
 
-from src.integrations.github_app_auth import (
+from integrations.github_app_auth import (
     assert_online_allowlisted,
     build_auth_header_from_env,
 )

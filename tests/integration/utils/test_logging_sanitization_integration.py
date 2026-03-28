@@ -2,8 +2,8 @@
 
 import pytest
 
-from src.utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
-from src.utils.sanitize import sanitize_prompt
+from utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
+from utils.sanitize import sanitize_prompt
 
 
 @pytest.mark.integration

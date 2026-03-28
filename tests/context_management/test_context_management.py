@@ -13,7 +13,7 @@ class TestContextNormalizer:
 
     def test_normalize_basic(self):
         """Test basic text normalization."""
-        from src.context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer()
 
@@ -24,7 +24,7 @@ class TestContextNormalizer:
 
     def test_normalize_lowercase(self):
         """Test lowercase conversion."""
-        from src.context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(lowercase=True)
         result = normalizer.normalize("Hello WORLD")
@@ -32,7 +32,7 @@ class TestContextNormalizer:
 
     def test_normalize_unicode(self):
         """Test unicode normalization."""
-        from src.context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(normalize_unicode=True)
         # Test with combining characters
@@ -41,7 +41,7 @@ class TestContextNormalizer:
 
     def test_strip_ansi(self):
         """Test ANSI code stripping."""
-        from src.context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(strip_ansi=True)
         result = normalizer.normalize("\x1b[31mred text\x1b[0m")
@@ -50,7 +50,7 @@ class TestContextNormalizer:
 
     def test_extract_key_signals(self):
         """Test key signal extraction."""
-        from src.context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer()
         text = """
@@ -75,7 +75,7 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_basic(self):
         """Test basic fingerprinting."""
-        from src.context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
         result = fp.fingerprint("This is a test statement")
@@ -87,7 +87,7 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_exact_match(self):
         """Test exact hash matching."""
-        from src.context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -99,7 +99,7 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_semantic_match(self):
         """Test semantic hash matching."""
-        from src.context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -114,7 +114,7 @@ class TestStatementFingerprinter:
 
     def test_similarity_calculation(self):
         """Test similarity calculation."""
-        from src.context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -138,7 +138,7 @@ class TestSemanticDeduplicator:
 
     def test_deduplicate_exact(self):
         """Test exact duplicate removal."""
-        from src.context_management.deduplicator import SemanticDeduplicator
+        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator(similarity_threshold=1.0)
 
@@ -158,7 +158,7 @@ class TestSemanticDeduplicator:
 
     def test_deduplicate_semantic(self):
         """Test semantic duplicate removal."""
-        from src.context_management.deduplicator import SemanticDeduplicator
+        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator(similarity_threshold=0.85)
 
@@ -175,7 +175,7 @@ class TestSemanticDeduplicator:
 
     def test_is_duplicate(self):
         """Test duplicate checking."""
-        from src.context_management.deduplicator import SemanticDeduplicator
+        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator()
 
@@ -193,7 +193,7 @@ class TestTokenBudgetEnforcer:
 
     def test_add_content(self):
         """Test adding content to budget."""
-        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=1000, soft_limit=800)
 
@@ -205,7 +205,7 @@ class TestTokenBudgetEnforcer:
 
     def test_budget_limits(self):
         """Test budget limit enforcement."""
-        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=100, soft_limit=80)
 
@@ -220,7 +220,7 @@ class TestTokenBudgetEnforcer:
 
     def test_get_context(self):
         """Test context retrieval."""
-        from src.context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer()
 
@@ -236,7 +236,7 @@ class TestLoopGuardrail:
 
     def test_record_action(self):
         """Test action recording."""
-        from src.context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -249,7 +249,7 @@ class TestLoopGuardrail:
 
     def test_detect_consecutive_repeats(self):
         """Test consecutive repeat detection."""
-        from src.context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -263,7 +263,7 @@ class TestLoopGuardrail:
 
     def test_no_violation_with_artifacts(self):
         """Test no violation when producing artifacts."""
-        from src.context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=2)
 
@@ -276,7 +276,7 @@ class TestLoopGuardrail:
 
     def test_check_before_action(self):
         """Test pre-action checking."""
-        from src.context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -293,7 +293,7 @@ class TestContextMemory:
 
     def test_store_and_retrieve(self):
         """Test basic store and retrieve."""
-        from src.context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
 
         memory = ContextMemory(max_chunk_tokens=1000)
 
@@ -305,7 +305,7 @@ class TestContextMemory:
 
     def test_chunking(self):
         """Test content chunking."""
-        from src.context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
 
         memory = ContextMemory(max_chunk_tokens=50)
 
@@ -318,7 +318,7 @@ class TestContextMemory:
 
     def test_map_reduce_summarize(self):
         """Test map-reduce summarization."""
-        from src.context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
 
         # Simple summarizer for testing
         def simple_summarizer(text):
@@ -334,7 +334,7 @@ class TestContextMemory:
 
     def test_persistence(self):
         """Test persistence to disk."""
-        from src.context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "memory"
@@ -355,7 +355,7 @@ class TestContextObserver:
 
     def test_logging(self):
         """Test structured logging."""
-        from src.context_management.observability import ContextObserver
+        from context_management.observability import ContextObserver
 
         observer = ContextObserver()
         observer.set_correlation_ids(correlation_id="test-123")
@@ -368,7 +368,7 @@ class TestContextObserver:
 
     def test_metrics(self):
         """Test metrics collection."""
-        from src.context_management.observability import ContextObserver
+        from context_management.observability import ContextObserver
 
         observer = ContextObserver(enable_metrics=True)
 
@@ -381,7 +381,7 @@ class TestContextObserver:
 
     def test_alerts(self):
         """Test alert generation."""
-        from src.context_management.observability import AlertSeverity, ContextObserver
+        from context_management.observability import AlertSeverity, ContextObserver
 
         observer = ContextObserver(enable_alerts=True)
 
@@ -395,7 +395,7 @@ class TestContextObserver:
 
     def test_correlation_context(self):
         """Test correlation ID context management."""
-        from src.context_management.observability import ContextObserver
+        from context_management.observability import ContextObserver
 
         observer = ContextObserver()
 
@@ -410,7 +410,7 @@ class TestPriorityPruner:
 
     def test_prune_basic(self):
         """Test basic pruning."""
-        from src.context_management.pruning import PriorityPruner
+        from context_management.pruning import PriorityPruner
 
         pruner = PriorityPruner()
 
@@ -421,7 +421,7 @@ class TestPriorityPruner:
 
     def test_prune_keep_errors(self):
         """Test that errors are kept."""
-        from src.context_management.pruning import PriorityPruner, PruneStrategy
+        from context_management.pruning import PriorityPruner, PruneStrategy
 
         pruner = PriorityPruner()
 
@@ -432,7 +432,7 @@ class TestPriorityPruner:
 
     def test_prune_batch(self):
         """Test batch pruning."""
-        from src.context_management.pruning import PriorityPruner
+        from context_management.pruning import PriorityPruner
 
         pruner = PriorityPruner()
 
@@ -455,14 +455,14 @@ class TestContextManagementIntegration:
 
     def test_full_pipeline(self):
         """Test full context management pipeline."""
-        from src.context_management import (
+        from context_management import (
             ContextNormalizer,
             ContextObserver,
             LoopGuardrail,
             SemanticDeduplicator,
             TokenBudgetEnforcer,
         )
-        from src.context_management.budget import ContentPriority
+        from context_management.budget import ContentPriority
 
         # Initialize components
         normalizer = ContextNormalizer()

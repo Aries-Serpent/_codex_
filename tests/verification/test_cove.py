@@ -11,7 +11,7 @@ class TestClaimExtractor:
     @pytest.fixture
     def extractor(self):
         """Create a claim extractor for testing."""
-        from src.verification.cove import ClaimExtractor
+        from verification.cove import ClaimExtractor
 
         return ClaimExtractor()
 
@@ -56,7 +56,7 @@ class TestCoVeEngine:
     @pytest.fixture
     def engine(self):
         """Create a CoVe engine for testing."""
-        from src.verification.cove import CoVeEngine
+        from verification.cove import CoVeEngine
 
         return CoVeEngine()
 

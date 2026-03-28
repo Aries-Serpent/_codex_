@@ -74,14 +74,24 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parent.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
+_src_path = str(REPO_ROOT / "src")
+if _src_path not in sys.path:
+    sys.path.insert(0, _src_path)
 
 
+from experiments import manager as experiment_manager  # noqa: E402
 from scripts import repo_audit  # type: ignore  # noqa: E402
-from src.experiments import manager as experiment_manager  # noqa: E402
-from src.tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
-from src.training.simple_trainer import SimpleTrainer  # noqa: E402
-from src.utils.checkpoint import load_checkpoint, save_checkpoint  # noqa: E402
-from src.utils.logging_factory import init_logging  # noqa: E402
+from src.training.simple_trainer import (
+    SimpleTrainer,  # noqa: E402  # src. prefix required: root ./training/ shadow
+)
+from src.utils.checkpoint import (  # noqa: E402  # src. prefix required: root ./utils/ shadow
+    load_checkpoint,
+    save_checkpoint,
+)
+from src.utils.logging_factory import (
+    init_logging,  # noqa: E402  # src. prefix required: root ./utils/ shadow
+)
+from tokenizer.fast_tokenizer import FastTokenizerWrapper  # noqa: E402
 
 
 @dataclass

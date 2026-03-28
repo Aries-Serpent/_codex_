@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.ingestion.split import SplitConfig, split_files
+from ingestion.split import SplitConfig, split_files
 
 
 def test_split_files_is_deterministic_with_seed() -> None:

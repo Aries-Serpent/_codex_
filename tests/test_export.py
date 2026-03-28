@@ -9,8 +9,8 @@ import sqlite3
 
 import pytest
 
-from src.codex.logging.config import DEFAULT_LOG_DB
-from src.codex.logging.export import export_session
+from codex.logging.config import DEFAULT_LOG_DB
+from codex.logging.export import export_session
 
 
 def test_export_session(tmp_path, monkeypatch):

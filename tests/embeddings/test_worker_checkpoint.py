@@ -6,7 +6,7 @@ Test module for worker checkpoint.
 
 import json
 
-from src.workers.embedding_worker import run_worker
+from workers.embedding_worker import run_worker
 
 
 def test_worker_checkpoint_resume(tmp_path, monkeypatch):

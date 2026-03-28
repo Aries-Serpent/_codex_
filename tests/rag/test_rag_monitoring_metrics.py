@@ -19,7 +19,7 @@ class TestPerformanceMetrics:
     def test_query_latency_tracking(self):
         """Test tracking of query latency."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -40,7 +40,7 @@ class TestPerformanceMetrics:
     def test_embedding_generation_time(self):
         """Test tracking embedding generation time."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -60,7 +60,7 @@ class TestPerformanceMetrics:
     def test_index_operation_metrics(self):
         """Test tracking index operation metrics."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -86,7 +86,7 @@ class TestMetricsAggregation:
     def test_average_query_latency(self):
         """Test calculating average query latency."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -108,7 +108,7 @@ class TestMetricsAggregation:
     def test_percentile_latency(self):
         """Test calculating latency percentiles."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -133,7 +133,7 @@ class TestMetricsAggregation:
     def test_throughput_calculation(self):
         """Test calculating query throughput."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -158,7 +158,7 @@ class TestIndexHealthMonitoring:
     def test_index_size_tracking(self):
         """Test tracking index size."""
         try:
-            from src.codex.rag.monitoring import IndexHealth
+            from codex.rag.monitoring import IndexHealth
 
             health = IndexHealth()
 
@@ -173,7 +173,7 @@ class TestIndexHealthMonitoring:
     def test_document_count_tracking(self):
         """Test tracking document count."""
         try:
-            from src.codex.rag.monitoring import IndexHealth
+            from codex.rag.monitoring import IndexHealth
 
             health = IndexHealth()
 
@@ -188,7 +188,7 @@ class TestIndexHealthMonitoring:
     def test_index_fragmentation(self):
         """Test checking index fragmentation."""
         try:
-            from src.codex.rag.monitoring import IndexHealth
+            from codex.rag.monitoring import IndexHealth
 
             health = IndexHealth()
 
@@ -204,7 +204,7 @@ class TestIndexHealthMonitoring:
     def test_health_check(self):
         """Test overall index health check."""
         try:
-            from src.codex.rag.monitoring import IndexHealth
+            from codex.rag.monitoring import IndexHealth
 
             health = IndexHealth()
 
@@ -225,7 +225,7 @@ class TestErrorTracking:
     def test_error_logging(self):
         """Test logging of errors."""
         try:
-            from src.codex.rag.monitoring import ErrorTracker
+            from codex.rag.monitoring import ErrorTracker
 
             tracker = ErrorTracker()
 
@@ -246,7 +246,7 @@ class TestErrorTracking:
     def test_error_rate_calculation(self):
         """Test calculating error rate."""
         try:
-            from src.codex.rag.monitoring import ErrorTracker
+            from codex.rag.monitoring import ErrorTracker
 
             tracker = ErrorTracker()
 
@@ -268,7 +268,7 @@ class TestErrorTracking:
     def test_alert_threshold(self):
         """Test alert threshold triggering."""
         try:
-            from src.codex.rag.monitoring import ErrorTracker
+            from codex.rag.monitoring import ErrorTracker
 
             tracker = ErrorTracker(alert_threshold=0.1)  # 10% error rate
 
@@ -294,7 +294,7 @@ class TestMetricsExport:
         try:
             import json
 
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -315,7 +315,7 @@ class TestMetricsExport:
     def test_export_metrics_dict(self):
         """Test exporting metrics as dictionary."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -335,7 +335,7 @@ class TestMetricsExport:
     def test_prometheus_format(self):
         """Test exporting metrics in Prometheus format."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -360,7 +360,7 @@ class TestRealTimeMonitoring:
     def test_streaming_metrics(self):
         """Test streaming metrics updates."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -384,7 +384,7 @@ class TestRealTimeMonitoring:
     def test_metrics_callback(self):
         """Test metrics callback mechanism."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
             callback_called = []
@@ -412,7 +412,7 @@ class TestDashboardIntegration:
     def test_get_dashboard_data(self):
         """Test getting data for monitoring dashboard."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -434,7 +434,7 @@ class TestDashboardIntegration:
     def test_time_series_data(self):
         """Test getting time series metrics data."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics()
 
@@ -459,8 +459,8 @@ class TestMetricsIntegration:
     def test_monitor_embedding_generation(self):
         """Test monitoring during embedding generation."""
         try:
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.embeddings import TFIDFEmbeddingProvider
+            from codex.rag.monitoring import RAGMetrics
 
             provider = TFIDFEmbeddingProvider()
             metrics = RAGMetrics()
@@ -483,8 +483,8 @@ class TestMetricsIntegration:
     def test_monitor_retrieval_pipeline(self):
         """Test monitoring complete retrieval pipeline."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
-            from src.codex.rag.retriever import CodexRetriever
+            from codex.rag.monitoring import RAGMetrics
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
             metrics = RAGMetrics()
@@ -512,7 +512,7 @@ class TestAlerting:
     def test_latency_alert(self):
         """Test alerting on high latency."""
         try:
-            from src.codex.rag.monitoring import RAGMetrics
+            from codex.rag.monitoring import RAGMetrics
 
             metrics = RAGMetrics(latency_threshold_ms=200)
 
@@ -531,7 +531,7 @@ class TestAlerting:
     def test_error_rate_alert(self):
         """Test alerting on high error rate."""
         try:
-            from src.codex.rag.monitoring import ErrorTracker
+            from codex.rag.monitoring import ErrorTracker
 
             tracker = ErrorTracker(alert_threshold=0.05)
 

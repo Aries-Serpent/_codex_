@@ -8,7 +8,7 @@ import os
 
 import pytest
 
-from src.codex_bridge.github_client import list_branches
+from codex_bridge.github_client import list_branches
 
 
 @pytest.mark.network

@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.data import datasets
+from data import datasets
 
 
 def _make_tokenizer(torch):

@@ -18,14 +18,14 @@ class TestSemanticClusterer:
 
     def test_init(self):
         """Test initialization."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer(similarity_threshold=0.85)
         assert clusterer.similarity_threshold == 0.85
 
     def test_add_statement(self):
         """Test adding statements to clusters."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer()
 
@@ -35,7 +35,7 @@ class TestSemanticClusterer:
 
     def test_cluster_similar_statements(self):
         """Test clustering similar statements."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer(similarity_threshold=0.5)
 
@@ -49,7 +49,7 @@ class TestSemanticClusterer:
 
     def test_cluster_statements_batch(self):
         """Test batch clustering."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer()
 
@@ -64,7 +64,7 @@ class TestSemanticClusterer:
 
     def test_get_representatives(self):
         """Test getting representative statements."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer(min_cluster_size=1)
 
@@ -76,7 +76,7 @@ class TestSemanticClusterer:
 
     def test_cluster_summary(self):
         """Test cluster summary statistics."""
-        from src.context_management.clustering import SemanticClusterer
+        from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer()
 
@@ -92,7 +92,7 @@ class TestContextPriorityQueue:
 
     def test_init(self):
         """Test initialization."""
-        from src.context_management.priority_queue import ContextPriorityQueue
+        from context_management.priority_queue import ContextPriorityQueue
 
         queue = ContextPriorityQueue(max_items=100, max_tokens=10000)
         assert queue.max_items == 100
@@ -100,7 +100,7 @@ class TestContextPriorityQueue:
 
     def test_push_pop(self):
         """Test push and pop operations."""
-        from src.context_management.priority_queue import ContextPriorityQueue, Priority
+        from context_management.priority_queue import ContextPriorityQueue, Priority
 
         queue = ContextPriorityQueue()
 
@@ -116,7 +116,7 @@ class TestContextPriorityQueue:
 
     def test_priority_ordering(self):
         """Test priority-based ordering."""
-        from src.context_management.priority_queue import ContextPriorityQueue, Priority
+        from context_management.priority_queue import ContextPriorityQueue, Priority
 
         queue = ContextPriorityQueue()
 
@@ -131,7 +131,7 @@ class TestContextPriorityQueue:
 
     def test_prune_to_tokens(self):
         """Test token-based pruning."""
-        from src.context_management.priority_queue import ContextPriorityQueue, Priority
+        from context_management.priority_queue import ContextPriorityQueue, Priority
 
         queue = ContextPriorityQueue(max_tokens=100000)
 
@@ -148,7 +148,7 @@ class TestContextPriorityQueue:
 
     def test_get_stats(self):
         """Test statistics."""
-        from src.context_management.priority_queue import ContextPriorityQueue, Priority
+        from context_management.priority_queue import ContextPriorityQueue, Priority
 
         queue = ContextPriorityQueue()
 
@@ -164,14 +164,14 @@ class TestSlidingWindowManager:
 
     def test_init(self):
         """Test initialization."""
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager(max_tokens=10000)
         assert window.max_tokens == 10000
 
     def test_add_content(self):
         """Test adding content to window."""
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager()
 
@@ -181,7 +181,7 @@ class TestSlidingWindowManager:
 
     def test_get_window(self):
         """Test getting window contents."""
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager()
 
@@ -193,7 +193,7 @@ class TestSlidingWindowManager:
 
     def test_window_overflow(self):
         """Test window overflow handling."""
-        from src.context_management.sliding_window import (
+        from context_management.sliding_window import (
             SlidingWindowManager,
             WindowStrategy,
         )
@@ -208,7 +208,7 @@ class TestSlidingWindowManager:
 
     def test_get_state(self):
         """Test window state."""
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager()
 
@@ -220,7 +220,7 @@ class TestSlidingWindowManager:
 
     def test_prune_to_tokens(self):
         """Test pruning to target tokens."""
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager(max_tokens=10000)
 
@@ -236,14 +236,14 @@ class TestHierarchicalMemory:
 
     def test_init(self):
         """Test initialization."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory
+        from context_management.hierarchical_memory import HierarchicalMemory
 
         memory = HierarchicalMemory()
         assert memory is not None
 
     def test_store_working(self):
         """Test storing in working memory."""
-        from src.context_management.hierarchical_memory import (
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -255,7 +255,7 @@ class TestHierarchicalMemory:
 
     def test_store_all_layers(self):
         """Test storing in all memory layers."""
-        from src.context_management.hierarchical_memory import (
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -273,7 +273,7 @@ class TestHierarchicalMemory:
 
     def test_retrieve(self):
         """Test retrieval from memory."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory
+        from context_management.hierarchical_memory import HierarchicalMemory
 
         memory = HierarchicalMemory()
 
@@ -284,7 +284,7 @@ class TestHierarchicalMemory:
 
     def test_retrieve_by_layer(self):
         """Test retrieval from specific layer."""
-        from src.context_management.hierarchical_memory import (
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -299,7 +299,7 @@ class TestHierarchicalMemory:
 
     def test_deduplication(self):
         """Test cross-layer deduplication."""
-        from src.context_management.hierarchical_memory import HierarchicalMemory
+        from context_management.hierarchical_memory import HierarchicalMemory
 
         memory = HierarchicalMemory()
 
@@ -311,7 +311,7 @@ class TestHierarchicalMemory:
 
     def test_get_working_context(self):
         """Test getting working context."""
-        from src.context_management.hierarchical_memory import (
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -326,7 +326,7 @@ class TestHierarchicalMemory:
 
     def test_clear_layer(self):
         """Test clearing a layer."""
-        from src.context_management.hierarchical_memory import (
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -347,14 +347,14 @@ class TestContextCache:
 
     def test_init(self):
         """Test initialization."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
         assert cache is not None
 
     def test_set_get(self):
         """Test set and get operations."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -365,7 +365,7 @@ class TestContextCache:
 
     def test_get_nonexistent(self):
         """Test getting nonexistent key."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -374,7 +374,7 @@ class TestContextCache:
 
     def test_invalidate(self):
         """Test invalidation."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -386,7 +386,7 @@ class TestContextCache:
 
     def test_get_or_set(self):
         """Test get_or_set pattern."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -407,7 +407,7 @@ class TestContextCache:
 
     def test_cache_stats(self):
         """Test cache statistics."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -421,7 +421,7 @@ class TestContextCache:
 
     def test_invalidate_by_tag(self):
         """Test tag-based invalidation."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache()
 
@@ -438,7 +438,7 @@ class TestContextCache:
 
     def test_lru_eviction(self):
         """Test LRU eviction."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         cache = ContextCache(max_entries=3)
 
@@ -457,7 +457,7 @@ class TestContextCache:
 
     def test_persistence(self):
         """Test disk persistence."""
-        from src.context_management.context_cache import ContextCache
+        from context_management.context_cache import ContextCache
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             persist_path = f.name
@@ -481,8 +481,8 @@ class TestEnhancedModulesIntegration:
 
     def test_hierarchical_memory_with_cache(self):
         """Test hierarchical memory with context cache."""
-        from src.context_management.context_cache import ContextCache
-        from src.context_management.hierarchical_memory import (
+        from context_management.context_cache import ContextCache
+        from context_management.hierarchical_memory import (
             HierarchicalMemory,
             MemoryLayer,
         )
@@ -506,8 +506,8 @@ class TestEnhancedModulesIntegration:
 
     def test_priority_queue_with_sliding_window(self):
         """Test priority queue with sliding window."""
-        from src.context_management.priority_queue import ContextPriorityQueue, Priority
-        from src.context_management.sliding_window import SlidingWindowManager
+        from context_management.priority_queue import ContextPriorityQueue, Priority
+        from context_management.sliding_window import SlidingWindowManager
 
         queue = ContextPriorityQueue()
         window = SlidingWindowManager(max_tokens=1000)
@@ -527,8 +527,8 @@ class TestEnhancedModulesIntegration:
 
     def test_clusterer_with_deduplicator(self):
         """Test semantic clusterer with deduplicator."""
-        from src.context_management.clustering import SemanticClusterer
-        from src.context_management.deduplicator import SemanticDeduplicator
+        from context_management.clustering import SemanticClusterer
+        from context_management.deduplicator import SemanticDeduplicator
 
         deduplicator = SemanticDeduplicator()
         clusterer = SemanticClusterer()

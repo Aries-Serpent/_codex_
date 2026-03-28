@@ -35,7 +35,7 @@ jobs:
         test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","integration","slow"]') || fromJSON('["quick","documentation"]') }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Fetch base ref for PR-scoped diff
         # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
@@ -114,7 +114,7 @@ jobs:
       # HFIX-001 Step 2: Upload coverage artifact for local baseline verification
       - name: Upload coverage artifact
         if: matrix.test-group == 'quick' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-baseline
           path: |
@@ -125,7 +125,7 @@ jobs:
 
       - name: Upload results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: validation-results-${{ matrix.test-group }}
           path: |
@@ -136,7 +136,7 @@ jobs:
 
       - name: Post rescue comment on validation failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           BRANCH_REF: ${{ github.head_ref }}
         with:
@@ -233,7 +233,7 @@ jobs:
         total: [4]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached
@@ -247,7 +247,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -288,7 +288,7 @@ jobs:
 
       - name: Upload shard results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: shard-results-${{ matrix.shard }}-of-${{ matrix.total }}
           path: |
@@ -299,7 +299,7 @@ jobs:
 
       - name: Post rescue comment on shard failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           BRANCH_REF: ${{ github.head_ref }}
         with:

@@ -28,17 +28,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
       # Cache sentence-transformers models (small, ~400MB, high value)
       # This significantly reduces test time by avoiding model re-downloads
       - name: Cache sentence-transformers models
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/torch/sentence_transformers
           key: ${{ runner.os }}-sentence-transformers-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
@@ -135,7 +135,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: Upload HTML coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage-report-${{ matrix.python-version }}
@@ -182,7 +182,7 @@ jobs:
           python scripts/ci/generate_cache_keys.py --type pip --workflow test-rag --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
 
       - name: Upload security report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: always()
         with:
           name: security-report-${{ matrix.python-version }}

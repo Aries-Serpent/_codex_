@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: "Re-trigger unanswered rescue comments OR post @copilot review"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           # Must use CODEX_MASTER_KEY (PAT for @mbaetiong) so the comment appears as a
           # human user that GitHub Copilot will respond to.  github-actions[bot] comments

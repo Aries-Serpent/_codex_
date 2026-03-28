@@ -20,7 +20,7 @@ import sys
 # Add parent directory to path for imports
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 
-from src.codex_bridge.github_client import code_search, get_text, list_branches
+from codex_bridge.github_client import code_search, get_text, list_branches
 
 DEFAULT_OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 DEFAULT_REPO = os.getenv("CODEX_GH_REPO", "_codex_")

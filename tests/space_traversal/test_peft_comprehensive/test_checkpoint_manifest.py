@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.training import checkpointing
+from training import checkpointing
 
 
 def _require_torch():

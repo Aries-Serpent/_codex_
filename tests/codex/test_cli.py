@@ -18,12 +18,12 @@ class TestCLIBasics:
 
     def test_cli_module_imports(self):
         """Test that CLI module can be imported."""
-        from src.codex.cli import main
+        from codex.cli import main
         assert callable(main)
 
     def test_cli_main_function_exists(self):
         """Test that main entry point exists."""
-        from src.codex.cli.main import main
+        from codex.cli.main import main
         assert callable(main)
 
 
@@ -32,7 +32,7 @@ class TestPROperator:
 
     def test_sanitize_branch_name(self):
         """Test branch name sanitization."""
-        from src.codex.cli.pr_operator import _sanitize_branch_name
+        from codex.cli.pr_operator import _sanitize_branch_name
 
         assert _sanitize_branch_name("simple") == "simple"
         assert _sanitize_branch_name("with spaces") == "with-spaces"
@@ -41,7 +41,7 @@ class TestPROperator:
 
     def test_sanitize_branch_name_length(self):
         """Test branch name length limiting."""
-        from src.codex.cli.pr_operator import _sanitize_branch_name
+        from codex.cli.pr_operator import _sanitize_branch_name
 
         long_name = "a" * 200
         result = _sanitize_branch_name(long_name)
@@ -50,7 +50,7 @@ class TestPROperator:
 
     def test_generate_pr_body(self):
         """Test PR body generation."""
-        from src.codex.cli.pr_operator import _generate_pr_body
+        from codex.cli.pr_operator import _generate_pr_body
 
         body = _generate_pr_body(
             snapshot_id="test-123",
@@ -70,7 +70,7 @@ class TestPROperator:
 
     def test_generate_pr_body_with_failures(self):
         """Test PR body generation with failures."""
-        from src.codex.cli.pr_operator import _generate_pr_body
+        from codex.cli.pr_operator import _generate_pr_body
 
         body = _generate_pr_body(
             snapshot_id="test-123",
@@ -87,7 +87,7 @@ class TestPROperator:
 
     def test_pr_config_defaults(self):
         """Test PRConfig default values."""
-        from src.codex.cli.pr_operator import PRConfig
+        from codex.cli.pr_operator import PRConfig
 
         config = PRConfig(owner="test", repo="repo")
 
@@ -97,7 +97,7 @@ class TestPROperator:
 
     def test_pr_content_creation(self):
         """Test PRContent creation."""
-        from src.codex.cli.pr_operator import PRContent
+        from codex.cli.pr_operator import PRContent
 
         content = PRContent(
             title="Test PR",
@@ -111,7 +111,7 @@ class TestPROperator:
 
     def test_pr_operator_generate_content(self):
         """Test PROperator.generate_pr_content."""
-        from src.codex.cli.pr_operator import PRConfig, PROperator
+        from codex.cli.pr_operator import PRConfig, PROperator
 
         config = PRConfig(owner="test", repo="repo")
         operator = PROperator(config)
@@ -129,7 +129,7 @@ class TestPROperator:
 
     def test_pr_operator_save_content(self, tmp_path: Path):
         """Test saving PR content to files."""
-        from src.codex.cli.pr_operator import PRConfig, PRContent, PROperator
+        from codex.cli.pr_operator import PRConfig, PRContent, PROperator
 
         config = PRConfig(owner="test", repo="repo")
         operator = PROperator(config)
@@ -149,7 +149,7 @@ class TestPROperator:
 
     def test_pr_result_success(self):
         """Test PRResult success state."""
-        from src.codex.cli.pr_operator import PRResult
+        from codex.cli.pr_operator import PRResult
 
         result = PRResult(
             success=True,
@@ -163,7 +163,7 @@ class TestPROperator:
 
     def test_pr_result_failure(self):
         """Test PRResult failure state."""
-        from src.codex.cli.pr_operator import PRResult
+        from codex.cli.pr_operator import PRResult
 
         result = PRResult(
             success=False,
@@ -175,7 +175,7 @@ class TestPROperator:
 
     def test_pr_operator_without_github(self):
         """Test PROperator behavior without GitHub access."""
-        from src.codex.cli.pr_operator import PRConfig, PRContent, PROperator
+        from codex.cli.pr_operator import PRConfig, PRContent, PROperator
 
         with patch.dict("os.environ", {}, clear=True):
             config = PRConfig(owner="test", repo="repo")
@@ -198,7 +198,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_config_defaults(self):
         """Test SandboxConfig default values."""
-        from src.codex.analyze.runtime.sandbox import SandboxConfig
+        from codex.analyze.runtime.sandbox import SandboxConfig
 
         config = SandboxConfig()
 
@@ -208,7 +208,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_config_custom(self):
         """Test SandboxConfig custom values."""
-        from src.codex.analyze.runtime.sandbox import SandboxConfig
+        from codex.analyze.runtime.sandbox import SandboxConfig
 
         config = SandboxConfig(
             timeout_seconds=30,
@@ -222,7 +222,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_manager_initialization(self):
         """Test SandboxManager initialization."""
-        from src.codex.analyze.runtime.sandbox import SandboxConfig, SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxConfig, SandboxManager
 
         config = SandboxConfig()
         manager = SandboxManager(config)
@@ -231,7 +231,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_manager_invalid_config(self):
         """Test SandboxManager with invalid config."""
-        from src.codex.analyze.runtime.sandbox import SandboxConfig, SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxConfig, SandboxManager
 
         config = SandboxConfig(timeout_seconds=-1)
 
@@ -240,7 +240,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_execute_simple_script(self, tmp_path: Path):
         """Test executing a simple script."""
-        from src.codex.analyze.runtime.sandbox import SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
         script.write_text("print('hello')\n", encoding="utf-8")
@@ -254,7 +254,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_execute_with_error(self, tmp_path: Path):
         """Test executing a script with error."""
-        from src.codex.analyze.runtime.sandbox import SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
         script.write_text("raise ValueError('test error')\n", encoding="utf-8")
@@ -267,7 +267,7 @@ class TestRuntimeComponents:
 
     def test_sandbox_execute_nonexistent(self, tmp_path: Path):
         """Test executing nonexistent script."""
-        from src.codex.analyze.runtime.sandbox import SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxManager
 
         manager = SandboxManager()
 
@@ -276,7 +276,7 @@ class TestRuntimeComponents:
 
     def test_execution_result_to_dict(self, tmp_path: Path):
         """Test ExecutionResult serialization."""
-        from src.codex.analyze.runtime.sandbox import SandboxManager
+        from codex.analyze.runtime.sandbox import SandboxManager
 
         script = tmp_path / "test.py"
         script.write_text("print('test')\n", encoding="utf-8")
@@ -291,7 +291,7 @@ class TestRuntimeComponents:
 
     def test_runtime_tracer_initialization(self):
         """Test RuntimeTracer initialization."""
-        from src.codex.analyze.runtime.tracer import RuntimeTracer
+        from codex.analyze.runtime.tracer import RuntimeTracer
 
         tracer = RuntimeTracer("test-snapshot")
 
@@ -299,7 +299,7 @@ class TestRuntimeComponents:
 
     def test_runtime_tracer_find_entry_point(self, tmp_path: Path):
         """Test finding entry point."""
-        from src.codex.analyze.runtime.tracer import RuntimeTracer
+        from codex.analyze.runtime.tracer import RuntimeTracer
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -312,7 +312,7 @@ class TestRuntimeComponents:
 
     def test_runtime_tracer_find_entry_point_fallback(self, tmp_path: Path):
         """Test entry point fallback to first .py file."""
-        from src.codex.analyze.runtime.tracer import RuntimeTracer
+        from codex.analyze.runtime.tracer import RuntimeTracer
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -327,7 +327,7 @@ class TestRuntimeComponents:
         """Test RuntimeReport serialization."""
         from datetime import datetime, timezone
 
-        from src.codex.analyze.runtime.tracer import RuntimeReport
+        from codex.analyze.runtime.tracer import RuntimeReport
 
         report = RuntimeReport(
             snapshot_id="test-123",
@@ -346,7 +346,7 @@ class TestRuntimeComponents:
         """Test saving RuntimeReport to file."""
         from datetime import datetime, timezone
 
-        from src.codex.analyze.runtime.tracer import RuntimeReport
+        from codex.analyze.runtime.tracer import RuntimeReport
 
         report = RuntimeReport(
             snapshot_id="test-123",

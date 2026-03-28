@@ -234,9 +234,9 @@ from pathlib import Path
 # -------------------------------
 try:
     # Expected existing helpers (preferred)
-    from src.codex.logging.db import log_event as _shared_log_event  # type: ignore
-    from src.codex.logging.db import init_db as _shared_init_db      # type: ignore
-    from src.codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
+    from codex.logging.db import log_event as _shared_log_event  # type: ignore
+    from codex.logging.db import init_db as _shared_init_db      # type: ignore
+    from codex.logging.db import _DB_LOCK as _shared_DB_LOCK     # type: ignore
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
@@ -395,7 +395,7 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.logging.session_logger import SessionLogger, log_message
+from codex.logging.session_logger import SessionLogger, log_message
 
 def _all_events(db):
     con = sqlite3.connect(db)
@@ -456,7 +456,7 @@ README_SNIPPET = """\
 You can log session lifecycle and chat events via a small context manager:
 
 ```python
-from src.codex.logging.session_logger import SessionLogger
+from codex.logging.session_logger import SessionLogger
 
 with SessionLogger(session_id="demo") as sl:
     sl.log("user", "hi")

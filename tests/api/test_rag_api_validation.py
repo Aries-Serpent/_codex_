@@ -19,7 +19,7 @@ pytest.importorskip("fastapi")
 from fastapi import HTTPException  # noqa: E402
 from pydantic import ValidationError
 
-from src.codex.api.rag_api import MergeIndicesRequest, _ensure_subpath
+from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath
 
 # ---------------------------------------------------------------------------
 # MergeIndicesRequest.source_indices — min_length=2 (Pydantic v2)

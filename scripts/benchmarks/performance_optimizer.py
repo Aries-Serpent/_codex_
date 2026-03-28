@@ -147,7 +147,7 @@ class PerformanceOptimizer:
     def benchmark_feature_retrieval(self) -> dict[str, Any]:
         """Benchmark feature store retrieval performance."""
         try:
-            from src.codex_ml.features.feature_store import FeatureStore
+            from codex_ml.features.feature_store import FeatureStore
 
             fs_path = self.base_path / "artifacts/features/production"
             store = FeatureStore(str(fs_path))

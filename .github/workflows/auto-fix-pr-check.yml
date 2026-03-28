@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload diagnostic report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: diagnostic-report-${{ github.event.pull_request.number }}
           path: .codex/diagnostic-report.json
@@ -87,7 +87,7 @@ jobs:
       - name: Generate Copilot Agent comment
         id: gen_comment
         if: steps.diagnostic.outcome == 'failure' && steps.read_report.outputs.report_exists == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           AUTO_FIXABLE: ${{ steps.read_report.outputs.auto_fixable }}
           TOTAL_ISSUES: ${{ steps.read_report.outputs.total_issues }}

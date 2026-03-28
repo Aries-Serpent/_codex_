@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.auth.sqlite_user_repository import SQLiteUserRepository
-from src.codex.auth.user_store import User
+from codex.auth.sqlite_user_repository import SQLiteUserRepository
+from codex.auth.user_store import User
 
 
 def _make_user(

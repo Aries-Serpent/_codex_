@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from src.codex_ml.logging.unified_logger import LoggerBackend, LoggerRegistry
+from codex_ml.logging.unified_logger import LoggerBackend, LoggerRegistry
 
 
 class DummyBackend(LoggerBackend):

@@ -16,7 +16,7 @@ import time
 
 import pytest
 
-from src.codex.logging.db_manager import DBManager
+from codex.logging.db_manager import DBManager
 
 
 def _raw_conn(conn):

@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Determine if chaining should proceed
         id: check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const INTEGRATION_BRANCHES = ['0D_base_'];
@@ -130,7 +130,7 @@ jobs:
       INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
     steps:
       - name: Checkout integration branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.check-trigger.outputs.integration_branch }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -310,33 +310,34 @@ jobs:
           set -euo pipefail
 
           PR_TITLE="🤖 [Agent Session] ${SESSION_TITLE} (${TIMESTAMP})"
-          PR_BODY="## 🔗 Auto-chained Copilot Agent Session
-
-          **Integration branch:** \`${INTEGRATION_BRANCH}\`
-          **Session branch:** \`${NEW_BRANCH}\`
-          **Opened by:** \`copilot-session-chain.yml\` (run [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))
-
-          > This PR was automatically created by the Session Chain workflow.
-          > It targets \`${INTEGRATION_BRANCH}\` (the staging integration branch).
-          > **Do NOT work directly on \`${INTEGRATION_BRANCH}\`** — all agent
-          > work is done through sub-PRs like this one.
-
-          ---
-
-          ### 💰 Cost Governance
-
-          - [ ] **💰 Cost Proposal Approved**
-
-          ### 🔐 Agent Token Delegation
-          - [ ] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
-
-          ### Architecture
-          \`\`\`
-          ${NEW_BRANCH}   ──► ${INTEGRATION_BRANCH} ──► main
-          (this PR)              (staging gate)     (promotion PR)
-          \`\`\`
-
-          See: [\`INTEGRATION_BRANCH_MODEL.md\`](.codex/docs/INTEGRATION_BRANCH_MODEL.md)"
+          PR_BODY=$(printf '%s\n' \
+            '## 🔗 Auto-chained Copilot Agent Session' \
+            '' \
+            "**Integration branch:** \`${INTEGRATION_BRANCH}\`" \
+            "**Session branch:** \`${NEW_BRANCH}\`" \
+            "**Opened by:** \`copilot-session-chain.yml\` (run [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))" \
+            '' \
+            '> This PR was automatically created by the Session Chain workflow.' \
+            "> It targets \`${INTEGRATION_BRANCH}\` (the staging integration branch)." \
+            "> **Do NOT work directly on \`${INTEGRATION_BRANCH}\`** — all agent" \
+            '> work is done through sub-PRs like this one.' \
+            '' \
+            '---' \
+            '' \
+            '### 💰 Cost Governance' \
+            '' \
+            '- [ ] **💰 Cost Proposal Approved**' \
+            '' \
+            '### 🔐 Agent Token Delegation' \
+            '- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '' \
+            '### Architecture' \
+            '```' \
+            "${NEW_BRANCH}   ──► ${INTEGRATION_BRANCH} ──► main" \
+            '(this PR)              (staging gate)     (promotion PR)' \
+            '```' \
+            '' \
+            "See: [\`INTEGRATION_BRANCH_MODEL.md\`](.codex/docs/INTEGRATION_BRANCH_MODEL.md)")
 
           PR_URL=$(gh pr create \
             --title "${PR_TITLE}" \
@@ -365,43 +366,45 @@ jobs:
           if [ -n "${CONTINUATION_PROMPT}" ]; then
             TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
           elif [ -n "${MERGED_PR}" ]; then
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
-
-          Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
-          You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
-          staging integration branch \`${INTEGRATION_BRANCH}\`.
-
-          **Architecture reminder:**
-          \`\`\`
-          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
-          (this PR)           (staging gate)          (promotion PR)
-          \`\`\`
-
-          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
-          Continue from where PR #${MERGED_PR} left off, addressing any remaining items
-          from the priority list. Review all CI checks and address any failures.
-
-          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
-          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
-          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
+            TRIGGER_COMMENT=$(printf '%s\n' \
+              '@copilot+claude-sonnet-4.6 continue' \
+              '' \
+              "Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`." \
+              "You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
+              "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '**Architecture reminder:**' \
+              '```' \
+              "${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main" \
+              '(this PR)           (staging gate)          (promotion PR)' \
+              '```' \
+              '' \
+              "Do NOT work directly on \`${INTEGRATION_BRANCH}\`." \
+              "Continue from where PR #${MERGED_PR} left off, addressing any remaining items" \
+              'from the priority list. Review all CI checks and address any failures.' \
+              '' \
+              '> **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by' \
+              "> default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch" \
+              "> \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR.")
           else
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
-
-          You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
-          staging integration branch \`${INTEGRATION_BRANCH}\`.
-
-          **Architecture reminder:**
-          \`\`\`
-          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
-          (this PR)           (staging gate)          (promotion PR)
-          \`\`\`
-
-          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
-          Begin by reviewing the current CI status of this PR and addressing any failures.
-
-          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
-          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
-          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
+            TRIGGER_COMMENT=$(printf '%s\n' \
+              '@copilot+claude-sonnet-4.6 continue' \
+              '' \
+              "You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
+              "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '**Architecture reminder:**' \
+              '```' \
+              "${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main" \
+              '(this PR)           (staging gate)          (promotion PR)' \
+              '```' \
+              '' \
+              "Do NOT work directly on \`${INTEGRATION_BRANCH}\`." \
+              'Begin by reviewing the current CI status of this PR and addressing any failures.' \
+              '' \
+              '> **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by' \
+              "> default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch" \
+              "> \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR.")
           fi
 
           gh pr comment "${PR_NUMBER}" --body "${TRIGGER_COMMENT}"

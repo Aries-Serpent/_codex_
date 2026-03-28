@@ -13,11 +13,11 @@ All tests are deterministic and isolated.
 
 
 
-from src.codex.auth.middleware import (
+from codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,
 )
-from src.codex.auth.token_manager import TokenManager, TokenType
+from codex.auth.token_manager import TokenManager, TokenType
 
 
 class TestPermissionChecks:

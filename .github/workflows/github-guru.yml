@@ -37,7 +37,7 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip-guru]') }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -100,7 +100,7 @@ jobs:
 
       - name: Upload session metrics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: github-guru-metrics-${{ github.run_number }}
           path: audit_artifacts/baselines/github_guru_session_*.json

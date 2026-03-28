@@ -175,7 +175,7 @@ class QuantumPluginRegistry:
 
     def __post_init__(self):
         """Initialize dependency graph for entanglement tracking."""
-        from src.codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
 
         self.dependency_graph = DependencyGraph()
 

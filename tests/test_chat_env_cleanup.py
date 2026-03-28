@@ -2,7 +2,7 @@
 
 import os
 
-from src.codex.chat import ChatSession
+from codex.chat import ChatSession
 
 
 def test_chat_env_cleanup(tmp_path, monkeypatch):

@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.codex.ingest.adapter import (
+from codex.ingest.adapter import (
     MAX_FILE_SIZE_MB,
     MAX_FILES_COUNT,
     MAX_TOTAL_SIZE_MB,

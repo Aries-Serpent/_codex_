@@ -8,7 +8,7 @@ from time import time
 
 import pytest
 
-from src.mcp.retries import retry_on_exception
+from mcp.retries import retry_on_exception
 
 counter = {"v": 0}
 

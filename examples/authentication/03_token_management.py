@@ -26,7 +26,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.codex.auth.token_manager import TokenManager, TokenType  # noqa: E402
+from codex.auth.token_manager import TokenManager, TokenType  # noqa: E402
 
 
 def main():
@@ -38,7 +38,7 @@ def main():
 
     # Initialize token manager with a secret key
     # In production, load from environment variable
-    secret_key = "demo_secret_key_do_not_use_in_production"
+    secret_key = "demo_secret_key_do_not_use_in_production"  # pragma: allowlist secret
     tokens = TokenManager(secret_key=secret_key)
 
     user_id = "demo_user_123"

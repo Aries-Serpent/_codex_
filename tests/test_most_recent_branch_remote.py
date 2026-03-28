@@ -6,7 +6,7 @@ Test module for most recent branch remote.
 
 import os
 
-from src.codex_bridge.github_client import most_recent_branch
+from codex_bridge.github_client import most_recent_branch
 
 
 def test_most_recent_branch_returns_string():

@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: "📥 Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # Fetch full history so we can cherry-pick cleanly.
           fetch-depth: 0
@@ -73,7 +73,7 @@ jobs:
 
       - name: "🔍 Verify single-file change"
         id: check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             let prNumber;

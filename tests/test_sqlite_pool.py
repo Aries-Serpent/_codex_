@@ -7,7 +7,7 @@ Test module for sqlite pool.
 import sqlite3
 import threading
 
-from src.codex.db import sqlite_patch
+from codex.db import sqlite_patch
 
 
 def test_sqlite_pool_allows_concurrent_writes(tmp_path, monkeypatch):

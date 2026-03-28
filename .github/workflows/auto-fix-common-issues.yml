@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Full history for better analysis
           # Fall back to the built-in GITHUB_TOKEN when neither repo secret is
@@ -119,7 +119,7 @@ jobs:
         if: |
           github.event_name == 'pull_request' &&
           steps.check.outcome == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const MARKER = '<!-- auto-fix-ci-issues -->';

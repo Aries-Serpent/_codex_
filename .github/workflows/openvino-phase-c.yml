@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -61,7 +61,7 @@ jobs:
     continue-on-error: true  # Phase C is optional Tier 2 — do not block merges
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached

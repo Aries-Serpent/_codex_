@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.metrics.duplication import (
+from codex.metrics.duplication import (
     DuplicateBlock,
     DuplicationDetector,
     DuplicationRatio,

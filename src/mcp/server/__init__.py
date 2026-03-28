@@ -71,7 +71,7 @@ class MCPServer:
 
 
 def get_app():
-    from src.mcp.server.facade_fastapi import APP
+    from mcp.server.facade_fastapi import APP
 
     return APP
 
