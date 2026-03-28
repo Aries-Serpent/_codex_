@@ -9,7 +9,7 @@ from __future__ import annotations
 import random
 from pathlib import Path
 
-from src.codex_ml.utils.checkpoint_core import load_checkpoint, save_checkpoint
+from codex_ml.utils.checkpoint_core import load_checkpoint, save_checkpoint
 
 
 def test_rng_restore_python_random(tmp_path: Path):

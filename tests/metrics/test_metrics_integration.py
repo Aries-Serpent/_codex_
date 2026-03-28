@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from src.codex.metrics.duplication import calculate_duplication_ratio, detect_duplicates
-from src.codex.metrics.storage import MetricStorage
+from codex.metrics.duplication import calculate_duplication_ratio, detect_duplicates
+from codex.metrics.storage import MetricStorage
 
 
 class TestFullWorkflow:

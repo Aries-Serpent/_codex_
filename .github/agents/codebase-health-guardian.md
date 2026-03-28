@@ -1,15 +1,15 @@
 ---
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
-version: 2.3.0
+version: 2.4.0
 updated: 2026-03-28
-last_health_sweep: 2026-03-28T16:17Z (S137)
+last_health_sweep: 2026-03-28T16:47Z (S138)
 sweep_status:
   ruff_violations: 0
   auto_fixable_issues: 0
   ci_health: "100% — 0 failures in last 100 main runs"
   advisory_patterns:
-    P19_src_absolute_imports: 292  # was 331; -39 fixed in S137 N8
+    P19_src_absolute_imports: 252  # was 292; -40 fixed in S138 N9 (tests/ batch)
     P20_yaml_multiline: 0
     P21_nodejs20_actions: 0
     P21_nodejs20_deadline: "2026-06-02 — ALL action families fully upgraded (S135+S136)"
@@ -23,13 +23,13 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — parallel domain checks and faster artifact hygiene
 ---
 
-# Codebase Health Guardian v2.3
+# Codebase Health Guardian v2.4
 
 > **Expanded** from `workflow-ci-fixer.agent.md`. Adds D2-Python Quality, D3-Test Policy
 > enforcement, D4-Artifact Hygiene, and D5-Nightly Health Sweep to the original D1 scope.
 >
-> **S137 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
-> · ✅ P20=0 · ✅ P21=0 · ⚠️ 292 advisory (P19 only, was 331 — -39 fixed in N8)
+> **S138 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
+> · ✅ P20=0 · ✅ P21=0 · ⚠️ 252 advisory (P19 only, was 292 — -40 fixed in N9)
 
 ## Mission
 
@@ -61,7 +61,7 @@ python -c "from <module> import <symbol>"  # import smoke
 - **Auto-fix**: F401, I001, W293, E501 (line length if ≤ 1 char over)
 - **Block merge**: E-level ruff errors not auto-fixed
 - **✅ S136 status**: 0 ruff violations (maintained across S134–S136)
-- **⚠️ Advisory P19**: 292 files use `from src.X` imports (was 331; -39 fixed S137 N8).
+- **⚠️ Advisory P19**: 252 files use `from src.X` imports (was 292; -40 fixed S138 N9).
   Migrate to `from X` style — non-blocking (`pytest.ini` `pythonpath = . src` allows both forms).
   **Enforce `from <pkg>` in ALL NEW code** (N5/N6 policy — no mass-refactor of existing files).
 
@@ -131,6 +131,7 @@ stat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # modified < 48h
 | S135  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | P20→0; P21: 211→28 refs |
 | S136  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | P21→0 (setup-python@v6, github-script@v8) |
 | S137  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | N8: P19 331→292 (51 files, 105 imports fixed) |
+| S138  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | N9: P19 292→252 (40 test files fixed); P21=0 ✅; P22 fixed |
 
 ---
 

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from src.training.seed_utils import set_all_seeds
+from training.seed_utils import set_all_seeds
 
 
 @pytest.fixture(autouse=True)

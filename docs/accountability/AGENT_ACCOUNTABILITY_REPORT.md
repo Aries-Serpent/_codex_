@@ -3,9 +3,84 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T16:17Z (S137 — Health Sweep N6/N7/N8)
+**Last updated:** 2026-03-28T16:47Z (S138 — Health Sweep N9/N10/N11)
 
 ---
+
+## SESSION SUMMARY — 2026-03-28T16:47Z S138 (Health Sweep N9/N10/N11)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed — no open CI rescue comments ✅
+- [x] **0b.** Failing CI checks reviewed: 0 failures on `main` ✅
+- [x] **0c.** S137 status file loaded ✅
+- [x] **0d.** CODEBASE_AGENCY_POLICY.md loaded ✅
+- [x] **0e.** AGENT_ACCOUNTABILITY_REPORT.md loaded ✅
+- [x] **0f.** All stored memories loaded ✅
+
+### Work Completed — S138 N9/N10/N11
+
+#### N10 — Pattern 21 Maintenance Watch (P21=0 confirmed)
+
+Ran `python3 scripts/ci/auto_fix_common_issues.py --check-only` at session start:
+- ✅ Pattern 20 (YAML multiline): 0 violations
+- ✅ Pattern 21 (Node.js 20 actions): 0 refs (all 7 action families clean)
+- ✅ Ruff: 0 violations
+- ⚠️ Pattern 22 (Tracked file sync): 1 issue → auto-fixed
+
+#### N9 — P19 Opportunistic Backfill: 292 → 252 (-40 files)
+
+Fixed `from src.X import Y` → `from X import Y` in 40 Python test files.
+Scope: `tests/` directory (space_traversal, metrics, integration, peft, logging, specs).
+
+| Area | Files fixed |
+|------|-------------|
+| `tests/space_traversal/test_peft_comprehensive/` | 22 |
+| `tests/metrics/` | 8 |
+| `tests/integration/` | 3 |
+| `tests/space_traversal/` (top-level) | 1 |
+| `tests/common/` | 1 |
+| `tests/peft/` | 1 |
+| `tests/logging/` | 1 |
+| `tests/specs/` | 1 |
+| Other | 2 |
+| **Total** | **40** |
+
+**Post-fix ruff:** 0 I001 (import sort) violations — no sort drift.
+**Final state:** ruff=0, all 40 files correct.
+
+#### N11 — objectives_tracker.md Data Drift (Resolved)
+
+- `objectives_tracker.md` updated to v1.5.0 (S138 row added)
+- `agent_context.json` updated: `COGNITIVE_BRAIN_SESSION_NUMBER: "138"`
+- P22 (tracked file sync): auto-fixed `.secrets.baseline` manifest hash drift
+
+#### 5-Pass Mandatory Self-Review (§8 CODEBASE_AGENCY_POLICY.md)
+
+| Pass | Check | Result |
+|------|-------|--------|
+| 1 | No `from src.` real imports in changed files | ✅ 0 remaining in fixed files |
+| 2 | `ruff check` (incl. I001 import sort) | ✅ 0 violations |
+| 3 | Advisory scan P19/P20/P21/P22 | ✅ P20=0, P21=0, P22=0; P19=252 (-40) |
+| 4 | YAML integrity + no stale Node.js 20 refs | ✅ All YAML valid, 0 stale refs |
+| 5 | Session metadata consistency | ✅ session=138, objectives_tracker=v1.5.0 |
+
+#### Agent Update — codebase-health-guardian.md v2.3 → v2.4
+
+- P19 count updated: 292 → 252
+- S138 sweep row added to history table
+- D2 P19 note updated with current count and N9 fix note
+
+#### Documentation Updates
+
+- `objectives_tracker.md` v1.4.0 → v1.5.0 — S138 sweep row added
+- `COGNITIVE_BRAIN_STATUS_S138_N9_N10_N11_2026-03-28.md` created
+- `agent_context.json` → session 138
+
+### AfterMath PDA Loop
+- **PLAN:** S138 N9 (P19 backfill), N10 (P21 watch), N11 (session metadata drift)
+- **DO:** N10 verified P21=0; N9 fixed 40 test files; N11 updated tracker+context; P22 auto-fixed
+- **ASSESS:** P19: 292→252 (-40 files, 13.7% reduction); ruff=0; all patterns green; session=138
+- **AfterMath:** No new patterns. P19-BATCH-001 confirmed: ruff I001 check post-fix shows 0 violations on this test-file batch (no sort drift, unlike src/ batch which had 2).
 
 ## SESSION SUMMARY — 2026-03-28T16:17Z S137 (Health Sweep N6/N7/N8)
 

@@ -15,9 +15,9 @@ from __future__ import annotations
 
 import pytest
 
-from src.rag.pipelines.chunking import Chunk, ChunkingPipeline
-from src.rag.pipelines.embedding import EmbeddingPipeline
-from src.rag.pipelines.quantum_retrieval import (
+from rag.pipelines.chunking import Chunk, ChunkingPipeline
+from rag.pipelines.embedding import EmbeddingPipeline
+from rag.pipelines.quantum_retrieval import (
     QuantumEnhancedRetrieval,
     QuantumRelevanceScorer,
     record_scoring_pattern,
@@ -31,7 +31,7 @@ class TestQuantumRetrievalWithAgentMemory:
         """Test recording patterns in agent memory."""
         scorer = QuantumRelevanceScorer()
 
-        from src.rag.pipelines.retrieval import RetrievalResult
+        from rag.pipelines.retrieval import RetrievalResult
 
         results = [
             RetrievalResult(
@@ -74,7 +74,7 @@ class TestQuantumRetrievalWithAgentMemory:
             # Create test retrieval
             scorer = QuantumRelevanceScorer(alpha=0.7, beta=0.2, gamma=0.1)
 
-            from src.rag.pipelines.retrieval import RetrievalResult
+            from rag.pipelines.retrieval import RetrievalResult
 
             results = [
                 RetrievalResult(
@@ -101,7 +101,7 @@ class TestQuantumRetrievalWithMCPMetrics:
     def test_metrics_tracking(self):
         """Test that quantum retrieval can be tracked with MCP metrics."""
         try:
-            from src.mcp.metrics.mcp_metrics import MCPMetrics
+            from mcp.metrics.mcp_metrics import MCPMetrics
 
             metrics = MCPMetrics()  # noqa: F841 - instantiated to verify import works
 

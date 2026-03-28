@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.training.checkpoint_manager import CheckpointManager
+from training.checkpoint_manager import CheckpointManager
 
 pytestmark = pytest.mark.requires_torch
 

@@ -30,7 +30,7 @@ except Exception as exc:  # pragma: no cover - runtime guard
 
 import src.training.trainer as trainer_mod  # noqa: E402
 
-from src.logging_utils import LoggingConfig  # noqa: E402
+from logging_utils import LoggingConfig  # noqa: E402
 
 torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):
