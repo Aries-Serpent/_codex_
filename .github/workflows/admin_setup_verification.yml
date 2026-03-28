@@ -297,7 +297,7 @@ jobs:
         env:
           HAS_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY != '' }}
           HAS_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY != '' }}
-        run: |
+        run: |  # pragma: allowlist secret
           # shellcheck disable=SC2086,SC2129
 
           echo "" >> "$GITHUB_STEP_SUMMARY"

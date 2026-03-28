@@ -290,7 +290,7 @@ class SecurityValidator:
         # Test 1: PKCE enabled by default
         config = self.oauth.create_github_config(
             client_id="test",
-            client_secret="test",
+            client_secret="test",  # pragma: allowlist secret
             redirect_uri="http://localhost",
         )
         self.test(
