@@ -1,35 +1,51 @@
 ---
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
-version: 2.0.0
-updated: 2026-02-20
+version: 2.1.0
+updated: 2026-03-28
+last_health_sweep: 2026-03-28T05:50Z (S134)
+sweep_status:
+  ruff_violations: 0
+  auto_fixable_issues: 0
+  ci_health: "100% — 0 failures in last 100 main runs"
+  advisory_patterns:
+    P19_src_absolute_imports: 331
+    P20_yaml_multiline: 4
+    P21_nodejs20_deadline: "2026-06-02"
 cognitive_integration_level: 3
 aais_contribution: +3.5 points
 batch: pr-6
 supersedes: workflow-ci-fixer.agent.md (scope expanded)
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-3
 runner_compatibility:
-  default: ubuntu-latest        # 2-core — all 4 enforcement domains (D1-D4) supported
+  default: ubuntu-latest        # 2-core — all 5 enforcement domains (D1-D5) supported
   large:   ubuntu-latest-large  # 4-core — parallel domain checks and faster artifact hygiene
 ---
 
-# Codebase Health Guardian v2.0
+# Codebase Health Guardian v2.1
 
 > **Expanded** from `workflow-ci-fixer.agent.md`. Adds D2-Python Quality, D3-Test Policy
-> enforcement, and D4-Artifact Hygiene to the original D1-Workflow YAML scope.
+> enforcement, D4-Artifact Hygiene, and D5-Nightly Health Sweep to the original D1 scope.
+>
+> **S134 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
+> · ✅ Accountability report fresh · ⚠️ 339 advisory (P19/P20/P21 — non-blocking)
 
 ## Mission
 
-Maintain codebase-wide health across four enforcement domains. Runs on every PR as a
-pre-merge gate, and can be invoked manually via `@copilot health-check`.
+Maintain codebase-wide health across **five enforcement domains**. Runs on every PR as a
+pre-merge gate, and can be invoked manually via `@copilot health-check`. Also drives the
+nightly health sweep (S-series sessions) to proactively surface and fix issues before
+they block PRs.
 
-## Four Enforcement Domains
+## Five Enforcement Domains
 
 ### D1 — Workflow YAML (original workflow-ci-fixer scope)
 - Fix YAML syntax errors in `.github/workflows/`
 - Enforce `if: true` / `if: false` guards on pre-Genesis workflows
 - Block deprecated `actions/checkout@v2` (enforce v4+)
 - Validate `ubuntu-latest` runner labels
+- **⚠️ Advisory P20**: 4 workflows have multi-line bash string assignments — use `printf '%s\n'` pattern to avoid actionlint YAML parse errors: `agent-auth-delegation.yml`, `copilot-session-chain.yml`, `create-sub-pr-to-0D_base_.yml`, `promote-integration-branch.yml`
+- **ℹ️ Advisory P21**: 123 workflows use Node.js 20 actions — upgrade deadline 2026-06-02 (use `actions/checkout@v5` etc.)
 
 ### D2 — Python Quality
 ```bash
@@ -40,6 +56,8 @@ python -c "from <module> import <symbol>"  # import smoke
 ```
 - **Auto-fix**: F401, I001, W293, E501 (line length if ≤ 1 char over)
 - **Block merge**: E-level ruff errors not auto-fixed
+- **✅ S134 status**: 0 ruff violations on main (all clean)
+- **⚠️ Advisory P19**: 331 files use `from src.X` imports — should migrate to `from X` (non-blocking; pytest.ini `pythonpath = . src` allows both forms)
 
 ### D3 — Test Policy Enforcement
 Block any commit that:
@@ -68,7 +86,42 @@ Block any commit that:
 [ ] D3: No new bare except: in test files
 [ ] D4: No new .md files in repo root (unless in allowlist)
 [ ] D4: .gitignore has audit_artifacts/** glob pattern
+[ ] D5: Nightly sweep log updated in objectives_tracker.md
+[ ] D5: AGENT_ACCOUNTABILITY_REPORT.md updated within 48h
 ```
+
+## D5 — Nightly Health Sweep
+
+The nightly health sweep (S-series: S134, S135, …) runs every 24h on `main` and covers:
+
+```bash
+# Step 1 — Lint
+python3 -m ruff check                          # must exit 0
+
+# Step 2 — Advisory scan
+python3 scripts/ci/auto_fix_common_issues.py --check-only \
+  --json-output /tmp/sweep-diagnostic.json     # 0 auto-fixable required
+
+# Step 3 — Security (if API accessible)
+gh api repos/{owner}/{repo}/code-scanning/alerts?state=open
+
+# Step 4 — Documentation freshness
+stat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # modified < 48h
+
+# Step 5 — CI health
+# Last 100 main runs must have 0 failures (success/skipped/cancelled only)
+
+# Step 6 — Cognitive brain update
+# Update .codex/cognitive_brain/objectives_tracker.md with sweep results
+```
+
+**Nightly Sweep History:**
+
+| Sweep | Date | Ruff | Auto-Fix | CI Health | Notes |
+|-------|------|------|----------|-----------|-------|
+| S134  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | 339 advisory |
+
+---
 
 ## Activation
 
