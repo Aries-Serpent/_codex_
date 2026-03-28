@@ -822,6 +822,89 @@ Failing to complete session protocol results in:
 
 ---
 
+## §ARLOOP — Already-Addressed-Task Response Protocol (HARD RULE)
+
+> **Trigger:** An automated rescue comment, retrigger post, or manual instruction asks an
+> agent to address a concern that has already been resolved in a previous commit on the
+> SAME PR.
+
+This rule fires **before any other action** when an agent recognises that the requested
+task is already done.
+
+### Step 1 — Acknowledge (do NOT stop here)
+
+State clearly that the specific issue was already fixed and at which commit.
+
+### Step 2 — Execute the PR Completion Sweep (MANDATORY)
+
+Run ALL of the following checks in parallel. Do not skip any.
+
+| Check | How to verify |
+|-------|--------------|
+| **CI: Validation Pipeline** | Confirm latest run on current HEAD = `success` via `list_workflow_runs` |
+| **CI: startup_failure runs** | Confirm they have 0 jobs (pre-existing config issue, not regressions) |
+| **Drift check** | `python3 scripts/ci/sync_tracked_files.py --fix` exits 0 |
+| **EOF newlines** | No `.json`/`.md`/`.yml`/`.py`/`.sh` files missing trailing `\n` |
+| **PR review threads** | Read every `<comment_thread>` in the PR — verify each has a response/fix |
+| **PR comments** | Read every `<comment_new>` — verify each has been replied to |
+| **Open continuation tasks** | Read PR description `- [ ]` checklist items — identify incomplete items |
+
+### Step 3 — Resolve Any Outstanding Items
+
+- If Sweep finds **unaddressed CI failures** → fix immediately (§2 "Address ALL Concerns").
+- If Sweep finds **unanswered review threads** → fix the code and reply.
+- If Sweep finds **unanswered PR comments** → reply and implement if actionable.
+- If Sweep finds **open continuation tasks** → execute them in priority order:
+  1. 🔴 Priority 1 (critical / blocking) first
+  2. 🟡 Priority 2 (validation) second
+  3. 🟢 Priority 3 (enhancement) third
+
+### Step 4 — Merge-Readiness Declaration (MANDATORY when Sweep is clean)
+
+When ALL of the following are true:
+
+- ✅ Validation Pipeline passes on current HEAD
+- ✅ `sync_tracked_files.py --fix` exits 0
+- ✅ Zero files missing EOF newlines
+- ✅ All PR review thread suggestions addressed or explicitly accepted/declined
+- ✅ All `<comment_new>` comments replied to
+- ✅ All `- [ ]` continuation tasks in PR description completed or documented in backlog
+
+The agent MUST post or state the following **verbatim**:
+
+```
+✅ **This PR is ready to be merged.**
+
+| Gate | Status |
+|------|--------|
+| Validation Pipeline | ✅ passing (run <RUN_ID>) |
+| Drift check | ✅ sync_tracked_files exits 0 |
+| EOF scan | ✅ 0 files missing newline |
+| PR review threads | ✅ all addressed |
+| PR comments | ✅ all replied |
+| Continuation tasks | ✅ complete / backlogged |
+```
+
+### Prohibited Responses
+
+The following responses to an already-addressed task are **policy violations**:
+
+| ❌ Prohibited | ✅ Required instead |
+|--------------|-------------------|
+| Stop after explaining the task is done | Execute the full PR Completion Sweep |
+| "Nothing else to do" without running the Sweep | Run the Sweep, then declare merge-readiness |
+| Declare merge-readiness without completing the Sweep | Complete every Sweep check first |
+| Skip continuation tasks because "the issue is resolved" | Resume continuation tasks in priority order |
+
+### Enforcement
+
+This rule is enforced by human review of agent session summaries. Violations are recorded
+in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and trigger a mandatory correction
+session. The deferral language gate (`.github/workflows/deferral-language-gate.yml`) also
+scans for "already addressed / not my concern" phrases that indicate Sweep bypass.
+
+---
+
 ## Code Quality Standards
 
 ### Input Validation & Sanitization
@@ -1255,6 +1338,7 @@ policy violation and must be fixed immediately.
 | 1.0.0 | 2026-01-05 | Initial policy creation |
 | 1.1.0 | 2026-01-05 | Added mandatory session completion protocol |
 | 1.2.0 | 2026-03-13 | Added Network Safety section (ML offline-mode proof) |
+| 1.3.0 | 2026-03-28 | Added §ARLOOP — Already-Addressed-Task Response Protocol (S242, PR #3770) |
 
 ---
 

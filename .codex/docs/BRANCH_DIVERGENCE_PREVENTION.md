@@ -2,7 +2,7 @@
 
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
 **Related workflows:** `forward-sync-autogen.yml`, `branch-divergence-monitor.yml`
-**Last updated:** 2026-03-21 (S171 — PR #3652)
+**Last updated:** 2026-03-28 (S242 — PR #3770, extends S237)
 
 ---
 
@@ -236,3 +236,117 @@ After any staging-gate merge (`0D_base_` → `main`):
 | Forward-sync | Copying auto-gen file content from `main` to `0D_base_`. |
 | Slim format | `codex_index_meta.json` with only header fields (no `chunks` array). |
 | Rebase guard | `git pull --rebase origin 0D_base_` before push to prevent non-fast-forward errors. |
+
+---
+
+## S237 Root Cause Taxonomy (added 2026-03-28)
+
+The following root causes were identified in triage report #3737 and fixed in S237 (PR #3770).
+They represent the most common failure patterns in branch divergence workflows.
+
+### RC-1 — `grep -c . || echo 0` Double-Output Bug ✅ FIXED (S237)
+
+**Affected workflows:** `branch-divergence-monitor.yml`, `doc-freshness-check.yml`
+
+**Pattern:**
+```bash
+COUNT=$(echo "$VAR" | grep -c . || echo 0)
+```
+
+**Failure mode:** `grep -c .` outputs `0` AND exits 1 when input is empty. The `|| echo 0`
+clause then appends a second `0` to stdout. `COUNT` becomes `"0\n0"`.
+
+**Downstream effects:**
+- `echo "behind_count=$BEHIND_COUNT"` → writes `behind_count=0\n0` to `$GITHUB_OUTPUT`
+- GitHub rejects the bare `0` line: `##[error]Invalid format '0'`
+- Python heredoc sees `"behind_count": 0\n0,` → `SyntaxError: invalid syntax`
+
+**Fix:** Replace `|| echo 0` with `|| true`. `grep -c` already outputs `0` on no-match; the
+fallback is redundant and harmful. Defensive Python casts added:
+```python
+int("$VAR".strip() or "0")
+```
+
+---
+
+### RC-2 — `git checkout -B` Without `-f` in Commit-Step Workflows ✅ FIXED (S237)
+
+**Affected workflows:** `cognitive-analysis-feed.yml`, `repo-var-sync-schedule.yml`,
+`embedding-index-rebuild.yml`, `vars-guide-sync.yml`
+
+**Failure mode:** Workflow generates local file changes, copies them to `/tmp`, then runs:
+```bash
+git checkout -B _autogen_sync_ origin/$TARGET
+```
+Git refuses the branch switch because uncommitted changes would be overwritten.
+
+**Why force is safe:** All modified files are already preserved in `/tmp` before the
+checkout. No data is lost by using `-f`.
+
+**Fix:**
+```bash
+git checkout -fB _autogen_sync_ origin/"$TARGET"
+```
+
+---
+
+### RC-3 — Chicken-and-Egg Auto-Gen Routing 🔄 SELF-RESOLVING
+
+**Root cause:** Scheduled workflows always run on `main`. The routing fix
+(`if 0D_base_ exists → push there; else → push to main`) lives on `0D_base_` but not yet
+on `main`. Until the staging-gate PR merges, `main`'s workflow files use the old, pre-fix
+versions and leak auto-gen commits directly to `main`.
+
+**Resolution:** RC-2 fix (S237) allows successful routing commits to reach `0D_base_`.
+Once the staging-gate PR merges, `main` gains the routing fix and divergence accumulation
+drops to near zero.
+
+---
+
+### RC-4 — Branch Divergence Monitor Does Not Alert on Its Own Failure 📋 BACKLOG
+
+**Problem:** When `branch-divergence-monitor.yml` fails internally (RC-1, syntax errors,
+API rate limits), there is no rescue comment posted and the failure is silent.
+
+**Planned fix (OBJ-002-I/J):** Add `rescue-comment-push` job + `continue-on-error: true`
+on count/analysis steps. Tracked as OBJ-002 sub-task I + J.
+
+---
+
+### RC-5 — Non-Fast-Forward Rejection in `forward-sync-autogen.yml` ✅ ALREADY HANDLED
+
+**Situation:** `forward-sync-autogen.yml` may fail with "non-fast-forward" if `0D_base_`
+receives commits between the workflow's checkout and its push.
+
+**Existing fix (pre-S237):** The workflow already contains a rebase guard:
+```bash
+git pull --rebase origin "${TARGET}" || {
+  echo "⚠️  Rebase failed — re-applying files on top of latest ${TARGET}"
+  git rebase --abort 2>/dev/null || true
+  git fetch origin "${TARGET}" --depth=5
+  git reset --hard origin/"${TARGET}"
+  # Re-apply all files and recommit
+}
+```
+This pattern was verified by OBJ-002-K investigation in S242. No code change required.
+
+---
+
+## Agent Execution Protocol (S237)
+
+When the S221 missed-trigger guard or CI rescue posts an alert about branch divergence:
+
+```
+Detect → Classify → Remediate → Verify
+```
+
+| Phase | Action |
+|-------|--------|
+| **Detect** | Check `branch-divergence-monitor.yml` last run output. Identify `severity` and `behind_count`. |
+| **Classify** | `git log origin/0D_base_..origin/main` — are they `github-actions[bot]` (auto-gen) or human (code-leak)? |
+| **Remediate** | Auto-gen: `gh workflow run forward-sync-autogen.yml`. Code-leak: cherry-pick onto `0D_base_` or open investigation session. |
+| **Verify** | Re-run `branch-divergence-monitor.yml --dry-run`. Confirm `behind_count=0` and `severity=healthy`. |
+
+**AfterMath patterns stored:**
+- `.codex/cognitive_brain/patterns/branch_divergence_grep_c_20260327.json` (RC-1)
+- `.codex/cognitive_brain/patterns/git_checkout_without_force_20260327.json` (RC-2)
