@@ -1473,17 +1473,17 @@ class CommonIssueFixer:
         # Group A: v5+ is Node.js 24-safe → flag only v1–v4
         nodejs20_group_a_re = re.compile(
             r"uses:\s*(actions/(?:checkout|upload-artifact|download-artifact|"
-            r"cache|setup-node|configure-pages|deploy-pages))@(v[1-4]\d*)\b",
+            r"cache|setup-node|configure-pages|deploy-pages))@(v[1-4](?:\.[\d]+)*)\b",
             re.IGNORECASE,
         )
         # Group B: setup-python v6+ is Node.js 24 → flag v1–v5
         nodejs20_group_b_re = re.compile(
-            r"uses:\s*(actions/setup-python)@(v[1-5]\d*)\b",
+            r"uses:\s*(actions/setup-python)@(v[1-5](?:\.[\d]+)*)\b",
             re.IGNORECASE,
         )
         # Group C: github-script v8+ is Node.js 24 → flag v1–v7
         nodejs20_group_c_re = re.compile(
-            r"uses:\s*(actions/github-script)@(v[1-7]\d*)\b",
+            r"uses:\s*(actions/github-script)@(v[1-7](?:\.[\d]+)*)\b",
             re.IGNORECASE,
         )
         workflow_dir = self.repo_root / ".github" / "workflows"
