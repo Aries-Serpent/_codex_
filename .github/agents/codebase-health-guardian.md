@@ -1,21 +1,21 @@
 ---
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
-version: 2.5.0
+version: 2.6.0
 updated: 2026-03-28
-last_health_sweep: 2026-03-28T20:30Z (S141)
+last_health_sweep: 2026-03-28T21:22Z (S144)
 sweep_status:
   ruff_violations: 0
   auto_fixable_issues: 0
-  ci_health: "100% — mypy CI gate fixed (S141; baseline 333)"
+  ci_health: "100% — approval gate on 37ced0f (agent-auth-delegation env protection — needs owner click)"
   advisory_patterns:
-    P19_src_absolute_imports: 252  # unchanged (S141 fixes were in src/ not tests/)
+    P19_src_absolute_imports: 140  # S144 N14: 252→140 (-112 in tests/); 9 remain in src/scripts
     P20_yaml_multiline: 0
     P21_nodejs20_actions: 0
     P21_nodejs20_deadline: "2026-06-02 — ALL action families fully upgraded (S135+S136)"
   mypy_baseline: 333  # CI isolated-venv count (was 306 from local env — corrected S141)
 cognitive_integration_level: 3
-aais_contribution: +3.5 points
+aais_contribution: +4.0 points
 batch: pr-6
 supersedes: workflow-ci-fixer.agent.md (scope expanded)
 planset: TOP3_AGENT_ENHANCEMENT_PLANSETS.md#PLANSET-3
@@ -29,8 +29,9 @@ runner_compatibility:
 > **Expanded** from `workflow-ci-fixer.agent.md`. Adds D2-Python Quality, D3-Test Policy
 > enforcement, D4-Artifact Hygiene, and D5-Nightly Health Sweep to the original D1 scope.
 >
-> **S141 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ mypy CI fixed
-> · ✅ P20=0 · ✅ P21=0 · ⚠️ 252 advisory (P19 only, unchanged) · mypy baseline 306→333 (CI env)
+> **S144 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ mypy baseline 333
+> · ✅ P20=0 · ✅ P21=0 · ⚠️ 140 advisory (P19 tests; -112 from S144 N14) · pre-approval hardening complete
+> · **New patterns:** FP-ACTOR-SKIP-001 · FP-PREAPPROVAL-001 · FP-SAFETYCAP-001
 
 ## Mission
 
