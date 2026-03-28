@@ -1448,10 +1448,10 @@ class CommonIssueFixer:
         """Pattern 21: Detect GitHub Actions pinned to Node.js 20 (deadline: 2026-06-02).
 
         GitHub will force all actions to Node.js 24 starting 2026-06-02.  Workflows
-        using ``actions/checkout@v4``, ``actions/setup-python@v5``, etc. will start
-        producing hard failures instead of deprecation warnings.
+        using deprecated action versions will start producing hard failures instead of
+        deprecation warnings.
 
-        Node.js 24-compatible (safe) versions per action family (S135 verified):
+        Node.js 24-compatible (safe) versions per action family (S136 verified):
         - ``actions/checkout``:          v5+ is Node.js 24 (v4 and below = Node.js 20)
         - ``actions/upload-artifact``:   v5+ is Node.js 24 (v4 and below = Node.js 20)
         - ``actions/download-artifact``: v5+ is Node.js 24 (v4 and below = Node.js 20)
@@ -1459,23 +1459,31 @@ class CommonIssueFixer:
         - ``actions/deploy-pages``:      v5+ is Node.js 24 (v4 and below = Node.js 20)
         - ``actions/setup-node``:        v5+ is Node.js 24 (v4 and below = Node.js 20)
         - ``actions/configure-pages``:   v5+ is Node.js 24 (v4 and below = Node.js 20)
-        - ``actions/setup-python``:      v5 is still Node.js 20 (v6+ is Node.js 24)
-        - ``actions/github-script``:     v7 is still Node.js 20 (v8+ is Node.js 24)
+        - ``actions/setup-python``:      v6+ is Node.js 24 (v5 and below = Node.js 20)
+        - ``actions/github-script``:     v8+ is Node.js 24 (v7 and below = Node.js 20)
 
-        Fix strategy (S135): bump to Node.js 24-compatible versions.
+        Upgrade history:
+        - S135: Group A (checkout/artifact/cache/deploy etc.) upgraded v4→v5
+        - S136: setup-python upgraded v5→v6; github-script upgraded v7→v8
+
         Track: https://github.blog/changelog/2025-09-19-deprecation-of-node-20
         """
         issues: List[str] = []
-        # Two-tier detection: different Node.js 20 cutoff per action family.
+        # Three-tier detection: different Node.js 20 cutoff per action family.
         # Group A: v5+ is Node.js 24-safe → flag only v1–v4
         nodejs20_group_a_re = re.compile(
             r"uses:\s*(actions/(?:checkout|upload-artifact|download-artifact|"
             r"cache|setup-node|configure-pages|deploy-pages))@(v[1-4]\d*)\b",
             re.IGNORECASE,
         )
-        # Group B: v5 is still Node.js 20 → flag v1–v5
+        # Group B: setup-python v6+ is Node.js 24 → flag v1–v5
         nodejs20_group_b_re = re.compile(
-            r"uses:\s*(actions/(?:setup-python|github-script))@(v[1-5]\d*)\b",
+            r"uses:\s*(actions/setup-python)@(v[1-5]\d*)\b",
+            re.IGNORECASE,
+        )
+        # Group C: github-script v8+ is Node.js 24 → flag v1–v7
+        nodejs20_group_c_re = re.compile(
+            r"uses:\s*(actions/github-script)@(v[1-7]\d*)\b",
             re.IGNORECASE,
         )
         workflow_dir = self.repo_root / ".github" / "workflows"
@@ -1490,7 +1498,8 @@ class CommonIssueFixer:
                 continue
             matches_a = nodejs20_group_a_re.findall(content)
             matches_b = nodejs20_group_b_re.findall(content)
-            all_matches = matches_a + matches_b
+            matches_c = nodejs20_group_c_re.findall(content)
+            all_matches = matches_a + matches_b + matches_c
             if all_matches:
                 rel = str(wf.relative_to(self.repo_root))
                 unique = list({f"{a}@{v}" for a, v in all_matches})

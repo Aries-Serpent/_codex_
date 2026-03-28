@@ -467,7 +467,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match

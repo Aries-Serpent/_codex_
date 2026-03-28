@@ -1,17 +1,18 @@
 ---
 name: Codebase Health Guardian
 description: Monitor and maintain overall codebase health including code quality, security, and test coverage
-version: 2.1.0
+version: 2.2.0
 updated: 2026-03-28
-last_health_sweep: 2026-03-28T05:50Z (S134)
+last_health_sweep: 2026-03-28T15:55Z (S136)
 sweep_status:
   ruff_violations: 0
   auto_fixable_issues: 0
   ci_health: "100% — 0 failures in last 100 main runs"
   advisory_patterns:
     P19_src_absolute_imports: 331
-    P20_yaml_multiline: 4
-    P21_nodejs20_deadline: "2026-06-02"
+    P20_yaml_multiline: 0
+    P21_nodejs20_actions: 0
+    P21_nodejs20_deadline: "2026-06-02 — ALL action families fully upgraded (S135+S136)"
 cognitive_integration_level: 3
 aais_contribution: +3.5 points
 batch: pr-6
@@ -22,13 +23,13 @@ runner_compatibility:
   large:   ubuntu-latest-large  # 4-core — parallel domain checks and faster artifact hygiene
 ---
 
-# Codebase Health Guardian v2.1
+# Codebase Health Guardian v2.2
 
 > **Expanded** from `workflow-ci-fixer.agent.md`. Adds D2-Python Quality, D3-Test Policy
 > enforcement, D4-Artifact Hygiene, and D5-Nightly Health Sweep to the original D1 scope.
 >
-> **S134 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
-> · ✅ Accountability report fresh · ⚠️ 339 advisory (P19/P20/P21 — non-blocking)
+> **S136 Sweep (2026-03-28):** ✅ 0 ruff violations · ✅ 0 auto-fixable issues · ✅ 100% CI green
+> · ✅ P20=0 (fixed S135) · ✅ P21=0 (resolved S135+S136) · ⚠️ 332 advisory (P19 only)
 
 ## Mission
 
@@ -42,10 +43,13 @@ they block PRs.
 ### D1 — Workflow YAML (original workflow-ci-fixer scope)
 - Fix YAML syntax errors in `.github/workflows/`
 - Enforce `if: true` / `if: false` guards on pre-Genesis workflows
-- Block deprecated `actions/checkout@v2` (enforce v4+)
+- Block deprecated `actions/checkout@v2` or `@v3` or `@v4` (enforce v5+)
 - Validate `ubuntu-latest` runner labels
-- **⚠️ Advisory P20**: 4 workflows have multi-line bash string assignments — use `printf '%s\n'` pattern to avoid actionlint YAML parse errors: `agent-auth-delegation.yml`, `copilot-session-chain.yml`, `create-sub-pr-to-0D_base_.yml`, `promote-integration-branch.yml`
-- **ℹ️ Advisory P21**: 123 workflows use Node.js 20 actions — upgrade deadline 2026-06-02 (use `actions/checkout@v5` etc.)
+- **✅ P20 RESOLVED (S135)**: All multiline bash assignments converted to `printf '%s\n'` form — 0 violations
+- **✅ P21 RESOLVED (S135+S136)**: All Node.js 20 action refs upgraded:
+  - Group A (checkout/artifact/cache): v4→v5 (S135)
+  - Group B (setup-python): v5→v6 (S136)
+  - Group C (github-script): v7→v8 (S136)
 
 ### D2 — Python Quality
 ```bash
@@ -56,8 +60,8 @@ python -c "from <module> import <symbol>"  # import smoke
 ```
 - **Auto-fix**: F401, I001, W293, E501 (line length if ≤ 1 char over)
 - **Block merge**: E-level ruff errors not auto-fixed
-- **✅ S134 status**: 0 ruff violations on main (all clean)
-- **⚠️ Advisory P19**: 331 files use `from src.X` imports — should migrate to `from X` (non-blocking; pytest.ini `pythonpath = . src` allows both forms)
+- **✅ S136 status**: 0 ruff violations (maintained across S134–S136)
+- **⚠️ Advisory P19**: 331 files use `from src.X` imports — should migrate to `from X` (non-blocking; pytest.ini `pythonpath = . src` allows both forms). **Enforce `from <pkg>` in ALL NEW code** (N5 policy — no mass-refactor).
 
 ### D3 — Test Policy Enforcement
 Block any commit that:
@@ -80,6 +84,8 @@ Block any commit that:
 
 ```
 [ ] D1: No YAML syntax errors in .github/workflows/
+[ ] D1: No Pattern 20 (multiline bash) violations — use printf form
+[ ] D1: No Pattern 21 (Node.js 20 actions) — all action refs at Node.js 24 versions
 [ ] D2: ruff check exits 0 on all changed .py files
 [ ] D2: Import smoke passes on all changed source modules
 [ ] D3: No xfail(strict=False) without base-branch SHA doc
@@ -119,7 +125,9 @@ stat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # modified < 48h
 
 | Sweep | Date | Ruff | Auto-Fix | CI Health | Notes |
 |-------|------|------|----------|-----------|-------|
-| S134  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | 339 advisory |
+| S134  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | 339 advisory (P19/P20/P21) |
+| S135  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | P20→0; P21: 211→28 refs |
+| S136  | 2026-03-28 | ✅ 0 | ✅ 0 fixable | ✅ 100% | P21→0 (setup-python@v6, github-script@v8) |
 
 ---
 

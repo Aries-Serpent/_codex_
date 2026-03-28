@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: "🔍 Enumerate and cancel runs"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           STATUS_FILTER: ${{ github.event.inputs.status_filter }}
           MAX_CANCEL: ${{ github.event.inputs.max_cancellations }}

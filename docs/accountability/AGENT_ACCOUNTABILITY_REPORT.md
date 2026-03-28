@@ -3,9 +3,90 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T06:15Z (S135 — Health Sweep N1+N2)
+**Last updated:** 2026-03-28T15:55Z (S136 — Health Sweep N4+N5)
 
 ---
+
+## SESSION SUMMARY — 2026-03-28T15:55Z S136 (Health Sweep N4+N5)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All bot-posted comments reviewed — no open CI rescue comments on health sweep branch ✅
+- [x] **0b.** All failing CI checks reviewed: 0 failures on `main` ✅
+- [x] **0c.** S135 status file loaded — N4/N5 phases adopted ✅
+- [x] **0d.** CODEBASE_AGENCY_POLICY.md loaded ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated in this commit ✅
+- [x] **2.** All loaded: Codebase Agency Policy, S135 cognitive brain status ✅
+
+### Work Completed — S136 N4 (setup-python@v6 + github-script@v8) + N4c (checker) + Agent v2.2
+
+#### N4a — setup-python @v5 → @v6 (41 files: 30 active + 11 disabled/template)
+
+**Verification:** `actions/setup-python@v6` confirmed on GitHub Marketplace with Node.js 24.
+Self-hosted runners require v2.327.1+ (GitHub-hosted runners: no changes needed).
+
+| File type | Count |
+|-----------|-------|
+| Active `.yml` | 30 |
+| `.disabled` | 10 |
+| `.template`/other | 1 |
+
+#### N4b — github-script @v7 → @v8 (52 files: 51 active + 1 disabled) — **NEW GAP FOUND**
+
+**Root cause:** S135 Pattern 21 checker (Group B) flagged `setup-python/github-script` at v1-v5.
+`github-script@v7` was NOT flagged because v7 > v5. This was a checker gap.
+
+**Verification:** `actions/github-script@v8` confirmed on GitHub Marketplace with Node.js 24.
+
+| File type | Count |
+|-----------|-------|
+| Active `.yml` | 51 |
+| `.disabled` | 1 |
+
+#### N4c — Pattern 21 Checker: Two-tier → Three-tier (S136)
+
+**Bug fixed:** `github-script@v7` was silently passing Pattern 21 because Group B only flagged v1-v5.
+Any v6 or v7 github-script refs would escape detection.
+
+**New three-tier checker:**
+
+| Group | Actions | Safe at | Flag range |
+|-------|---------|---------|------------|
+| A | checkout, upload-artifact, download-artifact, cache, setup-node, configure-pages, deploy-pages | v5+ | v1–v4 |
+| B | setup-python | v6+ | v1–v5 |
+| C | github-script | v8+ | v1–v7 |
+
+**Result:** Pattern 21: 28 refs → **0** ✅
+
+#### N5 — P19 src-Import Policy (Documentation Only)
+
+Policy confirmed: enforce `from <pkg>` in ALL NEW Python code. No mass-refactor.
+Documented in `codebase-health-guardian.md` v2.2 D2 section.
+
+#### Agent Update — codebase-health-guardian.md v2.1 → v2.2
+
+Updated production-ready agent with:
+- Architecture diagram (D1-D5 flow)
+- P20/P21 resolution status (both 0)
+- Pattern 21 three-tier table
+- D1 gate checklist entries for P20 + P21
+- Sweep history: S134, S135, S136 rows
+- D2 P19 N5 policy note
+
+### Verification Results
+
+| Check | Before S136 | After S136 |
+|-------|-------------|------------|
+| Pattern 20 (YAML multiline) | 0 ✅ | **0 ✅** |
+| Pattern 21 (Node.js 20) | 28 refs | **0 ✅** |
+| `ruff check` | 0 violations | **0 ✅** |
+| auto-fixable issues | 0 | **0 ✅** |
+| CI health (main) | 100% | **100% ✅** |
+
+### AfterMath PDA Loop
+- **PLAN:** S136 N4 (setup-python@v6, github-script@v8) + checker fix + agent v2.2
+- **DO:** 83 files upgraded; checker three-tier regex; agent updated; P21→0
+- **ASSESS:** All advisory patterns P20+P21 now resolved; P19 (src imports) remains advisory-only
+- **AfterMath:** NODEJS20-001 updated — github-script safe at v8+; three-tier detection pattern
 
 ## SESSION SUMMARY — 2026-03-28T06:15Z S135 (Health Sweep N1+N2)
 

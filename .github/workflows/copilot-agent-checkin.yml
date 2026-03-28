@@ -110,7 +110,7 @@ jobs:
 
     steps:
       - name: "Post research topics and open check-in to Discussion #3756"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           SHA: ${{ github.sha }}
           REF: ${{ github.ref_name }}
@@ -373,7 +373,7 @@ jobs:
       # session to complete — if no session ran, this guard acts as fallback.
       - name: "Missed-trigger guard — re-trigger unanswered rescue comments"
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           GH_DISCUSSION_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
@@ -582,7 +582,7 @@ jobs:
       # is silently wasted.
       - name: "Incomplete-session guard — re-trigger if attestation missing"
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           PR_NUMBER: ${{ github.event.pull_request.number || '' }}
@@ -768,7 +768,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: "Post reply to discussion comment"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           REPLY_COMMENT_NODE_ID: ${{ github.event.inputs.reply_comment_node_id }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}

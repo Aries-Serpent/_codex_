@@ -111,7 +111,7 @@ jobs:
           print(f"✅ Extracted session entry: {session_id[:80]}")
 
       - name: Post to GitHub Discussion #3673
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           SESSION_ID: ${{ steps.extract.outputs.session_id }}
           PR_NUMBER: ${{ inputs.pr_number || github.event.pull_request.number || '' }}

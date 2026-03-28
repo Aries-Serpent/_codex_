@@ -47,7 +47,7 @@ jobs:
         # Pre-creating the directory prevents that transient post-step failure.
 
       - name: "🐍 Set up Python"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1

@@ -136,7 +136,7 @@ jobs:
 
       - name: Post rescue comment on validation failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           BRANCH_REF: ${{ github.head_ref }}
         with:
@@ -299,7 +299,7 @@ jobs:
 
       - name: Post rescue comment on shard failure
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           BRANCH_REF: ${{ github.head_ref }}
         with:

@@ -12,7 +12,7 @@
 # Replace the step that creates a standalone comment:
 #
 #   # ❌ Old pattern (creates comment noise)
-#   - uses: actions/github-script@v7
+#   - uses: actions/github-script@v8
 #     with:
 #       script: |
 #         github.rest.issues.createComment({
@@ -95,7 +95,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
