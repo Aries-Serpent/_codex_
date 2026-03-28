@@ -3,9 +3,37 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/s134-health-sweep-codebase
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-28T18:56Z (S139 — CI rescue: crawler import regression + mypy baseline)
+**Last updated:** 2026-03-28T21:00Z (S142 — Validation Pipeline fix: cross-reference checker + trailing whitespace)
 
 ---
+
+## SESSION SUMMARY — 2026-03-28T21:00Z S142 (Validation Pipeline Fix + PR Sweep)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All PR comments reviewed: S221 false-positive (4148766957) replied "Resolved at `cce40f1`"; CI rescue (4148773534) investigated ✅
+- [x] **0b.** Failing CI check reviewed: Validation Pipeline / Fast Validation (run 23693656325) — `check-cross-references` hook failure on `pages-mkdocs.yml` + trailing whitespace in accountability report ✅
+- [x] **0c.** All 3 `copilot-pull-request-reviewer` thread items confirmed applied (commit `3f60148`): codex_offline_audit.py sys.path, auto_fix_common_issues.py sorted(), test_extended_trainer.py import alignment ✅
+- [x] **0d.** Branch 33 commits ahead of main — no merge conflicts ✅
+- [x] **0e.** `CODEBASE_AGENCY_POLICY.md`, `AGENT_ACCOUNTABILITY_REPORT.md`, stored session memories all loaded ✅
+
+### Work Completed
+1. **Fixed `scripts/ci/check_cross_references.py`** — Added `SKIP_FILES` frozenset mechanism to exclude files that contain inline Python scripts generating Markdown content. Added `pages-mkdocs.yml` (Python `f.write()` calls write link syntax to `docs/api/index.md`) and `check_cross_references.py` itself (self-referential: docstring documents the syntax it detects). Fixed `_should_skip()` to resolve relative paths, fixed `main()` to apply `_should_skip` to directly-passed files, and fixed `relative_to` crash in error-printing loop.
+2. **Fixed trailing whitespace** in `AGENT_ACCOUNTABILITY_REPORT.md` line 36 — pre-commit hook auto-modified this causing hook "fail"; committed the clean version.
+3. **Replied to S221 false-positive retrigger** (comment 4148766957, rescue `a12f5e295edf`) — "Resolved at `cce40f1`" per §ARLOOP v1.3.0; `hasResponse` check satisfied.
+4. **Confirmed all 3 PR review items applied** (r3005235897, r3005235904, r3005235910): sys.path fix, sorted(), import alignment — all in commit `3f60148`.
+
+### New Patterns Established
+- **CHECKER-SKIP-001**: Scripts that check for patterns they document in their own docstring should be added to `SKIP_FILES` with `# self-referential` comment.
+- **SKIP-INLINE-PY-001**: Workflow YAML files with `run: python -c "..."` blocks that write Markdown content should be in `SKIP_FILES` — links are relative to the OUTPUT file, not the YAML.
+
+### Impact Score
+- Files fixed: 2 source files
+- CI gates unblocked: Validation Pipeline / Fast Validation
+- Deferral Language Gate: 0 violations
+
+---
+
+
 
 ## SESSION SUMMARY — 2026-03-28T18:56Z S139 (CI Rescue)
 
@@ -33,7 +61,7 @@
 
 **Root cause:** The broken `from services.crawler.zendesk_sync import` in try/except with `# type: ignore[no-redef]` / `# type: ignore[assignment]` annotations generated mypy-visible errors. Additionally, the PR merge commit (CI runs on the auto-merge of branch + main) may have contributed additional error count vs local run.
 
-**Fix:** 
+**Fix:**
 1. Fixed `src/services/crawler/__init__.py` with relative imports → reduced local mypy count from 333 → 306.
 2. Updated `.mypy_baseline` from 333 → 306 (ratchet down — codebase improvement).
 
