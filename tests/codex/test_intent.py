@@ -18,7 +18,7 @@ class TestIntentInferer:
 
     def test_infer_cli_tool(self):
         """Test inferring intent for a CLI tool."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -36,7 +36,7 @@ class TestIntentInferer:
 
     def test_infer_web_service(self):
         """Test inferring intent for a web service."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -53,7 +53,7 @@ class TestIntentInferer:
 
     def test_infer_gui_app(self):
         """Test inferring intent for a GUI application."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -69,7 +69,7 @@ class TestIntentInferer:
 
     def test_infer_data_processing(self):
         """Test inferring intent for data processing code."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -85,7 +85,7 @@ class TestIntentInferer:
 
     def test_infer_unknown_code(self):
         """Test inferring intent for unknown code type."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -102,7 +102,7 @@ class TestIntentInferer:
 
     def test_infer_with_entry_point(self):
         """Test that entry point detection increases confidence."""
-        from src.codex.intent.inferer import infer_intent
+        from codex.intent.inferer import infer_intent
 
         static_report = {
             "snapshot_id": "test-123",
@@ -120,7 +120,7 @@ class TestIntentInferer:
 
     def test_intent_spec_to_dict(self):
         """Test IntentSpec serialization."""
-        from src.codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
+        from codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
 
         intent = IntentSpec(
             snapshot_id="test-123",
@@ -141,7 +141,7 @@ class TestIntentInferer:
 
     def test_intent_spec_save(self, tmp_path: Path):
         """Test saving IntentSpec to file."""
-        from src.codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import IntentSpec
 
         intent = IntentSpec(
             snapshot_id="test-123",
@@ -161,7 +161,7 @@ class TestCodeTypeDetection:
 
     def test_detect_cli_tool(self):
         """Test CLI tool detection."""
-        from src.codex.intent.inferer import _detect_cli_tool
+        from codex.intent.inferer import _detect_cli_tool
 
         assert _detect_cli_tool(["argparse"], [])
         assert _detect_cli_tool(["click"], [])
@@ -170,7 +170,7 @@ class TestCodeTypeDetection:
 
     def test_detect_gui_app(self):
         """Test GUI app detection."""
-        from src.codex.intent.inferer import _detect_gui_app
+        from codex.intent.inferer import _detect_gui_app
 
         assert _detect_gui_app(["tkinter"])
         assert _detect_gui_app(["PyQt5"])
@@ -179,7 +179,7 @@ class TestCodeTypeDetection:
 
     def test_detect_web_service(self):
         """Test web service detection."""
-        from src.codex.intent.inferer import _detect_web_service
+        from codex.intent.inferer import _detect_web_service
 
         assert _detect_web_service(["flask"])
         assert _detect_web_service(["fastapi"])
@@ -188,7 +188,7 @@ class TestCodeTypeDetection:
 
     def test_detect_networked(self):
         """Test networked app detection."""
-        from src.codex.intent.inferer import _detect_networked
+        from codex.intent.inferer import _detect_networked
 
         assert _detect_networked(["requests"])
         assert _detect_networked(["httpx"])
@@ -197,7 +197,7 @@ class TestCodeTypeDetection:
 
     def test_detect_data_processing(self):
         """Test data processing detection."""
-        from src.codex.intent.inferer import _detect_data_processing
+        from codex.intent.inferer import _detect_data_processing
 
         assert _detect_data_processing(["pandas"])
         assert _detect_data_processing(["numpy"])
@@ -210,7 +210,7 @@ class TestLLMClient:
 
     def test_client_initialization_without_key(self):
         """Test client initialization without API key."""
-        from src.codex.intent.llm_client import CodexLLMClient
+        from codex.intent.llm_client import CodexLLMClient
 
         with patch.dict("os.environ", {}, clear=True):
             client = CodexLLMClient(allow_external_llm=True)
@@ -221,7 +221,7 @@ class TestLLMClient:
         """Test rate limiting between calls."""
         import time
 
-        from src.codex.intent.llm_client import CodexLLMClient
+        from codex.intent.llm_client import CodexLLMClient
 
         client = CodexLLMClient(allow_external_llm=False)
 
@@ -235,7 +235,7 @@ class TestLLMClient:
 
     def test_build_intent_prompt(self):
         """Test building intent inference prompt."""
-        from src.codex.intent.llm_client import CodexLLMClient
+        from codex.intent.llm_client import CodexLLMClient
 
         client = CodexLLMClient(allow_external_llm=False)
 
@@ -253,7 +253,7 @@ class TestLLMClient:
 
     def test_truncate_context(self):
         """Test context truncation for token budget."""
-        from src.codex.intent.llm_client import _truncate_context
+        from codex.intent.llm_client import _truncate_context
 
         long_text = "x" * 50000
         truncated = _truncate_context(long_text, max_chars=1000)
@@ -263,7 +263,7 @@ class TestLLMClient:
 
     def test_hash_prompt(self):
         """Test prompt hashing for provenance."""
-        from src.codex.intent.llm_client import _hash_prompt
+        from codex.intent.llm_client import _hash_prompt
 
         prompt = "Test prompt"
         hash1 = _hash_prompt(prompt)
@@ -274,7 +274,7 @@ class TestLLMClient:
 
     def test_infer_intent_without_client(self):
         """Test intent inference when LLM is unavailable."""
-        from src.codex.intent.llm_client import CodexLLMClient
+        from codex.intent.llm_client import CodexLLMClient
 
         client = CodexLLMClient(allow_external_llm=False)
 
@@ -288,7 +288,7 @@ class TestProvenanceRecord:
 
     def test_provenance_record_to_dict(self):
         """Test provenance record serialization."""
-        from src.codex.intent.llm_client import ProvenanceRecord
+        from codex.intent.llm_client import ProvenanceRecord
 
         record = ProvenanceRecord(
             prompt_hash="abc123",
@@ -311,7 +311,7 @@ class TestProvenanceRecord:
 
     def test_provenance_record_save(self, tmp_path: Path):
         """Test saving provenance record."""
-        from src.codex.intent.llm_client import ProvenanceRecord
+        from codex.intent.llm_client import ProvenanceRecord
 
         record = ProvenanceRecord(
             prompt_hash="abc123def456",

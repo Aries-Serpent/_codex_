@@ -8,7 +8,7 @@ import logging
 
 import pytest
 
-from src.security import log_security_event
+from security import log_security_event
 
 
 def test_security_event_logged(caplog: pytest.LogCaptureFixture) -> None:

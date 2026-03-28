@@ -7,7 +7,7 @@ Priority 1 - CRITICAL gap (0% → 80%)
 
 from unittest.mock import MagicMock, Mock, patch
 
-from src.codex.rag.gpu_utils import (
+from codex.rag.gpu_utils import (
     check_cuda_available,
     get_gpu_memory,
     get_optimal_batch_size,

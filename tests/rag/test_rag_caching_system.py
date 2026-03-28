@@ -23,7 +23,7 @@ class TestEmbeddingCache:
     def test_embedding_cache_initialization(self):
         """Test embedding cache initialization."""
         try:
-            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(
@@ -38,7 +38,7 @@ class TestEmbeddingCache:
     def test_embedding_cache_hit(self):
         """Test embedding cache hit."""
         try:
-            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(
@@ -64,7 +64,7 @@ class TestEmbeddingCache:
     def test_embedding_cache_miss(self):
         """Test embedding cache miss."""
         try:
-            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(
@@ -83,7 +83,7 @@ class TestEmbeddingCache:
     def test_embedding_cache_persistence(self):
         """Test that embedding cache persists across instances."""
         try:
-            from src.codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(
@@ -108,7 +108,7 @@ class TestEmbeddingCache:
     def test_embedding_cache_eviction(self):
         """Test cache eviction policy."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create cache with small max size
@@ -131,7 +131,7 @@ class TestDocumentCache:
     def test_document_cache_basic(self):
         """Test basic document caching."""
         try:
-            from src.codex.rag.cache import DocumentCache
+            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -153,7 +153,7 @@ class TestDocumentCache:
     def test_document_cache_with_embeddings(self):
         """Test caching documents with pre-computed embeddings."""
         try:
-            from src.codex.rag.cache import DocumentCache
+            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -173,7 +173,7 @@ class TestDocumentCache:
     def test_document_cache_bulk_operations(self):
         """Test bulk document caching operations."""
         try:
-            from src.codex.rag.cache import DocumentCache
+            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -201,7 +201,7 @@ class TestQueryCache:
     def test_query_cache_basic(self):
         """Test basic query caching."""
         try:
-            from src.codex.rag.cache import QueryCache
+            from codex.rag.cache import QueryCache
 
             cache = QueryCache()
 
@@ -222,7 +222,7 @@ class TestQueryCache:
     def test_query_cache_with_filters(self):
         """Test query caching with filters."""
         try:
-            from src.codex.rag.cache import QueryCache
+            from codex.rag.cache import QueryCache
 
             cache = QueryCache()
 
@@ -250,7 +250,7 @@ class TestQueryCache:
     def test_query_cache_ttl(self):
         """Test query cache time-to-live."""
         try:
-            from src.codex.rag.cache import QueryCache
+            from codex.rag.cache import QueryCache
 
             cache = QueryCache(ttl=1)  # 1 second TTL
 
@@ -281,7 +281,7 @@ class TestCacheInvalidation:
     def test_cache_clear_all(self):
         """Test clearing entire cache."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -303,7 +303,7 @@ class TestCacheInvalidation:
     def test_cache_delete_specific(self):
         """Test deleting specific cache entries."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -326,7 +326,7 @@ class TestCacheInvalidation:
     def test_cache_invalidate_pattern(self):
         """Test invalidating cache entries by pattern."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -355,7 +355,7 @@ class TestCachePerformance:
     def test_cache_lookup_speed(self):
         """Test cache lookup performance."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -378,7 +378,7 @@ class TestCachePerformance:
     def test_cache_write_speed(self):
         """Test cache write performance."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -399,7 +399,7 @@ class TestCachePerformance:
         try:
             import sys
 
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -424,7 +424,7 @@ class TestCacheConsistency:
     def test_cache_key_hashing(self):
         """Test that cache keys are properly hashed."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -445,7 +445,7 @@ class TestCacheConsistency:
     def test_cache_collision_handling(self):
         """Test cache collision handling."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -467,7 +467,7 @@ class TestCacheConsistency:
         try:
             import threading
 
-            from src.codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -503,8 +503,8 @@ class TestCacheIntegration:
     def test_cache_with_embeddings(self):
         """Test cache integration with embedding generation."""
         try:
-            from src.codex.rag.cache import EmbeddingCache
-            from src.codex.rag.embeddings import TFIDFEmbeddingProvider
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.embeddings import TFIDFEmbeddingProvider
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -529,8 +529,8 @@ class TestCacheIntegration:
     def test_cache_with_retrieval(self):
         """Test cache integration with retrieval."""
         try:
-            from src.codex.rag.cache import QueryCache
-            from src.codex.rag.retriever import CodexRetriever
+            from codex.rag.cache import QueryCache
+            from codex.rag.retriever import CodexRetriever
 
             cache = QueryCache()
             retriever = CodexRetriever()

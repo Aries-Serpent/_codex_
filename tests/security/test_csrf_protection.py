@@ -6,7 +6,7 @@ Test module for csrf protection.
 
 import pytest
 
-from src.security import SecurityError, verify_csrf_token
+from security import SecurityError, verify_csrf_token
 
 
 def test_missing_csrf_token() -> None:

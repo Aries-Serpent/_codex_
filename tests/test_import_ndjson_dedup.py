@@ -6,8 +6,8 @@ Test module for import ndjson dedup.
 
 import sqlite3
 
-from src.codex.logging import import_ndjson, session_hooks
-from src.codex.logging.session_hooks import session
+from codex.logging import import_ndjson, session_hooks
+from codex.logging.session_hooks import session
 
 
 def test_importer_deduplicates_start_end(tmp_path, monkeypatch):

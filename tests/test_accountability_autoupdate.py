@@ -16,7 +16,7 @@ import json
 
 import pytest
 
-from src.codex.session.accountability_autoupdate import (
+from codex.session.accountability_autoupdate import (
     append_to_report,
     collect_metadata,
     compute_score,

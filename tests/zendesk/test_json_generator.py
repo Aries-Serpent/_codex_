@@ -14,7 +14,7 @@ import json
 
 import pytest
 
-from src.zendesk.json_generator import (
+from zendesk.json_generator import (
     ScriptTemplate,
     TemplateVariable,
     ZendeskJSONGenerator,

@@ -18,7 +18,7 @@ class TestStaticAnalyzer:
 
     def test_analyze_simple_file(self, tmp_path: Path):
         """Test analyzing a simple Python file."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     def test_analyze_multiple_files(self, tmp_path: Path):
         """Test analyzing multiple Python files."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     def test_analyze_extracts_imports(self, tmp_path: Path):
         """Test that imports are correctly extracted."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -79,7 +79,7 @@ from typing import List, Dict
 
     def test_analyze_extracts_exports(self, tmp_path: Path):
         """Test that exports are correctly extracted."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -108,7 +108,7 @@ class _PrivateClass:
 
     def test_analyze_calculates_complexity(self, tmp_path: Path):
         """Test complexity calculation."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -139,7 +139,7 @@ def complex_function(x, y, z):
 
     def test_analyze_handles_syntax_errors(self, tmp_path: Path):
         """Test that syntax errors are handled gracefully."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -158,7 +158,7 @@ def broken(
 
     def test_report_to_dict(self, tmp_path: Path):
         """Test report serialization."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -174,7 +174,7 @@ def broken(
 
     def test_report_save(self, tmp_path: Path):
         """Test saving report to file."""
-        from src.codex.analyze.static.analyzer import analyze
+        from codex.analyze.static.analyzer import analyze
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -196,7 +196,7 @@ class TestLineCount:
 
     def test_count_lines_simple(self, tmp_path: Path):
         """Test counting lines in simple file."""
-        from src.codex.analyze.static.analyzer import _count_lines
+        from codex.analyze.static.analyzer import _count_lines
 
         content = """line 1
 line 2
@@ -209,7 +209,7 @@ line 3
 
     def test_count_lines_with_comments(self, tmp_path: Path):
         """Test that comments are excluded from SLOC."""
-        from src.codex.analyze.static.analyzer import _count_lines
+        from codex.analyze.static.analyzer import _count_lines
 
         content = """# Comment 1
 def func():  # Inline comment
@@ -223,7 +223,7 @@ def func():  # Inline comment
 
     def test_count_lines_with_docstrings(self, tmp_path: Path):
         """Test that docstrings are excluded from SLOC."""
-        from src.codex.analyze.static.analyzer import _count_lines
+        from codex.analyze.static.analyzer import _count_lines
 
         content = '''def func():
     """
@@ -243,7 +243,7 @@ class TestComplexityCalculation:
 
     def test_complexity_linear_function(self):
         """Test complexity of a linear function."""
-        from src.codex.analyze.static.analyzer import _calculate_complexity
+        from codex.analyze.static.analyzer import _calculate_complexity
 
         code = """
 def linear():
@@ -258,7 +258,7 @@ def linear():
 
     def test_complexity_with_if(self):
         """Test complexity with if statement."""
-        from src.codex.analyze.static.analyzer import _calculate_complexity
+        from codex.analyze.static.analyzer import _calculate_complexity
 
         code = """
 def with_if(x):
@@ -273,7 +273,7 @@ def with_if(x):
 
     def test_complexity_with_loop(self):
         """Test complexity with loop."""
-        from src.codex.analyze.static.analyzer import _calculate_complexity
+        from codex.analyze.static.analyzer import _calculate_complexity
 
         code = """
 def with_loop(items):
@@ -291,7 +291,7 @@ class TestImportExtraction:
 
     def test_extract_simple_imports(self):
         """Test extracting simple imports."""
-        from src.codex.analyze.static.analyzer import _extract_imports
+        from codex.analyze.static.analyzer import _extract_imports
 
         code = """
 import os
@@ -305,7 +305,7 @@ import sys
 
     def test_extract_from_imports(self):
         """Test extracting from imports."""
-        from src.codex.analyze.static.analyzer import _extract_imports
+        from codex.analyze.static.analyzer import _extract_imports
 
         code = """
 from pathlib import Path
@@ -319,7 +319,7 @@ from typing import List, Dict
 
     def test_extract_imports_deduplication(self):
         """Test that duplicate imports are deduplicated."""
-        from src.codex.analyze.static.analyzer import _extract_imports
+        from codex.analyze.static.analyzer import _extract_imports
 
         code = """
 import os

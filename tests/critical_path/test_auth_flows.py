@@ -15,10 +15,10 @@ import time
 
 import pytest
 
-from src.codex.auth.middleware import (
+from codex.auth.middleware import (
     RateLimiter,
 )
-from src.codex.auth.token_manager import (
+from codex.auth.token_manager import (
     TokenManager,
     TokenType,
 )

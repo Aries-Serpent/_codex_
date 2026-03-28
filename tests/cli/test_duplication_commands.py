@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from src.codex.cli import cli
+from codex.cli import cli
 
 
 class TestDuplicationCheckCommand:

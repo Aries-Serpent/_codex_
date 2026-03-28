@@ -11,8 +11,8 @@ import math
 
 import pytest
 
-from src.rag.pipelines.chunking import Chunk
-from src.rag.pipelines.quantum_retrieval import (
+from rag.pipelines.chunking import Chunk
+from rag.pipelines.quantum_retrieval import (
     QuantumEnhancedRetrieval,
     QuantumRelevanceScorer,
     QuantumState,
@@ -430,7 +430,7 @@ class TestRecordScoringPattern:
         """Test successful pattern recording."""
         scorer = QuantumRelevanceScorer()
 
-        from src.rag.pipelines.retrieval import RetrievalResult
+        from rag.pipelines.retrieval import RetrievalResult
 
         results = [
             RetrievalResult(

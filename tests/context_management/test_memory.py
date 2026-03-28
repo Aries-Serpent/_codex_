@@ -9,7 +9,7 @@ Phase 9.1 Coverage Enhancement
 
 from datetime import datetime
 
-from src.context_management.memory import (
+from context_management.memory import (
     ContextMemory,
     MemoryChunk,
     RetrievalResult,

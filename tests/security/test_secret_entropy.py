@@ -6,7 +6,7 @@ security policy.
 
 from __future__ import annotations
 
-from src.security import check_secret_entropy
+from security import check_secret_entropy
 
 
 class TestSecretEntropy:

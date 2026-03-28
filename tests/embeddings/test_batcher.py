@@ -4,7 +4,7 @@ Test Batcher
 Test module for batcher.
 """
 
-from src.mcp.embeddings.batcher import batch_iterable, compute_checksum
+from mcp.embeddings.batcher import batch_iterable, compute_checksum
 
 
 def test_batch_iterable():

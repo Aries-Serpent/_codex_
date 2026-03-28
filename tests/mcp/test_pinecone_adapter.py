@@ -9,7 +9,7 @@ Test module for pinecone adapter.
 
 import pytest
 
-from src.mcp.backends.pinecone_adapter import PineconeAdapter
+from mcp.backends.pinecone_adapter import PineconeAdapter
 
 
 class FakeIndex:

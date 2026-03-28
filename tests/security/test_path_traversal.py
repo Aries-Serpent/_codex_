@@ -6,7 +6,7 @@ Test module for path traversal.
 
 import pytest
 
-from src.security import SecurityError, validate_input
+from security import SecurityError, validate_input
 
 
 def test_path_traversal_blocked() -> None:

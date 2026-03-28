@@ -29,7 +29,7 @@ class TestImportMigration:
         return ImportMigration(
             file_path="/test/file.py",
             old_import="from training.model import Model",
-            new_import="from src.training.model import Model",
+            new_import="from training.model import Model",
             line_number=5,
         )
 
@@ -37,7 +37,7 @@ class TestImportMigration:
         """Test ImportMigration initializes correctly."""
         assert basic_migration.file_path == "/test/file.py"
         assert basic_migration.old_import == "from training.model import Model"
-        assert basic_migration.new_import == "from src.training.model import Model"
+        assert basic_migration.new_import == "from training.model import Model"
         assert basic_migration.line_number == 5
 
     def test_calculate_properties(self, basic_migration):
@@ -68,7 +68,7 @@ class TestImportMigration:
         long_migration = ImportMigration(
             file_path="/test/file.py",
             old_import="from very.very.deep.nested.module.path import VeryLongClassName",
-            new_import="from src.very.very.deep.nested.module.path import VeryLongClassName",
+            new_import="from very.very.deep.nested.module.path import VeryLongClassName",
             line_number=1,
         )
         long_migration.calculate_properties()
@@ -155,8 +155,8 @@ from training.pipeline import Pipeline
 
     def test_migration_map_content(self, orchestrator):
         """Test migration map has expected mappings."""
-        assert orchestrator.migration_map["from training."] == "from src.training."
-        assert orchestrator.migration_map["from models."] == "from src.models."
+        assert orchestrator.migration_map["from training."] == "from training."
+        assert orchestrator.migration_map["from models."] == "from models."
         assert orchestrator.migration_map["import training."] == "import src.training."
         assert orchestrator.migration_map["import models."] == "import src.models."
 
@@ -301,7 +301,7 @@ from training.pipeline import Pipeline
         # Check one file was actually modified
         test_file1 = temp_repo / "module1.py"
         content = test_file1.read_text()
-        assert "from src.training.model import Model" in content  # New import
+        assert "from training.model import Model" in content  # New import
         assert "from training.model import Model" not in content  # Old import removed
 
     def test_execute_migrations_groups_by_file(self, orchestrator, temp_repo):
@@ -393,7 +393,7 @@ def preprocess():
         # Verify migrations were applied
         app_file = complex_repo / "app.py"
         app_content = app_file.read_text()
-        assert "from src.training.model import Model" in app_content
+        assert "from training.model import Model" in app_content
 
     def test_workflow_with_no_deprecated_imports(self):
         """Test workflow when repository has no deprecated imports."""
@@ -483,6 +483,6 @@ def test():
         assert "import training.trainer" not in final_content
 
         # Verify all new imports are present
-        assert "from src.training.model" in final_content
-        assert "from src.models.classifier" in final_content
+        assert "from training.model" in final_content
+        assert "from models.classifier" in final_content
         assert "import src.training.trainer" in final_content

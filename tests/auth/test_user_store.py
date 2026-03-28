@@ -5,8 +5,8 @@ Tests for UserStore and PasswordHasher.
 
 import pytest
 
-from src.codex.auth.exceptions import InvalidCredentialsError
-from src.codex.auth.user_store import PasswordHasher, User, UserStore
+from codex.auth.exceptions import InvalidCredentialsError
+from codex.auth.user_store import PasswordHasher, User, UserStore
 
 
 class TestPasswordHasher:

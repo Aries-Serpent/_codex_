@@ -8,7 +8,7 @@ import time
 
 import pytest
 
-from src.codex.auth.mfa_provider import (
+from codex.auth.mfa_provider import (
     BackupCode,
     MFAProvider,
     MFASecret,

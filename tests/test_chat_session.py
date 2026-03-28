@@ -13,7 +13,7 @@ import uuid
 
 import pytest
 
-from src.codex.chat import ChatSession
+from codex.chat import ChatSession
 
 
 def _count(db):

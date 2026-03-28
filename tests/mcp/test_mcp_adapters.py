@@ -11,7 +11,7 @@ class TestMockBackend:
     @pytest.fixture
     def backend(self):
         """Create a mock backend for testing."""
-        from src.mcp.adapters.mock_backend import MockBackend
+        from mcp.adapters.mock_backend import MockBackend
 
         return MockBackend(simulated_latency_ms=0)
 
@@ -118,7 +118,7 @@ class TestMCPMetrics:
     @pytest.fixture
     def metrics(self):
         """Create metrics instance for testing."""
-        from src.mcp.metrics.mcp_metrics import MCPMetrics
+        from mcp.metrics.mcp_metrics import MCPMetrics
 
         return MCPMetrics()
 
@@ -171,7 +171,7 @@ class TestMetricCollector:
     @pytest.fixture
     def collector(self):
         """Create a collector for testing."""
-        from src.mcp.metrics.mcp_metrics import MetricCollector
+        from mcp.metrics.mcp_metrics import MetricCollector
 
         return MetricCollector()
 

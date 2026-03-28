@@ -17,7 +17,7 @@ import pytest
 responses = pytest.importorskip("responses")
 from responses import matchers  # noqa: E402
 
-from src.zendesk.api_client import ZendeskAPIClient, ZendeskConfig  # noqa: E402
+from zendesk.api_client import ZendeskAPIClient, ZendeskConfig  # noqa: E402
 
 # ==============================================================================
 # FIXTURES

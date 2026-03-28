@@ -9,12 +9,12 @@ import pytest
 
 np = pytest.importorskip("numpy")
 pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
-from src.codex.retrieval.stores.base import (
+from codex.retrieval.stores.base import (
     DimensionMismatchError,
     VectorNotFoundError,
     VectorStore,
 )
-from src.codex.retrieval.stores.faiss_store import FAISSStore
+from codex.retrieval.stores.faiss_store import FAISSStore
 
 
 class TestVectorStoreInterface:

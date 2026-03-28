@@ -7,9 +7,9 @@ Test module for ndjson db parity.
 import json
 from datetime import UTC, datetime
 
-from src.codex.logging import import_ndjson, session_hooks
-from src.codex.logging.fetch_messages import fetch_messages
-from src.codex.logging.session_hooks import session
+from codex.logging import import_ndjson, session_hooks
+from codex.logging.fetch_messages import fetch_messages
+from codex.logging.session_hooks import session
 
 
 def test_ndjson_matches_db(tmp_path, monkeypatch):

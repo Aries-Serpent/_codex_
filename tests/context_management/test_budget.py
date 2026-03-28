@@ -9,7 +9,7 @@ Phase 9.1 Coverage Enhancement
 
 from datetime import datetime
 
-from src.context_management.budget import (
+from context_management.budget import (
     HARD_TOKEN_CEILING,
     SOFT_TOKEN_CAP,
     ContentBlock,

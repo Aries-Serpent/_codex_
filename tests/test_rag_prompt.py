@@ -1,5 +1,5 @@
 """Tests for RAG prompt assembly"""
-from src.codex.rag.prompt import (
+from codex.rag.prompt import (
     PromptConfig,
     PromptTemplate,
     _count_tokens,

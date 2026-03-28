@@ -4,7 +4,7 @@ Test Dedupe
 Test module for dedupe.
 """
 
-from src.mcp.embeddings.dedupe import InMemoryDeduper
+from mcp.embeddings.dedupe import InMemoryDeduper
 
 
 def test_dedupe():

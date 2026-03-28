@@ -17,8 +17,8 @@ import unittest.mock as mock
 
 import pytest
 
-from src.codex.auth.exceptions import AuthenticationError
-from src.codex.auth.github_app import (
+from codex.auth.exceptions import AuthenticationError
+from codex.auth.github_app import (
     GitHubApp,
     GitHubAppConfig,
     InstallationToken,

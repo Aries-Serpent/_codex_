@@ -2,7 +2,7 @@
 
 import sqlite3
 
-from src.codex.db import sqlite_patch
+from codex.db import sqlite_patch
 
 
 def test_sqlite_pool_close(tmp_path, monkeypatch):

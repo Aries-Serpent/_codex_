@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from src.codex.dynamics.model.sla import (
+from codex.dynamics.model.sla import (
     SLAMetric,
     SLAPauseCondition,
     SLAPolicy,

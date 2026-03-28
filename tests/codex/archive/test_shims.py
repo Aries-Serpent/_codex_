@@ -30,7 +30,7 @@ class TestWritePythonShim:
         content = shim_path.read_text()
 
         assert "AUTO-GENERATED SHIM" in content
-        assert "from src.canonical.module import *" in content
+        assert "from canonical.module import *" in content
         assert "DeprecationWarning" in content
 
     def test_creates_parent_dirs(self, tmp_path):

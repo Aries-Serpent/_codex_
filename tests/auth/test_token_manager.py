@@ -8,7 +8,7 @@ import time
 
 import pytest
 
-from src.codex.auth.token_manager import (
+from codex.auth.token_manager import (
     SessionInfo,
     TokenClaims,
     TokenManager,

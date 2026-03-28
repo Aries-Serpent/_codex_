@@ -11,7 +11,7 @@ class TestAgentCore:
     @pytest.fixture
     def agent(self):
         """Create an agent for testing."""
-        from src.agent.core import AgentCore
+        from agent.core import AgentCore
 
         return AgentCore()
 
@@ -67,14 +67,14 @@ class TestMockAdapter:
     @pytest.fixture
     def adapter(self):
         """Create a mock adapter."""
-        from src.agent.adapters.mock_adapter import MockAdapter
+        from agent.adapters.mock_adapter import MockAdapter
 
         return MockAdapter()
 
     @pytest.mark.asyncio
     async def test_complete(self, adapter):
         """Test completion with mock adapter."""
-        from src.agent.adapters.base_adapter import CompletionRequest
+        from agent.adapters.base_adapter import CompletionRequest
 
         request = CompletionRequest(prompt="Hello")
         response = await adapter.complete(request)

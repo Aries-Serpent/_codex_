@@ -29,8 +29,8 @@ export_userstore_snapshot = _migration.export_userstore_snapshot
 import_snapshot_to_sqlite = _migration.import_snapshot_to_sqlite
 verify_migration = _migration.verify_migration
 
-from src.codex.auth.sqlite_user_repository import SQLiteUserRepository  # noqa: E402
-from src.codex.auth.user_store import UserStore  # noqa: E402
+from codex.auth.sqlite_user_repository import SQLiteUserRepository  # noqa: E402
+from codex.auth.user_store import UserStore  # noqa: E402
 
 
 def _populate_store(n: int = 10) -> UserStore:

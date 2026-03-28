@@ -12,7 +12,7 @@ from collections import deque
 
 import pytest
 
-from src.codex.rag.monitoring import (
+from codex.rag.monitoring import (
     MetricDataPoint,
     MetricsConfig,
     RAGMetrics,
