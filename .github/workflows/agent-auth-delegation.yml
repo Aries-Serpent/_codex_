@@ -1488,6 +1488,16 @@ jobs:
                 } else { throw e; }
               }
             }
+            // GitHub API rejects empty-string variable values (422). Use DELETE to clear.
+            async function clearVar(name) {
+              try {
+                await github.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            }
 
             const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
 
@@ -1501,7 +1511,7 @@ jobs:
 
               if (isNaN(lockEpoch)) {
                 core.warning(`Corrupted session lock format: '${activeSession}' — clearing`);
-                await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                await clearVar('COPILOT_ACTIVE_SESSION');
                 sessionBusy = false;
               } else {
                 const age = now - lockEpoch;
@@ -1511,7 +1521,7 @@ jobs:
                   core.info(`Active session on PR #${activePR} (age: ${age}s, TTL: ${TTL_SECONDS}s)`);
                 } else if (age >= TTL_SECONDS) {
                   core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
-                  await upsertVar('COPILOT_ACTIVE_SESSION', '');
+                  await clearVar('COPILOT_ACTIVE_SESSION');
                   sessionBusy = false;
                 } else {
                   // Same PR — re-acquire is fine
@@ -1533,7 +1543,9 @@ jobs:
                 await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
               }
 
-              // Dedup: avoid spamming "session queued" on every PR edit while a session is active.
+              // S239: upsert the "⏳ Session Queued" comment — update it with the latest
+              // queue position if it already exists, otherwise create it. This keeps
+              // the queue position live so observers can see where they stand.
               // Fetches the most-recent 100 comments (GitHub max per_page). On very active PRs
               // (>100 comments) an earlier queued marker may not be found; worst case: one extra
               // notification per 100-comment boundary, which is acceptable.
@@ -1541,36 +1553,43 @@ jobs:
                 owner: context.repo.owner, repo: context.repo.repo,
                 issue_number: prNumber, per_page: 100,
               });
-              const alreadyQueued = prComments.some(c =>
-                (c.body || '').includes('<!-- session-gate-queued -->') &&
-                (c.body || '').includes(`PR #${activePR}`)
+              const queuedCommentBody = [
+                '<!-- session-gate-queued -->',
+                '## ⏳ Session Queued',
+                '',
+                `Another Copilot session is active on PR #${activePR}.`,
+                'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
+                '',
+                '| Detail | Value |',
+                '|--------|-------|',
+                `| Active Session | PR #${activePR} |`,
+                `| Queue Position | ${queueList.length} |`,
+                `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
+                '',
+                '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                '',
+                `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+              ].join('\n');
+              const existingQueuedComment = prComments.find(c =>
+                (c.body || '').includes('<!-- session-gate-queued -->')
               );
-              if (alreadyQueued) {
-                core.info(`⏳ PR #${prNumber} already queued for PR #${activePR} — skipping duplicate notification.`);
+              if (existingQueuedComment) {
+                // Update the existing comment with the latest queue position.
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  comment_id: existingQueuedComment.id,
+                  body: queuedCommentBody,
+                });
+                core.info(`⏳ PR #${prNumber} queue position updated (position ${queueList.length}, active: PR #${activePR}).`);
               } else {
-                // Post a queued notification on the PR
+                // Post a new queued notification on the PR.
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  body: [
-                    '<!-- session-gate-queued -->',
-                    '## ⏳ Session Queued',
-                    '',
-                    `Another Copilot session is active on PR #${activePR}.`,
-                    'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
-                    '',
-                    '| Detail | Value |',
-                    '|--------|-------|',
-                    `| Active Session | PR #${activePR} |`,
-                    `| Queue Position | ${queueList.length} |`,
-                    `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
-                    '',
-                    '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
-                    '',
-                    `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
-                  ].join('\n'),
+                  body: queuedCommentBody,
                 });
+                core.info(`⏳ PR #${prNumber} queued (position ${queueList.length}, active: PR #${activePR}).`);
               }
               core.info(`⏳ PR #${prNumber} queued — active session on PR #${activePR}`);
             } else {
@@ -1765,6 +1784,16 @@ jobs:
                 } else { throw e; }
               }
             }
+            // GitHub API rejects empty-string variable values (422). Use DELETE to clear.
+            async function clearVar(name) {
+              try {
+                await github.request('DELETE /repos/{owner}/{repo}/actions/variables/{name}', {
+                  owner: context.repo.owner, repo: context.repo.repo, name,
+                });
+              } catch (e) {
+                if (e.status !== 404) throw e;
+              }
+            }
 
             // Check if the closing PR holds the active session lock
             const activeSession = await getVar('COPILOT_ACTIVE_SESSION');
@@ -1780,7 +1809,7 @@ jobs:
             }
 
             // Release the lock
-            await upsertVar('COPILOT_ACTIVE_SESSION', '');
+            await clearVar('COPILOT_ACTIVE_SESSION');
             core.info(`🔓 Released session lock (was: ${activeSession})`);
 
             // Dequeue next PR
@@ -1820,10 +1849,117 @@ jobs:
                 // Only remove from queue after successful comment posting
                 await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
                 core.info(`✅ Dequeued PR #${nextPR} — posted @copilot continue`);
+
+                // S239: Update the "⏳ Session Queued" comment on any remaining PRs
+                // in the queue so they see their new (shifted) queue position.
+                for (let i = 0; i < queueList.length; i++) {
+                  const waitingPR = parseInt(queueList[i], 10);
+                  if (isNaN(waitingPR) || waitingPR <= 0) continue;
+                  try {
+                    const { data: waitingComments } = await github.rest.issues.listComments({
+                      owner: context.repo.owner, repo: context.repo.repo,
+                      issue_number: waitingPR, per_page: 100,
+                    });
+                    const queuedComment = waitingComments.find(c =>
+                      (c.body || '').includes('<!-- session-gate-queued -->')
+                    );
+                    if (queuedComment) {
+                      const newPos = i + 1; // 1-based position
+                      const updatedBody = [
+                        '<!-- session-gate-queued -->',
+                        '## ⏳ Session Queued',
+                        '',
+                        `Another Copilot session is now active on PR #${nextPRNumber} (just dequeued).`,
+                        'This PR will be triggered automatically when that session completes.',
+                        '',
+                        '| Detail | Value |',
+                        '|--------|-------|',
+                        `| Active Session | PR #${nextPRNumber} |`,
+                        `| Queue Position | ${newPos} |`,
+                        `| Ahead in queue | ${newPos - 1} PR(s) |`,
+                        '',
+                        '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                        '',
+                        `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+                      ].join('\n');
+                      await github.rest.issues.updateComment({
+                        owner: context.repo.owner, repo: context.repo.repo,
+                        comment_id: queuedComment.id,
+                        body: updatedBody,
+                      });
+                      core.info(`✅ Updated queue position for PR #${waitingPR} → position ${newPos}`);
+                    }
+                  } catch (err) {
+                    core.warning(`Failed to update queue position for PR #${queueList[i]}: ${err.message}`);
+                  }
+                }
               } catch (err) {
                 core.warning(`Failed to post @copilot continue on PR #${nextPR}: ${err.message}`);
                 // Don't remove from queue — will retry on next release
               }
             } else {
-              await upsertVar('COPILOT_SESSION_QUEUE', '');
+              await clearVar('COPILOT_SESSION_QUEUE');
             }
+
+  # ── rescue comment — posted on PR whenever this workflow fails ──────────
+  rescue-comment:
+    name: Post rescue comment on failure
+    runs-on: ubuntu-latest
+    needs: activate-delegation
+    if: |
+      failure() &&
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      pull-requests: write
+      issues: write
+    timeout-minutes: 5
+    steps:
+      - name: Post or append @copilot rescue comment
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: "Agent Auth Delegation"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error, datetime
+          token=os.environ["GH_TOKEN"]; pr_number=int(os.environ["PR_NUMBER"])
+          repo=os.environ["REPO"]; commit_sha=os.environ["COMMIT_SHA"]
+          run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
+          workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
+          now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
+          MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
+          API="https://api.github.com"
+          HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
+          def gh(method,path,body=None):
+            url=f"{API}{path}"; data=json.dumps(body).encode() if body else None
+            req=urllib.request.Request(url,data=data,headers=HDRS,method=method)
+            try:
+              with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
+            except urllib.error.HTTPError as e: return e.code,{}
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: agent-auth-delegation.yml → rescue-comment job (S227)_"""
+          existing_id=None; existing_body=""
+          page=1
+          while not existing_id:
+            _,page_comments=gh("GET",f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}")
+            if not isinstance(page_comments,list) or not page_comments: break
+            for c in page_comments:
+              if MARKER in (c.get("body") or ""): existing_id=c["id"]; existing_body=c.get("body",""); break
+            if existing_id or len(page_comments) < 100: break
+            page+=1
+          if existing_id:
+            append_section=f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n**Run:** [{run_id}]({run_url})\n\n@copilot `{workflow}` failed again on `{sha_short}`. Please investigate [run #{run_id}]({run_url})."
+            updated=(existing_body.rstrip()+append_section)[:65536]
+            status,_=gh("PATCH",f"/repos/{repo}/issues/comments/{existing_id}",{"body":updated})
+            if status in (200,201): print(f"✅ Appended to rescue comment #{existing_id}")
+            else: existing_id=None
+          if not existing_id:
+            status,resp=gh("POST",f"/repos/{repo}/issues/{pr_number}/comments",{"body":f"{MARKER}\n{rescue_body}"})
+            if status in (200,201): print(f"✅ Posted rescue comment: {resp.get('html_url','(no url)')}")
+            else: print(f"❌ Failed: HTTP {status}"); sys.exit(1)
+          PYEOF

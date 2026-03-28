@@ -133,7 +133,7 @@ jobs:
           cp docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md /tmp/_vars_guide_sync_
           cp .codex/variable_audit_latest.json /tmp/_var_audit_json_sync_ 2>/dev/null || true
           git fetch origin "$_TARGET" --depth=1
-          git checkout -B _autogen_sync_ origin/"$_TARGET"
+          git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
           cp /tmp/_vars_guide_sync_ docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md
           cp /tmp/_var_audit_json_sync_ .codex/variable_audit_latest.json 2>/dev/null || true
           git config user.name  "github-actions[bot]"

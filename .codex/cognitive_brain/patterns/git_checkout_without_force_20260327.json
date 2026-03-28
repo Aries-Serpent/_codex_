@@ -1,0 +1,30 @@
+{
+  "pattern_id": "git_checkout_without_force_autogen",
+  "session": "S237",
+  "pr": 3770,
+  "date": "2026-03-27",
+  "title": "git checkout -B _autogen_sync_ fails with uncommitted changes in commit-step workflows",
+  "severity": "high",
+  "auto_fix_eligible": true,
+  "detection_heuristic": "grep -rn \"checkout -B _autogen_sync_\" .github/workflows/",
+  "root_cause": {
+    "pattern": "git checkout -B _autogen_sync_ origin/\"$_TARGET\"",
+    "mechanism": "Commit-step workflows generate local file changes, copy them to /tmp, then try to checkout the target branch. Git refuses because uncommitted changes would be overwritten.",
+    "trigger_condition": "Workflow generates new content in-place before the branch switch. Files are safe in /tmp, so force-checkout is correct.",
+    "error_message": "error: Your local changes to the following files would be overwritten by checkout"
+  },
+  "fix": {
+    "command": "git checkout -fB _autogen_sync_ origin/\"$_TARGET\"  # -f = force, safe because files already copied to /tmp",
+    "sed_command": "sed -i 's/git checkout -B _autogen_sync_/git checkout -fB _autogen_sync_/g' .github/workflows/*.yml"
+  },
+  "affected_workflows": [
+    "cognitive-analysis-feed.yml",
+    "repo-var-sync-schedule.yml",
+    "embedding-index-rebuild.yml",
+    "vars-guide-sync.yml"
+  ],
+  "related_pattern": "branch_divergence_grep_c_double_output",
+  "related_plan": ".codex/plans/BRANCH_DIVERGENCE_PLAN_SET.md",
+  "ci_tracking": ".codex/CI_FAILURE_TRACKING_LOG.md",
+  "prevention": "Whenever a commit-step workflow copies files to /tmp before switching branches, add -f to git checkout to allow the switch. Document the -f with a comment explaining why it is safe."
+}

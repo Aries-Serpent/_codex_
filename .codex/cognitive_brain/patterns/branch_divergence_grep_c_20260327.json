@@ -1,0 +1,32 @@
+{
+  "pattern_id": "branch_divergence_grep_c_double_output",
+  "session": "S237",
+  "pr": 3770,
+  "date": "2026-03-27",
+  "title": "grep -c . || echo 0 produces double-zero output in GITHUB_OUTPUT and Python heredocs",
+  "severity": "high",
+  "auto_fix_eligible": true,
+  "detection_heuristic": "grep -rn \"grep -c.*|| echo [0-9]\" .github/workflows/",
+  "root_cause": {
+    "pattern": "COUNT=$(echo \"$VAR\" | grep -c . || echo 0)",
+    "mechanism": "grep -c outputs '0' to stdout AND exits 1 when no matches. The || echo 0 then appends a second '0' to stdout. COUNT becomes '0\\n0' (newline-separated double-zero).",
+    "downstream_effects": [
+      "GITHUB_OUTPUT key=0\\n0 → Actions rejects bare '0' line with 'Invalid format'",
+      "Python heredoc receives variable expansion '0\\n0' → '\"key\": 0\\n0,' is two adjacent expressions → SyntaxError: invalid syntax (perhaps you forgot a comma?)",
+      "Step exits 1, job fails, monitor cannot report divergence status"
+    ]
+  },
+  "fix": {
+    "shell": "Replace '|| echo 0' with '|| true' — grep -c already outputs 0 on no-match; || true suppresses exit 1 without adding output",
+    "python_defense": "Use int(\"$VAR\".strip() or \"0\") casts in Python heredocs to guard against any future multi-line expansion",
+    "sed_command": "sed -i 's/grep -c \\. || echo 0/grep -c . || true/g' .github/workflows/*.yml"
+  },
+  "affected_workflows": [
+    "branch-divergence-monitor.yml",
+    "doc-freshness-check.yml"
+  ],
+  "related_pattern": "git_checkout_without_force",
+  "related_plan": ".codex/plans/BRANCH_DIVERGENCE_PLAN_SET.md",
+  "ci_tracking": ".codex/CI_FAILURE_TRACKING_LOG.md",
+  "prevention": "Code review: flag any 'grep -c PATTERN || echo N' where N equals grep-c no-match output (always 0). Use '|| true' exclusively."
+}

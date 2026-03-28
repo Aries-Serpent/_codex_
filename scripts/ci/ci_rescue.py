@@ -773,27 +773,36 @@ def post_pr_comment(
         print(f"\n[DRY RUN] Would post/update RCA on PR #{pr_number}:\n{full_body[:500]}…")
         return True
 
-    # Fetch up to 100 existing PR comments to look for a matching rescue comment.
-    _, comments = _gh_api(f"/repos/{repo}/issues/{pr_number}/comments?per_page=100", token)
+    # Paginate through all PR comments in a SINGLE pass, checking for both the
+    # SHA-scoped marker and the legacy marker simultaneously.  The original two-pass
+    # approach doubled GitHub API calls on large PRs and increased rate-limit risk
+    # (code-review suggestion, PR #3770 commit 4ec9b6d).
     existing_id: Optional[int] = None
     existing_body: str = ""
-
-    if isinstance(comments, list):
-        # Primary: look for SHA-scoped marker
-        for c in comments:
+    legacy_id: Optional[int] = None
+    legacy_body: str = ""
+    page = 1
+    while True:
+        _, page_comments = _gh_api(
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}", token
+        )
+        if not isinstance(page_comments, list) or not page_comments:
+            break
+        for c in page_comments:
             c_body = c.get("body") or ""
-            if marker in c_body:
+            if marker in c_body and not existing_id:
                 existing_id = c["id"]
                 existing_body = c_body
-                break
-        # Fallback: legacy marker (no SHA) so we never leave orphaned old comments
-        if existing_id is None:
-            for c in comments:
-                c_body = c.get("body") or ""
-                if "<!-- ci-rescue-rca -->" in c_body:
-                    existing_id = c["id"]
-                    existing_body = c_body
-                    break
+            if "<!-- ci-rescue-rca -->" in c_body and not legacy_id:
+                legacy_id = c["id"]
+                legacy_body = c_body
+        if len(page_comments) < 100:
+            break
+        page += 1
+    # Prefer the SHA-scoped marker; fall back to legacy marker only if not found.
+    if not existing_id and legacy_id:
+        existing_id = legacy_id
+        existing_body = legacy_body
 
     if existing_id:
         # Append the new failure section to the existing rescue comment.

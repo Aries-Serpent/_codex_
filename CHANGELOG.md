@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3770)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3770 (SHA `ee886183`) at 2026-03-27T22:24Z [auto-generated]
+
+### Security (S234 — PRs #3767/#3768/#3769)
+- **security:** Bump `cryptography` from 46.0.5 to 46.0.6 — fixes CVE-2026-34073 (name constraints not applied to peer names with wildcard DNS SAN during certificate verification). Updated in `requirements.txt` and `requirements/lock.txt`. Cherry-picked from Dependabot PRs #3767, #3768, #3769.
+
+### Fixed (auto-update — PR #3765)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3765 (SHA `85003adf`) at 2026-03-27T15:14Z [auto-generated]
+
 ### Fixed (S214 — PR #3748)
 - **fix(ci/workflows):** `agent-auth-delegation.yml` — removed `vars.COPILOT_AGENT_AUTH_ENABLED != 'true'` guard from `detect-checkbox` job (caused it to be skipped when delegation was already active, silently breaking all re-delegation and session starts). Moved guard to `await-approval` only; updated `activate-delegation` to use `always()` with explicit result conditions so it runs for both fresh approvals and re-delegation (upserts existing `@copilot continue` comment, no Copilot loop). Added dedup to session concurrency gate notification.
 - **fix(ci/workflows):** `copilot-agent-session-done.yml` — changed PATH A/B post token from `GITHUB_TOKEN` (posts as `github-actions[bot]`, ignored by Copilot) to `CODEX_MASTER_KEY || CODEX_BACKUP_KEY || GITHUB_TOKEN` (posts as @mbaetiong, triggers Copilot sessions correctly).

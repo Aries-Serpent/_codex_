@@ -159,22 +159,32 @@ jobs:
                 core.info(`[DRY RUN] Body preview (first 200 chars):\n${body.slice(0, 200)}`);
                 return;
               }
-              // Check if a comment with this marker already exists
+              // Check if a comment with this marker already exists — paginate all
+              // comments so dedup works even when the discussion has >50 replies.
               let existingId = null;
               try {
-                const existing = await github.graphql(`
-                  query($id: ID!) {
-                    node(id: $id) {
-                      ... on Discussion {
-                        comments(first: 50) {
-                          nodes { id body }
+                let cursor = null;
+                let hasNextPage = true;
+                paginateLoop: while (hasNextPage) {
+                  const existing = await github.graphql(`
+                    query($id: ID!, $cursor: String) {
+                      node(id: $id) {
+                        ... on Discussion {
+                          comments(first: 50, after: $cursor) {
+                            nodes { id body }
+                            pageInfo { hasNextPage endCursor }
+                          }
                         }
                       }
-                    }
-                  }`, { id: discussionId });
-                const nodes = existing?.node?.comments?.nodes || [];
-                const found = nodes.find(c => (c.body || '').includes(marker));
-                if (found) existingId = found.id;
+                    }`, { id: discussionId, cursor });
+                  const page      = existing?.node?.comments || {};
+                  const nodes     = page.nodes || [];
+                  const pageInfo  = page.pageInfo || {};
+                  const found     = nodes.find(c => (c.body || '').includes(marker));
+                  if (found) { existingId = found.id; break paginateLoop; }
+                  hasNextPage = pageInfo.hasNextPage || false;
+                  cursor      = pageInfo.endCursor   || null;
+                }
               } catch(e) {
                 core.warning(`Could not check existing comments: ${e.message}`);
               }
@@ -449,36 +459,30 @@ jobs:
               'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]', 'copilot',
             ]);
 
-            // Collect all retrigger markers already posted (rescue IDs already retriggered)
-            const retriggerMarkers = new Set(
-              comments
-                .filter(c => retriggerMarkerRe.test(c.body || ''))
-                .flatMap(c => {
-                  const m = (c.body || '').match(/for rescue `([^`]+)`/);
-                  return m ? [m[1]] : [];
-                })
-            );
-
-            // Find the latest unanswered rescue comment (not yet retriggered)
+            // S239 fix: find the LATEST rescue comment regardless of previous retriggers.
+            // The old approach (retriggerMarkers set) permanently blocked re-triggering
+            // the same rescue ID — even when GitHub silently dropped the queued session
+            // after a new commit was pushed. Now we let hasResponse and the
+            // Copilot-acted-after-retrigger check handle deduplication correctly.
             let latestRescue = null;
             for (const c of comments) {
               const body = c.body || '';
               if (rescueMarkerRe.test(body)) {
                 const markerMatch = body.match(/<!--\s*ci-rescue-rca:([a-f0-9]+)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
-                if (!retriggerMarkers.has(rescueId)) {
-                  latestRescue = { id: rescueId, commentId: c.databaseId, body };
-                }
+                // Always update latestRescue — we want the LAST rescue comment in the list.
+                latestRescue = { id: rescueId, commentId: c.databaseId, body };
               }
             }
 
             if (!latestRescue) {
-              core.info('No unanswered rescue comments found — missed-trigger guard: nothing to do.');
+              core.info('No rescue comments found — missed-trigger guard: nothing to do.');
               return;
             }
 
             // Check if there is a Copilot agent response AFTER the rescue comment that
-            // explicitly resolves it ("fixed in" / "addressed in" / "resolved in").
+            // explicitly resolves it. Accept both "X in SHA" and "X at SHA" forms since
+            // Copilot responses vary between "Fixed in <commit>" and "Fixed at <commit>".
             // Using COPILOT_AGENT_LOGINS avoids false-positives from github-actions[bot]
             // CI update comments that are not resolution responses.
             const rescueIndex = comments.findIndex(c => c.databaseId === latestRescue.commentId);
@@ -487,13 +491,47 @@ jobs:
               const body  = (c.body || '').toLowerCase();
               return (
                 COPILOT_AGENT_LOGINS.has(login) &&
-                (body.includes('fixed in') || body.includes('addressed in') || body.includes('resolved in'))
+                (
+                  body.includes('fixed in')    || body.includes('fixed at')    ||
+                  body.includes('addressed in') || body.includes('addressed at') ||
+                  body.includes('resolved in')  || body.includes('resolved at')
+                )
               );
             });
 
             if (hasResponse) {
               core.info(`Rescue comment ${latestRescue.id} already has a Copilot resolution response — skipping.`);
               return;
+            }
+
+            // Dedup: if a retrigger was already posted for this rescue, only skip posting
+            // ANOTHER retrigger if Copilot has taken some action (posted any comment) after
+            // that retrigger. If Copilot has NOT acted after the retrigger, the queued
+            // session was silently dropped (e.g. a new commit push invalidated it), so we
+            // allow a re-fire. This prevents the "permanently blocked" bug where a single
+            // retrigger post caused the guard to never fire again for the same rescue.
+            const commentsAfterRescue = rescueIndex >= 0 ? comments.slice(rescueIndex + 1) : [];
+            const retriggersForRescue = commentsAfterRescue.filter(c => {
+              const body = c.body || '';
+              return retriggerMarkerRe.test(body) && body.includes(`rescue \`${latestRescue.id}\``);
+            });
+
+            if (retriggersForRescue.length > 0) {
+              const lastRetrigger = retriggersForRescue[retriggersForRescue.length - 1];
+              const lastRetriggerDbId = lastRetrigger.databaseId;
+              const lastRetriggerIndex = comments.findIndex(c => c.databaseId === lastRetriggerDbId);
+              // Check if any Copilot agent comment appeared AFTER the last retrigger.
+              // If yes, Copilot is actively handling it — don't spam another retrigger.
+              const copilotActedAfterRetrigger = lastRetriggerIndex >= 0 &&
+                comments.slice(lastRetriggerIndex + 1).some(c =>
+                  COPILOT_AGENT_LOGINS.has(c.author?.login || '')
+                );
+              if (copilotActedAfterRetrigger) {
+                core.info(`Retrigger already posted for rescue ${latestRescue.id} and Copilot has acted since — not re-triggering.`);
+                return;
+              }
+              // No Copilot action after the retrigger — session was silently dropped.
+              core.info(`Previous retrigger for rescue ${latestRescue.id} had no Copilot action — re-firing (session was dropped).`);
             }
 
             // Post re-trigger comment
@@ -537,7 +575,120 @@ jobs:
               core.warning(`Missed-trigger guard: failed to post re-trigger: ${e.message}`);
             }
 
-  # ── JOB 2: Session-Open Check-In (on @copilot mention) ──────────────────
+      # §ARLOOP Step 5 enforcement (S242, PR #3770):
+      # If the most recent Copilot agent comment does NOT contain the
+      # <!-- session-completion-attestation --> marker, the previous session ended
+      # without completing the §ARLOOP sweep.  Re-trigger the agent so no session
+      # is silently wasted.
+      - name: "Incomplete-session guard — re-trigger if attestation missing"
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const dryRun = (process.env.DRY_RUN || 'false') === 'true';
+            const COPILOT_AGENT_LOGINS = new Set([
+              'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]', 'copilot',
+            ]);
+            const ATTESTATION_MARKER = '<!-- session-completion-attestation -->';
+            const INCOMPLETE_MARKER  = '<!-- incomplete-session-retrigger -->';
+
+            // Find open PR
+            let prNumber = parseInt(process.env.PR_NUMBER || '0', 10);
+            if (!prNumber) {
+              try {
+                const branchName = context.ref_name
+                    || (context.payload.ref || '').replace('refs/heads/', '')
+                    || '';
+                const prs = await github.rest.pulls.list({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  state: 'open', head: `${context.repo.owner}:${branchName}`, per_page: 1,
+                });
+                prNumber = prs.data[0]?.number || 0;
+              } catch(e) { core.info(`Could not find open PR: ${e.message}`); return; }
+            }
+            if (!prNumber) return;
+
+            // Fetch last 100 comments (newest first via GraphQL)
+            let comments = [];
+            try {
+              const gql = await github.graphql(
+                `query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      comments(last: 100) {
+                        nodes { databaseId body author { login } }
+                      }
+                    }
+                  }
+                }`,
+                { owner: context.repo.owner, repo: context.repo.repo, pr: prNumber }
+              );
+              comments = gql?.repository?.pullRequest?.comments?.nodes || [];
+            } catch(e) { core.info(`Could not fetch comments: ${e.message}`); return; }
+
+            // Find the last Copilot agent comment
+            const copilotComments = comments.filter(c => COPILOT_AGENT_LOGINS.has(c.author?.login || ''));
+            if (copilotComments.length === 0) {
+              core.info('No Copilot agent comments yet — incomplete-session guard: nothing to do.');
+              return;
+            }
+            const lastCopilot = copilotComments[copilotComments.length - 1];
+
+            // If it already has the attestation, the session completed correctly.
+            if ((lastCopilot.body || '').includes(ATTESTATION_MARKER)) {
+              core.info('Last Copilot comment contains session-completion-attestation — session complete ✅');
+              return;
+            }
+
+            // If an INCOMPLETE_SESSION retrigger was already posted recently (after the
+            // last Copilot comment), don't spam another one.
+            const lastCopilotIndex = comments.findIndex(c => c.databaseId === lastCopilot.databaseId);
+            const alreadyRetriggered = comments.slice(lastCopilotIndex + 1).some(c =>
+              (c.body || '').includes(INCOMPLETE_MARKER)
+            );
+            if (alreadyRetriggered) {
+              core.info('Incomplete-session retrigger already posted — waiting for agent response.');
+              return;
+            }
+
+            // Post INCOMPLETE_SESSION retrigger
+            const incompleteBody = [
+              INCOMPLETE_MARKER,
+              '## ⚠️ Incomplete Session Detected (§ARLOOP enforcement)',
+              '',
+              '**Trigger:** A push to this branch detected that the previous Copilot agent',
+              'session ended without posting a `<!-- session-completion-attestation -->`',
+              'comment — meaning the §ARLOOP PR Completion Sweep was not completed.',
+              '',
+              '**Required action:**',
+              '@copilot+claude-sonnet-4.6 Please resume this session immediately:',
+              '',
+              '1. Run the full **§ARLOOP PR Completion Sweep** (`.codex/CODEBASE_AGENCY_POLICY.md §ARLOOP`)',
+              '2. Address any outstanding CI failures, review threads, and continuation tasks',
+              '3. Post the **Session Completion Attestation** comment when the sweep is clean',
+              '4. Declare: `✅ This PR is ready to be merged.`',
+              '',
+              '---',
+              '*Auto-posted by `copilot-agent-checkin.yml` incomplete-session-guard · §ARLOOP Step 5 (S242)*',
+            ].join('\n');
+
+            if (dryRun) {
+              core.info(`[DRY RUN] Would post incomplete-session retrigger for PR #${prNumber}`);
+              return;
+            }
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: prNumber, body: incompleteBody,
+              });
+              core.info(`✅ Incomplete-session guard: re-trigger posted for PR #${prNumber}`);
+            } catch(e) {
+              core.warning(`Incomplete-session guard: failed to post retrigger: ${e.message}`);
+            }
   checkin-open:
     name: "Agent open check-in"
     runs-on: ubuntu-latest

@@ -116,7 +116,7 @@ jobs:
             echo "🔀 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})"
             cp -r cognitive/ /tmp/_cognitive_sync_
             git fetch origin "$_TARGET" --depth=1
-            git checkout -B _autogen_sync_ origin/"$_TARGET"
+            git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
             cp -r /tmp/_cognitive_sync_/. cognitive/
             git add cognitive/
             git commit -m "🧠 Update cognitive learning from aftermath evaluation [automated]
@@ -203,7 +203,7 @@ jobs:
             cp .codex/cognitive_brain/workflow_patterns.jsonl /tmp/_patterns_sync_
             cp .codex/cognitive_brain/metadata.json          /tmp/_metadata_sync_
             git fetch origin "$_TARGET" --depth=1
-            git checkout -B _autogen_sync_ origin/"$_TARGET"
+            git checkout -fB _autogen_sync_ origin/"$_TARGET"  # S237: force-checkout (files already in /tmp)
             cp /tmp/_patterns_sync_ .codex/cognitive_brain/workflow_patterns.jsonl
             cp /tmp/_metadata_sync_ .codex/cognitive_brain/metadata.json
             git add .codex/cognitive_brain/workflow_patterns.jsonl \

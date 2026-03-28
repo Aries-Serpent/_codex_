@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-03-25T22:55:49Z",
+  "generated_at": "2026-03-27T12:39:20Z",
   "model": "all-MiniLM-L6-v2",
   "dim": 384,
   "chunk_count": 2904,
-  "build_time_seconds": 109.5
+  "build_time_seconds": 76.8
 }
