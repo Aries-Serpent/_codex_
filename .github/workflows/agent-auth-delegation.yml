@@ -73,22 +73,14 @@ jobs:
           # Check for Cost Governance checkbox
           if ! printf '%s' "${PR_BODY}" | grep -qiF '💰 Cost Proposal Approved'; then
             MISSING_SECTIONS=$((MISSING_SECTIONS + 1))
-            APPENDED="${APPENDED}
-          ### 💰 Cost Governance
-
-          - [ ] **💰 Cost Proposal Approved**
-          "
+            APPENDED="${APPENDED}$(printf '\n### 💰 Cost Governance\n\n- [ ] **💰 Cost Proposal Approved**\n')"
             echo "⚠️  Cost Governance checkbox missing from PR #${PR_NUM} body"
           fi
 
           # Check for Agent Token Delegation checkbox
           if ! printf '%s' "${PR_BODY}" | grep -qiF 'COPILOT_AGENT_AUTH_ENABLED'; then
             MISSING_SECTIONS=$((MISSING_SECTIONS + 1))
-            APPENDED="${APPENDED}
-          ### 🔐 Agent Token Delegation
-
-          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
-          "
+            APPENDED="${APPENDED}$(printf '\n### 🔐 Agent Token Delegation\n\n- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)\n')"
             echo "⚠️  Agent Token Delegation checkbox missing from PR #${PR_NUM} body"
           fi
 
@@ -98,11 +90,11 @@ jobs:
           fi
 
           # Append missing sections to the PR body
-          NEW_BODY="${PR_BODY}
-
-          ---
-          <!-- checkpoint-guardian: restored ${MISSING_SECTIONS} missing section(s) -->
-          ${APPENDED}"
+          NEW_BODY=$(printf '%s\n\n%s\n%s\n%s' \
+            "${PR_BODY}" \
+            "---" \
+            "<!-- checkpoint-guardian: restored ${MISSING_SECTIONS} missing section(s) -->" \
+            "${APPENDED}")
 
           gh pr edit "${PR_NUM}" --body "${NEW_BODY}" \
             && echo "✅ Restored ${MISSING_SECTIONS} missing checkbox section(s) to PR #${PR_NUM}" \
@@ -211,7 +203,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 50  # Enough for commit-count check (REQ-7); avoids full-clone cost
 
@@ -1214,7 +1206,7 @@ jobs:
     # always() is required here because GitHub Actions skips dependents of 'skipped' jobs by default.
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY }}

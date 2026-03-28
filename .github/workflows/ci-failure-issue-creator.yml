@@ -87,7 +87,7 @@ jobs:
 
     steps:
       - name: Checkout (consolidator + OTel)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py
@@ -353,7 +353,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref:         main
           fetch-depth: 1
@@ -490,7 +490,7 @@ jobs:
 
     steps:
       - name: Checkout (consolidator)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py

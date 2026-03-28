@@ -63,7 +63,7 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
@@ -86,7 +86,7 @@ jobs:
       (github.event_name == 'schedule') ||
       (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -104,7 +104,7 @@ jobs:
           safety check --json --output safety.json || true
           safety check || echo "Vulnerabilities found"
       - name: Upload results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dependency-scan-results
           path: |
@@ -123,7 +123,7 @@ jobs:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-python-cached
@@ -140,7 +140,7 @@ jobs:
           SECRETS_COUNT=$(grep -c "filename" .secrets.baseline || echo "0")
           echo "secrets_found=$SECRETS_COUNT" >> $GITHUB_OUTPUT
       - name: Upload baseline
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: secrets-baseline
           path: .secrets.baseline
@@ -158,7 +158,7 @@ jobs:
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -170,7 +170,7 @@ jobs:
           cyclonedx-py environment --format JSON --outfile sbom.json
           cyclonedx-py environment --format XML --outfile sbom.xml
       - name: Upload SBOM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sbom-reports
           path: |

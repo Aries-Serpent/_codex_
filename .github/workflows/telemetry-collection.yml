@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -95,7 +95,7 @@ jobs:
           fi
 
       - name: Upload telemetry report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: telemetry-report-${{ github.run_id }}
           path: telemetry_report_*.json

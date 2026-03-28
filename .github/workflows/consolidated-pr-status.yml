@@ -86,7 +86,7 @@ jobs:
 
     steps:
       - name: Checkout (for consolidator script)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py

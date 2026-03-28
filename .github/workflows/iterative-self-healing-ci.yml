@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 50
           # Use delegated token when COPILOT_AGENT_AUTH_ENABLED=true (S154 Phase 5).
@@ -196,7 +196,7 @@ jobs:
         # main→branch differences along with the fix.
         # Phase 5: COPILOT_AGENT_AUTH_ENABLED=true delegates the token so that
         # autonomous push succeeds without manual approval.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 50
           ref: ${{ needs.triage.outputs.head_branch || 'main' }}
@@ -566,7 +566,7 @@ jobs:
       needs.triage.outputs.pattern != ''
     steps:
       - name: "Checkout for pattern_recorder access"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.triage.outputs.head_branch }}
           fetch-depth: 1
@@ -650,7 +650,7 @@ jobs:
           wc -l /tmp/pattern_snapshot.json || true
 
       - name: "Upload pattern DB snapshot artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pattern-db-snapshot-${{ github.run_id }}
           path: /tmp/pattern_snapshot.json

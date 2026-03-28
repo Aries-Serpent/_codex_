@@ -71,7 +71,7 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ steps.branch.outputs.branch }}
           fetch-depth: 1
@@ -344,7 +344,7 @@ jobs:
           echo "- **Size**: $SIZE" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.package.outputs.package_name }}
           path: ${{ steps.package.outputs.package_name }}.${{ github.event.inputs.package_format }}
@@ -403,7 +403,7 @@ jobs:
           echo "✅ Generated package manifest" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload package manifest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.package.outputs.package_name }}-manifest
           path: package_manifest.json

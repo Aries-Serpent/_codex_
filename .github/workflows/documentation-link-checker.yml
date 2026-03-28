@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Compute documentation checksum
         id: checksum
@@ -66,7 +66,7 @@ jobs:
 
       - name: Check cache for previous successful run
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .link-check-success
           key: link-check-${{ steps.checksum.outputs.aggregate_checksum }}
@@ -188,7 +188,7 @@ jobs:
 
       - name: Upload link check report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: link-check-report
           path: link-check-report.json

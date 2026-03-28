@@ -133,9 +133,9 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'apply-vars'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cache pip downloads
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-infra-${{ hashFiles('pyproject.toml') }}
@@ -181,7 +181,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'apply-webhooks'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Configure webhooks
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -206,7 +206,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'list-vars'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: List variables and post to PR
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -239,7 +239,7 @@ jobs:
       needs.auth-check.outputs.authorized == 'true' &&
       needs.auth-check.outputs.operation == 'list-webhooks'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: List webhooks
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
@@ -257,7 +257,7 @@ jobs:
       (needs.auth-check.outputs.operation == 'app-status' ||
        needs.auth-check.outputs.operation == 'app-manifest')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Show app status or generate manifest URL
         env:

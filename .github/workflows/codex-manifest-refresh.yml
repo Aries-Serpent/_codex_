@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout PR branch (or main on schedule)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # On schedule runs, HEAD ref is not available — fall back to main.
           ref: ${{ github.head_ref || 'main' }}

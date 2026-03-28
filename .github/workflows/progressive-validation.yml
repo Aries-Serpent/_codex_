@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -148,7 +148,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -191,7 +191,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -232,7 +232,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout (needed for post-pr-summary action)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate summary
         id: gen-summary
