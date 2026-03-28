@@ -11833,3 +11833,59 @@ infrastructure issue unrelated to S237 code changes.
 **§0 Compliance:** All 5 triage report failures investigated with deep research. Root causes found and fixed immediately. No deferrals. OBJ-002 registered in cognitive brain. Codebase left better than found.
 
 ---
+
+---
+
+## S242 — §ARLOOP Hardening, OBJ-002 Phase 2 Completion, PR #3770 (2026-03-28)
+
+**PR:** #3770 | **Branch:** `0D_base_` | **Session:** S242
+
+### Objective
+Harden the Already-Addressed-Task Response Protocol (§ARLOOP), complete OBJ-002 Phase 2
+backlog items, address the open code review suggestion (ci_rescue.py), and resolve all
+outstanding items to qualify PR #3770 for merging.
+
+### Changes Made
+
+- [x] **S242-A** — §ARLOOP protocol added to `.codex/CODEBASE_AGENCY_POLICY.md` v1.3.0.
+  5-step mandatory process: Acknowledge → Sweep → Resolve → Declare → Attest.
+- [x] **S242-B** — Session Completion Attestation format added to §ARLOOP Step 5.
+  Machine-readable `<!-- session-completion-attestation -->` marker defined. No wasted sessions.
+- [x] **S242-C** — `copilot-agent-checkin.yml`: Added `incomplete-session-guard` step.
+  Fires on every push if last Copilot comment lacks `<!-- session-completion-attestation -->`.
+  Posts `<!-- incomplete-session-retrigger -->` comment to re-engage agent automatically.
+- [x] **S242-D** — `scripts/ci/ci_rescue.py`: Combined double-pagination pass into single pass.
+  Both SHA-scoped and legacy markers now checked in one loop (code review suggestion, 4ec9b6d).
+- [x] **S242-E** — OBJ-002-H: `.codex/docs/BRANCH_DIVERGENCE_PREVENTION.md` updated with
+  S237 root cause taxonomy (RC-1 through RC-5) and agent execution protocol.
+- [x] **S242-F** — OBJ-002-I: `rescue-comment-push` job added to `branch-divergence-monitor.yml`.
+  Posts rescue comment to latest open 0D_base_ PR on workflow failure.
+- [x] **S242-G** — OBJ-002-J: `continue-on-error: true` added to `measure` step in
+  `branch-divergence-monitor.yml` (allows rescue-comment-push to fire on step failure).
+- [x] **S242-H** — OBJ-002-K: `forward-sync-autogen.yml` RC-5 investigation complete.
+  Rebase-guard already handles non-fast-forward rejection. No code change needed.
+- [x] **S242-I** — OBJ-002-L: `branch-divergence-monitor.yml` latest scheduled run confirmed
+  failing with RC-1 (fix in this PR, resolves on merge to main). Successful run at 18:23 on 2026-03-27.
+- [x] **S242-J** — OBJ-002-M: `cognitive-analysis-feed.yml` post RC-2 fix confirmed **success**
+  on all recent runs (run 23673736944, 23661825926, 23646332858). RC-2 fix working correctly.
+- [x] **S242-K** — 30 `__init__.py` files missing EOF newlines — fixed (RP-006 prevention).
+- [x] **S242-L** — Accountability report updated (this entry).
+
+### §ARLOOP Sweep Results
+
+| Gate | Status |
+|------|--------|
+| Validation Pipeline | ✅ passing on `040c3eda` (run 23673693105) |
+| Drift check | ✅ sync_tracked_files exits 0 |
+| EOF scan | ✅ 0 files missing newline |
+| PR review threads | ✅ ci_rescue.py double-pagination addressed (S242-D) |
+| PR new comments (comment_id 4146389657) | ✅ replied |
+| Continuation tasks OBJ-002-H through M | ✅ all complete or documented |
+
+### §ARLOOP Enforcement Status
+
+- **Policy layer:** §ARLOOP v1.3.0 in CODEBASE_AGENCY_POLICY.md ✅
+- **Workflow layer:** `incomplete-session-guard` in copilot-agent-checkin.yml ✅
+- **Attestation format:** `<!-- session-completion-attestation -->` defined ✅
+
+**§0 Compliance:** All open items resolved. No deferrals. Codebase left better than found.

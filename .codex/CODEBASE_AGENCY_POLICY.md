@@ -896,12 +896,65 @@ The following responses to an already-addressed task are **policy violations**:
 | Declare merge-readiness without completing the Sweep | Complete every Sweep check first |
 | Skip continuation tasks because "the issue is resolved" | Resume continuation tasks in priority order |
 
+### Step 5 — Session Completion Attestation (NO WASTED SESSION GUARANTEE)
+
+After the Merge-Readiness Declaration, the agent MUST post a **Session Completion
+Attestation** comment on the PR.  This comment:
+
+1. Embeds the machine-readable marker `<!-- session-completion-attestation -->` so that
+   `copilot-agent-checkin.yml` can detect it and avoid re-triggering a completed session.
+2. Records the exact state of every open item for the next agent to resume instantly.
+3. Is the **only acceptable way to end a session**.  A session without this comment is
+   considered *incomplete* and the missed-trigger guard will re-fire within the next push.
+
+**Required format (copy verbatim and fill in values):**
+
+```
+<!-- session-completion-attestation -->
+## ✅ Session Complete — Merge-Readiness Attestation
+
+**Session:** S<NNN> | **PR:** #<NNNN> | **Head commit:** `<sha>`
+
+| Gate | Status |
+|------|--------|
+| Validation Pipeline | ✅ passing (run <RUN_ID>) |
+| Drift check | ✅ exits 0 |
+| EOF scan | ✅ 0 files missing newline |
+| PR review threads | ✅ all addressed |
+| PR new comments | ✅ all replied |
+| Continuation tasks | ✅ complete / backlogged (see below) |
+
+### Open Backlog (next session resumes here)
+- [ ] <Task 1 — priority / owner>
+- [ ] <Task 2 — priority / owner>
+*(empty if nothing remains)*
+
+### §ARLOOP Sweep Result
+- Unaddressed CI failures on this PR: **none** (or list them)
+- Unresolved review threads: **none** (or list them)
+- Unanswered PR comments: **none** (or list them)
+
+✅ **This PR is ready to be merged.**
+```
+
+**Enforcement:** `copilot-agent-checkin.yml` checks for `<!-- session-completion-attestation -->`
+in the agent's most recent comment.  If absent after the last push, the missed-trigger guard
+fires `INCOMPLETE_SESSION` and re-triggers the agent with the message:
+*"Previous session ended without a completion attestation.  Please complete the §ARLOOP sweep
+and post the attestation."*
+
+---
+
 ### Enforcement
 
-This rule is enforced by human review of agent session summaries. Violations are recorded
-in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and trigger a mandatory correction
-session. The deferral language gate (`.github/workflows/deferral-language-gate.yml`) also
-scans for "already addressed / not my concern" phrases that indicate Sweep bypass.
+This rule is enforced at three layers:
+
+1. **Policy (this document):** Mandatory for all agents.
+2. **Workflow (`copilot-agent-checkin.yml`):** Checks for `<!-- session-completion-attestation -->`
+   in the last agent comment on every push.  Missing attestation → INCOMPLETE_SESSION retrigger.
+3. **Accountability (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`):** Violations
+   recorded; trigger a mandatory correction session.  The deferral language gate
+   (`.github/workflows/deferral-language-gate.yml`) also scans for bypass phrases.
 
 ---
 
