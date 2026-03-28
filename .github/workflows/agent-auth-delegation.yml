@@ -1543,7 +1543,9 @@ jobs:
                 await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
               }
 
-              // Dedup: avoid spamming "session queued" on every PR edit while a session is active.
+              // S239: upsert the "⏳ Session Queued" comment — update it with the latest
+              // queue position if it already exists, otherwise create it. This keeps
+              // the queue position live so observers can see where they stand.
               // Fetches the most-recent 100 comments (GitHub max per_page). On very active PRs
               // (>100 comments) an earlier queued marker may not be found; worst case: one extra
               // notification per 100-comment boundary, which is acceptable.
@@ -1551,36 +1553,43 @@ jobs:
                 owner: context.repo.owner, repo: context.repo.repo,
                 issue_number: prNumber, per_page: 100,
               });
-              const alreadyQueued = prComments.some(c =>
-                (c.body || '').includes('<!-- session-gate-queued -->') &&
-                (c.body || '').includes(`PR #${activePR}`)
+              const queuedCommentBody = [
+                '<!-- session-gate-queued -->',
+                '## ⏳ Session Queued',
+                '',
+                `Another Copilot session is active on PR #${activePR}.`,
+                'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
+                '',
+                '| Detail | Value |',
+                '|--------|-------|',
+                `| Active Session | PR #${activePR} |`,
+                `| Queue Position | ${queueList.length} |`,
+                `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
+                '',
+                '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                '',
+                `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+              ].join('\n');
+              const existingQueuedComment = prComments.find(c =>
+                (c.body || '').includes('<!-- session-gate-queued -->')
               );
-              if (alreadyQueued) {
-                core.info(`⏳ PR #${prNumber} already queued for PR #${activePR} — skipping duplicate notification.`);
+              if (existingQueuedComment) {
+                // Update the existing comment with the latest queue position.
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  comment_id: existingQueuedComment.id,
+                  body: queuedCommentBody,
+                });
+                core.info(`⏳ PR #${prNumber} queue position updated (position ${queueList.length}, active: PR #${activePR}).`);
               } else {
-                // Post a queued notification on the PR
+                // Post a new queued notification on the PR.
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  body: [
-                    '<!-- session-gate-queued -->',
-                    '## ⏳ Session Queued',
-                    '',
-                    `Another Copilot session is active on PR #${activePR}.`,
-                    'This PR has been added to the session queue and will be triggered automatically when the active session completes.',
-                    '',
-                    '| Detail | Value |',
-                    '|--------|-------|',
-                    `| Active Session | PR #${activePR} |`,
-                    `| Queue Position | ${queueList.length} |`,
-                    `| Multi-Session | \`${multiSession}\` (default: disabled) |`,
-                    '',
-                    '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
-                    '',
-                    `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
-                  ].join('\n'),
+                  body: queuedCommentBody,
                 });
+                core.info(`⏳ PR #${prNumber} queued (position ${queueList.length}, active: PR #${activePR}).`);
               }
               core.info(`⏳ PR #${prNumber} queued — active session on PR #${activePR}`);
             } else {
@@ -1840,6 +1849,50 @@ jobs:
                 // Only remove from queue after successful comment posting
                 await upsertVar('COPILOT_SESSION_QUEUE', queueList.join(','));
                 core.info(`✅ Dequeued PR #${nextPR} — posted @copilot continue`);
+
+                // S239: Update the "⏳ Session Queued" comment on any remaining PRs
+                // in the queue so they see their new (shifted) queue position.
+                for (let i = 0; i < queueList.length; i++) {
+                  const waitingPR = parseInt(queueList[i], 10);
+                  if (isNaN(waitingPR) || waitingPR <= 0) continue;
+                  try {
+                    const { data: waitingComments } = await github.rest.issues.listComments({
+                      owner: context.repo.owner, repo: context.repo.repo,
+                      issue_number: waitingPR, per_page: 100,
+                    });
+                    const queuedComment = waitingComments.find(c =>
+                      (c.body || '').includes('<!-- session-gate-queued -->')
+                    );
+                    if (queuedComment) {
+                      const newPos = i + 1; // 1-based position
+                      const updatedBody = [
+                        '<!-- session-gate-queued -->',
+                        '## ⏳ Session Queued',
+                        '',
+                        `Another Copilot session is now active on PR #${nextPRNumber} (just dequeued).`,
+                        'This PR will be triggered automatically when that session completes.',
+                        '',
+                        '| Detail | Value |',
+                        '|--------|-------|',
+                        `| Active Session | PR #${nextPRNumber} |`,
+                        `| Queue Position | ${newPos} |`,
+                        `| Ahead in queue | ${newPos - 1} PR(s) |`,
+                        '',
+                        '> To enable parallel sessions, check the **Multiple Copilot Coding Agent Sessions** checkbox in the PR body.',
+                        '',
+                        `_Session Concurrency Gate — [design](docs/plans/AUTONOMOUS_SELF_HEALING_PROPOSAL_S182.md#session-concurrency-control-design)_`,
+                      ].join('\n');
+                      await github.rest.issues.updateComment({
+                        owner: context.repo.owner, repo: context.repo.repo,
+                        comment_id: queuedComment.id,
+                        body: updatedBody,
+                      });
+                      core.info(`✅ Updated queue position for PR #${waitingPR} → position ${newPos}`);
+                    }
+                  } catch (err) {
+                    core.warning(`Failed to update queue position for PR #${queueList[i]}: ${err.message}`);
+                  }
+                }
               } catch (err) {
                 core.warning(`Failed to post @copilot continue on PR #${nextPR}: ${err.message}`);
                 // Don't remove from queue — will retry on next release

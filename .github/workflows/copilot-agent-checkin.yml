@@ -459,31 +459,24 @@ jobs:
               'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]', 'copilot',
             ]);
 
-            // Collect all retrigger markers already posted (rescue IDs already retriggered)
-            const retriggerMarkers = new Set(
-              comments
-                .filter(c => retriggerMarkerRe.test(c.body || ''))
-                .flatMap(c => {
-                  const m = (c.body || '').match(/for rescue `([^`]+)`/);
-                  return m ? [m[1]] : [];
-                })
-            );
-
-            // Find the latest unanswered rescue comment (not yet retriggered)
+            // S239 fix: find the LATEST rescue comment regardless of previous retriggers.
+            // The old approach (retriggerMarkers set) permanently blocked re-triggering
+            // the same rescue ID — even when GitHub silently dropped the queued session
+            // after a new commit was pushed. Now we let hasResponse and the
+            // Copilot-acted-after-retrigger check handle deduplication correctly.
             let latestRescue = null;
             for (const c of comments) {
               const body = c.body || '';
               if (rescueMarkerRe.test(body)) {
                 const markerMatch = body.match(/<!--\s*ci-rescue-rca:([a-f0-9]+)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
-                if (!retriggerMarkers.has(rescueId)) {
-                  latestRescue = { id: rescueId, commentId: c.databaseId, body };
-                }
+                // Always update latestRescue — we want the LAST rescue comment in the list.
+                latestRescue = { id: rescueId, commentId: c.databaseId, body };
               }
             }
 
             if (!latestRescue) {
-              core.info('No unanswered rescue comments found — missed-trigger guard: nothing to do.');
+              core.info('No rescue comments found — missed-trigger guard: nothing to do.');
               return;
             }
 
@@ -504,6 +497,36 @@ jobs:
             if (hasResponse) {
               core.info(`Rescue comment ${latestRescue.id} already has a Copilot resolution response — skipping.`);
               return;
+            }
+
+            // Dedup: if a retrigger was already posted for this rescue, only skip posting
+            // ANOTHER retrigger if Copilot has taken some action (posted any comment) after
+            // that retrigger. If Copilot has NOT acted after the retrigger, the queued
+            // session was silently dropped (e.g. a new commit push invalidated it), so we
+            // allow a re-fire. This prevents the "permanently blocked" bug where a single
+            // retrigger post caused the guard to never fire again for the same rescue.
+            const commentsAfterRescue = rescueIndex >= 0 ? comments.slice(rescueIndex + 1) : [];
+            const retriggersForRescue = commentsAfterRescue.filter(c => {
+              const body = c.body || '';
+              return retriggerMarkerRe.test(body) && body.includes(`rescue \`${latestRescue.id}\``);
+            });
+
+            if (retriggersForRescue.length > 0) {
+              const lastRetrigger = retriggersForRescue[retriggersForRescue.length - 1];
+              const lastRetriggerDbId = lastRetrigger.databaseId;
+              const lastRetriggerIndex = comments.findIndex(c => c.databaseId === lastRetriggerDbId);
+              // Check if any Copilot agent comment appeared AFTER the last retrigger.
+              // If yes, Copilot is actively handling it — don't spam another retrigger.
+              const copilotActedAfterRetrigger = lastRetriggerIndex >= 0 &&
+                comments.slice(lastRetriggerIndex + 1).some(c =>
+                  COPILOT_AGENT_LOGINS.has(c.author?.login || '')
+                );
+              if (copilotActedAfterRetrigger) {
+                core.info(`Retrigger already posted for rescue ${latestRescue.id} and Copilot has acted since — not re-triggering.`);
+                return;
+              }
+              // No Copilot action after the retrigger — session was silently dropped.
+              core.info(`Previous retrigger for rescue ${latestRescue.id} had no Copilot action — re-firing (session was dropped).`);
             }
 
             // Post re-trigger comment
