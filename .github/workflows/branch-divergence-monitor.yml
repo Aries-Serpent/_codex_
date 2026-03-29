@@ -89,10 +89,6 @@ jobs:
 
       - name: Measure divergence
         id: measure
-        # OBJ-002-J: continue-on-error so a Python/bash failure inside this step
-        # still allows the rescue-comment-push job to fire (which needs failure()).
-        # The job itself will still be marked failed after this step exits non-zero.
-        continue-on-error: true
         env:
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
         run: |
@@ -258,7 +254,10 @@ jobs:
           # variable expansion reaching the Python heredoc. YAML block indentation
           # (10 spaces) is stripped by GitHub Actions before bash receives the script,
           # so PYEOF is seen at column 1 by bash and the Python code is unindented.
-          SUMMARY=$(python3 - <<PYEOF
+          # OBJ-002-J: guard only the Python serialisation step with || true so that a
+          # JSON failure does not prevent the rescue-comment-push job from firing while
+          # still failing the job if the measurement itself (bash logic above) fails.
+          SUMMARY=$(python3 - <<PYEOF 2>/dev/null || true
           import json, sys
           d = {
             "merge_base": "$MERGE_BASE",

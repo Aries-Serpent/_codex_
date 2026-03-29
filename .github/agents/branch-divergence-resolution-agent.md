@@ -52,7 +52,7 @@ classification system:
 │         │                                │  detect job:         │   │
 │         │ has commits                    │  - measure diverge   │   │
 │         │ 0D_base_ lacks                 │  - classify commits  │   │
-│         ▼                                │    (3 tiers)         │   │
+│         ▼                                │    (4 tiers)         │   │
 │  ┌─────────────────────────────────┐     │  - compute severity  │   │
 │  │        CLASSIFICATION           │     └──────────┬───────────┘   │
 │  │                                 │                │               │
@@ -62,8 +62,11 @@ classification system:
 │  │  AUTO-GEN ──────────────────▶   │     │     (autogen)        │   │
 │  │  (github-actions[bot] + [skip]) │     │  2. Fast-forward     │   │
 │  │                                 │     │     0D_base_ onto    │   │
-│  │  CODE-LEAK ─────────────────▶   │     │     main             │   │
-│  │  (human / copilot-swe-agent)    │     │     (pipeline-merge) │   │
+│  │  AGENT-COMMIT ──────────────▶   │     │     main             │   │
+│  │  (copilot bots / empty commits) │     │     (pipeline-merge) │   │
+│  │                                 │     │                      │   │
+│  │  CODE-LEAK ─────────────────▶   │     │                      │   │
+│  │  (human — everything else)      │     │                      │   │
 │  └─────────────────────────────────┘     └──────────┬───────────┘   │
 │                                                      │               │
 │  ┌───────────────────────────────────────────────────▼─────────┐    │

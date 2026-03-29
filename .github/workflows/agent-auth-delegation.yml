@@ -663,13 +663,27 @@ jobs:
         run: |
           echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
 
+          # Ensure the base ref is available locally so git log does not fail silently
+          if ! git fetch --no-tags origin "${{ github.base_ref }}" 2>/dev/null; then
+            echo "⚠️ **WARN** — Unable to fetch base ref origin/${{ github.base_ref }}; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::Empty-commit check skipped — could not fetch origin/${{ github.base_ref }}."
+            exit 0
+          fi
+
+          # Obtain commit list relative to the base ref; if this fails, emit WARN instead of a false PASS
+          COMMITS=$(git log --format="%H %an: %s" "origin/${{ github.base_ref }}"..HEAD 2>/dev/null) || {
+            echo "⚠️ **WARN** — git log failed for range origin/${{ github.base_ref }}..HEAD; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::Empty-commit check skipped — git log failed for origin/${{ github.base_ref }}..HEAD."
+            exit 0
+          }
+
           # Count commits with no file-tree changes
-          EMPTY_COMMITS=$(git log --format="%H %an: %s" "origin/${{ github.base_ref }}"..HEAD | \
-            while IFS= read -r line; do
-              SHA=$(echo "$line" | awk '{print $1}')
-              CHANGES=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null | wc -l)
-              [ "$CHANGES" -eq 0 ] && echo "$line"
-            done)
+          EMPTY_COMMITS=$(printf '%s\n' "$COMMITS" | while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            SHA=$(echo "$line" | awk '{print $1}')
+            CHANGES=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null | wc -l)
+            [ "$CHANGES" -eq 0 ] && echo "$line"
+          done)
 
           if [ -z "$EMPTY_COMMITS" ]; then
             echo "✅ **PASS** — No empty commits detected in this PR." >> "$GITHUB_STEP_SUMMARY"

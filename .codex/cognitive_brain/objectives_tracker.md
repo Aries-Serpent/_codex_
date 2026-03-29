@@ -471,7 +471,7 @@ diagrams, severity matrix, and OODA execution protocol.
 
 **OBJ-002-H** — Update `BRANCH_DIVERGENCE_PREVENTION.md`:
 1. Add S146 root cause taxonomy (RC-6: PIPELINE-MERGE misclassification)
-2. Add updated agent execution protocol with 3-tier classification
+2. Add updated agent execution protocol with 4-tier classification (PIPELINE-MERGE / AUTO-GEN / AGENT-COMMIT / CODE-LEAK)
 3. Update "Last Updated" date
 
 **OBJ-002-I + OBJ-002-J** — Monitor hardening:
@@ -498,15 +498,18 @@ DETECT:  get_workflow_run(branch-divergence-monitor.yml latest)
 
 CLASSIFY: behind_count > 0?
           YES → check commit subjects:
-               "Merge pull request #N from …/0D_base_"
+               "Merge pull request #N from Aries-Serpent/0D_base_"
                                          = PIPELINE-MERGE → auto-fwd (no alert)
-               github-actions[bot] + [skip ci] = AUTO-GEN  → trigger forward-sync
-               other                           = CODE-LEAK → escalate @mbaetiong
+               github-actions[bot] + [skip ci] = AUTO-GEN    → trigger forward-sync
+               copilot-swe-agent[bot] / github-copilot[bot]
+                 OR empty commits (0 file changes) = AGENT-COMMIT → auto-absorbed
+               other                              = CODE-LEAK  → escalate @mbaetiong
           NO  → divergence healthy, monitor is working
 
 REMEDIATE:
   PIPELINE-MERGE: monitor auto-corrects via fast-forward merge to 0D_base_
   AUTO-GEN:       workflow_dispatch forward-sync-autogen.yml
+  AGENT-COMMIT:   auto-absorbed by pipeline-merge fast-forward; no action needed
   CODE-LEAK:      cherry-pick to 0D_base_, open [DIVERGENCE-CRITICAL] issue
 
 VERIFY: re-run branch-divergence-monitor.yml → severity: "healthy"

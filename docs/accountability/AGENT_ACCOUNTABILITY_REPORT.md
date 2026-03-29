@@ -12704,7 +12704,7 @@ and the CI gate requirement.
 
 2. **FIX: PIPELINE-MERGE classification** — Added a third commit category to
    `branch-divergence-monitor.yml` (S146 commit `b24b0ac`):
-   - Pattern: `^Merge pull request #[0-9]+ from [^/]+/0D_base_$`
+   - Pattern: `^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$` (anchored to org)
    - Matched BEFORE `IS_AUTOGEN` so it takes priority
    - Classified as `PIPELINE-MERGE` → severity `low` (was `critical`)
    - New `pipeline_merge_count` output propagated through all downstream jobs:
@@ -12746,8 +12746,8 @@ and the CI gate requirement.
 - **PIPELINE-MERGE-001**: After every `0D_base_` → `main` staging-gate PR close,
   the merge commit will appear on `main` with a human author. The
   `branch-divergence-monitor.yml` PIPELINE-MERGE classifier (regex
-  `^Merge pull request #[0-9]+ from [^/]+/0D_base_$`) prevents false CRITICAL alerts.
-  If new staging-gate branch names are added, update the regex accordingly.
+  `^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$`) prevents false CRITICAL alerts.
+  If the staging-gate strategy or branch naming changes, update the workflow regex and this description accordingly.
 
 ### Lessons Learned
 
@@ -12889,3 +12889,55 @@ before the reply was registered — standard false-positive pattern.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-03-29T06:00Z S146-CONT7 (PR Review + Issue Triage)
+
+**Session ID:** S146-CONT7
+**PR:** #3782 (0D_base_: 4-tier branch divergence classifier)
+**Trigger:** New comment 4149540003 + new CI failure issues #3783–#3787
+
+### Changes Made
+
+1. **branch-divergence-monitor.yml** — Applied 4 PR review comment fixes:
+   - Fix 1: `TREE_CHANGES` — replaced `| wc -l || echo "0"` pipeline with reliable `git diff-tree` capture + conditional wc to prevent silent errors
+   - Fix 5: Removed duplicated `no-auto-PR policy` block (mismatched quotes on second copy)
+   - Fix 11: Removed step-level `continue-on-error: true` from `Measure divergence`; scoped error tolerance to Python JSON serialization only (`|| true` inline)
+
+2. **agent-auth-delegation.yml** — Fix 2: Added explicit `git fetch origin $base_ref` before `git log` in REQ-3b empty-commit check, with WARN-and-skip fallback if fetch fails (prevents silent false-PASS)
+
+3. **objectives_tracker.md** — Fix 3 + Fix 8:
+   - Quick reference CLASSIFY section now includes AGENT-COMMIT tier (Tier 3)
+   - Phase 3 plan "3-tier classification" corrected to "4-tier classification"
+
+4. **AGENT_ACCOUNTABILITY_REPORT.md** — Fix 4 (×2):
+   - PIPELINE-MERGE-001 pattern description corrected from `[^/]+/0D_base_` to `Aries-Serpent/0D_base_` in both locations (lines 12707 and 12749)
+
+5. **branch-divergence-resolution-agent.md** — Fix 6 + Fix 7:
+   - Architecture diagram label corrected from "(3 tiers)" to "(4 tiers)"
+   - CODE-LEAK classification box: removed "copilot-swe-agent" (now correctly AGENT-COMMIT); added AGENT-COMMIT row; CODE-LEAK now reads "human — everything else"
+
+6. **COGNITIVE_BRAIN_STATUS_S146_DIVERGENCE_FIX_2026-03-29.md** — Fix 9 + Fix 10:
+   - Regex corrected to `Aries-Serpent/0D_base_` (was `[^/]+/0D_base_`)
+   - Agent version corrected to v1.1.0 with 4-tier taxonomy description
+
+7. **security-scanning-suite.yml** — Fixed `cyclonedx-py` CLI syntax breaking #3787:
+   - `--format JSON --outfile sbom.json` → `--of JSON -o sbom.json` (cyclonedx-bom 7.x API)
+   - Same fix for XML output
+
+### Issue Triage
+
+| Issue | Root Cause | Resolution |
+|-------|-----------|-----------|
+| #3787 | `cyclonedx-py 7.x` changed `--format`/`--outfile` flags | Fixed in `security-scanning-suite.yml` |
+| #3786 | Nightly health sweep S149 task | Pre-existing task; P22/P23 both clean locally |
+| #3785 | 24% failure rate alert (198/240 = self-healing cascades) | Self-healing workflows dominate; real test failures are pre-existing P19 issues |
+| #3784 | S148 escalation on deleted branch `copilot/0d-base-fixes-for-critical-leak` | Stale — branch deleted post-merge; no action needed |
+| #3783 | S147 pre-merge on same deleted branch | Stale — branch deleted; no action needed |
+| #3780 | Old 2-tier divergence CRITICAL before S146 fix | Resolved by this PR (#3782) once merged |
+
+### Impact Score
+- Files changed: 7
+- PR review comments addressed: 11/11
+- CI issues triaged: 6
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations

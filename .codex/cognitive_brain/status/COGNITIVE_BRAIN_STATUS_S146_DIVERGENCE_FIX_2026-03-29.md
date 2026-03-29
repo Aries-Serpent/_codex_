@@ -28,7 +28,7 @@ unnecessary @copilot rescue sessions.
 
 ### 2. `branch-divergence-monitor.yml` Changes
 
-- **New category**: PIPELINE-MERGE (`^Merge pull request #[0-9]+ from [^/]+/0D_base_$`)
+- **New category**: PIPELINE-MERGE (`^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$`)
 - **New severity rule**: `pipeline_merge_count > 0` → `low` (was incorrectly `critical`)
 - **New auto-correct step**: Fast-forward `0D_base_` onto `main` when pipeline-merge detected
 - **New output**: `pipeline_merge_count` propagated through all jobs
@@ -37,12 +37,12 @@ unnecessary @copilot rescue sessions.
 
 ### 3. Custom Agent Created
 
-`.github/agents/branch-divergence-resolution-agent.md` v1.0.0:
-- Architecture diagram (ASCII art)
-- Severity matrix (3-tier)
+`.github/agents/branch-divergence-resolution-agent.md` v1.1.0:
+- Architecture diagram (ASCII art, updated to 4-tier)
+- Severity matrix (4-tier, includes AGENT-COMMIT)
 - OODA execution protocol
 - Self-healing loop diagram
-- Full taxonomy reference (PIPELINE-MERGE / AUTO-GEN / CODE-LEAK / EXPECTED)
+- Full taxonomy reference (PIPELINE-MERGE / AUTO-GEN / AGENT-COMMIT / CODE-LEAK / EXPECTED)
 
 ### 4. Cognitive Brain Updates
 
