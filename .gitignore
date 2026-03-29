@@ -143,6 +143,8 @@ manifests/k8s/*/secret.yaml
 !.codex/knowledge_graph/**
 !.codex/docs/
 !.codex/docs/**
+!.codex/issues/
+!.codex/issues/**
 !.codex/embeddings/
 .codex/embeddings/*
 !.codex/embeddings/codex_index_meta.json
