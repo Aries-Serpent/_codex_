@@ -1,6 +1,6 @@
 # Delegated-Comment Workflows — Reference, Diagrams & Audit
 
-> **Status:** ✅ Current (S227 · 2026-03-29)  
+> **Status:** ✅ Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
 > **Scope:** Every GitHub Actions workflow that posts PR/issue comments on behalf of the maintainer or an autonomous agent.  
 > **Run-link attribution:** All comments now end with `_[🔗 Workflow run](URL)_` so every automated post can be traced to its exact run.
 
@@ -146,6 +146,7 @@ graph TB
 | 32 | `telemetry-collection.yml` | CI health alert | `GITHUB_TOKEN` | `schedule` | JS-CONCAT | ✅ |
 | 33 | `token-probe.yml` | Token probe result | `CODEX_MASTER_KEY` | `workflow_dispatch` | JS-ARRAY | ✅ |
 | 34 | `workflow-link-validation.yml` | Link-check + rescue | `GITHUB_TOKEN` | `pull_request` | PY-RESCUE | ✅ |
+| 35 | `comment-review-gate.yml` | Live PR comment checklist + blocking gate | `CODEX_MASTER_KEY` | `pull_request` / `issue_comment` (mbaetiong) | JS-ARRAY + rescue | ✅ |
 
 ---
 
@@ -577,7 +578,7 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 | Event | Workflows That Post Comments |
 |-------|------------------------------|
-| `push` to PR branch | pre-merge-validation, resilient_validation, auto-fix-*, validate.yml, agent-auth-delegation, actionlint-audit, reference-integrity, root-org-validation, rust_swarm_ci, pre-flight-validation, pr-followup-generator, copilot-agent-checkin, copilot-agent-session-done |
+| `push` to PR branch | pre-merge-validation, resilient_validation, auto-fix-*, validate.yml, agent-auth-delegation, actionlint-audit, reference-integrity, root-org-validation, rust_swarm_ci, pre-flight-validation, pr-followup-generator, copilot-agent-checkin, copilot-agent-session-done, **comment-review-gate** |
 | `pull_request` opened | agent-auth-delegation (checklist), cost-gate, pr-cost-check |
 | `workflow_run` completed | ci-rescue, ci-failure-issue-creator, iterative-self-healing-ci, copilot-iterative-self-healing |
 | `issue_comment` with @copilot | copilot-review-responder, session-watchdog, chatops_copilot_trigger, agent-auth-delegation |

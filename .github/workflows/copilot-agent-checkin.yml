@@ -106,7 +106,10 @@ jobs:
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
       !startsWith(github.event.head_commit.message, 'chore(auth):') &&
-      !startsWith(github.event.head_commit.message, 'chore(d00):')
+      !startsWith(github.event.head_commit.message, 'chore(d00):') &&
+      !startsWith(github.event.head_commit.message, 'chore(sync):') &&
+      !startsWith(github.event.head_commit.message, 'fix(docs):') &&
+      !(github.event_name == 'push' && github.triggering_actor == 'copilot-swe-agent[bot]')
 
     steps:
       - name: "Post research topics and open check-in to Discussion #3756"
@@ -460,11 +463,11 @@ jobs:
             }
 
             // Find unanswered rescue comments:
-            // A rescue comment has the <!-- ci-rescue-rca:SHA --> marker.
+            // A rescue comment has the <!-- ci-rescue:PR_NUMBER --> marker.
             // An "answered" rescue comment already has:
             //   (a) a <!-- session-done-retrigger --> dedup marker for its rescue ID, OR
             //   (b) a Copilot agent reply containing resolution language after it.
-            const rescueMarkerRe   = /<!--\s*ci-rescue-rca:[a-f0-9]+\s*-->/;
+            const rescueMarkerRe   = /<!--\s*ci-rescue:\d+\s*-->/;
             const retriggerMarkerRe = /<!--\s*session-done-retrigger\s*-->/;
             // Only match actual Copilot agent logins — NOT github-actions[bot], which
             // posts the rescue comments themselves (matching it gave false-positive hasResponse).
@@ -481,7 +484,7 @@ jobs:
             for (const c of comments) {
               const body = c.body || '';
               if (rescueMarkerRe.test(body)) {
-                const markerMatch = body.match(/<!--\s*ci-rescue-rca:([a-f0-9]+)\s*-->/);
+                const markerMatch = body.match(/<!--\s*ci-rescue:(\d+)\s*-->/);
                 const rescueId = markerMatch ? markerMatch[1] : String(c.databaseId);
                 // Always update latestRescue — we want the LAST rescue comment in the list.
                 latestRescue = { id: rescueId, commentId: c.databaseId, body };

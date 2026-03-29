@@ -157,7 +157,7 @@ jobs:
           now        = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
           sha_short  = commit_sha[:12]
 
-          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER = f"<!-- ci-rescue:{pr_number} -->"
           API    = "https://api.github.com"
           HDRS   = {
               "Authorization": f"Bearer {token}",

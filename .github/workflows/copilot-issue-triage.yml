@@ -28,7 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Only run when a write key is available
-    if: github.actor != 'dependabot[bot]'
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      github.event.issue.user.type != 'Bot' &&
+      !contains(github.event.issue.labels.*.name, 'ci-failure') &&
+      !contains(github.event.issue.labels.*.name, 'automated')
 
     steps:
       - uses: actions/checkout@v5

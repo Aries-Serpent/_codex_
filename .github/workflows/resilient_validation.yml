@@ -149,7 +149,7 @@ jobs:
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
             const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
+            const marker = `<!-- ci-rescue:${context.issue.number} -->`;
             const workflowName = `Resilient Validation Suite / validation (${group})`;
 
             const rescueBody = [
@@ -316,7 +316,7 @@ jobs:
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
             const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue-rca:${shaShort} -->`;
+            const marker = `<!-- ci-rescue:${context.issue.number} -->`;
             const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;
 
             const rescueBody = [

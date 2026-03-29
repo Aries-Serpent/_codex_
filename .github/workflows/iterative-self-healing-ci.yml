@@ -558,6 +558,9 @@ jobs:
   # is not diagnosable are excluded — these still go to human escalation only.
   copilot-escalation:
     name: "🤖 Copilot escalation"
+    concurrency:
+      group: copilot-escalation-pr-${{ github.event.pull_request.number || needs.triage.outputs.head_branch || github.run_id }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: triage
@@ -705,9 +708,24 @@ jobs:
 
           RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
 
+          # ── Dedup guard: skip if a copilot-escalation comment was posted < 30 min ago ──
+          ESCALATION_MARKER="<!-- copilot-escalation:${PR_NUMBER} -->"
+          LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_             --json comments --jq             "[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty"             2>/dev/null || echo "")
+          if [ -n "$LAST_ESC" ]; then
+            NOW_TS=$(date +%s)
+            LAST_TS=$(date -d "${LAST_ESC}" +%s 2>/dev/null || echo "0")
+            ELAPSED=$(( NOW_TS - LAST_TS ))
+            if [ "$ELAPSED" -lt 1800 ]; then
+              echo "::notice::Skipping copilot-escalation — posted ${ELAPSED}s ago (< 30 min cooldown)"
+              echo "### ⏭️ Copilot Escalation Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
+              echo "Last escalation was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+
           # Build structured @copilot prompt per proposal §6 (Phase 8 P3: includes cross-PR correlation)
           cat > "${RUNNER_TEMP}/copilot_escalation.txt" <<COPILOT_EOF
-          <!-- copilot-escalation-trigger -->
+          <!-- copilot-escalation:${PR_NUMBER} -->
           ## 🤖 Copilot Self-Healing Escalation
 
           Auto-fix patterns exhausted for this failure. Requesting Copilot Coding Agent assistance.
