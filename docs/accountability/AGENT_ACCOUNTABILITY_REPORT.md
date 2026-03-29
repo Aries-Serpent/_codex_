@@ -13186,3 +13186,51 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-03-29T12:44Z S227 (CI Rescue — Agent Auth Delegation #23709189541)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comment (comment_id: 4150080244) reviewed — CI rescue request ✅
+- [x] **0b.** Failing CI check reviewed — run 23709189541 (REQ-4: accountability report not updated) ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated (this entry) ✅
+- [x] **2.** `.secrets.baseline` — stale CODEX_MANIFEST hash fixed via `sync_tracked_files.py --fix` ✅
+- [x] **3.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Root Cause
+
+CI run [23709189541](https://github.com/Aries-Serpent/_codex_/actions/runs/23709189541)
+was triggered on commit `b2f3b75` (staging-gate merge). The Cognitive Pre-flight
+REQ-4 gate checks `git diff --name-only HEAD~1 HEAD` for
+`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`. Commit `b2f3b75` was an
+auto-generated merge commit from `branch-divergence-monitor.yml` and did not include
+a doc update, so REQ-4 exited 1. The in-workflow auto-fix job then committed `5913b4f`
+(`[skip ci]`), updating the report. However, because `[skip ci]` was used, no new CI
+run was triggered and the prior run remained in FAILED state.
+
+A secondary issue was found: `.secrets.baseline` held a stale `hashed_secret`/
+`line_number` for the `CODEX_MANIFEST.json` entry (stored hash `d07017…`, expected
+`bfef71…`). Fixed by `python3 scripts/ci/sync_tracked_files.py --fix`.
+
+### Changes Made
+
+1. **`.secrets.baseline`** — Updated stale CODEX_MANIFEST entry (line=1967,
+   hash=bfef715c2f8f…) via `sync_tracked_files.py --fix`.
+2. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** — Added this session entry
+   to satisfy REQ-4 in the next CI run.
+
+### Verification Results
+
+```
+sync_tracked_files.py --check: all consistent ✅
+CODEX_MANIFEST integrity: sha256 consistent ✅
+.secrets.baseline: updated to correct hash ✅
+AGENT_ACCOUNTABILITY_REPORT: session entry dated 2026-03-29 ✅
+```
+
+### Impact Score
+- Files changed: 2 (`.secrets.baseline`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Root cause: REQ-4 gate missing accountability update in auto-merge commit + stale secrets baseline
+- CI gates unblocked: REQ-4, Pattern 22
+- Deferral Language Gate: 0 violations
+
+---
