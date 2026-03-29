@@ -162,8 +162,9 @@ jobs:
             IS_PIPELINE_MERGE=false
 
             # Pipeline-merge: staging-gate merge commit (0D_base_ → main PR merge)
-            # Pattern: "Merge pull request #N from <org>/0D_base_"
-            if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from [^/]+/0D_base_$'; then
+            # Pattern: "Merge pull request #N from Aries-Serpent/0D_base_"
+            # Anchored to org name to prevent false positives from forks/other contexts.
+            if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$'; then
               IS_PIPELINE_MERGE=true
             fi
 
@@ -206,8 +207,10 @@ jobs:
           echo "severity=$SEVERITY" >> "$GITHUB_OUTPUT"
 
           NEEDS_CORRECTION=false
-          [ "$AUTOGEN_COUNT" -gt 0 ] || [ "$CODELEAK_COUNT" -gt 0 ] || \
-          [ "$PIPELINE_MERGE_COUNT" -gt 0 ] && NEEDS_CORRECTION=true
+          if [ "$AUTOGEN_COUNT" -gt 0 ] || [ "$CODELEAK_COUNT" -gt 0 ] || \
+             [ "$PIPELINE_MERGE_COUNT" -gt 0 ]; then
+            NEEDS_CORRECTION=true
+          fi
           echo "needs_correction=$NEEDS_CORRECTION" >> "$GITHUB_OUTPUT"
 
           # ── Compact summary JSON (no newlines — safe for GITHUB_OUTPUT) ────
@@ -379,41 +382,47 @@ jobs:
         env:
           PIPELINE_MERGE_SHAS: ${{ needs.detect.outputs.summary_json }}
         run: |
-          git fetch origin main --depth=20
-          git fetch origin 0D_base_ --depth=20
+          git fetch origin main --depth=20 || { echo "::warning::fetch origin main failed"; exit 0; }
+          git fetch origin 0D_base_ --depth=20 || { echo "::warning::fetch origin 0D_base_ failed"; exit 0; }
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Attempt a no-ff merge of main into 0D_base_ to bring in the
-          # pipeline-merge commit(s).  If 0D_base_ is already an ancestor of
-          # main (fast-forward situation) we use --ff-only for a clean history.
+          # Bring local 0D_base_ up to date
           git checkout 0D_base_
-          git pull --rebase origin 0D_base_ 2>/dev/null || true
+          git pull --rebase origin 0D_base_ || { echo "::warning::rebase pull failed; continuing with local state"; }
 
+          # If HEAD (0D_base_) is already an ancestor of main, main's commits are
+          # already in 0D_base_'s future — this should not happen, but guard it.
+          # The check we actually need: is origin/main an ancestor of HEAD?
+          # If YES: 0D_base_ already contains main — no merge needed.
           if git merge-base --is-ancestor origin/main HEAD; then
             echo "ℹ️  0D_base_ already contains all main commits — no merge needed"
             exit 0
           fi
 
-          # Try fast-forward first (cleanest)
-          if git merge --ff-only origin/main 2>/dev/null; then
+          # Try fast-forward first (cleanest — only possible if 0D_base_ has no
+          # extra commits since the merge base)
+          if git merge --ff-only origin/main 2>&1; then
             echo "✅ Fast-forwarded 0D_base_ to include pipeline-merge commit(s)"
           else
-            # No-ff merge: 0D_base_ has commits main doesn't
-            git merge --no-ff origin/main \
-              -m "chore(sync): fast-forward 0D_base_ to include staging-gate merge commit(s) [skip ci]
+            # Diverged: 0D_base_ has commits main doesn't. Use a true merge commit
+            # to unite the histories while preserving 0D_base_'s staged work.
+            MERGE_OUTPUT=$(git merge --no-ff origin/main \
+              -m "chore(sync): merge main into 0D_base_ to include staging-gate commit(s) [skip ci]
 
           Staging-gate merge commit(s) detected on main that were not in 0D_base_.
-          This merge brings 0D_base_ up-to-date so the divergence monitor reports
-          severity=healthy on the next run.
+          This merge commit unites the two histories so the divergence monitor
+          reports severity=healthy on the next scheduled run.
 
           Pipeline-merge count: ${{ needs.detect.outputs.pipeline_merge_count }}
           Triggered by: branch-divergence-monitor.yml (scheduled)
           Merge base:   ${{ needs.detect.outputs.merge_base_sha }}" \
-              --no-edit 2>/dev/null || {
-                echo "⚠️  Merge conflict detected — skipping pipeline-merge fast-forward"
-                echo "Manual resolution required: cherry-pick merge commits onto 0D_base_"
+              --no-edit 2>&1) || {
+                MERGE_EXIT=$?
+                echo "::warning::Merge conflict (exit $MERGE_EXIT) — skipping pipeline-merge sync"
+                echo "Merge output: $MERGE_OUTPUT"
+                echo "Manual resolution required: merge or cherry-pick staging-gate commits onto 0D_base_"
                 git merge --abort 2>/dev/null || true
                 exit 0
               }

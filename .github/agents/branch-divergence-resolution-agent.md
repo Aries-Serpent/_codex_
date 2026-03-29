@@ -108,8 +108,8 @@ For each commit in `MAIN_ONLY`:
 AUTHOR=$(git log -1 --format="%an" "$SHA")
 SUBJECT=$(git log -1 --format="%s" "$SHA")
 
-# Tier 1: pipeline-merge
-if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from [^/]+/0D_base_$'; then
+# Tier 1: pipeline-merge (anchored to Aries-Serpent org — prevents fork false positives)
+if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from Aries-Serpent/0D_base_$'; then
   → PIPELINE_MERGE
 
 # Tier 2: auto-gen
