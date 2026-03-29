@@ -145,6 +145,8 @@ manifests/k8s/*/secret.yaml
 !.codex/docs/**
 !.codex/issues/
 !.codex/issues/**
+!.codex/aftermath/
+!.codex/aftermath/**
 !.codex/embeddings/
 .codex/embeddings/*
 !.codex/embeddings/codex_index_meta.json

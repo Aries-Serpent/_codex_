@@ -411,13 +411,120 @@ escalation comments to prevent cascade flooding:
 
 | Milestone | Task | Owner | Status |
 |-----------|------|-------|--------|
-| M1 | Create `workflow-execution-gate.yml` | Copilot | 🟡 Designed |
-| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | 🟡 Planned |
+| M1 | Create `workflow-execution-gate.yml` | Copilot | ✅ Done (S228) |
+| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | ✅ Done (S228) |
 | M3 | Add opt-in gate check to `security-scanning-suite.yml` | Copilot | ⬜ Pending |
 | M4 | Add opt-in gate check to `docs-build.yml` | Copilot | ⬜ Pending |
 | M5 | Add opt-in gate check to `nox-gates.yml` | Copilot | ⬜ Pending |
 | M6 | Add opt-in gate check to `cost-gate.yml` | Copilot | ⬜ Pending |
 | M7 | Test end-to-end with PR #3790 | Copilot+Owner | ⬜ Pending |
+
+---
+
+## 11. PDA Loop + Aftermath Tracking
+
+> **PDA = Plan → Do → Act (Deming cycle adapted for agentic CI workflows)**  
+> Each iteration through the gate produces a measurable outcome. Tracked here.
+
+```mermaid
+flowchart LR
+    subgraph "PDA Iteration Loop"
+        P[Plan\nDefine checklist\nchoices for session] --> D[Do\nAgent checks boxes\n+ triggers gate]
+        D --> A[Act\nGate runs workflows\nskips unchecked]
+        A --> AF[Aftermath\nRecord outcome\nupdate pattern DB]
+        AF -->|next session| P
+    end
+
+    subgraph "Aftermath DB (.codex/aftermath/)"
+        DB1[pda_iterations.jsonl]
+        DB2[workflow_skip_log.jsonl]
+        DB3[gate_outcomes.md]
+    end
+
+    AF --> DB1
+    AF --> DB2
+    AF --> DB3
+```
+
+### 11.1 PDA Iteration Schema
+
+Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterations.jsonl`:
+
+```json
+{
+  "iteration": 1,
+  "session": "S228",
+  "pr_number": 3790,
+  "timestamp": "2026-03-29T22:19Z",
+  "plan": {
+    "workflows_checked": ["pre-merge-validation.yml", "comment-review-gate.yml", "agent-auth-delegation.yml", "copilot-agent-checkin.yml"],
+    "workflows_unchecked": ["security-scanning-suite.yml", "docs-build.yml", "nox-gates.yml", "cost-gate.yml"]
+  },
+  "do": {
+    "gate_run_id": null,
+    "dispatched": [],
+    "skipped": [],
+    "gate_status": "not_yet_triggered"
+  },
+  "act": {
+    "workflows_ran": [],
+    "workflows_skipped": [],
+    "gate_outcome": "pending",
+    "cascades_prevented": 0
+  },
+  "aftermath": {
+    "lessons": ["Checklist injection added to agent-auth-delegation.yml wrap-up"],
+    "pattern_updates": ["P-WEC-001: checklist injection on first wrap-up"],
+    "open_items": ["M3-M6 opt-in gate checks pending"]
+  }
+}
+```
+
+### 11.2 Aftermath Pattern Library
+
+| Pattern ID | Pattern | Outcome | Iteration |
+|-----------|---------|---------|-----------|
+| P-WEC-001 | Checklist injected by agent-auth-delegation on first session | ✅ Works | 1 |
+| P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | 🔮 Untested | — |
+| P-WEC-003 | Gate triggers on pull_request_review (owner approval) | 🔮 Untested | — |
+| P-WEC-004 | Unchecked workflow correctly skipped via gate | 🔮 Untested | — |
+| P-WEC-005 | Always-required workflow (comment-review-gate) NOT skipped | 🔮 Untested | — |
+
+### 11.3 Self-Review at Each PDA Act Phase
+
+Before recording an Aftermath entry, the Copilot Agent MUST complete the following
+5-pass self-review:
+
+```markdown
+## 🔁 PDA Self-Review (5 passes)
+
+**Pass 1 — YAML Validity**
+- [ ] `workflow-execution-gate.yml` passes actionlint
+
+**Pass 2 — Checklist Syntax**
+- [ ] PR body contains `## 🔄 Workflow Execution Checklist` section
+- [ ] Gate marker `<!-- gate-managed-by: workflow-execution-gate.yml -->` present
+
+**Pass 3 — Gate Logic**
+- [ ] Checked items produce WILL RUN in gate summary comment
+- [ ] Unchecked items produce SKIPPED in gate summary comment
+
+**Pass 4 — No Side Effects**
+- [ ] Gate run does NOT create commits or file changes
+- [ ] Gate run does NOT trigger further workflow cascades
+
+**Pass 5 — Policy Compliance**
+- [ ] `sync_tracked_files.py --check` → all 4 consistent
+- [ ] Always-required workflows (REQ-13, deferral-gate, auth-delegation) are CHECKED
+- [ ] Per `.codex/CODEBASE_AGENCY_POLICY.md §0` — all PR comments addressed
+```
+
+### 11.4 What Works / What Doesn't (Iteration Log)
+
+| # | Date | What Worked | What Didn't | Fix Applied |
+|---|------|-------------|-------------|-------------|
+| 0 | 2026-03-29 | Checklist format defined | Gate not yet triggered live | M2 done; M3-M6 pending |
+| — | — | — | — | — |
 
 ---
 

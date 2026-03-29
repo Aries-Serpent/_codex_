@@ -42,6 +42,59 @@ On 2026-03-29, PR #3790 (`0D_base_`) experienced 46 CI failures across 13 workfl
 
 Additionally, `iterative-self-healing-ci` has **no marker-based dedup at all** on its escalation paths — every `workflow_run` completion triggers a new `@copilot` comment with no dedup.
 
+### 1.1 Race Condition Architecture Diagram
+
+```mermaid
+flowchart TD
+    subgraph "Trigger Sources"
+        PUSH[git push / PR update]
+    end
+
+    subgraph "Simultaneous Firer Group (T+0s to T+10s)"
+        WF1[auto-fix-common-issues.yml]
+        WF2[auto-fix-pr-check.yml]
+        WF3[resilient_validation.yml]
+        WF4[validate.yml]
+        WF5[pre-merge-validation.yml]
+        WF6[agent-auth-delegation.yml]
+        WF7[iterative-self-healing-ci.yml]
+    end
+
+    subgraph "Race Condition: GitHub Comments API"
+        C1[Comment attempt #1]
+        C2[Comment attempt #2]
+        C3[Comment attempt #3 ... #7]
+        STORM[💥 Comment Storm — 7 duplicates]
+    end
+
+    subgraph "Fix Applied (S227)"
+        MK[Per-PR marker\n'<!-- ci-rescue:{pr_number} -->']
+        CG[Concurrency group\n'ci-rescue-comment-{PR_NUMBER}']
+        DD[30-min dedup window]
+    end
+
+    PUSH --> WF1 & WF2 & WF3 & WF4 & WF5 & WF6 & WF7
+    WF1 & WF2 & WF3 --> C1 & C2 & C3 --> STORM
+
+    STORM -.->|S227 fix| MK
+    MK --> CG
+    CG --> DD
+```
+
+### 1.2 Fix Architecture Diagram (Post-S227)
+
+```mermaid
+flowchart LR
+    subgraph "Post-Fix Flow (S227 F-01 to F-13)"
+        PUSH2[git push] --> WFN[All N workflows fire]
+        WFN --> CHK{Marker present?\n'ci-rescue:{PR}'}
+        CHK -->|yes + <30min| SKIP[Skip — dedup guard]
+        CHK -->|no / >30min| POST[Post rescue comment]
+        POST --> UPS[Upsert marker in comment]
+        UPS --> CONC[Concurrency group serialises\nnext run]
+    end
+```
+
 ---
 
 ## 2. Audit Methodology

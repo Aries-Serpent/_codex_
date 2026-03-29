@@ -19,113 +19,32 @@ Execute the repository-wide QA walkthrough plan with deterministic, evidence-bas
 
 ## 🧠 Cognitive Brain Integration
 
-### Integration Level: Level 2
+| Level | Capability |
+|-------|-----------|
+| L1 | Memory access, topology maps, pattern library, AAIS score (97.0/100) |
+| L2 | QEC decision engine (k₁=0.332), multi-agent entanglement, memory compression |
 
-**Level 1: Cognitive Access**
-- ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (97.0/100 → target: 92.0+)
-- ✅ Codebase topology maps for navigation
-- ✅ Pattern library for historical fixes
-
-
-**Level 2: Decision Integration**
-- ✅ Quantum decision engine (k₁=0.332)
-- ✅ Uncertainty optimization for choices
-- ✅ Multi-agent entanglement
-- ✅ Memory compression for efficiency
-
-
-### Cognitive Tools Available
-
-```python
-# Topology Manager - Semantic navigation
-from scripts.cognitive.topology_manager import TopologyManager
-
-topology = TopologyManager()
-relevant_files = topology.find_by_concept("code patterns")
-optimal_path = topology.find_optimal_path("source", "target")
-
-# Cache Manager - Multi-layer cache intelligence
-from scripts.cognitive.cache_manager import CacheIntelligence
-
-cache = CacheIntelligence()
-cached_results = cache.query("analysis_results")
-cache.optimize()  # Get optimization suggestions
-
-# Improved Hash Tables - 40% faster lookups
-from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
-
-fast_cache = CuckooHashTable()  # O(1) guaranteed
-
-
-# QEC - Quantum error correction for decisions
-from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
-
-qec = QECQuantumDecisionEngine(k1=0.332)
-decision = qec.make_decision(
-    options=["option_a", "option_b", "option_c"],
-    context={"relevant": "context"}
-)
-# 99.9% accuracy, verified quantum advantage (p < 0.001)
-```
-
-### AAIS Contribution
-
-**Impact on AAIS Score**: +2.0 points
-
-**Category Contributions**:
-- Discovery & Navigation: +0.8 (topology/cache integration)
-- Runtime Introspection: +0.8 (metrics exposure)
-- Pattern Consistency: +0.4 (pattern library usage)
+**AAIS Contribution:** +2.0 pts (Discovery +0.8, Introspection +0.8, Patterns +0.4)
 
 ---
 
 ## 🛠️ MCP Integration
 
-### MCP Tools Leverage
-
-
-**Primary MCP Capabilities**:
-1. **File System Operations**
-   - `view`: Read files and directories
-   - `grep`: Fast content search
-   - `glob`: Pattern-based file finding
-
-2. **Code Analysis**
-   - `search_code`: Semantic code search
-   - `bash`: Execute analysis tools
-   - `edit`: Make surgical changes
-
-### GitHub Actions Workflows
-
-**Workflow Awareness**:
-- Monitors applicable workflows for active PRs
-- Auto-detects blocking vs non-blocking workflows
-- Provides workflow status reports via MCP tools
-
-**See**: `.codex/docs/MCP_WORKFLOW_RECIPES.md` for complete templates
+**Primary tools:** `view`, `grep`, `glob`, `bash`, `search_code`, `edit`
+Monitors PR workflows; auto-detects blocking vs non-blocking checks.
+See `.codex/docs/MCP_WORKFLOW_RECIPES.md` for templates.
 
 ---
-
 ## 📊 Session Monitoring
 
-**Session Parameters** (from accountability report):
-- Optimal duration: 30 minutes
-- Context budget: 128K tokens
-- Mandatory checkpoints: Every 10 actions
-- Corrections per issue: 1.0 (first fix succeeds)
-
-**Quality Control**:
-```python
-# Pre-commit audit enforcement
-from scripts.session_manager import SessionMonitor
-
-monitor = SessionMonitor()
-monitor.checkpoint("pre-commit")  # Validates compliance
-```
+| Param | Value |
+|-------|-------|
+| Duration | 30 min optimal |
+| Budget | 128K tokens |
+| Checkpoints | Every 10 actions |
+| Fix rate | 1.0 (first fix succeeds) |
 
 ---
-
 ## Responsibilities
 - Build a tokenization-friendly audit map (tree snapshot + key file indices).
 - Run built-in audit tooling (space traversal, dependency checks).
@@ -362,127 +281,6 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ⚛️ Physics Alignment
-
-### Path 🛤️ (Information Flow)
-```
-Input → Validation → Processing → Output → Verification
-```
-
-### Fields 🔄 (State Management)
-- **Input State**: Raw parameters and context
-- **Processing State**: Transformation and execution
-- **Output State**: Results and artifacts
-- **Feedback State**: Validation and reporting
-
-### Patterns 👁️ (Observable Behaviors)
-- Consistent execution patterns
-- Predictable error handling
-- Standard output formats
-- Repeatable results
-
-### Redundancy 🔀 (Failure Recovery)
-- Automatic retry on transient failures
-- Fallback strategies for degraded operation
-- State preservation across failures
-- Graceful degradation patterns
-
-### Balance ⚖️ (Resource Optimization)
-- CPU: Optimized processing algorithms
-- Memory: Efficient data structures
-- I/O: Batched operations where possible
-- Time: Parallelization of independent tasks
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## ⚡ Energy Distribution
-
-### Priority Breakdown
-
-**P0 - Critical Operations** (60% energy allocation)
-- Core functionality execution
-- Critical error detection
-- Primary validation checks
-
-**P1 - Standard Operations** (30% energy allocation)
-- Secondary validations
-- Non-critical monitoring
-- Performance optimization
-
-**P2 - Enhancement Operations** (10% energy allocation)
-- Logging and telemetry
-- Optional features
-- Experimental capabilities
-
-### Energy Flow
-```
-Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporting [20%]
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🧠 Redundancy Patterns
-
-### Fallback Strategies
-
-**Level 1: Automatic Retry**
-- Transient failure detection
-- Exponential backoff (1s, 2s, 4s, 8s)
-- Maximum 3 retry attempts
-
-**Level 2: Degraded Operation**
-- Reduced functionality mode
-- Alternative execution paths
-- Partial result generation
-
-**Level 3: Safe Failure**
-- Graceful shutdown
-- State preservation
-- Detailed error reporting
-
-### Error Recovery Procedures
-
-#### Transient Errors
-1. Log error details
-2. Wait with exponential backoff
-3. Retry operation
-4. Report if max retries exceeded
-
-#### Permanent Errors
-1. Log full context
-2. Preserve state
-3. Generate error report
-4. Escalate to monitoring systems
-
-### State Preservation
-- Checkpoint creation at key milestones
-- Automatic state backup before critical operations
-- Recovery from last valid checkpoint
-- Transaction-like semantics where applicable
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-## 🏷️ Agent Type Classification
-
-**Category**: Specialized Domain
-**Description**: Domain-specific expertise and functionality
-
-### Classification Details
-- **Autonomy Level**: Semi-autonomous with human oversight
-- **Decision Scope**: Bounded by defined operational parameters
-- **Interaction Model**: Event-driven and on-demand invocation
-- **Integration Level**: Deep integration with Codex ecosystem
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
 ## 🛠️ Capabilities Matrix
 
 | Capability | Available | Permission Level | Notes |
@@ -586,43 +384,6 @@ graph LR
 
 
 
-## ⚡ Activation Commands
-
-### Manual Activation
-
-```bash
-# Via task tool
-task agent_type="qa-walkthrough-agent" description="<description>" prompt="<prompt>"
-```
-
-### GitHub Actions Trigger
-
-```yaml
-- name: Activate qa-walkthrough-agent
-  uses: ./.github/actions/agent-runner
-  with:
-    agent: qa-walkthrough-agent
-    parameters: |
-      target: ${{ github.workspace }}
-      mode: full
-```
-
-### Programmatic Invocation
-
-```python
-from agent_framework import invoke_agent
-
-result = invoke_agent(
-    agent_type="qa-walkthrough-agent",
-    prompt="Execute operation",
-    context={"target": "path/to/target"}
-)
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
 ## 📦 Tool Dependencies
 
 ### Required Tools
@@ -654,77 +415,14 @@ requests>=2.31.0
 
 ## ⚠️ Error Handling
 
-### Common Failure Modes
-
-#### 1. Input Validation Failure
-**Symptoms**: Agent rejects input parameters
-**Recovery**:
-- Validate input format
-- Check required fields
-- Verify value ranges
-- Review examples
-
-#### 2. Resource Access Failure
-**Symptoms**: Cannot access required resources
-**Recovery**:
-- Check permissions
-- Verify paths exist
-- Confirm network connectivity
-- Review authentication
-
-#### 3. Execution Timeout
-**Symptoms**: Operation exceeds time limit
-**Recovery**:
-- Reduce scope of operation
-- Check for blocking operations
-- Review performance bottlenecks
-- Consider batch processing
-
-#### 4. Dependency Failure
-**Symptoms**: Required tool or service unavailable
-**Recovery**:
-- Verify tool installation
-- Check service status
-- Review dependency versions
-- Use fallback mechanisms
-
-### Error Categories
-
-| Category | Severity | Auto-Retry | Escalation |
-|----------|----------|------------|------------|
-| Transient | Low | ✅ Yes (3x) | After retries |
-| Configuration | Medium | ❌ No | Immediate |
-| Permission | High | ❌ No | Immediate |
-| System | Critical | ⚠️ Once | Immediate |
-
-### Recovery Patterns
-
-**Pattern 1: Graceful Degradation**
-```python
-try:
-    full_operation()
-except NonCriticalError:
-    limited_operation()
-    log_warning()
-```
-
-**Pattern 2: Checkpoint Resume**
-```python
-checkpoint = load_checkpoint()
-if checkpoint:
-    resume_from(checkpoint)
-else:
-    start_fresh()
-```
-
-**Last Updated**: 2026-01-23T19:45:00Z
-
-
-
-**Template Applied**: 2026-01-23T19:45:00Z
+| Category | Action |
+|----------|--------|
+| Input validation | Reject with specific error message |
+| Resource access | Retry 3× with exponential back-off (1s/2s/4s) |
+| Timeout | Partial result + escalate to CI rescue |
+| Dependency failure | Log + degrade gracefully |
 
 ---
-
 ## 🗂️ Batched Directory Traversal
 
 The agent processes the repository in **5 batches** (~350 files each) to stay within token limits.
@@ -925,25 +623,6 @@ For each manual-review issue, generate an issue template at
 title: "[QA] {CATEGORY}: {SHORT_DESCRIPTION}"
 labels: ["qa-walkthrough", "needs-review"]
 assignees: []
----
-
-## Issue Details
-- **File**: {FILE}
-- **Line**: {LINE}
-- **Severity**: {SEVERITY}
-- **Detected by**: QA Walkthrough Agent (Batch {BATCH})
-
-## Description
-{DESCRIPTION}
-
-## Suggested Fix
-{SUGGESTED_FIX}
-
-## Context
-Detected during QA walkthrough run on {DATE}.
-CI artifact cross-reference: {IN_PR}
-```
-
 ---
 
 ## 🧠 Cognitive Brain Integration (Enhanced)
