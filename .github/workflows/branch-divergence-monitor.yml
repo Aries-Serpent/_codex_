@@ -196,11 +196,12 @@ jobs:
             # Empty commits (no file changes) are always agent-commit regardless of author —
             # they are placeholder/plan commits that carry no code risk.
             if [ "$IS_PIPELINE_MERGE" = "false" ] && [ "$IS_AUTOGEN" = "false" ]; then
-              IS_EMPTY=$([ "$TREE_CHANGES" -eq 0 ] && echo "true" || echo "false")
               for BOT in $AGENT_BOT_AUTHORS; do
                 [ "$AUTHOR" = "$BOT" ] && IS_AGENT_COMMIT=true && break
               done
-              [ "$IS_EMPTY" = "true" ] && IS_AGENT_COMMIT=true
+              # Empty commits (0 file-tree changes) are always agent-commit regardless
+              # of author — they are placeholder/plan commits with no code risk.
+              [ "$TREE_CHANGES" -eq 0 ] && IS_AGENT_COMMIT=true
             fi
 
             if [ "$IS_PIPELINE_MERGE" = "true" ]; then
@@ -429,10 +430,9 @@ jobs:
           git checkout 0D_base_
           git pull --rebase origin 0D_base_ || { echo "::warning::rebase pull failed; continuing with local state"; }
 
-          # If HEAD (0D_base_) is already an ancestor of main, main's commits are
-          # already in 0D_base_'s future — this should not happen, but guard it.
-          # The check we actually need: is origin/main an ancestor of HEAD?
-          # If YES: 0D_base_ already contains main — no merge needed.
+          # `git merge-base --is-ancestor A B` returns 0 (true) if A is an ancestor of B.
+          # Here: `is origin/main an ancestor of HEAD (0D_base_)?`
+          # If YES → every commit on main is already reachable from HEAD → no merge needed.
           if git merge-base --is-ancestor origin/main HEAD; then
             echo "ℹ️  0D_base_ already contains all main commits — no merge needed"
             exit 0

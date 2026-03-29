@@ -8,10 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S146 — PR #3781)
-- **fix(monitor):** `branch-divergence-monitor.yml` — add **PIPELINE-MERGE** commit classification to prevent staging-gate merge commits (`Merge pull request #N from .../0D_base_`) from being misclassified as CODE-LEAK and raising false CRITICAL alerts. Severity for pipeline-merge-only divergence is now `low` (was `critical`). Added `pipeline_merge_count` output propagated through all jobs, issue body, step summary, and JSON summary.
-- **fix(monitor):** `branch-divergence-monitor.yml` — add "Fast-forward 0D_base_ to include pipeline-merge commit(s)" step to `auto-correct` job. When `pipeline_merge_count > 0`, the step fast-forwards `0D_base_` onto `main` so the next monitor run finds `severity=healthy`.
-- **fix(git):** Remove empty `e965f4e` "Initial plan" commit (no file changes, by `copilot-swe-agent[bot]`) that would have been classified as CODE-LEAK on `main` by the monitor.
-- **feat(agents):** Create `.github/agents/branch-divergence-resolution-agent.md` v1.0.0 — production-ready Custom Copilot Agent with architecture diagrams, severity matrix, OODA execution protocol, self-healing loop, and taxonomy reference (PIPELINE-MERGE / AUTO-GEN / CODE-LEAK / EXPECTED).
+- **fix(monitor):** `branch-divergence-monitor.yml` — 4-tier commit classification replacing original 2-tier (S146 + S146-CONT):
+  - **Tier 1 PIPELINE-MERGE**: `Merge pull request #N from Aries-Serpent/0D_base_` — staging-gate merge commit; severity `low`, auto-correct fast-forwards `0D_base_`.
+  - **Tier 2 AUTO-GEN**: `github-actions[bot]` + `[skip ci]`/`[automated]`/etc subject — forward-sync files.
+  - **Tier 3 AGENT-COMMIT**: `copilot-swe-agent[bot]`/`github-copilot[bot]`/`copilot[bot]` author, or any empty commit (0 file-tree changes via `git diff-tree`) — reviewed PR work, absorbed by Tier 1 fast-forward. Eliminates false CRITICAL alerts from agent sessions permanently.
+  - **Tier 4 CODE-LEAK**: everything else — `@copilot` escalation only when `codeleak > 0 AND absorbers === 0`.
+- **fix(monitor):** Severity: `CODE-LEAK + absorbers → low`; `CODE-LEAK alone → critical`. Operator precedence fixed (`if-then` block). Ancestry comment clarified. `pipeline_merge_count`, `agent_commit_count` propagated through all outputs, JSON, step summary, issue body.
+- **feat(preflight):** `agent-auth-delegation.yml` — new **REQ-3b** step `Detect empty commits in PR` (warn-only, `continue-on-error`): counts empty commits, explains AGENT-COMMIT impact, advises correct drop-before-push workflow.
+- **docs:** `BRANCH_DIVERGENCE_PREVENTION.md` — RC-6, RC-7, RC-8 root-cause sections; updated 4-tier Agent Execution Protocol quick reference.
+- **feat(agents):** `.github/agents/branch-divergence-resolution-agent.md` v1.1.0 — 4-tier classification table, architecture diagram, severity matrix, OODA protocol, self-healing loop.
 
 ### Fixed (S145 — PR #3777)
 - **fix(ci):** Remove `GitLabTokenDetector` from `.secrets.baseline` — was causing `detect-secrets` pre-commit hook to fail with `No such GitLabTokenDetector plugin to initialize` in CI environments running an older `detect-secrets` version than the one used to generate the baseline (version mismatch). Fixes recurring `Validation Pipeline / Fast Validation` failures on `a836919`.

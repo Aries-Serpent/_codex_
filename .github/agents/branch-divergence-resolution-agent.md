@@ -27,14 +27,15 @@ runner_compatibility:
 ## Purpose
 
 Autonomously detect, classify, and resolve branch divergence between
-`0D_base_` (staging) and `main` (default) branches using a three-tier
+`0D_base_` (staging) and `main` (default) branches using a four-tier
 classification system:
 
 | Tier | Category | Definition | Action |
 |------|----------|-----------|--------|
-| 1 | **PIPELINE-MERGE** | `Merge pull request #N from …/0D_base_` | Auto fast-forward `0D_base_` |
+| 1 | **PIPELINE-MERGE** | `Merge pull request #N from Aries-Serpent/0D_base_` | Auto fast-forward `0D_base_` |
 | 2 | **AUTO-GEN** | `github-actions[bot]` + `[skip ci]` subject | Forward-sync files |
-| 3 | **CODE-LEAK** | Everything else | @copilot escalation |
+| 3 | **AGENT-COMMIT** | `copilot-swe-agent[bot]`/`github-copilot[bot]` author, or empty commit (0 file changes) | Absorbed by pipeline-merge fast-forward |
+| 4 | **CODE-LEAK** | Everything else (human bypass of staging gate) | @copilot escalation only when no absorbers |
 
 ---
 
@@ -196,4 +197,5 @@ Re-run `branch-divergence-monitor.yml` (workflow_dispatch) and confirm:
 
 | Version | Date | Change |
 |---------|------|--------|
+| 1.1.0 | 2026-03-29 | 4-tier classification — AGENT-COMMIT tier added (S146 process improvement) |
 | 1.0.0 | 2026-03-29 | Initial version — S146 divergence fix, PIPELINE-MERGE tier |
