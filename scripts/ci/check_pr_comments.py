@@ -219,10 +219,9 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             parent_id = c.get("in_reply_to_id")
-            if parent_id is not None:
-                dt = _parse_ts(c.get("created_at", ""))
-                if dt is not None:
-                    copilot_reply_index.setdefault(int(parent_id), []).append(dt)
+            dt = _parse_ts(c.get("created_at", ""))
+            if parent_id is not None and dt is not None:
+                copilot_reply_index.setdefault(int(parent_id), []).append(dt)
 
     def first_copilot_response_after(comment_ts: datetime) -> datetime | None:
         """Return the earliest Copilot response timestamp strictly after *comment_ts*."""

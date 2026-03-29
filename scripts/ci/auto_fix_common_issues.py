@@ -123,6 +123,12 @@ class CommonIssueFixer:
             pattern_name: Run only patterns whose name contains this substring,
                           case-insensitive (e.g. "ruff", "import", "unused").
                           Ignored when pattern_num is non-zero.
+                          Special value ``"unknown"`` triggers a best-effort sweep
+                          of ALL patterns when the classifier cannot identify the
+                          failure type (e.g. collect_telemetry.py returns
+                          ``unknown``).  See PATTERN_KEYWORDS in
+                          ``scripts/ci/collect_telemetry.py`` to register new
+                          pattern names and eliminate the unknown bucket.
 
         Returns True if any issues were found.
         """
