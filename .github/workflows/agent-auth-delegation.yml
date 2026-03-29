@@ -681,7 +681,14 @@ jobs:
           EMPTY_COMMITS=$(printf '%s\n' "$COMMITS" | while IFS= read -r line; do
             [ -z "$line" ] && continue
             SHA=$(echo "$line" | awk '{print $1}')
-            CHANGES=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null | wc -l)
+            # Capture diff-tree output first; if the command fails (e.g., shallow
+            # checkout missing objects) skip this commit rather than treating it
+            # as empty, which would be a false-positive empty-commit warning.
+            CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null) || {
+              echo "::warning::Empty-commit check: git diff-tree failed for $SHA; skipping." >&2
+              continue
+            }
+            CHANGES=$(printf '%s\n' "$CHANGES_OUTPUT" | grep -c . || true)
             [ "$CHANGES" -eq 0 ] && echo "$line"
           done)
 

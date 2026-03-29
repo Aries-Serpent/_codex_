@@ -12941,3 +12941,37 @@ before the reply was registered — standard false-positive pattern.
 - CI issues triaged: 6
 - Regression introduced: 0
 - Deferral Language Gate: 0 violations
+
+## SESSION SUMMARY — 2026-03-29T07:00Z S146-CONT8 (Second-Wave PR Review + RP-004 Triage)
+
+**Session ID:** S146-CONT8
+**PR:** #3782 (0D_base_: 4-tier branch divergence classifier)
+**Trigger:** New comment 4149583432 (RP-004 CI rescue run 23703519127) + 3 new automated PR review comments on commit `1801083`
+
+### Changes Made
+
+1. **branch-divergence-monitor.yml:321** — Gated `Forward auto-gen file versions` step with `if: needs.detect.outputs.autogen_count != '0' || inputs.force_forward_sync == 'true'`. When the job triggers solely due to `pipeline_merge_count` or `agent_commit_count`, the forward step is now skipped, preventing potential overwrites of newer auto-gen files on `0D_base_` with older versions from `main`.
+
+2. **branch-divergence-monitor.yml:424** — Renamed `Fast-forward 0D_base_ to include pipeline-merge commit(s)` → `Fast-forward 0D_base_ to absorb pipeline-merge and agent-commit divergence`. Removed unused `PIPELINE_MERGE_SHAS` env var (was set to `summary_json` output but never read by the shell script). Updated success echo message to match new step intent.
+
+3. **agent-auth-delegation.yml:684** — Applied `CHANGES_OUTPUT` capture pattern in the empty-commit detection inner loop. Replaced `CHANGES=$(git diff-tree ... | wc -l)` with a two-step capture+check that emits a `::warning::` and skips the commit if `git diff-tree` fails (e.g., shallow checkout missing objects), preventing false empty-commit reports.
+
+### CI Rescue Triage — RP-004 run 23703519127 (commit `1801083`)
+
+Run 23703519127 reported RP-004 for commit `1801083` (which is the automated cognitive brain update). Local `sync_tracked_files.py --check` confirmed `status: passed, all consistent` — this is a SHA-drift artifact identical to the `c80979d41aaa` case analyzed in S146-CONT5. The automated cognitive brain commit does not touch CODEX_MANIFEST-tracked files. No fix required.
+
+### Verification Results
+
+```
+Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+YAML syntax: branch-divergence-monitor.yml  ✅
+YAML syntax: agent-auth-delegation.yml  ✅
+```
+
+### Impact Score
+- Files changed: 2
+- New PR review comments addressed: 3/3
+- RP-004 false-positive triaged: 1
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations

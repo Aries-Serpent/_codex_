@@ -320,6 +320,11 @@ jobs:
 
       - name: Forward auto-gen file versions from main → 0D_base_
         id: forward
+        # Only run when there are actual auto-gen commits to sync; skip when the
+        # job triggered solely due to pipeline-merge or agent-commit absorbers —
+        # those cases go straight to the fast-forward step below without touching
+        # auto-gen files (which could otherwise overwrite newer versions on 0D_base_).
+        if: needs.detect.outputs.autogen_count != '0' || inputs.force_forward_sync == 'true'
         run: |
           git fetch origin main --depth=1
 
@@ -416,13 +421,11 @@ jobs:
           echo "committed=true" >> "$GITHUB_OUTPUT"
           echo "changed_files=$CHANGED_NAMES" >> "$GITHUB_OUTPUT"
 
-      - name: Fast-forward 0D_base_ to include pipeline-merge commit(s)
-        # S146: When main has "Merge pull request #N from .../0D_base_" commits that
-        # are not in 0D_base_, merge-base main into 0D_base_ so the monitor
-        # finds 0 code-leaks on the next run.
+      - name: Fast-forward 0D_base_ to absorb pipeline-merge and agent-commit divergence
+        # S146: When main has "Merge pull request #N from .../0D_base_" or
+        # copilot-agent commits that are not yet in 0D_base_, merge main into
+        # 0D_base_ so the monitor finds 0 code-leaks on the next run.
         if: needs.detect.outputs.pipeline_merge_count != '0' || needs.detect.outputs.agent_commit_count != '0'
-        env:
-          PIPELINE_MERGE_SHAS: ${{ needs.detect.outputs.summary_json }}
         run: |
           git fetch origin main --depth=20 || { echo "::warning::fetch origin main failed"; exit 0; }
           git fetch origin 0D_base_ --depth=20 || { echo "::warning::fetch origin 0D_base_ failed"; exit 0; }
@@ -445,7 +448,7 @@ jobs:
           # Try fast-forward first (cleanest — only possible if 0D_base_ has no
           # extra commits since the merge base)
           if git merge --ff-only origin/main 2>&1; then
-            echo "✅ Fast-forwarded 0D_base_ to include pipeline-merge commit(s)"
+            echo "✅ Fast-forwarded 0D_base_ to absorb pipeline-merge/agent-commit divergence"
           else
             # Diverged: 0D_base_ has commits main doesn't. Use a true merge commit
             # to unite the histories while preserving 0D_base_'s staged work.
