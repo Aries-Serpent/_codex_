@@ -216,6 +216,8 @@ class CommonIssueFixer:
                 "filesystem-deadlock":          [],
                 "test-infrastructure":          [],
                 "integration-branch-direct-session": [],
+                # ── Unknown / unclassified (informational — escalate to human) ─
+                "unknown":                      [],
             }
             matched_names: set[str] = set()
             # Track whether this is a known-but-externally-handled classifier
@@ -232,16 +234,31 @@ class CommonIssueFixer:
                 if nm in matched_names or needle in nm.lower()
             ]
             if not patterns:
-                if _external_only and not matched_names:
+                if needle == "unknown":
+                    # Pattern unrecognised by collect_telemetry.py --classify-run.
+                    # Cannot determine which fix to apply — run all patterns as a
+                    # best-effort sweep and let the caller decide.
+                    print(
+                        "⚠️  Classifier 'unknown' — failure pattern not identified by "
+                        "collect_telemetry.py.\n"
+                        "    Running all patterns as a best-effort sweep.\n"
+                        "    To fix permanently: add the new failure keyword to\n"
+                        "    PATTERN_KEYWORDS in scripts/ci/collect_telemetry.py\n"
+                        "    and a case arm in iterative-self-healing-ci.yml.\n"
+                    )
+                    patterns = all_patterns
+                    print("🔍 Scanning for common CI issues (unknown-pattern sweep)…\n")
+                elif _external_only and not matched_names:
                     # Recognised classifier, but handled by a separate tool (e.g. branch_rebase_check.py)
                     print(
                         f"ℹ️  Classifier '{pattern_name}' is handled externally "
                         f"(not by auto_fix_common_issues.py) — skipping.\n"
                     )
                     return False
-                print(f"ℹ️  No patterns matched '{pattern_name}' — running all patterns\n")
-                patterns = all_patterns
-                print("🔍 Scanning for common CI issues…\n")
+                else:
+                    print(f"ℹ️  No patterns matched '{pattern_name}' — running all patterns\n")
+                    patterns = all_patterns
+                    print("🔍 Scanning for common CI issues…\n")
             else:
                 names_str = ", ".join(nm for _, nm, _ in patterns)
                 print(f"🔍 Running patterns matching '{pattern_name}': {names_str}\n")
