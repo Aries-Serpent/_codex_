@@ -528,6 +528,9 @@ jobs:
               "2. Add pattern to the \`case\` statement in \`iterative-self-healing-ci.yml\`" \
               "3. Add a fix handler in \`scripts/ci/auto_fix_common_issues.py\`" "" \
               "*Posted by: iterative-self-healing-ci.yml (Phase 5 — S154)*" \
+              "" \
+              "---" \
+              "_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_" \
               > /tmp/escalation_body.txt
             gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
               --body-file /tmp/escalation_body.txt
@@ -733,6 +736,9 @@ jobs:
           6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
 
           _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S201 Phase 8 P3)_
+
+          ---
+          _[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_
           COPILOT_EOF
 
           # Strip leading whitespace from heredoc (indented for readability)

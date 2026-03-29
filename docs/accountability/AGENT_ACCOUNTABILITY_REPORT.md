@@ -13234,3 +13234,27 @@ AGENT_ACCOUNTABILITY_REPORT: session entry dated 2026-03-29 ✅
 - Deferral Language Gate: 0 violations
 
 ---
+
+## Session S227 (continued) — 2026-03-29
+
+### Tasks Completed
+- Added `_[🔗 Workflow run](URL)_` footer to **all 34 delegated-comment workflows** (58 workflow files modified; both PY-RESCUE and JS/BASH body patterns covered).
+- Created `docs/workflows/DELEGATED_COMMENT_WORKFLOWS.md` — comprehensive reference including:
+  - Full mermaid topology map (32-node graph)
+  - Six detailed flow diagrams (rescue cascade, cognitive pre-flight, self-healing pipeline, session lifecycle, triage/telemetry, cost gate)
+  - Reference table (34 rows × 6 columns)
+  - Simultaneous-trigger collision audit (6 root-cause patterns; issue #3779 timeline evidence)
+  - Improvement recommendations form (8 categories × 2–3 questions, pre-selected ideal answers)
+- Standardised `agent-var-writer.yml` run-link to `_[🔗 Workflow run](URL)_` format.
+- Fixed `post-pr-summary` action to append run URL to DETAILS parameter.
+
+### Root Causes Documented
+- RCP-01: Missing shared upsert marker → duplicate rescue comment spam
+- RCP-02: Dual JS+PY rescue bodies post two separate comments per failure
+- RCP-03: `[skip ci]` on self-healer commits leaves CI in permanent failed state
+- RCP-04: `iterative-self-healing-ci` fires 7× per cluster failure
+- RCP-05: `copilot-issue-triage` triggers on every CI-failure issue
+- RCP-06: `cost-gate` race condition under 6 simultaneous callers
+
+### REQ-4 Compliance
+- AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✅

@@ -140,6 +140,9 @@ jobs:
                   `_Exploration marker detected: ${EXPLORATION_MARKER}_`,
                   '',
                   '_WF-003 | session-incremental-summary-reminder | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',
+                  '',
+                  '---',
+                  `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
                 ].join('\n');
 
                 await github.rest.issues.createComment({

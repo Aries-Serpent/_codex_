@@ -390,7 +390,7 @@ jobs:
             const fs = require('fs');
             const results = fs.readFileSync('coverage/benchmark_validation_report.txt', 'utf8');
             const MARKER = '<!-- benchmark-results-v1 -->';
-            const body = `${MARKER}\n## 📊 Benchmark Results\n\n\`\`\`\n${results}\n\`\`\``;
+            const body = `${MARKER}\n## 📊 Benchmark Results\n\n\`\`\`\n${results}\n\`\`\`\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
 
             // Retry loop — benchmark results update on every matrix shard
             // and every re-run, making concurrent races likely over a long
