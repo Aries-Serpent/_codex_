@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S146 — PR #3781)
+- **fix(monitor):** `branch-divergence-monitor.yml` — add **PIPELINE-MERGE** commit classification to prevent staging-gate merge commits (`Merge pull request #N from .../0D_base_`) from being misclassified as CODE-LEAK and raising false CRITICAL alerts. Severity for pipeline-merge-only divergence is now `low` (was `critical`). Added `pipeline_merge_count` output propagated through all jobs, issue body, step summary, and JSON summary.
+- **fix(monitor):** `branch-divergence-monitor.yml` — add "Fast-forward 0D_base_ to include pipeline-merge commit(s)" step to `auto-correct` job. When `pipeline_merge_count > 0`, the step fast-forwards `0D_base_` onto `main` so the next monitor run finds `severity=healthy`.
+- **fix(git):** Remove empty `e965f4e` "Initial plan" commit (no file changes, by `copilot-swe-agent[bot]`) that would have been classified as CODE-LEAK on `main` by the monitor.
+- **feat(agents):** Create `.github/agents/branch-divergence-resolution-agent.md` v1.0.0 — production-ready Custom Copilot Agent with architecture diagrams, severity matrix, OODA execution protocol, self-healing loop, and taxonomy reference (PIPELINE-MERGE / AUTO-GEN / CODE-LEAK / EXPECTED).
+
 ### Fixed (S145 — PR #3777)
 - **fix(ci):** Remove `GitLabTokenDetector` from `.secrets.baseline` — was causing `detect-secrets` pre-commit hook to fail with `No such GitLabTokenDetector plugin to initialize` in CI environments running an older `detect-secrets` version than the one used to generate the baseline (version mismatch). Fixes recurring `Validation Pipeline / Fast Validation` failures on `a836919`.
 - **fix(imports):** Revert `training` and `utils` imports in `scripts/codex_offline_audit.py` to `from src.training.` / `from src.utils.` form — root-level `training/__init__.py` and `utils/__init__.py` shadows were silently intercepting the de-src-ified imports. Closes review threads at `scripts/codex_offline_audit.py:76,87` (P19-SHADOW-EXPANDED-001).
