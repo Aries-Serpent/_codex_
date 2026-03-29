@@ -651,6 +651,42 @@ jobs:
             echo "✅ **PASS** — \`${TARGET}\` is NOT ignored by .gitignore." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # ── REQ-3b: Detect and warn on empty (no-file-change) commits ────────
+      # Empty commits are placeholders (e.g., "Initial plan" from copilot-swe-agent[bot])
+      # that carry no code value but are classified as AGENT-COMMIT by the divergence
+      # monitor. This check warns the agent so they know the commit will appear in the
+      # monitor's count. It is a WARN (not hard stop) since empty commits are sometimes
+      # intentional (e.g., triggering CI without a code change).
+      - name: Detect empty commits in PR
+        id: empty_commit_check
+        continue-on-error: true
+        run: |
+          echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
+
+          # Count commits with no file-tree changes
+          EMPTY_COMMITS=$(git log --format="%H %an: %s" "origin/${{ github.base_ref }}"..HEAD | \
+            while IFS= read -r line; do
+              SHA=$(echo "$line" | awk '{print $1}')
+              CHANGES=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null | wc -l)
+              [ "$CHANGES" -eq 0 ] && echo "$line"
+            done)
+
+          if [ -z "$EMPTY_COMMITS" ]; then
+            echo "✅ **PASS** — No empty commits detected in this PR." >> "$GITHUB_STEP_SUMMARY"
+          else
+            COUNT=$(echo "$EMPTY_COMMITS" | grep -c . || true)
+            echo "⚠️ **WARN** — ${COUNT} empty commit(s) detected (no file changes):" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "$EMPTY_COMMITS" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Impact:** Empty commits will appear as AGENT-COMMIT in \`branch-divergence-monitor.yml\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "and will be auto-absorbed by the fast-forward sync. No action required unless" >> "$GITHUB_STEP_SUMMARY"
+            echo "these commits were unintentional — if so, use \`git rebase -i\` to drop them" >> "$GITHUB_STEP_SUMMARY"
+            echo "**before** pushing to remote (after push, force-push is required to remove)." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::${COUNT} empty commit(s) found in PR — will be AGENT-COMMIT in divergence monitor (auto-absorbed)"
+          fi
+
       # ── REQ-4: Verify accountability report touched in last commit ─────────
       - name: Verify Accountability Report updated in last commit
         id: accountability_check
