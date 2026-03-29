@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S146 — PR #3781)
+- **fix(monitor):** `branch-divergence-monitor.yml` — 4-tier commit classification replacing original 2-tier (S146 + S146-CONT):
+  - **Tier 1 PIPELINE-MERGE**: `Merge pull request #N from Aries-Serpent/0D_base_` — staging-gate merge commit; severity `low`, auto-correct fast-forwards `0D_base_`.
+  - **Tier 2 AUTO-GEN**: `github-actions[bot]` + `[skip ci]`/`[automated]`/etc subject — forward-sync files.
+  - **Tier 3 AGENT-COMMIT**: `copilot-swe-agent[bot]`/`github-copilot[bot]`/`copilot[bot]` author, or any empty commit (0 file-tree changes via `git diff-tree`) — reviewed PR work, absorbed by Tier 1 fast-forward. Eliminates false CRITICAL alerts from agent sessions permanently.
+  - **Tier 4 CODE-LEAK**: everything else — `@copilot` escalation only when `codeleak > 0 AND absorbers === 0`.
+- **fix(monitor):** Severity: `CODE-LEAK + absorbers → low`; `CODE-LEAK alone → critical`. Operator precedence fixed (`if-then` block). Ancestry comment clarified. `pipeline_merge_count`, `agent_commit_count` propagated through all outputs, JSON, step summary, issue body.
+- **feat(preflight):** `agent-auth-delegation.yml` — new **REQ-3b** step `Detect empty commits in PR` (warn-only, `continue-on-error`): counts empty commits, explains AGENT-COMMIT impact, advises correct drop-before-push workflow.
+- **docs:** `BRANCH_DIVERGENCE_PREVENTION.md` — RC-6, RC-7, RC-8 root-cause sections; updated 4-tier Agent Execution Protocol quick reference.
+- **feat(agents):** `.github/agents/branch-divergence-resolution-agent.md` v1.1.0 — 4-tier classification table, architecture diagram, severity matrix, OODA protocol, self-healing loop.
+
 ### Fixed (S145 — PR #3777)
 - **fix(ci):** Remove `GitLabTokenDetector` from `.secrets.baseline` — was causing `detect-secrets` pre-commit hook to fail with `No such GitLabTokenDetector plugin to initialize` in CI environments running an older `detect-secrets` version than the one used to generate the baseline (version mismatch). Fixes recurring `Validation Pipeline / Fast Validation` failures on `a836919`.
 - **fix(imports):** Revert `training` and `utils` imports in `scripts/codex_offline_audit.py` to `from src.training.` / `from src.utils.` form — root-level `training/__init__.py` and `utils/__init__.py` shadows were silently intercepting the de-src-ified imports. Closes review threads at `scripts/codex_offline_audit.py:76,87` (P19-SHADOW-EXPANDED-001).
