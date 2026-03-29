@@ -11,8 +11,8 @@
   "COGNITIVE_BRAIN_INJECTION_ENABLED": "true",
   "COGNITIVE_BRAIN_ALLOWED_ACTORS": "mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]",
   "CODEX_CLI_API_URL": "http://localhost:8765",
-  "CODEX_CI_LAST_GREEN_SHA": "a34fa602137fcb640cbf9d65882a19545baacc42",
-  "CODEX_CI_FAILURE_RATE": "0.0:healthy",
+  "CODEX_CI_LAST_GREEN_SHA": "596a659d3d77eed22c111594cb040262194f027c",
+  "CODEX_CI_FAILURE_RATE": "17.6:degraded",
   "COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE": "0.75",
   "COGNITIVE_BRAIN_LTM_RETENTION_DAYS": "90",
   "EMBEDDING_INDEX_AUTO_REBUILD": "true",
@@ -21,22 +21,16 @@
   "COPILOT_AGENT_SESSION_RESTORE_ENABLED": "true",
   "COPILOT_AGENT_AUTH_ENABLED": "true",
   "COPILOT_AGENT_FIREWALL_ENABLED": "true",
-  "COGNITIVE_BRAIN_SESSION_NUMBER": 144,
+  "COGNITIVE_BRAIN_SESSION_NUMBER": "152",
   "AGENT_TOOLSDIRECTORY": "/opt/hostedtoolcache",
   "_meta": {
-    "generated_at": "2026-03-28T06:29:53.404953+00:00",
+    "generated_at": "2026-03-29T06:34:10.771253+00:00",
     "workflow": "repo-var-sync-schedule",
-    "sha": "255bee7b",
+    "sha": "7a73ecf7",
     "ref": "refs/heads/main",
     "actor": "mbaetiong",
-    "run_id": "23679380449",
+    "run_id": "23703274030",
     "repo_variables_count": 24,
-    "drift_entries": 3,
-    "note": "S138: COGNITIVE_BRAIN_SESSION_NUMBER incremented to 138. P19 backfill: 292\u2192252 (-40 test files). P21=0 confirmed (N10). Will be overwritten by repo-var-sync-schedule on next run.",
-    "s138_updated_at": "2026-03-28T16:47Z"
-  },
-  "_metadata": {
-    "note": "S141: mypy baseline 306\u2192333 (CI isolated-venv). 9 CI errors fixed from P19 backfill. PR review items applied. docs/ci/PR_LIFECYCLE.md created.",
-    "s141_updated_at": "2026-03-28T20:30Z"
+    "drift_entries": 3
   }
 }

@@ -1652,33 +1652,42 @@ class CommonIssueFixer:
         plugins_used: List[dict] = baseline.get("plugins_used", [])
         unknown_plugins: List[str] = []
 
+        # First, verify detect-secrets is installed in the running Python.
+        # If it is not installed at all, skip this check — we cannot determine
+        # compatibility and would incorrectly flag every plugin as "not available".
+        try:
+            import detect_secrets.plugins as _dsp  # noqa: F401 — availability check
+        except ImportError:
+            print(
+                "✅ Pattern 23 (Secrets Baseline Plugins): detect-secrets not installed "
+                "in this Python — skipping plugin-compatibility check"
+            )
+            return issues
+
+        import importlib as _im
+        import pkgutil as _pu
+
+        import detect_secrets.plugins as _dsp
+
         for plugin_entry in plugins_used:
             name = plugin_entry.get("name", "")
             if not name:
                 continue
-            # Try to import the plugin from detect_secrets — if it fails, the plugin
-            # is not available in the installed version.
-            try:
-                # detect_secrets uses snake_case module names derived from the class name
-                # e.g. GitLabTokenDetector → detect_secrets.plugins.gitlab
-                # Try a direct attribute lookup on the detect_secrets.plugins namespace
-                import detect_secrets.plugins as _dsp
-                found = hasattr(_dsp, name)
-                if not found:
-                    # Also probe sub-modules by scanning the package
-                    import importlib as _im
-                    import pkgutil as _pu
-                    for _mod_info in _pu.iter_modules(_dsp.__path__):
-                        try:
-                            _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
-                            if hasattr(_m, name):
-                                found = True
-                                break
-                        except Exception:
-                            pass
-                if not found:
-                    unknown_plugins.append(name)
-            except Exception:
+            # Try to find the plugin class in detect_secrets.plugins.
+            # First try a direct attribute lookup on the package namespace, then scan
+            # submodules (detect_secrets uses snake_case module names, e.g.
+            # GitLabTokenDetector → detect_secrets.plugins.gitlab).
+            found = hasattr(_dsp, name)
+            if not found:
+                for _mod_info in _pu.iter_modules(_dsp.__path__):
+                    try:
+                        _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
+                        if hasattr(_m, name):
+                            found = True
+                            break
+                    except Exception:
+                        pass
+            if not found:
                 unknown_plugins.append(name)
 
         if unknown_plugins:
