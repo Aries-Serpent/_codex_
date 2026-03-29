@@ -12975,3 +12975,46 @@ YAML syntax: agent-auth-delegation.yml  ✅
 - RP-004 false-positive triaged: 1
 - Regression introduced: 0
 - Deferral Language Gate: 0 violations
+
+## SESSION SUMMARY — 2026-03-29T07:30Z S146-CONT9 (test_sums_current_month_only Fix + Full Triage)
+
+**Session ID:** S146-CONT9
+**PR:** #3782 (0D_base_: 4-tier branch divergence classifier)
+**Trigger:** New comments 4149583481, 4149583541, 4149584891, 4149613245 (S221 re-trigger + deep CI analysis + self-healing escalation) referencing CI run 23703519127 at commit `18010835959f`
+
+### Root Cause Analysis — CI run 23703519127
+
+Run 23703519127 at commit `18010835959f` (= `1801083`) failed with two patterns:
+
+1. **Pattern 22 (Tracked File Sync)** — The accountability report did not yet contain the S146-CONT8 session entry at that commit. Fixed at `950df24` when the S146-CONT8 session entry was added to this file.
+
+2. **Pattern 23 (Secrets Baseline Plugins)** — CI installed `detect-secrets==1.4.0` which lacks many plugins listed in `.secrets.baseline`. This is the same environment-version mismatch that was fixed in S145 (run 23694943811). Both patterns pass at the current HEAD `faa1867`.
+
+The `test_sums_current_month_only` failure identified by the deep CI analysis comment was a **false positive** from the CI rescue analysis algorithm — the "Run quick tests" step in the actual CI job (step 8) passed successfully; the job failure was solely due to the auto-fix check (steps 4/5) and CI pattern pipeline strict gate (step 5).
+
+However, investigating this test locally revealed a **real latent bug**: `now.replace(month=now.month - 1)` raises `ValueError: day is out of range for month` on days 29–31 of months following a shorter month (e.g., March 29 → `replace(month=2)` → February 29 in non-leap year 2026 does not exist). The bug was present before this PR but manifested on the run date.
+
+### Changes Made
+
+1. **tests/capabilities/ci_test/test_usage_logger.py:95** — Fixed `test_sums_current_month_only` edge case: replaced `now.replace(month=now.month - 1)` with `now - datetime.timedelta(days=32)`. Using `timedelta(days=32)` reliably lands in the previous calendar month without day-overflow errors, regardless of the current day or whether the target month is a leap year. All 11 tests in the file pass.
+
+### Verification Results
+
+```
+tests/capabilities/ci_test/test_usage_logger.py  11/11 passed  ✅
+Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+auto_fix_common_issues: 0 auto-fixable  ✅
+```
+
+### Triage — Comments 4149583481 / 4149583541 / 4149584891 / 4149613245
+
+All four comments reference CI run 23703519127 at commit `18010835959f`. That run is 3 commits behind the current HEAD `faa1867`. The Pattern 22 and Pattern 23 failures from that run were already resolved in commits `950df24` (accountability report updated) and `faa1867`. The S221 guard re-trigger (comment 4149613245) is a false positive: a Copilot session WAS active and responding (S146-CONT8 response in the same thread). The rescue ID `18010835959f` has now been fully addressed.
+
+### Impact Score
+- Files changed: 1 (test file)
+- Tests fixed: 1 (test_sums_current_month_only — ValueError edge case)
+- False-positive CI rescue runs triaged: 1 (run 23703519127)
+- S221 false re-trigger triaged: 1 (comment 4149613245)
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations
