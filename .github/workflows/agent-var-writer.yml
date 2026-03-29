@@ -211,7 +211,7 @@ jobs:
                 'The provenance session token (`.codex/agent_auth_session.json`) is expired or missing.',
                 'Please re-trigger `agent-auth-delegation` and have mbaetiong approve the environment gate.',
                 '',
-                `[Workflow run](${runUrl})`,
+                `_[🔗 Workflow run](${runUrl})_`,
               ].join('\n');
             } else {
               body = [
@@ -224,7 +224,7 @@ jobs:
                 `| Variables rejected (not in allowlist) | ${rejected} |`,
                 `| Audit log | \`.codex/evidence/var_write_audit.jsonl\` |`,
                 '',
-                `[Workflow run](${runUrl})`,
+                `_[🔗 Workflow run](${runUrl})_`,
               ].join('\n');
             }
 

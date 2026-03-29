@@ -747,7 +747,7 @@ jobs:
               sys.exit(0)
           pr_number = prs[0]["number"]
 
-          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER = f"<!-- ci-rescue:{pr_number} -->"
 
           # Build rescue body without leading ** at column-0 (avoids YAML alias parse error)
           lines = [
