@@ -12857,3 +12857,35 @@ with no behind-commits.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-03-29T02:30Z S146-CONT3 (Auto-Fix PR Check Rescue)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All comments reviewed: Auto-Fix PR Check rescue + S221 false-positive re-triggers ✅
+- [x] **0b.** Pattern 22 (Tracked File Sync): `.secrets.baseline` had stale CODEX_MANIFEST hash → synced ✅
+- [x] **0c.** S221 false positives (4149245273, 4149245334): rescue `2590df2f2722` already resolved at `36286ba` ✅
+
+### Root Cause — Auto-Fix PR Check Failure
+
+`CODEX_MANIFEST / CHANGELOG / accountability drift detected`
+
+After updating `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in commit `36286ba`, the
+`.secrets.baseline` entry for `CODEX_MANIFEST.json` became stale (hash mismatch). The sync
+script `scripts/ci/sync_tracked_files.py --fix` updated the hash.
+
+**Fix:** `.secrets.baseline` hashed_secret updated from `aa287cfc30dfbc0bf9db0ea4d571e74193c8097b`
+to `d07017238b521f75acd26b41ea1df05cdcab3ae0`.
+
+### S221 False Positives
+
+Comments 4149245273 and 4149245334 are automated missed-trigger re-triggers for rescue ID
+`2590df2f2722`. That rescue was already resolved at commit `36286ba`. The S221 guard fired
+before the reply was registered — standard false-positive pattern.
+
+### Impact Score
+- Files changed: 1 (`.secrets.baseline`)
+- CI gate unblocked: Auto-Fix PR Check (Pattern 22)
+- S221 false positives cleared: 2
+- Deferral Language Gate: 0 violations
+
+---
