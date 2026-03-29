@@ -11,10 +11,15 @@
 
 This plan defines an **explicit checklist-based workflow execution gate** that:
 - Lets Copilot Coding Agent **check off only the workflows it needs** during wrap-up
-- **Cancels / skips** any workflow whose PR body checkbox remains unchecked
+- Posts an **execution-plan comment** listing which workflows are allowed (✅) vs skipped (⏭️)
+- Target workflows must **opt in** (via a `gate-check` step) to actually skip execution
 - Is approved by the **owner approval gate** before execution proceeds
 - Prevents unintended workflow runs from generating artefacts, comments, or commits
   that conflict with ongoing objectives
+
+> **Current implementation (M1/M2):** `workflow-execution-gate.yml` parses the PR body
+> and posts an execution-plan comment. Actual workflow skipping requires target workflows
+> to add the opt-in `gate-check` step (M3–M6, see §5).
 
 ---
 
@@ -24,17 +29,28 @@ This plan defines an **explicit checklist-based workflow execution gate** that:
 flowchart TD
     A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
     B -->|owner reviews| C{Owner Approval Gate}
-    C -->|approved| D[workflow-execution-gate.yml]
+    C -->|approved| D[workflow-execution-gate.yml\nM1 ✅ DONE]
     D -->|reads checklist| E{Parse PR body}
-    E -->|checked item| F[dispatch_workflow()]
-    E -->|unchecked item| G[skip + post notice]
-    F --> H[Target Workflow Runs]
-    G --> I[Target Workflow SKIPPED]
+    E -->|checked item| F[Post: WILL RUN notice]
+    E -->|unchecked item| G[Post: SKIPPED notice]
+    F & G --> H[Execution Plan Comment\nposted to PR]
+
+    subgraph "Opt-in by target workflow — M3-M6"
+        I[gate-check step\nin target workflow]
+        J{steps.gate-check\n.outputs.skip?}
+        K[Run main steps]
+        L[Skip main steps\nexit 0]
+    end
+
+    H -.->|signal| I
+    I --> J
+    J -->|false| K
+    J -->|true| L
 
     style F fill:#2d6a4f,color:#fff
     style G fill:#b23a48,color:#fff
-    style H fill:#2d6a4f,color:#fff
-    style I fill:#666,color:#fff
+    style K fill:#2d6a4f,color:#fff
+    style L fill:#666,color:#fff
 ```
 
 ---
@@ -284,7 +300,7 @@ For workflows that should respect the gate (opt-in, not always-required), add th
     BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
     # Check if this workflow appears in an unchecked item
-    if echo "$BODY" | grep -qP "^\- \[ \] ${WORKFLOW_NAME}"; then
+    if echo "$BODY" | grep -qF "- [ ] ${WORKFLOW_NAME}"; then
       echo "skip=true" >> "$GITHUB_OUTPUT"
       echo "⏭️ ${WORKFLOW_NAME} is unchecked in Workflow Execution Checklist — skipping"
     else
@@ -299,11 +315,20 @@ For workflows that should respect the gate (opt-in, not always-required), add th
     exit 0
 ```
 
-Then add to the primary job's `if:` condition:
+Then gate the primary job's main work step(s) with the `gate-check` output:
 ```yaml
 jobs:
   my-job:
-    if: needs.gate-check.outputs.skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check workflow execution gate
+        id: gate-check
+        # (gate-check implementation as shown above)
+
+      - name: Run main job logic
+        if: steps.gate-check.outputs.skip != 'true'
+        run: |
+          echo "Running main job tasks..."
 ```
 
 ---

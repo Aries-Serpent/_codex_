@@ -1,8 +1,10 @@
 name: Workflow Execution Gate
 
 # Reads the "## 🔄 Workflow Execution Checklist" section from the PR body.
-# Checked items ( - [x] ) are allowed to proceed; unchecked items ( - [ ] ) are
-# explicitly skipped and a notice is posted to the PR.
+# Checked items ( - [x] ) are recorded as allowed; unchecked items ( - [ ] )
+# are recorded as "skipped" in the execution-plan comment posted to the PR.
+# Target workflows must explicitly opt in (via a gate-check step) to actually
+# skip their own execution based on this signal.
 #
 # Triggered by:
 #   1. workflow_dispatch — Copilot wrap-up step calls this directly
@@ -124,7 +126,7 @@ jobs:
           No '## 🔄 Workflow Execution Checklist' section was found in the PR body.
           All workflows will follow their default triggers.
 
-          _See: [docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md](../blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_
+          _See: [Workflow Checklist Wiring Plan](${{ github.server_url }}/${{ github.repository }}/blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_
           _[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_"
           else
             # Build table rows
