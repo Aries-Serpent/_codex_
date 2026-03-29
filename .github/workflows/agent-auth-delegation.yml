@@ -845,6 +845,59 @@ jobs:
           fi
           echo "" >> "$GITHUB_STEP_SUMMARY"
 
+      # ── Workflow Execution Checklist — inject into PR body if missing ─────
+      # Ensures Copilot Agent can check off only the workflows needed for this
+      # session.  Unchecked items are skipped by workflow-execution-gate.yml.
+      # See: docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md
+      - name: Ensure Workflow Execution Checklist in PR body
+        id: inject-wec
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+
+          if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
+            echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
+            echo "### ✅ Workflow Execution Checklist\n\nAlready present — no injection required." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          CHECKLIST="
+
+## 🔄 Workflow Execution Checklist
+<!-- gate-managed-by: workflow-execution-gate.yml -->
+<!-- gate-version: 1.0.0 -->
+
+### ✅ Validation & Testing
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [x] resilient-validation-suite.yml — Resilient validation
+- [ ] nox-gates.yml — Nox test gates
+
+### ✅ Security & Quality
+- [x] comment-review-gate.yml — Comment review gate (always required)
+- [ ] security-scanning-suite.yml — Full security audit
+- [x] deferral-language-gate.yml — Deferral language guard
+
+### 📄 Documentation
+- [ ] docs-build.yml — Documentation build
+
+### 🤖 Automation
+- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
+- [x] copilot-agent-checkin.yml — Agent check-in (always required)
+- [ ] cost-gate.yml — Cost governance gate
+
+> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
+> this session. Unchecked workflows will be SKIPPED by the gate."
+
+          UPDATED_BODY="${BODY}${CHECKLIST}"
+          gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"
+          echo "✅ Workflow Execution Checklist injected into PR #${PR_NUMBER}"
+          echo "### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up." >> "$GITHUB_STEP_SUMMARY"
+
       # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
       # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)
       # to Tier-1 (CI blocks activate-delegation until a Session Summary is posted).
