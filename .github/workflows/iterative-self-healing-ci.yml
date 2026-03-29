@@ -754,7 +754,10 @@ jobs:
 
           # ── Dedup guard: skip if a copilot-escalation comment was posted < 30 min ago ──
           ESCALATION_MARKER="<!-- copilot-escalation:${PR_NUMBER} -->"
-          LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_             --json comments --jq             "[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty"             2>/dev/null || echo "")
+          LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
+            --json comments --jq \
+            '[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty' \
+            2>/dev/null || echo "")
           if [ -n "$LAST_ESC" ]; then
             NOW_TS=$(date +%s)
             LAST_TS=$(date -d "${LAST_ESC}" +%s 2>/dev/null || echo "0")

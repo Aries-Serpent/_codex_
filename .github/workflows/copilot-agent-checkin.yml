@@ -903,7 +903,6 @@ jobs:
               '_👍 React on this comment to accept all three pre-selected options (Q1-a, Q2-a, Q3-GAP-033). Implementation will begin in the next session._  ',
               '_👎 React to reject an option. No changes for that option._  ',
               '_No reaction within 48h = maintain current approach._',
-            ,
               '',
               '---',
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,

@@ -409,8 +409,8 @@ jobs:
               '',
               '| Rule | Requirement |',
               '|------|-------------|',
-              '| **Pre-session** | Review ALL bot comments + fix ALL failing CI checks FIRST |
-              '| **REQ-13** | Reply to ALL `mbaetiong` + critical-bot comments before new commits (enforced by `comment-review-gate.yml`) |',',
+              '| **Pre-session** | Review ALL bot comments + fix ALL failing CI checks FIRST |',
+              '| **REQ-13** | Reply to ALL `mbaetiong` + critical-bot comments before new commits (enforced by `comment-review-gate.yml`) |',
               '| Execution trigger | Within 60 seconds of reading a clear task |',
               '| Self-review | Minimum 5 passes before session close |',
               '| Deferral | NEVER without: documented blocker + 5 attempts + follow-up `@copilot` comment |',
