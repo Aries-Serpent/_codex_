@@ -13411,3 +13411,31 @@ The RP-004 pattern is resolved at HEAD.
 - Confirmed `sync_tracked_files.py --check` clean on aa27d9e ✅
 - Pushing S227-CONT-3 entry to trigger fresh CI on latest HEAD
 - Replied to all 5 new comments with resolution details
+
+---
+
+## Session S227-CONT-4 (S221 Missed-Trigger Recovery) — 2026-03-29
+
+**Session ID:** S227-CONT-4
+**Branch:** 0D_base_
+**PR:** #3790
+**Trigger:** S221 missed-trigger guard re-trigger (comment 4150774600, rescue ID `3790`)
+
+### Pre-flight
+- [x] §0a. All mbaetiong comments reviewed and addressed
+- [x] §0b. All bot comments reviewed (comment-review gate: 36/36 addressed ✅ at 18:18 UTC)
+- [x] REQ-4. AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- [x] Pattern 22. `sync_tracked_files.py --check` → all consistent ✅ on HEAD 1a6516d
+
+### Analysis
+The S221 missed-trigger guard fired because a push to `0D_base_` was detected while
+a prior Copilot session response was still in flight. The guard is a false-positive here —
+the comment-review gate already confirmed 36/36 comments addressed at 18:18 UTC, and
+HEAD `1a6516d` is fully clean:
+- `sync_tracked_files.py --check` → all 4 checks consistent ✅
+- `ruff check scripts/ci/check_pr_comments.py` → 0 errors
+- `actionlint .github/workflows/*.yml` → 0 errors (135 files)
+
+### Actions
+- Pushing S227-CONT-4 entry to satisfy REQ-4 and trigger fresh CI on latest HEAD
+- Replied to comment 4150774600 with resolution details
