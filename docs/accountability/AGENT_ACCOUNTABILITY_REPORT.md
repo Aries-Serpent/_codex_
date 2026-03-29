@@ -13018,3 +13018,41 @@ All four comments reference CI run 23703519127 at commit `18010835959f`. That ru
 - S221 false re-trigger triaged: 1 (comment 4149613245)
 - Regression introduced: 0
 - Deferral Language Gate: 0 violations
+
+## SESSION SUMMARY — 2026-03-29T07:53Z S146-CONT10 (Pattern 23 Fix — detect-secrets v1.4/v1.5 plugin mismatch)
+
+**Session ID:** S146-CONT10
+**PR:** #3782 (0D_base_: 4-tier branch divergence classifier)
+**Trigger:** New comments 4149617245 and 4149648023 — Auto-Fix PR Check failure on commit `faa1867231d3`; S221 missed-trigger re-trigger for rescue `18010835959f`
+
+### Root Cause Analysis — CI runs 23703734888/23703734875/23703734881/23703734907/23703734889
+
+All CI failures on commit `faa1867231d3` shared a common root cause:
+
+**Pattern 23 (Secrets Baseline Plugins)** — The CI environment installs `detect-secrets==1.4.0` (pinned in `.pre-commit-config.yaml`), but `.secrets.baseline` was generated locally with `detect-secrets==1.5.0`. The 4 plugins added in v1.5.0 (`IPPublicDetector`, `OpenAIDetector`, `PypiTokenDetector`, `TelegramBotTokenDetector`) are present in the baseline but unknown to v1.4.0, causing `TypeError` in the pre-commit hook. Pattern 23 locally passed (v1.5.0 has those plugins) but failed in CI (v1.4.0 does not).
+
+The Validation Pipeline failure was a downstream consequence — the `🔄 Sync tracked files` pre-commit hook rewrote `docs/ROADMAP.md` (date bump) during the CI run, causing pre-commit to exit with code 2.
+
+### Changes Made
+
+1. **`.secrets.baseline`** — Removed the 4 detect-secrets v1.5.0-only plugins (`IPPublicDetector`, `OpenAIDetector`, `PypiTokenDetector`, `TelegramBotTokenDetector`) from `plugins_used`. These are not available in the v1.4.0 environment pinned by `.pre-commit-config.yaml`.
+
+### Verification Results
+
+```
+Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+sync_tracked_files.py --fix: all consistent  ✅
+```
+
+### Triage — Comment 4149648023
+
+S221 missed-trigger re-trigger for rescue `18010835959f`. The session WAS active and had responded in the prior S146-CONT9 session. This is the same rescue ID as comments 4149583481/4149583541/4149584891/4149613245, all triaged in S146-CONT9.
+
+### Impact Score
+- Files changed: 1 (`.secrets.baseline`)
+- Pattern 23 fix: removed 4 v1.5.0-only plugins incompatible with pinned v1.4.0 pre-commit environment
+- False-positive CI rescue runs triaged: 5 (runs 23703734888/875/881/907/889)
+- S221 false re-trigger triaged: 1 (comment 4149648023)
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations
