@@ -1664,9 +1664,10 @@ class CommonIssueFixer:
             )
             return issues
 
-        import detect_secrets.plugins as _dsp
         import importlib as _im
         import pkgutil as _pu
+
+        import detect_secrets.plugins as _dsp
 
         for plugin_entry in plugins_used:
             name = plugin_entry.get("name", "")

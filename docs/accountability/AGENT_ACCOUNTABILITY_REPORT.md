@@ -13098,3 +13098,42 @@ S221 missed-trigger re-trigger for rescue `faa1867231d3`. The rescue ID referenc
 - S221 false re-trigger triaged: 1 (comment 4149664900)
 - Regression introduced: 0
 - Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-03-29T08:34Z S146-CONT12 (Unsorted Imports Fix in auto_fix_common_issues.py)
+
+**Session ID:** S146-CONT12
+**Date:** 2026-03-29
+**Trigger:** Comment 4149701714 — Pre-Merge Validation failure on run 23705040484 (commit `60726d4`)
+**Branch:** `0D_base_`
+**Commits:** TBD (this session)
+
+### Root Cause
+
+The S146-CONT11 fix (commit `60726d4`) added a `detect_secrets.plugins`/`importlib`/`pkgutil` import block inside the `check_secrets_baseline_plugins` function body (lines 1667–1669 of `scripts/ci/auto_fix_common_issues.py`). The three imports were written in alphabetical order by module name (`detect_secrets.plugins`, `importlib`, `pkgutil`), but `isort`/ruff's import sort rules require imports sorted by their alias suffix (`_dsp`, `_im`, `_pu`), placing `importlib as _im` before `pkgutil as _pu` — the resulting order `_dsp`, `_pu`, `_im` violated the sort rule (ruff I001).
+
+Pre-Merge Validation reported two failures:
+1. `[Unsorted Imports]` `scripts/ci/auto_fix_common_issues.py:1667` — I001 fixable with `ruff --fix`
+2. `[Tracked File Sync]` CODEX_MANIFEST/accountability drift — stale `AGENT_ACCOUNTABILITY_REPORT` entry (no S146-CONT12 entry yet)
+
+### Changes Made
+
+1. **`scripts/ci/auto_fix_common_issues.py`** — Applied `ruff --fix` to reorder the three local imports to ruff-compliant sorted order.
+
+### Verification Results
+
+```
+ruff check scripts/ci/auto_fix_common_issues.py → All checks passed ✅
+Pattern 22 (Tracked File Sync): all tracked files consistent ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available ✅
+sync_tracked_files.py --fix: all consistent ✅
+auto_fix_common_issues.py --check-only: 0 auto-fixable issues ✅
+```
+
+### Impact Score
+- Files changed: 2 (`scripts/ci/auto_fix_common_issues.py`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Root cause: ruff I001 import-sort violation introduced by S146-CONT11
+- Pre-Merge Validation failure: fixed
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations
