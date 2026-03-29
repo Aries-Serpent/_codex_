@@ -169,7 +169,12 @@ jobs:
             SHA=$(echo "$line" | awk '{print $1}')
             AUTHOR=$(git log -1 --format="%an" "$SHA")
             SUBJECT=$(git log -1 --format="%s" "$SHA")
-            TREE_CHANGES=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null | wc -l || echo "0")
+            CHANGES_OUTPUT=$(git diff-tree --no-commit-id -r --name-only "$SHA" 2>/dev/null) || CHANGES_OUTPUT=""
+            if [ -n "$CHANGES_OUTPUT" ]; then
+              TREE_CHANGES=$(printf '%s\n' "$CHANGES_OUTPUT" | wc -l)
+            else
+              TREE_CHANGES=0
+            fi
 
             IS_AUTOGEN=false
             IS_PIPELINE_MERGE=false
@@ -595,8 +600,6 @@ jobs:
             > **⚠️ GitHub Copilot no-auto-PR policy:** Sessions no longer create pull requests
             > by default. After implementing the fix, **explicitly open a pull request targeting
             > \`0D_base_\`** with your changes (use \`gh pr create --base 0D_base_ --title "..."\`).
-            > Do NOT leave changes on a branch without a PR.
-            > \`0D_base_\`** with your changes (use \`gh pr create --base 0D_base_ --title "...\"\`).
             > Do NOT leave changes on a branch without a PR.
             `;
             }
