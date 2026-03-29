@@ -2,7 +2,7 @@
 
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
 **Related workflows:** `forward-sync-autogen.yml`, `branch-divergence-monitor.yml`
-**Last updated:** 2026-03-28 (S242 — PR #3770, extends S237)
+**Last updated:** 2026-03-29 (S146-CONT — PR #3782, Gemini review fixes + OBJ-002-H/I/J)
 
 ---
 

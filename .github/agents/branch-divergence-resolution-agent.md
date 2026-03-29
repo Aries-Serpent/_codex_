@@ -5,7 +5,7 @@ description: >
   branch divergence between the staging integration branch (0D_base_) and the
   default branch (main). Implements the PIPELINE-MERGE fast-forward protocol
   (S146), distinguishing normal staging-gate merge commits from true code-leaks.
-version: 1.0.0
+version: 1.1.0
 created: 2026-03-29
 updated: 2026-03-29
 cognitive_integration_level: 4
@@ -79,13 +79,20 @@ classification system:
 
 ## Severity Matrix
 
-| `codeleak_count` | `pipeline_merge_count` | `autogen_count` | Severity |
-|-----------------|----------------------|-----------------|----------|
-| > 0 | any | any | `critical` 🚨 |
-| 0 | > 0 | any | `low` 🟡 |
-| 0 | 0 | > 5 | `high` 🔴 |
-| 0 | 0 | 1–5 | `low` 🟡 |
-| 0 | 0 | 0 | `healthy` ✅ |
+| `codeleak_count` | `pipeline_merge_count` | `agent_commit_count` | `autogen_count` | Severity |
+|-----------------|----------------------|---------------------|-----------------|----------|
+| > 0 | 0 | 0 | any | `critical` 🚨 (no absorber — true bypass) |
+| > 0 | > 0 | any | any | `low` 🟡 (pipeline-merge absorber present) |
+| > 0 | 0 | > 0 | any | `low` 🟡 (agent-commit absorber present) |
+| 0 | > 0 | any | any | `low` 🟡 |
+| 0 | 0 | > 0 | any | `low` 🟡 |
+| 0 | 0 | 0 | > 5 | `high` 🔴 |
+| 0 | 0 | 0 | 1–5 | `low` 🟡 |
+| 0 | 0 | 0 | 0 | `healthy` ✅ |
+
+> **Absorber rule:** A `CODE-LEAK` is only `critical` when **no absorbers** are present
+> (`pipeline_merge_count = 0` AND `agent_commit_count = 0`). When either absorber is present,
+> the pipeline-merge fast-forward auto-corrects the divergence, downgrading severity to `low`.
 
 ---
 
@@ -117,7 +124,14 @@ if echo "$SUBJECT" | grep -qE '^Merge pull request #[0-9]+ from Aries-Serpent/0D
 elif [ "$AUTHOR" = "github-actions[bot]" ] && subject matches [skip ci]/[automated]/...; then
   → AUTO_GEN
 
-# Tier 3: code-leak
+# Tier 3: agent-commit (copilot bot authors OR empty commits with no file changes)
+# Both patterns indicate agent/automated activity that is safe to absorb.
+elif echo "$AUTHOR" | grep -qE '^(copilot-swe-agent\[bot\]|github-copilot\[bot\]|copilot\[bot\])$'; then
+  → AGENT_COMMIT  # copilot bot author
+elif [ "$(git diff-tree --no-commit-id -r "$SHA" | wc -l)" -eq 0 ]; then
+  → AGENT_COMMIT  # empty commit — no file changes
+
+# Tier 4: code-leak (everything else — human bypass of staging gate)
 else
   → CODE_LEAK
 fi
@@ -129,6 +143,7 @@ fi
 |----------|--------|
 | PIPELINE-MERGE | `git merge --no-ff origin/main` on `0D_base_` then push |
 | AUTO-GEN | cherry-pick file versions from main → 0D_base_ |
+| AGENT-COMMIT | Absorbed by pipeline-merge fast-forward (no explicit action needed) |
 | CODE-LEAK | Open @copilot escalation issue, tag `branch-divergence` + `ci-triage` |
 
 ### 4. VERIFY
@@ -180,7 +195,8 @@ Re-run `branch-divergence-monitor.yml` (workflow_dispatch) and confirm:
 |------|-----------|-----|
 | PIPELINE-MERGE | Merge commit from `0D_base_` → `main` PR close | Auto fast-forward `0D_base_` |
 | AUTO-GEN | Scheduled auto-commit by `github-actions[bot]` | Forward-sync files |
-| CODE-LEAK | Human or agent commit that bypassed `0D_base_` staging | @copilot investigation |
+| AGENT-COMMIT | Commit by `copilot-swe-agent[bot]`/`github-copilot[bot]`, or empty commit (0 file changes) | Absorbed by pipeline-merge fast-forward |
+| CODE-LEAK | Human or agent commit that bypassed `0D_base_` staging (no absorbers present) | @copilot investigation |
 | EXPECTED | `0D_base_` AHEAD of `main` (normal staged work) | No action needed |
 
 ---

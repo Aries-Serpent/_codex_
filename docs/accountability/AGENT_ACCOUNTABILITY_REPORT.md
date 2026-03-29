@@ -12753,9 +12753,12 @@ and the CI gate requirement.
 
 - EVERY session must review `branch-divergence-monitor.yml` classification logic
   before concluding that a divergence is a true CODE-LEAK.
-- `copilot-swe-agent[bot]` authored commits are NOT auto-gen — they will be
-  classified as CODE-LEAK by the monitor. Agents must only push `[skip ci]`
-  commits authored as `github-actions[bot]` for routine maintenance work.
+- `copilot-swe-agent[bot]` authored commits are **AGENT-COMMIT** (Tier 3) under the 4-tier
+  classification system shipped in S146 (PR #3781). They are **no longer classified as
+  CODE-LEAK**. The old 2-tier classifier (pre-S146, pre-PR #3781) would incorrectly flag these
+  as CODE-LEAK, which was the root cause of false CRITICAL alerts. Under the new system,
+  AGENT-COMMIT commits are auto-absorbed by the pipeline-merge fast-forward, downgrading
+  severity to `low`. (PR #3782 corrected the agent documentation to reflect this fix.)
 - The `report_progress` tool may do a `git rebase` when pushing if the remote
   branch diverged — this flattens merge commits and loses two-parent history.
   Prefer `--force-with-lease` via `report_progress` when merge structure matters.
@@ -12807,6 +12810,50 @@ CODE-LEAK       (Tier 4) → severity: critical (if alone), low (if absorbers pr
 - Permanent fix: false CRITICAL alerts eliminated for all future copilot agent sessions
 - Files changed: 3 workflow/agent files + 1 runbook + 1 agent file
 - New patterns: RC-6, RC-7, RC-8 documented; AGENT-COMMIT-001 established
+- Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-03-29T02:30Z S146-CONT2 (CI Rescue + Gemini Review + Next-Phase Tasks)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All comments reviewed: CI rescue comment + new_requirement (Gemini review + next-phase tasks) ✅
+- [x] **0b.** REQ-10 branch diverge fix: rebased `0D_base_` onto `main` (was behind by 1 merge commit) ✅
+- [x] **0c.** Gemini code-assist review: 4 medium-priority comments addressed ✅
+- [x] **0d.** OBJ-002-H/I/J verified complete ✅
+
+### Root Cause — CI Failure REQ-10
+
+`Live compare main...0D_base_: status=diverged, behind_by=1`
+
+After PR #3777 merged `0D_base_` → `main`, the merge commit `7a73ecf76` appeared on `main`
+but not in `0D_base_`. The `BRANCH_REBASE_REQUIRED` marker was still present on the PR,
+and REQ-10 detected the divergence and failed.
+
+**Fix:** `git rebase origin/main` applied to `0D_base_` — branch is now ahead of `main`
+with no behind-commits.
+
+### Gemini Code Review Fixes
+
+| Comment | File | Line | Fix Applied |
+|---------|------|------|-------------|
+| Frontmatter version mismatch (`1.0.0` vs changelog `1.1.0`) | `branch-divergence-resolution-agent.md` | 8 | Updated `version: 1.0.0` → `version: 1.1.0` |
+| Severity Matrix missing absorber logic | `branch-divergence-resolution-agent.md` | 88 | Added `agent_commit_count` column; split CODE-LEAK row into critical (no absorbers) vs low (absorbers present); added absorber rule footnote |
+| CLASSIFY section only 3-tier (missing AGENT-COMMIT) | `branch-divergence-resolution-agent.md` | 124 | Added Tier 3 AGENT-COMMIT bash logic; renamed old Tier 3 to Tier 4 CODE-LEAK; added AGENT-COMMIT to REMEDIATE table and Taxonomy Reference |
+| Outdated Lesson Learned (copilot-swe-agent[bot] = CODE-LEAK) | `AGENT_ACCOUNTABILITY_REPORT.md` | 12756–12758 | Updated to reflect AGENT-COMMIT classification; documented S146 as the fix that eliminated this false positive |
+
+### OBJ Completion Status
+
+| OBJ | Description | Status |
+|-----|-------------|--------|
+| OBJ-002-H | Update `BRANCH_DIVERGENCE_PREVENTION.md` Last Updated date | ✅ DONE — updated to 2026-03-29 (S146-CONT PR #3782) |
+| OBJ-002-I | Add `rescue-comment-push` job to `branch-divergence-monitor.yml` | ✅ ALREADY DONE in prior commit (2590df2f) |
+| OBJ-002-J | Add `continue-on-error: true` to Python JSON serialization step | ✅ ALREADY DONE in prior commit (2590df2f) |
+
+### Impact Score
+- Files changed: 3
+- CI gate unblocked: REQ-10 (branch rebase gate)
+- Gemini review comments resolved: 4/4
 - Deferral Language Gate: 0 violations
 
 ---
