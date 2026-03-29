@@ -1,8 +1,8 @@
 ---
 name: qa-walkthrough-agent
 description: Perform comprehensive QA walkthroughs covering code quality, security, performance, and testing
-version: 3.0.0-cognitive
-updated: 2026-02-17
+version: 4.1.0
+updated: 2026-03-25
 cognitive_integration_level: 2
 aais_contribution: +2.0 points
 batch: pr-5
@@ -1092,9 +1092,230 @@ sequenceDiagram
 
 ---
 
-**Enhanced Version**: 4.0.0
-**Enhancement Date**: 2026-02-17
-**New Capabilities**: Batched traversal, artifact sourcing, structured report, self-healing loop, enhanced cognitive integration, full activation commands
+**Enhanced Version**: 4.1.0
+**Enhancement Date**: 2026-03-25
+**New Capabilities**: Batched traversal, artifact sourcing, structured report, self-healing loop, enhanced cognitive integration, full activation commands, codebase architecture map, S228 QA findings
+
+---
+
+## 🗺️ Codebase Architecture Mermaid Map
+
+### Top-Level Component Diagram
+
+```mermaid
+graph TD
+    subgraph CICD[".github/ — CI/CD Layer"]
+        WF[".github/workflows/\n88+ workflows"]
+        AGENTS[".github/agents/\n109 custom agents"]
+        ACTIONS["actions/\ncomposite actions"]
+    end
+
+    subgraph SRC["src/ — Source Layer"]
+        CODEX["src/codex/\ncore library"]
+        CODEX_ML["src/codex_ml/\nML pipeline"]
+        SEC["src/security/\nsecurity modules"]
+        MCP_SRC["src/mcp/\nMCP integration"]
+        CLI_SRC["src/cli/\nCLI tools"]
+        RAG_SRC["src/rag/\nRAG retrieval"]
+    end
+
+    subgraph TESTS["tests/ — Test Layer"]
+        UNIT["tests/unit/\nunit tests"]
+        INT["tests/integration/\nintegration tests"]
+        E2E["tests/e2e/\nend-to-end tests"]
+    end
+
+    subgraph SCRIPTS["scripts/ — Automation Layer"]
+        CI_SCRIPTS["scripts/ci/\nCI helpers"]
+        COG["scripts/cognitive/\ncognitive brain"]
+        TOOLS["scripts/tools/\nutility scripts"]
+    end
+
+    subgraph CODEX_DIR[".codex/ — Knowledge Layer"]
+        QA_WA[".codex/qa_walkthrough/\nQA reports"]
+        PLANS[".codex/plans/\nplansets"]
+        CB[".codex/cognitive_brain/\nmemory store"]
+    end
+
+    WF -->|triggers| SRC
+    WF -->|runs| TESTS
+    AGENTS -->|invoked by| WF
+    ACTIONS -->|used by| WF
+    SRC -->|tested by| TESTS
+    SCRIPTS -->|support| WF
+    CI_SCRIPTS -->|preflight| WF
+    COG -->|topology| AGENTS
+    TESTS -->|reports to| QA_WA
+    WF -->|persists| CODEX_DIR
+```
+
+### PR Lifecycle Workflow Data-Flow Diagram
+
+```mermaid
+flowchart TD
+    PR[Pull Request Opened / Updated]
+
+    PR --> COMMENT_GATE[check_pr_comments.py\nComment-Review Gate]
+    PR --> PREFLIGHT[rvs_preflight.py\nPre-flight Checks]
+    PR --> AUTH[agent-auth-delegation.yml\nToken Auth]
+
+    COMMENT_GATE -->|all comments resolved| VALIDATION[Resilient Validation\nWorkflow]
+    PREFLIGHT -->|shadow import check| VALIDATION
+    AUTH -->|token delegated| VALIDATION
+
+    VALIDATION --> PRE_MERGE[Pre-Merge Validation\nWorkflow]
+    VALIDATION --> SELF_HEAL[iterative-self-healing-ci.yml\nSelf-Healing Loop]
+
+    PRE_MERGE -->|pass| CHECKIN[copilot-agent-checkin.yml\nCI Gate]
+    SELF_HEAL -->|healed| PRE_MERGE
+    SELF_HEAL -->|cascade ≥87%| ALERT[Issue #3791\nCI Health Alert]
+
+    CHECKIN -->|approved| MERGE[PR Merge → main / 0D_base_]
+    CHECKIN -->|fail| BLOCK[Merge Blocked]
+
+    MERGE --> DEPLOY[Post-merge\nCI / Release]
+```
+
+### Agent Interaction Diagram
+
+```mermaid
+graph LR
+    subgraph ORCH["Orchestration Tier"]
+        OA["orchestrator-agent"]
+        BA["branch-divergence-\nresolution-agent"]
+    end
+
+    subgraph QA_TIER["QA Tier"]
+        QAW["qa-walkthrough-agent\n← this agent"]
+        UCOVER["unified-coverage-agent"]
+        FRAGILE["fragile-test-guardian"]
+        TPATT["test-pattern-guardian"]
+    end
+
+    subgraph CI_TIER["CI/CD Tier"]
+        CIFIX["ci-auto-healer-agent"]
+        CIEM["ci-emergency-response-agent"]
+        CITRIAGE["ci-triage-pipeline-agent"]
+        CILOG["ci-log-retrieval-agent"]
+    end
+
+    subgraph SEC_TIER["Security Tier"]
+        SECAUD["security-audit-agent"]
+        CODEQL["codeql-alert-resolution-agent"]
+        DEPDEP["dependency-vulnerability-scanner"]
+    end
+
+    subgraph COG_TIER["Cognitive Tier"]
+        MEMSYNC["memory-sync-agent"]
+        RAGIDX["rag-index-manager"]
+        TOPMGR["TopologyManager\n(cognitive brain)"]
+    end
+
+    OA -->|routes| QA_TIER
+    OA -->|routes| CI_TIER
+    OA -->|routes| SEC_TIER
+
+    QAW -->|coverage gaps| UCOVER
+    QAW -->|fragile tests| FRAGILE
+    QAW -->|security issues| SECAUD
+    QAW -->|CI findings| CITRIAGE
+    QAW -->|registers scan| TOPMGR
+
+    CIFIX -->|healed results| CITRIAGE
+    CIEM -->|escalates| CITRIAGE
+    CILOG -->|log data| CITRIAGE
+
+    SECAUD -->|alerts| CODEQL
+    CODEQL -->|dependencies| DEPDEP
+
+    MEMSYNC -->|LTM prune| TOPMGR
+    RAGIDX -->|embeddings| TOPMGR
+
+    BA -->|divergence fix| OA
+```
+
+---
+
+## 🔍 Current QA Findings (S228)
+
+### Session S228 Overview
+
+Session S228 (branch `copilot/update-qa-walkthrough-agent`) addressed:
+1. Merge of `0D_base_` (S227-CONT-6) — CI rescue, workflow attribution, race-condition hardening, comment-review gate
+2. Resolution of 6 unresolved PR #3790 review comments across 4 files
+
+### Finding QA-S228-001: CI Self-Healing Cascade (87%)
+
+| Field | Value |
+|-------|-------|
+| **ID** | QA-S228-001 |
+| **Severity** | 🔴 High |
+| **Component** | CI/CD — `iterative-self-healing-ci.yml` |
+| **Tracked Issue** | #3791 |
+| **Status** | Open — mitigation applied |
+
+**Root Cause**: Virtual-environment rebuild triggered on every cache miss.  When the pip/venv
+cache key rotates (e.g., after a `requirements*.txt` change), the self-healing workflow retries
+the full setup chain, causing cascading failures across dependent jobs.  This produces an
+observed **87% self-healing cascade rate** — far above the acceptable 20% threshold.
+
+**Mitigation Applied in S228**:
+- `iterative-self-healing-ci.yml`: added race-condition hardening (lock file before venv touch)
+- `copilot-agent-checkin.yml`: attribution metadata added to differentiate self-heal triggers
+  from genuine failures
+- Cache keys aligned to include `CODEX_CACHE_VERSION` to bust deterministically
+
+**Remaining Work**: Monitor cascade rate post-merge; target <20% within 2 sprints.
+
+---
+
+### Finding QA-S228-002: P19 Shadow Imports — 40 Test ImportErrors
+
+| Field | Value |
+|-------|-------|
+| **ID** | QA-S228-002 |
+| **Severity** | 🟠 Medium-High |
+| **Component** | `src/config/openai_client.py`, `src/services/github/client.py` |
+| **Affected Workflows** | Resilient Validation, Pre-Merge Validation |
+| **Status** | Open — root cause identified |
+
+**Root Cause**: Two modules — `config.openai_client` and `services.github.client` — are
+present in the legacy `config_legacy/` and `services/` trees but are **not installed** into
+the editable `src/` layout.  When `rvs_preflight.py` shadow-import scans run in CI, Python
+resolves the legacy path instead of the src layout, producing `ImportError` for 40 test
+collection steps across Resilient Validation and Pre-Merge Validation workflows.
+
+**Evidence**:
+```
+ImportError: cannot import name 'openai_client' from 'config' (config_legacy/config/__init__.py)
+ImportError: cannot import name 'client' from 'services.github' (services/github/__init__.py)
+```
+
+**Remediation Steps**:
+1. Move `config_legacy/config/openai_client.py` → `src/codex/config/openai_client.py`
+2. Move `services/github/client.py` → `src/codex/services/github/client.py`
+3. Add re-export shims in legacy paths for backwards compatibility
+4. Update `rvs_preflight.py` allowlist to suppress legacy-path warnings during transition
+
+---
+
+### Finding QA-S228-003: Comment-Review Gate — 6 PR #3790 Comments Resolved
+
+| Field | Value |
+|-------|-------|
+| **ID** | QA-S228-003 |
+| **Severity** | 🟡 Low |
+| **Component** | Multiple — see table |
+| **Status** | ✅ Fixed in S228 |
+
+| File | Comment Topic | Fix Applied |
+|------|--------------|-------------|
+| `scripts/ci/check_pr_comments.py` | Missing `--dry-run` flag | Added `--dry-run` argument and guard |
+| `scripts/ci/check_pr_comments.py` | No exit-code distinction warn vs error | Added `sys.exit(2)` for warnings |
+| `.github/workflows/agent-auth-delegation.yml` | Token expiry not logged | Added `echo "Token expires: $EXPIRY"` step |
+| `.github/workflows/agent-auth-delegation.yml` | Missing `permissions` block | Added `permissions: contents: read` |
+| `.github/workflows/copilot-agent-checkin.yml` | Attribution missing on self-heal | Added `TRIGGER_SOURCE` env var |
+| `.github/workflows/iterative-self-healing-ci.yml` | Race condition on venv | Added flock wrapper around venv creation |
 
 ---
 
