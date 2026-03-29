@@ -13056,3 +13056,45 @@ S221 missed-trigger re-trigger for rescue `18010835959f`. The session WAS active
 - S221 false re-trigger triaged: 1 (comment 4149648023)
 - Regression introduced: 0
 - Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-03-29T08:09Z S146-CONT11 (Pattern 23 False-Positive Fix — detect-secrets not in venv_ci)
+
+**Session ID:** S146-CONT11
+**PR:** #3782 (0D_base_: 4-tier branch divergence classifier)
+**Trigger:** New comments 4149650845 and 4149664900 — Validation Pipeline / Fast Validation failure on commit `f8540286c4d2`; S221 missed-trigger re-trigger for rescue `faa1867231d3`
+
+### Root Cause Analysis — CI runs 23704251613/23704251608/23704251661/23704607035/23704607040
+
+All CI failures on commit `f8540286c4d2` (pre-`f35512f`) were pre-fix runs. However, commit `f35512f` also triggered CI runs (23704607035/23704607040) that failed due to a newly discovered bug in the Pattern 23 check logic:
+
+**Pattern 23 false-positive bug** — `scripts/ci/auto_fix_common_issues.py` Pattern 23 wrapped each plugin import attempt in `try: ... except Exception: unknown_plugins.append(name)`. When `detect-secrets` is NOT installed in the checking Python (`.venv_ci` virtualenv), `import detect_secrets.plugins` raises `ImportError`, which is caught by the broad `except Exception`. This caused EVERY plugin in `plugins_used` to be appended to `unknown_plugins`, reporting all 22 standard plugins as incompatible — a complete false positive.
+
+The CI `Auto-Fix Common Issues` and `PR Auto-Fix Check` jobs then both exited with code 1 because they saw "23 auto-fixable issues" (22 Pattern 23 + 1 Pattern 22 downstream), when in fact there were zero real issues at `f35512f`.
+
+### Changes Made
+
+1. **`scripts/ci/auto_fix_common_issues.py`** — Fixed Pattern 23 to first check if `detect-secrets` is importable before scanning plugins. If `detect_secrets.plugins` cannot be imported (`ImportError`), the check now skips with a ✅ message instead of incorrectly flagging every plugin as incompatible. The inner `except Exception` catch for individual plugin lookup failures is removed (replaced by separate pre-flight import check + explicit submodule scanning without catch-all).
+
+### Verification Results
+
+```
+Pattern 22 (Tracked File Sync): all tracked files consistent  ✅
+Pattern 23 (Secrets Baseline Plugins): all baseline plugins available  ✅
+Simulated detect-secrets not installed: 0 false positives  ✅
+sync_tracked_files.py --check: all consistent  ✅
+```
+
+### Triage — Comment 4149664900
+
+S221 missed-trigger re-trigger for rescue `faa1867231d3`. The rescue ID references the commit `faa1867231d3ce34609fb772216fe4d5e0ad7505` (S146-CONT8 hardening commit). All CI failures on that commit were the same Pattern 23 root cause, fixed in `f35512f` (S146-CONT10) with the secondary Pattern 23 false-positive detection fixed in this session (S146-CONT11).
+
+### Impact Score
+- Files changed: 1 (`scripts/ci/auto_fix_common_issues.py`)
+- Pattern 23 false-positive fix: skip check when detect-secrets not installed in running Python
+- CI rescue runs on `f8540286c4d2`: pre-fix runs (stale); now resolved at `f35512f`+
+- CI rescue runs on `f35512f` (23704607035/23704607040): Pattern 23 false-positive bug; fixed
+- S221 false re-trigger triaged: 1 (comment 4149664900)
+- Regression introduced: 0
+- Deferral Language Gate: 0 violations
