@@ -95,6 +95,8 @@ class TestMonthlySummary:
         # Use timedelta(days=32) to safely land in the previous calendar month
         # without day-overflow errors (e.g. March 29 → replace(month=2) raises
         # ValueError because Feb 29 does not exist in non-leap years).
+        # 32 days is chosen because no calendar month has more than 31 days,
+        # so subtracting 32 always crosses into the prior month.
         last_month = now - datetime.timedelta(days=32)
         entry_old = {
             "ts": last_month.isoformat(),
