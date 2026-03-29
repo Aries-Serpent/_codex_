@@ -287,6 +287,9 @@ jobs:
 
       - name: Emit pre-commit failure details to step summary
         if: failure()
+    concurrency:
+      group: ci-rescue-comment-${{ github.event.pull_request.number || github.sha }}
+      cancel-in-progress: false
         shell: bash
         # S236/OBJ-001: Single shared script — no logic duplication between fast/full jobs.
         run: bash scripts/ci/emit_precommit_summary.sh validation.log "validation-log-full-${{ github.run_id }}"
