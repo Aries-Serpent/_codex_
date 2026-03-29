@@ -19,6 +19,7 @@ Exit codes:
 Usage:
   python scripts/ci/check_pr_comments.py --pr NUMBER --repo OWNER/REPO
   python scripts/ci/check_pr_comments.py --pr NUMBER --repo OWNER/REPO --output-json FILE
+  python scripts/ci/check_pr_comments.py --pr NUMBER --repo OWNER/REPO --metrics-file metrics.prom
   python scripts/ci/check_pr_comments.py --pr NUMBER --repo OWNER/REPO --post-checklist
 
 Environment:
@@ -182,7 +183,7 @@ def find_unaddressed_comments(
                     datetime.fromisoformat(ts.replace("Z", "+00:00"))
                 )
             except ValueError:
-                pass
+                print(f"[check_pr_comments] Warning: unparseable timestamp {ts!r} — skipping", file=sys.stderr)
 
     def was_addressed(comment_ts_str: str) -> bool:
         """True if a Copilot agent posted AFTER this comment."""
@@ -269,7 +270,6 @@ def find_unaddressed_comments(
 
 def build_checklist_body(report: dict[str, Any]) -> str:
     """Build the markdown checklist posted to the PR."""
-    total = report["pr_number"]  # kept for context; use pr_number in header
     total = report["total_comments"]
     addressed = report["addressed_count"]
     blocking = report["unaddressed_blocking"]
@@ -284,8 +284,7 @@ def build_checklist_body(report: dict[str, Any]) -> str:
         "<!-- comment-review-gate-checklist -->",
         "## 🔍 PR Comment Review Gate — Copilot Must Address All Items",
         "",
-        "> **Policy (§0 Codebase Agency Policy):** ALL comments from `mbaetiong` and "
-        "ALL bot-posted comments MUST be reviewed and addressed before new work begins.",
+        "> **Policy (§0 Codebase Agency Policy):** ALL comments from `mbaetiong` and ALL bot-posted comments MUST be reviewed and addressed before new work begins.",
         "",
         f"**Scan results:** {addressed}/{total} comments addressed · "
         f"Scanned at {report['scanned_at'][:16]} UTC",
@@ -358,8 +357,7 @@ def build_checklist_body(report: dict[str, Any]) -> str:
     lines += [
         "---",
         "",
-        "**To dismiss this checklist:** Reply to every blocking item above, "
-        "then push a new commit. The gate will re-scan on the next push.",
+        "**To dismiss this checklist:** Reply to every blocking item above, then push a new commit. The gate will re-scan on the next push.",
         "",
         f"_[🔗 Workflow run]({run_url})_",
     ]
@@ -412,6 +410,79 @@ def post_checklist(
         raise RuntimeError(f"HTTP {e.code} posting checklist: {body_err}") from e
 
 
+def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
+    """Write Prometheus text-format metrics for comment-response latency.
+
+    Emitted metric families:
+      comment_review_gate_total           — total comments scanned
+      comment_review_gate_addressed_total — comments with a Copilot response
+      comment_review_gate_blocking_total  — unaddressed blocking comments (mbaetiong)
+      comment_review_gate_warning_total   — unaddressed warning comments (bots)
+      comment_review_gate_info_total      — unaddressed info comments
+      comment_review_gate_response_latency_seconds — per-comment response latency
+      comment_review_gate_exit_code       — exit code emitted by the gate run
+    """
+    pr = report["pr_number"]
+    scanned_at = report.get("scanned_at", "")
+
+    lines: list[str] = [
+        "# HELP comment_review_gate_total Total comments scanned on the PR",
+        "# TYPE comment_review_gate_total gauge",
+        f'comment_review_gate_total{{pr="{pr}",repo="{report["repo"]}"}} {report["total_comments"]}',
+        "",
+        "# HELP comment_review_gate_addressed_total Comments that have a Copilot agent reply",
+        "# TYPE comment_review_gate_addressed_total gauge",
+        f'comment_review_gate_addressed_total{{pr="{pr}",repo="{report["repo"]}"}} {report["addressed_count"]}',
+        "",
+        "# HELP comment_review_gate_blocking_total Unaddressed BLOCKING comments (mbaetiong)",
+        "# TYPE comment_review_gate_blocking_total gauge",
+        f'comment_review_gate_blocking_total{{pr="{pr}",repo="{report["repo"]}"}} {len(report["unaddressed_blocking"])}',
+        "",
+        "# HELP comment_review_gate_warning_total Unaddressed WARNING comments (bots)",
+        "# TYPE comment_review_gate_warning_total gauge",
+        f'comment_review_gate_warning_total{{pr="{pr}",repo="{report["repo"]}"}} {len(report["unaddressed_warning"])}',
+        "",
+        "# HELP comment_review_gate_info_total Unaddressed INFO comments",
+        "# TYPE comment_review_gate_info_total gauge",
+        f'comment_review_gate_info_total{{pr="{pr}",repo="{report["repo"]}"}} {len(report["unaddressed_info"])}',
+        "",
+        "# HELP comment_review_gate_exit_code Exit code returned by this gate run (0=pass, 1=blocking, 2=warning)",
+        "# TYPE comment_review_gate_exit_code gauge",
+        f'comment_review_gate_exit_code{{pr="{pr}",repo="{report["repo"]}"}} {report["exit_code"]}',
+        "",
+    ]
+
+    # Per-comment response latency (seconds from comment creation to first Copilot reply)
+    all_comments = (
+        report["unaddressed_blocking"]
+        + report["unaddressed_warning"]
+        + report["unaddressed_info"]
+    )
+    latency_lines: list[str] = []
+    for c in all_comments:
+        latency_val = c.get("response_latency_seconds")
+        author = c.get("author", "unknown")[:32]
+        ctype = c.get("comment_type", "unknown")
+        if latency_val is not None:
+            latency_lines.append(
+                f'comment_review_gate_response_latency_seconds{{pr="{pr}",'
+                f'repo="{report["repo"]}",author="{author}",type="{ctype}"}} {latency_val:.3f}'
+            )
+
+    if latency_lines:
+        lines += [
+            "# HELP comment_review_gate_response_latency_seconds Seconds from comment creation to first Copilot reply",
+            "# TYPE comment_review_gate_response_latency_seconds gauge",
+        ] + latency_lines + [""]
+
+    # Timestamp comment (informational)
+    lines += [f"# Scanned at {scanned_at} — repo={report['repo']} pr={pr}"]
+
+    with open(path, "w") as fh:
+        fh.write("\n".join(lines) + "\n")
+    print(f"Prometheus metrics written to {path}")
+
+
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -421,6 +492,8 @@ def main() -> int:
     parser.add_argument("--pr", type=int, required=True, help="PR number")
     parser.add_argument("--repo", required=True, help="owner/repo")
     parser.add_argument("--output-json", metavar="FILE", help="Write JSON report to FILE")
+    parser.add_argument("--metrics-file", metavar="FILE",
+                        help="Write Prometheus text-format metrics to FILE")
     parser.add_argument("--post-checklist", action="store_true",
                         help="Post/update checklist comment on the PR")
     parser.add_argument("--dry-run", action="store_true",
@@ -442,6 +515,9 @@ def main() -> int:
         with open(args.output_json, "w") as fh:
             json.dump(report, fh, indent=2)
         print(f"Report written to {args.output_json}")
+
+    if args.metrics_file:
+        write_prometheus_metrics(report, args.metrics_file)
 
     # Print summary
     blocking = report["unaddressed_blocking"]
