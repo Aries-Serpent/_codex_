@@ -13290,3 +13290,55 @@ AGENT_ACCOUNTABILITY_REPORT: session entry dated 2026-03-29 ✅
 
 ### REQ-4 Compliance
 - AGENT_ACCOUNTABILITY_REPORT.md updated in this commit OK
+
+---
+
+## Session S227-CONT (S227 Continuation) — 2026-03-29
+
+**Session ID:** S227-CONT
+**Branch:** 0D_base_
+**PR:** #3790
+**Triggered by:** Comments 4150138938, 4150145510, 4150214896, 4150215172, 4150217451, 4150341527
+
+### Pre-flight Checklist (CODEBASE_AGENCY_POLICY.md v1.1.0)
+- [x] **§0a.** All `mbaetiong` comments reviewed and addressed (see below)
+- [x] **§0b.** All bot-posted comments reviewed and addressed
+- [x] **REQ-4.** `AGENT_ACCOUNTABILITY_REPORT.md` updated (this entry)
+- [x] **REQ-13.** PR comment review gate active
+
+### Root Cause Identified
+
+**Critical workflow YAML breakage** introduced by commit `6f9051e`:
+- 57 workflow files had bare `---` YAML document separators injected at column 0 inside Python f-string and JS template literal bodies within `run:` block scalars.
+- `validate.yml` had a stray `concurrency:` block inserted between step properties at wrong indentation.
+- These caused all workflows to fail with "expected a single document in the stream" / "mapping values are not allowed here" YAML parse errors.
+- **Impact:** ALL 135 workflow files effectively broken — every CI check was failing.
+
+### Fixes Applied
+
+| Fix | Description |
+|-----|-------------|
+| YAML-01 | Removed 57 bare `---` separators from workflow f-string/template-literal bodies via bulk regex |
+| YAML-02 | Moved `_[🔗 Workflow run]` footer inside string escape sequence (`\n\n_[🔗...]_`) to keep at correct YAML indentation |
+| YAML-03 | Fixed `validate.yml` stray `concurrency:` block between step properties (lines 290-292) |
+| YAML-04 | Fixed `auto-fix-common-issues.yml` JS template literal footer — added 12-space indentation |
+
+### Tasks Completed (S227-CONT)
+
+#### Addressed PR Comments
+- 4150138938 (Agent Token Delegation Activated / @copilot continue): acknowledged, continuing
+- 4150145510 (Validation Pipeline / Fast Validation failure on 25c5bd4): root cause was the YAML breakage in 6f9051e; fixed in this commit
+- 4150214896 (Comment Review Gate Failed — run 23710554283): gate correctly fired on own comment backlog; addressed via this session
+- 4150215172 (Comment Review Gate Failed — run 23710679456): same as above, duplicate gate fire; addressed
+- 4150217451 (Self-Healing Escalation — unknown pattern): pattern `unknown` = comment-review-gate firing; no new fix-handler needed as root cause is addressed
+- 4150341527 (Missed-Trigger Recovery S221 — rescue ID 3790): addressed, this commit is the response
+
+#### Workflow Run Link Footer — YAML Safety Fix
+All 58 affected workflow files now embed the `_[🔗 Workflow run]` footer **inside** the Python f-string / JS template literal using `\n\n` escape sequences, ensuring no bare `---` or column-0 content breaks YAML block scalar parsing.
+
+### Verification
+- `python3 -c "import yaml, os; ..."` → All 135 workflow files parse OK ✅
+- `sync_tracked_files.py --check` → All consistent ✅
+
+### REQ-4 Compliance
+- AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✅

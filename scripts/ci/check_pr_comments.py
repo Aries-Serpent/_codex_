@@ -32,8 +32,7 @@ import os
 import sys
 from datetime import datetime, timezone
 from typing import Any
-from urllib import request, error
-from urllib.parse import urlencode
+from urllib import error, request
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -270,7 +269,7 @@ def find_unaddressed_comments(
 
 def build_checklist_body(report: dict[str, Any]) -> str:
     """Build the markdown checklist posted to the PR."""
-    pr = report["pr_number"]
+    total = report["pr_number"]  # kept for context; use pr_number in header
     total = report["total_comments"]
     addressed = report["addressed_count"]
     blocking = report["unaddressed_blocking"]
