@@ -689,6 +689,9 @@ jobs:
               continue
             }
             CHANGES=$(printf '%s\n' "$CHANGES_OUTPUT" | grep -c . || true)
+            # grep -c . counts non-empty lines (exit 1 when 0 matches is silenced
+            # by || true); this correctly handles the empty-output case without
+            # needing pipefail or a separate wc call.
             [ "$CHANGES" -eq 0 ] && echo "$line"
           done)
 

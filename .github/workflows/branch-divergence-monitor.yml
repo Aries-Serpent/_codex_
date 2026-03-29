@@ -324,7 +324,9 @@ jobs:
         # job triggered solely due to pipeline-merge or agent-commit absorbers —
         # those cases go straight to the fast-forward step below without touching
         # auto-gen files (which could otherwise overwrite newer versions on 0D_base_).
-        if: needs.detect.outputs.autogen_count != '0' || inputs.force_forward_sync == 'true'
+        # Guard against both empty string and '0' to avoid unintended execution
+        # when the detect job output is missing or malformed.
+        if: (needs.detect.outputs.autogen_count != '' && needs.detect.outputs.autogen_count != '0') || inputs.force_forward_sync == 'true'
         run: |
           git fetch origin main --depth=1
 
