@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S243 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — absolute `filename` paths normalized to repo-relative before `_file_to_module()` (prevents invalid module names on GitHub Actions). Copilot review thread line 142.
+- **fix(ci):** `generate_coverage_map.py` — per-XML duplicate module merge now unions `uncovered_lines` correctly (not just subtracts covered). Copilot review thread line 173.
+- **fix(ci):** `generate_coverage_map.py` — `build_coverage_map` merges function-level `covered_functions`/`uncovered_functions` from all suites; tags aggregated entries with `+merged` suite label; adds `len(suite_names) != len(xml_paths)` ValueError guard. Copilot review threads lines 323 and 291.
+- **fix(ci):** `sync_tracked_files.py` — `check_agent_context_baseline()` now runs detect-secrets with `cwd=REPO_ROOT` and passes repo-relative path; baseline key lookup is deterministic regardless of caller cwd. Copilot review thread line 380.
+- **fix(ci):** `copilot-iterative-self-healing.yml` — pagination loop bounded by `MAX_PAGES=50`; emits warning on limit reached. Copilot review thread line 339.
+- **fix(ci):** `comment-review-gate.yml` — stale "PR-scoped" comment corrected to SHA-scoped semantics; `HEAD_SHA` for `issue_comment` trigger now fetched via `github.rest.pulls.get()` API (not `github.sha` fallback). Copilot review threads lines 201 and 191.
+- **fix(ci):** `ci_rescue.py` — `_gh_api()` captures real HTTP status via `curl -w '\n%{http_code}'`; `post_pr_comment()` accepts 200 or 201 as success. Prevents silent loss of deep RCA comments. Copilot review thread line 1555.
+- **feat(ci/coverage):** `ci_rescue.py` — added `COV_001` and `COV_002` rescue patterns with auto-fix commands (P2C coverage intelligence).
+- **feat(ci/coverage):** `validate.yml` — "Generate coverage map and PR delta comment" step (P2B): posts coverage delta comment on PRs after test run.
+- **feat(ci/coverage):** `session_bootstrap.py` — injects coverage intelligence at session start (P2A): surfaces zero/low-coverage modules and high-risk function counts from `coverage_map.json`.
+
 ### Fixed (S242 — PR #3818)
 - **fix(ci):** `generate_coverage_map.py` — corrected multi-suite merge logic: now unions `covered_lines` across suites and recalculates `line_rate` from combined data (was incorrectly picking highest `line_rate`, discarding coverage from other suites). Addresses Gemini high-priority review thread.
 - **fix(ci):** `generate_coverage_map.py` — `fn_covered` denominator now uses only executable lines (`covered ∪ uncovered` within function range) rather than all AST lines, eliminating artificial inflation from comments/docstrings. Addresses Gemini medium-priority review thread.

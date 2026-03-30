@@ -134,12 +134,23 @@ def parse_coverage_xml(
             if not filename:
                 continue
 
-            # Resolve to repo-relative path
-            if not Path(filename).is_absolute():
-                file_path = REPO_ROOT / filename
+            # Normalise filename to a repo-relative path.
+            # coverage.xml can contain either relative or absolute paths depending
+            # on how pytest-cov was invoked.  Absolute paths produce invalid module
+            # names (e.g. "/home/runner/work/_codex_/src/codex/foo.py" becomes
+            # "home.runner.work._codex_.src.codex.foo") and break cross-suite merges
+            # because the module key differs from entries generated from relative paths.
+            fpath = Path(filename)
+            if fpath.is_absolute():
+                try:
+                    rel_path = str(fpath.relative_to(REPO_ROOT))
+                except ValueError:
+                    # Path is outside the repo (unlikely but safe to skip)
+                    continue
+                file_path = fpath
             else:
-                file_path = Path(filename)
-            rel_path = filename
+                rel_path = filename
+                file_path = REPO_ROOT / filename
 
             module = _file_to_module(rel_path)
             lr = _line_rate(cls)
@@ -164,13 +175,13 @@ def parse_coverage_xml(
             )
 
             if module in entries:
-                # Merge: union of covered lines, prefer higher line_rate
+                # Merge: union of covered lines; uncovered = union minus covered
+                # so lines that became covered in a later class element are removed.
                 existing = entries[module]
-                existing.covered_lines = sorted(
-                    set(existing.covered_lines) | set(covered_lines)
-                )
+                merged_covered = set(existing.covered_lines) | set(covered_lines)
+                existing.covered_lines = sorted(merged_covered)
                 existing.uncovered_lines = sorted(
-                    set(existing.uncovered_lines) - set(covered_lines)
+                    (set(existing.uncovered_lines) | set(uncovered_lines)) - merged_covered
                 )
                 if lr > existing.line_rate:
                     existing.line_rate = lr
@@ -289,6 +300,16 @@ def build_coverage_map(
     if suite_names is None:
         suite_names = [p.stem for p in xml_paths]
 
+    if len(suite_names) != len(xml_paths):
+        raise ValueError(
+            f"xml_paths and suite_names must have the same length "
+            f"(got {len(xml_paths)} xml_paths, {len(suite_names)} suite_names)"
+        )
+
+    def _function_key(fn: dict[str, Any]) -> tuple[Any, Any]:
+        """Stable identification key for a function dict: (qualified_name or name, start_line)."""
+        return (fn.get("qualified_name") or fn.get("name"), fn.get("start_line"))
+
     all_modules: dict[str, ModuleEntry] = {}
     for xml_path, suite in zip(xml_paths, suite_names):
         parsed = parse_coverage_xml(xml_path, suite_name=suite)
@@ -321,6 +342,55 @@ def build_coverage_map(
                 existing.branch_rate = max(
                     existing.branch_rate, entry.branch_rate
                 )
+
+                # Merge function-level coverage so covered/uncovered_functions
+                # remain consistent with the merged line data.  A function is
+                # considered covered in the merged view if ANY suite classified it
+                # as covered; otherwise it is treated as uncovered.
+                existing_cov_fns: list[dict[str, Any]] = list(
+                    existing.covered_functions  # type: ignore[assignment]
+                    if isinstance(existing.covered_functions, list)
+                    and existing.covered_functions
+                    and isinstance(existing.covered_functions[0], dict)
+                    else [{"name": n} for n in existing.covered_functions]
+                )
+                existing_uncov_fns: list[dict[str, Any]] = list(
+                    existing.uncovered_functions or []
+                )
+                entry_cov_fns: list[dict[str, Any]] = list(
+                    entry.covered_functions  # type: ignore[assignment]
+                    if isinstance(entry.covered_functions, list)
+                    and entry.covered_functions
+                    and isinstance(entry.covered_functions[0], dict)
+                    else [{"name": n} for n in entry.covered_functions]
+                )
+                entry_uncov_fns: list[dict[str, Any]] = list(
+                    entry.uncovered_functions or []
+                )
+
+                merged_fns: dict[tuple[Any, Any], dict[str, Any]] = {}
+                covered_keys: set[tuple[Any, Any]] = set()
+                for fn in existing_cov_fns + entry_cov_fns:
+                    k = _function_key(fn)
+                    merged_fns.setdefault(k, fn)
+                    covered_keys.add(k)
+                for fn in existing_uncov_fns + entry_uncov_fns:
+                    merged_fns.setdefault(_function_key(fn), fn)
+
+                new_cov_fns: list[Any] = []
+                new_uncov_fns: list[Any] = []
+                for k, fn in merged_fns.items():
+                    if k in covered_keys:
+                        new_cov_fns.append(fn.get("name", fn))
+                    else:
+                        new_uncov_fns.append(fn)
+
+                existing.covered_functions = new_cov_fns  # type: ignore[assignment]
+                existing.uncovered_functions = new_uncov_fns
+
+                # Tag as aggregated when multiple suites contributed.
+                if "merged" not in str(existing.suite):
+                    existing.suite = f"{existing.suite}+merged"
             else:
                 all_modules[module] = entry
 

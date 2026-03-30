@@ -372,14 +372,18 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
 
-    # Run detect-secrets on agent_context.json only (fast targeted scan)
+    # Run detect-secrets on agent_context.json only (fast targeted scan).
+    # Use cwd=REPO_ROOT and a repo-relative path so the result key in
+    # detect-secrets output matches what is stored in .secrets.baseline.
+    agent_rel = str(AGENT_CONTEXT_PATH.relative_to(REPO_ROOT))
     try:
         proc = subprocess.run(
             [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
-             str(AGENT_CONTEXT_PATH)],
+             agent_rel],
             capture_output=True,
             text=True,
             timeout=30,
+            cwd=str(REPO_ROOT),
         )
         if proc.returncode != 0:
             raise RuntimeError(proc.stderr[:300])
@@ -392,8 +396,7 @@ def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
         )
         return
 
-    # detect-secrets uses the relative path as key (e.g. ".codex/agent_context.json")
-    agent_rel = str(AGENT_CONTEXT_PATH.relative_to(REPO_ROOT))
+    # detect-secrets keys results by the path passed to the scan command.
     new_entries = scan.get("results", {}).get(agent_rel, [])
 
     try:

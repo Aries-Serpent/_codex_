@@ -318,9 +318,11 @@ jobs:
           # Paginate through ALL PR comments to find the existing upsert marker.
           # PRs with >100 comments require pagination; a single page=1&per_page=100
           # would miss comments on later pages, silently creating a duplicate.
+          # Cap at MAX_PAGES to prevent unbounded API calls on very large PRs.
           EXISTING_ID=""
           PAGE=1
-          while [ -z "${EXISTING_ID}" ]; do
+          MAX_PAGES=50
+          while [ -z "${EXISTING_ID}" ] && [ "${PAGE}" -le "${MAX_PAGES}" ]; do
             BATCH=$(gh api \
               "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100&page=${PAGE}" \
               --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" \
@@ -336,6 +338,9 @@ jobs:
             [ "${COUNT}" -lt 100 ] && break
             PAGE=$((PAGE + 1))
           done
+          if [ -z "${EXISTING_ID}" ] && [ "${PAGE}" -gt "${MAX_PAGES}" ]; then
+            echo "⚠️  Reached max page limit (${MAX_PAGES}) searching for existing prompt comment; will create new."
+          fi
 
           if [ -n "${EXISTING_ID}" ]; then
             # Update in-place; surface error if PATCH fails so CI shows failure.

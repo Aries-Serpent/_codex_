@@ -194,13 +194,29 @@ jobs:
             const pr_number = context.issue.number || context.payload.pull_request?.number;
             if (!pr_number) { console.log('No PR number — skipping rescue comment'); return; }
 
-            // PR-scoped upsert marker — one comment per PR, updated in-place.
-            const shaShort = (process.env.HEAD_SHA || '').slice(0, 12) || 'unknown';
+            // Derive the PR head SHA.  For pull_request events, use the payload
+            // head SHA directly.  For issue_comment events, github.event.pull_request
+            // is absent, so fetch the PR via API to get the current head SHA rather
+            // than falling back to github.sha (the workflow ref), which would produce
+            // an incorrect SHA-scoped rescue marker.
+            let headSha = process.env.HEAD_SHA || '';
+            if (!headSha || headSha === context.sha) {
+              try {
+                const { data: prData } = await github.rest.pulls.get({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  pull_number: pr_number,
+                });
+                headSha = prData.head.sha || headSha;
+              } catch (e) {
+                console.log(`Could not fetch PR head SHA: ${e.message}`);
+              }
+            }
             // SHA-scoped upsert marker — one comment per (PR, commit SHA).
-            // Each new commit SHA gets its own new comment so failures for
+            // Each new commit SHA gets its own new rescue comment so failures for
             // different commits are tracked independently and never overwrite
             // each other.  Within a single SHA, repeated gate failures update
             // (upsert) the same comment in-place.
+            const shaShort = headSha.slice(0, 12) || 'unknown';
             const MARKER = `<!-- ci-rescue:${pr_number}:${shaShort} -->`;
             // Kept for backward-compat / agent detection of current scanned commit.
             const SHA_TAG  = `<!-- ci-review-scanned:${shaShort} -->`;
