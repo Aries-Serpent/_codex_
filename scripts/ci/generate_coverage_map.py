@@ -214,7 +214,17 @@ def _annotate_functions(
     covered_set = set(covered_lines)
 
     try:
-        source = file_path.read_text(encoding="utf-8", errors="replace")
+        raw = file_path.read_bytes()
+        try:
+            source = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            # Source file contains non-UTF-8 bytes; replace invalid sequences so
+            # AST parsing can still proceed, but log the issue for visibility.
+            source = raw.decode("utf-8", errors="replace")
+            print(
+                f"[warn] {file_path}: non-UTF-8 bytes replaced during AST parse",
+                file=sys.stderr,
+            )
         tree = ast.parse(source, filename=str(file_path))
     except (OSError, SyntaxError):
         return [], []
@@ -394,7 +404,9 @@ def build_gaps_md(coverage_map: dict[str, Any]) -> str:
             lr = e.get("line_rate", 0) * 100
             fns = ", ".join(
                 f.get("name", "?") for f in e.get("uncovered_functions", [])
-            )[:80]
+            )
+            if len(fns) > 80:
+                fns = fns[:77] + "..."
             lines.append(f"| `{m}` | {lr:.1f}% | {fns or '—'} |")
         lines.append("")
 

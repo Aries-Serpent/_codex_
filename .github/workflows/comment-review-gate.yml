@@ -199,7 +199,7 @@ jobs:
             // SHA-scoped secondary tag embedded in the body — lets agents detect
             // whether the checklist reflects the current commit without creating
             // extra comments.  Does NOT serve as the upsert key.
-            const shaShort = (process.env.HEAD_SHA || '').slice(0, 12);
+            const shaShort = (process.env.HEAD_SHA || '').slice(0, 12) || 'unknown';
             const SHA_TAG  = `<!-- ci-review-scanned:${shaShort} -->`;
 
             const runUrl  = process.env.RUN_URL;
@@ -229,9 +229,11 @@ jobs:
             ].join('\n');
 
             // Paginated upsert: search ALL pages so PRs with >100 comments are handled.
+            // Safety cap at 50 pages (5 000 comments) to prevent runaway loops if the
+            // marker was deleted or the API consistently returns full pages.
             let existing = null;
             let page = 1;
-            while (!existing) {
+            while (!existing && page <= 50) {
               const { data: batch } = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
