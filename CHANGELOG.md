@@ -4295,3 +4295,6 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (S185-b — PR #3739)
 - **fix(agents):** Add missing `description` field to 5 deprecated coverage agent configs — resolves "Invalid config: field 'description' is required" errors in Copilot custom agent selector for `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor.agent`
+
+### Added (S230 — PR #3790)
+- **test(ci):** `tests/ci/test_ci_rescue_find_pr.py` — 10 unit tests for `find_pr_for_run()` covering the S230 multi-PR selection fix: single PR, multiple PRs sharing same SHA, fallback path, edge cases.
