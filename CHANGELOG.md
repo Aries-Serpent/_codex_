@@ -4303,3 +4303,17 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - **fix(test):** `tests/ci/test_ci_rescue_find_pr.py` — remove 3 unused imports (json, MagicMock, pytest) and sort import block (ruff F401/I001 clean)
 - **fix(workflow):** `agent-auth-delegation.yml:901` — SC2028 echo→printf for `\n` escape sequences (actionlint clean)
 - **fix(ci):** `check_deferral_language.py` — add 2 EXEMPTION_PATTERNS: (a) CI status section headers `## ... NOT Introduced by This PR`; (b) `infrastructure enhancement` checklist labels; real deferrals still caught
+
+### Dependencies (S232 — PR #3790 cherry-picks from Dependabot PRs)
+- **ci**: `codecov/codecov-action` 5→6 (PR #3802)
+- **deps**: ml-dependencies group — duckdb 1.5.0→1.5.1, transformers 5.3.0→5.4.0 (PR #3803)
+- **deps**: data-dependencies group — datasets 4.8.3→4.8.4, numpy 2.4.3→2.4.4 (PR #3804)
+- **deps**: mistune 3.1.4→3.2.0 (PR #3805)
+- **deps**: pytz 2025.2→2026.1.post1 (PR #3806)
+- **deps**: async-lru 2.0.5→2.3.0 (PR #3807)
+- **deps**: jupyterlab-widgets 3.0.15→3.0.16 (PR #3808)
+- **deps**: databricks-sdk 0.73.0→0.102.0 (PR #3809)
+- **deps**: yarl 1.22.0→1.23.0 (PR #3810)
+- **deps**: dvc 3.66.1→3.67.0 (PR #3811)
+- **deps**: hypothesis 6.142.1→6.151.10 (PR #3812)
+- Conflict resolution in requirements/base.txt: datasets==4.8.4, numpy==2.4.4 (max of #3803+#3804)

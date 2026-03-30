@@ -13809,3 +13809,33 @@ timing issues.
 | 3 | SC2028 echo escape sequences | echo → printf | ✅ |
 | 4 | False-positive deferral in CI comment | Added 2 EXEMPTION_PATTERNS | ✅ |
 | 5 | CODEX_MANIFEST / CHANGELOG drift | sync_tracked_files clean | ✅ |
+
+---
+
+## SESSION SUMMARY — 2026-03-30T14:51Z SESSION S232 (PR #3790) — 11 Dependabot dep-bump cherry-picks
+
+### Problem
+Cherry-pick all dep-bump changes from 11 Dependabot PRs (#3802–#3812) into the 0D_base_ PR branch before merge, to avoid losing these updates when 0D_base_ is merged into main.
+
+### Work Completed
+1. **PR #3807 async-lru** already present as commit 627c814 ✅ (pre-existing)
+2. **Cherry-picked (pure dep-bump commits only):**
+   - `e38bc8918` — PR #3802 codecov/codecov-action 5→6 (4 workflow files)
+   - `2674b3a90` — PR #3803 ml-deps: duckdb 1.5.0→1.5.1, transformers 5.3.0→5.4.0
+   - `965b25dac` — PR #3804 data-deps: datasets 4.8.4, numpy 2.4.4 (conflict resolved: took max versions)
+   - `d96067b44` — PR #3805 mistune 3.1.4→3.2.0
+   - `56653637f` — PR #3806 pytz 2025.2→2026.1.post1
+   - `605e39f0f` — PR #3808 jupyterlab-widgets 3.0.15→3.0.16
+   - `7cae2efe6` — PR #3809 databricks-sdk 0.73.0→0.102.0
+   - `fdcec6762` — PR #3810 yarl 1.22.0→1.23.0
+   - `f176a4cd3` — PR #3811 dvc 3.66.1→3.67.0
+   - `dce422e69` — PR #3812 hypothesis 6.142.1→6.151.10
+3. **Conflict resolved** in requirements/base.txt: datasets (4.8.4) and numpy (2.4.4) — took max of #3803 and #3804
+4. **Security advisory check**: 0 vulnerabilities in all 11 bumped packages ✅
+5. **sync_tracked_files.py --fix**: all 4 checks consistent ✅
+6. **CHANGELOG updated** ✅
+
+### Regression Verification
+- No application code changed — only dep version pinning in requirements/ and pyproject.toml
+- All 10+1 cherry-picks applied cleanly (1 conflict in base.txt resolved deterministically)
+- Deferral gate, actionlint, ruff remain clean (no Python or workflow code changed)
