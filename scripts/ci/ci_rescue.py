@@ -708,13 +708,17 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         fix_command=[
             "bash",
             "-c",
-            # Ensure .coveragerc for RAG scope is present and test-rag.yml uses it
-            "python3 -c \""
-            "import pathlib, sys; "
-            "coveragerc = pathlib.Path('tests/rag/.coveragerc'); "
-            "assert coveragerc.exists(), 'tests/rag/.coveragerc missing — see S237 fix'; "
-            "print('COV_001: tests/rag/.coveragerc present — verify test-rag.yml uses --cov-config=tests/rag/.coveragerc'); "
-            "\"",
+            # Ensure .coveragerc for RAG scope is present and test-rag.yml uses it.
+            # Parenthesised to avoid ISC001 implicit-string-concatenation lint warning.
+            (
+                "python3 -c \""
+                "import pathlib, sys; "
+                "coveragerc = pathlib.Path('tests/rag/.coveragerc'); "
+                "assert coveragerc.exists(), 'tests/rag/.coveragerc missing — see S237 fix'; "
+                "print('COV_001: tests/rag/.coveragerc present"
+                " — verify test-rag.yml uses --cov-config=tests/rag/.coveragerc'); "
+                "\""
+            ),
         ],
         fix_description=(
             "RAG coverage scope dilution (COV_001): set `--cov=src/codex/rag` and "

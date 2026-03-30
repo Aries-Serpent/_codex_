@@ -75,8 +75,19 @@ class CommonIssueFixer:
             "Link Checker Config",      # Pattern 14 - auto-update .markdown-link-check.json
             "Stub Duplicate Defs",      # Pattern 16 - detect F811 duplicate method defs in stubs
             "Duplicate Kwargs",         # Pattern 18 - auto-fixable: duplicate keyword arguments
-            "Tracked File Sync",        # Pattern 22 - auto-fixable via sync_tracked_files.py
             "Secrets Baseline Plugins", # Pattern 23 - auto-fix: strip incompatible plugins from .secrets.baseline
+        }
+        # Soft-warning patterns: auto-fixable (the --fix command works) but do NOT block
+        # CI with an exit-code 1.  These are reported as informational "warning" in the
+        # JSON report and are applied automatically when running without --check-only.
+        # Keeping them separate from auto_fixable_patterns breaks the RP-004 infinite
+        # rescue loop: bot auto-commits (chore(d00), chore(auth)) routinely drift
+        # CODEX_MANIFEST hashes; treating that as a hard CI error causes
+        # ci-rescue.yml to fire on every push, creating a Copilot session for each
+        # bot commit — an unbounded loop.  Copilot's --pre-push routine still fixes
+        # these before every human/Copilot push.
+        self.soft_warning_patterns = {
+            "Tracked File Sync",        # Pattern 22 - CODEX_MANIFEST hash drift from bot auto-commits
         }
         self.manual_review_patterns = {
             "Unused Variables",         # Pattern 2  - context-dependent
@@ -1250,9 +1261,16 @@ class CommonIssueFixer:
         return issues
 
     def has_auto_fixable_issues(self) -> bool:
-        """Check if there are any unfixed auto-fixable issues."""
+        """Check if there are any unfixed auto-fixable issues that BLOCK CI.
+
+        Soft-warning patterns (e.g. Tracked File Sync / Pattern 22) are excluded:
+        they are auto-fixable but do not cause exit-code 1 in CI because they are
+        routinely introduced by bot auto-commits and are fixed by Copilot's
+        --pre-push routine.  Treating them as hard errors creates an infinite
+        rescue loop (bot commit → drift → rescue → fix → bot commit → ...).
+        """
         for pattern_name, issues in self.issues_found.items():
-            if pattern_name in self.auto_fixable_patterns:
+            if pattern_name in self.auto_fixable_patterns and pattern_name not in self.soft_warning_patterns:
                 fixed_count = self.fixes_applied.get(pattern_name, 0)
                 if len(issues) > fixed_count:
                     return True
@@ -1272,9 +1290,13 @@ class CommonIssueFixer:
             "timestamp": datetime.now().astimezone().isoformat(),
             "status": "failed" if self.has_auto_fixable_issues() else "passed",
             "total_issues": sum(len(issues) for issues in self.issues_found.values()),
+            # auto_fixable counts only BLOCKING patterns (excludes soft_warning_patterns).
+            # Soft-warning patterns are reported as "warning" severity and do not
+            # contribute to the count that causes pre-merge-validation to exit 1.
             "auto_fixable": sum(
                 len(issues) for name, issues in self.issues_found.items()
                 if name in self.auto_fixable_patterns
+                and name not in self.soft_warning_patterns
             ),
             "manual_review": sum(
                 len(issues) for name, issues in self.issues_found.items()
@@ -1315,6 +1337,10 @@ class CommonIssueFixer:
         for pattern_name, issues in self.issues_found.items():
             pattern_num = pattern_map.get(pattern_name, 0)
             is_auto_fixable = pattern_name in self.auto_fixable_patterns
+            # Soft-warning patterns are auto-fixable but reported as "warning"
+            # so they do not block CI (see soft_warning_patterns definition).
+            is_soft_warning = pattern_name in self.soft_warning_patterns
+            severity = "warning" if (not is_auto_fixable or is_soft_warning) else "error"
 
             for issue_str in issues:
                 # Parse issue string (format: "file:line - message")
@@ -1330,7 +1356,7 @@ class CommonIssueFixer:
                     "pattern": pattern_num,
                     "pattern_name": pattern_name,
                     "type": pattern_name.lower().replace(" ", "_"),
-                    "severity": "error" if is_auto_fixable else "warning",
+                    "severity": severity,
                     "file": file_path,
                     "line": line_num,
                     "message": message or issue_str,

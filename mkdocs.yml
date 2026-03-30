@@ -90,6 +90,12 @@ nav:
   - Deprecation Plan: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md
   - Optimization Summary: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md
   - Cache Architecture: https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md
+- CI Rescue & Health:
+  - CI Rescue Pipeline: ci/CI_RESCUE_PIPELINE.md
+  - CI/CD Index: ci/INDEX.md
+  - Failure Analysis: ci/CI_FAILURE_ANALYSIS.md
+  - CI Fix Summary: ci/CI_FIX_SUMMARY.md
+  - Root Org Validation: ci/ROOT_ORG_VALIDATION.md
 - Safety:
   - Safety Guide: safety/safety_guide.md
 - Database Options:
