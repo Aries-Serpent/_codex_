@@ -94,6 +94,9 @@ def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
         return None
     if raw.startswith(("http", "mailto:", "#", "ftp", "data:")):
         return None
+    # Skip pure-uppercase placeholder tokens (e.g. URL, RUN_URL) — not real file paths.
+    if re.match(r'^[A-Z][A-Z0-9_]*$', raw):
+        return None
     # Strip anchor fragment (#section) before resolving the file path
     raw = raw.split("#")[0].strip()
     raw = raw.split("?")[0].strip()

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S238 — PR #3814)
+- **fix(ci):** `check_cross_references.py` — added uppercase-only token guard in `_resolve_ref()` to skip placeholder tokens like `URL`, `RUN_URL` in documentation templates. Fixes Validation Pipeline `check-cross-references` hook failure on 3 `(URL)` references in `AGENT_ACCOUNTABILITY_REPORT.md` (lines 13292, 13299, 13983).
+- **fix(ci):** `generate_coverage_map.py` — replaced `import xml.etree.ElementTree as ET` with `import defusedxml.ElementTree as ET` to satisfy `check-unsafe-xml` pre-commit hook (XXE prevention policy).
+- **fix(ci):** `session_bootstrap.py` — D-00 checklist wording changed from "URL(s) fetched" to "URL(s) found" in offline mode (consistency fix per PR reviewer comment on `session_context_latest.md:43`).
+
 ### Fixed (S234 — PR #3814)
 - **fix(ci):** RP-007 structural fix — `sync_tracked_files.py` now includes a 5th check (`check_agent_context_baseline`) that runs a targeted `detect-secrets scan` on `.codex/agent_context.json` and patches its entry in `.secrets.baseline` when stale. Prevents recurring `detect-secrets` pre-commit exit-3 failures caused by `CODEX_CI_LAST_GREEN_SHA` rotation.
 - **fix(docs):** `validate-links.py` — added `^URL$` and `^RUN_URL$` to `SKIP_LINK_PATTERNS` so placeholder `(URL)` tokens in documentation templates are no longer flagged as missing files.

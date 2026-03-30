@@ -503,7 +503,7 @@ def write_digest(report: BootstrapReport, verbose: bool = False) -> Path:
         "Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:",
         "",
         "```markdown",
-        f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) fetched, "
+        f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) found, "
         f"triage {'✅ clean' if report.baseline_ok is True else '❌ FAILURES FOUND' if report.baseline_ok is False else '⏭️ skipped'}",
         "- [ ] D-01 Memories loaded",
         "- [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed",
