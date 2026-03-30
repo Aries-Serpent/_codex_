@@ -78,7 +78,8 @@ Import: `import pytest` at the top of the file; marker syntax:
 @pytest.mark.flaky(reruns=2)
 def test_my_timing_sensitive_test(): ...
 ```
-Note: Do NOT add `@pytest.mark.flaky` to tests run in sharded mode with
-`-p no:rerunfailures` (see P-038). The marker is safe for non-sharded test runs.
+Note: Sharded CI runs pass `-p no:rerunfailures` (see P-038), which disables the
+rerun plugin. In those runs, `@pytest.mark.flaky` is effectively a no-op and only
+has an effect in non-sharded test runs.
 
 - **Pattern:** P-044

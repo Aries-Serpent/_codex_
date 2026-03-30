@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S229-CONT-1 — PR #3795)
+- **fix(ci):** RP-007 — refresh `.secrets.baseline` for `agent_context.json` (hashed_secret was stale); also resync CODEX_MANIFEST entry via `sync_tracked_files.py --fix`.
+- **fix(docs):** Address Copilot review comments — rephrase origin-attribution language in `AGENT_ACCOUNTABILITY_REPORT.md`, clarify P-044 sharded-run note in `permanent_facts.md`.
+
 ### Fixed (S229 — PR #3795)
 - **fix(tests):** Mark 5 confirmed-flaky timing-sensitive tests with `@pytest.mark.flaky(reruns=2)` in `tests/space_traversal/test_performance.py`, `tests/autonomy/test_integration_budget_exhaustion.py`, and `tests/autonomy/test_autonomy_scheduler.py`. Documented as P-044 in `.codex/permanent_facts.md`.
 
