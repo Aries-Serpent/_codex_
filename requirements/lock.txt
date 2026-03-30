@@ -914,7 +914,7 @@ python-multipart==0.0.22
     # via fastapi
 pytokens==0.4.1
     # via black
-pytz==2025.2
+pytz==2026.1.post1
     # via
     #   great-expectations
     #   pandas
