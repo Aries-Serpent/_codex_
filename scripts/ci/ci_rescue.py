@@ -1535,25 +1535,24 @@ def run_deep_rescue(
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
         )
-        # Use a distinct marker so deep-rescue comments are separate from the
-        # standard rescue RCA comment.
-        deep_marker = f"<!-- ci-rescue-deep:{(commit_sha or '')[:12]} -->"
-        full_body = f"{deep_marker}\n{comment}"
-        print(f"\n📝 Posting deep RCA comment to PR #{pr_number}…")
-        if dry_run:
-            print(f"[DRY RUN] Would post deep RCA:\n{full_body[:400]}…")
+        # Append deep analysis into the same SHA-scoped RCA comment so the PR
+        # thread has ONE rescue thread per commit, not two separate comments.
+        # post_pr_comment() already implements SHA-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{sha} --> comment and appends there, or
+        # creates a fresh one if the standard rescue step hasn't run yet.
+        print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
+        success = post_pr_comment(
+            pr_number=pr_number,
+            repo=repo,
+            token=token,
+            body=comment,
+            dry_run=dry_run,
+            commit_sha=commit_sha,
+        )
+        if success:
+            print("  ✅ Deep analysis appended to rescue comment")
         else:
-            status, _ = _gh_api(
-                f"/repos/{repo}/issues/{pr_number}/comments",
-                token,
-                method="POST",
-                body={"body": full_body},
-            )
-            if status in (200, 201):
-                print("  ✅ Deep RCA comment posted")
-            else:
-                print(f"  ⚠️  Failed to post deep RCA comment (HTTP {status})",
-                      file=sys.stderr)
+            print("  ⚠️  Failed to append deep analysis", file=sys.stderr)
     else:
         print("  ⚠️  No PR resolved — deep RCA comment skipped")
 

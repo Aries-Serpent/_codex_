@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **fix(ci):** Refreshed `.secrets.baseline` agent_context.json entry after auth-token rotation commits changed `CODEX_CI_LAST_GREEN_SHA` (RP-007 fix).
 - **fix(ci):** Addressed 3 unaddressed comment-review-gate blocking items (comments 4156171706, 4156172390, 4156180410 on PR #3814) — session boundary gap documented; shallow-reply protocol correction applied.
 
+### Fixed (S236 — PR #3814)
+- **fix(ci):** `scripts/ci/ci_rescue.py` `run_deep_rescue()` — deep analysis was always POSTing a new `<!-- ci-rescue-deep:{sha} -->` comment; now calls `post_pr_comment()` which has SHA-scoped upsert, appending deep analysis to the existing RCA comment. Result: 2 ci-rescue comments per commit → 1.
+- **fix(ci):** `.github/workflows/copilot-iterative-self-healing.yml` — replaced unreliable text-based dedup check + always-create `gh pr comment` with SHA+category-scoped marker upsert (`<!-- copilot-healing:{sha}:{category} -->`). Uses `${RUNNER_TEMP}` temp file per TEMPORARY_FILES_POLICY.md. Result: one `@copilot Continue` comment per commit per failure category, updated in-place.
+
 ### Fixed (S235 — PR #3814)
 - **fix(ci):** `test-rag.yml` — RAG Module Tests failed with 5.093% coverage against 95% threshold; root cause: `--cov=src` measured coverage of ALL source files while only RAG tests ran. Fixed by changing to `--cov=src/codex/rag` (scope coverage to just the RAG module) and adding `tests/rag/` to the pytest test collection.
 - **fix(ci):** RP-007 — `.secrets.baseline` CODEX_MANIFEST entry was stale (hash missing); fixed via `sync_tracked_files.py --fix`. Unblocks Comment Review Gate and Pre-Merge Validation.
