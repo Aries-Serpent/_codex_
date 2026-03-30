@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S230 — PR #3790)
+- **fix(ci):** `ci_rescue.py` `find_pr_for_run()` — when multiple PRs share the same HEAD branch (e.g. two open PRs on `0D_base_`), the function was returning the first/oldest PR (`prs[0]`), causing rescue comments to be posted to the wrong PR. Fix: prefer the PR with the highest number (most recently opened = most likely actively worked on). Same fix applied to the inline fallback in `ci-rescue.yml`.
+- **fix(ci):** `ci-rescue.yml` inline fallback — `MARKER` was referenced before `pr_number` was resolved, causing a Python `NameError`. Moved `MARKER` definition to after PR lookup. Also switched to SHA-scoped marker (`<!-- ci-rescue-rca:{sha_short} -->`) consistent with `ci_rescue.py`.
+- **fix(ci):** `agent-auth-delegation.yml` session-gate — when a stale session lock is cleared via the 4-hour TTL, queued PRs were never retriggered (only the `session-release` job, triggered on PR close, processed the queue). Fix: when the Session Concurrency Gate clears a stale lock, it now also dequeues the first waiting PR and posts `@copilot continue` on it.
+
 ### Fixed (S229-CONT-2 — PR #3798)
 - **fix(ci):** P20 YAML parse error — `agent-auth-delegation.yml` multiline `CHECKLIST="..."` bash string at 0-column indentation broke YAML literal block parsing (actionlint: "could not parse as YAML: did not find expected key"). Replaced with `printf '%s\n' ... > "${RUNNER_TEMP}/checklist.txt"` pipeline (per TEMPORARY_FILES_POLICY.md).
 - **fix(ci):** P20 partial fix — `workflow-execution-gate.yml` first BODY assignment replaced with `printf` pipeline using `${RUNNER_TEMP}` temp file.

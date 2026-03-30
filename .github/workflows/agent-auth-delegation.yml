@@ -1638,6 +1638,50 @@ jobs:
                   core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
                   await clearVar('COPILOT_ACTIVE_SESSION');
                   sessionBusy = false;
+
+                  // S230 fix: when a stale TTL lock is cleared, also dequeue
+                  // and retrigger any PRs that were waiting in the queue.
+                  // Previously only the `session-release` job (fired on PR close)
+                  // processed the queue, leaving queued PRs stranded when a
+                  // session expired naturally (never closed).
+                  const staleClearedQueue = await getVar('COPILOT_SESSION_QUEUE');
+                  if (staleClearedQueue) {
+                    const staleClearedList = staleClearedQueue.split(',').filter(Boolean);
+                    // Peek at the first entry before mutating the array.
+                    const nextQueuedPR = parseInt(staleClearedList[0], 10);
+                    if (!isNaN(nextQueuedPR) && nextQueuedPR > 0 && nextQueuedPR !== prNumber) {
+                      core.info(`🔓 Stale lock cleared — retriggering queued PR #${nextQueuedPR}`);
+                      try {
+                        await github.rest.issues.createComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: nextQueuedPR,
+                          body: [
+                            '<!-- session-gate-dequeued -->',
+                            '## 🔓 Session Available (Stale Lock Cleared)',
+                            '',
+                            `Previous session (PR #${activePR}) exceeded the ${TTL_SECONDS / 3600}h TTL and was cleared.`,
+                            'This PR has been dequeued and the session is now starting.',
+                            '',
+                            '@copilot continue',
+                          ].join('\n'),
+                        });
+                        // Remove the dequeued PR from the queue only after the
+                        // comment was successfully posted (review: avoid removing
+                        // from queue if comment creation throws).
+                        staleClearedList.shift();
+                        await upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));
+                        core.info(`✅ Retriggered PR #${nextQueuedPR} after stale TTL cleanup`);
+                      } catch (err) {
+                        core.warning(`Failed to retrigger PR #${nextQueuedPR} after stale lock clear: ${err.message}`);
+                      }
+                    } else if (!isNaN(nextQueuedPR) && nextQueuedPR === prNumber) {
+                      // Current PR is first in queue — just clear it from the queue
+                      staleClearedList.shift();
+                      await upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));
+                      core.info(`Current PR #${prNumber} was first in queue — clearing from queue and proceeding`);
+                    }
+                  }
                 } else {
                   // Same PR — re-acquire is fine
                   sessionBusy = false;

@@ -754,9 +754,12 @@ jobs:
 
           # ── Dedup guard: skip if a copilot-escalation comment was posted < 30 min ago ──
           ESCALATION_MARKER="<!-- copilot-escalation:${PR_NUMBER} -->"
+          # Use a heredoc-fed jq expression to avoid double-quote nesting inside
+          # the --jq flag argument (reviewer: jq program must not embed double
+          # quotes in a double-quoted shell string — use single-quote wrapper).
+          JQ_EXPR='[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty'
           LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
-            --json comments --jq \
-            '[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty' \
+            --json comments --jq "$JQ_EXPR" \
             2>/dev/null || echo "")
           if [ -n "$LAST_ESC" ]; then
             NOW_TS=$(date +%s)

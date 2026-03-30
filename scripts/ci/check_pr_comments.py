@@ -524,7 +524,11 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
     ]
 
     # Per-comment response latency (seconds from comment creation to first Copilot reply)
-    # Only addressed comments have a populated response_latency_seconds value.
+    # `response_latency_seconds` is populated by `was_addressed()` for every comment that
+    # received a Copilot reply (addressed_flag=True, latency≥0).  It is None for unaddressed
+    # comments.  For unaddressed blocking/warning comments we emit a separate
+    # `comment_review_gate_pending_seconds` gauge (time still waiting since creation) so
+    # the metric family is never dead even on first-session PRs with no Copilot replies yet.
     all_comments = (
         report["addressed"]
         + report["unaddressed_blocking"]
@@ -532,6 +536,11 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
         + report["unaddressed_info"]
     )
     latency_lines: list[str] = []
+    pending_lines: list[str] = []
+    try:
+        now_utc = datetime.now(tz=timezone.utc)
+    except Exception:
+        now_utc = None
     for c in all_comments:
         latency_val = c.get("response_latency_seconds")
         author = c.get("author", "unknown")[:32]
@@ -541,12 +550,30 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
                 f'comment_review_gate_response_latency_seconds{{pr="{pr}",'
                 f'repo="{report["repo"]}",author="{author}",type="{ctype}"}} {latency_val:.3f}'
             )
+        elif not c.get("addressed") and now_utc is not None:
+            # Emit pending age for unaddressed comments so the gauge is never empty.
+            created_str = c.get("created_at") or c.get("submitted_at") or ""
+            try:
+                created_ts = datetime.fromisoformat(created_str.replace("Z", "+00:00"))
+                pending_secs = max((now_utc - created_ts).total_seconds(), 0.0)
+                pending_lines.append(
+                    f'comment_review_gate_pending_seconds{{pr="{pr}",'
+                    f'repo="{report["repo"]}",author="{author}",type="{ctype}"}} {pending_secs:.3f}'
+                )
+            except (ValueError, TypeError):
+                pass
 
     if latency_lines:
         lines += [
             "# HELP comment_review_gate_response_latency_seconds Seconds from comment creation to first Copilot reply",
             "# TYPE comment_review_gate_response_latency_seconds gauge",
         ] + latency_lines + [""]
+
+    if pending_lines:
+        lines += [
+            "# HELP comment_review_gate_pending_seconds Seconds an unaddressed comment has been waiting for a Copilot reply",
+            "# TYPE comment_review_gate_pending_seconds gauge",
+        ] + pending_lines + [""]
 
     # Timestamp comment (informational)
     lines += [f"# Scanned at {scanned_at} — repo={report['repo']} pr={pr}"]

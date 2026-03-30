@@ -13656,3 +13656,64 @@ timing issues.
 | 3 | Deferral Language Gate on 0D_base_ | No deferral language in this session | ✅ Prevented recurrence |
 | 4 | PR Comment Review Gate on PR #3798 | @mbaetiong comment #4151656944 replied to | ✅ Fixed |
 | 5 | P19: 141 files with `from src.` imports | Manual-review pattern; auto-fix script exits 0 (not a CI-blocking issue) | ℹ️ Tracked |
+
+---
+
+## SESSION SUMMARY — 2026-03-30T06:13Z SESSION S230 (PR #3790)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new comments reviewed: #4152436374 (last unanswered @copilot trigger), #4152326154 (session-gate-queued for PR #3798), and 40+ machine-generated rescue/deep-analysis comments from 00:12–05:51 UTC ✅
+- [x] **0b.** CI failures investigated: 6 direct `@copilot Continue` triggers (IDs: 4151168790, 4151405967, 4151670495, 4152339648, 4152373668, 4152436374) received zero Copilot response after 21:58 UTC; root causes identified and fixed ✅
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** Two bug fixes committed (ci_rescue.py cross-PR contamination, agent-auth-delegation.yml stale-TTL queue release) ✅
+- [x] **3.** `sync_tracked_files.py --check` run ✅
+- [x] **4.** Deferral language check — no deferral language ✅
+- [x] **5.** `CODEBASE_AGENCY_POLICY.md` §0 followed ✅
+
+### Work Completed
+
+1. **Root cause analysis — missed Copilot sessions**: 6 direct `@copilot Continue iterative self-healing` comments (21:58 UTC → 05:51 UTC on 2026-03-30) received zero Copilot response. Analysis confirmed:
+   - S229 session (PR #3798) held the `COPILOT_ACTIVE_SESSION` lock on `0D_base_`
+   - Session lock TTL is 4 hours; after TTL expiry the queue was NOT auto-processed (only `session-release`, triggered on PR close, processes the queue)
+   - This left PR #3790 stranded in the queue indefinitely until this session started
+
+2. **Bug fix — cross-PR contamination in `ci_rescue.py` `find_pr_for_run()`**: When multiple PRs share the same HEAD branch (`0D_base_`), `find_pr_for_run()` was returning `prs[0]["number"]` (the first/oldest PR) rather than checking which PR the failing commit belongs to. Fix: when multiple PRs have matching `head.sha`, return the one with the **highest PR number** (most recently opened = most likely to be actively worked on). Same fix applied to the inline fallback in `ci-rescue.yml`. Also fixed the `MARKER` variable in the inline fallback which was referencing `pr_number` before it was resolved.
+
+3. **Bug fix — session-gate stale-TTL queue release in `agent-auth-delegation.yml`**: The `session-release` job only fires on `pull_request: closed` events. When an active session expires via the 4-hour TTL (without the PR being closed), queued PRs were never retriggered. Fix: when the `Session Concurrency Gate` clears a stale lock (TTL expired), it now also dequeues the first waiting PR and posts `@copilot continue` on it. This prevents the queue from becoming permanently stranded.
+
+### AfterMath
+
+| # | Issue | Fix Applied | Outcome |
+|---|-------|-------------|---------|
+| 1 | 6 missed @copilot sessions (21:58–05:51 UTC) — PR #3790 stuck in queue | Identified root causes; current session picks up from last trigger | ✅ Addressed |
+| 2 | Cross-PR contamination: ci-rescue posting to wrong PR when multiple PRs share a branch | `find_pr_for_run()` now prefers highest PR number; inline fallback fixed | ✅ Fixed |
+| 3 | `MARKER` defined before `pr_number` resolved in ci-rescue.yml inline fallback | Moved MARKER definition to after PR resolution; switched to SHA-scoped marker | ✅ Fixed |
+| 4 | Session queue not released on stale TTL expiry (only on PR close) | Added stale-TTL dequeue+retrigger in session-gate step | ✅ Fixed |
+
+---
+
+## SESSION SUMMARY — 2026-03-30T06:30Z SESSION S230-CONT-1 (PR #3790) — Full Requirements Pass
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `@mbaetiong` new requirement comment reviewed (BLOCKING — comprehensive 8-item task list): all items addressed ✅
+- [x] **0b.** 2 unresolved review threads identified and fixed: `check_pr_comments.py:539` (dead latency metric) + `iterative-self-healing-ci.yml:761` (jq double-quote) ✅
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **3.** `sync_tracked_files.py --check` → all 4 consistent ✅
+- [x] **4.** Deferral language check — no deferral language ✅
+- [x] **5.** `CODEBASE_AGENCY_POLICY.md` §0 followed ✅
+
+### Work Completed
+1. **Unresolved review thread: `check_pr_comments.py:539` latency metric** — Added `comment_review_gate_pending_seconds` Prometheus gauge that emits for each unaddressed comment (seconds since creation). This ensures the latency metric family is active even on first-session PRs before any Copilot replies.
+2. **Unresolved review thread: `iterative-self-healing-ci.yml:761` jq double-quote** — Replaced inline `--jq '<expr>'` with a `JQ_EXPR` variable to eliminate any shell-quoting ambiguity. The jq expression now held in a clearly single-quoted shell variable, then passed via `"$JQ_EXPR"`.
+3. **Cognitive Brain status updated** — `.codex/plans/COGNITIVE_BRAIN_LIVE_STATUS.md` updated: Last Updated timestamp, KPI table updated with S230 fixes (session-gate + ci-rescue), next-milestones updated, W-087–W-089 work items logged.
+4. **`session-analysis-agent.md` v1.2.0** — Added S230 pattern knowledge: session-gate TTL stranding, cross-PR contamination patterns, pending-metric fix, and diagnosis steps for stranded queue entries.
+
+### AfterMath
+
+| # | Issue | Fix Applied | Outcome |
+|---|-------|-------------|---------|
+| 1 | Unresolved review: latency metric dead code | Added `comment_review_gate_pending_seconds` gauge | ✅ Fixed |
+| 2 | Unresolved review: jq double-quote nesting | `JQ_EXPR` variable isolates jq string | ✅ Fixed |
+| 3 | Cognitive Brain status stale (2026-03-03) | Updated KPIs, milestones, work log | ✅ Updated |
+| 4 | session-analysis-agent v1.0 (no S230 knowledge) | Added v1.2.0 with S230 patterns | ✅ Updated |

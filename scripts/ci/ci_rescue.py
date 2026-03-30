@@ -817,21 +817,48 @@ def get_job_log(job_id: int, repo: str, token: str, tail: int = LOG_TAIL_LINES) 
 
 
 def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
-    """Return the PR number associated with a workflow run (if any)."""
+    """Return the PR number associated with a workflow run (if any).
+
+    When multiple PRs share the same head branch (e.g. two open PRs both
+    pointing at ``0D_base_``), GitHub lists all of them in the workflow run's
+    ``pull_requests`` array.  Taking ``prs[0]`` would pick the *oldest* PR,
+    which is often the wrong one — rescue comments end up on a stale PR instead
+    of the one whose session produced the failing commit.
+
+    Strategy (in priority order):
+    1. Among the PRs in the run's ``pull_requests`` list, prefer the one whose
+       ``head.sha`` exactly matches the run's ``head_sha``.  When all SHAs match
+       (same branch), fall back to step 2.
+    2. Return the PR with the *highest* number (most recently opened) — this is
+       the best proxy for "the PR that is currently being actively worked on".
+    3. Fallback: scan open PRs via the REST API and apply the same logic.
+    """
     _, data = _gh_api(f"/repos/{repo}/actions/runs/{run_id}", token)
     if not isinstance(data, dict):
         return None
     prs = data.get("pull_requests", [])
-    if prs:
-        return prs[0]["number"]
-    # Fallback: search open PRs for head SHA
     head_sha = data.get("head_sha", "")
+    if prs:
+        # Prefer an exact SHA match first.
+        if head_sha:
+            sha_matches = [
+                p for p in prs
+                if p.get("head", {}).get("sha") == head_sha
+            ]
+            if sha_matches:
+                return max(p["number"] for p in sha_matches)
+        # No SHA match (shouldn't normally happen) — return highest-numbered PR.
+        return max(pr["number"] for pr in prs)
+    # Fallback: search open PRs for head SHA
     if head_sha:
         _, pr_data = _gh_api(f"/repos/{repo}/pulls?state=open&per_page=50", token)
         if isinstance(pr_data, list):
-            for pr in pr_data:
-                if pr.get("head", {}).get("sha") == head_sha:
-                    return pr["number"]
+            matches = [
+                pr for pr in pr_data
+                if pr.get("head", {}).get("sha") == head_sha
+            ]
+            if matches:
+                return max(pr["number"] for pr in matches)
     return None
 
 
