@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S242 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — corrected multi-suite merge logic: now unions `covered_lines` across suites and recalculates `line_rate` from combined data (was incorrectly picking highest `line_rate`, discarding coverage from other suites). Addresses Gemini high-priority review thread.
+- **fix(ci):** `generate_coverage_map.py` — `fn_covered` denominator now uses only executable lines (`covered ∪ uncovered` within function range) rather than all AST lines, eliminating artificial inflation from comments/docstrings. Addresses Gemini medium-priority review thread.
+- **fix(ci):** `check_cross_references.py` — replaced over-broad uppercase regex `re.match(r'^[A-Z][A-Z0-9_]*$')` with explicit allow-list `if raw in {"URL", "RUN_URL"}`. Prevents false skipping of extensionless docs (README, LICENSE, CHANGELOG). Addresses Gemini medium-priority review thread.
+- **fix(ci):** `.secrets.baseline` — CODEX_MANIFEST stale entry refreshed via `sync_tracked_files.py --fix` (RP-004 pattern 22 resolved).
+- **docs:** Updated cognitive-brain-manager.md to v4.3.0 with S242 status, next-phase plan, and merge analysis.
+
 ### Fixed (auto-update — PR #3818)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3818 (SHA `d17dd8a2`) at 2026-03-30T21:49Z [auto-generated]
 

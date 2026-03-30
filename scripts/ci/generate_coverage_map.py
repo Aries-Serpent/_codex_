@@ -61,7 +61,7 @@ class FunctionEntry:
     name: str
     start_line: int
     end_line: int
-    is_covered: bool
+    sufficient_coverage: bool  # True if ≥50% of executable lines are hit (not same as standard "any line executed")
     category: str = "function"  # "function" | "method" | "async_function" | "generator"
     risk: str = "unknown"  # "low" | "medium" | "high" | "critical"
 
@@ -243,27 +243,35 @@ def _annotate_functions(
         if not fn_lines:
             continue
 
-        fn_covered = len(covered_in_fn) / len(fn_lines) if fn_lines else 0
+        # Use only executable lines (covered + uncovered) as the denominator to
+        # avoid inflating the denominator with comments, docstrings, and blank lines
+        # that coverage tools never instrument.
+        executable_in_fn = fn_lines & (covered_set | set(uncovered_lines))
+        fn_covered = (
+            len(covered_in_fn) / len(executable_in_fn) if executable_in_fn else 0.0
+        )
         category = (
             "async_function"
             if isinstance(node, ast.AsyncFunctionDef)
             else "function"
         )
-        is_covered = fn_covered >= 0.50  # >50 % of function body is executed
+        # At least 50 % of executable lines hit → function is "sufficiently covered".
+        # This is a risk metric, not the standard "any line executed" definition.
+        sufficient_coverage = fn_covered >= 0.50
 
         functions.append(
             FunctionEntry(
                 name=node.name,
                 start_line=start,
                 end_line=end,
-                is_covered=is_covered,
+                sufficient_coverage=sufficient_coverage,
                 category=category,
                 risk=_function_risk(fn_covered),
             )
         )
 
-    covered_fns = [f for f in functions if f.is_covered]
-    uncovered_fns = [f for f in functions if not f.is_covered]
+    covered_fns = [f for f in functions if f.sufficient_coverage]
+    uncovered_fns = [f for f in functions if not f.sufficient_coverage]
     return uncovered_fns, covered_fns
 
 
@@ -286,10 +294,33 @@ def build_coverage_map(
         parsed = parse_coverage_xml(xml_path, suite_name=suite)
         for module, entry in parsed.items():
             if module in all_modules:
-                # Merge: take the higher line_rate
+                # Merge covered/uncovered lines across suites so every suite's
+                # contribution is preserved.  Design notes:
+                #   - A line covered by ANY suite is considered covered (union).
+                #   - A line absent from a suite's instrumentation scope simply
+                #     doesn't appear in that suite's lists; the union across all
+                #     suites naturally accumulates all known lines.
+                #   - line_rate is recalculated from the merged totals so it
+                #     reflects the combined picture rather than any single suite.
                 existing = all_modules[module]
-                if entry.line_rate > existing.line_rate:
-                    all_modules[module] = entry
+                merged_covered = sorted(
+                    set(existing.covered_lines) | set(entry.covered_lines)
+                )
+                # Remove from uncovered any line that was covered by any suite.
+                merged_uncovered = sorted(
+                    (set(existing.uncovered_lines) | set(entry.uncovered_lines))
+                    - set(merged_covered)
+                )
+                total_lines = len(merged_covered) + len(merged_uncovered)
+                merged_rate = (
+                    len(merged_covered) / total_lines if total_lines else 0.0
+                )
+                existing.covered_lines = merged_covered
+                existing.uncovered_lines = merged_uncovered
+                existing.line_rate = merged_rate
+                existing.branch_rate = max(
+                    existing.branch_rate, entry.branch_rate
+                )
             else:
                 all_modules[module] = entry
 

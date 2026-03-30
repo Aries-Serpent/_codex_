@@ -14245,3 +14245,56 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-03-30T22:27Z SESSION S242 (PR #3818) — Gemini Review + RP-004 + merge analysis
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** PR comments reviewed (§0 policy) — comment-review-gate, rescue RCA, Gemini review ✅
+- [x] **0b.** Failing CI checks reviewed — RP-004 tracked-file sync drift, 4 Gemini threads ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** CI failure patterns checked ✅
+- [x] **3.** `sync_tracked_files.py --fix` run — all tracked files consistent ✅
+- [x] **4.** Gemini code-review threads resolved (4 of 4) ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **Gemini review thread 1 (High) — generate_coverage_map.py:292** — Merge logic fixed:
+   instead of picking the entry with the higher `line_rate`, we now union `covered_lines`
+   across suites, remove lines from `uncovered_lines` that any suite covered, then
+   recalculate `line_rate` from the combined data.
+2. **Gemini review thread 2 (Medium) — generate_coverage_map.py:246** — `fn_covered`
+   denominator fixed: now uses `executable_in_fn` (covered ∪ uncovered lines within the
+   function range) rather than all AST lines, eliminating inflation from comments/docstrings.
+3. **Gemini review thread 3 (Medium) — generate_coverage_map.py:252** — `is_covered` field
+   clarified with inline comment: "sufficient_coverage — at least 50 % of executable lines
+   hit". Explicit comment explains the distinction from standard coverage definition.
+4. **Gemini review thread 4 (Medium) — check_cross_references.py:99** — Over-broad regex
+   `re.match(r'^[A-Z][A-Z0-9_]*$', raw)` replaced with an explicit allow-list
+   `if raw in {"URL", "RUN_URL"}`. Prevents false skipping of extensionless files like
+   README, LICENSE, CHANGELOG.
+5. **RP-004 Pattern 22** — `sync_tracked_files.py --fix` run; `.secrets.baseline`
+   CODEX_MANIFEST entry refreshed (was stale).
+6. **Merge analysis** — Confirmed PR #3818 MUST be merged into `main`. See below.
+
+### Merge Analysis — Why PR #3818 Must Be Merged into main
+| Category | Reason |
+|---|---|
+| CI workflows (`comment-review-gate.yml`, `test-rag.yml`) | Workflow fixes for future PRs; scheduled/push-to-main runs use main branch copy |
+| CI scripts (`check_pr_comments.py`, `sync_tracked_files.py`, `ci_rescue.py`) | Scripts are invoked by workflows; only take effect for main-branch runs once merged |
+| `check_cross_references.py` | Validation pipeline reads from repo; main-branch validation uses main copy |
+| `generate_coverage_map.py` | Coverage intelligence only useful to `main`-branch CI jobs |
+| `tests/rag/.coveragerc` | RAG coverage scope fix must land in main for correct ongoing coverage |
+| `.gitignore` | `.codex/coverage/` whitelist needed in main for tracked coverage artifacts |
+| `requirements/lock.txt` | Dependency bumps (11 Dependabot PRs) must land in main for consistent environments |
+| CHANGELOG / accountability | Audit trail must be in main |
+
+**Verdict: YES — must merge. Blocking CI fixes and infrastructure improvements in this PR
+are ineffective until landed in `main`.**
+
+### Impact Score
+- Files changed: 3 (`generate_coverage_map.py`, `check_cross_references.py`, `.secrets.baseline`)
+- Gemini review threads resolved: 4 / 4
+- RP-004 pattern 22: resolved
+- CI gates unblocked: comment-review-gate, auto-fix PR check
+
+---
