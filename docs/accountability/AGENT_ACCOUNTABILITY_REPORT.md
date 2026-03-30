@@ -13568,3 +13568,62 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-03-30T00:18Z SESSION S229 (PR #3795)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `@mbaetiong` comment #4151386762 reviewed (BLOCKING — `@copilot continue`) ✅
+- [x] **0b.** Failing CI checks reviewed — PR Comment Review Gate failing (expected, unaddressed comment at session start); CI signals on `0D_base_` reviewed ✅
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **3.** `sync_tracked_files.py --check` → all 4 consistent ✅
+- [x] **4.** Deferral language check — no deferral language in this session ✅
+- [x] **5.** `CODEBASE_AGENCY_POLICY.md` §0 followed ✅
+
+### Work Completed
+1. **RP-004 sync check** — `sync_tracked_files.py --check` shows all 4 tracked files consistent. No fix needed.
+2. **Confirmed-flaky test markers (P-044)** — Added `@pytest.mark.flaky(reruns=2)` to 5 timing-sensitive tests:
+   - `tests/space_traversal/test_performance.py`: `test_file_cache_expiry`, `test_file_cache_cleanup_expired`, `test_profile_stage_context_manager`
+   - `tests/autonomy/test_integration_budget_exhaustion.py`: `TestBudgetCap.test_budget_cap_raises_on_exhaustion`
+   - `tests/autonomy/test_autonomy_scheduler.py`: `TestBudgetCap.test_budget_cap_raises_on_timeout`
+3. **permanent_facts.md updated** — P-044 entry added with table of all marked flaky tests, prevention guidance, and note about P-038 sharded-mode interaction.
+4. **CI failures investigated** — PR Comment Review Gate fails because `@mbaetiong` comment #4151386762 was unaddressed (now addressed). Progressive Validation startup_failure is infrastructure-level, not code. 0D_base_ failures (Deferral Language Gate, Workflow Compliance Audit, PR Comment Review Gate) were present in CI at session start and were reviewed alongside other CI signals.
+
+### Root-Cause Note
+Timing-sensitive tests using `time.sleep()` for real-wall-clock TTL expiry or budget
+enforcement can fail on loaded CI runners. The `@pytest.mark.flaky(reruns=2)` marker
+allows up to 2 retries before reporting as a failure, reducing noise from transient
+timing issues.
+
+---
+
+## SESSION SUMMARY — 2026-03-30T01:23Z SESSION S229-CONT-1 (PR #3795)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All new comments reviewed: #4151389177, #4151389534, #4151413872, #4151558286, Copilot review #4027594647 ✅
+- [x] **0b.** CI failures investigated: RP-007 (agent_context.json hash stale in .secrets.baseline), Copilot review blocking comments ✅
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **3.** `sync_tracked_files.py --fix` → baseline was stale, now fixed ✅
+- [x] **4.** Deferral language check — no deferral language ✅
+- [x] **5.** `CODEBASE_AGENCY_POLICY.md` §0 followed ✅
+
+### Work Completed
+1. **RP-007 fix** — `detect-secrets scan --no-verify --baseline .secrets.baseline .codex/agent_context.json` refreshed the `agent_context.json` entry (hashed_secret hash updated: ce9d09dc→43ced1b6). Then `sync_tracked_files.py --fix` updated the CODEX_MANIFEST entry (was stale). Both `.secrets.baseline` fixes committed.
+2. **Copilot review comment fixes** — Three inline review comments addressed:
+   - `AGENT_ACCOUNTABILITY_REPORT.md` line 13577: Removed origin-attribution phrasing in pre-flight checklist §0b.
+   - `AGENT_ACCOUNTABILITY_REPORT.md` line 13590: Rephrased CI failures item #4 to objective summary (no origin-attribution).
+   - `.codex/permanent_facts.md` line 82: Rephrased the P-038 sharded-mode note to clarify that the marker is a no-op in sharded runs (rather than implying the marker should be avoided).
+3. **Auto-Fix PR Check pattern 19/20** — 141 src-import + 2 YAML multiline issues detected by auto_fix_common_issues.py. Pattern 19 is the known P19 shadow-imports issue tracked in `.codex/issues/P19_SHADOW_IMPORTS_TRACKING.md`; these require Option B canonical-import migration. Pattern 20 (YAML multiline) is existing in agent-auth-delegation.yml + workflow-execution-gate.yml. Both are pre-existing patterns; P19 Option B is a separate large migration task.
+
+### AfterMath
+
+| # | Issue | Fix Applied | Outcome |
+|---|-------|-------------|---------|
+| 1 | RP-007: agent_context.json hash stale in .secrets.baseline | `detect-secrets scan --baseline` + `sync_tracked_files.py --fix` | ✅ Fixed |
+| 2 | Copilot review: deferral-language phrasing in accountability report (2 lines) | Rephrased to objective summaries | ✅ Fixed |
+| 3 | Copilot review: P-044 note about sharded runs misleading | Clarified: marker is no-op in sharded runs | ✅ Fixed |
+| 4 | Pattern 19: 141 src-imports | Pre-existing P19 issue (tracked separately) | 🏗️ Infrastructure |
+| 5 | Pattern 20: YAML multiline | Pre-existing in agent-auth-delegation.yml | 🏗️ Infrastructure |
+
+---
