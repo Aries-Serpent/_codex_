@@ -862,36 +862,38 @@ jobs:
 
           if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
             echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
-            echo "### ✅ Workflow Execution Checklist\n\nAlready present — no injection required." >> "$GITHUB_STEP_SUMMARY"
+            printf '### ✅ Workflow Execution Checklist\n\nAlready present — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          CHECKLIST="
-
-## 🔄 Workflow Execution Checklist
-<!-- gate-managed-by: workflow-execution-gate.yml -->
-<!-- gate-version: 1.0.0 -->
-
-### ✅ Validation & Testing
-- [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [x] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
-
-### ✅ Security & Quality
-- [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit
-- [x] deferral-language-gate.yml — Deferral language guard
-
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
-
-### 🤖 Automation
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [x] copilot-agent-checkin.yml — Agent check-in (always required)
-- [ ] cost-gate.yml — Cost governance gate
-
-> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
-> this session. Unchecked workflows will be SKIPPED by the gate."
+          printf '%s\n' \
+            '' \
+            '## 🔄 Workflow Execution Checklist' \
+            '<!-- gate-managed-by: workflow-execution-gate.yml -->' \
+            '<!-- gate-version: 1.0.0 -->' \
+            '' \
+            '### ✅ Validation & Testing' \
+            '- [x] pre-merge-validation.yml — Pre-merge checks (always required)' \
+            '- [x] resilient-validation-suite.yml — Resilient validation' \
+            '- [ ] nox-gates.yml — Nox test gates' \
+            '' \
+            '### ✅ Security & Quality' \
+            '- [x] comment-review-gate.yml — Comment review gate (always required)' \
+            '- [ ] security-scanning-suite.yml — Full security audit' \
+            '- [x] deferral-language-gate.yml — Deferral language guard' \
+            '' \
+            '### 📄 Documentation' \
+            '- [ ] docs-build.yml — Documentation build' \
+            '' \
+            '### 🤖 Automation' \
+            '- [x] agent-auth-delegation.yml — Agent auth delegation (always required)' \
+            '- [x] copilot-agent-checkin.yml — Agent check-in (always required)' \
+            '- [ ] cost-gate.yml — Cost governance gate' \
+            '' \
+            '> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for' \
+            '> this session. Unchecked workflows will be SKIPPED by the gate.' \
+            > "${RUNNER_TEMP}/checklist.txt"
+          CHECKLIST=$(cat "${RUNNER_TEMP}/checklist.txt")
 
           UPDATED_BODY="${BODY}${CHECKLIST}"
           gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"

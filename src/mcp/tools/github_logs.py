@@ -200,17 +200,13 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
         # Get client
         client = _get_github_client()
 
-        from services.github.types import CheckRunStatus
-
-        status_enum = CheckRunStatus(input_data.status) if input_data.status else None
-
-        # Fetch check runs
+        # Fetch check runs (pass status as string; client accepts both str and enum)
         check_runs = client.list_check_runs_for_ref(
             input_data.owner,
             input_data.repo,
             input_data.ref,
             check_name=input_data.check_name,
-            status=status_enum,
+            status=input_data.status,
         )
 
         # Convert to serializable format
