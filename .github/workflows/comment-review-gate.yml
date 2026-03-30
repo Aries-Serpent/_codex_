@@ -60,7 +60,7 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -187,21 +187,34 @@ jobs:
         env:
           RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           BLOCKING: ${{ needs.scan-and-post.outputs.blocking_count }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const pr_number = context.issue.number || context.payload.pull_request?.number;
             if (!pr_number) { console.log('No PR number — skipping rescue comment'); return; }
 
-            const MARKER = `<!-- ci-rescue:${pr_number} -->`;
-            const runUrl = process.env.RUN_URL;
+            // PR-scoped upsert marker — one comment per PR, updated in-place.
+            const shaShort = (process.env.HEAD_SHA || '').slice(0, 12) || 'unknown';
+            // SHA-scoped upsert marker — one comment per (PR, commit SHA).
+            // Each new commit SHA gets its own new comment so failures for
+            // different commits are tracked independently and never overwrite
+            // each other.  Within a single SHA, repeated gate failures update
+            // (upsert) the same comment in-place.
+            const MARKER = `<!-- ci-rescue:${pr_number}:${shaShort} -->`;
+            // Kept for backward-compat / agent detection of current scanned commit.
+            const SHA_TAG  = `<!-- ci-review-scanned:${shaShort} -->`;
+
+            const runUrl  = process.env.RUN_URL;
             const blocking = process.env.BLOCKING || '?';
 
             const body = [
               MARKER,
+              SHA_TAG,
               '## 🚨 CI Rescue — Comment Review Gate Failed',
               '',
               `**${blocking} blocking comment(s)** from \`mbaetiong\` or CI bots are unaddressed on this PR.`,
+              `> _Last scanned commit: \`${shaShort}\`_`,
               '',
               '### Required Actions',
               '',
@@ -218,15 +231,24 @@ jobs:
               `_[🔗 Workflow run](${runUrl})_`,
             ].join('\n');
 
-            // Upsert: update existing or create new
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr_number,
-              per_page: 100,
-            });
+            // Paginated upsert: search ALL pages so PRs with >100 comments are handled.
+            // Safety cap at 50 pages (5 000 comments) to prevent runaway loops if the
+            // marker was deleted or the API consistently returns full pages.
+            let existing = null;
+            let page = 1;
+            while (!existing && page <= 50) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr_number,
+                per_page: 100,
+                page,
+              });
+              existing = batch.find(c => (c.body || '').includes(MARKER));
+              if (existing || batch.length < 100) break;
+              page++;
+            }
 
-            const existing = comments.find(c => (c.body || '').includes(MARKER));
             if (existing) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,

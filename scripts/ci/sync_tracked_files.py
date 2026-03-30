@@ -13,10 +13,13 @@ session.  Manual updates are error-prone:
 - ``CHANGELOG.md`` must always have an ``## [Unreleased]`` section; missing entries go
   unnoticed until pre-merge validation fails.
 - ``AGENT_ACCOUNTABILITY_REPORT.md`` must be touched on every commit (REQ-4 gate).
+- ``.codex/agent_context.json`` changes on every session (``CODEX_CI_LAST_GREEN_SHA``
+  rotates), causing its ``hashed_secret`` entry in ``.secrets.baseline`` to go stale
+  (RP-007 recurring pattern).
 
 Solution
 --------
-This script is the **single source of truth** for consistency of all four files.  It:
+This script is the **single source of truth** for consistency of all five files.  It:
 
 1. Recomputes ``CODEX_MANIFEST.json`` ``integrity_sha256`` using the same algorithm as
    ``generate_manifest.py`` (sha256 of ``json.dumps(all_other_keys, sort_keys=True)``).
@@ -25,7 +28,9 @@ This script is the **single source of truth** for consistency of all four files.
 3. Validates that ``CHANGELOG.md`` has an ``## [Unreleased]`` section with ≥1 entry below it.
 4. Checks that ``AGENT_ACCOUNTABILITY_REPORT.md`` has a ``SESSION SUMMARY`` entry dated
    within the last 7 days, or has been modified in the last 5 git commits.
-5. Optionally posts a sync-status comment to a GitHub Discussion.
+5. Refreshes the ``.codex/agent_context.json`` entry in ``.secrets.baseline`` (RP-007
+   prevention — targeted detect-secrets scan, not a full repo rescan).
+6. Optionally posts a sync-status comment to a GitHub Discussion.
 
 Usage
 -----
@@ -42,6 +47,9 @@ Usage
 
     # Fix only CHANGELOG / accountability:
     python scripts/ci/sync_tracked_files.py --fix --docs-only
+
+    # Pre-push mode (Layer 2+3 conflict guard — RECOMMENDED before every commit):
+    python scripts/ci/sync_tracked_files.py --pre-push
 
     # Machine-readable JSON output (for CI integration):
     python scripts/ci/sync_tracked_files.py --check --json-output /tmp/sync_report.json
@@ -83,6 +91,8 @@ MANIFEST_PATH = REPO_ROOT / "CODEX_MANIFEST.json"
 SECRETS_BASELINE = REPO_ROOT / ".secrets.baseline"
 CHANGELOG_PATH = REPO_ROOT / "CHANGELOG.md"
 ACCOUNTABILITY_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+# RP-007: agent_context.json rotates frequently; its baseline entry drifts every session
+AGENT_CONTEXT_PATH = REPO_ROOT / ".codex" / "agent_context.json"
 
 # Sentinel for auto-generated entries
 _AUTO_SYNC_SENTINEL = "[auto-sync]"
@@ -332,7 +342,122 @@ def check_secrets_baseline(result: SyncResult, *, fix: bool) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 3. CHANGELOG.md validation
+# 2b. .secrets.baseline — agent_context.json entry (RP-007 prevention)
+# ---------------------------------------------------------------------------
+
+
+def check_agent_context_baseline(result: SyncResult, *, fix: bool) -> None:
+    """Verify (and optionally repair) the agent_context.json entry in ``.secrets.baseline``.
+
+    RP-007 root cause: ``.codex/agent_context.json`` is rewritten every CI session
+    (``CODEX_CI_LAST_GREEN_SHA`` rotates), so the ``hashed_secret`` in
+    ``.secrets.baseline`` becomes stale.  The pre-commit ``detect-secrets`` hook then
+    exits 3 ("baseline updated") and blocks the commit.
+
+    Fix strategy: targeted ``detect-secrets scan --no-verify`` on just this one file
+    (~200ms) rather than a full repo scan.
+    """
+    if not AGENT_CONTEXT_PATH.exists():
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=True,
+            message="agent_context.json not found — skip",
+        )
+        return
+    if not SECRETS_BASELINE.exists():
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=False,
+            message=".secrets.baseline not found",
+        )
+        return
+
+    # Run detect-secrets on agent_context.json only (fast targeted scan)
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "detect_secrets", "scan", "--no-verify",
+             str(AGENT_CONTEXT_PATH)],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(proc.stderr[:300])
+        scan: dict[str, Any] = json.loads(proc.stdout)
+    except Exception as exc:
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=False,
+            message=f"detect-secrets scan failed: {exc}",
+        )
+        return
+
+    # detect-secrets uses the relative path as key (e.g. ".codex/agent_context.json")
+    agent_rel = str(AGENT_CONTEXT_PATH.relative_to(REPO_ROOT))
+    new_entries = scan.get("results", {}).get(agent_rel, [])
+
+    try:
+        with SECRETS_BASELINE.open(encoding="utf-8") as f:
+            baseline: dict[str, Any] = json.load(f)
+    except json.JSONDecodeError as exc:
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=False,
+            message=f"JSON parse error in .secrets.baseline: {exc}",
+        )
+        return
+
+    existing_entries = baseline.get("results", {}).get(agent_rel, [])
+
+    if not new_entries and not existing_entries:
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=True,
+            message="no high-entropy strings in agent_context.json — no baseline entry needed",
+        )
+        return
+
+    # Check if current entry matches fresh scan
+    if (
+        new_entries
+        and existing_entries
+        and existing_entries[0].get("hashed_secret") == new_entries[0].get("hashed_secret")
+        and existing_entries[0].get("line_number") == new_entries[0].get("line_number")
+    ):
+        line_num = new_entries[0].get("line_number", "?")
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=True,
+            message=f"agent_context.json entry correct (line={line_num}, hash={new_entries[0].get('hashed_secret','?')[:12]}…)",
+        )
+        return
+
+    if not fix:
+        stored_hash = (existing_entries[0].get("hashed_secret", "?")[:12] + "…") if existing_entries else "missing"
+        expected_hash = (new_entries[0].get("hashed_secret", "?")[:12] + "…") if new_entries else "no-entry"
+        result.record(
+            ".secrets.baseline (agent_context)",
+            ok=False,
+            message=f"agent_context.json entry stale — stored={stored_hash}, expected={expected_hash} (RP-007)",
+        )
+        return
+
+    # Fix: patch the agent_context entry in-place
+    if new_entries:
+        baseline.setdefault("results", {})[agent_rel] = new_entries
+    elif agent_rel in baseline.get("results", {}):
+        del baseline["results"][agent_rel]
+    _write_json_atomic(SECRETS_BASELINE, baseline)
+
+    line_num = new_entries[0].get("line_number", "?") if new_entries else "removed"
+    hash_val = (new_entries[0].get("hashed_secret", "?")[:12] + "…") if new_entries else "removed"
+    result.record(
+        ".secrets.baseline (agent_context)",
+        ok=False,
+        fixed=True,
+        message="agent_context.json baseline entry was stale (RP-007)",
+        fix_description=f"updated to line={line_num} hash={hash_val}",
+    )
 # ---------------------------------------------------------------------------
 
 _UNRELEASED_RE = re.compile(r"^## \[Unreleased\]", re.MULTILINE)
@@ -523,8 +648,9 @@ def check_accountability_freshness(result: SyncResult, *, fix: bool) -> None:
 3. **Next steps:** Replace this entry with a genuine session summary in the next commit.
 
 ### Lessons Learned
-- Run `python scripts/ci/sync_tracked_files.py --fix` before every commit to ensure
-  all tracked files (manifest, baseline, changelog, accountability) are consistent.
+- Run `python scripts/ci/sync_tracked_files.py --pre-push` before every commit to
+  fetch + rebase any concurrent CI bot commits (Layer 2+3 conflict guard) and then
+  ensure all tracked files (manifest, baseline, changelog, accountability) are consistent.
 
 ---
 """
@@ -620,6 +746,115 @@ def _git_sha() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Layer 2+3 — Pre-push conflict guard
+# ---------------------------------------------------------------------------
+
+
+def preflight_rebase(*, quiet: bool = False) -> bool:
+    """Fetch remote and rebase if the current branch is behind.
+
+    This is the implementation of the two-layer conflict prevention strategy
+    for files written by both agents and CI bots (CHANGELOG.md,
+    AGENT_ACCOUNTABILITY_REPORT.md, agent_auth_session.json,
+    session_context_latest.md):
+
+    Layer 2 — Structural fix:
+        Always fetch+rebase BEFORE running --fix so that
+        ``check_changelog`` and ``check_accountability_freshness`` append
+        *on top of* the latest bot commits, never in parallel with them.
+
+    Layer 3 — Pre-push protocol:
+        Called automatically when ``--pre-push`` is passed; ensures the
+        working tree is up-to-date with remote before any write/push.
+
+    Returns ``True`` on success (clean or rebased), ``False`` on failure
+    (conflict that requires manual resolution).
+    """
+
+    def _run(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            cmd, cwd=REPO_ROOT, capture_output=True, text=True, timeout=60, **kwargs
+        )
+
+    # Discover current branch
+    branch_proc = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+    branch = branch_proc.stdout.strip()
+    if not branch or branch == "HEAD":
+        if not quiet:
+            print("⚠️  preflight_rebase: detached HEAD — skipping fetch/rebase")
+        return True
+
+    if not quiet:
+        print(f"🔄 preflight_rebase: fetching origin/{branch} …")
+
+    # Fetch the branch quietly
+    fetch = _run(["git", "fetch", "origin", branch])
+    if fetch.returncode != 0:
+        if not quiet:
+            print(f"⚠️  preflight_rebase: git fetch failed (offline?): {fetch.stderr.strip()}")
+        # Not fatal — might be offline/no-network; proceed without rebase
+        return True
+
+    # Count commits remote is ahead of local
+    ahead_proc = _run(
+        ["git", "rev-list", "--count", f"HEAD..origin/{branch}"]
+    )
+    try:
+        commits_behind = int(ahead_proc.stdout.strip())
+    except ValueError:
+        commits_behind = 0
+
+    if commits_behind == 0:
+        if not quiet:
+            print(f"✅ preflight_rebase: already up-to-date with origin/{branch}")
+        return True
+
+    if not quiet:
+        print(
+            f"⚡ preflight_rebase: branch is {commits_behind} commit(s) behind "
+            f"origin/{branch} — rebasing …"
+        )
+
+    # Check for uncommitted changes before rebasing
+    status = _run(["git", "status", "--porcelain"])
+    if status.stdout.strip():
+        if not quiet:
+            print(
+                "⚠️  preflight_rebase: uncommitted changes detected — "
+                "stashing before rebase"
+            )
+        stash = _run(["git", "stash", "--include-untracked"])
+        if stash.returncode != 0:
+            if not quiet:
+                print(f"❌ preflight_rebase: git stash failed: {stash.stderr.strip()}")
+            return False
+        stashed = True
+    else:
+        stashed = False
+
+    rebase = _run(["git", "rebase", f"origin/{branch}"])
+
+    if stashed:
+        pop = _run(["git", "stash", "pop"])
+        if pop.returncode != 0 and not quiet:
+            print(f"⚠️  preflight_rebase: stash pop warning: {pop.stderr.strip()}")
+
+    if rebase.returncode != 0:
+        if not quiet:
+            print(
+                f"❌ preflight_rebase: rebase conflict on origin/{branch}.\n"
+                f"   Resolve manually, then re-run.\n"
+                f"   {rebase.stderr.strip()}"
+            )
+        _run(["git", "rebase", "--abort"])
+        return False
+
+    if not quiet:
+        print(f"✅ preflight_rebase: rebased {commits_behind} commit(s) onto origin/{branch}")
+    return True
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -671,6 +906,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Post sync report as a comment on this GitHub Discussion number",
     )
     p.add_argument(
+        "--pre-push",
+        action="store_true",
+        default=False,
+        help=(
+            "Pre-push mode (Layer 2+3 conflict guard): fetch + rebase on top of any "
+            "remote bot-commits first, then run --fix.  Use this as the single command "
+            "before every report_progress / git push to prevent CHANGELOG and "
+            "AGENT_ACCOUNTABILITY_REPORT conflicts with concurrent CI auto-commits."
+        ),
+    )
+    p.add_argument(
         "--quiet",
         action="store_true",
         help="Suppress per-check output; only print the final summary",
@@ -681,6 +927,18 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
+
+    # Layer 3 — pre-push rebase gate (fetch + rebase before any sync)
+    if args.pre_push:
+        rebase_ok = preflight_rebase(quiet=args.quiet)
+        if not rebase_ok:
+            print(
+                "❌ pre-push rebase failed — resolve conflicts manually then re-run.",
+                file=sys.stderr,
+            )
+            return 1
+        # pre-push implies --fix
+        args.fix = True
 
     # Default: --check if neither --check nor --fix provided
     do_fix = args.fix
@@ -693,6 +951,7 @@ def main(argv: list[str] | None = None) -> int:
     if manifest_scope:
         check_manifest_integrity(sync, fix=do_fix)
         check_secrets_baseline(sync, fix=do_fix)
+        check_agent_context_baseline(sync, fix=do_fix)  # RP-007: agent_context.json drift
 
     if docs_scope:
         check_changelog(sync, fix=do_fix)

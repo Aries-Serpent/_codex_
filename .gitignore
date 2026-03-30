@@ -301,6 +301,9 @@ yarn-error.log
 # Build output and coverage directories
 out/
 coverage/
+# Exception: tracked codex coverage intelligence map
+!.codex/coverage/
+!.codex/coverage/**
 .next/
 .nuxt/
 .cache/

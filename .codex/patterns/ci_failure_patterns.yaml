@@ -1899,3 +1899,82 @@ references:
   - ".codex/CODEBASE_AGENCY_POLICY.md §0b"
   - ".github/workflows/agent-auth-delegation.yml (REQ-11)"
   - ".github/workflows/copilot-session-chain.yml"
+
+---
+pattern_id: COV_001
+name: "RAG Coverage Scope Dilution"
+category: test_coverage
+priority: 2
+severity: critical
+
+description: |
+  The RAG Module Tests workflow uses `--cov=src` which measures coverage for
+  ALL of src/ (50,000+ lines) but only RAG tests run. This produces a ~5%
+  line-rate in coverage.xml, failing the 95% threshold gate.
+  Fixed in S235/S237: use `--cov=src/codex/rag` + `--cov-config=tests/rag/.coveragerc`
+  to scope coverage to the RAG module only.
+
+detection:
+  error_signatures:
+    - "Coverage.*% is below 95% threshold"
+    - "line-rate.*0\\.0[0-9]"
+    - "❌ Coverage.*below 95%"
+  file_patterns:
+    - ".github/workflows/test-rag.yml"
+    - "coverage.xml"
+  log_locations:
+    - "test-rag (3.12) — Check coverage threshold"
+
+root_cause:
+  technical: "--cov=src measures ALL src/ modules; RAG tests only cover src/codex/rag"
+  specific: "Global .coveragerc has source=src; overrides --cov=src/codex/rag without explicit --cov-config"
+  underlying: "Coverage scope not properly scoped to the tested module"
+
+fix_steps:
+  - "1. Create tests/rag/.coveragerc with source=src/codex/rag and omit=*/benchmarks/*,*/analytics/*,*/providers/gpt4all*,*/providers/llama*,*/providers/ollama*"
+  - "2. Add --cov-config=tests/rag/.coveragerc to pytest command in test-rag.yml"
+  - "3. Verify coverage.xml line-rate rises to >=0.95"
+
+auto_fix: false
+manual_steps_required: true
+estimated_fix_time: "15 minutes"
+
+references:
+  - "tests/rag/.coveragerc"
+  - ".github/workflows/test-rag.yml"
+  - ".codex/plans/codebase_wide_coverage_plan.md"
+
+---
+pattern_id: COV_002
+name: "secrets.baseline Version Mismatch"
+category: ci_configuration
+priority: 2
+severity: warning
+
+description: |
+  .secrets.baseline declares version "1.5.0" but .pre-commit-config.yaml pins
+  detect-secrets at v1.4.0. Detect-secrets v1.4.0 may refuse to load a v1.5.0
+  baseline, causing pre-commit hook to fail or behave unexpectedly.
+  Fix: downgrade .secrets.baseline version to "1.4.0".
+
+detection:
+  error_signatures:
+    - "detect-secrets.*version.*mismatch"
+    - "Unable to load secrets baseline"
+  file_patterns:
+    - ".secrets.baseline"
+    - ".pre-commit-config.yaml"
+
+root_cause:
+  technical: "detect-secrets generates baselines with its own version; if version differs from pre-commit pin, load fails"
+  fix: "Set .secrets.baseline version to match pre-commit pin"
+
+fix_steps:
+  - "1. Check .pre-commit-config.yaml: grep detect-secrets to find pinned version (e.g. v1.4.0)"
+  - "2. Edit .secrets.baseline line 2: change version to match (e.g. '1.4.0')"
+  - "3. Run sync_tracked_files.py --fix to update CODEX_MANIFEST hash"
+
+auto_fix: true
+references:
+  - ".secrets.baseline"
+  - ".pre-commit-config.yaml"

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S238 — PR #3814)
+- **fix(ci):** `check_cross_references.py` — added uppercase-only token guard in `_resolve_ref()` to skip placeholder tokens like `URL`, `RUN_URL` in documentation templates. Fixes Validation Pipeline `check-cross-references` hook failure on 3 `(URL)` references in `AGENT_ACCOUNTABILITY_REPORT.md` (lines 13292, 13299, 13983).
+- **fix(ci):** `generate_coverage_map.py` — replaced `import xml.etree.ElementTree as ET` with `import defusedxml.ElementTree as ET` to satisfy `check-unsafe-xml` pre-commit hook (XXE prevention policy).
+- **fix(ci):** `session_bootstrap.py` — D-00 checklist wording changed from "URL(s) fetched" to "URL(s) found" in offline mode (consistency fix per PR reviewer comment on `session_context_latest.md:43`).
+
+### Fixed (S234 — PR #3814)
+- **fix(ci):** RP-007 structural fix — `sync_tracked_files.py` now includes a 5th check (`check_agent_context_baseline`) that runs a targeted `detect-secrets scan` on `.codex/agent_context.json` and patches its entry in `.secrets.baseline` when stale. Prevents recurring `detect-secrets` pre-commit exit-3 failures caused by `CODEX_CI_LAST_GREEN_SHA` rotation.
+- **fix(docs):** `validate-links.py` — added `^URL$` and `^RUN_URL$` to `SKIP_LINK_PATTERNS` so placeholder `(URL)` tokens in documentation templates are no longer flagged as missing files.
+- **fix(docs):** `.codex/sessions/chain-20260330-151413.md` — applied gemini-code-assist suggestion: run number is now a hyperlink to the GitHub Actions run.
+- **fix(ci):** Refreshed `.secrets.baseline` agent_context.json entry after auth-token rotation commits changed `CODEX_CI_LAST_GREEN_SHA` (RP-007 fix).
+- **fix(ci):** Addressed 3 unaddressed comment-review-gate blocking items (comments 4156171706, 4156172390, 4156180410 on PR #3814) — session boundary gap documented; shallow-reply protocol correction applied.
+
+### Fixed (S236 — PR #3814)
+- **fix(ci):** `scripts/ci/ci_rescue.py` `run_deep_rescue()` — deep analysis was always POSTing a new `<!-- ci-rescue-deep:{sha} -->` comment; now calls `post_pr_comment()` which has SHA-scoped upsert, appending deep analysis to the existing RCA comment. Result: 2 ci-rescue comments per commit → 1.
+- **fix(ci):** `.github/workflows/copilot-iterative-self-healing.yml` — replaced unreliable text-based dedup check + always-create `gh pr comment` with SHA+category-scoped marker upsert (`<!-- copilot-healing:{sha}:{category} -->`). Uses `${RUNNER_TEMP}` temp file per TEMPORARY_FILES_POLICY.md. Result: one `@copilot Continue` comment per commit per failure category, updated in-place.
+
+### Fixed (S235 — PR #3814)
+- **fix(ci):** `test-rag.yml` — RAG Module Tests failed with 5.093% coverage against 95% threshold; root cause: `--cov=src` measured coverage of ALL source files while only RAG tests ran. Fixed by changing to `--cov=src/codex/rag` (scope coverage to just the RAG module) and adding `tests/rag/` to the pytest test collection.
+- **fix(ci):** RP-007 — `.secrets.baseline` CODEX_MANIFEST entry was stale (hash missing); fixed via `sync_tracked_files.py --fix`. Unblocks Comment Review Gate and Pre-Merge Validation.
+
+### Fixed (S233 — PR #3814)
+- **chore(ci):** Nightly health sweep S171 (issue #3800) — ran `ruff check` (no new violations), `auto_fix_common_issues.py` (Pattern 22 fixed via `sync_tracked_files.py --fix`: `CODEX_MANIFEST` integrity hash refreshed, `.secrets.baseline` CODEX_MANIFEST entry updated), reviewed last-5 CI runs on `main` (all healthy).
+- **chore(ci):** CI Health Alert #3801 — verified SELF_HEALING_001 S172 fix is present in `iterative-self-healing-ci.yml` (triage lines 97–99, heal lines 310–312 recreate `.venv_ci` on cache miss). High 26.9% failure rate reflects pre-fix data in the 7-day telemetry window; recent runs show cascade guard active (`skipped`). No code change required; monitor will clear as the window rolls forward.
+
 ### Fixed (auto-update — PR #3813)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3813 (SHA `8a90e255`) at 2026-03-30T15:06Z [auto-generated]
 

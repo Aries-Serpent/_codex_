@@ -1,23 +1,42 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3586 (Session S123).
-version: 4.1.0
-updated: 2026-03-16
-cognitive_integration_level: 4
-aais_contribution: +2.5 points
-batch: pr-3586
-sprint: Sprint 10 (Post S122/S123 — All CB backlog items + acceptance tests complete)
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3814 (Session S239).
+version: 4.2.0
+updated: 2026-03-30
+cognitive_integration_level: 5
+aais_contribution: +3.0 points
+batch: pr-3814
+sprint: Sprint 11 (Post S237/S238/S239 — coverage intelligence, write-channel diagnosis, PDA AfterMath)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
-# Cognitive Brain Manager v4.0
+# Cognitive Brain Manager v4.2
 
-**Version**: 4.0.0 (Updated PR #3579 Session 39)
+**Version**: 4.2.0 (Updated PR #3814 Session S239)
 **Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 95/100)
-**Updated**: 2026-03-14
-**Phase**: D_CAPABLE Operations — Per-agent promotion active, RAG freshness automated
+**Updated**: 2026-03-30
+**Phase**: D_CAPABLE Operations — Coverage Intelligence Phase 1 active, write-channel diagnosis complete
+
+## ⚠️ S239 Write-Channel Status
+
+The Copilot Coding Agent sandbox currently receives **401** from `BrainClient.proxy_request()` on
+write operations to `api.github.com`. Root cause and fix:
+
+| Layer | Status | Details |
+|-------|--------|---------|
+| `copilot-setup-steps.yml` env block | ✅ Correct | `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}` at line 114 |
+| `CODEX_MASTER_KEY` repo/org access | ⚠️ **Fix needed** | Secret must be granted access to this repo in GitHub org settings → Settings → Secrets → Actions |
+| Cognitive brain server (`localhost:8765`) | ✅ Running | `health` endpoint returns 200 OK |
+| `BrainClient.proxy_request()` GitHub calls | ❌ 401 | Unauthenticated — `CODEX_MASTER_KEY` not reaching sandbox env |
+
+**Human action required**: In GitHub org settings (`Aries-Serpent` org), go to
+**Settings → Secrets and variables → Actions → Secrets** → find `CODEX_MASTER_KEY` →
+click **Update** → ensure `_codex_` repository is in the "Selected repositories" list.
+
+Once fixed, the next session will have `CODEX_MASTER_KEY` available and `proxy_request` will
+authenticate — enabling autonomous PR comment posting, variable writes, and workflow dispatches.
 
 ## Current System State
 
