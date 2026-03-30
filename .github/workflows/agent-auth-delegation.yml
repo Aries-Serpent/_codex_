@@ -862,7 +862,7 @@ jobs:
 
           if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
             echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
-            echo "### ✅ Workflow Execution Checklist\n\nAlready present — no injection required." >> "$GITHUB_STEP_SUMMARY"
+            printf '### ✅ Workflow Execution Checklist\n\nAlready present — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
