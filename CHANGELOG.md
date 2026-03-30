@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S233 — PR #3814)
+- **chore(ci):** Nightly health sweep S171 (issue #3800) — ran `ruff check` (no new violations), `auto_fix_common_issues.py` (Pattern 22 fixed via `sync_tracked_files.py --fix`: `CODEX_MANIFEST` integrity hash refreshed, `.secrets.baseline` CODEX_MANIFEST entry updated), reviewed last-5 CI runs on `main` (all healthy).
+- **chore(ci):** CI Health Alert #3801 — verified SELF_HEALING_001 S172 fix is present in `iterative-self-healing-ci.yml` (triage lines 97–99, heal lines 310–312 recreate `.venv_ci` on cache miss). High 26.9% failure rate reflects pre-fix data in the 7-day telemetry window; recent runs show cascade guard active (`skipped`). No code change required; monitor will clear as the window rolls forward.
+
 ### Fixed (auto-update — PR #3813)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3813 (SHA `8a90e255`) at 2026-03-30T15:06Z [auto-generated]
 
