@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed (S229-CONT-2 — PR #3798)
-- **fix(ci):** P20 YAML parse error — `agent-auth-delegation.yml` multiline `CHECKLIST="..."` bash string at 0-column indentation broke YAML literal block parsing (actionlint: "could not parse as YAML: did not find expected key"). Replaced with `printf '%s\n' ... > /tmp/checklist.txt` pipeline.
-- **fix(ci):** P20 partial fix — `workflow-execution-gate.yml` first BODY assignment replaced with `printf` pipeline for consistency.
+- **fix(ci):** P20 YAML parse error — `agent-auth-delegation.yml` multiline `CHECKLIST="..."` bash string at 0-column indentation broke YAML literal block parsing (actionlint: "could not parse as YAML: did not find expected key"). Replaced with `printf '%s\n' ... > "${RUNNER_TEMP}/checklist.txt"` pipeline (per TEMPORARY_FILES_POLICY.md).
+- **fix(ci):** P20 partial fix — `workflow-execution-gate.yml` first BODY assignment replaced with `printf` pipeline using `${RUNNER_TEMP}` temp file.
 
 ### Fixed (S229-CONT-1 — PR #3795)
 - **fix(ci):** RP-007 — refresh `.secrets.baseline` for `agent_context.json` (hashed_secret was stale); also resync CODEX_MANIFEST entry via `sync_tracked_files.py --fix`.

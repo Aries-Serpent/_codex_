@@ -892,8 +892,8 @@ jobs:
             '' \
             '> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for' \
             '> this session. Unchecked workflows will be SKIPPED by the gate.' \
-            > /tmp/checklist.txt
-          CHECKLIST=$(cat /tmp/checklist.txt)
+            > "${RUNNER_TEMP}/checklist.txt"
+          CHECKLIST=$(cat "${RUNNER_TEMP}/checklist.txt")
 
           UPDATED_BODY="${BODY}${CHECKLIST}"
           gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"

@@ -129,8 +129,8 @@ jobs:
               "" \
               "_See: [Workflow Checklist Wiring Plan](${{ github.server_url }}/${{ github.repository }}/blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_" \
               "_[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_" \
-              > /tmp/gate_body.txt
-            BODY=$(cat /tmp/gate_body.txt)
+              > "${RUNNER_TEMP}/gate_body.txt"
+            BODY=$(cat "${RUNNER_TEMP}/gate_body.txt")
           else
             # Build table rows
             TABLE_ROWS=""
