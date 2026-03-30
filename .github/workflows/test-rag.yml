@@ -116,10 +116,10 @@ jobs:
 
           # Run RAG tests serially to avoid xdist worker plugin-discovery failures
           # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
-          python -m pytest tests/test_rag_*.py \
+          python -m pytest tests/test_rag_*.py tests/rag/ \
             -v \
             --tb=short --timeout=300 \
-            --cov=src \
+            --cov=src/codex/rag \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing

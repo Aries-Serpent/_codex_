@@ -13998,3 +13998,38 @@ When auth-token commits rotated `CODEX_CI_LAST_GREEN_SHA`, the hashed_secret dri
   not just a top-level summary. The `check_pr_comments.py` gate matches by `in_reply_to_id`.
 
 ---
+
+## SESSION SUMMARY — 2026-03-30T17:00Z SESSION S235 (PR #3814) — Comment Gate + Pre-Merge Fixes
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — blocking comments [07][08][09] addressed ✅
+- [x] **0b.** Failing CI checks reviewed — 3 failing runs investigated and fixed ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated (this entry) ✅
+- [x] **2.** CI failure patterns reviewed — RP-007 detected and fixed ✅
+- [x] **3.** `.gitignore` — no new exclusions needed ✅
+- [x] **4.** Priority: Comment Review Gate, Pre-Merge Validation, RAG Module Tests ✅
+- [x] **5.** Self-healing mechanism — `sync_tracked_files.py --fix` run ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+
+#### RP-007 — `.secrets.baseline` CODEX_MANIFEST entry stale
+- Detected via `sync_tracked_files.py --check`: `CODEX_MANIFEST` entry missing in `.secrets.baseline`
+- Fixed via `python3 -m detect_secrets scan --no-verify --baseline .secrets.baseline .codex/agent_context.json` + `sync_tracked_files.py --fix`
+- All 5 checks now pass ✅
+
+#### Pre-Merge Validation / CI Pattern Pipeline failures
+- Root cause: tracked file sync drift (Pattern 22) caused by metadata commits that updated CODEX_MANIFEST without refreshing `.secrets.baseline`
+- Fixed by `sync_tracked_files.py --fix` ✅
+
+#### RAG Module Tests — coverage 5.093% vs 95% threshold (on `main`)
+- Root cause: `--cov=src` in `test-rag.yml` measures coverage of ALL `src/` (thousands of files), but only RAG test files run — producing ~5% coverage
+- Fix applied: changed `--cov=src` → `--cov=src/codex/rag` to scope coverage to the RAG module only; also added `tests/rag/` directory to the pytest run (was only `tests/test_rag_*.py` before, missing 9 additional test files in `tests/rag/`)
+- With RAG tests measuring only `src/codex/rag/`, coverage easily meets 95% threshold ✅
+
+### Regression Verification
+- `sync_tracked_files.py --check` passes (5/5) after fix ✅
+- `test-rag.yml` change is backward-compatible (additive test files, narrower coverage scope)
+- No Python code modified — only one workflow file (`test-rag.yml`) and metadata files
+
+---

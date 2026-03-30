@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **fix(ci):** Refreshed `.secrets.baseline` agent_context.json entry after auth-token rotation commits changed `CODEX_CI_LAST_GREEN_SHA` (RP-007 fix).
 - **fix(ci):** Addressed 3 unaddressed comment-review-gate blocking items (comments 4156171706, 4156172390, 4156180410 on PR #3814) — session boundary gap documented; shallow-reply protocol correction applied.
 
+### Fixed (S235 — PR #3814)
+- **fix(ci):** `test-rag.yml` — RAG Module Tests failed with 5.093% coverage against 95% threshold; root cause: `--cov=src` measured coverage of ALL source files while only RAG tests ran. Fixed by changing to `--cov=src/codex/rag` (scope coverage to just the RAG module) and adding `tests/rag/` to the pytest test collection.
+- **fix(ci):** RP-007 — `.secrets.baseline` CODEX_MANIFEST entry was stale (hash missing); fixed via `sync_tracked_files.py --fix`. Unblocks Comment Review Gate and Pre-Merge Validation.
+
 ### Fixed (S233 — PR #3814)
 - **chore(ci):** Nightly health sweep S171 (issue #3800) — ran `ruff check` (no new violations), `auto_fix_common_issues.py` (Pattern 22 fixed via `sync_tracked_files.py --fix`: `CODEX_MANIFEST` integrity hash refreshed, `.secrets.baseline` CODEX_MANIFEST entry updated), reviewed last-5 CI runs on `main` (all healthy).
 - **chore(ci):** CI Health Alert #3801 — verified SELF_HEALING_001 S172 fix is present in `iterative-self-healing-ci.yml` (triage lines 97–99, heal lines 310–312 recreate `.venv_ci` on cache miss). High 26.9% failure rate reflects pre-fix data in the 7-day telemetry window; recent runs show cascade guard active (`skipped`). No code change required; monitor will clear as the window rolls forward.
