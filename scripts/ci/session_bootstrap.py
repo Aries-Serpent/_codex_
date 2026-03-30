@@ -494,6 +494,62 @@ def write_digest(report: BootstrapReport, verbose: bool = False) -> Path:
         for w in report.warnings:
             lines.append(f"- ⚠ {w}")
 
+    # ── Coverage Intelligence Injection (P2A) ────────────────────────────────
+    # If a pre-built coverage_map.json exists, surface high-risk modules and
+    # uncovered functions so the agent has immediate per-module risk context at
+    # session start without a separate lookup.
+    coverage_map_path = REPO_ROOT / ".codex" / "coverage" / "coverage_map.json"
+    if coverage_map_path.exists():
+        try:
+            import json as _json
+            cov_data = _json.loads(coverage_map_path.read_text(encoding="utf-8"))
+            meta = cov_data.get("_meta", {})
+            gaps = cov_data.get("gaps_summary", {})
+            modules_map = cov_data.get("modules", {})
+            overall_rate = meta.get("overall_line_rate", "?")
+            zero_cov = gaps.get("modules_zero_coverage", [])
+            low_cov = gaps.get("modules_below_50pct", [])
+            total_uncov_fns = gaps.get("total_uncovered_functions", "?")
+            high_risk_fns = gaps.get("high_risk_functions", "?")
+            generated_at = meta.get("generated_at", "unknown")
+            lines += [
+                "",
+                "---",
+                "",
+                "## 🗺️ Coverage Intelligence",
+                "",
+                f"> _Map generated: {generated_at}_  ",
+                f"> _Overall line rate: {round(float(overall_rate) * 100, 1) if isinstance(overall_rate, (int, float)) else overall_rate}%_",
+                f"> _Total uncovered functions: {total_uncov_fns} | High-risk: {high_risk_fns}_",
+                "",
+            ]
+            if zero_cov:
+                lines.append(f"**🔴 Zero-coverage modules ({len(zero_cov)}):**")
+                for m in zero_cov[:10]:
+                    lines.append(f"- `{m}`")
+                if len(zero_cov) > 10:
+                    lines.append(f"- _…and {len(zero_cov) - 10} more_")
+                lines.append("")
+            if low_cov:
+                lines.append(f"**🟡 Low-coverage modules <50% ({len(low_cov)}):**")
+                for m in low_cov[:10]:
+                    rate = modules_map.get(m, {}).get("line_rate", "?")
+                    pct = f"{round(float(rate) * 100, 1)}%" if isinstance(rate, (int, float)) else "?"
+                    lines.append(f"- `{m}` ({pct})")
+                if len(low_cov) > 10:
+                    lines.append(f"- _…and {len(low_cov) - 10} more_")
+                lines.append("")
+        except Exception as exc:
+            lines += [
+                "",
+                "---",
+                "",
+                "## 🗺️ Coverage Intelligence",
+                "",
+                f"_⚠ Failed to load coverage_map.json: {exc}_",
+                "",
+            ]
+
     lines += [
         "",
         "---",
@@ -503,7 +559,7 @@ def write_digest(report: BootstrapReport, verbose: bool = False) -> Path:
         "Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:",
         "",
         "```markdown",
-        f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) fetched, "
+        f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) found, "
         f"triage {'✅ clean' if report.baseline_ok is True else '❌ FAILURES FOUND' if report.baseline_ok is False else '⏭️ skipped'}",
         "- [ ] D-01 Memories loaded",
         "- [ ] D-02 CODEBASE_AGENCY_POLICY.md reviewed",

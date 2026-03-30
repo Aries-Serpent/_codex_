@@ -94,6 +94,11 @@ def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
         return None
     if raw.startswith(("http", "mailto:", "#", "ftp", "data:")):
         return None
+    # Skip known placeholder tokens that are not real file paths.
+    # Using an explicit allow-list rather than a broad regex to avoid accidentally
+    # skipping extensionless files like README, LICENSE, or CHANGELOG.
+    if raw in {"URL", "RUN_URL"}:
+        return None
     # Strip anchor fragment (#section) before resolving the file path
     raw = raw.split("#")[0].strip()
     raw = raw.split("?")[0].strip()

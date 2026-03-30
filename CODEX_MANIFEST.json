@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-29T23:19:17Z",
+  "generated_at": "2026-03-30T21:49:17Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1185,7 +1185,7 @@
     },
     {
       "name": "copilot-iterative-self-healing",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1974,5 +1974,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "0e1cdeead7b2c4c5f6d793d087c935ae4b013d74a102e4a818449257f7318fc7"
+  "integrity_sha256": "7451cb8e15129ec8196f440ddcc3dcb872f060759f40df66c03f51f1a75a446a"
 }

@@ -1,23 +1,89 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3586 (Session S123).
-version: 4.1.0
-updated: 2026-03-16
-cognitive_integration_level: 4
-aais_contribution: +2.5 points
-batch: pr-3586
-sprint: Sprint 10 (Post S122/S123 — All CB backlog items + acceptance tests complete)
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3818 (Session S242).
+version: 4.3.0
+updated: 2026-03-30
+cognitive_integration_level: 5
+aais_contribution: +3.5 points
+batch: pr-3818
+sprint: Sprint 12 (Post S240/S241/S242 — coverage accuracy, Gemini review resolution, merge analysis)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
-# Cognitive Brain Manager v4.0
+# Cognitive Brain Manager v4.3
 
-**Version**: 4.0.0 (Updated PR #3579 Session 39)
-**Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 95/100)
-**Updated**: 2026-03-14
-**Phase**: D_CAPABLE Operations — Per-agent promotion active, RAG freshness automated
+**Version**: 4.3.0 (Updated PR #3818 Session S242)
+**Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 96/100)
+**Updated**: 2026-03-30
+**Phase**: D_CAPABLE Operations — Coverage Intelligence Phase 2 active, merge-to-main gated
+
+## ✅ S242 Status Update — PR #3818
+
+### Changes Applied This Session
+| Item | Status | Details |
+|------|--------|---------|
+| Gemini thread 1 (High) | ✅ Fixed | `generate_coverage_map.py:292` — multi-suite merge unions covered_lines + recalculates line_rate |
+| Gemini thread 2 (Medium) | ✅ Fixed | `generate_coverage_map.py:246` — fn_covered uses executable lines as denominator |
+| Gemini thread 3 (Medium) | ✅ Clarified | `generate_coverage_map.py:252` — comment: "sufficient_coverage ≥50% executable lines" |
+| Gemini thread 4 (Medium) | ✅ Fixed | `check_cross_references.py:99` — explicit allow-list `{"URL","RUN_URL"}` replaces broad regex |
+| RP-004 Pattern 22 | ✅ Fixed | `sync_tracked_files.py --fix` — .secrets.baseline CODEX_MANIFEST entry refreshed |
+| REQ-10 divergence | ✅ Resolved (S241) | `Merge branch 'main'` commit `a80cb294d` cleared REQ-10 gate |
+| Merge analysis | ✅ Complete | PR #3818 MUST be merged to main (see §Merge Analysis) |
+
+## ⚠️ S239 Write-Channel Status (Pending Human Action)
+
+The Copilot Coding Agent sandbox currently receives **401** from `BrainClient.proxy_request()` on
+write operations to `api.github.com`. Root cause and fix:
+
+| Layer | Status | Details |
+|-------|--------|---------|
+| `copilot-setup-steps.yml` env block | ✅ Correct | `CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}` at line 114 |
+| `CODEX_MASTER_KEY` repo/org access | ⚠️ **Fix needed** | Secret must be granted access to this repo in GitHub org settings → Settings → Secrets → Actions |
+| Cognitive brain server (`localhost:8765`) | ✅ Running | `health` endpoint returns 200 OK |
+| `BrainClient.proxy_request()` GitHub calls | ❌ 401 | Unauthenticated — `CODEX_MASTER_KEY` not reaching sandbox env |
+
+**Human action required**: In GitHub org settings (`Aries-Serpent` org), go to
+**Settings → Secrets and variables → Actions → Secrets** → find `CODEX_MASTER_KEY` →
+click **Update** → ensure `_codex_` repository is in the "Selected repositories" list.
+
+Once fixed, the next session will have `CODEX_MASTER_KEY` available and `proxy_request` will
+authenticate — enabling autonomous PR comment posting, variable writes, and workflow dispatches.
+
+## 🗺️ Next-Phase Plan (Post-S242)
+
+### Phase 2 — Coverage Intelligence Activation (Target: S243–S245)
+
+```mermaid
+graph LR
+    subgraph PHASE2["Phase 2 — Coverage Intelligence (Active)"]
+        P2A["P2A: Wire coverage_map.json\ninto session_bootstrap.py\n(inject at session start)"]
+        P2B["P2B: PR coverage delta comment\n--pr-delta mode in validate.yml"]
+        P2C["P2C: COV_001 auto-fix in ci_rescue.py\n(deterministic handler)"]
+        P2D["P2D: Coverage trend\nSQLiteMemory LTM per-module history"]
+    end
+
+    subgraph PHASE3["Phase 3 — Merge to Main (Blocking Gate)"]
+        P3A["Merge PR #3818 → main\n32 files, 199 commits\n✅ MUST merge for CI fixes to take effect"]
+        P3B["Verify workflows run\nfrom main copy post-merge"]
+        P3C["Branch hygiene cleanup\nretire 0D_base_ stale state"]
+    end
+
+    P2A --> P2B --> P2C --> P2D --> P3A
+    P3A --> P3B --> P3C
+```
+
+### Merge Analysis — PR #3818 MUST Merge into main
+
+| Category | Files | Why merge is required |
+|---|---|---|
+| CI workflow fixes | `comment-review-gate.yml`, `test-rag.yml`, `copilot-iterative-self-healing.yml`, `workflow-execution-gate.yml` | Scheduled + push-to-main workflows always read from **main branch** copy |
+| CI scripts | `check_pr_comments.py`, `sync_tracked_files.py`, `ci_rescue.py`, `check_cross_references.py`, `generate_coverage_map.py` | Scripts invoked by workflows — only effective on main-branch runs |
+| Infrastructure | `tests/rag/.coveragerc`, `.gitignore`, `requirements/lock.txt` | RAG coverage scope fix, .codex/coverage/ tracking, 11 Dependabot bumps |
+| Audit trail | `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Must be in main for historical integrity |
+
+**Verdict: ✅ YES — this PR MUST be merged into main.** None of the CI fixes (workflow, script, infrastructure) take effect until they land in the default branch. The PR is currently marked `draft:true` — it should be converted to ready-for-review and merged after CI goes green.
 
 ## Current System State
 

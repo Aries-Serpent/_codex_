@@ -23,3 +23,37 @@
 - **Playwright content blocker bypass for github.com in cognitive_app** (low complexity): Browser integration fails when content blocker intercepts GitHub API calls
 
 ---
+
+## Session: S237
+**Date**: 2026-03-30T18:10:00Z
+**Context**: Sessions S233–S237 · PR #3814 · RAG coverage scope fix · comment dedup consolidation · PR dashboard 90→100 · codebase-wide coverage intelligence system
+
+### Lessons Learned
+
+- **Coverage scope dilution: `--cov=src` vs `--cov=src/codex/rag` + `--cov-config`**: When `test-rag.yml` uses `--cov=src`, coverage.xml `line-rate` is computed across ALL 50k+ lines of `src/` but only RAG tests run → ~5% aggregate. Fix: use `--cov=src/codex/rag` **and** `--cov-config=tests/rag/.coveragerc` (dedicated config prevents global `.coveragerc source=src` from being merged). Pattern `COV_001` now in `ci_failure_patterns.yaml`.
+
+- **`detect-secrets` baseline version must match pre-commit hook pin**: `detect-secrets v1.5.0` (system) writes `version: "1.5.0"` baselines; pre-commit pin at `v1.4.0` may fail to parse them. Fix: check `.pre-commit-config.yaml rev:` and downgrade `.secrets.baseline` `"version"` field to match. Pattern `COV_002`.
+
+- **SHA tag inside comment body, not as upsert key**: Embed `<!-- ci-review-scanned:{sha_short} -->` inside the comment body so agents can detect stale checklists per-commit. Keep `<!-- ci-rescue:{pr_number} -->` as the PR-scoped upsert key. No comment proliferation.
+
+- **Paginated `listComments` for PRs with >100 comments**: A single `per_page: 100` call misses comments on busy PRs. Fix: `while (!existing) { ...; if (batch.length < 100) break; page++; }` — now in `comment-review-gate.yml`.
+
+- **YAML multiline `BODY="..."` trips actionlint (Pattern 20)**: Replace with `printf '%s\n' line1 line2 ... > ${RUNNER_TEMP}/file_${GITHUB_RUN_ID}.txt; BODY=$(cat file.txt)`.
+
+- **PR dashboard 90→100: always decompose score by component**: The 10-point gap was entirely the `Test/quality gate (10%)`. Decomposing the dashboard score breakdown immediately identifies the single root cause rather than searching broadly.
+
+### Key Decisions
+
+- **Omit `benchmarks/`, `analytics/`, and external `providers/` from RAG coverage**: These require binary services (ollama, llama.cpp, gpt4all, metrics DB) unavailable in CI. Omitting gives a coverage metric for testable code; untestable modules need manual review.
+
+- **`setup-python@v5` → `@v6` when already editing a workflow**: Node.js 20 deprecation deadline is 2026-06-02 (informational). Since we were already modifying `comment-review-gate.yml`, upgrading in the same commit avoids a separate PR and resolves Pattern 21 proactively.
+
+- **`COV_001`/`COV_002` in `ci_failure_patterns.yaml`, not just accountability report**: The patterns file is machine-readable and consumed by `ci_rescue.py`. Adding coverage patterns enables automated detection guidance in future triage runs.
+
+### Future Research Topics
+
+- **Coverage map → cognitive brain STM injection** (medium): Wire `generate_coverage_map.py` output into `inject_coverage_context.py` so agents get per-module risk scores at session start without manual lookup.
+- **PR coverage delta comment via `--pr-delta` mode** (low): `generate_coverage_map.py --pr-delta` is implemented; just needs a CI step in `validate.yml` to call it and post the delta as a PR comment.
+- **`COV_001` auto-fix in `ci_rescue.py`** (low): The fix is deterministic; could be added as a `ci_rescue.py` handler for RAG coverage failures.
+
+---

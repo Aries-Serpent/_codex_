@@ -25,6 +25,10 @@ The cognitive brain enables:
 
 ## 🚀 Quick Links
 
+### 🚨 CI Rescue & Health
+- 🔄 **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
+- 📋 **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
+
 ### Core Documentation
 - 📖 **[Architecture](./ARCHITECTURE.md)** - Detailed technical architecture
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines

@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S243 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — absolute `filename` paths normalized to repo-relative before `_file_to_module()` (prevents invalid module names on GitHub Actions). Copilot review thread line 142.
+- **fix(ci):** `generate_coverage_map.py` — per-XML duplicate module merge now unions `uncovered_lines` correctly (not just subtracts covered). Copilot review thread line 173.
+- **fix(ci):** `generate_coverage_map.py` — `build_coverage_map` merges function-level `covered_functions`/`uncovered_functions` from all suites; tags aggregated entries with `+merged` suite label; adds `len(suite_names) != len(xml_paths)` ValueError guard. Copilot review threads lines 323 and 291.
+- **fix(ci):** `sync_tracked_files.py` — `check_agent_context_baseline()` now runs detect-secrets with `cwd=REPO_ROOT` and passes repo-relative path; baseline key lookup is deterministic regardless of caller cwd. Copilot review thread line 380.
+- **fix(ci):** `copilot-iterative-self-healing.yml` — pagination loop bounded by `MAX_PAGES=50`; emits warning on limit reached. Copilot review thread line 339.
+- **fix(ci):** `comment-review-gate.yml` — stale "PR-scoped" comment corrected to SHA-scoped semantics; `HEAD_SHA` for `issue_comment` trigger now fetched via `github.rest.pulls.get()` API (not `github.sha` fallback). Copilot review threads lines 201 and 191.
+- **fix(ci):** `ci_rescue.py` — `_gh_api()` captures real HTTP status via `curl -w '\n%{http_code}'`; `post_pr_comment()` accepts 200 or 201 as success. Prevents silent loss of deep RCA comments. Copilot review thread line 1555.
+- **feat(ci/coverage):** `ci_rescue.py` — added `COV_001` and `COV_002` rescue patterns with auto-fix commands (P2C coverage intelligence).
+- **feat(ci/coverage):** `validate.yml` — "Generate coverage map and PR delta comment" step (P2B): posts coverage delta comment on PRs after test run.
+- **feat(ci/coverage):** `session_bootstrap.py` — injects coverage intelligence at session start (P2A): surfaces zero/low-coverage modules and high-risk function counts from `coverage_map.json`.
+
+### Fixed (S242 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — corrected multi-suite merge logic: now unions `covered_lines` across suites and recalculates `line_rate` from combined data (was incorrectly picking highest `line_rate`, discarding coverage from other suites). Addresses Gemini high-priority review thread.
+- **fix(ci):** `generate_coverage_map.py` — `fn_covered` denominator now uses only executable lines (`covered ∪ uncovered` within function range) rather than all AST lines, eliminating artificial inflation from comments/docstrings. Addresses Gemini medium-priority review thread.
+- **fix(ci):** `check_cross_references.py` — replaced over-broad uppercase regex `re.match(r'^[A-Z][A-Z0-9_]*$')` with explicit allow-list `if raw in {"URL", "RUN_URL"}`. Prevents false skipping of extensionless docs (README, LICENSE, CHANGELOG). Addresses Gemini medium-priority review thread.
+- **fix(ci):** `.secrets.baseline` — CODEX_MANIFEST stale entry refreshed via `sync_tracked_files.py --fix` (RP-004 pattern 22 resolved).
+- **docs:** Updated cognitive-brain-manager.md to v4.3.0 with S242 status, next-phase plan, and merge analysis.
+
+### Fixed (auto-update — PR #3818)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3818 (SHA `d17dd8a2`) at 2026-03-30T21:49Z [auto-generated]
+
+### Fixed (S238 — PR #3814)
+- **fix(ci):** `check_cross_references.py` — added uppercase-only token guard in `_resolve_ref()` to skip placeholder tokens like `URL`, `RUN_URL` in documentation templates. Fixes Validation Pipeline `check-cross-references` hook failure on 3 `(URL)` references in `AGENT_ACCOUNTABILITY_REPORT.md` (lines 13292, 13299, 13983).
+- **fix(ci):** `generate_coverage_map.py` — replaced `import xml.etree.ElementTree as ET` with `import defusedxml.ElementTree as ET` to satisfy `check-unsafe-xml` pre-commit hook (XXE prevention policy).
+- **fix(ci):** `session_bootstrap.py` — D-00 checklist wording changed from "URL(s) fetched" to "URL(s) found" in offline mode (consistency fix per PR reviewer comment on `session_context_latest.md:43`).
+
+### Fixed (S234 — PR #3814)
+- **fix(ci):** RP-007 structural fix — `sync_tracked_files.py` now includes a 5th check (`check_agent_context_baseline`) that runs a targeted `detect-secrets scan` on `.codex/agent_context.json` and patches its entry in `.secrets.baseline` when stale. Prevents recurring `detect-secrets` pre-commit exit-3 failures caused by `CODEX_CI_LAST_GREEN_SHA` rotation.
+- **fix(docs):** `validate-links.py` — added `^URL$` and `^RUN_URL$` to `SKIP_LINK_PATTERNS` so placeholder `(URL)` tokens in documentation templates are no longer flagged as missing files.
+- **fix(docs):** `.codex/sessions/chain-20260330-151413.md` — applied gemini-code-assist suggestion: run number is now a hyperlink to the GitHub Actions run.
+- **fix(ci):** Refreshed `.secrets.baseline` agent_context.json entry after auth-token rotation commits changed `CODEX_CI_LAST_GREEN_SHA` (RP-007 fix).
+- **fix(ci):** Addressed 3 unaddressed comment-review-gate blocking items (comments 4156171706, 4156172390, 4156180410 on PR #3814) — session boundary gap documented; shallow-reply protocol correction applied.
+
+### Fixed (S236 — PR #3814)
+- **fix(ci):** `scripts/ci/ci_rescue.py` `run_deep_rescue()` — deep analysis was always POSTing a new `<!-- ci-rescue-deep:{sha} -->` comment; now calls `post_pr_comment()` which has SHA-scoped upsert, appending deep analysis to the existing RCA comment. Result: 2 ci-rescue comments per commit → 1.
+- **fix(ci):** `.github/workflows/copilot-iterative-self-healing.yml` — replaced unreliable text-based dedup check + always-create `gh pr comment` with SHA+category-scoped marker upsert (`<!-- copilot-healing:{sha}:{category} -->`). Uses `${RUNNER_TEMP}` temp file per TEMPORARY_FILES_POLICY.md. Result: one `@copilot Continue` comment per commit per failure category, updated in-place.
+
+### Fixed (S235 — PR #3814)
+- **fix(ci):** `test-rag.yml` — RAG Module Tests failed with 5.093% coverage against 95% threshold; root cause: `--cov=src` measured coverage of ALL source files while only RAG tests ran. Fixed by changing to `--cov=src/codex/rag` (scope coverage to just the RAG module) and adding `tests/rag/` to the pytest test collection.
+- **fix(ci):** RP-007 — `.secrets.baseline` CODEX_MANIFEST entry was stale (hash missing); fixed via `sync_tracked_files.py --fix`. Unblocks Comment Review Gate and Pre-Merge Validation.
+
+### Fixed (S233 — PR #3814)
+- **chore(ci):** Nightly health sweep S171 (issue #3800) — ran `ruff check` (no new violations), `auto_fix_common_issues.py` (Pattern 22 fixed via `sync_tracked_files.py --fix`: `CODEX_MANIFEST` integrity hash refreshed, `.secrets.baseline` CODEX_MANIFEST entry updated), reviewed last-5 CI runs on `main` (all healthy).
+- **chore(ci):** CI Health Alert #3801 — verified SELF_HEALING_001 S172 fix is present in `iterative-self-healing-ci.yml` (triage lines 97–99, heal lines 310–312 recreate `.venv_ci` on cache miss). High 26.9% failure rate reflects pre-fix data in the 7-day telemetry window; recent runs show cascade guard active (`skipped`). No code change required; monitor will clear as the window rolls forward.
+
+### Fixed (auto-update — PR #3813)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3813 (SHA `8a90e255`) at 2026-03-30T15:06Z [auto-generated]
+
 ### Fixed (S230 — PR #3790)
 - **fix(ci):** `ci_rescue.py` `find_pr_for_run()` — when multiple PRs share the same HEAD branch (e.g. two open PRs on `0D_base_`), the function was returning the first/oldest PR (`prs[0]`), causing rescue comments to be posted to the wrong PR. Fix: prefer the PR with the highest number (most recently opened = most likely actively worked on). Same fix applied to the inline fallback in `ci-rescue.yml`.
 - **fix(ci):** `ci-rescue.yml` inline fallback — `MARKER` was referenced before `pr_number` was resolved, causing a Python `NameError`. Moved `MARKER` definition to after PR lookup. Also switched to SHA-scoped marker (`<!-- ci-rescue-rca:{sha_short} -->`) consistent with `ci_rescue.py`.

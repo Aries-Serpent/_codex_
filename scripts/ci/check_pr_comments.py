@@ -63,6 +63,23 @@ COPILOT_AGENTS: set[str] = {
     "Copilot",
 }
 
+# Comments whose body starts with any of these HTML markers are self-referential
+# gate outputs and must be exempt from the scan (prevents circular blocking).
+SKIP_BODY_MARKERS: tuple[str, ...] = (
+    "<!-- comment-review-gate-checklist -->",
+    "<!-- ci-rescue:",
+    "<!-- pre-merge-validation-summary -->",
+    "<!-- auto-fix-ci-issues -->",
+    "<!-- copilot-escalation:",
+    "<!-- ci-rescue-rca:",
+    "<!-- ci-rescue-deep:",
+    "<!-- cognitive-preflight-checklist -->",
+    "<!-- PR_STATUS_DASHBOARD_v1 -->",
+    "<!-- BRANCH_REBASE_RESOLVED -->",
+    "<!-- agent-token-delegation-result -->",
+    "<!-- root-org-validation-v1 -->",
+)
+
 GITHUB_API = "https://api.github.com"
 
 
@@ -267,6 +284,9 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue  # Copilot's own comments don't need addressing
+        body_start = (c.get("body") or "")[:80]
+        if any(body_start.startswith(m) for m in SKIP_BODY_MARKERS):
+            continue  # Self-referential gate output — exempt from scan
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
         addressed_flag, latency = was_addressed(c.get("created_at", ""))

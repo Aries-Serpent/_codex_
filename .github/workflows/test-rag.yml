@@ -116,10 +116,16 @@ jobs:
 
           # Run RAG tests serially to avoid xdist worker plugin-discovery failures
           # (workers crash when pytest-cov/timeout aren't auto-discoverable in the worker env)
-          python -m pytest tests/test_rag_*.py \
+          #
+          # --cov-config=tests/rag/.coveragerc scopes coverage to src/codex/rag only,
+          # preventing the global .coveragerc `source=src` from diluting the line-rate.
+          # (S235 fix: on main branch `--cov=src` was measuring all of src/ with only
+          # RAG tests running → 5 % line-rate; this config isolates the RAG module.)
+          python -m pytest tests/test_rag_*.py tests/rag/ \
             -v \
             --tb=short --timeout=300 \
-            --cov=src \
+            --cov=src/codex/rag \
+            --cov-config=tests/rag/.coveragerc \
             --cov-report=xml \
             --cov-report=html \
             --cov-report=term-missing

@@ -695,6 +695,76 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             "::test_endpoints_have_type_hints",
         ],
     ),
+    RescuePattern(
+        pattern_id="COV_001",
+        description="RAG test coverage dilution — --cov=src measures all source while only RAG tests run",
+        log_regexes=[
+            r"test-rag.*coverage.*[0-9]+\.[0-9]+%.*below",
+            r"FAIL.*Required test coverage of.*not reached.*test.rag",
+            r"coverage.*below.*threshold.*test.rag",
+            r"RAG.*coverage.*5\.[0-9]+%",
+            r"--cov=src.*test.rag",
+        ],
+        fix_command=[
+            "bash",
+            "-c",
+            # Ensure .coveragerc for RAG scope is present and test-rag.yml uses it.
+            # Parenthesised to avoid ISC001 implicit-string-concatenation lint warning.
+            (
+                "python3 -c \""
+                "import pathlib, sys; "
+                "coveragerc = pathlib.Path('tests/rag/.coveragerc'); "
+                "assert coveragerc.exists(), 'tests/rag/.coveragerc missing — see S237 fix'; "
+                "print('COV_001: tests/rag/.coveragerc present"
+                " — verify test-rag.yml uses --cov-config=tests/rag/.coveragerc'); "
+                "\""
+            ),
+        ],
+        fix_description=(
+            "RAG coverage scope dilution (COV_001): set `--cov=src/codex/rag` and "
+            "`--cov-config=tests/rag/.coveragerc` in `test-rag.yml`. "
+            "See `tests/rag/.coveragerc` and S237 lessons learned."
+        ),
+        references=[
+            "tests/rag/.coveragerc",
+            ".github/workflows/test-rag.yml",
+            ".codex/patterns/ci_failure_patterns.yaml COV_001",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="COV_002",
+        description=".secrets.baseline version mismatch with detect-secrets pre-commit pin",
+        log_regexes=[
+            r"detect-secrets.*[Vv]ersion.*mismatch",
+            r"baseline.*version.*[0-9]\.[0-9].*pre-commit.*[0-9]\.[0-9]",
+            r"detect.secrets.*[Uu]pgrade.*baseline",
+        ],
+        fix_command=[
+            "bash",
+            "-c",
+            "python3 -c \""
+            + "import json, pathlib, re; "
+            + "cfg = pathlib.Path('.pre-commit-config.yaml').read_text(); "
+            + "m = re.search(r'detect-secrets.*?rev:\\s*v?([0-9.]+)', cfg, re.S); "
+            + "pin = m.group(1) if m else '1.4.0'; "
+            + "bl = pathlib.Path('.secrets.baseline'); "
+            + "data = json.loads(bl.read_text()); "
+            + "data['version'] = pin; "
+            + "bl.write_text(json.dumps(data, indent=2)); "
+            + "print(f'COV_002: updated .secrets.baseline version to {pin}'); "
+            + "\"",
+        ],
+        fix_description=(
+            "Baseline version mismatch (COV_002): downgrade `.secrets.baseline` "
+            "`version` field to match the `detect-secrets` rev pinned in "
+            "`.pre-commit-config.yaml`. Run `sync_tracked_files.py --fix` after."
+        ),
+        references=[
+            ".secrets.baseline",
+            ".pre-commit-config.yaml",
+            ".codex/patterns/ci_failure_patterns.yaml COV_002",
+        ],
+    ),
 ]
 
 
@@ -751,10 +821,18 @@ def _gh_api(
     method: str = "GET",
     body: Optional[dict] = None,
 ) -> tuple[int, dict | list | None]:
-    """Call the GitHub REST API using curl (avoids PyGitHub dependency)."""
+    """Call the GitHub REST API using curl (avoids PyGitHub dependency).
+
+    Returns (http_status_code, parsed_json_body).  Uses a unique delimiter
+    ``||HTTP_STATUS||`` appended via ``-w`` so the real HTTP status is captured
+    and returned instead of always returning 200 for any successful JSON parse,
+    which previously masked 4xx/5xx error responses.
+    """
+    _STATUS_DELIMITER = "||HTTP_STATUS||"
     cmd = [
         "curl",
         "-sS",
+        "-w", _STATUS_DELIMITER + "%{http_code}",  # append delimiter + real status
         "-H",
         f"Authorization: Bearer {token}",
         "-H",
@@ -780,11 +858,26 @@ def _gh_api(
             f"  ⚠️  GitHub API error (exit {result.returncode}): {stderr_snippet}", file=sys.stderr
         )
         return -1, None
+
+    # Split at the delimiter appended by -w '||HTTP_STATUS||%{http_code}'
+    raw = result.stdout
+    if _STATUS_DELIMITER in raw:
+        split_idx = raw.rfind(_STATUS_DELIMITER)
+        json_body = raw[:split_idx]
+        http_status_str = raw[split_idx + len(_STATUS_DELIMITER):].strip()
+    else:
+        json_body = raw
+        http_status_str = ""
     try:
-        return 200, json.loads(result.stdout)
+        http_status = int(http_status_str)
+    except (ValueError, TypeError):
+        http_status = -1
+
+    try:
+        return http_status, json.loads(json_body) if json_body.strip() else None
     except json.JSONDecodeError as exc:
         print(f"  ⚠️  GitHub API response not valid JSON: {exc}", file=sys.stderr)
-        return -1, None
+        return http_status, None
 
 
 def get_failed_jobs(run_id: int, repo: str, token: str) -> list[dict]:
@@ -961,7 +1054,7 @@ def post_pr_comment(
             body={"body": full_body},
         )
 
-    return status == 200
+    return status in (200, 201)
 
 
 # ---------------------------------------------------------------------------
@@ -1535,25 +1628,24 @@ def run_deep_rescue(
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
         )
-        # Use a distinct marker so deep-rescue comments are separate from the
-        # standard rescue RCA comment.
-        deep_marker = f"<!-- ci-rescue-deep:{(commit_sha or '')[:12]} -->"
-        full_body = f"{deep_marker}\n{comment}"
-        print(f"\n📝 Posting deep RCA comment to PR #{pr_number}…")
-        if dry_run:
-            print(f"[DRY RUN] Would post deep RCA:\n{full_body[:400]}…")
+        # Append deep analysis into the same SHA-scoped RCA comment so the PR
+        # thread has ONE rescue thread per commit, not two separate comments.
+        # post_pr_comment() already implements SHA-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{sha} --> comment and appends there, or
+        # creates a fresh one if the standard rescue step hasn't run yet.
+        print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
+        success = post_pr_comment(
+            pr_number=pr_number,
+            repo=repo,
+            token=token,
+            body=comment,
+            dry_run=dry_run,
+            commit_sha=commit_sha,
+        )
+        if success:
+            print("  ✅ Deep analysis appended to rescue comment")
         else:
-            status, _ = _gh_api(
-                f"/repos/{repo}/issues/{pr_number}/comments",
-                token,
-                method="POST",
-                body={"body": full_body},
-            )
-            if status in (200, 201):
-                print("  ✅ Deep RCA comment posted")
-            else:
-                print(f"  ⚠️  Failed to post deep RCA comment (HTTP {status})",
-                      file=sys.stderr)
+            print("  ⚠️  Failed to append deep analysis", file=sys.stderr)
     else:
         print("  ⚠️  No PR resolved — deep RCA comment skipped")
 
