@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3818)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3818 (SHA `d17dd8a2`) at 2026-03-30T21:49Z [auto-generated]
+
 ### Fixed (S238 — PR #3814)
 - **fix(ci):** `check_cross_references.py` — added uppercase-only token guard in `_resolve_ref()` to skip placeholder tokens like `URL`, `RUN_URL` in documentation templates. Fixes Validation Pipeline `check-cross-references` hook failure on 3 `(URL)` references in `AGENT_ACCOUNTABILITY_REPORT.md` (lines 13292, 13299, 13983).
 - **fix(ci):** `generate_coverage_map.py` — replaced `import xml.etree.ElementTree as ET` with `import defusedxml.ElementTree as ET` to satisfy `check-unsafe-xml` pre-commit hook (XXE prevention policy).
