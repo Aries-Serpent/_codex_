@@ -52,3 +52,34 @@
 - **Issue:** `codeql-analysis.yml` originally only triggered on PRs to `main`/`develop`. PRs to `0D_base_` and `copilot/**` never ran CodeQL, so GHAS had no SARIF and showed "N configurations not found".
 - **Fix:** Added `0D_base_` and `copilot/**` to `pull_request.branches`. Also added `go` to the language matrix (tools/github-secrets-cli has `go.mod`).
 - **Pattern:** P-039
+
+---
+
+## Confirmed-Flaky Timing-Sensitive Tests (S229)
+
+The following tests use `time.sleep()` for real-wall-clock expiry/timing checks
+and have been marked `@pytest.mark.flaky(reruns=2)` to handle occasional failures
+on loaded CI runners.
+
+**Marked in S229 (2026-03-30):**
+
+| File | Test | Reason |
+|------|------|--------|
+| `tests/space_traversal/test_performance.py` | `test_file_cache_expiry` | `time.sleep(1.1)` for TTL expiry — fails if runner is slow |
+| `tests/space_traversal/test_performance.py` | `test_file_cache_cleanup_expired` | `time.sleep(1.1)` for TTL expiry — fails if runner is slow |
+| `tests/space_traversal/test_performance.py` | `test_profile_stage_context_manager` | `time.sleep(0.05)` + boundary timing assertion `>= 0.05` |
+| `tests/autonomy/test_integration_budget_exhaustion.py` | `TestBudgetCap.test_budget_cap_raises_on_exhaustion` | `budget_cap(max_seconds=0.001)` — very tight timeout, may not trigger under high load |
+| `tests/autonomy/test_autonomy_scheduler.py` | `TestBudgetCap.test_budget_cap_raises_on_timeout` | `budget_cap(max_seconds=0.01)` — tight timeout, may not trigger under high load |
+
+**Prevention:** When writing tests that depend on wall-clock timing (sleep-based TTL,
+budget caps with millisecond precision), always add `@pytest.mark.flaky(reruns=2)`.
+Import: `import pytest` at the top of the file; marker syntax:
+```python
+@pytest.mark.flaky(reruns=2)
+def test_my_timing_sensitive_test(): ...
+```
+Note: Sharded CI runs pass `-p no:rerunfailures` (see P-038), which disables the
+rerun plugin. In those runs, `@pytest.mark.flaky` is effectively a no-op and only
+has an effect in non-sharded test runs.
+
+- **Pattern:** P-044

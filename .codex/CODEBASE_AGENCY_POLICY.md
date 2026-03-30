@@ -1,6 +1,6 @@
 # AI Codebase Agency Policy
 
-**Version:** 1.0.0
+**Version:** 1.1.0
 **Effective Date:** 2026-01-05
 **Status:** Mandatory for ALL AI agents
 **Enforcement:** Policy violations require immediate correction
@@ -50,6 +50,27 @@ before making any file changes:**
    - `github-actions[bot]` — CI gate comments (cognitive-preflight, deferral gate)
    - Any other bot or automated commenter
    - **ALL open/unresolved threads MUST be addressed before new work begins.**
+
+   **§0a — MAINTAINER COMMENTS (mbaetiong) — HIGHEST PRIORITY (HARD STOP):**
+   - Comments from `@mbaetiong` are BLOCKING. No commit may be pushed until
+     EVERY `mbaetiong` comment has been explicitly replied to by the agent.
+   - A "reply" means a substantive response that either confirms the action
+     taken, explains why the request was not actionable, or asks a clarifying
+     question. Silence is never acceptable.
+   - This is enforced by `comment-review-gate.yml` (REQ-13). CI will FAIL
+     with a blocking checklist comment listing every unaddressed `mbaetiong`
+     comment. The gate re-scans on every push.
+   - **Use `reply_to_comment` tool** with the correct `comment_id` for each
+     unaddressed comment before committing new changes.
+
+   **§0b — CRITICAL BOT COMMENTS — BLOCKING:**
+   - `copilot-pull-request-reviewer[bot]` — all review threads (inline + overall)
+   - `github-advanced-security[bot]` — all security alerts
+   - `github-code-quality[bot]` — all quality findings
+   - `github-actions[bot]` — all CI gate comments posted by workflows
+   - These are enforced by the same `comment-review-gate.yml` (REQ-13) gate.
+   - **Exception:** Informational bot comments (dependabot, codecov) are
+     WARNING-level. They must be reviewed but do not block CI.
 
 2. **Review ALL failing CI checks** on the active PR:
    - Fetch the latest workflow run status

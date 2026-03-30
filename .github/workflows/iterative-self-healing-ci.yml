@@ -161,6 +161,50 @@ jobs:
               echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
               echo "See: [INTEGRATION_BRANCH_MODEL.md](.codex/docs/INTEGRATION_BRANCH_MODEL.md)" >> "$GITHUB_STEP_SUMMARY"
               ;;
+            coverage-timeout)
+              # Coverage/test timeout failure (P19 pattern): pre-existing shadow-import
+              # failures (config.openai_client, services.github.client) cause the
+              # Resilient Validation Suite and Pre-Merge Validation to time out.
+              # Not auto-fixable here — root cause is upstream module shadow imports.
+              # Escalated to Copilot Coding Agent via copilot-escalation job.
+              echo "fixable=false" >> "$GITHUB_OUTPUT"
+              echo "### ⏱️ Coverage / Test Timeout (P19)" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Pattern \`coverage-timeout\` is **not auto-fixable** at this layer." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Root cause:** Pre-existing P19 shadow-import failures in" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`config.openai_client\` / \`services.github.client\` cause test-suite" >> "$GITHUB_STEP_SUMMARY"
+              echo "timeouts in the Resilient Validation Suite and Pre-Merge Validation." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Affected test files:**" >> "$GITHUB_STEP_SUMMARY"
+              echo "- \`tests/config/test_openai_client.py\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "- \`tests/services/github/test_client.py\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "- \`tests/services/test_github_client_phase9_1.py\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Action:** These failures pre-date this PR. Copilot escalation will" >> "$GITHUB_STEP_SUMMARY"
+              echo "be triggered to investigate and fix the shadow-import root cause." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            unknown)
+              # Pattern unrecognised by collect_telemetry.py classify-run.
+              # This occurs when: (a) the run log is not yet available, (b) no
+              # known keyword matches, or (c) classify-run itself failed.
+              # Not auto-fixable — escalate to human + Copilot for investigation.
+              echo "fixable=false" >> "$GITHUB_OUTPUT"
+              echo "### ❓ Unknown Failure Pattern" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Pattern \`unknown\` — \`collect_telemetry.py --classify-run\` could not" >> "$GITHUB_STEP_SUMMARY"
+              echo "identify the failure from the run logs." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Common causes:**" >> "$GITHUB_STEP_SUMMARY"
+              echo "1. Run logs not yet available (retry in a few minutes)" >> "$GITHUB_STEP_SUMMARY"
+              echo "2. New failure type not in the pattern keyword dictionary" >> "$GITHUB_STEP_SUMMARY"
+              echo "3. \`classify-run\` itself threw an exception (check triage logs)" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "**Action:** To add this pattern, update \`PATTERN_KEYWORDS\` in" >> "$GITHUB_STEP_SUMMARY"
+              echo "\`scripts/ci/collect_telemetry.py\` and add a \`case\` arm in this workflow." >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "See: [\`docs/workflows/WORKFLOW_RACE_CONDITION_AUDIT.md\`](docs/workflows/WORKFLOW_RACE_CONDITION_AUDIT.md)" >> "$GITHUB_STEP_SUMMARY"
+              ;;
             *)
               echo "fixable=false" >> "$GITHUB_OUTPUT"
               ;;
@@ -528,6 +572,9 @@ jobs:
               "2. Add pattern to the \`case\` statement in \`iterative-self-healing-ci.yml\`" \
               "3. Add a fix handler in \`scripts/ci/auto_fix_common_issues.py\`" "" \
               "*Posted by: iterative-self-healing-ci.yml (Phase 5 — S154)*" \
+              "" \
+              "---" \
+              "_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_" \
               > /tmp/escalation_body.txt
             gh pr comment "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
               --body-file /tmp/escalation_body.txt
@@ -555,6 +602,9 @@ jobs:
   # is not diagnosable are excluded — these still go to human escalation only.
   copilot-escalation:
     name: "🤖 Copilot escalation"
+    concurrency:
+      group: copilot-escalation-pr-${{ github.event.pull_request.number || needs.triage.outputs.head_branch || github.run_id }}
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: triage
@@ -702,9 +752,30 @@ jobs:
 
           RUN_URL="https://github.com/Aries-Serpent/_codex_/actions/runs/${RUN_ID}"
 
+          # ── Dedup guard: skip if a copilot-escalation comment was posted < 30 min ago ──
+          ESCALATION_MARKER="<!-- copilot-escalation:${PR_NUMBER} -->"
+          # Use a heredoc-fed jq expression to avoid double-quote nesting inside
+          # the --jq flag argument (reviewer: jq program must not embed double
+          # quotes in a double-quoted shell string — use single-quote wrapper).
+          JQ_EXPR='[.comments[] | select(.body | contains("<!-- copilot-escalation:"))] | last | .createdAt // empty'
+          LAST_ESC=$(gh pr view "$PR_NUMBER" --repo Aries-Serpent/_codex_ \
+            --json comments --jq "$JQ_EXPR" \
+            2>/dev/null || echo "")
+          if [ -n "$LAST_ESC" ]; then
+            NOW_TS=$(date +%s)
+            LAST_TS=$(date -d "${LAST_ESC}" +%s 2>/dev/null || echo "0")
+            ELAPSED=$(( NOW_TS - LAST_TS ))
+            if [ "$ELAPSED" -lt 1800 ]; then
+              echo "::notice::Skipping copilot-escalation — posted ${ELAPSED}s ago (< 30 min cooldown)"
+              echo "### ⏭️ Copilot Escalation Skipped (cooldown)" >> "$GITHUB_STEP_SUMMARY"
+              echo "Last escalation was ${ELAPSED}s ago. Cooldown: 1800s." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+
           # Build structured @copilot prompt per proposal §6 (Phase 8 P3: includes cross-PR correlation)
           cat > "${RUNNER_TEMP}/copilot_escalation.txt" <<COPILOT_EOF
-          <!-- copilot-escalation-trigger -->
+          <!-- copilot-escalation:${PR_NUMBER} -->
           ## 🤖 Copilot Self-Healing Escalation
 
           Auto-fix patterns exhausted for this failure. Requesting Copilot Coding Agent assistance.
@@ -733,6 +804,9 @@ jobs:
           6. Update \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\`
 
           _Posted by: iterative-self-healing-ci.yml → copilot-escalation (S201 Phase 8 P3)_
+
+          ---
+          _[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_
           COPILOT_EOF
 
           # Strip leading whitespace from heredoc (indented for readability)

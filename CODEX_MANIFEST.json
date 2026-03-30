@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-29T00:25:35Z",
+  "generated_at": "2026-03-29T23:19:17Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1149,6 +1149,11 @@
       "has_concurrency": true
     },
     {
+      "name": "comment-review-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "consolidated-pr-status",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": false
@@ -1206,7 +1211,7 @@
     {
       "name": "cost-gate",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "coverage-with-timeout",
@@ -1614,6 +1619,11 @@
       "has_concurrency": true
     },
     {
+      "name": "workflow-execution-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "workflow-expiry-enforcer",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1964,5 +1974,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "e9e5235c923e56e0d154e54ffc13ff814e8d1a67476e88de7d2fbe7d2dbbcba0"
+  "integrity_sha256": "0e1cdeead7b2c4c5f6d793d087c935ae4b013d74a102e4a818449257f7318fc7"
 }

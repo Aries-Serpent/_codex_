@@ -225,8 +225,7 @@ async def list_check_runs(
     try:
         client = _get_github_client()
 
-        from services.github.types import CheckRunStatus
-
+        # Use the locally-defined CheckRunStatus enum (avoids P19 shadow import).
         status_enum = CheckRunStatus(status) if status else None
 
         # Fetch check runs

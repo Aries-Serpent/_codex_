@@ -1,0 +1,244 @@
+name: "PR Comment Review Gate"
+
+# ────────────────────────────────────────────────────────────────────────────
+# REQ-13 — Hardened Comment Review Gate (S227)
+#
+# Tier-1 GROUNDED enforcement: runs on every PR push and posts a live
+# checklist of all unaddressed comments from:
+#   • mbaetiong (BLOCKING — CI fails until addressed)
+#   • github-actions[bot], copilot-pull-request-reviewer[bot],
+#     github-advanced-security[bot], github-code-quality[bot] (BLOCKING)
+#   • dependabot[bot], codecov[bot] etc. (WARNING)
+#
+# The checklist is upserted into a single PR comment (marker-based dedup).
+# CI fails with exit code 1 if blocking comments remain unaddressed.
+#
+# Policy reference: .codex/CODEBASE_AGENCY_POLICY.md §0
+# ────────────────────────────────────────────────────────────────────────────
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: comment-review-gate-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ── Job 1: Scan all PR comments and post the live checklist ───────────────
+  scan-and-post:
+    name: "🔍 Scan PR comments"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # Run on PR events or when mbaetiong posts a new comment
+    if: |
+      (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       github.event.comment.user.login == 'mbaetiong')
+
+    outputs:
+      exit_code: ${{ steps.scan.outputs.exit_code }}
+      blocking_count: ${{ steps.scan.outputs.blocking_count }}
+      warning_count: ${{ steps.scan.outputs.warning_count }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/check_pr_comments.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Determine PR number
+        id: pr_info
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || github.event.issue.number }}"
+          echo "pr_number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+          echo "repo=${{ github.repository }}" >> "$GITHUB_OUTPUT"
+
+      - name: Scan comments and post checklist
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          GITHUB_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          python3 scripts/ci/check_pr_comments.py \
+            --pr "${{ steps.pr_info.outputs.pr_number }}" \
+            --repo "${{ steps.pr_info.outputs.repo }}" \
+            --post-checklist \
+            --output-json /tmp/comment_review_report.json
+          EXIT_CODE=$?
+
+          # Parse counts from report
+          BLOCKING=$(python3 -c "
+          import json
+          r = json.load(open('/tmp/comment_review_report.json'))
+          print(len(r.get('unaddressed_blocking', [])))
+          " 2>/dev/null || echo "0")
+          WARNING=$(python3 -c "
+          import json
+          r = json.load(open('/tmp/comment_review_report.json'))
+          print(len(r.get('unaddressed_warning', [])))
+          " 2>/dev/null || echo "0")
+
+          echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+          echo "blocking_count=${BLOCKING}" >> "$GITHUB_OUTPUT"
+          echo "warning_count=${WARNING}" >> "$GITHUB_OUTPUT"
+
+          # Write step summary
+          echo "## 🔍 PR Comment Review Gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "### ✅ All comments addressed" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$EXIT_CODE" -eq 1 ]; then
+            echo "### 🚨 ${BLOCKING} blocking comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Copilot must address all blocking comments before committing new changes." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ⚠️ ${WARNING} warning comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # Return 0 always here — the gate job below enforces failure
+          exit 0
+
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
+          path: /tmp/comment_review_report.json
+          retention-days: 14
+          if-no-files-found: warn
+
+  # ── Job 2: Gate — fail CI if blocking comments are unaddressed ────────────
+  gate:
+    name: "🚦 Comment review gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: scan-and-post
+
+    steps:
+      - name: Enforce blocking comment requirement
+        env:
+          BLOCKING: ${{ needs.scan-and-post.outputs.blocking_count }}
+          EXIT_CODE: ${{ needs.scan-and-post.outputs.exit_code }}
+        run: |
+          echo "Blocking unaddressed comments: ${BLOCKING}"
+          echo "Exit code from scan: ${EXIT_CODE}"
+
+          if [ "${EXIT_CODE}" = "1" ] || [ "${BLOCKING:-0}" -gt 0 ]; then
+            echo "::error::${BLOCKING} blocking comment(s) from mbaetiong or CI bots are unaddressed."
+            echo "::error::Review the PR comment checklist and address each item before committing."
+            echo ""
+            echo "### 🚨 CI GATE FAILED — Unaddressed Blocking Comments" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**${BLOCKING} blocking comment(s)** from \`mbaetiong\` or CI bots remain unaddressed." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**To resolve:**" >> "$GITHUB_STEP_SUMMARY"
+            echo "1. Read every 🚨 row in the comment review checklist on this PR" >> "$GITHUB_STEP_SUMMARY"
+            echo "2. Reply to each comment with your resolution" >> "$GITHUB_STEP_SUMMARY"
+            echo "3. Push a new commit — this gate will re-scan automatically" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "_[🔗 Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "### ✅ Comment Review Gate: PASSED" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "All blocking comments are addressed." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_[🔗 Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_" >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Rescue comment on failure ─────────────────────────────────────────────
+  rescue-comment:
+    name: "Post gate failure notice"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [scan-and-post, gate]
+    if: failure()
+    concurrency:
+      group: ci-rescue-comment-${{ github.event.pull_request.number || github.sha }}
+      cancel-in-progress: false
+
+    permissions:
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Post failure notice on PR
+        uses: actions/github-script@v8
+        env:
+          RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BLOCKING: ${{ needs.scan-and-post.outputs.blocking_count }}
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          script: |
+            const pr_number = context.issue.number || context.payload.pull_request?.number;
+            if (!pr_number) { console.log('No PR number — skipping rescue comment'); return; }
+
+            const MARKER = `<!-- ci-rescue:${pr_number} -->`;
+            const runUrl = process.env.RUN_URL;
+            const blocking = process.env.BLOCKING || '?';
+
+            const body = [
+              MARKER,
+              '## 🚨 CI Rescue — Comment Review Gate Failed',
+              '',
+              `**${blocking} blocking comment(s)** from \`mbaetiong\` or CI bots are unaddressed on this PR.`,
+              '',
+              '### Required Actions',
+              '',
+              '1. **Read the [PR Comment Review Checklist](#)** (look for the pinned checklist comment above)',
+              '2. **Address every 🚨 BLOCKING row** — reply to the original comment with your resolution',
+              '3. **Push a new commit** — the gate re-scans automatically on every push',
+              '',
+              '> **Policy:** Per `.codex/CODEBASE_AGENCY_POLICY.md §0`, ALL comments from',
+              '> `mbaetiong` and ALL bot-posted CI gate comments MUST be addressed before new work begins.',
+              '',
+              `_Posted by: comment-review-gate.yml_`,
+              '',
+              `---`,
+              `_[🔗 Workflow run](${runUrl})_`,
+            ].join('\n');
+
+            // Upsert: update existing or create new
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr_number,
+              per_page: 100,
+            });
+
+            const existing = comments.find(c => (c.body || '').includes(MARKER));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr_number,
+                body,
+              });
+            }

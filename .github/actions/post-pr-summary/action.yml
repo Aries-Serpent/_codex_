@@ -46,7 +46,7 @@ runs:
         WORKFLOW_NAME: ${{ inputs.workflow-name }}
         STATUS: ${{ inputs.status }}
         SUMMARY: ${{ inputs.summary }}
-        DETAILS: ${{ inputs.details }}
+        DETAILS: ${{ inputs.details }}\n\n---\n_[🔗 Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
         # Only post on pull_request events (skip push/workflow_dispatch etc.)

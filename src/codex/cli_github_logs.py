@@ -228,12 +228,8 @@ def list_check_runs(
 
         click.echo(f"Fetching check runs for {owner}/{repo}@{ref}...", err=True)
 
-        from services.github.types import CheckRunStatus
-
-        status_enum = CheckRunStatus(status) if status else None
-
         check_runs = client.list_check_runs_for_ref(
-            owner, repo, ref, check_name=name, status=status_enum
+            owner, repo, ref, check_name=name, status=status
         )
 
         if not check_runs:
