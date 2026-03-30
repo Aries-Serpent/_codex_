@@ -148,16 +148,19 @@ jobs:
           | ⏭️ SKIPPED | \`${wf}\` |"
             done
 
-            BODY="${MARKER}
-          ## ⚙️ Workflow Execution Gate — Execution Plan
-
-          | Status | Workflow |
-          |--------|---------|${TABLE_ROWS}
-
-          > Workflows marked **SKIPPED** will not be triggered. This is controlled by the
-          > \`## 🔄 Workflow Execution Checklist\` section in the PR body.
-
-          _[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_"
+            BODY_FILE="${RUNNER_TEMP}/wf_gate_body_${GITHUB_RUN_ID}.txt"
+            printf '%s\n' "${MARKER}" \
+              "## ⚙️ Workflow Execution Gate — Execution Plan" \
+              "" \
+              "| Status | Workflow |" \
+              "|--------|---------|${TABLE_ROWS}" \
+              "" \
+              "> Workflows marked **SKIPPED** will not be triggered. This is controlled by the" \
+              "> \`## 🔄 Workflow Execution Checklist\` section in the PR body." \
+              "" \
+              "_[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_" \
+              > "${BODY_FILE}"
+            BODY=$(cat "${BODY_FILE}")
           fi
 
           # Upsert: update existing gate comment or create new one
