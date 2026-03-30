@@ -232,8 +232,7 @@ WORKFLOW_ENV_PROFILES: dict[str, EnvProfile] = {
         editable_extras="",
         pre_test_commands=[
             "# Install actionlint v1.7.7 (pinned)",
-            "curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/"
-            "actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint",
+            "curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint",
             "sudo mv actionlint /usr/local/bin/",
         ],
         ci_test_command=(
