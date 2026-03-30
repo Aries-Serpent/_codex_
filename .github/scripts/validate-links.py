@@ -69,6 +69,9 @@ SKIP_LINK_PATTERNS = [
     r'^/tmp/',             # Temporary file/script paths
     r'^.*?correct/path',   # Placeholder "../correct/path.md" in examples
     r'^AGENT_DESIGN\.md$', # Previously in HTML comments (now stripped upstream)
+    # Placeholder tokens used in documentation templates — not real file paths:
+    r'^URL$',              # e.g. [🔗 Workflow run](URL) — template placeholder, not a link
+    r'^RUN_URL$',          # e.g. (RUN_URL) — run-URL template placeholder in workflow docs
 ]
 
 class LinkValidator:
