@@ -172,30 +172,93 @@ def find_unaddressed_comments(
         f"/repos/{repo}/pulls/{pr_number}/reviews", token
     )
 
-    # Build timeline of Copilot responses (by timestamp)
+    # Build timeline of Copilot responses (by timestamp) from ALL comment sources:
+    # issue_comments, review_comments, and reviews so that review-posted replies
+    # are not missed by the was_addressed() heuristic.
     copilot_response_times: list[datetime] = []
+
+    def _parse_ts(ts: str) -> datetime | None:
+        """Parse an ISO-8601 timestamp, returning None on failure."""
+        if not ts:
+            return None
+        try:
+            return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        except ValueError:
+            print(
+                f"[check_pr_comments] Warning: unparseable timestamp {ts!r} — skipping",
+                file=sys.stderr,
+            )
+            return None
+
     for c in issue_comments:
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
-            ts = c.get("created_at", "")
-            try:
-                copilot_response_times.append(
-                    datetime.fromisoformat(ts.replace("Z", "+00:00"))
-                )
-            except ValueError:
-                print(f"[check_pr_comments] Warning: unparseable timestamp {ts!r} — skipping", file=sys.stderr)
+            dt = _parse_ts(c.get("created_at", ""))
+            if dt is not None:
+                copilot_response_times.append(dt)
 
-    def was_addressed(comment_ts_str: str) -> bool:
-        """True if a Copilot agent posted AFTER this comment."""
+    for c in review_comments:
+        login = (c.get("user") or {}).get("login", "")
+        if login in COPILOT_AGENTS:
+            dt = _parse_ts(c.get("created_at", ""))
+            if dt is not None:
+                copilot_response_times.append(dt)
+
+    for r in reviews:
+        login = (r.get("user") or {}).get("login", "")
+        if login in COPILOT_AGENTS:
+            dt = _parse_ts(r.get("submitted_at", ""))
+            if dt is not None:
+                copilot_response_times.append(dt)
+
+    # Build an explicit reply index from review_comments: comment_id -> [copilot reply times]
+    # This uses GitHub's `in_reply_to_id` field so that direct thread replies are detected
+    # without relying solely on a global timestamp heuristic.
+    copilot_reply_index: dict[int, list[datetime]] = {}
+    for c in review_comments:
+        login = (c.get("user") or {}).get("login", "")
+        if login in COPILOT_AGENTS:
+            parent_id = c.get("in_reply_to_id")
+            dt = _parse_ts(c.get("created_at", ""))
+            if parent_id is not None and dt is not None:
+                copilot_reply_index.setdefault(int(parent_id), []).append(dt)
+
+    def first_copilot_response_after(comment_ts: datetime) -> datetime | None:
+        """Return the earliest Copilot response timestamp strictly after *comment_ts*."""
+        candidates = [rt for rt in copilot_response_times if rt > comment_ts]
+        return min(candidates) if candidates else None
+
+    def was_addressed(comment_ts_str: str, comment_id: int | None = None) -> tuple[bool, float | None]:
+        """Return (addressed, latency_seconds).
+
+        For review comments, first checks whether a Copilot agent posted a direct
+        reply (matched via ``in_reply_to_id``).  Falls back to the global
+        timestamp heuristic for all other comment types.
+
+        Returns latency_seconds as the elapsed seconds from comment creation to
+        the first Copilot reply, or None if not addressed / latency unknown.
+        """
         if not comment_ts_str:
-            return False
-        try:
-            comment_ts = datetime.fromisoformat(
-                comment_ts_str.replace("Z", "+00:00")
-            )
-        except ValueError:
-            return False
-        return any(rt > comment_ts for rt in copilot_response_times)
+            return False, None
+        comment_ts = _parse_ts(comment_ts_str)
+        if comment_ts is None:
+            return False, None
+
+        # 1. Explicit reply check (review comments with in_reply_to_id)
+        if comment_id is not None:
+            direct_replies = copilot_reply_index.get(comment_id, [])
+            if direct_replies:
+                first_reply = min(direct_replies)
+                latency = (first_reply - comment_ts).total_seconds()
+                return True, max(latency, 0.0)
+
+        # 2. Global timestamp heuristic fallback
+        first_response = first_copilot_response_after(comment_ts)
+        if first_response is not None:
+            latency = (first_response - comment_ts).total_seconds()
+            return True, max(latency, 0.0)
+
+        return False, None
 
     # Classify all comments
     all_records: list[dict[str, Any]] = []
@@ -206,7 +269,9 @@ def find_unaddressed_comments(
             continue  # Copilot's own comments don't need addressing
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
-        rec["addressed"] = was_addressed(c.get("created_at", ""))
+        addressed_flag, latency = was_addressed(c.get("created_at", ""))
+        rec["addressed"] = addressed_flag
+        rec["response_latency_seconds"] = latency
         all_records.append(rec)
 
     for c in review_comments:
@@ -215,7 +280,11 @@ def find_unaddressed_comments(
             continue
         rec = classify_comment(c)
         rec["comment_type"] = "review_comment"
-        rec["addressed"] = was_addressed(c.get("created_at", ""))
+        addressed_flag, latency = was_addressed(
+            c.get("created_at", ""), comment_id=c.get("id")
+        )
+        rec["addressed"] = addressed_flag
+        rec["response_latency_seconds"] = latency
         all_records.append(rec)
 
     for r in reviews:
@@ -227,7 +296,9 @@ def find_unaddressed_comments(
             continue  # Skip empty review bodies
         rec = classify_comment(r)
         rec["comment_type"] = "review"
-        rec["addressed"] = was_addressed(r.get("submitted_at", ""))
+        addressed_flag, latency = was_addressed(r.get("submitted_at", ""))
+        rec["addressed"] = addressed_flag
+        rec["response_latency_seconds"] = latency
         all_records.append(rec)
 
     # Separate by category
@@ -453,8 +524,10 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
     ]
 
     # Per-comment response latency (seconds from comment creation to first Copilot reply)
+    # Only addressed comments have a populated response_latency_seconds value.
     all_comments = (
-        report["unaddressed_blocking"]
+        report["addressed"]
+        + report["unaddressed_blocking"]
         + report["unaddressed_warning"]
         + report["unaddressed_info"]
     )
