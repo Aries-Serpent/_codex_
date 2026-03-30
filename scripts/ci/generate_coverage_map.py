@@ -29,11 +29,12 @@ from __future__ import annotations
 import ast
 import json
 import sys
-import defusedxml.ElementTree as ET
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
+
+import defusedxml.ElementTree as ET
 
 # ---------------------------------------------------------------------------
 # Constants
