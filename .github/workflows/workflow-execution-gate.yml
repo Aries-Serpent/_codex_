@@ -1,0 +1,176 @@
+name: Workflow Execution Gate
+
+# Reads the "## 🔄 Workflow Execution Checklist" section from the PR body.
+# Checked items ( - [x] ) are recorded as allowed; unchecked items ( - [ ] )
+# are recorded as "skipped" in the execution-plan comment posted to the PR.
+# Target workflows must explicitly opt in (via a gate-check step) to actually
+# skip their own execution based on this signal.
+#
+# Triggered by:
+#   1. workflow_dispatch — Copilot wrap-up step calls this directly
+#   2. pull_request_review — when owner submits an approving review
+#
+# See: docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to parse checklist from'
+        required: true
+        type: string
+      triggered_by:
+        description: 'Who triggered this gate (copilot/owner/manual)'
+        default: 'manual'
+        type: string
+
+  pull_request_review:
+    types: [submitted]
+
+concurrency:
+  group: workflow-execution-gate-${{ github.event.pull_request.number || github.event.inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  parse-checklist:
+    name: "Parse Workflow Checklist"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only run on approval reviews or explicit dispatch
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved')
+    outputs:
+      workflows_to_run: ${{ steps.parse.outputs.workflows_to_run }}
+      workflows_to_skip: ${{ steps.parse.outputs.workflows_to_skip }}
+      pr_number: ${{ steps.resolve-pr.outputs.pr_number }}
+      has_checklist: ${{ steps.parse.outputs.has_checklist }}
+    steps:
+      - name: Resolve PR number
+        id: resolve-pr
+        run: |
+          PR="${{ github.event.pull_request.number || github.event.inputs.pr_number }}"
+          if [ -z "$PR" ]; then
+            echo "::error::Could not determine PR number"
+            exit 1
+          fi
+          echo "pr_number=${PR}" >> "$GITHUB_OUTPUT"
+          echo "PR number: ${PR}"
+
+      - name: Parse workflow checklist from PR body
+        id: parse
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR="${{ steps.resolve-pr.outputs.pr_number }}"
+          BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+
+          # Locate the Workflow Execution Checklist section
+          SECTION=$(echo "$BODY" | awk '
+            /^## 🔄 Workflow Execution Checklist/ { found=1 }
+            found && /^## / && !/^## 🔄 Workflow Execution Checklist/ { found=0 }
+            found { print }
+          ')
+
+          if [ -z "$SECTION" ]; then
+            echo "::notice::No Workflow Execution Checklist section found in PR #${PR} body"
+            echo "has_checklist=false" >> "$GITHUB_OUTPUT"
+            echo "workflows_to_run=" >> "$GITHUB_OUTPUT"
+            echo "workflows_to_skip=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_checklist=true" >> "$GITHUB_OUTPUT"
+
+          # Parse checked items: lines matching "- [x] filename.yml"
+          CHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[x\] )\S+\.yml' | sort -u | tr '\n' ',')
+          UNCHECKED=$(echo "$SECTION" | grep -oP '(?<=\- \[ \] )\S+\.yml' | sort -u | tr '\n' ',')
+
+          # Remove trailing comma
+          CHECKED="${CHECKED%,}"
+          UNCHECKED="${UNCHECKED%,}"
+
+          echo "workflows_to_run=${CHECKED}" >> "$GITHUB_OUTPUT"
+          echo "workflows_to_skip=${UNCHECKED}" >> "$GITHUB_OUTPUT"
+
+          echo "✅ Workflows to run:  ${CHECKED:-<none>}"
+          echo "⏭️ Workflows to skip: ${UNCHECKED:-<none>}"
+
+  post-gate-summary:
+    name: "Post Execution Plan"
+    needs: parse-checklist
+    if: always() && needs.parse-checklist.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Build and post execution plan comment
+        run: |
+          PR="${{ needs.parse-checklist.outputs.pr_number }}"
+          TO_RUN="${{ needs.parse-checklist.outputs.workflows_to_run }}"
+          TO_SKIP="${{ needs.parse-checklist.outputs.workflows_to_skip }}"
+          HAS_CHECKLIST="${{ needs.parse-checklist.outputs.has_checklist }}"
+          TRIGGER="${{ github.event.inputs.triggered_by || github.event_name }}"
+          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MARKER="<!-- workflow-execution-gate:${PR} -->"
+
+          if [ "$HAS_CHECKLIST" != "true" ]; then
+            printf '%s\n' \
+              "${MARKER}" \
+              "## ⚙️ Workflow Execution Gate — No Checklist Found" \
+              "" \
+              "No '## 🔄 Workflow Execution Checklist' section was found in the PR body." \
+              "All workflows will follow their default triggers." \
+              "" \
+              "_See: [Workflow Checklist Wiring Plan](${{ github.server_url }}/${{ github.repository }}/blob/0D_base_/docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md)_" \
+              "_[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_" \
+              > "${RUNNER_TEMP}/gate_body.txt"
+            BODY=$(cat "${RUNNER_TEMP}/gate_body.txt")
+          else
+            # Build table rows
+            TABLE_ROWS=""
+            IFS=',' read -ra RUN_LIST <<< "$TO_RUN"
+            for wf in "${RUN_LIST[@]}"; do
+              [ -z "$wf" ] && continue
+              TABLE_ROWS="${TABLE_ROWS}
+          | ✅ WILL RUN | \`${wf}\` |"
+            done
+
+            IFS=',' read -ra SKIP_LIST <<< "$TO_SKIP"
+            for wf in "${SKIP_LIST[@]}"; do
+              [ -z "$wf" ] && continue
+              TABLE_ROWS="${TABLE_ROWS}
+          | ⏭️ SKIPPED | \`${wf}\` |"
+            done
+
+            BODY="${MARKER}
+          ## ⚙️ Workflow Execution Gate — Execution Plan
+
+          | Status | Workflow |
+          |--------|---------|${TABLE_ROWS}
+
+          > Workflows marked **SKIPPED** will not be triggered. This is controlled by the
+          > \`## 🔄 Workflow Execution Checklist\` section in the PR body.
+
+          _[🔗 Gate run](${RUN_URL}) — triggered by: ${TRIGGER}_"
+          fi
+
+          # Upsert: update existing gate comment or create new one
+          EXISTING_ID=$(gh pr view "$PR" --repo "${{ github.repository }}" \
+            --json comments \
+            --jq "[.comments[] | select(.body | startswith(\"${MARKER}\"))] | last | .databaseId // empty" \
+            2>/dev/null || echo "")
+
+          if [ -n "$EXISTING_ID" ] && [ "$EXISTING_ID" != "null" ]; then
+            gh api "repos/${{ github.repository }}/issues/comments/${EXISTING_ID}" \
+              -X PATCH --field body="$BODY"
+            echo "✅ Updated existing gate comment (ID: ${EXISTING_ID})"
+          else
+            gh pr comment "$PR" --repo "${{ github.repository }}" --body "$BODY"
+            echo "✅ Created new gate comment on PR #${PR}"
+          fi

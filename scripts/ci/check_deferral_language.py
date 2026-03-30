@@ -127,9 +127,15 @@ EXEMPTION_PATTERNS: list[str] = [
     # Example: "genuine 'Will fix in a future session' → exit 1 (still caught)"
     r"genuine\s+[\"']Will fix in a future",
     r"genuine\s+[\"'][^\"']*future[^\"']*session",
-    # exit-1/still-caught pattern: describing scanner test output, not a real deferral
-    r"future session[^\"']*→ exit 1",
-    r"future session[^\"']*still caught",
+    # CI status report section headers that label pre-existing failure categories.
+    # Example: "## 🟡 Pre-Existing Failures (NOT Introduced by This PR, Still Codebase-Wide)"
+    # These are machine-generated category headings in CI rescue/status comments, not deferral
+    # statements from the agent.  A Markdown H1–H6 heading is structural labelling.
+    r"^#{1,6}\s+[^\n]*NOT\s+Introduced\s+by\s+This\s+PR",
+    # Infrastructure-enhancement TODO items are planned improvements, not current-issue deferrals.
+    # Example: "- [ ] Wire check_pr_comments.py ... — infrastructure enhancement; requires ..."
+    r"\binfrastructure\s+enhancement\b",
+
     # Labeling an exemption pattern category in PR description:
     # e.g., `r"genuine\s+...future...session"` — general "genuine + quoted future session" pattern
     # The " + quoted" between "genuine" and "future" means this is labeling a regex,
@@ -547,6 +553,17 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Print violations but exit 0 (informational mode)",
     )
+    parser.add_argument(
+        "--since",
+        metavar="ISO_DATETIME",
+        default=None,
+        help=(
+            "Only scan PR comments created at or after this ISO 8601 datetime "
+            "(e.g. 2026-03-29T00:00:00Z). Requires 'created_at' field in the "
+            "JSONL records. Older comments are skipped — prevents stale session "
+            "violations from permanently blocking CI on long-lived integration PRs."
+        ),
+    )
     args = parser.parse_args(argv)
 
     # Initialise ML classifier (no-op if DEFERRAL_SCANNER_ML != "1")
@@ -617,14 +634,49 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR: File not found: {path}", file=sys.stderr)
             return 2
         raw = path.read_text(encoding="utf-8")
+
+        # Parse --since threshold (S229-CONT-2: prevent stale session comments
+        # from permanently blocking CI on long-lived integration PRs).
+        since_dt = None
+        if args.since:
+            from datetime import datetime, timezone
+            try:
+                since_str = args.since.rstrip("Z")
+                since_dt = datetime.fromisoformat(since_str).replace(tzinfo=timezone.utc)
+                print(
+                    f"ℹ️  --since filter active: skipping comments created before {args.since}",
+                    file=sys.stderr,
+                )
+            except ValueError:
+                print(
+                    f"WARNING: could not parse --since '{args.since}' as ISO 8601; "
+                    "scanning all comments",
+                    file=sys.stderr,
+                )
+
         # Try JSONL format first (one JSON object per line with 'body' field)
         bodies: list[tuple[str, str]] = []
+        skipped = 0
         try:
             for i, line in enumerate(raw.splitlines(), start=1):
                 line = line.strip()
                 if not line:
                     continue
                 obj = json.loads(line)
+                # Apply --since filter when 'created_at' is present in the record
+                if since_dt is not None:
+                    created_raw = obj.get("created_at", "")
+                    if created_raw:
+                        from datetime import datetime, timezone
+                        try:
+                            created_dt = datetime.fromisoformat(
+                                created_raw.rstrip("Z")
+                            ).replace(tzinfo=timezone.utc)
+                            if created_dt < since_dt:
+                                skipped += 1
+                                continue
+                        except ValueError:
+                            pass  # malformed timestamp — include comment to be safe
                 body = obj.get("body", "")
                 user = obj.get("user", {}).get("login", f"comment-{i}")
                 if body:
@@ -632,6 +684,11 @@ def main(argv: list[str] | None = None) -> int:
         except json.JSONDecodeError:
             # Fall back to plain text scan
             bodies = [(raw, f"PR comments ({path.name})")]
+        if skipped:
+            print(
+                f"ℹ️  --since filter: skipped {skipped} comment(s) older than {args.since}",
+                file=sys.stderr,
+            )
         for body, label in bodies:
             all_violations += scan(body, label, ml_classifier)
 

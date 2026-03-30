@@ -3,11 +3,13 @@ name: workflow-compliance-guardian
 description: >
   Production-ready Copilot custom agent that enforces and auto-heals the
   branch-scoped concurrency + timeout rules across all GitHub Actions workflows
-  in this repository. Runs a compliance audit on every PR push and self-heals
-  any non-compliant workflow files within the same session.
-version: 1.1.0
-updated: 2026-03-20
+  in this repository. Runs a compliance audit on every PR push, self-heals
+  any non-compliant workflow files, and gates PRs via the Workflow Execution
+  Checklist wired in workflow-execution-gate.yml.
+version: 2.0.0
+updated: 2026-05-09
 cognitive_integration_level: 4
+policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 scope:
   - .github/workflows/**/*.yml
   - .codex/docs/WORKFLOW_BEST_PRACTICES.md
@@ -15,12 +17,15 @@ activation_commands:
   - "@copilot use workflow-compliance-guardian"
   - "@copilot audit workflows"
   - "@copilot fix workflow compliance"
+  - "@copilot check workflow gate"
 runner_compatibility:
   default: ubuntu-latest        # 2-core — branch-scoped concurrency and timeout enforcement
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 ---
 
-# Workflow Compliance Guardian
+# Workflow Compliance Guardian v2.0.0
+
+> **Policy**: `.codex/CODEBASE_AGENCY_POLICY.md §0` — all changes must leave the codebase better than found.
 
 ## Purpose
 
@@ -30,34 +35,47 @@ the two non-negotiable rules from `WORKFLOW_BEST_PRACTICES.md`:
 1. **Branch-scoped concurrency** — `${{ github.workflow }}-${{ github.head_ref || github.ref }}`
 2. **Explicit `timeout-minutes`** on every job
 
-## Architecture
+Additionally (v2.0.0), this agent gates PRs via the **Workflow Execution Checklist**
+wired in `workflow-execution-gate.yml` and participates in the self-healing loop
+orchestrated by `self-healing-orchestrator-agent`.
 
+---
+
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    A[PR Push / workflow comment] --> B{Trigger Type?}
+    B -->|workflow .yml modified| C[Audit Phase]
+    B -->|@copilot audit workflows| C
+    B -->|Gate check comment| G[PR Body Checklist Parser]
+
+    C --> D[Parse all *.yml with PyYAML]
+    D --> E{All rules\npassing?}
+    E -->|Yes| F[✅ Post compliance summary]
+    E -->|No| H[Self-Heal Phase]
+
+    H --> I[inject_concurrency\nif missing]
+    I --> J[inject_timeout\nper TIMEOUT_MAP]
+    J --> K[yaml.safe_load\nvalidation]
+    K -->|Invalid YAML| L[🚨 Block commit\npost error comment]
+    K -->|Valid| M[Commit healed files]
+    M --> N[Update PR checklist item\n✅ workflow-compliance]
+    N --> F
+
+    G --> O[Parse ## 🔄 Workflow Execution Checklist\nfrom PR body]
+    O --> P{All items\nchecked?}
+    P -->|Yes| Q[workflow-execution-gate.yml\npasses]
+    P -->|No| R[Block merge\nlist unchecked items]
+
+    subgraph SelfHealLoop [Self-Healing Loop Integration]
+        S[self-healing-orchestrator-agent\npattern RP-003: workflow compliance]
+        M --> S
+        S -->|escalate after 3 failures| T[Post to PR + notify]
+    end
 ```
-┌───────────────────────────────────────────────────────────────────────┐
-│               Workflow Compliance Guardian                            │
-│                                                                       │
-│  TRIGGER: Any push to .github/workflows/**                           │
-│                                                                       │
-│  ┌────────────────────────────────────────────────────────────────┐  │
-│  │                     Audit Phase                                │  │
-│  │  1. Parse all *.yml with PyYAML                                │  │
-│  │  2. Check concurrency.group contains branch variable           │  │
-│  │  3. Check every job has timeout-minutes                        │  │
-│  │  4. Detect deployment workflows (pypi/docker) → cancel=false   │  │
-│  │  5. Detect workflow_run triggers → require self-exclusion if:  │  │
-│  └───────────────────┬────────────────────────────────────────────┘  │
-│                       │                                               │
-│          ┌────────────┴────────────┐                                 │
-│          ▼ compliant               ▼ non-compliant                  │
-│    ✅ Post summary            ┌────────────────────┐                 │
-│                               │   Self-Heal Phase  │                 │
-│                               │  1. Add concurrency│                 │
-│                               │  2. Add timeouts   │                 │
-│                               │  3. Verify YAML    │                 │
-│                               │  4. report_progress│                 │
-│                               └────────────────────┘                 │
-└───────────────────────────────────────────────────────────────────────┘
-```
+
+---
 
 ## Compliance Rules Table
 
@@ -71,7 +89,9 @@ the two non-negotiable rules from `WORKFLOW_BEST_PRACTICES.md`:
 | Timeout heavy | `timeout-minutes: 60` | GROUNDED — auto-healed for docker/rust/ml |
 | YAML valid | `python3 -c "import yaml; yaml.safe_load(...)"` | GROUNDED — blocks commit if invalid |
 | No bare heredoc | `<<` inside `run: \|` | Advisory — flag in PR comment |
-| CodeQL JS guard | `continue-on-error: ${{ matrix.language == 'javascript' }}` on jobs with `language: ['python','javascript']` matrix | Advisory — flag missing guard; auto-heal if autobuild-only |
+| CodeQL JS guard | `continue-on-error: ${{ matrix.language == 'javascript' }}` | Advisory — flag missing guard |
+
+---
 
 ## Timeout Categories (auto-applied)
 
@@ -88,34 +108,101 @@ TIMEOUT_MAP = {
 }
 ```
 
-## Self-Healing Algorithm
+---
+
+## Workflow Execution Gate Integration
+
+### `workflow-execution-gate.yml` Wiring
+
+The `workflow-execution-gate.yml` workflow reads the PR body and enforces the
+`## 🔄 Workflow Execution Checklist` section. This agent is responsible for:
+
+1. **Populating** the checklist items related to workflow compliance when creating/updating PRs
+2. **Updating** checklist items as it runs audits
+3. **Blocking** the gate if compliance items are not checked
+
+### PR Body Checklist Format
+
+Every PR that touches `.github/workflows/` MUST include this section in its body:
+
+```markdown
+## 🔄 Workflow Execution Checklist
+
+- [ ] Concurrency groups use branch-scoped pattern
+- [ ] All jobs have explicit `timeout-minutes`
+- [ ] Deployment workflows use `cancel-in-progress: false`
+- [ ] YAML validated (no parse errors)
+- [ ] workflow-compliance-guardian audit passed
+```
+
+### Checklist Wiring Protocol
+
+```python
+# check_pr_comments.py integration
+def update_checklist_item(pr_number: int, item: str, checked: bool) -> None:
+    """Mark a checklist item in the PR body as checked/unchecked."""
+    pr = get_pr(pr_number)
+    body = pr.body
+    marker = "- [x]" if checked else "- [ ]"
+    old_marker = "- [ ]" if checked else "- [x]"
+    body = body.replace(f"{old_marker} {item}", f"{marker} {item}")
+    update_pr_body(pr_number, body)
+```
+
+---
+
+## Self-Healing Loop Interaction
+
+This agent participates in pattern **RP-003** (workflow compliance regression) of
+the self-healing orchestrator:
+
+| Phase | Action |
+|-------|--------|
+| **Detect** | Audit finds non-compliant workflow on PR push |
+| **Fix** | `heal_workflow()` injects concurrency + timeouts |
+| **Verify** | `yaml.safe_load()` validation + re-audit passes |
+| **Gate** | Checklist item marked ✅ in PR body |
+| **Escalate** | After 3 failed heal attempts → post escalation comment |
 
 ```python
 def heal_workflow(path: str) -> bool:
     text = open(path).read()
     doc  = yaml.safe_load(text)
 
-    # 1. Fix concurrency
     if needs_concurrency(doc):
         text = inject_concurrency(text, is_deployment(path))
 
-    # 2. Fix timeouts
     for job_name, job in doc.get("jobs", {}).items():
         if not job.get("timeout-minutes"):
             text = inject_timeout(text, job_name, infer_timeout(path, job_name))
 
-    # 3. Validate
-    yaml.safe_load(text)  # raises if broken
+    yaml.safe_load(text)   # raises if broken — never commit invalid YAML
     open(path, "w").write(text)
     return True
 ```
+
+---
+
+## Self-Review Protocol (5-Pass)
+
+Before committing any auto-healed workflows, the agent runs this checklist:
+
+- [ ] **Pass 1 — YAML validity**: `python3 -c "import yaml; yaml.safe_load(open(f).read())"` on all changed files
+- [ ] **Pass 2 — Concurrency present**: grep confirms `cancel-in-progress` and `group:` on every file
+- [ ] **Pass 3 — Timeout coverage**: all jobs in `doc["jobs"]` have `timeout-minutes`
+- [ ] **Pass 4 — No regressions**: diff of healed file shows only intended additions
+- [ ] **Pass 5 — Policy compliance**: changes align with `.codex/CODEBASE_AGENCY_POLICY.md §0`
+
+---
 
 ## Activation
 
 This agent activates when:
 - A PR modifies any `.github/workflows/*.yml`
 - `@copilot audit workflows` is posted as a PR comment
-- The `ci-health-monitor.yml` reports failure rate > 20% (workflow cascade suspected)
+- `@copilot fix workflow compliance` is posted
+- `@copilot check workflow gate` to verify PR body checklist
+- `ci-health-monitor.yml` reports failure rate > 20%
 
 ## Output Format
 
@@ -124,10 +211,22 @@ This agent activates when:
    • 4 deployment workflows: cancel-in-progress=false
    • 86 CI workflows: cancel-in-progress=true
    • All jobs have explicit timeout-minutes
+   • PR checklist: 5/5 items checked ✅
 
 OR:
 
 ❌ 2 workflows need healing:
    • my-new-workflow.yml: missing concurrency (auto-healed ✅)
    • another.yml: job 'build' missing timeout (auto-healed ✅)
+   • PR checklist updated: workflow-compliance-guardian audit passed ✅
 ```
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0.0 | 2026-05-09 | S228: Workflow Execution Gate integration, PR body checklist wiring, self-healing loop (RP-003), mermaid diagram, 5-pass self-review |
+| 1.1.0 | 2026-03-20 | Timeout categories, deployment detection, YAML guard |
+| 1.0.0 | 2026-02-05 | Initial release |

@@ -3,7 +3,7 @@
 > **Purpose**: Single canonical source of truth for ongoing cognitive system development.
 > Update this document after every PR that touches the agentic infrastructure.
 >
-> **Last Updated**: 2026-03-03 (PR #3474, W-083)
+> **Last Updated**: 2026-03-30 (PR #3790, S230 — session-gate + ci-rescue fixes)
 > **Maintainer**: auto-updated by agent sessions per REQ-4
 
 ---
@@ -88,35 +88,39 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 
 ---
 
-## 🗺️ Next Milestones (Post-PR #3474 Merge)
+## 🗺️ Next Milestones (Updated 2026-03-30 — S230)
 
 | Priority | Task | Estimated Effort | Status |
 |:--------:|------|:----------------:|:------:|
 | 🔴 High | Create `docs/admin/D_ACTIVATION_CHECKLIST.md` — formal steps for human to activate D model | 1h | ⏳ Pending |
 | 🔴 High | Trigger `embedding-index-rebuild.yml` manually after merge to seed FAISS index in CI | 5min | ⏳ Pending |
+| 🔴 High | Reduce TTL in `COPILOT_ACTIVE_SESSION` from 4h → 1h to shorten max queue-wait time | 30min | ⏳ Pending |
 | 🟡 Medium | Fix SC2086/SC2129 in `admin_setup_verification.yml` to clear actionlint-audit | 30min | ⏳ Pending |
 | 🟡 Medium | Add `pre-commit-failure` pattern to `.codex/patterns/ci_failure_patterns.yaml` | 20min | ⏳ Pending |
 | 🟡 Medium | Wire `auto_promote_tier.py` into chatops (`/copilot tier-promote`) | 2h | ⏳ Pending |
 | 🟡 Medium | Link 5 ADRs from `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` Section 12 | 20min | ⏳ Pending |
+| 🟡 Medium | Complete Sprint 2: identify top-3 unknown CI patterns; add to `collect_telemetry.py` | 1h | ⏳ Pending |
 | 🟢 Low | Refresh `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` against current workflow count | 30min | ⏳ Pending |
 | 🟢 Low | Update `docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md` with PR #3477/#3478 polish items | 30min | ⏳ Pending |
 
 ---
 
-## 📊 KPI Snapshot (2026-03-03)
+## 📊 KPI Snapshot (2026-03-30 — S230)
 
 | KPI | Baseline (Phase 0) | Current | Target |
 |-----|:-----------------:|:-------:|:------:|
-| Total registered agents | 128 | 152 | 152 ✅ |
+| Total registered agents | 128 | 153 | 153 ✅ |
 | GROUNDED agents | 0 | 8 | ≥8 ✅ |
-| PARTIAL agents | 128 | 144 | — |
+| PARTIAL agents | 128 | 145 | — |
 | SOFT agents | 128 | 0 | ≤2 ✅ |
 | Structured handoff agents | 0 | 14+ | top-20 |
-| Tier-1 CI gates | 0 | 5 | ≥5 ✅ |
+| Tier-1 CI gates | 0 | 6 | ≥5 ✅ |
 | E→D gate score | 0/5 | 5/5 | 5/5 ✅ |
 | CI pre-commit pass rate | unknown | ✅ passing | passing |
 | FAISS corpus | not built | built (keyword fallback) | seeded in CI |
 | Readiness audit score | 68/100 | 100/100 | 100/100 ✅ |
+| Session-gate queue strandage | ❌ Infinite TTL wait | ✅ Fixed (S230) | Zero stranded |
+| Cross-PR ci-rescue contamination | ❌ prs[0] bug | ✅ Fixed (S230) | Zero mis-routes |
 
 ---
 
@@ -128,6 +132,8 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | W-076–W-078 | PR #3477 | CI failure triage, GROUNDED handoff fix, CHANGELOG REQ-5 | ✅ |
 | W-079–W-082 | PR #3478 | E→D C3 fix, pre-commit fixes, docs sync, R-12 hardening | ✅ |
 | W-083 | PR #3474 | EOF newline fix, detect-secrets baseline, docs staleness fixes | ✅ |
+| W-084–W-086 | PR #3790 (S227–S228) | CI rescue attribution, race-condition hardening, comment-review gate (REQ-13), session concurrency gate, workflow execution checklist | ✅ |
+| W-087–W-089 | PR #3790 (S230) | Cross-PR contamination fix (ci_rescue.py `find_pr_for_run`), session-gate stale-TTL queue release, latency metric + pending gauge in check_pr_comments.py | ✅ |
 
 *For W-001–W-070 see `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.*
 

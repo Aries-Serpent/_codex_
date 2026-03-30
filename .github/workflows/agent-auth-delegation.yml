@@ -403,12 +403,14 @@ jobs:
               '- [ ] **4.** Read the `Priority for this session: X` comment on this PR — that is your **PRIMARY directive**',
               '- [ ] **5.** Post your Phase execution plan as a PR comment BEFORE making any file changes',
               '- [ ] **6.** Follow `.codex/CODEBASE_AGENCY_POLICY.md` at all times — violations must be self-corrected',
+              '- [ ] **7. REQ-13 (HARD STOP):** Address ALL comments from `@mbaetiong` and ALL bot-posted comments (copilot-pull-request-reviewer, github-actions, github-advanced-security, github-code-quality) **before** committing any new changes. CI gate `comment-review-gate.yml` enforces this.',
               '',
               '### ⚙️ Policy Quick Reference',
               '',
               '| Rule | Requirement |',
               '|------|-------------|',
               '| **Pre-session** | Review ALL bot comments + fix ALL failing CI checks FIRST |',
+              '| **REQ-13** | Reply to ALL `mbaetiong` + critical-bot comments before new commits (enforced by `comment-review-gate.yml`) |',
               '| Execution trigger | Within 60 seconds of reading a clear task |',
               '| Self-review | Minimum 5 passes before session close |',
               '| Deferral | NEVER without: documented blocker + 5 attempts + follow-up `@copilot` comment |',
@@ -426,6 +428,9 @@ jobs:
               '',
               '---',
               `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
+              '',
+              '---',
+              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 
             // Upsert: update existing or create new
@@ -529,6 +534,9 @@ jobs:
             }
 
             lines.push('_auto-posted by cognitive-preflight | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_');
+            lines.push('');
+            lines.push('---');
+            lines.push(`_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`);
 
             // Upsert: update existing or create new
             const directiveBody = lines.join('\n');
@@ -836,6 +844,61 @@ jobs:
             echo "- Next cognitive-preflight run will pass REQ-4/REQ-5." >> "$GITHUB_STEP_SUMMARY"
           fi
           echo "" >> "$GITHUB_STEP_SUMMARY"
+
+      # ── Workflow Execution Checklist — inject into PR body if missing ─────
+      # Ensures Copilot Agent can check off only the workflows needed for this
+      # session.  Unchecked items are skipped by workflow-execution-gate.yml.
+      # See: docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md
+      - name: Ensure Workflow Execution Checklist in PR body
+        id: inject-wec
+        if: >
+          github.event_name == 'pull_request' ||
+          github.event_name == 'pull_request_review'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
+
+          if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
+            echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
+            printf '### ✅ Workflow Execution Checklist\n\nAlready present — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          printf '%s\n' \
+            '' \
+            '## 🔄 Workflow Execution Checklist' \
+            '<!-- gate-managed-by: workflow-execution-gate.yml -->' \
+            '<!-- gate-version: 1.0.0 -->' \
+            '' \
+            '### ✅ Validation & Testing' \
+            '- [x] pre-merge-validation.yml — Pre-merge checks (always required)' \
+            '- [x] resilient-validation-suite.yml — Resilient validation' \
+            '- [ ] nox-gates.yml — Nox test gates' \
+            '' \
+            '### ✅ Security & Quality' \
+            '- [x] comment-review-gate.yml — Comment review gate (always required)' \
+            '- [ ] security-scanning-suite.yml — Full security audit' \
+            '- [x] deferral-language-gate.yml — Deferral language guard' \
+            '' \
+            '### 📄 Documentation' \
+            '- [ ] docs-build.yml — Documentation build' \
+            '' \
+            '### 🤖 Automation' \
+            '- [x] agent-auth-delegation.yml — Agent auth delegation (always required)' \
+            '- [x] copilot-agent-checkin.yml — Agent check-in (always required)' \
+            '- [ ] cost-gate.yml — Cost governance gate' \
+            '' \
+            '> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for' \
+            '> this session. Unchecked workflows will be SKIPPED by the gate.' \
+            > "${RUNNER_TEMP}/checklist.txt"
+          CHECKLIST=$(cat "${RUNNER_TEMP}/checklist.txt")
+
+          UPDATED_BODY="${BODY}${CHECKLIST}"
+          gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"
+          echo "✅ Workflow Execution Checklist injected into PR #${PR_NUMBER}"
+          printf '### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up.\n' >> "$GITHUB_STEP_SUMMARY"
 
       # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
       # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)
@@ -1575,6 +1638,50 @@ jobs:
                   core.warning(`Stale session lock cleared (PR #${activePR}, age: ${age}s > TTL ${TTL_SECONDS}s)`);
                   await clearVar('COPILOT_ACTIVE_SESSION');
                   sessionBusy = false;
+
+                  // S230 fix: when a stale TTL lock is cleared, also dequeue
+                  // and retrigger any PRs that were waiting in the queue.
+                  // Previously only the `session-release` job (fired on PR close)
+                  // processed the queue, leaving queued PRs stranded when a
+                  // session expired naturally (never closed).
+                  const staleClearedQueue = await getVar('COPILOT_SESSION_QUEUE');
+                  if (staleClearedQueue) {
+                    const staleClearedList = staleClearedQueue.split(',').filter(Boolean);
+                    // Peek at the first entry before mutating the array.
+                    const nextQueuedPR = parseInt(staleClearedList[0], 10);
+                    if (!isNaN(nextQueuedPR) && nextQueuedPR > 0 && nextQueuedPR !== prNumber) {
+                      core.info(`🔓 Stale lock cleared — retriggering queued PR #${nextQueuedPR}`);
+                      try {
+                        await github.rest.issues.createComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: nextQueuedPR,
+                          body: [
+                            '<!-- session-gate-dequeued -->',
+                            '## 🔓 Session Available (Stale Lock Cleared)',
+                            '',
+                            `Previous session (PR #${activePR}) exceeded the ${TTL_SECONDS / 3600}h TTL and was cleared.`,
+                            'This PR has been dequeued and the session is now starting.',
+                            '',
+                            '@copilot continue',
+                          ].join('\n'),
+                        });
+                        // Remove the dequeued PR from the queue only after the
+                        // comment was successfully posted (review: avoid removing
+                        // from queue if comment creation throws).
+                        staleClearedList.shift();
+                        await upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));
+                        core.info(`✅ Retriggered PR #${nextQueuedPR} after stale TTL cleanup`);
+                      } catch (err) {
+                        core.warning(`Failed to retrigger PR #${nextQueuedPR} after stale lock clear: ${err.message}`);
+                      }
+                    } else if (!isNaN(nextQueuedPR) && nextQueuedPR === prNumber) {
+                      // Current PR is first in queue — just clear it from the queue
+                      staleClearedList.shift();
+                      await upsertVar('COPILOT_SESSION_QUEUE', staleClearedList.join(','));
+                      core.info(`Current PR #${prNumber} was first in queue — clearing from queue and proceeding`);
+                    }
+                  }
                 } else {
                   // Same PR — re-acquire is fine
                   sessionBusy = false;
@@ -1985,7 +2092,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
@@ -1994,7 +2101,7 @@ jobs:
             try:
               with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
             except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: agent-auth-delegation.yml → rescue-comment job (S227)_"""
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: agent-auth-delegation.yml → rescue-comment job (S227)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:

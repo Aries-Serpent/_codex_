@@ -469,7 +469,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner, repo: context.repo.repo,
               issue_number: parseInt(issueNum, 10),
-              body: `🔧 **Automated fix PR opened**: ${pr.html_url}\n\n@copilot has been instructed to diagnose and fix the root cause.`,
+              body: `🔧 **Automated fix PR opened**: ${pr.html_url}\n\n@copilot has been instructed to diagnose and fix the root cause.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             });
 
             core.info(`Fix PR #${pr.number}: ${pr.html_url}`);
@@ -668,7 +668,7 @@ jobs:
             for (const issue of matching) {
               await github.rest.issues.createComment({
                 owner, repo, issue_number: issue.number,
-                body: `✅ **Auto-closed** — \`${wfName}\` passed on \`main\` at [\`${sha}\`](${runUrl}). The CI failure tracked by this issue has been resolved.`,
+                body: `✅ **Auto-closed** — \`${wfName}\` passed on \`main\` at [\`${sha}\`](${runUrl}). The CI failure tracked by this issue has been resolved.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
               });
               await github.rest.issues.update({
                 owner, repo, issue_number: issue.number,

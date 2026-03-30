@@ -352,7 +352,7 @@ class GitHubClient:
         if event:
             params["event"] = event
         if status:
-            params["status"] = status.value
+            params["status"] = status.value if hasattr(status, "value") else str(status)
 
         if workflow_id:
             path = f"/repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs"
@@ -651,7 +651,7 @@ class GitHubClient:
         if check_name:
             params["check_name"] = check_name
         if status:
-            params["status"] = status.value
+            params["status"] = status.value if hasattr(status, "value") else str(status)
 
         data = await self._get(
             f"/repos/{owner}/{repo}/commits/{ref}/check-runs",

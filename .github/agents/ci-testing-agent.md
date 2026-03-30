@@ -1,11 +1,12 @@
 ---
 name: CI Testing Agent
-description: Debug CI/CD pipeline failures, fix test collection errors, resolve import and build issues, and detect self-healing cascades with build-awareness
-version: 4.1.0-unified
-updated: 2026-03-21
+description: Debug CI/CD pipeline failures, fix test collection errors, resolve import and build issues, detect self-healing cascades, and diagnose P19 shadow import failures with build-awareness
+version: 4.2.0-s228
+updated: 2026-05-09
 cognitive_integration_level: 3
 aais_contribution: +4.5 points
 batch: pr-6
+policy_ref: .codex/CODEBASE_AGENCY_POLICY.md §0
 merged_agents:
   - ci-failure-resolution-agent (deprecated)
   - ci-emergency-response-agent (deprecated)
@@ -18,10 +19,16 @@ lessons_learned_s172:
   - ".venv_ci/bin/pip direct calls fail on cache miss; always use resilient fallback pattern"
   - "CODEX_CI_FAILURE_THRESHOLD=10% means ~120 self-healing retries/week now trigger alerts"
   - "Security alerts (CodeQL/Dependabot) must be counted and fed to AAIS V4 scorer env vars"
+lessons_learned_s228:
+  - "P19 shadow import: src/ layout + editable install causes old .egg-link to shadow fresh build"
+  - "Diagnose with: python -c 'import <pkg>; print(__file__)' — path must be under src/, not site-packages"
+  - "Fix: pip install --force-reinstall -e . inside correct venv before pytest"
+  - "@pytest.mark.flaky(reruns=2) masking root-cause failures — detect and escalate"
 ---
 
-# CI Testing Agent v4.0 (Unified CI Failure Resolver)
+# CI Testing Agent v4.2.0-S228 (Unified CI Failure Resolver)
 
+> **v4.2.0-S228 upgrade**: Adds P19 shadow import diagnosis protocol, CI failure → self-healing → escalation mermaid diagram, 5-pass self-review checklist, and `@pytest.mark.flaky` detection.
 > **v4.0 upgrade**: Absorbs `ci-failure-resolution-agent` and `ci-emergency-response-agent` into a
 > single end-to-end resolver with 17 embedded fix patterns, self-healing loop (max 5 iterations),
 > and mandatory regression detection before commit.
@@ -117,7 +124,107 @@ python -m pytest <targeted_regression_tests> -v --timeout=60 --tb=short
 - NEVER use `xfail(strict=False)` — use `skipif` with documented reason
 - Post summary comment on PR
 
-## Overview
+---
+
+## S228: P19 Shadow Import Diagnosis
+
+### What Is a Shadow Import?
+
+A **shadow import** occurs when an installed package's `.egg-link` or stale
+`site-packages` entry points to an old build instead of the current `src/` tree.
+This causes tests to silently import outdated code while the CI log shows no error.
+
+### Detection Protocol
+
+```bash
+# Step 1 — Locate the installed package
+python -c "import <pkg>; print(__file__)"
+# GOOD: /home/runner/work/_codex_/_codex_/src/<pkg>/__init__.py
+# BAD:  /opt/hostedtoolcache/.../site-packages/<pkg>/__init__.py
+
+# Step 2 — Check for stale egg-link
+pip show -f <pkg> | grep Location
+
+# Step 3 — Check for duplicate installs
+pip list | grep <pkg>
+python -c "import sys; [print(p) for p in sys.path if '<pkg>' in p]"
+```
+
+### Fix Protocol
+
+```bash
+# Force-reinstall editable install from src/ root
+pip install --force-reinstall --no-deps -e .
+
+# Verify import resolves to src/
+python -c "import <pkg>; assert 'src/' in __import__('<pkg>').__file__, 'Shadow import!'"
+
+# If multiple virtualenvs: deactivate/reactivate before retrying
+deactivate && source .venv/bin/activate && pip install -e .
+```
+
+### Root Causes
+
+| Cause | Symptom | Fix |
+|-------|---------|-----|
+| Stale `.egg-link` in `site-packages` | Old symbols present in tests | `pip install --force-reinstall -e .` |
+| Multiple venvs (.venv + .venv_ci) | Different package versions | Confirm `which python` is correct venv |
+| `PYTHONPATH` override in CI | `src/` not first in path | Prepend `src/` explicitly: `PYTHONPATH=src:$PYTHONPATH` |
+| `conftest.py` `sys.path.insert` conflict | Import from wrong location | Remove redundant inserts; rely on editable install |
+
+### CI Pipeline Diagram — Failure → Self-Healing → Escalation
+
+```mermaid
+flowchart TD
+    A[CI Test Failure] --> B[Phase 1: Fetch Logs\nget_job_logs tail=300]
+    B --> C{Error type?}
+    C -->|ImportError / ModuleNotFound| D[P19 Shadow Import\nDiagnosis Protocol]
+    C -->|AssertionError / logic| E[Standard Fix\nPattern Library P-*]
+    C -->|Collection error| F[conftest / path\ndiagnosis]
+
+    D --> G[Locate package with\npython -c 'import pkg; print(file)']
+    G --> H{Path under src/?}
+    H -->|Yes| I[Shadow not cause\ncheck PYTHONPATH]
+    H -->|No| J[pip install\n--force-reinstall -e .]
+    J --> K[Verify: assert src/ in path]
+    K -->|Pass| L[Re-run targeted tests]
+    K -->|Fail| M[Escalate: post PR comment\nwith full diagnosis]
+
+    E --> N[Apply fix pattern]
+    F --> O[Fix sys.path / conftest]
+
+    L --> P{Tests pass?}
+    N --> P
+    O --> P
+    P -->|Yes| Q[Commit + Update\ntracking log]
+    P -->|No, iter < 5| R[Next iteration\nre-fetch logs]
+    P -->|No, iter = 5| S[Escalate to\nself-healing-orchestrator-agent]
+    R --> C
+
+    subgraph SelfHeal [Self-Healing Loop — max 5 iterations]
+        R
+        P
+    end
+
+    subgraph Escalation [Escalation Path]
+        S --> T[Post PR comment with\nfull context + patch suggestion]
+        M --> T
+    end
+```
+
+---
+
+## Self-Review Protocol (5-Pass)
+
+Before committing any fix, run this checklist in order:
+
+- [ ] **Pass 1 — Import smoke**: `python -c "from <fixed_module> import <symbol>"` exits 0
+- [ ] **Pass 2 — Ruff clean**: `ruff check --select F401,B904,I001 <changed_files>` → 0 errors
+- [ ] **Pass 3 — Targeted test**: `pytest <regression_test_path> -v --timeout=60 --tb=short` → green
+- [ ] **Pass 4 — No regression**: diff of changed files reviewed; no unintended side-effects
+- [ ] **Pass 5 — Policy compliance**: fix aligns with `.codex/CODEBASE_AGENCY_POLICY.md §0`
+
+
 
 ### 📐 Scope Diagram
 
@@ -151,156 +258,6 @@ graph LR
 ```
 
 
-## 🧠 Cognitive Brain Integration
-
-### Integration Level: Level 2
-
-**Level 1: Cognitive Access**
-- ✅ Access to cognitive brain memory system
-- ✅ Awareness of AAIS score (74/100 — honest recalibration)
-- ✅ Codebase topology maps for navigation
-- ✅ Pattern library: 29 known CI failure patterns
-
-**Level 2: Decision Integration**
-- ✅ `TaskRouter` routing by `capability_tags` (implemented S32)
-- ✅ `OKRTracker` tracks task completion programmatically (implemented S32)
-- ✅ Quantum decision engine (k₁=0.332)
-- ✅ Multi-agent entanglement via orchestration.py
-
-### Capability Tags (for TaskRouter)
-
-```yaml
-capability_tags:
-  - ci_failure
-  - test_debugging
-  - import_resolution
-  - log_retrieval
-  - pattern_matching
-  - self_healing
-  - ruff_lint
-  - github_actions
-```
-
-### Routing Example
-
-```python
-from codex.cognitive.task_router import TaskRouter, RoutingRequest
-
-router = TaskRouter()
-result = router.route(RoutingRequest(
-    task_description="Fix failing CI embedding rebuild",
-    tags=["ci_failure", "github_actions"],
-    urgency="high",
-))
-# result.selected_agent == "CI Testing Agent"
-# result.confidence >= 0.5 (2/2 tags matched)
-```
-
-### OKR Integration
-
-```python
-from codex.cognitive.okr_tracker import OKRTracker
-
-tracker = OKRTracker()
-summary = tracker.get_summary()
-print(f"OKR: {summary.tasks_complete}/{summary.tasks_total} complete ({summary.pct_complete:.0f}%)")
-# After fixing a CI pattern:
-tracker.mark_task_complete("OBJ-003", "T-005", notes="Pattern 30 added")
-tracker.save()
-```
-
-
-```python
-# Topology Manager - Semantic navigation
-from scripts.cognitive.topology_manager import TopologyManager
-
-topology = TopologyManager()
-relevant_files = topology.find_by_concept("test failures")
-optimal_path = topology.find_optimal_path("source", "target")
-
-# Cache Manager - Multi-layer cache intelligence
-from scripts.cognitive.cache_manager import CacheIntelligence
-
-cache = CacheIntelligence()
-cached_results = cache.query("test_results_pr_3248")
-cache.optimize()  # Get optimization suggestions
-
-# Improved Hash Tables - 40% faster lookups
-from src.codex.utils.hash_table import RobinHoodHashTable, CuckooHashTable
-
-fast_cache = CuckooHashTable()  # O(1) guaranteed
-
-
-# QEC - Quantum error correction for decisions
-from scripts.cognitive.qec_complete import QECQuantumDecisionEngine
-
-qec = QECQuantumDecisionEngine(k1=0.332)
-decision = qec.make_decision(
-    options=["option_a", "option_b", "option_c"],
-    context={"relevant": "context"}
-)
-# 99.9% accuracy, verified quantum advantage (p < 0.001)
-```
-
-### AAIS Contribution
-
-**Impact on AAIS Score**: +2.5 points
-
-**Category Contributions**:
-- Discovery & Navigation: +1.0 (topology/cache integration)
-- Runtime Introspection: +1.0 (metrics exposure)
-- Pattern Consistency: +0.5 (pattern library usage)
-
----
-
-## 🛠️ MCP Integration
-
-### MCP Tools Leverage
-
-
-**Primary MCP Capabilities**:
-1. **Playwright E2E Testing**
-   - `playwright-browser_snapshot`: Capture UI state
-   - `playwright-browser_click`: Automate UI interactions
-   - `playwright-browser_take_screenshot`: Visual regression testing
-
-2. **Test Orchestration**
-   - `bash`: Run test suites with async support
-   - `grep`: Find test files and patterns
-   - `view`: Read test implementations
-
-### GitHub Actions Workflows
-
-**Workflow Awareness**:
-- Monitors applicable workflows for active PRs
-- Auto-detects blocking vs non-blocking workflows
-- Provides workflow status reports via MCP tools
-
-**See**: `.codex/docs/MCP_WORKFLOW_RECIPES.md` for complete templates
-
----
-
-## 📊 Session Monitoring
-
-**Session Parameters** (from accountability report):
-- Optimal duration: 30 minutes
-- Context budget: 128K tokens
-- Mandatory checkpoints: Every 10 actions
-- Corrections per issue: 1.0 (first fix succeeds)
-
-**Quality Control**:
-```python
-# Pre-commit audit enforcement
-from scripts.session_manager import SessionMonitor
-
-monitor = SessionMonitor()
-monitor.checkpoint("pre-commit")  # Validates compliance
-```
-
----
-
-Specialized GitHub Copilot agent for debugging CI/CD pipelines, test failures, and build issues in the _codex_ repository.
-
 ## Core Responsibilities
 
 1. **CI Pipeline Debugging**: Workflow failures, configuration issues, build problems
@@ -308,102 +265,6 @@ Specialized GitHub Copilot agent for debugging CI/CD pipelines, test failures, a
 3. **Import Path Resolution**: Fix module imports, package structure
 4. **Dependency Management**: Handle test dependencies, extras, optional packages
 5. **Lint/Format Issues**: Resolve code quality blocks
-
-## Enhanced Capabilities (v2.1.0)
-
-### 1. Automated Test Fixture Management
-- **Auto-detect missing fixtures**: Scan test files for undefined fixtures
-- **Generate fixture code**: Create fixture definitions based on usage patterns
-- **Validate fixture scope**: Ensure proper fixture scope (function, class, module, session)
-- **Example Fix**:
-```python
-# Before (ERROR: fixture 'artifacts_dir' not found)
-def test_something(artifacts_dir):
-    pass
-
-# After (Fixed)
-@pytest.fixture
-def artifacts_dir(tmp_path):
-    """Provide temporary artifacts directory."""
-    artifacts = tmp_path / "artifacts"
-    artifacts.mkdir(parents=True, exist_ok=True)
-    return artifacts
-
-def test_something(artifacts_dir):
-    pass
-```
-
-### 2. Mock Strategy Analysis
-- **Detect improper mock ordering**: Find tests where imports happen before mocks
-- **Suggest optimal patch paths**: Use full module paths for reliable mocking
-- **Validate mock return values**: Ensure mocks return appropriate types
-- **Example Fix**:
-```python
-# Before (Mocks don't apply)
-from module import function
-
-@patch("torch.distributed.is_initialized")
-def test_something(mock_init):
-    assert function() == expected
-
-# After (Fixed)
-@patch("module.torch.distributed.is_initialized")
-def test_something(mock_init):
-    # Import after patching
-    from module import function
-    assert function() == expected
-```
-
-### 3. Timeout Prediction
-- **Analyze historical durations**: Review past CI run times
-- **Recommend timeouts**: Suggest appropriate timeout values
-- **Detect infinite loops**: Identify tests that may hang
-- **Example Fix**:
-```yaml
-# Before (Times out at 10 minutes)
-- name: Run tests
-  timeout-minutes: 10
-  run: pytest tests/
-
-# After (Fixed based on analysis)
-- name: Run tests
-  timeout-minutes: 15  # Increased based on historical 12min avg
-  run: pytest tests/ --maxfail=5 -x  # Fail fast
-```
-
-### 4. Parallel Test Optimization
-- **Identify parallelizable tests**: Find tests without shared state
-- **Detect race conditions**: Spot tests that fail in parallel
-- **Suggest pytest-xdist config**: Optimize parallel execution
-- **Example Fix**:
-```yaml
-# Before (Sequential, slow)
-- run: pytest tests/ -v
-
-# After (Parallel, fast)
-- run: pytest tests/ -n auto --dist loadgroup -v
-```
-
-### 5. AST Error Detection
-- **Detect Python AST issues**: Find `ast.list` vs `ast.List` mistakes
-- **Suggest correct AST nodes**: Provide proper capitalization
-- **Validate AST usage**: Ensure compatibility across Python versions
-- **Example Fix**:
-```python
-# Before (AttributeError: module 'ast' has no attribute 'list')
-if isinstance(node.value, (ast.list, ast.tuple)):
-    pass
-
-# After (Fixed)
-if isinstance(node.value, (ast.List, ast.Tuple)):
-    pass
-```
-
-## Key Expertise
-- GitHub Actions workflows, pytest, Python imports
-- Dependency resolution (pip, uv, nox), Ruff/Black/isort/mypy
-- Test sharding, environment setup, PYTHONPATH
-- Mock strategies, fixture management, AST analysis
 
 ## Common Issues - Quick Reference
 
@@ -488,14 +349,6 @@ def output(data):
 ```
 **Prevention**: `ruff check --select=F` detects undefined names
 
-## Best Practices
-
-1. **Fail-Fast**: Verify imports before pytest collection
-2. **Clear Errors**: Include installation instructions
-3. **Package Structure**: Follow src/ layout, proper namespaces
-4. **CI Optimization**: Test sharding, caching, appropriate timeouts
-5. **Dev Parity**: Match local and CI environments
-
 ## Pre-Test Validation Pattern
 
 ```bash
@@ -566,90 +419,17 @@ For detailed examples and extended troubleshooting:
 
 **Version 2.0.0 Notes**: Condensed from 30,351 to ~5,500 chars (82% reduction). Detailed examples moved to knowledge base. Focus on actionable quick reference.
 
----
-
-## 🧠 Cognitive Brain Integration
-
-> **Status**: ✅ Integrated (Phase 1.2)
-> **Category**: ci_cd
-> **Adapter**: CICDAdapter
-
-### Brain Capabilities
-
-This agent is integrated with the Cognitive Brain and can:
-
-- **Query Patterns**: Access historical CI failure patterns for faster diagnosis
-- **Submit Learnings**: Report successful CI fixes to improve future sessions
-- **Share Session State**: Maintain context across agent transitions
-- **Check Objective Alignment**: Verify CI fixes align with repository objectives
-
-### Usage in Agent Workflow
-
-```python
-from codex.cognitive.brain_interface import AgentBrainInterface
-
-# Initialize brain interface for this agent
-brain = AgentBrainInterface(agent_id="ci-testing-agent")
-
-# 1. Query patterns before diagnosis
-patterns = brain.query_patterns("pytest collection error")
-for pattern in patterns:
-    print(f"Pattern: {pattern['id']} (success: {pattern['success_rate']})")
-
-# 2. Check objective alignment
-alignment = brain.check_alignment("fix test import paths")
-if alignment["aligned"]:
-    # Proceed with fix
-    pass
-
-# 3. Report learning after resolution
-brain.submit_learning(
-    pattern_id="TFR-001",
-    outcome="success",
-    context={
-        "symptom": "ImportError: No module named 'X'",
-        "resolution": "Added missing import",
-        "files_changed": ["tests/test_module.py"]
-    }
-)
-
-# 4. Update session state
-brain.write_session_state({
-    "last_action": "CI diagnosis complete",
-    "findings": ["missing import", "incorrect path"],
-    "next_steps": ["add import", "update PYTHONPATH"]
-})
-```
-
-### Integration Pattern
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  ci-testing-agent                   │
-├─────────────────────────────────────────────────────┤
-│  1. CI Failure Detected                             │
-│         ↓                                           │
-│  2. Query Brain for Similar CI Failures             │
-│         ↓                                           │
-│  3. Apply Known Fix or Diagnose New Issue           │
-│         ↓                                           │
-│  4. Submit Learning (success/failure)               │
-│         ↓                                           │
-│  5. Update Session State for Handoff                │
-└─────────────────────────────────────────────────────┘
-```
-
-### Related Documentation
-
-- [Agent Brain Protocol](../../.codex/docs/AGENT_BRAIN_PROTOCOL.md)
-- [Pattern Learning Store](../../.codex/cognitive_brain/pattern_learning_store.json)
-- [Brain Interface API](../../src/codex/cognitive/brain_interface.py)
-
-**Last Updated**: 2026-02-05T15:46:00Z
 
 ---
 
 ## Version History
+
+### v4.2.0-s228 (2026-05-09) - S228 Continuation
+- ✅ P19 shadow import diagnosis protocol (detection + fix + root cause table)
+- ✅ CI failure → self-healing → escalation mermaid diagram
+- ✅ 5-pass self-review checklist
+- ✅ `@pytest.mark.flaky(reruns=2)` detection guidance (see autonomous-test-healer-agent)
+- ✅ Policy ref: `.codex/CODEBASE_AGENCY_POLICY.md §0`
 
 ### v3.0.0-cognitive (2026-02-17) - PR-4
 - ✅ Cognitive brain integration (Level 2)

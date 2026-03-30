@@ -294,7 +294,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existingIssue.number,
-                body: `## Update: ${timestamp}\n\n${body}`
+                body: `## Update: ${timestamp}\n\n${body}\n\n---\n_[🔗 Workflow run](${runUrl})_`
               });
 
               console.log(`Updated existing issue #${existingIssue.number}`);

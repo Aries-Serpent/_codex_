@@ -322,6 +322,7 @@ jobs:
           PROMPT_FILE: ${{ steps.build_prompt.outputs.prompt_file }}
         run: |
           BODY=$(cat "${PROMPT_FILE}")
+          BODY="${BODY}\n\n---\n_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_"
           gh pr comment "${PR_NUMBER}" \
             --repo "${{ github.repository }}" \
             --body "${BODY}"

@@ -157,7 +157,7 @@ jobs:
           now        = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
           sha_short  = commit_sha[:12]
 
-          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER = f"<!-- ci-rescue:{pr_number} -->"
           API    = "https://api.github.com"
           HDRS   = {
               "Authorization": f"Bearer {token}",
@@ -337,7 +337,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: always()
         continue-on-error: true   # CODECOV_TOKEN not required on non-protected branches; avoid blocking CI
         with:

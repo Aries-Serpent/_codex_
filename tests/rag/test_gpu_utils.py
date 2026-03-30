@@ -116,7 +116,7 @@ class TestGetGpuMemory:
 class TestSelectDevice:
     """Test device selection logic."""
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_select_device_prefer_gpu_available(self, mock_check_cuda):
         """Test device selection when GPU is preferred and available."""
         mock_check_cuda.return_value = True
@@ -126,7 +126,7 @@ class TestSelectDevice:
         assert device == "cuda"
         mock_check_cuda.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_select_device_prefer_gpu_unavailable(self, mock_check_cuda):
         """Test device selection when GPU is preferred but unavailable."""
         mock_check_cuda.return_value = False
@@ -136,7 +136,7 @@ class TestSelectDevice:
         assert device == "cpu"
         mock_check_cuda.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_select_device_prefer_cpu(self, mock_check_cuda):
         """Test device selection when CPU is preferred."""
         # check_cuda_available should not be called when prefer_gpu=False
@@ -145,7 +145,7 @@ class TestSelectDevice:
         assert device == "cpu"
         mock_check_cuda.assert_not_called()
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_select_device_default_prefer_gpu(self, mock_check_cuda):
         """Test that default behavior prefers GPU."""
         mock_check_cuda.return_value = True
@@ -159,7 +159,7 @@ class TestSelectDevice:
 class TestGetOptimalBatchSize:
     """Test optimal batch size calculation."""
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_gpu(self, mock_get_gpu_memory):
         """Test batch size calculation with GPU memory available."""
         # 8GB free memory
@@ -177,7 +177,7 @@ class TestGetOptimalBatchSize:
         assert batch_size == 512
         mock_get_gpu_memory.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_small_gpu(self, mock_get_gpu_memory):
         """Test batch size calculation with limited GPU memory."""
         # 100MB free memory - very small
@@ -195,7 +195,7 @@ class TestGetOptimalBatchSize:
         assert batch_size == 512
         mock_get_gpu_memory.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_tiny_gpu(self, mock_get_gpu_memory):
         """Test batch size calculation with very limited GPU memory."""
         # 5MB free memory - extremely small, should give minimum batch size
@@ -212,7 +212,7 @@ class TestGetOptimalBatchSize:
         # Would give 2604, but should be within range [8, 512]
         assert 8 <= batch_size <= 512
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_cpu_fallback(self, mock_get_gpu_memory):
         """Test batch size calculation when GPU is not available (CPU fallback)."""
         # No GPU memory available
@@ -224,7 +224,7 @@ class TestGetOptimalBatchSize:
         assert batch_size == 32
         mock_get_gpu_memory.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_custom_embedding_dim(self, mock_get_gpu_memory):
         """Test batch size calculation with custom embedding dimension."""
         mock_get_gpu_memory.return_value = (8_000_000_000, 16_000_000_000)
@@ -241,7 +241,7 @@ class TestGetOptimalBatchSize:
         assert batch_size == 512  # Still clamped to max
         mock_get_gpu_memory.assert_called_once()
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_low_safety_factor(self, mock_get_gpu_memory):
         """Test batch size calculation with low safety factor."""
         mock_get_gpu_memory.return_value = (8_000_000_000, 16_000_000_000)
@@ -279,7 +279,7 @@ class TestTryGpuIndex:
             mock_faiss.StandardGpuResources.assert_called_once()
             mock_faiss.index_cpu_to_gpu.assert_called_once_with(mock_resources, 0, mock_index)
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_try_gpu_index_cpu_device(self, mock_check_cuda):
         """Test that CPU device returns original index without GPU check."""
         mock_index = Mock()
@@ -289,7 +289,7 @@ class TestTryGpuIndex:
         assert result == mock_index
         mock_check_cuda.assert_not_called()
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_try_gpu_index_cuda_unavailable(self, mock_check_cuda):
         """Test when CUDA is not available."""
         mock_check_cuda.return_value = False
@@ -371,7 +371,7 @@ class TestGpuUtilsIntegration:
         assert free >= 0
         assert total >= 0
 
-    @patch("src.codex.rag.gpu_utils.check_cuda_available")
+    @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_device_selection_batch_size_correlation(self, mock_check_cuda):
         """Test that device selection correlates with batch size."""
         # Scenario 1: GPU available
@@ -407,7 +407,7 @@ class TestGpuUtilsIntegration:
 class TestGpuUtilsEdgeCases:
     """Test edge cases and error scenarios."""
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_negative_memory(self, mock_get_gpu_memory):
         """Test handling of negative memory values (should not happen, but defensive)."""
         mock_get_gpu_memory.return_value = (-1, -1)
@@ -416,7 +416,7 @@ class TestGpuUtilsEdgeCases:
         batch_size = get_optimal_batch_size()
         assert batch_size >= 8  # Should clamp to minimum
 
-    @patch("src.codex.rag.gpu_utils.get_gpu_memory")
+    @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_zero_embedding_dim(self, mock_get_gpu_memory):
         """Test with zero embedding dimension (edge case)."""
         mock_get_gpu_memory.return_value = (8_000_000_000, 16_000_000_000)
