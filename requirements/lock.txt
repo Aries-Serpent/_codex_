@@ -525,7 +525,7 @@ mbstrdecoder==1.1.4
     #   typepy
 mdurl==0.1.2
     # via markdown-it-py
-mistune==3.1.4
+mistune==3.2.0
     # via
     #   great-expectations
     #   nbconvert
