@@ -739,16 +739,16 @@ RESCUE_PATTERNS: list[RescuePattern] = [
             "bash",
             "-c",
             "python3 -c \""
-            "import json, pathlib, re; "
-            "cfg = pathlib.Path('.pre-commit-config.yaml').read_text(); "
-            "m = re.search(r'detect-secrets.*?rev:\\s*v?([0-9.]+)', cfg, re.S); "
-            "pin = m.group(1) if m else '1.4.0'; "
-            "bl = pathlib.Path('.secrets.baseline'); "
-            "data = json.loads(bl.read_text()); "
-            "data['version'] = pin; "
-            "bl.write_text(json.dumps(data, indent=2)); "
-            "print(f'COV_002: updated .secrets.baseline version to {pin}'); "
-            "\"",
+            + "import json, pathlib, re; "
+            + "cfg = pathlib.Path('.pre-commit-config.yaml').read_text(); "
+            + "m = re.search(r'detect-secrets.*?rev:\\s*v?([0-9.]+)', cfg, re.S); "
+            + "pin = m.group(1) if m else '1.4.0'; "
+            + "bl = pathlib.Path('.secrets.baseline'); "
+            + "data = json.loads(bl.read_text()); "
+            + "data['version'] = pin; "
+            + "bl.write_text(json.dumps(data, indent=2)); "
+            + "print(f'COV_002: updated .secrets.baseline version to {pin}'); "
+            + "\"",
         ],
         fix_description=(
             "Baseline version mismatch (COV_002): downgrade `.secrets.baseline` "
