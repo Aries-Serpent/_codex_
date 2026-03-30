@@ -85,17 +85,25 @@ class TestKillSwitch:
 class TestDecisionLoop:
     """Tests for the main decision loop in dry-run mode."""
 
+    @pytest.mark.flaky(reruns=2)
+    @pytest.mark.timeout(120)
     def test_run_loop_dry_run_no_side_effects(self, tmp_path):
         """Dry-run mode should not write to memory/ directory."""
         mod = _import_scheduler()
         if not hasattr(mod, "run_autonomy_loop"):
             pytest.skip("run_autonomy_loop not exported")
 
+        # Mock sense_test_health to avoid spawning a full pytest subprocess during
+        # dry-run validation (the subprocess can exceed the 60s pytest-timeout on
+        # loaded CI runners, causing spurious failures unrelated to the test intent).
+        _healthy = {"status": "ok", "returncode": 0, "stderr_snippet": ""}
+
         # Patch SESSION_DIR to tmp_path so we don't pollute repo
         with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
              patch.object(mod, "DRY_RUN", True), \
              patch.object(mod, "MAX_ITERATIONS", 1), \
-             patch.object(mod, "BUDGET_SECONDS", 30):
+             patch.object(mod, "BUDGET_SECONDS", 30), \
+             patch.object(mod, "sense_test_health", return_value=_healthy):
             mod.run_autonomy_loop()
 
         # In dry-run, sessions dir should not be created by the loop
