@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3813)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3813 (SHA `8a90e255`) at 2026-03-30T15:06Z [auto-generated]
+
 ### Fixed (S230 — PR #3790)
 - **fix(ci):** `ci_rescue.py` `find_pr_for_run()` — when multiple PRs share the same HEAD branch (e.g. two open PRs on `0D_base_`), the function was returning the first/oldest PR (`prs[0]`), causing rescue comments to be posted to the wrong PR. Fix: prefer the PR with the highest number (most recently opened = most likely actively worked on). Same fix applied to the inline fallback in `ci-rescue.yml`.
 - **fix(ci):** `ci-rescue.yml` inline fallback — `MARKER` was referenced before `pr_number` was resolved, causing a Python `NameError`. Moved `MARKER` definition to after PR lookup. Also switched to SHA-scoped marker (`<!-- ci-rescue-rca:{sha_short} -->`) consistent with `ci_rescue.py`.
