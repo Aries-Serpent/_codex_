@@ -13904,7 +13904,7 @@ and the CI gate requirement.
 ### Work Completed
 
 #### Issue #3800 — Nightly Health Sweep S171
-1. **Ruff check** — ran `python3 -m ruff check`; only pre-existing E501 (line-too-long) violations found (2,655 occurrences). No new violations introduced by recent commits. ✅
+1. **Ruff check** — ran `python3 -m ruff check`; result: 2,655 E501 (line-too-long) violations reported; no other rule violations reported for this run. ✅
 2. **auto_fix_common_issues.py** — ran `--check-only`; Pattern 22 (Tracked File Sync) flagged with 1 auto-fixable issue: `CODEX_MANIFEST` integrity hash stale + `.secrets.baseline` CODEX_MANIFEST entry stale. Fixed via `python3 scripts/ci/sync_tracked_files.py --fix`. ✅
 3. **CodeQL alerts** — API returned 403 (integration lacks code-scanning read permission); no CodeQL changes were made in recent commits so no new alerts expected. ✅
 4. **AGENT_ACCOUNTABILITY_REPORT.md** — already updated for S232 today (0 days ago); this S233 entry adds coverage for the health sweep. ✅
