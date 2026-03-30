@@ -692,7 +692,7 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         ),
         references=[
             "src/codex_ml/serving/inference_server.py — S229-CONT-2 commit 481f161",
-            "tests/api/test_contract_validation.py::TestRequestResponseContracts"
+            "tests/api/test_contract_validation.py::TestRequestResponseContracts",
             "::test_endpoints_have_type_hints",
         ],
     ),
