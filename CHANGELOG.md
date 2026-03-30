@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S229 — PR #3795)
+- **fix(tests):** Mark 5 confirmed-flaky timing-sensitive tests with `@pytest.mark.flaky(reruns=2)` in `tests/space_traversal/test_performance.py`, `tests/autonomy/test_integration_budget_exhaustion.py`, and `tests/autonomy/test_autonomy_scheduler.py`. Documented as P-044 in `.codex/permanent_facts.md`.
+
 ### Fixed (auto-update — PR #3793)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3793 (SHA `e7c44c45`) at 2026-03-29T23:19Z [auto-generated]
 

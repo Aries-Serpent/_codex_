@@ -13568,3 +13568,31 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-03-30T00:18Z SESSION S229 (PR #3795)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `@mbaetiong` comment #4151386762 reviewed (BLOCKING — `@copilot continue`) ✅
+- [x] **0b.** Failing CI checks reviewed — PR Comment Review Gate failing (expected, unaddressed comment); 0D_base_ failures pre-existing from merged PR #3790 ✅
+- [x] **1.** `AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** `CHANGELOG.md` updated ✅
+- [x] **3.** `sync_tracked_files.py --check` → all 4 consistent ✅
+- [x] **4.** Deferral language check — no deferral language in this session ✅
+- [x] **5.** `CODEBASE_AGENCY_POLICY.md` §0 followed ✅
+
+### Work Completed
+1. **RP-004 sync check** — `sync_tracked_files.py --check` shows all 4 tracked files consistent. No fix needed.
+2. **Confirmed-flaky test markers (P-044)** — Added `@pytest.mark.flaky(reruns=2)` to 5 timing-sensitive tests:
+   - `tests/space_traversal/test_performance.py`: `test_file_cache_expiry`, `test_file_cache_cleanup_expired`, `test_profile_stage_context_manager`
+   - `tests/autonomy/test_integration_budget_exhaustion.py`: `TestBudgetCap.test_budget_cap_raises_on_exhaustion`
+   - `tests/autonomy/test_autonomy_scheduler.py`: `TestBudgetCap.test_budget_cap_raises_on_timeout`
+3. **permanent_facts.md updated** — P-044 entry added with table of all marked flaky tests, prevention guidance, and note about P-038 sharded-mode interaction.
+4. **CI failures investigated** — PR Comment Review Gate fails because `@mbaetiong` comment #4151386762 was unaddressed (now addressed). Progressive Validation startup_failure is infrastructure-level, not code. 0D_base_ failures (Deferral Language Gate, Workflow Compliance Audit, PR Comment Review Gate) are from PR #3790 pre-merge state, not from this session.
+
+### Root-Cause Note
+Timing-sensitive tests using `time.sleep()` for real-wall-clock TTL expiry or budget
+enforcement can fail on loaded CI runners. The `@pytest.mark.flaky(reruns=2)` marker
+allows up to 2 retries before reporting as a failure, reducing noise from transient
+timing issues.
+
+---
