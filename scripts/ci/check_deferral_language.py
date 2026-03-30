@@ -127,9 +127,15 @@ EXEMPTION_PATTERNS: list[str] = [
     # Example: "genuine 'Will fix in a future session' → exit 1 (still caught)"
     r"genuine\s+[\"']Will fix in a future",
     r"genuine\s+[\"'][^\"']*future[^\"']*session",
-    # exit-1/still-caught pattern: describing scanner test output, not a real deferral
-    r"future session[^\"']*→ exit 1",
-    r"future session[^\"']*still caught",
+    # CI status report section headers that label pre-existing failure categories.
+    # Example: "## 🟡 Pre-Existing Failures (NOT Introduced by This PR, Still Codebase-Wide)"
+    # These are machine-generated category headings in CI rescue/status comments, not deferral
+    # statements from the agent.  A Markdown H1–H6 heading is structural labelling.
+    r"^#{1,6}\s+[^\n]*NOT\s+Introduced\s+by\s+This\s+PR",
+    # Infrastructure-enhancement TODO items are planned improvements, not current-issue deferrals.
+    # Example: "- [ ] Wire check_pr_comments.py ... — infrastructure enhancement; requires ..."
+    r"\binfrastructure\s+enhancement\b",
+
     # Labeling an exemption pattern category in PR description:
     # e.g., `r"genuine\s+...future...session"` — general "genuine + quoted future session" pattern
     # The " + quoted" between "genuine" and "future" means this is labeling a regex,

@@ -9,13 +9,10 @@ comments on the wrong PR.
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 from typing import Any
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 # ---------------------------------------------------------------------------
 # Import the module under test
@@ -25,7 +22,6 @@ if str(SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_CI))
 
 import ci_rescue  # noqa: E402  (after sys.path manipulation)
-
 
 # ---------------------------------------------------------------------------
 # Helpers

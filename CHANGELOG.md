@@ -4298,3 +4298,8 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Added (S230 — PR #3790)
 - **test(ci):** `tests/ci/test_ci_rescue_find_pr.py` — 10 unit tests for `find_pr_for_run()` covering the S230 multi-PR selection fix: single PR, multiple PRs sharing same SHA, fallback path, edge cases.
+
+### Fixed (S231 — PR #3790)
+- **fix(test):** `tests/ci/test_ci_rescue_find_pr.py` — remove 3 unused imports (json, MagicMock, pytest) and sort import block (ruff F401/I001 clean)
+- **fix(workflow):** `agent-auth-delegation.yml:901` — SC2028 echo→printf for `\n` escape sequences (actionlint clean)
+- **fix(ci):** `check_deferral_language.py` — add 2 EXEMPTION_PATTERNS: (a) CI status section headers `## ... NOT Introduced by This PR`; (b) `infrastructure enhancement` checklist labels; real deferrals still caught

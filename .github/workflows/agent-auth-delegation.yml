@@ -898,7 +898,7 @@ jobs:
           UPDATED_BODY="${BODY}${CHECKLIST}"
           gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"
           echo "✅ Workflow Execution Checklist injected into PR #${PR_NUMBER}"
-          echo "### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up." >> "$GITHUB_STEP_SUMMARY"
+          printf '### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up.\n' >> "$GITHUB_STEP_SUMMARY"
 
       # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
       # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)

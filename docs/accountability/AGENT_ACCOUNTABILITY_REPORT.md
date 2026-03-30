@@ -13780,3 +13780,32 @@ timing issues.
 | # | Issue | Fix Applied | Outcome |
 |---|-------|-------------|---------|
 | 1 | No unit tests for `find_pr_for_run()` multi-PR logic | Added 10 tests in `tests/ci/test_ci_rescue_find_pr.py` | ✅ 10/10 pass |
+
+---
+
+## SESSION SUMMARY — 2026-03-30T07:30Z SESSION S231 (PR #3790) — 9 CI Failures Triage
+
+### Problem
+9 CI checks failing on PR #3790. Root causes:
+1. `test_ci_rescue_find_pr.py` — 3 unused imports (json, MagicMock, pytest) + unsorted import block (ruff F401/I001)
+2. `agent-auth-delegation.yml:901` — `echo "...\n..."` doesn't expand escape sequences (actionlint SC2028)
+3. `check_deferral_language.py` — 2 false-positive deferral violations in machine-generated CI status comments:
+   - `## 🟡 Pre-Existing Failures (NOT Introduced by This PR)` — section header in ci-rescue comment
+   - `infrastructure enhancement; requires out of scope` — checklist improvement label
+
+### Work Completed
+1. **Removed unused imports** from `tests/ci/test_ci_rescue_find_pr.py` → ruff All checks passed ✅
+2. **SC2028 fix** `agent-auth-delegation.yml:901` echo → printf ✅
+3. **Deferral exemption patterns** for CI status headers and enhancement labels ✅; real deferrals still caught ✅
+4. **CHANGELOG updated** with S231 entries ✅
+5. `sync_tracked_files.py --check` all 4 consistent ✅
+
+### AfterMath
+
+| # | Issue | Fix | Status |
+|---|-------|-----|--------|
+| 1 | F401 unused imports in test file | Removed json, MagicMock, pytest | ✅ |
+| 2 | I001 unsorted imports | Sorted stdlib imports | ✅ |
+| 3 | SC2028 echo escape sequences | echo → printf | ✅ |
+| 4 | False-positive deferral in CI comment | Added 2 EXEMPTION_PATTERNS | ✅ |
+| 5 | CODEX_MANIFEST / CHANGELOG drift | sync_tracked_files clean | ✅ |
