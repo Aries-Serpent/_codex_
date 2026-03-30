@@ -48,6 +48,9 @@ Usage
     # Fix only CHANGELOG / accountability:
     python scripts/ci/sync_tracked_files.py --fix --docs-only
 
+    # Pre-push mode (Layer 2+3 conflict guard — RECOMMENDED before every commit):
+    python scripts/ci/sync_tracked_files.py --pre-push
+
     # Machine-readable JSON output (for CI integration):
     python scripts/ci/sync_tracked_files.py --check --json-output /tmp/sync_report.json
 
@@ -645,8 +648,9 @@ def check_accountability_freshness(result: SyncResult, *, fix: bool) -> None:
 3. **Next steps:** Replace this entry with a genuine session summary in the next commit.
 
 ### Lessons Learned
-- Run `python scripts/ci/sync_tracked_files.py --fix` before every commit to ensure
-  all tracked files (manifest, baseline, changelog, accountability) are consistent.
+- Run `python scripts/ci/sync_tracked_files.py --pre-push` before every commit to
+  fetch + rebase any concurrent CI bot commits (Layer 2+3 conflict guard) and then
+  ensure all tracked files (manifest, baseline, changelog, accountability) are consistent.
 
 ---
 """
@@ -742,6 +746,115 @@ def _git_sha() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Layer 2+3 — Pre-push conflict guard
+# ---------------------------------------------------------------------------
+
+
+def preflight_rebase(*, quiet: bool = False) -> bool:
+    """Fetch remote and rebase if the current branch is behind.
+
+    This is the implementation of the two-layer conflict prevention strategy
+    for files written by both agents and CI bots (CHANGELOG.md,
+    AGENT_ACCOUNTABILITY_REPORT.md, agent_auth_session.json,
+    session_context_latest.md):
+
+    Layer 2 — Structural fix:
+        Always fetch+rebase BEFORE running --fix so that
+        ``check_changelog`` and ``check_accountability_freshness`` append
+        *on top of* the latest bot commits, never in parallel with them.
+
+    Layer 3 — Pre-push protocol:
+        Called automatically when ``--pre-push`` is passed; ensures the
+        working tree is up-to-date with remote before any write/push.
+
+    Returns ``True`` on success (clean or rebased), ``False`` on failure
+    (conflict that requires manual resolution).
+    """
+
+    def _run(cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            cmd, cwd=REPO_ROOT, capture_output=True, text=True, timeout=60, **kwargs
+        )
+
+    # Discover current branch
+    branch_proc = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+    branch = branch_proc.stdout.strip()
+    if not branch or branch == "HEAD":
+        if not quiet:
+            print("⚠️  preflight_rebase: detached HEAD — skipping fetch/rebase")
+        return True
+
+    if not quiet:
+        print(f"🔄 preflight_rebase: fetching origin/{branch} …")
+
+    # Fetch the branch quietly
+    fetch = _run(["git", "fetch", "origin", branch])
+    if fetch.returncode != 0:
+        if not quiet:
+            print(f"⚠️  preflight_rebase: git fetch failed (offline?): {fetch.stderr.strip()}")
+        # Not fatal — might be offline/no-network; proceed without rebase
+        return True
+
+    # Count commits remote is ahead of local
+    ahead_proc = _run(
+        ["git", "rev-list", "--count", f"HEAD..origin/{branch}"]
+    )
+    try:
+        commits_behind = int(ahead_proc.stdout.strip())
+    except ValueError:
+        commits_behind = 0
+
+    if commits_behind == 0:
+        if not quiet:
+            print(f"✅ preflight_rebase: already up-to-date with origin/{branch}")
+        return True
+
+    if not quiet:
+        print(
+            f"⚡ preflight_rebase: branch is {commits_behind} commit(s) behind "
+            f"origin/{branch} — rebasing …"
+        )
+
+    # Check for uncommitted changes before rebasing
+    status = _run(["git", "status", "--porcelain"])
+    if status.stdout.strip():
+        if not quiet:
+            print(
+                "⚠️  preflight_rebase: uncommitted changes detected — "
+                "stashing before rebase"
+            )
+        stash = _run(["git", "stash", "--include-untracked"])
+        if stash.returncode != 0:
+            if not quiet:
+                print(f"❌ preflight_rebase: git stash failed: {stash.stderr.strip()}")
+            return False
+        stashed = True
+    else:
+        stashed = False
+
+    rebase = _run(["git", "rebase", f"origin/{branch}"])
+
+    if stashed:
+        pop = _run(["git", "stash", "pop"])
+        if pop.returncode != 0 and not quiet:
+            print(f"⚠️  preflight_rebase: stash pop warning: {pop.stderr.strip()}")
+
+    if rebase.returncode != 0:
+        if not quiet:
+            print(
+                f"❌ preflight_rebase: rebase conflict on origin/{branch}.\n"
+                f"   Resolve manually, then re-run.\n"
+                f"   {rebase.stderr.strip()}"
+            )
+        _run(["git", "rebase", "--abort"])
+        return False
+
+    if not quiet:
+        print(f"✅ preflight_rebase: rebased {commits_behind} commit(s) onto origin/{branch}")
+    return True
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
@@ -793,6 +906,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Post sync report as a comment on this GitHub Discussion number",
     )
     p.add_argument(
+        "--pre-push",
+        action="store_true",
+        default=False,
+        help=(
+            "Pre-push mode (Layer 2+3 conflict guard): fetch + rebase on top of any "
+            "remote bot-commits first, then run --fix.  Use this as the single command "
+            "before every report_progress / git push to prevent CHANGELOG and "
+            "AGENT_ACCOUNTABILITY_REPORT conflicts with concurrent CI auto-commits."
+        ),
+    )
+    p.add_argument(
         "--quiet",
         action="store_true",
         help="Suppress per-check output; only print the final summary",
@@ -803,6 +927,18 @@ def _build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
+
+    # Layer 3 — pre-push rebase gate (fetch + rebase before any sync)
+    if args.pre_push:
+        rebase_ok = preflight_rebase(quiet=args.quiet)
+        if not rebase_ok:
+            print(
+                "❌ pre-push rebase failed — resolve conflicts manually then re-run.",
+                file=sys.stderr,
+            )
+            return 1
+        # pre-push implies --fix
+        args.fix = True
 
     # Default: --check if neither --check nor --fix provided
     do_fix = args.fix
