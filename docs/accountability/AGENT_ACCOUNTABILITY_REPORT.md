@@ -15193,5 +15193,3 @@ Fallback implementations MUST be defined at module level unconditionally. The co
 - Tests: 44 pass (unchanged count, 2 test assertions updated for new WEC item count)
 - Deferral Language Gate: 0 violations
 - CI gates unblocked: github-code-quality (2 alerts resolved), Comment Review Gate unblocked after next push
-
-
