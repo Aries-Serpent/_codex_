@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S261 — PR #3835 — 2026-03-31)
+- **fix(tests):** `tests/monitoring/test_logging_bootstrap_initialization.py` — test was flaky when run after any test that sets `MLFLOW_TRACKING_URI` or `MLFLOW_OFFLINE` env vars, because `_codex_logging_bootstrap` calls `_maybe_init_mlflow_offline()` before setting its own tracking URI, causing `calls.setdefault` to capture the leaked file path first. Fixed by: (1) clearing `MLFLOW_TRACKING_URI` and `MLFLOW_OFFLINE` via `monkeypatch.delenv` at test start; (2) switching `calls.setdefault` to `calls.update` so the explicit cfg tracking URI always wins regardless of initialization order.
+
 ### Fixed (S260 — PR #3835 — 2026-03-31)
 - **fix(ci): Issue 1** — `comment-review-gate.yml`: changed SHA-scoped `<!-- ci-rescue:{PR}:{SHA} -->` marker to PR-scoped `<!-- comment-review-gate:{PR} -->`. Gate failure comment is now updated in-place on every push instead of creating a new thread per commit. SHA surfaced in comment body for traceability.
 - **fix(ci): Issue 2** — `reference-integrity.yml` agent-file-size job: added `<!-- agent-file-size-gate -->` HTML dedup marker; `createComment` replaced with paginated upsert-in-place logic. No more duplicate Agent File Size Gate failure comments.

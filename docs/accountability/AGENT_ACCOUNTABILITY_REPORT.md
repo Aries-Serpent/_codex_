@@ -15112,6 +15112,27 @@ Fallback implementations MUST be defined at module level unconditionally. The co
 
 ---
 
+## SESSION SUMMARY — 2026-03-31T21:55Z S261 (PR #3835 — CI Failure Triage, Test Isolation Fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comments reviewed: mbaetiong comments #4165276299, #4165485266, #4165674511 — reviewed and addressed ✅
+- [x] **0b.** CI Failure Triage Report (issue #3832) analyzed — root causes identified: (1) unused imports in test file (already fixed in 887ec9e); (2) test_logging_bootstrap_initialization flaky due to env var leakage; (3) tokenization/training failures already fixed in prior commits ✅
+- [x] **0c.** `CODEBASE_AGENCY_POLICY.md` followed — all found issues fixed, no deferral language ✅
+
+### Work Completed
+1. **Test isolation fix** — `tests/monitoring/test_logging_bootstrap_initialization.py`: cleared `MLFLOW_TRACKING_URI` / `MLFLOW_OFFLINE` env vars via `monkeypatch.delenv` and switched `calls.setdefault` → `calls.update` to prevent env-leakage flakiness from prior tests.
+
+### Root-Cause Note (RP-S261-001 — Test Env Leakage)
+`_codex_logging_bootstrap` calls `_maybe_init_mlflow_offline()` at the top of the function (before the mlflow config section). If `MLFLOW_TRACKING_URI` was set to a file path by a previous test via direct `os.environ` assignment, the dummy mock's `set_tracking_uri` lambda captured that file path first via `setdefault`. Fix: delenv the env vars at test start + use `update` instead of `setdefault`.
+
+### Impact Score
+- Files changed: 3 (test file + CHANGELOG + accountability report)
+- Tests: monitoring/test_logging_bootstrap_initialization — flakiness eliminated
+- Deferral Language Gate: 0 violations
+- CI confidence: all prior failures were on older commits; 887ec9e HEAD is clean
+
+---
+
 ## SESSION SUMMARY — 2026-03-31T21:30Z S260 (PR #3835 — S260 Comment Dedup, WEC Hardening, Code-Quality Fixes)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
