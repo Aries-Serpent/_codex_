@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3820)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3820 (SHA `a3dc57bd`) at 2026-03-31T00:05Z [auto-generated]
+
 ### Fixed (S243 — PR #3818)
 - **fix(ci):** `generate_coverage_map.py` — absolute `filename` paths normalized to repo-relative before `_file_to_module()` (prevents invalid module names on GitHub Actions). Copilot review thread line 142.
 - **fix(ci):** `generate_coverage_map.py` — per-XML duplicate module merge now unions `uncovered_lines` correctly (not just subtracts covered). Copilot review thread line 173.
