@@ -14496,7 +14496,7 @@ and the CI gate requirement.
    that are resolved by this commit.
 
 ### Impact Score
-- Files changed: 2 (`scripts/ci/check_deferral_language.py`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files changed: 3 (`scripts/ci/check_deferral_language.py`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: PR Comment Review Gate, Agent Token Delegation (REQ-4)
 - Open review threads resolved: 1 (PR #3824 `discussion_r3013126159`)
 - Deferral Language Gate: 0 violations
