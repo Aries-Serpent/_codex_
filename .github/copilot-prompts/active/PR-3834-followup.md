@@ -24,18 +24,36 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [x] REQ-4/REQ-5 compliance — `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` updated (S256)
+- [x] `sync-tracked-files` hook fixed — `.secrets.baseline` hash and `docs/ROADMAP.md` date corrected (f6246cc)
+- [ ] Verify all `copilot-pull-request-reviewer` review threads are resolved after S257 push
+- [ ] Confirm Resilient Validation Suite `validation (slow)` and sharded tests all green
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+# Verify pre-commit hooks pass on all changed files
+pre-commit run sync-tracked-files --all-files
+pre-commit run check-yaml --all-files
+
+# Run the specific previously-failing test groups
+.venv_ci/bin/python -m pytest tests/cli/test_tokenization_cli_comprehensive.py::TestFallbackBehavior -v
+.venv_ci/bin/python -m pytest tests/space_traversal/test_peft_comprehensive/test_base_config.py -v
+.venv_ci/bin/python -m pytest tests/test_safety_filters_integration.py::test_training_invokes_prompt_sanitizer -v
+
+# Fast validation gate
+bash scripts/run_validation.sh --fast
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm Comment Review Gate shows 0 blocking items after S257 commit
+- [ ] Check CI run for `Resilient Validation Suite` on new HEAD commit
+- [ ] Verify `_FallbackTyper`/`_fallback_echo` are importable with typer installed (not just when missing)
+- [ ] Update cognitive brain manager PDA loop ASSESS phase
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Harden `session_wrapup_autofix.py` to prevent double-`---` in auto-generated session entries
+- [ ] Add `PR-3835-followup.md` scope to PR description (noted by `copilot-pull-request-reviewer`)
+- [ ] Consider exporting fallback classes in `tokenization/cli.py` `__all__` for explicit discoverability
 
 ---
 

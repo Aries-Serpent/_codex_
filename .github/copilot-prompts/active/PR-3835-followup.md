@@ -24,18 +24,38 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [x] Investigate and fix `sync-tracked-files` hook failure (`.secrets.baseline` + `docs/ROADMAP.md`) — commit `f6246cc`
+- [x] Fix `AGENT_ACCOUNTABILITY_REPORT.md` duplicate `---` separators and stale `Last updated` header — commit `7eae1af`
+- [x] Fix `Resilient Validation Suite` failures — `_FallbackTyper`/`_fallback_echo` unconditionally exported from `tokenization/cli.py` — S257
+- [x] Fix `test_training_invokes_prompt_sanitizer` — ValueError from `hf_pinning.require_revision()` now correctly causes `pytest.skip` — S257
+- [x] Populate all follow-up prompt files (PR-3834 and PR-3835) with real tasks — S257
+- [ ] Confirm all CI checks green on latest push
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+# Verify tokenization fallback exports work with typer installed
+.venv_ci/bin/python -c "from tokenization.cli import _FallbackTyper, _fallback_echo, _fallback_option; print('OK')"
+
+# Run the previously-failing tests
+.venv_ci/bin/python -m pytest tests/cli/test_tokenization_cli_comprehensive.py::TestFallbackBehavior -v
+.venv_ci/bin/python -m pytest tests/space_traversal/test_peft_comprehensive/test_base_config.py::test_base_config_load -v
+.venv_ci/bin/python -m pytest tests/test_safety_filters_integration.py::test_training_invokes_prompt_sanitizer -v
+
+# Pre-commit hooks
+pre-commit run sync-tracked-files --all-files
+pre-commit run check-yaml --all-files
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Confirm Comment Review Gate shows 0 blocking items on HEAD commit
+- [ ] Check `copilot-pull-request-reviewer` all 5 threads marked resolved/outdated
+- [ ] Confirm `Resilient Validation Suite` green on HEAD
+- [ ] Verify `PR-3835-followup.md` scope reflected in PR description (copilot reviewer R5)
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Harden `session_wrapup_autofix.py` to never produce double `---` in auto-generated entries
+- [ ] Add `_FallbackTyper`, `_fallback_echo`, `_fallback_option` to `tokenization/cli.py` `__all__`
+- [ ] Extend `check_pr_comments.py` to detect `copilot-review-responder.yml` 👍 reactions as "acknowledged" signal
 
 ---
 

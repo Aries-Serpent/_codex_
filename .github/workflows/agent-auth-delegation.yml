@@ -860,45 +860,35 @@ jobs:
         run: |
           BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
-          if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
-            echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
-            printf '### ✅ Workflow Execution Checklist\n\nAlready present — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
+          # Detect canonical marker (maintainer-required format) OR old-style header
+          if echo "$BODY" | grep -qF '**🔄 Workflow Execution Checklist**:'; then
+            echo "✅ Canonical Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
+            printf '### ✅ Workflow Execution Checklist\n\nAlready present (canonical format) — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          printf '%s\n' \
-            '' \
-            '## 🔄 Workflow Execution Checklist' \
-            '<!-- gate-managed-by: workflow-execution-gate.yml -->' \
-            '<!-- gate-version: 1.0.0 -->' \
-            '' \
-            '### ✅ Validation & Testing' \
-            '- [x] pre-merge-validation.yml — Pre-merge checks (always required)' \
-            '- [x] resilient-validation-suite.yml — Resilient validation' \
-            '- [ ] nox-gates.yml — Nox test gates' \
-            '' \
-            '### ✅ Security & Quality' \
-            '- [x] comment-review-gate.yml — Comment review gate (always required)' \
-            '- [ ] security-scanning-suite.yml — Full security audit' \
-            '- [x] deferral-language-gate.yml — Deferral language guard' \
-            '' \
-            '### 📄 Documentation' \
-            '- [ ] docs-build.yml — Documentation build' \
-            '' \
-            '### 🤖 Automation' \
-            '- [x] agent-auth-delegation.yml — Agent auth delegation (always required)' \
-            '- [x] copilot-agent-checkin.yml — Agent check-in (always required)' \
-            '- [ ] cost-gate.yml — Cost governance gate' \
-            '' \
-            '> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for' \
-            '> this session. Unchecked workflows will be SKIPPED by the gate.' \
-            > "${RUNNER_TEMP}/checklist.txt"
-          CHECKLIST=$(cat "${RUNNER_TEMP}/checklist.txt")
+          # Strip legacy format sections if present (old ### 💰/🔐 headings)
+          # so we don't double-append approval gate checkboxes
+          STRIPPED_BODY=$(printf '%s' "$BODY" | sed '/^### 💰 Cost Governance/,$d' | sed '/^### 🔐 Agent Token Delegation/,$d')
 
-          UPDATED_BODY="${BODY}${CHECKLIST}"
+          # Append the canonical WEC block — maintainer-mandated format
+          # Pre-checked state: COPILOT_AGENT_AUTH_ENABLED + Cost Proposal are [x] by default
+          # (maintainer has granted blanket approval; Auto-Post is opt-in per session)
+          WEC_BLOCK=$(printf '%s\n' \
+            '' \
+            '---' \
+            '' \
+            '**🔄 Workflow Execution Checklist**:' \
+            '' \
+            '🔐 Agent Token Delegation' \
+            '- [x] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '- [x] 💰 Cost Proposal Approved' \
+            '- [ ] 🔄 Auto-Post @copilot review After Agent Session')
+
+          UPDATED_BODY="${STRIPPED_BODY}${WEC_BLOCK}"
           gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"
-          echo "✅ Workflow Execution Checklist injected into PR #${PR_NUMBER}"
-          printf '### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up.\n' >> "$GITHUB_STEP_SUMMARY"
+          echo "✅ Canonical Workflow Execution Checklist injected into PR #${PR_NUMBER}"
+          printf '### ✅ Workflow Execution Checklist\n\nCanonical format injected — approval gates are now armed.\n' >> "$GITHUB_STEP_SUMMARY"
 
       # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
       # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)

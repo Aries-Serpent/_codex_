@@ -256,7 +256,12 @@ For Copilot/AI-assisted PRs:
 
 ---
 
-## Screenshots (if applicable)
+**🔄 Workflow Execution Checklist**:
+
+🔐 Agent Token Delegation
+- [ ] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)
+- [ ] 💰 Cost Proposal Approved
+- [ ] 🔄 Auto-Post @copilot review After Agent Session
 
 _Add screenshots for UI changes_
 

@@ -164,32 +164,36 @@ jobs:
           PR_TITLE: ${{ inputs.pr_title }}
           SESSION_LABEL: ${{ inputs.session_label }}
         run: |
-          PR_BODY=$(printf '%s\n' \
-            "## 🚀 ${SESSION_LABEL} Promotion: \`0D_base_\` → \`main\`" \
-            '' \
-            "This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`." \
-            '' \
-            '### Contents' \
-            "- See PR title and session notes for ${SESSION_LABEL} contents" \
-            '' \
-            '### Branch created from' \
-            "\`${SHA}\` (\`${{ inputs.source_branch }}\` @ ${SESSION_LABEL})" \
-            '' \
-            '### Architecture' \
-            '```' \
-            "${{ inputs.source_branch }}  ──►  0D_base_  ──►  main" \
-            "              (${SESSION_LABEL} session)          (this PR)" \
-            '```' \
-            '' \
-            '---' \
-            '_Auto-created by `promote-integration-branch.yml` workflow_' \
-            "_Source: \`mcp_poster create-branch\` + \`create-pr\` (${SESSION_LABEL})_" \
-            '' \
-            '### 💰 Cost Governance' \
-            '- [ ] **💰 Cost Proposal Approved**' \
-            '### 🔐 Agent Token Delegation' \
-            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
-            '- [ ] 🔄 Auto-Post @copilot review After Agent Session')
+          # Build PR body with variable concatenation to avoid shellcheck SC2215
+          # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).
+          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion: \`0D_base_\` → \`main\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`."$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Contents"$'\n'
+          PR_BODY+="- See PR title and session notes for ${SESSION_LABEL} contents"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Branch created from"$'\n'
+          PR_BODY+="\`${SHA}\` (\`${{ inputs.source_branch }}\` @ ${SESSION_LABEL})"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Architecture"$'\n'
+          PR_BODY+="\`\`\`"$'\n'
+          PR_BODY+="${{ inputs.source_branch }}  ──►  0D_base_  ──►  main"$'\n'
+          PR_BODY+="              (${SESSION_LABEL} session)          (this PR)"$'\n'
+          PR_BODY+="\`\`\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="---"$'\n'
+          PR_BODY+="_Auto-created by \`promote-integration-branch.yml\` workflow_"$'\n'
+          PR_BODY+="_Source: \`mcp_poster create-branch\` + \`create-pr\` (${SESSION_LABEL})_"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="---"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="🔐 Agent Token Delegation"$'\n'
+          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
+          PR_BODY+="- [ ] 💰 Cost Proposal Approved"$'\n'
+          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
             --repo "${{ github.repository }}" \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
@@ -205,18 +209,20 @@ jobs:
           SESSION_LABEL: ${{ inputs.session_label }}
         run: |
           PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
-          PR_BODY=$(printf '%s\n' \
-            "## 🚀 ${SESSION_LABEL} Promotion (updated): \`0D_base_\` → \`main\`" \
-            '' \
-            "This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`." \
-            "PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`." \
-            '' \
-            '### 🔐 Agent Token Delegation' \
-            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
-            '- [ ] 🔄 Auto-Post @copilot review After Agent Session' \
-            '' \
-            '### 💰 Cost Governance' \
-            '- [x] **💰 Cost Proposal Approved**')
+          # Build PR body with variable concatenation to avoid shellcheck SC2215.
+          PR_BODY="## 🚀 ${SESSION_LABEL} Promotion (updated): \`0D_base_\` → \`main\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`."$'\n'
+          PR_BODY+="PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`."$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="---"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="🔐 Agent Token Delegation"$'\n'
+          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
+          PR_BODY+="- [x] 💰 Cost Proposal Approved"$'\n'
+          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
 
           gh pr edit "${PR_NUM}" \
             --repo "${{ github.repository }}" \

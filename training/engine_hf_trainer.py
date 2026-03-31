@@ -845,6 +845,23 @@ def load_training_arguments(
     if "label_smoothing_factor" in cfg and _v(_hf_version) < _v("4.3.0"):
         cfg.pop("label_smoothing_factor")
 
+    # Safety net: remove any non-TrainingArguments keys that survived (e.g. when
+    # OmegaConf interpolation re-introduces them after the main pop loop due to
+    # pytest sys.modules caching with dual-package layout — RP-S257-004).
+    _EXTRA_KEYS = frozenset({
+        "batch_size", "lora_r", "lora_alpha", "lora_dropout", "precision",
+        "checkpoint_dir", "model_name", "tokenizer_name", "tokenizer_path",
+        "use_fast_tokenizer", "epochs", "val_split", "test_split", "logging",
+        "checkpoint", "training", "early_stopping_patience", "lora",
+        "grad_accum", "model", "device", "dtype", "deterministic",
+        "sanitize_prompts", "optimizer", "scheduler", "mixed_precision",
+        "tensorboard", "mlflow_enable", "max_epochs", "dataset",
+        "checkpoint_every_n_steps", "checkpoint_keep", "eval_split",
+        "gradient_accumulation",
+    })
+    for _k in _EXTRA_KEYS & set(cfg.keys()):
+        cfg.pop(_k, None)
+
     return TrainingArguments(**cfg)
 
 

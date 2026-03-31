@@ -105,7 +105,12 @@
 
 ---
 
-## ARCHIVAL OPERATIONS (if this PR removes or renames files)
+**🔄 Workflow Execution Checklist**:
+
+🔐 Agent Token Delegation
+- [ ] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)
+- [ ] 💰 Cost Proposal Approved
+- [ ] 🔄 Auto-Post @copilot review After Agent Session
 
 **Required if any files are deleted or moved:**
 
