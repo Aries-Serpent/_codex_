@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S250 — PR #3830)
+- **chore(ci):** `0D_base_` CI verified fully green post-PR #3827 merge (CodeQL ✅, Reference Integrity ✅, Documentation Link Checker ✅, Semgrep ✅).
+- **chore(ci):** Accountability report (`AGENT_ACCOUNTABILITY_REPORT.md`) S250 session entry added by self-healing gate (REQ-4 compliance).
+- **chore(ci):** CHANGELOG updated with S250 entry to satisfy REQ-5.
+
 ### Fixed (S249 — PR #3827)
 - **chore(workflow):** `copilot-session-chain.yml` — opt-in gate for auto-chaining: the `pull_request` trigger is restored but only fires when the merged PR body contains `- [x] **🔗 Needs follow-up session**`; unchecked (default) suppresses auto-chaining. The opt-in checkbox is included in all auto-generated session PR bodies. Previously removed auto-trigger has been replaced by this smarter conditional chain.
 - **chore(ci):** PR #3827 session S249 — responded to @mbaetiong continue request; verified `0D_base_` CI green post-PR #3825 merge; updated accountability report and CHANGELOG to satisfy REQ-4/REQ-5 gates.
