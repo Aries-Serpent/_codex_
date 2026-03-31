@@ -641,4 +641,4 @@ Agent Actions:
 - Cognitive brain visualization dashboard
 - Real-time health monitoring alerts
 
-> **📦 Templates & Version History:** Archived to [`.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md`](.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md) to maintain agent file-size gate (30,000-char limit). Templates: Phase Completion Document, Health Score, Version History, Session S128 historical state.
+> **📦 Templates & Version History:** Archived to [`.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md`](../../.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md) to maintain agent file-size gate (30,000-char limit). Templates: Phase Completion Document, Health Score, Version History, Session S128 historical state.
