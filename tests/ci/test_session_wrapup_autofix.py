@@ -114,6 +114,8 @@ class TestBuildWecBlock:
             "copilot-agent-checkin.yml",
             "cost-gate.yml",
             "copilot-agent-session-done.yml",
+            "workflow-execution-gate.yml",
+            "copilot-iterative-self-healing.yml",
             "auto-approve-workflows",
         ]
         for fname in optional:
@@ -492,8 +494,8 @@ class TestMain:
 class TestWecConstants:
     def test_wec_items_count_matches_sections(self):
         """Ensure _WEC_ITEMS has entries for all 4 sections + auto-approve."""
-        assert len(swa._WEC_ITEMS) == 12, (
-            f"Expected 12 WEC items (3+3+1+4+1), got {len(swa._WEC_ITEMS)}"
+        assert len(swa._WEC_ITEMS) == 14, (
+            f"Expected 14 WEC items (3+3+1+6+1), got {len(swa._WEC_ITEMS)}"
         )
 
     def test_always_required_items_in_wec_items(self):

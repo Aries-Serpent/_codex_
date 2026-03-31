@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-qa-walkthrough-agent
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-31T19:15Z (S258 — PR #3835 comment audit, Agent File Size Gate fix, merge readiness 97%)
+**Last updated:** 2026-03-31T21:30Z S260
 
 ---
 
@@ -15109,3 +15109,36 @@ Fallback implementations MUST be defined at module level unconditionally. The co
 - Merge confidence: 89% pre-CI-green → 97% post-CI-green
 - Deferral Language Gate: 0 violations
 - AAIS delta: +0.2 (v4.5.1 97.8 → v4.5.2 98.0)
+
+---
+
+## SESSION SUMMARY — 2026-03-31T21:30Z S260 (PR #3835 — S260 Comment Dedup, WEC Hardening, Code-Quality Fixes)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed: github-code-quality (2 unused-global alerts), github-advanced-security (6 outdated alerts), mbaetiong rescue/escalation comments — all reviewed ✅
+- [x] **0b.** Failing CI checks reviewed: RP-002 unused imports/vars, RP-012 unsorted imports — fixed in c938063 and d7f5f3a ✅
+- [x] **0c.** `CODEBASE_AGENCY_POLICY.md` followed — all found issues fixed, no deferral language ✅
+
+### Work Completed
+1. **Code-quality fix (d7f5f3a)** — `_WEC_ALWAYS_REQUIRED` wired into `_build_wec_block._checked()` (closes github-code-quality alert); `_REQUIRED_PR_CHECKBOXES` wired into `fix_pr_body_checkboxes` as default when no existing state (closes second alert). Both variables now genuinely used within the module.
+2. **S260 Issue 1** — `comment-review-gate.yml`: SHA-scoped marker `<!-- ci-rescue:PR:SHA -->` → PR-scoped `<!-- comment-review-gate:PR -->`. Eliminates per-commit comment spam.
+3. **S260 Issue 2** — `reference-integrity.yml` agent-file-size job: added `<!-- agent-file-size-gate -->` dedup marker + paginated upsert-in-place (was `createComment` every time).
+4. **S260 Issue 3** — `agent-auth-delegation.yml` cognitive-preflight: paginated comment search (was single 100-item page); added `Last updated for SHA:` line.
+5. **S260 Issue 4** — `scripts/ci/ci_rescue.py`: `_make_rca_marker` now returns PR-scoped `<!-- ci-rescue-rca:{pr_number} -->` — all RCA failures consolidate to one thread per PR.
+6. **S260 Issue 5** — Added `workflow-execution-gate.yml` and `copilot-iterative-self-healing.yml` to `_WEC_ITEMS` (Automation section); WEC item count 12→14; both PR templates and `agent-auth-delegation.yml` updated.
+7. **check_pr_comments.py** — Added `<!-- comment-review-gate:` and `<!-- agent-file-size-gate -->` to `SKIP_BODY_MARKERS` to prevent new markers triggering circular gate failures.
+8. **WEC concerns doc** — Created `docs/workflows/WEC_PR_BODY_CONFLICTS.md` identifying 4 conflict patterns and recommending always-append strategy.
+
+### Root-Cause Note (RP-S260-001 — WEC Stripped by report_progress)
+`report_progress` replaces the ENTIRE PR body with its `prDescription` parameter. Unless the WEC block is explicitly included at the end of every `prDescription`, it is silently stripped on every push. Fix: always append `_build_wec_block()` output at the end of every `prDescription` passed to `report_progress`.
+
+### Root-Cause Note (RP-S260-002 — Comment Review Gate per-SHA spam)
+`comment-review-gate.yml` was using `<!-- ci-rescue:{PR}:{SHA} -->` as the upsert marker, creating a NEW comment thread for EVERY commit SHA. 7 duplicate threads appeared on PR #3835. Fix: PR-scoped marker + update-in-place.
+
+### Impact Score
+- Files changed: 8 (comment-review-gate.yml, reference-integrity.yml, agent-auth-delegation.yml, ci_rescue.py, session_wrapup_autofix.py, check_pr_comments.py, PR templates ×2, tests)
+- Tests: 44 pass (unchanged count, 2 test assertions updated for new WEC item count)
+- Deferral Language Gate: 0 violations
+- CI gates unblocked: github-code-quality (2 alerts resolved), Comment Review Gate unblocked after next push
+
+

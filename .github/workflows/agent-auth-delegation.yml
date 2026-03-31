@@ -929,6 +929,8 @@ jobs:
             "- [$(_checked copilot-agent-checkin.yml false)] copilot-agent-checkin.yml — Agent check-in (always required)" \
             "- [$(_checked cost-gate.yml false)] cost-gate.yml — Cost governance gate" \
             "- [$(_checked copilot-agent-session-done.yml false)] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session" \
+            "- [$(_checked workflow-execution-gate.yml false)] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows" \
+            "- [$(_checked copilot-iterative-self-healing.yml false)] copilot-iterative-self-healing.yml — Iterative self-healing CI loop" \
             '' \
             '### ⚡ Auto-Approve' \
             "- [$(_checked auto-approve-workflows false)] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)" \

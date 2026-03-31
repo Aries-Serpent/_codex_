@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S260 — PR #3835 — 2026-03-31)
+- **fix(ci): Issue 1** — `comment-review-gate.yml`: changed SHA-scoped `<!-- ci-rescue:{PR}:{SHA} -->` marker to PR-scoped `<!-- comment-review-gate:{PR} -->`. Gate failure comment is now updated in-place on every push instead of creating a new thread per commit. SHA surfaced in comment body for traceability.
+- **fix(ci): Issue 2** — `reference-integrity.yml` agent-file-size job: added `<!-- agent-file-size-gate -->` HTML dedup marker; `createComment` replaced with paginated upsert-in-place logic. No more duplicate Agent File Size Gate failure comments.
+- **fix(ci): Issue 3** — `agent-auth-delegation.yml` cognitive-preflight: replaced single-page `listComments` (per_page=100 only) with paginated search (20-page cap) so the existing checklist comment is found and updated even on PRs with >100 comments. Added `Last updated for SHA:` line to heading.
+- **fix(ci): Issue 4** — `scripts/ci/ci_rescue.py`: `_make_rca_marker` now generates PR-scoped `<!-- ci-rescue-rca:{pr_number} -->` instead of per-SHA marker. All RCA failures for a PR consolidate into one comment thread; SHA surfaced in each `### 🔄 Failure Update (SHA: ...)` append section.
+- **feat(wec): Issue 5** — Added `workflow-execution-gate.yml` and `copilot-iterative-self-healing.yml` to `_WEC_ITEMS` (🤖 Automation section); updated both PR templates and `agent-auth-delegation.yml` WEC injection; WEC item count 12→14.
+- **fix(quality)** — `_WEC_ALWAYS_REQUIRED` now used inside `_build_wec_block` inner `_checked()` helper (closes `github-code-quality` "unused global" alert); `_REQUIRED_PR_CHECKBOXES` used in `fix_pr_body_checkboxes` as default WEC block when no maintainer state exists (closes second alert).
+- **fix(quality)** — `check_pr_comments.py` SKIP_BODY_MARKERS: added `<!-- comment-review-gate:` and `<!-- agent-file-size-gate -->` to prevent new marker formats from triggering circular blocking.
+
 ### Fixed (S258 — PR #3835 — 2026-03-31)
 - **fix(agents):** `cognitive-brain-manager.md` — trimmed from 31,983 chars to 29,516 chars by archiving Session S128 historical state and templates to `.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md`; resolves Agent File Size Gate FAILED (comment #4164732123) which was cascading into 3× Comment Review Gate failures.
 - **chore(docs):** Created `.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md` to archive S128 historical session state, Pipeline Status table, D_CAPABLE Gate snapshots, Branch Cleanup Mermaid diagram, and Phase Completion/Health Score templates.

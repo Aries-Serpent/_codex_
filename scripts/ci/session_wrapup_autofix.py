@@ -98,6 +98,8 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("copilot-agent-checkin.yml",     "Agent check-in (always required)",    False),
     ("cost-gate.yml",                 "Cost governance gate",                False),
     ("copilot-agent-session-done.yml", "Auto-Post @copilot review After Agent Session", False),
+    ("workflow-execution-gate.yml",   "WEC gate — parse checklist & arm allowed workflows", False),
+    ("copilot-iterative-self-healing.yml", "Iterative self-healing CI loop", False),
     # --- Auto-Approve ---
     ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
 ]
@@ -155,8 +157,8 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     validation_items   = _WEC_ITEMS[:3]
     security_items     = _WEC_ITEMS[3:6]
     docs_items         = _WEC_ITEMS[6:7]
-    automation_items   = _WEC_ITEMS[7:11]   # agent-auth → copilot-agent-session-done
-    auto_approve_items = _WEC_ITEMS[11:]    # auto-approve-workflows
+    automation_items   = _WEC_ITEMS[7:13]   # agent-auth → copilot-iterative-self-healing
+    auto_approve_items = _WEC_ITEMS[13:]    # auto-approve-workflows
 
     for fname, label, _ in validation_items:
         lines.append(f"- [{_checked(fname)}] {fname} — {label}")

@@ -122,6 +122,8 @@
 - [ ] copilot-agent-checkin.yml — Agent check-in (always required)
 - [ ] cost-gate.yml — Cost governance gate
 - [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
+- [ ] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
+- [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
 
 ### ⚡ Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
