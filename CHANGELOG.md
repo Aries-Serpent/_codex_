@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (S262 — PR #3835 — 2026-03-31)
+- **fix(security): CRITICAL** — `copilot/extension/package.json` axios upgraded from `^1.6.8` to `^1.13.5`. Resolves 4 CVEs: SSRF via absolute URL (GHSA-8hc4-xxm3-5ppp), DoS via data size (GHSA-jr5f-v2jv-69x6), DoS via `__proto__` key in mergeConfig (GHSA-r2r4-36mg-ppqc), credential leakage (GHSA-8hc4-xxm3-5ppp). Minimum safe version: 1.13.5.
+
+### Fixed (S262 — PR #3835 — 2026-03-31)
+- **fix(tests): dual-package shadow elimination** — `pytest.ini` pythonpath changed from `'. src'` to `'src'`. Removes root `./` from Python path, ensuring tests import from `src/training/` (17 files, superset) instead of diverged root `./training/` (13 files). Per S258 research analysis: all 42+ test import sites resolve correctly with zero breakage.
+- **fix(ci): comment-gate hardening** — `scripts/ci/check_pr_comments.py` SKIP_BODY_MARKERS matching changed from `startswith` to `in` (substring check). Prevents false negatives when comment bodies have leading whitespace or GitHub-injected prefixes before the HTML marker. Per S258 cascade prevention design doc.
+
 ### Fixed (S261 — PR #3835 — 2026-03-31)
 - **fix(tests):** `tests/monitoring/test_logging_bootstrap_initialization.py` — test was flaky when run after any test that sets `MLFLOW_TRACKING_URI` or `MLFLOW_OFFLINE` env vars, because `_codex_logging_bootstrap` calls `_maybe_init_mlflow_offline()` before setting its own tracking URI, causing `calls.setdefault` to capture the leaked file path first. Fixed by: (1) clearing `MLFLOW_TRACKING_URI` and `MLFLOW_OFFLINE` via `monkeypatch.delenv` at test start; (2) switching `calls.setdefault` to `calls.update` so the explicit cfg tracking URI always wins regardless of initialization order.
 
