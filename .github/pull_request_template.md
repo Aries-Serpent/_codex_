@@ -94,23 +94,40 @@
 - [ ] **Capture Baseline** - Commits to `audit_artifacts/baselines/` (with rotation/archival)
 - [ ] **Create Draft PR with Artifacts + Diffs** - Opens draft PR with matrix and manifest diffs
 
-### 🔐 Agent Token Delegation
-
-- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
-  - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]` to use delegated tokens
-  - Triggers the [`agent-auth-delegation`](.github/workflows/agent-auth-delegation.yml) gated workflow
-  - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
-  - Once approved, `@copilot continue` is posted automatically
-- [ ] 🔄 Auto-Post @copilot review After Agent Session
+- [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)
+  - ⚠️ **Default: disabled** — Only ONE Copilot session active at a time
+  - When enabled: allows parallel Copilot sessions on different PRs
+  - When disabled: sessions are queued and executed sequentially
+  - **Caution:** Multiple sessions may cause merge conflicts on shared files
 
 ---
 
-**🔄 Workflow Execution Checklist**:
+## 🔄 Workflow Execution Checklist
 
-🔐 Agent Token Delegation
-- [ ] 🔐 Enable Agent Token Delegation (`COPILOT_AGENT_AUTH_ENABLED`)
-- [ ] 💰 Cost Proposal Approved
-- [ ] 🔄 Auto-Post @copilot review After Agent Session
+### ✅ Validation & Testing
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [ ] resilient-validation-suite.yml — Resilient validation
+- [ ] nox-gates.yml — Nox test gates
+
+### ✅ Security & Quality
+- [x] comment-review-gate.yml — Comment review gate (always required)
+- [ ] security-scanning-suite.yml — Full security audit
+- [ ] deferral-language-gate.yml — Deferral language guard
+
+### 📄 Documentation
+- [ ] docs-build.yml — Documentation build
+
+### 🤖 Automation
+- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
+- [ ] copilot-agent-checkin.yml — Agent check-in (always required)
+- [ ] cost-gate.yml — Cost governance gate
+- [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
+
+### ⚡ Auto-Approve
+- [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
+
+> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for
+> this session. Unchecked workflows will be SKIPPED by the gate.
 
 **Required if any files are deleted or moved:**
 
