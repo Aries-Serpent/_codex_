@@ -127,16 +127,19 @@ def maybe_mlflow(
         return
 
     try:  # pragma: no cover - optional dependency path
-        # Always route through the guard, even when an explicit URI is provided.
-        # If `tracking_uri` is remote and no explicit opt-in is set, the guard
-        # will override to a local file-backed URI and log a warning.
+        # Always force the offline guard before starting a run so that a remote
+        # tracking URI (passed via `tracking_uri` or the env var) can never cause
+        # an unexpected network timeout.  `bootstrap_offline_tracking(force=True)`
+        # overrides to the local file-backed URI unless the explicit allow-remote
+        # opt-in is set; `mlflow.set_tracking_uri` propagates the decision to the
+        # MLflow client before `start_run()` opens the connection.
         if tracking_uri:
             os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
-        ensure_local_tracking()
+        effective = bootstrap_offline_tracking(force=True)
+        mlflow.set_tracking_uri(effective)
         with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
             yield mlflow
     except Exception:
-        LOGGER.warning("Exception occurred", exc_info=True)
         LOGGER.warning("Exception occurred", exc_info=True)
         # Degrade gracefully to a no-op logger when MLflow is unavailable.
         yield _NoOpLogger()
