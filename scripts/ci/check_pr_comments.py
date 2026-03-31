@@ -288,7 +288,7 @@ def find_unaddressed_comments(
         if login in COPILOT_AGENTS:
             continue  # Copilot's own comments don't need addressing
         body_start = (c.get("body") or "")[:80]
-        if any(m in body_start for m in SKIP_BODY_MARKERS):
+        if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
             continue  # Self-referential gate output — exempt from scan
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
