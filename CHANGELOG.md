@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S249 — PR #3827)
+- **chore(ci):** PR #3827 session S249 — responded to @mbaetiong continue request; verified `0D_base_` CI green post-PR #3825 merge; updated accountability report and CHANGELOG to satisfy REQ-4/REQ-5 gates.
+
 ### Fixed (S248 — PR #3825)
 - **fix(ci):** `scripts/ci/check_deferral_language.py` — replaced hardcoded line-number reference in comment (lines 670–672) with structural description ("in the `if args.since:` block above") so the comment remains accurate as the file evolves. Addresses PR #3824 review thread `discussion_r3013126159`.
 
