@@ -581,7 +581,7 @@ def write_prometheus_metrics(report: dict[str, Any], path: str) -> None:
                     f'comment_review_gate_pending_seconds{{pr="{pr}",'
                     f'repo="{report["repo"]}",author="{author}",type="{ctype}"}} {pending_secs:.3f}'
                 )
-            except (ValueError, TypeError):
+            except (ValueError, TypeError):  # skip comments with unparseable timestamps
                 pass
 
     if latency_lines:
