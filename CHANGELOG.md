@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S248 — PR #3825)
+- **fix(ci):** `scripts/ci/check_deferral_language.py` — replaced hardcoded line-number reference in comment (lines 670–672) with structural description ("in the `if args.since:` block above") so the comment remains accurate as the file evolves. Addresses PR #3824 review thread `discussion_r3013126159`.
+
 ### Fixed (auto-update — PR #3823)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3823 (SHA `b68c91dd`) at 2026-03-31T02:07Z [auto-generated]
 
