@@ -81,13 +81,6 @@ _WEC_MARKER = "## 🔄 Workflow Execution Checklist"
 # Legacy marker (old format) — still detected for backward-compat migration
 _WEC_MARKER_LEGACY = "**🔄 Workflow Execution Checklist**:"
 
-# Workflows that are ALWAYS pre-checked (always required gates)
-_WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset({
-    "pre-merge-validation.yml",
-    "comment-review-gate.yml",
-    "agent-auth-delegation.yml",
-})
-
 # Full ordered list of WEC workflow items: (filename, label, always_required)
 _WEC_ITEMS: list[tuple[str, str, bool]] = [
     # --- Validation & Testing ---
@@ -109,36 +102,11 @@ _WEC_ITEMS: list[tuple[str, str, bool]] = [
     ("auto-approve-workflows",        "Auto-Approve workflow to run (approves all pending runs on last commit SHA)", False),
 ]
 
-_REQUIRED_PR_CHECKBOXES = """
----
-
-## 🔄 Workflow Execution Checklist
-
-### ✅ Validation & Testing
-- [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
-
-### ✅ Security & Quality
-- [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit
-- [ ] deferral-language-gate.yml — Deferral language guard
-
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
-
-### 🤖 Automation
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [ ] copilot-agent-checkin.yml — Agent check-in (always required)
-- [ ] cost-gate.yml — Cost governance gate
-- [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
-
-### ⚡ Auto-Approve
-- [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
-
-> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for
-> this session. Unchecked workflows will be SKIPPED by the gate.
-"""
+# Derived from _WEC_ITEMS — workflows that are ALWAYS pre-checked (always required gates).
+# NOTE: defined AFTER _WEC_ITEMS because it is computed from _WEC_ITEMS; do not move above it.
+_WEC_ALWAYS_REQUIRED: frozenset[str] = frozenset(
+    fname for fname, _, always_required in _WEC_ITEMS if always_required
+)
 
 
 def _extract_wec_state(pr_body: str) -> dict[str, bool]:
@@ -215,6 +183,12 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
         "",
     ]
     return "\n".join(lines)
+
+
+# Canonical WEC block (default state — always-required items pre-checked).
+# Evaluated ONCE at module import time via _build_wec_block() so it stays in sync
+# with _WEC_ITEMS. Tests access this as ``swa._REQUIRED_PR_CHECKBOXES``.
+_REQUIRED_PR_CHECKBOXES: str = _build_wec_block()
 
 
 # ---------------------------------------------------------------------------
@@ -467,8 +441,8 @@ def fix_pr_body_checkboxes(
 
     The ``report_progress`` tool used by Copilot coding agent OVERWRITES the PR
     description with only the task checklist, stripping these mandatory sections.
-    This function restores them by appending ``_REQUIRED_PR_CHECKBOXES`` when the
-    canonical ``_WEC_MARKER`` is absent.
+    This function restores them by rebuilding the WEC block via ``_build_wec_block()``
+    when the canonical ``_WEC_MARKER`` is absent.
 
     Returns True if an update was made (or would be made in dry_run), False otherwise.
     """
@@ -757,7 +731,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # --fix-all delegates to auto_fix_all_missing() which covers every requirement
     if args.fix_all:
-        results = auto_fix_all_missing(
+        auto_fix_all_missing(
             pr_number=args.pr_number,
             sha=sha,
             run_url=args.run_url,

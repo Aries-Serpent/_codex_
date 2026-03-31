@@ -15,10 +15,7 @@ import json
 import sys
 import textwrap
 from pathlib import Path
-from types import SimpleNamespace
-from unittest.mock import MagicMock, call, patch
-
-import pytest
+from unittest.mock import MagicMock, patch
 
 # ---------------------------------------------------------------------------
 # Ensure scripts/ci is importable regardless of pytest working directory
@@ -28,7 +25,6 @@ if str(_SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_CI))
 
 import session_wrapup_autofix as swa  # noqa: E402  (after sys.path fix)
-
 
 # ===========================================================================
 # _extract_wec_state
@@ -263,7 +259,6 @@ class TestFixPrBodyCheckboxes:
         assert "- [ ] nox-gates.yml" in rebuilt
 
     def test_gh_cli_failure_returns_false(self):
-        import subprocess
         with patch("subprocess.run", side_effect=FileNotFoundError("gh not found")):
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
         assert result is False
