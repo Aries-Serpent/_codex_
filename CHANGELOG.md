@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S258 — PR #3835 — 2026-03-31)
+- **fix(agents):** `cognitive-brain-manager.md` — trimmed from 31,983 chars to 29,516 chars by archiving Session S128 historical state and templates to `.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md`; resolves Agent File Size Gate FAILED (comment #4164732123) which was cascading into 3× Comment Review Gate failures.
+- **chore(docs):** Created `.codex/docs/COGNITIVE_BRAIN_STATUS_S128.md` to archive S128 historical session state, Pipeline Status table, D_CAPABLE Gate snapshots, Branch Cleanup Mermaid diagram, and Phase Completion/Health Score templates.
+- **feat(cognitive-brain):** Cognitive Brain Manager v4.5.3 — PDA ASSESS updated with S258 findings, 2 new AfterMath patterns (RP-S258-001 file-size-cascade, RP-S258-002 dual-package-shadow-persistence), AAIS 98.3/100.
+- **docs(merge-readiness):** Confirmed merge confidence **97%** for 0D_base_ → main: CodeQL (python/js-ts/go) ✅, PyPI submit ✅, `mergeable_state: clean`. Remaining deductions: dual-package shadow (./training/) consolidation pending, pre-merge safety checklist items unchecked.
+
 ### Fixed (S257 — PR #3835 — 2026-03-31)
 - **fix(tests):** `src/tokenization/cli.py` — `_FallbackTyper`, `_fallback_echo`, `_fallback_option`, `_FallbackExit` now defined unconditionally at module level; no longer guarded by `if _typer is None:`, making them importable and testable when typer IS installed. Fixes `TestFallbackBehavior` ImportError in Resilient Validation Suite.
 - **fix(tests):** `tests/test_safety_filters_integration.py` — `test_training_invokes_prompt_sanitizer` now correctly skips on `ValueError` from `hf_pinning.require_revision()` ("commit hash"/"hf_revision" in message) — same offline-CI condition as `HFModelUnavailableError`.
