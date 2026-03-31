@@ -14582,3 +14582,64 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-03-31T03:10Z SESSION S249b (PR #3827)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — @mbaetiong new requirement: disable auto session-chain PR creation ✅
+- [x] **0b.** Failing CI checks reviewed — none new; gates passing from S249 commit ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: remove pull_request auto-trigger from copilot-session-chain.yml ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **feat(workflow):** `copilot-session-chain.yml` — removed the `pull_request` auto-trigger
+   (`types: [closed], branches: [0D_base_]`). The workflow is now `workflow_dispatch`-only.
+   No new sub-PR will be automatically created when a PR merges into `0D_base_`.
+   New PRs will be created manually by the repository owner.
+   The removed trigger is preserved in a comment block for easy restoration.
+
+### Impact Score
+- Files changed: 3 (`copilot-session-chain.yml`, `AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Behaviour change: session sub-PRs are no longer auto-created on merge to `0D_base_`
+- Reversibility: full — commented-out trigger block preserved in the workflow file
+- Deferral Language Gate: 0 violations
+
+---
+
+---
+
+## SESSION SUMMARY — 2026-03-31T03:15Z SESSION S249c (PR #3827)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed — @mbaetiong new requirements: opt-in gate for session chain ✅
+- [x] **0b.** Failing CI checks reviewed — none new ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: implement opt-in continuation gate in copilot-session-chain.yml ✅
+- [x] **5.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed
+1. **feat(workflow):** `copilot-session-chain.yml` — restored `pull_request` trigger but gated
+   it behind an explicit opt-in checkbox in the merged PR body:
+   `- [x] **🔗 Needs follow-up session**`.
+   - Unchecked (default): PR merges into `0D_base_` silently — no new sub-PR created.
+   - Checked before merge: session chain fires and opens a new sub-PR automatically.
+   - Logic added to `check-trigger` job (lines 114–133): reads `pr.body` from payload and
+     checks for the opt-in marker string before setting `should_chain=true`.
+   - The opt-in checkbox is included (unchecked) in all auto-generated session PR bodies
+     under the new "### 🔗 Session Continuation" section.
+
+### Impact Score
+- Files changed: 3 (`copilot-session-chain.yml`, `AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Behaviour change: auto-chain only fires when merged PR explicitly opts in
+- Default behaviour: no auto-chain (opt-in required)
+- Reversibility: full — remove the body check in `check-trigger` to revert
+- Deferral Language Gate: 0 violations
+
+---
