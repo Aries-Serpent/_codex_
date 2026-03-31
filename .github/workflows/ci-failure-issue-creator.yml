@@ -87,7 +87,7 @@ jobs:
 
     steps:
       - name: Checkout (consolidator + OTel)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py
@@ -97,7 +97,7 @@ jobs:
       # ── Classify severity ──────────────────────────────────────────────────
       - name: Classify severity and labels
         id: classify
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const wfName = context.payload.workflow_run.name;
@@ -139,7 +139,7 @@ jobs:
       - name: Fetch failed job details
         id: jobs
         if: github.event.workflow_run.conclusion == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -168,7 +168,7 @@ jobs:
       - name: Deduplicate — issue + single-branch check
         id: dedup
         if: github.event.workflow_run.conclusion == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -250,7 +250,7 @@ jobs:
     steps:
       - name: Create GitHub Issue
         id: issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -353,7 +353,7 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref:         main
           fetch-depth: 1
@@ -393,7 +393,7 @@ jobs:
 
       - name: Open fix PR with @copilot command
         id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -469,7 +469,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner, repo: context.repo.repo,
               issue_number: parseInt(issueNum, 10),
-              body: `🔧 **Automated fix PR opened**: ${pr.html_url}\n\n@copilot has been instructed to diagnose and fix the root cause.`,
+              body: `🔧 **Automated fix PR opened**: ${pr.html_url}\n\n@copilot has been instructed to diagnose and fix the root cause.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             });
 
             core.info(`Fix PR #${pr.number}: ${pr.html_url}`);
@@ -490,7 +490,7 @@ jobs:
 
     steps:
       - name: Checkout (consolidator)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py
@@ -498,13 +498,13 @@ jobs:
           sparse-checkout-cone-mode: false
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Find target PR for dashboard post
         id: find-pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -642,7 +642,7 @@ jobs:
 
     steps:
       - name: Close matching open ci-failure issues
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           script: |
@@ -668,7 +668,7 @@ jobs:
             for (const issue of matching) {
               await github.rest.issues.createComment({
                 owner, repo, issue_number: issue.number,
-                body: `✅ **Auto-closed** — \`${wfName}\` passed on \`main\` at [\`${sha}\`](${runUrl}). The CI failure tracked by this issue has been resolved.`,
+                body: `✅ **Auto-closed** — \`${wfName}\` passed on \`main\` at [\`${sha}\`](${runUrl}). The CI failure tracked by this issue has been resolved.\n\n---\n_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
               });
               await github.rest.issues.update({
                 owner, repo, issue_number: issue.number,

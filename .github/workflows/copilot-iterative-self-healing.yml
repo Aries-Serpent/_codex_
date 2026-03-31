@@ -162,7 +162,7 @@ jobs:
     if: needs.should-escalate.outputs.escalate == 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           sparse-checkout: |
             .codex
@@ -291,45 +291,75 @@ jobs:
           echo "..." >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Check for duplicate comment (idempotency guard)
-        id: dedup
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
-          CATEGORY: ${{ steps.build_prompt.outputs.category }}
-        run: |
-          if [ -z "${PR_NUMBER}" ]; then
-            echo "is_duplicate=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          # Check last 5 PR comments for the same category tag
-          RECENT=$(gh pr view "${PR_NUMBER}" \
-            --repo "${{ github.repository }}" \
-            --json comments \
-            --jq '.comments[-10:][].body' 2>/dev/null || echo "")
-          if echo "${RECENT}" | grep -q "self-healing.*${CATEGORY}\|${CATEGORY}.*self-healing\|Session S.*${CATEGORY}"; then
-            echo "is_duplicate=true" >> "$GITHUB_OUTPUT"
-            echo "ℹ️  Duplicate detected for category '${CATEGORY}' — skipping (idempotent)"
-          else
-            echo "is_duplicate=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Post @copilot prompt as PR comment
-        if: steps.dedup.outputs.is_duplicate != 'true' && needs.should-escalate.outputs.pr_number != ''
+      - name: Upsert @copilot prompt as PR comment
+        if: needs.should-escalate.outputs.pr_number != ''
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ needs.should-escalate.outputs.pr_number }}
           PROMPT_FILE: ${{ steps.build_prompt.outputs.prompt_file }}
+          CATEGORY: ${{ steps.build_prompt.outputs.category }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
-          BODY=$(cat "${PROMPT_FILE}")
-          gh pr comment "${PR_NUMBER}" \
-            --repo "${{ github.repository }}" \
-            --body "${BODY}"
-          echo "✅ Posted @copilot self-healing prompt on PR #${PR_NUMBER}"
-          echo "### ✅ @copilot prompt posted on PR #${PR_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+          # Build SHA-scoped upsert marker so each commit gets ONE prompt comment
+          # per category, updated in-place rather than creating new duplicates.
+          SHA_SHORT="${HEAD_SHA:0:12}"
+          MARKER="<!-- copilot-healing:${SHA_SHORT}:${CATEGORY} -->"
+
+          # Build body via run-ID-unique temp file (TEMPORARY_FILES_POLICY.md) to
+          # avoid collisions when parallel jobs run on the same runner.
+          BODY_FILE="${RUNNER_TEMP}/copilot_healing_body_${GITHUB_RUN_ID}.txt"
+          {
+            printf '%s\n' "${MARKER}"
+            cat "${PROMPT_FILE}"
+            printf '\n---\n_[🔗 Workflow run](https://github.com/%s/actions/runs/%s)_\n' \
+              "${GITHUB_REPOSITORY}" "${GITHUB_RUN_ID}"
+          } > "${BODY_FILE}"
+
+          # Paginate through ALL PR comments to find the existing upsert marker.
+          # PRs with >100 comments require pagination; a single page=1&per_page=100
+          # would miss comments on later pages, silently creating a duplicate.
+          # Cap at MAX_PAGES to prevent unbounded API calls on very large PRs.
+          EXISTING_ID=""
+          PAGE=1
+          MAX_PAGES=50
+          while [ -z "${EXISTING_ID}" ] && [ "${PAGE}" -le "${MAX_PAGES}" ]; do
+            BATCH=$(gh api \
+              "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100&page=${PAGE}" \
+              --jq ".[] | select(.body | contains(\"${MARKER}\")) | .id" \
+              2>/dev/null || echo "")
+            if [ -n "${BATCH}" ]; then
+              EXISTING_ID=$(echo "${BATCH}" | head -1)
+              break
+            fi
+            # Stop if the last page returned fewer than 100 entries (no more pages).
+            COUNT=$(gh api \
+              "/repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100&page=${PAGE}" \
+              --jq 'length' 2>/dev/null || echo "0")
+            [ "${COUNT}" -lt 100 ] && break
+            PAGE=$((PAGE + 1))
+          done
+          if [ -z "${EXISTING_ID}" ] && [ "${PAGE}" -gt "${MAX_PAGES}" ]; then
+            echo "⚠️  Reached max page limit (${MAX_PAGES}) searching for existing prompt comment; will create new."
+          fi
+
+          if [ -n "${EXISTING_ID}" ]; then
+            # Update in-place; surface error if PATCH fails so CI shows failure.
+            gh api --method PATCH \
+              "/repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_ID}" \
+              --field "body=@${BODY_FILE}" \
+              || { echo "❌ Failed to update comment #${EXISTING_ID}"; exit 1; }
+            echo "✅ Updated existing @copilot prompt (comment #${EXISTING_ID}) on PR #${PR_NUMBER}"
+            echo "### ✅ @copilot prompt updated on PR #${PR_NUMBER} (comment #${EXISTING_ID})" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh pr comment "${PR_NUMBER}" \
+              --repo "${{ github.repository }}" \
+              --body-file "${BODY_FILE}"
+            echo "✅ Posted @copilot self-healing prompt on PR #${PR_NUMBER}"
+            echo "### ✅ @copilot prompt posted on PR #${PR_NUMBER}" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Create escalation Issue when no PR exists
-        if: steps.dedup.outputs.is_duplicate != 'true' && needs.should-escalate.outputs.pr_number == ''
+        if: needs.should-escalate.outputs.pr_number == ''
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           HEAD_BRANCH: ${{ needs.should-escalate.outputs.head_branch }}
@@ -355,7 +385,7 @@ jobs:
           fi
 
       - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
-        if: steps.dedup.outputs.is_duplicate != 'true'
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
           CURRENT: ${{ vars.COGNITIVE_BRAIN_SESSION_NUMBER || '0' }}

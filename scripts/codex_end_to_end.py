@@ -47,7 +47,7 @@ import sys
 import uuid
 from pathlib import Path
 
-from src.codex.logging import conversation_logger as cl
+from codex.logging import conversation_logger as cl
 
 
 def _log_and_query(session_id: str, db: Path) -> str:

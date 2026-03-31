@@ -18,7 +18,7 @@ from fastapi.testclient import TestClient
 
 def _make_client() -> "TestClient":
     """Import the app and return a test client."""
-    from src.codex.api.app import app  # lazy import keeps test isolation
+    from codex.api.app import app  # lazy import keeps test isolation
 
     return TestClient(app, raise_server_exceptions=False)
 

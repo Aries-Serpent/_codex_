@@ -74,7 +74,7 @@ def test_run_hf_trainer_returns_without_error(monkeypatch, tmp_path, distributed
     """run_hf_trainer should complete without raising when given stub components."""
     _stub_trainer_components(monkeypatch)
 
-    from src.training.engine_hf_trainer import run_hf_trainer
+    from training.engine_hf_trainer import run_hf_trainer
 
     result = run_hf_trainer(
         ["hello world", "foo bar"],
@@ -90,7 +90,7 @@ def test_run_hf_trainer_creates_output_dir(monkeypatch, tmp_path):
     """run_hf_trainer should create the output directory."""
     _stub_trainer_components(monkeypatch)
 
-    from src.training.engine_hf_trainer import run_hf_trainer
+    from training.engine_hf_trainer import run_hf_trainer
 
     out = tmp_path / "trainer_out"
     run_hf_trainer(["hello"], out, distributed=False, seed=42)
@@ -101,7 +101,7 @@ def test_run_hf_trainer_accepts_empty_texts(monkeypatch, tmp_path):
     """run_hf_trainer should not crash on empty text list (uses default model)."""
     _stub_trainer_components(monkeypatch)
 
-    from src.training.engine_hf_trainer import run_hf_trainer
+    from training.engine_hf_trainer import run_hf_trainer
 
     # Should not raise; empty dataset is an edge case
     try:
@@ -115,7 +115,7 @@ def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
     """prepare_dataset should handle tokenizers that don't return attention_mask."""
     pytest.importorskip("datasets")
 
-    from src.training.engine_hf_trainer import prepare_dataset
+    from training.engine_hf_trainer import prepare_dataset
 
     class _MinimalTok:
         """Tokenizer that only returns input_ids (no attention_mask)."""

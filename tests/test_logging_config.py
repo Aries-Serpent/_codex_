@@ -8,7 +8,7 @@ Test module for logging config.
 """Tests for codex.logging.config module."""
 from pathlib import Path  # noqa: E402
 
-from src.codex.logging.config import DEFAULT_LOG_DB  # noqa: E402
+from codex.logging.config import DEFAULT_LOG_DB  # noqa: E402
 
 
 def test_default_log_db_is_path():

@@ -681,12 +681,22 @@ cognitive_brain:
 
 ---
 
-**Document Version:** 1.0.0
-**Last Updated:** 2026-02-05T09:45:00Z
+**Document Version:** 1.2.0
+**Last Updated:** 2026-03-30T06:13:00Z
 
 ---
 
 ## Version History
+
+### v1.2.0 (S230 — 2026-03-30) - PR #3790
+- ✅ S230 pattern: Session-gate stale-TTL queue stranding — when `COPILOT_ACTIVE_SESSION` expires via 4h TTL without PR close, queued PRs are NOT auto-retriggered. Fixed in `agent-auth-delegation.yml` session-gate step: stale-lock clear now also dequeues and posts `@copilot continue` on the next waiting PR.
+- ✅ S230 pattern: Cross-PR ci-rescue contamination — when multiple PRs share the same HEAD branch, `find_pr_for_run()` was returning `prs[0]` (oldest PR). Fixed: prefer highest PR number among matching entries.
+- ✅ S230 pattern: `MARKER` defined before `pr_number` resolved in ci-rescue.yml inline fallback — caused silent NameError. Fixed: MARKER definition moved after PR lookup.
+- ✅ S230 pattern: `comment_review_gate_response_latency_seconds` Prometheus metric was effectively never emitting for PRs with no addressed comments. Fixed: added `comment_review_gate_pending_seconds` gauge for unaddressed comments.
+- Known patterns for session-queue diagnosis:
+  - Check `COPILOT_SESSION_QUEUE` repo variable for stranded entries
+  - Check `COPILOT_ACTIVE_SESSION` age — if `age > 14400s` and queue non-empty, a queue-release was missed
+  - The session-gate TTL stale-lock cleanup now auto-processes the queue (S230 fix)
 
 ### v3.0.0-cognitive (2026-02-17) - PR-10
 - ✅ Cognitive brain integration (Level 1)

@@ -14,7 +14,7 @@ pytest.importorskip("transformers")
 from torch.optim import SGD  # noqa: E402
 
 import torch  # noqa: E402
-from src.training.checkpoint_manager import CheckpointManager  # noqa: E402
+from training.checkpoint_manager import CheckpointManager  # noqa: E402
 from transformers import TrainerControl, TrainerState  # noqa: E402
 
 

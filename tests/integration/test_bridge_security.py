@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from src.bridge_manager import (
+from bridge_manager import (
     BridgeManager,
     BridgeMode,
     ContextMessage,
@@ -46,7 +46,7 @@ class TestBridgeSecurity:
             # Acquire first lock
             with bridge_lock(lock_path):
                 # Try to acquire second lock (should timeout)
-                from src.bridge_manager import BridgeLock
+                from bridge_manager import BridgeLock
 
                 second_lock = BridgeLock(lock_path)
                 acquired = second_lock.acquire(timeout=1)

@@ -37,8 +37,8 @@ import logging
 import uuid
 from typing import Any, Iterable, Optional
 
-from src.codex.zendesk.model.trigger import _ZendeskBaseModel
-from src.quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTask
+from codex.zendesk.model.trigger import _ZendeskBaseModel
+from quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTask
 
 # Import scope validation infrastructure
 try:

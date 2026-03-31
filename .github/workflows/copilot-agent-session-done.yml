@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: "Re-trigger unanswered rescue comments OR post @copilot review"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           # Must use CODEX_MASTER_KEY (PAT for @mbaetiong) so the comment appears as a
           # human user that GitHub Copilot will respond to.  github-actions[bot] comments
@@ -191,6 +191,9 @@ jobs:
                 `${rescueUrl}`,
                 ``,
                 `> _Auto-posted by \`copilot-agent-session-done.yml\` (session-done retrigger path)_`,
+              '',
+              '---',
+              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
               ].join('\n');
 
               // Guard: don't re-post if we already re-triggered this rescue comment
@@ -245,6 +248,9 @@ jobs:
                 `Check \`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\` for patterns.`,
                 ``,
                 `> _Auto-posted by \`copilot-agent-session-done.yml\` (loop-break guard)_`,
+              '',
+              '---',
+              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
               ].join('\n');
 
               // Only post loop-breaker once per review-loop cycle

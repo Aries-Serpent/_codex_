@@ -227,7 +227,7 @@ class TestGitHubLogsAPI:
     def mock_github_client(self):
         """Mock GitHub client for API tests."""
         # Import the module first so it can be patched
-        from src.codex.api import github_logs
+        from codex.api import github_logs
         with patch.object(github_logs, '_get_github_client') as mock:
             client = Mock()
             mock.return_value = client
@@ -238,7 +238,7 @@ class TestGitHubLogsAPI:
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from src.codex.api.github_logs import router
+        from codex.api.github_logs import router
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -278,7 +278,7 @@ class TestGitHubLogsAPI:
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from src.codex.api.github_logs import router
+        from codex.api.github_logs import router
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,

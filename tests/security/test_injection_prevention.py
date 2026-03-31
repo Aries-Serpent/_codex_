@@ -10,7 +10,7 @@ import html
 
 import pytest
 
-from src.security import SecurityError, validate_input
+from security import SecurityError, validate_input
 
 
 class TestSQLInjectionPrevention:

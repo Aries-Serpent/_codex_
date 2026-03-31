@@ -493,7 +493,7 @@ currently a placeholder and will be implemented in the future.
 ## Usage (Future)
 
 ```python
-from src.ingestion import Ingestor
+from ingestion import Ingestor
 
 # Initialize with configuration
 ingestor = Ingestor({"source_type": "file"})

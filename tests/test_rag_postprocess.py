@@ -1,5 +1,5 @@
 """Tests for RAG post-processing module"""
-from src.codex.rag.postprocess import OutputProcessor, postprocess_output
+from codex.rag.postprocess import OutputProcessor, postprocess_output
 
 
 class TestOutputProcessor:

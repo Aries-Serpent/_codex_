@@ -143,6 +143,10 @@ manifests/k8s/*/secret.yaml
 !.codex/knowledge_graph/**
 !.codex/docs/
 !.codex/docs/**
+!.codex/issues/
+!.codex/issues/**
+!.codex/aftermath/
+!.codex/aftermath/**
 !.codex/embeddings/
 .codex/embeddings/*
 !.codex/embeddings/codex_index_meta.json
@@ -297,6 +301,9 @@ yarn-error.log
 # Build output and coverage directories
 out/
 coverage/
+# Exception: tracked codex coverage intelligence map
+!.codex/coverage/
+!.codex/coverage/**
 .next/
 .nuxt/
 .cache/

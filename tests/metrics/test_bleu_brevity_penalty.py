@@ -2,7 +2,7 @@
 
 import math
 
-from src.codex_ml.metrics.generation import (
+from codex_ml.metrics.generation import (
     compute_brevity_penalty,
     compute_corpus_bleu,
 )

@@ -4,7 +4,7 @@ import sqlite3
 
 import pytest
 
-from src.codex.logging.db_utils import get_columns, infer_probable_table
+from codex.logging.db_utils import get_columns, infer_probable_table
 
 
 def test_db_utils_table_name() -> None:

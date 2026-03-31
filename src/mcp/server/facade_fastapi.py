@@ -21,13 +21,13 @@ import logging
 
 from fastapi import FastAPI
 
-from src.mcp.middleware.rate_limit_middleware import RateLimitMiddleware
-from src.mcp.observability.metrics import Timer, increment
-from src.mcp.server.adapter_loader import lazy_connect_all
-from src.mcp.server.jsonrpc_adapter import register_jsonrpc_routes
-from src.mcp.server.middleware.auth import APIKeyAuthMiddleware
-from src.mcp.server.routes_health import register_health_routes
-from src.mcp.server.tracing import ensure_request_id, init_tracing
+from mcp.middleware.rate_limit_middleware import RateLimitMiddleware
+from mcp.observability.metrics import Timer, increment
+from mcp.server.adapter_loader import lazy_connect_all
+from mcp.server.jsonrpc_adapter import register_jsonrpc_routes
+from mcp.server.middleware.auth import APIKeyAuthMiddleware
+from mcp.server.routes_health import register_health_routes
+from mcp.server.tracing import ensure_request_id, init_tracing
 
 APP = FastAPI(title="MCP Façade (FastAPI)")
 logger = logging.getLogger(__name__)

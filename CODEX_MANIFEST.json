@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-03-28T12:10:03Z",
+  "generated_at": "2026-03-31T00:05:08Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1149,6 +1149,11 @@
       "has_concurrency": true
     },
     {
+      "name": "comment-review-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "consolidated-pr-status",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": false
@@ -1180,7 +1185,7 @@
     },
     {
       "name": "copilot-iterative-self-healing",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -1206,7 +1211,7 @@
     {
       "name": "cost-gate",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "coverage-with-timeout",
@@ -1614,6 +1619,11 @@
       "has_concurrency": true
     },
     {
+      "name": "workflow-execution-gate",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "workflow-expiry-enforcer",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1964,5 +1974,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1493c706bc68fb94663cd896664bc4ca57ebe76e978d4624eeed6952e48f4eec"
+  "integrity_sha256": "cdc20b104e52fddb02a7a651343f5a9ae7927ccf26e2d68dd8505443f0064551"
 }

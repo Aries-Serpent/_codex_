@@ -53,6 +53,19 @@ SKIP_DIRS = {
     "dist", "build", ".eggs", "archive",
 }
 
+# Files that contain inline scripts which *generate* Markdown content (e.g.
+# f.write() calls that write link syntax to an output file inside a workflow
+# run: block).  The links in these files are not references FROM the file
+# itself — they are content that will be written to a different output file.
+# Checking them against the source file's location produces false positives.
+#
+# This script is also listed here because its own docstring and comments
+# include the Markdown link syntax as documentation examples, not real links.
+SKIP_FILES: frozenset[str] = frozenset({
+    ".github/workflows/pages-mkdocs.yml",
+    "scripts/ci/check_cross_references.py",  # self-referential: documents the syntax it detects
+})
+
 # Only explicit Markdown links: [text](path)
 _MD_LINK_RE = re.compile(
     r'\[(?:[^\]]*)\]\('
@@ -62,7 +75,14 @@ _MD_LINK_RE = re.compile(
 
 
 def _should_skip(path: Path) -> bool:
-    return any(part in SKIP_DIRS for part in path.parts)
+    if any(part in SKIP_DIRS for part in path.parts):
+        return True
+    try:
+        abs_path = path if path.is_absolute() else REPO_ROOT / path
+        rel = str(abs_path.relative_to(REPO_ROOT))
+    except ValueError:
+        rel = str(path)
+    return rel in SKIP_FILES
 
 
 def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
@@ -73,6 +93,11 @@ def _resolve_ref(raw: str, source_file: Path) -> "Path | None":
     if any(c in raw for c in ("*", "?", "{", "}", "$", "\n", " ", "%")):
         return None
     if raw.startswith(("http", "mailto:", "#", "ftp", "data:")):
+        return None
+    # Skip known placeholder tokens that are not real file paths.
+    # Using an explicit allow-list rather than a broad regex to avoid accidentally
+    # skipping extensionless files like README, LICENSE, or CHANGELOG.
+    if raw in {"URL", "RUN_URL"}:
         return None
     # Strip anchor fragment (#section) before resolving the file path
     raw = raw.split("#")[0].strip()
@@ -173,7 +198,7 @@ def main(argv: "list[str] | None" = None) -> int:
     args = parser.parse_args(argv)
 
     if args.files:
-        files = [Path(f) for f in args.files if Path(f).exists()]
+        files = [Path(f) for f in args.files if Path(f).exists() and not _should_skip(Path(f))]
     elif args.full_scan:
         files = get_all_files(args.scan_dirs)
     else:
@@ -203,10 +228,18 @@ def main(argv: "list[str] | None" = None) -> int:
     print("Rule:   Run this check BEFORE moving or deleting ANY file.\n")
 
     for src_file, refs in sorted(by_file.items()):
-        print(f"  {src_file.relative_to(REPO_ROOT)}")
+        try:
+            src_display = src_file.relative_to(REPO_ROOT)
+        except ValueError:
+            src_display = src_file
+        print(f"  {src_display}")
         for line_no, raw, resolved in refs:
             print(f"    line {line_no:4d}: '{raw}'")
-            print(f"           -> expected: {resolved.relative_to(REPO_ROOT)}  FILE DOES NOT EXIST")
+            try:
+                res_display = resolved.relative_to(REPO_ROOT)
+            except ValueError:
+                res_display = resolved
+            print(f"           -> expected: {res_display}  FILE DOES NOT EXIST")
         print()
 
     print("FIX BEFORE COMMITTING:")

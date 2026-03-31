@@ -6,7 +6,7 @@ Test module for log adapters.
 
 import sqlite3
 
-from src.codex.monkeypatch import log_adapters as la
+from codex.monkeypatch import log_adapters as la
 
 
 def test_log_adapters_write(tmp_path):

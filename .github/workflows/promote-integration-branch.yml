@@ -34,6 +34,10 @@ on:
         description: "Promotion PR title"
         required: false
         default: "promote(S174): 0D_base_ → main — S174 consolidation + Agent Token Delegation"
+      session_label:
+        description: "Session label for PR body (e.g. 'S174', 'S137'). Defaults to 'S174' for backward compatibility."
+        required: false
+        default: "S174"
       force_recreate:
         description: "Delete and recreate 0D_base_ if it already exists"
         required: false
@@ -56,13 +60,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -158,35 +162,33 @@ jobs:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
           SHA: ${{ steps.resolve_sha.outputs.sha }}
           PR_TITLE: ${{ inputs.pr_title }}
+          SESSION_LABEL: ${{ inputs.session_label }}
         run: |
-          PR_BODY="## 🚀 S174 Promotion: \`0D_base_\` → \`main\`
-
-          This PR promotes the **S174 integration branch** (\`0D_base_\`) into \`main\`.
-
-          ### Contents
-          - **S174 Consolidation:** Archive 3 duplicate workflows, deprecate 5 legacy coverage agents, remove \`Art_\` prefix from 34 workflows, evict 31 stale docs
-          - **Agent Token Delegation:** \`[x] COPILOT_AGENT_AUTH_ENABLED\` activated; \`copilot-swe-agent[bot]\`, \`github-copilot[bot]\`, \`github-actions[bot]\` added to \`COGNITIVE_BRAIN_ALLOWED_ACTORS\`
-          - **GitHubMCPPoster write methods:** \`create_ref()\`, \`create_pull_request()\`, \`list_pull_requests()\`, \`merge_branch()\` + retry logic + CLI subcommands
-          - **MCP/Playwright improvements:** \`docs/ops/MCP_PLAYWRIGHT_IMPROVEMENTS.md\` — 17 improvements across 8 areas
-          - **\`docs/ops/INDEX.md\` fix:** 70 pre-existing broken relative paths corrected
-
-          ### Branch created from
-          \`${SHA}\` (\`copilot/update-ci-failure-rate-and-confirm-transition\` @ S174)
-
-          ### Architecture
-          \`\`\`
-          copilot/update-ci-failure-rate-and-confirm-transition  ──►  0D_base_  ──►  main
-                        (S174 session)                                 (this PR)
-          \`\`\`
-
-          ---
-          _Auto-created by \`promote-integration-branch.yml\` workflow_
-          _Source: \`mcp_poster create-branch\` + \`create-pr\` (IMP-001 / S174)_
-
-          ### 💰 Cost Governance
-          - [ ] **💰 Cost Proposal Approved**
-          ### 🔐 Agent Token Delegation
-          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)"
+          PR_BODY=$(printf '%s\n' \
+            "## 🚀 ${SESSION_LABEL} Promotion: \`0D_base_\` → \`main\`" \
+            '' \
+            "This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`." \
+            '' \
+            '### Contents' \
+            "- See PR title and session notes for ${SESSION_LABEL} contents" \
+            '' \
+            '### Branch created from' \
+            "\`${SHA}\` (\`${{ inputs.source_branch }}\` @ ${SESSION_LABEL})" \
+            '' \
+            '### Architecture' \
+            '```' \
+            "${{ inputs.source_branch }}  ──►  0D_base_  ──►  main" \
+            "              (${SESSION_LABEL} session)          (this PR)" \
+            '```' \
+            '' \
+            '---' \
+            '_Auto-created by `promote-integration-branch.yml` workflow_' \
+            "_Source: \`mcp_poster create-branch\` + \`create-pr\` (${SESSION_LABEL})_" \
+            '' \
+            '### 💰 Cost Governance' \
+            '- [ ] **💰 Cost Proposal Approved**' \
+            '### 🔐 Agent Token Delegation' \
+            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)')
 
           python -m codex.github.mcp_poster create-pr \
             --repo "${{ github.repository }}" \
@@ -201,18 +203,20 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
           SHA: ${{ steps.resolve_sha.outputs.sha }}
           PR_TITLE: ${{ inputs.pr_title }}
+          SESSION_LABEL: ${{ inputs.session_label }}
         run: |
           PR_NUM="${{ steps.check_pr.outputs.existing_pr }}"
-          PR_BODY="## 🚀 S174 Promotion (updated): \`0D_base_\` → \`main\`
-
-          This PR promotes the **S174 integration branch** (\`0D_base_\`) into \`main\`.
-          PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`.
-
-          ### 🔐 Agent Token Delegation
-          - [x] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
-
-          ### 💰 Cost Governance
-          - [x] **💰 Cost Proposal Approved**"
+          PR_BODY=$(printf '%s\n' \
+            "## 🚀 ${SESSION_LABEL} Promotion (updated): \`0D_base_\` → \`main\`" \
+            '' \
+            "This PR promotes the **${SESSION_LABEL} integration branch** (\`0D_base_\`) into \`main\`." \
+            "PR updated automatically — latest 0D_base_ SHA: \`${SHA}\`." \
+            '' \
+            '### 🔐 Agent Token Delegation' \
+            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '' \
+            '### 💰 Cost Governance' \
+            '- [x] **💰 Cost Proposal Approved**')
 
           gh pr edit "${PR_NUM}" \
             --repo "${{ github.repository }}" \

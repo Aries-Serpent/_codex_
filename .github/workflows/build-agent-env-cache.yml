@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # ── Optional: delete stale cache before rebuild ──────────────────────
       - name: Delete stale agent venv cache (force-rebuild)
@@ -95,7 +95,7 @@ jobs:
           cat /tmp/agent-env-health.json
 
       - name: Upload health report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: agent-env-health-${{ github.run_id }}
           path: /tmp/agent-env-health.json

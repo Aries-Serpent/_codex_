@@ -2,12 +2,12 @@
 
 import pytest
 
-from src.data import datasets
+from data import datasets
 
 
 def test_dataloader_config_validation_bounds():
     """Test DataLoaderConfig validates batch size and worker bounds."""
-    from src.data.datasets import DataLoaderConfig
+    from data.datasets import DataLoaderConfig
 
     # Valid config
     config = DataLoaderConfig(batch_size=32, num_workers=4)

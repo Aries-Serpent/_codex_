@@ -3,7 +3,7 @@
 import logging
 import sqlite3
 
-from src.codex.logging.fetch_messages import fetch_messages
+from codex.logging.fetch_messages import fetch_messages
 
 
 def test_missing_db_returns_empty_list(tmp_path, caplog):

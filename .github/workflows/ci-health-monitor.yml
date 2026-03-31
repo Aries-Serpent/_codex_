@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -159,7 +159,7 @@ jobs:
 
       - name: Create alert issue if failure rate is critical
         if: steps.telemetry.outputs.alert_required == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -470,7 +470,7 @@ jobs:
           if not prs or not isinstance(prs,list):
             print(f"No open PR for branch {branch} — skipping rescue comment"); sys.exit(0)
           pr_number=prs[0]["number"]
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** workflow failed on push to `{branch}` (commit `{sha_short}`).\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: rescue-comment-push job (S237)_"""
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** workflow failed on push to `{branch}` (commit `{sha_short}`).\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: rescue-comment-push job (S237)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:

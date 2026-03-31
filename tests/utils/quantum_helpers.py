@@ -28,7 +28,7 @@ def create_mock_module(module_name: str, **attributes: Any) -> ModuleType:
     Example:
         >>> mock_mod = create_mock_module('src.rag.chunking', process=lambda x: x)
         >>> install_mock_module(mock_mod)
-        >>> from src.rag import chunking
+        >>> from rag import chunking
         >>> chunking.process("test")
     """
     # Create a real module object

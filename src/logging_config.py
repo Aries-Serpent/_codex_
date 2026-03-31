@@ -4,7 +4,7 @@ Logging Config Module
 This module provides functionality for logging config.
 
 Usage:
-    from src.logging_config import ...
+    from logging_config import ...
 
 Classes:
     [To be documented]

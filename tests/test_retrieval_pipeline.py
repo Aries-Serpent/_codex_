@@ -15,7 +15,7 @@ pytest.importorskip("faiss")
 
 pytestmark = pytest.mark.requires_faiss
 
-from src.codex.retrieval import (  # noqa: E402
+from codex.retrieval import (  # noqa: E402
     FAISSStore,
     RetrievalEngine,
     build_embeddings,

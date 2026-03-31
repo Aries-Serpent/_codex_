@@ -24,9 +24,9 @@ from typing import Any, Optional, Union
 from fastapi import Body, FastAPI
 from pydantic import ValidationError
 
-from src.mcp.backends.interface import BackendAdapter  # type: ignore
-from src.mcp.observability.metrics import Timer, increment  # type: ignore
-from src.mcp.server.adapter_loader import load_adapter
+from mcp.backends.interface import BackendAdapter  # type: ignore
+from mcp.observability.metrics import Timer, increment  # type: ignore
+from mcp.server.adapter_loader import load_adapter
 
 from .schemas import CallToolParams, ListToolsParams, NegotiateParams  # type: ignore
 
@@ -57,7 +57,7 @@ def _get_adapter() -> BackendAdapter:
     if _ADAPTER_CACHE is None:
         _ADAPTER_CACHE = _ADAPTER_LOADER()
     adapter, _ = _ADAPTER_CACHE
-    return adapter  # type: ignore[return-value]
+    return adapter
 
 
 # Minimal JSON-RPC helper. Supports batching and parameter validation; maps validation errors to JSON-RPC -32602.  # noqa: E501

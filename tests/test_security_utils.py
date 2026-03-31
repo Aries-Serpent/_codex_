@@ -5,7 +5,7 @@ Tests all redaction and sanitization functions.
 
 import pytest
 
-from src.codex.security_utils import (
+from codex.security_utils import (
     redact_dict_with_secret_keys,
     redact_secret_name,
     redact_sensitive_value,

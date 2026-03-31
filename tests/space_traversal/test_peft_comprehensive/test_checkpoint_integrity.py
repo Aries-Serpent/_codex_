@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.codex_ml.utils.checkpoint_core import (
+from codex_ml.utils.checkpoint_core import (
     CheckpointIntegrityError,
     load_best,
     load_checkpoint,

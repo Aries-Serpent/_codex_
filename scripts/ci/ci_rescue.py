@@ -218,6 +218,36 @@ WORKFLOW_ENV_PROFILES: dict[str, EnvProfile] = {
         ],
         aftermath_categories=["rag_coverage", "embedding", "retrieval", "index"],
     ),
+
+    # ── Workflow Compliance Audit (actionlint) ────────────────────────────
+    r"actionlint|workflow compliance": EnvProfile(
+        name="Workflow Compliance Audit (actionlint)",
+        description=(
+            "actionlint + shellcheck linting of all .github/workflows/*.yml files. "
+            "Common failures: SC2028 (echo escape sequences), duplicate YAML keys, "
+            "untrusted context values in run: scripts."
+        ),
+        pip_packages=[],
+        requirements_files=[],
+        editable_extras="",
+        pre_test_commands=[
+            "# Install actionlint v1.7.7 (pinned)",
+            "curl -fsSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint",
+            "sudo mv actionlint /usr/local/bin/",
+        ],
+        ci_test_command=(
+            "actionlint "
+            "-format '{{range $e := .}}::error file={{$e.Filepath}},"
+            "line={{$e.Line}}::{{$e.Message}}{{end}}' "
+            ".github/workflows/*.yml"
+        ),
+        verify_commands=[
+            "actionlint .github/workflows/*.yml",
+        ],
+        aftermath_categories=[
+            "actionlint", "shellcheck", "SC2028", "yaml_key", "workflow_lint",
+        ],
+    ),
 }
 
 
@@ -589,6 +619,152 @@ RESCUE_PATTERNS: list[RescuePattern] = [
         ),
         references=["tests/test_session_hooks_warnings.py — S209 fix"],
     ),
+    RescuePattern(
+        pattern_id="RP-021",
+        description="actionlint SC2028 — echo may not expand escape sequences (use printf)",
+        log_regexes=[
+            r"SC2028.*echo may not expand escape sequences",
+            r"shellcheck.*SC2028.*Use printf",
+            r"echo may not expand escape sequences.*Use printf",
+        ],
+        fix_command=None,  # requires identifying the specific workflow file and line
+        fix_description=(
+            "actionlint/shellcheck SC2028: `echo \"...\\n...\"` does not expand `\\n` portably. "
+            "Fix: replace `echo \"...\\n...\"` with `printf '...\\n'` (or use $'...\\n...' quoting). "
+            "Example — commit 481f161 PR #3798 S229-CONT-2: "
+            "`agent-auth-delegation.yml:865` — `echo \"### ...\\n\\n...\"` "
+            "replaced with `printf '### ...\\n\\n...'`."
+        ),
+        references=[
+            ".github/workflows/agent-auth-delegation.yml — S229-CONT-2 commit 481f161",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="RP-022",
+        description=(
+            "P19 pytest @patch src.-prefix mismatch — "
+            "patch target has `src.` prefix but module is imported without it"
+        ),
+        log_regexes=[
+            r"@patch.*['\"]src\.codex\.",
+            r"@patch.*['\"]src\.mcp\.",
+            r"@patch.*['\"]src\.services\.",
+            r"Expected .* to have been called.*Called 0 times.*patch",
+            r"assert_called.*0.*times.*mock.*src\.",
+        ],
+        fix_command=None,  # requires identifying all affected @patch decorators
+        fix_description=(
+            "P19 root cause: `@patch(\"src.codex.*\")` patches a different module object than "
+            "the one actually executing when the module-level import is `from codex.* import ...` "
+            "(without `src.` prefix). The patch target must match the key in `sys.modules` at "
+            "import time. Fix: change `@patch(\"src.codex.X.Y\")` → `@patch(\"codex.X.Y\")` "
+            "to match the canonical (non-src.) import path. "
+            "Example — commit 481f161 PR #3798 S229-CONT-2: "
+            "`tests/rag/test_gpu_utils.py` had 15 `@patch(\"src.codex.rag.gpu_utils.*\")` "
+            "targets → all changed to `@patch(\"codex.rag.gpu_utils.*\")`."
+        ),
+        references=[
+            "tests/rag/test_gpu_utils.py — S229-CONT-2 commit 481f161",
+            ".codex/issues/P19_SHADOW_IMPORTS_TRACKING.md",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="RP-023",
+        description=(
+            "test_endpoints_have_type_hints — FastAPI endpoint handlers missing return type hints"
+        ),
+        log_regexes=[
+            r"test_endpoints_have_type_hints",
+            r"Handler type hint coverage.*< \d+%",
+            r"assert.*handler.*type.hint.*coverage",
+            r"FAILED.*test_endpoints_have_type_hints",
+        ],
+        fix_command=None,  # requires adding return type annotations to endpoint functions
+        fix_description=(
+            "`test_endpoints_have_type_hints` fails when the fraction of FastAPI handlers "
+            "with explicit return type annotations falls below the threshold (default 20%). "
+            "Fix: add `-> dict` (or a specific Pydantic model) return type hint to every "
+            "`@app.get` / `@app.post` handler function in the affected file. "
+            "Example — commit 481f161 PR #3798 S229-CONT-2: "
+            "`src/codex_ml/serving/inference_server.py` endpoints `root()`, `health()`, "
+            "`readiness()`, `liveness()` given `-> dict` hints, raising coverage 10%→50%."
+        ),
+        references=[
+            "src/codex_ml/serving/inference_server.py — S229-CONT-2 commit 481f161",
+            "tests/api/test_contract_validation.py::TestRequestResponseContracts",
+            "::test_endpoints_have_type_hints",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="COV_001",
+        description="RAG test coverage dilution — --cov=src measures all source while only RAG tests run",
+        log_regexes=[
+            r"test-rag.*coverage.*[0-9]+\.[0-9]+%.*below",
+            r"FAIL.*Required test coverage of.*not reached.*test.rag",
+            r"coverage.*below.*threshold.*test.rag",
+            r"RAG.*coverage.*5\.[0-9]+%",
+            r"--cov=src.*test.rag",
+        ],
+        fix_command=[
+            "bash",
+            "-c",
+            # Ensure .coveragerc for RAG scope is present and test-rag.yml uses it.
+            # Parenthesised to avoid ISC001 implicit-string-concatenation lint warning.
+            (
+                "python3 -c \""
+                "import pathlib, sys; "
+                "coveragerc = pathlib.Path('tests/rag/.coveragerc'); "
+                "assert coveragerc.exists(), 'tests/rag/.coveragerc missing — see S237 fix'; "
+                "print('COV_001: tests/rag/.coveragerc present"
+                " — verify test-rag.yml uses --cov-config=tests/rag/.coveragerc'); "
+                "\""
+            ),
+        ],
+        fix_description=(
+            "RAG coverage scope dilution (COV_001): set `--cov=src/codex/rag` and "
+            "`--cov-config=tests/rag/.coveragerc` in `test-rag.yml`. "
+            "See `tests/rag/.coveragerc` and S237 lessons learned."
+        ),
+        references=[
+            "tests/rag/.coveragerc",
+            ".github/workflows/test-rag.yml",
+            ".codex/patterns/ci_failure_patterns.yaml COV_001",
+        ],
+    ),
+    RescuePattern(
+        pattern_id="COV_002",
+        description=".secrets.baseline version mismatch with detect-secrets pre-commit pin",
+        log_regexes=[
+            r"detect-secrets.*[Vv]ersion.*mismatch",
+            r"baseline.*version.*[0-9]\.[0-9].*pre-commit.*[0-9]\.[0-9]",
+            r"detect.secrets.*[Uu]pgrade.*baseline",
+        ],
+        fix_command=[
+            "bash",
+            "-c",
+            "python3 -c \""
+            + "import json, pathlib, re; "
+            + "cfg = pathlib.Path('.pre-commit-config.yaml').read_text(); "
+            + "m = re.search(r'detect-secrets.*?rev:\\s*v?([0-9.]+)', cfg, re.S); "
+            + "pin = m.group(1) if m else '1.4.0'; "
+            + "bl = pathlib.Path('.secrets.baseline'); "
+            + "data = json.loads(bl.read_text()); "
+            + "data['version'] = pin; "
+            + "bl.write_text(json.dumps(data, indent=2)); "
+            + "print(f'COV_002: updated .secrets.baseline version to {pin}'); "
+            + "\"",
+        ],
+        fix_description=(
+            "Baseline version mismatch (COV_002): downgrade `.secrets.baseline` "
+            "`version` field to match the `detect-secrets` rev pinned in "
+            "`.pre-commit-config.yaml`. Run `sync_tracked_files.py --fix` after."
+        ),
+        references=[
+            ".secrets.baseline",
+            ".pre-commit-config.yaml",
+            ".codex/patterns/ci_failure_patterns.yaml COV_002",
+        ],
+    ),
 ]
 
 
@@ -645,10 +821,18 @@ def _gh_api(
     method: str = "GET",
     body: Optional[dict] = None,
 ) -> tuple[int, dict | list | None]:
-    """Call the GitHub REST API using curl (avoids PyGitHub dependency)."""
+    """Call the GitHub REST API using curl (avoids PyGitHub dependency).
+
+    Returns (http_status_code, parsed_json_body).  Uses a unique delimiter
+    ``||HTTP_STATUS||`` appended via ``-w`` so the real HTTP status is captured
+    and returned instead of always returning 200 for any successful JSON parse,
+    which previously masked 4xx/5xx error responses.
+    """
+    _STATUS_DELIMITER = "||HTTP_STATUS||"
     cmd = [
         "curl",
         "-sS",
+        "-w", _STATUS_DELIMITER + "%{http_code}",  # append delimiter + real status
         "-H",
         f"Authorization: Bearer {token}",
         "-H",
@@ -674,11 +858,26 @@ def _gh_api(
             f"  ⚠️  GitHub API error (exit {result.returncode}): {stderr_snippet}", file=sys.stderr
         )
         return -1, None
+
+    # Split at the delimiter appended by -w '||HTTP_STATUS||%{http_code}'
+    raw = result.stdout
+    if _STATUS_DELIMITER in raw:
+        split_idx = raw.rfind(_STATUS_DELIMITER)
+        json_body = raw[:split_idx]
+        http_status_str = raw[split_idx + len(_STATUS_DELIMITER):].strip()
+    else:
+        json_body = raw
+        http_status_str = ""
     try:
-        return 200, json.loads(result.stdout)
+        http_status = int(http_status_str)
+    except (ValueError, TypeError):
+        http_status = -1
+
+    try:
+        return http_status, json.loads(json_body) if json_body.strip() else None
     except json.JSONDecodeError as exc:
         print(f"  ⚠️  GitHub API response not valid JSON: {exc}", file=sys.stderr)
-        return -1, None
+        return http_status, None
 
 
 def get_failed_jobs(run_id: int, repo: str, token: str) -> list[dict]:
@@ -711,21 +910,48 @@ def get_job_log(job_id: int, repo: str, token: str, tail: int = LOG_TAIL_LINES) 
 
 
 def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
-    """Return the PR number associated with a workflow run (if any)."""
+    """Return the PR number associated with a workflow run (if any).
+
+    When multiple PRs share the same head branch (e.g. two open PRs both
+    pointing at ``0D_base_``), GitHub lists all of them in the workflow run's
+    ``pull_requests`` array.  Taking ``prs[0]`` would pick the *oldest* PR,
+    which is often the wrong one — rescue comments end up on a stale PR instead
+    of the one whose session produced the failing commit.
+
+    Strategy (in priority order):
+    1. Among the PRs in the run's ``pull_requests`` list, prefer the one whose
+       ``head.sha`` exactly matches the run's ``head_sha``.  When all SHAs match
+       (same branch), fall back to step 2.
+    2. Return the PR with the *highest* number (most recently opened) — this is
+       the best proxy for "the PR that is currently being actively worked on".
+    3. Fallback: scan open PRs via the REST API and apply the same logic.
+    """
     _, data = _gh_api(f"/repos/{repo}/actions/runs/{run_id}", token)
     if not isinstance(data, dict):
         return None
     prs = data.get("pull_requests", [])
-    if prs:
-        return prs[0]["number"]
-    # Fallback: search open PRs for head SHA
     head_sha = data.get("head_sha", "")
+    if prs:
+        # Prefer an exact SHA match first.
+        if head_sha:
+            sha_matches = [
+                p for p in prs
+                if p.get("head", {}).get("sha") == head_sha
+            ]
+            if sha_matches:
+                return max(p["number"] for p in sha_matches)
+        # No SHA match (shouldn't normally happen) — return highest-numbered PR.
+        return max(pr["number"] for pr in prs)
+    # Fallback: search open PRs for head SHA
     if head_sha:
         _, pr_data = _gh_api(f"/repos/{repo}/pulls?state=open&per_page=50", token)
         if isinstance(pr_data, list):
-            for pr in pr_data:
-                if pr.get("head", {}).get("sha") == head_sha:
-                    return pr["number"]
+            matches = [
+                pr for pr in pr_data
+                if pr.get("head", {}).get("sha") == head_sha
+            ]
+            if matches:
+                return max(pr["number"] for pr in matches)
     return None
 
 
@@ -828,7 +1054,7 @@ def post_pr_comment(
             body={"body": full_body},
         )
 
-    return status == 200
+    return status in (200, 201)
 
 
 # ---------------------------------------------------------------------------
@@ -1402,25 +1628,24 @@ def run_deep_rescue(
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
         )
-        # Use a distinct marker so deep-rescue comments are separate from the
-        # standard rescue RCA comment.
-        deep_marker = f"<!-- ci-rescue-deep:{(commit_sha or '')[:12]} -->"
-        full_body = f"{deep_marker}\n{comment}"
-        print(f"\n📝 Posting deep RCA comment to PR #{pr_number}…")
-        if dry_run:
-            print(f"[DRY RUN] Would post deep RCA:\n{full_body[:400]}…")
+        # Append deep analysis into the same SHA-scoped RCA comment so the PR
+        # thread has ONE rescue thread per commit, not two separate comments.
+        # post_pr_comment() already implements SHA-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{sha} --> comment and appends there, or
+        # creates a fresh one if the standard rescue step hasn't run yet.
+        print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
+        success = post_pr_comment(
+            pr_number=pr_number,
+            repo=repo,
+            token=token,
+            body=comment,
+            dry_run=dry_run,
+            commit_sha=commit_sha,
+        )
+        if success:
+            print("  ✅ Deep analysis appended to rescue comment")
         else:
-            status, _ = _gh_api(
-                f"/repos/{repo}/issues/{pr_number}/comments",
-                token,
-                method="POST",
-                body={"body": full_body},
-            )
-            if status in (200, 201):
-                print("  ✅ Deep RCA comment posted")
-            else:
-                print(f"  ⚠️  Failed to post deep RCA comment (HTTP {status})",
-                      file=sys.stderr)
+            print("  ⚠️  Failed to append deep analysis", file=sys.stderr)
     else:
         print("  ⚠️  No PR resolved — deep RCA comment skipped")
 

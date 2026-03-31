@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.codex.verify.comparator import (
+from codex.verify.comparator import (
     DEFAULT_FLAKINESS_RUNS,
     ComparisonDetail,
     ComparisonMode,

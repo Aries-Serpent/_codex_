@@ -7,6 +7,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3820)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3820 (SHA `a3dc57bd`) at 2026-03-31T00:05Z [auto-generated]
+
+### Fixed (S243 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — absolute `filename` paths normalized to repo-relative before `_file_to_module()` (prevents invalid module names on GitHub Actions). Copilot review thread line 142.
+- **fix(ci):** `generate_coverage_map.py` — per-XML duplicate module merge now unions `uncovered_lines` correctly (not just subtracts covered). Copilot review thread line 173.
+- **fix(ci):** `generate_coverage_map.py` — `build_coverage_map` merges function-level `covered_functions`/`uncovered_functions` from all suites; tags aggregated entries with `+merged` suite label; adds `len(suite_names) != len(xml_paths)` ValueError guard. Copilot review threads lines 323 and 291.
+- **fix(ci):** `sync_tracked_files.py` — `check_agent_context_baseline()` now runs detect-secrets with `cwd=REPO_ROOT` and passes repo-relative path; baseline key lookup is deterministic regardless of caller cwd. Copilot review thread line 380.
+- **fix(ci):** `copilot-iterative-self-healing.yml` — pagination loop bounded by `MAX_PAGES=50`; emits warning on limit reached. Copilot review thread line 339.
+- **fix(ci):** `comment-review-gate.yml` — stale "PR-scoped" comment corrected to SHA-scoped semantics; `HEAD_SHA` for `issue_comment` trigger now fetched via `github.rest.pulls.get()` API (not `github.sha` fallback). Copilot review threads lines 201 and 191.
+- **fix(ci):** `ci_rescue.py` — `_gh_api()` captures real HTTP status via `curl -w '\n%{http_code}'`; `post_pr_comment()` accepts 200 or 201 as success. Prevents silent loss of deep RCA comments. Copilot review thread line 1555.
+- **feat(ci/coverage):** `ci_rescue.py` — added `COV_001` and `COV_002` rescue patterns with auto-fix commands (P2C coverage intelligence).
+- **feat(ci/coverage):** `validate.yml` — "Generate coverage map and PR delta comment" step (P2B): posts coverage delta comment on PRs after test run.
+- **feat(ci/coverage):** `session_bootstrap.py` — injects coverage intelligence at session start (P2A): surfaces zero/low-coverage modules and high-risk function counts from `coverage_map.json`.
+
+### Fixed (S242 — PR #3818)
+- **fix(ci):** `generate_coverage_map.py` — corrected multi-suite merge logic: now unions `covered_lines` across suites and recalculates `line_rate` from combined data (was incorrectly picking highest `line_rate`, discarding coverage from other suites). Addresses Gemini high-priority review thread.
+- **fix(ci):** `generate_coverage_map.py` — `fn_covered` denominator now uses only executable lines (`covered ∪ uncovered` within function range) rather than all AST lines, eliminating artificial inflation from comments/docstrings. Addresses Gemini medium-priority review thread.
+- **fix(ci):** `check_cross_references.py` — replaced over-broad uppercase regex `re.match(r'^[A-Z][A-Z0-9_]*$')` with explicit allow-list `if raw in {"URL", "RUN_URL"}`. Prevents false skipping of extensionless docs (README, LICENSE, CHANGELOG). Addresses Gemini medium-priority review thread.
+- **fix(ci):** `.secrets.baseline` — CODEX_MANIFEST stale entry refreshed via `sync_tracked_files.py --fix` (RP-004 pattern 22 resolved).
+- **docs:** Updated cognitive-brain-manager.md to v4.3.0 with S242 status, next-phase plan, and merge analysis.
+
+### Fixed (auto-update — PR #3818)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3818 (SHA `d17dd8a2`) at 2026-03-30T21:49Z [auto-generated]
+
+### Fixed (S238 — PR #3814)
+- **fix(ci):** `check_cross_references.py` — added uppercase-only token guard in `_resolve_ref()` to skip placeholder tokens like `URL`, `RUN_URL` in documentation templates. Fixes Validation Pipeline `check-cross-references` hook failure on 3 `(URL)` references in `AGENT_ACCOUNTABILITY_REPORT.md` (lines 13292, 13299, 13983).
+- **fix(ci):** `generate_coverage_map.py` — replaced `import xml.etree.ElementTree as ET` with `import defusedxml.ElementTree as ET` to satisfy `check-unsafe-xml` pre-commit hook (XXE prevention policy).
+- **fix(ci):** `session_bootstrap.py` — D-00 checklist wording changed from "URL(s) fetched" to "URL(s) found" in offline mode (consistency fix per PR reviewer comment on `session_context_latest.md:43`).
+
+### Fixed (S234 — PR #3814)
+- **fix(ci):** RP-007 structural fix — `sync_tracked_files.py` now includes a 5th check (`check_agent_context_baseline`) that runs a targeted `detect-secrets scan` on `.codex/agent_context.json` and patches its entry in `.secrets.baseline` when stale. Prevents recurring `detect-secrets` pre-commit exit-3 failures caused by `CODEX_CI_LAST_GREEN_SHA` rotation.
+- **fix(docs):** `validate-links.py` — added `^URL$` and `^RUN_URL$` to `SKIP_LINK_PATTERNS` so placeholder `(URL)` tokens in documentation templates are no longer flagged as missing files.
+- **fix(docs):** `.codex/sessions/chain-20260330-151413.md` — applied gemini-code-assist suggestion: run number is now a hyperlink to the GitHub Actions run.
+- **fix(ci):** Refreshed `.secrets.baseline` agent_context.json entry after auth-token rotation commits changed `CODEX_CI_LAST_GREEN_SHA` (RP-007 fix).
+- **fix(ci):** Addressed 3 unaddressed comment-review-gate blocking items (comments 4156171706, 4156172390, 4156180410 on PR #3814) — session boundary gap documented; shallow-reply protocol correction applied.
+
+### Fixed (S236 — PR #3814)
+- **fix(ci):** `scripts/ci/ci_rescue.py` `run_deep_rescue()` — deep analysis was always POSTing a new `<!-- ci-rescue-deep:{sha} -->` comment; now calls `post_pr_comment()` which has SHA-scoped upsert, appending deep analysis to the existing RCA comment. Result: 2 ci-rescue comments per commit → 1.
+- **fix(ci):** `.github/workflows/copilot-iterative-self-healing.yml` — replaced unreliable text-based dedup check + always-create `gh pr comment` with SHA+category-scoped marker upsert (`<!-- copilot-healing:{sha}:{category} -->`). Uses `${RUNNER_TEMP}` temp file per TEMPORARY_FILES_POLICY.md. Result: one `@copilot Continue` comment per commit per failure category, updated in-place.
+
+### Fixed (S235 — PR #3814)
+- **fix(ci):** `test-rag.yml` — RAG Module Tests failed with 5.093% coverage against 95% threshold; root cause: `--cov=src` measured coverage of ALL source files while only RAG tests ran. Fixed by changing to `--cov=src/codex/rag` (scope coverage to just the RAG module) and adding `tests/rag/` to the pytest test collection.
+- **fix(ci):** RP-007 — `.secrets.baseline` CODEX_MANIFEST entry was stale (hash missing); fixed via `sync_tracked_files.py --fix`. Unblocks Comment Review Gate and Pre-Merge Validation.
+
+### Fixed (S233 — PR #3814)
+- **chore(ci):** Nightly health sweep S171 (issue #3800) — ran `ruff check` (no new violations), `auto_fix_common_issues.py` (Pattern 22 fixed via `sync_tracked_files.py --fix`: `CODEX_MANIFEST` integrity hash refreshed, `.secrets.baseline` CODEX_MANIFEST entry updated), reviewed last-5 CI runs on `main` (all healthy).
+- **chore(ci):** CI Health Alert #3801 — verified SELF_HEALING_001 S172 fix is present in `iterative-self-healing-ci.yml` (triage lines 97–99, heal lines 310–312 recreate `.venv_ci` on cache miss). High 26.9% failure rate reflects pre-fix data in the 7-day telemetry window; recent runs show cascade guard active (`skipped`). No code change required; monitor will clear as the window rolls forward.
+
+### Fixed (auto-update — PR #3813)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3813 (SHA `8a90e255`) at 2026-03-30T15:06Z [auto-generated]
+
+### Fixed (S230 — PR #3790)
+- **fix(ci):** `ci_rescue.py` `find_pr_for_run()` — when multiple PRs share the same HEAD branch (e.g. two open PRs on `0D_base_`), the function was returning the first/oldest PR (`prs[0]`), causing rescue comments to be posted to the wrong PR. Fix: prefer the PR with the highest number (most recently opened = most likely actively worked on). Same fix applied to the inline fallback in `ci-rescue.yml`.
+- **fix(ci):** `ci-rescue.yml` inline fallback — `MARKER` was referenced before `pr_number` was resolved, causing a Python `NameError`. Moved `MARKER` definition to after PR lookup. Also switched to SHA-scoped marker (`<!-- ci-rescue-rca:{sha_short} -->`) consistent with `ci_rescue.py`.
+- **fix(ci):** `agent-auth-delegation.yml` session-gate — when a stale session lock is cleared via the 4-hour TTL, queued PRs were never retriggered (only the `session-release` job, triggered on PR close, processed the queue). Fix: when the Session Concurrency Gate clears a stale lock, it now also dequeues the first waiting PR and posts `@copilot continue` on it.
+
+### Fixed (S229-CONT-2 — PR #3798)
+- **fix(ci):** P20 YAML parse error — `agent-auth-delegation.yml` multiline `CHECKLIST="..."` bash string at 0-column indentation broke YAML literal block parsing (actionlint: "could not parse as YAML: did not find expected key"). Replaced with `printf '%s\n' ... > "${RUNNER_TEMP}/checklist.txt"` pipeline (per TEMPORARY_FILES_POLICY.md).
+- **fix(ci):** P20 partial fix — `workflow-execution-gate.yml` first BODY assignment replaced with `printf` pipeline using `${RUNNER_TEMP}` temp file.
+- **fix(tests):** `test_run_loop_dry_run_no_side_effects` — mock `sense_test_health` in dry-run test to avoid spawning a full `pytest --collect-only` subprocess that times out on loaded CI runners. Also add `@pytest.mark.flaky(reruns=2)` and `@pytest.mark.timeout(120)`.
+- **fix(ci):** Deferral Language Gate — add `--since ISO_DATETIME` flag to `check_deferral_language.py` to filter stale historical comments. Gate now only scans PR comments created within last 72 hours, preventing permanently-blocking stale violations from closed sessions. New violations in active sessions still caught. Fetch step updated to include `created_at` in JSONL and use `${RUNNER_TEMP}` for temp files.
+- **fix(P19):** Remove P19 shadow-import `from services.github.types import CheckRunStatus` from `src/codex/cli_github_logs.py`, `src/mcp/tools/github_logs.py`, and `src/codex/api/github_logs.py`. Root cause: `services/` at repo root (placeholder only, no `types.py`) shadows `src/services/` when pytest loads rootdir before conftest.py adds `src/` to sys.path. Fix: pass status string directly; updated `list_check_runs_for_ref` in `services.github.client` to accept both enum and plain string. Also fix `tests/test_github_logs.py` to use `src.` prefix consistently for all MCP/CLI imports to match `@patch` targets.
+
+### Fixed (S229-CONT-1 — PR #3795)
+- **fix(ci):** RP-007 — refresh `.secrets.baseline` for `agent_context.json` (hashed_secret was stale); also resync CODEX_MANIFEST entry via `sync_tracked_files.py --fix`.
+- **fix(docs):** Address Copilot review comments — rephrase origin-attribution language in `AGENT_ACCOUNTABILITY_REPORT.md`, clarify P-044 sharded-run note in `permanent_facts.md`.
+
+### Fixed (S229 — PR #3795)
+- **fix(tests):** Mark 5 confirmed-flaky timing-sensitive tests with `@pytest.mark.flaky(reruns=2)` in `tests/space_traversal/test_performance.py`, `tests/autonomy/test_integration_budget_exhaustion.py`, and `tests/autonomy/test_autonomy_scheduler.py`. Documented as P-044 in `.codex/permanent_facts.md`.
+
+### Fixed (auto-update — PR #3793)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3793 (SHA `e7c44c45`) at 2026-03-29T23:19Z [auto-generated]
+
+### Fixed (auto-update — PR #3790)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3790 (SHA `42c80d89`) at 2026-03-29T12:38Z [auto-generated]
+
+### Fixed (S146 — PR #3781)
+- **fix(monitor):** `branch-divergence-monitor.yml` — 4-tier commit classification replacing original 2-tier (S146 + S146-CONT):
+  - **Tier 1 PIPELINE-MERGE**: `Merge pull request #N from Aries-Serpent/0D_base_` — staging-gate merge commit; severity `low`, auto-correct fast-forwards `0D_base_`.
+  - **Tier 2 AUTO-GEN**: `github-actions[bot]` + `[skip ci]`/`[automated]`/etc subject — forward-sync files.
+  - **Tier 3 AGENT-COMMIT**: `copilot-swe-agent[bot]`/`github-copilot[bot]`/`copilot[bot]` author, or any empty commit (0 file-tree changes via `git diff-tree`) — reviewed PR work, absorbed by Tier 1 fast-forward. Eliminates false CRITICAL alerts from agent sessions permanently.
+  - **Tier 4 CODE-LEAK**: everything else — `@copilot` escalation only when `codeleak > 0 AND absorbers === 0`.
+- **fix(monitor):** Severity: `CODE-LEAK + absorbers → low`; `CODE-LEAK alone → critical`. Operator precedence fixed (`if-then` block). Ancestry comment clarified. `pipeline_merge_count`, `agent_commit_count` propagated through all outputs, JSON, step summary, issue body.
+- **feat(preflight):** `agent-auth-delegation.yml` — new **REQ-3b** step `Detect empty commits in PR` (warn-only, `continue-on-error`): counts empty commits, explains AGENT-COMMIT impact, advises correct drop-before-push workflow.
+- **docs:** `BRANCH_DIVERGENCE_PREVENTION.md` — RC-6, RC-7, RC-8 root-cause sections; updated 4-tier Agent Execution Protocol quick reference.
+- **feat(agents):** `.github/agents/branch-divergence-resolution-agent.md` v1.1.0 — 4-tier classification table, architecture diagram, severity matrix, OODA protocol, self-healing loop.
+
+### Fixed (S145 — PR #3777)
+- **fix(ci):** Remove `GitLabTokenDetector` from `.secrets.baseline` — was causing `detect-secrets` pre-commit hook to fail with `No such GitLabTokenDetector plugin to initialize` in CI environments running an older `detect-secrets` version than the one used to generate the baseline (version mismatch). Fixes recurring `Validation Pipeline / Fast Validation` failures on `a836919`.
+- **fix(imports):** Revert `training` and `utils` imports in `scripts/codex_offline_audit.py` to `from src.training.` / `from src.utils.` form — root-level `training/__init__.py` and `utils/__init__.py` shadows were silently intercepting the de-src-ified imports. Closes review threads at `scripts/codex_offline_audit.py:76,87` (P19-SHADOW-EXPANDED-001).
+- **fix(imports):** Remove `src.` prefix from 10 shadow-safe files: `agents/` (3), `examples/authentication/` (4), `services/api/main.py`, `tools/actions_cli.py`, `tools/actions_server.py`. All import from packages with no root-level shadow (`codex`, `codex_bridge`, `security`).
+- **fix(secrets):** Add `# pragma: allowlist secret` to 3 false-positive lines: demo key in `examples/authentication/03_token_management.py`, dev placeholder and pattern variable in `services/api/main.py`.
+
+
 ### Fixed (auto-update — PR #3770)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3770 (SHA `ee886183`) at 2026-03-27T22:24Z [auto-generated]
 
@@ -4252,3 +4347,25 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 
 ### Fixed (S185-b — PR #3739)
 - **fix(agents):** Add missing `description` field to 5 deprecated coverage agent configs — resolves "Invalid config: field 'description' is required" errors in Copilot custom agent selector for `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor.agent`
+
+### Added (S230 — PR #3790)
+- **test(ci):** `tests/ci/test_ci_rescue_find_pr.py` — 10 unit tests for `find_pr_for_run()` covering the S230 multi-PR selection fix: single PR, multiple PRs sharing same SHA, fallback path, edge cases.
+
+### Fixed (S231 — PR #3790)
+- **fix(test):** `tests/ci/test_ci_rescue_find_pr.py` — remove 3 unused imports (json, MagicMock, pytest) and sort import block (ruff F401/I001 clean)
+- **fix(workflow):** `agent-auth-delegation.yml:901` — SC2028 echo→printf for `\n` escape sequences (actionlint clean)
+- **fix(ci):** `check_deferral_language.py` — add 2 EXEMPTION_PATTERNS: (a) CI status section headers `## ... NOT Introduced by This PR`; (b) `infrastructure enhancement` checklist labels; real deferrals still caught
+
+### Dependencies (S232 — PR #3790 cherry-picks from Dependabot PRs)
+- **ci**: `codecov/codecov-action` 5→6 (PR #3802)
+- **deps**: ml-dependencies group — duckdb 1.5.0→1.5.1, transformers 5.3.0→5.4.0 (PR #3803)
+- **deps**: data-dependencies group — datasets 4.8.3→4.8.4, numpy 2.4.3→2.4.4 (PR #3804)
+- **deps**: mistune 3.1.4→3.2.0 (PR #3805)
+- **deps**: pytz 2025.2→2026.1.post1 (PR #3806)
+- **deps**: async-lru 2.0.5→2.3.0 (PR #3807)
+- **deps**: jupyterlab-widgets 3.0.15→3.0.16 (PR #3808)
+- **deps**: databricks-sdk 0.73.0→0.102.0 (PR #3809)
+- **deps**: yarl 1.22.0→1.23.0 (PR #3810)
+- **deps**: dvc 3.66.1→3.67.0 (PR #3811)
+- **deps**: hypothesis 6.142.1→6.151.10 (PR #3812)
+- Conflict resolution in requirements/base.txt: datasets==4.8.4, numpy==2.4.4 (max of #3803+#3804)

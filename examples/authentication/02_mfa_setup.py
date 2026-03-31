@@ -36,7 +36,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.codex.auth.mfa_provider import MFAProvider  # noqa: E402
+from codex.auth.mfa_provider import MFAProvider  # noqa: E402
 
 
 def display_qr_instructions():

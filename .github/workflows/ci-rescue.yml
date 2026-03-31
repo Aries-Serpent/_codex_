@@ -93,7 +93,7 @@ jobs:
 
       # ── Set up Python (uses the runner's built-in Python; no checkout) ───
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -195,7 +195,6 @@ jobs:
           run_url    = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${RUN_ID}"
           sha_short  = commit_sha[:12]
           now        = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-          MARKER     = f"<!-- ci-rescue-rca:{sha_short} -->"
           API        = "https://api.github.com"
           HDRS       = {
               "Authorization": f"Bearer {token}",
@@ -214,23 +213,37 @@ jobs:
               except urllib.error.HTTPError as e:
                   return e.code, {}
 
-          # Find the PR number for this commit
+          # Find the PR number for this commit.
+          # When multiple PRs share the same head branch (e.g. two open PRs on
+          # 0D_base_), all of them appear in the run's pull_requests list with the
+          # same head SHA.  Taking the first entry posts rescue comments on the
+          # wrong (older) PR.  Instead, prefer the PR with the highest number —
+          # the most recently opened one is the most likely active context.
           _, runs_data = gh("GET", f"/repos/{repo}/actions/runs/{run_id}")
           pr_number = None
-          for pr in runs_data.get("pull_requests", []):
-              if pr.get("head", {}).get("sha") == commit_sha:
-                  pr_number = pr["number"]
-                  break
+          sha_matches = [
+              pr["number"]
+              for pr in runs_data.get("pull_requests", [])
+              if pr.get("head", {}).get("sha") == commit_sha
+          ]
+          if sha_matches:
+              pr_number = max(sha_matches)
           if not pr_number:
               _, prs = gh("GET", f"/repos/{repo}/pulls?state=open&per_page=50")
-              for pr in (prs if isinstance(prs, list) else []):
-                  if pr.get("head", {}).get("sha") == commit_sha:
-                      pr_number = pr["number"]
-                      break
+              all_matches = [
+                  pr["number"]
+                  for pr in (prs if isinstance(prs, list) else [])
+                  if pr.get("head", {}).get("sha") == commit_sha
+              ]
+              if all_matches:
+                  pr_number = max(all_matches)
 
           if not pr_number:
               print(f"⚠️  No PR found for commit {sha_short} — skipping rescue comment")
               sys.exit(0)
+
+          # Build the SHA-scoped dedup marker now that pr_number is resolved.
+          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
 
           body = (
               f"## 🚨 CI Rescue — @copilot Fix Required\n\n"
@@ -240,7 +253,8 @@ jobs:
               f"**Time:** {now}\n\n"
               f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
               "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
-              "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_"
+              "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"
+              f"_[🔗 Workflow run]({run_url})_"
           )
 
           # Paginate through all PR comments to find existing rescue marker.

@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import argparse
 
-from src.mcp.packager.generator import generate_package, load_config
+from mcp.packager.generator import generate_package, load_config
 
 
 def main() -> None:

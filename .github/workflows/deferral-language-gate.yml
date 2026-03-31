@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: "📥 Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "🗂️ Pre-create pip cache dir"
         run: mkdir -p ~/.cache/pip
@@ -47,7 +47,7 @@ jobs:
         # Pre-creating the directory prevents that transient post-step failure.
 
       - name: "🐍 Set up Python"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           # No pip cache: scikit-learn is only installed when DEFERRAL_SCANNER_ML=1
@@ -65,15 +65,15 @@ jobs:
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          printf '%s' "$PR_BODY" > /tmp/pr_body.txt
-          echo "PR body written ($(wc -c < /tmp/pr_body.txt) bytes)"
+          printf '%s' "$PR_BODY" > "${RUNNER_TEMP}/pr_body.txt"
+          echo "PR body written ($(wc -c < "${RUNNER_TEMP}/pr_body.txt") bytes)"
 
       - name: "🔍 Scan PR body for deferral language"
         id: scan_pr_body
         env:
           DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
         run: |
-          python scripts/ci/check_deferral_language.py --pr-body /tmp/pr_body.txt
+          python scripts/ci/check_deferral_language.py --pr-body "${RUNNER_TEMP}/pr_body.txt"
         continue-on-error: true
 
       - name: "🔍 Scan last 10 commit messages for deferral language"
@@ -104,9 +104,9 @@ jobs:
               .user.login == "github-copilot[bot]" or
               .user.login == "copilot[bot]" or
               .user.login == "Copilot"
-            ) | {body: .body, user: {login: .user.login}}' \
-            > /tmp/pr_comments.jsonl || echo '{}' > /tmp/pr_comments.jsonl
-          LINE_COUNT=$(wc -l < /tmp/pr_comments.jsonl)
+            ) | {body: .body, user: {login: .user.login}, created_at: .created_at}' \
+            > "${RUNNER_TEMP}/pr_comments.jsonl" || echo '{}' > "${RUNNER_TEMP}/pr_comments.jsonl"
+          LINE_COUNT=$(wc -l < "${RUNNER_TEMP}/pr_comments.jsonl")
           echo "Fetched ${LINE_COUNT} agent comment(s) for deferral scan"
 
       - name: "🔍 Scan agent PR comments for deferral language"
@@ -114,8 +114,17 @@ jobs:
         env:
           DEFERRAL_SCANNER_ML: ${{ vars.DEFERRAL_SCANNER_ML || '0' }}
         run: |
-          if [ -s /tmp/pr_comments.jsonl ]; then
-            python scripts/ci/check_deferral_language.py --pr-comments /tmp/pr_comments.jsonl
+          if [ -s "${RUNNER_TEMP}/pr_comments.jsonl" ]; then
+            # Only scan comments created within the last 72 hours (S229-CONT-2 fix:
+            # prevents stale historical session comments from permanently blocking
+            # CI on long-lived integration PRs like the 0D_base_ → main PR).
+            SINCE_DATE=$(date -u -d "72 hours ago" +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
+                         date -u -v-72H +"%Y-%m-%dT%H:%M:%SZ" 2>/dev/null || \
+                         echo "2000-01-01T00:00:00Z")
+            echo "Scanning comments created after: ${SINCE_DATE}"
+            python scripts/ci/check_deferral_language.py \
+              --pr-comments "${RUNNER_TEMP}/pr_comments.jsonl" \
+              --since "${SINCE_DATE}"
           else
             echo "No agent comments to scan."
           fi
@@ -197,7 +206,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
@@ -206,7 +215,7 @@ jobs:
             try:
               with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
             except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Root cause:** Deferral language detected in PR body, commit messages, or agent comments.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues, never defer)\n2. Review failure logs: [{run_id}]({run_url})\n3. Remove any deferral phrases from PR body / commit messages / agent comments\n4. Fix the deferred issue immediately — no exceptions\n5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n\n_Posted by: deferral-language-gate.yml → rescue-comment job (S217)_"""
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Root cause:** Deferral language detected in PR body, commit messages, or agent comments.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues, never defer)\n2. Review failure logs: [{run_id}]({run_url})\n3. Remove any deferral phrases from PR body / commit messages / agent comments\n4. Fix the deferred issue immediately — no exceptions\n5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n\n_Posted by: deferral-language-gate.yml → rescue-comment job (S217)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:

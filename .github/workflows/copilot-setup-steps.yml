@@ -120,7 +120,7 @@ jobs:
       # ============================================================================
 
       - name: "📦 Checkout Repository (baseline: no LFS content)"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0                 # Full history; required by some tools and avoids HEAD ambiguity
           lfs: false                     # Baseline stability: avoid LFS fetch during setup
@@ -467,7 +467,7 @@ jobs:
       # ============================================================================
 
       - name: "🐍 Set up Python ${{ env.PYTHON_VERSION || '3.12' }}"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION || '3.12' }}
           # No automatic pip cache — managed explicitly below so keys match
@@ -478,7 +478,7 @@ jobs:
       # L1 — pip download cache: same key format as setup-python-cached so
       # packages downloaded by any workflow are available to the agent session.
       - name: "💾 L1 — pip download cache (~/.cache/pip)"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-py${{ env.PYTHON_VERSION }}-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -490,7 +490,7 @@ jobs:
       # agent-warmed venv and vice-versa.
       - name: "💾 L3 — installed venv (.venv_ci)"
         id: cache-venv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .venv_ci
           key: ${{ runner.os }}-venv-py${{ env.PYTHON_VERSION }}-extras=dev-torch=false-preflight=false-${{ hashFiles('pyproject.toml', 'requirements/lock.txt') }}
@@ -926,7 +926,7 @@ jobs:
 
       - name: "📤 Upload Environment Report"
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: copilot-agent-environment-report
           path: ${{ steps.gen_report.outputs.REPORT_PATH }}
@@ -982,7 +982,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
@@ -991,7 +991,7 @@ jobs:
             try:
               with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
             except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: copilot-setup-steps.yml → rescue-comment job (S227)_"""
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: copilot-setup-steps.yml → rescue-comment job (S227)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:

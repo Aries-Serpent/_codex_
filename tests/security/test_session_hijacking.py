@@ -6,7 +6,7 @@ Test module for session hijacking.
 
 import pytest
 
-from src.security import SecurityError, verify_session_integrity
+from security import SecurityError, verify_session_integrity
 
 
 def test_session_integrity_mismatch() -> None:

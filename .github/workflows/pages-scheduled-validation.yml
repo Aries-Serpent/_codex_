@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -194,7 +194,7 @@ jobs:
           (steps.link_validation.outputs.error_count > 0 ||
            steps.mkdocs_build.outputs.exit_code != '0' ||
            steps.cognitive_app.outputs.error_count > 0)
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const timestamp = '${{ steps.config.outputs.timestamp }}';
@@ -294,7 +294,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: existingIssue.number,
-                body: `## Update: ${timestamp}\n\n${body}`
+                body: `## Update: ${timestamp}\n\n${body}\n\n---\n_[🔗 Workflow run](${runUrl})_`
               });
 
               console.log(`Updated existing issue #${existingIssue.number}`);
@@ -313,7 +313,7 @@ jobs:
 
       - name: Upload validation artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: scheduled-validation-${{ steps.config.outputs.timestamp }}
           path: |

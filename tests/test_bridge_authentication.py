@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from src.bridge_manager import (
+from bridge_manager import (
     BridgeManager,
     BridgeMode,
     ContextMessage,

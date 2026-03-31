@@ -8,7 +8,7 @@ import csv
 import json
 from pathlib import Path
 
-from src.evaluation.writers import write_csv, write_ndjson
+from evaluation.writers import write_csv, write_ndjson
 
 
 def test_write_ndjson(tmp_path: Path):

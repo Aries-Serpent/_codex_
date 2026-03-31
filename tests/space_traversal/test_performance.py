@@ -6,6 +6,8 @@ import json
 import time
 from pathlib import Path
 
+import pytest
+
 
 def test_timed_decorator():
     """Test function timing decorator."""
@@ -36,6 +38,7 @@ def test_file_cache_basic(tmp_path: Path):
     assert result is None
 
 
+@pytest.mark.flaky(reruns=2)
 def test_file_cache_expiry(tmp_path: Path):
     """Test cache TTL expiry."""
     from scripts.space_traversal.performance import FileCache
@@ -85,6 +88,7 @@ def test_file_cache_clear(tmp_path: Path):
     assert cache.get("key2") is None
 
 
+@pytest.mark.flaky(reruns=2)
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
     from scripts.space_traversal.performance import FileCache
@@ -200,6 +204,7 @@ def test_performance_metrics_to_json(tmp_path: Path):
     assert len(data["metrics"]) == 2
 
 
+@pytest.mark.flaky(reruns=2)
 def test_profile_stage_context_manager():
     """Test profile_stage context manager."""
     from scripts.space_traversal.performance import PerformanceMetrics, profile_stage

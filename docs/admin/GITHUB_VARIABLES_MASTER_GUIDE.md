@@ -1,4 +1,4 @@
-> **Last synced:** `2026-03-28T06:16:17Z` (auto-sync workflow)
+> **Last synced:** `2026-03-30T06:32:24Z` (auto-sync workflow)
 
 # GitHub Variables & Secrets — Master Reference Guide
 

@@ -21,7 +21,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
-from src.config.openai_client import CodexOpenAIClient, ExecutionResult
+from config.openai_client import CodexOpenAIClient, ExecutionResult
 
 # Configure logging
 logger = logging.getLogger(__name__)

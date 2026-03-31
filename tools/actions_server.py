@@ -20,7 +20,7 @@ import requests
 
 try:
     # Optional: reuse shared client utilities if importable
-    from src.codex_bridge.github_client import (
+    from codex_bridge.github_client import (
         most_recent_branch as gh_most_recent_branch,
     )
 except Exception:  # pragma: no cover - fallback

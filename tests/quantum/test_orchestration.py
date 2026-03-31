@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.quantum import (
+from quantum import (
     TaskPriority,
     ThermodynamicOrchestrator,
     ThermodynamicTask,

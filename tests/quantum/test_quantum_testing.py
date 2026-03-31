@@ -6,7 +6,7 @@ import math
 
 import pytest
 
-from src.quantum import QuantumTest, QuantumTestSuite, TestState
+from quantum import QuantumTest, QuantumTestSuite, TestState
 
 
 class TestQuantumTest:

@@ -5,7 +5,7 @@ Test module for tenant isolation.
 """
 
 # Tenant isolation tests for adapters (mock-based)
-from src.mcp.backends.mock_backend import InMemoryMockBackend
+from mcp.backends.mock_backend import InMemoryMockBackend
 
 
 def test_tenant_isolation():

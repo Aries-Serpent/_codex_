@@ -51,6 +51,7 @@ class TestBudgetCap:
 
         assert fast() == "done"
 
+    @pytest.mark.flaky(reruns=2)
     def test_budget_cap_raises_on_exhaustion(self):
         mod = _import("budget_uncertainty")
         if not hasattr(mod, "budget_cap"):

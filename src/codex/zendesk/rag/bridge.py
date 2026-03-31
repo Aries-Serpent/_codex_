@@ -6,9 +6,9 @@ import logging
 from dataclasses import dataclass
 from typing import Iterable
 
-from src.codex.zendesk.quantum import ZendeskTicket
-from src.rag.pipelines.chunking import Chunk, ChunkingPipeline
-from src.rag.pipelines.quantum_retrieval import QuantumEnhancedRetrieval
+from codex.zendesk.quantum import ZendeskTicket
+from rag.pipelines.chunking import Chunk, ChunkingPipeline
+from rag.pipelines.quantum_retrieval import QuantumEnhancedRetrieval
 
 logger = logging.getLogger(__name__)
 

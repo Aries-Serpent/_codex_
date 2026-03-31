@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, Mock
 
 import numpy as np
 
-from src.codex.retrieval.optimizations import (
+from codex.retrieval.optimizations import (
     OptimizedVectorStore,
     RetrievalMetrics,
     enable_memory_mapped_index,

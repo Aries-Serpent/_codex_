@@ -38,7 +38,7 @@ import shlex
 import subprocess
 from pathlib import Path
 
-from src.integrations.github_app_auth import (
+from integrations.github_app_auth import (
     create_runner_registration_token,
     exchange_installation_token,
     mint_app_jwt,

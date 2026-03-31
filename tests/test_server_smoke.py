@@ -11,7 +11,7 @@ pytest.importorskip("fastapi.testclient")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from src.mcp.server.facade_fastapi import APP  # noqa: E402
+from mcp.server.facade_fastapi import APP  # noqa: E402
 
 
 def test_health_endpoint():

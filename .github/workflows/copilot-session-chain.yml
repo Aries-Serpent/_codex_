@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Determine if chaining should proceed
         id: check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const INTEGRATION_BRANCHES = ['0D_base_'];
@@ -130,7 +130,7 @@ jobs:
       INTEGRATION_BRANCH: ${{ needs.check-trigger.outputs.integration_branch }}
     steps:
       - name: Checkout integration branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.check-trigger.outputs.integration_branch }}
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -246,6 +246,9 @@ jobs:
             printf '%s' "${TRIGGER_COMMENT}" > "${TRIGGER_FILE}"
           fi
 
+          echo "" >> "${TRIGGER_FILE}"
+          echo "---" >> "${TRIGGER_FILE}"
+          echo "_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_" >> "${TRIGGER_FILE}"
           if gh pr comment "${EXISTING_PR}" --body-file "${TRIGGER_FILE}"; then
             echo "retrigger_posted=true" >> "$GITHUB_OUTPUT"
             echo "✅ Posted re-trigger comment on existing PR #${EXISTING_PR} (branch: ${EXISTING_BRANCH})"
@@ -310,33 +313,34 @@ jobs:
           set -euo pipefail
 
           PR_TITLE="🤖 [Agent Session] ${SESSION_TITLE} (${TIMESTAMP})"
-          PR_BODY="## 🔗 Auto-chained Copilot Agent Session
-
-          **Integration branch:** \`${INTEGRATION_BRANCH}\`
-          **Session branch:** \`${NEW_BRANCH}\`
-          **Opened by:** \`copilot-session-chain.yml\` (run [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))
-
-          > This PR was automatically created by the Session Chain workflow.
-          > It targets \`${INTEGRATION_BRANCH}\` (the staging integration branch).
-          > **Do NOT work directly on \`${INTEGRATION_BRANCH}\`** — all agent
-          > work is done through sub-PRs like this one.
-
-          ---
-
-          ### 💰 Cost Governance
-
-          - [ ] **💰 Cost Proposal Approved**
-
-          ### 🔐 Agent Token Delegation
-          - [ ] **Enable Agent Token Delegation** (\`COPILOT_AGENT_AUTH_ENABLED\`)
-
-          ### Architecture
-          \`\`\`
-          ${NEW_BRANCH}   ──► ${INTEGRATION_BRANCH} ──► main
-          (this PR)              (staging gate)     (promotion PR)
-          \`\`\`
-
-          See: [\`INTEGRATION_BRANCH_MODEL.md\`](.codex/docs/INTEGRATION_BRANCH_MODEL.md)"
+          PR_BODY=$(printf '%s\n' \
+            '## 🔗 Auto-chained Copilot Agent Session' \
+            '' \
+            "**Integration branch:** \`${INTEGRATION_BRANCH}\`" \
+            "**Session branch:** \`${NEW_BRANCH}\`" \
+            "**Opened by:** \`copilot-session-chain.yml\` (run [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}))" \
+            '' \
+            '> This PR was automatically created by the Session Chain workflow.' \
+            "> It targets \`${INTEGRATION_BRANCH}\` (the staging integration branch)." \
+            "> **Do NOT work directly on \`${INTEGRATION_BRANCH}\`** — all agent" \
+            '> work is done through sub-PRs like this one.' \
+            '' \
+            '---' \
+            '' \
+            '### 💰 Cost Governance' \
+            '' \
+            '- [ ] **💰 Cost Proposal Approved**' \
+            '' \
+            '### 🔐 Agent Token Delegation' \
+            '- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '' \
+            '### Architecture' \
+            '```' \
+            "${NEW_BRANCH}   ──► ${INTEGRATION_BRANCH} ──► main" \
+            '(this PR)              (staging gate)     (promotion PR)' \
+            '```' \
+            '' \
+            "See: [\`INTEGRATION_BRANCH_MODEL.md\`](.codex/docs/INTEGRATION_BRANCH_MODEL.md)")
 
           PR_URL=$(gh pr create \
             --title "${PR_TITLE}" \
@@ -365,45 +369,48 @@ jobs:
           if [ -n "${CONTINUATION_PROMPT}" ]; then
             TRIGGER_COMMENT="${CONTINUATION_PROMPT}"
           elif [ -n "${MERGED_PR}" ]; then
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
-
-          Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`.
-          You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
-          staging integration branch \`${INTEGRATION_BRANCH}\`.
-
-          **Architecture reminder:**
-          \`\`\`
-          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
-          (this PR)           (staging gate)          (promotion PR)
-          \`\`\`
-
-          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
-          Continue from where PR #${MERGED_PR} left off, addressing any remaining items
-          from the priority list. Review all CI checks and address any failures.
-
-          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
-          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
-          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
+            TRIGGER_COMMENT=$(printf '%s\n' \
+              '@copilot+claude-sonnet-4.6 continue' \
+              '' \
+              "Previous sub-PR #${MERGED_PR} has been merged into \`${INTEGRATION_BRANCH}\`." \
+              "You are now working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
+              "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '**Architecture reminder:**' \
+              '```' \
+              "${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main" \
+              '(this PR)           (staging gate)          (promotion PR)' \
+              '```' \
+              '' \
+              "Do NOT work directly on \`${INTEGRATION_BRANCH}\`." \
+              "Continue from where PR #${MERGED_PR} left off, addressing any remaining items" \
+              'from the priority list. Review all CI checks and address any failures.' \
+              '' \
+              '> **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by' \
+              "> default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch" \
+              "> \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR.")
           else
-            TRIGGER_COMMENT="@copilot+claude-sonnet-4.6 continue
-
-          You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the
-          staging integration branch \`${INTEGRATION_BRANCH}\`.
-
-          **Architecture reminder:**
-          \`\`\`
-          ${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main
-          (this PR)           (staging gate)          (promotion PR)
-          \`\`\`
-
-          Do NOT work directly on \`${INTEGRATION_BRANCH}\`.
-          Begin by reviewing the current CI status of this PR and addressing any failures.
-
-          > **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by
-          > default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch
-          > \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR."
+            TRIGGER_COMMENT=$(printf '%s\n' \
+              '@copilot+claude-sonnet-4.6 continue' \
+              '' \
+              "You are working on branch \`${NEW_BRANCH}\` — a new sub-PR targeting the" \
+              "staging integration branch \`${INTEGRATION_BRANCH}\`." \
+              '' \
+              '**Architecture reminder:**' \
+              '```' \
+              "${NEW_BRANCH}  ──►  ${INTEGRATION_BRANCH}  ──►  main" \
+              '(this PR)           (staging gate)          (promotion PR)' \
+              '```' \
+              '' \
+              "Do NOT work directly on \`${INTEGRATION_BRANCH}\`." \
+              'Begin by reviewing the current CI status of this PR and addressing any failures.' \
+              '' \
+              '> **Note (GitHub Copilot no-auto-PR policy):** Sessions no longer create PRs by' \
+              "> default. This PR (#${PR_NUMBER}) is pre-created — commit all changes to branch" \
+              "> \`${NEW_BRANCH}\` and push to this PR. Do NOT create a new branch or PR.")
           fi
 
+          TRIGGER_COMMENT="${TRIGGER_COMMENT}\n\n---\n_[🔗 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_"
           gh pr comment "${PR_NUMBER}" --body "${TRIGGER_COMMENT}"
           echo "✅ Posted trigger comment on PR #${PR_NUMBER}"
 
@@ -472,7 +479,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue-rca:{sha_short} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
@@ -481,7 +488,7 @@ jobs:
             try:
               with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
             except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: copilot-session-chain.yml → rescue-comment job (S227)_"""
+          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: copilot-session-chain.yml → rescue-comment job (S227)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:

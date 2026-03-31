@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.training.evaluate import evaluate
+from training.evaluate import evaluate
 
 
 class _DummyTensor:

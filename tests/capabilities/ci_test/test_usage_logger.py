@@ -91,8 +91,13 @@ class TestMonthlySummary:
             "effective_minutes": 30.0,
             "tier": "GREEN",
         }
-        # Last-month entry (should not be counted)
-        last_month = now.replace(month=now.month - 1) if now.month > 1 else now.replace(year=now.year - 1, month=12)
+        # Last-month entry (should not be counted).
+        # Use timedelta(days=32) to safely land in the previous calendar month
+        # without day-overflow errors (e.g. March 29 → replace(month=2) raises
+        # ValueError because Feb 29 does not exist in non-leap years).
+        # 32 days is chosen because no calendar month has more than 31 days,
+        # so subtracting 32 always crosses into the prior month.
+        last_month = now - datetime.timedelta(days=32)
         entry_old = {
             "ts": last_month.isoformat(),
             "workflow": "W",

@@ -22,7 +22,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.config.openai_client import CodexOpenAIClient, ExecutionResult
+from config.openai_client import CodexOpenAIClient, ExecutionResult
 
 # Configure logging
 logger = logging.getLogger(__name__)

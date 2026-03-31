@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.training.config import TrainingConfig
+from training.config import TrainingConfig
 
 
 def test_training_config_defaults_validate() -> None:

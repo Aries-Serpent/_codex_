@@ -16,8 +16,8 @@ from tests.utils.torch_helpers import require_torch
 
 torch = require_torch()
 
-from src.training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
-from src.training.seed import ensure_global_seed  # noqa: E402
+from training.functional_training import TrainCfg, run_custom_trainer  # noqa: E402
+from training.seed import ensure_global_seed  # noqa: E402
 
 
 class TinyRegressionDataset(torch.utils.data.Dataset):

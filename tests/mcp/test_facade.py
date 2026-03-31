@@ -13,7 +13,7 @@ pytest.importorskip("fastapi")
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from src.mcp.server.facade_fastapi import APP  # noqa: E402
+from mcp.server.facade_fastapi import APP  # noqa: E402
 
 client = TestClient(APP)
 
@@ -64,8 +64,8 @@ def test_health_endpoints():
 def test_rate_limit_429(monkeypatch):
     monkeypatch.setenv("RATE_LIMIT_RATE", "0")
     monkeypatch.setenv("RATE_LIMIT_BURST", "0")
-    from src.mcp.middleware import rate_limit_middleware
-    from src.mcp.server import facade_fastapi
+    from mcp.middleware import rate_limit_middleware
+    from mcp.server import facade_fastapi
 
     importlib.reload(facade_fastapi)
     rate_limit_middleware._BUCKETS.clear()

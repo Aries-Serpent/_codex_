@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.codex.zendesk.model.ticket import (
+from codex.zendesk.model.ticket import (
     Ticket,
     TicketComment,
     TicketCustomField,

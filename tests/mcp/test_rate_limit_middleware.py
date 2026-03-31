@@ -14,7 +14,7 @@ pytest.importorskip("fastapi.testclient")
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
-from src.mcp.middleware.rate_limit_middleware import (  # noqa: E402
+from mcp.middleware.rate_limit_middleware import (  # noqa: E402
     RateLimitMiddleware,
     clear_buckets,
 )
@@ -55,7 +55,7 @@ def test_redis_backend_multi_worker_simulation():
     """
     from unittest.mock import MagicMock, patch
 
-    from src.mcp.middleware.rate_limit_middleware import _RedisBackend
+    from mcp.middleware.rate_limit_middleware import _RedisBackend
 
     mock_redis_module = MagicMock()
     mock_conn = MagicMock()

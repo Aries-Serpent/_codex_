@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Detect timebox, exploration, and no-auto-proceed directives
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -108,6 +108,9 @@ jobs:
                     '> To extend: post a new `~N minutes` comment.',
                     '',
                     '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',
+                '',
+                '---',
+                `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
                   ].join('\n'),
                 });
                 core.notice(`Timebox set: ${minutes}min, expires ${expiresISO}`, {
@@ -142,6 +145,9 @@ jobs:
                   '| Session close | **REQUIRED:** Post `## 🧠 Session Summary` with topics + follow-up `@copilot` prompt |',
                   '',
                   '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',
+              '',
+              '---',
+              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
                 ].join('\n'),
               });
               core.notice('Exploration session recorded — Session Continuity Policy active', {
@@ -185,6 +191,9 @@ jobs:
                       'To extend: post a new `~N minutes` comment.',
                       '',
                       '_session-watchdog | WF-002 | [SessionContinuityPolicy.md](.github/docs/SessionContinuityPolicy.md)_',
+                '',
+                '---',
+                `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,    
                     ].join('\n'),
                   });
                   core.warning(`Timebox expired: ${m[1]}`, {

@@ -30,8 +30,8 @@ from urllib.parse import urlparse
 
 # Re-export existing utilities from src/utils for backward compatibility
 try:
-    from src.utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
-    from src.utils.sensitive_data import mask_email, mask_password, mask_token
+    from utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
+    from utils.sensitive_data import mask_email, mask_password, mask_token
 except ImportError:
     # Fallback implementations if imports fail
     def mask_token(token: str, show_last: int = 4) -> str:
