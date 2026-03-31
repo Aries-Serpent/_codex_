@@ -78,6 +78,7 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- BRANCH_REBASE_RESOLVED -->",
     "<!-- agent-token-delegation-result -->",
     "<!-- root-org-validation-v1 -->",
+    "<!-- cost-check-bot -->",
 )
 
 GITHUB_API = "https://api.github.com"
