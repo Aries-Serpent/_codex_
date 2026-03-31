@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added (2026-03-30) — CI Rescue Pipeline Golden-Path Documentation (PR #3818 — S244)
+
+- **CI Rescue Pipeline** (`docs/ci/CI_RESCUE_PIPELINE.md`): New canonical reference documenting
+  the end-to-end lifecycle from workflow failure to Copilot fix session. Includes 9 Mermaid
+  diagrams (flowchart, sequence, state machine, timeline, dependency graph, anti-pattern maps)
+  and a component responsibility matrix. Golden-path example from PR #3818 comment #4158728043.
+- **CI/CD Index updated** (`docs/ci/INDEX.md`): CI Rescue Pipeline added as the top entry under
+  a new "🚨 CI Rescue Pipeline (Golden Path)" section.
+- **Homepage quick-links updated** (`docs/index.md`): "🚨 CI Rescue & Health" section added with
+  direct link to the new CI Rescue Pipeline doc.
+- **Nav entry added** (`mkdocs.yml`): "CI Rescue & Health" section with CI Rescue Pipeline at top.
+- **8 CI scripts shipped** (all under `scripts/ci/`):
+  - `ci_rescue.py` — Pattern-analysis engine for structured RCA comments
+  - `auto_fix_common_issues.py` — Auto-fix dispatcher for known CI failure patterns
+  - `sync_tracked_files.py` — Tracked-files sync for `.secrets.baseline` / CODEX_MANIFEST
+  - `check_cross_references.py` — Cross-reference validator with explicit URL allow-list
+  - `check_pr_comments.py` — PR comment reviewer with latency metrics
+  - `session_bootstrap.py` — Session pre-flight and cognitive-brain bootstrap
+  - `generate_coverage_map.py` — Multi-suite coverage map generator (`coverage_map.json`)
+  - `check_deferral_language.py` — Deferral-language gate for commits/PRs
+- **New test file**: `tests/ci/test_generate_coverage_map.py` — unit tests for the coverage
+  map generator (multi-suite merge, branch-rate calculation, edge cases).
+
 ### Fixed (2025-12-16) - CI/CD Pipeline Restoration (PR #2509)
 
 - **Critical Build Fix**: Fixed package directory mapping for `agents` package:

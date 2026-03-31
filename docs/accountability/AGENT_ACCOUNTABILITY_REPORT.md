@@ -12459,6 +12459,41 @@ infrastructure issue unrelated to S237 code changes.
 
 ---
 
+## S244 — CI Rescue Pipeline Golden-Path Doc + Post-Merge Alignment, PR #3818 (2026-03-30)
+
+### Session Summary
+
+Post-merge alignment pass following PR #3818 (`0D_base_` → `main`), sessions S233–S244.
+The session shipped the CI Rescue Pipeline golden-path documentation, 8 CI scripts, and
+a new test file, then performed a full documentation alignment pass to ensure the live
+GitHub Pages site reflects the merged state.
+
+### Tasks Completed
+- [x] **S244-A** — Created `docs/ci/CI_RESCUE_PIPELINE.md`: canonical reference for the
+  end-to-end CI rescue pipeline lifecycle. 9 Mermaid diagrams, component responsibility
+  matrix, golden-path sequence diagram (PR #3818 example).
+- [x] **S244-B** — Updated `docs/ci/INDEX.md`: CI Rescue Pipeline at top under new
+  "🚨 CI Rescue Pipeline (Golden Path)" section.
+- [x] **S244-C** — Updated `docs/index.md`: "🚨 CI Rescue & Health" quick-link section added;
+  "Last Updated" date set to 2026-03-30.
+- [x] **S244-D** — Updated `mkdocs.yml`: "CI Rescue & Health" nav section with CI Rescue
+  Pipeline, CI/CD Index, Failure Analysis, CI Fix Summary, Root Org Validation.
+- [x] **S244-E** — 8 CI scripts confirmed present in `scripts/ci/`.
+- [x] **S244-F** — Post-merge doc alignment: MkDocs strict build passes with 0 warnings.
+- [x] **S244-G** — CHANGELOG and accountability report updated (this entry).
+
+### §ARLOOP Sweep Results (S244)
+| Check | Result |
+|-------|--------|
+| MkDocs strict build | ✅ 0 warnings / 0 errors |
+| Nav entries verified | ✅ CI Rescue Pipeline, CI/CD Index in mkdocs.yml |
+| Live site verified | ✅ CI_RESCUE_PIPELINE/ and CI/INDEX/ pages render |
+| 0D_base_ → main drift | ✅ Historical references preserved; no contextually incorrect refs |
+| Script path verification | ✅ All 7 CI scripts present in scripts/ci/ |
+| Deferral Language Gate | ✅ 0 violations |
+
+---
+
 ## S243 — §ARLOOP Sweep + Code Review, PR #3770 (2026-03-28)
 
 ### Session Summary

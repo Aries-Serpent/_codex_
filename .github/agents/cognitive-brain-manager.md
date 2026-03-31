@@ -1,12 +1,12 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3818 (Session S242).
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3818 (Session S244 post-merge alignment).
 version: 4.3.0
 updated: 2026-03-30
 cognitive_integration_level: 5
 aais_contribution: +3.5 points
 batch: pr-3818
-sprint: Sprint 12 (Post S240/S241/S242 — coverage accuracy, Gemini review resolution, merge analysis)
+sprint: Sprint 12 (Post S240/S241/S242/S244 — coverage accuracy, Gemini review resolution, merge analysis, CI rescue pipeline, post-merge doc alignment)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
@@ -14,10 +14,23 @@ runner_compatibility:
 
 # Cognitive Brain Manager v4.3
 
-**Version**: 4.3.0 (Updated PR #3818 Session S242)
+**Version**: 4.3.0 (Updated PR #3818 Session S244 — post-merge doc alignment)
 **Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 96/100)
 **Updated**: 2026-03-30
-**Phase**: D_CAPABLE Operations — Coverage Intelligence Phase 2 active, merge-to-main gated
+**Phase**: D_CAPABLE Operations — Coverage Intelligence Phase 2 active, PR #3818 merged to main
+
+## ✅ S244 Status Update — PR #3818 Post-Merge Alignment
+
+### Changes Applied This Session
+| Item | Status | Details |
+|------|--------|---------|
+| CI Rescue Pipeline doc | ✅ Added | `docs/ci/CI_RESCUE_PIPELINE.md` — 9 Mermaid diagrams, golden-path reference |
+| CI/CD Index updated | ✅ Updated | CI Rescue Pipeline at top of `docs/ci/INDEX.md` |
+| Homepage quick-links | ✅ Updated | "🚨 CI Rescue & Health" section in `docs/index.md` |
+| mkdocs.yml nav | ✅ Verified | "CI Rescue & Health" section present with all 5 entries |
+| Last Updated date | ✅ Fixed | `docs/index.md` updated from 2026-02-04 to 2026-03-30 |
+| MkDocs strict build | ✅ Clean | 0 warnings, 0 errors after all fixes |
+| 8 CI scripts verified | ✅ Present | All scripts confirmed in `scripts/ci/` |
 
 ## ✅ S242 Status Update — PR #3818
 
