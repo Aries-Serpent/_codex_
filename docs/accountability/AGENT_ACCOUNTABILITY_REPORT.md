@@ -12489,7 +12489,7 @@ GitHub Pages site reflects the merged state.
 | Nav entries verified | ✅ CI Rescue Pipeline, CI/CD Index in mkdocs.yml |
 | Live site verified | ✅ CI_RESCUE_PIPELINE/ and CI/INDEX/ pages render |
 | 0D_base_ → main drift | ✅ Historical references preserved; no contextually incorrect refs |
-| Script path verification | ✅ All 7 CI scripts present in scripts/ci/ |
+| Script path verification | ✅ All 8 CI scripts present in scripts/ci/ |
 | Deferral Language Gate | ✅ 0 violations |
 
 ---
