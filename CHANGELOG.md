@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3831)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3831 (SHA `06038612`) at 2026-03-31T07:15Z [auto-generated]
+
 ### Fixed (S250 — PR #3830)
 - **chore(ci):** `0D_base_` CI verified fully green post-PR #3827 merge (CodeQL ✅, Reference Integrity ✅, Documentation Link Checker ✅, Semgrep ✅).
 - **chore(ci):** Accountability report (`AGENT_ACCOUNTABILITY_REPORT.md`) S250 session entry added by self-healing gate (REQ-4 compliance).
