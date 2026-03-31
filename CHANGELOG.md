@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3834)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3834 (SHA `dadc5962`) at 2026-03-31T15:31Z [auto-generated]
+
 ### Fixed (S255 — PR #3831 — 2026-03-31)
 - **fix(ci):** `tests/config/conftest.py` — sys.path always-first pattern: remove existing `_SRC` occurrences then insert at index 0, ensuring unambiguous `config` namespace resolution even when `_SRC` is already present later in path (review thread suggestion applied).
 - **fix(changelog):** Corrected S254 perf numbers from 30K→45K/60ms→40ms to 55K→45K/20ms→40ms to accurately reflect net diff vs. main (review thread).
