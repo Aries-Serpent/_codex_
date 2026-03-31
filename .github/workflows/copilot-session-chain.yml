@@ -12,7 +12,9 @@ name: "🔗 Copilot Session Chain"
 # Triggers:
 #   1. workflow_dispatch  — manually chain a new session from any branch
 #   2. pull_request closed+merged into integration branch
-#      — automatically opens the NEXT session when a sub-PR lands
+#      — ONLY chains if the merged PR body contains the opt-in marker:
+#        - [x] **🔗 Needs follow-up session**
+#      Leave the checkbox unchecked (default) to suppress auto-chaining.
 #
 # See: .codex/docs/INTEGRATION_BRANCH_MODEL.md
 
@@ -109,10 +111,24 @@ jobs:
               return;
             }
 
+            // Only chain if the merged PR explicitly opts in via the
+            // follow-up checkbox.  Leave it unchecked to suppress auto-chaining.
+            const body = pr.body || '';
+            const OPT_IN_MARKER = '- [x] **🔗 Needs follow-up session**';
+            if (!body.includes(OPT_IN_MARKER)) {
+              core.setOutput('should_chain', 'false');
+              core.info(
+                `PR #${pr.number} merged into ${base} but opt-in marker not checked — ` +
+                `skipping auto-chain. To enable, check "🔗 Needs follow-up session" ` +
+                `in the PR body before merging.`
+              );
+              return;
+            }
+
             core.setOutput('should_chain', 'true');
             core.setOutput('integration_branch', base);
             core.info(
-              `Sub-PR #${pr.number} merged into ${base} — ` +
+              `Sub-PR #${pr.number} merged into ${base} with follow-up opt-in — ` +
               `opening next session chain.`
             );
 
@@ -333,6 +349,9 @@ jobs:
             '' \
             '### 🔐 Agent Token Delegation' \
             '- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '' \
+            '### 🔗 Session Continuation' \
+            '- [ ] **🔗 Needs follow-up session** (check before merging to auto-open a new session PR on merge)' \
             '' \
             '### Architecture' \
             '```' \
