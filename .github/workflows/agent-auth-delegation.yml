@@ -428,13 +428,27 @@ jobs:
               '',
               '---',
               `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
+              `_Last updated for SHA: \`${sha}\` | ${new Date().toISOString()}_`,
               '',
               '---',
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 
-            // Upsert: update existing or create new
-            const existing = comments.find(c => c.body && c.body.includes(UPSERT_MARKER));
+            // Paginated upsert: search ALL pages so PRs with >100 comments are handled.
+            let existing = null;
+            let page = 1;
+            while (!existing && page <= 20) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+                page,
+              });
+              existing = batch.find(c => c.body && c.body.includes(UPSERT_MARKER));
+              if (existing || batch.length < 100) break;
+              page++;
+            }
             if (existing) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,

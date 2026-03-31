@@ -133,12 +133,13 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
 
     *existing_state* is the dict returned by ``_extract_wec_state``.  Items
     that are ``True`` there will be rendered as ``[x]``; "always required" items
-    are unconditionally ``[x]`` regardless of existing state.
+    (per ``_WEC_ALWAYS_REQUIRED``) are unconditionally ``[x]`` regardless of
+    existing state.
     """
     state = existing_state or {}
 
-    def _checked(filename: str, always_required: bool) -> str:
-        if always_required:
+    def _checked(filename: str) -> str:
+        if filename in _WEC_ALWAYS_REQUIRED:
             return "x"
         return "x" if state.get(filename, False) else " "
 
@@ -157,24 +158,24 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
     automation_items   = _WEC_ITEMS[7:11]   # agent-auth → copilot-agent-session-done
     auto_approve_items = _WEC_ITEMS[11:]    # auto-approve-workflows
 
-    for fname, label, always in validation_items:
-        lines.append(f"- [{_checked(fname, always)}] {fname} — {label}")
+    for fname, label, _ in validation_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += ["", "### ✅ Security & Quality"]
-    for fname, label, always in security_items:
-        lines.append(f"- [{_checked(fname, always)}] {fname} — {label}")
+    for fname, label, _ in security_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += ["", "### 📄 Documentation"]
-    for fname, label, always in docs_items:
-        lines.append(f"- [{_checked(fname, always)}] {fname} — {label}")
+    for fname, label, _ in docs_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += ["", "### 🤖 Automation"]
-    for fname, label, always in automation_items:
-        lines.append(f"- [{_checked(fname, always)}] {fname} — {label}")
+    for fname, label, _ in automation_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += ["", "### ⚡ Auto-Approve"]
-    for fname, label, always in auto_approve_items:
-        lines.append(f"- [{_checked(fname, always)}] {fname} — {label}")
+    for fname, label, _ in auto_approve_items:
+        lines.append(f"- [{_checked(fname)}] {fname} — {label}")
 
     lines += [
         "",
@@ -497,7 +498,9 @@ def fix_pr_body_checkboxes(
                 idx -= 1
             stripped_body = stripped_body[:idx]
 
-    new_body = stripped_body.rstrip() + _build_wec_block(existing_state)
+    new_body = stripped_body.rstrip() + (
+        _build_wec_block(existing_state) if existing_state else _REQUIRED_PR_CHECKBOXES
+    )
 
     if dry_run:
         print(f"[dry-run] Would restore Workflow Execution Checklist to PR #{pr_number}")

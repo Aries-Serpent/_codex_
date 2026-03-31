@@ -67,6 +67,7 @@ COPILOT_AGENTS: set[str] = {
 # gate outputs and must be exempt from the scan (prevents circular blocking).
 SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- comment-review-gate-checklist -->",
+    "<!-- comment-review-gate:",          # PR-scoped gate failure comment (new format)
     "<!-- ci-rescue:",
     "<!-- pre-merge-validation-summary -->",
     "<!-- auto-fix-ci-issues -->",
@@ -79,6 +80,7 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- agent-token-delegation-result -->",
     "<!-- root-org-validation-v1 -->",
     "<!-- cost-check-bot -->",
+    "<!-- agent-file-size-gate -->",       # Agent File Size Gate failure comment
 )
 
 GITHUB_API = "https://api.github.com"
