@@ -194,6 +194,8 @@ jobs:
           PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
           PR_BODY+="- [ ] 💰 Cost Proposal Approved"$'\n'
           PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
+
+          GH_TOKEN="${CODEX_MASTER_KEY}" gh pr create \
             --repo "${{ github.repository }}" \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \
