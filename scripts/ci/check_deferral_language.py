@@ -667,7 +667,7 @@ def main(argv: list[str] | None = None) -> int:
                 if since_dt is not None:
                     created_raw = obj.get("created_at", "")
                     if created_raw:
-                        # `datetime` and `timezone` are already imported above in the
+                        # `datetime` and `timezone` are already imported at line 642 in the
                         # `if args.since:` block; since_dt is only non-None when that
                         # block ran, the names are guaranteed to be in scope here.
                         try:
