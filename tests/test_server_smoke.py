@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from mcp.server.facade_fastapi import APP  # noqa: E402
 
 
+@pytest.mark.integration
 def test_health_endpoint():
     client = TestClient(APP)
     resp = client.get("/health")
@@ -23,6 +24,7 @@ def test_health_endpoint():
         assert key in payload
 
 
+@pytest.mark.integration
 def test_jsonrpc_endpoints():
     client = TestClient(APP)
     resp = client.post(

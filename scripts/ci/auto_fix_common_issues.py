@@ -1718,25 +1718,22 @@ class CommonIssueFixer:
 
         import detect_secrets.plugins as _dsp
 
+        # Pre-scan available plugin names once to avoid repeated module iteration per
+        # plugin entry (O(n·m) → O(n+m)).  detect_secrets uses snake_case module names,
+        # e.g. GitLabTokenDetector → detect_secrets.plugins.gitlab.
+        _available_plugins: set[str] = set(dir(_dsp))
+        for _mod_info in _pu.iter_modules(_dsp.__path__):
+            try:
+                _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
+                _available_plugins.update(dir(_m))
+            except Exception:  # noqa: BLE001 — skip unimportable plugin modules during discovery scan
+                pass
+
         for plugin_entry in plugins_used:
             name = plugin_entry.get("name", "")
             if not name:
                 continue
-            # Try to find the plugin class in detect_secrets.plugins.
-            # First try a direct attribute lookup on the package namespace, then scan
-            # submodules (detect_secrets uses snake_case module names, e.g.
-            # GitLabTokenDetector → detect_secrets.plugins.gitlab).
-            found = hasattr(_dsp, name)
-            if not found:
-                for _mod_info in _pu.iter_modules(_dsp.__path__):
-                    try:
-                        _m = _im.import_module(f"detect_secrets.plugins.{_mod_info.name}")
-                        if hasattr(_m, name):
-                            found = True
-                            break
-                    except Exception:
-                        pass
-            if not found:
+            if name not in _available_plugins:
                 unknown_plugins.append(name)
 
         if unknown_plugins:
