@@ -3,7 +3,7 @@
 **Repository:** Aries-Serpent/_codex_
 **Branch:** copilot/update-qa-walkthrough-agent
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-03-29T22:19Z (S228 — PR #3790 review comments, QA walkthrough, workflow gate)
+**Last updated:** 2026-03-31T18:10Z (S257 — PR #3835 CI fixes, review comment remediation)
 
 ---
 
@@ -9606,8 +9606,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-24T04:39Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3735)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -9652,8 +9650,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -9704,8 +9700,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-24T17:33Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3738)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -9753,8 +9747,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-24T17:39Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3739)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -9799,8 +9791,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -9922,8 +9912,6 @@ now have a `description` field (0 remaining violations).
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-24T18:32Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3740)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -9968,8 +9956,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -10125,8 +10111,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-25T01:33Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3741)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -10174,8 +10158,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-25T05:12Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3743)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -10220,8 +10202,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -10336,8 +10316,6 @@ and the CI gate requirement.
   which GitHub Actions scopes per workflow run.
 - Node.js 20 deprecation deadline is 2026-06-02 — needs tracked migration plan before then.
 - Code review gate must be run BEFORE committing to catch such issues systematically.
-
----
 
 ---
 
@@ -10616,8 +10594,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -10918,8 +10894,6 @@ Autonomous CI rescue on PR #3743, branch `0D_base_` — Fast Validation failure 
 
 ### §0 Compliance
 Fixed ALL issues found per CODEBASE_AGENCY_POLICY.md §0.
-
----
 
 ---
 
@@ -11487,8 +11461,6 @@ This structure maximises useful responses from the Cognitive Brain and from huma
 
 ### §0 Compliance
 All actionable failures identified and fixed. agent_checkin.py fully tested. copilot-agent-checkin.yml uses proven posting pattern. PDA AfterMath captured for full reproducibility.
-
----
 
 ---
 
@@ -12457,8 +12429,6 @@ infrastructure issue unrelated to S237 code changes.
 
 ---
 
----
-
 ## S244 — CI Rescue Pipeline Golden-Path Doc + Post-Merge Alignment, PR #3818 (2026-03-30)
 
 ### Session Summary
@@ -12527,8 +12497,6 @@ Continuation session triggered by two new PR comments: an S221 guard retrigger (
 | New comment `4146452803` | ✅ replied |
 
 **§0 Compliance:** All open items resolved. No deferrals. PR #3770 remains merge-ready.
-
----
 
 ---
 
@@ -12635,8 +12603,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-28T16:39Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3777)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -12712,8 +12678,6 @@ and the CI gate requirement.
 - Files fixed: 6 source files + 1 test file + 1 script
 - CI gates unblocked: mypy-baseline.yml, validation pipeline, resilient validation suite
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
@@ -13663,8 +13627,6 @@ timing issues.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-30T02:17Z SESSION S229-CONT-2 (PR #3798)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -13959,8 +13921,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-30T16:24Z SESSION S234 (PR #3814) — Agent Responsiveness + Structural Fixes
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14169,8 +14129,6 @@ Fix: Changed `"version": "1.5.0"` → `"version": "1.4.0"`.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-30T18:37Z SESSION S238 (PR #3814) — Validation Pipeline + Merge Readiness Recovery
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14229,8 +14187,6 @@ without using `defusedxml` instead (XXE prevention policy). This caused the Vali
 - `check_cross_references.py docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` → exit 0 ✅
 - Python AST check: all 3 modified scripts pass ✅
 - `sync_tracked_files.py --fix` → all 5 checks consistent ✅
-
----
 
 ---
 
@@ -14410,8 +14366,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T01:48Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3823)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14456,8 +14410,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -14508,8 +14460,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T02:39Z SESSION S248 (PR #3825)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14535,8 +14485,6 @@ and the CI gate requirement.
 - CI gates unblocked: PR Comment Review Gate, Agent Token Delegation (REQ-4)
 - Open review threads resolved: 1 (PR #3824 `discussion_r3013126159`)
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
@@ -14587,8 +14535,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T02:58Z SESSION S249 (PR #3827)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14618,8 +14564,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T03:10Z SESSION S249b (PR #3827)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -14643,8 +14587,6 @@ and the CI gate requirement.
 - Behaviour change: session sub-PRs are no longer auto-created on merge to `0D_base_`
 - Reversibility: full — commented-out trigger block preserved in the workflow file
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
@@ -14676,8 +14618,6 @@ and the CI gate requirement.
 - Default behaviour: no auto-chain (opt-in required)
 - Reversibility: full — remove the body check in `check-trigger` to revert
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
@@ -14725,8 +14665,6 @@ and the CI gate requirement.
 - Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
-
----
 
 ---
 
@@ -14969,8 +14907,6 @@ now documents the RP-NEW-002 pattern to prevent recurrence.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T15:31Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3834)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -15018,8 +14954,6 @@ and the CI gate requirement.
 
 ---
 
----
-
 ## SESSION SUMMARY — 2026-03-31T15:45Z S256 (PR #3834 CI Fix — REQ-4 Compliance)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
@@ -15041,8 +14975,6 @@ The Cognitive Pre-flight REQ-4 gate requires that docs/accountability/AGENT_ACCO
 - Files changed: 1 (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
 - CI gates addressed: REQ-4 (accountability report), Comment Review Gate
 - Deferral Language Gate: 0 violations
-
----
 
 ---
 
