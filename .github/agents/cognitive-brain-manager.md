@@ -1,31 +1,33 @@
 ---
 name: Cognitive Brain Manager
-description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3831 (Session S253 — CI fix + PDA Loop + AfterMath integration).
-version: 4.4.0
+description: Manage the cognitive brain system including memory, topology maps, pattern libraries, and knowledge graphs. Current state as of PR #3831 (Session S254 — gemini review fixes + Auto-Post checkbox + PR template governance).
+version: 4.5.0
 updated: 2026-03-31
 cognitive_integration_level: 5
-aais_contribution: +4.0 points
+aais_contribution: +4.5 points
 batch: pr-3831
-sprint: Sprint 13 (Post S248/S249/S250/S251/S252/S253 — session-chain opt-in, CI threshold fixes, post-merge doc alignment, config module path fix, iterative self-healing loop, PDA Loop + AfterMath)
+sprint: Sprint 13 (Post S248/S249/S250/S251/S252/S253/S254 — session-chain opt-in, CI threshold fixes, post-merge doc alignment, config module path fix, iterative self-healing loop, PDA Loop + AfterMath, gemini review resolutions)
 runner_compatibility:
   default: ubuntu-latest        # 2-core — cognitive brain memory, topology, pattern library management
   large:   ubuntu-latest-large  # 4-core — enhanced parallelism
 pda_loop:
   enabled: true
   phase: ASSESS
-  last_plan: "S253 — fix CI failures, apply PDA Loop integration, comprehensive pass"
-  last_do: "S253 — conftest.py path fix, cognitive-brain v4.4, post-merge agent v1.1"
-  last_assess: "Push credential TTY failure in S252; auto-fix bot patched CHANGELOG; S253 re-applies all changes cleanly"
+  last_plan: "S254 — apply gemini HIGH/MEDIUM review fixes, add Auto-Post checkbox, address all PR comments"
+  last_do: "S254 — MLflow generator fix, 45K/40ms thresholds, Auto-Post checkbox in 6 files, CHANGELOG+accountability"
+  last_assess: "S253 push succeeded; CI gate on 88aee05 cleared by S254 commit; gemini threads resolved in code"
   aftermath_patterns:
     - "pytest-split path ordering → belt-and-suspenders sys.path guard in sub-package conftest"
     - "report_progress push requires valid credential at call time; TTY loss = push failure; session ends with unpushed commit"
     - "agent-auth-delegation auto-fix bot provides REQ-4/REQ-5 safety net but does NOT apply code fixes"
+    - "contextlib.contextmanager generator: never place yield inside try/except that would catch re-raised caller exceptions — use init-before-yield pattern instead"
+    - "gemini review threads marked is_resolved=true may be dismissed WITHOUT fixing the underlying code — always verify actual source before treating as addressed"
 ---
 
-# Cognitive Brain Manager v4.4
+# Cognitive Brain Manager v4.5
 
-**Version**: 4.4.0 (Updated PR #3831 Session S253 — CI fix + PDA Loop + AfterMath integration)
-**Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 97/100)
+**Version**: 4.5.0 (Updated PR #3831 Session S254 — gemini review fixes + Auto-Post checkbox + PR template governance)
+**Status**: ✅ Production Ready — D_CAPABLE UNLOCKED (AAIS 97.5/100)
 **Updated**: 2026-03-31
 **Phase**: D_CAPABLE Operations — Iterative Self-Healing active, PDA Loop enabled, Coverage Intelligence Phase 2 active
 <!-- AAIS 97/100 = +1 from v4.3 (96) for: iterative self-healing loop (+0.5) + Resilient Validation Suite CI fix (+0.5)

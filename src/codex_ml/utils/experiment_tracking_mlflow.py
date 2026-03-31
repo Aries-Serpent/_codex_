@@ -137,12 +137,19 @@ def maybe_mlflow(
             os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
         effective = bootstrap_offline_tracking(force=True)
         mlflow.set_tracking_uri(effective)
-        with mlflow.start_run(run_name=run_name) as _run:  # noqa: F841 - ensure context
-            yield mlflow
+        # Initialize outside the try block that wraps the yield so that
+        # exceptions raised inside the caller's `with` block are NOT silently
+        # caught here (catching a re-raised exception at `yield` would cause
+        # RuntimeError: generator didn't stop after throw()).
+        run_context = mlflow.start_run(run_name=run_name)
     except Exception:
-        LOGGER.warning("Exception occurred", exc_info=True)
+        LOGGER.warning("Exception occurred during MLflow initialization", exc_info=True)
         # Degrade gracefully to a no-op logger when MLflow is unavailable.
         yield _NoOpLogger()
+        return
+
+    with run_context as _run:  # noqa: F841 - ensure context
+        yield mlflow
 
 
 __all__ = ["ensure_local_tracking", "maybe_mlflow", "_as_flat_params"]

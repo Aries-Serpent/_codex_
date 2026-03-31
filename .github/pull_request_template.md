@@ -101,6 +101,7 @@
   - Triggers the [`agent-auth-delegation`](.github/workflows/agent-auth-delegation.yml) gated workflow
   - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
   - Once approved, `@copilot continue` is posted automatically
+- [ ] 🔄 Auto-Post @copilot review After Agent Session
 
 ---
 

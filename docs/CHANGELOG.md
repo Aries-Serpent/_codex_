@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-### Fixed (S253 — PR #3831 — 2026-03-31)
+### Fixed (S254 — PR #3831 — 2026-03-31)
+- **fix(mlflow):** `maybe_mlflow()` generator refactored — `mlflow.start_run()` moved before `yield` to prevent `RuntimeError: generator didn't stop after throw()` (gemini HIGH alert). `return` after `yield _NoOpLogger()` ensures correct generator termination.
+- **fix(perf):** Performance threshold `dict_lookup_10000` raised 30K→45K; latency assert tightened 60ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).
+- **feat(pr-template):** `🔄 Auto-Post @copilot review After Agent Session` checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).
+- **feat(brain):** `cognitive-brain-manager.md` v4.4→v4.5 — S254 status, gemini review thread resolution patterns.
+
+
 - **fix(ci):** `tests/config/conftest.py` — added explicit `sys.path.insert(0, src/)` guard
   (with directory-depth comment) to fix `ModuleNotFoundError: No module named 'config.openai_client'`
   in the Resilient Validation Suite. Root cause: pytest-split workers resolve `tests/config/` ahead

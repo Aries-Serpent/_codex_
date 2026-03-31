@@ -80,7 +80,7 @@ jobs:
           # Check for Agent Token Delegation checkbox
           if ! printf '%s' "${PR_BODY}" | grep -qiF 'COPILOT_AGENT_AUTH_ENABLED'; then
             MISSING_SECTIONS=$((MISSING_SECTIONS + 1))
-            APPENDED="${APPENDED}$(printf '\n### 🔐 Agent Token Delegation\n\n- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)\n')"
+            APPENDED="${APPENDED}$(printf '\n### 🔐 Agent Token Delegation\n\n- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)\n- [ ] 🔄 Auto-Post @copilot review After Agent Session\n')"
             echo "⚠️  Agent Token Delegation checkbox missing from PR #${PR_NUM} body"
           fi
 

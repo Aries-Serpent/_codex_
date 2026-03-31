@@ -279,7 +279,7 @@ class TestInferenceLatencyBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        assert avg_latency < 60  # Less than 60ms (relaxed for CI variability)
+        assert avg_latency < 40  # Less than 40ms (relaxed for CI variability)
 
 
 # ============================================================================

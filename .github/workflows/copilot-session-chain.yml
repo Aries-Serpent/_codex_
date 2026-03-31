@@ -349,6 +349,7 @@ jobs:
             '' \
             '### 🔐 Agent Token Delegation' \
             '- [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '- [ ] 🔄 Auto-Post @copilot review After Agent Session' \
             '' \
             '### 🔗 Session Continuation' \
             '- [ ] **🔗 Needs follow-up session** (check before merging to auto-open a new session PR on merge)' \
