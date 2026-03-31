@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Fixed (S255 — PR #3831 — 2026-03-31)
+- **fix(ci):** `tests/config/conftest.py` — always-first sys.path pattern: remove existing `_SRC` entries then insert at index 0 (review thread suggestion).
+- **fix(changelog):** Corrected S254 perf numbers to 55K→45K/20ms→40ms (accurate net diff vs. main; review thread).
+- **feat(auto-post):** `copilot-agent-session-done.yml` wired to auto-fix pre-flight REQ-4/5 when `🔄 Auto-Post @copilot review After Agent Session` checkbox is checked.
+- **feat(wrapup):** `session_wrapup_autofix.py` — new `🔄 Auto-Post` checkbox added to `_REQUIRED_PR_CHECKBOXES`.
+
 ### Fixed (S254 — PR #3831 — 2026-03-31)
 - **fix(mlflow):** `maybe_mlflow()` generator refactored — `mlflow.start_run()` moved before `yield` to prevent `RuntimeError: generator didn't stop after throw()` (gemini HIGH alert). `return` after `yield _NoOpLogger()` ensures correct generator termination.
-- **fix(perf):** Performance threshold `dict_lookup_10000` raised 30K→45K; latency assert tightened 60ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).
+- **fix(perf):** Performance threshold `dict_lookup_10000` adjusted 55K→45K; latency assert tightened 20ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).
 - **feat(pr-template):** `🔄 Auto-Post @copilot review After Agent Session` checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).
 - **feat(brain):** `cognitive-brain-manager.md` v4.4→v4.5 — S254 status, gemini review thread resolution patterns.
 

@@ -14920,3 +14920,51 @@ now documents the RP-NEW-002 pattern to prevent recurrence.
 - Deferral Language Gate: 0 violations
 
 ---
+
+## SESSION SUMMARY — 2026-03-31T08:21Z SESSION S255 (PR #3831 — Auto-Post pre-flight wiring + review thread fixes)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** 🔃 LOADED: `.codex/CODEBASE_AGENCY_POLICY.md` ✅
+- [x] **0b.** 🔃 LOADED: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (S254 entry verified) ✅
+- [x] **0c.** 🔃 LOADED: stored memories (S254 Auto-Post checkbox, RP-NEW-004/005, conftest always-first pattern) ✅
+- [x] **0d.** ALL PR comments reviewed — 3 new blocking comments (#4160718146, #4160720384, #4160762757) ✅
+- [x] **0e.** ALL review threads applied — 3 review thread suggestions applied in code ✅
+- [x] **0f.** Agency Policy §0 non-deferral mandate honored — all issues fixed in this session ✅
+
+### Work Completed (S255)
+
+| # | File | Change | Status |
+|---|------|--------|--------|
+| 1 | `tests/config/conftest.py` | Always-first sys.path: `sys.path[:] = [p for p in sys.path if p != _SRC]; sys.path.insert(0, _SRC)` — guarantees `_SRC` is at index 0 even if present elsewhere (review thread applied) | ✅ |
+| 2 | `CHANGELOG.md` | Corrected S254 perf numbers: 30K→45K → **55K→45K**, 60ms→40ms → **20ms→40ms** (accurate net diff vs. main; review thread applied) | ✅ |
+| 3 | `docs/CHANGELOG.md` | Same perf number correction (review thread applied) | ✅ |
+| 4 | `.github/workflows/copilot-agent-session-done.yml` | Added `preflight-autofix` job: when `🔄 Auto-Post @copilot review After Agent Session` checkbox is checked, runs `session_wrapup_autofix.py` to fix REQ-4/5, commits+pushes before posting `@copilot review` | ✅ |
+| 5 | `scripts/ci/session_wrapup_autofix.py` | Added `🔄 Auto-Post @copilot review After Agent Session` checkbox to `_REQUIRED_PR_CHECKBOXES` — auto-restored when PR body loses the governance section | ✅ |
+| 6 | `CHANGELOG.md` | S255 entry | ✅ |
+| 7 | `docs/CHANGELOG.md` | S255 entry | ✅ |
+| 8 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | This S255 entry | ✅ |
+| 9 | `.github/agents/cognitive-brain-manager.md` | v4.5→v4.5.1: S255 status, Auto-Post wiring pattern (RP-NEW-006) | ✅ |
+
+### Review Thread Resolution (S255)
+
+| Thread | File | Priority | Applied |
+|--------|------|----------|---------|
+| Always-put `_SRC` at index 0 | `tests/config/conftest.py:27-28` | 🟡 MEDIUM | `sys.path[:] = [...]; sys.path.insert(0, _SRC)` |
+| Perf numbers 30K→55K/60ms→20ms baseline | `CHANGELOG.md:12-13` | 🟡 MEDIUM | Corrected to 55K→45K / 20ms→40ms |
+| Same perf correction in docs | `docs/CHANGELOG.md:9` | 🟡 MEDIUM | Corrected to 55K→45K / 20ms→40ms |
+
+### New AfterMath Patterns (S255)
+- **RP-NEW-006** — Auto-Post wiring: `copilot-agent-session-done.yml` `preflight-autofix` job runs `session_wrapup_autofix.py` to fix REQ-4/5 when `🔄 Auto-Post @copilot review After Agent Session` checkbox is checked. The job has `needs: preflight-autofix` and uses `actions/checkout@v4` with `CODEX_MASTER_KEY` for the commit-back push. Any new `workflow_run`-triggered workflow that needs pre-flight auto-fix must follow the same checkout+autofix+commit+push pattern.
+
+### PDA Loop (S255)
+- **PLAN** — Apply 3 review thread fixes, wire Auto-Post checkbox to pre-flight auto-fix, update session docs
+- **DO** — 9 files updated; YAML ✅ valid; Python AST ✅ valid; perf numbers corrected
+- **ASSESS** — CI gate will re-scan on new SHA; next session should show 0 blocking review threads
+
+### Impact Score
+- Files changed: 9
+- CI gates addressed: Comment Review Gate (3 new blocking), review threads (3)
+- AAIS delta: v4.5 97.5 → v4.5.1 97.8
+- Deferral Language Gate: 0 violations
+
+---

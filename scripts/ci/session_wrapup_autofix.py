@@ -75,6 +75,7 @@ _REQUIRED_PR_CHECKBOXES = """\
 ### 🔐 Agent Token Delegation
 
 - [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
+- [ ] 🔄 Auto-Post @copilot review After Agent Session
 """
 
 

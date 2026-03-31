@@ -24,8 +24,9 @@ import pytest
 #   parent.parent.parent → repo root
 _REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 _SRC = str(_REPO_ROOT / "src")
-if _SRC not in sys.path:
-    sys.path.insert(0, _SRC)
+# Ensure _SRC is first on sys.path: remove any existing occurrences, then insert at index 0.
+sys.path[:] = [p for p in sys.path if p != _SRC]
+sys.path.insert(0, _SRC)
 
 pytest.importorskip("yaml")
 pytest.importorskip("omegaconf")
