@@ -1,7 +1,7 @@
 # Evolution Timeline — _codex_ Cognitive AI Agency
 
-**Last Updated**: 2026-02-11  
-**Version**: 2.0.0  
+**Last Updated**: 2026-03-31  
+**Version**: 3.0.0  
 **Purpose**: Verified phase-by-phase history of the _codex_ project evolution, aligned with codebase evidence.  
 **Source of Truth**: Cross-referenced against `.codex/cognitive_brain/`, `docs/`, and `src/` artifacts.
 
@@ -171,17 +171,25 @@
 
 ### 🟢 Phase 12: Agent System Enhancement
 
-**Timeline**: 2026-02-01 — 2026-03-15  
-**Status**: 🟢 Active (Foundation + coordination in progress)  
-**Evidence**: 53+ agents deployed, cognitive brain operational, coordination protocols designed  
+**Timeline**: 2026-02-01 — 2026-03-31  
+**Status**: 🟢 Active (65% — infrastructure + coordination + CI hardening)  
+**Evidence**: 160+ agents deployed, WEC v2.0, unified-coverage-agent, self-healing CI, cognitive brain Phase 4  
 **Plansets**: PS-13 (Agent Task Router), PS-14 (MSV Dashboard)
 
 | Deliverable | Status | Planset | Evidence |
 |-------------|--------|---------|----------|
-| 53+ specialized agents | ✅ | — | `.github/agents/` deployed |
+| 160+ specialized agents | ✅ | — | `.github/agents/` (160 files deployed) |
 | Agent evolution map | ✅ | — | `COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md` |
 | Agent orchestrator | ✅ | — | `scripts/monitoring/agent_orchestrator.py` |
 | Meta-learning engine | ✅ | — | `scripts/cognitive/meta_learning_engine.py` |
+| Unified coverage agent | ✅ | — | 5 coverage agents consolidated into `unified-coverage-agent` |
+| WEC v2.0 (Workflow Execution Checklist) | ✅ | — | `scripts/ci/session_wrapup_autofix.py` (14 items, 5 sections) |
+| Auto-approve wiring | ✅ | — | `copilot-agent-session-done.yml` auto-approve job |
+| Session wrapup autofix | ✅ | — | `scripts/ci/session_wrapup_autofix.py` REQ-4/5/6 + WEC |
+| Comment review gate hardening | ✅ | — | `scripts/ci/check_pr_comments.py` (lstrip + startswith) |
+| Agent file size gate | ✅ | — | `reference-integrity.yml` (≤30,000 chars) |
+| Self-healing CI orchestrator | ✅ | — | `iterative-self-healing-ci.yml` + pattern recorder |
+| CI auto-fix system (8 patterns) | ✅ | — | `scripts/ci/auto_fix_common_issues.py` (37.5% auto-fix) |
 | Agent routing (automatic) | 🟢 PS-13 | PS-13 | Task classification taxonomy designed |
 | MSV dashboard component | 🟡 PS-14 | PS-14 | Design phase |
 | Multi-agent coordination | 🟢 | — | Phase 8.12 framework designed |
@@ -189,26 +197,49 @@
 | Learning from feedback loops | 🟢 | — | `extract_learnings.py` active |
 | Enhanced context awareness | ✅ | — | RAG integration active |
 
+**Key Milestone (S262)**: PR #3835 merged — axios CVE chain patched (4 CVEs), dual-package shadow eliminated, comment gate hardened, 34/34 CI workflows green.
+
 **Remaining Work**: PS-13 agent routing formalization, PS-14 MSV dashboard, coordination protocol integration.
 
 ---
 
-### 🟡 Phase 13: MCP Interactive Mode
+### 🟢 Phase 13: CI/Security Hardening & Infrastructure Resilience
 
 **Timeline**: 2026-03-15 — 2026-03-31  
-**Status**: 🟡 Planning  
-**Evidence**: No implementation found
+**Status**: 🟢 Active (Core hardening complete, MCP Interactive deferred)  
+**Evidence**: S257–S262 sessions, PR #3835, 48 vulnerabilities fixed, 136 active workflows
+
+Phase 13 was originally planned for MCP Interactive Mode (TUI). During execution,
+critical CI/security issues were prioritized: the axios CVE chain (4 CVEs), dual-package
+shadow elimination, comment gate hardening, and agent infrastructure resilience. MCP
+Interactive Mode deliverables are rescheduled to Phase 13.1.
 
 | Deliverable | Status | Evidence |
 |-------------|--------|----------|
-| TUI file selector | ⏳ Pending | Not implemented |
-| Real-time size preview | ⏳ Pending | Not implemented |
-| Dynamic include/exclude | ⏳ Pending | Not implemented |
-| Save selection as topic | ⏳ Pending | Not implemented |
+| axios CVE chain patched (4 CVEs) | ✅ | `copilot/extension/package.json` → `^1.13.5` (S262) |
+| Dual-package shadow eliminated | ✅ | `pytest.ini` pythonpath `'. src'` → `'src'` (S262) |
+| Comment gate hardened | ✅ | `check_pr_comments.py` lstrip().startswith() (S262) |
+| Actionlint SC2215 fixed | ✅ | `gh pr create` restored in 2 workflow files (S262) |
+| Agent file size gate enforced | ✅ | `cognitive-brain-manager.md` archived to ≤30K (S258) |
+| Cognitive Brain Phase 4 (OODA loop) | ✅ | SQLiteMemory persistence, FastAPI :8765 (S145) |
+| 136 active workflows validated | ✅ | `.github/workflows/` (actionlint clean) |
+| Session bootstrap protocol (D-00) | ✅ | `scripts/ci/session_bootstrap.py` (S145) |
+| TUI file selector | ⏳ Deferred | Rescheduled → Phase 13.1 |
+| Real-time size preview | ⏳ Deferred | Rescheduled → Phase 13.1 |
+| Dynamic include/exclude | ⏳ Deferred | Rescheduled → Phase 13.1 |
+| Save selection as topic | ⏳ Deferred | Rescheduled → Phase 13.1 |
+
+**Key Milestone**: 34/34 CI workflows green on PR #3835 merge (commit `cb2f7ce`). Zero known CVEs in production dependencies.
 
 ---
 
 ## 🔮 Future Phases (Cycle 2-4)
+
+### 🟡 Phase 13.1: MCP Interactive Mode
+
+**Timeline**: 2026-04-01 — 2026-04-15  
+**Features**: TUI file selector, real-time size preview, dynamic include/exclude, save selection as topic  
+**Prerequisite**: Phase 13 CI/Security hardening complete ✅
 
 ### 🟡 Phase 14: MCP Package Merge & Diff Tools
 
@@ -247,8 +278,9 @@ Phase 8:     ████████████████████ 100% �
 Phase 9:     ████████████████████ 100% ✅ Coverage & Perf
 Phase 10:    ████████████████████ 100% ✅ Genesis Foundation
 Phase 11:    ██████░░░░░░░░░░░░░░  30% 🟢 MCP Advanced (PS-11, PS-12 active)
-Phase 12:    ████████░░░░░░░░░░░░  40% 🟢 Agent Enhancement (PS-13, PS-14 active)
-Phase 13:    ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive
+Phase 12:    █████████████░░░░░░░  65% 🟢 Agent Enhancement (WEC v2.0, 160+ agents)
+Phase 13:    ████████████░░░░░░░░  60% 🟢 CI/Security Hardening (S257–S262)
+Phase 13.1:  ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive (rescheduled)
 Phase 14-18: ░░░░░░░░░░░░░░░░░░░░   0% 🟡 Future Cycles
 ```
 

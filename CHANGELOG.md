@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S262-post-merge — 2026-03-31)
+- **feat(docs):** `docs/evolution/EVOLUTION_TIMELINE.md` updated to v3.0.0 — Phase 12 (65%, 160+ agents, WEC v2.0, unified-coverage-agent), Phase 13 repurposed to CI/Security Hardening (S257–S262), MCP Interactive rescheduled to Phase 13.1, completion summary updated.
+- **feat(npm):** `copilot/extension/package-lock.json` generated — locks axios at 1.14.0 (zero CVEs), 189 packages at known-good versions.
+
 ### Security (S262 — PR #3835 — 2026-03-31)
 - **fix(security): CRITICAL** — `copilot/extension/package.json` axios upgraded from `^1.6.8` to `^1.13.5`. Resolves 4 CVEs: SSRF via absolute URL (GHSA-8hc4-xxm3-5ppp), DoS via data size (GHSA-jr5f-v2jv-69x6), DoS via `__proto__` key in mergeConfig (GHSA-r2r4-36mg-ppqc), credential leakage (GHSA-8hc4-xxm3-5ppp). Minimum safe version: 1.13.5.
 
