@@ -162,9 +162,8 @@ jobs:
             '### 💰 Cost Governance' \
             '- [ ] **💰 Cost Proposal Approved**' \
             '### 🔐 Agent Token Delegation' \
-            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)')
-
-          python -m codex.github.mcp_poster create-pr \
+            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
+            '- [ ] 🔄 Auto-Post @copilot review After Agent Session')
             --repo "${{ github.repository }}" \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \

@@ -667,7 +667,9 @@ def main(argv: list[str] | None = None) -> int:
                 if since_dt is not None:
                     created_raw = obj.get("created_at", "")
                     if created_raw:
-                        from datetime import datetime, timezone
+                        # `datetime` and `timezone` are imported in the `if args.since:` block
+                        # above; since_dt is only non-None when that block has run, so these
+                        # names are guaranteed to be in scope here.
                         try:
                             created_dt = datetime.fromisoformat(
                                 created_raw.rstrip("Z")

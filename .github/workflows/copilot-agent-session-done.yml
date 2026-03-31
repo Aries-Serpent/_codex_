@@ -45,12 +45,112 @@ concurrency:
 permissions:
   pull-requests: write
   issues: write
+  contents: write
 
 jobs:
+  # ── Job 1: Auto-fix pre-flight requirements when 🔄 checkbox is checked ─────
+  # When `- [x] 🔄 Auto-Post @copilot review After Agent Session` is checked in
+  # the PR body, this job runs session_wrapup_autofix.py to ensure REQ-4/REQ-5
+  # (accountability report + CHANGELOG touched in last commit) are satisfied
+  # before the review trigger is posted.  Commit is tagged [skip ci] to avoid
+  # triggering another full workflow run.
+  preflight-autofix:
+    name: "Pre-flight auto-fix (🔄 Auto-Post gate)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: |
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null
+    outputs:
+      autofix_ran: ${{ steps.autofix.outputs.autofix_ran }}
+
+    steps:
+      - name: "Checkout PR branch"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          fetch-depth: 2
+
+      - name: "Auto-fix pre-flight REQ-4/5 when 🔄 Auto-Post checkbox is checked"
+        id: autofix
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          TARGET_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_URL: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          GIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          echo "autofix_ran=false" >> "$GITHUB_OUTPUT"
+
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "No PR number — skipping pre-flight auto-fix."
+            exit 0
+          fi
+
+          # Check if the 🔄 Auto-Post checkbox is checked in the PR body
+          PR_BODY=$(gh pr view "${PR_NUMBER}" \
+            --repo "${{ github.repository }}" \
+            --json body -q '.body // ""' 2>/dev/null || echo "")
+
+          if ! printf '%s' "$PR_BODY" | grep -qiE '\-\s*\[x\]\s*.*Auto-Post.*@copilot'; then
+            echo "🔄 Auto-Post checkbox not checked — skipping pre-flight auto-fix."
+            exit 0
+          fi
+
+          echo "🔄 Auto-Post checkbox is CHECKED — running pre-flight auto-fix..."
+
+          # Determine which REQ fixes are needed by inspecting the last commit
+          LAST_COMMIT_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
+          FIX_ARGS=""
+
+          if ! echo "$LAST_COMMIT_FILES" | grep -q "AGENT_ACCOUNTABILITY_REPORT.md"; then
+            FIX_ARGS="$FIX_ARGS --fix-accountability"
+            echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md needs auto-fix"
+          else
+            echo "  REQ-4: AGENT_ACCOUNTABILITY_REPORT.md already updated — OK"
+          fi
+
+          if ! echo "$LAST_COMMIT_FILES" | grep -q "CHANGELOG.md"; then
+            FIX_ARGS="$FIX_ARGS --fix-changelog"
+            echo "  REQ-5: CHANGELOG.md needs auto-fix"
+          else
+            echo "  REQ-5: CHANGELOG.md already updated — OK"
+          fi
+
+          if [ -z "$FIX_ARGS" ]; then
+            echo "✅ All pre-flight requirements already satisfied — no auto-fix needed."
+            exit 0
+          fi
+
+          # Run the session_wrapup_autofix.py script (offline, idempotent)
+          python3 scripts/ci/session_wrapup_autofix.py \
+            --pr-number "${PR_NUMBER}" \
+            --sha "${GIT_SHA:0:8}" \
+            --run-url "${RUN_URL}" \
+            ${FIX_ARGS}
+
+          # Commit and push the auto-fixed files back to the branch
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "✅ No changes to commit — files already satisfied requirements."
+          else
+            git commit -m "fix(docs): auto-post pre-flight auto-fix: REQ-4/5 [auto-post-copilot-review][skip ci]"
+            git pull --rebase origin "${TARGET_BRANCH}" || true
+            git push origin HEAD:refs/heads/"${TARGET_BRANCH}"
+            echo "✅ Pre-flight auto-fix committed and pushed to ${TARGET_BRANCH}."
+            echo "autofix_ran=true" >> "$GITHUB_OUTPUT"
+          fi
+
   post-review-trigger:
     name: "Post @copilot review after agent session"
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: preflight-autofix
     # Only fire when:
     #   1. The workflow_run was associated with a PR (not a plain branch push)
     #   2. COPILOT_AGENT_AUTH_ENABLED is enabled
