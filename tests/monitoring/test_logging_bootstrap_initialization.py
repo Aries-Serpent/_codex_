@@ -11,6 +11,10 @@ from codex_ml.monitoring import codex_logging as cl
 
 
 def test_logging_bootstrap_initialization(monkeypatch, tmp_path):
+    # Clear env vars that may leak from other tests and affect _maybe_init_mlflow_offline()
+    monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
+    monkeypatch.delenv("MLFLOW_OFFLINE", raising=False)
+
     calls = {}
 
     class DummyWriter:
@@ -28,10 +32,12 @@ def test_logging_bootstrap_initialization(monkeypatch, tmp_path):
 
     monkeypatch.setattr(cl, "wandb", types.SimpleNamespace(init=fake_wandb_init))
 
+    # Use dict assignment (not setdefault) so the explicit cfg tracking_uri always wins
+    # even if _maybe_init_mlflow_offline() fires a preliminary set_tracking_uri call.
     dummy_mlflow = types.SimpleNamespace(
-        set_tracking_uri=lambda uri: calls.setdefault("ml_uri", uri),
-        set_experiment=lambda exp: calls.setdefault("ml_exp", exp),
-        start_run=lambda: calls.setdefault("ml_run", True),
+        set_tracking_uri=lambda uri: calls.update({"ml_uri": uri}),
+        set_experiment=lambda exp: calls.update({"ml_exp": exp}),
+        start_run=lambda: calls.update({"ml_run": True}),
     )
     monkeypatch.setattr(cl, "mlflow", dummy_mlflow)
 

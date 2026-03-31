@@ -428,13 +428,27 @@ jobs:
               '',
               '---',
               `_Auto-posted: ${new Date().toISOString()} | cognitive-preflight gate | WF-001_`,
+              `_Last updated for SHA: \`${sha}\` | ${new Date().toISOString()}_`,
               '',
               '---',
               `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
             ].join('\n');
 
-            // Upsert: update existing or create new
-            const existing = comments.find(c => c.body && c.body.includes(UPSERT_MARKER));
+            // Paginated upsert: search ALL pages so PRs with >100 comments are handled.
+            let existing = null;
+            let page = 1;
+            while (!existing && page <= 20) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+                page,
+              });
+              existing = batch.find(c => c.body && c.body.includes(UPSERT_MARKER));
+              if (existing || batch.length < 100) break;
+              page++;
+            }
             if (existing) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
@@ -848,6 +862,9 @@ jobs:
       # ── Workflow Execution Checklist — inject into PR body if missing ─────
       # Ensures Copilot Agent can check off only the workflows needed for this
       # session.  Unchecked items are skipped by workflow-execution-gate.yml.
+      # PRESERVATION RULE: any checkbox the maintainer set to [x] is retained.
+      # "always required" items (pre-merge-validation, comment-review-gate,
+      # agent-auth-delegation) are unconditionally [x].
       # See: docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md
       - name: Ensure Workflow Execution Checklist in PR body
         id: inject-wec
@@ -860,45 +877,71 @@ jobs:
         run: |
           BODY=$(gh pr view "${PR_NUMBER}" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
-          if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
-            echo "✅ Workflow Execution Checklist already present in PR #${PR_NUMBER} — no injection needed"
-            printf '### ✅ Workflow Execution Checklist\n\nAlready present — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
+          # Detect new canonical heading format
+          if echo "$BODY" | grep -qF '## 🔄 Workflow Execution Checklist'; then
+            echo "✅ Canonical Workflow Execution Checklist (heading format) already present in PR #${PR_NUMBER} — no injection needed"
+            printf '### ✅ Workflow Execution Checklist\n\nAlready present (canonical format) — no injection required.\n' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          printf '%s\n' \
+          # Also accept legacy bold-text marker to avoid double-injection during migration
+          if echo "$BODY" | grep -qF '**🔄 Workflow Execution Checklist**:'; then
+            echo "⚠️  Legacy WEC format detected in PR #${PR_NUMBER} — migrating to canonical heading format"
+          fi
+
+          # Extract existing checkbox state so maintainer selections are preserved.
+          # Lines of form:  - [x] some-workflow.yml — description
+          _checked() {
+            local fname="$1" always="$2"
+            if [ "$always" = "true" ]; then printf 'x'; return; fi
+            if echo "$BODY" | grep -qP "^\- \[x\] ${fname}"; then printf 'x'; else printf ' '; fi
+          }
+
+          # Strip ALL existing WEC variants to avoid duplication
+          STRIPPED_BODY=$(printf '%s' "$BODY" \
+            | sed '/^## 🔄 Workflow Execution Checklist/,$d' \
+            | sed '/^\*\*🔄 Workflow Execution Checklist\*\*:/,$d' \
+            | sed '/^### 💰 Cost Governance/,$d' \
+            | sed '/^### 🔐 Agent Token Delegation/,$d')
+
+          # Build new canonical WEC block preserving maintainer checkbox state
+          WEC=$(printf '%s\n' \
+            '' \
+            '---' \
             '' \
             '## 🔄 Workflow Execution Checklist' \
-            '<!-- gate-managed-by: workflow-execution-gate.yml -->' \
-            '<!-- gate-version: 1.0.0 -->' \
             '' \
             '### ✅ Validation & Testing' \
-            '- [x] pre-merge-validation.yml — Pre-merge checks (always required)' \
-            '- [x] resilient-validation-suite.yml — Resilient validation' \
-            '- [ ] nox-gates.yml — Nox test gates' \
+            "- [x] pre-merge-validation.yml — Pre-merge checks (always required)" \
+            "- [$(_checked resilient-validation-suite.yml false)] resilient-validation-suite.yml — Resilient validation" \
+            "- [$(_checked nox-gates.yml false)] nox-gates.yml — Nox test gates" \
             '' \
             '### ✅ Security & Quality' \
-            '- [x] comment-review-gate.yml — Comment review gate (always required)' \
-            '- [ ] security-scanning-suite.yml — Full security audit' \
-            '- [x] deferral-language-gate.yml — Deferral language guard' \
+            "- [x] comment-review-gate.yml — Comment review gate (always required)" \
+            "- [$(_checked security-scanning-suite.yml false)] security-scanning-suite.yml — Full security audit" \
+            "- [$(_checked deferral-language-gate.yml false)] deferral-language-gate.yml — Deferral language guard" \
             '' \
             '### 📄 Documentation' \
-            '- [ ] docs-build.yml — Documentation build' \
+            "- [$(_checked docs-build.yml false)] docs-build.yml — Documentation build" \
             '' \
             '### 🤖 Automation' \
-            '- [x] agent-auth-delegation.yml — Agent auth delegation (always required)' \
-            '- [x] copilot-agent-checkin.yml — Agent check-in (always required)' \
-            '- [ ] cost-gate.yml — Cost governance gate' \
+            "- [x] agent-auth-delegation.yml — Agent auth delegation (always required)" \
+            "- [$(_checked copilot-agent-checkin.yml false)] copilot-agent-checkin.yml — Agent check-in (always required)" \
+            "- [$(_checked cost-gate.yml false)] cost-gate.yml — Cost governance gate" \
+            "- [$(_checked copilot-agent-session-done.yml false)] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session" \
+            "- [$(_checked workflow-execution-gate.yml false)] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows" \
+            "- [$(_checked copilot-iterative-self-healing.yml false)] copilot-iterative-self-healing.yml — Iterative self-healing CI loop" \
             '' \
-            '> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for' \
-            '> this session. Unchecked workflows will be SKIPPED by the gate.' \
-            > "${RUNNER_TEMP}/checklist.txt"
-          CHECKLIST=$(cat "${RUNNER_TEMP}/checklist.txt")
+            '### ⚡ Auto-Approve' \
+            "- [$(_checked auto-approve-workflows false)] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)" \
+            '' \
+            '> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for' \
+            '> this session. Unchecked workflows will be SKIPPED by the gate.')
 
-          UPDATED_BODY="${BODY}${CHECKLIST}"
+          UPDATED_BODY="${STRIPPED_BODY}${WEC}"
           gh pr edit "${PR_NUMBER}" --repo "${{ github.repository }}" --body "${UPDATED_BODY}"
-          echo "✅ Workflow Execution Checklist injected into PR #${PR_NUMBER}"
-          printf '### ✅ Workflow Execution Checklist\n\nInjected into PR body — Copilot should update before wrap-up.\n' >> "$GITHUB_STEP_SUMMARY"
+          echo "✅ Canonical Workflow Execution Checklist (heading format) injected into PR #${PR_NUMBER}"
+          printf '### ✅ Workflow Execution Checklist\n\nCanonical format injected — approval gates are now armed.\n' >> "$GITHUB_STEP_SUMMARY"
 
       # ── REQ-6: Timebox expiry acknowledgment gate ────────────────────────
       # Tier-1 hard stop — promotes SESSION_TIMEBOX_EXPIRED from Tier-2 (visible comment, ignorable)

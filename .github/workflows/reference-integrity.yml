@@ -165,11 +165,9 @@ jobs:
               report = fs.readFileSync('/tmp/size_report.txt', 'utf8');
             } catch(e) { report = '(report not available)'; }
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## ❌ Agent File Size Gate — FAILED\n\n` +
+            const MARKER = '<!-- agent-file-size-gate -->';
+            const body = MARKER + '\n' +
+                    `## ❌ Agent File Size Gate — FAILED\n\n` +
                     `**Rule:** GitHub Copilot custom agent \`.md\` files in \`.github/agents/\` ` +
                     `must NOT exceed **30,000 characters**. Files over this limit cause the ` +
                     `custom agent to **silently stop working**.\n\n` +
@@ -178,8 +176,39 @@ jobs:
                     `1. Trim the file content to under 30,000 characters, OR\n` +
                     `2. If the file is NOT a registered custom agent (i.e. it is a doc/planning ` +
                     `file), move it to \`docs/\` or \`.codex/docs/\` — but ONLY AFTER running ` +
-                    `\`python scripts/ci/check_cross_references.py\` to verify no references break.\n`
-            });
+                    `\`python scripts/ci/check_cross_references.py\` to verify no references break.\n`;
+
+            // Upsert: update existing comment in-place to avoid duplicate spam.
+            let existing = null;
+            let page = 1;
+            while (!existing && page <= 20) {
+              const { data: batch } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+                page,
+              });
+              existing = batch.find(c => (c.body || '').includes(MARKER));
+              if (existing || batch.length < 100) break;
+              page++;
+            }
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
 
   # ── rescue comment — posted on PR whenever this workflow fails ──────────
   rescue-comment:

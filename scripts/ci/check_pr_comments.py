@@ -67,6 +67,7 @@ COPILOT_AGENTS: set[str] = {
 # gate outputs and must be exempt from the scan (prevents circular blocking).
 SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- comment-review-gate-checklist -->",
+    "<!-- comment-review-gate:",          # PR-scoped gate failure comment (new format)
     "<!-- ci-rescue:",
     "<!-- pre-merge-validation-summary -->",
     "<!-- auto-fix-ci-issues -->",
@@ -79,6 +80,7 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- agent-token-delegation-result -->",
     "<!-- root-org-validation-v1 -->",
     "<!-- cost-check-bot -->",
+    "<!-- agent-file-size-gate -->",       # Agent File Size Gate failure comment
 )
 
 GITHUB_API = "https://api.github.com"
@@ -286,7 +288,7 @@ def find_unaddressed_comments(
         if login in COPILOT_AGENTS:
             continue  # Copilot's own comments don't need addressing
         body_start = (c.get("body") or "")[:80]
-        if any(body_start.startswith(m) for m in SKIP_BODY_MARKERS):
+        if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
             continue  # Self-referential gate output — exempt from scan
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"

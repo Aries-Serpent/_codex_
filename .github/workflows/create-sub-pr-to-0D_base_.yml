@@ -128,42 +128,48 @@ jobs:
           SHA: ${{ steps.commit_info.outputs.sha }}
           EXTRA: ${{ inputs.pr_body_extra }}
         run: |
-          PR_BODY=$(printf '%s\n' \
-            "## 🔀 Session Branch Sub-PR: \`${SESSION_BRANCH}\` → \`0D_base_\`" \
-            '' \
-            'This PR merges a completed agent session branch into the staging integration' \
-            'branch `0D_base_` per **CODEBASE_AGENCY_POLICY.md §0b**.' \
-            '' \
-            '### Branch' \
-            "- **Head:** \`${SESSION_BRANCH}\`" \
-            '- **Base:** `0D_base_` (staging integration branch)' \
-            "- **Latest commit:** \`${SHA:0:8}\`" \
-            '' \
-            '### Architecture' \
-            '```' \
-            "${SESSION_BRANCH}  ──►  0D_base_  ──►  main" \
-            '  (this PR)              (staging)   (promotion PR)' \
-            '```' \
-            '' \
-            '### Checklist' \
-            '- [ ] All CI checks pass on head branch' \
-            '- [ ] Cross-reference gate: 0 broken refs' \
-            '- [ ] AGENT_REGISTRY count matches actual entries' \
-            '- [ ] Agent file size gate: all .md files ≤ 30,000 chars' \
-            '- [ ] CHANGELOG.md updated' \
-            '- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated' \
-            '- [ ] No deferral language in commits or PR body' \
-            '' \
-            "${EXTRA}" \
-            '' \
-            '---' \
-            "_Created by \`create-sub-pr-to-0D_base_.yml\` workflow — $(date -u +'%Y-%m-%dT%H:%M:%SZ')_" \
-            '' \
-            '### 💰 Cost Governance' \
-            '- [ ] **💰 Cost Proposal Approved**' \
-            '### 🔐 Agent Token Delegation' \
-            '- [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)' \
-            '- [ ] 🔄 Auto-Post @copilot review After Agent Session')
+          # Build PR body using variable concatenation to avoid shellcheck SC2215
+          # (printf multi-arg form with lines starting '-' is mis-flagged as a flag).
+          PR_BODY="## 🔀 Session Branch Sub-PR: \`${SESSION_BRANCH}\` → \`0D_base_\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="This PR merges a completed agent session branch into the staging integration"$'\n'
+          PR_BODY+="branch \`0D_base_\` per **CODEBASE_AGENCY_POLICY.md §0b**."$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Branch"$'\n'
+          PR_BODY+="- **Head:** \`${SESSION_BRANCH}\`"$'\n'
+          PR_BODY+="- **Base:** \`0D_base_\` (staging integration branch)"$'\n'
+          PR_BODY+="- **Latest commit:** \`${SHA:0:8}\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Architecture"$'\n'
+          PR_BODY+="\`\`\`"$'\n'
+          PR_BODY+="${SESSION_BRANCH}  ──►  0D_base_  ──►  main"$'\n'
+          PR_BODY+="  (this PR)              (staging)   (promotion PR)"$'\n'
+          PR_BODY+="\`\`\`"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="### Checklist"$'\n'
+          PR_BODY+="- [ ] All CI checks pass on head branch"$'\n'
+          PR_BODY+="- [ ] Cross-reference gate: 0 broken refs"$'\n'
+          PR_BODY+="- [ ] AGENT_REGISTRY count matches actual entries"$'\n'
+          PR_BODY+="- [ ] Agent file size gate: all .md files ≤ 30,000 chars"$'\n'
+          PR_BODY+="- [ ] CHANGELOG.md updated"$'\n'
+          PR_BODY+="- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated"$'\n'
+          PR_BODY+="- [ ] No deferral language in commits or PR body"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="${EXTRA}"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="---"$'\n'
+          PR_BODY+="_Created by \`create-sub-pr-to-0D_base_.yml\` workflow — $(date -u +'%Y-%m-%dT%H:%M:%SZ')_"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="---"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="**🔄 Workflow Execution Checklist**:"$'\n'
+          PR_BODY+=""$'\n'
+          PR_BODY+="🔐 Agent Token Delegation"$'\n'
+          PR_BODY+="- [x] 🔐 Enable Agent Token Delegation (\`COPILOT_AGENT_AUTH_ENABLED\`)"$'\n'
+          PR_BODY+="- [ ] 💰 Cost Proposal Approved"$'\n'
+          PR_BODY+="- [ ] 🔄 Auto-Post @copilot review After Agent Session"$'\n'
+
+          GH_TOKEN="${{ secrets.CODEX_MASTER_KEY }}" gh pr create \
             --repo "${{ github.repository }}" \
             --title "${PR_TITLE}" \
             --body "${PR_BODY}" \

@@ -211,14 +211,14 @@ jobs:
                 console.log(`Could not fetch PR head SHA: ${e.message}`);
               }
             }
-            // SHA-scoped upsert marker — one comment per (PR, commit SHA).
-            // Each new commit SHA gets its own new rescue comment so failures for
-            // different commits are tracked independently and never overwrite
-            // each other.  Within a single SHA, repeated gate failures update
-            // (upsert) the same comment in-place.
+            // PR-scoped upsert marker — one comment per PR, updated in-place on each
+            // gate failure.  The last-scanned SHA is surfaced in the comment body so
+            // agents can still identify which commit triggered the current failure,
+            // without generating a new comment thread per push.
             const shaShort = headSha.slice(0, 12) || 'unknown';
-            const MARKER = `<!-- ci-rescue:${pr_number}:${shaShort} -->`;
-            // Kept for backward-compat / agent detection of current scanned commit.
+            const MARKER = `<!-- comment-review-gate:${pr_number} -->`;
+            // Legacy SHA-scoped tag kept in body for backward-compat with agents that
+            // grep for the scanned commit reference.
             const SHA_TAG  = `<!-- ci-review-scanned:${shaShort} -->`;
 
             const runUrl  = process.env.RUN_URL;

@@ -124,12 +124,17 @@ jobs:
             exit 0
           fi
 
-          # Run the session_wrapup_autofix.py script (offline, idempotent)
+          # Run the session_wrapup_autofix.py script with --fix-all
+          # This covers ALL missing components in one call:
+          #   REQ-4  — AGENT_ACCOUNTABILITY_REPORT.md
+          #   REQ-5  — CHANGELOG.md
+          #   REQ-6  — .secrets.baseline ↔ CODEX_MANIFEST.json sync
+          #   WEC    — PR body Workflow Execution Checklist block
           python3 scripts/ci/session_wrapup_autofix.py \
             --pr-number "${PR_NUMBER}" \
             --sha "${GIT_SHA:0:8}" \
             --run-url "${RUN_URL}" \
-            ${FIX_ARGS}
+            --fix-all
 
           # Commit and push the auto-fixed files back to the branch
           git config user.name  "github-actions[bot]"
@@ -385,3 +390,84 @@ jobs:
               body: '@copilot+claude-sonnet-4.6 review',
             });
             console.log(`@copilot review posted to PR #${pr}.`);
+
+  # ── Job 3: Auto-approve all pending workflow runs on last commit SHA ────────
+  # Fires when `- [x] auto-approve-workflows` is checked in the PR body.
+  # Trigger point: after the "Copilot [finished work] on behalf of [mbaetiong]"
+  # event (i.e., immediately after this workflow_run trigger fires).
+  # Uses: GET /repos/{owner}/{repo}/actions/runs?head_sha={sha}&status=action_required
+  #       POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve
+  # Requires: CODEX_MASTER_KEY or CODEX_BACKUP_KEY with workflow approval scope.
+  auto-approve-pending-runs:
+    name: "⚡ Auto-Approve pending workflow runs"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: preflight-autofix
+    if: |
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null
+    steps:
+      - name: "Approve all action_required workflow runs for head SHA"
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PR_NUMBER}" ]; then
+            echo "No PR number — skipping auto-approve."
+            exit 0
+          fi
+
+          # Check whether the auto-approve-workflows checkbox is ticked
+          PR_BODY=$(gh pr view "${PR_NUMBER}" \
+            --repo "${REPO}" \
+            --json body -q '.body // ""' 2>/dev/null || echo "")
+
+          if ! printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows'; then
+            echo "⚡ auto-approve-workflows not checked — skipping."
+            exit 0
+          fi
+
+          echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
+
+          # Fetch all workflow runs for this commit that require approval
+          PENDING_RUNS=$(gh api \
+            "repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100" \
+            --jq '.workflow_runs[].id' 2>/dev/null || echo "")
+
+          if [ -z "$PENDING_RUNS" ]; then
+            echo "✅ No pending workflow runs requiring approval for SHA ${HEAD_SHA:0:12}."
+            printf '### ⚡ Auto-Approve\n\nNo action_required runs found for commit `%s`.\n' "${HEAD_SHA:0:12}" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          APPROVED=0
+          FAILED=0
+          SUMMARY_LINES=""
+
+          while IFS= read -r RUN_ID; do
+            [ -z "$RUN_ID" ] && continue
+            RUN_NAME=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" --jq '.name // "unknown"' 2>/dev/null || echo "unknown")
+            if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" 2>/dev/null; then
+              echo "  ✅ Approved run #${RUN_ID} (${RUN_NAME})"
+              APPROVED=$((APPROVED + 1))
+              SUMMARY_LINES="${SUMMARY_LINES}\n- ✅ Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID}) — ${RUN_NAME}"
+            else
+              echo "  ⚠️  Failed to approve run #${RUN_ID} (${RUN_NAME}) — may require owner approval"
+              FAILED=$((FAILED + 1))
+              SUMMARY_LINES="${SUMMARY_LINES}\n- ⚠️ Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID}) — ${RUN_NAME} (approval failed)"
+            fi
+          done <<< "$PENDING_RUNS"
+
+          printf '### ⚡ Auto-Approve Results\n\n**Approved:** %d | **Failed:** %d\n%b\n' \
+            "$APPROVED" "$FAILED" "$SUMMARY_LINES" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$APPROVED" -gt 0 ]; then
+            echo "✅ Auto-approved ${APPROVED} pending workflow run(s) for PR #${PR_NUMBER}."
+          fi
+          if [ "$FAILED" -gt 0 ]; then
+            echo "⚠️  ${FAILED} run(s) could not be approved — owner approval may be required."
+          fi

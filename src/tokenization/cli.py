@@ -25,80 +25,88 @@ else:
         _typer = None
 
 
-if _typer is None:  # pragma: no cover - fallback CLI when typer missing
+# Fallback implementations are always defined unconditionally at module level so
+# they are importable and testable regardless of whether typer is installed.
+# The ``if _typer is None:`` block below only wires the runtime namespace shim.
 
-    class _FallbackTyper:
-        """Minimal Typer-like interface used when the dependency is unavailable."""
 
-        def __init__(self, **kwargs: object) -> None:
-            self._commands: dict[str, tuple[types.FunctionType, inspect_module.Signature]] = {}
-            self._help_text = kwargs.get("help")
+class _FallbackTyper:
+    """Minimal Typer-like interface used when the dependency is unavailable."""
 
-        def command(self, name: str | None = None):
-            def _register(func: types.FunctionType) -> types.FunctionType:
-                cmd_name = name or func.__name__.replace("_", "-")
-                self._commands[cmd_name] = (func, inspect_module.signature(func))
-                return func
+    def __init__(self, **kwargs: object) -> None:
+        self._commands: dict[str, tuple[types.FunctionType, inspect_module.Signature]] = {}
+        self._help_text = kwargs.get("help")
 
-            return _register
+    def command(self, name: str | None = None):
+        def _register(func: types.FunctionType) -> types.FunctionType:
+            cmd_name = name or func.__name__.replace("_", "-")
+            self._commands[cmd_name] = (func, inspect_module.signature(func))
+            return func
 
-        def _print_app_help(self) -> None:
-            if self._help_text:
-                print(self._help_text)
-            if self._commands:
-                print("Commands:")
-                for command in sorted(self._commands):
-                    print(f"  {command}")
+        return _register
 
-        def _print_command_help(self, name: str, signature: inspect_module.Signature) -> None:
-            params = []
-            for param in signature.parameters.values():
-                placeholder = param.name.upper()
-                if param.default is inspect_module.Signature.empty:
-                    params.append(placeholder)
-                else:
-                    params.append(f"[{placeholder}]")
-            usage = " ".join(params)
-            if usage:
-                print(f"Usage: {name} {usage}")
+    def _print_app_help(self) -> None:
+        if self._help_text:
+            print(self._help_text)
+        if self._commands:
+            print("Commands:")
+            for command in sorted(self._commands):
+                print(f"  {command}")
+
+    def _print_command_help(self, name: str, signature: inspect_module.Signature) -> None:
+        params = []
+        for param in signature.parameters.values():
+            placeholder = param.name.upper()
+            if param.default is inspect_module.Signature.empty:
+                params.append(placeholder)
             else:
-                print(f"Usage: {name}")
+                params.append(f"[{placeholder}]")
+        usage = " ".join(params)
+        if usage:
+            print(f"Usage: {name} {usage}")
+        else:
+            print(f"Usage: {name}")
 
-        def __call__(self) -> None:
-            argv = sys.argv[1:]
-            if not argv or argv[0] in {"--help", "-h"}:
-                self._print_app_help()
-                raise SystemExit(0)
-            cmd_name, *rest = argv
-            entry = self._commands.get(cmd_name)
-            if entry is None:
-                print(f"Unknown command: {cmd_name}", file=sys.stderr)
-                self._print_app_help()
-                raise SystemExit(1)
-            func, signature = entry
-            if rest and rest[0] in {"--help", "-h"}:
-                self._print_command_help(cmd_name, signature)
-                raise SystemExit(0)
-            params = list(signature.parameters.values())
-            converted: list[object] = []
-            for arg, param in zip(rest, params, strict=False):
-                annotation = param.annotation
-                if annotation is Path or annotation == "Path":
-                    converted.append(Path(arg))
-                else:
-                    converted.append(arg)
-            func(*converted)
+    def __call__(self) -> None:
+        argv = sys.argv[1:]
+        if not argv or argv[0] in {"--help", "-h"}:
+            self._print_app_help()
+            raise SystemExit(0)
+        cmd_name, *rest = argv
+        entry = self._commands.get(cmd_name)
+        if entry is None:
+            print(f"Unknown command: {cmd_name}", file=sys.stderr)
+            self._print_app_help()
+            raise SystemExit(1)
+        func, signature = entry
+        if rest and rest[0] in {"--help", "-h"}:
+            self._print_command_help(cmd_name, signature)
+            raise SystemExit(0)
+        params = list(signature.parameters.values())
+        converted: list[object] = []
+        for arg, param in zip(rest, params, strict=False):
+            annotation = param.annotation
+            if annotation is Path or annotation == "Path":
+                converted.append(Path(arg))
+            else:
+                converted.append(arg)
+        func(*converted)
 
-    class _FallbackExit(SystemExit):
-        """Replacement for :class:`typer.Exit` when Typer isn't installed."""
 
-    def _fallback_echo(message: object, *, err: bool = False) -> None:
-        stream = sys.stderr if err else sys.stdout
-        print(message, file=stream)
+class _FallbackExit(SystemExit):
+    """Replacement for :class:`typer.Exit` when Typer isn't installed."""
 
-    def _fallback_option(default=None, *_: object, **__: object):
-        return default
 
+def _fallback_echo(message: object, *, err: bool = False) -> None:
+    stream = sys.stderr if err else sys.stdout
+    print(message, file=stream)
+
+
+def _fallback_option(default=None, *_: object, **__: object):
+    return default
+
+
+if _typer is None:  # pragma: no cover - fallback CLI when typer missing
     typer = types.SimpleNamespace(
         Typer=_FallbackTyper,
         echo=_fallback_echo,

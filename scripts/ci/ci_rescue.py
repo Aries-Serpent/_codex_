@@ -955,17 +955,17 @@ def find_pr_for_run(run_id: int, repo: str, token: str) -> Optional[int]:
     return None
 
 
-def _make_rca_marker(commit_sha: Optional[str]) -> str:
+def _make_rca_marker(pr_number: Optional[int] = None, commit_sha: Optional[str] = None) -> str:
     """Return the HTML comment marker used to identify rescue comments.
 
-    The marker embeds the first 12 characters of the commit SHA so that
-    subsequent failures on the *same* commit are appended to the existing
-    rescue comment rather than creating duplicate top-level comments.
-    Falls back to the legacy marker when no SHA is available.
-
-    Note: Python slicing is safe for strings shorter than 12 chars — it
-    simply returns the full string, so no length check is required.
+    Uses a PR-scoped marker (``<!-- ci-rescue-rca:{pr_number} -->``) so that
+    all RCA failures for a PR are consolidated into ONE comment thread, updated
+    in-place.  The commit SHA is surfaced in each appended failure-update section
+    for traceability.  Falls back to the legacy SHA-scoped or bare marker when
+    neither pr_number nor commit_sha is available.
     """
+    if pr_number:
+        return f"<!-- ci-rescue-rca:{pr_number} -->"
     if commit_sha and commit_sha.strip():
         return f"<!-- ci-rescue-rca:{commit_sha.strip()[:12]} -->"
     return "<!-- ci-rescue-rca -->"
@@ -982,17 +982,17 @@ def post_pr_comment(
     """Post or append-update a @copilot RCA comment on the PR.
 
     Deduplication strategy:
-    - Each rescue comment is tagged with ``<!-- ci-rescue-rca:{sha[:12]} -->``.
-    - If a comment with the same SHA marker already exists on the PR,
-      subsequent failures for that commit are *appended* as a new
-      ``### 🔄 Failure Update`` section inside the existing comment.
+    - All RCA failures for a PR share a single PR-scoped marker
+      ``<!-- ci-rescue-rca:{pr_number} -->``.
+    - If a comment with that marker already exists it is updated in-place by
+      appending a ``### 🔄 Failure Update (SHA: ...)`` section.
     - If no matching comment exists, a fresh comment is created.
-    - Also checks for the legacy marker (no SHA) to avoid orphaned old comments.
+    - Also checks for legacy SHA-scoped and bare markers to absorb old comments.
 
-    This keeps the PR thread clean: one rescue thread per commit, with a full
+    This keeps the PR thread clean: one RCA thread per PR with a full
     chronological record of every failure event.
     """
-    marker = _make_rca_marker(commit_sha)
+    marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha)
     full_body = f"{marker}\n{body}"
 
     if dry_run:
@@ -1032,10 +1032,11 @@ def post_pr_comment(
 
     if existing_id:
         # Append the new failure section to the existing rescue comment.
+        sha_label = f" (SHA: `{commit_sha.strip()[:12]}`)" if commit_sha and commit_sha.strip() else ""
         appended = (
             existing_body.rstrip()
             + "\n\n---\n\n"
-            + "### 🔄 Failure Update\n\n"
+            + f"### 🔄 Failure Update{sha_label}\n\n"
             + body
         )
         if len(appended) > MAX_COMMENT_CHARS:
@@ -1630,9 +1631,9 @@ def run_deep_rescue(
         )
         # Append deep analysis into the same SHA-scoped RCA comment so the PR
         # thread has ONE rescue thread per commit, not two separate comments.
-        # post_pr_comment() already implements SHA-scoped upsert: it finds the
-        # existing <!-- ci-rescue-rca:{sha} --> comment and appends there, or
-        # creates a fresh one if the standard rescue step hasn't run yet.
+        # post_pr_comment() implements PR-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{pr_number} --> comment and appends there, or
+        # creates a fresh one if this is the first RCA failure for this PR.
         print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
         success = post_pr_comment(
             pr_number=pr_number,
