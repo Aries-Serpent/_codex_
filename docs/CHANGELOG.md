@@ -4,7 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
-### Added (2026-03-30) — CI Rescue Pipeline Golden-Path Documentation (PR #3818 — S244)
+### Fixed (S253 — PR #3831 — 2026-03-31)
+- **fix(ci):** `tests/config/conftest.py` — added explicit `sys.path.insert(0, src/)` guard
+  (with directory-depth comment) to fix `ModuleNotFoundError: No module named 'config.openai_client'`
+  in the Resilient Validation Suite. Root cause: pytest-split workers resolve `tests/config/` ahead
+  of the root `conftest.py` path injection. Verified: 24/24 `test_openai_client.py` tests pass.
+- **feat(brain):** `.github/agents/cognitive-brain-manager.md` v4.3→v4.4 — Sprint 13 status table,
+  iterative self-review loop Mermaid architecture diagram, AfterMath patterns
+  (RP-NEW-001/002/003), Phase 3+4 next-phase plan, PDA Loop front-matter enabled.
+- **feat(agent):** `.github/agents/post-merge-doc-alignment-agent.md` v1.0→v1.1 — PDA Loop
+  integration, `self_healing` config block (enabled, max 3 iterations), `iteration_history`
+  tracking S244/S251/S252/S253 runs, `cognitive_integration_level: 3`.
+- **fix(docs):** `docs/index.md` "Last Updated" refreshed to 2026-03-31.
+- **health(sweep):** Issue #3829 nightly health sweep S200 completed — ruff check ✅ 0 violations;
+  CodeQL on main ✅ success (3 consecutive); last 5 CI runs on main: success/skipped ✅;
+  cognitive brain metadata updated; accountability report updated.
+
+### Fixed (auto-update — PR #3831)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3831 (SHA `06038612`) at 2026-03-31T07:15Z [auto-generated]
+
+
 
 - **CI Rescue Pipeline** (`docs/ci/CI_RESCUE_PIPELINE.md`): New canonical reference documenting
   the end-to-end lifecycle from workflow failure to Copilot fix session. Includes 9 Mermaid

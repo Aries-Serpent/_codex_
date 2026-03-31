@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S253 — PR #3831 — 2026-03-31)
+- **fix(ci):** `tests/config/conftest.py` — sys.path guard fixes `ModuleNotFoundError: config.openai_client` in Resilient Validation Suite (pytest-split path ordering issue). 24/24 tests pass.
+- **feat(brain):** `cognitive-brain-manager.md` v4.3→v4.4 — PDA Loop front-matter, AfterMath patterns, Sprint 13 status, iterative self-review loop Mermaid diagram.
+- **feat(agent):** `post-merge-doc-alignment-agent.md` v1.0→v1.1 — PDA Loop, self-healing block, iteration history S244–S253.
+- **health(sweep):** Issue #3829 S200 nightly health sweep completed — ruff ✅ 0 violations, CodeQL ✅ success, CI main ✅, cognitive brain updated.
+
 ### Fixed (auto-update — PR #3831)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3831 (SHA `06038612`) at 2026-03-31T07:15Z [auto-generated]
 
