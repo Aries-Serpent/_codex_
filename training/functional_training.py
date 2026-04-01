@@ -21,9 +21,8 @@ _warnings.warn(
     stacklevel=2,
 )
 
-from src.training.functional_training import *  # noqa: E402, F401, F403
-
 import src.training.functional_training as _src_mod  # noqa: E402
+from src.training.functional_training import *  # noqa: E402, F401, F403
 
 # Re-expose private helpers and module-level names (e.g. ``torch``) that tests
 # monkeypatch via "training.functional_training.<name>".  ``import *`` only

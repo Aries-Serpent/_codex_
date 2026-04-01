@@ -21,13 +21,15 @@ _warnings.warn(
     stacklevel=2,
 )
 
+import src.training.engine_hf_trainer as _src_mod  # noqa: E402
 from src.training.engine_hf_trainer import *  # noqa: E402, F401, F403
 
-import src.training.engine_hf_trainer as _src_mod  # noqa: E402
-
 # Re-expose private helpers needed by tests that monkeypatch via
-# "training.engine_hf_trainer.<name>".
-try:
-    _make_accelerator = _src_mod._make_accelerator  # type: ignore[attr-defined]
-except AttributeError:  # pragma: no cover
-    pass
+# "training.engine_hf_trainer.<name>".  ``import *`` does not export
+# underscore-prefixed names, so they must be forwarded explicitly.
+# Example: ``monkeypatch.setattr("training.engine_hf_trainer._make_accelerator", ...)``
+for _name in ("_make_accelerator",):
+    _val = getattr(_src_mod, _name, None)
+    if _val is not None:
+        globals()[_name] = _val
+del _name, _val
