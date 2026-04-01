@@ -83,7 +83,8 @@ jobs:
             --pr "${{ steps.pr_info.outputs.pr_number }}" \
             --repo "${{ steps.pr_info.outputs.repo }}" \
             --post-checklist \
-            --output-json /tmp/comment_review_report.json
+            --output-json /tmp/comment_review_report.json \
+            --write-session-requirements /tmp/session_requirements.md
           EXIT_CODE=$?
 
           # Parse counts from report
@@ -102,17 +103,19 @@ jobs:
           echo "blocking_count=${BLOCKING}" >> "$GITHUB_OUTPUT"
           echo "warning_count=${WARNING}" >> "$GITHUB_OUTPUT"
 
-          # Write step summary
+          # Write step summary — use BLOCKING/WARNING counts, not EXIT_CODE,
+          # because --write-session-requirements always exits 0 even when
+          # blocking comments exist.
           echo "## 🔍 PR Comment Review Gate" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "### ✅ All comments addressed" >> "$GITHUB_STEP_SUMMARY"
-          elif [ "$EXIT_CODE" -eq 1 ]; then
+          if [ "${BLOCKING:-0}" -gt 0 ]; then
             echo "### 🚨 ${BLOCKING} blocking comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Copilot must address all blocking comments before committing new changes." >> "$GITHUB_STEP_SUMMARY"
-          else
+            echo "Requirements written to session_requirements.md — injected into next Copilot session prompt." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${WARNING:-0}" -gt 0 ]; then
             echo "### ⚠️ ${WARNING} warning comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ✅ All comments addressed" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           # Return 0 always here — the gate job below enforces failure
@@ -125,6 +128,15 @@ jobs:
           name: comment-review-report-${{ steps.pr_info.outputs.pr_number }}-${{ github.run_id }}
           path: /tmp/comment_review_report.json
           retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload session requirements
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: session-requirements-${{ steps.pr_info.outputs.pr_number }}
+          path: /tmp/session_requirements.md
+          retention-days: 7
           if-no-files-found: warn
 
   # ── Job 2: Gate — fail CI if blocking comments are unaddressed ────────────

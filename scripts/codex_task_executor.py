@@ -319,7 +319,7 @@ class CodexTaskExecutor:
                     \"\"\"Train a model locally with optional LoRA adapters.\"\"\"
                     try:
                         from src import modeling
-                        from training import trainer as trainer_module
+                        from src.training import trainer as trainer_module
                     except Exception as exc:  # pragma: no cover - optional import path
                         echo(f"Training modules unavailable: {exc}")
                         raise Exit(code=1)

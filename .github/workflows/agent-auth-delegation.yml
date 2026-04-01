@@ -207,6 +207,39 @@ jobs:
         with:
           fetch-depth: 50  # Enough for commit-count check (REQ-7); avoids full-clone cost
 
+      # ── Session Requirements Injection ────────────────────────────────────
+      # Download unaddressed comment requirements from the comment-review-gate
+      # artifact (uploaded by that workflow's scan step).  When present, the
+      # requirements are pre-pended to the cognitive-preflight checklist so the
+      # agent sees them as the FIRST item in its session prompt — not as a CI
+      # blocker.  This implements the "pre-pend to session prompt" contract
+      # described in .codex/CODEBASE_AGENCY_POLICY.md §0a.
+      - name: "Download pending session requirements (if any)"
+        id: session_reqs
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number || github.event.issue.number }}"
+          if [ -z "$PR_NUMBER" ]; then
+            echo "has_requirements=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Try to download the latest session-requirements artifact for this PR
+          gh run download \
+            --repo "${{ github.repository }}" \
+            --name "session-requirements-${PR_NUMBER}" \
+            --dir /tmp/session-req-download \
+            2>/dev/null || true
+          if [ -f "/tmp/session-req-download/session_requirements.md" ]; then
+            echo "has_requirements=true" >> "$GITHUB_OUTPUT"
+            echo "requirements_path=/tmp/session-req-download/session_requirements.md" >> "$GITHUB_OUTPUT"
+            echo "📋 Session requirements found — will inject into preflight checklist"
+          else
+            echo "has_requirements=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No pending session requirements found"
+          fi
+
       # ── REQ-11: Integration-branch direct-session guard ───────────────────
       # 0D_base_ is the STAGING GATE — a Copilot session must NEVER run
       # directly on it.  All agent work happens through sub-PRs that target
@@ -356,6 +389,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require('fs');
             const sha = (context.sha || 'unknown').slice(0, 7);
             const MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';
 
@@ -381,6 +415,37 @@ jobs:
               : '\n> ℹ️ No session priority directive found. Post a comment with `Priority for this session: X` to set one.\n';
 
             const UPSERT_MARKER = '<!-- cognitive-preflight-checklist -->';
+
+            // Inject pending session requirements (from comment-review-gate) at top of checklist.
+            // Read actual file content — the session_reqs step downloads to a known path.
+            const sessionReqsHasReq = '${{ steps.session_reqs.outputs.has_requirements }}' === 'true';
+            let sessionReqsContent = '';
+            if (sessionReqsHasReq) {
+              try {
+                sessionReqsContent = fs.readFileSync(
+                  '/tmp/session-req-download/session_requirements.md', 'utf8'
+                ).trim();
+              } catch (e) {
+                core.warning(`Could not read session requirements file: ${e.message}`);
+              }
+            }
+            const pendingRequirementsBlock = sessionReqsHasReq && sessionReqsContent
+              ? [
+                  '',
+                  '---',
+                  '',
+                  '### 📋 Pending Comment Requirements (Pre-pended from Comment Review Gate)',
+                  '',
+                  '> **These comments were unaddressed on the previous scan and are injected here**',
+                  '> **as session requirements. Address each one BEFORE making file changes.**',
+                  '',
+                  sessionReqsContent,
+                  '',
+                  '---',
+                  '',
+                ].join('\n')
+              : '';
+
             const body = [
               UPSERT_MARKER,
               `## 🧠 ${MARKER} — SHA: ${sha}`,
@@ -388,6 +453,7 @@ jobs:
               '> **Auto-posted by `cognitive-preflight` job BEFORE session activation.**',
               '> Treat this as active instruction — NOT background memory. This is a CI gate.',
               priorityLine,
+              pendingRequirementsBlock,
               '---',
               '',
               '### ✅ Agent Pre-flight Checklist',

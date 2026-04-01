@@ -12,11 +12,15 @@ _PY_WARN = (
 
 
 def write_python_shim(duplicate: Path, canonical_import_path: str) -> None:
+    # Strip a leading "src." prefix so that the generated import uses the
+    # path relative to ``src/`` (which is always on sys.path via pytest.ini /
+    # pyproject pythonpath setting) rather than the installation prefix.
+    import_path = canonical_import_path.removeprefix("src.")
     duplicate.parent.mkdir(parents=True, exist_ok=True)
     duplicate.write_text(
         "# AUTO-GENERATED SHIM — DO NOT EDIT\n"
         f"{_PY_WARN}"
-        f"from {canonical_import_path} import *  # noqa: F401,F403\n",
+        f"from {import_path} import *  # noqa: F401,F403\n",
         encoding="utf-8",
     )
 
