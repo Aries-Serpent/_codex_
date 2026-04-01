@@ -126,7 +126,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
 
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import (
+    from .engine_hf_trainer import (
         _compute_metrics,
         get_hf_revision,
         run_hf_trainer,

@@ -15398,3 +15398,82 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+## SESSION SUMMARY — 2026-04-01T05:41Z SESSION S214/S216 (mypy Anti-Regression Fix + Nightly Health Sweep)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — no unaddressed maintainer comments ✅
+- [x] **0b.** Failing CI checks reviewed — mypy baseline failure on `main` (run 23833571333) identified ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — no new untracked artifacts ✅
+- [x] **4.** Priority: Fix mypy regression and nightly health sweep ✅
+- [x] **5.** CODEBASE_AGENCY_POLICY.md loaded and followed ✅
+- [x] **6.** Cognitive brain metadata loaded and updated ✅
+
+### Issues Addressed
+- **Issue #3842 / S216** — mypy Baseline (Type-Check Anti-Regression) failure on `main` (run 23833571333)
+- **Issue #3841 / S214** — Nightly codebase health sweep (2026-04-01T03:07:38Z)
+
+### Work Completed
+
+#### S216: mypy Anti-Regression Fix
+**Root Cause**: PR #3840 changed `src/training/functional_training.py` to import from the
+root shim `training.engine_hf_trainer` instead of `src.training.engine_hf_trainer`. The
+shim uses `from src.training.engine_hf_trainer import *` (star import), which mypy cannot
+statically resolve to specific attributes. This caused:
+- `src/training/functional_training.py:129: error: Module "training.engine_hf_trainer" has no attribute "get_hf_revision" [attr-defined]`
+- `src/training/functional_training.py:142: error: Unused "type: ignore" comment [unused-ignore]`
+
+Additionally, PR #3840 introduced a new try/except guard in `src/codex/api/__init__.py`
+with a `# type: ignore[assignment]` that becomes unused in the isolated mypy venv (where
+missing imports resolve to `Any`, eliminating any assignment type conflict).
+
+**Fixes Applied**:
+1. `src/training/functional_training.py:129` — Changed `from training.engine_hf_trainer import` to `from .engine_hf_trainer import` (relative import). Mypy can now directly resolve the module without going through the shim's unresolvable star-import.
+2. `src/codex/api/__init__.py:9` — Removed unused `# type: ignore[assignment]` comment (the assignment to `None` has no type conflict when `app` has type `Any` in the isolated venv).
+3. `.mypy_baseline` — Updated from 333 → 331 (locked in the 2-error improvement).
+
+**Verification**: Isolated venv (`python -m venv + mypy>=1.8.0 + types-PyYAML + types-requests`) shows **331 errors ↓ 2 vs baseline 333** ✅
+
+#### S214: Nightly Codebase Health Sweep
+1. **Ruff check**: `python3 -m ruff check .` → `All checks passed!` ✅ No new violations.
+2. **auto_fix_common_issues**: 144 issues found (all informational), 0 auto-fixable ✅
+3. **CodeQL alerts**: Unable to query via integration (403 Forbidden) — no action taken on CodeQL (infrastructure restriction).
+4. **Accountability report**: Updated (this entry) within session ✅ (last update: 2026-04-01)
+5. **Last 5 CI runs on main**: 5 passes (success/skipped) with no recurring failures beyond the already-tracked mypy regression now fixed.
+6. **Cognitive brain metadata**: Updated with S216 root-cause pattern (`mypy_shim_star_import_attr_not_found`) + S214 sweep results. Baseline total patterns: 307.
+
+### Root-Cause Note
+The S216 regression pattern "mypy_shim_star_import_attr_not_found" must be tracked:
+when a shim file uses `from original.module import *` (star import), mypy CANNOT infer
+which attributes the shim re-exports. Any consumer importing specific names from the
+shim will receive `[attr-defined]` errors. The correct pattern for src-relative imports
+within `src/` packages is to use relative imports (`from .module import name`) rather
+than routing through root-level shim files.
+
+### Lessons Learned
+- **Shim + star-import = mypy black hole**: Whenever code inside `src/` is changed to
+  import via a root shim (which re-exports via `import *`), mypy loses type resolution.
+  Always prefer relative imports within `src/` packages.
+- **Isolated-venv `type: ignore` drift**: When packages aren't installed, `# type:
+  ignore[assignment]` on `x = None` (where x was imported as `Any`) becomes unused.
+  Consider annotating with `Optional[X]` or restructure to avoid the ignore entirely.
+- **Baseline locking**: After fixing mypy errors, always run `mypy_baseline.py --update`
+  with the isolated venv to lock in improvements and prevent baseline ratchet violations.
+
+### PDA Loop / AfterMath
+- **Plan**: Fix mypy regression (+1 error) + run health sweep (S214)
+- **Do**: Applied relative import fix, removed unused type:ignore, updated baseline
+- **Act**: Verified with isolated venv (331 ≤ 333 baseline) ✅
+- **AfterMath**: Issues #3841, #3842 resolved; cognitive brain patterns updated; baseline ratcheted down to 331
+
+### Impact Score
+- Files changed: 4 (`src/training/functional_training.py`, `src/codex/api/__init__.py`, `.mypy_baseline`, cognitive brain metadata + patterns)
+- mypy errors reduced: 334 → 331 (−3 total vs pre-fix; −2 vs baseline 333)
+- CI gates unblocked: mypy Baseline Anti-Regression gate
+- Ruff violations: 0 (no new violations found)
+- Deferral Language Gate: 0 violations
+- Issues resolved: #3841 (S214 health sweep), #3842 (S216 mypy fix)
+
+---

@@ -6,7 +6,7 @@ try:
     from .rag_api import app
 except ImportError as exc:  # pragma: no cover — slowapi missing in lightweight envs
     if getattr(exc, "name", None) == "slowapi":
-        app = None  # type: ignore[assignment]
+        app = None
     else:
         raise
 
