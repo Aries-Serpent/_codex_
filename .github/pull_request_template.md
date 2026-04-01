@@ -1,7 +1,7 @@
 # Pull Request Template
 
-> **Version:** 1.4.0  
-> **Generated:** 2025-12-29  
+> **Version:** 1.5.0  
+> **Generated:** 2026-04-01  
 > **Purpose:** Standardized PR workflow with Copilot continuation support, safety checks, and optional capability controls
 
 ---
@@ -124,6 +124,13 @@
 - [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
 - [ ] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
 - [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
+  <!-- ↑ Checking this box enables ALL components below for the full self-healing loop: -->
+  - [ ] **Phase 1 — Triage** (`should-escalate` job): detects failure type, determines whether to escalate, resolves PR number and branch
+  - [ ] **Phase 2 — RCA Prompt Build** (`post-copilot-prompt` job): runs `scripts/ci/ci_rescue.py`, classifies failure category (test / lint / type / coverage / security / build / ci-pattern / general), builds context-rich `@copilot` prompt
+  - [ ] **Phase 3 — Comment Post / Upsert**: posts (or idempotently updates) the `@copilot` rescue prompt as a PR comment; one prompt per commit SHA to avoid duplicate noise
+  - [ ] **Phase 4 — Cognitive Brain Update**: records escalation pattern in cognitive brain DB; increments `COGNITIVE_BRAIN_SESSION_NUMBER` repository variable
+  - [ ] **Phase 5 — Iterative Loop**: on next push after Copilot addresses the comment, loop restarts from Phase 1 until all concerns resolve or cognitive-brain objectives normalize
+  - [ ] **Triggered by**: any of `Pre-Merge Validation`, `Iterative Self-Healing CI`, `mypy Baseline`, `Test — RAG Pipeline`, `Security Scan`, `Nightly CodeQL Alert Triage`, `Deferral Language Gate`, `CI Pattern Pipeline` completing with `failure` or `timed_out` conclusion
 
 ### ⚡ Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
@@ -140,6 +147,84 @@
 - [ ] **CHANGELOG updated** - Deprecations section includes removal details
 
 **If any of the above cannot be satisfied, explain why and propose a remediation plan.**
+
+---
+
+## 🔬 PDA Loop + AfterMath Plan: Reduce mypy Baseline Below 297
+
+> **Scope**: 39 remaining `# type: ignore[assignment]` comments in `src/training/` — all are
+> optional-package sentinel guards (`np = None`, `torch = None`, `npt = Any`, etc.).
+> These are **intentionally needed** when the packages are installed in full environments,
+> but the isolated-venv model treats them as unused-ignore. This plan tracks safe removal.
+>
+> **Current baseline**: 297 errors · **Target**: ≤ 258 errors (−39)
+
+### 📐 PDA Loop Structure
+
+**Observe** → **Orient** → **Decide** → **Act** cycle, with AfterMath verification after each iteration.
+
+#### Iteration 1 — Sentinel type annotation (estimated −12 errors)
+- [ ] **Observe**: Run `python scripts/ci/mypy_baseline.py` in isolated venv; collect the 39 `[assignment]` error locations
+- [ ] **Orient**: Classify each sentinel by package — `np`/`npt` (numpy), `torch`/`nn`/`autocast`/`GradScaler` (PyTorch), `fcntl` (stdlib), `Dataset` (datasets), `CheckpointManager`/`_Accelerator` (internal)
+- [ ] **Decide**: For each sentinel, determine if the variable can be typed with `Optional[type]` (e.g. `np: Optional[ModuleType] = None`) instead of using `Any` assignment
+- [ ] **Act**: Replace `np = None  # type: ignore[assignment]` with `np: Optional[types.ModuleType] = None` where the variable is a module sentinel; import `types` and `Optional` at top of file
+- [ ] **AfterMath**: Run baseline; verify error count decreased; confirm ruff still passes
+
+#### Iteration 2 — `TYPE_CHECKING` guard pattern (estimated −15 errors)
+- [ ] **Observe**: Identify sentinels where the type is a class from the optional package (e.g. `torch.Tensor`, `torch.nn.Module`, `GradScaler`, `Dataset`)
+- [ ] **Orient**: Check if the package ships type stubs that define these types — if yes, use `if TYPE_CHECKING:` guard
+- [ ] **Decide**: For numpy (`npt`), torch (`Tensor`, `nn`, `GradScaler`, `autocast`), accelerate (`_Accelerator`), datasets (`Dataset`) — all have stubs; `TYPE_CHECKING` guard is safe
+- [ ] **Act**:
+  ```python
+  from __future__ import annotations
+  from typing import TYPE_CHECKING
+  if TYPE_CHECKING:
+      import numpy as np
+      import numpy.typing as npt
+      import torch
+      import torch.nn as nn
+  ```
+  Replace `torch = None  # type: ignore[assignment]` with conditional import; use `"torch"` string annotation where needed at runtime
+- [ ] **AfterMath**: Run baseline; verify both isolated-venv AND full-package mypy pass (test in CI with `[assignment]` errors resolved)
+
+#### Iteration 3 — Remaining `[assignment]` cases (estimated −12 errors)
+- [ ] **Observe**: After iterations 1 and 2, run baseline to identify any residual `[assignment]` errors
+- [ ] **Orient**: For complex cases (`torch = types.SimpleNamespace(...)`, `OmegaConf.to_container(...)` returning `Any`), analyze if the type annotation can be widened
+- [ ] **Decide**: Widen return type annotation where the actual type is provably correct (e.g. `to_container` → cast to `dict[str, Any]`); add `cast()` where assignment type truly diverges
+- [ ] **Act**: Apply `cast(dict[str, Any], OmegaConf.to_container(...))` and similar targeted fixes
+- [ ] **AfterMath**: Confirm baseline ≤ 258; update `.mypy_baseline`; update CHANGELOG
+
+### 📊 Tracking Table
+
+| File | `[assignment]` count | Iteration | Status |
+|------|---------------------|-----------|--------|
+| `src/training/engine_hf_trainer.py` | ~5 | 1, 2 | ⏳ |
+| `src/training/data_utils.py` | ~6 | 1, 2 | ⏳ |
+| `src/training/trainer.py` | ~4 | 2 | ⏳ |
+| `src/training/checkpoint_manager.py` | ~2 | 1 | ⏳ |
+| `src/training/functional_training.py` | ~2 | 3 | ⏳ |
+| `src/training/checkpointing.py` | ~1 | 2 | ⏳ |
+| `src/training/datasets.py` | ~1 | 2 | ⏳ |
+| `src/training/seed_utils.py` | ~1 | 1 | ⏳ |
+| `src/training/simple_trainer.py` | ~1 | 2 | ⏳ |
+| `src/training/cache.py` | ~2 | 1 | ⏳ |
+| `src/training/config.py` | ~1 | 3 | ⏳ |
+| `src/training/accelerate_init_guard.py` | ~1 | 2 | ⏳ |
+
+### 🔁 AfterMath Gate (run after every iteration commit)
+
+```bash
+# 1. Isolated venv check (must equal new target)
+python3 -m venv /tmp/mypy-venv --clear
+/tmp/mypy-venv/bin/pip install "mypy>=1.8.0" types-PyYAML types-requests
+/tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
+
+# 2. Ruff must still pass
+python -m ruff check .
+
+# 3. Sync tracked files (baseline hash)
+python3 scripts/ci/sync_tracked_files.py --fix
+```
 
 ---
 
