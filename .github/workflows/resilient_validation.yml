@@ -28,6 +28,9 @@ jobs:
     name: "WEC gate — check resilient-validation-suite.yml checkbox"
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       skip: ${{ steps.gate.outputs.skip }}
     steps:
