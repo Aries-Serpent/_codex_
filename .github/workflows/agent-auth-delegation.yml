@@ -386,11 +386,10 @@ jobs:
         if: >
           github.event_name == 'pull_request' ||
           github.event_name == 'pull_request_review'
-        env:
-          SESSION_REQUIREMENTS_CONTENT: ${{ steps.session_reqs.outputs.has_requirements == 'true' && hashFiles('/tmp/session-req-download/session_requirements.md') != '' && 'PENDING' || '' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require('fs');
             const sha = (context.sha || 'unknown').slice(0, 7);
             const MARKER = 'COGNITIVE PRE-FLIGHT CHECKLIST';
 
@@ -417,9 +416,19 @@ jobs:
 
             const UPSERT_MARKER = '<!-- cognitive-preflight-checklist -->';
 
-            // Inject pending session requirements (from comment-review-gate) at top of checklist
+            // Inject pending session requirements (from comment-review-gate) at top of checklist.
+            // Read actual file content — the session_reqs step downloads to a known path.
             const sessionReqsHasReq = '${{ steps.session_reqs.outputs.has_requirements }}' === 'true';
-            const sessionReqsContent = process.env.SESSION_REQUIREMENTS_CONTENT || '';
+            let sessionReqsContent = '';
+            if (sessionReqsHasReq) {
+              try {
+                sessionReqsContent = fs.readFileSync(
+                  '/tmp/session-req-download/session_requirements.md', 'utf8'
+                ).trim();
+              } catch (e) {
+                core.warning(`Could not read session requirements file: ${e.message}`);
+              }
+            }
             const pendingRequirementsBlock = sessionReqsHasReq && sessionReqsContent
               ? [
                   '',

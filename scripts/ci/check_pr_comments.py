@@ -490,10 +490,29 @@ def write_session_requirements(report: dict[str, Any], path: str) -> None:
     """Write unaddressed blocking comments as session requirements for the next Copilot prompt.
 
     The output file is injected at the beginning of the Copilot agent session prompt
-    (by agent-auth-delegation.yml cognitive-preflight job) so that pending comments
-    are surfaced as session directives rather than CI blockers.
+    by the ``cognitive-preflight`` job in ``agent-auth-delegation.yml``.  This implements
+    the "pre-pend to session prompt" contract from ``.codex/CODEBASE_AGENCY_POLICY.md §0a``:
+    pending comments are surfaced as *session directives* rather than CI blockers.
 
-    Format: Markdown block that the cognitive-preflight job can append to its checklist.
+    Output format:
+        Markdown file starting with ``<!-- session-requirements-pending -->`` marker
+        (which is in ``SKIP_BODY_MARKERS`` so the comment-review gate ignores it if
+        the file is ever posted as a PR comment).  The body contains a table of every
+        unaddressed blocking comment with author, preview, and a direct link.
+
+    Retention:
+        Uploaded as ``session-requirements-{PR}`` GitHub Actions artifact with 7-day
+        retention by ``comment-review-gate.yml``.  The cognitive-preflight job in
+        ``agent-auth-delegation.yml`` downloads this artifact and reads the file via
+        ``fs.readFileSync`` before constructing the preflight checklist body.
+
+    When ``--write-session-requirements`` is set the gate exits 0 even when blocking
+    comments are present (non-blocking mode).  The normal exit-code-1 path is only
+    used when the flag is absent.
+
+    Args:
+        report: Report dict returned by ``find_unaddressed_comments()``.
+        path:   Filesystem path to write the markdown file to.
     """
     blocking = report["unaddressed_blocking"]
     warning = report["unaddressed_warning"]

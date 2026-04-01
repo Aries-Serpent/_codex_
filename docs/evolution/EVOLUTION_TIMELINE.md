@@ -169,10 +169,10 @@
 
 ---
 
-### 🟢 Phase 12: Agent System Enhancement
+### ✅ Phase 12: Agent System Enhancement
 
 **Timeline**: 2026-02-01 — 2026-03-31  
-**Status**: 🟢 Active (65% — infrastructure + coordination + CI hardening)  
+**Status**: ✅ Complete (core deliverables shipped; PS-13/PS-14 in Phase 14)  
 **Evidence**: 160+ agents deployed, WEC v2.0, unified-coverage-agent, self-healing CI, cognitive brain Phase 4  
 **Plansets**: PS-13 (Agent Task Router), PS-14 (MSV Dashboard)
 
@@ -203,11 +203,11 @@
 
 ---
 
-### 🟢 Phase 13: CI/Security Hardening & Infrastructure Resilience
+### ✅ Phase 13: CI/Security Hardening & Infrastructure Resilience
 
 **Timeline**: 2026-03-15 — 2026-03-31  
-**Status**: 🟢 Active (Core hardening complete, MCP Interactive deferred)  
-**Evidence**: S257–S262 sessions, PR #3835, 48 vulnerabilities fixed, 136 active workflows
+**Status**: ✅ Complete (S257–S263, MCP Interactive deferred to Phase 13.1)  
+**Evidence**: S257–S263 sessions, PR #3835 + PR #3838, 48 vulnerabilities fixed, 136 active workflows
 
 Phase 13 was originally planned for MCP Interactive Mode (TUI). During execution,
 critical CI/security issues were prioritized: the axios CVE chain (4 CVEs), dual-package
@@ -218,7 +218,9 @@ Interactive Mode deliverables are rescheduled to Phase 13.1.
 |-------------|--------|----------|
 | axios CVE chain patched (4 CVEs) | ✅ | `copilot/extension/package.json` → `^1.13.5` (S262) |
 | Dual-package shadow eliminated | ✅ | `pytest.ini` pythonpath `'. src'` → `'src'` (S262) |
-| Comment gate hardened | ✅ | `check_pr_comments.py` lstrip().startswith() (S262) |
+| Training/ shims consolidated | ✅ | `training/engine_hf_trainer.py`, `data_utils.py`, `functional_training.py` → shims (S263) |
+| Comment gate hardened | ✅ | `check_pr_comments.py` SKIP_TEXT_PATTERNS + review fix + `--write-session-requirements` (S263) |
+| Session requirements injection | ✅ | `comment-review-gate.yml` artifact + `agent-auth-delegation.yml` preflight injection (S263) |
 | Actionlint SC2215 fixed | ✅ | `gh pr create` restored in 2 workflow files (S262) |
 | Agent file size gate enforced | ✅ | `cognitive-brain-manager.md` archived to ≤30K (S258) |
 | Cognitive Brain Phase 4 (OODA loop) | ✅ | SQLiteMemory persistence, FastAPI :8765 (S145) |
@@ -278,9 +280,9 @@ Phase 8:     ████████████████████ 100% �
 Phase 9:     ████████████████████ 100% ✅ Coverage & Perf
 Phase 10:    ████████████████████ 100% ✅ Genesis Foundation
 Phase 11:    ██████░░░░░░░░░░░░░░  30% 🟢 MCP Advanced (PS-11, PS-12 active)
-Phase 12:    █████████████░░░░░░░  65% 🟢 Agent Enhancement (WEC v2.0, 160+ agents)
-Phase 13:    ████████████░░░░░░░░  60% 🟢 CI/Security Hardening (S257–S262)
-Phase 13.1:  ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive (rescheduled)
+Phase 12:    ████████████████████ 100% ✅ Agent Enhancement (WEC v2.0, 160+ agents)
+Phase 13:    ████████████████████ 100% ✅ CI/Security Hardening (S257–S263)
+Phase 13.1:  ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive (sprint plan ready)
 Phase 14-18: ░░░░░░░░░░░░░░░░░░░░   0% 🟡 Future Cycles
 ```
 
