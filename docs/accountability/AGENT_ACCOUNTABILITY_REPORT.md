@@ -15477,3 +15477,28 @@ than routing through root-level shim files.
 - Issues resolved: #3841 (S214 health sweep), #3842 (S216 mypy fix)
 
 ---
+
+## SESSION SUMMARY — 2026-04-01T06:05Z SESSION S216-FOLLOWUP (Comment Review Gate Fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comments from mbaetiong reviewed — CI Rescue (Agent Auth Delegation + Comment Review Gate) addressed ✅
+- [x] **0b.** Failing CI checks reviewed — PR Comment Review Gate `action_required` due to unrecognised follow-up prompt marker ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Issue Addressed
+- **PR Comment Review Gate** blocking on `<!-- pr-followup-prompt-generated -->` comment from `pr-followup-generator.yml`
+- **Agent Auth Delegation** CI Rescue (comment #4167605925) — this was for old commit `7742b11`; fix commit `a05c2b34e` already included accountability report update, resolving the Cognitive Pre-flight gate
+
+### Work Completed
+- `scripts/ci/check_pr_comments.py` — Added `<!-- pr-followup-prompt-generated -->` to `SKIP_BODY_MARKERS` tuple. The `pr-followup-generator.yml` workflow posts a comment with this HTML marker whenever it generates a follow-up prompt file. This is an informational/operational comment (not a code review requiring a response) and should be exempt from the Comment Review Gate scan.
+
+### Root-Cause Note
+`pr-followup-generator.yml` posts a `<!-- pr-followup-prompt-generated -->` comment on every PR where it generates a follow-up prompt file, but `check_pr_comments.py` did not recognise this marker as operational. This caused the Comment Review Gate to treat the auto-generated follow-up prompt notification as a blocking unaddressed comment on every PR where the generator runs. Fix: add the marker to `SKIP_BODY_MARKERS` alongside the other workflow-generated comment markers already present.
+
+### Impact Score
+- Files changed: 1 (`scripts/ci/check_pr_comments.py`)
+- CI gates unblocked: PR Comment Review Gate (future PRs will no longer be blocked by follow-up prompt comments)
+- Deferral Language Gate: 0 violations
+
+---

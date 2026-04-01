@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **fix(mypy): unused type:ignore in isolated venv** — `src/codex/api/__init__.py` removed `# type: ignore[assignment]` from `app = None` in ImportError except block; in isolated venv `app` has type `Any` (fastapi unresolvable), so assignment has no type conflict.
 - **fix(mypy): baseline ratchet 333→331** — Updated `.mypy_baseline` from 333 to 331 using isolated venv (locks in 2-error improvement from S216 fixes).
 - **chore(cognitive-brain): S214 nightly health sweep** — ruff `All checks passed!`, auto_fix 0 auto-fixable issues, cognitive brain metadata updated with S216 root-cause pattern. Issue #3841 (S214 health sweep) resolved.
+- **fix(ci/gate): add pr-followup-prompt-generated to SKIP_BODY_MARKERS** — `scripts/ci/check_pr_comments.py` now skips `<!-- pr-followup-prompt-generated -->` comments posted by `pr-followup-generator.yml`. Previously these informational auto-generated comments were flagged as unaddressed blocking items by the Comment Review Gate on every PR.
 
 ### Fixed (auto-update — PR #3843)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3843 (SHA `ae0c1968`) at 2026-04-01T05:38Z [auto-generated]
