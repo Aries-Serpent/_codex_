@@ -27,11 +27,20 @@ name: "🔄 Auto-Post @copilot review After Agent Session"
 
 on:
   workflow_run:
-    # Trigger when the Copilot coding agent session completes.
-    # The dynamic "Copilot coding agent" workflow (path: dynamic/copilot-swe-agent/copilot)
-    # is the actual agent session; its runs carry pull_requests context for the PR under work.
+    # Fires when the Copilot coding agent session completes, OR when CodeQL finishes.
+    #
+    # WHY CodeQL is included:
+    #   CodeQL completes AFTER the agent session ends.  By watching it we can:
+    #   (1) Immediately auto-approve any pending Copilot sessions that were queued
+    #       after the agent pushed new commits — honoring `- [x] copilot-agent-session-done.yml`
+    #       as maintainer pre-approval, eliminating "awaiting approval from a maintainer".
+    #   (2) Compile fresh CodeQL findings into the bot-feedback thread for the next session.
+    #
+    # The "Copilot coding agent" trigger handles the primary review-cycle loop.
+    # The "CodeQL" trigger handles the delayed auto-approve + CodeQL finding compilation.
+    #
     # NOTE: workflow_run listeners only execute from the default branch (main).
-    workflows: ["Copilot coding agent"]
+    workflows: ["Copilot coding agent", "CodeQL"]
     types: [completed]
 
 concurrency:
@@ -181,6 +190,15 @@ jobs:
             // This ensures the workflow always posts @copilot review when the user explicitly selects
             // `- [x] copilot-agent-session-done.yml` in the PR Workflow Execution Checklist,
             // even when COPILOT_AGENT_AUTH_ENABLED is unset (e.g. token unavailable environment).
+
+            // When triggered by CodeQL completion, skip the @copilot review post entirely.
+            // The auto-approve-pending-runs and compile-bot-feedback jobs handle CodeQL triggers.
+            const triggeringWorkflow = context.payload.workflow_run.name;
+            if (triggeringWorkflow === 'CodeQL') {
+              console.log(`Triggered by "${triggeringWorkflow}" — skipping @copilot review post (auto-approve + compile-bot-feedback handle this trigger).`);
+              return;
+            }
+
             const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
             const owner = context.repo.owner;
             const repo  = context.repo.repo;
@@ -437,17 +455,32 @@ jobs:
             exit 0
           fi
 
-          # Check whether the auto-approve-workflows checkbox is ticked
+          # Check which checkboxes are ticked.
+          # Auto-approve is enabled when EITHER:
+          #   1. `- [x] auto-approve-workflows` is checked (explicit approval, always approve)
+          #   2. `- [x] copilot-agent-session-done.yml` is checked (WEC pre-approval)
+          #      The WEC checkbox IS the maintainer's pre-approval — checking it means "run
+          #      this workflow and approve whatever it needs", eliminating the
+          #      "This workflow is awaiting approval from a maintainer" gate.
           PR_BODY=$(gh pr view "${PR_NUMBER}" \
             --repo "${REPO}" \
             --json body -q '.body // ""' 2>/dev/null || echo "")
 
-          if ! printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows'; then
-            echo "⚡ auto-approve-workflows not checked — skipping."
+          AUTO_APPROVE_CHECKED=0
+          SESSION_DONE_CHECKED=0
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows' && AUTO_APPROVE_CHECKED=1 || true
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*copilot-agent-session-done\.yml' && SESSION_DONE_CHECKED=1 || true
+
+          if [ "$AUTO_APPROVE_CHECKED" = "0" ] && [ "$SESSION_DONE_CHECKED" = "0" ]; then
+            echo "⚡ Neither auto-approve-workflows nor copilot-agent-session-done.yml is checked — skipping."
             exit 0
           fi
 
-          echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          if [ "$AUTO_APPROVE_CHECKED" = "1" ]; then
+            echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          else
+            echo "⚡ copilot-agent-session-done.yml WEC checkbox is CHECKED (pre-approval) — auto-approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          fi
 
           # Fetch all workflow runs for this commit that require approval
           PENDING_RUNS=$(gh api \

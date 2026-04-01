@@ -15764,3 +15764,45 @@ S266 was the FIRST session to successfully produce a properly-formatted rescue c
 - **Rescue comment scoping**: SHA-scoped (one per commit) is correct for consolidating all workflow failures on one push into a single comment. Run-ID-scoped (one per workflow-run) fragments the view.
 - **Agent session AfterMath**: Write PDA AfterMath notes BEFORE any long cache-upload or cleanup steps, as the session may terminate during cleanup.
 - **Abrupt session end detection**: The signature is `Terminate orphan process: pid (XXXX) (uvicorn)` + `(MainThread)` in the cleanup log. The code was committed; only the documentation was missed.
+
+---
+
+## SESSION SUMMARY — 2026-04-01T22:05Z SESSION S268 (copilot-agent-session-done.yml: CodeQL trigger + WEC pre-approval for auto-approve)
+
+### PDA Loop
+
+**Observe:**
+New requirement from @mbaetiong (comment #4173217595): `copilot-agent-session-done.yml` must EXPLICITLY TRIGGER after `CodeQL - Code Quality / Analyze (python) (dynamic)` completes. Currently the workflow only watches `"Copilot coding agent"`. CodeQL completes AFTER the agent session ends, leaving a window where pending Copilot sessions show "This workflow is awaiting approval from a maintainer" because `auto-approve-pending-runs` has already run (tied to agent completion) but new sessions were queued during/after CodeQL.
+
+**Orient:**
+Three root causes:
+1. `on.workflow_run.workflows` only lists `["Copilot coding agent"]` — CodeQL completion does not fire this workflow
+2. `auto-approve-pending-runs` only honors `auto-approve-workflows` checkbox — the `copilot-agent-session-done.yml` WEC checkbox (which IS maintainer pre-approval) was not recognized
+3. `post-review-trigger` would post `@copilot review` on every CodeQL completion — needs guard to prevent spam
+
+**Decide:**
+1. Add `"CodeQL"` to `on.workflow_run.workflows` list
+2. In `auto-approve-pending-runs`: ALSO approve when `copilot-agent-session-done.yml` WEC checkbox is checked (implements "the WEC checkbox IS pre-approval")
+3. In `post-review-trigger` script: early return when `triggeringWorkflow === 'CodeQL'` (skip @copilot review; compile-bot-feedback still runs for CodeQL findings)
+
+**Act:**
+Three surgical edits to `.github/workflows/copilot-agent-session-done.yml`:
+1. `on.workflow_run.workflows: ["Copilot coding agent", "CodeQL"]` + updated comments explaining WHY
+2. Added `triggeringWorkflow` guard at top of `post-review-trigger` script
+3. Replaced single-checkbox gate in `auto-approve-pending-runs` with dual-checkbox gate (either `auto-approve-workflows` OR `copilot-agent-session-done.yml`)
+
+**AfterMath:**
+Changes pushed as commit `{next_sha}`. NOTE: `workflow_run` events run from the **default branch (main)**. These changes take full effect once this PR is merged to main. Until merge, the changes are staged but not active for `workflow_run` triggers.
+
+### Work Completed
+1. `copilot-agent-session-done.yml` — added `"CodeQL"` to trigger list (S268)
+2. `copilot-agent-session-done.yml` — `post-review-trigger`: skip @copilot review when triggered by CodeQL
+3. `copilot-agent-session-done.yml` — `auto-approve-pending-runs`: dual-checkbox pre-approval gate
+4. `AGENT_ACCOUNTABILITY_REPORT.md` — this S268 entry
+5. `cognitive_brain/metadata.json` — S268 entry added
+
+### Key Technical Detail: workflow_run Default Branch Requirement
+`workflow_run` listeners run the workflow file from the **default branch (main)**, NOT from the PR branch. This means:
+- Changes to `copilot-agent-session-done.yml` in `0D_base_` only activate AFTER merge to main
+- Until merge, the updated trigger list is staged in `0D_base_` but the running version is from main
+- This is WHY the "awaiting approval" issue persists on current PRs — the fix must be merged first

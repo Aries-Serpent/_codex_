@@ -1,7 +1,7 @@
 {
-  "last_update": "2026-04-01T21:47:00.000000",
-  "total_patterns": 312,
-  "new_patterns": 3,
+  "last_update": "2026-04-01T22:05:00.000000",
+  "total_patterns": 314,
+  "new_patterns": 2,
   "updated_patterns": 49,
   "pattern_types": {
     "duration_variance": 135,
@@ -11,6 +11,10 @@
       "actionlint_context_in_run_sc2288: ${{ context }} in run: triggers SC2288 \u2014 always use env: vars",
       "sha_scoped_rescue_comment: all failures for same commit share one PR comment thread (not one per workflow-run)",
       "pre_commit_trailing_whitespace: accountability report trailing spaces cause Fast Validation failure"
+    ],
+    "new_in_s268": [
+      "workflow_run_default_branch_only: workflow_run events always use workflow file from main \u2014 changes must be merged before they take effect",
+      "wec_checkbox_as_pre_approval: checking - [x] copilot-agent-session-done.yml in WEC IS maintainer pre-approval for auto-approve"
     ]
   },
   "session_notes": {
@@ -113,6 +117,23 @@
         "pda_aftermath_note": "The SUCCESSFUL MECHANISM START (S266 rescue comment posted as comment #4173047240) was documented RETROACTIVELY in this S267 session as required by the AfterMath/PDA Loop protocol.",
         "lesson": "Long cache-save steps (6 caches \u00d7 30 seconds each = ~3 minutes post-job) can cause agent session termination before AfterMath is written. Mitigate by writing PDA AfterMath notes BEFORE triggering cache operations, or by keeping them in the commit message."
       }
+    },
+    "S268": {
+      "session": "S268",
+      "timestamp": "2026-04-01T22:05:00Z",
+      "title": "copilot-agent-session-done.yml: CodeQL trigger + WEC pre-approval for auto-approve",
+      "pda_loop": {
+        "observe": "copilot-agent-session-done.yml only watched 'Copilot coding agent'. CodeQL completed after agent session, leaving pending sessions showing 'awaiting approval from a maintainer'.",
+        "orient": "Three issues: (1) missing CodeQL trigger, (2) auto-approve only checked auto-approve-workflows not copilot-agent-session-done.yml WEC checkbox, (3) @copilot review would spam on every CodeQL run",
+        "decide": "Add 'CodeQL' to workflow_run.workflows; extend auto-approve gate; add CodeQL guard in post-review-trigger",
+        "act": "Three surgical edits to copilot-agent-session-done.yml",
+        "aftermath": "IMPORTANT: workflow_run runs from default branch (main). Changes active only after PR merge to main."
+      },
+      "patterns_identified": [
+        "workflow_run_default_branch_only",
+        "wec_checkbox_as_pre_approval"
+      ],
+      "important_caveat": "workflow_run listeners use the workflow file from the DEFAULT BRANCH (main), not from the PR branch. Changes staged in 0D_base_ are inactive until merged."
     }
   }
 }
