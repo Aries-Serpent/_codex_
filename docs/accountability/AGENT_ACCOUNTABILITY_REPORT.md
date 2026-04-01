@@ -15806,3 +15806,34 @@ Changes pushed as commit `{next_sha}`. NOTE: `workflow_run` events run from the 
 - Changes to `copilot-agent-session-done.yml` in `0D_base_` only activate AFTER merge to main
 - Until merge, the updated trigger list is staged in `0D_base_` but the running version is from main
 - This is WHY the "awaiting approval" issue persists on current PRs — the fix must be merged first
+
+---
+
+## SESSION SUMMARY — 2026-04-01T22:47Z SESSION S269 (codeql-analysis.yml: post-CodeQL auto-approve job)
+
+### PDA Loop
+
+**Observe:**
+New requirement from @mbaetiong: even with S268 staged, the maintainer still had to manually approve run `23873647646` (`copilot-agent-session-done.yml`). Root cause confirmed: `workflow_run` events ALWAYS execute from the DEFAULT BRANCH (main). The S268 changes adding `"CodeQL"` to `copilot-agent-session-done.yml`'s trigger list are in `0D_base_` and do NOT take effect until merged to main.
+
+**Orient:**
+Circular dependency: `copilot-agent-session-done.yml` runs `auto-approve-pending-runs` which would approve pending runs, but `copilot-agent-session-done.yml` itself is stuck in `action_required` before it can run. The only way to break this cycle WITHOUT touching `main` is to add approval logic to a workflow that ALREADY runs from the PR branch via `push`/`pull_request` triggers.
+
+**Decide:**
+Add a `post-codeql-auto-approve` job to `codeql-analysis.yml`. This workflow already runs on `push` and `pull_request` from `0D_base_` and therefore uses the PR-branch version of the file. When CodeQL completes, the new job checks WEC for either `- [x] copilot-agent-session-done.yml` or `- [x] auto-approve-workflows` and approves all `action_required` workflow runs for the head SHA.
+
+**Act:**
+Added `post-codeql-auto-approve` job to `.github/workflows/codeql-analysis.yml`:
+- `needs: analyze` + `if: always() && pull_request from this repo` — fires after every CodeQL run
+- Checks both WEC pre-approval checkboxes
+- Approves all `action_required` workflow runs for the head SHA using `CODEX_MASTER_KEY`
+- Includes detailed log output (run IDs, names, approved count)
+
+**AfterMath:**
+This is the IMMEDIATE fix (PR-branch, no merge required). The S268 `workflow_run: ["Copilot coding agent", "CodeQL"]` changes remain staged and will provide redundancy after merge to main. Two-layer protection:
+1. `codeql-analysis.yml:post-codeql-auto-approve` — immediate, from PR branch
+2. `copilot-agent-session-done.yml` CodeQL trigger — after merge to main
+
+### Work Completed
+1. `codeql-analysis.yml` — added `post-codeql-auto-approve` job (S269)
+2. `AGENT_ACCOUNTABILITY_REPORT.md` — this S269 entry
