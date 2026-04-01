@@ -16,14 +16,14 @@ import logging
 import os
 from typing import Any, Iterable
 
-from mcp.embeddings.batcher import batch_iterable, compute_checksum  # type: ignore
-from mcp.embeddings.chunking import chunk_texts  # type: ignore
-from mcp.embeddings.dedupe import InMemoryDeduper  # type: ignore
-from mcp.observability.metrics import Timer, increment  # type: ignore
-from mcp.retries import retry_on_exception  # type: ignore
-from mcp.server.adapter_loader import load_adapter  # type: ignore
-from mcp.server.safety_checks import live_tests_enabled  # type: ignore
-from mcp.workers.checkpoint import load_checkpoint, save_checkpoint  # type: ignore
+from mcp.embeddings.batcher import batch_iterable, compute_checksum
+from mcp.embeddings.chunking import chunk_texts
+from mcp.embeddings.dedupe import InMemoryDeduper
+from mcp.observability.metrics import Timer, increment
+from mcp.retries import retry_on_exception
+from mcp.server.adapter_loader import load_adapter
+from mcp.server.safety_checks import live_tests_enabled
+from mcp.workers.checkpoint import load_checkpoint, save_checkpoint
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ def _load_embedder_class(path: str):
         ValueError: If the path is not in the allowlist (prevents arbitrary code injection).
     """
     if not path:
-        from mcp.embeddings.mock_embedder import MockEmbedder  # type: ignore
+        from mcp.embeddings.mock_embedder import MockEmbedder
 
         return MockEmbedder
     if path not in _EMBEDDER_ALLOWLIST:

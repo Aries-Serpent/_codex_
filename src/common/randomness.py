@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 try:
     import numpy as np
 except Exception:  # pragma: no cover
-    np = None  # type: ignore[assignment]
+    np = None
 
 try:
     import torch
@@ -82,8 +82,8 @@ def set_seed(seed: int | None) -> int:
 
                 if backends is not None:
                     try:
-                        backends.cudnn.deterministic = True  # type: ignore[attr-defined]
-                        backends.cudnn.benchmark = False  # type: ignore[attr-defined]
+                        backends.cudnn.deterministic = True
+                        backends.cudnn.benchmark = False
                     except Exception as exc:
                         logger.debug(f"Exception: {exc}")
                         logger.debug("Unable to set CuDNN deterministic flags: %s", exc)

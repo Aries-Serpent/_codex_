@@ -106,7 +106,7 @@ def _synthetic_classification_dataset(
     global torch, DataLoader, TensorDataset, random_split
     if torch is None or DataLoader is None or TensorDataset is None:
         try:
-            torch = importlib.import_module("torch")  # type: ignore[assignment]
+            torch = importlib.import_module("torch")
         except Exception as exc:  # pragma: no cover - optional dependency guard
             raise DatasetRegistryError("torch is required for synthetic datasets") from exc
         torch_utils = getattr(torch, "utils", None)
@@ -126,16 +126,16 @@ def _synthetic_classification_dataset(
         train_dataset = dataset
         val_dataset = None
     else:
-        val_size = max(1, int(len(dataset) * float(val_split)))  # type: ignore[arg-type]
-        val_size = min(val_size, len(dataset) - 1) if len(dataset) > 1 else val_size  # type: ignore[arg-type]
+        val_size = max(1, int(len(dataset) * float(val_split)))
+        val_size = min(val_size, len(dataset) - 1) if len(dataset) > 1 else val_size
         if val_size <= 0:
             train_dataset = dataset
             val_dataset = None
         else:
-            train_size = len(dataset) - val_size  # type: ignore[arg-type]
+            train_size = len(dataset) - val_size
             if train_size <= 0:
-                train_size = len(dataset) - 1  # type: ignore[arg-type]
-                val_size = len(dataset) - train_size  # type: ignore[arg-type]
+                train_size = len(dataset) - 1
+                val_size = len(dataset) - train_size
             train_dataset, val_dataset = random_split(
                 dataset,
                 [train_size, val_size],

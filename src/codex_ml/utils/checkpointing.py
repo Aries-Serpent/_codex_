@@ -1225,7 +1225,7 @@ class CheckpointManager:
         _write_json(ep_dir / "system.json", env)
         if config is not None:
             try:  # prefer YAML
-                import yaml  # type: ignore[import-untyped]
+                import yaml
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
             except Exception:

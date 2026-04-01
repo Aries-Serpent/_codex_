@@ -184,8 +184,8 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
 try:  # optional LoRA support
     from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - optional
-    LoraConfig = None  # type: ignore
-    get_peft_model = None  # type: ignore
+    LoraConfig = None
+    get_peft_model = None
 
 
 def main(argv: Sequence[str] | None = None) -> int:

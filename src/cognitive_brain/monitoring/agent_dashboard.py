@@ -38,7 +38,7 @@ from typing import Any, Deque, Dict, List
 # ---------------------------------------------------------------------------
 
 try:
-    from prometheus_client import Counter, Gauge, Histogram  # type: ignore
+    from prometheus_client import Counter, Gauge, Histogram
 
     _cognitive_decisions_total = Counter(
         "cognitive_decisions_total",
@@ -62,7 +62,7 @@ try:
     _PROMETHEUS_AVAILABLE = True
 except ImportError:
     # No-op stubs so the rest of the module works without prometheus_client
-    class _NoOpMetric:  # type: ignore
+    class _NoOpMetric:
         def labels(self, **_):
             return self
 
@@ -75,10 +75,10 @@ except ImportError:
         def observe(self, *_, **__):
             pass
 
-    _cognitive_decisions_total = _NoOpMetric()  # type: ignore
-    _cognitive_coherence = _NoOpMetric()  # type: ignore
-    _cognitive_latency = _NoOpMetric()  # type: ignore
-    _cognitive_errors_total = _NoOpMetric()  # type: ignore
+    _cognitive_decisions_total = _NoOpMetric()
+    _cognitive_coherence = _NoOpMetric()
+    _cognitive_latency = _NoOpMetric()
+    _cognitive_errors_total = _NoOpMetric()
     _PROMETHEUS_AVAILABLE = False
 
 

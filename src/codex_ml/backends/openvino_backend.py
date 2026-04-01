@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 # Optional OpenVINO import — Tier 2 guard
 # ---------------------------------------------------------------------------
 try:
-    from openvino.runtime import Core  # type: ignore[import]
+    from openvino.runtime import Core
 
     _OV_AVAILABLE = True
 except ImportError:

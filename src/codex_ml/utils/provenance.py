@@ -72,7 +72,7 @@ def _yaml_dumps(data: Any) -> str:
     """Serialize ``data`` to YAML, falling back to JSON when PyYAML is unavailable."""
 
     try:  # pragma: no cover - optional dependency
-        import yaml  # type: ignore[import-untyped]
+        import yaml
     except Exception as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("PyYAML unavailable; falling back to JSON: %s", exc)

@@ -135,7 +135,7 @@ except Exception:  # pragma: no cover - degrade gracefully when symbolic deps mi
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[symbolic]"
             )
 
-    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")  # type: ignore[misc, assignment]
+    run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")
     Weights = _MissingSymbolic("Weights")  # type: ignore[misc, assignment]
     PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc, assignment]
     SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc, assignment]

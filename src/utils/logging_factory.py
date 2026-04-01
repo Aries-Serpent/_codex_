@@ -49,7 +49,7 @@ def init_logging(
 
     if resolved_mode == "wandb":
         try:
-            import wandb  # type: ignore
+            import wandb
 
             if wandb_disable_env and os.environ.get("WANDB_API_KEY") is None:
                 logger.warning("WANDB_API_KEY not found — running wandb in offline mode")

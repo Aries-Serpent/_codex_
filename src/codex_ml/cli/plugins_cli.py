@@ -41,10 +41,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency: Typer preferred when available
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer missing
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 _GROUPS = {
     "tokenizers": registries.tokenizers,

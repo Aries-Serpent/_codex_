@@ -15,7 +15,7 @@ from dataclasses import asdict, is_dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from codex_ml.cli.config import AppConfig, register_configs
 from codex_ml.codex_data import DataConfig, load_dataset

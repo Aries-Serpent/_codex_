@@ -22,8 +22,8 @@ try:  # pragma: no cover - optional torch guard for import-time failures
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
     nn = Any  # type: ignore[assignment]
-    GradScaler = None  # type: ignore[assignment, misc]
-    autocast = None  # type: ignore[assignment, misc]
+    GradScaler = None
+    autocast = None
     DataLoader = Any  # type: ignore[assignment, misc]
 
 if torch is not None:  # pragma: no cover - typing bridge
@@ -32,7 +32,7 @@ if torch is not None:  # pragma: no cover - typing bridge
     DataLoaderType = DataLoader
 else:  # pragma: no cover - fallback types
     TensorType = Any  # type: ignore[misc]
-    OptimizerType = Any  # type: ignore[misc]
+    OptimizerType = Any
     DataLoaderType = Any  # type: ignore[misc]
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
@@ -174,7 +174,7 @@ class Trainer:
     def __init__(
         self,
         model: nn.Module,
-        optimizer: OptimizerType,
+        optimizer: OptimizerType,  # type: ignore[valid-type]
         train_loader: DataLoaderType,
         *,
         val_loader: DataLoaderType | None = None,

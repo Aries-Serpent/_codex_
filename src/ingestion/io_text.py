@@ -20,7 +20,7 @@ from typing import Union
 
 logger = logging.getLogger(__name__)
 try:
-    from .encoding_detect import detect_encoding  # type: ignore
+    from .encoding_detect import detect_encoding
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
@@ -69,7 +69,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
 
     # Try charset-normalizer.from_path if available
     try:
-        from charset_normalizer import from_path  # type: ignore
+        from charset_normalizer import from_path
 
         result = from_path(str(path))
         best = result.best() if result is not None else None
@@ -103,7 +103,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
 
 # Ensure a usable detect_encoding callable exists
 if detect_encoding is None:
-    detect_encoding = _fallback_detect_encoding  # type: ignore
+    detect_encoding = _fallback_detect_encoding
 
 
 __all__ = ["read_text"]
@@ -134,7 +134,7 @@ def read_text(
     used_encoding = encoding
     if encoding == "auto":
         try:
-            used_encoding = detect_encoding(p)  # type: ignore[arg-type]
+            used_encoding = detect_encoding(p)
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             logger.warning("Exception occurred", exc_info=True)

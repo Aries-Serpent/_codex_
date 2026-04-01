@@ -32,8 +32,8 @@ try:  # Optional dependency handling
     import numpy as np
     import numpy.typing as npt
 except ModuleNotFoundError:  # pragma: no cover - lightweight environments
-    np = None  # type: ignore[assignment]
-    npt = Any  # type: ignore[assignment]
+    np = None
+    npt = Any
 
 try:
     import torch

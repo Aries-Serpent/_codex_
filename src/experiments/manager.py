@@ -26,9 +26,9 @@ from codex_ml.utils.optional import optional_dependency_error
 logger = logging.getLogger(__name__)
 
 try:  # noqa: SIM105 — module-level attribute needed for @patch("experiments.manager.mlflow")
-    import mlflow  # type: ignore[import]
+    import mlflow
 except Exception:
-    mlflow = None  # type: ignore[assignment]
+    mlflow = None
 
 
 def init_experiment(exp_name: str = "codex_experiment") -> None:

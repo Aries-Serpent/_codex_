@@ -130,7 +130,7 @@ from typing import Any, Iterable, Mapping, Optional, cast
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
 except Exception:  # pragma: no cover - numpy missing
-    np = None  # type: ignore[assignment]
+    np = None
 
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]
@@ -217,7 +217,7 @@ except Exception:  # pragma: no cover - transformers missing
         def create_scheduler(self, *args: Any, **kwargs: Any) -> None:  # pragma: no cover
             raise ImportError("transformers.Trainer unavailable in offline mode")
 
-    def get_scheduler(*args: Any, **kwargs: Any) -> Any:  # type: ignore[misc]  # pragma: no cover
+    def get_scheduler(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
         raise ImportError("transformers.optimization.get_scheduler unavailable in offline mode")
 
 
@@ -484,7 +484,7 @@ def build_trainer(
             if training_steps is not None:
                 trainer.lr_scheduler = get_scheduler(
                     name=scheduler_name,
-                    optimizer=trainer.optimizer,  # type: ignore[arg-type]
+                    optimizer=trainer.optimizer,
                     num_warmup_steps=(
                         getattr(args, "warmup_steps", 0)
                         if hasattr(args, "warmup_steps")

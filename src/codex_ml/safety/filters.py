@@ -45,7 +45,7 @@ from typing import (
 )
 
 try:  # pragma: no cover - optional dependency
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
     yaml = None  # type: ignore[assignment]
 
@@ -791,7 +791,7 @@ class SafetyFilters:
             return logits
         for tid in banned_token_ids:
             try:
-                logits[tid] = neg_inf  # type: ignore[index, call-arg]
+                logits[tid] = neg_inf
             except Exception as exc:  # nosec B112 - continue loop; log for observability
                 logger.debug(
                     "safety.filters: failed to assign neg_inf for token %s (%s)",

@@ -53,7 +53,7 @@ class HookManager:
     def dispatch(self, name: str, state: dict[str, Any]) -> None:
         for hook in self.hooks:
             try:
-                getattr(hook, name)(state)  # type: ignore[attr-defined]
+                getattr(hook, name)(state)
             except Exception as exc:  # pragma: no cover - defensive logging
                 logger.warning("Hook %s.%s error: %s", hook.__class__.__name__, name, exc)
 

@@ -27,7 +27,7 @@ from typing import Iterator, Optional, Union
 try:
     # Prefer a dedicated encoding detector if present in repo
     from .encoding_detect import (
-        detect_encoding as _repo_detect_encoding,  # type: ignore
+        detect_encoding as _repo_detect_encoding,
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
@@ -39,7 +39,7 @@ try:
     # - read_text(path) -> str
     # - read_text(path, encoding) -> str
     # - read_text(path, encoding, errors) -> (str, used_encoding)
-    from .io_text import read_text as _io_text_read_text  # type: ignore
+    from .io_text import read_text as _io_text_read_text
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
@@ -48,7 +48,7 @@ except Exception:
 try:
     # Some callers expect _detect_encoding from io_text
     from .io_text import (
-        _fallback_detect_encoding as _io_text__detect_encoding,  # type: ignore
+        _fallback_detect_encoding as _io_text__detect_encoding,
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
@@ -57,8 +57,8 @@ except Exception:
 
 # Deterministic shuffle and legacy read_text_file may live in utils
 try:
-    from .utils import deterministic_shuffle as _deterministic_shuffle  # type: ignore
-    from .utils import read_text_file as _utils_read_text_file  # type: ignore
+    from .utils import deterministic_shuffle as _deterministic_shuffle
+    from .utils import read_text_file as _utils_read_text_file
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
@@ -90,7 +90,7 @@ if _deterministic_shuffle is None:
         return items
 
 else:
-    deterministic_shuffle = _deterministic_shuffle  # type: ignore
+    deterministic_shuffle = _deterministic_shuffle
 
 
 # Provide a detect_encoding wrapper that uses repo detector, io_text helper, or a conservative fallback.  # noqa: E501
@@ -167,19 +167,19 @@ def _call_repo_read_text(
     # Try the richer signatures first and progressively fall back.
     try:
         # Newer helpers may return (text, used_encoding)
-        result = _io_text_read_text(path, encoding=encoding, errors=errors)  # type: ignore[misc]
+        result = _io_text_read_text(path, encoding=encoding, errors=errors)
     except TypeError as e:
         logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             # Older helper may accept (path, encoding)
-            result = _io_text_read_text(path, encoding)  # type: ignore[misc]
+            result = _io_text_read_text(path, encoding)
         except TypeError as e:
             logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             try:
                 # Very old: only path
-                result = _io_text_read_text(path)  # type: ignore[misc]
+                result = _io_text_read_text(path)
             except Exception as exc:
                 logger.debug(f"Exception: {exc}")
                 raise RuntimeError(f"repo read_text failed: {exc}") from exc

@@ -362,7 +362,7 @@ def split_dataset(
     if torch is None or torch_random_split is None:
         raise RuntimeError("torch is required for split_dataset")
     try:
-        n = len(dataset)  # type: ignore[arg-type]
+        n = len(dataset)
     except Exception:
         n = 0
     if n == 0:
@@ -411,7 +411,7 @@ def deterministic_split(
 
     if torch is None or torch_random_split is None:
         raise RuntimeError("torch is required for deterministic_split")
-    lengths = _compute_lengths(len(dataset), lengths_or_fracs)  # type: ignore[arg-type]
+    lengths = _compute_lengths(len(dataset), lengths_or_fracs)
     generator = torch.Generator().manual_seed(int(seed))
     parts = torch_random_split(dataset, lengths, generator=generator)
     return tuple(parts)

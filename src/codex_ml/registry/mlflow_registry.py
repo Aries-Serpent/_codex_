@@ -26,8 +26,8 @@ except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
     _HAS_MLFLOW = False
-    mlflow = None  # type: ignore
-    MlflowClient = None  # type: ignore
+    mlflow = None
+    MlflowClient = None
 
 
 class DeploymentStage(Enum):

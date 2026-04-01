@@ -40,7 +40,7 @@ class TokenCache:
         data: dict[str, np.ndarray] = {}
         for key in self._buffer[0].keys():
             data[key] = np.concatenate([b[key] for b in self._buffer], axis=0)
-        np.savez(shard_path, **data)  # type: ignore[arg-type]
+        np.savez(shard_path, **data)
         rows = int(next(iter(data.values())).shape[0])
         shard_info = {"path": shard_path.name, "rows": rows}
         self.manifest["shards"].append(shard_info)  # type: ignore[attr-defined]

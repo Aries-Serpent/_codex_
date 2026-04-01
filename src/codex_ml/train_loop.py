@@ -121,8 +121,8 @@ try:
     _HAS_TORCH = True
 except Exception:  # noqa: BLE001
     torch = None  # type: ignore
-    nn = None  # type: ignore
-    optim = None  # type: ignore
+    nn = None
+    optim = None
     StepLR = None
     DataLoader = None
     Dataset = object

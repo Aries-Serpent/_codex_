@@ -47,10 +47,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency used for the public CLI.
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 
 def _parse_env_overrides(values: Sequence[str]) -> dict[str, Optional[str]]:
@@ -180,7 +180,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             )
         try:
             app(prog_name="codex-tracking", args=arg_list, standalone_mode=False)
-        except typer.Exit as exc:  # type: ignore[attr-defined]
+        except typer.Exit as exc:
             exit_code = int(exc.exit_code or 0)
         else:
             exit_code = 0

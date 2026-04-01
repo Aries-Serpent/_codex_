@@ -28,10 +28,10 @@ from pathlib import Path  # noqa: E402
 try:  # Optional dependency: Typer preferred when present
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer absent
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 from .schema import LogRecord  # noqa: E402
 

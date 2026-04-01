@@ -39,14 +39,14 @@ except Exception:  # pragma: no cover
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover
-    LoraConfig = None  # type: ignore
-    get_peft_model = None  # type: ignore
+    LoraConfig = None
+    get_peft_model = None
 
 
 @dataclass
 class HFModelBundle:
     model: torch.nn.Module
-    tokenizer: AutoTokenizer  # type: ignore[valid-type]
+    tokenizer: AutoTokenizer
 
 
 def _resolve_dtype(dtype: str):

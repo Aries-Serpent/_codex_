@@ -26,7 +26,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +34,13 @@ try:
     from omegaconf import DictConfig, OmegaConf
 
     def _to_container(cfg: DictConfig) -> dict[str, Any]:
-        return OmegaConf.to_container(cfg, resolve=True)  # type: ignore[arg-type]
+        return OmegaConf.to_container(cfg, resolve=True)
 
 except ImportError:  # pragma: no cover - fallback for optional dependency
     DictConfig = dict  # type: ignore[misc, assignment]
 
-    def _to_container(cfg: DictConfig) -> dict[str, Any]:  # type: ignore[override]
-        return cfg  # type: ignore[return-value]
+    def _to_container(cfg: DictConfig) -> dict[str, Any]:
+        return cfg
 
 
 @dataclass

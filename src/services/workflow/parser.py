@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from .types import (
     InputType,
@@ -280,7 +280,7 @@ class WorkflowParser:
                         branches=branches if branches else None,
                         paths=paths if paths else None,
                         types=types if types else None,
-                        schedule_cron=schedule_cron,  # type: ignore[arg-type]
+                        schedule_cron=schedule_cron,
                         workflows=workflows,
                     )
                 )

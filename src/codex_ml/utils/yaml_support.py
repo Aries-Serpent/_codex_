@@ -27,7 +27,7 @@ _PY_YAML_INSTALL_HINT = 'pip install "PyYAML>=6.0"'
 
 _yaml_module: Optional[ModuleType]
 try:  # pragma: no cover - import guard
-    import yaml as _yaml_module  # type: ignore
+    import yaml as _yaml_module
 except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency
     _yaml_module = None
     _YAML_IMPORT_ERROR = exc

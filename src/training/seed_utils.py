@@ -30,7 +30,7 @@ from typing import Any  # noqa: E402
 try:
     import numpy as np
 except ImportError:  # pragma: no cover - numpy is optional
-    np = None  # type: ignore[assignment]
+    np = None
 
 
 def _set_numpy_seed(seed: int) -> None:

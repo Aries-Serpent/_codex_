@@ -12,15 +12,15 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 try:
-    import numpy as np  # type: ignore
+    import numpy as np
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore
+    np = None
     NUMPY_AVAILABLE = False
 
 try:
-    import torch  # type: ignore
+    import torch
 
     TORCH_AVAILABLE = hasattr(torch, "manual_seed")
 except (ImportError, AttributeError):

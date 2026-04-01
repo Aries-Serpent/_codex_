@@ -36,7 +36,7 @@ try:
 except ImportError:
     NUMPY_AVAILABLE = False
     # Provide minimal interface for type hints
-    np = None  # type: ignore
+    np = None
 
 from .chunking import Chunk
 from .embedding import EmbeddingPipeline

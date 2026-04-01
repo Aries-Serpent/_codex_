@@ -144,7 +144,7 @@ def _capture_rng_state_raw() -> dict[str, Any]:
     state: dict[str, Any] = {"python": _random.getstate()}
     if _np is not None:
         with suppress(Exception):  # pragma: no cover - numpy edge cases
-            state["numpy"] = _np.random.get_state()  # type: ignore[assignment]
+            state["numpy"] = _np.random.get_state()
     if torch is not None:
         with suppress(Exception):  # pragma: no cover - guard against torch quirks
             state["torch_cpu"] = _torch_rng_get_state()
