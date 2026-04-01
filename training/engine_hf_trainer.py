@@ -22,13 +22,12 @@ _warnings.warn(
 )
 
 from src.training.engine_hf_trainer import *  # noqa: E402, F401, F403
-from src.training.engine_hf_trainer import (  # noqa: E402, F401
-    AsyncLogFile,
-    CSVMetricsWriter,
-    HFTrainerConfig,
-    NDJSONMetricsWriter,
-    build_trainer,
-    build_training_args,
-    get_hf_revision,
-    run_hf_trainer,
-)
+
+import src.training.engine_hf_trainer as _src_mod  # noqa: E402
+
+# Re-expose private helpers needed by tests that monkeypatch via
+# "training.engine_hf_trainer.<name>".
+try:
+    _make_accelerator = _src_mod._make_accelerator  # type: ignore[attr-defined]
+except AttributeError:  # pragma: no cover
+    pass

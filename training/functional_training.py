@@ -22,10 +22,16 @@ _warnings.warn(
 )
 
 from src.training.functional_training import *  # noqa: E402, F401, F403
-from src.training.functional_training import (  # noqa: E402, F401
-    TrainCfg,
-    evaluate_batches,
-    evaluate_dataloader,
-    main,
-    run_custom_trainer,
-)
+
+import src.training.functional_training as _src_mod  # noqa: E402
+
+# Re-expose private helpers and module-level names (e.g. ``torch``) that tests
+# monkeypatch via "training.functional_training.<name>".  ``import *`` only
+# exports public names, so private symbols and bare-module imports from the
+# source file must be forwarded explicitly.
+# Example: ``monkeypatch.setattr("training.functional_training.torch.optim.AdamW", ...)``
+for _name in ("torch", "_codex_logging_bootstrap", "_codex_log_all"):
+    _val = getattr(_src_mod, _name, None)
+    if _val is not None:
+        globals()[_name] = _val
+del _name, _val
