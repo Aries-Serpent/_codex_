@@ -75,12 +75,25 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- ci-rescue-rca:",
     "<!-- ci-rescue-deep:",
     "<!-- cognitive-preflight-checklist -->",
+    "<!-- cognitive-preflight-session-directives -->",
     "<!-- PR_STATUS_DASHBOARD_v1 -->",
     "<!-- BRANCH_REBASE_RESOLVED -->",
     "<!-- agent-token-delegation-result -->",
     "<!-- root-org-validation-v1 -->",
     "<!-- cost-check-bot -->",
     "<!-- agent-file-size-gate -->",       # Agent File Size Gate failure comment
+    "<!-- session-gate-queued -->",        # Session concurrency gate — operational, not actionable
+    "<!-- self-healing-escalation -->",    # Iterative self-healing escalation (Phase 5+)
+    "<!-- workflow-execution-gate:",       # WEC gate execution plan
+    "<!-- session-requirements-pending -->",  # Session requirements file — injected into next prompt
+)
+
+# Text-content patterns for comments that lack an HTML marker but are still
+# self-referential / operational and should never block the gate.  These are
+# checked against the first 80 chars of the comment body (after lstrip).
+SKIP_TEXT_PATTERNS: tuple[str, ...] = (
+    "## Self-Healing Escalation",   # Phase 5 iterative-self-healing-ci.yml escalation (no HTML marker)
+    "## 🤖 Copilot Self-Healing Escalation",  # Phase 8 copilot-escalation fallback
 )
 
 GITHUB_API = "https://api.github.com"
@@ -290,6 +303,8 @@ def find_unaddressed_comments(
         body_start = (c.get("body") or "")[:80]
         if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
             continue  # Self-referential gate output — exempt from scan
+        if any(body_start.lstrip().startswith(p) for p in SKIP_TEXT_PATTERNS):
+            continue  # Known operational text pattern — exempt from scan
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
         addressed_flag, latency = was_addressed(c.get("created_at", ""))
@@ -317,7 +332,19 @@ def find_unaddressed_comments(
         body = (r.get("body") or "").strip()
         if not body:
             continue  # Skip empty review bodies
+        # Apply same SKIP_BODY_MARKERS / SKIP_TEXT_PATTERNS checks as issue comments.
+        body_start = body[:80]
+        if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
+            continue
+        if any(body_start.lstrip().startswith(p) for p in SKIP_TEXT_PATTERNS):
+            continue
+        # COMMENTED reviews from blocking bots are informational overviews, not
+        # change requests. Only CHANGES_REQUESTED state is blocking; APPROVED /
+        # COMMENTED / DISMISSED are downgraded to info so they never stall CI.
+        state = (r.get("state") or "").upper()
         rec = classify_comment(r)
+        if rec["category"] == "blocking_bot" and state != "CHANGES_REQUESTED":
+            rec["category"] = "info_bot"
         rec["comment_type"] = "review"
         addressed_flag, latency = was_addressed(r.get("submitted_at", ""))
         rec["addressed"] = addressed_flag
@@ -457,6 +484,87 @@ def build_checklist_body(report: dict[str, Any]) -> str:
     ]
 
     return "\n".join(lines)
+
+
+def write_session_requirements(report: dict[str, Any], path: str) -> None:
+    """Write unaddressed blocking comments as session requirements for the next Copilot prompt.
+
+    The output file is injected at the beginning of the Copilot agent session prompt
+    by the ``cognitive-preflight`` job in ``agent-auth-delegation.yml``.  This implements
+    the "pre-pend to session prompt" contract from ``.codex/CODEBASE_AGENCY_POLICY.md §0a``:
+    pending comments are surfaced as *session directives* rather than CI blockers.
+
+    Output format:
+        Markdown file starting with ``<!-- session-requirements-pending -->`` marker
+        (which is in ``SKIP_BODY_MARKERS`` so the comment-review gate ignores it if
+        the file is ever posted as a PR comment).  The body contains a table of every
+        unaddressed blocking comment with author, preview, and a direct link.
+
+    Retention:
+        Uploaded as ``session-requirements-{PR}`` GitHub Actions artifact with 7-day
+        retention by ``comment-review-gate.yml``.  The cognitive-preflight job in
+        ``agent-auth-delegation.yml`` downloads this artifact and reads the file via
+        ``fs.readFileSync`` before constructing the preflight checklist body.
+
+    When ``--write-session-requirements`` is set the gate exits 0 even when blocking
+    comments are present (non-blocking mode).  The normal exit-code-1 path is only
+    used when the flag is absent.
+
+    Args:
+        report: Report dict returned by ``find_unaddressed_comments()``.
+        path:   Filesystem path to write the markdown file to.
+    """
+    blocking = report["unaddressed_blocking"]
+    warning = report["unaddressed_warning"]
+    pr = report["pr_number"]
+    scanned_at = report["scanned_at"][:16]
+
+    lines = [
+        "<!-- session-requirements-pending -->",
+        "## 📋 Pending Comment Requirements — Pre-pended to Session Prompt",
+        "",
+        f"> **Auto-generated** by `comment-review-gate.yml` at {scanned_at} UTC",
+        f"> PR #{pr} has {len(blocking)} unaddressed blocking comment(s).",
+        "> These requirements are injected into the Copilot session prompt instead of blocking CI.",
+        "",
+    ]
+
+    if blocking:
+        lines += [
+            "### 🚨 Must Address (Blocking — from `mbaetiong` or CI bots)",
+            "",
+            "| # | Author | Preview | Link |",
+            "|---|--------|---------|------|",
+        ]
+        for i, c in enumerate(blocking, 1):
+            author = c["author"]
+            preview = c["body_preview"][:80].replace("|", "╎")
+            url = c["url"]
+            lines.append(f"| {i} | `@{author}` | {preview} | [View]({url}) |")
+        lines += [
+            "",
+            "**Agent Instructions:** Reply to each blocking comment above with your",
+            "resolution before pushing new commits. Use the GitHub API or `gh` CLI.",
+            "",
+        ]
+
+    if warning:
+        lines += [
+            "### ⚠️ Review Required (Warning — bot comments)",
+            "",
+        ]
+        for c in warning:
+            lines.append(f"- `@{c['author']}`: {c['body_preview'][:80]} ([View]({c['url']}))")
+        lines.append("")
+
+    lines += [
+        "---",
+        f"_Generated by comment-review-gate.yml · PR #{pr} · {scanned_at} UTC_",
+    ]
+
+    with open(path, "w") as fh:
+        fh.write("\n".join(lines) + "\n")
+    print(f"Session requirements written to {path}")
 
 
 def post_checklist(
@@ -619,6 +727,12 @@ def main() -> int:
                         help="Write Prometheus text-format metrics to FILE")
     parser.add_argument("--post-checklist", action="store_true",
                         help="Post/update checklist comment on the PR")
+    parser.add_argument("--write-session-requirements", metavar="FILE",
+                        help=(
+                            "Write unaddressed blocking comments as session requirements to FILE "
+                            "for injection into the next Copilot session prompt. When specified, "
+                            "the gate exits 0 even if blocking comments exist (non-blocking mode)."
+                        ))
     parser.add_argument("--dry-run", action="store_true",
                         help="Print checklist body without posting")
     args = parser.parse_args()
@@ -641,6 +755,9 @@ def main() -> int:
 
     if args.metrics_file:
         write_prometheus_metrics(report, args.metrics_file)
+
+    if args.write_session_requirements:
+        write_session_requirements(report, args.write_session_requirements)
 
     # Print summary
     blocking = report["unaddressed_blocking"]
@@ -674,6 +791,16 @@ def main() -> int:
         print(checklist_body)
     elif args.post_checklist:
         post_checklist(report, args.pr, args.repo, token)
+
+    # When --write-session-requirements is set, blocking comments are captured as
+    # session directives injected into the next Copilot prompt.  The gate itself
+    # exits 0 so CI stays green and the session can proceed.
+    if args.write_session_requirements and report["exit_code"] == 1:
+        print(
+            "\nNOTE: Blocking comments exist but --write-session-requirements is set. "
+            "Requirements written to file. Gate exits 0 (non-blocking mode)."
+        )
+        return 0
 
     return report["exit_code"]
 
