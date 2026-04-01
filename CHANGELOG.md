@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3840)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3840 (SHA `b0c71042`) at 2026-04-01T02:26Z [auto-generated]
+
 ### Added (S263 — PR #3838 — 2026-04-01)
 - **feat(ci): comment-gate session requirements** — `scripts/ci/check_pr_comments.py` new `--write-session-requirements FILE` flag: writes unaddressed blocking comments as session directives to a markdown file for injection into the next Copilot session prompt. Gate exits 0 when flag is set (non-blocking mode). Implements the "pre-pend to session prompt" contract from CODEBASE_AGENCY_POLICY.md §0a.
 - **feat(ci): session requirements artifact** — `comment-review-gate.yml` uploads `session-requirements-{PR}` artifact (7-day retention) in every scan run. The `agent-auth-delegation.yml` cognitive-preflight job now downloads this artifact and injects pending comment requirements at the top of the checklist posted to the PR.
