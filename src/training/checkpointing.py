@@ -168,7 +168,7 @@ def snapshot_rng_state() -> RNGState:
     cpu_state = _torch_rng_get_state()
     cuda_state = None
     if hasattr(torch, "cuda") and torch.cuda.is_available():
-        cuda_state = torch.cuda.get_rng_state_all()  # type: ignore[attr-defined]
+        cuda_state = torch.cuda.get_rng_state_all()
     return RNGState(cpu=cpu_state, cuda_all=cuda_state)
 
 
@@ -181,7 +181,7 @@ def restore_rng_state(state: RNGState) -> None:
         _torch_rng_set_state(state.cpu)
     if state.cuda_all is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
         with suppress(Exception):  # pragma: no cover - best effort restoration
-            torch.cuda.set_rng_state_all(state.cuda_all)  # type: ignore[attr-defined]
+            torch.cuda.set_rng_state_all(state.cuda_all)
 
 
 def _score_key(metric: float | None, epoch: int, mode: str) -> tuple[int, float, int]:

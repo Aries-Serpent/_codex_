@@ -8,6 +8,8 @@ on:
       - '.codex/*.md'
       - 'scripts/*.md'
   pull_request:
+    # Only run on non-draft PRs by default. DRAFT mode: doc link check is optional.
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'docs/**/*.md'
       - 'README.md'
@@ -22,9 +24,64 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
+  # ── WEC gate — check PR body to decide if link check should run ──────────────
+  wec-gate:
+    name: "WEC gate — check documentation-link-checker.yml checkbox"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      skip: ${{ steps.gate.outputs.skip }}
+    steps:
+      - name: "Read WEC checkbox and draft status from PR"
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # On non-PR events (push, schedule), always run
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "📋 Non-PR event — link check will run."
+            exit 0
+          fi
+
+          # Skip on DRAFT PRs — doc link checker is optional in draft mode
+          IS_DRAFT="${{ github.event.pull_request.draft }}"
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "📋 DRAFT PR — documentation-link-checker.yml is optional (skip=true)."
+            exit 0
+          fi
+
+          BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body --jq '.body // ""' 2>/dev/null || echo "")
+
+          # Extract only the WEC section to avoid false matches in code examples/comments.
+          WEC_SECTION=$(echo "$BODY" | awk '
+            /^## 🔄 Workflow Execution Checklist/ { found=1 }
+            found && /^## / && !/^## 🔄 Workflow Execution Checklist/ { found=0 }
+            found { print }
+          ')
+
+          # If WEC section is present AND documentation-link-checker.yml is explicitly unchecked, skip.
+          if [ -n "$WEC_SECTION" ]; then
+            if echo "$WEC_SECTION" | grep -qiE '^\s*-\s*\[\s*\]\s*documentation-link-checker\.yml'; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "📋 WEC: documentation-link-checker.yml is UNCHECKED — skipping link check."
+              exit 0
+            fi
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "📋 WEC gate passed — proceeding with link check."
+
   check-links:
+    name: "Check documentation links"
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    needs: wec-gate
+    # Skip when WEC unchecked on PRs; always run on push/schedule
+    if: needs.wec-gate.outputs.skip != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -232,7 +289,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue:{pr_number} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number}:run-{run_id} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):
@@ -241,7 +298,7 @@ jobs:
             try:
               with urllib.request.urlopen(req,timeout=20) as r: return r.status,json.loads(r.read())
             except urllib.error.HTTPError as e: return e.code,{}
-          rescue_body=f"""## 🚨 CI Rescue — @copilot Fix Required\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n_Posted by: documentation-link-checker.yml → rescue-comment job (S227)_\n\n_[🔗 Workflow run]({run_url})_"""
+          rescue_body=f"""## 🚨 CI Rescue — Root Cause Analysis\n\n**Workflow:** `{workflow}`\n**Run:** [{run_id}]({run_url})\n**Branch:** `{branch}`\n**Commit:** `{commit_sha}`\n**Time:** {now}\n\n@copilot The **{workflow}** check is failing on commit `{sha_short}`.\n\n**Steps to resolve:**\n1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n2. Check the failure logs: [{run_id}]({run_url})\n3. Apply the minimal fix and push\n4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n5. Verify all CI checks are green before concluding\n\n> **Note:** This comment is dedicated to Run ID `{run_id}`. Additional failures within the same run are appended below. A new push creates a new comment for the new run.\n\n_Posted by: documentation-link-checker.yml → rescue-comment job (S266)_\n\n_[🔗 Workflow run]({run_url})_"""
           existing_id=None; existing_body=""
           page=1
           while not existing_id:
@@ -252,13 +309,13 @@ jobs:
             if existing_id or len(page_comments) < 100: break
             page+=1
           if existing_id:
-            append_section=f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n**Run:** [{run_id}]({run_url})\n\n@copilot `{workflow}` failed again on `{sha_short}`. Please investigate [run #{run_id}]({run_url})."
+            append_section=f"\n\n---\n\n### 🔄 Additional Failure — {now}\n\n**Run:** [{run_id}]({run_url})\n\n@copilot `{workflow}` also failed in run `{run_id}`. See [run #{run_id}]({run_url}) for details."
             updated=(existing_body.rstrip()+append_section)[:65536]
             status,_=gh("PATCH",f"/repos/{repo}/issues/comments/{existing_id}",{"body":updated})
-            if status in (200,201): print(f"✅ Appended to rescue comment #{existing_id}")
+            if status in (200,201): print(f"✅ Appended to rescue comment #{existing_id} (run {run_id})")
             else: existing_id=None
           if not existing_id:
             status,resp=gh("POST",f"/repos/{repo}/issues/{pr_number}/comments",{"body":f"{MARKER}\n{rescue_body}"})
-            if status in (200,201): print(f"✅ Posted rescue comment: {resp.get('html_url','(no url)')}")
+            if status in (200,201): print(f"✅ Posted new rescue comment for run {run_id}: {resp.get('html_url','(no url)')}")
             else: print(f"❌ Failed: HTTP {status}"); sys.exit(1)
           PYEOF

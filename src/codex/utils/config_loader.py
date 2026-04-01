@@ -124,7 +124,7 @@ class ConfigLoader:
             return
 
         try:
-            import yaml  # type: ignore[import-untyped]
+            import yaml
 
             with error_config_path.open("r") as f:
                 self.error_config = yaml.safe_load(f) or {}

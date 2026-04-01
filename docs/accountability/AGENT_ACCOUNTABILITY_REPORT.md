@@ -1,9 +1,57 @@
 # Agent Accountability Report
 
 **Repository:** Aries-Serpent/_codex_
-**Branch:** copilot/fix-ci-failure-triage-report
+**Branch:** 0D_base_
 **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-**Last updated:** 2026-04-01T01:00Z S263
+**Last updated:** 2026-04-01T18:38:00Z S265
+
+---
+
+## SESSION SUMMARY — 2026-04-01T18:38:00Z S265 (PR #3843 — CI Fix: CSVMetricsWriter + mypy Baseline Reduction + WEC Template Alignment)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+- [x] **0b.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **0c.** PR #3843 comments reviewed — CI rescue comment (4172139409) and comment review gate (4172106281) addressed ✅
+- [x] **0d.** Stored session memories loaded and verified ✅
+- [x] **0e.** Cognitive brain metadata and workflow_patterns.jsonl loaded ✅
+
+### Work Completed
+
+1. **CI failure fixed — CSVMetricsWriter ImportError:** All 7 failing CI jobs (`Sharded quick tests (shard 1-4/4)`, `validation (quick/slow/integration)`) failed with `ImportError: cannot import name 'CSVMetricsWriter' from 'training.engine_hf_trainer'`. Root cause: `CSVMetricsWriter` class defined at line 679 in `src/training/engine_hf_trainer.py` was absent from `__all__`. The root shim (`training/engine_hf_trainer.py`) uses `from src.training.engine_hf_trainer import *`, so only `__all__` members are exported. Fix: added `"CSVMetricsWriter"` to `__all__`. Tests now pass: `tests/test_metrics_writers.py 2 passed`.
+
+2. **mypy baseline reduction — 36 errors eliminated in src/training/:** Ran `python -m mypy src/training/ --warn-unused-ignores` which revealed 36 errors:
+   - 28 unused `type: ignore` comments (packages installed in full-env make ignores redundant)
+   - 8 real type errors not suppressed by existing ignores
+   
+   Fixes applied across 8 files:
+   - `accelerate_init_guard.py`: removed entire unused `[misc,assignment]` ignore
+   - `checkpoint_manager.py`: removed 6 unused ignores (import-level `# type: ignore`, `[override]` on fallback functions, `[misc]` on inner class)
+   - `config.py`: removed unused `[return-value]` ignore
+   - `data_utils.py`: removed unused `[index]` ignore
+   - `datasets.py`: removed unused `[assignment]` from except-block fallback
+   - `engine_hf_trainer.py`: removed/corrected 6 ignores; added `[misc]` to `get_scheduler` fallback; added `[arg-type]` to `trainer.optimizer` call; added `CSVMetricsWriter` to `__all__`
+   - `functional_training.py`: removed 9 unused ignores; fixed `LoraConfig and get_peft_model` → `LoraConfig is not None and get_peft_model is not None`; added `[attr-defined]` to `from datasets import Dataset`
+   - `trainer.py`: changed `GradScaler/autocast` from `[assignment]` to `[assignment, misc]` (both error codes active with torch installed); added `[misc]` to `OptimizerType = Any`; removed 3 unused ignores
+
+3. **PR template WEC section aligned:** The Workflow Execution Checklist in `.github/pull_request_template.md` was out-of-sync with the canonical structure:
+   - Added `[x]` defaults for: `deferral-language-gate.yml`, `copilot-agent-checkin.yml`, `cost-gate.yml`, `copilot-agent-session-done.yml`, `workflow-execution-gate.yml`, `copilot-iterative-self-healing.yml`, `auto-approve-workflows`
+   - Removed `documentation-link-checker.yml` row (not in canonical WEC)
+   - Removed the 5-phase sub-checklist under `copilot-iterative-self-healing.yml`
+   - Added hardened agent instruction block (verbatim WEC copy requirement)
+   - Version bumped implicitly to reflect canonical structure
+
+4. **Cognitive brain updated:** metadata.json updated with S265 session notes (2 new patterns). New `shim_star_import_missing_from_all` pattern added to `workflow_patterns.jsonl`.
+
+5. **Session file preserved:** Restored accidentally-deleted `.codex/sessions/session_0fa9aba7...jsonl`.
+
+### Root-Cause Analysis
+- **RP-S265-001 (CSVMetricsWriter ImportError):** `CSVMetricsWriter` defined in `src/training/engine_hf_trainer.py` but omitted from `__all__`. Shim uses `import *` which only exports `__all__`. All 7 test shards/validation modes failed. Pattern: `shim_star_import_missing_from_all`.
+- **RP-S265-002 (36 unused type:ignore in src/training/):** Full package installation (torch 2.11, transformers, accelerate 1.13) makes previously-needed ignores redundant. `warn_unused_ignores=True` counts each as a mypy error. 28 removals + 8 code fixes applied.
+- **RP-S265-003 (PR template WEC drift):** Template WEC had stale defaults (unchecked items that should be auto-checked). Missing hardened agent instruction block caused agents to omit WEC on `report_progress` calls.
+
+### Violations
+None. No deferral language used. All issues fixed in session.
 
 ---
 
@@ -15354,6 +15402,10 @@ and the CI gate requirement.
 
 ## SESSION SUMMARY — 2026-04-01T21:14Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3847)
 
+---
+
+## SESSION SUMMARY — 2026-04-01T05:38Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3843)
+
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
@@ -15367,12 +15419,251 @@ and the CI gate requirement.
 ### Work Completed (Auto-generated)
 1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #3847 (SHA: `a56a328b`). This entry was
+   touched in the last commit of PR #3843 (SHA: `ae0c1968`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
 2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
    the cognitive-preflight gate detected a missing accountability report update and
    invoked this self-healing script automatically.
 3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/23871200151
+4. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/23833696573
+5. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
+   reviewing all bot-posted comments and failing CI checks before applying changes.
+
+### Root-Cause Note
+The recurring "accountability report not updated" failure (Cognitive Pre-flight REQ-4)
+occurs when a commit is pushed that does not include an update to this file.  The
+self-healing mechanism in `agent-auth-delegation.yml` now catches this pattern and
+auto-commits a minimal session entry, closing the gap between agent session commits
+and the CI gate requirement.
+
+### Lessons Learned
+- EVERY commit pushed on a PR with Agent Token Delegation enabled MUST touch this file.
+- Per §0 of CODEBASE_AGENCY_POLICY.md: EVERY session MUST begin by reviewing ALL
+  bot-posted comments and ALL failing CI checks before making any file changes.
+- The `session_wrapup_autofix.py` script provides a safety net but the preferred
+  approach is for the agent session to update this file explicitly before committing.
+- Auto-entries are clearly tagged `[auto-generated]` so they are distinguishable
+  from genuine session summaries written by the agent.
+
+### Impact Score
+- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- CI gates unblocked: REQ-4, REQ-5
+- Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
+
+---
+
+## SESSION SUMMARY — 2026-04-01T05:41Z SESSION S214/S216 (mypy Anti-Regression Fix + Nightly Health Sweep)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — no unaddressed maintainer comments ✅
+- [x] **0b.** Failing CI checks reviewed — mypy baseline failure on `main` (run 23833571333) identified ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — no new untracked artifacts ✅
+- [x] **4.** Priority: Fix mypy regression and nightly health sweep ✅
+- [x] **5.** CODEBASE_AGENCY_POLICY.md loaded and followed ✅
+- [x] **6.** Cognitive brain metadata loaded and updated ✅
+
+### Issues Addressed
+- **Issue #3842 / S216** — mypy Baseline (Type-Check Anti-Regression) failure on `main` (run 23833571333)
+- **Issue #3841 / S214** — Nightly codebase health sweep (2026-04-01T03:07:38Z)
+
+### Work Completed
+
+#### S216: mypy Anti-Regression Fix
+**Root Cause**: PR #3840 changed `src/training/functional_training.py` to import from the
+root shim `training.engine_hf_trainer` instead of `src.training.engine_hf_trainer`. The
+shim uses `from src.training.engine_hf_trainer import *` (star import), which mypy cannot
+statically resolve to specific attributes. This caused:
+- `src/training/functional_training.py:129: error: Module "training.engine_hf_trainer" has no attribute "get_hf_revision" [attr-defined]`
+- `src/training/functional_training.py:142: error: Unused "type: ignore" comment [unused-ignore]`
+
+Additionally, PR #3840 introduced a new try/except guard in `src/codex/api/__init__.py`
+with a `# type: ignore[assignment]` that becomes unused in the isolated mypy venv (where
+missing imports resolve to `Any`, eliminating any assignment type conflict).
+
+**Fixes Applied**:
+1. `src/training/functional_training.py:129` — Changed `from training.engine_hf_trainer import` to `from .engine_hf_trainer import` (relative import). Mypy can now directly resolve the module without going through the shim's unresolvable star-import.
+2. `src/codex/api/__init__.py:9` — Removed unused `# type: ignore[assignment]` comment (the assignment to `None` has no type conflict when `app` has type `Any` in the isolated venv).
+3. `.mypy_baseline` — Updated from 333 → 331 (locked in the 2-error improvement).
+
+**Verification**: Isolated venv (`python -m venv + mypy>=1.8.0 + types-PyYAML + types-requests`) shows **331 errors ↓ 2 vs baseline 333** ✅
+
+#### S214: Nightly Codebase Health Sweep
+1. **Ruff check**: `python3 -m ruff check .` → `All checks passed!` ✅ No new violations.
+2. **auto_fix_common_issues**: 144 issues found (all informational), 0 auto-fixable ✅
+3. **CodeQL alerts**: Unable to query via integration (403 Forbidden) — no action taken on CodeQL (infrastructure restriction).
+4. **Accountability report**: Updated (this entry) within session ✅ (last update: 2026-04-01)
+5. **Last 5 CI runs on main**: 5 passes (success/skipped) with no recurring failures beyond the already-tracked mypy regression now fixed.
+6. **Cognitive brain metadata**: Updated with S216 root-cause pattern (`mypy_shim_star_import_attr_not_found`) + S214 sweep results. Baseline total patterns: 307.
+
+### Root-Cause Note
+The S216 regression pattern "mypy_shim_star_import_attr_not_found" must be tracked:
+when a shim file uses `from original.module import *` (star import), mypy CANNOT infer
+which attributes the shim re-exports. Any consumer importing specific names from the
+shim will receive `[attr-defined]` errors. The correct pattern for src-relative imports
+within `src/` packages is to use relative imports (`from .module import name`) rather
+than routing through root-level shim files.
+
+### Lessons Learned
+- **Shim + star-import = mypy black hole**: Whenever code inside `src/` is changed to
+  import via a root shim (which re-exports via `import *`), mypy loses type resolution.
+  Always prefer relative imports within `src/` packages.
+- **Isolated-venv `type: ignore` drift**: When packages aren't installed, `# type:
+  ignore[assignment]` on `x = None` (where x was imported as `Any`) becomes unused.
+  Consider annotating with `Optional[X]` or restructure to avoid the ignore entirely.
+- **Baseline locking**: After fixing mypy errors, always run `mypy_baseline.py --update`
+  with the isolated venv to lock in improvements and prevent baseline ratchet violations.
+
+### PDA Loop / AfterMath
+- **Plan**: Fix mypy regression (+1 error) + run health sweep (S214)
+- **Do**: Applied relative import fix, removed unused type:ignore, updated baseline
+- **Act**: Verified with isolated venv (331 ≤ 333 baseline) ✅
+- **AfterMath**: Issues #3841, #3842 resolved; cognitive brain patterns updated; baseline ratcheted down to 331
+
+### Impact Score
+- Files changed: 4 (`src/training/functional_training.py`, `src/codex/api/__init__.py`, `.mypy_baseline`, cognitive brain metadata + patterns)
+- mypy errors reduced: 334 → 331 (−3 total vs pre-fix; −2 vs baseline 333)
+- CI gates unblocked: mypy Baseline Anti-Regression gate
+- Ruff violations: 0 (no new violations found)
+- Deferral Language Gate: 0 violations
+- Issues resolved: #3841 (S214 health sweep), #3842 (S216 mypy fix)
+
+---
+
+## SESSION SUMMARY — 2026-04-01T06:05Z SESSION S216-FOLLOWUP (Comment Review Gate Fix)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comments from mbaetiong reviewed — CI Rescue (Agent Auth Delegation + Comment Review Gate) addressed ✅
+- [x] **0b.** Failing CI checks reviewed — PR Comment Review Gate `action_required` due to unrecognised follow-up prompt marker ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Issue Addressed
+- **PR Comment Review Gate** blocking on `<!-- pr-followup-prompt-generated -->` comment from `pr-followup-generator.yml`
+- **Agent Auth Delegation** CI Rescue (comment #4167605925) — this was for old commit `7742b11`; fix commit `a05c2b34e` already included accountability report update, resolving the Cognitive Pre-flight gate
+
+### Work Completed
+- `scripts/ci/check_pr_comments.py` — Added `<!-- pr-followup-prompt-generated -->` to `SKIP_BODY_MARKERS` tuple. The `pr-followup-generator.yml` workflow posts a comment with this HTML marker whenever it generates a follow-up prompt file. This is an informational/operational comment (not a code review requiring a response) and should be exempt from the Comment Review Gate scan.
+
+### Root-Cause Note
+`pr-followup-generator.yml` posts a `<!-- pr-followup-prompt-generated -->` comment on every PR where it generates a follow-up prompt file, but `check_pr_comments.py` did not recognise this marker as operational. This caused the Comment Review Gate to treat the auto-generated follow-up prompt notification as a blocking unaddressed comment on every PR where the generator runs. Fix: add the marker to `SKIP_BODY_MARKERS` alongside the other workflow-generated comment markers already present.
+
+### Impact Score
+- Files changed: 1 (`scripts/ci/check_pr_comments.py`)
+- CI gates unblocked: PR Comment Review Gate (future PRs will no longer be blocked by follow-up prompt comments)
+- Deferral Language Gate: 0 violations
+
+---
+
+## SESSION SUMMARY — 2026-04-01T07:09Z SESSION S216-PHASE2 (Unused-Ignore Bulk Cleanup + Convention Docs + Optional Annotation)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** New comment from mbaetiong (#4167982455) reviewed — continuation tasks identified ✅
+- [x] **0b.** All CI checks reviewed — Comment Review Gate passes (1/1 addressed), other checks action_required per environment approval process ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated this session ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
+
+### Tasks Completed
+
+**Task 1: Reduce mypy baseline below 331 (complete)**
+- Removed 22 always-unused `# type: ignore` comments across 8 files in `src/training/`
+- All removals are safe: either (a) bare import statements where `ignore_missing_imports = True` already suppresses the error, or (b) attribute/call sites where the attribute IS defined in the package's bundled type stubs (numpy ≥ 1.20, torch ≥ 1.8, etc.)
+- Files modified: `seed_utils.py` (5), `checkpointing.py` (2), `checkpoint_manager.py` (4), `evaluate.py` (1), `data_utils.py` (3), `engine_hf_trainer.py` (4), `functional_training.py` (6) — total 25 hunk changes, 22 unique unused-ignore errors eliminated (some hunks fixed 2 ignores together)
+- Baseline ratcheted **331 → 308** (−23 errors) ✅
+- Isolated venv verification: `308 errors = baseline 308` ✅
+
+**Task 2: Annotate `app` with explicit `Optional` / `Any` type in `src/codex/api/__init__.py`**
+- Added `app: Any = None` sentinel before the conditional import block
+- Restructured guard: `app = None` in except block replaced by `pass` (app stays None)
+- Added `# noqa: F811` on the `from .rag_api import app` line to suppress F811 (re-assignment of module-level name)
+- This prevents `[assignment]` drift when FastAPI IS installed in full environments
+- `from typing import Any` added to the file
+
+**Task 3: Add intra-src/ import convention note to docs**
+- Added comprehensive "Import Conventions" section to `docs/contributing/contributor_notes.md`
+- Covers: relative-import rule, why root shims are dangerous for mypy, `type: ignore` hygiene, acceptable vs unacceptable patterns
+
+### Root-Cause Analysis (Iterative Gap Loop — Iteration 1)
+
+**Gap identified**: 61 unused-ignore errors in `src/training/` were in the baseline. Of those:
+- 22 were always-unused (import + known-attr removals) → **fixed**
+- 39 remain: assignment guards (`np = None`, `npt = Any`, etc.) — these ARE needed in full-package environments; keeping them prevents type errors when numpy/torch/etc. are installed
+
+**Residual Risk**: The remaining 39 unused-ignore errors in src/training/ are not fixable without either:
+1. Restructuring the optional-import guards to use `Optional[X]` type annotations (complex refactor, risks breaking imports at runtime)
+2. Adding `per-file-ignores` config — would suppress all unused-ignore errors in those files (not wanted)
+3. Accepting them in the baseline (current approach: 308 baseline)
+
+**Decision**: Accept 308 as the new baseline. The 39 remaining unused-ignores are legitimate "can't fix in isolated venv without risking full-env breakage" cases. Future work can address them via Optional type annotations individually.
+
+### Verification
+- `ruff check .` → `All checks passed!` ✅
+- Isolated venv: `308 errors = baseline 308` ✅
+- `pytest tests/training/ tests/codex/api/` → 30 skipped, 0 failed (expected: no torch/numpy in CI) ✅
+
+### Impact Score
+- Files changed: 11 (`seed_utils.py`, `checkpointing.py`, `checkpoint_manager.py`, `evaluate.py`, `data_utils.py`, `engine_hf_trainer.py`, `functional_training.py`, `src/codex/api/__init__.py`, `docs/contributing/contributor_notes.md`, `.mypy_baseline`, `CHANGELOG.md`)
+- mypy errors reduced: 331 → 308 (−23 in this session, −25 total since PR start)
+- CI gates: all passing ✅
+- Deferral Language Gate: 0 violations
+
+---
+
+## SESSION ADDENDUM — 2026-04-01T07:09Z SESSION S216-PHASE2 (Iteration 2 — Yaml/Requests Cleanup)
+
+### Iterative Gap Analysis — Iteration 2
+
+**Gap discovered**: After fixing src/training/ unused-ignores, mypy scan revealed 20 more unused-ignore errors in other src/ packages. All were `# type: ignore[import-untyped]` on `import yaml` or `import requests` statements. Since the isolated venv installs `types-PyYAML` and `types-requests`, these packages HAVE type stubs, making `[import-untyped]` ignores always unused.
+
+**Files fixed** (10 additional removals):
+- `src/codex/ast_adapters/yaml_adapter.py` — `import yaml`
+- `src/codex/cognitive/task_router.py` — `import yaml`
+- `src/codex/cognitive/workflow_optimizer.py` — `import yaml`
+- `src/codex/ingest/manifest.py` — `import yaml`
+- `src/codex/intent/inferer.py` — `import yaml`
+- `src/codex/quality/cli.py` — `import yaml`
+- `src/codex/utils/config_loader.py` — `import yaml`
+- `src/codex/archive/sigstore_client.py` — `import requests as _requests`
+- `src/codex/dynamics/model/sla.py` — `import requests as _requests`
+- `src/codex/rag/providers/ollama_provider.py` — `import requests` + `from requests.adapters import HTTPAdapter`
+
+**Baseline after Iteration 2**: 297 (−34 total vs starting 331)
+
+**Remaining gaps** (not fixed — require deeper analysis):
+- `src/codex/logging/query_logs.py:56,57` — `Console = None  # type: ignore[misc,assignment]` — assignment guards for rich library types (needed in full env)
+- `src/codex/security/storage.py:124,128,187,214` — AESGCM/ChaCha20Poly1305 assignment and call-arg ignores (cryptography library typing)
+- `src/codex/dynamics/model/sla.py:523,550` — `# type: ignore[call-arg]` on dataclass constructors (might be needed in full env)
+- 39 remaining in `src/training/` — all assignment guards (`np = None`, `npt = Any`, etc.) needed in full env
+
+**Residual risks**: Low. Remaining 297 errors are either genuinely needed in full-package environments or are pre-existing type annotation gaps (not related to this PR).
+
+**Verification**: `ruff check .` ✅, `mypy_baseline --require-baseline` (297 ≤ 297) ✅
+
+---
+
+## SESSION SUMMARY — 2026-04-01T18:25Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #3846)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
+- [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
+- [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
+- [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
+- [x] **5.** Self-healing mechanism — auto-fix triggered by Agent Token Delegation gate ✅
+- [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
+
+### Work Completed (Auto-generated)
+1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+   touched in the last commit of PR #3846 (SHA: `ac11652a`). This entry was
+   automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
+   Cognitive Pre-flight REQ-4 gate.
+2. **Trigger** — Agent Token Delegation was enabled with `COPILOT_AGENT_AUTH_ENABLED`;
+   the cognitive-preflight gate detected a missing accountability report update and
+   invoked this self-healing script automatically.
+3. **Run URL** — https://github.com/Aries-Serpent/_codex_/actions/runs/23864205616
 4. **§0 compliance** — Per CODEBASE_AGENCY_POLICY.md §0, this auto-fix session began by
    reviewing all bot-posted comments and failing CI checks before applying changes.
 

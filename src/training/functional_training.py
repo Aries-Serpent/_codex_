@@ -55,7 +55,7 @@ LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional config dependency
-    from omegaconf import DictConfig, OmegaConf  # type: ignore
+    from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - omegaconf not installed
     DictConfig = Any  # type: ignore
     OmegaConf = None  # type: ignore
@@ -67,23 +67,23 @@ try:  # pragma: no cover - optional logging dependency
         _codex_logging_bootstrap,
     )
 except Exception:  # pragma: no cover - monitoring module missing
-    CodexLoggers = Any  # type: ignore
+    CodexLoggers = Any
 
-    def _codex_log_all(*args: Any, **kwargs: Any) -> None:  # type: ignore
+    def _codex_log_all(*args: Any, **kwargs: Any) -> None:
         """Fallback no-op logger when monitoring is unavailable."""
 
-    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> dict[str, Any]:  # type: ignore
+    def _codex_logging_bootstrap(*args: Any, **kwargs: Any) -> dict[str, Any]:
         return {}
 
 
 try:  # pragma: no cover - optional system metrics dependency
     from codex_ml.monitoring.system_metrics import SystemMetricsLogger
 except Exception:  # pragma: no cover - metrics optional
-    SystemMetricsLogger = None  # type: ignore[misc]
+    SystemMetricsLogger = None
 
 
 try:  # pragma: no cover - optional manifest helper
-    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+    from codex_ml.data.checksums import manifest_for_paths
 except Exception:  # pragma: no cover - optional dependency missing
     manifest_for_paths = None  # type: ignore
 
@@ -92,14 +92,14 @@ try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
 except Exception:  # pragma: no cover - minimal training may not need registry
 
-    def get_model(*args: Any, **kwargs: Any):  # type: ignore
+    def get_model(*args: Any, **kwargs: Any):
         raise RuntimeError("codex_ml.models.registry is unavailable")
 
 
 try:  # pragma: no cover - optional system metrics dependency chain
     from codex_ml.utils.system_metrics import collect_metrics as collect_system_metrics
 except Exception:  # pragma: no cover - optional dependency missing
-    collect_system_metrics = None  # type: ignore[assignment]
+    collect_system_metrics = None
 
 
 def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
@@ -126,7 +126,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
 
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import (
+    from .engine_hf_trainer import (
         _compute_metrics,
         get_hf_revision,
         run_hf_trainer,
@@ -182,7 +182,7 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
 
 
 try:  # optional LoRA support
-    from peft import LoraConfig, get_peft_model  # type: ignore
+    from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
@@ -215,7 +215,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     cfg: DictConfig = load_training_cfg(allow_fallback=True, overrides=args.overrides)
     # Flatten training.* into top-level dict for hydra_cfg propagation
-    training_cfg: dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)  # type: ignore[assignment]
+    training_cfg: dict[str, Any] = OmegaConf.to_container(cfg, resolve=True)
     nested = training_cfg.pop("training", {})
     if isinstance(nested, dict):
         training_cfg.update(nested)
@@ -289,9 +289,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
-        from datasets import Dataset  # type: ignore
+        from datasets import Dataset  # type: ignore[attr-defined]
 
-        from transformers import AutoTokenizer  # type: ignore
+        from transformers import AutoTokenizer
 
         model_cfg = training_cfg.get(
             "model",
@@ -488,7 +488,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     loggers: CodexLoggers = _codex_logging_bootstrap(argparse.Namespace())
 
-    if cfg.use_lora and LoraConfig and get_peft_model:
+    if cfg.use_lora and LoraConfig is not None and get_peft_model is not None:
         try:
             lcfg = LoraConfig(
                 r=cfg.lora_r,
@@ -537,7 +537,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
 
     def _safe_len(data: Any) -> int | None:
         try:
-            return int(len(data))  # type: ignore[arg-type]
+            return int(len(data))
         except Exception:
             logger.warning("Exception occurred", exc_info=True)
             return None
@@ -658,7 +658,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
     privacy_engine = None
     if cfg.dp_enabled:
         try:
-            from opacus import PrivacyEngine  # type: ignore
+            from opacus import PrivacyEngine
 
             privacy_engine = PrivacyEngine()
             model, optimizer, train_loader = privacy_engine.make_private(
@@ -710,7 +710,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             for epoch in range(start_epoch, cfg.epochs):
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
-                for step, batch in enumerate(train_loader):  # type: ignore[var-annotated]
+                for step, batch in enumerate(train_loader):
                     if epoch == start_epoch and step < start_step:
                         continue
                     if cfg.limit_train_batches and step >= cfg.limit_train_batches:

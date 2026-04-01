@@ -51,6 +51,25 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
         None if model doesn't support parameter inspection
     """
     try:
+        # Fast-path: only real torch.nn.Module instances can contain meta tensors.
+        # Non-Module objects (plain tensors, test mocks, custom wrappers without
+        # an nn.Module base class) must be returned as-is by safe_model_to_device.
+        # Without this guard, MagicMock auto-creates .parameters() / .buffers()
+        # as empty iterators, causing has_meta_tensors to return False instead of
+        # None — which then makes safe_model_to_device call model.to(device) and
+        # return mock.to() instead of the original mock object.
+        try:
+            import torch as _torch_fast
+            if not isinstance(model, _torch_fast.nn.Module):
+                return None
+        except ImportError:
+            # torch not available — cannot perform nn.Module check; fall through
+            # to the attribute-based inspection below so non-torch wrappers with
+            # real parameters() iterators are still handled correctly.
+            logger.debug("torch not available for nn.Module isinstance check in has_meta_tensors")
+        except Exception as exc:  # pragma: no cover — catches corrupt installs
+            logger.warning("Unexpected error importing torch in has_meta_tensors: %s", exc)
+
         # Check if model has parameters method
         if hasattr(model, "parameters"):
             for param in model.parameters():

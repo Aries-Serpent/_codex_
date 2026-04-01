@@ -116,7 +116,7 @@ class D365CalendarClient:
         if not self._available:
             return None
         try:
-            import requests as _requests  # type: ignore[import-untyped]
+            import requests as _requests
 
             # Validate businesshoursid to prevent OData injection
             if businesshoursid is not None and not re.fullmatch(r"[\w\-]{1,128}", businesshoursid):
