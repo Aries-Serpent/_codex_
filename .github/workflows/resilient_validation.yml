@@ -2,6 +2,8 @@ name: Resilient Validation Suite
 
 on:
   pull_request:
+    # Only run on non-draft PRs by default. DRAFT mode: validation is optional.
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'docs/**'
       - 'tests/**'
@@ -21,8 +23,55 @@ concurrency:
 # on every branch push while still giving promotion merges full coverage.
 
 jobs:
+  # ── WEC gate — skip when checkbox is unchecked OR PR is in DRAFT mode ───────
+  wec-gate:
+    name: "WEC gate — check resilient-validation-suite.yml checkbox"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      skip: ${{ steps.gate.outputs.skip }}
+    steps:
+      - name: "Read WEC checkbox and draft status from PR"
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # Skip on DRAFT PRs — resilient validation is optional in draft mode
+          IS_DRAFT="${{ github.event.pull_request.draft }}"
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "📋 DRAFT PR — resilient-validation-suite.yml is optional (skip=true)."
+            exit 0
+          fi
+
+          BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body --jq '.body // ""' 2>/dev/null || echo "")
+
+          # Extract only the WEC section to avoid false matches in code examples/comments.
+          WEC_SECTION=$(echo "$BODY" | awk '
+            /^## 🔄 Workflow Execution Checklist/ { found=1 }
+            found && /^## / && !/^## 🔄 Workflow Execution Checklist/ { found=0 }
+            found { print }
+          ')
+
+          # If WEC section is present AND resilient-validation-suite.yml is explicitly unchecked, skip.
+          if [ -n "$WEC_SECTION" ]; then
+            if echo "$WEC_SECTION" | grep -qiE '^\s*-\s*\[\s*\]\s*resilient-validation-suite\.yml'; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "📋 WEC: resilient-validation-suite.yml is UNCHECKED — skipping resilient validation."
+              exit 0
+            fi
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "📋 WEC gate passed — proceeding with resilient validation."
+
   validation:
     runs-on: ubuntu-latest
+    needs: wec-gate
+    # Skip when WEC unchecked or PR is in DRAFT mode
+    if: needs.wec-gate.outputs.skip != 'true'
     # Full suite (90 min, all groups) for 0D_base_ → main promotion.
     # Simplified (55 min, quick+docs only) for all other PRs.
     timeout-minutes: ${{ github.base_ref == 'main' && github.head_ref == '0D_base_' && 90 || 55 }}
@@ -149,11 +198,14 @@ jobs:
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
             const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue:${context.issue.number} -->`;
+            // Run-ID-scoped marker: each Run ID gets its own dedicated comment thread.
+            // Multiple failures in the same run append to the same comment.
+            // A new run always creates a new comment for clean per-run traceability.
+            const marker = `<!-- ci-rescue:${context.issue.number}:run-${runId} -->`;
             const workflowName = `Resilient Validation Suite / validation (${group})`;
 
             const rescueBody = [
-              '## 🚨 CI Rescue — @copilot Fix Required',
+              '## 🚨 CI Rescue — Root Cause Analysis',
               '',
               `**Workflow:** \`${workflowName}\``,
               `**Run:** [${runId}](${runUrl})`,
@@ -170,19 +222,21 @@ jobs:
               '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
               '5. Verify all CI checks are green before concluding',
               '',
-              '> **Note:** This comment is updated (not duplicated) for each subsequent',
-              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
+              '> **Note:** This comment is dedicated to Run ID `' + runId + '`.',
+              '> Additional failures within the same run are appended below.',
+              '> A new push will create a new comment for the new run.',
               '',
-              '_Posted by: resilient_validation.yml → rescue comment (S211)_',
+              '_Posted by: resilient_validation.yml → rescue comment (S266)_',
               '',
               '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
+              `_[🔗 Workflow run](${runUrl})_`,
             ].join('\n');
 
             const fullBody = `${marker}\n${rescueBody}`;
-            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
+            const appendSection = `\n\n---\n\n### 🔄 Additional Failure — ${now}\n\n**Group:** \`${group}\`  **Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` also failed in the same run. See [run #${runId}](${runUrl}) for details.`;
 
-            // Find existing rescue comment for this SHA
+            // Find existing rescue comment for THIS specific run ID only.
+            // Comments from other runs use different markers and will NOT be upserted.
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -198,7 +252,7 @@ jobs:
                 comment_id: existing.id,
                 body: updated,
               });
-              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
+              console.log(`Appended failure update to existing rescue comment #${existing.id} (run ${runId})`);
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -206,7 +260,7 @@ jobs:
                 issue_number: context.issue.number,
                 body: fullBody,
               });
-              console.log('Posted new rescue comment');
+              console.log(`Posted new rescue comment for run ${runId}`);
             }
 
   # P11-04: Parallel test sharding (S100)
@@ -216,8 +270,9 @@ jobs:
   # on every branch push.
   sharded-quick:
     name: Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})
-    # Only run full sharding for 0D_base_ → main promotion PRs
-    if: github.base_ref == 'main' && github.head_ref == '0D_base_'
+    needs: wec-gate
+    # Only run full sharding for 0D_base_ → main promotion PRs, and only when WEC checked / not draft
+    if: needs.wec-gate.outputs.skip != 'true' && github.base_ref == 'main' && github.head_ref == '0D_base_'
     runs-on: ubuntu-latest
     # P11-05: Increased from 55→75 min after repeated shard cancellations.
     # 14 k+ quick tests across 4 shards (~3.5 k each) + ~12 min setup overhead
@@ -316,11 +371,13 @@ jobs:
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
             const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue:${context.issue.number} -->`;
+            // Run-ID-scoped marker: all shards in the same run share ONE comment.
+            // A new run (new push) always creates a new comment for clean per-run traceability.
+            const marker = `<!-- ci-rescue:${context.issue.number}:run-${runId} -->`;
             const workflowName = `Resilient Validation Suite / Sharded quick tests (shard ${shard}/${total})`;
 
             const rescueBody = [
-              '## 🚨 CI Rescue — @copilot Fix Required',
+              '## 🚨 CI Rescue — Root Cause Analysis',
               '',
               `**Workflow:** \`${workflowName}\``,
               `**Run:** [${runId}](${runUrl})`,
@@ -337,19 +394,20 @@ jobs:
               '4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`',
               '5. Verify all CI checks are green before concluding',
               '',
-              '> **Note:** This comment is updated (not duplicated) for each subsequent',
-              `> failure on commit \`${shaShort}\`. Each new failure appends a 🔄 section below.`,
+              '> **Note:** This comment is dedicated to Run ID `' + runId + '`.',
+              '> Additional shard failures within the same run are appended below.',
+              '> A new push will create a new comment for the new run.',
               '',
-              '_Posted by: resilient_validation.yml → rescue comment (S211)_',
+              '_Posted by: resilient_validation.yml → rescue comment (S266)_',
               '',
               '---',
-              `_[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,
+              `_[🔗 Workflow run](${runUrl})_`,
             ].join('\n');
 
             const fullBody = `${marker}\n${rescueBody}`;
-            const appendSection = `\n\n---\n\n### 🔄 Failure Update — ${now}\n\n**Run:** [${runId}](${runUrl})\n\n@copilot \`${workflowName}\` failed again on the same commit \`${shaShort}\`. Please investigate [run #${runId}](${runUrl}) and apply the fix.`;
+            const appendSection = `\n\n---\n\n### 🔄 Additional Failure — ${now}\n\n**Shard:** \`${shard}/${total}\`  **Run:** [${runId}](${runUrl})\n\n@copilot Shard \`${shard}/${total}\` also failed in the same run. See [run #${runId}](${runUrl}) for details.`;
 
-            // Find existing rescue comment for this SHA
+            // Find existing rescue comment for THIS specific run ID only.
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -365,7 +423,7 @@ jobs:
                 comment_id: existing.id,
                 body: updated,
               });
-              console.log(`Appended failure update to existing rescue comment #${existing.id}`);
+              console.log(`Appended shard failure to existing rescue comment #${existing.id} (run ${runId})`);
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -373,5 +431,5 @@ jobs:
                 issue_number: context.issue.number,
                 body: fullBody,
               });
-              console.log('Posted new rescue comment for shard failure');
+              console.log(`Posted new rescue comment for run ${runId} (shard ${shard}/${total})`);
             }

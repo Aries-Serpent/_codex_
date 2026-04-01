@@ -242,22 +242,27 @@ jobs:
               print(f"⚠️  No PR found for commit {sha_short} — skipping rescue comment")
               sys.exit(0)
 
-          # Build the SHA-scoped dedup marker now that pr_number is resolved.
-          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
+          # Build the Run-ID-scoped dedup marker: each workflow run gets its OWN
+          # dedicated comment thread. Multiple jobs failing in the same run append
+          # to the same comment; a new run always creates a new comment.
+          MARKER = f"<!-- ci-rescue-rca:{pr_number}:run-{run_id} -->"
 
           body = (
-              f"## 🚨 CI Rescue — @copilot Fix Required\n\n"
+              f"## 🚨 CI Rescue — Root Cause Analysis\n\n"
               f"**Workflow:** \`{workflow}\`\n"
               f"**Run:** [{run_id}]({run_url})\n"
               f"**Commit:** \`{commit_sha}\`\n"
               f"**Time:** {now}\n\n"
               f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
               "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
+              "> **Note:** This comment is dedicated to Run ID `" + str(run_id) + "`. "
+              "Additional failures within the same run are appended below. "
+              "A new push creates a new comment for the new run.\n\n"
               "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"
               f"_[🔗 Workflow run]({run_url})_"
           )
 
-          # Paginate through all PR comments to find existing rescue marker.
+          # Paginate through all PR comments to find existing rescue marker for THIS run.
           # A single ?per_page=100 fetch misses markers on page 2+ (S232 fix).
           existing_id, existing_body = None, ""
           page = 1
@@ -275,18 +280,18 @@ jobs:
 
           if existing_id:
               append_section = (
-                  f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n"
+                  f"\n\n---\n\n### 🔄 Additional Failure — {now}\n\n"
                   f"**Run:** [{run_id}]({run_url})\n\n"
-                  f"@copilot \`{workflow}\` failed again on the same commit \`{sha_short}\`. "
-                  f"Please investigate [run #{run_id}]({run_url})."
+                  f"@copilot \`{workflow}\` also failed in the same run. "
+                  f"See [run #{run_id}]({run_url}) for details."
               )
               updated = (existing_body.rstrip() + append_section)[:65536]
               status, _ = gh("PATCH", f"/repos/{repo}/issues/comments/{existing_id}", {"body": updated})
-              print(f"{'✅' if status in (200,201) else '❌'} Appended rescue update (HTTP {status})")
+              print(f"{'✅' if status in (200,201) else '❌'} Appended rescue update to run-{run_id} comment (HTTP {status})")
           else:
               status, resp = gh("POST", f"/repos/{repo}/issues/{pr_number}/comments",
                                 {"body": f"{MARKER}\n{body}"})
-              print(f"{'✅' if status in (200,201) else '❌'} Posted rescue comment (HTTP {status}): {resp.get('html_url','')}")
+              print(f"{'✅' if status in (200,201) else '❌'} Posted new rescue comment for run {run_id} (HTTP {status}): {resp.get('html_url','')}")
           PYEOF
             echo "rescue_exit=$?" >> "$GITHUB_OUTPUT"
           else
