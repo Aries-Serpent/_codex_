@@ -22,9 +22,49 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
+  # ── WEC gate — check PR body to decide if link check should run ──────────────
+  wec-gate:
+    name: "WEC gate — check documentation-link-checker.yml checkbox"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      skip: ${{ steps.gate.outputs.skip }}
+    steps:
+      - name: "Read WEC checkbox from PR body"
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          # On non-PR events (push, schedule), always run
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "📋 Non-PR event — link check will run."
+            exit 0
+          fi
+
+          BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body --jq '.body // ""' 2>/dev/null || echo "")
+
+          # If WEC section is present AND documentation-link-checker.yml is explicitly unchecked, skip.
+          if echo "$BODY" | grep -qE '## 🔄 Workflow Execution Checklist'; then
+            if echo "$BODY" | grep -qiE '^\-\s*\[\s*\]\s*documentation-link-checker\.yml'; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "📋 WEC: documentation-link-checker.yml is UNCHECKED — skipping link check."
+              exit 0
+            fi
+          fi
+
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "📋 WEC gate passed — proceeding with link check."
+
   check-links:
+    name: "Check documentation links"
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    needs: wec-gate
+    # Skip when WEC unchecked on PRs; always run on push/schedule
+    if: needs.wec-gate.outputs.skip != 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5

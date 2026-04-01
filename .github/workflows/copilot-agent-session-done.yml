@@ -156,9 +156,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: preflight-autofix
-    # Only fire when:
-    #   1. The workflow_run was associated with a PR (not a plain branch push)
+    # PRE-APPROVED: The WEC checkbox `- [x] copilot-agent-session-done.yml` in the PR body
+    # constitutes maintainer pre-approval.  This job MUST run even when preflight-autofix
+    # fails — `always()` ensures the posting is never blocked by an upstream job outcome.
+    # Only skip when there is no associated PR.
     if: |
+      always() &&
       github.event.workflow_run.pull_requests != null &&
       github.event.workflow_run.pull_requests[0] != null
 
@@ -503,7 +506,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: post-review-trigger
+    # PRE-APPROVED: always() ensures this job runs even if post-review-trigger failed.
+    # The WEC checkbox constitutes maintainer pre-approval — no additional gate needed.
     if: |
+      always() &&
       github.event.workflow_run.pull_requests != null &&
       github.event.workflow_run.pull_requests[0] != null
 

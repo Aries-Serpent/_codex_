@@ -116,6 +116,7 @@
 
 ### 📄 Documentation
 - [ ] docs-build.yml — Documentation build
+- [ ] documentation-link-checker.yml — Documentation link checker (can be skipped when no doc changes)
 
 ### 🤖 Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
