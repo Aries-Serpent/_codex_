@@ -103,17 +103,19 @@ jobs:
           echo "blocking_count=${BLOCKING}" >> "$GITHUB_OUTPUT"
           echo "warning_count=${WARNING}" >> "$GITHUB_OUTPUT"
 
-          # Write step summary
+          # Write step summary — use BLOCKING/WARNING counts, not EXIT_CODE,
+          # because --write-session-requirements always exits 0 even when
+          # blocking comments exist.
           echo "## 🔍 PR Comment Review Gate" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          if [ "$EXIT_CODE" -eq 0 ]; then
-            echo "### ✅ All comments addressed" >> "$GITHUB_STEP_SUMMARY"
-          elif [ "$EXIT_CODE" -eq 1 ]; then
+          if [ "${BLOCKING:-0}" -gt 0 ]; then
             echo "### 🚨 ${BLOCKING} blocking comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "Requirements written to session_requirements.md — injected into next Copilot session prompt." >> "$GITHUB_STEP_SUMMARY"
-          else
+          elif [ "${WARNING:-0}" -gt 0 ]; then
             echo "### ⚠️ ${WARNING} warning comment(s) unaddressed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ✅ All comments addressed" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           # Return 0 always here — the gate job below enforces failure
