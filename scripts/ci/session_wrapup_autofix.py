@@ -181,8 +181,11 @@ def _build_wec_block(existing_state: dict[str, bool] | None = None) -> str:
 
     lines += [
         "",
-        "> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for",
-        "> this session. Unchecked workflows will be SKIPPED by the gate.",
+        "> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be",
+        "> appended verbatim to **every** PR body update — including every `report_progress` call.",
+        "> Copy the WEC block from the current PR body into the `prDescription` parameter, keeping",
+        "> **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.",
+        "> Only 'always required' items may be auto-checked. All other items preserve their current state.",
         "",
     ]
     return "\n".join(lines)
@@ -435,17 +438,21 @@ def fix_pr_body_checkboxes(
     pr_number: str,
     dry_run: bool = False,
 ) -> bool:
-    """Ensure the PR description ends with the canonical Workflow Execution Checklist.
+    """Ensure the PR description contains the canonical Workflow Execution Checklist
+    with all maintainer-selected checkboxes preserved.
+
+    HARDENED BEHAVIOUR (S259 — maintainer mandate):
+    This function is called on EVERY agent session completion and PR body update.
+    It does NOT bail out when the WEC block is already present — it ALWAYS verifies
+    that the existing WEC block matches the canonical rebuild using the current
+    maintainer selections.  If they diverge (e.g. because ``report_progress``
+    overwrote the body and reset some checkboxes), the block is rebuilt in-place
+    using the selections extracted from the live PR body.
 
     The checklist block is required by multiple approval gates:
     - cost-gate.yml          (reads '💰 Cost Proposal Approved')
     - agent-auth-delegation.yml (reads 'COPILOT_AGENT_AUTH_ENABLED')
     - workflow-execution-gate.yml (reads the full WEC block)
-
-    The ``report_progress`` tool used by Copilot coding agent OVERWRITES the PR
-    description with only the task checklist, stripping these mandatory sections.
-    This function restores them by rebuilding the WEC block via ``_build_wec_block()``
-    when the canonical ``_WEC_MARKER`` is absent.
 
     Returns True if an update was made (or would be made in dry_run), False otherwise.
     """
@@ -464,29 +471,44 @@ def fix_pr_body_checkboxes(
     # Legacy fallback: old bold-text format
     has_wec_legacy = _WEC_MARKER_LEGACY in pr_body
 
-    # New format is self-sufficient — legacy cost/delegation strings no longer live in it
+    # ALWAYS extract existing maintainer selections (hardened — never skip this step)
+    existing_state = _extract_wec_state(pr_body)
+
     if has_wec:
-        print(f"✅ PR #{pr_number} already has Workflow Execution Checklist (heading format) — no repair needed")
-        return False
+        # WEC block is present — but verify the maintainer selections haven't drifted.
+        # Build what the block SHOULD look like given the current state, then compare
+        # to what's actually in the body from the WEC marker onward.
+        canonical_block = _build_wec_block(existing_state)
+        # _build_wec_block() always embeds _WEC_MARKER; guard defensively anyway.
+        if _WEC_MARKER not in canonical_block:  # pragma: no cover — should never happen
+            print(f"⚠  PR #{pr_number} _build_wec_block() returned a block without marker — forcing rebuild")
+        else:
+            canon_from_marker = canonical_block[canonical_block.index(_WEC_MARKER):]
+            body_from_marker  = pr_body[pr_body.index(_WEC_MARKER):]
+            if canon_from_marker.strip() == body_from_marker.strip():
+                n_checked = sum(1 for v in existing_state.values() if v)
+                print(
+                    f"✅ PR #{pr_number} WEC is already canonical "
+                    f"({n_checked} item(s) checked) — no repair needed"
+                )
+                return False
+        # State has drifted (or defensive guard hit) — fall through to rebuild
+        n_checked = sum(1 for v in existing_state.values() if v)
+        print(
+            f"⚠  PR #{pr_number} WEC state has drifted from canonical — "
+            f"re-applying {n_checked} maintainer selection(s)..."
+        )
 
     # Legacy-format checks (belt-and-suspenders for old PRs still carrying the old block)
-    needs_cost = "💰 Cost Proposal Approved" not in pr_body
-    needs_delegation = "COPILOT_AGENT_AUTH_ENABLED" not in pr_body
-
-    if has_wec_legacy and not needs_cost and not needs_delegation:
-        # Legacy format present and complete — migrate to new heading format
-        print(f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format")
     elif not has_wec_legacy:
-        missing = []
-        missing.append("Workflow Execution Checklist")
-        if needs_cost:
+        missing = ["Workflow Execution Checklist"]
+        if "💰 Cost Proposal Approved" not in pr_body:
             missing.append("Cost Governance")
-        if needs_delegation:
+        if "COPILOT_AGENT_AUTH_ENABLED" not in pr_body:
             missing.append("Agent Token Delegation")
         print(f"⚠  PR #{pr_number} missing: {', '.join(missing)} — restoring...")
-
-    # Extract existing checkbox state so maintainer selections are preserved
-    existing_state = _extract_wec_state(pr_body)
+    else:
+        print(f"⚠  PR #{pr_number} has legacy WEC format — migrating to canonical heading format")
 
     # Strip old WEC blocks (both new heading format and legacy bold-text format)
     stripped_body = pr_body
@@ -505,7 +527,11 @@ def fix_pr_body_checkboxes(
     )
 
     if dry_run:
-        print(f"[dry-run] Would restore Workflow Execution Checklist to PR #{pr_number}")
+        n_checked = sum(1 for v in existing_state.values() if v)
+        print(
+            f"[dry-run] Would rebuild WEC for PR #{pr_number} "
+            f"(preserving {n_checked} checked item(s))"
+        )
         return True
 
     try:
@@ -513,7 +539,11 @@ def fix_pr_body_checkboxes(
             ["gh", "pr", "edit", pr_number, "--body", new_body],
             check=True, capture_output=True, text=True,
         )
-        print(f"✅ Restored Workflow Execution Checklist to PR #{pr_number}")
+        n_checked = sum(1 for v in existing_state.values() if v)
+        print(
+            f"✅ Rebuilt WEC for PR #{pr_number} "
+            f"(preserved {n_checked} maintainer selection(s))"
+        )
         return True
     except subprocess.CalledProcessError as exc:
         print(f"⚠  Could not update PR #{pr_number} body: {exc.stderr or exc}", file=sys.stderr)

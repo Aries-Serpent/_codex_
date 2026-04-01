@@ -191,8 +191,8 @@ jobs:
             // Fetch PR body to check the WEC checkbox for copilot-agent-session-done.yml
             let wecChecked = false;
             try {
-              const { data: prData2 } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
-              const prBody = prData2.body || '';
+              const { data: prDataForWec } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
+              const prBody = prDataForWec.body || '';
               // Match: `- [x] copilot-agent-session-done.yml` (case-insensitive, optional leading spaces)
               wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prBody);
               console.log(`WEC checkbox (copilot-agent-session-done.yml): ${wecChecked}`);
@@ -618,7 +618,7 @@ jobs:
 
             // ── Build compiled continuation comment ──────────────────────────────
             const findingsList = findings
-              .map((f, i) => `**${i+1}. ${f.source}**\n\n> ${f.body.replace(/\n/g, '\n> ')}`)
+              .map((f, i) => `**${i + 1}. ${f.source}**\n\n> ${(f.body || '').replace(/\n/g, '\n> ')}`)
               .join('\n\n---\n\n');
 
             const compiledBody = [
