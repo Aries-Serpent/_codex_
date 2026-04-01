@@ -962,19 +962,24 @@ def _make_rca_marker(
 ) -> str:
     """Return the HTML comment marker used to identify rescue comments.
 
-    Uses a Run-ID-scoped marker (``<!-- ci-rescue-rca:{pr_number}:run-{run_id} -->``)
-    so that each workflow run gets its OWN dedicated comment thread, grouping all
-    failing jobs from that run together.  A new run (new push/trigger) always creates
-    a new comment, so agents can compare failures between runs and track resolution
-    progress per run.  Falls back to PR-scoped or SHA-scoped markers when run_id is
-    unavailable for backward compatibility.
+    Uses a commit-SHA-scoped marker (``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``)
+    so that ALL failing workflows for the SAME push share ONE comment thread.
+    A new push (different commit SHA) always creates a new comment, enabling
+    per-push comparison by agents.  Appending multiple failures from different
+    workflow runs into the same comment is intentional — this is the PDA Loop
+    AfterMath requirement (S267).
+
+    Falls back to PR-scoped or bare markers when commit_sha is unavailable.
+    The ``run_id`` parameter is accepted for backward compatibility but is no
+    longer used to scope the marker.
     """
-    if pr_number and run_id:
-        return f"<!-- ci-rescue-rca:{pr_number}:run-{run_id} -->"
+    sha12 = commit_sha.strip()[:12] if commit_sha and commit_sha.strip() else None
+    if pr_number and sha12:
+        return f"<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->"
     if pr_number:
         return f"<!-- ci-rescue-rca:{pr_number} -->"
-    if commit_sha and commit_sha.strip():
-        return f"<!-- ci-rescue-rca:{commit_sha.strip()[:12]} -->"
+    if sha12:
+        return f"<!-- ci-rescue-rca:{sha12} -->"
     return "<!-- ci-rescue-rca -->"
 
 
@@ -989,18 +994,18 @@ def post_pr_comment(
 ) -> bool:
     """Post or append-update a @copilot RCA comment on the PR.
 
-    Deduplication strategy:
-    - Each workflow run gets its own Run-ID-scoped marker
-      ``<!-- ci-rescue-rca:{pr_number}:run-{run_id} -->``.
-    - Multiple failing jobs within the SAME run append to the same comment,
-      keeping all failures for that run in one thread.
-    - A NEW run_id always creates a NEW comment so agents can compare failures
-      between runs and track resolution progress per run.
+    Deduplication strategy (S267 — SHA-scoped):
+    - All failing workflows for the SAME commit share ONE comment thread,
+      using marker ``<!-- ci-rescue-rca:{pr_number}:sha-{sha12} -->``.
+    - Multiple failing workflows on the same push ALL append to this thread,
+      giving agents a single consolidated view of every failure for that commit.
+    - A NEW push (different commit SHA) always creates a NEW comment so agents
+      can compare failures between pushes and track resolution progress.
     - Falls back to legacy PR-scoped and bare markers to absorb old comments
-      when run_id is unavailable.
+      when commit_sha is unavailable.
 
-    This keeps the PR thread clean: one RCA thread per run, with a full
-    chronological record of every failure event within that run.
+    This keeps the PR thread clean: one RCA thread per push, with a full
+    chronological record of every failing workflow for that commit.
     """
     marker = _make_rca_marker(pr_number=pr_number, commit_sha=commit_sha, run_id=run_id)
     full_body = f"{marker}\n{body}"
@@ -1010,7 +1015,7 @@ def post_pr_comment(
         return True
 
     # Paginate through all PR comments in a SINGLE pass, checking for both the
-    # run-scoped marker and the legacy PR-scoped / bare markers simultaneously.
+    # SHA-scoped marker and the legacy PR-scoped / bare markers simultaneously.
     existing_id: Optional[int] = None
     existing_body: str = ""
     legacy_id: Optional[int] = None
@@ -1034,12 +1039,12 @@ def post_pr_comment(
             break
         page += 1
     # Only fall back to the legacy bare marker when the caller is NOT using
-    # run-scoped markers (i.e. run_id was not provided).  When run_id IS
-    # provided the marker is already run-specific and can never collide with
+    # SHA-scoped markers (i.e. commit_sha was not provided).  When commit_sha IS
+    # provided the marker is already SHA-specific and can never collide with
     # an old bare <!-- ci-rescue-rca --> comment, so the fallback must be
-    # suppressed — otherwise a rescue comment from a completely different run
-    # (or even a different PR) could be incorrectly updated in-place.
-    if not existing_id and not run_id and legacy_id:
+    # suppressed — otherwise a rescue comment from a completely different push
+    # could be incorrectly updated in-place.
+    if not existing_id and not commit_sha and legacy_id:
         existing_id = legacy_id
         existing_body = legacy_body
 
@@ -1642,11 +1647,11 @@ def run_deep_rescue(
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
         )
-        # Append deep analysis into the run-scoped RCA comment so the PR
-        # thread has ONE rescue thread per run, not two separate comments.
-        # post_pr_comment() implements run-scoped upsert: it finds the
-        # existing <!-- ci-rescue-rca:{pr_number}:run-{run_id} --> comment and appends there, or
-        # creates a fresh one if this is the first RCA failure for this run.
+        # Append deep analysis into the SHA-scoped RCA comment so the PR
+        # thread has ONE rescue thread per push, not one per workflow run.
+        # post_pr_comment() implements SHA-scoped upsert: it finds the
+        # existing <!-- ci-rescue-rca:{pr_number}:sha-{sha12} --> comment and appends there, or
+        # creates a fresh one if this is the first failure for this commit.
         print(f"\n📝 Appending deep analysis to rescue comment on PR #{pr_number}…")
         success = post_pr_comment(
             pr_number=pr_number,

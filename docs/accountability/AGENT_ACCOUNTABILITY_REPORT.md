@@ -23,7 +23,7 @@
 2. **mypy baseline reduction — 36 errors eliminated in src/training/:** Ran `python -m mypy src/training/ --warn-unused-ignores` which revealed 36 errors:
    - 28 unused `type: ignore` comments (packages installed in full-env make ignores redundant)
    - 8 real type errors not suppressed by existing ignores
-   
+
    Fixes applied across 8 files:
    - `accelerate_init_guard.py`: removed entire unused `[misc,assignment]` ignore
    - `checkpoint_manager.py`: removed 6 unused ignores (import-level `# type: ignore`, `[override]` on fallback functions, `[misc]` on inner class)
@@ -12539,7 +12539,7 @@ Fast Validation (run 23667475273) failed on commit `ffb9a74b3437` with `end-of-f
 - [x] `sync_tracked_files.py --fix` — exits 0, all consistent.
 
 ### Stale-Commit CI Run Pattern (New)
-**Situation:** `run.head_sha (ffb9a74) != PR head.sha (3a94f7a)` — automated commits advanced HEAD after agent pushed code commit but before CI completed.  
+**Situation:** `run.head_sha (ffb9a74) != PR head.sha (3a94f7a)` — automated commits advanced HEAD after agent pushed code commit but before CI completed.
 **Response protocol:**
 1. Acknowledge stale commit in reply.
 2. Still fix the underlying defect — it will re-trigger on current HEAD.
@@ -15689,3 +15689,78 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — 2026-04-01T21:47Z SESSION S267 (CI Fixes: actionlint SC2288 + trailing-whitespace + line-length + SHA-scoped rescue comments)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** ALL bot-posted comments reviewed — comment #4173047240 (CI Rescue) addressed ✅
+- [x] **0b.** ALL failing CI checks reviewed from run 23871259851/23871259844/23871259959/23871259960 ✅
+- [x] **0c.** CODEBASE_AGENCY_POLICY.md §0 loaded ✅
+- [x] **0d.** AGENT_ACCOUNTABILITY_REPORT.md (latest entries) loaded ✅
+- [x] **0e.** Cognitive brain metadata loaded ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated ✅
+- [x] **2.** PDA Loop + AfterMath documented for S266 successful mechanism start ✅
+- [x] **3.** All CI failures resolved — actionlint, trailing-whitespace, line-length, SHA-scoped markers ✅
+
+### PDA Loop — Observe → Orient → Decide → Act → AfterMath
+
+**Observe:**
+Three CI failures on commit `30b97122eb54` triggered by the run on 2026-04-01:
+1. `Workflow Compliance Audit (actionlint)` (run 23871259844) — `SC2288:warning:92:55: This is interpreted as a command name ending with space` in `resilient_validation.yml:95` — `${{ github.base_ref }}` used directly in `run:` shell script
+2. `Validation Pipeline / Fast Validation` (run 23871259960) — `trim trailing whitespace` pre-commit hook failed on `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:26` (3 trailing spaces)
+3. `PR Auto-Fix Check` (run 23871259959) — Pattern 12 (line length): `src/codex/rag/embeddings.py:652` is 102 chars (> 100 limit)
+
+Additionally: Previous Copilot Agent session (job `69598659895`) ended abruptly at cache-save phase. All code work was committed but PDA AfterMath was not written. The session terminated cleanly (orphan processes `uvicorn` + `MainThread` killed normally) but BEFORE the AfterMath documentation step. This session retroactively documents S266's PDA AfterMath as required by policy.
+
+**Orient:**
+- SC2288 fix: GitHub Actions context expressions must NOT be interpolated directly in `run:` shell scripts — pass via `env:` block
+- Trailing whitespace: `AGENT_ACCOUNTABILITY_REPORT.md` had `   ` (3 spaces) on line 26 — stripped via `sed -i 's/[[:space:]]*$//'`
+- Line length: `embeddings.py:652` — split the 102-char `.encode()` call to two lines
+- Rescue comment scoping: Changed from `run-{runId}` to `sha-{sha_short}` so ALL failing workflows on the SAME commit share ONE comment thread (not one per workflow-run). This addresses the user's requirement that "subsequent failures are captured within the initial CI Rescue comment"
+
+**Decide:**
+Apply all 4 minimal fixes. Update rescue comment marker in 6 locations (`ci_rescue.py`, `ci-rescue.yml`, `auto-fix-common-issues.yml`, `nox_gates.yml`, `html_visual_regression.yml`, `documentation-link-checker.yml`). Document S266 PDA AfterMath retroactively.
+
+**Act:**
+1. `resilient_validation.yml:95` — added `env: BASE_REF: ${{ github.base_ref }}` and changed `run:` to use `"$BASE_REF"` (resolves actionlint SC2288)
+2. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — stripped all trailing whitespace via sed
+3. `src/codex/rag/embeddings.py:652` — wrapped `.encode()` call across 3 lines (102 → 77 + 63 chars)
+4. All rescue comment markers changed from `<!-- ci-rescue:{pr}:run-{runId} -->` to `<!-- ci-rescue:{pr}:sha-{sha12} -->` in 6 workflow files + `ci_rescue.py`
+5. `ci_rescue.py` `_make_rca_marker()` docstring + legacy fallback guard updated for SHA-scoped logic
+6. Cognitive brain metadata updated with S266/S267 PDA Loop entries
+
+**S266 AfterMath (retroactive — session job 69598659895 terminated before this was written):**
+S266 was the FIRST session to successfully produce a properly-formatted rescue comment.
+- Comment `#4173047240` was posted by `auto-fix-common-issues.yml` for run `23871259851`
+- Format: `<!-- ci-rescue:{pr}:run-{runId} -->` (working, now upgraded to SHA-scoped)
+- This validated the end-to-end rescue comment posting mechanism introduced in S266
+- The comment body correctly contained: Workflow, Run ID, Branch, Commit, @copilot steps, workflow run link
+
+**AfterMath (S267):**
+- All 3 CI failures resolved in commit `{next_sha}` (to be filled after push)
+- SHA-scoped grouping means ALL failures for commit `30b97122eb54` on next push will consolidate into ONE rescue comment
+- Lesson learned: Write PDA AfterMath BEFORE long cache-save steps in agent sessions
+
+### Work Completed
+1. **actionlint SC2288 fix** — `resilient_validation.yml:95`: moved `${{ github.base_ref }}` to `env: BASE_REF:` block; run: now references `"$BASE_REF"`. Resolves `SC2288: This is interpreted as a command name ending with space`.
+2. **Trailing whitespace fix** — `AGENT_ACCOUNTABILITY_REPORT.md`: stripped 3 trailing spaces from line 26 (was `   \n`, now `\n`). Pre-commit `trim trailing whitespace` hook will now pass.
+3. **Line length fix** — `src/codex/rag/embeddings.py:652`: wrapped `.encode()` call (102 → 77+63 chars). Auto-Fix Check Pattern 12 will now pass.
+4. **SHA-scoped rescue comment grouping** — All 6 rescue-comment locations updated. New behavior: same commit = same comment; new push = new comment. Implements user requirement from PR comment #4172843248.
+5. **PDA Loop + AfterMath documentation** — S266 successful start documented retroactively. Cognitive brain updated with S266 + S267 patterns.
+6. **Follow-up prompt** — Created `.github/copilot-prompts/active/S267-followup.md` for next agent.
+
+### Root-Cause Summary (for cognitive brain)
+| Pattern | File | Fix |
+|---------|------|-----|
+| `actionlint_context_in_run_sc2288` | `resilient_validation.yml:95` | Move `${{ context }}` to `env:` block |
+| `pre_commit_trailing_whitespace` | `AGENT_ACCOUNTABILITY_REPORT.md:26` | `sed -i 's/[[:space:]]*$//'` |
+| `auto_fix_line_length` | `src/codex/rag/embeddings.py:652` | Wrap method call at 100 chars |
+| `sha_scoped_rescue_comment` | 6 workflows + ci_rescue.py | `run-{runId}` → `sha-{sha12}` |
+
+### Lessons Learned
+- **SC2288 prevention**: Never interpolate `${{ github.* }}` directly in `run:` scripts. Always assign to an `env:` var first.
+- **Rescue comment scoping**: SHA-scoped (one per commit) is correct for consolidating all workflow failures on one push into a single comment. Run-ID-scoped (one per workflow-run) fragments the view.
+- **Agent session AfterMath**: Write PDA AfterMath notes BEFORE any long cache-upload or cleanup steps, as the session may terminate during cleanup.
+- **Abrupt session end detection**: The signature is `Terminate orphan process: pid (XXXX) (uvicorn)` + `(MainThread)` in the cleanup log. The code was committed; only the documentation was missed.

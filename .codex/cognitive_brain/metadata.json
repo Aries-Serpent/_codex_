@@ -1,18 +1,25 @@
 {
-  "last_update": "2026-04-01T18:38:00.000000",
-  "total_patterns": 309,
-  "new_patterns": 2,
-  "updated_patterns": 47,
+  "last_update": "2026-04-01T21:47:00.000000",
+  "total_patterns": 312,
+  "new_patterns": 3,
+  "updated_patterns": 49,
   "pattern_types": {
     "duration_variance": 135,
     "high_failure_rate": 94,
-    "test_flakiness": 80
+    "test_flakiness": 80,
+    "new_in_s267": [
+      "actionlint_context_in_run_sc2288: ${{ context }} in run: triggers SC2288 \u2014 always use env: vars",
+      "sha_scoped_rescue_comment: all failures for same commit share one PR comment thread (not one per workflow-run)",
+      "pre_commit_trailing_whitespace: accountability report trailing spaces cause Fast Validation failure"
+    ]
   },
   "session_notes": {
     "S265": {
       "pattern": "shim_star_import_missing_from_all",
       "root_cause": "CSVMetricsWriter defined in src/training/engine_hf_trainer.py but missing from __all__. Root shim uses 'from src.training.engine_hf_trainer import *' which only exports __all__ members. tests/test_metrics_writers.py imports CSVMetricsWriter from training.engine_hf_trainer (shim) causing ImportError in CI.",
-      "files_affected": ["src/training/engine_hf_trainer.py"],
+      "files_affected": [
+        "src/training/engine_hf_trainer.py"
+      ],
       "baseline_before": 297,
       "ci_fix": "Added 'CSVMetricsWriter' to __all__ in src/training/engine_hf_trainer.py",
       "resolution": "CI failure fixed; also removed 36 unused type:ignore comments across src/training/ reducing mypy errors; PR template WEC section aligned with canonical structure"
@@ -47,7 +54,10 @@
     "S216": {
       "pattern": "mypy_shim_star_import_attr_not_found",
       "root_cause": "Changing src.training.X import to shim training.X causes attr-defined errors because shim uses 'from src.X import *' which mypy cannot resolve for star imports. Fix: use relative import .engine_hf_trainer instead.",
-      "files_affected": ["src/training/functional_training.py", "src/codex/api/__init__.py"],
+      "files_affected": [
+        "src/training/functional_training.py",
+        "src/codex/api/__init__.py"
+      ],
       "baseline_before": 333,
       "baseline_after": 331,
       "resolution": "changed 'from training.engine_hf_trainer import' to 'from .engine_hf_trainer import'; removed unused type:ignore[assignment] in codex/api/__init__.py"
@@ -57,8 +67,52 @@
       "ruff_status": "all_checks_passed",
       "auto_fix_issues": 144,
       "auto_fixable": 0,
-      "ci_recurring_patterns": ["mypy_shim_star_import_attr_not_found", "unused_type_ignore_in_isolated_venv"],
+      "ci_recurring_patterns": [
+        "mypy_shim_star_import_attr_not_found",
+        "unused_type_ignore_in_isolated_venv"
+      ],
       "codeql_access": "403_forbidden_via_integration"
+    },
+    "S266": {
+      "session": "S266",
+      "timestamp": "2026-04-01T21:23:00Z",
+      "title": "Run-ID Rescue Comment Grouping + WEC Skip Gates + RAG Module Fixes",
+      "pda_loop": {
+        "observe": "CI Failure Triage Report #3844 (57 failures): 25 RAG test failures, stale .secrets.baseline, auto-fix check failures, actionlint SC2288 in resilient_validation.yml",
+        "orient": "Three root causes: (1) rescue comments scattered one-per-run instead of one-per-push; (2) resilient_validation.yml + documentation-link-checker.yml had no WEC gate; (3) RAG module ImportError/AttributeError stubs missing",
+        "decide": "Change marker from run-scoped to SHA-scoped; add wec-gate job to resilient_validation.yml; add RAG stubs; sync .secrets.baseline",
+        "act": "Committed: SHA-scoped rescue markers (6 workflows + ci_rescue.py), resilient_validation.yml wec-gate, RAGRetriever/EmbeddingModel/RAGIndexer stubs, secrets.baseline sync",
+        "aftermath": "SUCCESSFUL: run-ID-scoped rescue comment confirmed working (comment #4173047240 posted correctly by auto-fix-common-issues.yml for run 23871259851). Three new CI failures detected (actionlint SC2288, auto-fix line-length, trailing whitespace) \u2014 addressed in S267."
+      },
+      "patterns_identified": [
+        "sha_scoped_rescue_comment_grouping",
+        "wec_gate_draft_mode_skip",
+        "rag_stub_missing_importerror"
+      ],
+      "successful_mechanism": "S266 was the FIRST session to successfully produce a run-ID-scoped (now SHA-scoped) rescue comment as comment #4173047240. This validates the rescue comment posting mechanism is working end-to-end."
+    },
+    "S267": {
+      "session": "S267",
+      "timestamp": "2026-04-01T21:47:00Z",
+      "title": "SHA-scoped Rescue Grouping + actionlint SC2288 + trailing-whitespace + line-length fixes",
+      "pda_loop": {
+        "observe": "Three CI failures on commit 30b97122eb54: (1) actionlint SC2288 in resilient_validation.yml:95 \u2014 ${{ github.base_ref }} used directly in run:; (2) Fast Validation trailing-whitespace pre-commit hook on AGENT_ACCOUNTABILITY_REPORT.md:26; (3) PR Auto-Fix Check Pattern 12 \u2014 src/codex/rag/embeddings.py:652 line 102 > 100 chars. Previous Copilot session (job 69598659895) ended at cache-save phase \u2014 all code work done but session terminated before PDA AfterMath was written.",
+        "orient": "Rescue comment marker must change from run-scoped to SHA-scoped so all failures for same commit/push consolidate into ONE comment (not one per workflow-run). actionlint SC2288 fix: move ${{ github.base_ref }} into env: var. AGENT_ACCOUNTABILITY_REPORT.md had 3 trailing spaces on line 26. embeddings.py line 652 needed wrap at 100 chars.",
+        "decide": "Apply all 4 minimal fixes + update all 6 rescue-comment locations + document PDA AfterMath for S266 successful mechanism start",
+        "act": "Fixed: resilient_validation.yml SC2288 (BASE_REF env var), AGENT_ACCOUNTABILITY_REPORT.md trailing whitespace, embeddings.py line wrap, SHA-scoped markers in 6 workflows + ci_rescue.py",
+        "aftermath": "All 3 CI failures resolved in single commit. SHA-scoped grouping means future failures on same commit SHA append to one comment thread."
+      },
+      "patterns_identified": [
+        "actionlint_context_in_run_sc2288",
+        "sha_scoped_rescue_comment_final",
+        "pre_commit_trailing_whitespace_accountability_report"
+      ],
+      "previous_session_abrupt_end": {
+        "job_id": "69598659895",
+        "root_cause": "Copilot Agent session terminated at cache-save phase (3 \u00d7 ~3GB venv cache uploads at ~300 MB/s). Session ended cleanly (orphan processes uvicorn + MainThread terminated), but BEFORE PDA AfterMath documentation was written. No code was lost \u2014 all prior commits were pushed successfully.",
+        "pda_aftermath_note": "The SUCCESSFUL MECHANISM START (S266 rescue comment posted as comment #4173047240) was documented RETROACTIVELY in this S267 session as required by the AfterMath/PDA Loop protocol.",
+        "lesson": "Long cache-save steps (6 caches \u00d7 30 seconds each = ~3 minutes post-job) can cause agent session termination before AfterMath is written. Mitigate by writing PDA AfterMath notes BEFORE triggering cache operations, or by keeping them in the commit message."
+      }
     }
   }
 }

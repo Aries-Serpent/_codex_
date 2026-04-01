@@ -92,7 +92,9 @@ jobs:
       - name: Fetch base ref for PR-scoped diff
         # Needed so `git diff origin/<base>...HEAD` works on shallow clones for non-promotion PRs.
         if: github.base_ref != 'main' || github.head_ref != '0D_base_'
-        run: git fetch origin ${{ github.base_ref }} --depth=1
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch origin "$BASE_REF" --depth=1
 
       - name: Set up Python with shared cache
         uses: ./.github/actions/setup-python-cached

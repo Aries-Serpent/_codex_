@@ -242,10 +242,10 @@ jobs:
               print(f"⚠️  No PR found for commit {sha_short} — skipping rescue comment")
               sys.exit(0)
 
-          # Build the Run-ID-scoped dedup marker: each workflow run gets its OWN
-          # dedicated comment thread. Multiple jobs failing in the same run append
-          # to the same comment; a new run always creates a new comment.
-          MARKER = f"<!-- ci-rescue-rca:{pr_number}:run-{run_id} -->"
+          # Build the SHA-scoped dedup marker: all failing workflows for the SAME
+          # commit share ONE comment thread. A new push (different commit SHA)
+          # always creates a new comment, enabling per-push comparison.
+          MARKER = f"<!-- ci-rescue-rca:{pr_number}:sha-{sha_short} -->"
 
           body = (
               f"## 🚨 CI Rescue — Root Cause Analysis\n\n"
@@ -255,9 +255,9 @@ jobs:
               f"**Time:** {now}\n\n"
               f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
               "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
-              "> **Note:** This comment is dedicated to Run ID `" + str(run_id) + "`. "
-              "Additional failures within the same run are appended below. "
-              "A new push creates a new comment for the new run.\n\n"
+              "> **Note:** This comment captures ALL failing workflows for commit `" + sha_short + "`. "
+              "Each new push (different commit) creates a new comment. "
+              "Additional failures on the same commit are appended below.\n\n"
               "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"
               f"_[🔗 Workflow run]({run_url})_"
           )

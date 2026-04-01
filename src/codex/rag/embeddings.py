@@ -649,7 +649,9 @@ class EmbeddingModel:
     def encode(
         self, texts: List[str], batch_size: int = 32, show_progress: bool = False
     ) -> "np.ndarray":
-        return self._ensure_loaded().encode(texts, batch_size=batch_size, show_progress=show_progress)
+        return self._ensure_loaded().encode(
+            texts, batch_size=batch_size, show_progress=show_progress
+        )
 
     def get_dimension(self) -> int:
         return self._ensure_loaded().get_dimension()
