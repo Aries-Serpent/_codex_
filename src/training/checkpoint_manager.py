@@ -46,14 +46,14 @@ if "CheckpointManager" not in globals():
         )
     except Exception:  # pragma: no cover - legacy fallback path
         try:  # numpy is optional for RNG capture
-            import numpy as _np  # type: ignore
+            import numpy as _np
         except Exception:  # pragma: no cover - optional dependency
-            _np = None  # type: ignore
+            _np = None  # type: ignore[assignment]
 
         try:  # torch may be absent in lightweight environments
-            import torch as _torch  # type: ignore
+            import torch as _torch
         except Exception:  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore
+            _torch = None  # type: ignore[assignment]
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]
@@ -78,7 +78,7 @@ if "CheckpointManager" not in globals():
 
             if _np is not None:  # pragma: no branch - optional dependency
                 try:
-                    state["numpy"] = _numpy_state_payload(_np.random.get_state())  # type: ignore[attr-defined]
+                    state["numpy"] = _numpy_state_payload(_np.random.get_state())
                 except Exception as exc:  # pragma: no cover - defensive
                     logger.debug("Failed to capture numpy random state: %s", exc)
 
@@ -104,7 +104,7 @@ if "CheckpointManager" not in globals():
                     ):
                         torch_state["cuda"] = [
                             tensor.tolist()
-                            for tensor in _torch.cuda.get_rng_state_all()  # type: ignore[call-arg]
+                            for tensor in _torch.cuda.get_rng_state_all()
                         ]
                 except Exception as exc:  # pragma: no cover - cuda optional
                     logger.debug("Failed to capture CUDA random state: %s", exc)

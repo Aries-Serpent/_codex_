@@ -39,8 +39,8 @@ def _install_accelerate_compat() -> None:
     is chosen for CI visibility.
     """
     try:
-        import accelerate  # type: ignore
-        from accelerate import Accelerator as _BaseAccelerator  # type: ignore
+        import accelerate
+        from accelerate import Accelerator as _BaseAccelerator
 
         # presence of DataLoaderConfiguration indicates new-style API (v0.30+)
         DataLoaderConfiguration = getattr(
@@ -282,13 +282,13 @@ except Exception as exc:  # pragma: no cover - missing in some envs
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
-    from tools.monitoring_integrate import SummaryWriter  # type: ignore
+    from tools.monitoring_integrate import SummaryWriter
 except Exception:  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
 try:  # Optional accelerate integration
-    from accelerate import Accelerator as _Accelerator  # type: ignore
+    from accelerate import Accelerator as _Accelerator
 except Exception:  # pragma: no cover - optional dep
     _Accelerator = None  # type: ignore[assignment]
 
