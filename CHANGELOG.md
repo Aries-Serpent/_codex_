@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3846)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3846 (SHA `ac11652a`) at 2026-04-01T18:25Z [auto-generated]
+
 ### Fixed (S216/S214 — PR #3843 — 2026-04-01)
 - **fix(mypy): shim star-import attr-defined regression** — `src/training/functional_training.py` changed `from training.engine_hf_trainer import` to relative `from .engine_hf_trainer import`. Root shim uses `from src.training.engine_hf_trainer import *` which mypy cannot resolve for specific attributes; relative import resolves directly to `src/training/engine_hf_trainer.py`. Removes `[attr-defined]` error at line 129 and `[unused-ignore]` at line 142. Fixes issue #3842 (S216 mypy regression +1 error on `main`).
 - **fix(mypy): unused type:ignore in isolated venv** — `src/codex/api/__init__.py` removed `# type: ignore[assignment]` from `app = None` in ImportError except block; in isolated venv `app` has type `Any` (fastapi unresolvable), so assignment has no type conflict.
