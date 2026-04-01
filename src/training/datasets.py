@@ -35,7 +35,7 @@ import torch  # noqa: E402
 try:  # optional dependency
     from datasets import Dataset  # type: ignore
 except ImportError:  # pragma: no cover - optional dep missing
-    Dataset = None  # type: ignore[assignment]
+    Dataset = None
 
 
 def _encode_text(tokenizer, text: str, max_length: int) -> dict[str, np.ndarray]:

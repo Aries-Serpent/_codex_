@@ -22,9 +22,9 @@ _warnings.warn(
 )
 try:
     from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-        CheckpointManager,  # type: ignore
-        build_payload_bytes,  # type: ignore
-        dump_rng_state,  # type: ignore
+        CheckpointManager,
+        build_payload_bytes,
+        dump_rng_state,
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
@@ -69,7 +69,7 @@ if "CheckpointManager" not in globals():
                 raw_state[4],
             ]
 
-        def dump_rng_state() -> dict[str, Any]:  # type: ignore[override]
+        def dump_rng_state() -> dict[str, Any]:
             state: dict[str, Any] = {}
             try:
                 state["python"] = _python_state_payload(random.getstate())
@@ -119,7 +119,7 @@ if "CheckpointManager" not in globals():
             scaler: Any | None = None,
             *,
             rng_state: bool = False,
-        ) -> bytes:  # type: ignore[override]
+        ) -> bytes:
             if _torch is None:
                 raise RuntimeError("torch is required to build checkpoint payloads")
 
@@ -313,7 +313,7 @@ class CheckpointManager:  # type: ignore[no-redef]
         manager = self
         save_every = self.save_steps
 
-        class _Callback(TrainerCallback):  # type: ignore[misc]
+        class _Callback(TrainerCallback):
             def __init__(self) -> None:
                 self.model = None
                 self.optimizer = None

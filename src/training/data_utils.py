@@ -290,7 +290,7 @@ class TextDataset:
                 else:
                     out = self.tokenizer(txt)
                     # Expecting a mapping with 'input_ids'
-                    ids = out["input_ids"]  # type: ignore[index]
+                    ids = out["input_ids"]
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)
