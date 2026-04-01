@@ -66,6 +66,7 @@ __all__ = [
     "load_from_pretrained",  # Added for test compatibility (PR #3248)
     "_evaluate_model",  # Added for test compatibility (PR #3330)
     "get_hf_revision",  # Added for test compatibility (PR #3330)
+    "mlflow_run",  # Added for test compatibility (legacy patch target)
 ]
 
 

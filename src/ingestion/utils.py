@@ -375,5 +375,4 @@ def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
     return _detect_encoding(path)
 
 
-# Make the canonical _detect_encoding name available (kept for backward compatibility)
-_detect_encoding = _detect_encoding
+# _detect_encoding is available under that name from the definition above (backward compatibility)

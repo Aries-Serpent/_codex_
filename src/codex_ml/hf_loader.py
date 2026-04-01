@@ -50,12 +50,12 @@ if (
         ]
     )
 ):
-    AutoModel = cast("type[HF_AutoModel]", transformers.AutoModel)
-    AutoModelForCausalLM = cast("type[HF_AutoModelForCausalLM]", transformers.AutoModelForCausalLM)
-    AutoTokenizer = cast("type[HF_AutoTokenizer]", transformers.AutoTokenizer)
-    PreTrainedModel = cast("type[HF_PreTrainedModel]", transformers.PreTrainedModel)
+    AutoModel = cast(type[HF_AutoModel], transformers.AutoModel)
+    AutoModelForCausalLM = cast(type[HF_AutoModelForCausalLM], transformers.AutoModelForCausalLM)
+    AutoTokenizer = cast(type[HF_AutoTokenizer], transformers.AutoTokenizer)
+    PreTrainedModel = cast(type[HF_PreTrainedModel], transformers.PreTrainedModel)
     PreTrainedTokenizerBase = cast(
-        "type[HF_PreTrainedTokenizerBase]",
+        type[HF_PreTrainedTokenizerBase],
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing

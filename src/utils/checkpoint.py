@@ -44,16 +44,6 @@ _canonical_save_checkpoint: Callable[..., Any] | None = None
 _capture_rng_state: Callable[[], dict[str, Any]] | None = None
 _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 
-try:  # pragma: no cover - optional dependency
-    import torch as _torch
-except Exception:  # pragma: no cover - tolerate missing torch
-    _torch = None  # type: ignore[assignment]
-
-try:  # pragma: no cover - optional dependency
-    import numpy as _np
-except Exception:  # pragma: no cover - tolerate missing numpy
-    _np = None
-
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
