@@ -46,9 +46,16 @@ jobs:
 
           BODY=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json body --jq '.body // ""' 2>/dev/null || echo "")
 
+          # Extract only the WEC section to avoid false matches in code examples/comments.
+          WEC_SECTION=$(echo "$BODY" | awk '
+            /^## 🔄 Workflow Execution Checklist/ { found=1 }
+            found && /^## / && !/^## 🔄 Workflow Execution Checklist/ { found=0 }
+            found { print }
+          ')
+
           # If WEC section is present AND documentation-link-checker.yml is explicitly unchecked, skip.
-          if echo "$BODY" | grep -qE '## 🔄 Workflow Execution Checklist'; then
-            if echo "$BODY" | grep -qiE '^\-\s*\[\s*\]\s*documentation-link-checker\.yml'; then
+          if [ -n "$WEC_SECTION" ]; then
+            if echo "$WEC_SECTION" | grep -qiE '^\s*-\s*\[\s*\]\s*documentation-link-checker\.yml'; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
               echo "📋 WEC: documentation-link-checker.yml is UNCHECKED — skipping link check."
               exit 0
