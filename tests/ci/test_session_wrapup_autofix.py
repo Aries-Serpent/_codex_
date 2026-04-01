@@ -149,8 +149,9 @@ class TestBuildWecBlock:
 
     def test_instructions_footer_present(self):
         block = swa._build_wec_block()
-        assert "Instructions for Copilot Agent" in block
-        assert "SKIPPED by the gate" in block
+        assert "HARDENED AGENT INSTRUCTION" in block
+        assert "report_progress" in block
+        assert "never reset a maintainer selection" in block.lower()
 
     def test_heading_marker_present(self):
         block = swa._build_wec_block()

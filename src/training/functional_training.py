@@ -55,7 +55,7 @@ LOGGER = logging.getLogger(__name__)
 
 # optional dependencies -----------------------------------------------------
 try:  # pragma: no cover - optional config dependency
-    from omegaconf import DictConfig, OmegaConf  # type: ignore
+    from omegaconf import DictConfig, OmegaConf
 except Exception:  # pragma: no cover - omegaconf not installed
     DictConfig = Any  # type: ignore
     OmegaConf = None  # type: ignore
@@ -83,7 +83,7 @@ except Exception:  # pragma: no cover - metrics optional
 
 
 try:  # pragma: no cover - optional manifest helper
-    from codex_ml.data.checksums import manifest_for_paths  # type: ignore
+    from codex_ml.data.checksums import manifest_for_paths
 except Exception:  # pragma: no cover - optional dependency missing
     manifest_for_paths = None  # type: ignore
 
@@ -126,7 +126,7 @@ def _maybe_collect_system_metrics(enabled: bool) -> Optional[dict[str, float]]:
 
 
 try:  # pragma: no cover - optional HF trainer helpers
-    from training.engine_hf_trainer import (
+    from .engine_hf_trainer import (
         _compute_metrics,
         get_hf_revision,
         run_hf_trainer,
@@ -182,7 +182,7 @@ def _looks_like_local_source(identifier: PathLike[str] | str | None) -> bool:
 
 
 try:  # optional LoRA support
-    from peft import LoraConfig, get_peft_model  # type: ignore
+    from peft import LoraConfig, get_peft_model
 except Exception:  # pragma: no cover - optional
     LoraConfig = None  # type: ignore
     get_peft_model = None  # type: ignore
@@ -289,9 +289,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
-        from datasets import Dataset  # type: ignore
+        from datasets import Dataset
 
-        from transformers import AutoTokenizer  # type: ignore
+        from transformers import AutoTokenizer
 
         model_cfg = training_cfg.get(
             "model",
@@ -658,7 +658,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
     privacy_engine = None
     if cfg.dp_enabled:
         try:
-            from opacus import PrivacyEngine  # type: ignore
+            from opacus import PrivacyEngine
 
             privacy_engine = PrivacyEngine()
             model, optimizer, train_loader = privacy_engine.make_private(

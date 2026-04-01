@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from .base_adapter import BaseASTAdapter, StandardizedASTNode
 

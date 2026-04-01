@@ -1,11 +1,29 @@
 {
-  "last_update": "2026-04-01T03:04:31.955018",
-  "total_patterns": 305,
-  "new_patterns": 1,
-  "updated_patterns": 44,
+  "last_update": "2026-04-01T05:41:00.000000",
+  "total_patterns": 307,
+  "new_patterns": 2,
+  "updated_patterns": 45,
   "pattern_types": {
     "duration_variance": 135,
-    "high_failure_rate": 92,
-    "test_flakiness": 78
+    "high_failure_rate": 93,
+    "test_flakiness": 79
+  },
+  "session_notes": {
+    "S216": {
+      "pattern": "mypy_shim_star_import_attr_not_found",
+      "root_cause": "Changing src.training.X import to shim training.X causes attr-defined errors because shim uses 'from src.X import *' which mypy cannot resolve for star imports. Fix: use relative import .engine_hf_trainer instead.",
+      "files_affected": ["src/training/functional_training.py", "src/codex/api/__init__.py"],
+      "baseline_before": 333,
+      "baseline_after": 331,
+      "resolution": "changed 'from training.engine_hf_trainer import' to 'from .engine_hf_trainer import'; removed unused type:ignore[assignment] in codex/api/__init__.py"
+    },
+    "S214": {
+      "pattern": "nightly_health_sweep",
+      "ruff_status": "all_checks_passed",
+      "auto_fix_issues": 144,
+      "auto_fixable": 0,
+      "ci_recurring_patterns": ["mypy_shim_star_import_attr_not_found", "unused_type_ignore_in_isolated_venv"],
+      "codeql_access": "403_forbidden_via_integration"
+    }
   }
 }

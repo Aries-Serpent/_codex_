@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Try to import YAML parser
 try:
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 
     YAML_AVAILABLE = True
 except ImportError as e:
