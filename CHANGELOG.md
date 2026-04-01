@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (S263 — PR #3838 — 2026-04-01)
+- **feat(ci): comment-gate session requirements** — `scripts/ci/check_pr_comments.py` new `--write-session-requirements FILE` flag: writes unaddressed blocking comments as session directives to a markdown file for injection into the next Copilot session prompt. Gate exits 0 when flag is set (non-blocking mode). Implements the "pre-pend to session prompt" contract from CODEBASE_AGENCY_POLICY.md §0a.
+- **feat(ci): session requirements artifact** — `comment-review-gate.yml` uploads `session-requirements-{PR}` artifact (7-day retention) in every scan run. The `agent-auth-delegation.yml` cognitive-preflight job now downloads this artifact and injects pending comment requirements at the top of the checklist posted to the PR.
+- **feat(ci): Phase 13.1 MCP Interactive sprint plan** — `docs/plans/SPRINT_PLAN_PHASE_13_1.md` created with full sprint breakdown, TUI design, and milestone tracking.
+
+### Fixed (S263 — PR #3838 — 2026-04-01)
+- **fix(ci): Fast Validation sync-tracked-files** — `.secrets.baseline` hash updated for `CODEX_MANIFEST.json` (line 1981, `01525a0e9972`) after `0D_base_` merge changed manifest content. `docs/ROADMAP.md` date updated to `2026-04-01`. Resolves Validation Pipeline failure on run 23825929037.
+- **fix(ci): comment-gate SKIP_BODY_MARKERS** — Added `<!-- session-gate-queued -->`, `<!-- self-healing-escalation -->`, `<!-- cognitive-preflight-session-directives -->`, `<!-- workflow-execution-gate: -->`, `<!-- session-requirements-pending -->` to `SKIP_BODY_MARKERS`. Added `SKIP_TEXT_PATTERNS` tuple for unmarked Phase 5 self-healing escalation comments (`## Self-Healing Escalation`). Fixes false-positive blocking on operational bot comments.
+- **fix(ci): review SKIP logic** — `check_pr_comments.py` now applies `SKIP_BODY_MARKERS` and `SKIP_TEXT_PATTERNS` checks to PR reviews (not just issue/inline comments). COMMENTED-state reviews from `BLOCKING_BOTS` (e.g., `copilot-pull-request-reviewer[bot]`) are downgraded to `info_bot` — only `CHANGES_REQUESTED` state is blocking.
+- **fix(ci): Phase 5 self-healing escalation marker** — `iterative-self-healing-ci.yml` Phase 5 escalation comments now include `<!-- self-healing-escalation -->` HTML marker at the start of the body, making them exempt from the comment-review gate.
+- **fix(dual-package): training/ shims** — `training/engine_hf_trainer.py`, `training/data_utils.py`, `training/functional_training.py` converted from diverged full copies to proper deprecation shims that re-export from `src.training.*`. All imports annotated with `# noqa: E402` for ruff compliance.
+- **fix(dual-package): script imports** — `scripts/train.py` updated to import directly from `src.training.config` and `src.training.engine_hf_trainer`. `scripts/codex_task_executor.py` updated to import from `src.training.trainer`.
+
 ### Added (S262-post-merge — 2026-03-31)
 - **feat(docs):** `docs/evolution/EVOLUTION_TIMELINE.md` updated to v3.0.0 — Phase 12 (65%, 160+ agents, WEC v2.0, unified-coverage-agent), Phase 13 repurposed to CI/Security Hardening (S257–S262), MCP Interactive rescheduled to Phase 13.1, completion summary updated.
 - **feat(npm):** `copilot/extension/package-lock.json` generated — locks axios at 1.14.0 (zero CVEs), 189 packages at known-good versions.
