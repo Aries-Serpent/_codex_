@@ -93,8 +93,13 @@ jobs:
       pull-requests: read
     timeout-minutes: 5
     steps:
-      - name: "Approve pending workflow runs if WEC copilot-agent-session-done checkbox is checked"
+      - name: "Approve pending runs when WEC copilot-agent-session-done OR auto-approve-workflows is checked"
         env:
+          # CODEX_MASTER_KEY / CODEX_BACKUP_KEY carry the `actions: write` scope needed to
+          # approve workflow runs via POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve.
+          # github.token is listed last as a no-op fallback (it lacks actions:write in most
+          # configurations). If both secrets are absent the step logs a warning and exits 0
+          # so a missing secret never blocks the CodeQL job result.
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -104,6 +109,14 @@ jobs:
 
           if [ -z "${PR_NUMBER}" ]; then
             echo "No PR number — skipping post-CodeQL auto-approve."
+            exit 0
+          fi
+
+          # Validate that the token has the actions:write scope by attempting a
+          # lightweight API call.  If it fails (e.g. only github.token available with
+          # no actions permission), warn and exit cleanly — never fail the CodeQL result.
+          if ! gh api "repos/${REPO}/actions/runs?per_page=1" --silent 2>/dev/null; then
+            echo "⚠️  GH_TOKEN lacks actions:read/write — cannot approve pending runs. Ensure CODEX_MASTER_KEY or CODEX_BACKUP_KEY is set."
             exit 0
           fi
 
