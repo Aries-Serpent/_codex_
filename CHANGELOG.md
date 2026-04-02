@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3858)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3858 (SHA `660c25c9`) at 2026-04-02T18:20Z [auto-generated]
+
 ### Fixed (S282 — PR #3854)
 - Fix: 13 CodeQL / github-code-quality alerts on commit `bf2874a` — all resolved:
   - `scripts/ci/fast_forward_safe_files.py`: removed unused `_LOG_PATH` global; renamed `new_sha` → `staging_sha` and added to `pr-created` return dict; built-in denylist now includes `*deploy*`, `*release*`, `*publish*`, `*prod*` workflow patterns matching actual allowlist behaviour.

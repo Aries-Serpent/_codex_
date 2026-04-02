@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-04-02T12:21:41Z",
+  "generated_at": "2026-04-02T18:20:55Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1299,6 +1299,11 @@
       "has_concurrency": true
     },
     {
+      "name": "fast-forward-safe-files",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "flush-queued-runs",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1431,6 +1436,11 @@
     {
       "name": "pre-merge-validation",
       "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "proactive-ci-monitor",
+      "enforcement_tier": "SOFT",
       "has_concurrency": true
     },
     {
@@ -1983,5 +1993,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "78472ac3f83a92df12c39c7dd1b49526b56f805c3fb3af1c448c975504cd3075"
+  "integrity_sha256": "f6768b54d73a701d8a63e1a6261f2030b42f44d1b72f56c3b99868bc390af11b"
 }
