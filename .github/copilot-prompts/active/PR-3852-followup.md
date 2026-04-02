@@ -24,18 +24,25 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Verify mypy baseline remains at 0 after the `type: ignore` removals in `ollama_provider.py`
+- [ ] Confirm CI passes (no new mypy or lint errors) on the `0D_base_` branch
+- [ ] Verify CodeQL auto-approve pipeline fires correctly now that `copilot-agent-session-done.yml` CodeQL trigger is active on `main` (S268 staged, activated by PR #3846 merge)
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+python scripts/ci/mypy_baseline.py --require-baseline
+# Expected: ✅ PASS — 0 errors
+ruff check src/codex/rag/providers/ollama_provider.py
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Verify RAG test coverage >= 95% gate (baseline 95.24% from S274)
+- [ ] Confirm `comment-review-gate.yml` rescue comment now correctly tags `@copilot` (S275 fix)
+- [ ] Confirm `ci-rescue.yml` watch list now includes "PR Comment Review Gate" (S275 fix)
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Run AfterMath gate and update accountability report for S275
+- [ ] Monitor `copilot-agent-session-done.yml` workflow_run triggers to ensure they fire automatically after CodeQL completes on subsequent PRs
 
 ---
 

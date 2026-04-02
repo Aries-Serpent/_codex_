@@ -54,9 +54,9 @@ The S275 fix removed 2 unused `# type: ignore[import-untyped]` comments from
 by `types-requests`). Baseline file `.mypy_baseline` = 0.
 
 ```bash
-python -m venv /tmp/mypy-venv --clear
-/tmp/mypy-venv/bin/pip install "mypy>=1.8.0" types-PyYAML types-requests -q
-/tmp/mypy-venv/bin/python scripts/ci/mypy_baseline.py --require-baseline
+python -m venv "${RUNNER_TEMP}/mypy-venv" --clear
+"${RUNNER_TEMP}/mypy-venv/bin/pip" install "mypy>=1.8.0" types-PyYAML types-requests -q
+"${RUNNER_TEMP}/mypy-venv/bin/python" scripts/ci/mypy_baseline.py --require-baseline
 # Expected: ✅ PASS — 0 errors
 ```
 

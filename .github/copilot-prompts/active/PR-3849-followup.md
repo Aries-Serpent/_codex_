@@ -24,18 +24,24 @@ No files modified
 ## 🎯 NEXT PHASE OBJECTIVES
 
 ### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] No tasks specified
+- [ ] Verify aiohttp upgrade did not introduce regressions — run tests that cover HTTP client usage
+- [ ] Confirm no deprecation warnings from new aiohttp version in test output
+- [ ] Validate imports in all files that use `aiohttp` still resolve correctly
 
 **Validation**:
 ```bash
-echo "Add validation commands"
+python -m pytest tests/ -k "aiohttp or http or session" -q --tb=short
+python -c "import aiohttp; print(aiohttp.__version__)"
+ruff check src/ tests/ --select F401,F811
 ```
 
 ### Priority 2: Follow-Up Validation 🟡 HIGH
-- [ ] No tasks specified
+- [ ] Run full test suite to confirm no cross-module regressions from the aiohttp bump
+- [ ] Check `requirements/*.txt` or `pyproject.toml` pin constraints are consistent with merged version
 
 ### Priority 3: Future Enhancements 🟢 MEDIUM
-- [ ] No tasks specified
+- [ ] Monitor CI for any transient aiohttp-related failures over the next few PRs
+- [ ] Ensure `aiohttp` version range in constraints allows security patches automatically
 
 ---
 
