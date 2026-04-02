@@ -255,7 +255,7 @@ jobs:
               f"**Time:** {now}\n\n"
               f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
               "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
-              "> **Note:** This comment captures ALL failing workflows for commit `" + sha_short + "`. "
+              f"> **Note:** This comment captures ALL failing workflows for commit '{sha_short}'. "
               "Each new push (different commit) creates a new comment. "
               "Additional failures on the same commit are appended below.\n\n"
               "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"

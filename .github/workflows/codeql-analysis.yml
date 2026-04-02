@@ -141,30 +141,46 @@ jobs:
 
           echo "⚡ WEC pre-approval detected — approving action_required runs for SHA ${HEAD_SHA:0:12}..."
 
-          PENDING_RUNS=$(gh api \
+          # ── Query 1: direct push/PR runs matching this PR's head SHA ──────────
+          PENDING_BY_SHA=$(gh api \
             "repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100" \
             --jq '.workflow_runs[].id' 2>/dev/null || echo "")
 
+          # ── Query 2: workflow_run-triggered runs (CI rescue, session-done) ────
+          # These run from the DEFAULT BRANCH (main), so their head_sha is the
+          # main branch SHA — not the PR head SHA. They cannot be found by Query 1.
+          # Per user requirement: head_sha is used as identifier; when Run ID does
+          # not align with the PR head SHA, fall back to event=workflow_run query.
+          # Filter to runs created in the last 30 minutes to avoid approving stale runs.
+          PENDING_BY_WFR=$(gh api \
+            "repos/${REPO}/actions/runs?event=workflow_run&status=action_required&per_page=100" \
+            --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 1800)) | .id' \
+            2>/dev/null || echo "")
+
+          # Combine both sets, deduplicate, remove blanks
+          PENDING_RUNS=$(printf "%s\n%s\n" "$PENDING_BY_SHA" "$PENDING_BY_WFR" \
+            | sort -u | grep -v '^$' || echo "")
+
           if [ -z "$PENDING_RUNS" ]; then
-            echo "✅ No pending workflow runs requiring approval for SHA ${HEAD_SHA:0:12}."
+            echo "✅ No pending workflow runs requiring approval (SHA ${HEAD_SHA:0:12} + workflow_run event)."
             exit 0
           fi
 
           APPROVED=0
           while IFS= read -r RUN_ID; do
             [ -z "$RUN_ID" ] && continue
-            RUN_NAME=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
-              --jq '.name // "unknown"' 2>/dev/null || echo "unknown")
+            RUN_INFO=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
+              --jq '"\(.name // "unknown") (head_sha: \(.head_sha[:12]))"' 2>/dev/null || echo "unknown")
             if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" \
               --silent 2>/dev/null; then
-              echo "  ✅ Approved run #${RUN_ID} (${RUN_NAME})"
+              echo "  ✅ Approved run #${RUN_ID} — ${RUN_INFO}"
               APPROVED=$((APPROVED + 1))
             else
-              echo "  ⚠️  Could not approve run #${RUN_ID} (${RUN_NAME}) — may already be approved or running"
+              echo "  ⚠️  Could not approve run #${RUN_ID} — ${RUN_INFO} (may already be approved)"
             fi
           done <<< "$PENDING_RUNS"
 
-          echo "✅ post-CodeQL auto-approve: approved ${APPROVED} pending run(s) for SHA ${HEAD_SHA:0:12}."
+          echo "✅ post-CodeQL auto-approve: approved ${APPROVED} pending run(s) (PR SHA ${HEAD_SHA:0:12} + workflow_run fallback)."
 
   # ── rescue comment — posted on PR whenever CodeQL analysis fails ────────────
   rescue-comment:
