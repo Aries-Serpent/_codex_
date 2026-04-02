@@ -1,9 +1,9 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.1.0  
-> **Date:** 2026-03-28 (updated S145)  
+> **Version:** 1.2.0  
+> **Date:** 2026-04-02 (updated S279 — WEC checkbox-gated section, dependency-submission gap fix)  
 > **Branch:** `0D_base_`  
-> **Sources:** `.github/workflows/` inspection, CI log history (runs 23689574622, 23691951388, 23692231532, 23694943811)
+> **Sources:** `.github/workflows/` inspection, CI log history (runs 23689574622, 23691951388, 23692231532, 23694943811, 23902131469)
 
 This document describes the full expected lifecycle of a pull request on the `0D_base_` branch:
 which workflows run, when Copilot sessions are triggered, what failures are expected vs unexpected,
@@ -23,6 +23,8 @@ and how the self-healing / rescue system responds.
 8. [Mermaid Lifecycle Diagram](#8-mermaid-lifecycle-diagram)
 9. [Rescue Flow Diagram](#9-rescue-flow-diagram)
 10. [Historical CI Log Cross-Reference](#10-historical-ci-log-cross-reference)
+11. [WEC Checkbox-Gated Workflow Approval](#11-wec-checkbox-gated-workflow-approval)
+12. [PR State Machine — Draft, Pre-Check, Open, Ready](#12-pr-state-machine)
 
 ---
 
@@ -423,3 +425,219 @@ flowchart TD
     SYNCFIX --> CLEAN
     P1 --> CLEAN
 ```
+
+---
+
+## 11. WEC Checkbox-Gated Workflow Approval
+
+The **Workflow Execution Checklist (WEC)** is a markdown checklist embedded in every PR body.
+It controls which GitHub Actions workflows are permitted to run via the `workflow-execution-gate.yml`
+gate. This section explains how the gate works, how it differs from GitHub's native required-checks
+system, and what the pre-approval phase looks like.
+
+### 11.1 What is the WEC?
+
+The WEC block lives at the bottom of every PR description:
+
+```markdown
+## 🔄 Workflow Execution Checklist
+
+### ✅ Validation & Testing
+- [x] pre-merge-validation.yml — Pre-merge checks (always required)
+- [ ] resilient-validation-suite.yml — Resilient validation
+```
+
+- **`[x]` (checked)** = workflow is APPROVED to run
+- **`[ ]` (unchecked)** = workflow is NOT YET approved
+- **`always required`** items are auto-checked by the Copilot agent on every PR body update
+
+The `workflow-execution-gate.yml` workflow parses this checklist on every PR push and maintains
+an allowlist in a repo variable. Workflows that are not checked will NOT be triggered (or will exit
+early with a skip).
+
+### 11.2 Pre-Approval Phase (no workflows checked yet)
+
+When a PR is first opened and no workflows have been checked in the WEC, the PR is in
+**pre-approval pre-check status**. In this phase:
+
+| Category | Behaviour |
+|----------|-----------|
+| **Always-required workflows** | Run automatically (pre-merge-validation, comment-review-gate, agent-auth-delegation, etc.) |
+| **Gated workflows** | Do NOT run — the gate returns `skip` |
+| **GitHub-managed workflows** | Run regardless of WEC (e.g. `Automatic Dependency Submission (Python)`) |
+
+#### Pre-approval requirements
+
+The following checks MUST be green before any WEC items are approved:
+
+| Workflow / Job | Why it must pass unconditionally |
+|----------------|----------------------------------|
+| `Automatic Dependency Submission (Python)` ← `dynamic / submit-pypi` | GitHub-managed supply-chain check. Transient API failure (HTTP 503) is the only acceptable reason for a red; re-run resolves it. A structural failure (missing requirements file) requires a code fix before proceeding. |
+| `Resilient Dependency Submission` | Our retry-wrapped replacement. Must pass with all green. |
+| `Validation Pipeline / Fast Validation` | detect-secrets, ruff, sync-tracked-files. All must pass. |
+| `mypy Baseline Gate` | No new type errors vs baseline. Must pass. |
+| `deferral-language-gate` | No forbidden deferral phrases in changed files. Must pass. |
+
+> ⚠️ **Important:** `dynamic / submit-pypi (dynamic)` is GitHub's own automatic dependency
+> graph workflow. It runs unconditionally on every push and pull_request event to `0D_base_`.
+> If it fails, self-healing MUST be triggered immediately (see [§11.5 Self-Healing for Pre-Approval Failures](#115-self-healing-for-pre-approval-failures)).
+
+### 11.3 Approving Workflows (checking the WEC)
+
+To approve a workflow, the PR author or a Copilot agent **checks its checkbox** in the PR body
+and pushes an update. The `workflow-execution-gate.yml` gate re-parses the checklist on the next
+push and enables the newly approved workflow.
+
+**Typical approval sequence:**
+
+```
+1. Open PR (pre-approval — only always-required workflows run)
+         ↓
+2. Pre-approval checks green → check security-scanning-suite, resilient-validation-suite in WEC
+         ↓
+3. Push PR body update → workflow-execution-gate re-parses → approved workflows now run
+         ↓
+4. All approved workflows green → owner approves agent-auth-delegation
+         ↓
+5. Copilot sessions start → code changes → repeat from step 1 for new checks
+```
+
+> ⚠️ **HARDENED AGENT RULE:** Once an item is checked `[x]`, it MUST NEVER be unchecked
+> by a subsequent PR body update. The Copilot agent reads the CURRENT PR body and copies
+> all `[x]` items verbatim into the updated body. Only newly-added items may be set to `[ ]`.
+
+### 11.4 Draft vs Open vs Ready-to-Review PR States
+
+| State | GitHub Label | WEC Gate | Copilot Sessions | Required Checks |
+|-------|-------------|----------|-----------------|----------------|
+| **Draft** | `[Draft]` badge | Pre-approval phase | Not started | Only always-required run |
+| **Open (pre-check)** | No badge; `Open` | Pre-approval until WEC items checked | Not started | Always-required + GitHub-managed |
+| **Open (WEC approved)** | `Open` | Specific workflows approved via WEC | Active after agent-auth | All approved workflows + required |
+| **Ready to review** | `[Open]` (after clicking "Ready for review") | All WEC workflows may run | Post-approval active | Full suite |
+
+**Key difference between Draft and Open:**
+
+- **Draft PR**: GitHub suppresses required-check enforcement. Auto-merge is not available.
+  CI still runs, but PRs cannot be merged in draft state.
+- **Open PR (pre-approval)**: Required checks are enforced. The WEC gate has not yet approved
+  any gated workflows. The `agent-auth-delegation` environment protection still shows
+  `action_required` (waiting for owner approval).
+- **Open PR (WEC approved)**: Gated workflows are enabled by the WEC. Agent token delegation
+  may be active. Copilot sessions are running.
+- **Ready to review** (flipping from Draft to Open): This is the UI toggle that changes
+  the PR from Draft to Open state. In this codebase, PRs are usually opened directly as
+  non-draft so this transition is rare. When it does occur, CI re-evaluates all required checks.
+
+### 11.5 Self-Healing for Pre-Approval Failures
+
+Any failure during the pre-approval phase (including `dynamic / submit-pypi`) triggers the
+self-healing cascade:
+
+```
+1. Workflow fails (any name, including GitHub-managed)
+         ↓
+2. iterative-self-healing-ci.yml fires (workflows: ["*"], cancel-in-progress: false)
+   → classifies failure → attempts auto-fix (1-3 iterations)
+         ↓ (if not auto-fixable)
+3. copilot-iterative-self-healing.yml fires (extended watch list)
+   → posts @copilot escalation comment on PR, SHA-scoped upsert marker
+         ↓ (subsequent failures on same SHA)
+4. Additional failures UPSERT to the SAME comment (same SHA marker) rather than
+   creating new comments — prevents comment flooding
+         ↓
+5. ci-rescue.yml fires for watched workflows
+   → posts structured RCA comment with fix commands
+         ↓
+6. Copilot coding agent session starts → diagnoses → fixes → pushes
+```
+
+**The upsert marker** ensures one canonical escalation comment per commit SHA per category.
+Format: `<!-- copilot-healing:<sha12>:<category> -->` where `<sha12>` is the first 12 characters of the commit SHA.
+If the same SHA produces multiple failures of the same category, the comment is updated in-place.
+
+**Why `cancel-in-progress: false` matters:** (fixed in S279)
+The original `iterative-self-healing-ci.yml` used `cancel-in-progress: true`, which meant that
+when workflow B failed shortly after workflow A failed (both triggering the self-healer), the
+self-healer run for A would be *cancelled* by the run triggered by B. This caused the first
+failure's escalation comment to never be posted. The fix uses a run-ID-unique concurrency group
+so every failure gets its own non-cancellable self-healer run.
+
+### 11.6 Dependency Submission Failures — Classification
+
+`dynamic / submit-pypi (dynamic)` failures fall into two categories:
+
+| Root Cause | Evidence | Fix |
+|-----------|---------|-----|
+| Transient GitHub API 503 | Log: `"An error occurred while processing your request. Please try again later."` | Re-run the workflow — no code change needed |
+| Missing/malformed requirements | Log: `ComponentDetector: No components found` or package parse error | Fix `pyproject.toml` / `requirements*.txt` before proceeding |
+
+Our `Resilient Dependency Submission` workflow wraps the submission with retry logic and
+`continue-on-error` specifically for the 503 case (root cause documented in S154). If both
+the GitHub-managed workflow AND our custom one fail on non-503 errors, a code fix is required.
+
+---
+
+## 12. PR State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: git push + gh pr create --draft
+
+    Draft --> PreApproval: PR opened / converted to non-draft
+    note right of PreApproval
+        Phase: Pre-approval pre-check
+        Runs: always-required + GitHub-managed
+        WEC: nothing approved yet
+        submit-pypi MUST be green
+    end note
+
+    PreApproval --> WECApproved: Owner/agent checks WEC items
+    note right of WECApproved
+        Phase: WEC-gated workflows active
+        Runs: approved workflows + always-required
+        agent-auth: waiting for owner approval
+    end note
+
+    WECApproved --> AgentActive: Owner approves agent-auth-delegation
+    note right of AgentActive
+        Phase: Copilot sessions active
+        Runs: all approved + agent workflows
+        COPILOT_AGENT_AUTH_ENABLED = true
+    end note
+
+    AgentActive --> ReadyToReview: All checks green, code review complete
+    note right of ReadyToReview
+        Phase: Full suite
+        All required checks passing
+        Human code review complete
+    end note
+
+    ReadyToReview --> Merged: Owner approves + merge
+
+    PreApproval --> Rescue: Any pre-approval check fails
+    WECApproved --> Rescue: Any approved workflow fails
+    AgentActive --> Rescue: Any workflow fails
+    Rescue --> PreApproval: Copilot fixes + pushes
+    Rescue --> WECApproved: Copilot fixes + pushes (if past pre-approval)
+    Rescue --> AgentActive: Copilot fixes + pushes (if agent active)
+
+    Merged --> [*]
+```
+
+### Phase Comparison Table
+
+| Attribute | Draft | Pre-Approval (Open) | WEC Approved | Agent Active | Ready to Review |
+|-----------|-------|-------------------|--------------|-------------|----------------|
+| GitHub PR state | draft | open | open | open | open |
+| Can be merged | ❌ | ❌ | ❌ (unless checks pass) | ❌ (until checks pass) | ✅ (owner approval) |
+| Always-required workflows run | ✅ | ✅ | ✅ | ✅ | ✅ |
+| GitHub-managed workflows run | ✅ | ✅ | ✅ | ✅ | ✅ |
+| WEC-gated workflows run | ❌ | ❌ | ✅ (checked only) | ✅ (all checked) | ✅ |
+| Copilot sessions active | ❌ | ❌ | ❌ | ✅ | ✅ |
+| `agent-auth-delegation` approved | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Self-healing triggers | ✅ | ✅ | ✅ | ✅ | ✅ |
+| submit-pypi must be green | N/A | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED |
+
+> **Planning use:** This table enables mapping out which workflows to enable at each phase,
+> optimising for CI cost (don't run expensive suites during draft / pre-approval) while
+> ensuring security supply-chain checks pass unconditionally.
