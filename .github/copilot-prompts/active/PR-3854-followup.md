@@ -1,88 +1,129 @@
-# Follow-up Prompt: PR #3854 — S276 Session Continuation
+# Session Resumption Prompt — PR #3854 (0D_base_)
 
-**Generated:** 2026-04-02T11:45Z  
-**Branch:** `0D_base_`  
-**Session:** S276  
-**PR:** https://github.com/Aries-Serpent/_codex_/pull/3854
-
----
-
-## 📋 Session S276 Summary
-
-**What was fixed:**
-- 4 failing RAG embedding tests in `test_embeddings_comprehensive.py` (mock `.to()` chaining issue)
-- Fast Validation `sync-tracked-files` pre-commit hook failures (stale `.secrets.baseline` hash + `docs/ROADMAP.md` date)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: empty PR #3849 section populated; PR #3843 mismatch corrected
-- `CHANGELOG.md`: S276 fix entries added
-- All CI rescue comments and review threads addressed
+> **Purpose:** Paste this entire block as a comment on PR #3854 to resume the
+> next Copilot session. Updated after every session until merge.
+> **Do NOT use as a post-merge hotfix** — this is for iterating on an open PR.
 
 ---
 
-## 🎯 NEXT PHASE OBJECTIVES
+## 🔁 Resumption Command
 
-### Priority 1: Immediate Tasks 🔴 CRITICAL
-- [ ] Verify all 3 previously-failing CI checks are now GREEN after `ac962d8` push:
-  - `RAG Module Tests / test-rag (3.12)` 
-  - `Validation Pipeline / Fast Validation`
-  - `Automatic Dependency Submission` (transient — may still flake)
-- [ ] Confirm `comment-review-gate.yml` re-scan shows 0 blocking items
+```
+@copilot+claude-sonnet-4.6 Resume CI fixing on PR #3854, branch 0D_base_.
 
-**Validation**:
-```bash
-# Run RAG tests locally to confirm all pass
-python -m pytest tests/rag/test_embeddings_comprehensive.py tests/rag/ingestion/ -q --tb=short
+Latest commit: 186708b (S287)
+Context file:  .github/copilot-prompts/active/PR-3854-followup.md
 
-# Run sync check to confirm no drift
-python3 scripts/ci/sync_tracked_files.py --check
-
-# Verify mypy baseline still 0
-python scripts/ci/mypy_baseline.py --require-baseline
+Steps:
+1. Load .codex/CODEBASE_AGENCY_POLICY.md and stored memories
+2. Retrieve latest CI check results on commit 186708b using GitHub MCP tools
+3. For each FAILING check: retrieve logs, identify root cause, fix, verify locally
+4. For each new rescue comment posted since 186708b: address immediately
+5. Run: python scripts/ci/mypy_baseline.py --require-baseline
+6. Run: python -m ruff check src/ tests/
+7. Run: python -m pytest tests/rag/ -q --tb=short
+8. Push fixes via report_progress
+9. Update this file (PR-3854-followup.md) with new session summary
+10. Post follow-up resumption comment to PR
 ```
 
-### Priority 2: Post-merge Validation 🟡 HIGH
-- [ ] After merging `0D_base_` → `main`, verify `workflow_run` triggers fire for `copilot-agent-session-done.yml` and `codeql-analysis.yml` (S268 staged, activated after #3846 merge)
-- [ ] Confirm RAG coverage ≥ 95% in CI (was 95.24% baseline from S274)
-- [ ] Run `post-merge-doc-alignment-agent` to sync GitHub Pages with current codebase state
+---
 
-### Priority 3: Pattern Library Update 🟢 MEDIUM
-- [ ] Add `RP-RAG-MOCK` pattern to CI pattern DB: "MagicMock fixture for SentenceTransformer must configure `.to.return_value = mock_model`"
-- [ ] Consider adding a pre-commit check or CI warning for mock fixtures missing `.to.return_value` on model mocks
-- [ ] Update `.github/copilot-prompts/patterns/mock-patterns.md` (if exists) with this pattern
+## 📍 Current State (as of S287 — commit `186708b`)
+
+### ✅ Fixed This PR (do NOT re-fix)
+
+| Session | Fix | Files |
+|---------|-----|-------|
+| S282 | Zip Slip path-traversal fix | `src/codex/skills/compression.py` |
+| S282 | OTel OTLP exporter (`_OTLP_PROVIDER_CONFIGURED` → list sentinel) | `src/codex/skills/telemetry.py` |
+| S282 | CodeQL: 13 alerts (unused globals, empty excepts, self-import) | Multiple |
+| S283 | Self-healing cascade brake (hourly cap ≥10, 30-min dedup) | `iterative-self-healing-ci.yml` |
+| S283 | PDA Loop + AfterMath logger (14 patterns) | `scripts/ci/pda_failure_logger.py` |
+| S285 | mypy 49→0 via `mypy.manager` skill (11 fix patterns) | 14 source files |
+| S285 | actionlint `workflow_name`/`pr_number` outputs wired | `.github/workflows/` |
+| S285 | FF section populated with 17 files | `workflow-execution-gate.yml` |
+| S286 | mypy 23→0 after CodeQL unused-global/empty-except fixes | `telemetry.py`, `pda_failure_logger.py` |
+| S286 | Unused imports removed from `test_mypy_manager.py` | Tests |
+| S286 | RP-006: EOF newlines on 112 `.codex/` JSON files | `.codex/*.json` |
+| S286 | RP-007: `.secrets.baseline` refreshed | `.secrets.baseline` |
+| **S287** | **mypy 50→0: 47 stale `# type: ignore` removed across 21 files** | See list below |
+| **S287** | **`importlib.util` attr-defined in `cli_zendesk.py`** | `src/codex/cli_zendesk.py` |
+| **S287** | **Pre-commit EOF newlines (3 files)** | `.codex/webhook_*.json`, `PR_LIFECYCLE.md` |
+| **S287** | **RAG 10 CI failures: mock chaining + patch targets + RAGIndexer.model** | `src/codex/rag/indexer.py` + 4 test files |
+
+### S287 Files Changed (do not revert)
+`src/codex/{auth/github_app.py,cli/main.py,cli_zendesk.py,dynamics/model/sla.py,logging/query_logs.py,rag/indexer.py,security/storage.py,skills/registry.py}` · `src/codex_cli/app.py` · `src/codex_ml/cli/{checkpoint_validate,plugins_cli,tracking_decide,validate}.py` · `src/codex_ml/{config/settings,eval/eval_runner,monitoring/cli,serving/inference_server,utils/checkpoint_core}.py` · `src/ingestion/encoding_detect.py` · `src/integrations/github_app_auth.py` · `src/mcp/server/middleware/auth.py` · `src/services/workflow/parser.py` · `src/tokenization/cli.py` · `tests/rag/{test_device_placement,test_indexer_comprehensive,test_rag_integration,test_retriever_comprehensive}.py`
 
 ---
 
-## 🔬 Root Cause Reference (for pattern DB)
+## 🚨 Critical Patterns (avoid re-breaking)
 
-**Pattern ID**: `RP-RAG-MOCK-001`  
-**Symptom**: `AssertionError: assert False where False = isinstance(<MagicMock name='mock.to().encode()' ...>, np.ndarray)`  
-**Root Cause**: `safe_model_to_device()` calls `model.to(device=..., non_blocking=...)` for non-`nn.Module` models. `MagicMock.to()` returns a NEW mock (not `self`), discarding `encode.return_value` config.  
-**Fix**: Add `mock_model.to.return_value = mock_model` + `to_empty.return_value = mock_model` + `eval.return_value = mock_model` to any fixture that returns a MagicMock model passed through `safe_model_to_device`.  
-**Files affected**: `tests/rag/test_embeddings_comprehensive.py` — fixture `mock_sentence_transformer`
+### RAG Mock Pattern
+```python
+# ALL SentenceTransformer mocks MUST include:
+mock.to.return_value = mock
+mock.to_empty.return_value = mock
+mock.eval.return_value = mock
+mock.encode.return_value = np.random.randn(N, 384).astype(np.float32)
+
+# Patch at SOURCE (local import inside function body):
+with patch("sentence_transformers.SentenceTransformer", return_value=mock): ...
+
+# Simulate None sentinel (NOT side_effect=ImportError):
+with patch("codex.rag.retriever.SentenceTransformer", new=None): ...
+```
+
+### mypy `type: ignore` Rule
+```
+# type: ignore MUST be first comment on line.
+# With --ignore-missing-imports + --follow-imports=silent:
+#   - [import-untyped] ignores are ALWAYS unused → remove them
+#   - [assignment,misc] on `Foo = None` in except blocks → ALWAYS unused → remove
+```
+
+### mypy Baseline Verification
+```bash
+python -m venv /tmp/mypy-ci && \
+  /tmp/mypy-ci/bin/pip install -q "mypy>=1.8.0" types-PyYAML types-requests && \
+  /tmp/mypy-ci/bin/python scripts/ci/mypy_baseline.py --require-baseline
+# .mypy_baseline = 0 — must stay at 0
+```
 
 ---
 
-## 🔄 Workflow Execution Checklist
+## 🎯 Remaining Objectives (open, not yet fixed)
 
-### ✅ Validation & Testing
-- [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
+### Cognitive Brain (CB-001 → CB-006)
+| ID | Task | Blocker |
+|----|------|---------|
+| CB-001 | Typer API migration `src/codex_cli/app.py` — `app.group()` → sub-apps | Structural, post-merge preferred |
+| CB-002 | Confirm RAG coverage ≥95% gate holds | Verify after CI green on `186708b` |
+| CB-003 | actionlint YAML multiline string fixes | 2 workflows outstanding |
+| CB-004 | PDA pattern library >14 entries | AfterMath JSONL telemetry input needed |
+| CB-005 | `max_concurrency` for `agent.aais.batch` | Implementation |
+| CB-006 | Wire `ci.health.analyzer` history → `proactive-ci-monitor.py` | Implementation |
 
-### ✅ Security & Quality
-- [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit
-- [x] deferral-language-gate.yml — Deferral language guard
+### Merge Gate Checklist
+- [ ] All required CI checks green on `186708b` (or latest commit)
+- [ ] No open blocking review threads
+- [ ] Deferral language gate passes
+- [ ] `pre-merge-validation.yml` green
+- [ ] `mypy Baseline` green
+- [ ] `Validation Pipeline / Fast Validation` green
+- [ ] `RAG Module Tests / test-rag (3.12)` green
+- [ ] Safety confirmations checked in PR body
 
-### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
+---
 
-### 🤖 Automation
-- [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [x] copilot-agent-checkin.yml — Agent check-in (always required)
-- [x] cost-gate.yml — Cost governance gate
-- [x] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
-- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
-- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
+## 📋 How to Update This File Each Session
 
-### ⚡ Auto-Approve
-- [ ] auto-approve-workflows — Auto-Approve workflow to run
+At the end of every session, before posting the follow-up comment:
+1. Move completed items from "Remaining Objectives" → "Fixed This PR" table
+2. Update "Current State" commit hash and session number
+3. Add new "Critical Patterns" if a new recurring failure class was discovered
+4. Keep "Resumption Command" commit hash current
+5. `report_progress` to push the updated file
+
+---
+*Last updated: S287 · 2026-04-02 · commit `186708b`*
