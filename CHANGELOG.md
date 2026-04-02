@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed (S283 — PR #3854 — CI Health Alert #3860)
+### Fixed (S285 — PR #3854 — WEC catalog, PR_LIFECYCLE v1.6.0, PR template overhaul)
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.6.0 — comprehensive overhaul:
+  - §2 Workflow Trigger Map expanded from 10 entries to 60 PR-triggered workflows across 6 category tables (always-required, validation, security, docs, automation, auto-triggered)
+  - §8 Main Lifecycle Mermaid — new Phase 0 (always-required), WEC Gate Phase 2, FF Promotion box, PDA Loop logging node added
+  - §9 Rescue Sequence — rewritten with `pda_failure_logger.py` as participant; shows auto-fix iterations, `log-failure`/`log-fix`/`log-session` calls, grounded solution query
+  - §11.1 — WEC example corrected: `resilient-validation-suite.yml` → `resilient_validation.yml`; ⚠️ filename-accuracy callout added
+  - §11.2 — Always-required workflows listed explicitly (9 total); pre-approval requirements table corrected with exact filenames
+  - §11.3 — Approval sequence corrected with exact filenames; HARDENED AGENT RULE callout preserved
+  - §11.4 — Phase table expanded: added FF-Approved state column; blocking-comment resolution row added
+  - §12 PR State Machine — added FF-Approved state; Rescue→PDA Loop→self-healer edge; phase comparison table expanded with FF column + blocking-comments row
+  - §18 NEW — WEC Workflow Catalog: authoritative filename table for all 60 PR-triggered workflows in 6 sections (always-required, validation, security, docs, automation, FF); ⚠️ underscore/hyphen mismatch callout; WEC selection strategy mermaid flowchart
+  - §19 NEW — Fast-Forward Workflow Promotion: purpose, how-to, allowlist/denylist rules, FF Gate mermaid, status icons table, Copilot agent FF protocol
+- Fix: `.github/PULL_REQUEST_TEMPLATE.md` WEC section — comprehensive overhaul:
+  - Filename mismatches corrected: `resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → `pages-mkdocs.yml`
+  - Always-required defaults corrected: `deferral-language-gate.yml`, `copilot-agent-checkin.yml`, `cost-gate.yml`, `copilot-agent-session-done.yml`, `workflow-execution-gate.yml`, `copilot-iterative-self-healing.yml` now pre-checked `[x]`
+  - Added 8 new opt-in validation workflows: `validate.yml`, `mypy-baseline.yml`, `progressive-validation.yml`, `coverage-with-timeout.yml`, `test-rag.yml`, `pre-flight-validation.yml`, `data-quality-suite.yml`
+  - Added 5 new opt-in security workflows: `codeql-analysis.yml`, `semgrep_sarif.yml`, `actionlint-audit.yml`, `auto-fix-common-issues.yml`, `code-quality-coverage-suite.yml`
+  - Added Documentation section: `documentation-link-checker.yml`, `pages-mkdocs.yml`, `pages-pre-merge-validation.yml`
+  - Added 5 new opt-in automation workflows: `qa-walkthrough.yml`, `dependency-submission.yml`, `reference-integrity.yml`, `root-org-validation.yml`, `rust_swarm_ci.yml`
+  - FF section updated: link to §19 in PR_LIFECYCLE.md; `how it works` notes expanded
+  - HARDENED AGENT INSTRUCTION updated: added explicit filename-accuracy warning
+
+
 - Fix: CI self-healing cascade (issue #3860, 31% failure rate / 266 self-healing failures in 7 days) — 3-layer mitigation:
   1. **Expanded exclusion list** in `iterative-self-healing-ci.yml` triage job: added 12 CI meta-workflows that should not trigger self-healing (`Copilot Iterative Self-Healing Auto-Poster`, `CI Rescue`, `PR Comment Review Gate`, `Agent Token Delegation`, `Auto-Post @copilot`, `Agent Check-In`, `CI Failure Issue Creator`, `PR Cost Check`, `Copilot PR Session Injector`, `Session Watchdog`, `Chat-Ops Trigger`, `Copilot Review Responder`)
   2. **Per-branch hourly cap**: new `rate_cap` guard in triage job — skips run if ≥10 healer runs on the same branch in the past hour (SELF_HEALING_001 sub-scenario C brake)

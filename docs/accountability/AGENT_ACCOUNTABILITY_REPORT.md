@@ -16406,3 +16406,51 @@ and the CI gate requirement.
 - CI checks targeted: issue #3853 (59 failures), issue #3860 (31% failure rate)
 
 ---
+
+## SESSION SUMMARY — S285 — 2026-04-02T21:00Z (PR #3854 — WEC Catalog, PR_LIFECYCLE v1.6.0, PR Template Overhaul)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** All `comment_new` threads reviewed — comments 4180039217, 4180109068, 4180125730, 4180365789 addressed ✅
+- [x] **0b.** CODEBASE_AGENCY_POLICY.md loaded and followed ✅
+- [x] **0c.** AGENT_ACCOUNTABILITY_REPORT.md loaded; previous session (S283/S284) context read ✅
+- [x] **0d.** PDA failure solutions loaded from `.codex/aftermath/failure_pattern_solutions.yaml` ✅
+- [x] **1.** 60 PR-triggered workflows catalogued; 9 always-required identified ✅
+- [x] **2.** WEC filename mismatches identified and fixed in both PR template and PR_LIFECYCLE.md ✅
+- [x] **3.** New requirements (PR_LIFECYCLE expansion, WEC catalog) addressed ✅
+- [x] **4.** CHANGELOG.md updated; AGENT_ACCOUNTABILITY_REPORT.md updated (this entry) ✅
+
+### Work Completed
+
+#### PR_LIFECYCLE.md v1.5.0 → v1.6.0
+1. **§2 Workflow Trigger Map** — expanded from 10-row table to 6 category tables covering all 60 PR-triggered workflows; always-required, validation, security, docs, automation, and auto-triggered sections
+2. **§8 Main Lifecycle Mermaid** — added Phase 0 (always-required), WEC Gate subgraph with FF branch, PDA Loop logging; 4-phase lifecycle now fully reflected
+3. **§9 Rescue Sequence** — rewritten as 8-participant sequenceDiagram; `pda_failure_logger.py` is now a named participant; shows `log-failure`, auto-fix iterations, `log-fix`, grounded solution query, `log-session` calls
+4. **§11 WEC section** — corrected `resilient-validation-suite.yml` → `resilient_validation.yml` in example; 9 always-required workflows listed explicitly; pre-approval requirements table corrected with exact filenames
+5. **§11.4 Phase table** — added FF-Approved state column; blocking-comments resolved row
+6. **§12 State Machine** — new FF-Approved state with `note`; Rescue→PDA self-healer edge; phase comparison table expanded with FF column
+7. **§18 NEW — WEC Workflow Catalog** — authoritative filename table for all 60 workflows in 6 sections; ⚠️ underscore/hyphen mismatch callout; WEC selection strategy mermaid (always→cheap→medium→expensive→FF)
+8. **§19 NEW — Fast-Forward Workflow Promotion** — purpose, step-by-step instructions, allowlist/denylist rules, FF Gate mermaid with `create-pr`/`direct-push`/`excluded`/`denied` paths, status icons, Copilot agent FF protocol
+
+#### PR Template WEC Overhaul
+9. **Filename fixes**: `resilient-validation-suite.yml` → `resilient_validation.yml`, `nox-gates.yml` → `nox_gates.yml`, `docs-build.yml` → `pages-mkdocs.yml`
+10. **Always-required defaults corrected**: 6 workflows promoted from `[ ]` to `[x]`: `deferral-language-gate.yml`, `copilot-agent-checkin.yml`, `cost-gate.yml`, `copilot-agent-session-done.yml`, `workflow-execution-gate.yml`, `copilot-iterative-self-healing.yml`
+11. **New Validation & Testing opt-ins**: `validate.yml`, `mypy-baseline.yml`, `progressive-validation.yml`, `coverage-with-timeout.yml`, `test-rag.yml`, `pre-flight-validation.yml`, `data-quality-suite.yml` (7 new entries)
+12. **New Security & Quality opt-ins**: `codeql-analysis.yml`, `semgrep_sarif.yml`, `actionlint-audit.yml`, `auto-fix-common-issues.yml`, `code-quality-coverage-suite.yml` (5 new entries)
+13. **Documentation section added**: `documentation-link-checker.yml`, `pages-mkdocs.yml`, `pages-pre-merge-validation.yml`
+14. **Automation opt-ins added**: `qa-walkthrough.yml`, `dependency-submission.yml`, `reference-integrity.yml`, `root-org-validation.yml`, `rust_swarm_ci.yml`
+15. **HARDENED AGENT INSTRUCTION** — updated with explicit filename-accuracy warning (underscores vs hyphens)
+
+### Lessons Learned
+- WEC gate parses `\S+\.yml` — filename accuracy is a parsing requirement, not just style
+- 60 PR-triggered workflows on `0D_base_`; only 9 are truly always-required; the rest benefit from opt-in selection for CI cost management
+- PR_LIFECYCLE.md is the single source of truth for WEC filenames; keeping it in sync with `.github/workflows/` is mandatory
+- FF checkbox was present in PR template since S280 but absent from the CURRENT PR body (PR created before S280); agent must ADD missing WEC sections to PR body on every report_progress
+
+### Impact Score
+- Documentation updated: `docs/ci/PR_LIFECYCLE.md` v1.5.0 → v1.6.0 (+§18, +§19; 4 mermaid diagrams updated)
+- PR template fixed: 3 filename mismatches corrected; 6 always-required items pre-checked; 20 new opt-in entries added
+- Workflow catalog: 60 PR-triggered workflows documented with exact WEC filenames
+- Comments replied to: 4180365789 (session re-trigger)
+- Unblocked: comment-review-gate (1 blocking comment resolved)
+
+---

@@ -1,9 +1,9 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.5.0  
-> **Date:** 2026-04-02 (S283 — §17 PDA Loop failure pattern logging, §16.6 rate-limit hardening applied, issue #3853 triage complete)  
+> **Version:** 1.6.0  
+> **Date:** 2026-04-02 (S285 — §18 WEC Workflow Catalog, §19 Fast-Forward Promotion added; all WEC filename mismatches resolved; mermaid diagrams expanded)  
 > **Branch:** `0D_base_`  
-> **Sources:** `.github/workflows/` inspection, CI log history, issue #3853 triage report (59 failures / 14 workflows, 2026-04-02)
+> **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (59 failures / 14 workflows, 2026-04-02)
 
 This document describes the full expected lifecycle of a pull request on the `0D_base_` branch:
 which workflows run, when Copilot sessions are triggered, what failures are expected vs unexpected,
@@ -30,6 +30,8 @@ and how the self-healing / rescue system responds.
 15. [RAG Module Tests — Chronic Failure Pattern](#15-rag-module-tests--chronic-failure-pattern)
 16. [`@copilot` Comment Budget & Rate-Limit Controls](#16-copilot-comment-budget--rate-limit-controls)
 17. [PDA Loop + AfterMath — Failure Pattern Logging](#17-pda-loop--aftermath--failure-pattern-logging)
+18. [WEC Workflow Catalog — Complete Reference](#18-wec-workflow-catalog--complete-reference)
+19. [Fast-Forward Workflow Promotion](#19-fast-forward-workflow-promotion)
 
 ---
 
@@ -66,18 +68,86 @@ Developer pushes commit to 0D_base_
 
 ## 2. Workflow Trigger Map
 
-| Workflow | Trigger | Requires Approval | Purpose |
-|----------|---------|-------------------|---------|
-| `validate.yml` | `pull_request` | No | Pre-commit hook suite (ruff, detect-secrets, sync-tracked-files) |
-| `mypy-baseline.yml` | `pull_request` + `push` | No | Type-check anti-regression gate |
-| `resilient_validation.yml` | `pull_request` | No | Full pytest suite (4 shards + integration + slow) |
-| `agent-auth-delegation.yml` | `push` + `issue_comment` + `workflow_run` | **Yes — owner approves** | Delegates token to Copilot agents |
-| `copilot-agent-checkin.yml` | `push` to `0D_base_` | No (reads repo vars) | S221 guard — missed-trigger recovery |
-| `ci-rescue.yml` | `workflow_run` (on failure) | No | Root-cause analysis + rescue comment posting |
-| `copilot-agent-session-done.yml` | `workflow_run` | No | Session completion tracking |
-| `copilot-session-chain.yml` | `issue_comment` / `workflow_dispatch` | No | Copilot session sequencing |
-| `copilot-pr-session-injector.yml` | `pull_request` | No | Injects session context into PR |
-| `copilot-cascade-review.md` | Manual / dispatch | No | Multi-pass Copilot PR review |
+There are **60 PR-triggered workflows** on `0D_base_`. The table below covers the most
+significant ones. For the complete WEC-controlled catalog (all opt-in selectable workflows),
+see [§18 WEC Workflow Catalog](#18-wec-workflow-catalog--complete-reference).
+
+### 2.1 Always-Required Workflows (auto-run, never gated)
+
+| Workflow | Trigger | WEC Role | Purpose |
+|----------|---------|----------|---------|
+| `pre-merge-validation.yml` | `pull_request`, `pull_request_review` | ✅ Always required | Ruff, line-length, auto-fix check gate |
+| `comment-review-gate.yml` | `pull_request`, `pull_request_review`, `issue_comment` | ✅ Always required | Enforces §0 comment-reply policy |
+| `deferral-language-gate.yml` | `pull_request` | ✅ Always required | Blocks forbidden deferral phrases |
+| `agent-auth-delegation.yml` | `push`, `issue_comment`, `workflow_run` | ✅ Always required — owner approves | Delegates COPILOT_AGENT_AUTH_ENABLED token |
+| `copilot-agent-checkin.yml` | `push` to `0D_base_` | ✅ Always required | S221 missed-trigger guard |
+| `cost-gate.yml` | `workflow_call` | ✅ Always required | RED-tier cost governance gate |
+| `copilot-agent-session-done.yml` | `workflow_run` | ✅ Always required | Session completion + S221 retrigger |
+| `workflow-execution-gate.yml` | `workflow_dispatch`, `pull_request_review` | ✅ Always required | Parses WEC checklist + arms FF |
+| `copilot-iterative-self-healing.yml` | `workflow_run`, `schedule`, `workflow_dispatch` | ✅ Always required | Self-healing escalation loop |
+
+### 2.2 Validation & Testing Workflows (WEC opt-in)
+
+| Workflow | Trigger | WEC Checkbox | Purpose |
+|----------|---------|-------------|---------|
+| `resilient_validation.yml` | `pull_request` | `resilient_validation.yml` | Full pytest suite (4 shards + integration + slow) |
+| `nox_gates.yml` | `pull_request` | `nox_gates.yml` | Nox quality gates (ruff, mypy, coverage) |
+| `validate.yml` | `pull_request`, `schedule` | `validate.yml` | Fast validation (ruff, detect-secrets, sync-tracked) |
+| `mypy-baseline.yml` | `pull_request`, `push` | `mypy-baseline.yml` | Type-check anti-regression gate |
+| `progressive-validation.yml` | `pull_request` | `progressive-validation.yml` | Progressive validation suite |
+| `coverage-with-timeout.yml` | `pull_request` | `coverage-with-timeout.yml` | Coverage run with timeout guards |
+| `test-rag.yml` | `pull_request` | `test-rag.yml` | RAG module tests |
+| `pre-flight-validation.yml` | `pull_request`, `push` | `pre-flight-validation.yml` | Pre-flight CI validation |
+| `ci-checkpoint-validation.yml` | `pull_request` | `ci-checkpoint-validation.yml` | CI checkpoint validation |
+| `data-quality-suite.yml` | `pull_request` | `data-quality-suite.yml` | Data quality & determinism suite |
+
+### 2.3 Security & Quality Workflows (WEC opt-in)
+
+| Workflow | Trigger | WEC Checkbox | Purpose |
+|----------|---------|-------------|---------|
+| `security-scanning-suite.yml` | `pull_request` | `security-scanning-suite.yml` | Full security audit (bandit, pip-audit) |
+| `codeql-analysis.yml` | `pull_request`, `push`, `schedule` | `codeql-analysis.yml` | CodeQL SAST analysis |
+| `semgrep_sarif.yml` | `pull_request` | `semgrep_sarif.yml` | Semgrep SAST (SARIF upload) |
+| `actionlint-audit.yml` | `pull_request`, `push` | `actionlint-audit.yml` | Workflow compliance audit (actionlint) |
+| `auto-fix-common-issues.yml` | `pull_request`, `workflow_dispatch` | `auto-fix-common-issues.yml` | Auto-fix ruff/P22/P23 violations |
+| `auto-fix-pr-check.yml` | `pull_request` | `auto-fix-pr-check.yml` | PR auto-fix check |
+| `scan-secrets-variables.yml` | `pull_request` | `scan-secrets-variables.yml` | Secrets & variables scan |
+| `code-quality-coverage-suite.yml` | `pull_request` | `code-quality-coverage-suite.yml` | Code quality & coverage suite |
+
+### 2.4 Documentation Workflows (WEC opt-in)
+
+| Workflow | Trigger | WEC Checkbox | Purpose |
+|----------|---------|-------------|---------|
+| `documentation-link-checker.yml` | `pull_request` | `documentation-link-checker.yml` | Broken link detection in docs/ |
+| `pages-mkdocs.yml` | `pull_request`, `push` | `pages-mkdocs.yml` | MkDocs documentation build |
+| `pages-pre-merge-validation.yml` | `pull_request` | `pages-pre-merge-validation.yml` | Pages pre-merge validation |
+
+### 2.5 Automation & Agent Workflows (WEC opt-in)
+
+| Workflow | Trigger | WEC Checkbox | Purpose |
+|----------|---------|-------------|---------|
+| `qa-walkthrough.yml` | `pull_request`, `workflow_dispatch` | `qa-walkthrough.yml` | QA walkthrough agent |
+| `dependency-submission.yml` | `pull_request` | `dependency-submission.yml` | Resilient dependency submission |
+| `reference-integrity.yml` | `pull_request`, `push` | `reference-integrity.yml` | Reference integrity + agent size gate |
+| `root-org-validation.yml` | `pull_request`, `workflow_dispatch` | `root-org-validation.yml` | Root organization validation |
+| `rust_swarm_ci.yml` | `pull_request`, `push` | `rust_swarm_ci.yml` | Rust-Python hybrid swarm CI/CD |
+| `fast-forward-safe-files.yml` | `workflow_dispatch` | ⚡ FF checkbox (separate section) | Fast-forward safe files to `main` |
+
+### 2.6 Auto-Triggered (not WEC-selectable)
+
+These workflows run automatically on PR events and are not individually controlled via the WEC:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci-rescue.yml` | `workflow_run` (on failure) | RCA comment posting |
+| `iterative-self-healing-ci.yml` | `workflow_run` | Auto-fix + PDA Loop logging |
+| `copilot-pr-session-injector.yml` | `pull_request` | Session context injection |
+| `copilot-session-chain.yml` | `issue_comment`, `workflow_dispatch` | Session sequencing |
+| `pr-cost-check.yml` | `pull_request` | PR cost estimate comment |
+| `pr-followup-generator.yml` | `pull_request` | Follow-up prompt generation |
+| `pr-size-analyzer.yml` | `pull_request` | PR diff size analysis |
+| `labeler.yml` | `pull_request` | Label assignment |
+| `comment-review-gate.yml` | `issue_comment` (self-retrigger guard) | Gate re-scan on new comments |
 
 ---
 
@@ -253,28 +323,48 @@ flowchart TD
     A[Developer pushes commit] --> B{PR Exists?}
     B -->|No| C[Open PR]
     B -->|Yes| D[Sync push to existing PR]
-    C --> E
-    D --> E
+    C --> PRE
+    D --> PRE
 
-    subgraph PHASE1 ["Phase 1 — Pre-Approval Checks (immediate)"]
-        E[validate.yml / Fast Validation] --> F{Pass?}
-        G[mypy-baseline.yml] --> H{Pass?}
-        I[resilient_validation.yml shards x6] --> J{Pass?}
+    subgraph PRE ["Phase 0 — Always-Required (every push, no gate)"]
+        direction LR
+        PRE1[pre-merge-validation.yml]
+        PRE2[comment-review-gate.yml]
+        PRE3[deferral-language-gate.yml]
+        PRE4[copilot-agent-checkin.yml\n S221 guard]
     end
 
-    F -->|Fail| K[ci-rescue.yml posts 🚨 rescue comment]
+    PRE --> E
+    subgraph PHASE1 ["Phase 1 — Pre-Approval Checks"]
+        E[validate.yml / Fast Validation] --> F{Pass?}
+        G[mypy-baseline.yml] --> H{Pass?}
+        I[resilient_validation.yml shards ×6] --> J{Pass?}
+    end
+
+    F -->|Fail| K[ci-rescue.yml posts 🚨 rescue comment\n+ PDA Loop log-failure]
     H -->|Fail| K
     J -->|Fail| K
     K --> L[@copilot Fix Required comment]
     L --> M[Copilot session starts]
-    M --> N[Agent fixes code + pushes]
+    M --> N[Agent fixes code + pushes\n+ replies to blocking comments]
     N --> A
 
-    F -->|Pass| O
-    H -->|Pass| O
-    J -->|Pass| O
+    F -->|Pass| WEC
+    H -->|Pass| WEC
+    J -->|Pass| WEC
 
-    subgraph PHASE2 ["Phase 2 — Token Delegation Gate"]
+    subgraph WEC ["Phase 2 — WEC Gate: Opt-In Workflow Selection"]
+        direction TB
+        WEC1["Owner/agent checks WEC items\n(resilient_validation · nox_gates\nmypy-baseline · codeql · security\ndocs-build · qa-walkthrough …)"]
+        WEC2[workflow-execution-gate.yml\nparses PR body checklist]
+        WEC1 --> WEC2
+        WEC2 --> WEC3{FF checkbox\nticked?}
+        WEC3 -->|Yes| FF["⚡ fast-forward-safe-files.yml\nPromotes safe files to main"]
+        WEC3 -->|No| SKIP_FF[FF job skipped]
+    end
+
+    WEC2 --> O
+    subgraph PHASE2 ["Phase 3 — Token Delegation Gate"]
         O[agent-auth-delegation.yml] --> P{Owner\nApproves?}
     end
 
@@ -283,16 +373,20 @@ flowchart TD
     R --> S[@copilot continue posted]
     S --> T[Copilot session — next phase tasks]
 
-    subgraph PHASE3 ["Phase 3 — Post-Approval"]
-        T --> U[Agent completes tasks]
-        U --> V[copilot-agent-session-done.yml]
+    subgraph PHASE3 ["Phase 4 — Post-Approval Agent Sessions"]
+        T --> U[Agent completes tasks\n• update CHANGELOG\n• update accountability report\n• reply to ALL blocking comments]
+        U --> V[copilot-agent-session-done.yml\n• verify rescues answered\n• S221 guard on next push]
     end
 
     V --> W{Rescue\nanswered?}
     W -->|No| X[S221 guard fires\non next push]
     X --> L
-    W -->|Yes| Y[Ready for Review]
-    Y --> Z[🟢 All checks green → Merge]
+    W -->|Yes| Y[Ready for Review\n🟢 all checks green]
+    Y --> Z[Owner approves + Merge]
+
+    style FF fill:#d4edda,stroke:#28a745
+    style Q fill:#fff3cd,stroke:#856404
+    style K fill:#f8d7da,stroke:#721c24
 ```
 
 ---
@@ -301,31 +395,48 @@ flowchart TD
 
 ```mermaid
 sequenceDiagram
+    participant Dev as Developer / Copilot
     participant CI as GitHub Actions CI
+    participant Healer as iterative-self-healing-ci.yml
+    participant PDA as pda_failure_logger.py
     participant Rescue as ci-rescue.yml
     participant Checkin as copilot-agent-checkin.yml (S221)
     participant Copilot as @copilot Agent
     participant PR as Pull Request Comments
 
+    Dev->>CI: push commit to 0D_base_
     CI->>CI: Check fails (e.g., mypy-baseline)
-    CI->>Rescue: Triggers (workflow_run: completed)
-    Rescue->>PR: Posts 🚨 CI Rescue comment<br/>(rescue ID = failing commit SHA)
-    CI->>PR: mypy-baseline → rescue-comment job posts<br/>secondary fix comment
+    CI->>Healer: workflow_run: completed (conclusion=failure)
+
+    Healer->>Healer: classify logs → RP-XXX pattern
+    Healer->>PDA: log-failure (pattern_id, root_cause, fix_template)
+    PDA-->>Healer: logged to pda_iterations.jsonl
+
+    alt auto-fixable pattern
+        Healer->>CI: apply fix, commit, verify (max 3 iterations)
+        Healer->>PDA: log-fix (verification_passed=true/false)
+    else not auto-fixable
+        Healer->>Rescue: triggers ci-rescue.yml
+        Rescue->>PR: UPSERT 🚨 CI Rescue comment<br/><!-- ci-rescue:PR:sha-XXXXX --><br/>(pattern ID + fix commands + @copilot)
+    end
 
     PR->>Copilot: @copilot mentioned → session starts
     Copilot->>CI: Fetches logs via GitHub MCP tools
-    Copilot->>Copilot: Diagnoses root cause
-    Copilot->>CI: Pushes fix commit
+    Copilot->>PDA: summarize (query grounded solutions)
+    PDA-->>Copilot: proven fix_template + verification_cmd
+    Copilot->>Copilot: Diagnoses root cause, applies fix
+    Copilot->>CI: Push fix commit + reply to BLOCKING comments
+    Copilot->>PR: Posts "Fixed at <SHA>" reply
 
     CI->>CI: Re-runs checks on fix commit
     CI->>Copilot: copilot-agent-session-done.yml fires
-    Copilot->>PR: Posts "Fixed at <SHA>" reply
+    Copilot->>PDA: log-session (patterns_fixed, lessons)
 
     Note over Checkin: On EVERY push to 0D_base_
-    Checkin->>PR: Scans for unanswered rescues
-    alt Rescue has @copilot "fixed at" reply
-        Checkin->>Checkin: Guard suppressed — no re-trigger
-    else No @copilot reply found
+    Checkin->>PR: Scans for unanswered rescue comments
+    alt Rescue has @copilot "fixed at / resolved at / addressed at" reply
+        Checkin->>Checkin: S221 guard suppressed — no re-trigger
+    else No @copilot reply (rate-cap: ≥3 retriggers → stop)
         Checkin->>PR: Posts S221 missed-trigger re-trigger
         PR->>Copilot: @copilot session re-triggered
     end
@@ -449,16 +560,22 @@ The WEC block lives at the bottom of every PR description:
 
 ### ✅ Validation & Testing
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient-validation-suite.yml — Resilient validation
+- [ ] resilient_validation.yml — Resilient validation
+- [ ] mypy-baseline.yml — Type-check anti-regression
 ```
 
-- **`[x]` (checked)** = workflow is APPROVED to run
-- **`[ ]` (unchecked)** = workflow is NOT YET approved
-- **`always required`** items are auto-checked by the Copilot agent on every PR body update
+> ⚠️ **Filename accuracy is mandatory.** The WEC gate parses `\S+\.yml` tokens.
+> `resilient-validation-suite.yml` will NOT match `resilient_validation.yml` —
+> use the **exact** filename (underscores not hyphens where the file uses underscores).
+> See [§18](#18-wec-workflow-catalog--complete-reference) for the authoritative filename list.
 
-The `workflow-execution-gate.yml` workflow parses this checklist on every PR push and maintains
-an allowlist in a repo variable. Workflows that are not checked will NOT be triggered (or will exit
-early with a skip).
+- **`[x]` (checked)** = workflow is APPROVED to run
+- **`[ ]` (unchecked)** = workflow is NOT YET approved; gate returns `skip` when the workflow checks in
+- **`always required`** items must be `[x]` in every PR body update; the HARDENED AGENT INSTRUCTION enforces this
+
+The `workflow-execution-gate.yml` workflow parses this checklist on every `pull_request_review`
+approval or `workflow_dispatch`. Workflows that implement the WEC gate-check step exit early
+(`skip=true`) when their checkbox is unchecked.
 
 ### 11.2 Pre-Approval Phase (no workflows checked yet)
 
@@ -467,8 +584,8 @@ When a PR is first opened and no workflows have been checked in the WEC, the PR 
 
 | Category | Behaviour |
 |----------|-----------|
-| **Always-required workflows** | Run automatically (pre-merge-validation, comment-review-gate, agent-auth-delegation, etc.) |
-| **Gated workflows** | Do NOT run — the gate returns `skip` |
+| **Always-required workflows** | Run automatically (pre-merge-validation, comment-review-gate, deferral-language-gate, agent-auth-delegation, copilot-agent-checkin, cost-gate, copilot-agent-session-done, workflow-execution-gate, copilot-iterative-self-healing) |
+| **Gated opt-in workflows** | Do NOT run — the gate returns `skip` |
 | **GitHub-managed workflows** | Run regardless of WEC (e.g. `Automatic Dependency Submission (Python)`) |
 
 #### Pre-approval requirements
@@ -477,15 +594,16 @@ The following checks MUST be green before any WEC items are approved:
 
 | Workflow / Job | Why it must pass unconditionally |
 |----------------|----------------------------------|
-| `Automatic Dependency Submission (Python)` ← `dynamic / submit-pypi` | GitHub-managed supply-chain check. Transient API failure (HTTP 503) is the only acceptable reason for a red; re-run resolves it. A structural failure (missing requirements file) requires a code fix before proceeding. |
-| `Resilient Dependency Submission` | Our retry-wrapped replacement. Must pass with all green. |
-| `Validation Pipeline / Fast Validation` | detect-secrets, ruff, sync-tracked-files. All must pass. |
-| `mypy Baseline Gate` | No new type errors vs baseline. Must pass. |
-| `deferral-language-gate` | No forbidden deferral phrases in changed files. Must pass. |
+| `Automatic Dependency Submission (Python)` ← `dynamic / submit-pypi` | GitHub-managed supply-chain check. Transient API failure (HTTP 503) is the only acceptable reason for a red; re-run resolves it. |
+| `Resilient Dependency Submission` (`dependency-submission.yml`) | Our retry-wrapped replacement. Must pass with all green. |
+| `Validation Pipeline / Fast Validation` (`validate.yml`) | detect-secrets, ruff, sync-tracked-files. All must pass. |
+| `mypy Baseline Gate` (`mypy-baseline.yml`) | No new type errors vs baseline. Must pass. |
+| `deferral-language-gate.yml` | No forbidden deferral phrases in changed files. Must pass. |
+| `pre-merge-validation.yml` | Ruff, line-length, auto-fix check. Must pass. |
 
 > ⚠️ **Important:** `dynamic / submit-pypi (dynamic)` is GitHub's own automatic dependency
 > graph workflow. It runs unconditionally on every push and pull_request event to `0D_base_`.
-> If it fails, self-healing MUST be triggered immediately (see [§11.5 Self-Healing for Pre-Approval Failures](#115-self-healing-for-pre-approval-failures)).
+> If it fails, self-healing MUST be triggered immediately (see [§11.5](#115-self-healing-for-pre-approval-failures)).
 
 ### 11.3 Approving Workflows (checking the WEC)
 
@@ -498,7 +616,8 @@ push and enables the newly approved workflow.
 ```
 1. Open PR (pre-approval — only always-required workflows run)
          ↓
-2. Pre-approval checks green → check security-scanning-suite, resilient-validation-suite in WEC
+2. Pre-approval checks green → check resilient_validation.yml, mypy-baseline.yml,
+   security-scanning-suite.yml in WEC (use exact filenames — see §18)
          ↓
 3. Push PR body update → workflow-execution-gate re-parses → approved workflows now run
          ↓
@@ -518,6 +637,7 @@ push and enables the newly approved workflow.
 | **Draft** | `[Draft]` badge | Pre-approval phase | Not started | Only always-required run |
 | **Open (pre-check)** | No badge; `Open` | Pre-approval until WEC items checked | Not started | Always-required + GitHub-managed |
 | **Open (WEC approved)** | `Open` | Specific workflows approved via WEC | Active after agent-auth | All approved workflows + required |
+| **Open (FF approved)** | `Open` | ⚡ FF checkbox ticked + WEC items checked | Active | FF job fires; files promoted to main |
 | **Ready to review** | `[Open]` (after clicking "Ready for review") | All WEC workflows may run | Post-approval active | Full suite |
 
 **Key difference between Draft and Open:**
@@ -591,30 +711,44 @@ stateDiagram-v2
     Draft --> PreApproval: PR opened / converted to non-draft
     note right of PreApproval
         Phase: Pre-approval pre-check
-        Runs: always-required + GitHub-managed
+        Runs: always-required (9 workflows) + GitHub-managed
         WEC: nothing approved yet
         submit-pypi MUST be green
+        pre-merge-validation MUST be green
     end note
 
-    PreApproval --> WECApproved: Owner/agent checks WEC items
+    PreApproval --> WECApproved: Owner/agent checks WEC opt-in items\n(use exact filenames from §18)
     note right of WECApproved
         Phase: WEC-gated workflows active
         Runs: approved workflows + always-required
         agent-auth: waiting for owner approval
+        WEC gate parses PR body checklist
     end note
+
+    WECApproved --> FFApproved: Owner ticks ⚡ Fast-Forward Approved
+    note right of FFApproved
+        Phase: FF promotion active
+        fast-forward-safe-files.yml fires
+        Promotes allowlisted files to main
+        without full merge cycle
+    end note
+
+    FFApproved --> WECApproved: FF completes (returns to WEC phase)
 
     WECApproved --> AgentActive: Owner approves agent-auth-delegation
     note right of AgentActive
         Phase: Copilot sessions active
         Runs: all approved + agent workflows
         COPILOT_AGENT_AUTH_ENABLED = true
+        PDA Loop logging active
     end note
 
-    AgentActive --> ReadyToReview: All checks green, code review complete
+    AgentActive --> ReadyToReview: All checks green\nAll blocking comments replied to\nCHANGELOG + accountability updated
     note right of ReadyToReview
         Phase: Full suite
         All required checks passing
         Human code review complete
+        No unaddressed mbaetiong comments
     end note
 
     ReadyToReview --> Merged: Owner approves + merge
@@ -622,6 +756,7 @@ stateDiagram-v2
     PreApproval --> Rescue: Any pre-approval check fails
     WECApproved --> Rescue: Any approved workflow fails
     AgentActive --> Rescue: Any workflow fails
+    Rescue --> Rescue: PDA log-failure → self-healer tries auto-fix
     Rescue --> PreApproval: Copilot fixes + pushes
     Rescue --> WECApproved: Copilot fixes + pushes (if past pre-approval)
     Rescue --> AgentActive: Copilot fixes + pushes (if agent active)
@@ -631,21 +766,23 @@ stateDiagram-v2
 
 ### Phase Comparison Table
 
-| Attribute | Draft | Pre-Approval (Open) | WEC Approved | Agent Active | Ready to Review |
-|-----------|-------|-------------------|--------------|-------------|----------------|
-| GitHub PR state | draft | open | open | open | open |
-| Can be merged | ❌ | ❌ | ❌ (unless checks pass) | ❌ (until checks pass) | ✅ (owner approval) |
-| Always-required workflows run | ✅ | ✅ | ✅ | ✅ | ✅ |
-| GitHub-managed workflows run | ✅ | ✅ | ✅ | ✅ | ✅ |
-| WEC-gated workflows run | ❌ | ❌ | ✅ (checked only) | ✅ (all checked) | ✅ |
-| Copilot sessions active | ❌ | ❌ | ❌ | ✅ | ✅ |
-| `agent-auth-delegation` approved | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Self-healing triggers | ✅ | ✅ | ✅ | ✅ | ✅ |
-| submit-pypi must be green | N/A | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED |
+| Attribute | Draft | Pre-Approval | WEC Approved | FF Approved | Agent Active | Ready to Review |
+|-----------|-------|-------------|--------------|-------------|-------------|----------------|
+| GitHub PR state | draft | open | open | open | open | open |
+| Can be merged | ❌ | ❌ | ❌ (checks pending) | ❌ | ❌ (until all green) | ✅ owner approval |
+| Always-required workflows (9) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| GitHub-managed workflows | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| WEC opt-in workflows | ❌ | ❌ | ✅ (checked only) | ✅ (checked) | ✅ (all checked) | ✅ |
+| ⚡ FF promotion fires | ❌ | ❌ | ❌ | ✅ | ✅ if ticked | ✅ if ticked |
+| Copilot sessions active | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| `agent-auth-delegation` approved | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Self-healing + PDA Loop | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| submit-pypi must be green | N/A | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED | ✅ REQUIRED |
+| Blocking comments resolved | — | — | — | — | ✅ REQUIRED | ✅ REQUIRED |
 
-> **Planning use:** This table enables mapping out which workflows to enable at each phase,
-> optimising for CI cost (don't run expensive suites during draft / pre-approval) while
-> ensuring security supply-chain checks pass unconditionally.
+> **Cost optimisation:** Only check expensive suites (progressive-validation, rust_swarm_ci,
+> code-quality-coverage-suite) in the WEC once the cheap gates (mypy, ruff, deferral) are green.
+> Draft and pre-approval phases limit CI spend while protecting against regressions.
 
 ---
 
@@ -1183,3 +1320,276 @@ with root causes, fix templates, and verification commands. The resolution statu
 | Automatic Dependency Submission | 4 | submit-pypi infrastructure | ℹ️ Not code-fixable |
 | Copilot coding agent | 4 | Session failures on dependabot branches | ℹ️ Not code-fixable |
 
+
+---
+
+## 18. WEC Workflow Catalog — Complete Reference
+
+> **Source:** `.github/workflows/` inspection — 60 PR-triggered workflows as of S285 (2026-04-02)  
+> **Purpose:** Authoritative list of every workflow that can appear in the WEC checklist,
+> with the **exact filename** the WEC gate requires, WEC role, and recommended default state.
+
+### 18.1 Always-Required (pre-checked `[x]`, never unchecked)
+
+| Exact WEC Filename | Display Name | Why Always Required |
+|--------------------|-------------|---------------------|
+| `pre-merge-validation.yml` | Pre-Merge Validation | Ruff, line-length, auto-fix gate — must always pass |
+| `comment-review-gate.yml` | PR Comment Review Gate | §0 policy — all mbaetiong comments must be addressed |
+| `deferral-language-gate.yml` | 🚨 Deferral Language Gate | Deferral-language CI enforcement — always active |
+| `agent-auth-delegation.yml` | Agent Token Delegation | Token delegation — owner approves once per cycle |
+| `copilot-agent-checkin.yml` | Agent Check-In | S221 missed-trigger guard — fires every push |
+| `cost-gate.yml` | 💰 Cost Governance Gate | RED-tier budget gate — must always be armed |
+| `copilot-agent-session-done.yml` | Auto-Post @copilot review After Agent Session | Session completion + S221 retrigger |
+| `workflow-execution-gate.yml` | Workflow Execution Gate | Parses WEC checklist + arms FF — must always run |
+| `copilot-iterative-self-healing.yml` | Iterative Self-Healing CI Loop | Self-healing escalation — must always be active |
+
+### 18.2 Validation & Testing (opt-in `[ ]`)
+
+| Exact WEC Filename | Display Name | Cost | Notes |
+|--------------------|-------------|------|-------|
+| `resilient_validation.yml` | Resilient Validation Suite | 🔴 High | Full pytest (4 shards + integration + slow) |
+| `nox_gates.yml` | Nox Quality Gates | 🟡 Medium | Nox ruff, mypy, coverage gates |
+| `validate.yml` | Validation Pipeline | 🟢 Low | Fast: detect-secrets, ruff, sync-tracked |
+| `mypy-baseline.yml` | mypy Baseline (Type-Check Anti-Regression) | 🟢 Low | Type-check gate — recommended always-on |
+| `progressive-validation.yml` | Progressive Validation Suite | 🔴 High | Full progressive suite + coverage |
+| `coverage-with-timeout.yml` | Coverage with Timeout Guards | 🟡 Medium | Coverage run with timeout |
+| `test-rag.yml` | RAG Module Tests | 🟡 Medium | RAG-specific tests; see §15 for chronic patterns |
+| `validate.yml` | Validation Pipeline | 🟢 Low | Fast pre-commit suite |
+| `pre-flight-validation.yml` | Pre-Flight CI Validation | 🟢 Low | Pre-flight checks |
+| `ci-checkpoint-validation.yml` | CI Checkpoint Validation | 🟢 Low | CI checkpoint |
+| `data-quality-suite.yml` | Data Quality & Determinism Suite | 🟡 Medium | Determinism checks |
+| `audit-qa-suite.yml` | Audit & QA Suite (Unified) | 🟡 Medium | Unified audit + QA |
+
+> ⚠️ **Filename note:** `resilient_validation.yml` uses an underscore (`_`), NOT a hyphen (`-`).
+> `nox_gates.yml` also uses an underscore. Using `resilient-validation-suite.yml` or
+> `nox-gates.yml` will NOT be matched by the WEC gate parser.
+
+### 18.3 Security & Quality (opt-in `[ ]`)
+
+| Exact WEC Filename | Display Name | Cost | Notes |
+|--------------------|-------------|------|-------|
+| `security-scanning-suite.yml` | Security Scanning Suite | 🟡 Medium | Bandit, pip-audit, secrets |
+| `codeql-analysis.yml` | CodeQL | 🔴 High | SAST — runs on schedule too |
+| `semgrep_sarif.yml` | Semgrep SAST (SARIF Upload) | 🟡 Medium | Semgrep policy enforcement |
+| `actionlint-audit.yml` | Workflow Compliance Audit (actionlint) | 🟢 Low | Workflow YAML linting |
+| `auto-fix-common-issues.yml` | Auto-Fix Common CI Issues | 🟢 Low | Applies P1/P9/P12 auto-fixes |
+| `auto-fix-pr-check.yml` | PR Auto-Fix Check | 🟢 Low | Pre-merge auto-fix check |
+| `scan-secrets-variables.yml` | Scan and Report GitHub Secrets and Variables | 🟢 Low | Secrets/vars audit |
+| `code-quality-coverage-suite.yml` | Code Quality & Coverage Suite | 🟡 Medium | Coverage + quality |
+| `dependency-scan.yml` | Dependency Vulnerability Scan | 🟢 Low | pip-audit on requirements |
+| `sbom.yml` | Generate SBOM | 🟢 Low | Software Bill of Materials |
+
+### 18.4 Documentation (opt-in `[ ]`)
+
+| Exact WEC Filename | Display Name | Cost | Notes |
+|--------------------|-------------|------|-------|
+| `documentation-link-checker.yml` | Documentation Link Checker | 🟢 Low | Broken link detection in docs/ |
+| `pages-mkdocs.yml` | Pages / MkDocs Documentation Build | 🟡 Medium | Builds MkDocs site |
+| `pages-pre-merge-validation.yml` | Pages Pre-Merge Validation | 🟢 Low | Pages build pre-check |
+| `doc-freshness-check.yml` | AAIS Doc Freshness Check | 🟢 Low | AAIS scoring of docs/ |
+
+> ⚠️ **Note:** There is no `docs-build.yml` workflow. The documentation build workflow is
+> `pages-mkdocs.yml`. Using `docs-build.yml` in the WEC will silently not match anything.
+
+### 18.5 Automation & Agent (opt-in `[ ]`)
+
+| Exact WEC Filename | Display Name | Cost | Notes |
+|--------------------|-------------|------|-------|
+| `qa-walkthrough.yml` | QA Walkthrough Agent | 🟡 Medium | Full QA agent walkthrough |
+| `dependency-submission.yml` | Resilient Dependency Submission | 🟢 Low | Dependency graph submission |
+| `reference-integrity.yml` | 🔗 Reference Integrity + Agent Size Gate | 🟢 Low | Cross-reference validation |
+| `root-org-validation.yml` | Root Organization Validation | 🟢 Low | Root dir structure check |
+| `rust_swarm_ci.yml` | Rust-Python Hybrid Swarm CI/CD | 🔴 High | Rust cargo build + tests |
+| `e-to-d-transition-gate.yml` | E→D Transition Readiness Gate | 🟢 Low | Autonomy phase transition |
+| `d-capable-promotion-gate.yml` | D_CAPABLE Agent Promotion Gate | 🟢 Low | Agent authority gate |
+
+### 18.6 Fast-Forward (separate WEC section — not a checkbox item)
+
+The Fast-Forward feature is controlled by its own subsection in the WEC block, NOT a simple
+`[x] fast-forward-safe-files.yml` checkbox. It uses these markers:
+
+```markdown
+### ⚡ Fast-Forward Safe Files to `main`
+- [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
+
+<!-- FF_MERGE_MODE: create-pr -->
+<!-- FF_FILES:  -->
+<!-- FF_DRY_RUN: false -->
+
+<!-- FF_BLOCK_START
+Files to fast-forward (one per line, leave blank to use full allowlist):
+
+FF_BLOCK_END -->
+```
+
+See [§19](#19-fast-forward-workflow-promotion) for the full FF specification.
+
+### 18.7 WEC Selection Strategy Mermaid
+
+```mermaid
+flowchart TD
+    START([PR opened / new commit]) --> ALWAYS
+    subgraph ALWAYS ["Always-Required (auto-checked)"]
+        direction LR
+        A1[pre-merge-validation.yml]
+        A2[comment-review-gate.yml]
+        A3[deferral-language-gate.yml]
+        A4[agent-auth-delegation.yml]
+        A5[copilot-agent-checkin.yml]
+        A6[cost-gate.yml]
+        A7[copilot-agent-session-done.yml]
+        A8[workflow-execution-gate.yml]
+        A9[copilot-iterative-self-healing.yml]
+    end
+
+    ALWAYS --> CHEAP
+    subgraph CHEAP ["Cheap Gates (check early, low cost 🟢)"]
+        C1[validate.yml]
+        C2[mypy-baseline.yml]
+        C3[actionlint-audit.yml]
+        C4[auto-fix-common-issues.yml]
+        C5[documentation-link-checker.yml]
+    end
+
+    CHEAP --> MEDIUM
+    subgraph MEDIUM ["Medium Gates (check after cheap pass 🟡)"]
+        M1[resilient_validation.yml]
+        M2[nox_gates.yml]
+        M3[security-scanning-suite.yml]
+        M4[test-rag.yml]
+        M5[code-quality-coverage-suite.yml]
+    end
+
+    MEDIUM --> EXPENSIVE
+    subgraph EXPENSIVE ["Expensive Gates (owner approval 🔴)"]
+        E1[codeql-analysis.yml]
+        E2[progressive-validation.yml]
+        E3[rust_swarm_ci.yml]
+        E4[data-quality-suite.yml]
+    end
+
+    EXPENSIVE --> FF
+    subgraph FF ["Fast-Forward (separate section ⚡)"]
+        F1["⚡ FF Approved checkbox\n+ FF_BLOCK_START file list\n→ fast-forward-safe-files.yml"]
+    end
+
+    style ALWAYS fill:#d1ecf1,stroke:#0c5460
+    style CHEAP fill:#d4edda,stroke:#155724
+    style MEDIUM fill:#fff3cd,stroke:#856404
+    style EXPENSIVE fill:#f8d7da,stroke:#721c24
+    style FF fill:#e2d9f3,stroke:#6f42c1
+```
+
+---
+
+## 19. Fast-Forward Workflow Promotion
+
+> **Implemented:** S280 (2026-04-02)  
+> **Files:** `scripts/ci/fast_forward_safe_files.py`, `.codex/fast_forward_allowlist.yaml`,
+> `fast-forward-safe-files.yml`, `workflow-execution-gate.yml` (FF job)
+
+### 19.1 Purpose
+
+The Fast-Forward (FF) feature promotes pre-approved, safe-to-deploy files from the current PR
+branch directly to `main` **without waiting for the full merge cycle**. This is critical for:
+
+- Workflow files that only take effect from the default branch (`main`) — e.g., schedules,
+  `workflow_run` triggers, `workflow_dispatch` UI buttons
+- Scripts that CI relies on from `main`
+- Agent definition files that need to be visible to the entire repository
+
+### 19.2 How to Use the FF Checkbox
+
+```
+1. Identify which files need to be in main immediately (e.g., a new workflow with a schedule)
+
+2. In the PR body WEC section, tick the FF checkbox:
+   - [x] ⚡ Fast-Forward Approved — I (@mbaetiong) approve promoting the files below to main immediately
+
+3. Optionally specify files in the FF_BLOCK (one per line):
+   <!-- FF_BLOCK_START
+   .github/workflows/proactive-ci-monitor.yml
+   scripts/ci/pda_failure_logger.py
+   FF_BLOCK_END -->
+
+4. Set the merge mode (default: create-pr):
+   <!-- FF_MERGE_MODE: create-pr -->    ← opens a reviewable PR to main
+   <!-- FF_MERGE_MODE: direct-push -->  ← pushes directly (admin only)
+
+5. Push the PR body update → workflow-execution-gate.yml reads the FF section and
+   triggers fast-forward-safe-files.yml automatically
+
+6. Check the ⚡ Fast-Forward Result comment posted to the PR for status
+```
+
+### 19.3 Allowlist & Denylist
+
+The FF system uses `.codex/fast_forward_allowlist.yaml` to control which files may be promoted:
+
+```yaml
+allow:
+  - ".github/workflows/*.yml"
+  - "scripts/ci/*.py"
+  - ".github/agents/*.md"
+  - ".codex/aftermath/*.yaml"
+
+deny:
+  - "*deploy*"
+  - "*release*"
+  - "*publish*"
+  - "*prod*"
+```
+
+Files **not** in the allowlist are **excluded** (logged but not promoted).  
+Files matching the **denylist** are **denied** (blocked, logged as security concern).
+
+### 19.4 FF Gate Flow
+
+```mermaid
+flowchart TD
+    WEC[workflow-execution-gate.yml\nparse-ff step] --> FFCHECK{FF checkbox\nticked?}
+    FFCHECK -->|No| SKIP_FF[fast-forward job SKIPPED\nno files promoted]
+    FFCHECK -->|Yes| PARSE["Parse FF section\n• FF_MERGE_MODE (create-pr / direct-push)\n• FF_FILES (inline or FF_BLOCK)\n• FF_DRY_RUN (true / false)"]
+
+    PARSE --> FF_JOB[fast-forward job\nruns fast_forward_safe_files.py]
+    FF_JOB --> ALLOWED{Files in\nallowlist?}
+    ALLOWED -->|Yes| MERGE_MODE{Merge mode?}
+    ALLOWED -->|No| EXCLUDED["Files excluded\n(not in allowlist)"]
+    DENIED{Denylist\nmatch?} -->|Yes| DENY["Files denied\n(security block)"]
+    ALLOWED --> DENIED
+
+    MERGE_MODE -->|create-pr| PR_CREATED["Opens draft PR to main\nwith promoted files only"]
+    MERGE_MODE -->|direct-push| PUSH["Direct push to main\n(admin token required)"]
+
+    PR_CREATED --> RESULT["Post ⚡ Fast-Forward Result\ncomment to PR\n<!-- wec-ff-result:PR# -->"]
+    PUSH --> RESULT
+    EXCLUDED --> RESULT
+    DENY --> RESULT
+
+    style PR_CREATED fill:#d4edda,stroke:#28a745
+    style PUSH fill:#fff3cd,stroke:#856404
+    style DENY fill:#f8d7da,stroke:#721c24
+    style SKIP_FF fill:#e2e3e5,stroke:#6c757d
+```
+
+### 19.5 FF Status Icons
+
+| Result | Icon | Meaning |
+|--------|------|---------|
+| `pr-created` | ✅ | FF PR opened to main; review required |
+| `direct-pushed` | 🚀 | Files pushed directly to main (admin mode) |
+| `dry-run` | 🔕 | No changes made; would-promote list logged |
+| `nothing-to-promote` | ⏭️ | All files either excluded or already on main |
+
+### 19.6 Copilot Agent FF Protocol
+
+When a Copilot session adds new workflow files or CI scripts that must take effect on `main`
+immediately, the agent MUST:
+
+1. Add the files to the `FF_BLOCK_START` list in the PR body
+2. Set `FF_MERGE_MODE: create-pr` (default — always prefer PR over direct-push)
+3. Tick the `⚡ Fast-Forward Approved` checkbox
+4. Push the PR body update
+5. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
+
+The agent must NOT use `direct-push` mode without explicit human approval.

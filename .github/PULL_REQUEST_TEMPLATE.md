@@ -296,26 +296,52 @@ For Copilot/AI-assisted PRs:
 
 ## 🔄 Workflow Execution Checklist
 
+> **Instructions for Copilot Agent:** During wrap-up, check ONLY the workflows needed for
+> this session. Unchecked workflows will be SKIPPED by the gate. **Use EXACT filenames**
+> (see `docs/ci/PR_LIFECYCLE.md §18` for the authoritative list — filenames with underscores
+> like `resilient_validation.yml` must NOT be hyphenated). `always required` items are
+> pre-checked and must never be unchecked.
+
 ### ✅ Validation & Testing
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
-- [ ] resilient-validation-suite.yml — Resilient validation
-- [ ] nox-gates.yml — Nox test gates
+- [ ] resilient_validation.yml — Resilient validation (full pytest suite, 4 shards)
+- [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
+- [ ] validate.yml — Validation pipeline (fast: detect-secrets, ruff, sync-tracked)
+- [ ] mypy-baseline.yml — Type-check anti-regression gate
+- [ ] progressive-validation.yml — Progressive validation suite
+- [ ] coverage-with-timeout.yml — Coverage with timeout guards
+- [ ] test-rag.yml — RAG module tests
+- [ ] pre-flight-validation.yml — Pre-flight CI validation
+- [ ] data-quality-suite.yml — Data quality & determinism suite
 
 ### ✅ Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
-- [ ] security-scanning-suite.yml — Full security audit
-- [ ] deferral-language-gate.yml — Deferral language guard
+- [x] deferral-language-gate.yml — Deferral language guard (always required)
+- [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
+- [ ] codeql-analysis.yml — CodeQL SAST analysis
+- [ ] semgrep_sarif.yml — Semgrep SAST (SARIF upload)
+- [ ] actionlint-audit.yml — Workflow compliance audit
+- [ ] auto-fix-common-issues.yml — Auto-fix common CI issues
+- [ ] auto-fix-pr-check.yml — PR auto-fix check
+- [ ] code-quality-coverage-suite.yml — Code quality & coverage suite
 
 ### 📄 Documentation
-- [ ] docs-build.yml — Documentation build
+- [ ] documentation-link-checker.yml — Documentation link checker
+- [ ] pages-mkdocs.yml — MkDocs documentation build
+- [ ] pages-pre-merge-validation.yml — Pages pre-merge validation
 
 ### 🤖 Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
-- [ ] copilot-agent-checkin.yml — Agent check-in (always required)
-- [ ] cost-gate.yml — Cost governance gate
-- [ ] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session
-- [ ] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
-- [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
+- [x] copilot-agent-checkin.yml — Agent check-in / S221 guard (always required)
+- [x] cost-gate.yml — Cost governance gate (always required)
+- [x] copilot-agent-session-done.yml — Auto-Post @copilot review After Agent Session (always required)
+- [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
+- [x] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (always required)
+- [ ] qa-walkthrough.yml — QA walkthrough agent
+- [ ] dependency-submission.yml — Resilient dependency submission
+- [ ] reference-integrity.yml — Reference integrity + agent size gate
+- [ ] root-org-validation.yml — Root organization validation
+- [ ] rust_swarm_ci.yml — Rust-Python hybrid swarm CI/CD
 
 ### ⚡ Fast-Forward Safe Files to `main`
 
@@ -335,6 +361,7 @@ For Copilot/AI-assisted PRs:
 >
 > **Copilot Agent:** During wrap-up, if new workflow files were added that must
 > take effect immediately, tick the checkbox and populate the files list.
+> See `docs/ci/PR_LIFECYCLE.md §19` for full specification.
 
 - [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
 
@@ -350,8 +377,12 @@ FF_BLOCK_END -->
 ### ⚡ Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 
-> Instructions for Copilot Agent: During wrap-up, check ONLY the workflows needed for
-> this session. Unchecked workflows will be SKIPPED by the gate.
+> **HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
+> appended verbatim to **every** PR body update — including every `report_progress` call.
+> Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
+> **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
+> Only `always required` items may be auto-checked. All other items preserve their current state.
+> **Use EXACT filenames** — do NOT substitute hyphens for underscores or vice versa.
 
 _Add screenshots for UI changes_
 
