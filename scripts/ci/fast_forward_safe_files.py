@@ -72,6 +72,26 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
 _ALLOWLIST_PATH = Path(__file__).parents[2] / ".codex" / "fast_forward_allowlist.yaml"
 
+# Built-in defaults used when the allowlist YAML is absent or PyYAML is unavailable.
+_BUILTIN_ALLOWLIST_DEFAULTS: dict = {
+    "allowlist": [
+        ".github/workflows/*.yml",
+        ".github/workflows/*.yaml",
+        ".github/agents/*.md",
+        "scripts/ci/*.py",
+        "docs/ci/*.md",
+        "CHANGELOG.md",
+    ],
+    "denylist": [
+        ".github/workflows/*deploy*.yml",
+        ".github/workflows/*release*.yml",
+        ".github/workflows/*publish*.yml",
+        ".github/workflows/*prod*.yml",
+    ],
+    "default_merge_mode": "create-pr",
+    "auto_approve_when_all_safe": True,
+}
+
 
 # ---------------------------------------------------------------------------
 # Data model
@@ -100,46 +120,12 @@ def _load_allowlist(path: Path = _ALLOWLIST_PATH) -> dict:
     """Load and return the allowlist config dict."""
     if _yaml is None:
         logger.warning("PyYAML not available — using built-in defaults")
-        return {
-            "allowlist": [
-                ".github/workflows/*.yml",
-                ".github/workflows/*.yaml",
-                ".github/agents/*.md",
-                "scripts/ci/*.py",
-                "docs/ci/*.md",
-                "CHANGELOG.md",
-            ],
-            "denylist": [
-                ".github/workflows/*deploy*.yml",
-                ".github/workflows/*release*.yml",
-                ".github/workflows/*publish*.yml",
-                ".github/workflows/*prod*.yml",
-            ],
-            "default_merge_mode": "create-pr",
-            "auto_approve_when_all_safe": True,
-        }
+        return _BUILTIN_ALLOWLIST_DEFAULTS
     try:
         return _yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except FileNotFoundError:
         logger.warning("Allowlist not found at %s — using built-in defaults", path)
-        return {
-            "allowlist": [
-                ".github/workflows/*.yml",
-                ".github/workflows/*.yaml",
-                ".github/agents/*.md",
-                "scripts/ci/*.py",
-                "docs/ci/*.md",
-                "CHANGELOG.md",
-            ],
-            "denylist": [
-                ".github/workflows/*deploy*.yml",
-                ".github/workflows/*release*.yml",
-                ".github/workflows/*publish*.yml",
-                ".github/workflows/*prod*.yml",
-            ],
-            "default_merge_mode": "create-pr",
-            "auto_approve_when_all_safe": True,
-        }
+        return _BUILTIN_ALLOWLIST_DEFAULTS
 
 
 def _matches_any(filepath: str, patterns: list[str]) -> bool:

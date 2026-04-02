@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 import time
 
 import pytest
@@ -181,7 +182,6 @@ class TestExecutionEnvelopeRetries:
         reg = SkillRegistry()
         reg.register(_make_manifest(entrypoint="tests.skills.test_envelope:flaky_handler"))
         # Inject the handler via module-level trick — use sys.modules to avoid self-import
-        import sys
         mod = sys.modules[__name__]
         original = getattr(mod, "flaky_handler", None)
         mod.flaky_handler = flaky_handler  # type: ignore[attr-defined]
