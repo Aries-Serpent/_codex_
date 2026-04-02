@@ -90,6 +90,41 @@ _PATTERNS: list[dict[str, Any]] = [
         "regex": re.compile(r"actionlint.*(?P<file>\.github/workflows/[^\s]+):(?P<line>\d+)", re.M),
         "fix": "Fix YAML/shell issue in the reported workflow file at the reported line",
     },
+    # pytest-xdist distributed test failures
+    {
+        "id": "RP-XDIST-WORKER",
+        "category": "xdist-worker-crash",
+        "regex": re.compile(
+            r"(?:Worker\s+\w+\s+crashed|pytest-xdist.*worker.*(?:crash|died|lost)|"
+            r"INTERNALERROR.*xdist|gw\d+.*(?:CRASHED|DOWN))",
+            re.I | re.M,
+        ),
+        "fix": "xdist worker crash — check for forking issues, add --forked or reduce -n; "
+               "inspect worker stderr with -v -s",
+    },
+    {
+        "id": "RP-XDIST-COLLECT",
+        "category": "xdist-collection-error",
+        "regex": re.compile(
+            r"(?:distributed testing.*collect|collecting.*-n\s*\d+.*ERROR|"
+            r"xdist.*could not load.*conftest)",
+            re.I | re.M,
+        ),
+        "fix": "xdist collection error — ensure conftest.py is importable in all workers; "
+               "use --import-mode=importlib if needed",
+    },
+    # Flaky test markers
+    {
+        "id": "RP-FLAKY",
+        "category": "flaky-test",
+        "regex": re.compile(
+            r"(?:@pytest\.mark\.flaky|Flaky test.*(?:passed|failed) on retry "
+            r"(?P<n>\d+)/(?P<total>\d+)|RerunTestCase.*FAILED|rerun.*flaky)",
+            re.I | re.M,
+        ),
+        "fix": "Flaky test detected — investigate root cause (timing, ordering, external I/O). "
+               "Add @pytest.mark.flaky(reruns=3) as a temporary measure; file a stability bug.",
+    },
 ]
 
 # File + line extractor for generic failures

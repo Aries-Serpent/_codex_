@@ -301,6 +301,9 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ needs.parse-checklist.outputs.pr_number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           PR="${{ needs.parse-checklist.outputs.pr_number }}"
           [ -f /tmp/ff_result.json ] || exit 0
@@ -364,7 +367,3 @@ jobs:
           else:
               subprocess.run(['gh', 'pr', 'comment', pr, '--repo', repo, '--body', body], check=False)
           PYEOF
-        env:
-          PR: ${{ needs.parse-checklist.outputs.pr_number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_RUN_ID: ${{ github.run_id }}

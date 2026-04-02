@@ -22,6 +22,7 @@ from __future__ import annotations
 import logging
 import re
 from pathlib import Path
+from typing import Literal
 
 from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillManifest
 
@@ -108,6 +109,7 @@ def _frontmatter_to_manifest(
     # Risk tier inference from autonomy_model or enforcement_tier
     autonomy = str(fm.get("autonomy_model", "E")).upper()
     enforcement = str(fm.get("enforcement_tier", "SOFT")).upper()
+    risk_tier: Literal["low", "medium", "high"]
     if autonomy == "D_CAPABLE" or enforcement == "GROUNDED":
         risk_tier = "high"
     elif enforcement == "PARTIAL":

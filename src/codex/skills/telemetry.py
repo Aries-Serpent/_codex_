@@ -35,7 +35,7 @@ import os
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from .models import BudgetUsed, ExecutionMetrics, TelemetryEvent
 
@@ -105,7 +105,7 @@ def emit_event(
     *,
     skill_id: str,
     version: str,
-    status: str,
+    status: Literal["ok", "error"],
     metrics: ExecutionMetrics,
     trace_id: str,
     emit_jsonl: bool = True,

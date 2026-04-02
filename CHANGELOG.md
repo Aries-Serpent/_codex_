@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S281 — PR #3854)
+- Fix: `fast-forward-safe-files.yml` actionlint SC2089/SC2090 — replaced string variables with shell arrays for `FILES_ARG`, `DRY_FLAG`, `MSG_FLAG`; fixes quoted content being treated literally.
+- Fix: `workflow-execution-gate.yml` actionlint duplicate `env:` key — merged two `env:` blocks in "Post fast-forward result comment to PR" step into single block.
+- Fix: `src/codex/skills/telemetry.py` mypy regression — `status` parameter annotated as `Literal["ok", "error"]` instead of bare `str`.
+- Fix: `src/codex/skills/doc_loader.py` mypy regression — `risk_tier` variable annotated as `Literal["low", "medium", "high"]` to satisfy `PolicyConfig` field constraint.
+- Fix: `src/codex/skills/registry.py` mypy `[unused-ignore]` regression — removed `misc` from `# type: ignore[assignment,misc]` in except branch (packaging absent in CI venv causes import to yield `Any`, making ignore unused).
+- Feat: `src/codex/skills/test_failure_matcher/handler.py` — added `RP-XDIST-WORKER`, `RP-XDIST-COLLECT`, `RP-FLAKY` patterns (pytest-xdist worker crash/collection errors; `@pytest.mark.flaky` reruns).
+- Feat: `src/codex/skills/ci_health_analyzer/handler.py` — added `_trend_summary()` and `history` field in `run()` payload; ci.health.analyzer now supports historical trend window (chronic/trending/flapping/mixed labels, flap_rate, dominant_category).
+- Feat: `src/codex/skills/aais_batch/handler.py` — added `run_async()` for concurrent async batching via `ThreadPoolExecutor`; synchronous `run()` refactored to share `_score_item` helper.
+
 ### Fixed (auto-update — PR #3856)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3856 (SHA `8504e567`) at 2026-04-02T12:21Z [auto-generated]
 

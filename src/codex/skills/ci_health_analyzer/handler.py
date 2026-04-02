@@ -189,8 +189,75 @@ _RULES: list[dict[str, Any]] = [
 _CONFIDENCE_THRESHOLD = 0.5
 
 
+def _trend_summary(history: list[dict]) -> dict:
+    """Compute a trend window summary from a list of prior run results.
+
+    Parameters
+    ----------
+    history:
+        List of previous ``run()`` outputs (most-recent-last ordering
+        preferred but not required).  Empty list → no trend data.
+
+    Returns
+    -------
+    dict
+        ``{"run_count", "category_counts", "dominant_category",
+           "recurring_pattern_ids", "flap_rate", "trend_label"}``.
+    """
+    if not history:
+        return {
+            "run_count": 0,
+            "category_counts": {},
+            "dominant_category": None,
+            "recurring_pattern_ids": [],
+            "flap_rate": 0.0,
+            "trend_label": "no-history",
+        }
+
+    category_counts: dict[str, int] = {}
+    pattern_counts: dict[str, int] = {}
+    flaps = 0
+    prev_category: str | None = None
+
+    for entry in history:
+        cat = entry.get("category", "unknown")
+        pid = entry.get("pattern_id", "RP-UNKNOWN")
+        category_counts[cat] = category_counts.get(cat, 0) + 1
+        pattern_counts[pid] = pattern_counts.get(pid, 0) + 1
+        if prev_category is not None and prev_category != cat:
+            flaps += 1
+        prev_category = cat
+
+    total = len(history)
+    flap_rate = round(flaps / max(total - 1, 1), 3) if total > 1 else 0.0
+
+    dominant_category = max(category_counts, key=lambda k: category_counts[k])
+    recurring_pattern_ids = [
+        pid for pid, cnt in pattern_counts.items() if cnt > 1
+    ]
+
+    dominant_frac = category_counts[dominant_category] / total
+    if dominant_frac >= 0.8:
+        trend_label = f"chronic:{dominant_category}"
+    elif flap_rate >= 0.5:
+        trend_label = "flapping"
+    elif dominant_frac >= 0.5:
+        trend_label = f"trending:{dominant_category}"
+    else:
+        trend_label = "mixed"
+
+    return {
+        "run_count": total,
+        "category_counts": category_counts,
+        "dominant_category": dominant_category,
+        "recurring_pattern_ids": recurring_pattern_ids,
+        "flap_rate": flap_rate,
+        "trend_label": trend_label,
+    }
+
+
 def run(payload: dict) -> dict:
-    """Analyse CI run logs and return a health classification.
+    """Analyse CI run logs and return a health classification with trend window.
 
     Parameters
     ----------
@@ -200,14 +267,19 @@ def run(payload: dict) -> dict:
         - ``run_logs`` (str, required): raw CI log text.
         - ``workflow_name`` (str, optional): workflow display name for context.
         - ``commit_sha`` (str, optional): commit SHA for cross-reference.
+        - ``history`` (list[dict], optional): list of previous ``run()`` output
+          dicts (most-recent-last).  When provided, a ``trend`` field is
+          included in the result summarising the pattern across the window.
 
     Returns
     -------
     dict
         ``{"category", "pattern_id", "confidence", "fix_commands", "triage_note",
-            "all_matches", "workflow_name", "commit_sha"}``.
+            "all_matches", "workflow_name", "commit_sha", "trend"}``.
+        ``trend`` is ``None`` when no ``history`` is supplied.
     """
     logs: str = str(payload.get("run_logs", "")).strip()
+    history: list[dict] = list(payload.get("history") or [])
     if not logs:
         return {
             "category": "unknown",
@@ -218,6 +290,7 @@ def run(payload: dict) -> dict:
             "all_matches": [],
             "workflow_name": payload.get("workflow_name", ""),
             "commit_sha": payload.get("commit_sha", ""),
+            "trend": _trend_summary(history) if history else None,
         }
 
     workflow_name: str = str(payload.get("workflow_name", ""))
@@ -252,6 +325,15 @@ def run(payload: dict) -> dict:
             "triage_note": "No known pattern matched — manual triage required.",
         }
 
+    # Build trend from history + current run
+    trend: dict | None = None
+    if history is not None:
+        current_result = {
+            "category": best["category"],
+            "pattern_id": best["pattern_id"],
+        }
+        trend = _trend_summary(history + [current_result])
+
     return {
         "category": best["category"],
         "pattern_id": best["pattern_id"],
@@ -261,4 +343,5 @@ def run(payload: dict) -> dict:
         "all_matches": all_matches,
         "workflow_name": workflow_name,
         "commit_sha": commit_sha,
+        "trend": trend,
     }

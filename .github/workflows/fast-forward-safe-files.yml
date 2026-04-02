@@ -222,22 +222,22 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           # Parse optional files list
-          FILES_ARG=""
+          FILES_ARG=()
           if [ -n "${{ inputs.files }}" ]; then
-            FILES=$(echo "${{ inputs.files }}" | tr ',' ' ')
-            FILES_ARG="--files $FILES"
+            IFS=',' read -ra _FILES <<< "${{ inputs.files }}"
+            FILES_ARG=(--files "${_FILES[@]}")
           fi
 
           # Build dry-run flag
-          DRY_FLAG=""
+          DRY_FLAG=()
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            DRY_FLAG="--dry-run"
+            DRY_FLAG=(--dry-run)
           fi
 
           # Build commit message flag
-          MSG_FLAG=""
+          MSG_FLAG=()
           if [ -n "${{ inputs.commit_message }}" ]; then
-            MSG_FLAG="--commit-message '${{ inputs.commit_message }}'"
+            MSG_FLAG=(--commit-message "${{ inputs.commit_message }}")
           fi
 
           python scripts/ci/fast_forward_safe_files.py \
@@ -247,7 +247,7 @@ jobs:
             --target "${{ inputs.target_branch || 'main' }}" \
             --merge-mode "${{ inputs.merge_mode || 'create-pr' }}" \
             --output /tmp/ff_result.json \
-            $DRY_FLAG $FILES_ARG $MSG_FLAG
+            "${DRY_FLAG[@]}" "${FILES_ARG[@]}" "${MSG_FLAG[@]}"
 
       - name: Upload result artifact
         if: always()

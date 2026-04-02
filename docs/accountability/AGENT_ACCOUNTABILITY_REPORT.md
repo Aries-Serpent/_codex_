@@ -16177,3 +16177,51 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+---
+
+## SESSION SUMMARY — S281 — 2026-04-02T16:27Z (PR #3854)
+
+### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
+- [x] **0a.** ALL bot-posted comments reviewed — 5 unnoticed @copilot comments on PR #3854 identified and actioned ✅
+- [x] **0b.** Failing CI checks reviewed — mypy regression (+1 error), actionlint SC2089/SC2090, duplicate env: key ✅
+- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated ✅
+- [x] **2.** `CHANGELOG.md` — updated with S281 fix entries ✅
+- [x] **3.** CODEBASE_AGENCY_POLICY.md §0, §8 (Self-Review) followed — 5-pass review completed ✅
+- [x] **4.** Deferral language gate — 0 violations ✅
+- [x] **5.** Lodash 4.18.1 security-checked — no advisories ✅
+
+### Work Completed
+
+#### CI Fixes (Immediate — Priority 1)
+1. **actionlint SC2089/SC2090** (`fast-forward-safe-files.yml` line 223) — Replaced string-based `FILES_ARG`/`MSG_FLAG` with Bash arrays; fixes quoted content being treated literally in word-split expansion.
+2. **actionlint duplicate `env:` key** (`workflow-execution-gate.yml` line 367) — Merged two `env:` blocks in "Post fast-forward result comment to PR" step into a single block at the top.
+3. **mypy `[unused-ignore]` regression** (`registry.py:30`) — Root cause: CI venv has no `packaging` package; `--ignore-missing-imports` makes the import yield `Any`, so `None` assignment in except branch has no type error and the `# type: ignore[assignment,misc]` is unused. Fixed by removing `misc` from the ignore.
+4. **mypy `[arg-type]` in `telemetry.py:143`** — `status: str` → `status: Literal["ok", "error"]`; added `Literal` to imports.
+5. **mypy `[arg-type]` in `doc_loader.py:140`** — `risk_tier` variable annotated as `Literal["low", "medium", "high"]`; added `Literal` import.
+
+#### Next-Phase Feature Tasks (Priority 1 continued)
+6. **`test.failure.matcher` pattern expansion** — Added `RP-XDIST-WORKER` (xdist worker crash), `RP-XDIST-COLLECT` (xdist collection error), `RP-FLAKY` (`@pytest.mark.flaky` reruns) patterns. All patterns tested via smoke test.
+7. **`ci.health.analyzer` historical trend window** — Added `_trend_summary()` function computing `run_count`, `category_counts`, `dominant_category`, `recurring_pattern_ids`, `flap_rate`, `trend_label` (chronic/trending/flapping/mixed). `run()` now accepts optional `history` list of prior run dicts and includes `trend` in output.
+8. **`agent.aais.batch` async batching** — Added `run_async()` coroutine using `ThreadPoolExecutor` + `asyncio.gather`; `_score_item()` helper extracted; `max_workers` param supported. `run()` refactored to reuse helper.
+9. **Dependabot PR #3857 cherry-picked** — lodash 4.17.23 → 4.18.1 (no known vulnerabilities), `CODEX_MANIFEST.json`, `.secrets.baseline`, and follow-up prompt brought into PR #3854.
+
+### Self-Review (5-Pass)
+- **Pass 1 (Quality):** All modules import cleanly; ruff passes on all changed files ✅
+- **Pass 2 (Tests):** Skills test suite run; registry yaml NameError fixed ✅; mypy baseline 0 in CI venv ✅
+- **Pass 3 (Docs):** CHANGELOG updated, accountability report updated, follow-up prompt created ✅
+- **Pass 4 (Security):** lodash 4.18.1 advisory check → 0 vulnerabilities; no secrets introduced ✅
+- **Pass 5 (Integration):** actionlint clean on all 126 workflows; mypy 0 errors in CI venv ✅
+
+### Lessons Learned
+- `# type: ignore[assignment,misc]` in an except ImportError branch is flagged `[unused-ignore]` when `--ignore-missing-imports` is active AND the package is absent (import yields `Any`, making the None assignment error-free). Remove the comment entirely.
+- Bash arrays (`FILES_ARG=()` / `"${FILES_ARG[@]}"`) are the correct pattern for optional CLI argument groups — never use string variables with embedded quotes for CLI args.
+- Always run mypy in an isolated venv matching CI (`pip install mypy types-PyYAML types-requests` only) to reproduce baseline failures locally.
+
+### Impact Score
+- CI checks unblocked: 2 (mypy anti-regression gate, actionlint)
+- New skill patterns added: 3 (RP-XDIST-WORKER, RP-XDIST-COLLECT, RP-FLAKY)
+- New skill capabilities: 2 (ci.health.analyzer trend window, aais.batch async)
+- Security dependency bumped: lodash 4.17.23 → 4.18.1
+
+---

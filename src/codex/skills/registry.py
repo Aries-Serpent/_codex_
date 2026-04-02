@@ -27,7 +27,7 @@ from pathlib import Path
 try:
     from packaging.version import Version as _PkgVersion
 except ImportError:  # pragma: no cover - optional but present in dev requirements
-    _PkgVersion = None  # type: ignore[assignment,misc]
+    _PkgVersion = None  # noqa: F841
 
 try:
     import yaml
