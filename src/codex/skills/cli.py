@@ -28,7 +28,6 @@ from __future__ import annotations
 
 import json
 import logging
-import sys
 from pathlib import Path
 from typing import Optional
 
@@ -38,7 +37,6 @@ from .aais import AAISScorer
 from .compression import compress_skill, install_skill
 from .envelope import ExecutionEnvelope
 from .registry import SkillRegistry, get_registry
-from .routing import StratifiedRouter
 from .telemetry import push_to_app, read_events, summarise_events
 
 logger = logging.getLogger(__name__)
@@ -63,10 +61,15 @@ def _ensure_registry() -> SkillRegistry:
 # list
 # ---------------------------------------------------------------------------
 
+
 @app.command("list")
 def cmd_list(
-    capability: Optional[str] = typer.Option(None, "--capability", "-c", help="Filter by capability tag"),
-    risk_tier: Optional[str] = typer.Option(None, "--risk-tier", "-r", help="Filter by risk tier (low|medium|high)"),
+    capability: Optional[str] = typer.Option(
+        None, "--capability", "-c", help="Filter by capability tag"
+    ),
+    risk_tier: Optional[str] = typer.Option(
+        None, "--risk-tier", "-r", help="Filter by risk tier (low|medium|high)"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Emit JSON output"),
 ) -> None:
     """List registered skills with optional filters."""
@@ -102,6 +105,7 @@ def cmd_list(
 # ---------------------------------------------------------------------------
 # run
 # ---------------------------------------------------------------------------
+
 
 @app.command("run")
 def cmd_run(
@@ -149,6 +153,7 @@ def cmd_run(
 # compress
 # ---------------------------------------------------------------------------
 
+
 @app.command("compress")
 def cmd_compress(
     skill_id: str = typer.Option(..., "--skill", "-s", help="Skill id to compress"),
@@ -180,6 +185,7 @@ def cmd_compress(
 # install
 # ---------------------------------------------------------------------------
 
+
 @app.command("install")
 def cmd_install(
     archive: str = typer.Argument(..., help="Path to .7z or .zip skill archive"),
@@ -200,11 +206,14 @@ def cmd_install(
 # refresh-docs
 # ---------------------------------------------------------------------------
 
+
 @app.command("refresh-docs")
 def cmd_refresh_docs(
     paths: list[str] = typer.Option(..., "--paths", "-p", help="Doc paths to refresh"),
     style: str = typer.Option("aais", "--style", help="Scoring style (currently: aais)"),
-    prune_stale: bool = typer.Option(False, "--prune-stale", help="Remove docs scoring below threshold"),
+    prune_stale: bool = typer.Option(
+        False, "--prune-stale", help="Remove docs scoring below threshold"
+    ),
     emit_plan: Optional[str] = typer.Option(None, "--emit-plan", help="Write refresh plan to file"),
     apply: bool = typer.Option(False, "--apply", help="Apply the refresh plan"),
 ) -> None:
@@ -241,6 +250,7 @@ def cmd_refresh_docs(
 # score
 # ---------------------------------------------------------------------------
 
+
 @app.command("score")
 def cmd_score(
     skill_id: str = typer.Option(..., "--skill", "-s", help="Skill id to score"),
@@ -256,12 +266,17 @@ def cmd_score(
     scorer = AAISScorer()
 
     # Score the manifest description + doc metadata as representative text
-    content = "\n\n".join(filter(None, [
-        skill.manifest.name,
-        skill.manifest.description,
-        " ".join(skill.manifest.capability_tags),
-        skill.source_path,
-    ]))
+    content = "\n\n".join(
+        filter(
+            None,
+            [
+                skill.manifest.name,
+                skill.manifest.description,
+                " ".join(skill.manifest.capability_tags),
+                skill.source_path,
+            ],
+        )
+    )
     aais_result = scorer.score(content)
 
     score_data = {
@@ -287,6 +302,7 @@ def cmd_score(
 # ---------------------------------------------------------------------------
 # telemetry push
 # ---------------------------------------------------------------------------
+
 
 @telemetry_app.command("push")
 def cmd_telemetry_push(
@@ -329,6 +345,7 @@ def cmd_telemetry_push(
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     app()

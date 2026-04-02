@@ -11,7 +11,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-
 # ---------------------------------------------------------------------------
 # Sub-models used inside SkillManifest
 # ---------------------------------------------------------------------------
@@ -24,7 +23,9 @@ class BudgetConfig(BaseModel):
 
     calls: int = Field(default=1000, ge=1, description="Max invocations per policy window")
     tokens: int = Field(default=200_000, ge=1, description="Max LLM tokens per policy window")
-    wallclock_ms: int = Field(default=600_000, ge=1, description="Max wall-clock time per call in ms")
+    wallclock_ms: int = Field(
+        default=600_000, ge=1, description="Max wall-clock time per call in ms"
+    )
 
 
 class PolicyConfig(BaseModel):
@@ -59,8 +60,12 @@ class CompressionMeta(BaseModel):
 
     method: str = Field(default="7z", description="Compression algorithm")
     level: str = Field(default="max", description="Compression level")
-    size_before: int | None = Field(default=None, description="Archive size before compression (bytes)")
-    size_after: int | None = Field(default=None, description="Archive size after compression (bytes)")
+    size_before: int | None = Field(
+        default=None, description="Archive size before compression (bytes)"
+    )
+    size_after: int | None = Field(
+        default=None, description="Archive size after compression (bytes)"
+    )
 
     @property
     def compression_ratio(self) -> float | None:
@@ -150,7 +155,9 @@ class RegisteredSkill(BaseModel):
     def version(self) -> str:
         return self.manifest.version
 
-    def has_budget_headroom(self, *, calls: int = 1, tokens: int = 0, wallclock_ms: int = 0) -> bool:
+    def has_budget_headroom(
+        self, *, calls: int = 1, tokens: int = 0, wallclock_ms: int = 0
+    ) -> bool:
         """Return True if the requested additional usage fits within budget limits."""
         m = self.manifest.policy.budgets
         return (

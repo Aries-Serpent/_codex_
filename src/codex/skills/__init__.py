@@ -29,6 +29,11 @@ from .aais import AAISScorer, score_text
 from .compression import CompressionResult, compress_skill, install_skill
 from .doc_loader import load_agent_docs_as_skills
 from .envelope import ExecutionEnvelope, PolicyViolation
+
+# Research-branch integration: lightweight dataclass manifest + doc loader
+from .loader import SkillDocLoader
+from .manifest import SkillExecutionEnvelope
+from .manifest import SkillManifest as SkillManifestDC
 from .models import (
     AAISScore,
     BudgetConfig,
@@ -50,10 +55,6 @@ from .models import (
 from .registry import SkillRegistry, get_registry, reset_registry
 from .routing import StratifiedRouter
 from .telemetry import emit_event, read_events, skill_invocation_span, summarise_events
-
-# Research-branch integration: lightweight dataclass manifest + doc loader
-from .loader import SkillDocLoader
-from .manifest import SkillExecutionEnvelope, SkillManifest as SkillManifestDC
 
 __all__ = [
     # Models

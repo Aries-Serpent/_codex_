@@ -38,7 +38,6 @@ from typing import Any
 from .models import (
     BudgetUsed,
     ExecutionError,
-    ExecutionMetrics,
     ExecutionResult,
 )
 from .registry import SkillRegistry
@@ -129,8 +128,12 @@ class ExecutionEnvelope:
             )
 
         manifest = skill.manifest
-        effective_timeout_ms = timeout_ms or manifest.policy.budgets.wallclock_ms or self._default_timeout_ms
-        effective_max_retries = max_retries if max_retries is not None else self._default_max_retries
+        effective_timeout_ms = (
+            timeout_ms or manifest.policy.budgets.wallclock_ms or self._default_timeout_ms
+        )
+        effective_max_retries = (
+            max_retries if max_retries is not None else self._default_max_retries
+        )
 
         # Policy gate
         try:
@@ -234,7 +237,9 @@ class ExecutionEnvelope:
     def _load_handler(self, entrypoint: str) -> Any | None:
         """Import and return the handler callable from 'module:function' entrypoint."""
         if ":" not in entrypoint:
-            logger.error("Envelope: invalid entrypoint format '%s' (expected 'module:fn')", entrypoint)
+            logger.error(
+                "Envelope: invalid entrypoint format '%s' (expected 'module:fn')", entrypoint
+            )
             return None
         module_path, fn_name = entrypoint.rsplit(":", 1)
         try:
@@ -252,11 +257,21 @@ class ExecutionEnvelope:
         timeout_ms: int,
         trace_id: str,
     ) -> ExecutionResult:
-        """Execute handler in a thread with a hard timeout.
+        """Execute handler in a thread with a soft timeout gate.
 
-        Uses threading.Timer to enforce wall-clock limit.  The handler must
-        return a :class:`ExecutionResult` or a plain ``dict`` (which is
-        wrapped into ``ExecutionResult.data``).
+        ``thread.join(timeout)`` does **not** forcibly terminate the underlying
+        thread — Python threads cannot be killed from outside.  A timed-out
+        handler continues executing in the background as a daemon thread until
+        the process exits.  This is a known limitation of the thread-based
+        approach; handlers MUST be designed to be side-effect-safe (idempotent,
+        no critical resource holds) so background execution does no harm.
+
+        For hard isolation (true termination on timeout) wrap the handler in a
+        ``multiprocessing.Process`` instead.  That upgrade path is tracked in
+        the skills roadmap.
+
+        The handler must return a :class:`ExecutionResult` or a plain ``dict``
+        (which is wrapped into ``ExecutionResult.data``).
         """
         result_holder: list[ExecutionResult | None] = [None]
         exc_holder: list[Exception | None] = [None]

@@ -46,7 +46,9 @@ class SkillDocLoader:
         resolved = Path(path)
         raw = resolved.read_text(encoding="utf-8")
         frontmatter, _ = _split_frontmatter(raw)
-        capability_tags = frontmatter.get("capabilities") or frontmatter.get("capability_tags") or []
+        capability_tags = (
+            frontmatter.get("capabilities") or frontmatter.get("capability_tags") or []
+        )
         return SkillManifest(
             name=frontmatter.get("name") or frontmatter.get("title") or resolved.stem,
             description=frontmatter.get("description", ""),

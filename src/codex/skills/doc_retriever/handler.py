@@ -14,7 +14,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-_REPO_ROOT = Path(__file__).parents[5]
+_REPO_ROOT = Path(__file__).parents[4]
 _DOCS_GLOB = "docs/**/*.md"
 _DEFAULT_TOP_K = 5
 _EXCERPT_CHARS = 400
@@ -67,11 +67,23 @@ def run(payload: dict) -> dict:
         else:
             excerpt = text[:_EXCERPT_CHARS].replace("\n", " ").strip()
 
-        results.append({
-            "path": str(md_file.relative_to(_REPO_ROOT)),
-            "excerpt": excerpt,
-            "score": score,
-        })
+        results.append(
+            {
+                "path": _safe_relative(md_file, doc_root),
+                "excerpt": excerpt,
+                "score": score,
+            }
+        )
 
     results.sort(key=lambda r: r["score"], reverse=True)
     return {"results": results[:top_k], "total_found": len(results)}
+
+
+def _safe_relative(path: Path, base: Path) -> str:
+    """Return *path* relative to *base* (or *_REPO_ROOT*), falling back to str."""
+    for anchor in (base, _REPO_ROOT):
+        try:
+            return str(path.relative_to(anchor))
+        except ValueError:
+            continue
+    return str(path)

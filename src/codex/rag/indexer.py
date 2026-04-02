@@ -856,4 +856,3 @@ class RAGIndexer:
             from codex.rag.utils import safe_model_to_device
 
             self.model = safe_model_to_device(self.model, device)
-

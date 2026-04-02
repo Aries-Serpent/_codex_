@@ -12,7 +12,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-_REPO_ROOT = Path(__file__).parents[5]
+_REPO_ROOT = Path(__file__).parents[4]
 _DEFAULT_TOP_K = 10
 _CONTEXT_LINES = 3
 _PYTHON_GLOB = "**/*.py"
@@ -68,12 +68,24 @@ def run(payload: dict) -> dict:
             snippet = "\n".join(
                 f"{start + i + 1:4}: {lines[start + i]}" for i in range(end - start)
             )
-            matches.append({
-                "path": str(py_file.relative_to(_REPO_ROOT)),
-                "line": lineno,
-                "snippet": snippet,
-            })
+            matches.append(
+                {
+                    "path": _safe_relative(py_file, root),
+                    "line": lineno,
+                    "snippet": snippet,
+                }
+            )
             if len(matches) >= top_k:
                 return {"matches": matches, "total_found": len(matches)}
 
     return {"matches": matches, "total_found": len(matches)}
+
+
+def _safe_relative(path: Path, base: Path) -> str:
+    """Return *path* relative to *base* (or *_REPO_ROOT*), falling back to str."""
+    for anchor in (base, _REPO_ROOT):
+        try:
+            return str(path.relative_to(anchor))
+        except ValueError:
+            continue
+    return str(path)

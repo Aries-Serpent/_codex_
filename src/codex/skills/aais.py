@@ -40,9 +40,7 @@ from .models import AAISScore
 _RE_HEADING = re.compile(r"^#{1,6}\s+\S", re.MULTILINE)
 _RE_BULLET = re.compile(r"^[\-\*\+]\s+\S|\d+\.\s+\S", re.MULTILINE)
 _RE_CODE_BLOCK = re.compile(r"```[\s\S]*?```|`[^`]+`")
-_RE_PASSIVE = re.compile(
-    r"\b(is|are|was|were|be|been|being)\s+\w+ed\b", re.IGNORECASE
-)
+_RE_PASSIVE = re.compile(r"\b(is|are|was|were|be|been|being)\s+\w+ed\b", re.IGNORECASE)
 _RE_ACRONYM = re.compile(r"\b([A-Z]{2,})\b")
 # Patterns indicating a lineage/citation field present in text
 _RE_CITATION = re.compile(
@@ -120,7 +118,7 @@ class AAISScorer:
         # Gaussian-style score centred on ideal
         ideal = self._IDEAL_WORDS_PER_SENTENCE
         sigma = 12.0
-        wps_score = math.exp(-((mean_wps - ideal) ** 2) / (2 * sigma ** 2))
+        wps_score = math.exp(-((mean_wps - ideal) ** 2) / (2 * sigma**2))
 
         # Type/token ratio (vocabulary diversity)
         words = re.findall(r"\w+", text.lower())
@@ -145,9 +143,7 @@ class AAISScorer:
 
         freq: Counter[str] = Counter(acronyms)
         # Look for definition patterns: "ACRONYM (definition)" or "(definition) ACRONYM"
-        defined_pattern = re.compile(
-            r"\b([A-Z]{2,})\b\s*[\(\-:]|[\(\-:]\s*\b([A-Z]{2,})\b"
-        )
+        defined_pattern = re.compile(r"\b([A-Z]{2,})\b\s*[\(\-:]|[\(\-:]\s*\b([A-Z]{2,})\b")
         defined = set()
         for match in defined_pattern.finditer(text):
             grp = match.group(1) or match.group(2)
@@ -213,8 +209,17 @@ class AAISScorer:
 
         # Hedging words penalty
         _HEDGE_WORDS = {
-            "maybe", "perhaps", "possibly", "might", "could", "should",
-            "somewhat", "generally", "typically", "usually", "often",
+            "maybe",
+            "perhaps",
+            "possibly",
+            "might",
+            "could",
+            "should",
+            "somewhat",
+            "generally",
+            "typically",
+            "usually",
+            "often",
         }
         hedge_count = sum(1 for w in words_all if w.lower() in _HEDGE_WORDS)
         hedge_density = hedge_count / total_words
@@ -246,15 +251,14 @@ class AAISScorer:
             r"aais[_\-]?score",
             r"token[_\-]?count",
         ]
-        found = sum(
-            1 for pattern in citation_types if re.search(pattern, text, re.IGNORECASE)
-        )
+        found = sum(1 for pattern in citation_types if re.search(pattern, text, re.IGNORECASE))
         return round(min(1.0, found / len(citation_types)), 4)
 
 
 # ---------------------------------------------------------------------------
 # Convenience function
 # ---------------------------------------------------------------------------
+
 
 def score_text(text: str) -> AAISScore:
     """Score *text* using the default :class:`AAISScorer`.

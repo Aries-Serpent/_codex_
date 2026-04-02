@@ -28,7 +28,6 @@ Usage::
 from __future__ import annotations
 
 import logging
-import os
 import shutil
 import subprocess  # nosec B404 - 7z is only called with a validated, controlled arg list
 import tempfile
@@ -154,9 +153,7 @@ def compress_skill(
     if format == "7z" and _7Z_BIN:
         archive_path = out_path / f"{archive_name}.7z"
         level_flag = "-mx=9" if level == "max" else "-mx=5"
-        cmd = [
-            _7Z_BIN, "a", level_flag, str(archive_path), str(skill_dir)
-        ]
+        cmd = [_7Z_BIN, "a", level_flag, str(archive_path), str(skill_dir)]
         result = subprocess.run(  # nosec B603 - controlled path list, no shell=True
             cmd, capture_output=True, text=True
         )
@@ -223,7 +220,8 @@ def install_skill(
                 raise RuntimeError("7z binary not found; cannot extract .7z archive")
             subprocess.run(  # nosec B603
                 [_7Z_BIN, "x", str(archive_path), f"-o{tmp}", "-y"],
-                check=True, capture_output=True,
+                check=True,
+                capture_output=True,
             )
         elif suffix == ".zip":
             with zipfile.ZipFile(archive_path) as zf:
@@ -250,6 +248,7 @@ def install_skill(
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+
 def _compress_zip(skill_dir: Path, out_path: Path) -> Path:
     """Create a zip archive of *skill_dir* at *out_path*."""
     with zipfile.ZipFile(out_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
@@ -259,9 +258,7 @@ def _compress_zip(skill_dir: Path, out_path: Path) -> Path:
     return out_path
 
 
-def _update_manifest_compression(
-    manifest_file: Path, size_before: int, size_after: int
-) -> None:
+def _update_manifest_compression(manifest_file: Path, size_before: int, size_after: int) -> None:
     """Update compression size fields in an existing manifest.yaml in-place."""
     if yaml is None:  # pragma: no cover
         return

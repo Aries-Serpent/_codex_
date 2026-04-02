@@ -1,8 +1,8 @@
 name: "🔄 Doc Refresh Gate (AAIS)"
 
-# Post-merge freshness gate: runs doc.refresh.agent skill to score docs
-# and flag stale content after promotion branches merge to main.
-# Non-blocking (warning-only) — emits refresh plan as artifact.
+# Post-merge freshness gate: directly scores docs with AAISScorer (stdlib-only,
+# no skill invocation required) and flags stale content after promotion branches
+# merge to main.  Non-blocking (warning-only) — emits refresh plan as artifact.
 
 on:
   push:

@@ -49,6 +49,7 @@ _DEFAULT_TELEMETRY_PATH = "logs/skill_events.jsonl"
 # JSONL helpers
 # ---------------------------------------------------------------------------
 
+
 def _telemetry_path() -> Path:
     return Path(os.environ.get(_ENV_TELEMETRY_PATH, _DEFAULT_TELEMETRY_PATH))
 
@@ -67,6 +68,7 @@ def _append_jsonl(record: dict[str, Any]) -> None:
 # ---------------------------------------------------------------------------
 # OTel helpers
 # ---------------------------------------------------------------------------
+
 
 @contextlib.contextmanager
 def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]):
@@ -97,6 +99,7 @@ def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def emit_event(
     *,
@@ -149,7 +152,9 @@ def emit_event(
         _append_jsonl(event.model_dump())
 
     if emit_otel:
-        with _skill_span(skill_id, version, trace_id, {"status": status, "latency_ms": metrics.latency_ms}):
+        with _skill_span(
+            skill_id, version, trace_id, {"status": status, "latency_ms": metrics.latency_ms}
+        ):
             pass  # span is recorded on exit
 
     return event
@@ -189,7 +194,7 @@ def summarise_events(events: list[TelemetryEvent]) -> dict[str, Any]:
     total = len(events)
     ok_count = sum(1 for e in events if e.status == "ok")
     skill_set = sorted({e.skill_id for e in events})
-    latencies = [e.latency_ms for e in events if e.latency_ms]
+    latencies = [e.latency_ms for e in events if e.latency_ms is not None]
     aais_scores = [e.aais_score for e in events if e.aais_score is not None]
 
     return {

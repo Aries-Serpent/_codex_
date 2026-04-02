@@ -118,18 +118,14 @@ class StratifiedRouter:
         # Filter by risk tier ceiling
         max_rank = _RISK_TIER_RANK.get(risk_tier_max, 2)
         candidates = [
-            s for s in candidates
-            if _RISK_TIER_RANK.get(s.manifest.policy.risk_tier, 0) <= max_rank
+            s for s in candidates if _RISK_TIER_RANK.get(s.manifest.policy.risk_tier, 0) <= max_rank
         ]
 
         # Filter by caller allowlist
         candidates = [s for s in candidates if s.caller_allowed(caller_id)]
 
         # Filter by minimum budget headroom
-        candidates = [
-            s for s in candidates
-            if s.has_budget_headroom(calls=budget_calls_min)
-        ]
+        candidates = [s for s in candidates if s.has_budget_headroom(calls=budget_calls_min)]
 
         if not candidates:
             return RoutingDecision(
@@ -222,9 +218,7 @@ class StratifiedRouter:
         if not skill_tags:
             return 0.0
 
-        query_terms = set(query_tags) | {
-            w.lower() for w in objective.split() if len(w) > 3
-        }
+        query_terms = set(query_tags) | {w.lower() for w in objective.split() if len(w) > 3}
         skill_set = {t.lower() for t in skill_tags}
 
         intersection = skill_set & query_terms
@@ -236,7 +230,9 @@ class StratifiedRouter:
         # Jaccard similarity
         jaccard = len(intersection) / len(union)
         # Bonus if all query tags are covered
-        coverage_bonus = 0.2 if query_tags and all(t.lower() in skill_set for t in query_tags) else 0.0
+        coverage_bonus = (
+            0.2 if query_tags and all(t.lower() in skill_set for t in query_tags) else 0.0
+        )
 
         return min(1.0, jaccard + coverage_bonus)
 

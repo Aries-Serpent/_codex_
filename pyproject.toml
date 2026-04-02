@@ -435,11 +435,6 @@ csv = "codex_ml.data.registry:load_csv"
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"
 
-[project.entry-points."codex.skills"]
-doc_retriever = "codex.skills.doc_retriever.handler:run"
-doc_refresh   = "codex.skills.doc_refresh.handler:plan_and_apply"
-code_search   = "codex.skills.code_search.handler:run"
-
 [tool.black]
 line-length = 100
 target-version = ["py39", "py310", "py311"]

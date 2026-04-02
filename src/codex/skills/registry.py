@@ -21,8 +21,13 @@ from __future__ import annotations
 import importlib
 import importlib.metadata
 import logging
+import threading
 from pathlib import Path
-from typing import Callable
+
+try:
+    from packaging.version import Version as _PkgVersion
+except ImportError:  # pragma: no cover - optional but present in dev requirements
+    _PkgVersion = None  # type: ignore[assignment,misc]
 
 try:
     import yaml
@@ -37,8 +42,31 @@ logger = logging.getLogger(__name__)
 _DEFAULT_SKILLS_ROOT = Path(__file__).parent
 
 
+def _version_key(version: str) -> tuple:
+    """Return a sortable key for *version*.
+
+    Uses ``packaging.version.Version`` when available for correct semver
+    ordering (so ``10.0.0 > 2.0.0``).  Falls back to a naive integer-tuple
+    parse, then to the raw string so lexicographic ordering is never silently
+    applied to multi-digit version components.
+    """
+    if _PkgVersion is not None:
+        try:
+            return (_PkgVersion(version),)
+        except Exception:
+            pass
+    # Naive integer-tuple fallback (handles "X.Y.Z" correctly)
+    try:
+        return tuple(int(x) for x in version.split("."))
+    except (ValueError, AttributeError):
+        return (version,)
+
+
 class SkillRegistry:
-    """Thread-safe registry for discovering and resolving packaged skills.
+    """Registry for discovering and resolving packaged skills.
+
+    All public methods that mutate or read ``_skills`` / ``_latest`` acquire
+    ``_lock`` so the registry is safe to use from multiple threads.
 
     Attributes
     ----------
@@ -51,6 +79,7 @@ class SkillRegistry:
     def __init__(self) -> None:
         self._skills: dict[tuple[str, str], RegisteredSkill] = {}
         self._latest: dict[str, RegisteredSkill] = {}
+        self._lock = threading.Lock()
 
     # ------------------------------------------------------------------
     # Registration
@@ -80,23 +109,25 @@ class SkillRegistry:
             The registered entry (new or existing).
         """
         key = (manifest.id, manifest.version)
-        if key in self._skills:
-            logger.debug(
-                "Registry: '%s@%s' already registered (idempotent)",
-                manifest.id,
-                manifest.version,
-            )
-            return self._skills[key]
+        with self._lock:
+            if key in self._skills:
+                logger.debug(
+                    "Registry: '%s@%s' already registered (idempotent)",
+                    manifest.id,
+                    manifest.version,
+                )
+                return self._skills[key]
 
-        skill = RegisteredSkill(manifest=manifest, source_path=source_path)
-        self._skills[key] = skill
+            skill = RegisteredSkill(manifest=manifest, source_path=source_path)
+            self._skills[key] = skill
 
-        # Track latest (highest version string; simple string compare is fine
-        # for semver "X.Y.Z" where all components are padded to equal width
-        # in practice; for non-semver ids callers should pin versions).
-        existing_latest = self._latest.get(manifest.id)
-        if existing_latest is None or manifest.version >= existing_latest.version:
-            self._latest[manifest.id] = skill
+            # Track latest: use packaging.version (or integer-tuple fallback)
+            # for correct semver ordering so "10.0.0" beats "2.0.0".
+            existing_latest = self._latest.get(manifest.id)
+            if existing_latest is None or (
+                _version_key(manifest.version) >= _version_key(existing_latest.manifest.version)
+            ):
+                self._latest[manifest.id] = skill
 
         logger.info("Registry: registered skill '%s@%s'", manifest.id, manifest.version)
         return skill
@@ -119,9 +150,10 @@ class SkillRegistry:
         -------
         RegisteredSkill | None
         """
-        if version is not None:
-            return self._skills.get((skill_id, version))
-        return self._latest.get(skill_id)
+        with self._lock:
+            if version is not None:
+                return self._skills.get((skill_id, version))
+            return self._latest.get(skill_id)
 
     # ------------------------------------------------------------------
     # Listing / filtering
@@ -141,7 +173,8 @@ class SkillRegistry:
         risk_tier:
             If set, only skills with this exact ``policy.risk_tier``.
         """
-        results = list(self._latest.values())
+        with self._lock:
+            results = list(self._latest.values())
 
         if capability_tag:
             results = [s for s in results if capability_tag in s.manifest.capability_tags]
@@ -202,7 +235,21 @@ class SkillRegistry:
             return None
 
     def _discover_entry_points(self) -> int:
-        """Load skills registered via the ``codex.skills`` entry-point group."""
+        """Load skills registered via the ``codex.skills`` entry-point group.
+
+        Third-party packages that ship skills must register entry points under
+        the ``codex.skills`` group.  Each entry point MUST point at either:
+
+        1. A :class:`~codex.skills.models.SkillManifest` instance (module-level
+           attribute), or
+        2. A zero-argument callable that returns a :class:`SkillManifest`.
+
+        Entry points that point at handler functions (e.g. ``handler:run``) are
+        **not** supported by this loader and will be skipped with a warning.
+        Built-in skills (``doc.retriever.core`` etc.) are discovered via the
+        filesystem ``manifest.yaml`` scan in :meth:`discover` — their entry
+        points in ``pyproject.toml`` are intentionally absent.
+        """
         count = 0
         try:
             eps = importlib.metadata.entry_points(group="codex.skills")
@@ -211,13 +258,22 @@ class SkillRegistry:
 
         for ep in eps:
             try:
-                skill_factory: Callable[[], SkillManifest] = ep.load()
-                manifest = skill_factory() if callable(skill_factory) else skill_factory
-                if isinstance(manifest, SkillManifest):
-                    before = len(self._skills)
-                    self.register(manifest, source_path=f"entry_point:{ep.name}")
-                    if len(self._skills) > before:
-                        count += 1
+                obj = ep.load()
+                # Accept a SkillManifest instance or a 0-arg factory returning one.
+                manifest = obj() if callable(obj) and not isinstance(obj, SkillManifest) else obj
+                if not isinstance(manifest, SkillManifest):
+                    logger.warning(
+                        "Entry-point '%s' did not produce a SkillManifest "
+                        "(got %s); skipping. Ensure the entry point points at a "
+                        "SkillManifest instance or a zero-arg factory.",
+                        ep.name,
+                        type(manifest).__name__,
+                    )
+                    continue
+                before = len(self._skills)
+                self.register(manifest, source_path=f"entry_point:{ep.name}")
+                if len(self._skills) > before:
+                    count += 1
             except Exception as exc:
                 logger.warning("Failed to load entry-point skill '%s': %s", ep.name, exc)
 

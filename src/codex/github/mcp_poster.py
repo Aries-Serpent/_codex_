@@ -790,11 +790,7 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"discussionId": discussion_id})
-        return (
-            result.get("data", {})
-            .get("pinDiscussion", {})
-            .get("discussion", result)
-        )
+        return result.get("data", {}).get("pinDiscussion", {}).get("discussion", result)
 
     def unpin_discussion(self, repo: str, discussion_number: int) -> dict[str, Any]:
         """Unpin a previously pinned Discussion from the repository.
@@ -824,11 +820,7 @@ class GitHubMCPPoster:
         }
         """
         result = self._graphql(mutation, {"discussionId": discussion_id})
-        return (
-            result.get("data", {})
-            .get("unpinDiscussion", {})
-            .get("discussion", result)
-        )
+        return result.get("data", {}).get("unpinDiscussion", {}).get("discussion", result)
 
     def list_discussion_categories(self, repo: str) -> list[dict[str, Any]]:
         """List all Discussion categories in a repository.
@@ -1607,12 +1599,8 @@ class GitHubMCPPoster:
             The full parsed JSON response dict (including ``data`` key) so
             callers can continue to use the same access pattern.
         """
-        _NON_RETRYABLE_TYPES = frozenset(
-            {"FORBIDDEN", "NOT_FOUND", "UNPROCESSABLE", "BAD_REQUEST"}
-        )
-        _RETRYABLE_TYPES = frozenset(
-            {"RATE_LIMITED", "SERVICE_UNAVAILABLE", "INTERNAL"}
-        )
+        _NON_RETRYABLE_TYPES = frozenset({"FORBIDDEN", "NOT_FOUND", "UNPROCESSABLE", "BAD_REQUEST"})
+        _RETRYABLE_TYPES = frozenset({"RATE_LIMITED", "SERVICE_UNAVAILABLE", "INTERNAL"})
 
         last_exc: Exception | None = None
         for attempt in range(max_retries + 1):
@@ -1628,9 +1616,7 @@ class GitHubMCPPoster:
                     err_msg = first.get("message", str(gql_errors))
 
                     if err_type in _NON_RETRYABLE_TYPES:
-                        raise ValueError(
-                            f"{operation_name} GraphQL {err_type}: {err_msg}"
-                        )
+                        raise ValueError(f"{operation_name} GraphQL {err_type}: {err_msg}")
 
                     if err_type in _RETRYABLE_TYPES and attempt < max_retries:
                         wait = 2 ** (attempt + 1)
@@ -1643,9 +1629,7 @@ class GitHubMCPPoster:
                         continue
 
                     # Unknown error type or retries exhausted
-                    raise RuntimeError(
-                        f"{operation_name} GraphQL error ({err_type}): {err_msg}"
-                    )
+                    raise RuntimeError(f"{operation_name} GraphQL error ({err_type}): {err_msg}")
 
                 return result
 
@@ -1842,7 +1826,8 @@ def _build_parser() -> argparse.ArgumentParser:
     lsd.add_argument("--category", default=None, help="Filter by category slug (optional)")
     lsd.add_argument("--first", type=int, default=20, help="Max number to return (default 20)")
     lsd.add_argument(
-        "--after", default=None,
+        "--after",
+        default=None,
         help="Pagination cursor (endCursor from previous page)",
     )
     lsd.add_argument("--json", action="store_true", help="Output as JSON")
@@ -1851,12 +1836,8 @@ def _build_parser() -> argparse.ArgumentParser:
     gd = sub.add_parser("get-discussion", help="Get a single Discussion with its comments")
     gd.add_argument("--repo", required=True, help="owner/repo")
     gd.add_argument("--number", required=True, type=int, help="Discussion number")
-    gd.add_argument(
-        "--comments-first", type=int, default=50, help="Comments per page (default 50)"
-    )
-    gd.add_argument(
-        "--comments-after", default=None, help="Pagination cursor for comments"
-    )
+    gd.add_argument("--comments-first", type=int, default=50, help="Comments per page (default 50)")
+    gd.add_argument("--comments-after", default=None, help="Pagination cursor for comments")
     gd.add_argument("--json", action="store_true", help="Output as JSON")
 
     # list-discussion-categories

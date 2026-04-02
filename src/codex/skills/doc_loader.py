@@ -102,6 +102,7 @@ def _frontmatter_to_manifest(
 
     # Build a lightweight hash from the text content
     import hashlib
+
     doc_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
 
     # Risk tier inference from autonomy_model or enforcement_tier
@@ -119,7 +120,11 @@ def _frontmatter_to_manifest(
     if integration_points and isinstance(integration_points, list):
         # Use the first .py integration point if any
         py_points = [p for p in integration_points if str(p).endswith(".py")]
-        entrypoint = py_points[0].replace("/", ".").rstrip(".py") + ":run" if py_points else f"codex.skills.stubs:{skill_id.replace('.', '_')}"
+        entrypoint = (
+            py_points[0].replace("/", ".").rstrip(".py") + ":run"
+            if py_points
+            else f"codex.skills.stubs:{skill_id.replace('.', '_')}"
+        )
     else:
         entrypoint = f"codex.skills.stubs:{skill_id.replace('.', '_')}"
 

@@ -83,8 +83,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Full suite: all 4 groups. Simplified suite: quick + documentation only.
-        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","integration","slow"]') || fromJSON('["quick","documentation"]') }}
+        # Full suite: all 5 groups. Simplified suite: quick + documentation + skills.
+        test-group: ${{ (github.base_ref == 'main' && github.head_ref == '0D_base_') && fromJSON('["quick","documentation","skills","integration","slow"]') || fromJSON('["quick","documentation","skills"]') }}
 
     steps:
       - uses: actions/checkout@v5
@@ -142,6 +142,13 @@ jobs:
             documentation)
               npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true
               python scripts/validate_docs.py --fix || echo "Doc validation warnings (non-blocking)"
+              ;;
+            skills)
+              # Skills registry tests: isolated nox session with coverage
+              pip install nox --quiet
+              nox -s skills --no-venv 2>/dev/null || \
+                python -m pytest tests/skills/ -v --timeout=60 --tb=short --maxfail=10 \
+                  --cov=src/codex/skills --cov-report=xml --cov-report=json -q
               ;;
             integration)
               # Integration tests: 300s timeout, SEQUENTIAL execution (PR #3248 Attempt 15)

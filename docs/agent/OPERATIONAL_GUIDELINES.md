@@ -354,7 +354,7 @@ codex-skill score --skill doc.retriever.core --emit dist/aais_score.json
 codex-skill compress --skill doc.retriever.core --format 7z --out dist/
 
 # Install from archive
-codex-skill install dist/doc.retriever.core-1.0.0.7z
+codex-skill install dist/doc-retriever-core-1.0.0.7z
 ```
 
 #### Telemetry

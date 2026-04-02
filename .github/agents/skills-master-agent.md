@@ -230,10 +230,10 @@ codex-skill compress \
     --format 7z \
     --level max \
     --record-metrics \
-    --out dist/doc.retriever.core-1.0.0.7z
+    --out dist/doc-retriever-core-1.0.0.7z
 
 # Install from archive
-codex-skill install dist/doc.retriever.core-1.0.0.7z
+codex-skill install dist/doc-retriever-core-1.0.0.7z
 ```
 
 ### 6. Doc Refresh
@@ -429,7 +429,7 @@ Before completing any task, the Skills Master runs 5 passes:
 | Run a skill | `codex-skill run doc.retriever.core --payload @input.json` |
 | Score a skill | `codex-skill score --skill doc.retriever.core` |
 | Compress a skill | `codex-skill compress --skill doc.retriever.core --format 7z` |
-| Install a skill | `codex-skill install dist/doc.retriever.core-1.0.0.7z` |
+| Install a skill | `codex-skill install dist/doc-retriever-core-1.0.0.7z` |
 | Refresh docs | `codex-skill refresh-docs --paths docs/ --style aais` |
 | Push telemetry | `codex-skill telemetry push --from logs/skill_events.jsonl --summary` |
 | Filter by tag | `codex-skill list --capability docs` |

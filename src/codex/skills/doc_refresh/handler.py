@@ -13,7 +13,7 @@ from codex.skills.aais import AAISScorer
 
 logger = logging.getLogger(__name__)
 
-_REPO_ROOT = Path(__file__).parents[5]
+_REPO_ROOT = Path(__file__).parents[4]
 _AAIS_PRUNE_THRESHOLD = 0.30  # docs scoring below this are candidates for pruning
 _AAIS_REFRESH_THRESHOLD = 0.60  # docs scoring below this need refresh
 
@@ -63,32 +63,36 @@ def plan_and_apply(payload: dict) -> dict:
             aais = scorer.score(text)
             scores.append(aais.total)
 
-            rel = str(md_file.relative_to(_REPO_ROOT))
+            rel = _safe_relative(md_file, scan_path)
             content_hash = hashlib.sha256(text.encode()).hexdigest()[:16]
 
             if aais.total < _AAIS_PRUNE_THRESHOLD and prune_stale:
-                plan.append({
-                    "op": "prune",
-                    "path": rel,
-                    "reason": f"AAIS {aais.total:.2f} < prune threshold {_AAIS_PRUNE_THRESHOLD}",
-                    "aais_score": aais.total,
-                    "hash": content_hash,
-                })
+                plan.append(
+                    {
+                        "op": "prune",
+                        "path": rel,
+                        "reason": f"AAIS {aais.total:.2f} < prune threshold {_AAIS_PRUNE_THRESHOLD}",  # noqa: E501
+                        "aais_score": aais.total,
+                        "hash": content_hash,
+                    }
+                )
             elif aais.total < _AAIS_REFRESH_THRESHOLD:
-                plan.append({
-                    "op": "upsert",
-                    "path": rel,
-                    "reason": f"AAIS {aais.total:.2f} < refresh threshold {_AAIS_REFRESH_THRESHOLD}",
-                    "aais_score": aais.total,
-                    "hash": content_hash,
-                    "dimensions": {
-                        "concision": aais.concision,
-                        "acronym_discipline": aais.acronym_discipline,
-                        "structure": aais.structure,
-                        "clarity": aais.clarity,
-                        "citation_lineage": aais.citation_lineage,
-                    },
-                })
+                plan.append(
+                    {
+                        "op": "upsert",
+                        "path": rel,
+                        "reason": f"AAIS {aais.total:.2f} < refresh threshold {_AAIS_REFRESH_THRESHOLD}",  # noqa: E501
+                        "aais_score": aais.total,
+                        "hash": content_hash,
+                        "dimensions": {
+                            "concision": aais.concision,
+                            "acronym_discipline": aais.acronym_discipline,
+                            "structure": aais.structure,
+                            "clarity": aais.clarity,
+                            "citation_lineage": aais.citation_lineage,
+                        },
+                    }
+                )
 
     overall_aais = sum(scores) / len(scores) if scores else 0.0
 
@@ -96,9 +100,13 @@ def plan_and_apply(payload: dict) -> dict:
     if "apply" in actions:
         for op in plan:
             if op["op"] == "prune":
-                patches.append({"applied": "prune", "path": op["path"], "status": "pending_human_review"})
+                patches.append(
+                    {"applied": "prune", "path": op["path"], "status": "pending_human_review"}
+                )
             elif op["op"] == "upsert":
-                patches.append({"applied": "upsert_flag", "path": op["path"], "status": "flagged_for_refresh"})
+                patches.append(
+                    {"applied": "upsert_flag", "path": op["path"], "status": "flagged_for_refresh"}
+                )
 
     return {
         "plan": plan,
@@ -106,3 +114,13 @@ def plan_and_apply(payload: dict) -> dict:
         "patches": patches,
         "files_scanned": len(scores),
     }
+
+
+def _safe_relative(path: Path, base: Path) -> str:
+    """Return *path* relative to *base* (or *_REPO_ROOT*), falling back to str."""
+    for anchor in (base, _REPO_ROOT):
+        try:
+            return str(path.relative_to(anchor))
+        except ValueError:
+            continue
+    return str(path)
