@@ -159,10 +159,42 @@ jobs:
           fi
 
       # ── Run rescue engine (API-only, no file modifications) ──────────────
+      - name: Lookup CI Failure Triage Report issue URL
+        id: triage-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          # Find the open "📊 CI Failure Triage Report" issue created by batch-ci-triage.yml
+          # and expose its URL so the rescue engine can link to it in RCA comments.
+          # Response is stored to a temp file so the JSON parser receives clean input.
+          curl -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1" \
+            -o /tmp/triage_issues.json 2>/dev/null || echo "[]" > /tmp/triage_issues.json
+          TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'
+          import json, sys
+          try:
+              with open(sys.argv[1]) as fh:
+                  issues = json.load(fh)
+              print(issues[0]['html_url'] if isinstance(issues, list) and issues else '', end='')
+          except Exception:
+              print('', end='')
+          PYEOF
+          )
+          if [ -n "${TRIAGE_URL}" ]; then
+            echo "✅ Found CI Failure Triage Report: ${TRIAGE_URL}"
+            echo "url=${TRIAGE_URL}" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️  No open ci-triage issue found — triage URL will be omitted from RCA"
+            echo "url=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run CI rescue engine
         id: rescue
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
         run: |
           RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
           COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
@@ -179,6 +211,10 @@ jobs:
           SHA_FLAG=""
           if [ "${COMMIT_SHA}" != "" ]; then
             SHA_FLAG="--commit-sha ${COMMIT_SHA}"
+          fi
+          TRIAGE_FLAG=""
+          if [ -n "${TRIAGE_ISSUE_URL}" ]; then
+            TRIAGE_FLAG="--triage-issue-url ${TRIAGE_ISSUE_URL}"
           fi
 
           if [ "${RESCUE_UNAVAILABLE}" = "true" ]; then
@@ -304,6 +340,7 @@ jobs:
               ${PR_FLAG} \
               ${SHA_FLAG} \
               ${DRY_FLAG} \
+              ${TRIAGE_FLAG} \
               2>&1 | tee /tmp/rescue_output.txt
             echo "rescue_exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
@@ -322,6 +359,7 @@ jobs:
                 ${PR_FLAG} \
                 ${SHA_FLAG} \
                 ${DRY_FLAG} \
+                ${TRIAGE_FLAG} \
                 --deep \
                 2>&1 | tee /tmp/deep_rescue_output.txt || true
               echo "deep_rescue_exit=$?" >> "$GITHUB_OUTPUT"

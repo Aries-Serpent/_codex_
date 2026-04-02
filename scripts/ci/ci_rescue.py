@@ -1203,6 +1203,7 @@ def _format_rca_comment(
     commit_sha: Optional[str] = None,
     workflow_name: str = "",
     branch: str = "",
+    triage_issue_url: Optional[str] = None,
 ) -> str:
     """Build the @copilot RCA comment body with tailored env setup."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -1300,6 +1301,12 @@ def _format_rca_comment(
         )
         body = body + "\n\n" + env_section
 
+    # Append CI Failure Report cross-link when the triage issue URL is available.
+    # This gives @copilot immediate context on ALL recent failures across workflows,
+    # not just the one that triggered this rescue run.
+    if triage_issue_url:
+        body = body.rstrip() + _format_triage_report_footer(triage_issue_url)
+
     if len(body) > MAX_COMMENT_CHARS:
         body = (
             body[:MAX_COMMENT_CHARS]
@@ -1311,6 +1318,23 @@ def _format_rca_comment(
 # ---------------------------------------------------------------------------
 # Tailored Copilot environment setup + AfterMath tracking section
 # ---------------------------------------------------------------------------
+
+
+def _format_triage_report_footer(triage_issue_url: str) -> str:
+    """Return a markdown section linking to the live CI Failure Triage Report.
+
+    Appended to both standard and deep-rescue RCA comments so @copilot has
+    immediate cross-workflow failure context in every rescue thread.
+    """
+    return (
+        "\n\n---\n\n"
+        "### 📊 CI Failure Report — cross-workflow context\n\n"
+        f"The live **[CI Failure Triage Report]({triage_issue_url})** "
+        "shows all recent workflow failures across this repository. "
+        "Review it to identify recurring patterns or co-occurring failures "
+        "before applying fixes.\n\n"
+        f"> **Report:** {triage_issue_url}\n"
+    )
 
 
 def _format_env_setup_section(
@@ -1450,6 +1474,7 @@ def _format_deep_rca_comment(
     new_failures: set[str],
     matched_patterns: list[RescuePattern],
     commit_sha: Optional[str],
+    triage_issue_url: Optional[str] = None,
 ) -> str:
     """Build the comprehensive deep-rescue @copilot escalation comment body."""
     run_url = f"https://github.com/{repo}/actions/runs/{run_id}"
@@ -1569,6 +1594,11 @@ def _format_deep_rca_comment(
     lines_with_env = "\n".join(lines) + "\n\n" + env_section
 
     body = lines_with_env
+
+    # Append CI Failure Report cross-link when triage issue URL is available.
+    if triage_issue_url:
+        body = body.rstrip() + _format_triage_report_footer(triage_issue_url)
+
     if len(body) > MAX_COMMENT_CHARS:
         body = body[:MAX_COMMENT_CHARS] + "\n\n_(truncated — see Actions logs for full output)_"
     return body
@@ -1583,6 +1613,7 @@ def run_deep_rescue(
     branch: str,
     dry_run: bool,
     commit_sha: Optional[str],
+    triage_issue_url: Optional[str] = None,
 ) -> int:
     """Historical analysis mode: analyse last N runs and build pattern frequency map.
 
@@ -1646,6 +1677,7 @@ def run_deep_rescue(
             current_failures, historical_runs,
             recurring, sporadic, new_failures,
             matched_patterns, commit_sha,
+            triage_issue_url=triage_issue_url,
         )
         # Append deep analysis into the SHA-scoped RCA comment so the PR
         # thread has ONE rescue thread per push, not one per workflow run.
@@ -1715,6 +1747,15 @@ def main() -> int:
         default=None,
         help="Branch name (required for --deep mode historical lookup).",
     )
+    parser.add_argument(
+        "--triage-issue-url",
+        default=None,
+        help=(
+            "URL of the live CI Failure Triage Report issue (batch-ci-triage.yml). "
+            "When provided, a cross-workflow context link is appended to the RCA "
+            "comment so @copilot can see all recent failures in one click."
+        ),
+    )
     args = parser.parse_args()
 
     if not args.token:
@@ -1741,6 +1782,7 @@ def main() -> int:
             args.run_id, args.repo, args.token,
             pr_number, wf_name, branch,
             args.dry_run, args.commit_sha,
+            triage_issue_url=args.triage_issue_url,
         )
 
     # ── Standard rescue cycle ───────────────────────────────────────────────
@@ -1762,6 +1804,7 @@ def main() -> int:
             args.run_id, args.repo, result, timestamp, args.commit_sha,
             workflow_name=args.workflow_name or "",
             branch=args.branch or "",
+            triage_issue_url=args.triage_issue_url,
         )
         print(f"\n📝 Posting RCA comment to PR #{pr_number}…")
         ok = post_pr_comment(

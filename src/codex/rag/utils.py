@@ -51,28 +51,33 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
         None if model doesn't support parameter inspection
     """
     try:
-        # Fast-path: only real torch.nn.Module instances can contain meta tensors.
-        # Non-Module objects (plain tensors, test mocks, custom wrappers without
-        # an nn.Module base class) must be returned as-is by safe_model_to_device.
-        # Without this guard, MagicMock auto-creates .parameters() / .buffers()
-        # as empty iterators, causing has_meta_tensors to return False instead of
-        # None — which then makes safe_model_to_device call model.to(device) and
-        # return mock.to() instead of the original mock object.
+        # Determine whether this is a real torch.nn.Module.  We use this flag
+        # at the *end* of the inspection rather than as an early-exit guard so
+        # that custom wrappers and test fakes with genuine meta parameters are
+        # still detected correctly.
+        #
+        # MagicMock protection (S266): MagicMock auto-creates .parameters() /
+        # .buffers() as *empty* iterators, so has_meta_tensors returns False
+        # for them, which then causes safe_model_to_device to call mock.to()
+        # and return a new mock instead of the original.  We handle this by
+        # returning None (= "can't determine") only when NO parameters or
+        # buffers were found at all AND the model is not a real nn.Module.
+        _nn_module_check_result: Optional[bool] = None
         try:
             import torch as _torch_fast
-            if not isinstance(model, _torch_fast.nn.Module):
-                return None
+            _nn_module_check_result = isinstance(model, _torch_fast.nn.Module)
         except ImportError:
-            # torch not available — cannot perform nn.Module check; fall through
-            # to the attribute-based inspection below so non-torch wrappers with
-            # real parameters() iterators are still handled correctly.
+            # torch not available — fall through to attribute-based inspection.
             logger.debug("torch not available for nn.Module isinstance check in has_meta_tensors")
         except Exception as exc:  # pragma: no cover — catches corrupt installs
             logger.warning("Unexpected error importing torch in has_meta_tensors: %s", exc)
 
+        _inspected_any: bool = False
+
         # Check if model has parameters method
         if hasattr(model, "parameters"):
             for param in model.parameters():
+                _inspected_any = True
                 # Use is_meta attribute for direct meta tensor detection (PyTorch 1.10+)
                 if hasattr(param, "is_meta") and param.is_meta:
                     logger.debug(f"Found meta tensor parameter: {param.shape}")
@@ -86,6 +91,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
         # Also check buffers if available
         if hasattr(model, "buffers"):
             for buffer in model.buffers():
+                _inspected_any = True
                 if hasattr(buffer, "is_meta") and buffer.is_meta:
                     logger.debug(f"Found meta tensor buffer: {buffer.shape}")
                     return True
@@ -95,12 +101,17 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                         logger.debug("Found meta device buffer via device.type")
                         return True
 
-        try:
-            import torch as _torch
-
-            _is_nn_module = isinstance(model, _torch.nn.Module)
-        except Exception:
-            _is_nn_module = False
+        # Resolve _is_nn_module from the fast-path result captured above, or
+        # fall back to a second import attempt for the submodule-walk below.
+        _is_nn_module: bool
+        if _nn_module_check_result is not None:
+            _is_nn_module = _nn_module_check_result
+        else:
+            try:
+                import torch as _torch
+                _is_nn_module = isinstance(model, _torch.nn.Module)
+            except Exception:
+                _is_nn_module = False
 
         if not _is_nn_module:
             # For non-nn.Module objects, model.parameters() may not recurse into
@@ -120,6 +131,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                         except TypeError:
                             param_iter = submodule.named_parameters()
                         for _, param in param_iter:
+                            _inspected_any = True
                             if hasattr(param, "is_meta") and param.is_meta:
                                 logger.debug("Found meta tensor in submodule parameter")
                                 return True
@@ -138,6 +150,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                             # custom module implementations – fall back to default.
                             buf_iter = submodule.named_buffers()
                         for _, buf in buf_iter:
+                            _inspected_any = True
                             if hasattr(buf, "is_meta") and buf.is_meta:
                                 logger.debug("Found meta tensor in submodule buffer")
                                 return True
@@ -149,9 +162,17 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
             # Also check the model's own device attribute (e.g., SentenceTransformer
             # wrappers that expose their device without standard parameters/buffers).
             if hasattr(model, "device") and hasattr(model.device, "type"):
+                _inspected_any = True
                 if model.device.type == "meta":
                     logger.debug("Found meta device on model itself")
                     return True
+
+            # MagicMock protection: if we found NO parameters/buffers at all and the
+            # model is not a real nn.Module, return None (= "can't determine") so that
+            # safe_model_to_device returns the object unchanged instead of calling
+            # mock.to() and returning a new mock.
+            if not _inspected_any and not _is_nn_module:
+                return None
 
         return False
     except Exception as e:

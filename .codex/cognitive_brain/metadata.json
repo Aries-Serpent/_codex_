@@ -7,5 +7,26 @@
     "duration_variance": 137,
     "high_failure_rate": 93,
     "test_flakiness": 80
+  },
+  "session_notes": {
+    "S273": {
+      "session": "S273",
+      "date": "2026-04-02",
+      "pr": "3846",
+      "summary": "has_meta_tensors nn.Module guard refactored; CI Failure Report integrated into CI Rescue RCA",
+      "files_changed": [
+        "src/codex/rag/utils.py",
+        "scripts/ci/ci_rescue.py",
+        ".github/workflows/ci-rescue.yml",
+        "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+      ],
+      "patterns_added": [
+        "has_meta_tensors_early_return_footgun",
+        "torch_stub_nn_module_resolves_correctly",
+        "workflow_run_merge_required_for_activation",
+        "ci_failure_report_cross_reference"
+      ],
+      "key_fix": "has_meta_tensors() returned None for FakeModel with real meta params because torch stub resolves nn.Module; fixed by deferring None-return to after attribute inspection (using _inspected_any flag)"
+    }
   }
 }

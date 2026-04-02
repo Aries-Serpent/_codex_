@@ -15886,3 +15886,81 @@ All items complete — see commit message for file list.
   immediate fallback. Two-layer protection is better than one.
 - **PR template hygiene**: Remove plan sections immediately when their target is met.
   Stale plans mislead future agents.
+
+---
+
+## SESSION S273 — RAG Meta Tensor Fix + CI Failure Report Integration
+
+**Date:** 2026-04-02
+**PR:** #3846 (`0D_base_`)
+**Commits:** (see `git log --oneline -5`)
+**Triggered by:** Comment #4174422888 — RAG Module Tests failing again, CI Rescue not triggering
+
+### Observe
+- **RAG Module Tests / test-rag (3.12)** failed on run #751 (commit `505ae9f3`) and run #750 (commit before).
+- CI Rescue (`ci-rescue.yml`) did NOT post a rescue comment for either run.
+- Root cause 1 (RAG test): `has_meta_tensors()` in `src/codex/rag/utils.py` returned `None` for
+  `FakeModel` objects with genuine meta parameters. The S266 guard `if not isinstance(model, nn.Module): return None`
+  (lines 61-64) fired immediately because the torch stub provides a real `torch.nn.Module` class —
+  so `isinstance(FakeModel, nn.Module)` → `False` → early `return None` — bypassing all parameter inspection.
+  **7 tests in `test_rag_meta_tensor_regression.py` were silently failing.**
+- Root cause 2 (CI Rescue not triggering): `workflow_run` events ALWAYS execute from the DEFAULT BRANCH
+  (`main`). The S272 fix (`"RAG Module Tests"` watch name) is in `0D_base_` but `main` still has the stale
+  `"Test — RAG Pipeline"` name. The fix is INACTIVE until this PR merges.
+- **CI Failure Report (issue #3844)** CORRECTLY tracked RAG Module Tests failures (9 entries,
+  most recent run #751) — verifying the batch-ci-triage.yml pipeline captures these failures.
+  However, CI Rescue RCA comments did not cross-reference the report, giving @copilot incomplete context.
+- **Trailing codebase discovery**: The `has_meta_tensors()` nn.Module guard pattern (`return None`
+  for non-nn.Module objects) is a footgun — any non-nn.Module object with real meta parameters is
+  silently skipped. This same pattern may recur if `has_meta_tensors` callers add new non-nn.Module
+  wrappers. New rule: the `None` return must ONLY fire when zero parameters/buffers were inspected
+  (empty iterator case = MagicMock), never when actual meta params exist.
+
+### Orient
+- Fix `has_meta_tensors()`: remove early-return `None`, track `_inspected_any`, return `None` only
+  when no parameters/buffers were found AND model is not `nn.Module`.
+- Integrate CI Failure Report into CI Rescue RCA comments so every `@copilot` escalation includes
+  a cross-workflow context link.
+- Cannot fix CI Rescue watch-name issue without merging `0D_base_` → `main` first.
+
+### Decide
+1. Refactor `has_meta_tensors()` guard logic (surgical 3-section change in `utils.py`).
+2. Add `--triage-issue-url` arg to `ci_rescue.py`; inject into both `_format_rca_comment` and
+   `_format_deep_rca_comment` footers.
+3. Add "Lookup CI Failure Triage Report issue URL" step to `ci-rescue.yml`; pass URL via
+   `TRIAGE_FLAG` env var to both standard and deep rescue invocations.
+
+### Act
+All items complete — files changed:
+- `src/codex/rag/utils.py` — `has_meta_tensors()` guard refactored
+- `scripts/ci/ci_rescue.py` — `--triage-issue-url` arg; `_format_rca_comment` + `_format_deep_rca_comment` footers; `run_deep_rescue` signature
+- `.github/workflows/ci-rescue.yml` — "Lookup CI Failure Triage Report issue URL" step; `TRIAGE_ISSUE_URL` env; `${TRIAGE_FLAG}` in both `python3 /tmp/ci_rescue.py` calls
+
+### AfterMath
+- RAG tests: **499 passed**, 110 skipped, **0 failures** (was 7 failures pre-fix)
+- `test_rag_meta_tensor_regression.py`: **9/9 passing** (was 7 failing)
+- `ci_rescue.py` + `ci-rescue.yml`: YAML valid, Python AST clean
+- CI Failure Report integration: every RCA comment now links to the live triage report
+- **Merge required** for `workflow_run` watch-name fix (S272) to take effect on `main`
+
+### Trailing Codebase Discoveries (S273)
+1. **`has_meta_tensors()` nn.Module guard footgun**: Early-return `None` for non-nn.Module fires
+   whenever torch stub resolves `nn.Module` (i.e. always when stub `torch/nn/` dir exists). Pattern:
+   use `_inspected_any` flag, defer `None` return to AFTER attribute inspection completes.
+2. **Torch stub `nn/` subdirectory**: The repo ships `torch/nn/__init__.py` (stub nn module with
+   real `Module` class). This makes `isinstance(x, torch.nn.Module)` work correctly but breaks any
+   code that assumed `torch.nn` would raise `ImportError` when torch is absent.
+3. **CI Failure Report correctly catches RAG failures**: Issue #3844 already shows RAG Module Tests
+   with 9 failures including the exact failing run. The batch-ci-triage.yml pipeline is reliable.
+   Gap was only in the CI Rescue → Failure Report cross-reference direction.
+4. **workflow_run activation lag**: ANY fix to a `workflow_run` trigger in a PR branch is invisible
+   until merged. A second safety net (push/pull_request trigger with same logic) should ALWAYS be
+   added as an immediate fallback.
+
+### Lessons Learned (S273)
+- **Inspect before guarding**: Attribute-based guards that short-circuit parameter inspection must
+  be deferred to AFTER at least one iteration attempt. "No items found" ≠ "not a model".
+- **CI Failure Report as rescue context**: The triage report is a first-class data source for
+  @copilot RCA. Every rescue comment should link to it.
+- **Merge velocity matters for `workflow_run`**: Track which PRs contain `workflow_run` watchlist
+  fixes. Until merged, CI Rescue is blind to those workflows.
