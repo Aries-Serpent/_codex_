@@ -1,0 +1,118 @@
+name: "🔄 Doc Refresh Gate (AAIS)"
+
+# Post-merge freshness gate: runs doc.refresh.agent skill to score docs
+# and flag stale content after promotion branches merge to main.
+# Non-blocking (warning-only) — emits refresh plan as artifact.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/agents/**"
+  workflow_dispatch:
+    inputs:
+      aais_threshold:
+        description: "Minimum AAIS score (0.0-1.0) to pass gate"
+        required: false
+        default: "0.75"
+        type: string
+
+concurrency:
+  group: doc-refresh-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  doc-refresh-gate:
+    name: "🔄 AAIS Doc Refresh Gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: "📥 Checkout"
+        uses: actions/checkout@v5
+
+      - name: "🐍 Set up Python"
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: "📦 Install package"
+        run: |
+          pip install -e . --no-deps
+          pip install pyyaml pydantic typer
+
+      - name: "🔍 Run doc refresh skill (check-only)"
+        id: refresh
+        env:
+          AAIS_THRESHOLD: ${{ inputs.aais_threshold || '0.75' }}
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+          from codex.skills.aais import AAISScorer
+
+          scorer = AAISScorer()
+          threshold = float('${AAIS_THRESHOLD}')
+          results = []
+          stale = []
+
+          for doc_dir in ['docs/agent', 'docs/admin', 'docs/how-to']:
+              doc_path = Path(doc_dir)
+              if not doc_path.exists():
+                  continue
+              for md in sorted(doc_path.glob('**/*.md')):
+                  text = md.read_text(encoding='utf-8', errors='replace')
+                  if len(text.strip()) < 50:
+                      continue
+                  score = scorer.score(text)
+                  entry = {
+                      'file': str(md),
+                      'aais_total': round(score.total, 4),
+                      'concision': round(score.concision, 4),
+                      'acronym': round(score.acronym_discipline, 4),
+                      'structure': round(score.structure, 4),
+                      'clarity': round(score.clarity, 4),
+                      'citation': round(score.citation_lineage, 4),
+                  }
+                  results.append(entry)
+                  if score.total < threshold:
+                      stale.append(entry)
+
+          report = {
+              'threshold': threshold,
+              'total_docs': len(results),
+              'passing': len(results) - len(stale),
+              'below_threshold': len(stale),
+              'stale_docs': stale,
+              'all_scores': sorted(results, key=lambda x: x['aais_total']),
+          }
+
+          Path('.codex').mkdir(exist_ok=True)
+          Path('.codex/doc_refresh_report.json').write_text(
+              json.dumps(report, indent=2) + '\n', encoding='utf-8'
+          )
+
+          print(f'📊 Scanned {len(results)} docs | Threshold: {threshold}')
+          print(f'✅ Passing: {len(results) - len(stale)}')
+          print(f'⚠️  Below threshold: {len(stale)}')
+          if stale:
+              print()
+              print('Files below AAIS threshold:')
+              for s in stale:
+                  print(f'  {s[\"aais_total\"]:.3f}  {s[\"file\"]}')
+
+          # Non-blocking: always exit 0
+          sys.exit(0)
+          "
+
+      - name: "📤 Upload refresh report"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc-refresh-report
+          path: .codex/doc_refresh_report.json
+          retention-days: 30

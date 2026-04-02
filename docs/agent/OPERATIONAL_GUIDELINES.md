@@ -298,6 +298,114 @@ All agent operations MUST be logged to appropriate audit trails:
 
 ---
 
+## Cognitive Brain Skills CLI (`codex-skill`)
+
+The `codex-skill` CLI provides access to the Skills Registry, AAIS scorer,
+stratified router, telemetry, and compression from the command line.
+
+### Installation
+
+The CLI is installed automatically with the package:
+```bash
+pip install -e .
+# Verify:
+codex-skill --help
+```
+
+### Commands
+
+#### List registered skills
+
+```bash
+# List all discovered skills
+codex-skill list
+
+# Filter by capability tag
+codex-skill list --capability docs
+
+# Filter by risk tier
+codex-skill list --risk-tier low
+```
+
+#### Run a skill
+
+```bash
+# Run doc retriever with inline payload
+codex-skill run doc.retriever.core --payload '{"query": "AAIS scoring", "top_k": 5}'
+
+# Run with payload from file
+codex-skill run doc.refresh.agent --payload @refresh_input.json
+```
+
+#### Score skill documentation (AAIS)
+
+```bash
+# Score a specific skill's documentation quality
+codex-skill score --skill doc.retriever.core
+
+# Emit score to file
+codex-skill score --skill doc.retriever.core --emit dist/aais_score.json
+```
+
+#### Compress and distribute
+
+```bash
+# Package a skill as 7z archive
+codex-skill compress --skill doc.retriever.core --format 7z --out dist/
+
+# Install from archive
+codex-skill install dist/doc.retriever.core-1.0.0.7z
+```
+
+#### Telemetry
+
+```bash
+# Push telemetry summary to file
+codex-skill telemetry push --from logs/skill_events.jsonl --to file --summary
+```
+
+#### Doc refresh
+
+```bash
+# Scan docs and generate refresh plan
+codex-skill refresh-docs --paths docs/agent docs/admin --style aais --prune-stale
+
+# Emit plan to file (for CI gate use)
+codex-skill refresh-docs --paths docs/ --style aais --emit-plan .codex/doc_refresh_plan.json
+```
+
+### Nox Session
+
+Run the full skills test suite via nox:
+```bash
+nox -s skills                     # run all skills tests
+nox -s skills -- -k test_routing  # run only routing tests
+```
+
+### Programmatic Usage
+
+```python
+from codex.skills import get_registry, ExecutionEnvelope, AAISScorer
+
+# Discover and list skills
+registry = get_registry()
+registry.discover()
+for skill in registry.list():
+    print(f"{skill.skill_id} v{skill.version} — {skill.manifest.description}")
+
+# Execute a skill through the envelope (policy gate + timeout)
+env = ExecutionEnvelope(registry)
+result = env.run("doc.retriever.core", {"query": "cognitive brain", "top_k": 3})
+print(result.status, result.data)
+
+# Score text quality
+scorer = AAISScorer()
+score = scorer.score(open("docs/agent/OPERATIONAL_GUIDELINES.md").read())
+print(f"AAIS: {score.total:.3f}")
+```
+
+---
+
 ## Best Practices
 
 ### Communication
