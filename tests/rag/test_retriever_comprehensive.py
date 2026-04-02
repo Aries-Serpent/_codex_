@@ -106,6 +106,10 @@ def mock_sentence_transformer():
     """Create a mock SentenceTransformer model."""
     mock_model = MagicMock()
     mock_model.encode.return_value = np.random.randn(1, 384).astype(np.float32)
+    # safe_model_to_device calls model.to(device); keep same mock so encode is accessible
+    mock_model.to.return_value = mock_model
+    mock_model.to_empty.return_value = mock_model
+    mock_model.eval.return_value = mock_model
     return mock_model
 
 
@@ -182,7 +186,11 @@ class TestRetrieverInitialization:
     def test_initialization_loads_embedding_model(self, temp_index_dir, mock_faiss_index):
         """Test that initialization loads the embedding model."""
         with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
-            with patch("codex.rag.retriever.SentenceTransformer") as mock_st:
+            # Model loading goes through _model_utils which does a local import from
+            # sentence_transformers — patch at the source module level.
+            with patch("sentence_transformers.SentenceTransformer") as mock_st:
+                mock_st.return_value.to.return_value = mock_st.return_value
+                mock_st.return_value.eval.return_value = mock_st.return_value
                 Retriever(index_dir=str(temp_index_dir))
 
                 mock_st.assert_called_once()
@@ -190,7 +198,9 @@ class TestRetrieverInitialization:
     def test_initialization_model_import_error(self, temp_index_dir, mock_faiss_index):
         """Test initialization handles missing sentence-transformers."""
         with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, [], {})):
-            with patch("codex.rag.retriever.SentenceTransformer", side_effect=ImportError):
+            # Setting the module-level sentinel to None triggers the ImportError guard
+            # inside _load_model before safe_load_sentence_transformer is called.
+            with patch("codex.rag.retriever.SentenceTransformer", new=None):
                 with pytest.raises(ImportError):
                     Retriever(index_dir=str(temp_index_dir))
 
@@ -339,7 +349,8 @@ class TestRetrieverQuery:
 
         with patch("codex.rag.indexer.load_index", return_value=(mock_faiss_index, chunks, {})):
             with patch(
-                "codex.rag.retriever.SentenceTransformer", return_value=mock_sentence_transformer
+                "sentence_transformers.SentenceTransformer",
+                return_value=mock_sentence_transformer,
             ):
                 retriever = Retriever(index_dir=str(temp_index_dir))
                 retriever.query("search query", top_k=5)

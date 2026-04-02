@@ -20,16 +20,16 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore[assignment,misc]
-    HTTPException = Exception  # type: ignore[assignment,misc]
-    BaseModel = object  # type: ignore[assignment,misc]
-    APIKeyHeader = None  # type: ignore[assignment,misc]
-    Security = None  # type: ignore[assignment]
+    FastAPI = None
+    HTTPException = Exception
+    BaseModel = object
+    APIKeyHeader = None
+    Security = None
 
-    def Field(*a, **k):  # type: ignore[no-redef]
+    def Field(*a, **k):
         return None
 
-    Request = object  # type: ignore[assignment,misc]
+    Request = object
 
 logger = logging.getLogger(__name__)
 
@@ -466,7 +466,7 @@ if FASTAPI_AVAILABLE:
         )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
+                http_request.client.host if getattr(http_request, "client", None) else "global"
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")

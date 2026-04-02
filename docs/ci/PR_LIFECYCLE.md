@@ -1672,4 +1672,3 @@ immediately, the agent MUST:
 7. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
 
 The agent must **NOT** use `direct-push` mode without explicit human approval in a PR comment.
-

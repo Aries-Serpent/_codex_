@@ -805,6 +805,8 @@ class RAGIndexer:
     ) -> None:
         self.index_dir = Path(index_dir) if index_dir else Path(".")
         self.device = device
+        self.model: Any = None
+        self._try_load_model()
 
     def build_index(
         self,

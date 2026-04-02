@@ -342,7 +342,7 @@ else:  # pragma: no cover - click fallback
         default=None,
         help="Local mlruns dir",
     )
-    def track_smoke(dir_: Optional[Path]) -> None:  # type: ignore[misc]
+    def track_smoke(dir_: Optional[Path]) -> None:
         _track_smoke_impl(dir_)
 
     @app.command("split-smoke")
@@ -353,7 +353,7 @@ else:  # pragma: no cover - click fallback
         show_default=True,
         help="Seed for deterministic split",
     )
-    def split_smoke(seed: int) -> None:  # type: ignore[misc]
+    def split_smoke(seed: int) -> None:
         _split_smoke_impl(seed)
 
     @app.command("checkpoint-smoke")
@@ -365,10 +365,10 @@ else:  # pragma: no cover - click fallback
         show_default=True,
         help="Checkpoint directory",
     )
-    def checkpoint_smoke(out_dir: Path) -> None:  # type: ignore[misc]
+    def checkpoint_smoke(out_dir: Path) -> None:
         _checkpoint_smoke_impl(out_dir)
 
-    @app.group(  # type: ignore[attr-defined]
+    @app.group(
         name="reasoning-templates",
         help="Surface reasoning training presets and curricula metadata.",
     )
@@ -448,7 +448,7 @@ else:  # pragma: no cover - click fallback
         multiple=True,
         help="Only include specified categories (can be repeated).",
     )
-    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:  # type: ignore[misc]
+    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
         from codex_ml.cli.repo_map import render_repo_map
 
         echo(render_repo_map(reasoning=reasoning, include=includes))

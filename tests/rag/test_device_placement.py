@@ -232,6 +232,8 @@ class TestRAGModuleDevicePlacement:
 
         indexer = RAGIndexer(device='cpu')
         assert indexer.device == 'cpu'
+        if indexer.model is None:
+            pytest.skip('SentenceTransformer model not available in this environment (offline CI)')
         # Model should be on CPU
         assert all(
             p.device.type == 'cpu'
@@ -273,6 +275,8 @@ class TestRAGModuleDevicePlacement:
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(device='cpu')
+        if indexer.model is None:
+            pytest.skip('SentenceTransformer model not available in this environment (offline CI)')
 
         # Change device
         indexer.move_to_device('cpu')  # Stay on CPU

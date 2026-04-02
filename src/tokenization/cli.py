@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import typer as _typer
 except Exception:  # pragma: no cover - fallback when typer missing
-    _typer = None  # type: ignore[assignment]
+    _typer = None
 else:
     required_attrs = {"Typer", "echo", "Option", "Exit"}
     if not required_attrs.issubset(set(dir(_typer))):
-        _typer = None  # type: ignore[assignment]
+        _typer = None
 
 
 # Fallback implementations are always defined unconditionally at module level so

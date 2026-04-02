@@ -200,7 +200,7 @@ class GitHubApp:
             payload_b64 = _b64url(json.dumps(payload, separators=(",", ":")))
             signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
 
-            signature = private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())  # type: ignore[union-attr,arg-type,call-arg]
+            signature = private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())
             sig_b64 = _b64url_bytes(signature)
 
             return f"{header_b64}.{payload_b64}.{sig_b64}"

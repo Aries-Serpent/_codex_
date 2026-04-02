@@ -30,7 +30,7 @@ from typing import Optional
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
 except ModuleNotFoundError:  # pragma: no cover - pydantic missing
-    ValidationError = None  # type: ignore[assignment,misc]
+    ValidationError = None
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file
@@ -52,10 +52,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency: prefer Typer when available
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 
 def _format_validation_error(exc: ValidationError) -> str:

@@ -193,6 +193,10 @@ class TestEmbedChunks:
         """Create mock SentenceTransformer model."""
         mock = MagicMock()
         mock.encode.return_value = np.random.randn(3, 384).astype(np.float32)
+        # safe_model_to_device calls model.to(device); return self so encode is on the same mock
+        mock.to.return_value = mock
+        mock.to_empty.return_value = mock
+        mock.eval.return_value = mock
         return mock
 
     def test_embed_empty_chunks(self):

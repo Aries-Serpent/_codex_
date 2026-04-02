@@ -16519,3 +16519,44 @@ mypy.manager skill improvements, mypy 23→0 errors via skill-driven fixes, CI t
 - CI triage: 9/14 failing workflows addressed or classified
 
 ---
+
+## S287 — 2026-04-02 (mypy 50→0, RAG test CI regression, pre-commit fix)
+
+### Session Objectives
+Fix 3 failing CI checks on commit `91bdd7d`: mypy Baseline (50 errors), Validation Pipeline (pre-commit), and RAG Module Tests (10 failures).
+
+### Fixes Applied
+
+#### mypy Baseline: 50→0 errors
+Root cause: `mypy.manager` skill added `# type: ignore[assignment,misc]` comments to optional-import fallbacks across 20 files; with `--ignore-missing-imports --follow-imports=silent`, these became `[unused-ignore]`.  
+Fix: Batch-removed all 47 stale `# type: ignore` comments from: `src/codex/auth/github_app.py`, `src/codex/cli/main.py`, `src/codex/dynamics/model/sla.py`, `src/codex/logging/query_logs.py`, `src/codex/security/storage.py`, `src/codex/skills/registry.py`, `src/codex_cli/app.py`, `src/codex_ml/cli/checkpoint_validate.py`, `src/codex_ml/cli/plugins_cli.py`, `src/codex_ml/cli/tracking_decide.py`, `src/codex_ml/cli/validate.py`, `src/codex_ml/config/settings.py`, `src/codex_ml/eval/eval_runner.py`, `src/codex_ml/monitoring/cli.py`, `src/codex_ml/serving/inference_server.py`, `src/codex_ml/utils/checkpoint_core.py`, `src/ingestion/encoding_detect.py`, `src/integrations/github_app_auth.py`, `src/mcp/server/middleware/auth.py`, `src/services/workflow/parser.py`, `src/tokenization/cli.py`.  
+Fix: Added `import importlib.util` to `src/codex/cli_zendesk.py` to resolve 3 `[attr-defined]` errors on `importlib.util.find_spec`.
+
+#### Validation Pipeline / Fast Validation: pre-commit hooks
+Root cause: RP-006 fix (S286) added EOF newlines to 112 `.codex/` JSON files; `.codex/webhook_config.json` and `.codex/webhook_registry.json` and `docs/ci/PR_LIFECYCLE.md` got double-newline, violating `end-of-file-fixer`.  
+Fix: Stripped trailing blank lines from 3 affected files.
+
+#### RAG Module Tests: 10→0 failures
+Root cause: CI has `sentence_transformers` installed; 4 test patterns broke:
+1. `RAGIndexer.__init__` never set `self.model = None` → `AttributeError` when `sentence_transformers` available
+2. Test patches targeted `codex.rag.retriever.SentenceTransformer` but `_model_utils.safe_load_sentence_transformer` imports directly from `sentence_transformers` (local import) — patch didn't intercept
+3. `mock_model` fixtures missing `mock.to.return_value = mock` — `safe_model_to_device` chains `.to(device)` returning unconfigured MagicMock, breaking `.encode()` return type
+4. `test_initialization_model_import_error` used `side_effect=ImportError` but code checks `if SentenceTransformer is None:` (not callable)
+
+Fixes:
+- `src/codex/rag/indexer.py`: `RAGIndexer.__init__` now sets `self.model = None` and calls `self._try_load_model()`
+- `tests/rag/test_device_placement.py`: Added `pytest.skip` when `indexer.model is None` (offline CI)
+- `tests/rag/test_retriever_comprehensive.py`: Updated 3 tests — patch target → `sentence_transformers.SentenceTransformer`, `side_effect=ImportError` → `new=None`, fixture + `.to.return_value`
+- `tests/rag/test_indexer_comprehensive.py`: Added `.to/.to_empty/.eval.return_value = mock` to fixture
+- `tests/rag/test_rag_integration.py`: Added `.to.return_value = mock_model` to inline mocks
+
+### Lessons Learned
+- `from sentence_transformers import SentenceTransformer` inside a function body requires patching `sentence_transformers.SentenceTransformer` (source), NOT the module that imports it
+- Always set `self.attr = None` in `__init__` before any try-block that may set it — prevents `AttributeError` when exception is caught
+- `pytest.importorskip` succeeds in CI when a package is pip-installed even if models can't be downloaded — add `pytest.skip` when the model itself is absent
+
+### Impact
+- mypy errors: 50 → 0
+- RAG test failures: 10 → 0
+- pre-commit hook failures: 3 → 0
+- HOTFIX assessment: No CI bypass path exists for PR #3854 — all checks must be green before merge

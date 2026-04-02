@@ -7,6 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import importlib  # noqa: E402
+import importlib.util  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import subprocess  # noqa: E402

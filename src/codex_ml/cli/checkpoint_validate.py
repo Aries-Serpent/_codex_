@@ -41,10 +41,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency for CLI ergonomics.
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 
 class CheckpointValidationError(RuntimeError):
