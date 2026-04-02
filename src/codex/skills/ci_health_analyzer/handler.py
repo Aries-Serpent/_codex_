@@ -327,7 +327,7 @@ def run(payload: dict) -> dict:
 
     # Build trend from history + current run
     trend: dict | None = None
-    if history is not None:
+    if history:
         current_result = {
             "category": best["category"],
             "pattern_id": best["pattern_id"],

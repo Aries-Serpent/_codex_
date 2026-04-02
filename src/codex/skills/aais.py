@@ -230,7 +230,7 @@ class AAISScorer:
         if len(sentences) > 1:
             lens = [len(re.findall(r"\w+", s)) for s in sentences]
             mean_len = sum(lens) / len(lens)
-            variance = sum((l - mean_len) ** 2 for l in lens) / len(lens)
+            variance = sum((n - mean_len) ** 2 for n in lens) / len(lens)
             # Normalise: variance < 25 is ideal (std ≈ 5), penalise > 100
             variance_score = max(0.0, 1.0 - variance / 200)
         else:
