@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S276 — PR #3854)
+- Fix: `tests/rag/test_embeddings_comprehensive.py` — 4 failing RAG embedding tests restored by adding `mock_model.to.return_value = mock_model` / `to_empty` / `eval` to `mock_sentence_transformer` fixture (root cause: `safe_model_to_device` calls `model.to()` and MagicMock chaining returns unconfigured mock).
+- Fix: `.secrets.baseline` stale CODEX_MANIFEST.json hash regenerated via `sync_tracked_files.py --fix`.
+- Fix: `docs/ROADMAP.md` date updated to `2026-04-02` (was `2026-04-01`) per sync-tracked-files hook.
+- Fix: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — empty PR #3849 auto-session section populated; PR #3843 section mismatched reference corrected.
+- Chore: updated PR #3849, PR #3852, S274 follow-up prompts with concrete tasks and `${RUNNER_TEMP}` path.
+
 ### Fixed (auto-update — PR #3854)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3854 (SHA `62ec99b1`) at 2026-04-02T09:08Z [auto-generated]
 
