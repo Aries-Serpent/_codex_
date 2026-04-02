@@ -30,3 +30,4 @@
   "ci_tracking": ".codex/CI_FAILURE_TRACKING_LOG.md",
   "prevention": "Code review: flag any 'grep -c PATTERN || echo N' where N equals grep-c no-match output (always 0). Use '|| true' exclusively."
 }
+

@@ -47,10 +47,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency used for the public CLI.
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None
+    typer = None  # type: ignore[assignment]
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None
+        typer = None  # type: ignore[assignment]
 
 
 def _parse_env_overrides(values: Sequence[str]) -> dict[str, Optional[str]]:

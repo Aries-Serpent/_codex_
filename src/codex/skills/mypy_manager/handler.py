@@ -58,7 +58,7 @@ _RULES: list[dict[str, Any]] = [
         ),
         "fix_available": True,
         "fix_description": (
-            "Add  # type: ignore[assignment,misc]  to the fallback ``= None`` "
+            "Add  # type: ignore[assignment]  to the fallback ``= None`` "
             "line in the except-ImportError block."
         ),
     },
@@ -165,7 +165,7 @@ _RULES: list[dict[str, Any]] = [
     {
         "pattern": "MYPY-UNUSED-IGNORE",
         "code": "unused-ignore",
-        "regex": re.compile(r'Unused "type: ignore" comment', re.I),
+        "regex": re.compile(r'Unused "type: ignore', re.I),
         "fix_available": True,
         "fix_description": (
             "Remove the # type: ignore comment — the error it was suppressing "
@@ -382,7 +382,7 @@ def _fix_redundant_cast(src: str, line_no: int) -> tuple[str, bool]:
 
 
 def _fix_optional_import_fallback(src: str, line_no: int) -> tuple[str, bool]:
-    """Append # type: ignore[assignment,misc] to optional-import fallback = None line."""
+    """Append # type: ignore[assignment] to optional-import fallback = None line."""
     lines = src.splitlines(keepends=True)
     if line_no < 1 or line_no > len(lines):
         return src, False
@@ -393,7 +393,7 @@ def _fix_optional_import_fallback(src: str, line_no: int) -> tuple[str, bool]:
         return src, False
     # Append at end of line, preserving original newline
     nl = original[len(stripped):]
-    lines[line_no - 1] = stripped + "  # type: ignore[assignment,misc]" + nl
+    lines[line_no - 1] = stripped + "  # type: ignore[assignment]" + nl
     return "".join(lines), True
 
 
@@ -595,7 +595,7 @@ def run(inputs: dict[str, Any]) -> dict[str, Any]:
 
     # ── check / classify ─────────────────────────────────────────────────────
     if action in ("check", "classify", "report"):
-        if action == "classify" and inputs.get("mypy_output"):
+        if action == "classify" and "mypy_output" in inputs:
             raw = inputs["mypy_output"]
         else:
             raw = _run_mypy(src_dir)

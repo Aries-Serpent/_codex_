@@ -19,10 +19,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any
 from unittest.mock import patch
-
-import pytest
 
 # Ensure src/ is on the path
 sys.path.insert(0, str(Path(__file__).parents[3] / "src"))
@@ -219,7 +216,7 @@ class TestFixFunctions:
         src = "    Console = None\n"
         new_src, changed = _fix_optional_import_fallback(src, 1)
         assert changed
-        assert "# type: ignore[assignment,misc]" in new_src
+        assert "# type: ignore[assignment]" in new_src
 
     def test_fix_optional_import_fallback_skips_existing(self):
         src = "    Console = None  # type: ignore[assignment]\n"
@@ -440,7 +437,7 @@ class TestRunFix:
             })
         assert result["status"] == "fixed"
         written = src_file.read_text()
-        assert "# type: ignore[assignment,misc]" in written
+        assert "# type: ignore[assignment]" in written
 
     def test_fix_applies_redundant_cast(self, tmp_path):
         src_file = tmp_path / "enc.py"
