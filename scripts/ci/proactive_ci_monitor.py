@@ -378,7 +378,7 @@ def scan(
                     run_dt = datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
                     if (now - run_dt).total_seconds() > age_cutoff_s:
                         continue
-                except ValueError:
+                except ValueError:  # malformed timestamp — skip age-filtering for this run
                     pass
 
             report["failed_runs"] += 1

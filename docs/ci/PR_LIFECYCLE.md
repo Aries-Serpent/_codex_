@@ -1,7 +1,7 @@
 # PR Lifecycle — 0D_base_ Branch
 
-> **Version:** 1.3.0  
-> **Date:** 2026-04-02 (updated S280 — §13 high-frequency failure catalogue from triage #3853, §14 Copilot session automation roadmap, §15 RAG chronic pattern, enhanced §7 rescue cascade with upsert semantics)  
+> **Version:** 1.4.0  
+> **Date:** 2026-04-02 (S282 — §16 `@copilot` comment budget & rate-limit controls, full trigger→comment map, 35-workflow audit)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection, CI log history, issue #3853 triage report (71 failures / 13 workflows, 2026-04-02)
 
@@ -28,6 +28,7 @@ and how the self-healing / rescue system responds.
 13. [High-Frequency Failure Catalogue (from triage #3853)](#13-high-frequency-failure-catalogue)
 14. [Copilot Session Automation Improvement Roadmap](#14-copilot-session-automation-improvement-roadmap)
 15. [RAG Module Tests — Chronic Failure Pattern](#15-rag-module-tests--chronic-failure-pattern)
+16. [`@copilot` Comment Budget & Rate-Limit Controls](#16-copilot-comment-budget--rate-limit-controls)
 
 ---
 
@@ -893,3 +894,153 @@ flowchart TD
     RESCUE --> COPILOT
     COPILOT --> FIX["Apply mock fixture fix\nUpdate .coveragerc\nVerify pytest tests/rag/ -v"]
 ```
+
+---
+
+## 16. `@copilot` Comment Budget & Rate-Limit Controls
+
+> **Added S282 — 2026-04-02**  
+> **Why this matters:** A single push to `0D_base_` can fire up to **35 comment-posting workflows**
+> in parallel. Without upsert/dedup controls, each CI failure could generate 10–15 independent
+> `@copilot` comments — exhausting the GitHub REST rate limit (1,000 req/hour per repo) and
+> spamming the PR with noise.
+
+---
+
+### 16.1 Full Trigger → Comment Map (per push)
+
+The table below lists every workflow that **actually calls `createComment` or `updateComment`**,
+ordered by impact. Columns: **T** = create, **U** = upsert, **🤖** = posts `@copilot` mention.
+
+| Workflow | Trigger(s) | T | U | 🤖 | Guard / Dedup marker |
+|----------|-----------|---|---|-----|----------------------|
+| `agent-auth-delegation.yml` | `pull_request`, `pull_request_review`, `workflow_dispatch` | 7 | 6 | ✅ | SHA+step markers |
+| `copilot-agent-session-done.yml` | `workflow_run` (on any job completion) | 4 | 0 | ✅ | `<!-- session-done-retrigger -->` |
+| `resilient_validation.yml` | `pull_request` | 2 | 2 | ✅ | SHA upsert |
+| `reference-integrity.yml` | `pull_request`, `push`, `workflow_dispatch` | 2 | 1 | ✅ | SHA upsert |
+| `ci-failure-issue-creator.yml` | `workflow_run` (on failure) | 2 | 0 | ✅ | Issue label dedup |
+| `copilot-agent-checkin.yml` | **`push`**, `workflow_dispatch`, `issue_comment`, `workflow_run` | 2 | 0 | ✅ | `<!-- session-done-retrigger -->`, safety cap ≥3 |
+| `iterative-self-healing-ci.yml` | `workflow_run`, `workflow_dispatch` | 2 | 0 | ✅ | `<!-- copilot-healing:<sha12>:<category> -->` |
+| `copilot-session-chain.yml` | `workflow_dispatch`, `pull_request` | 2 | 0 | ✅ | `<!-- copilot-healing -->` |
+| `session-watchdog.yml` | `issue_comment` | 3 | 0 | ✅ | `issue_comment` filter |
+| `actionlint-audit.yml` | `pull_request`, **`push`** | 1 | 1 | ✅ | `<!-- ci-rescue:<pr>:sha-<sha12> -->` |
+| `auto-fix-common-issues.yml` | `workflow_dispatch`, `pull_request` | 1 | 1 | ✅ | `<!-- auto-fix-ci-issues -->` |
+| `ci-rescue.yml` | `workflow_run`, `workflow_dispatch` | — | — | ✅ | `<!-- ci-rescue:<pr>:sha-<sha12> -->` |
+| `comment-review-gate.yml` | `pull_request`, `pull_request_review`, `issue_comment` | 1 | 1 | ✅ | `<!-- comment-review-gate:<pr> -->` |
+| `copilot-iterative-self-healing.yml` | `workflow_run`, `schedule`, `workflow_dispatch` | 1 | 0 | ✅ | `<!-- copilot-healing:<sha12>:<category> -->` |
+| `pre-merge-validation.yml` | `pull_request`, `pull_request_review` | 1 | 1 | ✅ | `<!-- pre-merge-validation-summary -->` |
+| `pre-flight-validation.yml` | `pull_request`, **`push`** | 1 | 1 | ✅ | SHA upsert |
+| `cost-gate.yml` | `workflow_call` | 1 | 1 | ✅ | `<!-- cost-check-bot -->` |
+| `pr-cost-check.yml` | `pull_request` | 1 | 1 | ✅ | `<!-- pr-cost-check -->` |
+| `pr-followup-generator.yml` | `pull_request`, `workflow_dispatch` | 1 | 1 | ✅ | `<!-- pr-followup-prompt-generated -->` |
+| `root-org-validation.yml` | `pull_request`, `workflow_dispatch` | 1 | 1 | ✅ | `<!-- root-org-validation-v1 -->` |
+| `rust_swarm_ci.yml` | `pull_request`, **`push`** | 1 | 1 | ✅ | SHA upsert |
+| `chatops_copilot_trigger.yml` | `issue_comment` | 1 | 0 | ✅ | `issue_comment` event filter |
+| `copilot-review-responder.yml` | `pull_request_review`, `issue_comment` | 1 | 0 | ✅ | Review event filter |
+| `validate.yml` | `pull_request`, `schedule`, `workflow_dispatch` | 1 | 0 | ✅ | `<!-- root-org-validation-v1 -->` |
+
+---
+
+### 16.2 Worst-Case Budget Per Push
+
+```
+Single push to 0D_base_ (CI fully failing):
+
+  push-triggered workflows that post comments:
+    copilot-agent-checkin    →  1 create  (S221 guard; upserted on retry)
+    actionlint-audit         →  1 upsert  (SHA-scoped; no new comment if exists)
+    pre-flight-validation    →  1 upsert
+    reference-integrity      →  1 upsert
+    rust_swarm_ci            →  1 upsert
+
+  workflow_run-triggered (on failure):
+    ci-rescue.yml            →  1 upsert  per (PR, SHA) — ALL failures merged
+    iterative-self-healing   →  1 per (SHA, category) — upsert on repeat
+    copilot-iterative-*      →  1 per (SHA, category) — upsert on repeat
+    copilot-agent-session-done → 1 per session end
+
+  pull_request-triggered:
+    pre-merge-validation     →  1 upsert
+    resilient_validation     →  1 upsert
+    pr-cost-check            →  1 upsert
+    comment-review-gate      →  1 upsert
+
+  Maximum NEW comments per failing push: ~5–8
+  Maximum TOTAL API calls (create+upsert): ~15–20
+  GitHub REST limit: 1,000/hour — safe at normal push cadence
+  Secondary rate limit risk: >100 req/min — possible if 20+ workflows fire simultaneously
+```
+
+---
+
+### 16.3 Active Rate-Limit Controls
+
+| Control | Mechanism | Workflows |
+|---------|-----------|-----------|
+| **SHA-scoped upsert markers** | `<!-- copilot-healing:<sha12>:<category> -->` — same SHA+category updates in-place | `iterative-self-healing-ci.yml`, `copilot-iterative-self-healing.yml` |
+| **PR-scoped rescue upsert** | `<!-- ci-rescue:<pr>:sha-<sha12> -->` — one canonical rescue comment per (PR, SHA) | `ci-rescue.yml`, `actionlint-audit.yml`, all inline rescue jobs |
+| **S221 guard safety cap** | Pattern `FP-SAFETYCAP-001`: ≥3 retriggers per rescue ID → guard stops posting | `copilot-agent-checkin.yml` |
+| **Actor-skip rule** | Pattern `FP-ACTOR-SKIP-001`: guard skips when actor is `copilot-swe-agent[bot]` | `copilot-agent-checkin.yml` |
+| **`issue_comment` cascade guard** | `chatops_copilot_trigger.yml` / `copilot-review-responder.yml` only fire on **human** comments (filtered by `github.actor` ≠ bot) | `chatops_copilot_trigger.yml`, `copilot-review-responder.yml` |
+| **`cancel-in-progress: false` + run-ID concurrency** | Each failure gets its own non-cancellable healer run — but does NOT stack duplicate posts | `iterative-self-healing-ci.yml` (S279 fix) |
+
+---
+
+### 16.4 Identified Risks & Mitigations
+
+| Risk | Severity | Current Status | Mitigation |
+|------|----------|----------------|------------|
+| `copilot-agent-session-done.yml` fires on EVERY `workflow_run` completion | 🔴 High | fires 4× per push (1 per watcher job) | Add `<!-- session-done-deduplicated:<sha12> -->` upsert marker |
+| `comment-review-gate.yml` fires on `issue_comment` → new gate comment → triggers itself | 🟡 Medium | `is:bot` filter partially guards | Strengthen actor filter: skip if `github.actor` contains `[bot]` |
+| Parallel `workflow_run` triggers for same SHA fire 10–15 workflows simultaneously | 🟡 Medium | Each has its own upsert marker | No global budget cap — acceptable at current cadence |
+| `copilot-review-responder.yml` fires on every PR review regardless of author | 🟡 Medium | Review event filter limits to `pull_request_review` | Add bot-actor skip guard |
+| Schedule-triggered workflows (`branch-divergence-monitor`, `proactive-ci-monitor`) run every 30 min | 🟢 Low | Only post if failures found | Already conditional; no change needed |
+
+---
+
+### 16.5 `@copilot` Session Trigger Chain (annotated)
+
+```mermaid
+flowchart TD
+    PUSH([git push to 0D_base_]) --> CHECKIN
+    PUSH --> PUSH_WFLOWS[push-triggered workflows\nactionlint · pre-flight · reference-integrity\nrust_swarm · validate]
+
+    CHECKIN["copilot-agent-checkin.yml\n(push trigger — S221 guard)\nCap: ≥3 retriggers → stop"]
+    CHECKIN -->|unanswered rescue| S221POST["POST @copilot re-trigger\n<!-- session-done-retrigger -->"]
+
+    PUSH_WFLOWS -->|failure| WRUN["workflow_run triggers fire"]
+    WRUN --> CIRESCUE["ci-rescue.yml\nUPSERT <!-- ci-rescue:PR:sha -->\n@copilot RCA comment"]
+    WRUN --> HEALER["iterative-self-healing-ci.yml\nUPSERT <!-- copilot-healing:sha:cat -->\nmax 3 auto-fix iterations"]
+    WRUN --> COPHEALER["copilot-iterative-self-healing.yml\nUPSERT <!-- copilot-healing:sha:cat -->\n@copilot escalation if unfixable"]
+    WRUN --> SESSDONE["copilot-agent-session-done.yml\nCREATE <!-- session-done-retrigger -->\n⚠️ no upsert — fires per watcher"]
+
+    CIRESCUE -->|@copilot comment posted| SESSION["Copilot coding session starts"]
+    S221POST -->|@copilot mention| SESSION
+    COPHEALER -->|@copilot escalation| SESSION
+
+    SESSION -->|bot push| PUSH2([New push])
+    PUSH2 -->|actor=copilot-swe-agent[bot]| SKIPGUARD{"FP-ACTOR-SKIP-001\nactor in bot list?"}
+    SKIPGUARD -->|Yes| NOOP([S221 guard skips — no new comment])
+    SKIPGUARD -->|No| CHECKIN
+
+    SESSION -->|bot comment| COMGATE["comment-review-gate.yml\n(issue_comment trigger)\nUPSERT gate checklist"]
+    COMGATE -->|new comment| WATCHDOG["session-watchdog.yml\n(issue_comment trigger)\ncreates ≤1 watchdog comment"]
+
+    style SESSDONE fill:#ffcccc,stroke:#cc0000
+    style COMGATE fill:#fff3cd,stroke:#856404
+    style WATCHDOG fill:#fff3cd,stroke:#856404
+```
+
+> 🔴 **Red node:** `copilot-agent-session-done.yml` — creates (not upserts) per watcher; risk of duplicate posts on multi-job pushes.  
+> 🟡 **Yellow nodes:** cascade risk on `issue_comment` triggers; guarded by actor filters.
+
+---
+
+### 16.6 Recommended Hardening (future sessions)
+
+1. **Add upsert to `copilot-agent-session-done.yml`**: Replace all `createComment` calls with upsert-by-marker to prevent per-watcher duplicates.  
+2. **Global per-PR hourly comment cap**: Add a workflow-level check: if `PR comment count > 50 in last hour`, suppress non-critical posts (info/status only).  
+3. **Bot-actor filter on `issue_comment`-triggered workflows**: `chatops_copilot_trigger.yml`, `copilot-review-responder.yml`, `session-watchdog.yml` must check `github.actor` does not end with `[bot]` before posting.  
+4. **Proactive CI monitor throttle**: The 30-min schedule could generate 2+ `@copilot` comments per hour on a long-failing PR; add a per-PR-per-day cap of 5 proactive posts.  
+5. **`workflow_run` fan-out budget**: When ≥5 `workflow_run` failures fire for the same SHA within 2 minutes, collapse into a single merged RCA comment instead of individual posts.
+

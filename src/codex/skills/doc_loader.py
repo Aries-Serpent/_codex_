@@ -166,7 +166,7 @@ def load_agent_docs_as_skills(
     list[RegisteredSkill]
         One entry per parseable agent Markdown file.
     """
-    root = agents_root or (_repo_root() / ".github" / "agents")
+    root = agents_root or _DEFAULT_AGENTS_ROOT
     if not root.exists():
         logger.debug("DocLoader: agents root '%s' not found", root)
         return []

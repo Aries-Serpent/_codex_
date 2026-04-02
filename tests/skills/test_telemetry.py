@@ -37,7 +37,7 @@ def sample_metrics():
 
 class TestEmitEvent:
     def test_emit_jsonl_writes_record(self, telemetry_path, sample_metrics):
-        event = emit_event(
+        emit_event(
             skill_id="doc.retriever.core",
             version="1.0.0",
             status="ok",

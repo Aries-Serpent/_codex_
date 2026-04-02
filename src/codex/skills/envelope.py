@@ -45,9 +45,6 @@ from .telemetry import emit_event
 
 logger = logging.getLogger(__name__)
 
-_RISK_TIER_SCORES: dict[str, float] = {"low": 0.0, "medium": 0.3, "high": 0.8}
-
-
 class PolicyViolation(Exception):
     """Raised when a policy gate rejects an invocation."""
 

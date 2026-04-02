@@ -71,7 +71,6 @@ logger = logging.getLogger("fast_forward")
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
 _ALLOWLIST_PATH = Path(__file__).parents[2] / ".codex" / "fast_forward_allowlist.yaml"
-_LOG_PATH = Path(__file__).parents[2] / ".codex" / "fast_forward_log.ndjson"
 
 
 # ---------------------------------------------------------------------------
@@ -110,7 +109,12 @@ def _load_allowlist(path: Path = _ALLOWLIST_PATH) -> dict:
                 "docs/ci/*.md",
                 "CHANGELOG.md",
             ],
-            "denylist": [],
+            "denylist": [
+                ".github/workflows/*deploy*.yml",
+                ".github/workflows/*release*.yml",
+                ".github/workflows/*publish*.yml",
+                ".github/workflows/*prod*.yml",
+            ],
             "default_merge_mode": "create-pr",
             "auto_approve_when_all_safe": True,
         }
@@ -118,7 +122,24 @@ def _load_allowlist(path: Path = _ALLOWLIST_PATH) -> dict:
         return _yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except FileNotFoundError:
         logger.warning("Allowlist not found at %s — using built-in defaults", path)
-        return {}
+        return {
+            "allowlist": [
+                ".github/workflows/*.yml",
+                ".github/workflows/*.yaml",
+                ".github/agents/*.md",
+                "scripts/ci/*.py",
+                "docs/ci/*.md",
+                "CHANGELOG.md",
+            ],
+            "denylist": [
+                ".github/workflows/*deploy*.yml",
+                ".github/workflows/*release*.yml",
+                ".github/workflows/*publish*.yml",
+                ".github/workflows/*prod*.yml",
+            ],
+            "default_merge_mode": "create-pr",
+            "auto_approve_when_all_safe": True,
+        }
 
 
 def _matches_any(filepath: str, patterns: list[str]) -> bool:
@@ -431,7 +452,7 @@ def execute_plan(
 
     # create-pr mode (default)
     _create_branch(repo, staging_branch, target_sha, token)
-    new_sha = _apply_files_via_api(
+    staging_sha = _apply_files_via_api(
         repo, token,
         plan.pr_branch, staging_branch,
         plan.allowed, commit_msg,
@@ -477,6 +498,7 @@ def execute_plan(
         "fast_forward_pr": new_pr_number,
         "fast_forward_pr_url": new_pr_url,
         "staging_branch": staging_branch,
+        "staging_sha": staging_sha,
         "files_promoted": plan.allowed,
         "files_excluded": plan.excluded,
         "files_denied": plan.denied,

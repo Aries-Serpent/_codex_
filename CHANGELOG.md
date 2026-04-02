@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (S282 — PR #3854)
+- Fix: 13 CodeQL / github-code-quality alerts on commit `bf2874a` — all resolved:
+  - `scripts/ci/fast_forward_safe_files.py`: removed unused `_LOG_PATH` global; renamed `new_sha` → `staging_sha` and added to `pr-created` return dict; built-in denylist now includes `*deploy*`, `*release*`, `*publish*`, `*prod*` workflow patterns matching actual allowlist behaviour.
+  - `scripts/ci/proactive_ci_monitor.py`: added explanatory comment to empty `except ValueError` (malformed timestamp — non-fatal).
+  - `src/codex/skills/aais.py`: removed unused `_RE_CITATION` global regex.
+  - `src/codex/skills/cli.py`: removed duplicate `import json` at line 647 (already imported at line 32).
+  - `src/codex/skills/compression.py`: added `# noqa: BLE001` and explanatory comment to empty `except Exception` in archive helper.
+  - `src/codex/skills/doc_loader.py`: replaced inline `_repo_root() / ".github" / "agents"` with `_DEFAULT_AGENTS_ROOT` constant (alert: unused global now used).
+  - `src/codex/skills/envelope.py`: removed unused `_RISK_TIER_SCORES` global dict.
+  - `tests/skills/test_browse_command.py`: removed unused `from pathlib import Path` import (ruff F401).
+  - `tests/skills/test_candidate_skills.py`: removed unused `import pytest`; fixed import sort order (ruff I001).
+  - `tests/skills/test_envelope.py`: replaced `import tests.skills.test_envelope as mod` with `sys.modules[__name__]` to eliminate self-import CodeQL alert.
+  - `tests/skills/test_telemetry.py`: dropped unused `event =` binding from `emit_event(...)` call.
+  - `tests/test_fast_forward_safe_files.py`: removed unused `import pytest`; fixed import sort order (ruff I001).
+- Feat: `src/codex/skills/telemetry.py` — added `_configure_otlp_if_needed()` helper and `_OTLP_PROVIDER_CONFIGURED` flag; `_skill_span()` now configures an OTLP span exporter when `OTEL_EXPORTER_OTLP_ENDPOINT` env var is set and `opentelemetry-sdk`/`opentelemetry-exporter-otlp` are installed. Idempotent and silent on missing SDK (S282 OTel P1 task).
+- Docs: `docs/ci/PR_LIFECYCLE.md` → v1.4.0 — added §16 `@copilot` Comment Budget & Rate-Limit Controls: full trigger→comment map (35 workflows audited), worst-case per-push budget analysis (~5–8 new comments, ~15–20 API calls), active control inventory (SHA-scoped upsert, S221 guard cap, actor-skip, cascade guard), identified risks table, annotated mermaid cascade diagram, and §16.6 recommended hardening items.
+- Fix: `scripts/ci/fast_forward_safe_files.py` — `FileNotFoundError` branch in `_load_allowlist` now returns full built-in defaults (including denylist patterns) instead of empty dict `{}`.
+
 ### Fixed (S281 — PR #3854)
 - Fix: `fast-forward-safe-files.yml` actionlint SC2089/SC2090 — replaced string variables with shell arrays for `FILES_ARG`, `DRY_FLAG`, `MSG_FLAG`; fixes quoted content being treated literally.
 - Fix: `workflow-execution-gate.yml` actionlint duplicate `env:` key — merged two `env:` blocks in "Post fast-forward result comment to PR" step into single block.

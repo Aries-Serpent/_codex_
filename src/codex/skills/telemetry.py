@@ -69,6 +69,45 @@ def _append_jsonl(record: dict[str, Any]) -> None:
 # OTel helpers
 # ---------------------------------------------------------------------------
 
+_OTLP_PROVIDER_CONFIGURED = False
+
+
+def _configure_otlp_if_needed(trace_mod: object) -> None:
+    """Configure an OTLP span exporter when OTEL_EXPORTER_OTLP_ENDPOINT is set.
+
+    Called lazily from :func:`_skill_span` on first use.  Idempotent — the
+    tracer provider is set at most once per process.  Silently skips when the
+    ``opentelemetry-sdk`` or ``opentelemetry-exporter-otlp`` packages are not
+    installed.
+    """
+    global _OTLP_PROVIDER_CONFIGURED
+    if _OTLP_PROVIDER_CONFIGURED:
+        return
+    _OTLP_PROVIDER_CONFIGURED = True  # set early so we never retry on ImportError
+
+    endpoint = os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
+    if not endpoint:
+        return
+
+    try:
+        from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (  # type: ignore[import-untyped]
+            OTLPSpanExporter,
+        )
+        from opentelemetry.sdk.trace import TracerProvider  # type: ignore[import-untyped]
+        from opentelemetry.sdk.trace.export import (
+            BatchSpanProcessor,  # type: ignore[import-untyped]
+        )
+
+        provider = TracerProvider()
+        provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint)))
+        # Register as the global provider so get_tracer() picks it up
+        trace_mod.set_tracer_provider(provider)  # type: ignore[union-attr]
+        logger.debug("OTel OTLP exporter configured: %s", endpoint)
+    except ImportError:
+        logger.debug(
+            "OTel OTLP SDK not installed; OTEL_EXPORTER_OTLP_ENDPOINT=%r ignored", endpoint
+        )
+
 
 @contextlib.contextmanager
 def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]):
@@ -79,6 +118,7 @@ def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any
 
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
+        _configure_otlp_if_needed(trace_mod)
         tracer = trace_mod.get_tracer("codex.skills")
     except Exception:  # noqa: BLE001
         yield None

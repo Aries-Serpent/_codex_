@@ -42,12 +42,6 @@ _RE_BULLET = re.compile(r"^[\-\*\+]\s+\S|\d+\.\s+\S", re.MULTILINE)
 _RE_CODE_BLOCK = re.compile(r"```[\s\S]*?```|`[^`]+`")
 _RE_PASSIVE = re.compile(r"\b(is|are|was|were|be|been|being)\s+\w+ed\b", re.IGNORECASE)
 _RE_ACRONYM = re.compile(r"\b([A-Z]{2,})\b")
-# Patterns indicating a lineage/citation field present in text
-_RE_CITATION = re.compile(
-    r"doc[_\-]id|embed[_\-]index|sha[_\-]?256|hash[:\s]+[0-9a-f]{6,}|"
-    r"doc_id|embed_index_ref|aais_score|token_count",
-    re.IGNORECASE,
-)
 
 
 class AAISScorer:

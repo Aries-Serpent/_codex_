@@ -6,14 +6,12 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 # The script lives in scripts/ci/ — add to path before importing
 sys.path.insert(0, str(Path(__file__).parents[1] / "scripts" / "ci"))
 
 from fast_forward_safe_files import (  # noqa: E402
-    classify_files,
     _matches_any,
+    classify_files,
 )
 
 

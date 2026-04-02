@@ -644,8 +644,6 @@ def cmd_ff(
             typer.echo(f"Status: {status}")
 
     if emit:
-        import json
-
         _Path(emit).write_text(json.dumps(result, indent=2), encoding="utf-8")
         typer.echo(f"Result written to: {emit}")
 
