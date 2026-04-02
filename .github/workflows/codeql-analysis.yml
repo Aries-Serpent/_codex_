@@ -151,15 +151,15 @@ jobs:
           # main branch SHA — not the PR head SHA. They cannot be found by Query 1.
           # Per user requirement: head_sha is used as identifier; when Run ID does
           # not align with the PR head SHA, fall back to event=workflow_run query.
-          # Filter to runs created in the last 30 minutes to avoid approving stale runs.
+          # Filter to runs created in the last 60 minutes to cover high-load queue delays.
           PENDING_BY_WFR=$(gh api \
             "repos/${REPO}/actions/runs?event=workflow_run&status=action_required&per_page=100" \
-            --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 1800)) | .id' \
+            --jq '.workflow_runs[] | select(.created_at | fromdateiso8601 > (now - 3600)) | .id' \
             2>/dev/null || echo "")
 
-          # Combine both sets, deduplicate, remove blanks
+          # Combine both sets, deduplicate, remove blank/whitespace-only lines
           PENDING_RUNS=$(printf "%s\n%s\n" "$PENDING_BY_SHA" "$PENDING_BY_WFR" \
-            | sort -u | grep -v '^$' || echo "")
+            | sort -u | grep -v '^[[:space:]]*$' || echo "")
 
           if [ -z "$PENDING_RUNS" ]; then
             echo "✅ No pending workflow runs requiring approval (SHA ${HEAD_SHA:0:12} + workflow_run event)."
@@ -170,7 +170,8 @@ jobs:
           while IFS= read -r RUN_ID; do
             [ -z "$RUN_ID" ] && continue
             RUN_INFO=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}" \
-              --jq '"\(.name // "unknown") (head_sha: \(.head_sha[:12]))"' 2>/dev/null || echo "unknown")
+              --jq '"\(.name // "unknown") (head_sha: \(.head_sha[:12]))"' \
+              2>/dev/null || echo "error: failed to fetch run info")
             if gh api --method POST "repos/${REPO}/actions/runs/${RUN_ID}/approve" \
               --silent 2>/dev/null; then
               echo "  ✅ Approved run #${RUN_ID} — ${RUN_INFO}"
