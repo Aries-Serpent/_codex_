@@ -1,0 +1,173 @@
+name: "🔍 Proactive CI Monitor"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEFAULT BEHAVIOUR  →  Runs automatically every 30 minutes (no action needed).
+#
+# MANUAL TRIGGER — two equally valid methods:
+#
+#   METHOD A — GitHub Actions UI:
+#     1. https://github.com/Aries-Serpent/_codex_/actions/workflows/proactive-ci-monitor.yml
+#     2. Click "Run workflow" (top-right)
+#     3. Choose branch (select this PR branch before merge, or main after)
+#     4. Fill the form and click the green "Run workflow" button
+#
+#   METHOD B — GitHub CLI (works immediately on any branch):
+#     gh workflow run proactive-ci-monitor.yml \
+#       --repo Aries-Serpent/_codex_ \
+#       --ref copilot/research-ai-agent-skills-architecture \
+#       -f scope=all-open-prs -f dry_run=false -f max_age_h=24
+#
+# WHAT IT DOES:
+#   Scans every open PR for failed CI that slipped past the per-push
+#   self-healing cascade and posts a structured @copilot rescue comment.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  # ── DEFAULT: scheduled every 30 minutes ──────────────────────────────────
+  schedule:
+    - cron: "*/30 * * * *"
+
+  # ── MANUAL: "Run workflow" button in Actions UI ───────────────────────────
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "Scan scope"
+        type: choice
+        options:
+          - all-open-prs
+          - single-pr
+          - recent-failures
+        default: all-open-prs
+        required: true
+      target_pr:
+        description: "PR number (only when scope = single-pr, e.g. 3856)"
+        type: number
+        default: 0
+        required: false
+      max_age_h:
+        description: "Max age of failed runs to include (hours)"
+        type: number
+        default: 24
+        required: false
+      min_confidence:
+        description: "Min pattern confidence to escalate [0.0–1.0]"
+        type: string
+        default: "0.5"
+        required: false
+      dry_run:
+        description: "Dry run — analyse only, do NOT post any comments"
+        type: boolean
+        default: false
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  actions: read
+
+concurrency:
+  group: proactive-ci-monitor
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    name: "Scan (${{ inputs.scope || 'scheduled/all-open-prs' }}, dry=${{ inputs.dry_run || 'false' }})"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout monitor script
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts/ci/proactive_ci_monitor.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build CLI arguments
+        id: args
+        shell: bash
+        run: |
+          ARGS=""
+          TARGET_PR="${{ inputs.target_pr || 0 }}"
+          if [ "$TARGET_PR" != "0" ] && [ -n "$TARGET_PR" ]; then
+            ARGS="$ARGS --target-pr $TARGET_PR"
+          fi
+          ARGS="$ARGS --max-age-h ${{ inputs.max_age_h || 24 }}"
+          ARGS="$ARGS --min-confidence ${{ inputs.min_confidence || '0.5' }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          echo "cli_args=$ARGS" >> "$GITHUB_OUTPUT"
+
+      - name: Run proactive CI monitor
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python scripts/ci/proactive_ci_monitor.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --token "$GITHUB_TOKEN" \
+            --output /tmp/proactive_report.json \
+            ${{ steps.args.outputs.cli_args }}
+
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proactive-ci-monitor-report-${{ github.run_id }}
+          path: /tmp/proactive_report.json
+          retention-days: 14
+
+      - name: Write job summary
+        if: always()
+        env:
+          DRY_RUN_FLAG: ${{ inputs.dry_run || 'false' }}
+        run: |
+          [ -f /tmp/proactive_report.json ] || { echo "No report generated." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          python3 - <<'PYEOF'
+          import json, os, sys
+          try:
+              data = json.load(open('/tmp/proactive_report.json'))
+          except Exception as e:
+              print(f"Could not parse report: {e}", file=sys.stderr)
+              sys.exit(0)
+          dry  = os.environ.get('DRY_RUN_FLAG', 'false') == 'true'
+          mode = '🔕 DRY RUN' if dry else '🔔 LIVE'
+          lines = [
+              f"## 🔍 Proactive CI Monitor — {mode}\n",
+              "| Metric | Count |",
+              "|--------|-------|",
+              f"| PRs scanned | **{data['scanned_prs']}** |",
+              f"| Failed runs found | **{data['failed_runs']}** |",
+              f"| Escalated to @copilot | **{data['escalated']}** |",
+              f"| Transient (auto-skipped) | {data['skipped_transient']} |",
+              f"| Below confidence threshold | {data.get('below_confidence', 0)} |",
+              f"| Already addressed | {data['already_addressed']} |",
+              "",
+          ]
+          details = data.get('details', [])
+          if details:
+              lines += [
+                  "### Failure Details",
+                  "",
+                  "| PR | SHA | Workflow | Pattern | Confidence | Action |",
+                  "|---|---|---|---|---|---|",
+              ]
+              icons = {'escalated':'🚨','dry-run':'🔕','already-addressed':'✅','skipped-transient':'⏭️'}
+              for d in details[:30]:
+                  icon = icons.get(d['action'], '❓')
+                  conf = f"{d.get('confidence',0):.0%}"
+                  lines.append(
+                      f"| #{d['pr']} | `{d['sha']}` | {d['workflow'][:38]} "
+                      f"| `{d['pattern_id']}` | {conf} | {icon} {d['action']} |"
+                  )
+              if len(details) > 30:
+                  lines.append(f"\n_… and {len(details)-30} more — download the artifact_")
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write('\n'.join(lines) + '\n')
+          PYEOF

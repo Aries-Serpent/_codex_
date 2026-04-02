@@ -18,17 +18,13 @@ _PATTERNS: list[dict[str, Any]] = [
     {
         "id": "RP-019",
         "category": "import-error",
-        "regex": re.compile(
-            r"ModuleNotFoundError: No module named '(?P<module>[^']+)'", re.M
-        ),
+        "regex": re.compile(r"ModuleNotFoundError: No module named '(?P<module>[^']+)'", re.M),
         "fix": "Check for src. absolute import regression — run P19-BATCH-001",
     },
     {
         "id": "RP-009",
         "category": "mypy-regression",
-        "regex": re.compile(
-            r"mypy.*?(?P<count>\d+) error.*?>\s*(?P<baseline>\d+)", re.M
-        ),
+        "regex": re.compile(r"mypy.*?(?P<count>\d+) error.*?>\s*(?P<baseline>\d+)", re.M),
         "fix": "Fix new type errors or update baseline with CI isolated venv",
     },
     {
@@ -65,9 +61,7 @@ _PATTERNS: list[dict[str, Any]] = [
     {
         "id": "RP-P23",
         "category": "secrets-baseline",
-        "regex": re.compile(
-            r"TypeError: No such (?P<plugin>\S+Detector)", re.M
-        ),
+        "regex": re.compile(r"TypeError: No such (?P<plugin>\S+Detector)", re.M),
         "fix": "Run: python scripts/ci/auto_fix_common_issues.py --pattern 23",
     },
     {
@@ -87,17 +81,13 @@ _PATTERNS: list[dict[str, Any]] = [
     {
         "id": "RP-CHANGELOG",
         "category": "pre-flight-gate",
-        "regex": re.compile(
-            r"CHANGELOG\.md.*not updated|Verify CHANGELOG.md updated", re.I | re.M
-        ),
+        "regex": re.compile(r"CHANGELOG\.md.*not updated|Verify CHANGELOG.md updated", re.I | re.M),
         "fix": "Add ### Fixed (SN) entry to ## [Unreleased] in CHANGELOG.md",
     },
     {
         "id": "RP-ACTIONLINT",
         "category": "workflow-lint",
-        "regex": re.compile(
-            r"actionlint.*(?P<file>\.github/workflows/[^\s]+):(?P<line>\d+)", re.M
-        ),
+        "regex": re.compile(r"actionlint.*(?P<file>\.github/workflows/[^\s]+):(?P<line>\d+)", re.M),
         "fix": "Fix YAML/shell issue in the reported workflow file at the reported line",
     },
 ]

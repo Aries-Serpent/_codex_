@@ -317,6 +317,36 @@ For Copilot/AI-assisted PRs:
 - [ ] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows
 - [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop
 
+### ⚡ Fast-Forward Safe Files to `main`
+
+> Use this section to promote pre-approved files from this PR directly to `main`
+> **without waiting for the full merge cycle** — critical for workflow files that
+> only take effect from the default branch (schedules, `workflow_run` triggers,
+> `workflow_dispatch` UI buttons).
+>
+> **How it works:**
+> 1. Tick `⚡ Fast-Forward Approved` below (maintainer gate)
+> 2. Optionally list specific files — leave blank to use the full allowlist
+>    from `.codex/fast_forward_allowlist.yaml`
+> 3. Choose merge mode — `create-pr` opens a reviewable PR; `direct-push`
+>    commits straight to `main` (admin only)
+> 4. The WEC gate reads this section and triggers `fast-forward-safe-files.yml`
+>    automatically on approval
+>
+> **Copilot Agent:** During wrap-up, if new workflow files were added that must
+> take effect immediately, tick the checkbox and populate the files list.
+
+- [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
+
+<!-- FF_MERGE_MODE: create-pr -->
+<!-- FF_FILES:  -->
+<!-- FF_DRY_RUN: false -->
+
+<!-- FF_BLOCK_START
+Files to fast-forward (one per line, leave blank to use full allowlist):
+
+FF_BLOCK_END -->
+
 ### ⚡ Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 

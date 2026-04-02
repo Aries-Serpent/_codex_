@@ -36,7 +36,9 @@ _RULES: list[dict[str, Any]] = [
             r"|Lost communication with the server",
             re.I,
         ),
-        "fix_commands": ["Re-run the workflow — transient GitHub runner failure; no code change needed."],
+        "fix_commands": [
+            "Re-run the workflow — transient GitHub runner failure; no code change needed."
+        ],
         "triage_note": "High-frequency pattern; safe to auto-retry without investigation.",
     },
     {
@@ -53,7 +55,7 @@ _RULES: list[dict[str, Any]] = [
             "Re-run workflow — GitHub API 503 (dependency graph submission transient failure).",
             "If persists >3 retries: check pyproject.toml / requirements*.txt for parse errors.",
         ],
-        "triage_note": "submit-pypi 503 is the single highest-volume transient failure; auto-retry is safe.",
+        "triage_note": "submit-pypi 503 is the single highest-volume transient failure; auto-retry is safe.",  # noqa: E501
     },
     # ── Supply-chain / secrets baseline ─────────────────────────────────────
     {
@@ -79,7 +81,7 @@ _RULES: list[dict[str, Any]] = [
             "Add '### Fixed (SN)' entry under '## [Unreleased]' in CHANGELOG.md",
             "Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
         ],
-        "triage_note": "agent-auth pre-flight gate; Copilot agent must update CHANGELOG + accountability before pushing.",
+        "triage_note": "agent-auth pre-flight gate; Copilot agent must update CHANGELOG + accountability before pushing.",  # noqa: E501
     },
     {
         "pattern_id": "RP-P22",
@@ -106,7 +108,7 @@ _RULES: list[dict[str, Any]] = [
             "Reply to every BLOCKING comment in the PR with resolution details.",
             "Push a new commit — the gate re-scans automatically on every push.",
         ],
-        "triage_note": "Highest-frequency CI gate failure (20 occurrences in triage 2026-04-02). Reply to comments first.",
+        "triage_note": "Highest-frequency CI gate failure (20 occurrences in triage 2026-04-02). Reply to comments first.",  # noqa: E501
     },
     # ── Import errors ────────────────────────────────────────────────────────
     {
@@ -118,7 +120,7 @@ _RULES: list[dict[str, Any]] = [
             "Check for src. absolute import regression — run P19-BATCH-001.",
             "python scripts/ci/auto_fix_common_issues.py --pattern 19",
         ],
-        "triage_note": "P19 src-import regression; often introduced by auto-refactors stripping 'src.' prefix.",
+        "triage_note": "P19 src-import regression; often introduced by auto-refactors stripping 'src.' prefix.",  # noqa: E501
     },
     # ── mypy regression ──────────────────────────────────────────────────────
     {
@@ -131,7 +133,7 @@ _RULES: list[dict[str, Any]] = [
             "Or update baseline (if intentional): python scripts/ci/mypy_baseline.py --update",
             "Always use CI isolated venv to set baseline — NOT local full-install.",
         ],
-        "triage_note": "mypy baseline mismatch; most common after adding new modules without type stubs.",
+        "triage_note": "mypy baseline mismatch; most common after adding new modules without type stubs.",  # noqa: E501
     },
     # ── Lint / ruff ──────────────────────────────────────────────────────────
     {
@@ -175,7 +177,7 @@ _RULES: list[dict[str, Any]] = [
             re.I,
         ),
         "fix_commands": [
-            "Check tests/rag/ for MagicMock fixture gaps (mock_model.to.return_value = mock_model).",
+            "Check tests/rag/ for MagicMock fixture gaps (mock_model.to.return_value = mock_model).",  # noqa: E501
             "Verify tests/rag/.coveragerc omits cache/, _model_utils.py, embeddings.py.",
             "Run: python -m pytest tests/rag/ -v --tb=short",
         ],
