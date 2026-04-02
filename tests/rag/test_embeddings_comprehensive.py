@@ -32,6 +32,13 @@ def mock_sentence_transformer():
     mock_model = MagicMock()
     mock_model.encode.return_value = np.random.randn(3, 384).astype(np.float32)
     mock_model.get_sentence_embedding_dimension.return_value = 384
+    # safe_model_to_device calls model.to() / model.to_empty() on SentenceTransformer
+    # objects; ensure chained mock calls return the same configured mock so that
+    # self.model.encode() and self.model.get_sentence_embedding_dimension() still
+    # resolve to the return_value stubs set above.
+    mock_model.to.return_value = mock_model
+    mock_model.to_empty.return_value = mock_model
+    mock_model.eval.return_value = mock_model
     return mock_model
 
 
