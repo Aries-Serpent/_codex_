@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["test_output"],
+  "properties": {
+    "test_output": {
+      "type": "string",
+      "description": "Raw pytest or CI log text to parse"
+    },
+    "max_failures": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200,
+      "default": 50,
+      "description": "Maximum number of failure records to return"
+    }
+  },
+  "additionalProperties": false
+}

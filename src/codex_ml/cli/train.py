@@ -18,8 +18,10 @@ except ImportError as e:
     try:
         from config_legacy.utils import to_absolute_path  # fallback: legacy compat layer
     except (ImportError, ModuleNotFoundError):
+
         def to_absolute_path(path: str) -> str:
             return str(Path(path).resolve())
+
 
 try:
     import hydra

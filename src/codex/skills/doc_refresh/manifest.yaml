@@ -1,0 +1,35 @@
+id: doc.refresh.agent
+version: 1.0.0
+name: Doc Refresh Agent
+description: Plan and apply doc refresh with AAIS scoring and stale doc pruning.
+capability_tags:
+  - docs
+  - refresh
+  - planning
+  - aais
+entrypoint: codex.skills.doc_refresh.handler:plan_and_apply
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: medium
+  budgets:
+    calls: 200
+    tokens: 500000
+    wallclock_ms: 900000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: docs_refresh_playbook_v1
+  hash: "<sha256>"
+  aais_score: 0.90
+  token_count: 12000
+  embed_index_ref: indexes/doc_refresh_playbook_v1

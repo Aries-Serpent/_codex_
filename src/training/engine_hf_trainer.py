@@ -890,17 +890,45 @@ def load_training_arguments(
     # config store is active (e.g. after importing tokenization.cli in the same
     # pytest process), which can cause the resolved dict to include extra keys
     # not stripped by the main extras loop above.
-    _KNOWN_EXTRAS = frozenset({
-        "batch_size", "lora_r", "lora_alpha", "lora_dropout", "precision",
-        "checkpoint_dir", "model_name", "tokenizer_name", "tokenizer_path",
-        "use_fast_tokenizer", "epochs", "val_split", "test_split", "logging",
-        "checkpoint", "training", "early_stopping_patience", "lora",
-        "grad_accum", "model", "device", "dtype", "deterministic",
-        "sanitize_prompts", "optimizer", "scheduler", "mixed_precision",
-        "tensorboard", "mlflow_enable", "max_epochs", "dataset",
-        "checkpoint_every_n_steps", "checkpoint_keep", "eval_split",
-        "gradient_accumulation",
-    })
+    _KNOWN_EXTRAS = frozenset(
+        {
+            "batch_size",
+            "lora_r",
+            "lora_alpha",
+            "lora_dropout",
+            "precision",
+            "checkpoint_dir",
+            "model_name",
+            "tokenizer_name",
+            "tokenizer_path",
+            "use_fast_tokenizer",
+            "epochs",
+            "val_split",
+            "test_split",
+            "logging",
+            "checkpoint",
+            "training",
+            "early_stopping_patience",
+            "lora",
+            "grad_accum",
+            "model",
+            "device",
+            "dtype",
+            "deterministic",
+            "sanitize_prompts",
+            "optimizer",
+            "scheduler",
+            "mixed_precision",
+            "tensorboard",
+            "mlflow_enable",
+            "max_epochs",
+            "dataset",
+            "checkpoint_every_n_steps",
+            "checkpoint_keep",
+            "eval_split",
+            "gradient_accumulation",
+        }
+    )
     for _extra_key in _KNOWN_EXTRAS & set(cfg.keys()):
         cfg.pop(_extra_key, None)
 

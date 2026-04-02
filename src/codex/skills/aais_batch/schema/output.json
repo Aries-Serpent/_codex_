@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["scores", "summary"],
+  "properties": {
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "total", "pass"],
+        "properties": {
+          "id": {"type": "string"},
+          "total": {"type": "number"},
+          "pass": {"type": "boolean"},
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "concision": {"type": "number"},
+              "acronym_discipline": {"type": "number"},
+              "structure": {"type": "number"},
+              "clarity": {"type": "number"},
+              "citation_lineage": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": {"type": "integer"},
+        "passed": {"type": "integer"},
+        "failed": {"type": "integer"},
+        "avg_score": {"type": ["number", "null"]},
+        "threshold": {"type": "number"}
+      }
+    }
+  }
+}

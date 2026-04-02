@@ -103,8 +103,7 @@ if "CheckpointManager" not in globals():
                         and hasattr(_torch.cuda, "get_rng_state_all")
                     ):
                         torch_state["cuda"] = [
-                            tensor.tolist()
-                            for tensor in _torch.cuda.get_rng_state_all()
+                            tensor.tolist() for tensor in _torch.cuda.get_rng_state_all()
                         ]
                 except Exception as exc:  # pragma: no cover - cuda optional
                     logger.debug("Failed to capture CUDA random state: %s", exc)

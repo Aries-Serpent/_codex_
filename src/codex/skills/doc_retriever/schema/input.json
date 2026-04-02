@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["query"],
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query string"
+    },
+    "top_k": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 5
+    },
+    "doc_root": {
+      "type": "string",
+      "description": "Optional override for the docs root directory"
+    }
+  },
+  "additionalProperties": false
+}

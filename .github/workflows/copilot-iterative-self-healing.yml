@@ -27,6 +27,14 @@ on:
       - "Nightly CodeQL Alert Triage"
       - "Deferral Language Gate"
       - "CI Pattern Pipeline"
+      # Dependency submission / supply-chain (GitHub-managed + custom)
+      - "Automatic Dependency Submission (Python)"
+      - "Resilient Dependency Submission"
+      # Validation suites
+      - "Resilient Validation Suite"
+      - "Validation Pipeline"
+      - "Auto-Fix Common CI Issues"
+      - "PR Auto-Fix Check"
     types: [completed]
   schedule:
     - cron: "0 2 * * *"   # nightly 02:00 UTC health sweep

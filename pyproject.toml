@@ -298,6 +298,8 @@ codex-task-sequence = "cli.task_sequence:main"
 codex-ast-upgrade = "cli.ast_upgrade:main"
 codex-audit-runner = "cli.audit_runner_root:main"
 codex-status-audit = "cli.status_audit:main"
+# Cognitive Brain Skills Registry CLI
+codex-skill = "codex.skills.cli:main"
 
 [tool.setuptools]
 license-files = ["LICENSE", "LICENSES/*"]

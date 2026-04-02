@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #3856)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3856 (SHA `8504e567`) at 2026-04-02T12:21Z [auto-generated]
+
 ### Fixed (S276 — PR #3854)
 - Fix: `tests/rag/test_embeddings_comprehensive.py` — 4 failing RAG embedding tests restored by adding `mock_model.to.return_value = mock_model` / `to_empty` / `eval` to `mock_sentence_transformer` fixture (root cause: `safe_model_to_device` calls `model.to()` and MagicMock chaining returns unconfigured mock).
 - Fix: `.secrets.baseline` stale CODEX_MANIFEST.json hash regenerated via `sync_tracked_files.py --fix`.
