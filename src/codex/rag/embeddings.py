@@ -615,3 +615,63 @@ class TfidfEmbeddingProvider:
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         return self.max_features
+                self.is_fitted = True
+                logger.info(
+                    f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
+                )
+            except Exception as e:
+                logger.error(f"Error fitting TF-IDF vectorizer: {e}")
+                raise
+
+        # Transform texts to embeddings
+        try:
+            embeddings = self.vectorizer.transform(texts).toarray()
+            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")
+            return embeddings
+        except Exception as e:
+            logger.error(f"Error transforming texts with TF-IDF: {e}")
+            raise
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+        return self.max_features
+
+
+class EmbeddingModel:
+    """Lightweight device-aware embedding model facade.
+
+    Provides the ``EmbeddingModel`` name expected by device-placement tests and
+    external callers.  The underlying :class:`LocalSentenceTransformerProvider`
+    is loaded lazily on first :meth:`encode` / :meth:`get_dimension` call so that
+    instantiation succeeds in environments where the HuggingFace model is not
+    cached.
+    """
+
+    def __init__(
+        self,
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        device: str = "cpu",
+        cache_dir: Optional[str] = None,
+    ) -> None:
+        self.model_name = model_name
+        self.device = device
+        self.cache_dir = cache_dir
+        self._provider: Optional[LocalSentenceTransformerProvider] = None
+
+    def _ensure_loaded(self) -> LocalSentenceTransformerProvider:
+        if self._provider is None:
+            self._provider = LocalSentenceTransformerProvider(
+                model_name=self.model_name,
+                cache_dir=self.cache_dir,
+            )
+        return self._provider
+
+    def encode(
+        self, texts: List[str], batch_size: int = 32, show_progress: bool = False
+    ) -> "np.ndarray":
+        return self._ensure_loaded().encode(
+            texts, batch_size=batch_size, show_progress=show_progress
+        )
+
+    def get_dimension(self) -> int:
+        return self._ensure_loaded().get_dimension()

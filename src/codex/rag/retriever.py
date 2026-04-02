@@ -632,3 +632,58 @@ class CachedRetriever(Retriever):
             del self.cache_timestamps[key]
 
         logger.info(f"Invalidated {len(expired_keys)} expired cache entries")
+            key
+            for key, timestamp in self.cache_timestamps.items()
+            if (current_time - timestamp) >= self.cache_ttl
+        ]
+
+        for key in expired_keys:
+            if key in self.query_cache.cache:
+                del self.query_cache.cache[key]
+            del self.cache_timestamps[key]
+
+        logger.info(f"Invalidated {len(expired_keys)} expired cache entries")
+
+
+class RAGRetriever:
+    """Lightweight device-aware retriever facade.
+
+    Provides the ``RAGRetriever`` name expected by device-placement tests and
+    external callers while delegating heavy index/model loading to :class:`Retriever`.
+
+    This class intentionally performs *no* model or index loading at construction
+    time so that it can be instantiated safely in environments where the default
+    HuggingFace model is not cached.  Call :meth:`load` to initialise a full
+    :class:`Retriever` when the index and model are available.
+    """
+
+    def __init__(self, device: str = "cpu") -> None:
+        self.device = device
+        self._retriever: Optional[Retriever] = None
+
+    def load(
+        self,
+        index_dir: str = ".codex/tenants",
+        index_name: str = "default",
+        tenant_id: str = "default",
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        cache_dir: Optional[str] = None,
+    ) -> "RAGRetriever":
+        """Lazily initialise the underlying :class:`Retriever`."""
+        self._retriever = Retriever(
+            index_dir=index_dir,
+            index_name=index_name,
+            tenant_id=tenant_id,
+            model_name=model_name,
+            cache_dir=cache_dir,
+        )
+        return self
+
+    def query(self, query_text: str, top_k: int = 5, min_score: float = 0.0) -> list:
+        """Delegate query to the underlying retriever (requires :meth:`load` first)."""
+        if self._retriever is None:
+            raise RuntimeError(
+                "RAGRetriever is not initialised. "
+                "Call RAGRetriever.load(index_dir=..., model_name=...) before querying."
+            )
+        return self._retriever.query(query_text, top_k=top_k, min_score=min_score)

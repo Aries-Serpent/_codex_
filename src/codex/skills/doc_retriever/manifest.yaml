@@ -1,0 +1,34 @@
+id: doc.retriever.core
+version: 1.0.0
+name: Doc Retriever
+description: Retrieve embedded doc chunks with citations from the repository.
+capability_tags:
+  - docs
+  - retrieval
+  - cognitive-brain
+entrypoint: codex.skills.doc_retriever.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 1000
+    tokens: 200000
+    wallclock_ms: 600000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: docs_cognitive_brain_v1
+  hash: "<sha256>"
+  aais_score: 0.92
+  token_count: 48000
+  embed_index_ref: indexes/cognitive_brain_v1

@@ -298,6 +298,8 @@ codex-task-sequence = "cli.task_sequence:main"
 codex-ast-upgrade = "cli.ast_upgrade:main"
 codex-audit-runner = "cli.audit_runner_root:main"
 codex-status-audit = "cli.status_audit:main"
+# Cognitive Brain Skills Registry CLI
+codex-skill = "codex.skills.cli:main"
 
 [tool.setuptools]
 license-files = ["LICENSE", "LICENSES/*"]
@@ -432,6 +434,11 @@ csv = "codex_ml.data.registry:load_csv"
 
 [project.entry-points."codex_ml.trainers"]
 functional = "codex_ml.registry.trainers:_load_functional_trainer"
+
+[project.entry-points."codex.skills"]
+doc_retriever = "codex.skills.doc_retriever.handler:run"
+doc_refresh   = "codex.skills.doc_refresh.handler:plan_and_apply"
+code_search   = "codex.skills.code_search.handler:run"
 
 [tool.black]
 line-length = 100
