@@ -132,7 +132,7 @@ def _frontmatter_to_manifest(
         entrypoint=entrypoint,
         policy=PolicyConfig(
             allowlist=["*"],
-            risk_tier=risk_tier,  # type: ignore[arg-type]
+            risk_tier=risk_tier,
             budgets=BudgetConfig(calls=100, tokens=50_000, wallclock_ms=60_000),
         ),
         doc=DocMeta(

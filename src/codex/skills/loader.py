@@ -10,7 +10,6 @@ from typing import Any, Iterable
 import yaml
 
 from .manifest import SkillManifest
-from .registry import SkillRegistry
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,10 +34,12 @@ def _split_frontmatter(raw: str) -> tuple[dict[str, Any], str]:
 
 
 class SkillDocLoader:
-    """Utility for reading skill manifests from Markdown doc files."""
+    """Utility for reading skill manifests from Markdown doc files.
 
-    def __init__(self, registry: SkillRegistry | None = None) -> None:
-        self._registry = registry
+    Loads lightweight :class:`~codex.skills.manifest.SkillManifest` dataclasses
+    from Markdown files with YAML frontmatter.  For full Pydantic-model registry
+    integration use :func:`codex.skills.doc_loader.load_agent_docs_as_skills`.
+    """
 
     def load_manifest(self, path: str | Path) -> SkillManifest:
         """Load a single manifest from a Markdown file."""
@@ -46,7 +47,7 @@ class SkillDocLoader:
         raw = resolved.read_text(encoding="utf-8")
         frontmatter, _ = _split_frontmatter(raw)
         capability_tags = frontmatter.get("capabilities") or frontmatter.get("capability_tags") or []
-        manifest = SkillManifest(
+        return SkillManifest(
             name=frontmatter.get("name") or frontmatter.get("title") or resolved.stem,
             description=frontmatter.get("description", ""),
             capability_tags=capability_tags,
@@ -72,9 +73,6 @@ class SkillDocLoader:
                 }
             },
         )
-        if self._registry:
-            self._registry.register(manifest.name, manifest)
-        return manifest
 
     def load_many(self, paths: Iterable[str | Path]) -> list[SkillManifest]:
         """Load multiple manifests and optionally register them."""

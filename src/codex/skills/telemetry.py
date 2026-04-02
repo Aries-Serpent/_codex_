@@ -69,7 +69,7 @@ def _append_jsonl(record: dict[str, Any]) -> None:
 # ---------------------------------------------------------------------------
 
 @contextlib.contextmanager
-def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]):  # type: ignore[return]
+def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any]):
     """Yield an OTel span for a skill invocation, or yield None as a no-op."""
     if importlib.util.find_spec("opentelemetry") is None:
         yield None
@@ -137,7 +137,7 @@ def emit_event(
         ts=ts,
         skill_id=skill_id,
         version=version,
-        status=status,  # type: ignore[arg-type]
+        status=status,
         latency_ms=metrics.latency_ms,
         budget_used=metrics.budget_used or BudgetUsed(),
         aais_score=metrics.aais_score,
@@ -212,7 +212,7 @@ def skill_invocation_span(
     timeout_ms: int | None = None,
     doc_path: str | None = None,
     tracer_name: str = "codex.skill",
-):  # type: ignore[return]
+):
     """Context manager wrapping a skill execution in an OTel span.
 
     Compatible with the research-branch ``SkillExecutionEnvelope``; also
