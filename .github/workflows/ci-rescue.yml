@@ -30,6 +30,7 @@ on:
       - "Iterative Self-Healing CI"
       - "RAG Module Tests"
       - "Security Scan"
+      - "PR Comment Review Gate"
       # Extended coverage — sharded quick tests + slow validation
       - "Resilient Validation Suite"
     types: [completed]
