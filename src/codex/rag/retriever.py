@@ -632,17 +632,6 @@ class CachedRetriever(Retriever):
             del self.cache_timestamps[key]
 
         logger.info(f"Invalidated {len(expired_keys)} expired cache entries")
-            key
-            for key, timestamp in self.cache_timestamps.items()
-            if (current_time - timestamp) >= self.cache_ttl
-        ]
-
-        for key in expired_keys:
-            if key in self.query_cache.cache:
-                del self.query_cache.cache[key]
-            del self.cache_timestamps[key]
-
-        logger.info(f"Invalidated {len(expired_keys)} expired cache entries")
 
 
 class RAGRetriever:

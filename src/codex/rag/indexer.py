@@ -829,6 +829,7 @@ class RAGIndexer:
         return [
             d.name for d in self.index_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
         ]
+
     def _try_load_model(self) -> None:
         """Attempt to load the default embedding model onto self.device.
 
@@ -856,26 +857,3 @@ class RAGIndexer:
 
             self.model = safe_model_to_device(self.model, device)
 
-    def build_index(
-        self,
-        files: List[str],
-        index_name: str = "default",
-        chunk_size: int = 1000,
-        overlap: int = 128,
-    ) -> Path:
-        """Build an index from a list of files."""
-        return build_index_from_files(
-            files=[Path(f) for f in files],
-            index_dir=str(self.index_dir),
-            index_name=index_name,
-            chunk_size=chunk_size,
-            overlap=overlap,
-        )
-
-    def list_tenants(self) -> List[str]:
-        """List available tenant directories."""
-        if not self.index_dir.exists():
-            return []
-        return [
-            d.name for d in self.index_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
-        ]

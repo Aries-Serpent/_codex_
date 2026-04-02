@@ -162,7 +162,8 @@ class AAISScorer:
         undefined_high_freq = sum(
             cnt for acr, cnt in freq.items() if acr not in defined and cnt >= 3
         )
-        penalty = min(1.0, undefined_high_freq / max(len(words := re.findall(r"\w+", text)), 1) * 5)
+        word_count = len(re.findall(r"\w+", text))
+        penalty = min(1.0, undefined_high_freq / max(word_count, 1) * 5)
 
         score = max(0.0, defined_ratio - penalty)
         return round(min(1.0, score), 4)

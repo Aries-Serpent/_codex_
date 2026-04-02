@@ -14,7 +14,7 @@ from .registry import SkillRegistry
 
 LOGGER = logging.getLogger(__name__)
 
-_FRONTMATTER_PATTERN = re.compile(r"^---\\s*\\n(.*?)\\n---\\s*\\n?(.*)$", re.DOTALL)
+_FRONTMATTER_PATTERN = re.compile(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", re.DOTALL)
 
 
 def _split_frontmatter(raw: str) -> tuple[dict[str, Any], str]:

@@ -615,26 +615,6 @@ class TfidfEmbeddingProvider:
     def get_dimension(self) -> int:
         """Get embedding dimension."""
         return self.max_features
-                self.is_fitted = True
-                logger.info(
-                    f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
-                )
-            except Exception as e:
-                logger.error(f"Error fitting TF-IDF vectorizer: {e}")
-                raise
-
-        # Transform texts to embeddings
-        try:
-            embeddings = self.vectorizer.transform(texts).toarray()
-            logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")
-            return embeddings
-        except Exception as e:
-            logger.error(f"Error transforming texts with TF-IDF: {e}")
-            raise
-
-    def get_dimension(self) -> int:
-        """Get embedding dimension."""
-        return self.max_features
 
 
 class EmbeddingModel:
