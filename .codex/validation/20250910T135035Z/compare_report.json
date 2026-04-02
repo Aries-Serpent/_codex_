@@ -69,4 +69,3 @@
     "git_diff_name_status": "R100\t.github/_workflows_disabled/README.md\t.github/workflows.disabled/README.md\nR100\t.github/_workflows_disabled/_policy.yml\t.github/workflows.disabled/_policy.yml\nR100\t.github/_workflows_disabled/lint.yml\t.github/workflows.disabled/lint.yml\nR100\t.github/_workflows_disabled/nightly.yml.disabled\t.github/workflows.disabled/nightly.yml.disabled\nR100\t.github/_workflows_disabled/release-upload.yml\t.github/workflows.disabled/release-upload.yml\nR100\t.github/_workflows_disabled/vuln_scan.yml.disabled\t.github/workflows.disabled/vuln_scan.yml.disabled\nA\t.github/workflows/manual_ci.yml"
   }
 }
-

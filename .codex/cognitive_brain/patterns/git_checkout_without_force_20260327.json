@@ -28,4 +28,3 @@
   "ci_tracking": ".codex/CI_FAILURE_TRACKING_LOG.md",
   "prevention": "Whenever a commit-step workflow copies files to /tmp before switching branches, add -f to git checkout to allow the switch. Document the -f with a comment explaining why it is safe."
 }
-
