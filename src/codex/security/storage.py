@@ -121,11 +121,11 @@ class SecureStorage:
         elif algorithm == "aes-gcm":
             # AES-GCM requires 32-byte (256-bit) key
             key_bytes = self._ensure_key_bytes(key, length=32)
-            self.cipher = AESGCM(key_bytes)
+            self.cipher = AESGCM(key_bytes)  # type: ignore[assignment]
         elif algorithm == "chacha20":
             # ChaCha20-Poly1305 requires 32-byte key
             key_bytes = self._ensure_key_bytes(key, length=32)
-            self.cipher = ChaCha20Poly1305(key_bytes)
+            self.cipher = ChaCha20Poly1305(key_bytes)  # type: ignore[assignment]
 
     def _ensure_key_bytes(self, key: str, length: int) -> bytes:
         """
@@ -184,7 +184,7 @@ class SecureStorage:
         elif self.algorithm in ("aes-gcm", "chacha20"):
             # Generate random nonce
             nonce = os.urandom(12)  # 96-bit nonce for GCM/ChaCha20
-            ciphertext = self.cipher.encrypt(nonce, data_bytes, None)
+            ciphertext = self.cipher.encrypt(nonce, data_bytes, None)  # type: ignore[call-arg]
             # Prepend nonce to ciphertext
             return nonce + ciphertext
         else:
@@ -211,7 +211,7 @@ class SecureStorage:
             # Extract nonce (first 12 bytes)
             nonce = encrypted[:12]
             ciphertext = encrypted[12:]
-            plaintext = self.cipher.decrypt(nonce, ciphertext, None)
+            plaintext = self.cipher.decrypt(nonce, ciphertext, None)  # type: ignore[call-arg,arg-type]
             return plaintext.decode("utf-8")
         else:
             # Should never reach here due to validation in __init__

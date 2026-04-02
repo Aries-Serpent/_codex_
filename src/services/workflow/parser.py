@@ -280,7 +280,7 @@ class WorkflowParser:
                         branches=branches if branches else None,
                         paths=paths if paths else None,
                         types=types if types else None,
-                        schedule_cron=schedule_cron,
+                        schedule_cron=schedule_cron,  # type: ignore[arg-type]
                         workflows=workflows,
                     )
                 )

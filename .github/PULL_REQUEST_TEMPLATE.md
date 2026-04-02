@@ -345,34 +345,46 @@ For Copilot/AI-assisted PRs:
 
 ### ⚡ Fast-Forward Safe Files to `main`
 
-> Use this section to promote pre-approved files from this PR directly to `main`
-> **without waiting for the full merge cycle** — critical for workflow files that
-> only take effect from the default branch (schedules, `workflow_run` triggers,
-> `workflow_dispatch` UI buttons).
->
-> **How it works:**
-> 1. Tick `⚡ Fast-Forward Approved` below (maintainer gate)
-> 2. Optionally list specific files — leave blank to use the full allowlist
->    from `.codex/fast_forward_allowlist.yaml`
-> 3. Choose merge mode — `create-pr` opens a reviewable PR; `direct-push`
->    commits straight to `main` (admin only)
-> 4. The WEC gate reads this section and triggers `fast-forward-safe-files.yml`
->    automatically on approval
->
-> **Copilot Agent:** During wrap-up, if new workflow files were added that must
-> take effect immediately, tick the checkbox and populate the files list.
-> See `docs/ci/PR_LIFECYCLE.md §19` for full specification.
+> Promote pre-approved files from this PR directly to `main` without waiting for
+> the full merge cycle. Critical for workflow files that only take effect from the
+> default branch (`schedule`, `workflow_run`, `workflow_dispatch` triggers).
+> See [`docs/ci/PR_LIFECYCLE.md §19`](docs/ci/PR_LIFECYCLE.md) for full specification.
 
-- [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
+**Step 1 — Set parameters** *(edit the `<!-- FF_... -->` comment lines in the raw PR body — they are invisible when rendered but are read directly by the WEC gate parser)*
+
+```
+FF_MERGE_MODE  create-pr      # create-pr = opens reviewable PR to main
+                               # direct-push = commits directly (admin only)
+FF_FILES       (blank)         # blank = use full .codex/fast_forward_allowlist.yaml
+                               # or comma-separated: .github/workflows/foo.yml, scripts/ci/bar.py
+FF_DRY_RUN     false           # true = simulate only, no files are pushed
+```
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     WEC GATE PARAMETERS — edit the values below (one per line, must stay as
+     separate HTML comment lines so the grep parser in workflow-execution-gate.yml
+     can extract them with:
+       grep -oP '(?<=<!-- FF_MERGE_MODE: )\S+(?= -->)'
+       grep -oP '(?<=<!-- FF_FILES: ).*(?= -->)'
+       grep -oP '(?<=<!-- FF_DRY_RUN: )\S+(?= -->)'
+     ═══════════════════════════════════════════════════════════════════════════ -->
 
 <!-- FF_MERGE_MODE: create-pr -->
+
 <!-- FF_FILES:  -->
+
 <!-- FF_DRY_RUN: false -->
+
+**Step 2 — List files** *(optional — leave blank to use the full allowlist)*
 
 <!-- FF_BLOCK_START
 Files to fast-forward (one per line, leave blank to use full allowlist):
 
 FF_BLOCK_END -->
+
+**Step 3 — Approve**
+
+- [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files above to `main` immediately
 
 ### ⚡ Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)

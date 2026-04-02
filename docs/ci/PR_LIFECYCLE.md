@@ -1484,7 +1484,7 @@ flowchart TD
 
 ## 19. Fast-Forward Workflow Promotion
 
-> **Implemented:** S280 (2026-04-02)  
+> **Implemented:** S280 (2026-04-02) | **UX fix:** S285 (parameters panel + blank-line separation)
 > **Files:** `scripts/ci/fast_forward_safe_files.py`, `.codex/fast_forward_allowlist.yaml`,
 > `fast-forward-safe-files.yml`, `workflow-execution-gate.yml` (FF job)
 
@@ -1498,31 +1498,75 @@ branch directly to `main` **without waiting for the full merge cycle**. This is 
 - Scripts that CI relies on from `main`
 - Agent definition files that need to be visible to the entire repository
 
-### 19.2 How to Use the FF Checkbox
+### 19.2 PR Body Layout & How It Renders
+
+GitHub **hides** HTML comment lines (`<!-- ... -->`) in the rendered view. The FF section
+uses HTML comments as machine-readable parameter lines (parsed by the WEC gate grep/awk
+steps) and a **visible parameters panel** (a fenced code block) to show the current values
+to humans. The three-step structure is:
 
 ```
-1. Identify which files need to be in main immediately (e.g., a new workflow with a schedule)
-
-2. In the PR body WEC section, tick the FF checkbox:
-   - [x] ⚡ Fast-Forward Approved — I (@mbaetiong) approve promoting the files below to main immediately
-
-3. Optionally specify files in the FF_BLOCK (one per line):
-   <!-- FF_BLOCK_START
-   .github/workflows/proactive-ci-monitor.yml
-   scripts/ci/pda_failure_logger.py
-   FF_BLOCK_END -->
-
-4. Set the merge mode (default: create-pr):
-   <!-- FF_MERGE_MODE: create-pr -->    ← opens a reviewable PR to main
-   <!-- FF_MERGE_MODE: direct-push -->  ← pushes directly (admin only)
-
-5. Push the PR body update → workflow-execution-gate.yml reads the FF section and
-   triggers fast-forward-safe-files.yml automatically
-
-6. Check the ⚡ Fast-Forward Result comment posted to the PR for status
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  ### ⚡ Fast-Forward Safe Files to `main`                                        │
+│                                                                                 │
+│  **Step 1 — Set parameters**  ← visible code block shows current values         │
+│  ```                                                                            │
+│  FF_MERGE_MODE  create-pr     ← edit the <!-- FF_MERGE_MODE: ... --> line below │
+│  FF_FILES       (blank)       ← edit the <!-- FF_FILES: ... --> line below      │
+│  FF_DRY_RUN     false         ← edit the <!-- FF_DRY_RUN: ... --> line below    │
+│  ```                                                                            │
+│                                                                                 │
+│  <!-- FF_MERGE_MODE: create-pr -->    ← WEC parser reads this line              │
+│  <!-- FF_FILES:  -->                  ← WEC parser reads this line              │
+│  <!-- FF_DRY_RUN: false -->           ← WEC parser reads this line              │
+│                                                                                 │
+│  **Step 2 — List files**  (optional — leave blank for full allowlist)           │
+│  <!-- FF_BLOCK_START                  ← WEC awk reads between these markers     │
+│  .github/workflows/foo.yml                                                      │
+│  FF_BLOCK_END -->                                                               │
+│                                                                                 │
+│  **Step 3 — Approve**                                                           │
+│  - [ ] ⚡ Fast-Forward Approved  ← tick to fire fast-forward-safe-files.yml    │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 19.3 Allowlist & Denylist
+> **Why HTML comments?**  
+> Each `<!-- FF_... -->` comment must be on its **own line** with blank lines above and below
+> so that GitHub does not collapse them when copying or rendering. The WEC gate parser uses:
+> - `grep -oP '(?<=<!-- FF_MERGE_MODE: )\S+(?= -->)'` for the merge mode  
+> - `grep -oP '(?<=<!-- FF_FILES: ).*(?= -->)'` for the inline file list  
+> - `awk '/FF_BLOCK_START/{found=1} /FF_BLOCK_END/{found=0} found{print}'` for the block list
+
+### 19.3 How to Use the FF Section (Step-by-Step)
+
+```
+Step 1  Open the PR body for editing (pencil icon on GitHub)
+
+Step 2  Edit the <!-- FF_MERGE_MODE: ... --> line:
+        <!-- FF_MERGE_MODE: create-pr -->    ← safe default; opens reviewable PR to main
+        <!-- FF_MERGE_MODE: direct-push -->  ← admin only; commits directly to main
+
+Step 3  Optionally add files to the FF_BLOCK (one per line):
+        <!-- FF_BLOCK_START
+        .github/workflows/proactive-ci-monitor.yml
+        scripts/ci/pda_failure_logger.py
+        FF_BLOCK_END -->
+
+        Leave blank → the full .codex/fast_forward_allowlist.yaml is used
+
+Step 4  Optionally set dry-run to preview without pushing:
+        <!-- FF_DRY_RUN: true -->
+
+Step 5  Tick the Step 3 checkbox in the WEC section:
+        - [x] ⚡ Fast-Forward Approved — I approve promoting the files above to main immediately
+
+Step 6  Save the PR body → workflow-execution-gate.yml reads the FF section and
+        triggers fast-forward-safe-files.yml automatically
+
+Step 7  Check the ⚡ Fast-Forward Result comment posted to the PR for status
+```
+
+### 19.4 Allowlist & Denylist
 
 The FF system uses `.codex/fast_forward_allowlist.yaml` to control which files may be promoted:
 
@@ -1543,53 +1587,89 @@ deny:
 Files **not** in the allowlist are **excluded** (logged but not promoted).  
 Files matching the **denylist** are **denied** (blocked, logged as security concern).
 
-### 19.4 FF Gate Flow
+### 19.5 FF Gate Flow
 
 ```mermaid
 flowchart TD
-    WEC[workflow-execution-gate.yml\nparse-ff step] --> FFCHECK{FF checkbox\nticked?}
-    FFCHECK -->|No| SKIP_FF[fast-forward job SKIPPED\nno files promoted]
-    FFCHECK -->|Yes| PARSE["Parse FF section\n• FF_MERGE_MODE (create-pr / direct-push)\n• FF_FILES (inline or FF_BLOCK)\n• FF_DRY_RUN (true / false)"]
+    PR_EDIT["Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick ⚡ Fast-Forward Approved"]
+    PR_EDIT --> WEC["workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"]
 
-    PARSE --> FF_JOB[fast-forward job\nruns fast_forward_safe_files.py]
-    FF_JOB --> ALLOWED{Files in\nallowlist?}
-    ALLOWED -->|Yes| MERGE_MODE{Merge mode?}
-    ALLOWED -->|No| EXCLUDED["Files excluded\n(not in allowlist)"]
-    DENIED{Denylist\nmatch?} -->|Yes| DENY["Files denied\n(security block)"]
-    ALLOWED --> DENIED
+    WEC --> FFCHECK{FF checkbox\nticked?}
+    FFCHECK -->|No| SKIP_FF["fast-forward job SKIPPED\n⏭️ No files promoted"]
+    FFCHECK -->|Yes| PARSE["Extract parameters\n• FF_MERGE_MODE\n• FF_FILES / FF_BLOCK\n• FF_DRY_RUN"]
 
-    MERGE_MODE -->|create-pr| PR_CREATED["Opens draft PR to main\nwith promoted files only"]
-    MERGE_MODE -->|direct-push| PUSH["Direct push to main\n(admin token required)"]
+    PARSE --> DRY{DRY_RUN?}
+    DRY -->|true| DRY_OUT["Simulate only\n🔕 Log would-promote list"]
+    DRY -->|false| FF_JOB["fast-forward-safe-files.yml\nfast_forward_safe_files.py"]
+
+    FF_JOB --> ALLOWED{File in\nallowlist?}
+    ALLOWED -->|No| EXCLUDED["File excluded\n(not in allowlist)"]
+    ALLOWED -->|Yes| DENYCHECK{Matches\ndenylist?}
+    DENYCHECK -->|Yes| DENIED["File denied\n🔒 Security block"]
+    DENYCHECK -->|No| MERGE_MODE{FF_MERGE_MODE?}
+
+    MERGE_MODE -->|create-pr| PR_CREATED["Opens draft PR to main\n✅ pr-created"]
+    MERGE_MODE -->|direct-push| PUSH["Direct push to main\n🚀 direct-pushed\n(admin token required)"]
 
     PR_CREATED --> RESULT["Post ⚡ Fast-Forward Result\ncomment to PR\n<!-- wec-ff-result:PR# -->"]
     PUSH --> RESULT
+    DRY_OUT --> RESULT
     EXCLUDED --> RESULT
-    DENY --> RESULT
+    DENIED --> RESULT
+    SKIP_FF --> END["WEC gate continues\nnormal flow"]
 
     style PR_CREATED fill:#d4edda,stroke:#28a745
     style PUSH fill:#fff3cd,stroke:#856404
-    style DENY fill:#f8d7da,stroke:#721c24
+    style DENIED fill:#f8d7da,stroke:#721c24
     style SKIP_FF fill:#e2e3e5,stroke:#6c757d
+    style DRY_OUT fill:#cfe2ff,stroke:#084298
+    style EXCLUDED fill:#e2e3e5,stroke:#6c757d
 ```
 
-### 19.5 FF Status Icons
+### 19.6 WEC Parse-FF Parsing Map
+
+```mermaid
+sequenceDiagram
+    participant PB as PR Body (raw markdown)
+    participant GH as gh pr view --json body
+    participant GREP as grep -oP
+    participant AWK as awk FF_BLOCK parser
+    participant OUT as parse-ff outputs
+
+    PB->>GH: fetch raw PR body text
+    GH->>GREP: BODY string
+    GREP->>OUT: ff_approved (checkbox grep ^\s*-\s*\[x\].*Fast-Forward Approved)
+    GREP->>OUT: ff_merge_mode (<!-- FF_MERGE_MODE: \S+ -->)
+    GREP->>OUT: ff_files inline  (<!-- FF_FILES: .* -->)
+    GREP->>OUT: ff_dry_run (<!-- FF_DRY_RUN: \S+ -->)
+    GH->>AWK: BODY string
+    AWK->>OUT: ff_files block (FF_BLOCK_START...FF_BLOCK_END, overrides inline)
+    OUT->>OUT: merge: ff_files = block || inline || ""
+```
+
+### 19.7 FF Status Icons
 
 | Result | Icon | Meaning |
 |--------|------|---------|
-| `pr-created` | ✅ | FF PR opened to main; review required |
-| `direct-pushed` | 🚀 | Files pushed directly to main (admin mode) |
+| `pr-created` | ✅ | FF PR opened to `main`; review required |
+| `direct-pushed` | 🚀 | Files pushed directly to `main` (admin mode) |
 | `dry-run` | 🔕 | No changes made; would-promote list logged |
-| `nothing-to-promote` | ⏭️ | All files either excluded or already on main |
+| `nothing-to-promote` | ⏭️ | All files either excluded or already on `main` |
+| `security-block` | 🔒 | One or more files matched the denylist |
+| `skipped` | ⏩ | Checkbox not ticked; FF job not triggered |
 
-### 19.6 Copilot Agent FF Protocol
+### 19.8 Copilot Agent FF Protocol
 
 When a Copilot session adds new workflow files or CI scripts that must take effect on `main`
 immediately, the agent MUST:
 
-1. Add the files to the `FF_BLOCK_START` list in the PR body
-2. Set `FF_MERGE_MODE: create-pr` (default — always prefer PR over direct-push)
-3. Tick the `⚡ Fast-Forward Approved` checkbox
-4. Push the PR body update
-5. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
+1. Identify files that need to be on `main` to have effect (schedules, `workflow_run` triggers)
+2. In the PR body WEC section, populate the **FF_BLOCK** with those file paths (Step 2)
+3. Set `FF_MERGE_MODE: create-pr` (default — always prefer PR over direct-push)
+4. Update the visible **Step 1 parameters panel** code block to reflect the current values
+5. Tick the `⚡ Fast-Forward Approved` checkbox (Step 3)
+6. Push the PR body update via `report_progress`
+7. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
 
-The agent must NOT use `direct-push` mode without explicit human approval.
+The agent must **NOT** use `direct-push` mode without explicit human approval in a PR comment.
+

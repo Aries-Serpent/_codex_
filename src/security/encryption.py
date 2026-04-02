@@ -17,7 +17,6 @@ from __future__ import annotations
 import base64
 import logging
 import os
-from typing import cast
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ def _coerce_bytes(value: bytes | bytearray, *, name: str) -> bytes:
 def generate_key() -> bytes:
     if not _CRYPTO_AVAILABLE:
         raise ImportError("cryptography is not available")
-    return cast(bytes, AESGCM.generate_key(bit_length=KEY_SIZE * 8))
+    return AESGCM.generate_key(bit_length=KEY_SIZE * 8)
 
 
 def encrypt(plaintext: bytes, key: bytes, *, aad: bytes | None = None) -> bytes:
@@ -68,7 +67,7 @@ def encrypt(plaintext: bytes, key: bytes, *, aad: bytes | None = None) -> bytes:
 
     nonce = os.urandom(NONCE_SIZE)
     aesgcm = AESGCM(key_bytes)
-    ct = cast(bytes, aesgcm.encrypt(nonce, pt, aad))
+    ct = aesgcm.encrypt(nonce, pt, aad)
     return base64.b64encode(nonce + ct)
 
 
@@ -84,4 +83,4 @@ def decrypt(token: bytes, key: bytes, *, aad: bytes | None = None) -> bytes:
     nonce, ct = raw[:NONCE_SIZE], raw[NONCE_SIZE:]
     key_bytes = _coerce_bytes(key, name="key")
     aesgcm = AESGCM(key_bytes)
-    return cast(bytes, aesgcm.decrypt(nonce, ct, aad))
+    return aesgcm.decrypt(nonce, ct, aad)

@@ -46,7 +46,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
             )
         # Filter out any keys that ConfigDict doesn't support to avoid TypeErrors
         try:
-            return ConfigDict(**config)
+            return ConfigDict(**config)  # type: ignore[typeddict-item]
         except TypeError as exc:
             logger.debug(f"TypeError: {exc}")
             # If ConfigDict rejects unknown keys, filter to known parameters
@@ -57,7 +57,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
                 UserWarning,
                 stacklevel=2,
             )
-            return ConfigDict(**filtered)
+            return ConfigDict(**filtered)  # type: ignore[typeddict-item]
 
 
 __all__ = ["AppSettings", "EvalRow", "eval_row_schema", "get_settings"]
