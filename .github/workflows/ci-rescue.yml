@@ -28,7 +28,7 @@ on:
       - "Workflow Compliance Audit (actionlint)"
       - "Pre-Merge Validation"
       - "Iterative Self-Healing CI"
-      - "Test — RAG Pipeline"
+      - "RAG Module Tests"
       - "Security Scan"
       # Extended coverage — sharded quick tests + slow validation
       - "Resilient Validation Suite"
@@ -159,10 +159,42 @@ jobs:
           fi
 
       # ── Run rescue engine (API-only, no file modifications) ──────────────
+      - name: Lookup CI Failure Triage Report issue URL
+        id: triage-url
+        env:
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        run: |
+          # Find the open "📊 CI Failure Triage Report" issue created by batch-ci-triage.yml
+          # and expose its URL so the rescue engine can link to it in RCA comments.
+          # Response is stored to a temp file so the JSON parser receives clean input.
+          curl -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues?labels=ci-triage&state=open&per_page=1" \
+            -o /tmp/triage_issues.json 2>/dev/null || echo "[]" > /tmp/triage_issues.json
+          TRIAGE_URL=$(python3 - /tmp/triage_issues.json 2>/dev/null << 'PYEOF'
+          import json, sys
+          try:
+              with open(sys.argv[1]) as fh:
+                  issues = json.load(fh)
+              print(issues[0]['html_url'] if isinstance(issues, list) and issues else '', end='')
+          except Exception:
+              print('', end='')
+          PYEOF
+          )
+          if [ -n "${TRIAGE_URL}" ]; then
+            echo "✅ Found CI Failure Triage Report: ${TRIAGE_URL}"
+            echo "url=${TRIAGE_URL}" >> "$GITHUB_OUTPUT"
+          else
+            echo "⚠️  No open ci-triage issue found — triage URL will be omitted from RCA"
+            echo "url=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run CI rescue engine
         id: rescue
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
         run: |
           RUN_ID="${{ github.event.workflow_run.id || inputs.run_id }}"
           COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
@@ -179,6 +211,10 @@ jobs:
           SHA_FLAG=""
           if [ "${COMMIT_SHA}" != "" ]; then
             SHA_FLAG="--commit-sha ${COMMIT_SHA}"
+          fi
+          TRIAGE_FLAG=""
+          if [ -n "${TRIAGE_ISSUE_URL}" ]; then
+            TRIAGE_FLAG="--triage-issue-url ${TRIAGE_ISSUE_URL}"
           fi
 
           if [ "${RESCUE_UNAVAILABLE}" = "true" ]; then
@@ -242,22 +278,27 @@ jobs:
               print(f"⚠️  No PR found for commit {sha_short} — skipping rescue comment")
               sys.exit(0)
 
-          # Build the SHA-scoped dedup marker now that pr_number is resolved.
-          MARKER = f"<!-- ci-rescue-rca:{sha_short} -->"
+          # Build the SHA-scoped dedup marker: all failing workflows for the SAME
+          # commit share ONE comment thread. A new push (different commit SHA)
+          # always creates a new comment, enabling per-push comparison.
+          MARKER = f"<!-- ci-rescue-rca:{pr_number}:sha-{sha_short} -->"
 
           body = (
-              f"## 🚨 CI Rescue — @copilot Fix Required\n\n"
+              f"## 🚨 CI Rescue — Root Cause Analysis\n\n"
               f"**Workflow:** \`{workflow}\`\n"
               f"**Run:** [{run_id}]({run_url})\n"
               f"**Commit:** \`{commit_sha}\`\n"
               f"**Time:** {now}\n\n"
               f"@copilot the **{workflow}** check is failing on commit \`{sha_short}\`.\n\n"
               "Please investigate the failure logs, apply the minimal fix, and push.\n\n"
+              f"> **Note:** This comment captures ALL failing workflows for commit '{sha_short}'. "
+              "Each new push (different commit) creates a new comment. "
+              "Additional failures on the same commit are appended below.\n\n"
               "_Posted by: ci-rescue.yml → inline fallback (ci_rescue.py unavailable)_\n\n---\n"
               f"_[🔗 Workflow run]({run_url})_"
           )
 
-          # Paginate through all PR comments to find existing rescue marker.
+          # Paginate through all PR comments to find existing rescue marker for THIS run.
           # A single ?per_page=100 fetch misses markers on page 2+ (S232 fix).
           existing_id, existing_body = None, ""
           page = 1
@@ -275,18 +316,18 @@ jobs:
 
           if existing_id:
               append_section = (
-                  f"\n\n---\n\n### 🔄 Failure Update — {now}\n\n"
+                  f"\n\n---\n\n### 🔄 Additional Failure — {now}\n\n"
                   f"**Run:** [{run_id}]({run_url})\n\n"
-                  f"@copilot \`{workflow}\` failed again on the same commit \`{sha_short}\`. "
-                  f"Please investigate [run #{run_id}]({run_url})."
+                  f"@copilot \`{workflow}\` also failed in the same run. "
+                  f"See [run #{run_id}]({run_url}) for details."
               )
               updated = (existing_body.rstrip() + append_section)[:65536]
               status, _ = gh("PATCH", f"/repos/{repo}/issues/comments/{existing_id}", {"body": updated})
-              print(f"{'✅' if status in (200,201) else '❌'} Appended rescue update (HTTP {status})")
+              print(f"{'✅' if status in (200,201) else '❌'} Appended rescue update to run-{run_id} comment (HTTP {status})")
           else:
               status, resp = gh("POST", f"/repos/{repo}/issues/{pr_number}/comments",
                                 {"body": f"{MARKER}\n{body}"})
-              print(f"{'✅' if status in (200,201) else '❌'} Posted rescue comment (HTTP {status}): {resp.get('html_url','')}")
+              print(f"{'✅' if status in (200,201) else '❌'} Posted new rescue comment for run {run_id} (HTTP {status}): {resp.get('html_url','')}")
           PYEOF
             echo "rescue_exit=$?" >> "$GITHUB_OUTPUT"
           else
@@ -299,6 +340,7 @@ jobs:
               ${PR_FLAG} \
               ${SHA_FLAG} \
               ${DRY_FLAG} \
+              ${TRIAGE_FLAG} \
               2>&1 | tee /tmp/rescue_output.txt
             echo "rescue_exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
@@ -317,6 +359,7 @@ jobs:
                 ${PR_FLAG} \
                 ${SHA_FLAG} \
                 ${DRY_FLAG} \
+                ${TRIAGE_FLAG} \
                 --deep \
                 2>&1 | tee /tmp/deep_rescue_output.txt || true
               echo "deep_rescue_exit=$?" >> "$GITHUB_OUTPUT"

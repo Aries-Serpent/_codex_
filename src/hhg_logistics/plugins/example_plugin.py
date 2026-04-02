@@ -34,8 +34,8 @@ def register_nonzero_rate(df=None, **_kwargs) -> float:
 
 
 class StepCounterHook(BaseHook):
-    def on_init(self, state: dict[str, Any]) -> None:  # type: ignore[override]
+    def on_init(self, state: dict[str, Any]) -> None:
         state["plugin_steps"] = 0
 
-    def on_step_end(self, state: dict[str, Any]) -> None:  # type: ignore[override]
+    def on_step_end(self, state: dict[str, Any]) -> None:
         state["plugin_steps"] = int(state.get("plugin_steps", 0)) + 1

@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 # Try to import the repository-provided encoding detector if present.
 try:
     from .encoding_detect import (
-        detect_encoding as _repo_detect_encoding,  # type: ignore
+        detect_encoding as _repo_detect_encoding,
     )
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
@@ -49,7 +49,7 @@ except Exception:
 # variants return (text, encoding) while others return just text; the wrapper
 # below handles both.
 try:
-    from .io_text import read_text as _io_read_text  # type: ignore
+    from .io_text import read_text as _io_read_text
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     logger.warning("Exception occurred", exc_info=True)
@@ -110,7 +110,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     }
 
     try:  # optional dependency
-        from charset_normalizer import from_bytes  # type: ignore
+        from charset_normalizer import from_bytes
 
         result = from_bytes(data)
         best = result.best() if result is not None else None
@@ -311,18 +311,18 @@ def read_text(path: Union[str, Path], encoding: str = "utf-8", errors: str = "st
     if _io_read_text is not None:
         # Try the most featureful call first
         try:
-            result = _io_read_text(p, encoding=encoding, errors=errors)  # type: ignore[misc]
+            result = _io_read_text(p, encoding=encoding, errors=errors)
         except TypeError as e:
             logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             # The helper may not accept encoding/errors kwargs — try positional and fewer args
             try:
-                result = _io_read_text(p, encoding)  # type: ignore[misc]
+                result = _io_read_text(p, encoding)
             except TypeError as e:
                 logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 try:
-                    result = _io_read_text(p)  # type: ignore[misc]
+                    result = _io_read_text(p)
                 except Exception:
                     logger.warning("Exception occurred", exc_info=True)
                     logger.warning("Exception occurred", exc_info=True)
@@ -375,5 +375,4 @@ def _detect_encoding_wrapper(path: Union[str, Path]) -> str:
     return _detect_encoding(path)
 
 
-# Make the canonical _detect_encoding name available (kept for backward compatibility)
-_detect_encoding = _detect_encoding  # type: ignore
+# _detect_encoding is available under that name from the definition above (backward compatibility)

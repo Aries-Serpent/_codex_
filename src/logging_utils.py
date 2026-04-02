@@ -19,22 +19,22 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
 except Exception:  # pragma: no cover - fall back to a stub
-    SummaryWriter = None  # type: ignore[assignment]
+    SummaryWriter = None
 
 try:  # pragma: no cover - MLflow is optional for offline smoke tests
     import mlflow
 except Exception:  # pragma: no cover - guard offline runs that skip mlflow install
-    mlflow = None  # type: ignore[assignment]
+    mlflow = None
 
 try:  # pragma: no cover - optional runtime dependency
     import psutil
 except Exception:  # pragma: no cover - allow execution without psutil
-    psutil = None  # type: ignore[assignment]
+    psutil = None
 
 try:  # pragma: no cover - optional GPU metrics dependency
     import pynvml
 except Exception:  # pragma: no cover - allow execution without NVML bindings
-    pynvml = None  # type: ignore[assignment]
+    pynvml = None
 
 
 LOGGER = logging.getLogger(__name__)
@@ -282,12 +282,12 @@ def setup_logging(
     else:
         data: MutableMapping[str, object]
         if hasattr(config, "to_container"):
-            data = config.to_container(resolve=True)  # type: ignore[attr-defined]
+            data = config.to_container(resolve=True)
         else:
             # Use asdict() for dataclasses to handle slots=True compatibility
             # Fall back to dict() for regular mappings
             if hasattr(config, "__dataclass_fields__"):
-                data = asdict(config)  # type: ignore[arg-type,call-overload]
+                data = asdict(config)  # type: ignore[call-overload]
             else:
                 data = dict(config)
         resolved = LoggingConfig(**data)  # type: ignore[arg-type]

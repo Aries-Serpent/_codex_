@@ -21,14 +21,14 @@ from typing import Any, Callable
 
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
-    import torch as _torch  # type: ignore[import-not-found]
+    import torch as _torch
 except Exception:  # pragma: no cover - torch unavailable
     _torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency
-    import numpy as _np  # type: ignore[import-not-found]
+    import numpy as _np
 except Exception:  # pragma: no cover - numpy unavailable
-    _np = None  # type: ignore[assignment]
+    _np = None
 
 _warnings.warn(
     "src.utils.checkpoint is legacy; use codex_ml.utils.checkpointing or "
@@ -44,20 +44,10 @@ _canonical_save_checkpoint: Callable[..., Any] | None = None
 _capture_rng_state: Callable[[], dict[str, Any]] | None = None
 _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 
-try:  # pragma: no cover - optional dependency
-    import torch as _torch  # type: ignore
-except Exception:  # pragma: no cover - tolerate missing torch
-    _torch = None  # type: ignore[assignment]
-
-try:  # pragma: no cover - optional dependency
-    import numpy as _np  # type: ignore
-except Exception:  # pragma: no cover - tolerate missing numpy
-    _np = None  # type: ignore[assignment]
-
 # If a local legacy implementation exists in the repository, import it.
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
-    from training.checkpoint_manager import CheckpointManager  # type: ignore # noqa: F401
+    from training.checkpoint_manager import CheckpointManager  # noqa: F401
 except Exception:  # pragma: no cover - fallback to canonical
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore # noqa: F401
 
@@ -156,10 +146,10 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
             _torch_rng_set_state(tensor_state)
     if _np is not None and "numpy" in state:
         with suppress(Exception):
-            _np.random.set_state(state["numpy"])  # type: ignore[arg-type]
+            _np.random.set_state(state["numpy"])
     if "python" in state:
         with suppress(Exception):
-            _random.setstate(state["python"])  # type: ignore[arg-type]
+            _random.setstate(state["python"])
     cuda_mod = getattr(_torch, "cuda", None)
     cuda_state = state.get("cuda")
     if cuda_state is None:
@@ -173,7 +163,7 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
         set_all = getattr(cuda_mod, "set_rng_state_all", None)
         if callable(set_all):
             with suppress(Exception):
-                set_all(cuda_state)  # type: ignore[arg-type]
+                set_all(cuda_state)
                 return
         if isinstance(cuda_state, _torch.Tensor):
             iterable_states = [cuda_state]
@@ -190,7 +180,7 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
                     normalized = tensor_state.to(dtype=_torch.uint8)
                 else:
                     normalized = _torch.tensor(tensor_state, dtype=_torch.uint8)
-                cuda_mod.set_rng_state(  # type: ignore[call-arg]
+                cuda_mod.set_rng_state(
                     normalized,
                     device=idx,
                 )

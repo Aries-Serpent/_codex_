@@ -24,11 +24,11 @@ from typing import Any, Optional, Union
 from fastapi import Body, FastAPI
 from pydantic import ValidationError
 
-from mcp.backends.interface import BackendAdapter  # type: ignore
-from mcp.observability.metrics import Timer, increment  # type: ignore
+from mcp.backends.interface import BackendAdapter
+from mcp.observability.metrics import Timer, increment
 from mcp.server.adapter_loader import load_adapter
 
-from .schemas import CallToolParams, ListToolsParams, NegotiateParams  # type: ignore
+from .schemas import CallToolParams, ListToolsParams, NegotiateParams
 
 logger = logging.getLogger(__name__)
 

@@ -31,7 +31,7 @@ except ImportError as e:
     NUMPY_AVAILABLE = False
 
 try:
-    import torch  # type: ignore
+    import torch
 
     # Check if torch actually has the functionality we need
     TORCH_AVAILABLE = hasattr(torch, "manual_seed")
@@ -90,7 +90,7 @@ class SeedManager:
         self.deterministic = deterministic
         self.warn_on_missing = warn_on_missing
         self._state: Optional[SeedState] = None
-        self._rng: Optional[object] = None  # type: ignore
+        self._rng: Optional[object] = None
 
     def set_all_seeds(self) -> SeedState:
         """Set seeds for all supported frameworks.

@@ -29,18 +29,18 @@ try:
 
     mlflow_run = maybe_mlflow  # Alias for legacy tests
 except ImportError:  # pragma: no cover - mlflow optional
-    mlflow_run = None  # type: ignore
+    mlflow_run = None
 
 # Additional compatibility imports for tests (PR #3248)
 try:
     from codex_ml.utils.train_helpers import maybe_autocast
 except ImportError:  # pragma: no cover - optional
-    maybe_autocast = None  # type: ignore
+    maybe_autocast = None
 
 try:
     from codex_ml.utils.hf_pinning import load_from_pretrained
 except ImportError:  # pragma: no cover - optional
-    load_from_pretrained = None  # type: ignore
+    load_from_pretrained = None
 
 __all__ = [
     "SafetySettings",
@@ -66,6 +66,7 @@ __all__ = [
     "load_from_pretrained",  # Added for test compatibility (PR #3248)
     "_evaluate_model",  # Added for test compatibility (PR #3330)
     "get_hf_revision",  # Added for test compatibility (PR #3330)
+    "mlflow_run",  # Added for test compatibility (legacy patch target)
 ]
 
 

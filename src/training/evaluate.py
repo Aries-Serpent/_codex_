@@ -140,7 +140,7 @@ def evaluate(
             forward_inputs = _to_device(inputs, device)
             if "labels" not in forward_inputs and "input_ids" in forward_inputs:
                 forward_inputs["labels"] = forward_inputs["input_ids"]
-            with no_grad():  # type: ignore[misc]
+            with no_grad():
                 outputs = model(**forward_inputs)
             loss_value = _loss_to_float(getattr(outputs, "loss", outputs))
             losses.append(loss_value)

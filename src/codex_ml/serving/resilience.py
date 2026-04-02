@@ -321,7 +321,7 @@ class CircuitBreaker:
     def _record_state_change(self) -> None:
         """Record state transition"""
         self.metrics["state_transitions"] += 1
-        self.metrics["last_state_change"] = time.time()  # type: ignore[assignment]
+        self.metrics["last_state_change"] = time.time()
         logger.info(f"Circuit breaker state changed to {self.state.value}")
 
     def _calculate_uptime_ratio(self) -> float:

@@ -31,14 +31,14 @@ except Exception:  # pragma: no cover - optional dependency
 
 # charset-normalizer provides multiple helpers depending on installed version
 try:
-    from charset_normalizer import from_bytes as _cn_from_bytes  # type: ignore
+    from charset_normalizer import from_bytes as _cn_from_bytes
 except Exception:  # pragma: no cover - optional dependency
-    _cn_from_bytes = None  # type: ignore
+    _cn_from_bytes = None
 
 try:
-    from charset_normalizer import from_path as _cn_from_path  # type: ignore
+    from charset_normalizer import from_path as _cn_from_path
 except Exception:  # pragma: no cover - optional dependency
-    _cn_from_path = None  # type: ignore
+    _cn_from_path = None
 
 __all__ = ["detect_encoding", "autodetect_encoding"]
 

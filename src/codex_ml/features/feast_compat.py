@@ -466,7 +466,7 @@ class RedisBackend:
         socket_connect_timeout: float | None = None,
     ) -> None:
         try:
-            import redis as _redis  # type: ignore[import]
+            import redis as _redis
         except ImportError as exc:  # pragma: no cover
             raise ImportError(
                 "RedisBackend requires the 'redis' package. Install with: pip install redis"

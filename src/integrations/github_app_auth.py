@@ -24,14 +24,14 @@ from pathlib import Path
 from typing import Mapping, MutableMapping
 from urllib.parse import urlparse
 
-import requests  # type: ignore[import-untyped]
+import requests
 
 logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency for JWT minting
     import jwt  # pyjwt
 except Exception:  # pragma: no cover - defer error until minting
-    jwt = None  # type: ignore
+    jwt = None
 
 
 GITHUB_API_BASE = os.getenv("GITHUB_API_BASE", "https://api.github.com")

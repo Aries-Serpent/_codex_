@@ -37,12 +37,12 @@ except ImportError:
     import sys
     from types import ModuleType
 
-    boto3 = ModuleType("boto3")  # type: ignore
+    boto3 = ModuleType("boto3")
     # Add common attributes to prevent AttributeErrors in tests
     boto3.client = lambda *args, **kwargs: None  # type: ignore
     boto3.session = None  # type: ignore
     sys.modules.setdefault("boto3", boto3)
-    ClientError = Exception  # type: ignore
+    ClientError = Exception
     HAS_BOTO3 = False
     logger.warning("boto3 not installed - AWS provider will be stub only")
 

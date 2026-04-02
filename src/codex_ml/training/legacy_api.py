@@ -1101,7 +1101,7 @@ def run_functional_training(
                 total_loss = 0.0
                 seen_batches = 0
                 t0 = perf_counter()
-                for step, batch in enumerate(train_loader):  # type: ignore[var-annotated]
+                for step, batch in enumerate(train_loader):
                     prepared = {k: v.to(device) for k, v in batch.items()}
                     outputs = model(**prepared)
                     raw_loss = getattr(outputs, "loss", None)

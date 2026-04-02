@@ -28,7 +28,7 @@ __all__ = ["init_wandb_offline", "init_mlflow_local"]
 def init_wandb_offline(project: str = "codex"):
     """Initialize W&B in offline mode when WANDB_MODE=offline or no WANDB_API_KEY."""
     try:
-        import wandb  # type: ignore
+        import wandb
     except ImportError:
         logger.warning("wandb not installed; skipping W&B init (pip install wandb)")
         return None
@@ -47,7 +47,7 @@ def init_wandb_offline(project: str = "codex"):
 def init_mlflow_local():
     """Ensure MLflow logs locally (default mlruns/) unless a tracking URI is set."""
     try:
-        import mlflow  # type: ignore  # noqa: F401
+        import mlflow  # noqa: F401
     except ImportError:
         logger.warning("mlflow not installed; skipping MLflow init (pip install mlflow)")
         return None

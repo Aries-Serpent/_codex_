@@ -35,7 +35,7 @@ from omegaconf import DictConfig  # noqa: E402
 try:  # pragma: no cover - optional dependency
     from lm_eval import evaluator
 except Exception:  # pragma: no cover
-    evaluator = None  # type: ignore
+    evaluator = None
 
 
 def _default_model_args(cfg: DictConfig) -> str:

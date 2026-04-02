@@ -60,7 +60,7 @@ def _resolve_target_type(annotation: Any, current: Any) -> type[Any] | None:
             return type(current) if current is not None else str
         if annotation is None:
             return None
-        return annotation  # type: ignore[return-value]
+        return annotation
     if origin in {list, tuple, set, frozenset}:  # pragma: no cover - not used today
         return origin
     if origin in {Union, UnionType}:

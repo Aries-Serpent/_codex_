@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from codex_utils.regex_patterns import (  # type: ignore[import-untyped]  # noqa: F401
+from codex_utils.regex_patterns import (  # noqa: F401
     ENV_ASSIGNMENT,
     PEM_BLOCK,
 )

@@ -24,22 +24,22 @@ try:
         WhitespaceTokenizer,
     )
 except Exception:  # pragma: no cover - optional dependency guard
-    HFTokenizer = None  # type: ignore[assignment]
-    HFTokenizerAdapter = None  # type: ignore[assignment]
-    TokenizerAdapter = None  # type: ignore[assignment]
-    WhitespaceTokenizer = None  # type: ignore[assignment]
+    HFTokenizer = None  # type: ignore[assignment, misc]
+    HFTokenizerAdapter = None
+    TokenizerAdapter = None  # type: ignore[assignment, misc]
+    WhitespaceTokenizer = None  # type: ignore[assignment, misc]
 
 try:
     from .reward_model import HeuristicRewardModel, RewardModel
 except Exception:  # pragma: no cover - optional dependency guard
-    RewardModel = None  # type: ignore[assignment]
-    HeuristicRewardModel = None  # type: ignore[assignment]
+    RewardModel = None  # type: ignore[assignment, misc]
+    HeuristicRewardModel = None  # type: ignore[assignment, misc]
 
 try:
     from .rl import BanditRLAgent, RLAgent
 except Exception:  # pragma: no cover - optional dependency guard
-    RLAgent = None  # type: ignore[assignment]
-    BanditRLAgent = None  # type: ignore[assignment]
+    RLAgent = None  # type: ignore[assignment, misc]
+    BanditRLAgent = None  # type: ignore[assignment, misc]
 
 from .registry import apply_config, get, get_component, load_component, register
 

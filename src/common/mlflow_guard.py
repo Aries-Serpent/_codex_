@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import mlflow
 except Exception:  # pragma: no cover - mlflow not installed or misconfigured
-    mlflow = None  # type: ignore
+    mlflow = None
 
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
 
@@ -39,7 +39,7 @@ from .provenance import _read_dvc_lock, collect_dvc_stage  # noqa: E402
 
 def _config_fingerprint(cfg: DictConfig) -> str:
     """Stable SHA256 of resolved config YAML (aligned with provenance)."""
-    import yaml  # type: ignore[import-untyped]
+    import yaml
 
     try:
         # OmegaConf.to_yaml doesn't exist in older versions, use to_container
@@ -59,7 +59,7 @@ def _dataset_hash_from_dvc(
     st = collect_dvc_stage(lock, stage=stage) if lock else None
     if not st:
         return None
-    for _, meta in (st.outs or {}).items():  # type: ignore[attr-defined]
+    for _, meta in (st.outs or {}).items():
         h = meta.get("md5")
         if h:
             return h

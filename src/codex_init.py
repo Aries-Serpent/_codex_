@@ -161,7 +161,7 @@ class ConfigLoader:
     def _load_yaml(self, file_path: Path) -> Dict[str, Any]:
         """Load YAML file."""
         try:
-            import yaml  # type: ignore[import-untyped]
+            import yaml
 
             with open(file_path, "r") as f:
                 return yaml.safe_load(f) or {}

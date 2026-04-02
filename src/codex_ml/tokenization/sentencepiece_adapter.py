@@ -99,7 +99,7 @@ def _get_sentencepiece():
             def encode(self, text: str, out_type=int):
                 token_to_id = {tok: idx for idx, tok in enumerate(self.vocab)} or {"<unk>": 0}
                 ids = [token_to_id.get(tok, 0) for tok in text.split()]
-                return ids if out_type is int else [str(i) for i in ids]  # type: ignore[misc]
+                return ids if out_type is int else [str(i) for i in ids]
 
             def decode(self, ids):
                 id_to_token = {idx: tok for idx, tok in enumerate(self.vocab)} or {0: "<unk>"}

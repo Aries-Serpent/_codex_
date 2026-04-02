@@ -28,9 +28,9 @@ import random  # noqa: E402
 from typing import Any  # noqa: E402
 
 try:
-    import numpy as np  # type: ignore
+    import numpy as np
 except ImportError:  # pragma: no cover - numpy is optional
-    np = None  # type: ignore
+    np = None
 
 
 def _set_numpy_seed(seed: int) -> None:
@@ -46,7 +46,7 @@ def _set_numpy_seed(seed: int) -> None:
 def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
     torch_info: dict[str, Any] = {"available": False}
     try:
-        import torch  # type: ignore
+        import torch
 
         torch.manual_seed(seed)
         try:
@@ -61,12 +61,12 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
         if deterministic:
             deterministic_state: Any = True
             try:
-                torch.use_deterministic_algorithms(True, warn_only=False)  # type: ignore[attr-defined]
+                torch.use_deterministic_algorithms(True, warn_only=False)
             except TypeError as e:
                 logger.debug(f"TypeError: {e}")
                 logger.warning(f"TypeError: {e}", exc_info=True)
                 # Older torch versions accept a single positional argument
-                torch.use_deterministic_algorithms(True)  # type: ignore[arg-type]
+                torch.use_deterministic_algorithms(True)
             except AttributeError as e:
                 logger.debug(f"AttributeError: {e}")
                 logger.warning(f"AttributeError: {e}", exc_info=True)
@@ -76,7 +76,7 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
                 torch_info["deterministic"] = deterministic_state
 
             try:
-                import torch.backends.cudnn as cudnn  # type: ignore
+                import torch.backends.cudnn as cudnn
 
                 cudnn.benchmark = False
                 cudnn.deterministic = True

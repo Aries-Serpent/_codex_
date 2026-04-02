@@ -64,7 +64,7 @@ def _ensure_sentencepiece() -> bool:
 
 
 if TYPE_CHECKING:  # pragma: no cover - type checking only
-    import sentencepiece as spm  # type: ignore[import-untyped]
+    import sentencepiece as spm
 
     from .sentencepiece_adapter import SentencePieceAdapter as _SentencePieceAdapter
 

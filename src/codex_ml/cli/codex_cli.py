@@ -35,7 +35,7 @@ from types import SimpleNamespace
 from typing import Optional
 
 import click
-import yaml  # type: ignore[import-untyped]
+import yaml
 
 from codex_ml.cli.status_report import build_status_report
 from codex_ml.codex_structured_logging import (

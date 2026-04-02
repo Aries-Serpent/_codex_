@@ -22,8 +22,8 @@ try:  # pragma: no cover - optional torch guard for import-time failures
 except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
     torch = None  # type: ignore[assignment]
     nn = Any  # type: ignore[assignment]
-    GradScaler = None  # type: ignore[assignment]
-    autocast = None  # type: ignore[assignment]
+    GradScaler = None
+    autocast = None
     DataLoader = Any  # type: ignore[assignment, misc]
 
 if torch is not None:  # pragma: no cover - typing bridge
@@ -331,7 +331,7 @@ class Trainer:
 
     def _forward(self, inputs: Any) -> torch.Tensor:
         if isinstance(inputs, Mapping):
-            return self.simple.model(**inputs)  # type: ignore[arg-type]
+            return self.simple.model(**inputs)
         return self.simple.model(inputs)
 
     def _latest_checkpoint_path(self, directory: str | Path) -> Path | None:
@@ -619,7 +619,7 @@ class Trainer:
             num_batches = 0
             self._zero_grad()
 
-            for step, batch in enumerate(self.train_loader, start=1):  # type: ignore[var-annotated]
+            for step, batch in enumerate(self.train_loader, start=1):
                 inputs, labels = self._prepare_batch(batch)
                 with autocast(enabled=cfg.mixed_precision):
                     outputs = self._forward(inputs)

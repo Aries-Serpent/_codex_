@@ -90,7 +90,7 @@ jobs:
             const runUrl = `${{ github.server_url }}/${{ github.repository }}/actions/runs/${runId}`;
             const branch = process.env.BRANCH_REF || '';
             const now = new Date().toISOString().replace('T', ' ').substring(0, 16) + 'Z';
-            const marker = `<!-- ci-rescue:${context.issue.number} -->`;
+            const marker = `<!-- ci-rescue:${context.issue.number}:sha-${shaShort} -->`;
             const workflowName = 'Workflow Compliance Audit (actionlint)';
 
             const rescueBody = [
@@ -200,7 +200,7 @@ jobs:
           run_id=os.environ["RUN_ID"]; run_url=os.environ["RUN_URL"]
           workflow=os.environ["WORKFLOW_NAME"]; branch=os.environ["BRANCH"]
           now=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"); sha_short=commit_sha[:12]
-          MARKER=f"<!-- ci-rescue:{pr_number} -->"
+          MARKER=f"<!-- ci-rescue:{pr_number}:sha-{sha_short} -->"
           API="https://api.github.com"
           HDRS={"Authorization":f"Bearer {token}","Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","Content-Type":"application/json"}
           def gh(method,path,body=None):

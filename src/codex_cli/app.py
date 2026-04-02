@@ -31,7 +31,7 @@ REASONING_CURRICULA_ROOT = REASONING_TEMPLATE_ROOT / "curricula"
 
 _USE_TYPER = False
 try:  # pragma: no cover - prefer Typer when available
-    import typer as _typer  # type: ignore
+    import typer as _typer
 
     if hasattr(_typer, "Typer"):
         _USE_TYPER = True
@@ -147,7 +147,7 @@ if _USE_TYPER:
 
     def _load_yaml(path: Path) -> dict:
         try:
-            import yaml  # type: ignore
+            import yaml
         except Exception as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc
@@ -310,7 +310,7 @@ else:  # pragma: no cover - click fallback
 
     def _load_yaml(path: Path) -> dict:
         try:
-            import yaml  # type: ignore
+            import yaml
         except Exception as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc

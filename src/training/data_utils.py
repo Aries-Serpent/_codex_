@@ -32,8 +32,8 @@ try:  # Optional dependency handling
     import numpy as np
     import numpy.typing as npt
 except ModuleNotFoundError:  # pragma: no cover - lightweight environments
-    np = None  # type: ignore[assignment]
-    npt = Any  # type: ignore[assignment]
+    np = None
+    npt = Any
 
 try:
     import torch
@@ -44,18 +44,18 @@ else:
         torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - fcntl unavailable on Windows
-    import fcntl  # type: ignore[attr-defined]
+    import fcntl
 except ImportError:  # pragma: no cover - platform-specific fallback
     fcntl = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     if torch is not None:
-        Tensor = torch.Tensor  # type: ignore[attr-defined]
+        Tensor = torch.Tensor
     else:
         Tensor = Any  # type: ignore[misc]
 else:  # pragma: no cover - runtime alias
     if torch is not None:
-        Tensor = torch.Tensor  # type: ignore[attr-defined]
+        Tensor = torch.Tensor
     else:
         Tensor = Any  # type: ignore[assignment]
 
@@ -69,7 +69,7 @@ def _require_torch() -> None:
 
 # Optional deterministic shuffler import with robust fallback
 try:  # pragma: no cover - optional import from ingestion utilities
-    from ingestion import deterministic_shuffle  # type: ignore
+    from ingestion import deterministic_shuffle
 except Exception:  # pragma: no cover - fallback
     import random
 
@@ -290,7 +290,7 @@ class TextDataset:
                 else:
                     out = self.tokenizer(txt)
                     # Expecting a mapping with 'input_ids'
-                    ids = out["input_ids"]  # type: ignore[index]
+                    ids = out["input_ids"]
             except Exception:
                 logger.warning("Exception occurred", exc_info=True)
                 logger.warning("Exception occurred", exc_info=True)

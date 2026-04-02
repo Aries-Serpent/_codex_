@@ -27,11 +27,20 @@ name: "🔄 Auto-Post @copilot review After Agent Session"
 
 on:
   workflow_run:
-    # Trigger when the Copilot coding agent session completes.
-    # The dynamic "Copilot coding agent" workflow (path: dynamic/copilot-swe-agent/copilot)
-    # is the actual agent session; its runs carry pull_requests context for the PR under work.
+    # Fires when the Copilot coding agent session completes, OR when CodeQL finishes.
+    #
+    # WHY CodeQL is included:
+    #   CodeQL completes AFTER the agent session ends.  By watching it we can:
+    #   (1) Immediately auto-approve any pending Copilot sessions that were queued
+    #       after the agent pushed new commits — honoring `- [x] copilot-agent-session-done.yml`
+    #       as maintainer pre-approval, eliminating "awaiting approval from a maintainer".
+    #   (2) Compile fresh CodeQL findings into the bot-feedback thread for the next session.
+    #
+    # The "Copilot coding agent" trigger handles the primary review-cycle loop.
+    # The "CodeQL" trigger handles the delayed auto-approve + CodeQL finding compilation.
+    #
     # NOTE: workflow_run listeners only execute from the default branch (main).
-    workflows: ["Copilot coding agent"]
+    workflows: ["Copilot coding agent", "CodeQL"]
     types: [completed]
 
 concurrency:
@@ -156,10 +165,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: preflight-autofix
-    # Only fire when:
-    #   1. The workflow_run was associated with a PR (not a plain branch push)
-    #   2. COPILOT_AGENT_AUTH_ENABLED is enabled
+    # PRE-APPROVED: The WEC checkbox `- [x] copilot-agent-session-done.yml` in the PR body
+    # constitutes maintainer pre-approval.  This job MUST run even when preflight-autofix
+    # fails — `always()` ensures the posting is never blocked by an upstream job outcome.
+    # Only skip when there is no associated PR.
     if: |
+      always() &&
       github.event.workflow_run.pull_requests != null &&
       github.event.workflow_run.pull_requests[0] != null
 
@@ -175,22 +186,45 @@ jobs:
           # but the comment serves as a record for manual review).
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |
-            // Check repo variable COPILOT_AGENT_AUTH_ENABLED
-            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
-            if (authEnabled !== 'true' && authEnabled !== '1') {
-              console.log('COPILOT_AGENT_AUTH_ENABLED not set — skipping.');
+            // Gate check: proceed if EITHER the WEC checkbox is checked OR COPILOT_AGENT_AUTH_ENABLED is set.
+            // This ensures the workflow always posts @copilot review when the user explicitly selects
+            // `- [x] copilot-agent-session-done.yml` in the PR Workflow Execution Checklist,
+            // even when COPILOT_AGENT_AUTH_ENABLED is unset (e.g. token unavailable environment).
+
+            // When triggered by CodeQL completion, skip the @copilot review post entirely.
+            // The auto-approve-pending-runs and compile-bot-feedback jobs handle CodeQL triggers.
+            const triggeringWorkflow = context.payload.workflow_run.name;
+            if (triggeringWorkflow === 'CodeQL') {
+              console.log(`Triggered by "${triggeringWorkflow}" — skipping @copilot review post (auto-approve + compile-bot-feedback handle this trigger).`);
               return;
             }
 
+            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
             const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prs = context.payload.workflow_run.pull_requests;
+            const repo  = context.repo.repo;
+            const prs   = context.payload.workflow_run.pull_requests;
             if (!prs || prs.length === 0) {
               console.log('No associated PRs — skipping.');
               return;
             }
-
             const pr = prs[0].number;
+
+            // Fetch PR body to check the WEC checkbox for copilot-agent-session-done.yml
+            let wecChecked = false;
+            try {
+              const { data: prDataForWec } = await github.rest.pulls.get({ owner, repo, pull_number: pr });
+              const prBody = prDataForWec.body || '';
+              // Match: `- [x] copilot-agent-session-done.yml` (case-insensitive, optional leading spaces)
+              wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prBody);
+              console.log(`WEC checkbox (copilot-agent-session-done.yml): ${wecChecked}`);
+            } catch (e) {
+              console.log(`Could not fetch PR body for WEC check (non-fatal): ${e.message}`);
+            }
+
+            if (!wecChecked && authEnabled !== 'true' && authEnabled !== '1') {
+              console.log('copilot-agent-session-done.yml WEC checkbox not checked AND COPILOT_AGENT_AUTH_ENABLED not set — skipping.');
+              return;
+            }
 
             // Verify the PR is still open
             let prData;
@@ -421,17 +455,32 @@ jobs:
             exit 0
           fi
 
-          # Check whether the auto-approve-workflows checkbox is ticked
+          # Check which checkboxes are ticked.
+          # Auto-approve is enabled when EITHER:
+          #   1. `- [x] auto-approve-workflows` is checked (explicit approval, always approve)
+          #   2. `- [x] copilot-agent-session-done.yml` is checked (WEC pre-approval)
+          #      The WEC checkbox IS the maintainer's pre-approval — checking it means "run
+          #      this workflow and approve whatever it needs", eliminating the
+          #      "This workflow is awaiting approval from a maintainer" gate.
           PR_BODY=$(gh pr view "${PR_NUMBER}" \
             --repo "${REPO}" \
             --json body -q '.body // ""' 2>/dev/null || echo "")
 
-          if ! printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows'; then
-            echo "⚡ auto-approve-workflows not checked — skipping."
+          AUTO_APPROVE_CHECKED=0
+          SESSION_DONE_CHECKED=0
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*auto-approve-workflows' && AUTO_APPROVE_CHECKED=1 || true
+          printf '%s' "$PR_BODY" | grep -qiE '^\-\s*\[x\]\s*copilot-agent-session-done\.yml' && SESSION_DONE_CHECKED=1 || true
+
+          if [ "$AUTO_APPROVE_CHECKED" = "0" ] && [ "$SESSION_DONE_CHECKED" = "0" ]; then
+            echo "⚡ Neither auto-approve-workflows nor copilot-agent-session-done.yml is checked — skipping."
             exit 0
           fi
 
-          echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          if [ "$AUTO_APPROVE_CHECKED" = "1" ]; then
+            echo "⚡ auto-approve-workflows is CHECKED — approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          else
+            echo "⚡ copilot-agent-session-done.yml WEC checkbox is CHECKED (pre-approval) — auto-approving pending runs for SHA ${HEAD_SHA:0:12}..."
+          fi
 
           # Fetch all workflow runs for this commit that require approval
           PENDING_RUNS=$(gh api \
@@ -471,3 +520,176 @@ jobs:
           if [ "$FAILED" -gt 0 ]; then
             echo "⚠️  ${FAILED} run(s) could not be approved — owner approval may be required."
           fi
+
+  # ── Job 4: Compile bot feedback into a single @copilot continue comment ─────
+  # Fires after the agent session completes.  Collects all Code Quality, Security,
+  # and Copilot AI review findings from bot comments / PR reviews that have NOT
+  # already been compiled into a continue comment.  Posts a single thread as
+  # @mbaetiong directing Copilot to continue with ALL tasks + the bot concerns.
+  #
+  # Bot comment sources detected:
+  #   - github-copilot[bot] / copilot-pull-request-reviewer[bot] review COMMENTS (PR reviews)
+  #   - github-actions[bot] comments that include quality/security markers
+  #   - Any comment containing the <!-- code-quality-report --> or <!-- security-findings --> markers
+  #
+  # Guard: does NOT post if the most recent compile comment is identical to what
+  # would be posted (de-duplicate by SHA fingerprint).
+  compile-bot-feedback:
+    name: "Compile bot feedback → @copilot continue thread"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: post-review-trigger
+    # PRE-APPROVED: always() ensures this job runs even if post-review-trigger failed.
+    # The WEC checkbox constitutes maintainer pre-approval — no additional gate needed.
+    if: |
+      always() &&
+      github.event.workflow_run.pull_requests != null &&
+      github.event.workflow_run.pull_requests[0] != null
+
+    steps:
+      - name: "Collect bot findings and post consolidated @copilot continue comment"
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const prs   = context.payload.workflow_run.pull_requests;
+            if (!prs || prs.length === 0) return;
+            const prNumber = prs[0].number;
+
+            // Gate: only run when copilot-agent-session-done.yml WEC checkbox is checked
+            let wecChecked = false;
+            try {
+              const { data: prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
+              if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is closed — skipping.`); return; }
+              wecChecked = /[-*]\s*\[x\]\s*copilot-agent-session-done\.yml/i.test(prInfo.body || '');
+            } catch (e) {
+              console.log(`Cannot fetch PR for gate check: ${e.message}`); return;
+            }
+            const authEnabled = '${{ vars.COPILOT_AGENT_AUTH_ENABLED }}';
+            if (!wecChecked && authEnabled !== 'true' && authEnabled !== '1') {
+              console.log('WEC checkbox not checked — skipping compile-bot-feedback.'); return;
+            }
+
+            // ── Collect PR Review comments from Copilot AI reviewer ──────────────
+            const BOT_REVIEW_AUTHORS = new Set([
+              'copilot-pull-request-reviewer[bot]',
+              'github-copilot[bot]',
+              'copilot[bot]',
+            ]);
+            const BOT_COMMENT_AUTHORS = new Set([
+              'github-actions[bot]',
+              'copilot-pull-request-reviewer[bot]',
+              'github-copilot[bot]',
+            ]);
+            // Quality/security markers commonly emitted by CI bots
+            const BOT_CONTENT_MARKERS = [
+              '<!-- code-quality-report -->',
+              '<!-- security-findings -->',
+              'semgrep',
+              'codeql',
+              '🔒 security',
+              '⚠️ code quality',
+              'code scanning',
+              'code quality',
+              'security scan',
+            ];
+
+            let findings = [];
+
+            // 1. PR review comments (Copilot AI review findings)
+            try {
+              const reviews = await github.paginate(github.rest.pulls.listReviews, {
+                owner, repo, pull_number: prNumber, per_page: 50,
+              });
+              for (const review of reviews) {
+                const login = review.user?.login || '';
+                if (!BOT_REVIEW_AUTHORS.has(login)) continue;
+                // Collect the review body if it has content
+                if (review.body && review.body.trim().length > 20) {
+                  findings.push({ source: `Copilot AI Review (${review.submitted_at?.slice(0,10)})`, body: review.body.trim() });
+                }
+              }
+
+              // Also collect inline review comments (diff comments)
+              const reviewComments = await github.paginate(github.rest.pulls.listReviewComments, {
+                owner, repo, pull_number: prNumber, per_page: 100, sort: 'created', direction: 'desc',
+              });
+              const recent = reviewComments.slice(0, 20);
+              for (const rc of recent) {
+                const login = rc.user?.login || '';
+                if (!BOT_REVIEW_AUTHORS.has(login)) continue;
+                findings.push({ source: `Copilot Review Comment (${rc.path}:${rc.line || rc.original_line || '?'})`, body: rc.body.trim() });
+              }
+            } catch (e) {
+              console.log(`Could not fetch reviews (non-fatal): ${e.message}`);
+            }
+
+            // 2. Issue comments from quality/security bots
+            try {
+              const { data: issueComments } = await github.rest.issues.listComments({
+                owner, repo, issue_number: prNumber, per_page: 50,
+              });
+              // Only look at the last 30 comments
+              const recent = issueComments.slice(-30);
+              for (const c of recent) {
+                const login = c.user?.login || '';
+                const body  = c.body || '';
+                const isBotAuthor = BOT_COMMENT_AUTHORS.has(login);
+                const hasBotMarker = BOT_CONTENT_MARKERS.some(m => body.toLowerCase().includes(m.toLowerCase()));
+                // Skip the compile-thread itself to avoid re-including old compilations
+                if (body.includes('<!-- compiled-bot-feedback -->')) continue;
+                if ((isBotAuthor || hasBotMarker) && body.trim().length > 40) {
+                  // Truncate very long bot comments to first 500 chars
+                  const excerpt = body.length > 500 ? body.slice(0, 497) + '…' : body;
+                  findings.push({ source: `Bot Comment (${login}, ${c.created_at?.slice(0,10)})`, body: excerpt });
+                }
+              }
+            } catch (e) {
+              console.log(`Could not fetch issue comments (non-fatal): ${e.message}`);
+            }
+
+            if (findings.length === 0) {
+              console.log(`No bot findings detected for PR #${prNumber} — skipping compile-bot-feedback.`);
+              return;
+            }
+
+            // ── Build compiled continuation comment ──────────────────────────────
+            const findingsList = findings
+              .map((f, i) => `**${i + 1}. ${f.source}**\n\n> ${(f.body || '').replace(/\n/g, '\n> ')}`)
+              .join('\n\n---\n\n');
+
+            const compiledBody = [
+              `<!-- compiled-bot-feedback -->`,
+              `@copilot continue with all current priority 1, 2, 3, and 4 tasks as well as addressing all code quality and security concerns listed below.`,
+              ``,
+              `**📋 Bot-reported findings (${findings.length} item${findings.length > 1 ? 's' : ''}):**`,
+              ``,
+              findingsList,
+              ``,
+              `---`,
+              `> _Compiled by \`copilot-agent-session-done.yml\` · compile-bot-feedback job_`,
+              `> _[🔗 Workflow run](https://github.com/${owner}/${repo}/actions/runs/${context.runId})_`,
+            ].join('\n');
+
+            // Guard: don't re-post the same finding set within the last 5 comments
+            try {
+              const { data: recentComments } = await github.rest.issues.listComments({
+                owner, repo, issue_number: prNumber, per_page: 5,
+              });
+              const alreadyPosted = (recentComments || []).some(c =>
+                (c.body || '').includes('<!-- compiled-bot-feedback -->')
+              );
+              if (alreadyPosted) {
+                console.log(`compile-bot-feedback already posted recently for PR #${prNumber} — skipping.`);
+                return;
+              }
+            } catch (e) {
+              console.log(`Guard check failed (non-fatal): ${e.message}`);
+            }
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: prNumber, body: compiledBody,
+            });
+            console.log(`Compiled ${findings.length} bot finding(s) into @copilot continue comment on PR #${prNumber}.`);

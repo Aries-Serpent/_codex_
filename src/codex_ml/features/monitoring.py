@@ -23,7 +23,7 @@ __all__ = ["FeatureHealthMonitor", "FeatureHealthStatus", "HealthAlert"]
 try:
     from codex_ml.features.store import FeatureStore
 except ImportError:
-    FeatureStore = None  # type: ignore[misc,assignment]
+    FeatureStore = None
 
 
 @dataclass

@@ -25,11 +25,11 @@ import os
 import sys
 from typing import Any, Iterable, Optional
 
-from mcp.observability.metrics import Timer, increment  # type: ignore
+from mcp.observability.metrics import Timer, increment
 
 # Reuse Plan A scaffolds (import-safe)
-from mcp.retries import retry_on_exception  # type: ignore
-from mcp.server.safety_checks import live_tests_enabled  # type: ignore
+from mcp.retries import retry_on_exception
+from mcp.server.safety_checks import live_tests_enabled
 
 from .interface import BackendAdapter, BackendResponse, VectorItem
 

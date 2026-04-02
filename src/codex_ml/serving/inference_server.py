@@ -22,11 +22,11 @@ except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
     FastAPI = None
     HTTPException = Exception
-    BaseModel = object  # type: ignore[misc,assignment]
+    BaseModel = object
     APIKeyHeader = None
     Security = None
 
-    def Field(*a, **k):  # type: ignore[no-redef]
+    def Field(*a, **k):
         return None
 
     Request = object

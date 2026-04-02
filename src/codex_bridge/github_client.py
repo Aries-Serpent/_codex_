@@ -28,7 +28,7 @@ import os  # noqa: E402
 import time  # noqa: E402
 from typing import Any  # noqa: E402
 
-import requests  # type: ignore[import-untyped]  # noqa: E402
+import requests  # noqa: E402
 
 OWNER = os.getenv("CODEX_GH_OWNER", "Aries-Serpent")
 REPO = os.getenv("CODEX_GH_REPO", "_codex_")
