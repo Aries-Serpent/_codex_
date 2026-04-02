@@ -28,7 +28,7 @@ on:
       - "Workflow Compliance Audit (actionlint)"
       - "Pre-Merge Validation"
       - "Iterative Self-Healing CI"
-      - "Test — RAG Pipeline"
+      - "RAG Module Tests"
       - "Security Scan"
       # Extended coverage — sharded quick tests + slow validation
       - "Resilient Validation Suite"
