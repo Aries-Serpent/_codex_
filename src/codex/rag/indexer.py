@@ -805,37 +805,6 @@ class RAGIndexer:
     ) -> None:
         self.index_dir = Path(index_dir) if index_dir else Path(".")
         self.device = device
-        # Lazily populated by _try_load_model(); None until sentence-transformers
-        # is available and the default embedding model can be loaded.
-        self.model: Optional[Any] = None
-        self._try_load_model()
-
-    def _try_load_model(self) -> None:
-        """Attempt to load the default embedding model onto self.device.
-
-        Silently skips if sentence-transformers is not installed or the model
-        cannot be loaded (e.g. no network access in offline CI environments).
-        Callers that require a loaded model should check ``self.model is not None``.
-        """
-        try:
-            from codex.rag._model_utils import safe_load_sentence_transformer
-            from codex.rag.utils import safe_model_to_device
-
-            self.model = safe_load_sentence_transformer(
-                "sentence-transformers/all-MiniLM-L6-v2",
-            )
-            self.model = safe_model_to_device(self.model, self.device)
-        except Exception:
-            # Model unavailable (offline, missing dep, etc.) — leave as None.
-            pass
-
-    def move_to_device(self, device: str) -> None:
-        """Move the loaded embedding model to *device* and update ``self.device``."""
-        self.device = device
-        if self.model is not None:
-            from codex.rag.utils import safe_model_to_device
-
-            self.model = safe_model_to_device(self.model, device)
 
     def build_index(
         self,
